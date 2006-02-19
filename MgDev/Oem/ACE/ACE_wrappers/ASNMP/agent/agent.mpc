@@ -1,0 +1,13 @@
+// agent.mpc,v 1.1 2003/08/23 19:32:56 dhinton Exp
+
+project (asnmp_agent) : aceexe {
+  exename = agent
+  after += asnmp_lib
+  libs  += asnmp
+  includes += $(ACE_ROOT)/ASNMP
+  source_files {
+    agent_impl.cpp
+    main.cpp
+    snmp_agent.cpp
+  }
+}

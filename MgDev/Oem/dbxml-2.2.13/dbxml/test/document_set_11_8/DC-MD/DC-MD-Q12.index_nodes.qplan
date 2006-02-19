@@ -1,0 +1,44 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+          <OQPlan>P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order)</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="order" nodeType="element">
+          <OQPlan>P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order)</OQPlan>
+        </Step>
+      </Navigation>
+      <Where>
+        <Function name="{http://www.w3.org/2005/04/xpath-functions}:empty">
+          <Navigation>
+            <Variable name="a"/>
+            <Step axis="child" name="order_lines" nodeType="element"/>
+            <Step axis="child" name="order_line" nodeType="element">
+              <Predicates>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                </Sequence>
+              </Predicates>
+            </Step>
+          </Navigation>
+        </Function>
+      </Where>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="OneItemLine" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Navigation>
+          <Variable name="a"/>
+          <Step axis="attribute" name="id" nodeType="attribute">
+            <OQPlan>P(edge-attribute-equality-string,prefix,order.@id)</OQPlan>
+          </Step>
+        </Navigation>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

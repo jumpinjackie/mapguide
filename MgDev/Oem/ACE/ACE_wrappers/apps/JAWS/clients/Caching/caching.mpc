@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// caching.mpc,v 1.2 2003/12/23 20:23:20 dhinton Exp
+
+project(http_client) : aceexe {
+  Source_Files {
+    http_handler.cpp
+    http_client.cpp
+  }
+}

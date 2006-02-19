@@ -1,0 +1,67 @@
+.TableHeader {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    color: #000000;
+    background-color: #EEEEEE;
+    background-position: left top;
+    font-weight: bold;
+    text-align: left;
+    vertical-align: top;
+}
+.TableCell {
+    background-color: #FFFFFF;
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    color: #000000;
+    vertical-align: top;
+    line-height: 15pt;
+}
+.TableOverall {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    line-height: 15pt;
+    color: #000000;
+    background-color: #FFFFFF;
+    text-align: left;
+    vertical-align: top;
+    display: block;
+    border: thin outset #EEEEEE;
+}
+.TableToolbar {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    color: #000000;
+    background-color: #FFFFCC;
+}
+.ToolbarButton {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    color: #0066CC;
+    border-top-style: outset;
+    border-right-style: outset;
+    border-bottom-style: outset;
+    border-left-style: outset;
+    border-top-color: #CCCCCC;
+    border-right-color: #888888;
+    border-bottom-color: #888888;
+    border-left-color: #CCCCCC;
+    background-color: #FFFFFF;
+}
+.SaveCancel {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    color: #0066CC;
+    background-color: #CCCCCC;
+    border: none;
+}
+.GrayTab {
+
+    background-color: #CCCCCC;
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    color: #000000;
+    vertical-align: top;
+    line-height: 15pt;
+}

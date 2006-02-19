@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="precedence_etc">
+  <policies>
+    <policy name="flexible">
+      <addArg>-f</addArg>
+    </policy>
+    <policy name="strict"/>
+    <default>
+      <program>../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="fail">
+    <arg>(1!=1)!=(1!=1)=(1=1)  </arg>
+    <output>false
+</output>
+  </base>
+  <base type="fail">
+    <arg>-2&gt;-3!=(1!=1) </arg>
+    <output>true
+</output>
+  </base>
+  <base type="fail">
+    <arg>(1!=1)!=-2&gt;-3 </arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) or (1=1) and (1!=1)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) = xs:base64Binary(&quot;abcd&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) != xs:base64Binary(&quot;abcd&quot;)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;ABCD&quot;) != xs:base64Binary(&quot;abcd&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;-%&amp;12nfbwbo&quot;) = xs:base64Binary(&quot;12-%&amp;nfbwbo&quot;)</arg>
+    <output>Invalid representation of base64Binary 
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) = xs:hexBinary(&quot;abcd&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) != xs:hexBinary(&quot;abcd&quot;)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;ABCD&quot;) != xs:hexBinary(&quot;abcd&quot;)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;-%&amp;12nfbwbo&quot;) = xs:hexBinary(&quot;12-%&amp;nfbwbo&quot;)</arg>
+    <output>Invalid representation of hexBinary 
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;hello&quot;) = xs:QName(&quot;hello&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;hello&quot;) = xs:QName(&quot;HELLO&quot;)</arg>
+    <output>false
+</output>
+  </base>
+</test>

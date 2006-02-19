@@ -1,0 +1,11 @@
+#
+# Makefile.bor,v 4.3 2003/12/21 10:14:16 jwillemsen Exp
+#
+
+NAME = peerd
+OBJFILES = \
+        $(OBJDIR)\Options.obj \
+        $(OBJDIR)\Peer.obj \
+        $(OBJDIR)\peerd.obj
+!include <$(ACE_ROOT)\apps\build.bor>
+

@@ -1,0 +1,81 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+          <OQPlan>V(node-attribute-equality-string,@id,=,'8')</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="article" nodeType="element">
+          <OQPlan>V(node-attribute-equality-string,@id,=,'8')</OQPlan>
+        </Step>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="attribute" name="id" nodeType="attribute"/>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="8" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+        <Step axis="child" name="body" nodeType="element"/>
+        <Step axis="child" name="section" nodeType="element"/>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="attribute" name="heading" nodeType="attribute"/>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="introduction" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </ForBinding>
+    <ForBinding name="p">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+          <OQPlan>V(node-attribute-equality-string,@id,=,'8')</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="article" nodeType="element">
+          <OQPlan>V(node-attribute-equality-string,@id,=,'8')</OQPlan>
+        </Step>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="attribute" name="id" nodeType="attribute"/>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="8" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+        <Step axis="child" name="body" nodeType="element"/>
+        <Step axis="child" name="section" nodeType="element">
+          <Predicates>
+            <Operator name="node-order">
+              <ContextItem/>
+              <Variable name="a"/>
+            </Operator>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+            </Sequence>
+          </Predicates>
+        </Step>
+      </Navigation>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="HeadingOfSection" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Navigation>
+          <Variable name="p"/>
+          <Step axis="attribute" name="heading" nodeType="attribute"/>
+        </Navigation>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

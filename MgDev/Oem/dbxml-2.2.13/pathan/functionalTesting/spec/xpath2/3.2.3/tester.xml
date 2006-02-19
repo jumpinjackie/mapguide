@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="3.2.3">
+  <policies>
+    <policy name="">
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>/bookcase/shelf/book/child::title</arg>
+    <output>&lt;title&gt;Cryptonomicon&lt;/title&gt;
+&lt;title&gt;The Resistible Rise of Arturo Ui&lt;/title&gt;
+&lt;title&gt;Murder At Stiles&lt;/title&gt;
+&lt;title&gt;Toddler Taming&lt;/title&gt;
+&lt;title&gt;Tours of West Sussex&lt;/title&gt;
+&lt;title&gt;Limited Edition&lt;/title&gt;
+&lt;title&gt;How to Cook&lt;/title&gt;
+&lt;title&gt;The Authoritive Calvin and Hobbes&lt;/title&gt;
+&lt;title&gt;Tintin in America&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf/book/child::author</arg>
+    <output>&lt;author&gt;Stephenson&lt;/author&gt;
+&lt;author&gt;Brecht&lt;/author&gt;
+&lt;author&gt;Christie&lt;/author&gt;
+&lt;author&gt;Wren&lt;/author&gt;
+&lt;author&gt;Rutter&lt;/author&gt;
+&lt;author&gt;Walker&lt;/author&gt;
+&lt;author&gt;Marks&lt;/author&gt;
+&lt;author&gt;Smith&lt;/author&gt;
+&lt;author&gt;Watterson&lt;/author&gt;
+&lt;author&gt;Herge&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf/book/child::*</arg>
+    <output>&lt;title&gt;Cryptonomicon&lt;/title&gt;
+&lt;author&gt;Stephenson&lt;/author&gt;
+&lt;title&gt;The Resistible Rise of Arturo Ui&lt;/title&gt;
+&lt;author&gt;Brecht&lt;/author&gt;
+&lt;title&gt;Murder At Stiles&lt;/title&gt;
+&lt;author&gt;Christie&lt;/author&gt;
+&lt;title&gt;Toddler Taming&lt;/title&gt;
+&lt;author&gt;Wren&lt;/author&gt;
+&lt;author&gt;Rutter&lt;/author&gt;
+&lt;title&gt;Tours of West Sussex&lt;/title&gt;
+&lt;author&gt;Walker&lt;/author&gt;
+&lt;title&gt;Limited Edition&lt;/title&gt;
+&lt;author&gt;Marks&lt;/author&gt;
+&lt;title&gt;How to Cook&lt;/title&gt;
+&lt;author&gt;Smith&lt;/author&gt;
+&lt;title&gt;The Authoritive Calvin and Hobbes&lt;/title&gt;
+&lt;author&gt;Watterson&lt;/author&gt;
+&lt;title&gt;Tintin in America&lt;/title&gt;
+&lt;author&gt;Herge&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf/book[3]/child::author</arg>
+    <output>&lt;author&gt;Christie&lt;/author&gt;
+&lt;author&gt;Marks&lt;/author&gt;
+&lt;author&gt;Herge&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[3]/book/child::author</arg>
+    <output>&lt;author&gt;Smith&lt;/author&gt;
+&lt;author&gt;Watterson&lt;/author&gt;
+&lt;author&gt;Herge&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[3]/book[2]/child::title</arg>
+    <output>&lt;title&gt;The Authoritive Calvin and Hobbes&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[3]/book[2]/child::*</arg>
+    <output>&lt;title&gt;The Authoritive Calvin and Hobbes&lt;/title&gt;
+&lt;author&gt;Watterson&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf/book/attribute::*</arg>
+    <output>{}cover=&quot;soft&quot;
+{}cover=&quot;soft&quot;
+{}cover=&quot;soft&quot;
+{}cover=&quot;soft&quot;
+{}cover=&quot;hard&quot;
+{}cover=&quot;hard&quot;
+{}cover=&quot;hard&quot;
+{}cover=&quot;soft&quot;
+{}cover=&quot;hard&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf/book[2]/attribute::*</arg>
+    <output>{}cover=&quot;soft&quot;
+{}cover=&quot;hard&quot;
+{}cover=&quot;soft&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book/attribute::cover</arg>
+    <output>{}cover=&quot;soft&quot;
+{}cover=&quot;hard&quot;
+{}cover=&quot;hard&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf/attribute::position</arg>
+    <output>{}position=&quot;top&quot;
+{}position=&quot;middle&quot;
+{}position=&quot;bottom&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf/book/title/child::text()</arg>
+    <output>Cryptonomicon
+The Resistible Rise of Arturo Ui
+Murder At Stiles
+Toddler Taming
+Tours of West Sussex
+Limited Edition
+How to Cook
+The Authoritive Calvin and Hobbes
+Tintin in America
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[2]/title/child::text()</arg>
+    <output>Tours of West Sussex
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[2]/child::node()</arg>
+    <output>
+      
+&lt;title&gt;Tours of West Sussex&lt;/title&gt;
+
+      
+&lt;author&gt;Walker&lt;/author&gt;
+
+    
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[2]/title/child::node()</arg>
+    <output>Tours of West Sussex
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[2]/descendant::*</arg>
+    <output>&lt;title&gt;Tours of West Sussex&lt;/title&gt;
+&lt;author&gt;Walker&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[2]/descendant::author</arg>
+    <output>&lt;author&gt;Walker&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[2]/author/ancestor::shelf</arg>
+    <output>&lt;shelf position=&quot;middle&quot;&gt;
+    &lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;Toddler Taming&lt;/title&gt;
+      &lt;author&gt;Wren&lt;/author&gt;
+      &lt;author&gt;Rutter&lt;/author&gt;
+    &lt;/book&gt;
+    &lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;Tours of West Sussex&lt;/title&gt;
+      &lt;author&gt;Walker&lt;/author&gt;
+    &lt;/book&gt;
+    &lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;Limited Edition&lt;/title&gt;
+      &lt;author&gt;Marks&lt;/author&gt;
+    &lt;/book&gt;
+  &lt;/shelf&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[2]/author/ancestor-or-self::shelf</arg>
+    <output>&lt;shelf position=&quot;middle&quot;&gt;
+    &lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;Toddler Taming&lt;/title&gt;
+      &lt;author&gt;Wren&lt;/author&gt;
+      &lt;author&gt;Rutter&lt;/author&gt;
+    &lt;/book&gt;
+    &lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;Tours of West Sussex&lt;/title&gt;
+      &lt;author&gt;Walker&lt;/author&gt;
+    &lt;/book&gt;
+    &lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;Limited Edition&lt;/title&gt;
+      &lt;author&gt;Marks&lt;/author&gt;
+    &lt;/book&gt;
+  &lt;/shelf&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[2]/descendant-or-self::author</arg>
+    <output>&lt;author&gt;Walker&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[2]/self::author</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/child::shelf[1]/descendant::title</arg>
+    <output>&lt;title&gt;Cryptonomicon&lt;/title&gt;
+&lt;title&gt;The Resistible Rise of Arturo Ui&lt;/title&gt;
+&lt;title&gt;Murder At Stiles&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/child::shelf[1]/descendant::title[1]</arg>
+    <output>&lt;title&gt;Cryptonomicon&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/child::*/child::book[1]</arg>
+    <output>&lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;Cryptonomicon&lt;/title&gt;
+      &lt;author&gt;Stephenson&lt;/author&gt;
+    &lt;/book&gt;
+&lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;Toddler Taming&lt;/title&gt;
+      &lt;author&gt;Wren&lt;/author&gt;
+      &lt;author&gt;Rutter&lt;/author&gt;
+    &lt;/book&gt;
+&lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;How to Cook&lt;/title&gt;
+      &lt;author&gt;Smith&lt;/author&gt;
+    &lt;/book&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/</arg>
+    <output>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot; ?&gt;&lt;bookcase&gt;
+  &lt;shelf position=&quot;top&quot;&gt;
+    &lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;Cryptonomicon&lt;/title&gt;
+      &lt;author&gt;Stephenson&lt;/author&gt;
+    &lt;/book&gt;
+    &lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;The Resistible Rise of Arturo Ui&lt;/title&gt;
+      &lt;author&gt;Brecht&lt;/author&gt;
+    &lt;/book&gt;
+    &lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;Murder At Stiles&lt;/title&gt;
+      &lt;author&gt;Christie&lt;/author&gt;
+    &lt;/book&gt;
+  &lt;/shelf&gt;
+  &lt;shelf position=&quot;middle&quot;&gt;
+    &lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;Toddler Taming&lt;/title&gt;
+      &lt;author&gt;Wren&lt;/author&gt;
+      &lt;author&gt;Rutter&lt;/author&gt;
+    &lt;/book&gt;
+    &lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;Tours of West Sussex&lt;/title&gt;
+      &lt;author&gt;Walker&lt;/author&gt;
+    &lt;/book&gt;
+    &lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;Limited Edition&lt;/title&gt;
+      &lt;author&gt;Marks&lt;/author&gt;
+    &lt;/book&gt;
+  &lt;/shelf&gt;
+  &lt;shelf position=&quot;bottom&quot;&gt;
+    &lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;How to Cook&lt;/title&gt;
+      &lt;author&gt;Smith&lt;/author&gt;
+    &lt;/book&gt;
+    &lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;The Authoritive Calvin and Hobbes&lt;/title&gt;
+      &lt;author&gt;Watterson&lt;/author&gt;
+    &lt;/book&gt;
+    &lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;Tintin in America&lt;/title&gt;
+      &lt;author&gt;Herge&lt;/author&gt;
+    &lt;/book&gt;
+  &lt;/shelf&gt;
+&lt;/bookcase&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/descendant::title[1]</arg>
+    <output>&lt;title&gt;Cryptonomicon&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/descendant::title[7]</arg>
+    <output>&lt;title&gt;How to Cook&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/descendant::shelf[3]/child::book</arg>
+    <output>&lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;How to Cook&lt;/title&gt;
+      &lt;author&gt;Smith&lt;/author&gt;
+    &lt;/book&gt;
+&lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;The Authoritive Calvin and Hobbes&lt;/title&gt;
+      &lt;author&gt;Watterson&lt;/author&gt;
+    &lt;/book&gt;
+&lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;Tintin in America&lt;/title&gt;
+      &lt;author&gt;Herge&lt;/author&gt;
+    &lt;/book&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/descendant::book[3]/child::title</arg>
+    <output>&lt;title&gt;Murder At Stiles&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[1]/child::author[position() = 1]</arg>
+    <output>&lt;author&gt;Wren&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[1]/child::author[position() = 2]</arg>
+    <output>&lt;author&gt;Rutter&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[1]/child::author[position() = last()]</arg>
+    <output>&lt;author&gt;Rutter&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[1]/child::author[position() = last()-1]</arg>
+    <output>&lt;author&gt;Wren&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[1]/child::author[position() &gt; 1]</arg>
+    <output>&lt;author&gt;Rutter&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[2]/book[1]/following-sibling::book[position() = 1]</arg>
+    <output>&lt;book cover=&quot;hard&quot;&gt;
+      &lt;title&gt;Tours of West Sussex&lt;/title&gt;
+      &lt;author&gt;Walker&lt;/author&gt;
+    &lt;/book&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/shelf[3]/book[3]/preceding-sibling::book[position() = 1]</arg>
+    <output>&lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;The Authoritive Calvin and Hobbes&lt;/title&gt;
+      &lt;author&gt;Watterson&lt;/author&gt;
+    &lt;/book&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/descendant::book[position() = 8]</arg>
+    <output>&lt;book cover=&quot;soft&quot;&gt;
+      &lt;title&gt;The Authoritive Calvin and Hobbes&lt;/title&gt;
+      &lt;author&gt;Watterson&lt;/author&gt;
+    &lt;/book&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/descendant::title[position() = 9]</arg>
+    <output>&lt;title&gt;Tintin in America&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/child::shelf/child::book[position() = 3]/child::title[position() = 1]</arg>
+    <output>&lt;title&gt;Murder At Stiles&lt;/title&gt;
+&lt;title&gt;Limited Edition&lt;/title&gt;
+&lt;title&gt;Tintin in America&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/child::shelf/child::book[position() = 1]/child::author[position() = 2]</arg>
+    <output>&lt;author&gt;Rutter&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/bookcase/child::shelf/child::book[position() = 3]/child::author[position() = 1]</arg>
+    <output>&lt;author&gt;Christie&lt;/author&gt;
+&lt;author&gt;Marks&lt;/author&gt;
+&lt;author&gt;Herge&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//book/child::*[self::author or self::title]</arg>
+    <output>&lt;title&gt;Cryptonomicon&lt;/title&gt;
+&lt;author&gt;Stephenson&lt;/author&gt;
+&lt;title&gt;The Resistible Rise of Arturo Ui&lt;/title&gt;
+&lt;author&gt;Brecht&lt;/author&gt;
+&lt;title&gt;Murder At Stiles&lt;/title&gt;
+&lt;author&gt;Christie&lt;/author&gt;
+&lt;title&gt;Toddler Taming&lt;/title&gt;
+&lt;author&gt;Wren&lt;/author&gt;
+&lt;author&gt;Rutter&lt;/author&gt;
+&lt;title&gt;Tours of West Sussex&lt;/title&gt;
+&lt;author&gt;Walker&lt;/author&gt;
+&lt;title&gt;Limited Edition&lt;/title&gt;
+&lt;author&gt;Marks&lt;/author&gt;
+&lt;title&gt;How to Cook&lt;/title&gt;
+&lt;author&gt;Smith&lt;/author&gt;
+&lt;title&gt;The Authoritive Calvin and Hobbes&lt;/title&gt;
+&lt;author&gt;Watterson&lt;/author&gt;
+&lt;title&gt;Tintin in America&lt;/title&gt;
+&lt;author&gt;Herge&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//book/child::*[self::author or self::title][position() = last()]</arg>
+    <output>&lt;author&gt;Stephenson&lt;/author&gt;
+&lt;author&gt;Brecht&lt;/author&gt;
+&lt;author&gt;Christie&lt;/author&gt;
+&lt;author&gt;Rutter&lt;/author&gt;
+&lt;author&gt;Walker&lt;/author&gt;
+&lt;author&gt;Marks&lt;/author&gt;
+&lt;author&gt;Smith&lt;/author&gt;
+&lt;author&gt;Watterson&lt;/author&gt;
+&lt;author&gt;Herge&lt;/author&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//book/child::*[self::author or self::title][position() = 1]</arg>
+    <output>&lt;title&gt;Cryptonomicon&lt;/title&gt;
+&lt;title&gt;The Resistible Rise of Arturo Ui&lt;/title&gt;
+&lt;title&gt;Murder At Stiles&lt;/title&gt;
+&lt;title&gt;Toddler Taming&lt;/title&gt;
+&lt;title&gt;Tours of West Sussex&lt;/title&gt;
+&lt;title&gt;Limited Edition&lt;/title&gt;
+&lt;title&gt;How to Cook&lt;/title&gt;
+&lt;title&gt;The Authoritive Calvin and Hobbes&lt;/title&gt;
+&lt;title&gt;Tintin in America&lt;/title&gt;
+</output>
+  </base>
+</test>

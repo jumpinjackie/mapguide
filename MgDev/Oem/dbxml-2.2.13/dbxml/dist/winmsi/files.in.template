@@ -1,0 +1,151 @@
+# $Id: files.in.template,v 1.2 2005/12/12 18:11:30 gmf Exp $
+# Lists files needed to install particular
+# features in Windows.  Feature names must be
+# listed in features.in .
+
+# Note: columns below must be separated by tabs.
+
+# feature	source file			targdir	shortname
+
+CoreAPI		bin/libdb43.dll			/bin/
+DCoreAPI	bin/debug/libdb43d.dll		/bin/debug/
+DCoreAPI	bin/debug/db_dll.pdb		/bin/debug/
+CoreAPI		lib/libdb43.lib			/lib/
+DCoreAPI	lib/libdb43d.lib		/lib/
+CoreAPI		dbxml/build_win32/Release/msvcr71.dll	/bin/
+DCoreAPI	dbxml/build_win32/Debug/msvcr71d.dll	/bin/debug/
+CoreAPI		dbxml/build_win32/Release/msvcp71.dll	/bin/
+DCoreAPI	dbxml/build_win32/Debug/msvcp71d.dll	/bin/debug/
+
+CoreAPI		bin/libdbxml22.dll		/bin/
+DCoreAPI	bin/debug/libdbxml22d.dll	/bin/debug/
+DCoreAPI	bin/debug/dbxml.pdb		/bin/debug/
+CoreAPI		lib/libdbxml22.lib		/lib/
+DCoreAPI	lib/libdbxml22d.lib		/lib/
+
+CoreAPI		bin/libxquery12.dll		/bin/
+DCoreAPI	bin/debug/libxquery12d.dll	/bin/debug/
+DCoreAPI	bin/debug/xquery.pdb		/bin/debug/
+CoreAPI		lib/libxquery12.lib		/lib/
+DCoreAPI	lib/libxquery12d.lib		/lib/
+
+CoreAPI		bin/Pathan_7.1.dll		/bin/
+DCoreAPI	bin/debug/PathanD_7.1.dll	/bin/debug/
+DCoreAPI	bin/debug/PathanD_7.1.pdb	/bin/debug/
+CoreAPI		lib/Pathan_7.1.lib		/lib/
+DCoreAPI	lib/PathanD_7.1.lib		/lib/
+
+CoreAPI		bin/xerces-c_2_7.dll		/bin/
+DCoreAPI	bin/debug/xerces-c_2_7D.dll	/bin/debug/
+DCoreAPI	bin/debug/xerces-c_2_7D.pdb	/bin/debug/
+CoreAPI		lib/xerces-c_2.lib		/lib/
+DCoreAPI	lib/xerces-c_2D.lib		/lib/
+
+# This guarantees that we always have an include directory,
+# even if the sources for dbxml are absent.
+#
+# TODO: possibly a better way: enforce that dbxml/include/dbxml/
+# is always copied.  This would mean that some files
+# would end up in two features, which is not currently allowed,
+# we'd need to explore doing ComponentRefs across features.
+#
+CoreAPI		include/		/include/	
+
+CoreAPI		${PRODUCT_SHARED_WINMSIDIR}/images/webicon.ico	/installutil/
+CoreAPI		${PRODUCT_STAGE}/dbvars.bat		/
+
+JavaAPI		jar/db.jar			/jar/
+DJavaAPI	jar/debug/db.jar		/jar/debug/
+JavaAPI		jar/dbxml.jar			/jar/
+DJavaAPI	jar/debug/dbxml.jar		/jar/debug/
+JavaAPI		lib/libdbxml_java22.lib		/lib/
+DJavaAPI	lib/libdbxml_java22d.lib	/lib/
+JavaAPI		lib/libdb_java43.lib		/lib/
+DJavaAPI	lib/libdb_java43d.lib		/lib/
+
+
+JavaAPI		bin/libdb_java43.dll		/bin/
+DJavaAPI	bin/debug/libdb_java43d.dll	/bin/debug/
+DJavaAPI	bin/debug/db_java.pdb		/bin/debug/
+
+JavaAPI		bin/libdbxml_java22.dll		/bin/
+DJavaAPI	bin/debug/libdbxml_java22d.dll	/bin/debug/
+DJavaAPI	bin/debug/dbxml_java.pdb	/bin/debug/
+
+JavaEx		jar/dbexamples.jar		/jar/
+DJavaEx		jar/debug/dbexamples.jar	/jar/debug/
+JavaEx		jar/dbxmlexamples.jar		/jar/
+DJavaEx		jar/debug/dbxmlexamples.jar	/jar/debug/
+
+JavaEx		${PRODUCT_STAGE}/Sources/dbxml/examples/java/	/dbxml/examples/java/
+DJavaEx		${PRODUCT_STAGE}/Sources/dbxml/examples/java/	/dbxml/examples/java/
+
+
+TclAPI		bin/libdbxml_tcl22.dll		/bin/
+DTclAPI		bin/debug/libdbxml_tcl22d.dll	/bin/debug/
+DTclAPI		bin/debug/dbxml_tcl.pdb		/bin/debug/
+TclAPI		lib/libdbxml_tcl22.lib		/lib/
+DTclAPI		lib/libdbxml_tcl22d.lib		/lib/
+
+TclAPI		bin/libdb_tcl43.dll		/bin/
+DTclAPI		bin/debug/libdb_tcl43d.dll	/bin/debug/
+DTclAPI		bin/debug/db_tcl.pdb		/bin/debug/
+TclAPI		lib/libdb_tcl43.lib		/lib/
+DTclAPI		lib/libdb_tcl43d.lib		/lib/
+
+# These used to be CoreTools, but were moved to CoreAPI
+CoreAPI		bin/db_archive.exe		/bin/	db_arc~1.exe
+CoreAPI		bin/db_checkpoint.exe		/bin/	db_che~1.exe
+CoreAPI		bin/db_deadlock.exe		/bin/	db_dea~1.exe
+CoreAPI		bin/db_dump.exe			/bin/	db_dump.exe
+CoreAPI		bin/db_load.exe			/bin/	db_load.exe
+CoreAPI		bin/db_printlog.exe		/bin/	db_pri~1.exe
+CoreAPI		bin/db_recover.exe		/bin/	db_rec~1.exe
+CoreAPI		bin/db_stat.exe			/bin/	db_sta~1.exe
+CoreAPI		bin/db_upgrade.exe		/bin/	db_upg~1.exe
+CoreAPI		bin/db_verify.exe		/bin/	db_ver~1.exe
+CoreAPI		bin/dbxml_dump.exe		/bin/	xml_dump.exe
+CoreAPI		bin/dbxml_load.exe		/bin/	xml_load.exe
+CoreAPI		bin/dbxml_load_container.exe	/bin/	load_~1.exe
+CoreAPI		bin/dbxml.exe			/bin/	dbxml.exe
+
+DCoreAPI	bin/debug/dbxml.exe		/bin/debug/	dbxml.exe
+DCoreAPI	bin/debug/dbxml.pdb		/bin/debug/	dbxml.pdb
+
+# The xmlData is moved to CoreAPI because it is useful for many components
+CoreAPI		${PRODUCT_STAGE}/Sources/dbxml/examples/xmlData/	/dbxml/examples/xmlData/
+
+# Python
+Python		python/bsddb3-4.3.3.win32-py2.4.exe	/python/
+Python		python/dbxml-@DBXML_VERSION_MAJOR@.@DBXML_VERSION_MINOR@.@DBXML_VERSION_PATCH@.win32-py2.4.exe	/python/
+
+# Perl
+#Perl	perl/	/perl/
+#Perl	perl/	/perl/
+
+# Examples needs a file to install to prevent selection choices in the UI.
+Examples	${PRODUCT_STAGE}/dbvars.bat		/
+
+CoreEx		bin/dbxml_example_*.exe		/bin/
+DCoreEx		bin/debug/dbxml_example_*.exe	/bin/debug/
+DCoreEx		bin/debug/dbxml_example_*.pdb	/bin/debug/
+DCoreEx		bin/debug/xquery_example_*.exe	/bin/debug/
+DCoreEx		bin/debug/xquery_example_*.pdb	/bin/debug/
+
+CoreEx		${PRODUCT_STAGE}/Sources/dbxml/examples/cxx/	/dbxml/examples/cxx/
+DCoreEx		${PRODUCT_STAGE}/Sources/dbxml/examples/cxx/	/dbxml/examples/cxx/
+
+# See s_winmsi. This script removes some files from build_win32 that are
+# not needed. This simplifies the copy to a single line
+CoreEx		${PRODUCT_STAGE}/Sources/dbxml/build_win32/	/dbxml/build_win32/
+DCoreEx		${PRODUCT_STAGE}/Sources/dbxml/build_win32/	/dbxml/build_win32/
+
+Docs		${PRODUCT_STAGE}/docs/		/dbxml/docs/
+
+Src		${PRODUCT_STAGE}/Sources/buildall.sh		/
+SrcDbxml	${PRODUCT_STAGE}/Sources/dbxml/			/dbxml/
+SrcDb		${PRODUCT_STAGE}/Sources/db-4.3.29/		/db-4.3.29/
+SrcPathan	${PRODUCT_STAGE}/Sources/pathan/		/pathan/
+SrcXerces	${PRODUCT_STAGE}/Sources/xerces-c-src/		/xerces-c-src/
+SrcXquery	${PRODUCT_STAGE}/Sources/xquery-1.2.0/		/xquery-1.2.0/
+

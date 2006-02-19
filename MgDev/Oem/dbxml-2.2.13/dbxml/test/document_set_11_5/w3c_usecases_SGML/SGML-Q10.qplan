@@ -1,0 +1,53 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <LetBinding name="x">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.5.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',V(edge-attribute-equality-string,xref.@xrefid,=,'top4'))</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="xref" nodeType="element">
+              <OQPlan>V(edge-attribute-equality-string,xref.@xrefid,=,'top4')</OQPlan>
+            </Step>
+            <DbXmlFilter>
+              <Navigation>
+                <Step axis="attribute" name="xrefid" nodeType="attribute"/>
+                <DbXmlCompare name="equal">
+                  <Sequence>
+                    <AnyAtomicTypeConstructor value="top4" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                  </Sequence>
+                </DbXmlCompare>
+              </Navigation>
+            </DbXmlFilter>
+          </Navigation>
+        </LetBinding>
+        <LetBinding name="t">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.5.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="title" nodeType="element">
+              <Predicates>
+                <Operator name="node-order">
+                  <ContextItem/>
+                  <Variable name="x"/>
+                </Operator>
+              </Predicates>
+            </Step>
+          </Navigation>
+        </LetBinding>
+        <Variable name="t">
+          <Predicates>
+            <Function name="{http://www.w3.org/2005/04/xpath-functions}:last"/>
+          </Predicates>
+        </Variable>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

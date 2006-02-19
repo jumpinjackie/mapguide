@@ -1,0 +1,13 @@
+#
+# Makefile.bor,v 1.2 2003/12/21 10:14:16 jwillemsen Exp
+#
+
+NAME = blobby
+OBJFILES = \
+	$(OBJDIR)\Blob.obj \
+	$(OBJDIR)\Blob_Handler.obj \
+	$(OBJDIR)\Options.obj \
+	$(OBJDIR)\blobby.obj
+
+!include <$(ACE_ROOT)\apps\build.bor>
+

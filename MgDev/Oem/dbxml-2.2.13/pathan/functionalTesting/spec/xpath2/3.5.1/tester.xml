@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="spec_expressions">
+  <policies>
+    <policy name="comparison1">
+      <addArg>test.xml</addArg>
+    </policy>
+    <policy name="comparison2">
+      <addArg>test2.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>for $book1 in (//book) return $book1/author eq &quot;Kennedy&quot;</arg>
+    <output policy="comparison2">true
+false
+false
+</output>
+  <output policy="comparison1">true
+false
+false
+</output>
+  </base>
+</test>

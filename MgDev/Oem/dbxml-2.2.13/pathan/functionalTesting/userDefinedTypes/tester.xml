@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="datatypes">
+  <policies>
+    <policy name="user-defined">
+      <addArg>-N</addArg>
+      <addArg>xdt</addArg>
+      <addArg>http://www.w3.org/2005/04/xpath-datatypes</addArg>
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>distinct-values(//foo:shoe)</arg>
+    <output>3
+9
+</output>
+  </base>
+  <base type="pass">
+    <arg>foo:shoesize(&quot;9&quot;) instance of foo:shoesize</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>foo:hatsize(&quot;32&quot;) cast as xs:double</arg>
+    <output>32
+</output>
+  </base>
+  <base type="pass">
+    <arg>foo:shoesize(&quot;6&quot;) - foo:shoesize(&quot;3&quot;)</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((foo:shoesize(&quot;3&quot;), 100.0))</arg>
+    <output>103
+</output>
+  </base>
+  <base type="pass">
+    <arg>foo:negativeCelcius(&quot;-6&quot;) + foo:celcius(&quot;100&quot;)</arg>
+    <output>94
+</output>
+  </base>
+  <base type="pass">
+    <arg>(foo:negativeCelcius(&quot;-6&quot;) + foo:celcius(&quot;100&quot;)) instance of foo:negativeCelcius</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>foo:hatsize(&quot;28&quot;) - foo:shoesize(&quot;3&quot;)</arg>
+    <output>25
+</output>
+  </base>
+  <base type="pass">
+    <arg>foo:size(&quot;small&quot;) cast as xs:string</arg>
+    <output>small
+</output>
+  </base>
+  <base type="pass">
+    <arg>(foo:size(&quot;small&quot;) cast as xs:string) instance of xs:string</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(foo:monthDuration(&quot;P1M&quot;) + foo:monthDuration(&quot;P11M&quot;)) instance of xdt:yearMonthDuration</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(foo:yearDuration(&quot;P1Y&quot;) + foo:monthDuration(&quot;P11M&quot;)) instance of xdt:yearMonthDuration</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>foo:yearDuration(&quot;P1Y&quot;) + xs:date(&quot;2003-08-07&quot;) + foo:monthDuration(&quot;P11M&quot;)</arg>
+    <output>2005-07-07
+</output>
+  </base>
+  <base type="pass">
+    <arg>(xdt:yearMonthDuration(&quot;P1Y&quot;) cast as foo:yearDuration) instance of foo:yearDuration</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P1Y&quot;) cast as foo:yearDuration</arg>
+    <output>P1Y
+</output>
+  </base>
+  <base type="pass">
+    <arg>(xdt:yearMonthDuration(&quot;P11M&quot;) cast as foo:monthDuration) instance of foo:monthDuration</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P11M&quot;) cast as foo:monthDuration</arg>
+    <output>P11M
+</output>
+  </base>
+  <base type="pass">
+    <arg>foo:fourLetterWord(&quot;more&quot;) instance of foo:fourLetterWord</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>foo:fourLetterWord(&quot;luck&quot;) instance of xs:normalizedString</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>concat(foo:fourLetterWord(&quot;five&quot;), &quot; is a four letter &quot;, foo:fourLetterWord(&quot;word&quot;))</arg>
+    <output>five is a four letter word
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:token(&quot;hola&quot;) cast as foo:fourLetterWord</arg>
+    <output>hola
+</output>
+  </base>
+  <base type="pass">
+    <arg>(xs:token(&quot;hola&quot;) cast as foo:fourLetterWord) instance of foo:fourLetterWord</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>substring(foo:fourLetterWord(&quot;fall&quot;), foo:shoesize(3))</arg>
+    <output>ll
+</output>
+  </base>
+  <base type="pass">
+    <arg>foo:beerSize(&quot;330&quot;) - (foo:beerSize(&quot;330&quot;) * foo:waterContent(&quot;0.95&quot;))</arg>
+    <output>16.5
+</output>
+  </base>
+  <base type="pass">
+    <arg>(foo:beerSize(&quot;440&quot;) * foo:waterContent(&quot;0.95&quot;)) instance of xs:double</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(foo:beerSize(&quot;440&quot;) * foo:waterContent(&quot;0.95&quot;)) instance of foo:beerSize</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((foo:currency(&quot;10.21&quot;), foo:currency(&quot;10.20&quot;), foo:currency(&quot;1.20&quot;))) instance of foo:currency</arg>
+    <output>true
+</output>
+  </base>
+  <base comment="specs are not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:jpeg&quot;) cast as xs:NOTATION</arg>
+    <output>http://foo:jpeg
+</output>
+  </base>
+  <base comment="specs are not clear about this" type="fail">
+    <arg>(foo:Notation(&quot;http://foo:jpeg&quot;) cast as xs:NOTATION) cast as foo:Notation instance of foo:Notation</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(foo:celcius(&quot;99.0&quot;) cast as foo:fourLetterWord) instance of foo:fourLetterWord</arg>
+    <output>Value '99' with length '2' is not equal to length facet of '4'
+</output>
+  </base>
+  <base type="pass">
+    <arg>(foo:currency(&quot;4000&quot;) cast as foo:celcius) instance of foo:celcius</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((foo:shoesize(&quot;3&quot;), foo:negativeCelcius(&quot;-3&quot;), foo:beerSize(&quot;330&quot;), (-1 * foo:currency(&quot;330&quot;))))</arg>
+    <output>0
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((foo:shoesize(&quot;3&quot;), foo:negativeCelcius(&quot;-3&quot;), (-1 * foo:currency(&quot;330&quot;)))) instance of foo:currency</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((foo:shoesize(&quot;3&quot;), foo:negativeCelcius(&quot;-3&quot;), (-1 * foo:currency(&quot;330&quot;)))) instance of xs:float</arg>
+    <output>true
+</output>
+  </base>
+</test>

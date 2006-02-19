@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="spec_expressions"><policies><policy name="general_comparisons"><addArg>test.xml</addArg></policy><default><program>../../../../samples/evaluator/eval</program></default></policies><base type="pass"><arg>for $book in //book1 return ($book/author = &quot;Kennedy&quot;)</arg><output>true
+false
+true
+</output></base><base type="pass"><arg>for $book in //book2 return ($book/author = &quot;Kennedy&quot;)</arg><output>false
+false
+</output></base></test>

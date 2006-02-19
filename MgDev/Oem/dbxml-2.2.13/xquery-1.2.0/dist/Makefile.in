@@ -1,0 +1,141 @@
+# $Id: Makefile.in,v 1.11 2005/06/07 16:10:28 jsnelson Exp $
+
+srcdir=	@abs_srcdir@/..
+builddir= @abs_builddir@
+
+##################################################
+# Installation directories and permissions.
+##################################################
+prefix=	@prefix@
+exec_prefix=@exec_prefix@
+bindir=	@bindir@
+includedir=@includedir@
+libdir=	@libdir@
+docdir=	$(prefix)/docs
+
+dmode=	755
+emode=	555
+fmode=	444
+
+transform=@program_transform_name@
+
+##################################################
+# Paths for standard user-level commands.
+##################################################
+SHELL=	@xquery_cv_path_sh@
+ar=	@xquery_cv_path_ar@
+chmod=	@xquery_cv_path_chmod@
+cp=	@xquery_cv_path_cp@
+ln=	@xquery_cv_path_ln@
+mkdir=	@xquery_cv_path_mkdir@
+ranlib=	@xquery_cv_path_ranlib@
+rm=	@xquery_cv_path_rm@
+strip=	@xquery_cv_path_strip@
+bison= @xquery_cv_path_bison@
+flex= @xquery_cv_path_flex@
+
+##################################################
+# General library information.
+##################################################
+DEF_LIB=	@DEFAULT_LIB@
+DEF_LIB_CXX=	@DEFAULT_LIB_CXX@
+INSTALLER=	@INSTALLER@
+LIBTOOL=	@MAKEFILE_LIBTOOL@
+
+POSTLINK=	@POSTLINK@
+SOLINK=		@MAKEFILE_SOLINK@
+SOFLAGS=	@SOFLAGS@
+SOMAJOR=	@XQUERY_VERSION_MAJOR@
+SOVERSION=	@XQUERY_VERSION_MAJOR@.@XQUERY_VERSION_MINOR@
+
+CPPFLAGS=       -I$(builddir) -I$(srcdir)/include -I$(srcdir)/src @CPPFLAGS@
+
+##################################################
+# C API.
+##################################################
+CFLAGS=	 	-c $(CPPFLAGS) @CFLAGS@
+CC=		@MAKEFILE_CC@
+CCLINK=		@MAKEFILE_CCLINK@
+CC_MM= @MAKEFILE_CC_MM@
+
+LDFLAGS=	@LDFLAGS@
+LIBS=		@LIBS@
+LIBSO_LIBS=	@LIBSO_LIBS@
+
+libxquery=	libxquery.a
+libso_base=	libxquery
+libso=		$(libso_base)-$(SOVERSION)@SOSUFFIX@
+libso_static=	$(libso_base)-$(SOVERSION).a
+libso_target=	$(libso_base)-$(SOVERSION).la
+libso_default=	$(libso_base)@SOSUFFIX@
+libso_major=	$(libso_base)-$(SOMAJOR)@SOSUFFIX@
+
+OBJECT_POSTFIX= @o@
+
+##################################################
+# C++ API.
+#
+# C++ can be built with static or shared libraries.
+##################################################
+CXXFLAGS=	-c $(CPPFLAGS) @CXXFLAGS@
+CXX=		@MAKEFILE_CXX@
+CXXLINK=	@MAKEFILE_CXXLINK@
+CXX_MM= @MAKEFILE_CXX_MM@
+
+XSOLINK=	@MAKEFILE_XSOLINK@
+LIBXSO_LIBS=	@LIBXSO_LIBS@
+
+libcxx=		libxquery.a
+libxso_base=	libxquery
+libxso=		$(libxso_base)-$(SOVERSION)@SOSUFFIX@
+libxso_static=	$(libxso_base)-$(SOVERSION).a
+libxso_target=	$(libxso_base)-$(SOVERSION).la
+libxso_default=	$(libxso_base)@SOSUFFIX@
+libxso_major=	$(libxso_base)-$(SOMAJOR)@SOSUFFIX@
+
+##################################################
+# Dependency rules
+##################################################
+cppdeps= @set -e; $(CXX_MM) $(CXXFLAGS) $< \
+	| sed 's^\($*\)\.o[ :]*^$(builddir)/\1$(OBJECT_POSTFIX) $@ : ^g' > $@; \
+	[ -s $@ ] || rm -f $@
+
+ccdeps=	@set -e; $(CC_MM) $(CFLAGS) $< \
+	| sed 's^\($*\)\.o[ :]*^$(builddir)/\1$(OBJECT_POSTFIX) $@ : ^g' > $@; \
+	[ -s $@ ] || rm -f $@
+
+nocppdeps=
+noccdeps=
+
+buildcppdep=@BUILD_CPP_DEP@
+
+buildccdep=@BUILD_CC_DEP@
+
+##################################################
+# Source file lists
+#
+# Every file that is to be compiled needs to be
+# listed here, in the list corresponding to the
+# directory that it's in.
+##################################################
+
+XQUERY_PATH= $(srcdir)/src
+
+XQUERY_SOURCES= \
+		Grammar.cpp Scanner.cpp XQDebugHook.cpp XQDOMConstructor.cpp \
+		XQEngine.cpp XQEvaluator.cpp XQFLWOR.cpp XQFunctionCall.cpp XQFunction.cpp \
+		XQGlobalVariable.cpp XQQuantified.cpp XQQuery.cpp XQRemoteDebugger.cpp \
+		XQScopedNamespace.cpp XQTypeswitch.cpp XQValidate.cpp XQVariableBinding.cpp \
+		XQDynamicContextImpl.cpp XQContextImpl.cpp XQOrderingChange.cpp \
+		PrintDataItemTree.cpp XQFactoryImpl.cpp
+
+XQUERY_OBJECTS= \
+	$(patsubst %.c,%$(OBJECT_POSTFIX),${XQUERY_SOURCES:%.cpp=%$(OBJECT_POSTFIX)})
+
+EVAL_PATH= $(srcdir)/examples/eval
+
+EVAL_SOURCES= \
+		eval.cpp
+
+EVAL_OBJECTS= \
+	$(patsubst %.c,%$(OBJECT_POSTFIX),${EVAL_SOURCES:%.cpp=%$(OBJECT_POSTFIX)})

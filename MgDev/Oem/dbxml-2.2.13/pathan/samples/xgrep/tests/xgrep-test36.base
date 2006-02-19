@@ -1,0 +1,6 @@
+para[1] selects the first para child of the context node
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="para1" type="zzz">
+    something
+	<div><para name="para1b"/></div>
+  </para>

@@ -1,0 +1,10 @@
+// -*- MPC -*-
+// qos.mpb,v 1.3 2003/12/30 15:18:22 dhinton Exp
+
+feature(qos) {
+  after    += QoS
+  libs     += ACE_QoS
+  specific(borland, nmake, em3, vc6, vc7, vc71) {
+    macros += ACE_HAS_WINSOCK2_GQOS
+  }
+}

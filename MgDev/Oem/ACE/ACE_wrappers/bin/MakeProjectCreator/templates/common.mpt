@@ -1,0 +1,6 @@
+// -*- MPC -*-
+// common.mpt,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+// This file contains assignments that are common to all templates
+
+pch_defines += USING_PCH

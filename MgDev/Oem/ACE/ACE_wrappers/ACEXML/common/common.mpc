@@ -1,0 +1,7 @@
+//  -*- MPC -*-
+// common.mpc,v 1.5 2003/11/10 04:31:58 dhinton Exp
+
+project(ACEXML): acelib {
+  sharedname    = ACEXML
+  dynamicflags += ACEXML_BUILD_DLL
+}

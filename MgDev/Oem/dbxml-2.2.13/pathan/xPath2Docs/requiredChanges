@@ -1,0 +1,78 @@
+
+
+
+
+The use of a prefix token ":" is allowed on unprefixed QNames
+
+simple value -> schema primitive datatypes
+
+check 7 node kinds
+
+changes to context
+
+static type checking???
+
+- the XPathNSResolver is now the Static Context; it has more informations 
+than the simple list of available namespaces, e.g. default namespace for 
+functions, list of data types, base URI, collations
+- the XPathExpression interface needs more than just the active DOM node to 
+evaluate the expression; instead of building a simple Context object (with 
+no variables) it should directly accept the Evaluation Context (that now 
+holds also the current date and time)
+
+In any case, I think that the XPath 1.0 interface needs a way for the user 
+to force a specific Context object to be used both in the parsing and the 
+evaluation of an XPath 1.0 query (to provide variables, but also to add 
+custom functions), as the DOM3-XPath specs allow:
+
+Issue XPath-39:
+Support for custom variables and functions would be very useful.
+Resolution: No change.
+It is possible for an implementation to supply alternative sources of an 
+XPathEvaluator that can be customized with a custom variable and function 
+context. We do not specify how this is accomplished. It is too complex to 
+address in this version of the XPath DOM.
+
+
+
+type checking has changed, 2 levels now dependent on fallback conversions
+
+assess changes to lexer and parser
+
+namespace node changes - now dont have a parent and share
+
+wildcard now *:foo as well as foo:*
+
+we cant do this   child::school/(child::faculty | child::staff)/child::address    (ParenthesizedExpr)
+
+derefernces   child::figref[1]/attribute::refid=>figure
+
+Now use sequences
+    intersect, union, except
+
+
+
+[10]    NodeComp    ::=    Expr  ("==" |  "!==")  Expr
+[11]    OrderComp    ::=    Expr  ("<<" |  ">>" |  "precedes" |  "follows")  Expr
+
+
+
+quantified expressions - every $part in //part satisfies $part/@discounted
+
+
+
+for expressions
+
+
+
+datatypes
+
+
+
+
+
+notes
+
+check out 3-1 which should be a NCName
+
+

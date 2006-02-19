@@ -1,0 +1,3 @@
+Select a repeating node with a value from the XML document
+<?xgrep-match [xgrep-test56.xml]--------------------------------?>
+<integerElement>56</integerElement>

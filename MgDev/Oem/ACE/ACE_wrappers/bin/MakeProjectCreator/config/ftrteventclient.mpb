@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// ftrteventclient.mpb,v 1.4 2003/12/30 15:18:22 dhinton Exp
+
+project : ftclientorb, ftrtevent {
+  after     += FTRT_ClientORB
+  libs      += TAO_FTRT_ClientORB
+  comps     += FTRT_ClientORB
+  tagchecks += FTRT_ClientORB
+}

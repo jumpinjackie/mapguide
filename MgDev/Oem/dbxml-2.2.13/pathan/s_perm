@@ -1,0 +1,23 @@
+#!/bin/sh -
+#	$Id: s_perm,v 1.1 2005/05/18 16:23:49 gmf Exp $
+
+d=.
+echo 'Updating Pathan source tree permissions...'
+
+run()
+{
+	echo "	$1 ($2)"
+	if [ -f "$d/$1" ]; then
+		chmod "$2" "$d/$1"
+	else
+		echo "$d/$1: no such file or directory"
+		exit 1
+	fi
+}
+
+run util/mkinstalldirs 555
+run autotools/config.guess 555
+run autotools/config.sub 555
+run autotools/install-sh 555
+run configure 555
+

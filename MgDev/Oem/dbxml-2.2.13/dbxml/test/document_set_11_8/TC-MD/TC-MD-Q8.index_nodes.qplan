@@ -1,0 +1,28 @@
+<XQuery>
+  <Navigation>
+    <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+      <OQPlan>n(P(node-element-equality-string,prefix,name),V(node-attribute-equality-string,@id,=,'2'),P(node-element-presence-none,=,author))</OQPlan>
+    </QueryPlanFunction>
+    <Step axis="child" name="article" nodeType="element">
+      <OQPlan>V(node-attribute-equality-string,@id,=,'2')</OQPlan>
+    </Step>
+    <DbXmlFilter>
+      <Navigation>
+        <Step axis="attribute" name="id" nodeType="attribute"/>
+        <DbXmlCompare name="equal">
+          <Sequence>
+            <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </DbXmlCompare>
+      </Navigation>
+    </DbXmlFilter>
+    <Step axis="child" name="prolog" nodeType="element"/>
+    <Step axis="child" uri="*" name="*" nodeType="element"/>
+    <Step axis="child" name="author" nodeType="element">
+      <OQPlan>P(node-element-presence-none,=,author)</OQPlan>
+    </Step>
+    <Step axis="child" name="name" nodeType="element">
+      <OQPlan>P(node-element-equality-string,prefix,name)</OQPlan>
+    </Step>
+  </Navigation>
+</XQuery>

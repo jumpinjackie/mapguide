@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="for loop testing">
+  <policies>
+    <policy name="many bindings">
+    </policy>
+    <default>
+      <program>../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass"><arg>for $a in (1 to 3), $a in ($a to $a + 3), $a in ($a to $a + 3), $a in ($a to $a + 3), $a in ($a to $a + 3), $a in ($a to $a + 3), $a in ($a to $a + 3), $a in ($a to $a + 3), $a in ($a to $a + 3) return if($a mod 26 = 0) then $a else ()</arg>
+    <output>26
+26
+26
+26
+26
+26
+26
+26
+26</output>
+  </base>
+  <base type="pass"><arg>for $a1 in (1 to 3), $a2 in ($a1 to $a1 + 3), $a3 in ($a2 to $a2 + 3), $a4 in ($a3 to $a3 + 3), $a5 in ($a4 to $a4 + 3), $a6 in ($a5 to $a5 + 3), $a7 in ($a6 to $a6 + 3), $a8 in ($a7 to $a7 + 3), $a9 in ($a8 to $a8 + 3) return if($a9 mod 26 = 0) then $a9 else ()</arg>
+    <output>26
+26
+26
+26
+26
+26
+26
+26
+26</output>
+  </base>
+<base type="pass"><arg>for $a in (1 to 10), $b in (1 to 10) return $a</arg><output>1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+3
+3
+3
+3
+3
+3
+3
+3
+3
+3
+4
+4
+4
+4
+4
+4
+4
+4
+4
+4
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+6
+6
+6
+6
+6
+6
+6
+6
+6
+6
+7
+7
+7
+7
+7
+7
+7
+7
+7
+7
+8
+8
+8
+8
+8
+8
+8
+8
+8
+8
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10</output></base></test>

@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="aggregateFunctions">
+  <policies>
+    <policy name="">
+      <addArg>-N</addArg>
+      <addArg>xdt</addArg>
+      <addArg>http://www.w3.org/2005/04/xpath-datatypes</addArg>
+    </policy>
+    <default>
+      <program>../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>count((1, 2, 3))</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>count(())</arg>
+    <output>0
+</output>
+  </base>
+  <base type="pass">
+    <arg>count((&quot;abc&quot;, &quot;def&quot;))</arg>
+    <output>2
+</output>
+  </base>
+  <base type="pass">
+    <arg>count((&quot;abc&quot;, &quot;def&quot;, 1.0, xdt:yearMonthDuration(&quot;P2Y3M&quot;)))</arg>
+    <output>4
+</output>
+  </base>
+  <base type="pass">
+    <arg>count((&quot;abc&quot;, &quot;def&quot;, 1.0, xdt:untypedAtomic(&quot;no type&quot;)))</arg>
+    <output>4
+</output>
+  </base>
+  <base type="pass">
+    <arg>avg(())</arg>
+    <output>
+</output>
+  </base>
+  <base type="pass">
+    <arg>avg((1, 2, 3))</arg>
+    <output>2
+</output>
+  </base>
+  <base type="pass">
+    <arg>avg((xdt:untypedAtomic(1), xdt:untypedAtomic(2), xdt:untypedAtomic(3)))</arg>
+    <output>2
+</output>
+  </base>
+  <base type="pass">
+    <arg>avg((4, 4.5, 6.5E0))</arg>
+    <output>5
+</output>
+  </base>
+  <base type="pass">
+    <arg>avg((xs:double(&quot;NaN&quot;), 6.0E0))</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>avg((xdt:yearMonthDuration(&quot;P1Y2M&quot;), xdt:yearMonthDuration(&quot;P2Y3M&quot;), xdt:yearMonthDuration(&quot;P3Y1M&quot;)))</arg>
+    <output>P2Y2M
+</output>
+  </base>
+  <base type="pass">
+    <arg>avg((xdt:yearMonthDuration(&quot;P3Y2M&quot;), xdt:dayTimeDuration(&quot;PT30S&quot;)))</arg>
+    <output>Invalid argument to fn:avg() function
+</output>
+  </base>
+  <base type="pass">
+    <arg>avg((xdt:dayTimeDuration(&quot;P3DT10H&quot;), xdt:dayTimeDuration(&quot;P3DT12H&quot;), xdt:dayTimeDuration(&quot;PT11H33M3S&quot;)))</arg>
+    <output>P2DT11H11M1S
+</output>
+  </base>
+  <base type="pass">
+    <arg>avg((&quot;abc&quot;))</arg>
+    <output>Invalid argument to fn:avg() function
+</output>
+  </base>
+
+  <base type="pass">
+    <arg>max( 3 )</arg>
+    <output>3</output>
+  </base>
+  <base type="pass">
+    <arg>max( "hello" )</arg>
+    <output>hello</output>
+  </base>
+  <base type="pass">
+    <arg>max(((), (), ()))</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>max(((), 3, (), 1))</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((8, 9.99999, -3.4, 2))</arg>
+    <output>9.99999
+</output>
+  </base>
+  <base type="pass">
+    <arg>max(((8, 9.99999), -3.4, 2, (100.0, 2, 4, (6, 2, 3))))</arg>
+    <output>100
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:float(5), xs:float(6), xs:float(1 div 0.0E0)))</arg>
+    <output>INF
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:float(5), xs:float(6), xdt:untypedAtomic(&quot;INF&quot;))) </arg>
+    <output>INF
+</output>
+  </base>
+  <base comment="2 mod 0 == NaN" type="pass">
+    <arg>max((xs:float(5), xs:float(6), xs:float(xs:float(2) mod 0)))  </arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:integer(5), xs:double(1 div 0.0E0) ))  </arg>
+    <output>INF
+</output>
+  </base>
+  <base comment="-1 div 0.0E0 == -INF" type="pass">
+    <arg>max((xs:float(5), xs:float(-6), xs:float(-1 div 0.0E0))) </arg>
+    <output>5
+</output>
+  </base>
+  <base type="pass">
+    <arg>0 eq max((xs:double(&quot;-0&quot;), xs:double(0)))</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:integer(5), xs:decimal(10)))</arg>
+    <output>10
+</output>
+  </base>
+  <base comment="-1 div 0.0E0 == -INF" type="pass">
+    <arg>max((xs:decimal(5), xs:integer(10), xs:float(5), xs:double(-1 div 0.0E0)))  </arg>
+    <output>10
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:boolean(&quot;true&quot;), xs:boolean(&quot;false&quot;)))</arg>
+    <output>Invalid argument to fn:max() function
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((&quot;abc&quot;, &quot;zebra&quot;, &quot;c&quot;))</arg>
+    <output>zebra
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xdt:untypedAtomic(&quot;aaab&quot;), xdt:untypedAtomic(&quot;aaabb&quot;), xdt:untypedAtomic(&quot;aaabc&quot;)))</arg>
+    <output>Invalid lexical value [err:FORG0001]
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((&quot;abc&quot;, xdt:dayTimeDuration(&quot;P3DT11H13S&quot;)))</arg>
+    <output>Invalid argument to fn:max() function
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xdt:yearMonthDuration(&quot;P3Y2M&quot;), xdt:yearMonthDuration(&quot;P3Y1M&quot;)))</arg>
+    <output>P3Y2M
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xdt:yearMonthDuration(&quot;-P3Y1M&quot;), xdt:yearMonthDuration(&quot;-P3Y2M&quot;)))</arg>
+    <output>-P3Y1M
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xdt:yearMonthDuration(&quot;P3Y2M&quot;), xs:duration(&quot;P3Y2MT10H13S&quot;)))</arg>
+    <output>Invalid argument to fn:max() function
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xdt:dayTimeDuration(&quot;P3DT10H13S&quot;), xdt:dayTimeDuration(&quot;P3DT11H13S&quot;)))</arg>
+    <output>P3DT11H13S
+</output>
+  </base>
+  <base comment="- bad test case.  depends on implicit timezone -- set implicit timezone to -5 (export TZ='CEU-5') this is done in runTest.sh" type="pass">
+    <arg>max((xs:dateTime(&quot;2002-04-02T12:01:00&quot;), xs:dateTime(&quot;2002-03-02T12:01:00&quot;), xs:dateTime(&quot;2002-03-02T12:01:00&quot;))) </arg>
+    <output>2002-04-02T12:01:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:dateTime(&quot;2002-04-02T12:01:00&quot;), xs:dateTime(&quot;2002-03-02T12:01:00&quot;), xs:dateTime(&quot;2002-03-02T12:01:00-05:00&quot;)))</arg>
+    <output>2002-04-02T12:01:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((((xs:dateTime(&quot;2002-04-02T12:01:00-05:00&quot;)), xs:dateTime(&quot;2002-03-02T12:01:00-05:00&quot;), xs:dateTime(&quot;2002-03-02T12:01:00+05:00&quot;))))</arg>
+    <output>2002-04-02T12:01:00-05:00
+</output>
+  </base>
+  <base comment="- bad test case.  depends on implicit timezone -- set implicit timezone to -5 (export TZ='CEU-5') this is done in runTest.sh" type="pass">
+    <arg>max((xs:date(&quot;1999-03-01&quot;), xs:date(&quot;1999-02-28&quot;))) </arg>
+    <output>1999-03-01
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:date(&quot;1999-03-01+05:00&quot;), xs:date(&quot;1999-02-28-05:00&quot;)))</arg>
+    <output>1999-03-01+05:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:date(&quot;1999-03-01+06:06&quot;), xs:date(&quot;1999-02-28&quot;)))</arg>
+    <output>1999-03-01+06:06
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:gYearMonth(&quot;1999-04+10:00&quot;), xs:gYearMonth(&quot;1999-04Z&quot;), xs:gYearMonth(&quot;1999-04-10:00&quot;))) </arg>
+    <output>1999-04+10:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:gYearMonth(&quot;1999-03&quot;), xs:gYearMonth(&quot;1998-09&quot;), xs:gYearMonth(&quot;1999-04Z&quot;)))</arg>
+    <output>1999-04Z
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:gYear(&quot;1999&quot;), xs:gYear(&quot;-2000&quot;), xs:gYear(&quot;19999&quot;))) </arg>
+    <output>19999
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:gYear(&quot;-1999Z&quot;), xs:gYear(&quot;-2000Z&quot;), xs:gYear(&quot;-19999Z&quot;)))</arg>
+    <output>-1999Z
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:gMonthDay(&quot;--01-08&quot;), xs:gMonthDay(&quot;--02-08&quot;), xs:gMonthDay(&quot;--01-09&quot;))) </arg>
+    <output>--02-08
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:gMonthDay(&quot;--01-08&quot;), xs:gMonthDay(&quot;--02-08-02:00&quot;), xs:gMonthDay(&quot;--01-09&quot;)))</arg>
+    <output>--02-08-02:00
+</output>
+  </base>
+  <base comment="- bad test case.  depends on implicit timezone -- set implicit timezone to -5 (export TZ='CEU-5') this is done in runTest.sh" type="pass">
+    <arg>max((xs:gMonth(&quot;--11&quot;), xs:gMonth(&quot;--02&quot;), xs:gMonth(&quot;--11-12:00&quot;))) </arg>
+    <output>--11
+</output>
+  </base>
+  <base type="pass">
+    <arg>max((xs:gDay(&quot;---15-01:00&quot;), xs:gDay(&quot;---15+02:00&quot;), xs:gDay(&quot;---15-05:00&quot;))) </arg>
+    <output>---15+02:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>max(((), (())))</arg>
+    <output/>
+  </base>
+
+  <base type="pass">
+    <arg>min( 3 )</arg>
+    <output>3</output>
+  </base>
+  <base type="pass">
+    <arg>min( "hello" )</arg>
+    <output>hello</output>
+  </base>
+  <base type="pass">
+    <arg>min(((), (), ()))</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>min(((), 3, (), 1))</arg>
+    <output>1
+</output>
+  </base>
+  <base type="pass">
+    <arg>min(((8, 9.99999), -3.4, 2, (100.0, 2, 4, (6, 2, 3))))</arg>
+    <output>-3.4
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:float(5), xs:float(6), xs:float(&quot;-INF&quot;))) </arg>
+    <output>-INF
+</output>
+  </base>
+  <base comment="2 mod 0 == NaN" type="pass">
+    <arg>min((xs:float(5), xs:float(6), xdt:untypedAtomic(xs:float(2) mod 0)))  </arg>
+    <output>5
+</output>
+  </base>
+  <base comment="-1 div 0.0E0 == -INF" type="pass">
+    <arg>min((xs:float(-5), xs:float(-6), xs:float(1 div 0.0E0))) </arg>
+    <output>-6
+</output>
+  </base>
+  <base type="pass">
+    <arg>0 eq min((xs:double(0), xs:double(&quot;-0&quot;)))</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:integer(5), xs:decimal(10)))</arg>
+    <output>5
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:boolean(&quot;true&quot;), xs:boolean(&quot;false&quot;)))</arg>
+    <output>Invalid argument to fn:min() function
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((&quot;abc&quot;, &quot;zebra&quot;, &quot;c&quot;))</arg>
+    <output>abc
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((&quot;abc&quot;, xdt:dayTimeDuration(&quot;P3DT11H13S&quot;)))</arg>
+    <output>Invalid argument to fn:min() function
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xdt:yearMonthDuration(&quot;P3Y2M&quot;), xdt:yearMonthDuration(&quot;P3Y1M&quot;)))</arg>
+    <output>P3Y1M
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xdt:yearMonthDuration(&quot;-P3Y1M&quot;), xdt:yearMonthDuration(&quot;-P3Y2M&quot;)))</arg>
+    <output>-P3Y2M
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xdt:yearMonthDuration(&quot;P3Y2M&quot;), xs:duration(&quot;P3Y2MT10H13S&quot;)))</arg>
+    <output>Invalid argument to fn:min() function
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xdt:dayTimeDuration(&quot;P3DT10H13S&quot;), xdt:dayTimeDuration(&quot;P3DT11H13S&quot;)))</arg>
+    <output>P3DT10H13S
+</output>
+  </base>
+  <base comment="- bad test case.  depends on implicit timezone -- set implicit timezone to -5 (export TZ='CEU-5') this is done in runTest.sh" type="pass">
+    <arg>min((xs:dateTime(&quot;2002-04-02T12:01:00&quot;), xs:dateTime(&quot;2002-03-02T12:01:00&quot;), xs:dateTime(&quot;2002-03-02T12:01:00&quot;))) </arg>
+    <output>2002-03-02T12:01:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:dateTime(&quot;2002-04-02T12:01:00&quot;), xs:dateTime(&quot;2002-04-02T12:01:00+06:00&quot;), xs:dateTime(&quot;2002-04-02T12:01:00-05:00&quot;)))</arg>
+    <output>2002-04-02T12:01:00+06:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:dateTime(&quot;2002-04-02T12:01:00-05:00&quot;), xs:dateTime(&quot;2002-03-02T12:01:00-05:00&quot;), xs:dateTime(&quot;2002-03-02T12:01:00+05:00&quot;)))</arg>
+    <output>2002-03-02T12:01:00+05:00
+</output>
+  </base>
+  <base comment="- bad test case.  depends on implicit timezone -- set implicit timezone to -5 (export TZ='CEU-5') this is done in runTest.sh" type="pass">
+    <arg>min((xs:date(&quot;1999-03-01&quot;), xs:date(&quot;1999-02-28&quot;))) </arg>
+    <output>1999-02-28
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:date(&quot;1999-02-28+06:06&quot;), xs:date(&quot;1999-02-28&quot;)))</arg>
+    <output>1999-02-28+06:06
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:gYearMonth(&quot;1999-04+10:00&quot;), xs:gYearMonth(&quot;1999-04Z&quot;), xs:gYearMonth(&quot;1999-04-10:00&quot;))) </arg>
+    <output>1999-04-10:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:gYear(&quot;1999&quot;), xs:gYear(&quot;2000&quot;), xs:gYear(&quot;19999&quot;))) </arg>
+    <output>1999
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:gYear(&quot;-1999Z&quot;), xs:gYear(&quot;-2000Z&quot;), xs:gYear(&quot;-19999Z&quot;)))</arg>
+    <output>-19999Z
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:gMonthDay(&quot;--01-08&quot;), xs:gMonthDay(&quot;--02-08&quot;), xs:gMonthDay(&quot;--01-09&quot;))) </arg>
+    <output>--01-08
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:gMonthDay(&quot;--01-08&quot;), xs:gMonthDay(&quot;--01-08-02:00&quot;), xs:gMonthDay(&quot;--01-09&quot;)))</arg>
+    <output>--01-08
+</output>
+  </base>
+  <base comment="- bad test case.  depends on implicit timezone -- set implicit timezone to -5 (export TZ='CEU-5') this is done in runTest.sh" type="pass">
+    <arg>min((xs:gMonth(&quot;--11&quot;), xs:gMonth(&quot;--12&quot;), xs:gMonth(&quot;--11-04:00&quot;))) </arg>
+    <output>--11
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:gDay(&quot;---15-01:00&quot;), xs:gDay(&quot;---15+02:00&quot;), xs:gDay(&quot;---15Z&quot;))) </arg>
+    <output>---15-01:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>min(((), (())))</arg>
+    <output/>
+  </base>
+  <base comment="min(1000, INF, NaN); 1 div 0.0E0 == INF, 2 mod 0 == NaN" type="pass">
+    <arg>min((xs:float(1000), xs:float(1 div 0.0E0), xs:float(xs:float(2) mod 0))) </arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((8, 9.99999, -3.4, 2))</arg>
+    <output>-3.4
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((&quot;ka&quot;, &quot;za&quot;, &quot;bee&quot;, &quot;cha&quot;))</arg>
+    <output>bee
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((&quot;abc&quot;, &quot;zebra&quot;, &quot;c&quot;))</arg>
+    <output>abc
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xdt:yearMonthDuration(&quot;P3Y2M&quot;), xdt:yearMonthDuration(&quot;P3Y1M&quot;)))</arg>
+    <output>P3Y1M
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xdt:yearMonthDuration(&quot;P3Y2M&quot;), xs:duration(&quot;P3Y2MT10H13S&quot;)))</arg>
+    <output>Invalid argument to fn:min() function
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xdt:dayTimeDuration(&quot;P3DT10H13S&quot;), xdt:dayTimeDuration(&quot;P3DT11H13S&quot;)))</arg>
+    <output>P3DT10H13S
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xdt:dayTimeDuration(&quot;P3DT11H13S&quot;), xdt:dayTimeDuration(&quot;P3DT10H13S&quot;)))</arg>
+    <output>P3DT10H13S
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((&quot;abc&quot;, xdt:dayTimeDuration(&quot;P3DT11H13S&quot;)))</arg>
+    <output>Invalid argument to fn:min() function
+</output>
+  </base>
+  <base comment="- bad test case.  depends on implicit timezone  -- set implicit timezone to -5 (export TZ='CEU-5') this is done in runTest.sh" type="pass">
+    <arg>min((xs:dateTime(&quot;2002-04-02T12:01:00&quot;), xs:dateTime(&quot;2002-03-02T12:01:00&quot;), xs:dateTime(&quot;2002-04-02T12:01:00&quot;))) </arg>
+    <output>2002-03-02T12:01:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>min((xs:date(&quot;1999-03-01&quot;), xs:date(&quot;1999-02-28Z&quot;)))</arg>
+    <output>1999-02-28Z
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum(())</arg>
+    <output>0
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((1, 2, 3))</arg>
+    <output>6
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((4, xdt:untypedAtomic(4.5), 6.5E0))</arg>
+    <output>15
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((xs:double(&quot;NaN&quot;), 6.0E0))</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((xdt:yearMonthDuration(&quot;P1Y2M&quot;), xdt:yearMonthDuration(&quot;P2Y3M&quot;), xdt:yearMonthDuration(&quot;P3Y1M&quot;)))</arg>
+    <output>P6Y6M
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((xdt:yearMonthDuration(&quot;P3Y2M&quot;), xdt:dayTimeDuration(&quot;PT30S&quot;)))</arg>
+    <output>Invalid argument to fn:sum() function
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((xdt:dayTimeDuration(&quot;P3DT10H&quot;), xdt:dayTimeDuration(&quot;P3DT12H&quot;), xdt:dayTimeDuration(&quot;PT11H33M3S&quot;)))</arg>
+    <output>P7DT9H33M3S
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((xdt:untypedAtomic(&quot;P3DT10H&quot;), xdt:dayTimeDuration(&quot;P3DT12H&quot;), xdt:dayTimeDuration(&quot;PT11H33M3S&quot;)))</arg>
+    <output>Invalid lexical value [err:FORG0001]
+</output>
+  </base>
+  <base type="pass">
+    <arg>sum((xdt:untypedAtomic(4), xdt:untypedAtomic(5), xdt:untypedAtomic(6)))</arg>
+    <output>15
+</output>
+</base>
+  <base type="pass">
+    <arg>sum((&quot;abc&quot;))</arg>
+    <output>Invalid argument to fn:sum() function
+</output>
+  </base>
+</test>

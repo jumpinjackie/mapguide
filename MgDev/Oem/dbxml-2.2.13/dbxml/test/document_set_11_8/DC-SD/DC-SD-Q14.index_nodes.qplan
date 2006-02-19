@@ -1,0 +1,40 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+          <OQPlan>n(V(node-element-substring-string,description,=,'hoc'),V(node-element-substring-string,description,=,'ock'),V(node-element-substring-string,description,=,'cke'),V(node-element-substring-string,description,=,'key'))</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="catalog" nodeType="element"/>
+        <Step axis="child" name="item" nodeType="element"/>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="child" name="description" nodeType="element">
+              <OQPlan>n(V(node-element-substring-string,description,=,'hoc'),V(node-element-substring-string,description,=,'ock'),V(node-element-substring-string,description,=,'cke'),V(node-element-substring-string,description,=,'key'))</OQPlan>
+            </Step>
+            <DbXmlContains>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="hockey" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlContains>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Navigation>
+          <Variable name="a"/>
+          <Step axis="attribute" name="id" nodeType="attribute">
+            <OQPlan>P(node-attribute-equality-string,prefix,@id)</OQPlan>
+          </Step>
+        </Navigation>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

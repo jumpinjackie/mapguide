@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="node selection">
+  <policies>
+    <policy name="predicates">
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../samples/xgrep/xgrep</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>/esben/tenio[1]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/tenio[2]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio&gt;
+    &lt;kasia/&gt;
+    &lt;irena/&gt;
+  &lt;/tenio&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//irena[1]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/descendant::irena[1]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[@*]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;VANNET&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir surname=&quot;zelenika&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir country=&quot;croatia&quot;/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[not(@*)]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[@network]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;VANNET&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[@network][@surname]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[@network or @surname]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;VANNET&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir surname=&quot;zelenika&quot;/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[(@network) and (@surname)]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[@network and @surname]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+</output>
+  </base>
+  <base comment="Attributes have type xs:anyURI! bug" type="pass">
+    <arg>/esben/zvonimir[@network=&quot;CARNET&quot;]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+</output>
+  </base>
+  <base comment="Attributes have type xs:anyURI! bug" type="pass">
+    <arg>/esben/zvonimir[@network=&quot;SimonNet&quot;]</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[child::*]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//irena/parent::*[2]</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir/irena/ancestor-or-self::*[1]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir/irena/ancestor-or-self::*[2]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//irena/ancestor::*[1]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio&gt;
+    &lt;kasia/&gt;
+    &lt;irena/&gt;
+  &lt;/tenio&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[child::*]/preceding-sibling::zvonimir[1]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;VANNET&quot;/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[child::*]/following-sibling::zvonimir[1]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir surname=&quot;zelenika&quot;/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[preceding-sibling::zvonimir]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;VANNET&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir surname=&quot;zelenika&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir country=&quot;croatia&quot;/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[preceding-sibling::zvonimir[4]]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir country=&quot;croatia&quot;/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/zvonimir[preceding-sibling::zvonimir][4]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir country=&quot;croatia&quot;/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//tenio/irena/preceding::*[1]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;kasia/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//irena/preceding::*[2]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir country=&quot;croatia&quot;/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/*[string-length(name()) &lt; 7]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio&gt;
+    &lt;kasia/&gt;
+    &lt;irena/&gt;
+  &lt;/tenio&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/*[string-length(name()) &gt; 7]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;VANNET&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir surname=&quot;zelenika&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir country=&quot;croatia&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;agniezka&gt;&lt;kasia&gt;This is&lt;/kasia&gt;&lt;kasia&gt; a test.&lt;/kasia&gt;&lt;/agniezka&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;agniezka&gt;And so is this.&lt;/agniezka&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/*[string-length(name()) &lt;= 8]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;VANNET&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir surname=&quot;zelenika&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir country=&quot;croatia&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio&gt;
+    &lt;kasia/&gt;
+    &lt;irena/&gt;
+  &lt;/tenio&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;agniezka&gt;&lt;kasia&gt;This is&lt;/kasia&gt;&lt;kasia&gt; a test.&lt;/kasia&gt;&lt;/agniezka&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;agniezka&gt;And so is this.&lt;/agniezka&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/*[string-length(name()) &gt;= 5]</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;VANNET&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir network=&quot;CARNET&quot; surname=&quot;zelenika&quot;&gt;
+    &lt;irena/&gt;
+  &lt;/zvonimir&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir surname=&quot;zelenika&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir country=&quot;croatia&quot;/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio&gt;
+    &lt;kasia/&gt;
+    &lt;irena/&gt;
+  &lt;/tenio&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;agniezka&gt;&lt;kasia&gt;This is&lt;/kasia&gt;&lt;kasia&gt; a test.&lt;/kasia&gt;&lt;/agniezka&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;agniezka&gt;And so is this.&lt;/agniezka&gt;
+</output>
+  </base>
+  <base comment="- bug 2075" type="fail">
+    <arg>//agniezka[.=&quot;This is a test.&quot;] </arg>
+    <output/>
+  </base>
+  <base comment="should pass, since node is simple" type="pass">
+    <arg>//agniezka[.=&quot;And so is this.&quot;] </arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;agniezka&gt;And so is this.&lt;/agniezka&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>zvonimir[3]/irena</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena/&gt;
+</output>
+  </base>
+</test>

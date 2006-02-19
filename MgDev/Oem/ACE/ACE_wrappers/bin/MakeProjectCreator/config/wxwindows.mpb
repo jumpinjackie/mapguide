@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// wxwindows.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+project {
+  requires += wxwindows
+  macros   += __WXMSW__
+}

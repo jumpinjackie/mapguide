@@ -1,0 +1,2 @@
+<foo:purchaseOrder xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' 
+xmlns:foo='http://foo' xsi:schemaLocation='http://foo test.xsd'/>

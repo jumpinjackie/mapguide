@@ -1,0 +1,33 @@
+#!/bin/sh -
+#	$Id: s_test,v 1.3 2005/04/20 18:31:48 bostic Exp $
+#
+# Build the Tcl test files.
+
+msg1="# Automatically built by dist/s_test; may require local editing."
+
+t=/tmp/__t
+trap 'rm -f $t; exit 0' 0 1 2 3 13 15
+
+. RELEASE
+
+(echo "$msg1"					&& \
+ echo ""					&& \
+ echo "set tclsh_path @TCL_TCLSH@"		&& \
+ echo ""					&& \
+ echo "set src_root .."				&& \
+ echo "set test_path \$src_root/test") > $t
+
+f=../test/include.tcl
+cmp $t $f > /dev/null 2>&1 ||
+    (echo "Building $f" && rm -f $f && cp $t $f && chmod 444 $f)
+
+(echo "$msg1"					&& \
+ echo ""					&& \
+ echo "set tclsh_path SET_YOUR_TCLSH_PATH"	&& \
+ echo ""					&& \
+ echo "set src_root .."				&& \
+ echo "set test_path \$src_root/test") | sed -f lib_paths.sed > $t
+
+f=../build_win32/include.tcl
+cmp $t $f > /dev/null 2>&1 ||
+    (echo "Building $f" && rm -f $f && cp $t $f && chmod 444 $f)

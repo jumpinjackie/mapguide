@@ -1,0 +1,7 @@
+#
+# Makefile.bor,v 4.4 2003/12/21 10:14:16 jwillemsen Exp
+#
+
+DIRS = src
+
+!include <$(ACE_ROOT)\include\makeinclude\recurse.bor>

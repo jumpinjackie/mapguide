@@ -1,0 +1,36 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="s">
+      <Navigation>
+        <QueryPlanFunction result="document" container="11.5.4.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'report1.xml',V(edge-element-equality-string,section.section.title,=,'Procedure'))</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="descendant" name="section" nodeType="element"/>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="child" name="section.title" nodeType="element">
+              <OQPlan>V(edge-element-equality-string,section.section.title,=,'Procedure')</OQPlan>
+            </Step>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="Procedure" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </ForBinding>
+    <Navigation>
+      <Variable name="s"/>
+      <Step axis="descendant" name="instrument" nodeType="element"/>
+      <Predicates>
+        <Operator name="less_than_equal">
+          <Function name="{http://www.w3.org/2005/04/xpath-functions}:position"/>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+          </Sequence>
+        </Operator>
+      </Predicates>
+    </Navigation>
+  </FLWOR>
+</XQuery>

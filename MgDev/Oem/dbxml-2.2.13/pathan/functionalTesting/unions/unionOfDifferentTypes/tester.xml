@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="Unions of different types">
+  <policies>
+    <policy name="seq">
+      <addArg>-N</addArg>
+      <addArg>xs</addArg>
+      <addArg>http://www.w3.org/2001/XMLSchema</addArg>
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>/container/friendlyPerson[1]</arg>
+    <output>&lt;friendlyPerson&gt;42&lt;/friendlyPerson&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/container/friendlyPerson[1] instance of element(*,union.lotsOfTypes)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>data(/container/friendlyPerson[1]) instance of xs:decimal</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>/container/friendlyPerson[2]</arg>
+    <output>&lt;friendlyPerson&gt;2002-02-14&lt;/friendlyPerson&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>data(/container/friendlyPerson[2]) instance of xs:date</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>/container/friendlyPerson[3]</arg>
+    <output>&lt;friendlyPerson&gt;Sally&lt;/friendlyPerson&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>data(/container/friendlyPerson[3]) instance of xs:string</arg>
+    <output>true
+</output>
+  </base>
+</test>

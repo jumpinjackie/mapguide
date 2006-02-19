@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// lifecycle.mpb,v 1.4 2003/12/30 15:18:22 dhinton Exp
+
+project : naming {
+  libs      += TAO_CosLifeCycle
+  after     += CosLifeCycle
+  comps     += LifeCycle
+  tagchecks += LifeCycle
+}

@@ -1,0 +1,80 @@
+//
+//  Copyright (C) 2004-2006  Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+#ifndef MGSTREAMDATA_H_MG
+#define MGSTREAMDATA_H_MG
+
+class MgStreamHelper;
+
+///////////////////////////////////////////////////////////////////////////
+//  The StreamData class encapsulates the data pertaining to an
+//  input/output stream.
+class MG_SERVICE_API MgStreamData : public ACE_Data_Block
+{
+    DECLARE_CLASSNAME(MgStreamData)
+
+    ///////////////////////////////////////////////////////////////////////
+    ///  Constructors/Destructors
+    public:
+
+    MgStreamData( MgClientHandler* pHandle, ACE_HANDLE handle, MgStreamHelper* pStreamHelper );
+    MgStreamData( const MgStreamData & );
+    virtual ~MgStreamData();
+
+    ///////////////////////////////////////////////////////////////////////
+    ///  Accessors
+    public:
+
+    MgClientHandler* GetClientHandler();
+    INT64 GetDataRead();
+    void SetDataRead( INT64 total );
+    INT64 GetDataSize();
+    void SetDataSize( INT64 size );
+    ACE_HANDLE GetHandle() const;
+    MgStreamHelper* GetStreamHelper();
+    UINT32 GetVersion();
+    void SetVersion( UINT32 version );
+    bool GetErrorFlag();
+    void SetErrorFlag( bool flag );
+
+    ///////////////////////////////////////////////////////////////////////
+    ///  Member Variables
+    private:
+
+    ///  the ClientHandler that is servicing this stream
+    MgClientHandler*      m_pClientHandler;
+
+    ///  the underlyng handle of the input/output stream
+    const ACE_HANDLE    m_Handle;
+
+    ///  the StreamHelper objec that handles IO for the stream
+    MgStreamHelper*       m_pStreamHelper;
+
+    ///  the version of the stream behing read
+    UINT32          m_Version;
+
+    ///  the size of the data payload of the stream
+    INT64           m_DataSize;
+
+    ///  the number of bytes that have been read from the stream
+    INT64           m_DataRead;
+
+    ///  the current error state of the stream
+    bool                m_bError;
+};
+
+#endif  //  MGSTREAMDATA_H_MG
