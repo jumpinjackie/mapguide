@@ -1,0 +1,121 @@
+<XQuery>
+  <FunctionDefinition name="{http://www.w3.org/2005/04/xquery-local-functions}:between">
+    <FLWOR>
+      <LetBinding name="nodes">
+        <FLWOR>
+          <ForBinding name="n">
+            <Operator name="except">
+              <Variable name="seq"/>
+              <Navigation>
+                <Variable name="start"/>
+                <Step axis="descendant">
+                  <ItemType testType="node"/>
+                </Step>
+              </Navigation>
+            </Operator>
+            <Where>
+              <Operator name="and">
+                <Operator name="node-order">
+                  <Variable name="n"/>
+                  <Variable name="start"/>
+                </Operator>
+                <Operator name="node-order">
+                  <Variable name="n"/>
+                  <Variable name="end"/>
+                </Operator>
+              </Operator>
+            </Where>
+          </ForBinding>
+          <Variable name="n"/>
+        </FLWOR>
+      </LetBinding>
+      <Operator name="except">
+        <Variable name="nodes"/>
+        <Navigation>
+          <Variable name="nodes"/>
+          <Step axis="descendant">
+            <ItemType testType="node"/>
+          </Step>
+        </Navigation>
+      </Operator>
+    </FLWOR>
+  </FunctionDefinition>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="critical_sequence" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <LetBinding name="proc">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.4.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'report1.xml',V(edge-element-equality-string,section.section.title,=,'Procedure'))</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant-or-self" uri="*" name="*" nodeType="*"/>
+            <Step axis="child" name="section" nodeType="element">
+              <Predicates>
+                <Navigation>
+                  <Step axis="child" name="section.title" nodeType="element">
+                    <OQPlan>V(edge-element-equality-string,section.section.title,=,'Procedure')</OQPlan>
+                  </Step>
+                  <DbXmlCompare name="equal">
+                    <Sequence>
+                      <AnyAtomicTypeConstructor value="Procedure" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                    </Sequence>
+                  </DbXmlCompare>
+                </Navigation>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                </Sequence>
+              </Predicates>
+            </Step>
+          </Navigation>
+        </LetBinding>
+        <LetBinding name="first">
+          <Navigation>
+            <Variable name="proc"/>
+            <Step axis="descendant" name="incision" nodeType="element">
+              <OQPlan>P(node-element-presence-none,=,incision)</OQPlan>
+            </Step>
+            <Predicates>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+              </Sequence>
+            </Predicates>
+          </Navigation>
+        </LetBinding>
+        <LetBinding name="second">
+          <Navigation>
+            <Variable name="proc"/>
+            <Step axis="descendant" name="incision" nodeType="element">
+              <OQPlan>P(node-element-presence-none,=,incision)</OQPlan>
+            </Step>
+            <Predicates>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+              </Sequence>
+            </Predicates>
+          </Navigation>
+        </LetBinding>
+        <UserFunction name="{http://www.w3.org/2005/04/xquery-local-functions}:between">
+          <Binding name="{}:seq">
+            <Navigation>
+              <Variable name="proc"/>
+              <Step axis="descendant">
+                <ItemType testType="node"/>
+              </Step>
+            </Navigation>
+          </Binding>
+          <Binding name="{}:start">
+            <Variable name="first"/>
+          </Binding>
+          <Binding name="{}:end">
+            <Variable name="second"/>
+          </Binding>
+        </UserFunction>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

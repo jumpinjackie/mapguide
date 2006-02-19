@@ -1,0 +1,14 @@
+# $Id: environment.in,v 1.2 2005/02/25 23:28:37 dda Exp $
+# Lists environment varialbes needed to install particular
+# features in Windows.  Feature names must be
+# listed in features.in .
+
+# Note: columns below must be separated by tabs.
+
+# feature	variable		value			options
+
+CoreAPI		PATH			/bin			+first
+JavaAPI		CLASSPATH		/jar\\dbxml.jar		+last
+JavaAPI		CLASSPATH		/jar\\db.jar		+last
+JavaEx		CLASSPATH		/jar\\dbxmlexamples.jar	+last
+JavaEx		CLASSPATH		/jar\\dbexamples.jar	+last

@@ -1,0 +1,111 @@
+<XQuery>
+  <FunctionDefinition name="{http://www.w3.org/2005/04/xquery-local-functions}:one_level">
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="part" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Attributes>
+        <DOMConstructor type="attribute">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="partid" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Navigation>
+              <Variable name="p"/>
+              <Step axis="attribute" name="partid" nodeType="attribute">
+                <OQPlan>P(edge-attribute-equality-decimal,prefix,part.@partid)</OQPlan>
+              </Step>
+            </Navigation>
+          </Children>
+        </DOMConstructor>
+        <DOMConstructor type="attribute">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="name" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Navigation>
+              <Variable name="p"/>
+              <Step axis="attribute" name="name" nodeType="attribute">
+                <OQPlan>P(edge-attribute-equality-string,prefix,part.@name)</OQPlan>
+              </Step>
+            </Navigation>
+          </Children>
+        </DOMConstructor>
+      </Attributes>
+      <Children>
+        <FLWOR>
+          <ForBinding name="s">
+            <Navigation>
+              <QueryPlanFunction result="document" container="11.5.2.dbxml">
+                <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'partlist.xml',P(edge-element-presence-none,prefix,part))</OQPlan>
+              </QueryPlanFunction>
+              <Step axis="descendant" name="part" nodeType="element">
+                <OQPlan>P(edge-element-presence-none,prefix,part)</OQPlan>
+              </Step>
+            </Navigation>
+            <Where>
+              <Navigation>
+                <Variable name="p"/>
+                <Step axis="attribute" name="partid" nodeType="attribute">
+                  <RQPlan>V(part.@partid,=,'[to be calculated]')</RQPlan>
+                </Step>
+                <DbXmlCompare name="equal">
+                  <Navigation>
+                    <Variable name="s"/>
+                    <Step axis="attribute" name="partof" nodeType="attribute">
+                      <OQPlan>P(edge-attribute-equality-decimal,prefix,part.@partof)</OQPlan>
+                    </Step>
+                  </Navigation>
+                </DbXmlCompare>
+              </Navigation>
+            </Where>
+          </ForBinding>
+          <UserFunction name="{http://www.w3.org/2005/04/xquery-local-functions}:one_level">
+            <Binding name="{}:p">
+              <Variable name="s"/>
+            </Binding>
+          </UserFunction>
+        </FLWOR>
+      </Children>
+    </DOMConstructor>
+  </FunctionDefinition>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="parttree" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="p">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.2.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'partlist.xml',P(edge-element-presence-none,prefix,part))</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="part" nodeType="element">
+              <OQPlan>P(edge-element-presence-none,prefix,part)</OQPlan>
+              <Predicates>
+                <Function name="{http://www.w3.org/2005/04/xpath-functions}:empty">
+                  <Step axis="attribute" name="partof" nodeType="attribute">
+                    <OQPlan>P(edge-attribute-equality-decimal,prefix,part.@partof)</OQPlan>
+                  </Step>
+                </Function>
+              </Predicates>
+            </Step>
+          </Navigation>
+        </ForBinding>
+        <UserFunction name="{http://www.w3.org/2005/04/xquery-local-functions}:one_level">
+          <Binding name="{}:p">
+            <Variable name="p"/>
+          </Binding>
+        </UserFunction>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

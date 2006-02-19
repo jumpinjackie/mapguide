@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="functions">
+  <policies>
+    <policy name="sequence">
+      <addArg>-N</addArg>
+      <addArg>xdt</addArg>
+      <addArg>http://www.w3.org/2005/04/xpath-datatypes</addArg>
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>index-of((5,4,2,3,1),3)</arg>
+    <output>4
+</output>
+  </base>
+  <base type="pass">
+    <arg>index-of((1,2,3,1,1),1)</arg>
+    <output>1
+4
+5
+</output>
+  </base>
+  <base type="pass">
+    <arg>index-of((&quot;5&quot;,&quot;4&quot;,&quot;2&quot;,&quot;3&quot;,&quot;1&quot;),&quot;3&quot;)</arg>
+    <output>4
+</output>
+  </base>
+  <base type="pass">
+    <arg>index-of((&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;1&quot;,&quot;1&quot;),&quot;1&quot;)</arg>
+    <output>1
+4
+5
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $gin in //ginger return index-of(//gordon, $gin)</arg>
+    <output>1
+3
+4
+</output>
+  </base>
+  <base type="pass">
+    <arg>insert-before((&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;), 2, (&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;))</arg>
+    <output>1
+a
+b
+c
+d
+e
+2
+3
+4
+5
+</output>
+  </base>
+  <base type="pass">
+    <arg>insert-before((&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;), 0, (&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;))</arg>
+    <output>a
+b
+c
+d
+e
+1
+2
+3
+4
+5
+</output>
+  </base>
+  <base type="pass">
+    <arg>insert-before((&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;), 60, (&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;))</arg>
+    <output>1
+2
+3
+4
+5
+a
+b
+c
+d
+e
+</output>
+  </base>
+  <base type="pass">
+    <arg>remove((),1)</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>remove((&quot;loneliness&quot;),1)</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>remove((&quot;fred&quot;, &quot;barry&quot;, &quot;barney&quot;), 2)</arg>
+    <output>fred
+barney
+</output>
+  </base>
+  <base type="pass">
+    <arg>remove((3,4,5), 0)</arg>
+    <output>3
+4
+5
+</output>
+  </base>
+  <base type="pass">
+    <arg>remove((3,4,5), -17)</arg>
+    <output>3
+4
+5
+</output>
+  </base>
+  <base type="pass">
+    <arg>remove(((3,4,5),(6,7,8)), 2)</arg>
+    <output>3
+5
+6
+7
+8
+</output>
+  </base>
+  <base type="pass">
+    <arg>remove((1,2,3,4),5)</arg>
+    <output>1
+2
+3
+4
+</output>
+  </base>
+  <base type="pass">
+    <arg>remove(//gordon, 2)</arg>
+    <output>&lt;gordon&gt;hello&lt;/gordon&gt;
+&lt;gordon&gt;h&lt;!--comment--&gt;ello&lt;/gordon&gt;
+&lt;gordon&gt;hello&lt;/gordon&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal(//zvonimir,//zvonimir)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal(//zvonimir,//zvonimir[position() &lt; 5])</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal(//zvonimir[1],//zvonimir[2])</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal(//zvonimir[8],//zvonimir[8])</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal(//zvonimir[8],//zvonimir[9])</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal(//zvonimir[8],//zvonimir[10])</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal((1,2,3,4),(1,2,3,4))</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal((),())</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal((1,2,3,4),(1,1,3,4))</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal((1,2,3,4),(1,2,3))</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal((&quot;foo&quot;,&quot;bar&quot;),(&quot;foo&quot;,&quot;bar&quot;))</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal((&quot;Foo&quot;,&quot;widget&quot;),(&quot;foo&quot;,&quot;widget&quot;))</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal((&quot;foo&quot;,&quot;freda&quot;, 1.0E3),(&quot;foo&quot;,&quot;freda&quot;,1.0E3))</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>deep-equal((1,2,3,4,5),(1.0E0, 2.0, xs:double(3), xs:float(4), 5.0E0))</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $i in sequence-equal/zvonimir, $j in sequence-equal/zvonimir return deep-equal($i,$j) </arg>
+    <output>true
+true
+true
+true
+false
+false
+false
+false
+false
+false
+false
+true
+true
+true
+true
+false
+false
+false
+false
+false
+false
+false
+true
+true
+true
+true
+false
+false
+false
+false
+false
+false
+false
+true
+true
+true
+true
+false
+false
+false
+false
+false
+false
+false
+false
+false
+false
+false
+true
+false
+true
+false
+false
+false
+false
+false
+false
+false
+false
+false
+true
+false
+false
+false
+false
+false
+false
+false
+false
+false
+true
+false
+true
+false
+false
+false
+false
+false
+false
+false
+false
+false
+false
+false
+true
+false
+true
+true
+false
+false
+false
+false
+false
+false
+false
+false
+true
+false
+false
+false
+false
+false
+false
+false
+false
+false
+true
+false
+true
+true
+false
+false
+false
+false
+false
+false
+false
+true
+false
+true
+true
+</output>
+  </base>
+  <base comment="Attributes with same names and different values" type="pass">
+    <arg>deep-equal(sequence-equal/yves[1],sequence-equal/yves[2]) </arg>
+    <output>false
+</output>
+  </base>
+  <base comment="Same values, different names" type="pass">
+    <arg>deep-equal(sequence-equal/yves[1],sequence-equal/yves[3]) </arg>
+    <output>false
+</output>
+  </base>
+  <base comment="identical" type="pass">
+    <arg>deep-equal(sequence-equal/yves[1],sequence-equal/yves[4]) </arg>
+    <output>true
+</output>
+  </base>
+  <base comment="no attributes" type="pass">
+    <arg>deep-equal(sequence-equal/yves[1],sequence-equal/yves[5]) </arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $i in namespace-stuff/* return deep-equal(namespace-stuff/*[1],$i)</arg>
+    <output>true
+true
+false
+false
+false
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $i in children/fred, $j in children/fred return deep-equal($i,$j)</arg>
+    <output>true
+false
+false
+false
+true
+false
+false
+false
+true
+</output>
+  </base>
+
+  <base type="pass">
+    <arg>subsequence((),1,2)</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>subsequence((1,2,3),1,3)</arg>
+    <output>1
+2
+3
+</output>
+  </base>
+  <base type="pass">
+    <arg>subsequence((1,2,3),1,93)</arg>
+    <output>1
+2
+3
+</output>
+  </base>
+  <base type="pass">
+    <arg>subsequence((1,2,3),1)</arg>
+    <output>1
+2
+3
+</output>
+  </base>
+  <base type="pass">
+    <arg>subsequence((1,2,3),2)</arg>
+    <output>2
+3
+</output>
+  </base>
+  <base type="pass">
+    <arg>subsequence((1,&quot;hi&quot;,3),2,1.2)</arg>
+    <output>hi
+</output>
+  </base>
+  <base type="pass">
+    <arg>subsequence(//gordon,3,2)</arg>
+    <output>&lt;gordon&gt;h&lt;!--comment--&gt;ello&lt;/gordon&gt;
+&lt;gordon&gt;hello&lt;/gordon&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>subsequence((1,2,3),-1,2)</arg>
+    <output>1
+2
+</output>
+  </base>
+  <base type="pass">
+    <arg>subsequence((1,2,3,4),5)</arg>
+    <output>
+</output>
+  </base>
+  <base type="pass">
+    <arg>distinct-values((1,2,1,2,1,2,3,1.0E0,xs:decimal(2),xs:float(2)))</arg>
+    <output>1
+2
+3
+</output>
+  </base>
+  <base type="pass">
+    <arg>distinct-values((1,2,3,//zvonimir))</arg>
+    <output>1
+2
+3
+Some Text
+</output>
+  </base>
+  <base comment="uses deep-equal" type="pass">
+    <arg>distinct-values((//zvonimir)) </arg>
+    <output>Some Text
+</output>
+  </base>
+  <base type="pass">
+    <arg>distinct-values((xdt:untypedAtomic(&quot;1&quot;), &quot;1.0&quot;))</arg>
+    <output>1
+1.0</output>
+  </base>
+  <base type="pass">
+    <arg>distinct-values((xdt:yearMonthDuration(&quot;P5Y&quot;), xdt:yearMonthDuration(&quot;P5Y&quot;), xdt:yearMonthDuration(&quot;P5Y&quot;)))</arg>
+    <output>P5Y</output>
+  </base>
+  <base type="pass">
+    <arg>distinct-values((xs:time(&quot;12:00:00Z&quot;), xs:time(&quot;12:00:00-05:00&quot;), xs:time(&quot;12:00:00+05:00&quot;), xs:time(&quot;15:00:00+03:00&quot;)))</arg>
+    <output>12:00:00Z
+12:00:00-05:00
+12:00:00+05:00</output>
+  </base>
+  <base type="pass">
+    <arg>distinct-values((xs:date(&quot;1988-11-11&quot;), xs:date(&quot;1987-10-12&quot;), xs:date(&quot;1988-11-11&quot;), xs:date(&quot;1989-05-07&quot;), xs:date(&quot;1988-11-11&quot;)))</arg>
+    <output>1988-11-11
+1987-10-12
+1989-05-07
+</output>
+  </base>
+  <base type="pass">
+    <arg>distinct-values(())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>zero-or-one(())</arg>
+    <output>
+</output>
+  </base>
+  <base type="pass">
+    <arg>zero-or-one((1))</arg>
+    <output>1
+</output>
+  </base>
+  <base type="pass">
+    <arg>zero-or-one((1,2))</arg>
+    <output>fn:zero-or-one called with a sequence containing more than one item [err:FORG0003]
+</output>
+  </base>
+  <base type="pass">
+    <arg>one-or-more(())</arg>
+    <output>fn:one-or-more called with a sequence containing no items [err:FORG0004]
+</output>
+  </base>
+  <base type="pass">
+    <arg>one-or-more((1))</arg>
+    <output>1
+</output>
+  </base>
+  <base type="pass">
+    <arg>one-or-more((1,2))</arg>
+    <output>1
+2
+</output>
+  </base>
+  <base type="pass">
+    <arg>exactly-one(())</arg>
+    <output>fn:exactly-one called with a sequence containing no items [err:FORG0005]
+</output>
+  </base>
+  <base type="pass">
+    <arg>exactly-one((1))</arg>
+    <output>1
+</output>
+  </base>
+  <base type="pass">
+    <arg>exactly-one((1,2))</arg>
+    <output>fn:exactly-one called with a sequence containing more than one item [err:FORG0005]
+</output>
+  </base>
+
+  <base type="pass">
+    <arg>boolean(())</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>boolean(false())</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>boolean(&quot;&quot;)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>boolean(0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>boolean(0.0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>boolean(2 mod 0.0e0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>boolean(1)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>boolean(1.0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>boolean(&quot;anyString&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>empty(())</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>empty(((),()))</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>empty((1,2,3))</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>exists(())</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>exists(((),()))</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>exists((1,2,3))</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>unordered((1,2,3,4,5,6))</arg>
+    <output>1
+2
+3
+4
+5
+6
+</output>
+  </base>
+  <base type="pass">
+    <arg>unordered(())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>collection(&quot;test.xml&quot;)</arg>
+    <output>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot; ?&gt;&lt;testcase xml:lang=&quot;en&quot; xmlns:hee=&quot;http://theborg.org&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.theborg.org test.xsd&quot;&gt;
+  &lt;item-of&gt;
+    &lt;ginger&gt;hello&lt;/ginger&gt;
+    &lt;gordon&gt;hello&lt;/gordon&gt;
+    &lt;gordon&gt;ola&lt;/gordon&gt;
+    &lt;gordon&gt;h&lt;!--comment--&gt;ello&lt;/gordon&gt;
+    &lt;gordon&gt;hello&lt;/gordon&gt;
+  &lt;/item-of&gt;
+  &lt;sequence-equal&gt;
+    &lt;zvonimir&gt;Some Text&lt;/zvonimir&gt;
+    &lt;zvonimir&gt;Some &lt;!--commented--&gt;Text&lt;/zvonimir&gt;
+    &lt;zvonimir&gt;Some Text&lt;!--with comments--&gt;&lt;/zvonimir&gt;
+    &lt;zvonimir&gt;Some Text&lt;?with processing instructions?&gt;&lt;/zvonimir&gt;
+    &lt;zvonimir&gt;Some Text&lt;irena/&gt;&lt;/zvonimir&gt;
+    &lt;zvonimir&gt;Some &lt;!--commented--&gt;Text&lt;irena/&gt;&lt;/zvonimir&gt;
+    &lt;zvonimir&gt;Some Text&lt;!--with comments--&gt;&lt;irena/&gt;&lt;/zvonimir&gt;
+    &lt;zvonimir&gt;&lt;irena/&gt;Some Text&lt;/zvonimir&gt;
+    &lt;zvonimir&gt;&lt;irena/&gt;Some &lt;!--commented--&gt;Text&lt;/zvonimir&gt;
+    &lt;zvonimir&gt;&lt;irena/&gt;Some Text&lt;!--with comments--&gt;&lt;/zvonimir&gt;
+    &lt;zvonimir&gt;&lt;irena/&gt;Some Text&lt;?with processing instructions?&gt;&lt;/zvonimir&gt;
+    &lt;yves country=&quot;germany&quot;/&gt;
+    &lt;yves country=&quot;france&quot;/&gt;
+    &lt;yves land=&quot;germany&quot;/&gt;
+    &lt;yves country=&quot;germany&quot;/&gt;
+    &lt;yves/&gt;
+  &lt;/sequence-equal&gt;
+  &lt;namespace-stuff xml:lang=&quot;en-us&quot; xmlns:ha=&quot;http://sluggy.com&quot; xmlns:ho=&quot;http://sluggy.com&quot;&gt;
+    &lt;ha:fred xml:lang=&quot;ab&quot;/&gt;
+    &lt;ho:fred xml:lang=&quot;ab&quot;/&gt;
+    &lt;ha:george/&gt;
+    &lt;hee:fred/&gt;
+    &lt;ha:fred/&gt;
+  &lt;/namespace-stuff&gt;
+  &lt;children&gt;
+    &lt;fred&gt;
+      &lt;ron&gt;
+        &lt;hermione&gt;74&lt;/hermione&gt;
+      &lt;/ron&gt;
+      &lt;harry&gt;string&lt;/harry&gt;
+    &lt;/fred&gt;
+    &lt;fred&gt;
+      &lt;harry&gt;8.12948427&lt;/harry&gt;
+      &lt;ron&gt;
+        &lt;hermione/&gt;
+      &lt;/ron&gt;
+    &lt;/fred&gt;
+    &lt;fred&gt;
+      &lt;ron&gt;
+      &lt;/ron&gt;
+      &lt;harry/&gt;
+    &lt;/fred&gt;
+  &lt;/children&gt;
+&lt;/testcase&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>base-uri(doc(&quot;test.xml&quot;)) </arg>
+    <output>file://$PWD$/test.xml
+</output>
+  </base>
+  <base type="pass">
+    <arg>reverse(1 to 5) </arg>
+    <output>5
+4
+3
+2
+1
+</output>
+  </base>
+  <base type="pass">
+    <arg>reverse(()) </arg>
+    <output/>
+  </base>
+</test>

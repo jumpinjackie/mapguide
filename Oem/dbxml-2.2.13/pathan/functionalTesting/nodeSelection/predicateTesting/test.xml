@@ -1,0 +1,16 @@
+<esben xsi:schemaLocation="http://www.theborg.org test.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <tenio></tenio>
+  <zvonimir></zvonimir>
+  <zvonimir network="VANNET"></zvonimir>
+  <zvonimir network="CARNET" surname="zelenika">
+    <irena />
+  </zvonimir>
+  <zvonimir surname="zelenika"></zvonimir>
+  <zvonimir country="croatia" />
+  <tenio>
+    <kasia></kasia>
+    <irena />
+  </tenio>
+  <agniezka><kasia>This is</kasia><kasia> a test.</kasia></agniezka>
+  <agniezka>And so is this.</agniezka>
+</esben>

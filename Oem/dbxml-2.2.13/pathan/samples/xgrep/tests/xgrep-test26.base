@@ -1,0 +1,3 @@
+child::para[position()=3][attribute::type=warning] selects the third para child of the context node if that child has a type attribute with value warning
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="lastPara" type="warning"/>

@@ -1,0 +1,12 @@
+<xgrep-test name="xgrep tests" param="param2">
+
+  <employee secretary="person1" assistant="true"/>
+  <employee secretary="person2"/>
+  <employee secretary="person3" assistant="true"/>
+  <employee assistant="person4"/>
+
+  <true />
+  <false />
+  
+</xgrep-test>
+

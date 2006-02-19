@@ -1,0 +1,16 @@
+<XQuery>
+  <Navigation>
+    <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+      <OQPlan>n(V(node-element-substring-string,e,=,'hoc'),V(node-element-substring-string,e,=,'ock'),V(node-element-substring-string,e,=,'cke'),V(node-element-substring-string,e,=,'key'),P(node-element-equality-string,prefix,hw))</OQPlan>
+    </QueryPlanFunction>
+    <Step axis="child" name="dictionary" nodeType="element"/>
+    <Step axis="child" name="e" nodeType="element"/>
+    <DbXmlContains>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="hockey" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </DbXmlContains>
+    <Step axis="child" name="hwg" nodeType="element"/>
+    <Step axis="child" name="hw" nodeType="element"/>
+  </Navigation>
+</XQuery>

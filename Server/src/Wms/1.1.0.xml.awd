@@ -1,0 +1,320 @@
+<?xml version='1.0'?>
+<Template service="WMS" version="1.1.0">
+
+<Definitions>
+
+ <!-- This defines the format of each individual layer 
+      advertised by GetCapabilities                    -->
+ <Define item="Layer.xml">
+  <Layer queryable="&Layer.Queryable;" cascaded="&Layer.Cascaded;" noSubsets="&Layer.NoSubsets;" opaque="&Layer.Opaque;">
+   <Name>&Layer.Name;</Name>
+   <Title>&Layer.Title;</Title>
+   <?Ifdef item="Layer.Abstract"?><Abstract>&Layer.Abstract;</Abstract><?Endif?>
+   <?Ifdef item="Layer.KeywordList"?>
+   <KeywordList>
+     <?EnumDelim list="&Layer.KeywordList;" using="&Service.Keywords.xml;"?>
+   </KeywordList>
+   <?Endif?>
+   &Layer.ReferenceSystems;
+   <?Ifdef item="Layer.BoundingBox"?>
+    <?Enum list="&Layer.BoundingBox;" using="&LatLonBoundingBox.xml;" item="Bounds"?>
+    <?Enum list="&Layer.BoundingBox;" using="&BoundingBox.xml;" item="Bounds"?>
+   <?Else?>
+    <?Enum list="&Layer.BoundingBox.default;" using="&LatLonBoundingBox.xml;" item="Bounds"?>
+    <?Enum list="&Layer.BoundingBox.default;" using="&BoundingBox.xml;" item="Bounds"?>
+   <?Endif?>
+  </Layer>
+ </Define>
+ 
+ <Define item="Layer.BoundingBox.default">
+  <Bounds SRS="EPSG:4326" west="-180" south="-90" east="180" north="90"/>
+ </Define>
+ 
+ <Define item="LatLonBoundingBox.xml">
+   <LatLonBoundingBox          minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+ </Define>
+ <Define item="BoundingBox.xml">
+  <BoundingBox SRS="&Enum.item.SRS;" minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+ </Define>
+
+ <Define item="FeatureProperty.xml">
+  <Property name="&FeatureProperty.Name;" value="&FeatureProperty.Value;" ></Property>
+ </Define>
+ 
+ <Define item="FeatureProperty.html">
+  <tr><td class="name">&FeatureProperty.Name;</td><td>&FeatureProperty.Value;</td></tr>
+ </Define>
+ 
+  <Define item="FeatureProperty.text">
+  &FeatureProperty.Name;=&FeatureProperty.Value; 
+ </Define>
+
+ <!-- DUMMY DEFINITIONS - to be removed once this metadata is provided by the server -->
+ <Define item="Layer.Queryable">1</Define>
+ <Define item="Layer.Cascaded">0</Define>
+ <Define item="Layer.NoSubsets">0</Define>
+ <Define item="Layer.Opaque">0</Define>
+ <Define item="Layer.Title">A Layer's Title</Define>
+ <Define item="Layer.Abstract">The Layer's Abstract</Define>
+ <Define item="Layer.Name">Layer_Name</Define>
+ <Define item="Layer.RS">
+  <item>EPSG:4326</item>
+ </Define>
+
+ <!-- This definition codifies how reference systems (CRS or SRS) are depicted -->
+ <Define item="Layer.ReferenceSystems"><SRS><?Enum list="&Layer.RS;" using="&Layer.ReferenceSystems.xml;"?></SRS></Define>
+ <Define item="Layer.ReferenceSystems.xml">&Enum.Item; </Define>
+ <!-- We're currently not supporting child layers... -->
+ <Define item="Layer.Sublayers"></Define>
+
+  
+ <!-- In this version, keywords are enumerated enclosed in Keyword elements -->
+ <Define item="Service.Keywords.xml"><Keyword>&Enum.item;</Keyword>
+ </Define>
+
+</Definitions>
+
+<!--
+
+  WMS GetCapabilities  - XML
+
+-->
+<Response request="GetCapabilities" content-type="text/xml">
+<!DOCTYPE WMT_MS_Capabilities SYSTEM
+ "http://www.digitalearth.gov/wmt/xml/capabilities_1_1_0.dtd"
+  [
+  <!ELEMENT VendorSpecificCapabilities EMPTY>
+  ]>
+
+<WMT_MS_Capabilities version="&TemplateVersion;">
+ <!--
+
+ SERVICE METADATA
+
+ -->
+ <Service>
+  <Name>&Service.Name;</Name>
+  <Title>&Service.Title;</Title>
+  <?Ifdef item="Service.Abstract"?><Abstract>&Service.Abstract;</Abstract><?Endif?>
+  <?Ifdef item="Service.Keywords"?>
+    <KeywordList>
+    <?Enum list="&Service.Keywords;" using="&Service.Keywords.xml"?>
+    </KeywordList>
+  <?Endif?>
+  <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.OnlineResource;"></OnlineResource>
+
+  <ContactInformation>
+   <ContactPersonPrimary>
+     <ContactPerson>&Service.Contact.Name;</ContactPerson>
+     <ContactOrganization>&Service.Contact.Organization</ContactOrganization>
+   </ContactPersonPrimary>
+   <?Ifdef item="Service.Contact.Position"?><ContactPosition>&Service.Contact.Position;</ContactPosition><?Endif?>
+   <?Ifdef item="Service.Contact.Address.Type"?><ContactAddress>
+     <AddressType>&Service.Contact.Address.Type;</AddressType>
+     <Address>&Service.Contact.Address.Street;</Address>
+     <City>&Service.Contact.Address.City;</City>
+     <StateOrProvince>&Service.Contact.Address.StateProv;</StateOrProvince>
+     <PostCode>&Service.Contact.Address.PostCode;</PostCode>
+     <Country>&Service.Contact.Address.Country;</Country>
+    </ContactAddress><?Endif?>
+   <?Ifdef item="Service.Contact.Phone"?><ContactVoiceTelephone>&Service.Contact.Phone;</ContactVoiceTelephone><?Endif?>
+   <?Ifdef item="Service.Contact.Fax"?><ContactFacsimileTelephone>&Service.Contact.Fax;</ContactFacsimileTelephone><?Endif?>
+   <?Ifdef item="Service.Contact.Email"?><ContactElectronicMailAddress>&Service.Contact.Email;</ContactElectronicMailAddress><?Endif?>
+  </ContactInformation>
+
+  <Fees>&Service.Fees;</Fees>
+  <AccessConstraints>&Service.AccessConstraints;</AccessConstraints>
+ </Service>
+
+<!--
+
+  SERVICE CAPABILITIES
+
+ -->
+ <Capability>
+  <Request>
+
+   <GetCapabilities>
+     <?Enum list="&Formats.GetCapabilities;" using="&Format.xml;"?>
+     <DCPType>
+      <HTTP>
+       <Get>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetCapabilities;"/>
+       </Get>
+      </HTTP>
+     </DCPType>
+   </GetCapabilities>
+
+   <GetMap>
+    <?Enum list="&Formats.GetMap;" using="&Format.xml;" ?>
+    <DCPType>
+     <HTTP>
+      <Get>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetMap;"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetMap>
+
+   <GetFeatureInfo>
+    <?Enum list="&Formats.GetFeatureInfo;" using="&Format.xml;" ?>
+    <DCPType>
+     <HTTP>
+      <Get>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetFeatureInfo;"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetFeatureInfo>
+
+  </Request>
+
+  <Exception>
+   <?Enum list="&Formats.Exception;" using="&Format.xml;" ?>
+  </Exception>
+
+  <!-- No VendorSpecificCapabilities -->
+  <!-- No UserDefinedSymbolization -->
+
+<!--
+
+  PUBLISHED LAYERS
+
+ -->
+  <Layer>
+    <Title>&Service.Title;</Title>
+    <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90"/>
+    <BoundingBox SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+    <?EnumLayers using="&Layer.xml;" ?>
+  </Layer>
+
+ </Capability>
+</WMT_MS_Capabilities>
+</Response>
+
+
+<!--
+
+  WMS GetCapabilities  - HTML
+
+-->
+<Response request="GetCapabilities" content-type="text/html">
+<html>
+ <head>
+  <title>GetCapabilities Response for &Service.Title;</title>
+  &html.stylesheet;
+ </head>
+ <body>
+  <table border="1">
+   <tr><td class="title" colspan="2">Service Metadata - version &TemplateVersion;</td></tr>
+   <tr><td class="name">Name</td><td>&Service.Name;</td></tr>
+   <tr><td class="name">Title</td><td>&Service.Title;</td></tr>
+  <?Ifdef item="Service.Abstract"?>
+   <tr><td class="name">Abstract</td><td>&Service.Abstract;</td></tr>
+  <?Endif?>
+  <?Ifdef item="Service.Keywords"?>
+   <tr><td class="name">Keywords</td><td>
+    <?Enum list="&Service.Keywords;" using="&Format.html;"?>
+   </td></tr>
+  <?Endif?>
+   <tr><td class="name">Online Resource</td><td>&Url.OnlineResource;</td></tr>
+   <tr><td class="name">Contact Information</td><td>
+     &Service.Contact.Name;<br/>
+     &Service.Contact.Organization<br/>
+   <?Ifdef item="Service.Contact.Position"?>&Service.Contact.Position;<br/><?Endif?>
+   <?Ifdef item="Service.Contact.Address.Type"?>
+     &Service.Contact.Address.Street;<br/>
+     &Service.Contact.Address.City;, &Service.Contact.Address.StateProv;<br/>
+     &Service.Contact.Address.PostCode;<br/>
+     &Service.Contact.Address.Country;
+   <?Ifdef item="Service.Contact.Phone"?>Phone: &Service.Contact.Phone;<br/><?Endif?>
+   <?Ifdef item="Service.Contact.Fax"?>Fax: &Service.Contact.Fax;<br/><?Endif?>
+   <?Ifdef item="Service.Contact.Email"?>Email: &Service.Contact.Email;<br/><?Endif?>
+    </tr></td>
+    <?Endif?>
+  <tr><td class="name">Fees</td><td>&Service.Fees;</td></tr>
+  <tr><td class="name">Access Constraints</td><td>&Service.AccessConstraints;</td></tr>
+  <tr><td class="title" colspan="2">Capbilities</td></tr>
+  <tr><td class="name">GetCapabilities</td><td>
+   URL: &Url.GetCapabilities;<br/>
+   Formats:
+   <?Enum list="&Formats.GetCapability;" using="&Format.html;"?>
+  </td></tr>
+  <tr><td class="name">GetMap</td><td>
+   URL: &Url.GetMap;<br/>
+   Formats:
+   <?Enum list="&Formats.GetMap;" using="&Format.html;"?>
+  </td></tr>
+  <tr><td class="name">GetFeatureInfo</td><td>
+   URL: &Url.GetFeatureInfo;<br/>
+   Formats:
+   <?Enum list="&Formats.GetFeatureInfo;" using="&Format.html;"?>
+  </td></tr>
+  <tr><td class="title" colspan="2">Published Layers</td></tr>
+  <?EnumLayers using="&EnumLayer.html;"?>
+  </table>
+ </body>
+</html>
+</Response>
+
+
+
+<!--
+
+  WMS GetFeatureInfo  - XML
+
+-->
+<Response request="GetFeatureInfo" content-type="text/xml">
+<GetFeatureInfo>
+ <?EnumFeatureProperties using="&FeatureProperty.xml;" ?>
+</GetFeatureInfo>
+</Response>
+
+
+
+<!--
+
+  WMS GetFeatureInfo  - HTML
+
+-->
+<Response request="GetFeatureInfo" content-type="text/html">
+<html>
+<head>
+<title>GetFeatureInfo</title>
+&html.stylesheet;
+</head>
+<body>
+<table>
+ <?EnumFeatureProperties using="&FeatureProperty.html;" ?>
+</table>
+</body>
+</html>
+</Response>
+
+
+
+<!--
+
+  WMS GetFeatureInfo  - TEXT
+
+-->
+<Response request="GetFeatureInfo" content-type="text/plain">
+ <?EnumFeatureProperties using="&FeatureProperty.text;" ?>
+</Response>
+
+
+
+<!--
+
+  Exception Format  - XML
+
+-->
+<Response request="Exception" content-type="text/xml">
+<ServiceExceptionReport version="&TemplateVersion;">
+ <ServiceException code="&Exception.Type;">
+  &Exception.message;
+ </ServiceException>
+</ServiceExceptionReport>
+</Response>
+
+</Template>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="myfile.xsl" ?>
+<!DOCTYPE sales [
+<!ELEMENT sales (region*)>
+<!ATTLIST sales quarter CDATA #IMPLIED>
+<!ELEMENT region (units, amount)>
+<!ATTLIST region name ID #IMPLIED>
+<!ELEMENT units (#PCDATA) >
+<!ELEMENT amount (#PCDATA) >
+]>
+<sales quarter="2001-01">
+   <region name="Northeast">
+      <units>374</units>
+      <amount>12500.26</amount>
+   </region>
+   <region name="Southeast">
+      <units>512</units>
+      <amount>17692</amount>
+   </region>
+   <region name="Southwest">
+      <units>161</units>
+      <amount>8349.72</amount>
+   </region>
+   <region name="Northwest">
+      <units>465</units>
+      <amount>15239.6</amount>
+   </region>
+</sales>

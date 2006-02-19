@@ -1,0 +1,6 @@
+EXPORTS
+HttpFilterProc
+GetFilterVersion
+HttpExtensionProc
+GetExtensionVersion
+TerminateExtension

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema targetNamespace="http://www.test.com" elementFormDefault='qualified' xmlns:xs='http://www.w3.org/2001/XMLSchema' 
+xmlns:test="http://www.test.com" >
+
+  <xs:complexType name="weather" >
+    <xs:sequence >
+      <xs:element name="temperature" />
+      <xs:element name="precipitation" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="hatsize" >
+    <xs:restriction base="xs:integer" />
+  </xs:simpleType>
+
+  <xs:simpleType name="hatsizelist" >
+    <xs:list itemType="test:hatsize" />
+  </xs:simpleType>
+
+  <xs:complexType name='formula' mixed="true" >
+    <xs:sequence >
+      <xs:element name="subscript" type="xs:string" />
+    </xs:sequence >
+  </xs:complexType>
+
+  <xs:complexType name='cost' >
+    <xs:simpleContent >
+      <xs:extension base="xs:decimal" >
+        <xs:attribute name="a" type="xs:string" />
+        <xs:attribute name="b" type="xs:string" />
+        <xs:attribute name="c" type="xs:string" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:element name='testcase'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="E1" type="xs:anyType" />
+        <xs:element name="E2" type="test:formula" />
+        <xs:element name="E3" type="test:cost" />
+        <xs:element name="E4" type="test:hatsizelist" />
+        <xs:element name="E5" type="test:weather" />
+        <xs:element name="IDTag" maxOccurs="3">
+          <xs:complexType >
+             <xs:sequence />
+             <xs:attribute name="ID1" type="xs:ID" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    <xs:attribute name="A1" type="xs:double" />
+    <xs:attribute name="A2" type="xs:IDREFS" />
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

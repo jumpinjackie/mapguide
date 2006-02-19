@@ -1,0 +1,16 @@
+<top xsi:noNamespaceSchemaLocation="big.xsd"  xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:lala="http://lala" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:foo="foofoo">
+<att>abc</att>
+<ele  idA="abc" idAttr="a ab abc" >
+<poo />
+</ele>
+<ele  idA="ab" idAtt="abc" >
+<poo />
+</ele>
+<att>a</att>
+<ele  idA="a" idAttr="ab abc" >
+<poo />
+</ele>
+<atts>abc a</atts>
+<atts>ab</atts>
+<atts>a ab abc</atts>
+</top>

@@ -1,0 +1,10 @@
+<container xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:foo='foofoo' xsi:noNamespaceSchemaLocation='test.xsd'>
+  <friendlyPerson>42</friendlyPerson>
+  <friendlyPerson>2002-02-14</friendlyPerson>
+  <friendlyPerson>Sally</friendlyPerson>
+  <trueBlue attributeFriendlyPerson="2002-11-11" anotherAttributeFriendlyPerson="Diamondback">
+    <myGoodOldPal>Victoria</myGoodOldPal>
+  </trueBlue>
+</container>
+
+

@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// etcl.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+project : taolib {
+  after   += ETCL
+  libs    += TAO_ETCL
+}

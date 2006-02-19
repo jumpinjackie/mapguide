@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This schema is interdependent with test.xsd.
+     Note nobody would really make a schema like this -->
+<xs:schema elementFormDefault='unqualified' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:foo='foofoo'>
+
+  <xs:element name="section">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element ref="section" maxOccurs="unbounded"/>
+          <xs:element ref="leaf" maxOccurs="unbounded"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="containerOfContainers">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="container" maxOccurs="unbounded"/>
+        <xs:element ref="leaf" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

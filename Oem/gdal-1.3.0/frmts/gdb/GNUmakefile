@@ -1,0 +1,3 @@
+default:
+	(cd ..; $(MAKE))
+

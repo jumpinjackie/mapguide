@@ -1,0 +1,103 @@
+child::node() selects all the children of the context node, whatever their node type
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  Text1
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="para1" type="zzz">
+    something
+	<div><para name="para1b"/></div>
+  </para>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  Text2
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="para2" type="warning"/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<chapter>
+    <para name="para3"/>
+	<item name="item1"/>
+  </chapter>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<olist lang="olist-lang">
+    <item name="item2"/>
+  </olist>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  Text3
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="lastPara" type="warning"/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<doc>
+    <chapter/>
+	<chapter/>
+	<chapter/>
+	<chapter/>
+	<chapter>
+	  <section/>
+	  <section>
+	    Section2
+	  </section>
+	  <section/>
+	</chapter>
+	<chapter>
+	  <title name="t1">Title</title>
+	  <title name="t2">Introduction</title>
+	  <title name="t3"/>
+	</chapter>
+	<chapter>
+	  <title/>
+	</chapter>
+	<chapter/>
+
+	<appendix/>
+  
+  </doc>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<employee assistant="true" secretary="true1"/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<employee secretary="true2"/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<employee assistant="true" secretary="true3"/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<employee assistant="true4"/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+
+
+
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<Cue>
+    <Intensity>250</Intensity>
+    <Intensity>150</Intensity>
+    <Intensity>350</Intensity>
+    <Intensity>266</Intensity>
+  </Cue>

@@ -1,0 +1,19 @@
+// -*- MPC -*-
+// Dump_Restore.mpc,v 1.4 2003/12/23 20:23:21 dhinton Exp
+
+project(Netsvcs_Dump_Restore_Lib): acelib {
+  sharedname    = Dump_Restore
+  dynamicflags += ACE_BUILD_SVC_DLL
+  Source_Files {
+    Dump_Restore.cpp
+  }
+}
+
+project(Netsvcs_Dump_Restore) : aceexe {
+  exename = main
+  libs    += Dump_Restore
+  after   += Netsvcs_Dump_Restore_Lib
+  Source_Files {
+    main.cpp
+  }
+}

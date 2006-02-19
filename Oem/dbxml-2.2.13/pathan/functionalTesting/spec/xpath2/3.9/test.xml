@@ -1,0 +1,38 @@
+<testcase>
+  <spec_fragment>
+    <part discounted="no"/>
+    <part discounted="yes"/>
+    <part discounted="false"/>
+    <part discounted="0"/>
+    <part1 discounted="true"/>
+    <part1 discounted="true"/>
+    <part1/>
+    <part1 discounted="true"/>
+  <spec_fragment>
+  </spec_fragment>
+    <employee>
+      <salary>1000</salary>
+      <bonus>200</bonus>
+    </employee>
+    <employee>
+      <salary>1000</salary>
+      <bonus>251</bonus>
+    </employee>
+    <employee>
+      <salary>1000</salary>
+      <bonus>202</bonus>
+    </employee>
+    <employee1>
+      <salary>1000</salary>
+      <bonus>202</bonus>
+    </employee1>
+    <employee1>
+      <salary>1000</salary>
+      <bonus>202</bonus>
+    </employee1>
+    <employee1>
+      <salary>1000</salary>
+      <bonus>202</bonus>
+    </employee1>
+  </spec_fragment>
+</testcase>

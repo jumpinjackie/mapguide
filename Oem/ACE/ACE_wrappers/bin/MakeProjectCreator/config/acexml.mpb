@@ -1,0 +1,8 @@
+// -*- MPC -*-
+// acexml.mpb,v 1.4 2003/12/30 15:18:22 dhinton Exp
+
+project {
+  after    += ACEXML_Parser ACEXML
+  libs     += ACEXML_Parser ACEXML
+  includes += $(ACE_ROOT)/ACEXML/common
+}

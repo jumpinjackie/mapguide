@@ -1,0 +1,54 @@
+<para xsi:schemaLocation="http://www.theborg.org test.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <title>A tale of Sound and Fury, Told by an Idiot</title>
+  <subtitle>signifying nothing</subtitle>
+  <doc lang="kurdish" name="Inanna">
+    <chapter><title>Introduction</title></chapter>
+    <chapter>
+      <title>The Adventures of Stoke Mandeville, Astronaut and Gentleman </title>
+    </chapter>
+    <chapter>
+      <section>
+        <para>In the beginning, there was XPath 1.0.</para>
+      </section>
+      <section />
+    </chapter>
+    <chapter>
+      <section />
+    </chapter>  
+    <chapter>
+      <section title="Axes in XPath 2.0">
+        <list>
+          <member>child</member>
+          <member>parent</member>
+          <member>descendant</member>
+          <member>ancestor</member>
+          <member>ancestor-or-self</member>
+          <member>descendant-or-self</member>
+          <member>namespace</member>
+          <member>attribute</member>
+          <member>self</member>
+          <member>preceding-sibling</member>
+          <member>following-sibling</member>
+          <member>preceding</member>
+          <member>following</member>
+        </list>
+      </section>
+      <section title="Xpath 2.0" />
+    </chapter>  
+    <appendix>
+      <section title="That's all, folks!" />
+    </appendix>
+  </doc>
+  <div1>
+    <para type="warning">"Divvie" meant "idiot" in the part of Scotland where I was born.</para>
+    <section>
+      <para>But I didn't live there long.</para>
+      <para>It was very nice, though.</para>
+      <subsection>
+        <para>Test of nested para tags- 
+          <para>(This paragraph is inside the other one)</para>
+        </para>
+      </subsection>
+    </section>
+  </div1>
+</para>

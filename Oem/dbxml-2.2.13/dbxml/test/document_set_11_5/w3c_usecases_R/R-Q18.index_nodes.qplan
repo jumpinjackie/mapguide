@@ -1,0 +1,114 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="u">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'users.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="user_tuple" nodeType="element"/>
+          </Navigation>
+        </ForBinding>
+        <Sort>
+          <Specification modifier="ascending|empty_least">
+            <Navigation>
+              <Variable name="u"/>
+              <Step axis="child" name="name" nodeType="element"/>
+            </Navigation>
+          </Specification>
+        </Sort>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="user" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Navigation>
+              <Variable name="u"/>
+              <Step axis="child" name="name" nodeType="element"/>
+            </Navigation>
+            <FLWOR>
+              <ForBinding name="b">
+                <Function name="{http://www.w3.org/2005/04/xpath-functions}:distinct-values">
+                  <Navigation>
+                    <QueryPlanFunction result="document" container="11.5.3.dbxml">
+                      <RQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bids.xml',n(V(bid_tuple.userid,=,'[to be calculated]'),P(edge-element-equality-string,prefix,bid_tuple.itemno)))</RQPlan>
+                    </QueryPlanFunction>
+                    <Step axis="descendant" name="bid_tuple" nodeType="element"/>
+                    <DbXmlFilter>
+                      <Navigation>
+                        <Step axis="child" name="userid" nodeType="element">
+                          <RQPlan>V(bid_tuple.userid,=,'[to be calculated]')</RQPlan>
+                        </Step>
+                        <DbXmlCompare name="equal">
+                          <Navigation>
+                            <Variable name="u"/>
+                            <Step axis="child" name="userid" nodeType="element">
+                              <OQPlan>P(edge-element-equality-string,prefix,user_tuple.userid)</OQPlan>
+                            </Step>
+                          </Navigation>
+                        </DbXmlCompare>
+                      </Navigation>
+                    </DbXmlFilter>
+                    <Step axis="child" name="itemno" nodeType="element">
+                      <OQPlan>P(edge-element-equality-string,prefix,bid_tuple.itemno)</OQPlan>
+                    </Step>
+                  </Navigation>
+                </Function>
+              </ForBinding>
+              <ForBinding name="i">
+                <Navigation>
+                  <QueryPlanFunction result="document" container="11.5.3.dbxml">
+                    <RQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'items.xml',V(item_tuple.itemno,=,'[to be calculated]'))</RQPlan>
+                  </QueryPlanFunction>
+                  <Step axis="descendant" name="item_tuple" nodeType="element"/>
+                  <DbXmlFilter>
+                    <Navigation>
+                      <Step axis="child" name="itemno" nodeType="element">
+                        <RQPlan>V(item_tuple.itemno,=,'[to be calculated]')</RQPlan>
+                      </Step>
+                      <DbXmlCompare name="equal">
+                        <Variable name="b"/>
+                      </DbXmlCompare>
+                    </Navigation>
+                  </DbXmlFilter>
+                </Navigation>
+              </ForBinding>
+              <LetBinding name="descr">
+                <Navigation>
+                  <Variable name="i"/>
+                  <Step axis="child" name="description" nodeType="element"/>
+                  <Step axis="child">
+                    <ItemType testType="text"/>
+                  </Step>
+                </Navigation>
+              </LetBinding>
+              <Sort>
+                <Specification modifier="ascending|empty_least">
+                  <Variable name="descr"/>
+                </Specification>
+              </Sort>
+              <DOMConstructor type="element">
+                <Name>
+                  <Sequence>
+                    <AnyAtomicTypeConstructor value="bid_on_item" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                  </Sequence>
+                </Name>
+                <Children>
+                  <Variable name="descr"/>
+                </Children>
+              </DOMConstructor>
+            </FLWOR>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

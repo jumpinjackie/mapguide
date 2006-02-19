@@ -1,0 +1,386 @@
+INSTALL
+
+This software requires:
+
+o The entire DBXML build.
+o The php_db4 extension
+
+To build run the following commands from the src/php4 directory:
+
+> phpize
+> ./configure --with-dbxml=/path/to/dbxml/install 
+> 	      [--with-berkeleydb=/path/to/berkeleydb/install]
+> 	      [--with-xerces=/path/to/xerces/install]
+> 	      [--with-pathan=/path/to/pathan/install]
+> 	      [--with-xquery=/path/to/xquery/install]
+> make 
+> make install
+
+The optional --with-* arguments are only required if non-default
+locations are used for these libraries.
+
+Then in your php.ini file add
+
+extension=db4.so
+extension=dbxml.so
+
+*** db4 version dependencies ***
+dbxml and the php dbxml extension both rely on being linked against the version of db4 which ships bundled with dbxml.  If you are using an older db4 php
+extension build, you will need to rebuild that extension to link against the
+db4 which was built and installed as part of your dbxml setup.  If you have not
+built the extension yet, it is included in the dbxml source bundle in
+db-4.X.X/php_db4.  You would then configure it per its instructions with
+the db4 install directory given by:
+
+--with-db4=/path/to/dbxml/install
+
+*** A note about pthreads ***
+The db4 c++ library by default tries to link against libpthread on some
+systems (notably Linux).  If your PHP install is not linked against
+libpthread, you will need to disable pthread support in db4.  This can
+be done by compiling db4 with the flag  --with-mutex=x86/gcc-assembly.  
+
+This link option can be specified from the dbxml build script as:
+
+./buildall.sh --with-berkeleydb-conf="--with-mutex=x86/gcc-assembly"
+
+PHP can itself be forced to link against libpthread either by manually editing
+its build files (which some distributions do), or by building it with
+--with-experimental-zts.  To test if your existing linux build of php is
+linked against libpthread you can execute
+
+> ldd `which php`
+
+If libpthread.so is present in the list of libraries returned, then your
+php is linked against libpthread and this whole discussion is moot.
+
+*** WARNING TO OS X USERS ***
+
+Due to the way Mach-O Bundles (the Darwin shared library format) works, PHP is currently 
+unable to have an extension use symbols exported from another extension.  To have
+this not affect your OS X build you need to build db4.so statically into PHP.  To
+do this follow these steps:
+
+> cp -r db-4.x.x/php_db4 $PHP_SRC_DIR/ext/
+> cd $PHP_SRC_DIR/
+> buildconf
+> ./configure [your php build options] [your php_db4 build options]
+> make
+> make install
+
+You may also build dbxml into PHP statically with similar steps, but this is not necessary.
+
+*** Usage ***
+
+The extension provides the following classes, represented below in PHP
+pseudo-code.  Worked examples are available in the examples/
+subdirectory.
+
+class XmlManager {
+  function XmlManager($db4Env=null, $flags=0) {}
+  function createContainer($name, $flags= DB_CREATE, $type=0, $mode=0) {}
+    // or
+  function createContainer($xmlTransaction, $name, $flags= DB_CREATE, $type=0, $mode=0) {}
+  function openContainer($name, $flags=0) {}
+    // or
+  function existsContainer($name) {}
+    // or
+  function openContainer($xmlTransaction, $name, $flags=0) {}
+  function removeContainer($name) {}
+    // or
+  function removeContainer($xmlTransaction, $name) {}
+
+  function renameContainer($oldname, $newname) {}
+   // or
+  function renameContainer($xmlTransaction, $oldname, $newname) {}
+
+  function createMemBufInputStream($buffer, $bufferID) {}
+  function createDocument() {}
+  function createQueryContext($rt=XmlQueryContext_LiveValues,
+                              $et=XmlQueryContext_Eager) {}
+  function createUpdateContext() {}
+  function prepare($query, $xmlQueryContext=null) {}
+    // or
+  function prepare($xmlTransaction, $query, $xmlQueryContext=null) {}
+
+  function query($query, $xmlQueryContext=null, $flags=0) {}
+    // or
+  function query($xmlTransaction, $query, $xmlQueryContext=null, $flags=0) {}
+
+  function createResults() {}
+  function createModify() {}
+  function createTransaction() {}
+  function getDefaultContainerFlags() {}
+  function setDefaultContainerFlags($flags) {}
+  function getDefaultPageSize() {}
+  function setDefaultPageSize($size) {}
+  function getDefaultContainerType() {}
+  function setDefaultContainerType($type) {}
+  function upgradeContainer($flags, $updateContext);
+}
+
+class XmlContainer {
+  /* private constructor, use XmlManager::creaeContainer() */
+  function sync() {}
+  function getName() {}
+
+  // Index access and modification
+  function getIndexSpecification() {}
+  function setIndexSpecification($indexSpecification,
+                                 $updateContext=null) {}
+    // or
+  function setIndexSpecification($xmlTransaction, $indexSpecification, 
+                                 $updateContext=null) {}
+  function addIndex($uri, $name, $index, $updateContext=null) {}
+    // or
+  function addIndex($xmlTransaction, $uri, $name, $index, $updateContext=null) {}
+  function deleteIndex($uri, $name, $index, $updateContext=null) {}
+    // or
+  function deleteIndex($xmlTransaction, $uri, $name, $index, $updateContext=null) {}
+  function replaceIndex($uri, $name, $index, $updateContext=null) {}
+    // or
+  function replaceIndex($xmlTransaction, $uri, $name, $index, $updateContext=null) {}
+  function addDefaultIndex($index, $updateContext=null) {}
+    // or
+  function addDefaultIndex($xmlTransaction, $index, $updateContext=null) {}
+  function deleteDefaultIndex($xmlTransaction, $index, $updateContext=null) {}
+    // or
+  function deleteDefaultIndex($index, $updateContext=null) {}
+  function replaceDefaultIndex($xmlTransaction, $index, $updateContext=null) {}
+    // or
+  function replaceDefaultIndex($index, $updateContext=null) {}
+
+  // Document access and manipulation
+  function getDocument($name, $flags=0) {}
+    // or
+  function getDocument($xmlTransaction, $name, $flags=0) {}
+  function putDocument($xmlDocument, $updateContext=null, $flags=0) {}
+    // or
+  function putDocument($xmlTransaction, $xmlDocument, $updateContext=null, $flags=0) {}
+    // or
+  function putDocument($name, $xmlInputStream, $updateContext=null, $flags=0) {}
+    // or
+  function putDocument($xmlTransaction, $name, $xmlInputStream, $updateContext=null, $flags=0) {}
+    // or
+  function putDocument($name, $content, $updateContext=null, $flags=0) {}
+    // or
+  function putDocument($xmlTransaction, $name, $content, $updateContext=null, $flags=0) {}
+
+  function deleteDocument($xmlDocument, $updateContext=null) {}
+    // or
+  function deleteDocument($xmlTransaction, $xmlDocument, $updateContext=null) {}
+    // or
+  function deleteDocument($name, $updateContext=null) {}
+    // or
+  function deleteDocument($xmlTransaction, $name, $updateContext=null) {}
+
+  function updateDocument($xmlDocument, $updateContext=null) {}
+    // or
+  function updateDocument($xmlTransaction, $xmlDocument, $updateContext=null) {}
+    // or
+  function updateDocument($name, $xmlInputStream, $updateContext=null) {}
+    // or
+  function updateDocument($xmlTransaction, $name, $xmlInputStream, $updateContext=null) {}
+    // or
+  function updateDocument($name, $content, $updateContext=null) {}
+    // or
+  function updateDocument($xmlTransaction, $name, $content, $updateContext=null) {}
+
+  function lookupIndex($xmlQueryContext, $uri, $name, $index,
+                       $xmlValue=null, $flags = 0) {}
+    // or
+  function lookupIndex($xmlTransaction, $xmlQueryContext, $uri, $name, $index,
+                       $xmlValue=null, $flags = 0) {}
+    // or
+  function lookupIndex($xmlQueryContext, 
+                       $uri, $name,
+                       $parent_uri, $parent_name, 
+                       $index, $xmlValue=null, $flags = 0) {}
+    // or
+  function lookupIndex($xmlTransaction, $xmlQueryContext, 
+                       $uri, $name,
+                       $parent_uri, $parent_name, 
+                       $index, $xmlValue=null, $flags = 0) {}
+
+  function lookupStatistics($uri, $name, $index, $xmlValue=null) {}
+    // or
+  function lookupStatistics($xmlTransaction, $uri, $name, $index, $xmlValue=null) {}
+  function lookupStatistics($uri, $name, 
+                            $parent_uri, $parent_name, 
+                            $index, $xmlValue=null) {}
+    // or
+  function lookupStatistics($xmlTransaction, $uri, $name, 
+                            $parent_uri, $parent_name, 
+                            $index, $xmlValue=null) {}
+  function addAlias($name);
+  function removeAlias($name);
+  function getAllDocuments($xmlTransaction, $flags);
+  function getNumDocuments($xmlTransaction);
+  function close() {}
+}
+
+class XmlData {
+  function XmlData($string) {}
+  function getData() {}
+  function setData($string) {}
+}
+
+class XmlDocument {
+  /* private constructor, use XmlContainer factory methods */
+  function getName() {}
+  function setName($name) {}
+  function getContent() {} /* returns XmlData object */
+  function getContentAsString() {}
+  function setContent($content) {}
+    // or
+  function setContent($xmlData) {}
+    // or
+  function setContent($xmlInputStream) {}
+  function fetchAllData() {}
+  function getMetaData($uri, $name) {}
+}
+
+class XmlIndexSpecification {
+  function XmlIndexSpecification() {}
+  function addIndex($uri, $name, $type, $syntax) {}
+  function deleteIndex($uri, $name, $type, $syntax) {}
+  function replaceIndex($uri, $name, $type, $syntax) {}
+  function addDefaultIndex($type, $syntax) {}
+    // or
+  function addDefaultIndex($index) {}
+  function deleteDefaultIndex($type, $syntax) {}
+    // or
+  function deleteDefaultIndex($index) {}
+  function replaceDefaultIndex($type, $syntax) {}
+    // or
+  function replaceDefaultIndex($index) {}
+  function find($uri, $name) {}
+  function getDefaultIndex() {}
+  function getIndexes() {}
+}
+
+class XmlModify {
+  /* private constructor, use a factory instead */
+  function addInsertBeforeStep($xmlQueryExpression, $xmlObjectType,
+                               $name,$content) {}
+  function addInsertAfterStep($xmlQueryExpression, $xmlObjectType,
+                              $name,$content) {}
+  function addAppendStep($xmlQueryExpression, $xmlObjectType, $name,
+                         $content, $location = -1) {}
+  function addUpdateStep($xmlQueryExpression, $content) {}
+  function addRenameStep($xmlQueryExpression, $content) {}
+  function addRemoveStep($xmlQueryExpression) {}
+  function setNewEncoding($encoding) {}
+  function execute($xmlValue, $xmlQueryContext, $xmlUpdateContext) {}
+    // or
+  function execute($xmlTransaction, $xmlValue, $xmlQueryContext, $xmlUpdateContext) {}
+    // or
+  function execute($xmlResults, $xmlQueryContext, $xmlUpdateContext) {}
+    //or
+  function execute($xmlTransaction, $xmlResults, $xmlQueryContext, $xmlUpdateContext) {}
+    //or
+  function execute($xmlValue, $xmlQueryContext, $xmlUpdateContext) {}
+}
+
+class XmlQueryContext {
+  /* private contstructor, use factories instead */
+  function setNamespace($prefix, $uri) {}
+  function getNamespace($prefix) {}
+  function removeNamespace($prefix) {}
+  function clearNamespaces() {}
+  function setVariableValue($name, $xmlValue) {}
+  function getVariableValue($name) {}
+  function setBaseURI($uri) {}
+  function getBaseURI() {}
+  function setReturnType($rt = XmlQueryContext_ReturnType) {}
+  function getReturnType() {}
+  function setEvaluationType($rt = XmlQueryContext_EvaluationType) {}
+  function getEvaluationType() {}
+
+}
+
+class XmlQueryExpression {
+  /* private constructor, use a constructor like XmlManager::prepare()
+  */
+  function getQuery() {}
+  function getQueryPlan() {}
+  function execute($xmlQueryContext, flags = 0) {}
+    // or
+  function execute($xmlValue, $xmlQueryContext, flags = 0) {}
+    // or
+  function execute($xmlTransaction, $xmlQueryContext, flags = 0) {}
+    // or
+  function execute($xmlTransaction, $xmlValue, $xmlQueryContext, flags = 0) {}
+}
+
+class XmlResults {
+  /* private constructor, XmlQueryExpression::execute and
+  XmlManager::query are factories.
+  */
+  function next() {}
+  function previous() {}
+  function peek() {}
+  function hasNext() {}
+  function reset() {}
+}
+
+class XmlValue {
+  function XmlValue($value) {}
+  function getNodeName() {}
+  function getNodeValue() {}
+  function getNamespaceURI() {}
+  function getPrefix() {}
+  function getLocalName() {}
+  function getParentNode() {}
+  function getFirstChild() {}
+  function getLastChild() {}
+  function getPreviousSibling() {}
+  function getNextSibling() {}
+  function getOwnerElement() {}
+  function getNodeType() {}
+  function getType() {}
+  function isNull() {}
+  function isNumber() {}
+  function isString() {}
+  function isBoolean() {}
+  function isNode() {}
+  function isType($type) {}
+  function equals($xmlValue) {}
+  function getAttributes() {}
+  function asDocument() {}
+  function asBoolean() {}
+  function asNumber() {}
+  function asString() {}
+}
+
+class XmlUpdateContext {
+  /* private constructor.  Create this with
+  XmlManager::createUpdateContext()
+  */
+  function getApplyChangesToContainers() {}
+  function setApplyChangesToContainers($boolean) {}
+}
+
+class XmlTransaction {
+  /* private constructor.  Create with XmlManager::createTransaction()
+  */
+  function abort() {}
+  function commit() {}
+  function createChild($flags=0) {}
+}
+
+class XmlInputStream {
+  /* private constructor.  Create with
+  XmlManager::createMemBufInputStream()
+  */
+  function curPos() {}
+  function readBytes() {}
+}
+
+class XmlStatistics {
+  /* private constructor.  created via XmlContainer::lookupStatistics() */
+  function getNumberOfIndexedKeys() {}
+  function getNumberOfUniqueKeys() {}
+  function getSumKeyValueSize() {}
+}
+

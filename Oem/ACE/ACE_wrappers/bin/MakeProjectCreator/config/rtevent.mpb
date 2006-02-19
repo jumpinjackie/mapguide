@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// rtevent.mpb,v 1.4 2003/12/30 15:18:22 dhinton Exp
+
+project : messaging, svc_utils {
+  after     += RTEvent
+  libs      += TAO_RTEvent
+  comps     += RTEvent
+  tagchecks += RTEvent
+}

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema elementFormDefault='unqualified' 
+xmlns:xs='http://www.w3.org/2001/XMLSchema' 
+xmlns:xdt='http://www.w3.org/2005/04/xpath-datatypes'
+targetNamespace='http://foo' xmlns:foo='http://foo'>
+
+  <xs:simpleType name="shoesize">
+    <xs:restriction base="xs:integer">
+      <xs:enumeration value="3"/>
+      <xs:enumeration value="6"/>
+      <xs:enumeration value="9"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="hatsize">
+    <xs:restriction base="xs:integer">
+      <xs:enumeration value="28" />
+      <xs:enumeration value="30" />
+      <xs:enumeration value="32" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="size">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="small" />
+      <xs:enumeration value="medium" />
+      <xs:enumeration value="large" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="celcius" >
+    <xs:restriction base="xs:decimal" >
+      <xs:minExclusive value="-273"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="negativeCelcius">
+    <xs:restriction base="foo:celcius">
+      <xs:maxExclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="monthDuration">
+    <xs:restriction base="xdt:yearMonthDuration" >
+      <xs:pattern value="[\-]?P[0-9]+M"/>
+    </xs:restriction>
+  </xs:simpleType> 
+  
+  <xs:simpleType name="yearDuration">
+    <xs:restriction base="xdt:yearMonthDuration" >
+      <xs:pattern value="[\-]?P[0-9]+Y"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fourLetterWord">
+    <xs:restriction base="xs:token" >
+      <xs:length value="4"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:notation name="gif" public="image/gif" system="view.exe"/>
+  <xs:notation name="jpeg" public="image/jpeg" system="view.exe"/>
+
+  <xs:simpleType name="Notation">
+    <xs:restriction base="xs:NOTATION">
+      <xs:enumeration value="foo:gif"/>
+      <xs:enumeration value="foo:jpeg"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="beerSize">
+    <xs:restriction base="xs:double">
+      <xs:minInclusive value="330"/>
+      <xs:maxInclusive value="568"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="waterContent">
+    <xs:restriction base="xs:double">
+      <xs:minExclusive value="0.914"/>
+      <xs:maxExclusive value="0.998"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="currency">
+    <xs:restriction base="xs:float">
+      <xs:minExclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="tax">
+    <xs:restriction base="xs:float">
+      <xs:enumeration value="7"/>
+     </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:element name="purchaseOrder">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element name="shoe" type="foo:shoesize" maxOccurs="unbounded"/>
+        <xs:element name="hat" type="foo:hatsize" maxOccurs="unbounded"/>
+        <xs:element name="shirt" type="foo:size" maxOccurs="unbounded"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,10 @@
+select the para element children of the context node, testing with whitespace in expression
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="para1" type="zzz">
+    something
+	<div><para name="para1b"/></div>
+  </para>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="para2" type="warning"/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="lastPara" type="warning"/>

@@ -1,0 +1,24 @@
+#!/bin/sh -
+#       $Id: s_python,v 1.3 2004/12/28 19:07:24 gmf Exp $
+#
+# Build setup.py.in for the Python API with our default library paths.
+# It requires further processing via configure to create setup.py
+
+. RELEASE
+
+PYTHON_SRCDIR=../src/python
+d=$PYTHON_SRCDIR/setup.py
+f=$PYTHON_SRCDIR/setup.py.in
+s=$PYTHON_SRCDIR/setup.py.template
+t=/tmp/__t
+trap 'rm -f $t; exit 0' 0 1 2 3 13 15
+
+sed -e "s/@DBXML_VERSION_MAJOR@/$DBXML_VERSION_MAJOR/g" \
+      -e "s/@DBXML_VERSION_MINOR@/$DBXML_VERSION_MINOR/g" \
+      -e "s/@DBXML_VERSION_PATCH@/$DBXML_VERSION_PATCH/g" \
+      -f lib_paths.sed $s > $t
+
+cmp $t $f > /dev/null 2>&1 ||
+    (echo "Building $f" && rm -f $f && cp $t $f && chmod 644 $f)
+cmp $t $d > /dev/null 2>&1 ||
+    (echo "Building $d" && rm -f $d && cp $t $d && chmod 644 $d)

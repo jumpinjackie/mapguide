@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="xquery_use_cases">
+  <policies>
+    <policy name="sgml">
+      <addArg>report.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>(&quot;&lt;result&gt;&quot;, //report//para, &quot;&lt;/result&gt;&quot;) </arg>
+    <output>&lt;result&gt;
+&lt;para security=&quot;u&quot;&gt;With the ever-changing and growing global market, companies and
+large organizations are searching for ways to become more viable and
+competitive. Downsizing and other cost-cutting measures demand more
+efficient use of corporate resources. One very important resource is
+an organization's information.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;As part of the move toward integrated information management,
+whole industries are developing and implementing standards for
+exchanging technical information. This report describes how one such
+standard, the Standard Generalized Markup Language (SGML), works as
+part of an overall information management strategy.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;While SGML is a fairly recent technology, the use of
+&lt;emph&gt;markup&lt;/emph&gt; in computer-generated documents has existed for a
+while.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;Markup is everything in a document that is not content. The
+traditional meaning of markup is the manual &lt;emph&gt;marking&lt;/emph&gt; up
+of typewritten text to give instructions for a typesetter or
+compositor about how to fit the text on a page and what typefaces to
+use. This kind of markup is known as &lt;emph&gt;procedural markup&lt;/emph&gt;.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;Most electronic publishing systems today use some form of
+procedural markup. Procedural markup codes are good for one
+presentation of the information.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;Generic markup (also known as descriptive markup) describes the
+&lt;emph&gt;purpose&lt;/emph&gt; of the text in a document. A basic concept of
+generic markup is that the content of a document must be separate from
+the style. Generic markup allows for multiple presentations of the
+information.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;Industries involved in technical documentation increasingly
+prefer generic over procedural markup schemes. When a company changes
+software or hardware systems, enormous data translation tasks arise,
+often resulting in errors.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;SGML defines a strict markup scheme with a syntax for defining
+document data elements and an overall framework for marking up
+documents.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;SGML can describe and create documents that are not dependent on
+any hardware, software, formatter, or operating system. Since SGML documents
+conform to an international standard, they are portable.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;You can break a typical document into three layers: structure,
+content, and style. SGML works by separating these three aspects and
+deals mainly with the relationship between structure and content.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;At the heart of an SGML application is a file called the DTD, or
+Document Type Definition. The DTD sets up the structure of a document,
+much like a database schema describes the types of information it
+handles.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;A database schema also defines the relationships between the
+various types of data. Similarly, a DTD specifies &lt;emph&gt;rules&lt;/emph&gt;
+to help ensure documents have a consistent, logical structure.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;Content is the information itself. The method for identifying
+the information and its meaning within this framework is called
+&lt;emph&gt;tagging&lt;/emph&gt;. Tagging must
+conform to the rules established in the DTD (see &lt;xref xrefid=&quot;top4&quot;/&gt;).&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;SGML does not standardize style or other processing methods for
+information stored in SGML.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;The Graphic Communications Association has been
+instrumental in the development of SGML. GCA provides conferences,
+tutorials, newsletters, and publication sales for both members and
+non-members.&lt;/para&gt;
+&lt;para security=&quot;c&quot;&gt;Exiled members of the former Soviet Union's secret
+police, the KGB, have infiltrated the upper ranks of the GCA and are
+planning the Final Revolution as soon as DSSSL is completed.&lt;/para&gt;
+&lt;/result&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>(&quot;&lt;result&gt;&quot;, //intro/para, &quot;&lt;/result&gt;&quot;) </arg>
+    <output>&lt;result&gt;
+&lt;para security=&quot;u&quot;&gt;With the ever-changing and growing global market, companies and
+large organizations are searching for ways to become more viable and
+competitive. Downsizing and other cost-cutting measures demand more
+efficient use of corporate resources. One very important resource is
+an organization's information.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;As part of the move toward integrated information management,
+whole industries are developing and implementing standards for
+exchanging technical information. This report describes how one such
+standard, the Standard Generalized Markup Language (SGML), works as
+part of an overall information management strategy.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;While SGML is a fairly recent technology, the use of
+&lt;emph&gt;markup&lt;/emph&gt; in computer-generated documents has existed for a
+while.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;Markup is everything in a document that is not content. The
+traditional meaning of markup is the manual &lt;emph&gt;marking&lt;/emph&gt; up
+of typewritten text to give instructions for a typesetter or
+compositor about how to fit the text on a page and what typefaces to
+use. This kind of markup is known as &lt;emph&gt;procedural markup&lt;/emph&gt;.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;SGML defines a strict markup scheme with a syntax for defining
+document data elements and an overall framework for marking up
+documents.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;SGML can describe and create documents that are not dependent on
+any hardware, software, formatter, or operating system. Since SGML documents
+conform to an international standard, they are portable.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;You can break a typical document into three layers: structure,
+content, and style. SGML works by separating these three aspects and
+deals mainly with the relationship between structure and content.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;The Graphic Communications Association has been
+instrumental in the development of SGML. GCA provides conferences,
+tutorials, newsletters, and publication sales for both members and
+non-members.&lt;/para&gt;
+&lt;para security=&quot;c&quot;&gt;Exiled members of the former Soviet Union's secret
+police, the KGB, have infiltrated the upper ranks of the GCA and are
+planning the Final Revolution as soon as DSSSL is completed.&lt;/para&gt;
+&lt;/result&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>(&quot;&lt;result&gt;&quot;, for $c in //chapter[empty(intro)] return $c/section/intro/para, &quot;&lt;/result&gt;&quot;) </arg>
+    <output>&lt;result&gt;
+&lt;para security=&quot;u&quot;&gt;The Graphic Communications Association has been
+instrumental in the development of SGML. GCA provides conferences,
+tutorials, newsletters, and publication sales for both members and
+non-members.&lt;/para&gt;
+&lt;para security=&quot;c&quot;&gt;Exiled members of the former Soviet Union's secret
+police, the KGB, have infiltrated the upper ranks of the GCA and are
+planning the Final Revolution as soon as DSSSL is completed.&lt;/para&gt;
+&lt;/result&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>(&quot;&lt;result&gt;&quot;, (((//chapter)[2]//section)[3]//para)[2], &quot;&lt;/result&gt;&quot;) </arg>
+    <output>&lt;result&gt;
+&lt;para security=&quot;u&quot;&gt;At the heart of an SGML application is a file called the DTD, or
+Document Type Definition. The DTD sets up the structure of a document,
+much like a database schema describes the types of information it
+handles.&lt;/para&gt;
+&lt;/result&gt;
+</output>
+  </base>
+  <base comment="DTD needs to be ported to XML Schema" type="pass">
+    <arg>(&quot;&lt;result&gt;&quot;, //para[@security = &quot;c&quot;], &quot;&lt;/result&gt;&quot;) </arg>
+    <output>&lt;result&gt;
+&lt;para security=&quot;c&quot;&gt;Exiled members of the former Soviet Union's secret
+police, the KGB, have infiltrated the upper ranks of the GCA and are
+planning the Final Revolution as soon as DSSSL is completed.&lt;/para&gt;
+&lt;/result&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>(&quot;&lt;result&gt;&quot;, for $s in //section/@shorttitle return ($s), &quot;&lt;/result&gt;&quot;)</arg>
+    <output>&lt;result&gt;
+{}shorttitle=&quot;What is markup?&quot;
+{}shorttitle=&quot;What is SGML?&quot;
+{}shorttitle=&quot;How does SGML work?&quot;
+&lt;/result&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>(&quot;&lt;result&gt;&quot;, for $i in //intro/para[1] return (&quot;&lt;first_letter&gt;&quot;, substring(string($i), 1, 1), &quot;&lt;/first_letter&gt;&quot;), &quot;&lt;/result&gt;&quot;)</arg>
+    <output>&lt;result&gt;
+&lt;first_letter&gt;
+W
+&lt;/first_letter&gt;
+&lt;first_letter&gt;
+W
+&lt;/first_letter&gt;
+&lt;first_letter&gt;
+M
+&lt;/first_letter&gt;
+&lt;first_letter&gt;
+S
+&lt;/first_letter&gt;
+&lt;first_letter&gt;
+Y
+&lt;/first_letter&gt;
+&lt;first_letter&gt;
+T
+&lt;/first_letter&gt;
+&lt;/result&gt;
+</output>
+  </base>
+  <base type="fail">
+    <arg>(&quot;&lt;result&gt;&quot;, //section[contains(string(.//title), &quot;is SGML&quot;)], &quot;&lt;/result&gt;&quot;)	</arg>
+    <output>&lt;result&gt;
+&lt;title&gt;What &lt;emph&gt;is&lt;/emph&gt; SGML in the grand scheme of the universe, anyway?&lt;/title&gt;
+&lt;title&gt;How is SGML and would you recommend it to your grandmother?&lt;/title&gt;
+&lt;/result&gt;
+</output>
+  </base>
+  <base type="fail">
+    <arg>(&quot;&lt;result&gt;&quot;, //section[contains(.//title/text(), &quot;is SGML&quot;)], &quot;&lt;/result&gt;&quot;)	</arg>
+    <output>&lt;result&gt;
+&lt;title&gt;How is SGML and would you recommend it to your grandmother?&lt;/title&gt;
+&lt;/result&gt;
+</output>
+  </base>
+  <base comment="DTD needs to be ported to XML Schema" type="pass">
+    <arg>(&quot;&lt;result&gt;&quot;, (for $id in //xref/@xrefid return //topic[@topicid = $id]), &quot;&lt;/result&gt;&quot;) </arg>
+    <output>&lt;result&gt;
+&lt;topic topicid=&quot;top4&quot;&gt;
+&lt;title&gt;Structure&lt;/title&gt;
+&lt;para security=&quot;u&quot;&gt;At the heart of an SGML application is a file called the DTD, or
+Document Type Definition. The DTD sets up the structure of a document,
+much like a database schema describes the types of information it
+handles.&lt;/para&gt;
+&lt;para security=&quot;u&quot;&gt;A database schema also defines the relationships between the
+various types of data. Similarly, a DTD specifies &lt;emph&gt;rules&lt;/emph&gt;
+to help ensure documents have a consistent, logical structure.&lt;/para&gt;&lt;/topic&gt;
+&lt;/result&gt;
+</output>
+  </base>
+  <base comment="DTD needs to be ported to XML Schema" type="fail">
+    <arg>(&quot;&lt;result&gt;&quot;, for $x in //xref[@xrefid = &quot;top4&quot;], $t in //title[. &lt;&lt; $x] return //title[. &lt;&lt; //xref[@xrefid = &quot;top4&quot;]][last()], &quot;&lt;/result&gt;&quot;)	</arg>
+    <output>&lt;result&gt;
+&lt;title&gt;Content&lt;/title&gt;
+&lt;/result&gt;
+</output>
+  </base>
+</test>

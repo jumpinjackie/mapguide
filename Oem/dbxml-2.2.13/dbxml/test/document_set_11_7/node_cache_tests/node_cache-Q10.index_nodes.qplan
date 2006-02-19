@@ -1,0 +1,33 @@
+<XQuery>
+  <Operator name="is">
+    <Navigation>
+      <QueryPlanFunction result="collection" container="11.7.4.dbxml">
+        <OQPlan>n(P(node-element-equality-string,prefix,foo),V(node-element-equality-decimal,id,=,'13'))</OQPlan>
+      </QueryPlanFunction>
+      <Step axis="descendant" name="id" nodeType="element">
+        <OQPlan>V(node-element-equality-decimal,id,=,'13')</OQPlan>
+      </Step>
+      <DbXmlCompare name="equal">
+        <Sequence>
+          <AnyAtomicTypeConstructor value="13" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+        </Sequence>
+      </DbXmlCompare>
+      <Step axis="following-sibling" name="foo" nodeType="element">
+        <OQPlan>P(node-element-equality-string,prefix,foo)</OQPlan>
+      </Step>
+    </Navigation>
+    <Navigation>
+      <QueryPlanFunction result="collection" container="11.7.4.dbxml">
+        <OQPlan>P(node-element-equality-string,prefix,foo)</OQPlan>
+      </QueryPlanFunction>
+      <Step axis="descendant" name="foo" nodeType="element">
+        <OQPlan>P(node-element-equality-string,prefix,foo)</OQPlan>
+      </Step>
+      <Predicates>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="3" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+        </Sequence>
+      </Predicates>
+    </Navigation>
+  </Operator>
+</XQuery>

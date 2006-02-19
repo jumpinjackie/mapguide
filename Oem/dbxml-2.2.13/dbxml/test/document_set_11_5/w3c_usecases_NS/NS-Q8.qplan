@@ -1,0 +1,69 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q8" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Attributes>
+      <DOMConstructor type="attribute">
+        <Name>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="xmlns:xlink" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Name>
+        <Children>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="http://www.w3.org/1999/xlink" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Children>
+      </DOMConstructor>
+      <DOMConstructor type="attribute">
+        <Name>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="xmlns:eachbay" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Name>
+        <Children>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="http://www.example.com/auctioneers#eachbay" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Children>
+      </DOMConstructor>
+      <DOMConstructor type="attribute">
+        <Name>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="xmlns:ma" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Name>
+        <Children>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="http://www.example.com/AuctionWatch" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Children>
+      </DOMConstructor>
+    </Attributes>
+    <Children>
+      <Navigation>
+        <QueryPlanFunction result="document" container="11.5.1.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'auction.xml',U)</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="descendant" uri="http://www.example.com/AuctionWatch" name="Trading_Partners" nodeType="element"/>
+        <Operator name="union">
+          <Step axis="child" uri="http://www.example.com/AuctionWatch" name="Seller" nodeType="element"/>
+          <Step axis="child" uri="http://www.example.com/AuctionWatch" name="High_Bidder" nodeType="element"/>
+        </Operator>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="child" uri="*" name="NegativeComments" nodeType="element"/>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="0" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </Children>
+  </DOMConstructor>
+</XQuery>

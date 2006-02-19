@@ -1,0 +1,14 @@
+// soreduce.mpc,v 1.2 2003/08/29 19:58:15 dhinton Exp
+
+project(soreduce) : aceexe {
+  exename = soreduce
+  Source_Files {
+    Signature.cpp
+    Sig_List.cpp
+    Obj_Module.cpp
+    Library.cpp
+    SO_Group.cpp
+    soreduce.cpp
+  }
+}
+

@@ -1,0 +1,15 @@
+/** END CONFIG.H **/
+
+/* Note that by placing END CONFIG.H above this line, none of the
+following is merged into Pathan.hpp */
+
+/* UNIX compilers in general do not require explicit
+exportation/importation of symbols */
+
+#define PATHAN_EXPORT
+
+#ifndef NULL
+#define NULL 0
+#endif
+
+#endif

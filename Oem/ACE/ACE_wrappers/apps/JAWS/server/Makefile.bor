@@ -1,0 +1,20 @@
+#
+# Makefile.bor,v 1.3 2003/12/21 10:14:16 jwillemsen Exp
+#
+
+NAME = main
+OBJFILES = \
+	$(OBJDIR)\HTTP_Server.obj \
+	$(OBJDIR)\HTTP_Config.obj \
+	$(OBJDIR)\HTTP_Handler.obj \
+	$(OBJDIR)\HTTP_Helpers.obj \
+	$(OBJDIR)\JAWS_Pipeline.obj \
+	$(OBJDIR)\JAWS_Concurrency.obj \
+	$(OBJDIR)\HTTP_Request.obj \
+	$(OBJDIR)\HTTP_Response.obj \
+	$(OBJDIR)\Parse_Headers.obj \
+	$(OBJDIR)\IO.obj \
+   $(OBJDIR)\main.obj
+
+!include <$(ACE_ROOT)\apps\build.bor>
+

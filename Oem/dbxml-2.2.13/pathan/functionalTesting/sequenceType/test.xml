@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rootElement xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:foo='foofoo' xsi:noNamespaceSchemaLocation='test.xsd' xsi:namespaceSchemaLocation="foofoo foo.xsd">
+  <emptySection/>
+  <noOccurrenceIndicator>42.42</noOccurrenceIndicator>
+  <occurrenceIndicatorIsMin1Max3>42.42</occurrenceIndicatorIsMin1Max3>
+  <occurrenceIndicatorIsMin1Max3>24</occurrenceIndicatorIsMin1Max3>
+  <potentiallyEmptySection/>
+  <zeroOrOne>enervate</zeroOrOne>
+  <zeroOrMore>burgeon</zeroOrMore>
+  <oneOrMore>misogynist</oneOrMore>
+  <?testing how PIs can be queried  ?>
+  <secondSection>
+    <firstElement>banal</firstElement>
+    <secondElement>pulchritude</secondElement>
+  </secondSection>
+  <!-- This is a comment -->
+  <shoes>
+    <shoeSize>12.34</shoeSize>
+  </shoes>
+  <any>panegyric</any>
+  <elementWithAttribute attribute="lugubrious" />
+  <foo:strElement>just a string</foo:strElement>
+  <numElement xmlns="foofoo">8.4</numElement>
+</rootElement>

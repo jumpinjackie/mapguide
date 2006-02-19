@@ -1,0 +1,6 @@
+// -*- MPC -*-
+// ciaoversion.mpb,v 1.7 2003/12/30 15:18:22 dhinton Exp
+
+project {
+  version = 0.3.6
+}

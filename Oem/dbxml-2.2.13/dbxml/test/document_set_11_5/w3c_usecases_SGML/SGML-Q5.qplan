@@ -1,0 +1,29 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <Navigation>
+        <QueryPlanFunction result="document" container="11.5.5.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',V(edge-attribute-equality-string,para.@security,=,'c'))</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="descendant" name="para" nodeType="element">
+          <OQPlan>V(edge-attribute-equality-string,para.@security,=,'c')</OQPlan>
+        </Step>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="attribute" name="security" nodeType="attribute"/>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="c" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </Children>
+  </DOMConstructor>
+</XQuery>

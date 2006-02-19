@@ -1,0 +1,23 @@
+<XQuery>
+  <Navigation>
+    <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+      <OQPlan>n(V(node-element-equality-string,first_name,=,'Ben'),P(node-element-equality-string,prefix,name))</OQPlan>
+    </QueryPlanFunction>
+    <Step axis="child" name="catalog" nodeType="element"/>
+    <Step axis="child" name="item" nodeType="element"/>
+    <DbXmlFilter>
+      <Navigation>
+        <Step axis="child" name="authors" nodeType="element"/>
+        <Step axis="child" name="author" nodeType="element"/>
+        <Step axis="child" name="name" nodeType="element"/>
+        <Step axis="child" name="first_name" nodeType="element"/>
+        <DbXmlCompare name="equal">
+          <Sequence>
+            <AnyAtomicTypeConstructor value="Ben" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </DbXmlCompare>
+      </Navigation>
+    </DbXmlFilter>
+    <Step axis="child" name="title" nodeType="element"/>
+  </Navigation>
+</XQuery>

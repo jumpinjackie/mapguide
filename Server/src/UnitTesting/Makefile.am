@@ -1,0 +1,66 @@
+AUTOMAKE_OPTIONS = foreign
+
+EXTRA_DIST = UnitTesting.vcproj UnitTesting.rc
+
+prefix=@prefix@/server
+
+INCLUDES = \
+  -I../../../Oem/ACE/ACE_wrappers \
+  -I../../../Oem/CppUnit-1.9.14/include \
+  -I../../../Common/Service \
+  -I../../../Common/Service/CoordinateSystem \
+  -I../../../Common/Service/Services \
+  -I../../../Common/Service/System \
+  -I../../../Common/Service/Geometry \
+  -I../../../Common/Service/Geometry/Buffer \
+  -I../../../Common/Service/MapLayer \
+  -I../Common \
+  -I../Common/Manager \
+  -I../Services/Feature \
+  -I../Services/Mapping \
+  -I../Services/Rendering \
+  -I../Services/Resource \
+  -I../Services/ServerAdmin \
+  -I../Services/Site \
+  -I../Services/Tile \
+  -I$(map_fdo_include)
+
+check_LTLIBRARIES = libMgUnitTesting.la
+
+libMgUnitTesting_la_SOURCES = \
+  TestCoordinateSystem.cpp \
+  TestFeatureService.cpp \
+  TestGeometry.cpp\
+  TestLogManager.cpp \
+  TestLogManagerThread.cpp \
+  TestMappingService.cpp \
+  TestRenderingService.cpp \
+  TestResourceService.cpp \
+  TestServerAdminService.cpp \
+  TestServerManager.cpp \
+  TestServiceManager.cpp \
+  TestSiteService.cpp \
+  TestTileService.cpp \
+  UnitTesting.cpp
+
+noinst_HEADERS = \
+  CppUnitExtensions.h \
+  TestCoordinateSystem.h \
+  TestFeatureService.h \
+  TestGeometry.h \
+  TestLogManager.h \
+  TestLogManagerThread.h \
+  TestMappingService.h \
+  TestRenderingService.h \
+  TestResourceService.h \
+  TestServerAdminService.h \
+  TestServerManager.h \
+  TestServiceManager.h \
+  TestSiteService.h \
+  TestTileService.h \
+  UnitTesting.h
+
+libMgUnitTesting_la_LIBADD = -lcppunit
+
+libMgUnitTesting_la_LDFLAGS = -rpath /createshared -version-info 7:0:0 \
+  -L../../../Oem/CppUnit-1.9.14/src/cppunit

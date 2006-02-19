@@ -1,0 +1,4 @@
+README,v 1.2 2002/05/08 21:54:08 nanbor Exp
+
+This directory implement a DLL that contains the parser for XML based
+service configurator.

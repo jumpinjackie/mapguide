@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// ftserverorb.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+project : ftorbutils {
+  after     += FT_ServerORB 
+  libs      += TAO_FT_ServerORB 
+  comps     += FT_ServerORB 
+  tagchecks += FT_ServerORB 
+}

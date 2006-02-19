@@ -1,0 +1,3 @@
+child::para[position()=last()-1] selects the last but one para child of the context node
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="para2" type="warning"/>

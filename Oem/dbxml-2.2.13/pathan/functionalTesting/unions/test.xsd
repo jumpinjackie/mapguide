@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema elementFormDefault='unqualified' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:foo='foofoo'>
+
+  <xs:simpleType name="guns">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value = "Pistol" />
+      <xs:enumeration value = "Rifle" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="poison">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value = "Cyanide" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="coldness">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value = "Icy Stream" />
+      <xs:enumeration value = "Russian Air" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="sharpObjects">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value = "dagger" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="heavyObjects">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value = "car" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="union.methodsUsedToKillRasputin">
+    <xs:union memberTypes="guns poison coldness sharpObjects heavyObjects" />
+  </xs:simpleType>
+
+  <xs:element name="container">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="methodUsedToKillRasputin" type="union.methodsUsedToKillRasputin" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
