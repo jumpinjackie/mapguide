@@ -15,18 +15,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _UNITTESTING_H
-#define _UNITTESTING_H
+#include "stdafx.h"
 
-#include <fstream>
-#include <iostream>
-
-#ifdef WIN32
-#define UNITTESTING_EXPORT __declspec(dllexport)
-#else
-#define UNITTESTING_EXPORT
-#endif
-
-extern "C" UNITTESTING_EXPORT int Execute(CREFSTRING fileName);
-
-#endif // _UNITTESTING_H
+BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+{
+    switch (ul_reason_for_call)
+    {
+    case DLL_PROCESS_ATTACH:
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+        break;
+    }
+    return TRUE;
+}
