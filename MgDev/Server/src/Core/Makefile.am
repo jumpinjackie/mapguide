@@ -109,7 +109,6 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -R$(map_srcdir)/Server/src/Services/Site/.libs \
   -R$(map_srcdir)/Server/src/Services/Tile/.libs \
   -R$(map_srcdir)/Server/src/$(map_unittesting_dir)/.libs \
-  -R$(map_srcdir)/Server/src/FdoUnitTesting/.libs \
   -L$(map_fdo_lib) \
   -L../../../Oem/ACE/ACE_wrappers/ace \
   -L../../../Oem/DWFTK7.1/develop/global/src/dwfcore \
