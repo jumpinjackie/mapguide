@@ -1,10 +1,10 @@
 #------------------configure.in----------------------------------------
-dnl Configure.in for MapGuide Enterprise Server 
+dnl Configure.in for MapGuide Open Source 
 #----------------------------------------------------------------------
 # Variables
 # Following are the makefile directories 
 #----------------------------------------------------------------------
-AC_INIT(mapguide,1.0.0,http://www.autodesk.com)
+AC_INIT(mapguide,1.0.0,http://www.mapguide.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 

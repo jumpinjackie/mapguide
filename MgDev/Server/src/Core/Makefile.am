@@ -332,7 +332,7 @@ install-data-hook:
 	@echo '  <FeatureProvider>' >> $(fdodir)/providers.xml
 	@echo '    <Name>OSGeo.SDF.3.0</Name>' >> $(fdodir)/providers.xml
 	@echo '    <DisplayName>OSGeo FDO Provider for SDF</DisplayName>' >> $(fdodir)/providers.xml
-	@echo '    <Description>Read/write access to Autodesk's spatial database format, a file-based personal geodatabase that supports multiple features/attributes, spatial indexing, and file-locking.</Description>' >> $(fdodir)/providers.xml
+	@echo '    <Description>Read/write access to Autodesk spatial database format, a file-based personal geodatabase that supports multiple features/attributes, spatial indexing, and file-locking.</Description>' >> $(fdodir)/providers.xml
 	@echo '    <IsManaged>False</IsManaged>' >> $(fdodir)/providers.xml
 	@echo '    <Version>3.0.0.0</Version>' >> $(fdodir)/providers.xml
 	@echo '    <FeatureDataObjectsVersion>3.0.0.0</FeatureDataObjectsVersion>' >> $(fdodir)/providers.xml
