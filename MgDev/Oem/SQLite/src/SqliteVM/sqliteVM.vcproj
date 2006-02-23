@@ -20,7 +20,7 @@
 			IntermediateDirectory="..\..\obj\win32\debug\SqliteVM"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -40,17 +40,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\SQLite3;..\Exceptions;..\SqliteVM;..\..\..\..\Common\MdfModel"
-				PreprocessorDefinitions="WIN32;_DEBUG;MDFMODEL_EXPORTS"
+				AdditionalIncludeDirectories="..\SQLite3;..\Exceptions;..\SqliteVM;..\Unicode"
+				PreprocessorDefinitions="SQLITE_EXPORTS;WIN32;_DEBUG"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -87,7 +85,7 @@
 			IntermediateDirectory="..\..\obj\win32\release\SqliteVM"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -106,11 +104,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\SQLite3;..\Exceptions;..\SqliteVM;..\..\..\..\Common\MdfModel"
-				PreprocessorDefinitions="SQLITE_EXPORTS;WIN32;MDFMODEL_EXPORTS"
+				AdditionalIncludeDirectories="..\SQLite3;..\Exceptions;..\SqliteVM;..\Unicode"
+				PreprocessorDefinitions="SQLITE_EXPORTS;WIN32"
 				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -152,19 +148,19 @@
 			Name="Unicode"
 			>
 			<File
-				RelativePath="..\..\..\..\Common\MdfModel\ConvertUTF.c"
+				RelativePath="..\Unicode\ConvertUTF.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\Common\MdfModel\ConvertUTF.h"
+				RelativePath="..\Unicode\ConvertUTF.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\Common\MdfModel\UnicodeString.cpp"
+				RelativePath="..\Unicode\UnicodeString.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\Common\MdfModel\UnicodeString.h"
+				RelativePath="..\Unicode\UnicodeString.h"
 				>
 			</File>
 		</Filter>
@@ -297,6 +293,10 @@
 			</File>
 			<File
 				RelativePath=".\SqliteDB.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLiteDefs.h"
 				>
 			</File>
 			<File

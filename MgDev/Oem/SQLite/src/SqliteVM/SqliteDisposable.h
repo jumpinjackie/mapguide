@@ -1,8 +1,5 @@
-#ifndef _SqliteDisposable_H_
-#define _SqliteDisposable_H_
-
 //
-//  Copyright (C) 2004-2005  Autodesk, Inc.
+//  Copyright (C) 2004-2006  Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -18,10 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// <library>CoreData.lib</library>
-
-/// <summary>IDisposable is the base interface for all classes that implement this
-/// standard interface for reference counting and object destruction.</summary>
+#ifndef _SqliteDisposable_H_
+#define _SqliteDisposable_H_
 
 class SqliteDisposable
 {
@@ -55,7 +50,6 @@ protected:
     SqliteDisposable();
 
 private:
-
     INT32 m_refCount;
 };
 

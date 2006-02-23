@@ -20,7 +20,7 @@
 			IntermediateDirectory="..\..\obj\win32\debug\SQLiteUnitTest"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -40,17 +40,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\SQLite3;..\Exceptions;..\..\..\..\Common\Service;..\SqliteVM;&quot;..\..\..\..\oem\CppUnit-1.9.14\include&quot;"
+				AdditionalIncludeDirectories="..\SQLite3;..\Exceptions;..\SqliteVM;&quot;..\..\..\..\oem\CppUnit-1.9.14\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -103,7 +101,7 @@
 			IntermediateDirectory="..\..\obj\win32\release\SQLiteUnitTests"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -122,7 +120,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\SQLite3;..\Exceptions;..\..\..\..\Common\Service;..\SqliteVM;&quot;..\..\..\..\oem\CppUnit-1.9.14\include&quot;"
+				AdditionalIncludeDirectories="..\SQLite3;..\Exceptions;..\SqliteVM;&quot;..\..\..\..\oem\CppUnit-1.9.14\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"

@@ -21,7 +21,7 @@
 			IntermediateDirectory="..\..\obj\win32\debug\SqliteDotNet"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			ManagedExtensions="4"
 			>
 			<Tool
@@ -43,13 +43,11 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zl"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\sqliteVM;..\..\..\..\common\service;..\Exceptions;..\sqlite3"
+				AdditionalIncludeDirectories="..\sqliteVM;..\Exceptions;..\sqlite3"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -67,10 +65,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="mscoree.lib msvcmrtd.lib"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				EntryPointSymbol=""
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -103,7 +102,7 @@
 			IntermediateDirectory="..\..\obj\win32\release\SqliteDotNet"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			ManagedExtensions="4"
 			>
 			<Tool
@@ -125,12 +124,10 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zl"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\sqliteVM;..\..\..\..\common\service;..\Exceptions;..\sqlite3"
+				AdditionalIncludeDirectories="..\sqliteVM;..\Exceptions;..\sqlite3"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -147,7 +144,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="mscoree.lib ACE.lib msvcmrt.lib"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories=""
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
