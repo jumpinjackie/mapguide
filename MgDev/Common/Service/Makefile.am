@@ -404,7 +404,6 @@ noinst_HEADERS = $(include_SOURCES) \
   CoordinateSystem/CoordinateSystemMeasure.h \
   CoordinateSystem/CoordinateSystemTransform.h \
   CoordinateSystem/CoordinateSystemType.h \
-  CoordinateSystem/stdafx.h \
   Data/BatchPropertyCollection.h \
   Data/BlobProperty.h \
   Data/BooleanProperty.h \
