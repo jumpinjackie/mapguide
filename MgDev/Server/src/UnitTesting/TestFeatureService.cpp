@@ -1260,14 +1260,13 @@ void TestFeatureService::TestCase_JoinFeatures()
         bool bIsNullResult = reader->IsNull(L"Join1NAME");
         STRING s = reader->GetString(L"NAME");
         STRING s2 = reader->GetString(L"Join1NAME");
-        INT32 n = reader->GetInt32(L"Join1FeatId");
+        STRING s3 = reader->GetString(L"Join1ID");
 
         CPPUNIT_ASSERT(bReadNextResult);
         CPPUNIT_ASSERT(bIsNullResult == false);
-        //CPPUNIT_ASSERT(s == L"South Africa");
-        CPPUNIT_ASSERT(s == L"Botswana");
-        CPPUNIT_ASSERT(s2 == L"British Columbia");
-        CPPUNIT_ASSERT(n == 3);
+        CPPUNIT_ASSERT(s == L"NIEMUTH, ROGER L.");
+        CPPUNIT_ASSERT(s2 == L"Wells Fargo");
+        CPPUNIT_ASSERT(s3 == L"10573");
 
     }
     catch(MgException* e)
