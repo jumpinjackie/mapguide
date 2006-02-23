@@ -23,8 +23,7 @@ INCLUDEPATH = ../Exceptions \
               ../../../../Oem/php/TSRM \
               ../../../../Oem/php/Zend \
               ../../../../Oem/php/main \
-              ../../../../Oem/php \
-              ../../../../Common/ServiceAPI/src/Common/Util
+              ../../../../Oem/php
 
 #########################################
 #                                       #

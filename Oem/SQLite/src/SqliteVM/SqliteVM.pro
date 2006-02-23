@@ -53,7 +53,6 @@ SOURCES += ../SQLite3/attach.c \
            SqliteDisposable.cpp \
            SqliteVM.cpp
 
-
 HEADERS += ../SQLite3/btree.h \
            ../SQLite3/config.h \
            ../SQLite3/hash.h \
@@ -90,12 +89,12 @@ HEADERS += ../SQLite3/btree.h \
            SQLiteDefs.h \
            SqliteDisposable.h \
            SqliteVM.h \
-           SqliteWrap.h  \
+           SqliteWrap.h
 
 INCLUDEPATH = ../Exceptions \
               ../SQLite3 \
               ../SqliteVM \
-              ../../../../Common/ServiceAPI/src/Common/Util
+              ../Unicode
 
 #########################################
 #                                       #

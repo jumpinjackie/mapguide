@@ -4,6 +4,5 @@ CONFIG += warn_on \
           exceptions \
           rtti
           
-SUBDIRS += ../../../Common/ServiceAPI/src/Common \
-           ./SqliteVM \
+SUBDIRS += ./SqliteVM \
            ./SQLitePhpApi
