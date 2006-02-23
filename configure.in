@@ -321,8 +321,7 @@ AC_CONFIG_FILES([Server/Makefile \
 		Server/src/Services/Rendering/Makefile \
 		Server/src/Services/ServerAdmin/Makefile \
 		Server/src/Services/Tile/Makefile \
-		Server/src/Core/Makefile \
-		Server/src/FdoUnitTesting/Makefile])
+		Server/src/Core/Makefile])
 if test $map_using_proj4 = "yes"; then 
   AC_CONFIG_FILES([Server/src/UnitTesting/Makefile])
 else
