@@ -592,10 +592,13 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
 
                 //fill out the output object with the info we collected
                 //in the FeatureInfoRenderer for the first feature we hit
-                Ptr<MgPropertyCollection> props = fir.GetProperties();
-                ret->SetProperties(props);
-                ret->SetHyperlink(fir.GetUrl());
-                ret->SetTooltip(fir.GetTooltip());
+                if (fir.GetNumFeaturesProcessed() > 0)
+                {
+                    Ptr<MgPropertyCollection> props = fir.GetProperties();
+                    ret->SetProperties(props);
+                    ret->SetHyperlink(fir.GetUrl());
+                    ret->SetTooltip(fir.GetTooltip());
+                }
 
                 //update maxFeatures to number of features that
                 //we can select from subsequent layers
