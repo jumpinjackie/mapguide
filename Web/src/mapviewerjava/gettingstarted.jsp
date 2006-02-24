@@ -125,11 +125,11 @@ String FixupPageReferences(String html, String webLayout, boolean dwf, String vp
                 i = j + 5;
             res.append(html.substring(index, i));
             if(htmlRef) {
-                if(!html.substring(i, i+11).equals("javascript:"))
+                if(FixupRequired(html, i))
                     res.append(htmlPrefix);
             }
             else {
-                if(!html.substring(i, i + 7).equals("http://")) //link to external pages appears as image/style/script link because the href attribute is not as the same location in the link tag as for internal links
+                if(FixupRequired(html, i))
                     res.append(imgSrcPrefix);
             }
             index = i;
@@ -137,6 +137,11 @@ String FixupPageReferences(String html, String webLayout, boolean dwf, String vp
     } while(found);
     res.append(html.substring(index));
     return res.toString();
+}
+
+boolean FixupRequired(String html, int refIndex) {
+    return !html.substring(refIndex, refIndex + 7).equals("http://") && 
+           !html.substring(refIndex, refIndex + 11).equals("javascript:");
 }
 
 %>
