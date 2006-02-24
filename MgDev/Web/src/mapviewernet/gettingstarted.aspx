@@ -124,8 +124,10 @@ String FixupPageReferences(String html, String webLayout, bool dwf, String vpath
                 if(html.Substring(i, 11) != "javascript:")
                     res.Append(htmlPrefix);
             }
-            else
-                res.Append(imgSrcPrefix);
+            else {
+                if(html.Substring(i, 7) != "http://") //link to external pages appears as image/style/script link because the href attribute is not as the same location in the link tag as for internal links
+                    res.Append(imgSrcPrefix);
+            }
             index = i;
         }
     } while(found);

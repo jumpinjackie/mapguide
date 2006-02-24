@@ -133,8 +133,10 @@ function FixupPageReferences($html, $webLayout, $dwf, $vroot, $locale) {
                 if(substr($html, $i, 11) != "javascript:")
                     $res = $res . $htmlPrefix;
             }
-            else
-                $res = $res . $imgScrPrefix;
+            else {
+                if(substr($html, $i, 7) != "http://") //link to external pages appears as image/style/script link because the href attribute is not as the same location in the link tag as for internal links
+                    $res = $res . $imgScrPrefix;
+            }
             $index = $i;
         }
     } while($found);
