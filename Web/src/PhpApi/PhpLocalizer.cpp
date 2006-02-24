@@ -41,6 +41,7 @@ PSTRBUNDLE GetStringBundle(string& locale_)
     if (it == languages.end()) {
         FILE* f = NULL;
         string fname = localizationPath + locale;
+        f = fopen(fname.c_str(), "r");
         if(f == NULL) {  // assume file doesn't exists
             // requested locale is not supported, default to English
             it = languages.find(english);
@@ -139,4 +140,3 @@ static char* GetLocalizedString(const char* id_, const char* locale_)
         return estrdup("");
     return estrdup(it->second.c_str());
 }
-
