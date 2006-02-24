@@ -159,8 +159,8 @@ try
     if(ptCenter != null)
     {
         MgCoordinate coord = ptCenter.GetCoordinate();
-        Object[] formatArgs = { new Double(coord.GetX()), new Double(coord.GetY()) };
-        center = MessageFormat.format("new Point({0,number}, {1,number})", formatArgs);
+        Object[] formatArgs = { Double.toString(coord.GetX()), Double.toString(coord.GetY()) };
+        center = MessageFormat.format("new Point({0}, {1})", formatArgs);
     }
 
     //Process commands and declare command objects
