@@ -20,6 +20,7 @@ static string cppInline;
 static string swigInline;
 static string typedefs;
 static string nameSpace;
+static string package;
 static map<string, string> typeReplacements;
 static map<string, bool> classes;
 static vector<string> headers;
@@ -154,6 +155,12 @@ string parseNamespace(XNode* elt)
     return text;
 }
 
+string parsePackage(XNode* elt)
+{
+    string text = Trim(elt->GetText());
+    return text;
+}
+
 void parseParameterFile(char* xmlDef)
 {
 	XNode xml;
@@ -237,6 +244,12 @@ void parseParameterFile(char* xmlDef)
             if(!translateMode)
                 error("Namespace is not a valid section in SWIG generation mode");
             nameSpace = parseNamespace(node);
+        }
+        else if(node->name == "Package")
+        {
+            if(!translateMode)
+                error("Package is not a valid section in SWIG generation mode");
+            package = parsePackage(node);
         }
         else
         {
@@ -640,8 +653,8 @@ void processHeaderFile(string header)
                     if(outfile == NULL)
                         error(string("Cannot create java file ") + javaFile);
 
-                    if(nameSpace != "")
-                        fprintf(outfile, "package %s;\n\n", nameSpace.c_str());
+                    if(package != "")
+                        fprintf(outfile, "package %s;\n\n", package.c_str());
                 }
 
                 //in translate mode, pickup the doc comments for the class, if any.

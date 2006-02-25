@@ -31,6 +31,8 @@ PARSEINFO piDefault;
 DISP_OPT optDefault;
 XENTITYS entityDefault((LPXENTITY)x_EntityTable, sizeof(x_EntityTable)/sizeof(x_EntityTable[0]) );
 
+static XNodes::iterator emptyNodesIterator;
+static XAttrs::iterator emptyAttrsIterator;
 
 const char* _tcschrs( const char* psz, const char* pszchs )
 {
@@ -1102,7 +1104,7 @@ XNodes::iterator _tagXMLNode::GetChildIterator( LPXNode node )
 		if( *it == node )
 			return it;
 	}
-	return (XNodes::iterator)NULL;
+	return emptyNodesIterator;
 }
 
 LPXNode	_tagXMLNode::AppendChild( const char* name /*= NULL*/, const char* value /*= NULL*/ )
@@ -1121,7 +1123,7 @@ LPXNode _tagXMLNode::AppendChild( LPXNode node )
 bool _tagXMLNode::RemoveChild( LPXNode node )
 {
 	XNodes::iterator it = GetChildIterator( node );
-	if( it != (XNodes::iterator)NULL)
+	if(*it != NULL)
 	{
 		delete *it;
 		childs.erase( it );
@@ -1145,7 +1147,7 @@ XAttrs::iterator _tagXMLNode::GetAttrIterator( LPXAttr attr )
 		if( *it == attr )
 			return it;
 	}
-	return (XAttrs::iterator)NULL;
+	return emptyAttrsIterator;
 }
 
 LPXAttr _tagXMLNode::AppendAttr( LPXAttr attr )
@@ -1158,7 +1160,7 @@ LPXAttr _tagXMLNode::AppendAttr( LPXAttr attr )
 bool _tagXMLNode::RemoveAttr( LPXAttr attr )
 {
 	XAttrs::iterator it = GetAttrIterator( attr );
-	if(it != (XAttrs::iterator)NULL)
+	if(*it != NULL)
 	{
 		delete *it;
 		attrs.erase( it );
@@ -1191,7 +1193,7 @@ LPXAttr _tagXMLNode::AppendAttr( const char* name /*= NULL*/, const char* value 
 LPXNode _tagXMLNode::DetachChild( LPXNode node )
 {
 	XNodes::iterator it = GetChildIterator( node );
-	if( it != (XNodes::iterator)NULL)
+	if(*it != NULL)
 	{
 		childs.erase( it );
 		return node;
@@ -1202,7 +1204,7 @@ LPXNode _tagXMLNode::DetachChild( LPXNode node )
 LPXAttr _tagXMLNode::DetachAttr( LPXAttr attr )
 {
 	XAttrs::iterator it = GetAttrIterator( attr );
-	if(it != (XAttrs::iterator)NULL)
+	if(*it != NULL)
 	{
 		attrs.erase( it );
 		return attr;

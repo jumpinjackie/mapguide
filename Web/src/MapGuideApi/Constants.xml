@@ -59,6 +59,7 @@
 </Inline>
 
 <Namespace>OSGeo.MapGuide</Namespace>
+<Package>org.osgeo.mapguide</Package>
 
 <Classes>
   <Class name="MgServiceType" />
