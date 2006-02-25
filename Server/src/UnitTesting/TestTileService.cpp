@@ -121,7 +121,7 @@ void TestTileService::TestStart()
         Ptr<MgByteReader> dataReader2 = dataSource2->GetReader();
         m_svcResource->SetResourceData(fsres2, L"UT_Parcels.sdf", L"File", dataReader2);
 
-        Ptr<MgByteSource> dataSource3 = new MgByteSource(L"../UnitTestFiles/UT_Votingdistricts.sdf", false);
+        Ptr<MgByteSource> dataSource3 = new MgByteSource(L"../UnitTestFiles/UT_VotingDistricts.sdf", false);
         Ptr<MgByteReader> dataReader3 = dataSource3->GetReader();
         m_svcResource->SetResourceData(fsres3, L"UT_VotingDistricts.sdf", L"File", dataReader3);
 
