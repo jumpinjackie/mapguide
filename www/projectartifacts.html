@@ -5,53 +5,121 @@
 <title>MapGuide Open Source - Project Artifacts</title>
 </head>
 <body>
-<h1>MapGuide Open Source - Issue Lifecycle</h1>
+<h1>MapGuide Open Source - Project Artifacts</h1>
 
 <div class="h2">
 <h2>Defect Artifact Type</h2>
-Defect artifacts track the status of a bug.
+Defect artifacts are used to record and track bugs in an existing component or feature.
 <table width="100%">
   <tr>
     <th scope="col">Attribute</th>
     <th scope="col">Description</th>
   </tr>
-  <tr class="b">
+  <tr class="a">
     <td colspan="2">Synopsis Group </td>
   </tr>
-  <tr class="a">
+  <tr class="b">
   	<td>Summary</td>
-	<td>Brief one line description of the artifact."</td>
-  </tr>
-  <tr class="a">
-  	<td>Defect Severity</td>
-	<td>Severity of the defect, one of: Critical, High, Medium, or Low."</td>
+	<td>Brief one line description of the artifact.</td>
   </tr>
   <tr class="b">
+  	<td>Defect Severity</td>
+	<td>Severity of the defect, one of: Critical, High, Medium, or Low.</td>
+  </tr>
+  <tr class="a">
     <td colspan="2">Details Group</td>
   </tr>
   <tr class="b">
+  	<td>Description</td>
+	<td>Detailed description of the artifact.</td>
+  </tr>
+  <tr class="b">
+  	<td>Steps to Reproduce</td>
+	<td>Step by step instructions describing how to repoduce the defect.</td>
+  </tr>
+  <tr class="b">
+  	<td>Version</td>
+	<td>Version of the product this artifact was logged against.</td>
+  </tr>
+  <tr class="b">
+  	<td>Component</td>
+	<td>The component this artifact affects. See the Components table for a list of the possible values. </td>
+  </tr>
+  <tr class="b">
+  	<td>Subcomponent</td>
+	<td>The subcomponent this artifact affects. See the Components table for a list of the possible values.</td>
+  </tr>
+  <tr class="b">
+  	<td>Platform</td>
+	<td>Platform associated with this artifact.</td>
+  </tr>
+  <tr class="b">
+  	<td>Operating System</td>
+	<td>Operating System associated with this artifact.</td>
+  </tr>
+  <tr class="b">
+  	<td>OS Distribution and Version</td>
+	<td>Particular distribution and version of the operating system associated with this artifact.</td>
+  </tr>
+  <tr class="a">
     <td colspan="2">Status Group</td>
   </tr>
   <tr class="b">
-    <td colspan="2">Submission Notes</td>
+  	<td>Status</td>
+	<td>Current status of this artifact. See <a href="#">Artifact Lifecycle</a>.</td>
+  </tr>
+  <tr class="b">
+  	<td>Status Explation</td>
+	<td>Explanation of the current artifact status.</td>
+  </tr>
+  <tr class="b">
+  	<td>Target Milestone</td>
+	<td>Planned milestone by which this artifact should be resolved.</td>
+  </tr>
+  <tr class="b">
+  	<td>Resolution</td>
+	<td>How this artifact was resolved. See <a href="#">Artifact Lifecycle</a></td>
+  </tr>
+  <tr class="b">
+  	<td>Resolution Description</td>
+	<td>Description of the resolution to this artifact.</td>
+  </tr>
+  <tr class="b">
+  	<td>Build</td>
+	<td>Build number that includes a resolution for this artifact.</td>
+  </tr>
+  <tr class="b">
+  	<td>Dependent Artifacts</td>
+	<td>Artifacts that must be resolved before this artifact can be resolved.</td>
+  </tr>
+  <tr class="b">
+  	<td>Duplicate Artifacts</td>
+	<td>List of artifacts that are duplicates of this one. Required if the resolution is "Duplicate".</td>
+  </tr>
+  <tr class="b">
+  	<td>External ID</td>
+	<td>External ID that can be used to reference an item in another system that corresponds to this artifact.</td>
   </tr>
   <tr class="a">
+    <td colspan="2">Submission Notes</td>
+  </tr>
+  <tr class="b">
   	<td>Developer Notes</td>
 	<td>Notes about this code submission to developers regarding unit test results, work yet to be done, and/or changes that may affect other developers.</td>
   </tr>
-  <tr class="a">
+  <tr class="b">
   	<td>Testing Notes</td>
 	<td>Notes about this code submission regarding how to test the code and/or regressions that should be run.</td>
   </tr>
-  <tr class="a">
+  <tr class="b">
   	<td>Documentation Notes</td>
 	<td>Notes about this code submission regarding changes that may affect documentation.</td>
   </tr>
-  <tr class="a">
+  <tr class="b">
   	<td>Localization Notes</td>
 	<td>Notes about this code submission regarding changes that may affect localization.</td>
   </tr>
-  <tr class="a">
+  <tr class="b">
   	<td>Integration and Build Notes</td>
 	<td>Notes about this code submission that may affect integration or builds.</td>
   </tr>
@@ -60,15 +128,102 @@ Defect artifacts track the status of a bug.
 </div>
 <div class="h2">
 <h2>Enhancement Artifact Type</h2>
-
+Enhancement artifacts are used to record and track enhancements to an existing component or feature. Enhancements generally require little discussion to define the requirements.
+<table width="100%">
+  <tr>
+    <th scope="col">Attribute</th>
+    <th scope="col">Description</th>
+  </tr>
+  <tr class="a">
+    <td colspan="2">Submission Notes</td>
+  </tr>
+  <tr class="b">
+  	<td>Developer Notes</td>
+	<td>Notes about this code submission to developers regarding unit test results, work yet to be done, and/or changes that may affect other developers.</td>
+  </tr>
+  <tr class="b">
+  	<td>Testing Notes</td>
+	<td>Notes about this code submission regarding how to test the code and/or regressions that should be run.</td>
+  </tr>
+  <tr class="b">
+  	<td>Documentation Notes</td>
+	<td>Notes about this code submission regarding changes that may affect documentation.</td>
+  </tr>
+  <tr class="b">
+  	<td>Localization Notes</td>
+	<td>Notes about this code submission regarding changes that may affect localization.</td>
+  </tr>
+  <tr class="b">
+  	<td>Integration and Build Notes</td>
+	<td>Notes about this code submission that may affect integration or builds.</td>
+  </tr>
+</table>
 </div>
 <div class="h2">
 <h2>Feature Artifact Type</h2>
-
+Feature artifacts are used to record and track the development of new product features. Features generally require significant discussion to define the requirements and the scope of the feature.
+<table width="100%">
+  <tr>
+    <th scope="col">Attribute</th>
+    <th scope="col">Description</th>
+  </tr>
+  <tr class="a">
+    <td colspan="2">Submission Notes</td>
+  </tr>
+  <tr class="b">
+  	<td>Developer Notes</td>
+	<td>Notes about this code submission to developers regarding unit test results, work yet to be done, and/or changes that may affect other developers.</td>
+  </tr>
+  <tr class="b">
+  	<td>Testing Notes</td>
+	<td>Notes about this code submission regarding how to test the code and/or regressions that should be run.</td>
+  </tr>
+  <tr class="b">
+  	<td>Documentation Notes</td>
+	<td>Notes about this code submission regarding changes that may affect documentation.</td>
+  </tr>
+  <tr class="b">
+  	<td>Localization Notes</td>
+	<td>Notes about this code submission regarding changes that may affect localization.</td>
+  </tr>
+  <tr class="b">
+  	<td>Integration and Build Notes</td>
+	<td>Notes about this code submission that may affect integration or builds.</td>
+  </tr>
+</table>
 </div>
 <div class="h2">
 <h2>Task Artifact Type</h2>
 
+<table width="100%">
+  <tr>
+    <th scope="col">Attribute</th>
+    <th scope="col">Description</th>
+  </tr>
+  <tr class="a">
+    <td colspan="2">Submission Notes</td>
+  </tr>
+  <tr class="b">
+  	<td>Developer Notes</td>
+	<td>Notes about this code submission to developers regarding unit test results, work yet to be done, and/or changes that may affect other developers.</td>
+  </tr>
+  <tr class="b">
+  	<td>Testing Notes</td>
+	<td>Notes about this code submission regarding how to test the code and/or regressions that should be run.</td>
+  </tr>
+  <tr class="b">
+  	<td>Documentation Notes</td>
+	<td>Notes about this code submission regarding changes that may affect documentation.</td>
+  </tr>
+  <tr class="b">
+  	<td>Localization Notes</td>
+	<td>Notes about this code submission regarding changes that may affect localization.</td>
+  </tr>
+  <tr class="b">
+  	<td>Integration and Build Notes</td>
+	<td>Notes about this code submission that may affect integration or builds.</td>
+  </tr>
+</table>
 </div>
 </body>
 </html>
