@@ -182,7 +182,17 @@ bool MgWmsLayerDefinitions::GetMetadataDefinitions(MgUtilDictionary& Dictionary)
             STRING sName;
             STRING sValue;
             if(GetElementContents(_("Name"),sName) && GetElementContents(_("Value"),sValue)) {
-                STRING sDefinitionName =  _("Layer.") + sName;
+                STRING sDefinitionName =  _("Layer.");
+                // Present the names slightly differently than internal representation.
+                // System-defined metadata is published with an underscore prefix.  We
+                // publish this without the underscore: "_Bounds" -> "Layer.Bounds".
+                // User-defined metadata will not have the underscore, and we present
+                // this for consumption as "Layer.user.Whatever" -- just to make sure
+                // that the user and system namespaces remain distinct.
+                if(sName[0] == '_')
+                    sDefinitionName += sName.substr(1);
+                else
+                    sDefinitionName += _("user.") + sName;
 
                 //----------------------------------------------------------------------
                 // If it starts and ends with escaped angled brackets, let's assume it's

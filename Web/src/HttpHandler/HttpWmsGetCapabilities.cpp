@@ -91,8 +91,7 @@ void MgHttpWmsGetCapabilities::Execute(MgHttpResponse& hResponse)
 
           // Run API command
         STRING sType = _("LayerDefinition");
-        INT32 keProperties = MgResourceHeaderProperties::General |
-                             MgResourceHeaderProperties::Metadata;
+        INT32 keProperties = MgResourceHeaderProperties::Metadata;
         STRING sDontCare(_(""));
         Ptr<MgByteReader> Result =
               mgprService->EnumerateResources(&mgrIdentifier, // "Library://"

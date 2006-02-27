@@ -471,8 +471,10 @@ void MgOgcWmsServer::ProcedureEnumLayers(MgXmlProcessingInstruction& PIEnum)
 
         m_pLayers->GenerateDefinitions(*m_pTopOfDefinitions);
 
-        if(this->IsIterationInSubset(++iNum,sSubset,_("Layer.iteration")))
-            ProcessExpandableText(sFormat);
+        CPSZ pszIsPublished = this->Definition(_("Layer.IsPublished"));
+        if(pszIsPublished != NULL && SZ_EQ(pszIsPublished,_("1")))
+            if(this->IsIterationInSubset(++iNum,sSubset,_("Layer.iteration")))
+                ProcessExpandableText(sFormat);
     }
 }
 
