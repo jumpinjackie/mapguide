@@ -25,8 +25,12 @@ INT32 MgDisposable::GetRefCount()
     // conditionally acquire the lock
     ACE_Guard<ACE_Recursive_Thread_Mutex> ace_mon(m_dbg_mutex, 0);
 
-    // if this assert fails then this object should be derived from MgGuardDisposable and not MgDisposable
-    assert(ace_mon.locked() != 0);
+    // if this check fails then this object should be derived from MgGuardDisposable and not MgDisposable
+    if (ace_mon.locked() == 0)
+    {
+        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) ************ Concurrent refcount access in MgDisposable::GetRefCount(). Class Name: %W. This object should derive from MgGuardDisposable and not MgDisposable.\n"), GetClassName().c_str()));
+        assert(false);
+    }
 #endif
 
     return m_refCount;
@@ -40,8 +44,12 @@ INT32 MgDisposable::AddRef()
     // conditionally acquire the lock
     ACE_Guard<ACE_Recursive_Thread_Mutex> ace_mon(m_dbg_mutex, 0);
 
-    // if this assert fails then this object should be derived from MgGuardDisposable and not MgDisposable
-    assert(ace_mon.locked() != 0);
+    // if this check fails then this object should be derived from MgGuardDisposable and not MgDisposable
+    if (ace_mon.locked() == 0)
+    {
+        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) ************ Concurrent refcount access in MgDisposable::AddRef(). Class Name: %W. This object should derive from MgGuardDisposable and not MgDisposable.\n"), GetClassName().c_str()));
+        assert(false);
+    }
 #endif
 
     m_refCountFlag = true;
@@ -67,8 +75,12 @@ INT32 MgDisposable::Release()
         // conditionally acquire the lock
         ACE_Guard<ACE_Recursive_Thread_Mutex> ace_mon(m_dbg_mutex, 0);
 
-        // if this assert fails then this object should be derived from MgGuardDisposable and not MgDisposable
-        assert(ace_mon.locked() != 0);
+        // if this check fails then this object should be derived from MgGuardDisposable and not MgDisposable
+        if (ace_mon.locked() == 0)
+        {
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) ************ Concurrent refcount access in MgDisposable::Release(). Class Name: %W. This object should derive from MgGuardDisposable and not MgDisposable.\n"), GetClassName().c_str()));
+            assert(false);
+        }
 #endif
 
         m_refCountFlag = true;
