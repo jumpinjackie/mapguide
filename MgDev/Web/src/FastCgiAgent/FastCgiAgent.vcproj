@@ -224,6 +224,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\FastCgiAgent.rc"
+			>
+		</File>
+		<File
 			RelativePath=".\Product.h"
 			>
 		</File>

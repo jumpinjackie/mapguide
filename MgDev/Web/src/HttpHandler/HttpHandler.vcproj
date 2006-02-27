@@ -2221,6 +2221,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\HttpHandler.rc"
+			>
+		</File>
+		<File
 			RelativePath=".\HttpHandlerApiDllExport.h"
 			>
 		</File>

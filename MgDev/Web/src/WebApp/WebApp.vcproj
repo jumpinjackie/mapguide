@@ -197,6 +197,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\WebApp.rc"
+			>
+		</File>
+		<File
 			RelativePath=".\WebAppBuild.cpp"
 			>
 		</File>

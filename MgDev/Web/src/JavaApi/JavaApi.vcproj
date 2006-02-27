@@ -203,6 +203,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\JavaApi.rc"
+			>
+		</File>
+		<File
 			RelativePath=".\MgApi_wrap.cpp"
 			>
 		</File>
