@@ -209,6 +209,10 @@
 			RelativePath=".\php.i"
 			>
 		</File>
+		<File
+			RelativePath=".\PhpApi.rc"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
