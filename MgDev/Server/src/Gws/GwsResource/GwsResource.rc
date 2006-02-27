@@ -78,8 +78,8 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "Autodesk, Inc."
-            VALUE "FileDescription", "MgGwsResource Dynamic Link Library"
+            VALUE "CompanyName", "Open Source Geospatial Foundation"
+            VALUE "FileDescription", "GwsResource Dynamic Link Library"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "MgGwsResource"
             VALUE "LegalCopyright", "Copyright (C) 2006 Autodesk, Inc."
