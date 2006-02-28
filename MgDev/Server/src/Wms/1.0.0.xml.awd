@@ -6,24 +6,24 @@
   <!-- This defines the format of each individual layer 
       advertised by GetCapabilities                    -->
   <!-- Note: Studio published the following metadata fields                                -->
-  <!-- Layer.Name       -- The canonical machine-readable name for a layer                 -->
-  <!-- Layer.Abstract  -- Free-form human readable description for the layer               -->
-  <!-- Layer.Bounds    -- Structured XML in the form of one or more of these elements      -->
+  <!-- Layer.Name       - The canonical machine-readable name for a layer                  -->
+  <!-- Layer.Abstract  - Free-form human readable description for the layer                -->
+  <!-- Layer.Bounds    - Structured XML in the form of one or more of these elements       -->
   <!--                     <Bounds SRS= north= south= east= west=/>                        -->
   <!--                     (Note: Studio currently publishes this as plain text, which     -->
   <!--                     the template engine converts to an XML fragment; future work    -->
   <!--                     in Studio is expected to remedy this.)                          -->
   <!--                     (An example is shown below in Layer.BoundingBox.default)        -->
-  <!-- Layer.Cascaded  -- the WMS "cascade" value, indicating whether the data came from   -->
+  <!-- Layer.Cascaded  - the WMS "cascade" value, indicating whether the data came from    -->
   <!--                     another server, or originated on this server                    -->
-  <!-- Layer.ExtendedMetadata -- like Layer.Bounds, should be structured XML, but Studio   -->
+  <!-- Layer.ExtendedMetadata - like Layer.Bounds, should be structured XML, but Studio    -->
   <!--                            just writes it out as plain text.  Format: zero or more  -->
   <!--                            <Link href= type= format= /> elements.  Currently not    -->
   <!--                            implemented in templates.                                -->
-  <!-- Layer.Keywords  -- A comma-separated list of keywords associated with this layer.   -->
-  <!-- Layer.Opaque    -- boolean indicating whether the layer is opaque or transparent.   -->
-  <!-- Layer.Queryable -- boolean indicating whether the layer supports GetFeatureInfo.    -->
-  <!-- Layer.Title     -- The user-provided human-readable name for the layer.             -->
+  <!-- Layer.Keywords  - A comma-separated list of keywords associated with this layer.    -->
+  <!-- Layer.Opaque    - boolean indicating whether the layer is opaque or transparent.    -->
+  <!-- Layer.Queryable - boolean indicating whether the layer supports GetFeatureInfo.     -->
+  <!-- Layer.Title     - The user-provided human-readable name for the layer.              -->
   <!--                                                                                     -->
   <!-- Layer.NoSubsets is currently not emitted by Studio, its value is defaulted within   -->
   <!-- the OwsWmsService.config.awd file.                                                  -->

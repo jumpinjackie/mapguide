@@ -46,6 +46,37 @@
  <Define item="Response.Xml.Expected"></Define>
  <Define item="Response.Xml.Actual"></Define>
 
+ <!-- Test PI.Enum -->
+ <Define item="PI.Enum.Expected">(attr="has content" content="content")(attr="no content" content="")(attr="empty element" content="")(attr="has content too" content="content 2")</Define>
+ <Define item="PI.Enum.Actual"><?Enum list="&PI.Enum.List;" using="&PI.Enum.Using;"?></Define>
+ <Define item="PI.Enum.List">
+  <item attribute="has content">content</item>
+  <item attribute="no content"></item>
+  <item attribute="empty element"/>
+  <item attribute="has content too">content 2</item>
+ </Define>
+ <Define item="PI.Enum.Using">(attr="&Enum.item.attribute;" content="&Enum.item;")</Define>
+
+ <!-- Test PI.Enum.2 -->
+ <Define item="PI.Enum.2.Expected">1=a.Alpha 3=c.Charlie 5=e.Echo 7=.Golf </Define>
+ <Define item="PI.Enum.2.Actual"><?Enum list="&PI.Enum.2.List" item="Other" using="&PI.Enum.2.Using" subset="1,3,5,7"?></Define>
+ <Define item="PI.Enum.2.List">
+  <item thing="never">This is ignored</item>
+  <Other thing="a">Alpha</Other>
+  <Other thing="b">Bravo</Other>
+  <Other thing="c">Charlie</Other>
+  <Other thing="d">Delta</Other>
+  <Other thing="e">Echo</Other>
+  <Other thing="f">Foxtrot</Other>
+  <Other thing="">Golf</Other>
+  <Other thing="h">Hotel</Other>
+ </Define>
+ <Define item="PI.Enum.2.Using">&Enum.iteration;=&Enum.item.thing;.&Enum.item; </Define>
+
+ <!-- Test PI.Enum.Empty -->
+ <Define item="PI.Enum.Empty.Expected"></Define>
+ <Define item="PI.Enum.Empty.Actual"><?Enum list="" using="&Enum.item;"?></Define>
+
  <!-- Test PI.EnumDelim.Literal -->
  <Define item="PI.EnumDelim.Literal.Expected">c a b r </Define>
  <Define item="PI.EnumDelim.Literal.Actual"><?EnumDelim list="c,a,b,r"   using="&Enum.Item; " ?></Define>
@@ -89,7 +120,6 @@
 <?If l="&left;" op="gti" r="&right;"?><GTI/><?Else?><NOT><GTI/></NOT><?Endif?>
 <?If l="&left;" op="lei" r="&right;"?><LEI/><?Else?><NOT><LEI/></NOT><?Endif?>
 <?If l="&left;" op="gei" r="&right;"?><GEI/><?Else?><NOT><GEI/></NOT><?Endif?></Define>
-
 
 </Definitions>
 
@@ -145,6 +175,49 @@
   </Results>
  </Test>
 
+ <Test name="PI.Enum">
+  <Purpose>Tests the Enum ProcessingInstuction for attributes and Empty values</Purpose>
+  <Exercises>
+   <item>PI.Enum</item>
+   <item>PI.Enum.attributes</item>
+   <item>PI.Enum.emptycontent</item>
+  </Exercises>
+  <Expected>&PI.Enum.Expected;</Expected>
+  <Actual>&PI.Enum.Actual;</Actual>
+  <Results>
+   <?If l="&PI.Enum.Expected;" op="eq" r="&PI.Enum.Actual"?><Success/><?Else?><Failure/><?Endif?>
+  </Results>
+ </Test>
+
+ <Test name="PI.Enum.2">
+  <Purpose>Tests the Enum ProcessingInstuction for alternate item element, iteration indexing, and subsetting.</Purpose>
+  <Exercises>
+   <item>PI.Enum</item>
+   <item>PI.Enum.attributes</item>
+   <item>PI.Enum.emptyattribute</item>
+   <item>PI.Enum.item=Other</item>
+   <item>PI.Enum.iteration</item>
+   <item>PI.Enum.subset</item>
+  </Exercises>
+  <Expected>&PI.Enum.2.Expected;</Expected>
+  <Actual>&PI.Enum.2.Actual;</Actual>
+  <Results>
+   <?If l="&PI.Enum.2.Expected;" op="eq" r="&PI.Enum.2.Actual"?><Success/><?Else?><Failure/><?Endif?>
+  </Results>
+ </Test>
+
+ <Test name="PI.Enum.Empty">
+  <Purpose>Tests the Enum ProcessingInstuction for empty list.</Purpose>
+  <Exercises>
+   <item>PI.Enum</item>
+   <item>PI.Enum.emptylist</item>
+  </Exercises>
+  <Expected>&PI.Enum.Empty.Expected;</Expected>
+  <Actual>&PI.Enum.Empty.Actual;</Actual>
+  <Results>
+   <?If l="&PI.Enum.Empty.Expected;" op="eq" r="&PI.Enum.Empty.Actual"?><Success/><?Else?><Failure/><?Endif?>
+  </Results>
+ </Test>
 
  <Test name="PI.EnumDelim.Literal">
   <Purpose>Tests the EnumDelim ProcessInstruction with literal list attribute</Purpose>
