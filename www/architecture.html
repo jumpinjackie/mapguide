@@ -30,5 +30,65 @@
   <dt>MapGuide Site Administrator </dt>
   <dd>The MapGuide Site Administrator is an application for managing your site and   its servers. This application uses a web-based interface that you can access   from any web browser. To start the program, open a browser and enter:   http://servername/MapServer/MapAdmin/Login.php, using the name of the site   server that you specified during installation. You use the MapGuide Site   Administrator to add and remove servers, take servers offline for maintenance,   modify the configuration of a server, assign services to the servers, and   monitor the status of any server. The MapGuide Site Administrator is not a   separate product component, but it is installed as a part of the MapGuide Web   Server Extensions. </dd>
 </dl>
+
+
+
+<hr />
+
+<div class="h2">
+<h2>MapGuide Server</h2>
+<p>The functionality of the MapGuide Server is broken down into a collection of services each of which adheres to the principles of service-oriented archtecture. The core features of the server include:</p>
+<ul type="square">
+  <li>Runs as a Daemon on Linux or as a Service on Microsoft Windows.</li>
+  <li>Servers can be grouped together into a &quot;Site&quot; to increase scalability. </li>
+  <li>Provides connection oriented, role based security.</li>
+  <li>Provides configurable logging of client access, administrative access, authentication attempts, errors, session lifetimes, and request tracing. </li>
+</ul>
+<h3>Resource Service</h3>
+<ul type="square">
+  <li>Provides hierarchical storage of XML documents called resources. Resource documents define content such as:
+    <ul type="disc">
+	  <li>Feature Source - Defines a connection to a database or data file.</li>
+	  <li>Drawing Source - Defines a connection to a drawing (DWF) file.</li>
+      <li>Layer Definition - Defines a map layer which is comprised of a reference to a data source and rules for stylizing that data by scale range.</li>
+      <li>Map Definition - Defines a map in terms of a collection of layers, coordinate system, extent, and default background color.</li>
+      <li>Web Layout - Defines the commands available to the user and the general layout of the viewer UI. </li>
+    </ul>
+  </li>
+  <li>The ability to trace references between resource documents. </li>
+  <li>Access based security model with inheritable permissions.</li>
+  <li>Provides storage for meta-data and binary data associated with each resource document. </li>
+  <li>Provides storage for permanent library based resources and transient session based resources.  </li>
+</ul>
+<h3>Feature Service</h3>
+<ul type="square">
+  <li></li>
+</ul>
+<h3>Drawing Service</h3>
+
+<h3>Mapping Service</h3>
+
+<h3>Rendering Service</h3>
+
+<h3>Tile Service</h3>
+
+</div>
+
+<div class="h2">
+<h2>MapGuide Web Server Extensions</h2>
+<h3>Map Agent</h3>
+<h3>MapGuide Web API</h3>
+</div>
+
+<div class="h2">
+<h2>MapGuide Viewer</h2>
+<h3>AJAX Viewer</h3>
+<h3>DWF Viewer</h3>
+</div>
+
+<div class="h2">
+<h2>MapGuide Site Administrator</h2>
+</div>
+
 </body>
 </html>

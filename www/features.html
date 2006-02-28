@@ -7,47 +7,49 @@
 
 <body>
 <h1>MapGuide Open Source - Features</h1>
-<p>MapGuide Open Source is a web-based platform that enables users to quickly develop and deploy web mapping applications and geo-spatial web services. It is comprised of four major components, the MapGuide Server, MapGuide Web Server Extensions, MapGuide Viewer, and the MapGuide Site Administrator.</p>
-
-<div class="h2">
-<h2>MapGuide Server Features</h2>
-<p>The functionality of the MapGuide Server is broken down into a collection of services each of which adheres to the principles of service-oriented archtecture. The core features of the server include:</p>
-<ul type="square">
-  <li>Runs as a Daemon on Linux or as a Service on Microsoft Windows.</li>
-  <li>Servers can be grouped together into a &quot;Site&quot; to increase scalability. </li>
-  <li>Provides connection oriented, role based security.</li>
-  <li>Provides configurable logging of client access, administrative access, authentication attempts, errors, session lifetimes, and request tracing. </li>
+<p>MapGuide Open Source is a web-based platform that enables users to quickly develop and deploy web mapping applications and geo-spatial web services.</p>
+<ul>
+  <li>Highly Interactive Map Viewing
+    <ul>
+	  <li>Tiled map display featuring smooth pan and zoom (AJAX Viewer only)</li>
+	  <li>Feature selection by point, rectangle, radius, or polygon with immediate feedback</li>
+	  <li>Multi-line tooltip display of feature properties</li>
+      <li>Property browser provides immediate display of the property values of a selected feature</li>
+      <li>Support for feature buffering, selection of all features that fall within  selected polygon features, and the ability to measuring distance</li>
+      <li>Printing and plotting support</li>
+    </ul>
+  </li>
+  <br />
+  <li>Sophisticated Cartographic Output
+    <ul>
+	  <li>Scale dependent detail</li>
+	  <li>Rule driven thematic layer stylization</li>
+      <li>Dyanmic labeling with overpost detection, labels that follow the path of a line, and automatic label resizing</li>
+      <li>Anti-aliased image rendering </li>
+      <li>True color support</li>
+      <li>TrueType font support</li>
+    </ul>
+  </li>
+  <br />
+  <li>Fast, Scalable, and Secure Server Platform
+    <ul>
+	  <li>Multiple servers can be confugured as one logical site to improve scalability</li>
+	  <li>FastCGI based Map Agent loads once and stays loaded for use with both Apache and Microsoft IIS </li>
+	  <li>Database connections are pooled and shared, greatly improving performance</li>
+	  <li>Connection oriented, role based security</li>
+	  <li>Tile caching ensures map image tiles are only rendered once for the AJAX Viewer no matter how many users are viewing map</li>
+	</ul>
+  </li>
+  <br />
+  <li>Support for <a href="http://www.opengeospatial.org" target="_blank">Open Geospatial Consortium</a> Standards
+    <ul>
+	  <li>Web Map Service</li>
+	  <li>Web Feature Service</li>
+	</ul>
+  </li>
 </ul>
-<h3>Resource Service</h3>
-
-<h3>Feature Service</h3>
-
-<h3>Drawing Service</h3>
-
-<h3>Mapping Service</h3>
-
-<h3>Rendering Service</h3>
-
-<h3>Tile Service</h3>
-
-</div>
-
-<div class="h2">
-<h2>MapGuide Web Server Extensions</h2>
-<h3>Map Agent</h3>
-<h3>MapGuide Web API</h3>
-</div>
-
-<div class="h2">
-<h2>MapGuide Viewer</h2>
-<h3>AJAX Viewer</h3>
-<h3>DWF Viewer</h3>
-</div>
-
-<div class="h2">
-<h2>MapGuide Site Administrator</h2>
-</div>
-
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 <hr />
 <p>MapGuide Open Source is a new  web mapping platform that enables developers to rapidly develop and deploy  valuable spatial applications. It works with the latest PHP, .NET, and Java&trade;  tools to quickly build powerful applications for Windows or Linux server  environments.&nbsp;&nbsp; You can easily publish  spatial views over the web, for viewing in almost any browser.<br />
 List is still pretty long &ndash; should  we delete less important features?&nbsp; If  so, what are they?&nbsp; Bob &ndash; please provide  direction or make edits directly.</p>
