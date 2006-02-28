@@ -519,6 +519,10 @@ bool MgXmlParser::AtEnd() const
     return (m_iPos >= m_iLen - 1);
 }
 
+bool MgXmlParser::More() const
+{
+    return !AtEnd() || m_pCurrent != NULL;
+}
 
 bool MgXmlParser::Next()
 {

@@ -681,8 +681,9 @@ void MgOgcServer::ProcedureEnum(MgXmlProcessingInstruction& PIEnum)
     int iNum = 0;
 
     MgXmlParser List(sExpandedList.c_str());
+    List.Next(); // advance to beginning.
 
-    while(List.Next()) {
+    while(List.More()) {
         if(List.Current().Type() == keBeginElement) {
             MgXmlBeginElement& Begin = (MgXmlBeginElement&)List.Current();
             if(Begin.Name() == pszItem) {
@@ -718,9 +719,16 @@ void MgOgcServer::ProcedureEnum(MgXmlProcessingInstruction& PIEnum)
                         m_pTopOfDefinitions->AddDefinition(kpszDefinitionEnumItem,_(""));
 
                     ProcessExpandableText(sFormat);
-                }
+                } // if it's a subset of interest
+                else // it's not one of the subset= items.
+                    List.Next(); // skip it.
+
             } // if Begin.Name() == "item" (or requested substitute)
+            else // it's not one of the items named by item=
+                List.Next(); // skip it.
         } // if Type is Begin
+        else // not an <item> beginning
+            List.Next(); // skip it.
     } // While more tokens in the list.
 }
 

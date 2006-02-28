@@ -243,7 +243,7 @@ bool MgOgcWfsServer::ProcessOtherInstruction(CREFSTRING sProc,MgXmlProcessingIns
     {
         ProcedureEnumFeatures(PI);
     }
-    if(sProc == kpszPiGetFeatureCollection)
+    else if(sProc == kpszPiGetFeatureCollection)
     {
         ProcedureGetFeatureCollection(PI);
     }
@@ -269,12 +269,15 @@ void MgOgcWfsServer::ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum)
     int iNum = 0;
 
     while(m_pFeatures->Next()) {
-        // We ensure that each layer gets its own stack frame
-        // so definitions don't get carried over to the next layer.
-        CDictionaryStackFrame ForLayers(this);
+        // We ensure that each feature gets its own stack frame
+        // so definitions don't get carried over to the next feature.
+        CDictionaryStackFrame ForEachFeature(this);
         m_pFeatures->GenerateDefinitions(*m_pTopOfDefinitions);
-        if(IsIterationInSubset(++iNum,sSubset,kpszPiDefinitionFeatureIteration)) {
-            ProcessExpandableText(sFormat);
+
+        CPSZ pszIsPublished = this->Definition(_("Feature.IsPublished"));
+        if(pszIsPublished != NULL && SZ_EQ(pszIsPublished,_("1")))
+            if(IsIterationInSubset(++iNum,sSubset,kpszPiDefinitionFeatureIteration)) {
+                ProcessExpandableText(sFormat);
         }
     }
 }
