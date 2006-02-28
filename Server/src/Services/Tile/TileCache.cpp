@@ -43,21 +43,8 @@ MgTileCache::MgTileCache()
 // returns any cached tile for the given map / scale index / group / i / j
 MgByteReader* MgTileCache::Get(MgMap* map, int scaleIndex, CREFSTRING group, int i, int j)
 {
-    // If another thread is currently in a call to Set or Clear, then the "set"
-    // lock is enabled and we must wait for that call to finish.  We do this by
-    // acquiring the "set" lock.
-    ACE_Guard<ACE_Recursive_Thread_Mutex> ace_monSet(m_mutexSet, 1);
-
-    // At this point no other calls to Set or Clear are active.  But since we
-    // acquired the "set" lock above we're also blocking other calls to Get,
-    // and we don't want that.  We therefore need to release the "set" lock.
-    // But as soon as we release it then calls to Set and Clear can once again
-    // happen.  We temporarily block them by enabling the "get" lock.  But only
-    // do a tryacquire on this lock so that other calls to Get aren't blocked.
-    ACE_Guard<ACE_Recursive_Thread_Mutex> ace_monGet(m_mutexGet, 0);
-
-    // Now that the "get" lock is enabled we can safely release the "set' lock.
-    ace_monSet.release();
+    // acquire a read lock - this blocks if a writer holds the lock
+    ACE_Read_Guard<ACE_RW_Thread_Mutex> ace_mon(m_mutexRW);
 
     Ptr<MgByteReader> ret;
 
@@ -85,11 +72,8 @@ MgByteReader* MgTileCache::Get(MgMap* map, int scaleIndex, CREFSTRING group, int
 // caches a tile for the given map / scale index / group / i / j
 void MgTileCache::Set(MgByteReader* img, MgMap* map, int scaleIndex, CREFSTRING group, int i, int j)
 {
-    // acquire the set lock - this blocks subsequent Get, Set, and Clear calls
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_monSet, m_mutexSet));
-
-    // acquire the get lock - this allows completion of current Get calls
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_monGet, m_mutexGet));
+    // acquire a write lock - this blocks if any readers or a writer hold the lock
+    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_mutexRW);
 
     if (map != NULL && img != NULL)
     {
@@ -110,11 +94,8 @@ void MgTileCache::Set(MgByteReader* img, MgMap* map, int scaleIndex, CREFSTRING 
 // clears the tile cache for the given map
 void MgTileCache::Clear(MgMap* map)
 {
-    // acquire the set lock - this blocks subsequent Get, Set, and Clear calls
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_monSet, m_mutexSet));
-
-    // acquire the get lock - this allows completion of current Get calls
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_monGet, m_mutexGet));
+    // acquire a write lock - this blocks if any readers or a writer hold the lock
+    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_mutexRW);
 
     if (map != NULL)
     {
@@ -130,11 +111,8 @@ void MgTileCache::Clear(MgMap* map)
 // clears the tile cache for the given map
 void MgTileCache::Clear(MgResourceIdentifier* resId)
 {
-    // acquire the set lock - this blocks subsequent Get, Set, and Clear calls
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_monSet, m_mutexSet));
-
-    // acquire the get lock - this allows completion of current Get calls
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_monGet, m_mutexGet));
+    // acquire a write lock - this blocks if any readers or a writer hold the lock
+    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_mutexRW);
 
     // the resource must be a map definition
     if (resId != NULL && resId->GetResourceType() == MgResourceType::MapDefinition)

@@ -43,8 +43,7 @@ private:
     STRING GetFullPath(MgMap* map, int scaleIndex, CREFSTRING group);
     STRING CreateFullPath(MgMap* map, int scaleIndex, CREFSTRING group);
 
-    ACE_Recursive_Thread_Mutex m_mutexGet;
-    ACE_Recursive_Thread_Mutex m_mutexSet;
+    ACE_RW_Thread_Mutex m_mutexRW;
     STRING m_path;
 };
 
