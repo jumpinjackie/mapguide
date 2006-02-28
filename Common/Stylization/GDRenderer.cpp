@@ -114,6 +114,7 @@ GDRenderer::GDRenderer(int width,
 :
 m_width(width),
 m_height(height),
+m_bgcolor(bgColor),
 m_extents(0,0,0,0),
 m_wtPointBuffer(NULL),
 m_wtPointLen(0),
@@ -222,7 +223,18 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
     if (width != m_width || height != m_height)
     {
         im = gdImageCreateTrueColor(width, height);
+
+        int bgc = ConvertColor(im, m_bgcolor);
+
+        // initialize the destination image to the bg color (temporarily turn
+        // off alpha blending so the fill has the supplied alpha)
         gdImageAlphaBlending(im, 0);
+        gdImageFilledRectangle(im, 0, 0, gdImageSX(im)-1, gdImageSY(im), bgc);
+
+        // set any transparent color
+        if (m_bgcolor.alpha() != 255)
+            gdImageColorTransparent(im, bgc);
+
         gdImageCopyResized(im, (gdImagePtr)m_imout, 0, 0, 0,0,width, height, m_width, m_height);
         gdImageAlphaBlending(im, 1);
     }

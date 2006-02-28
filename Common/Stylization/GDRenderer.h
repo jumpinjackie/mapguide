@@ -167,6 +167,7 @@ private:
 
     void _TransformPointsNoClamp(double* inpts, int numpts);
 
+    RS_Color m_bgcolor;
     RS_Bounds m_extents;
     double m_metersPerUnit;
     double m_dpi;
