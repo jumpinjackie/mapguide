@@ -208,6 +208,7 @@ try
             // declare a new search command object
             Object[] formatArgs = { new Integer(i),
                                     StrEscape(name),
+                                    StrEscape(searchCmd.GetLabel()),
                                     new Integer(action),
                                     searchCmd.GetIconUrl(),
                                     searchCmd.GetDisabledIconUrl(),
@@ -220,7 +221,7 @@ try
                                     new Integer(searchCmd.GetMatchLimit()),
                                     new Integer(searchCmd.GetTarget()),
                                     searchCmd.GetTargetName() };
-            cmdObject = MessageFormat.format("commands[{0,number,integer}] = new SearchCommand(\"{1}\", {2,number,integer}, \"{3}\", \"{4}\", \"{5}\", \"{6}\", \"{7}\", \"{8}\", resCols{9}, \"{10}\", {11,number,integer}, {12,number,integer}, \"{13}\");\n", formatArgs);
+            cmdObject = MessageFormat.format("commands[{0,number,integer}] = new SearchCommand(\"{1}\", \"{2}\", {3,number,integer}, \"{4}\", \"{5}\", \"{6}\", \"{7}\", \"{8}\", \"{9}\", resCols{10}, \"{11}\", {12,number,integer}, {13,number,integer}, \"{14}\");\n", formatArgs);
 
             searchCmdIndex++;
         }

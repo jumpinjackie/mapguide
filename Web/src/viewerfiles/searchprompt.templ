@@ -42,7 +42,7 @@
         function InitDocument()
         {
             var cmd = GetParent().commands[cmdIndex];
-            document.getElementById("title").innerHTML = cmd.name;
+            document.getElementById("title").innerHTML = cmd.label;
             document.getElementById("prompt").innerHTML = cmd.prompt;
             if(!msie)
                 document.getElementById("lf").innerHTML = "<br>";

@@ -52,12 +52,13 @@
         this.BasicCommandInfo = BasicCommand;
         this.BasicCommandInfo(name, action, icon, iconDisabled, tooltip, description);
         }
-        function SearchCommand(name, action, icon, iconDisabled, tooltip, description, layer, prompt, resultColumns, filter, matchLimit, targetType, target) {
+        function SearchCommand(name, label, action, icon, iconDisabled, tooltip, description, layer, prompt, resultColumns, filter, matchLimit, targetType, target) {
         this.layer = layer;
         this.prompt = prompt;
         this.resultColumns = resultColumns;
         this.filter = filter;
         this.matchLimit = matchLimit;
+        this.label = label;
         this.UiTargetCommandInfo = UiTargetCommand;
         this.UiTargetCommandInfo(name, action, icon, iconDisabled, tooltip, description, targetType, target);
         }
