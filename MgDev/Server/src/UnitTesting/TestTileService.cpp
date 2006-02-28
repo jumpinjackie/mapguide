@@ -462,6 +462,11 @@ ACE_THR_FUNC_RETURN SetTileWorker(void* param)
         // clear the user info to prevent leaks
         MgUserInformation::SetCurrentUserInfo(NULL);
     }
+    catch (MgFileIoException* e)
+    {
+        // we sometimes get this due to a sharing error
+        SAFE_RELEASE(e);
+    }
     catch (MgException* e)
     {
         STRING message = e->GetDetails(TEST_LOCALE);
