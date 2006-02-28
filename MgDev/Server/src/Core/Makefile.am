@@ -289,7 +289,7 @@ install-data-local:
 	@pushd $(fdodir); ln -s libxerces-c.so.25.0 libxerces-c.so.25; ln -s libxerces-c.so.25.0 libxerces-c.so; popd;
 
 install-data-hook:
-	@sed -e 's#^FdoPath.*=.*#FdoPath                            = /usr/local/fdo-3.0.0/#' \
+	@sed -e 's#^FdoPath.*=.*#FdoPath                            = $(map_fdo_lib)#' \
              -e 's#^LogsPath.*=.*#LogsPath                           = ${prefix}/Logs/#' \
              -e 's#^ResourcesPath.*=.*#ResourcesPath                      = ${prefix}/Resources/#' \
              -e 's#^TempPath.*=.*#TempPath                           = ${prefix}/Temp/#' \
