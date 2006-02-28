@@ -215,8 +215,9 @@ NameValueCollection cmds = null;
                 cmdObjects += cols;
 
                 // declare a new search command object
-                cmdObject = String.Format("commands[{0}] = new SearchCommand(\"{1}\", {2}, \"{3}\", \"{4}\", \"{5}\", \"{6}\", \"{7}\", \"{8}\", resCols{9}, \"{10}\", {11}, {12}, \"{13}\");\n",
+                cmdObject = String.Format("commands[{0}] = new SearchCommand(\"{1}\", \"{2}\", {3}, \"{4}\", \"{5}\", \"{6}\", \"{7}\", \"{8}\", \"{9}\", resCols{10}, \"{11}\", {12}, {13}, \"{14}\");\n",
                     i, StrEscape(name, false),
+                    StrEscape(searchCmd.GetLabel(), false),
                     searchCmd.GetAction(),
                     searchCmd.GetIconUrl(),
                     searchCmd.GetDisabledIconUrl(),

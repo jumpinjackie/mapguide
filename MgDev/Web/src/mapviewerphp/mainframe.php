@@ -226,8 +226,9 @@ function BuildViewer($forDwf = true)
                 $cmdObjects = $cmdObjects . $cols;
 
                 // declare a new search command object
-                $cmdObject = sprintf("commands[%d] = new SearchCommand(\"%s\", %d, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", resCols%d, \"%s\", %d, %d, \"%s\");\n",
+                $cmdObject = sprintf("commands[%d] = new SearchCommand(\"%s\", \"%s\", %d, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", resCols%d, \"%s\", %d, %d, \"%s\");\n",
                                         $i, StrEscape($name),
+                                        StrEscape($cmd->GetLabel()),
                                         $cmd->GetAction(),
                                         $cmd->GetIconUrl(),
                                         $cmd->GetDisabledIconUrl(),
