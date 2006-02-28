@@ -258,6 +258,7 @@ public:
     // Advances to the next item.
     // Typical use: while(Next()) ...
     bool Next();
+    bool More() const;
 
     // Are we at the end of the stream?
     // Not normally used, as Next() combines
@@ -404,7 +405,7 @@ public:
         // Note that this is poor-man's logic that doesn't handle
         // recursive elements neatly.
         // So far, that's not a problem.
-        if(!m_bAtEnd)
+        if(!m_bAtEnd && !m_bInEmptyElement)
             while(!AtEnd())
                 if(!m_InStream.Next())
                     break;

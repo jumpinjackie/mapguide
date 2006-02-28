@@ -95,10 +95,8 @@ MgWfsFeatureDefinitions::MgWfsFeatureDefinitions(MgResourceService* pResourceSer
                 if(iEnd >= 0)
                     sSource.resize(iEnd);
                 // There, that's our Layer Source.
-                AddDefinition(oDefinitions,_("Source"),sSource.c_str());
-                AddDefinition(oDefinitions,_("Source.id"),sResource.c_str());
-
-
+                AddDefinition(oDefinitions,_("Feature.Source"),sSource.c_str());
+                AddDefinition(oDefinitions,_("Feature.Source.id"),sResource.c_str());
             }
             else if(GetMetadataDefinitions(Input,oDefinitions)) {
             }
@@ -140,6 +138,8 @@ MgWfsFeatureDefinitions::MgWfsFeatureDefinitions(MgResourceService* pResourceSer
                 AddDefinition(oTheWholeEnchilada,_("Feature.Name"),sName.c_str());
                 AddDefinition(oTheWholeEnchilada,_("Feature.Title"),sName.c_str());
 
+                // This is strange; it's called the "Description", but ends up being
+                // the type's name.  In our notation, it's the stuff after the colon.
                 STRING sDescription = pClass->GetDescription();
                 AddDefinition(oTheWholeEnchilada,_("Feature.Description"),sDescription.c_str());
 
@@ -302,13 +302,25 @@ bool MgWfsFeatureDefinitions::GetMetadataDefinitions(MgXmlParser& Input,CStream&
             STRING sName;
             STRING sValue;
             if(GetElementContents(Input,_("Name"),sName) && GetElementContents(Input,_("Value"),sValue)) {
-                STRING sDefinitionName =  _("Feature.") + sName;
+                STRING sDefinitionName =  _("Feature.");
+                // Present the names slightly differently than internal representation.
+                // System-defined metadata is published with an underscore prefix.  We
+                // publish this without the underscore: "_Bounds" -> "Layer.Bounds".
+                // User-defined metadata will not have the underscore, and we present
+                // this for consumption as "Layer.user.Whatever" -- just to make sure
+                // that the user and system namespaces remain distinct.
+                if(sName[0] == '_')
+                    sDefinitionName += sName.substr(1);
+                else
+                    sDefinitionName += _("user.") + sName;
                 //----------------------------------------------------------------------
                 // If it starts and ends with escaped angled brackets, let's assume it's
                 // "corrupted" XML that simply needs unescaping.
                 //
                 // TODO: This is not meant to be a long-term solution; it just overcomes
                 // a current schema restriction on metadata consisting of mixed content.
+                while(sValue.length() > 0 && isspace(sValue[sValue.length()-1]))
+                  sValue = sValue.substr(0,sValue.length()-1);
                 int iLt =sValue.find(_("&lt;"));
                 int iGt = sValue.rfind(_("&gt;"));
                 int iLen = sValue.length();
