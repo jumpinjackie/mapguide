@@ -60,6 +60,8 @@
 #include "HttpExecuteSqlQuery.h"
 #include "HttpGetSpatialContexts.h"
 #include "HttpGetLongTransactions.h"
+#include "HttpEnumerateDataStores.h"
+#include "HttpGetSchemaMapping.h"
 
 // Http Mapping Service operations
 #include "HttpGetMap.h"
@@ -351,6 +353,8 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opWfsGetCapabilities] = MgHttpWfsGetCapabilities::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opWfsGetFeature] = MgHttpWfsGetFeature::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opWfsDescribeFeatureType] = MgHttpWfsDescribeFeatureType::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opEnumerateDataStores] = MgHttpEnumerateDataStores::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetSchemaMapping] = MgHttpGetSchemaMapping::CreateObject;
 
     httpPostHandlerCreators.push_back(MgHttpWfsGetCapabilities::ProcessPostRequest);
     httpPostHandlerCreators.push_back(MgHttpWfsDescribeFeatureType::ProcessPostRequest);

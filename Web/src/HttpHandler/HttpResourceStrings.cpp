@@ -154,6 +154,9 @@ const STRING MgHttpResourceStrings::opSelectFeaturesSpatially = L"SELECTAGGREGAT
 const STRING MgHttpResourceStrings::opExecuteSqlQuery = L"EXECUTESQLQUERY";
 const STRING MgHttpResourceStrings::opGetSpatialContexts = L"GETSPATIALCONTEXTS";
 const STRING MgHttpResourceStrings::opGetLongTransactions = L"GETLONGTRANSACTIONS";
+const STRING MgHttpResourceStrings::opEnumerateDataStores = L"ENUMERATEDATASTORES";
+const STRING MgHttpResourceStrings::opGetSchemaMapping = L"GETSCHEMAMAPPING";
+
 
 // Predefined Drawing Service Request Parameters
 const STRING MgHttpResourceStrings::reqDrawingResourceId = L"RESOURCEID";

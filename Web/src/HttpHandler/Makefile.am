@@ -29,6 +29,7 @@ include_SOURCES = \
   HttpDeleteResourceData.cpp \
   HttpDescribeDrawing.cpp \
   HttpDescribeSchema.cpp \
+  HttpEnumerateDataStores.cpp \ 
   HttpEnumerateDrawingLayers.cpp \
   HttpEnumerateDrawingSectionResources.cpp \
   HttpEnumerateDrawingSections.cpp \
@@ -63,6 +64,7 @@ include_SOURCES = \
   HttpGetResourceContent.cpp \
   HttpGetResourceData.cpp \
   HttpGetResourceHeader.cpp \
+  HttpGetSchemaMapping.cpp \
   HttpGetSiteInfo.cpp \
   HttpGetSiteVersion.cpp \
   HttpGetSpatialContexts.cpp \
@@ -123,6 +125,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpDeleteResourceData.h \
   HttpDescribeDrawing.h \
   HttpDescribeSchema.h \
+  HttpEnumerateDataStores.h \ 
   HttpEnumerateDrawingLayers.h \
   HttpEnumerateDrawingSectionResources.h \
   HttpEnumerateDrawingSections.h \
@@ -157,6 +160,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpGetResourceContent.h \
   HttpGetResourceData.h \
   HttpGetResourceHeader.h \
+  HttpGetSchemaMapping.h \
   HttpGetSiteInfo.h \
   HttpGetSiteVersion.h \
   HttpGetSpatialContexts.h \

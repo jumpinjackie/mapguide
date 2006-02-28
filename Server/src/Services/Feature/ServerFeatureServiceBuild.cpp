@@ -88,9 +88,8 @@
 #include "ServerGwsFeatureReader.cpp"
 #include "ServerGwsGetFeatures.cpp"
 #include "GwsConnectionPool.cpp"
-
-
-
-
-
+#include "OpEnumerateDataStores.cpp"
+#include "OpGetSchemaMapping.cpp"
+#include "ServerEnumerateDataStores.cpp"
+#include "ServerGetSchemaMapping.cpp"
 

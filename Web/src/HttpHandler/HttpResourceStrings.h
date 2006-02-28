@@ -238,6 +238,8 @@ public:
     static const STRING opExecuteSqlQuery;
     static const STRING opGetSpatialContexts;
     static const STRING opGetLongTransactions;
+    static const STRING opEnumerateDataStores;
+    static const STRING opGetSchemaMapping;
 
     // Drawing services
     static const STRING opGetDrawingSectionResource;

@@ -457,6 +457,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\OpEnumerateDataStores.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\OpEnumerateDataStores.h"
+				>
+			</File>
+			<File
 				RelativePath=".\OpExecuteSqlNonQuery.cpp"
 				>
 				<FileConfiguration
@@ -742,6 +766,30 @@
 			</File>
 			<File
 				RelativePath=".\OpGetRaster.h"
+				>
+			</File>
+			<File
+				RelativePath=".\OpGetSchemaMapping.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\OpGetSchemaMapping.h"
 				>
 			</File>
 			<File
@@ -1518,6 +1566,30 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ServerEnumerateDataStores.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ServerEnumerateDataStores.h"
+			>
+		</File>
+		<File
 			RelativePath=".\ServerFeatureConnection.cpp"
 			>
 			<FileConfiguration
@@ -1806,6 +1878,30 @@
 		</File>
 		<File
 			RelativePath=".\ServerGetProviderCapabilities.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ServerGetSchemaMapping.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ServerGetSchemaMapping.h"
 			>
 		</File>
 		<File

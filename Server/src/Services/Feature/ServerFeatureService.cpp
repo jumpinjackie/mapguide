@@ -41,6 +41,8 @@
 #include "ServerUpdateFeatures.h"
 #include "ServerCreateFeatureSource.h"
 #include "ServerFeatureReader.h"
+#include "ServerEnumerateDataStores.h"
+#include "ServerGetSchemaMapping.h"
 #include "FilterUtil.h"
 
 #include <fdo/Xml/FeatureSerializer.h>
@@ -1132,4 +1134,44 @@ bool MgServerFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReader)
     retVal = true;
 
     return retVal;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// This method enumerates all the providers and if they are FDO enabled for 
+/// the specified provider and partial connection string.
+///
+/// \param providerName (String/string)
+/// The name of the Fdo feature provider.
+/// \param partialConnString (String/string)
+/// The partial connection string to the Fdo provider.
+///
+/// \returns
+/// Returns the list of data stores.
+MgByteReader* MgServerFeatureService::EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::EnumerateDataStores()");
+
+    MgServerEnumerateDataStores mseds;
+    return mseds.EnumerateDataStores(providerName, partialConnString);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// This method returns all of the logical to physical schema mappings for 
+/// the specified provider and partial connection string.
+///
+/// \param providerName (String/string)
+/// The name of the Fdo feature provider.
+/// \param partialConnString (String/string)
+/// The partial connection string to the Fdo provider.
+///
+/// \returns
+/// Returns the schema mapping.
+MgByteReader* MgServerFeatureService::GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetSchemaMapping()");
+
+    MgServerGetSchemaMapping msgsm;
+    return msgsm.GetSchemaMapping(providerName, partialConnString);
 }

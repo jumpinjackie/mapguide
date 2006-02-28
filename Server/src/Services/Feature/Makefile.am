@@ -98,7 +98,11 @@ include_SOURCES = \
   ByteSourceRasterStreamImpl.cpp \
   OpDescribeWfsFeatureType.cpp \
   OpGetWfsFeature.cpp \
-  FilterUtil.cpp
+  FilterUtil.cpp \
+  OpEnumerateDataStores.cpp \
+  OpGetSchemaMapping.cpp \
+  ServerEnumerateDataStores.cpp \
+  ServerGetSchemaMapping.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   FeatureOperation.h \
@@ -191,7 +195,11 @@ noinst_HEADERS = $(include_SOURCES) \
   DateTimeDataReaderCreator.h \
   OpDescribeWfsFeatureType.h \
   OpGetWfsFeature.h \
-  FilterUtil.h
+  FilterUtil.h \
+  OpEnumerateDataStores.h \
+  OpGetSchemaMapping.h \
+  ServerEnumerateDataStores.h \
+  ServerGetSchemaMapping.h
 
 libMgServerFeatureService_la_LIBADD = -lMgGwsCommon -lMgGwsQueryEngine
 
