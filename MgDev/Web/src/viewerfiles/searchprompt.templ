@@ -74,8 +74,8 @@
             var colDef = "<input type=\"hidden\" name=\"COLS\" value=\"" + cmd.resultColumns.length + "\">";
             for(var i = 0; i < cmd.resultColumns.length; i++)
             {
-                colDef += "<input type=\"hidden\" name=\"CN" + i + "\" value=\"" + escape(cmd.resultColumns[i].displayName) + "\">";
-                colDef += "<input type=\"hidden\" name=\"CP" + i + "\" value=\"" + escape(cmd.resultColumns[i].propertyName) + "\">";
+                colDef += "<input type=\"hidden\" name=\"CN" + i + "\" value=\"" + cmd.resultColumns[i].displayName + "\">";
+                colDef += "<input type=\"hidden\" name=\"CP" + i + "\" value=\"" + cmd.resultColumns[i].propertyName + "\">";
             }
             document.getElementById("MatchLabel").innerHTML = colDef;
         }
