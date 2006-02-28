@@ -49,7 +49,6 @@ String locale;
     mapName = "";
     sessionId = "";
     filter = "";
-    matchLabel = "";
     matchLimit = 0;
     locale = "";
 
@@ -72,7 +71,6 @@ String locale;
                     mapName,
                     sessionId,
                     filter,
-                    matchLabel,
                     String.valueOf(matchLimit)
                     };
     response.getWriter().write(Substitute(templ, vals));
@@ -89,7 +87,6 @@ void GetRequestParameters(HttpServletRequest request)
     mapName = GetParameter(request, "MAPNAME");
     sessionId = GetParameter(request, "SESSION");
     filter = GetParameter(request, "FILTER");
-    matchLabel = GetParameter(request, "ML");
     matchLimit = GetIntParameter(request, "MR");
     locale = GetParameter(request, "LOCALE");
 }

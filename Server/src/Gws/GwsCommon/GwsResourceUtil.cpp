@@ -69,7 +69,6 @@ CGwsResourceModule::GetString(unsigned int id, std::wstring &str)
     int nBufSize = FIXED_BUF_SIZE;
     wchar_t *pBuf = buf;
 
-#pragma message("TODO: Determine if LoadStringW is thread safe")
     int nLen = ::LoadStringW(shMod, id, pBuf, FIXED_BUF_SIZE);
     if (0 == nLen)
     {

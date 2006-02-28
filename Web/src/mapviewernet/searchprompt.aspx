@@ -32,7 +32,6 @@ String layerId = "";
 String mapName = "";
 String sessionId = "";
 String filter = "";
-String matchLabel = "";
 int matchLimit = 0;
 </script>
 
@@ -89,7 +88,6 @@ void GetParameters(NameValueCollection parameters)
     mapName = GetParameter(parameters, "MAPNAME");
     sessionId = GetParameter(parameters, "SESSION");
     filter = GetParameter(parameters, "FILTER");
-    matchLabel = GetParameter(parameters, "ML");
     matchLimit = GetIntParameter(parameters, "MR");
 }
 
