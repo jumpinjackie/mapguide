@@ -251,6 +251,7 @@ tempdir = ${prefix}/Temp
 trashdir = ${prefix}/Trash
 packagesdir = ${prefix}/Packages
 repositoriesdir = ${prefix}/Repositories
+repositoryadmindir = ${prefix}/RepositoryAdmin
 resourcesdir = ${prefix}/Resources
 schemadir = ${prefix}/Schema
 wmsdir = ${prefix}/Wms
@@ -270,6 +271,7 @@ install-data-local:
 	test -d $(repositoriesdir)/Session || $(mkinstalldirs) $(repositoriesdir)/Session
 	test -d $(repositoriesdir)/Session/DataFiles || $(mkinstalldirs) $(repositoriesdir)/Session/DataFiles
 	test -d $(repositoriesdir)/Site || $(mkinstalldirs) $(repositoriesdir)/Site
+	test -d $(repositoryadmindir) || $(mkinstalldirs) $(repositoryadmindir)
 	test -d $(resourcesdir) || $(mkinstalldirs) $(resourcesdir)
 	test -d $(wmsdir) || $(mkinstalldirs) $(wmsdir)
 	test -d $(wfsdir) || $(mkinstalldirs) $(wfsdir)
@@ -285,6 +287,7 @@ install-data-local:
 	@cp -fp ../../../Oem/DWFTK7.1/develop/global/fonts/* ${prefix}/bin/
 	@cp -fp ../../../Oem/gdal-1.3.0/data/* $(proj4datadir)
 	@cp -fp ../../../Oem/proj-4.4.9/nad/* $(proj4naddir)
+	@cp -fp ../../RepositoryAdmin/* $(repositoryadmindir)
 	@pushd $(fdodir); ln -s libxalanMsg.so.17.0 libxalanMsg.so.17; ln -s libxalanMsg.so.17.0 libxalanMsg.so; popd;
 	@pushd $(fdodir); ln -s libxerces-c.so.25.0 libxerces-c.so.25; ln -s libxerces-c.so.25.0 libxerces-c.so; popd;
 
