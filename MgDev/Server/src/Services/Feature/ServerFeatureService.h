@@ -587,6 +587,34 @@ public:
     MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
         MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures);
 
+    ////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// This method enumerates all the providers and if they are FDO enabled for 
+    /// the specified provider and partial connection string.
+    ///
+    /// \param providerName (String/string)
+    /// The name of the Fdo feature provider.
+    /// \param partialConnString (String/string)
+    /// The partial connection string to the Fdo provider.
+    ///
+    /// \returns
+    /// Returns the list of data stores.
+    MgByteReader* EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString);
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// This method returns all of the logical to physical schema mappings for 
+    /// the specified provider and partial connection string.
+    ///
+    /// \param providerName (String/string)
+    /// The name of the Fdo feature provider.
+    /// \param partialConnString (String/string)
+    /// The partial connection string to the Fdo provider.
+    ///
+    /// \returns
+    /// Returns the schema mapping.
+    MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString);
+
     MgBatchPropertyCollection* GetFeatures(INT32 featureReaderId);
     bool CloseFeatureReader(INT32 featureReaderId);
     MgBatchPropertyCollection* GetSqlRows(INT32 sqlReader);

@@ -59,6 +59,9 @@ INTERNAL_API:
     static const int DescribeWfsFeatureType_Id      = 0x1111ED1D;
     static const int GetWfsFeature_Id               = 0x1111ED1E;
     static const int CloseGwsFeatureReader_Id       = 0x1111ED1F;
+
+    static const int EnumerateDataStores_Id         = 0x1111ED20;
+    static const int GetSchemaMapping_Id            = 0x1111ED21;
 };
 
 #endif

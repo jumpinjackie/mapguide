@@ -747,6 +747,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\HttpEnumerateDataStores.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\HttpEnumerateDataStores.h"
+				>
+			</File>
+			<File
 				RelativePath=".\HttpExecuteSqlQuery.cpp"
 				>
 				<FileConfiguration
@@ -864,6 +888,30 @@
 			</File>
 			<File
 				RelativePath=".\HttpGetLongTransactions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HttpGetSchemaMapping.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\HttpGetSchemaMapping.h"
 				>
 			</File>
 			<File

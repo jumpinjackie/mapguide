@@ -1144,4 +1144,40 @@ bool MgProxyFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReaderId)
     return (bool)cmd.GetReturnValue().val.m_i8;
 }
 
+MgByteReader* MgProxyFeatureService::EnumerateDataStores(CREFSTRING providerName,
+                                                         CREFSTRING partialConnString)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::EnumerateDataStores_Id,    // Command Code
+                       2,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       1,                                           // Operation version
+                       MgCommand::knString, &providerName,          // Argument#1
+                       MgCommand::knString, &partialConnString,     // Argument#2
+                       MgCommand::knNone);                          // End of argument
 
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
+MgByteReader* MgProxyFeatureService::GetSchemaMapping(CREFSTRING providerName,
+                                                      CREFSTRING partialConnString)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::GetSchemaMapping_Id,   // Command Code
+                       2,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       1,                                           // Operation version
+                       MgCommand::knString, &providerName,          // Argument#1
+                       MgCommand::knString, &partialConnString,     // Argument#2
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}

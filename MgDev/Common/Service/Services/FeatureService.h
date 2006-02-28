@@ -1021,7 +1021,33 @@ PUBLISHED_API:
     virtual MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
         MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures) = 0;
 
+    ////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// This method enumerates all the providers and if they are FDO enabled for 
+    /// the specified provider and partial connection string.
+    ///
+    /// \param providerName (String/string)
+    /// The name of the Fdo feature provider.
+    /// \param partialConnString (String/string)
+    /// The partial connection string to the Fdo provider.
+    ///
+    /// \returns
+    /// Returns the list of data stores.
+    virtual MgByteReader* EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString) = 0;
 
+    ////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// This method returns all of the logical to physical schema mappings for 
+    /// the specified provider and partial connection string.
+    ///
+    /// \param providerName (String/string)
+    /// The name of the Fdo feature provider.
+    /// \param partialConnString (String/string)
+    /// The partial connection string to the Fdo provider.
+    ///
+    /// \returns
+    /// Returns the schema mapping.
+    virtual MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString) = 0;
 
 INTERNAL_API:
 
