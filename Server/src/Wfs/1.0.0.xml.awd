@@ -4,37 +4,62 @@
 <Definitions>
 
  <!-- This defines the format any given Feature Type will take when enumerated in GetCapabilities-->
+ <!--                                                                                     -->
+ <!--  Feature.Name          - The assigned name for the feature.                         -->
+ <!--  Feature.Title         - The human-readable name for this feature.                  -->
+ <!--                                                                                     -->
+ <!--  Feature.Abstract      - Human-readable description of the feature.                 -->
+ <!--  Feature.Keywords      - Keywords to describe the feature.                          -->
+ <!--                                                                                     -->
+ <!--  Feature.Source.id     - fully qualified                                            -->
+ <!--  Feature.Source        - The source part of the feature name (before the colon).    -->
+ <!--  Feature.Description   - The suffix part of the feature name (after the colon).     -->
+ <!--                                                                                     -->
+ <!--  Feature.Bounds        - Studio-provided <Bounds /> collection.                     -->
+ <!--                                                                                     -->
+ <!--  Feature.PrimarySRS    - Unused.  Reserved for future use. DO NOT USE.              -->
  <Define item="Feature.xml">
   <!-- 
        Feature class #&Feature.iteration;
     -->
     <FeatureType>
       <Name>&Feature.Name;</Name>
-      <Title>&Feature.Title;</Title>
+      <?If l="&Feature.Description;" op="eq" r=""?>
+       <Title>&Feature.Title;</Title>
+      <?Else?>
+       <Title>&Feature.Title; (&Feature.Description;)</Title>
+      <?Endif?>
       <Abstract>&Feature.Abstract;</Abstract>
-      <Keyword>&Feature.KeywordList;</Keyword>
-      <SRS>EPSG:4326</SRS> 
-   <?Ifdef item="Feature.WGS84BoundingBox"?>
-   <?Enum list="&Feature.WGS84BoundingBox;" using="&BoundingBox.xml;" item="Bounds"?>
-   <?Else?>
-    &Feature.name.to.BoundingBox;
-   <?Endif?>
+      <Keyword>&Feature.Keywords;</Keyword>
+      <?Enum list="&Feature.Bounds;" item="Bounds" using="&SRS.xml;"?>
+      <?Enum list="&Feature.Bounds;" item="Bounds" using="&LatLonBoundingBox.xml;"?>
+      <?Enum list="&Feature.Bounds;" item="Bounds" using="&BoundingBox.xml;"?>
     </FeatureType>
   </Define>
 
+  <Define item="SRS.xml">
+   <SRS>&Enum.item.SRS;</SRS>
+  </Define>
 
- <!-- pending implementation of metadata bounds -->
- <Define item="Bounds.translate">
-  <!-- Default bounding box, if none provided. -->
-  <translate>
+  <!-- Sniff out the EPSG:4326 item and use it for LatLon bounds -->
+  <Define item="LatLonBoundingBox.xml"><?If l="&Enum.item.SRS" op="eq" r="EPSG:4326"?>
+    <LatLonBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+    <?Endif?></Define>
+  <Define item="BoundingBox.xml">
+    <BoundingBox SRS="&Enum.item.SRS;" minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+  </Define>
+
+  <!-- Default, in case the metadata doesn't include a <Bounds> definition.  -->
+  <!-- EnumFeatures' Feature.Bounds eclipses this definition, but if that is -->
+  <!-- ever omitted, this one shows through.                                 -->
+  <!--  General format is one or more elements of the following:             -->
+  <!--    <Bounds SRS="..." west="..." south="..." east="..." north="..."/>  -->
+  <!--    where west, south, east, and north represent values in units       -->
+  <!--    determined by SRS.                                                 -->
+  <Define item="Feature.Bounds">
     <Bounds SRS="EPSG:4326" west="-180" south="-90" east="180" north="90"/>
-  </translate>
- </Define>
+  </Define>
 
- <!-- This "intermediate" definition allows us to put the <?Translate?> into another PI's argument list -->
- <Define item="Feature.name.to.Bounds"><?Translate text="&Feature.name;" with="&Bounds.translate;"?></Define>
- <!-- This definition takes a feature name and produces a bounding box definition based on a map lookup. -->
- <Define item="Feature.name.to.BoundingBox"><?Enum list="&Feature.name.to.Bounds;" using="&BoundingBox.xml;" item="Bounds"?></Define>
 
  <!-- Version 1.0.0 didn't break out the individual operators like
       subsequent versions did, therefore, we swallow up the six
@@ -68,9 +93,6 @@
  <Define item="FunctionNames.xml"><ogc:FunctionName nArgs="&Enum.item.args;">&Enum.item;</ogc:FunctionName></Define>
  <Define item="OtherSRS.xml"><wfs:OtherSRS>&Enum.item;</wfs:OtherSRS></Define>
  <Define item="Format.xml"><ows:Format>&Enum.item;</ows:Format></Define>
- <Define item="BoundingBox.xml">
-   <LatLonBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
- </Define>
 
  <!-- TODO: these will need to come from the full Feature metadata store -->
  <!-- for now, these are operating defaults. -->
