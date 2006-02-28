@@ -1977,16 +1977,16 @@ function ExecuteRectangleTool() {
         y1 = rcy2; y2 = rcy1;
     }
 
-    var pt1 = ScreenToMapUnits(x1, y1);
-    var pt2 = ScreenToMapUnits(x2, y2);
-
-    var mcsW = pt2.X - pt1.X;
-    var mcsH = pt2.Y - pt1.Y;
-
     if(tool == 3)
     {
         if((x2 - x1 <= 2) && (y2 - y1 <= 2))
             return;
+
+        pt1 = ScreenToMapUnits(x1, y1);
+        pt2 = ScreenToMapUnits(x2, y2);
+
+        mcsW = pt2.X - pt1.X;
+        mcsH = pt2.Y - pt1.Y;
 
         scale = CalculateScale1(mcsW, mcsH, mapDevW, mapDevH);
         scale = finscale? GetNearestFiniteScale(scale): NormalizeScale(scale);
@@ -1997,10 +1997,16 @@ function ExecuteRectangleTool() {
     {
         if((x2 - x1 <= 2) && (y2 - y1 <= 2))
         {
-            RequestPointSelection(pt1.X, pt1.Y, appending);
+            x1 --; y1 --;
+            x2 = x1 + 2; y2 = y1 + 2;
+            pt1 = ScreenToMapUnits(x1, y1);
+            pt2 = ScreenToMapUnits(x2, y2);
+            RequestPointSelection(pt1.X, pt1.Y, pt2.X, pt2.Y, appending);
         }
         else
         {
+            pt1 = ScreenToMapUnits(x1, y1);
+            pt2 = ScreenToMapUnits(x2, y2);
             RequestRectSelection(pt1.X, pt1.Y, pt2.X, pt2.Y, appending);
         }
     }
@@ -2058,11 +2064,11 @@ function CreateRequestHandler() {
     else
         return new XMLHttpRequest();
 }
-function RequestPointSelection(x, y, append) {
-    QueryFeatureInfo("POINT(" + x + " " + y + ")", append, 1, 7);
+function RequestPointSelection(x1, y1, x2, y2, append) {
+    QueryFeatureInfo(MakeWktPolygon(x1,y1,x2,y2), append, 1, 7);
 }
 function RequestRectSelection(x1, y1, x2, y2, append) {
-    QueryFeatureInfo("POLYGON((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "))", append, -1, 7);
+    QueryFeatureInfo(MakeWktPolygon(x1,y1,x2,y2), append, -1, 7);
 }
 function RequestCircleSelection(x, y, r, append) {
     QueryFeatureInfo("CURVEPOLYGON ((" + (x - r) + " " + y + " (CIRCULARARCSEGMENT (" + x + " " + (y - r) + ", " + (x + r) + " " + y + "), CIRCULARARCSEGMENT (" + x + " " + (y + r) + ", " + (x - r) + " " + y + "))))", append, 0, 7);
@@ -2076,6 +2082,9 @@ function RequestPolygonSelection(xs, ys, append) {
     }
     wkt += "))";
     QueryFeatureInfo(wkt, append, 0, 7);
+}
+function MakeWktPolygon(x1,y1,x2,y2) {
+    return "POLYGON((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "))";
 }
 function QueryFeatureInfo(geom, append, maxfeatures, which) {
     var url = webAgent;
