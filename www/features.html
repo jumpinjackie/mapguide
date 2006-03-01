@@ -34,8 +34,8 @@
   <br />
   <li>Built-in Resource Database 
     <ul type="disc">
-	  <li>Provides hierarchical storage of XML resource documents defining maps, layers, data connections, symbology, and viewer layout </li>
-	  <li>Allows linkage and reuse of resources, e.g. define data sources and layers once then reference them from multiple maps </li>
+	  <li>Provides hierarchical storage of XML resource documents that define maps, layers, data connections, symbology, and viewer layout </li>
+	  <li>Allows reuse of resources, e.g. define data sources and layers once then reference them from multiple maps </li>
 	  <li>Access based security model with inheritable permissions</li>
 	  <li>Permits meta-data and binary data to be associated with resource documents</li>
     </ul>
@@ -63,11 +63,11 @@
   <li>Extensive Server-Side APIs 
     <ul type="disc">
 	  <li>Create, query, read, and write permanant and session based XML resource documents </li>
-	  <li>Feature data query and update, including spatial and attribute query support, and schema discovery across all supported data sources </li>
+	  <li>Feature data query and update across all supported data sources, including spatial and attribute query support, and schema discovery  </li>
 	  <li>Coordinate system factory, definitions, coordinate reprojection, and great circle distance computation  </li>
 	  <li>Geometry creation, manipulation, and analysis with support for spatial predicates based on the DE-9IM model, overlay functions (intersection, union, difference, symetric difference), buffer, convex hull, area, and distance functions</li>
 	  <li>Vector and raster map stylization and rendering  </li>
-	  <li>Runtime map and layer manipulation, add / remove / change layers, change layer and group visibility, modify the definition of a layer, and alter the current center and scale </li>
+	  <li>Runtime map and layer manipulation, add / remove / change layers, change layer and group visibility, modify the definition of a layer, and alter the current view </li>
     </ul>
   </li>
   <br />
@@ -76,17 +76,17 @@
       <li>Fully multi-threaded and takes advantage of multi-core / multi-processor technology </li>
       <li>Multiple servers can be confugured as one logical site to improve scalability</li>
       <li>FastCGI based Map Agent loads once and stays loaded for use with both Apache and Microsoft IIS </li>
-      <li>Database connections are pooled and shared, greatly improving performance</li>
-      <li>Tile caching ensures map image tiles are only rendered once for the AJAX Viewer no matter how many users are viewing map</li>
+      <li>Database connections are pooled and shared between users,  improving performance</li>
+      <li>Tile caching ensures map image tiles are only rendered once for the AJAX Viewer no matter how many users are viewing the map</li>
       <li>Connection oriented, role based security</li>
       <li>Configurable logging of client access, administrative access, authentication attempts, errors, session lifetimes, and request tracing</li>
-      <li>Web-based site administration allows remote site and server configuration and log file access</li>
+      <li>Web-based site administration allows remote site and server configuration, and log file access</li>
     </ul>
   </li>
   <br />
   <li>Cross Platform 
     <ul type="disc">
-	  <li>Server can be deployed on Microsoft Windows as a Service or  on Linux as a Daemon </li>
+	  <li>Server can be deployed on Microsoft Windows or  Linux </li>
 	  <li>Supports  Apache  on Windows or Linux, and IIS on Microsoft Windows</li>
 	  <li>Web browser support for Microsoft Internet Explorer, Mozilla Firefox, and Sarfari</li>
     </ul>
