@@ -123,7 +123,6 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Geometry;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\Services\Drawing;..\..\Services\Feature;..\..\Services\Mapping;..\..\Services\Rendering;..\..\Services\Resource;..\..\Services\ServerAdmin;..\..\Services\Site;..\..\Services\Tile"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_FACTORY_EXPORTS"
-				MinimalRebuild="true"
 				RuntimeLibrary="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"

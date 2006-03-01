@@ -123,7 +123,6 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Mapping;..\..\..\..\Common\Stylization;..\..\..\..\Common\MdfModel;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_RENDERING_EXPORTS"
-				MinimalRebuild="true"
 				RuntimeLibrary="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
