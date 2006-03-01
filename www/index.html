@@ -6,14 +6,14 @@
   <body>
    <script type="text/javascript">
       function replaceLinks() {   
-         try{
+//         try{
             document.innerHTML =  document.innerHTML+ "foololoololooo";
             var tools2 = document.getElementById("projecthome");
             var tables2 = tools2.getElementsByTagName("table");
           tables2[0].innerHTML ='<!-- replaced project header info Note: May break in a juture release of CEE -->';         
-          } catch (e) {
-             alert(e);
-          }
+//          } catch (e) {
+//             alert(e);
+//          }
       }
       window.onload=replaceLinks;
    </script> 
