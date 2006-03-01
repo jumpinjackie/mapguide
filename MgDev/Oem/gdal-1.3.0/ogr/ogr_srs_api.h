@@ -279,6 +279,8 @@ typedef enum {
 #define SRS_PT_LM               "LM"
 #define SRS_PT_LAMBERT_CONFORMAL_CONIC                                  \
                                 "Lambert Conformal Conic" 
+#define SRS_PT_LAMBERT_CONFORMAL_CONIC_ALT                              \
+                                "Lambert_Conformal_Conic" 
 #define SRS_PT_LAMBERT_CONIC_CONFORMAL                                  \
                                 "Lambert Conic Conformal" 
 #define SRS_PT_LAMBERT_CONIC_CONFORMAL_WEST_ORIENTATED                  \

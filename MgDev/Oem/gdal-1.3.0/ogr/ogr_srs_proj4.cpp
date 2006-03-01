@@ -1420,8 +1420,10 @@ OGRErr OGRSpatialReference::exportToProj4( char ** ppszProj4 ) const
              EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC_2SP_BELGIUM) ||
              EQUAL(pszProjection,SRS_PT_LAMBERT_CONIC_CONFORMAL_2SP_BELGIUM) ||
              EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC) ||
+             EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC_ALT) ||
              EQUAL(pszProjection,SRS_PT_LAMBERT_CONIC_CONFORMAL) ||
              EQUAL(pszProjection,SRS_PT_LAMBERT_CONIC_CONFORMAL_WEST_ORIENTATED) ||
+             EQUAL(pszProjection,SRS_PT_LCC) ||
              EQUAL(pszProjection,SRS_PT_LM) )
     {
         sprintf( szProj4+strlen(szProj4),
