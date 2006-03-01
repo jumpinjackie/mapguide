@@ -20,7 +20,7 @@
 			IntermediateDirectory="..\..\obj\debug\WebApp"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -45,9 +45,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
@@ -64,16 +61,15 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="aced.lib xerces-c_2D.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib"
 				OutputFile="$(OutDir)/MgWebAppd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.2.13\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/WebAppd.pdb"
+				ProgramDatabaseFile="$(OutDir)/MgWebAppd.pdb"
 				SubSystem="2"
 				ImportLibrary="..\..\lib\debug\WebAppd.lib"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -106,7 +102,7 @@
 			IntermediateDirectory="..\..\obj\release\WebApp"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -128,12 +124,9 @@
 				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\Service;..\..\..\Common\Service\Geometry;..\..\..\Common\Service\Services;..\..\..\Common\Service\System;..\..\..\Common\Service\Util"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_WEBAPP_EXPORTS"
 				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="false"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -147,17 +140,17 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ace.lib xerces-c_2.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib"
 				OutputFile="$(OutDir)/MgWebApp.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.2.13\lib"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/MgWebApp.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				ImportLibrary="..\..\lib\release\WebApp.lib"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"

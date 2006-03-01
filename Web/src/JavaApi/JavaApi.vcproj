@@ -20,7 +20,7 @@
 			IntermediateDirectory="..\..\obj\debug\JavaApi"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -46,9 +46,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -64,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="aced.lib"
+				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)/MapGuideJavaApid.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
@@ -105,7 +102,7 @@
 			IntermediateDirectory="..\..\obj\release\JavaApi"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -128,9 +125,6 @@
 				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Oem\Java\include;..\..\..\Oem\Java\include\win32;..\..\..\Common\CoordinateSystem;..\..\..\Common\Service;..\..\..\Common\Service\Controller;..\..\..\Common\Service\Geometry;..\..\..\Common\Service\MapLayer;..\..\..\Common\Service\Services;..\..\..\Common\Service\Services\Rendering;..\..\..\Common\Service\System;..\..\..\Common\Service\Util;..\HttpHandler;..\WebApp;..\WebSupport"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;JAVA"
 				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -146,11 +140,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ace.lib"
+				AdditionalDependencies="ACE.lib"
 				OutputFile="$(OutDir)/MapGuideJavaApi.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/MapGuideJavaApi.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
