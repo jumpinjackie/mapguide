@@ -43,10 +43,8 @@
 				Optimization="3"
 				AdditionalIncludeDirectories=".."
 				PreprocessorDefinitions="ACE_BUILD_DLL;ACE_OS_BUILD_DLL;NDEBUG;WIN32;_WINDOWS"
-				MinimalRebuild="false"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
-				BufferSecurityCheck="true"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
@@ -133,11 +131,9 @@
 				Optimization="0"
 				AdditionalIncludeDirectories=".."
 				PreprocessorDefinitions="ACE_BUILD_DLL;ACE_OS_BUILD_DLL;_DEBUG;WIN32;_WINDOWS;"
-				MinimalRebuild="false"
 				ExceptionHandling="1"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				BufferSecurityCheck="true"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -2163,11 +2159,11 @@
 				>
 			</File>
 			<File
-				RelativePath="OS_Errno.h"
+				RelativePath="os_include\os_errno.h"
 				>
 			</File>
 			<File
-				RelativePath="os_include\os_errno.h"
+				RelativePath="OS_Errno.h"
 				>
 			</File>
 			<File
@@ -2555,11 +2551,11 @@
 				>
 			</File>
 			<File
-				RelativePath="os_include\sys\os_time.h"
+				RelativePath="os_include\os_time.h"
 				>
 			</File>
 			<File
-				RelativePath="os_include\os_time.h"
+				RelativePath="os_include\sys\os_time.h"
 				>
 			</File>
 			<File
