@@ -300,10 +300,10 @@ INTERNAL_API:
 
 private:
 
-    IGWSFeatureIterator* m_gwsFeatureIterator;
-    MgServerGwsGetFeatures* m_gwsGetFeatures;
+    GisPtr<IGWSFeatureIterator> m_gwsFeatureIterator;
+    Ptr<MgServerGwsGetFeatures> m_gwsGetFeatures;
     GwsFeatureIteratorMap m_secondaryGwsFeatureIteratorMap;
-    IGWSFeatureIterator* m_gwsFeatureIteratorCopy;
+    GisPtr<IGWSFeatureIterator> m_gwsFeatureIteratorCopy;
 
     void DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName);
 
