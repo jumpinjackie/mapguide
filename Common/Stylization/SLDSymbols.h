@@ -61,7 +61,7 @@ static const double SLD_TRIANGLE[] = {
 static const double cos36 = cos(36. * M_PI / 180.);
 static const double cos18 = cos(18. * M_PI / 180.);
 static const double sin36 = sin(36. * M_PI / 180.);
-static const double plen  = 1 - 0.5 / cos36; //length of the side of star point edge
+static const double plen  = 1. - 0.5 / cos36; //length of the side of star point edge
 
 //star (pentagonal)
 // CCW list order
@@ -90,7 +90,7 @@ static const double SLD_STAR[] = {
 
 //constant to derive a thickness for the plus
 static const double phi = 1.6180339887498948482045868343656; //Golden ratio
-static const double t = 0.5 / (2. * (phi + 1));
+static const double t = 0.5 / (2. * (phi + 1.));
 
 //cross (looks like plus sign)
 static const double SLD_CROSS[] = {
@@ -112,7 +112,7 @@ static const double SLD_CROSS[] = {
 
 //////////////////////////////////////////////
 
-static const double t2 = 2 * t / sqrt(2.);
+static const double t2 = 2. * t / sqrt(2.);
 
 static const double SLD_X[] = {
         t2,       0.,

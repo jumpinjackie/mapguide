@@ -124,7 +124,6 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".;Controller;CoordinateSystem;Data;Exception;Geometry;MapLayer;Net;Services;System;Util;..\CoordinateSystem;..\MdfModel;..\MdfParser;..\Security;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;&quot;..\..\Oem\gdal-1.3.0\ogr&quot;;&quot;..\..\Oem\gdal-1.3.0\port&quot;;&quot;..\..\Oem\proj-4.4.9\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_CORE_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
 				RuntimeLibrary="2"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"
