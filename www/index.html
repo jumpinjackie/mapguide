@@ -9,7 +9,9 @@
 //         try{
             document.innerHTML =  document.innerHTML+ "foololoololooo";
             var tools2 = document.getElementById("projecthome");
+			if (tools2 == null) alert("tools2 is null");
             var tables2 = tools2.getElementsByTagName("table");
+			if (tables2 == null) alert("tables2 is null");
           tables2[0].innerHTML ='<!-- replaced project header info Note: May break in a juture release of CEE -->';         
 //          } catch (e) {
 //             alert(e);
