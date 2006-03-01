@@ -180,28 +180,33 @@ MgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFea
 
     MdfModel::MdfString geom = vl->GetGeometry();
 
-    //add the geometry property
-    //and also spatial filter
-    if (!geom.empty())
-    {
-        //TODO:
-        //when constructing the spatial filter, we need to check the geometry capabilities
-        //allowed by the feature source of the layer.
-        //For SDF and most others, we can use EnvelopeIntersects, for Raster we need to use Intersects
-
-        //geometry providers -> we want an envelope intersects.
-        //If not, we need intersects. We should parse and check capabilities
-        //if we are to be really thorough, but we also do have a
-        //a more general query if the spatial fails
-
-        options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::EnvelopeIntersects);
-    }
-
     //set layer feature filter if any
-    if (overrideFilter && *overrideFilter != L'\0') //is it empty?
+    if (overrideFilter && *overrideFilter != L'\0')
+    {
+        //if there is an override filter, we will use that instead
+        //and drop the spatial query. We need to not use the spatial query
+        //in order to work around a problem with the filter evaluation in
+        //the FDO SHP provider. There are no bad side effects of this as long
+        //as override filters are only used to select features with specific IDs
+        //like they currently are.
         options->SetFilter(overrideFilter);
-    else if (!vl->GetFilter().empty())
-        options->SetFilter(vl->GetFilter());
+    }
+    else
+    {
+        //add the geometry property
+        //and also spatial filter
+        if (!geom.empty())
+        {
+            //geometry providers -> we want an envelope intersects.
+            //If not, we need intersects. We should parse and check capabilities
+            //if we are to be really thorough, but we also do have a
+            //a more general query if the spatial fails
+            options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::EnvelopeIntersects);
+        }
+
+        if (!vl->GetFilter().empty())
+            options->SetFilter(vl->GetFilter());
+    }
 
     Ptr<MgFeatureReader> rdr = (MgFeatureReader*)NULL;
 
@@ -1236,77 +1241,80 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                         mdef.height() = sz;
                         mdef.units() = RS_Units_Model;
 
-                        MdfModel::Symbol* symbol = ps->GetSymbol();
-
-                        if (symbol)
+                        if (ps)
                         {
-                            SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(ps->GetSymbol());
+                            MdfModel::Symbol* symbol = ps->GetSymbol();
 
-                            switch (type)
+                            if (symbol)
                             {
-                            case SymbolVisitor::stW2D:
+                                SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(ps->GetSymbol());
+
+                                switch (type)
                                 {
-                                    MdfModel::W2DSymbol* w2dsym = (MdfModel::W2DSymbol*)symbol;
-
-                                    mdef.name() = w2dsym->GetSymbolName();
-                                    mdef.library() = w2dsym->GetSymbolLibrary();
-
-                                    //override colors
-                                    ParseColor(w2dsym->GetAreaColor(), mdef.style().color());
-                                    ParseColor(w2dsym->GetLineColor(), mdef.style().outline().color());
-                                    ParseColor(w2dsym->GetTextColor(), mdef.style().background()); //text color stored in background
-                                }
-                                break;
-                            case SymbolVisitor::stMark:
-                                {
-                                    MdfModel::MarkSymbol* marksym = (MdfModel::MarkSymbol*)symbol;
-
-                                    MdfModel::MarkSymbol::Shape shape = marksym->GetShape();
-
-                                    switch (shape)
+                                case SymbolVisitor::stW2D:
                                     {
-                                    case MdfModel::MarkSymbol::Square :   mdef.name() = SLD_SQUARE_NAME;    break;
-                                    case MdfModel::MarkSymbol::Circle :   mdef.name() = SLD_CIRCLE_NAME;    break;
-                                    case MdfModel::MarkSymbol::Cross :    mdef.name() = SLD_CROSS_NAME;     break;
-                                    case MdfModel::MarkSymbol::Star :     mdef.name() = SLD_STAR_NAME;      break;
-                                    case MdfModel::MarkSymbol::Triangle : mdef.name() = SLD_TRIANGLE_NAME;  break;
-                                    case MdfModel::MarkSymbol::X :        mdef.name() = SLD_X_NAME;         break;
-                                    default: break;
+                                        MdfModel::W2DSymbol* w2dsym = (MdfModel::W2DSymbol*)symbol;
+
+                                        mdef.name() = w2dsym->GetSymbolName();
+                                        mdef.library() = w2dsym->GetSymbolLibrary();
+
+                                        //override colors
+                                        ParseColor(w2dsym->GetAreaColor(), mdef.style().color());
+                                        ParseColor(w2dsym->GetLineColor(), mdef.style().outline().color());
+                                        ParseColor(w2dsym->GetTextColor(), mdef.style().background()); //text color stored in background
                                     }
+                                    break;
+                                case SymbolVisitor::stMark:
+                                    {
+                                        MdfModel::MarkSymbol* marksym = (MdfModel::MarkSymbol*)symbol;
 
-                                    //override colors
-                                    ParseColor(marksym->GetFill()->GetForegroundColor(), mdef.style().color());
-                                    ParseColor(marksym->GetEdge()->GetColor(), mdef.style().outline().color());
-                                    ParseColor(marksym->GetFill()->GetBackgroundColor(), mdef.style().background());
+                                        MdfModel::MarkSymbol::Shape shape = marksym->GetShape();
+
+                                        switch (shape)
+                                        {
+                                        case MdfModel::MarkSymbol::Square :   mdef.name() = SLD_SQUARE_NAME;    break;
+                                        case MdfModel::MarkSymbol::Circle :   mdef.name() = SLD_CIRCLE_NAME;    break;
+                                        case MdfModel::MarkSymbol::Cross :    mdef.name() = SLD_CROSS_NAME;     break;
+                                        case MdfModel::MarkSymbol::Star :     mdef.name() = SLD_STAR_NAME;      break;
+                                        case MdfModel::MarkSymbol::Triangle : mdef.name() = SLD_TRIANGLE_NAME;  break;
+                                        case MdfModel::MarkSymbol::X :        mdef.name() = SLD_X_NAME;         break;
+                                        default: break;
+                                        }
+
+                                        //override colors
+                                        ParseColor(marksym->GetFill()->GetForegroundColor(), mdef.style().color());
+                                        ParseColor(marksym->GetEdge()->GetColor(), mdef.style().outline().color());
+                                        ParseColor(marksym->GetFill()->GetBackgroundColor(), mdef.style().background());
+                                    }
+                                    break;
+                                case SymbolVisitor::stFont:
+                                    {
+                                        MdfModel::FontSymbol* fontSym = (MdfModel::FontSymbol*)symbol;
+
+                                        //store the font name as the library string
+                                        mdef.library() = fontSym->GetFontName();
+
+                                        //store the marker character as the symbol name
+                                        mdef.name() = (wchar_t)fontSym->GetCharacter();
+
+                                        RS_FontStyle_Mask style = RS_FontStyle_Regular;
+
+                                        if (_wcsnicmp(L"true", fontSym->GetBold().c_str(), 4) == 0)
+                                            style = (RS_FontStyle_Mask)(style | RS_FontStyle_Bold);
+                                        if (_wcsnicmp(L"true", fontSym->GetItalic().c_str(), 4) == 0)
+                                            style = (RS_FontStyle_Mask)(style | RS_FontStyle_Italic);
+                                        if (_wcsnicmp(L"true", fontSym->GetUnderlined().c_str(), 4) == 0)
+                                            style = (RS_FontStyle_Mask)(style | RS_FontStyle_Underline);
+
+                                        mdef.fontstyle() = style;
+
+                                        //color
+                                        ParseColor(fontSym->GetForegroundColor(), mdef.style().color());
+                                    }
+                                //TODO: other types of symbols
+                                default: break;
+
                                 }
-                                break;
-                            case SymbolVisitor::stFont:
-                                {
-                                    MdfModel::FontSymbol* fontSym = (MdfModel::FontSymbol*)symbol;
-
-                                    //store the font name as the library string
-                                    mdef.library() = fontSym->GetFontName();
-
-                                    //store the marker character as the symbol name
-                                    mdef.name() = (wchar_t)fontSym->GetCharacter();
-
-                                    RS_FontStyle_Mask style = RS_FontStyle_Regular;
-
-                                    if (_wcsnicmp(L"true", fontSym->GetBold().c_str(), 4) == 0)
-                                        style = (RS_FontStyle_Mask)(style | RS_FontStyle_Bold);
-                                    if (_wcsnicmp(L"true", fontSym->GetItalic().c_str(), 4) == 0)
-                                        style = (RS_FontStyle_Mask)(style | RS_FontStyle_Italic);
-                                    if (_wcsnicmp(L"true", fontSym->GetUnderlined().c_str(), 4) == 0)
-                                        style = (RS_FontStyle_Mask)(style | RS_FontStyle_Underline);
-
-                                    mdef.fontstyle() = style;
-
-                                    //color
-                                    ParseColor(fontSym->GetForegroundColor(), mdef.style().color());
-                                }
-                            //TODO: other types of symbols
-                            default: break;
-
                             }
                         }
 
