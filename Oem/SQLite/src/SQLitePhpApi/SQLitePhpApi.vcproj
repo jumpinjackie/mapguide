@@ -44,7 +44,6 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\ACE\ACE_wrappers;..\..\..\php;..\..\..\php\main;..\..\..\php\Zend;..\..\..\php\TSRM;..\..\..\php\ext\w32api;..\..\..\..\Common\Service;..\..\..\..\Common\Service\System;..\Exceptions;..\SQLite3;..\SqliteVM"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1"
-				IgnoreStandardIncludePath="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -64,13 +63,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkLibraryDependencies="true"
-				UseLibraryDependencyInputs="false"
-				AdditionalDependencies="php5ts.lib ACEd.lib "
+				AdditionalDependencies="ACEd.lib php5ts.lib"
 				OutputFile="$(OutDir)/php_SQLitePhpApid.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\php\dev"
-				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/php_SQLitePhpApid.pdb"
 				SubSystem="2"
@@ -147,7 +143,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="php5ts.lib ACE.lib"
+				AdditionalDependencies="ACE.lib php5ts.lib"
 				OutputFile="$(OutDir)/php_SQLitePhpApi.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\php\dev"
