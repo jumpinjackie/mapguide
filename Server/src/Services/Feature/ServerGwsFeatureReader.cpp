@@ -54,8 +54,6 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader()
 MgServerGwsFeatureReader::~MgServerGwsFeatureReader()
 {
     Close();
-    SAFE_RELEASE(m_gwsGetFeatures);
-    GIS_SAFE_RELEASE(m_gwsFeatureIterator);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -576,7 +574,7 @@ MgRaster* MgServerGwsFeatureReader::GetRaster(CREFSTRING propertyName)
     assert(featureService != NULL);
 
     retVal->SetMgService(featureService);
-    retVal->SetHandle((INT32)(INT64)m_gwsGetFeatures);
+    retVal->SetHandle((INT32)(INT64)m_gwsGetFeatures.p);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetRaster");
 
@@ -611,7 +609,7 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
 
     if (operationCompleted && (mgException == 0))
     {
-        stream->WriteInt32((INT32)(INT64)m_gwsGetFeatures);// Write the pointer value so we can retrieve it for later use
+        stream->WriteInt32((INT32)(INT64)m_gwsGetFeatures.p);// Write the pointer value so we can retrieve it for later use
         stream->WriteObject((MgFeatureSet*)featureSet); // Write the feature set
     }
     else
@@ -863,8 +861,5 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
 
 void MgServerGwsFeatureReader::SetGwsIteratorCopy(IGWSFeatureIterator* iterCopy)
 {
-
     m_gwsFeatureIteratorCopy = GIS_SAFE_ADDREF(iterCopy);
-
 }
-
