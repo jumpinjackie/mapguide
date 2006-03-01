@@ -146,6 +146,7 @@
 				AdditionalLibraryDirectories="&quot;..\..\..\Oem\CppUnit-1.9.14\lib&quot;;&quot;..\..\..\Oem\FDO\lib&quot;"
 				DelayLoadDLLs="GisCommon.dll"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/MgUnitTesting.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

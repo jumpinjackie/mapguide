@@ -150,6 +150,7 @@
 				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib"
 				DelayLoadDLLs="Fdo.dll;GisCommon.dll;GisGeometry.dll"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/MgGwsCommon.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

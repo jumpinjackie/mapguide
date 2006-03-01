@@ -154,6 +154,7 @@
 				ModuleDefinitionFile="GwsQueryEngine.def"
 				DelayLoadDLLs="fdo.dll;GisCommon.dll;GisGeometry.dll"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/MgGwsQueryEngine.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
