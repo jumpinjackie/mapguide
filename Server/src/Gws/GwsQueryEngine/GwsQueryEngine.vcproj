@@ -21,7 +21,7 @@
 			IntermediateDirectory="..\..\..\obj\debug\GwsQueryEngine"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -46,8 +46,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -65,13 +63,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fdo.lib GisCommon.lib GisGeometry.lib MgGwsCommond.lib"
+				AdditionalDependencies="Fdo.lib GisCommon.lib GisGeometry.lib MgGwsCommond.lib"
 				OutputFile="$(OutDir)/MgGwsQueryEngined.dll"
 				LinkIncremental="2"
-				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;..\..\..\..\Oem\FDO\lib&quot;;&quot;..\..\..\lib\debug&quot;"
 				ModuleDefinitionFile="GwsQueryEngine.def"
-				DelayLoadDLLs="fdo.dll;GisCommon.dll;GisGeometry.dll"
+				DelayLoadDLLs="Fdo.dll;GisCommon.dll;GisGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgGwsQueryEngined.pdb"
 				SubSystem="2"
@@ -109,7 +106,7 @@
 			IntermediateDirectory="..\..\..\obj\release\GwsQueryEngine"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -133,8 +130,6 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
 				WarnAsError="true"
@@ -152,10 +147,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fdo.lib GisCommon.lib GisGeometry.lib MgGwsCommon.lib"
+				AdditionalDependencies="Fdo.lib GisCommon.lib GisGeometry.lib MgGwsCommon.lib"
 				OutputFile="$(OutDir)/MgGwsQueryEngine.dll"
 				LinkIncremental="1"
-				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;..\..\..\..\Oem\FDO\lib&quot;;&quot;..\..\..\lib\release&quot;"
 				ModuleDefinitionFile="GwsQueryEngine.def"
 				DelayLoadDLLs="fdo.dll;GisCommon.dll;GisGeometry.dll"

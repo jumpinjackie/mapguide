@@ -46,10 +46,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				BufferSecurityCheck="true"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -74,7 +70,6 @@
 				SubSystem="2"
 				ImportLibrary="..\..\..\lib\debug\MgServerTileServiced.lib"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -130,9 +125,6 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_TILE_EXPORTS"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -151,7 +143,7 @@
 				OutputFile="$(OutDir)/MgServerTileService.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib"
-				IgnoreDefaultLibraryNames="LIBCMT.lib"
+				IgnoreDefaultLibraryNames="libcmt.lib"
 				DelayLoadDLLs=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerTileService.pdb"
@@ -160,7 +152,6 @@
 				EnableCOMDATFolding="2"
 				ImportLibrary="..\..\..\lib\release\MgServerTileService.lib"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"

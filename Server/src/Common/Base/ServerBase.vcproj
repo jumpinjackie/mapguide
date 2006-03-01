@@ -46,11 +46,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				BufferSecurityCheck="true"
-				DisableLanguageExtensions="false"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -74,7 +69,6 @@
 				SubSystem="2"
 				ImportLibrary="..\..\..\lib\debug\MgServerBased.lib"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -130,9 +124,6 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_BASE_EXPORTS"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -158,7 +149,6 @@
 				EnableCOMDATFolding="2"
 				ImportLibrary="..\..\..\lib\release\MgServerBase.lib"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
