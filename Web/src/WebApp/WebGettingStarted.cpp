@@ -66,13 +66,19 @@ MgByteReader* MgWebLayout::ProcessGettingStartedPage(MgByteReader* htmlGettingSt
             int codeEnd = htmlIn.find('"', codeBegin += 45);
             if(codeEnd == string::npos)
                 return NULL;
-            INT32 cmdId = GetCommandIdFromCode(htmlIn.substr(codeBegin, codeEnd - codeBegin));
-            string cmdCode = htmlIn.substr(codeBegin, codeEnd - codeBegin);
-            if(cmdId == -1)
+            Ptr<MgWebCommand> cmd = GetCommandFromCode(htmlIn.substr(codeBegin, codeEnd - codeBegin));
+            if(cmd == NULL)
                 return NULL;
-            if(IsActionInUse(cmdId, tgt)) {
+            if(IsActionInUse(cmd, tgt)) {
                 //this action is defined and in use in this web layout. Carry it over in the HTML output
-                htmlOut += htmlIn.substr(dtBegin, ddEnd - dtBegin - 1 + 6);
+                htmlOut += "<dt>";
+                string iconUrl;
+                if(cmd->GetAction() != MgWebActions::Search)
+                    iconUrl = MgUtil::WideCharToMultiByte(cmd->GetIconUrl());
+                else
+                    iconUrl = "../stdicons/icon_search.gif";    //there may be several search commands all using different icons, so use the default one
+                htmlOut += "<img width=16 heigh=16 align=\"absbottom\" src=\"" + iconUrl + "\">&nbsp;";
+                htmlOut += htmlIn.substr(dtBegin + 4, ddEnd - dtBegin - 1 + 6 - 4);
             }
         }
         else {
@@ -93,31 +99,34 @@ MgByteReader* MgWebLayout::ProcessGettingStartedPage(MgByteReader* htmlGettingSt
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Get a command id from the command code in the getting started page
+// Get a command from the command code in the getting started page
 //
-INT32 MgWebLayout::GetCommandIdFromCode(string code)
+MgWebCommand* MgWebLayout::GetCommandFromCode(string code)
 {
     map<string, INT32>::const_iterator it;
     it = cmdCodes.find(code);
     if(it == cmdCodes.end())
-        return -1;
-    return it->second;
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Tells if the specified action is in use in this web layout
-//
-bool MgWebLayout::IsActionInUse(INT32 cmdId, INT32 targetViewer)
-{
+        return NULL;
+    INT32 cmdId = it->second;
     for(INT32 ci = 0; ci < m_commands->GetCount(); ci++) {
         Ptr<MgWebCommand> cmd = m_commands->GetItem(ci);
         if(cmd->GetAction() == cmdId) {
-            if((cmd->GetTargetViewerType() & targetViewer) != targetViewer)
-                return false;
-            if(cmd->IsUsed())
-                return true;
+            return SAFE_ADDREF((MgWebCommand*)cmd);
         }
     }
+    return NULL;
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+// Tells if the specified command is in use in this web layout
+//
+bool MgWebLayout::IsActionInUse(MgWebCommand* cmd, INT32 targetViewer)
+{
+    if((cmd->GetTargetViewerType() & targetViewer) != targetViewer)
+        return false;
+    if(cmd->IsUsed())
+        return true;
     return false;
 }
 

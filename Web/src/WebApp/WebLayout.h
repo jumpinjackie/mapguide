@@ -357,14 +357,14 @@ protected:
     INT32 ValidateTargetType(CREFSTRING tt);
 
     ///////////////////////////////////////////////////////////////////////////
-    // Get a command id from the command code in the getting started page
+    // Get a command from the command code in the getting started page
     //
-    INT32 GetCommandIdFromCode(string code);
+    MgWebCommand* GetCommandFromCode(string code);
 
     ///////////////////////////////////////////////////////////////////////////
-    // Tells if the specified action is in use in this web layout
+    // Tells if the specified command is in use in this web layout
     //
-    bool IsActionInUse(INT32 cmdId, INT32 targetViewer);
+    bool IsActionInUse(MgWebCommand* cmd, INT32 targetViewer);
 
 CLASS_ID:
     static const INT32 m_cls_id = WebApp_WebLayout;
