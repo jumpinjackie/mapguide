@@ -124,7 +124,6 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\..\Oem\FDO\inc;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Service;..\..\..\..\Common\Service\CoordinateSystem;..\..\..\..\Common\Service\Geometry;..\..\..\..\Common\Service\MapLayer;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\..\..\Common\Service\Util;..\..\..\..\Common\Stylization;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\..\Common\ServerUtil"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_MAPPING_EXPORTS"
-				MinimalRebuild="true"
 				RuntimeLibrary="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
