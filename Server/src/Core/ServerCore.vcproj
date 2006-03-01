@@ -68,7 +68,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\dbxml-2.2.13\lib&quot;;..\..\..\Oem\FDO\lib;..\..\..\Common\lib\debug;..\..\lib\debug"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				ProgramDatabaseFile="$(OutDir)/mgserver.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -149,7 +149,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\dbxml-2.2.13\lib&quot;;..\..\..\Oem\FDO\lib;..\..\..\Common\lib\release;..\..\lib\release"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				ProgramDatabaseFile="$(OutDir)/mgserver.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
