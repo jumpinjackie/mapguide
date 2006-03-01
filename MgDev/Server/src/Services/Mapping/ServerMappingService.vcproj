@@ -46,11 +46,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				BufferSecurityCheck="true"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough="ServerMappingServiceDefs.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -76,7 +71,6 @@
 				SubSystem="2"
 				ImportLibrary="..\..\..\lib\debug\MgServerMappingServiced.lib"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -132,10 +126,6 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_MAPPING_EXPORTS"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough="ServerMappingServiceDefs.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -155,7 +145,7 @@
 				OutputFile="$(OutDir)/MgServerMappingService.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\..\..\Oem\FDO\lib&quot;"
-				IgnoreDefaultLibraryNames="LIBCMT.lib"
+				IgnoreDefaultLibraryNames="libcmt.lib"
 				DelayLoadDLLs="Fdo.dll;GisCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerMappingService.pdb"
@@ -164,7 +154,6 @@
 				EnableCOMDATFolding="2"
 				ImportLibrary="..\..\..\lib\release\MgServerMappingService.lib"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"

@@ -46,11 +46,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				BufferSecurityCheck="true"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough="ServerAdminService.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -74,7 +69,6 @@
 				SubSystem="2"
 				ImportLibrary="..\..\..\lib\debug\MgServerAdminServiced.lib"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -130,10 +124,6 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_SERVERADMIN_EXPORTS"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough="ServerAdminService.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -152,7 +142,7 @@
 				OutputFile="$(OutDir)/MgServerAdminService.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
-				IgnoreDefaultLibraryNames="LIBCMT.lib"
+				IgnoreDefaultLibraryNames="libcmt.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerAdminService.pdb"
 				SubSystem="2"
@@ -160,7 +150,6 @@
 				EnableCOMDATFolding="2"
 				ImportLibrary="..\..\..\lib\release\MgServerAdminService.lib"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"

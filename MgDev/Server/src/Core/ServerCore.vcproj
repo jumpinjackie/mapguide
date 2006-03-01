@@ -45,16 +45,11 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				CompileAs="0"
 				DisableSpecificWarnings="4267"
-				ShowIncludes="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -76,7 +71,6 @@
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				SubSystem="1"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -128,7 +122,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Oem\FDO\inc;..\..\..\Common\CoordinateSystem;..\..\..\Common\Service;..\..\..\Common\Service\Geometry;..\..\..\Common\Service\Services;..\..\..\Common\Service\System;..\Common;..\Common\Base;..\Services\Drawing;..\Services\Feature;..\Common\Manager;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1"
@@ -136,14 +129,9 @@
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				CompileAs="0"
 				DisableSpecificWarnings="4267"
 			/>
 			<Tool
@@ -160,13 +148,11 @@
 				AdditionalDependencies="ACE.lib xerces-c_2.lib"
 				OutputFile="$(OutDir)/mgserver.exe"
 				LinkIncremental="1"
-				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\dbxml-2.2.13\lib&quot;;..\..\..\Oem\FDO\lib;..\..\..\Common\lib\release;..\..\lib\release"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				SubSystem="1"
 				TargetMachine="1"
-				FixedBaseAddress="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
