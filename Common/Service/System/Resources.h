@@ -24,8 +24,9 @@
 
 class ACE_Configuration_Heap;
 
-typedef std::pair<STRING, ACE_Configuration_Heap*> ResourceCachePair;
-typedef std::map<STRING, ACE_Configuration_Heap*> ResourceCache;
+typedef std::map<STRING, STRING> ResourceSection;
+typedef std::map<STRING, ResourceSection*> ResourceFile;
+typedef std::map<STRING, ResourceFile*> ResourceCache;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// MapGuide Resources try/catch/throw macros.
@@ -235,6 +236,7 @@ INTERNAL_API:
 private:
     static const STRING ResourceFilenameExtension;
     static const STRING ResourceFilenameUnderscore;
+    static const STRING WhiteSpace;
 
 private:
     /// \brief
@@ -244,6 +246,12 @@ private:
 
     /// Helper to get locale-specific resources
     ResourceCache::iterator GetResources(CREFSTRING locale, bool bLoad);
+
+    /// Helper to delete ResourceFile map
+    void DeleteResourceFile(ResourceFile* file);
+
+    /// Helper function to read in UTF8 resource file and parse it
+    bool ParseFile(CREFSTRING strResourceFileName, ResourceFile* resourceFile);
 
     /// Pointer to a process-wide singleton.
     static Ptr<MgResources> m_resources;
