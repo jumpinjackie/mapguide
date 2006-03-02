@@ -33,6 +33,7 @@ CPSZ MgOgcWmsException::kpszMissingDimensionValue  = _("MissingDimensionValue");
 CPSZ MgOgcWmsException::kpszInvalidDimensionValue  = _("InvalidDimensionValue");
 CPSZ MgOgcWmsException::kpszOperationNotSupported  = _("OperationNotSupported");
 CPSZ MgOgcWmsException::kpszMissingBoundingBox     = _("MissingBoundingBox");
+CPSZ MgOgcWmsException::kpszInvalidBoundingBox     = _("InvalidBoundingBox");
 
 // A catch-all for the innards being really unhealthy!
 CPSZ MgOgcException::kpszInternalError          = _("InternalError");

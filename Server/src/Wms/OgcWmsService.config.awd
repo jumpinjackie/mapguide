@@ -37,7 +37,7 @@
 
  <!-- The URL elements.  Change to suit, as this is reported -->
  <Define item="SERVER_NAME">(provide your server name)</Define>
- <Define item="SCRIPT_NAME">/mapguide/mapagent/mapagent.fcgi</Define>
+ <Define item="SCRIPT_NAME">/mapguide/mapagent/mapagent.fcgi?</Define>
 
  <!-- Stock definitions -->
  <Define item="URl.OnlineResource">http://&SERVER_NAME;/</Define>

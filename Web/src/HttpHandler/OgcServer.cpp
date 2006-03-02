@@ -29,6 +29,7 @@
 CPSZ kpszQueryStringService         = _("service");
 CPSZ kpszQueryStringRequest         = _("request");
 CPSZ kpszQueryStringVersion         = _("version");
+CPSZ kpszQueryStringWmtVersion         = _("wmtver");
 CPSZ kpszQueryStringFormat          = _("format");
 CPSZ kpszQueryStringCrs             = _("crs");
 CPSZ kpszQueryStringSrs             = _("srs");
@@ -1209,11 +1210,21 @@ VPSZ MgOgcServer::LoadFile(CPSZ pszFileName)
 // Version negotiation happens here.
 CPSZ MgOgcServer::NegotiatedVersion(CPSZ pszRequested)
 {
-    if(m_sNegotiatedVersion.length() == 0 || pszRequested != NULL) {
-        if(pszRequested == NULL)  {
+    if(m_sNegotiatedVersion.length() == 0 || pszRequested != NULL) 
+    {
+        if(pszRequested == NULL)  
+        {
+            // Read the VERSION parameter
             pszRequested = this->RequestParameter(kpszQueryStringVersion);
-            if(pszRequested == NULL) // still
-                pszRequested = kpszVersionRediculouslyHighVersion;
+            if(pszRequested == NULL)
+            {
+                // Look for the WMTVER parameter used in older request formats
+                pszRequested = this->RequestParameter(kpszQueryStringWmtVersion);
+                if(pszRequested == NULL) // still
+                {
+                    pszRequested = kpszVersionRediculouslyHighVersion;
+                }
+            }
         }
 
 #ifdef _DEBUG

@@ -33,6 +33,10 @@ CPSZ kpszQueryStringHeight          = _("height");
 CPSZ kpszFilenameGlobalConfigWms    = _("Wms:OgcWmsService.config");
 CPSZ kpszFilenameTemplatePrefixWms  = _("Wms:");
 
+// Supported image formats
+CPSZ kpszImageFormatPNG             = _("image/png");
+CPSZ kpszImageFormatGIF             = _("image/gif");
+CPSZ kpszImageFormatJPEG            = _("image/jpeg");
 
 // Plain ol' "GetCapabilities" is general to all Ogc Services, so it lives in the OgcServer source.
 CPSZ kpszQueryValueCapabilities     = _("Capabilities"); // keyword for pre 1.0.8 versions
@@ -56,6 +60,9 @@ CPSZ kpszExceptionMessageMissingMapDimension = _("The request must contain WIDTH
 CPSZ kpszExceptionMessageInvalidMapDimension = _("The WIDTH and HEIGHT arguments must be positive integer values."); // Localize
 CPSZ kpszExceptionMessageMissingCrs = _("The spatial reference system must be specified using either the CRS or SRS argument."); // Localize
 CPSZ kpszExceptionMessageMissingBoundingBox = _("The bounding box for the map must be specified using the BBOX argument."); // Localize
+CPSZ kpszExceptionMessageInvalidBoundingBox = _("The bounding box for the map must be specified using four numerical values in the order: minX,minY,maxX,maxY."); // Localize
+CPSZ kpszExceptionMessageInvalidImageFormat = _("The request uses an unsupported image format."); // Localize
+CPSZ kpszExceptionMessageMissingImageFormat = _("The request must contain a FORMAT parameter to specify the required image format."); // Localize
 // END LOCALIZATION
 
 CPSZ kpszPiEnumLayers                      = _("EnumLayers");
@@ -300,13 +307,37 @@ bool MgOgcWmsServer::ValidateMapParameters()
 {
     bool bValid = true;
 
-    // Check that a list of layers was specified
-    CPSZ mapLayerList = RequestParameter(kpszQueryStringLayers);
-    if(mapLayerList == NULL || szlen(mapLayerList) == 0)
+    // Check the image format
+    CPSZ imageFormat = RequestParameter(kpszQueryStringFormat);
+    if(imageFormat != NULL && szlen(imageFormat) > 0)
     {
-        ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszLayerNotDefined,
-                                                         kpszExceptionMessageMapLayersMissing));
+        if(SZ_NEI(imageFormat, kpszImageFormatPNG) &&
+            SZ_NEI(imageFormat, kpszImageFormatJPEG) &&
+            SZ_NEI(imageFormat, kpszImageFormatGIF))
+        {
+            ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
+                                                             kpszExceptionMessageInvalidImageFormat));
+            bValid = false;
+        }
+    }
+    else
+    {
+        // The required FORMAT parameter is missing
+        ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
+                                                         kpszExceptionMessageMissingImageFormat));
         bValid = false;
+    }
+
+    if(bValid)
+    {
+        // Check that a list of layers was specified
+        CPSZ mapLayerList = RequestParameter(kpszQueryStringLayers);
+        if(mapLayerList == NULL || szlen(mapLayerList) == 0)
+        {
+            ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszLayerNotDefined,
+                                                             kpszExceptionMessageMapLayersMissing));
+            bValid = false;
+        }
     }
 
     //Check that a spatial reference system was specified
@@ -337,6 +368,29 @@ bool MgOgcWmsServer::ValidateMapParameters()
             ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszMissingBoundingBox,
                                                  kpszExceptionMessageMissingBoundingBox));
             bValid = false;
+        }
+        else
+        {
+            Ptr<MgStringCollection> bboxParams = MgStringCollection::ParseCollection(bbox, _(","));
+            if(bboxParams != NULL && bboxParams->GetCount() == 4)
+            {
+                double minX = MgUtil::StringToDouble(bboxParams->GetItem(0));
+                double minY = MgUtil::StringToDouble(bboxParams->GetItem(1));
+                double maxX = MgUtil::StringToDouble(bboxParams->GetItem(2));
+                double maxY = MgUtil::StringToDouble(bboxParams->GetItem(3));
+                if(minX >= maxX || minY >= maxY)
+                {
+                    ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidBoundingBox,
+                                                 kpszExceptionMessageInvalidBoundingBox));
+                    bValid = false;
+                }
+            }
+            else
+            {
+                    ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidBoundingBox,
+                                                 kpszExceptionMessageInvalidBoundingBox));
+                    bValid = false;
+            }
         }
     }
 

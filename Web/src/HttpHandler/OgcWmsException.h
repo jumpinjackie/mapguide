@@ -70,6 +70,7 @@ MissingBoundingBox    Request does not contain a required bounding box parameter
     static CPSZ kpszInvalidDimensionValue;
     static CPSZ kpszOperationNotSupported;
     static CPSZ kpszMissingBoundingBox;
+    static CPSZ kpszInvalidBoundingBox;
 };
 
 #endif//_OgcWmsException_h
