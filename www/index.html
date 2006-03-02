@@ -12,7 +12,11 @@
             var tables2 = tools2.getElementsByTagName("table");
 			if (tables2[0] != null)
 			{
-            	tables2[0].rows.length = 0;
+				var rowCount = tables2[0].rows;
+            	for (i = 0; i < rowCount; i++)
+				{
+					tables2[0].deleteRow(0);
+				}
 //            	tables2[0].innerHTML ='<!-- replaced project header info Note: May break in a juture release of CEE -->';   
 			}      
           } catch (e) {
