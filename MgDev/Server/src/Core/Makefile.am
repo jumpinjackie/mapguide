@@ -138,6 +138,7 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/ResourceService/SampleRepositoryHeader.xml ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/ResourceService/SampleRepositoryContent.xml ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/ResourceService/Shuttle.zip ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/ResourceService/Shuttle.zip ../UnitTestFiles/World.mgp
 	@cp -f ../../../UnitTest/TestData/ResourceService/World_Countries.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/TEST.FeatureSource ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/TEST.sdf ../UnitTestFiles
