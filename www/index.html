@@ -12,8 +12,7 @@
             var tables2 = tools2.getElementsByTagName("table");
 			if (tables2[0] != null)
 			{
-				var rowCount = tables2[0].rows;
-            	for (i = 0; i < rowCount; i++)
+				while (tables2[0].rows.length > 0);
 				{
 					tables2[0].deleteRow(0);
 				}
