@@ -95,6 +95,12 @@
  <Define item="Service.Keywords.xml"><Keyword>&Enum.item;</Keyword>
  </Define>
 
+ <!-- Overrides of default Exception formats     
+  specific to this version template -->
+ <Define item="Formats.Exception">
+  <item>application/vnd.ogc.se_xml</item>
+ </Define>
+
 </Definitions>
 
 <!--
@@ -332,7 +338,7 @@
   Exception Format  - XML
 
 -->
-<Response request="Exception" content-type="text/xml">
+<Response request="Exception" content-type="application/vnd.ogc.se_xml">
 <ServiceExceptionReport version="&TemplateVersion;">
  <ServiceException code="&Exception.Type;">
   &Exception.message;

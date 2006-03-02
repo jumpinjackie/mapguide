@@ -117,6 +117,12 @@
   <?Translate text="&Enum.Item;" with="&Formats.translate;"?>
  </Define>
 
+ <!-- Overrides of default Exception formats     
+  specific to this version template -->
+ <Define item="Formats.Exception">
+  <item>text/xml</item>
+ </Define>
+
 </Definitions>
 
 <!--
