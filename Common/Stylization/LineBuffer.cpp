@@ -43,7 +43,7 @@
 LineBuffer::LineBuffer(int size)
 : m_bounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX)
 {
-    m_types_len = size;
+    m_types_len = rs_max(size, 2);
     m_types = new unsigned char[m_types_len];
     m_pts_len = m_types_len * 2;
     m_pts = new double[m_pts_len];
