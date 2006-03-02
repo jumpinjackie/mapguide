@@ -145,6 +145,8 @@ const STRING MgResources::ServerAdminService            = L"ServerAdminService";
 const STRING MgResources::SiteService                   = L"SiteService";
 const STRING MgResources::TileService                   = L"TileService";
 
+const STRING MgResources::WhiteSpace                          = L"\n\r\t ";
+
 MgResources::MgResources()
 {
     // default path
@@ -162,11 +164,9 @@ MgResources::~MgResources(void)
 
     for(iterator = m_resourceCache.begin(); iterator != m_resourceCache.end(); iterator++)
     {
-        ACE_Configuration_Heap* pResources = (ACE_Configuration_Heap*)((*iterator).second);
-        delete pResources;
-        pResources = NULL;
+        DeleteResourceFile(iterator->second);
+        iterator->second = NULL;       
     }
-
     m_resourceCache.clear();
 }
 
@@ -257,19 +257,19 @@ void MgResources::LoadResources(CREFSTRING locale)
     if (m_resourceCache.end() != iterator)
     {
         // Remove specified locale from the cache as we want to update it.
+        DeleteResourceFile(iterator->second);
+        iterator->second = NULL;
         m_resourceCache.erase(iterator);
     }
 
-    ACE_Configuration_Heap* pResources = new ACE_Configuration_Heap();
-    if (pResources->open() == 0)
+    ResourceFile* pResources = new ResourceFile();
+    if (NULL != pResources)
     {
         STRING strResourceFilename = GetResourceFilename(locale);
 
-        ACE_Ini_ImpExp configImpExp(*pResources);
-        if (configImpExp.import_config(MG_WCHAR_TO_TCHAR(strResourceFilename)) == 0)
+        if (true == ParseFile(strResourceFilename, pResources))
         {
-            // The resources have been loaded so cache them
-            m_resourceCache.insert(ResourceCachePair(locale, pResources));
+            m_resourceCache[locale] = pResources;
         }
         else
         {
@@ -324,15 +324,18 @@ STRING MgResources::GetStringResource(CREFSTRING locale, CREFSTRING section, CRE
     ResourceCache::iterator iterator = GetResources(locale, true);
     if (m_resourceCache.end() != iterator)
     {
-        ACE_Configuration_Heap* pResources = (ACE_Configuration_Heap*)((*iterator).second);
-
-        ACE_Configuration_Section_Key sectionKey;
-        if (pResources->open_section(pResources->root_section(), MG_WCHAR_TO_TCHAR(section), 0, sectionKey) == 0)
+        ResourceFile* pResources = iterator->second;
+        if (NULL != pResources)
         {
-            ACE_TString temp;
-            if (pResources->get_string_value(sectionKey, MG_WCHAR_TO_TCHAR(resourceId), temp) == 0)
+            ResourceFile::iterator sectionIter = pResources->find(section);
+            if (pResources->end() != sectionIter)
             {
-                value = MG_TCHAR_TO_WCHAR(temp.c_str());
+                ResourceSection* pSection = sectionIter->second;
+                ResourceSection::iterator resourceIter = pSection->find(resourceId);
+                if (pSection->end() != resourceIter)
+                {
+                    value = resourceIter->second;
+                }
             }
         }
     }
@@ -425,3 +428,93 @@ STRING MgResources::FormatMessage(CREFSTRING stringResource, MgStringCollection*
 
     return value;
 }
+
+void MgResources::DeleteResourceFile(ResourceFile* file)
+{
+    for (ResourceFile::iterator iter = file->begin(); iter != file->end(); iter++)
+    {
+        if (NULL != iter->second)
+        {
+            iter->second->clear();
+            delete iter->second;
+            iter->second = NULL;
+        }
+    }
+    file->clear();
+    delete file;
+}
+
+bool MgResources::ParseFile(CREFSTRING strResourceFileName, ResourceFile* pResourceFile)
+{
+    bool bParsed = false;
+
+    MG_RESOURCES_TRY()
+
+    // Read the entire file in assuming it is UTF-8 encoded.
+    Ptr<MgByteSource> resourceFile = new MgByteSource(strResourceFileName);
+    resourceFile->SetMimeType(MgMimeType::Text);
+    Ptr<MgByteReader> reader = resourceFile->GetReader();
+    STRING fileString = reader->ToString();
+
+    ResourceSection* pSection = NULL;
+
+    STRING::size_type offset = 0;
+    while (offset < fileString.length() && offset != fileString.npos)
+    {
+        // break at newlines
+        STRING::size_type newline = fileString.find(L"\n", offset);
+        if (newline != fileString.npos)
+        {
+            // Trim leading/trailing all whitespace
+            STRING subString = fileString.substr(offset, newline-offset);
+            STRING::size_type start = subString.find_first_not_of(MgResources::WhiteSpace);
+            STRING::size_type end = subString.find_last_not_of(MgResources::WhiteSpace);
+
+            offset = newline+1;
+
+            if (subString.npos != start && subString.npos != end)
+            {
+                subString = subString.substr(start, end-start+1);
+
+                if (L'#' == subString[0])
+                {
+                    // do nothing, skip to next line
+                    continue;
+                }
+
+                if (L'[' == subString[0])
+                {
+                    // start of section, save section name and switch to new section
+                    STRING brackets = L"[]";
+                    STRING sectionName = MgUtil::Trim(subString, brackets);
+                    pSection = new ResourceSection();
+                    pResourceFile->operator[](sectionName) = pSection;
+                    continue;
+                }
+
+                STRING::size_type equals = subString.find(L'=');
+                if (subString.npos != equals)
+                {
+                    // This should be a configuration directive.  Add it to the section.
+                    STRING directive = MgUtil::Trim(subString.substr(0, equals), MgResources::WhiteSpace);
+                    STRING value = MgUtil::Trim(subString.substr(equals+1), MgResources::WhiteSpace);
+                    if (NULL != pSection)
+                    {
+                        pSection->operator[](directive) = value;
+                    }
+                    else
+                    {
+                        throw new MgResourcesLoadFailedException(L"MgResources.ParseFile", __LINE__, __WFILE__, NULL, L"", NULL);
+                    }
+                }
+            }           
+        }         
+    }
+
+    bParsed = true;
+
+    MG_RESOURCES_CATCH_AND_THROW(L"MgResources.ParseFile")
+
+    return bParsed;
+}
+

@@ -454,10 +454,9 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream,
 
     try
     {
-        // TODO: use locale from client connection
-        except->GetMessage(MgResources::DefaultLocale);
-        except->GetDetails(MgResources::DefaultLocale);
-        except->GetStackTrace(MgResources::DefaultLocale);
+        except->GetMessage();
+        except->GetDetails();
+        except->GetStackTrace();
 
         stream.WriteResponseHeader(MgPacketParser::mecFailure, 1);
         stream.WriteObject(except);
