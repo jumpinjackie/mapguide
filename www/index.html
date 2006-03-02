@@ -7,14 +7,20 @@
    <script type="text/javascript">
       function replaceLinks() {   
          try {
-            var tools2 = document.getElementById("projecthome");
-            var tables2 = tools2.getElementsByTagName("table");
-			if (tables2[0] != null)	{
-				rowCount = tables2[0].rows.length;
-				for (i = 0; i < rowCount; i++) {
-					tables2[0].deleteRow(0);
-				}
-			}      
+		 	var apphead = document.getElementById("apphead");
+			if (apphead != null) {
+				apphead.innerHTML = "";
+			}	
+            var projecthome = document.getElementById("projecthome");
+			if (projecthome != null) {
+				var tableCollection = projecthome.getElementsByTagName("table");
+				if (tableCollection[0] != null)	{
+					rowCount = tableCollection[0].rows.length;
+					for (i = 0; i < rowCount; i++) {
+						tableCollection[0].deleteRow(0);
+					}
+				}    
+			}  
           } catch (e) {
           }
       }
