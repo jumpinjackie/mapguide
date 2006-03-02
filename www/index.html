@@ -6,21 +6,16 @@
   <body>
    <script type="text/javascript">
       function replaceLinks() {   
-         try{
-            document.innerHTML =  document.innerHTML+ "foololoololooo";
+         try {
             var tools2 = document.getElementById("projecthome");
             var tables2 = tools2.getElementsByTagName("table");
-			if (tables2[0] != null)
-			{
+			if (tables2[0] != null)	{
 				rowCount = tables2[0].rows.length;
-				for (i = 0; i < rowCount; i++)
-				{
+				for (i = 0; i < rowCount; i++) {
 					tables2[0].deleteRow(0);
 				}
-//            	tables2[0].innerHTML ='<!-- replaced project header info Note: May break in a juture release of CEE -->';   
 			}      
           } catch (e) {
-             alert(e);
           }
       }
       window.onload=replaceLinks;
