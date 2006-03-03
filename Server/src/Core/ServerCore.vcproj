@@ -46,7 +46,6 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4267"
@@ -65,7 +64,6 @@
 				AdditionalDependencies="ACEd.lib xerces-c_2D.lib"
 				OutputFile="$(OutDir)/mgserver.exe"
 				LinkIncremental="1"
-				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\dbxml-2.2.13\lib&quot;;..\..\..\Oem\FDO\lib;..\..\..\Common\lib\debug;..\..\lib\debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mgserver.pdb"
@@ -263,7 +261,6 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -272,7 +269,6 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
 		</File>
@@ -285,7 +281,6 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -294,7 +289,6 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
 		</File>

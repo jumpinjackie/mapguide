@@ -217,7 +217,6 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -226,7 +225,6 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
 			</File>
@@ -914,7 +912,6 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -923,7 +920,6 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
 		</File>

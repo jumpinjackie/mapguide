@@ -26,7 +26,7 @@
 //
 //------------------------------------------------------------------------------
 
-#include "AceCommon.h"   // use precompiled header
+#include "AceCommon.h"
 #include "buffer.h"
 #include <math.h>
 
