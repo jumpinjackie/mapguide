@@ -231,11 +231,12 @@ function Property(name, value) {
 }
 </script>
 <script language=javascript>
-var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5;
+var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5, DIGITIZING=6;
 var RECT=1, CIRCLE=2, POLY=3, SLIDER=4, SCALE=6;
+var DIGIPOINT = 0;
 var TILECX = 300, TILECY = 300;
 var GRIDCX = 15; GRIDCY = 15, DPI = 96;
-var moveType = NONE; dragElt = 0;
+var moveType = NONE, dragElt = 0, digiType;
 var intId;
 var tbMenu, ctxMenu, infoMenu;
 var minInfoWidth;
@@ -304,6 +305,7 @@ var selTtipText = "__#ENDSEL#__";
 var curimg = "mapImage1";
 var ovimgloaded = false;
 var minScale = 0.001, maxScale = 1000000000000;
+var digihandler = null;
 %s
 
 // public functions -----------------------------------------------
@@ -379,6 +381,13 @@ function GetCenter() {
 }
 function GetScale() {
     return curScale;
+}
+function DigitizePoint(handler) {
+    if(handler == null)
+        return;
+    digihandler = handler;
+    moveType = DIGITIZING;
+    digiType = DIGIPOINT;
 }
 
 // private functions -----------------------------------------------
@@ -505,6 +514,8 @@ function GotoView(x,y,scale,tohistory,moveovimg) {
         UpdateTilesAfterPan(prevtilex, prevtiley, panX1, panY1, panX2, panY2);
 }
 function ExecuteMapAction(action) {
+    if(moveType == DIGITIZING)
+        return;
     switch(action)
     {
         case 1:
@@ -632,6 +643,9 @@ function OnMouseDown(e) {
         }
         return false;
     }
+    
+    if(moveType == DIGITIZING)
+        return false;
 
     var processed = parent.ClickMap(x,y);
 
@@ -914,7 +928,13 @@ function OnMouseUp(e) {
     var x = e.clientX - mapPosX;
     var y = e.clientY;
     if(msie) e.cancelBubble = true; else e.stopPropagation();
-
+    
+    if(moveType == DIGITIZING) {
+        pt = ScreenToMapUnits(x, y);
+        digihandler(pt);
+        digihandler = null;
+        return false;
+    }
     lastposx = x; lastposy = y;
     if(moveType == RESIZING)
     {

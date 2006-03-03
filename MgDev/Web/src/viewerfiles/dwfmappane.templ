@@ -62,6 +62,7 @@ var selectionSet = null;
 var selEnumerator = null;
 var curFeature = null;
 var emapViewer;
+var digihandler = null;
 
 // public functions -----------------------------------------------
 //
@@ -365,7 +366,10 @@ function OnForwardMouseDown(e) {
     hidePopup(tbMenu);
     hidePopup(ctxMenu);
 }
-function DigitizePoint() {
+function DigitizePoint(handler) {
+    if(handler == null)
+        return;
+    digihandler = handler;
     emapViewer.DocumentHandler.DigitizePoint();
 }
 function Print(layouts, title) {
@@ -439,7 +443,8 @@ function Print(layouts, title) {
     </script>
 
     <script language="javascript" for="EMapEventRelayer" event="OnDigitizedPoint(map, point)">
-        parent.OnDigitizedPoint(point);
+        digihandler(point);
+        digihandler = null;
     </script>
 
     <script language="javascript" for="EMapEventRelayer" event="OnSelectionChanged()">
