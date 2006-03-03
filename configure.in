@@ -28,35 +28,14 @@ dnl *******************************************************
 dnl CoordinateSystem  Configuration
 dnl *******************************************************
 
-# Check for CoordinateSystem settings 
-AC_ARG_WITH([coordsys],
-	    MAP_HELP_STRING([--with-coordsys],
-              	            [specify alternative coordinate system source dir[[default=DEFAULT]]]),
-	    [map_coordsys_dir_path=$withval],
-	    [map_coordsys_dir_path="DEFAULT"])
-
-if test $map_coordsys_dir_path = "DEFAULT"; then 
-	map_using_proj4="yes"
-        map_unittesting_dir="UnitTesting"
-	AC_MSG_NOTICE([Using PROJ4 CoordinateSystem])
-	AC_SUBST(map_coordsys_dir,"CoordinateSystem")
-	AC_SUBST(map_coordsys_dir_path,"Common/CoordinateSystem")
-	AC_SUBST(map_coordsys_include_path,"Common/CoordinateSystem")
-	AC_SUBST(map_unittesting_dir)
+map_using_proj4="yes"
+map_unittesting_dir="UnitTesting"
+AC_MSG_NOTICE([Using PROJ4 CoordinateSystem])
+AC_SUBST(map_coordsys_dir,"CoordinateSystem")
+AC_SUBST(map_coordsys_dir_path,"Common/CoordinateSystem")
+AC_SUBST(map_coordsys_include_path,"Common/CoordinateSystem")
+AC_SUBST(map_unittesting_dir)
  	
-else
-	map_using_proj4="no"
-        map_unittesting_dir="UnitTesting_Mentor"
-	dnl : Assign the correct value
-	AC_MSG_NOTICE([Using Custom Defined CoordinateSystem])
-	map_coordsys_dir="${map_coordsys_dir_path##*/}"
-	map_coordsys_include_path="$map_coordsys_dir_path"
-	map_opt_oem_subdirs="Csmap SrsccLib"
-	AC_SUBST(map_coordsys_dir)
-	AC_SUBST(map_coordsys_dir_path)
-	AC_SUBST(map_coordsys_include_path)
-	AC_SUBST(map_unittesting_dir)
-fi
 
 dnl *******************************************************
 dnl PHP 5.0.5   Configuration
@@ -283,10 +262,6 @@ AC_CONFIG_FILES([Oem/Makefile \
                  Oem/DWFTK7.1/develop/Makefile \
                  Oem/DWFTK7.1/develop/global/Makefile \
                  Oem/DWFTK7.1/develop/global/src/Makefile])
-if test $map_using_proj4 != "yes"; then 
-  AC_CONFIG_FILES([Oem/Csmap/Makefile \
-                   Oem/SrsccLib/Makefile])
-fi
 			
 # MAP_CONFIG_FILES_COMMON
 AC_CONFIG_FILES([Common/Makefile \
@@ -295,11 +270,7 @@ AC_CONFIG_FILES([Common/Makefile \
 		Common/Security/Makefile \
 		Common/Service/Makefile \
 		Common/Stylization/Makefile])
-if test $map_using_proj4 = "yes"; then 
-  AC_CONFIG_FILES([Common/CoordinateSystem/Makefile])
-else
-  AC_CONFIG_FILES([Common/CoordinateSystem_Mentor/Makefile])
-fi
+AC_CONFIG_FILES([Common/CoordinateSystem/Makefile])
 
 # MAP_CONFIG_FILES_SERVER
 AC_CONFIG_FILES([Server/Makefile \
@@ -322,11 +293,7 @@ AC_CONFIG_FILES([Server/Makefile \
 		Server/src/Services/ServerAdmin/Makefile \
 		Server/src/Services/Tile/Makefile \
 		Server/src/Core/Makefile])
-if test $map_using_proj4 = "yes"; then 
-  AC_CONFIG_FILES([Server/src/UnitTesting/Makefile])
-else
-  AC_CONFIG_FILES([Server/src/UnitTesting_Mentor/Makefile])
-fi
+AC_CONFIG_FILES([Server/src/UnitTesting/Makefile])
 		
 # MAP_CONFIG_FILES_WEBTIER
 AC_CONFIG_FILES([Web/Makefile \
