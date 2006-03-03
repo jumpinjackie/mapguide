@@ -186,14 +186,6 @@ UnitTesting :
 	@echo "./mgserver /testmode" >> unittest.sh
 	@chmod a+x unittest.sh
 
-UnitTesting_Mentor :
-	@echo "#!/bin/sh" > unittest.sh
-	@echo "if test -z \"\$$LD_LIBRARY_PATH\"; then export LD_LIBRARY_PATH=/usr/local/gis/Coordsys; else export LD_LIBRARY_PATH=\$$LD_LIBRARY_PATH:/usr/local/gis/Coordsys; fi;" >> unittest.sh
-	@echo "if test -z \"\$$MENTOR_DICTIONARY_PATH\"; then export MENTOR_DICTIONARY_PATH=/usr/local/gis/Coordsys/11d; fi;" >> unittest.sh
-	@echo "echo MENTOR_DICTIONARY_PATH=\$$MENTOR_DICTIONARY_PATH" >> unittest.sh
-	@echo "./mgserver /testmode" >> unittest.sh
-	@chmod a+x unittest.sh
-
 unittest.sh : serverconfig_linux.ini UnitTestFiles $(map_unittesting_dir)
 
 categories.txt : ../../../Common/CoordinateSystem/categories.txt
