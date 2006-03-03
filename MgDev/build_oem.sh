@@ -4,6 +4,9 @@
 
 # MapGuide Open Source build script.
 #
+
+
+
 #**********************************************************
 # Initialization
 #**********************************************************
@@ -13,6 +16,23 @@ cd Oem
 
 INSTALLDIR=/usr/local/mapguideopensource
 
+while [ $# -gt 0 ]; do    # Until you run out of parameters . . .
+  case "$1" in
+    -prefix|--prefix)
+              INSTALLDIR="$2"
+              shift
+              ;;
+    -help|--help)
+              echo "Usage: $0 (options)"
+              echo "Options:"
+              echo "  --prefix [installation directory]"
+              echo "  --help Display usage"
+              ;;
+  esac
+  shift       # Check next set of parameters.
+done
+echo "OEM Build Initialization ............................"
+echo "Oem Libraries will be insalled at:${INSTALLDIR}"
 
 #**********************************************************
 # Build ACE 5.4
