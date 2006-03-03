@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = HttpHandler.vcproj
+EXTRA_DIST = HttpHandler.rc HttpHandler.vcproj
 
 prefix=@prefix@/webserverextensions
 

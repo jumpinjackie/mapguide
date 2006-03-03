@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = FastCgiAgent.vcproj
+EXTRA_DIST = FastCgiAgent.rc FastCgiAgent.vcproj
 
 prefix=@prefix@/webserverextensions
 

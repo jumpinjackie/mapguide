@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = GwsCommon.vcproj
+EXTRA_DIST = GwsCommon.rc GwsCommon.vcproj
 
 lib_LTLIBRARIES = libMgGwsCommon.la
 

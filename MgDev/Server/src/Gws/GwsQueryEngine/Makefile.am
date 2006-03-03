@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = GwsQueryEngine.vcproj GwsQueryEngine.def
+EXTRA_DIST = GwsQueryEngine.def GwsQueryEngine.rc GwsQueryEngine.vcproj
 
 lib_LTLIBRARIES = libMgGwsQueryEngine.la
 
