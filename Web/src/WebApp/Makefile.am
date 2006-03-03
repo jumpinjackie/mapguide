@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = WebApp.vcproj
+EXTRA_DIST = WebApp.rc WebApp.vcproj
 
 prefix=@prefix@/webserverextensions
 

@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = CoordinateSystem.vcproj categories.txt
+EXTRA_DIST = categories.txt CoordinateSystem.rc CoordinateSystem.vcproj
 
 INCLUDES = \
   -I../../Oem/gdal-1.3.0/ogr \

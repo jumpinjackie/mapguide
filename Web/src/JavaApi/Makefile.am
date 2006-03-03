@@ -1,5 +1,15 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = getclassid.code \
+             InitSockets.cpp \
+             InitSockets.h \
+             java.i \
+             JavaApi.rc \
+             JavaApi.vcproj \
+             org/osgeo/mapguide/AppThrowable.java \
+             org/osgeo/mapguide/MgBase64.java \
+             org/osgeo/mapguide/MgLocalizer.java
+
 prefix=@prefix@/webserverextensions
 
 INCLUDES = -I../../../Common/MdfModel \
@@ -23,8 +33,6 @@ BUILT_SOURCES = MgApi_wrap.cpp
 lib_LTLIBRARIES = libMapGuideJavaApi.la
 
 nodist_libMapGuideJavaApi_la_SOURCES = MgApi_wrap.cpp
-
-EXTRA_DIST = JavaApi.vcproj java.i getclassid.code InitSockets.cpp InitSockets.h org/osgeo/mapguide/AppThrowable.java
 
 CXXFLAGS = @CXXFLAGS@ -DJAVA
 

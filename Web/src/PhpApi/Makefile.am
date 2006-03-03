@@ -1,5 +1,11 @@
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = getclassid.code \
+             php.i \
+             PhpApi.rc \
+             PhpApi.vcproj \
+             PhpLocalizer.cpp
+
 prefix=@prefix@/webserverextensions
 
 INCLUDES = -I../../../Common/MdfModel \
@@ -23,8 +29,6 @@ INCLUDES = -I../../../Common/MdfModel \
 lib_LTLIBRARIES = libphp_MapGuideApi.la
 
 nodist_libphp_MapGuideApi_la_SOURCES = MgApi_wrap.cpp
-
-EXTRA_DIST = PhpApi.vcproj php.i getclassid.code PhpLocalizer.cpp
 
 CXXFLAGS = @CXXFLAGS@ -DPHP -DPHPPROXYAPI_EXPORTS
 
