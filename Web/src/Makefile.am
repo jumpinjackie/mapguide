@@ -34,10 +34,8 @@ install-data-local:
 	@cp -fp stdicons/* $(stdiconsdir)
 	@cp -fp viewerfiles/* $(viewerfilesdir)
 	@cp -rfp WEB-INF/* $(webinfdir)
-	@pushd $(mapagentdir); ln -s ../../bin/mapagent .; popd;
+	@pushd $(mapagentdir); ln -s ../../bin/mapagent mapagent; popd;
 	@cp -fp ../../UnitTest/WebTier/MapAgent/MapAgentForms/* $(mapagentdir)
-	@cp -fp mapagent/mapagent.fcgi $(mapagentdir)
-	@chmod 755 $(mapagentdir)/mapagent.fcgi
 	@chmod 777 $(tempdir)
 
 install-data-hook:
