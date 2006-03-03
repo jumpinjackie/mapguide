@@ -61,9 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)/MgServerBased.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerBased.pdb"
 				SubSystem="2"
@@ -138,9 +139,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="ACE.lib"
 				OutputFile="$(OutDir)/MgServerBase.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerBase.pdb"
 				SubSystem="2"

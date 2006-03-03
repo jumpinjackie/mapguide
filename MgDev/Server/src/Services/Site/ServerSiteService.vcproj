@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib"
 				OutputFile="$(OutDir)\MgServerSiteServiced.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\Oem\dbxml-2.2.13\lib&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\..\Oem\dbxml-2.2.13\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerSiteServiced.pdb"
 				SubSystem="2"
@@ -139,10 +139,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib"
 				OutputFile="$(OutDir)/MgServerSiteService.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\Oem\dbxml-2.2.13\lib&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\..\Oem\dbxml-2.2.13\lib&quot;"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerSiteService.pdb"
