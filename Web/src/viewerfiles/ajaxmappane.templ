@@ -303,6 +303,7 @@ var showSlider=%s;
 var selTtipText = "__#ENDSEL#__";
 var curimg = "mapImage1";
 var ovimgloaded = false;
+var minScale = 0.001, maxScale = 1000000000000;
 %s
 
 // public functions -----------------------------------------------
@@ -440,7 +441,7 @@ function delayedInit() {
             for(var i=0; i < 80; i++)
             {
                 scale /= 1.5;
-                if(scale < 1)
+                if(scale < minScale)
                     break;
                 scales.push(scale);
             }
@@ -1406,16 +1407,27 @@ function DraggingShape(e) {
     return false;
 }
 function ZoomIn(x, y) {
-    if(sci == 0)
-        return false;
+    if(sci == 0) {
+        if(finscale)
+            return;
+        scale /= 1.5;
+        scale = NormalizeScale(scale);
+    }
+    else
+        scale = scales[sci - 1];
     var pt = ScreenToMapUnits(x, y);
-    GotoView(pt.X, pt.Y, scales[sci - 1], true, true);
+    GotoView(pt.X, pt.Y, scale, true, false);
 }
 function ZoomOut(x, y) {
-    if(sci == scales.length - 1)
-        return false;
+    if(sci == scales.length - 1) {
+        if(finscale)
+            return false;
+        scale *= 1.5;
+    }
+    else
+        scale = scales[sci + 1];
     var pt = ScreenToMapUnits(x, y);
-    GotoView(pt.X, pt.Y, scales[sci + 1], true, true);
+    GotoView(pt.X, pt.Y, scale, true, false);
 }
 function PanUp() {
     Pan(extX1 + (extX2 - extX1) / 2, extY1 - (extY1 - extY2) / 3, true);
@@ -2005,11 +2017,10 @@ function ExecuteRectangleTool() {
 
         mcsW = pt2.X - pt1.X;
         mcsH = pt2.Y - pt1.Y;
-
         scale = CalculateScale1(mcsW, mcsH, mapDevW, mapDevH);
         scale = finscale? GetNearestFiniteScale(scale): NormalizeScale(scale);
         HideMapImage();
-        GotoView(pt1.X + mcsW/2, pt1.Y + mcsH/2, scale, true, true);
+        GotoView(pt1.X + mcsW/2, pt1.Y + mcsH/2, scale, true, false);
     }
     else if(tool == 0)
     {
@@ -2494,10 +2505,10 @@ function GetNearestFiniteScale(scale) {
     return scales[GetFiniteScaleIndex(scale)];
 }
 function NormalizeScale(scale) {
-    if(scale < scales[0])
-        return scales[0];
-    else if(scale > scales[scales.length-1])
-        return scales[scale.length-1];
+    if(scale < minScale)
+        return minScale;
+    if(scale > maxScale)
+        return maxScale;
     return scale;
 }
 function CalcTileMetrics(nx1, ny1, nx2, ny2) {
@@ -2628,7 +2639,7 @@ function ShowScaleTip(x, y, scale) {
     tip = document.getElementById("scaleTip").style;
     tip.visibility = "visible";
     tipText = document.getElementById("scaleTipText");
-    tipText.innerHTML = "&nbsp;1:" + parseInt(scale) + "&nbsp;";
+    tipText.innerHTML = "&nbsp;1:" + parent.FormatScale(scale) + "&nbsp;";
     w = tipText.offsetWidth;
     tip.top = y; tip.left = x - w - 3;
 }

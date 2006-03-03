@@ -290,9 +290,18 @@ function FormatMessage(fmt, params) {
             curScale = scale;
             if(hasStatusbar == 1)
             {
-            var s = parseInt(scale);
-            sbFrame.SetMapScaleMsg("1: " + formatNumber(s == 0? 1: s, ","));
+                sbFrame.SetMapScaleMsg("1: " + FormatScale(scale));
             }
+            }
+            function FormatScale(scale) {
+                if(scale >= 100000)
+                    return parseInt(scale);
+                else if(scale >= 1)
+                    return scale.toFixed(2);
+                else if(scale > 0.001)
+                    return scale.toFixed(3);
+                else
+                    return 0.001;
             }
             function OnMapLoaded() {
             ExecuteMapAction(15);
