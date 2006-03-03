@@ -464,18 +464,47 @@ function IsContextMenu() {
 function DisplayMapSize() {
     if(hasStatusbar == 0)
         return;
+    var mi = "__#MI#__", km = "__#KM#__", ft = "__#FT#__", i = "__#IN#__", mt = "__#MT#__",  cm = "__#CM#__";
     var usEnglish = mapFrame.IsEnglishUnits();
     var mpu = mapFrame.GetMetersPerUnits();
-    var f = usEnglish? 1609.35: 1000;
-    var w = mapFrame.GetMapWidth() / f * mpu;
-    var h = mapFrame.GetMapHeight() / f * mpu;
-    var text = parseInt(w) + " x " + parseInt(h) + " (" + (usEnglish? "__#MI#__": "__#KM#__") + ")";
+    var w = mapFrame.GetMapWidth() * mpu;
+    var h = mapFrame.GetMapHeight() * mpu;
+    if(usEnglish) {
+        w *= 3.28083988128;
+        h *= 3.28083988128;
+        if(w >= 5279.7552 && h >= 5279.7552) {
+            u = mi;
+            w /= 5279.7552; h /= 5279.7552;
+        }
+        else if(w < 1 && h < 1) {
+            u = i;
+            w *= 12; h *= 12;
+        }
+        else {
+            u = ft;
+        }
+    }
+    else {
+        if(w >= 1000 && h >= 1000) {
+            u = km;
+            w /= 1000; h /= 1000;
+        }
+        else if (w < 1 && h < 1) {
+            u = cm;
+            w *= 100; h *= 100;
+        }
+        else {
+            u = mt;
+        }
+    }
+    
+    var text = w.toFixed(2) + " x " + h.toFixed(2) + " (" + u + ")";
     sbFrame.SetMapSizeMsg(text);
 }
 
 function SetOptions(engUnit, latLonUnit) {
-    mapFrame.SetEnglishUnits(usEnglish = engUnit);
-    mapFrame.SetLatLonDisplayUnits(latLon = latLonUnit);
+    mapFrame.SetEnglishUnits(engUnit);
+    mapFrame.SetLatLonDisplayUnits(latLonUnit);
     DisplayMapSize();
 }
 function IsInitialView() {

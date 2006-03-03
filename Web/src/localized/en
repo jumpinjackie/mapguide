@@ -222,7 +222,11 @@ MAPUNITSCURPOS          = X: {0}, Y: {1}
 FEATURESSELECTED        = {0} features selected
 FEATURESELECTED         = {0} feature selected
 MI                      = mi
+FT                      = ft
+IN                      = in
 KM                      = km
+MT                      = m
+CM                      = cm
 
 # Localized Icon Files
 POWEREDBYICON           = PoweredBy_en.gif
