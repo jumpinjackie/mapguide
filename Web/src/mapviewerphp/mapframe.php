@@ -36,7 +36,7 @@ $showSlider = true;
 GetRequestParameters();
 
 if($locale == "")
-    $locale = "en";
+    $locale = GetDefaultLocale();
 
 SetLocalizedFilesPath(GetLocalizationPath());
 

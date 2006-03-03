@@ -77,12 +77,12 @@ try
     }
 
     MgSiteConnection site = new MgSiteConnection();
+    cred.SetLocale(locale);
     site.Open(cred);
 
     if(createSession)
     {
         MgSite site1 = new MgSite();
-        cred.SetLocale(locale);
         site1.Open(cred);
         sessionId = site1.CreateSession();
         if(forDwf == 0)
@@ -605,7 +605,7 @@ void GetRequestParameters(HttpServletRequest request)
     }
     else
     {
-        locale = "en"; // Default Locale
+        locale = GetDefaultLocale();
     }
     sessionId = request.getParameter("SESSION");
     if (sessionId != null && sessionId.length() > 0)

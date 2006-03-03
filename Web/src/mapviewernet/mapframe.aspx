@@ -208,7 +208,7 @@ void GetParameters(NameValueCollection parameters)
 
     locale = GetParameter(parameters, "LOCALE");
     if(locale == "")
-        locale = "en"; // Default locale
+        locale = GetDefaultLocale();
 
     hlTgt = GetParameter(parameters, "HLTGT");
     hlTgtName = GetParameter(parameters, "HLTGTNAME");

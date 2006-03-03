@@ -31,6 +31,11 @@ function InitializeWebTier()
     MgInitializeWebTier($cfgFile);
 }
 
+function GetDefaultLocale()
+{
+    return "en"; // localizable string
+}
+
 function GetLocalizationPath()
 {
     $thisFile = __FILE__;

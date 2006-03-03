@@ -29,6 +29,11 @@ void InitializeWebTier()
     MapGuideApi.MgInitializeWebTier(Request.ServerVariables["APPL_PHYSICAL_PATH"] + "../webconfig.ini");
 }
 
+String GetDefaultLocale()
+{
+    return "en"; // localizable string
+}
+
 String Substitute(String templ, String[] vals)
 {
     StringBuilder res = new StringBuilder();

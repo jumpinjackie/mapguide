@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
     $cred = new MgUserInformation();
     $cred->SetMgUsernamePassword("Administrator","admin");
-    $cred->SetLocale("eng");
+    $cred->SetLocale(GetDefaultLocale());
 
     $serverAdmin = new MgServerAdmin();
     $serverAdmin->Open("localhost", $cred);

@@ -39,7 +39,7 @@ namespace OSGeo.MapGuide
         {
             get
             {
-                return ((MgException)this).GetMessage("en");
+                return ((MgException)this).GetMessage();
             }
         }
 
@@ -47,7 +47,7 @@ namespace OSGeo.MapGuide
         {
             get
             {
-                return ((MgException)this).GetStackTrace("en");
+                return ((MgException)this).GetStackTrace();
             }
         }
 
