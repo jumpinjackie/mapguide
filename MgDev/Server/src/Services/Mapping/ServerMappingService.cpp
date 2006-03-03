@@ -1610,22 +1610,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
                 }
             }
 
-            int type = FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts);
-
-            // TODO: rework and move code to handle raster layers
-            //is it a pre-canned raster layer image?
-            //if (type == FeatureTypeStyleVisitor::ftsRaster)
-            //{
-            //    //return the fixed array
-            //    //MgByteSource will make its own copy of the data
-            //    Ptr<MgByteSource> src = new MgByteSource((BYTE_ARRAY_IN)RASTER_LAYER_ICON, sizeof(RASTER_LAYER_ICON));
-            //    byteReader = src->GetReader();
-            //}
-            //else
-            //{
-                //once we have a FeatureTypeStyle, draw it
-                byteReader = MgStylizationUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
-            //}
+            byteReader = MgStylizationUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
         }
     }
     else if (dl) // drawing layer
@@ -1635,8 +1620,12 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
         Ptr<MgByteSource> src = new MgByteSource((BYTE_ARRAY_IN)DWF_LAYER_ICON, sizeof(DWF_LAYER_ICON));
         byteReader = src->GetReader();
     }
-    else if (gl) // TODO: grid (raster) layer
+    else if (gl) //grid (raster) layer
     {
+        //return the fixed array
+        //MgByteSource will make its own copy of the data
+        Ptr<MgByteSource> src = new MgByteSource((BYTE_ARRAY_IN)RASTER_LAYER_ICON, sizeof(RASTER_LAYER_ICON));
+        byteReader = src->GetReader();
     }
 
     MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.GenerateLegendImage")
