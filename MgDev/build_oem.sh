@@ -32,7 +32,7 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters . . .
   shift       # Check next set of parameters.
 done
 echo "OEM Build Initialization ............................"
-echo "Oem Libraries will be insalled at:${INSTALLDIR}"
+echo "Oem Libraries will be installed at: ${INSTALLDIR}"
 
 #**********************************************************
 # Build ACE 5.4
