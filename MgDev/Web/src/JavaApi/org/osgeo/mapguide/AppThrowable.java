@@ -14,7 +14,7 @@ class AppThrowable extends Exception
     {
         try
         {
-            return ((MgException)this).GetMessage("en");
+            return ((MgException)this).GetMessage();
         }
         catch (MgException e)
         {
@@ -26,7 +26,7 @@ class AppThrowable extends Exception
     {
         try
         {
-            System.out.println(((MgException)this).GetStackTrace("en"));
+            System.out.println(((MgException)this).GetStackTrace());
         }
         catch (MgException e)
         {

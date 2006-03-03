@@ -31,7 +31,7 @@
         $adminIDID = 'adminID';
         $adminPassword = "";
         $adminPasswordID = 'adminPassword';
-        $locale = "eng";
+        $locale = "en"; // localizable string
         $errorMsg = "";
 
         if ( FirstTimeHere( $pageName ) )

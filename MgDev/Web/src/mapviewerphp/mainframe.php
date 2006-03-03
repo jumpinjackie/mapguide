@@ -78,12 +78,12 @@ function BuildViewer($forDwf = true)
         }
 
         $site = new MgSiteConnection();
+        $cred->SetLocale($locale);
         $site->Open($cred);
 
         if($createSession)
         {
             $site1 = new MgSite();
-            $cred->SetLocale($locale);
             $site1->Open($cred);
             $sessionId = $site1->CreateSession();
             if($forDwf == false)
@@ -563,7 +563,7 @@ function GetParameters($params)
     if(isset($params['LOCALE']))
         $locale = $params['LOCALE'];
     else
-        $locale = "en";
+        $locale = GetDefaultLocale();
 
     if(isset($params['SESSION']))
     {

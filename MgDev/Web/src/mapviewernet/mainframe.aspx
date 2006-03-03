@@ -80,12 +80,12 @@ NameValueCollection cmds = null;
         }
 
         MgSiteConnection site = new MgSiteConnection();
+        cred.SetLocale(locale);
         site.Open(cred);
 
         if (createSession)
         {
             MgSite site1 = new MgSite();
-            cred.SetLocale(locale);
             site1.Open(cred);
             sessionId = site1.CreateSession();
             if (forDwf == 0)
@@ -605,7 +605,7 @@ void GetParameters(NameValueCollection parameters)
     }
     else
     {
-        locale = "en"; // Default Locale
+        locale = GetDefaultLocale();
     }
     sessionId = parameters["SESSION"];
     if (sessionId != null && sessionId.Length > 0)

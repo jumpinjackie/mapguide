@@ -38,7 +38,7 @@ private void Page_Load(object sender, System.EventArgs e)
 
         MgUserInformation cred = new MgUserInformation();
         cred.SetMgUsernamePassword("Administrator", "admin");
-        cred.SetLocale("eng");
+        cred.SetLocale(GetDefaultLocale());
 
         MgServerAdmin serverAdmin = new MgServerAdmin();
         serverAdmin.Open("localhost", cred);

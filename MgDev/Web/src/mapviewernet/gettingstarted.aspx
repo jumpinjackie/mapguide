@@ -35,7 +35,7 @@ bool dwf = false;
             orgHtml = LoadTemplate(Request, "../localized/help/" + locale + "/" + pageName);
         } catch(Exception e) {
             orgHtml = LoadTemplate(Request, "../localized/help/en/" + pageName);
-            locale = "en";
+            locale = GetDefaultLocale();
         }
         String fixedupHtml = FixupPageReferences(orgHtml, webLayout, dwf, GetRootVirtualFolder(Request) + "/");
         if(pageName == cmdListPage) {
@@ -86,7 +86,7 @@ void GetParameters(NameValueCollection parameters)
     dwf = GetParameter(parameters, "DWF") == "1";
     locale = GetParameter(parameters, "LOCALE");
     if(locale == "")
-        locale = "en";
+        locale = GetDefaultLocale();
 }
 
 String FixupPageReferences(String html, String webLayout, bool dwf, String vpath) {

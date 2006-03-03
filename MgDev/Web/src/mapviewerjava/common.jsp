@@ -32,6 +32,11 @@ void InitializeWebTier() throws MgException
     MapGuideJavaApi.MgInitializeWebTier(configPath);
 }
 
+String GetDefaultLocale()
+{
+    return "en"; // localizable string
+}
+
 String GetParameter(HttpServletRequest request, String name)
 {
     String strval = request.getParameter(name);

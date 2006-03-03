@@ -42,7 +42,7 @@
         else {
             if(file_exists($locpath . "/help/en/" . $pageName)) {
                 $orgHtml = file_get_contents($locpath . "/help/en/" . $pageName);
-                $locale = "en";
+                $locale = GetDefaultLocale();
             }
             else {
                 echo "";
@@ -87,7 +87,7 @@ function GetParameters($params)
     if(isset($params['LOCALE']))
         $locale = $params['LOCALE'];
     else
-        $locale = "en";
+        $locale = GetDefaultLocale();
 }
 
 function GetRequestParameters()

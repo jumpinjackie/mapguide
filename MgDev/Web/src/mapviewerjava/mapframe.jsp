@@ -185,7 +185,7 @@ void GetRequestParameters(HttpServletRequest request)
     }
     else
     {
-        locale = "en"; // Default locale
+        locale = GetDefaultLocale();
     }
 
     hlTgt = GetParameter(request, "HLTGT");
