@@ -57,14 +57,14 @@
         }
         var parentRef = ParentRef();
             
-        if(parentRef.usEnglish)
+        if(parentRef.GetMapFrame().IsEnglishUnits())
             document.getElementById("USEnglish").checked = true;
         else
             document.getElementById("Metric").checked = true;
 
         if(dwf)
         {
-            if(parentRef.latLon)
+            if(parentRef.GetMapFrame().IsLatLongDisplayUnits())
                 document.getElementById("LatLon").checked = true;
             else
                 document.getElementById("MCS").checked = true;
