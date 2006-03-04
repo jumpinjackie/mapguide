@@ -11,15 +11,70 @@
 <h3><br>
   1.0 Installation and Configuration</h3>
 <p><strong>What are the minimum system requirements for MapGuide Open Source?</strong></p>
-<p>Please see the System Requirements.</p>
-<p><strong>Is PHP required to use MapGuide Open Source, if so why and for what?</strong></p>
-<p><strong>What Linux Distributions has MapGuide Open Source been built and run 
+<p>Please see the <a href="system_requirements.html">System Requirements</a>.</p>
+<p><strong>What are the map authoring tools for MapGuide Open Source?</strong></p>
+<p>Autodesk MapGuide Studio is the authoring environment for MapGuide Open Source 
+  that handles all aspects of preparing geospatial data for distribution on the 
+  Internet. Modeled after popular web development tools, Studio provides a unified 
+  environment that lets you rapidly create spatial applications using an intuitive 
+  and familiar interface. A free preview is available at <a href="http://www.autodesk.com/mapguidestudio">www.autodesk.com/mapguidestudio</a>.</p>
+<p><strong>Is PHP required to use MapGuide Open Source? If so why and for what?</strong></p>
+<p><strong>What Linux distributions has MapGuide Open Source been built to run 
   on?</strong></p>
 <p><strong>What versions of GCC can I compile MapGuide Open Source with?</strong> 
 </p>
-<p><strong>Can multiple PHP versions be co-existed on the same machine with the 
-  MapGuide installed?</strong></p>
-<h3>3.0 Viewing and Display</h3>
+<p><strong>Can I run MapGuide 6.x and MapGuide Open Source on the same environment 
+  and share data sources? </strong> </p>
+<p><strong>Can multiple PHP versions co-exist on the same machine with MapGuide 
+  Open Source installed?</strong></p>
+<h3>2.0 Loading and Managing Data</h3>
+<p><strong>I've added base layers to my map. Why don't they don't display correctly?</strong></p>
+<p>Verify that the map contains a proper set of finite scales at which to render 
+  the base layers. The minimum and maximum finite scales should roughly match 
+  the limits at which you want your map to be viewed. Also, the relative factor 
+  between intermediate finite scales should not be too large (a factor of 2 is 
+  a good starting point).</p>
+<p><strong>Why won&#8217;t my 500MB SHP file load?</strong></p>
+<p>There is an outstanding defect against loading large SHP files. The problem 
+  is with the SHP FDO provider.</p>
+<h3>3.0 Developing Applications</h3>
+<p><strong>Can I use Macromedia Cold Fusion to develop with MapGuide Open Source?</strong></p>
+<p><strong>MapGuide needed a plugin, does MapGuide Open Source also need a plugin?</strong></p>
+<p><strong>Can I setup my MapGuide Open Source application as a Visual Studio 
+  .Net project? Is there a sample Visual Studio .Net project using MapGuide Open 
+  Source?</strong></p>
+<p><strong>How do I force floating point values to appear as integers in my feature 
+  labels? </strong> </p>
+<p>Feature labels may include number expressions, which can simply be the name 
+  of a number-bearing feature property, or can be a complex calculation involving 
+  multiple properties and constants. The numerical type (integer or real) for 
+  these expressions is taken from the first property or constant in the expression. 
+  If the feature property AREA contains real numbers, the label &#8220;AREA&#8221; 
+  will display real numbers. If the label expression is altered to first reference 
+  an integer, integer values will be displayed: &#8220;(0 + AREA)&#8221;.</p>
+<p>I have defined an extension in my feature souce that joins a primary feature 
+  source with a secondary feature source that has multiple matching records to 
+  the primary features. Can I specify which record from the secondary feature 
+  to retrieve from the join?</p>
+<p>The result of a join defined by the feature source extension will be an extension 
+  that consists of the primary feature properties and the secondary feature properties. 
+  The secondary properties will be populated with values from the first matching 
+  record from the secondary feature source.</p>
+<p><strong>How do I use the Text Expression Editor to combine property values 
+  and text constants to form a URL or feature label? </strong></p>
+<p>A text expression is a concatenation of multiple string items. When the Text 
+  Expression Editor is in &#8220;Builder&#8221; mode, click &#8220;New&#8221; 
+  to add an item to the expression. Select each item and define its Text Value 
+  to be a property name, a constant string, or a number expression. The &#8220;Builder&#8221; 
+  editor converts this input into the text expression that is saved with a layer. 
+  Click the &#8220;Advanced&#8221; button to view and edit the text expression 
+  in its native format.</p>
+<p>The syntax for text expressions is:</p>
+<p>Expression = &#8220;&lt;Property&gt;&#8221;</p>
+<p>| &#8216;&lt;Constant&gt;&#8217;</p>
+<p>| (&lt;NumberExpression&gt;)</p>
+<p>| concat(&lt;Expression&gt;, &lt;Expression&gt;)</p>
+<h3>4.0 Viewing and Display</h3>
 <p><strong>Is it possible to use the DWF Viewer to create a Windows-based application? 
   For example, Autodesk MapGuide 6.5 has an API which can be loaded in a Visual 
   Basic application. </strong></p>
@@ -54,53 +109,10 @@
   the limits at which you want your map to be viewed. Also, the relative factor 
   between intermediate finite scales should not be too large (a factor of 2 is 
   a good starting point).</p>
-<p><strong>Can I use Macromedia Cold Fusion to develop with MapGuide Open Source?</strong></p>
-<p><strong>MapGuide needed a plugin, does MapGuide Open Source also need a plugin?</strong></p>
-<p><strong>Can I run MapGuide 6.x and MapGuide Open Source on the same environment 
-  and share data sources? </strong></p>
-<p><strong>Can I setup my MapGuide Open Source application as a Visual Studio 
-  .Net project? Is there a sample Visual Studio .Net project using MapGuide Open 
-  Source?</strong></p>
-<p><strong>Do you need a Berkley DB license to use MapGuide Open Source? How does 
-  MapGuide Open Source use Berkely DB?</strong></p>
-<p><strong>What are the map authoring tools for the system? Where is the loaded 
-  site?</strong></p>
-<p><strong>Can different MapGuide supported services be scaled and how?</strong></p>
-<p>What is the memory usage if large amount of data are used e.g. 100 - 200 Gb?</p>
-<p><strong>How do I use the Text Expression Editor to combine property values 
-  and text constants to form a URL or feature label? </strong></p>
-<p>A text expression is a concatenation of multiple string items. When the Text 
-  Expression Editor is in &#8220;Builder&#8221; mode, click &#8220;New&#8221; 
-  to add an item to the expression. Select each item and define its Text Value 
-  to be a property name, a constant string, or a number expression. The &#8220;Builder&#8221; 
-  editor converts this input into the text expression that is saved with a layer. 
-  Click the &#8220;Advanced&#8221; button to view and edit the text expression 
-  in its native format.</p>
-<p>The syntax for text expressions is:</p>
-<p>Expression = &#8220;&lt;Property&gt;&#8221;</p>
-<p>| &#8216;&lt;Constant&gt;&#8217;</p>
-<p>| (&lt;NumberExpression&gt;)</p>
-<p>| concat(&lt;Expression&gt;, &lt;Expression&gt;)</p>
-<p><strong>How do I force floating point values to appear as integers in my feature 
-  labels? </strong> </p>
-<p>Feature labels may include number expressions, which can simply be the name 
-  of a number-bearing feature property, or can be a complex calculation involving 
-  multiple properties and constants. The numerical type (integer or real) for 
-  these expressions is taken from the first property or constant in the expression. 
-  If the feature property AREA contains real numbers, the label &#8220;AREA&#8221; 
-  will display real numbers. If the label expression is altered to first reference 
-  an integer, integer values will be displayed: &#8220;(0 + AREA)&#8221;.</p>
-<p>I have defined an extension in my feature souce that joins a primary feature 
-  source with a secondary feature source that has multiple matching records to 
-  the primary features. Can I specify which record from the secondary feature 
-  to retrieve from the join?</p>
-<p>The result of a join defined by the feature source extension will be an extension 
-  that consists of the primary feature properties and the secondary feature properties. 
-  The secondary properties will be populated with values from the first matching 
-  record from the secondary feature source.</p>
-<p><strong>Why won&#8217;t my 500Mb+ SHP files load?</strong></p>
-<p>There is an outstanding defect against loading large SHP files. The problem 
-  is with the SHP FDO provider (defect 761033, status: deferred).<br>
+<h3>5.0 Administrating Sites and Servers</h3>
+<p><strong>What is the memory usage if large amount of data are used (100 - 200 
+  GB)?</strong></p>
+<p><strong>Can different MapGuide supported services be scaled and how?</strong><br>
 </p>
 </body>
 </html>
