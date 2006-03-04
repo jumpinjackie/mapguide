@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = WebApp HttpHandler FastCgiAgent PhpApi JavaApi
 DIST_SUBDIRS = WebApp HttpHandler FastCgiAgent PhpApi JavaApi
-EXTRA_DIST = MapGuideApi DotNetApi DotNetUnmanagedApi mapviewernet mapviewerjava mapviewerphp mapadmin mapagent stdicons viewerfiles WebSupport WebTier.sln webconfig.ini WEB-INF
+EXTRA_DIST = MapGuideApi DotNetApi DotNetUnmanagedApi mapviewernet mapviewerjava mapviewerphp mapadmin mapagent stdicons viewerfiles WebSupport WebTier.sln webconfig.ini WEB-INF localized
 
 prefix=@prefix@/webserverextensions/www
 
@@ -10,6 +10,7 @@ mapadmindir = ${prefix}/mapadmin
 mapviewerphpdir = ${prefix}/mapviewerphp
 mapviewerjavadir = ${prefix}/mapviewerjava
 stdiconsdir = ${prefix}/stdicons
+localizeddir = ${prefix}/localized
 viewerfilesdir = ${prefix}/viewerfiles
 resourcesdir = ${prefix}/Resources
 tempdir = ${prefix}/TempDir
@@ -23,6 +24,7 @@ install-data-local:
 	test -d $(resourcesdir) || $(mkinstalldirs) $(resourcesdir)
 	test -d $(tempdir) || $(mkinstalldirs) $(tempdir)
 	test -d $(stdiconsdir) || $(mkinstalldirs) $(stdiconsdir)
+	test -d $(localizeddir) || $(mkinstalldirs) $(localizeddir)
 	test -d $(viewerfilesdir) || $(mkinstalldirs) $(viewerfilesdir)
 	test -d $(webinfdir) || $(mkinstalldirs) $(webinfdir)
 	@cp -rfp mapadmin/* $(mapadmindir)
@@ -31,6 +33,7 @@ install-data-local:
 	@cp -rfp mapviewerphp/* $(mapviewerphpdir)
 	@cp -fp PhpApi/constants.php $(mapviewerphpdir)
 	@find mapviewerjava -maxdepth 1 -type f -exec cp -fp {} $(mapviewerjavadir) \;
+	@cp -fp localized/* $(localizeddir)
 	@cp -fp stdicons/* $(stdiconsdir)
 	@cp -fp viewerfiles/* $(viewerfilesdir)
 	@cp -rfp WEB-INF/* $(webinfdir)

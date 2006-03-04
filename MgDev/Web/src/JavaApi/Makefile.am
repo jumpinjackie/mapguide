@@ -18,8 +18,8 @@ INCLUDES = -I../../../Common/MdfModel \
            -I../../../Common/Service/Geometry \
            -I../../../Common/Service/Util \
            -I../../../Common/Service/System \
-           -I../../../Oem/Java/Include \
-           -I../../../Oem/Java/Include/linux \
+           -I$(JAVA_HOME)/include \
+           -I$(JAVA_HOME)/include/linux \
            -I../../../Oem/ACE/ACE_wrappers \
            -I../HttpHandler \
            -I../WebSupport \
@@ -391,5 +391,5 @@ MgApi_wrap.cpp : \
 	../../../Oem/SWIGEx/Linux/swig -dllname MapGuideJavaApi -c++ -java -DJAVA -package org.osgeo.mapguide -root MgObject -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -dispose "((MgDisposable*)arg1)->Release()" -rethrow "e->Raise();" -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ../../../Oem/SWIGEx/Lib MapGuideApi.i
 	rm -f org/osgeo/mapguide/*.class
 	mv -f *.java org/osgeo/mapguide
-	javac -classpath . org/osgeo/mapguide/*.java
-	jar cf ../WEB-INF/lib/MapGuideApi.jar org/osgeo/mapguide/*.class
+	$(JAVA_HOME)/bin/javac -classpath . org/osgeo/mapguide/*.java
+	$(JAVA_HOME)/bin/jar cf ../WEB-INF/lib/MapGuideApi.jar org/osgeo/mapguide/*.class
