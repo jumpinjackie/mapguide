@@ -33,7 +33,7 @@ install-data-local:
 	@cp -rfp mapviewerphp/* $(mapviewerphpdir)
 	@cp -fp PhpApi/constants.php $(mapviewerphpdir)
 	@find mapviewerjava -maxdepth 1 -type f -exec cp -fp {} $(mapviewerjavadir) \;
-	@cp -fp localized/* $(localizeddir)
+	@cp -rfp localized/* $(localizeddir)
 	@cp -fp stdicons/* $(stdiconsdir)
 	@cp -fp viewerfiles/* $(viewerfilesdir)
 	@cp -rfp WEB-INF/* $(webinfdir)
