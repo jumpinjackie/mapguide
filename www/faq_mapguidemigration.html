@@ -16,7 +16,9 @@
   <li><a href="#6">MapGuide needed a plug-in, does MapGuide Open Source also need a plug-in?</a></li>
   <li><a href="#7">Can I run MapGuide 6.x and MapGuide Open Source in the same environment?</a></li>
   <li><a href="#8">Can I use a MapGuide 6.5 Server as a data source for MapGuide Open Source?</a></li>
+  <li><a href="#9">In MapGuide 6.5 each layer in an MWF can point to a different URL, how can this be achieved in MapGuide Open Source?</a></li>
 </ol>
+<hr />
 <dl>
   <dt><a name="1" id="1">1. How is MapGuide Open Source different from the Autodesk MapGuide 6.5 software?</a></dt>
   <dd>Here is a brief list of differences. See the Features page for a complete list of the features of MapGuide Open Source.
@@ -37,7 +39,7 @@
   </dd>
 
   <dt><a name="4" id="4">4. Can I use Macromedia Cold Fusion to develop with MapGuide Open Source?</a></dt>
-  <dd>You can in the same way that MapGuide 6.5 applications use Cold Fusion, to display and interact with attribute data. However MapGuide Open Source does expose any APIs to ColdFusion.
+  <dd>You can in the same way that MapGuide 6.5 applications use Cold Fusion, to display and interact with attribute data. However MapGuide Open Source does expose any API's to ColdFusion.
   </dd>
 
   <dt><a name="5" id="5">5. Can I use reports created in ColdFusion for MapGuide 6.5 with MapGuide Open Source?</a></dt>
@@ -55,6 +57,11 @@
   <dt><a name="8" id="8">8. Can I use a MapGuide 6.5 Server as a data source for MapGuide Open Source?</a></dt>
   <dd>No. At the moment there is no data connector or FDO provider that will allow MapGuide Open Source to use a MapGuide 6.5 Server as a data source.
   </dd>
+
+  <dt><a name="9" id="9">9. In MapGuide 6.5 each layer in an MWF can point to a different URL, how can this be achieved in MapGuide Open Source?</a></dt>
+  <dd>In MapGuide Open Source, a Map Definition can only have layers that point to a single site. However by using MapGuide Open Source as a WMS/WFS service, one MapGuide Server can be chained to another using the WMS or WFS FDO Providers (as soon as they are available).  Thus, we can have a site reference another site by creating a WFS (or WMS) feature source that retrieves data from another MapGuide WFS (or WMS) service.
+  </dd>
+
 
 </dl>
 </body>
