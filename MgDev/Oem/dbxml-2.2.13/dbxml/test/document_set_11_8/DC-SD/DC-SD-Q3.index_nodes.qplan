@@ -1,0 +1,94 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Function name="{http://www.w3.org/2005/04/xpath-functions}:distinct-values">
+        <Navigation>
+          <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+            <OQPlan>n(P(node-element-equality-string,prefix,name),R(node-element-equality-string,date_of_release,>=,'1990-01-01',<,'1991-01-01'))</OQPlan>
+          </QueryPlanFunction>
+          <Step axis="child" name="catalog" nodeType="element"/>
+          <Step axis="child" name="item" nodeType="element"/>
+          <DbXmlFilter>
+            <Navigation>
+              <Step axis="child" name="date_of_release" nodeType="element">
+                <OQPlan>V(node-element-equality-string,date_of_release,>=,'1990-01-01')</OQPlan>
+              </Step>
+              <DbXmlCompare name="greater_than_equal">
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="1990-01-01" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </DbXmlCompare>
+            </Navigation>
+          </DbXmlFilter>
+          <DbXmlFilter>
+            <Navigation>
+              <Step axis="child" name="date_of_release" nodeType="element">
+                <OQPlan>V(node-element-equality-string,date_of_release,<,'1991-01-01')</OQPlan>
+              </Step>
+              <DbXmlCompare name="less_than">
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="1991-01-01" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </DbXmlCompare>
+            </Navigation>
+          </DbXmlFilter>
+          <Step axis="child" name="publisher" nodeType="element"/>
+          <Step axis="child" name="name" nodeType="element">
+            <OQPlan>P(node-element-equality-string,prefix,name)</OQPlan>
+          </Step>
+        </Navigation>
+      </Function>
+    </ForBinding>
+    <LetBinding name="b">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+          <RQPlan>V(name,=,'[to be calculated]')</RQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="catalog" nodeType="element"/>
+        <Step axis="child" name="item" nodeType="element"/>
+        <Step axis="child" name="publisher" nodeType="element"/>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="child" name="name" nodeType="element">
+              <RQPlan>V(name,=,'[to be calculated]')</RQPlan>
+            </Step>
+            <DbXmlCompare name="equal">
+              <Variable name="a"/>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </LetBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="Publisher" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Variable name="a"/>
+          </Children>
+        </DOMConstructor>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="NumberOfItems" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Function name="{http://www.w3.org/2005/04/xpath-functions}:count">
+              <Variable name="b"/>
+            </Function>
+          </Children>
+        </DOMConstructor>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

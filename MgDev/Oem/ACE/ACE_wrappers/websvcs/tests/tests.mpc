@@ -1,0 +1,13 @@
+// -*- MPC -*-
+// tests.mpc,v 1.2 2003/12/23 20:23:21 dhinton Exp
+
+project(Websvcs Test) : aceexe {
+  exename = Test_Url_Addr
+  libs    += websvcs
+  after   += websvcs
+  Source_Files {
+    Test_URL_Addr.cpp
+  }
+  Header_Files {
+  }
+}

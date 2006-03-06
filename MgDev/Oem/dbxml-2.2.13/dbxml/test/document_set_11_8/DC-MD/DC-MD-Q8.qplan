@@ -1,0 +1,19 @@
+<XQuery>
+  <Navigation>
+    <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+      <OQPlan>n(P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order),P(node-element-presence-none,=,item_id),V(edge-attribute-equality-string,order.@id,=,'4'))</OQPlan>
+    </QueryPlanFunction>
+    <Step axis="child" name="order" nodeType="element"/>
+    <DbXmlFilter>
+      <Navigation>
+        <Step axis="attribute" name="id" nodeType="attribute"/>
+        <DbXmlCompare name="equal">
+          <Sequence>
+            <AnyAtomicTypeConstructor value="4" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </DbXmlCompare>
+      </Navigation>
+    </DbXmlFilter>
+    <Step axis="descendant" name="item_id" nodeType="element"/>
+  </Navigation>
+</XQuery>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="anyURI_operators"><policies><policy name="flexible"><addArg>-f</addArg></policy><policy name="strict"/><default><program>../../../samples/evaluator/eval</program></default></policies><base type="pass"><arg>xs:anyURI(&quot;gopher://spinaltap.micro.umn.edu/00/Weather/California/Los%20Angeles&quot;) = xs:anyURI(&quot;gopher://spinaltap.micro.umn.edu&quot;)</arg><output>false
+</output></base><base type="pass"><arg>xs:anyURI(&quot;&quot;) = xs:anyURI(&quot;http://&quot;)</arg><output>false
+</output></base><base type="pass"><arg>xs:anyURI(&quot;&quot;) = xs:anyURI(&quot;&quot;)</arg><output>true
+</output></base><base type="pass"><arg>xs:anyURI(&quot;http://quitealongnameforasubdomain.stillabitofamouthfulforthesitename.org.uk&quot;) = xs:anyURI(&quot;http://quitealongnameforasubdomain.stillabitofamouthfulforthesitename.org.uk&quot;)</arg><output>true
+</output></base><base comment="see bug 2559" type="fail"><arg>xs:anyURI(&quot;c:\jenn\ie&quot;) = xs:anyURI(&quot;c:\jenn&quot;) </arg><output>false
+</output></base><base type="pass"><arg>xs:anyURI(&quot;../&quot;) = xs:anyURI(&quot;../&quot;)</arg><output>true
+</output></base></test>

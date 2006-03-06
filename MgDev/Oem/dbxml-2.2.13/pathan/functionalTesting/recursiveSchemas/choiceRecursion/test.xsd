@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema elementFormDefault='unqualified' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:foo='foofoo'>
+
+  <xs:element name="leaf" type="xs:string" />
+
+  <xs:element name="section">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element ref="section" maxOccurs="unbounded"/>
+          <xs:element ref="leaf" maxOccurs="unbounded"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="container">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="section" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

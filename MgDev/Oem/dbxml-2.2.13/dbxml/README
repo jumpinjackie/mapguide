@@ -1,0 +1,15 @@
+Sleepycat Software: Berkeley DB XML 2.2.13: (December 19, 2005)
+
+This is version 2.2.13 of Berkeley DB XML from Sleepycat Software.
+To view the release documentation, see
+    dbxml/docs/index.html
+
+For build instructions, see
+    dbxml/docs/ref_xml/xml_unix/intro.html for UNIX-like platforms
+ or dbxml/docs/ref_xml/xml_win/intro.html for Microsoft Windows
+
+To see a summary of changes in this release, as well as the
+lastest patches, and known issues, see
+   http://dev.sleepycat.com
+
+Contact support@sleepycat.com if you have problems or questions.

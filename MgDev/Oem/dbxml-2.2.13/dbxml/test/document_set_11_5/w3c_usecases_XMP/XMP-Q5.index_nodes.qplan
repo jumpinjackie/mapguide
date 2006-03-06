@@ -1,0 +1,91 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="books-with-prices" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="b">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.8.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="book" nodeType="element"/>
+          </Navigation>
+        </ForBinding>
+        <ForBinding name="a">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.8.dbxml">
+              <RQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'reviews.xml',V(entry.title,=,'[to be calculated]'))</RQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="entry" nodeType="element"/>
+            <DbXmlFilter>
+              <Navigation>
+                <Step axis="child" name="title" nodeType="element">
+                  <RQPlan>V(entry.title,=,'[to be calculated]')</RQPlan>
+                </Step>
+                <DbXmlCompare name="equal">
+                  <Navigation>
+                    <Variable name="b"/>
+                    <Step axis="child" name="title" nodeType="element">
+                      <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+                    </Step>
+                  </Navigation>
+                </DbXmlCompare>
+              </Navigation>
+            </DbXmlFilter>
+          </Navigation>
+        </ForBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="book-with-prices" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Navigation>
+              <Variable name="b"/>
+              <Step axis="child" name="title" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+              </Step>
+            </Navigation>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="price-bstore2" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <Navigation>
+                  <Variable name="a"/>
+                  <Step axis="child" name="price" nodeType="element"/>
+                  <Step axis="child">
+                    <ItemType testType="text"/>
+                  </Step>
+                </Navigation>
+              </Children>
+            </DOMConstructor>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="price-bstore1" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <Navigation>
+                  <Variable name="b"/>
+                  <Step axis="child" name="price" nodeType="element"/>
+                  <Step axis="child">
+                    <ItemType testType="text"/>
+                  </Step>
+                </Navigation>
+              </Children>
+            </DOMConstructor>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

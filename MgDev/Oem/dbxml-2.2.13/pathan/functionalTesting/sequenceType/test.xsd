@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema elementFormDefault='unqualified' xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+
+<!-- This schema defines a bunch of different types that are to be tested.
+     To get an idea of what the instance should look like skip over the type
+     definitions to the rootElement definition
+ -->
+
+  <xs:complexType name='noElementsType'>
+    <xs:sequence />
+  </xs:complexType>
+
+  <xs:complexType name='potentiallyEmptySectionType'>
+    <xs:sequence>
+      <!-- occurrence indicator is ? -->
+      <xs:element name='firstElement' type='xs:string' minOccurs="0" maxOccurs="1" />
+      <!-- occurrence indicator is * -->
+      <xs:element name='secondElement' type='xs:string' minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name='twoElementsType'>
+    <xs:sequence>
+      <xs:element name='firstElement' type='xs:string' />
+      <xs:element name='secondElement' type='xs:string' />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name='shoeSizeType'>
+    <xs:sequence>
+      <xs:element name='shoeSize' type='xs:decimal' minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name='rootElement'>
+    <!-- Because this complexType has no name, it is an anonymous type, and any xpath pointing to a child tests QNames for anonymous types (ElemOrAttrType section 2.2 from section 2.4.2-->
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='emptySection' type='noElementsType' />
+        <xs:element name='noOccurrenceIndicator' type='xs:decimal' />
+        <xs:element name='occurrenceIndicatorIsMin1Max3' type='xs:decimal' minOccurs="1" maxOccurs="3" />
+        <xs:element name='potentiallyEmptySection' type='potentiallyEmptySectionType' />
+        <xs:element name='zeroOrOne' type='xs:string' minOccurs="0" maxOccurs="1" />
+        <xs:element name='zeroOrMore' type='xs:string' minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name='oneOrMore' type='xs:string' minOccurs="1" maxOccurs="unbounded" />
+        <xs:element name='secondSection' type='twoElementsType' />
+        <xs:element name='shoes' type='shoeSizeType' />
+        <xs:element name='any' type='xs:anySimpleType' />
+        <xs:element name='elementWithAttribute'>
+          <xs:complexType>
+            <xs:attribute name="attribute" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+	<xs:any namespace="##other"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+
+
+</xs:schema>

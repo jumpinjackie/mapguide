@@ -1,0 +1,7 @@
+#
+# Makefile.bor,v 4.4 2003/12/21 10:08:34 jwillemsen Exp
+#
+
+DIRS = collection deadlock invariant manual mutex rw_lock
+
+!include <$(ACE_ROOT)\include\makeinclude\recurse.bor>

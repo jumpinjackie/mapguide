@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// taolib.mpb,v 1.6 2004/01/07 18:15:34 elliott_c Exp
+
+project : acelib, taoversion, tao_output, taodefaults {
+  after += TAO
+  libs  += TAO
+}

@@ -1,0 +1,44 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q5" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Attributes>
+      <DOMConstructor type="attribute">
+        <Name>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="xmlns:music" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Name>
+        <Children>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="http://www.example.org/music/records" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Children>
+      </DOMConstructor>
+    </Attributes>
+    <Children>
+      <Navigation>
+        <QueryPlanFunction result="document" container="11.5.1.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'auction.xml',P(edge-element-presence-none,=,record:http://www.example.org/music/records.remark:http://www.example.org/music/records))</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="descendant" uri="http://www.example.org/music/records" name="record" nodeType="element"/>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="child" uri="http://www.example.org/music/records" name="remark" nodeType="element">
+              <OQPlan>P(edge-element-presence-none,=,record:http://www.example.org/music/records.remark:http://www.example.org/music/records)</OQPlan>
+            </Step>
+            <Step axis="attribute" uri="http://www.w3.org/XML/1998/namespace" name="lang" nodeType="attribute"/>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="de" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </Children>
+  </DOMConstructor>
+</XQuery>

@@ -1,0 +1,5 @@
+child::para[position()>1] selects all the para children of the context node other than the first para child of the context node
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="para2" type="warning"/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="lastPara" type="warning"/>

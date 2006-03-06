@@ -1,0 +1,36 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="results" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <Navigation>
+        <QueryPlanFunction result="document" container="11.5.8.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'books.xml',u(P(edge-element-equality-string,prefix,section.title),P(edge-element-equality-string,prefix,chapter.title)))</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="descendant-or-self" uri="*" name="*" nodeType="*"/>
+        <Operator name="union">
+          <Step axis="child" name="chapter" nodeType="element"/>
+          <Step axis="child" name="section" nodeType="element"/>
+        </Operator>
+        <Step axis="child" name="title" nodeType="element">
+          <OQPlan>u(P(edge-element-equality-string,prefix,section.title),P(edge-element-equality-string,prefix,chapter.title))</OQPlan>
+        </Step>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="child">
+              <ItemType testType="text"/>
+            </Step>
+            <DbXmlContains>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="XML" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlContains>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </Children>
+  </DOMConstructor>
+</XQuery>

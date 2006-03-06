@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="numeric_operators">
+  <policies>
+    <policy name="flexible">
+      <addArg>-f</addArg>
+    </policy>
+    <policy name="strict"/>
+    <default>
+      <program>../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>(((4))) + 3</arg>
+    <output>7
+</output>
+  </base>
+  <base type="pass">
+    <arg>3&gt;2</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>3&lt;2</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1=1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>0 = 0</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;0&quot;) = xs:double(&quot;+0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;0&quot;) = xs:double(&quot;-0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;+0&quot;) = xs:double(&quot;-0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>0E0 = 0E0</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>0E0 = +0E0</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>0E0 = xs:double(&quot;-0E0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;+0E0&quot;) = xs:double(&quot;-0E0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;-0E0&quot;) = 0E0</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;-0E0&quot;) = xs:double(&quot;+0E0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1=2</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.0=1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.4!=1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1!=1</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>2!=1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.5 &gt;= 1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1&gt;=1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>0.5&gt;=1</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.5&lt;=1</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1&lt;=1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>.5&lt;=1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1&gt;-1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;-0&quot;)&gt;-1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;-0&quot;)&lt;-1</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1!=-1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1=+1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(42E0 mod 0)=(42e0 mod 0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0)=(1 div 0e0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>-(1 div 0e0)=(1 div xs:double(&quot;-0e0&quot;))</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0)=-(1 div 0e0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0)=(42 mod 0e0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>0=(42.0E0 mod 0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>42=(1 div 0e0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0) &gt; -(1 div 0e0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0) &gt; (1 div 0e0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0) &gt; 346234528396792</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0) &gt; 0</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0) &gt; -23125</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>35980723076 &lt; (1 div 0e0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>-(1 div 0e0) &lt; -346234528396792</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>-(1 div 0e0) &lt; 0</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div xs:double(&quot;-0e0&quot;)) &lt; 23125</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>32 &gt; -(1 div 0e0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>3 gt 2</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>3 lt 2</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>0 eq 0</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>0 eq xs:double(&quot;+0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>0 eq xs:double(&quot;-0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;-0&quot;) eq xs:double(&quot;-0.0e0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>0 eq -5 div xs:double(&quot;INF&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;+0&quot;) eq xs:double(&quot;-0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 eq 1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 eq 2</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.0 eq 1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.4 ne 1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 ne 1</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>2 ne 1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.5 ge 1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 ge 1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>0.5 ge 1</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.5 le 1</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 le 1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>0.5 le 1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 gt -1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 ne -1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 eq +1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(4.2E1 mod 0) eq (4200E-2 mod 0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0) eq (1 div 0e0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>-(1 div 0e0) eq -(1 div 0e0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0) eq -(1 div 0e0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0) eq (42e0 mod 0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>0 eq (42E0 mod 0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>42 eq (1 div 0e0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0)  gt  -(1 div 0e0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.3256 eq 1.3256</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 eq 1.1232</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 eq -1.3256</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.3256 ne 1.3256</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 ne 1.1232</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 ne -1.3256</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 ge 1.12</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 ge 1.356</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 ge -1.356</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 ge .5</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 gt 1.12</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 gt 1.356</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 gt -1.356</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 gt 0.5</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 le 1.12</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 le 1.356</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 le -1.356</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 le 0.5</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 lt 1.12</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 lt 1.356</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 lt -1.356</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.12 lt 0.5</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>1+1</arg>
+    <output>2
+</output>
+  </base>
+  <base type="pass">
+    <arg>1++1</arg>
+    <output>2
+</output>
+  </base>
+  <base type="pass">
+    <arg>1+-1</arg>
+    <output>0
+</output>
+  </base>
+  <base type="pass">
+    <arg>6*7</arg>
+    <output>42
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 div 3</arg>
+    <output>0.3333333333333333333333333333333
+</output>
+  </base>
+  <base type="pass">
+    <arg>42 div 7</arg>
+    <output>6
+</output>
+  </base>
+  <base type="pass">
+    <arg>42 idiv 7</arg>
+    <output>6
+</output>
+  </base>
+  <base type="pass">
+    <arg>10 idiv 3</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>10 idiv -3</arg>
+    <output>-3
+</output>
+  </base>
+  <base type="pass">
+    <arg>14 idiv 3</arg>
+    <output>4
+</output>
+  </base>
+  <base type="pass">
+    <arg>-14 idiv 3</arg>
+    <output>-4
+</output>
+  </base>
+  <base type="pass">
+    <arg>42 mod 7</arg>
+    <output>0
+</output>
+  </base>
+  <base type="pass">
+    <arg>45 mod 7</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>-42 mod 7</arg>
+    <output>0
+</output>
+  </base>
+  <base type="pass">
+    <arg>-42 mod 12</arg>
+    <output>-6
+</output>
+  </base>
+  <base type="pass">
+    <arg>42 mod -12</arg>
+    <output>6
+</output>
+  </base>
+  <base type="pass">
+    <arg>-42 mod -12</arg>
+    <output>-6
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 div (-10.0E0 mod 5)</arg>
+    <output>-INF
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 div (xs:float(&quot;-10.0E0&quot;) mod -5)</arg>
+    <output>-INF
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 div (10.0E0 mod -5)</arg>
+    <output>INF
+</output>
+  </base>
+  <base type="pass">
+    <arg>42.3 div 7</arg>
+    <output>6.0428571428571428571428571428571
+</output>
+  </base>
+  <base type="pass">
+    <arg>42.3 div 7.1</arg>
+    <output>5.9577464788732394366197183098591
+</output>
+  </base>
+  <base type="pass">
+    <arg>42.3 mod 7</arg>
+    <output>0.3
+</output>
+  </base>
+  <base type="pass">
+    <arg>42.3 mod 7.1</arg>
+    <output>6.8
+</output>
+  </base>
+  <base type="pass">
+    <arg>45.3 mod 7</arg>
+    <output>3.3
+</output>
+  </base>
+  <base type="pass">
+    <arg>45.3 mod 7.1</arg>
+    <output>2.7
+</output>
+  </base>
+  <base type="pass">
+    <arg>-42.3 mod 7</arg>
+    <output>-0.3
+</output>
+  </base>
+  <base type="pass">
+    <arg>-42.3 mod 7.1</arg>
+    <output>-6.8
+</output>
+  </base>
+  <base type="pass">
+    <arg>-42.3 mod 12</arg>
+    <output>-6.3
+</output>
+  </base>
+  <base type="pass">
+    <arg>-42.0 mod 12</arg>
+    <output>-6
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(42) mod 0</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0) mod 7</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>-(1 div 0e0) mod 7</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>-(1 div 0e0) mod 0</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>(42 mod 0.0E0) mod 7</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>7 mod (42E0 mod 0)</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>(42E0 mod 0) mod (42E0 mod 0)</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>7 mod (1 div 0e0)</arg>
+    <output>7
+</output>
+  </base>
+  <base type="pass">
+    <arg>0 mod (1 div 0e0)</arg>
+    <output>0
+</output>
+  </base>
+  <base type="pass">
+    <arg>0 mod 7</arg>
+    <output>0
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.23E2 mod .6E1</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>10-7</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>7-10</arg>
+    <output>-3
+</output>
+  </base>
+  <base type="pass">
+    <arg>7+10</arg>
+    <output>17
+</output>
+  </base>
+  <base type="pass">
+    <arg>12.5+3.7435</arg>
+    <output>16.2435
+</output>
+  </base>
+  <base type="pass">
+    <arg>12e-5+-47</arg>
+    <output>-46.99988
+</output>
+  </base>
+  <base type="pass">
+    <arg>.62+12.5</arg>
+    <output>13.12
+</output>
+  </base>
+  <base type="pass">
+    <arg>1E2+5.125E0</arg>
+    <output>105.125
+</output>
+  </base>
+  <base type="pass">
+    <arg>1e5*2e-5</arg>
+    <output>2
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.1e6</arg>
+    <output>1.1E6
+</output>
+  </base>
+  <base type="pass">
+    <arg>1.2e17 div 6e15</arg>
+    <output>20
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1 div 0e0)</arg>
+    <output>INF
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 div 0 </arg>
+    <output>Division by zero [err:FOAR0001]
+</output>
+  </base>
+  <base type="pass">
+    <arg>1e0 div 0e0</arg>
+    <output>INF
+</output>
+  </base>
+  <base type="pass">
+    <arg>1e0 div xs:double(&quot;-0e0&quot;)</arg>
+    <output>-INF
+</output>
+  </base>
+  <base type="pass">
+    <arg>1 div xs:double(&quot;-INF&quot;) eq xs:float(&quot;-0.0&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>-0</arg>
+    <output>0
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;-0E0&quot;)</arg>
+    <output>-0
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1+1)*2</arg>
+    <output>4
+</output>
+  </base>
+  <base type="pass">
+    <arg>1+1*2</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>1+(1*2)</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>-1 + (1*2)</arg>
+    <output>1
+</output>
+  </base>
+  <base type="pass">
+    <arg>-1.0 + (1*2)</arg>
+    <output>1
+</output>
+  </base>
+  <base type="pass">
+    <arg>+1 + (1*2)</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>+9999999999999999999+1</arg>
+    <output>10000000000000000000
+</output>
+  </base>
+  <base type="pass">
+    <arg>9999999999999999999-1</arg>
+    <output>9999999999999999998
+</output>
+  </base>
+  <base type="pass">
+    <arg>500000000000000000+499999999999999999</arg>
+    <output>999999999999999999
+</output>
+  </base>
+  <base type="pass">
+    <arg>9999999999.9*9999999999.9</arg>
+    <output>99999999998000000000.01
+</output>
+  </base>
+  <base type="pass">
+    <arg>-9999999999999999999-1</arg>
+    <output>-10000000000000000000
+</output>
+  </base>
+  <base type="pass">
+    <arg>-9999999999.9*-9999999999.9</arg>
+    <output>99999999998000000000.01
+</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:double(&quot;-0.0E0&quot;) + 5</arg>
+    <output>5
+</output>
+  </base>
+  <base type="pass">
+    <arg>3 + xs:float(&quot;-0e99&quot;)</arg>
+    <output>3
+</output>
+  </base>
+  <base type="pass">
+    <arg>5 * xs:double(&quot;-0&quot;)</arg>
+    <output>-0
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;-0.0E0&quot;) * 913840123895</arg>
+    <output>-0
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;-0E1&quot;) - -10</arg>
+    <output>10
+</output>
+  </base>
+  <base type="pass">
+    <arg>-9 - xs:double(&quot;-0&quot;)</arg>
+    <output>-9
+</output>
+  </base>
+</test>

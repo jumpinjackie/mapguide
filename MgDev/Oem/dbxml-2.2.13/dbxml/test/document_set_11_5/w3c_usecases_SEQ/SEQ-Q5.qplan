@@ -1,0 +1,125 @@
+<XQuery>
+  <FunctionDefinition name="{http://www.w3.org/2005/04/xquery-local-functions}:precedes">
+    <Operator name="and">
+      <Operator name="node-order">
+        <Variable name="a"/>
+        <Variable name="b"/>
+      </Operator>
+      <Function name="{http://www.w3.org/2005/04/xpath-functions}:empty">
+        <Operator name="intersect">
+          <Navigation>
+            <Variable name="a"/>
+            <Step axis="descendant">
+              <ItemType testType="node"/>
+            </Step>
+          </Navigation>
+          <Variable name="b"/>
+        </Operator>
+      </Function>
+    </Operator>
+  </FunctionDefinition>
+  <FunctionDefinition name="{http://www.w3.org/2005/04/xquery-local-functions}:follows">
+    <Operator name="and">
+      <Operator name="node-order">
+        <Variable name="a"/>
+        <Variable name="b"/>
+      </Operator>
+      <Function name="{http://www.w3.org/2005/04/xpath-functions}:empty">
+        <Operator name="intersect">
+          <Navigation>
+            <Variable name="b"/>
+            <Step axis="descendant">
+              <ItemType testType="node"/>
+            </Step>
+          </Navigation>
+          <Variable name="a"/>
+        </Operator>
+      </Function>
+    </Operator>
+  </FunctionDefinition>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="critical_sequence" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <LetBinding name="proc">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.4.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'report1.xml',V(edge-element-equality-string,section.section.title,=,'Procedure'))</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant-or-self" uri="*" name="*" nodeType="*"/>
+            <Step axis="child" name="section" nodeType="element">
+              <Predicates>
+                <Navigation>
+                  <Step axis="child" name="section.title" nodeType="element">
+                    <OQPlan>V(edge-element-equality-string,section.section.title,=,'Procedure')</OQPlan>
+                  </Step>
+                  <DbXmlCompare name="equal">
+                    <Sequence>
+                      <AnyAtomicTypeConstructor value="Procedure" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                    </Sequence>
+                  </DbXmlCompare>
+                </Navigation>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                </Sequence>
+              </Predicates>
+            </Step>
+          </Navigation>
+        </LetBinding>
+        <ForBinding name="n">
+          <Navigation>
+            <Variable name="proc"/>
+            <Step axis="descendant">
+              <ItemType testType="node"/>
+            </Step>
+          </Navigation>
+          <Where>
+            <Operator name="and">
+              <UserFunction name="{http://www.w3.org/2005/04/xquery-local-functions}:follows">
+                <Binding name="{}:a">
+                  <Variable name="n"/>
+                </Binding>
+                <Binding name="{}:b">
+                  <Navigation>
+                    <Variable name="proc"/>
+                    <Step axis="descendant" name="incision" nodeType="element">
+                      <OQPlan>P(node-element-presence-none,=,incision)</OQPlan>
+                    </Step>
+                    <Predicates>
+                      <Sequence>
+                        <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                      </Sequence>
+                    </Predicates>
+                  </Navigation>
+                </Binding>
+              </UserFunction>
+              <UserFunction name="{http://www.w3.org/2005/04/xquery-local-functions}:precedes">
+                <Binding name="{}:a">
+                  <Variable name="n"/>
+                </Binding>
+                <Binding name="{}:b">
+                  <Navigation>
+                    <Variable name="proc"/>
+                    <Step axis="descendant" name="incision" nodeType="element">
+                      <OQPlan>P(node-element-presence-none,=,incision)</OQPlan>
+                    </Step>
+                    <Predicates>
+                      <Sequence>
+                        <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                      </Sequence>
+                    </Predicates>
+                  </Navigation>
+                </Binding>
+              </UserFunction>
+            </Operator>
+          </Where>
+        </ForBinding>
+        <Variable name="n"/>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

@@ -1,0 +1,88 @@
+<XQuery>
+  <FLWOR>
+    <LetBinding name="item">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+          <OQPlan>n(P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.items),V(edge-attribute-equality-string,item.@id,=,'8'))</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="items" nodeType="element">
+          <OQPlan>P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.items)</OQPlan>
+        </Step>
+        <Step axis="child" name="item" nodeType="element">
+          <OQPlan>V(edge-attribute-equality-string,item.@id,=,'8')</OQPlan>
+        </Step>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="attribute" name="id" nodeType="attribute"/>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="8" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </LetBinding>
+    <ForBinding name="prevItem">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+          <OQPlan>P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.items)</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="items" nodeType="element">
+          <OQPlan>P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.items)</OQPlan>
+        </Step>
+        <Step axis="child" name="item" nodeType="element">
+          <Predicates>
+            <Operator name="node-order">
+              <ContextItem/>
+              <Variable name="item"/>
+            </Operator>
+            <Operator name="equal">
+              <Function name="{http://www.w3.org/2005/04/xpath-functions}:position"/>
+              <Function name="{http://www.w3.org/2005/04/xpath-functions}:last"/>
+            </Operator>
+          </Predicates>
+        </Step>
+      </Navigation>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="CurrentItem" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Navigation>
+              <Variable name="item"/>
+              <Step axis="attribute" name="id" nodeType="attribute">
+                <OQPlan>P(edge-attribute-equality-string,prefix,item.@id)</OQPlan>
+              </Step>
+            </Navigation>
+          </Children>
+        </DOMConstructor>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="PreviousItem" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Navigation>
+              <Variable name="prevItem"/>
+              <Step axis="attribute" name="id" nodeType="attribute">
+                <OQPlan>P(edge-attribute-equality-string,prefix,item.@id)</OQPlan>
+              </Step>
+            </Navigation>
+          </Children>
+        </DOMConstructor>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

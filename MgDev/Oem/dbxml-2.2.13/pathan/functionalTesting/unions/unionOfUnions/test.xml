@@ -1,0 +1,8 @@
+<container xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:foo='foofoo' xsi:noNamespaceSchemaLocation='test.xsd'>
+  <teleTubbyInclusion>42</teleTubbyInclusion>
+  <teleTubbyInclusion>2002-02-14</teleTubbyInclusion>
+  <teleTubbyInclusion>Sally</teleTubbyInclusion>
+  <trueBlue>Victoria</trueBlue>
+</container>
+
+

@@ -1,0 +1,10 @@
+<postals xmlns="http://www.example.com/postals">
+  <row>
+    <city>Cambridge</city>
+    <prefix>CB</prefix>
+  </row>
+  <row>
+    <city>Oxford</city>
+    <prefix>OX</prefix>
+  </row>  
+</postals>

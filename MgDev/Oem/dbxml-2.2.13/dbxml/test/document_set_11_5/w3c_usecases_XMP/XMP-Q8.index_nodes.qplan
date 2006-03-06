@@ -1,0 +1,60 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="b">
+      <Navigation>
+        <QueryPlanFunction result="document" container="11.5.8.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',U)</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="descendant" name="book" nodeType="element"/>
+      </Navigation>
+    </ForBinding>
+    <LetBinding name="e">
+      <Navigation>
+        <Variable name="b"/>
+        <Step axis="child" uri="*" name="*" nodeType="element">
+          <Predicates>
+            <Operator name="and">
+              <Function name="{http://www.w3.org/2005/04/xpath-functions}:contains">
+                <Function name="{http://www.w3.org/2005/04/xpath-functions}:string">
+                  <ContextItem/>
+                </Function>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="Suciu" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </Function>
+              <Function name="{http://www.w3.org/2005/04/xpath-functions}:ends-with">
+                <Function name="{http://www.w3.org/2005/04/xpath-functions}:local-name">
+                  <ContextItem/>
+                </Function>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="or" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </Function>
+            </Operator>
+          </Predicates>
+        </Step>
+      </Navigation>
+      <Where>
+        <Function name="{http://www.w3.org/2005/04/xpath-functions}:exists">
+          <Variable name="e"/>
+        </Function>
+      </Where>
+    </LetBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="book" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Navigation>
+          <Variable name="b"/>
+          <Step axis="child" name="title" nodeType="element">
+            <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+          </Step>
+        </Navigation>
+        <Variable name="e"/>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

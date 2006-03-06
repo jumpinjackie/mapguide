@@ -1,0 +1,43 @@
+AUTOMAKE_OPTIONS = foreign
+
+EXTRA_DIST = ServerTileService.vcproj ServerTileService.rc
+
+prefix=@prefix@/server
+
+INCLUDES = \
+  -I../../../../Oem/ACE/ACE_wrappers \
+  -I../../../../Common/Service \
+  -I../../../../Common/Service/Services \
+  -I../../../../Common/Service/System \
+  -I../../Common \
+  -I../../Common/Base \
+  -I../../Common/Manager \
+  -I../../../../Common/MdfModel
+
+lib_LTLIBRARIES = libMgServerTileService.la
+
+libMgServerTileService_la_SOURCES = \
+  ServerTileServiceBuild.cpp
+
+include_SOURCES = \
+  OpClearCache.cpp \
+  OpGetTile.cpp \
+  OpSetTile.cpp \
+  ServerTileService.cpp \
+  TileCache.cpp \
+  TileOperation.cpp \
+  TileOperationFactory.cpp \
+  TileServiceHandler.cpp
+
+noinst_HEADERS = $(include_SOURCES) \
+  OpClearCache.h \
+  OpGetTile.h \
+  OpSetTile.h \
+  ServerTileDllExport.h \
+  ServerTileService.h \
+  TileCache.h \
+  TileOperation.h \
+  TileOperationFactory.h \
+  TileServiceHandler.h
+
+libMgServerTileService_la_LDFLAGS = -version-info 7:0:0
