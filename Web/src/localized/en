@@ -136,7 +136,7 @@ HTMLABOUTSERVERTITLE    = MapGuide Server
 HTMLABOUTVIEWERTITLE    = MapGuide Viewer
 HTMLABOUTSERVERVERSION  = %s (Version %s)
 HTMLABOUTVIEWERVERSION  = %s (Version %s)
-HTMLABOUTTEXT           = <br>This product is made available subject to the terms of GNU Lesser General Public License Version 2.1 ("LGPL").  A copy of the LGPL, as well as additional copyright notices and license terms applicable to portions of this product are set forth in the <a href="../localized/license_en.htm" target="blank">license</a> file.<br><br>All trademarks and registered trademarks mentioned herein are the property of their respective owners.<br><br>Copyright &copy; 2005 Autodesk, Inc.<br><br>
+HTMLABOUTTEXT           = <br>This product is made available subject to the terms of GNU Lesser General Public License Version 2.1 ("LGPL").  A copy of the LGPL, as well as additional copyright notices and license terms applicable to portions of this product are set forth in the <a href="../localized/license_en.htm" target="blank">license</a> file.<br><br>All trademarks and registered trademarks mentioned herein are the property of their respective owners.<br><br>Copyright &copy; 2006 Autodesk, Inc.<br><br>
 HTMLABOUTLICENSE        = license file
 HTMLABOUTLICENSEFILE    = license_en.htm
 
@@ -148,7 +148,6 @@ PRINTTITLE              = Get Printable Page
 PRINTELEMENTS           = Select the elements to include in the print layout.
 PRINTPAGETITLE          = Page title:
 PRINTLEGEND             = Legend
-PRINTSCALEBAR           = Scale bar
 PRINTNORTHARROW         = North arrow
 PRINTCREATEPAGE         = Create Page
 
@@ -212,6 +211,7 @@ VIEWERZOOMIN            = Zoom In
 VIEWERZOOMOUT           = Zoom Out
 VIEWERMOVESLIDER        = Drag to move slider
 VIEWERDRAGZOOM          = Drag to zoom
+ENDSEL                  = CTRL + click to end
 
 # Main Frame
 NEEDLOGIN               = You must enter a valid login ID and password to access this site
@@ -222,7 +222,11 @@ MAPUNITSCURPOS          = X: {0}, Y: {1}
 FEATURESSELECTED        = {0} features selected
 FEATURESELECTED         = {0} feature selected
 MI                      = mi
+FT                      = ft
+IN                      = in
 KM                      = km
+MT                      = m
+CM                      = cm
 
 # Localized Icon Files
 POWEREDBYICON           = PoweredBy_en.gif
