@@ -2,11 +2,64 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>MapGuide Open Source - Architecture</title>
+<title>MapGuide Open Source - Getting Started</title>
 </head>
-
 <body>
-<h1>MapGuide Open Source - Getting Started </h1>
+<h1>MapGuide Open Source - Getting Started</h1>
+<p><a href="#1">Getting MapGuide Up and Running</a></p>
+<p><a href="#2">Components of the MapGuide Platform</a></p>
+<p><a href="#3">Understanding Resources</a></p>
+<p><a href="#4">Developing MapGuide Applications</a></p>
+
+<div class="h2">
+<h2><a name="1" id="1">Getting MapGuide Up and Running</a></h2>
+To get MapGuide Open Source up and running on your system, follow these five steps:
+<dl>
+  <dt>1. Download and install the MapGuide Server and MapGuide Web Server Extensions.</dt>
+  <dd>For Windows visit the <a href="downloads.html">downloads page</a> and download MgServerSetup.exe and MgWebServerExtensionsSetup.exe. Then follow the steps in the Installing MapGuide on Windows document to install the software.<br /><br />
+    For Linux visit the MapGuide Open Source <a href="downloads.html">downloads page</a> and the Feature Data Objects <a href="https://fdo.osgeo.org/downloads.html">downloads page</a> and download mapguideopensource-1.0.0.tar.gz, mapguideopensource-1.0.0.tar.gz, and fdo-3.0.0.tar.gz. Then follow the steps in the Building MapGuide on Linux document to configure, make, and install the software.</dd>
+  
+  <dt>2. Download and extract the sample application.</dt>
+  <dd>Visit the <a href="downloads.html">downloads page</a> and download phpviewersample.zip. On Windows extract the files to C:\Program Files\MapGuideOpenSource\WebServerExtensions\www. On Linux extract the files to /usr/local/mapguideopensource/webserverextensions/www. Note that in both cases it should create a folder called phpviewersample under www.  </dd>
+  
+  <dt>3. Download the sample data.</dt>
+  <dd>Visit the <a href="downloads.html">downloads page</a> and download the resource package Sheboygan.mgp. On Windows copy the file to  C:\Program Files\MapGuideOpenSource\Server\Packages. On Linux copy the file to /usr/local/mapguideopensource/server/packages.  </dd>
+  
+  <dt>4. Load the sample data using the Site Administrator application.</dt>
+  <dd>Open a web browser to the following URL: <a href="http://localhost:8008/mapguide/mapadmin/login.php">http://localhost:8008/mapguide/mapadmin/login.php</a>. Login using the user id "Administrator" and the default password "admin". When you see the Manage Servers page appear, select "Load Packages" in the left navigation bar. Select the radio button next to Sheboygan.mgp and click "Load Package".  </dd>
+
+  <dt>5. Launch the sample application.</dt>
+  <dd>Finally open a web browser to the following URL: <a href="http://localhost:8008/mapguide/phpviewersample/ajaxtiledviewersample.php">http://localhost:8008/mapguide/phpviewersample/ajaxtiledviewersample.php</a> to launch the sample application .  </dd>
+</dl>
+At this point you should have MapGuide Open Source up and running. To find out more read the rest of this guide, look through the <a href="faq.html">FAQ</a>, and visit the <a href="documentation.html">documentation page</a> to view the developer documetation.
+ 
+</div>
+
+<div class="h2">
+<h2><a name="2" id="2">Components of the MapGuide Platform</a></h2>
+
+</div>
+
+<div class="h2">
+<h2><a name="3" id="3">Understanding Resources</a></h2>
+
+</div>
+
+<div class="h2">
+<h2><a name="4" id="4">Developing MapGuide Applications</a></h2>
+
+</div>
+<br />
+<br />
+<br />
+Stuff Below is to be Restructured or Removed
+<br />
+<br />
+<br />
+<br />
+
+
+
 <h3>Deployment overview</h3>
 <p>This page provides a  brief overview  of MapGuide Open Source   components and basic deployment information. The figure below shows a typical   deployment.</p>
 <p><img src="images/mapguide_components.png" alt="MapGuide Open Source Architecture" width="629" height="616" /></p>
