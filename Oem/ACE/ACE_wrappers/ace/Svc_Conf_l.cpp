@@ -6,6 +6,7 @@
  * /project/cvs-repository/ACE_wrappers-repository/ace/Svc_Conf_l.cpp,v 4.66 2003/11/10 21:48:26 shuston Exp
  */
 
+
 #define FLEX_SCANNER
 #define ACE_YY_FLEX_MAJOR_VERSION 2
 #define ACE_YY_FLEX_MINOR_VERSION 5
