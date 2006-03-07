@@ -68,6 +68,9 @@
     $errServerAddressMissing = "Server address is not specified.";
     $errServerIsDown = "%s is down.";
     $errCannotOpenFolder = 'Cannot access "%s".  Please ensure that the path exists and you have access permission.';
+	$errNoPackageSpecified = "No package specified.";
+	$errNoResourceSpecified = "No resource folder specified.";
+	$errCannotCreatePackage = "Cannot create package %s from folder %s:  ";
     $errNoPackagesFound = "No packages found.";
     $errNoPackageLog = "No package log specified.";
     $errNoPackageSelectionForDelete = "Package must be selected in order to delete.";
@@ -90,8 +93,8 @@
     $confSuccessfulLogRetrieval = "%s log has been successfully retrieved.";
     $confSuccessfulLogClearing = "%s log has been successfully cleared.";
     $confSuccessfulServersUpdate = "Servers have been successfully updated.";
-    $confPackageIsLoading = "%s is currently loading.  Please wait.";
     $confPackageLoadCompleted = "%s load has completed. Please check status.";
+    $confPackageMakeCompleted = "Package %s has been created from folder %s.";
     $confSuccessfulWMSUpdate = "WMS properties have been successfully updated.";
     $confSuccessfulWFSUpdate = "WFS properties have been successfully updated.";
 
