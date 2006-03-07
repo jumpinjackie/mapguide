@@ -130,16 +130,9 @@ m_xformer(),
 m_pPool(NULL)
 {
     if (m_width <= 0)
-    {
-        _ASSERT(false);
         m_width = 1;
-    }
-
     if (m_height <= 0)
-    {
-        _ASSERT(false);
         m_height = 1;
-    }
 
     gdImagePtr img = gdImageCreateTrueColor(m_width, m_height);
     m_imout = img;
@@ -218,6 +211,11 @@ void GDRenderer::Save(const RS_String& filename, const RS_String& format, int wi
 RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
 {
     gdImagePtr im = NULL;
+
+    if (width <= 0)
+        width = 1;
+    if (height <= 0)
+        height = 1;
 
     //do we need to stretch to non-square pixels?
     if (width != m_width || height != m_height)
@@ -1351,7 +1349,7 @@ double GDRenderer::_MeterToMapSize(RS_Units unit, double number)
     if (unit == RS_Units_Device) // in meters, fixed size
         scale_factor = m_mapScale / m_metersPerUnit;
     else
-        scale_factor = m_scale / m_metersPerUnit;
+        scale_factor = 1.0 / m_metersPerUnit;
 
     return number * scale_factor;
 }
