@@ -31,6 +31,9 @@
     $selectedLog = ACCESS_LOG;
     $selectedPackage = "";
     $packageLoadErrorMsg = "";
+    $packageMakeErrorMsg = "";
+    $packageLoadConfirmationMsg = "";
+    $packageMakeConfirmationMsg = "";
     $confirmationMsg = "";
     $userInfo = NULL;
     $clientAgent = "";
@@ -57,6 +60,9 @@
         global $selectedLog;
         global $selectedPackage;
         global $packageLoadErrorMsg;
+        global $packageMakeErrorMsg;
+        global $packageLoadConfirmationMsg;
+        global $packageMakeConfirmationMsg;
         global $confirmationMsg;
         global $userInfo;
         global $clientAgent;
@@ -79,6 +85,9 @@
         $selectedLog = ACCESS_LOG;
         $selectedPackage = "";
         $packageLoadErrorMsg = "";
+        $packageMakeErrorMsg = "";
+        $packageLoadConfirmationMsg = "";
+        $packageMakeConfirmationMsg = "";
         $confirmationMsg = "";
         $userInfo = NULL;
         $clientAgent = "";
@@ -115,6 +124,9 @@
         global $selectedLog;
         global $selectedPackage;
         global $packageLoadErrorMsg;
+        global $packageMakeErrorMsg;
+        global $packageLoadConfirmationMsg;
+        global $packageMakeConfirmationMsg;
         global $confirmationMsg;
         global $userInfo;
         global $clientAgent;
@@ -142,6 +154,9 @@
             $selectedLog = $_SESSION[ 'selectedLog' ];
             $selectedPackage = $_SESSION[ 'selectedPackage' ];
             $packageLoadErrorMsg = $_SESSION[ 'packageLoadErrorMsg' ];
+            $packageMakeErrorMsg = $_SESSION[ 'packageMakeErrorMsg' ];
+            $packageLoadConfirmationMsg = $_SESSION[ 'packageLoadConfirmationMsg' ];
+            $packageMakeConfirmationMsg = $_SESSION[ 'packageMakeConfirmationMsg' ];
             $confirmationMsg = $_SESSION[ 'confirmationMsg' ];
             $clientAgent = $_SESSION[ 'clientAgent' ];
             $clientIp = $_SESSION[ 'clientIp' ];
@@ -186,6 +201,9 @@
         global $selectedLog;
         global $selectedPackage;
         global $packageLoadErrorMsg;
+        global $packageMakeErrorMsg;
+        global $packageLoadConfirmationMsg;
+        global $packageMakeConfirmationMsg;
         global $confirmationMsg;
         global $userInfo;
         global $clientAgent;
@@ -208,6 +226,9 @@
         $_SESSION[ 'selectedLog' ] = $selectedLog;
         $_SESSION[ 'selectedPackage' ] = $selectedPackage;
         $_SESSION[ 'packageLoadErrorMsg' ] = $packageLoadErrorMsg;
+        $_SESSION[ 'packageMakeErrorMsg' ] = $packageMakeErrorMsg;
+        $_SESSION[ 'packageLoadConfirmationMsg' ] = $packageLoadConfirmationMsg;
+        $_SESSION[ 'packageMakeConfirmationMsg' ] = $packageMakeConfirmationMsg;
         $_SESSION[ 'confirmationMsg' ] = $confirmationMsg;
         $_SESSION[ 'clientAgent' ] = $clientAgent;
         $_SESSION[ 'clientIp' ] = $clientIp;

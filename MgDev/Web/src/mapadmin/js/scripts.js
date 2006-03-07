@@ -216,6 +216,15 @@ function SubmitForm( formName )
     }
 }
 
+function ConditionalSubmitForm( formName, conditionMsg, conditionFlag, conditionVal )
+{
+	if ( window.confirm( conditionMsg ) )
+	{
+		SetElementValue( conditionFlag, conditionVal );
+		SubmitForm( formName );
+	}
+}
+
 function ServiceConditionalDeleteButton( deleteFlagName, okFlag, deleteNotPermittedStr, confirmationID, confirmationStr )
 {
     deleteFlag = getElement( deleteFlagName );
@@ -302,4 +311,44 @@ function ClosePopups( popups )
         if ( windowRef != null && !windowRef.closed )
             windowRef.close();
     }
+}
+
+function TrimDashes( theString )
+{
+	var start = 0;
+	var end = theString.length;
+	
+	while ( start < end )
+	{
+		var c = theString.charAt( start );
+		if ( c != '-' )
+			break;
+		start++;
+	}
+	while ( start < end )
+	{
+		var c = theString.charAt( end - 1 );
+		if ( c != '-' )
+			break;
+		end--;
+	}
+	
+	if ( start >= end )
+		return new String( "" );
+	else
+		return theString.substring( start, end );
+}
+
+function SuggestPackageName( suggestedNameFormat, folderName, packageNameElement )
+{
+	// Remove spaces and sla
+	var folderNameStr = folderName.replace( /Library:\/\//, '' );
+	folderNameStr = folderNameStr.replace( /\//g, '-' );
+	folderNameStr = TrimDashes( folderNameStr );
+	
+	if ( folderNameStr.length <= 0 )
+		packageName = "";
+	else
+		packageName = suggestedNameFormat.replace( /<FOLDER_NAME>/, folderNameStr );
+	SetElementValue( packageNameElement, packageName );
 }

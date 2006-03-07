@@ -53,8 +53,8 @@
     $rolesMenuGroup[ ASSIGN_ROLES_MENU_ITEM ] =     'userrolemanagement.php';
     $rolesMenuGroup[ EDIT_ROLES_MENU_ITEM ] =       'assignroles.php';
 
-    define( 'LOAD_PACKAGES_MENU_ITEM', "Load Packages" );
-    $packagesMenuGroup[ LOAD_PACKAGES_MENU_ITEM ] = 'loadpackages.php';
+    define( 'PACKAGE_MANAGEMENT_MENU_ITEM', "Manage Packages" );
+    $packagesMenuGroup[ PACKAGE_MANAGEMENT_MENU_ITEM ] = 'packagemanagement.php';
 
     define( 'CONFIGURE_WMS_MENU_ITEM', "Configure WMS" );
     $wmsMenuGroup[ CONFIGURE_WMS_MENU_ITEM ] = 'wmsproperties.php';
@@ -377,7 +377,7 @@
         echo "<tr><td><hr></td></tr>\n";
         DisplayMenuGroup( $currMenuItem, ASSIGN_ROLES_MENU_ITEM, $rolesMenuGroup );
         echo "<tr><td><hr></td></tr>\n";
-        DisplayMenuGroup( $currMenuItem, LOAD_PACKAGES_MENU_ITEM, $packagesMenuGroup );
+        DisplayMenuGroup( $currMenuItem, PACKAGE_MANAGEMENT_MENU_ITEM, $packagesMenuGroup );
         echo "<tr><td><hr></td></tr>\n";
         DisplayMenuGroup( $currMenuItem, CONFIGURE_WMS_MENU_ITEM, $wmsMenuGroup );
         echo "<tr><td><hr></td></tr>\n";

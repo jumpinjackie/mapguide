@@ -43,24 +43,22 @@ try
     $formName = "LoadPackage";
     $pageTitle = "Load Package";
     $packageLoadErrorMsg = "";
-    $confirmationMsg = "";
+    $packageLoadConfirmationMsg = "";
 
 
     if ( !FirstTimeHere( $pageName ) )
     {
         LoadResourcePackage( $selectedPackage );
-        $confirmationMsg = sprintf( $confPackageLoadCompleted, $selectedPackage );
+        $packageLoadConfirmationMsg = sprintf( $confPackageLoadCompleted, $selectedPackage );
         $packageLoadErrorMsg = "";
         SaveSessionVars();
-        header( 'Location:  loadpackages.php?'.strip_tags(SID) );
+        header( 'Location:  packagemanagement.php?'.strip_tags(SID) );
         exit();
     }
     else
     {
         if ( empty( $selectedPackage ) )
-        throw new Exception( $errNoPackageLog );
-        $packageLoadErrorMsg = "";
-        $confirmationMsg = sprintf( $confPackageIsLoading, $selectedPackage );
+	        throw new Exception( $errNoPackageSelected );
     }
 }
 catch ( MgException $e )
@@ -77,7 +75,7 @@ catch ( Exception $e )
 if ( !empty( $packageLoadErrorMsg ) )
 {
     SaveSessionVars();
-    header( 'Location:  loadpackages.php?'.strip_tags(SID) );
+    header( 'Location:  packagemanagement.php?'.strip_tags(SID) );
     exit();
 }
 
@@ -101,7 +99,6 @@ if ( !empty( $packageLoadErrorMsg ) )
                 BeginContentArea( $formName );
                 DeclareHiddenVars( $pageName );
                 DisplayTitleBar( $pageTitle, NULL );
-                DisplayConfirmationMsg( $confirmationMsg );
                 ?>
 
                 The package is currently loading which may take some time.  If you wish to continue with Site Administration work, you may open another browser and login to another instance of the Site Administrator.
