@@ -21,4 +21,14 @@
     <LibraryPath>SDFProvider.dll</LibraryPath>
   </FeatureProvider>
 
+  <FeatureProvider>
+    <Name>OSGeo.MySQL.3.0</Name>
+    <DisplayName>OSGeo FDO Provider for MySQL</DisplayName>
+    <Description>Read/write access to MySQL-based data store. Supports spatial data types and spatial query operations.</Description>
+    <IsManaged>False</IsManaged>
+    <Version>3.0.0.0</Version>
+    <FeatureDataObjectsVersion>3.0.0.0</FeatureDataObjectsVersion>
+    <LibraryPath>FdoMySql.dll</LibraryPath>
+  </FeatureProvider>
+
 </FeatureProviderRegistry>
