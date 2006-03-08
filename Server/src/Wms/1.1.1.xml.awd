@@ -160,7 +160,7 @@
      <DCPType>
       <HTTP>
        <Get>
-        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetCapabilities;"/>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetCapabilities;?"/>
        </Get>
       </HTTP>
      </DCPType>
@@ -171,7 +171,7 @@
     <DCPType>
      <HTTP>
       <Get>
-        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetMap;"/>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetMap;?"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -182,7 +182,7 @@
     <DCPType>
      <HTTP>
       <Get>
-        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetFeatureInfo;"/>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetFeatureInfo;?"/>
       </Get>
      </HTTP>
     </DCPType>
