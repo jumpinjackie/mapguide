@@ -52,7 +52,7 @@ localuninstall:
 	@$(LIBTOOL) --mode=uninstall rm -f $(srclibdir)/libpathan.la
 
 install:
-	@for dir in `find include -type d | grep -v 'CVS'`; do $(srcdir)/util/mkinstalldirs $(incdir)/../$$dir ; $(LIBTOOL) --mode=install $(INSTALL) $(srcincdir)/../$$dir/*.h* $(incdir)/../$$dir 2>/dev/null >/dev/null; done
+	@for dir in `find include -type d | grep -v 'CVS' | grep -v '.svn'`; do $(srcdir)/util/mkinstalldirs $(incdir)/../$$dir ; $(LIBTOOL) --mode=install $(INSTALL) $(srcincdir)/../$$dir/*.h* $(incdir)/../$$dir 2>/dev/null >/dev/null; done
 	$(srcdir)/util/mkinstalldirs $(libdir)
 	@$(LIBTOOL) --mode=install $(INSTALL) $(srclibdir)/libpathan.la $(libdir) 2> /dev/null
 	@$(LIBTOOL) --mode=finish $(libdir)
