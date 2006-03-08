@@ -186,7 +186,7 @@
      </Format>
      <DCPType>
       <HTTP>
-       <Get onlineResource="&Url.GetCapabilities;"/>
+       <Get onlineResource="&Url.GetCapabilities;?"/>
       </HTTP>
      </DCPType>
    </Capabilities>
@@ -197,7 +197,7 @@
     </Format>
     <DCPType>
      <HTTP>
-      <Get onlineResource="&Url.GetMap;"/>
+      <Get onlineResource="&Url.GetMap;?"/>
      </HTTP>
     </DCPType>
    </Map>
@@ -208,7 +208,7 @@
     </Format>
     <DCPType>
      <HTTP>
-      <Get onlineResource="&Url.GetFeatureInfo;"/>
+      <Get onlineResource="&Url.GetFeatureInfo;?"/>
      </HTTP>
     </DCPType>
    </FeatureInfo>

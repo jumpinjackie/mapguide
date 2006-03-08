@@ -29,8 +29,12 @@
       <?Else?>
        <Title>&Feature.Title; (&Feature.Description;)</Title>
       <?Endif?>
+      <?Ifdef item="Feature.Abstract"?>
       <Abstract>&Feature.Abstract;</Abstract>
+      <?Endif?>
+      <?Ifdef item="Feature.Keywords"?>
       <Keyword>&Feature.Keywords;</Keyword>
+      <?Endif?>
       <?Enum list="&Feature.Bounds;" item="Bounds" using="&SRS.xml;"?>
       <?Enum list="&Feature.Bounds;" item="Bounds" using="&LatLonBoundingBox.xml;"?>
       <?Enum list="&Feature.Bounds;" item="Bounds" using="&BoundingBox.xml;"?>
@@ -94,18 +98,6 @@
  <Define item="OtherSRS.xml"><wfs:OtherSRS>&Enum.item;</wfs:OtherSRS></Define>
  <Define item="Format.xml"><ows:Format>&Enum.item;</ows:Format></Define>
 
- <!-- TODO: these will need to come from the full Feature metadata store -->
- <!-- for now, these are operating defaults. -->
- <Define item="Feature.namespace">http://fdo.osgeo.org/schemas</Define>
- <Define item="Feature.Abstract">Abstract for this layer</Define>
- <Define item="Feature.KeywordList"></Define>
- <Define item="Feature.DefaultSRS">EPSG:4326</Define>
- <!--Define item="Feature.OtherSRS"></Define-->
- <Define item="Feature.Bounds.north">90</Define>
- <Define item="Feature.Bounds.south">-90</Define>
- <Define item="Feature.Bounds.west">-180</Define>
- <Define item="Feature.Bounds.east">180</Define>
-
  <Define item="DescribeFeature.EnumDelim.xml">  
    <!-- &Enum.iteration; -->
    <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;typeName=&Enum.item;"/>
@@ -124,8 +116,6 @@
  </Define>
     
 </Definitions>
-
-<!-- TODO: Translations for GML2, XMLSCHEMA -->
 
 <!--
 
