@@ -799,7 +799,7 @@ class ResourceServiceAPI
         }
         elseif ($extension == "dwf")
         {
-            $mimeType = "application/x-dwf";
+            $mimeType = "model/vnd.dwf";
         }
         elseif ($extension == "jpg" || $extension == "jpeg")
         {
