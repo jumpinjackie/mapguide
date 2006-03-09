@@ -92,6 +92,7 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfcore \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwf \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfemap \
+  -R$(map_srcdir)/Oem/dbxml-2.2.13/install/lib \
   -R$(map_srcdir)/$(map_coordsys_dir_path)/.libs \
   -R$(map_srcdir)/Common/MdfModel/.libs \
   -R$(map_srcdir)/Common/MdfParser/.libs \
@@ -280,7 +281,15 @@ install-data-local:
 	@cp -fp ../../../Oem/DWFTK7.1/develop/global/fonts/* ${prefix}/bin/
 	@cp -fp ../../../Oem/gdal-1.3.0/data/* $(proj4datadir)
 	@cp -fp ../../../Oem/proj-4.4.9/nad/* $(proj4naddir)
-	@cp -fp ../../RepositoryAdmin/* $(repositoryadmindir)
+	@cp -fp ../../../Oem/dbxml-2.2.13/install/bin/db_archive ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml-2.2.13/install/bin/db_checkpoint ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml-2.2.13/install/bin/db_recover ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml-2.2.13/install/bin/db_upgrade ${prefix}/bin/
+	@cp -fp ../../RepositoryAdmin/*.sh $(repositoryadmindir)
+	@cp -fp ../../RepositoryAdmin/*.php $(repositoryadmindir)
+	@cp -fp ../../RepositoryAdmin/*.inc $(repositoryadmindir)
+	@cp -fp ../../RepositoryAdmin/*.pdf $(repositoryadmindir)
+	@cp -fp ../../RepositoryAdmin/license.txt $(repositoryadmindir)
 	@pushd $(fdodir); ln -s libxalanMsg.so.17.0 libxalanMsg.so.17; ln -s libxalanMsg.so.17.0 libxalanMsg.so; popd;
 	@pushd $(fdodir); ln -s libxerces-c.so.25.0 libxerces-c.so.25; ln -s libxerces-c.so.25.0 libxerces-c.so; popd;
 
