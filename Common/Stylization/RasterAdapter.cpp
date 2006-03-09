@@ -295,7 +295,7 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
     //we have to copy row by row, since rasters returned by
     //RFP/ATIL are padded to multiples of 8 bytes
     int pitch = (int)is->available() / h;
-    int rowSize = (w + 7) / 8; //8 pixels per byte
+    int rowSize = w / 8; //8 pixels per byte
 
     //we will process the raster row by row, for better efficiency (hopefully)
     unsigned char* row = (unsigned char*)alloca(pitch);
@@ -316,7 +316,7 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
         //now convert from bitonal to RGBA and copy to destination
         unsigned char* px = row;
 
-        for (int i=0; i<rowSize-1; i++)
+        for (int i=0; i<rowSize; i++)
         {
             unsigned char bits = *px++;
 
@@ -330,8 +330,8 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
             *dstptr++ = (bits & 0x01) ? fgc : bgc;
         }
 
-        //do the last pixel of the row -- we may not need
-        //all bits of the last byte, so loop accrodingly
+        //do the last pixels of the row -- we may not need
+        //all bits of the last byte, so loop accordingly
         int last_bit_mask = 0x80 >> (w % 8);
         unsigned char bits = *px++;
 
