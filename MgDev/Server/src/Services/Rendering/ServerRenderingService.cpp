@@ -657,6 +657,8 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
         }
     }
 
+    RS_String units = (dstCs.p) ? dstCs->GetUnits() : L"";
+
     // initialize the stylizer
     RSMgSymbolManager mgr(m_svcResource);
     dr->SetSymbolManager(&mgr);
@@ -665,7 +667,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     ds.Initialize(dr);
 
     RS_Color bgcolor(0, 0, 0, 255); //not used -- GDRenderer is already initialized to the correct bgcolor
-    RS_MapUIInfo mapInfo(map->GetName(), map->GetObjectId(), srs, bgcolor);
+    RS_MapUIInfo mapInfo(map->GetName(), map->GetObjectId(), srs, units, bgcolor);
 
     // begin map stylization
     dr->StartMap(&mapInfo, b, scale, map->GetDisplayDpi(), map->GetMetersPerUnit(), NULL);
@@ -789,7 +791,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
     RS_Bounds b(0,0,width,height);
 
-    RS_MapUIInfo info(L"", L"", L"", bgcolor);
+    RS_MapUIInfo info(L"", L"", L"", L"", bgcolor);
     double pixelsPerInch = 96.0;
     double metersPerPixel = 0.0254 / pixelsPerInch;
 

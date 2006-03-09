@@ -180,6 +180,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     }
 
     double metersPerUnit = (cs.p) ? cs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
+    RS_String units = (cs.p) ? cs->GetUnits() : L"";
 
     RS_Color bgcolor;
     MgStylizationUtil::ParseColor( mdf->GetBackgroundColor(), bgcolor);
@@ -188,7 +189,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     double dMapScale = map->GetViewScale();
     double dpi = map->GetDisplayDpi();
 
-    RS_MapUIInfo mapInfo(mapResId->GetName(), map->GetObjectId(), srs, bgcolor);
+    RS_MapUIInfo mapInfo(mapResId->GetName(), map->GetObjectId(), srs, units, bgcolor);
 
     dr.StartMap(&mapInfo, b, dMapScale, dpi, metersPerUnit);
 
@@ -411,6 +412,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     }
 
     double metersPerUnit = (dstCs.p) ? dstCs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
+    RS_String units = (dstCs.p) ? dstCs->GetUnits() : L"";
 
     //set up the map coord sys to lat lon transformation -- for use by the observation mesh
     if (dstCs)
@@ -435,7 +437,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     DefaultStylizer ds;
     ds.Initialize(&dr);
 
-    RS_MapUIInfo mapInfo(map->GetName(), map->GetObjectId(), srs, bgcolor);
+    RS_MapUIInfo mapInfo(map->GetName(), map->GetObjectId(), srs, units, bgcolor);
 
     //begin map stylization
     dr.StartMap(&mapInfo, b, dMapScale, dpi, metersPerUnit, xformToLL);
@@ -1023,6 +1025,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         }
 
         double metersPerUnit = (dstCs.p) ? dstCs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
+        RS_String units = (dstCs.p) ? dstCs->GetUnits() : L"";
 
         double dMapScale = 0.0;
         Ptr<MgCoordinate> center = new MgCoordinateXY(0, 0);
@@ -1140,7 +1143,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         layoutColor.green() = bgColor->GetGreen();
         layoutColor.blue() = bgColor->GetBlue();
 
-        RS_MapUIInfo mapInfo(map->GetName(), L"", srs, layoutColor);
+        RS_MapUIInfo mapInfo(map->GetName(), L"", srs, units, layoutColor);
 
         // Dynamically adjust the width and height of the map
         printLayout->ComputeMapOffsetAndSize(dMapScale, extents, metersPerUnit, dr.mapOffsetX(), dr.mapOffsetY(), dr.mapWidth(), dr.mapHeight(), mapPlot->GetExpandToFit());
@@ -1329,9 +1332,10 @@ MgByteReader* MgServerMappingService::GenerateLegendPlot(
     }
 
     double metersPerUnit = (dstCs.p) ? dstCs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
+    RS_String units = (dstCs.p) ? dstCs->GetUnits() : L"";
 
     RS_Color mapBgColor(255, 255, 255, 0);
-    RS_MapUIInfo mapInfo(map->GetName(), L"", srs, mapBgColor);
+    RS_MapUIInfo mapInfo(map->GetName(), L"", srs, units, mapBgColor);
 
     double dpi = map->GetDisplayDpi();
     dr.StartMap(&mapInfo, b, scale, dpi, metersPerUnit);
