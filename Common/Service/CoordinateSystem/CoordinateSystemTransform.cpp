@@ -663,7 +663,7 @@ MgEnvelope* MgCoordinateSystemTransform::Transform(MgEnvelope* envelope)
                          upperRight->GetX(), upperRight->GetY(), upperRight->GetZ());
 
             //call the internal envelope transform
-            CEnvelope* e2 = m_coordSysTransform->Transform(&e1);
+            e2 = m_coordSysTransform->Transform(&e1);
 
             lowerLeft = new MgCoordinateXYZ(e2->GetLowerLeftXCoordinate(),
                                             e2->GetLowerLeftYCoordinate(),
