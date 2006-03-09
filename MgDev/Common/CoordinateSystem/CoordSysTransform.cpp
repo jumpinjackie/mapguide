@@ -163,11 +163,14 @@ void CCoordinateSystemTransform::Transform(double& x, double& y)
 {
     try
     {
-        InternalTransform(1, &x, &y, NULL, NULL);
+        InternalTransform(&x, &y, NULL, NULL, 1);
     }
-    catch(...)
+    catch(CException* e)
     {
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = e->GetMessage();
+        delete e;
+
+        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, message);
     }
 }
 
@@ -201,11 +204,14 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], int arraySize
 
     try
     {
-        InternalTransform(arraySize, x, y, NULL, NULL);
+        InternalTransform(x, y, NULL, NULL, arraySize);
     }
-    catch(...)
+    catch(CException* e)
     {
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = e->GetMessage();
+        delete e;
+
+        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, message);
     }
 }
 
@@ -229,11 +235,14 @@ void CCoordinateSystemTransform::TransformM(double& x, double& y, double& m)
 {
     try
     {
-        InternalTransform(1, &x, &y, NULL, &m);
+        InternalTransform(&x, &y, NULL, &m, 1);
     }
-    catch(...)
+    catch(CException* e)
     {
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = e->GetMessage();
+        delete e;
+
+        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, message);
     }
 }
 
@@ -275,11 +284,14 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double m[], 
 
     try
     {
-        InternalTransform(arraySize, x, y, NULL, m);
+        InternalTransform(x, y, NULL, m, arraySize);
     }
-    catch(...)
+    catch(CException* e)
     {
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = e->GetMessage();
+        delete e;
+
+        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, message);
     }
 }
 
@@ -303,11 +315,14 @@ void CCoordinateSystemTransform::Transform(double& x, double& y, double& z)
 {
     try
     {
-        InternalTransform(1, &x, &y, &z, NULL);
+        InternalTransform(&x, &y, &z, NULL, 1);
     }
-    catch(...)
+    catch(CException* e)
     {
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = e->GetMessage();
+        delete e;
+
+        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, message);
     }
 }
 
@@ -349,11 +364,14 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], double z[], i
 
     try
     {
-        InternalTransform(arraySize, x, y, z, NULL);
+        InternalTransform(x, y, z, NULL, arraySize);
     }
-    catch(...)
+    catch(CException* e)
     {
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = e->GetMessage();
+        delete e;
+
+        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, message);
     }
 }
 
@@ -380,11 +398,14 @@ void CCoordinateSystemTransform::TransformM(double& x, double& y, double& z, dou
 {
     try
     {
-        InternalTransform(1, &x, &y, &z, &m);
+        InternalTransform(&x, &y, &z, &m, 1);
     }
-    catch(...)
+    catch(CException* e)
     {
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = e->GetMessage();
+        delete e;
+
+        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, message);
     }
 }
 
@@ -434,11 +455,14 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double z[], 
 
     try
     {
-        InternalTransform(arraySize, x, y, z, m);
+        InternalTransform(x, y, z, m, arraySize);
     }
-    catch(...)
+    catch(CException* e)
     {
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = e->GetMessage();
+        delete e;
+
+        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, message);
     }
 }
 
@@ -518,17 +542,17 @@ CEnvelope* CCoordinateSystemTransform::Transform(CEnvelope* envelope)
     return pEnvelope;
 }
 
-void CCoordinateSystemTransform::InternalTransform(int numPts, double* x, double* y, double* z, double* m)
+void CCoordinateSystemTransform::InternalTransform(double* x, double* y, double* z, double* m, int numPts)
 {
     // We must at least have the x and y
     if(NULL == x)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"[2] - double pointer.");
+        throw new CNullArgumentException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"[1] - double pointer.");
     }
 
     if(NULL == y)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"[3] - double pointer.");
+        throw new CNullArgumentException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"[2] - double pointer.");
     }
 
     try
@@ -567,7 +591,7 @@ void CCoordinateSystemTransform::InternalTransform(int numPts, double* x, double
                 if (TRUE != m_transformForward->TransformEx(numPts, x, y, z, NULL))
                 {
                     //if proj failed to convert, generate an exception
-                    throw;
+                    throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"PROJ4 failed to transform the data.");
                 }
             }
             break;
@@ -581,6 +605,10 @@ void CCoordinateSystemTransform::InternalTransform(int numPts, double* x, double
                 for (int i=0; i<numPts; i++)
                     m[i] *= unitScale;
         }
+    }
+    catch(CCoordinateSystemTransformFailedException* e)
+    {
+        throw e;
     }
     catch(...)
     {

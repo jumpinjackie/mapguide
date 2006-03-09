@@ -18,7 +18,7 @@
 #include "CoordSysCommon.h"
 #include "CoordSysIncludes.h"
 
-const STRING CNullArgumentException::MessageText = L"%ls";
+const STRING CNullArgumentException::MessageText = L"Argument is null: %ls";
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

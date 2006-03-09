@@ -225,7 +225,7 @@ public:
 private:
     CCoordinateSystemTransform() {};
 
-    void InternalTransform(int numPts, double* x, double* y, double* z, double* m);
+    void InternalTransform(double* x, double* y, double* z, double* m, int numPts);
 
     CEnvelope* XYExtentToLL(OGRCoordinateTransformation* transform, CEnvelope* envelope);
     CEnvelope* LLExtentToXY(OGRCoordinateTransformation* transform, CEnvelope* envelope);
