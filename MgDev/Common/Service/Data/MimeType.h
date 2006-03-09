@@ -38,8 +38,8 @@ PUBLISHED_API:
     /// application/octet-stream
     static const STRING Binary;   ///\if INTERNAL value("application/octet-stream") \endif
 
-    /// application/x-dwf
-    static const STRING Dwf;      ///\if INTERNAL value("application/x-dwf") \endif
+    /// model/vnd.dwf
+    static const STRING Dwf;      ///\if INTERNAL value("model/vnd.dwf") \endif
 
     /// image/jpeg
     static const STRING Gif;      ///\if INTERNAL value("image/gif") \endif
