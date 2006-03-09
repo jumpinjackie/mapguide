@@ -478,6 +478,7 @@ public:
         m_name(L""),
         m_guid(L""),
         m_coordsys(L""),
+        m_units(L""),
         m_bgcolor(255,255,255,255)
     {
     }
@@ -485,10 +486,12 @@ public:
     RS_MapUIInfo(const RS_String& name,
                  const RS_String& guid,
                  const RS_String& coordsys,
+                 const RS_String& units,
                  const RS_Color&  bgcolor) :
         m_name(name),
         m_guid(guid),
         m_coordsys(coordsys),
+        m_units(units),
         m_bgcolor(bgcolor)
     {
     }
@@ -496,12 +499,14 @@ public:
     inline RS_String& name()       { return m_name; }
     inline RS_String& guid()       { return m_guid; }
     inline RS_String& coordsys()   { return m_coordsys; }
+    inline RS_String& units()      { return m_units; }
     inline RS_Color&  bgcolor()    { return m_bgcolor; }
 
 private:
     RS_String m_name;
     RS_String m_guid;
     RS_String m_coordsys;
+    RS_String m_units;
     RS_Color  m_bgcolor;
 };
 
