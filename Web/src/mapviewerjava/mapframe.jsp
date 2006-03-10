@@ -58,7 +58,7 @@ String hlTgtName;
         }
         else
         {
-            frameName = "";
+            frameName = "_BLANK";
         }
         String mapRequest = "../mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" + mapDefinition + "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" + locale + (sessionId != ""? "&SESSION=" + sessionId: "") + "&reload=true";
         String vals[] = { mapRequest,
