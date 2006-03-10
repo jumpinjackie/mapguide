@@ -152,10 +152,10 @@ throw()
     // cccccccc-bbbb-1aaa
     // note the 1 indicates a time-based uuid with a known or random host id
     //
-    nTimestamp = ((nTimestamp << 32) & 0xffffffff00000000) |
-                 ((nTimestamp >> 16) & 0x00000000ffff0000) |
-                 ((nTimestamp >> 48) & 0x0000000000000fff) |
-                                       0x0000000000001000;
+    nTimestamp = ((nTimestamp << 32) & 0xffffffff00000000LL) |
+                 ((nTimestamp >> 16) & 0x00000000ffff0000LL) |
+                 ((nTimestamp >> 48) & 0x0000000000000fffLL) |
+                                       0x0000000000001000LL;
 
     //
     // 
