@@ -84,8 +84,7 @@ void EMapRenderer::StartMap(RS_MapUIInfo*    mapInfo,
                           extents.miny,
                           extents.maxy);
 
-    //coord sys is TODO
-    DWFLinearUnit unit(L"degrees", metersPerUnit);
+    DWFLinearUnit unit(mapInfo->units().c_str(), metersPerUnit);
     DWFCoordinateSpace cs(mapInfo->coordsys().c_str(), unit, fullView, &initialView);
 
     m_pPage = DWFCORE_ALLOC_OBJECT( DWFEMapSection(
