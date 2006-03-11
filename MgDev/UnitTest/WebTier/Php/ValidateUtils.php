@@ -30,7 +30,7 @@ class ValidateUtils
             //TODO: what extension should we put for binary data
             $extension="bin";
         }
-        elseif ($mimeType == "application/x-dwf")
+        elseif ($mimeType == "model/vnd.dwf")
         {
             $extension = "dwf";
         }
