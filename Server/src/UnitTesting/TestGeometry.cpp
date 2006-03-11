@@ -1377,10 +1377,14 @@ void TestGeometry::TestCase_ConvexHull()
 
         // The reason for the different check below is because we get slightly
         // different results with rounding under Debug and Release builds.
-#ifdef _DEBUG
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (0 1, 15 16)") == 0);
+#ifdef _WIN32
+    #ifdef _DEBUG
+            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (0 1, 15 16)") == 0);
+    #else
+            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 1, 15 16, 3 4, 12 13, 0 1))") == 0);
+    #endif
 #else
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 1, 15 16, 3 4, 12 13, 0 1))") == 0);
+            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (0 1, 15 16)") == 0);
 #endif
 
         //TEST 8
@@ -1390,10 +1394,14 @@ void TestGeometry::TestCase_ConvexHull()
 
         // The reason for the different check below is because we get slightly
         // different results with rounding under Debug and Release builds.
-#ifdef _DEBUG
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0))") == 0);
+#ifdef _WIN32
+    #ifdef _DEBUG
+            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0))") == 0);
+    #else
+            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 0, 0 5, 5 5, 1 1, 2 2, 4 3, 5 0, 0 0))") == 0);
+    #endif
 #else
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 0, 0 5, 5 5, 1 1, 2 2, 4 3, 5 0, 0 0))") == 0);
+            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0))") == 0);
 #endif
 
         //TEST 9
