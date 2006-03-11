@@ -36,6 +36,9 @@ include_SOURCES = \
   FdoConnectionManager.cpp \
   GroupInfo.cpp \
   LogManager.cpp \
+  PackageLogHandler.cpp \
+  PackageLogReader.cpp \
+  PackageLogWriter.cpp \
   PackageManager.cpp \
   PermissionCache.cpp \
   PermissionInfo.cpp \
@@ -57,6 +60,9 @@ noinst_HEADERS = $(include_SOURCES) \
   GroupInfo.h \
   LogManager.h \
   LogType.h \
+  PackageLogHandler.h \
+  PackageLogReader.h \
+  PackageLogWriter.h \
   PackageManager.h \
   PermissionCache.h \
   PermissionInfo.h \

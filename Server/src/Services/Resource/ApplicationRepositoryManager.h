@@ -92,6 +92,9 @@ public:
     void CopyResourceData(CREFSTRING sourceResourceTags,
         REFSTRING destResourceTags, bool overwrite);
 
+    virtual MgResourceDataStreamManager* GetResourceDataStreamManager();
+    virtual MgResourceDataFileManager* GetResourceDataFileManager();
+
 protected:
 
     virtual void UpdateChangedResourceSet(MgResourceIdentifier& resource);
@@ -109,5 +112,15 @@ private:
 };
 
 /// Inline Methods
+
+inline MgResourceDataStreamManager* MgApplicationRepositoryManager::GetResourceDataStreamManager()
+{
+    return m_dataStreamMan;
+}
+
+inline MgResourceDataFileManager* MgApplicationRepositoryManager::GetResourceDataFileManager()
+{
+    return m_dataFileMan;
+}
 
 #endif

@@ -15,37 +15,36 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_ZIP_FILE_HANDLER_H
-#define MG_ZIP_FILE_HANDLER_H
+#ifndef MGZIPFILEHANDLER_H_
+#define MGZIPFILEHANDLER_H_
 
 class MgZipFileHandler
 {
 /// Constructors/Destructor
 
-    public:
+public:
 
-        explicit MgZipFileHandler(CREFSTRING zipPathname);
-        virtual ~MgZipFileHandler();
+    MgZipFileHandler(CREFSTRING filePath, 
+        DWFZipFileDescriptor::teFileMode fileMode);
+    virtual ~MgZipFileHandler();
 
-    private:
+private:
 
-        // Unimplemented Constructors/Methods
+    // Unimplemented Constructors/Methods
 
-        MgZipFileHandler();
-        MgZipFileHandler(const MgZipFileHandler&);
-        MgZipFileHandler& operator=(const MgZipFileHandler&);
+    MgZipFileHandler();
+    MgZipFileHandler(const MgZipFileHandler&);
+    MgZipFileHandler& operator=(const MgZipFileHandler&);
 
 /// Methods
 
-    public:
-
-        DWFInputStream* Unzip(CREFSTRING archivedPathname);
+public:
 
 /// Data Members
 
-    private:
+protected:
 
-        auto_ptr<DWFZipFileDescriptor> m_zipFileDescriptor;
+    auto_ptr<DWFZipFileDescriptor> m_zipFileDescriptor;
 };
 
 /// Inline Methods

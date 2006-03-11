@@ -36,6 +36,7 @@ include_SOURCES = \
   OpIsMaximumLogSizeEnabled.cpp \
   OpIsOnline.cpp \
   OpLoadPackage.cpp \
+  OpMakePackage.cpp \
   OpNotifyResourcesChanged.cpp \
   OpRegisterServicesOnServers.cpp \
   OpRenameLog.cpp \
@@ -68,6 +69,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpIsMaximumLogSizeEnabled.h \
   OpIsOnline.h \
   OpLoadPackage.h \
+  OpMakePackage.h \
   OpNotifyResourcesChanged.h \
   OpRegisterServicesOnServers.h \
   OpRenameLog.h \

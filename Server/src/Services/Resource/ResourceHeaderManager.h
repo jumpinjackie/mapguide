@@ -22,6 +22,7 @@
 #include "LibraryRepositoryManager.h"
 #include "PermissionManager.h"
 #include "ResourceHeader.h"
+#include "ResourcePackageMaker.h"
 
 typedef std::map<STRING, STRING> MgResourcePermissionMap;
 
@@ -95,6 +96,9 @@ protected:
         UINT32 opId = MgResourceService::opIdSetResource);
     virtual void DeleteDocument(MgResourceIdentifier& resource,
         XmlDocument& xmlDoc, XmlUpdateContext& updateContext);
+
+    void PackageResource(MgResourceIdentifier& resource, 
+        MgResourcePackageMaker& packageMaker);
 
 private:
 

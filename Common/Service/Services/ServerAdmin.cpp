@@ -677,39 +677,35 @@ MgByteReader* MgServerAdmin::GetPackageLog(CREFSTRING packageName)
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-/// <summary>
-/// Gets the current status of the specified package
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Retrieves the current status of the specified package.
 ///
-/// <param name="packageName">
-/// The name of the package to get the status for.  Available packages can be
-/// found by using EnumeratePackages().
-/// </param>
+/// \param packageName
+/// The name of the package to get the status for.
+/// Available packages can be found by using EnumeratePackages().
 ///
-/// <returns>
+/// \return
 /// The status of the package.
-/// </returns>
 ///
-/// EXCEPTIONS:
-/// None
-STRING MgServerAdmin::GetPackageStatus(CREFSTRING packageName)
+MgPackageStatusInformation* MgServerAdmin::GetPackageStatus(CREFSTRING packageName)
 {
+    ACE_ASSERT(m_connProp != NULL);
     MgCommand cmd;
-    cmd.ExecuteCommand(m_connProp,                                      // Connection
-                        MgCommand::knString,                            // Return type expected
-                        MgServerAdminServiceOpId::GetPackageStatus,     // Command Code
-                        1,                                              // No of arguments
-                        ServerAdmin_Service,                            // Service Id
-                        1,                                              // Operation version
-                        MgCommand::knString, &packageName,              // Argument #1
-                        MgCommand::knNone);
+
+    cmd.ExecuteCommand(
+        m_connProp,                                         // Connection
+        MgCommand::knObject,                                // Return type
+        MgServerAdminServiceOpId::GetPackageStatus,         // Command Code
+        1,                                                  // Number of arguments
+        ServerAdmin_Service,                                // Service ID
+        1,                                                  // Operation version
+        MgCommand::knString, &packageName,                  // Argument #1
+        MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
 
-    STRING retVal = *(cmd.GetReturnValue().val.m_str);
-    delete cmd.GetReturnValue().val.m_str;
-    return retVal;
+    return (MgPackageStatusInformation*)cmd.GetReturnValue().val.m_obj;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -729,6 +725,32 @@ void MgServerAdmin::LoadPackage(CREFSTRING packageName)
         ServerAdmin_Service,                                // Service ID
         1,                                                  // Operation version
         MgCommand::knString, &packageName,                  // Argument #1
+        MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates a package from the specified resource, and then saves it into 
+/// the specified name.
+///
+void MgServerAdmin::MakePackage(MgResourceIdentifier* resource, 
+    CREFSTRING packageName, CREFSTRING packageDescription)
+{
+    assert(m_connProp != NULL);
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(
+        m_connProp,                                         // Connection
+        MgCommand::knVoid,                                  // Return type
+        MgServerAdminServiceOpId::MakePackage,              // Command Code
+        3,                                                  // Number of arguments
+        ServerAdmin_Service,                                // Service ID
+        1,                                                  // Operation version
+        MgCommand::knObject, resource,                      // Argument #1
+        MgCommand::knString, &packageName,                  // Argument #2
+        MgCommand::knString, &packageDescription,           // Argument #3
         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());

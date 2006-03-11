@@ -2587,3 +2587,83 @@ void MgResourceHeaderManager::UpdateResourceModifiedDates(
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceHeaderManager.UpdateResourceModifiedDates")
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Packages the specified resource.
+///
+void MgResourceHeaderManager::PackageResource(MgResourceIdentifier& resource, 
+    MgResourcePackageMaker& packageMaker)
+{
+    ACE_ASSERT(resource.IsFolder());
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    string resourcePathname;
+    MgUtil::WideCharToMultiByte(resource.ToString(), resourcePathname);
+
+    // Set up an XQuery.
+    XmlManager& xmlMan = m_container.getManager();
+    XmlQueryContext queryContext = xmlMan.createQueryContext();
+    string query;
+
+    if (m_repositoryMan.m_currUserIsAdmin)
+    {
+        queryContext.setEvaluationType(XmlQueryContext::Lazy);
+        query = "collection('";
+    }
+    else
+    {
+        queryContext.setEvaluationType(XmlQueryContext::Eager);
+        query = "for $i in collection('";
+    }
+
+    query += m_container.getName();
+    query += "')";
+    query += "/*[starts-with(dbxml:metadata('dbxml:name'),'";
+    query += resourcePathname;
+
+    if (m_repositoryMan.m_currUserIsAdmin)
+    {
+        query += "')]";
+    }
+    else
+    {
+        query += "')] order by dbxml:metadata('dbxml:name', $i) return $i";
+    }
+
+    // Execute the XQuery.
+    XmlResults results = IsTransacted() ?
+        xmlMan.query(GetXmlTxn(), query, queryContext, 0) :
+        xmlMan.query(query, queryContext, 0);
+
+    // Get the resources
+    MgResourceIdentifier currResource;
+    XmlValue xmlValue;
+    INT32 resourceCount = 0;
+
+    while (results.next(xmlValue))
+    {
+        ++resourceCount;
+
+        const XmlDocument& xmlDoc = xmlValue.asDocument();
+        currResource.SetResource(MgUtil::MultiByteToWideChar(xmlDoc.getName()));
+
+        // Check if the current user has a read permission.
+        if (CheckPermission(currResource,
+            MgResourcePermission::ReadOnly, false))
+        {
+            // Package the resource header.
+            packageMaker.PackageResourceHeader(currResource, xmlDoc);
+        }
+    }
+
+    if (0 == resourceCount)
+    {
+        m_repositoryMan.ThrowResourceNotFoundException(resource, 
+            L"MgResourceHeaderManager.PackageResource", 
+            __LINE__, __WFILE__);
+    }
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceHeaderManager.PackageResource")
+}

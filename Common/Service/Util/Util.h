@@ -338,6 +338,15 @@ INTERNAL_API:
     ///
     static INT32 StringToInt32(CREFSTRING str);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Converts a string to a 64-bit integer.
+    ///
+    /// \return
+    /// returns INT64 value.
+    ///
+    static INT64 StringToInt64(CREFSTRING str);
+
     //////////////////////////////////////////////
     /// \brief
     /// Converts a string to a 64-bit floating-point number.
@@ -463,6 +472,8 @@ INTERNAL_API:
 
     static void Int32ToString(INT32 val, string& str);
     static void Int32ToString(INT32 val, STRING& str);
+    static void UInt32ToString(UINT32 val, string& str);
+    static void UInt32ToString(UINT32 val, STRING& str);
     static void Int64ToString(INT64 val, string& str);
     static void Int64ToString(INT64 val, STRING& str);
     static void SingleToString(float val, string& str);

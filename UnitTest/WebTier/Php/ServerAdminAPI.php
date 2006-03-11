@@ -276,8 +276,10 @@ class ServerAdminAPI
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"PACKAGENAME\"");
             $packageName = $this->unitTestParamVm->GetString("ParamValue");
 
-            $status = $this->serverAdmin->GetPackageStatus($packageName);
-            return new Result($status, "text/plain");
+            $statusInfo = $this->serverAdmin->GetPackageStatus($packageName);
+            $statusCode = $statusInfo->GetStatusCode();
+
+            return new Result($statusCode, "text/plain");
         }
         catch (MgException $e)
         {

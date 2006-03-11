@@ -275,16 +275,50 @@ MgPropertyCollection* MgServerManager::GetConfigurationProperties(CREFSTRING pro
 /// <summary>
 /// Sets the configuration properties for the specified property section.
 /// </summary>
-void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection, MgPropertyCollection* properties)
+void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection, 
+    MgPropertyCollection* properties)
 {
     MG_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerManager::SetConfigurationProperties()");
 
+    if (NULL == properties)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerManager::SetConfigurationProperties", 
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
     if (NULL == pConfiguration)
     {
-        throw new MgNullReferenceException(L"MgServerManager::SetConfigurationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullReferenceException(
+            L"MgServerManager::SetConfigurationProperties", 
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Do any validation if required.
+
+    if (MgConfigProperties::GeneralPropertiesSection == propertySection)
+    {
+        // Since the Server's display name is used to be part of the default 
+        // package name, check to make sure it does not contain reserved 
+        // characters for section and file names.
+        for (INT32 i = 0; i < properties->GetCount(); ++i)
+        {
+            Ptr<MgProperty> baseProperty = properties->GetItem(i);
+
+            if (MgPropertyType::String == baseProperty->GetPropertyType())
+            {
+                MgStringProperty* strProperty = static_cast<MgStringProperty*>(baseProperty.p);
+
+                if (MgConfigProperties::GeneralPropertyDisplayName == strProperty->GetName())
+                {
+                    MgUtil::CheckReservedCharacter(strProperty->GetValue(), L"\\/:*?\"<>|[]=");
+                    break;
+                }
+            }
+        }
     }
 
     // Set the properties

@@ -252,6 +252,14 @@ MgValueCannotBeLessThanZero                           = The value cannot be less
 # R E S O U R C E  S E R V I C E
 # *****************************************************************************
 [ResourceService]
+MgPackageStatusMessageLoadPackageSucceeded            = LOAD SUCCEEDED: %1 successfully loaded package on %2
+MgPackageStatusMessageMakePackageSucceeded            = MAKE SUCCEEDED: %1 successfully made package on %2
+MgPackageStatusMessageLoadPackageFailed               = LOAD FAILED: %1 failed to load package on %2
+MgPackageStatusMessageMakePackageFailed               = MAKE FAILED: %1 failed to make package on %2
+MgPackageStatusMessageLoadPackageInProgress           = Loading package %1 ...
+MgPackageStatusMessageMakePackageInProgress           = Making package %1 ...
+MgPackageStatusMessageNotStarted                      = Not started
+MgPackageStatusMessageUnknown                         = Unknown
 
 # *****************************************************************************
 # S E R V E R A D M I N  S E R V I C E

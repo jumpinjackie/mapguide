@@ -44,7 +44,7 @@ MgServerResourceService::MgServerResourceService(
     MG_RESOURCE_SERVICE_TRY()
 
     m_loadBalanceMan = MgLoadBalanceManager::GetInstance();
-    assert(NULL != m_loadBalanceMan);
+    ACE_ASSERT(NULL != m_loadBalanceMan);
 
     // Clean up the Session repository after creating the Site repository
     // to eliminate unnecessary XMLPlatformUtils::Initialize/Terminate calls
@@ -185,7 +185,7 @@ void MgServerResourceService::CreateRepository(MgResourceIdentifier* resource,
             L"MgServerResourceService.CreateRepository", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    assert(!resource->GetRepositoryName().empty());
+    ACE_ASSERT(!resource->GetRepositoryName().empty());
     MgSessionRepositoryManager repositoryMan(*m_sessionRepository);
 
     repositoryMan.CreateRepository(resource, content, header);
@@ -223,7 +223,7 @@ void MgServerResourceService::DeleteRepository(MgResourceIdentifier* resource)
             L"MgServerResourceService.DeleteRepository", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    assert(!resource->GetRepositoryName().empty());
+    ACE_ASSERT(!resource->GetRepositoryName().empty());
     MgSessionRepositoryManager repositoryMan(*m_sessionRepository);
 
     repositoryMan.DeleteRepository(resource);
@@ -343,7 +343,7 @@ MgByteReader* MgServerResourceService::GetRepositoryHeader(
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    assert(resource->GetRepositoryName().empty());
+    ACE_ASSERT(resource->GetRepositoryName().empty());
     MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
 
     byteReader = repositoryMan.GetRepositoryHeader(resource);
@@ -359,69 +359,58 @@ MgByteReader* MgServerResourceService::GetRepositoryHeader(
 /// \brief
 /// Applies a package of resource changes to the repository.
 ///
-void MgServerResourceService::ApplyResourcePackage(MgByteReader* resourcePackage)
+void MgServerResourceService::ApplyResourcePackage(MgByteReader* packageStream)
 {
-    STRING tempPathname;
-
     MG_RESOURCE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::ApplyResourcePackage()");
 
-    if (NULL == resourcePackage)
+    if (NULL == packageStream)
     {
         throw new MgNullArgumentException(
             L"MgServerResourceService.ApplyResourcePackage",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    tempPathname = MgFileUtil::GenerateTempFileName();
-    MgByteSink byteSink(resourcePackage);
+    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
 
-    byteSink.ToFile(tempPathname);
-    LoadResourcePackage(tempPathname, false);
+    repositoryMan.ApplyResourcePackage(packageStream);
 
-    MG_RESOURCE_SERVICE_CATCH(L"MgServerResourceService.ApplyResourcePackage")
+    repositoryMan.CommitTransaction();
 
-    if (!tempPathname.empty())
-    {
-        try
-        {
-            MgFileUtil::DeleteFile(tempPathname);
-        }
-        catch (MgException* e)
-        {
-            SAFE_RELEASE(e);
-        }
-        catch (...)
-        {
-        }
-    }
+    // Dispatch resource change notifications.
 
-    MG_RESOURCE_SERVICE_THROW()
+    Ptr<MgSerializableCollection> changedResources = repositoryMan.GetChangedResources();
+
+    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.ApplyResourcePackage")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Loads the specified resource package into the repository.
 ///
-void MgServerResourceService::LoadResourcePackage(CREFSTRING pathname, 
+void MgServerResourceService::LoadResourcePackage(CREFSTRING packagePathname, 
     bool logActivities)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    if (!MgFileUtil::PathnameExists(pathname))
+    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::LoadResourcePackage()");
+
+    if (!MgFileUtil::PathnameExists(packagePathname))
     {
         MgStringCollection arguments;
-        arguments.Add(pathname);
+        arguments.Add(packagePathname);
 
         throw new MgFileNotFoundException(
-            L"MgServerResourceService.LoadResourcePackage",
+            L"MgServerResourceService.LoadResourcePackage", 
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
 
-    repositoryMan.LoadResourcePackage(pathname, logActivities);
+    repositoryMan.LoadResourcePackage(packagePathname, logActivities);
 
     repositoryMan.CommitTransaction();
 
@@ -432,6 +421,42 @@ void MgServerResourceService::LoadResourcePackage(CREFSTRING pathname,
     m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.LoadResourcePackage")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates a package from the specified resource, and then saves it into 
+/// the specified name.
+///
+void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource, 
+    CREFSTRING packagePathname, CREFSTRING packageDescription, bool logActivities)
+{
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::MakeResourcePackage()");
+
+    if (NULL == resource)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerResourceService.ApplyResourcePackage",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if (!resource->IsFolder())
+    {
+        throw new MgInvalidResourceTypeException(
+            L"MgServerResourceService.MakeResourcePackage",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
+
+    repositoryMan.MakeResourcePackage(resource, packagePathname, 
+        packageDescription, logActivities);
+
+    repositoryMan.CommitTransaction();
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.MakeResourcePackage")
 }
 
 ///----------------------------------------------------------------------------
@@ -468,7 +493,7 @@ MgByteReader* MgServerResourceService::EnumerateResources(
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    assert(resource->GetRepositoryName().empty());
+    ACE_ASSERT(resource->GetRepositoryName().empty());
     MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
 
     byteReader = repositoryMan.EnumerateResources(resource, depth, type,
@@ -704,7 +729,7 @@ MgByteReader* MgServerResourceService::GetResourceHeader(
             L"MgServerResourceService.GetResourceHeader", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    assert(resource->GetRepositoryName().empty());
+    ACE_ASSERT(resource->GetRepositoryName().empty());
     MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
 
     byteReader = repositoryMan.GetResourceHeader(resource);
@@ -750,7 +775,7 @@ MgDateTime* MgServerResourceService::GetResourceModifiedDate(
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    assert(resource->GetRepositoryName().empty());
+    ACE_ASSERT(resource->GetRepositoryName().empty());
     MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
 
     dateTime = repositoryMan.GetResourceModifiedDate(resource);
@@ -954,7 +979,7 @@ void MgServerResourceService::ChangeResourceOwner(
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    assert(resource->GetRepositoryName().empty());
+    ACE_ASSERT(resource->GetRepositoryName().empty());
     MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
 
     repositoryMan.ChangeResourceOwner(resource, owner, includeDescendants);
@@ -995,7 +1020,7 @@ void MgServerResourceService::InheritPermissionsFrom(MgResourceIdentifier* resou
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    assert(resource->GetRepositoryName().empty());
+    ACE_ASSERT(resource->GetRepositoryName().empty());
     MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
 
     repositoryMan.InheritPermissionsFrom(resource);
@@ -1211,7 +1236,7 @@ MgByteReader* MgServerResourceService::GetResourceData(
 MgApplicationRepositoryManager* MgServerResourceService::CreateApplicationRepositoryManager(
     MgResourceIdentifier* resource)
 {
-    assert(NULL != resource);
+    ACE_ASSERT(NULL != resource);
     auto_ptr<MgApplicationRepositoryManager> repositoryMan;
     STRING repositoryType = resource->GetRepositoryType();
 
@@ -1219,12 +1244,12 @@ MgApplicationRepositoryManager* MgServerResourceService::CreateApplicationReposi
 
     if (MgRepositoryType::Library == repositoryType)
     {
-        assert(resource->GetRepositoryName().empty());
+        ACE_ASSERT(resource->GetRepositoryName().empty());
         repositoryMan.reset(new MgLibraryRepositoryManager(*m_libraryRepository));
     }
     else if (MgRepositoryType::Session == repositoryType)
     {
-        assert(!resource->GetRepositoryName().empty());
+        ACE_ASSERT(!resource->GetRepositoryName().empty());
         repositoryMan.reset(new MgSessionRepositoryManager(*m_sessionRepository));
     }
     else
@@ -1723,7 +1748,7 @@ MgSecurityCache* MgServerResourceService::CreateSecurityCache()
     MgSiteResourceContentManager* resourceContentMan =
         dynamic_cast<MgSiteResourceContentManager*>(
             repositoryMan.GetResourceContentManager());
-    assert(NULL != resourceContentMan);
+    ACE_ASSERT(NULL != resourceContentMan);
 
     securityCache = resourceContentMan->CreateSecurityCache();
 
@@ -1748,7 +1773,7 @@ MgPermissionCache* MgServerResourceService::CreatePermissionCache(bool startup)
     MgResourceHeaderManager* resourceHeaderManager =
         dynamic_cast<MgResourceHeaderManager*>(
             repositoryManager.GetResourceHeaderManager());
-    assert(NULL != resourceHeaderManager);
+    ACE_ASSERT(NULL != resourceHeaderManager);
 
     permissionCache = resourceHeaderManager->CreatePermissionCache();
 

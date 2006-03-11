@@ -102,13 +102,6 @@
     $descAdmin = "Administrators maintain the Database.  You must be an administrator to Create/Maintain Users and Groups, establish roles for Users and Groups, and update the Server configuration.";
     $descAuthor = "Authors maintain the maps.  You must be an author to Create/Maintain a map or any of its attributes.";
 
-    // Package status
-    $pkgSucceeded = "Successfully loaded";
-    $pkgLoading = "Loading...";
-    $pkgFailed = "Failed";
-    $pkgNotStarted = "Not started";
-    $pkgStatusUnknown = "Unknown";
-
     // Special label for Everyone group in selectors
     $everyoneGroupSelectorLabel = "Everyone (Built-in group)";
 ?>

@@ -18,64 +18,56 @@
 #include "ResourceServiceDefs.h"
 #include "OperationParameter.h"
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Constructs the object.
-/// </summary>
-///----------------------------------------------------------------------------
+// Resource Service operation parameters
+// TODO: Share the following strings with the Web tier.
 
+const STRING MgOperationParameter::Type=L"TYPE";
+const STRING MgOperationParameter::Depth=L"DEPTH";
+const STRING MgOperationParameter::ResourceId=L"RESOURCEID";
+const STRING MgOperationParameter::ResourceContent=L"CONTENT";
+const STRING MgOperationParameter::ResourceHeader=L"HEADER";
+const STRING MgOperationParameter::SourceResourceId=L"SOURCE";
+const STRING MgOperationParameter::DestinationResourceId=L"DESTINATION";
+const STRING MgOperationParameter::DataName=L"DATANAME";
+const STRING MgOperationParameter::DataType=L"DATATYPE";
+const STRING MgOperationParameter::DataLength=L"DATALENGTH";
+const STRING MgOperationParameter::Data=L"DATA";
+const STRING MgOperationParameter::OldDataName=L"OLDDATANAME";
+const STRING MgOperationParameter::NewDataName=L"NEWDATANAME";
+const STRING MgOperationParameter::Overwrite=L"OVERWRITE";
+const STRING MgOperationParameter::Package=L"PACKAGE";
+const STRING MgOperationParameter::Owner=L"OWNER";
+const STRING MgOperationParameter::IncludeDescendants=L"INCLUDEDESCENDANTS";
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Constructs the object.
+///
 MgOperationParameter::MgOperationParameter()
 {
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Constructs a new MgOperationParameter object and initializes the member
-/// variables to values given by a referenced MgOperationParameter object.
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Copy constructor.
 ///
-/// <param name="opParam">
-/// Reference to an MgOperationParameter object.
-/// </param>
-///
-/// <exceptions>
-/// MgOutOfMemoryException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
 MgOperationParameter::MgOperationParameter(const MgOperationParameter& opParam)
 {
     *this = opParam;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Destructs the object.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 MgOperationParameter::~MgOperationParameter()
 {
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Overloaded assignment operator for MgOperationParameter.
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Assignment operator.
 ///
-/// <param name="opParam">
-/// Reference to the structure that is to be copied.
-/// </param>
-///
-/// <return>
-/// Reference to the structure (the one assigned to).
-/// </return>
-///
-/// <exceptions>
-/// MgOutOfMemoryException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
 MgOperationParameter& MgOperationParameter::operator=(
     const MgOperationParameter& opParam)
 {
@@ -88,23 +80,19 @@ MgOperationParameter& MgOperationParameter::operator=(
     return *this;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Sets the value of the parameter.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 void MgOperationParameter::SetValue(CREFSTRING value)
 {
     m_value = value;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Sets the content type of the parameter.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 void MgOperationParameter::SetContentType(CREFSTRING contentType)
 {
     m_contentType = contentType;

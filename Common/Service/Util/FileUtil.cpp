@@ -51,6 +51,50 @@ MgFileUtil::~MgFileUtil()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Validates the specified file name.
+///
+void MgFileUtil::ValidateFileName(CREFSTRING fileName)
+{
+    MG_TRY()
+
+    if (fileName.empty())
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(MgResources::BlankArgument);
+
+        throw new MgInvalidArgumentException(
+            L"MgFileUtil.ValidateFileName",
+            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
+    }
+
+    if (STRING::npos != fileName.find_first_of(L"\\/:*?\"<>|")) 
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(fileName);
+
+        throw new MgInvalidArgumentException(
+            L"MgFileUtil.ValidateFileName",
+            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+    }
+
+    if (L'.' == fileName[0] || L'.' == fileName[fileName.length() - 1])
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(fileName);
+
+        throw new MgInvalidArgumentException(
+            L"MgFileUtil.ValidateFileName",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    MG_CATCH_AND_THROW(L"MgFileUtil.ValidateFileName")
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Checks if the specified string (e.g. file extension) begins with a dot.
@@ -797,75 +841,52 @@ STRING MgFileUtil::GenerateTempFileName(bool useMgTempPath,
     return tempPathname;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Determines the time that the specified file was last modified.
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Retrieves the time that the specified file was created.
 ///
-/// <param name="pathname">
-/// Full path name of the file or directory.
-/// </param>
-///
-/// <returns>
-/// The date the file was last modified.
-/// </returns>
-///----------------------------------------------------------------------------
-
-STRING MgFileUtil::GetLastModifiedDate(CREFSTRING pathname)
+MgDateTime MgFileUtil::GetFileCreationTime(CREFSTRING pathname)
 {
-    STRING modifiedDate;
-
-    MG_TRY()
-
     struct _stat statInfo;
 
     if (GetFileStatus(pathname, statInfo, true))
     {
-        ACE_TCHAR timebuf[26];
-        ACE_OS::ctime_r(&statInfo.st_mtime, timebuf, sizeof timebuf);
-        STRING wTime = MG_TCHAR_TO_WCHAR(timebuf);
-
-        modifiedDate = wTime.substr(0, 11);
-        modifiedDate += wTime.substr(20, 4);
-        modifiedDate += L" ";
-        modifiedDate += wTime.substr(11, 8);
+        return MgDateTime(statInfo.st_ctime);
     }
 
-    MG_CATCH_AND_THROW(L"MgFileUtil.GetLastModifiedDate")
-
-    return modifiedDate;
+    return MgDateTime();
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Gets the file size of a file.
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Retrieves the time that the specified file was last modified.
 ///
-/// <param name="pathname">
-/// Full path name of the file or directory.
-/// </param>
-///
-/// <returns>
-/// The size of the file in bytes
-/// </returns>
-///----------------------------------------------------------------------------
-
-INT32 MgFileUtil::GetFileSizeInBytes(CREFSTRING pathname)
+MgDateTime MgFileUtil::GetFileModificationTime(CREFSTRING pathname)
 {
-    INT32 size = 0;
-
-    MG_TRY()
-
     struct _stat statInfo;
 
     if (GetFileStatus(pathname, statInfo, true))
     {
-        size = statInfo.st_size;
+        return MgDateTime(statInfo.st_mtime);
     }
 
-    MG_CATCH_AND_THROW(L"MgFileUtil.GetFileSizeInBytes")
+    return MgDateTime();
+}
 
-    return size;
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Retrieves the size (in bytes) of the specified file.
+///
+INT64 MgFileUtil::GetFileSize(CREFSTRING pathname)
+{
+    struct _stat statInfo;
+
+    if (GetFileStatus(pathname, statInfo, true))
+    {
+        return (INT64)statInfo.st_size;
+    }
+
+    return 0;
 }
 
 ///----------------------------------------------------------------------------

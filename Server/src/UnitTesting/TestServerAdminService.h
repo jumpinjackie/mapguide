@@ -39,6 +39,7 @@ class TestServerAdminService : public CppUnit::TestFixture
 
     CPPUNIT_TEST(TestCase_EnumeratePackages);
     CPPUNIT_TEST(TestCase_LoadPackage);
+    CPPUNIT_TEST(TestCase_MakePackage);
     CPPUNIT_TEST(TestCase_GetPackageLog);
     CPPUNIT_TEST(TestCase_GetPackageStatus);
     CPPUNIT_TEST(TestCase_DeletePackage);
@@ -73,6 +74,7 @@ public:
 
     void TestCase_EnumeratePackages();
     void TestCase_LoadPackage();
+    void TestCase_MakePackage();
     void TestCase_GetPackageLog();
     void TestCase_GetPackageStatus();
     void TestCase_DeletePackage();

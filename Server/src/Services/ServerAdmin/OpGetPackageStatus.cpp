@@ -66,22 +66,22 @@ void MgOpGetPackageStatus::Execute()
 
     if (1 == m_packet.m_NumArguments)
     {
-        STRING package;
-        stream->GetString(package);
+        STRING packageName;
+        stream->GetString(packageName);
 
         argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(package.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(packageName);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         // Authenticate operation
         Authenticate();
 
-        STRING status = m_service->GetPackageStatus(package);
+        Ptr<MgPackageStatusInformation> statusInfo = m_service->GetPackageStatus(packageName);
 
         operationCompleted = true;
-        WriteResponseStream(*stream, status);
+        WriteResponseStream(*stream, statusInfo);
     }
     else
     {

@@ -204,6 +204,7 @@ bool InitializeStaticData()
 
     // CoreService
     classCreators[CoreService_MgServerInformation]                =  MgServerInformation::CreateObject;
+    classCreators[CoreService_MgPackageStatusInformation]         =  MgPackageStatusInformation::CreateObject;
 
     // FeatureService
     classCreators[FeatureService_ClassDefinition]                 =  MgClassDefinition::CreateObject;

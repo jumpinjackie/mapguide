@@ -330,6 +330,7 @@ include_SOURCES = \
   Services/MapPlot.cpp \
   Services/MapPlotCollection.cpp \
   Services/ObjectPropertyDefinition.cpp \
+  Services/PackageStatusInformation.cpp \
   Services/PlotSpecification.cpp \
   Services/PrintLayout.cpp \
   Services/ProxyDataReader.cpp \
@@ -764,6 +765,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/ObjectPropertyDefinition.h \
   Services/ObjectPropertyType.h \
   Services/OrderingOption.h \
+  Services/PackageStatusInformation.h \
   Services/PlotSpecification.h \
   Services/PrintLayout.h \
   Services/ProxyDataReader.h \

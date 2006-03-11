@@ -49,6 +49,7 @@
 #include "MappingService.cpp"
 #include "MapPlot.cpp"
 #include "MapPlotCollection.cpp"
+#include "PackageStatusInformation.cpp"
 #include "PlotSpecification.cpp"
 #include "PrintLayout.cpp"
 #include "ProxyDataReader.cpp"

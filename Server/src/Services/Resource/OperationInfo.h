@@ -15,50 +15,85 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_OPERATION_INFO_H
-#define MG_OPERATION_INFO_H
+#ifndef MGOPERATIONINFO_H_
+#define MGOPERATIONINFO_H_
 
 #include "OperationParameter.h"
 
 typedef std::map<STRING, MgOperationParameter> MgOpParamMap;
 
+class MgOperationName
+{
+INTERNAL_API:
+
+    static const STRING EnumerateRepositories;
+    static const STRING CreateRepository;
+    static const STRING DeleteRepository;
+    static const STRING UpdateRepository;
+    static const STRING GetRepositoryContent;
+    static const STRING GetRepositoryHeader;
+    static const STRING ApplyResourcePackage;
+
+    static const STRING EnumerateResources;
+    static const STRING SetResource;
+    static const STRING DeleteResource;
+    static const STRING MoveResource;
+    static const STRING CopyResource;
+    static const STRING GetResourceContent;
+    static const STRING GetResourceHeader;
+    static const STRING EnumerateResourceReferences;
+    static const STRING ChangeResourceOwner;
+    static const STRING InheritPermissionsFrom;
+
+    static const STRING EnumerateResourceData;
+    static const STRING SetResourceData;
+    static const STRING DeleteResourceData;
+    static const STRING RenameResourceData;
+    static const STRING GetResourceData;
+};
+
 class MgOperationInfo
 {
 /// Constructors/Destructor
 
-    public:
+public:
 
-        MgOperationInfo();
-        MgOperationInfo(const MgOperationInfo& opInfo);
-        virtual ~MgOperationInfo();
+    MgOperationInfo();
+    explicit MgOperationInfo(CREFSTRING name);
+    MgOperationInfo(const MgOperationInfo& opInfo);
+    virtual ~MgOperationInfo();
 
 /// Methods
 
-    public:
+public:
 
-        MgOperationInfo& operator=(const MgOperationInfo& opInfo);
+    MgOperationInfo& operator=(const MgOperationInfo& opInfo);
 
-        CREFSTRING GetName() const;
-        void SetName(CREFSTRING name);
+    CREFSTRING GetName() const;
+    void SetName(CREFSTRING name);
 
-        CREFSTRING GetVersion() const;
-        void SetVersion(CREFSTRING version);
+    CREFSTRING GetVersion() const;
+    void SetVersion(CREFSTRING version);
 
-        const MgOperationParameter& GetParameter(CREFSTRING name,
-            bool required = true) const;
-        void SetParameter(CREFSTRING name, const MgOperationParameter& opParam);
+    const MgOperationParameter& GetParameter(CREFSTRING name,
+        bool required = true) const;
+    void AddParameter(CREFSTRING name, const MgOperationParameter& opParam);
+    void RemoveParameter(CREFSTRING name);
+
+    const MgOpParamMap& GetParameters() const;
 
 /// Data Members
 
-    public:
+public:
 
-        static const MgOperationParameter m_defaultParameter;
+    static const STRING sm_currentVersion;
+    static const MgOperationParameter sm_blankParameter;
 
-    private:
+private:
 
-        STRING m_name;
-        STRING m_version;
-        MgOpParamMap m_parameters;
+    STRING m_name;
+    STRING m_version;
+    MgOpParamMap m_parameters;
 };
 
 /// Inline Methods
@@ -71,6 +106,11 @@ inline CREFSTRING MgOperationInfo::GetName() const
 inline CREFSTRING MgOperationInfo::GetVersion() const
 {
     return m_version;
+}
+
+inline const MgOpParamMap& MgOperationInfo::GetParameters() const
+{
+    return m_parameters;
 }
 
 #endif

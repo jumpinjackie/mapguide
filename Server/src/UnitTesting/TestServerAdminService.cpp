@@ -492,13 +492,13 @@ void TestServerAdminService::TestCase_EnumeratePackages()
         MgServiceManager* serviceMan = MgServiceManager::GetInstance();
         if(serviceMan == 0)
         {
-            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_EnumeratePackages", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgServerAdminService> pService = dynamic_cast<MgServerAdminService*>(serviceMan->RequestService(MgServiceType::ServerAdminService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_EnumeratePackages", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgPropertyCollection> pPropertyCollection1 = pService->GetConfigurationProperties(L"ResourceServiceProperties");
@@ -545,13 +545,13 @@ void TestServerAdminService::TestCase_LoadPackage()
         MgServiceManager* serviceMan = MgServiceManager::GetInstance();
         if(serviceMan == 0)
         {
-            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_LoadPackage", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgServerAdminService> pService = dynamic_cast<MgServerAdminService*>(serviceMan->RequestService(MgServiceType::ServerAdminService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_LoadPackage", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgPropertyCollection> pPropertyCollection1 = pService->GetConfigurationProperties(L"ResourceServiceProperties");
@@ -594,6 +594,74 @@ void TestServerAdminService::TestCase_LoadPackage()
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// Test Case Description:
+///
+/// Creates a package from the specified resource, and then saves it into 
+/// the specified name.
+///
+void TestServerAdminService::TestCase_MakePackage()
+{
+    try
+    {
+        MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+        if(serviceMan == 0)
+        {
+            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_MakePackage", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgServerAdminService> pService = dynamic_cast<MgServerAdminService*>(serviceMan->RequestService(MgServiceType::ServerAdminService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_MakePackage", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgPropertyCollection> pPropertyCollection1 = pService->GetConfigurationProperties(L"ResourceServiceProperties");
+        Ptr<MgStringProperty> pProperty1 = (MgStringProperty*)pPropertyCollection1->GetItem(L"PackagesPath");
+        STRING valueOriginal = pProperty1->GetValue();
+
+        pProperty1->SetValue(L"../UnitTestFiles/");
+        pService->SetConfigurationProperties(L"ResourceServiceProperties", pPropertyCollection1);
+
+        Ptr<MgPropertyCollection> pPropertyCollection2 = pService->GetConfigurationProperties(L"ResourceServiceProperties");
+        Ptr<MgStringProperty> pProperty2 = (MgStringProperty*)pPropertyCollection1->GetItem(L"PackagesPath");
+
+        Ptr<MgUserInformation> userInfo;
+
+        //Sets the user information for the current thread to be administrator
+        MgUserInformation::SetCurrentUserInfo(NULL);
+        userInfo = new MgUserInformation(adminName, adminPass);
+        if (userInfo != NULL)
+        {
+            userInfo->SetLocale(userLocale);
+            MgUserInformation::SetCurrentUserInfo(userInfo);
+
+            MgResourceIdentifier resource(L"Library://UnitTests/");
+
+            pService->MakePackage(&resource, 
+                TestServerAdminService::PackageName2, L"Unit Test Package");
+        }
+
+        Ptr<MgStringCollection> packages = pService->EnumeratePackages();
+
+        // Restore original value
+        pProperty1->SetValue(valueOriginal);
+        pService->SetConfigurationProperties(L"ResourceServiceProperties", pPropertyCollection1);
+
+        CPPUNIT_ASSERT(packages->Contains(TestServerAdminService::PackageName2));
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetMessage(TEST_LOCALE);
+        message += e->GetStackTrace(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
 
 ///----------------------------------------------------------------------------
 /// Test Case Description:
@@ -607,13 +675,13 @@ void TestServerAdminService::TestCase_GetPackageLog()
         MgServiceManager* serviceMan = MgServiceManager::GetInstance();
         if(serviceMan == 0)
         {
-            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_GetPackageLog", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgServerAdminService> pService = dynamic_cast<MgServerAdminService*>(serviceMan->RequestService(MgServiceType::ServerAdminService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_GetPackageLog", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgPropertyCollection> pPropertyCollection1 = pService->GetConfigurationProperties(L"ResourceServiceProperties");
@@ -661,13 +729,13 @@ void TestServerAdminService::TestCase_GetPackageStatus()
         MgServiceManager* serviceMan = MgServiceManager::GetInstance();
         if(serviceMan == 0)
         {
-            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_GetPackageStatus", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgServerAdminService> pService = dynamic_cast<MgServerAdminService*>(serviceMan->RequestService(MgServiceType::ServerAdminService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_GetPackageStatus", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgPropertyCollection> pPropertyCollection1 = pService->GetConfigurationProperties(L"ResourceServiceProperties");
@@ -680,14 +748,14 @@ void TestServerAdminService::TestCase_GetPackageStatus()
         Ptr<MgPropertyCollection> pPropertyCollection2 = pService->GetConfigurationProperties(L"ResourceServiceProperties");
         Ptr<MgStringProperty> pProperty2 = (MgStringProperty*)pPropertyCollection1->GetItem(L"PackagesPath");
 
-        STRING status;
-        status = pService->GetPackageStatus(TestServerAdminService::PackageName);
+        Ptr<MgPackageStatusInformation> statusInfo = pService->GetPackageStatus(TestServerAdminService::PackageName);
+        STRING statusCode = statusInfo->GetStatusCode();
 
         // Restore original value
         pProperty1->SetValue(valueOriginal);
         pService->SetConfigurationProperties(L"ResourceServiceProperties", pPropertyCollection1);
 
-        CPPUNIT_ASSERT(status == MgPackageStatus::Success);
+        CPPUNIT_ASSERT(statusCode == MgPackageStatusCode::Succeeded);
     }
     catch(MgException* e)
     {
@@ -715,13 +783,13 @@ void TestServerAdminService::TestCase_DeletePackage()
         MgServiceManager* serviceMan = MgServiceManager::GetInstance();
         if(serviceMan == 0)
         {
-            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_DeletePackage", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgServerAdminService> pService = dynamic_cast<MgServerAdminService*>(serviceMan->RequestService(MgServiceType::ServerAdminService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_GetInformationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_DeletePackage", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgPropertyCollection> pPropertyCollection1 = pService->GetConfigurationProperties(L"ResourceServiceProperties");
@@ -734,12 +802,9 @@ void TestServerAdminService::TestCase_DeletePackage()
         Ptr<MgPropertyCollection> pPropertyCollection2 = pService->GetConfigurationProperties(L"ResourceServiceProperties");
         Ptr<MgStringProperty> pProperty2 = (MgStringProperty*)pPropertyCollection1->GetItem(L"PackagesPath");
 
-        Ptr<MgStringCollection> packages;
-        STRING packagePath = L"../UnitTestFiles/" + TestServerAdminService::PackageName;
-        STRING packagePath2 = L"../UnitTestFiles/" + TestServerAdminService::PackageName2;
-        MgFileUtil::CopyFile(packagePath, packagePath2, true);
         pService->DeletePackage(TestServerAdminService::PackageName2);
-        packages = pService->EnumeratePackages();
+
+        Ptr<MgStringCollection> packages = pService->EnumeratePackages();
 
         // Restore original value
         pProperty1->SetValue(valueOriginal);

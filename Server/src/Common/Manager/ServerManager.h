@@ -66,6 +66,7 @@ public:
     void SetDocument(CREFSTRING identifier, MgByteReader* data);
 
     bool IsSiteServer() const;
+    CREFSTRING GetServerName() const;
     CREFSTRING GetLocalServerAddress() const;
 
     // Admin Properties
@@ -190,6 +191,11 @@ private:
 inline bool MgServerManager::IsSiteServer() const
 {
     return m_isSiteServer;
+}
+
+inline CREFSTRING MgServerManager::GetServerName() const
+{
+    return m_displayName;
 }
 
 inline CREFSTRING MgServerManager::GetLocalServerAddress() const

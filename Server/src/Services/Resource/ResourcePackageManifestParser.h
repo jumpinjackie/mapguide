@@ -15,55 +15,47 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_RESOURCE_PACKAGE_MANIFEST_PARSER_H
-#define MG_RESOURCE_PACKAGE_MANIFEST_PARSER_H
+#ifndef MGRESOURCEPACKAGEMANIFESTPARSER_H_
+#define MGRESOURCEPACKAGEMANIFESTPARSER_H_
 
-#include "XmlUtil.h"
+#include "ResourcePackageManifestHandler.h"
 #include "OperationInfo.h"
 
 typedef std::vector<MgOperationInfo> MgOpInfoVector;
 
-class MgResourcePackageManifestParser
+class MgResourcePackageManifestParser : public MgResourcePackageManifestHandler
 {
 /// Constructors/Destructor
 
-    public:
+public:
 
-        MgResourcePackageManifestParser();
-        virtual ~MgResourcePackageManifestParser();
+    MgResourcePackageManifestParser();
+    virtual ~MgResourcePackageManifestParser();
 
-    private:
+private:
 
-        // Unimplemented Methods
+    // Unimplemented Methods
 
-        MgResourcePackageManifestParser(const MgResourcePackageManifestParser&);
-        MgResourcePackageManifestParser& operator=(
-            const MgResourcePackageManifestParser&);
+    MgResourcePackageManifestParser(const MgResourcePackageManifestParser&);
+    MgResourcePackageManifestParser& operator=(
+        const MgResourcePackageManifestParser&);
 
 /// Methods
 
-    public:
+public:
 
-        CREFSTRING GetDescription() const;
-        const MgOpInfoVector& GetOperations() const;
+    const MgOpInfoVector& GetOperations() const;
 
-        void Parse(const string& manifest);
+    void Parse(const string& manifest);
 
 /// Data Members
 
-    private:
+private:
 
-        auto_ptr<MgXmlUtil> m_xmlUtil;
-        STRING m_description;
-        MgOpInfoVector m_operations;
+    MgOpInfoVector m_operations;
 };
 
 /// Inline Methods
-
-inline CREFSTRING MgResourcePackageManifestParser::GetDescription() const
-{
-    return m_description;
-}
 
 inline const MgOpInfoVector& MgResourcePackageManifestParser::GetOperations() const
 {

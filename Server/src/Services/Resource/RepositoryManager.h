@@ -69,6 +69,8 @@ public:
     DbTxn* GetDbTxn() const;
     XmlTransaction& GetXmlTxn();
 
+    MgUserInformation* GetCurrentUserInfo() const;
+
     void ThrowResourceNotFoundException(MgResourceIdentifier& resource,
         CREFSTRING methodName, UINT32 lineNumber, CREFSTRING fileName);
     void ThrowDuplicateResourceException(MgResourceIdentifier& resource,
@@ -150,6 +152,11 @@ inline XmlTransaction& MgRepositoryManager::GetXmlTxn()
 {
     assert(NULL != m_xmlTxn.get());
     return *m_xmlTxn;
+}
+
+inline MgUserInformation* MgRepositoryManager::GetCurrentUserInfo() const
+{
+    return m_currUserInfo;
 }
 
 #endif

@@ -78,11 +78,13 @@ public:
 
     // Resource Package Management Methods
 
-    void DeletePackage(CREFSTRING packageName);
     MgStringCollection* EnumeratePackages();
-    MgByteReader* GetPackageLog(CREFSTRING packageName);
-    STRING GetPackageStatus(CREFSTRING packageName);
     void LoadPackage(CREFSTRING packageName);
+    void MakePackage(MgResourceIdentifier* resource, CREFSTRING packageName, 
+        CREFSTRING packageDescription);
+    void DeletePackage(CREFSTRING packageName);
+    MgPackageStatusInformation* GetPackageStatus(CREFSTRING packageName);
+    MgByteReader* GetPackageLog(CREFSTRING packageName);
 
 protected:
     //  Inherited from MgDisposable

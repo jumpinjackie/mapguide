@@ -1790,26 +1790,8 @@
 
         function PackageTableRecord( $serverAdmin, $packageName )
         {
-            global $pkgSucceeded;
-            global $pkgFailed;
-            global $pkgLoading;
-            global $pkgNotStarted;
-            global $pkgStatusUnknown;
-
-            $theStatus = $serverAdmin->GetPackageStatus( $packageName );
-            if ( $theStatus == MgPackageStatus::Success )
-                $this->status = $pkgSucceeded;
-            else
-            if ( $theStatus == MgPackageStatus::Failed )
-                $this->status = $pkgFailed;
-            else
-            if ( $theStatus == MgPackageStatus::Loading )
-                $this->status = $pkgLoading;
-            else
-            if ( $theStatus == MgPackageStatus::NotStarted )
-                $this->status = $pkgNotStarted;
-            else
-                $this->status = $pkgStatusUnknown;
+            $statusInfo = $serverAdmin->GetPackageStatus( $packageName );
+            $this->status = $statusInfo->GetStatusMessage();
         }
     }
 

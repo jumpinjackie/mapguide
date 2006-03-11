@@ -68,7 +68,6 @@ include_SOURCES = \
   OpSetResource.cpp \
   OpSetResourceData.cpp \
   OpUpdateRepository.cpp \
-  PackageStatusLogManager.cpp \
   Repository.cpp \
   RepositoryManager.cpp \
   ResourceContainer.cpp \
@@ -84,8 +83,12 @@ include_SOURCES = \
   ResourceManager.cpp \
   ResourceOperation.cpp \
   ResourceOperationFactory.cpp \
-  ResourcePackageManager.cpp \
+  ResourcePackageHandler.cpp \
+  ResourcePackageLoader.cpp \
+  ResourcePackageMaker.cpp \
+  ResourcePackageManifestHandler.cpp \
   ResourcePackageManifestParser.cpp \
+  ResourcePackageManifestSerializer.cpp \
   ResourceServiceHandler.cpp \
   ServerResourceService.cpp \
   SessionRepository.cpp \
@@ -100,7 +103,9 @@ include_SOURCES = \
   TagInfo.cpp \
   TagManager.cpp \
   XmlSchemaResolver.cpp \
-  ZipFileHandler.cpp
+  ZipFileHandler.cpp \
+  ZipFileReader.cpp \
+  ZipFileWriter.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   ApplicationRepository.h \
@@ -139,7 +144,6 @@ noinst_HEADERS = $(include_SOURCES) \
   OpSetResource.h \
   OpSetResourceData.h \
   OpUpdateRepository.h \
-  PackageStatusLogManager.h \
   Repository.h \
   RepositoryManager.h \
   ResourceContainer.h \
@@ -154,8 +158,12 @@ noinst_HEADERS = $(include_SOURCES) \
   ResourceInfo.h \
   ResourceManager.h \
   ResourceOperationFactory.h \
-  ResourcePackageManager.h \
+  ResourcePackageHandler.h \
+  ResourcePackageLoader.h \
+  ResourcePackageMaker.h \
+  ResourcePackageManifestHandler.h \
   ResourcePackageManifestParser.h \
+  ResourcePackageManifestSerializer.h \
   ResourceOperation.h \
   ResourceServiceDefs.h \
   ResourceServiceHandler.h \
@@ -174,6 +182,8 @@ noinst_HEADERS = $(include_SOURCES) \
   TagManager.h \
   XmlSchemaResolver.h \
   ZipFileHandler.h \
+  ZipFileReader.h \
+  ZipFileWriter.h \
   ../../Common/stdafx.h
 
 libMgServerResourceService_la_LIBADD = -lMgCommon -lMgServerBase -lMgServerManager -lxerces-c -lpathan -lxquery -ldb_cxx -ldbxml

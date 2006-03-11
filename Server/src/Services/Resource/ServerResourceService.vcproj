@@ -1120,30 +1120,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\PackageStatusLogManager.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\PackageStatusLogManager.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Repository.cpp"
 			>
 			<FileConfiguration
@@ -1456,7 +1432,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\ResourcePackageManager.cpp"
+			RelativePath=".\ResourcePackageHandler.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
@@ -1476,7 +1452,79 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\ResourcePackageManager.h"
+			RelativePath=".\ResourcePackageHandler.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ResourcePackageLoader.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ResourcePackageLoader.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ResourcePackageMaker.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ResourcePackageMaker.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ResourcePackageManifestHandler.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ResourcePackageManifestHandler.h"
 			>
 		</File>
 		<File
@@ -1501,6 +1549,30 @@
 		</File>
 		<File
 			RelativePath=".\ResourcePackageManifestParser.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ResourcePackageManifestSerializer.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ResourcePackageManifestSerializer.h"
 			>
 		</File>
 		<File
@@ -1882,6 +1954,54 @@
 		</File>
 		<File
 			RelativePath=".\ZipFileHandler.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ZipFileReader.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ZipFileReader.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ZipFileWriter.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ZipFileWriter.h"
 			>
 		</File>
 	</Files>

@@ -30,20 +30,28 @@ const STRING MgLogFileType::Trace           = L"TraceLog";
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Types of package status return codes
+/// Package API names
 ///
-const STRING MgPackageStatus::Success       = L"SUCCESS";
-const STRING MgPackageStatus::Failed        = L"FAILED";
-const STRING MgPackageStatus::Loading       = L"LOADING";
-const STRING MgPackageStatus::NotStarted    = L"NOTSTARTED";
-const STRING MgPackageStatus::Unknown       = L"UNKNOWN";
+const STRING MgPackageApiName::LoadPackage  = L"LoadPackage";
+const STRING MgPackageApiName::MakePackage  = L"MakePackage";
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Types of file extensions
+/// Status codes for packages
 ///
-const STRING MgFileExtensions::Package      = L".mgp";
-const STRING MgFileExtensions::Log          = L".log";
+const STRING MgPackageStatusCode::Succeeded = L"Succeeded";
+const STRING MgPackageStatusCode::Failed    = L"Failed";
+const STRING MgPackageStatusCode::InProgress= L"InProgress";
+const STRING MgPackageStatusCode::NotStarted= L"NotStarted";
+const STRING MgPackageStatusCode::Unknown   = L"Unknown";
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// Extensions for file types
+///
+const STRING MgFileExtension::Log           = L".log";
+const STRING MgFileExtension::Mgp           = L".mgp";
+const STRING MgFileExtension::Xml           = L".xml";
 
 
 ///////////////////////////////////////////////////////////////////////////////

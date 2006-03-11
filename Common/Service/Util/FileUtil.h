@@ -57,6 +57,7 @@ class MG_SERVICE_API MgFileUtil
 
     /// Helper Methods
 
+    static void ValidateFileName(CREFSTRING fileName);
     static bool BeginsWithDot(CREFSTRING str);
     static bool EndsWithSlash(CREFSTRING str);
     static bool EndsWithExtension(CREFSTRING pathname,
@@ -93,8 +94,9 @@ class MG_SERVICE_API MgFileUtil
     static STRING GenerateTempFileName(bool useMgTempPath = true,
         CREFSTRING prefix = L"", CREFSTRING extension = L"");
 
-    static STRING GetLastModifiedDate(CREFSTRING pathname);
-    static INT32 GetFileSizeInBytes(CREFSTRING pathname);
+    static MgDateTime GetFileCreationTime(CREFSTRING pathname);
+    static MgDateTime GetFileModificationTime(CREFSTRING pathname);
+    static INT64 GetFileSize(CREFSTRING pathname);
 
     static bool IsFileInUse(CREFSTRING pathname);
     static bool LockFile(CREFSTRING pathname);
