@@ -52,7 +52,10 @@ public:
 
     virtual MgByteReader* GetRepositoryHeader(
         MgResourceIdentifier* resource);
-    void LoadResourcePackage(CREFSTRING pathname, bool logActivities);
+    void ApplyResourcePackage(MgByteReader* packageStream);
+    void LoadResourcePackage(CREFSTRING packagePathname, bool logActivities);
+    void MakeResourcePackage(MgResourceIdentifier* resource, 
+        CREFSTRING packagePathname, CREFSTRING packageDescription, bool logActivities);
 
     // Resource Management APIs
 

@@ -334,6 +334,7 @@ typedef int          UINT32;
     <Header path="../../../Common/Service/Services/GeometryProperty.h"/>
     <Header path="../../../Common/Service/Services/FeatureProperty.h"/>
     <Header path="../../../Common/Service/Services/ObjectPropertyDefinition.h"/>
+    <Header path="../../../Common/Service/Services/PackageStatusInformation.h"/>
     <Header path="../../../Common/Service/Services/Raster.h"/>
     <Header path="../../../Common/Service/Services/SqlDataReader.h"/>
     <Header path="../../../Common/Service/Services/DataReader.h"/>

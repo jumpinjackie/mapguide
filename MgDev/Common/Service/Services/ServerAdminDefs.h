@@ -51,37 +51,52 @@ EXTERNAL_API:
 };
 
 
-//////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Status return codes for packages
-class MG_SERVICE_API MgPackageStatus
+/// Package API names
+///
+class MG_SERVICE_API MgPackageApiName
 {
-EXTERNAL_API:
-    /// Indicates package successfully loaded
-    static const STRING Success;        /// value("SUCCESS")
-
-    /// Indicates an error occured while loading package
-    static const STRING Failed;         /// value("FAILED")
-
-    /// Indicates a package is currently being loaded
-    static const STRING Loading;        /// value("LOADING")
-
-    /// Indicates a package has not started loading
-    static const STRING NotStarted;     /// value("NOTSTARTED")
-
-    /// Indicates the status of the package is not known
-    static const STRING Unknown;        /// value("UNKNOWN")
+INTERNAL_API:
+    static const STRING LoadPackage;    /// value("LoadPackage")
+    static const STRING MakePackage;    /// value("MakePackage")
 };
 
 
-//////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Extensions for certain file types
-class MG_SERVICE_API MgFileExtensions
+/// Status codes for packages
+///
+class MG_SERVICE_API MgPackageStatusCode
+{
+EXTERNAL_API:
+    /// Indicates a package was successfully loaded/made.
+    static const STRING Succeeded;      /// value("Succeeded")
+
+    /// Indicates an error occured while loading/making the package.
+    static const STRING Failed;         /// value("Failed")
+
+    /// Indicates a package is currently being loaded/made.
+    static const STRING InProgress;     /// value("InProgress")
+
+    /// Indicates the package has not started.
+    static const STRING NotStarted;     /// value("NotStarted")
+
+    /// Indicates the status of the package is not known.
+    static const STRING Unknown;        /// value("Unknown")
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Extensions for file types
+///
+class MG_SERVICE_API MgFileExtension
 {
 INTERNAL_API:
-    static const STRING Package;        /// Extension for a resource package
-    static const STRING Log;            /// Extension for a resource package's log
+    static const STRING Log;            /// Extension for log files
+    static const STRING Mgp;            /// Extension for resource package files
+    static const STRING Xml;            /// Extension for XML files
 };
 
 
@@ -192,6 +207,7 @@ INTERNAL_API:
     static const int GetDocument                    = 0x1111EA18;
     static const int SetDocument                    = 0x1111EA19;
     static const int NotifyResourcesChanged         = 0x1111EA1A;
+    static const int MakePackage                    = 0x1111EA1B;
 };
 
 #define DECLARE_DYNCREATE_SERVERADMIN() \

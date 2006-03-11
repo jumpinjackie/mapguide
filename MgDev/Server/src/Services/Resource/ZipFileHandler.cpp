@@ -18,64 +18,29 @@
 #include "ResourceServiceDefs.h"
 #include "ZipFileHandler.h"
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Constructs the object.
-/// </summary>
 ///
-/// <exceptions>
-/// MgDwfException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
-MgZipFileHandler::MgZipFileHandler(CREFSTRING zipPathname)
+MgZipFileHandler::MgZipFileHandler(CREFSTRING filePath, 
+    DWFZipFileDescriptor::teFileMode fileMode)
 {
-    assert(!zipPathname.empty());
+    ACE_ASSERT(!filePath.empty());
 
     MG_RESOURCE_SERVICE_TRY()
 
-    DWFFile zipFile(zipPathname.c_str());
+    DWFFile zipFile(filePath.c_str());
 
-    m_zipFileDescriptor.reset(new DWFZipFileDescriptor(zipFile, DWFZipFileDescriptor::eUnzip));
+    m_zipFileDescriptor.reset(new DWFZipFileDescriptor(zipFile, fileMode));
     m_zipFileDescriptor->open();
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgZipFileHandler.MgZipFileHandler")
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Destructs the object.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 MgZipFileHandler::~MgZipFileHandler()
 {
-}
-
-///----------------------------------------------------------------------------
-/// <summary>
-/// Extracts the content of an archived file to a stream of bytes.
-/// The caller is responsible to de-allocate the returned object by calling
-/// DWFCORE_FREE_OBJECT.
-/// </summary>
-///
-/// <exceptions>
-/// MgDwfException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
-DWFInputStream* MgZipFileHandler::Unzip(CREFSTRING archivedPathname)
-{
-    assert(!archivedPathname.empty());
-    DWFInputStream* inputStream = NULL;
-
-    MG_RESOURCE_SERVICE_TRY()
-
-    DWFString archivedFile(archivedPathname.c_str());
-
-    inputStream = m_zipFileDescriptor->unzip(archivedFile);
-
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgZipFileHandler.Unzip")
-
-    return inputStream;
 }

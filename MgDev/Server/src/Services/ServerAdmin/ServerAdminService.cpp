@@ -733,46 +733,25 @@ MgByteReader* MgServerAdminService::GetPackageLog(CREFSTRING packageName)
 /// EXCEPTIONS:
 /// None.
 ///----------------------------------------------------------------------------
-STRING MgServerAdminService::GetPackageStatus(CREFSTRING packageName)
+MgPackageStatusInformation* MgServerAdminService::GetPackageStatus(CREFSTRING packageName)
 {
-    STRING status;
+    Ptr<MgPackageStatusInformation> statusInfo;
 
     MG_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetPackageStatus()");
 
-    status = MgPackageManager::GetInstance()->GetPackageStatus(packageName);
+    statusInfo = MgPackageManager::GetInstance()->GetPackageStatus(packageName);
 
     MG_CATCH_AND_THROW(L"MgServerAdminService.GetPackageStatus");
 
-    return status;
+    return statusInfo.Detach();
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Tells the server to start loading the specified package
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Loads the specified package into a resource repository.
 ///
-/// <param name="packageName">
-/// The name of the package to be loaded.  Available packages can be found by
-/// using EnumeratePackages().
-/// </param>
-///
-/// <returns>
-/// Nothing.
-/// </returns>
-///
-/// EXCEPTIONS:
-/// MgFileNotFoundException
-/// MgInvalidArgumentException
-/// MgOutOfMemoryException
-/// MgInvalidResourcePackageException
-/// MgInvalidRepositoryTypeException
-/// MgInvalidRepositoryNameException
-/// MgInvalidResourcePathException
-/// MgInvalidResourceNameException
-/// MgInvalidResourceTypeException
-///----------------------------------------------------------------------------
 void MgServerAdminService::LoadPackage(CREFSTRING packageName)
 {
     MG_TRY()
@@ -782,6 +761,24 @@ void MgServerAdminService::LoadPackage(CREFSTRING packageName)
     MgPackageManager::GetInstance()->LoadPackage(packageName);
 
     MG_CATCH_AND_THROW(L"MgServerAdminService.LoadPackage");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates a package from the specified resource, and then saves it into 
+/// the specified name.
+///
+void MgServerAdminService::MakePackage(MgResourceIdentifier* resource, 
+    CREFSTRING packageName, CREFSTRING packageDescription)
+{
+    MG_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerAdminService::MakePackage()");
+
+    MgPackageManager::GetInstance()->MakePackage(resource, packageName, 
+        packageDescription);
+
+    MG_CATCH_AND_THROW(L"MgServerAdminService.MakePackage");
 }
 
 //////////////////////////////////////////////////////////////////

@@ -35,6 +35,7 @@
 #include "OpIsOnline.cpp"
 #include "OpIsMaximumLogSizeEnabled.cpp"
 #include "OpLoadPackage.cpp"
+#include "OpMakePackage.cpp"
 #include "OpNotifyResourcesChanged.cpp"
 #include "OpRegisterServicesOnServers.cpp"
 #include "OpRenameLog.cpp"

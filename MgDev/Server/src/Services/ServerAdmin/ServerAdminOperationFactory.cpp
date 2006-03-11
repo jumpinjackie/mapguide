@@ -38,6 +38,7 @@
 #include "OpIsMaximumLogSizeEnabled.h"
 #include "OpIsOnline.h"
 #include "OpLoadPackage.h"
+#include "OpMakePackage.h"
 #include "OpNotifyResourcesChanged.h"
 #include "OpRegisterServicesOnServers.h"
 #include "OpRenameLog.h"
@@ -97,8 +98,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpGetConfigurationProperties());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -109,8 +109,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpSetConfigurationProperties());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -121,8 +120,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpBringOnline());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -133,8 +131,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpTakeOffline());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -145,8 +142,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpIsOnline());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -157,8 +153,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpGetLog());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -169,8 +164,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpGetLogFile());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -181,8 +175,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpClearLog());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -193,8 +186,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpDeleteLog());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -205,8 +197,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpRenameLog());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -217,8 +208,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpEnumerateLogs());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -229,8 +219,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpDeletePackage());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -241,8 +230,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpEnumeratePackages());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -253,8 +241,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpGetPackageLog());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -265,8 +252,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpGetPackageStatus());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -277,8 +263,18 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpLoadPackage());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
+        }
+        break;
+
+    case MgServerAdminServiceOpId::MakePackage:
+        switch (operationVersion)
+        {
+        case 1:
+            handler.reset(new MgOpMakePackage());
+            break;
+        default:
+            break;
         }
         break;
 
@@ -289,8 +285,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpGetInformationProperties());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -301,8 +296,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpRegisterServicesOnServers());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -313,8 +307,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpUnregisterServicesOnServers());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -325,8 +318,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpNotifyResourcesChanged());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -337,8 +329,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpSetMaximumLogSize());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -349,8 +340,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpSetLogDelimiter());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -361,8 +351,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpEnableMaximumLogSize());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -373,8 +362,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpIsMaximumLogSizeEnabled());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -385,8 +373,7 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpGetDocument());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
@@ -397,14 +384,22 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
             handler.reset(new MgOpSetDocument());
             break;
         default:
-            throw new MgInvalidOperationVersionException(
-                L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            break;
         }
         break;
 
     default:
         throw new MgInvalidOperationException(
-            L"MgServerAdminOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+            L"MgServerAdminOperationFactory.GetOperation", 
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if (NULL == handler.get())
+    {
+        throw new MgInvalidOperationVersionException(
+            L"MgServerAdminOperationFactory.GetOperation", 
+            __LINE__, __WFILE__, NULL, L"", NULL);
+        
     }
 
     MG_CATCH_AND_THROW(L"MgServerAdminOperationFactory.GetOperation")

@@ -228,6 +228,7 @@
 #define CoreService_MgSiteConnection                      CORESERVICE_ID+5
 #define CoreService_MgConnectionProperties                CORESERVICE_ID+6
 #define CoreService_MgServerInformation                   CORESERVICE_ID+7
+#define CoreService_MgPackageStatusInformation            CORESERVICE_ID+8
 
 // Drawing Service
 #define DrawingService_DrawingService                     DRAWINGSERVICE_ID+0

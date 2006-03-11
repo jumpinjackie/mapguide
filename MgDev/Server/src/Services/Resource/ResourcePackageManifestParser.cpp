@@ -18,37 +18,27 @@
 #include "ResourceServiceDefs.h"
 #include "ResourcePackageManifestParser.h"
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Constructs the object.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 MgResourcePackageManifestParser::MgResourcePackageManifestParser()
 {
-    m_operations.reserve(12);
+    m_operations.reserve(256);
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Destructs the object.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 MgResourcePackageManifestParser::~MgResourcePackageManifestParser()
 {
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Parses the specified resource package manifest.
-/// </summary>
 ///
-/// <exceptions>
-/// MgException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
 void MgResourcePackageManifestParser::Parse(const string& manifest)
 {
     assert(!manifest.empty());
@@ -97,7 +87,7 @@ void MgResourcePackageManifestParser::Parse(const string& manifest)
 
                     opParam.SetValue(value);
                     opParam.SetContentType(contentType);
-                    opInfo.SetParameter(name, opParam);
+                    opInfo.AddParameter(name, opParam);
                 }
             }
 

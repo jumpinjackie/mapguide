@@ -375,18 +375,18 @@ EXTERNAL_API:
     ///
     MgByteReader* GetPackageLog(CREFSTRING packageName);
 
-    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the current status of the specified package
+    /// Retrieves the current status of the specified package.
     ///
     /// \param packageName
-    /// The name of the package to get the status for.  Available packages can be
-    /// found by using EnumeratePackages().
+    /// The name of the package to get the status for.
+    /// Available packages can be found by using EnumeratePackages().
     ///
     /// \return
     /// The status of the package.
     ///
-    STRING GetPackageStatus(CREFSTRING packageName);
+    MgPackageStatusInformation* GetPackageStatus(CREFSTRING packageName);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -415,6 +415,45 @@ EXTERNAL_API:
     /// \exception MgOutOfMemoryException
     ///
     void LoadPackage(CREFSTRING packageName);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates a package from the specified resource, and then saves it into 
+    /// the specified name.
+    ///
+    /// \remarks
+    /// This method only works on "Library" repository.
+    ///
+    /// \param resource
+    /// Resource identifier of a folder containing permissible resources to be 
+    /// packaged.
+    ///
+    /// \param packageName
+    /// The name of the package to be made. The serverconfig.ini file has the 
+    /// "PackagesPath" property which will be used for path. The file name will
+    /// automatically be appended with the ".mgp" extension (case sensitive) 
+    /// if it is not specified.
+    ///
+    /// \param packageDescription
+    /// The description of the package.
+    ///
+    /// \return
+    /// Nothing.
+    ///
+    /// \exception MgDuplicateFileException
+    /// \exception MgPathTooLongException
+    /// \exception MgFileIoException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgNullArgumentException
+    /// \exception MgInvalidRepositoryTypeException
+    /// \exception MgInvalidRepositoryNameException
+    /// \exception MgInvalidResourcePathException
+    /// \exception MgInvalidResourceNameException
+    /// \exception MgInvalidResourceTypeException
+    /// \exception MgOutOfMemoryException
+    ///
+    void MakePackage(MgResourceIdentifier* resource, CREFSTRING packageName, 
+        CREFSTRING packageDescription);
 
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief

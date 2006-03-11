@@ -45,12 +45,6 @@ const STRING MgResources::ServerServiceName             = L"Server"; // Do not t
 const STRING MgResources::ServerServiceDisplayName      = L"MapGuide Server"; // Do not translate
 const STRING MgResources::ServerServiceDescription      = L"The MapGuide Server process.";
 
-const STRING MgResources::MgPackageStatusLogManagerStatus       = L"Status:";
-const STRING MgResources::MgPackageStatusLogManagerPackageInfo  = L"Package information:";
-const STRING MgResources::MgPackageStatusLogManagerError        = L"Error:";
-const STRING MgResources::MgPackageStatusLogManagerDetails      = L"Details:";
-const STRING MgResources::MgPackageStatusLogManagerOpsComplete  = L"Operations completed:";
-
 // The following resource strings are for the commandline options for the server. These are not in the resources file because
 // the server has not even started at this point.
 const STRING MgResources::ServerCmdHelp                 = L"/help"; // Do not translate
@@ -126,6 +120,7 @@ const STRING MgResources::ServerServiceStartFailure     = L"Service failed to st
 
 const STRING MgResources::Resource_Exception_Section    = L"Exceptions";
 
+const STRING MgResources::Unknown                       = L"Unknown";
 const STRING MgResources::Success                       = L"Success";
 const STRING MgResources::Failure                       = L"Failure";
 const STRING MgResources::UnauthorizedAccess            = L"Unauthorized Access";
@@ -518,3 +513,48 @@ bool MgResources::ParseFile(CREFSTRING strResourceFileName, ResourceFile* pResou
     return bParsed;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets a message that is retrieved from the specified resource ID and is 
+/// formatted with the specified arguments.
+///
+/// \param section
+/// Section in the resource file.
+/// \param resourceId
+/// Resource identifier in the section.
+/// \param arguments
+/// Pointer to an MgStringCollection that contains the text to be placed 
+/// into the formatted message. If arguments is NULL then that is treated 
+/// as having 0 arguments provided. A maximum of 9 arguments is allowed.
+///
+/// \return
+/// The formatted message string.
+///
+STRING MgResources::GetMessage(CREFSTRING section, CREFSTRING resourceId, 
+    MgStringCollection* arguments)
+{
+    STRING message;
+
+    MG_RESOURCES_TRY()
+
+    STRING locale = DefaultLocale;
+    MgConfiguration* configuration = MgConfiguration::GetInstance();
+    ACE_ASSERT(NULL != configuration);
+
+    if (NULL != configuration)
+    {
+        configuration->GetStringValue(
+            MgConfigProperties::GeneralPropertiesSection, 
+            MgConfigProperties::GeneralPropertyDefaultLocale, 
+            locale, 
+            MgConfigProperties::DefaultGeneralPropertyDefaultLocale);
+    }
+
+    STRING resourceStr = GetStringResource(locale, section, resourceId);
+
+    message = FormatMessage(resourceStr, arguments);
+
+    MG_RESOURCES_CATCH_AND_THROW(L"MgResources.GetMessage")
+
+    return message;
+}

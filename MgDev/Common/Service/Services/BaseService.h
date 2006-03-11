@@ -24,6 +24,7 @@
 #include "ConnectionProperties.h"
 #include "SiteConnection.h"
 #include "ServerInformation.h"
+#include "PackageStatusInformation.h"
 #include "BaseServiceDefs.h"
 
 #endif  // MG_BASE_SERVICE_H

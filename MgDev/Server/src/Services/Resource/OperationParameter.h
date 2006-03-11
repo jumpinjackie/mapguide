@@ -15,37 +15,57 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_OPERATION_PARAMETER_H
-#define MG_OPERATION_PARAMETER_H
+#ifndef MGOPERATIONPARAMETER_H_
+#define MGOPERATIONPARAMETER_H_
 
 class MgOperationParameter
 {
 /// Constructors/Destructor
 
-    public:
+public:
 
-        MgOperationParameter();
-        MgOperationParameter(const MgOperationParameter& opParam);
-        virtual ~MgOperationParameter();
+    MgOperationParameter();
+    MgOperationParameter(const MgOperationParameter& opParam);
+    virtual ~MgOperationParameter();
 
 /// Methods
 
-    public:
+public:
 
-        MgOperationParameter& operator=(const MgOperationParameter& opParam);
+    MgOperationParameter& operator=(const MgOperationParameter& opParam);
 
-        CREFSTRING GetValue() const;
-        void SetValue(CREFSTRING value);
+    CREFSTRING GetValue() const;
+    void SetValue(CREFSTRING value);
 
-        CREFSTRING GetContentType() const;
-        void SetContentType(CREFSTRING contentType);
+    CREFSTRING GetContentType() const;
+    void SetContentType(CREFSTRING contentType);
 
 /// Data Members
 
-    private:
+INTERNAL_API:
 
-        STRING m_value;
-        STRING m_contentType;
+    static const STRING Type;
+    static const STRING Depth;
+    static const STRING ResourceId;
+    static const STRING ResourceContent;
+    static const STRING ResourceHeader;
+    static const STRING SourceResourceId;
+    static const STRING DestinationResourceId;
+    static const STRING DataName;
+    static const STRING DataType;
+    static const STRING DataLength;
+    static const STRING Data;
+    static const STRING OldDataName;
+    static const STRING NewDataName;
+    static const STRING Overwrite;
+    static const STRING Package;
+    static const STRING Owner;
+    static const STRING IncludeDescendants;
+
+private:
+
+    STRING m_value;
+    STRING m_contentType;
 };
 
 /// Inline Methods

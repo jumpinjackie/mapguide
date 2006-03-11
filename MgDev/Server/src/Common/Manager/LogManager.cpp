@@ -1482,7 +1482,7 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
 
             // Write file header information if the log is empty
             bool bLogFileEmpty = true;
-            bLogFileEmpty =  (MgFileUtil::GetFileSizeInBytes(filename) ? false : true);
+            bLogFileEmpty =  (MgFileUtil::GetFileSize(filename) ? false : true);
 
             if (bLogFileEmpty)
             {
@@ -2536,9 +2536,9 @@ bool MgLogManager::IsMaxSizeExceeded(CREFSTRING logFileName)
 {
     bool bMaxSizeReached = false;
 
-    INT32 nFileSize = MgFileUtil::GetFileSizeInBytes(logFileName);
+    INT64 nFileSize = MgFileUtil::GetFileSize(logFileName);
 
-    if ( nFileSize >= (MgLogManager::m_maxLogSize * 1024))
+    if (nFileSize >= (MgLogManager::m_maxLogSize * 1024))
     {
         bMaxSizeReached = true;
     }

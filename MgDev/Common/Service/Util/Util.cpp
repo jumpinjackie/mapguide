@@ -592,6 +592,12 @@ INT32 MgUtil::StringToInt32(CREFSTRING str)
     return static_cast<INT32>(::atoi(tmp.c_str()));
 }
 
+INT64 MgUtil::StringToInt64(CREFSTRING str)
+{
+    // TODO: This is not accurate but is big enough for internal use for now.
+    return (INT64)MgUtil::StringToDouble(str);
+}
+
 double MgUtil::StringToDouble(CREFSTRING str)
 {
     // TODO: Is if safe to assume the string is in C locale?
@@ -822,6 +828,22 @@ void MgUtil::Int32ToString(INT32 val, STRING& str)
     wchar_t buf[32] = { 0 };
 
     ::swprintf(buf, 32, L"%d", val);
+    str = &buf[0];
+}
+
+void MgUtil::UInt32ToString(UINT32 val, string& str)
+{
+    char buf[32] = { 0 };
+
+    ::sprintf(buf, "%u", val);
+    str = &buf[0];
+}
+
+void MgUtil::UInt32ToString(UINT32 val, STRING& str)
+{
+    wchar_t buf[32] = { 0 };
+
+    ::swprintf(buf, 32, L"%u", val);
     str = &buf[0];
 }
 

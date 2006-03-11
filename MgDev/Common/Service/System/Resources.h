@@ -145,6 +145,26 @@ INTERNAL_API:
     ///
     STRING FormatMessage(CREFSTRING stringResource, MgStringCollection* arguments);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets a message that is retrieved from the specified resource ID and is 
+    /// formatted with the specified arguments.
+    ///
+    /// \param section
+    /// Section in the resource file.
+    /// \param resourceId
+    /// Resource identifier in the section.
+    /// \param arguments
+    /// Pointer to an MgStringCollection that contains the text to be placed 
+    /// into the formatted message. If arguments is NULL then that is treated 
+    /// as having 0 arguments provided. A maximum of 9 arguments is allowed.
+    ///
+    /// \return
+    /// The formatted message string.
+    ///
+    STRING GetMessage(CREFSTRING section, CREFSTRING resourceId, 
+        MgStringCollection* arguments);
+
     /// Resource Components
     static const STRING ResourceComponentServer;
     static const STRING ResourceComponentWeb;
@@ -166,11 +186,6 @@ INTERNAL_API:
     static const STRING FormatExceptionLocationMethods;
     static const STRING FormatExceptionLocationLines;
     static const STRING FormatExceptionLocationFiles;
-    static const STRING MgPackageStatusLogManagerStatus;
-    static const STRING MgPackageStatusLogManagerPackageInfo;
-    static const STRING MgPackageStatusLogManagerError;
-    static const STRING MgPackageStatusLogManagerDetails;
-    static const STRING MgPackageStatusLogManagerOpsComplete;
     static const STRING ServerStarting;
     static const STRING ServerShuttingDown;
     static const STRING ServerStarted;
@@ -214,6 +229,7 @@ INTERNAL_API:
 
     static const STRING Resource_Exception_Section;
 
+    static const STRING Unknown;
     static const STRING Success;
     static const STRING Failure;
     static const STRING UnauthorizedAccess;

@@ -20,7 +20,8 @@
 #include "ResourceHeaderManager.h"
 #include "ResourceDataStreamManager.h"
 #include "ResourceDataFileManager.h"
-#include "ResourcePackageManager.h"
+#include "ResourcePackageLoader.h"
+#include "ResourcePackageMaker.h"
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -65,7 +66,7 @@ MgLibraryRepositoryManager::~MgLibraryRepositoryManager()
 void MgLibraryRepositoryManager::UpdateDateModifiedResourceSet(
     CREFSTRING resource)
 {
-    assert(!resource.empty());
+    ACE_ASSERT(!resource.empty());
     m_dateModifiedResources.insert(resource);
 }
 
@@ -97,7 +98,7 @@ void MgLibraryRepositoryManager::CommitTransaction()
 
 MgByteReader* MgLibraryRepositoryManager::GetRepositoryHeader(MgResourceIdentifier* resource)
 {
-    assert(NULL != resource);
+    ACE_ASSERT(NULL != resource);
     Ptr<MgByteReader> byteReader;
 
     MG_RESOURCE_SERVICE_TRY()
@@ -122,20 +123,95 @@ MgByteReader* MgLibraryRepositoryManager::GetRepositoryHeader(MgResourceIdentifi
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Loads the specified resource package into the repository.
+/// Applies a package of resource changes to the repository.
 ///
-void MgLibraryRepositoryManager::LoadResourcePackage(CREFSTRING pathname, 
-    bool logActivities)
+void MgLibraryRepositoryManager::ApplyResourcePackage(MgByteReader* packageStream)
 {
-    assert(!pathname.empty());
+    ACE_ASSERT(NULL != packageStream);
+    STRING packagePathname;
 
     MG_RESOURCE_SERVICE_TRY()
 
-    MgResourcePackageManager packageMan(*this, pathname, logActivities);
+    packagePathname = MgFileUtil::GenerateTempFileName();
+    MgByteSink byteSink(packageStream);
 
-    packageMan.PerformOperations();
+    byteSink.ToFile(packagePathname);
+    LoadResourcePackage(packagePathname, false);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgLibraryRepositoryManager.LoadResourcePackage")
+    MG_RESOURCE_SERVICE_CATCH(L"MgLibraryRepositoryManager.ApplyResourcePackage")
+
+    if (!packagePathname.empty())
+    {
+        try
+        {
+            MgFileUtil::DeleteFile(packagePathname);
+        }
+        catch (MgException* e)
+        {
+            SAFE_RELEASE(e);
+        }
+        catch (...)
+        {
+        }
+    }
+
+    MG_RESOURCE_SERVICE_THROW()
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Loads the specified resource package into the repository.
+///
+void MgLibraryRepositoryManager::LoadResourcePackage(CREFSTRING packagePathname, 
+    bool logActivities)
+{
+    ACE_ASSERT(!packagePathname.empty());
+    auto_ptr<MgResourcePackageLoader> packageLoader;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    packageLoader.reset(new MgResourcePackageLoader(*this));
+    packageLoader->Start(packagePathname, logActivities);
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgLibraryRepositoryManager.LoadResourcePackage")
+
+    if (NULL != packageLoader.get())
+    {
+        packageLoader->End(mgException);
+    }
+
+    MG_RESOURCE_SERVICE_THROW()
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates a package from the specified resource, and then saves it into 
+/// the specified name.
+///
+void MgLibraryRepositoryManager::MakeResourcePackage(MgResourceIdentifier* resource, 
+    CREFSTRING packagePathname, CREFSTRING packageDescription, bool logActivities)
+{
+    ACE_ASSERT(NULL != resource && !packagePathname.empty());
+
+    auto_ptr<MgResourcePackageMaker> packageMaker;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    packageMaker.reset(new MgResourcePackageMaker(*this));
+    packageMaker->Start(*resource, packagePathname, packageDescription, 
+        logActivities);
+
+    m_resourceHeaderMan->PackageResource(*resource, *packageMaker.get());
+    m_resourceContentMan->PackageResource(*resource, *packageMaker.get());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgLibraryRepositoryManager.MakeResourcePackage")
+
+    if (NULL != packageMaker.get())
+    {
+        packageMaker->End(mgException);
+    }
+
+    MG_RESOURCE_SERVICE_THROW()
 }
 
 ///----------------------------------------------------------------------------
@@ -152,7 +228,7 @@ MgByteReader* MgLibraryRepositoryManager::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
     INT32 properties, CREFSTRING fromDate, CREFSTRING toDate)
 {
-    assert(NULL != resource);
+    ACE_ASSERT(NULL != resource);
     Ptr<MgByteReader> byteReader;
 
     MG_RESOURCE_SERVICE_TRY()
@@ -212,7 +288,7 @@ MgByteReader* MgLibraryRepositoryManager::EnumerateResources(
 
 MgByteReader* MgLibraryRepositoryManager::GetResourceHeader(MgResourceIdentifier* resource)
 {
-    assert(NULL != resource);
+    ACE_ASSERT(NULL != resource);
     Ptr<MgByteReader> byteReader;
 
     MG_RESOURCE_SERVICE_TRY()
@@ -249,7 +325,7 @@ MgByteReader* MgLibraryRepositoryManager::GetResourceHeader(MgResourceIdentifier
 MgDateTime* MgLibraryRepositoryManager::GetResourceModifiedDate(
     MgResourceIdentifier* resource)
 {
-    assert(NULL != resource);
+    ACE_ASSERT(NULL != resource);
     Ptr<MgDateTime> dateTime;
 
     MG_RESOURCE_SERVICE_TRY()
@@ -274,7 +350,7 @@ MgDateTime* MgLibraryRepositoryManager::GetResourceModifiedDate(
 void MgLibraryRepositoryManager::ChangeResourceOwner(
     MgResourceIdentifier* resource, CREFSTRING owner, bool includeDescendants)
 {
-    assert(NULL != resource && !owner.empty());
+    ACE_ASSERT(NULL != resource && !owner.empty());
 
     MG_RESOURCE_SERVICE_TRY()
 
@@ -300,7 +376,7 @@ void MgLibraryRepositoryManager::ChangeResourceOwner(
 void MgLibraryRepositoryManager::InheritPermissionsFrom(
     MgResourceIdentifier* resource)
 {
-    assert(NULL != resource);
+    ACE_ASSERT(NULL != resource);
 
     MG_RESOURCE_SERVICE_TRY()
 
@@ -332,8 +408,8 @@ void MgLibraryRepositoryManager::InheritPermissionsFrom(
 
 bool MgLibraryRepositoryManager::FindResource(MgResourceIdentifier* resource)
 {
-    assert(NULL != resource);
-    assert(NULL != m_resourceHeaderMan);
+    ACE_ASSERT(NULL != resource);
+    ACE_ASSERT(NULL != m_resourceHeaderMan);
 
     return m_resourceHeaderMan->FindResource(resource->ToString());
 }

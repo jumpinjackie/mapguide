@@ -21,42 +21,45 @@
 #include "ApplicationResourceContentManager.h"
 
 class MgLibraryRepositoryManager;
+class MgResourcePackageMaker;
 
 class MgLibraryResourceContentManager : public MgApplicationResourceContentManager
 {
 /// Constructors/Destructor
 
-    public:
+public:
 
-        explicit MgLibraryResourceContentManager(
-            MgLibraryRepositoryManager& repositoryMan);
-        virtual ~MgLibraryResourceContentManager();
+    explicit MgLibraryResourceContentManager(
+        MgLibraryRepositoryManager& repositoryMan);
+    virtual ~MgLibraryResourceContentManager();
 
-    private:
+private:
 
-        // Unimplemented Constructors/Methods
+    // Unimplemented Constructors/Methods
 
-        MgLibraryResourceContentManager();
-        MgLibraryResourceContentManager(const MgLibraryResourceContentManager&);
-        MgLibraryResourceContentManager& operator=(const MgLibraryResourceContentManager&);
-
-    protected:
-
-        // Resource Permission related methods
-
-        virtual bool CheckPermission(MgResourceIdentifier& resource,
-            CREFSTRING permission, bool strict = true);
-        virtual bool CheckParentPermission(MgResourceIdentifier& resource,
-            CREFSTRING permission, bool strict = true);
+    MgLibraryResourceContentManager();
+    MgLibraryResourceContentManager(const MgLibraryResourceContentManager&);
+    MgLibraryResourceContentManager& operator=(const MgLibraryResourceContentManager&);
 
 /// Methods
 
-    public:
+protected:
+
+    // Resource Permission related methods
+
+    virtual bool CheckPermission(MgResourceIdentifier& resource,
+        CREFSTRING permission, bool strict = true);
+    virtual bool CheckParentPermission(MgResourceIdentifier& resource,
+        CREFSTRING permission, bool strict = true);
+
+    void PackageResource(MgResourceIdentifier& resource, 
+        MgResourcePackageMaker& packageMaker);
 
 /// Data Members
 
-    private:
+private:
 
+    friend class MgLibraryRepositoryManager;
 };
 
 #endif

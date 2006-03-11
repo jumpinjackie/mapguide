@@ -29,7 +29,6 @@ class MgSiteRepository;
 class MgRepositoryManager;
 class MgSystemRepositoryManager;
 class MgApplicationRepositoryManager;
-class MgPackageStatusLogManager;
 
 class MG_SERVER_RESOURCE_API MgServerResourceService : public MgResourceService
 {
@@ -63,8 +62,11 @@ public:
         MgResourceIdentifier* resource);
     virtual MgByteReader* GetRepositoryHeader(
         MgResourceIdentifier* resource);
-    virtual void ApplyResourcePackage(MgByteReader* package);
-    virtual void LoadResourcePackage(CREFSTRING pathname, bool logActivities);
+    virtual void ApplyResourcePackage(MgByteReader* packageStream);
+    virtual void LoadResourcePackage(CREFSTRING packagePathname, bool logActivities);
+    virtual void MakeResourcePackage(MgResourceIdentifier* resource, 
+        CREFSTRING packagePathname, CREFSTRING packageDescription, 
+        bool logActivities);
 
     // Resource Management APIs
 
