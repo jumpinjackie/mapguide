@@ -164,6 +164,11 @@ void MgPackageLogReader::ReadStatus()
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
+    // Get the actual package modification time and size.
+    actualPackageName = MgPackageManager::GetPackageName(m_packagePathname);
+    actualPackageDate = new MgDateTime(MgFileUtil::GetFileModificationTime(m_packagePathname));
+    actualPackageSize = MgFileUtil::GetFileSize(m_packagePathname);
+
     if (!MgFileUtil::PathnameExists(m_logPathname))
     {
         MgStringCollection arguments;
@@ -173,11 +178,6 @@ void MgPackageLogReader::ReadStatus()
             L"MgPackageLogReader.ReadStatus", 
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
-
-    // Get the actual package modification time and size.
-    actualPackageName = MgPackageManager::GetPackageName(m_packagePathname);
-    actualPackageDate = new MgDateTime(MgFileUtil::GetFileModificationTime(m_packagePathname));
-    actualPackageSize = MgFileUtil::GetFileSize(m_packagePathname);
 
     // If a log file exists, the status should be recorded within it.
     file = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(m_logPathname), ACE_TEXT("rb"));
@@ -287,9 +287,6 @@ void MgPackageLogReader::ReadStatus()
 
     if (mgException != NULL)
     {
-        // Remove the invalid log file.
-        MgFileUtil::DeleteFile(m_logPathname);
-
         // Reset the status with actual/useful information if possible.
         m_statusInfo.SetStatusCode(MgPackageStatusCode::Unknown);
         m_statusInfo.SetPackageName(actualPackageName);
@@ -299,6 +296,9 @@ void MgPackageLogReader::ReadStatus()
         {
             m_statusInfo.SetPackageDate(actualPackageDate);
         }
+
+        // Remove the invalid log file.
+        MgFileUtil::DeleteFile(m_logPathname);
     }
 
     MG_THROW()
