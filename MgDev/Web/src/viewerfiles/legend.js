@@ -5,7 +5,7 @@ function LegendItem(type, code)
     this.id = 0;
 }
 
-function GroupItem(legend, expanded, parent, visible, objectId, name, basegroup)
+function GroupItem(legend, expanded, parent, visible, displayInLegend, objectId, name, basegroup)
 {
     this.LegendItemInfo = LegendItem;
     this.LegendItemInfo(0, 'G');
@@ -13,6 +13,7 @@ function GroupItem(legend, expanded, parent, visible, objectId, name, basegroup)
     this.expanded = expanded;
     this.parent = parent;
     this.visible = visible;
+    this.displayInLegend = displayInLegend;
     this.objectId = objectId;
     this.name = name;
     this.base = basegroup;
@@ -20,7 +21,7 @@ function GroupItem(legend, expanded, parent, visible, objectId, name, basegroup)
     this.isDisplayed = false;
 }
 
-function LayerItem(legend, name, expanded, parent, visible, selectable, resId, objectId, baselayer)
+function LayerItem(legend, name, expanded, parent, visible, displayInLegend, selectable, resId, objectId, baselayer)
 {
     this.LegendItemInfo = LegendItem;
     this.LegendItemInfo(1, 'L');
@@ -28,6 +29,7 @@ function LayerItem(legend, name, expanded, parent, visible, selectable, resId, o
     this.expanded = expanded;
     this.parent = parent;
     this.visible = visible;
+    this.displayInLegend = displayInLegend;
     this.selectable = selectable;
     this.resId = resId;
     this.objectId = objectId;

@@ -630,25 +630,26 @@
                             ++visible;
                     }
                 }
-                node.isDisplayed = visible != 0;
+                node.isDisplayed = node.displayInLegend && (visible != 0);
             }
             else if(node.type == 1)
             {
                 var rangeIndex = node.curScale;
                 var scaleRanges = node.children;
                 node.curScale = -1;
-                for(var j=0; j < scaleRanges.length; j++)
-                {
-                    var scaleRange = scaleRanges[j];
-                    if(scale >= scaleRange.min && scale < scaleRange.max)
+                if(node.displayInLegend) {
+                    for(var j=0; j < scaleRanges.length; j++)
                     {
-                        node.curScale = j;
-                        break;
+                        var scaleRange = scaleRanges[j];
+                        if(scale >= scaleRange.min && scale < scaleRange.max)
+                        {
+                            node.curScale = j;
+                            break;
+                        }
                     }
+                    if(rangeIndex != node.curScale && node.curScale != -1)
+                        SetLayerStyles(node);
                 }
-                if(rangeIndex != node.curScale && node.curScale != -1)
-                    SetLayerStyles(node);
-
                 node.isDisplayed = node.curScale != -1;
             }
         }
@@ -786,7 +787,7 @@
             {
                 if(tree[i].base)
                 {
-                    if(visOnly && (!tree[i].visible || !tree[i].isDisplayed))
+                    if(visOnly && !tree[i].visible)
                         continue;
                     groups.push(tree[i].name);
                 }

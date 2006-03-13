@@ -190,8 +190,6 @@ ArrayList BuildLayerTree(MgMap map) throws MgException
         MgLayerGroup rtGroup = (MgLayerGroup)groups.GetItem(i);
         TreeItem node = new TreeItem(rtGroup.GetName(), true, rtGroup);
         knownGroups.put(node.name, node);
-        if(!rtGroup.GetDisplayInLegend())
-            continue;
         MgLayerGroup parentGroup = rtGroup.GetGroup();
         if(parentGroup == null)
         {
@@ -226,8 +224,6 @@ ArrayList BuildLayerTree(MgMap map) throws MgException
     for(int i = 0; i < layers.GetCount(); i++)
     {
         MgLayer rtLayer= layers.GetItem(i);
-        if(!rtLayer.GetDisplayInLegend())
-            continue;
         TreeItem node = new TreeItem(rtLayer.GetName(), false, rtLayer);
         MgLayerGroup parentGroup = rtLayer.GetGroup();
         if(parentGroup == null)
@@ -289,12 +285,13 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     MgLayerGroup rtLayerGroup = (MgLayerGroup)node.rtObject;
                     if(fulldata)
                     {
-                        output = output + String.format("var %s = new GroupItem(\"%s\", %s, %s, %s, \"%s\", \"%s\", %s);\n",
+                        output = output + String.format("var %s = new GroupItem(\"%s\", %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
                                                            new Object[] {groupName,
                                                            rtLayerGroup.GetLegendLabel(),
                                                            rtLayerGroup.GetExpandInLegend()? "true": "false",
                                                            parentName,
                                                            rtLayerGroup.GetVisible()? "true": "false",
+                                                           rtLayerGroup.GetDisplayInLegend()? "true": "false",
                                                            rtLayerGroup.GetObjectId(),
                                                            rtLayerGroup.GetName(),
                                                            rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMap? "true": "false"});
@@ -329,13 +326,14 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                         MgResourceIdentifier resId = rtLayer.GetLayerDefinition();
                         String layerName = "lyr" + (intermediateVar++);
                         String objectId = rtLayer.GetObjectId();
-                        output = output + String.format("var %s = new LayerItem(\"%s\", \"%s\", %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
+                        output = output + String.format("var %s = new LayerItem(\"%s\", \"%s\", %s, %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
                                                            new Object[] {layerName,
                                                            rtLayer.GetLegendLabel(),
                                                            rtLayer.GetName(),
                                                            rtLayer.GetExpandInLegend()? "true": "false",
                                                            parentName,
                                                            rtLayer.GetVisible()? "true": "false",
+                                                           rtLayer.GetDisplayInLegend()? "true": "false",
                                                            rtLayer.GetSelectable()? "true": "false",
                                                            resId.ToString(),
                                                            objectId,

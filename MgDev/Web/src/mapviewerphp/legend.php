@@ -128,9 +128,6 @@ function BuildLayerTree($map)
         $node = new TreeItem($rtGroup->GetName(), true, $rtGroup);
         $knownGroups[$node->name] = $node;
 
-        if(!$rtGroup->GetDisplayInLegend())
-            continue;
-
         $parentGroup = $rtGroup->GetGroup();
         if($parentGroup == null) {
             array_push($tree, $node);
@@ -164,8 +161,6 @@ function BuildLayerTree($map)
     for($i = 0; $i < $layers->GetCount(); $i++)
     {
         $rtLayer = $layers->GetItem($i);
-        if(!$rtLayer->GetDisplayInLegend())
-            continue;
         $node = new TreeItem($rtLayer->GetName(), false, $rtLayer);
         $parentGroup = $rtLayer->GetGroup();
         if($parentGroup == null)
@@ -211,12 +206,13 @@ function BuildClientSideTree($tree, $parent, $parentName, $fulldata, $container,
 
                     if($fulldata)
                     {
-                        $output = $output . sprintf("var %s = new GroupItem(\"%s\", %s, %s, %s, \"%s\", \"%s\", %s);\n",
+                        $output = $output . sprintf("var %s = new GroupItem(\"%s\", %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
                                                         $groupName,
                                                         $node->rtObject->GetLegendLabel(),
                                                         $node->rtObject->GetExpandInLegend()? "true": "false",
                                                         $parentName,
                                                         $node->rtObject->GetVisible()? "true": "false",
+                                                        $node->rtObject->GetDisplayInLegend()? "true": "false",
                                                         $node->rtObject->GetObjectId(),
                                                         $node->rtObject->GetName(),
                                                         $node->rtObject->GetLayerGroupType() == MgLayerGroupType::BaseMap? "true": "false");
@@ -250,13 +246,14 @@ function BuildClientSideTree($tree, $parent, $parentName, $fulldata, $container,
                         $resId = $node->rtObject->GetLayerDefinition();
                         $layerName = "lyr" . ($intermediateVar ++);
                         $objectId = $node->rtObject->GetObjectId();
-                        $output = $output . sprintf("var %s = new LayerItem(\"%s\", \"%s\", %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
+                        $output = $output . sprintf("var %s = new LayerItem(\"%s\", \"%s\", %s, %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
                                                         $layerName,
                                                         $node->rtObject->GetLegendLabel(),
                                                         $node->rtObject->GetName(),
                                                         $node->rtObject->GetExpandInLegend()? "true": "false",
                                                         $parentName,
                                                         $node->rtObject->GetVisible()? "true": "false",
+                                                        $node->rtObject->GetDisplayInLegend()? "true": "false",
                                                         $node->rtObject->GetSelectable()? "true": "false",
                                                         $resId->ToString(),
                                                         $objectId,
