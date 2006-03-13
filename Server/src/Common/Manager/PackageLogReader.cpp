@@ -265,7 +265,7 @@ void MgPackageLogReader::ReadStatus()
     // Validate the current package status information.
     STRING packageName = m_statusInfo.GetPackageName();
     Ptr<MgDateTime> packageDate = m_statusInfo.GetPackageDate();
-    INT32 packageSize = m_statusInfo.GetPackageSize();
+    INT64 packageSize = m_statusInfo.GetPackageSize();
 
     if (packageName != actualPackageName 
      || packageSize != actualPackageSize 
