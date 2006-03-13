@@ -37,16 +37,15 @@ MgByte::MgByte(BYTE_ARRAY_IN bytes, INT32 len, AllocatorType allocator)
     // Basic initialization
     m_bytes = NULL;
     m_len = 0;
+    m_allocLen = len;
 
     // If len was specified then we need to (preallocate) the internal buffer
     if (len > 0)
     {
-        m_allocLen = len;
         if (MgByte::Internal == m_allocType)
         {
             m_bytes = Allocate(len);
         }
-
     }
 
     // If bytes were passed in, we need to assign them directly if not allocating,

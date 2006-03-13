@@ -1910,6 +1910,9 @@ void DWFRenderer::AddDWFContent(RS_InputStream*   in,
 {
     try
     {
+        if (in->available() == 0)
+            return;
+
         //go to beginning of stream
         in->seek(SEEK_SET, 0);
 
@@ -2491,6 +2494,9 @@ void DWFRenderer::FindSymbolReferencePoint( RS_InputStream*     in,
 {
     try
     {
+        if (in->available() == 0)
+            return;
+
         //go to beginning of stream
         in->seek(SEEK_SET, 0);
 
