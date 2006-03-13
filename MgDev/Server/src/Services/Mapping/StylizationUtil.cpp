@@ -429,85 +429,84 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                       -mapLayer->GetDisplayOrder(),
                                        uig);
 
-
             MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf);
             MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf);
             MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf);
 
             if (vl)
             {
-                //get feature source id
-                STRING sfeatResId = vl->GetResourceID();
-                Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(sfeatResId);
-
-                // get the feature extent to use with the query
-                RS_Bounds extent = dr->GetBounds();
-
-                //perform the feature query
+                // make sure we have a valid scale range
                 MdfModel::VectorScaleRange* scaleRange = Stylizer::FindScaleRange(*vl->GetScaleRanges(), scale);
-
-                // if requested, expand the feature extent to account for stylization
-                if (expandExtents)
-                {
-                    // get the additional offset to account for stylization
-                    double mcsOffset = ComputeStylizationOffset(map, scaleRange, scale);
-                    extent.minx -= mcsOffset;
-                    extent.miny -= mcsOffset;
-                    extent.maxx += mcsOffset;
-                    extent.maxy += mcsOffset;
-                }
-
-                //now get the coordinate system of the layer data
-                //TODO: this can be cached per resource, since it is
-                //unlikely to ever change
-                Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(featResId, true);
-
-                Ptr<MgCoordinateSystem> srcCs = (MgCoordinateSystem*)NULL;
-
-                if (dstCs && csrdr->ReadNext())
-                {
-                    STRING srcwkt = csrdr->GetCoordinateSystemWkt();
-
-                    srcCs = (srcwkt.empty()) ? NULL : csFactory->Create(srcwkt);
-
-                    if (srcCs.p)
-                    {
-                        xformer = new MgCSTrans(srcCs, dstCs);
-                    }
-                }
-
-                //extract hyperlink and tooltip info
-                if (!vl->GetToolTip().empty()) legendInfo.hastooltips() = true;
-                if (!vl->GetUrl().empty()) legendInfo.hashyperlinks() = true;
-
-                //set up the property name mapping -- it tells us what
-                //string the viewer should be displaying as the name of each
-                //feature property
-                // TODO: check to see if name is FeatureClass or Extension name
-                RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
-
-                MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
-
-                for (int j=0; j<pmappings->GetCount(); j++)
-                {
-                    MdfModel::NameStringPair* m = pmappings->GetAt(j);
-                    fcinfo.add_mapping(m->GetName(), m->GetValue());
-                }
-
-                //check for overridden feature query filter and remember it.
-                //we will use this when making feature queries
-                STRING overrideFilter = L"";
-
-                if (overrideFilters)
-                    overrideFilter = overrideFilters->GetItem(i);
-
-                //here we will check if the layer has a composite polyline style.
-                //If so, we will make multiple feature queries and process
-                //the geometry once for each line style. This makes things look
-                //much better
 
                 if (scaleRange)
                 {
+                    // get feature source id
+                    STRING sfeatResId = vl->GetResourceID();
+                    Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(sfeatResId);
+
+                    // get the feature extent to use with the query
+                    RS_Bounds extent = dr->GetBounds();
+
+                    // if requested, expand the feature extent to account for stylization
+                    if (expandExtents)
+                    {
+                        // get the additional offset to account for stylization
+                        double mcsOffset = ComputeStylizationOffset(map, scaleRange, scale);
+                        extent.minx -= mcsOffset;
+                        extent.miny -= mcsOffset;
+                        extent.maxx += mcsOffset;
+                        extent.maxy += mcsOffset;
+                    }
+
+                    //now get the coordinate system of the layer data
+                    //TODO: this can be cached per resource, since it is
+                    //unlikely to ever change
+                    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(featResId, true);
+
+                    Ptr<MgCoordinateSystem> srcCs = (MgCoordinateSystem*)NULL;
+
+                    if (dstCs && csrdr->ReadNext())
+                    {
+                        STRING srcwkt = csrdr->GetCoordinateSystemWkt();
+
+                        srcCs = (srcwkt.empty()) ? NULL : csFactory->Create(srcwkt);
+
+                        if (srcCs.p)
+                        {
+                            xformer = new MgCSTrans(srcCs, dstCs);
+                        }
+                    }
+
+                    //extract hyperlink and tooltip info
+                    if (!vl->GetToolTip().empty()) legendInfo.hastooltips() = true;
+                    if (!vl->GetUrl().empty()) legendInfo.hashyperlinks() = true;
+
+                    //set up the property name mapping -- it tells us what
+                    //string the viewer should be displaying as the name of each
+                    //feature property
+                    // TODO: check to see if name is FeatureClass or Extension name
+                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
+
+                    MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
+
+                    for (int j=0; j<pmappings->GetCount(); j++)
+                    {
+                        MdfModel::NameStringPair* m = pmappings->GetAt(j);
+                        fcinfo.add_mapping(m->GetName(), m->GetValue());
+                    }
+
+                    //check for overridden feature query filter and remember it.
+                    //we will use this when making feature queries
+                    STRING overrideFilter = L"";
+
+                    if (overrideFilters)
+                        overrideFilter = overrideFilters->GetItem(i);
+
+                    //here we will check if the layer has a composite polyline style.
+                    //If so, we will make multiple feature queries and process
+                    //the geometry once for each line style. This makes things look
+                    //much better
+
                     MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
                     MdfModel::FeatureTypeStyle* fts = (ftsc->GetCount() > 0) ? ftsc->GetAt(0) : NULL;
 
@@ -650,109 +649,117 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
             }
             else if (gl)
             {
-                //get feature source id
-                STRING sfeatResId = gl->GetResourceID();
-                Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(sfeatResId);
-
-                // get the feature extent to use with the query
-                RS_Bounds extent = dr->GetBounds();
-
-                //perform the feature query
+                // make sure we have a valid scale range
                 MdfModel::GridScaleRange* scaleRange = Stylizer::FindScaleRange(*gl->GetScaleRanges(), scale);
 
-                //now get the coordinate system of the layer data
-                //TODO: this can be cached per resource, since it is
-                //unlikely to ever change
-                Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(featResId, true);
-
-                Ptr<MgCoordinateSystem> srcCs = (MgCoordinateSystem*)NULL;
-
-                if (dstCs && csrdr->ReadNext())
+                if (scaleRange)
                 {
-                    STRING srcwkt = csrdr->GetCoordinateSystemWkt();
+                    //get feature source id
+                    STRING sfeatResId = gl->GetResourceID();
+                    Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(sfeatResId);
 
-                    srcCs = (srcwkt.empty()) ? NULL : csFactory->Create(srcwkt);
+                    // get the feature extent to use with the query
+                    RS_Bounds extent = dr->GetBounds();
 
-                    if (srcCs.p)
+                    //now get the coordinate system of the layer data
+                    //TODO: this can be cached per resource, since it is
+                    //unlikely to ever change
+                    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(featResId, true);
+
+                    Ptr<MgCoordinateSystem> srcCs = (MgCoordinateSystem*)NULL;
+
+                    if (dstCs && csrdr->ReadNext())
                     {
-                        xformer = new MgCSTrans(srcCs, dstCs);
+                        STRING srcwkt = csrdr->GetCoordinateSystemWkt();
+
+                        srcCs = (srcwkt.empty()) ? NULL : csFactory->Create(srcwkt);
+
+                        if (srcCs.p)
+                        {
+                            xformer = new MgCSTrans(srcCs, dstCs);
+                        }
                     }
-                }
 
-                //grid layer does not yet have hyperlink or tooltip
-                //extract hyperlink and tooltip info
-                //if (!gl->GetToolTip().empty()) legendInfo.hastooltips() = true;
-                //if (!gl->GetUrl().empty()) legendInfo.hashyperlinks() = true;
+                    //grid layer does not yet have hyperlink or tooltip
+                    //extract hyperlink and tooltip info
+                    //if (!gl->GetToolTip().empty()) legendInfo.hastooltips() = true;
+                    //if (!gl->GetUrl().empty()) legendInfo.hashyperlinks() = true;
 
-                //set up the property name mapping -- it tells us what
-                //string the viewer should be displaying as the name of each
-                //feature property
-                // TODO: check to see if name is FeatureClass or Extension name
-                RS_FeatureClassInfo fcinfo(gl->GetFeatureName());
+                    //set up the property name mapping -- it tells us what
+                    //string the viewer should be displaying as the name of each
+                    //feature property
+                    // TODO: check to see if name is FeatureClass or Extension name
+                    RS_FeatureClassInfo fcinfo(gl->GetFeatureName());
 
-                //GridLayer does not yet have property mappings
-                /*
-                MdfModel::NameStringPairCollection* pmappings = gl->GetPropertyMappings();
+                    //GridLayer does not yet have property mappings
+                    /*
+                    MdfModel::NameStringPairCollection* pmappings = gl->GetPropertyMappings();
 
-                for (int j=0; j<pmappings->GetCount(); j++)
-                {
-                    MdfModel::NameStringPair* m = pmappings->GetAt(j);
-                    fcinfo.add_mapping(m->GetName(), m->GetValue());
-                }
-                */
+                    for (int j=0; j<pmappings->GetCount(); j++)
+                    {
+                        MdfModel::NameStringPair* m = pmappings->GetAt(j);
+                        fcinfo.add_mapping(m->GetName(), m->GetValue());
+                    }
+                    */
 
-                //check for overridden feature query filter and remember it.
-                //we will use this when making feature queries
-                STRING overrideFilter = L"";
+                    //check for overridden feature query filter and remember it.
+                    //we will use this when making feature queries
+                    STRING overrideFilter = L"";
 
-                if (overrideFilters)
-                    overrideFilter = overrideFilters->GetItem(i);
+                    if (overrideFilters)
+                        overrideFilter = overrideFilters->GetItem(i);
 
-                int width  = map->GetDisplayWidth();
-                int height = map->GetDisplayHeight();
+                    int width  = map->GetDisplayWidth();
+                    int height = map->GetDisplayHeight();
 
-                if (width == 0 || height == 0)
-                {
-                    //in case we are using DWF Viewer
-                    //compute the size of the viewer screen -- since we don't know it directly
-                    double pixelsPerMapUnit = dr->GetMetersPerUnit() / 0.0254 * dr->GetDpi() / dr->GetMapScale();
-                    width = (int)(extent.width() * pixelsPerMapUnit);
-                    height = (int)(extent.height() * pixelsPerMapUnit);
-                }
+                    if (width == 0 || height == 0)
+                    {
+                        //in case we are using DWF Viewer
+                        //compute the size of the viewer screen -- since we don't know it directly
+                        double pixelsPerMapUnit = dr->GetMetersPerUnit() / 0.0254 * dr->GetDpi() / dr->GetMapScale();
+                        width = (int)(extent.width() * pixelsPerMapUnit);
+                        height = (int)(extent.height() * pixelsPerMapUnit);
+                    }
 
-                Ptr<MgFeatureReader> rdr = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, srcCs, width, height);
-                if (rdr.p)
-                {
-                    //wrap the MgFeatureReader in our RSMgFeatureReader wrapper
-                    //TODO: For raster layers we need to check for the "Image" property name
-                    //and replace that by clipped_raster which is the computed geometry
-                    //property we are using instead of the actual raster property
-                    //Post-preview we should write code to get the feature schema
-                    //and examine that for raster properties.
-                    //const MdfModel::MdfString& flgeom = gl->GetGeometry();
-                    RSMgFeatureReader rsrdr(rdr, L"clipped_raster");
+                    //perform the raster query
+                    Ptr<MgFeatureReader> rdr = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, srcCs, width, height);
+                    if (rdr.p)
+                    {
+                        //wrap the MgFeatureReader in our RSMgFeatureReader wrapper
+                        //TODO: For raster layers we need to check for the "Image" property name
+                        //and replace that by clipped_raster which is the computed geometry
+                        //property we are using instead of the actual raster property
+                        //Post-preview we should write code to get the feature schema
+                        //and examine that for raster properties.
+                        //const MdfModel::MdfString& flgeom = gl->GetGeometry();
+                        RSMgFeatureReader rsrdr(rdr, L"clipped_raster");
 
-                    //stylize into a dwf
-                    dr->StartLayer(&legendInfo, &fcinfo);
-                    ds->StylizeGridLayer(gl, &rsrdr, xformer, NULL, NULL);
-                    dr->EndLayer();
+                        //stylize into a dwf
+                        dr->StartLayer(&legendInfo, &fcinfo);
+                        ds->StylizeGridLayer(gl, &rsrdr, xformer, NULL, NULL);
+                        dr->EndLayer();
+                    }
                 }
             }
             else if (dl) //drawing layer
             {
-                Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(dl->GetResourceID());
+                // make sure we have a valid scale range
+                if (scale >= dl->GetMinScale() && scale < dl->GetMaxScale())
+                {
+                    Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(dl->GetResourceID());
 
-                //get DWF from drawing service
-                Ptr<MgByteReader> reader = svcDrawing->GetSection(resId, dl->GetSheet());
+                    //get DWF from drawing service
+                    Ptr<MgByteReader> reader = svcDrawing->GetSection(resId, dl->GetSheet());
 
-                RSMgInputStream is(reader);
+                    RSMgInputStream is(reader);
 
-                //TODO: set up a simple linear transformer
-                //in case the DWF has no units set inside the W2D
-                //otherwise the Units opcode will be used to transform
-                //to mapping space
+                    //TODO: set up a simple linear transformer
+                    //in case the DWF has no units set inside the W2D
+                    //otherwise the Units opcode will be used to transform
+                    //to mapping space
 
-                ds->StylizeDrawingLayer( dl, &legendInfo, &is, NULL );
+                    ds->StylizeDrawingLayer( dl, &legendInfo, &is, NULL );
+                }
             }
 
         MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.GenerateMapUpdate");
