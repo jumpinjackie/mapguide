@@ -517,10 +517,8 @@ bool MgLayer::IsVisibleAtScale(double scale)
     //check visibility flags
     Ptr<MgLayerGroup> group = GetGroup();
 
-    if(group == NULL)
-        return true;
-    else
-        return group->IsVisible();
+    if(group && !group->IsVisible())
+        return false;
 
     //check scale ranges
     if(m_scaleRanges.size() % 2)
