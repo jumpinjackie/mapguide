@@ -1524,6 +1524,9 @@ void GDRenderer::AddDWFContent(RS_InputStream*   in,
 {
     try
     {
+        if (in->available() == 0)
+            return;
+
         //go to beginning of stream
         in->seek(SEEK_SET, 0);
 
@@ -1959,6 +1962,9 @@ void GDRenderer::FindSymbolReferencePoint(RS_InputStream*   in,
 {
     try
     {
+        if (in->available() == 0)
+            return;
+
         //go to beginning of stream
         in->seek(SEEK_SET, 0);
 

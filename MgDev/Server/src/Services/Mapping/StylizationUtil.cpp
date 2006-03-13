@@ -1089,6 +1089,8 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
         er.StartLayer(NULL, NULL);
 
+        MG_SERVER_MAPPING_SERVICE_TRY()
+
         switch (type)
         {
         case FeatureTypeStyleVisitor::ftsArea:
@@ -1334,6 +1336,10 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
         default:
             break;
         }
+
+        //we don't want to crash out of GetMap just because the legend bitmap failed
+        //for whatever reason
+        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgServerMappingService.DrawFTS")
 
         er.EndLayer();
         er.EndMap();
