@@ -47,7 +47,7 @@ if($type == "DWF")
     else if($hlTgt == 3)
         $frameName = $hlTgtName;
     else
-        $frameName = "";
+        $frameName = "_BLANK";
     $mapRequest = "../mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" . $mapDefinition . "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" . $locale . ($sessionId != ""? "&SESSION=" . $sessionId: "") . "&reload=true";
     $templ = Localize(file_get_contents("../viewerfiles/dwfmappane.templ"), $locale, GetClientOS());
     printf ($templ,
