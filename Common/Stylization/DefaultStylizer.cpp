@@ -67,7 +67,6 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
                                                 void*                 userData
                                                 )
 {
-
     //gets rid of const in pointer -- some functions we call aren't const
     MdfModel::VectorLayerDefinition* fl = (MdfModel::VectorLayerDefinition*)layer;
 
