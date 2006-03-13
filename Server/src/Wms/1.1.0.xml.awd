@@ -101,127 +101,159 @@
   <item>application/vnd.ogc.se_xml</item>
  </Define>
 
-</Definitions>
+ <!-- These are the supported (Get)Capabilities formats 
+  for version 1.1.1.     -->
+ <Define item="Formats.GetCapabilities">
+  <item>text/xml</item>
+  <item>text/html</item>
+  <item>application/vnd.ogc.wms_xml</item>
+ </Define>
 
-<!--
-
-  WMS GetCapabilities  - XML
-
--->
-<Response request="GetCapabilities" content-type="text/xml">
-<!DOCTYPE WMT_MS_Capabilities SYSTEM
+ <Define item="GetCapabilities.xml">
+  <!DOCTYPE WMT_MS_Capabilities SYSTEM
  "http://www.digitalearth.gov/wmt/xml/capabilities_1_1_0.dtd"
   [
-  <!ELEMENT VendorSpecificCapabilities EMPTY>
+   <!ELEMENT VendorSpecificCapabilities EMPTY>
   ]>
 
-<WMT_MS_Capabilities version="&TemplateVersion;">
- <!--
+  <WMT_MS_Capabilities version="&TemplateVersion;">
+   <!--
 
- SERVICE METADATA
+  SERVICE METADATA
 
  -->
- <Service>
-  <Name>&Service.Name;</Name>
-  <Title>&Service.Title;</Title>
-  <?Ifdef item="Service.Abstract"?><Abstract>&Service.Abstract;</Abstract><?Endif?>
-  <?Ifdef item="Service.Keywords"?>
+   <Service>
+    <Name>&Service.Name;</Name>
+    <Title>&Service.Title;</Title>
+    <?Ifdef item="Service.Abstract"?>
+    <Abstract>&Service.Abstract;</Abstract>
+    <?Endif?>
+    <?Ifdef item="Service.Keywords"?>
     <KeywordList>
-    <?Enum list="&Service.Keywords;" using="&Service.Keywords.xml"?>
+     <?Enum list="&Service.Keywords;" using="&Service.Keywords.xml"?>
     </KeywordList>
-  <?Endif?>
-  <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.OnlineResource;"></OnlineResource>
+    <?Endif?>
+    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.OnlineResource;"></OnlineResource>
 
-  <ContactInformation>
-   <ContactPersonPrimary>
-     <ContactPerson>&Service.Contact.Name;</ContactPerson>
-     <ContactOrganization>&Service.Contact.Organization</ContactOrganization>
-   </ContactPersonPrimary>
-   <?Ifdef item="Service.Contact.Position"?><ContactPosition>&Service.Contact.Position;</ContactPosition><?Endif?>
-   <?Ifdef item="Service.Contact.Address.Type"?><ContactAddress>
-     <AddressType>&Service.Contact.Address.Type;</AddressType>
-     <Address>&Service.Contact.Address.Street;</Address>
-     <City>&Service.Contact.Address.City;</City>
-     <StateOrProvince>&Service.Contact.Address.StateProv;</StateOrProvince>
-     <PostCode>&Service.Contact.Address.PostCode;</PostCode>
-     <Country>&Service.Contact.Address.Country;</Country>
-    </ContactAddress><?Endif?>
-   <?Ifdef item="Service.Contact.Phone"?><ContactVoiceTelephone>&Service.Contact.Phone;</ContactVoiceTelephone><?Endif?>
-   <?Ifdef item="Service.Contact.Fax"?><ContactFacsimileTelephone>&Service.Contact.Fax;</ContactFacsimileTelephone><?Endif?>
-   <?Ifdef item="Service.Contact.Email"?><ContactElectronicMailAddress>&Service.Contact.Email;</ContactElectronicMailAddress><?Endif?>
-  </ContactInformation>
+    <ContactInformation>
+     <ContactPersonPrimary>
+      <ContactPerson>&Service.Contact.Name;</ContactPerson>
+      <ContactOrganization>&Service.Contact.Organization</ContactOrganization>
+     </ContactPersonPrimary>
+     <?Ifdef item="Service.Contact.Position"?>
+     <ContactPosition>&Service.Contact.Position;</ContactPosition>
+     <?Endif?>
+     <?Ifdef item="Service.Contact.Address.Type"?>
+     <ContactAddress>
+      <AddressType>&Service.Contact.Address.Type;</AddressType>
+      <Address>&Service.Contact.Address.Street;</Address>
+      <City>&Service.Contact.Address.City;</City>
+      <StateOrProvince>&Service.Contact.Address.StateProv;</StateOrProvince>
+      <PostCode>&Service.Contact.Address.PostCode;</PostCode>
+      <Country>&Service.Contact.Address.Country;</Country>
+     </ContactAddress>
+     <?Endif?>
+     <?Ifdef item="Service.Contact.Phone"?>
+     <ContactVoiceTelephone>&Service.Contact.Phone;</ContactVoiceTelephone>
+     <?Endif?>
+     <?Ifdef item="Service.Contact.Fax"?>
+     <ContactFacsimileTelephone>&Service.Contact.Fax;</ContactFacsimileTelephone>
+     <?Endif?>
+     <?Ifdef item="Service.Contact.Email"?>
+     <ContactElectronicMailAddress>&Service.Contact.Email;</ContactElectronicMailAddress>
+     <?Endif?>
+    </ContactInformation>
 
-  <Fees>&Service.Fees;</Fees>
-  <AccessConstraints>&Service.AccessConstraints;</AccessConstraints>
- </Service>
+    <Fees>&Service.Fees;</Fees>
+    <AccessConstraints>&Service.AccessConstraints;</AccessConstraints>
+   </Service>
 
-<!--
+   <!--
 
   SERVICE CAPABILITIES
 
  -->
- <Capability>
-  <Request>
+   <Capability>
+    <Request>
 
-   <GetCapabilities>
-     <?Enum list="&Formats.GetCapabilities;" using="&Format.xml;"?>
-     <DCPType>
-      <HTTP>
-       <Get>
+     <GetCapabilities>
+      <?Enum list="&Formats.GetCapabilities;" using="&Format.xml;"?>
+      <DCPType>
+       <HTTP>
+        <Get>
         <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetCapabilities;?"/>
-       </Get>
-      </HTTP>
-     </DCPType>
-   </GetCapabilities>
+        </Get>
+       </HTTP>
+      </DCPType>
+     </GetCapabilities>
 
-   <GetMap>
-    <?Enum list="&Formats.GetMap;" using="&Format.xml;" ?>
-    <DCPType>
-     <HTTP>
-      <Get>
+     <GetMap>
+      <?Enum list="&Formats.GetMap;" using="&Format.xml;" ?>
+      <DCPType>
+       <HTTP>
+        <Get>
         <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetMap;?"/>
-      </Get>
-     </HTTP>
-    </DCPType>
-   </GetMap>
+        </Get>
+       </HTTP>
+      </DCPType>
+     </GetMap>
 
-   <GetFeatureInfo>
-    <?Enum list="&Formats.GetFeatureInfo;" using="&Format.xml;" ?>
-    <DCPType>
-     <HTTP>
-      <Get>
+     <GetFeatureInfo>
+      <?Enum list="&Formats.GetFeatureInfo;" using="&Format.xml;" ?>
+      <DCPType>
+       <HTTP>
+        <Get>
         <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="&Url.GetFeatureInfo;?"/>
-      </Get>
-     </HTTP>
-    </DCPType>
-   </GetFeatureInfo>
+        </Get>
+       </HTTP>
+      </DCPType>
+     </GetFeatureInfo>
 
-  </Request>
+    </Request>
 
-  <Exception>
-   <?Enum list="&Formats.Exception;" using="&Format.xml;" ?>
-  </Exception>
+    <Exception>
+     <?Enum list="&Formats.Exception;" using="&Format.xml;" ?>
+    </Exception>
 
-  <!-- No VendorSpecificCapabilities -->
-  <!-- No UserDefinedSymbolization -->
+    <!-- No VendorSpecificCapabilities -->
+    <!-- No UserDefinedSymbolization -->
 
-<!--
+    <!--
 
   PUBLISHED LAYERS
 
  -->
-  <Layer>
-    <Title>&Service.Title;</Title>
-    <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90"/>
-    <BoundingBox SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
-    <?EnumLayers using="&Layer.xml;" ?>
-  </Layer>
+    <Layer>
+     <Title>&Service.Title;</Title>
+     <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90"/>
+     <BoundingBox SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+     <?EnumLayers using="&Layer.xml;" ?>
+    </Layer>
 
- </Capability>
-</WMT_MS_Capabilities>
+   </Capability>
+  </WMT_MS_Capabilities>
+ </Define>
+
+</Definitions>
+
+<!--
+
+  WMS GetCapabilities  - XML as text/xml
+
+-->
+ <Response request="GetCapabilities" content-type="text/xml">
+  &GetCapabilities.xml;
+ </Response>
+
+<!--
+
+  WMS GetCapabilities  - XML as application/vnd.ogc.wms_xml
+
+-->
+<Response request="GetCapabilities" content-type="application/vnd.ogc.wms_xml">
+ &GetCapabilities.xml;
 </Response>
-
-
+ 
 <!--
 
   WMS GetCapabilities  - HTML

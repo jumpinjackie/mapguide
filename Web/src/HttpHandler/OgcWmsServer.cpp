@@ -22,6 +22,7 @@
 CPSZ kpszQueryValueWms              = _("WMS");
 CPSZ kpszQueryStringInfoFormat      = _("info_format");
 CPSZ kpszQueryStringLayers          = _("layers");
+CPSZ kpszQueryStringStyles          = _("styles");
 CPSZ kpszQueryStringQueryLayers     = _("query_layers");
 CPSZ kpszQueryStringICoord          = _("i");
 CPSZ kpszQueryStringJCoord          = _("j");
@@ -37,6 +38,9 @@ CPSZ kpszFilenameTemplatePrefixWms  = _("Wms:");
 CPSZ kpszImageFormatPNG             = _("image/png");
 CPSZ kpszImageFormatGIF             = _("image/gif");
 CPSZ kpszImageFormatJPEG            = _("image/jpeg");
+
+// GetCapabilities XML format
+CPSZ kpszMimeTypeApplicationWmsXml                = _("application/vnd.ogc.wms_xml");
 
 // Plain ol' "GetCapabilities" is general to all Ogc Services, so it lives in the OgcServer source.
 CPSZ kpszQueryValueCapabilities     = _("Capabilities"); // keyword for pre 1.0.8 versions
@@ -54,6 +58,7 @@ CPSZ kpszInternalErrorMissingGetCapyResponse = _("Unable to generate a GetCapabi
 CPSZ kpszExceptionMessageGetFeatureInfoUnsupported = _("REQUEST=GetFeatureInfo operation is not supported on this server."); // Localize
 CPSZ kpszExceptionMessageQueryLayerNotDefined = _("One or more layers specified in the QUERY_LAYERS argument are not defined in the map."); // Localize
 CPSZ kpszExceptionMessageMapLayersMissing = _("The map request must contain at least one valid layer."); // Localize
+CPSZ kpszExceptionMessageStyleNotDefined = _("An unsupported layer style was requested. Only default layer styles are supported."); // Localize
 CPSZ kpszExceptionMessageMissingQueryPoint = _("The request must contain I and J arguments specifying the query point."); // Localize
 CPSZ kpszExceptionMessageInvalidQueryPoint = _("The point specified by the I and J arguments must fall within the map extent."); // Localize
 CPSZ kpszExceptionMessageMissingMapDimension = _("The request must contain WIDTH and HEIGHT arguments to specify the map size."); // Localize
@@ -216,27 +221,34 @@ void MgOgcWmsServer::GetCapabilitiesResponse()
 {
     if(ValidateGetCapabilitiesParameters())
     {
-        // Looks for a specific FORMAT= parameter, and if missing,
-        // uses the default of text/xml.
-        //
-        // 04-024 ISO DIS 19128:
-        // 7.2.3.1 FORMAT
-        //     The optional FORMAT parameter states the desired format of the service metadata. ...
-        //     Every server shall support the default text/xml format defined in Annex A. Support for
-        //     other formats is optional. ... If the request specifies a format not supported by the
-        //     server, the server shall respond with the default text/xml format.
+        // Looks for a specific FORMAT parameter
         CPSZ pszFormat = RequestParameter(kpszQueryStringFormat);
-        if(pszFormat == NULL)
-          pszFormat = kpszMimeTypeXml;
+        if(pszFormat != NULL)
+        {
+            // Make a request for the user-specified format
+            if(GenerateResponse(kpszQueryValueGetCapabilities,pszFormat))
+                return;
+        }
+        
+        // If we get to here, either the user did not specify a format,
+        // or we were unable to honor the requested format. So we try the
+        // default format instead.
 
-        // The WMS spec says if we can't honor the requested format...
-        if(GenerateResponse(kpszQueryValueGetCapabilities,pszFormat))
-            return;
+        // Default mime type for version 1.1.0 and higher
+        CPSZ pszDefaultFormat = kpszMimeTypeApplicationWmsXml;
+        CPSZ pszVersion = NegotiatedVersion();
+        if(pszVersion != NULL && SZ_EQI(pszVersion, _("1.0.0")))
+        {
+            // Default mime type for 1.0.0 requests
+            pszDefaultFormat = kpszMimeTypeXml;
+        }
 
-        // ... we must respond with xml (if we didn't just try that already)
-        if(SZ_NE(pszFormat,kpszMimeTypeXml) &&
-            GenerateResponse(kpszQueryValueGetCapabilities,kpszMimeTypeXml))
-            return;
+        // Make a request for the default format
+        if(pszFormat == NULL || SZ_NE(pszFormat, pszDefaultFormat))
+        {
+            if(GenerateResponse(kpszQueryValueGetCapabilities,pszDefaultFormat))
+                return;
+        }
 
         // Hmmm... this is bad.  We need to die gracefully.
         InternalError(kpszInternalErrorMissingGetCapyResponse);
@@ -337,6 +349,31 @@ bool MgOgcWmsServer::ValidateMapParameters()
             ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszLayerNotDefined,
                                                              kpszExceptionMessageMapLayersMissing));
             bValid = false;
+        }
+    }
+
+    if(bValid)
+    {
+        // Since we only support default styles, check that no specific
+        // style was requested.
+        CPSZ styleList = RequestParameter(kpszQueryStringStyles);
+        if(styleList != NULL && szlen(styleList) > 0)
+        {
+            Ptr<MgStringCollection> styles = MgStringCollection::ParseCollection(styleList, _(","));
+            if(styles != NULL && styles->GetCount() > 0)
+            {
+                for(int i = 0; i < styles->GetCount(); i++)
+                {
+                    STRING styleName = styles->GetItem(i);
+                    if(styleName.length() > 0)
+                    {
+                        ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszStyleNotDefined,
+                                                                         kpszExceptionMessageStyleNotDefined));
+                        bValid = false;
+                        break;
+                    }
+                }
+            }
         }
     }
 
