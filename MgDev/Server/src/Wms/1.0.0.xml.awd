@@ -93,11 +93,6 @@
   <item>text/xml</item>
  </Define>
 
- <Define item="Formats.Exception">
-   <item>text/xml</item>
-   <item></item>
- </Define>
-
  <!-- Version 1.0.0 used XML elements instead of text for formats, so our
       canonical notation, a mime-type string, needs to be translated into
       an XML element.  This definition provides a translation table
