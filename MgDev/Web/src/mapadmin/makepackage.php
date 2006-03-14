@@ -33,6 +33,9 @@ try
         $serverAdmin->Open( $siteServerAddress, $userInfo );
 		
 		// Make sure folder name begins with "Library://" and ends with "/"
+		if ( ( strcasecmp( "Library", $folderName ) == 0 ) || ( strcasecmp( "Library:", $folderName ) == 0 ) )
+			$completeFolderName = "Library://";
+		else
 		if ( strncasecmp( "Library://", $folderName, 10 ) == 0 )
 			$completeFolderName = $folderName;
 		else

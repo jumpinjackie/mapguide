@@ -341,14 +341,19 @@ function TrimDashes( theString )
 
 function SuggestPackageName( suggestedNameFormat, folderName, packageNameElement )
 {
-	// Remove spaces and sla
-	var folderNameStr = folderName.replace( /Library:\/\//, '' );
+	if ( folderName.length == 0 )
+		return;
+		
+	// Remove spaces and slashes
+	var folderNameStr = folderName.replace( /Library/, '' );
+	folderNameStr = folderNameStr.replace( /\:/, '' );
+	folderNameStr = folderNameStr.replace( /\/\//, '' );
 	folderNameStr = folderNameStr.replace( /\//g, '-' );
 	folderNameStr = TrimDashes( folderNameStr );
 	
 	if ( folderNameStr.length <= 0 )
-		packageName = "";
-	else
-		packageName = suggestedNameFormat.replace( /<FOLDER_NAME>/, folderNameStr );
+		folderNameStr = "Library";
+	packageName = suggestedNameFormat.replace( /<FOLDER_NAME>/, folderNameStr );
+	
 	SetElementValue( packageNameElement, packageName );
 }
