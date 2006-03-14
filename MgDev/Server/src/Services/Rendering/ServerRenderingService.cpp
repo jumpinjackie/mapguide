@@ -472,9 +472,11 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
 
     Ptr<MgLayerCollection> layers = map->GetLayers();
 
+    bool first = true; //topmost feature sets the hyperlink and tooltip
+
     //iterate over all map layers, but only do selection
     //if the layer is in the passed in collection
-    for (int p=layers->GetCount()-1; p>=0; p--)
+    for (int p=0; p<layers->GetCount(); p++)
     {
         //find the layer we need to select features from
         Ptr<MgLayer> layer = layers->GetItem(p);
@@ -487,6 +489,10 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
 
         if (!layer->GetSelectable() || !layer->IsVisibleAtScale(map->GetViewScale()))
             continue;
+
+        //have we processed enough features already?
+        if (maxFeatures <= 0)
+            break;
 
         //get the coordinate system of the layer --> we need this
         //so that we can convert the input geometry from mapping space
@@ -592,12 +598,13 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
 
                 //fill out the output object with the info we collected
                 //in the FeatureInfoRenderer for the first feature we hit
-                if (fir.GetNumFeaturesProcessed() > 0)
+                if (fir.GetNumFeaturesProcessed() > 0 && first)
                 {
                     Ptr<MgPropertyCollection> props = fir.GetProperties();
                     ret->SetProperties(props);
                     ret->SetHyperlink(fir.GetUrl());
                     ret->SetTooltip(fir.GetTooltip());
+                    first = false;
                 }
 
                 //update maxFeatures to number of features that
