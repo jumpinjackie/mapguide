@@ -37,6 +37,7 @@ public:
     void  Double2Float(double x, double y, OpsFloatPoint& floatPoint) const;
     float Double2Float(double distance);
     MgCoordinate* Float2Double(const OpsFloatPoint& floatPoint) const;
+    double Float2Double(float distance);
 
 private:
 
