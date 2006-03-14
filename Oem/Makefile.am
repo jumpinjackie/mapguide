@@ -11,9 +11,9 @@ dist-hook:
 install-exec-am:
 	@cp -fp ACE/ACE_wrappers/ace/*.so ${prefix}/lib
 	@cp -fp fcgi/fcgi-2.4.0/libfcgi/.libs/libfcgi.so ${prefix}/lib
-	@cp -fp dbxml-2.2.13/install/lib/libpathan.so* ${prefix}/lib
-	@cp -fp dbxml-2.2.13/install/lib/libxerces-c.so* ${prefix}/lib
-	@cp -fp dbxml-2.2.13/install/lib/libxquery*.so ${prefix}/lib
-	@cp -fp dbxml-2.2.13/install/lib/libdb_cxx*.so ${prefix}/lib
-	@cp -fp dbxml-2.2.13/install/lib/libdbxml*.so ${prefix}/lib
+	@cp -fpd dbxml-2.2.13/install/lib/libpathan.so* ${prefix}/lib
+	@cp -fpd dbxml-2.2.13/install/lib/libxerces-c.so* ${prefix}/lib
+	@cp -fpd dbxml-2.2.13/install/lib/libxquery*.so ${prefix}/lib
+	@cp -fpd dbxml-2.2.13/install/lib/libdb_cxx*.so ${prefix}/lib
+	@cp -fpd dbxml-2.2.13/install/lib/libdbxml*.so ${prefix}/lib
 
