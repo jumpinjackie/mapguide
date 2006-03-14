@@ -734,20 +734,11 @@ void GDRenderer::DrawSLDSymbol(RS_Bounds& dst, RS_MarkerDef& mdef)
 
     //fill color
     RS_Color fill = mdef.style().color();
-
-    if (fill.argb() == RS_Color::EMPTY_COLOR_ARGB)
-        fill = RS_Color(0, 0, 255, 255);
-
     int gdcfill = ConvertColor((gdImagePtr)m_imout, fill);
 
     //outline color
     RS_Color outline = mdef.style().outline().color();
-
-    if (outline.argb() == RS_Color::EMPTY_COLOR_ARGB)
-        outline = RS_Color(127, 127, 127, 255);
-
     int gdcline = ConvertColor((gdImagePtr)m_imout, outline);
-
 
     RS_F_Point* poly = NULL;
     int npts = 0;
@@ -819,6 +810,8 @@ void GDRenderer::DrawSLDSymbol(RS_Bounds& dst, RS_MarkerDef& mdef)
         gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
 
         //draw fill
+        // TODO: When a filled polygon image is down-sampled, a gray false edge is created.
+        // This edge can only be seen when the real edge is not being drawn.
         gdImageSetThickness((gdImagePtr)m_imsym, 0);
         gdImageFilledPolygon((gdImagePtr)m_imsym, (gdPointPtr)pts, npts, gdcfill);
         //draw outline with a thickness set so that when scaled down to
