@@ -131,14 +131,29 @@ void FloatTransform::Double2Float(double x, double y, OpsFloatPoint& floatPoint)
 //-------------------------------------------------------------------------
 float FloatTransform::Double2Float(double distance)
 {
-    OpsFloatPoint floatPoint1;
-    Double2Float(0.0, 0.0, floatPoint1);
-
-    OpsFloatPoint floatPoint2;
-    Double2Float(distance, 0.0, floatPoint2);
-
-    return float(::fabs(floatPoint2.x - floatPoint1.x));
+    return float(distance * xScale);
 }
+
+//-------------------------------------------------------------------------
+//
+// METHOD: Float2Double().
+//
+// PURPOSE: Transform a value from space to double space.
+//
+// PARAMETERS:
+//
+//     Input:
+//
+//         value - the float value to transform.
+//
+// RETURNS: the value in double space.
+//
+//-------------------------------------------------------------------------
+double FloatTransform::Float2Double(float distance)
+{
+    return (double)distance / xScale;
+}
+
 
 //-------------------------------------------------------------------------
 //

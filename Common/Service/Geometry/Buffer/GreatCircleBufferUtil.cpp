@@ -587,7 +587,10 @@ void GreatCircleBufferUtil::GetOffsetPoint(double dAzimuth,
     Ptr<MgCoordinate> coordMCS = m_transform->Float2Double(fP0);
 
     Ptr<MgCoordinateSystem> coordSys = m_measure->GetCoordSys();
-    Ptr<MgCoordinate> returnCoord = m_measure->GetCoordinate(coordMCS, dAzimuth, (dOffsetDistance/coordSys->GetUnitScale()));
+
+    double offset = m_transform->Float2Double(dOffsetDistance);
+
+    Ptr<MgCoordinate> returnCoord = m_measure->GetCoordinate(coordMCS, dAzimuth, offset);
 
     m_transform->Double2Float(returnCoord->GetX(), returnCoord->GetY(), fP);
 } // end: GetOffsetPoint()
