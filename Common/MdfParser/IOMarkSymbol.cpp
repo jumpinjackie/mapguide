@@ -34,8 +34,8 @@ void IOMarkSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     {
         this->m_startElemName = name;
         MarkSymbol* markSymbol = new MarkSymbol(MarkSymbol::Square);
-        markSymbol->OrphanFill();
-        markSymbol->OrphanEdge();
+        delete markSymbol->OrphanFill();
+        delete markSymbol->OrphanEdge();
         this->m_symbol = markSymbol;
     }
     else if (this->m_currElemName == L"Fill") // NOXLATE
