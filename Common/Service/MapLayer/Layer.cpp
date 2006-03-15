@@ -19,6 +19,7 @@
 #include "Util/XmlDefs.h"
 #include "Util/XmlUtil.h"
 #include "VectorScaleRange.h"
+#include "GridScaleRange.h"
 
 IMPLEMENT_CREATE_OBJECT(MgLayer)
 
@@ -551,6 +552,9 @@ void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
     //get the layer definition from the resource repository
     Ptr<MgByteReader> layerContent = resourceService->GetResourceContent(m_definition);
 
+    //TODO: This code should be converted to use the MDF parser instead!!!
+    //It would simpler and faster and would not get out of date as easily.  
+
     //parse the layer definition and extract all the scale ranges
     MgXmlUtil xmlUtil;
     xmlUtil.ParseString(MgUtil::GetTextFromReader(layerContent).c_str());
@@ -628,8 +632,8 @@ void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
             }
             else if(strName == L"DrawingLayerDefinition")    //NOXLATE
             {
-                bool hasMin = false, hasMax = false;
-                double minScale, maxScale;
+                double minScale = 0.0;
+                double maxScale = MdfModel::VectorScaleRange::MAX_MAP_SCALE;
                 DOMNode* ichild = MgXmlUtil::GetFirstChild(elt);
                 while(0 != ichild)
                 {
@@ -640,25 +644,80 @@ void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
 
                         if(strName == L"MinScale")  //NOXLATE
                         {
-                            hasMin = true;
                             MgXmlUtil::GetTextFromElement(ielt, strval);
                             minScale = MgUtil::StringToDouble(strval);
                         }
                         else if(strName == L"MaxScale")  //NOXLATE
                         {
-                            hasMax = true;
                             MgXmlUtil::GetTextFromElement(ielt, strval);
                             maxScale = MgUtil::StringToDouble(strval);
                         }
-
-                        if(hasMin && hasMax)
-                        {
-                            m_scaleRanges.push_back(minScale);
-                            m_scaleRanges.push_back(maxScale);
-                            break;
-                        }
                     }
                     ichild = MgXmlUtil::GetNextSibling(ichild);
+                }
+
+                m_scaleRanges.push_back(minScale);
+                m_scaleRanges.push_back(maxScale);
+
+                break;
+            }
+            else if(strName == L"GridLayerDefinition")    //NOXLATE
+            {
+                DOMNode* child = MgXmlUtil::GetFirstChild(elt);
+                while(0 != child)
+                {
+                    if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+                    {
+                        elt = (DOMElement*)child;
+                        strName = MgXmlUtil::GetTagName(elt);
+
+                        if(strName == L"GridScaleRange")  //NOXLATE
+                        {
+                            double minScale = 0.0;
+                            double maxScale = MdfModel::GridScaleRange::MAX_MAP_SCALE;
+
+                            DOMNode* ichild = MgXmlUtil::GetFirstChild(elt);
+                            while(0 != ichild)
+                            {
+                                if(MgXmlUtil::GetNodeType(ichild) == DOMNode::ELEMENT_NODE)
+                                {
+                                    DOMElement* ielt = (DOMElement*)ichild;
+                                    strName = MgXmlUtil::GetTagName(ielt);
+
+                                    if(strName == L"MinScale")  //NOXLATE
+                                    {
+                                        MgXmlUtil::GetTextFromElement(ielt, strval);
+                                        minScale = MgUtil::StringToDouble(strval);
+                                    }
+                                    else if(strName == L"MaxScale")  //NOXLATE
+                                    {
+                                        MgXmlUtil::GetTextFromElement(ielt, strval);
+                                        maxScale = MgUtil::StringToDouble(strval);
+                                    }
+                                }
+                                ichild = MgXmlUtil::GetNextSibling(ichild);
+                            }
+
+                            m_scaleRanges.push_back(minScale);
+                            m_scaleRanges.push_back(maxScale);
+                        }
+                        else if(strName == L"ResourceId")  //NOXLATE
+                        {
+                            MgXmlUtil::GetTextFromElement(elt, m_featureSourceId);
+                            m_featureSourceId = MgUtil::Trim(m_featureSourceId);
+                        }
+                        else if(strName == L"FeatureName")  //NOXLATE
+                        {
+                            MgXmlUtil::GetTextFromElement(elt, m_featureName);
+                            m_featureName = MgUtil::Trim(m_featureName);
+                        }
+                        else if(strName == L"Geometry")  //NOXLATE
+                        {
+                            MgXmlUtil::GetTextFromElement(elt, m_geometry);
+                            m_geometry = MgUtil::Trim(m_geometry);
+                        }
+                    }
+                    child = MgXmlUtil::GetNextSibling(child);
                 }
                 break;
             }
