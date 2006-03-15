@@ -100,7 +100,7 @@ public:
     ///\throw   None
     ///
     _DWFTK_API
-    virtual unsigned short int major()
+    virtual unsigned short major()
         throw() = 0;
 
     ///
@@ -110,7 +110,7 @@ public:
     ///\throw   None
     ///
     _DWFTK_API
-    virtual unsigned short int minor()
+    virtual unsigned short minor()
         throw() = 0;
 
     ///
