@@ -27,6 +27,13 @@
 
 #ifndef DWFTK_READ_ONLY
 
+#ifdef minor
+#undef minor
+#endif
+
+#ifdef major
+#undef major
+#endif
 
 #include "dwfcore/String.h"
 #include "dwfcore/Exception.h"
@@ -93,7 +100,7 @@ public:
     ///\throw   None
     ///
     _DWFTK_API
-    virtual unsigned short major()
+    virtual unsigned short int major()
         throw() = 0;
 
     ///
@@ -103,7 +110,7 @@ public:
     ///\throw   None
     ///
     _DWFTK_API
-    virtual unsigned short minor()
+    virtual unsigned short int minor()
         throw() = 0;
 
     ///
