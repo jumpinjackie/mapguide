@@ -21,21 +21,27 @@
 #include "XmlParser.h"
 #include "Dictionary.h"
 
-class MgWmsLayerDefinitions: public IOgcResourceEnumerator
+class MgWmsLayerDefinitions: public IOgcResourceEnumerator, public MgDisposable
 {
 public:
-    MgWmsLayerDefinitions(MgXmlParser& Input);
+    MgWmsLayerDefinitions(CPSZ xmlInput);
+    // Default constructor to keep Ptr<> happy
+    MgWmsLayerDefinitions(){};
+    virtual ~MgWmsLayerDefinitions();
 
     bool Next();
 
     void GenerateDefinitions(MgUtilDictionary& Dictionary);
+
+protected:
+    virtual void Dispose(){delete this;}
 
 private:
     bool   SkipElement(CPSZ pszElementName);
     bool   GetElementContents(CPSZ pszElementName,STRING& sValue);
     bool   GetMetadataDefinitions(MgUtilDictionary& Dictionary);
 
-    MgXmlParser& m_XmlInput;
+    MgXmlParser* m_xmlParser;
     bool m_bOk;
 };
 

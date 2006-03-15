@@ -18,7 +18,7 @@
 #ifndef _FS_WMS_GET_MAP_H
 #define _FS_WMS_GET_MAP_H
 
-class MgHttpWmsGetMap : public MgHttpRequestResponseHandler
+class MgHttpWmsGetMap : public MgHttpRequestResponseHandler, public IMgOgcDataAccessor
 {
 HTTP_DECLARE_CREATE_OBJECT()
 
@@ -50,6 +50,9 @@ public:
     /// Classification of handler
     /// </returns>
     MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcWms; }
+
+    // IMgOgcDataAccessor method
+    virtual void AcquireValidationData(MgOgcServer* ogcServer);
 
 private:
 

@@ -118,8 +118,7 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
     // Create the WMS handler
     MgHttpResponseStream responseStream;
     MgOgcWmsServer wms(requestParams, responseStream);
-
-    if(wms.ValidateRequest())
+    if(wms.ProcessRequest(this))
     {
         // Get an instance of the resource service
         Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
@@ -167,5 +166,21 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
     }
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpWmsGetMap.Execute")
+}
+
+void MgHttpWmsGetMap::AcquireValidationData(MgOgcServer* ogcServer)
+{
+    MgOgcWmsServer* wmsServer = (MgOgcWmsServer*)ogcServer;
+    if(wmsServer != NULL)
+    {
+        // Create an instance of the Resource Service
+        Ptr<MgResourceService> resourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
+
+        // Retrieve layer defs from the server
+        Ptr<MgWmsLayerDefinitions> layerDefs = MgHttpWmsGetCapabilities::GetLayerDefinitions(*resourceService);
+
+        // The WMS Server takes ownership of the layer definitions
+        wmsServer->SetLayerDefs(layerDefs);
+    }
 }
 

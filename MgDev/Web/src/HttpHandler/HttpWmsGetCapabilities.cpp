@@ -76,41 +76,12 @@ void MgHttpWmsGetCapabilities::Execute(MgHttpResponse& hResponse)
     Ptr<MgHttpResult> hResult = hResponse.GetResult();
 
     MG_HTTP_HANDLER_TRY()
-
-    // We need a list of the layers.
-    // This comes to us from the ResourceService in the form
-    // of an XML description.  We parse on the fly, in the
-    // MgWmsLayerDefinitions object.
-    STRING sLayers;
-    {
-        // Create ProxyResourceService instance
-        Ptr<MgResourceService> mgprService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
-
-          // Create MgResourceIdentifier
-        MgResourceIdentifier mgrIdentifier(_("Library://"));
-
-          // Run API command
-        STRING sType = _("LayerDefinition");
-        INT32 keProperties = MgResourceHeaderProperties::Metadata;
-        STRING sDontCare(_(""));
-        Ptr<MgByteReader> Result =
-              mgprService->EnumerateResources(&mgrIdentifier, // "Library://"
-                                              -1,             // Infinite depth
-                                              sType,          // "LayerDefinition"
-                                              keProperties,   // want metadata, not security
-                                              sDontCare,      // start date; don't care
-                                              sDontCare);     // end date; don't care
-
-        sLayers = Result->ToString();
-    }
-    MgXmlParser LayerDefs(sLayers.c_str());
-    MgWmsLayerDefinitions Layers(LayerDefs);
-
+    
     // We have to wrap the request parameters, since the outside
     // world is case-sensitive (with respect to names,) but
     // we need our parameters NOT to be so.
-    MgHttpRequestParameters Parms(m_hRequest->GetRequestParam());
-    MgHttpResponseStream Out;
+    MgHttpRequestParameters requestParams(m_hRequest->GetRequestParam());
+    MgHttpResponseStream responseStream;
 
     // Declare the method we'd like the system to use for resolving
     // loader documents.
@@ -118,16 +89,56 @@ void MgHttpWmsGetCapabilities::Execute(MgHttpResponse& hResponse)
     MgOgcServer::SetLoader(GetDocument);
 
     // Instance a server-lette
-    MgOgcWmsServer Wms(Parms,Out,&Layers);
+    MgOgcWmsServer wms(requestParams, responseStream);
 
     // Execute the request
-    Wms.RespondToRequest();
+    wms.ProcessRequest(this);
 
     // Slurp the results.
-    Ptr<MgByteReader> capabilities = Out.Stream().GetReader();
+    Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();
 
     // Set the result
     hResult->SetResultObject(capabilities, capabilities->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpWmsGetCapabilities.Execute")
+}
+
+void MgHttpWmsGetCapabilities::AcquireResponseData(MgOgcServer* ogcServer)
+{
+    MgOgcWmsServer* wmsServer = (MgOgcWmsServer*)ogcServer;
+    if(wmsServer != NULL)
+    {
+        // Create an instance of the Resource Service
+        Ptr<MgResourceService> resourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
+
+        // Retrieve the layer definitions
+        Ptr<MgWmsLayerDefinitions> layerDefs = MgHttpWmsGetCapabilities::GetLayerDefinitions(*resourceService);
+
+        // WMS Server takes ownership of layer defs
+        wmsServer->SetLayerDefs(layerDefs);
+    }
+}
+
+// Static method to retrieve layer definitions
+MgWmsLayerDefinitions* MgHttpWmsGetCapabilities::GetLayerDefinitions(MgResourceService& resourceService)
+{
+    MgWmsLayerDefinitions* layerDefs = NULL;
+        
+    // Create MgResourceIdentifier
+    MgResourceIdentifier mgrIdentifier(_("Library://"));
+
+      // Run API command
+    STRING sType = _("LayerDefinition");
+    INT32 keProperties = MgResourceHeaderProperties::Metadata;
+    STRING sDontCare(_(""));
+    Ptr<MgByteReader> Result =
+          resourceService.EnumerateResources(&mgrIdentifier, // "Library://"
+                                          -1,             // Infinite depth
+                                          sType,          // "LayerDefinition"
+                                          keProperties,   // want metadata, not security
+                                          sDontCare,      // start date; don't care
+                                          sDontCare);     // end date; don't care
+
+    STRING sLayers = Result->ToString();
+    return new MgWmsLayerDefinitions(sLayers.c_str());
 }

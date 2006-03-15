@@ -18,7 +18,7 @@
 #ifndef _FS_WMS_GET_FEATURE_INFO_H
 #define _FS_WMS_GET_FEATURE_INFO_H
 
-class MgHttpWmsGetFeatureInfo : public MgHttpRequestResponseHandler
+class MgHttpWmsGetFeatureInfo : public MgHttpRequestResponseHandler, public IMgOgcDataAccessor
 {
 HTTP_DECLARE_CREATE_OBJECT()
 
@@ -50,6 +50,10 @@ public:
     /// Classification of handler
     /// </returns>
     MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcWms; }
+
+    // IMgOgcDataAccessor methods
+    virtual void AcquireValidationData(MgOgcServer* ogcServer);
+    virtual void AcquireResponseData(MgOgcServer* ogcServer);
 
 private:
 

@@ -175,6 +175,29 @@ CPSZ kpszVersionRediculouslyHighVersion = _("9999.9.9"); // If no version is pro
 
 DocLoaderFunc MgOgcServer::ms_fnDocLoader = NULL;
 
+
+// The central point of contact in request processing. This method
+// calls virtual methods that must be implemented by derived classes
+// to retrieve data required for validation and response generation.
+bool MgOgcServer::ProcessRequest(IMgOgcDataAccessor* dataAccessor)
+{
+    if(dataAccessor != NULL)
+    {
+        dataAccessor->AcquireValidationData(this);
+    }
+
+    bool bValid = ValidateRequest();
+    if(bValid)
+    {
+        if(dataAccessor != NULL)
+        {
+            dataAccessor->AcquireResponseData(this);
+        }
+        RespondToRequest();
+    }
+    return bValid;
+}
+
 void MgOgcServer::SetLoader(DocLoaderFunc fnDocLoad)
 {
     ms_fnDocLoader = fnDocLoad;
