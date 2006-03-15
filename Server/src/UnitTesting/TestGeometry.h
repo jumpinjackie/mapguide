@@ -45,7 +45,7 @@ class TestGeometry : public CppUnit::TestFixture
 
     CPPUNIT_TEST(TestCase_BufferNoMeasure);
     CPPUNIT_TEST(TestCase_BufferArbitrary);
-    CPPUNIT_TEST(TestCase_BufferGeographic);
+    //CPPUNIT_TEST(TestCase_BufferGeographic);
     CPPUNIT_TEST(TestCase_BufferProjected);
 
     CPPUNIT_TEST(TestCase_Intersection);
