@@ -58,6 +58,8 @@ CPSZ kpszInternalErrorMissingGetCapyResponse = _("Unable to generate a GetCapabi
 CPSZ kpszExceptionMessageGetFeatureInfoUnsupported = _("REQUEST=GetFeatureInfo operation is not supported on this server."); // Localize
 CPSZ kpszExceptionMessageQueryLayerNotDefined = _("One or more layers specified in the QUERY_LAYERS argument are not defined in the map."); // Localize
 CPSZ kpszExceptionMessageMapLayersMissing = _("The map request must contain at least one valid layer."); // Localize
+CPSZ kpszExceptionMessageMapLayerNotDefined = _("The map request contains invalid layer names."); // Localize
+CPSZ kpszExceptionMessageMapLayerNotQueryable = _("The GetFeatureInfo request contains the names of layers that are not queryable."); // Localize
 CPSZ kpszExceptionMessageStyleNotDefined = _("An unsupported layer style was requested. Only default layer styles are supported."); // Localize
 CPSZ kpszExceptionMessageMissingQueryPoint = _("The request must contain I and J arguments specifying the query point."); // Localize
 CPSZ kpszExceptionMessageInvalidQueryPoint = _("The point specified by the I and J arguments must fall within the map extent."); // Localize
@@ -112,17 +114,17 @@ void MgOgcWmsServer::RespondToRequest()
     WmsRequestType requestType = GetRequestType();
     switch(requestType)
     {
-        case GetCapabilitiesType:
+        case WmsGetCapabilitiesType:
         {
             GetCapabilitiesResponse();
             break;
         }
-        case GetMapType:
+        case WmsGetMapType:
         {
             GetMapResponse();
             break;
         }
-        case GetFeatureInfoType:
+        case WmsGetFeatureInfoType:
         {
             GetFeatureInfoResponse();
             break;
@@ -143,17 +145,17 @@ bool MgOgcWmsServer::ValidateRequest()
     WmsRequestType requestType = GetRequestType();
     switch(requestType)
     {
-        case GetCapabilitiesType:
+        case WmsGetCapabilitiesType:
         {
             bValid = ValidateGetCapabilitiesParameters();
             break;
         }
-        case GetMapType:
+        case WmsGetMapType:
         {
             bValid = ValidateMapParameters();
             break;
         }
-        case GetFeatureInfoType:
+        case WmsGetFeatureInfoType:
         {
             bValid = ValidateGetFeatureInfoParameters();
             break;
@@ -171,7 +173,7 @@ bool MgOgcWmsServer::ValidateRequest()
 // Determine the request type for this WMS request
 enum MgOgcWmsServer::WmsRequestType MgOgcWmsServer::GetRequestType()
 {
-    WmsRequestType requestType = UnknownType;
+    WmsRequestType requestType = WmsUnknownType;
 
     // Get the value of the REQUEST parameter
     CPSZ pszRequest = RequestParameter(kpszQueryStringRequest);
@@ -180,17 +182,17 @@ enum MgOgcWmsServer::WmsRequestType MgOgcWmsServer::GetRequestType()
         if(SZ_EQI(pszRequest,kpszQueryValueGetCapabilities) ||
             SZ_EQI(pszRequest,kpszQueryValueCapabilities))
         {
-            requestType = GetCapabilitiesType;
+            requestType = WmsGetCapabilitiesType;
         }
         else if(SZ_EQI(pszRequest,kpszQueryValueGetMap) ||
             SZ_EQI(pszRequest,kpszQueryValueMap))
         {
-            requestType = GetMapType;
+            requestType = WmsGetMapType;
         }
         else if(SZ_EQI(pszRequest,kpszQueryValueGetFeatureInfo) ||
             SZ_EQI(pszRequest,kpszQueryValueFeatureInfo))
         {
-            requestType = GetFeatureInfoType;
+            requestType = WmsGetFeatureInfoType;
         }
     }
     return requestType;
@@ -219,77 +221,69 @@ void MgOgcWmsServer::GetDefaultExceptionInfo(REFSTRING sTemplate,REFSTRING sMime
 // Implements the WMS GetCapabilities response.
 void MgOgcWmsServer::GetCapabilitiesResponse()
 {
-    if(ValidateGetCapabilitiesParameters())
+    // Looks for a specific FORMAT parameter
+    CPSZ pszFormat = RequestParameter(kpszQueryStringFormat);
+    if(pszFormat != NULL)
     {
-        // Looks for a specific FORMAT parameter
-        CPSZ pszFormat = RequestParameter(kpszQueryStringFormat);
-        if(pszFormat != NULL)
-        {
-            // Make a request for the user-specified format
-            if(GenerateResponse(kpszQueryValueGetCapabilities,pszFormat))
-                return;
-        }
-        
-        // If we get to here, either the user did not specify a format,
-        // or we were unable to honor the requested format. So we try the
-        // default format instead.
-
-        // Default mime type for version 1.1.0 and higher
-        CPSZ pszDefaultFormat = kpszMimeTypeApplicationWmsXml;
-        CPSZ pszVersion = NegotiatedVersion();
-        if(pszVersion != NULL && SZ_EQI(pszVersion, _("1.0.0")))
-        {
-            // Default mime type for 1.0.0 requests
-            pszDefaultFormat = kpszMimeTypeXml;
-        }
-
-        // Make a request for the default format
-        if(pszFormat == NULL || SZ_NE(pszFormat, pszDefaultFormat))
-        {
-            if(GenerateResponse(kpszQueryValueGetCapabilities,pszDefaultFormat))
-                return;
-        }
-
-        // Hmmm... this is bad.  We need to die gracefully.
-        InternalError(kpszInternalErrorMissingGetCapyResponse);
+        // Make a request for the user-specified format
+        if(GenerateResponse(kpszQueryValueGetCapabilities,pszFormat))
+            return;
     }
+    
+    // If we get to here, either the user did not specify a format,
+    // or we were unable to honor the requested format. So we try the
+    // default format instead.
+
+    // Default mime type for version 1.1.0 and higher
+    CPSZ pszDefaultFormat = kpszMimeTypeApplicationWmsXml;
+    CPSZ pszVersion = NegotiatedVersion();
+    if(pszVersion != NULL && SZ_EQI(pszVersion, _("1.0.0")))
+    {
+        // Default mime type for 1.0.0 requests
+        pszDefaultFormat = kpszMimeTypeXml;
+    }
+
+    // Make a request for the default format
+    if(pszFormat == NULL || SZ_NE(pszFormat, pszDefaultFormat))
+    {
+        if(GenerateResponse(kpszQueryValueGetCapabilities,pszDefaultFormat))
+            return;
+    }
+
+    // Hmmm... this is bad.  We need to die gracefully.
+    InternalError(kpszInternalErrorMissingGetCapyResponse);
 }
 
 // Probably will remain hereafter a stub.
 void MgOgcWmsServer::GetMapResponse()
 {
-    ValidateMapParameters();
 }
 
 
 // Create the response for a GetFeatureInfo request
 void MgOgcWmsServer::GetFeatureInfoResponse()
 {
-    if(ValidateGetFeatureInfoParameters())
-    {
-        //
-        // 04-024 ISO DIS 19128:
-        // 7.4.3.9
-        // The server shall return a response according to the requested
-        // INFO_FORMAT if the request is valid, or issue a service exception
-        // otherwise. The nature of the response is at the discretion of the
-        // service provider, but it shall pertain to the feature(s) nearest
-        // to (I,J).
-        CPSZ pszFormat = RequestParameter(kpszQueryStringInfoFormat);
+    // 04-024 ISO DIS 19128:
+    // 7.4.3.9
+    // The server shall return a response according to the requested
+    // INFO_FORMAT if the request is valid, or issue a service exception
+    // otherwise. The nature of the response is at the discretion of the
+    // service provider, but it shall pertain to the feature(s) nearest
+    // to (I,J).
+    CPSZ pszFormat = RequestParameter(kpszQueryStringInfoFormat);
 
-        // Be more lenient than the spec, and default to text/xml if not specified
-        if(pszFormat == NULL)
-          pszFormat = kpszMimeTypeXml;
+    // Be more lenient than the spec, and default to text/xml if not specified
+    if(pszFormat == NULL)
+      pszFormat = kpszMimeTypeXml;
 
-        if(GenerateResponse(kpszQueryValueGetFeatureInfo,pszFormat))
-            return;
+    if(GenerateResponse(kpszQueryValueGetFeatureInfo,pszFormat))
+        return;
 
-        if(GenerateResponse(kpszQueryValueGetFeatureInfo,kpszMimeTypeXml))
-            return;
+    if(GenerateResponse(kpszQueryValueGetFeatureInfo,kpszMimeTypeXml))
+        return;
 
-        ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszOperationNotSupported,
-                                                         kpszExceptionMessageGetFeatureInfoUnsupported));
-    }
+    ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszOperationNotSupported,
+                                                     kpszExceptionMessageGetFeatureInfoUnsupported));
 }
 
 bool MgOgcWmsServer::ValidateGetCapabilitiesParameters()
@@ -316,6 +310,13 @@ bool MgOgcWmsServer::ValidateGetCapabilitiesParameters()
 }
 
 bool MgOgcWmsServer::ValidateMapParameters()
+{
+    return ValidateMapParameters(NULL);
+}
+
+// If the queryableLayers collection object is not NULL, we populate it with the
+// names of the queryable layers when we parse for published layers.
+bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
 {
     bool bValid = true;
 
@@ -349,6 +350,50 @@ bool MgOgcWmsServer::ValidateMapParameters()
             ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszLayerNotDefined,
                                                              kpszExceptionMessageMapLayersMissing));
             bValid = false;
+        }
+        else
+        {
+            // Get a list of the requested layers
+            Ptr<MgStringCollection> requestedLayers = MgStringCollection::ParseCollection(mapLayerList, L",");
+            
+            // Get a list of the available layers
+            Ptr<MgStringCollection> availableLayers = new MgStringCollection();
+            if(m_pLayers != NULL)
+            {
+                while(m_pLayers->Next())
+                {
+                    MgUtilDictionary currentDef(NULL);
+                    m_pLayers->GenerateDefinitions(currentDef);
+                    CPSZ layerName = currentDef[L"Layer.Name"];
+                    CPSZ isPublished = currentDef[L"Layer.IsPublished"];
+                    if(isPublished != NULL && SZ_EQ(isPublished, L"1"))
+                    {
+                        // Add this layer to the list of published layers
+                        availableLayers->Add(layerName);
+                        if(queryableLayers != NULL)
+                        {
+                            CPSZ isQueryable = currentDef[L"Layer.Queryable"];
+                            if(isQueryable != NULL && SZ_EQ(isQueryable, L"1"))
+                            {
+                                // Add this layer to the list of queryable layers
+                                queryableLayers->Add(layerName);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Verify that all of the requested layers are available
+            for(int i = 0; i < requestedLayers->GetCount(); i++)
+            {
+                if(!availableLayers->Contains(requestedLayers->GetItem(i)))
+                {
+                    ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszLayerNotDefined,
+                                                                     kpszExceptionMessageMapLayerNotDefined));
+                    bValid = false;
+                    break;
+                }
+            }
         }
     }
 
@@ -461,7 +506,11 @@ bool MgOgcWmsServer::ValidateMapParameters()
 
 bool MgOgcWmsServer::ValidateGetFeatureInfoParameters()
 {
-    bool bValid = ValidateMapParameters();
+    Ptr<MgStringCollection> queryableLayers = new MgStringCollection();
+    
+    // The ValidateMapParameters method will check that the map parameters in the
+    // request are valid, and populate our list of queryable layers.
+    bool bValid = ValidateMapParameters(queryableLayers);
     if(bValid)
     {
         // Make sure we have a query point specified by I and J parameters
@@ -504,14 +553,28 @@ bool MgOgcWmsServer::ValidateGetFeatureInfoParameters()
             CPSZ mapLayerList = RequestParameter(kpszQueryStringLayers);
             Ptr<MgStringCollection> mapLayers = MgStringCollection::ParseCollection(mapLayerList, L",");
 
+            // Retrieve the layer names to query
             Ptr<MgStringCollection> queryLayers = MgStringCollection::ParseCollection(queryLayerList, L",");
             for(int i=0; i<queryLayers->GetCount(); i++)
             {
-                if(!mapLayers->Contains(queryLayers->GetItem(i)))
+                STRING layerName = queryLayers->GetItem(i);
+
+                // Check that this layer is part of the map
+                if(!mapLayers->Contains(layerName))
                 {
                     ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszLayerNotDefined,
                                                              kpszExceptionMessageQueryLayerNotDefined));
                     bValid = false;
+                    break;
+                }
+
+                // Check that this layer is queryable
+                if(!queryableLayers->Contains(layerName))
+                {
+                    ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszLayerNotQueryable,
+                                                                     kpszExceptionMessageMapLayerNotQueryable));
+                    bValid = false;
+                    break;
                 }
             }
         }
@@ -589,6 +652,12 @@ void MgOgcWmsServer::ProcedureEnumFeatureProperties(MgXmlProcessingInstruction& 
 // Set the feature info (used for generating GetFeatureInfo response)
 void MgOgcWmsServer::SetFeatureInfo(MgWmsFeatureInfo* pFeatureInfo)
 {
-    m_pFeatureInfo = pFeatureInfo;
+    m_pFeatureInfo = SAFE_ADDREF(pFeatureInfo);
+}
+
+// Set the layer definitions
+void MgOgcWmsServer::SetLayerDefs(MgWmsLayerDefinitions* pLayerDefs)
+{
+    m_pLayers = SAFE_ADDREF(pLayerDefs);
 }
 

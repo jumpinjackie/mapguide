@@ -60,9 +60,17 @@ public:
 
     // Not much to be said here.  Just respond to the request sent in.
     // One stop shopping: call this after construction, and it all happens.
-    virtual void RespondToRequest() = 0;
+    virtual bool ProcessRequest(IMgOgcDataAccessor* dataAccessor);
 
 protected:
+
+    // Method to be implemented by derived classes to validate request parameters
+    virtual bool ValidateRequest() = 0;
+
+    // Method to be implemented by derived classes to generate the response data
+    virtual void RespondToRequest() = 0;
+
+
     // Generates a response from the template.  Typically, this is
     // what most derivations will call.  It merely looks for an
     // element of

@@ -131,40 +131,9 @@ void MgHttpWmsGetFeatureInfo::Execute(MgHttpResponse& hResponse)
     // Create the WMS handler
     MgHttpResponseStream responseStream;
     MgOgcWmsServer wms(requestParams, responseStream);
-
-    if(wms.ValidateRequest())
-    {
-        // Get an instance of the resource service
-        Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
-
-        // Get an MgMap object corresponding to the request params
-        Ptr<MgMap> map = MgWmsMapUtil::GetMap(m_layers, m_bbox, m_crs, m_width, m_height, resourceService);
-
-        // Create Rendering Service instance
-        Ptr<MgRenderingService> service = (MgRenderingService*)(CreateService(MgServiceType::RenderingService));
-
-        // Determine the query layers
-        Ptr<MgStringCollection> queryLayers = MgStringCollection::ParseCollection(m_queryLayers, L",");
-
-        // Get the selection geometry
-        Ptr<MgGeometry> selectionGeometry = GetSelectionGeometry(map);
-
-        // Call the C++ API
-        Ptr<MgFeatureInformation> featureInfo = service->QueryFeatures(map, queryLayers, selectionGeometry,
-            MgFeatureSpatialOperations::Intersects, m_featureCount);
-
-        // Convert to XML format
-        Ptr<MgByteReader> featureInfoXml = featureInfo->ToXml();
-
-        // Convert to a string
-        STRING xmlString = featureInfoXml->ToString();
-        MgXmlParser xmlFeatureInfo(xmlString.c_str());
-        MgWmsFeatureInfo wmsFeatureInfo(xmlFeatureInfo);
-
-        // Execute the request
-        wms.SetFeatureInfo(&wmsFeatureInfo);
-        wms.RespondToRequest();
-    }
+    
+    // Process the request
+    wms.ProcessRequest(this);
 
     // Obtain the response byte reader
     Ptr<MgByteReader> featInfoResponse = responseStream.Stream().GetReader();
@@ -194,3 +163,58 @@ MgGeometry* MgHttpWmsGetFeatureInfo::GetSelectionGeometry(MgMap* map)
 
     return selectionGeometry;
 }
+
+void MgHttpWmsGetFeatureInfo::AcquireValidationData(MgOgcServer* ogcServer)
+{
+    MgOgcWmsServer* wmsServer = (MgOgcWmsServer*)ogcServer;
+    if(wmsServer != NULL)
+    {
+        // Get an instance of the resource service
+        Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
+
+        // Retrieve layer definitions
+        Ptr<MgWmsLayerDefinitions> layerDefs = MgHttpWmsGetCapabilities::GetLayerDefinitions(*resourceService);
+
+        // WMS Server takes ownership of layer definitions
+        wmsServer->SetLayerDefs(layerDefs);
+    }
+}
+
+void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
+{
+    MgOgcWmsServer* wmsServer = (MgOgcWmsServer*)ogcServer;
+    if(wmsServer != NULL)
+    {
+        // Get an instance of the resource service
+        Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
+
+        // Get an MgMap object corresponding to the request params
+        Ptr<MgMap> map = MgWmsMapUtil::GetMap(m_layers, m_bbox, m_crs, m_width, m_height, resourceService);
+
+        // Create Rendering Service instance
+        Ptr<MgRenderingService> service = (MgRenderingService*)(CreateService(MgServiceType::RenderingService));
+
+        // Determine the query layers
+        Ptr<MgStringCollection> queryLayers = MgStringCollection::ParseCollection(m_queryLayers, L",");
+
+        // Get the selection geometry
+        Ptr<MgGeometry> selectionGeometry = GetSelectionGeometry(map);
+
+        // Call the C++ API
+        Ptr<MgFeatureInformation> featureInfo = service->QueryFeatures(map, queryLayers, selectionGeometry,
+            MgFeatureSpatialOperations::Intersects, m_featureCount);
+
+        // Convert to XML format
+        Ptr<MgByteReader> featureInfoXml = featureInfo->ToXml();
+
+        // Convert to a string
+        STRING xmlString = featureInfoXml->ToString();
+        
+        // Create the object to store the feature info
+        Ptr<MgWmsFeatureInfo> wmsFeatureInfo = new MgWmsFeatureInfo(xmlString.c_str());
+
+        // The WMS Server takes ownership of the feature info
+        wmsServer->SetFeatureInfo(wmsFeatureInfo);
+    }
+}
+

@@ -18,7 +18,10 @@
 #ifndef _FS_WMS_GET_CAPABILITIES_H
 #define _FS_WMS_GET_CAPABILITIES_H
 
-class MgHttpWmsGetCapabilities : public MgHttpRequestResponseHandler
+class MgWmsLayerDefinitions;
+class MgOgcWmsServer;
+
+class MgHttpWmsGetCapabilities : public MgHttpRequestResponseHandler, public IMgOgcDataAccessor
 {
 HTTP_DECLARE_CREATE_OBJECT()
 
@@ -51,6 +54,16 @@ public:
     /// </returns>
     MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcWms; }
 
+    /// <summary>
+    /// Returns a set of layer defintions
+    /// </summary>
+    /// <returns>
+    /// MgWmsLayerDefinitions
+    /// </returns>
+    static MgWmsLayerDefinitions* GetLayerDefinitions(MgResourceService& resourceService);
+
+    // IMgOgcDataAccessor method
+    virtual void AcquireResponseData(MgOgcServer* ogcServer);
 private:
 };
 

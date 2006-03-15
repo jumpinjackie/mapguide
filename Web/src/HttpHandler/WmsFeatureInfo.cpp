@@ -19,28 +19,39 @@
 #include "WmsFeatureInfo.h"
 
 
-MgWmsFeatureInfo::MgWmsFeatureInfo(MgXmlParser& input)
-:   m_xmlInput(input)
-,   m_bOk(false)
+MgWmsFeatureInfo::MgWmsFeatureInfo(CPSZ inputXML)
+:   m_bOk(false)
 
 {
+    // Create a new XML parser
+    m_xmlParser = new MgXmlParser(inputXML);
+    
     // Set parsing options
-    input.SetOptions(keSkipWhitespace|keSkipComments|keSkipProcessingInstructions);
+    m_xmlParser->SetOptions(keSkipWhitespace|keSkipComments|keSkipProcessingInstructions);
 
     // Move to the first element, if one exists
-    while(input.Next() && input.Current().Type() == keBeginElement)
+    while(m_xmlParser->Next() && m_xmlParser->Current().Type() == keBeginElement)
     {
         // Is it a FeatureInformation element?
-        MgXmlBeginElement& begin = (MgXmlBeginElement&)input.Current();
+        MgXmlBeginElement& begin = (MgXmlBeginElement&)m_xmlParser->Current();
         if(begin.Name() == _("FeatureInformation"))
         {
             // Move to the first entry in the feature information
-            m_bOk = input.Next();
+            m_bOk = m_xmlParser->Next();
             break;
         }
 
         // If it isn't a FeatureInformation element, skip it.
         SkipElement(begin.Name().c_str());
+    }
+}
+
+MgWmsFeatureInfo::~MgWmsFeatureInfo()
+{
+    if(m_xmlParser != NULL)
+    {
+        delete m_xmlParser;
+        m_xmlParser = NULL;
     }
 }
 
@@ -50,9 +61,9 @@ bool MgWmsFeatureInfo::Next()
     {
         // Set to false until we find a property element
         m_bOk = false;
-        while(!m_xmlInput.AtEnd() && m_xmlInput.Current().Type() == keBeginElement)
+        while(!m_xmlParser->AtEnd() && m_xmlParser->Current().Type() == keBeginElement)
         {
-            MgXmlBeginElement& begin = (MgXmlBeginElement&)m_xmlInput.Current();
+            MgXmlBeginElement& begin = (MgXmlBeginElement&)m_xmlParser->Current();
             if(begin.Name() == _("Property"))
             {
                 m_bOk = true;
@@ -71,9 +82,9 @@ void MgWmsFeatureInfo::GenerateDefinitions(MgUtilDictionary& dictionary)
 {
     if(m_bOk)
     {
-        if(m_xmlInput.Current().Type() == keBeginElement)
+        if(m_xmlParser->Current().Type() == keBeginElement)
         {
-            MgXmlBeginElement& begin = (MgXmlBeginElement&)m_xmlInput.Current();
+            MgXmlBeginElement& begin = (MgXmlBeginElement&)m_xmlParser->Current();
             if(begin.HasAttributes())
             {
                 STRING name;
@@ -101,14 +112,14 @@ bool MgWmsFeatureInfo::SkipElement(CPSZ pszElementName)
 {
     STRING sName;
 
-    if(pszElementName == NULL && m_xmlInput.Current().Type() == keBeginElement)
+    if(pszElementName == NULL && m_xmlParser->Current().Type() == keBeginElement)
     {
-        MgXmlBeginElement& begin = (MgXmlBeginElement&)m_xmlInput.Current();
+        MgXmlBeginElement& begin = (MgXmlBeginElement&)m_xmlParser->Current();
         sName = begin.Name();
         pszElementName = sName.c_str();
     }
 
-    MgXmlSynchronizeOnElement whatever(m_xmlInput,pszElementName);
+    MgXmlSynchronizeOnElement whatever(*m_xmlParser,pszElementName);
 
     return whatever.AtBegin();
 }

@@ -62,23 +62,34 @@ Here's just one of what we'll be processing (we'll get a collection of these):
 </ResourceDocument>
 */
 
-MgWmsLayerDefinitions::MgWmsLayerDefinitions(MgXmlParser& Input)
-:   m_XmlInput(Input)
-,   m_bOk(false)
+MgWmsLayerDefinitions::MgWmsLayerDefinitions(CPSZ inputXml)
+:   m_bOk(false)
 
 {
-    //
-    Input.SetOptions(keSkipWhitespace|keSkipComments|keSkipProcessingInstructions);
+    // Create an MgXmlParser to parse the layer def XML string
+    m_xmlParser = new MgXmlParser(inputXml);
+    
+    // Set parsing options
+    m_xmlParser->SetOptions(keSkipWhitespace|keSkipComments|keSkipProcessingInstructions);
 
     // If there's a next (ie, First) element, and it's the expected beginning element
     // let's see what it is...
-    if(Input.Next() && Input.Current().Type() == keBeginElement) {
+    if(m_xmlParser->Next() && m_xmlParser->Current().Type() == keBeginElement) {
         // Is it a ResourceList element?
-        MgXmlBeginElement& Begin = (MgXmlBeginElement&)Input.Current();
+        MgXmlBeginElement& Begin = (MgXmlBeginElement&)m_xmlParser->Current();
         m_bOk = Begin.Name() == _("ResourceList");
 
         // Position ourselves over the next thing, the anticipated ResourceDocument element
-        Input.Next();
+        m_xmlParser->Next();
+    }
+}
+
+MgWmsLayerDefinitions::~MgWmsLayerDefinitions()
+{
+    if(m_xmlParser != NULL)
+    {
+        delete m_xmlParser;
+        m_xmlParser = NULL;
     }
 }
 
@@ -87,8 +98,8 @@ bool MgWmsLayerDefinitions::Next()
     if(!m_bOk)
         return false;
 
-    if(m_XmlInput.Current().Type() == keBeginElement) {
-        MgXmlBeginElement& Begin = (MgXmlBeginElement&)m_XmlInput.Current();
+    if(m_xmlParser->Current().Type() == keBeginElement) {
+        MgXmlBeginElement& Begin = (MgXmlBeginElement&)m_xmlParser->Current();
         m_bOk = Begin.Name() == _("ResourceDocument");
     }
     else
@@ -99,7 +110,7 @@ bool MgWmsLayerDefinitions::Next()
 
 void MgWmsLayerDefinitions::GenerateDefinitions(MgUtilDictionary& Dictionary)
 {
-    MgXmlSynchronizeOnElement ResourceDocument(m_XmlInput,_("ResourceDocument"));
+    MgXmlSynchronizeOnElement ResourceDocument(*m_xmlParser,_("ResourceDocument"));
     if(!ResourceDocument.AtBegin())
         return; // Something is wrong.  We leave.
 
@@ -144,12 +155,12 @@ void MgWmsLayerDefinitions::GenerateDefinitions(MgUtilDictionary& Dictionary)
 
 bool MgWmsLayerDefinitions::GetElementContents(CPSZ pszElementName,STRING& sValue)
 {
-    MgXmlSynchronizeOnElement Element(m_XmlInput,pszElementName);
+    MgXmlSynchronizeOnElement Element(*m_xmlParser,pszElementName);
     if(!Element.AtBegin())
         return false;
 
-    if(m_XmlInput.Current().Type() == keText) {
-        sValue = m_XmlInput.Current().Contents();
+    if(m_xmlParser->Current().Type() == keText) {
+        sValue = m_xmlParser->Current().Contents();
         return true;
     }
 
@@ -158,25 +169,25 @@ bool MgWmsLayerDefinitions::GetElementContents(CPSZ pszElementName,STRING& sValu
 
 bool MgWmsLayerDefinitions::GetMetadataDefinitions(MgUtilDictionary& Dictionary)
 {
-//    STRING sDebug = m_XmlInput.Current().Contents();
+//    STRING sDebug = m_xmlParser->Current().Contents();
     // We're looking for a <ResourceDocumentHeader ...>
-    MgXmlSynchronizeOnElement ElementResourceDocumentHeader(m_XmlInput,_("ResourceDocumentHeader"));
+    MgXmlSynchronizeOnElement ElementResourceDocumentHeader(*m_xmlParser,_("ResourceDocumentHeader"));
     if(!ElementResourceDocumentHeader.AtBegin())
         return false;
 
     // And inside that, there's a <Metadata ...>
-    MgXmlSynchronizeOnElement ElementMetadata(m_XmlInput,_("Metadata"));
+    MgXmlSynchronizeOnElement ElementMetadata(*m_xmlParser,_("Metadata"));
     if(!ElementMetadata.AtBegin())
         return false;
 
     // And inside *that*, we hope there's a <Simple...>
-    MgXmlSynchronizeOnElement ElementSimple(m_XmlInput,_("Simple"));
+    MgXmlSynchronizeOnElement ElementSimple(*m_xmlParser,_("Simple"));
     if(!ElementSimple.AtBegin())
         return false;
 
     // And once we're here, we hope to find a grunch of <Property...> elements
     while(!ElementSimple.AtEnd()) {
-        MgXmlSynchronizeOnElement ElementProperty(m_XmlInput,_("Property"));
+        MgXmlSynchronizeOnElement ElementProperty(*m_xmlParser,_("Property"));
         if(ElementProperty.AtBegin()) {
             // Each of which consist of <Name> and <Value> pairs...
             STRING sName;
@@ -226,13 +237,13 @@ bool MgWmsLayerDefinitions::GetMetadataDefinitions(MgUtilDictionary& Dictionary)
 bool MgWmsLayerDefinitions::SkipElement(CPSZ pszElementName)
 {
     STRING sName;
-    if(pszElementName == NULL && m_XmlInput.Current().Type() == keBeginElement) {
-        MgXmlBeginElement& Begin = (MgXmlBeginElement&)m_XmlInput.Current();
+    if(pszElementName == NULL && m_xmlParser->Current().Type() == keBeginElement) {
+        MgXmlBeginElement& Begin = (MgXmlBeginElement&)m_xmlParser->Current();
         sName = Begin.Name();
         pszElementName = sName.c_str();
     }
 
-    MgXmlSynchronizeOnElement Whatever(m_XmlInput,pszElementName);
+    MgXmlSynchronizeOnElement Whatever(*m_xmlParser,pszElementName);
 
     return Whatever.AtBegin();
 }

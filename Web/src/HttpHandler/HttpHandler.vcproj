@@ -1893,6 +1893,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\OgcDataAccessor.h"
+				>
+			</File>
+			<File
 				RelativePath=".\OgcException.h"
 				>
 			</File>

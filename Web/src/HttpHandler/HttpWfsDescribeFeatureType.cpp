@@ -120,7 +120,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
             MgOgcWfsServer Wfs(Parms,Out,Features);
 
             // Execute the request
-            Wfs.RespondToRequest();
+            Wfs.ProcessRequest(this);
 
             // Slurp the results.
             Ptr<MgByteReader> capabilities = Out.Stream().GetReader();

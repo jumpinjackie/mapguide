@@ -18,7 +18,7 @@
 #ifndef _FS_WFS_GET_FEATURE_H
 #define _FS_WFS_GET_FEATURE_H
 
-class MgHttpWfsGetFeature : public MgHttpRequestResponseHandler
+class MgHttpWfsGetFeature : public MgHttpRequestResponseHandler, public IMgOgcDataAccessor
 {
 HTTP_DECLARE_CREATE_OBJECT()
 
@@ -64,6 +64,9 @@ public:
     /// Classification of handler
     /// </returns>
     MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcWfs; }
+
+    virtual void AcquireResponseData(MgOgcServer* ogcServer);
+    virtual void AcquireValidationData(MgOgcServer* ogcServer);
 
 INTERNAL_API:
     MgHttpWfsGetFeature();

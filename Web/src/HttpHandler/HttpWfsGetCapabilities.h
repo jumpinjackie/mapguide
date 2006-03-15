@@ -18,7 +18,7 @@
 #ifndef _FS_WFS_GET_CAPABILITIES_H
 #define _FS_WFS_GET_CAPABILITIES_H
 
-class MgHttpWfsGetCapabilities : public MgHttpRequestResponseHandler
+class MgHttpWfsGetCapabilities : public MgHttpRequestResponseHandler, public IMgOgcDataAccessor
 {
 HTTP_DECLARE_CREATE_OBJECT()
 

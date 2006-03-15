@@ -26,18 +26,30 @@ class MgOgcWfsServer: public MgOgcServer
 {
 public:
     MgOgcWfsServer(MgHttpRequestParameters& Request, CStream& Response, MgWfsFeatureDefinitions& Features);
-    MgOgcWfsServer(MgHttpRequestParameters& Request, CStream& Response, MgWfsFeatures& Features);
-
-    void RespondToRequest();
+    MgOgcWfsServer(MgHttpRequestParameters& Request, CStream& Response);
 
     void GenerateTypeNameException(CREFSTRING sTypeName);
+    void SetFeatures(MgWfsFeatures* pFeatures);
+    void SetGetFeatureRequestParams(WfsGetFeatureParams* pGetFeatureParams);
 
 protected:
+    virtual void RespondToRequest();
+    virtual bool ValidateRequest();
+
     void GetCapabilitiesResponse();
     void DescribeFeatureTypeResponse();
     void GetFeatureResponse();
 
     bool ValidateGetFeatureRequest();
+
+    enum WfsRequestType
+    {
+        WfsUnknownType,
+        WfsGetCapabilitiesType,
+        WfsGetFeatureType,
+        WfsDescribeFeatureTypeType
+    };
+    enum WfsRequestType GetRequestType();
 
     CPSZ GetServiceType();
     CPSZ GetTemplatePrefix();
@@ -75,7 +87,8 @@ private:
     CPSZ ServiceExceptionReportElement();
 
     MgWfsFeatureDefinitions* m_pFeatures;
-    MgWfsFeatures* m_pFeatureSet;
+    Ptr<MgWfsFeatures> m_pFeatureSet;
+    Ptr<WfsGetFeatureParams> m_pGetFeatureParams;
 
     // The backing store for the default exception.
 

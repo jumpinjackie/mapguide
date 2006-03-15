@@ -202,6 +202,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OgcException.h \
   OgcFramework.h \
   OgcServer.h \
+  OgcDataAccessor.h \
   OgcWfsException.h \
   OgcWfsServer.h \
   OgcWmsException.h \

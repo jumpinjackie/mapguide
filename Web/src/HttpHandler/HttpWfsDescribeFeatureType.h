@@ -18,7 +18,7 @@
 #ifndef _FS_WFS_DESCRIBE_FEATURE_TYPE_H
 #define _FS_WFS_DESCRIBE_FEATURE_TYPE_H
 
-class MgHttpWfsDescribeFeatureType : public MgHttpRequestResponseHandler
+class MgHttpWfsDescribeFeatureType : public MgHttpRequestResponseHandler, public IMgOgcDataAccessor
 {
 HTTP_DECLARE_CREATE_OBJECT()
 

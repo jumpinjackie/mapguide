@@ -20,6 +20,7 @@
 
 #include "OgcServer.h"
 #include "OgcWmsException.h"
+#include "OgcDataAccessor.h"
 #include "WmsLayerDefinitions.h"
 #include "WmsFeatureInfo.h"
 
@@ -29,12 +30,13 @@ public:
     MgOgcWmsServer(MgHttpRequestParameters& Request,CStream& Response,MgWmsLayerDefinitions* pLayers);
     MgOgcWmsServer(MgHttpRequestParameters& Request,CStream& Response);
 
-    void RespondToRequest();
-    bool ValidateRequest();
-
     void SetFeatureInfo(MgWmsFeatureInfo* pFeatureInfo);
+    void SetLayerDefs(MgWmsLayerDefinitions* pLayerDefs);
 
 protected:
+    virtual void RespondToRequest();
+    virtual bool ValidateRequest();
+
     void GetCapabilitiesResponse();
     void GetMapResponse();
     void GetFeatureInfoResponse();
@@ -50,10 +52,10 @@ protected:
 
     enum WmsRequestType
     {
-        UnknownType,
-        GetCapabilitiesType,
-        GetMapType,
-        GetFeatureInfoType
+        WmsUnknownType,
+        WmsGetCapabilitiesType,
+        WmsGetMapType,
+        WmsGetFeatureInfoType
     };
     enum WmsRequestType GetRequestType();
 
@@ -84,16 +86,16 @@ private:
     bool ValidateGetCapabilitiesParameters();
     bool ValidateGetFeatureInfoParameters();
     bool ValidateMapParameters();
+    bool ValidateMapParameters(MgStringCollection* queryableLayers);
 
     CPSZ ServiceExceptionReportElement();
 
-    MgWmsLayerDefinitions* m_pLayers;
-    MgWmsFeatureInfo* m_pFeatureInfo;
+    Ptr<MgWmsLayerDefinitions> m_pLayers;
+    Ptr<MgWmsFeatureInfo> m_pFeatureInfo;
 
     // The backing store for the default exception.
     static STRING ms_sExceptionTemplate;
     static STRING ms_sExceptionMimeType;
-
 
     // Everpresent global definitions.  This ends up being the end (deepest part) of
     // the dictionary stack, so subsequent frames have access to it, though their own

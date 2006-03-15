@@ -21,19 +21,25 @@
 #include "XmlParser.h"
 #include "Dictionary.h"
 
-class MgWmsFeatureInfo: public IOgcResourceEnumerator
+class MgWmsFeatureInfo: public IOgcResourceEnumerator, public MgDisposable
 {
 public:
-    MgWmsFeatureInfo(MgXmlParser& Input);
+    MgWmsFeatureInfo(CPSZ inputXml);
+    //Default constructor to keep Ptr<> happy
+    MgWmsFeatureInfo(){};
+    virtual ~MgWmsFeatureInfo();
 
     bool Next();
 
     void GenerateDefinitions(MgUtilDictionary& Dictionary);
 
+protected:
+    virtual void Dispose(){delete this;}
+
 private:
    bool   SkipElement(CPSZ pszElementName);
 
-   MgXmlParser& m_xmlInput;
+   MgXmlParser* m_xmlParser;
    bool m_bOk;
 };
 

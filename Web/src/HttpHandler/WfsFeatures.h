@@ -21,22 +21,20 @@
 #include "XmlParser.h"
 #include "Dictionary.h"
 
-class MgWfsFeatures: public IOgcResourceEnumerator
+class MgWfsFeatures: public IOgcResourceEnumerator, public MgDisposable
 {
 public:
-    MgWfsFeatures(WfsGetFeatureParams* pRequestParams, MgFeatureService* pFeatureService);
-    ~MgWfsFeatures();
+    MgWfsFeatures(CPSZ inputXml);
+    //Default constructor to keep Ptr<> happy
+    MgWfsFeatures();
+    virtual ~MgWfsFeatures();
 
     bool Next();
     void GenerateDefinitions(MgUtilDictionary& Dictionary);
 
-    void RetrieveFeatures();
-    WfsGetFeatureParams* GetRequestParams(){return m_pRequestParams;}
+    virtual void Dispose(){delete this;}
 
 private:
-
-    WfsGetFeatureParams* m_pRequestParams;
-    MgFeatureService*  m_pFeatureService;
 
     STRING m_responseString;
     bool m_bOk;

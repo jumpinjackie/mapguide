@@ -82,6 +82,7 @@
 #include "HttpClearTileCache.h"
 
 // Http Wms operations
+#include "OgcDataAccessor.h"
 #include "HttpWmsGetCapabilities.h"
 #include "HttpWmsGetMap.h"
 #include "HttpWmsGetFeatureInfo.h"
