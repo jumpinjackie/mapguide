@@ -34,6 +34,7 @@ noinst_HEADERS = CgiGetParser.h \
                  ../WebSupport/WebSupport.h
 
 mapagent_LDADD = -lACE \
+                 -lxerces-c \
                  ../../../Oem/fcgi/fcgi-2.4.0/libfcgi/.libs/libfcgi.so \
                  -lMgCommon \
                  -lMgCoordinateSystem \
@@ -43,6 +44,7 @@ mapagent_LDADD = -lACE \
 
 mapagent_LDFLAGS = -version-info 7:0:0 \
             -L../../../Oem/ACE/ACE_wrappers/ace \
+            -L../../../Oem/dbxml-2.2.13/install/lib \
             -L$(top_builddir)/$(map_coordsys_dir_path) \
             -L../../../Common/MdfModel \
             -L../../../Common/MdfParser \
