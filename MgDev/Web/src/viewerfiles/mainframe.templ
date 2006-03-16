@@ -520,6 +520,10 @@ function ExecutePrintablePageCommand(index) {
     OpenUrl("%s?SCALE=" + curScale + "&DPI=" + mapFrame.GetDPI() + "&CENTERX=" + center.X + "&CENTERY=" + center.Y, index);
 }
 function ExecuteMeasureCommand(index) {
+    if(mapFrame.IsDigitizing()) {
+        SetStatusMsg("__#DIGALREADYRUNNING#__");
+        return;
+    }
     inMeasure = true;
     pointBegin = null;
     measureWinRef = OpenUrl("%s?PARTIAL=0&TOTAL=0", index);

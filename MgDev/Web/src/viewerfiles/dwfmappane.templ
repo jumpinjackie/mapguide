@@ -63,6 +63,7 @@ var selEnumerator = null;
 var curFeature = null;
 var emapViewer;
 var digihandler = null;
+var digitizing = false;
 
 // public functions -----------------------------------------------
 //
@@ -180,7 +181,39 @@ function GetCenter() {
 function GetScale() {
     return emapViewer.MapScale;
 }
-        
+function DigitizePoint(handler) {
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizePoint();
+}
+function DigitizeLine(handler) {
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizeLine();
+}
+function DigitizePolyline(handler) {
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizeLineString();
+}
+function DigitizePolygon(handler) {
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizePolygon();
+}
+function DigitizeCircle(handler) {
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizeCircle();
+}
+function DigitizeRectangle(handler) {
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizeRectangle();
+}
+function IsDigitizing() {
+    return digitizing;
+}
 // private functions -----------------------------------------------
 //
 function ExecuteMapAction(action) {
@@ -249,7 +282,10 @@ function ExecuteMapAction(action) {
         case 22:
             emapViewer.ExecuteCommand("ABOUT");
             break;
+        default:
+            return;
     }
+    digitizing = false;
 }
 function InitDocument() {
     document.onmousedown = OnMouseDown;
@@ -368,12 +404,6 @@ function OnForwardMouseDown(e) {
     hidePopup(tbMenu);
     hidePopup(ctxMenu);
 }
-function DigitizePoint(handler) {
-    if(handler == null)
-        return;
-    digihandler = handler;
-    emapViewer.DocumentHandler.DigitizePoint();
-}
 function Print(layouts, title) {
     var layoutColl = new ActiveXObject("AdCommon.Collection2");
     var unitStr = emapViewer.MetricMapUnits? "Metric": "US-English";
@@ -398,6 +428,24 @@ function Print(layouts, title) {
     }
     emapViewer.ShowPrintDialog(layoutColl);
 }
+function OnDigitizeEnd(shape) {
+    if(digihandler != null) {
+        digitizing = false;
+        digihandler(shape);
+        digihandler = null;
+    }
+}
+function PrepareDigitization(handler) {
+    if(handler == null)
+        return false;
+    if(parent.InMeasure()) {
+        parent.SetStatusMsg("__#MEASALREADYRUNNING#__");
+        return false;
+    }
+    digihandler = handler;
+    digitizing = true;
+    return true;
+}
 
     </script>
     
@@ -409,6 +457,11 @@ function Print(layouts, title) {
         parent.ForwardMouseDown(document, null);
         if(parent.ClickMap(x, y))
             handled.State = true;
+    </script>
+
+    <script language="javascript" for="DWFViewer" event="OnKeyDown(key, handled)">
+        if(key == 27 && digitizing)
+            digitizing = false;            
     </script>
 
     <script language=javascript for="DWFViewer" event="OnExecuteCommandEx(itemType, state, data, handled)">
@@ -445,8 +498,30 @@ function Print(layouts, title) {
     </script>
 
     <script language="javascript" for="EMapEventRelayer" event="OnDigitizedPoint(map, point)">
-        digihandler(point);
-        digihandler = null;
+        OnDigitizeEnd(point);
+    </script>
+
+    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedLine(map, line)">
+        OnDigitizeEnd(line);
+    </script>
+
+    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedLineString(map, line)">
+        OnDigitizeEnd(line);
+    </script>
+
+    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedPolygon(map, poly)">
+        OnDigitizeEnd(poly);
+    </script>
+
+    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedRectangle(map, rect)">
+        if(digihandler != null) {
+            y = rect.Y1; rect.Y1 = rect.Y2; rect.Y2 = y;
+            OnDigitizeEnd(rect);
+        }
+    </script>
+
+    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedCircle(map, circle)">
+        OnDigitizeEnd(circle);
     </script>
 
     <script language="javascript" for="EMapEventRelayer" event="OnSelectionChanged()">
@@ -476,3 +551,4 @@ function Print(layouts, title) {
     <span id="CtxMenuDivs"></span>
   </body>
 </html>
+
