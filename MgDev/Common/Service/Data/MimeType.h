@@ -41,7 +41,7 @@ PUBLISHED_API:
     /// model/vnd.dwf
     static const STRING Dwf;      ///\if INTERNAL value("model/vnd.dwf") \endif
 
-    /// image/jpeg
+    /// image/gif
     static const STRING Gif;      ///\if INTERNAL value("image/gif") \endif
 
     /// image/jpeg
