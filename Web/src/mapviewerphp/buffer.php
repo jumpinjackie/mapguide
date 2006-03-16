@@ -85,19 +85,15 @@
         else if($units == "fe")         //feet
             $distance *= .30480;
 
-        // calculate the distance in map units
+        // Get the map SRS
+        //
         $srsFactory = new MgCoordinateSystemFactory();
-        $srsDefMap = $map->GetMapSRS();
-        $srsMap = null;
-        if($srsDefMap != "")
-        {
-            $srsMap = $srsFactory->Create($srsDefMap);
-            $arbitraryMapSrs = $srsMap->GetType() == MgCoordinateSystemType::Arbitrary;
-            if($arbitraryMapSrs == false)
-                $distance = $srsMap->ConvertMetersToCoordinateSystemUnits($distance);
-        }
-        else
-            $arbitraryMapSrs = true;
+        $srsDefMap = GetMapSRS($map);
+        $mapSrsUnits = "";
+        $srsMap = $srsFactory->Create($srsDefMap);
+        $arbitraryMapSrs = $srsMap->GetType() == MgCoordinateSystemType::Arbitrary;
+        if($arbitraryMapSrs)
+            $mapSrsUnits = $srsMap->GetUnits();
 
         //Create/Modify layer definition
         $layerDefContent = BuildLayerDefinitionContent();
@@ -173,8 +169,6 @@
 
         $bufferFeatures = 0;
         $allCompatible = false;
-        $prevArbSrs = "";
-        $arbSrs = null;
 
         for($li = 0; $li < $selLayers->GetCount(); $li++)
         {
@@ -215,30 +209,34 @@
 
             $srsDs = $srsFactory->Create($srsDefDs);
             $arbitraryDsSrs = $srsDs->GetType() == MgCoordinateSystemType::Arbitrary;
-            if($arbitraryDsSrs)
-            {
-                if($prevArbSrs != "" && $prevArbSrs != $srsDefDs && $arbitraryMapSrs && $merge)
-                    throw Exception(GetLocalizedString("BUFFERDIFFARBXY", $locale));
-                $prevArbSrs = $srsDefDs;
-                if($arbSrs == null)
-                    $arbSrs = $srsDs;
-            }
+            $dsSrsUnits = "";
 
-            if($arbitraryDsSrs != $arbitraryMapSrs)
+            if($arbitraryDsSrs)
+                $dsSrsUnits = $srsDs->GetUnits();
+                
+            // exclude layer if:
+            //  the map is non-arbitrary and the layer is arbitrary or vice-versa
+            //     or
+            //  layer and map are both arbitrary but have different units
+            //
+            if(($arbitraryDsSrs != $arbitraryMapSrs) || ($arbitraryDsSrs && ($dsSrsUnits != $mapSrsUnits)))
             {
-                //exclude this layer because its srs is incompatible with the map srs
                 $excludedLayers ++;
                 continue;
             }
 
+            // calculate distance in the data source SRS units
+            //
+            $dist = $srsDs->ConvertMetersToCoordinateSystemUnits($distance);
+
             // calculate great circle unless data source srs is arbitrary
-            if($arbitraryDsSrs == true)
+            if(!$arbitraryDsSrs)
                 $measure = new MgCoordinateSystemMeasure($srsDs);
             else
                 $measure = null;
 
-            // create a SRS transformer if necessary
-            if(($arbitraryMapSrs == false) && ($arbitraryDsSrs == false) && $srsDefDs != $srsDefMap)
+            // create a SRS transformer if necessary.
+            if($srsDefDs != $srsDefMap)
                 $srsXform = new MgCoordinateSystemTransform($srsDs, $srsMap);
             else
                 $srsXform = null;
@@ -265,23 +263,19 @@
                     $geomReader = $features->GetGeometry($geomPropName);
                     $geom = $agfRW->Read($geomReader);
 
-                    if($srsXform != null)
-                    {
-                        $wkt = new MgWktReaderWriter();
-                        $geomDest = $geom->Transform($srsXform);
-                    }
-                    else
-                        $geomDest = $geom;
-
                     if(!$merge)
                     {
-                        $geomBuffer = $geomDest->Buffer($distance, $measure);
+                        $geomBuffer = $geom->Buffer($dist, $measure);
+                        if($srsXform != null)
+                            $geomBuffer = $geomBuffer->Transform($srsXform);
                         AddFeatureToCollection($propCollection, $agfRW, $featId++, $geomBuffer);
                         $bufferFeatures++;
                     }
                     else
                     {
-                        $inputGeometries->Add($geomDest);
+                        if($srsXform != null)
+                            $geom = $geom->Transform($srsXform);
+                        $inputGeometries->Add($geom);
                     }
                 }
                 while($features->ReadNext());
@@ -294,13 +288,14 @@
         {
             if($inputGeometries->GetCount() > 0)
             {
-                if($arbitraryMapSrs)
-                    $measure = new MgCoordinateSystemMeasure($arbSrs);
+                $dist = $srsMap->ConvertMetersToCoordinateSystemUnits($distance);
+                if(!$arbitraryMapSrs)
+                    $measure = new MgCoordinateSystemMeasure($srsMap);
                 else
                     $measure = null;
 
                 $geomFactory = new MgGeometryFactory();
-                $geomBuffer = $geomFactory->CreateMultiGeometry($inputGeometries)->Buffer($distance, $measure);
+                $geomBuffer = $geomFactory->CreateMultiGeometry($inputGeometries)->Buffer($dist, $measure);
                 AddFeatureToCollection($propCollection, $agfRW, $featId, $geomBuffer);
                 $bufferFeatures = 1;
             }
@@ -468,6 +463,17 @@ function AddFeatureToCollection($propCollection, $agfRW, $featureId, $featureGeo
     $geomProp = new MgGeometryProperty("GEOM", $geomReader);
     $bufferProps->Add($geomProp);
     $propCollection->Add($bufferProps);
+}
+
+function GetMapSrs($map)
+{
+    $srs = $map->GetMapSRS();
+    if($srs != "") 
+        return $srs;
+       
+    //No SRS, set to ArbitrayXY meters
+    //
+    return "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
 }
 
 ?>

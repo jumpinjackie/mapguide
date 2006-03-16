@@ -96,24 +96,15 @@ String dataSource = "";
         else if (units.Equals("fe")) //feet
             distance *= 0.30480;
 
-        // calculate the distance in map units
+        // Get the map SRS
+        //
         MgCoordinateSystemFactory srsFactory = new MgCoordinateSystemFactory();
-        String srsDefMap = map.GetMapSRS();
-        MgCoordinateSystem srsMap = null;
-        bool arbitraryMapSrs;
-        if (srsDefMap != null && srsDefMap.Length > 0)
-        {
-            srsMap = srsFactory.Create(srsDefMap);
-            arbitraryMapSrs = (srsMap.GetType() == MgCoordinateSystemType.Arbitrary);
-            if (!arbitraryMapSrs)
-            {
-                distance = srsMap.ConvertMetersToCoordinateSystemUnits(distance);
-            }
-        }
-        else
-        {
-            arbitraryMapSrs = true;
-        }
+        String srsDefMap = GetMapSrs(map);
+        String mapSrsUnits = "";
+        MgCoordinateSystem srsMap = srsFactory.Create(srsDefMap);
+        bool arbitraryMapSrs = (srsMap.GetType() == MgCoordinateSystemType.Arbitrary);
+        if (arbitraryMapSrs)
+            mapSrsUnits = srsMap.GetUnits();
 
         //Create/Modify layer definition
         MgByteReader layerDefContent = BuildLayerDefinitionContent();
@@ -189,9 +180,6 @@ String dataSource = "";
         MgGeometryCollection inputGeometries = new MgGeometryCollection();
 
         int bufferFeatures = 0;
-        String prevArbSrs = "";
-        MgCoordinateSystem arbSrs = null;
-
         for (int li = 0; li < selLayers.GetCount(); li++)
         {
             MgLayer selLayer = selLayers.GetItem(li);
@@ -233,36 +221,36 @@ String dataSource = "";
 
             srsDs = srsFactory.Create(srsDefDs);
             bool arbitraryDsSrs = (srsDs.GetType() == MgCoordinateSystemType.Arbitrary);
-            if (arbitraryDsSrs)
-            {
-                if (prevArbSrs != null && prevArbSrs.Length > 0 && !prevArbSrs.Equals(srsDefDs) && arbitraryMapSrs && merge == 1)
-                {
-                    throw new Exception(MgLocalizer.GetString("BUFFERDIFFARBXY", locale));
-                }
-                prevArbSrs = srsDefDs;
-                if (arbSrs == null)
-                {
-                    arbSrs = srsDs;
-                }
-            }
+            String dsSrsUnits = "";
 
-            if (arbitraryDsSrs != arbitraryMapSrs)
+            if (arbitraryDsSrs)
+                dsSrsUnits = srsDs.GetUnits();
+
+            // exclude layer if:
+            //  the map is non-arbitrary and the layer is arbitrary or vice-versa
+            //     or
+            //  layer and map are both arbitrary but have different units
+            //
+            if ((arbitraryDsSrs != arbitraryMapSrs) || (arbitraryDsSrs && (dsSrsUnits != mapSrsUnits)))
             {
-                //exclude this layer because its srs is incompatible with the map srs
                 excludedLayers++;
                 continue;
             }
 
+            // calculate distance in the data source SRS units
+            //
+            double dist = srsDs.ConvertMetersToCoordinateSystemUnits(distance);
+
             // calculate great circle unless data source srs is arbitrary
             MgCoordinateSystemMeasure measure;
-            if (arbitraryDsSrs == true)
+            if (!arbitraryDsSrs)
                 measure = new MgCoordinateSystemMeasure(srsDs);
             else
                 measure = null;
 
             // create a SRS transformer if necessary
             MgCoordinateSystemTransform srsXform;
-            if ((arbitraryMapSrs == false) && (arbitraryDsSrs == false) && !srsDefDs.Equals(srsDefMap))
+            if (!srsDefDs.Equals(srsDefMap))
                 srsXform = new MgCoordinateSystemTransform(srsDs, srsMap);
             else
                 srsXform = null;
@@ -289,24 +277,19 @@ String dataSource = "";
                     MgByteReader geomReader = features.GetGeometry(geomPropName);
                     MgGeometry geom = agfRW.Read(geomReader);
 
-                    MgGeometry geomDest;
-                    if (srsXform != null)
-                    {
-                        //$wkt = new MgWktReaderWriter();
-                        geomDest = (MgGeometry)geom.Transform(srsXform);
-                    }
-                    else
-                        geomDest = geom;
-
                     if (merge == 0)
                     {
-                        geomBuffer = geomDest.Buffer(distance, measure);
+                        geomBuffer = geom.Buffer(dist, measure);
+                        if (srsXform != null)
+                            geomBuffer = (MgGeometry)geomBuffer.Transform(srsXform);
                         AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
                         bufferFeatures++;
                     }
                     else
                     {
-                        inputGeometries.Add(geomDest);
+                        if (srsXform != null)
+                            geom = (MgGeometry)geom.Transform(srsXform);
+                        inputGeometries.Add(geom);
                     }
                 }
                 while (features.ReadNext());
@@ -319,14 +302,15 @@ String dataSource = "";
         {
             if (inputGeometries.GetCount() > 0)
             {
+                double dist = srsMap.ConvertMetersToCoordinateSystemUnits(distance);
                 MgCoordinateSystemMeasure measure;
-                if (arbitraryMapSrs)
-                    measure = new MgCoordinateSystemMeasure(arbSrs);
+                if (!arbitraryMapSrs)
+                    measure = new MgCoordinateSystemMeasure(srsMap);
                 else
                     measure = null;
 
                 MgGeometryFactory geomFactory = new MgGeometryFactory();
-                geomBuffer = geomFactory.CreateMultiGeometry(inputGeometries).Buffer(distance, measure);
+                geomBuffer = geomFactory.CreateMultiGeometry(inputGeometries).Buffer(dist, measure);
                 AddFeatureToCollection(propCollection, agfRW, featId, geomBuffer);
                 bufferFeatures = 1;
             }
@@ -521,6 +505,23 @@ void AddFeatureToCollection(MgBatchPropertyCollection propCollection, MgAgfReade
     MgGeometryProperty geomProp = new MgGeometryProperty("GEOM", geomReader);
     bufferProps.Add(geomProp);
     propCollection.Add(bufferProps);
+}
+
+String GetMapSrs(MgMap map)
+{
+    try
+    {
+        String srs = map.GetMapSRS();
+        if (srs!= "")
+            return srs;
+    }
+    catch (MgException e)
+    {
+    }
+
+    //No SRS, set to ArbitrayXY meters
+    //
+    return "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
 }
 
 </script>
