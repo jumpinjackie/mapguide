@@ -44,17 +44,17 @@ public:
         Write(_(">\r\n"));// NOXLATE
     }
 
-    bool Write(CPSZ pszOut,int iCount)
+    bool Write(CPSZ pszOut,size_t iCount)
     {
         size_t uWritten;
         iCount *= sizeof(wchar_t);
         m_StreamOut.Write(pszOut,iCount,&uWritten);
-        return uWritten == (size_t)iCount;
+        return uWritten == iCount;
     }
 
     bool Write(CPSZ pszOut)
     {
-        return Write(pszOut,(int)szlen(pszOut));
+        return Write(pszOut,szlen(pszOut));
     }
 
 private:

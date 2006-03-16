@@ -125,8 +125,8 @@ void MgWmsLayerDefinitions::GenerateDefinitions(MgUtilDictionary& Dictionary)
             if(sValue.find(_("Library://")) == 0)
                 sValue = sValue.substr(10);
             // Remove the LayerDefinition suffix, if present.
-            int iEnd = sValue.find(_(".LayerDefinition"));
-            if(iEnd >= 0)
+            STRING::size_type iEnd = sValue.find(_(".LayerDefinition"));
+            if(iEnd != STRING::npos)
                 sValue.resize(iEnd);
             // There, that's our Layer Name.
             Dictionary.AddDefinition(_("Layer.Name"),sValue);
@@ -135,7 +135,7 @@ void MgWmsLayerDefinitions::GenerateDefinitions(MgUtilDictionary& Dictionary)
             // friendly name will simply be the layer name sans
             // path.
             iEnd = sValue.find_last_of('/');
-            if(iEnd >= 0)
+            if(iEnd != STRING::npos)
                 sValue = sValue.substr(iEnd+1); // one past the slash.
 
             // That's our Layer Title,
@@ -211,16 +211,16 @@ bool MgWmsLayerDefinitions::GetMetadataDefinitions(MgUtilDictionary& Dictionary)
                 //
                 // TODO: This is not meant to be a long-term solution; it just overcomes
                 // a current schema restriction on metadata consisting of mixed content.
-                int iLt =sValue.find(_("&lt;"));
-                int iGt = sValue.rfind(_("&gt;"));
-                int iLen = sValue.length();
+                STRING::size_type iLt =sValue.find(_("&lt;"));
+                STRING::size_type iGt = sValue.rfind(_("&gt;"));
+                STRING::size_type iLen = sValue.length();
                 if(sValue.find(_("&lt;")) == 0 && sValue.rfind(_("&gt;")) == sValue.length() - 4) {
-                  int iPos;
-                  while((iPos = sValue.find(_("&lt;"))) >= 0)
+                  STRING::size_type iPos;
+                  while((iPos = sValue.find(_("&lt;")))  != STRING::npos)
                     sValue = sValue.substr(0,iPos) + _("<") + sValue.substr(iPos+4);
-                  while((iPos = sValue.find(_("&gt;"))) >= 0)
+                  while((iPos = sValue.find(_("&gt;")))  != STRING::npos)
                     sValue = sValue.substr(0,iPos) + _(">") + sValue.substr(iPos+4);
-                  while((iPos = sValue.find(_("\x201d"))) >= 0)
+                  while((iPos = sValue.find(_("\x201d")))  != STRING::npos)
                     sValue = sValue.substr(0,iPos) + _("\"") + sValue.substr(iPos+1);
                 }
                 //----------------------------------------------------------------------

@@ -64,15 +64,15 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     // If it's just one feature (no comma sep found) let's do
     // a single response, else let's recursively enumerate the features.
     STRING sFeatureTypes = m_hRequest->GetRequestParam()->GetParameterValue(MgHttpResourceStrings::reqWfsTypeName);
-    if(sFeatureTypes.length() > 0 && sFeatureTypes.find(_(",")) == -1) {
+    if(sFeatureTypes.length() > 0 && sFeatureTypes.find(_(",")) != STRING::npos) {
         // TODO: assumes that this is GML type.
         //STRING sOutputFormat = m_hRequest->GetRequestParam()->GetParameterValue(_("OUTPUTFORMAT"));
 
         // Create Proxy Feature Service instance
         Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
-        int iPos = sFeatureTypes.find(_(":"));
-        if(iPos >= 0) {
+        STRING::size_type iPos = sFeatureTypes.find(_(":"));
+        if(iPos != STRING::npos) {
             STRING sResource = sFeatureTypes.substr(0,iPos);
             STRING sClass = sFeatureTypes.substr(iPos+1);
 

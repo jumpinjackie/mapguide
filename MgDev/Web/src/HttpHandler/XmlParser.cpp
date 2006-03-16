@@ -110,7 +110,16 @@ STRING MgXmlNode::Contents() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-MgXmlDoctypeNode::MgXmlDoctypeNode(CPSZ pszString,int& iStartStop)
+MgXmlInvalid::MgXmlInvalid()
+{
+    m_pszStart = _("");
+    m_iLen = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+MgXmlDoctypeNode::MgXmlDoctypeNode(CPSZ pszString,xsize_t& iStartStop)
 : m_bSystem(false)
 , m_bPublic(false)
 , m_pszDtd(NULL)
@@ -162,14 +171,14 @@ MgXmlDoctypeNode::MgXmlDoctypeNode(CPSZ pszString,int& iStartStop)
     if(psz[0]=='[') {
         m_pszInternalSubset = psz+1;
         psz = AdvanceToDoctypeEnd(m_pszInternalSubset);
-        m_iInternalSubsetLen = psz - m_pszInternalSubset;
+        m_iInternalSubsetLen = (xsize_t) (psz - m_pszInternalSubset);
     }
 
     // Now, some administrative overhead: we need to find the end of
     // the DOCTYPE, make a note of the overall length, as well as tell
     // the parser how much we've consumed.
     psz = AdvanceOverWhitespace(psz);
-    m_iLen = psz - m_pszStart;
+    m_iLen = (xsize_t) (psz - m_pszStart);
     iStartStop += m_iLen;
     m_iLen++; // save a bunch of +1's and -1's elsewhere; include the ending '>'
 }
@@ -241,13 +250,13 @@ CPSZ MgXmlDoctypeNode::AdvanceToDoctypeEnd(CPSZ psz)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Represents a CDATA node, such as  <![CDATA[ ... ]]>
-MgXmlCdataNode::MgXmlCdataNode(CPSZ pszString,int& iStartStop)
+MgXmlCdataNode::MgXmlCdataNode(CPSZ pszString,xsize_t& iStartStop)
 {
     // Mark off the start of the <![CDATA[ ...]]> declaration
     m_pszStart = pszString + iStartStop;
 
     CPSZ psz = AdvanceToCDataEnd(m_pszStart + /*len("<![CDATA[")*/ 9);
-    m_iLen = psz - m_pszStart;
+    m_iLen = (xsize_t) (psz - m_pszStart);
     iStartStop += m_iLen;
     m_iLen++;
 }
@@ -360,7 +369,7 @@ bool MgXmlAttributedNode::GetAttribute(CPSZ pszName,STRING& sValue)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-MgXmlProcessingInstruction::MgXmlProcessingInstruction(CPSZ pszString,int& iStartStop)
+MgXmlProcessingInstruction::MgXmlProcessingInstruction(CPSZ pszString,xsize_t& iStartStop)
 {
     m_pszStart   = pszString + iStartStop;
     m_iEndOfName = AdvanceOverName(m_pszStart+2)+2;
@@ -390,7 +399,7 @@ bool MgXmlProcessingInstruction::IsXml() const
 ////////////////////////////////////////////////////////////////////////////////
 
 
-MgXmlBeginElement::MgXmlBeginElement(CPSZ pszString,int& iStartStop)
+MgXmlBeginElement::MgXmlBeginElement(CPSZ pszString,xsize_t& iStartStop)
 {
     m_pszStart   = pszString + iStartStop;
     m_iEndOfName = AdvanceOverName(m_pszStart);
@@ -428,7 +437,7 @@ bool MgXmlBeginElement::IsEmpty() const
 ////////////////////////////////////////////////////////////////////////////////
 
 
-MgXmlEndElement::MgXmlEndElement(CPSZ pszString,int& iStartStop)
+MgXmlEndElement::MgXmlEndElement(CPSZ pszString,xsize_t& iStartStop)
 {
     m_pszStart = pszString + iStartStop;
     m_iLen     = Advance(m_pszStart);
@@ -448,7 +457,7 @@ STRING MgXmlEndElement::Name() const
 ////////////////////////////////////////////////////////////////////////////////
 
 
-MgXmlTextElement::MgXmlTextElement(CPSZ pszString,int& iStartStop)
+MgXmlTextElement::MgXmlTextElement(CPSZ pszString,xsize_t& iStartStop)
 {
     m_pszStart = pszString + iStartStop;
     m_iLen     = Advance(m_pszStart);
@@ -458,7 +467,7 @@ MgXmlTextElement::MgXmlTextElement(CPSZ pszString,int& iStartStop)
 
 bool MgXmlTextElement::IsWhitespace() const
 {
-    for(int i=0;i<m_iLen;i++) {
+    for(xsize_t i=0;i<m_iLen;i++) {
         CPSZ psz = m_pszStart+i; psz;
         if(!iswspace(m_pszStart[i]))
             return false;
@@ -469,7 +478,7 @@ bool MgXmlTextElement::IsWhitespace() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-MgXmlComment::MgXmlComment(CPSZ pszString,int& iStartStop)
+MgXmlComment::MgXmlComment(CPSZ pszString,xsize_t& iStartStop)
 {
     m_pszStart = pszString + iStartStop;
     m_iLen = Advance(m_pszStart);
@@ -489,8 +498,8 @@ STRING MgXmlComment::Text() const
 // Const version. We make a copy of the string.
 MgXmlParser::MgXmlParser(CPSZ pszString)
 : m_sString(szdup(pszString))
-, m_iPos(-1)
-, m_pCurrent(NULL)
+, m_iPos(UNINITIALIZED_XSIZE_T)
+, m_pCurrent(new MgXmlInvalid())
 , m_dwOptions(keNone)                  // The default is that you get all
 {
     m_iLen = (int) szlen(m_sString);
@@ -499,8 +508,8 @@ MgXmlParser::MgXmlParser(CPSZ pszString)
 // Non-const version.  We take ownership of the string.
 MgXmlParser::MgXmlParser(VPSZ pszString)
 : m_sString(pszString)
-, m_iPos(-1)
-, m_pCurrent(NULL)
+, m_iPos(UNINITIALIZED_XSIZE_T)
+, m_pCurrent(new MgXmlInvalid())
 , m_dwOptions(keNone)                  // The default is that you get all
 {
     m_iLen = (int) szlen(m_sString);
@@ -521,7 +530,7 @@ bool MgXmlParser::AtEnd() const
 
 bool MgXmlParser::More() const
 {
-    return !AtEnd() || m_pCurrent != NULL;
+    return !AtEnd() || m_pCurrent->Type() != keUnknownXml;
 }
 
 bool MgXmlParser::Next()
@@ -532,7 +541,7 @@ bool MgXmlParser::Next()
     do {
         if(AtEnd()) {
             delete(m_pCurrent);
-            m_pCurrent = NULL;
+            m_pCurrent = new MgXmlInvalid();
             return false;
         }
 
@@ -547,7 +556,7 @@ bool MgXmlParser::Next()
         // Clean up what was there before.
         if(m_pCurrent != NULL) {
             delete(m_pCurrent);
-            m_pCurrent = NULL;
+            m_pCurrent = NULL; // Note: not new MgXmlInvalid(); pointer will be set soon.
         }
 
         // Examine what is under the "cursor" in our scan forward.
@@ -589,7 +598,7 @@ bool MgXmlParser::Next()
     return true;
 }
 
-bool MgXmlParser::IsDoctype(int iPos)
+bool MgXmlParser::IsDoctype(xsize_t iPos)
 {
     return m_sString[iPos++] == 'D'
         && m_sString[iPos++] == 'O'
@@ -600,7 +609,7 @@ bool MgXmlParser::IsDoctype(int iPos)
         && m_sString[iPos  ] == 'E';
 }
 
-bool MgXmlParser::IsCdata(int iPos)
+bool MgXmlParser::IsCdata(xsize_t iPos)
 {
     return m_sString[iPos++] == '['
         && m_sString[iPos++] == 'C'
@@ -743,8 +752,8 @@ bool MgXmlNamespaceManager::HasNamespace(STRING sNamespace)
 
 STRING MgXmlNamespaceManager::QualifiedName(STRING sName)
 {
-    int iSep = sName.find(_(":"));
-    if(iSep == -1) {
+    size_t iSep = sName.find(_(":"));
+    if(iSep != STRING::npos) {
         // Unprefixed name; might be in default namespace,
         // or it might just be vanilla.
         STRING sNamespace = NamespaceFrom(ksDefaultNsPrefix);
