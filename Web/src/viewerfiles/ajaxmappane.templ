@@ -165,6 +165,7 @@
     <script type="text/javascript" src="../viewerfiles/wz_jsgraphics.js"></script>
     <script type="text/javascript" src="../viewerfiles/hashtable.js"></script>
     <script type="text/javascript" src="../viewerfiles/sarissa.js"></script>
+    <script type="text/javascript" src="../viewerfiles/digitize.js"></script>
     <script language=javascript>
 function SelLayer(className)
 {
@@ -176,12 +177,6 @@ function Selection()
     this.layers = new Hashtable();
     this.count = 0;
 }
-function Point(x, y)
-{
-    this.X = x;
-    this.Y = y;
-}
-
 function Envelope()
 {
     this.lowerLeft = new Point(0,0);
@@ -231,12 +226,11 @@ function Property(name, value) {
 }
 </script>
 <script language=javascript>
-var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5, DIGITIZING=6;
+var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5;
 var RECT=1, CIRCLE=2, POLY=3, SLIDER=4, SCALE=6;
-var DIGIPOINT = 0;
 var TILECX = 300, TILECY = 300;
 var GRIDCX = 15; GRIDCY = 15, DPI = 96;
-var moveType = NONE, dragElt = 0, digiType;
+var moveType = NONE, dragElt = 0, digitizer;
 var intId;
 var tbMenu, ctxMenu, infoMenu;
 var minInfoWidth;
@@ -306,6 +300,8 @@ var curimg = "mapImage1";
 var ovimgloaded = false;
 var minScale = 0.001, maxScale = 1000000000000;
 var digihandler = null;
+var digitizing = false;
+var cancelTgt;
 %s
 
 // public functions -----------------------------------------------
@@ -385,9 +381,35 @@ function GetScale() {
 function DigitizePoint(handler) {
     if(handler == null)
         return;
-    digihandler = handler;
-    moveType = DIGITIZING;
-    digiType = DIGIPOINT;
+    StartDigitizing(new PointDigitizer(OnShapeDigitized, ScreenToMapUnits), handler);
+}
+function DigitizeLine(handler) {
+    if(handler == null)
+        return;
+    StartDigitizing(new LineDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH), handler);
+}
+function DigitizeCircle(handler) {
+    if(handler == null)
+        return;
+    StartDigitizing(new CircleDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH), handler);
+}
+function DigitizeRectangle(handler) {
+    if(handler == null)
+        return;
+    StartDigitizing(new RectangleDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH), handler);
+}
+function DigitizePolyline(handler) {
+    if(handler == null)
+        return;
+    StartDigitizing(new PolylineDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH, ShowSelectionTip, selTtipText, false), handler);
+}
+function DigitizePolygon(handler) {
+    if(handler == null)
+        return;
+    StartDigitizing(new PolylineDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH, ShowSelectionTip, selTtipText, true), handler);
+}
+function IsDigitizing() {
+    return digitizing;
 }
 
 // private functions -----------------------------------------------
@@ -418,6 +440,8 @@ function InitDocument() {
 
     hlData = new HlData();
     moveTimer = 0;
+    
+    cancelTgt = document.getElementById("KeyTarget");
     
     initTimer = setInterval(delayedInit, 200);
 }
@@ -513,8 +537,7 @@ function GotoView(x,y,scale,tohistory,moveovimg) {
         UpdateTilesAfterPan(prevtilex, prevtiley, panX1, panY1, panX2, panY2);
 }
 function ExecuteMapAction(action) {
-    if(moveType == DIGITIZING)
-        return;
+    CancelDigitization();
     switch(action)
     {
         case 1:
@@ -643,8 +666,10 @@ function OnMouseDown(e) {
         return false;
     }
     
-    if(moveType == DIGITIZING)
+    if(digitizing) {
+        digitizer.MouseDown(e, x, y);
         return false;
+    }
 
     var processed = parent.ClickMap(x,y);
 
@@ -879,6 +904,11 @@ function OnMouseMove(e) {
     lastposx = x; lastposy = y;
 
     try { parent.OnCursorPosChanged(x, y); } catch(e) {}
+    
+    if(digitizing) {
+        digitizer.MouseMove(e, x, y);
+        return false;
+    }
 
     if(moveType == RESIZING)
         ResizeTo(e.clientX);
@@ -928,10 +958,8 @@ function OnMouseUp(e) {
     var y = e.clientY;
     if(msie) e.cancelBubble = true; else e.stopPropagation();
     
-    if(moveType == DIGITIZING) {
-        pt = ScreenToMapUnits(x, y);
-        digihandler(pt);
-        digihandler = null;
+    if(digitizing) {
+        digitizer.MouseUp(e, x, y);
         return false;
     }
     lastposx = x; lastposy = y;
@@ -1522,7 +1550,7 @@ function ToolFeedback(x, y) {
     }
     else
     {
-        ShowSelectionTip(x + mapPosX + 16, y + 16, true);
+        ShowSelectionTip(x + mapPosX + 16, y + 16, selTtipText, true);
         polySel.xs[polySel.xs.length - 1] = x;
         polySel.ys[polySel.ys.length - 1] = y;
     }
@@ -1545,7 +1573,7 @@ function EndToolFeedback(x, y) {
         polySel.xs.push(polySel.xs[0]);
         polySel.ys.push(polySel.ys[0]);
 
-        ShowSelectionTip(0, 0, false);
+        ShowSelectionTip(0, 0, null, false);
     }
     ShowToolFeedback(false);
 }
@@ -2827,12 +2855,12 @@ function ExitMap(e) {
     EndPaning(e);
     return true;
 }
-function ShowSelectionTip(x, y, show) {
+function ShowSelectionTip(x, y, text, show) {
     tip = document.getElementById("scaleTip").style;
     if(show) {
         tip.visibility = "visible";
         tipText = document.getElementById("scaleTipText");
-        tipText.innerHTML = "&nbsp;" + selTtipText + "&nbsp;";
+        tipText.innerHTML = "&nbsp;" + text + "&nbsp;";
         tip.top = y; tip.left = x;
      }
      else
@@ -2841,7 +2869,39 @@ function ShowSelectionTip(x, y, show) {
 function OnLayersChanged(){
     ResetVisLayers();
 }
-
+function StartDigitizing(digitizerTool, handler) {
+    if(parent.InMeasure()) {
+        parent.SetStatusMsg("__#MEASALREADYRUNNING#__");
+        return;
+    }
+    digihandler = handler;
+    digitizer = digitizerTool;
+    digitizing = true;
+    document.getElementById("KeyTarget").focus();
+}
+function CancelDigitization() {
+    if(digitizing) {
+        digitizer.Cancel();
+        digitizing = false;
+        digihandler = null;
+    }
+}
+function OnShapeDigitized(shape) {
+    if(digitizing) {
+        digitizing = false;
+        if(digihandler != null) {
+            digihandler(shape);
+            digihandler = null;
+        }
+    }
+}
+function KeyPressed(e) {
+    if(e.keyCode == 27) {
+        CancelDigitization();
+        return false;
+    }
+    return true;
+}
     </script>
 
   </head>
@@ -2921,5 +2981,6 @@ function OnLayersChanged(){
       &nbsp;
     </div>
     <div class="PopupMenu" id="InfoMenu"></div>
+    <input id="KeyTarget" type="text" onKeyDown="return KeyPressed(event);" style="position: absolute; left: 0px; right: 0px; width: 0px; height: 0px" >
   </body>
 </html>
