@@ -243,10 +243,10 @@ function DisplayPackageLog( selectedPackageName )
     var packageNameElement = getElement( selectedPackageName );
     if ( packageNameElement == null )
         return;
-
+		
     var windowNum = Math.round( Math.random() * 100000 );
     var logWindowName = "PackageLog"+windowNum;
-    var destination = "displaypackagelog.php?"+selectedPackageName+"="+packageNameElement.value;
+    var destination = "displaypackagelog.php?selectedPackageID="+packageNameElement.value;
 
     logWindow = window.open( destination, logWindowName, "width=800, height=600, scrollbars, resizable" );
 }
