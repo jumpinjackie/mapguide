@@ -80,8 +80,6 @@ PUBLISHED_API:
     /// If a group is specified, this returns a list of the users in
     /// that group. If a group is not specified, it returns a list of
     /// all users.
-    /// \n
-    /// For more information about users and groups, see xxxxxxxxxxx.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -128,9 +126,6 @@ PUBLISHED_API:
     /// \brief
     /// Gets a list of available groups.
     ///
-    /// \remarks
-    /// For more information about groups, see xxxxxxxxxxx.
-    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// MgByteReader EnumerateGroups();
@@ -144,7 +139,7 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns an MgByteReader object listing the groups in XML
-    /// format using the MgGroupList schema.
+    /// format using the \site GroupList_schema GroupList \endlink schema.
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
@@ -158,7 +153,7 @@ PUBLISHED_API:
     ///
     MgByteReader* EnumerateGroups( );
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Creates a \link session_repository session repository \endlink
     /// for the current user.
@@ -197,7 +192,8 @@ PUBLISHED_API:
     ///
     /// <!-- Examples (PHP) -->
     /// \htmlinclude PHPExamplesTop.html
-    /// This example shows how to create a session repository. Note how the session ID is stored back in the MgUserInformation object. This is necessary for GetCurrentSession to work.
+    /// This example shows how to create a session repository. Note how the session ID 
+    /// is stored back in the MgUserInformation object. This is necessary for GetCurrentSession to work.
     /// \code
     /// // Initialize the web tier
     /// MgInitializeWebTier('C:\\Inetpub\\wwwroot\\PhpMapAgent\\webconfig.ini');
@@ -232,6 +228,9 @@ PUBLISHED_API:
     /// \htmlinclude ExampleBottom.html
     ///
     /// \exception [[To be documented]]
+    ///
+    /// \todo
+    ///   [[What are the exceptions?]]    
     ///
     /// \see
     /// DestroySession
@@ -272,7 +271,7 @@ PUBLISHED_API:
     /// \exception [[To be documented]]
     ///
     /// \todo
-    ///   * [[Question for Trevor: What are the exceptions?]]
+    ///   [[What are the exceptions?]]
     ///
     /// \see
     /// CreateSession
@@ -305,7 +304,7 @@ PUBLISHED_API:
     /// \exception [[To be documented]]
     ///
     /// \todo
-    ///   * [[Question for Trevor: What are the exceptions?]]
+    ///   * [[What are the exceptions?]]
     ///
     /// \see
     /// CreateSession
