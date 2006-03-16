@@ -48,6 +48,25 @@ enum MgXmlNodeType {
   keCdata                     // a <![CDATA[ ]]> block
 };
 
+// It's convenient for us to have a "size_t" type where an undefined
+// value is just below zero (ie, -1).
+// * The int type fits the bill, but causes problems when accepting 
+//   size_t (which is unsigned) -- generating a slew of compiler warnings
+//   about data truncation possibilities.
+// * Just going with size_t makes the compiler warnings disappear,
+//   but horribly "complexifies" the logic needed to start with a
+//   pointer "just before the beginning".
+// * Casting size_t into int isn't great, because it masks a problem
+//   if we should ever happen to get pointer spreads greater than max int.
+// * While not perfect, a cast to a synonym of int at least allows us
+//   to keep tabs on those casts, when and if data truncation becomes real.
+//   (What? a document that large?  Well, it wasn't so long ago we
+//   were saying the same about 64K, then 1MB segmented boundaries... ;)
+//   At leat now there's something explicit to search for -- casting
+//   to (xsize_t) -- and a central place to redefine the synonym.
+typedef int xsize_t;
+#define UNINITIALIZED_XSIZE_T ((xsize_t)-1)
+
 ////////////////////////////////////////////////////////////////////////////////
 // Generic definition of node.  Abstract type.
 class MgXmlNode
@@ -65,8 +84,21 @@ public:
     STRING Contents() const;
 
 protected:
-    CPSZ m_pszStart;  // pointer to the start of the node's representation
-    int     m_iLen;      // the length, in characters, of the node's representtion
+    CPSZ    m_pszStart;  // pointer to the start of the node's representation
+    xsize_t m_iLen;      // the length, in characters, of the node's representtion
+};
+
+
+// Used to represent the "invalid" state prior to
+// beginning and after end of stream.  Allows
+// parser->Current() to return something at all
+// times (since it is a reference)
+class MgXmlInvalid: public MgXmlNode
+{
+public:
+    MgXmlInvalid();
+
+    MgXmlNodeType Type() const { return keUnknownXml; }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +132,7 @@ private:
 class MgXmlDoctypeNode: public MgXmlNode
 {
 public:
-    MgXmlDoctypeNode(CPSZ pszString,int& iStartStop);
+    MgXmlDoctypeNode(CPSZ pszString,xsize_t& iStartStop);
 
     MgXmlNodeType Type() const { return keDoctype; }
 
@@ -129,7 +161,7 @@ private:
     int m_iDtdLen;
 
     CPSZ m_pszInternalSubset;
-    int m_iInternalSubsetLen;
+    xsize_t m_iInternalSubsetLen;
 
 };
 
@@ -138,7 +170,7 @@ private:
 class MgXmlCdataNode: public MgXmlNode
 {
 public:
-    MgXmlCdataNode(CPSZ pszString,int& iStartStop);
+    MgXmlCdataNode(CPSZ pszString,xsize_t& iStartStop);
 
     MgXmlNodeType Type() const { return keCdata; }
 
@@ -171,7 +203,7 @@ protected:
 class MgXmlProcessingInstruction: public MgXmlAttributedNode
 {
 public:
-    MgXmlProcessingInstruction(CPSZ pszString,int& iStartStop);
+    MgXmlProcessingInstruction(CPSZ pszString,xsize_t& iStartStop);
 
     MgXmlNodeType Type() const { return keProcessingInstruction; }
 
@@ -190,7 +222,7 @@ public:
 class MgXmlBeginElement: public MgXmlAttributedNode
 {
 public:
-    MgXmlBeginElement(CPSZ pszString,int& iStartStop);
+    MgXmlBeginElement(CPSZ pszString,xsize_t& iStartStop);
 
     MgXmlNodeType Type() const { return keBeginElement; }
 
@@ -206,7 +238,7 @@ public:
 class MgXmlEndElement: public MgXmlNode
 {
 public:
-    MgXmlEndElement(CPSZ pszString,int& iStartStop);
+    MgXmlEndElement(CPSZ pszString,xsize_t& iStartStop);
 
     MgXmlNodeType Type() const { return keEndElement; }
 
@@ -219,7 +251,7 @@ public:
 class MgXmlTextElement: public MgXmlNode
 {
 public:
-    MgXmlTextElement(CPSZ pszString,int& iStartStop);
+    MgXmlTextElement(CPSZ pszString,xsize_t& iStartStop);
 
     MgXmlNodeType Type() const { return keText; }
 
@@ -232,7 +264,7 @@ public:
 class MgXmlComment: public MgXmlNode
 {
 public:
-    MgXmlComment(CPSZ pszString,int& iStartStop);
+    MgXmlComment(CPSZ pszString,xsize_t& iStartStop);
 
     MgXmlNodeType Type() const { return keComment; }
 
@@ -282,15 +314,16 @@ public:
     LONGBITS Options() { return m_dwOptions; }
 
 private:
-    bool IsDoctype(int iPos);
-    bool IsCdata(int iPos);
+    bool IsDoctype(xsize_t iPos);
+    bool IsCdata(xsize_t iPos);
 
     CPSZ      m_sString;
-    int       m_iLen;
-    int       m_iPos;
+    xsize_t   m_iLen;
+    xsize_t   m_iPos;
     MgXmlNode* m_pCurrent;
     LONGBITS  m_dwOptions;
 };
+
 
 // For use in SetOptions
 enum CParseOptions{
@@ -378,6 +411,11 @@ public:
         // We're in an element, but it's empty, so
         // by definition, we're at the end.
         if(m_bInEmptyElement)
+            return true;
+
+        // Pretty conclusive: if the stream's at end, so are we.
+        // Likely a bad chunk of XML, though.
+        if(m_InStream.AtEnd())
             return true;
 
         // Not at </ending> tag?

@@ -199,10 +199,10 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                         resultReader->ToStringUtf8(thisResponseString);
 
                         // Strip off anything before the first member element, or after the last one
-                        int firstMember = thisResponseString.find(startMemberElement);
+                        STRING::size_type firstMember = thisResponseString.find(startMemberElement);
                         if(firstMember != string::npos)
                         {
-                            int lastMember = thisResponseString.rfind(endMemberElement);
+                            STRING::size_type lastMember = thisResponseString.rfind(endMemberElement);
                             if(lastMember != string::npos)
                             {
                                 responseString.append(thisResponseString, firstMember, lastMember - firstMember + endMemberElement.length());

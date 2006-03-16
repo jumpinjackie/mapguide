@@ -28,6 +28,7 @@
 MgWfsFeatureDefinitions::MgWfsFeatureDefinitions(MgResourceService* pResourceService,MgFeatureService* pFeatureService)
 :   m_pResourceService(pResourceService)
 ,   m_pFeatureService(pFeatureService)
+,   m_pXmlInput(NULL)
 ,   m_sSubsetOfTypes(_("\n"))
 ,   m_bOk(false)
 {
@@ -91,8 +92,8 @@ MgWfsFeatureDefinitions::MgWfsFeatureDefinitions(MgResourceService* pResourceSer
                 if(sSource.find(_("Library://")) == 0)
                     sSource = sSource.substr(10);
                 // Remove the LayerDefinition suffix, if present.
-                int iEnd = sSource.find(_(".FeatureSource"));
-                if(iEnd >= 0)
+                STRING::size_type iEnd = sSource.find(_(".FeatureSource"));
+                if(iEnd != STRING::npos)
                     sSource.resize(iEnd);
                 // There, that's our Layer Source.
                 AddDefinition(oDefinitions,_("Feature.Source"),sSource.c_str());
@@ -321,16 +322,16 @@ bool MgWfsFeatureDefinitions::GetMetadataDefinitions(MgXmlParser& Input,CStream&
                 // a current schema restriction on metadata consisting of mixed content.
                 while(sValue.length() > 0 && isspace(sValue[sValue.length()-1]))
                   sValue = sValue.substr(0,sValue.length()-1);
-                int iLt =sValue.find(_("&lt;"));
-                int iGt = sValue.rfind(_("&gt;"));
-                int iLen = sValue.length();
+                STRING::size_type iLt =sValue.find(_("&lt;"));
+                STRING::size_type iGt = sValue.rfind(_("&gt;"));
+                STRING::size_type iLen = sValue.length();
                 if(sValue.find(_("&lt;")) == 0 && sValue.rfind(_("&gt;")) == sValue.length() - 4) {
-                  int iPos;
-                  while((iPos = sValue.find(_("&lt;"))) >= 0)
+                  STRING::size_type iPos;
+                  while((iPos = sValue.find(_("&lt;"))) != STRING::npos)
                     sValue = sValue.substr(0,iPos) + _("<") + sValue.substr(iPos+4);
-                  while((iPos = sValue.find(_("&gt;"))) >= 0)
+                  while((iPos = sValue.find(_("&gt;"))) != STRING::npos)
                     sValue = sValue.substr(0,iPos) + _(">") + sValue.substr(iPos+4);
-                  while((iPos = sValue.find(_("\x201d"))) >= 0) // gendered quote, as has been encountered.
+                  while((iPos = sValue.find(_("\x201d"))) != STRING::npos) // gendered quote, as has been encountered.
                     sValue = sValue.substr(0,iPos) + _("\"") + sValue.substr(iPos+1);
                 }
                 //----------------------------------------------------------------------
@@ -376,8 +377,8 @@ bool MgWfsFeatureDefinitions::HasFeature(CPSZ pszFeatureName)
     sKey += pszFeatureName;
     sKey +=_("<");// NOXLATE
 
-    int iPos = this->m_sSourcesAndClasses.find(sKey);
-    return iPos >= 0;
+    STRING::size_type iPos = this->m_sSourcesAndClasses.find(sKey);
+    return iPos != STRING::npos;
 }
 
 
@@ -394,8 +395,8 @@ bool MgWfsFeatureDefinitions::SubsetFeatureList(CPSZ pszFeatureNames)
     // We're destructive to this string, so let's make a local copy.
     STRING sTypeNames(pszFeatureNames);
 
-    int iPos;
-    while( (iPos = sTypeNames.find(_(","))) >= 0 ) {
+    STRING::size_type iPos;
+    while( (iPos = sTypeNames.find(_(","))) != STRING::npos ) {
         STRING sType = sTypeNames.substr(0,iPos);
         sTypeNames = sTypeNames.substr(iPos +/* length(",")*/1);
         if(!AddSubset(sType.c_str()))
@@ -425,7 +426,7 @@ bool MgWfsFeatureDefinitions::IsWantedSubset(CPSZ pszTypeName)
     STRING sTypeName(_("\n"));
     sTypeName += pszTypeName;
     sTypeName += _("\n");
-    int iPos = m_sSubsetOfTypes.find(sTypeName);
-    return  iPos >= 0;
+    STRING::size_type iPos = m_sSubsetOfTypes.find(sTypeName);
+    return  iPos != STRING::npos;
 }
 

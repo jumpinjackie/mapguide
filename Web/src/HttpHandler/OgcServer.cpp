@@ -776,8 +776,8 @@ bool MgOgcServer::IsIterationInSubset(int iNum,STRING sSubset,CPSZ pszDefinition
         STRING sNum = _(",");
         sNum += szInteger;
         sNum +=_(",");
-        int iDebug = sSubset.find(sNum);
-        bInclude = (iDebug >= 0);
+        STRING::size_type iDebug = sSubset.find(sNum);
+        bInclude = (iDebug != STRING::npos);
     }
 
     if(bInclude) {
@@ -816,9 +816,9 @@ void MgOgcServer::ProcedureEnumDelim(MgXmlProcessingInstruction& PIEnum)
     ProcessExpandableTextIntoString(sSubset,sSubset);
 
     int iNum = 0;   // iteration count.
-    int iSep = -1;  // last known position of separator; before start of string initially
-    int iItem = 0;  // start of current item; at start of string initially.
-    while((iSep = sList.find(sSep,iItem)) >= 0) {
+    STRING::size_type iSep = STRING::npos;  // last known position of separator; before start of string initially
+    STRING::size_type iItem = 0;            // start of current item; at start of string initially.
+    while((iSep = sList.find(sSep,iItem)) != STRING::npos ) {
         // Each item/iteration gets its own stack frame, so
         // definitions from one iteration don't carry forth
         // into the next.
@@ -1081,9 +1081,6 @@ bool MgOgcServer::GenerateResponse(CPSZ pszResponse,CPSZ pszSpecificMimeType)
         return true; // we generated *a* response, but probably not the one expected ... ;-)
     }
 
-    // Provide a default definition for this.
-    m_pTopOfDefinitions->AddDefinition(kpszDictionaryTemplateVersion,pszVersion);
-
     STRING sFileName(GetTemplatePrefix());
     sFileName += pszVersion;
     sFileName += kpszFilenameTemplateSuffix;
@@ -1208,8 +1205,8 @@ VPSZ MgOgcServer::LoadFile(CPSZ pszFileName)
 {
     STRING sRet;
     MgOgcServer::ms_fnDocLoader(pszFileName,sRet);
-    int iSizeInBytes = sRet.length() * sizeof(CHARTYPE);  // Nice O(1) bit of info
-                                                          // Can't do that with UTF8!
+    STRING::size_type iSizeInBytes = sRet.length() * sizeof(CHARTYPE);  // Nice O(1) bit of info
+                                                                        // Can't do that with UTF8!
 
     // Copy... ( +sizeof(CHARTYPE) == ending null char)
     VPSZ pSlurp = (VPSZ)malloc(iSizeInBytes+sizeof(CHARTYPE));
@@ -1222,7 +1219,7 @@ VPSZ MgOgcServer::LoadFile(CPSZ pszFileName)
     }
 
     // Make sure the thing is null-terminated.
-    int iSizeInChars = iSizeInBytes / sizeof(CHARTYPE);
+    STRING::size_type iSizeInChars = iSizeInBytes / sizeof(CHARTYPE);
     pSlurp[iSizeInChars] = 0;
 
     return pSlurp;
@@ -1254,6 +1251,8 @@ CPSZ MgOgcServer::NegotiatedVersion(CPSZ pszRequested)
         // For debug builds only, allow a regression test version.
         if(pszRequested != NULL && SZ_EQ(pszRequested,kpszDebugVersionRegress)) {
             m_sNegotiatedVersion = pszRequested;
+            // Provide a default definition for this.
+            m_pTopOfDefinitions->AddDefinition(kpszDictionaryTemplateVersion,pszRequested);
             return m_sNegotiatedVersion.c_str();
         }
 #endif
@@ -1309,6 +1308,7 @@ CPSZ MgOgcServer::NegotiatedVersion(CPSZ pszRequested)
             m_sNegotiatedVersion = sVersion; // the last version we found.
     }
 
+    m_pTopOfDefinitions->AddDefinition(kpszDictionaryTemplateVersion,m_sNegotiatedVersion.c_str());
     return m_sNegotiatedVersion.c_str();
 }
 
@@ -1359,8 +1359,8 @@ bool MgOgcServer::Write(CPSZ pszText)
 {
     if(!m_bWriteEnabled)
         return true; // pretend to succeed.
-    size_t uLen = szlen(pszText)*sizeof(CHARTYPE);
-    size_t uWritten;
+    STRING::size_type uLen = szlen(pszText)*sizeof(CHARTYPE);
+    STRING::size_type uWritten;
     m_pResponse->Write(pszText,uLen,&uWritten);
     return uWritten == uLen;
 }
@@ -1369,8 +1369,8 @@ bool MgOgcServer::Write(CPSZ pszText,int iChars)
 {
     if(!m_bWriteEnabled)
         return true; // pretend to succeed.
-    size_t uLen = (size_t)iChars * sizeof(CHARTYPE);
-    size_t uWritten;
+    STRING::size_type uLen = (STRING::size_type)iChars * sizeof(CHARTYPE);
+    STRING::size_type uWritten;
     m_pResponse->Write(pszText,uLen,&uWritten);
     return uWritten == uLen;
 }

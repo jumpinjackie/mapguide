@@ -167,10 +167,10 @@ MgStringCollection* WfsGetFeatureParams::GetParenthesisedList(CREFSTRING sourceS
         STRING remaining = MgUtil::Trim(sourceString);
         while(remaining.length() > 0)
         {
-            int openParenthesis = remaining.find_first_of(L"(");
+            STRING::size_type openParenthesis = remaining.find_first_of(L"(");
             if(openParenthesis != string::npos)
             {
-                int closeParenthesis = remaining.find_first_of(L")");
+                STRING::size_type closeParenthesis = remaining.find_first_of(L")");
                 if(closeParenthesis != string::npos)
                 {
                     STRING thisString = remaining.substr(openParenthesis + 1, closeParenthesis - openParenthesis - 1);
