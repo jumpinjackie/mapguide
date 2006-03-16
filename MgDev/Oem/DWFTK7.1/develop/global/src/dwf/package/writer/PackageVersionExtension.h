@@ -27,6 +27,13 @@
 
 #ifndef DWFTK_READ_ONLY
 
+#ifdef minor
+#undef minor
+#endif
+
+#ifdef major
+#undef major
+#endif
 
 #include "dwfcore/String.h"
 #include "dwfcore/Exception.h"
