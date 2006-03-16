@@ -271,7 +271,7 @@ void DefaultStylizer::StylizeDrawingLayer(  const MdfModel::DrawingLayerDefiniti
     double mapScale = m_renderer->GetMapScale();
 
     //check if we are in scale range
-    if (mapScale > layer->GetMinScale() && mapScale <= layer->GetMaxScale())
+    if (mapScale >= layer->GetMinScale() && mapScale < layer->GetMaxScale())
     {
         m_renderer->StartLayer(legendInfo, NULL);
 
