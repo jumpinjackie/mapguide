@@ -31,6 +31,7 @@
 
 #define EARTH_RADIUS_METERS 6378100.0
 #define METERS_PER_DEGREE   111319.4908
+#define SMALL_ANGLE 1e-7
 
 
 // Dummy class used to automate initialization/uninitialization of CPL.
@@ -1143,11 +1144,35 @@ double CCoordinateSystem::GetAzimuth(double x1, double y1, double x2, double y2)
             double lon2Rads = lon2 * DEG_TO_RAD;
             double lat2Rads = lat2 * DEG_TO_RAD;
 
-            double angularDistance = ::acos(::sin(lat1Rads)*::sin(lat2Rads) + ::cos(lat1Rads)*::cos(lat2Rads)*::cos(lon2Rads-lon1Rads));
-            double cosAzimuth = (::cos(lat1Rads)*::sin(lat2Rads) - ::sin(lat1Rads)*::cos(lat2Rads)*::cos(lon2Rads-lon1Rads)) / ::sin(angularDistance);
-            double sinAzimuth = ::cos(lat2Rads)*::sin(lon2Rads-lon1Rads) / ::sin(angularDistance);
+            double deltax = fabs(lon2Rads-lon1Rads);
+            double deltay = fabs(lat2Rads-lat1Rads);
 
-            azimuth = RAD_TO_DEG*::atan2(sinAzimuth, cosAzimuth);
+            if (deltax < SMALL_ANGLE && deltay < SMALL_ANGLE)
+            {
+                //use small angle formula in case points are really close
+                //formula is the same as the general case but small angle formulae are used
+                //For small angles: sin(delta) ~ delta and cos(delta) ~ 1 - 0.5 * (delta)^2
+
+                double delta = lon2Rads-lon1Rads;
+
+                double sinAsinDist = delta * cos(lat2Rads);
+
+                double cosAsinDist = cos(lat1Rads) * sin(lat2Rads) - sin(lat1Rads) * cos(lat2Rads);
+                
+                //only this term really contributes to cosAsinDist, the part above is
+                //usually 0 or very very close to 0
+                cosAsinDist += sin(lat1Rads) * cos(lat2Rads) * delta * delta / 2.0;
+
+                azimuth = RAD_TO_DEG*::atan2(sinAsinDist, cosAsinDist);
+            }
+            else
+            {
+                double angularDistance = ::acos(::sin(lat1Rads)*::sin(lat2Rads) + ::cos(lat1Rads)*::cos(lat2Rads)*::cos(lon2Rads-lon1Rads));
+                double cosAzimuth = (::cos(lat1Rads)*::sin(lat2Rads) - ::sin(lat1Rads)*::cos(lat2Rads)*::cos(lon2Rads-lon1Rads)) / ::sin(angularDistance);
+                double sinAzimuth = ::cos(lat2Rads)*::sin(lon2Rads-lon1Rads) / ::sin(angularDistance);
+
+                azimuth = RAD_TO_DEG*::atan2(sinAzimuth, cosAzimuth);
+            }
         }
     }
     catch(...)
