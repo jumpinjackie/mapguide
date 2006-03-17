@@ -148,6 +148,11 @@ LatLonBorderWalker::~LatLonBorderWalker()
 LatLonBorderWalker::AzimuthType LatLonBorderWalker::GetLLAzimuthType(MgCoordinate* p0MCS,
     MgCoordinate* p1MCS)
 {
+    //be consistent with GetMCSAzimuthType for points that are equal
+    if (p0MCS->GetX() == p1MCS->GetX() && 
+        p0MCS->GetY() == p1MCS->GetY())
+        return SouthNorthAzimuth;
+
     double dAzimuth = m_measure->GetAzimuth(p0MCS, p1MCS);
 
     if ((dAzimuth == 0.0) || (dAzimuth == 180.0))
