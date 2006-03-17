@@ -81,12 +81,9 @@ void IOSymbol::Write(MdfStream &fd, Symbol *m_symbol)
     fd << "</SizeY>" << std::endl; // NOXLATE
 
     // Property: Rotation (optional)
-    if (wstrToDouble(m_symbol->GetRotation().c_str()) != 0.0)
-    {
-        fd << tab() << "<Rotation>"; // NOXLATE
-        fd << EncodeString(m_symbol->GetRotation());
-        fd << "</Rotation>" << std::endl; // NOXLATE
-    }
+    fd << tab() << "<Rotation>"; // NOXLATE
+    fd << EncodeString(m_symbol->GetRotation());
+    fd << "</Rotation>" << std::endl; // NOXLATE
 
     // Property: MaintainAspect (optional)
     if (m_symbol->GetMaintainAspect() == false)
