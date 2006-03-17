@@ -67,16 +67,24 @@ void MgResourcePackageHandler::InitializeStatus(CREFSTRING packageApiName,
         Ptr<MgDateTime> startTime = new MgDateTime();
         statusInfo.SetEndTime(startTime);
 
-        MgUserInformation* currUserInfo = m_repositoryManager.GetCurrentUserInfo();
-        ACE_ASSERT(NULL != currUserInfo);
+        Ptr<MgUserInformation> currUserInfo = m_repositoryManager.GetCurrentUserInfo();
+        ACE_ASSERT(NULL != currUserInfo.p);
 
         if (NULL != currUserInfo)
         {
             statusInfo.SetUserName(currUserInfo->GetUserName());
         }        
 
-        statusInfo.SetServerName(serverManager->GetServerName());
-        statusInfo.SetServerIp(serverManager->GetLocalServerAddress());
+        STRING serverName = serverManager->GetServerName();
+        STRING serverAddress = serverManager->GetLocalServerAddress();
+
+        if (serverName.empty())
+        {
+            MgIpUtil::HostAddressToName(serverAddress, serverName);
+        }
+
+        statusInfo.SetServerName(serverName);
+        statusInfo.SetServerAddress(serverAddress);
 
         // Write the log file.
         m_packageLogWriter->UpdateLog();

@@ -80,9 +80,9 @@ bool MgPackageLogReader::SetEntry(CREFSTRING name, CREFSTRING value)
     {
         m_statusInfo.SetServerName(value);
     }
-    else if (MgPackageLogEntry::ServerIp == name)
+    else if (MgPackageLogEntry::ServerAddress == name)
     {
-        m_statusInfo.SetServerIp(value);
+        m_statusInfo.SetServerAddress(value);
     }
     else if (MgPackageLogEntry::StartTime == name)
     {

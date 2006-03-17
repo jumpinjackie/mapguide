@@ -51,6 +51,15 @@ MgResourcePackageMaker::~MgResourcePackageMaker()
 void MgResourcePackageMaker::GeneratePathnames(MgResourceIdentifier& resource, 
     CREFSTRING postfix, REFSTRING resourcePathname, REFSTRING archivePathname) const
 {
+    // Ensure the resource package is only made from the Library repository.
+
+    if (!resource.IsRepositoryTypeOf(MgRepositoryType::Library))
+    {
+        throw new MgInvalidRepositoryTypeException(
+            L"MgResourcePackageMaker.GeneratePathnames",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     resourcePathname = resource.ToString();
 
     size_t startIndex = resource.GetRootPath().length();

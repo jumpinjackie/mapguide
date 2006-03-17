@@ -106,7 +106,7 @@ void MgPackageLogWriter::UpdateLog()
     WriteEntry(file, MgPackageLogEntry::PackageSize, m_statusInfo.GetPackageSize());
     WriteEntry(file, MgPackageLogEntry::UserName, m_statusInfo.GetUserName());
     WriteEntry(file, MgPackageLogEntry::ServerName, m_statusInfo.GetServerName());
-    WriteEntry(file, MgPackageLogEntry::ServerIp, m_statusInfo.GetServerIp());
+    WriteEntry(file, MgPackageLogEntry::ServerAddress, m_statusInfo.GetServerAddress());
     WriteEntry(file, MgPackageLogEntry::StartTime, m_statusInfo.GetStartTime());
     WriteEntry(file, MgPackageLogEntry::EndTime, m_statusInfo.GetEndTime());
 

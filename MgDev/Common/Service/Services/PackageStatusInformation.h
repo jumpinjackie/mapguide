@@ -230,19 +230,19 @@ EXTERNAL_API:
     /// \return
     /// The server name.
     ///
-    STRING GetServerIp();
+    STRING GetServerAddress();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the IP address of the Site server on which the package API is performed.
     ///
-    /// \param serverIp
+    /// \param serverAddress
     /// IP address of the server.
     ///
     /// \return
     /// Nothing.
     ///
-    void SetServerIp(CREFSTRING serverIp);
+    void SetServerAddress(CREFSTRING serverAddress);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -440,7 +440,7 @@ private:
 
     STRING m_userName;
     STRING m_serverName;
-    STRING m_serverIp;
+    STRING m_serverAddress;
 
     Ptr<MgDateTime> m_startTime;
     Ptr<MgDateTime> m_endTime;
