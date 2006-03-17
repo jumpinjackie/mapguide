@@ -386,13 +386,10 @@ void MgApplicationResourceContentManager::DeleteResourceData(XmlDocument& xmlDoc
             MgResourceInfo::sm_metadataNames[MgResourceInfo::Tags],
             tagValue))
     {
-        MgApplicationRepositoryManager* appRepositoryManager =
-            dynamic_cast<MgApplicationRepositoryManager*>(&m_repositoryMan);
-        assert(NULL != appRepositoryManager);
         STRING resourceTags;
         MgUtil::MultiByteToWideChar(tagValue.asString(), resourceTags);
 
-        appRepositoryManager->DeleteResourceData(resourceTags);
+        m_repositoryMan.DeleteResourceData(resourceTags);
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationResourceContentManager.DeleteResourceData")

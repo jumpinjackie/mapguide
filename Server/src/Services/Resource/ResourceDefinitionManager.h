@@ -67,10 +67,10 @@ public:
         bool strict = false);
     void UpdateResource(MgResourceInfo& resourceInfo,
         const string& document);
-    void MoveResource(MgResourceIdentifier* sourceResource,
-        MgResourceIdentifier* destResource, bool overwrite);
-    void CopyResource(MgResourceIdentifier* sourceResource,
-        MgResourceIdentifier* destResource, bool overwrite);
+    virtual void MoveResource(MgResourceIdentifier* sourceResource,
+        MgResourceIdentifier* destResource, bool overwrite) = 0;
+    virtual void CopyResource(MgResourceIdentifier* sourceResource,
+        MgResourceIdentifier* destResource, bool overwrite) = 0;
     MgByteReader* GetResource(MgResourceIdentifier* resource,
         const MgDataBindingInfo* dataBindingInfo = NULL);
 
@@ -125,6 +125,9 @@ protected:
     XmlContainer& m_container;
 
 private:
+
+    friend class MgResourceHeaderManager;
+    friend class MgResourceContentManager;
 
     static ACE_Recursive_Thread_Mutex sm_mutex;
 };

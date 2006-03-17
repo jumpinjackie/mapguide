@@ -95,7 +95,15 @@ public:
     virtual MgByteReader* GetResourceContent(
         MgResourceIdentifier* resource, CREFSTRING preProcessTags) = 0;
 
+    // Resource Data Management APIs
+
+    virtual void DeleteResourceData(CREFSTRING resourceTags);
+    virtual void CopyResourceData(CREFSTRING sourceResourceTags,
+        REFSTRING destResourceTags, bool overwrite);
+
     // Helper Methods
+
+    MgRepositoryManager* GetSourceRepositoryManager();
 
     virtual bool FindResource(MgResourceIdentifier* resource);
 
@@ -119,6 +127,8 @@ protected:
     bool m_currUserIsAdmin;
     bool m_currUserIsAuthor;
 
+    MgRepositoryManager* m_sourceRepositoryMan;
+
     DbTxn* m_dbTxn;
     auto_ptr<XmlTransaction> m_xmlTxn;
 
@@ -138,6 +148,11 @@ private:
 
 /// Inline Methods
 
+inline MgRepositoryManager* MgRepositoryManager::GetSourceRepositoryManager()
+{
+    return m_sourceRepositoryMan;
+}
+
 inline MgRepository& MgRepositoryManager::GetRepository() const
 {
     return m_repository;
@@ -156,7 +171,7 @@ inline XmlTransaction& MgRepositoryManager::GetXmlTxn()
 
 inline MgUserInformation* MgRepositoryManager::GetCurrentUserInfo() const
 {
-    return m_currUserInfo;
+    return SAFE_ADDREF((MgUserInformation*)m_currUserInfo);
 }
 
 #endif

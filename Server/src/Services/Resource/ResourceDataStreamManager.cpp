@@ -143,24 +143,34 @@ void MgResourceDataStreamManager::DeleteResourceData(const string& dataKey,
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-void MgResourceDataStreamManager::CopyResourceData(const string& oldDataKey,
-    const string& newDataKey, CREFSTRING dataName)
+void MgResourceDataStreamManager::CopyResourceData(const string& sourceDataKey,
+    const string& destDataKey, CREFSTRING dataName)
 {
     Dbt data;
-    ::memset(&data, 0, sizeof(data));
 
     MG_RESOURCE_SERVICE_TRY()
+
+    // Get the source MgResourceDataStreamManager.
+    MgApplicationRepositoryManager* sourceRepositoryMan =
+        dynamic_cast<MgApplicationRepositoryManager*>(
+        ((MgApplicationRepositoryManager&)m_repositoryMan).GetSourceRepositoryManager());
+    ACE_ASSERT(NULL != sourceRepositoryMan);
+    MgResourceDataStreamManager* sourceResourceDataStreamMan = 
+        sourceRepositoryMan->GetResourceDataStreamManager();
+    ACE_ASSERT(NULL != sourceResourceDataStreamMan);
 
     // Get the resource data.
 
     Dbt key;
     ::memset(&key, 0, sizeof(key));
+    ::memset(&data, 0, sizeof(data));
 
-    key.set_data(reinterpret_cast<void*>(const_cast<char*>(oldDataKey.c_str())));
-    key.set_size(static_cast<u_int32_t>(oldDataKey.length() + 1));
+    key.set_data(reinterpret_cast<void*>(const_cast<char*>(sourceDataKey.c_str())));
+    key.set_size(static_cast<u_int32_t>(sourceDataKey.length() + 1));
     data.set_flags(DB_DBT_MALLOC);
 
-    if (DB_NOTFOUND == m_database.get(GetDbTxn(), &key, &data, 0))
+    if (DB_NOTFOUND == sourceResourceDataStreamMan->m_database.get(
+        sourceResourceDataStreamMan->GetDbTxn(), &key, &data, 0))
     {
         MgStringCollection arguments;
         arguments.Add(dataName);
@@ -174,8 +184,8 @@ void MgResourceDataStreamManager::CopyResourceData(const string& oldDataKey,
 
     ::memset(&key, 0, sizeof(key));
 
-    key.set_data(reinterpret_cast<void*>(const_cast<char*>(newDataKey.c_str())));
-    key.set_size(static_cast<u_int32_t>(newDataKey.length() + 1));
+    key.set_data(reinterpret_cast<void*>(const_cast<char*>(destDataKey.c_str())));
+    key.set_size(static_cast<u_int32_t>(destDataKey.length() + 1));
 
     m_database.put(GetDbTxn(), &key, &data, 0);
 

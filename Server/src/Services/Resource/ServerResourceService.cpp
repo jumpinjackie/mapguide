@@ -449,6 +449,14 @@ void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    if (!resource->IsRepositoryTypeOf(MgRepositoryType::Library))
+    {
+        throw new MgInvalidRepositoryTypeException(
+            L"MgServerResourceService.MakeResourcePackage",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    ACE_ASSERT(resource->GetRepositoryName().empty());
     MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
 
     repositoryMan.MakeResourcePackage(resource, packagePathname, 
@@ -607,7 +615,7 @@ void MgServerResourceService::MoveResource(MgResourceIdentifier* sourceResource,
     }
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
-        CreateApplicationRepositoryManager(sourceResource));
+        CreateApplicationRepositoryManager(destResource));
 
     repositoryMan->MoveResource(sourceResource, destResource, overwrite);
 
@@ -646,7 +654,7 @@ void MgServerResourceService::CopyResource(MgResourceIdentifier* sourceResource,
     }
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
-        CreateApplicationRepositoryManager(sourceResource));
+        CreateApplicationRepositoryManager(destResource));
 
     repositoryMan->CopyResource(sourceResource, destResource, overwrite);
 

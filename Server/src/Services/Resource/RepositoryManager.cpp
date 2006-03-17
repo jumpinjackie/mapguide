@@ -42,6 +42,9 @@ MgRepositoryManager::MgRepositoryManager(
     m_dbTxn(NULL),
     m_xmlTxn(NULL)
 {
+    // Set the source and destination repository managers are the same by default.
+    m_sourceRepositoryMan = this;
+
     ::time(&m_accessedTime);
 
     InitializeTransaction();
@@ -399,7 +402,8 @@ void MgRepositoryManager::InitializeTransaction()
     if (NULL != m_dbTxn || NULL != m_xmlTxn.get())
     {
         throw new MgInvalidOperationException(
-            L"MgRepositoryManager.InitializeTransaction", __LINE__, __WFILE__, NULL, L"", NULL);
+            L"MgRepositoryManager.InitializeTransaction", 
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     MgDbEnvironment* environment = m_repository.GetEnvironment();
@@ -576,15 +580,11 @@ void MgRepositoryManager::ThrowDuplicateResourceException(
 
 MgByteReader* MgRepositoryManager::EnumerateRepositories()
 {
-    MG_RESOURCE_SERVICE_TRY()
-
-    throw new MgInvalidOperationException(
+    throw new MgNotImplementedException(
         L"MgRepositoryManager.EnumerateRepositories",
         __LINE__, __WFILE__, NULL, L"", NULL);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgRepositoryManager.EnumerateRepositories")
-
-    return NULL;
+    return NULL; // to make some compiler happy
 }
 
 ///----------------------------------------------------------------------------
@@ -667,15 +667,11 @@ void MgRepositoryManager::CreateRepository(MgResourceIdentifier* resource,
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-void MgRepositoryManager::DeleteRepository(
-    MgResourceIdentifier* resource)
+void MgRepositoryManager::DeleteRepository(MgResourceIdentifier* resource)
 {
-    MG_RESOURCE_SERVICE_TRY()
-
-    throw new MgInvalidOperationException(
-        L"MgRepositoryManager.DeleteRepository", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgRepositoryManager.DeleteRepository")
+    throw new MgNotImplementedException(
+        L"MgRepositoryManager.DeleteRepository", 
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 ///----------------------------------------------------------------------------
@@ -957,6 +953,30 @@ void MgRepositoryManager::UpdateResource(MgResourceIdentifier* resource,
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgRepositoryManager.UpdateResource")
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Deletes all the resource data referenced in the specified resource tags.
+///
+void MgRepositoryManager::DeleteResourceData(CREFSTRING resourceTags)
+{
+    throw new MgNotImplementedException(
+        L"MgRepositoryManager.DeleteResourceData", 
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Copies all the resource data referenced in the source resource tags, and
+/// returns destination resource tags with new references.
+///
+void MgRepositoryManager::CopyResourceData(CREFSTRING sourceResourceTags,
+    REFSTRING destResourceTags, bool overwrite)
+{
+    throw new MgNotImplementedException(
+        L"MgRepositoryManager.CopyResourceData", 
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 ///----------------------------------------------------------------------------

@@ -92,12 +92,18 @@ public:
     void CopyResourceData(CREFSTRING sourceResourceTags,
         REFSTRING destResourceTags, bool overwrite);
 
-    virtual MgResourceDataStreamManager* GetResourceDataStreamManager();
-    virtual MgResourceDataFileManager* GetResourceDataFileManager();
+    MgApplicationResourceContentManager* GetApplicationResourceContentManager();
+
+    MgResourceDataStreamManager* GetResourceDataStreamManager();
+    MgResourceDataFileManager* GetResourceDataFileManager();
 
 protected:
 
     virtual void UpdateChangedResourceSet(MgResourceIdentifier& resource);
+
+private:
+
+    static MgApplicationRepositoryManager* Create(MgResourceIdentifier* resource);
 
 /// Data Members
 
