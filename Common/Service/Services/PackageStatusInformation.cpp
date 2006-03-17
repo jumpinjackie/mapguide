@@ -77,7 +77,7 @@ MgPackageStatusInformation& MgPackageStatusInformation::operator=(const MgPackag
         m_packageSize           = packageStatusInfo.m_packageSize;
         m_userName              = packageStatusInfo.m_userName;
         m_serverName            = packageStatusInfo.m_serverName;
-        m_serverIp              = packageStatusInfo.m_serverIp;
+        m_serverAddress         = packageStatusInfo.m_serverAddress;
 
         if (packageStatusInfo.m_startTime == NULL)
         {
@@ -144,7 +144,7 @@ void MgPackageStatusInformation::Serialize(MgStream* stream)
     stream->WriteInt64(m_packageSize);
     stream->WriteString(m_userName);
     stream->WriteString(m_serverName);
-    stream->WriteString(m_serverIp);
+    stream->WriteString(m_serverAddress);
     stream->WriteObject(m_startTime);
     stream->WriteObject(m_endTime);
     stream->WriteInt32(m_opsFailed);
@@ -170,7 +170,7 @@ void MgPackageStatusInformation::Deserialize(MgStream* stream)
     stream->GetInt64(m_packageSize);
     stream->GetString(m_userName);
     stream->GetString(m_serverName);
-    stream->GetString(m_serverIp);
+    stream->GetString(m_serverAddress);
     m_startTime = (MgDateTime*)stream->GetObject();
     m_endTime = (MgDateTime*)stream->GetObject();
     stream->GetInt32(m_opsFailed);
@@ -210,7 +210,7 @@ STRING MgPackageStatusInformation::GetStatusMessage()
         resourceId = (MgPackageApiName::LoadPackage == m_apiName) ?
             L"MgPackageStatusMessageLoadPackageSucceeded" :
             L"MgPackageStatusMessageMakePackageSucceeded";
-        arguments.Add(m_serverName.empty() ? m_serverIp : m_serverName);
+        arguments.Add(m_serverName.empty() ? m_serverAddress : m_serverName);
         arguments.Add(m_endTime->ToXmlString(false));
     }
     else if (MgPackageStatusCode::Failed == m_statusCode)
@@ -218,7 +218,7 @@ STRING MgPackageStatusInformation::GetStatusMessage()
         resourceId = (MgPackageApiName::LoadPackage == m_apiName) ?
             L"MgPackageStatusMessageLoadPackageFailed" :
             L"MgPackageStatusMessageMakePackageFailed";
-        arguments.Add(m_serverName.empty() ? m_serverIp : m_serverName);
+        arguments.Add(m_serverName.empty() ? m_serverAddress : m_serverName);
         arguments.Add(m_endTime->ToXmlString(false));
     }
     else if (MgPackageStatusCode::InProgress == m_statusCode)
@@ -343,14 +343,14 @@ void MgPackageStatusInformation::SetServerName(CREFSTRING serverName)
     m_serverName = serverName;
 }
 
-STRING MgPackageStatusInformation::GetServerIp()
+STRING MgPackageStatusInformation::GetServerAddress()
 {
-    return m_serverIp;
+    return m_serverAddress;
 }
 
-void MgPackageStatusInformation::SetServerIp(CREFSTRING serverIp)
+void MgPackageStatusInformation::SetServerAddress(CREFSTRING serverAddress)
 {
-    m_serverIp = serverIp;
+    m_serverAddress = serverAddress;
 }
 
 MgDateTime* MgPackageStatusInformation::GetStartTime()

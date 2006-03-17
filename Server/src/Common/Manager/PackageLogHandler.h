@@ -32,7 +32,7 @@ INTERNAL_API:
 
     static const STRING UserName;
     static const STRING ServerName;
-    static const STRING ServerIp;
+    static const STRING ServerAddress;
 
     static const STRING StartTime;
     static const STRING EndTime;
