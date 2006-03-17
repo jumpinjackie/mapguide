@@ -152,12 +152,10 @@ public:
 
     // Other internal methods
 
-    virtual void PerformRepositoryCheckpoints(UINT32 flags = 0);
-
-protected:
-
     MgApplicationRepositoryManager* CreateApplicationRepositoryManager(
         MgResourceIdentifier* resource);
+
+    virtual void PerformRepositoryCheckpoints(UINT32 flags = 0);
 
 /// Data Members
 

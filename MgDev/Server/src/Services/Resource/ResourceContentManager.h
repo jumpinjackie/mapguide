@@ -52,6 +52,10 @@ public:
 
     virtual void AddResource(MgResourceInfo& resourceInfo,
         const string& document);
+    virtual void MoveResource(MgResourceIdentifier* sourceResource,
+        MgResourceIdentifier* destResource, bool overwrite);
+    virtual void CopyResource(MgResourceIdentifier* sourceResource,
+        MgResourceIdentifier* destResource, bool overwrite);
 
 protected:
 

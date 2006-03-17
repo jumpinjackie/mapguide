@@ -25,40 +25,40 @@ class MgResourceDataStreamManager : public MgResourceDataManager
 {
 /// Constructors/Destructor
 
-    public:
+public:
 
-        explicit MgResourceDataStreamManager(
-            MgApplicationRepositoryManager& repositoryMan);
-        virtual ~MgResourceDataStreamManager();
+    explicit MgResourceDataStreamManager(
+        MgApplicationRepositoryManager& repositoryMan);
+    virtual ~MgResourceDataStreamManager();
 
-    private:
+private:
 
-        // Unimplemented Constructors/Methods
+    // Unimplemented Constructors/Methods
 
-        MgResourceDataStreamManager();
-        MgResourceDataStreamManager(const MgResourceDataStreamManager&);
-        MgResourceDataStreamManager& operator=(const MgResourceDataStreamManager&);
+    MgResourceDataStreamManager();
+    MgResourceDataStreamManager(const MgResourceDataStreamManager&);
+    MgResourceDataStreamManager& operator=(const MgResourceDataStreamManager&);
 
 /// Methods
 
-    public:
+public:
 
-        // Resource Data Management APIs
+    // Resource Data Management APIs
 
-        void SetResourceData(const string& dataKey, CREFSTRING dataName,
-            MgByteReader* byteReader);
-        void DeleteResourceData(const string& dataKey, CREFSTRING dataName,
-            bool strict = false);
-        void CopyResourceData(const string& oldDataKey,
-            const string& newDataKey, CREFSTRING dataName);
-        MgByteReader* GetResourceData(const string& dataKey,
-            CREFSTRING dataName, CREFSTRING mimeType);
+    void SetResourceData(const string& dataKey, CREFSTRING dataName,
+        MgByteReader* byteReader);
+    void DeleteResourceData(const string& dataKey, CREFSTRING dataName,
+        bool strict = false);
+    void CopyResourceData(const string& sourceDataKey,
+        const string& destDataKey, CREFSTRING dataName);
+    MgByteReader* GetResourceData(const string& dataKey,
+        CREFSTRING dataName, CREFSTRING mimeType);
 
 /// Data Members
 
-    protected:
+protected:
 
-        Db& m_database;
+    Db& m_database;
 };
 
 #endif

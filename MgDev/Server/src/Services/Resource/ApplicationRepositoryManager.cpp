@@ -25,6 +25,8 @@
 #include "ResourceInfo.h"
 #include "CryptographyUtil.h"
 #include "LogManager.h"
+#include "ServiceManager.h"
+#include "ServerResourceService.h"
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -106,6 +108,48 @@ MgApplicationRepositoryManager::~MgApplicationRepositoryManager()
 {
     delete m_dataStreamMan;
     delete m_dataFileMan;
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates an application repository manager.
+///
+MgApplicationRepositoryManager* MgApplicationRepositoryManager::Create(
+    MgResourceIdentifier* resource)
+{
+    MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+    ACE_ASSERT(NULL != serviceManager);
+    Ptr<MgService> service = serviceManager->RequestService(MgServiceType::ResourceService);
+    MgServerResourceService* resourceService = dynamic_cast<MgServerResourceService*>(service.p);
+
+    if (NULL == resourceService)
+    {
+        throw new MgServiceNotAvailableException(
+            L"MgApplicationRepositoryManager.Create",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    return resourceService->CreateApplicationRepositoryManager(resource);
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the application resource content manager.
+///
+MgApplicationResourceContentManager* MgApplicationRepositoryManager::GetApplicationResourceContentManager()
+{
+    MgApplicationResourceContentManager* appResourceContentMan =
+        dynamic_cast<MgApplicationResourceContentManager*>(
+            GetResourceContentManager());
+
+    if (NULL == appResourceContentMan)
+    {
+        throw new MgInvalidCastException(
+            L"MgApplicationResourceContentManager.GetApplicationResourceContentManager", 
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    return appResourceContentMan;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -250,14 +294,11 @@ MgByteReader* MgApplicationRepositoryManager::GetRepositoryContent(
 MgByteReader* MgApplicationRepositoryManager::GetRepositoryHeader(
     MgResourceIdentifier* resource)
 {
-    MG_RESOURCE_SERVICE_TRY()
+    throw new MgNotImplementedException(
+        L"MgApplicationRepositoryManager.GetRepositoryHeader", 
+        __LINE__, __WFILE__, NULL, L"", NULL);
 
-    throw new MgInvalidOperationException(
-        L"MgApplicationRepositoryManager.GetRepositoryHeader", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationRepositoryManager.GetRepositoryHeader")
-
-    return NULL;
+    return NULL; // to make some compiler happy
 }
 
 ///----------------------------------------------------------------------------
@@ -274,14 +315,11 @@ MgByteReader* MgApplicationRepositoryManager::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
     INT32 properties, CREFSTRING fromDate, CREFSTRING toDate)
 {
-    MG_RESOURCE_SERVICE_TRY()
+    throw new MgNotImplementedException(
+        L"MgApplicationRepositoryManager.EnumerateResources", 
+        __LINE__, __WFILE__, NULL, L"", NULL);
 
-    throw new MgInvalidOperationException(
-        L"MgApplicationRepositoryManager.EnumerateResources", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationRepositoryManager.EnumerateResources")
-
-    return NULL;
+    return NULL; // to make some compiler happy
 }
 
 ///----------------------------------------------------------------------------
@@ -358,14 +396,11 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceContent(
 MgByteReader* MgApplicationRepositoryManager::GetResourceHeader(
     MgResourceIdentifier* resource)
 {
-    MG_RESOURCE_SERVICE_TRY()
+    throw new MgNotImplementedException(
+        L"MgApplicationRepositoryManager.GetResourceHeader", 
+        __LINE__, __WFILE__, NULL, L"", NULL);
 
-    throw new MgInvalidOperationException(
-        L"MgApplicationRepositoryManager.GetResourceHeader", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationRepositoryManager.GetResourceHeader")
-
-    return NULL;
+    return NULL; // to make some compiler happy
 }
 
 ///----------------------------------------------------------------------------
@@ -451,22 +486,24 @@ void MgApplicationRepositoryManager::MoveResource(
 
     // Move the resource and all of its children.
 
-    MgResourceContentManager* resourceContentMan = GetResourceContentManager();
     MgResourceHeaderManager* resourceHeaderMan = GetResourceHeaderManager();
 
-    if (NULL == resourceHeaderMan)
-    {
-        resourceContentMan->MoveResource(sourceResource, destResource, overwrite);
-    }
-    else
+    if (NULL != resourceHeaderMan)
     {
         MgResourceInfo resourceInfo(*destResource, m_currUserInfo, m_accessedTime);
-        string headerDoc;
+        string defaultDoc;
 
-        resourceHeaderMan->AddParentResources(resourceInfo, headerDoc);
+        resourceHeaderMan->AddParentResources(resourceInfo, defaultDoc);
         resourceHeaderMan->MoveResource(sourceResource, destResource, overwrite);
-        resourceContentMan->MoveResource(sourceResource, destResource, overwrite);
     }
+
+    MgResourceContentManager* resourceContentMan = GetResourceContentManager();
+    ACE_ASSERT(NULL != resourceContentMan);
+
+    resourceContentMan->MoveResource(sourceResource, destResource, overwrite);
+
+    UpdateDateModifiedResourceSet(sourceResource->GetFullPath(true));
+    UpdateDateModifiedResourceSet(destResource->GetFullPath(true));
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationRepositoryManager.MoveResource")
 }
@@ -486,6 +523,7 @@ void MgApplicationRepositoryManager::CopyResource(
     bool overwrite)
 {
     assert(NULL != sourceResource && NULL != destResource) ;
+    auto_ptr<MgApplicationRepositoryManager> sourceRepositoryMan;
 
     MG_RESOURCE_SERVICE_TRY()
 
@@ -511,19 +549,6 @@ void MgApplicationRepositoryManager::CopyResource(
 
         throw new MgInvalidArgumentException(L"MgApplicationRepositoryManager.CopyResource",
             __LINE__, __WFILE__, &arguments, L"MgInvalidResourceCannotBeRoot", NULL);
-    }
-
-    if (sourceResource->GetRootPath() != destResource->GetRootPath())
-    {
-        // Root paths are different
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(sourceResource->ToString());
-        arguments.Add(L"2");
-        arguments.Add(destResource->ToString());
-
-        throw new MgInvalidArgumentException(L"MgApplicationRepositoryManager.CopyResource",
-            __LINE__, __WFILE__, &arguments, L"MgResourceRootPathsDifferent", NULL);
     }
 
     if (sourceResource->GetResourceType() != destResource->GetResourceType())
@@ -552,26 +577,44 @@ void MgApplicationRepositoryManager::CopyResource(
             __LINE__, __WFILE__, &arguments, L"MgResourcesIdentical", NULL);
     }
 
-    // Copy the resource and all of its children.
+    // Initialize the source MgApplicationRepositoryManager.
 
-    MgResourceContentManager* resourceContentMan = GetResourceContentManager();
-    MgResourceHeaderManager* resourceHeaderMan = GetResourceHeaderManager();
-
-    if (NULL == resourceHeaderMan)
+    if (sourceResource->GetRootPath() == destResource->GetRootPath())
     {
-        resourceContentMan->CopyResource(sourceResource, destResource, overwrite);
+        m_sourceRepositoryMan = this;
     }
     else
     {
-        MgResourceInfo resourceInfo(*destResource, m_currUserInfo, m_accessedTime);
-        string headerDoc;
-
-        resourceHeaderMan->AddParentResources(resourceInfo, headerDoc);
-        resourceHeaderMan->CopyResource(sourceResource, destResource, overwrite);
-        resourceContentMan->CopyResource(sourceResource, destResource, overwrite);
+        sourceRepositoryMan.reset(Create(sourceResource));
+        m_sourceRepositoryMan = sourceRepositoryMan.get();
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationRepositoryManager.CopyResource")
+    // Copy the resource and all of its children.
+
+    MgResourceHeaderManager* resourceHeaderMan = GetResourceHeaderManager();
+
+    if (NULL != resourceHeaderMan)
+    {
+        MgResourceInfo resourceInfo(*destResource, m_currUserInfo, m_accessedTime);
+        string defaultDoc;
+
+        resourceHeaderMan->AddParentResources(resourceInfo, defaultDoc);
+        resourceHeaderMan->CopyResource(sourceResource, destResource, overwrite);
+    }
+
+    MgResourceContentManager* resourceContentMan = GetResourceContentManager();
+    ACE_ASSERT(NULL != resourceContentMan);
+
+    resourceContentMan->CopyResource(sourceResource, destResource, overwrite);
+
+    UpdateDateModifiedResourceSet(destResource->GetFullPath(true));
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgApplicationRepositoryManager.CopyResource")
+
+    // Set the source and destination repository managers are the same by default.
+    m_sourceRepositoryMan = this;
+
+    MG_RESOURCE_SERVICE_THROW()
 }
 
 ///----------------------------------------------------------------------------
@@ -595,9 +638,7 @@ MgByteReader* MgApplicationRepositoryManager::EnumerateReferences(
     // Perform the operation.
 
     MgApplicationResourceContentManager* resourceContentMan =
-        dynamic_cast<MgApplicationResourceContentManager*>(
-        GetResourceContentManager());
-    assert(NULL != resourceContentMan);
+        GetApplicationResourceContentManager();
 
     byteReader = resourceContentMan->EnumerateReferences(resource);
 
@@ -620,9 +661,7 @@ void MgApplicationRepositoryManager::EnumerateParentMapDefinitions(
     MG_RESOURCE_SERVICE_TRY()
 
     MgApplicationResourceContentManager* resourceContentMan =
-        dynamic_cast<MgApplicationResourceContentManager*>(
-        GetResourceContentManager());
-    assert(NULL != resourceContentMan);
+        GetApplicationResourceContentManager();
 
     // Scan through the repository tree to search for all the parent Map
     // Definition resources that reference the specified child resources.
@@ -695,9 +734,7 @@ MgByteReader* MgApplicationRepositoryManager::EnumerateResourceData(
     // Perform the operation.
 
     MgApplicationResourceContentManager* resourceContentMan =
-        dynamic_cast<MgApplicationResourceContentManager*>(
-        GetResourceContentManager());
-    assert(NULL != resourceContentMan);
+        GetApplicationResourceContentManager();
 
     byteReader = resourceContentMan->EnumerateResourceData(resource);
 
@@ -740,9 +777,7 @@ void MgApplicationRepositoryManager::SetResourceData(
     // Get the resource tags.
 
     MgApplicationResourceContentManager* resourceContentMan =
-        dynamic_cast<MgApplicationResourceContentManager*>(
-        GetResourceContentManager());
-    assert(NULL != resourceContentMan);
+        GetApplicationResourceContentManager();
     STRING resourceTags;
     XmlDocument xmlDoc = resourceContentMan->GetResourceTags(resource,
         MgResourcePermission::ReadWrite, resourceTags);
@@ -875,9 +910,7 @@ void MgApplicationRepositoryManager::DeleteResourceData(
     // Get the resource tags.
 
     MgApplicationResourceContentManager* resourceContentMan =
-        dynamic_cast<MgApplicationResourceContentManager*>(
-        GetResourceContentManager());
-    assert(NULL != resourceContentMan);
+        GetApplicationResourceContentManager();
     STRING resourceTags;
     XmlDocument xmlDoc = resourceContentMan->GetResourceTags(resource,
         MgResourcePermission::ReadWrite, resourceTags);
@@ -970,9 +1003,7 @@ void MgApplicationRepositoryManager::RenameResourceData(
     // Get the resource tags.
 
     MgApplicationResourceContentManager* resourceContentMan =
-        dynamic_cast<MgApplicationResourceContentManager*>(
-        GetResourceContentManager());
-    assert(NULL != resourceContentMan);
+        GetApplicationResourceContentManager();
     STRING resourceTags;
     XmlDocument xmlDoc = resourceContentMan->GetResourceTags(resource,
         MgResourcePermission::ReadWrite, resourceTags);
@@ -1051,9 +1082,7 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceData(
     // Get the resource tags.
 
     MgApplicationResourceContentManager* resourceContentMan =
-        dynamic_cast<MgApplicationResourceContentManager*>(
-        GetResourceContentManager());
-    assert(NULL != resourceContentMan);
+        GetApplicationResourceContentManager();
     STRING resourceTags;
 
     resourceContentMan->GetResourceTags(resource,
@@ -1267,6 +1296,8 @@ void MgApplicationRepositoryManager::DeleteResourceData(
 void MgApplicationRepositoryManager::CopyResourceData(
     CREFSTRING sourceResourceTags, REFSTRING destResourceTags, bool overwrite)
 {
+    ACE_ASSERT(NULL != m_sourceRepositoryMan);
+
     MG_RESOURCE_SERVICE_TRY()
 
     destResourceTags = L"";
@@ -1279,25 +1310,29 @@ void MgApplicationRepositoryManager::CopyResourceData(
     }
 
     MgTagManager sourceTagMan(sourceResourceTags), destTagMan;
-    STRING oldPath, newPath;
+    STRING sourcePath, destPath;
     MgTagInfo filePathTag;
 
     if (sourceTagMan.GetTag(MgResourceTag::DataFilePath, filePathTag, false))
     {
-        oldPath = newPath = m_dataFileMan->GetResourceDataFilePath();
-        oldPath += filePathTag.GetAttribute(MgTagInfo::TokenValue);
+        // Intialize the source path.
+        sourcePath = ((MgApplicationRepositoryManager*)m_sourceRepositoryMan)->m_dataFileMan->GetResourceDataFilePath();
+        sourcePath += filePathTag.GetAttribute(MgTagInfo::TokenValue);
+        sourcePath += L"/";
+
+        // Intialize the destination path.
+        destPath = m_dataFileMan->GetResourceDataFilePath();
 
         STRING dirName;
         MgUtil::GenerateUuid(dirName);
 
-        newPath += dirName;
-        MgFileUtil::CreateDirectory(newPath);
+        destPath += dirName;
+        MgFileUtil::CreateDirectory(destPath);
 
         destTagMan.SetTag(MgResourceTag::DataFilePath,
             MgResourceDataType::String, dirName, MgMimeType::Text);
 
-        oldPath += L"/";
-        newPath += L"/";
+        destPath += L"/";
     }
 
     MgTagMap& tagMap = sourceTagMan.GetTagMap();
@@ -1313,24 +1348,24 @@ void MgApplicationRepositoryManager::CopyResourceData(
 
         if (MgResourceDataType::File == dataType)
         {
-            assert(!oldPath.empty() && !newPath.empty() && dataValue.empty());
-            STRING oldPathname = oldPath, newPathname = newPath;
-            oldPathname += dataName;
-            newPathname += dataName;
+            assert(!sourcePath.empty() && !destPath.empty() && dataValue.empty());
+            STRING sourcePathname = sourcePath, destPathname = destPath;
+            sourcePathname += dataName;
+            destPathname += dataName;
 
             destTagMan.SetTag(dataName, dataType, dataValue, mimeType);
-            m_dataFileMan->CopyResourceData(oldPathname, newPathname, overwrite);
+            m_dataFileMan->CopyResourceData(sourcePathname, destPathname, overwrite);
         }
         else if (MgResourceDataType::Stream == dataType)
         {
-            string oldDataKey, newDataKey;
+            string sourceDataKey, destDataKey;
 
-            MgUtil::WideCharToMultiByte(dataValue, oldDataKey);
+            MgUtil::WideCharToMultiByte(dataValue, sourceDataKey);
             MgUtil::GenerateUuid(dataValue);
-            MgUtil::WideCharToMultiByte(dataValue, newDataKey);
+            MgUtil::WideCharToMultiByte(dataValue, destDataKey);
 
             destTagMan.SetTag(dataName, dataType, dataValue, mimeType);
-            m_dataStreamMan->CopyResourceData(oldDataKey, newDataKey, dataName);
+            m_dataStreamMan->CopyResourceData(sourceDataKey, destDataKey, dataName);
         }
         else if (MgResourceDataType::String == dataType)
         {

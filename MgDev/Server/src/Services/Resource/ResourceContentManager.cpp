@@ -58,15 +58,11 @@ MgResourceContentManager::~MgResourceContentManager()
 
 MgByteReader* MgResourceContentManager::EnumerateRepositories()
 {
-    MG_RESOURCE_SERVICE_TRY()
-
-    throw new MgInvalidOperationException(
+    throw new MgNotImplementedException(
         L"MgResourceContentManager.EnumerateRepositories",
         __LINE__, __WFILE__, NULL, L"", NULL);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceContentManager.EnumerateRepositories")
-
-    return NULL;
+    return NULL; // to make some compiler happy
 }
 
 ///----------------------------------------------------------------------------
@@ -185,6 +181,322 @@ void MgResourceContentManager::AddResource(MgResourceInfo& resourceInfo,
     PutDocument(resource, xmlDoc, updateContext);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceContentManager.AddResource")
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Renames a resource and/or moves it from one location to another.
+///
+void MgResourceContentManager::MoveResource(
+    MgResourceIdentifier* sourceResource, MgResourceIdentifier* destResource,
+    bool overwrite)
+{
+    assert(NULL != sourceResource && NULL != destResource);
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    // Check whether or not the destination resource already exists.
+
+    if (!overwrite && FindResource(destResource->ToString()))
+    {
+        m_repositoryMan.ThrowDuplicateResourceException(*destResource,
+            L"MgResourceContentManager.MoveResource",
+            __LINE__, __WFILE__);
+    }
+
+    // Set up an XQuery.
+
+    string sourcePathname, destPathname;
+
+    MgUtil::WideCharToMultiByte(sourceResource->ToString(), sourcePathname);
+    MgUtil::WideCharToMultiByte(destResource->ToString(), destPathname);
+
+    bool sourceResourceIsFolder = sourceResource->IsFolder();
+    string query;
+
+    if (sourceResourceIsFolder)
+    {
+        assert(destResource->IsFolder());
+
+        query  = "for $i in collection('";
+        query += m_container.getName();
+        query += "')";
+        query += "/*[starts-with(dbxml:metadata('dbxml:name'),'";
+        query += sourcePathname;
+        query += "')]";
+        query += " order by dbxml:metadata('dbxml:name', $i) return $i";
+    }
+    else
+    {
+        assert(!destResource->IsFolder());
+
+        query  = "collection('";
+        query += m_container.getName();
+        query += "')";
+        query += "/*[dbxml:metadata('dbxml:name')='";
+        query += sourcePathname;
+        query += "']";
+    }
+
+    // Execute the XQuery.
+
+    XmlManager& xmlManager = m_container.getManager();
+    XmlQueryContext queryContext = xmlManager.createQueryContext();
+    XmlResults results = IsTransacted() ?
+        xmlManager.query(GetXmlTxn(), query, queryContext, 0) :
+        xmlManager.query(query, queryContext, 0);
+
+    if (0 == results.size())
+    {
+        if (sourceResourceIsFolder)
+        {
+            return;
+        }
+        else
+        {
+            m_repositoryMan.ThrowResourceNotFoundException(*sourceResource,
+                L"MgResourceContentManager.MoveResource",
+                __LINE__, __WFILE__);
+        }
+    }
+
+    // Move/rename the resources.
+
+    XmlUpdateContext updateContext = xmlManager.createUpdateContext();
+    const size_t sourcePathLength = sourcePathname.length();
+    XmlValue xmlValue;
+
+    while (results.next(xmlValue))
+    {
+        XmlDocument currDoc = xmlValue.asDocument();
+        string currPathname = currDoc.getName();
+        MgResourceIdentifier currResource(MgUtil::MultiByteToWideChar(currPathname));
+
+        CheckParentPermission(currResource, MgResourcePermission::ReadWrite);
+
+        if (sourceResourceIsFolder)
+        {
+            currPathname.replace(0, sourcePathLength, destPathname);
+            currResource.SetResource(MgUtil::MultiByteToWideChar(currPathname));
+        }
+        else
+        {
+            assert(1 == results.size());
+
+            currPathname = destPathname;
+            currResource = *destResource;
+        }
+
+        if (overwrite)
+        {
+            XmlDocument oldDoc;
+
+            if (MgResourceDefinitionManager::GetDocument(currPathname, oldDoc))
+            {
+                DeleteDocument(currResource, oldDoc, updateContext);
+            }
+        }
+
+        currDoc.setName(currPathname);
+        currDoc.setMetaData(
+            MgResourceInfo::sm_metadataUri,
+            MgResourceInfo::sm_metadataNames[MgResourceInfo::Depth],
+            XmlValue(static_cast<double>(currResource.GetDepth())));
+
+        UpdateDocument(currResource, currDoc, updateContext,
+            MgResourceService::opIdMoveResource);
+    }
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceContentManager.MoveResource")
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Copies an existing resource to another location.
+///
+void MgResourceContentManager::CopyResource(
+    MgResourceIdentifier* sourceResource, MgResourceIdentifier* destResource,
+    bool overwrite)
+{
+    assert(NULL != sourceResource && NULL != destResource);
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    // Check whether or not the destination resource already exists.
+
+    if (!overwrite && FindResource(destResource->ToString()))
+    {
+        m_repositoryMan.ThrowDuplicateResourceException(*destResource,
+            L"MgResourceContentManager.CopyResource",
+            __LINE__, __WFILE__);
+    }
+
+    // Get the source MgResourceContentManager.
+
+    MgApplicationRepositoryManager* sourceRepositoryMan =
+        dynamic_cast<MgApplicationRepositoryManager*>(
+        ((MgApplicationRepositoryManager&)m_repositoryMan).GetSourceRepositoryManager());
+    ACE_ASSERT(NULL != sourceRepositoryMan);
+    MgResourceContentManager* sourceResourceContentMan = 
+        sourceRepositoryMan->GetResourceContentManager();
+
+    // Set up an XQuery.
+
+    string sourcePathname, destPathname;
+
+    MgUtil::WideCharToMultiByte(sourceResource->ToString(), sourcePathname);
+    MgUtil::WideCharToMultiByte(destResource->ToString(), destPathname);
+
+    bool sourceResourceIsFolder = sourceResource->IsFolder();
+    string query;
+
+    if (sourceResourceIsFolder)
+    {
+        assert(destResource->IsFolder());
+
+        query  = "for $i in collection('";
+        query += sourceResourceContentMan->m_container.getName();
+        query += "')";
+        query += "/*[starts-with(dbxml:metadata('dbxml:name'),'";
+        query += sourcePathname;
+        query += "')]";
+        query += " order by dbxml:metadata('dbxml:name', $i) return $i";
+    }
+    else
+    {
+        assert(!destResource->IsFolder());
+
+        query  = "collection('";
+        query += sourceResourceContentMan->m_container.getName();
+        query += "')";
+        query += "/*[dbxml:metadata('dbxml:name')='";
+        query += sourcePathname;
+        query += "']";
+    }
+
+    // Execute the XQuery.
+
+    XmlManager& sourceXmlMan = sourceResourceContentMan->m_container.getManager();
+    XmlQueryContext queryContext = sourceXmlMan.createQueryContext();
+    XmlResults results = sourceResourceContentMan->IsTransacted() ?
+        sourceXmlMan.query(sourceResourceContentMan->GetXmlTxn(), query, queryContext, 0) :
+        sourceXmlMan.query(query, queryContext, 0);
+
+    if (0 == results.size())
+    {
+        if (sourceResourceIsFolder)
+        {
+            return;
+        }
+        else
+        {
+            sourceRepositoryMan->ThrowResourceNotFoundException(*sourceResource,
+                L"MgResourceContentManager.CopyResource", 
+                __LINE__, __WFILE__);
+        }
+    }
+
+    // Get the source and destination MgResourceHeaderManager's.
+
+    MgResourceHeaderManager* sourceResourceHeaderMan = 
+        sourceRepositoryMan->GetResourceHeaderManager();
+    MgResourceHeaderManager* destResourceHeaderMan = 
+        m_repositoryMan.GetResourceHeaderManager();
+    bool addResourceHeaders = (NULL == sourceResourceHeaderMan && NULL != destResourceHeaderMan);
+
+    // Copy the resources.
+
+    XmlManager& destXmlMan = m_container.getManager();
+    XmlUpdateContext updateContext = destXmlMan.createUpdateContext();
+    const size_t sourcePathLength = sourcePathname.length();
+    XmlValue xmlValue;
+
+    while (results.next(xmlValue))
+    {
+        const XmlDocument& currDoc = xmlValue.asDocument();
+        string currPathname = currDoc.getName();
+        MgResourceIdentifier currResource(MgUtil::MultiByteToWideChar(currPathname));
+
+        sourceResourceContentMan->CheckPermission(currResource, MgResourcePermission::ReadOnly);
+
+        if (sourceResourceIsFolder)
+        {
+            currPathname.replace(0, sourcePathLength, destPathname);
+            currResource.SetResource(MgUtil::MultiByteToWideChar(currPathname));
+        }
+        else
+        {
+            assert(1 == results.size());
+
+            currPathname = destPathname;
+            currResource = *destResource;
+        }
+
+        bool overwritten = false;
+
+        if (overwrite || addResourceHeaders)
+        {
+            XmlDocument oldDoc;
+
+            if (MgResourceDefinitionManager::GetDocument(currPathname, oldDoc))
+            {
+                if (overwrite)
+                {
+                    DeleteDocument(currResource, oldDoc, updateContext);
+                    overwritten = true;
+                }
+                else
+                {
+                    m_repositoryMan.ThrowDuplicateResourceException(currResource,
+                        L"MgResourceContentManager.CopyResource", 
+                        __LINE__, __WFILE__);
+                }
+            }
+            else if (addResourceHeaders && currPathname != destPathname)
+            {
+                MgResourceInfo resourceInfo(currResource, 
+                    m_repositoryMan.m_currUserInfo, m_repositoryMan.m_accessedTime);
+                string defaultDoc;
+
+                destResourceHeaderMan->AddParentResources(resourceInfo, defaultDoc);
+                destResourceHeaderMan->AddResource(resourceInfo, defaultDoc);
+            }
+        }
+
+        XmlDocument newDoc = destXmlMan.createDocument();
+
+        newDoc.setName(currPathname);
+        newDoc.setMetaData(
+            MgResourceInfo::sm_metadataUri,
+            MgResourceInfo::sm_metadataNames[MgResourceInfo::Depth],
+            XmlValue(static_cast<double>(currResource.GetDepth())));
+
+        XmlValue tagValue;
+        STRING destResourceTags;
+
+        if (currDoc.getMetaData(MgResourceInfo::sm_metadataUri,
+                MgResourceInfo::sm_metadataNames[MgResourceInfo::Tags],
+                tagValue))
+        {
+            STRING sourceResourceTags;
+            MgUtil::MultiByteToWideChar(tagValue.asString(), sourceResourceTags);
+
+            m_repositoryMan.CopyResourceData(sourceResourceTags,
+                destResourceTags, overwrite);
+        }
+
+        tagValue = XmlValue(MgUtil::WideCharToMultiByte(destResourceTags));
+        newDoc.setMetaData(
+            MgResourceInfo::sm_metadataUri,
+            MgResourceInfo::sm_metadataNames[MgResourceInfo::Tags],
+            tagValue);
+
+        newDoc.setContentAsXmlInputStream(currDoc.getContentAsXmlInputStream());
+
+        PutDocument(currResource, newDoc, updateContext);
+    }
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceContentManager.CopyResource")
 }
 
 ///----------------------------------------------------------------------------

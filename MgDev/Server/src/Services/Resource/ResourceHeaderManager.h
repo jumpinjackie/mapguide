@@ -60,6 +60,10 @@ public:
         INT32 properties, CREFSTRING fromDate, CREFSTRING toDate);
     virtual void AddResource(MgResourceInfo& resourceInfo,
         const string& document);
+    virtual void MoveResource(MgResourceIdentifier* sourceResource,
+        MgResourceIdentifier* destResource, bool overwrite);
+    virtual void CopyResource(MgResourceIdentifier* sourceResource,
+        MgResourceIdentifier* destResource, bool overwrite);
     void AddParentResources(MgResourceInfo& resourceInfo,
         const string& document);
     MgDateTime* GetResourceModifiedDate(MgResourceIdentifier* resource);
