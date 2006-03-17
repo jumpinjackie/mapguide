@@ -64,7 +64,7 @@
 
         function AddMeasure(segId, begin, end)
         {
-            var url = "%s?SEGID=" + segId + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&X1=" + begin.X + "&Y1=" + begin.Y + "&X2=" + end.X + "&Y2=" + end.Y + "&TOTAL=" + total + "&US=" + (GetParent().usEnglish? 1: 0) + "&TGT=" + target + "&POPUP=" + popup;
+            var url = "%s?SEGID=" + segId + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&X1=" + begin.X + "&Y1=" + begin.Y + "&X2=" + end.X + "&Y2=" + end.Y + "&TOTAL=" + total + "&US=" + (GetParent().GetMapFrame().IsEnglishUnits()? 1: 0) + "&TGT=" + target + "&POPUP=" + popup;
             document.location.href = url;
         } 
         
@@ -110,7 +110,7 @@
         
         function ShowUnits()
         {
-            var units = GetParent().usEnglish? "__#MILES#__": "__#KILOMETERS#__";
+            var units = GetParent().GetMapFrame().IsEnglishUnits()? "__#MILES#__": "__#KILOMETERS#__";
             document.getElementById("units1").innerHTML = units;
             document.getElementById("units2").innerHTML = units;
         }
