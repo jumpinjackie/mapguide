@@ -752,8 +752,8 @@ bool MgXmlNamespaceManager::HasNamespace(STRING sNamespace)
 
 STRING MgXmlNamespaceManager::QualifiedName(STRING sName)
 {
-    size_t iSep = sName.find(_(":"));
-    if(iSep != STRING::npos) {
+    STRING::size_type iSep = sName.find(_(":"));
+    if(iSep == STRING::npos) {
         // Unprefixed name; might be in default namespace,
         // or it might just be vanilla.
         STRING sNamespace = NamespaceFrom(ksDefaultNsPrefix);
