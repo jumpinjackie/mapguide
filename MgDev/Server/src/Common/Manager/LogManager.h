@@ -327,7 +327,7 @@ private:
     static const STRING LogStatusActive;
     static const STRING LogStatusArchive;
 
-    char* m_applicationName;
+    STRING m_applicationName;
 
     std::ofstream m_logStream;
     ACE_OSTREAM_TYPE* m_outputStream;
@@ -407,6 +407,12 @@ private:
 
     void AddDelimiter(REFSTRING entry);
     void TranslateDelimiter();
+
+    // Helper function to determine and archive should be created based on the specified archive frequency
+    bool CheckArchiveFrequency(enum MgLogType logType, CREFSTRING logFilename);
+
+    // Helper function to remove the archive frequency specifier from the filename
+    STRING RemoveArchiveFrequencySpecifier(CREFSTRING logFilename);
 
     // Access Log
     bool m_bAccessLogEnabled;
