@@ -78,7 +78,6 @@ const STRING MgLogManager::LogStatusArchive     = L"Archive";
 
 // Constructor
 MgLogManager::MgLogManager(void) :
-    m_applicationName(0),
     m_outputStream(0),
     m_bAccessLogEnabled(true),
     m_AccessLogFileName(MgLogManager::DefaultAccessLogFileName),
@@ -100,11 +99,6 @@ MgLogManager::~MgLogManager(void)
 {
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgLogManager::~MgLogManager()\n")));
 
-    if (m_applicationName)
-    {
-        delete [] m_applicationName;
-        m_applicationName = NULL;
-    }
 }
 
 void MgLogManager::Dispose(void)
@@ -141,7 +135,7 @@ void MgLogManager::Initialize()
 {
     MG_LOGMANAGER_TRY()
 
-    m_applicationName = MgUtil::WideCharToMultiByte(MgResources::ServerServiceDisplayName.c_str());
+    m_applicationName = MgResources::ServerServiceDisplayName;
 
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
 
@@ -1398,7 +1392,7 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
 
         MG_LOGMANAGER_TRY()
 
-        LogToSysLog(m_applicationName);
+        LogToSysLog((char *)(MgUtil::WideCharToMultiByte(m_applicationName)).c_str());
 #ifdef _WIN32
         pAce->log(logPriority, ACE_TEXT("%W\r\n"), message.c_str());
 #else
@@ -1469,7 +1463,14 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
 
             MG_LOGMANAGER_TRY()
 
-                m_logStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
+            ValidateLogHeaders();
+
+            if (false == CheckArchiveFrequency(logType, filename))
+            {
+                ArchiveLog(filename);
+            }
+
+            m_logStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
 
             if (!m_logStream.is_open())
             {
@@ -2019,31 +2020,7 @@ STRING MgLogManager::BuildFileName(CREFSTRING filename)
 {
     STRING newFilename = filename.c_str();
 
-    if (newFilename.find_first_of(L'%') != string::npos)
-    {
-        // Get current system time
-        time_t rawtime;
-        struct tm* localTime;
-        time(&rawtime);
-        localTime = localtime(&rawtime);
-
-        // buffer to place date in
-        char buf[3];
-
-        strftime(buf, 3, "%y", localTime);
-        STRING year = MgUtil::MultiByteToWideChar((string)buf);
-        strftime(buf, 3, "%m", localTime);
-        STRING month = MgUtil::MultiByteToWideChar((string)buf);
-        strftime(buf, 3, "%d", localTime);
-        STRING day = MgUtil::MultiByteToWideChar((string)buf);
-
-        // replace %y with year
-        newFilename = MgUtil::ReplaceString(newFilename, L"%y", year.c_str());
-        // replace %m with month
-        newFilename = MgUtil::ReplaceString(newFilename, L"%m", month.c_str());
-        // replace %d with day
-        newFilename = MgUtil::ReplaceString(newFilename, L"%d", day.c_str());
-    }
+    newFilename = RemoveArchiveFrequencySpecifier(newFilename);
 
     return (m_path + newFilename);
 }
@@ -2907,7 +2884,7 @@ STRING MgLogManager::DetermineLogFileStatus(CREFSTRING logFilename, CREFSTRING l
 
     STRING currentLogName = L"";
 
-    // Get the being used for the current log
+    // Get the name being used for the current log
     if (0 == logFileType.compare(MgLogManager::AccessLog))
     {
         currentLogName = GetAccessLogFileName();
@@ -2948,6 +2925,8 @@ STRING MgLogManager::DetermineLogFileStatus(CREFSTRING logFilename, CREFSTRING l
         throw new MgInvalidArgumentException(L"MgLogManager.DetermineLogFileStatus",
             __LINE__, __WFILE__, &arguments, L"MgInvalidLogType", NULL);
     }
+
+    currentLogName = RemoveArchiveFrequencySpecifier(currentLogName);
 
     // Compare the current log name with the filename to determine its status.
     if (0 == logFilename.compare(currentLogName))
@@ -3013,4 +2992,96 @@ void MgLogManager::EnableMaximumLogSize(bool useMaxSize)
 bool MgLogManager::IsMaximumLogSizeEnabled()
 {
     return m_useMaxLogSize;
+}
+
+bool MgLogManager::CheckArchiveFrequency(enum MgLogType logType, CREFSTRING logFilename)
+{
+    bool bCurrentLog = true;
+
+    // Get the frequency specifier from the filename
+    STRING rawFilename;
+
+    switch (logType)
+    {
+    case mltAccess:
+        rawFilename = m_AccessLogFileName;
+        break;
+    case mltAdmin:
+        rawFilename = m_AdminLogFileName;
+        break;
+    case mltAuthentication:
+        rawFilename = m_AuthenticationLogFileName;
+        break;
+    case mltError:
+        rawFilename = m_ErrorLogFileName;
+        break;
+    case mltSession:
+        rawFilename = m_SessionLogFileName;
+        break;
+    case mltTrace:
+        rawFilename = m_TraceLogFileName;
+        break;
+    }
+
+    STRING specifier;
+    STRING::size_type specifierIndex = rawFilename.find_first_of(L'%');
+    if (specifierIndex != string::npos)
+    {
+        specifier = rawFilename[specifierIndex + 1];
+    }
+
+
+    // Get the timestamp of the current log file
+    if (MgFileUtil::PathnameExists(logFilename))
+    {
+        Ptr<MgDateTime> logTimestamp = new MgDateTime(MgFileUtil::GetFileModificationTime(logFilename));
+        STRING str = logTimestamp->ToString();
+
+        // Compare the timestamp to the current time
+        MgDateTime currentTime;
+
+        // If the frequency boundary has been crossed, the file needs to be archived
+        if (specifier == L"d")
+        {
+            if ( logTimestamp->GetYear() <= currentTime.GetYear() 
+                && logTimestamp->GetMonth() <= currentTime.GetMonth() )
+            {
+                if ( logTimestamp->GetDay() != currentTime.GetDay() )
+                {
+                    bCurrentLog = false;
+                }
+            }
+        }
+        else if (specifier == L"m")
+        {
+            if ( logTimestamp->GetYear() <= currentTime.GetYear() )
+            {
+                if (logTimestamp->GetMonth() != currentTime.GetMonth())
+                {
+                    bCurrentLog = false;
+                }
+            }
+        }
+        else if (specifier == L"y")
+        {
+            if ( logTimestamp->GetYear() < currentTime.GetYear() )
+            {
+                bCurrentLog = false;
+            }
+        }
+    }
+
+    return bCurrentLog;
+}
+
+STRING MgLogManager::RemoveArchiveFrequencySpecifier(CREFSTRING logFilename)
+{
+    STRING newFileName;
+
+    // Remove the archive frequency specifier from the filename, if it is present
+    newFileName = MgUtil::ReplaceString(logFilename, L"%y", L"");     // NOXLATE
+    newFileName = MgUtil::ReplaceString(newFileName, L"%m", L"");     // NOXLATE
+    newFileName = MgUtil::ReplaceString(newFileName, L"%d", L"");     // NOXLATE
+
+    return newFileName;
 }
