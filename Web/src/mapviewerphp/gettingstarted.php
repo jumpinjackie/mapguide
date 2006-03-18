@@ -99,7 +99,7 @@ function GetRequestParameters()
 }
 
 function FixupPageReferences($html, $webLayout, $dwf, $vroot, $locale) {
-    $htmlPrefix = "gettingstarted.php?WEBLAYOUT=" . $webLayout . "&DWF=". ($dwf?"1":"0") . "&PAGE=";
+    $htmlPrefix = "gettingstarted.php?WEBLAYOUT=" . urlencode($webLayout) . "&DWF=". ($dwf?"1":"0") . "&PAGE=";
     $imgScrPrefix = $vroot . "localized/help/" . $locale . "/";
     $index = 0;
     $res = "";

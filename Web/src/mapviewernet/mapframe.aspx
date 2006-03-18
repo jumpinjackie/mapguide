@@ -63,7 +63,7 @@ String hlTgtName;
         {
             frameName = "_BLANK";
         }
-        mapRequest = "../mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" + mapDefinition + "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" + locale + (sessionId != ""? "&SESSION=" + sessionId: "") + "&reload=true";
+        mapRequest = "../mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" + HttpUtility.UrlEncode(mapDefinition) + "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" + locale + (sessionId != ""? "&SESSION=" + sessionId: "") + "&reload=true";
 
         //load html template code and format it
         //
@@ -169,7 +169,7 @@ String hlTgtName;
                         scaleCreationCode,
                         vpath + "ajaxviewerabout.aspx",
                         vpath + "legendctrl.aspx",
-                        mapName,
+                        HttpUtility.UrlEncode(mapName),
                         sessionId,
                         vpath + "propertyctrl.aspx"};
             Response.Write(Substitute(templ, vals));

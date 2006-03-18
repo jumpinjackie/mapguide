@@ -37,11 +37,10 @@ String dwf = "";
 
     String templ = LoadTemplate("/viewerfiles/taskframe.templ");
     String[] vals = { GetSurroundVirtualPath(request) + "tasklist.jsp",
-                      taskPane,
-                      sessionId,
-                      webLayout,
-                      dwf };
-
+                    taskPane,
+                    sessionId,
+                    URLEncoder.encode(webLayout, "UTF-8"),
+                    dwf };
     response.getWriter().write(Substitute(templ, vals));
 %>
 

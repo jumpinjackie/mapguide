@@ -18,6 +18,7 @@
 <%@ page import="org.osgeo.mapguide.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
+<%@ page import="java.net.*" %>
 <%@ page import="java.text.*" %>
 <%@ page import="javax.servlet.jsp.*" %>
 <%@ page import="javax.servlet.http.*" %>
@@ -126,7 +127,7 @@ try
         defHome = true;
     }
 
-    String mapDefinitionUrl = mapDef;   //TODO check if encoding necessary
+    String mapDefinitionUrl = URLEncoder.encode(mapDef, "UTF-8");
     String title = webLayout.GetTitle();
 
     boolean showLegend = infoPane.IsLegendBandVisible();
@@ -147,9 +148,9 @@ try
 
     //calculate the url of the inner pages
     //
-    String srcToolbar = showToolbar ? ( "src=\"" + vpath + "toolbar.jsp\"" ) : "";
+    String srcToolbar = showToolbar ? ( "src=\"" + vpath + "toolbar.jsp?WEBLAYOUT=" + URLEncoder.encode(webLayoutDefinition, "UTF-8") + "\"" ) : "";
     String srcStatusbar = showStatusbar ? ( "src=\"" + vpath + "statusbar.jsp\"" ) : "";
-    String srcTaskFrame = showTaskPane? ("src=\"" + vpath + "taskframe.jsp?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + webLayoutDefinition + "&DWF=" + (forDwf!=0? "1": "0") + "&SESSION=" + (orgSessionId != ""? orgSessionId: "") + "\"") : "";
+    String srcTaskFrame = showTaskPane? ("src=\"" + vpath + "taskframe.jsp?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + URLEncoder.encode(webLayoutDefinition, "UTF-8") + "&DWF=" + (forDwf!=0? "1": "0") + "&SESSION=" + (orgSessionId != ""? orgSessionId: "") + "\"") : "";
     String srcTaskBar = "src=\"" + vpath + "taskbar.jsp\"";
 
     //view center

@@ -93,8 +93,8 @@ void GetRequestParameters(HttpServletRequest request)
         locale = GetDefaultLocale();
 }
 
-String FixupPageReferences(String html, String webLayout, boolean dwf, String vpath) {
-    String htmlPrefix = new StringBuffer().append("gettingstarted.jsp?WEBLAYOUT=").append(webLayout).append("&DWF=").append(dwf?"1":"0").append("&PAGE=").toString();
+String FixupPageReferences(String html, String webLayout, boolean dwf, String vpath) throws UnsupportedEncodingException {
+    String htmlPrefix = new StringBuffer().append("gettingstarted.jsp?WEBLAYOUT=").append(URLEncoder.encode(webLayout, "UTF-8")).append("&DWF=").append(dwf?"1":"0").append("&PAGE=").toString();
     String imgSrcPrefix = new StringBuffer().append(vpath).append("localized/help/").append(locale).append("/").toString();
     StringBuffer res = new StringBuffer();
     int index = 0;

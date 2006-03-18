@@ -27,7 +27,7 @@ $dwf = "";
 GetRequestParameters();
 
 $templ = file_get_contents("../viewerfiles/taskframe.templ");
-print sprintf($templ, GetSurroundVirtualPath() . "tasklist.php", $taskPane, $session, $webLayout, $dwf);
+print sprintf($templ, GetSurroundVirtualPath() . "tasklist.php", $taskPane, $session, urlencode($webLayout), $dwf);
 
 function GetParameters($params)
 {

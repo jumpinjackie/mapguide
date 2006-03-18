@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
 <%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Web" %>
 
 <!-- #Include File="common.aspx -->
 
@@ -39,7 +40,7 @@ String dwf = "";
                     GetSurroundVirtualPath(Request) + "tasklist.aspx",
                     taskPane,
                     session,
-                    webLayout,
+                    HttpUtility.UrlEncode(webLayout),
                     dwf
                     };
 

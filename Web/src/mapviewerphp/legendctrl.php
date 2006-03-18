@@ -29,7 +29,7 @@
     printf($templ,
             $vpath . "legend.php",
             $vpath . "legend.php",
-            $mapName,
+            urlencode($mapName),
             $sessionId,
             $vpath . "legendui.php");
 
