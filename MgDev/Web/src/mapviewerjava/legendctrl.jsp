@@ -44,7 +44,7 @@ try
     String vals[] = {
         vpath + "legend.jsp",
         vpath + "legend.jsp",
-        mapName,
+        URLEncoder.encode(mapName, "UTF-8"),
         sessionId,
         vpath + "legendui.jsp"};
 

@@ -171,9 +171,9 @@ function BuildViewer($forDwf = true)
 
         //calculate the url of the inner pages
         //
-        $srcToolbar = $showToolbar? ('src="' . $vpath . 'toolbar.php?WEBLAYOUT=' . $webLayoutDefinition . '"'): '';
+        $srcToolbar = $showToolbar? ('src="' . $vpath . 'toolbar.php?WEBLAYOUT=' . urlencode($webLayoutDefinition) . '"'): '';
         $srcStatusbar = $showStatusbar? ('src="' . $vpath . 'statusbar.php"') : "";
-        $srcTaskFrame = $showTaskPane? ('src="' . $vpath . 'taskframe.php?TASK=' . $taskPaneUrl . '&WEBLAYOUT=' . $webLayoutDefinition . '&DWF=' . ($forDwf? "1": "0") . '&SESSION=' . ($orgSessionId != ""? $orgSessionId: "") . '"') : '';
+        $srcTaskFrame = $showTaskPane? ('src="' . $vpath . 'taskframe.php?TASK=' . $taskPaneUrl . '&WEBLAYOUT=' . urlencode($webLayoutDefinition) . '&DWF=' . ($forDwf? "1": "0") . '&SESSION=' . ($orgSessionId != ""? $orgSessionId: "") . '"') : '';
         $srcTaskBar = 'src="' . $vpath . 'taskbar.php"';
 
         //view center

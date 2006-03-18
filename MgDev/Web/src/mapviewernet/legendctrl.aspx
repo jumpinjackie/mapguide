@@ -42,7 +42,7 @@ String sessionId = "";
         String[] vals = {
             vpath + "legend.aspx",
             vpath + "legend.aspx",
-            mapName,
+            HttpUtility.UrlEncode(mapName),
             sessionId,
             vpath + "legendui.aspx"};
 

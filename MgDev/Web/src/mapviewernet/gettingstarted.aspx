@@ -3,6 +3,7 @@
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
 <%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Web" %>
 <%@ Import Namespace="OSGeo.MapGuide" %>
 
 <!-- #Include File="common.aspx -->
@@ -90,7 +91,7 @@ void GetParameters(NameValueCollection parameters)
 }
 
 String FixupPageReferences(String html, String webLayout, bool dwf, String vpath) {
-    String htmlPrefix = new StringBuilder().Append("gettingstarted.aspx?WEBLAYOUT=").Append(webLayout).Append("&DWF=").Append(dwf?"1":"0").Append("&PAGE=").ToString();
+    String htmlPrefix = new StringBuilder().Append("gettingstarted.aspx?WEBLAYOUT=").Append(HttpUtility.UrlEncode(webLayout)).Append("&DWF=").Append(dwf?"1":"0").Append("&PAGE=").ToString();
     String imgSrcPrefix = new StringBuilder().Append(vpath).Append("localized/help/").Append(locale).Append("/").ToString();
     StringBuilder res = new StringBuilder();
     int index = 0;

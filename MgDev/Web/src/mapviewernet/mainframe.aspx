@@ -153,9 +153,9 @@ NameValueCollection cmds = null;
 
         //calculate the url of the inner pages
         //
-        String srcToolbar = showToolbar ? ("src=\"" + vpath + "toolbar.aspx?WEBLAYOUT=" + webLayoutDefinition + "\"") : "";
+        String srcToolbar = showToolbar ? ("src=\"" + vpath + "toolbar.aspx?WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "\"") : "";
         String srcStatusbar = showStatusbar ? ("src=\"" + vpath + "statusbar.aspx\"") : "";
-        String srcTaskFrame = showTaskPane ? ("src=\"" + vpath + "taskframe.aspx?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + webLayoutDefinition + "&DWF=" + (forDwf != 0 ? "1" : "0") + "&SESSION=" + (orgSessionId != "" ? orgSessionId : "") + "\"") : "";
+        String srcTaskFrame = showTaskPane ? ("src=\"" + vpath + "taskframe.aspx?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "&DWF=" + (forDwf != 0 ? "1" : "0") + "&SESSION=" + (orgSessionId != "" ? orgSessionId : "") + "\"") : "";
         String srcTaskBar = "src=\"" + vpath + "taskbar.aspx\"";
 
         //view center

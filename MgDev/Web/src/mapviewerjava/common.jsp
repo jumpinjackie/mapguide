@@ -18,6 +18,7 @@
 <%@ page import="org.osgeo.mapguide.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
+<%@ page import="java.net.*" %>
 <%@ page import="javax.servlet.jsp.*" %>
 <%@ page import="javax.servlet.http.*" %>
 
