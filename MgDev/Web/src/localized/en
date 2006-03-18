@@ -227,6 +227,8 @@ IN                      = in
 KM                      = km
 MT                      = m
 CM                      = cm
+DIGALREADYRUNNING       = Cannot execute measure: A digitization command is in progress.
+MEASALREADYRUNNING      = Cannot execute digitization: A measure is in progress.
 
 # Localized Icon Files
 POWEREDBYICON           = PoweredBy_en.gif
