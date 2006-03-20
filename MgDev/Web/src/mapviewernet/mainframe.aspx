@@ -479,6 +479,10 @@ NameValueCollection cmds = null;
             frameset = Substitute(frameset, vals);
         }
 
+        String homePageUrl = taskPaneUrl;
+        if (String.Compare(homePageUrl.Substring(0, 7), "http://", true) != 0)
+            homePageUrl = vpath + homePageUrl;
+
         //load the HTML template and format it
         //
         String template = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/mainframe.templ"), locale, GetClientOS(Request));
@@ -489,7 +493,7 @@ NameValueCollection cmds = null;
                     showStatusbar? "1" : "0",
                     showTaskPane? "1" : "0",
                     showTaskPane? "0" : (showTaskBar? "1" : "0"),
-                    vpath + taskPaneUrl,
+                    homePageUrl,
                     defHome? "1" : "0",
                     webLayoutDefinition,
                     mapDef,
