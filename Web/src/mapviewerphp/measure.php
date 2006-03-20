@@ -78,44 +78,20 @@
         }
         else
         {
-            if($srs != "")
-            {
-                // Transform the coordinates to Lat/Lon
-                //
-                $geomFactory = new MgGeometryFactory();
-                $coord1 = $geomFactory->CreateCoordinateXY($x1, $y1);
-                $coord2 = $geomFactory->CreateCoordinateXY($x2, $y2);
-
-                $srsFactory = new MgCoordinateSystemFactory();
-                $srsMap = $srsFactory->Create($srs);
-                $xcoord1 = $srsMap->ConvertToLonLat($coord1);
-                $xcoord2 = $srsMap->ConvertToLonLat($coord2);
-                $x1 = $xcoord1->GetX(); $y1 = $xcoord1->GetY();
-                $x2 = $xcoord2->GetX(); $y2 = $xcoord2->GetY();
-            }
-
-            //Calculate the distance
-            //
-            if($y1 >= $y2)
-            {
-                $lon1 = $y1; $lon2 = $y2;
-            }
+            $srsFactory = new MgCoordinateSystemFactory();
+            $srsMap = $srsFactory->Create($srs);
+            
+            $srsType = $srsMap->GetType();
+            if($srsType == MgCoordinateSystemType::Geographic)
+                $distance = $srsMap->MeasureGreatCircleDistance($x1, $y1, $x2, $y2);
             else
-            {
-                $lon1 = $y2; $lon2 = $y1;
-            }
+                $distance = $srsMap->MeasureEuclideanDistance($x1, $y1, $x2, $y2);
 
-            $radlat1 = M_PI * $x1 / 180;
-            $radlat2 = M_PI * $x2 / 180;
-            $radlon1 = M_PI * $lon1 / 180;
-            $radlon2 = M_PI * $lon2 / 180;
-            $theta = $lon1 - $lon2;
-            $radtheta = M_PI * $theta/180;
-            $distance = sin($radlat1) * sin($radlat2) + cos($radlat1) * cos($radlat2) * cos($radtheta);
-            $distance = acos($distance);
-            $distance *= (180 / M_PI) * 60 * 1.1515;
+            $distance = $srsMap->ConvertCoordinateSystemUnitsToMeters($distance);   
             if(!$us)
-                $distance *= 1.609344;  //convert to kilometers
+                $distance *= 0.001;             //get kilometers
+            else
+                $distance *= 0.000621371192;    //get miles
 
             $total += $distance;
 
@@ -170,7 +146,7 @@
                     $schema->GetClasses()->Add($classDef);
 
                     //finally, creation of the feature source
-                    $params = new MgCreateSdfParams("LatLong", $srs, $schema);
+                    $params = new MgCreateSdfParams("MapSrs", $srs, $schema);
                     $featureSrvc->CreateFeatureSource($dataSourceId, $params);
 
                     //build map tip

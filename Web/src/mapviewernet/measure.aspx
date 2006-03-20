@@ -88,55 +88,27 @@ String dataSource = "";
             }
             else
             {
-                MgGeometryFactory geomFactory;
-                if (srs != "")
-                {
-                    // Transform the coordinates to Lat/Lon
-                    //
-                    geomFactory = new MgGeometryFactory();
-                    MgCoordinate coord1 = geomFactory.CreateCoordinateXY(x1, y1);
-                    MgCoordinate coord2 = geomFactory.CreateCoordinateXY(x2, y2);
+                MgCoordinateSystemFactory srsFactory = new MgCoordinateSystemFactory();
+                MgCoordinateSystem srsMap = srsFactory.Create(srs);
 
-                    MgCoordinateSystemFactory srsFactory = new MgCoordinateSystemFactory();
-                    MgCoordinateSystem srsMap = srsFactory.Create(srs);
-                    MgCoordinate xcoord1 = srsMap.ConvertToLonLat(coord1);
-                    MgCoordinate xcoord2 = srsMap.ConvertToLonLat(coord2);
-                    x1 = xcoord1.GetX(); y1 = xcoord1.GetY();
-                    x2 = xcoord2.GetX(); y2 = xcoord2.GetY();
-                }
-
-                //Calculate the distance
-                //
-                double lon1;
-                double lon2;
-                if (y1 >= y2)
-                {
-                    lon1 = y1;
-                    lon2 = y2;
-                }
+                int srsType = srsMap.GetType();
+                if (srsType == MgCoordinateSystemType.Geographic)
+                    distance = srsMap.MeasureGreatCircleDistance(x1, y1, x2, y2);
                 else
-                {
-                    lon1 = y2;
-                    lon2 = y1;
-                }
+                    distance = srsMap.MeasureEuclideanDistance(x1, y1, x2, y2);
 
-                double radlat1 = Math.PI * x1 / 180;
-                double radlat2 = Math.PI * x2 / 180;
-                double radlon1 = Math.PI * lon1 / 180;
-                double radlon2 = Math.PI * lon2 / 180;
-                double theta = lon1 - lon2;
-                double radtheta = Math.PI * theta / 180;
-                distance = Math.Sin(radlat1) * Math.Sin(radlat2) + Math.Cos(radlat1) * Math.Cos(radlat2) * Math.Cos(radtheta);
-                distance = Math.Acos(distance);
-                distance *= (180 / Math.PI) * 60 * 1.1515;
+                distance = srsMap.ConvertCoordinateSystemUnitsToMeters(distance);
+
                 if (0 == us)
-                    distance *= 1.609344;  //convert to kilometers
+                    distance *= 0.001;              //get kilometers
+                else
+                    distance *= 0.000621371192;     //get miles
 
                 total += distance;
 
                 //create the line string geometry representing this segment
                 //
-                geomFactory = new MgGeometryFactory();
+                MgGeometryFactory geomFactory = new MgGeometryFactory();
                 MgCoordinateCollection coordinates = new MgCoordinateCollection();
                 coordinates.Add(geomFactory.CreateCoordinateXY(x1, y1));
                 coordinates.Add(geomFactory.CreateCoordinateXY(x2, y2));
