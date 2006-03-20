@@ -62,9 +62,8 @@ MgByteReader* MgDwfController::GetMap(MgResourceIdentifier* mapDefinition,
     if (userInfo != NULL) sessionId = userInfo->GetMgSessionId();
     if (sessionId.empty())
     {
-        ///TODO: Call MgSiteConnection::GetSite() here
-        Ptr<MgSite> site = new MgSite();
-        site->Open(userInfo);
+        MgSiteConnection* mgSiteConnection = MgSiteConnection::GetCurrentConnection();
+        Ptr<MgSite> site = mgSiteConnection->GetSite();
         sessionId = site->CreateSession();
         userInfo->SetMgSessionId(sessionId);
     }

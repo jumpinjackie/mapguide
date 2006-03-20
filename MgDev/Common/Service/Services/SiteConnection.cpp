@@ -422,9 +422,7 @@ void MgSiteConnection::AuthenticateWithHttpServer(MgUserInformation* userInforma
 void MgSiteConnection::AuthenticateWithSiteServer(MgUserInformation* userInformation)
 {
     assert(NULL != userInformation);
-    Ptr<MgSite> site = new MgSite();
-
-    site->Open(userInformation); // Authentication is implicitly performed.
+    Ptr<MgSite> site = GetSite(); // GetSite() performs authentication
 }
 
 /// <summary>
@@ -573,8 +571,22 @@ void MgSiteConnection::Authenticate(MgUserInformation* userInformation)
 /// </summary>
 MgSite* MgSiteConnection::GetSite()
 {
-    //TODO: We need to move MgSite into MgBaseService so we can implement this method!!!!
-    throw new MgNotImplementedException(L"MgSiteConnection.GetSite", __LINE__, __WFILE__, NULL, L"", NULL);
+    // Get user information
+    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+
+    Ptr<MgSite> site;
+
+    if (NULL != userInfo)
+    {
+        site = new MgSite();
+        site->Open(userInfo);
+    }
+    else
+    {
+        throw new MgConnectionNotOpenException(L"MgSiteConnection.GetSite", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    return site.Detach();
 }
 
 ///////////////////////////////

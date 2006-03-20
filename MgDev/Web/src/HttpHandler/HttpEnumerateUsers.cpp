@@ -53,13 +53,8 @@ void MgHttpEnumerateUsers::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Get user information
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-
     // Open connection to Mg server
-    Ptr<MgSite> mgSite;
-    mgSite = new MgSite();
-    mgSite->Open(userInfo);
+    Ptr<MgSite> mgSite = m_siteConn->GetSite();
 
     // Run API command
     MgByteReader* byteReaderResult = mgSite->EnumerateUsers( m_group );

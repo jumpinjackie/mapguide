@@ -77,8 +77,7 @@ typedef map<double, double, less<double> > SORTEDSCALES;
 ///     $siteConnection = new MgSiteConnection();
 ///     $siteConnection->Open($user);
 ///     // Create a session repository
-///     $site = new MgSite();
-///     $site->Open($user);
+///     $site = $siteConnection->GetSite();
 ///     $sessionID = $site->CreateSession();
 ///     $user->SetMgSessionId($sessionID);
 ///     // Get an instance of the required services.

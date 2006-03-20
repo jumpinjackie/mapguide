@@ -204,8 +204,7 @@ PUBLISHED_API:
     /// $siteConnection->Open($userInformation);
     ///
     /// // Create a session repository
-    /// $site = new MgSite();
-    /// $site->Open($userInformation);
+    /// $site = $siteConnection->GetSite();
     /// $sessionID = $site->CreateSession();
     /// \endcode
     /// <pre>
