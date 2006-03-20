@@ -36,11 +36,12 @@
    <?Ifdef item="Layer.Keywords"?>
    <Keywords><?EnumDelim list="&Layer.Keywords;" using="&Enum.item; "?></Keywords>
    <?Endif?>
-   &Layer.ReferenceSystems;
    <?Ifdef item="Layer.Bounds"?>
-    <?Enum list="&Layer.Bounds;" using="&LatLonBoundingBox.xml;" item="Bounds"?>
-    <?Enum list="&Layer.Bounds;" using="&BoundingBox.xml;" item="Bounds"?>
+    <?Enum list="&Layer.Bounds;" item="Bounds" using="&SRS.xml;"?>
+    <?Enum list="&Layer.Bounds;" item="Bounds" using="&LatLonBoundingBox.xml;"?>
+    <?Enum list="&Layer.Bounds;" item="Bounds" using="&BoundingBox.xml;"?>
    <?Else?>
+    <?Enum list="&Layer.BoundingBox.default;" item="Bounds" using="&SRS.xml;"?>
     <?Enum list="&Layer.BoundingBox.default;" using="&LatLonBoundingBox.xml;" item="Bounds"?>
     <?Enum list="&Layer.BoundingBox.default;" using="&BoundingBox.xml;" item="Bounds"?>
    <?Endif?>
@@ -54,8 +55,13 @@
  <Define item="LatLonBoundingBox.xml">
    <LatLonBoundingBox          minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
  </Define>
+ 
  <Define item="BoundingBox.xml">
   <BoundingBox SRS="&Enum.item.SRS;" minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+ </Define>
+
+ <Define item="SRS.xml">
+  <SRS>&Enum.item.SRS;</SRS>
  </Define>
  
  <Define item="FeatureProperty.xml">
@@ -78,13 +84,7 @@
  <Define item="Layer.Title">(Untitled Layer)</Define>
  <Define item="Layer.Abstract"></Define>
  <Define item="Layer.Name"></Define>
- <Define item="Layer.RS">
-  <item>EPSG:4326</item>
- </Define>
 
- <!-- This definition codifies how reference systems (CRS or SRS) are depicted -->
- <Define item="Layer.ReferenceSystems"><SRS><?Enum list="&Layer.RS;" using="&Layer.ReferenceSystems.xml;"?></SRS></Define>
- <Define item="Layer.ReferenceSystems.xml">&Enum.Item; </Define>
  <!-- We're currently not supporting child layers... -->
  <Define item="Layer.Sublayers"></Define>
 
@@ -227,7 +227,8 @@
     <Title>&Service.Title;</Title>
     <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90"/>
     <BoundingBox SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
-    <?EnumLayers using="&Layer.xml;" ?>
+    <SRS>EPSG:4326</SRS>
+   <?EnumLayers using="&Layer.xml;" ?>
   </Layer>
  </Capability>
 </WMT_MS_Capabilities>
