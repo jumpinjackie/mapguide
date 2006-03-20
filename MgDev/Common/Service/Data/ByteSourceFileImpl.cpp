@@ -110,7 +110,7 @@ void ByteSourceFileImpl::LoadFile(CREFSTRING filename)
     {
         MgStringCollection arguments;
         arguments.Add(filename);
-        if(errno == EEXIST)
+        if(errno == ENOENT)
 
             throw new MgFileNotFoundException(L"ByteSourceFileImpl", __LINE__, __WFILE__, &arguments, L"", NULL);
         else
