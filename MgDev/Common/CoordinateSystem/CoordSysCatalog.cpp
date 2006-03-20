@@ -110,43 +110,60 @@ CCoordinateSystemCategory* CCoordinateSystemCatalog::GetCoordinateSystemCategory
 
 void CCoordinateSystemCatalog::ReadCategoryDictionary(CREFSTRING fileName)
 {
-    // Open the file
-#ifdef WIN32
+    // Open categories files from current directory or PROJ directory
+
+    // Check to see if the PROJ environment variable is set
+    char* szPath = getenv(PROJ_NAD_PATH);
+    STRING path;
+    if(szPath)
+    {
+        wchar_t* wszPath = Convert_Ascii_To_Wide(szPath);
+        if(wszPath)
+        {
+            if(::wcslen(wszPath) > 0)
+            {
+                path = wszPath;
+            }
+
+            delete [] wszPath;
+            wszPath = NULL;
+        }
+    }
+
+#ifdef _WIN32
+
+    // Attempt to open from current directory
     FILE* file = _wfopen(fileName.c_str(), L"rt");
+
+    if (NULL == file && !path.empty())
+    {
+        // Attempt to open from PROJ directory
+        STRING wName = path;
+        wName.append(L"\\");
+        wName.append(fileName);
+        file = _wfopen(wName.c_str(), L"rt");
+    }
 #else
+    // Linux - attempt to open from current directory
     char* szFileName = Convert_Wide_To_Ascii(fileName.c_str());
+
     FILE* file = fopen(szFileName, "rt");
+    if (NULL == file && !path.empty())
+    {
+        // Attempt to open from PROJ directory
+        string fName = szPath;
+        fName.append("/");
+        fName.append(szFileName);
+        file = fopen(fName.c_str(), "rt");
+    }
+
     delete [] szFileName;
     szFileName = NULL;
 #endif
+    
     if(file != NULL)
     {
         CCoordinateSystemCategory* category = NULL;
-
-        #ifdef _WIN32
-        // Check to see if the environment variable is set
-        char* szPath = getenv(PROJ_NAD_PATH);
-        #else
-        // Linux initialization
-        char szPath[1024] = "";
-        strcpy(szPath, getenv(PROJ_NAD_PATH));
-        #endif
-
-        STRING path = L"";
-        if(szPath)
-        {
-            wchar_t* wszPath = Convert_Ascii_To_Wide(szPath);
-            if(wszPath)
-            {
-                if(::wcslen(wszPath) > 0)
-                {
-                    path = wszPath;
-                }
-
-                delete [] wszPath;
-                wszPath = NULL;
-            }
-        }
 
         // Set a default path if we could not set it from the environment
         if(path.empty())
