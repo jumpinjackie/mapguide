@@ -293,22 +293,23 @@ function InitDocument() {
     document.getElementById("FlyoutDivs").innerHTML = InitToolbarFlyouts(parent.toolbarItems);
     if(parent.IsContextMenu())
         document.getElementById("CtxMenuDivs").innerHTML = InitContextMenu(parent.ctxMenuItems);
-
+        
     // the current product (DWF Viewer or DWF Composer)
     var productName = DWFViewer.ProductName;
 
     // create the event relayer object, accounting for the product
-    var object = document.createElement("OBJECT");
+    frdoc = frames["Relayer"].document;     
+    var object = frdoc.createElement("OBJECT");
     object.style.visibility = "hidden";
     object.id = 'EMapEventRelayer';
     if (productName == "Autodesk DWF Viewer")
         object.classid = 'clsid:90BB2003-1BA4-4D88-45BC-4734E453A8EF';
     else if (productName == "Autodesk DWF Composer")
         object.classid = 'clsid:90BB2003-1BA4-4D88-45BC-5734E453A8EF';
-    document.appendChild(object);
+    frdoc.appendChild(object);
 
     // add the relayer to the viewer
-    DWFViewer.AddEventRelayer(EMapEventRelayer);
+    DWFViewer.AddEventRelayer(frdoc.EMapEventRelayer);
 }
 function ContextMenu(x, y) {
     hidePopup(tbMenu);
@@ -447,12 +448,17 @@ function PrepareDigitization(handler) {
     return true;
 }
 
-    </script>
-    
-    <script language=javascript for="EMapEventRelayer" event="OnMapScaleChanged(mapScale)">
-        parent.OnScaleChanged(mapScale);
+var Src="%s"
+var NavpaneWidth="%s";
+var NavpaneVisible="%s";
+var LayersBandVisible="%s";
+var PropertiesBandVisible="%s";
+var HyperlinkTarget="%s";
+
     </script>
 
+   <script src="../viewerfiles/initdwfctrl.js"></script>
+    
     <script language=javascript for="DWFViewer" event="OnLButtonDown(x, y, handled)">
         parent.ForwardMouseDown(document, null);
         if(parent.ClickMap(x, y))
@@ -497,58 +503,14 @@ function PrepareDigitization(handler) {
         }
     </script>
 
-    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedPoint(map, point)">
-        OnDigitizeEnd(point);
-    </script>
-
-    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedLine(map, line)">
-        OnDigitizeEnd(line);
-    </script>
-
-    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedLineString(map, line)">
-        OnDigitizeEnd(line);
-    </script>
-
-    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedPolygon(map, poly)">
-        OnDigitizeEnd(poly);
-    </script>
-
-    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedRectangle(map, rect)">
-        if(digihandler != null) {
-            y = rect.Y1; rect.Y1 = rect.Y2; rect.Y2 = y;
-            OnDigitizeEnd(rect);
-        }
-    </script>
-
-    <script language="javascript" for="EMapEventRelayer" event="OnDigitizedCircle(map, circle)">
-        OnDigitizeEnd(circle);
-    </script>
-
-    <script language="javascript" for="EMapEventRelayer" event="OnSelectionChanged()">
-        selectionSet = null;
-        parent.OnSelectionChanged();
-    </script>
-
   </head>
-  <body onload="InitDocument()" leftmargin=0 topmargin=0 rightmargin=0 bottommargin=0 marginwidth=0 marginheight=0 bgcolor=#d0d0d0>
-    <object id="DWFViewer"
-            classid="clsid:A662DA7E-CCB7-4743-B71A-D817F6D575DF"
-            border=0
-            width=100%% 
-            height=100%%
-            style="position: absolute; left: -1px; top: 0px;" >
-      <param name="Src" value="%s">
-      <param name="ToolbarVisible" value="False">
-      <param name="NavpaneWidth" value="%s">
-      <param name="NavpaneVisible" value="%s">
-      <param name="LayersBandVisible" value="%s">
-      <param name="PropertiesBandVisible" value="%s">
-      <param name="HyperlinkTarget" value="%s">
-      <param name="ViewerParams" value="?PreferredDefaultInterface='{69BD6A6D-F788-4A34-BAE9-76AB5F69EF9D}">
-    </object>
+  <body leftmargin=0 topmargin=0 rightmargin=0 bottommargin=0 marginwidth=0 marginheight=0 bgcolor=#d0d0d0>
+    <iframe name="Relayer" width=10 height=10 src="../viewerfiles/emaprelayer.html"></iframe>
     <div class="PopupMetricsDiv" id="MetricsDiv"><span class="PopupMetrics" id="Metrics"></span></div>
     <span id="FlyoutDivs"></span>
     <span id="CtxMenuDivs"></span>
+   <div id="DWF"></div>
+   <script language="JScript">CreateDWFControl();</script>
   </body>
 </html>
 
