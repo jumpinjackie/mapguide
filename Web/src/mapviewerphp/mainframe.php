@@ -475,6 +475,10 @@ function BuildViewer($forDwf = true)
                                     $srcStatusbar);
         }
 
+        $homePageUrl = $taskPaneUrl;
+        if(strncasecmp($homePageUrl, "http://", 7) != 0)
+            $homePageUrl = $vpath . $homePageUrl;
+            
         //load the HTML template and format it
         //
         $templ = Localize(file_get_contents("../viewerfiles/mainframe.templ"), $locale, GetClientOS());
@@ -485,7 +489,7 @@ function BuildViewer($forDwf = true)
                     $showStatusbar? 1: 0,
                     $showTaskPane? 1: 0,
                     $showTaskPane? 0: ($showTaskBar? 1: 0),
-                    $vpath . $taskPaneUrl,
+                    $homePageUrl,
                     $defHome? "1": "0",
                     $webLayoutDefinition,
                     $mapDef,

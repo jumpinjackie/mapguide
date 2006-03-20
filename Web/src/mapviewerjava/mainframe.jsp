@@ -474,6 +474,10 @@ try
         frameset = Substitute(frameSetTempl, vals);
     }
 
+    String homePageUrl = taskPaneUrl;
+    if(homePageUrl.substring(0, 7).compareToIgnoreCase("http://") != 0)
+        homePageUrl = vpath + homePageUrl;
+        
     //load the HTML template and format it
     //
     String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/mainframe.templ"), locale, GetClientOS(request));
@@ -487,7 +491,7 @@ try
                       showStatusbar ? int1 : int0,
                       showTaskPane ? int1 : int0,
                       !showTaskPane ? int0 : (showTaskBar ? int1 : int0),
-                      vpath + taskPaneUrl,
+                      homePageUrl,
                       defHome? "1" : "0",
                       webLayoutDefinition,
                       mapDef,
