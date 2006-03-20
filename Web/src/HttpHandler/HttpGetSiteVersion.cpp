@@ -51,14 +51,13 @@ void MgHttpGetSiteVersion::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
+    // Open connection to Mg server
+    Ptr<MgSite> mgSite = m_siteConn->GetSite();
+
+    STRING serverAddress = mgSite->GetSiteServerAddress();
+
     // Get user information
     MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-
-    // Open connection to Mg server
-    Ptr<MgSite> mgSite;
-    mgSite = new MgSite();
-    mgSite->Open(userInfo);
-    STRING serverAddress = mgSite->GetSiteServerAddress();
 
     // Create ServerAdmin object
     Ptr<MgServerAdmin> serverAdmin = new MgServerAdmin();
