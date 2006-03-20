@@ -54,8 +54,7 @@
     var iconExpand = "../stdicons/lc_expand.gif";
     var iconCollapse = "../stdicons/lc_collapse.gif";
     var iconNoExpand = "../stdicons/lc_noexpand.gif";
-    var iconOpenGroup = "../stdicons/lc_group_exp.gif";
-    var iconCloseGroup = "../stdicons/lc_group.gif";
+    var iconGroup = "../stdicons/lc_group.gif";
     var iconBrokenLayer = "../stdicons/lc_broken.gif";
     var iconRasterLayer = "../stdicons/lc_raster.gif";
     var iconDrawingLayer = "../stdicons/lc_dwf.gif";
@@ -127,7 +126,7 @@
         //icon
         item += '<td width=23 id="Ic_' + node.objectId + '"><img width=16 height=16 src="';
         if(isGroup)
-            item += node.expanded? iconOpenGroup: iconCloseGroup;
+            item += iconGroup;
         else
             item += iconBrokenLayer;
         item += '"></td>';
@@ -291,12 +290,6 @@
         var expElt = document.getElementById('Ex_' + node.objectId);
         if(expElt != null)
             expElt.innerHTML = MakeExpandCode(node);
-        if(node.type == 0)
-        {
-            var icElt = document.getElementById('Ic_' + node.objectId);
-            if(icElt != null)
-                icElt.innerHTML = '<img width=16 height=16 src="' + (node.expanded? iconOpenGroup: iconCloseGroup) + '">';
-        }
     }
 
     function ChangeVisibility(objectId)
