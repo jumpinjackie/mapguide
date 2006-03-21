@@ -1479,10 +1479,12 @@
     $logDelimiters[ SPACE_DELIMITER ] = " ";
     $logDelimiters[ NO_DELIMITER ] = "";
 
+	define( 'ARCHIVE_NONE',			"None" );
     define( 'ARCHIVE_DAILY',        "Day" );
     define( 'ARCHIVE_MONTHLY',        "Month" );
     define( 'ARCHIVE_YEARLY',        "Year" );
-    $archiveFrequencies[ ARCHIVE_DAILY   ] = "%d";
+    $archiveFrequencies[ ARCHIVE_NONE	 ] = "";
+	$archiveFrequencies[ ARCHIVE_DAILY   ] = "%d";
     $archiveFrequencies[ ARCHIVE_MONTHLY ] = "%m";
     $archiveFrequencies[ ARCHIVE_YEARLY  ] = "%y";
 
