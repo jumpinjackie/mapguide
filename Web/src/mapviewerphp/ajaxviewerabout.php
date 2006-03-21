@@ -23,9 +23,9 @@ include 'constants.php';
 
 define('VIEWER_VERSION', "7.0.139.3");
 
-$titleBar = $productHtml . " Viewer";
-$serverTitle = $productHtml . " Server";
-$viewerTitle = $productHtml . " Viewer";
+$titleBar = $product . " Viewer";
+$serverTitle = $product . " Server";
+$viewerTitle = $product . " Viewer";
 $viewerVersion = VIEWER_VERSION;
 $serverVersion = "##Unknown";
 $sessionId = "";
