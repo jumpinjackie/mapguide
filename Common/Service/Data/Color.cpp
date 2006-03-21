@@ -80,7 +80,10 @@ MgColor::~MgColor()
 /// </summary>
 STRING MgColor::GetColor()
 {
-    throw new MgNotImplementedException(L"MgColor.MgColor", __LINE__, __WFILE__, NULL, L"", NULL);
+    char rgb[9];
+    sprintf(rgb, "%02x%02x%02x%02x", m_red, m_green, m_blue, m_alpha);
+    string srgb = rgb;
+    return MgUtil::MultiByteToWideChar(srgb);
 }
 
 /////////////////////////////////////////////////////////////////
