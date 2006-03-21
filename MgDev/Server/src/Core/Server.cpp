@@ -125,6 +125,11 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
         STRING defaultLocale;
         pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDefaultLocale, defaultLocale, MgConfigProperties::DefaultGeneralPropertyDefaultLocale);
 
+        // Initialize the Log Manager
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing Log Manager.\n")));
+        MgLogManager* pLogManager = MgLogManager::GetInstance();
+        pLogManager->Initialize();
+
         // Load the resources
         // This will load the specified locale or default locale if one is not specified.
         // If additional locales are needed they will be loaded/cached on demand.
@@ -132,198 +137,252 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
         MgResources* pResources = MgResources::GetInstance();
         pResources->SetComponent(MgResources::ResourceComponentServer);
         pResources->Initialize(resourcesPath);
-        pResources->LoadResources(defaultLocale);
 
-        // Initialize the Log Manager
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing Log Manager.\n")));
-        MgLogManager* pLogManager = MgLogManager::GetInstance();
-        pLogManager->Initialize();
-
-        // Initialize the Server Manager
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing Server Manager.\n")));
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-        pServerManager->Initialize();
-
-        // We cannot add trace statements until the log manager is initialized.
-        MG_LOG_TRACE_ENTRY(L"MgServer::init() - Start");
-
-        // Initialize the Load Balance Manager.
-        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing Load Balance Manager.\n")));
-        MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
-        loadBalanceManager->Initialize();
-
-        // Initialize the Service Manager
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing Service Manager.\n")));
-        MgServiceManager* pServiceManager = MgServiceManager::GetInstance();
-        pServiceManager->Initialize();
-
-        pConfiguration->GetIntValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyConnectionTimeout, m_nConnectionTimeout, MgConfigProperties::DefaultGeneralPropertyConnectionTimeout);
-        pConfiguration->GetIntValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyConnectionTimerInterval, m_nConnectionTimerInterval, MgConfigProperties::DefaultGeneralPropertyConnectionTimerInterval);
-
-        pConfiguration->GetIntValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval, m_nServiceRegistrationTimerInterval, MgConfigProperties::DefaultGeneralPropertyServiceRegistrationTimerInterval);
-
-        // TODO: Validate other configuration properties (e.g. using MG_CHECK_RANGE as below, etc.).
-        pConfiguration->GetIntValue(MgConfigProperties::SiteServicePropertiesSection, MgConfigProperties::SiteServicePropertySessionTimeout, m_nSessionTimeout, MgConfigProperties::DefaultSiteServicePropertySessionTimeout);
-        MG_CHECK_RANGE(m_nSessionTimeout, MgConfigProperties::MinimumSiteServicePropertySessionTimeout, MgConfigProperties::MaximumSiteServicePropertySessionTimeout, L"MgServer::init");
-        pConfiguration->GetIntValue(MgConfigProperties::SiteServicePropertiesSection, MgConfigProperties::SiteServicePropertySessionTimerInterval, m_nSessionTimerInterval, MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval);
-        MG_CHECK_RANGE(m_nSessionTimerInterval, MgConfigProperties::MinimumSiteServicePropertySessionTimerInterval, MgConfigProperties::MaximumSiteServicePropertySessionTimerInterval, L"MgServer::init");
-
-        pConfiguration->GetIntValue(MgConfigProperties::ResourceServicePropertiesSection, MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval, m_nRepositoryCheckpointsTimerInterval, MgConfigProperties::DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval);
-
-        // Feature Service
-        bool bDataConnectionPoolEnabled = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled;
-        INT32 nDataConnectionPoolSize = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize;
-        INT32 nDataConnectionTimeout = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout;
-
-        pConfiguration->GetBoolValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled, bDataConnectionPoolEnabled, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled);
-        pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize, nDataConnectionPoolSize, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize);
-        pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionTimeout, nDataConnectionTimeout, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout);
-        pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval, m_nDataConnectionTimerInterval, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval);
-
-        // Initialize and load the FDO library
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing FDO.\n")));
-        STRING fdoPath;
-        pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyFdoPath, fdoPath, MgConfigProperties::DefaultGeneralPropertyFdoPath);
-
-        // Check if path ends with a '/' if not, add one if needed
-        MgFileUtil::AppendSlashToEndOfPath(fdoPath);
-
-        #ifdef WIN32
-        HMODULE hlib = NULL;
-
-        // Get the size of the PATH environment variable for this process
-        DWORD size = GetEnvironmentVariableW(L"PATH", NULL, 0) + 1;
-
-        wchar_t* pathBuffer = new wchar_t[size];
-        if(pathBuffer)
+        // Try loading the specified locale resource. If it fails default to loading "en". 
+        // If that fails then we will not start the server because we need our resources.
+        try
         {
-            // Get the PATH environment variable for this process
-            size = GetEnvironmentVariableW(L"PATH", pathBuffer, size);
-
-            // Add our own FDO path to the start because we want it searched 1st
-            STRING updatedPath = fdoPath;
-            updatedPath += L";";
-            updatedPath += pathBuffer;
-
-            // Set the PATH environment variable for this process
-            SetEnvironmentVariableW(L"PATH", updatedPath.c_str());
-
-            delete [] pathBuffer;
-            pathBuffer = NULL;
+            pResources->LoadResources(defaultLocale);
         }
-        #else
-        void* hlib = NULL;
-        string updatedPath;
-
-        char* ldlibpath = getenv("LD_LIBRARY_PATH");
-        if (ldlibpath != NULL)
+        catch(MgException* e)
         {
-            updatedPath = ldlibpath;
-            updatedPath += ":";
-        }
-        else
-        {
-            updatedPath = "";
-        }
-        updatedPath += MgUtil::WideCharToMultiByte(fdoPath);
+            SAFE_RELEASE(e);
 
-        setenv("LD_LIBRARY_PATH", updatedPath.c_str(), 1);
-        #endif
+            // Log error message about failing to load the specified locale resources
+            MgStringCollection arguments;
+            arguments.Add(pResources->GetResourceFilename(defaultLocale));
+            arguments.Add(defaultLocale);
 
-        // Load the Fdo library
-        STRING fdoLibrary = fdoPath;
+            STRING message = pResources->FormatMessage(MgResources::FailedToLoadResourcesFile, &arguments);
+            ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+            MG_LOG_ERROR_ENTRY(message.c_str());
 
-        #ifdef WIN32
-        fdoLibrary += L"fdo.dll";
-        hlib = LoadLibraryW(fdoLibrary.c_str());
-        #else
-        fdoLibrary += L"libFdo.so";
-        hlib = dlopen(MG_WCHAR_TO_TCHAR(fdoLibrary), RTLD_NOW);
-        #endif
+            // Check to see if we were attempting to load the "en" locale resources.
+            if(MgResources::DefaultLocale == defaultLocale)
+            {
+                // The server needs to fail to start because the specified default locale was
+                // the same as "en"
+                nResult = -1;
+            }
+            else
+            {
+                // Try loading the "en" locale resources instead
+                defaultLocale = MgResources::DefaultLocale;
 
-        if (NULL == hlib)
-        {
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Failed to load FDO library.\n")));
-            throw new MgFdoException(L"MgServer.svc",
-                 __LINE__, __WFILE__, NULL, L"MgFailedToLoadFdoLibrary", NULL);
+                try
+                {
+                    // Log message indicating that we defaulted to using the "en" resources.
+                    message = MgResources::UsingDefaultResourceFile;
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+                    MG_LOG_ERROR_ENTRY(message.c_str());
+
+                    pResources->LoadResources(defaultLocale);
+                }
+                catch(MgException* e)
+                {
+                    SAFE_RELEASE(e);
+                    nResult = -1;
+
+                    // We also failed to load the default "en" resource 
+                    MgStringCollection arguments;
+                    arguments.Add(pResources->GetResourceFilename(defaultLocale));
+                    arguments.Add(defaultLocale);
+
+                    STRING message = pResources->FormatMessage(MgResources::FailedToLoadResourcesFile, &arguments);
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+                    MG_LOG_ERROR_ENTRY(message.c_str());
+                }
+            }
         }
 
-        // Initialize the FDO Connection Manager
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing FDO Connection Manager.\n")));
-        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, nDataConnectionTimeout);
+        if(0 == nResult)
+        {
+            // Initialize the Server Manager
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing Server Manager.\n")));
+            MgServerManager* pServerManager = MgServerManager::GetInstance();
+            pServerManager->Initialize(defaultLocale);
 
-        // Registers services on this server and other servers within the site.
+            // We cannot add trace statements until the log manager is initialized.
+            MG_LOG_TRACE_ENTRY(L"MgServer::init() - Start");
 
-        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Registering Services.\n")));
-        RegisterServices();
+            // Initialize the Load Balance Manager.
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing Load Balance Manager.\n")));
+            MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
+            loadBalanceManager->Initialize();
 
-    #ifdef _DEBUG
-        STRING strResourceFilename = pResources->GetResourceFilename(pServerManager->GetDefaultLocale());
+            // Initialize the Service Manager
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing Service Manager.\n")));
+            MgServiceManager* pServiceManager = MgServiceManager::GetInstance();
+            pServiceManager->Initialize();
 
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Server Information:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Commandline Options:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Client Request Limit          : %d\n"), m_nClientRequestLimit));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Test Mode                     : %s\n"), m_bTestMode == true ? ACE_TEXT("true") : ACE_TEXT("false")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Test FDO                      : %s\n"), m_bTestFdo == true ? ACE_TEXT("true") : ACE_TEXT("false")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  General Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    IP Address                    : %s\n"), MG_WCHAR_TO_TCHAR(loadBalanceManager->GetLocalServerAddress())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Fdo path                      : %s\n"), MG_WCHAR_TO_TCHAR(fdoPath)));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Logs path                     : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetLogsPath())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Locale (Default)              : %s\n"), MG_WCHAR_TO_TCHAR(pServerManager->GetDefaultLocale())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Locale Resources File Loaded  : %s\n"), MG_WCHAR_TO_TCHAR(strResourceFilename)));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Client Service Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Connection Timeout            : %d\n"), m_nConnectionTimeout));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Connection Timer Interval     : %d\n"), m_nConnectionTimerInterval));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Drawing Service Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Feature Service Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Enabled  : %s\n"), bDataConnectionPoolEnabled == true ? ACE_TEXT("true") : ACE_TEXT("false")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Size     : %d\n"), nDataConnectionPoolSize));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timeout       : %d\n"), nDataConnectionTimeout));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timer Interval: %d\n"),m_nDataConnectionTimerInterval));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Mapping Service Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Rendering Service Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Resource Service Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Site Service Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timeout               : %d\n"), m_nSessionTimeout));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timer Interval        : %d\n"), m_nSessionTimerInterval));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Administrative Connection Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Port                          : %d\n"), pServerManager->GetAdminPort()));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Thread Pool Size              : %d\n"), pServerManager->GetAdminThreads()));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Email Address                 : %W\n"), pServerManager->GetAdminEmail().c_str()));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Client Connection Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Port                          : %d\n"), pServerManager->GetClientPort()));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Thread Pool Size              : %d\n"), pServerManager->GetClientThreads()));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Site Connection Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Port                          : %d\n"), pServerManager->GetSitePort()));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Thread Pool Size              : %d\n"), pServerManager->GetSiteThreads()));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    IP Address                    : %s\n"), MG_WCHAR_TO_TCHAR(pServerManager->GetSiteServerAddress())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Access Log Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsAccessLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAccessLogFileName())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAccessLogParameters())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Admin Log Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsAdminLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAdminLogFileName())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAdminLogParameters())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Authentication Log Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsAuthenticationLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAuthenticationLogFileName())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAuthenticationLogParameters())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Error Log Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsErrorLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetErrorLogFileName())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetErrorLogParameters())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Session Log Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsSessionLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetSessionLogFileName())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetSessionLogParameters())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Trace Log Properties:\n")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsTraceLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetTraceLogFileName())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetTraceLogParameters())));
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n")));
+            pConfiguration->GetIntValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyConnectionTimeout, m_nConnectionTimeout, MgConfigProperties::DefaultGeneralPropertyConnectionTimeout);
+            pConfiguration->GetIntValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyConnectionTimerInterval, m_nConnectionTimerInterval, MgConfigProperties::DefaultGeneralPropertyConnectionTimerInterval);
+
+            pConfiguration->GetIntValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval, m_nServiceRegistrationTimerInterval, MgConfigProperties::DefaultGeneralPropertyServiceRegistrationTimerInterval);
+
+            // TODO: Validate other configuration properties (e.g. using MG_CHECK_RANGE as below, etc.).
+            pConfiguration->GetIntValue(MgConfigProperties::SiteServicePropertiesSection, MgConfigProperties::SiteServicePropertySessionTimeout, m_nSessionTimeout, MgConfigProperties::DefaultSiteServicePropertySessionTimeout);
+            MG_CHECK_RANGE(m_nSessionTimeout, MgConfigProperties::MinimumSiteServicePropertySessionTimeout, MgConfigProperties::MaximumSiteServicePropertySessionTimeout, L"MgServer::init");
+            pConfiguration->GetIntValue(MgConfigProperties::SiteServicePropertiesSection, MgConfigProperties::SiteServicePropertySessionTimerInterval, m_nSessionTimerInterval, MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval);
+            MG_CHECK_RANGE(m_nSessionTimerInterval, MgConfigProperties::MinimumSiteServicePropertySessionTimerInterval, MgConfigProperties::MaximumSiteServicePropertySessionTimerInterval, L"MgServer::init");
+
+            pConfiguration->GetIntValue(MgConfigProperties::ResourceServicePropertiesSection, MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval, m_nRepositoryCheckpointsTimerInterval, MgConfigProperties::DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval);
+
+            // Feature Service
+            bool bDataConnectionPoolEnabled = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled;
+            INT32 nDataConnectionPoolSize = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize;
+            INT32 nDataConnectionTimeout = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout;
+
+            pConfiguration->GetBoolValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled, bDataConnectionPoolEnabled, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled);
+            pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize, nDataConnectionPoolSize, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize);
+            pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionTimeout, nDataConnectionTimeout, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout);
+            pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval, m_nDataConnectionTimerInterval, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval);
+
+            // Initialize and load the FDO library
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing FDO.\n")));
+            STRING fdoPath;
+            pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyFdoPath, fdoPath, MgConfigProperties::DefaultGeneralPropertyFdoPath);
+
+            // Check if path ends with a '/' if not, add one if needed
+            MgFileUtil::AppendSlashToEndOfPath(fdoPath);
+
+            #ifdef WIN32
+            HMODULE hlib = NULL;
+
+            // Get the size of the PATH environment variable for this process
+            DWORD size = GetEnvironmentVariableW(L"PATH", NULL, 0) + 1;
+
+            wchar_t* pathBuffer = new wchar_t[size];
+            if(pathBuffer)
+            {
+                // Get the PATH environment variable for this process
+                size = GetEnvironmentVariableW(L"PATH", pathBuffer, size);
+
+                // Add our own FDO path to the start because we want it searched 1st
+                STRING updatedPath = fdoPath;
+                updatedPath += L";";
+                updatedPath += pathBuffer;
+
+                // Set the PATH environment variable for this process
+                SetEnvironmentVariableW(L"PATH", updatedPath.c_str());
+
+                delete [] pathBuffer;
+                pathBuffer = NULL;
+            }
+            #else
+            void* hlib = NULL;
+            string updatedPath;
+
+            char* ldlibpath = getenv("LD_LIBRARY_PATH");
+            if (ldlibpath != NULL)
+            {
+                updatedPath = ldlibpath;
+                updatedPath += ":";
+            }
+            else
+            {
+                updatedPath = "";
+            }
+            updatedPath += MgUtil::WideCharToMultiByte(fdoPath);
+
+            setenv("LD_LIBRARY_PATH", updatedPath.c_str(), 1);
+            #endif
+
+            // Load the Fdo library
+            STRING fdoLibrary = fdoPath;
+
+            #ifdef WIN32
+            fdoLibrary += L"fdo.dll";
+            hlib = LoadLibraryW(fdoLibrary.c_str());
+            #else
+            fdoLibrary += L"libFdo.so";
+            hlib = dlopen(MG_WCHAR_TO_TCHAR(fdoLibrary), RTLD_NOW);
+            #endif
+
+            if (NULL == hlib)
+            {
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Failed to load FDO library.\n")));
+                throw new MgFdoException(L"MgServer.svc",
+                     __LINE__, __WFILE__, NULL, L"MgFailedToLoadFdoLibrary", NULL);
+            }
+
+            // Initialize the FDO Connection Manager
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing FDO Connection Manager.\n")));
+            MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+            pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, nDataConnectionTimeout);
+
+            // Registers services on this server and other servers within the site.
+
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Registering Services.\n")));
+            RegisterServices();
+
+#ifdef _DEBUG
+            STRING strResourceFilename = pResources->GetResourceFilename(pServerManager->GetDefaultLocale());
+
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Server Information:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Commandline Options:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Client Request Limit          : %d\n"), m_nClientRequestLimit));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Test Mode                     : %s\n"), m_bTestMode == true ? ACE_TEXT("true") : ACE_TEXT("false")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Test FDO                      : %s\n"), m_bTestFdo == true ? ACE_TEXT("true") : ACE_TEXT("false")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  General Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    IP Address                    : %s\n"), MG_WCHAR_TO_TCHAR(loadBalanceManager->GetLocalServerAddress())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Fdo path                      : %s\n"), MG_WCHAR_TO_TCHAR(fdoPath)));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Logs path                     : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetLogsPath())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Locale (Default)              : %s\n"), MG_WCHAR_TO_TCHAR(pServerManager->GetDefaultLocale())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Locale Resources File Loaded  : %s\n"), MG_WCHAR_TO_TCHAR(strResourceFilename)));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Client Service Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Connection Timeout            : %d\n"), m_nConnectionTimeout));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Connection Timer Interval     : %d\n"), m_nConnectionTimerInterval));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Drawing Service Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Feature Service Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Enabled  : %s\n"), bDataConnectionPoolEnabled == true ? ACE_TEXT("true") : ACE_TEXT("false")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Size     : %d\n"), nDataConnectionPoolSize));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timeout       : %d\n"), nDataConnectionTimeout));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timer Interval: %d\n"),m_nDataConnectionTimerInterval));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Mapping Service Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Rendering Service Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Resource Service Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Site Service Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timeout               : %d\n"), m_nSessionTimeout));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timer Interval        : %d\n"), m_nSessionTimerInterval));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Administrative Connection Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Port                          : %d\n"), pServerManager->GetAdminPort()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Thread Pool Size              : %d\n"), pServerManager->GetAdminThreads()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Email Address                 : %W\n"), pServerManager->GetAdminEmail().c_str()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Client Connection Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Port                          : %d\n"), pServerManager->GetClientPort()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Thread Pool Size              : %d\n"), pServerManager->GetClientThreads()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Site Connection Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Port                          : %d\n"), pServerManager->GetSitePort()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Thread Pool Size              : %d\n"), pServerManager->GetSiteThreads()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    IP Address                    : %s\n"), MG_WCHAR_TO_TCHAR(pServerManager->GetSiteServerAddress())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Access Log Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsAccessLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAccessLogFileName())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAccessLogParameters())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Admin Log Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsAdminLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAdminLogFileName())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAdminLogParameters())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Authentication Log Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsAuthenticationLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAuthenticationLogFileName())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetAuthenticationLogParameters())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Error Log Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsErrorLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetErrorLogFileName())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetErrorLogParameters())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Session Log Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsSessionLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetSessionLogFileName())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetSessionLogParameters())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Trace Log Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Enabled                       : %s\n"), pLogManager->IsTraceLogEnabled() == true ? ACE_TEXT("true") : ACE_TEXT("false")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Filename                      : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetTraceLogFileName())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetTraceLogParameters())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n")));
 #endif
+        }
     }
     catch (MgException* e)
     {
@@ -537,17 +596,25 @@ int MgServer::svc(void)
         #ifdef WIN32
             HMODULE hlib = NULL;
             #ifdef _DEBUG // load debug dll
-                hlib = LoadLibrary(L"MgUnitTestingd.dll");
+            STRING library = L"MgUnitTestingd.dll";
+            hlib = LoadLibrary(library.c_str());
             #else // Load Release dll
-                hlib = LoadLibrary(L"MgUnitTesting.dll");
+            STRING library = L"MgUnitTesting.dll";
+            hlib = LoadLibrary(library.c_str());
             #endif
 
             if (hlib != NULL)
             {
                 execute = (EXECUTE)GetProcAddress(hlib, "Execute");
             }
+            else
+            {
+                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %W\n"), library.c_str()));
+                throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
         #else
-            void* hlib = dlopen("libMgUnitTesting.so", RTLD_NOW);
+            string library = "libMgUnitTesting.so";
+            void* hlib = dlopen(library.c_str(), RTLD_NOW);
 
             if (hlib != NULL)
             {
@@ -555,7 +622,8 @@ int MgServer::svc(void)
             }
             else
             {
-                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %s\n"), ACE_TEXT(dlerror())));
+                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %s\n"), library.c_str()));
+                throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         #endif // WIN32
             if (execute != NULL)
@@ -572,6 +640,7 @@ int MgServer::svc(void)
             else
             {
                 // Failed to retrieve function
+                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot locate 'Execute' procedure address inside library.\n")));
                 throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
             }
 
@@ -579,15 +648,15 @@ int MgServer::svc(void)
         }
         catch (MgException* e)
         {
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), L"Unable to run all the unit tests.\n"));
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to run all the unit tests.\n")));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("%W\n"), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str()));
             SAFE_RELEASE(e);
 
             nResult = -1;
         }
         catch (...)
         {
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), L"Unable to run all the unit tests.\n"));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to run all the unit tests.\n")));
 
             nResult = -1;
         }
@@ -630,17 +699,25 @@ int MgServer::svc(void)
         #ifdef WIN32
             HMODULE hlib = NULL;
             #ifdef _DEBUG // load debug dll
-                hlib = LoadLibrary(L"MgFdoUnitTestingd.dll");
+            STRING library = L"MgFdoUnitTestingd.dll";
+            hlib = LoadLibrary(library.c_str());
             #else // Load Release dll
-                hlib = LoadLibrary(L"MgFdoUnitTesting.dll");
+            STRING library = L"MgFdoUnitTesting.dll";
+            hlib = LoadLibrary(library.c_str());
             #endif
 
             if (hlib != NULL)
             {
                 execute = (EXECUTE)GetProcAddress(hlib, "Execute");
             }
+            else
+            {
+                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %W\n"), library.c_str()));
+                throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
         #else
-            void* hlib = dlopen("libMgFdoUnitTesting.so", RTLD_NOW);
+            string library = "libMgFdoUnitTesting.so";
+            void* hlib = dlopen(library.c_str(), RTLD_NOW);
 
             if (hlib != NULL)
             {
@@ -648,7 +725,8 @@ int MgServer::svc(void)
             }
             else
             {
-                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %s\n"), ACE_TEXT(dlerror())));
+                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %s\n"), library.c_str()));
+                throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         #endif // WIN32
             if (execute != NULL)
@@ -665,6 +743,7 @@ int MgServer::svc(void)
             else
             {
                 // Failed to retrieve function
+                ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot locate 'Execute' procedure address inside library.\n")));
                 throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
             }
 
@@ -672,15 +751,15 @@ int MgServer::svc(void)
         }
         catch (MgException* e)
         {
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), L"Unable to run all the FDO unit tests.\n"));
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to run all the FDO unit tests.\n")));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("%W\n"), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str()));
             SAFE_RELEASE(e);
 
             nResult = -1;
         }
         catch (...)
         {
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), L"Unable to run all the FDO unit tests.\n"));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to run all the FDO unit tests.\n")));
 
             nResult = -1;
         }

@@ -227,6 +227,8 @@ INTERNAL_API:
     static const STRING ServerServiceError;
     static const STRING ServerServiceStartFailure;
 
+    static const STRING UsingDefaultResourceFile;
+
     static const STRING Resource_Exception_Section;
 
     static const STRING Unknown;

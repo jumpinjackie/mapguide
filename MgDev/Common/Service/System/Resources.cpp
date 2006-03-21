@@ -27,10 +27,10 @@ const STRING MgResources::ResourceComponentServer    = L"server";       // Do no
 const STRING MgResources::ResourceComponentWeb       = L"web";          // Do not translate
 
 // The following resouce messages are not in the resource file because there may be the case where the resource file failed to load.
-const STRING MgResources::FailedToLoadResourcesFile     = L"Failed to load the resource file %1 for locale %2.";
+const STRING MgResources::FailedToLoadResourcesFile     = L"Failed to load the resource file \"%1\" for locale \"%2\".";
 const STRING MgResources::FailedToLoadStartupFile       = L"Startup file %1 cannot be found or cannot be opened.";
-const STRING MgResources::FailedToLoadConfigurationFile = L"Configuration file %1 cannot be found or cannot be opened.";
-const STRING MgResources::FailedToRetrieveMessage       = L"Failed to retrieve message for %1.";
+const STRING MgResources::FailedToLoadConfigurationFile = L"Configuration file \"%1\" cannot be found or cannot be opened.";
+const STRING MgResources::FailedToRetrieveMessage       = L"Failed to retrieve message for \"%1\".";
 const STRING MgResources::FormatExceptionLocationMethod = L"Exception occured in method ";
 const STRING MgResources::FormatExceptionLocationLine   = L" at line ";
 const STRING MgResources::FormatExceptionLocationFile   = L" in file ";
@@ -44,6 +44,7 @@ const STRING MgResources::ServerStopped                 = L"Server stopped.";
 const STRING MgResources::ServerServiceName             = L"Server"; // Do not translate
 const STRING MgResources::ServerServiceDisplayName      = L"MapGuide Server"; // Do not translate
 const STRING MgResources::ServerServiceDescription      = L"The MapGuide Server process.";
+const STRING MgResources::UsingDefaultResourceFile      = L"Defaulting to the \"en\" resource file.";
 
 // The following resource strings are for the commandline options for the server. These are not in the resources file because
 // the server has not even started at this point.

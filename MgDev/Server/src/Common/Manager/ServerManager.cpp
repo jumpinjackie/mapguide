@@ -114,11 +114,14 @@ MgServerManager* MgServerManager::GetInstance()
 }
 
 // Initialization the server manager
-void MgServerManager::Initialize()
+void MgServerManager::Initialize(CREFSTRING locale)
 {
     MG_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerManager::Initialize()");
+
+    // Set the locale
+    m_defaultLocale = locale;
 
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
 
@@ -230,7 +233,6 @@ void MgServerManager::LoadConfigurationProperties()
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
 
     // General
-    pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDefaultLocale, m_defaultLocale, MgConfigProperties::DefaultGeneralPropertyDefaultLocale);
     pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDisplayName, m_displayName, MgConfigProperties::DefaultGeneralPropertyDisplayName);
 
     // Admin Connection
