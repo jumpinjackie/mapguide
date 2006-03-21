@@ -16,6 +16,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <script runat="server">
 
-public static String product = "MapGuide Open Source";
+public static String product = "MapGuide";
 
 </script>

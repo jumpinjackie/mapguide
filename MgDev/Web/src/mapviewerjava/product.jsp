@@ -16,6 +16,6 @@
 
 <%!
 
-String product = "MapGuide Open Source";
+String product = "MapGuide";
 
 %>

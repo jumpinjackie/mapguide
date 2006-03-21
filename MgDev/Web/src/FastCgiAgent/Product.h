@@ -18,6 +18,6 @@
 #ifndef CGI_PRODUCT_H
 #define CGI_PRODUCT_H
 
-#define PRODUCT_NAME "MapGuide Open Source"
+#define PRODUCT_NAME "MapGuide"
 
 #endif
