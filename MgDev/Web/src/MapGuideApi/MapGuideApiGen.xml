@@ -106,6 +106,7 @@ typedef int          UINT32;
     <Header path="../../../Common/Service/Data/ByteSource.h"/>
     <Header path="../../../Common/Service/Data/ByteSink.h"/>
     <Header path="../../../Common/Service/Data/DateTime.h"/>
+    <Header path="../../../Common/Service/Data/Color.h"/>
 
     <Header path="../../../Common/Service/Data/Collection.h"/>
     <Header path="../../../Common/Service/Data/IntCollection.h"/>
