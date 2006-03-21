@@ -70,9 +70,12 @@ try
     {
         global $archiveFrequencies;
 
-        $frequency = ARCHIVE_DAILY;
+        $frequency = ARCHIVE_NONE;
         foreach( $archiveFrequencies as $key => $val )
         {
+			if ( $key == ARCHIVE_NONE )
+				continue;
+				
             $pos = strpos( $filename, $val );
             if ( $pos !== false )
             {
