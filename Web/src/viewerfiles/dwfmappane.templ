@@ -155,7 +155,6 @@ function SetSelectionXML(xmlSet) {
     emapViewer.ExecuteCommand("CLEARSELECTION");
     var set = emapViewer.DeserializeSet(xmlSet);
     emapViewer.SelectionSet = set;   
-    emapViewer.ExecuteCommand("ZOOMSELECTION");                     
 }
 function IsEnglishUnits() {
     return !emapViewer.MetricMapUnits;
@@ -259,7 +258,7 @@ function ExecuteMapAction(action) {
             emapViewer.ExecuteCommand("NEXTVIEW");
             break;
         case 14:
-                emapViewer.ExecuteCommand("INITIALMAPVIEW");
+            emapViewer.ExecuteCommand("INITIALMAPVIEW");
             break;
         case 15:
             emapViewer.ExecuteCommand("SELECT");
