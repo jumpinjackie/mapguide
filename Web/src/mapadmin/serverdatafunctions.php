@@ -1791,7 +1791,7 @@
         function PackageTableRecord( $serverAdmin, $packageName )
         {
             $statusInfo = $serverAdmin->GetPackageStatus( $packageName );
-            $this->status = $statusInfo->GetStatusMessage();
+			$this->status = ( $statusInfo != NULL ) ? $statusInfo->GetStatusMessage() : "";
         }
     }
 
