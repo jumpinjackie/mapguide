@@ -52,7 +52,7 @@ public:
     static MgServerManager* GetInstance(void);
 
     // This initializes the server manager
-    void Initialize();
+    void Initialize(CREFSTRING locale);
     void LoadConfigurationProperties();
 
     CREFSTRING GetDefaultLocale();
