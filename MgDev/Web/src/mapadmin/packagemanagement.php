@@ -58,16 +58,9 @@ try
     $currPage = 1;
 
 	// Construct suggestedPackageName
-    $siteServerAddress = $site->GetSiteServerAddress();
-	$ipAddressStr = str_replace( '.', '-', $siteServerAddress );
 	$dateData = getdate();
 	$dateStr = sprintf( "%04u%02u%02u", $dateData[ 'year' ], $dateData[ 'mon' ], $dateData[ 'mday' ] );
-	$serverAdmin = new MgServerAdmin();
-    $serverAdmin->Open( $siteServerAddress, $userInfo );
-	$generalProps = new GeneralPropsRecord();
-	$generalProps->GetProps( $serverAdmin );
-	$serverAdmin->Close();
-	$suggestedPackageName = "From_".$generalProps->displayName."_".$ipAddressStr."_".$dateStr."_<FOLDER_NAME>";
+	$suggestedPackageName = "From_".$_SERVER['COMPUTERNAME']."_".$dateStr."_<FOLDER_NAME>";
 
     // Get submitted data
     if ( array_key_exists( $selectedPackageID, $_POST ) )
