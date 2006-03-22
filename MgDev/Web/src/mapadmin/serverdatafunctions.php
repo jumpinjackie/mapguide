@@ -1792,8 +1792,19 @@
 
         function PackageTableRecord( $serverAdmin, $packageName )
         {
-            $statusInfo = $serverAdmin->GetPackageStatus( $packageName );
-			$this->status = ( $statusInfo != NULL ) ? $statusInfo->GetStatusMessage() : "";
+			global $errCannotGetPackageStatus;
+			
+			$this->status = "";
+			
+			try
+			{
+	            $statusInfo = $serverAdmin->GetPackageStatus( $packageName );
+				$this->status = ( $statusInfo != NULL ) ? $statusInfo->GetStatusMessage() : "";
+			}
+			catch ( MgException $e )
+			{
+				$this->status = sprintf( $errCannotGetPackageStatus, $e->GetMessage() );
+			}
         }
     }
 
