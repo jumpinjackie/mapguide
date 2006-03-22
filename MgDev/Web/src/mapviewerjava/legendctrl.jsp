@@ -27,6 +27,7 @@
 String mapName = "";
 String sessionId = "";
 String templFile = "";
+String mapFrame = "";
 %>
 
 <%
@@ -42,6 +43,7 @@ try
     templFile = "/viewerfiles/legendctrl.templ";
     String vpath = GetSurroundVirtualPath(request);
     String vals[] = {
+        mapFrame,
         vpath + "legend.jsp",
         vpath + "legend.jsp",
         URLEncoder.encode(mapName, "UTF-8"),
@@ -72,5 +74,10 @@ void GetRequestParameters(HttpServletRequest request)
 
     if(IsParameter(request, "SESSION"))
         sessionId = GetParameter(request, "SESSION");
+
+    if(IsParameter(request, "MAPFRAME"))
+        mapFrame = GetParameter(request, "MAPFRAME");
+    else
+        mapFrame = "parent";
 }
 %>

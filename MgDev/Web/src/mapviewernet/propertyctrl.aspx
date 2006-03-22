@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <script runat="server">
 String locale = "";
+String mapFrame = "";
 </script>
 
 <%
@@ -33,7 +34,8 @@ String locale = "";
     MgLocalizer.SetLocalizedFilesPath(Request.ServerVariables["APPL_PHYSICAL_PATH"] + "..\\localized\\");
     String templ = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/propertyctrl.templ"), locale, GetClientOS(Request));
 
-    Response.Write(templ);
+    String[] vals = { mapFrame };
+    Response.Write(Substitute(templ, vals));
 %>
 
 <script runat="server">
@@ -48,6 +50,10 @@ void GetRequestParameters()
 void GetParameters(NameValueCollection parameters)
 {
     locale =  GetParameter(parameters, "LOCALE");
+    if(IsParameter(parameters, "MAPFRAME"))
+        mapFrame = GetParameter(parameters, "MAPFRAME");
+    else
+        mapFrame = "parent";
 }
 
 </script>
