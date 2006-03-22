@@ -344,7 +344,21 @@ function SuggestPackageName( suggestedNameFormat, folderName, packageNameElement
 	if ( folderName.length == 0 )
 		return;
 		
-	// Remove spaces and slashes
+	idx = suggestedNameFormat.indexOf( '<SQ>' );
+	while ( idx != -1 )
+	{
+		suggestedNameFormat = suggestedNameFormat.replace( /<SQ>/, '\'' );
+		idx = suggestedNameFormat.indexOf( '<SQ>' );
+	}
+
+	idx = suggestedNameFormat.indexOf( '<DQ>' );
+	while ( idx != -1 )
+	{
+		suggestedNameFormat = suggestedNameFormat.replace( /<DQ>/, '"' );
+		idx = suggestedNameFormat.indexOf( '<DQ>' );
+	}
+
+// Remove spaces and slashes
 	var folderNameStr = folderName.replace( /Library/, '' );
 	folderNameStr = folderNameStr.replace( /\:/, '' );
 	folderNameStr = folderNameStr.replace( /\/\//, '' );

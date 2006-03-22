@@ -43,6 +43,8 @@ try
 	$duplicatePackageName = false;
 	$overwriteID = 'OverwritePackage';
 	$overwrite = false;
+	$dateStr = '';
+	$sourceStr = '';
 	$suggestedPackageName = "";
 	
 	// Load values
@@ -60,7 +62,21 @@ try
 	// Construct suggestedPackageName
 	$dateData = getdate();
 	$dateStr = sprintf( "%04u%02u%02u", $dateData[ 'year' ], $dateData[ 'mon' ], $dateData[ 'mday' ] );
-	$suggestedPackageName = "From_".$_SERVER['COMPUTERNAME']."_".$dateStr."_<FOLDER_NAME>";
+	if ( array_key_exists( 'COMPUTERNAME', $_SERVER ) )
+		$sourceStr = $_SERVER[ 'COMPUTERNAME' ];
+	else
+	{
+		$siteServer = $site->GetSiteServerAddress();
+		$serverAdmin = new MgServerAdmin();
+        $serverAdmin->Open( $siteServer, $userInfo );
+		$genProps = new GeneralPropsRecord();
+        $genProps->GetProps( $serverAdmin );
+		$sourceStr = $genProps->displayName;
+		$serverAdmin->Close();
+		$sourceStr = str_replace( "'", "<SQ>", $sourceStr );
+		$sourceStr = str_replace( '"', "<DQ>", $sourceStr );
+	}
+	$suggestedPackageName = "From_".$sourceStr."_".$dateStr."_<FOLDER_NAME>";
 
     // Get submitted data
     if ( array_key_exists( $selectedPackageID, $_POST ) )

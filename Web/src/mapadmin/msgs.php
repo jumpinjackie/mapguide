@@ -84,6 +84,7 @@
     $errInvalidTileCachePath = "Tile service tile cache path must be specified.";
     $errInvalidSessionTimeOut = "Site service session timeout is invalid.";
     $errInvalidSessionTimerInt = "Site service session timer interval is invalid.";
+	$errCannotGetPackageStatus = "Cannot get package status: %s";
 
     // Confirmation Messages:
     $confSuccessfulDeletion = "%s has been successfully deleted.";
