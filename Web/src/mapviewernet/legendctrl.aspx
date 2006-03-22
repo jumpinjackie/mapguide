@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script runat="server">
 String mapName = "";
 String sessionId = "";
+String mapFrame = "";
 </script>
 
 <%
@@ -40,6 +41,7 @@ String sessionId = "";
 
         String vpath = GetSurroundVirtualPath(Request);
         String[] vals = {
+            mapFrame,
             vpath + "legend.aspx",
             vpath + "legend.aspx",
             HttpUtility.UrlEncode(mapName),
@@ -72,13 +74,15 @@ void GetRequestParameters()
 void GetParameters(NameValueCollection parameters)
 {
     if(IsParameter(parameters, "MAPNAME"))
-    {
         mapName = GetParameter(parameters, "MAPNAME");
-    }
+
     if(IsParameter(parameters, "SESSION"))
-    {
         sessionId = GetParameter(parameters, "SESSION");
-    }
+
+    if(IsParameter(parameters, "MAPFRAME"))
+        mapFrame = GetParameter(parameters, "MAPFRAME");
+    else
+        mapFrame = "parent";
 }
 
 </script>

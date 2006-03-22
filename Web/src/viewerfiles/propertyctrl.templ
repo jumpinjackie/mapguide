@@ -47,6 +47,7 @@
     <script language="javascript" src="../viewerfiles/browserdetect.js"></script>
     <script language=javascript>
 var resizing = false;
+var mapFrame = %s;
 
 // public functions -----------------------------------------------
 //
@@ -117,7 +118,7 @@ function OnResizeGrid(e) {
     return true;
 }
 function GetMapFrame() {
-    return parent; 
+    return mapFrame; 
 }
 function GetMainFrame() {
     return GetMapFrame().parent;

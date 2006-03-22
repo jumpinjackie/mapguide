@@ -5,6 +5,7 @@
     var treeReady = false;
     var intStateCompl = false;
     var thisFrame = this;
+    var mapFrame = %s;
     
 // public functions -----------------------------------------------
 //
@@ -38,7 +39,7 @@ function OnInternalStateComplete() {
     thisFrame.intStateCompl = true;
 }
 function GetMapFrame() {
-    return parent;
+    return mapFrame;
 }
 function OnForwardMouseDown(e) {
     thisFrame.legendUiFrame.OnForwardMouseDown(e);

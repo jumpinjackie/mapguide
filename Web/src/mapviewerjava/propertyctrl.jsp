@@ -25,6 +25,7 @@
 
 <%!
 String locale;
+String mapFrame;
 %>
 
 <%
@@ -39,7 +40,8 @@ try
     GetRequestParameters(request);
 
     String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/propertyctrl.templ"), locale, GetClientOS(request));
-    response.getWriter().write(templ);
+    String vals[] = { mapFrame };
+    response.getWriter().write(Substitute(templ, vals));
 }
 catch(Exception ne)
 {
@@ -57,5 +59,9 @@ response.flushBuffer();
 void GetRequestParameters(HttpServletRequest request)
 {
      locale = GetParameter(request, "LOCALE");
+    if(IsParameter(request, "MAPFRAME"))
+        mapFrame = GetParameter(request, "MAPFRAME");
+    else
+        mapFrame = "parent";
 }
 %>

@@ -21,12 +21,14 @@
 
     $mapName = "";
     $sessionId = "";
+    $mapFrame = "";
 
     GetRequestParameters();
 
     $templ = file_get_contents("../viewerfiles/legendctrl.templ");
     $vpath = GetSurroundVirtualPath();
     printf($templ,
+            $mapFrame,
             $vpath . "legend.php",
             $vpath . "legend.php",
             urlencode($mapName),
@@ -35,10 +37,14 @@
 
 function GetParameters($params)
 {
-    global $mapName, $sessionId;
+    global $mapName, $sessionId, $mapFrame;
 
     $mapName = $params['MAPNAME'];
     $sessionId = $params['SESSION'];
+    if(isset($params['MAPFRAME']))
+        $mapFrame = $params['MAPFRAME'];
+    else
+        $mapFrame = "parent";
 }
 
 function GetRequestParameters()

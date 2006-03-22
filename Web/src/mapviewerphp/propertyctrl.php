@@ -21,20 +21,25 @@
     include 'constants.php';
 
     $locale = "";
+    $mapFrame = "";
 
     GetRequestParameters();
 
     $templ = file_get_contents("../viewerfiles/propertyctrl.templ");
     SetLocalizedFilesPath(GetLocalizationPath());
     $templ = Localize($templ, $locale, GetClientOS());
-    print sprintf($templ);
+    printf($templ, $mapFrame);
 
 function GetParameters($params)
 {
-    global $locale;
+    global $locale, $mapFrame;
 
     if(isset($params['LOCALE']))
         $locale = $params['LOCALE'];
+    if(isset($params['MAPFRAME']))
+        $mapFrame = $params['MAPFRAME'];
+    else
+        $mapFrame = "parent";
 }
 
 function GetRequestParameters()
