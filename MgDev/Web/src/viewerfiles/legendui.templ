@@ -323,8 +323,18 @@
                 else
                 {
                     grpElt.style.display = "block";
-                    if(node.children != null && node.children.length > 0)
+                    if(node.children != null && node.children.length > 0) {
                         ShowHideNodes(node.children);
+                        hasVisibleChildren = false;
+                        for(var j=0; j < node.children.length; j++) {
+                            if(node.children[j].isDisplayed) {
+                                hasVisibleChildren = true;
+                            }
+                        }
+                        expElt = document.getElementById('Ex_' + node.objectId);
+                        if(expElt)
+                            expElt.style.visibility = hasVisibleChildren? "visible": "hidden";
+                    }
                 }
             }
             else if(node.type == 1)
@@ -613,17 +623,9 @@
             if(node.type == 0)
             {
                 var count = node.children != null? node.children.length: 0;
-                var visible = 0;
                 if(count > 0)
-                {
                     UpdateScaleRanges(node.children);
-                    for(var k=0; k < count; k++)
-                    {
-                        if(node.children[k].isDisplayed)
-                            ++visible;
-                    }
-                }
-                node.isDisplayed = node.displayInLegend && (visible != 0);
+                node.isDisplayed = node.displayInLegend;
             }
             else if(node.type == 1)
             {
