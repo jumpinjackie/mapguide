@@ -18,11 +18,19 @@
 #include "OgcFramework.h"
 #include "WfsFeatures.h"
 
-MgWfsFeatures::MgWfsFeatures(CPSZ inputXml):
-    m_bOk(true),
-    m_bDone(false)
+
+CPSZ gszElementNameFeatureMember = _("http://www.opengis.net/gml:featureMember");
+
+MgWfsFeatures::MgWfsFeatures(CPSZ szInputXml,int iMaxFeatures)
+:   m_sFeatureCollection(szInputXml)
+,   m_XmlInput(m_sFeatureCollection.c_str())
+,   m_iMaxFeatures(iMaxFeatures)
+,   m_bOk(true)
+,   m_bDone(false)
 {
-    m_responseString = inputXml;
+    if(m_iMaxFeatures < 1)
+        m_iMaxFeatures = 1000000; // a million features max should be enough.
+    m_XmlInput.Next();
 }
 
 MgWfsFeatures::~MgWfsFeatures()
@@ -31,22 +39,84 @@ MgWfsFeatures::~MgWfsFeatures()
 
 bool MgWfsFeatures::Next()
 {
-    if(m_bOk)
-    {
-        if(m_bDone)
-        {
-            m_bOk = false;
+    // Blitz anything that's there.
+    m_sCurrentFeature = _("");
+
+    if(m_bOk && m_iMaxFeatures--) {
+        while(true) {
+            // End of stream?
+            if(m_XmlInput.AtEnd()) {
+                m_bOk = false;
+                break; // while
+            }
+
+           // Okay; a good sign... let's start poking around.
+            switch(m_XmlInput.Current().Type()) {
+            case keBeginElement:
+                {
+                    MgXmlBeginElement& Begin = (MgXmlBeginElement&)m_XmlInput.Current();
+                    m_Namespaces.TrackBeginElement(Begin);
+
+                    // If it's a <featureMember> element...
+                    if(m_Namespaces.QualifiedName(Begin) == gszElementNameFeatureMember) {
+                        m_sCurrentFeature = Begin.Contents();
+                        m_iCurrentInnerContent = m_sCurrentFeature.length();
+
+                        MgXmlSynchronizeOnNamespaceElement SlurpThis(m_XmlInput,
+                                                                     gszElementNameFeatureMember,
+                                                                     m_Namespaces);
+                        // Declare our intent to go into the element.
+                        SlurpThis.AtBegin();
+                        // Now slurp out the contents.
+                        while(!SlurpThis.AtEnd()) {
+                            m_sCurrentFeature += m_XmlInput.Current().Contents();
+                            m_XmlInput.Next();
+                        }
+                        // Make a note of how much has been added.
+                        m_iCurrentInnerLength = m_sCurrentFeature.length() - m_iCurrentInnerContent;
+                        // We're currently parked over the </featureMember> element; tack that on.
+                        m_sCurrentFeature += m_XmlInput.Current().Contents();
+                        // Track the end element's going.
+                        m_Namespaces.TrackEndElement((MgXmlEndElement&)m_XmlInput.Current());
+                        // And tell the caller we've got a hit.
+                        return m_bOk;
+                    }
+                    else {
+                        m_XmlInput.Next();
+                    }
+                }
+                break;
+
+            case keEndElement:
+                {
+                    // The </featureMember> element is swallowed above,
+                    // This processes only non-featureMember elements, as is
+                    // the case when querying for two or more feature classes.
+                    MgXmlEndElement& End = (MgXmlEndElement&)m_XmlInput.Current();
+                    m_Namespaces.TrackEndElement(End);
+                    m_XmlInput.Next();
+                }
+                break;
+
+            default:
+                // Unexpected and uninteresting (<?xml?>, white space, comments, etc.); skip it.
+                m_XmlInput.Next();
+            }
         }
     }
+    else
+        m_bOk = false;
+
     return m_bOk;
 }
 
 void MgWfsFeatures::GenerateDefinitions(MgUtilDictionary& Dictionary)
 {
-    if(m_bOk)
-    {
-        Dictionary.AddDefinition(L"GetFeature.FeatureCollection", m_responseString.c_str());
-        m_bDone = true;
+    if(m_bOk) {
+        Dictionary.AddDefinition(L"Feature.OuterXml",    m_sCurrentFeature);
+        Dictionary.AddDefinition(L"Feature.InnerXml",    m_sCurrentFeature.substr(m_iCurrentInnerContent,m_iCurrentInnerLength));
+        Dictionary.AddDefinition(L"Feature.EndElement",  m_sCurrentFeature.substr(m_iCurrentInnerContent+m_iCurrentInnerLength));
+        Dictionary.AddDefinition(L"Feature.BeginElement",m_sCurrentFeature.substr(0,m_iCurrentInnerContent));
     }
 }
 

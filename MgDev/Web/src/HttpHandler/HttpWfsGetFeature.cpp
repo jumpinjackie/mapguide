@@ -192,22 +192,17 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                             requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve);
 
                         // TODO How to determine number of features retrieved...?
+                        // Note: for now, maxFeatures is managed by the MgWfsFeatures object. - TMT 2006-3-20
                         // numFeaturesRetrieved += ?
 
                         // Write the byte reader's data into our response data object
                         string thisResponseString;
                         resultReader->ToStringUtf8(thisResponseString);
 
-                        // Strip off anything before the first member element, or after the last one
-                        STRING::size_type firstMember = thisResponseString.find(startMemberElement);
-                        if(firstMember != string::npos)
-                        {
-                            STRING::size_type lastMember = thisResponseString.rfind(endMemberElement);
-                            if(lastMember != string::npos)
-                            {
-                                responseString.append(thisResponseString, firstMember, lastMember - firstMember + endMemberElement.length());
-                            }
-                        }
+                        // just append the entire thing; there's important stuff, like namespace declarations
+                        // that we would lose if we just extracted the <featureMember> elements.
+                        // The MgWfsFeatures object will parse the pseudo-XML that results.
+                        responseString += thisResponseString;
                     }
                 }
             }
@@ -215,7 +210,7 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
         if(responseString.length() > 0)
         {
             STRING wResponseString = MgUtil::MultiByteToWideChar(responseString);
-            Ptr<MgWfsFeatures> features = new MgWfsFeatures(wResponseString.c_str());
+            Ptr<MgWfsFeatures> features = new MgWfsFeatures(wResponseString.c_str(),m_getFeatureParams->GetMaxFeatures());
             wfsServer->SetFeatures(features);
         }
     }

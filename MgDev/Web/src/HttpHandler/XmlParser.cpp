@@ -716,7 +716,7 @@ bool MgXmlNamespaceManager::TrackEndElement  (MgXmlEndElement&   oEnd)
 
 STRING MgXmlNamespaceManager::NamespaceFrom(STRING sPrefix)
 {
-    CPSZ pszNamespace = m_pTopScope->operator [](sPrefix.c_str());
+    CPSZ pszNamespace = m_pTopScope? m_pTopScope->operator [](sPrefix.c_str()) : NULL;
     // Return an empty namespace if nothing is found.  That's
     // what we have to do since STRINGS can't be NULL themselves.
     return STRING(pszNamespace? pszNamespace : _(""));

@@ -28,6 +28,7 @@ CPSZ kpszQueryValueDescribeFeatureType     = _("DescribeFeatureType");
 CPSZ kpszQueryStringOutputFormat           = _("OutputFormat");
 CPSZ kpszQueryStringOutputFormatDefault    = _("Formats.DescribeFeatureType.default");
 
+CPSZ kpszPiEnumFeatureTypes                = _("EnumFeatureTypes");
 CPSZ kpszPiEnumFeatures                    = _("EnumFeatures");
 CPSZ kpszPiEnumFeaturesDefaultFormat       = _("&Feature.Name;\n");
 
@@ -306,11 +307,15 @@ void MgOgcWfsServer::DescribeFeatureTypeResponse()
 
 bool MgOgcWfsServer::ProcessOtherInstruction(CREFSTRING sProc,MgXmlProcessingInstruction& PI)
 {
-    if(sProc == kpszPiEnumFeatures)
+    if(sProc == kpszPiEnumFeatureTypes)
+    {
+        ProcedureEnumFeatureTypes(PI);
+    }
+    else if(sProc == kpszPiEnumFeatures)
     {
         ProcedureEnumFeatures(PI);
     }
-    else if(sProc == kpszPiGetFeatureCollection)
+    else if(sProc == kpszPiGetFeatureCollection) // DEPRECATED
     {
         ProcedureGetFeatureCollection(PI);
     }
@@ -322,7 +327,9 @@ bool MgOgcWfsServer::ProcessOtherInstruction(CREFSTRING sProc,MgXmlProcessingIns
     return true; // processed... we're happy.
 }
 
-void MgOgcWfsServer::ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum)
+// This Enum is used by GetCapabilities to list the type names of features
+// 
+void MgOgcWfsServer::ProcedureEnumFeatureTypes(MgXmlProcessingInstruction& PIEnum)
 {
     STRING sFormat;
     if(!PIEnum.GetAttribute(kpszPiAttributeUsing,sFormat))
@@ -350,6 +357,37 @@ void MgOgcWfsServer::ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum)
 }
 
 
+void MgOgcWfsServer::ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum)
+{
+    STRING sFormat;
+    if(!PIEnum.GetAttribute(kpszPiAttributeUsing,sFormat))
+        sFormat = kpszPiGetFeatureCollectionDefaultFormat;
+
+    STRING sSubset;
+    if(!PIEnum.GetAttribute(kpszPiAttributeSubset,sSubset))
+        sSubset = kpszEmpty;
+    ProcessExpandableTextIntoString(sSubset,sSubset);
+
+    int iNum = 0;
+
+    if(m_pFeatureSet != NULL) {
+        while(m_pFeatureSet->Next()) {
+            // We ensure that each feature gets its own stack frame
+            // so definitions don't get carried over to the next feature.
+            CDictionaryStackFrame ForEachFeature(this);
+
+            m_pFeatureSet->GenerateDefinitions(*m_pTopOfDefinitions);
+
+            if(IsIterationInSubset(++iNum,sSubset,kpszPiDefinitionFeatureIteration))
+                ProcessExpandableText(sFormat);
+        }
+    }
+}
+
+
+
+
+
 void MgOgcWfsServer::GenerateTypeNameException(CREFSTRING sTypeName)
 {
     sTypeName; // RESERVED FOR FUTURE USE; unused for now... to provide this info in exception body.
@@ -360,17 +398,7 @@ void MgOgcWfsServer::GenerateTypeNameException(CREFSTRING sTypeName)
 // This will enumerate all features
 void MgOgcWfsServer::ProcedureGetFeatureCollection(MgXmlProcessingInstruction& instruction)
 {
-    STRING sFormat;
-    if(!instruction.GetAttribute(kpszPiAttributeUsing,sFormat))
-        sFormat = kpszPiGetFeatureCollectionDefaultFormat;
-
-    CDictionaryStackFrame forFeatureProperties(this);
-
-    if(m_pFeatureSet != NULL)
-    {
-        m_pFeatureSet->GenerateDefinitions(*m_pTopOfDefinitions);
-        ProcessExpandableText(sFormat);
-    }
+    ProcessExpandableText(_("<!-- GetFeatureCollection PI is deprecated; use EnumFeatures -->"));
 }
 
 void MgOgcWfsServer::SetFeatures(MgWfsFeatures* pFeatures)

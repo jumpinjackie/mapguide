@@ -38,10 +38,11 @@
 
 #define _(x)     L ## x         // Define the appropriate string literal type
 
-#define SZ_EQ(pszLeft,pszRight) (szcmp(pszLeft,pszRight) == 0)
-#define SZ_NE(pszLeft,pszRight) (szcmp(pszLeft,pszRight) != 0)
-#define SZ_EQI(pszLeft,pszRight)(szicmp(pszLeft,pszRight) == 0)
-#define SZ_NEI(pszLeft,pszRight)(szicmp(pszLeft,pszRight) != 0)
+#define SZ_EQ(pszLeft,pszRight)         (szcmp(pszLeft,pszRight) == 0)
+#define SZ_EQN(pszLeft,pszRight,iCount) (szcmpn(pszLeft,pszRight,iCount) == 0)
+#define SZ_NE(pszLeft,pszRight)         (szcmp(pszLeft,pszRight) != 0)
+#define SZ_EQI(pszLeft,pszRight)        (szicmp(pszLeft,pszRight) == 0)
+#define SZ_NEI(pszLeft,pszRight)        (szicmp(pszLeft,pszRight) != 0)
 
 #define byte_sizeof(x) (sizeof(x))
 #define char_sizeof(x) (sizeof(x) / sizeof(CHARTYPE))
@@ -50,10 +51,11 @@
 #ifdef _WIN32
 
 # include "wchar.h"
-# define szlen(s)    wcslen(s)
-# define szcmp(l,r)  wcscmp(l,r)
-# define szicmp(l,r) wcsicmp(l,r)
-# define szdup(s)    wcsdup(s)
+# define szlen(s)      wcslen(s)
+# define szcmp(l,r)    wcscmp(l,r)
+# define szcmpn(l,r,c) wcsncmp(l,r,c)
+# define szicmp(l,r)   wcsicmp(l,r)
+# define szdup(s)      wcsdup(s)
 // CHARTYPE-appropriate abstractions for file IO
 # define szopen(fn,ac) _wfopen(fn,ac)
 # define szgets(buf,ich,h) fgetws(buf,ich,h)
@@ -64,10 +66,11 @@
 #else// if linux?
 
 # include "wchar.h"
-# define szlen(s)    wcslen(s)
-# define szcmp(l,r)  wcscmp(l,r)
-# define szicmp(l,r) wcscasecmp(l,r)
-# define szdup(s)    wcsdup(s)
+# define szlen(s)      wcslen(s)
+# define szcmp(l,r)    wcscmp(l,r)
+# define szcmpn(l,r,c) wcsncmp(l,r,c)
+# define szicmp(l,r)   wcscasecmp(l,r)
+# define szdup(s)      wcsdup(s)
 // CHARTYPE-appropriate abstractions for file IO
 # define szopen(fn,ac) xwfopen(fn,ac)
 # define szgets(buf,ich,h) fgetws(buf,ich,h)
