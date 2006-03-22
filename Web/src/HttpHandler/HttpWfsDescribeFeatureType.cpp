@@ -64,7 +64,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     // If it's just one feature (no comma sep found) let's do
     // a single response, else let's recursively enumerate the features.
     STRING sFeatureTypes = m_hRequest->GetRequestParam()->GetParameterValue(MgHttpResourceStrings::reqWfsTypeName);
-    if(sFeatureTypes.length() > 0 && sFeatureTypes.find(_(",")) != STRING::npos) {
+    if(sFeatureTypes.length() > 0 && sFeatureTypes.find(_(",")) == STRING::npos) {
         // TODO: assumes that this is GML type.
         //STRING sOutputFormat = m_hRequest->GetRequestParam()->GetParameterValue(_("OUTPUTFORMAT"));
 

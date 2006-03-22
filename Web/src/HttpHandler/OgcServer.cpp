@@ -333,8 +333,7 @@ void MgOgcServer::SetContentType(CPSZ pszMimeType)
     m_pResponse->SetContentType(pszMimeType);
 
     // Centralized help: write out the XML declarative PI.
-    if(SZ_EQ(pszMimeType,kpszMimeTypeXml)) {
-      // removed Write(kpszBOM);
+    if(SZ_EQN(pszMimeType,kpszMimeTypeXml,szlen(kpszMimeTypeXml))) {
       Write(kpszXmlProcessingInstruction);
     }
 }
@@ -518,6 +517,8 @@ void MgOgcServer::ProcessXmlStream(MgXmlParser& Xml)
 
         case keEndElement:
             // The processing of the end element is handled in the outer context.
+            // NO, we do NOT want to process the writing of the </end> element
+            // here; that may not be what the outer context wants. ;-)
             return;
         }
     }
@@ -1038,11 +1039,19 @@ void MgOgcServer::Expansion(const STRING& sExpansionName)
     // as a definition we just don't know about.)
     else  {
         CPSZ pszName = sExpansionName.c_str();
-        CPSZ pszValue = Definition(pszName);
+        // "Escape" notation: a name prefixed with an apostrophe is
+        // written out literally (not processed for expansions.)
+        // Naturally, that apostrophe isn't considered part of the name.
+        bool bDontExpand = pszName[0] == '\'';
+        CPSZ pszValue = Definition(pszName + (bDontExpand? 1 : 0));
         --m_iExpansionRecursionDepth;
         if(pszValue != NULL && m_iExpansionRecursionDepth >= 0) {
-            MgXmlParser AvoidInlineReference(pszValue);
-            ProcessXmlStream(AvoidInlineReference);
+            if(bDontExpand)
+                Write(pszValue);
+            else {
+                MgXmlParser AvoidInlineReference(pszValue);
+                ProcessXmlStream(AvoidInlineReference);
+            }
         }
         else { // If we don't understand it, leave it in place -- it might be a real entity.
             Write(kpszExpansionPrefix);

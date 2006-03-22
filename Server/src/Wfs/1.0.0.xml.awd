@@ -54,8 +54,8 @@
   </Define>
 
   <!-- Default, in case the metadata doesn't include a <Bounds> definition.  -->
-  <!-- EnumFeatures' Feature.Bounds eclipses this definition, but if that is -->
-  <!-- ever omitted, this one shows through.                                 -->
+  <!-- EnumFeatureTypes' Feature.Bounds eclipses this definition, but if     -->
+  <!-- that is ever omitted, this one shows through.                         -->
   <!--  General format is one or more elements of the following:             -->
   <!--    <Bounds SRS="..." west="..." south="..." east="..." north="..."/>  -->
   <!--    where west, south, east, and north represent values in units       -->
@@ -111,9 +111,11 @@
    <ogc:&Enum.item; />
  </Define>
 
- <Define item="GetFeature.GetFeatureCollection.xml">
-   &GetFeature.FeatureCollection;
+ <Define item="GetFeature.xml">
+   <!-- Feature &Feature.iteration; -->
+   &Feature.OuterXml;
  </Define>
+
     
 </Definitions>
 
@@ -192,7 +194,7 @@
       <Query/>
     </Operations>
 
-    <?EnumFeatures using="&Feature.xml;"?>
+    <?EnumFeatureTypes using="&Feature.xml;"?>
 
   </FeatureTypeList>
 
@@ -239,7 +241,7 @@
 <Response request="DescribeFeatureType" content-type="text/xml; subtype=gml/2.1.2">
  <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
             elementFormDefault="qualified" attributeFormDefault="unqualified">
- <?EnumFeatures using="&DescribeFeature.EnumFeature.xml;" ?>
+ <?EnumFeatureTypes using="&DescribeFeature.EnumFeature.xml;" ?>
  </xs:schema>
 </Response>
 
@@ -249,9 +251,9 @@
 
 -->
 <Response request="GetFeature" content-type="text/xml; subtype=gml/2.1.2">
-    <wfs:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs">
-        <?GetFeatureCollection using="&GetFeature.GetFeatureCollection.xml;" ?>
-    </wfs:FeatureCollection>
+ <wfs:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs">
+  <?EnumFeatures using="&GetFeature.xml;" ?>
+ </wfs:FeatureCollection>
 </Response>
 
 <!--

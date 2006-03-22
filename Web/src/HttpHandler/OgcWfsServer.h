@@ -61,7 +61,7 @@ protected:
 
 private:
 
-    // <?EnumFeatures
+    // <?EnumFeatureTypes
     //   using="xml-stream-for-each-layer"
     //                 -- the contents to be used to format each item in
     //                    the list, typically an expansion of one or more
@@ -80,9 +80,16 @@ private:
     //   Creates the definition "Feature.iteration" that reflects the current iteration value,
     //   a one-based index (that is, it will equal 1, 2, 3, etc. or as dictated by the
     //   subset.)
+    // ?>
+    void ProcedureEnumFeatureTypes(MgXmlProcessingInstruction& PIEnum);
+
+    // Soon to be deprecated.
+    void ProcedureGetFeatureCollection(MgXmlProcessingInstruction& PIEnum);
+
+    // <?EnumFeatures
+    //
     void ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum);
 
-    void ProcedureGetFeatureCollection(MgXmlProcessingInstruction& PIEnum);
 
     CPSZ ServiceExceptionReportElement();
 

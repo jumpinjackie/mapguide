@@ -24,7 +24,7 @@
 class MgWfsFeatures: public IOgcResourceEnumerator, public MgDisposable
 {
 public:
-    MgWfsFeatures(CPSZ inputXml);
+    MgWfsFeatures(CPSZ inputXml,int iMaxFeatures);
     //Default constructor to keep Ptr<> happy
     MgWfsFeatures();
     virtual ~MgWfsFeatures();
@@ -35,10 +35,15 @@ public:
     virtual void Dispose(){delete this;}
 
 private:
-
-    STRING m_responseString;
+    STRING m_sFeatureCollection;  // the entire blob of features
+    MgXmlNamespaceManager m_Namespaces;
+    MgXmlParser m_XmlInput;
+    STRING m_sCurrentFeature;                 // just the current feature.
+    STRING::size_type m_iCurrentInnerContent; // index to start of content after <gml:featureMember>
+    STRING::size_type m_iCurrentInnerLength;  // length of content between <gml:featureMember> and </gml:featureMember>
     bool m_bOk;
     bool m_bDone;
+    int m_iMaxFeatures;
 };
 
 #endif//_MgWfsFeatures_h
