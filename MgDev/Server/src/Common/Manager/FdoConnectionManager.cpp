@@ -184,6 +184,23 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
         STRING longTransactionName;
         GetConnectionPropertiesFromXml(&xmlUtil, providerName, configDocumentName, longTransactionName);
 
+        #ifdef WIN32
+        // TODO: Remove this code once the bug in FDO G001 has been fixed.
+        // This code is to prevent the Oracle FDO provider from crashing the server
+        // because no Oracle client is installed.
+        // Note: This code is for Windows only.
+        // Check for "oci.dll" if we cannot load it, then there is no Oracle client.
+        HMODULE hlib = LoadLibraryW(L"oci.dll");
+        if (NULL == hlib)
+        {
+            MgStringCollection arguments;
+            arguments.Add(L"No Oracle client installed.");
+
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Open() - No Oracle client installed.\n")));
+            throw new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+        }
+        #endif
+
         // Create a new connection and add it to the cache
         pFdoConnection = m_connManager->CreateConnection(providerName.c_str());
 
@@ -259,6 +276,23 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
 
     if(NULL == pFdoConnection)
     {
+        #ifdef WIN32
+        // TODO: Remove this code once the bug in FDO G001 has been fixed.
+        // This code is to prevent the Oracle FDO provider from crashing the server
+        // because no Oracle client is installed.
+        // Note: This code is for Windows only.
+        // Check for "oci.dll" if we cannot load it, then there is no Oracle client.
+        HMODULE hlib = LoadLibraryW(L"oci.dll");
+        if (NULL == hlib)
+        {
+            MgStringCollection arguments;
+            arguments.Add(L"No Oracle client installed.");
+
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Open() - No Oracle client installed.\n")));
+            throw new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+        }
+        #endif
+
         // Create a new connection and add it to the cache
         pFdoConnection = m_connManager->CreateConnection(providerName.c_str());
         // No connection string, no pooling and connection will remain in closed state
