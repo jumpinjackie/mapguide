@@ -15,28 +15,20 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifdef WIN32
-#include "Dll.cpp"
-#endif
-#include "Connection.cpp"
-#include "FdoConnectionManager.cpp"
-#include "GroupInfo.cpp"
-#include "LicenseManager.cpp"
-#include "LoadBalanceManager.cpp"
-#include "LogManager.cpp"
-#include "PackageLogHandler.cpp"
-#include "PackageLogReader.cpp"
-#include "PackageLogWriter.cpp"
-#include "PackageManager.cpp"
-#include "PermissionCache.cpp"
-#include "PermissionInfo.cpp"
-#include "PermissionManager.cpp"
-#include "RoleInfo.cpp"
-#include "SecurityCache.cpp"
-#include "SecurityManager.cpp"
-#include "ServerManager.cpp"
-#include "ServiceManager.cpp"
-#include "SessionCache.cpp"
-#include "SessionInfo.cpp"
-#include "SessionManager.cpp"
-#include "UserInfo.cpp"
+#include "LicenseUtil.h"
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Constructs the object.
+///
+MgLicenseUtil::MgLicenseUtil()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Destructs the object.
+///
+MgLicenseUtil::~MgLicenseUtil()
+{
+}

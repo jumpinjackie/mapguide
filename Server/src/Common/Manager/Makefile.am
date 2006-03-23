@@ -31,10 +31,11 @@ libMgServerManager_la_SOURCES = \
   ServerManagerBuild.cpp
 
 include_SOURCES = \
-  LoadBalanceManager.cpp \
   Connection.cpp \
   FdoConnectionManager.cpp \
   GroupInfo.cpp \
+  LicenseManager.cpp \
+  LoadBalanceManager.cpp \
   LogManager.cpp \
   PackageLogHandler.cpp \
   PackageLogReader.cpp \
@@ -54,10 +55,11 @@ include_SOURCES = \
   UserInfo.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
-  LoadBalanceManager.h \
   Connection.h \
   FdoConnectionManager.h \
   GroupInfo.h \
+  LicenseManager.h \
+  LoadBalanceManager.h \
   LogManager.h \
   LogType.h \
   PackageLogHandler.h \

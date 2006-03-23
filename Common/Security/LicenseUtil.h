@@ -15,28 +15,35 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifdef WIN32
-#include "Dll.cpp"
+#ifndef MGLICENSEUTIL_H_
+#define MGLICENSEUTIL_H_
+
+class MgLicenseUtil
+{
+/// Constructors/Destructor
+
+public:
+
+    MgLicenseUtil();
+    virtual ~MgLicenseUtil();
+
+private:
+
+    // Unimplemented Constructors/Methods
+
+    MgLicenseUtil(const MgLicenseUtil&);
+    MgLicenseUtil& operator=(const MgLicenseUtil&);
+
+/// Methods
+
+public:
+
+/// Data Members
+
+private:
+
+};
+
+/// Inline Methods
+
 #endif
-#include "Connection.cpp"
-#include "FdoConnectionManager.cpp"
-#include "GroupInfo.cpp"
-#include "LicenseManager.cpp"
-#include "LoadBalanceManager.cpp"
-#include "LogManager.cpp"
-#include "PackageLogHandler.cpp"
-#include "PackageLogReader.cpp"
-#include "PackageLogWriter.cpp"
-#include "PackageManager.cpp"
-#include "PermissionCache.cpp"
-#include "PermissionInfo.cpp"
-#include "PermissionManager.cpp"
-#include "RoleInfo.cpp"
-#include "SecurityCache.cpp"
-#include "SecurityManager.cpp"
-#include "ServerManager.cpp"
-#include "ServiceManager.cpp"
-#include "SessionCache.cpp"
-#include "SessionInfo.cpp"
-#include "SessionManager.cpp"
-#include "UserInfo.cpp"

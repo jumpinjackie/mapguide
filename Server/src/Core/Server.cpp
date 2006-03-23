@@ -19,6 +19,7 @@
 #include "ServerCommon.h"
 #include "ClientAcceptor.h"
 #include "WorkerThread.h"
+#include "LicenseManager.h"
 #include "ServerManager.h"
 #include "LoadBalanceManager.h"
 #include "ServiceManager.h"
@@ -197,6 +198,12 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 
         if(0 == nResult)
         {
+            // Initialize the License Manager.
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing License Manager.\n")));
+            MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
+            assert(NULL != licenseManager);
+            licenseManager->Initialize();
+
             // Initialize the Server Manager
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing Server Manager.\n")));
             MgServerManager* pServerManager = MgServerManager::GetInstance();
@@ -440,11 +447,15 @@ int MgServer::fini(void)
 
     // Orderly clean up applicable static manager objects which depend on
     // other third-party libraries so that the server can be cleanly shut down.
-
     MgFdoConnectionManager::Terminate();
     MgServiceManager::Terminate();
     MgLoadBalanceManager::Terminate();
 
+    MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
+    assert(NULL != licenseManager);
+    licenseManager->Terminate();
+
+    // Log the current status.
     MgResources* pResources = MgResources::GetInstance();
     STRING message = pResources->FormatMessage(MgResources::ServerStopped, 0);
 
