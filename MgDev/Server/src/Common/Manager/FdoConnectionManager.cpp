@@ -190,14 +190,17 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
         // because no Oracle client is installed.
         // Note: This code is for Windows only.
         // Check for "oci.dll" if we cannot load it, then there is no Oracle client.
-        HMODULE hlib = LoadLibraryW(L"oci.dll");
-        if (NULL == hlib)
+        if(providerName == L"Autodesk.Oracle.3.0")
         {
-            MgStringCollection arguments;
-            arguments.Add(L"No Oracle client installed.");
+            HMODULE hlib = LoadLibraryW(L"oci.dll");
+            if (NULL == hlib)
+            {
+                MgStringCollection arguments;
+                arguments.Add(L"No Oracle client installed.");
 
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Open() - No Oracle client installed.\n")));
-            throw new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Open() - No Oracle client installed.\n")));
+                throw new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+            }
         }
         #endif
 
@@ -282,14 +285,17 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
         // because no Oracle client is installed.
         // Note: This code is for Windows only.
         // Check for "oci.dll" if we cannot load it, then there is no Oracle client.
-        HMODULE hlib = LoadLibraryW(L"oci.dll");
-        if (NULL == hlib)
+        if(providerName == L"Autodesk.Oracle.3.0")
         {
-            MgStringCollection arguments;
-            arguments.Add(L"No Oracle client installed.");
+            HMODULE hlib = LoadLibraryW(L"oci.dll");
+            if (NULL == hlib)
+            {
+                MgStringCollection arguments;
+                arguments.Add(L"No Oracle client installed.");
 
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Open() - No Oracle client installed.\n")));
-            throw new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Open() - No Oracle client installed.\n")));
+                throw new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+            }
         }
         #endif
 
