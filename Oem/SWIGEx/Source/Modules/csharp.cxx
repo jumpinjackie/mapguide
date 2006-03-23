@@ -26,6 +26,7 @@ char cvsroot_csharp_cxx[] = "$Header: /cvsroot/SWIG/Source/Modules/csharp.cxx,v 
 
 extern String*			baseException;
 extern String*          getIdFilename;
+extern String*          catchAllCodeFilename;
 extern String*			disposeCode;
 extern String*          rethrowCode;
 extern ExceptionClass*	rootException;
@@ -316,6 +317,8 @@ class CSHARP : public Language {
 
     if(getIdFilename)
 		Swig_insert_file(getIdFilename, f_wrappers);
+    if(catchAllCodeFilename)
+		Swig_insert_file(catchAllCodeFilename, f_wrappers);
 
     /* Emit code */
     Language::top(n);
@@ -858,6 +861,7 @@ class CSHARP : public Language {
 	if(!wrappingConstant && !native_function_flag && baseException)
 	{
 		Printf(f->code, "}\ncatch(%s* e)\n{\nThrowDotNetExceptionWrapper(e);\n}\n", baseException);
+		Printf(f->code, "\tcatch(...) { onCatchAll(\"%s\"); }\n", overloaded_name);
 	}
 
     Printf(f->code, "}\n");

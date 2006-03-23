@@ -25,7 +25,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml C# ./Constants.cs&#x0D;&#x0A;copy .\dotnet.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname MapGuideUnmanagedApid -namespace OSGeo.MapGuide -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;"
+				CommandLine="..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml C# ./Constants.cs&#x0D;&#x0A;copy .\dotnet.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname MapGuideUnmanagedApid -namespace OSGeo.MapGuide -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -108,7 +108,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml C# ./Constants.cs&#x0D;&#x0A;copy .\dotnet.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname MapGuideUnmanagedApi -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;"
+				CommandLine="..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml C# ./Constants.cs&#x0D;&#x0A;copy .\dotnet.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname MapGuideUnmanagedApi -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"

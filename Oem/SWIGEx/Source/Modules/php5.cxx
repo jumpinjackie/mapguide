@@ -1031,9 +1031,11 @@ public:
     Printf(s_wrappers, "/* end wrapper section */\n");
     Printf(s_vdecl, "/* end vdecl subsection */\n");
 
-	extern String* getIdFilename;
+	extern String* getIdFilename, *catchAllCodeFilename;
 	if(getIdFilename)
 		Swig_insert_file(getIdFilename, s_vdecl);
+	if(catchAllCodeFilename)
+		Swig_insert_file(catchAllCodeFilename, s_vdecl);
 
 	emitThrowFunctionDefinition();
 
@@ -1541,7 +1543,7 @@ virtual int functionWrapper(Node *n) {
 		Printf(f->code, "catch(%s *e)\n", baseException);
 		Printf(f->code, "{\n");
 		Printf(f->code, "\tThrowPHPExceptionWrapper(e TSRMLS_CC);\n");
-		Printf(f->code, "}\n");
+        Printf(f->code, "} catch(...) { onCatchAll(\"%s\" TSRMLS_CC); }\n", iname);
 	}
 
     if (mvr) {

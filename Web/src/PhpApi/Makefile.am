@@ -1,6 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = getclassid.code \
+             catchall.code \
              php.i \
              PhpApi.rc \
              PhpApi.vcproj \
@@ -386,6 +387,7 @@ MgApi_wrap.cpp : \
 	../../../Oem/SWIGEx/Linux/swig -c++ -php -DPHPSWIG -baseexception MgException \
           -clsidcode getclassid.code \
           -clsiddata m_cls_id \
+          -catchallcode catchall.code \
           -dispose "((MgDisposable*)arg1)->Release()" \
           -rethrow "e->Raise();" \
           -nodefault -o MgApi_wrap.cpp \
