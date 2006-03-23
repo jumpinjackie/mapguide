@@ -71,11 +71,7 @@ try
     $genProps->GetProps( $serverAdmin );
 	$serverAdmin->Close();
 	if ( !empty( $genProps->displayName ) )
-	{
 		$sourceStr = $genProps->displayName;
-//		$sourceStr = str_replace( "'", "<SQ>", $sourceStr );
-//		$sourceStr = str_replace( '"', "<DQ>", $sourceStr );
-	}
 	else
 	if ( strcmp( '127.0.0.1', $siteServer ) != 0 )
 		$sourceStr = str_replace( '.', '-', $siteServer );
@@ -83,9 +79,9 @@ try
 	if ( array_key_exists( 'COMPUTERNAME', $_SERVER ) )
 		$sourceStr = $_SERVER[ 'COMPUTERNAME' ];
 	else 
-		$sourceStr = '';
+		$sourceStr = 'SiteServer';
 	$suggestedPackageName = "From_".$sourceStr."_".$dateStr."_<FOLDER_NAME>";
-	$escapedSuggestedPackageName = str_replace( "'", "\'", $suggestedPackageName );  
+	$escapedSuggestedPackageName = str_replace( "'", "\'", $suggestedPackageName ); 
 
     // Get submitted data
     if ( array_key_exists( $selectedPackageID, $_POST ) )
