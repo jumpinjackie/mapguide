@@ -40,12 +40,14 @@ try
 	$folderName = "";
 	$packageNameID = 'MakePackageNameID';
 	$packageName = "";
+	$escapedPackageName = "";
 	$duplicatePackageName = false;
 	$overwriteID = 'OverwritePackage';
 	$overwrite = false;
 	$dateStr = '';
 	$sourceStr = '';
 	$suggestedPackageName = "";
+	$escapedSuggestedPackageName = "";
 	
 	// Load values
     $viewLogID = 'ViewLogID';
@@ -62,21 +64,28 @@ try
 	// Construct suggestedPackageName
 	$dateData = getdate();
 	$dateStr = sprintf( "%04u%02u%02u", $dateData[ 'year' ], $dateData[ 'mon' ], $dateData[ 'mday' ] );
+	$siteServer = $site->GetSiteServerAddress();
+	$serverAdmin = new MgServerAdmin();
+    $serverAdmin->Open( $siteServer, $userInfo );
+	$genProps = new GeneralPropsRecord();
+    $genProps->GetProps( $serverAdmin );
+	$serverAdmin->Close();
+	if ( !empty( $genProps->displayName ) )
+	{
+		$sourceStr = $genProps->displayName;
+//		$sourceStr = str_replace( "'", "<SQ>", $sourceStr );
+//		$sourceStr = str_replace( '"', "<DQ>", $sourceStr );
+	}
+	else
+	if ( strcmp( '127.0.0.1', $siteServer ) != 0 )
+		$sourceStr = str_replace( '.', '-', $siteServer );
+	else
 	if ( array_key_exists( 'COMPUTERNAME', $_SERVER ) )
 		$sourceStr = $_SERVER[ 'COMPUTERNAME' ];
-	else
-	{
-		$siteServer = $site->GetSiteServerAddress();
-		$serverAdmin = new MgServerAdmin();
-        $serverAdmin->Open( $siteServer, $userInfo );
-		$genProps = new GeneralPropsRecord();
-        $genProps->GetProps( $serverAdmin );
-		$sourceStr = $genProps->displayName;
-		$serverAdmin->Close();
-		$sourceStr = str_replace( "'", "<SQ>", $sourceStr );
-		$sourceStr = str_replace( '"', "<DQ>", $sourceStr );
-	}
+	else 
+		$sourceStr = '';
 	$suggestedPackageName = "From_".$sourceStr."_".$dateStr."_<FOLDER_NAME>";
+	$escapedSuggestedPackageName = str_replace( "'", "\'", $suggestedPackageName );  
 
     // Get submitted data
     if ( array_key_exists( $selectedPackageID, $_POST ) )
@@ -104,6 +113,7 @@ try
 			if ( empty( $packageName ) )
 				throw new Exception( $errNoPackageSpecified );
 				
+			$escapedPackageName = str_replace( "'", "\'", $packageName );
 			$duplicatePackageName = false;
 			if ( !$overwrite )
 			{
@@ -192,7 +202,7 @@ catch ( Exception $e )
     <?php OutputHeader( $pageTitle ); ?>
 
 <?php if ( $duplicatePackageName ) { ?>
-	<body onLoad="ConditionalSubmitForm( '<?php echo $formName ?>', 'Package name <?php echo $packageName ?> already exists.  Overwrite?', '<?php echo $overwriteID ?>', 'true' )" >
+	<body onLoad="ConditionalSubmitForm( '<?php echo $formName ?>', 'Package name <?php echo $escapedPackageName?> already exists.  Overwrite?', '<?php echo $overwriteID ?>', 'true' )" >
 <?php } else {?>
 	<body>
 <?php } ?>
@@ -231,11 +241,11 @@ catch ( Exception $e )
                 <table border="0" cellspacing="0" class="inputForm">
                 	<tr>
                         <td class="makePackageInputLabel">Folder name (e.g. //&lt;root_folder&gt;/&lt;folder1&gt;):</td>
-                        <td class="inputFormValue"><input onChange="SuggestPackageName('<?php echo $suggestedPackageName?>', this.value, '<?php echo $packageNameID?>')" class="inputFormValue" name="<?php echo $folderNameID?>" type="text" value="<?php echo $folderName?>"></td>
+                        <td class="inputFormValue"><input onChange="SuggestPackageName('<?php echo $escapedSuggestedPackageName?>', this.value, '<?php echo $packageNameID?>')" class="inputFormValue" name="<?php echo $folderNameID?>" type="text" value="<?php echo $folderName?>"></td>
                     </tr>
                     <tr>
                         <td class="makePackageInputLabel">Resulting package name:</td>
-                        <td class="inputFormValue"><input onChange="if ( this.value.length == 0 ) { SuggestPackageName('<?php echo $suggestedPackageName?>', document.<?php echo $formName.'.'.$folderNameID?>.value, '<?php echo $packageNameID?>')}" class="inputFormValue" name="<?php echo $packageNameID?>" type="text" value="<?php echo $packageName?>"></td>
+                        <td class="inputFormValue"><input onChange="if ( this.value.length == 0 ) { SuggestPackageName('<?php echo $escapedSuggestedPackageName?>', document.<?php echo $formName.'.'.$folderNameID?>.value, '<?php echo $packageNameID?>')}" class="inputFormValue" name="<?php echo $packageNameID?>" type="text" value="<?php echo $packageName?>"></td>
                     </tr>
 				</table>
 
@@ -312,13 +322,14 @@ catch ( Exception $e )
                     else
                     foreach ( $packageTable as $key => $val )
                     {
+						$escapedKey = str_replace( "'", "\'", $key );
                         if ( $selectedPackage == $key )
                         $checkedStr = " checked ";
                         else
                         $checkedStr = "";
                     ?>
                             <tr>
-                                <td class="dataCell"><input name="<?php echo $selectedPackageID ?>" onClick="SetElementValue('<?php echo $viewLogID?>', '<?php echo $key?>');" type="radio" value="<?php echo $key ?>" <?php echo $checkedStr ?> ></td>
+                                <td class="dataCell"><input name="<?php echo $selectedPackageID ?>" onClick="SetElementValue('<?php echo $viewLogID?>', '<?php echo $escapedKey?>');" type="radio" value="<?php echo $key ?>" <?php echo $checkedStr ?> ></td>
                                 <td class="dataCell"><?php echo $key ?></td>
                                 <td class="dataCell"><?php echo $val->status ?></td>
                             </tr>
