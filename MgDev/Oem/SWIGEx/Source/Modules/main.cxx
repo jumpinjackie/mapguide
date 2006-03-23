@@ -61,6 +61,7 @@ using namespace std;
 	String     *disposeCode = 0;
     String     *rethrowCode = 0;
 	String	   *getIdFilename = 0;
+	String	   *catchAllCodeFilename = 0;
 	bool       noConstants = false;
 
 
@@ -74,6 +75,7 @@ static char *usage = (char*)"\
      -c++            - Enable C++ processing\n\
 	 -clsiddata <member> - Data member used as class identifier\n\
 	 -clsidcode <file> - Name of the file implementing getClassId()\n\
+	 -catchallcode <file> - Name of the file implementing onCatchAll()\n\
      -co             - Check a file out of the SWIG library\n\
      -dispose <code> - Code to call to replace 'delete arg1'\n\
      -dirprot        - Turn on wrapping of protected members for director classes\n\
@@ -534,6 +536,15 @@ int SWIG_main(int argc, char *argv[], Language *l) {
 	      } else {
 		Swig_arg_error();
 	      }
+	  } else if (strcmp(argv[i],"-catchallcode") == 0) {
+	      Swig_mark_arg(i);
+	      if (argv[i+1]) {
+		catchAllCodeFilename = Swig_copy_string(argv[i+1]);
+		Swig_mark_arg(i+1);
+		i++;
+	      } else {
+		Swig_arg_error();
+	      }
 		} else if(strcmp(argv[i], "-baseexception") == 0) {
 			if (argv[i+1]) {
 				baseException = NewString(argv[i+1]);
@@ -735,6 +746,12 @@ int SWIG_main(int argc, char *argv[], Language *l) {
 	    Printf(stderr,"\n-clsidcode must be specified when -clsiddata is.\n\n");
 	    SWIG_exit (EXIT_FAILURE); 
 	}
+  }
+
+  if(catchAllCodeFilename == NULL)
+  {
+    Printf(stderr,"\n-catchallcode must be specified.\n\n");
+    SWIG_exit (EXIT_FAILURE); 
   }
 
   enableRuntimeTypeChecking = clsIdMember != NULL;

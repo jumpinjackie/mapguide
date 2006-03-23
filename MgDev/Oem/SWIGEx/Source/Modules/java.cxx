@@ -28,6 +28,7 @@ using namespace std;
 typedef DOH UpcallData;
 
 extern String *getIdFilename;
+extern String *catchAllCodeFilename;
 extern map<string, int> clsIds;
 extern map<string, ExceptionClass*> exmap;
 extern ExceptionClass*	rootException;
@@ -530,6 +531,8 @@ class JAVA : public Language {
 
 	if(getIdFilename)
 		Swig_insert_file(getIdFilename, f_wrappers);
+	if(catchAllCodeFilename)
+		Swig_insert_file(catchAllCodeFilename, f_wrappers);
 
     /* Emit code */
     Language::top(n);
@@ -1222,6 +1225,7 @@ class JAVA : public Language {
 	if(!native_function_flag && baseException)
 	{
 		Printf(f->code, "}\ncatch(%s* e)\n{\nThrowJavaExceptionWrapper(jenv, e);\n}\n", baseException);
+		Printf(f->code, "\tcatch(...) { onCatchAll(jenv, \"%s\"); }\n", overloaded_name);
 	}
 
 	Printf(f->code, "}\n");

@@ -1,6 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = getclassid.code \
+             catchall.code \
              InitSockets.cpp \
              InitSockets.h \
              java.i \
@@ -388,7 +389,7 @@ MgApi_wrap.cpp : \
 	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/MapGuideApiGen.xml
 	cp -f java.i language.i
 	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/Constants.xml Java .
-	../../../Oem/SWIGEx/Linux/swig -dllname MapGuideJavaApi -c++ -java -DJAVA -package org.osgeo.mapguide -root MgObject -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -dispose "((MgDisposable*)arg1)->Release()" -rethrow "e->Raise();" -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ../../../Oem/SWIGEx/Lib MapGuideApi.i
+	../../../Oem/SWIGEx/Linux/swig -dllname MapGuideJavaApi -c++ -java -DJAVA -package org.osgeo.mapguide -root MgObject -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((MgDisposable*)arg1)->Release()" -rethrow "e->Raise();" -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ../../../Oem/SWIGEx/Lib MapGuideApi.i
 	rm -f org/osgeo/mapguide/*.class
 	mv -f *.java org/osgeo/mapguide
 	$(JAVA_HOME)/bin/javac -classpath . org/osgeo/mapguide/*.java
