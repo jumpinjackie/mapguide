@@ -65,6 +65,13 @@
                     __LINE__, __WFILE__, NULL, L"", NULL);                    \
                 break;                                                        \
                                                                               \
+            case ecFileIoError:                                               \
+            case ecReadError:                                                 \
+            case ecWriteError:                                                \
+                cryptoException = new MgFileIoException(methodName,           \
+                    __LINE__, __WFILE__, NULL, L"", NULL);                    \
+                break;                                                        \
+                                                                              \
             case ecEncryptionError:                                           \
                 cryptoException = new MgEncryptionException(methodName,       \
                     __LINE__, __WFILE__, NULL, L"", NULL);                    \

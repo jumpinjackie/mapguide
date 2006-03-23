@@ -18,6 +18,7 @@
 #include "AceCommon.h"
 #include "ServiceOperation.h"
 #include "Connection.h"
+#include "LicenseManager.h"
 #include "LogManager.h"
 #include "SessionManager.h"
 #include "ServiceManager.h"
@@ -32,6 +33,15 @@
 MgServiceOperation::MgServiceOperation() :
     m_currConnection(NULL)
 {
+    if (!IsOverheadOperation())
+    {
+        MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
+
+        if (NULL != licenseManager)
+        {
+            licenseManager->CheckLicense();
+        }
+    }
 }
 
 ///----------------------------------------------------------------------------

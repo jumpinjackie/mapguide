@@ -54,14 +54,16 @@ enum MgErrorCode
     ecNullArgument          ,
     ecInvalidArgument       ,
     ecLengthError           ,
+/// Date Time errors.
+    ecDateTimeError         ,
+/// File errors.
+    ecFileIoError           ,
+    ecReadError             ,
+    ecWriteError            ,
 /// Cryptography errors.
     ecEncryptionError       ,
     ecDecryptionError       ,
 /// License errors.
-    ecFileIoError           ,
-    ecReadError             ,
-    ecWriteError            ,
-    ecDateTimeError         ,
     ecInvalidLicense        ,
     ecLicenseExpired        ,
 /// Unknown errors.

@@ -10,4 +10,6 @@ libMgSecurity_a_SOURCES = \
 noinst_HEADERS = \
   CryptographyUtil.cpp \
   CryptographyUtil.h \
+  LicenseUtil.cpp \
+  LicenseUtil.h \
   SecurityDefs.h
