@@ -1435,3 +1435,62 @@ STRING MgCoordinateSystem::GetBaseLibrary()
     return CCoordinateSystem::GetBaseLibrary();
 }
 
+STRING MgCoordinateSystem::ConvertEpsgCodeToWkt(INT32 code)
+{
+    STRING wkt;
+
+    try
+    {
+        wkt = CCoordinateSystem::ConvertEpsgCodeToWkt(code);
+    }
+    catch(CCoordinateSystemInitializationFailedException* e)
+    {
+        MgStringCollection arguments;
+        arguments.Add(e->GetMessage());
+        delete e;
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+    }
+    catch(CException* e)
+    {
+        MgStringCollection arguments;
+        arguments.Add(e->GetMessage());
+        delete e;
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+    }
+    catch(...)
+    {
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    return wkt;
+}
+
+INT32 MgCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
+{
+    INT32 code;
+
+    try
+    {
+        code = CCoordinateSystem::ConvertWktToEpsgCode(wkt);
+    }
+    catch(CCoordinateSystemInitializationFailedException* e)
+    {
+        MgStringCollection arguments;
+        arguments.Add(e->GetMessage());
+        delete e;
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+    }
+    catch(CException* e)
+    {
+        MgStringCollection arguments;
+        arguments.Add(e->GetMessage());
+        delete e;
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+    }
+    catch(...)
+    {
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    return code;
+}

@@ -1933,3 +1933,129 @@ STRING CCoordinateSystem::GetBaseLibrary()
 {
     return CCoordinateSystem::BaseLibrary;
 }
+
+STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
+{
+    STRING wkt;
+
+    try
+    {
+        OGRSpatialReference ogrSrs;
+
+        // Use the OGR Conversion Library to import the EPSG code
+        OGRErr error = ogrSrs.importFromEPSG(code);
+        if(OGRERR_NONE == error)
+        {
+            char* epsgWkt = NULL;
+            error = ogrSrs.exportToWkt(&epsgWkt);
+            if(OGRERR_NONE == error)
+            {
+                if(epsgWkt)
+                {
+                    if(strlen(epsgWkt) > 0)
+                    {
+                        wchar_t* csWkt = Convert_Ascii_To_Wide(epsgWkt);
+                        if(csWkt)
+                        {
+                            wkt = csWkt;
+                            delete [] csWkt;
+                            csWkt = NULL;
+                        }
+                    }
+
+                    delete [] epsgWkt;
+                    epsgWkt = NULL;
+                }
+            }
+            else
+            {
+                if(epsgWkt)
+                {
+                    delete [] epsgWkt;
+                    epsgWkt = NULL;
+                }
+
+                throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, L"Failed to convert EPSG code to WKT.");
+            }
+        }
+        else
+        {
+            throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, L"Failed to convert EPSG code to WKT.");
+        }
+    }
+    catch(CException* ex)
+    {
+        throw ex;
+    }
+    catch(...)
+    {
+        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, L"Unexpected error.");
+    }
+
+    return wkt;
+}
+
+long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
+{
+    long code;
+
+    try
+    {
+        OGRSpatialReference ogrSrs;
+
+        // Use the OGR Conversion Library to import the OGC WKT
+        char* epsgWkt = Convert_Wide_To_Ascii(wkt.c_str());
+        char* temp = epsgWkt;
+        OGRErr error = ogrSrs.importFromWkt(&temp);
+
+        // Free resources
+        delete [] epsgWkt;
+        epsgWkt = NULL;
+
+        if(OGRERR_NONE == error)
+        {
+            const char* authroityCode = NULL;
+
+            if(ogrSrs.IsGeographic())
+            {
+                authroityCode = ogrSrs.GetAuthorityCode("GEOGCS");
+            }
+            else if(ogrSrs.IsProjected())
+            {
+                authroityCode = ogrSrs.GetAuthorityCode("PROJCS");
+            }
+            else if(ogrSrs.IsLocal())
+            {
+                authroityCode = ogrSrs.GetAuthorityCode("LOCAL_CS");
+            }
+
+            if(authroityCode)
+            {
+                code = ::atoi(authroityCode);
+                if(code == 0)
+                {
+                    throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, L"Failed to convert WKT to EPSG code.");
+                }
+            }
+            else
+            {
+                throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, L"Failed to convert WKT to EPSG code.");
+            }
+        }
+        else
+        {
+            throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, L"Failed to convert WKT to EPSG code.");
+        }
+    }
+    catch(CException* ex)
+    {
+        throw ex;
+    }
+    catch(...)
+    {
+        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, L"Unexpected error.");
+    }
+
+    return code;
+}
+

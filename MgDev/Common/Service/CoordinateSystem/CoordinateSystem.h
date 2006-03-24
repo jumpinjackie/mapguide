@@ -1236,6 +1236,33 @@ PUBLISHED_API:
     /// \htmlinclude ExampleBottom.html
     ///
     STRING GetCategory();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Converts the specified EPSG coordinate system code into the corresponding
+    /// wkt string.
+    ///
+    /// \param code
+    /// The EPSG coordinate system code to convert.
+    ///
+    /// \return
+    /// String of the corresponding wkt
+    ///
+    STRING ConvertEpsgCodeToWkt(INT32 code);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Converts the specified wkt string into the corresponding
+    /// EPSG code string.
+    ///
+    /// \param wkt
+    /// The wkt string to convert.
+    ///
+    /// \return
+    /// Value of the corresponding EPSG code
+    ///
+    INT32 ConvertWktToEpsgCode(CREFSTRING wkt);
+
 INTERNAL_API:
     MgCoordinateSystem();
     MgCoordinateSystem(CREFSTRING ogcWkt);
