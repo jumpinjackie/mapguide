@@ -623,48 +623,44 @@
             if(node.type == 0)
             {
                 var count = node.children != null? node.children.length: 0;
-                visible = false;
+                node.hasVisibleLayers = false;
                 if(count > 0) {
                     UpdateScaleRanges(node.children);
-                    if(node.displayInLegend) {
-                        for(var j=0; j < node.children.length; j++) {
-                            child = node.children[j];
-                            if(child.type == 0) {
-                                if(child.isDisplayed) {
-                                    visible = true;
-                                    break;
-                                }
+                    for(var j=0; j < node.children.length; j++) {
+                        child = node.children[j];
+                        if(child.type == 0) {
+                            if(child.hasVisibleLayers) {
+                                node.hasVisibleLayers = true;
+                                break;
                             }
-                            else {
-                                if(child.displayInLegend && child.curScale != -1) {
-                                    visible = true;
-                                    break;
-                                }
+                        }
+                        else {
+                            if(child.curScale != -1) {
+                                node.hasVisibleLayers = true;
+                                break;
                             }
                         }
                     }
                 }
-                node.isDisplayed = visible;
+                node.isDisplayed = node.displayInLegend && node.hasVisibleLayers;
             }
             else if(node.type == 1)
             {
                 var rangeIndex = node.curScale;
                 var scaleRanges = node.children;
                 node.curScale = -1;
-                if(node.displayInLegend) {
-                    for(var j=0; j < scaleRanges.length; j++)
+                for(var j=0; j < scaleRanges.length; j++)
+                {
+                    var scaleRange = scaleRanges[j];
+                    if(scale >= scaleRange.min && scale < scaleRange.max)
                     {
-                        var scaleRange = scaleRanges[j];
-                        if(scale >= scaleRange.min && scale < scaleRange.max)
-                        {
-                            node.curScale = j;
-                            break;
-                        }
+                        node.curScale = j;
+                        break;
                     }
-                    if(rangeIndex != node.curScale && node.curScale != -1)
-                        SetLayerStyles(node);
                 }
-                node.isDisplayed = node.curScale != -1;
+                if(node.displayInLegend && rangeIndex != node.curScale && node.curScale != -1)
+                    SetLayerStyles(node);
+                node.isDisplayed = node.displayInLegend && node.curScale != -1;
             }
         }
     }
