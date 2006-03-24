@@ -153,10 +153,10 @@ NameValueCollection cmds = null;
 
         //calculate the url of the inner pages
         //
-        String srcToolbar = showToolbar ? ("src=\"" + vpath + "toolbar.aspx?WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "\"") : "";
-        String srcStatusbar = showStatusbar ? ("src=\"" + vpath + "statusbar.aspx\"") : "";
-        String srcTaskFrame = showTaskPane ? ("src=\"" + vpath + "taskframe.aspx?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "&DWF=" + (forDwf != 0 ? "1" : "0") + "&SESSION=" + (orgSessionId != "" ? orgSessionId : "") + "\"") : "";
-        String srcTaskBar = "src=\"" + vpath + "taskbar.aspx\"";
+        String srcToolbar = showToolbar ? ("src=\"" + vpath + "toolbar.aspx?LOCALE=" + locale + "\"") : "";
+        String srcStatusbar = showStatusbar ? ("src=\"" + vpath + "statusbar.aspx?LOCALE=" + locale + "\"") : "";
+        String srcTaskFrame = showTaskPane ? ("src=\"" + vpath + "taskframe.aspx?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "&DWF=" + (forDwf != 0 ? "1" : "0") + "&SESSION=" + (orgSessionId != "" ? orgSessionId : "") + "&LOCALE=" + locale + "\"") : "";
+        String srcTaskBar = "src=\"" + vpath + "taskbar.aspx?LOCALE=" + locale + "\"";
 
         //view center
         //

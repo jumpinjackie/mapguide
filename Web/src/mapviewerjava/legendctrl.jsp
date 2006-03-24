@@ -28,6 +28,7 @@ String mapName = "";
 String sessionId = "";
 String templFile = "";
 String mapFrame = "";
+String locale = "";
 %>
 
 <%
@@ -48,7 +49,8 @@ try
         vpath + "legend.jsp",
         URLEncoder.encode(mapName, "UTF-8"),
         sessionId,
-        vpath + "legendui.jsp"};
+        vpath + "legendui.jsp",
+        locale };
 
     String templ = LoadTemplate(templFile);
     response.getWriter().write(Substitute(templ, vals));
@@ -69,15 +71,12 @@ response.flushBuffer();
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    if(IsParameter(request, "MAPNAME"))
-        mapName = GetParameter(request, "MAPNAME");
-
-    if(IsParameter(request, "SESSION"))
-        sessionId = GetParameter(request, "SESSION");
-
+    mapName = GetParameter(request, "MAPNAME");
+    sessionId = GetParameter(request, "SESSION");
     if(IsParameter(request, "MAPFRAME"))
         mapFrame = GetParameter(request, "MAPFRAME");
     else
         mapFrame = "parent";
+    locale = GetParameter(request, "LOCALE");
 }
 %>

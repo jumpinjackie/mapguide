@@ -22,6 +22,7 @@
     $mapName = "";
     $sessionId = "";
     $mapFrame = "";
+    $locale = "";
 
     GetRequestParameters();
 
@@ -33,11 +34,12 @@
             $vpath . "legend.php",
             urlencode($mapName),
             $sessionId,
-            $vpath . "legendui.php");
+            $vpath . "legendui.php",
+            $locale );
 
 function GetParameters($params)
 {
-    global $mapName, $sessionId, $mapFrame;
+    global $mapName, $sessionId, $mapFrame, $locale;
 
     $mapName = $params['MAPNAME'];
     $sessionId = $params['SESSION'];
@@ -45,6 +47,7 @@ function GetParameters($params)
         $mapFrame = $params['MAPFRAME'];
     else
         $mapFrame = "parent";
+    $locale = $params['LOCALE'];
 }
 
 function GetRequestParameters()

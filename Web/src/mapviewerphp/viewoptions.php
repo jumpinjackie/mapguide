@@ -33,11 +33,12 @@
 
 function GetParameters($params)
 {
-    global $tgt, $popup, $dwf;
+    global $tgt, $popup, $dwf, $locale;
 
     $tgt = $params['TGT'];
     $popup = $params['POPUP'];
     $dwf = $params['DWF'];
+    $locale = $params['LOCALE'];
 }
 
 function GetRequestParameters()

@@ -35,19 +35,20 @@
     print sprintf($templ,
                   $popup,
                   $vpath . "colorpicker.php",
+                  $locale,
                   $vpath . "buffer.php",
                   $us == 1? "selected": "",
                   $us == 1? "": "selected",
                   $mapName,
                   $sessionId,
-                  $popup);
+                  $popup,
+                  $locale);
 
 function GetParameters($params)
 {
     global $target, $cmdIndex, $clientWidth, $mapName, $sessionId, $popup, $us, $locale;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
+    $locale = $params['LOCALE'];
     $mapName = $params['MAPNAME'];
     $sessionId = $params['SESSION'];
     $popup = $params['POPUP'];

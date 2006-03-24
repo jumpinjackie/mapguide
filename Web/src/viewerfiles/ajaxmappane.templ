@@ -302,6 +302,7 @@ var minScale = 0.001, maxScale = 1000000000000;
 var digihandler = null;
 var digitizing = false;
 var cancelTgt;
+var locale = '%s';
 %s
 
 // public functions -----------------------------------------------
@@ -2400,7 +2401,7 @@ function ShowGroupLayers(groupsShown, groupsHidden, layersShown, layersHidden) {
     RequestMap(curScale, extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, groupsShown, groupsHidden, layersShown, layersHidden);
 }
 function About() {
-    var winAbout = window.open("%s?SESSION=" + sessionId, "about", "width=700,height=440");
+    var winAbout = window.open("%s?SESSION=" + sessionId + "&LOCALE=" + locale, "about", "width=700,height=440");
     if(winAbout != null)
         winAbout.focus();
 }
@@ -2920,7 +2921,7 @@ function KeyPressed(e) {
            </table>
          </div>
          <div class="legendCtrl" id="LegendCtrlDiv"  style="visibility: hidden;">
-           <iframe id="LegendCtrl" name="LegendCtrl" src="%s?MAPNAME=%s&SESSION=%s" frameborder="0" width="0">
+           <iframe id="LegendCtrl" name="LegendCtrl" src="%s?MAPNAME=%s&SESSION=%s&LOCALE=%s" frameborder="0" width="0">
            </iframe>
          </div>
          <div class="legendCaption" id="PropertyCaption">
@@ -2932,7 +2933,7 @@ function KeyPressed(e) {
          </div>
          </div>
          <div class="propertyCtrl" id="PropertyCtrlDiv"  style="visibility: hidden;">
-           <iframe id="PropertyCtrl" name="PropertyCtrl" src="%s" frameborder="0" width="0">
+           <iframe id="PropertyCtrl" name="PropertyCtrl" src="%s?LOCALE=%s" frameborder="0" width="0">
            </iframe>
          </div>
        </div>

@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 String mapName = "";
 String sessionId = "";
 String mapFrame = "";
+String locale = "";
 </script>
 
 <%
@@ -46,7 +47,8 @@ String mapFrame = "";
             vpath + "legend.aspx",
             HttpUtility.UrlEncode(mapName),
             sessionId,
-            vpath + "legendui.aspx"};
+            vpath + "legendui.aspx",
+            locale };
 
         String templ = LoadTemplate(Request, "../viewerfiles/legendctrl.templ");
         Response.Write(Substitute(templ, vals));
@@ -73,16 +75,13 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    if(IsParameter(parameters, "MAPNAME"))
-        mapName = GetParameter(parameters, "MAPNAME");
-
-    if(IsParameter(parameters, "SESSION"))
-        sessionId = GetParameter(parameters, "SESSION");
-
+    mapName = GetParameter(parameters, "MAPNAME");
+    sessionId = GetParameter(parameters, "SESSION");
     if(IsParameter(parameters, "MAPFRAME"))
         mapFrame = GetParameter(parameters, "MAPFRAME");
     else
         mapFrame = "parent";
+    locale = GetParameter(parameters, "LOCALE");
 }
 
 </script>

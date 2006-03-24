@@ -23,19 +23,21 @@ $taskPane = "";
 $session = "";
 $webLayout = "";
 $dwf = "";
+$locale = "";
 
 GetRequestParameters();
 
 $templ = file_get_contents("../viewerfiles/taskframe.templ");
-print sprintf($templ, GetSurroundVirtualPath() . "tasklist.php", $taskPane, $session, urlencode($webLayout), $dwf);
+print sprintf($templ, GetSurroundVirtualPath() . "tasklist.php", $locale, $taskPane, $session, urlencode($webLayout), $dwf, $locale);
 
 function GetParameters($params)
 {
-    global $taskPane, $session, $webLayout, $dwf;
+    global $taskPane, $session, $webLayout, $dwf, $locale;
 
     $taskPane = $params['TASK'];
     $session = $params['SESSION'];
     $webLayout = $params['WEBLAYOUT'];
+    $locale = $params['LOCALE'];
     $dwf = $params['DWF'];
 }
 

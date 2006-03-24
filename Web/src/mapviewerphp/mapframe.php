@@ -132,12 +132,15 @@ else
                     $hlTgt, $hlTgtName,
                     $vpath . "setselection.php",
                     $showSlider? "true": "false",
+                    $locale,
                     $scaleCreationCode,
                     $vpath . "ajaxviewerabout.php",
                     $vpath . "legendctrl.php",
                     urlencode($mapName),
                     $sessionId,
-                    $vpath . "propertyctrl.php"
+                    $locale,
+                    $vpath . "propertyctrl.php",
+                    $locale
                     );
     }
     catch(MgException $e)
