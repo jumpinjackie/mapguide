@@ -25,6 +25,8 @@ class HttpUnitTests
         HtmlPrinter::PrintTestCases("FeatureService", "../../TestData/FeatureService/FeatureServiceTest.dump", "Http");
         HtmlPrinter::PrintTestCases("MappingService", "../../TestData/MappingService/MappingServiceTest.dump", "Http");
         HtmlPrinter::PrintTestCases("SiteServiceTests", "../../TestData/SiteService/SiteServiceTest.dump", "Http");
+        HtmlPrinter::PrintTestCases("WfsTests", "../../TestData/Wfs/WfsTest.dump", "Http");
+        HtmlPrinter::PrintTestCases("WmsTests", "../../TestData/Wms/WmsTest.dump", "Http");
 
         HtmlPrinter::PrintSelectTestMode();
         HtmlPrinter::PrintSelectOutput();
