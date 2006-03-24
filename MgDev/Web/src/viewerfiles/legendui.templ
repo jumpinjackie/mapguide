@@ -623,9 +623,28 @@
             if(node.type == 0)
             {
                 var count = node.children != null? node.children.length: 0;
-                if(count > 0)
+                visible = false;
+                if(count > 0) {
                     UpdateScaleRanges(node.children);
-                node.isDisplayed = node.displayInLegend;
+                    if(node.displayInLegend) {
+                        for(var j=0; j < node.children.length; j++) {
+                            child = node.children[j];
+                            if(child.type == 0) {
+                                if(child.isDisplayed) {
+                                    visible = true;
+                                    break;
+                                }
+                            }
+                            else {
+                                if(child.displayInLegend && child.curScale != -1) {
+                                    visible = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                node.isDisplayed = visible;
             }
             else if(node.type == 1)
             {
