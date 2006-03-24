@@ -18,6 +18,7 @@ function GroupItem(legend, expanded, parent, visible, displayInLegend, objectId,
     this.name = name;
     this.base = basegroup;
     this.children = null;
+    this.hasVisibleLayers = false;
     this.isDisplayed = false;
 }
 
@@ -36,7 +37,6 @@ function LayerItem(legend, name, expanded, parent, visible, displayInLegend, sel
     this.layerRes = resId;
     this.name = name;
     this.base = baselayer;
-    this.hasChildrenDisplayed = false;
     this.children = new Array();
     this.lyrtype = 0;
     this.curScale = -1;
