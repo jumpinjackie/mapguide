@@ -28,6 +28,7 @@ String taskPane = "";
 String sessionId = "";
 String webLayout = "";
 String dwf = "";
+String locale = "";
 %>
 
 <%
@@ -37,10 +38,12 @@ String dwf = "";
 
     String templ = LoadTemplate("/viewerfiles/taskframe.templ");
     String[] vals = { GetSurroundVirtualPath(request) + "tasklist.jsp",
+                    locale,
                     taskPane,
                     sessionId,
                     URLEncoder.encode(webLayout, "UTF-8"),
-                    dwf };
+                    dwf,
+                    locale };
     response.getWriter().write(Substitute(templ, vals));
 %>
 
@@ -51,5 +54,6 @@ void GetRequestParameters(HttpServletRequest request)
     sessionId = GetParameter(request, "SESSION");
     webLayout = GetParameter(request, "WEBLAYOUT");
     dwf = GetParameter(request, "DWF");
+    locale = GetParameter(request, "LOCALE");
 }
 %>

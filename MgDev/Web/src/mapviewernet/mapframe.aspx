@@ -166,12 +166,15 @@ String hlTgtName;
                         hlTgtName,
                         vpath + "setselection.aspx",
                         showSlider != 0? "true": "false",
+                        locale,
                         scaleCreationCode,
                         vpath + "ajaxviewerabout.aspx",
                         vpath + "legendctrl.aspx",
                         HttpUtility.UrlEncode(mapName),
                         sessionId,
-                        vpath + "propertyctrl.aspx"};
+                        locale,
+                        vpath + "propertyctrl.aspx",
+                        locale };
             Response.Write(Substitute(templ, vals));
         }
         catch(MgException mge)

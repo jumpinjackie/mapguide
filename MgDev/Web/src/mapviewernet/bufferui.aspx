@@ -41,12 +41,14 @@ int us = 0;
     String[] vals = {
                     popup.ToString(),
                     vpath + "colorpicker.aspx",
+                    locale,
                     vpath + "buffer.aspx",
                     us == 1? "selected" : "",
                     us == 1? "" : "selected",
                     mapName,
                     sessionId,
                     popup.ToString(),
+                    locale,
                     };
 
     Response.Write(Substitute(templ, vals));

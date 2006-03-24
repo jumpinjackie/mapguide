@@ -28,6 +28,7 @@ String taskPane = "";
 String session = "";
 String webLayout = "";
 String dwf = "";
+String locale = "";
 </script>
 
 <%
@@ -38,10 +39,12 @@ String dwf = "";
     String templ = LoadTemplate(Request, "../viewerfiles/taskframe.templ");
     String[] vals = {
                     GetSurroundVirtualPath(Request) + "tasklist.aspx",
+                    locale,
                     taskPane,
                     session,
                     HttpUtility.UrlEncode(webLayout),
-                    dwf
+                    dwf,
+                    locale
                     };
 
     Response.Write(Substitute(templ, vals));
@@ -62,6 +65,7 @@ void GetParameters(NameValueCollection parameters)
     session = GetParameter(parameters, "SESSION");
     webLayout = GetParameter(parameters, "WEBLAYOUT");
     dwf = GetParameter(parameters, "DWF");
+    locale = GetParameter(parameters, "LOCALE");
 }
 
 </script>

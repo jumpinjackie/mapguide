@@ -148,10 +148,10 @@ try
 
     //calculate the url of the inner pages
     //
-    String srcToolbar = showToolbar ? ( "src=\"" + vpath + "toolbar.jsp?WEBLAYOUT=" + URLEncoder.encode(webLayoutDefinition, "UTF-8") + "\"" ) : "";
-    String srcStatusbar = showStatusbar ? ( "src=\"" + vpath + "statusbar.jsp\"" ) : "";
-    String srcTaskFrame = showTaskPane? ("src=\"" + vpath + "taskframe.jsp?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + URLEncoder.encode(webLayoutDefinition, "UTF-8") + "&DWF=" + (forDwf!=0? "1": "0") + "&SESSION=" + (orgSessionId != ""? orgSessionId: "") + "\"") : "";
-    String srcTaskBar = "src=\"" + vpath + "taskbar.jsp\"";
+    String srcToolbar = showToolbar ? ( "src=\"" + vpath + "toolbar.jsp?LOCALE=" + locale + "\"" ) : "";
+    String srcStatusbar = showStatusbar ? ( "src=\"" + vpath + "statusbar.jsp?LOCALE=" + locale + "\"" ) : "";
+    String srcTaskFrame = showTaskPane? ("src=\"" + vpath + "taskframe.jsp?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + URLEncoder.encode(webLayoutDefinition, "UTF-8") + "&DWF=" + (forDwf!=0? "1": "0") + "&SESSION=" + (orgSessionId != ""? orgSessionId: "") + "&LOCALE=" + locale + "\"") : "";
+    String srcTaskBar = "src=\"" + vpath + "taskbar.jsp?LOCALE=" + locale + "\"";
 
     //view center
     //

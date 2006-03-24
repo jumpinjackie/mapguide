@@ -185,7 +185,7 @@
            else
                 return;
             height = allowTransparency? 470: 445;
-            w = window.open("%s?CLR=" + clr + "&ALLOWTRANS=" + (allowTransparency? "1":"0") + "&TRANS=" + (transparent?"1":"0"), "colorPicker", "toolbar=no,status=no,width=355,height=" + height);
+            w = window.open("%s?LOCALE=%s&CLR=" + clr + "&ALLOWTRANS=" + (allowTransparency? "1":"0") + "&TRANS=" + (transparent?"1":"0"), "colorPicker", "toolbar=no,status=no,width=355,height=" + height);
             w.focus();
         }
         
@@ -333,6 +333,7 @@
     <input type="hidden" name="MAPNAME" value="%s">
     <input type="hidden" name="SESSION" value="%s">
     <input type="hidden" name="POPUP" value="%s">
+    <input type="hidden" name="LOCALE" value="%s">
     <input type="hidden" name="LCOLOR" id="lcolor" value="#000000">
     <input type="hidden" name="FFCOLOR" id="ffcolor" value="#f00000">
     <input type="hidden" name="FBCOLOR" id="fbcolor" value="#ffffff">

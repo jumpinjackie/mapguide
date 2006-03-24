@@ -162,12 +162,15 @@ String hlTgtName;
                     hlTgtName,
                     vpath + "setselection.jsp",
                     showSlider != 0? "true": "false",
+                    locale,
                     scaleCreationCode,
                     vpath + "ajaxviewerabout.jsp",
                     vpath + "legendctrl.jsp",
                     URLEncoder.encode(mapName, "UTF-8"),
                     sessionId,
-                    vpath + "propertyctrl.jsp"};
+                    locale,
+                    vpath + "propertyctrl.jsp",
+                    locale };
         response.getWriter().write(Substitute(templ, vals));
     }
 

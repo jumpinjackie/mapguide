@@ -44,12 +44,15 @@ int us;
     String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/bufferui.templ"), locale, GetClientOS(request));
     String[] vals = { String.valueOf(popup),
                       vpath + "colorpicker.jsp",
+                      locale,
                       vpath + "buffer.jsp",
                       us == 1? "selected" : "",
                       us == 1? "" : "selected",
                       mapName,
                       sessionId,
-                      String.valueOf(popup)};
+                      String.valueOf(popup),
+                      locale
+                      };
 
     response.getWriter().write(Substitute(templ, vals));
 %>
