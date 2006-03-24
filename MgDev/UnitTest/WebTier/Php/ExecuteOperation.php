@@ -14,6 +14,8 @@ require_once("DrawingServiceHttpRequests.php");
 require_once("FeatureServiceHttpRequests.php");
 require_once("SiteServiceHttpRequests.php");
 require_once("MappingServiceHttpRequests.php");
+require_once("WfsHttpRequests.php");
+require_once("WmsHttpRequests.php");
 
 require_once("Result.php");
 
@@ -30,6 +32,8 @@ class ExecuteOperation
     private $serverAdminOperation;
     private $mapLayerOperation;
     private $webLayoutOperation;
+    private $wfsOperation;
+    private $wmsOperation;
 
     public function __construct($requestType, $db, $Url)
     {
@@ -41,6 +45,8 @@ class ExecuteOperation
             $this->featureServiceOperation = new FeatureServiceHttpRequests($db, $Url);
             $this->siteServiceOperation = new SiteServiceHttpRequests($db, $Url);
             $this->mappingServiceOperation = new MappingServiceHttpRequests($db, $Url);
+            $this->wfsOperation = new WfsHttpRequests($db, $Url);
+            $this->wmsOperation = new WmsHttpRequests($db, $Url);
         }
         elseif (substr_count($requestType,"Api"))
         {
@@ -557,11 +563,41 @@ class ExecuteOperation
         }
 
         //End WebLayout API
+        //Start Wfs
+        elseif($operationName == "WfsGetCapabilities")
+        {
+            $actualResult = $this->wfsOperation->GetCapabilities($paramSet);
+        }
+        elseif($operationName == "WfsDescribeFeatureType")
+        {
+            $actualResult = $this->wfsOperation->DescribeFeatureType($paramSet);
+        }
+        elseif($operationName == "WfsGetFeature")
+        {
+            $actualResult = $this->wfsOperation->GetFeature($paramSet);
+        }
+        //End Wfs
+        //Start Wms
+        elseif($operationName == "WmsGetCapabilities")
+        {
+            $actualResult = $this->wmsOperation->GetCapabilities($paramSet);
+        }
+        elseif($operationName == "WmsGetMap")
+        {
+            
+            $actualResult = $this->wmsOperation->GetMap($paramSet);
+        }
+        elseif($operationName == "WmsGetFeatureInfo")
+        {
+            
+            $actualResult = $this->wmsOperation->GetFeatureInfo($paramSet);
+        }
+        //End Wms
         else
         {
             $actualResult = new Result ("Unknown operation", "text/plain");
         }
-
+    
         return $actualResult;
     }
 }

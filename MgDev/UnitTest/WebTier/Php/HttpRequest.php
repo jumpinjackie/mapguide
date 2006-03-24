@@ -62,6 +62,13 @@ class HttpRequest
             $response = self::GetHttpErrorMessage($response);
             $result = new Result($response, "text/plain", 559);
         }
+        //If there was an 100 response we need to remove 2 headers
+        else if (strpos($response, "100 Continue"))
+        {
+            $response = self::RemoveHeader($response);
+            $response = self::RemoveHeader($response);
+            $result = new Result($response, self::GetContentType(), self::GetHttpStatusCode());
+        }
         else
         {
             $response = self::RemoveHeader($response);
@@ -82,12 +89,11 @@ class HttpRequest
     }
 
     //Find the separator between the header and the body and remove the header
-    //Search backwards because sometimes we get back an extra HTTP 100 Continue header
     function RemoveHeader($response)
     {
-        if (strrpos($response, "\r\n\r\n"))
+        if (strpos($response, "\r\n\r\n"))
         {
-            $response = substr($response, strrpos($response, "\r\n\r\n")+4);
+            $response = substr($response, strpos($response, "\r\n\r\n")+4);
         }
         else
         {

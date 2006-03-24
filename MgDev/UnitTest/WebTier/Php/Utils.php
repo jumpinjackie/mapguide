@@ -27,7 +27,7 @@ class Utils
 
         catch (MgException $e)
         {
-            print ($e->GetMessage());
+            print ($e->GetMessage("en"));
         }
         catch (SqliteException $s)
         {
@@ -47,7 +47,7 @@ class Utils
             }
             catch (SqliteException $sq)
             {
-                print ($sq->GetMessage("en"));
+                print ($sq->GetMessage("eng"));
             }
         }
     }
