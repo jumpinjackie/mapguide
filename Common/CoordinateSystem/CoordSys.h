@@ -510,6 +510,32 @@ public:
     ///</returns>
     virtual void ConvertToLonLat(double x[], double y[], double lon[], double lat[], int arraySize);
 
+    ///////////////////////////////////////////////////////////////////////////
+    ///<summary>
+    /// Converts the specified EPSG coordinate system code into the corresponding
+    /// wkt string.
+    ///</summary>
+    ///<param name="code">
+    /// The EPSG coordinate system code to convert.
+    ///</param>
+    ///<returns>
+    /// String of the corresponding wkt
+    ///</returns>
+    static STRING ConvertEpsgCodeToWkt(long code);
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///<summary>
+    /// Converts the specified wkt string into the corresponding
+    /// EPSG code.
+    ///</summary>
+    ///<param name="wkt">
+    /// The wkt string to convert.
+    ///</param>
+    ///<returns>
+    /// The corresponding EPSG code
+    ///</returns>
+    static long ConvertWktToEpsgCode(CREFSTRING wkt);
+
     // Arbitrary X-Y Coordinate Support
     static const STRING ArbitraryXYCategoryDescription;
     static const STRING ArbitraryXYDescription;

@@ -215,6 +215,9 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_Boston_Projected);
     CPPUNIT_TEST(TestCase_NewYork_Projected);
 
+    // EPSG
+    CPPUNIT_TEST(TestCase_EPSG);
+
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
 
@@ -415,6 +418,9 @@ public:
     void TestCase_NewYork_Geographic();
     void TestCase_Boston_Projected();
     void TestCase_NewYork_Projected();
+
+    // EPSG
+    void TestCase_EPSG();
 
 private:
 
