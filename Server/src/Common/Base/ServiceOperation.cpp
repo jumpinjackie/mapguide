@@ -33,15 +33,6 @@
 MgServiceOperation::MgServiceOperation() :
     m_currConnection(NULL)
 {
-    if (!IsOverheadOperation())
-    {
-        MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
-
-        if (NULL != licenseManager)
-        {
-            licenseManager->CheckLicense();
-        }
-    }
 }
 
 ///----------------------------------------------------------------------------
@@ -499,9 +490,19 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream,
 
 void MgServiceOperation::Authenticate()
 {
+    // Perform the license validation.
+    if (!IsOverheadOperation())
+    {
+        MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
+
+        if (NULL != licenseManager)
+        {
+            licenseManager->CheckLicense();
+        }
+    }
+
     // Currently, only Server Admin/Site/Resource Service operations need
     // user role authentication. This may change in the future.
-
     MgServerManager* serverManager = MgServerManager::GetInstance();
     assert(NULL != serverManager);
 
