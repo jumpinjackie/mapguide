@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="DWF EMap Toolkit (1.0)"
+	Name="DWF EMap Toolkit (1.0.0)"
 	ProjectGUID="{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}"
 	Keyword="Win32Proj">
 	<Platforms>

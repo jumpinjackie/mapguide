@@ -141,6 +141,22 @@ throw( DWFException )
 
     _nFileBytesRemaining -= (size_t)nBytesRead;
 
+    // TODO this can be enabled when we have time to beat on this
+    //  -Sriram 6/18/04
+
+    /*
+    //
+    // if we are encrypted and if the bytes we have uncompressed
+    // doesnt match the uncompressed size then we probably have
+    // a bad password. we didnt get UNZ_BADPASSWORD because the stream
+    // must have appeared to be a valid compressed stream
+    //
+    if (_bIsEncrypted && _nFileBytesRemaining != 0 && (int)nBytesToRead != nBytesRead)
+    {
+        _DWFCORE_THROW( DWFInvalidPasswordException, L"Bad password provided" );
+    }
+    */
+
     return (size_t)nBytesRead;
 }
 
@@ -152,7 +168,6 @@ throw( DWFException )
 {
     _DWFCORE_THROW( DWFNotImplementedException, L"Seeking not permitted on this stream" );
 }
-
 _DWFCORE_API
 void
 DWFUnzippingInputStream::attach( DWFZipFileDescriptor*  pFileDescriptor,
@@ -162,5 +177,3 @@ throw()
     _pDescriptor = pFileDescriptor;
     _bOwnDescriptor = bOwnDescriptor;
 }
-
-

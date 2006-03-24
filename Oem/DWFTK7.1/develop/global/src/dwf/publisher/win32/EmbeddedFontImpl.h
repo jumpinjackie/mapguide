@@ -281,7 +281,7 @@ _declspec(selectany) const char* DWFEmbeddedFontImpl_Win32::_kz_T2Embed = "t2emb
 
 #endif
 
-};
+}
 
 
 #else

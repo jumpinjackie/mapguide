@@ -1498,6 +1498,9 @@ TK_Status TK_Polyhedron::write_vertex_parameters_all (BStreamFileToolkit & tk) a
                 if (tk.GetTargetVersion() >= 1175) {
                     if ((status = PutData(tk, mp_paramwidth)) != TK_Normal)
                         return status;
+
+                    _W3DTK_REQUIRE_VERSION( 1175 );
+
                 }
                 mp_substage++;
             }   nobreak;
@@ -1721,6 +1724,8 @@ TK_Status TK_Polyhedron::write_vertex_parameters (BStreamFileToolkit & tk) alter
                 if (tk.GetTargetVersion() >= 1175) {
                     if ((status = PutData(tk, mp_paramwidth)) != TK_Normal)
                         return status;
+
+                    _W3DTK_REQUIRE_VERSION( 1175 );
                 }
                 mp_substage++;
             } nobreak;
@@ -1833,6 +1838,8 @@ TK_Status TK_Polyhedron::write_vertex_parameters (BStreamFileToolkit & tk) alter
                 if (tk.GetTargetVersion() >= 1175) {
                     if ((status = PutData(tk, mp_paramcount)) != TK_Normal)
                         return status;
+
+                    _W3DTK_REQUIRE_VERSION( 1175 );
                 }
                 mp_substage++;
             } nobreak;
@@ -1944,6 +1951,7 @@ TK_Status TK_Polyhedron::write_vertex_parameters_main (BStreamFileToolkit & tk) 
         if (mp_paramcount > 0) {
             if ((tk.GetWriteFlags() & TK_Full_Resolution_Parameters) && 
                 tk.GetTargetVersion() >= 1175) {
+                    _W3DTK_REQUIRE_VERSION( 1175 );
                 mp_compression_scheme = (unsigned char) CS_NONE;
                 if (mp_paramcount == mp_pointcount) {
                     mp_optopcode = OPT_ALL_PARAMETERS;
@@ -3922,6 +3930,7 @@ TK_Status TK_Polyhedron::write_vertex_marker_symbols (BStreamFileToolkit & tk) a
                                     break;
                                 }
                                 else if (tk.GetTargetVersion() < 1160) {
+                                    _W3DTK_REQUIRE_VERSION( 1160 );
                                     if ((status = PutData(tk, (unsigned char)0)) != TK_Normal)
                                         return status;
                                     break;
@@ -4615,6 +4624,7 @@ TK_Status TK_Polyhedron::write_edge_patterns (BStreamFileToolkit & tk) alter {
                                     break;
                                 }
                                 else if (tk.GetTargetVersion() < 1160) {
+                                    _W3DTK_REQUIRE_VERSION( 1160 );
                                     if ((status = PutData(tk, (unsigned char)0)) != TK_Normal)
                                         return status;
                                     break;
@@ -5196,6 +5206,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 11: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_vmvisibilities != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_vertex_marker_visibilities(tk)) != TK_Normal)
                     return status;
             }
@@ -5205,6 +5216,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 12: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_vmsymbols != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_vertex_marker_symbols(tk)) != TK_Normal)
                     return status;
             }
@@ -5214,6 +5226,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 13: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_vmsizes != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_vertex_marker_sizes(tk)) != TK_Normal)
                     return status;
             }
@@ -5223,6 +5236,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 14: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_fvisibilities != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_face_visibilities(tk)) != TK_Normal)
                     return status;
             }
@@ -5232,6 +5246,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 15: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_fpatterns != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_face_patterns(tk)) != TK_Normal)
                     return status;
             }
@@ -5241,6 +5256,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 16: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_fnormals != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_face_normals(tk)) != TK_Normal)
                     return status;
             }
@@ -5250,6 +5266,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 17: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_evisibilities != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_edge_visibilities(tk)) != TK_Normal)
                     return status;
             }
@@ -5259,6 +5276,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 18: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_epatterns != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_edge_patterns(tk)) != TK_Normal)
                     return status;
             }
@@ -5268,6 +5286,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 19: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_ecolors != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_edge_colors(tk)) != TK_Normal)
                     return status;
             }
@@ -5277,6 +5296,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 20: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_eindices != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_edge_indices(tk)) != TK_Normal)
                     return status;
             }
@@ -5286,6 +5306,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 21: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_eweights != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_edge_weights(tk)) != TK_Normal)
                     return status;
             }
@@ -5295,6 +5316,7 @@ TK_Status TK_Polyhedron::Write (BStreamFileToolkit & tk) alter {
         case 22: {
             if (tk.GetTargetVersion() >= 1105 &&
                 mp_enormals != null) {
+                    _W3DTK_REQUIRE_VERSION( 1105 );
                 if ((status = write_edge_normals(tk)) != TK_Normal)
                     return status;
             }

@@ -34,6 +34,12 @@ using namespace DWFCore;
 #include "dwf/Toolkit.h"
 
 
+#ifndef _W3DTK_REQUIRE_VERSION
+#define _W3DTK_REQUIRE_VERSION( v )     { if (_nRequiredVersion < v) _nRequiredVersion = v; }
+#endif
+
+
+
 //
 // fwd decl
 //
@@ -116,6 +122,22 @@ public:
     virtual void serialize( const void* pTag = NULL )
         throw( DWFException ) = 0;
 
+	///
+	///         This method returns the minimum stream version required
+	///         to support the data and options captured in the opcode.
+	///			
+	///\return  The minimum version required for support.  This is the integer
+	///         representation of the stream version (i.e. 1000, 1236, etc.)
+    ///         This method returns <b>0</b> if there is no existing version restriction.
+    ///
+    ///\since   1.2.1236
+	///
+	virtual unsigned int version()
+		throw()
+	{
+        return _nRequiredVersion;
+    }
+
 protected:
 
     ///
@@ -125,11 +147,13 @@ protected:
     ///
     W3DOpcodeHandler( BaseOpcodeHandlerObserver* pObserver = NULL )
         throw()
-        : _pObserver( pObserver )
+        : _nRequiredVersion( 0 )
+        , _pObserver( pObserver )
     {;}
 
 protected:
 
+    unsigned int                _nRequiredVersion;
     BaseOpcodeHandlerObserver*  _pObserver;
 
 private:

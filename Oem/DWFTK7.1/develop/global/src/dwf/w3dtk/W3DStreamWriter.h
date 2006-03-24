@@ -62,6 +62,14 @@ using namespace DWFCore;
 #endif
 #endif
 
+//
+// the minimum version number
+// this is the earliest stream version that we ever supported
+//
+#ifndef DWFW3D_STREAM_WRITER_EARLIEST_VERSION
+#define DWFW3D_STREAM_WRITER_EARLIEST_VERSION     1000
+#endif
+
 ///
 ///\interface   W3DStreamWriter   dwf/w3dtk/W3DStreamWriter.h     "dwf/w3dtk/W3DStreamWriter.h"
 ///\brief       This class manages the interaction among the HSF streamer object,
@@ -95,18 +103,26 @@ public:
     ///
     ///         Prepares the writer for use.
     ///
+    ///\param   nRequestedVersion   An optional parameter that controls the stream format by
+    ///                             restricting opcode data and options to a target version number.
+    ///                             By default, the latest current version is used.
+    ///
     ///\throw   DWFException
     ///
-    void open()
+    void open( unsigned int nRequestedVersion = 0 )
         throw( DWFException );
 
     ///
     ///         Flushes any pending operations
     ///         and releases all resources.
     ///
+    ///\return  The minimum required stream version number to support
+    ///         the data and options captured in all opcodes.  If no
+    ///         such requirement exists the method returns zero.
+    ///
     ///\throw   DWFException
     ///
-    void close()
+    unsigned int close()
         throw( DWFException );
 
     ///
@@ -121,6 +137,7 @@ private:
     DWFOutputStream&    _rStream;
     BStreamFileToolkit& _rToolkit;
     bool                _bOpen;
+    unsigned int        _nRequiredVersion;
 
 #ifdef  DWFW3D_STREAM_WRITER_USE_STACK_BUFFER
 

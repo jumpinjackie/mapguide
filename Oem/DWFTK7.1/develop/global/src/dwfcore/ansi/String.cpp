@@ -48,7 +48,7 @@ void
 DWFString::destroy()
 throw( DWFException )
 {
-#ifdef DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     DWFCORE_ZERO_MEMORY( _zStackBuffer, DWFCORE_STRING_STACK_BUFFER_SIZE_IN_BYTES );
 #endif
@@ -84,7 +84,7 @@ throw( DWFException )
 {
     if (rString._nDataChars > 0)
     {
-#ifdef DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
         if (rString._bDataInHeap == false)
         {
             _store( rString._zStackBuffer, rString.bytes() );
@@ -162,7 +162,7 @@ throw( DWFException )
 {
     if (rString._nDataChars > 0)
     {
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
         if (rString._bDataInHeap == false)
         {
             _store( rString._zStackBuffer, rString.bytes() );
@@ -256,7 +256,7 @@ void
 DWFString::append( const DWFString& rString )
 throw( DWFException )
 {
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
         if (rString._bDataInHeap == false)
         {
             _append( rString._zStackBuffer, rString.bytes() );
@@ -318,7 +318,7 @@ throw()
         return true;
     }
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     if (_bDataInHeap == false)
     {
@@ -348,7 +348,7 @@ throw()
         return false;
     }
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     if (_bDataInHeap == false)
     {
@@ -378,7 +378,7 @@ throw()
         return false;
     }
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     if (_bDataInHeap == false)
     {
@@ -408,7 +408,7 @@ throw()
         return true;
     }
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     if (_bDataInHeap == false)
     {
@@ -437,7 +437,7 @@ throw()
         return ((_nDataChars > 0) ? false : true);
     }
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     if (_bDataInHeap == false)
     {
@@ -466,7 +466,7 @@ throw()
         return true;
     }
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     if (_bDataInHeap == false)
     {
@@ -496,7 +496,7 @@ throw()
         return ((_nDataChars > 0) ? true : false);
     }
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     if (_bDataInHeap == false)
     {
@@ -525,7 +525,7 @@ throw()
         return ((_nDataChars > 0) ? true : false);
     }
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     if (_bDataInHeap == false)
     {
@@ -556,7 +556,7 @@ throw( DWFException )
         _DWFCORE_THROW( DWFInvalidArgumentException, L"No output buffer provided" );
     }
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
     if (_bDataInHeap == false)
     {
         return EncodeUTF8( _zStackBuffer, bytes(), pBuffer, nBufferBytes );
@@ -590,7 +590,7 @@ throw( DWFException )
         _DWFCORE_THROW( DWFMemoryException, L"Failed to allocate buffer" );
     }
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
     if (_bDataInHeap == false)
     {
         return EncodeUTF8( _zStackBuffer, bytes(), *ppBuffer, nBytes );
@@ -703,7 +703,7 @@ throw( DWFException )
     if (_pHeapBuffer == NULL)
     {
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
             //
             // using stack buffer
@@ -845,7 +845,7 @@ throw( DWFException )
         {
             wchar_t* pDest = NULL;
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
             if (_bDataInHeap == false)
             {
@@ -874,7 +874,7 @@ throw( DWFException )
             wchar_t* pDest = (wchar_t*)apNewBuffer;
             wchar_t* pSource = NULL;
 
-#ifdef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
             if (_bDataInHeap == false)
             {
@@ -2282,3 +2282,4 @@ throw()
 }
 
 #endif
+

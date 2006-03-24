@@ -152,30 +152,6 @@ public:
     }
 
     ///
-    ///             Returns a handler for clip rectangle geometry.
-    ///
-    ///\return      A reference to an op-code handler.
-    ///\throw       DWFException
-    ///
-    virtual TK_Clip_Rectangle& getClipRectangleHandler()
-        throw( DWFException )
-    {
-        _DWFCORE_THROW( DWFNotImplementedException, L"Handler not available in this builder" );
-    }
-
-    ///
-    ///             Returns a handler for clip region geometry.
-    ///
-    ///\return      A reference to an op-code handler.
-    ///\throw       DWFException
-    ///
-    virtual TK_Clip_Region& getClipRegionHandler()
-        throw( DWFException )
-    {
-        _DWFCORE_THROW( DWFNotImplementedException, L"Handler not available in this builder" );
-    }
-
-    ///
     ///             Returns a handler for cutting plane geometry.
     ///
     ///\return      A reference to an op-code handler.

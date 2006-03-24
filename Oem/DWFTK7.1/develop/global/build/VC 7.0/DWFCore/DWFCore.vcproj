@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.0"
-	Name="DWF Core Library (1.1)"
+	Name="DWF Core Library (1.1.1)"
 	ProjectGUID="{8BECE007-1749-4300-87D8-267B613AAE6B}"
 	Keyword="Win32Proj">
 	<Platforms>
@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore.1.1.0.lib"/>
+				OutputFile="$(OutDir)/dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -102,7 +102,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore.1.1.0.lib"/>
+				OutputFile="$(OutDir)/dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -157,7 +157,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore.1.1.0.dll"
+				OutputFile="$(OutDir)/dwfcore.1.1.1.dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="TRUE"
@@ -228,7 +228,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore.1.1.0.dll"
+				OutputFile="$(OutDir)/dwfcore.1.1.1.dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile=""
 				LargeAddressAware="0"
@@ -293,7 +293,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore_wt.1.1.0.lib"/>
+				OutputFile="$(OutDir)/dwfcore_wt.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -350,7 +350,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore_wt.1.1.0.lib"/>
+				OutputFile="$(OutDir)/dwfcore_wt.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool

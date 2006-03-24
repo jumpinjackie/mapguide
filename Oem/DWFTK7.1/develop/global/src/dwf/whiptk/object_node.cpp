@@ -61,7 +61,6 @@ WT_Object_Node const & WT_Object_Node::operator=(WT_Object_Node const & object_n
 void WT_Object_Node::set(WT_File & file, WT_Integer32 object_node_num, char const * object_node_name)
 {
     m_incarnation = file.next_incarnation();
-    m_previous_object_node_num = m_object_node_num;
     m_object_node_num = object_node_num;
     m_object_node_name = object_node_name ? (WT_Byte*)object_node_name : WT_String::kNull;
 }
@@ -70,7 +69,6 @@ void WT_Object_Node::set(WT_File & file, WT_Integer32 object_node_num, char cons
 void WT_Object_Node::set(WT_File & file, WT_Integer32 object_node_num, WT_Unsigned_Integer16 const * object_node_name)
 {
     m_incarnation = file.next_incarnation();
-    m_previous_object_node_num = m_object_node_num;
     m_object_node_num = object_node_num;
     m_object_node_name.set(WT_String::wcslen(object_node_name),object_node_name);
 }
@@ -79,7 +77,6 @@ void WT_Object_Node::set(WT_File & file, WT_Integer32 object_node_num, WT_Unsign
 void WT_Object_Node::set(WT_Object_Node const & object_node)
 {
     m_incarnation = object_node.m_incarnation;
-    m_previous_object_node_num = m_object_node_num;
     m_object_node_num = object_node.m_object_node_num;
     m_object_node_name = object_node.m_object_node_name;
 }
@@ -186,6 +183,7 @@ WT_Result WT_Object_Node::serialize(WT_File & file) const
             WD_CHECK (file.write((WT_Byte) ')'));
         }
     }
+    ((WT_Object_Node*)this)->m_previous_object_node_num = m_object_node_num;
 
     return WT_Result::Success;
 }

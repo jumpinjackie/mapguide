@@ -28,6 +28,7 @@ throw()
                : _rStream( rW3DStream )
                , _rToolkit( rToolkit )
                , _bOpen( false )
+               , _nRequiredVersion( DWFW3D_STREAM_WRITER_EARLIEST_VERSION )
 #ifndef DWFW3D_STREAM_WRITER_USE_STACK_BUFFER
                , _pBuffer( NULL )
 #endif
@@ -44,7 +45,7 @@ throw()
 }
 
 void
-W3DStreamWriter::open()
+W3DStreamWriter::open( unsigned int nRequestedVersion )
 throw( DWFException )
 {
 #ifndef DWFW3D_STREAM_WRITER_USE_STACK_BUFFER
@@ -63,10 +64,20 @@ throw( DWFException )
     //
     _rToolkit.PrepareBuffer( _pBuffer, DWFW3D_STREAM_WRITER_BUFFER_BYTES );
 
+        //
+        // if applicable, tell the hsf streamer to constrain its output format
+        // also, don't bother making the call if the request is for a version
+        // higher than (or equal to) the current one (w3dtk/BStream.h)
+        //
+    if ((nRequestedVersion > 0) && (nRequestedVersion <= TK_File_Format_Version))
+    {
+        _rToolkit.SetTargetVersion( nRequestedVersion );
+    }
+
     _bOpen = true;
 }
 
-void
+unsigned int
 W3DStreamWriter::close()
 throw( DWFException )
 {
@@ -102,6 +113,8 @@ throw( DWFException )
     }
 
     _bOpen = false;
+
+    return ((_nRequiredVersion < (unsigned int)_rToolkit.GetTargetVersion()) ? _nRequiredVersion : 0);
 }
 
 void
@@ -116,6 +129,15 @@ throw( DWFException )
         // the toolkit will write out as much as the current buffer can hold
         //
         TK_Status eStatus = pHandler->Write( _rToolkit );
+
+            //
+            // if the opcode requires a stream version greater than the
+            // current setting, adjust the requirement here
+            //
+        if (pHandler->version() > _nRequiredVersion)
+        {
+            _nRequiredVersion = pHandler->version();
+        }
 
             //
             // if there is still more data left to write; we have to loop through 

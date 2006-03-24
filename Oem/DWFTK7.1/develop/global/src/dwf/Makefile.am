@@ -5,7 +5,7 @@ pkginclude_HEADERS =  Toolkit.h Version.h
 
 lib_LTLIBRARIES =  libdwftk.la
 
-libdwftk_la_LDFLAGS = -release 7.1.0
+libdwftk_la_LDFLAGS = -release 7.1.1
 
 libdwftk_la_SOURCES =  Toolkit.cpp
 

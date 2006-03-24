@@ -38,7 +38,7 @@ DWFModel::DWFModel( DWFOutputStream&  rModelStream,
                     const DWFString&  zModelSource,
                     const DWFString&  zModelSourceID )
 throw()
-        : DWFPublishableSection(zModelTitle, zModelSource, zModelSourceID)
+        : DWFPublishableSection( zModelTitle, zModelSource, zModelSourceID )
         , _bOpen( false )
         , _bCompress( true )
         , _bStreamDefaults( true )
@@ -52,6 +52,8 @@ throw()
         , _nStyleSegments( 0 )
         , _zMIME( DWFMIME::kzMIMEType_W3D )
         , _pW3DFile( NULL )
+        , _pW3DFileStream( NULL )
+        , _pVersionBuffer( NULL )
         , _pW3DStreamWriter( NULL )
         , _pDefaultViewCamera( NULL )
 {
@@ -76,7 +78,7 @@ DWFModel::DWFModel( const DWFString&  zModelTitle,
                     const DWFString&  zModelSource,
                     const DWFString&  zModelSourceID )
 throw()
-        : DWFPublishableSection(zModelTitle, zModelSource, zModelSourceID)
+        : DWFPublishableSection( zModelTitle, zModelSource, zModelSourceID )
         , _bOpen( false )
         , _bCompress( true )
         , _bStreamDefaults( true )
@@ -90,6 +92,8 @@ throw()
         , _nStyleSegments( 0 )
         , _zMIME( DWFMIME::kzMIMEType_W3D )
         , _pW3DFile( NULL )
+        , _pW3DFileStream( NULL )
+        , _pVersionBuffer( NULL )
         , _pW3DStreamWriter( NULL )
         , _pDefaultViewCamera( NULL )
 {
@@ -169,7 +173,8 @@ DWFModel::open( tePolygonHandedness ePolygonHandedness,
                 double*             pTransform,
                 bool                bUseDefaultLighting,
                 bool                bUsePublishedEdges,
-                bool                bUseSilhouetteEdges )
+                bool                bUseSilhouetteEdges,
+                unsigned int        nTargetW3DVersion )
 throw( DWFException )
 {
     if (_bOpen)
@@ -242,7 +247,7 @@ throw( DWFException )
     //
     // initialize the writer
     //
-    _pW3DStreamWriter->open();
+    _pW3DStreamWriter->open( nTargetW3DVersion );
 
     //
     // prepare the toolkit with default settings
@@ -325,7 +330,7 @@ throw( DWFException )
 }
 
 _DWFTK_API
-void
+unsigned int
 DWFModel::close()
 throw( DWFException )
 {
@@ -347,12 +352,55 @@ throw( DWFException )
     //
     _pW3DStreamWriter->notify( _oToolkit.GetOpcodeHandler(TKE_Termination) );
 
-     //
+    //
     // finalize the writer
     //
-    _pW3DStreamWriter->close();
+    unsigned int nRequiredVersion = _pW3DStreamWriter->close();
+
+    //
+    // get the writer out of the picture for good
+    //
+    DWFCORE_FREE_OBJECT( _pW3DStreamWriter );
+
+    //
+    // get the input stream of the w3d file
+    //
+    _pW3DFileStream = _pW3DFile->getInputStream();
+
+        //
+        // here we surgically repair the w3d file with the minimum required version
+        // we do this for maximum backwards compatability. a version requirement greater
+        // than zero indicates the required version is less than the current format version
+        // and can be downgraded.
+        //
+    if (nRequiredVersion > 0)
+    {
+            //
+            // allocate a buffer for the header opcode data
+            //
+        _pVersionBuffer = DWFCORE_ALLOC_MEMORY( char, 16 );
+        if (_pVersionBuffer == NULL)
+        {
+            _DWFCORE_THROW( DWFMemoryException, L"Failed to allocate read buffer" );
+        }
+
+            //
+            // read in enough to capture the stream version
+            //
+        if (16 != _pW3DFileStream->read(_pVersionBuffer, 16))
+        {
+            _DWFCORE_THROW( DWFIOException, L"Failed to read temporary file stream" );
+        }
+
+        //
+        // "fix" the version
+        //
+        ::sprintf( (char*)&_pVersionBuffer[8], "%02d.%02d ", nRequiredVersion/100, nRequiredVersion%100 );
+    }
 
     _bOpen = false;
+
+    return nRequiredVersion;
 }
 
 _DWFTK_API
@@ -916,17 +964,27 @@ DWFModel::getInputStream()
 throw( DWFException )
 {
         //
-        // ask the temp file for it's stream
+        // this should not have been called...
         //
-    if (_pW3DFile)
+    if (_pW3DFileStream == NULL)
     {
-        return _pW3DFile->getInputStream();
+        _DWFCORE_THROW( DWFIOException, L"No input stream available for the model" );
     }
-
-    //
-    // otherwise, for now anyway...
-    //
-    _DWFCORE_THROW( DWFIOException, L"No input stream available for the model" );
+        //
+        // if there is no version buffer, we can just return the file stream
+        //
+    else if (_pVersionBuffer == NULL)
+    {
+        return _pW3DFileStream;
+    }
+        //
+        // we have both a version buffer and the rest of the w3d stream
+        // so build a special buffer stream and return that
+        //
+    else 
+    {
+        return DWFCORE_ALLOC_OBJECT( _SpecialBufferedInputStream(_pVersionBuffer, 16, _pW3DFileStream) );
+    } 
 }
 
 _DWFTK_API
@@ -1155,36 +1213,6 @@ throw( DWFException )
     }
 
     TK_Circle* pHandler = (TK_Circle*)_oToolkit.GetOpcodeHandler( TKE_Circular_Wedge );
-    pHandler->setObserver( _pW3DStreamWriter );
-
-    return *pHandler;
-}
-
-TK_Clip_Rectangle&
-DWFModel::getClipRectangleHandler()
-throw( DWFException )
-{
-    if (_bOpen == false)
-    {
-        _DWFCORE_THROW( DWFUnexpectedException, L"Model must be open" );
-    }
-
-    TK_Clip_Rectangle* pHandler = (TK_Clip_Rectangle*)_oToolkit.GetOpcodeHandler( TKE_Clip_Rectangle );
-    pHandler->setObserver( _pW3DStreamWriter );
-
-    return *pHandler;
-}
-
-TK_Clip_Region&
-DWFModel::getClipRegionHandler()
-throw( DWFException )
-{
-    if (_bOpen == false)
-    {
-        _DWFCORE_THROW( DWFUnexpectedException, L"Model must be open" );
-    }
-
-    TK_Clip_Region* pHandler = (TK_Clip_Region*)_oToolkit.GetOpcodeHandler( TKE_Clip_Region );
     pHandler->setObserver( _pW3DStreamWriter );
 
     return *pHandler;
@@ -1877,6 +1905,90 @@ throw( DWFException )
 
     return *pHandler;
 }
+
+
+///
+///
+///
+
+DWFModel::_SpecialBufferedInputStream::_SpecialBufferedInputStream( char*           pBuffer,
+                                                                    unsigned int    nBufferBytes,
+                                                                    DWFInputStream* pStream )
+throw()
+        : _nBufferBytes( nBufferBytes )
+        , _nBufferBytesRead( 0 )
+        , _pBuffer( pBuffer )
+        , _pStream( pStream )
+{
+    ;
+}
+
+DWFModel::_SpecialBufferedInputStream::~_SpecialBufferedInputStream()
+throw()
+{
+    if (_pBuffer)
+    {
+        DWFCORE_FREE_MEMORY( _pBuffer );
+    }
+
+    if (_pStream)
+    {
+        DWFCORE_FREE_OBJECT( _pStream );
+    }
+}
+
+size_t
+DWFModel::_SpecialBufferedInputStream::available() const
+throw( DWFException )
+{
+    return (_pStream->available() - (_nBufferBytesRead - _nBufferBytes));
+}
+
+size_t
+DWFModel::_SpecialBufferedInputStream::read( void*  pBuffer,
+                                             size_t nBytesToRead )
+throw( DWFException )
+{
+    size_t nBytesRead = 0;
+    char* pOut = (char*)pBuffer;
+    char* pIn = _pBuffer;
+
+    while ((_nBufferBytesRead < _nBufferBytes) && (nBytesRead < nBytesToRead))
+    {
+        *pOut = *pIn;
+
+        pOut++;
+        pIn++;
+        _nBufferBytesRead++;
+        nBytesRead++;
+    }
+
+    if (nBytesRead < nBytesToRead)
+    {
+        nBytesRead += _pStream->read( pOut, (nBytesToRead - nBytesRead) );
+    }
+
+    return nBytesRead;
+}
+
+off_t
+DWFModel::_SpecialBufferedInputStream::seek( int    eOrigin,
+                                             off_t  nOffset )
+throw( DWFException )
+{
+    if ((eOrigin == SEEK_SET) && (nOffset < (off_t)_nBufferBytes))
+    {
+        _nBufferBytesRead = nOffset;
+    }
+    else
+    {
+        _pStream->seek( eOrigin, nOffset );
+    }
+
+    return -1;
+}
+
+
 
 #endif
 

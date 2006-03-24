@@ -83,7 +83,7 @@ class DWFSectionBuilder;
 ///
 ///\todo        Provide a thread-safe reader implementation.
 ///
-class DWFPackageReader
+class DWFPackageReader   _DWFTK_EXPORT_API_MEMORY_CONTROL_BASE
 {
 
 public:
@@ -96,24 +96,24 @@ public:
         ///
         ///     DWF 6 (and higher) zip package format.
         ///
-		eDWFPackage,            /**< A DWF of version 6.0 or greater */
-		///
+        eDWFPackage,
+        ///
         ///     Password protected DWF 6 (and higher) zip package format.
         ///
-        eDWFPackageEncrypted,   /**< A Password protected DWF of version 6.0 or greater */
-		///
+        eDWFPackageEncrypted,
+        ///
         ///     2D graphics stream/file resource.
         ///
-        eW2DStream,             /**< A W2D file resource */
-		 ///
+        eW2DStream,
+        ///
         ///     Legacy DWF 0.55 (or lower) data and graphics stream.
         ///
-        eDWFStream,             /**< A DWF of version 0.55 or less */
-		///
+        eDWFStream,
+        ///
         ///     A non-DWF zip package format.
         ///
-        eZIPFile,               /**< A ZIP file */
-		///
+        eZIPFile,
+        ///
         ///     Unknown format.
         ///
         eUnknown
@@ -392,13 +392,14 @@ protected:
 
 private:
 
-    DWFFile                                 _zDWFPackage;
-    DWFString                               _zDWFPassword;
-    DWFInputStream*                         _pDWFStream;
+    DWFFile                 _zDWFPackage;
+    DWFString               _zDWFPassword;
+    DWFInputStream*         _pDWFStream;
 
-    tPackageInfo                            _tPackageInfo;
-    DWFManifest*                            _pPackageManifest;
-    DWFSectionBuilder*                      _pSectionBuilder;
+    tPackageInfo            _tPackageInfo;
+
+    DWFManifest*            _pPackageManifest;
+    DWFSectionBuilder*      _pSectionBuilder;
     DWFZipFileIndex                         _oZipFileIndex;
 
 private:

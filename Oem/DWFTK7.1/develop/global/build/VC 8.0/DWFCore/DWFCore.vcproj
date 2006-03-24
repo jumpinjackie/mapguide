@@ -5,6 +5,7 @@
 	Name="DWFCore"
 	ProjectGUID="{8BECE007-1749-4300-87D8-267B613AAE6B}"
 	Keyword="Win32Proj"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -40,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../../src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="false"
@@ -72,7 +73,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore.1.1.0.lib"
+				OutputFile="$(OutDir)/dwfcore.1.1.1.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -120,7 +121,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="../../../src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
 				StringPooling="true"
 				BasicRuntimeChecks="0"
 				SmallerTypeCheck="false"
@@ -148,7 +149,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore.1.1.0.lib"
+				OutputFile="$(OutDir)/dwfcore.1.1.1.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -224,7 +225,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore.1.1.0.dll"
+				OutputFile="$(OutDir)/dwfcore.1.1.1.dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -321,7 +322,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore.1.1.0.dll"
+				OutputFile="$(OutDir)/dwfcore.1.1.1.dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile=""
 				LargeAddressAware="0"
@@ -382,7 +383,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../../src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="false"
@@ -414,7 +415,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore_wt.1.1.0.lib"
+				OutputFile="$(OutDir)/dwfcore_wt.1.1.1.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -462,7 +463,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="../../../src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
 				StringPooling="true"
 				BasicRuntimeChecks="0"
 				SmallerTypeCheck="false"
@@ -491,7 +492,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="rpcrt4.lib"
-				OutputFile="$(OutDir)/dwfcore_wt.1.1.0.lib"
+				OutputFile="$(OutDir)/dwfcore_wt.1.1.1.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

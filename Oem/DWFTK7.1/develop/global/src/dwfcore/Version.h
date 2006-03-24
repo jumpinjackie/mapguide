@@ -26,8 +26,8 @@
 
 #define _DWFCORE_VERSION_MAJOR      1
 #define _DWFCORE_VERSION_MINOR      1
-#define _DWFCORE_VERSION_EXTRA      0
-#define _DWFCORE_VERSION_BUILD      278
+#define _DWFCORE_VERSION_EXTRA      1
+#define _DWFCORE_VERSION_BUILD      287
 
 
 #define _DWFCORE_VERSION_ECHO( s )                  #s

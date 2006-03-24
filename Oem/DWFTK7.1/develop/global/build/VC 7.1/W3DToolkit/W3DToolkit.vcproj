@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="DWF W3D Toolkit (1.1.1236)"
+	Name="DWF W3D Toolkit (1.2.1236)"
 	ProjectGUID="{9415DE9A-E01E-47C1-A159-EB1E1D4E518C}">
 	<Platforms>
 		<Platform
@@ -39,8 +39,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/w3dtk.1.1.1236.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				OutputFile="$(OutDir)/w3dtk.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -103,8 +103,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/w3dtk.1.1.1236.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				OutputFile="$(OutDir)/w3dtk.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
@@ -161,8 +161,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/w3dtk_ro.1.1.1236.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				OutputFile="$(OutDir)/w3dtk_ro.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -225,8 +225,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/w3dtk_ro.1.1.1236.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				OutputFile="$(OutDir)/w3dtk_ro.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
@@ -283,8 +283,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
-				OutputFile="$(OutDir)/w3dtk_ro.1.1.1236.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
+				OutputFile="$(OutDir)/w3dtk_ro.1.2.1236.dll"
 				AdditionalLibraryDirectories="..\..\..\lib\shared\debug"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
@@ -356,8 +356,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
-				OutputFile="$(OutDir)/w3dtk_ro.1.1.1236.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
+				OutputFile="$(OutDir)/w3dtk_ro.1.2.1236.dll"
 				AdditionalLibraryDirectories="..\..\..\lib\shared\release"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
@@ -423,8 +423,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/w3dtk_wt.1.1.1236.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				OutputFile="$(OutDir)/w3dtk_wt.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -487,8 +487,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/w3dtk_wt.1.1.1236.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				OutputFile="$(OutDir)/w3dtk_wt.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
@@ -545,8 +545,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
-				OutputFile="$(OutDir)/w3dtk.1.1.1236.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
+				OutputFile="$(OutDir)/w3dtk.1.2.1236.dll"
 				AdditionalLibraryDirectories="..\..\..\lib\shared\debug"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
@@ -618,8 +618,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
-				OutputFile="$(OutDir)/w3dtk.1.1.1236.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
+				OutputFile="$(OutDir)/w3dtk.1.2.1236.dll"
 				AdditionalLibraryDirectories="..\..\..\lib\shared\release"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"

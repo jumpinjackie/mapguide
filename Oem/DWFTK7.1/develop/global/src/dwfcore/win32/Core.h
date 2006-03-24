@@ -153,6 +153,7 @@
         ::wcsicmp( a, b )
 #endif
 
+
     //
     // calculate length of ascii string
     //
