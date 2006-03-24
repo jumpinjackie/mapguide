@@ -373,6 +373,7 @@ throw()
         if (iResourceHierarchy->second == pResource)
         {
             _oResourceHierarchy.erase( iResourceHierarchy );
+            break;
         }
     }
 

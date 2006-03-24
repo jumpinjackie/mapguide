@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="DWFToolkit (7.1)"
+	Name="DWFToolkit (7.1.1)"
 	ProjectGUID="{2D22C637-6219-4096-8399-EEA4BBD142AA}"
 	Keyword="MakeFileProj"
 	>
@@ -74,8 +74,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk.7.1.1.lib"
 				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -124,7 +125,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\..\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;DWFTK_STATIC;DWFTK_BUILD_EXPAT;EXPAT_COMPILED_FROM_DSP;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				PreprocessorDefinitions="NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;DWFTK_STATIC;DWFTK_BUILD_EXPAT;EXPAT_COMPILED_FROM_DSP;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
 				StringPooling="true"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="2"
@@ -155,7 +156,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk.7.1.1.lib"
 				IgnoreAllDefaultLibraries="false"
 			/>
 			<Tool
@@ -234,8 +235,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk_ro.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk_ro.7.1.1.lib"
 				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -284,7 +286,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\..\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;DWFTK_STATIC;DWFTK_READ_ONLY;DWFTK_BUILD_EXPAT;EXPAT_COMPILED_FROM_DSP;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				PreprocessorDefinitions="NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;DWFTK_STATIC;DWFTK_READ_ONLY;DWFTK_BUILD_EXPAT;EXPAT_COMPILED_FROM_DSP;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
 				StringPooling="true"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="2"
@@ -316,7 +318,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk_ro.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk_ro.7.1.1.lib"
 				IgnoreAllDefaultLibraries="false"
 			/>
 			<Tool
@@ -396,11 +398,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib whiptk.7.7.601.lib w3dtk.1.1.1236.lib"
-				OutputFile="$(OutDir)/dwftk.7.1.0.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib whiptk.7.7.601.lib w3dtk.1.2.1236.lib"
+				OutputFile="$(OutDir)/dwftk.7.1.1.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="../../../lib/shared/debug/vc8.0"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				OptimizeReferences="2"
@@ -497,9 +500,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib whiptk.7.7.601.lib w3dtk.1.1.1236.lib"
-				OutputFile="$(OutDir)/dwftk.7.1.0.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib whiptk.7.7.601.lib w3dtk.1.2.1236.lib"
+				OutputFile="$(OutDir)/dwftk.7.1.1.dll"
 				AdditionalLibraryDirectories="../../../lib/shared/release/vc8.0"
+				IgnoreDefaultLibraryNames=""
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				ImportLibrary="../../../lib/shared/release/vc8.0/$(TargetName).lib"
@@ -591,11 +595,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib whiptk_ro.7.7.601.lib w3dtk_ro.1.1.1236.lib"
-				OutputFile="$(OutDir)/dwftk_ro.7.1.0.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib whiptk_ro.7.7.601.lib w3dtk_ro.1.2.1236.lib"
+				OutputFile="$(OutDir)/dwftk_ro.7.1.1.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="../../../lib/shared/debug/vc8.0"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				OptimizeReferences="2"
@@ -692,9 +697,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib whiptk_ro.7.7.601.lib w3dtk_ro.1.1.1236.lib"
-				OutputFile="$(OutDir)/dwftk_ro.7.1.0.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib whiptk_ro.7.7.601.lib w3dtk_ro.1.2.1236.lib"
+				OutputFile="$(OutDir)/dwftk_ro.7.1.1.dll"
 				AdditionalLibraryDirectories="../../../lib/shared/release/vc8.0"
+				IgnoreDefaultLibraryNames=""
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				ImportLibrary="../../../lib/shared/release/vc8.0/$(TargetName).lib"
@@ -785,8 +791,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk_wt.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk_wt.7.1.1.lib"
 				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -835,7 +842,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\..\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;DWFTK_STATIC;DWFTK_BUILD_EXPAT;EXPAT_COMPILED_FROM_DSP;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_DEPRECATE;WIN32;DWFTK_STATIC;DWFTK_BUILD_EXPAT;EXPAT_COMPILED_FROM_DSP;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
 				StringPooling="true"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="2"
@@ -867,7 +874,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk_wt.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk_wt.7.1.1.lib"
 				IgnoreAllDefaultLibraries="false"
 			/>
 			<Tool

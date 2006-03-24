@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.00"
-	Name="DWF Toolkit (7.1)"
+	Name="DWF Toolkit (7.1.1)"
 	ProjectGUID="{2D22C637-6219-4096-8399-EEA4BBD142AA}"
 	Keyword="MakeFileProj">
 	<Platforms>
@@ -45,7 +45,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk.7.1.1.lib"
 				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames=""/>
 			<Tool
@@ -101,7 +101,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk.7.1.1.lib"
 				IgnoreAllDefaultLibraries="FALSE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -152,7 +152,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk_ro.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk_ro.7.1.1.lib"
 				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames=""/>
 			<Tool
@@ -209,7 +209,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk_ro.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk_ro.7.1.1.lib"
 				IgnoreAllDefaultLibraries="FALSE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -261,8 +261,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib whiptk.7.7.601.lib w3dtk.1.1.1236.lib"
-				OutputFile="$(OutDir)/dwftk.7.1.0.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib whiptk.7.7.601.lib w3dtk.1.2.1236.lib"
+				OutputFile="$(OutDir)/dwftk.7.1.1.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="../../../lib/shared/debug/vc7.0"
@@ -330,8 +330,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib whiptk.7.7.601.lib w3dtk.1.1.1236.lib"
-				OutputFile="$(OutDir)/dwftk.7.1.0.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib whiptk.7.7.601.lib w3dtk.1.2.1236.lib"
+				OutputFile="$(OutDir)/dwftk.7.1.1.dll"
 				AdditionalLibraryDirectories="../../../lib/shared/release/vc7.0"
 				IgnoreDefaultLibraryNames=""
 				OptimizeReferences="2"
@@ -390,8 +390,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib whiptk_ro.7.7.601.lib w3dtk_ro.1.1.1236.lib"
-				OutputFile="$(OutDir)/dwftk_ro.7.1.0.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib whiptk_ro.7.7.601.lib w3dtk_ro.1.2.1236.lib"
+				OutputFile="$(OutDir)/dwftk_ro.7.1.1.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="../../../lib/shared/debug/vc7.0"
@@ -459,8 +459,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib whiptk_ro.7.7.601.lib w3dtk_ro.1.1.1236.lib"
-				OutputFile="$(OutDir)/dwftk_ro.7.1.0.dll"
+				AdditionalDependencies="dwfcore.1.1.1.lib whiptk_ro.7.7.601.lib w3dtk_ro.1.2.1236.lib"
+				OutputFile="$(OutDir)/dwftk_ro.7.1.1.dll"
 				AdditionalLibraryDirectories="../../../lib/shared/release/vc7.0"
 				IgnoreDefaultLibraryNames=""
 				OptimizeReferences="2"
@@ -518,7 +518,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk_wt.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk_wt.7.1.1.lib"
 				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames=""/>
 			<Tool
@@ -574,7 +574,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\dwftk_wt.7.1.0.lib"
+				OutputFile="$(OutDir)\dwftk_wt.7.1.1.lib"
 				IgnoreAllDefaultLibraries="FALSE"/>
 			<Tool
 				Name="VCMIDLTool"/>

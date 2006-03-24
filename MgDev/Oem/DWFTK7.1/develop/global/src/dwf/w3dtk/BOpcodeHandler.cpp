@@ -1700,10 +1700,13 @@ TK_Status TK_Referenced_Segment::Write (BStreamFileToolkit & tk) alter {
         case 1: {
             auto        unsigned char       byte = 0;
 
-	    if (tk.GetTargetVersion() >= 1150 && m_cond_length > 0)
-		if ((status = PutData (tk, byte)) != TK_Normal)
-		    return status;
+	        if (tk.GetTargetVersion() >= 1150 && m_cond_length > 0)
+            {
+		        if ((status = PutData (tk, byte)) != TK_Normal)
+		            return status;
 
+                _W3DTK_REQUIRE_VERSION( 1150 );
+            }
             m_stage++;
         }   nobreak;
 
@@ -1731,27 +1734,33 @@ TK_Status TK_Referenced_Segment::Write (BStreamFileToolkit & tk) alter {
 
         case 4: {
             
-	    if (tk.GetTargetVersion() >= 1150 && m_cond_length > 0) {
-		auto        unsigned char       byte = (unsigned char)m_cond_length;
+	        if (tk.GetTargetVersion() >= 1150 && m_cond_length > 0) 
+            {
+		        auto        unsigned char       byte = (unsigned char)m_cond_length;
 
-		if ((status = PutData (tk, byte)) != TK_Normal)
-		    return status;
-	    }
+		        if ((status = PutData (tk, byte)) != TK_Normal)
+		            return status;
+
+                _W3DTK_REQUIRE_VERSION( 1150 );
+	        }
 
             m_stage++;
         }   nobreak;
 
         case 5: {
-	    if (tk.GetTargetVersion() >= 1150 && m_cond_length > 0) {
-		 if ((status = PutData (tk, m_condition, m_cond_length)) != TK_Normal)
-		    return status;
+	        if (tk.GetTargetVersion() >= 1150 && m_cond_length > 0) 
+            {
+		        if ((status = PutData (tk, m_condition, m_cond_length)) != TK_Normal)
+		            return status;
 
-		if (tk.GetLogging() && tk.GetLoggingOptions (TK_Logging_Segment_Names)) {
-		    LogDebug (tk, "<");
-		    LogDebug (tk, m_condition);
-		    LogDebug (tk, ">");
-		}
-	    }
+		        if (tk.GetLogging() && tk.GetLoggingOptions (TK_Logging_Segment_Names)) {
+		            LogDebug (tk, "<");
+		            LogDebug (tk, m_condition);
+		            LogDebug (tk, ">");
+		        }
+
+                _W3DTK_REQUIRE_VERSION( 1150 );
+	        }
 
             m_stage++;
         }   nobreak;
@@ -2446,11 +2455,13 @@ TK_Status TK_Point::Write (BStreamFileToolkit & tk) alter {
         }   nobreak;
 
         case 2: {
-            if (tk.GetTargetVersion() >= 1170 && 
-		(m_opcode == TKE_Distant_Light || m_opcode == TKE_Local_Light )) {
-		if ((status = PutData (tk, m_options)) != TK_Normal)
-		    return status;
-	    }
+            if (tk.GetTargetVersion() >= 1170 && (m_opcode == TKE_Distant_Light || m_opcode == TKE_Local_Light )) 
+            {
+		        if ((status = PutData (tk, m_options)) != TK_Normal)
+		            return status;
+
+                _W3DTK_REQUIRE_VERSION( 1170 );
+	        }
             m_stage++;
         }   nobreak;
 
@@ -3920,6 +3931,9 @@ TK_Status TK_Sphere::Write (BStreamFileToolkit & tk) alter {
         case 0: {
             if (tk.GetTargetVersion() < 1155)    
                 return TK_Normal;
+
+            _W3DTK_REQUIRE_VERSION( 1155 );
+
             if ((status = PutOpcode (tk)) != TK_Normal)
                 return status;
             m_stage++;
@@ -4516,6 +4530,8 @@ TK_Status TK_Text::Write (BStreamFileToolkit & tk) alter {
             if (tk.GetTargetVersion() >= 1002) {
                 if ((status = PutData (tk, m_options)) != TK_Normal)
                     return status;
+                
+                _W3DTK_REQUIRE_VERSION( 1002 );
 	    }
             m_stage++;
         }   nobreak;
@@ -4525,6 +4541,8 @@ TK_Status TK_Text::Write (BStreamFileToolkit & tk) alter {
 		(m_options & TKO_Text_Option_Region) != 0) {
                 if ((status = PutData (tk, m_region_options)) != TK_Normal)
                     return status;
+
+                _W3DTK_REQUIRE_VERSION( 1002 );
 	    }
             m_stage++;
         }   nobreak;
@@ -4534,6 +4552,8 @@ TK_Status TK_Text::Write (BStreamFileToolkit & tk) alter {
 		(m_options & TKO_Text_Option_Region) != 0) {
                 if ((status = PutData (tk, m_region_count)) != TK_Normal)
                     return status;
+
+                _W3DTK_REQUIRE_VERSION( 1002 );
 	    }
             m_stage++;
         }   nobreak;
@@ -4543,6 +4563,8 @@ TK_Status TK_Text::Write (BStreamFileToolkit & tk) alter {
 		(m_options & TKO_Text_Option_Region) != 0) {
                 if ((status = PutData (tk, m_region, 3*m_region_count)) != TK_Normal)
                     return status;
+
+                _W3DTK_REQUIRE_VERSION( 1002 );
 	    }
             m_stage++;
         }   nobreak;
@@ -5525,6 +5547,7 @@ TK_Status TK_Image::Write (BStreamFileToolkit & tk) alter {
 	    if ((m_options & TKO_Image_Explicit_Size) != 0 && tk.GetTargetVersion() >= 1001) {
 		if ((status = PutData (tk, m_explicit_size, 2)) != TK_Normal)
 		    return status;
+        _W3DTK_REQUIRE_VERSION( 1001 );
 	    }
             m_stage++;
         }   nobreak;
@@ -5533,6 +5556,7 @@ TK_Status TK_Image::Write (BStreamFileToolkit & tk) alter {
 	    if ((m_options & TKO_Image_Explicit_Size) != 0 && tk.GetTargetVersion() >= 1001) {
 		if ((status = PutData (tk, m_explicit_units, 2)) != TK_Normal)
 		    return status;
+        _W3DTK_REQUIRE_VERSION( 1001 );
 	    }
             m_stage++;
         }   nobreak;
@@ -7205,6 +7229,24 @@ TK_Status TK_Rendering_Options::Write (BStreamFileToolkit & tk) alter {
     auto        int             nurbs_mask = m_nurbs_options_mask;
     auto        int             hlr_mask = m_hlr_options;
 
+
+        //
+        // these are tied to the constraint check below
+        //
+
+    if (emask & (TKO_Rendo_Mask_Transform|TKO_Rendo_Image_Scale))
+    {
+        _W3DTK_REQUIRE_VERSION( 1001 );
+    }
+    if (emask & (TKO_Rendo_Mask_Transform|TKO_Rendo_Simple_Shadow))
+    {
+        _W3DTK_REQUIRE_VERSION( 1002 );
+    }
+    if (hlr_mask & (TKO_Hidden_Line_Extended2_Mask|TKO_Hidden_Line_Extended2))
+    {
+        _W3DTK_REQUIRE_VERSION( 1150 );
+    }
+
     if (tk.GetTargetVersion() < 650) {
         
         mask &= ~(TKO_Rendo_Buffer_Options          | TKO_Rendo_Hidden_Line_Options     |
@@ -7333,7 +7375,13 @@ TK_Status TK_Rendering_Options::Write (BStreamFileToolkit & tk) alter {
                 if ((status = PutData (tk, m_lock_color_value)) != TK_Normal)
                     return status;
 		}
-		else switch (m_progress) {
+        else {
+            //
+            // this follows from the above check right?
+            //
+            _W3DTK_REQUIRE_VERSION( 1101 );
+
+            switch (m_progress) {
 		    case 0:
 			if ((status = PutData (tk, m_lock_color_value)) != TK_Normal)
 			    return status;
@@ -7507,7 +7555,8 @@ TK_Status TK_Rendering_Options::Write (BStreamFileToolkit & tk) alter {
 
 		    default:
 			return tk.Error ("lost track processing color locks");
-		}
+		    }
+        }
             }
             m_stage++;
         }   nobreak;
@@ -8066,6 +8115,11 @@ TK_Status TK_Rendering_Options::Write (BStreamFileToolkit & tk) alter {
             if (emask &&
                 (m_mask[1] & m_value[1] & TKO_Rendo_Simple_Shadow) != 0) {
 		auto	    unsigned short	    smask = m_simple_shadow;
+
+        if (smask & (TKO_Simple_Shadow_Extended|TKO_Simple_Shadow_Auto))
+        {
+            _W3DTK_REQUIRE_VERSION( 1170 )
+        }
 
 		if (tk.GetTargetVersion() < 1170) {
 		    smask &= ~(TKO_Simple_Shadow_Extended|TKO_Simple_Shadow_Auto);
@@ -10015,6 +10069,8 @@ TK_Status TK_Named::Write (BStreamFileToolkit & tk) alter {
     if (tk.GetTargetVersion() < 1160)
 	return TK_Normal;
 
+    _W3DTK_REQUIRE_VERSION( 1160 );
+
     switch (m_stage) {
         case 0: {
             if ((status = PutOpcode (tk)) != TK_Normal)
@@ -10152,6 +10208,8 @@ TK_Status TK_Conditions::Write (BStreamFileToolkit & tk) alter {
 
     if (tk.GetTargetVersion() < 1150)	
 	return status;
+
+    _W3DTK_REQUIRE_VERSION( 1150 );
 
     switch (m_stage) {
         case 0: {
@@ -11272,6 +11330,9 @@ TK_Status TK_Texture::Write (BStreamFileToolkit & tk) alter {
     if (tk.GetTargetVersion() < 1165)
 	flags &= 0x00007FFF;
 
+    _W3DTK_REQUIRE_VERSION( 1165 );
+
+
     if (m_flags == 0 && streq (m_name, m_image)) {
 	
 	return status;
@@ -11676,6 +11737,9 @@ TK_Status TK_Glyph_Definition::Write (BStreamFileToolkit & tk) alter {
     if (tk.GetTargetVersion() < 1160)
 	return TK_Normal;
 
+    _W3DTK_REQUIRE_VERSION( 1160 );
+
+
     switch (m_stage) {
         case 0: {
             if ((status = PutOpcode (tk)) != TK_Normal)
@@ -11805,6 +11869,9 @@ TK_Status TK_Line_Style::Write (BStreamFileToolkit & tk) alter {
 
     if (tk.GetTargetVersion() < 1160)
 	return TK_Normal;
+
+    _W3DTK_REQUIRE_VERSION( 1160 );
+
 
     switch (m_stage) {
         case 0: {

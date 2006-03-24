@@ -451,20 +451,6 @@ public:
         throw( DWFException );
 
     ///
-    ///\copydoc DWFGeometryHandlerBuilder::getClipRectangleHandler
-    ///
-    _DWFTK_API
-    TK_Clip_Rectangle& getClipRectangleHandler()
-        throw( DWFException );
-
-    ///
-    ///\copydoc DWFGeometryHandlerBuilder::getClipRegionHandler
-    ///
-    _DWFTK_API
-    TK_Clip_Region& getClipRegionHandler()
-        throw( DWFException );
-
-    ///
     ///\copydoc DWFGeometryHandlerBuilder::getCuttingPlaneHandler
     ///
     _DWFTK_API

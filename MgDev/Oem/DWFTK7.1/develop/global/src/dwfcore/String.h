@@ -856,7 +856,7 @@ private:
 
 private:
 
-#ifdef DWFCORE_STRING_USE_STACK_BUFFER
+#ifndef DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     wchar_t     _zStackBuffer[_DWFCORE_STRING_STACK_BUFFER_SIZE_IN_WCHARS];
 
@@ -898,11 +898,11 @@ DWFString::operator const wchar_t*()
 const
 throw()
 {
-#ifndef  DWFCORE_STRING_USE_STACK_BUFFER
+#ifdef  DWFCORE_STRING_DISABLE_STACK_BUFFER
 
     return _pHeapBuffer;
 
-#else
+#endif
 
         //
         // return heap if it exists
@@ -924,8 +924,6 @@ throw()
         // no data
         //
     return NULL;
-
-#endif
 }
 
 

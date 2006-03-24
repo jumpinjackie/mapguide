@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF EMap Toolkit (1.0)", "DWFEMap.vcproj", "{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF EMap Toolkit (1.0.0)", "DWFEMap.vcproj", "{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject

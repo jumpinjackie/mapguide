@@ -50,7 +50,7 @@
 				Name="VCLibrarianTool"
 				AdditionalOptions="/MACHINE:I386"
 				OutputFile="$(OutDir)/whiptk.7.7.601.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
@@ -110,7 +110,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
 				OutputFile="$(OutDir)/whiptk.7.7.601.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../../lib/shared/debug"
@@ -190,7 +190,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
 				OutputFile="$(OutDir)/whiptk.7.7.601.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../../lib/shared/release"
@@ -264,7 +264,7 @@
 				Name="VCLibrarianTool"
 				AdditionalOptions="/MACHINE:I386"
 				OutputFile="$(OutDir)/whiptk.7.7.601.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -324,7 +324,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)/whiptk_ro.7.7.601.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -391,7 +391,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)/whiptk_ro.7.7.601.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
@@ -450,7 +450,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
 				OutputFile="$(OutDir)/whiptk_ro.7.7.601.dll"
 				AdditionalLibraryDirectories="..\..\..\lib\shared\debug"
 				GenerateDebugInformation="TRUE"
@@ -526,7 +526,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
 				OutputFile="$(OutDir)/whiptk_ro.7.7.601.dll"
 				AdditionalLibraryDirectories="..\..\..\lib\shared\release"
 				GenerateDebugInformation="TRUE"
@@ -597,7 +597,7 @@
 				Name="VCLibrarianTool"
 				AdditionalOptions="/MACHINE:I386"
 				OutputFile="$(OutDir)/whiptk_wt.7.7.601.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -665,7 +665,7 @@
 				Name="VCLibrarianTool"
 				AdditionalOptions="/MACHINE:I386"
 				OutputFile="$(OutDir)/whiptk_wt.7.7.601.lib"
-				IgnoreDefaultLibraryNames="dwfcore.1.1.0.lib"/>
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"

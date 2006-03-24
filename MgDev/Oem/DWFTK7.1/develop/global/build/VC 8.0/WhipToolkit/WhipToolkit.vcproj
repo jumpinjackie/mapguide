@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="DWF W2D (Whip) Toolkit (7.7.601)"
 	ProjectGUID="{681750CF-B191-4A41-B92C-0F94599B121D}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -84,6 +85,7 @@
 				Name="VCLibrarianTool"
 				AdditionalOptions="/MACHINE:I386"
 				OutputFile="$(OutDir)/whiptk.7.7.601.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -167,11 +169,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
 				OutputFile="$(OutDir)/whiptk.7.7.601.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="../../../lib/shared/debug/vc8.0"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				SubSystem="2"
@@ -276,11 +279,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
 				OutputFile="$(OutDir)/whiptk.7.7.601.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="../../../lib/shared/release/vc8.0"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				SubSystem="0"
@@ -381,6 +385,7 @@
 				Name="VCLibrarianTool"
 				AdditionalOptions="/MACHINE:I386"
 				OutputFile="$(OutDir)/whiptk.7.7.601.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -464,6 +469,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)/whiptk_ro.7.7.601.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -551,6 +557,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)/whiptk_ro.7.7.601.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -633,7 +640,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
 				OutputFile="$(OutDir)/whiptk_ro.7.7.601.dll"
 				AdditionalLibraryDirectories="..\..\..\lib\shared\debug/vc8.0"
 				GenerateDebugInformation="true"
@@ -737,7 +744,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore.1.1.0.lib"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
 				OutputFile="$(OutDir)/whiptk_ro.7.7.601.dll"
 				AdditionalLibraryDirectories="..\..\..\lib\shared\release/vc8.0"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
@@ -838,6 +845,7 @@
 				Name="VCLibrarianTool"
 				AdditionalOptions="/MACHINE:I386"
 				OutputFile="$(OutDir)/whiptk_wt.7.7.601.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -927,6 +935,7 @@
 				Name="VCLibrarianTool"
 				AdditionalOptions="/MACHINE:I386"
 				OutputFile="$(OutDir)/whiptk_wt.7.7.601.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -1548,6 +1557,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\dwf\whiptk\embedded_font.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\whiptk\endian.h"
 				>
 			</File>
 			<File

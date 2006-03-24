@@ -7,7 +7,7 @@ pkginclude_HEADERS = BufferInputStream.h BufferOutputStream.h Comparator.h Core.
 
 lib_LTLIBRARIES =  libdwfcore.la
 
-libdwfcore_la_LDFLAGS = -release 1.1.0
+libdwfcore_la_LDFLAGS = -release 1.1.1
 
 libdwfcore_la_SOURCES = BufferInputStream.cpp BufferOutputStream.cpp DecompressingInputStream.cpp Exception.cpp File.cpp FileInputStream.cpp FileOutputStream.cpp MIME.cpp MonitoredInputStream.cpp Owner.cpp ThreadPool.cpp UnzippingInputStream.cpp UTF8EncodingOutputStream.cpp UUID.cpp XMLEncodingOutputStream.cpp ZipFileDescriptor.cpp ZippingOutputStream.cpp 
 

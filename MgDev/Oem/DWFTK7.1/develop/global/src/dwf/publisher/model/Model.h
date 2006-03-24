@@ -205,6 +205,11 @@ public:
     ///                                     in wireframe mode, regardless of the published interior edge conditions.
     ///                                     If \e false, the viewer should not calculate nor display silhouette edges
     ///                                     in wireframe mode, regardless of the published interior edge conditions.
+    ///
+    ///\param       nTargetW3DVersion       Indicates the desired W3D format version to create.  Publishers may use
+    ///                                     this parameter to create models that are backwards compatible with older
+    ///                                     viewer products at the possible expense of visual effects.
+    ///
     ///\throw       DWFException
     ///
     _DWFTK_API
@@ -213,7 +218,8 @@ public:
                double*              pTransform          = NULL,
                bool                 bUseDefaultLighting = true,
                bool                 bUsePublishedEdges = false,
-               bool                 bUseSilhouetteEdges = false )
+               bool                 bUseSilhouetteEdges = false,
+               unsigned int         nTargetW3DVersion = 0 )
         throw( DWFException );
 
     ///
@@ -222,10 +228,14 @@ public:
     ///             This method should be paired with \a open() to scope the
     ///             model's usage.
     ///
+    ///\return      The minimum required W3D format version required to support
+    ///             the data and options used by the model.  If no
+    ///             such requirement exists the method returns zero.
+    ///
     ///\throw       DWFException
     ///
     _DWFTK_API
-    void close()
+    unsigned int close()
         throw( DWFException );
 
     ///
@@ -633,12 +643,6 @@ private:
     TK_Circle& getCircularWedgeHandler()
         throw( DWFException );
 
-    TK_Clip_Rectangle& getClipRectangleHandler()
-		throw( DWFException );
-
-    TK_Clip_Region& getClipRegionHandler()
-		throw( DWFException );
-
     TK_Cutting_Plane& getCuttingPlaneHandler()
         throw( DWFException );
 
@@ -820,6 +824,8 @@ private:
     DWFString               _zMIME;
 
     DWFTempFile*            _pW3DFile;
+    DWFInputStream*         _pW3DFileStream;
+    char*                   _pVersionBuffer;
 
     BStreamFileToolkit      _oToolkit;
     W3DStreamWriter*        _pW3DStreamWriter;
@@ -829,6 +835,42 @@ private:
     DWFEmbeddedFont::tList          _oEmbeddedFonts;
     DWFPublishableResource::tList   _oResources;
     DWFPublishedObject::tMap        _oPublishedObjects;
+
+private:
+
+    //
+    //
+    //
+    class _SpecialBufferedInputStream : public DWFInputStream
+    {
+    public:
+
+        _SpecialBufferedInputStream( char*              pBuffer,
+                                     unsigned int       nBufferBytes,
+                                     DWFInputStream*    pStream )
+            throw();
+
+        virtual ~_SpecialBufferedInputStream()
+            throw();
+
+        size_t available() const
+            throw( DWFException );
+
+        size_t read( void*  pBuffer,
+                     size_t nBytesToRead )
+            throw( DWFException );
+
+        off_t seek( int    eOrigin,
+                    off_t  nOffset )
+            throw( DWFException );
+
+    private:
+
+        unsigned int    _nBufferBytes;
+        unsigned int    _nBufferBytesRead;
+        char*           _pBuffer;
+        DWFInputStream* _pStream;
+    };
 
 private:
 

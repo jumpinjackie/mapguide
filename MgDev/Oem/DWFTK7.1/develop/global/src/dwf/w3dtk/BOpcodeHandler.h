@@ -2483,6 +2483,30 @@ class BBINFILETK_API TK_Rendering_Options : public BBaseOpcodeHandler {
 
 
         /*!
+            Sets the mask indicating which types of geometry have a color lock setting. Geometry types are 
+            specified by #TKO_Geometry_Bits.
+        */
+        void            SetColorLockMask (int m) alter     { m_lock_color_mask = m;       }
+        /*!
+            Returns the mask indicating which types of geometry have a color lock setting. Geometry types are 
+            specified by #TKO_Geometry_Bits.
+        */
+        int             GetColorLockMask (void) const      { return m_lock_color_mask;    }
+
+
+
+        /*!
+            Sets the mask indicating which geometry colors are locked. Geometry types are 
+            specified by #TKO_Geometry_Bits.
+        */
+        void            SetColorLockValue (int v) alter    { m_lock_color_value = v;      }
+        /*!
+            Returns the mask indicating which geometry colors are locked. Geometry types are 
+            specified by #TKO_Geometry_Bits.
+        */
+        int             GetColorLockValue (void) const     { return m_lock_color_value;   }
+
+        /*!
             Sets the mask indicating which face color channels have a lock setting. Color channels are 
             specified by #TKO_Color_Channel_Lock_Bits.
         */

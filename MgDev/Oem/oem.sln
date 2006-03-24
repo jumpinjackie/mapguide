@@ -45,13 +45,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbxml", "dbxml-2.2.13\dbxml
 		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFCore", "DWFTK7.1\develop\global\build\VC 8.0\DWFCore\DWFCore.vcproj", "{8BECE007-1749-4300-87D8-267B613AAE6B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFCore (1.1.1)", "DWFTK7.1\develop\global\build\VC 8.0\DWFCore\DWFCore.vcproj", "{8BECE007-1749-4300-87D8-267B613AAE6B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF EMap Toolkit (1.0)", "DWFTK7.1\develop\global\build\VC 8.0\DWFEMapToolkit\DWFEMap.vcproj", "{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF EMap Toolkit (1.0.0)", "DWFTK7.1\develop\global\build\VC 8.0\DWFEMapToolkit\DWFEMap.vcproj", "{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFToolkit (7.1)", "DWFTK7.1\develop\global\build\VC 8.0\DWFToolkit\DWFToolkit.vcproj", "{2D22C637-6219-4096-8399-EEA4BBD142AA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFToolkit (7.1.1)", "DWFTK7.1\develop\global\build\VC 8.0\DWFToolkit\DWFToolkit.vcproj", "{2D22C637-6219-4096-8399-EEA4BBD142AA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF W3D Toolkit (1.1.1236)", "DWFTK7.1\develop\global\build\VC 8.0\W3DToolkit\W3DToolkit.vcproj", "{9415DE9A-E01E-47C1-A159-EB1E1D4E518C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF W3D Toolkit (1.2.1236)", "DWFTK7.1\develop\global\build\VC 8.0\W3DToolkit\W3DToolkit.vcproj", "{9415DE9A-E01E-47C1-A159-EB1E1D4E518C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF W2D (Whip) Toolkit (7.7.601)", "DWFTK7.1\develop\global\build\VC 8.0\WhipToolkit\WhipToolkit.vcproj", "{681750CF-B191-4A41-B92C-0F94599B121D}"
 EndProject

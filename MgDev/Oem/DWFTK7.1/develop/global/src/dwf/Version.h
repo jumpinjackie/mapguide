@@ -424,8 +424,8 @@
 
 #define _DWFTK_VERSION_MAJOR                        7           // Binary interface compatability (not compatable across revisions)
 #define _DWFTK_VERSION_MINOR                        1           // Binary interface compatability (changes backwards compatable across revisions)
-#define _DWFTK_VERSION_AGE                          0           // Binary interface compatability (not interface changes, internal changes only)
-#define _DWFTK_VERSION_BUILD                        278         // Internal build difference
+#define _DWFTK_VERSION_AGE                          1           // Binary interface compatability (not interface changes, internal changes only)
+#define _DWFTK_VERSION_BUILD                        287         // Internal build difference
 
 #define _DWFTK_VERSION_ECHO( s )                    #s
 #define _DWFTK_VERSION_STRING_( a, b, c, d )        _DWFTK_VERSION_ECHO(a) "." _DWFTK_VERSION_ECHO(b) "." _DWFTK_VERSION_ECHO(c) "." _DWFTK_VERSION_ECHO(d) "\0"

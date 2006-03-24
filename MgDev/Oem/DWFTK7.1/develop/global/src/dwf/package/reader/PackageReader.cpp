@@ -106,21 +106,18 @@ throw( DWFException )
 {
     DWFZipFileDescriptor* pPackageDescriptor = NULL;
 
-        //
-        // TODO: Invent some really cool thread-safe stream or wrapper...
-        //
-    if (_pDWFStream)
-    {
+        if (_pDWFStream)
+        {
         pPackageDescriptor = DWFCORE_ALLOC_OBJECT( DWFZipFileDescriptor(*_pDWFStream) );
-    }
-    else
-    {
+        }
+        else
+        {
         pPackageDescriptor = DWFCORE_ALLOC_OBJECT( DWFZipFileDescriptor(_zDWFPackage, DWFZipFileDescriptor::eUnzip) );
-    }
+        }
 
     if (pPackageDescriptor == NULL)
-    {
-        _DWFCORE_THROW( DWFMemoryException, L"Failed to allocate file descriptor" );
+        {
+            _DWFCORE_THROW( DWFMemoryException, L"Failed to allocate file descriptor" );
     }
 
     _makeSectionBuilder();
@@ -144,9 +141,9 @@ throw( DWFException )
 {
     try
     {
-        //
-        // open up the package
-        //
+            //
+            // open up the package if necessary
+            //
         DWFPointer<DWFZipFileDescriptor> apPackageDescriptor( _open(), false );
 
         //
@@ -191,13 +188,13 @@ throw( DWFException )
             _tPackageInfo.zTypeGUID.assign( DWFInterface::kzEPlot_ID );
 
             DWFString zTypeFile( _tPackageInfo.zTypeGUID );
-                    zTypeFile.append( /*NOXLATE*/L".TYPEINFO" );
+                    zTypeFile.append( L".TYPEINFO" );
 
             if (apPackageDescriptor->locate(zTypeFile) == false)
             {
                 _tPackageInfo.zTypeGUID.assign( DWFInterface::kzEModel_ID );
                 zTypeFile.assign( _tPackageInfo.zTypeGUID );
-                zTypeFile.append( /*NOXLATE*/L".TYPEINFO" );
+                zTypeFile.append( L".TYPEINFO" );
 
                 if (apPackageDescriptor->locate(zTypeFile) == false)
                 {
@@ -253,7 +250,7 @@ throw( DWFException )
             }
             else
             {
-                _DWFCORE_THROW( DWFIOException, /*NOXLATE*/L"Invalid DWF stream" );
+                _DWFCORE_THROW( DWFIOException, L"Invalid DWF stream" );
             }            
         }
 			//
@@ -264,10 +261,10 @@ throw( DWFException )
 			//
 			// open as stream
 			//
-            DWFStreamFileDescriptor* pStreamDescriptor = DWFCORE_ALLOC_OBJECT( DWFStreamFileDescriptor(_zDWFPackage, /*NOXLATE*/L"rb") );
+            DWFStreamFileDescriptor* pStreamDescriptor = DWFCORE_ALLOC_OBJECT( DWFStreamFileDescriptor(_zDWFPackage, L"rb") );
             if (pStreamDescriptor == NULL)
             {
-                _DWFCORE_THROW( DWFMemoryException, /*NOXLATE*/L"Failed to allocate stream descriptor" );
+                _DWFCORE_THROW( DWFMemoryException, L"Failed to allocate stream descriptor" );
             }
 
 			//
@@ -286,7 +283,7 @@ throw( DWFException )
             else
             {
                 DWFCORE_FREE_OBJECT( pStreamDescriptor );
-                _DWFCORE_THROW( DWFIOException, /*NOXLATE*/L"Invalid DWF file" );
+                _DWFCORE_THROW( DWFIOException, L"Invalid DWF file" );
             }   
 
             DWFCORE_FREE_OBJECT( pStreamDescriptor );
@@ -304,8 +301,8 @@ throw( DWFException )
     rInfo.eType = eUnknown;
     rInfo.zTypeGUID.destroy();
 
-    bool bDWF = (DWFCORE_COMPARE_MEMORY(pBuffer, /*NOXLATE*/"(DWF V", 6) == 0);
-    bool bW2D = (bDWF ? false : (DWFCORE_COMPARE_MEMORY(pBuffer, /*NOXLATE*/"(W2D V", 6) == 0));
+    bool bDWF = (DWFCORE_COMPARE_MEMORY(pBuffer, "(DWF V", 6) == 0);
+    bool bW2D = (bDWF ? false : (DWFCORE_COMPARE_MEMORY(pBuffer, "(W2D V", 6) == 0));
 
     if (!bDWF && !bW2D)
     {
@@ -347,7 +344,7 @@ throw( DWFException )
 
         if (_pPackageManifest == NULL)
         {
-            _DWFCORE_THROW( DWFMemoryException, /*NOXLATE*/L"Failed to allocate manifest" );
+            _DWFCORE_THROW( DWFMemoryException, L"Failed to allocate manifest" );
         }
 
         if (pFilter)
@@ -357,7 +354,7 @@ throw( DWFException )
 
         getManifest( *_pPackageManifest );
     }
-    
+
     return *_pPackageManifest;
 }
 
@@ -371,7 +368,7 @@ throw( DWFException )
     // since this will probably (a) be a one-time event and
     // (b) it probably won't be very large
     //
-    DWFPointer<DWFInputStream> apManifestStream( extract(/*NOXLATE*/L"manifest.xml", false), false );
+    DWFPointer<DWFInputStream> apManifestStream( extract(L"manifest.xml", false), false );
 
     //
     // setup a work buffer
@@ -380,7 +377,7 @@ throw( DWFException )
 
     if (apParseBuffer.isNull())
     {
-        _DWFCORE_THROW( DWFMemoryException, /*NOXLATE*/L"Failed to allocate work buffer" );
+        _DWFCORE_THROW( DWFMemoryException, L"Failed to allocate work buffer" );
     }
 
     //
@@ -441,9 +438,12 @@ throw( DWFException )
             //
             // release the parser
             //
-            XML_ParserFree( pManifestParser );
+            XML_ParserFree( pManifestParser );	  
+
+            //
             // Throw the exception to the next handler. A common exception is the DWFInvalidPasswordException
-            // exception. We re-throw here so higher level code can deal with it.
+            // exception. We re-throw here so higher level code can deal with it.  
+            //
             throw;
         }
 
@@ -467,7 +467,7 @@ throw( DWFException )
             DWFString zParseError( XML_ErrorString( XML_GetErrorCode(pManifestParser)) );
 
             wchar_t zBuffer[32] = {0};
-            _DWFCORE_SWPRINTF( zBuffer, 32, /*NOXLATE*/L" [line: %d]", XML_GetCurrentLineNumber(pManifestParser) );
+            _DWFCORE_SWPRINTF( zBuffer, 32, L" [line: %d]", XML_GetCurrentLineNumber(pManifestParser) );
 
             zParseError.append( zBuffer );
 
@@ -501,9 +501,9 @@ throw( DWFException )
         return (*ppFile)->getInputStream();
     }
 
-    //
-    // open up the package
-    //
+        //
+        // open up the package if necessary
+        //
     DWFZipFileDescriptor* pPackageDescriptor = _open();
 
         //
@@ -511,7 +511,7 @@ throw( DWFException )
         //
     if (pPackageDescriptor->locate(zFilename) == false)
     {
-        _DWFCORE_THROW( DWFDoesNotExistException, /*NOXLATE*/L"Requested archive not found in DWF package" );
+        _DWFCORE_THROW( DWFDoesNotExistException, L"Requested archive not found in DWF package" );
     }
 
     //
@@ -520,14 +520,10 @@ throw( DWFException )
     DWFInputStream* pArchiveStream = pPackageDescriptor->unzip( zFilename, _zDWFPassword );
 
         //
-        // attach the descriptor so it will be deleted when the caller is done with the stream
-        //
     {
         DWFUnzippingInputStream* pUnzipStream = (DWFUnzippingInputStream*)pArchiveStream;
         pUnzipStream->attach( pPackageDescriptor, true );
     }
-
-        //
         // disk cache requested
         //
     if (bCache)
@@ -552,7 +548,7 @@ throw( DWFException )
         {
             DWFCORE_FREE_OBJECT( pCache );
 
-            _DWFCORE_THROW( DWFMemoryException, /*NOXLATE*/L"Failed to allocate stream monitor" );
+            _DWFCORE_THROW( DWFMemoryException, L"Failed to allocate stream monitor" );
         }
 
         //
@@ -594,7 +590,7 @@ throw( DWFException )
 
         if (_pSectionBuilder == NULL)
         {
-            _DWFCORE_THROW( DWFMemoryException, /*NOXLATE*/L"Failed to allocate section builder" );
+            _DWFCORE_THROW( DWFMemoryException, L"Failed to allocate section builder" );
         }
 
         //

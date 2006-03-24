@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="GisCommon.lib Fdo.lib dwfcore_wt.1.1.0.lib dwftk_wt.7.1.0.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib MgMdfModeld.lib gd.lib freetype2110_D.lib"
+				AdditionalDependencies="GisCommon.lib Fdo.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib MgMdfModeld.lib gd.lib freetype2110_D.lib"
 				OutputFile="$(OutDir)/MgStylizationd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;..\..\Oem\FDO\lib;..\..\Oem\gd\build\win32\gd\Debug;..\..\Common\lib\debug;..\..\Oem\gd\freetype\objs"
@@ -145,7 +145,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="GisCommon.lib Fdo.lib dwfcore_wt.1.1.0.lib dwftk_wt.7.1.0.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib MgMdfModel.lib gd.lib freetype2110.lib"
+				AdditionalDependencies="GisCommon.lib Fdo.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib MgMdfModel.lib gd.lib freetype2110.lib"
 				OutputFile="$(OutDir)/MgStylization.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0;..\..\Oem\FDO\lib;..\..\Oem\gd\build\win32\gd\Release;..\..\Common\lib\Release;..\..\Oem\gd\freetype\objs"

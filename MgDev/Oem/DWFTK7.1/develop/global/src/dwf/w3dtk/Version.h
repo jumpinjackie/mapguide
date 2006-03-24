@@ -33,8 +33,8 @@
 //
 
 #define _W3DTK_VERSION_MAJOR                        1
-#define _W3DTK_VERSION_MINOR                        0
-#define _W3DTK_VERSION_HOOPS                        1000
+#define _W3DTK_VERSION_MINOR                        2
+#define _W3DTK_VERSION_HOOPS                        1236
 #define _W3DTK_VERSION_BUILD                        _DWFTK_VERSION_BUILD
 
 #define _W3DTK_VERSION_ECHO( s )                    #s

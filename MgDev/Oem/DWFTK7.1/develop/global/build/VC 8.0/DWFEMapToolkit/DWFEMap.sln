@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF EMap Toolkit (1.0)", "DWFEMap.vcproj", "{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF EMap Toolkit (1.0.0)", "DWFEMap.vcproj", "{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

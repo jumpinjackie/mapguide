@@ -105,18 +105,14 @@ public:
     off_t seek( int eOrigin, off_t nOffset )
         throw( DWFException );
 
-    ///
-    ///\copydoc DWFFileInputStream::attach()
-    ///
     _DWFCORE_API
     void attach( DWFZipFileDescriptor* pFileDescriptor, bool bOwnDescriptor )
         throw();
-
 private:
 
-    bool                    _bFileOpen;
-    size_t                  _nFileBytesRemaining;
-    unzFile                 _pUnzipStream;
+    bool    _bFileOpen;
+    size_t  _nFileBytesRemaining;
+    unzFile _pUnzipStream;
     DWFZipFileDescriptor*   _pDescriptor;
     bool                    _bOwnDescriptor;
 

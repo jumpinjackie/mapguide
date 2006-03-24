@@ -200,7 +200,7 @@ throw( DWFException )
         //
         // determine indices
         //
-        unsigned short iPoint = 0;
+        unsigned int iPoint = 0; // Needs to be large enough to hold 0xffff + 1
         unsigned int nPoints = 0;
 
             //
@@ -210,7 +210,7 @@ throw( DWFException )
         {
             if (_abCodePoints[iPoint])
             {
-                _pSparseCharacters[nPoints++] = iPoint;
+                _pSparseCharacters[nPoints++] = (unsigned short) iPoint;
             }
 
             iPoint++;
@@ -229,7 +229,7 @@ throw( DWFException )
             {
                 if (_abCodePoints[iPoint])
                 {
-                    _pSparseCharacters[nPoints++] = iPoint;
+                    _pSparseCharacters[nPoints++] = (unsigned short) iPoint;
                 }
 
                 iPoint++;
@@ -246,7 +246,7 @@ throw( DWFException )
             {
                 if (_abCodePoints[iPoint])
                 {
-                    _pSparseCharacters[nPoints++] = iPoint;
+                    _pSparseCharacters[nPoints++] = (unsigned short) iPoint;
                 }
 
                 iPoint++;
@@ -263,7 +263,7 @@ throw( DWFException )
             {
                 if (_abCodePoints[iPoint])
                 {
-                    _pSparseCharacters[nPoints++] = iPoint;
+                    _pSparseCharacters[nPoints++] = (unsigned short) iPoint;
                 }
 
                 iPoint++;

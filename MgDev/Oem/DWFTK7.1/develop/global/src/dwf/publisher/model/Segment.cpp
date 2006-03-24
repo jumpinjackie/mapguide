@@ -1186,32 +1186,6 @@ throw( DWFException )
 }
 
 _DWFTK_API
-TK_Clip_Rectangle&
-DWFSegment::getClipRectangleHandler()
-throw( DWFException )
-{
-    if (_bOpen == false)
-    {
-        _DWFCORE_THROW( DWFUnexpectedException, L"Segment must be open" );
-    }
-
-    return _rGeometryBuilder.getClipRectangleHandler();
-}
-
-_DWFTK_API
-TK_Clip_Region&
-DWFSegment::getClipRegionHandler()
-throw( DWFException )
-{
-    if (_bOpen == false)
-    {
-        _DWFCORE_THROW( DWFUnexpectedException, L"Segment must be open" );
-    }
-
-    return _rGeometryBuilder.getClipRegionHandler();
-}
-
-_DWFTK_API
 TK_Cutting_Plane&
 DWFSegment::getCuttingPlaneHandler()
 throw( DWFException )
