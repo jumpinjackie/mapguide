@@ -186,10 +186,14 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
 
         #ifdef WIN32
         // TODO: Remove this code once the bug in FDO G001 has been fixed.
-        // This code is to prevent the Oracle FDO provider from crashing the server
-        // because no Oracle client is installed.
+        // This code is to prevent the following providers from crashing and taking the server down
+        // when the appropriate client is not installed:
+        //   1) Oracle
+        //      Check for "oci.dll" if we cannot load it, then there is no Oracle client.
+        //   2) MySQL
+        //      Check for "libmysql.dll" if we cannot load it, then there is no MySQL client.
+        //
         // Note: This code is for Windows only.
-        // Check for "oci.dll" if we cannot load it, then there is no Oracle client.
         if(providerName == L"Autodesk.Oracle.3.0")
         {
             HMODULE hlib = LoadLibraryW(L"oci.dll");
@@ -199,6 +203,18 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
                 arguments.Add(L"No Oracle client installed.");
 
                 ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Open() - No Oracle client installed.\n")));
+                throw new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+            }
+        }
+        else if(providerName == L"OSGeo.MySQL.3.0")
+        {
+            HMODULE hlib = LoadLibraryW(L"libmysql.dll");
+            if (NULL == hlib)
+            {
+                MgStringCollection arguments;
+                arguments.Add(L"No MySQL client installed.");
+
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Open() - No MySQL client installed.\n")));
                 throw new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
             }
         }
@@ -281,10 +297,14 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
     {
         #ifdef WIN32
         // TODO: Remove this code once the bug in FDO G001 has been fixed.
-        // This code is to prevent the Oracle FDO provider from crashing the server
-        // because no Oracle client is installed.
+        // This code is to prevent the following providers from crashing and taking the server down
+        // when the appropriate client is not installed:
+        //   1) Oracle
+        //      Check for "oci.dll" if we cannot load it, then there is no Oracle client.
+        //   2) MySQL
+        //      Check for "libmysql.dll" if we cannot load it, then there is no MySQL client.
+        //
         // Note: This code is for Windows only.
-        // Check for "oci.dll" if we cannot load it, then there is no Oracle client.
         if(providerName == L"Autodesk.Oracle.3.0")
         {
             HMODULE hlib = LoadLibraryW(L"oci.dll");
@@ -294,6 +314,18 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
                 arguments.Add(L"No Oracle client installed.");
 
                 ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Open() - No Oracle client installed.\n")));
+                throw new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
+            }
+        }
+        else if(providerName == L"OSGeo.MySQL.3.0")
+        {
+            HMODULE hlib = LoadLibraryW(L"libmysql.dll");
+            if (NULL == hlib)
+            {
+                MgStringCollection arguments;
+                arguments.Add(L"No MySQL client installed.");
+
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Open() - No MySQL client installed.\n")));
                 throw new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
             }
         }
