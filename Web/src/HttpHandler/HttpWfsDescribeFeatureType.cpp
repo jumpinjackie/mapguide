@@ -60,6 +60,11 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
 
     MG_HTTP_HANDLER_TRY()
 
+    Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
+    Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
+    //
+    MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService);
+
     // This is a comma-sep a list.  If empty, == all.
     // If it's just one feature (no comma sep found) let's do
     // a single response, else let's recursively enumerate the features.
@@ -73,18 +78,23 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
 
         STRING::size_type iPos = sFeatureTypes.find(_(":"));
         if(iPos != STRING::npos) {
-            STRING sResource = sFeatureTypes.substr(0,iPos);
+            STRING sPrefix = sFeatureTypes.substr(0,iPos);
             STRING sClass = sFeatureTypes.substr(iPos+1);
+            STRING sResource; // TODO: look for this in arg, since POST may put it there to save us trouble.
 
-            sResource = _("Library://") + sResource + _(".FeatureSource");
-            MgResourceIdentifier idResource(sResource);
-            Ptr<MgStringCollection> pFeatureClasses = new MgStringCollection();
-            pFeatureClasses->Add(sClass);
+            if(oFeatureTypes.PrefixToFeatureSource(sPrefix,sResource)) {
+                MgResourceIdentifier idResource(sResource);
+                Ptr<MgStringCollection> pFeatureClasses = new MgStringCollection();
+                pFeatureClasses->Add(sClass);
 
-            Ptr<MgByteReader> response  = pFeatureService->DescribeWfsFeatureType(&idResource,pFeatureClasses);
+                Ptr<MgByteReader> response  = pFeatureService->DescribeWfsFeatureType(&idResource,pFeatureClasses);
 
-            // Set the result
-            hResult->SetResultObject(response, response->GetMimeType());
+                // Set the result
+                hResult->SetResultObject(response, response->GetMimeType());
+            }
+            else 
+                // Badly formed feature type?  Throw an exception.
+                GenerateTypeNameException(hResult,sFeatureTypes);
         }
         else {
             // Badly formed feature type?  Throw an exception.
@@ -95,14 +105,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
         // There's more than one feature, so we need to enumerate
         // them and have each get imported.
         //
-        // Create Proxy Feature Service instance
-        // Note: these things must have a lifetime that exceeds
-        //      MgWfsFeatureDefinitions Features, below.
-        Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
-        Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
-        //
-        MgWfsFeatureDefinitions Features(pResourceService,pFeatureService);
-        if(!Features.SubsetFeatureList(sFeatureTypes.c_str()))
+        if(!oFeatureTypes.SubsetFeatureList(sFeatureTypes.c_str()))
             GenerateTypeNameException(hResult,sFeatureTypes);
         else {
             // We have to wrap the request parameters, since the outside
@@ -117,7 +120,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
             MyLog.Write(_("WFS::DescribeFeatureType\r\n"));
 #endif
             // Instance a server-lette
-            MgOgcWfsServer Wfs(Parms,Out,Features);
+            MgOgcWfsServer Wfs(Parms,Out,oFeatureTypes);
 
             // Execute the request
             Wfs.ProcessRequest(this);
@@ -151,11 +154,13 @@ bool MgHttpWfsDescribeFeatureType::ProcessPostRequest(MgHttpRequest *hRequest, M
     STRING wxmlString = MgUtil::MultiByteToWideChar(xmlString);
 
     //TODO Parse hRequest->GetRequestParam()->GetXmlPostData();
+    //TODO When parsing, extract prefix and namespace and put them into the parm collection.
 #ifdef _WFS_LOGGING
     MyLog.Write(_("WFS::DescribeFeatureType POST\r\n"));
     MyLog.Write(wxmlString);
     MyLog.Write();
 #endif
+
     return false;
 }
 
@@ -166,7 +171,7 @@ void MgHttpWfsDescribeFeatureType::GenerateTypeNameException(MgHttpResult* pResu
     Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
     Ptr<MgFeatureService> pFeatureService   = (MgFeatureService *)(CreateService(MgServiceType::FeatureService ));
     //
-    MgWfsFeatureDefinitions Features(pResourceService,pFeatureService);
+    MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService);
     // We have to wrap the request parameters, since the outside
     // world is case-sensitive (with respect to names,) but
     // we need our parameters NOT to be so.
@@ -176,7 +181,7 @@ void MgHttpWfsDescribeFeatureType::GenerateTypeNameException(MgHttpResult* pResu
     MgOgcServer::SetLoader(GetDocument);
 
     // Instance a server-lette
-    MgOgcWfsServer Wfs(Parms,Out,Features);
+    MgOgcWfsServer Wfs(Parms,Out,oFeatureTypes);
 
     // All that tedium, just to get to this call! ;-)
     Wfs.GenerateTypeNameException(sFeatureTypes);

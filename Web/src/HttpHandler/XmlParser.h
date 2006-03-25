@@ -351,7 +351,7 @@ public:
     {
     }
     // At end, advance us so the InStream is ready for whatever follows.
-    ~MgXmlSynchronizeOnElement()
+    virtual ~MgXmlSynchronizeOnElement()
     {
         AdvancePastEnd();
     }
@@ -510,6 +510,20 @@ public:
 
     bool AddNamespace(CREFSTRING sPrefix,CREFSTRING sNamespace);
 
+    // Gets the total count of namespaces, including
+    // duplications brought about by scope eclipses.
+    int TotalCount();
+    // These are indexed 0 .. TotalCount()-1, and may reflect
+    // duplicate prefix declarations.
+    bool Namespace(int iIndex,REFSTRING sNamespace);
+    bool Prefix(int iIndex,REFSTRING sPrefix);
+    // Determines if the prefix=Namespace definition iIndex
+    // is eclipsed by another definition using the same prefix.
+    bool IsEclipsed(int iIndex);
+
+    bool FindPrefix(CREFSTRING sPrefix,int& iIndex);
+    bool FindNamespace(CREFSTRING sNamespace,int& iIndex);
+
 private:
     bool IsXmlNs(CPSZ pszAttrName);
     MgXmlNamespaceScope* m_pTopScope;
@@ -529,6 +543,14 @@ public:
     :   m_oNamespaces(oNamespaces),MgXmlSynchronizeOnElement(InStream,pszQualifiedElementName)
     {
     }
+
+    ~MgXmlSynchronizeOnNamespaceElement()
+    {
+        // Need to do this now, since by the time the base dtor is
+        // called, we're not "OnNamespace" flavor anymore.
+        AdvancePastEnd();
+    }
+
 
 
 protected:
@@ -550,8 +572,7 @@ protected:
     {
         bool bRet = m_oNamespaces.QualifiedName(oEnd.Name()) == pszDesiredName;
 
-        if(bRet)
-            m_oNamespaces.TrackEndElement(oEnd);
+        m_oNamespaces.TrackEndElement(oEnd);
 
         return bRet;
     }

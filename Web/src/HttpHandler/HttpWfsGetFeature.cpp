@@ -25,9 +25,6 @@
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWfsGetFeature)
 
-const string startMemberElement = MgUtil::WideCharToMultiByte(L"<gml:featureMember>");
-const string endMemberElement = MgUtil::WideCharToMultiByte(L"</gml:featureMember>");
-
 /// <summary>
 /// Initializes the common parameters and parameters specific to this request.
 /// </summary>
@@ -116,6 +113,11 @@ void MgHttpWfsGetFeature::AcquireValidationData(MgOgcServer* ogcServer)
 // Acquire data required to generate the response
 void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
 {
+    Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
+    Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
+    //
+    MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService);
+
     MgOgcWfsServer* wfsServer = (MgOgcWfsServer*)ogcServer;
     if(wfsServer != NULL)
     {
@@ -141,68 +143,81 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                         break;
                     }
 
-                    STRING featureType = featureTypeList->GetItem(i);
-                    int delimPos = (int)featureType.find_last_of(L":");
-                    if(delimPos != wstring::npos)
+                    // Get a name of a feature type, like "ns12345:Foo"
+                    STRING sFeatureType = featureTypeList->GetItem(i);
+                    STRING::size_type delimPos = sFeatureType.find_last_of(L":");
+                    // Is it well-formed?  must take QName form: prefix-colon-classname
+                    if(delimPos != STRING::npos)
                     {
-                        STRING featureSource = featureType.substr(0, delimPos);
-                        STRING fullFeatureSource = L"Library://" + featureSource + L".FeatureSource";
-                        STRING featureClass = featureType.substr(delimPos + 1);
+                        // If so, break it up into its constituent parts
+                        STRING sPrefix = sFeatureType.substr(0, delimPos);
+                        STRING sClass  = sFeatureType.substr(delimPos+1);
 
-                        Ptr<MgResourceIdentifier> featureSourceId = new MgResourceIdentifier(fullFeatureSource);
+                        // Given the prefix, reconstitute the resource name
+                        // If from HTTP POST, the namespace manager should have a record of it.
+                        STRING sResource = m_getFeatureParams->NamespaceManager().NamespaceFrom(sPrefix);
+                        // If so, we're good.  If not (as might be the case for HTTP GET) try to guess what 
+                        // it might be by decoding the prefix's hash... this is fallible if the caller decided
+                        // to use a different prefix, but didn't communicate the namespace associated with that
+                        // prefix... buuuut.... there are limits to our tolerance.
+                        if(sResource.length() > 0 || oFeatureTypes.PrefixToFeatureSource(sPrefix,sResource)) {
+                            // From these inquiries, we now have a resource ID, "Library://...FeatureSource"
+                            // and the class name (the "Foo" part from the example above.)
+                            Ptr<MgResourceIdentifier> featureSourceId = new MgResourceIdentifier(sResource);
 
-                        Ptr<MgStringCollection> requiredProperties;
-                        requiredProperties = NULL;
-                        Ptr<MgStringCollection> requiredPropertiesList = m_getFeatureParams->GetRequiredProperties();
-                        if(requiredPropertiesList != NULL && requiredPropertiesList->GetCount() > i)
-                        {
-                            STRING requiredPropertiesString = requiredPropertiesList->GetItem(i);
-                            if(requiredPropertiesString.length() > 0)
+                            Ptr<MgStringCollection> requiredProperties;
+                            requiredProperties = NULL;
+                            Ptr<MgStringCollection> requiredPropertiesList = m_getFeatureParams->GetRequiredProperties();
+                            if(requiredPropertiesList != NULL && requiredPropertiesList->GetCount() > i)
                             {
-                                requiredProperties = MgStringCollection::ParseCollection(requiredPropertiesString, L",");
+                                STRING requiredPropertiesString = requiredPropertiesList->GetItem(i);
+                                if(requiredPropertiesString.length() > 0)
+                                {
+                                    requiredProperties = MgStringCollection::ParseCollection(requiredPropertiesString, L",");
+                                }
                             }
-                        }
 
-                        STRING filter = L"";
-                        Ptr<MgStringCollection> filterList = m_getFeatureParams->GetFilterStrings();
-                        if(filterList->GetCount() > i)
-                        {
-                            filter = filterList->GetItem(i);
-                        }
-                        else if(filterList->GetCount() == 1)
-                        {
-                            // If there's only one filter in the list, use it for all typenames
-                            filter = filterList->GetItem(0);
-                        }
-
-                        // Calculate the max remaining features to retrieve
-                        int numFeaturesToRetrieve = maxFeatures;
-                        if(maxFeatures > 0)
-                        {
-                            numFeaturesToRetrieve = maxFeatures - numFeaturesRetrieved;
-                            if(numFeaturesToRetrieve <= 0)
+                            STRING filter = L"";
+                            Ptr<MgStringCollection> filterList = m_getFeatureParams->GetFilterStrings();
+                            if(filterList->GetCount() > i)
                             {
-                                // We have all the features we need, so break out of the loop
-                                break;
+                                filter = filterList->GetItem(i);
                             }
+                            else if(filterList->GetCount() == 1)
+                            {
+                                // If there's only one filter in the list, use it for all typenames
+                                filter = filterList->GetItem(0);
+                            }
+
+                            // Calculate the max remaining features to retrieve
+                            int numFeaturesToRetrieve = maxFeatures;
+                            if(maxFeatures > 0)
+                            {
+                                numFeaturesToRetrieve = maxFeatures - numFeaturesRetrieved;
+                                if(numFeaturesToRetrieve <= 0)
+                                {
+                                    // We have all the features we need, so break out of the loop
+                                    break;
+                                }
+                            }
+
+                            // Call the C++ API
+                            Ptr<MgByteReader> resultReader = featureService->GetWfsFeature(featureSourceId, sClass,
+                                requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve);
+
+                            // TODO How to determine number of features retrieved...?
+                            // Note: for now, maxFeatures is managed by the MgWfsFeatures object. - TMT 2006-3-20
+                            // numFeaturesRetrieved += ?
+
+                            // Write the byte reader's data into our response data object
+                            string thisResponseString;
+                            resultReader->ToStringUtf8(thisResponseString);
+
+                            // just append the entire thing; there's important stuff, like namespace declarations
+                            // that we would lose if we just extracted the <featureMember> elements.
+                            // The MgWfsFeatures object will parse the pseudo-XML that results.
+                            responseString += thisResponseString;
                         }
-
-                        // Call the C++ API
-                        Ptr<MgByteReader> resultReader = featureService->GetWfsFeature(featureSourceId, featureClass,
-                            requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve);
-
-                        // TODO How to determine number of features retrieved...?
-                        // Note: for now, maxFeatures is managed by the MgWfsFeatures object. - TMT 2006-3-20
-                        // numFeaturesRetrieved += ?
-
-                        // Write the byte reader's data into our response data object
-                        string thisResponseString;
-                        resultReader->ToStringUtf8(thisResponseString);
-
-                        // just append the entire thing; there's important stuff, like namespace declarations
-                        // that we would lose if we just extracted the <featureMember> elements.
-                        // The MgWfsFeatures object will parse the pseudo-XML that results.
-                        responseString += thisResponseString;
                     }
                 }
             }
@@ -240,6 +255,9 @@ bool MgHttpWfsGetFeature::ProcessPostRequest(MgHttpRequest *hRequest, MgHttpResp
         if(bValid)
         {
             Ptr<WfsGetFeatureParams> featureParams = new WfsGetFeatureParams(wxmlString);
+            // We (that is, *this* MgHttpWfsGetFeature) doesn't handle the POST request.
+            // We clone another one of ourselves, dummying up the parameters, and let it
+            // do our work for us.
             Ptr<MgHttpWfsGetFeature> getFeatureHandler = new MgHttpWfsGetFeature(hRequest, featureParams);
             getFeatureHandler->Execute(hResponse);
         }
