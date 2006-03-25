@@ -58,6 +58,14 @@ public:
     MgStringCollection* GetFeatureTypes();
 
     /// <summary>
+    /// Class destructor
+    /// </summary>
+    /// <returns>
+    /// none
+    /// </returns>
+    ~WfsGetFeatureParams();
+
+    /// <summary>
     /// Retrieves the filter strings for the request
     /// </summary>
     /// <returns>
@@ -103,6 +111,8 @@ public:
     /// </returns>
     static bool IsValidXmlRequest(CREFSTRING xmlString);
 
+    MgXmlNamespaceManager& NamespaceManager();
+
 INTERNAL_API:
     // Default constructor to keep Ptr<> happy
     WfsGetFeatureParams();
@@ -134,6 +144,7 @@ private:
     Ptr<MgStringCollection> m_featureTypeList;
     Ptr<MgStringCollection> m_requiredPropertiesList;
     Ptr<MgStringCollection> m_filterStrings;
+    MgXmlNamespaceManager*  m_pNamespaces; // collect namespaces (ns#) namespaces
     INT32 m_maxFeatures;
     STRING m_srs;
 };

@@ -5,15 +5,15 @@
 
  <!-- This defines the format any given Feature Type will take when enumerated in GetCapabilities-->
  <!--                                                                                     -->
+ <!--  Feature.Prefix        - A unique prefix assigned to this feature's resource.       -->
  <!--  Feature.Name          - The assigned name for the feature.                         -->
- <!--  Feature.Title         - The human-readable name for this feature.                  -->
+ <!--  Feature.FullName      - The fully-qualified name for the feature: Prefix+Name      -->
+ <!--  Feature.Resource      - The MapGuide resource name associated with this feature    -->
  <!--                                                                                     -->
+ <!--  Feature.Title         - The human-readable name for this feature.                  -->
  <!--  Feature.Abstract      - Human-readable description of the feature.                 -->
  <!--  Feature.Keywords      - Keywords to describe the feature.                          -->
- <!--                                                                                     -->
- <!--  Feature.Source.id     - fully qualified                                            -->
- <!--  Feature.Source        - The source part of the feature name (before the colon).    -->
- <!--  Feature.Description   - The suffix part of the feature name (after the colon).     -->
+ <!--  Feature.Description   - Additional text provided by FDO.                           -->
  <!--                                                                                     -->
  <!--  Feature.Bounds        - Studio-provided <Bounds /> collection.                     -->
  <!--                                                                                     -->
@@ -22,8 +22,8 @@
   <!-- 
        Feature class #&Feature.iteration;
     -->
-    <FeatureType>
-      <Name>&Feature.Name;</Name>
+    <FeatureType xmlns:&Feature.Prefix;="&Feature.Resource;">
+      <Name>&Feature.FullName;</Name>
       <?If l="&Feature.Description;" op="eq" r=""?>
        <Title>&Feature.Title;</Title>
       <?Else?>
@@ -40,6 +40,7 @@
       <?Enum list="&Feature.Bounds;" item="Bounds" using="&BoundingBox.xml;"?>
     </FeatureType>
   </Define>
+
 
   <Define item="SRS.xml">
    <SRS>&Enum.item.SRS;</SRS>
@@ -104,7 +105,7 @@
  </Define>
  <Define item="DescribeFeature.EnumFeature.xml">
    <!-- &Feature.iteration; -->
-   <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;typeName=&Feature.name;"/>
+   <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;typeName=&Feature.FullName;"/>
  </Define>
 
  <Define item="Format.OgcElement">

@@ -78,14 +78,7 @@ MgHttpWmsGetMap::MgHttpWmsGetMap(MgHttpRequest *hRequest)
 
     // Background transparency
     STRING transparent = params->GetParameterValue(MgHttpResourceStrings::reqWmsTransparent);
-    if(transparent == L"TRUE")
-    {
-        m_transparent = true;
-    }
-    else
-    {
-        m_transparent = false;
-    }
+    m_transparent = SZ_EQI(transparent.c_str(),L"TRUE");
 
     // Background color
     m_bgColor = params->GetParameterValue(MgHttpResourceStrings::reqWmsBackgroundColor);

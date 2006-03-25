@@ -15,15 +15,36 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "OgcFramework.h"
-#include "WfsFeatureDefinitions.h"
 
 /*
-  This source file starts out looking exactly like MgWfsFeatureDefinitions.cpp/.h
-  but (a) since it represents a different object, and (b) the implementation is
-  expected to devolve into two considerably different things, it's broken out
-  into separate code.
+
+  Before:
+    A FeatureType's name was the composition of an abbreviation of the
+    Resource name (sans "Library://" and ".FeatureSource") concatenated
+    with the class's definition name, so you'd end up with something like
+    this:  "Samples/Sheboygan/Data/HydrographicLines:HydrographicLines"
+  Now:
+    A FeatureType's name now conforms to XML Qualified Name (QName) syntax,
+    so the same feature above would now be:
+       "ns191970179:HydrographicLines"
+    with the following support:
+       xmlns:ns191970179="Library://Samples/Sheboygan/Data/HydrographicLines.FeatureSource"
+    WFS certification seems to require QName syntax.  The algorithm used here allows us
+    to shorten class names, while still being able to detect data resource name
+    via namespace, (or absent that -- as might be the case for HTTP GET forms of
+    GetFeature or DescribeFeatureType -- the ability to infer via the namespace prefix
+    "hash" what the likely feature source is.)
+
+    The following definitions are thus created:
+
+    Feature.Name:     "HydrographicLines"
+    Feature.Prefix:   "ns191970179"
+    Feature.FullName: "ns191970179:HydrographicLines"
+    Feature.Resource: "Library://Samples/Sheboygan/Data/HydrographicLines.FeatureSource"
 */
+
+#include "OgcFramework.h"
+#include "WfsFeatureDefinitions.h"
 
 MgWfsFeatureDefinitions::MgWfsFeatureDefinitions(MgResourceService* pResourceService,MgFeatureService* pFeatureService)
 :   m_pResourceService(pResourceService)
@@ -68,6 +89,24 @@ MgWfsFeatureDefinitions::MgWfsFeatureDefinitions(MgResourceService* pResourceSer
     // Everything will be put into this thing
     // though we don't get things in the right order,
     // so some juggling is called for.
+    // The end result is some "pseudo-XML" (no single root element)
+    // that is a collection of feature classes, as follows:
+    //  
+    //  <FeatureClass id='ns180401301:BuildingOutlines' xmlns:ns180401301='Library://Samples/Sheboygan/Data/BuildingOutlines.FeatureSource'>
+    //  <Define item='Feature.Name'>BuildingOutlines</Define>
+    //  <Define item='Feature.Title'>BuildingOutlines</Define>
+    //  <Define item='Feature.FullName'>ns180401301:BuildingOutlines</Define>
+    //  <Define item='Feature.Description'></Define>
+    //  <Define item='Feature.Prefix'>ns180401301</Define>
+    //  <Define item='Feature.Resource'>Library://Samples/Sheboygan/Data/BuildingOutlines.FeatureSource</Define>
+    //  <Define item='Feature.PrimarySRS'>EPSG:4326</Define>
+    //  <Define item='Feature.Bounds'><Bounds SRS="EPSG:4326" west="-87.74" south="43.68" east="-87.69" north="43.815"></Define>
+    //  <Define item='Feature.Abstract'>Building Outlines.</Define>
+    //  <Define item='Feature.Keywords'>Buildings, Outlines</Define>
+    //  <Define item='Feature.Title'>Building Outlines</Define>
+    //  <Define item='Feature.IsPublished'>1</Define>
+    //  </FeatureClass>
+
     CStringStream oTheWholeEnchilada;
 
     while(!ResourceList.AtEnd()) {
@@ -76,28 +115,18 @@ MgWfsFeatureDefinitions::MgWfsFeatureDefinitions(MgResourceService* pResourceSer
         if(!ResourceDocument.AtBegin())
             return; // Something is wrong.  We leave.
 
-        STRING sResource;
-        STRING sSource;
+        STRING sResource; // "Library://....FeatureSource"
+        STRING sPrefix;   // "ns######" based on hash of sResource.
 
         CStringStream oDefinitions;
         // We're looking specifically for ResourceId elements.
         while(!ResourceDocument.AtEnd()) {
             if(GetElementContents(Input,_("ResourceId"),sResource)) {
-                // Okay, the ResourceId is too decorated for our purposes;
-                // the outside world doesn't need to know (and clutter up
-                // URL command lines with) this syntactic "punctuation" so
-                // we just get rid of it.
-                // Remove the Library prefix, if present.
-                sSource = sResource;
-                if(sSource.find(_("Library://")) == 0)
-                    sSource = sSource.substr(10);
-                // Remove the LayerDefinition suffix, if present.
-                STRING::size_type iEnd = sSource.find(_(".FeatureSource"));
-                if(iEnd != STRING::npos)
-                    sSource.resize(iEnd);
-                // There, that's our Layer Source.
-                AddDefinition(oDefinitions,_("Feature.Source"),sSource.c_str());
-                AddDefinition(oDefinitions,_("Feature.Source.id"),sResource.c_str());
+                // We get the canonical xmlns:prefix associated with the resource.
+                FeatureSourceToPrefix(sResource,sPrefix);
+
+                AddDefinition(oDefinitions,_("Feature.Prefix"),sPrefix.c_str());
+                AddDefinition(oDefinitions,_("Feature.Resource"),sResource.c_str());
             }
             else if(GetMetadataDefinitions(Input,oDefinitions)) {
             }
@@ -107,7 +136,7 @@ MgWfsFeatureDefinitions::MgWfsFeatureDefinitions(MgResourceService* pResourceSer
         } // while not at end of ResourceDocument
 
         // Now, given the feature source, we need to find out stuff about
-        // it...
+        // it; there are one or more Feature *Classes* defined within it.
         MgResourceIdentifier idResource(sResource);
 
         // And what classes we can expect to find.
@@ -122,32 +151,42 @@ MgWfsFeatureDefinitions::MgWfsFeatureDefinitions(MgResourceService* pResourceSer
             for(INT32 iClass=0; iClass<pClasses->GetCount(); iClass++) {
                 Ptr<MgClassDefinition> pClass = pClasses->GetItem(iClass);
 
+                // TODO: STALE?
                 // What internally is known as the name is really
                 // the human-readable thing, which in OGC parlance is the title.
-                STRING sTitle = pClass->GetName();
+                STRING sName = pClass->GetName();
 
+                // TODO: STALE?
                 // And what OGC wants to call a Name is really the internal
                 // cookie.  We use the stripped down resource name (source)
                 // plus the human-readable name
-                STRING sName = sSource+_(":")+sTitle;
+                STRING sFullName = sPrefix+_(":")+sName;
 
                 // Now, spew out everything we know about this class.
                 STRING sFeatureNameAttr(_("id='"));
-                sFeatureNameAttr += sName;
+                sFeatureNameAttr += sFullName;
+                sFeatureNameAttr += _("' xmlns:");
+                sFeatureNameAttr += sPrefix;
+                sFeatureNameAttr += _("='");
+                sFeatureNameAttr += sResource;
                 sFeatureNameAttr += _("'");
+
                 MgXmlElementEmitter oXmlFeatureClass(oTheWholeEnchilada,_("FeatureClass"),sFeatureNameAttr.c_str());
                 AddDefinition(oTheWholeEnchilada,_("Feature.Name"),sName.c_str());
                 AddDefinition(oTheWholeEnchilada,_("Feature.Title"),sName.c_str());
+                AddDefinition(oTheWholeEnchilada,_("Feature.FullName"),sFullName.c_str());
+                // Stuff like Feature.Prefix and Feature.Resource are in oDefinitions, and
+                // will be appended below.
 
                 // This is strange; it's called the "Description", but ends up being
-                // the type's name.  In our notation, it's the stuff after the colon.
+                // the type's name. 
                 STRING sDescription = pClass->GetDescription();
                 AddDefinition(oTheWholeEnchilada,_("Feature.Description"),sDescription.c_str());
 
                 // TODO: evaluate what, of interest, can be found here.
                 //Ptr<MgPropertyDefinitionCollection> pProperties = pClass->GetProperties();
 
-                // Also include the definitions that are common to all classes in this source.
+                // Also tack on the definitions that are common to all classes in this source.
                 STRING sDefinitions = oDefinitions.Contents();
                 oXmlFeatureClass.Write(sDefinitions.c_str(),sDefinitions.length());
             }
@@ -373,7 +412,7 @@ void MgWfsFeatureDefinitions::Initialize()
 bool MgWfsFeatureDefinitions::HasFeature(CPSZ pszFeatureName)
 {
     STRING sKey;
-    sKey = _("<Define item='Feature.Name'>"); // NOXLATE
+    sKey = _("<Define item='Feature.FullName'>"); // NOXLATE
     sKey += pszFeatureName;
     sKey +=_("<");// NOXLATE
 
@@ -417,6 +456,7 @@ bool MgWfsFeatureDefinitions::AddSubset(CPSZ pszTypeName)
     }
 }
 
+
 bool MgWfsFeatureDefinitions::IsWantedSubset(CPSZ pszTypeName)
 {
     // special case: no subset is in effect.
@@ -429,4 +469,62 @@ bool MgWfsFeatureDefinitions::IsWantedSubset(CPSZ pszTypeName)
     STRING::size_type iPos = m_sSubsetOfTypes.find(sTypeName);
     return  iPos != STRING::npos;
 }
+
+
+bool MgWfsFeatureDefinitions::FeatureSourceToPrefix(CREFSTRING sFeatureSource,
+                                                    REFSTRING sPrefix)
+{
+    STRING sHash;
+    MgUtil::Int32ToString(StringHasher(sFeatureSource.c_str()),sHash);
+    sPrefix = _("ns")+ sHash;
+
+    return true;
+}
+
+
+bool MgWfsFeatureDefinitions::PrefixToFeatureSource(STRING sPrefix,REFSTRING sFeatureSource)
+{
+
+    STRING sKey;
+    sKey = _("xmlns:"); // NOXLATE
+    sKey += sPrefix;
+    sKey +=_("='");// NOXLATE
+
+    STRING::size_type iPos = m_sSourcesAndClasses.find(sKey);
+    if(iPos != STRING::npos) {
+        iPos += sKey.length(); // advance us past the key, we're pointing to the FeatureSource.
+        STRING::size_type iEnd = m_sSourcesAndClasses.find(_("'"),iPos); // NOXLATE
+        if(iEnd != STRING::npos) {
+            sFeatureSource = m_sSourcesAndClasses.substr(iPos,iEnd-iPos);
+            return true;
+        }
+    }
+    return false;
+
+
+    // TODO: for convenience, truncate sPrefix (allow qname.)
+    return false; // TODO: FINISH
+}
+
+
+// Just a simple hashing algorithm
+unsigned MgWfsFeatureDefinitions::StringHasher(CPSZ pszString)
+{ 
+  size_t i = 0;
+  size_t iLen = szlen(pszString);
+  unsigned x = 0;
+  unsigned uRet = 0;
+
+  for(i = 0; i<iLen; i++) {
+    uRet = (uRet << 4) + pszString[i];
+    x = (uRet & 0xF0000000);
+    if(x != 0)
+      uRet = uRet ^ (x >> 24);
+      uRet = uRet & (~ x);
+  }
+  return uRet;
+}
+
+
+
 

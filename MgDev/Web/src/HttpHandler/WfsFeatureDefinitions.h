@@ -42,6 +42,17 @@ public:
     // String is a comma-separated list of feature names.
     bool SubsetFeatureList(CPSZ pszFeatureNames);
 
+    // Convenience methods to map Feature Source <-> QName prefix.
+    // * Given a Feature Source ("Library://...FeatureSource") string,
+    //   creates the recommended prefix name.  Generally succeeds.
+    bool FeatureSourceToPrefix(CREFSTRING sFeatureSource,REFSTRING sPrefix);
+    // * Given a prefix, attempts to identify the corresponding feature source
+    //   string; will fail if an invalid prefix is provided.  Should be used
+    //   only if definitive feature source is not already known (via namespace)
+    //   declaration (as might be the case for HTTP GET variants of GetFeature
+    //   and DescribeFeatureType.)
+    bool PrefixToFeatureSource(STRING sPrefix,REFSTRING sFeatureSource);
+
 private:
     bool   SkipElement(MgXmlParser& Input,CPSZ pszElementName);
     bool   GetElementContents(MgXmlParser& Input,CPSZ pszElementName,STRING& sValue);
@@ -61,6 +72,14 @@ private:
     STRING m_sSourcesAndClasses;
     STRING m_sSubsetOfTypes;
     bool m_bOk;
+
+
+    // Used to generate a statistically "unique" integer
+    // (shorter than a GUID) of the given string.
+    // Used as a second line of defense for finding 
+    // a feature when the explicit namespace isn't provided.
+    static unsigned StringHasher(CPSZ s);
+
 };
 
 #endif//_MgWfsFeatureDefinitions_h

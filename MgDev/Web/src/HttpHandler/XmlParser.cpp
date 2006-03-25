@@ -796,8 +796,112 @@ bool MgXmlNamespaceManager::IsXmlNs(CPSZ pszAttrName)
         && pszAttrName[5] == ':';
 }
 
+int MgXmlNamespaceManager::TotalCount()
+{
+    int iCount = 0;
+    MgUtilDictionary* pScope = m_pTopScope;
+    while(pScope != NULL) {
+        iCount += pScope->Count();
+        pScope = pScope->NextScope();
+    }
+    return iCount;
+}
 
 
+//
+bool MgXmlNamespaceManager::Namespace(int iIndex,REFSTRING sNamespace)
+{
+    if(iIndex >= 0) {
+        MgUtilDictionary* pScope = m_pTopScope;
+        while(pScope != NULL) {
+            int iCount = pScope->Count();
+            if(iIndex < iCount) {
+                sNamespace = (CPSZ)pScope->Value(iIndex);
+                return true;
+            }
+
+            // Else, keep going.
+            iIndex -= iCount;
+            pScope = pScope->NextScope();
+        }
+    }
+    // index too high if we got here.
+    return false;
+}
+
+
+bool MgXmlNamespaceManager::Prefix(int iIndex,REFSTRING sPrefix)
+{
+    if(iIndex >= 0) {
+        MgUtilDictionary* pScope = m_pTopScope;
+        while(pScope != NULL) {
+            int iCount = pScope->Count();
+            if(iIndex < iCount) {
+                sPrefix = pScope->Name(iIndex);
+                return true;
+            }
+
+            // Else, keep going.
+            iIndex -= iCount;
+            pScope = pScope->NextScope();
+        }
+    }
+    // index too high if we got here.
+    return false;
+}
+
+bool MgXmlNamespaceManager::FindPrefix(CREFSTRING sPrefix,int& iIndex)
+{
+    MgUtilDictionary* pScope = m_pTopScope;
+    int iLocalIndex = 0;
+    while(pScope != NULL) {
+        int iCount = pScope->Count();
+        for(int i=0;i<iCount;i++) {
+            if(sPrefix == pScope->Name(i)) {
+                iIndex = iLocalIndex + i;
+                return true;
+            }
+        }
+        // Not in this scope? keep going
+        iLocalIndex += iCount;
+        pScope = pScope->NextScope();
+    }
+    iIndex = -1;
+    return false;
+}
+
+bool MgXmlNamespaceManager::FindNamespace(CREFSTRING sNamespace,int& iIndex)
+{
+    MgUtilDictionary* pScope = m_pTopScope;
+    int iLocalIndex = 0;
+    while(pScope != NULL) {
+        int iCount = pScope->Count();
+        for(int i=0;i<iCount;i++) {
+            if(sNamespace == (CPSZ)pScope->Value(i)) {
+                iIndex = iLocalIndex + i;
+                return true;
+            }
+        }
+        // Not in this scope? keep going
+        iLocalIndex += iCount;
+        pScope = pScope->NextScope();
+    }
+    iIndex = -1;
+    return false;
+}
+
+bool MgXmlNamespaceManager::IsEclipsed(int iIndex)
+{
+    STRING sPrefix;
+    if(!Prefix(iIndex,sPrefix))
+        return false;
+
+    int iCheck;
+    if(!FindPrefix(sPrefix,iCheck))
+        return false;
+
+    return iCheck != iIndex;
+}
 
 
 

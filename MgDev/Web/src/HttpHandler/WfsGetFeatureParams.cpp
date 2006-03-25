@@ -36,6 +36,7 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgHttpRequestParam* params)
 :   m_maxFeatures(-1)
 ,   m_filterStrings(new MgStringCollection())
 ,   m_featureTypeList(new MgStringCollection())
+,   m_pNamespaces(new MgXmlNamespaceManager())
 {
 
     // Get the required properties
@@ -89,6 +90,18 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgHttpRequestParam* params)
     }
 }
 
+WfsGetFeatureParams::~WfsGetFeatureParams()
+{
+    delete(m_pNamespaces);
+}
+
+MgXmlNamespaceManager& WfsGetFeatureParams::NamespaceManager()
+{
+    return *m_pNamespaces;
+}
+
+
+
 /// <summary>
 /// Initializes the parameters of the request from an XML document
 /// (ie, from an HTTP POST request)
@@ -103,6 +116,7 @@ WfsGetFeatureParams::WfsGetFeatureParams(CREFSTRING xmlRequestString)
 :   m_maxFeatures(-1)
 ,   m_filterStrings(new MgStringCollection())
 ,   m_featureTypeList(new MgStringCollection())
+,   m_pNamespaces(new MgXmlNamespaceManager())
 {
     MgXmlParser parser(xmlRequestString.c_str());
     MgXmlNamespaceManager oNamespaces;
@@ -140,6 +154,19 @@ WfsGetFeatureParams::WfsGetFeatureParams(CREFSTRING xmlRequestString)
             else
                 m_maxFeatures = -1;
 
+            // We want to hang onto the namespaces that are
+            // defined in the GetFeature request, since that will
+            // likely contain namespaces that help us track feature type
+            // names.
+            m_pNamespaces->TrackBeginElement(*pBegin);
+            /*
+            int i=0,iTotalNamespaces = oNamespaces.TotalCount();
+            for(int i=0;i<iTotalNamespaces;i++) {
+                if(!oNamespaces.IsEclipsed(i)) {
+                }
+            }
+            */
+
             // We've gotten all we need out of the <GetFeature> begin-element
             // so now let's dig into its contents: queries...
             parser.Next();
@@ -151,8 +178,11 @@ WfsGetFeatureParams::WfsGetFeatureParams(CREFSTRING xmlRequestString)
 }
 
 // Default constructor to keep Ptr<> happy
-WfsGetFeatureParams::WfsGetFeatureParams() :
-    m_maxFeatures(-1)
+WfsGetFeatureParams::WfsGetFeatureParams() 
+:   m_maxFeatures(-1)
+,   m_filterStrings(new MgStringCollection())
+,   m_featureTypeList(new MgStringCollection())
+,   m_pNamespaces(new MgXmlNamespaceManager())
 {
 }
 
