@@ -48,7 +48,7 @@ if($type == "DWF")
         $frameName = $hlTgtName;
     else
         $frameName = "_BLANK";
-    $mapRequest = "../mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" . urlencode($mapDefinition) . "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" . $locale . ($sessionId != ""? "&SESSION=" . $sessionId: "") . "&reload=true";
+    $mapRequest = GetRootVirtualFolder() . "/mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" . urlencode($mapDefinition) . "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" . $locale . ($sessionId != ""? "&SESSION=" . $sessionId: "") . "&reload=true";
     $templ = Localize(file_get_contents("../viewerfiles/dwfmappane.templ"), $locale, GetClientOS());
     printf ($templ,
                 $mapRequest,
