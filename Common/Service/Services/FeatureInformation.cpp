@@ -86,7 +86,7 @@ MgByteReader* MgFeatureInformation::ToXml()
     if(m_hyperlink.length() > 0)
     {
         xml.append(L"<Hyperlink>");
-        xml.append(m_hyperlink);
+        xml.append(MgUtil::ReplaceEscapeCharInXml(m_hyperlink));
         xml.append(L"</Hyperlink>\n");
     }
     else
