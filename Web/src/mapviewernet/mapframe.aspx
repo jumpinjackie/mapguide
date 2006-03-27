@@ -63,7 +63,7 @@ String hlTgtName;
         {
             frameName = "_BLANK";
         }
-        mapRequest = "../mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" + HttpUtility.UrlEncode(mapDefinition) + "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" + locale + (sessionId != ""? "&SESSION=" + sessionId: "") + "&reload=true";
+        mapRequest = GetRootVirtualFolder(Request) + "/mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" + HttpUtility.UrlEncode(mapDefinition) + "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" + locale + (sessionId != "" ? "&SESSION=" + sessionId : "") + "&reload=true";
 
         //load html template code and format it
         //

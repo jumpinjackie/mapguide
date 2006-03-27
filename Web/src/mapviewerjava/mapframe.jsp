@@ -60,7 +60,7 @@ String hlTgtName;
         {
             frameName = "_BLANK";
         }
-        String mapRequest = "../mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" + URLEncoder.encode(mapDefinition, "UTF-8") + "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" + locale + (sessionId != ""? "&SESSION=" + sessionId: "") + "&reload=true";
+        String mapRequest = GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi?OPERATION=GETMAP&VERSION=1.0&MAPDEFINITION=" + URLEncoder.encode(mapDefinition, "UTF-8") + "&DWFVERSION=6.01&EMAPVERSION=1.0&LOCALE=" + locale + (sessionId != ""? "&SESSION=" + sessionId: "") + "&reload=true";
         String vals[] = { mapRequest,
                       String.valueOf(infoWidth),
                       showLegend != 0 || showProperties != 0? "true": "false",
