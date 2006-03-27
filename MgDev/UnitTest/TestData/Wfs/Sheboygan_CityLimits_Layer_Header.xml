@@ -17,7 +17,7 @@
       </Property>
       <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
         <Name>_Abstract</Name>
-        <Value>Buildings in the city</Value>
+        <Value>City limits</Value>
       </Property>
       <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
         <Name>_Bounds</Name>
@@ -25,7 +25,7 @@
       </Property>
       <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
         <Name>_Title</Name>
-        <Value>Buildings</Value>
+        <Value>CityLimits</Value>
       </Property>
       <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
         <Name>_Opaque</Name>
