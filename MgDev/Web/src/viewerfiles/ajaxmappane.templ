@@ -1171,13 +1171,18 @@ function LayoutControls() {
 
     var legendCtrlDiv = document.getElementById("LegendCtrlDiv");
     var legendCtrl = document.getElementById("LegendCtrl");
+    var wh = msie? document.body.clientHeight: window.innerHeight;
     if(isLegend && legendExpanded)
     {
-        legendCtrl.style.height = legendHeight + "px";
-        legendCtrlDiv.style.height = legendHeight + "px";
+        if(isProperties)
+            lh = legendHeight;
+        else
+            lh = wh - y;
+        legendCtrl.style.height = lh + "px";
+        legendCtrlDiv.style.height = lh + "px";
         if(infoWidth >= 20)
             legendCtrlDiv.style.visibility = "visible";
-        y += legendHeight;
+        y += lh;
     }
     else
     {
@@ -1206,8 +1211,7 @@ function LayoutControls() {
     propCtrlDiv.style.top = y + "px";
     if(isProperties && propExpanded)
     {
-        var height = msie? document.body.clientHeight: window.innerHeight;
-        var h = height - y;
+        var h = wh - y;
         if(h < 1)
             h = 1;
         propCtrl.style.height = h + "px";
