@@ -21,6 +21,7 @@
 #include "RepositoryManager.h"
 #include "ApplicationRepository.h"
 
+class MgApplicationResourceContentManager;
 class MgResourceDataStreamManager;
 class MgResourceDataFileManager;
 
