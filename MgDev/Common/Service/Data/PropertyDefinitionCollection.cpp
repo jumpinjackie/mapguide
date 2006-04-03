@@ -285,7 +285,10 @@ void MgPropertyDefinitionCollection::Serialize(MgStream* stream)
     INT32 count = this->GetCount();
     stream->WriteInt32(count);
     for (INT32 i = 0; i < count; i++)
-        stream->WriteObject(this->GetItem(i));
+    {
+        Ptr<MgPropertyDefinition> prop = this->GetItem(i);
+        stream->WriteObject(prop);
+    }
 }
 
 
@@ -301,8 +304,7 @@ void MgPropertyDefinitionCollection::Deserialize(MgStream* stream)
     stream->GetInt32(count);
     for (INT32 i = 0; i < count; i++)
     {
-        Ptr<MgPropertyDefinition> prop;
-        prop = (MgPropertyDefinition*)stream->GetObject();
+        Ptr<MgPropertyDefinition> prop = (MgPropertyDefinition*)stream->GetObject();
         this->Add(prop);
     }
 }

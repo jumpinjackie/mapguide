@@ -166,7 +166,7 @@ void MgClassDefinitionCollection::Serialize(MgStream* stream)
     INT32 count = this->GetCount();
     stream->WriteInt32(count);
     for (INT32 i = 0; i < count; i++)
-        stream->WriteObject(this->GetItem(i));
+        stream->WriteObject(Ptr<MgClassDefinition>(this->GetItem(i)));
 }
 
 //////////////////////////////////////////////////////////////////

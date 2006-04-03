@@ -225,7 +225,8 @@ void MgSerializableCollection::Serialize(MgStream* stream)
 
     for (INT32 i = 0; i < size; ++i)
     {
-        stream->WriteObject(GetItem(i));
+        Ptr<MgSerializable> obj = GetItem(i);
+        stream->WriteObject(obj);
     }
 }
 
