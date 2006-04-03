@@ -183,6 +183,10 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\catchall.code"
+			>
+		</File>
+		<File
 			RelativePath=".\getclassid.code"
 			>
 		</File>
