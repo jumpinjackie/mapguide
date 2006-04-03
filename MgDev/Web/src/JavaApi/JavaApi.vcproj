@@ -107,7 +107,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml Java .&#x0D;&#x0A;copy .\java.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -java -DJAVA -DWIN32 -dllname MapGuideJavaApi -package org.osgeo.mapguide -root Object -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;move /Y *.java org\osgeo\mapguide&#x0D;&#x0A;del org\osgeo\mapguide\*.class&#x0D;&#x0A;echo Building java classes...&#x0D;&#x0A;javac -classpath . org\osgeo\mapguide\*.java&#x0D;&#x0A;echo Building JAR file&#x0D;&#x0A;jar cf ..\WEB-INF\lib\MapGuideApi.jar org\osgeo\mapguide\*.class&#x0D;&#x0A;&#x0D;&#x0A;"
+				CommandLine="..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml Java .&#x0D;&#x0A;copy .\java.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -java -DJAVA -DWIN32 -dllname MapGuideJavaApi -package org.osgeo.mapguide -root Object -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;move /Y *.java org\osgeo\mapguide&#x0D;&#x0A;del org\osgeo\mapguide\*.class&#x0D;&#x0A;echo Building java classes...&#x0D;&#x0A;javac -classpath . org\osgeo\mapguide\*.java&#x0D;&#x0A;echo Building JAR file&#x0D;&#x0A;jar cf ..\WEB-INF\lib\MapGuideApi.jar org\osgeo\mapguide\*.class&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -182,6 +182,10 @@
 	<References>
 	</References>
 	<Files>
+		<File
+			RelativePath=".\catchall.code"
+			>
+		</File>
 		<File
 			RelativePath=".\getclassid.code"
 			>
