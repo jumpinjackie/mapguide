@@ -985,6 +985,7 @@ INT32 MgServerManager::ComputeWIN32CpuLoad()
     #ifdef WIN32
 
         HQUERY          hQuery;
+        HGLOBAL         hAlloc;
         HCOUNTER        *pCounterHandle;
         PDH_STATUS      pdhStatus;
         PDH_FMT_COUNTERVALUE   fmtValue;
@@ -995,10 +996,11 @@ INT32 MgServerManager::ComputeWIN32CpuLoad()
         pdhStatus = PdhOpenQuery (0, 0, &hQuery);
 
         // Allocate the counter handle array.
-        pCounterHandle = (HCOUNTER *)GlobalAlloc(GPTR, sizeof(HCOUNTER));
+        hAlloc = ::GlobalAlloc(GPTR, sizeof(HCOUNTER));
 
         wcscpy(szPathBuffer, L"\\Process(Idle)\\% Processor Time");    // NOXLATE
 
+        pCounterHandle = (HCOUNTER*)hAlloc;
         pdhStatus = PdhAddCounter (hQuery,
                                     szPathBuffer,
                                     0,
@@ -1026,6 +1028,9 @@ INT32 MgServerManager::ComputeWIN32CpuLoad()
 
         // Close the query.
         pdhStatus = PdhCloseQuery (hQuery);
+
+        // Free memory
+        ::GlobalFree(hAlloc);
 
     #else
 
