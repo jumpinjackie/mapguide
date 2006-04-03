@@ -289,8 +289,8 @@ void MgPropertyCollection::Serialize(MgStream* stream)
     stream->WriteBoolean(bCaseSensitive);
     for (INT32 i = 0; i < count; i++)
     {
-        Ptr<MgProperty> property = this->GetItem(i);
-        stream->WriteObject(property);
+        Ptr<MgProperty> prop = this->GetItem(i);
+        stream->WriteObject(prop);
     }
 }
 
@@ -319,8 +319,7 @@ void MgPropertyCollection::Deserialize(MgStream* stream)
 
     for (INT32 i = 0; i < count; i++)
     {
-        Ptr<MgProperty> prop;
-        prop = (MgProperty*)stream->GetObject();
+        Ptr<MgProperty> prop = (MgProperty*)stream->GetObject();
         this->Add(prop);
     }
 }
