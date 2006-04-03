@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="spec expressions">
+  <policies>
+    <policy name="node_comparisons">
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>//book[isbn=&quot;1558604820&quot;] is //book[call=&quot;QA76.9 C2941&quot;]  </arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>//book[isbn=&quot;1558604820&quot;] is //book[call=&quot;QA76.9 C3845&quot;]  </arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//book1[isbn=&quot;1558604821&quot;] is //book[call=&quot;QA76.9 C2941&quot;] </arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>//book2[isbn=&quot;1558604820&quot;] is //book2[call=&quot;QA76.9 C3845&quot;] </arg>
+    <output>true
+</output>
+  </base>
+</test>

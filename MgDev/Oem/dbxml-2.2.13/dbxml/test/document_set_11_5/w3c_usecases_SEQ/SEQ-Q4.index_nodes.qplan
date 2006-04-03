@@ -1,0 +1,51 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="p">
+      <Navigation>
+        <QueryPlanFunction result="document" container="11.5.4.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'report1.xml',V(edge-element-equality-string,section.section.title,=,'Procedure'))</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="descendant" name="section" nodeType="element"/>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="child" name="section.title" nodeType="element">
+              <OQPlan>V(edge-element-equality-string,section.section.title,=,'Procedure')</OQPlan>
+            </Step>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="Procedure" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+      <Where>
+        <Function name="{http://www.w3.org/2005/04/xpath-functions}:not">
+          <SomeFLWOR>
+            <ForBinding name="a">
+              <Navigation>
+                <Variable name="p"/>
+                <Step axis="descendant" name="anesthesia" nodeType="element"/>
+              </Navigation>
+            </ForBinding>
+            <Operator name="node-order">
+              <Variable name="a"/>
+              <Navigation>
+                <Variable name="p"/>
+                <Step axis="descendant" name="incision" nodeType="element">
+                  <OQPlan>P(node-element-presence-none,=,incision)</OQPlan>
+                </Step>
+                <Predicates>
+                  <Sequence>
+                    <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                  </Sequence>
+                </Predicates>
+              </Navigation>
+            </Operator>
+          </SomeFLWOR>
+        </Function>
+      </Where>
+    </ForBinding>
+    <Variable name="p"/>
+  </FLWOR>
+</XQuery>

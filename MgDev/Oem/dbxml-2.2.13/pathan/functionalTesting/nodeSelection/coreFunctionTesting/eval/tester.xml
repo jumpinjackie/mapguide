@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="functions acting on nodes"><policies><policy name="DontReturnNodes"><addArg>test.xml</addArg></policy><default><program>../../../../samples/evaluator/eval</program></default></policies><base type="pass"><arg>deep-equal(//irena/child::comment(),//irena/zvonimir)</arg><output>false
+</output></base><base type="fail"><arg>deep-equal(//zvonimir/optic:whisky,//yves/optic:whisky) </arg><output>false
+</output></base><base type="fail"><arg>deep-equal(/esben/fred/george,/esben/george)  </arg><output>true
+</output></base><base type="pass"><arg>deep-equal(/esben/fred/george,/esben/fred/george/fred/george)</arg><output>false
+</output></base><base type="fail"><arg>deep-equal(/esben,copy(/esben)) </arg><output>true
+</output></base><base type="fail"><arg>node-equal(/esben,copy(/esben)) </arg><output>false
+</output></base><base type="fail"><arg>local-name(//yves/optic:whisky) </arg><output>whisky
+</output></base><base type="fail"><arg>namespace-uri(//zvonimir/optic:whisky)  </arg><output>urn:glasses:www.20-20.org
+</output></base><base type="fail"><arg>node-before(//hermione,//irena) </arg><output>false
+</output></base><base type="fail"><arg>node-before(//irena,//hermione) </arg><output/></base></test>

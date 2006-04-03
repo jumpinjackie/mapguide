@@ -1,0 +1,40 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="id">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.5.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',P(edge-attribute-equality-string,prefix,xref.@xrefid))</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="xref" nodeType="element">
+              <OQPlan>P(edge-attribute-equality-string,prefix,xref.@xrefid)</OQPlan>
+            </Step>
+            <Step axis="attribute" name="xrefid" nodeType="attribute"/>
+          </Navigation>
+        </ForBinding>
+        <Navigation>
+          <QueryPlanFunction result="document" container="11.5.5.dbxml">
+            <RQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',V(topic.@topicid,=,'[to be calculated]'))</RQPlan>
+          </QueryPlanFunction>
+          <Step axis="descendant" name="topic" nodeType="element">
+            <RQPlan>V(topic.@topicid,=,'[to be calculated]')</RQPlan>
+          </Step>
+          <DbXmlFilter>
+            <Navigation>
+              <Step axis="attribute" name="topicid" nodeType="attribute"/>
+              <DbXmlCompare name="equal">
+                <Variable name="id"/>
+              </DbXmlCompare>
+            </Navigation>
+          </DbXmlFilter>
+        </Navigation>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

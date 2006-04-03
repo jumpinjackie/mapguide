@@ -1,0 +1,11 @@
+#!/bin/sh -
+#	$Id: s_all,v 1.5 2005/02/22 20:05:47 gmf Exp $
+
+sh s_perm		# permissions.
+
+sh s_config		# autoconf.
+#sh s_include		# general include files.
+sh s_win32		# Win32 include files.
+sh s_win32_dsp		# Win32 project files.
+sh s_win32_vcproj	# Win32 VC7 project files.
+sh s_test		# Test suite support.

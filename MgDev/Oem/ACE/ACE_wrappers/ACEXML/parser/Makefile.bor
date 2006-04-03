@@ -1,0 +1,11 @@
+#
+# Makefile.bor,v 1.3 2003/12/20 14:21:14 jwillemsen Exp
+#
+# Makefile for building the ACE XML parser Library
+#
+
+DIRS = \
+        debug_validator \
+        parser
+
+!include <$(ACE_ROOT)\include\makeinclude\recurse.bor>

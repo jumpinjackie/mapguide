@@ -1,0 +1,17 @@
+// -*- MPC -*-
+// gperf_test.mpb,v 1.3 2003/12/30 15:18:22 dhinton Exp
+
+project: aceexe {
+  after += gperf
+  Define_Custom(GPERF) {
+    command          = $(ACE_ROOT)/bin/gperf
+    libpath         += $(ACE_ROOT)/lib
+    output_option    = >
+    inputext         = .gperf
+    source_outputext = .cpp
+  }
+
+  Source_Files {
+    test.cpp
+  }
+}

@@ -1,0 +1,86 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="i">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'items.xml',n(V(node-element-substring-string,description,=,'bic'),V(node-element-substring-string,description,=,'icy'),V(node-element-substring-string,description,=,'cyc'),V(node-element-substring-string,description,=,'ycl'),V(node-element-substring-string,description,=,'cle'),V(node-element-equality-date,start_date,<=,'1999-01-31'),V(node-element-equality-date,end_date,>=,'1999-01-31')))</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="item_tuple" nodeType="element"/>
+            <DbXmlFilter>
+              <Navigation>
+                <Step axis="child" name="start_date" nodeType="element">
+                  <OQPlan>V(node-element-equality-date,start_date,<=,'1999-01-31')</OQPlan>
+                </Step>
+                <DbXmlCompare name="less_than_equal">
+                  <Sequence>
+                    <AnyAtomicTypeConstructor value="1999-01-31" typeuri="http://www.w3.org/2001/XMLSchema" typename="date"/>
+                  </Sequence>
+                </DbXmlCompare>
+              </Navigation>
+            </DbXmlFilter>
+            <DbXmlFilter>
+              <Navigation>
+                <Step axis="child" name="end_date" nodeType="element">
+                  <OQPlan>V(node-element-equality-date,end_date,>=,'1999-01-31')</OQPlan>
+                </Step>
+                <DbXmlCompare name="greater_than_equal">
+                  <Sequence>
+                    <AnyAtomicTypeConstructor value="1999-01-31" typeuri="http://www.w3.org/2001/XMLSchema" typename="date"/>
+                  </Sequence>
+                </DbXmlCompare>
+              </Navigation>
+            </DbXmlFilter>
+            <DbXmlFilter>
+              <Navigation>
+                <Step axis="child" name="description" nodeType="element">
+                  <OQPlan>n(V(node-element-substring-string,description,=,'bic'),V(node-element-substring-string,description,=,'icy'),V(node-element-substring-string,description,=,'cyc'),V(node-element-substring-string,description,=,'ycl'),V(node-element-substring-string,description,=,'cle'))</OQPlan>
+                </Step>
+                <DbXmlContains>
+                  <Sequence>
+                    <AnyAtomicTypeConstructor value="Bicycle" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                  </Sequence>
+                </DbXmlContains>
+              </Navigation>
+            </DbXmlFilter>
+          </Navigation>
+        </ForBinding>
+        <Sort>
+          <Specification modifier="ascending|empty_least">
+            <Navigation>
+              <Variable name="i"/>
+              <Step axis="child" name="itemno" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,item_tuple.itemno)</OQPlan>
+              </Step>
+            </Navigation>
+          </Specification>
+        </Sort>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="item_tuple" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Navigation>
+              <Variable name="i"/>
+              <Step axis="child" name="itemno" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,item_tuple.itemno)</OQPlan>
+              </Step>
+            </Navigation>
+            <Navigation>
+              <Variable name="i"/>
+              <Step axis="child" name="description" nodeType="element"/>
+            </Navigation>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

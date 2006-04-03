@@ -1,0 +1,20 @@
+<XQuery>
+  <Navigation>
+    <QueryPlanFunction result="collection" container="11.7.2.dbxml">
+      <OQPlan>n(P(node-element-presence-none,=,a),P(node-element-presence-none,=,b),P(node-element-presence-none,=,c))</OQPlan>
+    </QueryPlanFunction>
+    <DbXmlFilter>
+      <Navigation gotoRoot="true">
+        <Step axis="descendant" name="a" nodeType="element">
+          <OQPlan>P(node-element-presence-none,=,a)</OQPlan>
+        </Step>
+        <Step axis="child" name="b" nodeType="element">
+          <OQPlan>P(node-element-presence-none,=,b)</OQPlan>
+        </Step>
+        <Step axis="child" name="c" nodeType="element">
+          <OQPlan>P(node-element-presence-none,=,c)</OQPlan>
+        </Step>
+      </Navigation>
+    </DbXmlFilter>
+  </Navigation>
+</XQuery>

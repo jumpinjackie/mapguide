@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// rtoldevent.mpb,v 1.5 2003/12/30 15:18:22 dhinton Exp
+
+project : rtevent, rtsched {
+  after     += RTOLDEvent
+  libs      += TAO_RTOLDEvent
+  comps     += RTOLDEvent
+  tagchecks += RTOLDEvent
+}

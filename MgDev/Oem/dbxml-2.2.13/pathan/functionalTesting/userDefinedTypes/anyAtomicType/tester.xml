@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="datatypes">
+  <policies>
+    <policy name="user-defined.derived.from.untypedAtomic">
+      <addArg>test.xml</addArg>
+      <addArg>-e</addArg>
+    </policy>
+    <default>
+      <program>../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>1 + 1</arg>
+    <output>Message: The base type xdt:anyAtomicType does not allow itself to be used as the base for a restriction and/or as a type in a list and/or union
+2
+</output>
+  </base>
+</test>

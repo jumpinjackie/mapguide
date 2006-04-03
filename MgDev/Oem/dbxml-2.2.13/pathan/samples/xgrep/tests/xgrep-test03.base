@@ -1,0 +1,44 @@
+child::text() selects all text node children of the context node
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  Text1
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  Text2
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  Text3
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+  
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+
+
+
+
+
+  

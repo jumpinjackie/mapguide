@@ -1,0 +1,400 @@
+//
+//  Copyright (C) 2004-2006  Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+#ifndef MG_USER_INFORMATION_H
+#define MG_USER_INFORMATION_H
+
+#undef GetUserName
+
+///////////////////////////////////
+/// \brief
+/// Type of user information
+/// INTERNAL API: Do not document
+///
+/// \internal
+///
+enum UserInformationType
+{
+    uitNone = 0, /// No credentials
+    uitMg,  /// Internally managed MapGuide style credentials
+    uitMgSession,  /// Internally managed MapGuide session
+};
+
+class MgUserInformation;
+template class MG_SERVICE_API Ptr<MgUserInformation>;
+
+
+/// \defgroup MgUserInformation MgUserInformation
+/// \ingroup Common_Module
+/// \{
+
+///////////////////////////////////
+/// \brief
+/// This class manages user information.
+///
+/// \remarks
+/// Information includes the
+/// user's locale, session information, and credentials.  For the first release,
+/// credentials are based on MapGuide authentication only.  This class will be extended in
+/// later releases to include authentication support for LDAP and ADS.
+class MG_SERVICE_API MgUserInformation : public MgSerializable
+{
+    DECLARE_DYNCREATE_COREDATA();
+    DECLARE_CLASSNAME(MgUserInformation)
+
+PUBLISHED_API:
+    ///////////////////////////////
+    /// \brief
+    /// Constructs an unintialized information object
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgUserInformation();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgUserInformation();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgUserInformation();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Nothing
+    ///
+    MgUserInformation();
+
+    ///////////////////////////////
+    /// \brief
+    /// Constructs an information object from a session identifier
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgUserInformation(string sessionId);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgUserInformation(String sessionId);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgUserInformation(string sessionId);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param sessionId (String/string)
+    /// MapGuide session identifier
+    ///
+    /// \return
+    /// Nothing
+    ///
+    MgUserInformation(CREFSTRING sessionId);
+
+    ///////////////////////////////
+    /// \brief
+    /// Constructs information object with a MapGuide user name and password.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgUserInformation(string userName, string password);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgUserInformation(String userName, String password);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgUserInformation(string userName, string password);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param userName (String/string)
+    /// MapGuide user name
+    /// \param password (String/string)
+    /// user password
+    ///
+    /// \return
+    /// Nothing
+    ///
+    MgUserInformation(CREFSTRING userName, CREFSTRING password);
+
+    ///////////////////////////////
+    /// \brief
+    /// Initializes credentials with a MapGuide user name and password.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void SetMgUsernamePassword(string userName, string password);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void SetMgUsernamePassword(String userName, String password);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void SetMgUsernamePassword(string userName, string password);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param userName (String/string)
+    /// MapGuide user name
+    /// \param password (String/string)
+    /// user password
+    ///
+    /// \return
+    /// Nothing
+    ///
+     void SetMgUsernamePassword(CREFSTRING userName, CREFSTRING password);
+
+    ///////////////////////////////
+    /// \brief
+    /// Initializes user information with a MapGuide session identifier.  A
+    /// session identifier can be created for the current user via
+    /// MgSite::CreateSession.  In order to obtain a session identifier,
+    /// MgSiteConnection must be opened with valid credentials.  Once opened,
+    /// GetSite can be called to obtain MgSite which can then be used to
+    /// create a session identifier for the currently logged in user.
+    ///
+    /// Session identifiers contain internally recognized authentication and locale information.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void SetMgSessionId(string sessionId);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void SetMgSessionId(String sessionId);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void SetMgSessionId(string sessionId);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param sessionId (String/string)
+    /// MapGuide session identifier
+    ///
+    /// \return
+    /// Nothing
+    ///
+     void SetMgSessionId(CREFSTRING sessionId);
+
+    ///////////////////////////////
+    /// \brief
+    /// Sets the desired locale for the user.
+    /// Locale codes are 3 letters language codes defined by ISO 639-2. Please refer
+    /// to  http://www.loc.gov/standards/iso639-2/
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void SetLocale(string locale);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void SetLocale(String locale);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void SetLocale(string locale);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param locale (String/string)
+    /// Input
+    /// Three letter locale code
+    ///
+    /// \return
+    /// Nothing
+    ///
+     void SetLocale(CREFSTRING locale);
+
+    ///////////////////////////////
+    /// \brief
+    /// Retrieves the locale for the user.
+    /// Locale codes are 3 letters language codes defined by ISO 639-2. Please refer
+    /// to  http://www.loc.gov/standards/iso639-2/
+    ///
+    /// Locale will only be available if SetLocale has been called on the user information
+    /// object or if the user information was initialized with a session identifier.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GetLocale();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// String GetLocale();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetLocale();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Three letter locale code
+    ///
+    STRING GetLocale();
+
+    ///////////////////////////////
+    /// \brief
+    /// Returns an encrypted MgByteReader for the given credentials.  This byte reader
+    /// can then be used to populate credentials into any resource which requires default
+    /// credentials.  Some feature sources (Oracle Databases) and some drawing sources
+    /// (password protected DWFs) may require default credentials to access them.
+    /// See MgResourceService::SetResourceData for more information.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgByteReader GetReader();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgByteReader GetReader();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgByteReader GetReader();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Encrypted byte reader for credentials
+    ///
+    MgByteReader* GetReader();
+
+EXTERNAL_API:
+
+    ///////////////////////////////
+    /// \brief
+    /// Destructor
+    ///
+    /// \return
+    /// Nothing
+    ///
+     ~MgUserInformation();
+
+    void SetClientAgent(CREFSTRING agent);
+    STRING GetClientAgent();
+
+    void SetClientIp(CREFSTRING ip);
+    STRING GetClientIp();
+
+INTERNAL_API:
+
+    ///////////////////////////////
+    /// \brief
+    /// Returns the session identifier stored
+    ///
+    /// \return
+    /// session identifier stored
+    ///
+    STRING GetMgSessionId();
+
+    ///////////////////////////////
+    /// \brief
+    /// Returns the username stored
+    ///
+    /// \return
+    /// Username stored
+    ///
+    STRING GetUserName();
+
+    ///////////////////////////////
+    /// \brief
+    /// Returns the password stored
+    ///
+    /// \return
+    /// password stored
+    ///
+    STRING GetPassword();
+
+    ///////////////////////////////
+    /// \brief
+    /// Returns the type of supplied credentials
+    ///
+    /// \return
+    /// The type of supplied credentials
+    ///
+    UserInformationType GetType();
+
+    ///////////////////////////////
+    /// \brief
+    /// Create a sessionid
+    ///
+    /// \return
+    /// New session id
+    ///
+    STRING CreateMgSessionId();
+
+    ///////////////////////////////
+    /// \brief
+    /// Clears the current sessionid
+    ///
+    void ClearMgSessionId();
+
+    ///////////////////////////////
+    /// \brief
+    /// Sets the user information for the current thread.  This
+    /// function uses thread local storage.
+    ///
+    /// \param userInformation
+    /// User Information to assign to the current thread
+    ///
+    /// \return
+    /// Nothing
+    ///
+    static void SetCurrentUserInfo(MgUserInformation* userInformation);
+
+    ///////////////////////////////
+    /// \brief
+    /// Gets the user information for the current thread which was
+    /// set previously using SetCurrentUserInfo.  This
+    /// function uses thread local storage.
+    ///
+    /// \return
+    /// User information for currently executing thread
+    ///
+    /// \exception MgConnectionNotOpenException if the user information is not initialized
+    ///
+    static MgUserInformation* GetCurrentUserInfo();
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serialize data to TCP/IP stream
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    virtual void Serialize(MgStream* stream);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Deserialize data from TCP/IP stream
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    virtual void Deserialize(MgStream* stream);
+
+protected:
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Get the class Id
+    ///
+    /// \return
+    /// The integer value
+    ///
+     INT32 GetClassId();
+
+    virtual void Dispose();
+
+private:
+
+    STRING m_username;
+    STRING m_password;
+    STRING m_sessionId;
+    STRING m_locale;
+    UserInformationType m_type;
+
+    STRING m_clientAgent;
+    STRING m_clientIp;
+
+CLASS_ID:
+    static const INT32 m_cls_id = CoreData_System_MgUserInformation;
+};
+/// \}
+
+#endif

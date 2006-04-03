@@ -1,0 +1,73 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="order">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+          <OQPlan>n(P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order),V(edge-attribute-equality-string,order.@id,=,'7'))</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="order" nodeType="element"/>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="attribute" name="id" nodeType="attribute"/>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="7" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </ForBinding>
+    <ForBinding name="cust">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+          <RQPlan>V(customer.@id,=,'[to be calculated]')</RQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="customers" nodeType="element"/>
+        <Step axis="child" name="customer" nodeType="element"/>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="attribute" name="id" nodeType="attribute"/>
+            <DbXmlCompare name="equal">
+              <Navigation>
+                <Variable name="order"/>
+                <Step axis="child" name="customer_id" nodeType="element">
+                  <OQPlan>P(node-element-equality-string,prefix,customer_id)</OQPlan>
+                </Step>
+              </Navigation>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Navigation>
+          <Variable name="order"/>
+          <Step axis="attribute" name="id" nodeType="attribute"/>
+        </Navigation>
+        <Navigation>
+          <Variable name="order"/>
+          <Step axis="child" name="order_status" nodeType="element"/>
+        </Navigation>
+        <Navigation>
+          <Variable name="cust"/>
+          <Step axis="child" name="first_name" nodeType="element"/>
+        </Navigation>
+        <Navigation>
+          <Variable name="cust"/>
+          <Step axis="child" name="last_name" nodeType="element"/>
+        </Navigation>
+        <Navigation>
+          <Variable name="cust"/>
+          <Step axis="child" name="phone_number" nodeType="element"/>
+        </Navigation>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

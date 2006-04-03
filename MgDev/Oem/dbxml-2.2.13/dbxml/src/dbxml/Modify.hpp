@@ -1,0 +1,202 @@
+//
+// See the file LICENSE for redistribution information.
+//
+// Copyright (c) 2002-2005
+//	Sleepycat Software.  All rights reserved.
+//
+// $Id: Modify.hpp,v 1.14 2005/09/20 14:35:51 jsnelson Exp $
+//
+
+#ifndef __MODIFY_HPP
+#define __MODIFY_HPP
+
+#include <string>
+#include <vector>
+#include <dbxml/XmlManager.hpp>
+#include "ReferenceCounted.hpp"
+#include "dbxml/XmlModify.hpp"
+#include "dbxml/XmlQueryContext.hpp"
+#include "UTF8.hpp"
+
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+
+namespace DbXml
+{
+
+/// ModifyStep base class
+class ModifyStep
+{
+public:
+	typedef std::vector<ModifyStep*> Vector;
+	
+	ModifyStep(const XmlQueryExpression &expr);
+	virtual ~ModifyStep();
+	
+	unsigned int execute(Transaction *transaction, Value *toModify,
+			     XmlQueryContext &context) const;
+	virtual void modify(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node,
+		XmlQueryContext &context) const = 0;
+protected:
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMAttr *
+	importAttr(XERCES_CPP_NAMESPACE_QUALIFIER DOMAttr *attr,
+		   XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *newdoc,
+		   XmlQueryContext &context) const;
+
+private:
+	ModifyStep(const ModifyStep &);
+	ModifyStep &operator=(const ModifyStep &);
+	
+	QueryExpression *expr_;
+};
+
+/// Step that removes the given node
+class RemoveStep : public ModifyStep
+{
+public:
+	RemoveStep(const XmlQueryExpression &expr) : ModifyStep(expr) {}
+	
+	virtual void modify(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node,
+		XmlQueryContext &context) const;
+};
+
+/// Step that renames the given node
+class RenameStep : public ModifyStep
+{
+public:
+	RenameStep(const XmlQueryExpression &expr, const std::string &name)
+		: ModifyStep(expr), name_(name) {}
+	
+	virtual void modify(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node,
+		XmlQueryContext &context) const;
+
+private:
+	UTF8ToXMLCh name_;
+};
+
+/// Step that updates the text content of a given node
+class UpdateStep : public ModifyStep
+{
+public:
+	UpdateStep(const XmlQueryExpression &expr, const std::string &content)
+		: ModifyStep(expr), content_(content) {}
+	
+	virtual void modify(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node,
+		XmlQueryContext &context) const;
+
+private:
+	UTF8ToXMLCh content_;
+};
+
+/// Intermediate step, that constructs the replacement content for it's derived steps
+class DOMContentStep : public ModifyStep
+{
+public:
+	DOMContentStep(
+		const XmlQueryExpression &expr, XmlModify::XmlObject type,
+		const std::string &name, const std::string &content,
+		XPath2MemoryManager *memMgr,
+		XERCES_CPP_NAMESPACE_QUALIFIER XercesDOMParser *domParser);
+	virtual ~DOMContentStep();
+protected:
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *document_;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *content_;
+};
+
+/// Step that inserts content before the given node
+class InsertBeforeStep : public DOMContentStep
+{
+public:
+	InsertBeforeStep(
+		const XmlQueryExpression &expr, XmlModify::XmlObject type,
+		const std::string &name, const std::string &content,
+		XPath2MemoryManager *memMgr,
+		XERCES_CPP_NAMESPACE_QUALIFIER XercesDOMParser *domParser)
+		: DOMContentStep(
+			expr, type, name, content, memMgr, domParser) {}
+
+	virtual void modify(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node,
+		XmlQueryContext &context) const;
+};
+
+/// Step that inserts content after the given node
+class InsertAfterStep : public DOMContentStep
+{
+public:
+	InsertAfterStep(
+		const XmlQueryExpression &expr, XmlModify::XmlObject type,
+		const std::string &name, const std::string &content,
+		XPath2MemoryManager *memMgr,
+		XERCES_CPP_NAMESPACE_QUALIFIER XercesDOMParser *domParser)
+		: DOMContentStep(
+			expr, type, name, content, memMgr, domParser) {}
+	
+	virtual void modify(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node,
+		XmlQueryContext &context) const;
+};
+
+/// Step that appends content as a child of the given node, at the optional location
+class AppendStep : public DOMContentStep
+{
+public:
+	AppendStep(
+		const XmlQueryExpression &expr, XmlModify::XmlObject type,
+		const std::string &name, const std::string &content,
+		int location, XPath2MemoryManager *memMgr,
+		XERCES_CPP_NAMESPACE_QUALIFIER XercesDOMParser *domParser)
+		: DOMContentStep(
+			expr, type, name, content, memMgr, domParser),
+		  location_(location) {}
+
+	virtual void modify(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node,
+		XmlQueryContext &context) const;
+
+private:
+	int location_;
+};
+
+class Modify : public ReferenceCountedProtected
+{
+public:
+	Modify(XmlManager &db) : db_(db), memMgr_(0), domParser_(0) {}
+	virtual ~Modify();
+
+	XPath2MemoryManager *getMemMgr() const;
+	XERCES_CPP_NAMESPACE_QUALIFIER XercesDOMParser *getDOMParser();
+	
+	void addStep(ModifyStep *stepToAdopt);
+	void setNewEncoding(const std::string &newEncoding);
+	
+	unsigned int execute(Transaction *txn, Value *toModify,
+			     XmlQueryContext &context,
+			     XmlUpdateContext &uc) const;
+	unsigned int execute(Transaction *txn, XmlResults &toModify,
+			     XmlQueryContext &context,
+			     XmlUpdateContext &uc) const;
+	
+private:
+	unsigned int executeInternal(Transaction *txn, Value *toModify,
+				     XmlQueryContext &context) const;
+	unsigned int changeEncoding(const XmlDocument &document) const;
+	void updateDocument(
+		Transaction *txn, const XmlDocument &document,
+		XmlQueryContext &context, XmlUpdateContext &uc) const;
+	
+	mutable XmlManager db_;
+	
+	mutable XPath2MemoryManager *memMgr_;
+	XERCES_CPP_NAMESPACE_QUALIFIER XercesDOMParser *domParser_;
+	
+	std::string newEncoding_;
+	ModifyStep::Vector steps_;
+};
+
+}
+#endif

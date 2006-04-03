@@ -1,0 +1,37 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+          <OQPlan>V(node-attribute-equality-string,@id,=,'4')</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="article" nodeType="element">
+          <OQPlan>V(node-attribute-equality-string,@id,=,'4')</OQPlan>
+        </Step>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="attribute" name="id" nodeType="attribute"/>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="4" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Article" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Navigation>
+          <Variable name="a"/>
+          <Step axis="child" name="body" nodeType="element"/>
+        </Navigation>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>
