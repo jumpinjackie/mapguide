@@ -235,8 +235,8 @@ catch ( Exception $e )
                     ?>
                             <tr>
                                 <td class="serviceSelectorLabel">Description:</td>
-                                <td class="serviceSelectorValue">
-                                    <textarea class="serviceSelectorValue" name="<?php echo $serverDescriptionID?>" cols="60" <?php echo $enabledStr;?> ><?php echo $serverDescription; ?></textarea>
+                                <td class="inputFormValue" colspan="3">
+                                    <textarea class="inputFormValue" name="<?php echo $serverDescriptionID?>" cols="60" <?php echo $enabledStr;?> ><?php echo $serverDescription; ?></textarea>
                                 </td>
                             </tr>
                     <?php
