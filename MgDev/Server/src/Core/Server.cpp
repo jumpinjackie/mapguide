@@ -16,7 +16,6 @@
 //
 
 #include "Server.h"
-#include "ServerCommon.h"
 #include "ClientAcceptor.h"
 #include "WorkerThread.h"
 #include "LicenseManager.h"
@@ -67,21 +66,6 @@ MgServer::MgServer()
 
     m_bTestMode = false;
     m_bTestFdo = false;
-
-    // General
-    m_nConnectionTimeout           = MgConfigProperties::DefaultGeneralPropertyConnectionTimeout;
-    m_nConnectionTimerInterval     = MgConfigProperties::DefaultGeneralPropertyConnectionTimerInterval;
-
-    m_nDataConnectionTimerInterval = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval;
-
-    m_nServiceRegistrationTimerInterval = MgConfigProperties::DefaultGeneralPropertyServiceRegistrationTimerInterval;
-    m_nServiceRegistrationTimerId  = 0;
-    m_bServiceRegistrationDone     = false;
-
-    m_nSessionTimeout              = MgConfigProperties::DefaultSiteServicePropertySessionTimeout;
-    m_nSessionTimerInterval        = MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval;
-
-    m_nRepositoryCheckpointsTimerInterval = MgConfigProperties::DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval;
 
 #ifdef _DEBUG
     m_nClientRequestLimit = -1;   // -1 = No limit. DEBUG ONLY
@@ -201,7 +185,7 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             // Initialize the License Manager.
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing License Manager.\n")));
             MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
-            assert(NULL != licenseManager);
+            ACE_ASSERT(NULL != licenseManager);
             licenseManager->Initialize();
 
             // Initialize the Server Manager
@@ -222,28 +206,16 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             MgServiceManager* pServiceManager = MgServiceManager::GetInstance();
             pServiceManager->Initialize();
 
-            pConfiguration->GetIntValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyConnectionTimeout, m_nConnectionTimeout, MgConfigProperties::DefaultGeneralPropertyConnectionTimeout);
-            pConfiguration->GetIntValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyConnectionTimerInterval, m_nConnectionTimerInterval, MgConfigProperties::DefaultGeneralPropertyConnectionTimerInterval);
-
-            pConfiguration->GetIntValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval, m_nServiceRegistrationTimerInterval, MgConfigProperties::DefaultGeneralPropertyServiceRegistrationTimerInterval);
-
-            // TODO: Validate other configuration properties (e.g. using MG_CHECK_RANGE as below, etc.).
-            pConfiguration->GetIntValue(MgConfigProperties::SiteServicePropertiesSection, MgConfigProperties::SiteServicePropertySessionTimeout, m_nSessionTimeout, MgConfigProperties::DefaultSiteServicePropertySessionTimeout);
-            MG_CHECK_RANGE(m_nSessionTimeout, MgConfigProperties::MinimumSiteServicePropertySessionTimeout, MgConfigProperties::MaximumSiteServicePropertySessionTimeout, L"MgServer::init");
-            pConfiguration->GetIntValue(MgConfigProperties::SiteServicePropertiesSection, MgConfigProperties::SiteServicePropertySessionTimerInterval, m_nSessionTimerInterval, MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval);
-            MG_CHECK_RANGE(m_nSessionTimerInterval, MgConfigProperties::MinimumSiteServicePropertySessionTimerInterval, MgConfigProperties::MaximumSiteServicePropertySessionTimerInterval, L"MgServer::init");
-
-            pConfiguration->GetIntValue(MgConfigProperties::ResourceServicePropertiesSection, MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval, m_nRepositoryCheckpointsTimerInterval, MgConfigProperties::DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval);
+            // Initialize the Event Timer Manager.
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing Event Timer Manager.\n")));
+            m_eventTimerManager.Initialize();
 
             // Feature Service
             bool bDataConnectionPoolEnabled = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled;
             INT32 nDataConnectionPoolSize = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize;
-            INT32 nDataConnectionTimeout = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout;
 
             pConfiguration->GetBoolValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled, bDataConnectionPoolEnabled, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled);
             pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize, nDataConnectionPoolSize, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize);
-            pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionTimeout, nDataConnectionTimeout, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout);
-            pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval, m_nDataConnectionTimerInterval, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval);
 
             // Initialize and load the FDO library
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing FDO.\n")));
@@ -315,15 +287,22 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 
             // Initialize the FDO Connection Manager
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing FDO Connection Manager.\n")));
+            MgEventTimer& dataConnectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::DataConnectionTimeout);
             MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-            pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, nDataConnectionTimeout);
+            pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout());
 
             // Registers services on this server and other servers within the site.
-
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Registering Services.\n")));
-            RegisterServices();
+            // If successful, then terminate the Service Registration timer.
+            if (loadBalanceManager->RegisterServices(true))
+            {
+                m_eventTimerManager.GetEventTimer(
+                    MgEventTimer::ServiceRegistration).Terminate();
+            }
 
 #ifdef _DEBUG
+            MgEventTimer& connectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::ConnectionTimeout);
+            MgEventTimer& sessionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::SessionTimeout);
             STRING strResourceFilename = pResources->GetResourceFilename(pServerManager->GetDefaultLocale());
 
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Server Information:\n")));
@@ -338,20 +317,20 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Locale (Default)              : %s\n"), MG_WCHAR_TO_TCHAR(pServerManager->GetDefaultLocale())));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Locale Resources File Loaded  : %s\n"), MG_WCHAR_TO_TCHAR(strResourceFilename)));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Client Service Properties:\n")));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Connection Timeout            : %d\n"), m_nConnectionTimeout));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Connection Timer Interval     : %d\n"), m_nConnectionTimerInterval));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Connection Timeout            : %d\n"), connectionTimer.GetEventTimeout()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Connection Timer Interval     : %d\n"), connectionTimer.GetInterval()));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Drawing Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Feature Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Enabled  : %s\n"), bDataConnectionPoolEnabled == true ? ACE_TEXT("true") : ACE_TEXT("false")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Size     : %d\n"), nDataConnectionPoolSize));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timeout       : %d\n"), nDataConnectionTimeout));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timer Interval: %d\n"),m_nDataConnectionTimerInterval));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timeout       : %d\n"), dataConnectionTimer.GetEventTimeout()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timer Interval: %d\n"), dataConnectionTimer.GetInterval()));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Mapping Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Rendering Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Resource Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Site Service Properties:\n")));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timeout               : %d\n"), m_nSessionTimeout));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timer Interval        : %d\n"), m_nSessionTimerInterval));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timeout               : %d\n"), sessionTimer.GetEventTimeout()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timer Interval        : %d\n"), sessionTimer.GetInterval()));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Administrative Connection Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Port                          : %d\n"), pServerManager->GetAdminPort()));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Thread Pool Size              : %d\n"), pServerManager->GetAdminThreads()));
@@ -443,7 +422,22 @@ int MgServer::fini(void)
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::fini()\n")));
 
     // Unregister all the server services.
-    UnregisterServices();
+    {
+        MG_TRY()
+
+        MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
+        ACE_ASSERT(NULL != loadBalanceManager);
+
+        if (NULL != loadBalanceManager)
+        {
+            loadBalanceManager->UnregisterServices();
+        }
+
+        // If an error occurs, catch the exception but do not throw it so that
+        // the server can continue shutting down.
+
+        MG_CATCH_AND_RELEASE()
+    }
 
     // Orderly clean up applicable static manager objects which depend on
     // other third-party libraries so that the server can be cleanly shut down.
@@ -452,7 +446,7 @@ int MgServer::fini(void)
     MgLoadBalanceManager::Terminate();
 
     MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
-    assert(NULL != licenseManager);
+    ACE_ASSERT(NULL != licenseManager);
     licenseManager->Terminate();
 
     // Log the current status.
@@ -796,52 +790,8 @@ int MgServer::svc(void)
                 MG_LOG_TRACE_ENTRY(L"MgServer::svc() - Setup thread pool/register event handlers.");
                 ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::svc() - Setup thread pool/register event handlers\n")));
 
-                // Create a timer thread that checks for Connections and DataConnections that have timed-out.
-                m_idleTimeoutTimer.reactor(ACE_Reactor::instance());
-                m_idleTimeoutTimer.activate();
-
-                // Create the handler that responds to the timer.
-                MgIdleTimeoutHandler idleTimeoutHandler(this, m_nConnectionTimeout, m_nSessionTimeout);
-
-                // Schedule timers to go off at specified intervals.  When the timer goes off, the event ID
-                // indicates whether the connections or data connections should be checked for an inactvity timeout.
-                // The handler will process the timeout as necessary.
-                const int nConnectionTimerEvent = evtConnection;
-                const int nDataConnectionTimerEvent = evtDataConnection;
-                const int nServiceRegistrationTimerEvent = evtServiceRegistration;
-                const int nSessionTimerEvent = evtSessionCleanup;
-                const int nRepositoryCheckpointsTimerEvent = evtRepositoryCheckpoints;
-                const ACE_Time_Value startTime = ACE_OS::gettimeofday() + ACE_Time_Value(180); // 3 minute delay after startup
-
-                ACE_Time_Value nConnectionTimerInterval = ACE_Time_Value(m_nConnectionTimerInterval);
-                ACE_Time_Value nDataConnectionTimerInterval = ACE_Time_Value(m_nDataConnectionTimerInterval);
-                ACE_Time_Value nServiceRegistrationTimerInterval = ACE_Time_Value(m_nServiceRegistrationTimerInterval);
-                ACE_Time_Value nSessionTimerInterval = ACE_Time_Value(m_nSessionTimerInterval);
-                ACE_Time_Value nRepositoryCheckpointsTimerInterval = ACE_Time_Value(m_nRepositoryCheckpointsTimerInterval);
-
-                long nConnectionTimerId = m_idleTimeoutTimer.schedule(&idleTimeoutHandler, &nConnectionTimerEvent, startTime, nConnectionTimerInterval);
-                long nDataConnectionTimerId = m_idleTimeoutTimer.schedule(&idleTimeoutHandler, &nDataConnectionTimerEvent, startTime, nDataConnectionTimerInterval);
-
-                if (!m_bServiceRegistrationDone)
-                {
-                    m_nServiceRegistrationTimerId = m_idleTimeoutTimer.schedule(
-                        &idleTimeoutHandler, &nServiceRegistrationTimerEvent,
-                        startTime, nServiceRegistrationTimerInterval);
-                }
-
-                long nSessionTimerId = 0;
-                long nRepositoryCheckpointsTimerId = 0;
-
-                if (pServerManager->IsSiteServer())
-                {
-                    nSessionTimerId = m_idleTimeoutTimer.schedule(
-                        &idleTimeoutHandler, &nSessionTimerEvent,
-                        startTime, nSessionTimerInterval);
-
-                    nRepositoryCheckpointsTimerId = m_idleTimeoutTimer.schedule(
-                        &idleTimeoutHandler, &nRepositoryCheckpointsTimerEvent,
-                        startTime, nRepositoryCheckpointsTimerInterval);
-                }
+                // Activate event timers.
+                m_eventTimerManager.Activate();
 
                 // Setup the thread manager and the worker threads
                 ACE_Thread_Manager threadManager;
@@ -936,31 +886,8 @@ int MgServer::svc(void)
                                         ACE_Reactor::instance()->remove_handler(SIGQUIT, (ACE_Sig_Action*)NULL, (ACE_Sig_Action*)NULL, -1);
                                         ACE_Reactor::instance()->remove_handler(SIGTERM, (ACE_Sig_Action*)NULL, (ACE_Sig_Action*)NULL, -1);
 
-                                        // Cancel timers
-                                        m_idleTimeoutTimer.cancel(nConnectionTimerId);
-                                        m_idleTimeoutTimer.cancel(nDataConnectionTimerId);
-
-                                        if (0 != m_nServiceRegistrationTimerId)
-                                        {
-                                            m_idleTimeoutTimer.cancel(m_nServiceRegistrationTimerId);
-                                        }
-
-                                        if (0 != nSessionTimerId)
-                                        {
-                                            m_idleTimeoutTimer.cancel(nSessionTimerId);
-                                        }
-
-                                        if (0 != nRepositoryCheckpointsTimerId)
-                                        {
-                                            m_idleTimeoutTimer.cancel(nRepositoryCheckpointsTimerId);
-                                        }
-
-                                        m_idleTimeoutTimer.deactivate();
-                                        m_idleTimeoutTimer.wait();
-                                        m_idleTimeoutTimer.close();
-
-                                        // Remove timer handler
-                                        ACE_Reactor::instance()->remove_handler(&idleTimeoutHandler, ACE_Event_Handler::TIMER_MASK | ACE_Event_Handler::DONT_CALL);
+                                        // Deactivate event timers.
+                                        m_eventTimerManager.Deactivate();
                                     }
                                 }
                             }
@@ -1108,82 +1035,3 @@ template class ACE_LOCK_SOCK_Acceptor<ACE_SYNCH_MUTEX>;
 #elif defined (ACE_HAS_TEMPLATE_INSTANTIATION_PRAGMA)
 #pragma instantiate ACE_LOCK_SOCK_Acceptor<ACE_SYNCH_MUTEX>
 #endif /* ACE_HAS_EXPLICIT_TEMPLATE_INSTANTIATION */
-
-///----------------------------------------------------------------------------
-/// <summary>
-/// Registers services on this server and other servers within the site.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgServer::RegisterServices()
-{
-    // Do nothing if the service registration has already been done.
-
-    if (m_bServiceRegistrationDone)
-    {
-        return;
-    }
-
-    bool onStartup = (0 == m_nServiceRegistrationTimerId);
-
-    MG_TRY()
-
-    MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
-    assert(NULL != loadBalanceManager);
-
-    if (loadBalanceManager->RegisterServices(onStartup))
-    {
-        // Cancel the Service Registration timer if necessary.
-
-        if (0 != m_nServiceRegistrationTimerId)
-        {
-            const int* timerEvent = NULL;
-            int result = m_idleTimeoutTimer.cancel(m_nServiceRegistrationTimerId,
-                (const void**)&timerEvent);
-
-            if (1 == result)
-            {
-                assert(NULL != timerEvent && evtServiceRegistration == *timerEvent);
-                m_nServiceRegistrationTimerId = 0;
-            }
-            else
-            {
-                assert(false);
-            }
-        }
-
-        m_bServiceRegistrationDone = true;
-    }
-
-    MG_CATCH(L"MgServer.RegisterServices")
-
-    // When NOT on startup (i.e. on timer):
-    // If an error occurs, catch the exception but do not throw it so that
-    // the server can continue running.
-
-    if (onStartup)
-    {
-        MG_THROW()
-    }
-}
-
-///----------------------------------------------------------------------------
-/// <summary>
-/// Un-registers services on this server.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgServer::UnregisterServices()
-{
-    MG_TRY()
-
-    MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
-    assert(NULL != loadBalanceManager);
-
-    loadBalanceManager->UnregisterServices();
-
-    // If an error occurs, catch the exception but do not throw it so that
-    // the server can continue shutting down.
-
-    MG_CATCH(L"MgServer.UnregisterServices")
-}

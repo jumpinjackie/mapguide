@@ -19,7 +19,7 @@
 #define MGSERVER_H_
 
 #include "AceCommon.h"
-#include "IdleTimeoutHandler.h"
+#include "EventTimerManager.h"
 
 #ifdef WIN32
 #include "ace/NT_Service.h"
@@ -111,11 +111,8 @@ public:
     virtual void stop_requested (DWORD controlCode);
 #endif
 
-    void RegisterServices();
-
 private:
 
-    void UnregisterServices();
     void ParseArgs(INT32 argc, ACE_TCHAR *argv[]);
 
     ///////////////////////////////////////////////////////
@@ -126,26 +123,11 @@ private:
     STRING m_strTestFileName;
     STRING m_strTestName;
 
-    ACE_Thread_Timer_Queue_Adapter<ACE_Timer_Heap> m_idleTimeoutTimer;
-
-    // General Properties
-    INT32 m_nConnectionTimeout;
-    INT32 m_nConnectionTimerInterval;
-
-    INT32 m_nDataConnectionTimerInterval;
-
-    INT32 m_nServiceRegistrationTimerInterval;
-    long  m_nServiceRegistrationTimerId;
-    bool  m_bServiceRegistrationDone;
-
-    INT32 m_nSessionTimeout;
-    INT32 m_nSessionTimerInterval;
-
-    INT32 m_nRepositoryCheckpointsTimerInterval;
-
 #ifdef _DEBUG
     INT32 m_nClientRequestLimit;        // DEBUG ONLY
 #endif
+
+    MgEventTimerManager m_eventTimerManager;
 };
 
 typedef ACE_Singleton<MgServer, ACE_SYNCH_MUTEX> SERVER;
