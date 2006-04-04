@@ -183,6 +183,12 @@ EXTERNAL_API:
     static const STRING ResourceServicePropertyRepositoryCheckpointsTimerInterval;      /// value("RepositoryCheckpointsTimerInterval")
     static const INT32 DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval;/// value(600)
 
+    /// Sets the time duration (in seconds) between resource change notifications
+    static const STRING ResourceServicePropertyResourceChangeTimerInterval;         /// value("ResourceChangeTimerInterval")
+    static const INT32 DefaultResourceServicePropertyResourceChangeTimerInterval;   /// value(5)
+    static const INT32 MinimumResourceServicePropertyResourceChangeTimerInterval;   /// value(1)
+    static const INT32 MaximumResourceServicePropertyResourceChangeTimerInterval;   /// value(2147483647)
+
     /// Sets the maximum number of resources with permission information to be cached
     static const STRING ResourceServicePropertyResourcePermissionCacheSize;             /// value("ResourcePermissionCacheSize")
     static const INT32 DefaultResourceServicePropertyResourcePermissionCacheSize;       /// value(1000)

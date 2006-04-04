@@ -109,6 +109,10 @@ const STRING MgConfigProperties::ResourceServicePropertyResourceDataFileTrashFol
 const STRING MgConfigProperties::DefaultResourceServicePropertyResourceDataFileTrashFolderName  = L"Trash";
 const STRING MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval      = L"RepositoryCheckpointsTimerInterval";
 const INT32  MgConfigProperties::DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval = 600;
+const STRING MgConfigProperties::ResourceServicePropertyResourceChangeTimerInterval             = L"ResourceChangeTimerInterval";
+const INT32  MgConfigProperties::DefaultResourceServicePropertyResourceChangeTimerInterval      = 5;
+const INT32  MgConfigProperties::MinimumResourceServicePropertyResourceChangeTimerInterval      = 1;
+const INT32  MgConfigProperties::MaximumResourceServicePropertyResourceChangeTimerInterval      = 2147483647;
 const STRING MgConfigProperties::ResourceServicePropertyResourcePermissionCacheSize             = L"ResourcePermissionCacheSize";
 const INT32  MgConfigProperties::DefaultResourceServicePropertyResourcePermissionCacheSize      = 1000;
 const STRING MgConfigProperties::ResourceServicePropertyResourceValidationEnabled               = L"ResourceValidationEnabled";

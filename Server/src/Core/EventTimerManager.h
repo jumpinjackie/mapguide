@@ -15,21 +15,45 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "ClientAcceptor.cpp"
-#include "ClientHandler.cpp"
-#include "ConnectionTimeoutEventHandler.cpp"
-#include "DataConnectionTimeoutEventHandler.cpp"
-#include "EventTimer.cpp"
-#include "EventTimerManager.cpp"
-#include "main.cpp"
-#include "RepositoryCheckpointEventHandler.cpp"
-#include "ResourceChangeEventHandler.cpp"
-#include "Server.cpp"
-#include "ServiceHandlerFactory.cpp"
-#include "ServiceRegistrationEventHandler.cpp"
-#include "SessionTimeoutEventHandler.cpp"
-#include "SignalHandler.cpp"
-#include "ThreadBase.cpp"
-#include "TimedEvent.cpp"
-#include "TimedEventHandler.cpp"
-#include "WorkerThread.cpp"
+#ifndef MGEVENTTIMERMANAGER_H_
+#define MGEVENTTIMERMANAGER_H_
+
+#include "EventTimer.h"
+
+class MgEventTimerManager
+{
+/// Constructors/Destructor
+
+public:
+
+    MgEventTimerManager();
+    virtual ~MgEventTimerManager();
+
+private:
+
+    // Unimplemented Constructors/Methods
+
+    MgEventTimerManager(const MgEventTimerManager&);
+    MgEventTimerManager& operator=(const MgEventTimerManager&);
+
+/// Methods
+
+public:
+
+    MgEventTimer& GetEventTimer(MgEventTimer::Type type);
+
+    void Initialize();
+
+    void Activate();
+    void Deactivate();
+
+/// Data Members
+
+private:
+
+    MgEventTimer m_eventTimers[MG_MAX_EVENT_TIMERS];
+};
+
+/// Inline Methods
+
+#endif

@@ -34,24 +34,42 @@ mgserver_SOURCES = \
   ServerCoreBuild.cpp
 
 include_SOURCES = \
-  main.cpp \
   ClientAcceptor.cpp \
   ClientHandler.cpp \
-  IdleTimeoutHandler.cpp \
+  ConnectionTimeoutEventHandler.cpp \
+  DataConnectionTimeoutEventHandler.cpp \
+  EventTimer.cpp \
+  EventTimerManager.cpp \
+  main.cpp \
+  RepositoryCheckpointEventHandler.cpp \
+  ResourceChangeEventHandler.cpp \
   Server.cpp \
   ServiceHandlerFactory.cpp \
+  ServiceRegistrationEventHandler.cpp \
+  SessionTimeoutEventHandler.cpp \
   SignalHandler.cpp \
   ThreadBase.cpp \
+  TimedEvent.cpp \
+  TimedEventHandler.cpp \
   WorkerThread.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   ClientAcceptor.h \
   ClientHandler.h \
-  IdleTimeoutHandler.h \
+  ConnectionTimeoutEventHandler.h \
+  DataConnectionTimeoutEventHandler.h \
+  EventTimer.h \
+  EventTimerManager.h \
+  RepositoryCheckpointEventHandler.h \
+  ResourceChangeEventHandler.h \
   Server.h \
   ServiceHandlerFactory.h \
+  ServiceRegistrationEventHandler.h \
+  SessionTimeoutEventHandler.h \
   SignalHandler.h \
   ThreadBase.h \
+  TimedEvent.h \
+  TimedEventHandler.h \
   WorkerThread.h \
   ../Common/ServerCommon.h
 
