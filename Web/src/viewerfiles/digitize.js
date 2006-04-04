@@ -214,7 +214,7 @@ function RectangleDigitizer(handler, cnvfunc, cancelTgt, fbShape, fbDiv, fbColor
     }
 }
 
-function PolylineDigitizer(handler, cnvfunc, cancelTgt, fbShape, fbDiv, fbColor, fbPos, fbW, fbH, tiphandler, tiptext, closed)
+function LineStringDigitizer(handler, cnvfunc, cancelTgt, fbShape, fbDiv, fbColor, fbPos, fbW, fbH, tiphandler, tiptext, closed)
 {
     this.DigitizerInfo = Digitizer;
     this.DigitizerInfo(handler, cnvfunc, cancelTgt, fbShape, fbDiv, fbColor, fbPos, fbW, fbH, tiphandler, tiptext);

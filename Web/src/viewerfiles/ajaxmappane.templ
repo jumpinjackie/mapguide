@@ -399,15 +399,15 @@ function DigitizeRectangle(handler) {
         return;
     StartDigitizing(new RectangleDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH), handler);
 }
-function DigitizePolyline(handler) {
+function DigitizeLineString(handler) {
     if(handler == null)
         return;
-    StartDigitizing(new PolylineDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH, ShowSelectionTip, selTtipText, false), handler);
+    StartDigitizing(new LineStringDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH, ShowSelectionTip, selTtipText, false), handler);
 }
 function DigitizePolygon(handler) {
     if(handler == null)
         return;
-    StartDigitizing(new PolylineDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH, ShowSelectionTip, selTtipText, true), handler);
+    StartDigitizing(new LineStringDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH, ShowSelectionTip, selTtipText, true), handler);
 }
 function IsDigitizing() {
     return digitizing;
