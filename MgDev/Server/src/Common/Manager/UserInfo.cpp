@@ -92,17 +92,19 @@ CREFSTRING MgUserInfo::GetPassword() const
 {
     if (m_passwordEncrypted)
     {
-        STRING decryptedPassword;
-
         MG_CRYPTOGRAPHY_TRY()
 
         MgCryptographyUtil cryptoUtil;
-        cryptoUtil.DecryptPassword(m_password, decryptedPassword);
+        string decryptedPassword;
+
+        cryptoUtil.DecryptPassword(MgUtil::WideCharToMultiByte(m_password), 
+            decryptedPassword);
+
+        MgUtil::MultiByteToWideChar(decryptedPassword, 
+            const_cast<MgUserInfo*>(this)->m_password);
+        const_cast<MgUserInfo*>(this)->m_passwordEncrypted = false;
 
         MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgUserInfo.GetPassword")
-
-        const_cast<MgUserInfo*>(this)->m_password = decryptedPassword;
-        const_cast<MgUserInfo*>(this)->m_passwordEncrypted = false;
     }
 
     return m_password;

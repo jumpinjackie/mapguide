@@ -26,7 +26,7 @@
 /// Helper macros.
 ///
 #define MG_CRYPTOGRAPHY_TRY()                                                 \
-    Ptr<MgException> cryptoException;                                         \
+    Ptr<MgException> cryptographyException;                                   \
                                                                               \
     try                                                                       \
     {                                                                         \
@@ -41,70 +41,76 @@
                 break;                                                        \
                                                                               \
             case ecInvalidOperation:                                          \
-                cryptoException = new MgInvalidOperationException(methodName, \
-                    __LINE__, __WFILE__, NULL, L"", NULL);                    \
+                cryptographyException = new MgInvalidOperationException(      \
+                    methodName, __LINE__, __WFILE__, NULL, L"", NULL);        \
                 break;                                                        \
                                                                               \
             case ecNullArgument:                                              \
-                cryptoException = new MgNullArgumentException(methodName,     \
-                    __LINE__, __WFILE__, NULL, L"", NULL);                    \
+                cryptographyException = new MgNullArgumentException(          \
+                    methodName, __LINE__, __WFILE__, NULL, L"", NULL);        \
                 break;                                                        \
                                                                               \
             case ecInvalidArgument:                                           \
-                cryptoException = new MgInvalidArgumentException(methodName,  \
-                    __LINE__, __WFILE__, NULL, L"", NULL);                    \
+                cryptographyException = new MgInvalidArgumentException(       \
+                    methodName, __LINE__, __WFILE__, NULL, L"", NULL);        \
                 break;                                                        \
                                                                               \
             case ecLengthError:                                               \
-                cryptoException = new MgLengthException(methodName,           \
-                    __LINE__, __WFILE__, NULL, L"", NULL);                    \
+                cryptographyException = new MgLengthException(                \
+                    methodName, __LINE__, __WFILE__, NULL, L"", NULL);        \
                 break;                                                        \
                                                                               \
             case ecDateTimeError:                                             \
-                cryptoException = new MgDateTimeException(methodName,         \
-                    __LINE__, __WFILE__, NULL, L"", NULL);                    \
+                cryptographyException = new MgDateTimeException(              \
+                    methodName, __LINE__, __WFILE__, NULL, L"", NULL);        \
                 break;                                                        \
                                                                               \
             case ecFileIoError:                                               \
             case ecReadError:                                                 \
             case ecWriteError:                                                \
-                cryptoException = new MgFileIoException(methodName,           \
-                    __LINE__, __WFILE__, NULL, L"", NULL);                    \
+                cryptographyException = new MgFileIoException(                \
+                    methodName, __LINE__, __WFILE__, NULL, L"", NULL);        \
                 break;                                                        \
                                                                               \
             case ecEncryptionError:                                           \
-                cryptoException = new MgEncryptionException(methodName,       \
-                    __LINE__, __WFILE__, NULL, L"", NULL);                    \
+                cryptographyException = new MgEncryptionException(            \
+                    methodName, __LINE__, __WFILE__, NULL, L"", NULL);        \
                 break;                                                        \
                                                                               \
             case ecDecryptionError:                                           \
-                cryptoException = new MgDecryptionException(methodName,       \
-                    __LINE__, __WFILE__, NULL, L"", NULL);                    \
+                cryptographyException = new MgDecryptionException(            \
+                    methodName, __LINE__, __WFILE__, NULL, L"", NULL);        \
                 break;                                                        \
                                                                               \
             case ecUnclassified:                                              \
             default:                                                          \
-                cryptoException = new MgUnclassifiedException(methodName,     \
-                    __LINE__, __WFILE__, NULL, L"", NULL);                    \
+                cryptographyException = new MgUnclassifiedException(          \
+                    methodName, __LINE__, __WFILE__, NULL, L"", NULL);        \
                 break;                                                        \
         }                                                                     \
     }                                                                         \
+    catch (MgException* e)                                                    \
+    {                                                                         \
+        cryptographyException = e;                                            \
+        cryptographyException->AddStackTraceInfo(                             \
+            methodName, __LINE__, __WFILE__);                                 \
+    }                                                                         \
     catch (exception& e)                                                      \
     {                                                                         \
-        cryptoException = MgSystemException::Create(e, methodName,            \
-            __LINE__, __WFILE__);                                             \
+        cryptographyException = MgSystemException::Create(                    \
+            e, methodName, __LINE__, __WFILE__);                              \
     }                                                                         \
     catch (...)                                                               \
     {                                                                         \
-        cryptoException = new MgUnclassifiedException(methodName,             \
-            __LINE__, __WFILE__, NULL, L"", NULL);                            \
+        cryptographyException = new MgUnclassifiedException(                  \
+            methodName, __LINE__, __WFILE__, NULL, L"", NULL);                \
     }                                                                         \
 
 #define MG_CRYPTOGRAPHY_THROW()                                               \
-    if (cryptoException != NULL)                                              \
+    if (cryptographyException != NULL)                                        \
     {                                                                         \
-        (*cryptoException).AddRef();                                          \
-        cryptoException->Raise();                                             \
+        (*cryptographyException).AddRef();                                    \
+        cryptographyException->Raise();                                       \
     }                                                                         \
 
 #define MG_CRYPTOGRAPHY_CATCH_AND_THROW(methodName)                           \
@@ -112,6 +118,15 @@
                                                                               \
     MG_CRYPTOGRAPHY_THROW()                                                   \
 
+#define MG_CRYPTOGRAPHY_CATCH_AND_RELEASE()                                   \
+    }                                                                         \
+    catch (MgException* e)                                                    \
+    {                                                                         \
+        cryptographyException = e;                                            \
+    }                                                                         \
+    catch (...)                                                               \
+    {                                                                         \
+    }                                                                         \
 
 /// \defgroup MgCryptographyManager MgCryptographyManager
 /// \ingroup Common_Module

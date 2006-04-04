@@ -40,60 +40,60 @@ private:
 
 public:
 
-    bool IsStringDecryptable(const wstring& str) const;
-    bool IsStringEncrypted(const wstring& str) const;
+    bool IsStringDecryptable(const string& str) const;
+    bool IsStringEncrypted(const string& str) const;
 
-    void EncryptCredentials(const wstring& username,
-        const wstring& password, wstring& credentials);
-    void DecryptCredentials(const wstring& credentials,
-        wstring& username, wstring& password, bool validateKey = false);
+    void EncryptCredentials(const string& username,
+        const string& password, string& credentials);
+    void DecryptCredentials(const string& credentials,
+        string& username, string& password, bool validateKey = false);
 
-    void EncryptUsername(const wstring& plainText, wstring& cipherText);
-    void DecryptUsername(const wstring& cipherText, wstring& plainText,
+    void EncryptUsername(const string& plainText, string& cipherText);
+    void DecryptUsername(const string& cipherText, string& plainText,
         bool validateKey = false);
 
-    void EncryptPassword(const wstring& plainText, wstring& cipherText);
-    void DecryptPassword(const wstring& cipherText, wstring& plainText,
+    void EncryptPassword(const string& plainText, string& cipherText);
+    void DecryptPassword(const string& cipherText, string& plainText,
         bool validateKey = false);
 
-    void EncryptString(const wstring& plainText, wstring& cipherText);
-    void DecryptString(const wstring& cipherText, wstring& plainText,
+    void EncryptString(const string& plainText, string& cipherText);
+    void DecryptString(const string& cipherText, string& plainText,
         bool validateKey = false);
 
 protected:
 
-    void CombineStrings(const wstring& inStr1, const wstring& inStr2,
-        wstring& outStr);
-    void SplitStrings(const wstring& inStr, wstring& outStr1,
-        wstring& outStr2);
+    void CombineStrings(const string& inStr1, const string& inStr2,
+        string& outStr);
+    void SplitStrings(const string& inStr, string& outStr1,
+        string& outStr2);
 
-    void GenerateCryptographKey(wstring& key);
-    void ValidateCryptographKey(const wstring& key);
+    void GenerateCryptographKey(string& key);
+    void ValidateCryptographKey(const string& key);
 
-    void BinToHex(const wstring& binStr, wstring& hexStr);
-    void HexToBin(const wstring& hexStr, wstring& binStr);
+    void BinToHex(const string& binStr, string& hexStr);
+    void HexToBin(const string& hexStr, string& binStr);
 
 private:
 
-    void EncryptStringByTransposition(const wstring& inStr,
-        wstring& outStr, int numOfColumn);
-    void DecryptStringByTransposition(const wstring& inStr,
-        wstring& outStr, int numOfColumn);
+    void EncryptStringByTransposition(const string& inStr,
+        string& outStr, int numOfColumn);
+    void DecryptStringByTransposition(const string& inStr,
+        string& outStr, int numOfColumn);
 
-    void EncryptStringByTransposition(const wstring& inStr,
-        wstring& outStr);
-    void DecryptStringByTransposition(const wstring& inStr,
-        wstring& outStr);
+    void EncryptStringByTransposition(const string& inStr,
+        string& outStr);
+    void DecryptStringByTransposition(const string& inStr,
+        string& outStr);
 
-    void EncryptStringWithKey(const wstring& inStr, wstring& outStr,
-        const wstring& key);
-    void DecryptStringWithKey(const wstring& inStr, wstring& outStr,
-        const wstring& key);
+    void EncryptStringWithKey(const string& inStr, string& outStr,
+        const string& key);
+    void DecryptStringWithKey(const string& inStr, string& outStr,
+        const string& key);
 
-    void EncryptStrings(const wstring& plainText1, const wstring& plainText2,
-        wstring& cipherText, const wstring& reservedChars = L"");
-    void DecryptStrings(const wstring& cipherText,
-        wstring& plainText1, wstring& plainText2, bool validateKey = false);
+    void EncryptStrings(const string& plainText1, const string& plainText2,
+        string& cipherText, const string& reservedChars = "");
+    void DecryptStrings(const string& cipherText,
+        string& plainText1, string& plainText2, bool validateKey = false);
 
 /// Data Members
 
@@ -105,9 +105,9 @@ protected:
 
 private:
 
-    static const wchar_t sm_stringDelimiter;
-    static const wstring sm_reservedCharactersForStrings;
-    static const wstring sm_reservedCharactersForCredentials;
+    static const char sm_stringDelimiter;
+    static const string sm_reservedCharactersForStrings;
+    static const string sm_reservedCharactersForCredentials;
 };
 
 /// Inline Methods

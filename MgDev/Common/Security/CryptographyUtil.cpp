@@ -20,73 +20,65 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// Constants.
 ///
-static const wstring MG_PRIVATE_KEY                     = L"WutsokeedbA";
-static const wchar_t MG_CRYPTOMAN_DEC_CHARS[]           = L"0123456789";
-static const wchar_t MG_CRYPTOMAN_HEX_CHARS[]           = L"0123456789abcdef";
-static const int MG_CRYPTOMAN_MAGIC_NUMBER_1            = 42;
-static const int MG_CRYPTOMAN_MAGIC_NUMBER_2            = 3;
-static const int MG_CRYPTOMAN_MIN_COLUMN_NUMBER         = 5;
+static const string MG_CRYPTOGRAPHY_PRIVATE_KEY         = "WutsokeedbA";
+static const char MG_CRYPTOGRAPHY_DEC_CHARS[]           = "0123456789";
+static const char MG_CRYPTOGRAPHY_HEX_CHARS[]           = "0123456789abcdef";
+static const int MG_CRYPTOGRAPHY_MAGIC_NUMBER_1         = 42;
+static const int MG_CRYPTOGRAPHY_MAGIC_NUMBER_2         = 3;
+static const int MG_CRYPTOGRAPHY_MIN_COLUMN_NUMBER      = 5;
 
 const int MgCryptographyUtil::sm_minCipherTextLength    = 34; // based on delimiter length and minimum key length
 const int MgCryptographyUtil::sm_minKeyLength           = 14;
 const int MgCryptographyUtil::sm_maxKeyLength           = 32;
-const wchar_t MgCryptographyUtil::sm_stringDelimiter    = L'\v';
-const wstring MgCryptographyUtil::sm_reservedCharactersForStrings = L"\v\f";
-const wstring MgCryptographyUtil::sm_reservedCharactersForCredentials = L"\t\r\n\v\f";
+const char MgCryptographyUtil::sm_stringDelimiter       = '\v';
+const string MgCryptographyUtil::sm_reservedCharactersForStrings = "\v\f";
+const string MgCryptographyUtil::sm_reservedCharactersForCredentials = "\t\r\n\v\f";
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Constructs the object.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 MgCryptographyUtil::MgCryptographyUtil()
 {
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Destructs the object.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 MgCryptographyUtil::~MgCryptographyUtil()
 {
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Combines the two specified strings into one.
 /// The input string must NOT contain the reserved sm_stringDelimiter.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::CombineStrings(const wstring& inStr1,
-    const wstring& inStr2, wstring& outStr)
+///
+void MgCryptographyUtil::CombineStrings(const string& inStr1,
+    const string& inStr2, string& outStr)
 {
     outStr  = inStr1;
     outStr += sm_stringDelimiter;
     outStr += inStr2;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Splits the specified string to two.
 /// The input string must contain the reserved sm_stringDelimiter.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::SplitStrings(const wstring& inStr,
-    wstring& outStr1, wstring& outStr2)
+///
+void MgCryptographyUtil::SplitStrings(const string& inStr,
+    string& outStr1, string& outStr2)
 {
     if (inStr.empty())
     {
         throw ecNullArgument;
     }
 
-    wstring::size_type i = inStr.find(sm_stringDelimiter);
+    string::size_type i = inStr.find(sm_stringDelimiter);
 
-    if (wstring::npos == i)
+    if (string::npos == i)
     {
         throw ecInvalidArgument;
     }
@@ -94,9 +86,9 @@ void MgCryptographyUtil::SplitStrings(const wstring& inStr,
     {
         outStr1 = inStr.substr(0, i);
 
-        wstring::size_type j = inStr.find(sm_stringDelimiter, ++i);
+        string::size_type j = inStr.find(sm_stringDelimiter, ++i);
 
-        if (wstring::npos == j)
+        if (string::npos == j)
         {
             outStr2 = inStr.substr(i);
         }
@@ -107,14 +99,12 @@ void MgCryptographyUtil::SplitStrings(const wstring& inStr,
     }
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Generates an asymmetric key.
 /// This key is simply the current coordinated universal time (UTC).
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::GenerateCryptographKey(wstring& key)
+///
+void MgCryptographyUtil::GenerateCryptographKey(string& key)
 {
     // Get the current local time.
 
@@ -132,10 +122,10 @@ void MgCryptographyUtil::GenerateCryptographKey(wstring& key)
 
 
     const size_t size = sm_maxKeyLength + 1;
-    wchar_t buf[size];
+    char buf[size];
     ::memset(buf, 0, sizeof(buf));
 
-    if (sm_minKeyLength != ::wcsftime(buf, size, L"%Y%m%d%H%M%S", utcTime))
+    if (sm_minKeyLength != ::strftime(buf, size, "%Y%m%d%H%M%S", utcTime))
     {
         throw ecDateTimeError;
     }
@@ -144,13 +134,11 @@ void MgCryptographyUtil::GenerateCryptographKey(wstring& key)
     assert(key.length() == sm_minKeyLength);
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Validates an asymmetric key.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::ValidateCryptographKey(const wstring& key)
+///
+void MgCryptographyUtil::ValidateCryptographKey(const string& key)
 {
     // TODO: We could do more security checks here.
 
@@ -164,19 +152,17 @@ void MgCryptographyUtil::ValidateCryptographKey(const wstring& key)
     {
         throw ecLengthError;
     }
-    else if (wstring::npos != key.find_first_not_of(MG_CRYPTOMAN_DEC_CHARS))
+    else if (string::npos != key.find_first_not_of(MG_CRYPTOGRAPHY_DEC_CHARS))
     {
         throw ecInvalidArgument;
     }
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Converts a binary string to a hexadecimal string.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::BinToHex(const wstring& binStr, wstring& hexStr)
+///
+void MgCryptographyUtil::BinToHex(const string& binStr, string& hexStr)
 {
     int binStrLen = (int)binStr.length();
 
@@ -189,43 +175,39 @@ void MgCryptographyUtil::BinToHex(const wstring& binStr, wstring& hexStr)
 
         for (int j = 1; j >= 0; --j)
         {
-            hexStr += MG_CRYPTOMAN_HEX_CHARS[(num >> j*4) & 0xF];
+            hexStr += MG_CRYPTOGRAPHY_HEX_CHARS[(num >> j*4) & 0xF];
         }
     }
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Converts a hexadecimal string to a binary string.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::HexToBin(const wstring& hexStr, wstring& binStr)
+///
+void MgCryptographyUtil::HexToBin(const string& hexStr, string& binStr)
 {
     int binStrLen = (int)hexStr.length() / 2;
 
     binStr.clear();
     binStr.reserve(binStrLen + 1);
 
-    const wchar_t* buf = hexStr.c_str();
+    const char* buf = hexStr.c_str();
 
     for (int i = 0; i < binStrLen; ++i)
     {
         int hex;
 
-        ::swscanf(buf+i*2, L"%2x", &hex);
-        binStr += wchar_t(hex);
+        ::sscanf(buf+i*2, "%2x", &hex);
+        binStr += char(hex);
     }
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts a string using transposition.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::EncryptStringByTransposition(const wstring& inStr,
-    wstring& outStr, int numOfColumn)
+///
+void MgCryptographyUtil::EncryptStringByTransposition(const string& inStr,
+    string& outStr, int numOfColumn)
 {
     int inStrLen = (int)inStr.length();
     int numOfRow = (int)::ceil((double)inStrLen / (double)numOfColumn);
@@ -247,14 +229,12 @@ void MgCryptographyUtil::EncryptStringByTransposition(const wstring& inStr,
     }
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Decrypts a string using transposition.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::DecryptStringByTransposition(const wstring& inStr,
-    wstring& outStr, int numOfColumn)
+///
+void MgCryptographyUtil::DecryptStringByTransposition(const string& inStr,
+    string& outStr, int numOfColumn)
 {
     int inStrLen = (int)inStr.length();
     int numOfRow = (int)::ceil((double)inStrLen / (double)numOfColumn);
@@ -290,19 +270,17 @@ void MgCryptographyUtil::DecryptStringByTransposition(const wstring& inStr,
     }
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts a string using transposition.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::EncryptStringByTransposition(const wstring& inStr,
-    wstring& outStr)
+///
+void MgCryptographyUtil::EncryptStringByTransposition(const string& inStr,
+    string& outStr)
 {
-    wstring tmpStr;
+    string tmpStr;
     int inStrLen = (int)inStr.length();
 
-    int numOfColumn = MG_CRYPTOMAN_MIN_COLUMN_NUMBER;
+    int numOfColumn = MG_CRYPTOGRAPHY_MIN_COLUMN_NUMBER;
     EncryptStringByTransposition(inStr, tmpStr, numOfColumn);
 
     numOfColumn += inStrLen % 6;
@@ -310,19 +288,17 @@ void MgCryptographyUtil::EncryptStringByTransposition(const wstring& inStr,
     assert(inStr.length() == outStr.length());
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Decrypts a string using transposition.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::DecryptStringByTransposition(const wstring& inStr,
-    wstring& outStr)
+///
+void MgCryptographyUtil::DecryptStringByTransposition(const string& inStr,
+    string& outStr)
 {
-    wstring tmpStr;
+    string tmpStr;
     int inStrLen = (int)inStr.length();
 
-    int numOfColumn = MG_CRYPTOMAN_MIN_COLUMN_NUMBER + inStrLen % 6;
+    int numOfColumn = MG_CRYPTOGRAPHY_MIN_COLUMN_NUMBER + inStrLen % 6;
     DecryptStringByTransposition(inStr, tmpStr, numOfColumn);
 
     numOfColumn -= inStrLen % 6;
@@ -330,32 +306,28 @@ void MgCryptographyUtil::DecryptStringByTransposition(const wstring& inStr,
     assert(inStr.length() == outStr.length());
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts a string using the one-time-pad algorithm.
-///
 /// The asymmetric key is normally between 5 - 10 characters.
-///
 /// The cipher text MUST be at least twice the size of the plain text.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::EncryptStringWithKey(const wstring& inStr,
-    wstring& outStr, const wstring& key)
+///
+void MgCryptographyUtil::EncryptStringWithKey(const string& inStr,
+    string& outStr, const string& key)
 {
-    wchar_t prevChar = MG_CRYPTOMAN_MAGIC_NUMBER_1;
-    wchar_t currChar;
+    char prevChar = MG_CRYPTOGRAPHY_MAGIC_NUMBER_1;
+    char currChar;
     int keyIdx = 0;
     int keyLen = (int)key.length();
     int outStrLen = (int)inStr.length();
-    wstring tmpStr;
+    string tmpStr;
 
     tmpStr.reserve(outStrLen + 1);
 
     for (int i = 0; i < outStrLen; ++i)
     {
         currChar = inStr[i];
-        tmpStr += wchar_t(currChar ^ key[keyIdx] ^ prevChar ^ ((i / MG_CRYPTOMAN_MAGIC_NUMBER_2) % 255));
+        tmpStr += char(currChar ^ key[keyIdx] ^ prevChar ^ ((i / MG_CRYPTOGRAPHY_MAGIC_NUMBER_2) % 255));
         prevChar = currChar;
 
         ++keyIdx;
@@ -370,25 +342,21 @@ void MgCryptographyUtil::EncryptStringWithKey(const wstring& inStr,
     assert((inStr.length() * 2) == outStr.length());
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Decrypts a string using the one-time-pad algorithm.
-///
 /// The asymmetric key is normally between 5 - 10 characters.
-///
 /// The cipher text MUST be at least twice the size of the plain text.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::DecryptStringWithKey(const wstring& inStr,
-    wstring& outStr, const wstring& key)
+///
+void MgCryptographyUtil::DecryptStringWithKey(const string& inStr,
+    string& outStr, const string& key)
 {
-    wchar_t prevChar = MG_CRYPTOMAN_MAGIC_NUMBER_1;
-    wchar_t currChar;
+    char prevChar = MG_CRYPTOGRAPHY_MAGIC_NUMBER_1;
+    char currChar;
     int keyIdx = 0;
     int keyLen = (int)key.length();
     int outStrLen = (int)inStr.length() / 2;
-    wstring tmpStr;
+    string tmpStr;
 
     HexToBin(inStr, tmpStr);
 
@@ -398,7 +366,7 @@ void MgCryptographyUtil::DecryptStringWithKey(const wstring& inStr,
     for (int i = 0; i < outStrLen; ++i)
     {
         currChar = tmpStr[i];
-        outStr += wchar_t(currChar ^ key[keyIdx] ^ prevChar ^ ((i / MG_CRYPTOMAN_MAGIC_NUMBER_2) % 255));
+        outStr += char(currChar ^ key[keyIdx] ^ prevChar ^ ((i / MG_CRYPTOGRAPHY_MAGIC_NUMBER_2) % 255));
         prevChar = outStr[i];
 
         ++keyIdx;
@@ -412,34 +380,32 @@ void MgCryptographyUtil::DecryptStringWithKey(const wstring& inStr,
     assert(inStr.length() == (outStr.length() * 2));
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts the specified strings using an asymmetric key and transposition.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::EncryptStrings(const wstring& plainText1,
-    const wstring& plainText2, wstring& cipherText, const wstring& reservedChars)
+///
+void MgCryptographyUtil::EncryptStrings(const string& plainText1,
+    const string& plainText2, string& cipherText, const string& reservedChars)
 {
     try
     {
         // Validate arguments.
 
-        if (wstring::npos != plainText1.find_first_of(reservedChars) ||
-            wstring::npos != plainText2.find_first_of(reservedChars))
+        if (string::npos != plainText1.find_first_of(reservedChars) ||
+            string::npos != plainText2.find_first_of(reservedChars))
         {
             throw ecInvalidArgument;
         }
 
         // Generate a public key.
 
-        wstring publicKey;
+        string publicKey;
 
         GenerateCryptographKey(publicKey);
 
         // Encrypt the string using a public key.
 
-        wstring tmpStr1, tmpStr2;
+        string tmpStr1, tmpStr2;
 
         CombineStrings(plainText1, plainText2, tmpStr1);
         EncryptStringWithKey(tmpStr1, tmpStr2, publicKey);
@@ -447,7 +413,7 @@ void MgCryptographyUtil::EncryptStrings(const wstring& plainText1,
         // Encrypt the string using a private key.
 
         CombineStrings(tmpStr2, publicKey, tmpStr1);
-        EncryptStringWithKey(tmpStr1, tmpStr2, MG_PRIVATE_KEY);
+        EncryptStringWithKey(tmpStr1, tmpStr2, MG_CRYPTOGRAPHY_PRIVATE_KEY);
 
         // Encrypt the string using transposition.
 
@@ -463,14 +429,12 @@ void MgCryptographyUtil::EncryptStrings(const wstring& plainText1,
     }
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Decrypts the specified strings using an asymmetric key and transposition.
-/// </summary>
-///----------------------------------------------------------------------------
-
-void MgCryptographyUtil::DecryptStrings(const wstring& cipherText,
-    wstring& plainText1, wstring& plainText2, bool validateKey)
+///
+void MgCryptographyUtil::DecryptStrings(const string& cipherText,
+    string& plainText1, string& plainText2, bool validateKey)
 {
     try
     {
@@ -483,17 +447,17 @@ void MgCryptographyUtil::DecryptStrings(const wstring& cipherText,
 
         // Decrypt the string using transposition.
 
-        wstring tmpStr1;
+        string tmpStr1;
 
         DecryptStringByTransposition(cipherText, tmpStr1);
 
         // Decrypt the string using a private key.
 
-        wstring tmpStr2;
+        string tmpStr2;
 
-        DecryptStringWithKey(tmpStr1, tmpStr2, MG_PRIVATE_KEY);
+        DecryptStringWithKey(tmpStr1, tmpStr2, MG_CRYPTOGRAPHY_PRIVATE_KEY);
 
-        wstring publicKey;
+        string publicKey;
 
         SplitStrings(tmpStr2, tmpStr1, publicKey);
 
@@ -518,28 +482,24 @@ void MgCryptographyUtil::DecryptStrings(const wstring& cipherText,
     }
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Determines if the specified string is decryptable.
-/// </summary>
 ///
-/// <param name="str">
+/// \param str
 /// String to be checked.
-/// </param>
 ///
-/// <returns>
-/// \Returns true if the specified string is decryptable, false otherwise.
-/// </returns>
-///----------------------------------------------------------------------------
-
-bool MgCryptographyUtil::IsStringDecryptable(const wstring& str) const
+/// \return
+/// Returns true if the specified string is decryptable, false otherwise.
+///
+bool MgCryptographyUtil::IsStringDecryptable(const string& str) const
 {
     bool decryptable = true;
 
     if (str.empty()
         || str.length() < sm_minCipherTextLength
         || 0 != (str.length() % 2)
-        || wstring::npos != str.find_first_not_of(MG_CRYPTOMAN_HEX_CHARS))
+        || string::npos != str.find_first_not_of(MG_CRYPTOGRAPHY_HEX_CHARS))
     {
         decryptable = false;
     }
@@ -547,21 +507,17 @@ bool MgCryptographyUtil::IsStringDecryptable(const wstring& str) const
     return decryptable;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Determines if the specified string is encrypted.
-/// </summary>
 ///
-/// <param name="str">
+/// \param str
 /// String to be checked.
-/// </param>
 ///
-/// <returns>
-/// \Returns true if the specified string is encrypted, false otherwise.
-/// </returns>
-///----------------------------------------------------------------------------
-
-bool MgCryptographyUtil::IsStringEncrypted(const wstring& str) const
+/// \return
+/// Returns true if the specified string is encrypted, false otherwise.
+///
+bool MgCryptographyUtil::IsStringEncrypted(const string& str) const
 {
     // Perform the validation by checking if the string is decryptable.
 
@@ -569,7 +525,7 @@ bool MgCryptographyUtil::IsStringEncrypted(const wstring& str) const
 
     try
     {
-        wstring plainText1, plainText2;
+        string plainText1, plainText2;
 
         const_cast<MgCryptographyUtil*>(this)->DecryptStrings(str, plainText1, plainText2);
 
@@ -582,119 +538,99 @@ bool MgCryptographyUtil::IsStringEncrypted(const wstring& str) const
     return encrypted;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts credentials.
-/// </summary>
 ///
-/// <param name="username">
+/// \param username
 /// Username to be encrypted.
-/// </param>
-/// <param name="password">
+/// \param password
 /// Password to be encrypted.
-/// </param>
-/// <param name="credentials">
+/// \param credentials
 /// Encrypted credentials.
-/// </param>
 ///
 /// EXCEPTIONS:
-/// NullArgument
-/// InvalidArgument
-/// LengthError
-/// EncryptionError
-///----------------------------------------------------------------------------
-
+/// ecNullArgument
+/// ecInvalidArgument
+/// ecLengthError
+/// ecEncryptionError
+///
 void MgCryptographyUtil::EncryptCredentials(
-    const wstring& username, const wstring& password, wstring& credentials)
+    const string& username, const string& password, string& credentials)
 {
     EncryptStrings(username, password, credentials, sm_reservedCharactersForCredentials);
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Decrypts credentials.
-/// </summary>
 ///
-/// <param name="credentials">
+/// \param credentials
 /// Credentials to be decrypted.
-/// </param>
-/// <param name="username">
+/// \param username
 /// Decrypted username.
-/// </param>
-/// <param name="password">
+/// \param password
 /// Decrypted password.
-/// </param>
-/// <param name="validateKey">
+/// \param validateKey
 /// Flag to determine whether or not the cryptography key should be validated.
-/// </param>
 ///
 /// EXCEPTIONS:
-/// NullArgument
-/// InvalidArgument
-/// LengthError
-/// DecryptionError
-///----------------------------------------------------------------------------
-
+/// ecNullArgument
+/// ecInvalidArgument
+/// ecLengthError
+/// ecDecryptionError
+///
 void MgCryptographyUtil::DecryptCredentials(
-    const wstring& credentials, wstring& username, wstring& password,
+    const string& credentials, string& username, string& password,
     bool validateKey)
 {
     DecryptStrings(credentials, username, password, validateKey);
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts a username.
-/// </summary>
 ///
-/// <param name="plainText">
+/// \param plainText
 /// Username to be encrypted.
-/// </param>
-/// <param name="cipherText">
+/// \param cipherText
 /// Encrypted username.
-/// </param>
 ///
 /// EXCEPTIONS:
-/// NullArgument
-/// InvalidArgument
-/// LengthError
-/// EncryptionError
-///----------------------------------------------------------------------------
-
+/// ecNullArgument
+/// ecInvalidArgument
+/// ecLengthError
+/// ecEncryptionError
+///
 void MgCryptographyUtil::EncryptUsername(
-    const wstring& plainText, wstring& cipherText)
+    const string& plainText, string& cipherText)
 {
-    wstring dummyStr;
+    string dummyStr;
 
     EncryptCredentials(plainText, dummyStr, cipherText);
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Decrypts a username.
-/// </summary>
 ///
-/// <param name="cipherText">
+/// \param cipherText
 /// Username to be decrypted.
-/// </param>
-/// <param name="plainText">
+/// \param plainText
 /// Decrypted username.
-/// </param>
-/// <param name="validateKey">
+/// \param validateKey
 /// Flag to determine whether or not the cryptography key should be validated.
-/// </param>
 ///
 /// EXCEPTIONS:
-/// NullArgument
-/// InvalidArgument
-/// LengthError
-/// DecryptionError
-///----------------------------------------------------------------------------
-
+/// ecNullArgument
+/// ecInvalidArgument
+/// ecLengthError
+/// ecDecryptionError
+///
 void MgCryptographyUtil::DecryptUsername(
-    const wstring& cipherText, wstring& plainText, bool validateKey)
+    const string& cipherText, string& plainText, bool validateKey)
 {
-    wstring dummyStr;
+    string dummyStr;
 
     DecryptCredentials(cipherText, plainText, dummyStr, validateKey);
 
@@ -704,59 +640,50 @@ void MgCryptographyUtil::DecryptUsername(
     }
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts a password.
-/// </summary>
 ///
-/// <param name="plainText">
+/// \param plainText
 /// Password to be encrypted.
-/// </param>
-/// <param name="cipherText">
+/// \param cipherText
 /// Encrypted password.
-/// </param>
 ///
 /// EXCEPTIONS:
-/// NullArgument
-/// InvalidArgument
-/// LengthError
-/// EncryptionError
-///----------------------------------------------------------------------------
-
+/// ecNullArgument
+/// ecInvalidArgument
+/// ecLengthError
+/// ecEncryptionError
+///
 void MgCryptographyUtil::EncryptPassword(
-    const wstring& plainText, wstring& cipherText)
+    const string& plainText, string& cipherText)
 {
-    wstring dummyStr;
+    string dummyStr;
 
     EncryptCredentials(dummyStr, plainText, cipherText);
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Decrypts a password.
-/// </summary>
 ///
-/// <param name="cipherText">
+/// \param cipherText
 /// Password to be decrypted.
-/// </param>
-/// <param name="plainText">
+/// \param plainText
 /// Decrypted password.
-/// </param>
-/// <param name="validateKey">
+/// \param validateKey
 /// Flag to determine whether or not the cryptography key should be validated.
-/// </param>
 ///
 /// EXCEPTIONS:
-/// NullArgument
-/// InvalidArgument
-/// LengthError
-/// DecryptionError
-///----------------------------------------------------------------------------
-
+/// ecNullArgument
+/// ecInvalidArgument
+/// ecLengthError
+/// ecDecryptionError
+///
 void MgCryptographyUtil::DecryptPassword(
-    const wstring& cipherText, wstring& plainText, bool validateKey)
+    const string& cipherText, string& plainText, bool validateKey)
 {
-    wstring dummyStr;
+    string dummyStr;
 
     DecryptCredentials(cipherText, dummyStr, plainText, validateKey);
 
@@ -766,59 +693,50 @@ void MgCryptographyUtil::DecryptPassword(
     }
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts a string.
-/// </summary>
 ///
-/// <param name="plainText">
+/// \param plainText
 /// String to be encrypted.
-/// </param>
-/// <param name="cipherText">
+/// \param cipherText
 /// Encrypted string.
-/// </param>
 ///
 /// EXCEPTIONS:
-/// NullArgument
-/// InvalidArgument
-/// LengthError
-/// EncryptionError
-///----------------------------------------------------------------------------
-
+/// ecNullArgument
+/// ecInvalidArgument
+/// ecLengthError
+/// ecEncryptionError
+///
 void MgCryptographyUtil::EncryptString(
-    const wstring& plainText, wstring& cipherText)
+    const string& plainText, string& cipherText)
 {
-    wstring dummyStr;
+    string dummyStr;
 
     EncryptStrings(plainText, dummyStr, cipherText, sm_reservedCharactersForStrings);
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Decrypts a string.
-/// </summary>
 ///
-/// <param name="cipherText">
+/// \param cipherText
 /// String to be decrypted.
-/// </param>
-/// <param name="plainText">
+/// \param plainText
 /// Decrypted string.
-/// </param>
-/// <param name="validateKey">
+/// \param validateKey
 /// Flag to determine whether or not the cryptography key should be validated.
-/// </param>
 ///
 /// EXCEPTIONS:
-/// NullArgument
-/// InvalidArgument
-/// LengthError
-/// DecryptionError
-///----------------------------------------------------------------------------
-
+/// ecNullArgument
+/// ecInvalidArgument
+/// ecLengthError
+/// ecDecryptionError
+///
 void MgCryptographyUtil::DecryptString(
-    const wstring& cipherText, wstring& plainText, bool validateKey)
+    const string& cipherText, string& plainText, bool validateKey)
 {
-    wstring dummyStr;
+    string dummyStr;
 
     DecryptStrings(cipherText, plainText, dummyStr, validateKey);
 

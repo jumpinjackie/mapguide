@@ -495,8 +495,9 @@ MgByteReader* MgProxyResourceService::GetResourceContent(
         && byteReader != NULL)
     {
         STRING mimeType = byteReader->GetByteSource()->GetMimeType();
-        STRING cipherText = byteReader->ToString();
-        STRING plainText;
+        string cipherText, plainText;
+
+        byteReader->ToStringUtf8(cipherText);
 
         MG_CRYPTOGRAPHY_TRY()
 
@@ -506,10 +507,8 @@ MgByteReader* MgProxyResourceService::GetResourceContent(
 
         MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgProxyResourceService.GetResourceContent")
 
-        string document;
-        MgUtil::WideCharToMultiByte(plainText, document);
         Ptr<MgByteSource> byteSource = new MgByteSource(
-            (unsigned char*)document.c_str(), (INT32)document.length());
+            (BYTE_ARRAY_IN)plainText.c_str(), (INT32)plainText.length());
 
         byteSource->SetMimeType(mimeType);
         byteReader = byteSource->GetReader();
@@ -822,8 +821,9 @@ MgByteReader* MgProxyResourceService::GetResourceData(
         && byteReader != NULL)
     {
         STRING mimeType = byteReader->GetByteSource()->GetMimeType();
-        STRING cipherText = byteReader->ToString();
-        STRING plainText;
+        string cipherText, plainText;
+
+        byteReader->ToStringUtf8(cipherText);
 
         MG_CRYPTOGRAPHY_TRY()
 
@@ -833,10 +833,8 @@ MgByteReader* MgProxyResourceService::GetResourceData(
 
         MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgProxyResourceService.GetResourceData")
 
-        string document;
-        MgUtil::WideCharToMultiByte(plainText, document);
         Ptr<MgByteSource> byteSource = new MgByteSource(
-            (unsigned char*)document.c_str(), (INT32)document.length());
+            (BYTE_ARRAY_IN)plainText.c_str(), (INT32)plainText.length());
 
         byteSource->SetMimeType(mimeType);
         byteReader = byteSource->GetReader();

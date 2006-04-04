@@ -27,49 +27,50 @@ class MgTagManager
 {
 // Constructors/Destructor
 
-    public:
+public:
 
-        MgTagManager();
-        MgTagManager(CREFSTRING tags);
-        virtual ~MgTagManager();
+    MgTagManager();
+    MgTagManager(CREFSTRING tags);
+    virtual ~MgTagManager();
 
 // Methods
 
-    public:
+public:
 
-        static bool IsReservedTag(CREFSTRING name);
-        static void ValidateTag(CREFSTRING name, CREFSTRING type);
+    static bool IsReservedTag(CREFSTRING name);
+    static void ValidateTag(CREFSTRING name, CREFSTRING type);
 
-        MgTagMap& GetTagMap();
+    MgTagMap& GetTagMap();
 
-        void ParseTags(CREFSTRING tags);
-        STRING GetTags() const;
-        int SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
-            string& doc);
+    void ParseTags(CREFSTRING tags);
+    STRING GetTags() const;
+    int SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
+        string& doc);
 
-        bool GetTag(CREFSTRING name, MgTagInfo& tagInfo,
-            bool strict = true) const;
-        void SetTag(CREFSTRING name, CREFSTRING type, CREFSTRING value,
-            CREFSTRING mimeType);
-        void DeleteTag(CREFSTRING name, MgTagInfo& tagInfo);
-        void RenameTag(CREFSTRING oldName, CREFSTRING newName);
+    bool GetTag(CREFSTRING name, MgTagInfo& tagInfo,
+        bool strict = true) const;
+    void SetTag(CREFSTRING name, CREFSTRING type, CREFSTRING value,
+        CREFSTRING mimeType);
+    void DeleteTag(CREFSTRING name, MgTagInfo& tagInfo);
+    void RenameTag(CREFSTRING oldName, CREFSTRING newName);
 
-    protected:
+protected:
 
-        int SubstituteTag(CREFSTRING name, CREFSTRING value, string& doc);
-        void AddTag(CREFSTRING name, const MgTagInfo& tagInfo);
+    int SubstituteTag(const string& name, const string& value, string& doc);
+    int SubstituteTag(CREFSTRING name, CREFSTRING value, string& doc);
+    void AddTag(CREFSTRING name, const MgTagInfo& tagInfo);
 
-    private:
+private:
 
-        void CheckTagString(CREFSTRING str);
-        void CheckTagString(const string& doc, CREFSTRING tag);
-        void CheckTagStrings(const string& doc);
+    void CheckTagString(CREFSTRING str);
+    void CheckTagString(const string& doc, CREFSTRING tag);
+    void CheckTagStrings(const string& doc);
 
 // Data Members
 
-    private:
+private:
 
-        MgTagMap m_tagMap;
+    MgTagMap m_tagMap;
 };
 
 // Inline Methods

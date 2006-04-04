@@ -73,7 +73,11 @@ void MgOpAddUser::Execute()
             MG_CRYPTOGRAPHY_TRY()
 
             MgCryptographyUtil cryptoUtil;
-            cryptoUtil.DecryptPassword(encryptedPassword, password);
+            string decryptedPassword;
+
+            cryptoUtil.DecryptPassword(MgUtil::WideCharToMultiByte(encryptedPassword), 
+                decryptedPassword);
+            MgUtil::MultiByteToWideChar(decryptedPassword, password);
 
             MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgOpAddUser.Execute")
         }
