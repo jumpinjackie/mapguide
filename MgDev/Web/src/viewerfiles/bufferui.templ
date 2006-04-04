@@ -52,13 +52,13 @@
         var fbcolor = "ffffff";
         var transparent = 1;
         var pickClr;
-      
+
         function InitDocument()
         {
-            document.getElementById("distance").focus();   
+            document.getElementById("distance").focus();
             var w = msie? document.body.clientWidth: window.innerWidth - 40;
             document.getElementById("layers").style.width = (w > 200? 200: w) + "px";
-            FillLayerList();            
+            FillLayerList();
         }
 
         function FillLayerList()
@@ -82,7 +82,7 @@
                 list.options[0] = new Option("__#BUFFERNOLAYER#__");
             document.getElementById("Done").disabled = layers.length == 0;
         }
-        
+
         function UpdateColors()
         {
             var elt;
@@ -101,9 +101,8 @@
             elt = document.getElementById("fbcolorswtach").style;
             elt.backgroundColor = transparent? "#ffffff": "#" + fbcolor;
             elt.color = transparent? "black": "#" + fbcolor;
-            
         }
-        
+
         function Validate()
         {
             var field = document.getElementById("distance");
@@ -132,7 +131,7 @@
             UpdateColors();
             return true;
         }
-        
+
         function GetSelection()
         {
             var sel = GetParent().GetMapFrame().GetSelectionXML();
@@ -172,7 +171,7 @@
             else
                 return parent.parent;
         }
-        
+
         function PickColor(what, allowTransparency, transparent)
         {
             var clr;
@@ -188,7 +187,7 @@
             w = window.open("%s?LOCALE=%s&CLR=" + clr + "&ALLOWTRANS=" + (allowTransparency? "1":"0") + "&TRANS=" + (transparent?"1":"0"), "colorPicker", "toolbar=no,status=no,width=355,height=" + height);
             w.focus();
         }
-        
+
         function OnColorPicked(clr, trans)
         {
             if(pickClr == 0)
@@ -202,12 +201,11 @@
             }
             UpdateColors();
         }
-        
+
         function RefreshLayers()
         {
             FillLayerList();
         }
-        
     </script>
 </head>
 <body onload="InitDocument()" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5 bottommargin=5 rightmargin=5>
@@ -243,10 +241,10 @@
         <tr><td><input type="button" value="__#BUTTONREFRESH#__" style="width: 70px;" class="Ctrl" onclick="RefreshLayers()"></td></tr>
         <tr><td height="6"></td></tr>
         <tr><td>__#BUFFERNAME#__</td></tr>
-        <tr><td><input type="edit" name="BUFFER" id="buffer" value="Buffer 1" size="25" class="Ctrl"></td></tr>
+        <tr><td><input type="edit" name="BUFFER" id="buffer" value="__#BUFFERNAMETEXT#__" size="25" class="Ctrl"></td></tr>
         <tr><td><input type="checkbox" checked name="MERGE" class="Ctrl">__#BUFFERMERGE#__</td></tr>
         <tr><td height="6"></td></tr>
-        
+
         <tr><td>
           <table cellspacing=0 cellpadding=0 border=0 width="100%%" class="RegText">
           <tr><td valign=top>
@@ -315,7 +313,7 @@
           </td></tr>
           </table>
         </td></tr>
-        
+
         <tr><td height="6"><hr></td></tr>
         <tr><td><input id="Done" type="submit" value="__#BUTTONDONE#__" style="width: 70px;" class="Ctrl">&nbsp;<input id="Cancel" type="submit" value="__#BUTTONCANCEL#__" style="width: 70px;" class="Ctrl"></td></tr>
         <tr><td height="6"></td></tr>
@@ -328,8 +326,8 @@
           </ul>
         </div>
         </td></tr>
-        </table>    
-        
+        </table>
+
     <input type="hidden" name="MAPNAME" value="%s">
     <input type="hidden" name="SESSION" value="%s">
     <input type="hidden" name="POPUP" value="%s">
