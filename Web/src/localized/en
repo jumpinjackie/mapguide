@@ -87,6 +87,7 @@ BUFFERDISTANCE                  = Distance around features:
 BUFFERLAYERS                    = Layers to include in the buffer:
 BUFFERNOLAYER                   = <No layer selected>
 BUFFERNAME                      = Name for the resulting buffer layer:
+BUFFERNAMETEXT                  = Buffer 1
 BUFFERMERGE                     = Merge buffer areas
 BUFFERFILLSTYLE                 = &nbsp;Fill style
 BUFFERFILLPATTERN               = Fill pattern:
