@@ -287,13 +287,13 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     {
                         output = output + String.format("var %s = new GroupItem(\"%s\", %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
                                                            new Object[] {groupName,
-                                                           rtLayerGroup.GetLegendLabel(),
+                                                           StrEscape(rtLayerGroup.GetLegendLabel()),
                                                            rtLayerGroup.GetExpandInLegend()? "true": "false",
                                                            parentName,
                                                            rtLayerGroup.GetVisible()? "true": "false",
                                                            rtLayerGroup.GetDisplayInLegend()? "true": "false",
                                                            rtLayerGroup.GetObjectId(),
-                                                           rtLayerGroup.GetName(),
+                                                           StrEscape(rtLayerGroup.GetName()),
                                                            rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMap? "true": "false"});
 
                     }
@@ -301,7 +301,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     {
                         output = output + String.format("var %s = new GroupSummary(\"%s\", \"%s\", %s, %s);\n",
                                                            new Object[] {groupName,
-                                                           rtLayerGroup.GetName(),
+                                                           StrEscape(rtLayerGroup.GetName()),
                                                            rtLayerGroup.GetObjectId(),
                                                            arrChildName,
                                                            parentName});
@@ -328,7 +328,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                         String objectId = rtLayer.GetObjectId();
                         output = output + String.format("var %s = new LayerItem(\"%s\", \"%s\", %s, %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
                                                            new Object[] {layerName,
-                                                           rtLayer.GetLegendLabel(),
+                                                           StrEscape(rtLayer.GetLegendLabel()),
                                                            rtLayer.GetName(),
                                                            rtLayer.GetExpandInLegend()? "true": "false",
                                                            parentName,
@@ -355,7 +355,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                         output = output + String.format("%s[%d] = new LayerSummary(\"%s\", \"%s\", \"%s\");\n",
                                                             new Object[] {container,
                                                             Integer.valueOf(i),
-                                                            rtLayer.GetName(),
+                                                            StrEscape(rtLayer.GetName()),
                                                             rtLayer.GetObjectId(),
                                                             rtLayer.GetLayerDefinition().ToString()});
                     }
@@ -451,8 +451,8 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
 
                         output = output + String.format("%s.children[%d] = new StyleItem(\"%s\", \"%s\", %d, %d);\n",
                                                     new Object[]{scaleRangeVarName, Integer.valueOf(styleIndex++),
-                                                    labelText.trim(),
-                                                    filterText.trim(),
+                                                    StrEscape(labelText.trim()),
+                                                    StrEscape(filterText.trim()),
                                                     ts+1,
                                                     catIndex++
                                                     });
@@ -494,4 +494,18 @@ InputStream ByteReaderToStream(MgByteReader byteReader) throws MgException
     }
     return stream;
 }
+
+String StrEscape(String str)
+{
+    return StrEscape(str, false);
+}
+
+String StrEscape(String str, boolean single)
+{
+    String org = single ? "'" : "\"";
+    String rep = single ? "\\\\'": "\\\\\"";
+
+    return str.replaceAll(org, rep);
+}
+
 %>
