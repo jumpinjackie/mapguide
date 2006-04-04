@@ -275,12 +275,10 @@ STRING MgTagManager::GetTags() const
     return tags;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Substitutes all the tags.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 int MgTagManager::SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
     string& doc)
 {
@@ -298,18 +296,20 @@ int MgTagManager::SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
 
     if (GetTag(MgResourceDataName::UserCredentials, tagInfo, false))
     {
-        STRING username, password;
-
         MG_CRYPTOGRAPHY_TRY()
 
         MgCryptographyUtil cryptoUtil;
-        cryptoUtil.DecryptCredentials(tagInfo.GetAttribute(
-            MgTagInfo::TokenValue), username, password);
+        string username, password;
+
+        cryptoUtil.DecryptCredentials(MgUtil::WideCharToMultiByte(
+            tagInfo.GetAttribute(MgTagInfo::TokenValue)), username, password);
+
+        count += SubstituteTag(MgUtil::WideCharToMultiByte(
+            MgResourceTag::Username), username, doc);
+        count += SubstituteTag(MgUtil::WideCharToMultiByte(
+            MgResourceTag::Password), password, doc);
 
         MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgTagManager.SubstituteTags")
-
-        count += SubstituteTag(MgResourceTag::Username, username, doc);
-        count += SubstituteTag(MgResourceTag::Password, password, doc);
     }
 
     count += SubstituteTag(MgResourceTag::LoginUsername,
@@ -322,31 +322,38 @@ int MgTagManager::SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
     return count;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Substitutes the tag.
-/// </summary>
-///----------------------------------------------------------------------------
-
-int MgTagManager::SubstituteTag(CREFSTRING name, CREFSTRING value, string& doc)
+///
+int MgTagManager::SubstituteTag(const string& name, const string& value, string& doc)
 {
     int count = 0;
+    size_t index;
+    size_t pos1 = name.length();
+    size_t pos2 = value.length();
+
+    while (string::npos != (index = doc.find(name)))
+    {
+        doc.replace(index, pos1, value, 0, pos2);
+        ++count;
+    }
+
+    return count;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Substitutes the tag.
+///
+int MgTagManager::SubstituteTag(CREFSTRING name, CREFSTRING value, string& doc)
+{
     string tagName, tagValue;
 
     MgUtil::WideCharToMultiByte(name, tagName);
     MgUtil::WideCharToMultiByte(value, tagValue);
 
-    size_t index;
-    size_t pos1 = tagName.length();
-    size_t pos2 = tagValue.length();
-
-    while (string::npos != (index = doc.find(tagName)))
-    {
-        doc.replace(index, pos1, tagValue, 0, pos2);
-        ++count;
-    }
-
-    return count;
+    return SubstituteTag(tagName, tagValue, doc);
 }
 
 ///----------------------------------------------------------------------------

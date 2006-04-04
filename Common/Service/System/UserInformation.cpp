@@ -359,7 +359,13 @@ void MgUserInformation::Deserialize(MgStream* stream)
         MG_CRYPTOGRAPHY_TRY()
 
         MgCryptographyUtil cryptoUtil;
-        cryptoUtil.DecryptCredentials(credentials, m_username, m_password);
+        string username, password;
+
+        cryptoUtil.DecryptCredentials(MgUtil::WideCharToMultiByte(credentials), 
+            username, password);
+
+        MgUtil::MultiByteToWideChar(username, m_username);
+        MgUtil::MultiByteToWideChar(password, m_password);
 
         MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgUserInformation.Deserialize")
     }

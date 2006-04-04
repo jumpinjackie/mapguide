@@ -74,12 +74,15 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
         MG_CRYPTOGRAPHY_TRY()
 
         MgCryptographyUtil cryptoUtil;
+        string cipherText, plainText;
 
-        cryptoUtil.DecryptString(partialConnString, decryptedPartialConnString);
+        MgUtil::WideCharToMultiByte(partialConnString, cipherText);
+        cryptoUtil.DecryptString(cipherText, plainText);
+        MgUtil::MultiByteToWideChar(plainText, decryptedPartialConnString);
 
         MG_CRYPTOGRAPHY_CATCH(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues")
 
-        if (cryptoException != NULL)
+        if (cryptographyException != NULL)
         {
             decryptedPartialConnString = partialConnString;
         }

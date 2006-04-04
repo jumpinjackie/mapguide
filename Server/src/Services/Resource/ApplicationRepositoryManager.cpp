@@ -1124,20 +1124,18 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceData(
 
         if (MgResourceDataName::UserCredentials == dataName)
         {
-            STRING username, password;
+            // For security purpose, only the decrypted username
+            // (no decrypted password) is returned.
 
             MG_CRYPTOGRAPHY_TRY()
 
             MgCryptographyUtil cryptoUtil;
-            cryptoUtil.DecryptCredentials(tagInfo.GetAttribute(
-                MgTagInfo::TokenValue), username, password);
+            string password;
+
+            cryptoUtil.DecryptCredentials(MgUtil::WideCharToMultiByte(
+                tagInfo.GetAttribute(MgTagInfo::TokenValue)), data, password);
 
             MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgApplicationRepositoryManager.GetResourceData")
-
-            // For security purpose, only the decrypted username
-            // (no decrypted password) is returned.
-
-            MgUtil::WideCharToMultiByte(username, data);
         }
         else
         {
@@ -1146,7 +1144,7 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceData(
         }
 
         Ptr<MgByteSource> byteSource = new MgByteSource(
-            (unsigned char*)data.c_str(), (INT32)data.length());
+            (BYTE_ARRAY_IN)data.c_str(), (INT32)data.length());
 
         byteSource->SetMimeType(mimeType);
         byteReader = byteSource->GetReader();
@@ -1173,15 +1171,15 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceData(
 
         // Substitute all the tags.
 
-        string dataDoc;
+        string data;
 
-        byteReader->ToStringUtf8(dataDoc);
-        tagMan.SubstituteTags(dataBindingInfo, dataDoc);
+        byteReader->ToStringUtf8(data);
+        tagMan.SubstituteTags(dataBindingInfo, data);
 
         // Re-create a byte reader.
 
         Ptr<MgByteSource> byteSource = new MgByteSource(
-            (unsigned char*)dataDoc.c_str(), (INT32)dataDoc.length());
+            (BYTE_ARRAY_IN)data.c_str(), (INT32)data.length());
 
         byteSource->SetMimeType(mimeType);
         byteReader = byteSource->GetReader();

@@ -19,76 +19,62 @@
 #include "CryptographyManager.h"
 #include "CryptographyUtil.h"
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Constructs the object.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 MgCryptographyManager::MgCryptographyManager()
 {
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Destructs the object.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 MgCryptographyManager::~MgCryptographyManager()
 {
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Disposes the object.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 void MgCryptographyManager::Dispose()
 {
     delete this;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Returns the class ID.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 INT32 MgCryptographyManager::GetClassId()
 {
     return m_cls_id;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Determines if the specified string is decryptable.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 bool MgCryptographyManager::IsStringDecryptable(CREFSTRING str) const
 {
-    return m_cryptoUtil.IsStringDecryptable(str);
+    return m_cryptoUtil.IsStringDecryptable(MgUtil::WideCharToMultiByte(str));
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Determines if the specified string is encrypted.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 bool MgCryptographyManager::IsStringEncrypted(CREFSTRING str) const
 {
-    return m_cryptoUtil.IsStringEncrypted(str);
+    return m_cryptoUtil.IsStringEncrypted(MgUtil::WideCharToMultiByte(str));
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts credentials.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 STRING MgCryptographyManager::EncryptCredentials(CREFSTRING username,
     CREFSTRING password)
 {
@@ -96,64 +82,71 @@ STRING MgCryptographyManager::EncryptCredentials(CREFSTRING username,
 
     MG_CRYPTOGRAPHY_TRY()
 
-    m_cryptoUtil.EncryptCredentials(username, password, credentials);
+    string mbStr;
+
+    m_cryptoUtil.EncryptCredentials(MgUtil::WideCharToMultiByte(username), 
+        MgUtil::WideCharToMultiByte(password), mbStr);
+    MgUtil::MultiByteToWideChar(mbStr, credentials);
 
     MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgCryptographyManager.EncryptCredentials");
 
     return credentials;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts a string.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 STRING MgCryptographyManager::EncryptString(CREFSTRING plainText)
 {
     STRING cipherText;
 
     MG_CRYPTOGRAPHY_TRY()
 
-    m_cryptoUtil.EncryptString(plainText, cipherText);
+    string mbStr;
+
+    m_cryptoUtil.EncryptString(MgUtil::WideCharToMultiByte(plainText), mbStr);
+    MgUtil::MultiByteToWideChar(mbStr, cipherText);
 
     MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgCryptographyManager.EncryptString")
 
     return cipherText;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts a username.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 STRING MgCryptographyManager::EncryptUsername(CREFSTRING username)
 {
     STRING encryptedUsername;
 
     MG_CRYPTOGRAPHY_TRY()
 
-    m_cryptoUtil.EncryptUsername(username, encryptedUsername);
+    string mbStr;
+
+    m_cryptoUtil.EncryptUsername(MgUtil::WideCharToMultiByte(username), mbStr);
+    MgUtil::MultiByteToWideChar(mbStr, encryptedUsername);
 
     MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgCryptographyManager.EncryptUsername")
 
     return encryptedUsername;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Encrypts a password.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///
 STRING MgCryptographyManager::EncryptPassword(CREFSTRING password)
 {
     STRING encryptedPassword;
 
     MG_CRYPTOGRAPHY_TRY()
 
-    m_cryptoUtil.EncryptPassword(password, encryptedPassword);
+    string mbStr;
+
+    m_cryptoUtil.EncryptPassword(MgUtil::WideCharToMultiByte(password), mbStr);
+    MgUtil::MultiByteToWideChar(mbStr, encryptedPassword);
 
     MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgCryptographyManager.EncryptPassword")
 
