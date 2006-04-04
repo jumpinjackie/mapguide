@@ -68,8 +68,6 @@
 #include "ace/Process_Manager.h"
 #include "ace/Date_Time.h"
 
-class MgClientHandler;
-
 #include "Net/PacketStructure.h"
 #include "Net/StreamData.h"
 #include "Net/StreamParser.h"

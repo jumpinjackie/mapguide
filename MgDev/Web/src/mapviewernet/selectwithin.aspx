@@ -35,7 +35,6 @@ String dwf = "";
 
 <%
     Response.Charset = "utf-8";
-    MapGuideApi.InitializeSockets();
 
     GetRequestParameters();
 
@@ -96,10 +95,6 @@ String dwf = "";
     catch(Exception ne)
     {
         return;
-    }
-    finally
-    {
-        MapGuideApi.TerminateSockets();
     }
 %>
 

@@ -29,7 +29,6 @@ private void Page_Load(object sender, System.EventArgs e)
     try
     {
         Response.Charset = "utf-8";
-        MapGuideApi.InitializeSockets();
 
         Response.Write("<b>MapGuide Server Admin Service Tests</b><p>");
 
@@ -131,10 +130,6 @@ private void Page_Load(object sender, System.EventArgs e)
     {
         Response.Write(mge.GetMessage());
         Response.Write(mge.GetDetails());
-    }
-    finally
-    {
-        MapGuideApi.TerminateSockets();
     }
 }
 </script>

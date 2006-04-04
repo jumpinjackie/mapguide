@@ -35,7 +35,7 @@ public:
     // Class methods
 private:
     IMgServiceHandler::MgProcessStatus ProcessMessage ( ACE_Message_Block* pMB );
-    IMgServiceHandler::MgProcessStatus ProcessOperation ( MgStreamData* pData );
+    IMgServiceHandler::MgProcessStatus ProcessOperation ( MgServerStreamData* pData );
 
     MgStreamHelper::MgStreamStatus CheckStream( MgStreamHelper* pHelper );
 

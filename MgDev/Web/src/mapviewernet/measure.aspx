@@ -46,7 +46,6 @@ String dataSource = "";
 
 <%
     Response.Charset = "utf-8";
-    MapGuideApi.InitializeSockets();
 
     try
     {
@@ -243,7 +242,6 @@ String dataSource = "";
     }
     finally
     {
-        MapGuideApi.TerminateSockets();
     }
 %>
 

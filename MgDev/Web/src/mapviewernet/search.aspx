@@ -55,7 +55,6 @@ String searchError;
     matchLimit = 0;
 
     Response.Charset = "utf-8";
-    MapGuideApi.InitializeSockets();
 
     try
     {
@@ -243,7 +242,6 @@ String searchError;
     }
     finally
     {
-        MapGuideApi.TerminateSockets();
     }
 %>
 

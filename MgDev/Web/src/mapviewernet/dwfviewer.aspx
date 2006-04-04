@@ -21,6 +21,4 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ Import Namespace="OSGeo.MapGuide" %>
 
 <script runat="server">int forDwf=1;</script>
-<% MapGuideApi.InitializeSockets();%>
 <!-- #Include File="mainframe.aspx -->
-<% MapGuideApi.TerminateSockets(); %>

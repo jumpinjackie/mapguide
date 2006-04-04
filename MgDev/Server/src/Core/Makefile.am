@@ -44,6 +44,7 @@ include_SOURCES = \
   RepositoryCheckpointEventHandler.cpp \
   ResourceChangeEventHandler.cpp \
   Server.cpp \
+  ServerStreamData.cpp \
   ServiceHandlerFactory.cpp \
   ServiceRegistrationEventHandler.cpp \
   SessionTimeoutEventHandler.cpp \
@@ -63,6 +64,7 @@ noinst_HEADERS = $(include_SOURCES) \
   RepositoryCheckpointEventHandler.h \
   ResourceChangeEventHandler.h \
   Server.h \
+  ServerStreamData.h \
   ServiceHandlerFactory.h \
   ServiceRegistrationEventHandler.h \
   SessionTimeoutEventHandler.h \

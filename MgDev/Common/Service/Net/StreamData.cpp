@@ -38,17 +38,14 @@
 //  <param name = "pStreamHelper">
 //  The MgStreamHelper object that handles data I/O for this stream.
 //  </param>
-MgStreamData::MgStreamData( MgClientHandler* pHandler, ACE_HANDLE handle,
-                            MgStreamHelper* pStreamHelper ) :
-    m_pClientHandler( pHandler ),
+MgStreamData::MgStreamData( ACE_HANDLE handle, MgStreamHelper* pStreamHelper ) :
     m_Handle( handle ),
-    m_pStreamHelper( pStreamHelper ),
+    m_pStreamHelper( SAFE_ADDREF(pStreamHelper) ),
     m_Version( 0 ),
     m_DataSize( 0 ),
     m_DataRead( 0 ),
     m_bError( false )
 {
-    ACE_ASSERT( pHandler != NULL );
     ACE_ASSERT( handle != 0 );
     ACE_ASSERT( pStreamHelper != NULL );
 };
@@ -61,18 +58,16 @@ MgStreamData::MgStreamData( MgClientHandler* pHandler, ACE_HANDLE handle,
 //  <param name = "copy">
 //  The MgStreamData objec to copy for the new object.
 //  </param>
-MgStreamData::MgStreamData( const MgStreamData &copy ) :
-    m_pClientHandler( copy.m_pClientHandler ),
-    m_Handle(copy.m_Handle ),
-    m_pStreamHelper( copy.m_pStreamHelper ),
+MgStreamData::MgStreamData( MgStreamData &copy ) :
+    m_Handle( copy.m_Handle ),
+    m_pStreamHelper( copy.m_pStreamHelper.Detach() ),
     m_Version( copy.m_Version ),
     m_DataSize( copy.m_DataSize ),
     m_DataRead( copy.m_DataRead ),
     m_bError( copy.m_bError )
 {
-    ACE_ASSERT( m_pClientHandler != NULL );
     ACE_ASSERT( m_Handle != 0 );
-    ACE_ASSERT( m_pStreamHelper != NULL );
+    ACE_ASSERT( NULL != (MgStreamHelper*) m_pStreamHelper );
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -145,19 +140,6 @@ void MgStreamData::SetVersion( UINT32 version )
     }
 
     return;
-};
-
-///////////////////////////////////////////////////////////////////////////
-//  <summary>
-//  Gets a pointer to the MgClientHandler that owns this stream.
-//  </summary>
-//
-//  <returns>
-//  Returns a pointer to a MgClientHandler.
-//  </returns>
-MgClientHandler*  MgStreamData::GetClientHandler()
-{
-    return m_pClientHandler;
 };
 
 ///////////////////////////////////////////////////////////////////////////

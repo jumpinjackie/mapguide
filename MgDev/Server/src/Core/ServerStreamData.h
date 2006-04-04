@@ -15,62 +15,39 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGSTREAMDATA_H_MG
-#define MGSTREAMDATA_H_MG
+#ifndef MGSERVERSTREAMDATA_H_MG
+#define MGSERVERSTREAMDATA_H_MG
 
-class MgStreamHelper;
+// Debugging code
+void LogStream(char* buf, ...);
 
 ///////////////////////////////////////////////////////////////////////////
 //  The StreamData class encapsulates the data pertaining to an
 //  input/output stream.
-class MG_SERVICE_API MgStreamData : public ACE_Data_Block
+class MgServerStreamData : public MgStreamData
 {
-    DECLARE_CLASSNAME(MgStreamData)
+    DECLARE_CLASSNAME(MgServerStreamData)
 
     ///////////////////////////////////////////////////////////////////////
     ///  Constructors/Destructors
     public:
 
-    MgStreamData( ACE_HANDLE handle, MgStreamHelper* pStreamHelper );
-    MgStreamData( MgStreamData & );
-    virtual ~MgStreamData();
+    MgServerStreamData( MgClientHandler* pHandle, ACE_HANDLE handle, MgStreamHelper* pStreamHelper );
+    MgServerStreamData( MgServerStreamData & );
+    virtual ~MgServerStreamData();
 
     ///////////////////////////////////////////////////////////////////////
     ///  Accessors
     public:
 
-    INT64 GetDataRead();
-    void SetDataRead( INT64 total );
-    INT64 GetDataSize();
-    void SetDataSize( INT64 size );
-    ACE_HANDLE GetHandle() const;
-    MgStreamHelper* GetStreamHelper();
-    UINT32 GetVersion();
-    void SetVersion( UINT32 version );
-    bool GetErrorFlag();
-    void SetErrorFlag( bool flag );
+    MgClientHandler* GetClientHandler();
 
     ///////////////////////////////////////////////////////////////////////
     ///  Member Variables
-    protected:
+    private:
 
-    ///  the underlyng handle of the input/output stream
-    const ACE_HANDLE    m_Handle;
-
-    ///  the StreamHelper objec that handles IO for the stream
-    Ptr<MgStreamHelper> m_pStreamHelper;
-
-    ///  the version of the stream behing read
-    UINT32          m_Version;
-
-    ///  the size of the data payload of the stream
-    INT64           m_DataSize;
-
-    ///  the number of bytes that have been read from the stream
-    INT64           m_DataRead;
-
-    ///  the current error state of the stream
-    bool                m_bError;
+    ///  the ClientHandler that is servicing this stream
+    Ptr<MgClientHandler> m_pClientHandler;
 };
 
 #endif  //  MGSTREAMDATA_H_MG

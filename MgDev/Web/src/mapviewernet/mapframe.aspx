@@ -82,7 +82,6 @@ String hlTgtName;
     {
         try
         {
-            MapGuideApi.InitializeSockets();
             InitializeWebTier();
 
             // create the map instance and store it with the session
@@ -182,10 +181,6 @@ String hlTgtName;
             Response.Write(mge.GetMessage());
             Response.Write("<br>");
             Response.Write(mge.GetDetails());
-        }
-        finally
-        {
-            MapGuideApi.TerminateSockets();
         }
    }
 

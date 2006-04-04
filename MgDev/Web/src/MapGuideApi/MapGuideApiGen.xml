@@ -31,14 +31,6 @@
 #endif
 #include "HttpHandlerApiDllExport.h"
 #include "HttpHandler.h"
-#ifdef PHP
-#else
-#ifdef _WIN32
-#include "InitSockets.h"
-#else
-#include "InitSockets.cpp"
-#endif
-#endif
 
 #if defined(PHP) || defined(JAVA)
 typedef std::wstring STRINGPARAM;

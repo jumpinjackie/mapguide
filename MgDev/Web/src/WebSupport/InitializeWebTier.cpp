@@ -29,6 +29,9 @@ void MgInitializeWebTierInternal(CREFSTRING configFile)
 
     if (m_bInitialized) return;
 
+    // Initialize ACE, this should enable sockets as well
+    ACE::init();
+
     // Load configuration file
     MgConfiguration* config = MgConfiguration::GetInstance();
 

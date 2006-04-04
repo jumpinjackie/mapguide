@@ -96,7 +96,3 @@
 // Global functions
 //
 void MgInitializeWebTier(STRINGPARAM configFile);
-
-// sockets functions are exposed for Java unit testing purpose, and will not be documented,
-void InitializeSockets();
-void TerminateSockets();

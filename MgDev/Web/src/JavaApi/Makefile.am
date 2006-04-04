@@ -2,8 +2,6 @@ AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = getclassid.code \
              catchall.code \
-             InitSockets.cpp \
-             InitSockets.h \
              java.i \
              JavaApi.rc \
              JavaApi.vcproj \
@@ -61,7 +59,6 @@ MgApi_wrap.cpp : \
     ../../../Common/MdfModel/UnicodeString.h \
     ../HttpHandler/HttpHandlerApiDllExport.h \
     ../HttpHandler/HttpHandler.h \
-    ./InitSockets.cpp \
     ../../../Common/Service/System/ClassId.h \
     ../../../Common/Service/System/Object.h \
     ../../../Common/Service/System/Disposable.h \

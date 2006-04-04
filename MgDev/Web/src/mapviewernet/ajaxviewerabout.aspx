@@ -38,7 +38,6 @@ String serverVersion = "##Unknown";
 
 <%
     Response.Charset = "utf-8";
-    MapGuideApi.InitializeSockets();
 
     try
     {
@@ -74,10 +73,6 @@ String serverVersion = "##Unknown";
     catch (Exception ne)
     {
         Response.Write("<p>Exception: " + ne.Message);
-    }
-    finally
-    {
-        MapGuideApi.TerminateSockets();
     }
 %>
 

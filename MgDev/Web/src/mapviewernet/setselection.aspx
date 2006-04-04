@@ -33,7 +33,6 @@ bool queryInfo = false;
 <%
     Response.Charset = "utf-8";
     Response.ContentType = "text/xml";
-    MapGuideApi.InitializeSockets();
 
     GetRequestParameters();
 
@@ -106,10 +105,6 @@ bool queryInfo = false;
     catch (MgException e)
     {
         Response.Write("\nSetSelection Exception: " + e.GetDetails());
-    }
-    finally
-    {
-        MapGuideApi.TerminateSockets();
     }
 %>
 

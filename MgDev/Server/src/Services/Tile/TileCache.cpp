@@ -61,6 +61,7 @@ MgByteReader* MgTileCache::Get(MgMap* map, int scaleIndex, CREFSTRING group, int
         if (MgFileUtil::PathnameExists(tmp))
         {
             Ptr<MgByteSource> bs = new MgByteSource(tmp, false);
+            bs->SetMimeType(MgMimeType::Png);
             ret = bs->GetReader();
         }
     }
