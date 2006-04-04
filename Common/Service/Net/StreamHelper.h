@@ -24,7 +24,7 @@ template class MG_SERVICE_API Ptr<MgStreamHelper>;
 ///////////////////////////////////////////////////////////////////////////
 //  The MgStreamHelper class provides an interface to read and write data
 //  from an underlying stream.
-class MG_SERVICE_API MgStreamHelper : public MgDisposable
+class MG_SERVICE_API MgStreamHelper : public MgGuardDisposable
 {
     ///////////////////////////////////////////////////////////////////////
     ///  Constructors/Destructors

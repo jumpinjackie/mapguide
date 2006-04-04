@@ -259,30 +259,20 @@ MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformati
         stack = iter->second;
     }
 
-    // TSW July 23, 2005
-    // Disable web/server connection pooling for now.  It does not work correctly
-    // under the .Net agent (and probably the Java Agent) since the socket library
-    // does not remain initialized between agent invocations.  We need to modify
-    // MgInitializeWebTier (C/C++ code) to keep sockets initialized while the
-    // service dll is still loaded.
-    //
-    // TSW September 23, 2005
-    // Even when running with a FastCGI App, connection reuse seems unstable.
-    // A stack trace on a locked up Enumerate Resources request indicated that the
-    // FastCGI agent was waiting for the response from an Authenticate request.
-    //if (stack == NULL)
-    //{
-    //    stack = new MgServerConnectionStack();
-    //    (g_connectionPool->pool)[hash] = stack;
-    //}
+    if (stack == NULL)
+    {
+        stack = new MgServerConnectionStack();
+        (g_connectionPool->pool)[hash] = stack;
+    }
 
     // Try to get a previously used connection
-    //msc = stack->Pop();
+    msc = stack->Pop();
+    
 
     if (msc == NULL)
     {
-    // Create new connection
-    msc = new MgServerConnection();
+        // Create new connection
+        msc = new MgServerConnection();
 
         // Open throws TargetNotFound
         if ( msc != NULL )

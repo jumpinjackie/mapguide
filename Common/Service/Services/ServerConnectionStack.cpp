@@ -79,13 +79,13 @@ MgServerConnection* MgServerConnectionStack::Pop()
 {
     MgServerConnection* conn = NULL;
 
+    ACE_Time_Value now = ACE_High_Res_Timer::gettimeofday();
     while (conn == NULL && m_stack->size() > 0)
     {
         conn = m_stack->top();
         if (NULL != conn)
         {
             m_stack->pop();
-            ACE_Time_Value now = ACE_High_Res_Timer::gettimeofday();
             ACE_Time_Value diffTime = now - *(conn->LastUsed());
             double diff = diffTime.sec();
             if (diff > 60.0 )

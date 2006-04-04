@@ -58,7 +58,6 @@ String dataSource = "";
     dataSource = "Session:" + sessionId + "//" + bufferName + "_Buffer.FeatureSource";
     String layerDef = "Session:" + sessionId + "//" + bufferName + "_Buffer.LayerDefinition";
 
-    MapGuideApi.InitializeSockets();
     try
     {
         bool newBuffer = false;
@@ -359,18 +358,12 @@ String dataSource = "";
     catch (MgException exc)
     {
         OnError(MgLocalizer.GetString("BUFFERERROR", locale), exc.GetMessage());
-        MapGuideApi.TerminateSockets();
         return;
     }
     catch (Exception ne)
     {
         OnError(MgLocalizer.GetString("BUFFERERROR", locale), ne.Message);
-        MapGuideApi.TerminateSockets();
         return;
-    }
-    finally
-    {
-        MapGuideApi.TerminateSockets();
     }
 
 %>

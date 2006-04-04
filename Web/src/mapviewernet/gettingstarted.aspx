@@ -21,7 +21,6 @@ bool dwf = false;
 
     Response.Charset = "utf-8";
     Response.ContentType = "text/html";
-    MapGuideApi.InitializeSockets();
 
     GetRequestParameters();
 
@@ -63,9 +62,6 @@ bool dwf = false;
         Response.Write(mge.GetDetails());
     }
     catch(Exception e) {
-    }
-    finally {
-        MapGuideApi.TerminateSockets();
     }
 
 %>

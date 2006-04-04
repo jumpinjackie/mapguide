@@ -71,8 +71,6 @@ String output = "\nvar layerData = new Array();\n";
 
     try
     {
-        MapGuideApi.InitializeSockets();
-
         // Initialize web tier with the site configuration file.
         InitializeWebTier();
 
@@ -131,10 +129,6 @@ String output = "\nvar layerData = new Array();\n";
         Response.Write(mge.GetMessage());
         Response.Write("<br>");
         Response.Write(mge.GetDetails());
-    }
-    finally
-    {
-        MapGuideApi.TerminateSockets();
     }
 
 %>

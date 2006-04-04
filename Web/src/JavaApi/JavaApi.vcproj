@@ -191,14 +191,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\InitSockets.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\InitSockets.h"
-			>
-		</File>
-		<File
 			RelativePath=".\java.i"
 			>
 		</File>

@@ -42,7 +42,6 @@ NameValueCollection cmds = null;
     {
         Response.Charset = "utf-8";
         MgLocalizer.SetLocalizedFilesPath(Request.ServerVariables["APPL_PHYSICAL_PATH"] + "..\\localized\\");
-        MapGuideApi.InitializeSockets();
 
         // Initialize web tier with the site configuration file.
         InitializeWebTier();
@@ -546,10 +545,6 @@ NameValueCollection cmds = null;
     catch (Exception ne)
     {
         Response.Write(ne.Message);
-    }
-    finally
-    {
-        MapGuideApi.TerminateSockets();
     }
 %>
 

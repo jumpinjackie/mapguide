@@ -98,8 +98,8 @@ int MgClientAcceptor::handle_input(ACE_HANDLE handle)
 
     if (nResult != -1)
     {
-        MgClientHandler* handler = new MgClientHandler(clientConnection, reactor(), m_pMessageQueue);
-        if(handler)
+        Ptr<MgClientHandler> handler = new MgClientHandler(clientConnection, reactor(), m_pMessageQueue);
+        if(NULL != (MgClientHandler*) handler)
         {
             nResult = handler->Initialize();
             if(-1 != nResult)

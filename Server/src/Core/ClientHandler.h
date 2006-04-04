@@ -22,12 +22,13 @@
 
 class MgConnection;
 
-class MgClientHandler : public ACE_Event_Handler
+class MgClientHandler : public ACE_Event_Handler, public MgGuardDisposable
 {
     ///////////////////////////////////////////////////////
     /// Methods
 public:
     MgClientHandler (const ACE_SOCK_Stream &stream, ACE_Reactor* pReactor, ACE_Message_Queue<ACE_MT_SYNCH>* pMessageQueue);
+    MgClientHandler();
     virtual ~MgClientHandler();
 
     // ACE_Event_Handler methods
@@ -52,6 +53,12 @@ public:
     MgConnection* GetConnection();
     HandlerStatus GetStatus();
     void SetStatus( HandlerStatus status );
+    MgStreamHelper* GetStreamHelper();
+
+protected:
+
+     virtual void Dispose();
+
 
 private:
     INT32 ProcessInput(ACE_HANDLE handle);

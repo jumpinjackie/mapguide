@@ -19,6 +19,7 @@
 #include "ClientHandler.h"
 #include "Connection.h"
 #include "ServerManager.h"
+#include "ServerStreamData.h"
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -32,6 +33,9 @@ MgClientHandler::MgClientHandler(const ACE_SOCK_Stream &stream, ACE_Reactor* pRe
     // Set the reactor
     reactor(pReactor);
 
+    // Increment self-refcount to account for ACE reactor.  Refcount is decremented in handle_close
+    SAFE_ADDREF(this);
+
     m_pConnection = new MgConnection();
 
     MgServerManager* pServerManager = MgServerManager::GetInstance();
@@ -39,7 +43,19 @@ MgClientHandler::MgClientHandler(const ACE_SOCK_Stream &stream, ACE_Reactor* pRe
     {
         pServerManager->IncrementActiveConnections();
     }
+}
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Default constructor for Ptr<> template
+/// </summary>
+MgClientHandler::MgClientHandler()
+:
+    m_SockStream(ACE_INVALID_HANDLE),
+    m_pMessageQueue(NULL),
+    m_Status(hsIdle),
+    m_pConnection(NULL)
+{
 }
 
 //////////////////////////////////////////////////////////////////
@@ -169,7 +185,7 @@ int MgClientHandler::handle_input(ACE_HANDLE handle)
             m_pStreamHelper = new MgAceStreamHelper( handle );
         }
 
-        stream = new MgStream(m_pStreamHelper);
+        stream = new MgStream( m_pStreamHelper );
 
         // TODO: use locale from client connection
         mgException->GetMessage(MgResources::DefaultLocale);
@@ -226,7 +242,7 @@ INT32 MgClientHandler::ProcessInput(ACE_HANDLE handle)
             {
                 //  create a MgStreamData Object for our message queue
                 MgStreamData* pData = NULL;
-                ACE_NEW_RETURN( pData, MgStreamData( this, handle, m_pStreamHelper ), -1 );
+                ACE_NEW_RETURN( pData, MgServerStreamData( this, handle, m_pStreamHelper ), -1 );
 
                 //  create the message block
                 ACE_Message_Block* mb = NULL;
@@ -271,7 +287,13 @@ int MgClientHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask mask)
         pServerManager->RemoveClientHandle(handle);
     }
 
-    delete this;
+    // Flag this handler as closed
+    m_Status = MgClientHandler::hsClosed;
+
+    // Decrement self refcount
+    MgClientHandler* pThis = this;
+    SAFE_RELEASE(pThis);
+
     return 0;
 }
 
@@ -300,4 +322,21 @@ void MgClientHandler::SetStatus( MgClientHandler::HandlerStatus status )
 MgConnection* MgClientHandler::GetConnection()
 {
     return m_pConnection;
+}
+
+
+MgStreamHelper* MgClientHandler::GetStreamHelper()
+{
+    return (MgStreamHelper*) m_pStreamHelper;
+}
+
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Disposes this object.
+/// </summary>
+///----------------------------------------------------------------------------
+void MgClientHandler::Dispose()
+{
+    delete this;
 }

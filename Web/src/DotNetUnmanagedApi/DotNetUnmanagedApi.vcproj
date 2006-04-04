@@ -201,14 +201,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\InitSockets.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\InitSockets.h"
-			>
-		</File>
-		<File
 			RelativePath=".\MgApi_wrap.cpp"
 			>
 		</File>

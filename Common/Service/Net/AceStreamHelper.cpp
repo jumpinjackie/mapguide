@@ -522,7 +522,7 @@ bool MgAceStreamHelper::IsConnected()
     ACE_SOCK_Stream stream;
     stream.set_handle( m_handle );
     UINT8 dummy;
-    ACE_Time_Value val(0, 1);
+    ACE_Time_Value val(0, 0);
     ssize_t res = stream.recv_n( &dummy, 1, MSG_PEEK, &val);
     if ( res < 0 )
     {
@@ -530,7 +530,8 @@ bool MgAceStreamHelper::IsConnected()
         int error = ::WSAGetLastError(); // errno doesn't work correctly on Windows
         bConnected = ( error == WSAEWOULDBLOCK || error == 0 );
 #else
-        bConnected = ( errno == EWOULDBLOCK || errno == 0 );
+        bConnected = ( errno == EWOULDBLOCK || errno == 0 || errno == ETIME);
+       
 #endif
     }
     return bConnected;

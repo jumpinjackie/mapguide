@@ -74,7 +74,7 @@ int MgWorkerThread::svc(void)
 
             if(messageBlock)
             {
-                MgStreamData* pData = dynamic_cast<MgStreamData*>(messageBlock->data_block());
+                MgServerStreamData* pData = dynamic_cast<MgServerStreamData*>(messageBlock->data_block());
 
                 if(messageBlock->msg_type() == ACE_Message_Block::MB_STOP)
                 {
@@ -91,6 +91,8 @@ int MgWorkerThread::svc(void)
                 {
                     IMgServiceHandler::MgProcessStatus stat = ProcessMessage( messageBlock );
 
+                    Ptr<MgClientHandler> pClientHandler = pData->GetClientHandler();
+
                     switch ( stat )
                     {
                         case ( IMgServiceHandler::mpsError ) :
@@ -99,13 +101,14 @@ int MgWorkerThread::svc(void)
                             //  HTTP agent, it will respond with a close control packet.  We will
                             //  try to process this incoming packet, but since there still may be junk
                             //  data on the wire, we will force the close of the client handler
-                            //  if we are already in an error condition.
+                            //  if we are already in an error condition.                             
                             if ( pData->GetErrorFlag() )
                             {
-                                //  remove the client handler it from reactor
-                                pData->GetClientHandler()->SetStatus( MgClientHandler::hsClosed );
-                                pData->GetClientHandler()->reactor()->remove_handler(
-                                    pData->GetClientHandler()->get_handle(), ACE_Event_Handler::READ_MASK );
+                                // Remove the client handler from reactor.  This code will also
+                                // be hit if the client handler has been torn down from the connection idle timer
+                                // while we were waiting for additional requests from the client.                                   
+                                pClientHandler->reactor()->remove_handler(
+                                    pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK );
 
                                 //  reset the stream error flag
                                 pData->SetErrorFlag( false );
@@ -120,13 +123,13 @@ int MgWorkerThread::svc(void)
                                 //  with a close control packet.  Check to see if we have received
                                 //  the packet.  If so, push it back on the queue.  If not, go
                                 //  into idle state to wait for the next request.
-                                if ( MgStreamHelper::mssDone == CheckStream( pData->GetStreamHelper() ) )
+                                if ( MgStreamHelper::mssDone == CheckStream( pClientHandler->GetStreamHelper() ) )
                                 {
                                     //  set client handler status before queueing messageblock
-                                    pData->GetClientHandler()->SetStatus( MgClientHandler::hsQueued );
+                                    pClientHandler->SetStatus( MgClientHandler::hsQueued );
 
                                     //  Create a new messageBlock and put it on the queue
-                                    MgStreamData* pStreamData = new MgStreamData( *pData );
+                                    MgServerStreamData* pStreamData = new MgServerStreamData( *pData );
                                     if(pStreamData)
                                     {
                                         //  create the message block
@@ -139,20 +142,27 @@ int MgWorkerThread::svc(void)
                                 }
                                 else
                                 {
-                                    pData->GetClientHandler()->SetStatus( MgClientHandler::hsIdle );
+                                    pClientHandler->SetStatus( MgClientHandler::hsIdle );
                                 }
                             }
                             break;
 
                         case ( IMgServiceHandler::mpsDone ) :
+                            
+                            // Do we still have a stream?
+                            if (NULL == (MgClientHandler*) pClientHandler || MgClientHandler::hsClosed == pClientHandler->GetStatus())
+                            {
+                                break;
+                            }
+
                             //  is there anything else on the stream?
-                            if ( MgStreamHelper::mssDone == CheckStream( pData->GetStreamHelper() ) )
+                            if (MgStreamHelper::mssDone == CheckStream( pClientHandler->GetStreamHelper() ) )
                             {
                                 //  set client handler status before queueing messageblock
-                                pData->GetClientHandler()->SetStatus( MgClientHandler::hsQueued );
+                                pClientHandler->SetStatus( MgClientHandler::hsQueued );
 
                                 //  Create a new messageBlock and put it on the queue
-                                MgStreamData* pStreamData = new MgStreamData( *pData );
+                                MgServerStreamData* pStreamData = new MgServerStreamData( *pData );
                                 if(pStreamData)
                                 {
                                     //  create the message block
@@ -165,23 +175,27 @@ int MgWorkerThread::svc(void)
                             }
                             else
                             {
-                                pData->GetClientHandler()->SetStatus( MgClientHandler::hsIdle );
+                                pClientHandler->SetStatus( MgClientHandler::hsIdle );
                             }
                             break;
 
                         case ( IMgServiceHandler::mpsClosed ) :
                             // Push an error on the handler and remove it from reactor
                             // to force a timely close
-                            pData->GetClientHandler()->SetStatus( MgClientHandler::hsClosed );
-                            pData->GetClientHandler()->reactor()->remove_handler(
-                                pData->GetClientHandler()->get_handle(), ACE_Event_Handler::READ_MASK);
+                            if (NULL != (MgClientHandler*) pClientHandler)
+                            {
+                                pClientHandler->reactor()->remove_handler(
+                                pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
+                            }
                             break;
 
                         case ( IMgServiceHandler::mpsOther ) :
-                            pData->GetClientHandler()->SetStatus( MgClientHandler::hsBusy );
+                            if (NULL != (MgClientHandler*) pClientHandler)
+                            {
+                                pClientHandler->SetStatus( MgClientHandler::hsBusy );
+                            }
                             break;
                     }
-
                 }
 
                 //  Cleanup message block
@@ -237,17 +251,35 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessMessage( ACE_Message_B
     IMgServiceHandler::MgProcessStatus stat = IMgServiceHandler::mpsError;
 
     Ptr<MgException> mgException;
-    MgStreamData* pData = 0;
+    MgServerStreamData* pData = 0;
     try
     {
         ACE_ASSERT( pMB );
         if ( pMB )
         {
-            pData = (MgStreamData*) pMB->data_block();
+            pData = (MgServerStreamData*) pMB->data_block();
+            Ptr<MgClientHandler> pHandler = pData->GetClientHandler();
             MgStreamHelper* pStreamHelper = pData->GetStreamHelper();
-            MgClientHandler* pHandler = pData->GetClientHandler();
 
-            ACE_ASSERT ( pData && pStreamHelper && pHandler );
+            // For pooled TCP/IP connections, the idle timeout handler may have removed
+            // the client handler for this message block while we were waiting for
+            // another request.  If the client handler is closed then
+            // we should bail out of the processing loop because there is no longer an
+            // active connection to read an operation from.
+            //
+            // Note:  No exception is thrown and no error is logged because stale connection
+            // removal is considered standard operational behaviour.
+            if (NULL == pData || NULL == pStreamHelper || MgClientHandler::hsClosed == pHandler->GetStatus())
+            {
+                if (NULL != pData)
+                {
+                    pData->SetErrorFlag(true);
+                }
+
+                return IMgServiceHandler::mpsError;
+            }
+
+            ACE_ASSERT ( pData && pStreamHelper && (MgClientHandler*) pHandler );
 
             if(pHandler->GetStatus() == MgClientHandler::hsQueued)
             {
@@ -390,7 +422,7 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessMessage( ACE_Message_B
 /// <summary>
 /// Processes an Operation.
 /// </summary>
-IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessOperation( MgStreamData* pData )
+IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessOperation( MgServerStreamData* pData )
 {
     ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) MgWorkerThread::ProcessOperation\n" )));
 
@@ -404,7 +436,7 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessOperation( MgStreamDat
         ACE_ASSERT( pData );
         if ( pData )
         {
-            MgClientHandler* pHandler = NULL;
+            Ptr<MgClientHandler> pHandler;
             MgServerManager* serverManager = NULL;
             MgOperationPacket op;
             MgStreamHelper* pHelper = NULL;
@@ -413,7 +445,7 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessOperation( MgStreamDat
 
             // Get client handler
             pHandler = pData->GetClientHandler();
-            ACE_ASSERT ( pHandler );
+            ACE_ASSERT ( (MgClientHandler*) pHandler );
 
             // Get the Connection
             pConnection = pHandler->GetConnection();
