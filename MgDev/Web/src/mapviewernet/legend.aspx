@@ -301,20 +301,20 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     {
                         output = output + String.Format("var {0} = new GroupItem(\"{1}\", {2}, {3}, {4},{5}, \"{6}\", \"{7}\", {8});\n",
                                                         groupName,
-                                                        rtLayerGroup.GetLegendLabel(),
+                                                        StrEscape(rtLayerGroup.GetLegendLabel()),
                                                         rtLayerGroup.GetExpandInLegend()? "true": "false",
                                                         parentName,
                                                         rtLayerGroup.GetVisible() ? "true" : "false",
                                                         rtLayerGroup.GetDisplayInLegend() ? "true" : "false",
                                                         rtLayerGroup.GetObjectId(),
-                                                        rtLayerGroup.GetName(),
+                                                        StrEscape(rtLayerGroup.GetName()),
                                                         rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMap? "true": "false");
                     }
                     else
                     {
                         output = output + String.Format("var {0} = new GroupSummary(\"{1}\", \"{2}\", {3}, {4});\n",
                                                         groupName,
-                                                        rtLayerGroup.GetName(),
+                                                        StrEscape(rtLayerGroup.GetName()),
                                                         rtLayerGroup.GetObjectId(),
                                                         arrChildName,
                                                         parentName);
@@ -342,7 +342,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                         output = output + String.Format("var {0} = new LayerItem(\"{1}\", \"{2}\", {3}, {4}, {5}, {6}, {7}, \"{8}\", \"{9}\", {10});\n",
                                                         layerName,
                                                         rtLayer.GetLegendLabel(),
-                                                        rtLayer.GetName(),
+                                                        StrEscape(rtLayer.GetName()),
                                                         rtLayer.GetExpandInLegend()? "true": "false",
                                                         parentName,
                                                         rtLayer.GetVisible()? "true": "false",
@@ -455,8 +455,8 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
                         output = output + String.Format("{0}.children[{1}] = new StyleItem(\"{2}\", \"{3}\", {4}, {5});\n",
                                                     scaleRangeVarName,
                                                     styleIndex++,
-                                                    labelText.Trim(),
-                                                    filterText.Trim(),
+                                                    StrEscape(labelText.Trim()),
+                                                    StrEscape(filterText.Trim()),
                                                     ts+1,
                                                     catIndex++);
                     }
@@ -475,6 +475,17 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
         //broken layer definition. just don't create any info for that layer
         return;
     }
+}
+
+String StrEscape(String str)
+{
+    return StrEscape(str, false);
+}
+
+String StrEscape(String str, bool single)
+{
+    String c = single? "'" : "\"";
+    return (str.Replace(c, "\\"+c) + "A");
 }
 
 </script>

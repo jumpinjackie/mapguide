@@ -208,20 +208,20 @@ function BuildClientSideTree($tree, $parent, $parentName, $fulldata, $container,
                     {
                         $output = $output . sprintf("var %s = new GroupItem(\"%s\", %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
                                                         $groupName,
-                                                        $node->rtObject->GetLegendLabel(),
+                                                        StrEscape($node->rtObject->GetLegendLabel()),
                                                         $node->rtObject->GetExpandInLegend()? "true": "false",
                                                         $parentName,
                                                         $node->rtObject->GetVisible()? "true": "false",
                                                         $node->rtObject->GetDisplayInLegend()? "true": "false",
                                                         $node->rtObject->GetObjectId(),
-                                                        $node->rtObject->GetName(),
+                                                        StrEscape($node->rtObject->GetName()),
                                                         $node->rtObject->GetLayerGroupType() == MgLayerGroupType::BaseMap? "true": "false");
                     }
                     else
                     {
                         $output = $output . sprintf("var %s = new GroupSummary(\"%s\", \"%s\", %s, %s);\n",
                                                         $groupName,
-                                                        $node->rtObject->GetName(),
+                                                        StrEscape($node->rtObject->GetName()),
                                                         $node->rtObject->GetObjectid(),
                                                         $arrChildName,
                                                         $parentName);
@@ -248,7 +248,7 @@ function BuildClientSideTree($tree, $parent, $parentName, $fulldata, $container,
                         $objectId = $node->rtObject->GetObjectId();
                         $output = $output . sprintf("var %s = new LayerItem(\"%s\", \"%s\", %s, %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
                                                         $layerName,
-                                                        $node->rtObject->GetLegendLabel(),
+                                                        StrEscape($node->rtObject->GetLegendLabel()),
                                                         $node->rtObject->GetName(),
                                                         $node->rtObject->GetExpandInLegend()? "true": "false",
                                                         $parentName,
@@ -270,7 +270,7 @@ function BuildClientSideTree($tree, $parent, $parentName, $fulldata, $container,
                     {
                         $output = $output . sprintf("%s[%d] = new LayerSummary(\"%s\", \"%s\", \"%s\");\n",
                                                             $container, $i,
-                                                            $rtLayer->GetName(),
+                                                            StrEscape($rtLayer->GetName()),
                                                             $rtLayer->GetObjectId(),
                                                             $rtLayer->GetLayerDefinition()->ToString());
                     }
@@ -351,8 +351,8 @@ function BuildLayerDefinitionData($resSrvc, $resId, $layerVarName, &$output)
 
                     $output = $output . sprintf("%s.children[%d] = new StyleItem(\"%s\", \"%s\", %d, %d);\n",
                                                 $scaleRangeVarName, $styleIndex++,
-                                                trim($labelText),
-                                                trim($filterText),
+                                                StrEscape(trim($labelText)),
+                                                StrEscape(trim($filterText)),
                                                 $ts+1,
                                                 $catIndex++);
                 }
@@ -416,6 +416,15 @@ function GetRequestParameters()
         GetParameters($_POST);
     else
         GetParameters($_GET);
+}
+
+function StrEscape($str, $single=false)
+{
+    $c = $single? "'" : "\"";
+    if(strpos($str, $c) < 0)
+        return $str;
+
+    return str_replace($c, "\\" . $c , $str);
 }
 
 ?>
