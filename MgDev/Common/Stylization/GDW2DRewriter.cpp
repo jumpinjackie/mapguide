@@ -261,6 +261,7 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
     if (image.format() == WT_Image::RGBA)
     {
         src = gdImageCreateTrueColor(image.columns(), image.rows());
+        gdImageAlphaBlending(src, 0);
 
         for (int j=0; j<image.rows(); j++)
             for (int i=0; i<image.columns(); i++)
@@ -270,6 +271,8 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
                 int gdc = ConvertColor(src, rsc);
                 gdImageSetPixel(src, i, j, gdc);
             }
+
+        gdImageAlphaBlending(src, 1);
     }
     else if (image.format() == WT_Image::RGB)
     {
