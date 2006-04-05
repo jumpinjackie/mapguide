@@ -24,6 +24,8 @@
 
 #include "ImageFormats.h"
 
+extern CPSZ kpszDefineSupportedFormats; // borrowed. TODO: publish as member variable.
+
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWmsGetMap)
 
 /// <summary>
@@ -39,49 +41,52 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWmsGetMap)
 MgHttpWmsGetMap::MgHttpWmsGetMap(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
+}
 
-    Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
 
+void MgHttpWmsGetMap::InitializeRequestParameters(MgOgcWmsServer& oServer)
+{
     // Get the WMS request version
-    m_version = params->GetParameterValue(MgHttpResourceStrings::reqWmsVersion);
+    m_version = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsVersion);
 
     // Get the requested layers
-    m_layers = params->GetParameterValue(MgHttpResourceStrings::reqWmsLayers);
+    m_layers = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsLayers);
 
     // Get the requested styles
-    m_styles = params->GetParameterValue(MgHttpResourceStrings::reqWmsStyles);
+    m_styles = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsStyles);
 
     // Get the requested CRS (Ver 1.3) or SRS (Ver 1.1) value
-    m_crs = params->GetParameterValue(MgHttpResourceStrings::reqWmsCrs);
+    m_crs = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsCrs);
     if(m_crs.length() == 0)
     {
-        m_crs = params->GetParameterValue(MgHttpResourceStrings::reqWmsSrs);
+        m_crs = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsSrs);
     }
 
     // Get the requested styles
-    m_bbox = params->GetParameterValue(MgHttpResourceStrings::reqWmsBbox);
+    m_bbox = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsBbox);
 
     // Get width and convert to integer
-    string widthParam = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqWmsWidth));
-    m_width = atoi(widthParam.c_str());
+    STRING sParameter;
+    sParameter = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsWidth);
+    m_width = MgUtil::StringToInt32(sParameter);
 
     // Get height and convert to integer
-    string heightParam = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqWmsHeight));
-    m_height = atoi(heightParam.c_str());
+    sParameter = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsHeight);
+    m_height = MgUtil::StringToInt32(sParameter);
 
     // Get the requested format
-    m_format = params->GetParameterValue(MgHttpResourceStrings::reqWmsFormat);
+    m_format = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsFormat);
 
     /////////////////////////////////////////////////
     // Optional parameters
     /////////////////////////////////////////////////
 
     // Background transparency
-    STRING transparent = params->GetParameterValue(MgHttpResourceStrings::reqWmsTransparent);
+    STRING transparent = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsTransparent);
     m_transparent = SZ_EQI(transparent.c_str(),L"TRUE");
 
     // Background color
-    m_bgColor = params->GetParameterValue(MgHttpResourceStrings::reqWmsBackgroundColor);
+    m_bgColor = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsBackgroundColor);
 }
 
 /// <summary>
@@ -127,19 +132,10 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
             m_width, m_height, resourceService);
 
         // Get the image format
-        STRING format = MgImageFormats::Png;
-        if(_wcsicmp(m_format.c_str(), L"image/JPEG") == 0)
-        {
-            format = MgImageFormats::Jpeg;
-        }
-        else if(_wcsicmp(m_format.c_str(), L"image/GIF") == 0)
-        {
-            format = MgImageFormats::Gif;
-        }
-        else if(_wcsicmp(m_format.c_str(), L"image/TIFF") == 0)
-        {
-            format = MgImageFormats::Tiff;
-        }
+        // Note: should be valid, since this mapping has already happened
+        // in the Validate phase.
+        STRING format;
+        wms.MapValue(kpszDefineSupportedFormats,m_format.c_str(),format);
 
         // Render the map
         Ptr<MgRenderingService> renderingService = (MgRenderingService*)CreateService(MgServiceType::RenderingService);
@@ -147,7 +143,8 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
         Ptr<MgByteReader> mapImage = renderingService->RenderMap(map, selection, extents, m_width, m_height, bkColor, format);
 
         // Set the result
-        hResult->SetResultObject(mapImage, mapImage->GetMimeType());
+        STRING sMimeType = mapImage->GetMimeType();
+        hResult->SetResultObject(mapImage, sMimeType.length() > 0 ? sMimeType : m_format);
     }
     else
     {
@@ -166,6 +163,9 @@ void MgHttpWmsGetMap::AcquireValidationData(MgOgcServer* ogcServer)
     MgOgcWmsServer* wmsServer = (MgOgcWmsServer*)ogcServer;
     if(wmsServer != NULL)
     {
+        // The initialization that used to happen in the ctor is deferred until now
+        // (when we need it) since now we have access to a server object.
+        InitializeRequestParameters(*wmsServer);
         // Create an instance of the Resource Service
         Ptr<MgResourceService> resourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
 
@@ -176,4 +176,12 @@ void MgHttpWmsGetMap::AcquireValidationData(MgOgcServer* ogcServer)
         wmsServer->SetLayerDefs(layerDefs);
     }
 }
+
+STRING MgHttpWmsGetMap::GetRequestParameter(MgOgcWmsServer& oServer,CREFSTRING sParameterName)
+{
+    CPSZ psz = oServer.RequestParameter(sParameterName.c_str());
+    return STRING(psz? psz : _(""));
+}
+
+
 

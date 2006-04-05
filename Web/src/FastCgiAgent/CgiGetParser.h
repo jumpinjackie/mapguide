@@ -25,6 +25,9 @@ public:
     CgiGetParser(void);
     ~CgiGetParser(void);
     static void Parse(char* queryString, MgHttpRequestParam* params);
+private:
+    static void ParseOneParameter(string sParameter, MgHttpRequestParam* params);
+
 };
 
 #endif

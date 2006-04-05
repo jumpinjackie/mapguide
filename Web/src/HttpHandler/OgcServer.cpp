@@ -915,6 +915,7 @@ void MgOgcServer::ProcedureTranslate(MgXmlProcessingInstruction &PITranslate)
     ProcessExpandableTextIntoString(sString,sStringExpanded);
 
 
+
     // Now, using the translation map we've been given,
     // let's do the mapping lookup.
     MgXmlParser MapDefinitions(pszMapDef);
@@ -1399,7 +1400,7 @@ bool MgOgcServer::WriteLine()
 // Uses a Map definition to map the From string to the resulting To string.
 bool MgOgcServer::MapValue(MgXmlParser& Xml,CPSZ pszFrom,REFSTRING sTo)
 {
-    while(Xml.Next()) {
+    while(!Xml.AtEnd()) {
         if(Xml.Current().Type() == keBeginElement) {
             MgXmlSynchronizeOnElement MapElement(Xml,kpszElementTranslate);
             MgXmlBeginElement* pBegin;
@@ -1423,10 +1424,28 @@ bool MgOgcServer::MapValue(MgXmlParser& Xml,CPSZ pszFrom,REFSTRING sTo)
                     return true;
                 }
             }
+            else
+                Xml.Next();
         }
+        else
+            Xml.Next();
+
     }
     return false;
 }
+
+// Convenience shorthand, since so many uses of MapValue are
+// based on a definition.
+bool MgOgcServer::MapValue(CPSZ pszDefinitionName,CPSZ pszFrom,REFSTRING sTo)
+{
+    CPSZ pszDefinitionValue = Definition(pszDefinitionName);
+    if(!pszDefinitionValue)
+        return false;
+
+    MgXmlParser Xml(pszDefinitionValue);
+    return MapValue(Xml,pszFrom,sTo);
+}
+
 
 
 CPSZ MgOgcServer::RequestParameter(CPSZ pszParameter)
@@ -1451,6 +1470,7 @@ CPSZ MgOgcServer::RequestParameter(CPSZ pszParameter)
         CPSZ pszValueMap = this->Definition(sName.c_str());
         if(pszValueMap != NULL) {
             MgXmlParser Xml(pszValueMap);
+            m_sValueCache.erase();
             if(MapValue(Xml,pszUnmappedValue,m_sValueCache)) {
                 return m_sValueCache.c_str();
             }

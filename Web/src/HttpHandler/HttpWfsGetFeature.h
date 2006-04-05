@@ -72,8 +72,10 @@ INTERNAL_API:
     MgHttpWfsGetFeature();
 
 private:
-    MgHttpWfsGetFeature(MgHttpRequest *hRequest, WfsGetFeatureParams *params);
+    // Private ctor, used by POSTS to synthesize a call to execute.
+    MgHttpWfsGetFeature(MgHttpRequest *hRequest, CREFSTRING sPostRequestXml /* instead of WfsGetFeatureParams *params */);
 
+    STRING m_sPostRequestXml;
 
     Ptr<WfsGetFeatureParams> m_getFeatureParams;
 };

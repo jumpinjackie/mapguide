@@ -35,9 +35,20 @@ CPSZ kpszFilenameGlobalConfigWms    = _("Wms:OgcWmsService.config");
 CPSZ kpszFilenameTemplatePrefixWms  = _("Wms:");
 
 // Supported image formats
-CPSZ kpszImageFormatPNG             = _("image/png");
-CPSZ kpszImageFormatGIF             = _("image/gif");
-CPSZ kpszImageFormatJPEG            = _("image/jpeg");
+// This is the name of the define used to
+// identify supported formats.  It is to contain
+// a value map, which will translate supported mime types
+// to internal RenderingService values.
+CPSZ kpszDefineSupportedFormats     = _("RenderingService.SupportedFormats");
+// This is the default definition.  Can be overridden
+// in the template.
+CPSZ kpszDefaultSupportedFormats    =  _("<translate from=\"image/jpeg\">JPG</translate>")
+                                       _("<translate from=\"image/png\">PNG</translate>")
+                                       _("<translate from=\"image/gif\">GIF</translate>")
+                                       _("<translate from=\"image/tiff\">TIFF</translate>")
+                                       // Below is REQUIRED.  Illegal strings should map to "".
+                                       _("<translate></translate>");
+                                      
 
 // GetCapabilities XML format
 CPSZ kpszMimeTypeApplicationWmsXml                = _("application/vnd.ogc.wms_xml");
@@ -49,12 +60,12 @@ CPSZ kpszQueryValueMap              = _("Map");          // keyword for pre 1.0.
 CPSZ kpszQueryValueGetFeatureInfo   = _("GetFeatureInfo");
 CPSZ kpszQueryValueFeatureInfo      = _("FeatureInfo");  // keyword for pre 1.0.8 versions
 
-
 // BEGIN LOCALIZATION -- The following strings are all subject to localization.
 CPSZ kpszExceptionMessageMissingServiceWms = _("Expected required SERVICE=WMS argument."); // Localize
 CPSZ kpszExceptionMessageMissingRequest    = _("Expected required REQUEST= argument.");    // Localize
 CPSZ kpszExceptionMessageUnknownRequest    = _("Expected valid REQUEST= argument (such as GetCapabilities.)"); // Localize
 CPSZ kpszInternalErrorMissingGetCapyResponse = _("Unable to generate a GetCapabilities Response --  missing a text/xml Response in the template file."); // Localize
+CPSZ kpszInternalErrorMissingDefinition      = _("Unable to generate a response; missing a required internal definition."); // Localize
 CPSZ kpszExceptionMessageGetFeatureInfoUnsupported = _("REQUEST=GetFeatureInfo operation is not supported on this server."); // Localize
 CPSZ kpszExceptionMessageQueryLayerNotDefined = _("One or more layers specified in the QUERY_LAYERS argument are not defined in the map."); // Localize
 CPSZ kpszExceptionMessageMapLayersMissing = _("The map request must contain at least one valid layer."); // Localize
@@ -79,6 +90,7 @@ CPSZ kpszPiEnumLayersDefaultFormat         = _("&Layer.Name;\n");
 CPSZ kpszPiEnumFeaturePropertiesDefaultFormat = _("&FeatureProperty.xml;");
 
 extern CPSZ kpszPiAttributeSubset;      // = _("subset");
+extern CPSZ kpszDefinitionInitServerError; // inherited from OgcServer.
 
 
 MgUtilDictionary MgOgcWmsServer::ms_GlobalDefinitions(NULL);
@@ -92,10 +104,7 @@ MgOgcWmsServer::MgOgcWmsServer(MgHttpRequestParameters& Request,CStream& Respons
 , m_pLayers(pLayers)
 , m_pFeatureInfo(NULL)
 {
-    InitServer(kpszFilenameGlobalConfigWms,
-               ms_GlobalDefinitions,
-               ms_sExceptionTemplate,
-               ms_sExceptionMimeType);
+    InitWmsServer(kpszFilenameGlobalConfigWms);
 }
 
 MgOgcWmsServer::MgOgcWmsServer(MgHttpRequestParameters& Request, CStream& Response)
@@ -103,10 +112,24 @@ MgOgcWmsServer::MgOgcWmsServer(MgHttpRequestParameters& Request, CStream& Respon
 , m_pLayers(NULL)
 , m_pFeatureInfo(NULL)
 {
-    InitServer(kpszFilenameGlobalConfigWms,
-               ms_GlobalDefinitions,
-               ms_sExceptionTemplate,
-               ms_sExceptionMimeType);
+    InitWmsServer(kpszFilenameGlobalConfigWms);
+}
+
+bool MgOgcWmsServer::InitWmsServer(CPSZ pszFilenameGlobalConfig)
+{
+    bool bRet = InitServer(kpszFilenameGlobalConfigWms,
+                           ms_GlobalDefinitions,
+                           ms_sExceptionTemplate,
+                           ms_sExceptionMimeType);
+    // First time initialization?  Time to augment it.
+    if(bRet) {
+        // Initialize the supported formats, unless the config template
+        // already has.
+        if(ms_GlobalDefinitions.FindName(kpszDefineSupportedFormats) < 0)
+            ms_GlobalDefinitions.AddDefinition(kpszDefineSupportedFormats,kpszDefaultSupportedFormats);
+    }
+
+    return bRet;
 }
 
 void MgOgcWmsServer::RespondToRequest()
@@ -324,12 +347,19 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
     CPSZ imageFormat = RequestParameter(kpszQueryStringFormat);
     if(imageFormat != NULL && szlen(imageFormat) > 0)
     {
-        if(SZ_NEI(imageFormat, kpszImageFormatPNG) &&
-            SZ_NEI(imageFormat, kpszImageFormatJPEG) &&
-            SZ_NEI(imageFormat, kpszImageFormatGIF))
-        {
-            ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
-                                                             kpszExceptionMessageInvalidImageFormat));
+        CPSZ pszMap = this->Definition(kpszDefineSupportedFormats);
+        if(pszMap) {
+            MgXmlParser Xml(pszMap);
+            STRING sTo;
+            if(!MapValue(Xml,imageFormat,sTo) || sTo.length() == 0) {
+                ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
+                                                                 kpszExceptionMessageInvalidImageFormat));
+                bValid = false;
+            }
+        }
+        else {
+            this->m_pTopOfDefinitions->AddDefinition(kpszDefinitionInitServerError,kpszDefineSupportedFormats);
+            InternalError(kpszInternalErrorMissingDefinition);
             bValid = false;
         }
     }

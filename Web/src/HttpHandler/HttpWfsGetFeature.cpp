@@ -36,17 +36,22 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWfsGetFeature)
 /// nothing
 /// </returns>
 MgHttpWfsGetFeature::MgHttpWfsGetFeature(MgHttpRequest *hRequest)
+: m_getFeatureParams(NULL)
 {
     InitializeCommonParameters(hRequest);
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
-    m_getFeatureParams = new WfsGetFeatureParams(params);
+    // Deferred until AcquireValidationData call
+    m_getFeatureParams = NULL; // new WfsGetFeatureParams(params);
 }
 
-MgHttpWfsGetFeature::MgHttpWfsGetFeature(MgHttpRequest *hRequest, WfsGetFeatureParams *params)
+MgHttpWfsGetFeature::MgHttpWfsGetFeature(MgHttpRequest *hRequest, CREFSTRING sPostRequestXml /*WfsGetFeatureParams *params*/)
+: m_getFeatureParams(NULL)
+, m_sPostRequestXml(sPostRequestXml)
 {
     InitializeCommonParameters(hRequest);
-    m_getFeatureParams = SAFE_ADDREF((WfsGetFeatureParams*)params);
+    // Deferred until AcquireValidationData call
+    //m_getFeatureParams = SAFE_ADDREF((WfsGetFeatureParams*)params);
 }
 
 // Default constructor to keep Ptr<> happy
@@ -104,8 +109,17 @@ void MgHttpWfsGetFeature::Execute(MgHttpResponse& hResponse)
 void MgHttpWfsGetFeature::AcquireValidationData(MgOgcServer* ogcServer)
 {
     MgOgcWfsServer* wfsServer = (MgOgcWfsServer*)ogcServer;
+
     if(wfsServer != NULL)
     {
+        // We've put this off long enough.  Now we have a WFS server,
+        // so we can create the parameters collection, as pre-processed
+        // by the server's templates.
+        if(m_sPostRequestXml.length() > 0)
+            m_getFeatureParams = new WfsGetFeatureParams(*wfsServer,m_sPostRequestXml);
+        else
+            m_getFeatureParams = new WfsGetFeatureParams(*wfsServer);
+
         wfsServer->SetGetFeatureRequestParams(m_getFeatureParams);
     }
 }
@@ -254,11 +268,11 @@ bool MgHttpWfsGetFeature::ProcessPostRequest(MgHttpRequest *hRequest, MgHttpResp
         bValid = WfsGetFeatureParams::IsValidXmlRequest(wxmlString);
         if(bValid)
         {
-            Ptr<WfsGetFeatureParams> featureParams = new WfsGetFeatureParams(wxmlString);
+            //Ptr<WfsGetFeatureParams> featureParams = new WfsGetFeatureParams(wxmlString);
             // We (that is, *this* MgHttpWfsGetFeature) doesn't handle the POST request.
             // We clone another one of ourselves, dummying up the parameters, and let it
             // do our work for us.
-            Ptr<MgHttpWfsGetFeature> getFeatureHandler = new MgHttpWfsGetFeature(hRequest, featureParams);
+            Ptr<MgHttpWfsGetFeature> getFeatureHandler = new MgHttpWfsGetFeature(hRequest, wxmlString /* featureParams*/);
             getFeatureHandler->Execute(hResponse);
         }
     }
