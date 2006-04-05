@@ -27,10 +27,10 @@
             case MgUser::Anonymous:
             case MgUser::WmsUser:
             case MgUser::WfsUser:
-                return false;
+                return 'false';
                 break;
             default:
-                return true;
+                return 'true';
                 break;
         }
     }
@@ -210,10 +210,7 @@
                             else
                                 $checkedStr = "";
 
-                            if ( OkToDeleteUser( $key ) )
-                                $userSelectionOnClickStr = "SetElementValue( '".$okToDeleteID."', 'true' );SetElementValue( '".$selectedUserID."', '".$key."');";
-                            else
-                                $userSelectionOnClickStr = "SetElementValue( '".$okToDeleteID."', 'false' );SetElementValue( '".$selectedUserID."', '".$key."');";
+                            $userSelectionOnClickStr = "SetElementValue( '".$okToDeleteID."', '".OkToDeleteUser( $key )."' );SetElementValue( '".$selectedUserID."', '".$key."');";
 
                             CreateListOfGroupHyperlinksForTable( $val->groups, $numGroups, $groupsStr );
                             CreateListOfRoleHyperlinksForTable( $userRolesTable[$key], $roleStr, true, $key );
