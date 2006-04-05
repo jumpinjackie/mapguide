@@ -139,9 +139,9 @@ table {
  <!-- For historic reasons, we need to accept these output formats, -->
  <!-- which we convert into the indicated notations                 -->
  <Define item="Parameter.OutputFormat.ValueMap">
+  <translate from="GML2">text/xml; subtype=gml/2.1.2</translate>
   <translate from="XMLSCHEMA">text/xml; subtype=gml/2.1.2</translate>
  </Define>
-
 
  <!-- These are the supported GetFeature formats 
       Specific version templates can override these    -->

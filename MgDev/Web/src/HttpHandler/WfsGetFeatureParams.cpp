@@ -32,7 +32,7 @@
 /// <returns>
 /// nothing
 /// </returns>
-WfsGetFeatureParams::WfsGetFeatureParams(MgHttpRequestParam* params)
+WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestParam* params*/)
 :   m_maxFeatures(-1)
 ,   m_filterStrings(new MgStringCollection())
 ,   m_featureTypeList(new MgStringCollection())
@@ -40,11 +40,11 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgHttpRequestParam* params)
 {
 
     // Get the required properties
-    STRING propertyNames = params->GetParameterValue(MgHttpResourceStrings::reqWfsPropertyName);
+    STRING propertyNames = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsPropertyName);
     m_requiredPropertiesList = GetParenthesisedList(propertyNames);
 
     // Get the requested feature types
-    STRING featureTypes = params->GetParameterValue(MgHttpResourceStrings::reqWfsTypeName);
+    STRING featureTypes = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsTypeName);
     if(featureTypes.length() > 0)
     {
         m_featureTypeList = MgStringCollection::ParseCollection(featureTypes, L",");
@@ -55,19 +55,19 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgHttpRequestParam* params)
     }
 
     // Get the requested feature IDs
-    STRING featureIds = params->GetParameterValue(MgHttpResourceStrings::reqWfsFeatureId);
+    STRING featureIds = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsFeatureId);
 
     // Get the requested filter
-    STRING filters = params->GetParameterValue(MgHttpResourceStrings::reqWfsFilter);
+    STRING filters = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsFilter);
 
     // Get the requested bounding box
-    STRING bbox = params->GetParameterValue(MgHttpResourceStrings::reqWfsBbox);
+    STRING bbox = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsBbox);
 
     // Build the filter strings from the feature IDs, filters or bounding box
     BuildFilterStrings(filters, featureIds, bbox);
 
     // Get the requested SRS value
-    m_srs = params->GetParameterValue(MgHttpResourceStrings::reqWfsSrsName);
+    m_srs = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsSrsName);
 
     // Get the SRS in WKT form
     STRING srsWkt = MgWmsMapUtil::SrsToWkt(m_srs);
@@ -78,7 +78,7 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgHttpRequestParam* params)
     }
 
     // Get the maximum number of features to return
-    string maxFeaturesParam = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqWfsMaxFeatures));
+    string maxFeaturesParam = MgUtil::WideCharToMultiByte(GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsMaxFeatures));
     if(maxFeaturesParam.length() > 0)
     {
         m_maxFeatures = atoi(maxFeaturesParam.c_str());
@@ -112,7 +112,7 @@ MgXmlNamespaceManager& WfsGetFeatureParams::NamespaceManager()
 /// <returns>
 /// nothing
 /// </returns>
-WfsGetFeatureParams::WfsGetFeatureParams(CREFSTRING xmlRequestString)
+WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer,CREFSTRING xmlRequestString)
 :   m_maxFeatures(-1)
 ,   m_filterStrings(new MgStringCollection())
 ,   m_featureTypeList(new MgStringCollection())
@@ -496,6 +496,12 @@ bool WfsGetFeatureParams::ParseFilterElement(MgXmlParser& parser,MgXmlNamespaceM
     // It's a filter element, and we "processed" it, but
     // it's possible that it contributed nothing to the filter list.
     return true;
+}
+
+STRING WfsGetFeatureParams::GetRequestParameter(MgOgcWfsServer& oServer,CREFSTRING sParameterName)
+{
+    CPSZ psz = oServer.RequestParameter(sParameterName.c_str());
+    return STRING(psz? psz : _(""));
 }
 
 

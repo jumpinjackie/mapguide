@@ -62,6 +62,19 @@ public:
     // One stop shopping: call this after construction, and it all happens.
     virtual bool ProcessRequest(IMgOgcDataAccessor* dataAccessor);
 
+    // Gets the value of the the Request's parameter
+    // Note that this applies both pre-fetch mapping of
+    // parameter names, and post-fetch mapping of parameter
+    // values, if definitions are present in the template files.
+    CPSZ RequestParameter(CPSZ pszParameter);
+
+    // Uses a Map definition to map the From string to the resulting To string.
+    bool MapValue(MgXmlParser& Map,CPSZ pszFrom,REFSTRING sTo);
+    // Convenience overload: grabs the definition you provide from the
+    // dictionary, and uses that to map from -> to; returns false if no 
+    // definition found, or if otherwise the mapping fails
+    bool MapValue(CPSZ pszDefinitionName,CPSZ pszFrom,REFSTRING sTo);
+
 protected:
 
     // Method to be implemented by derived classes to validate request parameters
@@ -85,9 +98,6 @@ protected:
     //
     // Returns false if it was not able to find a suitable response object.
     bool GenerateResponse(CPSZ pszRequest,CPSZ pszSpecificMimeType);
-
-    // Gets the value of the the Request's parameter
-    CPSZ RequestParameter(CPSZ pszParameter);
 
     // Generate an exception response given the exception indicated.
     // This loads the template, and attempts to find an Exception response
@@ -387,16 +397,12 @@ protected:
     // definition indicated by pszDefinition; if omitted, defaults to "Enum.iteration"
     bool IsIterationInSubset(int iNum,STRING sSubset,CPSZ pszDefinition = NULL);
 
-
-
 private:
     // Specifically digests <Template>...</Template>
     bool ProcessTemplateElement(MgXmlParser& Template,CPSZ pszResponse,CPSZ pszSpecificMimeType,CPSZ pszVersion);
     // Specifically digests <Response>...</Response>
     bool ProcessResponseElement(MgXmlParser& Template,CPSZ pszRequest, CPSZ pszSpecificMimeType);
 
-    // Uses a Map definition to map the From string to the resulting To string.
-    bool MapValue(MgXmlParser& Map,CPSZ pszFrom,REFSTRING sTo);
 
 
     // These are the links to the outside world.  The input (request) and

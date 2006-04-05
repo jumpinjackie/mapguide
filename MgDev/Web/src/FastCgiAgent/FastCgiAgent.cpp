@@ -333,7 +333,10 @@ bool AuthenticateOgcRequest(MgHttpRequestParam* params)
             // Tolerance and forgiveness?  Look for key namespace declarations before quitting?
             // Some requests forget the (required!!!) service= attribute, but do everything else
             // right, relying on the root element to carry the day.
-            return false; // abandon the authentication attempt
+            // No.  If we've gotten here, it's possibly a WMS request, since SERVICE=
+            // isn't always required for them. TODO: this form of authentication should
+            // run past the individual OGC objects to see if they concur.
+            return isWms;
         }
         else if(bWfs && bWms) // which is it? this is not good.
             return false; // abandon the authentication attempt

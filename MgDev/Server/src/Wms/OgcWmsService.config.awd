@@ -116,9 +116,6 @@ table {
  <!-- This is the default definition for a reference system (SRS, or CRS) -->
  <Define item="RS.xml"><SRS>&Enum.item;</SRS></Define>
 
-
-
-
  <!-- You can control the formats supported by various  
       WMS responses by (a) modifying these lists and    
       (b) adding (if necessary) the appropriate         
@@ -142,6 +139,38 @@ table {
    <item>image/png</item>
    <item>image/jpeg</item>
    <item>image/gif</item>
+ </Define>
+
+ <!-- This value map permits FORMAT= parameters to be  -->
+ <!-- translated into canonical mime type notations    -->
+ <!-- mostly for historical support (1.0.0 didn't use  -->
+ <!-- mime types) but also for tolerance; some clients -->
+ <!-- don't follow the requirement that parameter      -->
+ <!-- values are (supposed to be) case sensitive.      -->
+ <Define item="Parameter.Format.ValueMap">
+  <!-- Permutations of GIF -->
+  <translate from="GIF">image/gif</translate>
+  <translate from="gif">image/gif</translate>
+  <translate from="image/GIF">image/gif</translate>
+
+  <!-- Permutations of PNG -->
+  <translate from="PNG">image/png</translate>
+  <translate from="png">image/png</translate>
+  <translate from="image/PNG">image/png</translate>
+
+  <!-- Permutations of JPG -->
+  <translate from="JPG">image/jpeg</translate>
+  <translate from="JPEG">image/jpeg</translate>
+  <translate from="jpg">image/jpeg</translate>
+  <translate from="jpeg">image/jpeg</translate>
+  <translate from="image/JPEG">image/jpeg</translate>
+  <translate from="image/JPG">image/jpeg</translate>
+ </Define>
+
+
+ <!-- -->
+ <Define item="Parameter.SRS.ValueMap">
+  <translate from="LL84">EPSG:4326</translate>
  </Define>
 
  <!-- These are the supported (Get)FeatureInfo formats 

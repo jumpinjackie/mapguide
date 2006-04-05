@@ -24,6 +24,8 @@ class MgXmlNamespaceManager;
 class MgXmlSynchronizeOnNamespaceElement;
 class MgXmlBeginElement;
 
+class MgOgcWfsServer;
+
 class WfsGetFeatureParams : public MgDisposable
 {
 public:
@@ -36,7 +38,7 @@ public:
     /// <returns>
     /// nothing
     /// </returns>
-    WfsGetFeatureParams(MgHttpRequestParam* requestParams);
+    WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestParam* requestParams*/);
 
     /// <summary>
     /// Initializes the parameters of the request from an XML document
@@ -47,7 +49,7 @@ public:
     /// <returns>
     /// nothing
     /// </returns>
-    WfsGetFeatureParams(CREFSTRING xmlParams);
+    WfsGetFeatureParams(MgOgcWfsServer& oServer, CREFSTRING sXmlParams);
 
     /// <summary>
     /// Retrieves the requested feature types
@@ -121,6 +123,8 @@ protected:
     virtual void Dispose(){delete this;}
 
 private:
+    // Use this in lieu of direct access to parameters.
+    STRING GetRequestParameter(MgOgcWfsServer& oServer,CREFSTRING sParameterName);
 
     MgStringCollection* GetParenthesisedList(CREFSTRING sourceString);
     void BuildFilterStrings(CREFSTRING filters, CREFSTRING featureIds, CREFSTRING bbox);
@@ -140,6 +144,7 @@ private:
     // attach the right namespace.
     static void FixupMissingWfsNamespaceForGetFeature(MgXmlSynchronizeOnNamespaceElement& oGetFeatureElement,
                                                       MgXmlParser& parser,MgXmlNamespaceManager& nsmgr);
+
 
     Ptr<MgStringCollection> m_featureTypeList;
     Ptr<MgStringCollection> m_requiredPropertiesList;

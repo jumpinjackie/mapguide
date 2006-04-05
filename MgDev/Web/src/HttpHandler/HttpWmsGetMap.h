@@ -61,6 +61,7 @@ private:
 
     int CompareNoCase( CREFSTRING str1, CREFSTRING str2 ) const;
 
+    void InitializeRequestParameters(MgOgcWmsServer& oServer);
     STRING m_version;
     STRING m_layers;
     STRING m_styles;
@@ -71,6 +72,10 @@ private:
     STRING m_format;
     bool m_transparent;
     STRING m_bgColor;
+
+    // Use this in lieu of direct access to parameters.
+    STRING GetRequestParameter(MgOgcWmsServer& oServer,CREFSTRING sParameterName);
+
 };
 
 #endif  // _FS_WMS_GET_MAP_H

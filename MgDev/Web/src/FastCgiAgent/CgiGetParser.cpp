@@ -26,39 +26,52 @@ CgiGetParser::~CgiGetParser(void)
 {
 }
 
-void CgiGetParser::Parse(char* queryString, MgHttpRequestParam* params)
+void CgiGetParser::Parse(char* pszQuery, MgHttpRequestParam* params)
 {
     MG_TRY()
-    string query;
-    MgUtil::UnEscapeUrl(queryString, query);
+
+    // but we need the support of a string class, so we wrap it.
+    string sQuery(pszQuery);
+
     string::size_type startPos = 0;
     string::size_type sepPos = 0;
-    while (sepPos != query.npos)
-    {
-        sepPos = query.find('=', startPos);
-        if (sepPos != query.npos)
-        {
-            string paramName = query.substr(startPos, sepPos-startPos);
-            string paramValue;
-            startPos = sepPos + 1;
-            sepPos = query.find('&', startPos);
-            if (sepPos != query.npos)
-            {
-                paramValue = query.substr(startPos, sepPos-startPos);
-                startPos = sepPos + 1;
-            }
-            else
-            {
-                paramValue = query.substr(startPos);
-            }
+    while (sepPos != sQuery.npos) {
+        sepPos = sQuery.find('&',startPos);
+        if(sepPos != sQuery.npos) {
+            // Extract one parameter.
+            string sParameter = sQuery.substr(startPos,sepPos - startPos);
 
-            if (paramName.length() > 0 && paramValue.length() > 0)
-            {
-                STRING name = MgUtil::MultiByteToWideChar(paramName);
-                STRING value = MgUtil::MultiByteToWideChar(paramValue);
-                params->AddParameter(name, value);
-            }
+            // Update the next start to be past the ampersand.
+            startPos = sepPos + 1;
+
+            // Now, digest the parameter.
+            ParseOneParameter(sParameter,params);
         }
     }
+
+    ParseOneParameter(sQuery.substr(startPos),params);
+
     MG_CATCH_AND_THROW(L"CgiGetParser.Parse");
+}
+
+void CgiGetParser::ParseOneParameter(string sParameter, MgHttpRequestParam* params)
+{
+    if(sParameter.length() == 0)
+        return;
+
+    string sName;
+    string sValue;
+    string::size_type sepPosEqual = sParameter.find('=');
+    if(sepPosEqual != sParameter.npos) { // A name/value pair.
+        // Unescape any decorations encoded within the name or value.
+        MgUtil::UnEscapeUrl((char*)sParameter.substr(0,sepPosEqual).c_str(),sName);
+        MgUtil::UnEscapeUrl((char*)sParameter.substr(sepPosEqual+1).c_str(),sValue);
+    }
+    else { // just a name, no value.
+        MgUtil::UnEscapeUrl((char*)sParameter.c_str(),sName);
+        sValue = "";
+    }
+    STRING wsName  = MgUtil::MultiByteToWideChar(sName);
+    STRING wsValue = MgUtil::MultiByteToWideChar(sValue);
+    params->AddParameter(wsName, wsValue);
 }

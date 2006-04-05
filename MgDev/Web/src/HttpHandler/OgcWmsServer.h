@@ -34,6 +34,10 @@ public:
     void SetLayerDefs(MgWmsLayerDefinitions* pLayerDefs);
 
 protected:
+    // Centralize initialization regardless of ctor used.
+    bool InitWmsServer(CPSZ pszFilenameGlobalConfig);
+
+
     virtual void RespondToRequest();
     virtual bool ValidateRequest();
 
