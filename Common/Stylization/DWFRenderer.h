@@ -73,14 +73,12 @@ public:
                                                 double        mapScale,
                                                 double        dpi,
                                                 double        metersPerUnit,
-                                                CSysTransformer* xformToLL
-                                                );
+                                                CSysTransformer* xformToLL);
 
-    STYLIZATION_API virtual void EndMap           ();
+    STYLIZATION_API virtual void EndMap         ();
 
     STYLIZATION_API virtual void StartLayer     (RS_LayerUIInfo*      legendInfo,
-                                                 RS_FeatureClassInfo* classInfo
-                                                 );
+                                                 RS_FeatureClassInfo* classInfo);
 
     STYLIZATION_API virtual void EndLayer       ();
 
@@ -119,8 +117,7 @@ public:
     STYLIZATION_API virtual void AddDWFContent(RS_InputStream*  in,
                                                CSysTransformer* xformer,
                                                const RS_String&    section,
-                                               const RS_String&    passwd
-                                               );
+                                               const RS_String&    passwd);
 
     STYLIZATION_API virtual void SetSymbolManager(RS_SymbolManager* manager);
 
@@ -180,12 +177,14 @@ protected:
 
     void Init(RS_Bounds& extents);
 
-private:
+protected:
 
     //transformation from mapping to W2D space
     inline double _TX(double x);
     inline double _TY(double y);
     void _TransformPointsNoClamp(double* inpts, int numpts);
+
+private:
 
     //macro/overpost opcode output -- done manually by writing to file
     void BeginMacro(WT_File* file, int id, int scale);
@@ -286,11 +285,11 @@ private:
 
     void SetActions(WT_File& file);
 
-    //////
+    //////////////////////////////////////////////////////////
     // State variables for when DWFRenderer is used to keep
     // information during DWF rewriting process for symbols
     // and DWF layers
-    //////
+    //////////////////////////////////////////////////////////
     std::vector<int>    m_cntrs;
     RS_InputStream*     m_input;
     CSysTransformer*    m_xformer;
@@ -304,9 +303,7 @@ private:
     RS_MarkerDef m_lastSymbol;
 
     //////////////////////////////////////////////////////////
-    //
     // End of DWF rewrite specific code
-    //
     //////////////////////////////////////////////////////////
 };
 

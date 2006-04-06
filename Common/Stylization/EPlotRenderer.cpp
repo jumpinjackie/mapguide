@@ -287,7 +287,7 @@ void EPlotRenderer::EndMap()
                 AddW2DResource( *iter,
                                 *oditer,
                                 (const double*)anTransform,
-                                (const double*) mapClip,
+                                (const double*)mapClip,
                                 DWFXML::kzRole_Graphics2d,
                                 L"Layer name"); //TODO:
                 m_bFirst = false;
@@ -297,7 +297,7 @@ void EPlotRenderer::EndMap()
                 AddW2DResource( *iter,
                                 *oditer,
                                 (const double*)anTransform,
-                                (const double*) mapClip,
+                                (const double*)mapClip,
                                 DWFXML::kzRole_Graphics2dOverlay,
                                 L"Layer name");
             }
@@ -322,7 +322,7 @@ void EPlotRenderer::EndMap()
                 AddW2DResource( *iter,
                     NULL, //no attribute data for labels
                     (const double*)anTransform,
-                    (const double*) mapClip,
+                    (const double*)mapClip,
                     DWFXML::kzRole_Graphics2dOverlay,
                     L"Layer name - Labels");
             }
@@ -338,7 +338,7 @@ void EPlotRenderer::EndMap()
             AddW2DResource( *iter,
                 NULL,
                 (const double*)anTransform2,
-                (const double*) layoutClip,
+                (const double*)layoutClip,
                 DWFXML::kzRole_Graphics2dOverlay,
                 L"Layer name - Layout");
         }
@@ -349,7 +349,7 @@ void EPlotRenderer::EndMap()
             AddW2DResource( *iter,
                 NULL,
                 (const double*)anTransform2,
-                (const double*) layoutClip,
+                (const double*)layoutClip,
                 DWFXML::kzRole_Graphics2dOverlay,
                 L"Layer name - Layout Labels");
         }
@@ -408,6 +408,31 @@ void EPlotRenderer::EndMap()
 
     // no need to delete the observation mesh - EPlotRenderer makes sure
     // it never creates one
+}
+
+
+void EPlotRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
+                               RS_FeatureClassInfo* classInfo)
+{
+    // init super first
+    DWFRenderer::StartLayer(legendInfo, classInfo);
+
+    // add a viewport so that entities get properly clipped
+    WT_Logical_Point points[4];
+    RS_Bounds& extent = GetBounds();
+    points[0].m_x = (int)_TX(extent.minx);
+    points[0].m_y = (int)_TY(extent.miny);
+    points[1].m_x = (int)_TX(extent.maxx);
+    points[1].m_y = (int)_TY(extent.miny);
+    points[2].m_x = (int)_TX(extent.maxx);
+    points[2].m_y = (int)_TY(extent.maxy);
+    points[3].m_x = (int)_TX(extent.minx);
+    points[3].m_y = (int)_TY(extent.maxy);
+
+    WT_Viewport viewport1(*m_w2dFile, "", 4, points);
+    WT_Viewport viewport2(*m_w2dLabels, "", 4, points);
+    m_w2dFile->desired_rendition().viewport() = viewport1;
+    m_w2dLabels->desired_rendition().viewport() = viewport2;
 }
 
 

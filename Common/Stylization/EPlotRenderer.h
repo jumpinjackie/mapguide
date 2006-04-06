@@ -50,18 +50,28 @@ public:
 
     STYLIZATION_API virtual ~EPlotRenderer();
 
+    ///////////////////////////////////////////////////////////////////
+    // DWFRenderer overloads
+    //
     STYLIZATION_API virtual void StartMap   (RS_MapUIInfo*    mapInfo,
                                              RS_Bounds&       extents,
                                              double           mapScale,
                                              double           dpi,
                                              double           metersPerUnit,
                                              CSysTransformer* xformToLL = NULL
-                                           );
+                                            );
 
     STYLIZATION_API virtual void EndMap();
 
+    STYLIZATION_API virtual void StartLayer (RS_LayerUIInfo*      legendInfo,
+                                             RS_FeatureClassInfo* classInfo
+                                            );
+
     STYLIZATION_API virtual void Done();
 
+    ///////////////////////////////////////////////////////////////////
+    // EPlot specific stuff
+    //
     STYLIZATION_API void SetPageWidth(double width);
 
     STYLIZATION_API void SetPageHeight(double height);

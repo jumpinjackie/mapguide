@@ -418,8 +418,8 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
 
     if (legendInfo)
     {
-        //set the W2D layer id -- this is needed for the EPlot case
-        //but should not matter for the EMap case
+        //set the W2D layer id -- this is needed for the EMap case
+        //but should not matter for the EPlot case
         WT_Layer lr(*m_w2dFile, m_layerNum, Util_ConvertString(legendInfo->name().c_str()));
         m_w2dFile->desired_rendition().layer() = lr;
 
