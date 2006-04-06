@@ -64,7 +64,7 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
 
 MgServerGetProviderCapabilities::~MgServerGetProviderCapabilities()
 {
-    m_connManager = NULL;
+    GIS_SAFE_RELEASE(m_connManager);
 
     if (NULL != m_xmlUtil)
         delete m_xmlUtil;

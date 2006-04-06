@@ -81,7 +81,7 @@ private:
     IGWSFeatureIterator*                 m_gwsFeatureReader;
     Ptr<MgFeatureSet>                    m_featureSet;
     Ptr<MgClassDefinition>               m_classDef;
-    GisStringCollection*                 m_relationNames;
+    GisPtr<GisStringCollection>          m_relationNames;
     STRING                               m_extensionName;
 };
 

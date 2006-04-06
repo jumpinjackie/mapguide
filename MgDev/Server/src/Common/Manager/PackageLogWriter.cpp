@@ -98,17 +98,21 @@ void MgPackageLogWriter::UpdateLog()
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
+    Ptr<MgDateTime> packageDate = m_statusInfo.GetPackageDate();
+    Ptr<MgDateTime> startTime   = m_statusInfo.GetStartTime();
+    Ptr<MgDateTime> endTime     = m_statusInfo.GetEndTime();
+
     WriteEntry(file, MgPackageLogEntry::ApiName, m_statusInfo.GetApiName());
     WriteEntry(file, MgPackageLogEntry::StatusCode, m_statusInfo.GetStatusCode());
     WriteEntry(file, MgPackageLogEntry::PackageName, m_statusInfo.GetPackageName());
     WriteEntry(file, MgPackageLogEntry::PackageDescription, m_statusInfo.GetPackageDescription(), true);
-    WriteEntry(file, MgPackageLogEntry::PackageDate, m_statusInfo.GetPackageDate());
+    WriteEntry(file, MgPackageLogEntry::PackageDate, packageDate);
     WriteEntry(file, MgPackageLogEntry::PackageSize, m_statusInfo.GetPackageSize());
     WriteEntry(file, MgPackageLogEntry::UserName, m_statusInfo.GetUserName());
     WriteEntry(file, MgPackageLogEntry::ServerName, m_statusInfo.GetServerName());
     WriteEntry(file, MgPackageLogEntry::ServerAddress, m_statusInfo.GetServerAddress());
-    WriteEntry(file, MgPackageLogEntry::StartTime, m_statusInfo.GetStartTime());
-    WriteEntry(file, MgPackageLogEntry::EndTime, m_statusInfo.GetEndTime());
+    WriteEntry(file, MgPackageLogEntry::StartTime, startTime);
+    WriteEntry(file, MgPackageLogEntry::EndTime, endTime);
 
     if (m_statusInfo.GetOperationsReceived() > 0)
     {

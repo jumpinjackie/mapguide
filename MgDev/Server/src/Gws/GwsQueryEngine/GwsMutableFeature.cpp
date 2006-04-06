@@ -239,7 +239,7 @@ void CGwsMutableFeature::InitializePropertyValues ()
 
     for (int i = 0; i < names->GetCount (); i ++) {
         const CGwsPropertyDesc & desc = fdesc->GetPropertyDescriptor (i);
-        FdoPropertyValue * propval = ConstructPropertyValue (desc);
+        GisPtr<FdoPropertyValue> propval = ConstructPropertyValue (desc);
         m_pProperties->Add (propval);
     }
 }
@@ -249,7 +249,7 @@ FdoPropertyValue * CGwsMutableFeature::ConstructPropertyValue (
     const CGwsPropertyDesc & desc
 )
 {
-    FdoValueExpression * valexpr = ConstructValueExpression (desc);
+    GisPtr<FdoValueExpression> valexpr = ConstructValueExpression (desc);
 
     if (valexpr != NULL)
         return FdoPropertyValue::Create (desc.m_name.c_str (), valexpr);
@@ -899,9 +899,9 @@ void CGwsMutableFeature::ToString(
 
 void CGwsMutableFeature::SetValue(GisString* propertyName, FdoValueExpression* pVal)
 {
-    GisPtr<FdoPropertyValue>     pPropertyValue;
+    GisPtr<FdoPropertyValue> pPropertyValue =
+                                m_pProperties->FindItem (propertyName);
 
-    pPropertyValue = m_pProperties->FindItem (propertyName);
     if (pPropertyValue != NULL) {
         pPropertyValue->SetValue(pVal);
     } else {
@@ -919,7 +919,7 @@ void CGwsMutableFeature::SetNull(GisString* propertyName)
     GisPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
     if (pPropertyValue == NULL) { // not yet set
-        GisPtr<FdoPropertyValue>  pPropertyValue = ConstructPropertyValue (* desc);
+        pPropertyValue = ConstructPropertyValue (* desc);
         m_pProperties->Add(pPropertyValue);
     } else {
         GisPtr<FdoValueExpression> pVal = pPropertyValue->GetValue ();

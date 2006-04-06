@@ -71,7 +71,7 @@ MgFdoConnectionManager::~MgFdoConnectionManager(void)
 
     m_FdoConnectionCache.clear();
 
-    m_connManager = NULL;
+    GIS_SAFE_RELEASE(m_connManager);
 
     MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.~MgFdoConnectionManager")
 }

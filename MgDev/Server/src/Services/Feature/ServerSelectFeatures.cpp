@@ -845,7 +845,8 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             MgServerFeatureConnection msfcLeft(featureSourceIdentifier);
             if ( msfcLeft.IsConnectionOpen() )
             {
-                pool->AddConnection(primaryConnectionName.c_str(), msfcLeft.GetConnection());
+                GisPtr<FdoIConnection> connLeft = msfcLeft.GetConnection();
+                pool->AddConnection(primaryConnectionName.c_str(), connLeft);
             }
             else
             {
@@ -906,7 +907,8 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                     MgServerFeatureConnection msfcRight(secondaryFeatureSource);
                     if ( msfcRight.IsConnectionOpen() )
                     {
-                        pool->AddConnection(secondaryConnectionName.c_str(), msfcRight.GetConnection());
+                        GisPtr<FdoIConnection> connRight = msfcRight.GetConnection();
+                        pool->AddConnection(secondaryConnectionName.c_str(), connRight);
                     }
                     else
                     {
@@ -984,8 +986,10 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             query->Execute(&iter);
             query->Execute(&iterCopy);
 
+            GisPtr<GisStringCollection> fsNames = qd->FeatureSourceNames();
+
             gwsFeatureReader = new MgServerGwsFeatureReader(iter);
-            gwsFeatureReader->PrepareGwsGetFeatures(parsedExtensionName, qd->FeatureSourceNames());
+            gwsFeatureReader->PrepareGwsGetFeatures(parsedExtensionName, fsNames);
             gwsFeatureReader->SetGwsIteratorCopy(iterCopy);
 
         }

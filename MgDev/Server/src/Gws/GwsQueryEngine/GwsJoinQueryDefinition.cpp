@@ -139,20 +139,21 @@ IGWSQualifiedNames* GWSJoinQueryDefinition<T>::QualifiedNames ()
 template<class T>
 GisStringCollection*  GWSJoinQueryDefinition<T>::FeatureSourceNames ()
 {
-
     GisPtr<GisStringCollection> lfsnames = m_leftQd->FeatureSourceNames ();
     GisPtr<GisStringCollection> rfsnames = m_rightQd->FeatureSourceNames ();
 
     GisStringCollection * fsnames = GisStringCollection::Create ();
     int i;
     for (i = 0; lfsnames != NULL && i < lfsnames->GetCount (); i ++) {
-        if (! fsnames->Contains (lfsnames->GetItem (i))) {
+        GisStringElementP elem = lfsnames->GetItem (i);
+        if (! fsnames->Contains (elem)) {
             fsnames->Add (lfsnames->GetString (i));
         }
     }
 
     for (i = 0; rfsnames != NULL && i < rfsnames->GetCount (); i ++) {
-        if (! fsnames->Contains (rfsnames->GetItem (i))) {
+        GisStringElementP elem = rfsnames->GetItem (i);
+        if (! fsnames->Contains (elem)) {
             fsnames->Add (rfsnames->GetString (i));
         }
     }

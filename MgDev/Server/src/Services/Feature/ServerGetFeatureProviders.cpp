@@ -36,8 +36,10 @@ MgServerGetFeatureProviders::MgServerGetFeatureProviders()
 
 MgServerGetFeatureProviders::~MgServerGetFeatureProviders()
 {
-    m_providerReg = NULL;
-    m_connManager = NULL;
+    GIS_SAFE_RELEASE(m_providerReg);
+    GIS_SAFE_RELEASE(m_connManager);
+
+    // do not release this one
     m_fdoProviderCol = NULL;
 
     delete m_xmlUtil;

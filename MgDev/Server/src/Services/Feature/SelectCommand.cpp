@@ -48,11 +48,9 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource) : m_filter(NULL
 
 MgSelectCommand::~MgSelectCommand()
 {
-    if (NULL != m_fdoConn)
-        m_fdoConn->Release();
-
-    if (NULL != m_command)
-        m_command->Release();
+    GIS_SAFE_RELEASE(m_fdoConn);
+    GIS_SAFE_RELEASE(m_command);
+    GIS_SAFE_RELEASE(m_filter);
 }
 
 FdoIdentifierCollection* MgSelectCommand::GetPropertyNames()
