@@ -225,7 +225,7 @@ function ConditionalSubmitForm( formName, conditionMsg, conditionFlag, condition
 	}
 }
 
-function ServiceConditionalDeleteButton( deleteFlagName, okFlag, deleteNotPermittedStr, confirmationID, confirmationStr )
+function ServiceConditionalDeleteButton( deleteFlagName, okFlag, deleteNotPermittedStr, confirmationID, confirmationStr, formName )
 {
     deleteFlag = getElement( deleteFlagName );
     if ( deleteFlag == null )
@@ -234,8 +234,21 @@ function ServiceConditionalDeleteButton( deleteFlagName, okFlag, deleteNotPermit
     if ( deleteFlag.value != okFlag )
         window.alert( deleteNotPermittedStr );
     else
-    if ( confirmationID != null )
-        SetElementValueWithConfirmation( confirmationID, confirmationStr );
+    if ( confirmationID != null && window.confirm( confirmationStr ) )
+	{
+        SetElementValue( confirmationID, "true" );
+		SubmitForm( formName );
+	}
+}
+
+function DisplayServerStatus( serverToMonitorID )
+{
+    var serverToMonitorElement = getElement( serverToMonitorID );
+    if ( serverToMonitorElement == null )
+        return;
+		
+    var destination = "viewserverstatus.php?serverToMonitor="+serverToMonitorElement.value;
+	statusWindow = window.open( destination, "ServerStatusWindow", "width=600, height=600, scrollbars, resizable, menubar=yes, toolbar=yes" );
 }
 
 function DisplayPackageLog( selectedPackageName )
