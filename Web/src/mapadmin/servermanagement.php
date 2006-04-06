@@ -53,6 +53,7 @@ try
     $serverUpdateList = array();
     $okToDeleteID = 'okToDelete';
     $okToDeleteVal = 'true';
+	$serverToMonitorID = 'serverToMonitor';
     $onlineID = 'online';
     $onlineList = array();
     $serverTable = array();
@@ -203,13 +204,15 @@ catch ( Exception $e )
                 $button->label = "Remove";
                 $button->icon = "images/delete.gif";
                 $button->id = 'RemoveButton';
+				$button->submitForm = false;
                 $button->action =
-                "ServiceConditionalDeleteButton( 'okToDelete', 'true', 'The site server cannot be removed.', '".DELETE_SELECTION_ID."', 'Are you sure you want to delete the selected server?');";
+                "ServiceConditionalDeleteButton( 'okToDelete', 'true', 'The site server cannot be removed.', '".DELETE_SELECTION_ID."', 'Are you sure you want to delete the selected server?', '".$formName."');";
                 $buttons[1] = $button;
                 $button = new ToolbarButtonRecord();
                 $button->label = "Status";
                 $button->icon = "images/monitor_status.gif";
-                $button->action = "window.open( 'viewserverstatus.php', 'ServerStatusWindow', 'width=600, height=600, scrollbars, resizable, menubar=yes, toolbar=yes' )";
+				$button->submitForm = false;
+                $button->action = "DisplayServerStatus( '".$serverToMonitorID."' );";
                 $buttons[2] = $button;
                 $button = new ToolbarButtonRecord();
                 $button->id = 'ConfigureButton';
@@ -252,9 +255,9 @@ catch ( Exception $e )
                         $serverHrefStr = 'serverproperties.php?'.$selectedServerID.'='.$key;
 
                         if ( $key == $siteServerAddress )
-                        $serverSelectionOnClickStr = "SetElementValue( '".$okToDeleteID."', 'false' );";
+                        $serverSelectionOnClickStr = "SetElementValue( '".$okToDeleteID."', 'false' ); SetElementValue( '".$serverToMonitorID."', '".$key."' );";
                         else
-                        $serverSelectionOnClickStr = "SetElementValue( '".$okToDeleteID."', 'true' );";
+                        $serverSelectionOnClickStr = "SetElementValue( '".$okToDeleteID."', 'true' );  SetElementValue( '".$serverToMonitorID."', '".$key."' );";
 
                         $serviceSelector->serverAddress = $key;
                         $serviceSelector->drawingOnID = $drawingServiceOnID.'[]';
@@ -286,8 +289,9 @@ catch ( Exception $e )
                     ?>
                 </table>
 
-                <!-- Hidden flag to say whether or not Delete is permitted -->
+                <!-- Hidden flags -->
                 <input type="hidden" name="<?php echo $okToDeleteID; ?>" value="<?php echo $okToDeleteVal; ?>" >
+				<input type="hidden" name="<?php echo $serverToMonitorID ?>" value="<?php echo $selectedServer ?>" >
 
                 <?php
                 DisplayPaginationControl( $currPage, $numServers, $pageSize, 'servermanagement.php' );

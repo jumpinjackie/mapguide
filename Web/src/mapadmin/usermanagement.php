@@ -176,8 +176,9 @@
                     $button = new ToolbarButtonRecord();
                         $button->label = "Delete User";
                         $button->icon = "images/delete.gif";
+						$button->submitForm = false;
                         $button->action =
-                            "ServiceConditionalDeleteButton( 'okToDelete', 'true', 'This user cannot be deleted.', '".DELETE_SELECTION_ID."', 'Are you sure you want to delete the selected user?');";
+                            "ServiceConditionalDeleteButton( 'okToDelete', 'true', 'This user cannot be deleted.', '".DELETE_SELECTION_ID."', 'Are you sure you want to delete the selected user?', '".$formName."' );";
                     $buttons[2] = $button;
                     DisplayToolbar( $buttons, $formName );
                 ?>

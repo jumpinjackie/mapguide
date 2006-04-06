@@ -462,6 +462,7 @@
         var $icon;
         var $action;
         var $disabled;
+		var $submitForm;
 
         function ToolbarButtonRecord()
         {
@@ -470,6 +471,7 @@
             $this->icon = "";
             $this->action = "";
             $this->disabled = false;
+			$this->submitForm = true;
         }
     }
     function DisplayStandaloneToolbar( $buttons, $formName, $class )
@@ -507,7 +509,7 @@
                         echo $button->action;
                     if ( $haveAction && $haveForm )
                         echo ";";
-                    if ( $haveForm )
+                    if ( $haveForm && $button->submitForm )
                         echo "SubmitForm('",$formName,"');";
                     echo '"';
                 }
