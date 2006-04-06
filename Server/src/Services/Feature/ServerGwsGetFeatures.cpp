@@ -1342,7 +1342,7 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
 
 void MgServerGwsGetFeatures::SetRelationNames(GisStringCollection* relationNames)
 {
-    m_relationNames = relationNames;
+    m_relationNames = GIS_SAFE_ADDREF(relationNames);
 }
 
 void MgServerGwsGetFeatures::SetExtensionName(CREFSTRING extensionName)
@@ -1352,7 +1352,7 @@ void MgServerGwsGetFeatures::SetExtensionName(CREFSTRING extensionName)
 
 GisStringCollection* MgServerGwsGetFeatures::GetRelationNames()
 {
-    return m_relationNames;
+    return GIS_SAFE_ADDREF((GisStringCollection*)m_relationNames);
 }
 
 STRING MgServerGwsGetFeatures::GetExtensionName()

@@ -118,7 +118,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinition()
     MG_FEATURE_SERVICE_TRY()
 
     Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy);
-    gwsGetFeatures->SetRelationNames(m_gwsGetFeatures->GetRelationNames());
+    gwsGetFeatures->SetRelationNames(GisPtr<GisStringCollection>(m_gwsGetFeatures->GetRelationNames()));
     gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
     classDef = gwsGetFeatures->GetMgClassDefinition(false);
 
@@ -148,7 +148,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinitionNoXml()
     MG_FEATURE_SERVICE_TRY()
 
     Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy);
-    gwsGetFeatures->SetRelationNames(m_gwsGetFeatures->GetRelationNames());
+    gwsGetFeatures->SetRelationNames(GisPtr<GisStringCollection>(m_gwsGetFeatures->GetRelationNames()));
     gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
     classDef = gwsGetFeatures->GetMgClassDefinition(false);
 

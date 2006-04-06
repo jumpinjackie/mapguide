@@ -48,7 +48,7 @@ MgResourcePackageMaker::~MgResourcePackageMaker()
 /// \brief
 /// Generates unique resource and archive pathnames.
 ///
-void MgResourcePackageMaker::GeneratePathnames(MgResourceIdentifier& resource, 
+void MgResourcePackageMaker::GeneratePathnames(MgResourceIdentifier& resource,
     CREFSTRING postfix, REFSTRING resourcePathname, REFSTRING archivePathname) const
 {
     // Ensure the resource package is only made from the Library repository.
@@ -83,14 +83,14 @@ void MgResourcePackageMaker::GeneratePathnames(MgResourceIdentifier& resource,
 /// \brief
 /// Starts making the resource package.
 ///
-void MgResourcePackageMaker::Start(MgResourceIdentifier& resource, 
-    CREFSTRING packagePathname, CREFSTRING packageDescription, 
+void MgResourcePackageMaker::Start(MgResourceIdentifier& resource,
+    CREFSTRING packagePathname, CREFSTRING packageDescription,
     bool logActivities)
 {
     MG_RESOURCE_SERVICE_TRY()
 
     // Initialize the status information.
-    InitializeStatus(MgPackageApiName::MakePackage, packagePathname, 
+    InitializeStatus(MgPackageApiName::MakePackage, packagePathname,
         logActivities);
 
     if (m_packageLogWriter != NULL)
@@ -120,10 +120,11 @@ void MgResourcePackageMaker::End(MgException* except)
     if (NULL == except)
     {
         // Package the resource package manifest.
+        Ptr<MgByteReader> reader = m_manifestSerializer.ToByteReader();
         m_zipFileWriter->AddArchive(
-            MgResourcePackageManifestHandler::sm_manifestFileName, 
-            m_manifestSerializer.ToByteReader());
-    
+            MgResourcePackageManifestHandler::sm_manifestFileName,
+            reader);
+
         // Close the package file.
         m_zipFileWriter.reset(NULL);
 
@@ -200,7 +201,7 @@ void MgResourcePackageMaker::PackageResourceHeader(
             opInfo->RemoveParameter(MgOperationParameter::ResourceHeader);
 
             // Add the operation information to the resource operation map.
-            // This operation will be added to the resource package manifest later 
+            // This operation will be added to the resource package manifest later
             // when packaging the resource content.
             m_resourceOperationMap.insert(MgResourceOperationMap::value_type(
                 resourcePathname, opInfo.release()));
@@ -209,12 +210,12 @@ void MgResourcePackageMaker::PackageResourceHeader(
     else
     {
         // Add the operation information to the resource operation map.
-        // This operation will be added to the resource package manifest later 
+        // This operation will be added to the resource package manifest later
         // when packaging the resource content.
         m_resourceOperationMap.insert(MgResourceOperationMap::value_type(
             resourcePathname, opInfo.release()));
     }
-    
+
     // Package the resource header.
     m_zipFileWriter->AddArchive(archivePathname, xmlDoc);
 
@@ -244,10 +245,10 @@ bool MgResourcePackageMaker::PackageResourceContent(
     MG_RESOURCE_SERVICE_TRY()
 
     ACE_ASSERT(!resource.IsFolder() || resource.IsRoot());
-    MgResourceOperationMap::const_iterator i = 
+    MgResourceOperationMap::const_iterator i =
         m_resourceOperationMap.find(resource.ToString());
 
-    // The resource not in the resource operation map means the current user 
+    // The resource not in the resource operation map means the current user
     // has no read pemission to it.
     if (m_resourceOperationMap.end() == i)
     {
@@ -263,7 +264,7 @@ bool MgResourcePackageMaker::PackageResourceContent(
 
     GeneratePathnames(resource, postfix, resourcePathname, archivePathname);
 
-    // All resource contents, except the root and subfolders, must be deleted 
+    // All resource contents, except the root and subfolders, must be deleted
     // so that all resource data are wiped out cleanly.
     if (!resource.IsFolder())
     {
@@ -289,7 +290,7 @@ bool MgResourcePackageMaker::PackageResourceContent(
 
     // Serialize the operation information to the resource package manifest.
     m_manifestSerializer.Serialize(*opInfo);
-        
+
     // Package the resource content.
     m_zipFileWriter->AddArchive(archivePathname, xmlDoc);
 
@@ -316,7 +317,7 @@ bool MgResourcePackageMaker::PackageResourceContent(
 /// Packages the specified resource data.
 ///
 void MgResourcePackageMaker::PackageResourceData(
-    MgResourceIdentifier& resource, MgByteReader* byteReader, 
+    MgResourceIdentifier& resource, MgByteReader* byteReader,
     CREFSTRING dataName, CREFSTRING dataType)
 {
     MG_RESOURCE_SERVICE_TRY()
