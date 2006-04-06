@@ -320,7 +320,7 @@ function getMaxOptionLen(menuObj)
 function startBuildMenuContent(menuObj)
 {
    resetContent(menuObj);
-   menuObj.content = "<div class=\"PopupScrollUpArea\" id=\"" + menuObj.menuName + "ScrollUpArea\" align=center style=\"height: 12px;\"><img id=\"" + menuObj.menuName + "ArrowUp\" src=\"scrollup.gif\" width=16 height=16></div>" +
+   menuObj.content = "<div class=\"PopupScrollUpArea\" id=\"" + menuObj.menuName + "ScrollUpArea\" align=center style=\"height: 12px;\"><img id=\"" + menuObj.menuName + "ArrowUp\" src=\"" + menuObj.iconScrollUp + "\" width=16 height=16></div>" +
         "<div class=\"PopupList\" id=\"" + menuObj.menuName + "List\" style=\"background-color: " + menuObj.bkColor + "\">\n" +
         "<div class=\"PopupInnerList\" id=\"" + menuObj.menuName + "InnerList\" style=\"background-color: " + menuObj.bkColor + "\">\n" +
         "<table class=\"PopupTableContent\" id=\"Tbl" + menuObj.menuName + "\" width=100% cellspacing=0 cellpadding=0 style=\"background-color: " + menuObj.bkColor + "\">\n";
@@ -332,7 +332,7 @@ function endBuildMenuContent(menuObj)
         "</table>\n" +
         "</div>\n" +
         "</div>\n" +
-        "<div class=\"PopupScrollDownArea\" id=\"" + menuObj.menuName + "ScrollDownArea\" align=center><img src=\"scrolldown.gif\" id=\"" + menuObj.menuName + "ArrowDown\" width=16 height=16></div>\n";
+        "<div class=\"PopupScrollDownArea\" id=\"" + menuObj.menuName + "ScrollDownArea\" align=center><img src=\"" + menuObj.iconScrollDown + "\" id=\"" + menuObj.menuName + "ArrowDown\" width=16 height=16></div>\n";
 }
 
 function addMenuOption(menuObj, text, param, type, icon, iconDisabled, enabled)
