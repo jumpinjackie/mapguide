@@ -2097,6 +2097,7 @@ void DWFRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, co
     m_xformer = xformer;
     m_bHaveViewport = false;
     m_layerFilter = w2dfilter;
+    m_bLayerPassesFilter = true;
 
     WT_File fin;
     fin.set_file_mode(WT_File::/*WT_File_mode::*/File_Read);
