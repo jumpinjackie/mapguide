@@ -227,10 +227,23 @@ WT_Result simple_process_layer (WT_Layer & layer, WT_File & file)
 
     if (!filter.empty())
     {
-        if (wcsstr(filter.c_str(), name))
-            rewriter->LayerPassesFilter() = true;
-        else
-            rewriter->LayerPassesFilter() = false;
+        rewriter->LayerPassesFilter() = false;
+
+        wchar_t* strTok = (wchar_t*)alloca(sizeof(wchar_t) * (filter.length() + 1));
+        wcscpy(strTok, filter.c_str());
+
+        wchar_t* token = wcstok(strTok, L",");
+
+        while(token)
+        {
+            if (wcscmp(token, name) == 0)
+            {
+                rewriter->LayerPassesFilter() = true;
+                break;
+            }
+              
+            token = wcstok(NULL, L",");
+        }
     }
 
     delete [] name;
