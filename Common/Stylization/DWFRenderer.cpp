@@ -755,11 +755,26 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     //sized symbols -- the difference happens when we play the macro
     //Device space macros are played with negative size
 
-    //For now every symbol is put in a macro fo its own.
-    //Eventually we can reuse the same macro for similar symbols
-    //and just play it at different positions and sizes
+    //construct a scaling bounding box that will take care of 
+    //the desired aspect ratio -- not that overall scaling to the
+    //correct size will be done using the macro attributes, but we 
+    //need to take aspect into account ourselves, since macro 
+    //only has a single overall scale factor
+    double lastAspect = (m_lastSymbol.height() == 0.0) ? 2.0 : m_lastSymbol.width() / m_lastSymbol.height();
+    double aspect = (mdef.height() == 0.0) ? 2.0 : mdef.width() / mdef.height();
+    
+    RS_Bounds dst;
 
-    RS_Bounds dst(0, 0, SYMBOL_MAX, SYMBOL_MAX);
+    if (aspect >= 1.0)
+    {
+        double diff = 0.5 * (aspect - 1.0) * SYMBOL_MAX;
+        dst = RS_Bounds(0, diff, SYMBOL_MAX, SYMBOL_MAX - diff);
+    }
+    else
+    {
+        double diff = 0.5 * (1.0 - aspect) * SYMBOL_MAX;
+        dst = RS_Bounds(diff, 0, SYMBOL_MAX - diff, SYMBOL_MAX);
+    }
 
     //construct transformer -- we will use one
     //even for the default symbol -- makes sure
@@ -773,14 +788,13 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             //TODO: cannot easily check for font symbol repetition
             //since we forward to the labeling logic...
             ////check to see if the last symbol we got was the same
-            ////we need to compare only symbol properties which are not
-            ////handled by macro scaling
             //if (   mdef.library() != m_lastSymbol.library()
             //    || mdef.name() != m_lastSymbol.name()
             //    || mdef.rotation() != m_lastSymbol.rotation()
             //    || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
             //    || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
-            //    || mdef.style().background().argb() != m_lastSymbol.style().background().argb())
+            //    || mdef.style().background().argb() != m_lastSymbol.style().background().argb()
+            //    || aspect != lastAspect)
             //{
                 m_lastSymbol = mdef;
 
@@ -807,14 +821,13 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         else
         {
             //check to see if the last symbol we got was the same
-            //we need to compare only symbol properties which are not
-            //handled by macro scaling
             if (   mdef.library() != m_lastSymbol.library()
                 || mdef.name() != m_lastSymbol.name()
                 || mdef.rotation() != m_lastSymbol.rotation()
                 || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
                 || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
-                || mdef.style().background().argb() != m_lastSymbol.style().background().argb())
+                || mdef.style().background().argb() != m_lastSymbol.style().background().argb()
+                || aspect != lastAspect)
             {
                 m_lastSymbol = mdef;
 
@@ -906,14 +919,13 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         //case where we are using a symbol from the library
 
         //check to see if the last symbol we got was the same
-        //we need to compare only symbol properties which are not
-        //handled by macro scaling
         if (   mdef.library() != m_lastSymbol.library()
             || mdef.name() != m_lastSymbol.name()
             || mdef.rotation() != m_lastSymbol.rotation()
             || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
             || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
-            || mdef.style().background().argb() != m_lastSymbol.style().background().argb())
+            || mdef.style().background().argb() != m_lastSymbol.style().background().argb()
+            || aspect != lastAspect)
         {
             m_lastSymbol = mdef;
 
