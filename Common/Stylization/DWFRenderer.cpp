@@ -770,6 +770,20 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     {
         if (is_font_symbol)
         {
+            //TODO: cannot easily check for font symbol repetition
+            //since we forward to the labeling logic...
+            ////check to see if the last symbol we got was the same
+            ////we need to compare only symbol properties which are not
+            ////handled by macro scaling
+            //if (   mdef.library() != m_lastSymbol.library()
+            //    || mdef.name() != m_lastSymbol.name()
+            //    || mdef.rotation() != m_lastSymbol.rotation()
+            //    || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
+            //    || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
+            //    || mdef.style().background().argb() != m_lastSymbol.style().background().argb())
+            //{
+                m_lastSymbol = mdef;
+
             //convert font symbol to a simple label
             RS_TextDef tdef(RS_HAlignment_Center, RS_VAlignment_Half);
             RS_FontDef fdef(mdef.library(), mdef.height(), mdef.fontstyle(), mdef.units());
@@ -792,84 +806,98 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         }
         else
         {
-            //it is one of the default SLD symbols
-            RS_F_Point* poly = NULL;
-            int npts = 0;
-
-            //determine which SLD symbol we need to draw
-            //and pick up its polygon point definition
-            const wchar_t* nm = mdef.name().c_str();
-
-            if (wcscmp(nm, SLD_CIRCLE_NAME) == 0)
+            //check to see if the last symbol we got was the same
+            //we need to compare only symbol properties which are not
+            //handled by macro scaling
+            if (   mdef.library() != m_lastSymbol.library()
+                || mdef.name() != m_lastSymbol.name()
+                || mdef.rotation() != m_lastSymbol.rotation()
+                || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
+                || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
+                || mdef.style().background().argb() != m_lastSymbol.style().background().argb())
             {
-                poly = (RS_F_Point*)SLD_CIRCLE;
-                npts = sizeof(SLD_CIRCLE) / (2 * sizeof(double));
-            }
-            else if (wcscmp(nm, SLD_TRIANGLE_NAME) == 0)
-            {
-                poly = (RS_F_Point*)SLD_TRIANGLE;
-                npts = sizeof(SLD_TRIANGLE) / (2 * sizeof(double));
-            }
-            else if (wcscmp(nm, SLD_STAR_NAME) == 0)
-            {
-                poly = (RS_F_Point*)SLD_STAR;
-                npts = sizeof(SLD_STAR) / (2 * sizeof(double));
-            }
-            else if (wcscmp(nm, SLD_CROSS_NAME) == 0)
-            {
-                poly = (RS_F_Point*)SLD_CROSS;
-                npts = sizeof(SLD_CROSS) / (2 * sizeof(double));
-            }
-            else if (wcscmp(nm, SLD_X_NAME) == 0)
-            {
-                poly = (RS_F_Point*)SLD_X;
-                npts = sizeof(SLD_X) / (2 * sizeof(double));
-            }
-            else
-            {
-                //default is a square
-                poly = (RS_F_Point*)SLD_SQUARE;
-                npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
-            }
+                m_lastSymbol = mdef;
 
-            EnsureBufferSize(npts);
-            WT_Logical_Point* pts = m_wtPointBuffer;
+                //it is one of the default SLD symbols
+                RS_F_Point* poly = NULL;
+                int npts = 0;
 
-            double tempx, tempy;
+                //determine which SLD symbol we need to draw
+                //and pick up its polygon point definition
+                const wchar_t* nm = mdef.name().c_str();
 
-            for (int i=0; i<npts; i++)
-            {
-                //transform from unity to a SYMBOL_MAX sized square
-                tempx = poly[i].x * SYMBOL_MAX;
-                tempy = poly[i].y * SYMBOL_MAX;
-
-                trans.TransformPoint(tempx, tempy);
-
-                pts[i].m_x = (WT_Integer32)tempx;
-                pts[i].m_y = (WT_Integer32)tempy;
-            }
-
-            //enclose W2D geometry in a macro
-            BeginMacro(file, 0, SYMBOL_MAX);
-
-                if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
-                    file->desired_rendition().color() = WT_Color(0,0,255);
+                if (wcscmp(nm, SLD_CIRCLE_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_CIRCLE;
+                    npts = sizeof(SLD_CIRCLE) / (2 * sizeof(double));
+                }
+                else if (wcscmp(nm, SLD_TRIANGLE_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_TRIANGLE;
+                    npts = sizeof(SLD_TRIANGLE) / (2 * sizeof(double));
+                }
+                else if (wcscmp(nm, SLD_STAR_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_STAR;
+                    npts = sizeof(SLD_STAR) / (2 * sizeof(double));
+                }
+                else if (wcscmp(nm, SLD_CROSS_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_CROSS;
+                    npts = sizeof(SLD_CROSS) / (2 * sizeof(double));
+                }
+                else if (wcscmp(nm, SLD_X_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_X;
+                    npts = sizeof(SLD_X) / (2 * sizeof(double));
+                }
                 else
-                    file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().color()));
+                {
+                    //default is a square
+                    poly = (RS_F_Point*)SLD_SQUARE;
+                    npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
+                }
 
-                WT_Polygon symbolFill(npts, pts, true);
-                symbolFill.serialize(*file);
+                EnsureBufferSize(npts);
+                WT_Logical_Point* pts = m_wtPointBuffer;
 
-                if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
-                    file->desired_rendition().color() = WT_Color(127,127,127);
-                else
-                    file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().outline().color()));
+                double tempx, tempy;
 
-                WT_Polyline symbol(npts, pts, true);
-                symbol.serialize(*file);
+                for (int i=0; i<npts; i++)
+                {
+                    //transform from unity to a SYMBOL_MAX sized square
+                    tempx = poly[i].x * SYMBOL_MAX;
+                    tempy = poly[i].y * SYMBOL_MAX;
 
-            //end macro definition and play the macro
-            EndMacro(file);
+                    trans.TransformPoint(tempx, tempy);
+
+                    pts[i].m_x = (WT_Integer32)tempx;
+                    pts[i].m_y = (WT_Integer32)tempy;
+                }
+
+                //enclose W2D geometry in a macro
+                BeginMacro(file, 0, SYMBOL_MAX);
+
+                    if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
+                        file->desired_rendition().color() = WT_Color(0,0,255);
+                    else
+                        file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().color()));
+
+                    WT_Polygon symbolFill(npts, pts, true);
+                    symbolFill.serialize(*file);
+
+                    if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
+                        file->desired_rendition().color() = WT_Color(127,127,127);
+                    else
+                        file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().outline().color()));
+
+                    WT_Polyline symbol(npts, pts, true);
+                    symbol.serialize(*file);
+
+                //end macro definition 
+                EndMacro(file);
+            }
+
             PlayMacro(file, 0, rs_max(mdef.width(), mdef.height()), mdef.units(), x, y);
         }
     }
