@@ -210,20 +210,12 @@ WT_Result gdr_process_font (WT_Font & font, WT_File & file)
 }
 
 
-WT_Result gdr_process_gouraudPolyline (WT_Gouraud_Polyline & gouraudPolyline, WT_File & file)
+WT_Result gdr_process_gouraudPolyline (WT_Gouraud_Polyline & /*gouraudPolyline*/, WT_File & /*file*/)
 {
-    GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-
-    //transform the points
-//  int numpts = 0;
-    const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(
-        file, gouraudPolyline.points(), gouraudPolyline.count(), true);
-    dstpts = NULL;
-
+    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
     //TODO: if the polyline is clipped, the colors will be wrong
     //WT_Gouraud_Polyline poly2(numpts, dstpts, gouraudPolyline.colors(), true);
     //poly2.serialize(*rewriter->GetImage());
-
     return WT_Result::Success;
 }
 
@@ -983,10 +975,33 @@ WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file)
 
     if (!filter.empty())
     {
-        if (wcsstr(filter.c_str(), name))
-            rewriter->LayerPassesFilter() = true;
-        else
-            rewriter->LayerPassesFilter() = false;
+        rewriter->LayerPassesFilter() = false;
+
+        wchar_t* strTok = (wchar_t*)alloca(sizeof(wchar_t) * (filter.length() + 1));
+        wcscpy(strTok, filter.c_str());
+
+#ifdef _WIN32
+        wchar_t* token = wcstok(strTok, L",");
+#else
+        wchar_t* ptr;
+        wchar_t* token = wcstok(strTok, L",", &ptr);
+#endif
+
+        while(token)
+        {
+            if (wcscmp(token, name) == 0)
+            {
+                rewriter->LayerPassesFilter() = true;
+                break;
+            }
+
+#ifdef _WIN32
+            token = wcstok(NULL, L",");
+#else
+            token = wcstok(NULL, L",", &ptr);
+#endif
+
+        }
     }
 
     delete [] name;
