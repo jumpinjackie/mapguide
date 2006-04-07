@@ -98,7 +98,8 @@ public:
     virtual void AddDWFContent(RS_InputStream*  in,
                                CSysTransformer* xformer,
                                const RS_String& section,
-                               const RS_String& passwd)
+                               const RS_String& passwd,
+                               const RS_String& filter)
     {}
 
     virtual void SetSymbolManager(RS_SymbolManager* manager)

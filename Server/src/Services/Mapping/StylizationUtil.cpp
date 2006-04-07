@@ -753,12 +753,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     RSMgInputStream is(reader);
 
-                    //TODO: set up a simple linear transformer
-                    //in case the DWF has no units set inside the W2D
-                    //otherwise the Units opcode will be used to transform
-                    //to mapping space
-
-                    ds->StylizeDrawingLayer( dl, &legendInfo, &is, NULL );
+                    ds->StylizeDrawingLayer( dl, &legendInfo, &is, dl->GetLayerFilter());
                 }
             }
 

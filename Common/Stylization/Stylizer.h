@@ -73,7 +73,7 @@ public:
     virtual void StylizeDrawingLayer(   const MdfModel::DrawingLayerDefinition* layer,
                                         RS_LayerUIInfo*                         legendInfo,
                                         RS_InputStream*                         dwfin,
-                                        CSysTransformer*                        xformer
+                                        const RS_String&                        layerFilter
                                         ) = 0;
 
     ///<summary>

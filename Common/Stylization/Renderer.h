@@ -149,7 +149,8 @@ public:
     virtual void AddDWFContent(RS_InputStream*  in,
                                CSysTransformer* xformer,
                                const RS_String& section,
-                               const RS_String& passwd
+                               const RS_String& passwd,
+                               const RS_String& w2dfilter
                                ) = 0;
 
     ///<summary>

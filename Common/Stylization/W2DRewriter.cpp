@@ -209,14 +209,35 @@ WT_Result simple_process_lineWeight (WT_Line_Weight & lineWeight, WT_File & file
 WT_Result simple_process_lineStyle (WT_Line_Style & lineStyle, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
+
     (*rewriter->_GetW2D()).desired_rendition().line_style() = lineStyle;
+
     return WT_Result::Success;
 }
 
 WT_Result simple_process_layer (WT_Layer & layer, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
-    (*rewriter->_GetW2D()).desired_rendition().layer() = layer;
+
+    wchar_t* name = WT_String::to_wchar(layer.layer_name().length(), layer.layer_name().unicode());
+
+    //check if the current layer was requested by looking it up
+    //in the W2D layer filter that was passes to the renderer
+    RS_String filter = rewriter->GetLayerFilter();
+
+    if (!filter.empty())
+    {
+        if (wcsstr(filter.c_str(), name))
+            rewriter->LayerPassesFilter() = true;
+        else
+            rewriter->LayerPassesFilter() = false;
+    }
+
+    delete [] name;
+
+    if (rewriter->LayerPassesFilter())
+        (*rewriter->_GetW2D()).desired_rendition().layer() = layer;
+
     return WT_Result::Success;
 }
 
@@ -275,6 +296,9 @@ WT_Result simple_process_comments (WT_Comments & comments, WT_File & file)
 WT_Result simple_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     int numcntrs = contourSet.contours();
     WT_Integer32* cntrcounts = contourSet.counts();
@@ -380,6 +404,9 @@ WT_Result simple_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_Fi
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
+
     bool restoreColor = false;
     WT_Color rendColor;
 
@@ -430,6 +457,9 @@ WT_Result simple_process_gouraudPolyline (WT_Gouraud_Polyline & gouraudPolyline,
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
+
     //transform the points
     int numpts = 0;
     std::vector<int>* cntrs = NULL;
@@ -449,6 +479,9 @@ WT_Result simple_process_gouraudPolyline (WT_Gouraud_Polyline & gouraudPolyline,
 WT_Result simple_process_gouraudPolytriangle (WT_Gouraud_Polytriangle & gouraudPolytriangle, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     WT_Logical_Point* srcpts = gouraudPolytriangle.points();
 
@@ -497,6 +530,9 @@ int g_imageId = 1;//TODO:  may be this should be a variable in DWFRenderer
 WT_Result simple_process_image (WT_Image & image, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     //transform the bounds
     WT_Logical_Box bounds = image.bounds();
@@ -801,6 +837,9 @@ WT_Result simple_process_markerSymbol (WT_Marker_Symbol & markerSymbol, WT_File 
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
+
     (*rewriter->_GetW2D()).desired_rendition().marker_symbol() = markerSymbol;
     return WT_Result::Success;
 }
@@ -839,6 +878,9 @@ WT_Result simple_process_origin (WT_Origin & origin, WT_File & file)
 WT_Result simple_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     bool restoreColor = false;
     WT_Color rendColor;
@@ -906,6 +948,9 @@ WT_Result simple_process_polymarker (WT_Polymarker & polymarker, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
+
     //do all necessary transformations and clipping
     int outpts = 0;
     std::vector<int>* cntrs = NULL;
@@ -924,6 +969,9 @@ WT_Result simple_process_polymarker (WT_Polymarker & polymarker, WT_File & file)
 WT_Result simple_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     bool restoreColor = false;
     WT_Color rendColor;
@@ -1023,6 +1071,9 @@ WT_Result simple_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, W
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
+
     //transform the bounds
     WT_Logical_Box bounds = pngGroup4Image.bounds();
 
@@ -1060,6 +1111,9 @@ WT_Result simple_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, W
 WT_Result simple_process_polyline (WT_Polyline & polyline, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     bool isPolygon = rewriter->_GetW2D()->desired_rendition().fill().fill() == WD_True;
 
@@ -1134,6 +1188,9 @@ WT_Result simple_process_polyline (WT_Polyline & polyline, WT_File & file)
 WT_Result simple_process_text (WT_Text & text, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     WT_Logical_Point pt = text.position();
 

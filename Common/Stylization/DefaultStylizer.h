@@ -52,7 +52,7 @@ public:
     STYLIZATION_API virtual void StylizeDrawingLayer(   const MdfModel::DrawingLayerDefinition* layer,
                                                         RS_LayerUIInfo*         legendInfo,
                                                         RS_InputStream*         dwfin,
-                                                        CSysTransformer*        xformer //can be NULL
+                                                        const RS_String&        layerFilter
                                                     );
 
     STYLIZATION_API virtual void SetGeometryAdapter( GisGeometryType type,
