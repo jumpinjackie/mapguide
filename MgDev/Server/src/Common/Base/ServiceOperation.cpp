@@ -490,21 +490,28 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream,
 
 void MgServiceOperation::Authenticate()
 {
+    MgServerManager* serverManager = MgServerManager::GetInstance();
+    assert(NULL != serverManager);
+
     // Perform the license validation.
     if (!IsOverheadOperation())
     {
-        MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
-
-        if (NULL != licenseManager)
+        // The license does not need to be checked for ServerAdmin and Site operations
+        // to allow processing of operations, such as viewing error logs, when license check fails.
+        if (m_packet.m_ServiceID != MgPacketParser::msiServerAdmin &&
+            m_packet.m_ServiceID != MgPacketParser::msiSite)
         {
-            licenseManager->CheckLicense();
+            MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
+
+            if (NULL != licenseManager)
+            {
+                licenseManager->CheckLicense();
+            }
         }
     }
 
     // Currently, only Server Admin/Site/Resource Service operations need
     // user role authentication. This may change in the future.
-    MgServerManager* serverManager = MgServerManager::GetInstance();
-    assert(NULL != serverManager);
 
     if (serverManager->IsSiteServer())
     {
