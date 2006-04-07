@@ -908,7 +908,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             BeginMacro(file, 0, SYMBOL_MAX);
 
                 //copy symbol W2D into destination
-                AddDWFContent(symbol, &st, mdef.name(), std::wstring(L""));
+                AddDWFContent(symbol, &st, mdef.name(), RS_String(L""), RS_String(L""));
 
             //end macro definition and play the macro
             EndMacro(file);
@@ -1906,7 +1906,8 @@ void DWFRenderer::Init(RS_Bounds& extents)
 void DWFRenderer::AddDWFContent(RS_InputStream*   in,
                                 CSysTransformer*  xformer,
                                 const RS_String&  section,
-                                const RS_String&  passwd)
+                                const RS_String&  passwd,
+                                const RS_String&  w2dfilter)
 {
     try
     {
@@ -1983,7 +1984,7 @@ void DWFRenderer::AddDWFContent(RS_InputStream*   in,
                             }
 
                             RSDWFInputStream rsdwfin(pStream);
-                            AddW2DContent(&rsdwfin, xformer);
+                            AddW2DContent(&rsdwfin, xformer, w2dfilter);
 
                             DWFCORE_FREE_OBJECT(pStream);
                         }
@@ -2008,7 +2009,7 @@ void DWFRenderer::AddDWFContent(RS_InputStream*   in,
                             }
 
                             RSDWFInputStream rsdwfin(pStream);
-                            AddW2DContent(&rsdwfin, xformer);
+                            AddW2DContent(&rsdwfin, xformer, w2dfilter);
 
                             DWFCORE_FREE_OBJECT(pStream);
                         }
@@ -2059,7 +2060,7 @@ void DWFRenderer::AddDWFContent(RS_InputStream*   in,
     }
 }
 
-void DWFRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer)
+void DWFRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter)
 {
     WT_Result result;
 
@@ -2067,6 +2068,7 @@ void DWFRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer)
     m_input = in;
     m_xformer = xformer;
     m_bHaveViewport = false;
+    m_layerFilter = w2dfilter;
 
     WT_File fin;
     fin.set_file_mode(WT_File::/*WT_File_mode::*/File_Read);

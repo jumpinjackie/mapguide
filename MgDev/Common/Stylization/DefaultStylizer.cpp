@@ -265,7 +265,7 @@ void DefaultStylizer::StylizeGridLayer(   const MdfModel::GridLayerDefinition* l
 void DefaultStylizer::StylizeDrawingLayer(  const MdfModel::DrawingLayerDefinition* layer,
                                             RS_LayerUIInfo*     legendInfo,
                                             RS_InputStream*         dwfin,
-                                            CSysTransformer*        xformer
+                                            const RS_String&        layerFilter
                                           )
 {
     double mapScale = m_renderer->GetMapScale();
@@ -276,7 +276,7 @@ void DefaultStylizer::StylizeDrawingLayer(  const MdfModel::DrawingLayerDefiniti
         m_renderer->StartLayer(legendInfo, NULL);
 
         //TODO: dwf password
-        m_renderer->AddDWFContent(dwfin, xformer, L"", L"");
+        m_renderer->AddDWFContent(dwfin, NULL, L"", L"", layerFilter);
 
         m_renderer->EndLayer();
     }

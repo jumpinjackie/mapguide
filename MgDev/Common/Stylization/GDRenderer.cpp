@@ -666,7 +666,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
         m_mdOverrideColors = mdef;
 
         //copy symbol W2D into destination
-        AddDWFContent(symbol, &st, mdef.name(), std::wstring(L""));
+        AddDWFContent(symbol, &st, mdef.name(), RS_String(L""), RS_String(L""));
 
         m_bIsSymbolW2D = false;
     }
@@ -1513,7 +1513,8 @@ bool GDRenderer::FindFont(RS_FontDef& def, RS_String& fontName)
 void GDRenderer::AddDWFContent(RS_InputStream*   in,
                                CSysTransformer*  xformer,
                                const RS_String&  section,
-                               const RS_String&  passwd)
+                               const RS_String&  passwd,
+                               const RS_String&  w2dfilter)
 {
     try
     {
@@ -1589,7 +1590,7 @@ void GDRenderer::AddDWFContent(RS_InputStream*   in,
                             }
 
                             RSDWFInputStream rsdwfin(pStream);
-                            AddW2DContent(&rsdwfin, xformer);
+                            AddW2DContent(&rsdwfin, xformer, w2dfilter);
 
                             DWFCORE_FREE_OBJECT(pStream);
                         }
@@ -1631,7 +1632,7 @@ void GDRenderer::AddDWFContent(RS_InputStream*   in,
 }
 
 
-void GDRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer)
+void GDRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter)
 {
     WT_Result result;
 
@@ -1639,6 +1640,8 @@ void GDRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer)
     m_input = in;
     m_xformer = xformer;
     m_bHaveViewport = false;
+    m_bLayerPassesFilter = true;
+    m_layerFilter = w2dfilter;
 
     m_pPool = new LineBufferPool();
 
@@ -1691,7 +1694,7 @@ void GDRenderer::SetActions(WT_File& file)
     file.set_color_action(gdr_process_color);
     file.set_line_weight_action(gdr_process_lineWeight);
     file.set_line_style_action(gdr_process_lineStyle);
-    //file.set_layer_action(gdr_process_layer);
+    file.set_layer_action(gdr_process_layer);
     file.set_viewport_action(gdr_process_viewport);
     file.set_visibility_action(gdr_process_visibility);
     file.set_code_page_action(gdr_process_codePage);

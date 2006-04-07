@@ -116,8 +116,9 @@ public:
 
     STYLIZATION_API virtual void AddDWFContent(RS_InputStream*  in,
                                                CSysTransformer* xformer,
-                                               const RS_String&    section,
-                                               const RS_String&    passwd);
+                                               const RS_String& section,
+                                               const RS_String& passwd,
+                                               const RS_String& w2dfilter);
 
     STYLIZATION_API virtual void SetSymbolManager(RS_SymbolManager* manager);
 
@@ -254,6 +255,8 @@ public:
     /*Do not export from DLL*/ bool IsViewportSet() { return m_bHaveViewport; }
     /*Do not export from DLL*/ bool IsSymbolW2D() { return m_bIsSymbolW2D; }
     /*Do not export from DLL*/ RS_MarkerDef& GetOverrideColorMarker() { return m_mdOverrideColors; }
+    /*Do not export from DLL*/ RS_String& GetLayerFilter() { return m_layerFilter; }
+    /*Do not export from DLL*/ bool& LayerPassesFilter() { return m_bLayerPassesFilter; }
 
     /*Do not export from DLL*/ WT_File* _GetW2D() { return m_w2dFile; }
     /*Do not export from DLL*/ RS_InputStream* _GetInputStream() { return m_input; }
@@ -276,7 +279,7 @@ public:
     /*Do not export from DLL*/  void UpdateSymbolTrans(WT_File& file, WT_Viewport& viewport);
 
 private:
-    void AddW2DContent(RS_InputStream* in, CSysTransformer* xformer);
+    void AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter);
     void FindSymbolReferencePoint(RS_InputStream*     in,
                                   const RS_String&    section,
                                   const RS_String&    passwd,
@@ -295,6 +298,8 @@ private:
     CSysTransformer*    m_xformer;
     bool                m_bIsSymbolW2D;
     bool                m_bHaveViewport;
+    bool                m_bLayerPassesFilter;
+    RS_String           m_layerFilter;
 
     //storage for override colors
     RS_MarkerDef m_mdOverrideColors;

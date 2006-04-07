@@ -40,7 +40,7 @@ WT_Result gdr_process_color (WT_Color & color, WT_File & file);
 WT_Result gdr_process_lineWeight (WT_Line_Weight & lineWeight, WT_File & file);
 WT_Result gdr_process_lineStyle (WT_Line_Style & lineStyle, WT_File & file);
 WT_Result gdr_process_linePattern (WT_Line_Pattern & linePattern, WT_File & file);
-//WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file);
+WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file);
 WT_Result gdr_process_viewport (WT_Viewport & viewport, WT_File & file);
 WT_Result gdr_process_visibility (WT_Visibility & visibility, WT_File & file);
 WT_Result gdr_process_codePage (WT_Code_Page & codePage, WT_File & file);

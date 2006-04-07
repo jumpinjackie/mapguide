@@ -157,6 +157,9 @@ WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
 
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
+
     WT_RGBA32 rgba = file.rendition().color().rgba();
     RS_Color color = RS_Color(rgba.m_rgb.r, rgba.m_rgb.g, rgba.m_rgb.b, rgba.m_rgb.a);
 
@@ -240,6 +243,9 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
         return WT_Result::Success;
 
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     //transform the bounds
     WT_Logical_Box bounds = image.bounds();
@@ -398,6 +404,9 @@ WT_Result gdr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
 
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
+
     WT_RGBA32 rgba = file.rendition().color().rgba();
     RS_Color color = RS_Color(rgba.m_rgb.r, rgba.m_rgb.g, rgba.m_rgb.b, rgba.m_rgb.a);
 
@@ -454,6 +463,9 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
         return WT_Result::Success;
 
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     WT_RGBA32 rgba = file.rendition().color().rgba();
     RS_Color color = RS_Color(rgba.m_rgb.r, rgba.m_rgb.g, rgba.m_rgb.b, rgba.m_rgb.a);
@@ -532,6 +544,9 @@ WT_Result gdr_process_polygon (WT_Polygon & polygon, WT_File & file)
 
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
+
     WT_RGBA32 rgba = file.rendition().color().rgba();
     RS_Color color = RS_Color(rgba.m_rgb.r, rgba.m_rgb.g, rgba.m_rgb.b, rgba.m_rgb.a);
 
@@ -568,6 +583,9 @@ WT_Result gdr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & fi
         return WT_Result::Success;
 
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     WT_RGBA32 rgba = file.rendition().color().rgba();
     RS_Color color = RS_Color(rgba.m_rgb.r, rgba.m_rgb.g, rgba.m_rgb.b, rgba.m_rgb.a);
@@ -608,6 +626,9 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
         return WT_Result::Success;
 
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     //transform the bounds
     WT_Logical_Box bounds = pngGroup4Image.bounds();
@@ -701,6 +722,9 @@ WT_Result gdr_process_polyline (WT_Polyline & polyline, WT_File & file)
 
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
+
     WT_RGBA32 rgba = file.rendition().color().rgba();
     RS_Color color = RS_Color(rgba.m_rgb.r, rgba.m_rgb.g, rgba.m_rgb.b, rgba.m_rgb.a);
 
@@ -763,6 +787,9 @@ WT_Result gdr_process_text (WT_Text & text, WT_File & file)
         return WT_Result::Success;
 
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
+
+    if (!rewriter->LayerPassesFilter())
+        return WT_Result::Success;
 
     WT_RGBA32 rgba = file.rendition().color().rgba();
     RS_Color color = RS_Color(rgba.m_rgb.r, rgba.m_rgb.g, rgba.m_rgb.b, rgba.m_rgb.a);
@@ -888,80 +915,81 @@ WT_Result gdr_process_markerSize (WT_Marker_Size & /*markerSize*/, WT_File & /*f
 
 WT_Result gdr_process_markerSymbol (WT_Marker_Symbol & /*markerSymbol*/, WT_File & /*file*/)
 {
-    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-
-    //(*rewriter->GetImage()).desired_rendition().marker_symbol() = markerSymbol;
     return WT_Result::Success;
 }
 
 
 WT_Result gdr_process_mergeControl (WT_Merge_Control & /*mergeControl*/, WT_File & /*file*/)
 {
-    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //(*rewriter->GetImage()).desired_rendition().merge_control() = mergeControl;
     return WT_Result::Success;
 }
 
 
 WT_Result gdr_process_projection (WT_Projection & /*projection*/, WT_File & /*file*/)
 {
-    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //projection.serialize(*rewriter->GetImage());
     return WT_Result::Success;
 }
 
 
 WT_Result gdr_process_inkedArea (WT_Inked_Area & /*inkedArea*/, WT_File & /*file*/)
 {
-    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //inkedArea.serialize(*rewriter->GetImage());
     return WT_Result::Success;
 }
 
 
 WT_Result gdr_process_alignment (WT_Alignment & /*alignment*/, WT_File & /*file*/)
 {
-    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //alignment.serialize(*rewriter->GetImage());
     return WT_Result::Success;
 }
 
 
 WT_Result gdr_process_penPattern (WT_Pen_Pattern & /*penPattern*/, WT_File & /*file*/)
 {
-    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //(*rewriter->GetImage()).desired_rendition().pen_pattern() = penPattern;
     return WT_Result::Success;
 }
 
 
 WT_Result gdr_process_linePattern (WT_Line_Pattern & /*linePattern*/, WT_File & /*file*/)
 {
-    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //(*rewriter->GetImage()).desired_rendition().line_pattern() = linePattern;
     return WT_Result::Success;
 }
 
 
 WT_Result gdr_process_fillPattern (WT_Fill_Pattern & /*fillPattern*/, WT_File & /*file*/)
 {
-    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //fillPattern.serialize(*rewriter->GetImage());
     return WT_Result::Success;
 }
 
 
 WT_Result gdr_process_dashPattern (WT_Dash_Pattern & /*dashPattern*/, WT_File & /*file*/)
 {
-    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //(*rewriter->GetImage()).desired_rendition().dash_pattern() = dashPattern;
     return WT_Result::Success;
 }
 
 
 WT_Result gdr_process_lineStyle (WT_Line_Style & /*lineStyle*/, WT_File & /*file*/)
 {
-    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //(*rewriter->GetImage()).desired_rendition().line_style() = lineStyle;
+    return WT_Result::Success;
+}
+
+WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file)
+{    
+    GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
+    wchar_t* name = WT_String::to_wchar(layer.layer_name().length(), layer.layer_name().unicode());
+
+    //check if the current layer was requested by looking it up
+    //in the W2D layer filter that was passes to the renderer
+    RS_String filter = rewriter->GetLayerFilter();
+
+    if (!filter.empty())
+    {
+        if (wcsstr(filter.c_str(), name))
+            rewriter->LayerPassesFilter() = true;
+        else
+            rewriter->LayerPassesFilter() = false;
+    }
+
+    delete [] name;
+
     return WT_Result::Success;
 }
