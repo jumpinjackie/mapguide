@@ -168,7 +168,7 @@ void MgDwfController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* map
                 MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
                 MgStringCollection arguments;
-                arguments.Add(L"2");
+                arguments.Add(m_mapCmdSetDataExtent);
                 arguments.Add(buffer);
 
                 throw new MgInvalidArgumentException(L"MgDwfController.ApplyMapViewCommands",

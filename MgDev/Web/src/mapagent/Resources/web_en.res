@@ -184,6 +184,7 @@ MgInvalidGeometryNoDimension                          = The geometry is invalid 
 MgInvalidGeometryTooFewCoordinates                    = The geometry is invalid because it has too few coordinates.
 MgInvalidGeometryType                                 = The geometry type is invalid because it is not recognized.
 MgInvalidHour                                         = The hour is invalid because it must be between 0 and 23.
+MgInvalidImageSizeTooBig                              = The requested image size exceeds the maximum.
 MgInvalidLogType                                      = The log type is invalid because it is not recognized.
 MgInvalidMapPlotCollectionMapPlotInstruction          = The map plot is invalid because it contains an unrecognized map plot instruction.
 MgInvalidMicroSecond                                  = The microsecond is invalid because it must be between 0 and 999999.
@@ -226,7 +227,8 @@ MgTagFieldNotFound                                    = The tag contained no fie
 MgUnsupportedService                                  = The site/resource services cannot be enabled/disabled.
 MgUserAndGroupNotEmpty                                = Both the user and group are not empty.
 MgUserAndRoleNotEmpty                                 = Both the user and role are not empty.
-MgValueCannotBeLessThanZero                           = The value cannot be less than 0.
+MgValueCannotBeLessThanOrEqualToZero                  = The value cannot be less than or equal to zero.
+MgValueCannotBeLessThanZero                           = The value cannot be less than zero.
 
 # *****************************************************************************
 # D R A W I N G  S E R V I C E

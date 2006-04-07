@@ -69,7 +69,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
             MgStringCollection arguments;
-            arguments.Add(L"2");
+            arguments.Add(m_mapCmdSetViewCenterX);
             arguments.Add(buffer);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
@@ -95,7 +95,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
             MgStringCollection arguments;
-            arguments.Add(L"2");
+            arguments.Add(m_mapCmdSetViewCenterY);
             arguments.Add(buffer);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
@@ -121,14 +121,26 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
             MgStringCollection arguments;
-            arguments.Add(L"2");
+            arguments.Add(m_mapCmdSetViewScale);
             arguments.Add(buffer);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
                 __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
         }
 
-        map->SetViewScale(MgUtil::StringToDouble(((MgStringProperty*)((MgProperty*)val))->GetValue()));
+        STRING sScale = ((MgStringProperty*)((MgProperty*)val))->GetValue();
+        double scale = MgUtil::StringToDouble(sScale);
+        if(scale <= 0.0)
+        {
+            MgStringCollection arguments;
+            arguments.Add(m_mapCmdSetViewScale);
+            arguments.Add(sScale);
+
+            throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
+                __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+        }
+
+        map->SetViewScale(scale);
 
         //refresh all layers that are visible
         Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -137,7 +149,6 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             Ptr<MgLayer> layer = layers->GetItem(layerIndex);
             layer->ForceRefresh(true);
         }
-
     }
 
     //Set display dpi
@@ -150,14 +161,26 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
             MgStringCollection arguments;
-            arguments.Add(L"2");
+            arguments.Add(m_mapCmdSetDisplayDpi);
             arguments.Add(buffer);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
                 __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
         }
 
-        map->SetDisplayDpi(MgUtil::StringToInt32(((MgStringProperty*)((MgProperty*)val))->GetValue()));
+        STRING sDpi = ((MgStringProperty*)((MgProperty*)val))->GetValue();
+        INT32 dpi = MgUtil::StringToInt32(sDpi);
+        if(dpi <= 0)
+        {
+            MgStringCollection arguments;
+            arguments.Add(m_mapCmdSetDisplayDpi);
+            arguments.Add(sDpi);
+
+            throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
+                __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+        }
+
+        map->SetDisplayDpi(dpi);
     }
 
     //Set display width
@@ -170,14 +193,26 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
             MgStringCollection arguments;
-            arguments.Add(L"2");
+            arguments.Add(m_mapCmdSetDisplayWidth);
             arguments.Add(buffer);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
                 __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
         }
 
-        map->SetDisplayWidth(MgUtil::StringToInt32(((MgStringProperty*)((MgProperty*)val))->GetValue()));
+        STRING sWidth = ((MgStringProperty*)((MgProperty*)val))->GetValue();
+        INT32 width = MgUtil::StringToInt32(sWidth);
+        if(width <= 0)
+        {
+            MgStringCollection arguments;
+            arguments.Add(m_mapCmdSetDisplayWidth);
+            arguments.Add(sWidth);
+
+            throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
+                __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+        }
+
+        map->SetDisplayWidth(width);
     }
 
     //Set display height
@@ -190,14 +225,26 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
             MgStringCollection arguments;
-            arguments.Add(L"2");
+            arguments.Add(m_mapCmdSetDisplayHeight);
             arguments.Add(buffer);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
                 __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
         }
 
-        map->SetDisplayHeight(MgUtil::StringToInt32(((MgStringProperty*)((MgProperty*)val))->GetValue()));
+        STRING sHeight = ((MgStringProperty*)((MgProperty*)val))->GetValue();
+        INT32 height = MgUtil::StringToInt32(sHeight);
+        if(height <= 0)
+        {
+            MgStringCollection arguments;
+            arguments.Add(m_mapCmdSetDisplayHeight);
+            arguments.Add(sHeight);
+
+            throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
+                __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+        }
+
+        map->SetDisplayHeight(height);
     }
 
     //Show layers
@@ -210,7 +257,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
             MgStringCollection arguments;
-            arguments.Add(L"2");
+            arguments.Add(m_mapCmdShowLayers);
             arguments.Add(buffer);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
@@ -230,7 +277,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
             MgStringCollection arguments;
-            arguments.Add(L"2");
+            arguments.Add(m_mapCmdHideLayers);
             arguments.Add(buffer);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
@@ -250,7 +297,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
             MgStringCollection arguments;
-            arguments.Add(L"2");
+            arguments.Add(m_mapCmdShowGroups);
             arguments.Add(buffer);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
@@ -270,7 +317,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
 
             MgStringCollection arguments;
-            arguments.Add(L"2");
+            arguments.Add(m_mapCmdHideGroups);
             arguments.Add(buffer);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",

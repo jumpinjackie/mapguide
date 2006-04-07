@@ -32,12 +32,12 @@ IMPLEMENT_CREATE_OBJECT(MgMap)
 //
 MgMap::MgMap()
     : m_center(NULL),
-      m_scale(0.0),
+      m_scale(1.0),
       m_mapExtent(NULL),
       m_dataExtent(NULL),
-      m_displayDpi(0),
-      m_displayWidth(0),
-      m_displayHeight(0),
+      m_displayDpi(96),
+      m_displayWidth(1),
+      m_displayHeight(1),
       m_trackChangesDisabled(false),
       m_layerRefreshMode(unspecified),
       m_metersPerUnit(1.0)
