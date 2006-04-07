@@ -418,6 +418,7 @@ function IsDigitizing() {
 function InitDocument() {
     if(!msie)
         document.getElementById("InfoDiv").style.display = "block";
+
     mapDataRequest = null;
     pancxu = orgExtX1 + (orgExtX2 - orgExtX1) / 2;
     pancyu = orgExtY2 + (orgExtY1 - orgExtY2) / 2;
@@ -431,11 +432,7 @@ function InitDocument() {
 
     document.getElementById("LegendResizer").onmousedown = StartResizingLegend;
     window.onresize = OnSizeChanged;
-
-    document.getElementById("FlyoutDivs").innerHTML = InitToolbarFlyouts(parent.toolbarItems);
-    if(parent.IsContextMenu())
-        document.getElementById("CtxMenuDivs").innerHTML = InitContextMenu(parent.ctxMenuItems);
-
+    
     document.getElementById("map").style.backgroundColor = bgColor;
     mapCell = document.getElementById("map");
 
@@ -453,6 +450,10 @@ function delayedInit() {
     } catch(e) { return; }
 
     clearInterval(initTimer);
+
+    document.getElementById("FlyoutDivs").innerHTML = InitToolbarFlyouts(parent.toolbarItems);
+    if(parent.IsContextMenu())
+        document.getElementById("CtxMenuDivs").innerHTML = InitContextMenu(parent.ctxMenuItems);
 
     baseGroups = GetLegendCtrl().GetBaseGroups(false);
     if(baseGroups == null)
@@ -500,6 +501,7 @@ function delayedInit() {
         scale = CalculateScale1(Math.abs(orgExtX2 - orgExtX1), Math.abs(orgExtY2 - orgExtY1), mapDevW, mapDevH);
         GotoView(orgExtX1 + (orgExtX2 - orgExtX1) / 2, orgExtY2 + (orgExtY1 - orgExtY2) / 2, scale, true, true);
     }
+    
     mapInit = true;
 }
 function BuildGroupInfo() {
