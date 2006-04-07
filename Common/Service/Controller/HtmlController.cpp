@@ -203,69 +203,6 @@ void MgHtmlController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* ma
 
     //apply commands common to both type of viewers
     MgController::ApplyMapViewCommands(map, mapViewCommands);
-
-    //apply commands specific to ZCV
-    Ptr<MgProperty> val;
-
-    //Set display dpi
-    val = mapViewCommands->FindItem(m_mapCmdSetDisplayDpi);
-    if(val != NULL)
-    {
-        if(val->GetPropertyType() != MgPropertyType::String)
-        {
-            STRING buffer;
-            MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(L"2");
-            arguments.Add(buffer);
-
-            throw new MgInvalidArgumentException(L"MgHtmlController.ApplyMapViewCommands",
-                __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
-        }
-
-        map->SetDisplayDpi(MgUtil::StringToInt32(((MgStringProperty*)((MgProperty*)val))->GetValue()));
-    }
-
-    //Set display width
-    val = mapViewCommands->FindItem(m_mapCmdSetDisplayWidth);
-    if(val != NULL)
-    {
-        if(val->GetPropertyType() != MgPropertyType::String)
-        {
-            STRING buffer;
-            MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(L"2");
-            arguments.Add(buffer);
-
-            throw new MgInvalidArgumentException(L"MgHtmlController.ApplyMapViewCommands",
-                __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
-        }
-
-        map->SetDisplayWidth(MgUtil::StringToInt32(((MgStringProperty*)((MgProperty*)val))->GetValue()));
-    }
-
-    //Set display height
-    val = mapViewCommands->FindItem(m_mapCmdSetDisplayHeight);
-    if(val != NULL)
-    {
-        if(val->GetPropertyType() != MgPropertyType::String)
-        {
-            STRING buffer;
-            MgUtil::Int32ToString((INT32)val->GetPropertyType(), buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(L"2");
-            arguments.Add(buffer);
-
-            throw new MgInvalidArgumentException(L"MgHtmlController.ApplyMapViewCommands",
-                __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyTypeForCommand", NULL);
-        }
-
-        map->SetDisplayHeight(MgUtil::StringToInt32(((MgStringProperty*)((MgProperty*)val))->GetValue()));
-    }
 }
 
 //////////////////////////////////////////////////////////////////

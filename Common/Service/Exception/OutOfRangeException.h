@@ -23,7 +23,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when a parameter value passed to a method
-/// in not in the valid range specified by its documentation.
+/// is not in the valid range specified by its documentation.
 ///
 /// \remarks
 /// This exception is generally thrown by the collection classes when the

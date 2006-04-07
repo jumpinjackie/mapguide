@@ -35,6 +35,10 @@
 #include "TileDefs.h"
 
 
+// the maximum number of allowed pixels for rendered images
+static const INT32 MAX_PIXELS = 16384*16384;
+
+
 // used when we want to process a given number of features
 bool StylizeThatMany(void* data)
 {
@@ -226,14 +230,23 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     if (NULL == map)
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"", NULL);
 
+    // validate map view parameters
+    int width            = map->GetDisplayWidth();
+    int height           = map->GetDisplayHeight();
+    int dpi              = map->GetDisplayDpi();
+    double scale         = map->GetViewScale();
+    double metersPerUnit = map->GetMetersPerUnit();
+    if (width <= 0 || height <= 0 || dpi <= 0 || scale <= 0.0 || metersPerUnit <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+
+    // sanity check - number of image pixels cannot exceed MAX_PIXELS
+    if (width * height > MAX_PIXELS)
+        throw new MgOutOfRangeException(L"MgServerRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
+
     // compute map extent that corresponds to pixel extent
     Ptr<MgPoint> pt          = map->GetViewCenter();
     Ptr<MgCoordinate> center = pt->GetCoordinate();
-    int width                = map->GetDisplayWidth();
-    int height               = map->GetDisplayHeight();
-    double scale             = map->GetViewScale();
-    double metersPerUnit     = map->GetMetersPerUnit();
-    double unitsPerPixel     = 0.0254 / (double)map->GetDisplayDpi() / metersPerUnit;
+    double unitsPerPixel     = 0.0254 / (double)dpi / metersPerUnit;
     double mapWidth2         = 0.5 * (double)width  * unitsPerPixel * scale;
     double mapHeight2        = 0.5 * (double)height * unitsPerPixel * scale;
 
@@ -311,13 +324,17 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map)
+    if (NULL == map || extents == NULL || backgroundColor == NULL)
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    // validate map view parameters
+    int dpi              = map->GetDisplayDpi();
+    double metersPerUnit = map->GetMetersPerUnit();
+    if (width <= 0 || height <= 0 || dpi <= 0 || metersPerUnit <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
 
     // compute a view center and scale from the given extents
     // and pass on to the RenderMap that uses center and scale
-
-    double metersPerUnit = map->GetMetersPerUnit();
 
     Ptr<MgCoordinate> ll = extents->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> ur = extents->GetUpperRightCoordinate();
@@ -337,7 +354,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     if (mapAR >= screenAR)
     {
-        scale = b.width() * metersPerUnit * 100.0 / 2.54 * map->GetDisplayDpi() / (double)width;
+        scale = b.width() * metersPerUnit * 100.0 / 2.54 * (double)dpi / (double)width;
 
         // we based map scale on the image width, so adjust rendering
         // height to match the map aspect ratio
@@ -351,7 +368,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     }
     else
     {
-        scale = b.height() * metersPerUnit * 100.0 / 2.54 * map->GetDisplayDpi() / (double)height;
+        scale = b.height() * metersPerUnit * 100.0 / 2.54 * (double)dpi / (double)height;
 
         // we based map scale on the image height, so adjust rendering
         // height to match the map aspect ratio
@@ -363,6 +380,10 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
         if (abs(drawWidth - width) <= 1)
             drawWidth = width;
     }
+
+    // sanity check - number of image pixels cannot exceed MAX_PIXELS
+    if (drawWidth * drawHeight > MAX_PIXELS)
+        throw new MgOutOfRangeException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
 
     // use the supplied background color
     RS_Color bgcolor(backgroundColor->GetRed(),
@@ -397,11 +418,20 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map)
+    if (NULL == map || NULL == center || NULL == backgroundColor)
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
 
+    // validate map view parameters
+    int dpi              = map->GetDisplayDpi();
     double metersPerUnit = map->GetMetersPerUnit();
-    double unitsPerPixel = 0.0254 / (double)map->GetDisplayDpi() / metersPerUnit;
+    if (scale <= 0.0 || width <= 0 || height <= 0 || dpi <= 0 || metersPerUnit <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+
+    // sanity check - number of image pixels cannot exceed MAX_PIXELS
+    if (width * height > MAX_PIXELS)
+        throw new MgOutOfRangeException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
+
+    double unitsPerPixel = 0.0254 / (double)dpi / metersPerUnit;
     double mapWidth2 = 0.5 * (double)width * unitsPerPixel * scale;
     double mapHeight2 = 0.5 * (double)height * unitsPerPixel * scale;
 
@@ -785,8 +815,16 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
     MG_TRY()
 
-    if (NULL == map)
+    if (NULL == map || NULL == backgroundColor)
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    // validate map view parameters
+    if (width <= 0 || height <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+
+    // sanity check - number of image pixels cannot exceed MAX_PIXELS
+    if (width * height > MAX_PIXELS)
+        throw new MgOutOfRangeException(L"MgServerRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
 
     RS_Color bgcolor(backgroundColor->GetRed(),
                      backgroundColor->GetGreen(),
@@ -841,10 +879,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
         data->Dispose();
     }
 
-
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMapLegend")
 
     return SAFE_ADDREF(ret.p);
 }
-
-
