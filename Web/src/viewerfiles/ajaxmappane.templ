@@ -419,6 +419,11 @@ function InitDocument() {
     if(!msie)
         document.getElementById("InfoDiv").style.display = "block";
 
+    if((orgExtX1 - orgExtX2) == 0 || (orgExtY1 - orgExtY2) == 0) {
+        extX1 = orgExtX1 = -.1; extY1 = orgExtY1 = .1, 
+        extX2 = orgExtX2 = .1; extY2 = orgExtY2 = -.1;
+    }        
+        
     mapDataRequest = null;
     pancxu = orgExtX1 + (orgExtX2 - orgExtX1) / 2;
     pancyu = orgExtY2 + (orgExtY1 - orgExtY2) / 2;
