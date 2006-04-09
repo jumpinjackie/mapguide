@@ -65,10 +65,22 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     //
     MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService);
 
+    // We have to wrap the request parameters, since the outside
+    // world is case-sensitive (with respect to names,) but
+    // we need our parameters NOT to be so.
+    MgHttpRequestParameters Parms(m_hRequest->GetRequestParam());
+    MgHttpResponseStream Out;
+
+    MgOgcServer::SetLoader(GetDocument);
+
+    // Instance a server-lette
+    MgOgcWfsServer Wfs(Parms,Out,oFeatureTypes);
+
     // This is a comma-sep a list.  If empty, == all.
     // If it's just one feature (no comma sep found) let's do
     // a single response, else let's recursively enumerate the features.
-    STRING sFeatureTypes = m_hRequest->GetRequestParam()->GetParameterValue(MgHttpResourceStrings::reqWfsTypeName);
+    CPSZ pszFeatureTypes = Wfs.RequestParameter(MgHttpResourceStrings::reqWfsTypeName.c_str());
+    STRING sFeatureTypes = pszFeatureTypes? pszFeatureTypes : _("");
     if(sFeatureTypes.length() > 0 && sFeatureTypes.find(_(",")) == STRING::npos) {
         // TODO: assumes that this is GML type.
         //STRING sOutputFormat = m_hRequest->GetRequestParam()->GetParameterValue(_("OUTPUTFORMAT"));
@@ -108,20 +120,10 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
         if(!oFeatureTypes.SubsetFeatureList(sFeatureTypes.c_str()))
             GenerateTypeNameException(hResult,sFeatureTypes);
         else {
-            // We have to wrap the request parameters, since the outside
-            // world is case-sensitive (with respect to names,) but
-            // we need our parameters NOT to be so.
-            MgHttpRequestParameters Parms(m_hRequest->GetRequestParam());
-            MgHttpResponseStream Out;
-
-            MgOgcServer::SetLoader(GetDocument);
 
 #ifdef _WFS_LOGGING
             MyLog.Write(_("WFS::DescribeFeatureType\r\n"));
 #endif
-            // Instance a server-lette
-            MgOgcWfsServer Wfs(Parms,Out,oFeatureTypes);
-
             // Execute the request
             Wfs.ProcessRequest(this);
 
