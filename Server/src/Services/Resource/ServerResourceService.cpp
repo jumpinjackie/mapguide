@@ -827,11 +827,10 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    // Check if all the resources come from the Library or Session repository.
+    // Check if the resources come from the Library or Session repository.
 
     set<string> childResources;
     INT32 libraryResources = 0;
-    INT32 sessionResources = 0;
     INT32 numResources = resources->GetCount();
 
     for (INT32 i = 0; i < numResources; ++i)
@@ -859,7 +858,6 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
             {
                 childResources.insert(MgUtil::WideCharToMultiByte(
                     resource->ToString()));
-                ++sessionResources;
             }
             else
             {
@@ -868,16 +866,6 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
                     __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
-    }
-
-    // Check if all the resources come from the same repository.
-
-    if (0 != libraryResources && 0 != sessionResources)
-    {
-        // TODO: Throw a more descriptive exception?
-        throw new MgInvalidArgumentException(
-            L"MgServerResourceService.EnumerateParentMapDefinitions",
-            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Note that a Session resource may reference a Library resource but not
@@ -893,36 +881,33 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
 
     if (numResources > 0)
     {
-        MgSessionRepositoryManager sessionRepositoryMan(*m_sessionRepository);
-
-        if (sessionResources > 0)
-        {
-            sessionRepositoryMan.EnumerateParentMapDefinitions(childResources,
-                parentResources);
-            sessionRepositoryMan.CommitTransaction();
-        }
-        else if (libraryResources > 0)
+        if (libraryResources > 0)
         {
             MgLibraryRepositoryManager libraryRepositoryMan(*m_libraryRepository);
 
             libraryRepositoryMan.EnumerateParentMapDefinitions(childResources,
                 parentResources);
             libraryRepositoryMan.CommitTransaction();
-
-            sessionRepositoryMan.EnumerateParentMapDefinitions(childResources,
-                parentResources);
-            sessionRepositoryMan.CommitTransaction();
         }
+
+        MgSessionRepositoryManager sessionRepositoryMan(*m_sessionRepository);
+
+        sessionRepositoryMan.EnumerateParentMapDefinitions(childResources,
+            parentResources);
+        sessionRepositoryMan.CommitTransaction();
     }
 
-    mapDefinitions = new MgSerializableCollection();
-
-    for (set<STRING>::const_iterator i = parentResources.begin();
-        i != parentResources.end( ); ++i)
+    if (!parentResources.empty())
     {
-        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(*i);
+        mapDefinitions = new MgSerializableCollection();
 
-        mapDefinitions->Add(resource.p);
+        for (set<STRING>::const_iterator i = parentResources.begin();
+            i != parentResources.end( ); ++i)
+        {
+            Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(*i);
+
+            mapDefinitions->Add(resource.p);
+        }
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateParentMapDefinitions")
@@ -1819,23 +1804,24 @@ void MgServerResourceService::UpdateChangedResources(MgSerializableCollection* r
 {
     if (NULL != resources)
     {
-        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
         INT32 numResources = resources->GetCount();
 
-        for (INT32 i = 0; i < numResources; ++i)
+        if (numResources > 0)
         {
-            Ptr<MgSerializable> serializableObj = resources->GetItem(i);
-            MgResourceIdentifier* resource = dynamic_cast<MgResourceIdentifier*>(
-                serializableObj.p);
+            ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-            if (NULL == resource)
+            for (INT32 i = 0; i < numResources; ++i)
             {
-                throw new MgInvalidCastException(
-                    L"MgServerResourceService.UpdateChangedResources",
-                    __LINE__, __WFILE__, NULL, L"", NULL);
-            }
+                Ptr<MgSerializable> serializableObj = resources->GetItem(i);
+                MgResourceIdentifier* resource = dynamic_cast<MgResourceIdentifier*>(
+                    serializableObj.p);
+                ACE_ASSERT(NULL != resource);
 
-            m_changedResources.insert(resource->ToString());
+                if (NULL != resource)
+                {
+                    m_changedResources.insert(resource->ToString());
+                }
+            }
         }
     }
 }
