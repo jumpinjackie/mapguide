@@ -685,25 +685,6 @@ void MgApplicationRepositoryManager::EnumerateParentMapDefinitions(
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationRepositoryManager.EnumerateParentMapDefinitions")
 }
 
-///////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Return a collection of changed resources.
-///
-MgSerializableCollection* MgApplicationRepositoryManager::GetChangedResources() const
-{
-    Ptr<MgSerializableCollection> changedResources = new MgSerializableCollection();
-
-    for (set<STRING>::const_iterator i = m_changedResources.begin();
-        i != m_changedResources.end(); ++i)
-    {
-        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(*i);
-
-        changedResources->Add(resource.p);
-    }
-
-    return changedResources.Detach();
-}
-
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Enumerates tagged data for the specified resource.

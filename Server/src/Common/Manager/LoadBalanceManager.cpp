@@ -894,14 +894,61 @@ void MgLoadBalanceManager::NotifyResourcesChanged(CREFSTRING serverAddress,
 
     STRING ipAddress;
     MgIpUtil::HostNameToAddress(serverAddress, ipAddress);
-    MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInformation = MgSecurityManager::CreateSystemCredentials();
     MgServerAdmin serverAdmin;
 
-    serverAdmin.Open(ipAddress, currUserInfo);
+    serverAdmin.Open(ipAddress, userInformation);
     serverAdmin.NotifyResourcesChanged(resources);
     serverAdmin.Close();
 
     MG_CATCH_AND_THROW(L"MgLoadBalanceManager.NotifyResourcesChanged")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Dispatch resource change notifications to all the servers that host the
+/// tile service.
+///
+void MgLoadBalanceManager::DispatchResourceChangeNotifications(
+    MgSerializableCollection* resources)
+{
+    MG_TRY()
+
+    if (resources != NULL && resources->GetCount() > 0)
+    {
+        MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::DispatchResourceChangeNotifications()");
+
+        Ptr<MgStringCollection> addresses = GetServerAddresses(MgServiceType::TileService);
+        INT32 numServers = addresses->GetCount();
+
+        for (INT32 i = 0; i < numServers; ++i)
+        {
+            // If an error occurs, catch the exception but do not throw it
+            // so that the site server can continue dispatching
+            // resource change notifications to other support servers.
+
+            try
+            {
+                NotifyResourcesChanged(addresses->GetItem(i), resources);
+            }
+            catch (MgException* e)
+            {
+                // Server is down or request gets timed out? Log the message.
+                STRING locale = m_serverManager->GetDefaultLocale();
+
+                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+                MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
+                MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+
+                SAFE_RELEASE(e);
+            }
+            catch (...)
+            {
+            }
+        }
+    }
+
+    MG_CATCH_AND_THROW(L"MgLoadBalanceManager.DispatchResourceChangeNotifications")
 }
 
 ///----------------------------------------------------------------------------
@@ -1808,62 +1855,4 @@ void MgLoadBalanceManager::EnableServices(INT32 serviceFlags)
     }
 
     MG_CATCH_AND_THROW(L"MgLoadBalanceManager.EnableServices")
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Dispatch resource change notifications to all the servers that host the
-/// tile service.
-///
-void MgLoadBalanceManager::DispatchResourceChangeNotifications(
-    MgSerializableCollection* resources)
-{
-    // TODO: Optimization - to perform this task on a different thread.
-    //       Do nothing for now as this operation may take too long.
-/*
-    MG_TRY()
-
-    if (!m_serverManager->IsSiteServer())
-    {
-        throw new MgInvalidOperationException(
-            L"MgLoadBalanceManager.DispatchResourceChangeNotifications",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    if (NULL != resources && resources->GetCount() > 0)
-    {
-        MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::DispatchResourceChangeNotifications()");
-
-        Ptr<MgStringCollection> addresses = GetServerAddresses(MgServiceType::TileService);
-        INT32 numServers = addresses->GetCount();
-
-        for (INT32 i = 0; i < numServers; ++i)
-        {
-            // If an error occurs, catch the exception but do not throw it
-            // so that the site server can continue dispatching
-            // resource change notifications to other support servers.
-
-            try
-            {
-                NotifyResourcesChanged(addresses->GetItem(i), resources);
-            }
-            catch (MgException* e)
-            {
-                // Server is down or request gets timed out? Log the message.
-                STRING locale = m_serverManager->GetDefaultLocale();
-
-                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
-                MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-                MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
-
-                SAFE_RELEASE(e);
-            }
-            catch (...)
-            {
-            }
-        }
-    }
-
-    MG_CATCH_AND_THROW(L"MgLoadBalanceManager.DispatchResourceChangeNotifications")
-*/
 }

@@ -65,7 +65,7 @@ INT32 MgEventTimer::GetEventTimeout() const
 /// \brief
 /// Sets the timer interval (in seconds).
 ///
-void MgEventTimer::SetInterval(const ACE_Time_Value& interval)
+void MgEventTimer::SetInterval(INT32 interval)
 {
     m_interval = interval;
 }
@@ -123,7 +123,9 @@ void MgEventTimer::Schedule(const ACE_Time_Value& startTime)
 
     const MgTimedEvent& event = m_eventHandler->GetEvent();
     const long& eventId = event.GetId();
-    m_id = m_timer.schedule(m_eventHandler.get(), &eventId, startTime, m_interval);
+    ACE_Time_Value interval = ACE_Time_Value(m_interval);
+
+    m_id = m_timer.schedule(m_eventHandler.get(), &eventId, startTime, interval);
 
     MG_CATCH_AND_THROW(L"MgEventTimer.Schedule");
 }

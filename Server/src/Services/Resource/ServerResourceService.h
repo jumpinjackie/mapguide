@@ -20,9 +20,10 @@
 
 #include "ServerResourceDllExport.h"
 
+#include <set>
+
 class MgSecurityCache;
 class MgPermissionCache;
-class MgLoadBalanceManager;
 class MgLibraryRepository;
 class MgSessionRepository;
 class MgSiteRepository;
@@ -157,15 +158,24 @@ public:
 
     virtual void PerformRepositoryCheckpoints(UINT32 flags = 0);
 
+    virtual MgSerializableCollection* GetChangedResources();
+    virtual void UpdateChangedResources(MgSerializableCollection* changedResources);
+
+protected:
+
+    void UpdateChangedResources(const set<STRING>& changedResources);
+
 /// Data Members
 
 private:
 
-    MgLoadBalanceManager* m_loadBalanceMan;
+    ACE_Recursive_Thread_Mutex m_mutex;
 
     MgSiteRepository*    m_siteRepository;
     MgSessionRepository* m_sessionRepository;
     MgLibraryRepository* m_libraryRepository;
+
+    set<STRING> m_changedResources;
 };
 
 #endif

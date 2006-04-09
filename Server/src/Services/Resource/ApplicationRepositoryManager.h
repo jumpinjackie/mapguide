@@ -72,7 +72,6 @@ public:
     MgByteReader* EnumerateReferences(MgResourceIdentifier* resource);
     void EnumerateParentMapDefinitions(
         set<string>& childResources, set<STRING>& parentResources);
-    MgSerializableCollection* GetChangedResources() const;
 
     // Resource Data Management APIs
 
@@ -97,6 +96,8 @@ public:
 
     MgResourceDataStreamManager* GetResourceDataStreamManager();
     MgResourceDataFileManager* GetResourceDataFileManager();
+
+    const set<STRING>& GetChangedResources() const;
 
 protected:
 
@@ -128,6 +129,11 @@ inline MgResourceDataStreamManager* MgApplicationRepositoryManager::GetResourceD
 inline MgResourceDataFileManager* MgApplicationRepositoryManager::GetResourceDataFileManager()
 {
     return m_dataFileMan;
+}
+
+inline const set<STRING>& MgApplicationRepositoryManager::GetChangedResources() const
+{
+    return m_changedResources;
 }
 
 #endif

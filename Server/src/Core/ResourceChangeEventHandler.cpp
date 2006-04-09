@@ -17,7 +17,7 @@
 
 #include "AceCommon.h"
 #include "ResourceChangeEventHandler.h"
-#include "LoadBalanceManager.h"
+#include "ServiceManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -26,6 +26,9 @@
 MgResourceChangeEventHandler::MgResourceChangeEventHandler(MgEventTimer& timer) :
     MgTimedEventHandler(timer)
 {
+    m_serviceManager = MgServiceManager::GetInstance();
+    ACE_ASSERT(NULL != m_serviceManager);
+
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     ACE_ASSERT(NULL != configuration);
     INT32 interval = MgConfigProperties::DefaultResourceServicePropertyResourceChangeTimerInterval;
@@ -44,7 +47,7 @@ MgResourceChangeEventHandler::MgResourceChangeEventHandler(MgEventTimer& timer) 
             L"MgResourceChangeEventHandler.MgResourceChangeEventHandler");
     }
 
-    m_timer.SetInterval(ACE_Time_Value(interval));
+    m_timer.SetInterval(interval);
     m_event.SetId(MgTimedEvent::ResourceChange);
 }
 
@@ -67,13 +70,7 @@ void MgResourceChangeEventHandler::HandleEvent(long eventId)
     // Dispatch resource change notifications.
     if (MgTimedEvent::ResourceChange == eventId)
     {
-        MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
-        ACE_ASSERT(NULL != loadBalanceManager);
-
-        if (NULL != loadBalanceManager)
-        {
-            loadBalanceManager->DispatchResourceChangeNotifications(NULL);
-        }
+        m_serviceManager->DispatchResourceChangeNotifications();
     }
 
     MG_CATCH_AND_THROW(L"MgResourceChangeEventHandler.HandleEvent")

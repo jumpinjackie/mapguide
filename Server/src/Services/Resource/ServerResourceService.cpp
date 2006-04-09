@@ -18,7 +18,6 @@
 #include "ResourceServiceDefs.h"
 #include "ServerResourceService.h"
 #include "PermissionManager.h"
-#include "LoadBalanceManager.h"
 #include "LibraryRepository.h"
 #include "SessionRepository.h"
 #include "SiteRepository.h"
@@ -36,15 +35,11 @@
 MgServerResourceService::MgServerResourceService(
     MgConnectionProperties* connection) :
     MgResourceService(connection),
-    m_loadBalanceMan(NULL),
     m_siteRepository(NULL),
     m_sessionRepository(NULL),
     m_libraryRepository(NULL)
 {
     MG_RESOURCE_SERVICE_TRY()
-
-    m_loadBalanceMan = MgLoadBalanceManager::GetInstance();
-    ACE_ASSERT(NULL != m_loadBalanceMan);
 
     // Clean up the Session repository after creating the Site repository
     // to eliminate unnecessary XMLPlatformUtils::Initialize/Terminate calls
@@ -230,11 +225,8 @@ void MgServerResourceService::DeleteRepository(MgResourceIdentifier* resource)
 
     repositoryMan.CommitTransaction();
 
-    // Dispatch resource change notifications.
-
-    Ptr<MgSerializableCollection> changedResources = repositoryMan.GetChangedResources();
-
-    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+    // Update the current set of changed resources.
+    UpdateChangedResources(repositoryMan.GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.DeleteRepository")
 }
@@ -378,11 +370,8 @@ void MgServerResourceService::ApplyResourcePackage(MgByteReader* packageStream)
 
     repositoryMan.CommitTransaction();
 
-    // Dispatch resource change notifications.
-
-    Ptr<MgSerializableCollection> changedResources = repositoryMan.GetChangedResources();
-
-    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+    // Update the current set of changed resources.
+    UpdateChangedResources(repositoryMan.GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.ApplyResourcePackage")
 }
@@ -414,11 +403,8 @@ void MgServerResourceService::LoadResourcePackage(CREFSTRING packagePathname,
 
     repositoryMan.CommitTransaction();
 
-    // Dispatch resource change notifications.
-
-    Ptr<MgSerializableCollection> changedResources = repositoryMan.GetChangedResources();
-
-    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+    // Update the current set of changed resources.
+    UpdateChangedResources(repositoryMan.GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.LoadResourcePackage")
 }
@@ -544,11 +530,8 @@ void MgServerResourceService::SetResource(MgResourceIdentifier* resource,
 
     repositoryMan->CommitTransaction();
 
-    // Dispatch resource change notifications.
-
-    Ptr<MgSerializableCollection> changedResources = repositoryMan->GetChangedResources();
-
-    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+    // Update the current set of changed resources.
+    UpdateChangedResources(repositoryMan->GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.SetResource")
 }
@@ -582,11 +565,8 @@ void MgServerResourceService::DeleteResource(MgResourceIdentifier* resource)
 
     repositoryMan->CommitTransaction();
 
-    // Dispatch resource change notifications.
-
-    Ptr<MgSerializableCollection> changedResources = repositoryMan->GetChangedResources();
-
-    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+    // Update the current set of changed resources.
+    UpdateChangedResources(repositoryMan->GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.DeleteResource")
 }
@@ -621,11 +601,8 @@ void MgServerResourceService::MoveResource(MgResourceIdentifier* sourceResource,
 
     repositoryMan->CommitTransaction();
 
-    // Dispatch resource change notifications.
-
-    Ptr<MgSerializableCollection> changedResources = repositoryMan->GetChangedResources();
-
-    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+    // Update the current set of changed resources.
+    UpdateChangedResources(repositoryMan->GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.MoveResource")
 }
@@ -660,11 +637,8 @@ void MgServerResourceService::CopyResource(MgResourceIdentifier* sourceResource,
 
     repositoryMan->CommitTransaction();
 
-    // Dispatch resource change notifications.
-
-    Ptr<MgSerializableCollection> changedResources = repositoryMan->GetChangedResources();
-
-    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+    // Update the current set of changed resources.
+    UpdateChangedResources(repositoryMan->GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.CopyResource")
 }
@@ -1105,11 +1079,8 @@ void MgServerResourceService::SetResourceData(MgResourceIdentifier* resource,
 
     repositoryMan->CommitTransaction();
 
-    // Dispatch resource change notifications.
-
-    Ptr<MgSerializableCollection> changedResources = repositoryMan->GetChangedResources();
-
-    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+    // Update the current set of changed resources.
+    UpdateChangedResources(repositoryMan->GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.SetResourceData")
 }
@@ -1144,11 +1115,8 @@ void MgServerResourceService::DeleteResourceData(
 
     repositoryMan->CommitTransaction();
 
-    // Dispatch resource change notifications.
-
-    Ptr<MgSerializableCollection> changedResources = repositoryMan->GetChangedResources();
-
-    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+    // Update the current set of changed resources.
+    UpdateChangedResources(repositoryMan->GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.DeleteResourceData")
 }
@@ -1183,11 +1151,8 @@ void MgServerResourceService::RenameResourceData(MgResourceIdentifier* resource,
 
     repositoryMan->CommitTransaction();
 
-    // Dispatch resource change notifications.
-
-    Ptr<MgSerializableCollection> changedResources = repositoryMan->GetChangedResources();
-
-    m_loadBalanceMan->DispatchResourceChangeNotifications(changedResources);
+    // Update the current set of changed resources.
+    UpdateChangedResources(repositoryMan->GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.RenameResourceData")
 }
@@ -1816,4 +1781,79 @@ void MgServerResourceService::PerformRepositoryCheckpoints(UINT32 flags)
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.PerformCheckpoint")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the current set of changed resources.
+///
+MgSerializableCollection* MgServerResourceService::GetChangedResources()
+{
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    if (m_changedResources.empty())
+    {
+        return NULL;
+    }
+
+    Ptr<MgSerializableCollection> resources = new MgSerializableCollection();
+
+    for (set<STRING>::const_iterator i = m_changedResources.begin();
+        i != m_changedResources.end(); ++i)
+    {
+        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(*i);
+
+        resources->Add(resource.p);
+    }
+
+    m_changedResources.clear();
+
+    return resources.Detach();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Updates the current set of changed resources.
+///
+void MgServerResourceService::UpdateChangedResources(MgSerializableCollection* resources)
+{
+    if (NULL != resources)
+    {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+        INT32 numResources = resources->GetCount();
+
+        for (INT32 i = 0; i < numResources; ++i)
+        {
+            Ptr<MgSerializable> serializableObj = resources->GetItem(i);
+            MgResourceIdentifier* resource = dynamic_cast<MgResourceIdentifier*>(
+                serializableObj.p);
+
+            if (NULL == resource)
+            {
+                throw new MgInvalidCastException(
+                    L"MgServerResourceService.UpdateChangedResources",
+                    __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+
+            m_changedResources.insert(resource->ToString());
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Updates the current set of changed resources.
+///
+void MgServerResourceService::UpdateChangedResources(const set<STRING>& resources)
+{
+    if (!resources.empty())
+    {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+        for (set<STRING>::const_iterator i = resources.begin(); 
+            i != resources.end(); ++i)
+        {
+            m_changedResources.insert(*i);
+        }
+    }
 }

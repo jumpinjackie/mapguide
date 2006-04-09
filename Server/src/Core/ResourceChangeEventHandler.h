@@ -51,6 +51,7 @@ protected:
 
 private:
 
+    MgServiceManager* m_serviceManager;
 };
 
 /// Inline Methods

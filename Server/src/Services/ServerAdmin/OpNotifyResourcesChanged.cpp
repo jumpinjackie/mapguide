@@ -69,7 +69,7 @@ void MgOpNotifyResourcesChanged::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSerializableCollection");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        MgSecurityManager::Authenticate(MgUserInformation::GetCurrentUserInfo());
 
         m_service->NotifyResourcesChanged(resources);
 
