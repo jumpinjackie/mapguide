@@ -61,7 +61,7 @@ public:
 
 protected:
 
-    virtual void HandleEvent(long eventId = 0) = 0;
+    virtual void HandleEvent(long eventId) = 0;
 
 private:
 

@@ -59,8 +59,8 @@ public:
     MgTimedEventHandler& GetEventHandler() const;
     INT32 GetEventTimeout() const;
 
-    const ACE_Time_Value& GetInterval() const;
-    void SetInterval(const ACE_Time_Value& interval);
+    INT32 GetInterval() const;
+    void SetInterval(INT32 interval);
 
     void Initialize(MgEventTimer::Type type);
     void Terminate();
@@ -77,13 +77,13 @@ private:
 
     long m_id;
     ACE_Thread_Timer_Queue_Adapter<ACE_Timer_Heap> m_timer;
-    ACE_Time_Value m_interval;
+    INT32 m_interval;
     auto_ptr<MgTimedEventHandler> m_eventHandler;
 };
 
 /// Inline Methods
 
-inline const ACE_Time_Value& MgEventTimer::GetInterval() const
+inline INT32 MgEventTimer::GetInterval() const
 {
     return m_interval;
 }

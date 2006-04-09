@@ -57,7 +57,7 @@ MgSessionTimeoutEventHandler::MgSessionTimeoutEventHandler(MgEventTimer& timer) 
             L"MgSessionTimeoutEventHandler.MgSessionTimeoutEventHandler");
     }
 
-    m_timer.SetInterval(ACE_Time_Value(interval));
+    m_timer.SetInterval(interval);
     m_event.SetTimeout(timeout);
     m_event.SetId(MgTimedEvent::SessionTimeout);
 }

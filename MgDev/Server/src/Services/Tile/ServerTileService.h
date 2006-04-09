@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGSERVERTILESERVICE_H
-#define MGSERVERTILESERVICE_H
+#ifndef MGSERVERTILESERVICE_H_
+#define MGSERVERTILESERVICE_H_
 
 #include "ServerTileDllExport.h"
 #include "TileCache.h"
@@ -50,7 +50,6 @@ private:
     MgServerTileService();
 
     // member data
-    Ptr<MgResourceService> m_svcResource;
     Ptr<MgTileCache> m_tileCache;
 };
 

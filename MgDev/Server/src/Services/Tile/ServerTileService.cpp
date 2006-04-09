@@ -21,13 +21,6 @@
 
 MgServerTileService::MgServerTileService(MgConnectionProperties* connection) : MgTileService(connection)
 {
-    // store references to the various services we use
-    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-    assert(NULL != serviceMan);
-
-    m_svcResource = dynamic_cast<MgResourceService*>(serviceMan->RequestService(MgServiceType::ResourceService));
-    assert(m_svcResource != NULL);
-
     m_tileCache = new MgTileCache();
 }
 
@@ -139,36 +132,44 @@ void MgServerTileService::ClearCache(MgMap* map)
     MG_CATCH_AND_THROW(L"MgServerTileService.ClearCache")
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Handle the Resource Change Notification event.
+/// Any tile cache associated with the specified Map Definition resources 
+/// will be cleared.
+///
 void MgServerTileService::NotifyResourcesChanged(MgSerializableCollection* resources)
 {
-    if (NULL == resources || resources->GetCount() <= 0)
-    {
-        return;
-    }
+    MG_TRY()
 
-    // get any parent map definitions associated with these resources
-    Ptr<MgSerializableCollection> parentMaps = NULL; // m_svcResource->EnumerateParentMapDefinitions(resources);
-
-    if (parentMaps != NULL)
+    if (NULL != resources)
     {
-        // iterate over the maps
-        INT32 numMaps = parentMaps->GetCount();
-        for (INT32 i=0; i<numMaps; ++i)
+        INT32 numMaps = resources->GetCount();
+
+        for (INT32 i = 0; i < numMaps; ++i)
         {
-            Ptr<MgResourceIdentifier> mapResId = dynamic_cast<MgResourceIdentifier*>(parentMaps->GetItem(i));
-            if (mapResId != NULL)
+            Ptr<MgSerializable> serializableObj = resources->GetItem(i);
+            MgResourceIdentifier* mapResId = 
+                dynamic_cast<MgResourceIdentifier*>(serializableObj.p);
+
+            if (NULL == mapResId)
             {
-                if (mapResId->IsResourceTypeOf(MgResourceType::MapDefinition))
-                {
-                    // clear any tile cache associated with this map
-                    m_tileCache->Clear(mapResId);
-                }
-                else if (mapResId->IsResourceTypeOf(MgResourceType::Map))
-                {
-                    // TODO?
-                }
+                throw new MgInvalidCastException(
+                    L"MgServerTileService.NotifyResourcesChanged",
+                    __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+
+            if (mapResId->IsResourceTypeOf(MgResourceType::MapDefinition))
+            {
+                // clear any tile cache associated with this map
+                m_tileCache->Clear(mapResId);
+            }
+            else if (mapResId->IsResourceTypeOf(MgResourceType::Map))
+            {
+                // TODO?
             }
         }
     }
+
+    MG_CATCH_AND_THROW(L"MgServerTileService.NotifyResourcesChanged")
 }

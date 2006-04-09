@@ -542,8 +542,66 @@ MgService* MgServiceManager::RequestService(INT32 serviceType)
 ///
 void MgServiceManager::NotifyResourcesChanged(MgSerializableCollection* resources)
 {
+    if (m_tileService == NULL && 
+        m_loadBalanceManager->m_localServerInfo->IsServiceEnabled(
+            MgServiceType::TileService))
+    {
+        m_tileService = dynamic_cast<MgServerTileService*>(
+            MgSiteConnection::CreateService(MgServiceType::TileService, m_localConnProp));
+    }
+
     if (m_tileService != NULL)
     {
         m_tileService->NotifyResourcesChanged(resources);
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Dispatch resource change notifications to all the servers that host the
+/// tile service.
+///
+void MgServiceManager::DispatchResourceChangeNotifications()
+{
+    Ptr<MgSerializableCollection> changedResources;
+
+    MG_TRY()
+
+    ACE_ASSERT(m_serverManager->IsSiteServer());
+
+    if (m_resourceService == NULL)
+    {
+        throw new MgServiceNotAvailableException(
+            L"MgServiceManager.DispatchResourceChangeNotifications",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    changedResources = m_resourceService->GetChangedResources();
+
+    if (changedResources != NULL)
+    {
+        // Use the Administrator account to collect all the map definitions
+        // whose child resources have been changed.
+        Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(
+            MgUser::Administrator, L"");
+
+        MgUserInformation::SetCurrentUserInfo(adminUserInfo);
+        Ptr<MgSerializableCollection> changedMaps = 
+            m_resourceService->EnumerateParentMapDefinitions(changedResources);
+        MgUserInformation::SetCurrentUserInfo(NULL);
+
+        m_loadBalanceManager->DispatchResourceChangeNotifications(changedMaps);
+    }
+
+    MG_CATCH(L"MgServiceManager.DispatchResourceChangeNotifications")
+
+    // If an error occurred (e.g. due to deadlocks?), then restore the changed
+    // resources so that they will be retried in the next Resource Change
+    // Notification event.
+    if (mgException != NULL)
+    {
+        m_resourceService->UpdateChangedResources(changedResources);
+    }
+
+    MG_THROW()
 }

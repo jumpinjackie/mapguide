@@ -73,11 +73,6 @@ public:
     void UnregisterServices();
     void EnableServices(INT32 serviceFlags);
 
-    // Notification Methods
-
-    void DispatchResourceChangeNotifications(
-        MgSerializableCollection* resources);
-
 private:
 
     MgStringCollection* GetServerAddresses(INT32 serviceType) const;
@@ -116,6 +111,8 @@ private:
         bool strict);
 
     void NotifyResourcesChanged(CREFSTRING serverAddress,
+        MgSerializableCollection* resources);
+    void DispatchResourceChangeNotifications(
         MgSerializableCollection* resources);
 
 /// Data Members

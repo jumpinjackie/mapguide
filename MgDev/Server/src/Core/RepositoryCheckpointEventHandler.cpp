@@ -39,7 +39,7 @@ MgRepositoryCheckpointEventHandler::MgRepositoryCheckpointEventHandler(MgEventTi
             MgConfigProperties::DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval);
     }
 
-    m_timer.SetInterval(ACE_Time_Value(interval));
+    m_timer.SetInterval(interval);
     m_event.SetId(MgTimedEvent::RepositoryCheckpoint);
 }
 
