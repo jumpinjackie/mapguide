@@ -9,8 +9,15 @@
   <translate from="d">Delta</translate>
   <translate>Otherwise</translate>
  </Define>
+ <Define item="My.Translator.NoOtherwise">
+  <translate from="a">Alpha</translate>
+  <translate from="b">Bravo</translate>
+  <translate from="c">Charlie</translate>
+  <translate from="d">Delta</translate>
+ </Define>
  <Define item="My.list">a,b,c,d,e</Define>
  <Define item="Mapper"><item><?Translate text="&Enum.item;" with="&My.Translator;" ?></item></Define>
+ <Define item="Mapper.NoOtherwise"><item><?Translate text="&Enum.item;" with="&My.Translator.NoOtherwise;" ?></item></Define>
 
  <!-- Test VersionNegotiation -->
  <!-- This overrides the definitions in the config; is a constant baseline for the test -->
@@ -47,8 +54,8 @@
  <Define item="Response.Xml.Actual"></Define>
 
  <!-- Test PI.Enum -->
- <Define item="PI.Enum.Expected">(attr="has content" content="content")(attr="no content" content="")(attr="empty element" content="")(attr="has content too" content="content 2")</Define>
- <Define item="PI.Enum.Actual"><?Enum list="&PI.Enum.List;" using="&PI.Enum.Using;"?></Define>
+ <Define item="PI.Enum.Expected">(attr="has content" content="content") (attr="no content" content="") (attr="empty element" content="") (attr="has content too" content="content 2")</Define>
+ <Define item="PI.Enum.Actual"><?Enum list="&PI.Enum.List;" using="&PI.Enum.Using;" between=" "?></Define>
  <Define item="PI.Enum.List">
   <item attribute="has content">content</item>
   <item attribute="no content"></item>
@@ -78,12 +85,12 @@
  <Define item="PI.Enum.Empty.Actual"><?Enum list="" using="&Enum.item;"?></Define>
 
  <!-- Test PI.EnumDelim.Literal -->
- <Define item="PI.EnumDelim.Literal.Expected">c a b r </Define>
- <Define item="PI.EnumDelim.Literal.Actual"><?EnumDelim list="c,a,b,r"   using="&Enum.Item; " ?></Define>
+ <Define item="PI.EnumDelim.Literal.Expected">c:a:b:r</Define>
+ <Define item="PI.EnumDelim.Literal.Actual"><?EnumDelim list="c,a,b,r"   using="&Enum.Item;" between=":"?></Define>
 
  <!-- Test PI.EnumDelim.Expansion -->
- <Define item="PI.EnumDelim.Expansion.Expected"><item>Alpha</item><item>Bravo</item><item>Charlie</item><item>Delta</item><item>Otherwise</item></Define>
- <Define item="PI.EnumDelim.Expansion.Actual"><?EnumDelim list="&My.list;" using="&Mapper;" ?></Define>
+ <Define item="PI.EnumDelim.Expansion.Expected"><item>Alpha</item><item>Bravo</item><item>Charlie</item><item>Delta</item><item>Otherwise</item><item>Alpha</item><item>Bravo</item><item>Charlie</item><item>Delta</item><item>e</item></Define>
+ <Define item="PI.EnumDelim.Expansion.Actual"><?EnumDelim list="&My.list;" using="&Mapper;" ?><?EnumDelim list="&My.list;" using="&Mapper.NoOtherwise;" ?></Define>
 
 
  <!-- Test PI.Ifdef -->
@@ -181,6 +188,7 @@
    <item>PI.Enum</item>
    <item>PI.Enum.attributes</item>
    <item>PI.Enum.emptycontent</item>
+   <item>PI.Enum.between</item>
   </Exercises>
   <Expected>&PI.Enum.Expected;</Expected>
   <Actual>&PI.Enum.Actual;</Actual>
@@ -225,6 +233,7 @@
    <item>PI.EnumDelim</item>
    <item>PI.EnumDelim.list=literal</item>
    <item>PI.EnumDelim.using=Expansion.Enum.item</item>
+   <item>PI.Enum.between</item>
   </Exercises>
   <Expected>&PI.EnumDelim.Literal.Expected;</Expected>
   <Actual>&PI.EnumDelim.Literal.Actual;</Actual>

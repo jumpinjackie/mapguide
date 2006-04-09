@@ -128,8 +128,8 @@ private:
 
     MgStringCollection* GetParenthesisedList(CREFSTRING sourceString);
     void BuildFilterStrings(CREFSTRING filters, CREFSTRING featureIds, CREFSTRING bbox);
-    bool ParseQueryElement(MgXmlParser& parser,MgXmlNamespaceManager& oNamespaces);
-    bool ParseFilterElement(MgXmlParser& parser,MgXmlNamespaceManager& oNamespaces);
+    bool ParseQueryElement(MgOgcWfsServer& oServer,MgXmlParser& parser,MgXmlNamespaceManager& oNamespaces);
+    bool ParseFilterElement(MgOgcWfsServer& oServer,MgXmlParser& parser,MgXmlNamespaceManager& oNamespaces);
 
     static bool MoveToEndOfElement(MgXmlParser& parser, MgXmlNamespaceManager& oMgr, const wchar_t* pszElementName);
     static STRING GetElementContents(MgXmlParser& parser);

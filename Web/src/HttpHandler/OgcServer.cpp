@@ -63,6 +63,7 @@ CPSZ kpszAttributeNumber            = _("number");
 
 CPSZ kpszElementTranslate           = _("translate");
 CPSZ kpszAttributeFrom              = _("from");
+CPSZ kpszDefinitionTranslationFrom  = _("Translate.From");
 
 CPSZ kpszDefinitionParameterPrefix  = _("Parameter.");
 CPSZ kpszDefinitionValueMapSuffix   = _(".ValueMap");
@@ -162,6 +163,7 @@ CPSZ kpszPiAttributeList             = _("list"); // indicates a list, in whatev
 CPSZ kpszPiAttributeUsing            = _("using");// indicates a formatting string, used by all enumerators
 CPSZ kpszPiAttributeWith             = _("with"); // used by translate to indicate the translation table to use
 CPSZ kpszPiAttributeSep              = _("sep");  // indicates a separator
+CPSZ kpszPiAttributeBetween          = _("between"); // indicates what appears between items in enumerations
 CPSZ kpszPiAttributeSubset           = _("subset"); // indicates which subset of all iterated values to report
 
 
@@ -703,6 +705,10 @@ void MgOgcServer::ProcedureEnum(MgXmlProcessingInstruction& PIEnum)
         sSubset = kpszEmpty;
     ProcessExpandableTextIntoString(sSubset,sSubset);
 
+    STRING sBetween;
+    if(!PIEnum.GetAttribute(kpszPiAttributeBetween,sBetween))
+        sBetween = _("");
+
     int iNum = 0;
 
     MgXmlParser List(sExpandedList.c_str());
@@ -712,6 +718,10 @@ void MgOgcServer::ProcedureEnum(MgXmlProcessingInstruction& PIEnum)
         if(List.Current().Type() == keBeginElement) {
             MgXmlBeginElement& Begin = (MgXmlBeginElement&)List.Current();
             if(Begin.Name() == pszItem) {
+
+                if(iNum && sBetween.length() > 0)
+                    ProcessExpandableText(sBetween);
+
                 // Each item/iteration gets its own stack frame, so
                 // definitions from one iteration don't carry forth
                 // into the next.
@@ -807,6 +817,10 @@ void MgOgcServer::ProcedureEnumDelim(MgXmlProcessingInstruction& PIEnum)
     if(!PIEnum.GetAttribute(kpszPiAttributeSep,sSep))
         sSep = kpszPiDefaultSeparator;
 
+    STRING sBetween;
+    if(!PIEnum.GetAttribute(kpszPiAttributeBetween,sBetween))
+        sBetween = _("");
+
     STRING sFormat;
     if(!PIEnum.GetAttribute(kpszPiAttributeUsing,sFormat))
         sFormat = kpszPiDefaultFormat;
@@ -820,6 +834,9 @@ void MgOgcServer::ProcedureEnumDelim(MgXmlProcessingInstruction& PIEnum)
     STRING::size_type iSep = STRING::npos;  // last known position of separator; before start of string initially
     STRING::size_type iItem = 0;            // start of current item; at start of string initially.
     while((iSep = sList.find(sSep,iItem)) != STRING::npos ) {
+        if(iNum && sBetween.length() > 0)
+            ProcessExpandableText(sBetween);
+
         // Each item/iteration gets its own stack frame, so
         // definitions from one iteration don't carry forth
         // into the next.
@@ -833,6 +850,9 @@ void MgOgcServer::ProcedureEnumDelim(MgXmlProcessingInstruction& PIEnum)
         iItem = iSep+1;
     }
     {
+        if(iNum && sBetween.length() > 0)
+            ProcessExpandableText(sBetween);
+
         CDictionaryStackFrame ForProcedureVariables(this);
         // Now, one final "iteration" since there's always a dangler after the last separator.
         if(IsIterationInSubset(++iNum,sSubset)) {
@@ -925,6 +945,20 @@ void MgOgcServer::ProcedureTranslate(MgXmlProcessingInstruction &PITranslate)
     ProcessExpandableText(sMappedResults);
 }
 
+// Like ProcessExpandableTextIntoString, but allows more than
+// just &Expansions; -- full XML handling like <? ?> etc is
+// done for this.  Note: arguments to PIs should only accept
+// expansions, so they should only use ProcessExpandableTextIntoString
+void MgOgcServer::ProcessXmlIntoString(CPSZ pszText,REFSTRING sOut)
+{
+    CStringStream Str;
+    CSubstituteStream ForThisMethod(this,Str);
+
+    MgXmlParser Xml(pszText);
+    ProcessXmlStream(Xml);
+
+    sOut = Str.Contents();
+}
 
 void MgOgcServer::ProcessExpandableTextIntoString(CPSZ pszText,REFSTRING sOut)
 {
@@ -1415,10 +1449,16 @@ bool MgOgcServer::MapValue(MgXmlParser& Xml,CPSZ pszFrom,REFSTRING sTo)
                     // Cool; move into the <map> element's contents and slurp
                     // it up.
                     Xml.Next();
+
+                    CDictionaryStackFrame ForThisTranslation(this);
+                    m_pTopOfDefinitions->AddDefinition(kpszDefinitionTranslationFrom,pszFrom);
+
+                    STRING sText;
                     while(!MapElement.AtEnd()) {
-                        sTo+= Xml.Current().Contents();
+                        sText+= Xml.Current().Contents();
                         Xml.Next();
                     }
+                    ProcessXmlIntoString(sText.c_str(),sTo);
 
                     // Stop looking; we've found our mapping.  Go home happy.
                     return true;
@@ -1431,6 +1471,8 @@ bool MgOgcServer::MapValue(MgXmlParser& Xml,CPSZ pszFrom,REFSTRING sTo)
             Xml.Next();
 
     }
+    // If we got here, the string passes though unchanged.
+    sTo = pszFrom;
     return false;
 }
 
@@ -1461,23 +1503,36 @@ CPSZ MgOgcServer::RequestParameter(CPSZ pszParameter)
     if(pszMappedName != NULL)
         pszParameter = pszMappedName;
 
-    // Here's the actual lookup.
-    CPSZ pszUnmappedValue = m_Request[pszParameter];
-    if(pszUnmappedValue != NULL) {
+    // Common post-acquisition parameter handling
+    return ProcessArgumentAs(pszParameter,m_Request[pszParameter]);
+}
+
+// Allows external agents to transform arguments as if they were
+// a variable of the same name.  Useful for allowing HTTP POST operations
+// the same template-guided fixups as HTTP GET has.
+CPSZ MgOgcServer::ProcessArgumentAs(CPSZ pszOstensibleName,CPSZ pszActualValue)
+{
+    if(pszActualValue != NULL) {
         // Now, if that parameter has a value map,
         // let's see if the unmapped value has a mapping.
+        STRING sName = kpszDefinitionParameterPrefix;
+        sName += pszOstensibleName;
         sName += kpszDefinitionValueMapSuffix;
+
+        // Is there a value mapping definition?
+        // That is, "Parameter.(pszOstensibleName).ValueMap"
         CPSZ pszValueMap = this->Definition(sName.c_str());
+        // If so, We run the actual value through that for the mapped result.
         if(pszValueMap != NULL) {
             MgXmlParser Xml(pszValueMap);
             m_sValueCache.erase();
-            if(MapValue(Xml,pszUnmappedValue,m_sValueCache)) {
+            if(MapValue(Xml,pszActualValue,m_sValueCache)) {
                 return m_sValueCache.c_str();
             }
         }
     }
 
-    return pszUnmappedValue;
+    return pszActualValue;
 }
 
 

@@ -38,70 +38,54 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWmsGetFeatureInfo)
 MgHttpWmsGetFeatureInfo::MgHttpWmsGetFeatureInfo(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
+}
 
-    Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
-
+void MgHttpWmsGetFeatureInfo::InitializeRequestParameters(MgOgcWmsServer& oServer)
+{
     // Get the WMS request version
-    m_version = params->GetParameterValue(MgHttpResourceStrings::reqWmsVersion);
+    m_version = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsVersion);
 
     // Get the requested layers
-    m_queryLayers = params->GetParameterValue(MgHttpResourceStrings::reqWmsQueryLayers);
+    m_queryLayers = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsQueryLayers);
 
     // Get the requested styles
-    m_infoFormat = params->GetParameterValue(MgHttpResourceStrings::reqWmsInfoFormat);
+    m_infoFormat = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsInfoFormat);
 
     // Get i pixel coordinate and convert to integer
-    string iParam = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqWmsICoord));
-    if(iParam.length() == 0)
-    {
-        // If no "I" parameter was specified, look for an "X" parameter
-        iParam = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqWmsXCoord));
-    }
-    m_iCoord = atoi(iParam.c_str());
+    m_iCoord = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsICoord);
+    if(m_iCoord == 0)
+        m_iCoord = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsXCoord);
 
     // Get j pixel coordinate and convert to integer
-    string jParam = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqWmsJCoord));
-    if(jParam.length() == 0)
-    {
-        // If no "J" parameter was specified, look for a "Y" parameter
-        jParam = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqWmsYCoord));
-    }
-    m_jCoord = atoi(jParam.c_str());
+    m_iCoord = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsJCoord);
+    if(m_jCoord == 0)
+        m_jCoord = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsYCoord);
 
     // Get the requested layers
-    m_layers = params->GetParameterValue(MgHttpResourceStrings::reqWmsLayers);
+    m_layers = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsLayers);
 
     // Get the requested styles
-    m_styles = params->GetParameterValue(MgHttpResourceStrings::reqWmsStyles);
+    m_styles = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsStyles);
 
-    // Get the requested styles
-    m_crs = params->GetParameterValue(MgHttpResourceStrings::reqWmsCrs);
+    // Get the requested reference system
+    m_crs = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsCrs);
 
-    // Get the requested styles
-    m_bbox = params->GetParameterValue(MgHttpResourceStrings::reqWmsBbox);
+    // Get the requested bounds
+    m_bbox = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsBbox);
 
     // Get width and convert to integer
-    string widthParam = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqWmsWidth));
-    m_width = atoi(widthParam.c_str());
+    m_width = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsWidth);
 
     // Get height and convert to integer
-    string heightParam = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqWmsHeight));
-    m_height = atoi(heightParam.c_str());
+    m_height = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsHeight);
 
     // Get the requested format
-    m_format = params->GetParameterValue(MgHttpResourceStrings::reqWmsFormat);
+    m_format = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsFormat);
 
     // Get the maximum number of features to return
-    m_featureCount = 1;
-    string featureCountParam = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqWmsFeatureCount));
-    if(featureCountParam.length() > 0)
-    {
-        m_featureCount = atoi(featureCountParam.c_str());
-        if(m_featureCount < 1)
-        {
-            m_featureCount = 1;
-        }
-    }
+    m_featureCount = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsFeatureCount);
+    if(m_featureCount < 1)
+        m_featureCount = 1;
 }
 
 /// <summary>
@@ -169,6 +153,10 @@ void MgHttpWmsGetFeatureInfo::AcquireValidationData(MgOgcServer* ogcServer)
     MgOgcWmsServer* wmsServer = (MgOgcWmsServer*)ogcServer;
     if(wmsServer != NULL)
     {
+        // The initialization that used to happen in the ctor is deferred until now
+        // (when we need it) since now we have access to a server object.
+        InitializeRequestParameters(*wmsServer);
+
         // Get an instance of the resource service
         Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
 
@@ -217,4 +205,17 @@ void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
         wmsServer->SetFeatureInfo(wmsFeatureInfo);
     }
 }
+
+STRING MgHttpWmsGetFeatureInfo::GetRequestParameter(MgOgcWmsServer& oServer,CREFSTRING sParameterName)
+{
+    CPSZ psz = oServer.RequestParameter(sParameterName.c_str());
+    return STRING(psz? psz : _(""));
+}
+
+INT32 MgHttpWmsGetFeatureInfo::GetRequestParameterInt32(MgOgcWmsServer& oServer,CREFSTRING sParameterName)
+{
+    STRING sNum = GetRequestParameter(oServer,sParameterName);
+    return MgUtil::StringToInt32(sNum);
+}
+
 

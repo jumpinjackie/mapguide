@@ -59,6 +59,8 @@ private:
 
     MgGeometry* GetSelectionGeometry(MgMap* map);
 
+    void InitializeRequestParameters(MgOgcWmsServer& oServer);
+
     STRING m_version;
     STRING m_queryLayers;
     STRING m_infoFormat;
@@ -75,6 +77,8 @@ private:
     INT32 m_height;
     STRING m_format;
 
+    STRING GetRequestParameter(MgOgcWmsServer& oServer,CREFSTRING sParameterName);
+    INT32  GetRequestParameterInt32(MgOgcWmsServer& oServer,CREFSTRING sParameterName);
 
 };
 

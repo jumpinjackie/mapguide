@@ -171,7 +171,7 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer,CREFSTRING xmlR
             // so now let's dig into its contents: queries...
             parser.Next();
             while(!oGetFeatureElement.AtEnd()) {
-                ParseQueryElement(parser,oNamespaces);
+                ParseQueryElement(oServer,parser,oNamespaces);
             };
         }
     }
@@ -444,7 +444,7 @@ STRING WfsGetFeatureParams::GetElementContents(MgXmlParser& parser)
 }
 
 // Parse a Query element
-bool WfsGetFeatureParams::ParseQueryElement(MgXmlParser& parser,MgXmlNamespaceManager& oNamespaces)
+bool WfsGetFeatureParams::ParseQueryElement(MgOgcWfsServer& oServer,MgXmlParser& parser,MgXmlNamespaceManager& oNamespaces)
 {
     MgXmlSynchronizeOnNamespaceElement oQueryElement(parser,
                                                      _("http://www.opengis.net/wfs:Query"),
@@ -457,7 +457,7 @@ bool WfsGetFeatureParams::ParseQueryElement(MgXmlParser& parser,MgXmlNamespaceMa
 
     STRING sTypeName;
     if(pBegin->GetAttribute(_("typeName"),sTypeName))
-        m_featureTypeList->Add(sTypeName);
+        m_featureTypeList->Add(oServer.ProcessArgumentAs(_("typeName"),sTypeName.c_str()));
 
     // Done slurping attributes; now let's look inside.
     if(!pBegin->IsEmpty()) {
@@ -466,7 +466,7 @@ bool WfsGetFeatureParams::ParseQueryElement(MgXmlParser& parser,MgXmlNamespaceMa
 
         while(!oQueryElement.AtEnd())
             // If we didn't find a Filter element, move on.
-            if(!ParseFilterElement(parser,oNamespaces))
+            if(!ParseFilterElement(oServer,parser,oNamespaces))
                 parser.Next();
     }
 
@@ -475,7 +475,7 @@ bool WfsGetFeatureParams::ParseQueryElement(MgXmlParser& parser,MgXmlNamespaceMa
 
 
 // Parse a Filter element
-bool WfsGetFeatureParams::ParseFilterElement(MgXmlParser& parser,MgXmlNamespaceManager& oNamespaces)
+bool WfsGetFeatureParams::ParseFilterElement(MgOgcWfsServer& oServer,MgXmlParser& parser,MgXmlNamespaceManager& oNamespaces)
 {
     MgXmlSynchronizeOnNamespaceElement oFilterElement(parser,
                                                      _("http://www.opengis.net/ogc:Filter"),
@@ -489,7 +489,7 @@ bool WfsGetFeatureParams::ParseFilterElement(MgXmlParser& parser,MgXmlNamespaceM
     if(!pBegin->IsEmpty()) {
         STRING filterString = GetElementContents(parser);
         if(filterString.length() > 0) {
-            m_filterStrings->Add(filterString);
+            m_filterStrings->Add(oServer.ProcessArgumentAs(_("filter"),filterString.c_str()));
         }
     }
 

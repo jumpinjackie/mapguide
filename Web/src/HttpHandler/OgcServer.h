@@ -75,6 +75,11 @@ public:
     // definition found, or if otherwise the mapping fails
     bool MapValue(CPSZ pszDefinitionName,CPSZ pszFrom,REFSTRING sTo);
 
+    // Allows external agents to transform arguments as if they were
+    // a variable of the same name.  Useful for allowing HTTP POST operations
+    // the same template-guided fixups as HTTP GET has.
+    CPSZ ProcessArgumentAs(CPSZ pszOstensibleName,CPSZ pszActualValue);
+
 protected:
 
     // Method to be implemented by derived classes to validate request parameters
@@ -197,6 +202,11 @@ protected:
     void ProcessExpandableTextIntoString(CPSZ pszText,REFSTRING sOut);
     void ProcessExpandableTextIntoString(STRING sText,REFSTRING sOut);
 
+    // Like ProcessExpandableTextIntoString, above, but allows full
+    // XML processing, like PIs etc.  Only for use in full XML contexts,
+    // NOT for processing PI arguments.
+    void ProcessXmlIntoString(CPSZ pszText,REFSTRING sOut);
+
 private:
 
     // Takes a single expansion and provides is substitution.
@@ -229,6 +239,10 @@ private:
     //                    the list, typically an expansion of one or more
     //                    Define items that presumably at least reference
     //                    &Enum.item;
+    //   between="between-each-item"
+    //                 -- the contents to be used to separarate each item in
+    //                    the list; defaults to an empty string, but can be used
+    //                    to embed a string between items.
     //   item="element-name"
     //                 -- the name of the element to consider instead of "item"
     //                    for example,
@@ -270,6 +284,10 @@ private:
     //                    the list, typically an expansion of one or more
     //                    Define items that presumably at least reference
     //                    &Enum.item;
+    //   between="between-each-item"
+    //                 -- the contents to be used to separarate each item in
+    //                    the list; defaults to an empty string, but can be used
+    //                    to embed a string between items.
     //   subset="list"
     //                 -- a comma-separated list of integers (note: no spaces around
     //                    commas) to be iterated.  For example, subset="1,3,5,7"
@@ -346,7 +364,9 @@ private:
     void ProcedureEndif(MgXmlProcessingInstruction& PIEndif);
 
     // <?Translate     -- Translates a string using a translation table
-    //   text="str"    -- The input string to be translated
+    //   text="str"    -- The input string to be translated.  Appears as
+    //                    the definition "Translate.From" for the duration
+    //                    of the translation.
     //   with="translatetable"
     //                 -- The contents of the table, typically an expansion
     //                    of one (or more) Define items.  The format of these
