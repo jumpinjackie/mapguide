@@ -208,98 +208,11 @@ MgByteReader* MgServerDrawingService::GetSection(MgResourceIdentifier* resource,
             arguments.Add(sectionName);
             throw new MgDwfSectionNotFoundException(L"MgServerDrawingService.GetSection", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
-        pSection->readDescriptor();
-
-        // Get the resources for the section
-        DWFIterator<DWFResource*>* piResources = pSection->findResourcesByRole(DWFXML::kzRole_Graphics2d);
-        int count = 0;
-
-        DWFResource* pResource = NULL;
-
-        if (piResources)
-        {
-            for (; piResources->valid(); piResources->next())
-            {
-                count++;
-
-                // An ePlot section should have only one 2d streaming graphics resouce (the primary W2D file)
-                if (count != 1)
-                {
-                    MgStringCollection arguments;
-                    arguments.Add(sectionName);
-                    throw new MgInvalidDwfSectionException(L"MgServerDrawingService.GetSection", __LINE__, __WFILE__, &arguments, L"", NULL);
-                }
-
-                pResource = piResources->get();
-            }
-
-            DWFCORE_FREE_OBJECT( piResources );
-            piResources = NULL;
-        }
-
-        if (0 == pResource)
-        {
-            throw new MgNullReferenceException(L"MgServerDrawingService.GetSection", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        DWFInputStream* pStream = pResource->getInputStream();
-        if (0 == pStream)
-        {
-            throw new MgNullReferenceException(L"MgServerDrawingService.GetSection", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        // Use EPlotSection to get section color, paper
-        const DWFPaper* pPaper = ((DWFEPlotSection*)pSection)->paper();
-        UINT32 color = ((DWFEPlotSection*)pSection)->color();
-
-        // Use GraphicResource to get description, transform, clip, etc.
-        DWFGraphicResource* dwfGraphicResource = (DWFGraphicResource*)pResource;
-        const double* pTransform =((DWFGraphicResource*)pResource)->transform();
-        const double* pClip = ((DWFGraphicResource*)pResource)->clip();
-        const double* pExtents = ((DWFGraphicResource*)pResource)->extents();
-
-        // Create a DWFEPlotSection
-        DWFEPlotSection* pPage = DWFCORE_ALLOC_OBJECT( DWFEPlotSection(
-            pSection->title(),
-            pSection->objectID(),
-            pSection->order(),
-            pSection->source(),
-            color,
-            pPaper) );
-        if (0 == pPage)
-        {
-            throw new MgOutOfMemoryException(L"MgServerDrawingService.GetSection", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        // Set properties for the section
-        pPage->provideProperty(
-            DWFCORE_ALLOC_OBJECT( DWFProperty( PROPERTY_CREATOR.c_str(), PROPERTY_CREATOR_VALUE.c_str(), L"", L"", L"") ) );
-
-        // Define the 2d graphics resource
-        DWFGraphicResource* p2Dgfx = DWFCORE_ALLOC_OBJECT( DWFGraphicResource(
-            pResource->title(),
-            DWFXML::kzRole_Graphics2d,
-            DWFMIME::kzMIMEType_W2D,
-            DWF_AUTHOR.c_str(),
-            dwfGraphicResource->description(),
-            L"",
-            L"") );
-        if (0 == p2Dgfx)
-        {
-            throw new MgOutOfMemoryException(L"MgServerDrawingService.GetSection", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        p2Dgfx->configureGraphic(pTransform, pExtents, pClip);
-
-        // Hand-off the stream to the resource
-        p2Dgfx->setInputStream(pStream);
-
-        // Drop resource into the section
-        pPage->addResource( p2Dgfx, true );
 
         // Create a DWFPackageWriter for writing the section to a temporary DWF file
         STRING tempDwfPathname = MgFileUtil::GenerateTempFileName(false,
             /*NOXLATE*/ L"MGDS");
-        DWFFile oDWF(MgUtil::WideCharToMultiByte(tempDwfPathname).c_str());
+        DWFFile oDWF(tempDwfPathname.c_str());
 
         DWFPackageVersionExtension* pVersionExtension =
             DWFCORE_ALLOC_OBJECT(DWFPackageVersionTypeInfoExtension(DWFInterface::kzEPlot_ID));
@@ -307,7 +220,7 @@ MgByteReader* MgServerDrawingService::GetSection(MgResourceIdentifier* resource,
         DWFPackageWriter oWriter( oDWF, L"", pVersionExtension );
 
         // Add section to the writer
-        oWriter.addSection(pPage);
+        oWriter.addSection(pSection);
 
         // Write the package
         oWriter.write(
