@@ -206,6 +206,12 @@
         {
             FillLayerList();
         }
+        function OnCancel() {
+            mf = GetParent();
+            mf.mapFrame.ClearSelection();
+            mf.GotoHomePage();
+            
+        }
     </script>
 </head>
 <body onload="InitDocument()" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5 bottommargin=5 rightmargin=5>
@@ -315,7 +321,7 @@
         </td></tr>
 
         <tr><td height="6"><hr></td></tr>
-        <tr><td><input id="Done" type="submit" value="__#BUTTONDONE#__" style="width: 70px;" class="Ctrl">&nbsp;<input id="Cancel" type="submit" value="__#BUTTONCANCEL#__" style="width: 70px;" class="Ctrl"></td></tr>
+        <tr><td><input id="Done" type="submit" value="__#BUTTONDONE#__" style="width: 70px;" class="Ctrl">&nbsp;<input id="Cancel" type="button" value="__#BUTTONCANCEL#__" style="width: 70px;" class="Ctrl" onclick="OnCancel()"></td></tr>
         <tr><td height="6"></td></tr>
         </table>
         <table border="0" cellspacing="0" cellpadding="5" width="100%%" class="Regext">
