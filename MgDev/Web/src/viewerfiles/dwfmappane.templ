@@ -293,7 +293,7 @@ function InitDocument() {
     if(parent.IsContextMenu())
         document.getElementById("CtxMenuDivs").innerHTML = InitContextMenu(parent.ctxMenuItems);
         
-    // the current product (DWF Viewer or DWF Composer)
+    // the current product (DWF Viewer or ADR)
     var productName = DWFViewer.ProductName;
 
     // create the event relayer object, accounting for the product
@@ -303,7 +303,7 @@ function InitDocument() {
     object.id = 'EMapEventRelayer';
     if (productName == "Autodesk DWF Viewer")
         object.classid = 'clsid:90BB2003-1BA4-4D88-45BC-4734E453A8EF';
-    else if (productName == "Autodesk DWF Composer")
+    else if (productName == "Autodesk Design Review")
         object.classid = 'clsid:90BB2003-1BA4-4D88-45BC-5734E453A8EF';
     frdoc.appendChild(object);
 
