@@ -53,14 +53,12 @@ function main()
     $testsFailed += ExecuteTest("Api", "../../TestData/MapLayer/MapLayerTest.dump", $testsRun, $file, $isEnterprise);
 
     $testsFailed += ExecuteTest("Api", "../../TestData/WebLayout/WebLayoutTest.dump", $testsRun, $file, $isEnterprise);
-    
+
    // $testsFailed += ExecuteTest("Http", "../../TestData/Wfs/WfsTest.dump", $testsRun, $file, $isEnterprise);
 
    // $testsFailed += ExecuteTest("Http", "../../TestData/Wms/WmsTest.dump", $testsRun, $file, $isEnterprise);
 
-    
-    //TODO: Uncomment when Unicode tests are fixed
-    //$testsFailed += ExecuteTest("Api", "../../TestData/Unicode/UnicodeTest.dump", $testsRun);
+    $testsFailed += ExecuteTest("Api", "../../TestData/Unicode/UnicodeTest.dump", $testsRun, $file, $isEnterprise);
 
     $str = sprintf("\n\nTests failed/run: %d/%d\n", $testsFailed, $testsRun);
     $str .=sprintf("Run ended: %s\n\n",date("D M j G:i:s T Y"));
@@ -125,7 +123,6 @@ function ExecuteTest($requestType, $dumpFileName, &$testsRun, $file, $ent)
         print $s->GetMessage();
         return 1;
     }
-
 }
 
 function SetGlobals()

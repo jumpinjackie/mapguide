@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <WebLayout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="WebLayout-1.0.0.xsd">
   <Title>Sample_World_Ěščहिंद②Ab2ｶﾞ≈Ａｂ２ガ圭传岩</Title>
   <Map>
@@ -530,7 +530,7 @@
       <Description>Get printer-friendly page</Description>
       <ImageURL>stdicons/icon_printablepage.gif</ImageURL>
       <DisabledImageURL>stdicons/icon_printablepage_disabled.gif</DisabledImageURL>
-      <TargetViewer>Html</TargetViewer>
+      <TargetViewer>Ajax</TargetViewer>
       <Target>NewWindow</Target>
     </Command>
     <Command xsi:type="HelpCommandType">
