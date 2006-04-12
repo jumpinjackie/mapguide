@@ -100,6 +100,7 @@ include_SOURCES = \
   Exception/EmptyFeatureSetException.cpp \
   Exception/EncryptionException.cpp \
   Exception/EndOfStreamException.cpp \
+  Exception/EvaluationExpiredException.cpp \
   Exception/Exception.cpp \
   Exception/FdoException.cpp \
   Exception/FeatureServiceException.cpp \
@@ -484,6 +485,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/EmptyFeatureSetException.h \
   Exception/EncryptionException.h \
   Exception/EndOfStreamException.h \
+  Exception/EvaluationExpiredException.h \
   Exception/Exception.h \
   Exception/ExceptionDefs.h \
   Exception/FdoException.h \

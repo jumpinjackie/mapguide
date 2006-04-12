@@ -56,6 +56,7 @@
 #include "EmptyFeatureSetException.cpp"
 #include "EncryptionException.cpp"
 #include "EndOfStreamException.cpp"
+#include "EvaluationExpiredException.cpp"
 #include "Exception.cpp"
 #include "FdoException.cpp"
 #include "FeatureServiceException.cpp"

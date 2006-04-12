@@ -226,6 +226,11 @@ INTERNAL_API:
     static const STRING ServerErrorCodeMessage;
     static const STRING ServerServiceError;
     static const STRING ServerServiceStartFailure;
+    static const STRING RegisteredLicenseDetected;
+    static const STRING EvaluationLicenseDetected;
+    static const STRING AlphaReleaseDetected;
+    static const STRING BetaReleaseDetected;
+    static const STRING PreviewReleaseDetected;
 
     static const STRING UsingDefaultResourceFile;
 
