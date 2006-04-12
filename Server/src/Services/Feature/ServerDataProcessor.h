@@ -40,9 +40,14 @@ public:
     virtual MgByteReader* GetRaster(INT32 xSize, INT32 ySize, STRING propName);
     virtual MgServerFeatureProcessorType GetProcessorType() { return msfptDataProcessor; }
 
+    void ClearDataReader();
+
 protected:
 
-    void Dispose() { delete this; }
+    void Dispose()
+    {
+        delete this;
+    }
 
 private:
 

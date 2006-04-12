@@ -32,8 +32,7 @@ public:
     MgSpatialContextData* GetSpatialContextData(FdoISpatialContextReader* spatialReader);
 
 private:
-    STRING                  m_providerName;
-    FdoIConnection*         m_fdoConn;
+    STRING  m_providerName;
     auto_ptr<MgSpatialContextInfoMap> m_spatialContextInfoMap;
 };
 

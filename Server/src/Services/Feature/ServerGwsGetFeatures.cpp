@@ -101,7 +101,7 @@ MgFeatureSet* MgServerGwsGetFeatures::GetFeatures(INT32 count)
 /////
 MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
 {
-    CHECKNULL(m_gwsFeatureReader, L"MgServerGwsGetFeatures.GetFeatures");
+    CHECKNULL(m_gwsFeatureReader, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -109,11 +109,11 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
     {
         // Retrieve FdoClassDefinition
         GisPtr<FdoClassDefinition> fdoClassDefinition = m_gwsFeatureReader->GetClassDefinition();
-        CHECKNULL((FdoClassDefinition*)fdoClassDefinition, L"MgServerGwsGetFeatures.GetFeatures");
+        CHECKNULL((FdoClassDefinition*)fdoClassDefinition, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
         // Convert FdoClassDefinition to MgClassDefinition
         Ptr<MgClassDefinition> mgClassDef = this->GetMgClassDefinition(fdoClassDefinition, bSerialize);
-        CHECKNULL((MgClassDefinition*)mgClassDef, L"MgServerGwsGetFeatures.GetFeatures");
+        CHECKNULL((MgClassDefinition*)mgClassDef, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
         // Advance the primary feature source iterator
         if (m_gwsFeatureReader->ReadNext())
@@ -130,13 +130,13 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
 
                 // Retrieve the secondary class definitions
                 GisPtr<FdoClassDefinition> secFdoClassDefinition = featureIter->GetClassDefinition();
-                CHECKNULL((FdoClassDefinition*)secFdoClassDefinition, L"MgServerGwsGetFeatures.GetFeatures");
+                CHECKNULL((FdoClassDefinition*)secFdoClassDefinition, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
                 GisStringP qname = secFdoClassDefinition->GetQualifiedName();
 
                 // Convert FdoClassDefinition to MgClassDefinition
                 Ptr<MgClassDefinition> secMgClassDef = this->GetMgClassDefinition(secFdoClassDefinition, bSerialize);
-                CHECKNULL((MgClassDefinition*)secMgClassDef, L"MgServerGwsGetFeatures.GetFeatures");
+                CHECKNULL((MgClassDefinition*)secMgClassDef, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
                 // retrieve the secondary properites and prefix them with the relation name
                 Ptr<MgPropertyDefinitionCollection> mpdc2 = secMgClassDef->GetProperties();
@@ -155,7 +155,6 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
                 }
 
                 mgClassDef->SetName(m_extensionName);
-
             }
 
             // Convert MgClassDefinition to FdoClassDefinition.
@@ -199,12 +198,10 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
                 // Set the serialized feature join result xml for the MgClassDefinition.
                 mgClassDef->SetSerializedXml(str1);
             }
-
         }
 
         // Store the it for future use
         m_classDef = SAFE_ADDREF((MgClassDefinition*)mgClassDef);
-
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsGetFeatures.GetMgClassDefinition")
@@ -213,23 +210,22 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
 }
 
 
-
 //////////////////////////////////////////////////////////////////
 MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(FdoClassDefinition* fdoClassDefinition, bool bSerialize)
 {
-    CHECKNULL(fdoClassDefinition, L"MgClassDefinition.GetMgClassDefinition");
+    CHECKNULL(fdoClassDefinition, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     // Create MgClassDefinition
     Ptr<MgClassDefinition> mgClassDef = new MgClassDefinition();
-    CHECKNULL((MgClassDefinition*)mgClassDef, L"MgClassDefinition.GetMgClassDefinition");
+    CHECKNULL((MgClassDefinition*)mgClassDef, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     // Get PropertyDefinitionCollection to store property definitions
     Ptr<MgPropertyDefinitionCollection> propDefCol = mgClassDef->GetProperties();
-    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgClassDefinition.GetMgClassDefinition");
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     // Get PropertyDefinitionCollection to store key property definitions i.e. which makes key for this feature class
     Ptr<MgPropertyDefinitionCollection> identityPropDefCol = mgClassDef->GetIdentityProperties();
-    CHECKNULL((MgPropertyDefinitionCollection*)identityPropDefCol, L"MgClassDefinition.GetMgClassDefinition");
+    CHECKNULL((MgPropertyDefinitionCollection*)identityPropDefCol, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     // description
     GisString* desc = fdoClassDefinition->GetDescription();
@@ -259,7 +255,7 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(FdoClassDefiniti
 
     // Retrieve Class properties from FDO
     GisPtr<FdoPropertyDefinitionCollection> fpdc = fdoClassDefinition->GetProperties();
-    CHECKNULL((FdoPropertyDefinitionCollection*)fpdc, L"MgClassDefinition.GetMgClassDefinition");
+    CHECKNULL((FdoPropertyDefinitionCollection*)fpdc, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     // Retrieve Base class properties from FDO
     // TODO: Should we add Base class properties into the list of properties?
@@ -328,13 +324,13 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(FdoClassDefiniti
         mgClassDef->SetBaseClassDefinition(mgBaseClsDef);
     }
 
-    return SAFE_ADDREF((MgClassDefinition*)mgClassDef);
+    return mgClassDef.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
 void MgServerGwsGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
-                                             FdoPropertyDefinitionCollection* fdoPropDefCol)
+                                                FdoPropertyDefinitionCollection* fdoPropDefCol)
 {
     // CHECKNULL((FdoPropertyDefinitionCollection*)propDefCol, L"MgClassDefinition.GetClassProperties");
 
@@ -347,7 +343,7 @@ void MgServerGwsGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* 
     {
         // Get Fdo Property
         GisPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
-        CHECKNULL((FdoPropertyDefinition*)fpd, L"MgClassDefinition.GetClassProperties");
+        CHECKNULL((FdoPropertyDefinition*)fpd, L"MgServerGwsGetFeatures.GetClassProperties");
 
         // Create MgProperty
         Ptr<MgPropertyDefinition> prop = this->GetMgPropertyDefinition(fpd);
@@ -362,7 +358,7 @@ void MgServerGwsGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* 
 
 //////////////////////////////////////////////////////////////////
 void MgServerGwsGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
-                                             FdoDataPropertyDefinitionCollection* fdoPropDefCol)
+                                                FdoDataPropertyDefinitionCollection* fdoPropDefCol)
 {
     // CHECKNULL((FdoDataPropertyDefinitionCollection*)propDefCol, L"MgClassDefinition.GetClassProperties");
 
@@ -375,7 +371,7 @@ void MgServerGwsGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* 
     {
         // Get Fdo Property
         GisPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
-        CHECKNULL((FdoPropertyDefinition*)fpd, L"MgClassDefinition.GetClassProperties");
+        CHECKNULL((FdoPropertyDefinition*)fpd, L"MgServerGwsGetFeatures.GetClassProperties");
 
         // Create MgProperty
         Ptr<MgPropertyDefinition> prop = this->GetMgPropertyDefinition(fpd);
@@ -391,7 +387,7 @@ void MgServerGwsGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* 
 //////////////////////////////////////////////////////////////////
 MgPropertyDefinition* MgServerGwsGetFeatures::GetMgPropertyDefinition(FdoPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoPropertyDefinition*)fdoPropDef, L"MgClassDefinition.GetMgPropertyDefinition");
+    CHECKNULL((FdoPropertyDefinition*)fdoPropDef, L"MgServerGwsGetFeatures.GetMgPropertyDefinition");
 
     Ptr<MgPropertyDefinition> propDef;
 
@@ -432,7 +428,7 @@ MgPropertyDefinition* MgServerGwsGetFeatures::GetMgPropertyDefinition(FdoPropert
         }
     }
 
-    return SAFE_ADDREF((MgPropertyDefinition*)propDef);
+    return propDef.Detach();
 }
 
 
@@ -488,13 +484,13 @@ MgDataPropertyDefinition* MgServerGwsGetFeatures::GetDataPropertyDefinition(FdoD
 
     propDef->SetScale((INT32)scale);
 
-    return SAFE_ADDREF((MgDataPropertyDefinition*)propDef);
+    return propDef.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
 MgGeometricPropertyDefinition* MgServerGwsGetFeatures::GetGeometricPropertyDefinition(FdoGeometricPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgClassDefinition.GetGeometricPropertyDefinition");
+    CHECKNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgServerGwsGetFeatures.GetGeometricPropertyDefinition");
 
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgGeometricPropertyDefinition> propDef = new MgGeometricPropertyDefinition(name);
@@ -529,7 +525,7 @@ MgGeometricPropertyDefinition* MgServerGwsGetFeatures::GetGeometricPropertyDefin
         propDef->SetSpatialContextAssociation(STRING(spatialContextName));
     }
 
-    return SAFE_ADDREF((MgGeometricPropertyDefinition*)propDef);
+    return propDef.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -569,12 +565,19 @@ void MgServerGwsGetFeatures::AddFeatures(INT32 count)
                     break;
                 }
             }
+
             // Read next throws exception which it should not (therefore we just ignore it)
-            try { found = m_gwsFeatureReader->ReadNext(); } catch(...) {found = false;}
+            try
+            {
+                found = m_gwsFeatureReader->ReadNext();
+            }
+            catch(...)
+            {
+                found = false;
+            }
+
         } while (found);
-
     }
-
 }
 
 //////////////////////////////////////////////////////////////////
@@ -687,7 +690,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
         }
         case MgPropertyType::Single: /// Single precision floating point value
         {
-            float val = 0;
+            float val = 0.0f;
             bool isNull = true;
 
             IGWSFeatureIterator* gwsFeatureIter = NULL;
@@ -707,7 +710,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
         }
         case MgPropertyType::Double: /// Double precision floating point value
         {
-            double val = 0;
+            double val = 0.0;
             bool isNull = true;
 
             IGWSFeatureIterator* gwsFeatureIter = NULL;
@@ -820,7 +823,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
     //                val = this->GetLOBFromFdo(parsedPropertyName, gwsFeatureIter);
                 }
 
-                prop = new MgBlobProperty(propName,val);
+                prop = new MgBlobProperty(propName, val);
                 prop->SetNull(isNull);
             }
             break;
@@ -840,7 +843,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
     //                val = this->GetLOBFromFdo(parsedPropertyName, gwsFeatureIter);
                 }
 
-                prop = new MgClobProperty(propName,val);
+                prop = new MgClobProperty(propName, val);
                 prop->SetNull(isNull);
             }
             break;
@@ -920,7 +923,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
         }
     }
 
-    return SAFE_ADDREF((MgProperty*)prop);
+    return prop.Detach();
 }
 
 
@@ -1102,8 +1105,9 @@ MgByteReader* MgServerGwsGetFeatures::SerializeToXml(FdoClassDefinition* classDe
 
     delete[] bytes;
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
+
 
 //////////////////////////////////////////////////////////////////
 MgByteReader* MgServerGwsGetFeatures::GetRaster(INT32 xSize, INT32 ySize, STRING rasterPropName)
@@ -1138,13 +1142,13 @@ MgByteReader* MgServerGwsGetFeatures::GetRaster(INT32 xSize, INT32 ySize, STRING
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsGetFeatures.GetRaster")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
 MgObjectPropertyDefinition* MgServerGwsGetFeatures::GetObjectPropertyDefinition(FdoObjectPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgClassDefinition.GetObjectPropertyDefinition");
+    CHECKNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgServerGwsGetFeatures.GetObjectPropertyDefinition");
 
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgObjectPropertyDefinition> propDef = new MgObjectPropertyDefinition(name);
@@ -1165,7 +1169,7 @@ MgObjectPropertyDefinition* MgServerGwsGetFeatures::GetObjectPropertyDefinition(
     }
 
     GisPtr<FdoClassDefinition> fdoClsDef = fdoPropDef->GetClass();
-    CHECKNULL((FdoClassDefinition*)fdoClsDef, L"MgServerGetFeatures.GetObjectPropertyDefinition")
+    CHECKNULL((FdoClassDefinition*)fdoClsDef, L"MgServerGwsGetFeatures.GetObjectPropertyDefinition")
 
     GisPtr<FdoDataPropertyDefinition> idenProp = fdoPropDef->GetIdentityProperty(); // Can return NULL
 
@@ -1182,13 +1186,13 @@ MgObjectPropertyDefinition* MgServerGwsGetFeatures::GetObjectPropertyDefinition(
     propDef->SetOrderType(orderOption);
     propDef->SetObjectType(mgObjType);
 
-    return SAFE_ADDREF((MgObjectPropertyDefinition*)propDef);
+    return propDef.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
 MgRasterPropertyDefinition* MgServerGwsGetFeatures::GetRasterPropertyDefinition(FdoRasterPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgClassDefinition.GetRasterPropertyDefinition");
+    CHECKNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgServerGwsGetFeatures.GetRasterPropertyDefinition");
 
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgRasterPropertyDefinition> propDef = new MgRasterPropertyDefinition(name);
@@ -1218,16 +1222,16 @@ MgRasterPropertyDefinition* MgServerGwsGetFeatures::GetRasterPropertyDefinition(
     }
     propDef->SetReadOnly(isReadOnly);
 
-    return SAFE_ADDREF((MgRasterPropertyDefinition*)propDef);
+    return propDef.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
 MgByteReader* MgServerGwsGetFeatures::GetLOBFromFdo(CREFSTRING propName, IGWSFeatureIterator* gwsFeatureIterator)
 {
-    CHECKNULL(gwsFeatureIterator, L"MgServerGetFeatures.GetLOBFromFdo");
+    CHECKNULL(gwsFeatureIterator, L"MgServerGwsGetFeatures.GetLOBFromFdo");
 
-    Ptr<MgByteReader> val;
+    Ptr<MgByteReader> byteReader;
 
     // TODO: We need to switch to GisIStreamReader when we have streaming capability
     // in MgByteReader
@@ -1240,11 +1244,11 @@ MgByteReader* MgServerGwsGetFeatures::GetLOBFromFdo(CREFSTRING propName, IGWSFea
             GisByte* bytes = byteArray->GetData();
             GisInt32 len = byteArray->GetCount();
             Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
-            val = byteSource->GetReader();
+            byteReader = byteSource->GetReader();
         }
     }
 
-    return SAFE_ADDREF((MgByteReader*)val);
+    return byteReader.Detach();
 }
 
 bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName)
@@ -1261,7 +1265,6 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
     // Join1 = relation name
     // PropA = property name
 
-
     STRING qualifiedName;
     STRING className;
     STRING relationName;
@@ -1275,7 +1278,6 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
         throw new MgInvalidArgumentException(L"MgServerGwsFeatureReader.DeterminePropertyFeatureSource",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
-
 
     // Check if the input propName is prefixed with the relationName
     // by comparing with primary feature source property names
@@ -1331,12 +1333,10 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
                     }
                 }
             }
-
         }
     }
 
     return bPropertyFound;
-
 }
 
 
@@ -1359,4 +1359,3 @@ STRING MgServerGwsGetFeatures::GetExtensionName()
 {
     return m_extensionName;
 }
-

@@ -37,8 +37,6 @@ bool MgServerGetProviderCapabilities::m_isInitialized = MgServerGetProviderCapab
 
 MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING providerName)
 {
-    m_xmlCap = NULL;
-
     if (providerName.empty())
     {
         MgStringCollection arguments;
@@ -49,28 +47,30 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
-    m_providerName = providerName;
-
-    m_xmlUtil = new MgXmlUtil();
-    CHECKNULL(m_xmlUtil, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities()");
-
-    m_connManager =  FdoFeatureAccessManager::GetConnectionManager();
-    CHECKNULL(m_connManager, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities()");
+    GisPtr<IConnectionManager> connManager = FdoFeatureAccessManager::GetConnectionManager();
+    CHECKNULL(connManager, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
 
     // TODO: Should this connection be cached?
-    m_fdoConn = m_connManager->CreateConnection(providerName.c_str());
-    CHECKNULL((FdoIConnection*)m_fdoConn, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
+    // use a smart pointer until the end in case there's an exception
+    GisPtr<FdoIConnection> fdoConn = connManager->CreateConnection(providerName.c_str());
+    CHECKNULL(fdoConn, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
+
+    m_xmlUtil = new MgXmlUtil();
+    CHECKNULL(m_xmlUtil, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
+
+    m_xmlCap = NULL;
+
+    // no more risk of exceptions, so we can now assign these
+    m_fdoConn = fdoConn.Detach();
+    m_providerName = providerName;
 }
 
 MgServerGetProviderCapabilities::~MgServerGetProviderCapabilities()
 {
-    GIS_SAFE_RELEASE(m_connManager);
+    GIS_SAFE_RELEASE(m_fdoConn);
 
     if (NULL != m_xmlUtil)
         delete m_xmlUtil;
-
-    if (NULL != m_fdoConn)
-        m_fdoConn->Release();
 
     if (NULL != m_xmlCap)
         delete m_xmlCap;
@@ -79,9 +79,8 @@ MgServerGetProviderCapabilities::~MgServerGetProviderCapabilities()
 
 MgByteReader* MgServerGetProviderCapabilities::GetProviderCapabilities()
 {
-    CHECKNULL(m_xmlUtil, L"MgServerGetProviderCapabilities.GetProviderCapabilities()");
+    CHECKNULL(m_xmlUtil, L"MgServerGetProviderCapabilities.GetProviderCapabilities");
     Ptr<MgByteReader> byteReader;
-    byteReader = NULL;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -95,7 +94,7 @@ MgByteReader* MgServerGetProviderCapabilities::GetProviderCapabilities()
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetProviderCapabilities.GetProviderCapabilities")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 void MgServerGetProviderCapabilities::CreateCapabilitiesDocument()
@@ -770,4 +769,3 @@ bool MgServerGetProviderCapabilities::Initialize()
 
     return true;
 }
-

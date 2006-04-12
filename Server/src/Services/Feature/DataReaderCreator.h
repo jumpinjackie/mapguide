@@ -36,38 +36,33 @@ public:
         // Use the converted vector
         Ptr<MgPropertyDefinitionCollection> propDefCol = this->GetPropertyDefinitions();
         Ptr<MgBatchPropertyCollection> bpCol = this->GetBatchCollection(values);
-        Ptr<MgProxyDataReader> proxyReader = new MgProxyDataReader(bpCol, propDefCol);
-
-        return SAFE_ADDREF((MgDataReader*)proxyReader);
+        return new MgProxyDataReader(bpCol, propDefCol);
     }
 
     MgDataReader* Execute(const std::vector<STRING>& in)
     {
         Ptr<MgPropertyDefinitionCollection> propDefCol = this->GetPropertyDefinitions();
         Ptr<MgBatchPropertyCollection> bpCol = this->GetBatchCollection(in);
-        Ptr<MgProxyDataReader> proxyReader = new MgProxyDataReader(bpCol, propDefCol);
-
-        return SAFE_ADDREF((MgDataReader*)proxyReader);
+        return new MgProxyDataReader(bpCol, propDefCol);
     }
 
     MgDataReader* Execute(MgGeometryCollection* in)
     {
         Ptr<MgPropertyDefinitionCollection> propDefCol = this->GetPropertyDefinitions();
         Ptr<MgBatchPropertyCollection> bpCol = this->GetBatchCollection(in);
-        Ptr<MgProxyDataReader> proxyReader = new MgProxyDataReader(bpCol, propDefCol);
-
-        return SAFE_ADDREF((MgDataReader*)proxyReader);
+        return new MgProxyDataReader(bpCol, propDefCol);
     }
 
     MgPropertyDefinitionCollection* GetPropertyDefinitions()
     {
         // Create property definition for the type specified
         Ptr<MgPropertyDefinition> propDef = new MgPropertyDefinition(m_propertyAlias, m_propType);
+
         // Add to property definition collection
         Ptr<MgPropertyDefinitionCollection> propDefCol = new MgPropertyDefinitionCollection();
         propDefCol->Add(propDef);
 
-        return SAFE_ADDREF((MgPropertyDefinitionCollection*)propDefCol);
+        return propDefCol.Detach();
     }
 
     MgBatchPropertyCollection* GetBatchCollection(MgGeometryCollection* in)
@@ -89,7 +84,7 @@ public:
             }
         }
 
-        return SAFE_ADDREF((MgBatchPropertyCollection*)bpCol);
+        return bpCol.Detach();
     }
 
     MgBatchPropertyCollection* GetBatchCollection(const std::vector<T>& in)
@@ -107,7 +102,7 @@ public:
             bpCol->Add(propCol);    //  Add to set of Batch Collection
         }
 
-        return SAFE_ADDREF((MgBatchPropertyCollection*)bpCol);
+        return bpCol.Detach();
     }
 
     void ConvertVector(const std::vector<double>& in, std::vector<T>& values)
@@ -130,16 +125,21 @@ public:
     virtual MgProperty* GetProperty(MgGeometry* val) {return NULL;}
 
 protected:
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
     MgDataReaderCreator()
     {
         m_propType = MgPropertyType::Null;
     }
-    ~MgDataReaderCreator() {}
+    ~MgDataReaderCreator()
+    {
+    }
 
     STRING m_propertyAlias;
     int m_propType;
 };
 
-#endif  // MG_DATA_READER_CREATOR_H
+#endif

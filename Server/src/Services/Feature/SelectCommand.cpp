@@ -142,20 +142,19 @@ void MgSelectCommand::SetFilter(FdoFilter* value)
 {
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetFilter");
     m_command->SetFilter(value);
-    m_filter = GIS_SAFE_ADDREF((FdoFilter*)value);
+
+    GIS_SAFE_RELEASE(m_filter);
+    m_filter = GIS_SAFE_ADDREF(value);
 }
 
 MgReader* MgSelectCommand::Execute()
 {
-    Ptr<MgFeatureReader> mgFeatureReader = (MgFeatureReader*)NULL;
-
     // Execute the command
     GisPtr<FdoIFeatureReader> featureReader = m_command->Execute();
     CHECKNULL((FdoIFeatureReader*)featureReader, L"MgSelectCommand.Execute");
 
     // Create a feature reader identifier
-    Ptr<MgServerFeatureReaderIdentifier> featReaderId =
-            new MgServerFeatureReaderIdentifier(featureReader);
+    Ptr<MgServerFeatureReaderIdentifier> featReaderId = new MgServerFeatureReaderIdentifier(featureReader);
 
     // TODO: This needs to be tied back to the original FDO connection that is cached so that if the original
     //       FDO connection is ever removed from the cache then the associated MgServerFeatureReaderIdentifier
@@ -167,9 +166,7 @@ MgReader* MgSelectCommand::Execute()
     // TODO: can be possible more record available. Need to look into FdoConnectionPoolManager to find out
     // TODO: how can we pool the connections and MgServerFeatureReaderIdentifier
 
-    mgFeatureReader = new MgServerFeatureReader(featReaderId);
-
-    return SAFE_ADDREF((MgFeatureReader*)mgFeatureReader);
+    return new MgServerFeatureReader(featReaderId);
 }
 
 bool MgSelectCommand::IsSupportedFunction(FdoFunction* fdoFunc)
@@ -194,5 +191,5 @@ bool MgSelectCommand::SupportsSelectDistinct()
 
 FdoFilter* MgSelectCommand::GetFilter()
 {
-    return m_filter;
+    return GIS_SAFE_ADDREF(m_filter);
 }

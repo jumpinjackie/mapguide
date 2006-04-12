@@ -47,11 +47,9 @@ MgSelectAggregateCommand::MgSelectAggregateCommand(MgResourceIdentifier* resourc
 
 MgSelectAggregateCommand::~MgSelectAggregateCommand()
 {
-    if (NULL != m_fdoConn)
-        m_fdoConn->Release();
-
-    if (NULL != m_command)
-        m_command->Release();
+    GIS_SAFE_RELEASE(m_fdoConn);
+    GIS_SAFE_RELEASE(m_command);
+    GIS_SAFE_RELEASE(m_filter);
 }
 
 FdoIdentifierCollection* MgSelectAggregateCommand::GetPropertyNames()
@@ -124,21 +122,19 @@ void MgSelectAggregateCommand::SetFilter(FdoFilter* value)
 {
     CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.SetFilter");
     m_command->SetFilter(value);
-    m_filter = GIS_SAFE_ADDREF((FdoFilter*)value);
+
+    GIS_SAFE_RELEASE(m_filter);
+    m_filter = GIS_SAFE_ADDREF(value);
 }
 
 MgReader* MgSelectAggregateCommand::Execute()
 {
-    Ptr<MgDataReader> mgDataReader = (MgDataReader*)NULL;
-
     // Execute the command
     GisPtr<FdoIDataReader> dataReader = m_command->Execute();
     CHECKNULL((FdoIDataReader*)dataReader, L"MgSelectAggregateCommand.Execute");
 
     // Create a feature reader identifier
-    mgDataReader = new MgServerDataReader(dataReader, m_providerName);
-
-    return SAFE_ADDREF((MgDataReader*)mgDataReader);
+    return new MgServerDataReader(dataReader, m_providerName);
 }
 
 bool MgSelectAggregateCommand::IsSupportedFunction(FdoFunction* fdoFunc)
@@ -163,5 +159,5 @@ bool MgSelectAggregateCommand::SupportsSelectDistinct()
 
 FdoFilter* MgSelectAggregateCommand::GetFilter()
 {
-    return m_filter;
+    return GIS_SAFE_ADDREF(m_filter);
 }

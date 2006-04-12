@@ -45,13 +45,11 @@ private:
     bool IsConnectionOpen();
     static bool Initialize();
 
-    IConnectionManager*     m_connManager;
     MgXmlUtil*              m_xmlUtil;
     STRING                  m_providerName;
     FdoIConnection*         m_fdoConn;
     MgXmlUtil*              m_xmlCap;
     static bool             m_isInitialized;
-
 };
 
 #endif

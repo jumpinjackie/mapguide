@@ -245,7 +245,7 @@ MgClassDefinition* MgServerGetFeatures::GetMgClassDefinition(FdoClassDefinition*
         mgClassDef->SetBaseClassDefinition(mgBaseClsDef);
     }
 
-    return SAFE_ADDREF((MgClassDefinition*)mgClassDef);
+    return mgClassDef.Detach();
 }
 
 
@@ -352,7 +352,7 @@ MgPropertyDefinition* MgServerGetFeatures::GetMgPropertyDefinition(FdoPropertyDe
         }
     }
 
-    return SAFE_ADDREF((MgPropertyDefinition*)propDef);
+    return propDef.Detach();
 }
 
 
@@ -408,7 +408,7 @@ MgDataPropertyDefinition* MgServerGetFeatures::GetDataPropertyDefinition(FdoData
 
     propDef->SetScale((INT32)scale);
 
-    return SAFE_ADDREF((MgDataPropertyDefinition*)propDef);
+    return propDef.Detach();
 }
 
 
@@ -453,7 +453,7 @@ MgObjectPropertyDefinition* MgServerGetFeatures::GetObjectPropertyDefinition(Fdo
     propDef->SetOrderType(orderOption);
     propDef->SetObjectType(mgObjType);
 
-    return SAFE_ADDREF((MgObjectPropertyDefinition*)propDef);
+    return propDef.Detach();
 }
 
 
@@ -495,7 +495,7 @@ MgGeometricPropertyDefinition* MgServerGetFeatures::GetGeometricPropertyDefiniti
         propDef->SetSpatialContextAssociation(STRING(spatialContextName));
     }
 
-    return SAFE_ADDREF((MgGeometricPropertyDefinition*)propDef);
+    return propDef.Detach();
 }
 
 
@@ -532,7 +532,7 @@ MgRasterPropertyDefinition* MgServerGetFeatures::GetRasterPropertyDefinition(Fdo
     }
     propDef->SetReadOnly(isReadOnly);
 
-    return SAFE_ADDREF((MgRasterPropertyDefinition*)propDef);
+    return propDef.Detach();
 }
 
 
@@ -679,7 +679,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
         }
         case MgPropertyType::Single: /// Single precision floating point value
         {
-            float val = 0;
+            float val = 0.0f;
             bool isNull = true;
 
             if (!m_featureReader->IsNull(propName.c_str()))
@@ -694,7 +694,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
         }
         case MgPropertyType::Double: /// Double precision floating point value
         {
-            double val = 0;
+            double val = 0.0;
             bool isNull = true;
 
             if (!m_featureReader->IsNull(propName.c_str()))
@@ -778,7 +778,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
                 val = this->GetLOBFromFdo(propName, m_featureReader);
             }
 
-            prop = new MgBlobProperty(propName,val);
+            prop = new MgBlobProperty(propName, val);
             prop->SetNull(isNull);
             break;
         }
@@ -793,7 +793,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
                 val = this->GetLOBFromFdo(propName, m_featureReader);
             }
 
-            prop = new MgClobProperty(propName,val);
+            prop = new MgClobProperty(propName, val);
             prop->SetNull(isNull);
             break;
         }
@@ -857,7 +857,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
         }
     }
 
-    return SAFE_ADDREF((MgProperty*)prop);
+    return prop.Detach();
 }
 
 
@@ -1042,7 +1042,7 @@ MgByteReader* MgServerGetFeatures::SerializeToXml(FdoClassDefinition* classDef)
 
     delete[] bytes;
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -1075,7 +1075,7 @@ MgByteReader* MgServerGetFeatures::GetRaster(INT32 xSize, INT32 ySize, STRING ra
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetFeatures.GetRaster")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -1084,7 +1084,7 @@ MgByteReader* MgServerGetFeatures::GetLOBFromFdo(CREFSTRING propName, FdoIFeatur
 {
     CHECKNULL((FdoIFeatureReader*)featureReader, L"MgServerGetFeatures.GetLOBFromFdo");
 
-    Ptr<MgByteReader> val;
+    Ptr<MgByteReader> byteReader;
 
     // TODO: We need to switch to GisIStreamReader when we have streaming capability
     // in MgByteReader
@@ -1097,9 +1097,9 @@ MgByteReader* MgServerGetFeatures::GetLOBFromFdo(CREFSTRING propName, FdoIFeatur
             GisByte* bytes = byteArray->GetData();
             GisInt32 len = byteArray->GetCount();
             Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
-            val = byteSource->GetReader();
+            byteReader = byteSource->GetReader();
         }
     }
 
-    return SAFE_ADDREF((MgByteReader*)val);
+    return byteReader.Detach();
 }

@@ -386,9 +386,7 @@ double MgServerFeatureUtil::Minimum(VECTOR& v)
     {
         double val = v[i];
         if (val < min)
-        {
             min = val;
-        }
     }
     return min;
 }
@@ -422,7 +420,7 @@ INT32 MgServerFeatureUtil::GetMgFeaturePropertyType(FdoPropertyType fdoPropType)
 
 MgRaster* MgServerFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
 {
-    Ptr<MgRaster> retVal = (MgRaster*)NULL;
+    Ptr<MgRaster> retVal;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -488,7 +486,7 @@ MgRaster* MgServerFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureUtil.GetRaster");
 
-    return SAFE_ADDREF((MgRaster*)retVal);
+    return retVal.Detach();
 }
 
 
@@ -508,7 +506,7 @@ MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rast
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
-    Ptr<MgByteReader> byteReader = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     GisPtr<FdoIRaster> fdoRaster = reader->GetRaster(rasterPropName.c_str());
     CHECKNULL((FdoIRaster*)fdoRaster, L"MgServerFeatureUtil.GetRaster");
@@ -535,7 +533,7 @@ MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rast
         byteReader = byteSource->GetReader();
     }
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -603,7 +601,7 @@ FdoParameterValueCollection* MgServerFeatureUtil::CreateFdoParameterCollection(M
         paramCol->Add(fdoProp);
     }
 
-    return GIS_SAFE_ADDREF((FdoParameterValueCollection*)paramCol);
+    return paramCol.Detach();
 }
 
 FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcProp)
@@ -611,7 +609,7 @@ FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcPr
     CHECKNULL(srcProp, L"MgServerFeatureUtil.MgPropertyToFdoProperty")
 
     INT16 propType = srcProp->GetPropertyType();
-    GisPtr<FdoLiteralValue> fdoVal = (FdoLiteralValue*)NULL;
+    GisPtr<FdoLiteralValue> fdoVal;
 
     switch(propType)
     {
@@ -733,7 +731,7 @@ FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcPr
         }
     }
 
-    return GIS_SAFE_ADDREF((FdoLiteralValue*)fdoVal);
+    return fdoVal.Detach();
 }
 
 FdoParameterValue* MgServerFeatureUtil::MgPropertyToFdoParameter(MgProperty* srcProp)
@@ -743,9 +741,7 @@ FdoParameterValue* MgServerFeatureUtil::MgPropertyToFdoParameter(MgProperty* src
 
     assert(!str.empty());
 
-    GisPtr<FdoParameterValue> fdoParam = FdoParameterValue::Create(str.c_str(), fdoValue);
-
-    return GIS_SAFE_ADDREF((FdoParameterValue*) fdoParam);
+    return FdoParameterValue::Create(str.c_str(), fdoValue);
 }
 
 FdoPropertyValue* MgServerFeatureUtil::MgPropertyToFdoProperty(MgProperty* srcProp)
@@ -755,9 +751,7 @@ FdoPropertyValue* MgServerFeatureUtil::MgPropertyToFdoProperty(MgProperty* srcPr
 
     assert(!str.empty());
 
-    GisPtr<FdoPropertyValue> fdoProp = FdoPropertyValue::Create(str.c_str(), fdoValue);
-
-    return GIS_SAFE_ADDREF((FdoPropertyValue*) fdoProp);
+    return FdoPropertyValue::Create(str.c_str(), fdoValue);
 }
 
 INT32 MgServerFeatureUtil::FdoOrderTypeToMgOrderingOption(FdoOrderType type)

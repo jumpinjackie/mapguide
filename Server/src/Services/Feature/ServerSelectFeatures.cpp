@@ -43,8 +43,7 @@ MgServerSelectFeatures::MgServerSelectFeatures()
 
 MgServerSelectFeatures::~MgServerSelectFeatures()
 {
-    if (NULL != m_customFunction)
-        m_customFunction->Release();
+    GIS_SAFE_RELEASE(m_customFunction);
 }
 
 // Executes the describe schema command and serializes the schema to XML
@@ -53,7 +52,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
                                                  MgFeatureQueryOptions* options,
                                                  bool executeSelectAggregate)
 {
-    Ptr<MgReader> mgReader = (MgReader*)NULL;
+    Ptr<MgReader> mgReader;
     bool isSelectAggregate = executeSelectAggregate;
 
     MG_FEATURE_SERVICE_TRY()
@@ -74,11 +73,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         // Apply options to FDO command
         ApplyQueryOptions(isSelectAggregate);
 
-        GisPtr<FdoFilter> filter;
-        if (NULL != m_command->GetFilter())
-        {
-            filter = m_command->GetFilter();
-        }
+        GisPtr<FdoFilter> filter = m_command->GetFilter();
 
         // Perform feature join
         mgReader = JoinFeatures(resource, className, filter);
@@ -107,10 +102,13 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 
         // Create Command
         CreateCommand(resource, isSelectAggregate);
+
         // Set the FeatureClass Name
         m_command->SetFeatureClassName((GisString*)className.c_str());
+
         // Set options (NULL is a valid value)
         m_options = SAFE_ADDREF(options);
+
         // Apply options to FDO command
         ApplyQueryOptions(isSelectAggregate);
 
@@ -192,6 +190,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 
         // If custom function is found, then validate that no more than one function/property is specified
         ValidateConstraintsOnCustomFunctions();
+
         // Execute the command
         reader = m_command->Execute();
 
@@ -210,7 +209,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.SelectFeatures")
 
-    return SAFE_ADDREF((MgReader*)mgReader);
+    return mgReader.Detach();
 }
 
 void MgServerSelectFeatures::ApplyQueryOptions(bool isSelectAggregate)
@@ -232,14 +231,16 @@ void MgServerSelectFeatures::ApplyQueryOptions(bool isSelectAggregate)
 void MgServerSelectFeatures::ApplyClassProperties()
 {
     CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyClassProperties");
-    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFilter");
+    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyClassProperties");
 
     Ptr<MgStringCollection> properties = m_options->GetClassProperties();
 
-    if (properties == NULL) { return; } // Nothing to do
+    if (properties == NULL)
+        return; // Nothing to do
 
     INT32 cnt = properties->GetCount();
-    if (cnt <= 0) { return; } // Nothing to do
+    if (cnt <= 0)
+        return; // Nothing to do
 
     GisPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
     CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyClassProperties");
@@ -249,7 +250,7 @@ void MgServerSelectFeatures::ApplyClassProperties()
         STRING propertyName = properties->GetItem(i);
 
         GisPtr<FdoIdentifier> fdoIden = FdoIdentifier::Create((GisString*)propertyName.c_str());
-        CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.SelectFeatures");
+        CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.ApplyClassProperties");
 
         fic->Add(fdoIden);
     }
@@ -264,10 +265,12 @@ void MgServerSelectFeatures::ApplyComputedProperties()
 
     Ptr<MgStringPropertyCollection> properties = m_options->GetComputedProperties();
 
-    if (properties == NULL) { return; } // Nothing to do
+    if (properties == NULL)
+        return; // Nothing to do
 
     INT32 cnt = properties->GetCount();
-    if (cnt <= 0) { return; } // Nothing to do
+    if (cnt <= 0)
+        return; // Nothing to do
 
     // TODO: Add support for custom functions
 
@@ -313,9 +316,9 @@ void MgServerSelectFeatures::ApplyFilter()
     CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyFilter");
     CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFilter");
 
-    GisPtr<FdoFilter> regularFilter = (FdoFilter*)NULL;
-    GisPtr<FdoSpatialCondition> spatialFilter = (FdoSpatialCondition*)NULL;
-    GisPtr<FdoFilter> combineFilter = (FdoFilter*)NULL;
+    GisPtr<FdoFilter> regularFilter;
+    GisPtr<FdoSpatialCondition> spatialFilter;
+    GisPtr<FdoFilter> combineFilter;
     FdoBinaryLogicalOperations bOper = FdoBinaryLogicalOperations_And;
 
     // Build regular filter
@@ -384,21 +387,22 @@ void MgServerSelectFeatures::ApplyFilter()
     {
         m_command->SetFilter(combineFilter);
     }
-
 }
 
 // Ordering options
 void MgServerSelectFeatures::ApplyOrderingOptions()
 {
-    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyClassProperties");
-    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFilter");
+    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyOrderingOptions");
+    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyOrderingOptions");
 
     Ptr<MgStringCollection> properties = m_options->GetOrderingProperties();
 
-    if (properties == NULL) { return; } // Nothing to do
+    if (properties == NULL)
+        return; // Nothing to do
 
     INT32 cnt = properties->GetCount();
-    if (cnt <= 0) { return; } // Nothing to do
+    if (cnt <= 0)
+        return; // Nothing to do
 
     // Ordering options are supplied but provider does not support it
     if (!m_command->SupportsSelectOrdering())
@@ -424,7 +428,7 @@ void MgServerSelectFeatures::ApplyOrderingOptions()
         if (!propertyName.empty())
         {
             GisPtr<FdoIdentifier> fdoIden = FdoIdentifier::Create((GisString*)propertyName.c_str());
-            CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.SelectFeatures");
+            CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.ApplyOrderingOptions");
 
             fic->Add(fdoIden);
         }
@@ -523,7 +527,6 @@ void MgServerSelectFeatures::AddCustomComputedProperty(CREFSTRING aliasName, Fdo
                 expr = exprCol->GetItem(0);   // Property Name
             }
 
-
             // Just pass in the property name
             // GisPtr<FdoComputedIdentifier> fdoIden = FdoComputedIdentifier::Create(expName, expr);
 
@@ -535,7 +538,6 @@ void MgServerSelectFeatures::AddCustomComputedProperty(CREFSTRING aliasName, Fdo
 
             if (propName != NULL)
                 fic->Add(propName);
-
 
             m_customPropertyName = aliasName;
             m_customPropertyFound = true;
@@ -583,7 +585,7 @@ void MgServerSelectFeatures::CreateCommand(MgResourceIdentifier* resource, bool 
     {
         m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_SelectAggregates);
     }
-    CHECKNULL((MgFeatureServiceCommand*)m_command, L"MgServerSelectFeatures.SelectFeatures");
+    CHECKNULL((MgFeatureServiceCommand*)m_command, L"MgServerSelectFeatures.CreateCommand");
 }
 
 void MgServerSelectFeatures::ValidateParam(MgResourceIdentifier* resource, CREFSTRING className)
@@ -591,7 +593,7 @@ void MgServerSelectFeatures::ValidateParam(MgResourceIdentifier* resource, CREFS
     // className and resource identifier can not be NULL
     if (resource == NULL)
     {
-        throw new MgNullArgumentException(L"MgServerSelectFeatures::SelectFeatures()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgServerSelectFeatures::ValidateParam()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     if (className.empty())
@@ -600,7 +602,7 @@ void MgServerSelectFeatures::ValidateParam(MgResourceIdentifier* resource, CREFS
         arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgServerSelectFeatures::SelectFeatures()",
+        throw new MgInvalidArgumentException(L"MgServerSelectFeatures::ValidateParam()",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 }
@@ -608,13 +610,15 @@ void MgServerSelectFeatures::ValidateParam(MgResourceIdentifier* resource, CREFS
 void MgServerSelectFeatures::ApplyAggregateOptions(bool isSelectAggregate)
 {
     // If not select aggregate, just return
-    if (!isSelectAggregate) { return; }
+    if (!isSelectAggregate)
+        return;
 
     // Downcast to see if it is an instance of MgFeatureAggregateOptions.
     MgFeatureAggregateOptions* options = dynamic_cast<MgFeatureAggregateOptions*>((MgFeatureQueryOptions*)m_options);
 
     // If it is not MgFeatureAggregateOptions, we simply return
-    if (options == NULL) { return; }
+    if (options == NULL)
+        return;
 
     STRING groupFilter = options->GetGroupFilter();
     Ptr<MgStringCollection> strCol = options->GetGroupingProperties();
@@ -645,15 +649,17 @@ void MgServerSelectFeatures::ApplyAggregateOptions(bool isSelectAggregate)
 
 void MgServerSelectFeatures::ApplyFdoGroupingProperties(MgStringCollection* propertyNames)
 {
-    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyClassProperties");
-    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFilter");
+    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyFdoGroupingProperties");
+    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFdoGroupingProperties");
 
     Ptr<MgStringCollection> properties = SAFE_ADDREF(propertyNames);
 
-    if (properties == NULL) { return; } // Nothing to do
+    if (properties == NULL)
+        return; // Nothing to do
 
     INT32 cnt = properties->GetCount();
-    if (cnt <= 0) { return; } // Nothing to do
+    if (cnt <= 0)
+        return; // Nothing to do
 
     // Grouping options are supplied but provider does not support it
     if (!m_command->SupportsSelectGrouping())
@@ -666,14 +672,14 @@ void MgServerSelectFeatures::ApplyFdoGroupingProperties(MgStringCollection* prop
     }
 
     GisPtr<FdoIdentifierCollection> fic = ((MgFeatureServiceCommand*)m_command)->GetGrouping();
-    CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.AddFdoGroupingProperties");
+    CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyFdoGroupingProperties");
 
     for (INT32 i=0; i < cnt; i++)
     {
         STRING propertyName = properties->GetItem(i);
 
         GisPtr<FdoIdentifier> fdoIden = FdoIdentifier::Create((GisString*)propertyName.c_str());
-        CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.AddFdoGroupingProperties");
+        CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.ApplyFdoGroupingProperties");
 
         fic->Add(fdoIden);
     }
@@ -684,14 +690,17 @@ bool MgServerSelectFeatures::ContainsCustomFunction(MgFeatureQueryOptions* optio
 {
     bool hasCustomFunction = false;
 
-    if (options == NULL) { return false; }
+    if (options == NULL)
+        return false;
 
     Ptr<MgStringPropertyCollection> properties = options->GetComputedProperties();
 
-    if (properties == NULL) { return false; } // Nothing to do
+    if (properties == NULL)
+        return false;   // Nothing to do
 
     INT32 cnt = properties->GetCount();
-    if (cnt <= 0) { return false; } // Nothing to do
+    if (cnt <= 0)
+        return false;   // Nothing to do
 
     for (INT32 i=0; i < cnt; i++)
     {
@@ -702,7 +711,7 @@ bool MgServerSelectFeatures::ContainsCustomFunction(MgFeatureQueryOptions* optio
         if (str != NULL)
         {
             GisPtr<FdoExpression> expression = FdoExpression::Parse(str);
-            CHECKNULL((FdoExpression*)expression, L"MgServerSelectFeatures.ApplyComputedProperties");
+            CHECKNULL((FdoExpression*)expression, L"MgServerSelectFeatures.ContainsCustomFunction");
 
             hasCustomFunction = ContainsUdf(expression);
         }
@@ -715,7 +724,7 @@ bool MgServerSelectFeatures::ContainsCustomFunction(MgFeatureQueryOptions* optio
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgServerSelectFeatures.ValidateConstraintsOnCustomFunctions",
+        throw new MgFeatureServiceException(L"MgServerSelectFeatures.ContainsCustomFunction",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -725,7 +734,7 @@ bool MgServerSelectFeatures::ContainsCustomFunction(MgFeatureQueryOptions* optio
 // Convert reader into a custom MgDataReader
 MgReader* MgServerSelectFeatures::GetCustomReader(MgReader* reader)
 {
-    Ptr<MgReader> distReader = (MgDataReader*)NULL;
+    Ptr<MgReader> distReader;
     if (m_customPropertyFound)
     {
         Ptr<MgFeatureDistribution> featureDist =
@@ -733,7 +742,8 @@ MgReader* MgServerSelectFeatures::GetCustomReader(MgReader* reader)
 
         distReader = featureDist->Execute();
     }
-    return SAFE_ADDREF((MgReader*)distReader);
+
+    return distReader.Detach();
 }
 
 // Look for extension (feature join) properties in the feature source document
@@ -810,7 +820,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
     DOMElement* rootNode = xmlUtil.GetRootNode();
     DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
-    CHECKNULL(extensionNodeList, L"MgServerSelectFeatures.JoinFeatures()");
+    CHECKNULL(extensionNodeList, L"MgServerSelectFeatures.JoinFeatures");
 
     int extensionNodes = (int)extensionNodeList->getLength();
 
@@ -864,15 +874,10 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             ParseQualifiedClassName(szFeatureClass, primaryFsSchema, primaryFsClassName);
 
             // Create primary query definition
-            GisPtr<IGWSQueryDefinition> lqd;
             GisPtr<GisStringCollection> lsellist;
-            GisPtr<FdoFilter> lfilter;
-            if (filter != NULL)
-            {
-                lfilter = GIS_SAFE_ADDREF(filter);
-            }
+            GisPtr<FdoFilter> lfilter = GIS_SAFE_ADDREF(filter);
 
-            lqd = IGWSFeatureQueryDefinition::Create(
+            GisPtr<IGWSQueryDefinition> lqd = IGWSFeatureQueryDefinition::Create(
                    lsellist,
                    GWSQualifiedName(primaryConnectionName.c_str(), primaryFsSchema.c_str(), primaryFsClassName.c_str()),
                    lfilter);
@@ -927,11 +932,10 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 ParseQualifiedClassName(szSecondaryClassName, secondaryFsSchema, secondaryFsClassName);
 
                 // Create secondary query definition
-                GisPtr<IGWSQueryDefinition> rqd;
                 GisPtr<GisStringCollection> rsellist;
                 GisPtr<FdoFilter> rfilter;
 
-                rqd = IGWSFeatureQueryDefinition::Create(
+                GisPtr<IGWSQueryDefinition> rqd = IGWSFeatureQueryDefinition::Create(
                        rsellist,
                        GWSQualifiedName(secondaryConnectionName.c_str(), secondaryFsSchema.c_str(), secondaryFsClassName.c_str()),
                        rfilter);
@@ -977,7 +981,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
             //Pass the QueryDefinition to the JoinEngine
             // Create query object by passing connection pool object and query definition
-            GisPtr<IGWSQuery>  query = IGWSQuery::Create(pool, qd, NULL);
+            GisPtr<IGWSQuery> query = IGWSQuery::Create(pool, qd, NULL);
             GisPtr<IGWSFeatureIterator> iter;
             GisPtr<IGWSFeatureIterator> iterCopy;
 
@@ -991,13 +995,12 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             gwsFeatureReader = new MgServerGwsFeatureReader(iter);
             gwsFeatureReader->PrepareGwsGetFeatures(parsedExtensionName, fsNames);
             gwsFeatureReader->SetGwsIteratorCopy(iterCopy);
-
         }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.JoinFeatures")
 
-    return SAFE_ADDREF((MgServerGwsFeatureReader*)gwsFeatureReader);
+    return gwsFeatureReader.Detach();
 }
 
 void MgServerSelectFeatures::RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent)
@@ -1087,7 +1090,7 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
         for (int i = 0; i < extensionNodes; i++)
         {
             DOMNode* extensionNode = extensionNodeList->item(i);
-            CHECKNULL(extensionNode, L"MgServerSelectFeatures.FindFeatureJoinProperties");
+            CHECKNULL(extensionNode, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
 
             DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
             int nNameNodes = (int)nameNodeList->getLength();
@@ -1139,6 +1142,5 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
         }
     }
 
-    return SAFE_ADDREF((MgResourceIdentifier*)secResId);
+    return secResId.Detach();
 }
-

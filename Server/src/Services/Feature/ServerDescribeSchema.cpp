@@ -39,17 +39,10 @@ MgServerDescribeSchema::MgServerDescribeSchema() :
 //////////////////////////////////////////////////////////////////
 MgServerDescribeSchema::~MgServerDescribeSchema()
 {
-    if (NULL != m_fdoConn)
-        m_fdoConn->Release();
-
-    if (NULL != m_ffsc)
-        m_ffsc->Release();
-
-    if (NULL != m_fdoConn2)
-        m_fdoConn2->Release();
-
-    if (NULL != m_ffsc2)
-        m_ffsc2->Release();
+    GIS_SAFE_RELEASE(m_fdoConn);
+    GIS_SAFE_RELEASE(m_ffsc);
+    GIS_SAFE_RELEASE(m_fdoConn2);
+    GIS_SAFE_RELEASE(m_ffsc2);
 }
 
 
@@ -194,17 +187,8 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
                 }
 
                 // Release the secondary connection and secondary schema collection
-                if (NULL != m_fdoConn2)
-                {
-                    m_fdoConn2->Release();
-                    m_fdoConn2 = NULL;
-                }
-                if (NULL != m_ffsc2)
-                {
-                    m_ffsc2->Release();
-                    m_ffsc2 = NULL;
-                }
-
+                GIS_SAFE_RELEASE(m_fdoConn2);
+                GIS_SAFE_RELEASE(m_ffsc2);
             }
 
         }  // End of for-loop that iterates thru the secondary sources
@@ -514,8 +498,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.DescribeSchema")
 
-    return SAFE_ADDREF((MgFeatureSchemaCollection*)fsCollection);
-
+    return fsCollection.Detach();
 }
 
 
@@ -549,8 +532,6 @@ STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
 
     MG_FEATURE_SERVICE_TRY()
 
-    Ptr<MgByteReader> byteReader;
-
     if (NULL == schema)
     {
         throw new MgNullArgumentException(L"MgServerDescribeSchema.SchemaToXml", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -558,8 +539,7 @@ STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
 
     CHECKNULL((MgFeatureSchemaCollection*)schema, L"MgServerDescribeSchema.SchemaToXml");
 
-    GisPtr<FdoFeatureSchemaCollection> fdoSchemaCol;
-    fdoSchemaCol = this->GetFdoFeatureSchemaCollection(schema);
+    GisPtr<FdoFeatureSchemaCollection> fdoSchemaCol = this->GetFdoFeatureSchemaCollection(schema);
 
     xmlSchema = this->GetSerializedXml(fdoSchemaCol);
 
@@ -577,17 +557,16 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::GetFdoFeatureSchemaCollectio
 
     MG_FEATURE_SERVICE_TRY()
 
-    CHECKNULL((MgFeatureSchemaCollection*)mgSchemaCol, L"MgServerDescribeSchema.GetFdoFeatureSchemaCollection");
-    fdoSchemaCol = FdoFeatureSchemaCollection::Create((FdoSchemaElement*) NULL);
+    CHECKNULL(mgSchemaCol, L"MgServerDescribeSchema.GetFdoFeatureSchemaCollection");
+    fdoSchemaCol = FdoFeatureSchemaCollection::Create((FdoSchemaElement*)NULL);
 
-    INT32 i=0;
+    INT32 i = 0;
     INT32 count = mgSchemaCol->GetCount();
 
     for (i=0; i<count; i++)
     {
-        GisPtr<FdoFeatureSchema> fdoSchema;
         Ptr<MgFeatureSchema> mgSchema = mgSchemaCol->GetItem(i);
-        fdoSchema = this->GetFdoFeatureSchema(mgSchema);
+        GisPtr<FdoFeatureSchema> fdoSchema = this->GetFdoFeatureSchema(mgSchema);
         if (fdoSchemaCol->Contains(fdoSchema))
         {
             throw new MgDuplicateObjectException(L"MgServerDescribeSchema.GetFdoFeatureSchemaCollection", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -600,7 +579,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::GetFdoFeatureSchemaCollectio
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetFdoFeatureSchemaCollection")
 
-    return GIS_SAFE_ADDREF((FdoFeatureSchemaCollection*)fdoSchemaCol);
+    return fdoSchemaCol.Detach();
 }
 
 
@@ -610,10 +589,10 @@ FdoFeatureSchema* MgServerDescribeSchema::GetFdoFeatureSchema(MgFeatureSchema* m
     GisPtr<FdoFeatureSchema> fdoSchema;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgFeatureSchema*)mgSchema, L"MgServerDescribeSchema.GetFdoFeatureSchema");
+    CHECKNULL(mgSchema, L"MgServerDescribeSchema.GetFdoFeatureSchema");
 
     fdoSchema = FdoFeatureSchema::Create();
-    CHECKNULL((FdoFeatureSchema*) fdoSchema, L"MgServerDescribeSchema.GetFdoFeatureSchema");
+    CHECKNULL(fdoSchema, L"MgServerDescribeSchema.GetFdoFeatureSchema");
 
     STRING name = mgSchema->GetName();
     if (!name.empty())
@@ -634,7 +613,7 @@ FdoFeatureSchema* MgServerDescribeSchema::GetFdoFeatureSchema(MgFeatureSchema* m
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetFdoFeatureSchema")
 
-    return GIS_SAFE_ADDREF((FdoFeatureSchema*)fdoSchema);
+    return fdoSchema.Detach();
 }
 
 
@@ -649,9 +628,8 @@ void MgServerDescribeSchema::GetFdoClassCollection(FdoClassCollection* fdoClassC
 
     for (i=0; i<count; i++)
     {
-        GisPtr<FdoClassDefinition> fdoClassDef;
         Ptr<MgClassDefinition> mgClassDef = mgClassDefCol->GetItem(i);
-        fdoClassDef = this->GetFdoClassDefinition(mgClassDef, fdoClassCol);
+        GisPtr<FdoClassDefinition> fdoClassDef = this->GetFdoClassDefinition(mgClassDef, fdoClassCol);
         CHECKNULL(fdoClassDef, L"MgServerDescribeSchema.GetFdoClassCollection")
 
         GisStringP name = fdoClassDef->GetName();
@@ -678,9 +656,7 @@ FdoClassDefinition* MgServerDescribeSchema::GetFdoClassDefinition(MgClassDefinit
     fdoClassDef = fdoClassCol->FindItem(name.c_str());
 
     if (fdoClassDef != NULL) // Class is already available and therefore return from here.
-    {
-        return GIS_SAFE_ADDREF((FdoClassDefinition*)fdoClassDef);
-    }
+        return fdoClassDef.Detach();
 
     //Create FdoClassDefinition
     STRING geomName = mgClassDef->GetDefaultGeometryPropertyName();
@@ -695,7 +671,7 @@ FdoClassDefinition* MgServerDescribeSchema::GetFdoClassDefinition(MgClassDefinit
         fdoClassDef = FdoClass::Create();
     }
 
-    CHECKNULL((FdoClassDefinition*) fdoClassDef, L"MgServerDescribeSchema.GetFdoClassDefinition");
+    CHECKNULL(fdoClassDef, L"MgServerDescribeSchema.GetFdoClassDefinition");
 
     GisPtr<FdoPropertyDefinitionCollection> fdoPropDefCol = fdoClassDef->GetProperties();
     CHECKNULL((FdoPropertyDefinitionCollection*) fdoPropDefCol, L"MgServerDescribeSchema.GetFdoClassDefinition");
@@ -743,19 +719,19 @@ FdoClassDefinition* MgServerDescribeSchema::GetFdoClassDefinition(MgClassDefinit
     Ptr<MgClassDefinition> awBaseDef = mgClassDef->GetBaseClassDefinition();
     if (awBaseDef != NULL)
     {
-        GisPtr<FdoClassDefinition> fdoBaseDef = (FdoClassDefinition*)NULL;
+        GisPtr<FdoClassDefinition> fdoBaseDef;
         STRING bname = awBaseDef->GetName();
         assert(!bname.empty());
-        if (!name.empty()) // Empty name is an error
+        if (!bname.empty()) // Empty name is an error
         {
-            fdoBaseDef = fdoClassCol->FindItem(name.c_str());
+            fdoBaseDef = fdoClassCol->FindItem(bname.c_str());
             if (fdoBaseDef == NULL) // Not found
             {
                 fdoBaseDef = GetFdoClassDefinition(awBaseDef, fdoClassCol); // Create a new one
                 if (fdoBaseDef != NULL)
                 {
-                    GisStringP name = fdoBaseDef->GetName();
-                    if (!FdoClassExist(name, fdoClassCol))
+                    GisStringP nameBase = fdoBaseDef->GetName();
+                    if (!FdoClassExist(nameBase, fdoClassCol))
                         fdoClassCol->Add(fdoBaseDef);
                 }
             }
@@ -772,7 +748,7 @@ FdoClassDefinition* MgServerDescribeSchema::GetFdoClassDefinition(MgClassDefinit
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetFdoClassCollection")
 
-    return GIS_SAFE_ADDREF((FdoClassDefinition*)fdoClassDef);
+    return fdoClassDef.Detach();
 }
 
 
@@ -883,7 +859,7 @@ FdoPropertyDefinition* MgServerDescribeSchema::GetFdoPropertyDefinition(MgProper
     }
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetFdoPropertyDefinition")
 
-    return GIS_SAFE_ADDREF((FdoPropertyDefinition*)fdoPropDef);
+    return fdoPropDef.Detach();
 }
 
 
@@ -940,7 +916,7 @@ FdoDataPropertyDefinition* MgServerDescribeSchema::GetDataPropertyDefinition(MgD
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetFdoClassCollection")
 
-    return SAFE_ADDREF((FdoDataPropertyDefinition*)fdoPropDef);
+    return fdoPropDef.Detach();
 }
 
 
@@ -984,7 +960,7 @@ FdoObjectPropertyDefinition* MgServerDescribeSchema::GetObjectPropertyDefinition
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetObjectPropertyDefinition")
 
-    return SAFE_ADDREF((FdoObjectPropertyDefinition*)fdoPropDef);
+    return fdoPropDef.Detach();
 }
 
 
@@ -1027,7 +1003,7 @@ FdoGeometricPropertyDefinition* MgServerDescribeSchema::GetGeometricPropertyDefi
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetGeometricPropertyDefinition")
 
-    return GIS_SAFE_ADDREF((FdoGeometricPropertyDefinition*)fdoPropDef);
+    return fdoPropDef.Detach();
 }
 
 
@@ -1065,7 +1041,7 @@ FdoRasterPropertyDefinition* MgServerDescribeSchema::GetRasterPropertyDefinition
     fdoPropDef->SetReadOnly(isReadOnly);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetRasterPropertyDefinition")
 
-    return SAFE_ADDREF((FdoRasterPropertyDefinition*)fdoPropDef);
+    return fdoPropDef.Detach();
 }
 
 
@@ -1192,12 +1168,11 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::XmlToSchema(CREFSTRING xml)
     GisByte* gisBytes = (GisByte*) mbString.c_str();
 
     GisPtr<GisIoMemoryStream> stream = GisIoMemoryStream::Create();
-    stream->Write(gisBytes, (GisSize) len);
+    stream->Write(gisBytes, (GisSize)len);
 
-    GisPtr<FdoFeatureSchemaCollection> fdoSchemaCol;
-    fdoSchemaCol = FdoFeatureSchemaCollection::Create((FdoSchemaElement*)NULL);
+    GisPtr<FdoFeatureSchemaCollection> fdoSchemaCol = FdoFeatureSchemaCollection::Create((FdoSchemaElement*)NULL);
     stream->Reset();
-    fdoSchemaCol->ReadXml((GisIoMemoryStream*)stream);
+    fdoSchemaCol->ReadXml(stream);
 
     // Get schema count
     GisInt32 cnt = fdoSchemaCol->GetCount();
@@ -1212,7 +1187,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::XmlToSchema(CREFSTRING xml)
         STRING tmpName(name);
         STRING tmpDesc(description);
 
-        Ptr <MgFeatureSchema> mgSchema = new MgFeatureSchema(tmpName, tmpDesc);
+        Ptr<MgFeatureSchema> mgSchema = new MgFeatureSchema(tmpName, tmpDesc);
         Ptr<MgClassDefinitionCollection> classCol = mgSchema->GetClasses();
 
         // Get all classes for a schema
@@ -1239,7 +1214,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::XmlToSchema(CREFSTRING xml)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.XmlToSchema")
 
-    return SAFE_ADDREF((MgFeatureSchemaCollection*)mgSchemaCol);
+    return mgSchemaCol.Detach();
 }
 
 
@@ -1249,7 +1224,7 @@ STRING MgServerDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoS
     STRING serializedXml;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((FdoFeatureSchemaCollection*) fdoSchemaCol, L"MgServerDescribeSchema.GetSerializedXml");
+    CHECKNULL(fdoSchemaCol, L"MgServerDescribeSchema.GetSerializedXml");
 
     GisIoMemoryStreamP fmis = GisIoMemoryStream::Create();
     CHECKNULL((GisIoMemoryStream*)fmis, L"MgServerDescribeSchema.DescribeSchema");
@@ -1314,7 +1289,7 @@ MgStringCollection* MgServerDescribeSchema::GetSchemas(MgResourceIdentifier* res
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetSchemas")
 
-    return SAFE_ADDREF((MgStringCollection*)strCol);
+    return strCol.Detach();
 }
 
 
@@ -1357,7 +1332,7 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetClasses")
 
-    return SAFE_ADDREF((MgStringCollection*)strCol);
+    return strCol.Detach();
 }
 
 
@@ -1418,27 +1393,17 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetClassDefinition")
 
-    return SAFE_ADDREF((MgClassDefinition*)classDefinition);
+    return classDefinition.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
 bool MgServerDescribeSchema::FdoClassExist(const wchar_t* name, FdoClassCollection* clsCol)
 {
-    bool retVal = false;
-    GisInt32 index = -1;
+    if (name == NULL) // Empty name is an error
+        return false;
 
-    if (name != NULL) // Empty name is an error
-    {
-        index = clsCol->IndexOf(name);
-    }
-
-    if (index >= 0)
-    {
-        retVal = true;
-    }
-
-    return retVal;
+    return (clsCol->IndexOf(name) >= 0);
 }
 
 
@@ -1450,7 +1415,7 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
                                                                               CREFSTRING schemaName,
                                                                               CREFSTRING className)
 {
-    Ptr<MgPropertyDefinitionCollection> idProps = new MgPropertyDefinitionCollection();
+    Ptr<MgPropertyDefinitionCollection> idProps;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -1463,6 +1428,8 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
     {
         throw new MgClassNotFoundException(L"MgServerDescribeSchema.GetIdentityProperties", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    idProps = new MgPropertyDefinitionCollection();
 
     this->ExecuteDescribeSchema(resource, schemaName);
     CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.GetIdentityProperties");
@@ -1577,4 +1544,3 @@ void MgServerDescribeSchema::ValidateFeatureSource(string& featureSourceXmlConte
             __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
     }
 }
-

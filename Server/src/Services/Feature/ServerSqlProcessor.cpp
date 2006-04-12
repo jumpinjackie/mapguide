@@ -167,7 +167,7 @@ void MgServerSqlProcessor::AddRow(MgPropertyDefinitionCollection* propDefCol)
 
 MgProperty* MgServerSqlProcessor::GetMgProperty(CREFSTRING propName, INT16 type)
 {
-    Ptr<MgNullableProperty> prop = (MgNullableProperty*)NULL;
+    Ptr<MgNullableProperty> prop;
 
     // No propertyname specified, return NULL
     if (!propName.empty())
@@ -220,7 +220,7 @@ MgProperty* MgServerSqlProcessor::GetMgProperty(CREFSTRING propName, INT16 type)
             }
             case MgPropertyType::Single: /// Single precision floating point value
             {
-                float val = 0;
+                float val = 0.0f;
                 bool isNull = true;
 
                 if (!m_sqlDataReader->IsNull(propName.c_str()))
@@ -235,7 +235,7 @@ MgProperty* MgServerSqlProcessor::GetMgProperty(CREFSTRING propName, INT16 type)
             }
             case MgPropertyType::Double: /// Double precision floating point value
             {
-                double val = 0;
+                double val = 0.0;
                 bool isNull = true;
 
                 if (!m_sqlDataReader->IsNull(propName.c_str()))
@@ -352,5 +352,5 @@ MgProperty* MgServerSqlProcessor::GetMgProperty(CREFSTRING propName, INT16 type)
         }
     }
 
-    return SAFE_ADDREF((MgProperty*)prop);
+    return prop.Detach();
 }

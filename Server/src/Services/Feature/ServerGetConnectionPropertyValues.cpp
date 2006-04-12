@@ -27,13 +27,10 @@
 
 MgServerGetConnectionPropertyValues::MgServerGetConnectionPropertyValues()
 {
-    m_fdoConn = NULL;
 }
 
 MgServerGetConnectionPropertyValues::~MgServerGetConnectionPropertyValues()
 {
-    if (NULL != m_fdoConn)
-        m_fdoConn->Release();
 }
 
 // Executes the describe schema command and serializes the schema to XML
@@ -42,7 +39,6 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
                                                                                       CREFSTRING partialConnString )
 {
     Ptr<MgStringCollection> stringCol;
-    stringCol = NULL;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -95,11 +91,11 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
 
     // Connect to provider
     MgServerFeatureConnection msfc(providerName, decryptedPartialConnString);
-    m_fdoConn = msfc.GetConnection();
-    CHECKNULL((FdoIConnection*)m_fdoConn, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
+    GisPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+    CHECKNULL((FdoIConnection*)fdoConn, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
 
     // Get Connection Info
-    GisPtr<FdoIConnectionInfo> connInfo = m_fdoConn->GetConnectionInfo();
+    GisPtr<FdoIConnectionInfo> connInfo = fdoConn->GetConnectionInfo();
     CHECKNULL((FdoIConnectionInfo*)connInfo, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
 
     // Get Connection Property Dictionary
@@ -131,5 +127,5 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues")
 
-    return SAFE_ADDREF((MgStringCollection*)stringCol);
+    return stringCol.Detach();
 }

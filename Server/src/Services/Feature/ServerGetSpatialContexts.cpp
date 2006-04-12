@@ -27,14 +27,11 @@
 
 MgServerGetSpatialContexts::MgServerGetSpatialContexts()
 {
-    m_fdoConn = NULL;
     m_spatialContextInfoMap.reset(NULL);
 }
 
 MgServerGetSpatialContexts::~MgServerGetSpatialContexts()
 {
-    if (NULL != m_fdoConn)
-        m_fdoConn->Release();
 }
 
 // Executes the describe schema command and serializes the schema to XML
@@ -54,26 +51,24 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
     MgServerFeatureConnection msfc(resId);
 
     // connection must be open to retrieve list of active contexts
-    if ( msfc.IsConnectionOpen() )
+    if ( !msfc.IsConnectionOpen() )
     {
-        m_fdoConn = msfc.GetConnection();
-        m_providerName = msfc.GetProviderName();
-        m_spatialContextInfoMap.reset(msfc.GetSpatialContextInfoMap());
+        throw new MgConnectionFailedException(L"MgServerGetSpatialContexts::GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    else
-    {
-        throw new MgConnectionFailedException(L"MgServerGetSpatialContexts::MgServerGetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+
+    GisPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+    m_providerName = msfc.GetProviderName();
+    m_spatialContextInfoMap.reset(msfc.GetSpatialContextInfoMap());
 
     // Check whether command is supported by provider
     if (!msfc.SupportsCommand((INT32)FdoCommandType_GetSpatialContexts))
     {
         // TODO: specify which argument and message, once we have the mechanism
         STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");
-        throw new MgInvalidOperationException(L"MgServerGetSpatialContexts.GetConnectionPropertyValues", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidOperationException(L"MgServerGetSpatialContexts.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    GisPtr<FdoIGetSpatialContexts> fdoCommand = (FdoIGetSpatialContexts*)m_fdoConn->CreateCommand(FdoCommandType_GetSpatialContexts);
+    GisPtr<FdoIGetSpatialContexts> fdoCommand = (FdoIGetSpatialContexts*)fdoConn->CreateCommand(FdoCommandType_GetSpatialContexts);
     CHECKNULL((FdoIGetSpatialContexts*)fdoCommand, L"MgServerGetSpatialContexts.GetSpatialContexts");
 
     // Execute the command
@@ -108,7 +103,7 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSpatialContexts.GetSpatialContexts")
 
-    return SAFE_ADDREF((MgSpatialContextReader*)mgSpatialContextReader);
+    return mgSpatialContextReader.Detach();
 }
 
 MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpatialContextReader* spatialReader)
@@ -184,5 +179,5 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     bool isActive = spatialReader->IsActive();
     spatialData->SetActiveStatus(isActive);
 
-    return SAFE_ADDREF((MgSpatialContextData*)spatialData);
+    return spatialData.Detach();
 }

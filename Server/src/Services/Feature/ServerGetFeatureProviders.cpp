@@ -20,11 +20,11 @@
 
 MgServerGetFeatureProviders::MgServerGetFeatureProviders()
 {
-    m_providerReg =  FdoFeatureAccessManager::GetProviderRegistry();
-    CHECKNULL(m_providerReg, L"MgServerGetFeatureProviders.MgServerGetFeatureProviders()");
+    GisPtr<IProviderRegistry> providerReg = FdoFeatureAccessManager::GetProviderRegistry();
+    CHECKNULL(providerReg, L"MgServerGetFeatureProviders.MgServerGetFeatureProviders()");
 
-    m_connManager =  FdoFeatureAccessManager::GetConnectionManager();
-    CHECKNULL(m_connManager, L"MgServerGetFeatureProviders.MgServerGetFeatureProviders()");
+    GisPtr<IConnectionManager> connManager = FdoFeatureAccessManager::GetConnectionManager();
+    CHECKNULL(connManager, L"MgServerGetFeatureProviders.MgServerGetFeatureProviders()");
 
     m_fdoProviderCol = m_providerReg->GetProviders();
     CHECKNULL(m_fdoProviderCol, L"MgServerGetFeatureProviders.MgServerGetFeatureProviders()");
@@ -32,6 +32,10 @@ MgServerGetFeatureProviders::MgServerGetFeatureProviders()
     // this XML follows the FeatureProviderRegistry-1.0.0.xsd schema
     m_xmlUtil = new MgXmlUtil("FeatureProviderRegistry" /* NOXLATE */);
     CHECKNULL(m_xmlUtil, L"MgServerGetFeatureProviders.MgServerGetFeatureProviders()");
+
+    // no more risk of exceptions, so we can now assign these
+    m_providerReg = providerReg.Detach();
+    m_connManager = connManager.Detach();
 }
 
 MgServerGetFeatureProviders::~MgServerGetFeatureProviders()
@@ -57,7 +61,7 @@ MgByteReader* MgServerGetFeatureProviders::GetFeatureProviders()
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetFeatureProviders.GetFeatureProviders")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 void MgServerGetFeatureProviders::CreateFeatureProvidersDocument()
@@ -205,7 +209,7 @@ void MgServerGetFeatureProviders::AddConnectionProperty(DOMElement* connPropRoot
         GisString** propValues = fdoConnPropertyDict->EnumeratePropertyValues(propertyName, propCnt);
         for ( GisInt32 j = 0; j < propCnt; j++ )
         {
-            char *value = MgUtil::WideCharToMultiByte(propValues[j]);
+            const char *value = MgUtil::WideCharToMultiByte(propValues[j]);
             m_xmlUtil->AddTextNode(connPropElem, "Value" /* NOXLATE */, value);
             delete[] value;
         }

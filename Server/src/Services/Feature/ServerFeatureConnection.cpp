@@ -82,7 +82,7 @@ FdoIConnection* MgServerFeatureConnection::GetConnection()
 
 STRING MgServerFeatureConnection::GetProviderName()
 {
-    CHECKNULL((FdoIConnection*)m_fdoConn, L"MgServerFeatureConnection.SetConnectionProperties()");
+    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.SetConnectionProperties()");
 
     // Get FdoIConnectionInfo
     GisPtr<FdoIConnectionInfo> fdoConnInfo = m_fdoConn->GetConnectionInfo();
@@ -94,7 +94,7 @@ STRING MgServerFeatureConnection::GetProviderName()
 
 bool MgServerFeatureConnection::IsConnectionOpen()
 {
-    CHECKNULL((FdoIConnection*)m_fdoConn, L"MgServerFeatureConnection.IsConnectionOpen()");
+    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.IsConnectionOpen()");
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (FdoConnectionState_Open != state)
         return false;
@@ -105,7 +105,7 @@ bool MgServerFeatureConnection::IsConnectionOpen()
 
 bool MgServerFeatureConnection::IsConnectionPending()
 {
-    CHECKNULL((FdoIConnection*)m_fdoConn, L"MgServerFeatureConnection.IsConnectionOpen()");
+    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.IsConnectionOpen()");
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (FdoConnectionState_Pending != state)
         return false;
@@ -116,7 +116,7 @@ bool MgServerFeatureConnection::IsConnectionPending()
 
 bool MgServerFeatureConnection::IsConnectionBusy()
 {
-    CHECKNULL((FdoIConnection*)m_fdoConn, L"MgServerFeatureConnection.IsConnectionBusy()");
+    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.IsConnectionBusy()");
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (FdoConnectionState_Busy != state)
         return false;
@@ -127,7 +127,7 @@ bool MgServerFeatureConnection::IsConnectionBusy()
 
 bool MgServerFeatureConnection::IsConnectionClosed()
 {
-    CHECKNULL((FdoIConnection*)m_fdoConn, L"MgServerFeatureConnection.IsConnectionClosed()");
+    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.IsConnectionClosed()");
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (FdoConnectionState_Closed != state)
         return false;
@@ -138,7 +138,7 @@ bool MgServerFeatureConnection::IsConnectionClosed()
 
 bool MgServerFeatureConnection::SupportsCommand(INT32 commandType)
 {
-    CHECKNULL((FdoIConnection*)m_fdoConn, L"MgServerFeatureConnection.SupportsConfiguration()");
+    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.SupportsConfiguration()");
 
     GisPtr<FdoICommandCapabilities> fcc = m_fdoConn->GetCommandCapabilities();
     CHECKNULL((FdoICommandCapabilities*)fcc, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");

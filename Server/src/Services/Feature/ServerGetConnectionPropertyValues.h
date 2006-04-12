@@ -33,8 +33,7 @@ public:
                                                      CREFSTRING partialConnString );
 
 private:
-    STRING                  m_providerName;
-    FdoIConnection*         m_fdoConn;
+    STRING  m_providerName;
 };
 
 #endif

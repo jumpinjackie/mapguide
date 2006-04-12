@@ -27,8 +27,9 @@ class MgStringDataReaderCreator : public MgDataReaderCreator<STRING>
     DECLARE_CLASSNAME(MgStringDataReaderCreator)
 
 public:
-    MgStringDataReaderCreator() {}
-
+    MgStringDataReaderCreator()
+    {
+    }
 
     MgStringDataReaderCreator(CREFSTRING propertyAlias)
     {
@@ -36,16 +37,20 @@ public:
         m_propType = MgPropertyType::String;
     }
 
-    ~MgStringDataReaderCreator() {}
+    ~MgStringDataReaderCreator()
+    {
+    }
 
     //
     MgProperty* GetProperty(CREFSTRING val)
     {
-        Ptr<MgProperty> prop = new MgStringProperty(m_propertyAlias, val);
-        return SAFE_ADDREF((MgProperty*)prop);
+        return new MgStringProperty(m_propertyAlias, val);
     }
 
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 };
 
-#endif  // MG_STRING_DATA_READER_CREATOR_H
+#endif

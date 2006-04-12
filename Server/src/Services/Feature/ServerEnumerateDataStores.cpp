@@ -89,5 +89,5 @@ MgByteReader* MgServerEnumerateDataStores::EnumerateDataStores(CREFSTRING provid
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerEnumerateDataStores.EnumerateDataStores")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
