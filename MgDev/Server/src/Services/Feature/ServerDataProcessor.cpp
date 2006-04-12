@@ -40,12 +40,25 @@ MgServerDataProcessor::MgServerDataProcessor(MgServerDataReader* dataReader)
 
 MgServerDataProcessor::~MgServerDataProcessor()
 {
-    // TODO: Should we close the SqlDataReader or just releasing is fine??
-    if (m_dataReader != NULL)
-        m_dataReader->Close();
-
-    SAFE_RELEASE(m_dataReader);
+    ClearDataReader();
 }
+
+
+void MgServerDataProcessor::ClearDataReader()
+{
+    // clear the reader member variable before releasing it, since the final
+    // release could cause the processor to also be destroyed (due to a
+    // circular reference), which would result in this method being called
+    // a second time...
+    MgServerDataReader* dataReader = m_dataReader;
+    if (dataReader != NULL)
+    {
+        m_dataReader = NULL;
+        dataReader->Close();
+        dataReader->Release();
+    }
+}
+
 
 MgBatchPropertyCollection* MgServerDataProcessor::GetRows(INT32 count)
 {
@@ -172,7 +185,7 @@ void MgServerDataProcessor::AddRow(MgPropertyDefinitionCollection* propDefCol)
 
 MgProperty* MgServerDataProcessor::GetMgProperty(CREFSTRING propName, INT16 type)
 {
-    Ptr<MgNullableProperty> prop = (MgNullableProperty*)NULL;
+    Ptr<MgNullableProperty> prop;
 
     // No propertyname specified, return NULL
     if (!propName.empty())
@@ -373,14 +386,12 @@ MgProperty* MgServerDataProcessor::GetMgProperty(CREFSTRING propName, INT16 type
         }
     }
 
-    return SAFE_ADDREF((MgProperty*)prop);
+    return prop.Detach();
 }
 
 MgByteReader* MgServerDataProcessor::GetRaster(INT32 xSize, INT32 ySize, STRING propName)
 {
     CHECKNULL((MgServerDataReader*)m_dataReader, L"MgServerDataProcessor.GetRaster");
 
-    Ptr<MgByteReader> byteReader = m_dataReader->GetRaster(xSize, ySize, propName);
-
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return m_dataReader->GetRaster(xSize, ySize, propName);
 }

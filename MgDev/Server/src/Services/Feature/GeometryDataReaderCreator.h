@@ -27,8 +27,9 @@ class MgGeometryDataReaderCreator : public MgDataReaderCreator<MgGeometry*>
     DECLARE_CLASSNAME(MgGeometryDataReaderCreator)
 
 public:
-    MgGeometryDataReaderCreator() {}
-
+    MgGeometryDataReaderCreator()
+    {
+    }
 
     MgGeometryDataReaderCreator(CREFSTRING propertyAlias)
     {
@@ -36,7 +37,9 @@ public:
         m_propType = MgPropertyType::Geometry;
     }
 
-    ~MgGeometryDataReaderCreator() {}
+    ~MgGeometryDataReaderCreator()
+    {
+    }
 
     //
     MgProperty* GetProperty(MgGeometry* val)
@@ -44,12 +47,15 @@ public:
         // Convert Geometry to AGF
         MgAgfReaderWriter agfWriter;
         Ptr<MgByteReader> reader = agfWriter.Write(val);
+
         // Create Geometry property
-        Ptr<MgProperty> prop = new MgGeometryProperty(m_propertyAlias, reader);
-        return SAFE_ADDREF((MgProperty*)prop);
+        return new MgGeometryProperty(m_propertyAlias, reader);
     }
 
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 };
 
-#endif  // MG_GEOMETRY_DATA_READER_CREATOR_H
+#endif

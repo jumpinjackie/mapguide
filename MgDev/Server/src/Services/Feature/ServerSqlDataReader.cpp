@@ -234,7 +234,7 @@ BYTE MgServerSqlDataReader::GetByte(CREFSTRING propertyName)
 /// <returns>Returns the DTime value.</returns>
 MgDateTime* MgServerSqlDataReader::GetDateTime(CREFSTRING propertyName)
 {
-    Ptr<MgDateTime> retVal = (MgDateTime*)NULL;
+    Ptr<MgDateTime> retVal;
 
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetDateTime");
 
@@ -246,7 +246,7 @@ MgDateTime* MgServerSqlDataReader::GetDateTime(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetDateTime");
 
-    return SAFE_ADDREF((MgDateTime*)retVal);
+    return retVal.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -260,7 +260,7 @@ float MgServerSqlDataReader::GetSingle(CREFSTRING propertyName)
 {
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetSingle");
 
-    float retVal = 0;
+    float retVal = 0.0f;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -282,7 +282,7 @@ double MgServerSqlDataReader::GetDouble(CREFSTRING propertyName)
 {
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetDouble");
 
-    double retVal = 0;
+    double retVal = 0.0;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -310,7 +310,7 @@ INT16 MgServerSqlDataReader::GetInt16(CREFSTRING propertyName)
 
     retVal = (INT16)m_sqlReader->GetInt16(propertyName.c_str());
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetDouble");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt16");
 
     return retVal;
 }
@@ -383,7 +383,7 @@ STRING MgServerSqlDataReader::GetString(CREFSTRING propertyName)
         retVal = str;
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt64");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetString");
 
     return retVal;
 }
@@ -399,7 +399,7 @@ MgByteReader* MgServerSqlDataReader::GetBLOB(CREFSTRING propertyName)
 {
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetBLOB");
 
-    Ptr<MgByteReader> byteReader = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -407,7 +407,7 @@ MgByteReader* MgServerSqlDataReader::GetBLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetBLOB");
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -421,7 +421,7 @@ MgByteReader* MgServerSqlDataReader::GetCLOB(CREFSTRING propertyName)
 {
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetCLOB");
 
-    Ptr<MgByteReader> byteReader = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -429,7 +429,7 @@ MgByteReader* MgServerSqlDataReader::GetCLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetCLOB");
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -442,7 +442,8 @@ MgByteReader* MgServerSqlDataReader::GetCLOB(CREFSTRING propertyName)
 MgByteReader* MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName)
 {
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetGeometry");
-    Ptr<MgByteReader> retVal = (MgByteReader*)NULL;
+
+    Ptr<MgByteReader> retVal;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -459,7 +460,7 @@ MgByteReader* MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetGeometry");
 
-    return SAFE_ADDREF((MgByteReader*)retVal);
+    return retVal.Detach();
 }
 
 
@@ -467,7 +468,7 @@ MgByteReader* MgServerSqlDataReader::GetLOB(CREFSTRING propName)
 {
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetLOB");
 
-    Ptr<MgByteReader> val = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     // TODO: We need to switch to GisIStreamReader when we have streaming capability in MgByteReader
     GisPtr<FdoLOBValue> fdoVal = m_sqlReader->GetLOB(propName.c_str());
@@ -482,10 +483,10 @@ MgByteReader* MgServerSqlDataReader::GetLOB(CREFSTRING propName)
             // TODO: We need to differentiate between CLOB and BLOB
             // TODO: How do we fine the MimeType of data for CLOB
             byteSource->SetMimeType(MgMimeType::Binary);
-            val = byteSource->GetReader();
+            byteReader = byteSource->GetReader();
         }
     }
-    return SAFE_ADDREF((MgByteReader*)val);
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -508,9 +509,9 @@ void MgServerSqlDataReader::Serialize(MgStream* stream)
 {
     INT32 count = 1; // Get value from MgConfiguration
 
-    Ptr<MgPropertyDefinitionCollection> propDefCol = (MgPropertyDefinitionCollection*)NULL;
-    Ptr<MgBatchPropertyCollection> bpCol = (MgBatchPropertyCollection*)NULL;
-    Ptr<MgServerSqlProcessor> sqlProcessor = (MgServerSqlProcessor*)NULL;
+    Ptr<MgPropertyDefinitionCollection> propDefCol;
+    Ptr<MgBatchPropertyCollection> bpCol;
+    Ptr<MgServerSqlProcessor> sqlProcessor;
     bool operationCompleted = false;
 
     MG_FEATURE_SERVICE_TRY()
@@ -634,7 +635,7 @@ const wchar_t* MgServerSqlDataReader::GetString(CREFSTRING propName, INT32& leng
         length = (INT32)wcslen((const wchar_t*)retVal);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetInt64");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");
 
     return ((const wchar_t*)retVal);
 }

@@ -27,8 +27,9 @@ class MgInt64DataReaderCreator : public MgDataReaderCreator<INT64>
     DECLARE_CLASSNAME(MgInt64DataReaderCreator)
 
 public:
-    MgInt64DataReaderCreator() {}
-
+    MgInt64DataReaderCreator()
+    {
+    }
 
     MgInt64DataReaderCreator(CREFSTRING propertyAlias)
     {
@@ -36,17 +37,20 @@ public:
         m_propType = MgPropertyType::Int64;
     }
 
-    ~MgInt64DataReaderCreator() {}
+    ~MgInt64DataReaderCreator()
+    {
+    }
 
     //
     MgProperty* GetProperty(INT64 val)
     {
-        Ptr<MgProperty> prop = new MgInt64Property(m_propertyAlias, val);
-        return SAFE_ADDREF((MgProperty*)prop);
+        return new MgInt64Property(m_propertyAlias, val);
     }
 
-    virtual void Dispose() { delete this; }
-
+    virtual void Dispose()
+    {
+        delete this;
+    }
 };
 
-#endif  // MG_INT64_DATA_READER_CREATOR_H
+#endif

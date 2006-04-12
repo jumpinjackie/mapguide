@@ -27,8 +27,9 @@ class MgSingleDataReaderCreator : public MgDataReaderCreator<float>
     DECLARE_CLASSNAME(MgSingleDataReaderCreator)
 
 public:
-    MgSingleDataReaderCreator() {}
-
+    MgSingleDataReaderCreator()
+    {
+    }
 
     MgSingleDataReaderCreator(CREFSTRING propertyAlias)
     {
@@ -36,17 +37,20 @@ public:
         m_propType = MgPropertyType::Single;
     }
 
-    ~MgSingleDataReaderCreator() {}
+    ~MgSingleDataReaderCreator()
+    {
+    }
 
     //
     MgProperty* GetProperty(float val)
     {
-        Ptr<MgProperty> prop = new MgSingleProperty(m_propertyAlias, val);
-        return SAFE_ADDREF((MgProperty*)prop);
+        return new MgSingleProperty(m_propertyAlias, val);
     }
 
-    virtual void Dispose() { delete this; }
-
+    virtual void Dispose()
+    {
+        delete this;
+    }
 };
 
-#endif  // MG_SINGLE_DATA_READER_CREATOR_H
+#endif

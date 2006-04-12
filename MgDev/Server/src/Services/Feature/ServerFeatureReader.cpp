@@ -121,7 +121,7 @@ MgClassDefinition* MgServerFeatureReader::GetClassDefinition()
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetClassDefinition")
 
-    return SAFE_ADDREF((MgClassDefinition*)classDef);
+    return classDef.Detach();
 }
 
 
@@ -139,7 +139,7 @@ MgClassDefinition* MgServerFeatureReader::GetClassDefinition()
 /// serializing the class definition to XML
 MgClassDefinition* MgServerFeatureReader::GetClassDefinitionNoXml()
 {
-    CHECKNULL(m_getFeatures, L"MgServerFeatureReader.GetClassDefinition");
+    CHECKNULL(m_getFeatures, L"MgServerFeatureReader.GetClassDefinitionNoXml");
 
     Ptr<MgClassDefinition> classDef;
 
@@ -147,9 +147,9 @@ MgClassDefinition* MgServerFeatureReader::GetClassDefinitionNoXml()
 
     classDef = m_getFeatures->GetMgClassDefinition(false);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetClassDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetClassDefinitionNoXml")
 
-    return SAFE_ADDREF((MgClassDefinition*)classDef);
+    return classDef.Detach();
 }
 
 
@@ -233,7 +233,7 @@ BYTE MgServerFeatureReader::GetByte(CREFSTRING propertyName)
 /// InvalidPropertyType
 MgDateTime* MgServerFeatureReader::GetDateTime(CREFSTRING propertyName)
 {
-    Ptr<MgDateTime> retVal = (MgDateTime*)NULL;
+    Ptr<MgDateTime> retVal;
 
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetDateTime");
 
@@ -245,7 +245,7 @@ MgDateTime* MgServerFeatureReader::GetDateTime(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetDateTime");
 
-    return SAFE_ADDREF((MgDateTime*)retVal);
+    return retVal.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -261,7 +261,7 @@ float MgServerFeatureReader::GetSingle(CREFSTRING propertyName)
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetSingle");
 
-    float retVal = 0;
+    float retVal = 0.0f;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -285,7 +285,7 @@ double MgServerFeatureReader::GetDouble(CREFSTRING propertyName)
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetDouble");
 
-    double retVal = 0;
+    double retVal = 0.0;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -315,7 +315,7 @@ INT16 MgServerFeatureReader::GetInt16(CREFSTRING propertyName)
 
     retVal = (INT16)m_fdoReader->GetInt16(propertyName.c_str());
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetDouble");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetInt16");
 
     return retVal;
 }
@@ -394,7 +394,7 @@ STRING MgServerFeatureReader::GetString(CREFSTRING propertyName)
         retVal = str;
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetInt64");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetString");
 
     return retVal;
 }
@@ -412,7 +412,7 @@ MgByteReader* MgServerFeatureReader::GetBLOB(CREFSTRING propertyName)
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetBLOB");
 
-    Ptr<MgByteReader> byteReader = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -420,8 +420,7 @@ MgByteReader* MgServerFeatureReader::GetBLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetBLOB");
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
-
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -437,7 +436,7 @@ MgByteReader* MgServerFeatureReader::GetCLOB(CREFSTRING propertyName)
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetCLOB");
 
-    Ptr<MgByteReader> byteReader = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -445,7 +444,7 @@ MgByteReader* MgServerFeatureReader::GetCLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetCLOB");
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -460,8 +459,9 @@ MgByteReader* MgServerFeatureReader::GetCLOB(CREFSTRING propertyName)
 MgFeatureReader* MgServerFeatureReader::GetFeatureObject(CREFSTRING propertyName)
 {
     // TODO: Figure out how to support object properties.
-    CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetString");
-    Ptr<MgServerFeatureReader> featureReader = (MgServerFeatureReader*)NULL;
+    CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetFeatureObject");
+
+    Ptr<MgServerFeatureReader> featureReader;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -476,7 +476,7 @@ MgFeatureReader* MgServerFeatureReader::GetFeatureObject(CREFSTRING propertyName
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetFeatureObject");
 
-    return SAFE_ADDREF((MgServerFeatureReader*)featureReader);
+    return featureReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -491,7 +491,8 @@ MgFeatureReader* MgServerFeatureReader::GetFeatureObject(CREFSTRING propertyName
 MgByteReader* MgServerFeatureReader::GetGeometry(CREFSTRING propertyName)
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetGeometry");
-    Ptr<MgByteReader> retVal = (MgByteReader*)NULL;
+
+    Ptr<MgByteReader> retVal;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -507,7 +508,7 @@ MgByteReader* MgServerFeatureReader::GetGeometry(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetGeometry");
 
-    return SAFE_ADDREF((MgByteReader*)retVal);
+    return retVal.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -522,7 +523,8 @@ MgByteReader* MgServerFeatureReader::GetGeometry(CREFSTRING propertyName)
 MgRaster* MgServerFeatureReader::GetRaster(CREFSTRING propertyName)
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetRaster");
-    Ptr<MgRaster> retVal = (MgRaster*)NULL;
+
+    Ptr<MgRaster> retVal;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -555,7 +557,7 @@ MgRaster* MgServerFeatureReader::GetRaster(CREFSTRING propertyName)
     }
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetRaster");
 
-    return SAFE_ADDREF((MgRaster*)retVal);
+    return retVal.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -570,7 +572,7 @@ void MgServerFeatureReader::Serialize(MgStream* stream)
 {
     INT32 count = 1; // Get value from MgConfiguration
     bool operationCompleted = false;
-    Ptr<MgFeatureSet> featureSet = (MgFeatureSet*)NULL;
+    Ptr<MgFeatureSet> featureSet;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -612,7 +614,6 @@ void MgServerFeatureReader::Serialize(MgStream* stream)
     }
 
     MG_FEATURE_SERVICE_THROW();
-
 }
 
 //////////////////////////////////////////////////////////////////
@@ -702,7 +703,7 @@ const wchar_t* MgServerFeatureReader::GetString(CREFSTRING propName, INT32& leng
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetString");
 
-    GisString* retVal;
+    GisString* retVal = NULL;
 
     MG_FEATURE_SERVICE_TRY()
 

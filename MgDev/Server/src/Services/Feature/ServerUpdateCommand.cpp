@@ -70,7 +70,5 @@ MgProperty* MgServerUpdateCommand::Execute()
     sprintf(buff, "%d", m_cmdId);
     STRING str = MgUtil::MultiByteToWideChar(string(buff));
 
-    Ptr<MgInt32Property> prop = new MgInt32Property(str, recordsUpdated);
-
-    return SAFE_ADDREF((MgInt32Property*)prop);
+    return new MgInt32Property(str, recordsUpdated);
 }

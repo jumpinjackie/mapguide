@@ -27,7 +27,9 @@ class MgBooleanDataReaderCreator : public MgDataReaderCreator<INT16>
     DECLARE_CLASSNAME(MgBooleanDataReaderCreator)
 
 public:
-    MgBooleanDataReaderCreator() {}
+    MgBooleanDataReaderCreator()
+    {
+    }
 
     MgBooleanDataReaderCreator(CREFSTRING propertyAlias)
     {
@@ -35,17 +37,20 @@ public:
         m_propType = MgPropertyType::Boolean;
     }
 
-    ~MgBooleanDataReaderCreator() {}
+    ~MgBooleanDataReaderCreator()
+    {
+    }
 
     //
     MgProperty* GetProperty(INT16 val)
     {
-        Ptr<MgProperty> prop = new MgBooleanProperty(m_propertyAlias,(bool)val);
-        return SAFE_ADDREF((MgProperty*)prop);
+        return new MgBooleanProperty(m_propertyAlias, (bool)val);
     }
 
-    virtual void Dispose() { delete this; }
-
+    virtual void Dispose()
+    {
+        delete this;
+    }
 };
 
-#endif  // MG_DOUBLE_DATA_READER_CREATOR_H
+#endif

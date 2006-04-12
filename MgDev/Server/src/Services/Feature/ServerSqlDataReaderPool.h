@@ -65,4 +65,4 @@ private:
     ACE_Recursive_Thread_Mutex m_mutex;
 };
 
-#endif //_MG_SERVER_FEATURE_READER_IDENTIFIER_POOL_H_
+#endif

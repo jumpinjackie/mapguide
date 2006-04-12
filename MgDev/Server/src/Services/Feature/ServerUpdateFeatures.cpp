@@ -50,7 +50,7 @@ MgPropertyCollection* MgServerUpdateFeatures::Execute(MgResourceIdentifier* reso
                                                       MgFeatureCommandCollection* commands,
                                                       bool useTransaction)
 {
-    Ptr<MgPropertyCollection> propCol = (MgPropertyCollection*)NULL;
+    Ptr<MgPropertyCollection> propCol;
     FdoITransaction* transaction = NULL;
     bool commited = false;
 

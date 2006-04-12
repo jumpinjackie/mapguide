@@ -354,16 +354,14 @@ STRING MgServerFeatureService::DescribeSchemaAsXml( MgResourceIdentifier* resour
 ///    filter text.
 /// 2. Interrogation of class definition would allow to determine properties of classes
 ///    which can be used for filter text.
-MgFeatureReader*  MgServerFeatureService::SelectFeatures(   MgResourceIdentifier* resource,
-                                                            CREFSTRING className,
-                                                            MgFeatureQueryOptions* options )
+MgFeatureReader* MgServerFeatureService::SelectFeatures( MgResourceIdentifier* resource,
+                                                         CREFSTRING className,
+                                                         MgFeatureQueryOptions* options )
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SelectFeatures()");
 
     MgServerSelectFeatures mssf;
-    Ptr<MgFeatureReader> reader = (MgFeatureReader*)mssf.SelectFeatures(resource, className, options, false);
-
-    return SAFE_ADDREF((MgFeatureReader*)reader);
+    return (MgFeatureReader*)mssf.SelectFeatures(resource, className, options, false);
 }
 
 
@@ -406,16 +404,14 @@ MgFeatureReader*  MgServerFeatureService::SelectFeatures(   MgResourceIdentifier
 /// 3. Interrogation of provider capabilities will inform list of operations supported
 /// 4. Interrogation of class definition would allow to determine properties of classes
 ///    which can be used for filter text.
-MgDataReader*  MgServerFeatureService::SelectAggregate( MgResourceIdentifier* resource,
-                                                        CREFSTRING className,
-                                                        MgFeatureAggregateOptions* options )
+MgDataReader* MgServerFeatureService::SelectAggregate( MgResourceIdentifier* resource,
+                                                       CREFSTRING className,
+                                                       MgFeatureAggregateOptions* options )
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SelectAggregate()");
 
     MgServerSelectFeatures mssf;
-    Ptr<MgDataReader> reader = (MgDataReader*)mssf.SelectFeatures(resource, className, options, true);
-
-    return SAFE_ADDREF((MgDataReader*)reader);
+    return (MgDataReader*)mssf.SelectFeatures(resource, className, options, true);
 }
 
 
@@ -673,7 +669,7 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
 // Helper private method
 void MgServerFeatureService::FeatureSourceToString(MgResourceIdentifier* resource, string& resourceContent)
 {
-    CHECKNULL(resource, L"MgServerFeatureService.GetCapabilities");
+    CHECKNULL(resource, L"MgServerFeatureService.FeatureSourceToString");
 
     MgServiceManager* serviceMan = MgServiceManager::GetInstance();
     assert(NULL != serviceMan);
@@ -727,10 +723,7 @@ MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(INT32 featureRead
     Ptr<MgBatchPropertyCollection> bpCol = featSet->GetFeatures();
     CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgServerFeatureService.GetFeatures");
 
-    if (bpCol->GetCount() > 0)
-        return SAFE_ADDREF((MgBatchPropertyCollection*)bpCol);
-    else
-        return NULL;
+    return (bpCol->GetCount() > 0)? bpCol.Detach() : NULL;
 }
 
 
@@ -741,7 +734,7 @@ bool MgServerFeatureService::CloseFeatureReader(INT32 featureReaderId)
     MgServerGetFeatures* featId = ((MgServerGetFeatures*)(INT64)featureReaderId);
 
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
-    CHECKNULL(featPool, L"MgServerFeatureService.GetFeatures");
+    CHECKNULL(featPool, L"MgServerFeatureService.CloseFeatureReader");
 
     if (featPool->Contains(featId))
     {
@@ -800,7 +793,7 @@ MgByteReader* MgServerFeatureService::GetRaster(INT32 readerId, INT32 xSize, INT
 {
     MgServerFeatureProcessor* featureProcessor = ((MgServerFeatureProcessor*)(INT64)readerId);
 
-    Ptr<MgByteReader> byteReader = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     if (featureProcessor != NULL)
     {
@@ -822,7 +815,7 @@ MgByteReader* MgServerFeatureService::GetRaster(INT32 readerId, INT32 xSize, INT
         byteReader = featureProcessor->GetRaster(xSize, ySize, propName);
     }
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -859,10 +852,7 @@ MgBatchPropertyCollection* MgServerFeatureService::GetSqlRows(INT32 lsqlReader)
     Ptr<MgBatchPropertyCollection> bpCol = sqlReader->GetRows(count);
     CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgServerFeatureService.GetSqlRows");
 
-    if (bpCol->GetCount() > 0)
-        return SAFE_ADDREF((MgBatchPropertyCollection*)bpCol);
-    else
-        return NULL;
+    return (bpCol->GetCount() > 0)? bpCol.Detach() : NULL;
 }
 
 
@@ -918,10 +908,7 @@ MgBatchPropertyCollection* MgServerFeatureService::GetDataRows(INT32 ldataReader
     Ptr<MgBatchPropertyCollection> bpCol = dataReader->GetRows(count);
     CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgServerFeatureService.GetDataRows");
 
-    if (bpCol->GetCount() > 0)
-        return SAFE_ADDREF((MgBatchPropertyCollection*)bpCol);
-    else
-        return NULL;
+    return (bpCol->GetCount() > 0)? bpCol.Detach() : NULL;
 }
 
 
@@ -929,10 +916,23 @@ MgBatchPropertyCollection* MgServerFeatureService::GetDataRows(INT32 ldataReader
 bool MgServerFeatureService::CloseDataReader(INT32 ldataReader)
 {
     bool retVal = false;
-    Ptr<MgServerDataProcessor> dataReader = ((MgServerDataProcessor*)(INT64)ldataReader);
 
+    MgServerDataProcessor* dataReader = ((MgServerDataProcessor*)(INT64)ldataReader);
+
+    // At this point we have the following:
+    //   - the data processor is in the pool
+    //   - the data processor references the data reader
+    //   - the data reader references the data processor
+    // The last two result in a circular reference which we have to break.
+
+    // release the processor's reference to the reader - this causes the
+    // reader to be destroyed and release its reference to the processor
+    dataReader->ClearDataReader();
+
+    // now remove the processor from the pool - this should be the final
+    // reference to the processor and will cause it to be destroyed
     MgServerDataReaderPool* dataReaderPool = MgServerDataReaderPool::GetInstance();
-    CHECKNULL(dataReaderPool, L"MgServerFeatureService.CloseSqlReader");
+    CHECKNULL(dataReaderPool, L"MgServerFeatureService.CloseDataReader");
 
     if (dataReaderPool->Contains(dataReader))
     {
@@ -1014,7 +1014,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     //so that we can convert the input geometry from mapping space
     //to layer's space
     Ptr<MgSpatialContextReader> csrdr = GetSpatialContexts(fs, true);
-    Ptr<MgCoordinateSystem> layerCs = (MgCoordinateSystem*)NULL;
+    Ptr<MgCoordinateSystem> layerCs;
 
     if (mapCs && csrdr->ReadNext())
     {
@@ -1023,7 +1023,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     }
 
     //we want to transform query geometry from mapping space to feature space
-    Ptr<MgCoordinateSystemTransform> trans = (MgCoordinateSystemTransform*)NULL;
+    Ptr<MgCoordinateSystemTransform> trans;
 
     if (mapCs && layerCs)
     {
@@ -1079,7 +1079,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     }
 
     // TODO: can FeatureName be an extension name rather than a FeatureClass?
-    Ptr<MgFeatureReader> rdr =  SelectFeatures(fs, featureName, options);
+    Ptr<MgFeatureReader> rdr = SelectFeatures(fs, featureName, options);
 
     //get underlying FDO feature reader
     GisPtr<FdoIFeatureReader> fdoRdr = ((MgServerFeatureReader*)(rdr.p))->GetInternalReader();
@@ -1087,7 +1087,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     //generate a file name to serialize wfs data
     STRING fileName = MgFileUtil::GenerateTempFileName(false, L"wfs", L"xml");
 
-    FdoXmlFeatureFlags* flags = FdoXmlFeatureFlags::Create();
+    GisPtr<FdoXmlFeatureFlags> flags = FdoXmlFeatureFlags::Create();
     flags->SetWriteCollection(true);
     flags->SetWriteMember(true);
     flags->SetCollectionUri(L"http://www.opengis.net/wfs");
@@ -1112,7 +1112,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
 
     FdoXmlFeatureSerializer::XmlSerialize(fdoRdr, featWriter, flags);
 
-    flags->Release();
+    flags = NULL;
     featWriter = NULL;
     propWriter = NULL;
     xmlWriter = NULL; //flush and close file

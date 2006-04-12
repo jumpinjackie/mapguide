@@ -35,14 +35,13 @@ MgServerSqlCommand::MgServerSqlCommand()
 
 MgServerSqlCommand::~MgServerSqlCommand()
 {
-    if (NULL != m_fdoConn)
-        m_fdoConn->Release();
+    GIS_SAFE_RELEASE(m_fdoConn);
 }
 
 // Executes the describe schema command and serializes the schema to XML
 MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement)
 {
-    Ptr<MgSqlDataReader> mgSqlDataReader = (MgSqlDataReader*)NULL;
+    Ptr<MgSqlDataReader> mgSqlDataReader;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -64,13 +63,12 @@ MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlCommand.ExecuteQuery")
 
-    return SAFE_ADDREF((MgSqlDataReader*)mgSqlDataReader);
+    return mgSqlDataReader.Detach();
 }
 
 // Executes the describe schema command and serializes the schema to XML
 INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement)
 {
-    Ptr<MgSqlDataReader> mgSqlDataReader = (MgSqlDataReader*)NULL;
     INT32 rowsAffected = 0;
 
     MG_FEATURE_SERVICE_TRY()
@@ -98,7 +96,7 @@ void MgServerSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sql
     // SQL statement can not be empty
     if (resource == NULL)
     {
-        throw new MgNullArgumentException(L"MgServerSqlCommand.MgServerSqlCommand()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgServerSqlCommand.Validate", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     if (sqlStatement.empty())
@@ -107,21 +105,19 @@ void MgServerSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sql
         arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgServerSqlCommand.MgServerSqlCommand()",
+        throw new MgInvalidArgumentException(L"MgServerSqlCommand.Validate",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
     // Connect to provider
     MgServerFeatureConnection msfc(resource);
-    if ( msfc.IsConnectionOpen() )
+    if ( !msfc.IsConnectionOpen() )
     {
-        m_fdoConn = msfc.GetConnection();
-        m_providerName = msfc.GetProviderName();
+        throw new MgConnectionFailedException(L"MgServerSqlCommand::Validate", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    else
-    {
-        throw new MgConnectionFailedException(L"MgServerSqlCommand::SelectFeatures()", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+
+    m_fdoConn = msfc.GetConnection();
+    m_providerName = msfc.GetProviderName();
 
     // Check whether command is supported by provider
     if (!msfc.SupportsCommand(commandType))

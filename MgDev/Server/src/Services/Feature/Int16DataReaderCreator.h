@@ -27,8 +27,9 @@ class MgInt16DataReaderCreator : public MgDataReaderCreator<INT16>
     DECLARE_CLASSNAME(MgInt16DataReaderCreator)
 
 public:
-    MgInt16DataReaderCreator() {}
-
+    MgInt16DataReaderCreator()
+    {
+    }
 
     MgInt16DataReaderCreator(CREFSTRING propertyAlias)
     {
@@ -36,16 +37,20 @@ public:
         m_propType = MgPropertyType::Int16;
     }
 
-    ~MgInt16DataReaderCreator() {}
+    ~MgInt16DataReaderCreator()
+    {
+    }
 
     //
     MgProperty* GetProperty(INT16 val)
     {
-        Ptr<MgProperty> prop = new MgInt16Property(m_propertyAlias, val);
-        return SAFE_ADDREF((MgProperty*)prop);
+        return new MgInt16Property(m_propertyAlias, val);
     }
 
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 };
 
-#endif  // MG_DOUBLE_DATA_READER_CREATOR_H
+#endif

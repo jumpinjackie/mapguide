@@ -124,7 +124,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinition()
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetClassDefinition")
 
-    return SAFE_ADDREF((MgClassDefinition*)classDef);
+    return classDef.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -154,9 +154,8 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinitionNoXml()
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetClassDefinitionNoXml")
 
-    return SAFE_ADDREF((MgClassDefinition*)classDef);
+    return classDef.Detach();
 }
-
 
 
 //////////////////////////////////////////////////////////////////
@@ -261,7 +260,7 @@ MgDateTime* MgServerGwsFeatureReader::GetDateTime(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetDateTime");
 
-    return SAFE_ADDREF((MgDateTime*)retVal);
+    return retVal.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -273,7 +272,7 @@ MgDateTime* MgServerGwsFeatureReader::GetDateTime(CREFSTRING propertyName)
 /// <returns>Returns the single value.</returns>
 float MgServerGwsFeatureReader::GetSingle(CREFSTRING propertyName)
 {
-    float retVal = 0;
+    float retVal = 0.0f;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -299,7 +298,7 @@ float MgServerGwsFeatureReader::GetSingle(CREFSTRING propertyName)
 /// <returns>Returns the double value.</returns>
 double MgServerGwsFeatureReader::GetDouble(CREFSTRING propertyName)
 {
-    double retVal = 0;
+    double retVal = 0.0;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -337,7 +336,7 @@ INT16 MgServerGwsFeatureReader::GetInt16(CREFSTRING propertyName)
 
     retVal = (INT16)gwsFeatureIter->GetInt16(parsedPropertyName.c_str());
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetDouble");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetInt16");
 
     return retVal;
 }
@@ -416,7 +415,7 @@ STRING MgServerGwsFeatureReader::GetString(CREFSTRING propertyName)
         retVal = str;
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetInt64");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetString");
 
     return retVal;
 }
@@ -444,7 +443,7 @@ MgByteReader* MgServerGwsFeatureReader::GetBLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetBLOB");
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -470,7 +469,7 @@ MgByteReader* MgServerGwsFeatureReader::GetCLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetCLOB");
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -493,7 +492,7 @@ MgFeatureReader* MgServerGwsFeatureReader::GetFeatureObject(CREFSTRING propertyN
     IGWSFeatureIterator* gwsFeatureIter = NULL;
     STRING parsedPropertyName;
     DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
-    CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetFeatureReader");
+    CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetFeatureObject");
 
     GisPtr<FdoIFeatureReader> featureObjectReader = gwsFeatureIter->GetFeatureObject(parsedPropertyName.c_str());
 
@@ -506,7 +505,7 @@ MgFeatureReader* MgServerGwsFeatureReader::GetFeatureObject(CREFSTRING propertyN
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetFeatureObject");
 
-    return SAFE_ADDREF((MgServerFeatureReader*)featureReader);
+    return featureReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -534,7 +533,7 @@ MgByteReader* MgServerGwsFeatureReader::GetGeometry(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetGeometry");
 
-    return SAFE_ADDREF((MgByteReader*)retVal);
+    return retVal.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -578,7 +577,7 @@ MgRaster* MgServerGwsFeatureReader::GetRaster(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetRaster");
 
-    return SAFE_ADDREF((MgRaster*)retVal);
+    return retVal.Detach();
 }
 
 void MgServerGwsFeatureReader::Serialize(MgStream* stream)
@@ -603,7 +602,6 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
 
     MG_FEATURE_SERVICE_CATCH(L"MgServerGwsFeatureReader.Serialize");
 
-
     // Mark operation is completed successfully
     stream->WriteBoolean(operationCompleted);
 
@@ -616,7 +614,6 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
     {
         stream->WriteObject((MgException*)mgException);
     }
-
 
     MG_FEATURE_SERVICE_THROW();
 }
@@ -732,7 +729,7 @@ const wchar_t* MgServerGwsFeatureReader::GetString(CREFSTRING propName, INT32& l
         length = (INT32)wcslen((const wchar_t*)retVal);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetInt64");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");
 
     return ((const wchar_t*)retVal);
 }
@@ -753,7 +750,6 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
     // Join1 = relation name
     // PropA = property name
 
-
     STRING qualifiedName;
 
     if (inputPropName.empty())
@@ -765,7 +761,6 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
         throw new MgInvalidArgumentException(L"MgServerGwsFeatureReader.DeterminePropertyFeatureSource",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
-
 
     // Check if the input propName is prefixed with the relationName
     // by comparing with primary feature source property names
@@ -826,11 +821,8 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
                         *gwsFeatureIter = secondaryFeatureIter;
                         break;
                     }
-
                 }
-
             }
-
         }
     }
 
@@ -842,7 +834,6 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
         throw new MgParameterNotFoundException(
             L"MgServerGwsFeatureReader.DeterminePropertyFeatureSource", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
-
 }
 
 

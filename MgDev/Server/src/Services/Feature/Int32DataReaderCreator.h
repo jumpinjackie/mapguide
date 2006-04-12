@@ -27,8 +27,9 @@ class MgInt32DataReaderCreator : public MgDataReaderCreator<INT32>
     DECLARE_CLASSNAME(MgInt32DataReaderCreator)
 
 public:
-    MgInt32DataReaderCreator() {}
-
+    MgInt32DataReaderCreator()
+    {
+    }
 
     MgInt32DataReaderCreator(CREFSTRING propertyAlias)
     {
@@ -36,17 +37,20 @@ public:
         m_propType = MgPropertyType::Int32;
     }
 
-    ~MgInt32DataReaderCreator() {}
+    ~MgInt32DataReaderCreator()
+    {
+    }
 
     //
     MgProperty* GetProperty(INT32 val)
     {
-        Ptr<MgProperty> prop = new MgInt32Property(m_propertyAlias, val);
-        return SAFE_ADDREF((MgProperty*)prop);
+        return new MgInt32Property(m_propertyAlias, val);
     }
 
-    virtual void Dispose() { delete this; }
-
+    virtual void Dispose()
+    {
+        delete this;
+    }
 };
 
-#endif  // MG_INT32_DATA_READER_CREATOR_H
+#endif

@@ -27,7 +27,9 @@ class MgDateTimeDataReaderCreator : public MgDataReaderCreator<double>
     DECLARE_CLASSNAME(MgDateTimeDataReaderCreator)
 
 public:
-    MgDateTimeDataReaderCreator() {}
+    MgDateTimeDataReaderCreator()
+    {
+    }
 
     MgDateTimeDataReaderCreator(CREFSTRING propertyAlias)
     {
@@ -35,18 +37,22 @@ public:
         m_propType = MgPropertyType::DateTime;
     }
 
-    ~MgDateTimeDataReaderCreator() {}
+    ~MgDateTimeDataReaderCreator()
+    {
+    }
 
     //
     MgProperty* GetProperty(double val)
     {
         Ptr<MgDateTime> dateTime = new MgDateTime(val);
-        Ptr<MgProperty> prop = new MgDateTimeProperty(m_propertyAlias, dateTime);
-        return SAFE_ADDREF((MgProperty*)prop);
+        return new MgDateTimeProperty(m_propertyAlias, dateTime);
     }
 
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
 };
 
-#endif  // MG_DOUBLE_DATA_READER_CREATOR_H
+#endif

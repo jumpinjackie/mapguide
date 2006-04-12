@@ -101,7 +101,7 @@ INT32 MgServerDataReader::GetPropertyCount()
 /// <returns>Returns the Property name</returns>
 STRING MgServerDataReader::GetPropertyName(INT32 index)
 {
-    CHECKNULL(m_dataReader, L"MgServerDataReader.GetPropertyCount");
+    CHECKNULL(m_dataReader, L"MgServerDataReader.GetPropertyName");
 
     STRING retVal;
 
@@ -113,7 +113,7 @@ STRING MgServerDataReader::GetPropertyName(INT32 index)
         retVal = (wchar_t*)str;
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetPropertyCount")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetPropertyName")
 
     return retVal;
 }
@@ -243,7 +243,7 @@ BYTE MgServerDataReader::GetByte(CREFSTRING propertyName)
 /// <returns>Returns the DTime value.</returns>
 MgDateTime* MgServerDataReader::GetDateTime(CREFSTRING propertyName)
 {
-    Ptr<MgDateTime> retVal = (MgDateTime*)NULL;
+    Ptr<MgDateTime> retVal;
 
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetDateTime");
 
@@ -255,7 +255,7 @@ MgDateTime* MgServerDataReader::GetDateTime(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetDateTime");
 
-    return SAFE_ADDREF((MgDateTime*)retVal);
+    return retVal.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -269,7 +269,7 @@ float MgServerDataReader::GetSingle(CREFSTRING propertyName)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetSingle");
 
-    float retVal = 0;
+    float retVal = 0.0f;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -291,7 +291,7 @@ double MgServerDataReader::GetDouble(CREFSTRING propertyName)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetDouble");
 
-    double retVal = 0;
+    double retVal = 0.0;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -319,7 +319,7 @@ INT16 MgServerDataReader::GetInt16(CREFSTRING propertyName)
 
     retVal = (INT16)m_dataReader->GetInt16(propertyName.c_str());
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetDouble");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetInt16");
 
     return retVal;
 }
@@ -392,7 +392,7 @@ STRING MgServerDataReader::GetString(CREFSTRING propertyName)
         retVal = str;
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetInt64");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");
 
     return retVal;
 }
@@ -408,7 +408,7 @@ MgByteReader* MgServerDataReader::GetBLOB(CREFSTRING propertyName)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetBLOB");
 
-    Ptr<MgByteReader> byteReader = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -416,7 +416,7 @@ MgByteReader* MgServerDataReader::GetBLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetBLOB");
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -430,7 +430,7 @@ MgByteReader* MgServerDataReader::GetCLOB(CREFSTRING propertyName)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetCLOB");
 
-    Ptr<MgByteReader> byteReader = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -438,7 +438,7 @@ MgByteReader* MgServerDataReader::GetCLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetCLOB");
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -451,7 +451,8 @@ MgByteReader* MgServerDataReader::GetCLOB(CREFSTRING propertyName)
 MgByteReader* MgServerDataReader::GetGeometry(CREFSTRING propertyName)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetGeometry");
-    Ptr<MgByteReader> retVal = (MgByteReader*)NULL;
+
+    Ptr<MgByteReader> retVal;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -470,14 +471,15 @@ MgByteReader* MgServerDataReader::GetGeometry(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetGeometry");
 
-    return SAFE_ADDREF((MgByteReader*)retVal);
+    return retVal.Detach();
 }
 
 // Get the Raster data
 MgRaster* MgServerDataReader::GetRaster(CREFSTRING propertyName)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetRaster");
-    Ptr<MgRaster> retVal = (MgRaster*)NULL;
+
+    Ptr<MgRaster> retVal;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -498,13 +500,12 @@ MgRaster* MgServerDataReader::GetRaster(CREFSTRING propertyName)
 
     // Collect the data reader into a pool for ReadNext operation
     MgServerDataReaderPool* dataReaderPool = MgServerDataReaderPool::GetInstance();
-    CHECKNULL((MgServerDataReaderPool*)dataReaderPool, L"MgServerDataReader.Serialize");
+    CHECKNULL((MgServerDataReaderPool*)dataReaderPool, L"MgServerDataReader.GetRaster");
 
     // No data processor is created yet, therefore create it.
     if (NULL == m_dataProcessor)
-    {
         m_dataProcessor = new MgServerDataProcessor(this);
-    }
+
     // Add data processor to pool
     if (!dataReaderPool->Contains(m_dataProcessor))
     {
@@ -515,9 +516,9 @@ MgRaster* MgServerDataReader::GetRaster(CREFSTRING propertyName)
     retVal->SetMgService(featureService);
     retVal->SetHandle((INT32)(INT64)m_dataProcessor.p);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetRaster");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetRaster");
 
-    return SAFE_ADDREF((MgRaster*)retVal);
+    return retVal.Detach();
 }
 
 
@@ -525,7 +526,7 @@ MgByteReader* MgServerDataReader::GetLOB(CREFSTRING propName)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetLOB");
 
-    Ptr<MgByteReader> val = (MgByteReader*)NULL;
+    Ptr<MgByteReader> retVal;
 
     // TODO: We need to switch to GisIStreamReader when we have streaming capability in MgByteReader
     GisPtr<FdoLOBValue> fdoVal = m_dataReader->GetLOB(propName.c_str());
@@ -537,13 +538,15 @@ MgByteReader* MgServerDataReader::GetLOB(CREFSTRING propName)
             GisByte* bytes = byteArray->GetData();
             GisInt32 len = byteArray->GetCount();
             Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
+
             // TODO: We need to differentiate between CLOB and BLOB
             // TODO: How do we fine the MimeType of data for CLOB
             byteSource->SetMimeType(MgMimeType::Binary);
-            val = byteSource->GetReader();
+            retVal = byteSource->GetReader();
         }
     }
-    return SAFE_ADDREF((MgByteReader*)val);
+
+    return retVal.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -553,7 +556,7 @@ MgByteReader* MgServerDataReader::GetLOB(CREFSTRING propName)
 /// <returns>Nothing</returns>
 void MgServerDataReader::Close()
 {
-    CHECKNULL(m_dataReader, L"MgServerDataReader.GetString");
+    CHECKNULL(m_dataReader, L"MgServerDataReader.Close");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -576,8 +579,8 @@ void MgServerDataReader::Serialize(MgStream* stream)
 {
     INT32 count = 1; // Get value from MgConfiguration
 
-    Ptr<MgPropertyDefinitionCollection> propDefCol = (MgPropertyDefinitionCollection*)NULL;
-    Ptr<MgBatchPropertyCollection> bpCol = (MgBatchPropertyCollection*)NULL;
+    Ptr<MgPropertyDefinitionCollection> propDefCol;
+    Ptr<MgBatchPropertyCollection> bpCol;
     bool operationCompleted = false;
 
     MG_FEATURE_SERVICE_TRY()
@@ -596,9 +599,8 @@ void MgServerDataReader::Serialize(MgStream* stream)
 
     // No data processor is created yet, therefore create it.
     if (NULL == m_dataProcessor)
-    {
         m_dataProcessor = new MgServerDataProcessor(this);
-    }
+
     // Add data processor to pool
     if (!dataReaderPool->Contains(m_dataProcessor))
         dataReaderPool->Add(m_dataProcessor); // Add the reference
@@ -656,14 +658,12 @@ MgByteReader* MgServerDataReader::GetRaster(INT32 xSize, INT32 ySize, STRING ras
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetRaster");
 
-    Ptr<MgByteReader> byteReader = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     MG_FEATURE_SERVICE_TRY()
 
     if (rasterPropName.empty())
-    {
         rasterPropName = GetRasterPropertyName();
-    }
 
     // If there is no raster property, GetRaster should not be called
     if (rasterPropName.empty())
@@ -676,7 +676,7 @@ MgByteReader* MgServerDataReader::GetRaster(INT32 xSize, INT32 ySize, STRING ras
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetRaster")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -731,7 +731,7 @@ const wchar_t* MgServerDataReader::GetString(CREFSTRING propName, INT32& length)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetString");
 
-    GisString* retVal;
+    GisString* retVal = NULL;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -741,7 +741,7 @@ const wchar_t* MgServerDataReader::GetString(CREFSTRING propName, INT32& length)
         length = (INT32)wcslen((const wchar_t*)retVal);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetInt64");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");
 
     return ((const wchar_t*)retVal);
 }

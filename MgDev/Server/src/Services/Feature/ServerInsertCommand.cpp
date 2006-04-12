@@ -48,7 +48,7 @@ MgServerInsertCommand::~MgServerInsertCommand()
 
 MgProperty* MgServerInsertCommand::Execute()
 {
-    Ptr<MgFeatureProperty> prop = (MgFeatureProperty*)NULL;
+    Ptr<MgFeatureProperty> prop;
 
     STRING clsName = m_featCommand->GetFeatureClassName();
     Ptr<MgBatchPropertyCollection> srcCol = m_featCommand->GetBatchPropertyValues();
@@ -82,7 +82,7 @@ MgProperty* MgServerInsertCommand::Execute()
         prop = SingleInsert(srcCol, propValCol, fdoCommand, fdoConn);
     }
 
-    return SAFE_ADDREF((MgFeatureProperty*)prop);
+    return prop.Detach();
 }
 
 MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection* srcCol,
@@ -98,7 +98,7 @@ MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection
         bParamValCol->Add(paramCol);
     }
     GisPtr<FdoIFeatureReader> reader = fdoCommand->Execute();
-    CHECKNULL((FdoIFeatureReader*)reader, L"MgServerInsertCommand.Execute");
+    CHECKNULL((FdoIFeatureReader*)reader, L"MgServerInsertCommand.BatchInsert");
 
     // TODO: This is FDO defect, they should not require ReadNext() for class definition
     bool available = false;
@@ -110,7 +110,7 @@ MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgFeatureManipulationCommand.CreateCommand", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgServerGwsGetFeatures.BatchInsert", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // Create a feature reader identifier
@@ -122,9 +122,7 @@ MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection
     STRING str = MgUtil::MultiByteToWideChar(string(buff));
 
     Ptr<MgFeatureReader> mgFeatureReader = new MgServerFeatureReader(featReaderId);
-    Ptr<MgFeatureProperty> prop = new MgFeatureProperty(str, mgFeatureReader);
-
-    return SAFE_ADDREF((MgFeatureProperty*)prop);
+    return new MgFeatureProperty(str, mgFeatureReader);
 }
 
 MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollection* srcCol,
@@ -145,7 +143,7 @@ MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollectio
         MgServerFeatureUtil::FillFdoPropertyCollection(propCol, propValCol);
 
         GisPtr<FdoIFeatureReader> reader = fdoCommand->Execute();
-        CHECKNULL((FdoIFeatureReader*)reader, L"MgServerInsertCommand.Execute");
+        CHECKNULL((FdoIFeatureReader*)reader, L"MgServerInsertCommand.SingleInsert");
 
         if (keyProps == NULL)
         {
@@ -165,7 +163,7 @@ MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollectio
 
             MgStringCollection arguments;
             arguments.Add(message);
-            throw new MgFeatureServiceException(L"MgFeatureManipulationCommand.SingleInsert", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgFeatureServiceException(L"MgServerInsertCommand.SingleInsert", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         bool available = false;
@@ -177,7 +175,7 @@ MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollectio
 
             MgStringCollection arguments;
             arguments.Add(message);
-            throw new MgFeatureServiceException(L"MgFeatureManipulationCommand.SingleInsert", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgFeatureServiceException(L"MgServerInsertCommand.SingleInsert", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         // Performance improvement: Only return the key values
@@ -235,7 +233,5 @@ MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollectio
     sprintf(buff, "%d", m_cmdId);
     STRING str = MgUtil::MultiByteToWideChar(string(buff));
 
-    Ptr<MgFeatureProperty> prop = new MgFeatureProperty(str, featureSetReader);
-
-    return SAFE_ADDREF((MgFeatureProperty*)prop);
+    return new MgFeatureProperty(str, featureSetReader);
 }

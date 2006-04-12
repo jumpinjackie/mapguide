@@ -28,13 +28,10 @@
 
 MgServerGetLongTransactions::MgServerGetLongTransactions()
 {
-    m_fdoConn = NULL;
 }
 
 MgServerGetLongTransactions::~MgServerGetLongTransactions()
 {
-    if (NULL != m_fdoConn)
-        m_fdoConn->Release();
 }
 
 // Executes the describe schema command and serializes the schema to XML
@@ -55,15 +52,13 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
     MgServerFeatureConnection msfc(resId);
 
     // connection must be open to retrieve list of active contexts
-    if ( msfc.IsConnectionOpen() )
+    if ( !msfc.IsConnectionOpen() )
     {
-        m_fdoConn = msfc.GetConnection();
-        m_providerName = msfc.GetProviderName();
+        throw new MgConnectionFailedException(L"MgServerGetLongTransactions::GetLongTransactions()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    else
-    {
-        throw new MgConnectionFailedException(L"MgServerGetLongTransactions::MgServerGetLongTransactions()", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+
+    GisPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+    m_providerName = msfc.GetProviderName();
 
     // Check whether command is supported by provider
     if (!msfc.SupportsCommand((INT32)FdoCommandType_GetLongTransactions))
@@ -73,7 +68,7 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
         throw new MgInvalidOperationException(L"MgServerGetLongTransactions.GetLongTransactions", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    GisPtr<FdoIGetLongTransactions> fdoCommand = (FdoIGetLongTransactions*)m_fdoConn->CreateCommand(FdoCommandType_GetLongTransactions);
+    GisPtr<FdoIGetLongTransactions> fdoCommand = (FdoIGetLongTransactions*)fdoConn->CreateCommand(FdoCommandType_GetLongTransactions);
     CHECKNULL((FdoIGetLongTransactions*)fdoCommand, L"MgServerGetLongTransactions.GetLongTransactions");
 
     // Execute the command
@@ -108,7 +103,7 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetLongTransactions.GetLongTransactions")
 
-    return SAFE_ADDREF((MgLongTransactionReader*)mgLongTransactionReader);
+    return mgLongTransactionReader.Detach();
 }
 
 MgLongTransactionData* MgServerGetLongTransactions::GetLongTransactionData(FdoILongTransactionReader* longTransactionReader)
@@ -150,5 +145,5 @@ MgLongTransactionData* MgServerGetLongTransactions::GetLongTransactionData(FdoIL
     bool isFrozen = longTransactionReader->IsFrozen();
     longTransactionData->SetFrozenStatus(isFrozen);
 
-    return SAFE_ADDREF((MgLongTransactionData*)longTransactionData);
+    return longTransactionData.Detach();
 }

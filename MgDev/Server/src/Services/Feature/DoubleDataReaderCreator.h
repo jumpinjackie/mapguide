@@ -27,7 +27,9 @@ class MgDoubleDataReaderCreator : public MgDataReaderCreator<double>
     DECLARE_CLASSNAME(MgDoubleDataReaderCreator)
 
 public:
-    MgDoubleDataReaderCreator() {}
+    MgDoubleDataReaderCreator()
+    {
+    }
 
     MgDoubleDataReaderCreator(CREFSTRING propertyAlias)
     {
@@ -35,17 +37,20 @@ public:
         m_propType = MgPropertyType::Double;
     }
 
-    ~MgDoubleDataReaderCreator() {}
+    ~MgDoubleDataReaderCreator()
+    {
+    }
 
     //
     MgProperty* GetProperty(double val)
     {
-        Ptr<MgProperty> prop = new MgDoubleProperty(m_propertyAlias, val);
-        return SAFE_ADDREF((MgProperty*)prop);
+        return new MgDoubleProperty(m_propertyAlias, val);
     }
 
-    virtual void Dispose() { delete this; }
-
+    virtual void Dispose()
+    {
+        delete this;
+    }
 };
 
-#endif  // MG_DOUBLE_DATA_READER_CREATOR_H
+#endif
