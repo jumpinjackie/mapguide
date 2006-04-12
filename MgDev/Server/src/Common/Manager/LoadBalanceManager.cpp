@@ -901,6 +901,8 @@ void MgLoadBalanceManager::NotifyResourcesChanged(CREFSTRING serverAddress,
     serverAdmin.NotifyResourcesChanged(resources);
     serverAdmin.Close();
 
+    MgUserInformation::SetCurrentUserInfo(NULL);
+
     MG_CATCH_AND_THROW(L"MgLoadBalanceManager.NotifyResourcesChanged")
 }
 
