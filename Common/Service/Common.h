@@ -127,6 +127,7 @@ class ACE_SOCK_Stream;
 #include "Exception/EmptyFeatureSetException.h"
 #include "Exception/EncryptionException.h"
 #include "Exception/EndOfStreamException.h"
+#include "Exception/EvaluationExpiredException.h"
 #include "Exception/FdoException.h"
 #include "Exception/FeatureServiceException.h"
 #include "Exception/FileNotFoundException.h"

@@ -45,6 +45,12 @@ const STRING MgResources::ServerServiceName             = L"Server"; // Do not t
 const STRING MgResources::ServerServiceDisplayName      = L"MapGuide Server"; // Do not translate
 const STRING MgResources::ServerServiceDescription      = L"The MapGuide Server process.";
 const STRING MgResources::UsingDefaultResourceFile      = L"Defaulting to the \"en\" resource file.";
+const STRING MgResources::RegisteredLicenseDetected     = L"Registered license detected...";
+const STRING MgResources::EvaluationLicenseDetected     = L"Evaluation license detected.  Evaluation will expire in: %1 day(s).";
+const STRING MgResources::AlphaReleaseDetected          = L"Alpha release detected.  Alpha version will expire in: %1 day(s).";
+const STRING MgResources::BetaReleaseDetected           = L"Beta release detected.  Beta version will expire in: %1 day(s).";
+const STRING MgResources::PreviewReleaseDetected        = L"Preview release detected.  Preview version will expire in: %1 day(s).";
+
 
 // The following resource strings are for the commandline options for the server. These are not in the resources file because
 // the server has not even started at this point.

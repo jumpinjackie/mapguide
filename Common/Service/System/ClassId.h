@@ -190,6 +190,7 @@
 #define Common_Exception_MgPermissionDeniedException                        COREDATA_EXCEPTION_ID+127
 #define Common_Exception_MgResourceTagNotFoundException                     COREDATA_EXCEPTION_ID+128
 #define Common_Exception_MgCoordinateSystemInitializationFailedException    COREDATA_EXCEPTION_ID+129
+#define Common_Exception_MgEvaluationExpiredException                       COREDATA_EXCEPTION_ID+130
 
 // CoreData Property
 #define CoreData_Property_BlobProperty                    COREDATA_PROPERTY_ID+0
