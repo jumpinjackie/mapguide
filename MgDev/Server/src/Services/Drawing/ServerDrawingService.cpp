@@ -63,10 +63,8 @@ MgByteReader* MgServerDrawingService::GetDrawing(MgResourceIdentifier* resource)
     // Get the name of the dwf file from the resource content and remove the path from the filename
     STRING dwfFileName = L"";
     STRING dwfCoordinateSpace = L"";
-    MgServerDrawingServiceUtil::ParseDrawingResourceContent(
-        m_resourceService->GetResourceContent(resource, L""),
-        dwfFileName,
-        dwfCoordinateSpace);
+    Ptr<MgByteReader> reader = m_resourceService->GetResourceContent(resource, L"");
+    MgServerDrawingServiceUtil::ParseDrawingResourceContent(reader, dwfFileName, dwfCoordinateSpace);
     dwfFileName = dwfFileName.substr( dwfFileName.rfind(L"%") + 1 );
 
     // Return the drawing via a MgByteReader
@@ -74,7 +72,7 @@ MgByteReader* MgServerDrawingService::GetDrawing(MgResourceIdentifier* resource)
 
     MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgServerDrawingService.GetDrawing")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -143,7 +141,7 @@ MgByteReader* MgServerDrawingService::DescribeDrawing(MgResourceIdentifier* reso
 
     MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgServerDrawingService.DescribeDrawing")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -210,8 +208,7 @@ MgByteReader* MgServerDrawingService::GetSection(MgResourceIdentifier* resource,
         }
 
         // Create a DWFPackageWriter for writing the section to a temporary DWF file
-        STRING tempDwfPathname = MgFileUtil::GenerateTempFileName(false,
-            /*NOXLATE*/ L"MGDS");
+        STRING tempDwfPathname = MgFileUtil::GenerateTempFileName(false, /*NOXLATE*/L"MGDS");
         DWFFile oDWF(tempDwfPathname.c_str());
 
         DWFPackageVersionExtension* pVersionExtension =
@@ -240,7 +237,7 @@ MgByteReader* MgServerDrawingService::GetSection(MgResourceIdentifier* resource,
 
     MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgServerDrawingService.GetSection")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -378,7 +375,7 @@ MgByteReader* MgServerDrawingService::GetSectionResource(MgResourceIdentifier* r
 
     MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgServicerDrawingService.GetSectionResource")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -540,7 +537,7 @@ MgStringCollection* MgServerDrawingService::EnumerateLayers(MgResourceIdentifier
 
     MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgServerDrawingService.EnumerateLayers")
 
-    return SAFE_ADDREF((MgStringCollection*)layers);
+    return layers.Detach();
 }
 
 
@@ -807,8 +804,7 @@ MgByteReader* MgServerDrawingService::GetLayer( MgResourceIdentifier* resource, 
         pPage->addResource( p2Dgfx, true );
 
         // ... create a DWFPackageWriter
-        STRING tempDwfPathname = MgFileUtil::GenerateTempFileName(false,
-            /*NOXLATE*/ L"MGDS");
+        STRING tempDwfPathname = MgFileUtil::GenerateTempFileName(false, /*NOXLATE*/L"MGDS");
         DWFFile oDWF(MgUtil::WideCharToMultiByte(tempDwfPathname).c_str());
 
         DWFPackageVersionExtension* pVersionExtension =
@@ -841,7 +837,7 @@ MgByteReader* MgServerDrawingService::GetLayer( MgResourceIdentifier* resource, 
 
     MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgServerDrawingService.GetLayer")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -906,21 +902,24 @@ MgByteReader* MgServerDrawingService::EnumerateSections(MgResourceIdentifier* re
                 strSection += "\t\t<Name>";  // NOXLATE
                 if (pSection->name())
                 {
-                    strSection += MgUtil::WideCharToMultiByte( pSection->name() );
+                    STRING temp = pSection->name();
+                    strSection += MgUtil::WideCharToMultiByte( temp );
                 }
                 strSection += "</Name>\n";  // NOXLATE
 
                 strSection += "\t\t<Type>";  // NOXLATE
                 if (pSection->type())
                 {
-                    strSection += MgUtil::WideCharToMultiByte( pSection->type() );
+                    STRING temp = pSection->type();
+                    strSection += MgUtil::WideCharToMultiByte( temp );
                 }
                 strSection += "</Type>\n";  // NOXLATE
 
                 strSection += "\t\t<Title>";  // NOXLATE
                 if (pSection->title())
                 {
-                    strSection += MgUtil::WideCharToMultiByte( pSection->title() );
+                    STRING temp = pSection->title();
+                    strSection += MgUtil::WideCharToMultiByte( temp );
                 }
                 strSection += "</Title>\n";  // NOXLATE
 
@@ -953,7 +952,7 @@ MgByteReader* MgServerDrawingService::EnumerateSections(MgResourceIdentifier* re
 
     MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgServerDrawingService.EnumerateSections")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -1043,28 +1042,32 @@ MgByteReader* MgServerDrawingService::EnumerateSectionResources(MgResourceIdenti
             sectionResources += "\t\t<Href>";
             if (pResource->href())
             {
-                sectionResources += MgUtil::WideCharToMultiByte( pResource->href() );
+                STRING temp = pResource->href();
+                sectionResources += MgUtil::WideCharToMultiByte( temp );
             }
             sectionResources += "</Href>";
 
             sectionResources += "\t\t<Role>";
             if (pResource->role())
             {
-                sectionResources += MgUtil::WideCharToMultiByte( pResource->role() );
+                STRING temp = pResource->role();
+                sectionResources += MgUtil::WideCharToMultiByte( temp );
             }
             sectionResources += "</Role>";
 
             sectionResources += "\t\t<Mime>";
             if (pResource->mime())
             {
-                sectionResources += MgUtil::WideCharToMultiByte( pResource->mime() );
+                STRING temp = pResource->mime();
+                sectionResources += MgUtil::WideCharToMultiByte( temp );
             }
             sectionResources += "</Mime>";
 
             sectionResources += "\t\t<Title>";
             if (pResource->title())
             {
-                sectionResources += MgUtil::WideCharToMultiByte( pResource->title() );
+                STRING temp = pResource->title();
+                sectionResources += MgUtil::WideCharToMultiByte( temp );
             }
             sectionResources += "</Title>\n";
 
@@ -1086,7 +1089,7 @@ MgByteReader* MgServerDrawingService::EnumerateSectionResources(MgResourceIdenti
 
     MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgServerDrawingService.EnumerateSections")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -1121,10 +1124,8 @@ STRING MgServerDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource
 
     // Get the coordinate space from the resource content.
     STRING dwfFileName = L"";
-    MgServerDrawingServiceUtil::ParseDrawingResourceContent(
-        m_resourceService->GetResourceContent(resource, L""),
-        dwfFileName,
-        dwfCoordinateSpace);
+    Ptr<MgByteReader> reader = m_resourceService->GetResourceContent(resource, L"");
+    MgServerDrawingServiceUtil::ParseDrawingResourceContent(reader, dwfFileName, dwfCoordinateSpace);
 
     // Assume coordinate space is LL84 if none is specified in the resource content.
     if (dwfCoordinateSpace.empty())
