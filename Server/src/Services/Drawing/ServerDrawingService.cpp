@@ -902,7 +902,7 @@ MgByteReader* MgServerDrawingService::EnumerateSections(MgResourceIdentifier* re
                 strSection += "\t\t<Name>";  // NOXLATE
                 if (pSection->name())
                 {
-                    STRING temp = pSection->name();
+                    STRING temp = (const wchar_t*)pSection->name();
                     strSection += MgUtil::WideCharToMultiByte( temp );
                 }
                 strSection += "</Name>\n";  // NOXLATE
@@ -910,7 +910,7 @@ MgByteReader* MgServerDrawingService::EnumerateSections(MgResourceIdentifier* re
                 strSection += "\t\t<Type>";  // NOXLATE
                 if (pSection->type())
                 {
-                    STRING temp = pSection->type();
+                    STRING temp = (const wchar_t*)pSection->type();
                     strSection += MgUtil::WideCharToMultiByte( temp );
                 }
                 strSection += "</Type>\n";  // NOXLATE
@@ -918,7 +918,7 @@ MgByteReader* MgServerDrawingService::EnumerateSections(MgResourceIdentifier* re
                 strSection += "\t\t<Title>";  // NOXLATE
                 if (pSection->title())
                 {
-                    STRING temp = pSection->title();
+                    STRING temp = (const wchar_t*)pSection->title();
                     strSection += MgUtil::WideCharToMultiByte( temp );
                 }
                 strSection += "</Title>\n";  // NOXLATE
@@ -1042,7 +1042,7 @@ MgByteReader* MgServerDrawingService::EnumerateSectionResources(MgResourceIdenti
             sectionResources += "\t\t<Href>";
             if (pResource->href())
             {
-                STRING temp = pResource->href();
+                STRING temp = (const wchar_t*)pResource->href();
                 sectionResources += MgUtil::WideCharToMultiByte( temp );
             }
             sectionResources += "</Href>";
@@ -1050,7 +1050,7 @@ MgByteReader* MgServerDrawingService::EnumerateSectionResources(MgResourceIdenti
             sectionResources += "\t\t<Role>";
             if (pResource->role())
             {
-                STRING temp = pResource->role();
+                STRING temp = (const wchar_t*)pResource->role();
                 sectionResources += MgUtil::WideCharToMultiByte( temp );
             }
             sectionResources += "</Role>";
@@ -1058,7 +1058,7 @@ MgByteReader* MgServerDrawingService::EnumerateSectionResources(MgResourceIdenti
             sectionResources += "\t\t<Mime>";
             if (pResource->mime())
             {
-                STRING temp = pResource->mime();
+                STRING temp = (const wchar_t*)pResource->mime();
                 sectionResources += MgUtil::WideCharToMultiByte( temp );
             }
             sectionResources += "</Mime>";
@@ -1066,7 +1066,7 @@ MgByteReader* MgServerDrawingService::EnumerateSectionResources(MgResourceIdenti
             sectionResources += "\t\t<Title>";
             if (pResource->title())
             {
-                STRING temp = pResource->title();
+                STRING temp = (const wchar_t*)pResource->title();
                 sectionResources += MgUtil::WideCharToMultiByte( temp );
             }
             sectionResources += "</Title>\n";
