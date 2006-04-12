@@ -927,7 +927,8 @@ bool MgServerFeatureService::CloseDataReader(INT32 ldataReader)
 
     // release the processor's reference to the reader - this causes the
     // reader to be destroyed and release its reference to the processor
-    dataReader->ClearDataReader();
+    if (dataReader != NULL)
+        dataReader->ClearDataReader();
 
     // now remove the processor from the pool - this should be the final
     // reference to the processor and will cause it to be destroyed
