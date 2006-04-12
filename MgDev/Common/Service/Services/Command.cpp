@@ -26,9 +26,6 @@
 void MgCommand::ExecuteCommand(MgConnectionProperties* connProp, DataTypes retType, int cmdCode, int numArguments, int serviceId, int operationVer, ...)
 {
     // Obtain connection for command
-    Ptr<MgServerConnection> serviceConn;
-    serviceConn = NULL;
-
     ServerConnectionType sct = sctRemoteServerToServer;
     if (!connProp->GetUrl().empty())
     {
@@ -38,7 +35,7 @@ void MgCommand::ExecuteCommand(MgConnectionProperties* connProp, DataTypes retTy
 
     //TODO: Pass user info into method and remove TLS
     MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-    serviceConn = MgServerConnection::Acquire(userInfo, connProp);
+    Ptr<MgServerConnection> serviceConn = MgServerConnection::Acquire(userInfo, connProp);
     Ptr<MgStream> stream = serviceConn->GetStream();
 
     MgOperationPacket mop;
