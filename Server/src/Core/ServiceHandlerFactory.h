@@ -30,6 +30,7 @@ class MgServiceHandlerFactory
     //  Constructors/Destructors
     protected :
         MgServiceHandlerFactory( void );
+    public :
         virtual ~MgServiceHandlerFactory( void );
 
     ///////////////////////////////////////////////////////////////////////
@@ -38,11 +39,6 @@ class MgServiceHandlerFactory
         static MgServiceHandlerFactory* Instance();
         IMgServiceHandler* GetHandler(UINT32 serviceId, MgStreamData* data,
             const MgOperationPacket& packet);
-
-    ///////////////////////////////////////////////////////////////////////
-    //  Member Variables
-    private :
-        static MgServiceHandlerFactory* m_pFactory;
 };
 
 #endif  //  MG_SERVICE_HANDLER_FACTORY_H

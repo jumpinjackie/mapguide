@@ -27,8 +27,8 @@
 #include "SiteServiceHandler.h"
 #include "TileServiceHandler.h"
 
-//  Initializes the static singelton MgServiceHandlerFactory object
-MgServiceHandlerFactory* MgServiceHandlerFactory::m_pFactory = NULL;
+//  References the static singleton MgServiceHandlerFactory object
+static auto_ptr<MgServiceHandlerFactory> s_pFactory;
 
 //-------------------------------------------------------------------------
 //  Constructors/Destructors
@@ -42,7 +42,7 @@ MgServiceHandlerFactory* MgServiceHandlerFactory::m_pFactory = NULL;
 //  </summary>
 MgServiceHandlerFactory::MgServiceHandlerFactory( void )
 {
-};
+}
 
 ///////////////////////////////////////////////////////////////////////////
 //  <summary>
@@ -50,8 +50,7 @@ MgServiceHandlerFactory::MgServiceHandlerFactory( void )
 //  </summary>
 MgServiceHandlerFactory::~MgServiceHandlerFactory( void )
 {
-    delete m_pFactory;
-};
+}
 
 //-------------------------------------------------------------------------
 //  Methods
@@ -64,15 +63,15 @@ MgServiceHandlerFactory::~MgServiceHandlerFactory( void )
 //  </summary>
 //
 //  <returns>
-//  Returns the singelton instance of the MgServiceHandlerFactory.
+//  Returns the singleton instance of the MgServiceHandlerFactory.
 //  </returns>
 MgServiceHandlerFactory* MgServiceHandlerFactory::Instance()
 {
-    if ( NULL == m_pFactory )
-        m_pFactory = new MgServiceHandlerFactory();
+    if ( NULL == s_pFactory.get() )
+        s_pFactory.reset(new MgServiceHandlerFactory());
 
-    return m_pFactory;
-};
+    return s_pFactory.get();
+}
 
 ///////////////////////////////////////////////////////////////////////////
 //  <summary>

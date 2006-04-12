@@ -155,7 +155,7 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
-    FdoIConnection* pFdoConnection = NULL;
+    GisPtr<FdoIConnection> pFdoConnection;
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -256,13 +256,13 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
             }
 
             // Increase the reference count before returning it because this entry has been pooled
-            GIS_SAFE_ADDREF(pFdoConnection);
+            GIS_SAFE_ADDREF(pFdoConnection.p);
         }
     }
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.Open")
 
-    return pFdoConnection;
+    return pFdoConnection.Detach();
 }
 
 
@@ -270,7 +270,7 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
-    FdoIConnection* pFdoConnection = NULL;
+    GisPtr<FdoIConnection> pFdoConnection;
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -364,14 +364,14 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
                     // TODO: Update cache by removing oldest unused entry and adding new entry
                 }
                 // Increase the reference count before returning it because this entry has been pooled
-                GIS_SAFE_ADDREF(pFdoConnection);
+                GIS_SAFE_ADDREF(pFdoConnection.p);
             }
         }
     }
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.Open")
 
-    return pFdoConnection;
+    return pFdoConnection.Detach();
 }
 
 

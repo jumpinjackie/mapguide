@@ -128,10 +128,7 @@ void MgSecurityManager::SetGroup(CREFSTRING group)
 
 MgUserInformation* MgSecurityManager::CreateSystemCredentials()
 {
-    Ptr<MgUserInformation> userInformation = new MgUserInformation(
-        MG_SYSTEM_USERNAME, MG_SYSTEM_PASSWORD);
-
-    return userInformation.Detach();
+    return new MgUserInformation(MG_SYSTEM_USERNAME, MG_SYSTEM_PASSWORD);
 }
 
 ///----------------------------------------------------------------------------
