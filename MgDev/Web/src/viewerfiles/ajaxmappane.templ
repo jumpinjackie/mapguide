@@ -501,13 +501,14 @@ function delayedInit() {
 
     GetPropertyCtrl().SetProperties(0);
 
+    mapInit = true;
+
     parent.OnMapLoaded();
     if(!parent.IsInitialView()) {
         scale = CalculateScale1(Math.abs(orgExtX2 - orgExtX1), Math.abs(orgExtY2 - orgExtY1), mapDevW, mapDevH);
         GotoView(orgExtX1 + (orgExtX2 - orgExtX1) / 2, orgExtY2 + (orgExtY1 - orgExtY2) / 2, scale, true, true);
     }
     
-    mapInit = true;
 }
 function BuildGroupInfo() {
     if(!hasTiles)
@@ -545,6 +546,8 @@ function GotoView(x,y,scale,tohistory,moveovimg) {
         UpdateTilesAfterPan(prevtilex, prevtiley, panX1, panY1, panX2, panY2);
 }
 function ExecuteMapAction(action) {
+    if(!mapInit)
+        return;
     CancelDigitization();
     switch(action)
     {
@@ -642,6 +645,9 @@ function OnMouseDown(e) {
         parent.ForwardMouseDown(document, e);
     }
     else
+        return false;
+        
+    if(!mapInit)
         return false;
         
     if(msie)
@@ -1085,14 +1091,15 @@ function DragSlider(y) {
         h = parseInt(w * (mapDevH / mapDevW));
         xi = parseInt(mapDevW/2 - w / 2);
         yi = parseInt(mapDevH/2 - h / 2);
-        img = document.getElementById(msie? "img1div": curimg).style;
-        if(msie)
+        img = document.getElementById(msie? "img1div": curimg);
+        if(msie && img)
         {
-            img.position = "absolute";
-            img.left = xi;
-            img.top = yi;
-            img.width = w;
-            img.height = h;
+            imgs = img.style;
+            imgs.position = "absolute";
+            imgs.left = xi;
+            imgs.top = yi;
+            imgs.width = w;
+            imgs.height = h;
         }
     }
     ShowScaleTip(sliderx + mapPosX, sliderPos, scale);
@@ -2443,9 +2450,11 @@ function EndResizingLegend(e) {
         document.getElementById("LegendResizer").releaseCapture();
 }
 function ScaleSliding(e) {
-    moveType = DRAGGINGCTRL;
-    dragElt = SLIDER;
-    anchorY = e.screenY;
+    if(mapInit) {
+        moveType = DRAGGINGCTRL;
+        dragElt = SLIDER;
+        anchorY = e.screenY;
+    }
     if(msie) e.cancelBubble = true; else e.stopPropagation();
     return false;
 }
