@@ -26,7 +26,7 @@ MgServerGetFeatureProviders::MgServerGetFeatureProviders()
     GisPtr<IConnectionManager> connManager = FdoFeatureAccessManager::GetConnectionManager();
     CHECKNULL(connManager, L"MgServerGetFeatureProviders.MgServerGetFeatureProviders()");
 
-    m_fdoProviderCol = m_providerReg->GetProviders();
+    m_fdoProviderCol = providerReg->GetProviders();
     CHECKNULL(m_fdoProviderCol, L"MgServerGetFeatureProviders.MgServerGetFeatureProviders()");
 
     // this XML follows the FeatureProviderRegistry-1.0.0.xsd schema
