@@ -17,8 +17,7 @@
 
 #ifndef MGUTIL_H_
 #define MGUTIL_H_
-
-/// \ingroup NOT_EXPOSED_module
+ 
 
 #include "LinuxMemoryStatus.h"
 
@@ -546,3 +545,4 @@ if (pointer == NULL)     \
 #define MG_WCHAR_TO_CHAR(x) MgUtil::WideCharToMultiByte((wstring)x).c_str()
 
 #endif // MGUTIL_H_
+

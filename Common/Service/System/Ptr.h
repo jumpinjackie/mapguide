@@ -15,12 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// INTERNAL_CLASS - NOT EXPOSED
 
 #ifndef PTR_H_
 #define PTR_H_
-
-/// \ingroup NOT_EXPOSED_module
 
 #ifdef _WIN32
 #pragma once
@@ -222,3 +219,4 @@ public:
 };
 
 #endif
+

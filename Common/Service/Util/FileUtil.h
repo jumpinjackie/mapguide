@@ -18,7 +18,7 @@
 #ifndef MGFILEUTIL_H_
 #define MGFILEUTIL_H_
 
-/// \ingroup NOT_EXPOSED_module
+// INTERNAL USE ONLY
 
 // This allows to use the same function name for both Windows and Linux.
 
@@ -112,3 +112,4 @@ class MG_SERVICE_API MgFileUtil
 /// Inline Methods
 
 #endif
+
