@@ -132,7 +132,8 @@
 /// \ingroup Common_Module
 /// \{
 ///////////////////////////////////////////////////////////////////////////////
-/// Class declaration.
+/// \brief
+/// Encryption methods.
 ///
 class MG_SERVICE_API MgCryptographyManager : public MgDisposable
 {
@@ -153,9 +154,6 @@ PUBLISHED_API:
     /// \htmlinclude PHPSyntaxTop.html
     /// MgCryptographyManager();
     /// \htmlinclude SyntaxBottom.html
-    ///
-    ///
-
     MgCryptographyManager();
 
     ///////////////////////////////////////////////////////////////////////////
@@ -186,8 +184,6 @@ PUBLISHED_API:
     /// \exception MgLengthException
     /// \exception MgEncryptionException
     ///
-    ///
-
     STRING EncryptCredentials(CREFSTRING username, CREFSTRING password);
 
     ///////////////////////////////////////////////////////////////////////////
@@ -216,8 +212,6 @@ PUBLISHED_API:
     /// \exception MgLengthException
     /// \exception MgEncryptionException
     ///
-    ///
-
     STRING EncryptString(CREFSTRING plainText);
 
 EXTERNAL_API:
