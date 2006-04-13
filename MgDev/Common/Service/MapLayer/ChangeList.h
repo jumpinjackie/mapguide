@@ -15,14 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \ingroup NOT_EXPOSED_module
-
 #ifndef _MGCHANGELIST_H_
 #define _MGCHANGELIST_H_
 
 class MgChangeList;
 template class MG_SERVICE_API Ptr<MgChangeList>;
 
+/// \cond INTERNAL  
 class MG_SERVICE_API MgChangeList : public MgNamedSerializable
 {
     DECLARE_CLASSNAME(MgChangeList)
@@ -97,5 +96,6 @@ protected:
 
     Ptr<MgDisposableCollection>  m_changes;
 };
+/// \endcond 
 
 #endif
