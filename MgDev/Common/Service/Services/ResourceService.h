@@ -423,7 +423,7 @@ PUBLISHED_API:
     /// 1) Prepare the resource's content XML file using the schema
     /// appropriate to the type.
     /// \n
-    /// a) If the resource references other resources, use the <c>\<uri>\</c>
+    /// a) If the resource references other resources, use the <c>\<uri></c>
     /// elements to specify their paths in the repository. For
     /// example a map file, called World.MapDefinition, might look
     /// like this:

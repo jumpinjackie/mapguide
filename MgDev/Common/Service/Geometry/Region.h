@@ -26,8 +26,10 @@ class MgRegion;
 template class MG_SERVICE_API Ptr<MgRegion>;
 
 ///////////////////////////////////////////////////////////////
+/// \brief
 /// MgRegion is an abstract base class The concrete classes are
 /// MgPolygon and MgCurvePolygon.
+///
 /// \note
 /// In OpenGIS Simple Features this is called a Surface.
 ///

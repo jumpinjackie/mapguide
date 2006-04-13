@@ -18,11 +18,10 @@
 #ifndef MGRASTERTYPES_H
 #define MGRASTERTYPES_H
 
-/// \ingroup NOT_EXPOSED_module
-
+  
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// MgUnitType defines enumerated values used to determine the type
+/// Enumerated values used to determine the type
 /// of units for plot decorations (scale bar).
 class MG_SERVICE_API MgRasterDataModelType
 {

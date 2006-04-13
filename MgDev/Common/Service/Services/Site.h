@@ -139,7 +139,7 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns an MgByteReader object listing the groups in XML
-    /// format using the \site GroupList_schema GroupList \endlink schema.
+    /// format using the \link GroupList_schema GroupList \endlink schema.
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html

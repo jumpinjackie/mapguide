@@ -20,7 +20,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Service types for MgSiteConnection CreateService
+/// Service types for MgSiteConnection::CreateService().
 class MG_SERVICE_API MgServiceType
 {
 PUBLISHED_API:
@@ -66,6 +66,8 @@ INTERNAL_API:
 /// \cond INTERNAL
 /// \brief
 /// Operation IDs for Site Admin.
+/// 
+/// \remarks
 /// INTERNAL - Do not document.
 ///
 class MG_SERVICE_API MgSiteOpId
@@ -95,10 +97,11 @@ INTERNAL_API:
     static const int CreateSession                      = 0x1111EB16;
     static const int DestroySession                     = 0x1111EB17;
 };
-/// \endcond INTERNAL
+/// \endcond
 
 
 ///////////////////////////////////////////////////////////////////////////////
+/// \cond INTERNAL
 /// \brief
 /// MapGuide users.
 ///
@@ -120,9 +123,12 @@ EXTERNAL_API:
     /// WMS User (Built-in account for WMS users with Viewer roles)
     static const STRING WmsUser;        /// value("WmsUser")
 };
+/// \endcond
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
+/// \cond INTERNAL 
 /// \brief
 /// MapGuide groups.
 ///
@@ -132,9 +138,11 @@ EXTERNAL_API:
     /// Everyone group (Built-in group to include all users)
     static const STRING Everyone;       /// value("Everyone")
 };
+/// \endcond 
 
 
 ///////////////////////////////////////////////////////////////////////////////
+/// \cond INTERNAL 
 /// \brief
 /// MapGuide roles.
 ///
@@ -154,5 +162,6 @@ INTERNAL_API:
     /// WMS/WFS user role (with read-only permission to resources by default)
     static const STRING Ogc;
 };
+/// \endcond 
 
 #endif

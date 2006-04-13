@@ -18,7 +18,7 @@
 #ifndef MGIMAGEFORMATS_H
 #define MGIMAGEFORMATS_H
 
-/// \ingroup NOT_EXPOSED_module
+/// \ingroup Rendering_Service_Module
 
 /////////////////////////////////////////////////////////// 
 /// \brief
@@ -27,9 +27,8 @@
 class MG_SERVICE_API MgImageFormats
 {
 PUBLISHED_API:
-    /// \if INTERNAL   
+    /// \internal
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
-    /// \endif
     
     /// Gif format
     static const STRING Gif;    /// \if INTERNAL value("GIF") \endif

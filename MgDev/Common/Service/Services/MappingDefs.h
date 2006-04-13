@@ -82,6 +82,7 @@ PUBLISHED_API:
 /// \}
 
 
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////////////
 /// \internal
 /// \brief
@@ -103,5 +104,6 @@ INTERNAL_API:
     static const int GeneratePlot3              = 0x1111EE0A;
     static const int GenerateLegendImage        = 0x1111EE0D;
 };
+/// \endcond 
 
 #endif

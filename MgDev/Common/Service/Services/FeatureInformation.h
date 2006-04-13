@@ -27,7 +27,9 @@ template class MG_SERVICE_API Ptr<MgFeatureInformation>;
 
 class MgSelection;
 
-/// Exposed API class for handling feature information
+/////////////////////////////////////////////////////////// 
+/// \brief
+/// Information about features.
 ///
 class MG_SERVICE_API MgFeatureInformation : public MgSerializable
 {
@@ -37,6 +39,9 @@ class MG_SERVICE_API MgFeatureInformation : public MgSerializable
 PUBLISHED_API:
 
     /////////////////////////////////////////
+    /// \brief
+    /// Get the selection set the described features are part of.
+    /// 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// MgSelection GetSelection();
@@ -48,10 +53,16 @@ PUBLISHED_API:
     /// MgSelection GetSelection();
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// Get the selection set the described features are part of.
     MgSelection* GetSelection();
 
     /////////////////////////////////////////
+    /// \brief
+    /// Get the tooltip text.
+    /// 
+    /// \remarks
+    ///
+    /// Valid only when there is only one feature described in this object
+    //// 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// string GetTooltip();
@@ -63,11 +74,16 @@ PUBLISHED_API:
     /// string GetTooltip();
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// Get the tooltip text
-    /// Valid only when there is only one feature described in this object
+    /// 
     STRING GetTooltip();
 
     /////////////////////////////////////////
+    /// \brief
+    /// Get the hyperlink URL text
+    ///
+    /// \remarks
+    /// Valid only when there is only one feature described in this object.
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// string GetHyperlink();
@@ -79,11 +95,16 @@ PUBLISHED_API:
     /// string GetHyperlink();
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// Get the hyperlink URL text
-    /// Valid only when there is only one feature described in this object.
+
     STRING GetHyperlink();
 
     /////////////////////////////////////////
+    /// \brief
+    /// Get the collection of properties for the described feature.
+    /// 
+    /// \remarks
+    /// Valid only when there is only one feature described in this object.
+    /// 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// MgPropertyCollection GetProperties();
@@ -95,8 +116,6 @@ PUBLISHED_API:
     /// MgPropertyCollection GetHyperlink();
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// Get the collection of properties for the described feature.
-    /// Valid only when there is only one feature described in this object.
     MgPropertyCollection* GetProperties();
 
 EXTERNAL_API:
