@@ -18,14 +18,13 @@
 #ifndef _MG_LONG_TRANSACTION_DATA_H
 #define _MG_LONG_TRANSACTION_DATA_H
 
-/// \ingroup NOT_EXPOSED_module
 
 class MgStream;
 
 class MgLongTransactionData;
 template class Ptr<MgLongTransactionData>;
 
-// INTERNAL_CLASS
+/// \cond INTERNAL  
 class MG_SERVICE_API MgLongTransactionData : public MgNamedSerializable
 {
     DECLARE_CREATE_OBJECT()
@@ -84,5 +83,6 @@ INTERNAL_API:
 CLASS_ID:
     static const INT32 m_cls_id = FeatureService_LongTransactionData;
 };
+/// \endcond 
 
 #endif

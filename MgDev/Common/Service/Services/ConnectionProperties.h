@@ -18,7 +18,6 @@
 #ifndef MG_CONNECTION_PROPERTIES_H
 #define MG_CONNECTION_PROPERTIES_H
 
-/// \ingroup NOT_EXPOSED_module
 
 class MG_SERVICE_API MgConnectionProperties;
 
@@ -29,6 +28,7 @@ template class MG_SERVICE_API Ptr<MgConnectionProperties>;
 class MgStream;
 class MgSerializable;
 
+/// \cond INTERNAL  
 class MG_SERVICE_API MgConnectionProperties : public MgSerializable
 {
     DECLARE_CLASSNAME(MgConnectionProperties)
@@ -146,3 +146,5 @@ CLASS_ID:
 };
 
 #endif // MG_CONNECTION_PROPERTIES_H
+
+/// \endcond 

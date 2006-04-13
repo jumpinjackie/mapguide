@@ -15,7 +15,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \ingroup NOT_EXPOSED_module
 
 #ifndef MGPACKAGESTATUSINFORMATION_H_
 #define MGPACKAGESTATUSINFORMATION_H_
@@ -23,6 +22,7 @@
 class MgPackageStatusInformation;
 template class MG_SERVICE_API Ptr<MgPackageStatusInformation>;
 
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// This class manages resource package status information.
@@ -454,5 +454,6 @@ CLASS_ID:
 
     static const INT32 m_cls_id = CoreService_MgPackageStatusInformation;
 };
+/// \endcond 
 
 #endif
