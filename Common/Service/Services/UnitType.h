@@ -18,8 +18,6 @@
 #ifndef MGUNITTYPE_H
 #define MGUNITTYPE_H
 
-/// \ingroup NOT_EXPOSED_module
-
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgUnitType defines enumerated values used to determine the type

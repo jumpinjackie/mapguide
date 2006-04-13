@@ -48,9 +48,8 @@ template class MG_SERVICE_API Ptr<MgUserInformation>;
 ///
 /// \remarks
 /// Information includes the
-/// user's locale, session information, and credentials.  For the first release,
-/// credentials are based on MapGuide authentication only.  This class will be extended in
-/// later releases to include authentication support for LDAP and ADS.
+/// user's locale, session information, and credentials. 
+/// Credentials are based on MapGuide authentication only. 
 class MG_SERVICE_API MgUserInformation : public MgSerializable
 {
     DECLARE_DYNCREATE_COREDATA();
@@ -73,7 +72,7 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
-    /// Nothing
+    /// Returns nothing
     ///
     MgUserInformation();
 
@@ -96,7 +95,7 @@ PUBLISHED_API:
     /// MapGuide session identifier
     ///
     /// \return
-    /// Nothing
+    /// Returns nothing
     ///
     MgUserInformation(CREFSTRING sessionId);
 
@@ -121,7 +120,7 @@ PUBLISHED_API:
     /// user password
     ///
     /// \return
-    /// Nothing
+    /// Returns nothing
     ///
     MgUserInformation(CREFSTRING userName, CREFSTRING password);
 
@@ -146,7 +145,7 @@ PUBLISHED_API:
     /// user password
     ///
     /// \return
-    /// Nothing
+    /// Returns nothing
     ///
      void SetMgUsernamePassword(CREFSTRING userName, CREFSTRING password);
 
@@ -176,7 +175,7 @@ PUBLISHED_API:
     /// MapGuide session identifier
     ///
     /// \return
-    /// Nothing
+    /// Returns nothing
     ///
      void SetMgSessionId(CREFSTRING sessionId);
 
@@ -202,7 +201,7 @@ PUBLISHED_API:
     /// Three letter locale code
     ///
     /// \return
-    /// Nothing
+    /// Returns nothing
     ///
      void SetLocale(CREFSTRING locale);
 
@@ -262,7 +261,7 @@ EXTERNAL_API:
     /// Destructor
     ///
     /// \return
-    /// Nothing
+    /// Returns nothing
     ///
      ~MgUserInformation();
 
@@ -334,7 +333,7 @@ INTERNAL_API:
     /// User Information to assign to the current thread
     ///
     /// \return
-    /// Nothing
+    /// Returns nothing
     ///
     static void SetCurrentUserInfo(MgUserInformation* userInformation);
 

@@ -18,7 +18,7 @@
 #ifndef MG_INVALID_OPERATION_VERSION_EXCEPTION_H_
 #define MG_INVALID_OPERATION_VERSION_EXCEPTION_H_
 
-/// \ingroup NOT_EXPOSED_module
+/// \ingroup Exceptions_Module
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

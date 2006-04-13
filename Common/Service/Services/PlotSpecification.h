@@ -56,6 +56,18 @@ PUBLISHED_API:
     /// \param pageUnits (String/string)
     /// Input
     /// units for page size.  See MgPageUnitsType for valid units of measure
+    /// \param left (float)
+    /// Input
+    /// The left margin between the plot and the page edge.
+    /// \param top (float)
+    /// Input
+    /// The top margin between the plot and the page edge.
+    /// \param right (float)
+    /// Input
+    /// The right margin between the plot and the page edge.
+    /// \param bottom (float)
+    /// Input
+    /// The bottom margin between the plot and the page edge.            
     ///
     /// \return
     /// Nothing

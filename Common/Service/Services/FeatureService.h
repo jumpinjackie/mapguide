@@ -1011,7 +1011,7 @@ PUBLISHED_API:
     /// The spatial reference system in which to return feature geometries
     /// \param filter (String/string)
     /// An XML string containing the definition for an OGC filter
-    /// \param filter (int)
+    /// \param maxFeatures (int)
     /// The maximum number of features to retrieve. If the value is less
     /// than or equal to zero, all features will be retrieved.
     ///

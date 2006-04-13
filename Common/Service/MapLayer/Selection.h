@@ -256,7 +256,10 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// Does a particular layer (and optional class) have selections
+    /// Does a particular layer and class have selections.
+    ///
+    /// \remarks
+    /// The class name can be obtained from the layer with MgLayer::GetFeatureClassName.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

@@ -24,8 +24,9 @@ class MgAceStreamHelper;
 template class MG_SERVICE_API Ptr<MgAceStreamHelper>;
 
 ///////////////////////////////////////////////////////////////////////////
-//  The MgAceStreamHelper class provides an interface to read and write data
-//  from an underlying ACE data stream.
+/// \brief
+///  The MgAceStreamHelper class provides an interface to read and write data
+///  from an underlying ACE data stream.
 class MG_SERVICE_API MgAceStreamHelper : public MgStreamHelper
 {
     DECLARE_CLASSNAME(MgAceStreamHelper)
