@@ -18,10 +18,8 @@
 #ifndef _MG_PROXY_DRAWING_SERVICE_H
 #define _MG_PROXY_DRAWING_SERVICE_H
 
-/// \defgroup MgProxyDrawingService MgProxyDrawingService
-/// \ingroup Drawing_Service_Module
-/// \{
 
+/// \cond INTERNAL  
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// This class allows to retrieve DWF (ePlot based) or create an instance of
@@ -303,6 +301,6 @@ private:
 
     void SetWarning(MgWarnings* warning);
 };
-/// \}
+/// \endcond 
 
 #endif

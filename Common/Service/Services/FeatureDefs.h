@@ -18,8 +18,8 @@
 #ifndef MGFEATUREDEFS_H
 #define MGFEATUREDEFS_H
 
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////////////
-/// \internal
 /// \brief
 /// Operation IDs for Feature Service.
 /// INTERNAL do not document.
@@ -63,5 +63,6 @@ INTERNAL_API:
     static const int EnumerateDataStores_Id         = 0x1111ED20;
     static const int GetSchemaMapping_Id            = 0x1111ED21;
 };
+/// \endcond 
 
 #endif

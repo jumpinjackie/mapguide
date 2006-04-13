@@ -18,19 +18,21 @@
 #ifndef _MG_PROXY_DATA_READER_H
 #define _MG_PROXY_DATA_READER_H
 
-/// \ingroup NOT_EXPOSED_module
 
 class MgDataReader;
 
 class MgProxyDataReader;
 template class MG_SERVICE_API Ptr<MgProxyDataReader>;
 
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The SqlReader interface provides a forward-only, read-only
 /// iterator for reading relational table data.
+/// 
+/// \remarks
 /// The initial position of the SqlReader interface is prior to the first item.
-/// Thus, you must call ReadNext to begin accessing any data..
+/// Thus, you must call ReadNext to begin accessing any data.
 class MG_SERVICE_API  MgProxyDataReader : public MgDataReader
 {
     DECLARE_CREATE_OBJECT();
@@ -379,4 +381,6 @@ CLASS_ID:
     static const INT32 m_cls_id = FeatureService_DataReader;
 
 };
+/// \endcond 
+
 #endif

@@ -18,8 +18,7 @@
 #ifndef MG_CUSTOM_LOGO_INFO_H
 #define MG_CUSTOM_LOGO_INFO_H
 
-/// \ingroup NOT_EXPOSED_module
-
+/// \cond INTERNAL  
 class MG_SERVICE_API MgCustomLogoInfo
 {
     DECLARE_CLASSNAME(MgCustomLogoInfo)
@@ -61,5 +60,6 @@ private:
     STRING m_name;
 
 };
+/// \endcond 
 
 #endif
