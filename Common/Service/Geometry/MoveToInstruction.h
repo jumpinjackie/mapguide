@@ -18,8 +18,7 @@
 #ifndef _MGMOVETOINSTRUCTION_H_
 #define _MGMOVETOINSTRUCTION_H_
 
-/// \ingroup NOT_EXPOSED_module
-
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgMoveToInstruction defines the beginning coordinate of a new segment in a
@@ -48,5 +47,6 @@ EXTERNAL_API:
     ///
     virtual MgCoordinate* GetCoordinate();
 };
+/// \endcond 
 
 #endif //_MGMOVETOINSTRUCTION_H_

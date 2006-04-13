@@ -18,8 +18,7 @@
 #ifndef _MGGEOMETRICPATHINSTRUCTION_H_
 #define _MGGEOMETRICPATHINSTRUCTION_H_
 
-/// \ingroup NOT_EXPOSED_module
-
+/// \cond INTERNAL 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgGeometricPathInstruction is an abstract base class for all of the path
@@ -37,5 +36,6 @@ EXTERNAL_API:
     ///
     virtual INT32 GetType() = 0;
 };
+/// \endcond 
 
 #endif //_MGGEOMETRICPATHINSTRUCTION_H_
