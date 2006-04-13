@@ -15,15 +15,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \ingroup NOT_EXPOSED_module
-
 #ifndef MG_STREAM_WRITER_H
 #define MG_STREAM_WRITER_H
 
-/// INTERNAL_CLASS
-
 class MgPacketParser;
 
+/// \cond INTERNAL  
 class MG_SERVICE_API MgStreamWriter
 {
     DECLARE_CLASSNAME(MgStreamWriter)
@@ -267,6 +264,7 @@ protected:
     /// Private member data
     Ptr<MgStreamHelper> m_sHelper;
 };
+/// \endcond 
 
 #define MG_STREAM_VERSION   1
 

@@ -18,7 +18,6 @@
 #ifndef MG_RESOURCES_H_
 #define MG_RESOURCES_H_
 
-/// \ingroup NOT_EXPOSED_module
 
 #include <map>
 
@@ -43,6 +42,7 @@ typedef std::map<STRING, ResourceFile*> ResourceCache;
 #define MG_RESOURCES_CATCH_AND_THROW(methodName)                              \
     MG_CATCH_AND_THROW(methodName)                                            \
 
+/// \cond INTERNAL  
 class MG_SERVICE_API MgResources : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgResources)
@@ -284,5 +284,6 @@ private:
     ResourceCache m_resourceCache;
     ACE_Recursive_Thread_Mutex m_mutex;
 };
+/// \endcond 
 
 #endif

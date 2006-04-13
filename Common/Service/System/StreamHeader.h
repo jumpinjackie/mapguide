@@ -15,11 +15,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \ingroup NOT_EXPOSED_module
 
+/// \cond INTERNAL  
 struct MG_SERVICE_API MgStreamHeader
 {
     UINT32 m_streamStart;
     UINT32 m_streamVersion;
     UINT32 m_streamDataHdr;
 };
+/// \endcond  

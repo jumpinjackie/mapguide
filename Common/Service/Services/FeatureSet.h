@@ -18,14 +18,13 @@
 #ifndef _MG_FEATURE_SET_H_
 #define _MG_FEATURE_SET_H_
 
-/// \ingroup NOT_EXPOSED_module
-
 #ifndef FEATURESET_TEMPL
 #define FEATURESET_TEMPL
 class MgFeatureSet;
 template class MG_SERVICE_API Ptr<MgFeatureSet>;
 #endif
 
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The FeatureSet class provides an iterator a way to create a
@@ -258,5 +257,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = FeatureService_FeatureSet;
 };
+/// \endcond 
 
 #endif
