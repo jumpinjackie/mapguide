@@ -36,8 +36,8 @@ MgMap::MgMap()
       m_mapExtent(NULL),
       m_dataExtent(NULL),
       m_displayDpi(96),
-      m_displayWidth(1),
-      m_displayHeight(1),
+      m_displayWidth(0),
+      m_displayHeight(0),
       m_trackChangesDisabled(false),
       m_layerRefreshMode(unspecified),
       m_metersPerUnit(1.0)
