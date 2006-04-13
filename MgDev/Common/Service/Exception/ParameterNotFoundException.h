@@ -15,11 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \ingroup Exceptions_Module
 
 #ifndef MG_PARAMETER_NOT_FOUND_EXCEPTION_H_
 #define MG_PARAMETER_NOT_FOUND_EXCEPTION_H_
 
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when a parameter is not found.
@@ -65,5 +65,6 @@ CLASS_ID:
 
     static const INT32 m_cls_id = Common_Exception_MgParameterNotFoundException;
 };
+/// \endcond 
 
 #endif
