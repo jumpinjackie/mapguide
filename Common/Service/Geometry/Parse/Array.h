@@ -15,6 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+/// ALL THESE ARE INTERNAL ONLY
+
 #ifndef _ARRAY_H_
 #define _ARRAY_H_
 
@@ -22,7 +24,6 @@
 #pragma once
 #endif
 #include "ArrayHelper.h"
-
 
 // Template for dynamic array.  It supports:
 //  - shared ownership, via reference counting
@@ -55,8 +56,11 @@
 //      cout << "The second element is " << element << endl;
 //      GIS_SAFE_RELEASE(ints);
 
+
 /// \brief
 /// Abstract template class for defining dynamic arrays.
+///
+/// \remarks
 /// WARNING: This array uses a single memory allocation to store array elements
 /// and may re-allocate that memory when the array size needs to change.
 /// Therefore, do not keep pointers to array elements and avoid using
@@ -360,3 +364,4 @@ typedef GisArray<INT32>  GisIntArray;
 
 //typedef GisArray<GisString> GisStringArray;
 #endif
+

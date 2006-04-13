@@ -18,7 +18,6 @@
 #ifndef _MG_PARSEAWKTUTIL_H_
 #define _MG_PARSEAWKTUTIL_H_
 
-/// \ingroup NOT_EXPOSED_module
 
 class MgCoordinate;
 class MgLineString;
@@ -27,6 +26,7 @@ class MgLinearRing;
 class MgLinearSegment;
 class MgPoint;
 
+/// \cond INTERNAL  
 class MgParseAwktUtil
 {
 public:
@@ -37,5 +37,7 @@ public:
     static MgLinearSegment* CreateLinearSegment(INT32 dimensionType, INT32 numOfCoordinates, double* ordinates, INT32& index);
     static MgPoint* CreatePoint(INT32 dimension, double* doubles, INT32& index);
 };
+/// \endcond 
 
 #endif
+

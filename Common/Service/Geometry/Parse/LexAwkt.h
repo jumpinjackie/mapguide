@@ -20,7 +20,6 @@
 // variables of these names with a value of 1 to 9
 //#define gis_awkt_YYDEBUG  1
 
-/// \ingroup Geometry_Module
 
 #ifndef NOTOKEN_H
 #include "yyAwkt.h"

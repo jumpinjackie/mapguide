@@ -15,7 +15,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \ingroup Geometry_Module
 
 #define GisToken_POINT 257
 #define GisToken_LINESTRING 258
