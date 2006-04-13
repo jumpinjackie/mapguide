@@ -18,8 +18,8 @@
 #ifndef _MGGEOMUTIL_H_
 #define _MGGEOMUTIL_H_
 
-/// \ingroup NOT_EXPOSED_module
 
+/// \cond INTERNAL  
 class MgGeometryUtil
 {
 INTERNAL_API:
@@ -90,5 +90,6 @@ INTERNAL_API:
     ///
     static bool AggregatesEqual(MgAggregateGeometry* geom1, MgAggregateGeometry* geom2);
 };
+/// \endcond 
 
 #endif // MGGEOMUTIL

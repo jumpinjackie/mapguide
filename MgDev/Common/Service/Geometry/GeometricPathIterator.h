@@ -18,8 +18,7 @@
 #ifndef _MGGEOMETRICPATHITERATOR_H_
 #define _MGGEOMETRICPATHITERATOR_H_
 
-/// \ingroup NOT_EXPOSED_module
-
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// The abstract MgGeometricPathIterator class supports iteration over a
@@ -87,5 +86,6 @@ EXTERNAL_API:
     ///
     virtual void Reset() = 0;
 };
+/// \endcond 
 
 #endif //_MGGEOMETRICPATHITERATOR_H_

@@ -22,10 +22,10 @@
 #pragma once
 #endif
 
-/// \ingroup Geometry_Module
 
 #define GIS_API
 
+/// \cond INTERNAL  
 class GisStringUtility
 {
 public:
@@ -48,4 +48,6 @@ public:
 
     GIS_API static wchar_t*   NullString;
 };
+/// \endcond 
+
 #endif

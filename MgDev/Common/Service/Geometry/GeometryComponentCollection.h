@@ -18,8 +18,8 @@
 #ifndef _MG_GEOMETRYCOMPONENTCOLLECTION_H_
 #define _MG_GEOMETRYCOMPONENTCOLLECTION_H_
 
-/// \ingroup NOT_EXPOSED_module
 
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgGeometryComponentCollection provides support for defining an ordered set
@@ -156,5 +156,6 @@ EXTERNAL_API:
     ///
     virtual INT32 IndexOf(const MgGeometryComponent* value) const;
 };
+/// \endcond 
 
 #endif

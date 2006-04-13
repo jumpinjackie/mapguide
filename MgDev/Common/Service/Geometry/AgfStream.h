@@ -18,8 +18,7 @@
 #ifndef _MGAGFSTREAM_H_
 #define _MGAGFSTREAM_H_
 
-/// \ingroup NOT_EXPOSED_module
-
+/// \cond INTERNAL 
 ///////////////////////////////////////////////////////////////////////////
 //  The MgAgfStream class provides an interface to read and write data
 //  without adding packet information
@@ -448,5 +447,7 @@ INTERNAL_API:
     ///
     virtual MgStreamHelper::MgStreamStatus WriteControlPacket(MgControlPacket& packet);
 };
+/// \endcond 
 
 #endif // _MGAGFSTREAM_H_
+

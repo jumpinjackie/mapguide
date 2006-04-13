@@ -15,6 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+// INTERNAL USE ONLY
+
 #ifndef _PARSEAWKT_H_
 #define _PARSEAWKT_H_
 
@@ -24,8 +26,6 @@
 #ifndef _WIN32
 #include <stdint.h>
 #endif
-
-/// \ingroup NOT_EXPOSED_module
 
 #include "../GeometryCommon.h"
 #include "AceCommon.h"
@@ -178,3 +178,4 @@ extern INT32        gis_awkt_yylex(MgParseAwkt*);
 #define Node_Trace(a)
 #endif
 #endif
+

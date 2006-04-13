@@ -22,6 +22,8 @@
 
 #include "SpatialUtilityVectorAngle.h"
 
+/// \cond INTERNAL  
+/////////////////////////////////////////////////////////// 
 // Circular arc with all possible parameters computed.
 struct MgSpatialUtilityCircularArc
 {
@@ -86,5 +88,6 @@ protected:
     /// 2 or 3 known positions on the arc, including the start and end positions.
     double BestArcStep(double radius, double arcLength, double maximumError);
 };
+/// \endcond 
 
 #endif
