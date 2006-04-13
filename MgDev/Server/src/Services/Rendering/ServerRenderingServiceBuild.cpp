@@ -19,11 +19,13 @@
 #include "Dll.cpp"
 #endif
 #include "FeatureInfoRenderer.cpp"
+#include "FeaturePropRenderer.cpp"
 #include "OpRenderDynamicOverlay.cpp"
 #include "OpRenderMap.cpp"
 #include "OpRenderMapLegend.cpp"
 #include "OpRenderTile.cpp"
 #include "OpQueryFeatures.cpp"
+#include "OpQueryFeatureProperties.cpp"
 #include "RenderingOperation.cpp"
 #include "RenderingOperationFactory.cpp"
 #include "RenderingServiceHandler.cpp"

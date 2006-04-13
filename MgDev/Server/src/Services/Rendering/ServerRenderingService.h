@@ -21,6 +21,7 @@
 #include "ServerRenderingDllExport.h"
 
 class MgFeatureInformation;
+class FeatureInfoRenderer;
 class GDRenderer;
 
 class MG_SERVER_RENDERING_API MgServerRenderingService : public MgRenderingService
@@ -73,6 +74,12 @@ public:
                                         INT32 selectionVariant, // Within, Touching, Topmost
                                         INT32 maxFeatures);
 
+    virtual MgBatchPropertyCollection* QueryFeatureProperties( MgMap* map,
+                                        MgStringCollection* layerNames,
+                                        MgGeometry* geometry,
+                                        INT32 selectionVariant, // Within, Touching, Topmost
+                                        INT32 maxFeatures);
+
 private:
     /// Default constructor that does nothing. Its purpose is to keep
     /// the code from causing a compiler error when using gcc.
@@ -102,6 +109,13 @@ private:
                                     double scale,
                                     RS_Bounds& b,
                                     bool expandExtents);
+
+    void RenderForSelection(MgMap* map,
+                         MgStringCollection* layerNames,
+                         MgGeometry* geometry,
+                         INT32 selectionVariant, 
+                         INT32 maxFeatures,
+                         FeatureInfoRenderer* selRenderer);
 
     // member data
     Ptr<MgFeatureService> m_svcFeature;

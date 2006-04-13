@@ -24,20 +24,19 @@
 #include "RSMgFeatureReader.h"
 
 
-FeatureInfoRenderer::FeatureInfoRenderer(MgSelection* selection, const RS_String& layerId, const RS_String& fcName, int maxFeatures, double mapScale)
+FeatureInfoRenderer::FeatureInfoRenderer(MgSelection* selection, int maxFeatures, double mapScale)
 : m_extents(0,0,1,1),
   m_numFeatures(0),
   m_url(L""),
   m_tooltip(L""),
   m_props(NULL),
-  m_layerId(layerId),
+  m_layerId(L""),
   m_nMaxFeatures(maxFeatures),
   m_mapScale(mapScale),
-  m_fcName(fcName),
+  m_fcName(L""),
   m_fcInfo(NULL)
 {
     m_selection = SAFE_ADDREF(selection);
-
     m_keyEncode = new KeyEncode();
 }
 
@@ -101,16 +100,16 @@ void FeatureInfoRenderer::StartFeature (RS_FeatureReader* feature, const RS_Stri
 
             m_props->Add(sp);
         }
-
     }
 
     m_numFeatures++;
 }
 
 
-void FeatureInfoRenderer::StartLayer(RS_LayerUIInfo*      /*legendInfo*/,
-                                     RS_FeatureClassInfo* classInfo
-                                    )
+void FeatureInfoRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
+                                     RS_FeatureClassInfo* classInfo)
 {
     m_fcInfo = classInfo;
+    m_layerId = legendInfo->guid();
+    m_fcName = classInfo->name();
 }
