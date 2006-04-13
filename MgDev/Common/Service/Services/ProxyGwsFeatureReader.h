@@ -18,7 +18,6 @@
 #ifndef _MG_PROXY_GWS_FEATURE_READER_H
 #define _MG_PROXY_GWS_FEATURE_READER_H
 
-/// \ingroup NOT_EXPOSED_module
 
 #ifndef FEATURESET_TEMPL
 #define FEATURESET_TEMPL
@@ -31,6 +30,7 @@ class MgFeatureReader;
 class MgProxyGwsFeatureReader;
 template class MG_SERVICE_API Ptr<MgProxyGwsFeatureReader>;
 
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The GwsFeatureReader interface provides a forward-only, read-only
@@ -414,4 +414,6 @@ CLASS_ID:
     static const INT32 m_cls_id = FeatureService_GwsFeatureReader;
 
 };
+/// \endcond 
+
 #endif

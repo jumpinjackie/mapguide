@@ -18,13 +18,12 @@
 #ifndef _MG_SPATIAL_CONTEXT_DATA_H
 #define _MG_SPATIAL_CONTEXT_DATA_H
 
-/// \ingroup NOT_EXPOSED_module
-
 class MgStream;
 
 class MgSpatialContextData;
 template class Ptr<MgSpatialContextData>;
 
+/// \cond INTERNAL  
 // INTERNAL_CLASS
 class MG_SERVICE_API MgSpatialContextData : public MgNamedSerializable
 {
@@ -90,5 +89,6 @@ INTERNAL_API:
 CLASS_ID:
     static const INT32 m_cls_id = FeatureService_SpatialContextData;
 };
+/// \endcond 
 
 #endif

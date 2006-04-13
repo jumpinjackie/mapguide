@@ -18,7 +18,6 @@
 #ifndef _MG_PROXY_FEATURE_READER_H
 #define _MG_PROXY_FEATURE_READER_H
 
-/// \ingroup NOT_EXPOSED_module
 
 #ifndef FEATURESET_TEMPL
 #define FEATURESET_TEMPL
@@ -31,6 +30,7 @@ class MgFeatureReader;
 class MgProxyFeatureReader;
 template class MG_SERVICE_API Ptr<MgProxyFeatureReader>;
 
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The FeatureReader class provides a one way iterator for reading feature data.
@@ -431,4 +431,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = FeatureService_FeatureReader;
 };
+/// \endcond 
+
 #endif
