@@ -15,6 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+ 
+
 #ifndef MGMEMORYSTREAMHELPER_H_MG
 #define MGMEMORYSTREAMHELPER_H_MG
 
@@ -23,6 +25,7 @@
 class MgMemoryStreamHelper;
 template class MG_SERVICE_API Ptr<MgMemoryStreamHelper>;
 
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////////
 //  The MgMemoryStreamHelper class provides an interface to read and write data
 //  from an underlying memory data stream.
@@ -170,5 +173,6 @@ class MG_SERVICE_API MgMemoryStreamHelper : public MgStreamHelper
     /// minimum size of a memory bloc
     static INT32 m_blockSize;
 };
+/// \endcond 
 
 #endif  //  MGMEMORYSTREAMHELPER_H_MG

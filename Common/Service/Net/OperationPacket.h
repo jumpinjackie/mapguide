@@ -15,11 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+
 #ifndef MGOPERATIONPACKET_H_MG
 #define MGOPERATIONPACKET_H_MG
 
 #include "BasicPacket.h"
 
+/// \cond INTERNAL  
 //  Operation Packet Wrapper Structure
 struct MgOperationPacket : public MgBasicPacket
 {
@@ -41,5 +43,6 @@ struct MgOperationPacket : public MgBasicPacket
     UINT32 m_NumArguments;
     MgUserInformation* m_UserInfo;
 };
+/// \endcond 
 
 #endif  //  MGOPERATIONPACKET_H_MG

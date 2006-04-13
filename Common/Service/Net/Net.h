@@ -15,9 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+
 #ifndef MG_NET_H
 #define MG_NET_H
 
+/// \cond INTERNAL  
 class MG_SERVICE_API MgNet
 {
     DECLARE_CLASSNAME(MgNet)
@@ -26,5 +28,7 @@ public:
     MgNet();
     ~MgNet(void);
 };
+/// \endcond 
 
 #endif //MG_NET_H
+
