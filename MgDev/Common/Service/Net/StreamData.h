@@ -15,11 +15,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+
+
 #ifndef MGSTREAMDATA_H_MG
 #define MGSTREAMDATA_H_MG
 
 class MgStreamHelper;
 
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////////
 //  The StreamData class encapsulates the data pertaining to an
 //  input/output stream.
@@ -72,5 +75,7 @@ class MG_SERVICE_API MgStreamData : public ACE_Data_Block
     ///  the current error state of the stream
     bool                m_bError;
 };
+/// \endcond 
 
 #endif  //  MGSTREAMDATA_H_MG
+ 

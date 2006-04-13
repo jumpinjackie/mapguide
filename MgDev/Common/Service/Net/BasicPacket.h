@@ -15,15 +15,18 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+
 #ifndef MGBASICPACKET_H_MG
 #define MGBASICPACKET_H_MG
 
 #include "Common.h"
 
+/// \cond INTERNAL  
 //  Basic Packet Wrapper Structure
 struct MgBasicPacket
 {
     UINT32 m_PacketHeader;
 };
+/// \endcond 
 
 #endif  //  MGBASICPACKET_H_MG

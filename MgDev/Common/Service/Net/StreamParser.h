@@ -15,11 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+
 #ifndef MGSTREAMPARSER_H_MG
 #define MGSTREAMPARSER_H_MG
 
 class MgStreamData;
 
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////////
 //  The MgStreamParser class wraps static methods that allow parsing of
 //  stream structures.
@@ -52,5 +54,7 @@ class MG_SERVICE_API MgStreamParser
         static bool WriteStreamHeader( MgStreamData* pStreamData );
         static bool WriteEndHeader( MgStreamData* pStreamData );
 };
+/// \endcond 
 
 #endif  //  MGSTREAMPARSER_H_MG
+
