@@ -35,6 +35,7 @@ INTERNAL_API:
     static const int QueryFeatures              = 0x1111E907;
     static const int RenderTile                 = 0x1111E908;
     static const int RenderDynamicOverlay       = 0x1111E909;
+    static const int QueryFeatureProperties     = 0x1111E90A;
 };
 /// \endcond INTERNAL
 

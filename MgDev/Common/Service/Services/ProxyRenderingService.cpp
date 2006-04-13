@@ -411,3 +411,56 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
 
     return (MgFeatureInformation*)cmd.GetReturnValue().val.m_obj;
 }
+
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// The QueryFeatureProeprties operation identifies those features that
+/// meet the specified spatial selection criteria. This operation
+/// is used to implement WMS feature info and returns property values
+/// for all features which match the spatial query
+/// </summary>
+/// <param name="map">Input
+/// map object containing current state of map.
+/// </param>
+/// <param name="layerName">Input
+/// Active layer name for which to query features
+/// </param>
+/// <param name="geometry">Input
+/// geometry object specifying the selection area
+/// </param>
+/// <param name="selectionVariant">Input
+/// selection criterion - 0=Within, 1=Touching, 2=Topmost
+/// </param>
+/// <param name="maxFeatures">Input
+/// the maximum number of features to return
+/// </param>
+/// <returns>
+/// An MgSelection instance identifying the features that meet the
+/// selection criteria. Returns null if no features are identified.
+/// </returns>
+MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
+    MgMap* map,
+    MgStringCollection* layerNames,
+    MgGeometry* geometry,
+    INT32 selectionVariant, 
+    INT32 maxFeatures)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                              // Connection
+                        MgCommand::knObject,                    // Return type expected
+                        MgRenderingServiceOpId::QueryFeatureProperties,  // Command Code
+                        5,                                      // No of arguments
+                        Rendering_Service,                      // Service Id
+                        1,                                      // Operation version
+                        MgCommand::knObject, map,               // Argument#1
+                        MgCommand::knObject, layerNames,        // Argument#2
+                        MgCommand::knObject, geometry,          // Argument#3
+                        MgCommand::knInt32, selectionVariant,   // Argument#4
+                        MgCommand::knInt32, maxFeatures,        // Argument#5
+                        MgCommand::knNone);                     // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgBatchPropertyCollection*)cmd.GetReturnValue().val.m_obj;
+}

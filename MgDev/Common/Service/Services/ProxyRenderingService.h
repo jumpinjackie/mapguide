@@ -249,8 +249,43 @@ EXTERNAL_API:
         MgMap* map,
         MgStringCollection* layerNames,
         MgGeometry* geometry,
-        INT32 selectionVariant, // Within, Touching, Topmost
+        INT32 selectionVariant, 
         INT32 maxFeatures);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// The QueryFeatureProeprties operation identifies those features that
+    /// meet the specified spatial selection criteria. This operation
+    /// is used to implement WMS feature info and returns property values
+    /// for all features which match the spatial query
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param layerName
+    /// Input
+    /// Active layer name for which to query features
+    /// \param geometry
+    /// Input
+    /// geometry object specifying the selection area
+    /// \param selectionVariant
+    /// Input
+    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// \param maxFeatures
+    /// Input
+    /// the maximum number of features to return
+    ///
+    /// \return
+    /// An MgSelection instance identifying the features that meet the
+    /// selection criteria. Returns null if no features are identified.
+    ///
+    virtual MgBatchPropertyCollection* QueryFeatureProperties(
+        MgMap* map,
+        MgStringCollection* layerNames,
+        MgGeometry* geometry,
+        INT32 selectionVariant, 
+        INT32 maxFeatures);
+
 
 INTERNAL_API:
 
