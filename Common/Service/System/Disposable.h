@@ -18,12 +18,11 @@
 #ifndef _MGDISPOSABLE_H_
 #define _MGDISPOSABLE_H_
 
-/// \ingroup NOT_EXPOSED_module
-
 #ifdef _DEBUG
 #include "ace/Process_Manager.h"
 #endif
 
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// MgDisposable is the base interface for all classes that implement this
@@ -117,5 +116,6 @@ private:
     ACE_Recursive_Thread_Mutex m_dbg_mutex;
 #endif
 };
+/// \endcond 
 
 #endif
