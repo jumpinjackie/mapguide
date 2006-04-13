@@ -15,10 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+/// INTERNAL USE ONLY 
+
 #ifndef MGCOMMONDEFS_H_
 #define MGCOMMONDEFS_H_
-
-/// \ingroup NOT_EXPOSED_module
 
 #ifdef WIN32
 #include <basetsd.h>
