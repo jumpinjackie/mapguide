@@ -18,8 +18,7 @@
 #ifndef _MGNAMEDSERIALIZABLE_H_
 #define _MGNAMEDSERIALIZABLE_H_
 
-/// \ingroup NOT_EXPOSED_module
-
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// Root class for all named serializable objects.
@@ -60,5 +59,6 @@ INTERNAL_API:
     ///
     virtual bool CanSetName() = 0;
 };
+/// \endcond 
 
 #endif
