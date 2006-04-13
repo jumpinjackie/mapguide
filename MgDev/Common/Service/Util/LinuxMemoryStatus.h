@@ -18,8 +18,9 @@
 #ifndef _MG_LINUXMEMORYSTATUS_H_
 #define _MG_LINUXMEMORYSTATUS_H_
 
-/// \ingroup NOT_EXPOSED_module
 
+/// \cond INTERNAL  
+/////////////////////////////////////////////////////////// 
 /// \brief
 /// A structure to store Linux memory status
 struct MgLinuxMemoryStatus
@@ -35,5 +36,6 @@ struct MgLinuxMemoryStatus
     INT64 m_swapUsed;
     INT64 m_swapFree;
 };
+/// \endcond 
 
 #endif

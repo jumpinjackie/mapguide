@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+/// \cond INTERNAL  
+
+
 #ifndef MG_XML_DEFS_H_
 #define MG_XML_DEFS_H_
 
@@ -22,7 +25,6 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOM.hpp>
 
-/// \ingroup NOT_EXPOSED_module
 
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMImplementationLS.hpp>
@@ -91,3 +93,5 @@ XERCES_CPP_NAMESPACE_USE
     MG_XML_THROW()                                                            \
 
 #endif
+
+/// \endcond 

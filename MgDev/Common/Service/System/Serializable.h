@@ -18,11 +18,11 @@
 #ifndef _MG_SERIALIZABLE_H
 #define _MG_SERIALIZABLE_H
 
-/// \ingroup NOT_EXPOSED_module
 
 class MgDisposable;
 class MgStream;
 
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// Root class of all serializable objects.
@@ -59,5 +59,6 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream) = 0;
 };
+/// \endcond 
 
 #endif

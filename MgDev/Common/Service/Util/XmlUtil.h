@@ -18,8 +18,7 @@
 #ifndef MGXML_UTIL_
 #define MGXML_UTIL_
 
-/// \ingroup NOT_EXPOSED_module
-
+/// \cond INTERNAL 
 class MG_SERVICE_API MgXmlUtil
 {
     DECLARE_CLASSNAME(MgXmlUtil)
@@ -106,5 +105,6 @@ class MG_SERVICE_API MgXmlUtil
         DOMDocument* m_doc;
         bool m_ownDomDoc;
 };
+/// \endcond 
 
 #endif // MG_XML_UTIL
