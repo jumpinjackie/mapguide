@@ -557,27 +557,26 @@ void MgServerGetFeatures::AddFeatures(INT32 count)
     INT32 cnt = propDefCol->GetCount();
 
     // We only read if there is atleast one property requested
-    if (cnt > 0)
+    if (cnt > 0 && count > 0)
     {
-        bool found = false;
-        // while (m_featureReader->ReadNext())
-
-        // Read next throws exception which it should not (therefore we just ignore it)
-        try { found = m_featureReader->ReadNext(); } catch(...) {found = false;}
-        while (found)
+        try
         {
-            AddFeature((MgPropertyDefinitionCollection*)propDefCol);
-            if (count > 0)
+            while (m_featureReader->ReadNext())
             {
-                desiredFeatures++;
+                AddFeature((MgPropertyDefinitionCollection*)propDefCol);
+
                 // Collected required features therefore do not process more
-                if (desiredFeatures == count)
-                {
+                if (++desiredFeatures == count)
                     break;
-                }
             }
-            // Read next throws exception which it should not (therefore we just ignore it)
-            try { found = m_featureReader->ReadNext(); } catch(...) {found = false;}
+        }
+        //some providers will throw if ReadNext is called more than once
+        catch (GisException* e)
+        {
+            //TODO: not sure if this can happen any longer, so
+            //let's track it with an assert
+            assert(false);
+            e->Release();
         }
     }
 }
@@ -589,7 +588,8 @@ void MgServerGetFeatures::AddFeature(MgPropertyDefinitionCollection* propDefCol)
     CHECKNULL((FdoIFeatureReader*)m_featureReader, L"MgServerGetFeatures.AddFeature");
     CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerGetFeatures.AddFeature");
 
-    Ptr<MgPropertyCollection> propCol = new MgPropertyCollection();
+    //intentionally turn off duplicate checking for better performance
+    Ptr<MgPropertyCollection> propCol = new MgPropertyCollection(true, false);
     INT32 cnt = propDefCol->GetCount();
 
     for (INT32 i=0; i < cnt; i++)
