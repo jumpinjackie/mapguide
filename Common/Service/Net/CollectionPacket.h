@@ -20,10 +20,13 @@
 
 #include "ArgumentPacket.h"
 
+/// \cond INTERNAL  
+/////////////////////////////////////////////////////////// 
 //  Collection Packet Wrapper Structure
 struct MgCollectionPacket : public MgArgumentPacket
 {
     UINT32  m_NumElements;
 };
+/// \endcond 
 
 #endif  //  MGCOLLECTIONPACKET_H_MG

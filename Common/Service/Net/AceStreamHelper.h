@@ -23,6 +23,7 @@
 class MgAceStreamHelper;
 template class MG_SERVICE_API Ptr<MgAceStreamHelper>;
 
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
 ///  The MgAceStreamHelper class provides an interface to read and write data
@@ -154,5 +155,6 @@ class MG_SERVICE_API MgAceStreamHelper : public MgStreamHelper
     /// TCP/IP packet size
     static INT32 m_tcpPacketSize;
 };
+/// \endcond 
 
 #endif  //  MGACESTREAMHELPER_H_MG
