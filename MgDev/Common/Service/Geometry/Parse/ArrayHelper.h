@@ -22,9 +22,10 @@
 #pragma once
 #endif
 
-/// \ingroup Geometry_Module
-
 #define GIS_API
+
+/// \cond INTERNAL  
+/////////////////////////////////////////////////////////// 
 /* Class to do allocations for the GisArray template.
  * Allocations and freeing must be done in this class in order to
  * protect against various callers that have overridden
@@ -60,4 +61,6 @@ protected:
     /// Constructor (makes sure that this class cannot be instantiated -- it consists of all static methods.
     GIS_API GisArrayHelper() {};
 };
+/// \endcond 
+
 #endif
