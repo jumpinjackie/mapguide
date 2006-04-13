@@ -18,14 +18,16 @@
 #ifndef MGSTRINGPROPERTYCOLLECTION_H_
 #define MGSTRINGPROPERTYCOLLECTION_H_
 
-/// \ingroup NOT_EXPOSED_module
-
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// This class collects key-value pairs in Strings. The key name should be unique.
+/// 
+/// \remarks
 /// The class can be useful in collecting requests, for example, http://localhost/MapAgent.php?REQUEST=TEST1&PARAM=TEST2
 /// The collection could have REQUEST, PARAM as keys with TEST1, TEST2 as associated values respectively.
-/// NOTE:
+/// 
+/// \note
 /// Collections are NOT thread safe and ordered in the sequence of add operation.
 class MG_SERVICE_API MgStringPropertyCollection : public MgCollection
 {
@@ -306,5 +308,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = CoreData_Collection_StringPropertyCollection;
 };
+/// \endcond 
 
 #endif
