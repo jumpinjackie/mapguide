@@ -20,8 +20,9 @@
 
 #include "ServerAdminDefs.h"
 
-/// \ingroup NOT_EXPOSED_module
 
+/// \cond INTERNAL  
+/////////////////////////////////////////////////////////// 
 /// \brief
 /// This class contains methods to allow MapGuide clients to perform administration related
 /// operations:
@@ -630,5 +631,6 @@ CLASS_ID:
     static const INT32 m_cls_id = ServerAdmin_ServerAdmin;
 
 };
+/// \endcond 
 
 #endif // MGSERVERADMIN_H_

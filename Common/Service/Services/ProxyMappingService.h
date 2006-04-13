@@ -18,10 +18,8 @@
 #ifndef _MG_PROXY_MAPPING_SERVICE_H_
 #define _MG_PROXY_MAPPING_SERVICE_H_
 
-/// \defgroup MgProxyMappingService MgProxyMappingService
-/// \ingroup Mapping_Service_Module
-/// \{
 
+/// \cond INTERNAL  
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// This class contains methods to allow MapGuide users to return feature data from
@@ -341,6 +339,6 @@ private:
 
     void SetWarning(MgWarnings* warning);
 };
-/// \}
+/// \endcond 
 
 #endif

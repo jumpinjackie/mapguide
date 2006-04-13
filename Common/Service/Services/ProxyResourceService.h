@@ -18,10 +18,7 @@
 #ifndef MGPROXYRESOURCESERVICE_H_
 #define MGPROXYRESOURCESERVICE_H_
 
-/// \defgroup MgProxyResourceService MgProxyResourceService
-/// \ingroup Other_Resource_Service_classes
-/// \{
-
+/// \cond INTERNAL  
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Contains all the methods to make requests to the resource
@@ -667,6 +664,6 @@ private:
 
     void SetWarning(MgWarnings* warning);
 };
-/// \}
+/// \endcond 
 
 #endif

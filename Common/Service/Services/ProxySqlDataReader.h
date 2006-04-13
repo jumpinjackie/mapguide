@@ -18,13 +18,12 @@
 #ifndef _MG_PROXY_SQL_DATA_READER_H
 #define _MG_PROXY_SQL_DATA_READER_H
 
-/// \ingroup NOT_EXPOSED_module
-
 class MgSqlDataReader;
 
 class MgProxySqlDataReader;
 template class MG_SERVICE_API Ptr<MgProxySqlDataReader>;
 
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The SqlReader interface provides a forward-only, read-only
@@ -383,4 +382,6 @@ CLASS_ID:
     static const INT32 m_cls_id = FeatureService_SqlDataReader;
 
 };
+/// \endcond 
+
 #endif

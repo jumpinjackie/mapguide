@@ -18,7 +18,6 @@
 #ifndef MG_MAP_SERVER_CONNECTION_POOL_H
 #define MG_MAP_SERVER_CONNECTION_POOL_H
 
-/// \ingroup NOT_EXPOSED_module
 
 #ifdef WIN32
 #undef CreateService
@@ -33,12 +32,12 @@ class MG_SERVICE_API MgConnectionProperties;
 class MgServerConnectionPool;
 template class Ptr<MgServerConnectionPool>;
 
+/// \cond INTERNAL  
 ///////////////////////////////////////////////////////////////////////
 /// \brief
 /// Represents a FILO stack of map server connections.  Tracks idle time
 /// for each connection and removes stale connections.
 /// INTERNAL_ONLY:
-/// \cond INTERNAL
 class MG_SERVICE_API MgServerConnectionPool : public MgDisposable
 {
     DECLARE_CLASSNAME(MgServerConnectionPool)
@@ -63,6 +62,6 @@ protected:
 
     void Dispose();
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #endif

@@ -18,10 +18,10 @@
 #ifndef _MG_PROXY_FEATURE_SERVICE_H
 #define _MG_PROXY_FEATURE_SERVICE_H
 
-/// \ingroup NOT_EXPOSED_module
 
 class MgIntCollection;
 
+/// \cond INTERNAL  
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The purpose of FeatureService is to provide access to all available FdoProviders
@@ -741,5 +741,6 @@ private:
 
     void SetWarning(MgWarnings* warning);
 };
+/// \endcond 
 
 #endif
