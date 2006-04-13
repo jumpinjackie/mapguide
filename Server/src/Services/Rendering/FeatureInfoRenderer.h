@@ -35,8 +35,6 @@ class MG_SERVER_RENDERING_API FeatureInfoRenderer : public Renderer
 
 public:
     FeatureInfoRenderer(MgSelection* selection,
-                        const RS_String& layerId,
-                        const RS_String& geomPropName,
                         int maxFeatures,
                         double mapScale);
     virtual ~FeatureInfoRenderer();
@@ -174,25 +172,29 @@ public:
         return SAFE_ADDREF(m_props);
     }
 
-private:
-
-    RS_Bounds m_extents;
-    double m_mapScale;
-
-    MgSelection* m_selection;
+protected:
+    //common to FeaturePropRenderer and FeatureInfoRenderer
     RS_String m_layerId;
     RS_String m_fcName;
 
     int m_numFeatures;
     int m_nMaxFeatures;
 
-    RS_String m_url;
-    RS_String m_tooltip;
-    MgPropertyCollection* m_props;
-
     KeyEncode* m_keyEncode;
 
     RS_FeatureClassInfo* m_fcInfo;
+
+    MgSelection* m_selection;
+
+    RS_Bounds m_extents;
+    double m_mapScale;
+
+private:
+    
+    //specific to FeatureInfoRenderer
+    RS_String m_url;
+    RS_String m_tooltip;
+    MgPropertyCollection* m_props;
 };
 
 #endif

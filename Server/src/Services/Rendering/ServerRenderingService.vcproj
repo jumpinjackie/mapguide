@@ -189,6 +189,30 @@
 			Name="Ops"
 			>
 			<File
+				RelativePath=".\OpQueryFeatureProperties.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\OpQueryFeatureProperties.h"
+				>
+			</File>
+			<File
 				RelativePath=".\OpQueryFeatures.cpp"
 				>
 				<FileConfiguration
@@ -399,6 +423,30 @@
 		</File>
 		<File
 			RelativePath=".\FeatureInfoRenderer.h"
+			>
+		</File>
+		<File
+			RelativePath=".\FeaturePropRenderer.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\FeaturePropRenderer.h"
 			>
 		</File>
 		<File

@@ -31,7 +31,9 @@ include_SOURCES = \
   OpRenderMap.cpp \
   OpRenderTile.cpp \
   OpQueryFeatures.cpp \
+  OpQueryFeatureProperties.cpp \
   FeatureInfoRenderer.cpp \
+  FeaturePropRenderer.cpp \
   OpRenderMapLegend.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
@@ -44,7 +46,9 @@ noinst_HEADERS = $(include_SOURCES) \
   OpRenderMap.h \
   OpRenderTile.h \
   OpQueryFeatures.h \
+  OpQueryFeatureProperties.h \
   FeatureInfoRenderer.h \
+  FeaturePropRenderer.h \
   OpRenderMapLegend.h
 
 libMgServerRenderingService_la_LDFLAGS = -version-info 7:0:0

@@ -470,192 +470,25 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
 
     MG_TRY()
 
-    if (NULL == map || NULL == geometry)
-        throw new MgNullArgumentException(L"MgServerRenderingService.QueryFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
-
+    //detect case where there is no limit to selection
     if (maxFeatures == -1)
         maxFeatures = INT_MAX;
-    else if (maxFeatures < 0)
-    {
-        STRING buffer;
-        MgUtil::Int32ToString(maxFeatures, buffer);
-
-        MgStringCollection arguments;
-        arguments.Add(L"5");
-        arguments.Add(buffer);
-
-        throw new MgInvalidArgumentException(L"MgServerRenderingService.QueryFeatures",
-            __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanZero", NULL);
-    }
 
     //create return structure and selection set to fill out
     ret = new MgFeatureInformation();
     Ptr<MgSelection> sel = new MgSelection(map);
+    FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale());
 
-    //convert the map coordinate system from srs wkt to a mentor cs structure
-    STRING srs = map->GetMapSRS();
-    Ptr<MgCoordinateSystem> mapCs = (srs.empty()) ? NULL : m_pCSFactory->Create(srs);
+    RenderForSelection(map, layerNames, geometry, selectionVariant, maxFeatures, &fir);
 
-    //initial simple selection scheme
-    //Run a geometric FDO query on the given selection geometry
-    //and return the features we get from FDO
-
-    Ptr<MgLayerCollection> layers = map->GetLayers();
-
-    bool first = true; //topmost feature sets the hyperlink and tooltip
-
-    //iterate over all map layers, but only do selection
-    //if the layer is in the passed in collection
-    for (int p=0; p<layers->GetCount(); p++)
+    //fill out the output object with the info we collected
+    //in the FeatureInfoRenderer for the first feature we hit
+    if (fir.GetNumFeaturesProcessed() > 0)
     {
-        //find the layer we need to select features from
-        Ptr<MgLayer> layer = layers->GetItem(p);
-
-        //do we want to select on this layer -- if caller
-        //gave us a layer name collection, check if the layer
-        //is in there
-        if (layerNames && layerNames->GetCount() > 0 && layerNames->IndexOf(layer->GetName()) == -1)
-            continue;
-
-        if (!layer->GetSelectable() || !layer->IsVisibleAtScale(map->GetViewScale()))
-            continue;
-
-        //have we processed enough features already?
-        if (maxFeatures <= 0)
-            break;
-
-        //get the coordinate system of the layer --> we need this
-        //so that we can convert the input geometry from mapping space
-        //to layer's space
-        Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(layer->GetFeatureSourceId());
-        Ptr<MgSpatialContextReader> csrdr = m_svcFeature->GetSpatialContexts(featResId, true);
-        Ptr<MgCoordinateSystem> layerCs = (MgCoordinateSystem*)NULL;
-
-        if (mapCs && csrdr->ReadNext())
-        {
-            STRING srcwkt = csrdr->GetCoordinateSystemWkt();
-            layerCs = (srcwkt.empty()) ? NULL : m_pCSFactory->Create(srcwkt);
-        }
-
-        //we want to transform query geometry from mapping space to layer space
-        Ptr<MgCoordinateSystemTransform> trans = (MgCoordinateSystemTransform*)NULL;
-
-        if (mapCs && layerCs)
-        {
-            trans = new MgCoordinateSystemTransform(mapCs, layerCs);
-        }
-
-        //if we have a valid transform, get the request geom in layer's space
-        Ptr<MgGeometricEntity> queryGeom = SAFE_ADDREF(geometry);
-
-        if (trans)
-        {
-            //get selection geometry in layer space
-            queryGeom = geometry->Transform(trans);
-        }
-
-        //execute the spatial query
-        Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
-        STRING geomPropName = layer->GetFeatureGeometryName();
-
-        //set the spatial filter for the selection
-        options->SetSpatialFilter(geomPropName, (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
-
-        //unfortunately the layer filter is not stored in the runtime layer
-        //so we will need to get it from the layer definition
-        Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, layerResId));
-        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
-
-        if (vl) // vector layer
-        {
-            try
-            {
-                if (!vl->GetFilter().empty())
-                {
-                    //set layer feature filter if any
-                    options->SetFilter(vl->GetFilter());
-                }
-
-                // TODO: can FeatureName be an extension name rather than a FeatureClass?
-                Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
-                RSMgFeatureReader rsrdr(rdr, vl->GetGeometry());
-
-                // TODO: can FeatureName be an extension name rather than a FeatureClass?
-                FeatureInfoRenderer fir(sel, layer->GetObjectId(), vl->GetFeatureName(), maxFeatures, map->GetViewScale());
-                DefaultStylizer ds;
-                ds.Initialize(&fir);
-
-                //run a stylization loop with the FeatureInfoRenderer.
-                //This will build up the selection set and also
-                //evaluate the tooltip, hyperlink and feature properties
-                //for the first feature hit
-
-                RS_UIGraphic uig(NULL, 0, L"");
-                RS_LayerUIInfo info(layer->GetName(),
-                                    L"",        // object ID
-                                    true,       // selectable
-                                    true,       // visible
-                                    true,       // editable
-                                    L"",        // group name
-                                    L"",        // group ID
-                                    true,       // showInLegend
-                                    true,       // expandInLegend
-                                    0.0,        // zOrder
-                                    uig);       // uiGraphic
-
-                //extract hyperlink and tooltip info
-                if (!vl->GetToolTip().empty()) info.hastooltips() = true;
-                if (!vl->GetUrl().empty()) info.hashyperlinks() = true;
-
-                //set up the property name mapping -- it tells us what
-                //string the viewer should be displaying as the name of each
-                //feature property
-                // TODO: can FeatureName be an extension name rather than a FeatureClass?
-                RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
-
-                MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
-
-                for (int i=0; i<pmappings->GetCount(); i++)
-                {
-                    MdfModel::NameStringPair* m = pmappings->GetAt(i);
-                    fcinfo.add_mapping(m->GetName(), m->GetValue());
-                }
-
-                fir.StartLayer(&info, &fcinfo);
-                ds.StylizeFeatures(vl, &rsrdr, NULL, StylizeThatMany, &fir);
-                fir.EndLayer();
-
-                //fill out the output object with the info we collected
-                //in the FeatureInfoRenderer for the first feature we hit
-                if (fir.GetNumFeaturesProcessed() > 0 && first)
-                {
-                    Ptr<MgPropertyCollection> props = fir.GetProperties();
-                    ret->SetProperties(props);
-                    ret->SetHyperlink(fir.GetUrl());
-                    ret->SetTooltip(fir.GetTooltip());
-                    first = false;
-                }
-
-                //update maxFeatures to number of features that
-                //we can select from subsequent layers
-                maxFeatures -= fir.GetNumFeaturesProcessed();
-            }
-            catch (MgFdoException* e)
-            {
-                //TODO: what should we really be doing in this case?
-                //This can happen if the underlying FDO provider does not
-                //support a particular spatial operation. One way around this
-                //is to select all features which appear on the screen and then
-                //do our own geometry math.
-                e->Release();
-            }
-            //catch (GisException* e2)
-            //{
-            //    //same comment as above
-            //    e2->Release();
-            //}
-        }
+        Ptr<MgPropertyCollection> props = fir.GetProperties();
+        ret->SetProperties(props);
+        ret->SetHyperlink(fir.GetUrl());
+        ret->SetTooltip(fir.GetTooltip());
     }
 
     ret->SetSelection(sel);
@@ -664,6 +497,35 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
 
     return SAFE_ADDREF(ret.p);
 }
+
+
+MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgMap* map,
+                                    MgStringCollection* layerNames,
+                                    MgGeometry* geometry,
+                                    INT32 selectionVariant, // Within, Touching, Topmost
+                                    INT32 maxFeatures)
+{
+    Ptr<MgBatchPropertyCollection> ret;
+
+    MG_TRY()
+
+    //detect case where there is no limit to selection
+    if (maxFeatures == -1)
+        maxFeatures = INT_MAX;
+
+    Ptr<MgSelection> sel = NULL;//TODO: do we need this for this API? new MgSelection(map);
+    FeaturePropRenderer fpr(sel, maxFeatures, map->GetViewScale());
+
+    RenderForSelection(map, layerNames, geometry, selectionVariant, maxFeatures, &fpr);
+
+    ret = fpr.GetProperties();
+    //ret->SetSelection(sel);
+
+    MG_CATCH_AND_THROW(L"MgServerRenderingService.QueryFeatures")
+
+    return SAFE_ADDREF(ret.p);
+}
+
 
 
 MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
@@ -883,3 +745,179 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
     return SAFE_ADDREF(ret.p);
 }
+
+
+//a helper function that does most of the work for QueryFeatures
+//and QueryFeatureProperties. Basically runs a rendering loop with 
+//a custom renderer supplied by the caller that accumulates selection
+//related things like property values and feature IDs.
+void MgServerRenderingService::RenderForSelection(MgMap* map,
+                         MgStringCollection* layerNames,
+                         MgGeometry* geometry,
+                         INT32 selectionVariant, 
+                         INT32 maxFeatures,
+                         FeatureInfoRenderer* selRenderer)
+{
+    if (NULL == map || NULL == geometry)
+        throw new MgNullArgumentException(L"MgServerRenderingService.QueryFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    if (maxFeatures < 0)
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(maxFeatures, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(L"5");
+        arguments.Add(buffer);
+
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.QueryFeatures",
+            __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanZero", NULL);
+    }
+
+    //convert the map coordinate system from srs wkt to a mentor cs structure
+    STRING srs = map->GetMapSRS();
+    Ptr<MgCoordinateSystem> mapCs = (srs.empty()) ? NULL : m_pCSFactory->Create(srs);
+
+    //initial simple selection scheme
+    //Run a geometric FDO query on the given selection geometry
+    //and return the features we get from FDO
+
+    Ptr<MgLayerCollection> layers = map->GetLayers();
+
+    //iterate over all map layers, but only do selection
+    //if the layer is in the passed in collection
+    for (int p=0; p<layers->GetCount(); p++)
+    {
+        //find the layer we need to select features from
+        Ptr<MgLayer> layer = layers->GetItem(p);
+
+        //do we want to select on this layer -- if caller
+        //gave us a layer name collection, check if the layer
+        //is in there
+        if (layerNames && layerNames->GetCount() > 0 && layerNames->IndexOf(layer->GetName()) == -1)
+            continue;
+
+        if (!layer->GetSelectable() || !layer->IsVisibleAtScale(map->GetViewScale()))
+            continue;
+
+        //have we processed enough features already?
+        if (maxFeatures <= 0)
+            break;
+
+        //get the coordinate system of the layer --> we need this
+        //so that we can convert the input geometry from mapping space
+        //to layer's space
+        Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(layer->GetFeatureSourceId());
+        Ptr<MgSpatialContextReader> csrdr = m_svcFeature->GetSpatialContexts(featResId, true);
+        Ptr<MgCoordinateSystem> layerCs = (MgCoordinateSystem*)NULL;
+
+        if (mapCs && csrdr->ReadNext())
+        {
+            STRING srcwkt = csrdr->GetCoordinateSystemWkt();
+            layerCs = (srcwkt.empty()) ? NULL : m_pCSFactory->Create(srcwkt);
+        }
+
+        //we want to transform query geometry from mapping space to layer space
+        Ptr<MgCoordinateSystemTransform> trans = (MgCoordinateSystemTransform*)NULL;
+
+        if (mapCs && layerCs)
+        {
+            trans = new MgCoordinateSystemTransform(mapCs, layerCs);
+        }
+
+        //if we have a valid transform, get the request geom in layer's space
+        Ptr<MgGeometricEntity> queryGeom = SAFE_ADDREF(geometry);
+
+        if (trans)
+        {
+            //get selection geometry in layer space
+            queryGeom = geometry->Transform(trans);
+        }
+
+        //execute the spatial query
+        Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+        STRING geomPropName = layer->GetFeatureGeometryName();
+
+        //set the spatial filter for the selection
+        options->SetSpatialFilter(geomPropName, (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
+
+        //unfortunately the layer filter is not stored in the runtime layer
+        //so we will need to get it from the layer definition
+        Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, layerResId));
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+
+        if (vl) // vector layer
+        {
+            try
+            {
+                if (!vl->GetFilter().empty())
+                {
+                    //set layer feature filter if any
+                    options->SetFilter(vl->GetFilter());
+                }
+
+                // TODO: can FeatureName be an extension name rather than a FeatureClass?
+                Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
+                RSMgFeatureReader rsrdr(rdr, vl->GetGeometry());
+
+                DefaultStylizer ds;
+                ds.Initialize(selRenderer);
+
+                //run a stylization loop with the FeatureInfoRenderer.
+                //This will build up the selection set and also
+                //evaluate the tooltip, hyperlink and feature properties
+                //for the first feature hit
+
+                RS_UIGraphic uig(NULL, 0, L"");
+                RS_LayerUIInfo info(layer->GetName(),
+                                    layer->GetObjectId(), // object ID
+                                    true,       // selectable
+                                    true,       // visible
+                                    true,       // editable
+                                    L"",        // group name
+                                    L"",        // group ID
+                                    true,       // showInLegend
+                                    true,       // expandInLegend
+                                    0.0,        // zOrder
+                                    uig);       // uiGraphic
+
+                //extract hyperlink and tooltip info
+                if (!vl->GetToolTip().empty()) info.hastooltips() = true;
+                if (!vl->GetUrl().empty()) info.hashyperlinks() = true;
+
+                //set up the property name mapping -- it tells us what
+                //string the viewer should be displaying as the name of each
+                //feature property
+                // TODO: can FeatureName be an extension name rather than a FeatureClass?
+                RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
+
+                MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
+
+                for (int i=0; i<pmappings->GetCount(); i++)
+                {
+                    MdfModel::NameStringPair* m = pmappings->GetAt(i);
+                    fcinfo.add_mapping(m->GetName(), m->GetValue());
+                }
+
+                selRenderer->StartLayer(&info, &fcinfo);
+                ds.StylizeFeatures(vl, &rsrdr, NULL, StylizeThatMany, selRenderer);
+                selRenderer->EndLayer();
+
+                //update maxFeatures to number of features that
+                //we can select from subsequent layers
+                maxFeatures -= selRenderer->GetNumFeaturesProcessed();
+            }
+            catch (MgFdoException* e)
+            {
+                //TODO: what should we really be doing in this case?
+                //This can happen if the underlying FDO provider does not
+                //support a particular spatial operation. One way around this
+                //is to select all features which appear on the screen and then
+                //do our own geometry math.
+                e->Release();
+            }
+        }
+    }
+}
+
