@@ -22,7 +22,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-///
+/// Thrown when a length of some item does not match the expected length.
 class MG_SERVICE_API MgLengthException : public MgSystemException
 {
     DECLARE_CLASSNAME(MgLengthException)
