@@ -18,6 +18,7 @@
 #ifndef _MG_CONTROLLER_H_
 #define _MG_CONTROLLER_H_
 
+/// \cond INTERNAL 
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// This class contains methods to respond to all of the standard
@@ -90,7 +91,8 @@ protected:
     /// \brief
     /// Create an MgEnvelope instance from a string representation.
     ///
-    /// TODO will be a static method of MgEnvelope
+    /// \todo
+    /// Will be a static method of MgEnvelope
     MgEnvelope* ParseEnvelope(CREFSTRING strEnvelope);
 
 CLASS_ID:
@@ -115,3 +117,5 @@ protected:
 #include "HtmlController.h"
 
 #endif
+
+/// \endcond 
