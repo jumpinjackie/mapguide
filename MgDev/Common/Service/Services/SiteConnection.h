@@ -53,7 +53,7 @@ enum ServerConnectionType
 /// Site connection.  Provides basic authentication and Service access
 /// capabilities for the site.
 ///
-/// \cond INTERNAL
+/// \if INTERNAL
 /// INTERNAL:
 /// An MgSiteHelper derived class is used internally to implement the
 /// Authenticate and GetService methods.  The Factory dlls and CreateService
@@ -63,7 +63,7 @@ enum ServerConnectionType
 /// The site server ip address and ports are contained in a configuration
 /// file for the web tier.  The configuration file also defines which services
 /// are hosted locally.
-/// \endcond INTERNAL
+/// \endif
 ///
 class MG_SERVICE_API MgSiteConnection  : public MgDisposable
 {
