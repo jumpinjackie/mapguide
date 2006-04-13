@@ -15,13 +15,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \ingroup NOT_EXPOSED_module
+
 
 #ifndef _MG_CONFIGURATION_SECTION_COLLECTION_H
 #define _MG_CONFIGURATION_SECTION_COLLECTION_H
 
 class MgConfigurationSection;
 
+/// \cond INTERNAL  
 class MgConfigurationSectionCollection : public MgDisposable
 {
     DECLARE_CLASSNAME(MgConfigurationSectionCollection)
@@ -195,5 +196,6 @@ protected:
 private:
     Ptr<MgDisposableCollection> m_collection;
 };
+/// \endcond 
 
 #endif // _MG_CONFIGURATION_SECTION_COLLECTION_H
