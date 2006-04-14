@@ -15,14 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
 #ifndef MGSTREAMHELPER_H_MG
 #define MGSTREAMHELPER_H_MG
 
 class MgStreamHelper;
 template class MG_SERVICE_API Ptr<MgStreamHelper>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////
 //  The MgStreamHelper class provides an interface to read and write data
 //  from an underlying stream.
@@ -129,6 +128,6 @@ class MG_SERVICE_API MgStreamHelper : public MgGuardDisposable
     protected:
     virtual void Dispose();
 };
-/// \endcond 
+/// \endcond
 
 #endif  //  MGSTREAMHELPER_H_MG

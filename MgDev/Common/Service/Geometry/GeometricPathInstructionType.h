@@ -18,7 +18,7 @@
 #ifndef _MGGEOMETRICPATHINSTRUCTIONTYPE_H_
 #define _MGGEOMETRICPATHINSTRUCTIONTYPE_H_
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgGeometricPathInstructionType defines enumerated values used to specify
@@ -57,6 +57,6 @@ EXTERNAL_API:
     ///
     static const INT32 Close = 4;
 };
-/// \endcond 
+/// \endcond
 
 #endif //_MGGEOMETRICPATHINSTRUCTIONTYPE_H_

@@ -18,7 +18,6 @@
 #ifndef SERVER_CONNECTION_IMP_H
 #define SERVER_CONNECTION_IMP_H
 
-
 // forward declaration
 class ACE_SOCK_Stream;
 

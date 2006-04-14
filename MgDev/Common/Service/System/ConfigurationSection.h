@@ -15,11 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
 #ifndef _MG_CONFIGURATION_SECTION_H
 #define _MG_CONFIGURATION_SECTION_H
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 class MgConfigurationSection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgConfigurationSection)
@@ -111,6 +110,6 @@ private:
     STRING m_sectionPath;
     Ptr<MgStringCollection> m_sectionComment;
 };
-/// \endcond 
+/// \endcond
 
 #endif // _MG_CONFIGURATION_SECTION_H

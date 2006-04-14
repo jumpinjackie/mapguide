@@ -22,7 +22,7 @@
 class FloatTransform;
 class ProgressCallback;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 class MgBuffer
 {
 public:
@@ -136,6 +136,6 @@ private:
     //static System::Collections::ArrayList* FindSmallestContainingPolygon(Point2D point, System::Collections::ArrayList* polygonList, double areas __gc []);
     Ptr<MgMeasure> m_measure;
 };
-/// \endcond 
+/// \endcond
 
 #endif // _MG_BUFFER_H_

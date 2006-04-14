@@ -20,7 +20,7 @@
 
 #include "BasicPacket.h"
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////// 
 //  Argument Packet Wrapper Structure
 struct MgArgumentPacket : public MgBasicPacket
@@ -33,6 +33,6 @@ struct MgArgumentPacket : public MgBasicPacket
     UINT8*      m_pData;
     INT64       m_Length;
 };
-/// \endcond 
+/// \endcond
 
 #endif  //  MGARGUMENTPACKET_H_MG

@@ -126,9 +126,8 @@ EXTERNAL_API:
 /// \endcond
 
 
-
 ///////////////////////////////////////////////////////////////////////////////
-/// \cond INTERNAL 
+/// \cond INTERNAL
 /// \brief
 /// MapGuide groups.
 ///
@@ -138,11 +137,11 @@ EXTERNAL_API:
     /// Everyone group (Built-in group to include all users)
     static const STRING Everyone;       /// value("Everyone")
 };
-/// \endcond 
+/// \endcond
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \cond INTERNAL 
+/// \cond INTERNAL
 /// \brief
 /// MapGuide roles.
 ///
@@ -162,6 +161,6 @@ INTERNAL_API:
     /// WMS/WFS user role (with read-only permission to resources by default)
     static const STRING Ogc;
 };
-/// \endcond 
+/// \endcond
 
 #endif

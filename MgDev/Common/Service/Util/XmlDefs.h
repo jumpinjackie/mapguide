@@ -15,8 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \cond INTERNAL  
-
+/// \cond INTERNAL
 
 #ifndef MG_XML_DEFS_H_
 #define MG_XML_DEFS_H_
@@ -94,4 +93,4 @@ XERCES_CPP_NAMESPACE_USE
 
 #endif
 
-/// \endcond 
+/// \endcond

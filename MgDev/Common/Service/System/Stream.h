@@ -24,7 +24,7 @@ class MgStringCollection;
 class MgStream;
 template class MG_SERVICE_API Ptr<MgStream>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////
 //  The MgStream class provides an interface to read and write data via TCP/IP
 class MG_SERVICE_API MgStream : public MgDisposable, public MgStreamReader, public MgStreamWriter
@@ -82,6 +82,6 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoreService_Stream;
 };
-/// \endcond 
+/// \endcond
 
 #endif  //  MGSTREAM_H

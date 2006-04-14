@@ -20,7 +20,7 @@
 
 #include "AceCommon.h"
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////
 //  The PacketParser class wraps static methods that allow parsing of
 //  packet structures and other information.
@@ -112,6 +112,6 @@ class MG_SERVICE_API MgPacketParser
 
         static bool GetControlPacket( MgStreamData* pData, MgControlPacket* pPacket );
 };
-/// \endcond 
+/// \endcond
 
 #endif  //  MGPACKETPARSER_H_MG

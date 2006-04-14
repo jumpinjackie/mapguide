@@ -18,7 +18,7 @@
 #ifndef _MG_CONTROLLER_H_
 #define _MG_CONTROLLER_H_
 
-/// \cond INTERNAL 
+/// \cond INTERNAL
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// This class contains methods to respond to all of the standard
@@ -118,4 +118,4 @@ protected:
 
 #endif
 
-/// \endcond 
+/// \endcond

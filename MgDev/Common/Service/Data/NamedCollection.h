@@ -36,7 +36,7 @@ template class MG_SERVICE_API Ptr<MgNamedCollection>;
 // for the overhead of building and deleting the map.
 #define COLL_MAP_THRESHOLD 10
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// NamedCollection is a template for collections keyed by element name.  The
@@ -321,7 +321,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = CoreData_Collection_NamedCollection;
 };
-/// \endcond 
+/// \endcond
 
 #endif
-

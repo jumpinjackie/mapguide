@@ -117,6 +117,3 @@ inline bool ByteSourceFileImpl::IsTemporary() const
 /// \endcond INTERNAL
 
 #endif // MG_BYTE_SOURCE_FILE_IMPL_H
-
-
-

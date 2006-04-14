@@ -20,7 +20,7 @@
 #ifndef MgSpatialUtilityVectorAngle_H
 #define MgSpatialUtilityVectorAngle_H
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////// 
 // Angle of a vector in 3D XYZ-coordinate system.
 struct MgSpatialUtilityVectorAngle
@@ -28,6 +28,6 @@ struct MgSpatialUtilityVectorAngle
     double m_theta; // (-PI, PI]: radian of the vector on the XY-Plane project relative to X-axis. */
     double m_phi;   // [-PI/2, PI/2]  : radian of the vector relative to XY-plane
 };
-/// \endcond 
+/// \endcond
 
 #endif

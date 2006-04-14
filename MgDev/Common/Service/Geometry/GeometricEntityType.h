@@ -18,8 +18,7 @@
 #ifndef _MGGEOMETRY_ENTITY_TYPE_H_
 #define _MGGEOMETRY_ENTITY_TYPE_H_
 
-
-/// \cond INTERNAL 
+/// \cond INTERNAL
 ////////////////////////////////////////////////////////////
 /// \brief
 /// MgGeometryEntityType defines two integer constants which
@@ -41,6 +40,6 @@ EXTERNAL_API:
     ///
     static const INT32 Geometry = 1;
 };
-/// \endcond 
+/// \endcond
 
 #endif //_MGGEOMETRYCOMPONENTTYPE_H_

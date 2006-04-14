@@ -20,13 +20,13 @@
 
 #include "ArgumentPacket.h"
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////// 
 //  Binary Stream Argument Packet Wrapper Structure
 struct MgBinaryStreamArgumentPacket : public MgArgumentPacket
 {
     UINT32      m_Version;
 };
-/// \endcond 
+/// \endcond
 
 #endif  //  MGBINARYSTREAMARGUMENTPACKET_H_MG

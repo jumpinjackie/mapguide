@@ -18,11 +18,11 @@
 #ifndef MGSERVICEFACTORY_H_
 #define MGSERVICEFACTORY_H_
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 
 extern "C" MG_SERVICE_API void* CreateMgObject(int classId);
 extern "C" MG_SERVICE_API void* CreateMgService(ServerConnectionType sct, INT32 serviceType, MgConnectionProperties* connProp);
 
-/// \endcond 
+/// \endcond
 
 #endif

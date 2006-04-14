@@ -30,7 +30,7 @@ class MgFeatureReader;
 class MgProxyGwsFeatureReader;
 template class MG_SERVICE_API Ptr<MgProxyGwsFeatureReader>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The GwsFeatureReader interface provides a forward-only, read-only
@@ -414,6 +414,6 @@ CLASS_ID:
     static const INT32 m_cls_id = FeatureService_GwsFeatureReader;
 
 };
-/// \endcond 
+/// \endcond
 
 #endif

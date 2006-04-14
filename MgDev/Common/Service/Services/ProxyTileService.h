@@ -18,8 +18,7 @@
 #ifndef _MG_PROXY_TILE_SERVICE_H
 #define _MG_PROXY_TILE_SERVICE_H
 
-
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// This class allows tiling of map images
@@ -126,6 +125,6 @@ private:
 
     void SetWarning(MgWarnings* warning);
 };
-/// \endcond 
+/// \endcond
 
 #endif

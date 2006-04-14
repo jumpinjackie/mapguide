@@ -24,7 +24,7 @@ class MgStream;
 class MgLongTransactionData;
 template class Ptr<MgLongTransactionData>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 class MG_SERVICE_API MgLongTransactionData : public MgNamedSerializable
 {
     DECLARE_CREATE_OBJECT()
@@ -83,6 +83,6 @@ INTERNAL_API:
 CLASS_ID:
     static const INT32 m_cls_id = FeatureService_LongTransactionData;
 };
-/// \endcond 
+/// \endcond
 
 #endif

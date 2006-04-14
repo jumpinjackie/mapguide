@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 // INTERNAL USE ONLY
 
 #ifndef _MGOBJECTCHANGE_H_
@@ -76,4 +76,4 @@ protected:
 
 #endif
 
-/// \endcond 
+/// \endcond

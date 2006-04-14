@@ -15,15 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
-
 #ifndef MGSERIALIZABLECOLLECTION_H_
 #define MGSERIALIZABLECOLLECTION_H_
 
 class MgSerializableCollection;
 template class MG_SERVICE_API Ptr<MgSerializableCollection>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// MgSerializableCollection represents a collection of serializable objects.
@@ -235,8 +233,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = CoreData_Collection_SerializableCollection;
 };
-/// \endcond 
+/// \endcond
 
 #endif
-
- 

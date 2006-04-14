@@ -18,10 +18,9 @@
 #ifndef _MGCLOSEINSTRUCTION_H_
 #define _MGCLOSEINSTRUCTION_H_
 
-
 class MgGeometricPathInstruction;
 
-/// \cond INTERNAL 
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgCloseInstruction defines a line from the current coordinate in the path
@@ -51,6 +50,6 @@ EXTERNAL_API:
     ///
     virtual MgCoordinate* GetCoordinate();
 };
-/// \endcond 
+/// \endcond
 
 #endif //_MGCLOSEINSTRUCTION_H_

@@ -20,8 +20,7 @@
 
 #include "ServerAdminDefs.h"
 
-
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////// 
 /// \brief
 /// This class contains methods to allow MapGuide clients to perform administration related
@@ -631,6 +630,6 @@ CLASS_ID:
     static const INT32 m_cls_id = ServerAdmin_ServerAdmin;
 
 };
-/// \endcond 
+/// \endcond
 
 #endif // MGSERVERADMIN_H_

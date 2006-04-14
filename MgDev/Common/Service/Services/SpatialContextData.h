@@ -23,7 +23,7 @@ class MgStream;
 class MgSpatialContextData;
 template class Ptr<MgSpatialContextData>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 // INTERNAL_CLASS
 class MG_SERVICE_API MgSpatialContextData : public MgNamedSerializable
 {
@@ -89,6 +89,6 @@ INTERNAL_API:
 CLASS_ID:
     static const INT32 m_cls_id = FeatureService_SpatialContextData;
 };
-/// \endcond 
+/// \endcond
 
 #endif

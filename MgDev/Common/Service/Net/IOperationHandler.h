@@ -15,14 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
 #ifndef IMGOPERATIONHADNLER_H
 #define IMGOPERATIONHADNLER_H
 
 class MgStreamData;
 struct MgOperationPacket;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////
 //  The IMgOperationHandler class defines the interface that all operations
 //  processed and executed by the MapGuide server must implement.
@@ -47,6 +46,6 @@ class MG_SERVICE_API IMgOperationHandler
     MgStreamData* m_data;
     MgOperationPacket m_packet;
 };
-/// \endcond 
+/// \endcond
 
 #endif  //  IMGOPERATIONHADNLER_H

@@ -18,10 +18,9 @@
 #ifndef MGIPUTIL_H_
 #define MGIPUTIL_H_
 
-
 class MG_SERVICE_API ACE_Recursive_Thread_Mutex;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 class MG_SERVICE_API MgIpUtil
 {
     DECLARE_CLASSNAME(MgIpUtil)
@@ -198,9 +197,8 @@ private:
 
     static ACE_Recursive_Thread_Mutex sm_mutex;
 };
-/// \endcond 
+/// \endcond
 
 /// Inline Methods
 
 #endif
-

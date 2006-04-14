@@ -18,8 +18,7 @@
 #ifndef _MG_LINUXMEMORYSTATUS_H_
 #define _MG_LINUXMEMORYSTATUS_H_
 
-
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////// 
 /// \brief
 /// A structure to store Linux memory status
@@ -36,6 +35,6 @@ struct MgLinuxMemoryStatus
     INT64 m_swapUsed;
     INT64 m_swapFree;
 };
-/// \endcond 
+/// \endcond
 
 #endif

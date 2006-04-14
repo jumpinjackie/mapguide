@@ -22,7 +22,7 @@
 class MgPackageStatusInformation;
 template class MG_SERVICE_API Ptr<MgPackageStatusInformation>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// This class manages resource package status information.
@@ -454,6 +454,6 @@ CLASS_ID:
 
     static const INT32 m_cls_id = CoreService_MgPackageStatusInformation;
 };
-/// \endcond 
+/// \endcond
 
 #endif

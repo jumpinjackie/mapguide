@@ -20,7 +20,7 @@
 
 class MgPacketParser;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 class MG_SERVICE_API MgStreamWriter
 {
     DECLARE_CLASSNAME(MgStreamWriter)
@@ -264,7 +264,7 @@ protected:
     /// Private member data
     Ptr<MgStreamHelper> m_sHelper;
 };
-/// \endcond 
+/// \endcond
 
 #define MG_STREAM_VERSION   1
 

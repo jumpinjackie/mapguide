@@ -30,7 +30,7 @@ class MgFeatureReader;
 class MgProxyFeatureReader;
 template class MG_SERVICE_API Ptr<MgProxyFeatureReader>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The FeatureReader class provides a one way iterator for reading feature data.
@@ -431,6 +431,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = FeatureService_FeatureReader;
 };
-/// \endcond 
+/// \endcond
 
 #endif

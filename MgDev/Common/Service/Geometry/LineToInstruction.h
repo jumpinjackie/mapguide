@@ -18,7 +18,7 @@
 #ifndef _MGLINETOINSTRUCTION_H_
 #define _MGLINETOINSTRUCTION_H_
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgLineToInstruction defines a straight line from the last coordinate in the
@@ -47,6 +47,6 @@ EXTERNAL_API:
     ///
     virtual MgCoordinate* GetCoordinate();
 };
-/// \endcond 
+/// \endcond
 
 #endif //_MGLINETOINSTRUCTION_H_

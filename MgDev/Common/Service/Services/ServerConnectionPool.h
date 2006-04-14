@@ -32,7 +32,7 @@ class MG_SERVICE_API MgConnectionProperties;
 class MgServerConnectionPool;
 template class Ptr<MgServerConnectionPool>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////
 /// \brief
 /// Represents a FILO stack of map server connections.  Tracks idle time

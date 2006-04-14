@@ -18,8 +18,7 @@
 #ifndef _MGQUADTOINSTRUCTION_H_
 #define _MGQUADTOINSTRUCTION_H_
 
-
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgQuadToInstruction defines a quadratic curve from the last coordinate in
@@ -58,6 +57,6 @@ EXTERNAL_API:
     ///
     virtual MgCoordinate* GetControlCoordinate();
 };
-/// \endcond 
+/// \endcond
 
 #endif //_MGQUADTOINSTRUCTION_H_

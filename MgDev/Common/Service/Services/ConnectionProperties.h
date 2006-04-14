@@ -28,7 +28,7 @@ template class MG_SERVICE_API Ptr<MgConnectionProperties>;
 class MgStream;
 class MgSerializable;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 class MG_SERVICE_API MgConnectionProperties : public MgSerializable
 {
     DECLARE_CLASSNAME(MgConnectionProperties)
@@ -147,4 +147,4 @@ CLASS_ID:
 
 #endif // MG_CONNECTION_PROPERTIES_H
 
-/// \endcond 
+/// \endcond
