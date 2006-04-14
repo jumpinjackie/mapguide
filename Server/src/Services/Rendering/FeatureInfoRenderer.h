@@ -47,17 +47,14 @@ public:
                           double        mapScale,
                           double        dpi,
                           double        metersPerUnit,
-                          CSysTransformer* xformToLL)
-    {}
+                          CSysTransformer* xformToLL = NULL);
 
-    virtual void EndMap()
-    {}
+    virtual void EndMap();
 
     virtual void StartLayer(RS_LayerUIInfo* legendInfo,
                             RS_FeatureClassInfo* classInfo);
 
-    virtual void EndLayer()
-    {}
+    virtual void EndLayer();
 
 
     virtual void ProcessPolygon(LineBuffer* lb,
@@ -106,6 +103,12 @@ public:
     virtual void StartFeature(RS_FeatureReader* feature,
                               const RS_String*  tooltip = NULL,
                               const RS_String*  url = NULL);
+
+    virtual RS_MapUIInfo* GetMapInfo();
+
+    virtual RS_LayerUIInfo* GetLayerInfo();
+
+    virtual RS_FeatureClassInfo* GetFeatureClassInfo();
 
     virtual double GetMapScale()
     {
@@ -182,6 +185,9 @@ protected:
 
     KeyEncode* m_keyEncode;
 
+    // map/layer/feature info
+    RS_MapUIInfo* m_mapInfo;
+    RS_LayerUIInfo* m_layerInfo;
     RS_FeatureClassInfo* m_fcInfo;
 
     MgSelection* m_selection;

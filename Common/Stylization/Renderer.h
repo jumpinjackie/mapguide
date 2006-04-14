@@ -165,6 +165,12 @@ public:
     // for it from the renderer
     //------------------------------------------------------
 
+    virtual RS_MapUIInfo* GetMapInfo() = 0;
+
+    virtual RS_LayerUIInfo* GetLayerInfo() = 0;
+
+    virtual RS_FeatureClassInfo* GetFeatureClassInfo() = 0;
+
     virtual double GetMapScale() = 0;
 
     virtual double GetMetersPerUnit() = 0;

@@ -558,6 +558,12 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
     RS_String units = (dstCs.p) ? dstCs->GetUnits() : L"";
 
+    // get the session ID
+    STRING sessionId;
+    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    if (userInfo != NULL)
+        sessionId = userInfo->GetMgSessionId();
+
     // initialize the stylizer
     RSMgSymbolManager mgr(m_svcResource);
     dr->SetSymbolManager(&mgr);
@@ -566,10 +572,11 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     ds.Initialize(dr);
 
     RS_Color bgcolor(0, 0, 0, 255); //not used -- GDRenderer is already initialized to the correct bgcolor
-    RS_MapUIInfo mapInfo(map->GetName(), map->GetObjectId(), srs, units, bgcolor);
+
+    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor);
 
     // begin map stylization
-    dr->StartMap(&mapInfo, b, scale, map->GetDisplayDpi(), map->GetMetersPerUnit(), NULL);
+    dr->StartMap(&mapInfo, b, scale, map->GetDisplayDpi(), map->GetMetersPerUnit());
 
         // if no layer collection is supplied, then put all layers in a temporary collection
         Ptr<MgReadOnlyLayerCollection> tempLayers = SAFE_ADDREF(roLayers);
@@ -698,7 +705,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
     RS_Bounds b(0,0,width,height);
 
-    RS_MapUIInfo info(L"", L"", L"", L"", bgcolor);
+    RS_MapUIInfo info(L"", L"", L"", L"", L"", bgcolor);
     double pixelsPerInch = 96.0;
     double metersPerPixel = 0.0254 / pixelsPerInch;
 
@@ -774,9 +781,22 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanZero", NULL);
     }
 
+    // get the session ID
+    STRING sessionId;
+    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    if (userInfo != NULL)
+        sessionId = userInfo->GetMgSessionId();
+
     //convert the map coordinate system from srs wkt to a mentor cs structure
     STRING srs = map->GetMapSRS();
     Ptr<MgCoordinateSystem> mapCs = (srs.empty()) ? NULL : m_pCSFactory->Create(srs);
+
+    // begin map stylization
+    RS_Bounds b(0, 0, 1, 1);    // not used
+    RS_Color bgcolor(0, 0, 0, 255); // not used
+    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, L"", bgcolor);
+
+    selRenderer->StartMap(&mapInfo, b, map->GetViewScale(), map->GetDisplayDpi(), map->GetMetersPerUnit());
 
     //initial simple selection scheme
     //Run a geometric FDO query on the given selection geometry
@@ -919,5 +939,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             }
         }
     }
+
+    selRenderer->EndMap();
 }
 

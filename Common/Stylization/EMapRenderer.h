@@ -50,7 +50,6 @@ class EMapRenderer : public DWFRenderer
 public:
 
     STYLIZATION_API EMapRenderer(const RS_String& filename,
-                                 const RS_String& sessionId,
                                  const RS_String& agentUri
                                 );
 
@@ -106,9 +105,8 @@ private:
 
     DWFImageResource* CreateImageResource(unsigned char* data, int len);
 
-    std::wstring m_dwfFilename;
-    std::wstring m_sessionId;
-    std::wstring m_agentUri;
+    RS_String m_dwfFilename;
+    RS_String m_agentUri;
 
     DWFUUID* m_uuid;
 

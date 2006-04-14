@@ -24,6 +24,7 @@
 #include "StringValue.h"
 #include "BooleanValue.h"
 #include "DateTimeValue.h"
+#include "KeyEncode.h"
 
 #include <wctype.h>
 
@@ -32,6 +33,7 @@ RS_FilterExecutor::RS_FilterExecutor(RS_FeatureReader* featureReader)
     m_reader = featureReader;
 
     m_pPool = new DataValuePool();
+    m_keyEncode = new KeyEncode();
 }
 
 RS_FilterExecutor::~RS_FilterExecutor()
@@ -42,6 +44,7 @@ RS_FilterExecutor::~RS_FilterExecutor()
     Reset(); //clean out feature property cache
 
     delete m_pPool;
+    delete m_keyEncode;
 }
 
 RS_FilterExecutor* RS_FilterExecutor::Create(RS_FeatureReader* featureReader)
@@ -53,6 +56,18 @@ RS_FilterExecutor* RS_FilterExecutor::Create(RS_FeatureReader* featureReader)
 void RS_FilterExecutor::Dispose()
 {
     delete this;
+}
+
+
+void RS_FilterExecutor::SetMapLayerInfo(const RS_String& session,
+                                        const RS_String& mapName,
+                                        const RS_String& layerID,
+                                        const RS_String& featureClass)
+{
+    m_session = session;
+    m_mapName = mapName;
+    m_layerID = layerID;
+    m_featCls = featureClass;
 }
 
 
@@ -377,7 +392,6 @@ void RS_FilterExecutor::ProcessFunction(FdoFunction& expr)
 {
     GisString* name = expr.GetName();
 
-
     if (_wcsnicmp(name, L"ARGB", 4) == 0)
     {
         //color function
@@ -412,6 +426,26 @@ void RS_FilterExecutor::ProcessFunction(FdoFunction& expr)
         m_pPool->RelinquishDataValue(argRight);
 
         m_retvals.push(m_pPool->ObtainStringValue(res, true));
+    }
+    else if (_wcsnicmp(name, L"SESSION", 7) == 0)
+    {
+        ExecuteSession(expr);
+    }
+    else if (_wcsnicmp(name, L"MAPNAME", 7) == 0)
+    {
+        ExecuteMapName(expr);
+    }
+    else if (_wcsnicmp(name, L"LAYERID", 7) == 0)
+    {
+        ExecuteLayerID(expr);
+    }
+    else if (_wcsnicmp(name, L"FEATURECLASS", 12) == 0)
+    {
+        ExecuteFeatureClass(expr);
+    }
+    else if (_wcsnicmp(name, L"FEATUREID", 9) == 0)
+    {
+        ExecuteFeatureID(expr);
     }
     else if (_wcsnicmp(name, L"DECAP", 5) == 0)
     {
@@ -818,4 +852,90 @@ void RS_FilterExecutor::ExecuteARGB(FdoFunction& function)
     GisInt64 color = (alpha << 24) | (red << 16) | (green << 8) | blue;
 
     m_retvals.push(m_pPool->ObtainInt64Value(color));
+}
+
+
+void RS_FilterExecutor::ExecuteSession(FdoFunction& function)
+{
+    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+
+    // make sure we have zero arguments
+    int count = args->GetCount();
+    if (count != 0)
+        throw GisException::Create(L"Incorrect number of arguments for function SESSION");
+
+    wchar_t* res = new wchar_t[m_session.length()+1];
+    wcscpy(res, m_session.c_str());
+
+    m_retvals.push(m_pPool->ObtainStringValue(res, true));
+}
+
+
+void RS_FilterExecutor::ExecuteMapName(FdoFunction& function)
+{
+    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+
+    // make sure we have zero arguments
+    int count = args->GetCount();
+    if (count != 0)
+        throw GisException::Create(L"Incorrect number of arguments for function MAPNAME");
+
+    wchar_t* res = new wchar_t[m_mapName.length()+1];
+    wcscpy(res, m_mapName.c_str());
+
+    m_retvals.push(m_pPool->ObtainStringValue(res, true));
+}
+
+
+void RS_FilterExecutor::ExecuteLayerID(FdoFunction& function)
+{
+    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+
+    // make sure we have zero arguments
+    int count = args->GetCount();
+    if (count != 0)
+        throw GisException::Create(L"Incorrect number of arguments for function LAYERID");
+
+    wchar_t* res = new wchar_t[m_layerID.length()+1];
+    wcscpy(res, m_layerID.c_str());
+
+    m_retvals.push(m_pPool->ObtainStringValue(res, true));
+}
+
+
+void RS_FilterExecutor::ExecuteFeatureClass(FdoFunction& function)
+{
+    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+
+    // make sure we have zero arguments
+    int count = args->GetCount();
+    if (count != 0)
+        throw GisException::Create(L"Incorrect number of arguments for function FEATURECLASS");
+
+    wchar_t* res = new wchar_t[m_featCls.length()+1];
+    wcscpy(res, m_featCls.c_str());
+
+    m_retvals.push(m_pPool->ObtainStringValue(res, true));
+}
+
+
+void RS_FilterExecutor::ExecuteFeatureID(FdoFunction& function)
+{
+    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+
+    // make sure we have zero arguments
+    int count = args->GetCount();
+    if (count != 0)
+        throw GisException::Create(L"Incorrect number of arguments for function FEATUREID");
+
+    // generate base 64 id
+    const unsigned char* base64 = m_keyEncode->EncodeKey(m_reader);
+    size_t len = strlen((const char*)base64);
+
+    // convert to a wide string
+    wchar_t* res = new wchar_t[len+1];
+    for (size_t k=0; k<len+1; k++)
+        res[k] = (wchar_t)base64[k];
+
+    m_retvals.push(m_pPool->ObtainStringValue(res, true));
 }

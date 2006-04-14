@@ -370,8 +370,8 @@ void EPlotRenderer::EndMap()
     m_pPage = NULL;
 
     //////////////////////////////////////////////////////////////////////
-    // If we call DWFRenderer::EndMap() here then it will free all the
-    // output streams in the layer/label/layout stream lists, and then
+    // If we call DWFRenderer::EndMap() right now then it will free all
+    // the output streams in the layer/label/layout stream lists, and then
     // later when we try to write the DWF we crash.  Instead, let's move
     // the streams out of the layer/label/layout lists and into another
     // set of lists which gets cleaned up after we write the DWF.
@@ -406,8 +406,8 @@ void EPlotRenderer::EndMap()
     m_lLayoutStreams.clear();
     m_lLayoutLabelStreams.clear();
 
-    // no need to delete the observation mesh - EPlotRenderer makes sure
-    // it never creates one
+    // now we can call the super
+    DWFRenderer::EndMap();
 }
 
 
@@ -433,6 +433,12 @@ void EPlotRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
     WT_Viewport viewport2(*m_w2dLabels, "", 4, points);
     m_w2dFile->desired_rendition().viewport() = viewport1;
     m_w2dLabels->desired_rendition().viewport() = viewport2;
+}
+
+
+void EPlotRenderer::EndLayer()
+{
+    DWFRenderer::EndLayer();
 }
 
 

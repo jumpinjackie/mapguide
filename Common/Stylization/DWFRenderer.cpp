@@ -198,6 +198,8 @@ WT_Result my_seek(WT_File & /*file*/, int /*distance*/, int & /*amount_seeked*/)
 
 DWFRenderer::DWFRenderer()
 : m_w2dFile(NULL),
+  m_mapInfo(NULL),
+  m_layerInfo(NULL),
   m_featureClass(NULL),
   m_attributes(NULL),
   m_featureClassInfo(NULL),
@@ -247,7 +249,7 @@ DWFRenderer::~DWFRenderer()
 // Initializes map generation with required map properties.
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::StartMap( RS_MapUIInfo* /*mapInfo*/,
+void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
                             RS_Bounds&    extents,
                             double        mapScale,
                             double        dpi,
@@ -290,6 +292,9 @@ void DWFRenderer::StartMap( RS_MapUIInfo* /*mapInfo*/,
 
     if (xformToLL)
         m_obsMesh = new ObservationMesh(m_extents, xformToLL);
+
+    // remember the map info
+    m_mapInfo = mapInfo;
 }
 
 //-----------------------------------------------------------------------------
@@ -334,6 +339,9 @@ void DWFRenderer::EndMap()
         delete m_obsMesh;
         m_obsMesh = NULL;
     }
+
+    // clear the map info
+    m_mapInfo = NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -430,6 +438,9 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
     }
 
     m_imgID = 0;
+
+    // remember the layer info
+    m_layerInfo = legendInfo;
 }
 
 //-----------------------------------------------------------------------------
@@ -484,6 +495,9 @@ void DWFRenderer::EndLayer()
 
     //it's ok for it to be null
     m_featureClass = NULL;
+
+    // clear the layer info
+    m_layerInfo = NULL;
 }
 
 //----------------------------------------------------------------------------
@@ -1786,6 +1800,24 @@ void DWFRenderer::StoreAttributes(RS_FeatureReader* feature, const RS_String* to
             }
         }
     }
+}
+
+
+RS_MapUIInfo* DWFRenderer::GetMapInfo()
+{
+    return m_mapInfo;
+}
+
+
+RS_LayerUIInfo* DWFRenderer::GetLayerInfo()
+{
+    return m_layerInfo;
+}
+
+
+RS_FeatureClassInfo* DWFRenderer::GetFeatureClassInfo()
+{
+    return m_featureClassInfo;
 }
 
 

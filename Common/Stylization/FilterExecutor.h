@@ -29,6 +29,7 @@ typedef DataValueStack<DataValue> retval_stack;
 
 //forward declare
 class DataValuePool;
+class KeyEncode;
 
 ///<summary>
 ///An implementation of FdoIFilterProcessor and FdoIExpressionProcessor which
@@ -50,6 +51,11 @@ protected:
 public:
 
     static RS_FilterExecutor* Create(RS_FeatureReader* featureReader);
+
+    void SetMapLayerInfo(const RS_String& session,
+                         const RS_String& mapName,
+                         const RS_String& layerID,
+                         const RS_String& featClass);
 
 public:
 
@@ -105,6 +111,11 @@ public:
 private:
 
     void ExecuteARGB(FdoFunction& function);
+    void ExecuteSession(FdoFunction& function);
+    void ExecuteMapName(FdoFunction& function);
+    void ExecuteLayerID(FdoFunction& function);
+    void ExecuteFeatureClass(FdoFunction& function);
+    void ExecuteFeatureID(FdoFunction& function);
 
     bool MatchesHere(wchar_t* pattern, wchar_t* src);
     bool MatchPercent(wchar_t* pattern, wchar_t* src);
@@ -115,6 +126,13 @@ private:
     RS_FeatureReader* m_reader;
 
     DataValuePool* m_pPool;
+
+    RS_String m_session;
+    RS_String m_mapName;
+    RS_String m_layerID;
+    RS_String m_featCls;
+
+    KeyEncode* m_keyEncode;
 
     //cached identifier values
     std::vector<std::pair<void*, DataValue*> > m_hPropCache;

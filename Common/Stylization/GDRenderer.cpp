@@ -119,6 +119,9 @@ m_extents(0,0,0,0),
 m_wtPointBuffer(NULL),
 m_wtPointLen(0),
 m_symbolManager(NULL),
+m_mapInfo(NULL),
+m_layerInfo(NULL),
+m_fcInfo(NULL),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
 m_bSelectionMode(false),
@@ -306,7 +309,7 @@ void GDRenderer::Combine(const RS_String& fileIn1, const RS_String& fileIn2, con
 }
 
 
-void GDRenderer::StartMap(RS_MapUIInfo* /*mapInfo*/,
+void GDRenderer::StartMap(RS_MapUIInfo* mapInfo,
                           RS_Bounds&    extents,
                           double        mapScale,
                           double        dpi,
@@ -354,6 +357,9 @@ void GDRenderer::StartMap(RS_MapUIInfo* /*mapInfo*/,
     m_invScale = 1.0 / m_scale;
 
     m_labeler->StartLabels();
+
+    // remember the map info
+    m_mapInfo = mapInfo;
 }
 
 
@@ -361,17 +367,26 @@ void GDRenderer::EndMap()
 {
     //finally draw all the labels
     m_labeler->BlastLabels();
+
+    // clear the map info
+    m_mapInfo = NULL;
 }
 
 
-void GDRenderer::StartLayer(RS_LayerUIInfo*      /*legendInfo*/,
-                            RS_FeatureClassInfo* /*classInfo*/)
+void GDRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
+                            RS_FeatureClassInfo* classInfo)
 {
+    // remember the layer/feature info
+    m_layerInfo = legendInfo;
+    m_fcInfo = classInfo;
 }
 
 
 void GDRenderer::EndLayer()
 {
+    // clear the layer/feature info
+    m_layerInfo = NULL;
+    m_fcInfo = NULL;
 }
 
 
@@ -942,6 +957,24 @@ void GDRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 void GDRenderer::SetSymbolManager(RS_SymbolManager* manager)
 {
     m_symbolManager = manager;
+}
+
+
+RS_MapUIInfo* GDRenderer::GetMapInfo()
+{
+    return m_mapInfo;
+}
+
+
+RS_LayerUIInfo* GDRenderer::GetLayerInfo()
+{
+    return m_layerInfo;
+}
+
+
+RS_FeatureClassInfo* GDRenderer::GetFeatureClassInfo()
+{
+    return m_fcInfo;
 }
 
 
