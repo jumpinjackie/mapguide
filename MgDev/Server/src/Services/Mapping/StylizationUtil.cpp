@@ -1078,7 +1078,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
         RS_Bounds b(0,0,pixelW,pixelH);
 
-        RS_MapUIInfo info(L"name", L"guid", L"", L"", RS_Color(255,255,255,0));
+        RS_MapUIInfo info(L"", L"name", L"guid", L"", L"", RS_Color(255,255,255,0));
 
         double pixelsPerInch = 96.0;
         double metersPerPixel = 0.0254 / pixelsPerInch;

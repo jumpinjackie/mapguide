@@ -67,6 +67,8 @@ public:
                                              RS_FeatureClassInfo* classInfo
                                             );
 
+    STYLIZATION_API virtual void EndLayer();
+
     STYLIZATION_API virtual void Done();
 
     ///////////////////////////////////////////////////////////////////

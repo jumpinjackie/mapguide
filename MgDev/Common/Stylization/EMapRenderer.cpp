@@ -38,13 +38,11 @@
 #include "dwfemap/package/LayerGroup.h"
 
 EMapRenderer::EMapRenderer(const RS_String& filename,
-                           const RS_String& sessionId,
                            const RS_String& agentUri
                            ) : DWFRenderer()
 {
     m_pPage = NULL;
     m_uuid = new DWFUUID;
-    m_sessionId = sessionId;
     m_agentUri = agentUri;
     m_dwfFilename = filename;
     m_pLayer = NULL;
@@ -98,7 +96,7 @@ void EMapRenderer::StartMap(RS_MapUIInfo*    mapInfo,
 
     // _AW_Session and _AW_MapName are required map properties
     // DO NOT CHANGE THESE PROPERTY NAMES - the DWF Viewer
-    DWFProperty propM1(L"_AW_Session", m_sessionId.c_str());
+    DWFProperty propM1(L"_AW_Session", mapInfo->session().c_str());
     DWFProperty propM2(L"_AW_MapName", mapInfo->name().c_str());
 
     // add properties to map

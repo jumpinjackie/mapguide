@@ -122,6 +122,12 @@ public:
 
     STYLIZATION_API virtual void SetSymbolManager(RS_SymbolManager* manager);
 
+    STYLIZATION_API virtual RS_MapUIInfo* GetMapInfo();
+
+    STYLIZATION_API virtual RS_LayerUIInfo* GetLayerInfo();
+
+    STYLIZATION_API virtual RS_FeatureClassInfo* GetFeatureClassInfo();
+
     STYLIZATION_API virtual double GetMapScale();
 
     STYLIZATION_API virtual RS_Bounds& GetBounds();
@@ -161,6 +167,10 @@ protected:
     bool m_bHaveLabels;
 
     ObservationMesh* m_obsMesh;
+
+    // map/layer info
+    RS_MapUIInfo* m_mapInfo;
+    RS_LayerUIInfo* m_layerInfo;
 
     //support for selection -- must save id for every W2D object
     //which we will refrence from DWF Object Instances

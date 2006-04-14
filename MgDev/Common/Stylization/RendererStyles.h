@@ -475,6 +475,7 @@ class RS_MapUIInfo
 {
 public:
     RS_MapUIInfo() :
+        m_session(L""),
         m_name(L""),
         m_guid(L""),
         m_coordsys(L""),
@@ -483,11 +484,13 @@ public:
     {
     }
 
-    RS_MapUIInfo(const RS_String& name,
+    RS_MapUIInfo(const RS_String& session,
+                 const RS_String& name,
                  const RS_String& guid,
                  const RS_String& coordsys,
                  const RS_String& units,
                  const RS_Color&  bgcolor) :
+        m_session(session),
         m_name(name),
         m_guid(guid),
         m_coordsys(coordsys),
@@ -496,6 +499,7 @@ public:
     {
     }
 
+    inline RS_String& session()    { return m_session; }
     inline RS_String& name()       { return m_name; }
     inline RS_String& guid()       { return m_guid; }
     inline RS_String& coordsys()   { return m_coordsys; }
@@ -503,6 +507,7 @@ public:
     inline RS_Color&  bgcolor()    { return m_bgcolor; }
 
 private:
+    RS_String m_session;
     RS_String m_name;
     RS_String m_guid;
     RS_String m_coordsys;

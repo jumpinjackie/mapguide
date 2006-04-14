@@ -101,6 +101,12 @@ public:
 
     STYLIZATION_API virtual void SetSymbolManager(RS_SymbolManager* manager);
 
+    STYLIZATION_API virtual RS_MapUIInfo* GetMapInfo();
+
+    STYLIZATION_API virtual RS_LayerUIInfo* GetLayerInfo();
+
+    STYLIZATION_API virtual RS_FeatureClassInfo* GetFeatureClassInfo();
+
     STYLIZATION_API virtual double GetMapScale();
 
     STYLIZATION_API virtual RS_Bounds& GetBounds();
@@ -248,6 +254,11 @@ private:
     bool                m_bHaveViewport;
     bool                m_bLayerPassesFilter;
     RS_String           m_layerFilter;
+
+    // map/layer/feature info
+    RS_MapUIInfo* m_mapInfo;
+    RS_LayerUIInfo* m_layerInfo;
+    RS_FeatureClassInfo* m_fcInfo;
 
     //storage for override colors
     RS_MarkerDef m_mdOverrideColors;

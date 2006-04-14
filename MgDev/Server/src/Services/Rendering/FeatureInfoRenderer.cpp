@@ -34,6 +34,8 @@ FeatureInfoRenderer::FeatureInfoRenderer(MgSelection* selection, int maxFeatures
   m_nMaxFeatures(maxFeatures),
   m_mapScale(mapScale),
   m_fcName(L""),
+  m_mapInfo(NULL),
+  m_layerInfo(NULL),
   m_fcInfo(NULL)
 {
     m_selection = SAFE_ADDREF(selection);
@@ -106,10 +108,58 @@ void FeatureInfoRenderer::StartFeature (RS_FeatureReader* feature, const RS_Stri
 }
 
 
+void FeatureInfoRenderer::StartMap(RS_MapUIInfo*    mapInfo,
+                                   RS_Bounds&       /*extents*/,
+                                   double           /*mapScale*/,
+                                   double           /*dpi*/,
+                                   double           /*metersPerUnit*/,
+                                   CSysTransformer* /*xformToLL*/)
+{
+    // remember the map info
+    m_mapInfo = mapInfo;
+}
+
+
+void FeatureInfoRenderer::EndMap()
+{
+    // clear the map info
+    m_mapInfo = NULL;
+}
+
+
 void FeatureInfoRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
                                      RS_FeatureClassInfo* classInfo)
 {
+    // remember the layer/feature info
+    m_layerInfo = legendInfo;
     m_fcInfo = classInfo;
+
     m_layerId = legendInfo->guid();
     m_fcName = classInfo->name();
+}
+
+
+void FeatureInfoRenderer::EndLayer()
+{
+    // clear the layer/feature info
+    m_layerInfo = NULL;
+    m_fcInfo = NULL;
+}
+
+
+RS_MapUIInfo* FeatureInfoRenderer::GetMapInfo()
+{
+    return m_mapInfo;
+}
+
+
+RS_LayerUIInfo* FeatureInfoRenderer::GetLayerInfo()
+{
+    return m_layerInfo;
+}
+
+
+RS_FeatureClassInfo* FeatureInfoRenderer::GetFeatureClassInfo()
+{
+    return m_fcInfo;
 }

@@ -27,6 +27,7 @@
 #include "LineBuffer.h"
 #include "FeatureTypeStyleVisitor.h"
 
+const RS_String s_Empty(L"");
 
 DefaultStylizer::DefaultStylizer()
 {
@@ -95,6 +96,17 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
 
     RS_FilterExecutor* exec = RS_FilterExecutor::Create(features);
 
+    // configure the filter with the current map/layer info
+    RS_MapUIInfo* mapInfo = m_renderer->GetMapInfo();
+    RS_LayerUIInfo* layerInfo = m_renderer->GetLayerInfo();
+    RS_FeatureClassInfo* featInfo = m_renderer->GetFeatureClassInfo();
+
+    const RS_String& session = (mapInfo != NULL)? mapInfo->session() : s_Empty;
+    const RS_String& mapName = (mapInfo != NULL)? mapInfo->name() : s_Empty;
+    const RS_String& layerId = (layerInfo != NULL)? layerInfo->guid() : s_Empty;
+    const RS_String& featCls = (featInfo != NULL)? featInfo->name() : s_Empty;
+    exec->SetMapLayerInfo(session, mapName, layerId, featCls);
+    
     // find the FeatureTypeStyle
     MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
 

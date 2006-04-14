@@ -37,8 +37,6 @@
 
 #include "LegendPlotUtil.h"
 
-#include "QueryRenderer.h"
-
 #include "icons.h"
 
 #define LEGEND_BITMAP_SIZE 16
@@ -47,15 +45,6 @@
 //for use by observation mesh transformation
 const STRING SRS_LL84 = L"GEOGCS[\"LL84\",DATUM[\"WGS 84\",SPHEROID[\"WGS 84\",6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0],UNIT[\"Degrees\",0.01745329252]]";
 
-
-//used when we want to process just one feature
-bool StylizeJustOne(void* data)
-{
-    if ( ((QueryRenderer*)data)->GetNumFeaturesProcessed() >= 1)
-        return true;
-
-    return false;
-}
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -158,7 +147,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     //get a temporary file to write out EMap DWF to
     STRING dwfName = MgFileUtil::GenerateTempFileName(false, mdf->GetName());
 
-    EMapRenderer dr(dwfName, sessionId, mapAgentUri);
+    EMapRenderer dr(dwfName, mapAgentUri);
 
     //get the coordinate system unit scale
     MdfModel::MdfString srs = map->GetMapSRS();
@@ -189,7 +178,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     double dMapScale = map->GetViewScale();
     double dpi = map->GetDisplayDpi();
 
-    RS_MapUIInfo mapInfo(mapResId->GetName(), map->GetObjectId(), srs, units, bgcolor);
+    RS_MapUIInfo mapInfo(sessionId, mapResId->GetName(), map->GetObjectId(), srs, units, bgcolor);
 
     dr.StartMap(&mapInfo, b, dMapScale, dpi, metersPerUnit);
 
@@ -429,6 +418,13 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     double dMapScale = map->GetViewScale();
     double dpi =       map->GetDisplayDpi();
 
+    // get the session ID
+    STRING sessionId;
+    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    if (userInfo != NULL)
+        sessionId = userInfo->GetMgSessionId();
+
+    // prepare the renderer
     EMapUpdateRenderer dr(dwfName, seqNo);
 
     RSMgSymbolManager mgr(m_svcResource);
@@ -437,7 +433,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     DefaultStylizer ds;
     ds.Initialize(&dr);
 
-    RS_MapUIInfo mapInfo(map->GetName(), map->GetObjectId(), srs, units, bgcolor);
+    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor);
 
     //begin map stylization
     dr.StartMap(&mapInfo, b, dMapScale, dpi, metersPerUnit, xformToLL);
@@ -1143,7 +1139,13 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         layoutColor.green() = bgColor->GetGreen();
         layoutColor.blue() = bgColor->GetBlue();
 
-        RS_MapUIInfo mapInfo(map->GetName(), L"", srs, units, layoutColor);
+        // Get the session ID
+        STRING sessionId;
+        MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+        if (userInfo != NULL)
+            sessionId = userInfo->GetMgSessionId();
+
+        RS_MapUIInfo mapInfo(sessionId, map->GetName(), L"", srs, units, layoutColor);
 
         // Dynamically adjust the width and height of the map
         printLayout->ComputeMapOffsetAndSize(dMapScale, extents, metersPerUnit, dr.mapOffsetX(), dr.mapOffsetY(), dr.mapWidth(), dr.mapHeight(), mapPlot->GetExpandToFit());
@@ -1335,7 +1337,7 @@ MgByteReader* MgServerMappingService::GenerateLegendPlot(
     RS_String units = (dstCs.p) ? dstCs->GetUnits() : L"";
 
     RS_Color mapBgColor(255, 255, 255, 0);
-    RS_MapUIInfo mapInfo(map->GetName(), L"", srs, units, mapBgColor);
+    RS_MapUIInfo mapInfo(L"", map->GetName(), L"", srs, units, mapBgColor);
 
     double dpi = map->GetDisplayDpi();
     dr.StartMap(&mapInfo, b, scale, dpi, metersPerUnit);
