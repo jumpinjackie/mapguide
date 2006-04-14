@@ -67,6 +67,17 @@ STRING gConfigPath;
 // concurrent incoming requests.
 int main ()
 {
+#ifdef WIN32
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+    #ifdef _DEBUG
+    // to debug memory leaks, set a breakpoint here and set iBlock
+    // to the block allocation you want to break on
+    long iBlock = -1;
+    _CrtSetBreakAlloc(iBlock);
+    #endif
+#endif
+
     bool bFirstTime = true;
     bool bShouldContinue = true;
     int nRequests = 1;
@@ -225,6 +236,8 @@ int main ()
 
         FCGI_Finish();
     }
+
+    MgUninitializeWebTier();
 
     DumpMessage("Exiting process %d",getpid());
 

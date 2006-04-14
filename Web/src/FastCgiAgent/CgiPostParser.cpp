@@ -30,6 +30,9 @@
 extern void DumpMessage(const char* format, ...);
 extern void DumpMessage2(const char* msg);
 
+//TODO: Make MAXPOSTSIZE a webconfig parameter
+static size_t MAXPOSTSIZE = 1000000000; // Limit to 1Gig
+
 // Is the thing pointed to an XML processing instruction?
 bool IsXmlPi(char* buf)
 {
@@ -42,19 +45,23 @@ bool IsXmlPi(char* buf)
 
 CgiPostParser::CgiPostParser(void)
 {
+    m_bufSize = 0;
+    m_buf = NULL;
 }
 
 CgiPostParser::~CgiPostParser(void)
 {
+    if (m_buf != NULL)
+    {
+        free(m_buf);
+        m_buf = NULL;
+    }
 }
 
 void CgiPostParser::Parse(MgHttpRequestParam* params)
 {
     MG_TRY()
-    //TODO: Make MAXPOSTSIZE a webconfig parameter
-    static size_t MAXPOSTSIZE = 1000000000; // Limit to 1Gig
-    static size_t bufSize = 0;
-    static char* buf = NULL;
+
     size_t bufPos = 0;
 
     // TODO: Use a memory mapped file here
@@ -70,28 +77,28 @@ void CgiPostParser::Parse(MgHttpRequestParam* params)
             throw new MgStreamIoException(L"CgiPostParser.Parse", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        // Attempt to reuse the existing buffer, if it's
-        // big enough; if not, we need to reallocate a bigger
-        // one.  Note: to avoid a null pointer, even when a first
-        // pass has Content-Length == 0 (an thus not > the virgin
-        // bufSize,) we ALWAYS come through this branch if the
-        // buffer is still null.
-        if (nBytes > bufSize || buf == NULL)
+        // Attempt to reuse the existing buffer if it's big enough.  If
+        // not we need to reallocate a bigger one.  Note: to avoid a null
+        // pointer, even when a first pass has Content-Length == 0 (and
+        // thus not > the virgin m_bufSize,) we ALWAYS come through this
+        // branch if the buffer is still null.
+        if (nBytes > m_bufSize || m_buf == NULL)
         {
-            if (buf != NULL)
+            if (m_buf != NULL)
             {
-                free(buf);
-                buf = NULL;
+                free(m_buf);
+                m_buf = NULL;
             }
-            // Add extra byte for url encoded null termination
-            buf = (char*) malloc(nBytes+1);
 
-            if (NULL == buf)
+            // Add extra byte for url encoded null termination
+            m_buf = (char*)malloc(nBytes+1);
+
+            if (NULL == m_buf)
             {
                 throw new MgOutOfMemoryException(L"CgiPostParser.Parse", __LINE__, __WFILE__, NULL, L"", NULL);
             }
 
-            bufSize = nBytes;
+            m_bufSize = nBytes;
         }
     }
 
@@ -101,11 +108,11 @@ void CgiPostParser::Parse(MgHttpRequestParam* params)
 
     if (nBytes > 0)
     {
-        readBytes = fread(buf, 1, nBytes, stdin);
+        readBytes = fread(m_buf, 1, nBytes, stdin);
     }
 
     DumpMessage("Read %d bytes", readBytes);
-    DumpMessage2(buf);
+    DumpMessage2(m_buf);
 
 
     if (readBytes != nBytes)
@@ -122,9 +129,10 @@ void CgiPostParser::Parse(MgHttpRequestParam* params)
 
         if (content == CgiStrings::UrlEncoded)
         {
-            buf[nBytes] = '\0';
+            m_buf[nBytes] = '\0';
+
             // Here's another case of interoperability "Forgiveness
-            // and Tolerance": deegree, among other clients, sends along
+            // and Tolerance": degree, among other clients, sends along
             // a POST with xml contents, but fails to correctly set the
             // mime type.  You guessed it: it says it's url-encoded.
             // ----------------
@@ -135,10 +143,10 @@ void CgiPostParser::Parse(MgHttpRequestParam* params)
             // the IsXmlPi should conveniently fail if it really IS
             // url-encoded, since the question mark in <?xml...?>
             // should itself be url-encoded: <%3Fxml... )
-            if(IsXmlPi(buf))
-                params->SetXmlPostData(buf);
+            if(IsXmlPi(m_buf))
+                params->SetXmlPostData(m_buf);
             else
-                CgiGetParser::Parse(buf,params);
+                CgiGetParser::Parse(m_buf, params);
         }
         else if (content.find(CgiStrings::MultiPartForm) != content.npos)
         {
@@ -154,8 +162,8 @@ void CgiPostParser::Parse(MgHttpRequestParam* params)
                 partTag.append(content.substr(tagIdx+strlen(boundary)));
                 string dataEndTag = "\r\n";
                 dataEndTag.append(partTag);
-                char* endBuf = &buf[nBytes];
-                char* curBuf = buf;
+                char* endBuf = &m_buf[nBytes];
+                char* curBuf = m_buf;
                 while (curBuf < endBuf && NULL != curBuf)
                 {
                     // Isolate multipart header
@@ -236,7 +244,8 @@ void CgiPostParser::Parse(MgHttpRequestParam* params)
                                 STRING fileName = MgFileUtil::GenerateTempFileName();
                                 Ptr<MgByte> bytes = new MgByte((BYTE_ARRAY_IN)dataStart, (INT32)(dataEnd-dataStart), MgByte::None);
                                 Ptr<MgByteSource> source = new MgByteSource(bytes);
-                                Ptr<MgByteSink> sink = new MgByteSink(source->GetReader());
+                                Ptr<MgByteReader> reader = source->GetReader();
+                                Ptr<MgByteSink> sink = new MgByteSink(reader);
                                 sink->ToFile(fileName);
 
                                 params->AddParameter(paramName, fileName);
@@ -262,13 +271,14 @@ void CgiPostParser::Parse(MgHttpRequestParam* params)
                 }
             }
         }
+
         // The check for text/xml is not always sufficient.  CarbonTools, for example,
         // fails to set Content-Type: text/xml and just sends Content-Type: utf-8.
         // A better check might be looking into the buffer to find "<?xml" at the beginning.
-        else if (content.find(CgiStrings::TextXml) != content.npos || IsXmlPi(buf))
+        else if (content.find(CgiStrings::TextXml) != content.npos || IsXmlPi(m_buf))
         {
-            buf[nBytes] = '\0';
-            params->SetXmlPostData(buf);
+            m_buf[nBytes] = '\0';
+            params->SetXmlPostData(m_buf);
         }
         else
         {
@@ -276,6 +286,6 @@ void CgiPostParser::Parse(MgHttpRequestParam* params)
             throw new MgStreamIoException(L"CgiPostParser.Parse", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
+
     MG_CATCH_AND_THROW(L"CgiPostParser.Parse");
 }
-
