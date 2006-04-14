@@ -57,7 +57,7 @@ void MgHttpEnumerateUsers::Execute(MgHttpResponse& hResponse)
     Ptr<MgSite> mgSite = m_siteConn->GetSite();
 
     // Run API command
-    MgByteReader* byteReaderResult = mgSite->EnumerateUsers( m_group );
+    Ptr<MgByteReader> byteReaderResult = mgSite->EnumerateUsers( m_group );
 
     hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 

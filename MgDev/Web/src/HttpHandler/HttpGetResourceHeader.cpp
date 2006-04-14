@@ -66,7 +66,7 @@ void MgHttpGetResourceHeader::Execute(MgHttpResponse& hResponse)
     MgResourceIdentifier mgrIdentifier(m_resourceId);
 
     // Run API command
-    MgByteReader* byteReaderResult = mgprService->GetResourceHeader(&mgrIdentifier);
+    Ptr<MgByteReader> byteReaderResult = mgprService->GetResourceHeader(&mgrIdentifier);
 
     hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 

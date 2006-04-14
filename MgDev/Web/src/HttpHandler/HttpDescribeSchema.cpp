@@ -56,7 +56,8 @@ void MgHttpDescribeSchema::Execute(MgHttpResponse& hResponse)
 
     MgResourceIdentifier resId(m_resId);
 
-    STRING schema = m_hRequest->GetRequestParam()->GetParameterValue(MgHttpResourceStrings::reqFeatSchema);
+    Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
+    STRING schema = hrParam->GetParameterValue(MgHttpResourceStrings::reqFeatSchema);
 
     // Create Proxy Feature Service instance
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));

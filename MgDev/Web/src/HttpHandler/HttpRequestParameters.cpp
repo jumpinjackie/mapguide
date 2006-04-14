@@ -59,6 +59,18 @@ MgHttpRequestParameters::~MgHttpRequestParameters()
 // too.
 void MgHttpRequestParameters::Empty()
 {
+    for(int i=0; i<Count(); i++) {
+        CPSZ pszName = Name(i);
+        if(pszName != NULL) {
+            free((void*)pszName);
+            SetName(i,NULL);
+        }
+        void* pvValue = Value(i);
+        if(pvValue != NULL) {
+            free(pvValue);
+            SetValue(i,NULL);
+        }
+    }
     MgUtilNameStringValueCollection::Empty();
 }
 

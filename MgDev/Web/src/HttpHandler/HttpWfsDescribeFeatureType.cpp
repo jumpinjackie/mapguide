@@ -38,8 +38,6 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWfsDescribeFeatureType)
 MgHttpWfsDescribeFeatureType::MgHttpWfsDescribeFeatureType(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
-
-    Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
 }
 
 
@@ -68,7 +66,8 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     // We have to wrap the request parameters, since the outside
     // world is case-sensitive (with respect to names,) but
     // we need our parameters NOT to be so.
-    MgHttpRequestParameters Parms(m_hRequest->GetRequestParam());
+    Ptr<MgHttpRequestParam> origReqParams = m_hRequest->GetRequestParam();
+    MgHttpRequestParameters Parms(origReqParams);
     MgHttpResponseStream Out;
 
     MgOgcServer::SetLoader(GetDocument);
@@ -83,7 +82,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     STRING sFeatureTypes = pszFeatureTypes? pszFeatureTypes : _("");
     if(sFeatureTypes.length() > 0 && sFeatureTypes.find(_(",")) == STRING::npos) {
         // TODO: assumes that this is GML type.
-        //STRING sOutputFormat = m_hRequest->GetRequestParam()->GetParameterValue(_("OUTPUTFORMAT"));
+        //STRING sOutputFormat = origReqParams->GetParameterValue(_("OUTPUTFORMAT"));
 
         // Create Proxy Feature Service instance
         Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
@@ -104,7 +103,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
                 // Set the result
                 hResult->SetResultObject(response, response->GetMimeType());
             }
-            else 
+            else
                 // Badly formed feature type?  Throw an exception.
                 GenerateTypeNameException(hResult,sFeatureTypes);
         }
@@ -152,11 +151,12 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
 /// </returns>
 bool MgHttpWfsDescribeFeatureType::ProcessPostRequest(MgHttpRequest *hRequest, MgHttpResponse& hResponse)
 {
-    string xmlString = hRequest->GetRequestParam()->GetXmlPostData();
+    Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
+    string xmlString = params->GetXmlPostData();
     STRING wxmlString = MgUtil::MultiByteToWideChar(xmlString);
 
-    //TODO Parse hRequest->GetRequestParam()->GetXmlPostData();
-    //TODO When parsing, extract prefix and namespace and put them into the parm collection.
+    //TODO Parse params->GetXmlPostData();
+    //TODO When parsing, extract prefix and namespace and put them into the param collection.
 #ifdef _WFS_LOGGING
     MyLog.Write(_("WFS::DescribeFeatureType POST\r\n"));
     MyLog.Write(wxmlString);
@@ -167,17 +167,18 @@ bool MgHttpWfsDescribeFeatureType::ProcessPostRequest(MgHttpRequest *hRequest, M
 }
 
 
-
 void MgHttpWfsDescribeFeatureType::GenerateTypeNameException(MgHttpResult* pResult,CREFSTRING sFeatureTypes)
 {
     Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
     Ptr<MgFeatureService> pFeatureService   = (MgFeatureService *)(CreateService(MgServiceType::FeatureService ));
     //
     MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService);
+
     // We have to wrap the request parameters, since the outside
     // world is case-sensitive (with respect to names,) but
     // we need our parameters NOT to be so.
-    MgHttpRequestParameters Parms(m_hRequest->GetRequestParam());
+    Ptr<MgHttpRequestParam> origReqParams = m_hRequest->GetRequestParam();
+    MgHttpRequestParameters Parms(origReqParams);
     MgHttpResponseStream Out;
 
     MgOgcServer::SetLoader(GetDocument);
