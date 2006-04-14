@@ -74,7 +74,9 @@ MgUserInformation::MgUserInformation(CREFSTRING userName, CREFSTRING password)
 ///<returns>
 ///Nothing
 ///</returns>
- MgUserInformation::~MgUserInformation() {}
+MgUserInformation::~MgUserInformation()
+{
+}
 
 ///////////////////////////////
 ///<summary>

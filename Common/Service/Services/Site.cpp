@@ -175,6 +175,8 @@ STRING MgSite::CreateSession()
     SetWarning( cmd.GetWarningObject() );
 
     session = *(cmd.GetReturnValue().val.m_str);
+    delete cmd.GetReturnValue().val.m_str;
+
     MgUserInformation* userInformation = MgUserInformation::GetCurrentUserInfo();
     if(userInformation != NULL)
         userInformation->SetMgSessionId(session);
@@ -1187,6 +1189,7 @@ STRING MgSite::RequestServer(INT32 serviceType)
     SetWarning(cmd.GetWarningObject());
 
     serverAddress = *(cmd.GetReturnValue().val.m_str);
+    delete cmd.GetReturnValue().val.m_str;
 
     MG_SITE_CATCH_AND_THROW(L"MgSite.RequestServer")
 
