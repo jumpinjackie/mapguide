@@ -146,12 +146,16 @@
     
     function IncrRed()
     {
+        if(transparent)
+            return;
         r = IncrClr(r);
         SetSelectedColor(r,g,b);
     }
 
     function DecrRed()
     {
+        if(transparent)
+            return;
         r = DecrClr(r);
         SetSelectedColor(r,g,b);
     }
@@ -172,24 +176,32 @@
 
     function IncrGreen()
     {
+        if(transparent)
+            return;
         g = IncrClr(g);
         SetSelectedColor(r,g,b);
     }
 
     function DecrGreen()
     {
+        if(transparent)
+            return;
         g = DecrClr(g);
         SetSelectedColor(r,g,b);
     }
 
     function IncrBlue()
     {
+        if(transparent)
+            return;
         b = IncrClr(b);
         SetSelectedColor(r,g,b);
     }
 
     function DecrBlue()
     {
+        if(transparent)
+            return;
         b = DecrClr(b);
         SetSelectedColor(r,g,b);
     }
