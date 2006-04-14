@@ -30,4 +30,10 @@ class MgHttpResponse;
 /// </param>
 void MgInitializeWebTier(CREFSTRING configFile);
 
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Uninitializes web tier components.
+/// </summary>
+void MgUninitializeWebTier();
+
 #endif // MGWEBSUPPORT_H

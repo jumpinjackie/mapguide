@@ -20,14 +20,16 @@
 #include "Resources.h"
 
 
+// Initialize only once per process
+static bool m_bInitialized = false;
+
+
 void MgInitializeWebTierInternal(CREFSTRING configFile)
 {
     MG_TRY()
 
-    // Initialize only once per process
-    static bool m_bInitialized = false;
-
-    if (m_bInitialized) return;
+    if (m_bInitialized)
+        return;
 
     // Initialize ACE, this should enable sockets as well
     ACE::init();
@@ -50,7 +52,6 @@ void MgInitializeWebTierInternal(CREFSTRING configFile)
 
         resources->Initialize(resourcesPath);
         resources->LoadResources(locale);
-
     }
 
     m_bInitialized = true;
@@ -58,12 +59,38 @@ void MgInitializeWebTierInternal(CREFSTRING configFile)
     MG_CATCH_AND_THROW(L"MgInitializeWebTierInternal")
 }
 
+
+void MgUninitializeWebTierInternal()
+{
+    MG_TRY()
+
+    if (!m_bInitialized)
+        return;
+
+    // Uninitialize ACE
+    ACE::fini();
+
+    m_bInitialized = false;
+
+    MG_CATCH_AND_THROW(L"MgUninitializeWebTierInternal")
+}
+
+
 void MgInitializeWebTier(CREFSTRING configFile)
 {
     MG_TRY()
 
-    ACE_MT (ACE_GUARD_ACTION(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance (), MgInitializeWebTierInternal(configFile);, ;));
+    ACE_MT (ACE_GUARD_ACTION(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance(), MgInitializeWebTierInternal(configFile);, ;));
 
     MG_CATCH_AND_THROW(L"MgInitializeWebTier")
 }
 
+
+void MgUninitializeWebTier()
+{
+    MG_TRY()
+
+    ACE_MT (ACE_GUARD_ACTION(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance(), MgUninitializeWebTierInternal();, ;));
+
+    MG_CATCH_AND_THROW(L"MgInitializeWebTier")
+}
