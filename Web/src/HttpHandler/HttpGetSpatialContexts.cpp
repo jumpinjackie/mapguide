@@ -44,8 +44,6 @@ MgHttpGetSpatialContexts::MgHttpGetSpatialContexts(MgHttpRequest *hRequest)
         m_activeOnly = true;
     else if (activeOnly == L"0")
         m_activeOnly = false;
-    else if (activeOnly.empty())
-        m_activeOnly = false;
     else
     {
         MgStringCollection arguments;
