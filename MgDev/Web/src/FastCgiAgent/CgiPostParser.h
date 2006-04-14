@@ -26,8 +26,10 @@ public:
     CgiPostParser(void);
     ~CgiPostParser(void);
     void Parse(MgHttpRequestParam* params);
-private:
 
+private:
+    size_t m_bufSize;
+    char* m_buf;
 };
 
 #endif
