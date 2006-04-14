@@ -39,8 +39,6 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWmsGetCapabilities)
 MgHttpWmsGetCapabilities::MgHttpWmsGetCapabilities(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
-
-    Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
 }
 
 
@@ -80,7 +78,8 @@ void MgHttpWmsGetCapabilities::Execute(MgHttpResponse& hResponse)
     // We have to wrap the request parameters, since the outside
     // world is case-sensitive (with respect to names,) but
     // we need our parameters NOT to be so.
-    MgHttpRequestParameters requestParams(m_hRequest->GetRequestParam());
+    Ptr<MgHttpRequestParam> origReqParams = m_hRequest->GetRequestParam();
+    MgHttpRequestParameters requestParams(origReqParams);
     MgHttpResponseStream responseStream;
 
     // Declare the method we'd like the system to use for resolving
@@ -123,7 +122,7 @@ void MgHttpWmsGetCapabilities::AcquireResponseData(MgOgcServer* ogcServer)
 MgWmsLayerDefinitions* MgHttpWmsGetCapabilities::GetLayerDefinitions(MgResourceService& resourceService)
 {
     MgWmsLayerDefinitions* layerDefs = NULL;
-        
+
     // Create MgResourceIdentifier
     MgResourceIdentifier mgrIdentifier(_("Library://"));
 

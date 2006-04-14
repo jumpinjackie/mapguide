@@ -57,7 +57,7 @@ void MgHttpEnumerateGroups::Execute(MgHttpResponse& hResponse)
     Ptr<MgSite> mgSite = m_siteConn->GetSite();
 
     // Run API command
-    MgByteReader* byteReaderResult = mgSite->EnumerateGroups();
+    Ptr<MgByteReader> byteReaderResult = mgSite->EnumerateGroups();
 
     hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 

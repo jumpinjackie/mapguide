@@ -38,8 +38,6 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWfsGetCapabilities)
 MgHttpWfsGetCapabilities::MgHttpWfsGetCapabilities(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
-
-    Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
 }
 
 
@@ -71,7 +69,8 @@ void MgHttpWfsGetCapabilities::Execute(MgHttpResponse& hResponse)
     // We have to wrap the request parameters, since the outside
     // world is case-sensitive (with respect to names,) but
     // we need our parameters NOT to be so.
-    MgHttpRequestParameters Parms(m_hRequest->GetRequestParam());
+    Ptr<MgHttpRequestParam> origReqParams = m_hRequest->GetRequestParam();
+    MgHttpRequestParameters Parms(origReqParams);
     MgHttpResponseStream Out;
 
     MgOgcServer::SetLoader(GetDocument);
@@ -105,6 +104,7 @@ void MgHttpWfsGetCapabilities::Execute(MgHttpResponse& hResponse)
 /// </returns>
 bool MgHttpWfsGetCapabilities::ProcessPostRequest(MgHttpRequest *hRequest, MgHttpResponse& hResponse)
 {
-    //TODO Parse hRequest->GetRequestParam()->GetXmlPostData();
+    //Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
+    //TODO Parse params->GetXmlPostData();
     return false;
 }

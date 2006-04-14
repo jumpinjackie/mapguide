@@ -222,7 +222,7 @@ bool MgOgcWfsServer::ValidateGetFeatureRequest()
     }
 
     // Check that the request contains at least one feature type
-    MgStringCollection* pFeatureTypes = m_pGetFeatureParams->GetFeatureTypes();
+    Ptr<MgStringCollection> pFeatureTypes = m_pGetFeatureParams->GetFeatureTypes();
     if(pFeatureTypes == NULL || pFeatureTypes->GetCount() == 0)
     {
         ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszMissingRequestParameter,

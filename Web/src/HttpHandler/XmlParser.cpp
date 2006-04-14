@@ -518,7 +518,7 @@ MgXmlParser::MgXmlParser(VPSZ pszString)
 MgXmlParser::~MgXmlParser()
 {
     if(m_sString != NULL)
-        delete(m_sString);
+        free((void*)m_sString);
     if(m_pCurrent != NULL)
         delete(m_pCurrent);
 }
@@ -665,6 +665,20 @@ MgXmlNamespaceManager::MgXmlNamespaceManager()
 }
 
 
+MgXmlNamespaceManager::~MgXmlNamespaceManager()
+{
+    // Sometimes we're left with one or more namespace scopes due to mismatched
+    // calls to TrackBeginElement/TrackEndElement.  We need to delete these to
+    // reclaim memory.
+    while (m_pTopScope != NULL)
+    {
+        MgXmlNamespaceScope* pOldTop = m_pTopScope;
+        m_pTopScope = (MgXmlNamespaceScope*)m_pTopScope->NextScope();
+        delete(pOldTop);
+    }
+}
+
+
 bool MgXmlNamespaceManager::TrackBeginElement(MgXmlBeginElement& oBegin)
 {
     m_pTopScope = new MgXmlNamespaceScope(oBegin.Name().c_str(),m_pTopScope);
@@ -706,7 +720,7 @@ bool MgXmlNamespaceManager::TrackEndElement  (MgXmlEndElement&   oEnd)
         return false;  // We don't expect that: </end> not the same as <begin>
 
     // Remove that top scope.
-    MgUtilDictionary* pOldTop = m_pTopScope;
+    MgXmlNamespaceScope* pOldTop = m_pTopScope;
     m_pTopScope = (MgXmlNamespaceScope*)m_pTopScope->NextScope();
     delete(pOldTop);
 

@@ -482,6 +482,7 @@ class MgXmlNamespaceManager
 {
 public:
     MgXmlNamespaceManager();
+    ~MgXmlNamespaceManager();
 
     // These two methods track the scope of namespaces
     // by hooking into the Begin and End elements.

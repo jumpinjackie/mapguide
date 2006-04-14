@@ -230,7 +230,8 @@ MgHttpResponse* MgHttpRequest::Execute()
     MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
     if (userInfo != NULL && !userInfo->GetMgSessionId().empty())
     {
-        hResponse->GetHeader()->AddHeader(MgHttpResourceStrings::reqSession, userInfo->GetMgSessionId());
+        Ptr<MgHttpHeader> header = hResponse->GetHeader();
+        header->AddHeader(MgHttpResourceStrings::reqSession, userInfo->GetMgSessionId());
     }
 
     MG_HTTP_HANDLER_CATCH(L"MgHttpRequest.Execute")
