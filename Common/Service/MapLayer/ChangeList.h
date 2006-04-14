@@ -21,7 +21,7 @@
 class MgChangeList;
 template class MG_SERVICE_API Ptr<MgChangeList>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 class MG_SERVICE_API MgChangeList : public MgNamedSerializable
 {
     DECLARE_CLASSNAME(MgChangeList)
@@ -96,6 +96,6 @@ protected:
 
     Ptr<MgDisposableCollection>  m_changes;
 };
-/// \endcond 
+/// \endcond
 
 #endif

@@ -18,8 +18,7 @@
 #ifndef _MG_GEOMETRYCOMPONENTCOLLECTION_H_
 #define _MG_GEOMETRYCOMPONENTCOLLECTION_H_
 
-
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgGeometryComponentCollection provides support for defining an ordered set
@@ -156,6 +155,6 @@ EXTERNAL_API:
     ///
     virtual INT32 IndexOf(const MgGeometryComponent* value) const;
 };
-/// \endcond 
+/// \endcond
 
 #endif

@@ -22,7 +22,7 @@
 class MgDisposableCollection;
 template class MG_SERVICE_API Ptr<MgDisposableCollection>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// This class represents a collection of MgDisposable objects.  The objects
@@ -225,6 +225,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = CoreData_Collection_Collection;
 };
-/// \endcond 
+/// \endcond
 
 #endif

@@ -15,10 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
 #ifndef _MG_CONFIGURATION_H
 #define _MG_CONFIGURATION_H
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /// MapGuide Configuration try/catch/throw macros.
@@ -35,7 +33,7 @@
 #define MG_CONFIGURATION_CATCH_AND_THROW(methodName)                          \
     MG_CATCH_AND_THROW(methodName)                                            \
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 class MG_SERVICE_API MgConfiguration : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgConfiguration)
@@ -244,7 +242,6 @@ private:
     /// Needed for thread-safety
     ACE_Recursive_Thread_Mutex m_mutex;
 };
-/// \endcond 
+/// \endcond
 
 #endif //_MG_CONFIGURATION_H
-

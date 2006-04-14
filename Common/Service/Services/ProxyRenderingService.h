@@ -18,7 +18,7 @@
 #ifndef _MG_PROXY_RENDERING_SERVICE_H
 #define _MG_PROXY_RENDERING_SERVICE_H
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// This class allows rendering of map images
@@ -310,6 +310,6 @@ private:
 
     void SetWarning(MgWarnings* warning);
 };
-/// \endcond 
+/// \endcond
 
 #endif

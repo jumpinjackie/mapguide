@@ -18,10 +18,9 @@
 #ifndef _MGGUARDDISPOSABLE_H_
 #define _MGGUARDDISPOSABLE_H_
 
-
 #include "ace/Process_Manager.h"
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// MgGuardDisposable is the base interface for all classes that implement this
@@ -83,6 +82,6 @@ private:
 
     ACE_Recursive_Thread_Mutex m_mutex;
 };
-/// \endcond 
+/// \endcond
 
 #endif

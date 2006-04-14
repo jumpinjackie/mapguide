@@ -18,7 +18,7 @@
 #ifndef _MG_ADV_CONTROLLER_H_
 #define _MG_ADV_CONTROLLER_H_
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 //Temporary:  page units will be defined in mapping services
 class MG_SERVICE_API MgPageSizeUnits
 {

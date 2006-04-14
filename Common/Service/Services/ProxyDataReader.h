@@ -24,7 +24,7 @@ class MgDataReader;
 class MgProxyDataReader;
 template class MG_SERVICE_API Ptr<MgProxyDataReader>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The SqlReader interface provides a forward-only, read-only
@@ -381,6 +381,6 @@ CLASS_ID:
     static const INT32 m_cls_id = FeatureService_DataReader;
 
 };
-/// \endcond 
+/// \endcond
 
 #endif

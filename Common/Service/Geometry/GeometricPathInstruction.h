@@ -18,7 +18,7 @@
 #ifndef _MGGEOMETRICPATHINSTRUCTION_H_
 #define _MGGEOMETRICPATHINSTRUCTION_H_
 
-/// \cond INTERNAL 
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgGeometricPathInstruction is an abstract base class for all of the path
@@ -36,6 +36,6 @@ EXTERNAL_API:
     ///
     virtual INT32 GetType() = 0;
 };
-/// \endcond 
+/// \endcond
 
 #endif //_MGGEOMETRICPATHINSTRUCTION_H_

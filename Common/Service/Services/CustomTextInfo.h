@@ -18,7 +18,7 @@
 #ifndef MG_CUSTOM_TEXT_INFO_H
 #define MG_CUSTOM_TEXT_INFO_H
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 class MG_SERVICE_API MgCustomTextInfo
 {
     DECLARE_CLASSNAME(MgCustomTextInfo)
@@ -54,6 +54,6 @@ private:
     STRING m_value;
 
 };
-/// \endcond 
+/// \endcond
 
 #endif

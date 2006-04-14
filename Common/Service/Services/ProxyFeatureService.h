@@ -21,7 +21,7 @@
 
 class MgIntCollection;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The purpose of FeatureService is to provide access to all available FdoProviders
@@ -741,6 +741,6 @@ private:
 
     void SetWarning(MgWarnings* warning);
 };
-/// \endcond 
+/// \endcond
 
 #endif

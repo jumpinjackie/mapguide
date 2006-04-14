@@ -18,7 +18,7 @@
 #ifndef _GEOUTIL_H_
 #define _GEOUTIL_H_
 
-/// \cond INTERNAL 
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// The MgWktReaderWriter class supports reading geometry objects from a
@@ -54,6 +54,6 @@ public:
 private:
     static STRING ToAwkt(MgGeometricEntity* geom1);
 };
-/// \endcond 
+/// \endcond
 
 #endif

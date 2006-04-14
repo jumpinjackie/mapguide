@@ -18,7 +18,7 @@
 #ifndef _MGNAMEDSERIALIZABLE_H_
 #define _MGNAMEDSERIALIZABLE_H_
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// Root class for all named serializable objects.
@@ -59,6 +59,6 @@ INTERNAL_API:
     ///
     virtual bool CanSetName() = 0;
 };
-/// \endcond 
+/// \endcond
 
 #endif

@@ -24,7 +24,7 @@
 
 #define GIS_API
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////// 
 /* Class to do allocations for the GisArray template.
  * Allocations and freeing must be done in this class in order to
@@ -61,6 +61,6 @@ protected:
     /// Constructor (makes sure that this class cannot be instantiated -- it consists of all static methods.
     GIS_API GisArrayHelper() {};
 };
-/// \endcond 
+/// \endcond
 
 #endif

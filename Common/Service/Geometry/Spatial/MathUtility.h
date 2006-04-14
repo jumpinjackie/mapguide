@@ -15,7 +15,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
 #ifndef MgMathUtility_H
 #define MgMathUtility_H
 
@@ -30,7 +29,7 @@
 #define M_PI    3.14159265358979323846
 #endif
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 // Mathematical Utility.
 class MgMathUtility
 {
@@ -93,8 +92,6 @@ public:
     /// value is also a (quiet) NaN.
     static double LinearInterpolate(double start, double end, double proportion);
 };
-/// \endcond 
+/// \endcond
 
 #endif
-
- 

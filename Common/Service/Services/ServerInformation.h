@@ -15,14 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
 #ifndef MGSERVERINFORMATION_H_
 #define MGSERVERINFORMATION_H_
 
 class MgServerInformation;
 template class MG_SERVICE_API Ptr<MgServerInformation>;
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// This class manages server information.  Information includes the server
@@ -373,6 +372,6 @@ CLASS_ID:
 
     static const INT32 m_cls_id = CoreService_MgServerInformation;
 };
-/// \endcond 
+/// \endcond
 
 #endif

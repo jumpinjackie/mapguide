@@ -18,8 +18,7 @@
 #ifndef MG_OBJECT_H_
 #define MG_OBJECT_H_
 
-
-/// \cond INTERNAL  
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Root class of all non-exception objects
@@ -66,6 +65,6 @@ INTERNAL_API:
     ///
     bool IsOfClass(INT32 classId);
 };
-/// \endcond 
+/// \endcond
 
 #endif

@@ -18,7 +18,7 @@
 #ifndef MG_COMMAND_H
 #define MG_COMMAND_H
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// The class Command provides a generic mechanism to send commands
@@ -160,6 +160,6 @@ protected:
 
     ReturnValue     m_retVal;
 };
-/// \endcond 
+/// \endcond
 
 #endif

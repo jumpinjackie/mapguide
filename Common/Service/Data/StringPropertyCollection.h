@@ -18,7 +18,7 @@
 #ifndef MGSTRINGPROPERTYCOLLECTION_H_
 #define MGSTRINGPROPERTYCOLLECTION_H_
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// This class collects key-value pairs in Strings. The key name should be unique.
@@ -308,6 +308,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = CoreData_Collection_StringPropertyCollection;
 };
-/// \endcond 
+/// \endcond
 
 #endif

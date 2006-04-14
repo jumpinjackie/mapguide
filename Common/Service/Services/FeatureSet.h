@@ -24,7 +24,7 @@ class MgFeatureSet;
 template class MG_SERVICE_API Ptr<MgFeatureSet>;
 #endif
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The FeatureSet class provides an iterator a way to create a
@@ -257,6 +257,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = FeatureService_FeatureSet;
 };
-/// \endcond 
+/// \endcond
 
 #endif

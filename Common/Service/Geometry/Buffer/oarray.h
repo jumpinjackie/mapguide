@@ -304,4 +304,3 @@ typedef OpsArray<int> OpsIntArray;
 #endif
 
 /// \endcond INTERNAL
-

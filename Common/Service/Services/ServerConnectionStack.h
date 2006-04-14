@@ -88,4 +88,3 @@ private:
 /// \endcond INTERNAL
 
 #endif
-

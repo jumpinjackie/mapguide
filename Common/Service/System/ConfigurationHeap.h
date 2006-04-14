@@ -18,7 +18,7 @@
 #ifndef _MG_CONFIGURATION_HEAP_H_
 #define _MG_CONFIGURATION_HEAP_H_
 
-/// \cond INTERNAL 
+/// \cond INTERNAL
 class MgConfigurationHeap
 {
     DECLARE_CLASSNAME(MgConfigurationHeap)
@@ -154,7 +154,6 @@ private:
     ///
     wstring Trim(const wstring& line);
 };
-/// \endcond 
+/// \endcond
 
 #endif // _MG_CONFIGURATION_HEAP_H_
-

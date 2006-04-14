@@ -25,7 +25,7 @@
 
 #define GIS_API
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 class GisStringUtility
 {
 public:
@@ -48,6 +48,6 @@ public:
 
     GIS_API static wchar_t*   NullString;
 };
-/// \endcond 
+/// \endcond
 
 #endif

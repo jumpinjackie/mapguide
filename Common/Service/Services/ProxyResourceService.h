@@ -18,7 +18,7 @@
 #ifndef MGPROXYRESOURCESERVICE_H_
 #define MGPROXYRESOURCESERVICE_H_
 
-/// \cond INTERNAL  
+/// \cond INTERNAL
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Contains all the methods to make requests to the resource
@@ -664,6 +664,6 @@ private:
 
     void SetWarning(MgWarnings* warning);
 };
-/// \endcond 
+/// \endcond
 
 #endif
