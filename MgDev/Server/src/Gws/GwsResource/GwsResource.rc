@@ -102,7 +102,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STRING_CACHEID      "Feature with Cache Id"
+    IDS_STRING_CACHEID      "Feature with Cache ID"
     IDS_STRING_UPDATEFAILED "Update Instance failed in Add Features"
     IDS_STRING_eGwsOutOfMemory "GWS Out of memory."
     IDS_STRING_eGwsFailedToCommitTransaction 
@@ -122,7 +122,7 @@ BEGIN
     IDS_STRING_eGwsFailedToPrepareQuery "Query preparation Failed."
     IDS_STRING_eGwsFailedToExecuteQuery "Failed to execute query."
     IDS_STRING_eGwsGetCachedFeaturesByIdsFailed 
-                            "Unable to get cached features by ids."
+                            "Unable to get cached features by IDs."
     IDS_STRING_eGwsIsReadOnly "The GWS is open in read-only mode."
     IDS_STRING_eGwsFileNotFound "GWS XML file not found."
 END
@@ -146,7 +146,7 @@ BEGIN
     IDS_STRING_eGwsFailedToWriteGws "Failed to write the GWS XML file."
     IDS_STRING_eGwsFailed   "Failed to complete operation."
     IDS_STRING_eGwsInvalidCacheId 
-                            "Cache id is invalid or feature is not cached."
+                            "Cache ID is invalid or feature is not cached."
     IDS_STRING_eGwsFailedToInitializeFdoConnection 
                             "Failed to initialize Fdo connection."
     IDS_STRING_eGwsConnectionParameterNotFound 
@@ -158,9 +158,9 @@ END
 STRINGTABLE 
 BEGIN
     IDS_STRING_eGwsFailedToCacheFeatures "Failed to cache features."
-    IDS_STRING_eGwsLayerSourceNotPartOfGws "Layer source not part of Gws"
+    IDS_STRING_eGwsLayerSourceNotPartOfGws "Layer source not part of GWS"
     IDS_STRING_eGwsFeatureSourceDoesnotSupportLongIdentity 
-                            "This Feature Source does not support integer feature ids."
+                            "This Feature Source does not support integer feature IDs."
     IDS_STRING_eGwsFailedToDeleteFeature "Failed to delete Feature."
     IDS_STRING_eGwsFailedToInsertFeature "Failed to insert feature."
     IDS_STRING_eGwsInvalidParameter "Invalid parameter."
@@ -202,7 +202,7 @@ BEGIN
     IDS_STRING_eGwsJoinPropertiesCardinalityViolation 
                             "Join properties cardinality violation."
     IDS_STRING_eGwsGwsCacheCorrupted 
-                            "Gws cache is corrupted or has unsupported format."
+                            "GWS cache is corrupted or has unsupported format."
     IDS_STRING_eGwsFailedToUpdateFeature "Failed to update feature."
     IDS_STRING_eGwsEditSetUnavailable 
                             "The edit set is unavailable for un-cached layers and layers in direct update mode."
@@ -219,12 +219,12 @@ BEGIN
     IDS_STRING_eGwsFailedToTerminateSession "Failed to end session."
     IDS_STRING_eGwsSessionNotFound "Session does not exist."
     IDS_STRING_eGwsFailedToFlushChanges 
-                            "Failed to flush changed to the feature source or cache."
+                            "Failed to flush changes to the feature source or cache."
     IDS_STRING_eGwsFailedToDesribeClass "Failed to describe class."
     IDS_STRING_eGwsFeatureStorageDoesNotExist 
-                            "Gws cache feature storage does not exist."
+                            "GWS cache feature storage does not exist."
     IDS_STRING_eGwsFeatureStorageAlreadyCreated 
-                            "Gws cache feature storage already exist."
+                            "GWS cache feature storage already exist."
     IDS_STRING_eGwsFailedToCreateQuery "Failed to create query."
     IDS_STRING_eGwsDoesNotSupportRightJoin 
                             "Join is not supported at the right hand side of the query definition."
@@ -254,7 +254,7 @@ BEGIN
                             "Failed to add FDO identity property definition."
     IDS_STRING_eGwsFailedToCreateGwsFeatureDefintion 
                             "Failed to create feature definition in GWS cache."
-    IDS_STRING_eGwsStorageNotLoaded "Gws cache is not yet loaded."
+    IDS_STRING_eGwsStorageNotLoaded "GWS cache is not yet loaded."
     IDS_STRING_eGwsFdoReadOnlyProperty 
                             "Failed to set or update read only property."
     IDS_STRING_eGwsFdoQueryIsNotPrepared "Query is not prepared."
@@ -270,11 +270,11 @@ BEGIN
     IDS_STRING_eGwsFailedToSaveGws "Failed to save GWS."
     IDS_STRING_eGwsFailedToDescribeLayer "Cannot get layer description."
     IDS_STRING_eGwsWarningNotCaching 
-                            "Gws does not cache feature for the layer."
+                            "GWS does not cache feature for the layer."
     IDS_STRING_eGwsWarningStillLoadingCache 
-                            "Gws working thread is still caching features. "
+                            "GWS working thread is still caching features. "
     IDS_STRING_eGwsWarningCacheLoadingStopped 
-                            "Gws cache loading has been stopped."
+                            "GWS cache loading has been stopped."
     IDS_STRING_eGwsItemAlreadyAdded 
                             "An item with the specified name is already in the collection."
     IDS_STRING_eGwsItemNotFound 
@@ -310,7 +310,7 @@ BEGIN
     IDS_STRING_eGwsInsertCommandNotSupported 
                             "Insert command is not supported by the feature source."
     IDS_STRING_eGwsWrongLayerFeatureId 
-                            "Wrong layer feature id. Layer feature id must be a single long value."
+                            "Wrong layer feature ID. Layer feature ID must be a single long value."
     IDS_STRING_eGwsFailedToSaveEditSet "Failed to save edit set."
     IDS_STRING_eGwsMissingLeftJoinAttributes 
                             "Join attributes were not specified."
@@ -378,7 +378,7 @@ BEGIN
     IDS_STRING_eGwsFailedToUpdateLayerSourceVersion 
                             "Failed to update the Layer Source's version information."
     IDS_STRING_eGwsCannotMakeUniqueGwsName "Failed to create unique GWS name."
-    IDS_PROGRESS_READINGFEATUREIDS "Reading feature ids."
+    IDS_PROGRESS_READINGFEATUREIDS "Reading feature IDs."
     IDS_STRING_eGwsWarningExtentsNotYetAvailable 
                             "Extents are not yet available."
     IDS_PROGRESS_PROCESSINGLAYER "Processing Layer %s..."
