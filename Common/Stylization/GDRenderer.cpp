@@ -1429,9 +1429,6 @@ void GDRenderer::DrawString( const RS_String& s,
     char* sutf8 = (char*)alloca(lenbytes);
 
     //convert input to UTF8, which is what GD uses
-    //Note 20051030 : there is a known bug in UTF8 encoding for some Unicode planes
-    //in DWFString on Linux -- this is fixed in the latest toolkit
-    //we just need to get a new drop
     DWFCore::DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
 
     //convert font path to utf8 also
@@ -1464,9 +1461,6 @@ void GDRenderer::MeasureString(const RS_String&  s,
     char* sutf8 = (char*)alloca(lenbytes);
 
     //convert input to UTF8, which is what GD uses
-    //Note 20051030 : there is a known bug in UTF8 encoding for some Unicode planes
-    //in DWFString on Linux -- this is fixed in the latest toolkit
-    //we just need to get a new drop
     DWFCore::DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
 
     //convert font path to utf8 also

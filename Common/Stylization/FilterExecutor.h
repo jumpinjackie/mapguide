@@ -116,6 +116,7 @@ private:
     void ExecuteLayerID(FdoFunction& function);
     void ExecuteFeatureClass(FdoFunction& function);
     void ExecuteFeatureID(FdoFunction& function);
+    void ExecuteUrlEncode(FdoFunction& function);
 
     bool MatchesHere(wchar_t* pattern, wchar_t* src);
     bool MatchPercent(wchar_t* pattern, wchar_t* src);
