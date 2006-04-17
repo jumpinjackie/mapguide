@@ -138,6 +138,7 @@ include_SOURCES = \
   Exception/InvalidResourcePreProcessingTypeException.cpp \
   Exception/InvalidResourceTypeException.cpp \
   Exception/InvalidServerNameException.cpp \
+  Exception/InvalidSerialNumberException.cpp \
   Exception/InvalidStreamHeaderException.cpp \
   Exception/IoException.cpp \
   Exception/LayerNotFoundException.cpp \
@@ -524,6 +525,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/InvalidResourcePreProcessingTypeException.h \
   Exception/InvalidResourceTypeException.h \
   Exception/InvalidServerNameException.h \
+  Exception/InvalidSerialNumberException.h \
   Exception/InvalidStreamHeaderException.h \
   Exception/IoException.h \
   Exception/LayerNotFoundException.h \

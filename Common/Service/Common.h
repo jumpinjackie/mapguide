@@ -163,6 +163,7 @@ class ACE_SOCK_Stream;
 #include "Exception/InvalidResourcePreProcessingTypeException.h"
 #include "Exception/InvalidResourceTypeException.h"
 #include "Exception/InvalidServerNameException.h"
+#include "Exception/InvalidSerialNumberException.h"
 #include "Exception/InvalidStreamHeaderException.h"
 #include "Exception/LayerNotFoundException.h"
 #include "Exception/LengthException.h"

@@ -67,6 +67,7 @@ enum MgErrorCode
     ecInvalidLicense        ,
     ecLicenseExpired        ,
     ecEvaluationExpired     ,
+    ecInvalidSerialNumber   ,
 /// Unknown errors.
     ecUnclassified      = 99
 };
