@@ -106,8 +106,12 @@ EXTERNAL_API:
     static const STRING GeneralPropertyWmsDocumentPath;                 /// value("WmsDocumentPath")
     static const STRING DefaultGeneralPropertyWmsDocumentPath;          /// value("Wms/")
 
+INTERNAL_API:
+
     static const STRING GeneralPropertyWorkerThreadPoolSize;            /// value("WorkerThreadPoolSize")
     static const INT32 DefaultGeneralPropertyWorkerThreadPoolSize;      /// value(10)
+
+EXTERNAL_API:
 
     /// ADMINISTRATIVE CONNECTION PROPERTIES SECTION ---------------------------------------------------------------------
 

@@ -79,7 +79,7 @@
 
 #define MG_CONFIG_MIN_PATH_LENGTH                       1
 #define MG_CONFIG_MAX_PATH_LENGTH                       255
-#define MG_CONFIG_PATH_RESERVED_CHARACTERS              L":*?\"<>|"
+#define MG_CONFIG_PATH_RESERVED_CHARACTERS              L"*?\"<>|"
 
 // Default configuration filenames
 const STRING MgConfigProperties::DefaultConfigurationFilename                               = L"webconfig.ini";
@@ -380,6 +380,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviGeneralProperties[] =
     { MgConfigProperties::GeneralPropertyTempPath                                   , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::GeneralPropertyWfsDocumentPath                            , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::GeneralPropertyWmsDocumentPath                            , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::GeneralPropertyWorkerThreadPoolSize                       , MgPropertyType::Int32     , MG_CONFIG_MIN_THREAD_POOL_SIZE        , MG_CONFIG_MAX_THREAD_POOL_SIZE        , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
