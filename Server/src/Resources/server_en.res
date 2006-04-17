@@ -150,6 +150,11 @@ MgXmlParserException                                  = An exception occurred in
 [ErrorDescription]
 MgArgumentsMismatch                                   = The arguments needed do not match the arguments provided.
 MgCollectionEmpty                                     = The collection cannot be empty. 
+MgConfigurationPropertyLengthIsInvalid                = The value of property %1 under section %2 is %3. Its length must be %4
+MgConfigurationPropertyLengthIsOutOfRange             = The value of property %1 under section %2 is %3. Its length must be between %4 and %5
+MgConfigurationPropertyValueContainsReservedCharacters= The value of property %1 under section %2 is %3. It must not contain any of the following reserved characters: %4
+MgConfigurationPropertyValueIsNotSpecified            = The value of property %1 under section %2 must be specified.
+MgConfigurationPropertyValueIsOutOfRange              = The value of property %1 under section %2 is %3. It must be between %4 and %5
 MgContentDocumentNotEmpty                             = The content document is not empty.
 MgContentNotNull                                      = The content is not null.
 MgCoordinateDimensionDifferent                        = The coordinate dimensions are different.

@@ -105,9 +105,12 @@ void MgSiteConnection::Open(MgUserInformation* userInformation)
     if (!m_http && !m_isWebTier && !m_isServer && !m_isSiteServer)
     {
         MgStringCollection arguments;
-        arguments.Add(MgConfigProperties::DefaultConfigurationFilename);
+        arguments.Add(NULL == m_config ?
+            MgConfigProperties::DefaultConfigurationFilename :
+            m_config->GetFileName());
 
-        throw new MgConfigurationException(L"MgSiteConnection.Open", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgConfigurationException(L"MgSiteConnection.Open", 
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // Get the service IP address from the site server
@@ -525,7 +528,9 @@ MgConnectionProperties* MgSiteConnection::GetSiteConnectionProperties()
         MgStringCollection arguments;
         arguments.Add(m_config->GetFileName());
 
-        throw new MgConfigurationException(L"MgSiteConnection.GetSiteConnectionProperties", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgConfigurationException(
+            L"MgSiteConnection.GetSiteConnectionProperties", 
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return connProp.Detach();

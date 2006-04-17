@@ -198,7 +198,7 @@ void TestServerAdminService::TestCase_SetConfigurationProperties()
         Ptr<MgStringProperty> pProperty1 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultLocale");
         STRING valueOriginal = pProperty1->GetValue();
 
-        pProperty1->SetValue(L"fra");
+        pProperty1->SetValue(L"fr");
         pService->SetConfigurationProperties(L"GeneralProperties", pPropertyCollection1);
 
         Ptr<MgPropertyCollection> pPropertyCollection2 = pService->GetConfigurationProperties(L"GeneralProperties");

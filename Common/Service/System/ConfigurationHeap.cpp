@@ -440,13 +440,6 @@ bool MgConfigurationHeap::SetStringValue(const ACE_Configuration_Section_Key& ke
 }
 
 
-bool MgConfigurationHeap::SetIntegerValue(const ACE_Configuration_Section_Key& key, const ACE_TCHAR* name, u_int value)
-{
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
-    return (m_aceConfigurationHeap.set_integer_value(key, name, value) == 0);
-}
-
-
 bool MgConfigurationHeap::GetStringValue(const ACE_Configuration_Section_Key& key, const ACE_TCHAR* name, ACE_TString& value)
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));

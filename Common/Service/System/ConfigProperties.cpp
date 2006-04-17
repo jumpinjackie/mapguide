@@ -18,6 +18,69 @@
 #include "AceCommon.h"
 #include "ConfigProperties.h"
 
+///////////////////////////////////////////////////////////////////////////////
+/// Value ranges of numeric properties
+///
+#define MG_CONFIG_MAX_INT32                             2147483647 // 0x7FFFFFFF
+
+#define MG_CONFIG_MIN_CACHE_SIZE                        1
+#define MG_CONFIG_MAX_CACHE_SIZE                        MG_CONFIG_MAX_INT32
+
+#define MG_CONFIG_MIN_CONNECTION_POOL_SIZE              1
+#define MG_CONFIG_MAX_CONNECTION_POOL_SIZE              1024
+
+#define MG_CONFIG_MIN_CONNECTIONS                       1
+#define MG_CONFIG_MAX_CONNECTIONS                       1024
+
+#define MG_CONFIG_MIN_PORT_NUMBER                       0
+#define MG_CONFIG_MAX_PORT_NUMBER                       65535
+
+#define MG_CONFIG_MIN_QUEUE_SIZE                        1
+#define MG_CONFIG_MAX_QUEUE_SIZE                        1024
+
+#define MG_CONFIG_MIN_THREAD_POOL_SIZE                  1
+#define MG_CONFIG_MAX_THREAD_POOL_SIZE                  1024
+
+#define MG_CONFIG_MIN_TIMEOUT                           1
+#define MG_CONFIG_MAX_TIMEOUT                           86400
+
+#define MG_CONFIG_MIN_TIMER_INTERVAL                    1
+#define MG_CONFIG_MAX_TIMER_INTERVAL                    MG_CONFIG_MAX_INT32
+
+///////////////////////////////////////////////////////////////////////////////
+/// Length ranges of string properties
+///
+#define MG_CONFIG_MIN_EMAIL_LENGTH                      0
+#define MG_CONFIG_MAX_EMAIL_LENGTH                      255
+
+#define MG_CONFIG_MIN_FILE_NAME_LENGTH                  1
+#define MG_CONFIG_MAX_FILE_NAME_LENGTH                  128
+#define MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS         L"\\/:*?\"<>|"
+
+#define MG_CONFIG_MIN_FOLDER_NAME_LENGTH                1
+#define MG_CONFIG_MAX_FOLDER_NAME_LENGTH                128
+#define MG_CONFIG_FOLDER_NAME_RESERVED_CHARACTERS       MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS
+
+#define MG_CONFIG_MIN_IP_ADDRESS_LENGTH                 1
+#define MG_CONFIG_MAX_IP_ADDRESS_LENGTH                 255
+
+#define MG_CONFIG_MIN_LOCALE_LENGTH                     2
+#define MG_CONFIG_MAX_LOCALE_LENGTH                     2
+
+#define MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH            0
+#define MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH            255
+
+#define MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH             0
+#define MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH             1024
+
+#define MG_CONFIG_MIN_PASSWORD_LENGTH                   0
+#define MG_CONFIG_MAX_PASSWORD_LENGTH                   64
+#define MG_CONFIG_PASSWORD_RESERVED_CHARACTERS          L"\t\r\n\v\f"
+
+#define MG_CONFIG_MIN_PATH_LENGTH                       1
+#define MG_CONFIG_MAX_PATH_LENGTH                       255
+#define MG_CONFIG_PATH_RESERVED_CHARACTERS              L":*?\"<>|"
+
 // Default configuration filenames
 const STRING MgConfigProperties::DefaultConfigurationFilename                               = L"webconfig.ini";
 const STRING MgConfigProperties::ServerConfigurationFilename                                = L"serverconfig.ini";
@@ -28,115 +91,36 @@ const STRING MgConfigProperties::ServerConfigurationFilename                    
 // General Properties
 // ******************************************************************
 const STRING MgConfigProperties::GeneralPropertiesSection                                   = L"GeneralProperties";
-const STRING MgConfigProperties::GeneralPropertyDefaultLocale                               = L"DefaultLocale";
-const STRING MgConfigProperties::DefaultGeneralPropertyDefaultLocale                        = L"en";      // ISO 639-1 name
-const STRING MgConfigProperties::GeneralPropertyDisplayName                                 = L"DisplayName";
-const STRING MgConfigProperties::DefaultGeneralPropertyDisplayName                          = L"";
-const STRING MgConfigProperties::GeneralPropertyLogsPath                                    = L"LogsPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyLogsPath                             = L"./Logs/";
-const STRING MgConfigProperties::GeneralPropertyResourcesPath                               = L"ResourcesPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyResourcesPath                        = L"./Resources/";
-const STRING MgConfigProperties::GeneralPropertyTcpIpMtu                                    = L"TcpIpMtu";
-const INT32  MgConfigProperties::DefaultGeneralPropertyTcpIpMtu                             = 1460;
-const STRING MgConfigProperties::GeneralPropertyTempPath                                    = L"TempPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyTempPath                             = L"./Temp/";
-const STRING MgConfigProperties::GeneralPropertyFdoPath                                     = L"FdoPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyFdoPath                              = L"";
 const STRING MgConfigProperties::GeneralPropertyConnectionTimeout                           = L"ConnectionTimeout";
 const INT32  MgConfigProperties::DefaultGeneralPropertyConnectionTimeout                    = 120;
 const STRING MgConfigProperties::GeneralPropertyConnectionTimerInterval                     = L"ConnectionTimerInterval";
 const INT32  MgConfigProperties::DefaultGeneralPropertyConnectionTimerInterval              = 60;
-const STRING MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval            = L"ServiceRegistrationTimerInterval";
-const INT32  MgConfigProperties::DefaultGeneralPropertyServiceRegistrationTimerInterval     = 60;
-const STRING MgConfigProperties::GeneralPropertyMaxLogFileSize                              = L"MaxLogFileSize";
-const INT32  MgConfigProperties::DefaultGeneralPropertyMaxLogFileSize                       = 64;
+const STRING MgConfigProperties::GeneralPropertyDefaultLocale                               = L"DefaultLocale";
+const STRING MgConfigProperties::DefaultGeneralPropertyDefaultLocale                        = L"en";      // ISO 639-1 name
+const STRING MgConfigProperties::GeneralPropertyDisplayName                                 = L"DisplayName";
+const STRING MgConfigProperties::DefaultGeneralPropertyDisplayName                          = L"";
+const STRING MgConfigProperties::GeneralPropertyFdoPath                                     = L"FdoPath";
+const STRING MgConfigProperties::DefaultGeneralPropertyFdoPath                              = L"";
 const STRING MgConfigProperties::GeneralPropertyLogsDelimiter                               = L"LogsDelimiter";
 const STRING MgConfigProperties::DefaultGeneralPropertyLogsDelimiter                        = L"\t";
+const STRING MgConfigProperties::GeneralPropertyLogsPath                                    = L"LogsPath";
+const STRING MgConfigProperties::DefaultGeneralPropertyLogsPath                             = L"Logs/";
+const STRING MgConfigProperties::GeneralPropertyMaxLogFileSize                              = L"MaxLogFileSize";
+const INT32  MgConfigProperties::DefaultGeneralPropertyMaxLogFileSize                       = 1024;
 const STRING MgConfigProperties::GeneralPropertyMaxLogFileSizeEnabled                       = L"MaxLogFileSizeEnabled";
 const bool   MgConfigProperties::DefaultGeneralPropertyMaxLogFileSizeEnabled                = false;
-
-// ******************************************************************
-// Drawing Service Properties
-// ******************************************************************
-const STRING MgConfigProperties::DrawingServicePropertiesSection                            = L"DrawingServiceProperties";
-
-// ******************************************************************
-// Feature Service Properties
-// ******************************************************************
-const STRING MgConfigProperties::FeatureServicePropertiesSection                            = L"FeatureServiceProperties";
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled            = L"DataConnectionPoolEnabled";
-const bool   MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled     = false;
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize               = L"DataConnectionPoolSize";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize        = 100;
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimeout                = L"DataConnectionTimeout";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout         = 600;
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval          = L"DataConnectionTimerInterval";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval   = 60;
-const STRING MgConfigProperties::FeatureServicePropertyDataCacheSize                        = L"DataCacheSize";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize                 = 100;
-
-// ******************************************************************
-// Mapping Service Properties
-// ******************************************************************
-const STRING MgConfigProperties::MappingServicePropertiesSection                            = L"MappingServiceProperties";
-
-// ******************************************************************
-// Rendering Service Properties
-// ******************************************************************
-const STRING MgConfigProperties::RenderingServicePropertiesSection                          = L"RenderingServiceProperties";
-const STRING MgConfigProperties::RenderingServicePropertyTileExtentOffset                   = L"TileExtentOffset";
-const double MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset            = 0.35;
-
-// ******************************************************************
-// Resource Service Properties
-// ******************************************************************
-const STRING MgConfigProperties::ResourceServicePropertiesSection                               = L"ResourceServiceProperties";
-const STRING MgConfigProperties::ResourceServicePropertyLibraryResourceDataFilePath             = L"LibraryResourceDataFilePath";
-const STRING MgConfigProperties::DefaultResourceServicePropertyLibraryResourceDataFilePath      = L"./Repositories/Library/DataFiles/";
-const STRING MgConfigProperties::ResourceServicePropertyLibraryRepositoryPath                   = L"LibraryRepositoryPath";
-const STRING MgConfigProperties::DefaultResourceServicePropertyLibraryRepositoryPath            = L"./Repositories/Library/";
-const STRING MgConfigProperties::ResourceServicePropertySessionResourceDataFilePath             = L"SessionResourceDataFilePath";
-const STRING MgConfigProperties::DefaultResourceServicePropertySessionResourceDataFilePath      = L"./Repositories/Session/DataFiles/";
-const STRING MgConfigProperties::ResourceServicePropertySessionRepositoryPath                   = L"SessionRepositoryPath";
-const STRING MgConfigProperties::DefaultResourceServicePropertySessionRepositoryPath            = L"./Repositories/Session/";
-const STRING MgConfigProperties::ResourceServicePropertySiteRepositoryPath                      = L"SiteRepositoryPath";
-const STRING MgConfigProperties::DefaultResourceServicePropertySiteRepositoryPath               = L"./Repositories/Site/";
-const STRING MgConfigProperties::ResourceServicePropertyPackagesPath                            = L"PackagesPath";
-const STRING MgConfigProperties::DefaultResourceServicePropertyPackagesPath                     = L"./Packages/";
-const STRING MgConfigProperties::ResourceServicePropertyResourceSchemaFilePath                  = L"ResourceSchemaFilePath";
-const STRING MgConfigProperties::DefaultResourceServicePropertyResourceSchemaFilePath           = L"./Schema/";
-const STRING MgConfigProperties::ResourceServicePropertyResourceDataFileTrashFolderName         = L"ResourceDataFileTrashFolderName";
-const STRING MgConfigProperties::DefaultResourceServicePropertyResourceDataFileTrashFolderName  = L"Trash";
-const STRING MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval      = L"RepositoryCheckpointsTimerInterval";
-const INT32  MgConfigProperties::DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval = 600;
-const STRING MgConfigProperties::ResourceServicePropertyResourceChangeTimerInterval             = L"ResourceChangeTimerInterval";
-const INT32  MgConfigProperties::DefaultResourceServicePropertyResourceChangeTimerInterval      = 5;
-const INT32  MgConfigProperties::MinimumResourceServicePropertyResourceChangeTimerInterval      = 1;
-const INT32  MgConfigProperties::MaximumResourceServicePropertyResourceChangeTimerInterval      = 2147483647;
-const STRING MgConfigProperties::ResourceServicePropertyResourcePermissionCacheSize             = L"ResourcePermissionCacheSize";
-const INT32  MgConfigProperties::DefaultResourceServicePropertyResourcePermissionCacheSize      = 1000;
-const STRING MgConfigProperties::ResourceServicePropertyResourceValidationEnabled               = L"ResourceValidationEnabled";
-const bool   MgConfigProperties::DefaultResourceServicePropertyResourceValidationEnabled        = true;
-
-// ******************************************************************
-// Site Service Properties
-// ******************************************************************
-const STRING MgConfigProperties::SiteServicePropertiesSection                               = L"SiteServiceProperties";
-const STRING MgConfigProperties::SiteServicePropertySessionTimeout                          = L"SessionTimeout";
-const INT32  MgConfigProperties::DefaultSiteServicePropertySessionTimeout                   = 1200;
-const INT32  MgConfigProperties::MinimumSiteServicePropertySessionTimeout                   = 180;
-const INT32  MgConfigProperties::MaximumSiteServicePropertySessionTimeout                   = 2147483647;
-const STRING MgConfigProperties::SiteServicePropertySessionTimerInterval                    = L"SessionTimerInterval";
-const INT32  MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval             = 400;
-const INT32  MgConfigProperties::MinimumSiteServicePropertySessionTimerInterval             = 60;
-const INT32  MgConfigProperties::MaximumSiteServicePropertySessionTimerInterval             = 2147483647;
-
-// ******************************************************************
-// Tile Service Properties
-// ******************************************************************
-const STRING MgConfigProperties::TileServicePropertiesSection                               = L"TileServiceProperties";
-const STRING MgConfigProperties::TileServicePropertyTileCachePath                           = L"TileCachePath";
-const STRING MgConfigProperties::DefaultTileServicePropertyTileCachePath                    = L"./Repositories/TileCache/";
+const STRING MgConfigProperties::GeneralPropertyResourcesPath                               = L"ResourcesPath";
+const STRING MgConfigProperties::DefaultGeneralPropertyResourcesPath                        = L"Resources/";
+const STRING MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval            = L"ServiceRegistrationTimerInterval";
+const INT32  MgConfigProperties::DefaultGeneralPropertyServiceRegistrationTimerInterval     = 60;
+const STRING MgConfigProperties::GeneralPropertyTcpIpMtu                                    = L"TcpIpMtu";
+const INT32  MgConfigProperties::DefaultGeneralPropertyTcpIpMtu                             = 1460;
+const STRING MgConfigProperties::GeneralPropertyTempPath                                    = L"TempPath";
+const STRING MgConfigProperties::DefaultGeneralPropertyTempPath                             = L"Temp/";
+const STRING MgConfigProperties::GeneralPropertyWfsDocumentPath                             = L"WfsDocumentPath";
+const STRING MgConfigProperties::DefaultGeneralPropertyWfsDocumentPath                      = L"Wfs/";
+const STRING MgConfigProperties::GeneralPropertyWmsDocumentPath                             = L"WmsDocumentPath";
+const STRING MgConfigProperties::DefaultGeneralPropertyWmsDocumentPath                      = L"Wms/";
 
 // ******************************************************************
 // Administrative Connection Properties
@@ -162,7 +146,7 @@ const INT32  MgConfigProperties::DefaultClientConnectionPropertyMaxConnections  
 const STRING MgConfigProperties::ClientConnectionPropertyPort                               = L"Port";
 const INT32  MgConfigProperties::DefaultClientConnectionPropertyPort                        = 4444;
 const STRING MgConfigProperties::ClientConnectionPropertyQueueSize                          = L"QueueSize";
-const INT32  MgConfigProperties::DefaultClientConnectionPropertyQueueSize                   = 10;
+const INT32  MgConfigProperties::DefaultClientConnectionPropertyQueueSize                   = 20;
 const STRING MgConfigProperties::ClientConnectionPropertyThreadPoolSize                     = L"ThreadPoolSize";
 const INT32  MgConfigProperties::DefaultClientConnectionPropertyThreadPoolSize              = 10;
 
@@ -180,23 +164,6 @@ const STRING MgConfigProperties::SiteConnectionPropertyQueueSize                
 const INT32  MgConfigProperties::DefaultSiteConnectionPropertyQueueSize                     = 10;
 const STRING MgConfigProperties::SiteConnectionPropertyThreadPoolSize                       = L"ThreadPoolSize";
 const INT32  MgConfigProperties::DefaultSiteConnectionPropertyThreadPoolSize                = 5;
-
-// ******************************************************************
-// Agent Properties
-// ******************************************************************
-const STRING MgConfigProperties::AgentPropertiesSection                                     = L"AgentProperties";
-const STRING MgConfigProperties::AgentDebugPause                                            = L"DebugPause";
-const INT32  MgConfigProperties::DefaultAgentDebugPause                                     = 0;
-const STRING MgConfigProperties::AgentDisableAuthoring                                      = L"DisableAuthoring";
-const STRING MgConfigProperties::AgentDisableWms                                            = L"DisableWms";
-const STRING MgConfigProperties::AgentDisableWfs                                            = L"DisableWfs";
-
-// ******************************************************************
-// OGC Properties
-// ******************************************************************
-const STRING MgConfigProperties::OgcPropertiesSection                                       = L"OgcProperties";
-const STRING MgConfigProperties::WmsPassword                                                = L"WmsPassword";
-const STRING MgConfigProperties::WfsPassword                                                = L"WfsPassword";
 
 // ******************************************************************
 // Hosted Properties
@@ -217,6 +184,83 @@ const STRING MgConfigProperties::HostPropertySiteService                        
 const bool   MgConfigProperties::DefaultHostPropertySiteService                             = false;
 const STRING MgConfigProperties::HostPropertyTileService                                    = L"TileService";
 const bool   MgConfigProperties::DefaultHostPropertyTileService                             = false;
+
+// ******************************************************************
+// Drawing Service Properties
+// ******************************************************************
+const STRING MgConfigProperties::DrawingServicePropertiesSection                            = L"DrawingServiceProperties";
+
+// ******************************************************************
+// Feature Service Properties
+// ******************************************************************
+const STRING MgConfigProperties::FeatureServicePropertiesSection                            = L"FeatureServiceProperties";
+const STRING MgConfigProperties::FeatureServicePropertyDataCacheSize                        = L"DataCacheSize";
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize                 = 100;
+const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled            = L"DataConnectionPoolEnabled";
+const bool   MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled     = false;
+const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize               = L"DataConnectionPoolSize";
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize        = 100;
+const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimeout                = L"DataConnectionTimeout";
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout         = 600;
+const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval          = L"DataConnectionTimerInterval";
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval   = 60;
+
+// ******************************************************************
+// Mapping Service Properties
+// ******************************************************************
+const STRING MgConfigProperties::MappingServicePropertiesSection                            = L"MappingServiceProperties";
+
+// ******************************************************************
+// Rendering Service Properties
+// ******************************************************************
+const STRING MgConfigProperties::RenderingServicePropertiesSection                          = L"RenderingServiceProperties";
+const STRING MgConfigProperties::RenderingServicePropertyTileExtentOffset                   = L"TileExtentOffset";
+const double MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset            = 0.35;
+
+// ******************************************************************
+// Resource Service Properties
+// ******************************************************************
+const STRING MgConfigProperties::ResourceServicePropertiesSection                               = L"ResourceServiceProperties";
+const STRING MgConfigProperties::ResourceServicePropertyLibraryRepositoryPath                   = L"LibraryRepositoryPath";
+const STRING MgConfigProperties::DefaultResourceServicePropertyLibraryRepositoryPath            = L"Repositories/Library/";
+const STRING MgConfigProperties::ResourceServicePropertyLibraryResourceDataFilePath             = L"LibraryResourceDataFilePath";
+const STRING MgConfigProperties::DefaultResourceServicePropertyLibraryResourceDataFilePath      = L"Repositories/Library/DataFiles/";
+const STRING MgConfigProperties::ResourceServicePropertyPackagesPath                            = L"PackagesPath";
+const STRING MgConfigProperties::DefaultResourceServicePropertyPackagesPath                     = L"Packages/";
+const STRING MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval      = L"RepositoryCheckpointsTimerInterval";
+const INT32  MgConfigProperties::DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval = 600;
+const STRING MgConfigProperties::ResourceServicePropertyResourceChangeTimerInterval             = L"ResourceChangeTimerInterval";
+const INT32  MgConfigProperties::DefaultResourceServicePropertyResourceChangeTimerInterval      = 5;
+const STRING MgConfigProperties::ResourceServicePropertyResourceDataFileTrashFolderName         = L"ResourceDataFileTrashFolderName";
+const STRING MgConfigProperties::DefaultResourceServicePropertyResourceDataFileTrashFolderName  = L"Trash";
+const STRING MgConfigProperties::ResourceServicePropertyResourcePermissionCacheSize             = L"ResourcePermissionCacheSize";
+const INT32  MgConfigProperties::DefaultResourceServicePropertyResourcePermissionCacheSize      = 1000;
+const STRING MgConfigProperties::ResourceServicePropertyResourceSchemaFilePath                  = L"ResourceSchemaFilePath";
+const STRING MgConfigProperties::DefaultResourceServicePropertyResourceSchemaFilePath           = L"Schema/";
+const STRING MgConfigProperties::ResourceServicePropertyResourceValidationEnabled               = L"ResourceValidationEnabled"; // for internal use only
+const bool   MgConfigProperties::DefaultResourceServicePropertyResourceValidationEnabled        = true;
+const STRING MgConfigProperties::ResourceServicePropertySessionRepositoryPath                   = L"SessionRepositoryPath";
+const STRING MgConfigProperties::DefaultResourceServicePropertySessionRepositoryPath            = L"Repositories/Session/";
+const STRING MgConfigProperties::ResourceServicePropertySessionResourceDataFilePath             = L"SessionResourceDataFilePath";
+const STRING MgConfigProperties::DefaultResourceServicePropertySessionResourceDataFilePath      = L"Repositories/Session/DataFiles/";
+const STRING MgConfigProperties::ResourceServicePropertySiteRepositoryPath                      = L"SiteRepositoryPath";
+const STRING MgConfigProperties::DefaultResourceServicePropertySiteRepositoryPath               = L"Repositories/Site/";
+
+// ******************************************************************
+// Site Service Properties
+// ******************************************************************
+const STRING MgConfigProperties::SiteServicePropertiesSection                               = L"SiteServiceProperties";
+const STRING MgConfigProperties::SiteServicePropertySessionTimeout                          = L"SessionTimeout";
+const INT32  MgConfigProperties::DefaultSiteServicePropertySessionTimeout                   = 1200;
+const STRING MgConfigProperties::SiteServicePropertySessionTimerInterval                    = L"SessionTimerInterval";
+const INT32  MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval             = 400;
+
+// ******************************************************************
+// Tile Service Properties
+// ******************************************************************
+const STRING MgConfigProperties::TileServicePropertiesSection                               = L"TileServiceProperties";
+const STRING MgConfigProperties::TileServicePropertyTileCachePath                           = L"TileCachePath";
+const STRING MgConfigProperties::DefaultTileServicePropertyTileCachePath                    = L"Repositories/TileCache/";
 
 // ******************************************************************
 // Access Log Properties
@@ -267,7 +311,7 @@ const STRING MgConfigProperties::DefaultErrorLogPropertyParameters              
 // ******************************************************************
 const STRING MgConfigProperties::SessionLogPropertiesSection                                = L"SessionLogProperties";
 const STRING MgConfigProperties::SessionLogPropertyEnabled                                  = L"Enabled";
-const bool   MgConfigProperties::DefaultSessionLogPropertyEnabled                           = true;
+const bool   MgConfigProperties::DefaultSessionLogPropertyEnabled                           = false;
 const STRING MgConfigProperties::SessionLogPropertyFilename                                 = L"Filename";
 const STRING MgConfigProperties::DefaultSessionLogPropertyFilename                          = L"Session.log";
 const STRING MgConfigProperties::SessionLogPropertyParameters                               = L"Parameters";
@@ -278,7 +322,7 @@ const STRING MgConfigProperties::DefaultSessionLogPropertyParameters            
 // ******************************************************************
 const STRING MgConfigProperties::TraceLogPropertiesSection                                  = L"TraceLogProperties";
 const STRING MgConfigProperties::TraceLogPropertyEnabled                                    = L"Enabled";
-const bool   MgConfigProperties::DefaultTraceLogPropertyEnabled                             = true;
+const bool   MgConfigProperties::DefaultTraceLogPropertyEnabled                             = false;
 const STRING MgConfigProperties::TraceLogPropertyFilename                                   = L"Filename";
 const STRING MgConfigProperties::DefaultTraceLogPropertyFilename                            = L"Trace.log";
 const STRING MgConfigProperties::TraceLogPropertyParameters                                 = L"Parameters";
@@ -297,3 +341,210 @@ const STRING MgConfigProperties::SupportServerSection                           
 const STRING MgConfigProperties::SupportServerNameProperty                                 = L"Name";
 const STRING MgConfigProperties::SupportServerDescriptionProperty                          = L"Description";
 const STRING MgConfigProperties::SupportServerAddressProperty                              = L"IpAddress";
+
+// ******************************************************************
+// Agent Properties
+// ******************************************************************
+const STRING MgConfigProperties::AgentPropertiesSection                                     = L"AgentProperties";
+const STRING MgConfigProperties::AgentDebugPause                                            = L"DebugPause";
+const INT32  MgConfigProperties::DefaultAgentDebugPause                                     = 0;
+const STRING MgConfigProperties::AgentDisableAuthoring                                      = L"DisableAuthoring";
+const STRING MgConfigProperties::AgentDisableWfs                                            = L"DisableWfs";
+const STRING MgConfigProperties::AgentDisableWms                                            = L"DisableWms";
+
+// ******************************************************************
+// OGC Properties
+// ******************************************************************
+const STRING MgConfigProperties::OgcPropertiesSection                                       = L"OgcProperties";
+const STRING MgConfigProperties::WfsPassword                                                = L"WfsPassword";
+const STRING MgConfigProperties::WmsPassword                                                = L"WmsPassword";
+
+///////////////////////////////////////////////////////////////////////////////
+/// Common Configuration Validation Information Maps
+///
+const MgConfigValidationInfo MgConfigProperties::sm_cviGeneralProperties[] =
+{
+    { MgConfigProperties::GeneralPropertyConnectionTimeout                          , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
+    { MgConfigProperties::GeneralPropertyConnectionTimerInterval                    , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
+    { MgConfigProperties::GeneralPropertyDefaultLocale                              , MgPropertyType::String    , MG_CONFIG_MIN_LOCALE_LENGTH           , MG_CONFIG_MAX_LOCALE_LENGTH           , L""                                       },
+    { MgConfigProperties::GeneralPropertyDisplayName                                , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
+    { MgConfigProperties::GeneralPropertyFdoPath                                    , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::GeneralPropertyLogsDelimiter                              , MgPropertyType::String    , 1                                     , 128                                   , L""                                       },
+    { MgConfigProperties::GeneralPropertyMaxLogFileSize                             , MgPropertyType::Int32     , 1                                     , 2000000                               , L""                                       },
+    { MgConfigProperties::GeneralPropertyMaxLogFileSizeEnabled                      , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::GeneralPropertyResourcesPath                              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval           , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
+    { MgConfigProperties::GeneralPropertyTcpIpMtu                                   , MgPropertyType::Int32     , 1                                     , 65535                                 , L""                                       },
+    { MgConfigProperties::GeneralPropertyTempPath                                   , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::GeneralPropertyWfsDocumentPath                            , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::GeneralPropertyWmsDocumentPath                            , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviAdministrativeConnectionProperties[] =
+{
+    { MgConfigProperties::AdministrativeConnectionPropertyEmail                     , MgPropertyType::String    , MG_CONFIG_MIN_EMAIL_LENGTH            , MG_CONFIG_MAX_EMAIL_LENGTH            , L""                                       },
+    { MgConfigProperties::AdministrativeConnectionPropertyMaxConnections            , MgPropertyType::Int32     , MG_CONFIG_MIN_CONNECTIONS             , MG_CONFIG_MAX_CONNECTIONS             , L""                                       },
+    { MgConfigProperties::AdministrativeConnectionPropertyPort                      , MgPropertyType::Int32     , MG_CONFIG_MIN_PORT_NUMBER             , MG_CONFIG_MAX_PORT_NUMBER             , L""                                       },
+    { MgConfigProperties::AdministrativeConnectionPropertyQueueSize                 , MgPropertyType::Int32     , MG_CONFIG_MIN_QUEUE_SIZE              , MG_CONFIG_MAX_QUEUE_SIZE              , L""                                       },
+    { MgConfigProperties::AdministrativeConnectionPropertyThreadPoolSize            , MgPropertyType::Int32     , MG_CONFIG_MIN_THREAD_POOL_SIZE        , MG_CONFIG_MAX_THREAD_POOL_SIZE        , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviClientConnectionProperties[] =
+{
+    { MgConfigProperties::ClientConnectionPropertyMaxConnections                    , MgPropertyType::Int32     , MG_CONFIG_MIN_CONNECTIONS             , MG_CONFIG_MAX_CONNECTIONS             , L""                                       },
+    { MgConfigProperties::ClientConnectionPropertyPort                              , MgPropertyType::Int32     , MG_CONFIG_MIN_PORT_NUMBER             , MG_CONFIG_MAX_PORT_NUMBER             , L""                                       },
+    { MgConfigProperties::ClientConnectionPropertyQueueSize                         , MgPropertyType::Int32     , MG_CONFIG_MIN_QUEUE_SIZE              , MG_CONFIG_MAX_QUEUE_SIZE              , L""                                       },
+    { MgConfigProperties::ClientConnectionPropertyThreadPoolSize                    , MgPropertyType::Int32     , MG_CONFIG_MIN_THREAD_POOL_SIZE        , MG_CONFIG_MAX_THREAD_POOL_SIZE        , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviSiteConnectionProperties[] =
+{
+    { MgConfigProperties::SiteConnectionPropertyIpAddress                           , MgPropertyType::String    , MG_CONFIG_MIN_IP_ADDRESS_LENGTH       , MG_CONFIG_MAX_IP_ADDRESS_LENGTH       , L""                                       },
+    { MgConfigProperties::SiteConnectionPropertyMaxConnections                      , MgPropertyType::Int32     , MG_CONFIG_MIN_CONNECTIONS             , MG_CONFIG_MAX_CONNECTIONS             , L""                                       },
+    { MgConfigProperties::SiteConnectionPropertyPort                                , MgPropertyType::Int32     , MG_CONFIG_MIN_PORT_NUMBER             , MG_CONFIG_MAX_PORT_NUMBER             , L""                                       },
+    { MgConfigProperties::SiteConnectionPropertyQueueSize                           , MgPropertyType::Int32     , MG_CONFIG_MIN_QUEUE_SIZE              , MG_CONFIG_MAX_QUEUE_SIZE              , L""                                       },
+    { MgConfigProperties::SiteConnectionPropertyThreadPoolSize                      , MgPropertyType::Int32     , MG_CONFIG_MIN_THREAD_POOL_SIZE        , MG_CONFIG_MAX_THREAD_POOL_SIZE        , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Server Configuration Validation Information Maps
+///
+const MgConfigValidationInfo MgConfigProperties::sm_cviHostProperties[] =
+{
+    { MgConfigProperties::HostPropertyDrawingService                                , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::HostPropertyFeatureService                                , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::HostPropertyMappingService                                , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::HostPropertyRenderingService                              , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::HostPropertyResourceService                               , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::HostPropertyServerAdminService                            , MgPropertyType::Boolean   , 1                                     , 1                                     , L""                                       },
+    { MgConfigProperties::HostPropertySiteService                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::HostPropertyTileService                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviDrawingServiceProperties[] =
+{
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                  , L""                                        }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviFeatureServiceProperties[] =
+{
+    { MgConfigProperties::FeatureServicePropertyDataCacheSize                       , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled           , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize              , MgPropertyType::Int32     , MG_CONFIG_MIN_CONNECTION_POOL_SIZE    , MG_CONFIG_MAX_CONNECTION_POOL_SIZE    , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyDataConnectionTimeout               , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval         , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviMappingServiceProperties[] =
+{
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviRenderingServiceProperties[] =
+{
+    { MgConfigProperties::RenderingServicePropertyTileExtentOffset                  , MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviResourceServiceProperties[] =
+{
+    { MgConfigProperties::ResourceServicePropertyLibraryRepositoryPath              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::ResourceServicePropertyLibraryResourceDataFilePath        , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::ResourceServicePropertyPackagesPath                       , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
+    { MgConfigProperties::ResourceServicePropertyResourceChangeTimerInterval        , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
+    { MgConfigProperties::ResourceServicePropertyResourceDataFileTrashFolderName    , MgPropertyType::String    , MG_CONFIG_MIN_FOLDER_NAME_LENGTH      , MG_CONFIG_MAX_FOLDER_NAME_LENGTH      , MG_CONFIG_FOLDER_NAME_RESERVED_CHARACTERS },
+    { MgConfigProperties::ResourceServicePropertyResourcePermissionCacheSize        , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
+    { MgConfigProperties::ResourceServicePropertyResourceSchemaFilePath             , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::ResourceServicePropertyResourceValidationEnabled          , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::ResourceServicePropertySessionRepositoryPath              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::ResourceServicePropertySessionResourceDataFilePath        , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::ResourceServicePropertySiteRepositoryPath                 , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviSiteServiceProperties[] =
+{
+    { MgConfigProperties::SiteServicePropertySessionTimeout                         , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
+    { MgConfigProperties::SiteServicePropertySessionTimerInterval                   , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviTileServiceProperties[] =
+{
+    { MgConfigProperties::TileServicePropertyTileCachePath                          , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviAccessLogProperties[] =
+{
+    { MgConfigProperties::AccessLogPropertyEnabled                                  , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AccessLogPropertyFilename                                 , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::AccessLogPropertyParameters                               , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviAdminLogProperties[] =
+{
+    { MgConfigProperties::AdminLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AdminLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::AdminLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviAuthenticationLogProperties[] =
+{
+    { MgConfigProperties::AuthenticationLogPropertyEnabled                          , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AuthenticationLogPropertyFilename                         , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::AuthenticationLogPropertyParameters                       , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviErrorLogProperties[] =
+{
+    { MgConfigProperties::ErrorLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::ErrorLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::ErrorLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviSessionLogProperties[] =
+{
+    { MgConfigProperties::SessionLogPropertyEnabled                                 , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::SessionLogPropertyFilename                                , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::SessionLogPropertyParameters                              , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviTraceLogProperties[] =
+{
+    { MgConfigProperties::TraceLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::TraceLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::TraceLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Web Configuration Validation Information Maps
+///
+const MgConfigValidationInfo MgConfigProperties::sm_cviAgentProperties[] =
+{
+    { MgConfigProperties::AgentDebugPause                                           , MgPropertyType::Int32     , 0                                     , 86400                                 , L""                                       },
+    { MgConfigProperties::AgentDisableAuthoring                                     , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AgentDisableWfs                                           , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AgentDisableWms                                           , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviOgcProperties[] =
+{
+    { MgConfigProperties::WfsPassword                                               , MgPropertyType::String    , MG_CONFIG_MIN_PASSWORD_LENGTH         , MG_CONFIG_MAX_PASSWORD_LENGTH         , MG_CONFIG_PASSWORD_RESERVED_CHARACTERS    },
+    { MgConfigProperties::WmsPassword                                               , MgPropertyType::String    , MG_CONFIG_MIN_PASSWORD_LENGTH         , MG_CONFIG_MAX_PASSWORD_LENGTH         , MG_CONFIG_PASSWORD_RESERVED_CHARACTERS    },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};

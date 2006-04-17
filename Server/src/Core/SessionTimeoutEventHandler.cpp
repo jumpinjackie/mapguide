@@ -40,21 +40,11 @@ MgSessionTimeoutEventHandler::MgSessionTimeoutEventHandler(MgEventTimer& timer) 
             MgConfigProperties::SiteServicePropertySessionTimeout, 
             timeout, 
             MgConfigProperties::DefaultSiteServicePropertySessionTimeout);
-        MG_CHECK_RANGE(
-            timeout, 
-            MgConfigProperties::MinimumSiteServicePropertySessionTimeout, 
-            MgConfigProperties::MaximumSiteServicePropertySessionTimeout, 
-            L"MgSessionTimeoutEventHandler.MgSessionTimeoutEventHandler");
         configuration->GetIntValue(
             MgConfigProperties::SiteServicePropertiesSection, 
             MgConfigProperties::SiteServicePropertySessionTimerInterval, 
             interval, 
             MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval);
-        MG_CHECK_RANGE(
-            interval, 
-            MgConfigProperties::MinimumSiteServicePropertySessionTimerInterval, 
-            MgConfigProperties::MaximumSiteServicePropertySessionTimerInterval, 
-            L"MgSessionTimeoutEventHandler.MgSessionTimeoutEventHandler");
     }
 
     m_timer.SetInterval(interval);
