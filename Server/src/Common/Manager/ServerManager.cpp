@@ -292,6 +292,7 @@ void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
     }
 
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
+
     if (NULL == pConfiguration)
     {
         throw new MgNullReferenceException(
@@ -299,35 +300,10 @@ void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    // Do any validation if required.
-
-    if (MgConfigProperties::GeneralPropertiesSection == propertySection)
-    {
-        // Since the Server's display name is used to be part of the default 
-        // package name, check to make sure it does not contain reserved 
-        // characters for section and file names.
-        for (INT32 i = 0; i < properties->GetCount(); ++i)
-        {
-            Ptr<MgProperty> baseProperty = properties->GetItem(i);
-
-            if (MgPropertyType::String == baseProperty->GetPropertyType())
-            {
-                MgStringProperty* strProperty = static_cast<MgStringProperty*>(baseProperty.p);
-
-                if (MgConfigProperties::GeneralPropertyDisplayName == strProperty->GetName())
-                {
-                    MgUtil::CheckReservedCharacter(strProperty->GetValue(), L"\\/:*?\"<>|[]=");
-                    break;
-                }
-            }
-        }
-    }
-
     // Set the properties
     pConfiguration->SetProperties(propertySection, properties);
 
     // Enable/disable specified services for this local server if applicable.
-
     if (MgConfigProperties::HostPropertiesSection == propertySection)
     {
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
