@@ -95,6 +95,7 @@ MgInvalidResourcePathException                        = Invalid resource path: %
 MgInvalidResourcePreProcessingTypeException           = Invalid resource pre-processing type.
 MgInvalidResourceTypeException                        = Invalid resource type.
 MgInvalidServerNameException                          = Invalid server name: %1
+MgInvalidSerialNumberException                        = Invalid serial number: %1
 MgInvalidStreamHeaderException                        = Invalid stream header exception.
 MgIoException                                         = An IO exception occurred.
 MgLayerNotFoundException                              = The specified layer was not found: %1

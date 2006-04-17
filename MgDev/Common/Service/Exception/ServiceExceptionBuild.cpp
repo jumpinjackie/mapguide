@@ -93,6 +93,7 @@
 #include "InvalidResourcePathException.cpp"
 #include "InvalidResourcePreProcessingTypeException.cpp"
 #include "InvalidResourceTypeException.cpp"
+#include "InvalidSerialNumberException.cpp"
 #include "InvalidServerNameException.cpp"
 #include "InvalidStreamHeaderException.cpp"
 #include "IoException.cpp"
