@@ -28,6 +28,12 @@
 
 #include <wctype.h>
 
+#ifdef _WIN32
+#pragma warning(disable : 4290)
+#endif
+#include "dwfcore/String.h"
+using namespace DWFCore;
+
 RS_FilterExecutor::RS_FilterExecutor(RS_FeatureReader* featureReader)
 {
     m_reader = featureReader;
@@ -447,12 +453,16 @@ void RS_FilterExecutor::ProcessFunction(FdoFunction& expr)
     {
         ExecuteFeatureID(expr);
     }
+    else if (_wcsnicmp(name, L"URLENCODE", 9) == 0)
+    {
+        ExecuteUrlEncode(expr);
+    }
     else if (_wcsnicmp(name, L"DECAP", 5) == 0)
     {
         GisPtr<FdoExpressionCollection> args = expr.GetArguments();
 
         if (args->GetCount() != 1)
-            throw GisException::Create(L"Invalid number of arguments.");
+            throw GisException::Create(L"Incorrect number of arguments for function DECAP");
 
         GisPtr<FdoExpression> val = args->GetItem(0);
         val->Process(this);
@@ -860,8 +870,7 @@ void RS_FilterExecutor::ExecuteSession(FdoFunction& function)
     GisPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have zero arguments
-    int count = args->GetCount();
-    if (count != 0)
+    if (args->GetCount() != 0)
         throw GisException::Create(L"Incorrect number of arguments for function SESSION");
 
     wchar_t* res = new wchar_t[m_session.length()+1];
@@ -876,8 +885,7 @@ void RS_FilterExecutor::ExecuteMapName(FdoFunction& function)
     GisPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have zero arguments
-    int count = args->GetCount();
-    if (count != 0)
+    if (args->GetCount() != 0)
         throw GisException::Create(L"Incorrect number of arguments for function MAPNAME");
 
     wchar_t* res = new wchar_t[m_mapName.length()+1];
@@ -892,8 +900,7 @@ void RS_FilterExecutor::ExecuteLayerID(FdoFunction& function)
     GisPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have zero arguments
-    int count = args->GetCount();
-    if (count != 0)
+    if (args->GetCount() != 0)
         throw GisException::Create(L"Incorrect number of arguments for function LAYERID");
 
     wchar_t* res = new wchar_t[m_layerID.length()+1];
@@ -908,8 +915,7 @@ void RS_FilterExecutor::ExecuteFeatureClass(FdoFunction& function)
     GisPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have zero arguments
-    int count = args->GetCount();
-    if (count != 0)
+    if (args->GetCount() != 0)
         throw GisException::Create(L"Incorrect number of arguments for function FEATURECLASS");
 
     wchar_t* res = new wchar_t[m_featCls.length()+1];
@@ -924,8 +930,7 @@ void RS_FilterExecutor::ExecuteFeatureID(FdoFunction& function)
     GisPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have zero arguments
-    int count = args->GetCount();
-    if (count != 0)
+    if (args->GetCount() != 0)
         throw GisException::Create(L"Incorrect number of arguments for function FEATUREID");
 
     // generate base 64 id
@@ -938,4 +943,117 @@ void RS_FilterExecutor::ExecuteFeatureID(FdoFunction& function)
         res[k] = (wchar_t)base64[k];
 
     m_retvals.push(m_pPool->ObtainStringValue(res, true));
+}
+
+
+// URL encodes a string.
+//
+// From the HTTP 1.1 specification:
+//
+//   Many HTTP/1.1 header field values consist of words separated by LWS
+//   or special characters. These special characters MUST be in a quoted
+//   string to be used within a parameter value (as defined in section 3.6).
+//
+//       token          = 1*<any CHAR except CTLs or separators>
+//       separators     = "(" | ")" | "<" | ">" | "@"
+//                      | "," | ";" | ":" | "\" | <">
+//                      | "/" | "[" | "]" | "?" | "="
+//                      | "{" | "}" | SP | HT
+//
+//
+// 3.6 Transfer Codings
+//
+//   ...
+//
+//   Parameters are in  the form of attribute/value pairs.
+//
+//       parameter    = attribute "=" value
+//       attribute    = token
+//       value        = token | quoted-string
+//
+void RS_FilterExecutor::ExecuteUrlEncode(FdoFunction& function)
+{
+    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+
+    // make sure we have one argument
+    if (args->GetCount() != 1)
+        throw GisException::Create(L"Incorrect number of arguments for function URLENCODE");
+
+    // evaluate the argument
+    GisPtr<FdoExpression> arg = args->GetItem(0);
+    arg->Process(this);
+
+    // get the string to encode
+    DataValue* dvVal = m_retvals.pop();
+    wchar_t* sval = dvVal->GetAsString();
+
+    size_t len = wcslen(sval);
+    if (len >= 0)
+    {
+        // must first UTF8 encode
+        size_t lenbytes = len*4 + 1;
+        char* sutf8 = (char*)alloca(lenbytes);
+        size_t utf8lenbytes = DWFString::EncodeUTF8(sval, len * sizeof(wchar_t), sutf8, lenbytes);
+
+        // now URL encode the result
+        size_t urllenbytes = 3*utf8lenbytes + 1;
+        char* sUrl = (char*)alloca(urllenbytes * sizeof(char));
+        memset(sUrl, 0, urllenbytes * sizeof(char));
+
+        size_t i, j;
+        for (i = j = 0; i < utf8lenbytes; ++i)
+        {
+            char chr = sutf8[i];
+            if ((chr <= 0x20) || // a space or anything below it in value
+                (chr == 0x21) || // a ! (exclamation)
+                (chr == 0x22) || // a " (quotation mark)
+                (chr == 0x23) || // a # (hash)
+                (chr == 0x24) || // a $ (dollar)
+                (chr == 0x25) || // a % (percentage)
+                (chr == 0x26) || // a & (ampersand)
+                (chr == 0x27) || // a ' (apostrophe)
+                (chr == 0x28) || // a (
+                (chr == 0x29) || // a )
+//              (chr == 0x2A) || // a * (asterisk)
+                (chr == 0x2B) || // a + (plus)
+                (chr == 0x2C) || // a , (comma)
+//              (chr == 0x2D) || // a - (hyphen)
+//              (chr == 0x2E) || // a . (period)
+                (chr == 0x2F) || // a / (forward slash)
+                (chr == 0x3A) || // a : (colon)
+                (chr == 0x3B) || // a ; (semi-colon)
+                (chr == 0x3C) || // a < (less than)
+                (chr == 0x3D) || // a = (equals)
+                (chr == 0x3E) || // a > (greater than)
+                (chr == 0x3F) || // a ? (question mark)
+                (chr == 0x40) || // a @ (at)
+                (chr == 0x5B) || // a [
+                (chr == 0x5C) || // a \ (backslash)
+                (chr == 0x5D) || // a ]
+                (chr == 0x5E) || // a ^
+//              (chr == 0x5F) || // a _ (underscore)
+                (chr == 0x60) || // a `
+                (chr == 0x7B) || // a { (opening bracket)
+                (chr == 0x7C) || // a | (pipe)
+                (chr == 0x7D) || // a } (closing bracket)
+                (chr == 0x7E) || // a ~ (tilde)
+                (chr == 0x7F) || // a control character
+                (chr >= 0x80))   // 8-bit (encoded)
+                j += sprintf(&sUrl[j], "%%%2X", (unsigned char)chr);
+            else
+                sUrl[j++] = chr;
+        }
+
+        // finally, convert to a wide string
+        wchar_t* res = new wchar_t[j+1];
+        for (size_t k=0; k<j+1; k++)
+            res[k] = (wchar_t)sUrl[k];
+
+        m_pPool->RelinquishDataValue(dvVal);
+        m_retvals.push(m_pPool->ObtainStringValue(res, true));
+    }
+    else
+    {
+        m_retvals.push(dvVal);
+    }
 }
