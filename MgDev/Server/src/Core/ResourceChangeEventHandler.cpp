@@ -40,11 +40,6 @@ MgResourceChangeEventHandler::MgResourceChangeEventHandler(MgEventTimer& timer) 
             MgConfigProperties::ResourceServicePropertyResourceChangeTimerInterval, 
             interval, 
             MgConfigProperties::DefaultResourceServicePropertyResourceChangeTimerInterval);
-        MG_CHECK_RANGE(
-            interval, 
-            MgConfigProperties::MinimumResourceServicePropertyResourceChangeTimerInterval, 
-            MgConfigProperties::MaximumResourceServicePropertyResourceChangeTimerInterval, 
-            L"MgResourceChangeEventHandler.MgResourceChangeEventHandler");
     }
 
     m_timer.SetInterval(interval);

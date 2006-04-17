@@ -18,6 +18,8 @@
 #ifndef MGCONFIGPROPERTIES_H_
 #define MGCONFIGPROPERTIES_H_
 
+struct MgConfigValidationInfo;
+
 /// \cond INTERNAL
 //////////////////////////////////////////////////////////////////
 /// \brief
@@ -35,39 +37,14 @@ EXTERNAL_API:
     static const STRING DefaultConfigurationFilename;                   /// value("webconfig.ini")
     static const STRING ServerConfigurationFilename;                    /// value("serverconfig.ini")
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// Common Configuration Validation Information Maps
+    ///
 
     /// GENERAL PROPERTIES SECTION ---------------------------------------------------------------------------------------
 
     /// General server properties
     static const STRING GeneralPropertiesSection;                       /// value("GeneralProperties")
-
-    /// Server's default locale
-    static const STRING GeneralPropertyDefaultLocale;                   /// value("DefaultLocale")
-    static const STRING DefaultGeneralPropertyDefaultLocale;            /// value("en")
-
-    /// Server's display name
-    static const STRING GeneralPropertyDisplayName;                     /// value("DisplayName")
-    static const STRING DefaultGeneralPropertyDisplayName;              /// value("")
-
-    /// Root folder for server's log files
-    static const STRING GeneralPropertyLogsPath;                        /// value("LogsPath")
-    static const STRING DefaultGeneralPropertyLogsPath;                 /// value("./Logs/")
-
-    /// Root folder for server's localization resources
-    static const STRING GeneralPropertyResourcesPath;                   /// value("ResourcesPath")
-    static const STRING DefaultGeneralPropertyResourcesPath;            /// value("./Resources/")
-
-    /// TCP/IP Maximum Transmission Unit
-    static const STRING GeneralPropertyTcpIpMtu;                        /// value("TcpIpMtu")
-    static const INT32 DefaultGeneralPropertyTcpIpMtu;                  /// value(1460)
-
-    /// Temporary file path
-    static const STRING GeneralPropertyTempPath;                        /// value("TempPath")
-    static const STRING DefaultGeneralPropertyTempPath;                 /// value("./Temp/")
-
-    /// Fdo file path
-    static const STRING GeneralPropertyFdoPath;                         /// value("FdoPath")
-    static const STRING DefaultGeneralPropertyFdoPath;                  /// value("")
 
     /// Sets the maximum amount of time (in seconds) for connection idle activity before the socket connection is closed
     static const STRING GeneralPropertyConnectionTimeout;               /// value("ConnectionTimeout")
@@ -77,150 +54,57 @@ EXTERNAL_API:
     static const STRING GeneralPropertyConnectionTimerInterval;         /// value("ConnectionTimerInterval")
     static const INT32 DefaultGeneralPropertyConnectionTimerInterval;   /// value(60)
 
-    /// Sets the time duration (in seconds) between service registrations
-    static const STRING GeneralPropertyServiceRegistrationTimerInterval;        /// value("ServiceRegistrationTimerInterval")
-    static const INT32 DefaultGeneralPropertyServiceRegistrationTimerInterval;  /// value(60)
+    /// Server's default locale
+    static const STRING GeneralPropertyDefaultLocale;                   /// value("DefaultLocale")
+    static const STRING DefaultGeneralPropertyDefaultLocale;            /// value("en")
 
-    /// Sets the maximum log file size (in kilobytes)
-    static const STRING GeneralPropertyMaxLogFileSize;                  /// value("MaxLogFileSize")
-    static const INT32 DefaultGeneralPropertyMaxLogFileSize;            /// value(64)
+    /// Server's display name
+    static const STRING GeneralPropertyDisplayName;                     /// value("DisplayName")
+    static const STRING DefaultGeneralPropertyDisplayName;              /// value("")
+
+    /// Fdo file path
+    static const STRING GeneralPropertyFdoPath;                         /// value("FdoPath")
+    static const STRING DefaultGeneralPropertyFdoPath;                  /// value("")
 
     /// Sets the field delimiter in the logs
     static const STRING GeneralPropertyLogsDelimiter;                   /// value("LogsDelimiter")
     static const STRING DefaultGeneralPropertyLogsDelimiter;            /// value("\t")
 
+    /// Root folder for server's log files
+    static const STRING GeneralPropertyLogsPath;                        /// value("LogsPath")
+    static const STRING DefaultGeneralPropertyLogsPath;                 /// value("Logs/")
+
+    /// Sets the maximum log file size (in kilobytes)
+    static const STRING GeneralPropertyMaxLogFileSize;                  /// value("MaxLogFileSize")
+    static const INT32 DefaultGeneralPropertyMaxLogFileSize;            /// value(64)
+
     /// Specifies whether the maximum log size restriction is enabled
     static const STRING GeneralPropertyMaxLogFileSizeEnabled;           /// value("MaxLogFileSizeEnabled")
     static const bool DefaultGeneralPropertyMaxLogFileSizeEnabled;      /// value(false)
 
+    /// Root folder for server's localization resources
+    static const STRING GeneralPropertyResourcesPath;                   /// value("ResourcesPath")
+    static const STRING DefaultGeneralPropertyResourcesPath;            /// value("Resources/")
 
-    /// DRAWING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
+    /// Sets the time duration (in seconds) between service registrations
+    static const STRING GeneralPropertyServiceRegistrationTimerInterval;        /// value("ServiceRegistrationTimerInterval")
+    static const INT32 DefaultGeneralPropertyServiceRegistrationTimerInterval;  /// value(60)
 
-    /// Drawing Service properties.  Note that in V1.0 this property section is only defined on the Site Server.
-    static const STRING DrawingServicePropertiesSection;                /// value("DrawingServiceProperties")
+    /// TCP/IP Maximum Transmission Unit
+    static const STRING GeneralPropertyTcpIpMtu;                        /// value("TcpIpMtu")
+    static const INT32 DefaultGeneralPropertyTcpIpMtu;                  /// value(1460)
 
+    /// Temporary file path
+    static const STRING GeneralPropertyTempPath;                        /// value("TempPath")
+    static const STRING DefaultGeneralPropertyTempPath;                 /// value("Temp/")
 
-    /// FEATURE SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
+    /// Document path location for WFS documents
+    static const STRING GeneralPropertyWfsDocumentPath;                 /// value("WfsDocumentPath")
+    static const STRING DefaultGeneralPropertyWfsDocumentPath;          /// value("Wfs/")
 
-    /// Feature Service properties.  Note that in V1.0 this property section is only defined on the Site Server.
-    static const STRING FeatureServicePropertiesSection;                /// value("FeatureServiceProperties")
-
-    /// Sets whether to pool connections
-    static const STRING FeatureServicePropertyDataConnectionPoolEnabled;        /// value("DataConnectionPoolEnabled")
-    static const bool DefaultFeatureServicePropertyDataConnectionPoolEnabled;   /// value(false)
-
-    /// Sets the number of pooled data connections
-    static const STRING FeatureServicePropertyDataConnectionPoolSize;           /// value("DataConnectionPoolSize")
-    static const INT32 DefaultFeatureServicePropertyDataConnectionPoolSize;     /// value(100)
-
-    /// Sets the maximum amount of time (in seconds) for data connection idle activity before the data connection is closed
-    static const STRING FeatureServicePropertyDataConnectionTimeout;            /// value("DataConnectionTimeout")
-    static const INT32 DefaultFeatureServicePropertyDataConnectionTimeout;      /// value(600)
-
-    /// Sets the time duration (in seconds) between timeout checks
-    static const STRING FeatureServicePropertyDataConnectionTimerInterval;      /// value("DataConnectionTimerInterval")
-    static const INT32 DefaultFeatureServicePropertyDataConnectionTimerInterval;/// value(60)
-
-    /// Sets the maximum number of features fetched to reduce the network traffic
-    static const STRING FeatureServicePropertyDataCacheSize;            /// value("DataCacheSize")
-    static const INT32 DefaultFeatureServicePropertyDataCacheSize;      /// value(100)
-
-
-    /// MAPPING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
-
-    /// Mapping Service properties
-    static const STRING MappingServicePropertiesSection;                /// value("MappingServiceProperties")
-
-
-    /// RENDERING SERVICE PROPERTIES SECTION -----------------------------------------------------------------------------
-
-    /// Rendering Service properties
-    static const STRING RenderingServicePropertiesSection;              /// value("RenderingServiceProperties")
-
-    /// Maximum request extent offset to use when requesting features for a tile, specified as a factor of the tile size
-    static const STRING RenderingServicePropertyTileExtentOffset;       /// value("TileExtentOffset")
-    static const double DefaultRenderingServicePropertyTileExtentOffset;/// value(0.35)
-
-
-    /// RESOURCE SERVICE PROPERTIES SECTION ------------------------------------------------------------------------------
-
-    /// Resource Service properties.  Note that in V1.0 this property section is only defined on the Site Server.
-    static const STRING ResourceServicePropertiesSection;               /// value("ResourceServiceProperties")
-
-    /// Sets the root of the library resource data files
-    static const STRING ResourceServicePropertyLibraryResourceDataFilePath;         /// value("LibraryResourceDataFilePath")
-    static const STRING DefaultResourceServicePropertyLibraryResourceDataFilePath;  /// value("./Repositories/Library/DataFiles/")
-
-    /// Sets the root of the library repository
-    static const STRING ResourceServicePropertyLibraryRepositoryPath;               /// value("LibraryRepositoryPath")
-    static const STRING DefaultResourceServicePropertyLibraryRepositoryPath;        /// value("./Repositories/Library/")
-
-    /// Sets the root of the session resource data files
-    static const STRING ResourceServicePropertySessionResourceDataFilePath;         /// value("SessionResourceDataFilePath")
-    static const STRING DefaultResourceServicePropertySessionResourceDataFilePath;  /// value("./Repositories/Session/DataFiles/")
-
-    /// Sets the root of the session repository
-    static const STRING ResourceServicePropertySessionRepositoryPath;               /// value("SessionRepositoryPath")
-    static const STRING DefaultResourceServicePropertySessionRepositoryPath;        /// value("./Repositories/Session/")
-
-    /// Sets the root of the site repository
-    static const STRING ResourceServicePropertySiteRepositoryPath;                  /// value("SiteRepositoryPath")
-    static const STRING DefaultResourceServicePropertySiteRepositoryPath;           /// value("./Repositories/Site/")
-
-    /// Sets the path to resource packages
-    static const STRING ResourceServicePropertyPackagesPath;                        /// value("PackagesPath")
-    static const STRING DefaultResourceServicePropertyPackagesPath;                 /// value("./Packages/")
-
-    /// Sets the path to all resource schema files
-    static const STRING ResourceServicePropertyResourceSchemaFilePath;              /// value("ResourceSchemaFilePath")
-    static const STRING DefaultResourceServicePropertyResourceSchemaFilePath;       /// value("./Schema/")
-
-    /// Sets the trash folder name
-    static const STRING ResourceServicePropertyResourceDataFileTrashFolderName;         /// value("ResourceDataFileTrashFolderName")
-    static const STRING DefaultResourceServicePropertyResourceDataFileTrashFolderName;  /// value("Trash")
-
-    /// Sets the time duration (in seconds) between repository checkpoints
-    static const STRING ResourceServicePropertyRepositoryCheckpointsTimerInterval;      /// value("RepositoryCheckpointsTimerInterval")
-    static const INT32 DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval;/// value(600)
-
-    /// Sets the time duration (in seconds) between resource change notifications
-    static const STRING ResourceServicePropertyResourceChangeTimerInterval;         /// value("ResourceChangeTimerInterval")
-    static const INT32 DefaultResourceServicePropertyResourceChangeTimerInterval;   /// value(5)
-    static const INT32 MinimumResourceServicePropertyResourceChangeTimerInterval;   /// value(1)
-    static const INT32 MaximumResourceServicePropertyResourceChangeTimerInterval;   /// value(2147483647)
-
-    /// Sets the maximum number of resources with permission information to be cached
-    static const STRING ResourceServicePropertyResourcePermissionCacheSize;             /// value("ResourcePermissionCacheSize")
-    static const INT32 DefaultResourceServicePropertyResourcePermissionCacheSize;       /// value(1000)
-
-
-    /// SITE SERVICE PROPERTIES SECTION ----------------------------------------------------------------------------------
-
-    /// Site Service properties.  Note that in V1.0 this property section is only defined on the Site Server.
-    static const STRING SiteServicePropertiesSection;                   /// value("SiteServiceProperties")
-
-    /// Sets the maximum amount of time (in seconds) for session timeout
-    static const STRING SiteServicePropertySessionTimeout;              /// value("SessionTimeout")
-    static const INT32 DefaultSiteServicePropertySessionTimeout;        /// value(1200)
-    static const INT32 MinimumSiteServicePropertySessionTimeout;        /// value(180)
-    static const INT32 MaximumSiteServicePropertySessionTimeout;        /// value(2147483647)
-
-    /// Sets the time duration (in seconds) between session timeout checks
-    static const STRING SiteServicePropertySessionTimerInterval;        /// value("SessionTimerInterval")
-    static const INT32 DefaultSiteServicePropertySessionTimerInterval;  /// value(400)
-    static const INT32 MinimumSiteServicePropertySessionTimerInterval;  /// value(60)
-    static const INT32 MaximumSiteServicePropertySessionTimerInterval;  /// value(2147483647)
-
-
-    /// TILE SERVICE PROPERTIES SECTION ----------------------------------------------------------------------------------
-
-    /// Tile Service properties
-    static const STRING TileServicePropertiesSection;                   /// value("TileServiceProperties")
-
-    /// Sets the root of the image tile cache
-    static const STRING TileServicePropertyTileCachePath;               /// value("TileCachePath")
-    static const STRING DefaultTileServicePropertyTileCachePath;        /// value("./Repositories/TileCache/")
-
+    /// Document path location for WMS documents
+    static const STRING GeneralPropertyWmsDocumentPath;                 /// value("WmsDocumentPath")
+    static const STRING DefaultGeneralPropertyWmsDocumentPath;          /// value("Wms/")
 
     /// ADMINISTRATIVE CONNECTION PROPERTIES SECTION ---------------------------------------------------------------------
 
@@ -247,7 +131,6 @@ EXTERNAL_API:
     static const STRING AdministrativeConnectionPropertyThreadPoolSize;         /// value("ThreadPoolSize")
     static const INT32 DefaultAdministrativeConnectionPropertyThreadPoolSize;   /// value(5)
 
-
     /// CLIENT CONNECTION PROPERTIES SECTION -----------------------------------------------------------------------------
 
     /// Client Connection properties
@@ -268,7 +151,6 @@ EXTERNAL_API:
     /// Sets the number of worker threads available for client processing
     static const STRING ClientConnectionPropertyThreadPoolSize;         /// value("ThreadPoolSize")
     static const INT32 DefaultClientConnectionPropertyThreadPoolSize;   /// value(10)
-
 
     /// SITE CONNECTION PROPERTIES SECTION -------------------------------------------------------------------------------
 
@@ -294,38 +176,6 @@ EXTERNAL_API:
     /// Sets the number of worker threads available for site processing
     static const STRING SiteConnectionPropertyThreadPoolSize;           /// value("ThreadPoolSize")
     static const INT32 DefaultSiteConnectionPropertyThreadPoolSize;     /// value(5)
-
-
-    /// AGENT PROPERTIES SECTION -----------------------------------------------------------------------------------------
-
-    /// Agent properties
-    static const STRING AgentPropertiesSection;                         /// value("AgentProperties")
-
-    /// Number of seconds to wait before processing each request value
-    static const STRING AgentDebugPause;                                /// value("DebugPause")
-    static const INT32 DefaultAgentDebugPause;                          /// value(0)
-
-    /// Disables Http operations used for Authoring
-    static const STRING AgentDisableAuthoring;                          /// value("DisableAuthoring")
-
-    /// Disables Http operations used for OGC Wms
-    static const STRING AgentDisableWms;                                /// value("DisableWms")
-
-    /// Disables Http operations used for OGC Wfs
-    static const STRING AgentDisableWfs;                                /// value("DisableWfs")
-
-
-    /// OGC PROPERTIES SECTION -------------------------------------------------------------------------------------------
-
-    /// Ogc properties
-    static const STRING OgcPropertiesSection;                           /// value("OgcProperties")
-
-    /// Password for Wms requests
-    static const STRING WmsPassword;                                    /// value("WmsPassword")
-
-    /// Password for Wfs requests
-    static const STRING WfsPassword;                                    /// value("WfsPassword")
-
 
     /// HOST PROPERTIES SECTION ------------------------------------------------------------------------------------------
 
@@ -355,9 +205,13 @@ EXTERNAL_API:
     static const STRING HostPropertyResourceService;                    /// value("ResourceService")
     static const bool DefaultHostPropertyResourceService;               /// value(false)
 
+INTERNAL_API:
+
     /// Enables/disables the ServerAdmin Service (for internal use only).
     /// Note that, this service is available on each server.
     static const STRING HostPropertyServerAdminService;                 /// value("ServerAdminService")
+
+EXTERNAL_API:
 
     /// Enables/disables the Site Service.  Note that in V1.0 this service is only
     /// available on the Site Server and must be enabled there.
@@ -368,6 +222,128 @@ EXTERNAL_API:
     static const STRING HostPropertyTileService;                        /// value("TileService")
     static const bool DefaultHostPropertyTileService;                   /// value(false)
 
+    /// DRAWING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
+
+    /// Drawing Service properties.  Note that in V1.0 this property section is only defined on the Site Server.
+    static const STRING DrawingServicePropertiesSection;                /// value("DrawingServiceProperties")
+
+    /// FEATURE SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
+
+    /// Feature Service properties.  Note that in V1.0 this property section is only defined on the Site Server.
+    static const STRING FeatureServicePropertiesSection;                        /// value("FeatureServiceProperties")
+
+    /// Sets the maximum number of features fetched to reduce the network traffic
+    static const STRING FeatureServicePropertyDataCacheSize;                    /// value("DataCacheSize")
+    static const INT32 DefaultFeatureServicePropertyDataCacheSize;              /// value(100)
+
+    /// Sets whether to pool connections
+    static const STRING FeatureServicePropertyDataConnectionPoolEnabled;        /// value("DataConnectionPoolEnabled")
+    static const bool DefaultFeatureServicePropertyDataConnectionPoolEnabled;   /// value(false)
+
+    /// Sets the number of pooled data connections
+    static const STRING FeatureServicePropertyDataConnectionPoolSize;           /// value("DataConnectionPoolSize")
+    static const INT32 DefaultFeatureServicePropertyDataConnectionPoolSize;     /// value(100)
+
+    /// Sets the maximum amount of time (in seconds) for data connection idle activity before the data connection is closed
+    static const STRING FeatureServicePropertyDataConnectionTimeout;            /// value("DataConnectionTimeout")
+    static const INT32 DefaultFeatureServicePropertyDataConnectionTimeout;      /// value(600)
+
+    /// Sets the time duration (in seconds) between timeout checks
+    static const STRING FeatureServicePropertyDataConnectionTimerInterval;      /// value("DataConnectionTimerInterval")
+    static const INT32 DefaultFeatureServicePropertyDataConnectionTimerInterval;/// value(60)
+
+    /// MAPPING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
+
+    /// Mapping Service properties
+    static const STRING MappingServicePropertiesSection;                /// value("MappingServiceProperties")
+
+    /// RENDERING SERVICE PROPERTIES SECTION -----------------------------------------------------------------------------
+
+    /// Rendering Service properties
+    static const STRING RenderingServicePropertiesSection;              /// value("RenderingServiceProperties")
+
+    /// Maximum request extent offset to use when requesting features for a tile, specified as a factor of the tile size
+    static const STRING RenderingServicePropertyTileExtentOffset;       /// value("TileExtentOffset")
+    static const double DefaultRenderingServicePropertyTileExtentOffset;/// value(0.35)
+
+    /// RESOURCE SERVICE PROPERTIES SECTION ------------------------------------------------------------------------------
+
+    /// Resource Service properties.  Note that in V1.0 this property section is only defined on the Site Server.
+    static const STRING ResourceServicePropertiesSection;               /// value("ResourceServiceProperties")
+
+    /// Sets the root of the library repository
+    static const STRING ResourceServicePropertyLibraryRepositoryPath;               /// value("LibraryRepositoryPath")
+    static const STRING DefaultResourceServicePropertyLibraryRepositoryPath;        /// value("Repositories/Library/")
+
+    /// Sets the root of the library resource data files
+    static const STRING ResourceServicePropertyLibraryResourceDataFilePath;         /// value("LibraryResourceDataFilePath")
+    static const STRING DefaultResourceServicePropertyLibraryResourceDataFilePath;  /// value("Repositories/Library/DataFiles/")
+
+    /// Sets the path to resource packages
+    static const STRING ResourceServicePropertyPackagesPath;                        /// value("PackagesPath")
+    static const STRING DefaultResourceServicePropertyPackagesPath;                 /// value("Packages/")
+
+    /// Sets the time duration (in seconds) between repository checkpoints
+    static const STRING ResourceServicePropertyRepositoryCheckpointsTimerInterval;      /// value("RepositoryCheckpointsTimerInterval")
+    static const INT32 DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval;/// value(600)
+
+    /// Sets the time duration (in seconds) between resource change notifications
+    static const STRING ResourceServicePropertyResourceChangeTimerInterval;         /// value("ResourceChangeTimerInterval")
+    static const INT32 DefaultResourceServicePropertyResourceChangeTimerInterval;   /// value(5)
+
+    /// Sets the trash folder name
+    static const STRING ResourceServicePropertyResourceDataFileTrashFolderName;         /// value("ResourceDataFileTrashFolderName")
+    static const STRING DefaultResourceServicePropertyResourceDataFileTrashFolderName;  /// value("Trash")
+
+    /// Sets the maximum number of resources with permission information to be cached
+    static const STRING ResourceServicePropertyResourcePermissionCacheSize;             /// value("ResourcePermissionCacheSize")
+    static const INT32 DefaultResourceServicePropertyResourcePermissionCacheSize;       /// value(1000)
+
+    /// Sets the path to all resource schema files
+    static const STRING ResourceServicePropertyResourceSchemaFilePath;              /// value("ResourceSchemaFilePath")
+    static const STRING DefaultResourceServicePropertyResourceSchemaFilePath;       /// value("Schema/")
+
+INTERNAL_API:
+
+    /// Enables/disables the resource validation
+    static const STRING ResourceServicePropertyResourceValidationEnabled;       /// value("ResourceValidationEnabled")
+    static const bool DefaultResourceServicePropertyResourceValidationEnabled;  /// value(true)
+
+EXTERNAL_API:
+
+    /// Sets the root of the session repository
+    static const STRING ResourceServicePropertySessionRepositoryPath;               /// value("SessionRepositoryPath")
+    static const STRING DefaultResourceServicePropertySessionRepositoryPath;        /// value("Repositories/Session/")
+
+    /// Sets the root of the session resource data files
+    static const STRING ResourceServicePropertySessionResourceDataFilePath;         /// value("SessionResourceDataFilePath")
+    static const STRING DefaultResourceServicePropertySessionResourceDataFilePath;  /// value("Repositories/Session/DataFiles/")
+
+    /// Sets the root of the site repository
+    static const STRING ResourceServicePropertySiteRepositoryPath;                  /// value("SiteRepositoryPath")
+    static const STRING DefaultResourceServicePropertySiteRepositoryPath;           /// value("Repositories/Site/")
+
+    /// SITE SERVICE PROPERTIES SECTION ----------------------------------------------------------------------------------
+
+    /// Site Service properties.  Note that in V1.0 this property section is only defined on the Site Server.
+    static const STRING SiteServicePropertiesSection;                   /// value("SiteServiceProperties")
+
+    /// Sets the maximum amount of time (in seconds) for session timeout
+    static const STRING SiteServicePropertySessionTimeout;              /// value("SessionTimeout")
+    static const INT32 DefaultSiteServicePropertySessionTimeout;        /// value(1200)
+
+    /// Sets the time duration (in seconds) between session timeout checks
+    static const STRING SiteServicePropertySessionTimerInterval;        /// value("SessionTimerInterval")
+    static const INT32 DefaultSiteServicePropertySessionTimerInterval;  /// value(400)
+
+    /// TILE SERVICE PROPERTIES SECTION ----------------------------------------------------------------------------------
+
+    /// Tile Service properties
+    static const STRING TileServicePropertiesSection;                   /// value("TileServiceProperties")
+
+    /// Sets the root of the image tile cache
+    static const STRING TileServicePropertyTileCachePath;               /// value("TileCachePath")
+    static const STRING DefaultTileServicePropertyTileCachePath;        /// value("Repositories/TileCache/")
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -517,7 +493,6 @@ EXTERNAL_API:
     static const STRING AccessLogPropertyParameters;                /// value("Parameters")
     static const STRING DefaultAccessLogPropertyParameters;         /// value("")
 
-
     /// ADMIN LOG PROPERTIES SECTION -------------------------------------------------------------------------------------
 
     /// Admin Log properties.  This log records all administrative operations (server status
@@ -536,7 +511,6 @@ EXTERNAL_API:
     /// The Admin log's parameters
     static const STRING AdminLogPropertyParameters;                 /// value("Parameters")
     static const STRING DefaultAdminLogPropertyParameters;          /// value("")
-
 
     /// AUTHENTICATION LOG PROPERTIES SECTION ----------------------------------------------------------------------------
 
@@ -557,7 +531,6 @@ EXTERNAL_API:
     static const STRING AuthenticationLogPropertyParameters;        /// value("Parameters")
     static const STRING DefaultAuthenticationLogPropertyParameters; /// value("")
 
-
     /// ERROR LOG PROPERTIES SECTION -------------------------------------------------------------------------------------
 
     /// Error Log properties.  This log records all errors that occur during the MapGuide
@@ -576,7 +549,6 @@ EXTERNAL_API:
     /// The Error log's parameters
     static const STRING ErrorLogPropertyParameters;                 /// value("Parameters")
     static const STRING DefaultErrorLogPropertyParameters;          /// value("")
-
 
     /// SESSION LOG PROPERTIES SECTION -----------------------------------------------------------------------------------
 
@@ -598,7 +570,6 @@ EXTERNAL_API:
     static const STRING SessionLogPropertyParameters;               /// value("Parameters")
     static const STRING DefaultSessionLogPropertyParameters;        /// value("")
 
-
     /// TRACE LOG PROPERTIES SECTION -------------------------------------------------------------------------------------
 
     /// Trace Log properties.  This log records the details for each request (logged
@@ -619,6 +590,7 @@ EXTERNAL_API:
     static const STRING TraceLogPropertyParameters;                 /// value("Parameters")
     static const STRING DefaultTraceLogPropertyParameters;          /// value("")
 
+INTERNAL_API:
 
     /// SUPPORT SERVERS SECTION -----------------------------------------------------------------------------------------
 
@@ -643,13 +615,69 @@ EXTERNAL_API:
     /// IP address of a support server
     static const STRING SupportServerAddressProperty;               /// value("IpAddress")
 
-INTERNAL_API:
+EXTERNAL_API:
 
-    /// RESOURCE SERVICE PROPERTIES SECTION ------------------------------------------------------------------------------
+    ///////////////////////////////////////////////////////////////////////////
+    /// Web Configuration Validation Information Maps
+    ///
 
-    /// Enables/disables the resource validation
-    static const STRING ResourceServicePropertyResourceValidationEnabled;       /// value("ResourceValidationEnabled")
-    static const bool DefaultResourceServicePropertyResourceValidationEnabled;  /// value(true)
+    /// AGENT PROPERTIES SECTION -----------------------------------------------------------------------------------------
+
+    /// Agent properties
+    static const STRING AgentPropertiesSection;                         /// value("AgentProperties")
+
+    /// Number of seconds to wait before processing each request value
+    static const STRING AgentDebugPause;                                /// value("DebugPause")
+    static const INT32 DefaultAgentDebugPause;                          /// value(0)
+
+    /// Disables Http operations used for Authoring
+    static const STRING AgentDisableAuthoring;                          /// value("DisableAuthoring")
+
+    /// Disables Http operations used for OGC Wfs
+    static const STRING AgentDisableWfs;                                /// value("DisableWfs")
+
+    /// Disables Http operations used for OGC Wms
+    static const STRING AgentDisableWms;                                /// value("DisableWms")
+
+    /// OGC PROPERTIES SECTION -------------------------------------------------------------------------------------------
+
+    /// Ogc properties
+    static const STRING OgcPropertiesSection;                           /// value("OgcProperties")
+
+    /// Password for Wfs requests
+    static const STRING WfsPassword;                                    /// value("WfsPassword")
+
+    /// Password for Wms requests
+    static const STRING WmsPassword;                                    /// value("WmsPassword")
+
+public:
+
+    // Common Configuration Validation Information Maps
+    static const MgConfigValidationInfo sm_cviGeneralProperties[];
+    static const MgConfigValidationInfo sm_cviAdministrativeConnectionProperties[];
+    static const MgConfigValidationInfo sm_cviClientConnectionProperties[];
+    static const MgConfigValidationInfo sm_cviSiteConnectionProperties[];
+
+    // Server Configuration Validation Information Maps
+    static const MgConfigValidationInfo sm_cviHostProperties[];
+    static const MgConfigValidationInfo sm_cviDrawingServiceProperties[];
+    static const MgConfigValidationInfo sm_cviFeatureServiceProperties[];
+    static const MgConfigValidationInfo sm_cviMappingServiceProperties[];
+    static const MgConfigValidationInfo sm_cviRenderingServiceProperties[];
+    static const MgConfigValidationInfo sm_cviResourceServiceProperties[];
+    static const MgConfigValidationInfo sm_cviSiteServiceProperties[];
+    static const MgConfigValidationInfo sm_cviTileServiceProperties[];
+
+    static const MgConfigValidationInfo sm_cviAccessLogProperties[];
+    static const MgConfigValidationInfo sm_cviAdminLogProperties[];
+    static const MgConfigValidationInfo sm_cviAuthenticationLogProperties[];
+    static const MgConfigValidationInfo sm_cviErrorLogProperties[];
+    static const MgConfigValidationInfo sm_cviSessionLogProperties[];
+    static const MgConfigValidationInfo sm_cviTraceLogProperties[];
+
+    // Web Configuration Validation Information Maps
+    static const MgConfigValidationInfo sm_cviAgentProperties[];
+    static const MgConfigValidationInfo sm_cviOgcProperties[];
 };
 /// \endcond INTERNAL
 

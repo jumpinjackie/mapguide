@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MG_CONFIGURATION_HEAP_H_
-#define _MG_CONFIGURATION_HEAP_H_
+#ifndef MG_CONFIGURATION_HEAP_H_
+#define MG_CONFIGURATION_HEAP_H_
 
 /// \cond INTERNAL
 class MgConfigurationHeap
@@ -103,7 +103,6 @@ INTERNAL_API:
     bool EnumerateSections(const ACE_Configuration_Section_Key& key, int index, ACE_TString& name);
     bool EnumerateValues(const ACE_Configuration_Section_Key& key, int index, ACE_TString& name, ACE_Configuration::VALUETYPE& type);
     bool SetStringValue(const ACE_Configuration_Section_Key& key, const ACE_TCHAR* name, const ACE_TString& value);
-    bool SetIntegerValue(const ACE_Configuration_Section_Key& key, const ACE_TCHAR* name, u_int value);
     bool GetStringValue(const ACE_Configuration_Section_Key& key, const ACE_TCHAR* name, ACE_TString& value);
     bool RemoveValue(const ACE_Configuration_Section_Key& key, const ACE_TCHAR* name);
 
@@ -156,4 +155,4 @@ private:
 };
 /// \endcond
 
-#endif // _MG_CONFIGURATION_HEAP_H_
+#endif // MG_CONFIGURATION_HEAP_H_

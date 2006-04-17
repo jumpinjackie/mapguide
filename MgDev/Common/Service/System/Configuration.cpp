@@ -18,7 +18,7 @@
 #include "AceCommon.h"
 
 // Process-wide MgConfiguration
-Ptr<MgConfiguration> MgConfiguration::m_configuration = (MgConfiguration*)NULL;
+Ptr<MgConfiguration> MgConfiguration::sm_configuration = (MgConfiguration*)NULL;
 
 /// <summary>
 /// Constructor
@@ -52,13 +52,13 @@ MgConfiguration* MgConfiguration::GetInstance(void)
 
     ACE_TRACE ("MgConfiguration::GetInstance");
 
-    if (MgConfiguration::m_configuration == NULL)
+    if (MgConfiguration::sm_configuration == NULL)
     {
         // Perform Double-Checked Locking Optimization.
         ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance (), 0));
-        if (MgConfiguration::m_configuration == NULL)
+        if (MgConfiguration::sm_configuration == NULL)
         {
-            MgConfiguration::m_configuration = new MgConfiguration;
+            MgConfiguration::sm_configuration = new MgConfiguration;
         }
     }
 
@@ -66,7 +66,7 @@ MgConfiguration* MgConfiguration::GetInstance(void)
 
     // To avoid overheads and maintain thread safety,
     // do not assign this returned static singleton to a Ptr object.
-    return MgConfiguration::m_configuration;
+    return MgConfiguration::sm_configuration;
 }
 
 ///----------------------------------------------------------------------------
@@ -354,6 +354,7 @@ bool MgConfiguration::GetValue(CREFSTRING section, CREFSTRING property, REFSTRIN
         if (m_config.GetStringValue(sectionKey, MG_WCHAR_TO_TCHAR(property), temp))
         {
             value = MG_TCHAR_TO_WCHAR(temp.c_str());
+            ValidateValue(section, property, value);
         }
     }
 
@@ -499,53 +500,28 @@ void MgConfiguration::SetProperties(CREFSTRING section,
             {
                 MgStringProperty* pProperty =
                     static_cast<MgStringProperty*>(pBaseProperty.p);
+                STRING name = pProperty->GetName();
+                STRING value = pProperty->GetValue();
 
-                // TODO: Property Validation - Should throw an exception if value is not valid
-                // Example: Filename = "" <---- This is not valid
-
+                ValidateValue(section, name, value);
                 success = m_config.SetStringValue(sectionKey,
-                    MG_WCHAR_TO_TCHAR(pProperty->GetName()),
-                    MG_WCHAR_TO_TCHAR(pProperty->GetValue()));
-            }
-            else if (MgPropertyType::Int32 == pBaseProperty->GetPropertyType())
-            {
-                MgInt32Property* pProperty =
-                    static_cast<MgInt32Property*>(pBaseProperty.p);
+                    MG_WCHAR_TO_TCHAR(name), MG_WCHAR_TO_TCHAR(value));
 
-                // TODO: Property Validation - Should throw an exception if value is not valid
-                // Example: Port = Hello <---- This is not valid
-
-                success = m_config.SetIntegerValue(sectionKey,
-                    MG_WCHAR_TO_TCHAR(pProperty->GetName()),
-                    pProperty->GetValue());
-            }
-            else if (MgPropertyType::Boolean == pBaseProperty->GetPropertyType())
-            {
-                MgBooleanProperty* pProperty =
-                    static_cast<MgBooleanProperty*>(pBaseProperty.p);
-
-                // TODO: Property Validation - Should throw an exception if value is not valid
-                // Example: Enabled = Yes <---- This is not valid
-
-                success = m_config.SetIntegerValue(sectionKey,
-                    MG_WCHAR_TO_TCHAR(pProperty->GetName()),
-                    pProperty->GetValue() ? 1 : 0);
+                if (!success)
+                {
+                    break;
+                }
             }
             else
             {
-                // TODO: Support more types?
-
+                // Everything in the ini file is treated as a string so we should not be here
                 throw new MgInvalidPropertyTypeException(
                     L"MgConfiguration.SetProperties", __LINE__, __WFILE__, NULL, L"", NULL);
             }
-
-            if (!success)
-            {
-                break;
-            }
         }
     }
-    else
+
+    if (!success)
     {
         MgStringCollection arguments;
         arguments.Add(section);
@@ -636,4 +612,303 @@ void MgConfiguration::RemoveProperties(CREFSTRING section,
     SaveConfiguration(GetFileName());
 
     MG_CONFIGURATION_CATCH_AND_THROW(L"MgConfiguration.RemoveProperties")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets the configuration validation information on the specified property.
+///
+const MgConfigValidationInfo* MgConfiguration::GetConfigValidationInfo(
+    const MgConfigValidationInfo validationInfoList[], CREFSTRING property) const
+{
+    const MgConfigValidationInfo* validationInfo = NULL;
+
+    if (NULL != validationInfoList)
+    {
+        int i = 0;
+        
+        while (!validationInfoList[i].m_propertyName.empty())
+        {
+            if (validationInfoList[i].m_propertyName == property)
+            {
+                validationInfo = &validationInfoList[i];
+                break;
+            }
+
+            ++i;
+        }
+    }
+
+    return validationInfo;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets the configuration validation information on the specified property.
+///
+const MgConfigValidationInfo* MgConfiguration::GetConfigValidationInfo(
+    CREFSTRING section, CREFSTRING property) const
+{
+    const MgConfigValidationInfo* validationInfo = NULL;
+
+    if (MgConfigProperties::GeneralPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviGeneralProperties, property);
+    }
+    else if (MgConfigProperties::AdministrativeConnectionPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviAdministrativeConnectionProperties, property);
+    }
+    else if (MgConfigProperties::ClientConnectionPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviClientConnectionProperties, property);
+    }
+    else if (MgConfigProperties::SiteConnectionPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviSiteConnectionProperties, property);
+    }
+    else if (MgConfigProperties::HostPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviHostProperties, property);
+    }
+    else if (MgConfigProperties::DrawingServicePropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviDrawingServiceProperties, property);
+    }
+    else if (MgConfigProperties::FeatureServicePropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviFeatureServiceProperties, property);
+    }
+    else if (MgConfigProperties::MappingServicePropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviMappingServiceProperties, property);
+    }
+    else if (MgConfigProperties::RenderingServicePropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviRenderingServiceProperties, property);
+    }
+    else if (MgConfigProperties::ResourceServicePropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviResourceServiceProperties, property);
+    }
+    else if (MgConfigProperties::SiteServicePropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviSiteServiceProperties, property);
+    }
+    else if (MgConfigProperties::TileServicePropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviTileServiceProperties, property);
+    }
+    else if (MgConfigProperties::AccessLogPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviAccessLogProperties, property);
+    }
+    else if (MgConfigProperties::AdminLogPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviAdminLogProperties, property);
+    }
+    else if (MgConfigProperties::AuthenticationLogPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviAuthenticationLogProperties, property);
+    }
+    else if (MgConfigProperties::ErrorLogPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviErrorLogProperties, property);
+    }
+    else if (MgConfigProperties::SessionLogPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviSessionLogProperties, property);
+    }
+    else if (MgConfigProperties::TraceLogPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviTraceLogProperties, property);
+    }
+    else if (MgConfigProperties::AgentPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviAgentProperties, property);
+    }
+    else if (MgConfigProperties::OgcPropertiesSection == section)
+    {
+        validationInfo = GetConfigValidationInfo(
+            MgConfigProperties::sm_cviOgcProperties, property);
+    }
+
+    return validationInfo;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Validates the specified property value.
+///
+void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property, 
+    CREFSTRING value)
+{
+    MG_CONFIGURATION_TRY()
+
+    const MgConfigValidationInfo* validationInfo = GetConfigValidationInfo(
+        section, property);
+
+    if (NULL == validationInfo)
+    {
+        return;
+    }
+
+    if (MgPropertyType::String == validationInfo->m_propertyType)
+    {
+        double strLength = static_cast<double>(value.length());
+
+        if (strLength < validationInfo->m_minimumValue ||
+            strLength > validationInfo->m_maximumValue)
+        {
+            MgStringCollection whatArguments;
+            whatArguments.Add(GetFileName());
+
+            MgStringCollection whyArguments;
+            whyArguments.Add(property);
+            whyArguments.Add(section);
+
+            if (0.0 == strLength)
+            {
+                throw new MgConfigurationException(
+                    L"MgConfiguration.ValidateValue",
+                    __LINE__, __WFILE__, &whatArguments, 
+                    L"MgConfigurationPropertyValueIsNotSpecified", &whyArguments);
+            }
+            else
+            {
+                STRING minimumValue = validationInfo->GetMinimumValue();
+                STRING maximumValue = validationInfo->GetMaximumValue();
+
+                whyArguments.Add(value);
+                whyArguments.Add(minimumValue);
+
+                if (minimumValue == maximumValue)
+                {
+                    throw new MgConfigurationException(
+                        L"MgConfiguration.ValidateValue",
+                        __LINE__, __WFILE__, &whatArguments, 
+                        L"MgConfigurationPropertyLengthIsInvalid", &whyArguments);
+                }
+                else
+                {
+                    whyArguments.Add(maximumValue);
+
+                    throw new MgConfigurationException(
+                        L"MgConfiguration.ValidateValue",
+                        __LINE__, __WFILE__, &whatArguments, 
+                        L"MgConfigurationPropertyLengthIsOutOfRange", &whyArguments);
+                }
+            }
+        }
+
+        if (!validationInfo->m_reservedCharacters.empty() &&
+            STRING::npos != value.find_first_of(validationInfo->m_reservedCharacters))
+        {
+            MgStringCollection whatArguments;
+            whatArguments.Add(GetFileName());
+
+            MgStringCollection whyArguments;
+            whyArguments.Add(property);
+            whyArguments.Add(section);
+            whyArguments.Add(value);
+            whyArguments.Add(validationInfo->m_reservedCharacters);
+
+            throw new MgConfigurationException(
+                L"MgConfiguration.ValidateValue",
+                __LINE__, __WFILE__, &whatArguments, 
+                L"MgConfigurationPropertyValueContainsReservedCharacters", &whyArguments);
+        }
+    }
+    else
+    {
+        double numericValue = MgUtil::StringToDouble(value);
+
+        if (numericValue < validationInfo->m_minimumValue ||
+            numericValue > validationInfo->m_maximumValue)
+        {
+            MgStringCollection whatArguments;
+            whatArguments.Add(GetFileName());
+
+            MgStringCollection whyArguments;
+            whyArguments.Add(property);
+            whyArguments.Add(section);
+            whyArguments.Add(value);
+            whyArguments.Add(validationInfo->GetMinimumValue());
+            whyArguments.Add(validationInfo->GetMaximumValue());
+
+            throw new MgConfigurationException(
+                L"MgConfiguration.ValidateValue",
+                __LINE__, __WFILE__, &whatArguments, 
+                L"MgConfigurationPropertyValueIsOutOfRange", &whyArguments);
+        }
+    }
+
+    MG_CONFIGURATION_CATCH_AND_THROW(L"MgConfiguration.ValidateValue")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the minimum value of the numeric property or the minimum value of
+/// the length of the string property.
+///
+STRING MgConfigValidationInfo::GetMinimumValue() const
+{
+    STRING value;
+
+    if (MgPropertyType::Boolean == m_propertyType
+     || MgPropertyType::Byte    == m_propertyType
+     || MgPropertyType::Int16   == m_propertyType
+     || MgPropertyType::Int32   == m_propertyType)
+    {
+        MgUtil::Int32ToString(static_cast<INT32>(m_minimumValue), value);
+    }
+    else
+    {
+        MgUtil::DoubleToString(m_minimumValue, value);
+    }
+
+    return value;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the maximum value of the numeric property or the maximum value of
+/// the length of the string property.
+///
+STRING MgConfigValidationInfo::GetMaximumValue() const
+{
+    STRING value;
+
+    if (MgPropertyType::Boolean == m_propertyType
+     || MgPropertyType::Byte    == m_propertyType
+     || MgPropertyType::Int16   == m_propertyType
+     || MgPropertyType::Int32   == m_propertyType)
+    {
+        MgUtil::Int32ToString(static_cast<INT32>(m_maximumValue), value);
+    }
+    else
+    {
+        MgUtil::DoubleToString(m_maximumValue, value);
+    }
+
+    return value;
 }

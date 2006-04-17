@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MG_CONFIGURATION_H
-#define _MG_CONFIGURATION_H
+#ifndef MG_CONFIGURATION_H_
+#define MG_CONFIGURATION_H_
 
 ///////////////////////////////////////////////////////////////////////////////
 /// MapGuide Configuration try/catch/throw macros.
@@ -32,6 +32,21 @@
 
 #define MG_CONFIGURATION_CATCH_AND_THROW(methodName)                          \
     MG_CATCH_AND_THROW(methodName)                                            \
+
+//////////////////////////////////////////////////////////////////
+/// Validation information on configuration properties.
+///
+struct MgConfigValidationInfo
+{
+    STRING m_propertyName; // Name of the configuration property
+    INT32 m_propertyType;  // Type of the configuration property
+    double m_minimumValue; // Minimum value of the numeric property or minimum value of the length of the string property
+    double m_maximumValue; // Maximum value of the numeric property or maximum value of the length of the string property
+    STRING m_reservedCharacters; // Reserved characters for the property value.
+
+    STRING GetMinimumValue() const;
+    STRING GetMaximumValue() const;
+};
 
 /// \cond INTERNAL
 class MG_SERVICE_API MgConfiguration : public MgGuardDisposable
@@ -229,19 +244,29 @@ private:
     /// Get the generic value in string
     bool GetValue(CREFSTRING section, CREFSTRING property, REFSTRING value);
 
-    /// Ace member
-    MgConfigurationHeap m_config;
+    const MgConfigValidationInfo* GetConfigValidationInfo(
+        const MgConfigValidationInfo validationInfoList[],
+        CREFSTRING property) const;
+    const MgConfigValidationInfo* GetConfigValidationInfo(CREFSTRING section,
+        CREFSTRING property) const;
+    void ValidateValue(CREFSTRING section, CREFSTRING property,
+        CREFSTRING value);
+
+private:
 
     /// Pointer to a process-wide singleton.
-    static Ptr<MgConfiguration> m_configuration;
+    static Ptr<MgConfiguration> sm_configuration;
+
+    /// Needed for thread-safety
+    ACE_Recursive_Thread_Mutex m_mutex;
+
+    /// Ace member
+    MgConfigurationHeap m_config;
 
     /// Store the file name loaded
     STRING m_fileName;
     bool m_fileLoaded;
-
-    /// Needed for thread-safety
-    ACE_Recursive_Thread_Mutex m_mutex;
 };
 /// \endcond
 
-#endif //_MG_CONFIGURATION_H
+#endif // MG_CONFIGURATION_H_
