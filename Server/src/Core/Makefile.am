@@ -11,6 +11,7 @@ INCLUDES = \
   -I../Common \
   -I../Common/Base \
   -I../Common/Manager \
+  -I../Common/Thread \
   -I../Services/Drawing \
   -I../Services/Feature \
   -I../Services/Mapping \
@@ -41,6 +42,7 @@ include_SOURCES = \
   EventTimer.cpp \
   EventTimerManager.cpp \
   main.cpp \
+  OperationThread.cpp \
   RepositoryCheckpointEventHandler.cpp \
   ResourceChangeEventHandler.cpp \
   Server.cpp \
@@ -51,8 +53,7 @@ include_SOURCES = \
   SignalHandler.cpp \
   ThreadBase.cpp \
   TimedEvent.cpp \
-  TimedEventHandler.cpp \
-  WorkerThread.cpp
+  TimedEventHandler.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   ClientAcceptor.h \
@@ -61,6 +62,7 @@ noinst_HEADERS = $(include_SOURCES) \
   DataConnectionTimeoutEventHandler.h \
   EventTimer.h \
   EventTimerManager.h \
+  OperationThread.h \
   RepositoryCheckpointEventHandler.h \
   ResourceChangeEventHandler.h \
   Server.h \
@@ -72,7 +74,6 @@ noinst_HEADERS = $(include_SOURCES) \
   ThreadBase.h \
   TimedEvent.h \
   TimedEventHandler.h \
-  WorkerThread.h \
   ../Common/ServerCommon.h
 
 mgserver_LDADD = \
@@ -100,6 +101,7 @@ mgserver_LDADD = \
   -lMgServerRenderingService \
   -lMgServerResourceService \
   -lMgServerSiteService \
+  -lMgServerThread \
   -lMgServerTileService \
   -lMgMdfModel \
   -lMgMdfParser \
@@ -121,6 +123,7 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -R$(map_srcdir)/Server/src/Common/Base/.libs \
   -R$(map_srcdir)/Server/src/Common/Manager/.libs \
   -R$(map_srcdir)/Server/src/Common/Factory/.libs \
+  -R$(map_srcdir)/Server/src/Common/Thread/.libs \
   -R$(map_srcdir)/Server/src/Services/Drawing/.libs \
   -R$(map_srcdir)/Server/src/Services/Feature/.libs \
   -R$(map_srcdir)/Server/src/Services/Mapping/.libs \
@@ -144,6 +147,7 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -L../Common/Base \
   -L../Common/Manager \
   -L../Common/Factory \
+  -L../Common/Thread \
   -L../Services/Drawing \
   -L../Services/Feature \
   -L../Services/Mapping \

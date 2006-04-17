@@ -15,21 +15,4 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "ClientAcceptor.cpp"
-#include "ClientHandler.cpp"
-#include "ConnectionTimeoutEventHandler.cpp"
-#include "DataConnectionTimeoutEventHandler.cpp"
-#include "EventTimer.cpp"
-#include "EventTimerManager.cpp"
-#include "main.cpp"
-#include "OperationThread.cpp"
-#include "RepositoryCheckpointEventHandler.cpp"
-#include "ResourceChangeEventHandler.cpp"
-#include "Server.cpp"
-#include "ServerStreamData.cpp"
-#include "ServiceHandlerFactory.cpp"
-#include "ServiceRegistrationEventHandler.cpp"
-#include "SessionTimeoutEventHandler.cpp"
-#include "SignalHandler.cpp"
-#include "TimedEvent.cpp"
-#include "TimedEventHandler.cpp"
+#include "ThreadBase.cpp"

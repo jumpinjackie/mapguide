@@ -8918,7 +8918,7 @@ else
 fi
 
 # MAP_CONFIG_FILES_SERVER
-                                                                                                                                                                                                        ac_config_files="$ac_config_files Server/Makefile Server/src/Makefile Server/src/Gws/Makefile Server/src/Gws/GwsResource/Makefile Server/src/Gws/GwsCommon/Makefile Server/src/Gws/GwsQueryEngine/Makefile Server/src/Common/Makefile Server/src/Common/Base/Makefile Server/src/Common/Factory/Makefile Server/src/Common/Manager/Makefile Server/src/Services/Makefile Server/src/Services/Feature/Makefile Server/src/Services/Mapping/Makefile Server/src/Services/Resource/Makefile Server/src/Services/Site/Makefile Server/src/Services/Drawing/Makefile Server/src/Services/Rendering/Makefile Server/src/Services/ServerAdmin/Makefile Server/src/Services/Tile/Makefile Server/src/Core/Makefile"
+                                                                                                                                                                                                        ac_config_files="$ac_config_files Server/Makefile Server/src/Makefile Server/src/Gws/Makefile Server/src/Gws/GwsResource/Makefile Server/src/Gws/GwsCommon/Makefile Server/src/Gws/GwsQueryEngine/Makefile Server/src/Common/Makefile Server/src/Common/Base/Makefile Server/src/Common/Factory/Makefile Server/src/Common/Manager/Makefile Server/src/Common/Thread/Makefile Server/src/Services/Makefile Server/src/Services/Feature/Makefile Server/src/Services/Mapping/Makefile Server/src/Services/Resource/Makefile Server/src/Services/Site/Makefile Server/src/Services/Drawing/Makefile Server/src/Services/Rendering/Makefile Server/src/Services/ServerAdmin/Makefile Server/src/Services/Tile/Makefile Server/src/Core/Makefile"
 
 if test $map_using_proj4 = "yes"; then
             ac_config_files="$ac_config_files Server/src/UnitTesting/Makefile"
@@ -9526,6 +9526,7 @@ do
   "Server/src/Common/Base/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Common/Base/Makefile" ;;
   "Server/src/Common/Factory/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Common/Factory/Makefile" ;;
   "Server/src/Common/Manager/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Common/Manager/Makefile" ;;
+  "Server/src/Common/Thread/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Common/Thread/Makefile" ;;
   "Server/src/Services/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Makefile" ;;
   "Server/src/Services/Feature/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Feature/Makefile" ;;
   "Server/src/Services/Mapping/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Mapping/Makefile" ;;

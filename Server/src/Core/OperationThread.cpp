@@ -16,18 +16,19 @@
 //
 
 #include "AceCommon.h"
-#include "WorkerThread.h"
+#include "OperationThread.h"
 #include "ClientHandler.h"
 #include "ServiceHandlerFactory.h"
 #include "Connection.h"
 #include "ServerManager.h"
+#include "SessionManager.h"
 #include "LogManager.h"
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Constructor
 /// </summary>
-MgWorkerThread::MgWorkerThread(ACE_Thread_Manager &tm, INT32 nThreads) :
+MgOperationThread::MgOperationThread(ACE_Thread_Manager &tm, INT32 nThreads) :
     MgThreadBase(tm, nThreads)
 {
     m_bActive = true;
@@ -38,7 +39,7 @@ MgWorkerThread::MgWorkerThread(ACE_Thread_Manager &tm, INT32 nThreads) :
 /// <summary>
 /// ACE_Task method
 /// </summary>
-int MgWorkerThread::svc(void)
+int MgOperationThread::svc(void)
 {
     INT32 nResult = 0;
 
@@ -47,10 +48,10 @@ int MgWorkerThread::svc(void)
     {
         while (m_bActive)
         {
-            // Clear the user information for this worker thread.
+            // Clear the user information for this operation thread.
             MgUserInformation::SetCurrentUserInfo(NULL);
 
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) MgWorkerThread::svc() start loop\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgOperationThread::svc() Ready\n")));
 
             ACE_Message_Block* messageBlock = NULL;
 
@@ -60,15 +61,15 @@ int MgWorkerThread::svc(void)
 
                 if(nError == EINTR)
                 {
-                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) Interrupted while waiting for message\n")));
-                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) Exiting thread\n")));
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%P|%t) Interrupted while waiting for message\n")));
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%P|%t) MgOperationThread - Exiting thread\n")));
                     return 0;
                 }
                 else
                 {
                     // There was an error
-                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) Exiting thread\n")));
-                    ACE_ERROR_RETURN ((LM_ERROR, ACE_TEXT("%p\n"), ACE_TEXT("MgWorkerThread::svc()")), -1);
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%P|%t) MgOperationThread - Exiting thread\n")));
+                    ACE_ERROR_RETURN ((LM_ERROR, ACE_TEXT("%p\n"), ACE_TEXT("MgOperationThread::svc()")), -1);
                 }
             }
 
@@ -219,7 +220,7 @@ int MgWorkerThread::svc(void)
     {
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-        mgException = MgSystemException::Create(e, L"MgWorkerThread.svc", __LINE__, __WFILE__);
+        mgException = MgSystemException::Create(e, L"MgOperationThread.svc", __LINE__, __WFILE__);
         ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
         MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
 
@@ -229,14 +230,14 @@ int MgWorkerThread::svc(void)
     {
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-        mgException = new MgUnclassifiedException(L"MgWorkerThread.svc", __LINE__, __WFILE__, NULL, L"", NULL);
+        mgException = new MgUnclassifiedException(L"MgOperationThread.svc", __LINE__, __WFILE__, NULL, L"", NULL);
         ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
         MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
 
         nResult = -1;
     }
 
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) Exiting thread\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgOperationThread - Exiting thread\n")));
     return nResult;
 }
 
@@ -244,9 +245,9 @@ int MgWorkerThread::svc(void)
 /// <summary>
 /// Processes a Data Message Block.
 /// </summary>
-IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessMessage( ACE_Message_Block* pMB )
+IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Message_Block* pMB )
 {
-    ACE_DEBUG(( LM_DEBUG, ACE_TEXT( "  (%t) MgWorkerThread::ProcessMessage\n" )));
+    ACE_DEBUG(( LM_DEBUG, ACE_TEXT( "  (%P|%t) MgOperationThread::ProcessMessage\n" )));
 
     IMgServiceHandler::MgProcessStatus stat = IMgServiceHandler::mpsError;
 
@@ -302,38 +303,38 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessMessage( ACE_Message_B
                             switch ( pt )
                             {
                                 case ( MgPacketParser::mphOperation ) :
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) OPERATION PACKET\n" )));
+                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) OPERATION PACKET\n" )));
                                     stat = ProcessOperation( pData );
                                     keepParsing = false; // TODO: Remove this line when support for zero data size is added
                                     break;
 
                                 case ( MgPacketParser::mphOperationResponse ) :
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... OPERATION RESPONSE PACKET\n" )));
+                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... OPERATION RESPONSE PACKET\n" )));
                                     stat = IMgServiceHandler::mpsError;
                                     keepParsing = false;
                                     break;
 
                                 case ( MgPacketParser::mphArgumentSimple ) :
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... SIMPLE ARGUMENT PACKET\n" )));
+                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... SIMPLE ARGUMENT PACKET\n" )));
                                     stat = IMgServiceHandler::mpsError;
                                     keepParsing = false;
                                     break;
 
                                 case ( MgPacketParser::mphArgumentCollection ):
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... COLLECTION ARGUMENT PACKET\n" )));
+                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... COLLECTION ARGUMENT PACKET\n" )));
                                     stat = IMgServiceHandler::mpsError;
                                     keepParsing = false;
                                     break;
 
                                 case ( MgPacketParser::mphArgumentBinaryStream ) :
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... BINARY STREAM ARGUMENT PACKET\n" )));
+                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... BINARY STREAM ARGUMENT PACKET\n" )));
                                     stat = IMgServiceHandler::mpsError;
                                     keepParsing = false;
                                     break;
 
                                 case ( MgPacketParser::mphControl ):
                                     {
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) CONTROL PACKET\n" )));
+                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) CONTROL PACKET\n" )));
                                     // Check for close packet
                                     MgControlPacket packet;
                                     MgPacketParser::GetControlPacket( pData, &packet );
@@ -347,13 +348,13 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessMessage( ACE_Message_B
                                     break;
 
                                 case ( MgPacketParser::mphError ):
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... ERROR PACKET\n" )));
+                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... ERROR PACKET\n" )));
                                     stat = IMgServiceHandler::mpsError;
                                     keepParsing = false;
                                     break;
 
                                 default :
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... Unknown Packet Type\n" )));
+                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... Unknown Packet Type\n" )));
                                     stat = IMgServiceHandler::mpsError;
                                     keepParsing = false;
                                     break;
@@ -393,7 +394,7 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessMessage( ACE_Message_B
     {
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-        mgException = MgSystemException::Create(e, L"MgWorkerThread.ProcessMessage", __LINE__, __WFILE__);
+        mgException = MgSystemException::Create(e, L"MgOperationThread.ProcessMessage", __LINE__, __WFILE__);
         ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
         MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
 
@@ -403,7 +404,7 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessMessage( ACE_Message_B
     {
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-        mgException = new MgUnclassifiedException(L"MgWorkerThread.ProcessMessage", __LINE__, __WFILE__, NULL, L"", NULL);
+        mgException = new MgUnclassifiedException(L"MgOperationThread.ProcessMessage", __LINE__, __WFILE__, NULL, L"", NULL);
         ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
         MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
 
@@ -422,9 +423,9 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessMessage( ACE_Message_B
 /// <summary>
 /// Processes an Operation.
 /// </summary>
-IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessOperation( MgServerStreamData* pData )
+IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServerStreamData* pData )
 {
-    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) MgWorkerThread::ProcessOperation\n" )));
+    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) MgOperationThread::ProcessOperation\n" )));
 
     ACE_Time_Value operationTime = 0;
     IMgServiceHandler::MgProcessStatus stat = IMgServiceHandler::mpsError;
@@ -572,7 +573,7 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessOperation( MgServerStr
     {
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-        mgException = MgSystemException::Create(e, L"MgWorkerThread.ProcessOperation", __LINE__, __WFILE__);
+        mgException = MgSystemException::Create(e, L"MgOperationThread.ProcessOperation", __LINE__, __WFILE__);
         ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
         MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
 
@@ -589,7 +590,7 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessOperation( MgServerStr
     {
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-        mgException = new MgUnclassifiedException(L"MgWorkerThread.ProcessOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        mgException = new MgUnclassifiedException(L"MgOperationThread.ProcessOperation", __LINE__, __WFILE__, NULL, L"", NULL);
         ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
         MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
 
@@ -610,7 +611,7 @@ IMgServiceHandler::MgProcessStatus MgWorkerThread::ProcessOperation( MgServerStr
 /// <summary>
 /// Checks for data in the given MgStreamHelper
 /// </summary>
-MgStreamHelper::MgStreamStatus MgWorkerThread::CheckStream( MgStreamHelper* pHelper )
+MgStreamHelper::MgStreamStatus MgOperationThread::CheckStream( MgStreamHelper* pHelper )
 {
     UINT8 dummy = 0;
 
@@ -638,7 +639,7 @@ MgStreamHelper::MgStreamStatus MgWorkerThread::CheckStream( MgStreamHelper* pHel
     {
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-        mgException = MgSystemException::Create(e, L"MgWorkerThread.CheckStream", __LINE__, __WFILE__);
+        mgException = MgSystemException::Create(e, L"MgOperationThread.CheckStream", __LINE__, __WFILE__);
         ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
         MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
 
@@ -648,7 +649,7 @@ MgStreamHelper::MgStreamStatus MgWorkerThread::CheckStream( MgStreamHelper* pHel
     {
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-        mgException = new MgUnclassifiedException(L"MgWorkerThread.CheckStream", __LINE__, __WFILE__, NULL, L"", NULL);
+        mgException = new MgUnclassifiedException(L"MgOperationThread.CheckStream", __LINE__, __WFILE__, NULL, L"", NULL);
         ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
         MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
 

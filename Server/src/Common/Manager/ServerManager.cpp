@@ -19,6 +19,8 @@
 #include "ProductVersion.h"
 #include "ServiceManager.h"
 #include "ServerAdminDefs.h"
+#include "WorkerThread.h"
+#include "WorkerThreadData.h"
 
 const STRING MgServerManager::DocumentExtension = L".awd";
 const STRING MgServerManager::DocumentPath      = L"DocumentPath";
@@ -37,7 +39,8 @@ MgServerManager::MgServerManager(void) :
     m_totalActiveConnections(0),
     m_pAdminMessageQueue(NULL),
     m_pClientMessageQueue(NULL),
-    m_pSiteMessageQueue(NULL)
+    m_pSiteMessageQueue(NULL),
+    m_pWorkerThreads(NULL)
 {
     m_defaultLocale = MgConfigProperties::DefaultGeneralPropertyDefaultLocale;
 
@@ -82,6 +85,9 @@ MgServerManager::~MgServerManager(void)
         delete m_pClientHandles;
         m_pClientHandles = NULL;
     }
+
+    delete m_pWorkerThreads;
+    m_pWorkerThreads = NULL;
 }
 
 void MgServerManager::Dispose(void)
@@ -217,6 +223,12 @@ void MgServerManager::Initialize(CREFSTRING locale)
     {
         MgIpUtil::HostNameToAddress(siteServerAddress, m_siteServerAddress);
     }
+
+    // Create the worker thread pool
+    INT32 workerThreadPoolSize = 0;
+    pConfiguration->GetIntValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyWorkerThreadPoolSize, workerThreadPoolSize, MgConfigProperties::DefaultGeneralPropertyWorkerThreadPoolSize);
+    m_pWorkerThreads = new MgWorkerThread(m_threadManager, workerThreadPoolSize);
+    m_pWorkerThreads->Activate();
 
     MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::Initialize() - Site  server's IP address: " + m_siteServerAddress);
     MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::Initialize() - Local server's IP address: " + m_localServerAddress);
@@ -1366,4 +1378,48 @@ STRING MgServerManager::GetDocumentIdentifierFilename(CREFSTRING pathTag, CREFST
     }
 
     return filename;
+}
+
+void MgServerManager::StartWorkerThread(void (*function)())
+{
+    // We want the worker thread pool to do some work for us
+    MgWorkerThreadData* wtd;
+    ACE_NEW_NORETURN( wtd, MgWorkerThreadData( function ) );
+
+    ACE_Message_Block* mb;
+    ACE_NEW_NORETURN( mb, ACE_Message_Block( wtd ) );
+    if(mb)
+    {
+        mb->msg_type(ACE_Message_Block::MB_DATA);
+        int nResult = m_pWorkerThreads->putq(mb);
+        if(nResult == -1)
+        {
+            // Failed to queue the message
+            STRING messageId;
+            MgStringCollection arguments;
+
+            arguments.Add(L"Failed to queue ACE_Message_Block.");
+            messageId = L"MgFormatInnerExceptionMessage";
+
+            MgException* mgException = new MgRuntimeException(L"MgServerManager.StartWorkerThread", __LINE__, __WFILE__, NULL, messageId, &arguments);
+            throw mgException;
+        }
+    }
+}
+
+void MgServerManager::StopWorkerThreads()
+{
+    // Tell the worker threads to stop
+    ACE_Message_Block* mb = new ACE_Message_Block(4);
+    if(mb)
+    {
+        mb->msg_type(ACE_Message_Block::MB_STOP);
+        m_pWorkerThreads->putq(mb);
+    }
+
+    // Wait for threads to process STOP
+    m_pWorkerThreads->wait();
+
+    m_threadManager.wait();
+    m_threadManager.close();
 }

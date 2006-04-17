@@ -121,6 +121,8 @@ const STRING MgConfigProperties::GeneralPropertyWfsDocumentPath                 
 const STRING MgConfigProperties::DefaultGeneralPropertyWfsDocumentPath                      = L"Wfs/";
 const STRING MgConfigProperties::GeneralPropertyWmsDocumentPath                             = L"WmsDocumentPath";
 const STRING MgConfigProperties::DefaultGeneralPropertyWmsDocumentPath                      = L"Wms/";
+const STRING MgConfigProperties::GeneralPropertyWorkerThreadPoolSize                        = L"WorkerThreadPoolSize";
+const INT32  MgConfigProperties::DefaultGeneralPropertyWorkerThreadPoolSize                 = 10;
 
 // ******************************************************************
 // Administrative Connection Properties
