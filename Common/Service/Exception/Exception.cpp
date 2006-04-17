@@ -98,7 +98,7 @@ STRING MgException::GetLocale() throw()
 
         MgConfiguration* configuration = MgConfiguration::GetInstance();
 
-        if (NULL != configuration)
+        if (NULL != configuration && configuration->IsFileLoaded())
         {
             configuration->GetStringValue(
                 MgConfigProperties::GeneralPropertiesSection,
