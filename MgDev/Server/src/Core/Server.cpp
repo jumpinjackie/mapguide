@@ -17,7 +17,7 @@
 
 #include "Server.h"
 #include "ClientAcceptor.h"
-#include "WorkerThread.h"
+#include "OperationThread.h"
 #include "LicenseManager.h"
 #include "ServerManager.h"
 #include "LoadBalanceManager.h"
@@ -421,6 +421,10 @@ int MgServer::fini(void)
     MG_LOG_TRACE_ENTRY(L"MgServer::fini() - Start");
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::fini()\n")));
 
+    // Signal the worker threads to STOP
+    MgServerManager* pMgServerManager = MgServerManager::GetInstance();
+    pMgServerManager->StopWorkerThreads();
+
     // Unregister all the server services.
     {
         MG_TRY()
@@ -649,7 +653,7 @@ int MgServer::svc(void)
                 throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
             }
 
-            ACE_DEBUG((LM_INFO, ACE_TEXT("Finished running the unit tests.\n")));
+            ACE_DEBUG((LM_INFO, ACE_TEXT("Finished running the unit tests.\n\n")));
         }
         catch (MgException* e)
         {
@@ -793,31 +797,31 @@ int MgServer::svc(void)
                 // Activate event timers.
                 m_eventTimerManager.Activate();
 
-                // Setup the thread manager and the worker threads
+                // Setup the thread manager and the operation threads
                 ACE_Thread_Manager threadManager;
 
-                MgWorkerThread clientWorkers(threadManager, pServerManager->GetClientThreads());
-                MgWorkerThread adminWorkers(threadManager, pServerManager->GetAdminThreads());
-                MgWorkerThread siteWorkers(threadManager, pServerManager->GetSiteThreads());
+                MgOperationThread clientThreads(threadManager, pServerManager->GetClientThreads());
+                MgOperationThread adminThreads(threadManager, pServerManager->GetAdminThreads());
+                MgOperationThread siteThreads(threadManager, pServerManager->GetSiteThreads());
 
                 // Set the message queue in the MgServerManager
-                pServerManager->SetAdminMessageQueue(adminWorkers.msg_queue_);
-                pServerManager->SetClientMessageQueue(clientWorkers.msg_queue_);
-                pServerManager->SetSiteMessageQueue(siteWorkers.msg_queue_);
+                pServerManager->SetAdminMessageQueue(adminThreads.msg_queue_);
+                pServerManager->SetClientMessageQueue(clientThreads.msg_queue_);
+                pServerManager->SetSiteMessageQueue(siteThreads.msg_queue_);
 
                 ACE_INET_Addr clientAddr((u_short)pServerManager->GetClientPort());
                 ACE_INET_Addr adminAddr((u_short)pServerManager->GetAdminPort());
                 ACE_INET_Addr siteAddr((u_short)pServerManager->GetSitePort());
 
-                MgClientAcceptor clientAcceptor(clientAddr, ACE_Reactor::instance(), clientWorkers.msg_queue_);
+                MgClientAcceptor clientAcceptor(clientAddr, ACE_Reactor::instance(), clientThreads.msg_queue_);
                 nResult = clientAcceptor.Initialize();
                 if(nResult == 0)
                 {
-                    MgClientAcceptor adminAcceptor(adminAddr, ACE_Reactor::instance(), adminWorkers.msg_queue_);
+                    MgClientAcceptor adminAcceptor(adminAddr, ACE_Reactor::instance(), adminThreads.msg_queue_);
                     nResult = adminAcceptor.Initialize();
                     if(nResult == 0)
                     {
-                        MgClientAcceptor siteAcceptor(siteAddr, ACE_Reactor::instance(), siteWorkers.msg_queue_);
+                        MgClientAcceptor siteAcceptor(siteAddr, ACE_Reactor::instance(), siteThreads.msg_queue_);
                         nResult = siteAcceptor.Initialize();
                         if(nResult == 0)
                         {
@@ -829,13 +833,13 @@ int MgServer::svc(void)
                             MG_LOG_SYSTEM_ENTRY(LM_INFO, message.c_str());
 
                             // Start up the thread pools
-                            nResult = clientWorkers.Activate();
+                            nResult = clientThreads.Activate();
                             if(nResult == 0)
                             {
-                                nResult = adminWorkers.Activate();
+                                nResult = adminThreads.Activate();
                                 if(nResult == 0)
                                 {
-                                    nResult = siteWorkers.Activate();
+                                    nResult = siteThreads.Activate();
                                     if(nResult == 0)
                                     {
                                         // Update the server service status
@@ -850,34 +854,34 @@ int MgServer::svc(void)
                                         // The server is shutting down so cleanup, but do it fast
                                         // as this could happen during a shutdown.
 
-                                        // Tell the worker threads to stop
+                                        // Tell the operation threads to stop
                                         ACE_Message_Block* mb = new ACE_Message_Block(4);
                                         if(mb)
                                         {
                                             mb->msg_type(ACE_Message_Block::MB_STOP);
-                                            clientWorkers.putq(mb);
+                                            clientThreads.putq(mb);
                                         }
 
                                         mb = new ACE_Message_Block(4);
                                         if(mb)
                                         {
                                             mb->msg_type(ACE_Message_Block::MB_STOP);
-                                            adminWorkers.putq(mb);
+                                            adminThreads.putq(mb);
                                         }
 
                                         mb = new ACE_Message_Block(4);
                                         if(mb)
                                         {
                                             mb->msg_type(ACE_Message_Block::MB_STOP);
-                                            siteWorkers.putq(mb);
+                                            siteThreads.putq(mb);
                                         }
 
-                                        // Stop the worker threads
-                                        clientWorkers.close();
-                                        adminWorkers.close();
-                                        siteWorkers.close();
+                                        // Stop the operation threads
+                                        clientThreads.close();
+                                        adminThreads.close();
+                                        siteThreads.close();
 
-                                        // Ensure the thread manager waits until all workers are done before closing
+                                        // Ensure the thread manager waits until all operation threads are done before closing
                                         threadManager.wait();
                                         threadManager.close();
 

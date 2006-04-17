@@ -149,3 +149,49 @@ void TestServerManager::TestCase_GetSiteThreads()
 
     CPPUNIT_ASSERT(threads == 5);
 }
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case validates the worker threads.
+///----------------------------------------------------------------------------
+void TestServerManager::TestCase_ValidateWorkerThreads()
+{
+    try
+    {
+        MgServerManager* pMgServerManager = MgServerManager::GetInstance();
+
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n(%P|%t) Starting worker thread.\n")));
+        pMgServerManager->StartWorkerThread(&TestServerManager::TestWorkerThreads);
+
+        // Do something else while worker thread is busy
+        for(int i=0;i<5;i++)
+        {
+            int x = i * ACE_OS::rand();
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Main thread %d(%d)\n"), i, x));
+        }
+        // Give the worker thread some time to do work
+        ACE_OS::sleep(5);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+void TestServerManager::TestWorkerThreads()
+{
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Starting work\n")));
+    for(int i=0;i<5;i++)
+    {
+        int x = i * ACE_OS::rand();
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Worker %d(%d)\n"), i, x));
+    }
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Finished work\n")));
+}

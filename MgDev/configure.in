@@ -283,6 +283,7 @@ AC_CONFIG_FILES([Server/Makefile \
 		Server/src/Common/Base/Makefile \
 		Server/src/Common/Factory/Makefile \
 		Server/src/Common/Manager/Makefile \
+		Server/src/Common/Thread/Makefile \
 		Server/src/Services/Makefile \
 		Server/src/Services/Feature/Makefile \
 		Server/src/Services/Mapping/Makefile \

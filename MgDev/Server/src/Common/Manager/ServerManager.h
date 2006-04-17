@@ -36,6 +36,7 @@
 
 class MgLogManager;
 class MgServiceManager;
+class MgWorkerThread;
 
 typedef ACE_Atomic_Op<ACE_Thread_Mutex, INT32>  SAFE_INT32;
 
@@ -135,6 +136,10 @@ public:
     void AddClientHandle(ACE_HANDLE handle);
     void RemoveClientHandle(ACE_HANDLE handle);
 
+    // Methods for accessing the worker thread pool
+    void StartWorkerThread(void (*function)());
+    void StopWorkerThreads();
+
 private:
 
     // Constructor
@@ -181,6 +186,9 @@ private:
     ACE_Message_Queue<ACE_MT_SYNCH>*    m_pAdminMessageQueue;
     ACE_Message_Queue<ACE_MT_SYNCH>*    m_pClientMessageQueue;
     ACE_Message_Queue<ACE_MT_SYNCH>*    m_pSiteMessageQueue;
+
+    ACE_Thread_Manager m_threadManager;
+    MgWorkerThread* m_pWorkerThreads;
 
     static const STRING DocumentExtension;
     static const STRING DocumentPath;

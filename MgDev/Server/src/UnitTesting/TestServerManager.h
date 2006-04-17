@@ -33,6 +33,7 @@ class TestServerManager : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetAdminThreads);
     CPPUNIT_TEST(TestCase_GetClientThreads);
     CPPUNIT_TEST(TestCase_GetSiteThreads);
+    CPPUNIT_TEST(TestCase_ValidateWorkerThreads);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -51,6 +52,10 @@ public:
     void TestCase_GetAdminThreads();
     void TestCase_GetClientThreads();
     void TestCase_GetSiteThreads();
+    void TestCase_ValidateWorkerThreads();
+
+private:
+    static void TestWorkerThreads();
 };
 
 #endif // _TESTSERVERMANAGER_H

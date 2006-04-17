@@ -40,3 +40,5 @@
 #include "SessionInfo.cpp"
 #include "SessionManager.cpp"
 #include "UserInfo.cpp"
+#include "WorkerThread.cpp"
+#include "WorkerThreadData.cpp"

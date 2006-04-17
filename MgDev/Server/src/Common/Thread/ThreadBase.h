@@ -15,35 +15,29 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGWORKERTHREAD_H
-#define MGWORKERTHREAD_H
+#ifndef MGTHREADBASE_H
+#define MGTHREADBASE_H
 
+#include "ServerThreadDllExport.h"
 #include "AceCommon.h"
-#include "ThreadBase.h"
-#include "IServiceHandler.h"
 
-class MgWorkerThread : public MgThreadBase
+class MG_SERVER_THREAD_API MgThreadBase : public ACE_Task<ACE_MT_SYNCH>
 {
     ///////////////////////////////////////////////////////
     /// Methods
 public:
-    MgWorkerThread(ACE_Thread_Manager &tm, INT32 nThreads);
+    MgThreadBase (ACE_Thread_Manager &tm, INT32 nThreads);
 
     // ACE_Task methods
-    virtual int svc (void);
+    virtual int svc (void) = 0;
 
     // Class methods
-private:
-    IMgServiceHandler::MgProcessStatus ProcessMessage ( ACE_Message_Block* pMB );
-    IMgServiceHandler::MgProcessStatus ProcessOperation ( MgServerStreamData* pData );
-
-    MgStreamHelper::MgStreamStatus CheckStream( MgStreamHelper* pHelper );
+    INT32 Activate();
 
     ///////////////////////////////////////////////////////
     /// Member data
-private:
-    bool m_bActive;
-    ACE_High_Res_Timer m_timer;
+protected:
+    INT32 m_nThreads;
 };
 
 #endif

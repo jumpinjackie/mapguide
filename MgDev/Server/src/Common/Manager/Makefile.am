@@ -23,7 +23,7 @@ INCLUDES = \
   -I../../Services/ServerAdmin \
   -I../../Services/Site \
   -I../../Services/Tile \
-  -I../ServerUtil/
+  -I../Thread
 
 lib_LTLIBRARIES = libMgServerManager.la
 
@@ -52,7 +52,9 @@ include_SOURCES = \
   SessionCache.cpp \
   SessionInfo.cpp \
   SessionManager.cpp \
-  UserInfo.cpp
+  UserInfo.cpp \
+  WorkerThread.cpp \
+  WorkerThreadData.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   Connection.h \
@@ -78,6 +80,8 @@ noinst_HEADERS = $(include_SOURCES) \
   SessionCache.h \
   SessionInfo.h \
   SessionManager.h \
-  UserInfo.h
+  UserInfo.h \
+  WorkerThread.h \
+  WorkerThreadData.h
 
 libMgServerManager_la_LDFLAGS = -version-info 7:0:0

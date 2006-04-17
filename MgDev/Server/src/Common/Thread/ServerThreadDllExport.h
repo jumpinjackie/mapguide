@@ -15,28 +15,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGTHREADBASE_H
-#define MGTHREADBASE_H
+#ifndef MG_SERVER_THREAD_DLL_EXPORT_H
+#define MG_SERVER_THREAD_DLL_EXPORT_H
 
-#include "AceCommon.h"
-
-class MgThreadBase : public ACE_Task<ACE_MT_SYNCH>
-{
-    ///////////////////////////////////////////////////////
-    /// Methods
-public:
-    MgThreadBase (ACE_Thread_Manager &tm, INT32 nThreads);
-
-    // ACE_Task methods
-    virtual int svc (void) = 0;
-
-    // Class methods
-    INT32 Activate();
-
-    ///////////////////////////////////////////////////////
-    /// Member data
-protected:
-    INT32 m_nThreads;
-};
+#ifdef _WIN32
+#ifdef MG_SERVER_THREAD_EXPORTS
+#    define MG_SERVER_THREAD_API __declspec(dllexport)
+#else
+#    define MG_SERVER_THREAD_API __declspec(dllimport)
+#endif
+#else
+#define MG_SERVER_THREAD_API
+#endif
 
 #endif
