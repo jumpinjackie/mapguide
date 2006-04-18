@@ -51,7 +51,6 @@ include_SOURCES = \
   ServiceRegistrationEventHandler.cpp \
   SessionTimeoutEventHandler.cpp \
   SignalHandler.cpp \
-  ThreadBase.cpp \
   TimedEvent.cpp \
   TimedEventHandler.cpp
 
@@ -71,7 +70,6 @@ noinst_HEADERS = $(include_SOURCES) \
   ServiceRegistrationEventHandler.h \
   SessionTimeoutEventHandler.h \
   SignalHandler.h \
-  ThreadBase.h \
   TimedEvent.h \
   TimedEventHandler.h \
   ../Common/ServerCommon.h
