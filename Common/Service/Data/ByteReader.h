@@ -169,8 +169,6 @@ INTERNAL_API:
     /// \param byteSource
     /// Byte  source object
     ///
-    ///
-
     MgByteReader();
 
     //////////////////////////////////////////////////////////////////
@@ -180,7 +178,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-
     virtual void Serialize(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
@@ -190,7 +187,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-
     virtual void Deserialize(MgStream* stream);
 
     ////////////////////////////////////////////////////////////////
@@ -205,6 +201,7 @@ INTERNAL_API:
     /// \exception MgIoException if reader cannot be rewound
     ///
     virtual void Rewind();
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Get the byte source for a reader
@@ -212,7 +209,6 @@ INTERNAL_API:
     /// \return
     /// Byte source for reader
     ///
-
     virtual MgByteSource* GetByteSource();
 
     ///////////////////////////////////////////////////////////////////////////
@@ -225,8 +221,6 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidArgumentException is thrown if the reader does not contain text.
     ///
-    ///
-
     void ToStringUtf8(string& str);
 
 protected:
@@ -237,16 +231,12 @@ protected:
     /// \param byteSource
     /// Byte  source object
     ///
-    ///
-
     MgByteReader(MgByteSource* byteSource);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Destruct a MgByteReader object
     ///
-    ///
-
     virtual ~MgByteReader();
 
     //////////////////////////////////////////////////////////////////
@@ -256,8 +246,6 @@ protected:
     /// \param byteSource
     /// Byte source object
     ///
-    ///
-
     virtual void SetByteSource(MgByteSource* byteSource);
 
     //////////////////////////////////////////////////////////////////
@@ -267,15 +255,12 @@ protected:
     /// \return
     /// Class Identifider.
     ///
-    ///
-
     virtual INT32 GetClassId();
 
     //////////////////////////////////////////////
     /// \brief
     /// Dispose this object.
     ///
-
     virtual void Dispose();
 
 protected:

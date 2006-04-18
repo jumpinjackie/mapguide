@@ -99,7 +99,6 @@ void ByteSourceFileImpl::Rename(CREFSTRING newName)
     m_temporary = false;
 
     LoadFile(newName);
-
 }
 
 void ByteSourceFileImpl::LoadFile(CREFSTRING filename)
@@ -111,7 +110,6 @@ void ByteSourceFileImpl::LoadFile(CREFSTRING filename)
         MgStringCollection arguments;
         arguments.Add(filename);
         if(errno == ENOENT)
-
             throw new MgFileNotFoundException(L"ByteSourceFileImpl", __LINE__, __WFILE__, &arguments, L"", NULL);
         else
             throw new MgFileIoException(L"ByteSourceFileImpl", __LINE__, __WFILE__, &arguments, L"", NULL);

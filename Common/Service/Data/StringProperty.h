@@ -60,7 +60,7 @@ PUBLISHED_API:
     /// \param value (String/string)
     /// The value of the property.
     ///
-     MgStringProperty(CREFSTRING name, CREFSTRING value);
+    MgStringProperty(CREFSTRING name, CREFSTRING value);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -80,7 +80,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-     STRING GetValue();
+    STRING GetValue();
 
     /////////////////////////////////////////////////////////
     /// \brief
@@ -101,7 +101,7 @@ PUBLISHED_API:
     /// Returns the property type MgPropertyType::String.
     ///
     ///
-     INT16 GetPropertyType();
+    INT16 GetPropertyType();
 
     ////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -124,7 +124,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     void SetValue(CREFSTRING value);
+    void SetValue(CREFSTRING value);
 
 EXTERNAL_API:
 
@@ -132,7 +132,6 @@ EXTERNAL_API:
     /// \brief
     /// Destructor. Deletes the property and any information
     /// contained in it.
-    ///
     ///
     virtual ~MgStringProperty();
 
@@ -142,7 +141,7 @@ INTERNAL_API:
     /// \brief
     /// Constructor.
     ///
-     MgStringProperty();
+    MgStringProperty();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -151,8 +150,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Serialize(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
@@ -162,9 +159,8 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Deserialize(MgStream* stream);
+
 protected:
 
     /////////////////////////////////////////////////////////////////
@@ -174,7 +170,7 @@ protected:
     /// \return
     /// Returns the integer value of the class Id.
     ///
-     INT32 GetClassId();
+    INT32 GetClassId();
 
     friend class MgPropertyCollection;
     friend class MgStringPropertyCollection;
@@ -203,7 +199,6 @@ protected:
     /// Self destructing method.
     ///
     virtual void Dispose();
-
 
 private:
     STRING          m_propertyName;

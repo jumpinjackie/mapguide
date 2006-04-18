@@ -42,13 +42,18 @@ MgInt32Property::MgInt32Property()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgInt32Property::~MgInt32Property() {}
+MgInt32Property::~MgInt32Property()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgInt32Property::GetClassId() { return m_cls_id; }
+INT32 MgInt32Property::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -57,7 +62,10 @@ MgInt32Property::~MgInt32Property() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgInt32Property::GetPropertyType() { return MgPropertyType::Int32; }
+INT16 MgInt32Property::GetPropertyType()
+{
+    return MgPropertyType::Int32;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -66,11 +74,11 @@ MgInt32Property::~MgInt32Property() {}
 /// <returns>
 /// The property value
 /// </returns>
- INT32 MgInt32Property::GetValue()
- {
+INT32 MgInt32Property::GetValue()
+{
     CheckNull();
     return m_value;
- }
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -82,17 +90,20 @@ MgInt32Property::~MgInt32Property() {}
 /// <returns>
 /// Nothing
 /// </returns>
- void MgInt32Property::SetValue(INT32 value)
- {
+void MgInt32Property::SetValue(INT32 value)
+{
     CheckNull();
     m_value = value;
- }
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgInt32Property::Dispose() { delete this; }
+void MgInt32Property::Dispose()
+{
+    delete this;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -120,7 +131,6 @@ void MgInt32Property::ToXml(string &str, bool includeType, string rootElmName)
     str += std::string(buf) + "</Value>";
 
     str += "</" + rootElmName + ">";
-
 }
 
 
@@ -131,7 +141,6 @@ void MgInt32Property::ToXml(string &str, bool includeType, string rootElmName)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgInt32Property::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -145,7 +154,6 @@ void MgInt32Property::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgInt32Property::Deserialize(MgStream* stream)
 {
     STRING str;

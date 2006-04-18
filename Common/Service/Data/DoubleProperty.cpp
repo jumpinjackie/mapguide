@@ -51,13 +51,18 @@ MgDoubleProperty::MgDoubleProperty()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgDoubleProperty::~MgDoubleProperty() {}
+MgDoubleProperty::~MgDoubleProperty()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgDoubleProperty::GetClassId() { return m_cls_id; }
+INT32 MgDoubleProperty::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -66,7 +71,10 @@ MgDoubleProperty::~MgDoubleProperty() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgDoubleProperty::GetPropertyType() { return MgPropertyType::Double; }
+INT16 MgDoubleProperty::GetPropertyType()
+{
+    return MgPropertyType::Double;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -75,18 +83,21 @@ MgDoubleProperty::~MgDoubleProperty() {}
 /// <returns>
 /// The property value
 /// </returns>
- double MgDoubleProperty::GetValue()
- {
+double MgDoubleProperty::GetValue()
+{
     CheckNull();
     return m_value;
- }
+}
 
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgDoubleProperty::Dispose() { delete this; }
+void MgDoubleProperty::Dispose()
+{
+    delete this;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -122,7 +133,6 @@ void MgDoubleProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += "<Value>" + doubleStr + "</Value>";
 
     str += "</" + rootElmName + ">";
-
 }
 
 
@@ -133,7 +143,6 @@ void MgDoubleProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgDoubleProperty::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -147,7 +156,6 @@ void MgDoubleProperty::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgDoubleProperty::Deserialize(MgStream* stream)
 {
     STRING str;

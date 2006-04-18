@@ -42,13 +42,18 @@ MgInt64Property::MgInt64Property()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgInt64Property::~MgInt64Property() {}
+MgInt64Property::~MgInt64Property()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgInt64Property::GetClassId() { return m_cls_id; }
+INT32 MgInt64Property::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -57,7 +62,10 @@ MgInt64Property::~MgInt64Property() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgInt64Property::GetPropertyType() { return MgPropertyType::Int64; }
+INT16 MgInt64Property::GetPropertyType()
+{
+    return MgPropertyType::Int64;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -66,11 +74,11 @@ MgInt64Property::~MgInt64Property() {}
 /// <returns>
 /// The property value
 /// </returns>
- INT64 MgInt64Property::GetValue()
- {
+INT64 MgInt64Property::GetValue()
+{
     CheckNull();
     return m_value;
- }
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -82,11 +90,11 @@ MgInt64Property::~MgInt64Property() {}
 /// <returns>
 /// Nothing
 /// </returns>
- void MgInt64Property::SetValue(INT64 value)
- {
+void MgInt64Property::SetValue(INT64 value)
+{
     CheckNull();
     m_value = value;
- }
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -118,17 +126,19 @@ void MgInt64Property::ToXml(string &str, bool includeType, string rootElmName)
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgInt64Property::Dispose() { delete this; }
+void MgInt64Property::Dispose()
+{
+    delete this;
+}
 
 
- //////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
 ///<summary>
 /// Serialize data to TCP/IP stream
 ///</summary>
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgInt64Property::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -142,7 +152,6 @@ void MgInt64Property::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgInt64Property::Deserialize(MgStream* stream)
 {
     STRING str;

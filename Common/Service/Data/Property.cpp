@@ -22,15 +22,16 @@
 /// Constructor.  Initializes an empty property
 /// </summary>
 MgProperty::MgProperty()
-{}
-
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Destructor.  Deletes property and any contained information
 /// </summary>
 MgProperty::~MgProperty()
-{}
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>

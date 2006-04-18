@@ -594,7 +594,6 @@ bool MgDateTime::operator<=(const MgDateTime& dt) const
     {
         return true;
     }
-
 }
 
 bool MgDateTime::operator>(const MgDateTime& dt) const
@@ -849,11 +848,9 @@ string MgDateTime::ToXmlStringUtf8(bool utc)
 time_t MgDateTime::ToTimeValue()
 {
     // Ensure both date and time values are valid.
-
     ValidateDateTime();
 
-    // Perfrom the conversion.
-
+    // Perform the conversion.
     struct tm timeInfo;
 
     GetDateTimeInfo(timeInfo);
@@ -945,40 +942,40 @@ int MgDateTime::IsLeapYear(long year, char calendar) const
 
 } // end: IsLeapYear()
 
+
 long MgDateTime::lfloor(long a, long b)   //  assumes b positive
 {
-   return ( a >= 0L ? a/b : ( a%b == 0L ) - 1 - labs(a)/b );
+    return ( a >= 0L ? a/b : ( a%b == 0L ) - 1 - labs(a)/b );
 }
+
 
 long MgDateTime::GregorianDay(int day, int month, long year, char calendar)
 {
-   long gdn;
-   int month_length[14] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 0};
+    long gdn;
+    int month_length[14] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 0};
 
-   calendar = (char)toupper((int)calendar);
-   if ( !calendar )
-       calendar = 'G';
+    calendar = (char)toupper((int)calendar);
+    if ( !calendar )
+        calendar = 'G';
 
-   month_length[2] = 28 + IsLeapYear(year, calendar);
+    month_length[2] = 28 + IsLeapYear(year, calendar);
 
-   if ( month < 1  || month > 12 || day < 1  || day > month_length[month] )
-       return 0;
-   else
-       {
-       // calculate the number of days before or after
-       // October 15, 1582 (Gregorian)
+    if ( month < 1  || month > 12 || day < 1  || day > month_length[month] )
+        return 0;
 
-       gdn = (year-1)*365 + lfloor(year-1,4L);
-       if ( calendar == 'G' )
-           gdn += lfloor(year-1,400L) - lfloor(year-1,100L);
+    // calculate the number of days before or after
+    // October 15, 1582 (Gregorian)
 
-       while (--month)
-           gdn += month_length[month];
-       gdn += day - 577736L - 2*(calendar=='J');
-       }
+    gdn = (year-1)*365 + lfloor(year-1,4L);
+    if ( calendar == 'G' )
+        gdn += lfloor(year-1,400L) - lfloor(year-1,100L);
 
-   month_length[2] = 28;
-   return gdn;
+    while (--month)
+        gdn += month_length[month];
+    gdn += day - 577736L - 2*(calendar=='J');
+
+    month_length[2] = 28;
+    return gdn;
 }
 
 ///----------------------------------------------------------------------------
@@ -989,69 +986,69 @@ long MgDateTime::GregorianDay(int day, int month, long year, char calendar)
 
 void MgDateTime::CalendarDate(long gdn, char calendar)
 {
-   int month_length[14] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 0};
-   int month, i, exception;
-   long year, y4, y100, y400;
+    int month_length[14] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 0};
+    int month, i, exception;
+    long year, y4, y100, y400;
 
-   calendar = (char)toupper((int)calendar);
-   if ( !calendar )
-       calendar = 'G';
+    calendar = (char)toupper((int)calendar);
+    if ( !calendar )
+        calendar = 'G';
 
-   gdn += 577735L + 2*(calendar=='J');
+    gdn += 577735L + 2*(calendar=='J');
 
-   y400 = 146100L - 3*(calendar=='G');
-   y100 =  36525L -   (calendar=='G');
-   y4   =   1461L;
+    y400 = 146100L - 3*(calendar=='G');
+    y100 =  36525L -   (calendar=='G');
+    y4   =   1461L;
 
-   exception = false;
-   year = 400*lfloor(gdn,y400);        //  400-year periods
-   gdn -= y400*lfloor(gdn,y400);
-   if ( gdn > 0L )
-       {
-       year += 100*lfloor(gdn,y100);   //  100-year periods
-       gdn -= y100*lfloor(gdn,y100);
-       exception = ( gdn == 0L && calendar == 'G' );
-       if ( gdn > 0L )
-           {
-           year += 4*lfloor(gdn,y4);   //  4-year periods
-           gdn -= y4*lfloor(gdn,y4);
-           if ( gdn > 0L )
-               {
-               i = 0;
-               while ( gdn > 365 && ++i < 4 )
-                   {
-                   year++;
-                   gdn -= 365L;
-                   }
-               }
-           }
-       }
+    exception = false;
+    year = 400*lfloor(gdn,y400);        //  400-year periods
+    gdn -= y400*lfloor(gdn,y400);
+    if ( gdn > 0L )
+    {
+        year += 100*lfloor(gdn,y100);   //  100-year periods
+        gdn -= y100*lfloor(gdn,y100);
+        exception = ( gdn == 0L && calendar == 'G' );
+        if ( gdn > 0L )
+        {
+            year += 4*lfloor(gdn,y4);   //  4-year periods
+            gdn -= y4*lfloor(gdn,y4);
+            if ( gdn > 0L )
+            {
+                i = 0;
+                while ( gdn > 365 && ++i < 4 )
+                {
+                    year++;
+                    gdn -= 365L;
+                }
+            }
+        }
+    }
 
-   if ( exception )
-       gdn = 366L;
-      //  occurs once every hundred years with Gregorian calendar
-   else
-       {
-       year++;
-       gdn++;
-       }
+    if ( exception )
+        gdn = 366L;
+        //  occurs once every hundred years with Gregorian calendar
+    else
+    {
+        year++;
+        gdn++;
+    }
 
-   month_length[2] = 28 + IsLeapYear(year, calendar);
-   month = 1;
-   while ( month < 13 && gdn > month_length[month] )
-       gdn -= month_length[month++];
+    month_length[2] = 28 + IsLeapYear(year, calendar);
+    month = 1;
+    while ( month < 13 && gdn > month_length[month] )
+        gdn -= month_length[month++];
 
-   if ( month == 13 )
-       {
-       month = 1;
-       year++;
-       }
+    if ( month == 13 )
+    {
+        month = 1;
+        year++;
+    }
 
-   month_length[2] = 28;
+    month_length[2] = 28;
 
-   m_year = (INT16)year;
-   m_month = (INT8)month;
-   m_day = (INT8)gdn;
+    m_year = (INT16)year;
+    m_month = (INT8)month;
+    m_day = (INT8)gdn;
 }
 
 // populates the hours, minutes, seconds and microseconds members

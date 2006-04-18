@@ -264,7 +264,7 @@ MgPropertyDefinition* MgPropertyDefinitionCollection::FindItem(CREFSTRING name)
 /// Creates an XML document representing the collection.
 /// </summary>
 /// <returns>
-/// Pointer to an MgByteReader object
+/// Returns a pointer to an MgByteReader object.
 /// </returns>
 MgByteReader* MgPropertyDefinitionCollection::ToXml()
 {

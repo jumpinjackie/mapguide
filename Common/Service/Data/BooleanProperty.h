@@ -56,7 +56,7 @@ PUBLISHED_API:
     /// \param value (boolean/bool)
     /// The value of the property
     ///
-     MgBooleanProperty(CREFSTRING name, bool value);
+    MgBooleanProperty(CREFSTRING name, bool value);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -76,7 +76,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-     bool GetValue();
+    bool GetValue();
 
     ///////////////////////////////////////////////////////
     /// \brief
@@ -96,7 +96,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property type MgPropertyType::Boolean.
     ///
-     INT16 GetPropertyType();
+    INT16 GetPropertyType();
 
     ///////////////////////////////////////////////////////////////////////
     /// \brief
@@ -119,7 +119,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     void SetValue(bool value);
+    void SetValue(bool value);
 
 EXTERNAL_API:
 
@@ -127,7 +127,6 @@ EXTERNAL_API:
     /// \brief
     /// Destructor. Deletes property and any information contained in
     /// it.
-    ///
     ///
     virtual ~MgBooleanProperty();
 
@@ -137,7 +136,7 @@ INTERNAL_API:
     /// \brief
     /// Constructor.
     ///
-     MgBooleanProperty();
+    MgBooleanProperty();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -146,8 +145,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Serialize(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
@@ -157,8 +154,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Deserialize(MgStream* stream);
 
 protected:
@@ -170,9 +165,10 @@ protected:
     /// \return
     /// Returns the integer value of the class Id.
     ///
-     INT32 GetClassId();
+    INT32 GetClassId();
 
     friend class MgPropertyCollection;
+
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Converts the property name and value to XML.

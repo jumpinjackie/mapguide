@@ -56,7 +56,7 @@ PUBLISHED_API:
     /// \param value (short/int)
     /// The value of the property.
     ///
-     MgInt16Property(CREFSTRING name, INT16 value);
+    MgInt16Property(CREFSTRING name, INT16 value);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -76,7 +76,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-     INT16 GetValue();
+    INT16 GetValue();
 
     ////////////////////////////////////////////////////////
     /// \brief
@@ -97,7 +97,7 @@ PUBLISHED_API:
     /// Returns the property type MgPropertyType::Int16.
     ///
     ///
-     INT16 GetPropertyType();
+    INT16 GetPropertyType();
 
     ////////////////////////////////////////////////////////////////////
     /// \brief
@@ -120,7 +120,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     void SetValue(INT16 value);
+    void SetValue(INT16 value);
 
 EXTERNAL_API:
 
@@ -128,7 +128,6 @@ EXTERNAL_API:
     /// \brief
     /// Destructor. Deletes the property and any information
     /// contained in it.
-    ///
     ///
     virtual ~MgInt16Property();
 
@@ -138,7 +137,7 @@ INTERNAL_API:
     /// \brief
     /// Constructor.
     ///
-     MgInt16Property();
+    MgInt16Property();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -147,8 +146,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Serialize(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
@@ -158,8 +155,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Deserialize(MgStream* stream);
 
 protected:
@@ -170,9 +165,10 @@ protected:
     /// \return
     /// Returns the integer value of the class Id.
     ///
-     INT32 GetClassId();
+    INT32 GetClassId();
 
     friend class MgPropertyCollection;
+
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Converts the property name and value to XML.
@@ -181,6 +177,7 @@ protected:
     /// ByteReader for the XML.
     ///
     void ToXml(string &str, bool includeType = true, string rootElmName = "Property");
+
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Self destructing method.

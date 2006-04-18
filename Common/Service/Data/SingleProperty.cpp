@@ -42,13 +42,18 @@ MgSingleProperty::MgSingleProperty()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgSingleProperty::~MgSingleProperty() {}
+MgSingleProperty::~MgSingleProperty()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgSingleProperty::GetClassId() { return m_cls_id; }
+INT32 MgSingleProperty::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -60,11 +65,11 @@ MgSingleProperty::~MgSingleProperty() {}
 /// <returns>
 /// Nothing
 /// </returns>
- void MgSingleProperty::SetValue(float value)
- {
+void MgSingleProperty::SetValue(float value)
+{
     CheckNull();
     m_value = value;
- }
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -73,7 +78,10 @@ MgSingleProperty::~MgSingleProperty() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgSingleProperty::GetPropertyType() { return MgPropertyType::Single; }
+INT16 MgSingleProperty::GetPropertyType()
+{
+    return MgPropertyType::Single;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -82,18 +90,21 @@ MgSingleProperty::~MgSingleProperty() {}
 /// <returns>
 /// The property value
 /// </returns>
- float MgSingleProperty::GetValue()
- {
+float MgSingleProperty::GetValue()
+{
     CheckNull();
     return m_value;
- }
+}
 
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgSingleProperty::Dispose() { delete this; }
+void MgSingleProperty::Dispose()
+{
+    delete this;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -126,7 +137,6 @@ void MgSingleProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgSingleProperty::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -140,7 +150,6 @@ void MgSingleProperty::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgSingleProperty::Deserialize(MgStream* stream)
 {
     STRING str;

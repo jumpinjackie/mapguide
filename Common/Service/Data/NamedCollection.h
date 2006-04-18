@@ -18,7 +18,6 @@
 #ifndef _MG_NAMED_COLLECTION_H
 #define _MG_NAMED_COLLECTION_H
 
-
 #include <map>
 #include <cctype>
 using namespace std;

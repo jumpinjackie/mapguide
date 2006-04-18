@@ -276,7 +276,7 @@ INT32 MgDisposableCollection::IndexOf(const MgDisposable* value) const
 /// Creates an XML document representing the collection.
 /// </summary>
 /// <returns>
-/// A pointer to an MgByteReader object.
+/// Returns a pointer to an MgByteReader object.
 /// </returns>
 MgByteReader* MgDisposableCollection::ToXml()
 {

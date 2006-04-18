@@ -42,13 +42,18 @@ MgDateTimeProperty::MgDateTimeProperty()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgDateTimeProperty::~MgDateTimeProperty() {}
+MgDateTimeProperty::~MgDateTimeProperty()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgDateTimeProperty::GetClassId() { return m_cls_id; }
+INT32 MgDateTimeProperty::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -57,7 +62,10 @@ MgDateTimeProperty::~MgDateTimeProperty() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgDateTimeProperty::GetPropertyType() { return MgPropertyType::DateTime; }
+INT16 MgDateTimeProperty::GetPropertyType()
+{
+    return MgPropertyType::DateTime;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -89,7 +97,10 @@ void MgDateTimeProperty::SetValue(MgDateTime* value)
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgDateTimeProperty::Dispose() { delete this; }
+void MgDateTimeProperty::Dispose()
+{
+    delete this;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -118,7 +129,6 @@ void MgDateTimeProperty::ToXml(string &str, bool includeType, string rootElmName
     str += "</Value>";
 
     str += "</" + rootElmName + ">";
-
 }
 
 
@@ -129,7 +139,6 @@ void MgDateTimeProperty::ToXml(string &str, bool includeType, string rootElmName
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgDateTimeProperty::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -143,7 +152,6 @@ void MgDateTimeProperty::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgDateTimeProperty::Deserialize(MgStream* stream)
 {
     STRING str;

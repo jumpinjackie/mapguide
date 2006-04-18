@@ -281,7 +281,7 @@ INT32 MgStringPropertyCollection::IndexOf(CREFSTRING keyname)
 /// Creates an XML document representing the collection.
 /// </summary>
 /// <returns>
-/// A pointer to an MgByteReader object.
+/// Returns a pointer to an MgByteReader object.
 /// </returns>
 MgByteReader* MgStringPropertyCollection::ToXml()
 {

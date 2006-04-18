@@ -25,7 +25,6 @@ IMPLEMENT_DYNCREATE(MgStringCollection);
 /// </summary>
 MgStringCollection::MgStringCollection()
 {
-    m_strProperty = new MgPropertyCollection(true,true);
 }
 
 
@@ -35,9 +34,7 @@ MgStringCollection::MgStringCollection()
 /// </summary>
 MgStringCollection::~MgStringCollection()
 {
-    m_strProperty->Clear();
-    delete m_strProperty;
-    m_strProperty = NULL;
+    m_strProperty.clear();
 }
 
 
@@ -60,7 +57,7 @@ INT32 MgStringCollection::GetClassId()
 /// </returns>
 INT32 MgStringCollection::GetCount() const
 {
-    return m_strProperty->GetCount();
+    return (INT32)m_strProperty.size();
 }
 
 
@@ -74,11 +71,8 @@ INT32 MgStringCollection::GetCount() const
 /// </returns>
 STRING MgStringCollection::GetItem(INT32 index) const
 {
-    STRING str;
-    Ptr<MgStringProperty> strPtr = (MgStringProperty*)m_strProperty->GetItem(index);
-    if (strPtr != NULL)
-        str = strPtr->GetName();
-    return str;
+    ValidateIndex(index);
+    return m_strProperty[index];
 }
 
 
@@ -93,9 +87,8 @@ STRING MgStringCollection::GetItem(INT32 index) const
 /// InvalidArgument if index is out of range
 void MgStringCollection::SetItem(INT32 index, CREFSTRING value)
 {
-    Ptr<MgStringProperty> strPtr = (MgStringProperty*)m_strProperty->GetItem(index);
-    if (strPtr != NULL)
-        strPtr->SetName(value);
+    ValidateIndex(index);
+    m_strProperty[index] = value;
 }
 
 
@@ -109,9 +102,8 @@ void MgStringCollection::SetItem(INT32 index, CREFSTRING value)
 /// </returns>
 INT32 MgStringCollection::Add(CREFSTRING value)
 {
-    Ptr<MgStringProperty> strPtr = new MgStringProperty(value, L"");
-    INT32 cnt = m_strProperty->Add(strPtr);
-    return cnt;
+    m_strProperty.push_back(value);
+    return this->GetCount();
 }
 
 
@@ -127,8 +119,8 @@ INT32 MgStringCollection::Add(CREFSTRING value)
 /// InvalidArgument if index is out of range
 void MgStringCollection::Insert(INT32 index, CREFSTRING value)
 {
-    Ptr<MgStringProperty> strPtr = new MgStringProperty(value,L"");
-    m_strProperty->Insert(index, strPtr);
+    ValidateIndex(index);
+    m_strProperty.insert( m_strProperty.begin( ) + index, value );
 }
 
 
@@ -139,7 +131,7 @@ void MgStringCollection::Insert(INT32 index, CREFSTRING value)
 /// <returns>Returns nothing.</returns>
 void MgStringCollection::Clear()
 {
-    m_strProperty->Clear();
+    m_strProperty.clear();
 }
 
 
@@ -153,9 +145,9 @@ void MgStringCollection::Clear()
 /// InvalidArgument if the item does not exist within the collection.
 void MgStringCollection::Remove(CREFSTRING value)
 {
-    Ptr<MgStringProperty> strPtr = (MgStringProperty*)m_strProperty->FindItem(value);
-    if (strPtr != NULL)
-        m_strProperty->Remove(strPtr);
+    INT32 index = this->IndexOf(value);
+    ValidateIndex(index);
+    m_strProperty.erase( m_strProperty.begin( ) + index );
 }
 
 
@@ -169,7 +161,8 @@ void MgStringCollection::Remove(CREFSTRING value)
 /// InvalidArgument if the item does not exist within the collection.
 void MgStringCollection::RemoveAt(INT32 index)
 {
-    m_strProperty->RemoveAt(index);
+    ValidateIndex(index);
+    m_strProperty.erase( m_strProperty.begin() + index );
 }
 
 
@@ -183,7 +176,11 @@ void MgStringCollection::RemoveAt(INT32 index)
 /// </returns>
 bool MgStringCollection::Contains(CREFSTRING value)
 {
-    return m_strProperty->Contains(value);
+    bool contains = false;
+    if (this->IndexOf(value) > -1)
+        contains = true;
+
+    return contains;
 }
 
 
@@ -197,7 +194,19 @@ bool MgStringCollection::Contains(CREFSTRING value)
 /// </returns>
 INT32 MgStringCollection::IndexOf(CREFSTRING value)
 {
-    return m_strProperty->IndexOf(value);
+    INT32 cnt = (INT32)m_strProperty.size();
+    INT32 index = -1;
+
+    for (INT32 i = 0; i < cnt; i++)
+    {
+        if (m_strProperty[i] == value)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    return index;
 }
 
 
@@ -206,7 +215,7 @@ INT32 MgStringCollection::IndexOf(CREFSTRING value)
 /// Creates an XML document representing the collection.
 /// </summary>
 /// <returns>
-/// A pointer to an MgByteReader object
+/// Returns a pointer to an MgByteReader object.
 /// </returns>
 MgByteReader* MgStringCollection::ToXml()
 {
@@ -217,24 +226,14 @@ MgByteReader* MgStringCollection::ToXml()
     INT32 cnt = this->GetCount();
     for (int i=0; i < cnt; i++)
     {
-        Ptr<MgStringProperty> strPtr = (MgStringProperty*)m_strProperty->GetItem(i);
-        if (strPtr != NULL)
-            strPtr->ToXml(xmlStr, true, false);
+        xmlStr += "<Item>";
+        xmlStr += MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(m_strProperty[i]));
+        xmlStr += "</Item>";
     }
 
     xmlStr += "</StringCollection>";
 
     return MgUtil::GetByteReader(xmlStr);
-}
-
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Disposes the object.
-/// </summary>
-void MgStringCollection::Dispose()
-{
-    delete this;
 }
 
 
@@ -274,6 +273,16 @@ void MgStringCollection::Deserialize(MgStream* stream)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Disposes the object.
+/// </summary>
+void MgStringCollection::Dispose()
+{
+    delete this;
+}
+
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Creates a string collection from parsing a string
 /// Each element in the string is separated with the specified
 /// delimiter. If no delimiter is specified, comma is used
@@ -290,8 +299,8 @@ MgStringCollection* MgStringCollection::ParseCollection(CREFSTRING coll, CREFSTR
     if(collection.length() == 0)
         return NULL;
 
-    MgStringCollection* c = new MgStringCollection;
-    if(c == NULL)
+    MgStringCollection* c = new MgStringCollection();
+    if (c == NULL)
         return NULL;
 
     STRING separator = delim.length() == 0? L",": delim;
@@ -318,4 +327,35 @@ MgStringCollection* MgStringCollection::ParseCollection(CREFSTRING coll, CREFSTR
     }
 
     return c;
+}
+
+
+/// performs index validation
+void MgStringCollection::ValidateIndex(INT32 index) const
+{
+    INT32 cnt = (INT32)m_strProperty.size();
+    if (index >= cnt)
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(buffer);
+
+        throw new MgInvalidArgumentException(L"MgStringCollection.ValidateIndex",
+            __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooBig", NULL);
+    }
+    else if (index < 0)
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(buffer);
+
+        throw new MgInvalidArgumentException(L"MgStringCollection.ValidateIndex",
+            __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooSmall", NULL);
+    }
 }

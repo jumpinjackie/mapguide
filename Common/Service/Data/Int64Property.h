@@ -56,7 +56,7 @@ PUBLISHED_API:
     /// \param value (long/string)
     /// The value of the property.
     ///
-     MgInt64Property(CREFSTRING name, INT64 value);
+    MgInt64Property(CREFSTRING name, INT64 value);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -76,7 +76,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-     INT64 GetValue();
+    INT64 GetValue();
 
     ////////////////////////////////////////////////////////
     /// \brief
@@ -97,7 +97,7 @@ PUBLISHED_API:
     /// Returns the property type MgPropertyType::Int64.
     ///
     ///
-     INT16 GetPropertyType();
+    INT16 GetPropertyType();
 
     //////////////////////////////////////////////////////////////////////
     /// \brief
@@ -120,7 +120,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     void SetValue(INT64 value);
+    void SetValue(INT64 value);
 
 EXTERNAL_API:
 
@@ -138,7 +138,7 @@ INTERNAL_API:
     /// \brief
     /// Constructor.
     ///
-     MgInt64Property();
+    MgInt64Property();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -147,8 +147,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Serialize(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
@@ -158,8 +156,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Deserialize(MgStream* stream);
 
 protected:
@@ -171,9 +167,10 @@ protected:
     /// \return
     /// Returns the integer value of the class Id.
     ///
-     INT32 GetClassId();
+    INT32 GetClassId();
 
     friend class MgPropertyCollection;
+
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Converts the property name and value to XML.
@@ -188,7 +185,6 @@ protected:
     /// Self destructing method.
     ///
     virtual void Dispose();
-
 
 private:
     STRING          m_propertyName;

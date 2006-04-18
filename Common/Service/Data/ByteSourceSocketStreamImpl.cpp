@@ -42,27 +42,27 @@ m_blockRead(0)
 ///</summary>
 ///
 ByteSourceSocketStreamImpl::~ByteSourceSocketStreamImpl()
- {
-     if (m_conn != NULL)
-     {
-         // Read everything out of the stream.  Developers
-         // may not pull the entire stream before dumping
-         // the MgByteReader.
-         INT32 nBytes = 0;
-         unsigned char buf[1024];
-         do
-         {
-             nBytes = Read(buf, 1024);
-         }
-         while (nBytes > 0);
+{
+    if (m_conn != NULL)
+    {
+        // Read everything out of the stream.  Developers
+        // may not pull the entire stream before dumping
+        // the MgByteReader.
+        INT32 nBytes = 0;
+        unsigned char buf[1024];
+        do
+        {
+            nBytes = Read(buf, 1024);
+        }
+        while (nBytes > 0);
 
-         m_conn = NULL;
-     }
-     m_len = 0;
-     m_pos = 0;
-     m_blockSize = 0;
-     m_blockRead = 0;
- }
+        m_conn = NULL;
+    }
+    m_len = 0;
+    m_pos = 0;
+    m_blockSize = 0;
+    m_blockRead = 0;
+}
 
 //////////////////////////////////////////////////////////////////
 ///<summary>

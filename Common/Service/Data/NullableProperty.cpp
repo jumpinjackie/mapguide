@@ -44,7 +44,10 @@ MgNullableProperty::~MgNullableProperty()
 /// <param name="bIsNull">
 /// Specify TRUE or FALSE whether this property value is NULL
 /// </param>
-void MgNullableProperty::SetNull(bool bIsNull) { m_bIsNull = bIsNull; }
+void MgNullableProperty::SetNull(bool bIsNull)
+{
+    m_bIsNull = bIsNull;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -54,7 +57,10 @@ void MgNullableProperty::SetNull(bool bIsNull) { m_bIsNull = bIsNull; }
 /// TRUE - if property is null
 /// FALSE - if property has a value
 /// </returns>
-bool MgNullableProperty::IsNull() { return m_bIsNull; }
+bool MgNullableProperty::IsNull()
+{
+    return m_bIsNull;
+}
 
 void MgNullableProperty::CheckNull()
 {
