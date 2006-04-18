@@ -37,6 +37,8 @@ class WT_File;
 class WT_Viewport;
 class WT_Logical_Point;
 
+struct RS_Font;
+
 class GDRenderer : public Renderer
 {
     friend class LabelRenderer;
@@ -137,18 +139,18 @@ public:
                     int              x,
                     int              y,
                     double           height,
-                    const RS_String& font,
+                    const RS_Font*   font,
                     const RS_Color&  color,
                     double           angle);
 
     void MeasureString(const RS_String& s,
                        double           height,
-                       const RS_String& font,
+                       const RS_Font* font,
                        double           angle,
                        RS_F_Point*      res,
                        float*           offsets);
 
-    bool FindFont(RS_FontDef& def, RS_String& fontName);
+    const RS_Font* FindFont(RS_FontDef& def);
 
 
 private:

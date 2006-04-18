@@ -61,7 +61,7 @@ class FontManager
 
         FontList*   GetFontList();
 
-        STYLIZATION_API const wchar_t* FindFont( const wchar_t* fontname, bool bold, bool italic, bool underline );
+        STYLIZATION_API const RS_Font* FindFont( const wchar_t* fontname, bool bold, bool italic);
 
         //  singleton access method
         STYLIZATION_API static FontManager* Instance();

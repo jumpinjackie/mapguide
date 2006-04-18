@@ -191,8 +191,8 @@ protected:
 protected:
 
     //transformation from mapping to W2D space
-    inline double _TX(double x);
-    inline double _TY(double y);
+    double _TX(double x);
+    double _TY(double y);
     void _TransformPointsNoClamp(double* inpts, int numpts);
 
 private:

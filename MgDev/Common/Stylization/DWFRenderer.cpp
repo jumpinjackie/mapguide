@@ -1366,12 +1366,11 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
 // Transformation functions from mapping to W2D space.
 // It's a little ghetto to have separate ones for x and y
 // but makes the rest of the code a little cleaner.
-// Plus, they are inlined anyway
 //
 //-----------------------------------------------------------------------------
 
 //transforms an x coordinate from mapping to DWF space
-inline double DWFRenderer::_TX(double x)
+double DWFRenderer::_TX(double x)
 {
     //none of these should happen -- otherwise the DWF will get integer overflow
     //since we scale the bounding extents to be the full int32 range
@@ -1386,7 +1385,7 @@ inline double DWFRenderer::_TX(double x)
 }
 
 //transforms a y coordinate from mapping to DWF space
-inline double DWFRenderer::_TY(double y)
+double DWFRenderer::_TY(double y)
 {
     //none of these should happen -- otherwise the DWF will get integer overflow
     //since we scale the bounding extents to be the full int32 range

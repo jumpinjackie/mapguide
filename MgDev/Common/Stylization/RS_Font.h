@@ -23,54 +23,48 @@
 
 using namespace std;
 
-class RS_Font
+struct RS_Font
 {
     public :
 
-        //enum FontFlag
-        //{
-        //    ffNone                = 0x0000,
-        //    //Typeface            = 0x0001,
-        //    ffBold                = 0x0002,
-        //    ffItalic              = 0x0004,
-        //    //Charset             = 0x0008,
-        //    //Pitch_And_Family    = 0x0010,
-        //    //Font_Type           = 0x0020,
-        //    //Panose              = 0x0040,
-        //    //Height              = 0x0080,
-        //    ffUnderlined          = 0x0100,
-        //    ffAll                 = 0x01FF,
-
-        //    ffUndefined = -1
-        //};
-
     public :
-        RS_Font(void);
-        RS_Font(RS_Font & copy);
-        virtual ~RS_Font(void);
+        RS_Font(void) :
+            m_bold(false),
+            m_italic(false),
+            m_units_per_EM(0),
+            m_ascender(0),
+            m_descender(0),
+            m_height(0),
+            m_max_advance_width(0),
+            m_max_advance_height(0),
+            m_underline_position(0),
+            m_underline_thickness(0),
+            m_fullname(L""),
+            m_familyname(L""),
+            m_index(0),
+            m_filename(L"")
+        {
+        }
 
-    public :
-        bool GetBold();
-        void SetBold( bool isBold );
-        bool GetItalic();
-        void SetItalic( bool isItalic );
-        bool GetUnderlined();
-        void SetUnderlined( bool isUnderlined );
+    public:
 
-        wchar_t const * GetFullName();
-        void SetFullName( wchar_t const * pFullName );
-        wchar_t const * GetFamilyName();
-        void SetFamilyName( wchar_t const * pFamilyName );
-        long GetIndex();
-        void SetIndex( long index) ;
-        wchar_t const * GetFileName();
-        void SetFileName( wchar_t const * pFileName );
-
-    private :
+        //font style
         bool m_bold;
         bool m_italic;
-        bool m_underlined;
 
+        //font metrics
+        unsigned short m_units_per_EM;
+        short          m_ascender;
+        short          m_descender;
+        short          m_height;
+
+        short          m_max_advance_width;
+        short          m_max_advance_height;
+
+        short          m_underline_position;
+        short          m_underline_thickness;
+
+        //font names
         wstring  m_fullname;
         wstring  m_familyname;
         long  m_index;

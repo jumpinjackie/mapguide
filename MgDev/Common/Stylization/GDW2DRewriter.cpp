@@ -825,16 +825,13 @@ WT_Result gdr_process_text (WT_Text & text, WT_File & file)
         RS_FontDef fdef(rs_uni_name, hgt, (RS_FontStyle_Mask)style, RS_Units_Model);
         delete [] uni_name;
 
-        RS_String font_file = L"";
-        bool found = rewriter->FindFont(fdef, font_file);
-
-        if (!found)
-            font_file = L"c:\\windows\\fonts\\arial.ttf";
+        RS_String font_file;
+        const RS_Font* rsfont = rewriter->FindFont(fdef);
 
         //draw the text
         wchar_t* uni_text = WT_String::to_wchar(text.string().length(), text.string().unicode());
 
-        rewriter->DrawString(uni_text, dstpts[0].x, dstpts[0].y, hgt, font_file, color, rot);
+        rewriter->DrawString(uni_text, dstpts[0].x, dstpts[0].y, hgt, rsfont, color, rot);
 
         delete [] uni_text;
     }

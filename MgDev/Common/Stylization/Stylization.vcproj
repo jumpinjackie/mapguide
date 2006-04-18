@@ -426,10 +426,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RS_Font.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\RS_Font.h"
 				>
 			</File>

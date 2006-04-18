@@ -364,7 +364,7 @@ void FontManager::create_font (FT_Face face, FT_Long index, wchar_t const * file
     UnicodeString::MultiByteToWideChar( tempstr.c_str(), familyname );
 #endif
 
-    font->SetFamilyName( familyname.c_str() );
+    font->m_familyname = familyname;
 
     wstring fullname;
     fullname += familyname;
@@ -387,30 +387,27 @@ void FontManager::create_font (FT_Face face, FT_Long index, wchar_t const * file
     UnicodeString::MultiByteToWideChar( tempstr.c_str(), fullname );
 #endif
 
-    font->SetFullName( fullname.c_str() );
+    font->m_fullname = fullname;
+    font->m_filename = filename;
+    font->m_index = index;
 
-    font->SetFileName( filename );
-    font->SetIndex( index );
-
+    //remember font style
     if (face->style_flags & FT_STYLE_FLAG_ITALIC)
-        font->SetItalic( true );
+        font->m_italic = true;
 
     if (face->style_flags & FT_STYLE_FLAG_BOLD)
-        font->SetBold( true );
+        font->m_bold = true;
+
+    //remember font metrics
+    font->m_ascender = face->ascender;
+    font->m_descender = face->descender;
+    font->m_units_per_EM = face->units_per_EM;
+    font->m_height = face->height;
+    font->m_underline_position = face->underline_position;
+    font->m_underline_thickness = face->underline_thickness;
 
     //  add the font
     m_fontlist.push_front( font );
-
-    //  check underline
-    if (face->underline_position != 0)
-    {
-        //  create another font with underline flag
-        RS_Font* ufont = new RS_Font( *font );
-        ufont->SetUnderlined( true );
-
-        //  add the font
-        m_fontlist.push_front( ufont );
-    }
 }
 
 //
@@ -420,7 +417,7 @@ FontList* FontManager::GetFontList()
 }
 
 //
-const wchar_t* FontManager::FindFont( const wchar_t* fontname, bool bold, bool italic, bool underline )
+const RS_Font* FontManager::FindFont( const wchar_t* fontname, bool bold, bool italic)
 {
     FontListIterator it = m_fontlist.begin();
 
@@ -455,7 +452,7 @@ const wchar_t* FontManager::FindFont( const wchar_t* fontname, bool bold, bool i
             best = current;
 
         //  check full name (really the family here)
-        if ( wcsstr(current->GetFullName(), buf) != NULL )
+        if ( wcsstr(current->m_fullname.c_str(), buf) != NULL )
         {
             tempscore += 2;
 
@@ -464,20 +461,16 @@ const wchar_t* FontManager::FindFont( const wchar_t* fontname, bool bold, bool i
             //Arial Black vs. Arial Narrow vs. Arial
             //no need for a case-insensiteive compare since all names
             //are already converted to lower case
-            if (wcscmp(current->GetFamilyName(), buf) == 0)
+            if (wcscmp(current->m_familyname.c_str(), buf) == 0)
                 tempscore ++;
         }
 
         //  check bold
-        if ( bold == current->GetBold() )
+        if ( bold == current->m_bold )
             tempscore++;
 
         //  check italic
-        if ( italic == current->GetItalic() )
-            tempscore++;
-
-        //  check underline
-        if ( underline == current->GetUnderlined() )
+        if ( italic == current->m_italic )
             tempscore++;
 
         //  is the current font a better match?
@@ -489,6 +482,6 @@ const wchar_t* FontManager::FindFont( const wchar_t* fontname, bool bold, bool i
         ++it;
     }
 
-    //  return filename
-    return best? best->GetFileName() : NULL;
+    //  return matched font
+    return best;
 }

@@ -22,6 +22,7 @@
 #include "SimpleOverpost.h"
 
 class GDRenderer;
+struct RS_Font;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -38,7 +39,8 @@ struct LR_LabelInfoLocal
           m_numpts(0),
           m_numelems(0),
           m_oriented_bounds(NULL),
-          m_charpos(NULL)
+          m_charpos(NULL),
+          m_spacing(NULL)
     {
     }
 
@@ -51,7 +53,7 @@ struct LR_LabelInfoLocal
     RS_F_Point* m_pts;
     int m_numpts;
 
-    RS_String m_fontpath;
+    const RS_Font* m_font;
     double m_hgt;
     double m_textwid;
     double m_texthgt;
@@ -69,6 +71,9 @@ struct LR_LabelInfoLocal
 
     // stores data for individual characters of a path label
     CharPos* m_charpos;
+
+    // stores horizontal advance per character (including kerning)
+    double* m_spacing;
 };
 
 
@@ -130,7 +135,7 @@ private:
     void ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::vector<LR_OverpostGroupLocal*>& groups);
     bool ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfoLocal& info, bool render, bool exclude, bool check);
 
-    void ApplyTextAlignment(RS_TextDef& tdef, double actual_height, RS_F_Point* extent, RS_F_Point& ins_point);
+    void ApplyTextAlignment(RS_TextDef& tdef, double actual_height, RS_F_Point* extent, RS_F_Point& ins_point, const RS_Font* font);
 
     void AddExclusionRegion(SimpleOverpost* pMgr, RS_F_Point* pts, int npts);
 
