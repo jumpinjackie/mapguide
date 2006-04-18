@@ -1308,7 +1308,7 @@ INSERT INTO "HttpTestResults" VALUES('InheritPermissionsFrom with resource that 
 INSERT INTO "HttpTestResults" VALUES('InheritPermissionsFrom with resource that is not of type Library', 17006, 'text/plain', X'4D67496E76616C69645265736F7572636554797065457863657074696F6E0D0A');
 INSERT INTO "HttpTestResults" VALUES('InheritPermissionsFrom using folder resource', 17007, 'text/plain; charset=utf-8', X'');
 INSERT INTO "HttpTestResults" VALUES('InheritPermissionsFrom using root resource', 17008, 'text/plain; charset=utf-8', X'');
-INSERT INTO "HttpTestResults" VALUES('ApplyResource - with blank package parameter', 18002, 'text/plain', X'4D67496E76616C6964417267756D656E74457863657074696F6E0D0A');
+INSERT INTO "HttpTestResults" VALUES('ApplyResource - with blank package parameter', 18002, 'text/plain', X'4D6746696C654E6F74466F756E64457863657074696F6E0D0A');
 INSERT INTO "HttpTestResults" VALUES('ApplyResourcePackage - when package is not a zip file', 18003, 'text/plain', X'4D67447766457863657074696F6E0D0A');
 INSERT INTO "HttpTestResults" VALUES('ApplyResourcePackage - when package zip file contains invalid data', 18004, 'text/plain', X'4D67447766457863657074696F6E0D0A');
 INSERT INTO "HttpTestResults" VALUES('ApplyResourcePackage - with valid package', 18005, 'text/plain; charset=utf-8', '');
