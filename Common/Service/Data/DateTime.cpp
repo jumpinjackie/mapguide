@@ -912,7 +912,7 @@ double MgDateTime::ToMilliSeconds()
     if (day < 0)
         milliSeconds *= -1;
 
-    return (day * 24 * 60 * 60 * 1000 + milliSeconds);
+    return (day * 24.0 * 60.0 * 60.0 * 1000.0 + milliSeconds);
 }
 
 int MgDateTime::IsLeapYear(long year, char calendar) const
@@ -1067,7 +1067,7 @@ void MgDateTime::AssignTime(INT64 milliSeconds)
     m_hour = (INT8)hours;
     m_minute = (INT8)minutes;
     m_second = (INT8)seconds;
-    m_microsecond = microseconds;
+    m_microsecond = (INT32)microseconds;
 }
 
 void MgDateTime::Initialize()
