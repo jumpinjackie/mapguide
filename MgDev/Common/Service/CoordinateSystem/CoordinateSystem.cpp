@@ -19,14 +19,14 @@
 #include "CoordSysIncludes.h"
 
 // Coordinate system information properties
-const STRING MgCoordinateSystem::CoordinateSystemCode                  = L"Code";
-const STRING MgCoordinateSystem::CoordinateSystemDescription           = L"Description";
-const STRING MgCoordinateSystem::CoordinateSystemProjection            = L"Projection";
-const STRING MgCoordinateSystem::CoordinateSystemProjectionDescription = L"Projection Description";
-const STRING MgCoordinateSystem::CoordinateSystemDatum                 = L"Datum";
-const STRING MgCoordinateSystem::CoordinateSystemDatumDescription      = L"Datum Description";
-const STRING MgCoordinateSystem::CoordinateSystemEllipsoid             = L"Ellipsoid";
-const STRING MgCoordinateSystem::CoordinateSystemEllipsoidDescription  = L"Ellipsoid Description";
+const STRING MgCoordinateSystem::CoordinateSystemCode                  = L"Code";                   // NOXLATE
+const STRING MgCoordinateSystem::CoordinateSystemDescription           = L"Description";            // NOXLATE
+const STRING MgCoordinateSystem::CoordinateSystemProjection            = L"Projection";             // NOXLATE
+const STRING MgCoordinateSystem::CoordinateSystemProjectionDescription = L"Projection Description"; // NOXLATE
+const STRING MgCoordinateSystem::CoordinateSystemDatum                 = L"Datum";                  // NOXLATE
+const STRING MgCoordinateSystem::CoordinateSystemDatumDescription      = L"Datum Description";      // NOXLATE
+const STRING MgCoordinateSystem::CoordinateSystemEllipsoid             = L"Ellipsoid";              // NOXLATE
+const STRING MgCoordinateSystem::CoordinateSystemEllipsoidDescription  = L"Ellipsoid Description";  // NOXLATE
 
 ///////////////////////////////////////////////////////////////////////////
 ///<summary>
