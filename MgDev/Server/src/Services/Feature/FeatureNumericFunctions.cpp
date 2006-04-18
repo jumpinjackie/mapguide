@@ -173,7 +173,7 @@ double MgFeatureNumericFunctions::GetValue()
             case MgPropertyType::DateTime:
             {
                 Ptr<MgDateTime> dateTime = m_reader->GetDateTime(m_propertyName);
-                val = dateTime->ToSeconds();
+                val = dateTime->ToNumber();
                 break;
             }
             case MgPropertyType::Boolean:

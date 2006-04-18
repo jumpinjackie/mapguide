@@ -462,8 +462,6 @@ PUBLISHED_API:
     ///
     void Validate();
 
-// TODO: Uncomment the code below when the client can handle just date or time.
-
     /// \brief
     /// Determines if this object only represents a date value.
     ///
@@ -481,7 +479,7 @@ PUBLISHED_API:
     /// \return
     /// Returns true if only the date is valid; otherwise returns false.
     ///
-//    bool IsDate();
+    bool IsDate();
 
     /// \brief
     /// Determines if this object only represents a time value.
@@ -500,7 +498,7 @@ PUBLISHED_API:
     /// \return
     /// Returns true if only the time is valid; otherwise returns false.
     ///
-//    bool IsTime();
+    bool IsTime();
 
     /// \brief
     /// Determines if this object represents both date and time values.
@@ -519,7 +517,7 @@ PUBLISHED_API:
     /// \return
     /// Returns true if both the date and time are valid; otherwise returns false.
     ///
-//    bool IsDateTime();
+    bool IsDateTime();
 
 INTERNAL_API:
 
@@ -527,7 +525,7 @@ INTERNAL_API:
     explicit MgDateTime(CREFSTRING fdoDateTime);
     explicit MgDateTime(const string& xmlDateTime);
     explicit MgDateTime(time_t timeValue);
-    explicit MgDateTime(double seconds);
+    explicit MgDateTime(double number);
     MgDateTime(const MgDateTime& dt);
 
     MgDateTime& operator=(const MgDateTime& dt);
@@ -545,7 +543,8 @@ INTERNAL_API:
     STRING ToXmlString(bool utc = true);
     string ToXmlStringUtf8(bool utc = true);
     time_t ToTimeValue();
-    double ToSeconds();
+    double ToNumber();
+    double ToMilliSeconds();
 
 protected:
 
@@ -566,6 +565,7 @@ private:
     long lfloor(long a, long b);   //  assumes b positive
     long GregorianDay(int day, int month, long year, char calendar);
     void CalendarDate(long gdn, char calendar);
+    void AssignTime(INT64 microSeconds);
 
     void Initialize();
 
@@ -577,6 +577,42 @@ private:
     void ValidateDateTime();
     void ValidateDate();
     void ValidateTime();
+
+    // To perform the SelectAggregates operations on DateTime data, each data value
+    // must be turned into an integer before the operation and restored to a DateTime
+    // value after the operation.  Since there are three types of values (Dates,
+    // Times and DateTimes), three ranges of integers are used to represent the
+    // converted data values.  Integers are stored as double precision values.
+    //
+    // Note that FDO's DateTime data only operates with millisecond precision.
+    // The methods related to performing SelectAggregates therefore only use
+    // millisecond precision, depsite the ability of MgDateTime to store microsecond
+    // values.  Using these methods on MgDateTime objects that were created from
+    // sources other than FDO strings will result in a loss of data.
+    //
+    // The largest range of values represent DateTimes, which have millisecond
+    // precision and range from January 1 in the year 1 to December 31 of 9999.
+    // Each DateTime maps to an integer representing the number of milliseconds
+    // before or since the beginning of the Gregorian Calendar (October 12, 1582),
+    // which maps to zero.
+    //
+    // Because doubles provide only 14 digits of precision, this mapping may result
+    // in a loss of data for DateTimes beginning in 3170.  This data loss would
+    // occur in the millisecond portion of the DateTime.  DateTimes before the
+    // beginning of the Gregorian Calendar are reprsented as negative integers
+    // that range down almost to -50 trillion.
+    //
+    // Each Time values maps to an integer representing the number of milliseconds
+    // since 12:00AM of the hypothetical day.  This results in 86.4 million values,
+    // which range up from -60 trillion.  Time values have no data loss issues.
+    //
+    // Each Date value is mapped to an integer representing the number of days
+    // before or after the beginning of the Gregorian Calendar.  These 3.65 million
+    // values range up from -70 trillion, and also have no data loss issues.
+
+    static const INT64 MIN_DATETIME = -50000000000000LL;
+    static const INT64 TIME_ZERO    = -60000000000000LL;
+    static const INT64 DATE_ZERO    = -70000000000000LL;
 
 private:
 
