@@ -216,20 +216,20 @@ categories.txt : ../../../Common/CoordinateSystem/categories.txt
 
 serverconfig_linux.ini :
 	@sed -e 's#^FdoPath.*=.*#FdoPath                            = $(map_fdo_lib)#' \
-             -e 's#^LogsPath.*=.*#LogsPath                           = Logs/#' \
-             -e 's#^ResourcesPath.*=.*#ResourcesPath                      = ../Resources/#' \
-             -e 's#^TempPath.*=.*#TempPath                           = Temp/#' \
-             -e 's#^WmsDocumentPath.*=.*#WmsDocumentPath                    = Wms/#' \
-             -e 's#^WfsDocumentPath.*=.*#WfsDocumentPath                    = Wfs/#' \
-             -e 's#^TileCachePath.*=.*#TileCachePath      = Repositories/TileCache/#' \
-             -e 's#^LibraryResourceDataFilePath.*=.*#LibraryResourceDataFilePath        = Repositories/Library/DataFiles/#' \
-             -e 's#^LibraryRepositoryPath.*=.*#LibraryRepositoryPath              = Repositories/Library/#' \
-             -e 's#^SessionResourceDataFilePath.*=.*#SessionResourceDataFilePath        = Repositories/Session/DataFiles/#' \
-             -e 's#^SessionRepositoryPath.*=.*#SessionRepositoryPath              = Repositories/Session/#' \
-             -e 's#^SiteRepositoryPath.*=.*#SiteRepositoryPath                 = Repositories/Site/#' \
-             -e 's#^PackagesPath.*=.*#PackagesPath                       = Packages/#' \
-             -e 's#^ResourceSchemaFilePath.*=.*#ResourceSchemaFilePath             = ../../../Common/Schema/#' \
-             -e 's#^ResourceDataFileTrashFolderName.*=.*#ResourceDataFileTrashFolderName    = Trash/#' \
+             -e 's#^LogsPath.*=.*#LogsPath                           = Logs#' \
+             -e 's#^ResourcesPath.*=.*#ResourcesPath                      = ../Resources#' \
+             -e 's#^TempPath.*=.*#TempPath                           = Temp#' \
+             -e 's#^WmsDocumentPath.*=.*#WmsDocumentPath                    = Wms#' \
+             -e 's#^WfsDocumentPath.*=.*#WfsDocumentPath                    = Wfs#' \
+             -e 's#^TileCachePath.*=.*#TileCachePath      = Repositories/TileCache#' \
+             -e 's#^LibraryResourceDataFilePath.*=.*#LibraryResourceDataFilePath        = Repositories/Library/DataFiles#' \
+             -e 's#^LibraryRepositoryPath.*=.*#LibraryRepositoryPath              = Repositories/Library#' \
+             -e 's#^SessionResourceDataFilePath.*=.*#SessionResourceDataFilePath        = Repositories/Session/DataFiles#' \
+             -e 's#^SessionRepositoryPath.*=.*#SessionRepositoryPath              = Repositories/Session#' \
+             -e 's#^SiteRepositoryPath.*=.*#SiteRepositoryPath                 = Repositories/Site#' \
+             -e 's#^PackagesPath.*=.*#PackagesPath                       = Packages#' \
+             -e 's#^ResourceSchemaFilePath.*=.*#ResourceSchemaFilePath             = ../../../Common/Schema#' \
+             -e 's#^ResourceDataFileTrashFolderName.*=.*#ResourceDataFileTrashFolderName    = Trash#' \
            serverconfig.ini > serverconfig_linux.ini
 	@cp -f serverconfig_linux.ini serverconfig.ini
 
