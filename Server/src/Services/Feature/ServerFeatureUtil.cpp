@@ -257,7 +257,7 @@ void MgServerFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING na
             if (type == MgPropertyType::DateTime)
             {
                 Ptr<MgDateTime> dateTime = new MgDateTime(STRING(arg2));
-                dataMin = dateTime->ToSeconds();
+                dataMin = dateTime->ToNumber();
             }
             else
             {
@@ -270,7 +270,7 @@ void MgServerFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING na
             if (type == MgPropertyType::DateTime)
             {
                 Ptr<MgDateTime> dateTime = new MgDateTime(STRING(arg3));
-                dataMax = dateTime->ToSeconds();
+                dataMax = dateTime->ToNumber();
             }
             else
             {

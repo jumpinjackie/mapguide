@@ -106,7 +106,7 @@ bool DateTimeValue::IsGreaterThan(DataValue& v2)
 {
     GisDateTime d2 = v2.GetAsDateTime();
 
-    if (m_value.IsDate() && d2.IsDate())
+    if ((m_value.IsDate() && d2.IsDate()) || (m_value.IsDateTime() && d2.IsDateTime()))
     {
         if (m_value.year > d2.year)
             return true;
@@ -129,7 +129,7 @@ bool DateTimeValue::IsGreaterThan(DataValue& v2)
             return false;
     }
 
-    if (m_value.IsTime() && d2.IsTime())
+    if ((m_value.IsTime() && d2.IsTime()) || (m_value.IsDateTime() && d2.IsDateTime()))
     {
         //test hour
         if (m_value.hour > d2.hour)

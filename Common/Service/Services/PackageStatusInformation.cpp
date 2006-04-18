@@ -400,7 +400,7 @@ double MgPackageStatusInformation::GetAverageOperationTime()
 
     if (opsSucceeded > 0)
     {
-        double totalOpTime = (m_endTime->ToSeconds() - m_startTime->ToSeconds()) / 1000.0;
+        double totalOpTime = (m_endTime->ToMilliSeconds() - m_startTime->ToMilliSeconds()) / 1000.0;
 
         return (totalOpTime / opsSucceeded);
     }
