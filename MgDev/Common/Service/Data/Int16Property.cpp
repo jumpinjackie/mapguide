@@ -42,13 +42,18 @@ MgInt16Property::MgInt16Property()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgInt16Property::~MgInt16Property() {}
+MgInt16Property::~MgInt16Property()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgInt16Property::GetClassId() { return m_cls_id; }
+INT32 MgInt16Property::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -57,7 +62,10 @@ MgInt16Property::~MgInt16Property() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgInt16Property::GetPropertyType() { return MgPropertyType::Int16; }
+INT16 MgInt16Property::GetPropertyType()
+{
+    return MgPropertyType::Int16;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -66,11 +74,11 @@ MgInt16Property::~MgInt16Property() {}
 /// <returns>
 /// The property value
 /// </returns>
- INT16 MgInt16Property::GetValue()
- {
+INT16 MgInt16Property::GetValue()
+{
     CheckNull();
     return m_value;
- }
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -93,7 +101,10 @@ void MgInt16Property::SetValue(INT16 value)
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgInt16Property::Dispose() { delete this; }
+void MgInt16Property::Dispose()
+{
+    delete this;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -136,7 +147,6 @@ void MgInt16Property::ToXml(string &str, bool includeType, string rootElmName)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgInt16Property::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -150,7 +160,6 @@ void MgInt16Property::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgInt16Property::Deserialize(MgStream* stream)
 {
     STRING str;

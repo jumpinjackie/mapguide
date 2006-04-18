@@ -57,7 +57,7 @@ PUBLISHED_API:
     /// \param value (MgByteReader)
     /// The value of the property.
     ///
-     MgClobProperty(CREFSTRING name, MgByteReader* value);
+    MgClobProperty(CREFSTRING name, MgByteReader* value);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -77,7 +77,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-     MgByteReader* GetValue();
+    MgByteReader* GetValue();
 
     //////////////////////////////////////////////////////
     /// \brief
@@ -98,7 +98,7 @@ PUBLISHED_API:
     /// Returns the property type MgPropertyType::Clob
     ///
     ///
-     INT16 GetPropertyType();
+    INT16 GetPropertyType();
 
     ///////////////////////////////////////////////////////////////////////
     /// \brief
@@ -121,7 +121,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     void SetValue(MgByteReader* value);
+    void SetValue(MgByteReader* value);
 
 EXTERNAL_API:
 
@@ -129,7 +129,6 @@ EXTERNAL_API:
     /// \brief
     /// Destructor. Deletes the property and any information
     /// contained in it.
-    ///
     ///
     virtual ~MgClobProperty();
 
@@ -139,7 +138,7 @@ INTERNAL_API:
     /// \brief
     /// Constructor.
     ///
-     MgClobProperty();
+    MgClobProperty();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -148,8 +147,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Serialize(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
@@ -159,8 +156,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Deserialize(MgStream* stream);
 
 protected:
@@ -172,7 +167,7 @@ protected:
     /// \return
     /// Returns the integer value of the class Id.
     ///
-     INT32 GetClassId();
+    INT32 GetClassId();
 
     friend class MgPropertyCollection;
     /////////////////////////////////////////////////////////////////

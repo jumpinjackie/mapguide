@@ -71,7 +71,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     MgDateTime();
+    MgDateTime();
 
     /// \brief
     /// Construct a date value
@@ -97,7 +97,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     MgDateTime(INT16 year, INT8 month, INT8 day);
+    MgDateTime(INT16 year, INT8 month, INT8 day);
 
     /// \brief
     /// Construct a time value
@@ -125,7 +125,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     MgDateTime(INT8 hour, INT8 minute, INT8 second, INT32 microsecond);
+    MgDateTime(INT8 hour, INT8 minute, INT8 second, INT32 microsecond);
 
     /// \brief
     /// Construct a date time value
@@ -159,7 +159,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     MgDateTime(INT16 year, INT8 month, INT8 day, INT8 hour, INT8 minute, INT8 second, INT32 microsecond);
+    MgDateTime(INT16 year, INT8 month, INT8 day, INT8 hour, INT8 minute, INT8 second, INT32 microsecond);
 
     /// \brief
     /// Gets the day component of this object

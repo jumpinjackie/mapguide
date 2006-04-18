@@ -50,13 +50,18 @@ MgClobProperty::MgClobProperty()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgClobProperty::~MgClobProperty() {}
+MgClobProperty::~MgClobProperty()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgClobProperty::GetClassId() { return m_cls_id; }
+INT32 MgClobProperty::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -65,7 +70,10 @@ MgClobProperty::~MgClobProperty() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgClobProperty::GetPropertyType() { return MgPropertyType::Clob; }
+INT16 MgClobProperty::GetPropertyType()
+{
+    return MgPropertyType::Clob;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -74,11 +82,11 @@ MgClobProperty::~MgClobProperty() {}
 /// <returns>
 /// The property value
 /// </returns>
- MgByteReader* MgClobProperty::GetValue()
- {
+MgByteReader* MgClobProperty::GetValue()
+{
     CheckNull();
     return SAFE_ADDREF((MgByteReader*)m_value);
- }
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -98,7 +106,10 @@ void MgClobProperty::SetValue(MgByteReader* value)
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgClobProperty::Dispose() { delete this; }
+void MgClobProperty::Dispose()
+{
+    delete this;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -121,7 +132,6 @@ void MgClobProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += MgUtil::GetStringFromReader(this->GetValue()) + "</Value>";
 
     str += "</" + rootElmName + ">";
-
 }
 
 //////////////////////////////////////////////////////////////////
@@ -131,7 +141,6 @@ void MgClobProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgClobProperty::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -145,7 +154,6 @@ void MgClobProperty::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgClobProperty::Deserialize(MgStream* stream)
 {
     STRING str;

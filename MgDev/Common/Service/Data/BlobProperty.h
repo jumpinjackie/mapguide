@@ -97,7 +97,6 @@ PUBLISHED_API:
     /// \return
     /// Returns the property type MgPropertyType::Blob.
     ///
-    ///
     INT16 GetPropertyType();
 
     ///////////////////////////////////////////////////////////////////////
@@ -130,7 +129,6 @@ EXTERNAL_API:
     /// Destructor. Deletes a property and any information contained
     /// in it.
     ///
-    ///
     virtual ~MgBlobProperty();
 
 INTERNAL_API:
@@ -148,8 +146,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Serialize(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
@@ -159,8 +155,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Deserialize(MgStream* stream);
 
 protected:

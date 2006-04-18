@@ -41,13 +41,18 @@ MgStringProperty::MgStringProperty()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgStringProperty::~MgStringProperty() {}
+MgStringProperty::~MgStringProperty()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
-INT32 MgStringProperty::GetClassId() { return m_cls_id; }
+INT32 MgStringProperty::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -56,7 +61,10 @@ INT32 MgStringProperty::GetClassId() { return m_cls_id; }
 /// <returns>
 /// The property type
 /// </returns>
-INT16 MgStringProperty::GetPropertyType() { return MgPropertyType::String; }
+INT16 MgStringProperty::GetPropertyType()
+{
+    return MgPropertyType::String;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -89,7 +97,10 @@ void MgStringProperty::SetValue(CREFSTRING value)
 /// <summary>
 /// Self destructing method
 /// </summary>
-void MgStringProperty::Dispose() { delete this; }
+void MgStringProperty::Dispose()
+{
+    delete this;
+}
 
 
 /////////////////////////////////////////////////////////////////
@@ -133,7 +144,6 @@ void MgStringProperty::ToXml(string &str, bool onlyKey, bool includeType, string
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgStringProperty::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -147,7 +157,6 @@ void MgStringProperty::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgStringProperty::Deserialize(MgStream* stream)
 {
     STRING str;

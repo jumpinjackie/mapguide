@@ -51,13 +51,18 @@ MgBlobProperty::MgBlobProperty()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgBlobProperty::~MgBlobProperty() {}
+MgBlobProperty::~MgBlobProperty()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgBlobProperty::GetClassId() { return m_cls_id; }
+INT32 MgBlobProperty::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -66,7 +71,10 @@ MgBlobProperty::~MgBlobProperty() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgBlobProperty::GetPropertyType() { return MgPropertyType::Blob; }
+INT16 MgBlobProperty::GetPropertyType()
+{
+    return MgPropertyType::Blob;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -88,18 +96,21 @@ MgByteReader* MgBlobProperty::GetValue()
 /// Value of property
 /// </param>
 /// </summary>
- void MgBlobProperty::SetValue(MgByteReader* value)
- {
+void MgBlobProperty::SetValue(MgByteReader* value)
+{
     CheckNull();
     m_value = SAFE_ADDREF(value);
- }
+}
 
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgBlobProperty::Dispose() { delete this; }
+void MgBlobProperty::Dispose()
+{
+    delete this;
+}
 
 
 /////////////////////////////////////////////////////////////////
@@ -138,7 +149,6 @@ void MgBlobProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgBlobProperty::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -152,7 +162,6 @@ void MgBlobProperty::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgBlobProperty::Deserialize(MgStream* stream)
 {
     STRING str;

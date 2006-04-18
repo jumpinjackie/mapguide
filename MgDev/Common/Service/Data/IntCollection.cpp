@@ -216,7 +216,7 @@ INT32 MgIntCollection::IndexOf(INT32 value)
 /// Creates an XML document representing the collection.
 /// </summary>
 /// <returns>
-/// Pointer to an MgByteReader object.
+/// Returns a pointer to an MgByteReader object.
 /// </returns>
 MgByteReader* MgIntCollection::ToXml()
 {
@@ -291,7 +291,7 @@ void MgIntCollection::Dispose()
 void MgIntCollection::ValidateIndex(INT32 index) const
 {
     INT32 cnt = (INT32)m_intProperty.size();
-    if (cnt < index)
+    if (index >= cnt)
     {
         STRING buffer;
         MgUtil::Int32ToString(index, buffer);
@@ -302,5 +302,17 @@ void MgIntCollection::ValidateIndex(INT32 index) const
 
         throw new MgInvalidArgumentException(L"MgIntCollection.ValidateIndex",
             __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooBig", NULL);
+    }
+    else if (index < 0)
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(buffer);
+
+        throw new MgInvalidArgumentException(L"MgIntCollection.ValidateIndex",
+            __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooSmall", NULL);
     }
 }

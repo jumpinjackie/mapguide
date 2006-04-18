@@ -37,14 +37,11 @@ INTERNAL_API:
     /// \param serverConn
     /// server connection
     ///
-    ///
     ByteSourceSocketStreamImpl(INT64 len, MgServerConnection* serverConn);
-
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Destroy ByteSourceSocketStreamImpl object
-    ///
     ///
     virtual ~ByteSourceSocketStreamImpl();
 
@@ -85,6 +82,7 @@ INTERNAL_API:
     /// \exception MgInvalidOperationException will be thrown since socket stream cannot be rewound
     ///
     void Rewind();
+
 protected:
     Ptr<MgServerConnection> m_conn;
     INT64     m_len;

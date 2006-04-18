@@ -357,7 +357,7 @@ INTERNAL_API:
 
 protected:
 
-    /////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////
     /// \brief
     /// Gets the class Id.
     ///
@@ -366,7 +366,7 @@ protected:
     ///
     INT32 GetClassId();
 
-    /////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////
     /// \brief
     /// Disposes the object.
     ///
@@ -374,7 +374,10 @@ protected:
 
 private:
 
-    MgPropertyCollection* m_strProperty;
+    /// performs index validation
+    void ValidateIndex(INT32 index) const;
+
+    std::vector<STRING> m_strProperty;
 
 CLASS_ID:
     static const INT32 m_cls_id = CoreData_Collection_StringCollection;

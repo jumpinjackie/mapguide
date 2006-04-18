@@ -70,13 +70,18 @@ MgPropertyDefinition::MgPropertyDefinition()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgPropertyDefinition::~MgPropertyDefinition() {}
+MgPropertyDefinition::~MgPropertyDefinition()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgPropertyDefinition::GetClassId() { return m_cls_id; }
+INT32 MgPropertyDefinition::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -85,15 +90,21 @@ MgPropertyDefinition::~MgPropertyDefinition() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgPropertyDefinition::GetPropertyType() { return m_propertyType; }
+INT16 MgPropertyDefinition::GetPropertyType()
+{
+    return m_propertyType;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgPropertyDefinition::Dispose() { delete this; }
+void MgPropertyDefinition::Dispose()
+{
+    delete this;
+}
 
- /////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
 /// <summary>
 /// Converts data into XML format
 /// </summary>
@@ -142,7 +153,6 @@ void MgPropertyDefinition::ToXml(string &str, bool includeType, string rootElmNa
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgPropertyDefinition::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -158,7 +168,6 @@ void MgPropertyDefinition::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgPropertyDefinition::Deserialize(MgStream* stream)
 {
     STRING str;

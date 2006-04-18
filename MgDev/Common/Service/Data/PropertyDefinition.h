@@ -62,7 +62,7 @@ PUBLISHED_API:
     /// \return
     /// Nothing
     ///
-     MgPropertyDefinition(CREFSTRING name, INT16 type);
+    MgPropertyDefinition(CREFSTRING name, INT16 type);
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -91,7 +91,7 @@ PUBLISHED_API:
     /// identifies the concrete type.
     ///
     ///
-     INT16 GetPropertyType();
+    INT16 GetPropertyType();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -115,7 +115,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     void SetDescription(CREFSTRING description);
+    void SetDescription(CREFSTRING description);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -135,7 +135,7 @@ PUBLISHED_API:
     /// \return
     /// Returns a String containing the description of the property.
     ///
-     STRING GetDescription();
+    STRING GetDescription();
 
     ///////////////////////////////////////////////////////////////////////
     /// \brief
@@ -160,7 +160,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     void SetQualifiedName(CREFSTRING qualifiedName);
+    void SetQualifiedName(CREFSTRING qualifiedName);
 
     ////////////////////////////////////////////////////////////
     /// \brief
@@ -181,7 +181,7 @@ PUBLISHED_API:
     /// \return
     /// Returns a String containing the qualified name.
     ///
-     STRING GetQualifiedName();
+    STRING GetQualifiedName();
 
 EXTERNAL_API:
 
@@ -200,7 +200,7 @@ INTERNAL_API:
     /// \brief
     /// Constructor.
     ///
-     MgPropertyDefinition();
+    MgPropertyDefinition();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -209,8 +209,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Serialize(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
@@ -220,8 +218,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Deserialize(MgStream* stream);
 
 protected:
@@ -233,7 +229,7 @@ protected:
     /// \return
     /// The integer value
     ///
-     INT32 GetClassId();
+    INT32 GetClassId();
 
     friend class MgPropertyDefinitionCollection;
 

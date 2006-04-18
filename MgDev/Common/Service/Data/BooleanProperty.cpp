@@ -41,13 +41,18 @@ MgBooleanProperty::MgBooleanProperty()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgBooleanProperty::~MgBooleanProperty() {}
+MgBooleanProperty::~MgBooleanProperty()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgBooleanProperty::GetClassId() { return m_cls_id; }
+INT32 MgBooleanProperty::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -56,7 +61,10 @@ MgBooleanProperty::~MgBooleanProperty() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgBooleanProperty::GetPropertyType() { return MgPropertyType::Boolean; }
+INT16 MgBooleanProperty::GetPropertyType()
+{
+    return MgPropertyType::Boolean;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -65,11 +73,11 @@ MgBooleanProperty::~MgBooleanProperty() {}
 /// <returns>
 /// The property value
 /// </returns>
- bool MgBooleanProperty::GetValue()
- {
+bool MgBooleanProperty::GetValue()
+{
     CheckNull();
     return m_value;
- }
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -78,18 +86,21 @@ MgBooleanProperty::~MgBooleanProperty() {}
 /// value of property
 /// </param>
 /// </summary>
- void MgBooleanProperty::SetValue(bool value)
- {
+void MgBooleanProperty::SetValue(bool value)
+{
     CheckNull();
     m_value = value;
- }
+}
 
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgBooleanProperty::Dispose() { delete this; }
+void MgBooleanProperty::Dispose()
+{
+    delete this;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -117,7 +128,6 @@ void MgBooleanProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += "</Value>";
 
     str += "</" + rootElmName + ">";
-
 }
 
 //////////////////////////////////////////////////////////////////
@@ -127,7 +137,6 @@ void MgBooleanProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgBooleanProperty::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -141,7 +150,6 @@ void MgBooleanProperty::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgBooleanProperty::Deserialize(MgStream* stream)
 {
     STRING str;

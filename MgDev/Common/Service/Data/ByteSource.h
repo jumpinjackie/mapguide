@@ -176,7 +176,6 @@ INTERNAL_API:
     /// \brief
     /// Default constructor for ByteSource object. Needed for Linux build
     ///
-
     MgByteSource();
 
     //////////////////////////////////////////////////////////////////
@@ -224,7 +223,6 @@ INTERNAL_API:
     ///
     /// \return
     /// Information about the underlying data source
-    ///
     ///
     ByteSourceImpl* GetSourceImpl();
 

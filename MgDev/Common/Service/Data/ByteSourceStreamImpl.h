@@ -38,13 +38,11 @@ public:
     /// \param stream
     /// MgStream object
     ///
-    ///
     ByteSourceMgStreamImpl(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Destructor
-    ///
     ///
     virtual ~ByteSourceMgStreamImpl();
 
@@ -59,7 +57,6 @@ public:
     ///
     /// \return
     /// Actual number of bytes put in the buffer. 0 means end of bytes
-    ///
     ///
     INT32 Read(BYTE_ARRAY_OUT buffer, INT32 length);
 
@@ -86,6 +83,7 @@ public:
     /// \exception MgInvalidOperationException will be thrown since MgStream cannot be rewound
     ///
     void Rewind();
+
 protected:
     MgStream* m_stream;
 };

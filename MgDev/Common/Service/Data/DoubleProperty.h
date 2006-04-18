@@ -59,7 +59,7 @@ PUBLISHED_API:
     /// \param value (double)
     /// The value of the property.
     ///
-     MgDoubleProperty(CREFSTRING name, double value);
+    MgDoubleProperty(CREFSTRING name, double value);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -79,7 +79,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-     double GetValue();
+    double GetValue();
 
     //////////////////////////////////////////////////////
     /// \brief
@@ -99,7 +99,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property type MgPropertyType::Double.
     ///
-     INT16 GetPropertyType();
+    INT16 GetPropertyType();
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -122,7 +122,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-     void SetValue(double value);
+    void SetValue(double value);
 
 EXTERNAL_API:
 
@@ -130,7 +130,6 @@ EXTERNAL_API:
     /// \brief
     /// Destructor. Deletes the property and any information
     /// contained in it.
-    ///
     ///
     virtual ~MgDoubleProperty();
 
@@ -140,7 +139,7 @@ INTERNAL_API:
     /// \brief
     /// Constructor.
     ///
-     MgDoubleProperty();
+    MgDoubleProperty();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -149,8 +148,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Serialize(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
@@ -160,8 +157,6 @@ INTERNAL_API:
     /// \param stream
     /// Stream
     ///
-    ///
-
     virtual void Deserialize(MgStream* stream);
 
 protected:
@@ -173,7 +168,7 @@ protected:
     /// \return
     /// Returns the integer value of the class Id.
     ///
-     INT32 GetClassId();
+    INT32 GetClassId();
 
     friend class MgPropertyCollection;
     /////////////////////////////////////////////////////////////////

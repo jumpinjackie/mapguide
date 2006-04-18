@@ -68,7 +68,6 @@ void MgByteReader::SetByteSource(MgByteSource* byteSource)
 ///Byte source for reader
 ///</summary>
 ///
-
 MgByteSource* MgByteReader::GetByteSource()
 {
     return m_byteSource;
@@ -78,7 +77,10 @@ MgByteSource* MgByteReader::GetByteSource()
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgByteReader::GetClassId() { return m_cls_id; }
+INT32 MgByteReader::GetClassId()
+{
+    return m_cls_id;
+}
 
 //////////////////////////////////////////////
 ///<summary>

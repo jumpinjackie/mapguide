@@ -88,7 +88,10 @@ MgByteSource::~MgByteSource()
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgByteSource::GetClassId() { return m_cls_id; }
+INT32 MgByteSource::GetClassId()
+{
+    return m_cls_id;
+}
 
 //////////////////////////////////////////////
 ///<summary>

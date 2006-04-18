@@ -51,7 +51,6 @@ public:
     /// \param data
     /// MgByte object to use
     ///
-    ///
     ByteSourceMemoryImpl(MgByte* data);
 
     //////////////////////////////////////////////////////////////////

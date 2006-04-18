@@ -50,13 +50,18 @@ MgByteProperty::MgByteProperty()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgByteProperty::~MgByteProperty() {}
+MgByteProperty::~MgByteProperty()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgByteProperty::GetClassId() { return m_cls_id; }
+INT32 MgByteProperty::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -65,7 +70,10 @@ MgByteProperty::~MgByteProperty() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgByteProperty::GetPropertyType() { return MgPropertyType::Byte; }
+INT16 MgByteProperty::GetPropertyType()
+{
+    return MgPropertyType::Byte;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -74,11 +82,11 @@ MgByteProperty::~MgByteProperty() {}
 /// <returns>
 /// The property value
 /// </returns>
- BYTE MgByteProperty::GetValue()
- {
+BYTE MgByteProperty::GetValue()
+{
     CheckNull();
     return m_value;
- }
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -87,17 +95,20 @@ MgByteProperty::~MgByteProperty() {}
 /// Value of property
 /// </param>
 /// </summary>
- void MgByteProperty::SetValue(BYTE value)
- {
+void MgByteProperty::SetValue(BYTE value)
+{
     CheckNull();
     m_value = value;
- }
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgByteProperty::Dispose() { delete this; }
+void MgByteProperty::Dispose()
+{
+    delete this;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -118,7 +129,6 @@ void MgByteProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += "</Value>";
 
     str += "</" + rootElmName + ">";
-
 }
 
 //////////////////////////////////////////////////////////////////
@@ -128,7 +138,6 @@ void MgByteProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgByteProperty::Serialize(MgStream* stream)
 {
     stream->WriteString(GetName());
@@ -142,7 +151,6 @@ void MgByteProperty::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgByteProperty::Deserialize(MgStream* stream)
 {
     STRING str;

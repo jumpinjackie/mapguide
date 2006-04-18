@@ -48,7 +48,6 @@ public:
     /// \return
     /// Actual number of bytes put in the buffer. 0 means end of bytes
     ///
-    ///
     virtual INT32 Read(BYTE_ARRAY_OUT buffer, INT32 length) = 0;
 
     ////////////////////////////////////////////////////////////////
