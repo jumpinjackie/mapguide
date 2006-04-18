@@ -201,6 +201,9 @@ class FeatureServiceHttpRequests
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"RESOURCEID\"");
             $arrayParam["RESOURCEID"]=$this->unitTestParamVm->GetString("ParamValue");
 
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"ACTIVEONLY\"");
+            $arrayParam["ACTIVEONLY"]=$this->unitTestParamVm->GetString("ParamValue");
+
             return $this->httpRequest->SendRequest($this->URL, $arrayParam);
         }
         catch (SqliteException $s)
