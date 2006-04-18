@@ -22,6 +22,7 @@
 #include "SimpleOverpost.h"
 
 class GDRenderer;
+struct RS_Font;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -99,7 +100,7 @@ private:
 
     bool ProcessLabelInternal(LR_LabelInfo& info, bool render, bool exclude, bool check);
 
-    void ApplyTextAlignment(RS_TextDef& tdef, double actual_height, RS_F_Point* extent, RS_F_Point& ins_point);
+    void ApplyTextAlignment(RS_TextDef& tdef, double actual_height, RS_F_Point* extent, RS_F_Point& ins_point, const RS_Font* font);
 
     bool DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclude, bool check);
     bool DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude, bool check);

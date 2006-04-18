@@ -47,7 +47,6 @@ libMgStylization_la_SOURCES = \
   LabelRendererLocal.cpp \
   SimpleOverpost.cpp \
   RS_ByteData.cpp \
-  RS_Font.cpp \
   FontManager.cpp
 
 

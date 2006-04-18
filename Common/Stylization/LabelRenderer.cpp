@@ -20,8 +20,10 @@
 #include "gd.h"
 #include "GDRenderer.h"
 #include "GDUtils.h"
+#include "RS_Font.h"
 
 #define M_PI 3.14159265358979323846
+#define ROUND(x) (int)((x) + 0.5)
 
 //#define DEBUG_LABELS
 
@@ -306,7 +308,7 @@ bool LabelRenderer::ProcessLabelInternal(LR_LabelInfo& info,
 
 //////////////////////////////////////////////////////////////////////////////
 //modifies the text extent (and insertion point) to take into account text alignment
-void LabelRenderer::ApplyTextAlignment(RS_TextDef& tdef, double actual_height, RS_F_Point* extent, RS_F_Point& ins_point)
+void LabelRenderer::ApplyTextAlignment(RS_TextDef& tdef, double actual_height, RS_F_Point* extent, RS_F_Point& ins_point, const RS_Font* font)
 {
     // adjustments for horizontal and vertical alignment
     double hAlignOffset = 0.0;
@@ -345,10 +347,10 @@ void LabelRenderer::ApplyTextAlignment(RS_TextDef& tdef, double actual_height, R
     // vertical alignment
     // ------------------
 
-    //double em_square_size = fm.m_em_square;
-    double font_cap_height = actual_height; //fm.m_cap_em_height * actual_height / em_square_size;
-    double font_ascent     = actual_height; //fm.m_ascent        * actual_height / em_square_size;
-    double font_descent    = 0; //fm.m_descent       * actual_height / em_square_size;
+    double em_square_size = font->m_units_per_EM;
+    double font_cap_height = font->m_height * actual_height / em_square_size;
+    double font_ascent     = font->m_ascender * actual_height / em_square_size;
+    double font_descent    = font->m_descender * actual_height / em_square_size;
 
     // get the height vector
     double dyh = 0.0;
@@ -486,7 +488,7 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
     // very sensitive to it.  Remove this roundoff by rounding the height to
     // the nearest 1/65536ths of a point.
     hgt *= 65536.0;
-    hgt = (int)(hgt + 0.5);
+    hgt = ROUND(hgt);
     hgt /= 65536.0;
 
     //radian CCW rotation
@@ -498,14 +500,14 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
 
     //font matching
     //TODO: not working right now
-    RS_String fontpath;
-    if (!m_renderer->FindFont(info.m_tdef.font(), fontpath))
+    const RS_Font* font = m_renderer->FindFont(info.m_tdef.font());
+    if (!font)
         return false;
 
     //get overall string size and char spacing
     RS_F_Point fpts[4];
     float* spacing = (float*)alloca(info.m_text.length() * 2 * sizeof(float));
-    m_renderer->MeasureString(info.m_text.c_str(), hgt, fontpath, 0.0, fpts, spacing);
+    m_renderer->MeasureString(info.m_text.c_str(), hgt, font, 0.0, fpts, spacing);
 
     //the width and height of this particular string
     //TODO: we can be more precise if we get height on per character basis
@@ -513,7 +515,7 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
     double textwid = fabs(fpts[1].x - fpts[0].x);
 
     //get overall extent and char spacing, including rotation
-    m_renderer->MeasureString(info.m_text.c_str(), hgt, fontpath, rotation, fpts, NULL);
+    m_renderer->MeasureString(info.m_text.c_str(), hgt, font, rotation, fpts, NULL);
 
     //transform insertion point into pixel space
     RS_F_Point ins_point(m_renderer->_TXD(info.m_x), m_renderer->_TYD(info.m_y));
@@ -526,7 +528,7 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
 
     //apply text alignment to bounding box
     //this will modify both the insertion point and the extent
-    ApplyTextAlignment(info.m_tdef, hgt, fpts, ins_point);
+    ApplyTextAlignment(info.m_tdef, hgt, fpts, ins_point, font);
 
 #ifdef DEBUG_LABELS
     // this debugging code draws a box around the label (using its bounds)
@@ -565,31 +567,62 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
         int posx = (int)floor(ins_point.x+0.5);
         int posy = (int)floor(ins_point.y+0.5);
 
+        //get descent from font metrics -- we will use this for underline
+        //and opaque bbox
+        //TODO: not sure if we should always draw the opaque bbox with the 
+        //descent or only when underline is present...
+        double descent = (double)font->m_descender * hgt / (double)font->m_units_per_EM;
+
         if (info.m_tdef.textbg() == RS_TextBackground_Ghosted)
         {
-            m_renderer->DrawString(info.m_text, posx-offset, posy, hgt, fontpath, info.m_tdef.bgcolor(), rotation);
-            m_renderer->DrawString(info.m_text, posx+offset, posy, hgt, fontpath, info.m_tdef.bgcolor(), rotation);
-            m_renderer->DrawString(info.m_text, posx, posy-offset, hgt, fontpath, info.m_tdef.bgcolor(), rotation);
-            m_renderer->DrawString(info.m_text, posx, posy+offset, hgt, fontpath, info.m_tdef.bgcolor(), rotation);
+            m_renderer->DrawString(info.m_text, posx-offset, posy, hgt, font, info.m_tdef.bgcolor(), rotation);
+            m_renderer->DrawString(info.m_text, posx+offset, posy, hgt, font, info.m_tdef.bgcolor(), rotation);
+            m_renderer->DrawString(info.m_text, posx, posy-offset, hgt, font, info.m_tdef.bgcolor(), rotation);
+            m_renderer->DrawString(info.m_text, posx, posy+offset, hgt, font, info.m_tdef.bgcolor(), rotation);
         }
         else if (info.m_tdef.textbg() == RS_TextBackground_Opaque)
         {
             //set up rotated bounds
             RS_F_Point b[4];
 
-            RotatedBounds(ins_point.x, ins_point.y, textwid, texthgt, rotation, b);
+            RotatedBounds(ins_point.x, ins_point.y + descent, textwid, texthgt + descent, rotation, b);
 
             RS_D_Point dpts[4];
             for (int j=0; j<4; j++)
             {
-                dpts[j].x = (int)b[j].x;
-                dpts[j].y = (int)b[j].y;
+                dpts[j].x = ROUND(b[j].x);
+                dpts[j].y = ROUND(b[j].y);
             }
 
             gdImageFilledPolygon((gdImagePtr)m_renderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.bgcolor()));
         }
 
-        m_renderer->DrawString(info.m_text, posx, posy, hgt, fontpath, info.m_tdef.color(), rotation);
+        m_renderer->DrawString(info.m_text, posx, posy, hgt, font, info.m_tdef.color(), rotation);
+
+        //render underline
+        if (info.m_tdef.font().style() & RS_FontStyle_Underline)
+        {
+            //estimate underline line width as % of font height
+            double line_width = (double)font->m_underline_thickness * hgt / (double)font->m_units_per_EM;
+            double line_pos = - (double)font->m_underline_position * hgt / (double)font->m_units_per_EM;
+
+            //set up a rotated thin rectangle representing the 
+            //underline
+            RS_F_Point b[4];
+
+            RotatedBounds(ins_point.x, ins_point.y + line_pos, textwid, 0, rotation, b);
+
+            RS_D_Point dpts[4];
+            for (int j=0; j<4; j++)
+            {
+                dpts[j].x = ROUND(b[j].x);
+                dpts[j].y = ROUND(b[j].y);
+            }
+
+            gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), ROUND(line_width));
+            gdImageLine((gdImagePtr)m_renderer->GetImage(), dpts[0].x, dpts[0].y, dpts[1].x, dpts[1].y, ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.color()));
+            gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), 0);
+        }
     }
 
     return true;
@@ -607,7 +640,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
     // very sensitive to it.  Remove this roundoff by rounding the height to
     // the nearest 1/65536ths of a point.
     hgt *= 65536.0;
-    hgt = (int)(hgt + 0.5);
+    hgt = ROUND(hgt);
     hgt /= 65536.0;
 
     //-------------------------------------------------------
@@ -615,14 +648,14 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
     //-------------------------------------------------------
 
     //font matching
-    RS_String fontpath;
-    if (!m_renderer->FindFont(info.m_tdef.font(), fontpath))
+    const RS_Font* font = m_renderer->FindFont(info.m_tdef.font());
+    if (!font)
         return false;
 
     //get overall extent and char spacing
     RS_F_Point fpts[4];
     float* spacing = (float*)alloca(info.m_text.length() * 2 * sizeof(float));
-    m_renderer->MeasureString(info.m_text.c_str(), hgt, fontpath, 0.0, fpts, spacing);
+    m_renderer->MeasureString(info.m_text.c_str(), hgt, font, 0.0, fpts, spacing);
 
     //the width and height of this particular string
     //TODO: we can be more precise if we get height on per character basis
@@ -723,7 +756,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
             //it takes kerning into account, but should be good enough
             //we could measure each character separately but that seems like
             //too many calls to FreeType
-            double advance = (i == numchars-1)? textwid * font_scale - total_advance : spacing[i] * font_scale;
+            double advance = (i == numchars-1)? textwid - total_advance : spacing[i] * font_scale;
             total_advance += advance;
 
             //compute rotated bounds of character
@@ -789,18 +822,76 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
                 c[0] = info.m_text[i];
 
                 //compute screen position and round
-                int posx = (int)(pos[i].x+0.5);
-                int posy = (int)(pos[i].y+0.5);
+                int posx = ROUND(pos[i].x);
+                int posy = ROUND(pos[i].y);
 
                 if (info.m_tdef.textbg() == RS_TextBackground_Ghosted)
                 {
-                    m_renderer->DrawString(c, posx-offset, posy, hgt, fontpath, info.m_tdef.bgcolor(), pos[i].anglerad);
-                    m_renderer->DrawString(c, posx+offset, posy, hgt, fontpath, info.m_tdef.bgcolor(), pos[i].anglerad);
-                    m_renderer->DrawString(c, posx, posy-offset, hgt, fontpath, info.m_tdef.bgcolor(), pos[i].anglerad);
-                    m_renderer->DrawString(c, posx, posy+offset, hgt, fontpath, info.m_tdef.bgcolor(), pos[i].anglerad);
+                    m_renderer->DrawString(c, posx-offset, posy, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
+                    m_renderer->DrawString(c, posx+offset, posy, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
+                    m_renderer->DrawString(c, posx, posy-offset, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
+                    m_renderer->DrawString(c, posx, posy+offset, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
                 }
 
-                m_renderer->DrawString(c, posx, posy, hgt, fontpath, info.m_tdef.color(), pos[i].anglerad);
+                m_renderer->DrawString(c, posx, posy, hgt, font, info.m_tdef.color(), pos[i].anglerad);
+            }
+
+            //render underline
+            if (info.m_tdef.font().style() & RS_FontStyle_Underline)
+            {
+                //estimate underline line width as % of font height
+                double line_width = (double)font->m_underline_thickness * hgt / (double)font->m_units_per_EM;
+                //underline position w.r.t. baseline. Invert y while at it
+                double line_pos = - (double)font->m_underline_position * hgt / (double)font->m_units_per_EM;
+
+                //zero it out again, we will need the accumulator for
+                //underline purposes
+                total_advance = 0.0;
+
+                //used to keep track of last position of the underline, which is 
+                //drawn piecewise for each character
+                int last_x = ROUND(pos[0].x + sin(pos[0].anglerad) * line_pos);
+                int last_y = ROUND(pos[0].y + cos(pos[0].anglerad) * line_pos);
+                int sx, sy, ex, ey;
+
+                //draw the characters, each in its computed position
+                for (size_t i=0; i<numchars; i++)
+                {
+                    //width of character - not really exact width since
+                    //it takes kerning into account, but should be good enough
+                    //we could measure each character separately but that seems like
+                    //too many calls to FreeType
+                    double advance = (i == numchars-1)? textwid - total_advance : spacing[i] * font_scale;
+                    total_advance += advance;
+
+                    sx = last_x;
+                    sy = last_y;
+
+                    if (i == numchars - 1)
+                    {
+                        //estimate bottom right corner of last character
+                        double eex = pos[i].x + cos(pos[i].anglerad) * advance;
+                        double eey = pos[i].y - sin(pos[i].anglerad) * advance;
+
+                        //now take into account underline offset
+                        ex = ROUND(eex + sin(pos[i].anglerad) * line_pos);
+                        ey = ROUND(eey + cos(pos[i].anglerad) * line_pos);
+                    }
+                    else
+                    {
+                        //move position by underline offset
+                        ex = ROUND(pos[i+1].x + sin(pos[i+1].anglerad) * line_pos);
+                        ey = ROUND(pos[i+1].y + cos(pos[i+1].anglerad) * line_pos);
+                    }
+
+                    gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), (int)(line_width+0.5));
+                    gdImageSetAntiAliased((gdImagePtr)m_renderer->GetImage(), ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.color()));
+                    gdImageLine((gdImagePtr)m_renderer->GetImage(), sx, sy, ex, ey, gdAntiAliased);
+                    gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), 0);
+
+                    last_x = ex;
+                    last_y = ey;
+                }
             }
         }
 

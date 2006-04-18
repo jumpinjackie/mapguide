@@ -573,6 +573,7 @@ void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allow
 {
     RS_MarkerDef use_mdef = mdef;
 
+
     //use the selection style to draw
     if (m_bSelectionMode)
            use_mdef = RS_MarkerDef( mdef.width(),
@@ -1420,7 +1421,7 @@ void GDRenderer::DrawString( const RS_String& s,
                                 int              x,
                                 int              y,
                                 double           height,
-                                const RS_String& font,
+                                const RS_Font*   font,
                                 const RS_Color&  color,
                                 double           angle)
 {
@@ -1432,11 +1433,11 @@ void GDRenderer::DrawString( const RS_String& s,
     DWFCore::DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
 
     //convert font path to utf8 also
-    size_t lenf = font.length();
+    size_t lenf = font->m_filename.length();
     size_t lenbytesf = lenf * 4 + 1;
     char* futf8 = (char*)alloca(lenbytesf);
 
-    DWFCore::DWFString::EncodeUTF8(font.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
+    DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
 
     //draw the string
     int gdc = ConvertColor((gdImagePtr)m_imout, (RS_Color&)color);
@@ -1451,7 +1452,7 @@ void GDRenderer::DrawString( const RS_String& s,
 //////////////////////////////////////////////////////////////////////////////
 void GDRenderer::MeasureString(const RS_String&  s,
                                   double            height,
-                                  const RS_String&  font,
+                                  const RS_Font*    font,
                                   double            angle,
                                   RS_F_Point*       res, //assumes 4 points in this array
                                   float*            offsets) //assumes length equals 2 * length of string
@@ -1464,11 +1465,11 @@ void GDRenderer::MeasureString(const RS_String&  s,
     DWFCore::DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
 
     //convert font path to utf8 also
-    size_t lenf = font.length();
+    size_t lenf = font->m_filename.length();
     size_t lenbytesf = lenf * 4 + 1;
     char* futf8 = (char*)alloca(lenbytesf);
 
-    DWFCore::DWFString::EncodeUTF8(font.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
+    DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
 
     int extent[8];
     gdFTStringExtra extra;
@@ -1499,27 +1500,11 @@ void GDRenderer::MeasureString(const RS_String&  s,
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool GDRenderer::FindFont(RS_FontDef& def, RS_String& fontName)
+const RS_Font* GDRenderer::FindFont(RS_FontDef& def)
 {
-    RS_String& nm = def.name();
-
-    //check if font name looks like an absolute path to a file.
-    //In that case do not do matching, just return the string
-    if ((nm.find(L'/') != wstring::npos) || (nm.find(L'\\') != wstring::npos))
-    {
-        fontName = nm;
-        return true;
-    }
-
-    const wchar_t* name = FontManager::Instance()->FindFont(nm.c_str(),
-                                      (def.style() & RS_FontStyle_Bold) != 0,
-                                      (def.style() & RS_FontStyle_Italic) != 0,
-                                      (def.style() & RS_FontStyle_Underline) != 0);
-    if (name == NULL)
-        return false;
-
-    fontName = name;
-    return true;
+    return FontManager::Instance()->FindFont(def.name().c_str(),
+                          (def.style() & RS_FontStyle_Bold) != 0,
+                          (def.style() & RS_FontStyle_Italic) != 0);
 }
 
 
