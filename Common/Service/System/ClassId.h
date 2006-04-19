@@ -192,6 +192,7 @@
 #define Common_Exception_MgCoordinateSystemInitializationFailedException    COREDATA_EXCEPTION_ID+129
 #define Common_Exception_MgEvaluationExpiredException                       COREDATA_EXCEPTION_ID+130
 #define Common_Exception_MgInvalidSerialNumberException                     COREDATA_EXCEPTION_ID+131
+#define Common_Exception_MgResourceBusyException                            COREDATA_EXCEPTION_ID+132
 
 // CoreData Property
 #define CoreData_Property_BlobProperty                    COREDATA_PROPERTY_ID+0

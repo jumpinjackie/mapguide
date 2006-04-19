@@ -959,7 +959,7 @@ void MgRepositoryManager::UpdateResource(MgResourceIdentifier* resource,
 /// \brief
 /// Deletes all the resource data referenced in the specified resource tags.
 ///
-void MgRepositoryManager::DeleteResourceData(CREFSTRING resourceTags)
+void MgRepositoryManager::DeleteResourceData(CREFSTRING resourceTags, MgResourceIdentifier* resource)
 {
     throw new MgNotImplementedException(
         L"MgRepositoryManager.DeleteResourceData", 

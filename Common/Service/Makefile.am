@@ -167,6 +167,7 @@ include_SOURCES = \
   Exception/RepositoryNotFoundException.cpp \
   Exception/RepositoryNotOpenException.cpp \
   Exception/RepositoryOpenFailedException.cpp \
+  Exception/ResourceBusyException.cpp \
   Exception/ResourceDataNotFoundException.cpp \
   Exception/ResourceNotFoundException.cpp \
   Exception/ResourcesException.cpp \
@@ -554,6 +555,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/RepositoryNotFoundException.h \
   Exception/RepositoryNotOpenException.h \
   Exception/RepositoryOpenFailedException.h \
+  Exception/ResourceBusyException.h \
   Exception/ResourceDataNotFoundException.h \
   Exception/ResourceNotFoundException.h \
   Exception/ResourcesException.h \

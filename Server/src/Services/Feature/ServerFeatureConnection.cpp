@@ -66,6 +66,10 @@ MgServerFeatureConnection::~MgServerFeatureConnection()
     }
 }
 
+void MgServerFeatureConnection::Dispose(void)
+{
+    delete this;
+}
 
 void MgServerFeatureConnection::Initialize()
 {

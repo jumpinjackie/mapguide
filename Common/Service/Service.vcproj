@@ -3800,6 +3800,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Exception\ResourceBusyException.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Exception\ResourceBusyException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception\ResourceDataNotFoundException.cpp"
 				>
 				<FileConfiguration

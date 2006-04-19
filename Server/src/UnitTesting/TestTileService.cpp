@@ -19,6 +19,7 @@
 #include "TestTileService.h"
 #include "../UnitTesting/CppUnitExtensions.h"
 #include "ServiceManager.h"
+#include "../Common/Manager/FdoConnectionManager.h"
 
 #define PATH_LEN 512
 
@@ -65,6 +66,14 @@ void TestTileService::TestStart()
 
     try
     {
+        #ifdef _DEBUG
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        #endif
+
         // set user info
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
         userInfo->SetLocale(TEST_LOCALE);
@@ -180,6 +189,14 @@ void TestTileService::TestEnd()
 
         // remove temporary directory for tile images
         MgFileUtil::DeleteDirectory(L"./temp_tiles", true, false);
+
+        #ifdef _DEBUG
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        #endif
     }
     catch (MgException* e)
     {

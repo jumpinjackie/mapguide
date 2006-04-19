@@ -63,7 +63,7 @@ public:
 
 protected:
 
-    virtual void DeleteResourceData(XmlDocument& xmlDoc);
+    virtual void DeleteResourceData(MgResourceIdentifier* resource, XmlDocument& xmlDoc);
 
 /// Data Members
 

@@ -375,7 +375,7 @@ void MgApplicationResourceContentManager::SetResourceTags(
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgApplicationResourceContentManager::DeleteResourceData(XmlDocument& xmlDoc)
+void MgApplicationResourceContentManager::DeleteResourceData(MgResourceIdentifier* resource, XmlDocument& xmlDoc)
 {
     MG_RESOURCE_SERVICE_TRY()
 
@@ -389,7 +389,7 @@ void MgApplicationResourceContentManager::DeleteResourceData(XmlDocument& xmlDoc
         STRING resourceTags;
         MgUtil::MultiByteToWideChar(tagValue.asString(), resourceTags);
 
-        m_repositoryMan.DeleteResourceData(resourceTags);
+        m_repositoryMan.DeleteResourceData(resourceTags, resource);
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationResourceContentManager.DeleteResourceData")

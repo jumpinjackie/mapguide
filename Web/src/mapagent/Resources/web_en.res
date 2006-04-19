@@ -123,6 +123,7 @@ MgRepositoryCreationFailedException                   = Cannot create repository
 MgRepositoryNotFoundException                         = Repository was not found: %1
 MgRepositoryNotOpenException                          = Repository is not open: %1
 MgRepositoryOpenFailedException                       = Cannot open repository: %1
+MgResourceBusyException                               = Please try your operation later as the resource was busy: %1
 MgResourceDataNotFoundException                       = Resource data was not found: %1
 MgResourceNotFoundException                           = Resource was not found: %1
 MgResourcesException                                  = Resources exception: %1 %2

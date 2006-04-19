@@ -74,7 +74,7 @@ protected:
     virtual void DeleteDocument(MgResourceIdentifier& resource,
         XmlDocument& xmlDoc, XmlUpdateContext& updateContext);
 
-    virtual void DeleteResourceData(XmlDocument& xmlDoc) {};
+    virtual void DeleteResourceData(MgResourceIdentifier* resource, XmlDocument& xmlDoc) {};
 
 /// Data Members
 

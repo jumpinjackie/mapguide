@@ -6,6 +6,7 @@ prefix=@prefix@/server
 
 INCLUDES = \
   -I../../../../Oem/ACE/ACE_wrappers \
+  -I$(map_fdo_include) \
   -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
   -I../../../../Oem/dbxml-2.2.13/install/include \
   -I../../../../Oem/dbxml-2.2.13/dbxml/include \
@@ -20,6 +21,7 @@ INCLUDES = \
   -I../../Common/Base \
   -I../../Common/Manager \
   -I../../Common/ServerUtil \
+  -I../Feature \
   -I../Site
 
 CXXFLAGS = @CXXFLAGS@ -DDWFTK_USE_DWFCORE_ZLIB

@@ -21,6 +21,7 @@
 #include "TestResourceService.h"
 #include "CppUnitExtensions.h"
 #include "SecurityCache.h"
+#include "../Common/Manager/FdoConnectionManager.h"
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestResourceService, "TestResourceService");
 
@@ -67,6 +68,27 @@ void TestResourceService::tearDown()
 void TestResourceService::TestStart()
 {
     ACE_DEBUG((LM_INFO, ACE_TEXT("\nRunning Resource Service tests.\n")));
+
+    try
+    {
+        #ifdef _DEBUG
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        #endif
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 void TestResourceService::TestEnd()
@@ -93,6 +115,14 @@ void TestResourceService::TestEnd()
         // delete the drawing source definition
         Ptr<MgResourceIdentifier> mapres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/Shuttle.DrawingSource");
         pService->DeleteResource(mapres1);
+
+        #ifdef _DEBUG
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        #endif
     }
     catch (MgException* e)
     {

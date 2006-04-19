@@ -32,7 +32,7 @@ protected:
     ~MgServerDeleteCommand();
 private:
     Ptr<MgDeleteFeatures> m_featCommand;
-    MgServerFeatureConnection* m_srvrFeatConn;
+    Ptr<MgServerFeatureConnection> m_srvrFeatConn;
     INT32 m_cmdId;
 };
 

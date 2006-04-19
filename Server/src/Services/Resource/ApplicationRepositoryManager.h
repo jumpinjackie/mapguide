@@ -88,7 +88,7 @@ public:
 
     // Helper Methods
 
-    void DeleteResourceData(CREFSTRING resourceTags);
+    void DeleteResourceData(CREFSTRING resourceTags, MgResourceIdentifier* resource);
     void CopyResourceData(CREFSTRING sourceResourceTags,
         REFSTRING destResourceTags, bool overwrite);
 

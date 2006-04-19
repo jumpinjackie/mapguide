@@ -53,7 +53,7 @@ public:
 
     virtual void Dispose() { delete this; }
 private:
-    FdoIConnection* m_fdoConn;
+    Ptr<MgServerFeatureConnection> m_connection;
     STRING m_providerName;
     FdoISelectAggregates* m_command;
 
