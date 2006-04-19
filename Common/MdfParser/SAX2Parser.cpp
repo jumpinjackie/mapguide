@@ -180,11 +180,6 @@ void SAX2Parser::ParseFile(std::string str)
     ifs >> s;
     ifs.close();
 
-    std::ofstream fd;
-
-    fd.open("message.log"); // NOXLATE
-    fd << "Log opened : " << str.c_str() << std::endl; // NOXLATE
-
     //Need a better test, probably one for the version, but for our current purposes, this one will sufice.
     if (s != std::string("<?xml")) // NOXLATE
     {
@@ -202,17 +197,11 @@ void SAX2Parser::ParseFile(std::string str)
             m_succeeded = false;
         }
     }
-    fd.close();
 }
 
 
 void SAX2Parser::ParseFile(char* str)
 {
-    std::ofstream fd;
-
-    fd.open("message.log"); // NOXLATE
-    fd << "Log opened : " << str << std::endl; // NOXLATE
-
     try
     {
         m_Parser->parse(str);
@@ -223,7 +212,6 @@ void SAX2Parser::ParseFile(char* str)
         m_succeeded = false;
     }
 
-    fd.close();
 }
 
 
