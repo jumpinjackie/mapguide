@@ -1,12 +1,6 @@
 /*
     Pulldown styles
 */
-span.PopupMetrics
-{
-    font-family: tahoma, helvetica, sans-serif;
-    font-size: 8pt;
-    font-weight: normal;
-}
 div.PopupMetricsDiv
 {
     position: absolute;

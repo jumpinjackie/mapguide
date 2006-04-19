@@ -432,15 +432,14 @@ function showPopup(menuObj, optimizeWidth, x, y)
     }
     
     //calculate menu width and x position
-    var menuWidth = menuObj.minSize;
+    var mw = menuObj.minSize;
     if(optimizeWidth)
     {
-        var lenMax = getMaxOptionLen(menuObj) + 30;
-        if(lenMax > menuWidth)
-            menuWidth = lenMax;
+        var lenMax = getMaxOptionLen(menuObj) + 35;
+        if(lenMax > mw)
+            mw = lenMax;
     }
     
-    var mw = w > menuWidth? menuWidth: w - 10;
     menuObj.width = mw;
     var xPos;
 
