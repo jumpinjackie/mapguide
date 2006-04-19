@@ -32,7 +32,7 @@ protected:
     ~MgServerUpdateCommand();
 private:
     Ptr<MgUpdateFeatures> m_featCommand;
-    MgServerFeatureConnection* m_srvrFeatConn;
+    Ptr<MgServerFeatureConnection> m_srvrFeatConn;
     INT32 m_cmdId;
 };
 

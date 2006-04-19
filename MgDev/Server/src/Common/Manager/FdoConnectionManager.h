@@ -73,6 +73,11 @@ public:
     MgSpatialContextInfoMap* GetSpatialContextInfo(MgResourceIdentifier* resourceIdentifier);
 
     void RemoveExpiredConnections();
+    bool RemoveCachedFdoConnection(CREFSTRING key);
+
+#ifdef _DEBUG
+    void ShowCache(void);
+#endif
 
 private:
     // Constructor
@@ -81,6 +86,8 @@ private:
     FdoIConnection* FindFdoConnection(MgResourceIdentifier* resourceIdentifier);
     FdoIConnection* FindFdoConnection(CREFSTRING providerName, CREFSTRING connectionString);
     FdoIConnection* SearchFdoConnectionCache(CREFSTRING key, CREFSTRING data);
+    void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, CREFSTRING data);
+    bool FdoConnectionCacheFull(void);
 
     void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
     void GetConnectionPropertiesFromXml(MgXmlUtil* pXmlUtil, STRING& providerName, STRING& configDocumentName, STRING& longTransactionName);

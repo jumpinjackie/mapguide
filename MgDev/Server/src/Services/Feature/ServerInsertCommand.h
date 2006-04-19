@@ -43,7 +43,7 @@ protected:
 
 private:
     Ptr<MgInsertFeatures> m_featCommand;
-    MgServerFeatureConnection* m_srvrFeatConn;
+    Ptr<MgServerFeatureConnection> m_srvrFeatConn;
     INT32 m_cmdId;
 };
 

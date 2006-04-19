@@ -123,6 +123,7 @@
 #include "RepositoryNotFoundException.cpp"
 #include "RepositoryNotOpenException.cpp"
 #include "RepositoryOpenFailedException.cpp"
+#include "ResourceBusyException.cpp"
 #include "ResourceDataNotFoundException.cpp"
 #include "ResourceNotFoundException.cpp"
 #include "ResourcesException.cpp"

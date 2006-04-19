@@ -670,7 +670,7 @@ void MgResourceContentManager::DeleteDocument(MgResourceIdentifier& resource,
 
     // Delete the resource data.
 
-    DeleteResourceData(xmlDoc);
+    DeleteResourceData(&resource, xmlDoc);
 
     // Delete the resource.
 

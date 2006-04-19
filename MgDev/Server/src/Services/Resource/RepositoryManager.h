@@ -97,7 +97,7 @@ public:
 
     // Resource Data Management APIs
 
-    virtual void DeleteResourceData(CREFSTRING resourceTags);
+    virtual void DeleteResourceData(CREFSTRING resourceTags, MgResourceIdentifier* resource);
     virtual void CopyResourceData(CREFSTRING sourceResourceTags,
         REFSTRING destResourceTags, bool overwrite);
 

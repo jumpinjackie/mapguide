@@ -28,10 +28,8 @@
 
 //////////////////////////////////////////////////////////////////
 MgServerDescribeSchema::MgServerDescribeSchema() :
-    m_fdoConn(NULL),
-    m_ffsc(NULL),
-    m_fdoConn2(NULL),
-    m_ffsc2(NULL)
+    m_connection(NULL),
+    m_ffsc(NULL)
 {
 }
 
@@ -39,10 +37,6 @@ MgServerDescribeSchema::MgServerDescribeSchema() :
 //////////////////////////////////////////////////////////////////
 MgServerDescribeSchema::~MgServerDescribeSchema()
 {
-    GIS_SAFE_RELEASE(m_fdoConn);
-    GIS_SAFE_RELEASE(m_ffsc);
-    GIS_SAFE_RELEASE(m_fdoConn2);
-    GIS_SAFE_RELEASE(m_ffsc2);
 }
 
 
@@ -52,11 +46,10 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
     MG_FEATURE_SERVICE_TRY()
 
     // Connect to provider
-    MgServerFeatureConnection msfc(resource);
-    if ( msfc.IsConnectionOpen() )
+    m_connection = new MgServerFeatureConnection(resource);
+    if ( m_connection->IsConnectionOpen() )
     {
-        m_fdoConn = msfc.GetConnection();
-        m_providerName = msfc.GetProviderName();
+        m_providerName = m_connection->GetProviderName();
     }
     else
     {
@@ -64,7 +57,8 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
     }
 
     // TODO: Check whether this command is supported by the provider
-    GisPtr<FdoIDescribeSchema> fdoCommand = (FdoIDescribeSchema*)m_fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
+    GisPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
+    GisPtr<FdoIDescribeSchema> fdoCommand = (FdoIDescribeSchema*)fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
     CHECKNULL((FdoIDescribeSchema*)fdoCommand, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
     if (!schemaName.empty())
@@ -139,11 +133,13 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
 
             if (NULL != secondaryFeatureSource)
             {
-                MgServerFeatureConnection msfc2(secondaryFeatureSource);
-                if ( msfc2.IsConnectionOpen() )
+                GisPtr<FdoFeatureSchemaCollection> ffsc2;
+                STRING providerName2;
+
+                Ptr<MgServerFeatureConnection> connection2 = new MgServerFeatureConnection(secondaryFeatureSource);
+                if ( connection2->IsConnectionOpen() )
                 {
-                    m_fdoConn2 = msfc2.GetConnection();
-                    m_providerName2 = msfc2.GetProviderName();
+                    providerName2 = connection2->GetProviderName();
                 }
                 else
                 {
@@ -151,18 +147,19 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
                 }
 
                 // Check whether this command is supported by the provider
-                GisPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)m_fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
+                GisPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
+                GisPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
                 CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.ExecuteDescribeSchema");
 
                 // Execute the command
-                m_ffsc2 = fdoCommand2->Execute();
+                ffsc2 = fdoCommand2->Execute();
 
                 // Extract the schemas from the secondary collection and add them to the main collection
                 // Get schema count
-                GisInt32 cnt = m_ffsc2->GetCount();
+                GisInt32 cnt = ffsc2->GetCount();
                 for (GisInt32 i = 0; i < cnt; i++)
                 {
-                    GisPtr<FdoFeatureSchema> ffs = m_ffsc2->GetItem(i);
+                    GisPtr<FdoFeatureSchema> ffs = ffsc2->GetItem(i);
                     STRING fdoSchemaName = (wchar_t*)ffs->GetName();
 
                     if (fdoSchemaName != secSchemaName)
@@ -185,10 +182,6 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
                         m_ffsc->Add(ffs);
                     }
                 }
-
-                // Release the secondary connection and secondary schema collection
-                GIS_SAFE_RELEASE(m_fdoConn2);
-                GIS_SAFE_RELEASE(m_ffsc2);
             }
 
         }  // End of for-loop that iterates thru the secondary sources
@@ -395,11 +388,13 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                 Ptr<MgResourceIdentifier> secondaryFeatureSource = new MgResourceIdentifier(secondaryResourceId);
                 if (NULL != secondaryFeatureSource)
                 {
-                    MgServerFeatureConnection msfc2(secondaryFeatureSource);
-                    if ( msfc2.IsConnectionOpen() )
+                    GisPtr<FdoFeatureSchemaCollection> ffsc2;
+                    STRING providerName2;
+
+                    Ptr<MgServerFeatureConnection> connection2 = new MgServerFeatureConnection(secondaryFeatureSource);
+                    if ( connection2->IsConnectionOpen() )
                     {
-                        m_fdoConn2 = msfc2.GetConnection();
-                        m_providerName2 = msfc2.GetProviderName();
+                        providerName2 = connection2->GetProviderName();
                     }
                     else
                     {
@@ -407,17 +402,18 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                     }
 
                     // Get the schema collection for the secondary resource
-                    GisPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)m_fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
+                    GisPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
+                    GisPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
                     CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.DescribeSchema");
-                    m_ffsc2 = fdoCommand2->Execute();
+                    ffsc2 = fdoCommand2->Execute();
 
-                    int nSecSchemaCnt = (int)m_ffsc2->GetCount();
+                    int nSecSchemaCnt = (int)ffsc2->GetCount();
 
                     // cycle thru FdoFeatureSchemaCollection for secSchemaName
                     for (int nSecSchemaIndex = 0; nSecSchemaIndex < nSecSchemaCnt; nSecSchemaIndex++)
                     {
                         // retrieve the schema
-                        GisPtr<FdoFeatureSchema> ffs = m_ffsc2->GetItem(nSecSchemaIndex);
+                        GisPtr<FdoFeatureSchema> ffs = ffsc2->GetItem(nSecSchemaIndex);
                         STRING fdoSchemaName = (wchar_t*)ffs->GetName();
 
                         if (fdoSchemaName != secSchemaName)

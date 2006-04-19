@@ -18,6 +18,7 @@
 #include "ResourceServiceDefs.h"
 #include "ApplicationRepositoryManager.h"
 #include "ApplicationResourceContentManager.h"
+#include "FdoConnectionManager.h"
 #include "ResourceHeaderManager.h"
 #include "ResourceDataStreamManager.h"
 #include "ResourceDataFileManager.h"
@@ -909,15 +910,38 @@ void MgApplicationRepositoryManager::DeleteResourceData(
 
     if (MgResourceDataType::File == dataType)
     {
-        MgTagInfo filePathTag;
-        tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag);
+        // Need to check the FDO connection manager to see if there is a cached
+        // connection to this data and remove it if possible.
+        // If there is and it is not in use then we can remove it from the cache
+        // and allow the delete.
+        MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        ACE_ASSERT(NULL != fdoConnectionManager);
 
-        STRING pathname = m_dataFileMan->GetResourceDataFilePath();
-        pathname += filePathTag.GetAttribute(MgTagInfo::TokenValue);
-        pathname += L"/";
-        pathname += dataName;
+        if (NULL != fdoConnectionManager)
+        {
+            if(fdoConnectionManager->RemoveCachedFdoConnection(resource->ToString()))
+            {
+                MgTagInfo filePathTag;
+                tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag);
 
-        m_dataFileMan->DeleteResourceData(pathname);
+                STRING pathname = m_dataFileMan->GetResourceDataFilePath();
+                pathname += filePathTag.GetAttribute(MgTagInfo::TokenValue);
+                pathname += L"/";
+                pathname += dataName;
+
+                m_dataFileMan->DeleteResourceData(pathname);
+            }
+            else
+            {
+                // Could not remove the cached FDO connection because it is in use.
+                MgStringCollection arguments;
+                arguments.Add(resource->ToString());
+
+                throw new MgResourceBusyException(
+                    L"MgApplicationRepositoryManager.DeleteResourceData",
+                    __LINE__, __WFILE__, &arguments, L"", NULL);
+            }
+        }
     }
     else if (MgResourceDataType::Stream == dataType)
     {
@@ -1188,8 +1212,11 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceData(
 ///----------------------------------------------------------------------------
 
 void MgApplicationRepositoryManager::DeleteResourceData(
-    CREFSTRING resourceTags)
+    CREFSTRING resourceTags,
+    MgResourceIdentifier* resource)
 {
+    assert(NULL != resource);
+
     MG_RESOURCE_SERVICE_TRY()
 
     // Do nothing if there is no resource tag.
@@ -1221,11 +1248,33 @@ void MgApplicationRepositoryManager::DeleteResourceData(
 
         if (MgResourceDataType::File == dataType)
         {
-            assert(!filePath.empty());
-            STRING pathname = filePath;
-            pathname += dataName;
+            // Need to check the FDO connection manager to see if there is a cached
+            // connection to this data and remove it if possible.
+            // If there is and it is not in use then we can remove it from the cache
+            // and allow the delete.
+            MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+            ACE_ASSERT(NULL != fdoConnectionManager);
 
-            m_dataFileMan->DeleteResourceData(pathname);
+            if (NULL != fdoConnectionManager)
+            {
+                if(fdoConnectionManager->RemoveCachedFdoConnection(resource->ToString()))
+                {
+                    assert(!filePath.empty());
+                    STRING pathname = filePath;
+                    pathname += dataName;
+
+                    m_dataFileMan->DeleteResourceData(pathname);
+                }
+                else
+                {
+                    MgStringCollection arguments;
+                    arguments.Add(resource->ToString());
+
+                    throw new MgResourceBusyException(
+                        L"MgApplicationRepositoryManager.DeleteResourceData",
+                        __LINE__, __WFILE__, &arguments, L"", NULL);
+                }
+            }
         }
         else if (MgResourceDataType::Stream == dataType)
         {

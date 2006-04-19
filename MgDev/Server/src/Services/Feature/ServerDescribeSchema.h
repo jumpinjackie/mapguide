@@ -63,13 +63,8 @@ private:
     void ValidateFeatureSource(string& featureSourceXmlContent);
 
     STRING                  m_providerName;
-    FdoIConnection*         m_fdoConn;
-    FdoFeatureSchemaCollection* m_ffsc;
-
-    // Members for secondary feature source schemas
-    STRING                  m_providerName2;
-    FdoIConnection*         m_fdoConn2;
-    FdoFeatureSchemaCollection* m_ffsc2;
+    Ptr<MgServerFeatureConnection> m_connection;
+    GisPtr<FdoFeatureSchemaCollection> m_ffsc;
 };
 
 #endif

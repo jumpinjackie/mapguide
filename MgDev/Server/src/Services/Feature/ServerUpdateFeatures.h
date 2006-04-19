@@ -41,7 +41,7 @@ private:
 
 private:
 
-    MgServerFeatureConnection* m_SrvrFeatConn;
+    Ptr<MgServerFeatureConnection> m_SrvrFeatConn;
     STRING m_providerName;
 };
 

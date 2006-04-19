@@ -190,6 +190,7 @@ class ACE_SOCK_Stream;
 #include "Exception/RepositoryNotFoundException.h"
 #include "Exception/RepositoryNotOpenException.h"
 #include "Exception/RepositoryOpenFailedException.h"
+#include "Exception/ResourceBusyException.h"
 #include "Exception/ResourceDataNotFoundException.h"
 #include "Exception/ResourceNotFoundException.h"
 #include "Exception/ResourcesException.h"

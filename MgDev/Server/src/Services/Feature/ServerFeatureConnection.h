@@ -22,13 +22,15 @@
 #include "Fdo.h"
 #include "FdoConnectionManager.h"
 
-class MgServerFeatureConnection
+class MgServerFeatureConnection : public MgGuardDisposable
 {
 public:
 
     MgServerFeatureConnection(MgResourceIdentifier* featureSourceIdentifier);
     MgServerFeatureConnection(CREFSTRING providerName, CREFSTRING connectionString);
-    ~MgServerFeatureConnection();
+    virtual ~MgServerFeatureConnection();
+
+    virtual void Dispose();
 
     FdoIConnection* GetConnection();
     STRING GetProviderName();

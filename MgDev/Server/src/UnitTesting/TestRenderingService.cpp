@@ -18,6 +18,7 @@
 #include "AceCommon.h"
 #include "TestRenderingService.h"
 #include "ServiceManager.h"
+#include "../Common/Manager/FdoConnectionManager.h"
 
 const STRING TEST_LOCALE = L"en";
 
@@ -59,6 +60,14 @@ void TestRenderingService::TestStart()
 
     try
     {
+        #ifdef _DEBUG
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        #endif
+
         // set user info
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
         userInfo->SetLocale(TEST_LOCALE);
@@ -191,6 +200,14 @@ void TestRenderingService::TestEnd()
         // delete the symbol library
         Ptr<MgResourceIdentifier> slres1 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/SymbolMart.SymbolLibrary");
         m_svcResource->DeleteResource(slres1);
+
+        #ifdef _DEBUG
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        #endif
     }
     catch (MgException* e)
     {
