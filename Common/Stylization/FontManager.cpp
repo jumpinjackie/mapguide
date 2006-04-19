@@ -233,41 +233,38 @@ void FontManager::init_font_list ()
         while (bOK && hFile != INVALID_HANDLE_VALUE) {
             //  do we have a file?
             if (!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                //  check of ttf
-                wstring fn(wcslwr/*_tcslwr*/(FindFileData.cFileName));
-                if (fn.find(L".ttf") != string::npos) {
-                    //  ok, load up the face information
-                    wstring entryName (fontdir);
-                    entryName += L"\\";
-                    entryName += FindFileData.cFileName;
 
-                    FT_Face face;
-                    FT_Long index = 0;
-                    FT_Long num_faces = 0;
+                //  ok, load up the face information
+                wstring entryName (fontdir);
+                entryName += L"\\";
+                entryName += FindFileData.cFileName;
 
-                    do {
-                        string en;
-                        UnicodeString::WideCharToMultiByte( entryName.c_str(), en );
-                        error = FT_New_Face (m_library, en.c_str(),
-                            index, &face);
+                FT_Face face = NULL;
+                FT_Long index = 0;
+                FT_Long num_faces = 0;
 
-                        if (!error) {
+                do {
+                    string en;
+                    UnicodeString::WideCharToMultiByte( entryName.c_str(), en );
+                    error = FT_New_Face (m_library, en.c_str(),
+                        index, &face);
 
-                            //  init num_faces if necessary
-                            if (!num_faces)
-                                num_faces = face->num_faces;
-                        }
+                    if (!error) {
 
-                        create_font (face, index, entryName.c_str());
+                        //  init num_faces if necessary
+                        if (!num_faces)
+                            num_faces = face->num_faces;
+                    }
 
-                        //  dispose of face
-                        FT_Done_Face (face);
+                    create_font (face, index, entryName.c_str());
 
-                        //  increment our face index
-                        index++;
+                    //  dispose of face
+                    FT_Done_Face (face);
 
-                    } while (!error && index < num_faces);
-                }
+                    //  increment our face index
+                    index++;
+
+                } while (!error && index < num_faces);
             }
 
             bOK = FindNextFile (hFile, &FindFileData);
