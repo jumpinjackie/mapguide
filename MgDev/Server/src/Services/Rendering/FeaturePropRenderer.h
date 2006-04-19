@@ -64,8 +64,6 @@ private:
     MgBatchPropertyCollection* m_featprops;
 
     KeyEncode* m_keyEncode;
-
-    RS_FeatureClassInfo* m_fcInfo;
 };
 
 #endif
