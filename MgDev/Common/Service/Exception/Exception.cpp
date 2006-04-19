@@ -258,6 +258,7 @@ STRING MgException::FormatMessage(CREFSTRING locale, CREFSTRING section,
 
     if (NULL != resources)
     {
+        // try using the supplied locale
         STRING resourceStr = resources->GetStringResource(locale, section,
             resourceId);
 
@@ -265,6 +266,19 @@ STRING MgException::FormatMessage(CREFSTRING locale, CREFSTRING section,
     }
 
     MG_CATCH_AND_RELEASE()
+
+    if (message.empty() && NULL != resources && locale != MgResources::DefaultLocale)
+    {
+        MG_TRY()
+
+        // try using the default locale as a backup
+        STRING resourceStr = resources->GetStringResource(MgResources::DefaultLocale, section,
+            resourceId);
+
+        message = resources->FormatMessage(resourceStr, arguments);
+
+        MG_CATCH_AND_RELEASE()
+    }
 
     if (message.empty() && NULL != resources)
     {
