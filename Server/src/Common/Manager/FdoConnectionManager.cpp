@@ -411,7 +411,7 @@ void MgFdoConnectionManager::RemoveExpiredConnections()
                 delete pFdoConnectionCacheEntry;
                 pFdoConnectionCacheEntry = NULL;
 
-                iter = m_FdoConnectionCache.erase(iter);
+                m_FdoConnectionCache.erase(iter++);
             }
             else
             {
@@ -969,7 +969,7 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
                         delete pFdoConnectionCacheEntry;
                         pFdoConnectionCacheEntry = NULL;
 
-                        iter = m_FdoConnectionCache.erase(iter);
+                        m_FdoConnectionCache.erase(iter++);
 
                         connectionsRemoved++;
 
@@ -1070,7 +1070,7 @@ bool MgFdoConnectionManager::FdoConnectionCacheFull(void)
                         delete pFdoConnectionCacheEntry;
                         pFdoConnectionCacheEntry = NULL;
 
-                        iter = m_FdoConnectionCache.erase(iter);
+                        m_FdoConnectionCache.erase(iter++);
 
                         bCacheFull = false;
                         break;
