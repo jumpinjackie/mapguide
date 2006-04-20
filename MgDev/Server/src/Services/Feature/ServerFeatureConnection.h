@@ -30,6 +30,12 @@ public:
     MgServerFeatureConnection(CREFSTRING providerName, CREFSTRING connectionString);
     virtual ~MgServerFeatureConnection();
 
+private:
+
+    MgServerFeatureConnection();
+
+public:
+
     virtual void Dispose();
 
     FdoIConnection* GetConnection();

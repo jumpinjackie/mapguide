@@ -549,7 +549,7 @@ MgRaster* MgServerFeatureReader::GetRaster(CREFSTRING propertyName)
     assert(featureService != NULL);
 
     retVal->SetMgService(featureService);
-    retVal->SetHandle((INT32)(INT64)m_getFeatures);
+    retVal->SetHandle((INT32)m_getFeatures);
 
     // Collect the feature reader into a pool for GetRaster operation
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
@@ -610,7 +610,7 @@ void MgServerFeatureReader::Serialize(MgStream* stream)
 
     if (operationCompleted && (mgException == 0))
     {
-        stream->WriteInt32((INT32)(INT64)m_getFeatures);// Write the pointer value so we can retrieve it for later use
+        stream->WriteInt32((INT32)m_getFeatures);       // Write the pointer value so we can retrieve it for later use
         stream->WriteObject((MgFeatureSet*)featureSet); // Write the feature set
     }
     else

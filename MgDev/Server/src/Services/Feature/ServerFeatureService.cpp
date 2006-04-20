@@ -690,7 +690,7 @@ void MgServerFeatureService::FeatureSourceToString(MgResourceIdentifier* resourc
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(INT32 featureReaderId)
 {
-    MgServerGetFeatures* featId = ((MgServerGetFeatures*)(INT64)featureReaderId);
+    MgServerGetFeatures* featId = (MgServerGetFeatures*)featureReaderId;
 
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureService.GetFeatures");
@@ -731,7 +731,7 @@ MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(INT32 featureRead
 bool MgServerFeatureService::CloseFeatureReader(INT32 featureReaderId)
 {
     bool retVal = false;
-    MgServerGetFeatures* featId = ((MgServerGetFeatures*)(INT64)featureReaderId);
+    MgServerGetFeatures* featId = (MgServerGetFeatures*)featureReaderId;
 
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureService.CloseFeatureReader");
@@ -791,7 +791,7 @@ MgFeatureSchemaCollection* MgServerFeatureService::XmlToSchema(CREFSTRING xml)
 //////////////////////////////////////////////////////////////////
 MgByteReader* MgServerFeatureService::GetRaster(INT32 readerId, INT32 xSize, INT32 ySize, STRING propName)
 {
-    MgServerFeatureProcessor* featureProcessor = ((MgServerFeatureProcessor*)(INT64)readerId);
+    MgServerFeatureProcessor* featureProcessor = (MgServerFeatureProcessor*)readerId;
 
     Ptr<MgByteReader> byteReader;
 
@@ -822,7 +822,7 @@ MgByteReader* MgServerFeatureService::GetRaster(INT32 readerId, INT32 xSize, INT
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgServerFeatureService::GetSqlRows(INT32 lsqlReader)
 {
-    MgServerSqlProcessor* sqlReader = ((MgServerSqlProcessor*)(INT64)lsqlReader);
+    MgServerSqlProcessor* sqlReader = (MgServerSqlProcessor*)lsqlReader;
 
     MgServerSqlDataReaderPool* sqlDataReaderPool = MgServerSqlDataReaderPool::GetInstance();
     CHECKNULL(sqlDataReaderPool, L"MgServerFeatureService.GetSqlRows");
@@ -860,7 +860,7 @@ MgBatchPropertyCollection* MgServerFeatureService::GetSqlRows(INT32 lsqlReader)
 bool MgServerFeatureService::CloseSqlReader(INT32 lsqlReader)
 {
     bool retVal = false;
-    MgServerSqlProcessor* sqlReader = ((MgServerSqlProcessor*)(INT64)lsqlReader);
+    MgServerSqlProcessor* sqlReader = (MgServerSqlProcessor*)lsqlReader;
 
     MgServerSqlDataReaderPool* sqlDataReaderPool = MgServerSqlDataReaderPool::GetInstance();
     CHECKNULL(sqlDataReaderPool, L"MgServerFeatureService.CloseSqlReader");
@@ -878,7 +878,7 @@ bool MgServerFeatureService::CloseSqlReader(INT32 lsqlReader)
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgServerFeatureService::GetDataRows(INT32 ldataReader)
 {
-    MgServerDataProcessor* dataReader = ((MgServerDataProcessor*)(INT64)ldataReader);
+    MgServerDataProcessor* dataReader = (MgServerDataProcessor*)ldataReader;
 
     MgServerDataReaderPool* dataReaderPool = MgServerDataReaderPool::GetInstance();
     CHECKNULL(dataReaderPool, L"MgServerFeatureService.GetDataRows");
@@ -917,7 +917,7 @@ bool MgServerFeatureService::CloseDataReader(INT32 ldataReader)
 {
     bool retVal = false;
 
-    MgServerDataProcessor* dataReader = ((MgServerDataProcessor*)(INT64)ldataReader);
+    MgServerDataProcessor* dataReader = (MgServerDataProcessor*)ldataReader;
 
     // At this point we have the following:
     //   - the data processor is in the pool

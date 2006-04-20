@@ -543,7 +543,7 @@ void MgServerSqlDataReader::Serialize(MgStream* stream)
 
     if (operationCompleted && (mgException == 0))
     {
-        stream->WriteInt32((INT32)(INT64)(MgServerSqlProcessor*)sqlProcessor);  // Write the pointer value so we can retrieve it for later use
+        stream->WriteInt32((INT32)sqlProcessor.p);                              // Write the pointer value so we can retrieve it for later use
         stream->WriteString(m_providerName);                                    // Provider Name for XML
         stream->WriteObject((MgPropertyDefinitionCollection*)propDefCol);       // Write the property definition
         stream->WriteObject((MgBatchPropertyCollection*)bpCol);                 // Write the property data
