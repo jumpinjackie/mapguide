@@ -417,7 +417,7 @@ void MgResourceIdentifier::ParseIdentifier(CREFSTRING resource)
     else
     {
         throw new MgInvalidRepositoryTypeException(
-            L"MgResourceIdentifier.CheckRepositoryType", __LINE__,  __WFILE__, NULL, L"", NULL);
+            L"MgResourceIdentifier.ParseIdentifier", __LINE__,  __WFILE__, NULL, L"", NULL);
     }
 
     Validate();
