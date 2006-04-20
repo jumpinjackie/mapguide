@@ -521,7 +521,7 @@ void MgServerSelectFeatures::AddCustomComputedProperty(CREFSTRING aliasName, Fdo
         {
             GisPtr<FdoExpressionCollection> exprCol = function->GetArguments();
             GisInt32 cnt = exprCol->GetCount();
-            GisPtr<FdoExpression> expr = NULL;
+            GisPtr<FdoExpression> expr;
             if (cnt > 0)
             {
                 expr = exprCol->GetItem(0);   // Property Name

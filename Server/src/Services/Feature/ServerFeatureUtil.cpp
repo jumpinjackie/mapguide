@@ -541,7 +541,7 @@ bool MgServerFeatureUtil::ValidatePoolEntry(INT32 readerId)
 {
     bool isValid = false;
 
-    MgServerFeatureProcessor* featureProcessor = ((MgServerFeatureProcessor*)(INT64)readerId);
+    MgServerFeatureProcessor* featureProcessor = (MgServerFeatureProcessor*)readerId;
     if (featureProcessor != NULL)
     {
         MgServerFeatureProcessorType fpType = featureProcessor->GetProcessorType();

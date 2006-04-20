@@ -27,9 +27,7 @@
 
 
 //////////////////////////////////////////////////////////////////
-MgServerDescribeSchema::MgServerDescribeSchema() :
-    m_connection(NULL),
-    m_ffsc(NULL)
+MgServerDescribeSchema::MgServerDescribeSchema()
 {
 }
 

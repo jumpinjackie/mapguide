@@ -514,7 +514,7 @@ MgRaster* MgServerDataReader::GetRaster(CREFSTRING propertyName)
     }
 
     retVal->SetMgService(featureService);
-    retVal->SetHandle((INT32)(INT64)m_dataProcessor.p);
+    retVal->SetHandle((INT32)m_dataProcessor.p);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetRaster");
 
@@ -617,7 +617,7 @@ void MgServerDataReader::Serialize(MgStream* stream)
 
     if (operationCompleted && (mgException == 0))
     {
-        stream->WriteInt32((INT32)(INT64)(MgServerDataProcessor*)m_dataProcessor);  // Write the pointer value so we can retrieve it for later use
+        stream->WriteInt32((INT32)m_dataProcessor.p);                               // Write the pointer value so we can retrieve it for later use
         stream->WriteString(m_providerName);                                        // Provider Name for XML
         stream->WriteObject((MgPropertyDefinitionCollection*)propDefCol);           // Write the Property definition
         stream->WriteObject((MgBatchPropertyCollection*)bpCol);                     // Write the Property data
