@@ -825,7 +825,6 @@ WT_Result gdr_process_text (WT_Text & text, WT_File & file)
         RS_FontDef fdef(rs_uni_name, hgt, (RS_FontStyle_Mask)style, RS_Units_Model);
         delete [] uni_name;
 
-        RS_String font_file;
         const RS_Font* rsfont = rewriter->FindFont(fdef);
 
         //draw the text

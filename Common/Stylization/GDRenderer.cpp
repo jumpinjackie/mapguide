@@ -1425,6 +1425,9 @@ void GDRenderer::DrawString( const RS_String& s,
                                 const RS_Color&  color,
                                 double           angle)
 {
+    if (font == NULL)
+        return;
+
     size_t len = s.length();
     size_t lenbytes = len*4+1;
     char* sutf8 = (char*)alloca(lenbytes);
