@@ -35,6 +35,12 @@ class MgXmlProcessingInstruction;
 // UTF-16)
 typedef bool (*DocLoaderFunc)(CPSZ pszDoc,REFSTRING sRet);
 
+enum EscapeState {
+    keNormal = 0,
+    keEscaping = 1,
+    keUnescaping = -1
+};
+
 // Simple interface for enumeration of resources.
 class IOgcResourceEnumerator // abstract interface
 {
@@ -121,6 +127,11 @@ protected:
     // Other than that, though, they're fundamentally the same.
     CPSZ Definition(CPSZ pszItem);
 
+    // Some overloads to facilitate adding definitions.
+    bool AddDefinition(CPSZ pszItem,CPSZ pszValue);
+    bool AddDefinition(CPSZ pszItem,CREFSTRING sValue);
+    bool AddDefinition(CPSZ pszItem,int iValue);
+
     // Certain operations define transient definitions that should
     // eclipse definitions already made.  The one basic example is that
     // a bunch of global definitions are made, and each server instance
@@ -154,7 +165,7 @@ protected:
         MgOgcServer*  m_pServer;      // remember the server
         // persist the original states
         bool m_bWriteEnabled;
-        bool m_bEscaping;
+        EscapeState m_eEscapeState;
     };
 
     // Pushes Exception values into the current dictionary stack frame
@@ -308,6 +319,19 @@ private:
     //                    the list, typically an expansion of one or more
     //                    Define items that presumably at least reference
     //                    &EnumDictionary.Name; and/or &EnumDictionary.Value;
+    //   between="between-each-definition"
+    //                 -- the contents to be used to separarate each definition in
+    //                    a frame; defaults to an empty string, but can be used
+    //                    to embed a string between items.
+    //   betweenframes="between-each-frame"
+    //                 -- the contents to be used to separarate each frame in
+    //                    the dictionary; defaults to an empty string, but can be used
+    //                    to embed a string between items.
+    //   depth="number-of-frames"
+    //                 -- the number of frames to enumerate.  If omitted defaults
+    //                    to the entire dictionary, as does any nonpositive integer.
+    //                    (Certain operations segregate the dictionary into scope frames
+    //                    to eclipse existing definitions.)
     //   This tool is used primarily for debugging and diagnostics, and is
     //   employed during internal errors.
     // ?>
@@ -319,6 +343,13 @@ private:
     //                    converted into &lt; and &gt; respectively.
     // ?>
     void ProcedureEscape(MgXmlProcessingInstruction& PIEscape);
+
+    // <?Unscape       -- Unescapes the contents of the string provided,
+    //                    allowing text to appear like XML.
+    //   text="string" -- The string to be unescaped, < and > are
+    //                    converted from &lt; and &gt; respectively.
+    // ?>
+    void ProcedureUnescape(MgXmlProcessingInstruction& PIEscape);
 
     // <?Ifdef         -- Begins a conditional block, as determined by
     //                    the existance of a Define item.
@@ -386,6 +417,55 @@ private:
     // ?>
     void ProcedureTranslate(MgXmlProcessingInstruction& PITranslate);
 
+    // <?EnumXml       -- Enumerates elements in XML.
+    //   list="xml"    -- The input XML string to be parsed.  Typically one
+    //                    or more definition containing a fragment of XML.
+    //                    Note: to avoid extensive pre-processing of the 
+    //                    source xml, use the "apostrophe escape notation"
+    //                    for any given definition: &'foo; instead of &foo;
+    //                    This merely expands the definition (of foo, in this
+    //                    case) without evaluating the contents within it.)
+    //   using="for-each-item"
+    //                 -- the contents to be used to format each item in
+    //                    the list, typically an expansion of one or more
+    //                    Define items that presumably at least reference
+    //                    &XmlNode.Contents;
+    //                    The following items are defined during the enumeration:
+    //                    Enum.Fragment     -- the source text (text="...") being
+    //                                        enumerated.
+    //                    Enum.iteration    -- the iteration count of nodes encountered.
+    //                    Enum.depth        -- the current depth (unmatched <begin> elements)
+    //                                         encountered; initially 0.
+    //                    Enum.item         -- the raw contents of the node, regardless of type
+    //                    XmlNode.Type      -- The node type: 
+    //                                         "text"    -- text
+    //                                         "space"   -- whitespace
+    //                                         "begin"   -- a begin element
+    //                                         "end"     -- an end element. [See Note]
+    //                                         "pi"      -- a processing instruction
+    //                                         "comment" -- a comment
+    //                                         "doctype" -- a DOCTYPE declaration
+    //                                         "cdata"   -- a CDATA block
+    //   The following only applies to "begin" type
+    //                    XmlNode.EmptyBegin-- "/" if empty begin element, else ""
+    //   The following only apply to "begin", "end", and possibly "pi"
+    //                    XmlNode.Name      -- actual name as it occurs in the source fragment
+    //                    XmlNode.Base      -- the base name, stripped of prefix (if any, else == name)
+    //                    XmlNode.Prefix    -- the prefix, if any, of the name given
+    //                    XmlNode.Namespace -- the namespace, if any, of the element name.
+    //                    XmlNode.Fullname  -- the full name of the element: namespace and base.
+    //                    XmlNode.Attributes -- the raw collection of attributes.
+    //                    XmlNode.AttributeList -- the attributes, formatted as an <item> list
+    //   Note: for "end" elements, it may be desirable to use &'Enum.item; instead of &Enum.item;
+    //   (the apostrophe escape notation) since that ensures the actual end element won't be parsed 
+    //   away.  Also note that Enum.depth does not reset to a lesser value until after the end element
+    //   has been processed.
+    // ?>
+    void ProcedureEnumXml(MgXmlProcessingInstruction& PIEnumXml);
+
+    // Helper function for EnumXml
+    void GetAttributesFrom(MgXmlAttribute& oAttributes,REFSTRING sAttributes,REFSTRING sAttributeList);
+
 #ifdef _DEBUG
     void ProcedureDiagnostic(MgXmlProcessingInstruction& PIDiag);
 #endif
@@ -423,6 +503,10 @@ private:
     // Specifically digests <Response>...</Response>
     bool ProcessResponseElement(MgXmlParser& Template,CPSZ pszRequest, CPSZ pszSpecificMimeType);
 
+    // Actual recursive work-horse of ProcedureEnumXml.
+    void DoEnumXml(MgXmlParser& Fragment,MgXmlNamespaceManager& Namespaces,
+                   int& iNum,int iDepth,
+                   CREFSTRING sFormat,CREFSTRING sSubset);
 
 
     // These are the links to the outside world.  The input (request) and
@@ -433,7 +517,7 @@ private:
 
     // This determines whether writing is enabled.
     bool m_bWriteEnabled;
-    bool m_bEscaping;
+    EscapeState m_eEscapeState;
 
     // This is the cached version as determined by negotiation.
     STRING m_sNegotiatedVersion;

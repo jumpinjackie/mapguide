@@ -37,7 +37,6 @@
       <?Endif?>
       <?Enum list="&Feature.Bounds;" item="Bounds" using="&SRS.xml;"?>
       <?Enum list="&Feature.Bounds;" item="Bounds" using="&LatLonBoundingBox.xml;"?>
-      <?Enum list="&Feature.Bounds;" item="Bounds" using="&BoundingBox.xml;"?>
     </FeatureType>
   </Define>
 
@@ -48,7 +47,7 @@
 
   <!-- Sniff out the EPSG:4326 item and use it for LatLon bounds -->
   <Define item="LatLonBoundingBox.xml"><?If l="&Enum.item.SRS" op="eq" r="EPSG:4326"?>
-    <LatLonBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+    <LatLongBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
     <?Endif?></Define>
   <Define item="BoundingBox.xml">
     <BoundingBox SRS="&Enum.item.SRS;" minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
@@ -117,7 +116,6 @@
    &Feature.OuterXml;
  </Define>
 
-    
 </Definitions>
 
 <!--
