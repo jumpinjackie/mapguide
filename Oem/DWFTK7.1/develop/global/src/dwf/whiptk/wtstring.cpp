@@ -599,31 +599,38 @@ wchar_t * WT_String::to_wchar(
     WT_Unsigned_Integer16 const * string /**< The 16 bit wide character (Unicode) buffer to copy from. */
     )
 {
-    if(sizeof(wchar_t) == 2)
-    {
-        wchar_t *new_string = new wchar_t[length+1];
-        if(!new_string)
-            throw WT_Result::Out_Of_Memory_Error;
+    wchar_t *new_string = new wchar_t[length+1];
+    if(!new_string)
+        throw WT_Result::Out_Of_Memory_Error;
 
+    // Init it to all zeros, so that there's never a problem with termination.
+    WD_SET_MEMORY(new_string, (length+1)*sizeof(wchar_t), 0);
+
+    if(sizeof(wchar_t) == 2) // Win32
+    {
+        if(!new_string)
+        {
+            throw WT_Result::Out_Of_Memory_Error;
+        }
+
+        // Note, this is assuming that the input string is UCS-2 - no UTF16 surrogate pairs
         int i;
         for(i=0; i<length; i++ )
+        {
             new_string[i] = (wchar_t) string[i];
-        new_string[i] = 0;
+        }
+
         return new_string;
     }
 
-    if (sizeof(wchar_t) == 4)
+    if (sizeof(wchar_t) == 4) // Rest of world
     {
-        wchar_t *new_string = new wchar_t[length+1];
-        if(!new_string)
-            throw WT_Result::Out_Of_Memory_Error;
-
         // Note: Don't optimize these away - ConvertUTF16toUTF32 messes with the stored vals.
         const UTF16 *source = (const UTF16 *) string;
         UTF32 *target = (UTF32*) new_string;
         ConversionResult res = ConvertUTF16toUTF32(
-	                                &source, source+length, 
-	                                &target, target+length,
+                                    &source, source+length,
+                                    &target, target+length,
                                     lenientConversion
                                 );
         if(res==conversionOK)
@@ -631,6 +638,9 @@ wchar_t * WT_String::to_wchar(
             return new_string;
         }
     }
+
+    // Should never get here...
+    delete [] new_string;
 
     return NULL;
 }
