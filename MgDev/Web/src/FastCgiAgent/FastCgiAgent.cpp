@@ -332,29 +332,31 @@ bool AuthenticateOgcRequest(MgHttpRequestParam* params)
     }
     else { // Look for possible POST-method with content payload.
         string sContents = params->GetXmlPostData();
-        // Look for the service attribute using a light-weight scan of the contents.
-        // No need to invoke a full XML parsing for what's essentially pattern-matching.
-        // (too bad there's no Perl-like RegExp nearby, though... )
-        bool bWfs = sContents.find("service=\"WFS\"")            != string::npos  // NOXLATE
-                  ||sContents.find("service='WFS'")              != string::npos; // NOXLATE
+        if(sContents.length() > 0) {
+            // Look for the service attribute using a light-weight scan of the contents.
+            // No need to invoke a full XML parsing for what's essentially pattern-matching.
+            // (too bad there's no Perl-like RegExp nearby, though... )
+            bool bWfs = sContents.find("service=\"WFS\"")            != string::npos  // NOXLATE
+                      ||sContents.find("service='WFS'")              != string::npos; // NOXLATE
 
-        bool bWms = sContents.find("service=\"WMS\"")            != string::npos  // NOXLATE
-                  ||sContents.find("service='WMS'")              != string::npos; // NOXLATE
+            bool bWms = sContents.find("service=\"WMS\"")            != string::npos  // NOXLATE
+                      ||sContents.find("service='WMS'")              != string::npos; // NOXLATE
 
-        // No determination made.
-        if(!bWfs && !bWms) {
-            // Tolerance and forgiveness?  Look for key namespace declarations before quitting?
-            // Some requests forget the (required!!!) service= attribute, but do everything else
-            // right, relying on the root element to carry the day.
-            // No.  If we've gotten here, it's possibly a WMS request, since SERVICE=
-            // isn't always required for them. TODO: this form of authentication should
-            // run past the individual OGC objects to see if they concur.
-            return isWms;
+            // No determination made.
+            if(!bWfs && !bWms) {
+                // Tolerance and forgiveness?  Look for key namespace declarations before quitting?
+                // Some requests forget the (required!!!) service= attribute, but do everything else
+                // right, relying on the root element to carry the day.
+                // No.  If we've gotten here, it's possibly a WMS request, since SERVICE=
+                // isn't always required for them. TODO: this form of authentication should
+                // run past the individual OGC objects to see if they concur.
+                return isWms;
+            }
+            else if(bWfs && bWms) // which is it? this is not good.
+                return false; // abandon the authentication attempt
+
+            isWms = bWms;
         }
-        else if(bWfs && bWms) // which is it? this is not good.
-            return false; // abandon the authentication attempt
-
-        isWms = bWms;
     }
 
     // Get WMS/WFS password from configuration.

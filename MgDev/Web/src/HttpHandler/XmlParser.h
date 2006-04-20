@@ -195,6 +195,7 @@ public:
 
 protected:
     int m_iEndOfName;             // m_pszStart[m_iEndOfName] is first char past name
+    virtual int EndDecorationLen() = 0; // how many chars at the end of content are not "attribute"
     MgXmlAttribute m_Attributes;
 };
 
@@ -214,6 +215,9 @@ public:
     // special check.  Otherwise, you could do PI.Name() == "xml", but with
     // a lot more overhead.
     bool IsXml() const;
+
+protected:
+    int EndDecorationLen();
 };
 
 
@@ -229,6 +233,9 @@ public:
     STRING Name() const;
 
     bool IsEmpty() const; // Is it <begin ... /> element? don't expect </end>
+
+protected:
+    virtual int EndDecorationLen();
 };
 
 

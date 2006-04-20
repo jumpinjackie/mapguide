@@ -29,7 +29,7 @@
 CPSZ kpszQueryStringService         = _("service");
 CPSZ kpszQueryStringRequest         = _("request");
 CPSZ kpszQueryStringVersion         = _("version");
-CPSZ kpszQueryStringWmtVersion         = _("wmtver");
+CPSZ kpszQueryStringWmtVersion      = _("wmtver");
 CPSZ kpszQueryStringFormat          = _("format");
 CPSZ kpszQueryStringCrs             = _("crs");
 CPSZ kpszQueryStringSrs             = _("srs");
@@ -78,6 +78,11 @@ CPSZ kpszEntityQuote                = _("quot");
 CPSZ kpszEntityApostrophe           = _("apos");
 CPSZ kpszEntityLessThanFullSyntax   = _("&lt;");
 CPSZ kpszEntityGreaterThanFullSyntax= _("&gt;");
+CPSZ kpszEntityLessThanValue        = _("<");
+CPSZ kpszEntityGreaterThanValue     = _(">");
+CPSZ kpszEntityAmpersandValue       = _("&");
+CPSZ kpszEntityQuoteValue           = _("\"");
+CPSZ kpszEntityApostropheValue      = _("'");
 CPSZ kpszExpansionPrefix            = _("&");
 CPSZ kpszExpansionSuffix            = _(";");
 
@@ -86,6 +91,9 @@ CPSZ kpszDictionarySupportedVersions = _("SupportedVersions");
 CPSZ kpszDictionaryTemplateVersion   = _("TemplateVersion");
 CPSZ kpszDictionaryEnumDictName      = _("EnumDictionary.Name");
 CPSZ kpszDictionaryEnumDictValue     = _("EnumDictionary.Value");
+CPSZ kpszDefinitionEnumDictDepth     = _("EnumDictionary.depth");
+CPSZ kpszDefinitionEnumDictFrameIter = _("EnumDictionary.frameiteration");
+CPSZ kpszDefinitionEnumDictIteration = _("EnumDictionary.iteration");
 CPSZ kpszDefinitionInitServerError   = _("InitServer.Error");
 CPSZ kpszDefinitionInitServerFile    = _("InitServer.File");
 CPSZ kpszDefinitionExceptionType     = _("Exception.Type");
@@ -95,12 +103,36 @@ CPSZ kpszDefinitionExceptionContents = _("Exception.Contents");
 CPSZ kpszDefinitionEnumItem          = _("Enum.item");
 CPSZ kpszDefinitionEnumItemPrefix    = _("Enum.item.");
 CPSZ kpszDefinitionEnumIteration     = _("Enum.iteration");
+CPSZ kpszDefinitionEnumXmlnsPrefix   = _("Enum.xmlns.");
+CPSZ kpszDefinitionEnumDepth         = _("Enum.depth");
+
+CPSZ kpszDefinitionXmlNodeType       = _("XmlNode.Type");
+CPSZ kpszDefinitionXmlNodeName       = _("XmlNode.Name");
+CPSZ kpszDefinitionXmlNodePrefix     = _("XmlNode.Prefix");
+CPSZ kpszDefinitionXmlNodeBase       = _("XmlNode.Base");
+CPSZ kpszDefinitionXmlNodeNamespace  = _("XmlNode.Namespace");
+CPSZ kpszDefinitionXmlNodeFullname   = _("XmlNode.Fullname");
+CPSZ kpszDefinitionXmlNodeEmptyBegin = _("XmlNode.EmptyBegin");
+CPSZ kpszDefinitionXmlNodeEndMark    = _("XmlNode.Endnode");
+CPSZ kpszDefinitionXmlNodeAttributes = _("XmlNode.Attributes");
+CPSZ kpszDefinitionXmlNodeAttrList   = _("XmlNode.AttributeList");
+
+CPSZ kpszXmlNodeTypeText             = _("text");
+CPSZ kpszXmlNodeTypeWhitespace       = _("space");
+CPSZ kpszXmlNodeTypeBeginElement     = _("begin");
+CPSZ kpszXmlNodeTypeEndElement       = _("end");
+CPSZ kpszXmlNodeTypeProcessingInstruction = _("pi");
+CPSZ kpszXmlNodeTypeComment          = _("comment");
+CPSZ kpszXmlNodeTypeDoctype          = _("doctype");
+CPSZ kpszXmlNodeTypeCdata            = _("cdata");
+CPSZ kpszXmlNodeTypeUnknown          = _("unknown");
 
 CPSZ kpszDefinitionRequestPassword   = _("Request.PASSWORD");
 CPSZ kpszOmittedValue                = _("(omitted)"); // if any dictionary value needs to be omitted...
 
 CPSZ kpszEmpty                      = _("");
 CPSZ kpszNewline                    = _("\n");
+CPSZ kpszXmlSlash                   = _("/");
 
 // BEGIN LOCALIZATION --
 CPSZ kpszDefaultExceptionTemplate   = _("<html><head><title>Server Exception</title></head><body><h1>Server Exception:</h1><p>Type: &Exception.Type;</p><p>Message: &Exception.Message;</p><pre><?EnumDictionary?></pre></body></html>");
@@ -115,6 +147,8 @@ CPSZ kpszPiErrorUnknownPiSuffix      = _(" -->");
 
 //  Filenames and file op args.
 CPSZ kpszFilenameTemplateSuffix     = _(".xml");
+
+CPSZ kpszXmlns                      = _("xmlns");
 
 
 CPSZ kpszElementNameServiceException = _("ServiceException");
@@ -134,11 +168,13 @@ CPSZ kpszPiEnum                      = _("Enum");
 CPSZ kpszPiEnumDictionary            = _("EnumDictionary");
 CPSZ kpszPiEnumDelim                 = _("EnumDelim");
 CPSZ kpszPiEscape                    = _("Escape");
+CPSZ kpszPiUnescape                  = _("Unescape");
 CPSZ kpszPiIf                        = _("If");
 CPSZ kpszPiIfdef                     = _("Ifdef");
 CPSZ kpszPiEndif                     = _("Endif");
 CPSZ kpszPiElse                      = _("Else");
 CPSZ kpszPiTranslate                 = _("Translate");
+CPSZ kpszPiEnumXml                   = _("EnumXml");
 
 CPSZ kpszPiIfAttrLeft                = _("l");
 CPSZ kpszPiIfAttrOp                  = _("op");
@@ -164,13 +200,16 @@ CPSZ kpszPiAttributeUsing            = _("using");// indicates a formatting stri
 CPSZ kpszPiAttributeWith             = _("with"); // used by translate to indicate the translation table to use
 CPSZ kpszPiAttributeSep              = _("sep");  // indicates a separator
 CPSZ kpszPiAttributeBetween          = _("between"); // indicates what appears between items in enumerations
+CPSZ kpszPiAttributeBetweenFrames    = _("betweenframes"); // indicates what appears between (dictionary) frame blocks.
 CPSZ kpszPiAttributeSubset           = _("subset"); // indicates which subset of all iterated values to report
-
+CPSZ kpszPiAttributeDepth            = _("depth");  // indicates a depth parameter
 
 CPSZ kpszPiDefaultFormat             = _("&Enum.item;\n"); // When using= is omitted, this is frequently the default
+CPSZ kpszPiDefaultFormatEnumXml      = _("&'Enum.item;");  // When using= is omitted for EnumXml, this is the default
 CPSZ kpszPiDefaultSeparator          = _(",");             // When sep= is omitted, this is the default
-CPSZ kpszPiDefaultDictionaryFormat   = _("&EnumDictionary.Name;=&EnumDictionary.Value;\n");
+CPSZ kpszPiDefaultDictionaryFormat   = _("&EnumDictionary.Name;=&'EnumDictionary.Value;\n");
                                                            // When using is omitted in a dictionary enumeration, ...
+CPSZ kpszPiDefaultDepth              = _("-1");
 
 CPSZ kpszVersionRediculouslyHighVersion = _("9999.9.9"); // If no version is provided, we "ask" for this (to get
                                                          // the highest version possible.
@@ -301,7 +340,7 @@ MgOgcServer::MgOgcServer(MgHttpRequestParameters& Request,
 , m_bBusyEnumeratingDictionary(false)
 , m_iExpansionRecursionDepth(32)
 , m_bWriteEnabled(true)
-, m_bEscaping(false)
+, m_eEscapeState(keNormal)
 {
     //InitServer();
 
@@ -315,7 +354,7 @@ MgOgcServer::MgOgcServer(MgHttpRequestParameters& Request,
         CPSZ pszValue = (CPSZ)Request.Value(i);
         STRING sName = kpszDefinitionPrefixRequest;
         sName += pszName;
-        this->m_pTopOfDefinitions->AddDefinition(sName.c_str(),pszValue);
+        AddDefinition(sName.c_str(),pszValue);
     }
 }
 
@@ -400,12 +439,12 @@ bool MgOgcServer::DefaultExceptionResponse()
 
 void MgOgcServer::DefineExceptionValues(const MgOgcException& Exception)
 {
-    m_pTopOfDefinitions->AddDefinition(kpszDefinitionExceptionType,Exception.Type());
-    m_pTopOfDefinitions->AddDefinition(kpszDefinitionExceptionMessage,Exception.Message());
-    m_pTopOfDefinitions->AddDefinition(kpszDefinitionExceptionElement,Exception.ElementName());
+    AddDefinition(kpszDefinitionExceptionType,Exception.Type());
+    AddDefinition(kpszDefinitionExceptionMessage,Exception.Message());
+    AddDefinition(kpszDefinitionExceptionElement,Exception.ElementName());
     CStringStream Out;
     Exception.WriteTo(Out);
-    m_pTopOfDefinitions->AddDefinition(kpszDefinitionExceptionContents,Out.Contents());
+    AddDefinition(kpszDefinitionExceptionContents,Out.Contents());
 }
 
 
@@ -540,6 +579,8 @@ void MgOgcServer::ProcessInstruction(MgXmlProcessingInstruction& PI)
         ProcedureEnumDelim(PI);
     else if(sProc == kpszPiEscape)
         ProcedureEscape(PI);
+    else if(sProc == kpszPiUnescape)
+        ProcedureUnescape(PI);
     else if(sProc == kpszPiIf)
         ProcedureIf(PI);
     else if(sProc == kpszPiIfdef)
@@ -550,6 +591,8 @@ void MgOgcServer::ProcessInstruction(MgXmlProcessingInstruction& PI)
         ProcedureElse(PI);
     else if(sProc == kpszPiTranslate)
         ProcedureTranslate(PI);
+    else if(sProc == kpszPiEnumXml)
+        ProcedureEnumXml(PI);
 #ifdef _DEBUG
     else if(sProc == _("Diagnostic")) // NOXLATE
         ProcedureDiagnostic(PI);
@@ -664,15 +707,38 @@ void MgOgcServer::ProcedureEndif(MgXmlProcessingInstruction& PIEndif)
 
 void MgOgcServer::ProcedureEscape(MgXmlProcessingInstruction& PIEscape)
 {
-    bool bOldEscapeState = m_bEscaping;
-    m_bEscaping = true;
+    EscapeState eOldEscapeState = m_eEscapeState;
+    m_eEscapeState = keEscaping;
 
     STRING sText;
     if(PIEscape.GetAttribute(kpszPiAttributeText,sText))
         ProcessExpandableText(sText);
 
-    m_bEscaping = bOldEscapeState;
+    m_eEscapeState = eOldEscapeState;
 }
+
+void MgOgcServer::ProcedureUnescape(MgXmlProcessingInstruction& PIEscape)
+{
+    EscapeState eOldEscapeState = m_eEscapeState;
+    m_eEscapeState = keUnescaping;
+
+    CDictionaryStackFrame ForSomeLocalDefinitions(this);
+    AddDefinition(kpszEntityLessThan,   kpszEntityLessThanValue);
+    AddDefinition(kpszEntityGreaterThan,kpszEntityGreaterThanValue);
+    AddDefinition(kpszEntityAmpersand,  kpszEntityAmpersandValue);
+    AddDefinition(kpszEntityQuote,      kpszEntityQuoteValue);
+    AddDefinition(kpszEntityApostrophe, kpszEntityApostropheValue);
+
+    STRING sText;
+    if(PIEscape.GetAttribute(kpszPiAttributeText,sText)) {
+        STRING sDebug;
+        ProcessExpandableTextIntoString(sText,sDebug);
+        ProcessExpandableText(sText);
+    }
+
+    m_eEscapeState = eOldEscapeState;
+}
+
 
 // Interpret a <?Enum list= using= ?> processing instruction
 void MgOgcServer::ProcedureEnum(MgXmlProcessingInstruction& PIEnum)
@@ -707,7 +773,7 @@ void MgOgcServer::ProcedureEnum(MgXmlProcessingInstruction& PIEnum)
 
     STRING sBetween;
     if(!PIEnum.GetAttribute(kpszPiAttributeBetween,sBetween))
-        sBetween = _("");
+        sBetween = kpszEmpty;
 
     int iNum = 0;
 
@@ -734,7 +800,7 @@ void MgOgcServer::ProcedureEnum(MgXmlProcessingInstruction& PIEnum)
                             STRING sName = Attr.Name();
                             STRING sValue = Attr.Value();
                             sName = kpszDefinitionEnumItemPrefix + sName;
-                            m_pTopOfDefinitions->AddDefinition(sName,sValue);
+                            AddDefinition(sName.c_str(),sValue);
                         }
                     }
 
@@ -747,11 +813,11 @@ void MgOgcServer::ProcedureEnum(MgXmlProcessingInstruction& PIEnum)
                             List.Next();
                         }
 
-                        m_pTopOfDefinitions->AddDefinition(kpszDefinitionEnumItem,sItem.c_str());
+                        AddDefinition(kpszDefinitionEnumItem,sItem.c_str());
 
                     } // if Item.AtBegin();
                     else
-                        m_pTopOfDefinitions->AddDefinition(kpszDefinitionEnumItem,_(""));
+                        AddDefinition(kpszDefinitionEnumItem,kpszEmpty);
 
                     ProcessExpandableText(sFormat);
                 } // if it's a subset of interest
@@ -792,7 +858,7 @@ bool MgOgcServer::IsIterationInSubset(int iNum,STRING sSubset,CPSZ pszDefinition
     }
 
     if(bInclude) {
-        m_pTopOfDefinitions->AddDefinition(pszDefinition? pszDefinition : kpszDefinitionEnumIteration,szInteger);
+        AddDefinition(pszDefinition? pszDefinition : kpszDefinitionEnumIteration,szInteger);
         return true;
     }
 
@@ -804,7 +870,7 @@ bool MgOgcServer::IsIterationInSubset(int iNum,STRING sSubset,CPSZ pszDefinition
 void MgOgcServer::ProcedureEnumDelim(MgXmlProcessingInstruction& PIEnum)
 {
     //
-    STRING sDebugContents = PIEnum.Contents();
+    //STRING sDebugContents = PIEnum.Contents();
 
     STRING sList;
     if(!PIEnum.GetAttribute(kpszPiAttributeList,sList))
@@ -819,7 +885,7 @@ void MgOgcServer::ProcedureEnumDelim(MgXmlProcessingInstruction& PIEnum)
 
     STRING sBetween;
     if(!PIEnum.GetAttribute(kpszPiAttributeBetween,sBetween))
-        sBetween = _("");
+        sBetween = kpszEmpty;
 
     STRING sFormat;
     if(!PIEnum.GetAttribute(kpszPiAttributeUsing,sFormat))
@@ -844,7 +910,7 @@ void MgOgcServer::ProcedureEnumDelim(MgXmlProcessingInstruction& PIEnum)
 
         STRING sItem = sList.substr(iItem,iSep - iItem);
         if(IsIterationInSubset(++iNum,sSubset)) {
-            m_pTopOfDefinitions->AddDefinition(kpszDefinitionEnumItem,sItem.c_str());
+            AddDefinition(kpszDefinitionEnumItem,sItem.c_str());
             ProcessExpandableText(sFormat);
         }
         iItem = iSep+1;
@@ -856,10 +922,32 @@ void MgOgcServer::ProcedureEnumDelim(MgXmlProcessingInstruction& PIEnum)
         CDictionaryStackFrame ForProcedureVariables(this);
         // Now, one final "iteration" since there's always a dangler after the last separator.
         if(IsIterationInSubset(++iNum,sSubset)) {
-            m_pTopOfDefinitions->AddDefinition(kpszDefinitionEnumItem,sList.substr(iItem).c_str());
+            AddDefinition(kpszDefinitionEnumItem,sList.substr(iItem).c_str());
             ProcessExpandableText(sFormat);
         }
     }
+}
+
+int widetoint(CPSZ pszNum)
+{
+    // Preparatory work: look for legal '+' or '-' in front of number
+    bool bNeg = *pszNum == '-';
+    if(bNeg || *pszNum == '+')
+        pszNum++;
+
+    // Now, race through the digits.
+    int iRet = 0;
+    while(pszNum) {
+        int ch = (int)*pszNum;
+        if(!isdigit(ch))       
+            break;
+
+        iRet *= 10;
+        iRet += ch - '0';
+        pszNum++;
+    }
+
+    return bNeg? -iRet : iRet;
 }
 
 // This enumerates the "dictionary" -- the entire, nested structure.
@@ -877,6 +965,21 @@ void MgOgcServer::ProcedureEnumDictionary(MgXmlProcessingInstruction& PIEnum)
     if(!PIEnum.GetAttribute(kpszPiAttributeUsing,sFormat))
         sFormat = kpszPiDefaultDictionaryFormat;
 
+    STRING sBetween;
+    if(!PIEnum.GetAttribute(kpszPiAttributeBetween,sBetween))
+        sBetween = kpszEmpty;
+
+    STRING sBetweenFrames;
+    if(!PIEnum.GetAttribute(kpszPiAttributeBetweenFrames,sBetweenFrames))
+        sBetweenFrames = kpszEmpty;
+
+    STRING sDepth;
+    if(!PIEnum.GetAttribute(kpszPiAttributeDepth,sDepth))
+        sDepth = kpszPiDefaultDepth;
+    int iDepthLimit = sztoi(sDepth.c_str());
+    if(iDepthLimit < 1)
+        iDepthLimit = -1;
+
     int iOldExpansionRecursionDepth = m_iExpansionRecursionDepth;
     m_iExpansionRecursionDepth = 2;
 
@@ -889,19 +992,33 @@ void MgOgcServer::ProcedureEnumDictionary(MgXmlProcessingInstruction& PIEnum)
     // Goedelian self-reference.
     CDictionaryStackFrame ToAvoidHavingOurDefinitionsShow(this);
 
+    int iDepth = 1;
+    int iTotalCount = 1;
     while(pCurrentDictionary != NULL) {
+        AddDefinition(kpszDefinitionEnumDictDepth,iDepth++);
+
         int iCount = pCurrentDictionary->Count();
         for(int i=0; i < iCount; i++) {
+            AddDefinition(kpszDefinitionEnumDictFrameIter,i+1);
+            AddDefinition(kpszDefinitionEnumDictIteration,iTotalCount++);
+            if(i > 0)
+                ProcessExpandableText(sBetween);
+
             CPSZ pszName  =       pCurrentDictionary->Name(i);
             CPSZ pszValue = (CPSZ)pCurrentDictionary->Value(i);
             if(SZ_EQI(pszName,kpszDefinitionRequestPassword))
                 pszValue = kpszOmittedValue; // must suppress the password.
-            m_pTopOfDefinitions->AddDefinition(kpszDictionaryEnumDictName, pszName);
-            m_pTopOfDefinitions->AddDefinition(kpszDictionaryEnumDictValue,pszValue);
+            AddDefinition(kpszDictionaryEnumDictName, pszName);
+            AddDefinition(kpszDictionaryEnumDictValue,pszValue);
 
             ProcessExpandableText(sFormat);
         }
+        // Let's see if we've exceeded our depth.
+        if(!--iDepthLimit)
+            break;
         pCurrentDictionary = pCurrentDictionary->NextScope();
+        if(pCurrentDictionary != NULL)
+            ProcessExpandableText(sBetweenFrames);
     }
 
     m_bBusyEnumeratingDictionary = false;
@@ -944,6 +1061,208 @@ void MgOgcServer::ProcedureTranslate(MgXmlProcessingInstruction &PITranslate)
     // Process the results back to the outer stream.
     ProcessExpandableText(sMappedResults);
 }
+
+
+void MgOgcServer::ProcedureEnumXml(MgXmlProcessingInstruction& PIEnumXml)
+{
+    STRING sList;
+    if(!PIEnumXml.GetAttribute(kpszPiAttributeList,sList))
+        return;
+
+    ProcessExpandableTextIntoString(sList,sList);
+
+    STRING sFormat;
+    if(!PIEnumXml.GetAttribute(kpszPiAttributeUsing,sFormat))
+        sFormat = kpszPiDefaultFormatEnumXml;
+
+    STRING sSubset;
+    if(!PIEnumXml.GetAttribute(kpszPiAttributeSubset,sSubset))
+        sSubset = kpszEmpty;
+    ProcessExpandableTextIntoString(sSubset,sSubset);
+
+    int iNum = 0;
+    MgXmlParser Fragment(sList.c_str());
+    MgXmlNamespaceManager Namespaces;
+
+    DoEnumXml(Fragment,Namespaces,iNum,0,sFormat,sSubset);
+}
+
+
+void MgOgcServer::GetAttributesFrom(MgXmlAttribute& oAttributes,REFSTRING sAttributes,REFSTRING sAttributeList)
+{
+    sAttributes = oAttributes.Contents();
+    sAttributeList = kpszEmpty;
+
+    while(oAttributes.Next()) {
+        STRING sName = oAttributes.Name();
+        STRING sValue = oAttributes.Value();
+        STRING sOther;
+
+        // Offer some meaningful information for attributes with
+        // namespaces.
+        STRING sPrefix;
+        STRING sBase;
+        STRING sNamespace;
+        STRING::size_type iColon = sName.find(':');
+        if(iColon != STRING::npos) {
+            sPrefix = sName.substr(0,iColon);
+            sBase   = sName.substr(iColon+1);
+        }
+        else {
+            sPrefix = kpszEmpty;
+            sBase   = sName;
+        }
+
+        // Here's a bit of fun: detect attributes that are really
+        // namespace declarations, and identify them as such, both
+        // to the dictionary, and 
+        if(sBase == kpszXmlns || sPrefix == kpszXmlns) {
+            sNamespace = sValue;
+            // Also toss it into the dictionary; since each <begin>
+            // creates its own stack frame, this will have the same scope
+            // as namespaces themselves do.
+            // The canonical notation is "Enum.xmlns.foo" for xmlns:foo=""
+            // and "Enum.xmlns." for the default namespace (xmlns="")
+            // This simplifies lookup by offering a simple, unconditional notation.
+            STRING sDef = kpszDefinitionEnumXmlnsPrefix;
+            sDef += (sBase != kpszXmlns)? sBase : kpszEmpty;
+            AddDefinition(sDef.c_str(),sNamespace);
+        }
+        sOther = _(" prefix=\"")+sPrefix+_("\" base=\"")+sBase+_("\" ns=\"")+sNamespace+_("\""); // DO NOT LOCALIZE
+
+        // This is the basic &Enum.item.name; = &Enum.item; association,
+        // but sOther contains other (namespace-specific) definitions as well.
+        STRING sItem = _("<item name=\"")+sName+_("\"")+sOther+_(">")+sValue+_("</item>"); // DO NOT LOCALIZE
+        sAttributeList += sItem;
+    }
+}
+
+
+void MgOgcServer::DoEnumXml(MgXmlParser& Fragment,MgXmlNamespaceManager& Namespaces,
+                            int& iNum,int iDepth,
+                            CREFSTRING sFormat,CREFSTRING sSubset)
+{
+    while(Fragment.Next()) {
+        if(IsIterationInSubset(++iNum,sSubset)) {
+            // Okay, it's worth doing some work here.
+            CDictionaryStackFrame ForThisDepth(this);
+            
+            // Let's make a note of our current depth.
+            AddDefinition(kpszDefinitionEnumDepth,iDepth);
+
+            // Let's always push this node's contents into the dictionary.
+            // Note: for any </end> element, you'll have to use "apostrophe escape notation",
+            // that is, &Enum.item; becomes &'Enum.item; to avoid having the </end> element 
+            // parsed out of existance.
+            STRING sContents = Fragment.Current().Contents();
+            AddDefinition(kpszDefinitionEnumItem,sContents);
+
+            // Now, per-element processing:
+            STRING sType,sName,sEmpty,sEnd;
+            STRING sAttributes,sAttributeList;
+            switch(Fragment.Current().Type()) {
+            case keText:
+                // We distinguish between whitespace-only text, and text with non-whitespace content.
+                sType = ((MgXmlTextElement&)Fragment.Current()).IsWhitespace()? kpszXmlNodeTypeWhitespace : kpszXmlNodeTypeText;
+                break;
+
+            case keBeginElement: 
+                {
+                    sType = kpszXmlNodeTypeBeginElement;
+                    MgXmlBeginElement& Begin = (MgXmlBeginElement&)Fragment.Current();
+                    Namespaces.TrackBeginElement(Begin);
+                    sName = Begin.Name();
+                    sEmpty = Begin.IsEmpty()? kpszXmlSlash : kpszEmpty;
+                    GetAttributesFrom(Begin.Attributes(),sAttributes,sAttributeList);
+                }
+                break;
+
+            case keEndElement:
+                {
+                    sType = kpszXmlNodeTypeEndElement;
+                    MgXmlEndElement& End = (MgXmlEndElement&)Fragment.Current();
+                    Namespaces.TrackEndElement(End);
+                    sName = End.Name();
+                    sEnd = kpszXmlSlash;
+                }
+                break;
+
+            case keProcessingInstruction:
+                {
+                    sType = kpszXmlNodeTypeProcessingInstruction;
+                    MgXmlProcessingInstruction& PI = (MgXmlProcessingInstruction&)Fragment.Current();
+                    sName = PI.Name();
+                    GetAttributesFrom(PI.Attributes(),sAttributes,sAttributeList);
+                }
+                break;
+
+            case keComment:
+                sType = kpszXmlNodeTypeComment;
+                break;
+
+            case keDoctype:
+                sType = kpszXmlNodeTypeDoctype;
+                break;
+
+            case keCdata:
+                sType = kpszXmlNodeTypeCdata;
+                break;
+
+            default:
+                sType = kpszXmlNodeTypeUnknown;
+            }
+
+            STRING sPrefix,sBase;
+            STRING sFullName;
+            STRING sNamespace;
+
+            // Only do this namespace stuff for elements that have 'names'
+            if(sName.length() > 0) {
+                sFullName  = Namespaces.QualifiedName(sName);
+                sNamespace = Namespaces.NamespaceFrom(sPrefix.length()>0? sPrefix : MgXmlNamespaceManager::ksDefaultNsPrefix);
+
+                STRING::size_type iColon = sName.find(':');
+                if(iColon != STRING::npos) {
+                    sPrefix = sName.substr(0,iColon);
+                    sBase   = sName.substr(iColon+1);
+                }
+                else {
+                    sPrefix = kpszEmpty;
+                    sBase   = sName;
+                }
+            }
+
+            AddDefinition(kpszDefinitionXmlNodeType,      sType);
+            AddDefinition(kpszDefinitionXmlNodeName,      sName);
+            AddDefinition(kpszDefinitionXmlNodePrefix,    sPrefix);
+            AddDefinition(kpszDefinitionXmlNodeBase,      sBase);
+            AddDefinition(kpszDefinitionXmlNodeNamespace, sNamespace);
+            AddDefinition(kpszDefinitionXmlNodeFullname,  sFullName);
+            AddDefinition(kpszDefinitionXmlNodeEmptyBegin,sEmpty);
+            AddDefinition(kpszDefinitionXmlNodeEndMark,   sEnd);
+            AddDefinition(kpszDefinitionXmlNodeAttributes,sAttributes);
+            AddDefinition(kpszDefinitionXmlNodeAttrList,  sAttributeList);
+
+            ProcessExpandableText(sFormat);
+
+            switch(Fragment.Current().Type()) {
+            case keBeginElement:
+                // If it's not an empty begin element, let's recurse into it.
+                if( !((MgXmlBeginElement&)Fragment.Current()).IsEmpty())
+                    DoEnumXml(Fragment,Namespaces,iNum,iDepth+1,sFormat,sSubset);
+                break;
+
+            case keEndElement:
+                return;
+
+            default:
+                break; // hey, nothing to do but continue looping! 
+            }
+        }
+    }
+}
+
+
 
 // Like ProcessExpandableTextIntoString, but allows more than
 // just &Expansions; -- full XML handling like <? ?> etc is
@@ -1004,7 +1323,7 @@ void MgOgcServer::ProcessExpandableText(CPSZ pszTextWithExpansions,int iLength)
             break;
 
         case '<':
-            if(m_bEscaping) {
+            if(m_eEscapeState == keEscaping) {
                 Write(pszStart,iPos);
                 Write(kpszEntityLessThanFullSyntax);
                 pszStart+= iPos+1;
@@ -1014,7 +1333,7 @@ void MgOgcServer::ProcessExpandableText(CPSZ pszTextWithExpansions,int iLength)
                 iPos++;
             break;
         case '>':
-            if(m_bEscaping) {
+            if(m_eEscapeState == keEscaping) {
                 Write(pszStart,iPos);
                 Write(kpszEntityGreaterThanFullSyntax);
                 pszStart+= iPos+1;
@@ -1063,9 +1382,12 @@ CPSZ MgOgcServer::ProcessExpansion(CPSZ pszExpansionName)
 void MgOgcServer::Expansion(const STRING& sExpansionName)
 {
     // First, cope with the XML-defined entity names.  We *never* touch these.
-    if(sExpansionName == kpszEntityLessThan  || sExpansionName == kpszEntityGreaterThan ||
+    // ... well, almost never.  If we're unescaping, we'll go ahead and use
+    // the definitions.
+    if(this->m_eEscapeState != keUnescaping  && 
+      (sExpansionName == kpszEntityLessThan  || sExpansionName == kpszEntityGreaterThan ||
        sExpansionName == kpszEntityAmpersand || sExpansionName == kpszEntityQuote       ||
-       sExpansionName == kpszEntityApostrophe ) {
+       sExpansionName == kpszEntityApostrophe ) ) {
         Write(kpszExpansionPrefix);
         Write(sExpansionName);
         Write(kpszExpansionSuffix);
@@ -1114,6 +1436,24 @@ CPSZ MgOgcServer::Definition(CPSZ pszItem)
 }
 
 
+bool MgOgcServer::AddDefinition(CPSZ pszItem,CPSZ pszValue)
+{
+    return m_pTopOfDefinitions->AddDefinition(pszItem,pszValue);
+}
+
+bool MgOgcServer::AddDefinition(CPSZ pszItem,CREFSTRING sValue)
+{
+    return m_pTopOfDefinitions->AddDefinition(pszItem,sValue.c_str());
+}
+
+bool MgOgcServer::AddDefinition(CPSZ pszItem,int iValue)
+{
+    SZBUF szInteger[32];
+    szsprintf(szInteger,sizeof(szInteger),_("%d"),iValue);
+    return AddDefinition(pszItem,szInteger);
+}
+
+
 // This is the central entrypoint to template processing.  It will load a version-
 // appropriate template file, and attempt to generate a response of the indicated
 // mime-type, as driven by the template file.
@@ -1131,7 +1471,7 @@ bool MgOgcServer::GenerateResponse(CPSZ pszResponse,CPSZ pszSpecificMimeType)
 
     VPSZ pszTemplate = LoadFile(sFileName.c_str());
     if(pszTemplate == NULL) {
-        m_pTopOfDefinitions->AddDefinition(kpszDefinitionInitServerFile,sFileName.c_str());
+        AddDefinition(kpszDefinitionInitServerFile,sFileName.c_str());
         InternalError(kpszInternalErrorNoTemplateFile);
         return true; // we generated *a* response, but probably not the one expected ... ;-)
     }
@@ -1296,7 +1636,7 @@ CPSZ MgOgcServer::NegotiatedVersion(CPSZ pszRequested)
         if(pszRequested != NULL && SZ_EQ(pszRequested,kpszDebugVersionRegress)) {
             m_sNegotiatedVersion = pszRequested;
             // Provide a default definition for this.
-            m_pTopOfDefinitions->AddDefinition(kpszDictionaryTemplateVersion,pszRequested);
+            AddDefinition(kpszDictionaryTemplateVersion,pszRequested);
             return m_sNegotiatedVersion.c_str();
         }
 #endif
@@ -1352,7 +1692,7 @@ CPSZ MgOgcServer::NegotiatedVersion(CPSZ pszRequested)
             m_sNegotiatedVersion = sVersion; // the last version we found.
     }
 
-    m_pTopOfDefinitions->AddDefinition(kpszDictionaryTemplateVersion,m_sNegotiatedVersion.c_str());
+    AddDefinition(kpszDictionaryTemplateVersion,m_sNegotiatedVersion.c_str());
     return m_sNegotiatedVersion.c_str();
 }
 
@@ -1451,7 +1791,7 @@ bool MgOgcServer::MapValue(MgXmlParser& Xml,CPSZ pszFrom,REFSTRING sTo)
                     Xml.Next();
 
                     CDictionaryStackFrame ForThisTranslation(this);
-                    m_pTopOfDefinitions->AddDefinition(kpszDefinitionTranslationFrom,pszFrom);
+                    AddDefinition(kpszDefinitionTranslationFrom,pszFrom);
 
                     STRING sText;
                     while(!MapElement.AtEnd()) {
@@ -1563,25 +1903,24 @@ MgOgcServer::CSubstituteStream::CSubstituteStream(MgOgcServer* pServer,CStream& 
 :   m_pServer(      pServer)
 ,   m_pStreamOld(   pServer->m_pResponse)
 ,   m_bWriteEnabled(pServer->m_bWriteEnabled)
-,   m_bEscaping(    pServer->m_bEscaping)
+,   m_eEscapeState( pServer->m_eEscapeState)
 {
     // Redirect to the new stream
     m_pServer->m_pResponse = &StreamNew;
     // Using default settings.
-    m_pServer->m_bEscaping     = false;
+    m_pServer->m_eEscapeState  = keNormal;
     m_pServer->m_bWriteEnabled = true;
 }
 
 MgOgcServer::CSubstituteStream::~CSubstituteStream()
 {
     // Restore the previous values.
-    m_pServer->m_bEscaping     = m_bEscaping;
+    m_pServer->m_eEscapeState  = m_eEscapeState;
     m_pServer->m_bWriteEnabled = m_bWriteEnabled;
     // Restore the previous stream.
     m_pServer->m_pResponse     = m_pStreamOld;
     // There, things should be exactly like we left it.
 }
-
 
 #ifdef _WFS_LOGGING
 

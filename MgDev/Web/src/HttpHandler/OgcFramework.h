@@ -56,6 +56,7 @@
 # define szcmpn(l,r,c) wcsncmp(l,r,c)
 # define szicmp(l,r)   wcsicmp(l,r)
 # define szdup(s)      wcsdup(s)
+# define sztoi(s)      widetoint(s)
 // CHARTYPE-appropriate abstractions for file IO
 # define szopen(fn,ac) _wfopen(fn,ac)
 # define szgets(buf,ich,h) fgetws(buf,ich,h)
@@ -71,6 +72,7 @@
 # define szcmpn(l,r,c) wcsncmp(l,r,c)
 # define szicmp(l,r)   wcscasecmp(l,r)
 # define szdup(s)      wcsdup(s)
+# define sztoi(s)      widetoint(s)
 // CHARTYPE-appropriate abstractions for file IO
 # define szopen(fn,ac) xwfopen(fn,ac)
 # define szgets(buf,ich,h) fgetws(buf,ich,h)
