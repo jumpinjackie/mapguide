@@ -574,7 +574,7 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
         }
         if (m_bShowScalebar || m_bShowNorthArrow)
         {
-            mapHeight -= MgPrintLayout::ScalebarHeight*convertUnits;
+            mapHeight -= (MgPrintLayout::ScalebarHeight + MgPrintLayout::ScalebarPadding)*convertUnits;
         }
         if (m_bShowUrl || m_bShowDateTime)
         {
@@ -676,7 +676,14 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
     }
 
     //finally center map vertically using updated map height
-    mapOffsetY = (m_dPageHeight - mapHeight) * 0.5;
+    if (m_bShowTitle)
+    {
+        mapOffsetY = (m_dPageHeight - MgPrintLayout::HeaderHeight*convertUnits - mapHeight) * 0.5;
+    }
+    if (m_bShowScalebar || m_bShowNorthArrow || m_bShowUrl || m_bShowDateTime)
+    {
+        mapOffsetY = (m_dPageHeight - mapHeight) * 0.5;
+    }
 }
 
 

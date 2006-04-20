@@ -382,6 +382,11 @@ void MgLegendPlotUtil::ComputeLegendOffsetAndSize(MgPrintLayout* layout, double 
     }
 
     double startY = (dr.GetBounds().height() + dr.mapBoundsHeight()) * 0.5;
+    if (layout->ShowTitle() &&
+        !layout->ShowScalebar() && !layout->ShowNorthArrow() && !layout->ShowUrl() && !layout->ShowDateTime())
+    {
+        startY -= MgPrintLayout::HeaderHeight*convertUnits * 0.5;
+    }
 
     double y = startY;
 
@@ -550,7 +555,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
     double metersPerUnit = dr.GetMetersPerUnit();
 
     // position the scalebar just below the the map
-    double startY = (dr.GetBounds().height() - dr.mapBoundsHeight()) * 0.5 - MgPrintLayout::ScalebarPadding*convertUnits;
+    double startY = dr.mapOffsetY() - MgPrintLayout::ScalebarPadding*convertUnits;
 
     // Calculate distance units and divisions
     int nUnitsPerDivision = 5;
@@ -923,7 +928,7 @@ void MgLegendPlotUtil::AddNorthArrowElement(MgPrintLayout* layout, EPlotRenderer
     }
 
     // position the north arrow just below the the map
-    double startY = (dr.GetBounds().height() - dr.mapBoundsHeight()) * 0.5 - MgPrintLayout::ScalebarHeight*convertUnits;
+    double startY = dr.mapOffsetY() - MgPrintLayout::ScalebarHeight*convertUnits;
 
     // North arrow (left half)
     x = startX + northArrowMinVertexX*convertUnits;
