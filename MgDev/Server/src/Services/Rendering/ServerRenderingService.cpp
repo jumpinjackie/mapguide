@@ -755,18 +755,18 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
 
 //a helper function that does most of the work for QueryFeatures
-//and QueryFeatureProperties. Basically runs a rendering loop with 
+//and QueryFeatureProperties. Basically runs a rendering loop with
 //a custom renderer supplied by the caller that accumulates selection
 //related things like property values and feature IDs.
 void MgServerRenderingService::RenderForSelection(MgMap* map,
                          MgStringCollection* layerNames,
                          MgGeometry* geometry,
-                         INT32 selectionVariant, 
+                         INT32 selectionVariant,
                          INT32 maxFeatures,
                          FeatureInfoRenderer* selRenderer)
 {
     if (NULL == map || NULL == geometry)
-        throw new MgNullArgumentException(L"MgServerRenderingService.QueryFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"", NULL);
 
     if (maxFeatures < 0)
     {
@@ -777,7 +777,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         arguments.Add(L"5");
         arguments.Add(buffer);
 
-        throw new MgInvalidArgumentException(L"MgServerRenderingService.QueryFeatures",
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection",
             __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanZero", NULL);
     }
 
@@ -942,4 +942,3 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
     selRenderer->EndMap();
 }
-
