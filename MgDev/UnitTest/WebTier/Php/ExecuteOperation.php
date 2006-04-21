@@ -572,9 +572,13 @@ class ExecuteOperation
         {
             $actualResult = $this->wfsOperation->DescribeFeatureType($paramSet);
         }
-        elseif($operationName == "WfsGetFeature")
+        elseif($operationName == "WfsGetFeature_GET")
         {
             $actualResult = $this->wfsOperation->GetFeature($paramSet);
+        }
+        elseif($operationName == "WfsGetFeature_POST")
+        {
+            $actualResult = $this->wfsOperation->GetFeature($paramSet, "POST");
         }
         //End Wfs
         //Start Wms

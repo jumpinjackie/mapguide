@@ -163,7 +163,6 @@ class FeatureServiceAPI
             //TODO: Set query options
             if (array_key_exists("FILTER", $this->arrayParam))
             {
-                print 'hello';
                 $queryOptions->SetFilter($this->arrayParam["FILTER"]);
             }
 
@@ -174,7 +173,6 @@ class FeatureServiceAPI
 
                 for ($i=0; $i<count($stringArray); $i++)
                 {
-                    print 'hello';
                     $queryOptions->AddFeatureProperty($stringArray[$i]);
                 }
             }
