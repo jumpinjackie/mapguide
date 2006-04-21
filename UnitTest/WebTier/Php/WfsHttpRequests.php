@@ -75,7 +75,7 @@ class WfsHttpRequests
     }
 
 
-    function GetFeature($paramSet)
+    function GetFeature($paramSet, $request="GET")
     {
         try
         {
@@ -90,7 +90,14 @@ class WfsHttpRequests
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"typeName\"");
             $arrayParam["typeName"]=$this->unitTestParamVm->GetString("ParamValue");
 
-            return $this->httpRequest->SendRequest($this->URL, $arrayParam);
+            if($request=="POST")
+            {
+                return $this->httpRequest->SendRequest($this->URL, $arrayParam, "POST");
+            }
+            else
+            {
+                return $this->httpRequest->SendRequest($this->URL, $arrayParam);
+            }
         }
         catch (SqliteException $s)
         {
@@ -98,6 +105,6 @@ class WfsHttpRequests
         }
     }
 
-    
+
 }
 ?>
