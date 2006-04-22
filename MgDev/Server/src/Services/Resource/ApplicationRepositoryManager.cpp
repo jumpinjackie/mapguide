@@ -661,6 +661,23 @@ void MgApplicationRepositoryManager::EnumerateParentMapDefinitions(
 {
     MG_RESOURCE_SERVICE_TRY()
 
+    // If the child list contains some Map Definition resources, then
+    // insert them into the parent list.
+
+    for (set<string>::const_iterator i = childResources.begin();
+        i != childResources.end( ); ++i)
+    {
+        string mbResourcePathname = *i;
+        STRING wcResourcePathname;
+        MgUtil::MultiByteToWideChar(mbResourcePathname, wcResourcePathname);
+        MgResourceIdentifier resource(wcResourcePathname);
+
+        if (resource.IsResourceTypeOf(MgResourceType::MapDefinition))
+        {
+            parentResources.insert(wcResourcePathname);
+        }
+    }
+
     MgApplicationResourceContentManager* resourceContentMan =
         GetApplicationResourceContentManager();
 
