@@ -164,10 +164,6 @@ void MgServerTileService::NotifyResourcesChanged(MgSerializableCollection* resou
                 // clear any tile cache associated with this map
                 m_tileCache->Clear(mapResId);
             }
-            else if (mapResId->IsResourceTypeOf(MgResourceType::Map))
-            {
-                // TODO?
-            }
         }
     }
 
