@@ -130,34 +130,8 @@ void MgTileCache::Clear(MgResourceIdentifier* resId)
 // gets the base path to use with the tile cache for the given map
 STRING MgTileCache::GetBasePath(MgMap* map)
 {
-    STRING mapPath;
-
     Ptr<MgResourceIdentifier> resId = map->GetMapDefinition();
-    if (resId->GetRepositoryType() == MgRepositoryType::Library)
-    {
-        // for maps in the library repository the path+name is unique
-        mapPath  = resId->GetPath();
-        mapPath += L"_";
-        mapPath += resId->GetName();
-    }
-    else
-    {
-        // for maps in the session repository the name alone is not
-        // unique - we need to append the session ID
-        mapPath  = resId->GetName();
-        mapPath += L"_";
-        mapPath += map->GetObjectId();
-    }
-
-    // for safety
-    mapPath = MgUtil::ReplaceString(mapPath, L"/", L"_");
-    mapPath = MgUtil::ReplaceString(mapPath, L":", L"_");
-
-    // build the base path
-    wchar_t tmp[PATH_LEN] = { 0 };
-    swprintf(tmp, PATH_LEN, L"%ls%ls", m_path.c_str(), mapPath.c_str());
-
-    return STRING(tmp);
+    return GetBasePath(resId);
 }
 
 
@@ -166,6 +140,14 @@ STRING MgTileCache::GetBasePath(MgResourceIdentifier* resId)
 {
     STRING mapPath;
 
+    // safety check
+    assert(resId != NULL);
+    if (resId == NULL)
+        return mapPath;
+
+    // we should only be dealing with map definitions
+    assert(resId->GetResourceType() == MgResourceType::MapDefinition);
+
     if (resId->GetRepositoryType() == MgRepositoryType::Library)
     {
         // for maps in the library repository the path+name is unique
@@ -173,9 +155,17 @@ STRING MgTileCache::GetBasePath(MgResourceIdentifier* resId)
         mapPath += L"_";
         mapPath += resId->GetName();
     }
+    else if (resId->GetRepositoryType() == MgRepositoryType::Session)
+    {
+        // for maps in the session repository we use the session name + map name
+        mapPath  = resId->GetRepositoryName();
+        mapPath += L"_";
+        mapPath += resId->GetName();
+    }
     else
     {
-        // TODO - return empty string for now
+        // shouldn't get here
+        assert(false);
         return mapPath;
     }
 
