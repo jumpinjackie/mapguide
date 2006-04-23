@@ -32,11 +32,11 @@ MgOpRenderTile::~MgOpRenderTile()
 void MgOpRenderTile::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderTile::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"RenderTile");
 
@@ -44,22 +44,22 @@ void MgOpRenderTile::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (4 == m_packet.m_NumArguments)
     {
-        Ptr<MgMap> map = (MgMap*)stream->GetObject();
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
 
         STRING baseMapLayerGroupName;
-        stream->GetString(baseMapLayerGroupName);
+        m_stream->GetString(baseMapLayerGroupName);
 
         INT32 tileCol = 0;
-        stream->GetInt32(tileCol);
+        m_stream->GetInt32(tileCol);
 
         INT32 tileRow = 0;
-        stream->GetInt32(tileRow);
+        m_stream->GetInt32(tileRow);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -74,8 +74,8 @@ void MgOpRenderTile::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderTile(map, baseMapLayerGroupName, tileCol, tileRow);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -83,7 +83,7 @@ void MgOpRenderTile::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpRenderTile.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -94,9 +94,9 @@ void MgOpRenderTile::Execute()
 
     MG_CATCH(L"MgOpRenderTile.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

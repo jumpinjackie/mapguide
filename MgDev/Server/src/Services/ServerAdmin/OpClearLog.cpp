@@ -50,11 +50,11 @@ MgOpClearLog::~MgOpClearLog()
 void MgOpClearLog::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpClearLog::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"ClearLog");
 
@@ -62,14 +62,14 @@ void MgOpClearLog::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         STRING log;
-        stream->GetString(log);
+        m_stream->GetString(log);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(log.c_str());
@@ -80,8 +80,8 @@ void MgOpClearLog::Execute()
 
         bool bCleared = m_service->ClearLog(log);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, bCleared);
+        m_opCompleted = true;
+        WriteResponseStream(bCleared);
     }
     else
     {
@@ -89,7 +89,7 @@ void MgOpClearLog::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpClearLog.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -100,9 +100,9 @@ void MgOpClearLog::Execute()
 
     MG_CATCH(L"MgOpClearLog.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

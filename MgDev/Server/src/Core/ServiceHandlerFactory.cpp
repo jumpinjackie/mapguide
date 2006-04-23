@@ -99,56 +99,51 @@ MgServiceHandlerFactory* MgServiceHandlerFactory::Instance()
 IMgServiceHandler* MgServiceHandlerFactory::GetHandler(UINT32 serviceId,
     MgStreamData* data, const MgOperationPacket& packet)
 {
-    IMgServiceHandler* serviceHandler = 0;
+    IMgServiceHandler* serviceHandler = NULL;
 
-    try
+    MG_TRY()
+
+    switch (serviceId)
     {
-        switch (serviceId)
-        {
-            case MgPacketParser::msiDrawing:
-                serviceHandler = new MgDrawingServiceHandler(data, packet);
-                break;
+        case MgPacketParser::msiDrawing:
+            serviceHandler = new MgDrawingServiceHandler(data, packet);
+            break;
 
-            case MgPacketParser::msiFeature:
-                serviceHandler = new MgFeatureServiceHandler(data, packet);
-                break;
+        case MgPacketParser::msiFeature:
+            serviceHandler = new MgFeatureServiceHandler(data, packet);
+            break;
 
-            case MgPacketParser::msiMapping:
-                serviceHandler = new MgMappingServiceHandler(data, packet);
-                break;
+        case MgPacketParser::msiMapping:
+            serviceHandler = new MgMappingServiceHandler(data, packet);
+            break;
 
-            case MgPacketParser::msiRendering:
-                serviceHandler = new MgRenderingServiceHandler(data, packet);
-                break;
+        case MgPacketParser::msiRendering:
+            serviceHandler = new MgRenderingServiceHandler(data, packet);
+            break;
 
-            case MgPacketParser::msiResource:
-                serviceHandler = new MgResourceServiceHandler(data, packet);
-                break;
+        case MgPacketParser::msiResource:
+            serviceHandler = new MgResourceServiceHandler(data, packet);
+            break;
 
-            case MgPacketParser::msiServerAdmin:
-                serviceHandler = new MgServerAdminServiceHandler(data, packet);
-                break;
+        case MgPacketParser::msiServerAdmin:
+            serviceHandler = new MgServerAdminServiceHandler(data, packet);
+            break;
 
-            case MgPacketParser::msiSite:
-                serviceHandler = new MgSiteServiceHandler(data, packet);
-                break;
+        case MgPacketParser::msiSite:
+            serviceHandler = new MgSiteServiceHandler(data, packet);
+            break;
 
-            case MgPacketParser::msiTile:
-                serviceHandler = new MgTileServiceHandler(data, packet);
-                break;
+        case MgPacketParser::msiTile:
+            serviceHandler = new MgTileServiceHandler(data, packet);
+            break;
 
-            case MgPacketParser::msiUnknown:
-            default:
-                throw new MgServiceNotSupportedException(L"GetHandler", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        case MgPacketParser::msiUnknown:
+        default:
+            throw new MgServiceNotSupportedException(L"GetHandler", 
+                __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    catch (MgException* e)
-    {
-        SAFE_RELEASE(e); // TODO: Rethrow MgException to the caller
-    }
-    catch (...)
-    {
-    }
+
+    MG_CATCH_AND_THROW(L"MgServiceHandlerFactory.GetHandler")
 
     return serviceHandler;
 }

@@ -53,11 +53,11 @@ MgOpAuthenticate::~MgOpAuthenticate()
 void MgOpAuthenticate::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpAuthenticate::Execute()\n")));
-    ACE_ASSERT(NULL != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     // Disabled logging this operation because it is called very often
 //    MG_LOG_OPERATION_MESSAGE(L"Authenticate");
@@ -66,18 +66,18 @@ void MgOpAuthenticate::Execute()
 
 //    MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (3 == m_packet.m_NumArguments)
     {
         Ptr<MgUserInformation> userInfo =
-            (MgUserInformation*)stream->GetObject();
+            (MgUserInformation*)m_stream->GetObject();
         Ptr<MgStringCollection> requiredRoles =
-            (MgStringCollection*)stream->GetObject();
+            (MgStringCollection*)m_stream->GetObject();
         bool returnAssignedRoles;
-        stream->GetBoolean(returnAssignedRoles);
+        m_stream->GetBoolean(returnAssignedRoles);
 
-        argsRead = true;
+        m_argsRead = true;
 
 //        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
 //        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgUserInformation");
@@ -90,8 +90,8 @@ void MgOpAuthenticate::Execute()
         Ptr<MgStringCollection> assignedRoles = m_service->Authenticate(userInfo,
             requiredRoles, returnAssignedRoles);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, assignedRoles);
+        m_opCompleted = true;
+        WriteResponseStream(assignedRoles);
     }
     else
     {
@@ -99,7 +99,7 @@ void MgOpAuthenticate::Execute()
 //        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if (!argsRead)
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpAuthenticate.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -110,9 +110,9 @@ void MgOpAuthenticate::Execute()
 
     MG_SITE_SERVICE_CATCH(L"MgOpAuthenticate.Execute")
 
-    if (mgException != NULL && !operationCompleted && stream != NULL)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
 //        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

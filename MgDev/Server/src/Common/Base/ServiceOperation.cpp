@@ -31,7 +31,9 @@
 ///----------------------------------------------------------------------------
 
 MgServiceOperation::MgServiceOperation() :
-    m_currConnection(NULL)
+    m_currConnection(NULL),
+    m_argsRead(false),
+    m_opCompleted(false)
 {
 }
 
@@ -150,31 +152,31 @@ void MgServiceOperation::Init(MgStreamData* data,
     const MgOperationPacket& packet)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::Init()\n" )));
-    ACE_ASSERT(0 != data);
+    ACE_ASSERT(NULL != data);
 
     MG_TRY()
 
-    if (0 == data)
+    m_data = data;
+    m_packet = packet;
+
+    m_currConnection = MgConnection::GetCurrentConnection();
+    assert(NULL != m_currConnection);
+
+    if (NULL == data)
     {
         throw new MgNullArgumentException(L"MgServiceOperation.Init",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    m_data = data;
-    m_packet = packet;
-
     // Pull first argument. It is the user information.
-    Ptr<MgStream> stream = new MgStream(m_data->GetStreamHelper());
-    Ptr<MgUserInformation> currUserInfo = dynamic_cast<MgUserInformation*>(stream->GetObject());
+    m_stream = new MgStream(m_data->GetStreamHelper());
+    Ptr<MgUserInformation> currUserInfo = dynamic_cast<MgUserInformation*>(m_stream->GetObject());
     assert(currUserInfo != NULL);
 
     MgUserInformation::SetCurrentUserInfo(currUserInfo);
     m_packet.m_UserInfo = NULL;
 
     // Update client info in the connection that is associated with this operation.
-    m_currConnection = MgConnection::GetCurrentConnection();
-    assert(NULL != m_currConnection);
-
     m_currConnection->SetClientAgent(currUserInfo->GetClientAgent());
     m_currConnection->SetClientIp(currUserInfo->GetClientIp());
     m_currConnection->SetUserName(currUserInfo->GetUserName());
@@ -187,34 +189,61 @@ void MgServiceOperation::Init(MgStreamData* data,
     MG_CATCH_AND_THROW(L"MgServiceOperation.Init")
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Handles the specified exception.
+///
+bool MgServiceOperation::HandleException(MgException* except)
+{
+    bool handled = false;
+
+    MG_TRY()
+
+    // Write the exception if all the data have been read successfully.
+    if (m_argsRead && NULL != except && m_stream != NULL)
+    {
+        WriteResponseStream(except);
+        handled = true;
+    }
+    else if (NULL != m_currConnection)
+    {
+        m_currConnection->SetCurrentOperationStatus(MgConnection::OpFailed);
+    }
+
+    MG_CATCH_AND_RELEASE()
+
+    return handled;
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Write the response stream.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgStream& stream)
+void MgServiceOperation::WriteResponseStream()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
+    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
 
     MG_TRY()
 
     MgService* service = GetService();
-    assert(0 != service);
+    assert(NULL != service);
 
     if (service->HasWarnings())
     {
         Ptr<MgWarnings> warning = service->GetWarningsObject();
 
-        stream.WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 1);
-        stream.WriteObject(warning);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 1);
+        m_stream->WriteObject(warning);
     }
     else
     {
-        stream.WriteResponseHeader(MgPacketParser::mecSuccess, 0);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccess, 0);
     }
 
-    stream.WriteStreamEnd();
+    m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
 
@@ -227,30 +256,31 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream)
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgStream& stream, bool value)
+void MgServiceOperation::WriteResponseStream(bool value)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
+    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
 
     MG_TRY()
 
     MgService* service = GetService();
-    assert(0 != service);
+    assert(NULL != service);
 
     if (service->HasWarnings())
     {
         Ptr<MgWarnings> warning = service->GetWarningsObject();
 
-        stream.WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
-        stream.WriteObject(warning);
-        stream.WriteBoolean(value);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
+        m_stream->WriteObject(warning);
+        m_stream->WriteBoolean(value);
     }
     else
     {
-        stream.WriteResponseHeader(MgPacketParser::mecSuccess, 1);
-        stream.WriteBoolean(value);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccess, 1);
+        m_stream->WriteBoolean(value);
     }
 
-    stream.WriteStreamEnd();
+    m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
 
@@ -263,12 +293,13 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream, bool value)
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgStream& stream, INT32 value)
+void MgServiceOperation::WriteResponseStream(INT32 value)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
+    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
 
     MgService* service = GetService();
-    assert(0 != service);
+    assert(NULL != service);
 
     MG_TRY()
 
@@ -276,17 +307,17 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream, INT32 value)
     {
         Ptr<MgWarnings> warning = service->GetWarningsObject();
 
-        stream.WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
-        stream.WriteObject(warning);
-        stream.WriteInt32(value);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
+        m_stream->WriteObject(warning);
+        m_stream->WriteInt32(value);
     }
     else
     {
-        stream.WriteResponseHeader(MgPacketParser::mecSuccess, 1);
-        stream.WriteInt32(value);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccess, 1);
+        m_stream->WriteInt32(value);
     }
 
-    stream.WriteStreamEnd();
+    m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
 
@@ -299,12 +330,13 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream, INT32 value)
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgStream& stream, INT64 value)
+void MgServiceOperation::WriteResponseStream(INT64 value)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
+    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
 
     MgService* service = GetService();
-    assert(0 != service);
+    assert(NULL != service);
 
     MG_TRY()
 
@@ -312,17 +344,17 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream, INT64 value)
     {
         Ptr<MgWarnings> warning = service->GetWarningsObject();
 
-        stream.WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
-        stream.WriteObject(warning);
-        stream.WriteInt64(value);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
+        m_stream->WriteObject(warning);
+        m_stream->WriteInt64(value);
     }
     else
     {
-        stream.WriteResponseHeader(MgPacketParser::mecSuccess, 1);
-        stream.WriteInt64(value);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccess, 1);
+        m_stream->WriteInt64(value);
     }
 
-    stream.WriteStreamEnd();
+    m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
 
@@ -335,12 +367,13 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream, INT64 value)
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgStream& stream, STRING value)
+void MgServiceOperation::WriteResponseStream(STRING value)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
+    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
 
     MgService* service = GetService();
-    assert(0 != service);
+    assert(NULL != service);
 
     MG_TRY()
 
@@ -348,17 +381,17 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream, STRING value)
     {
         Ptr<MgWarnings> warning = service->GetWarningsObject();
 
-        stream.WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
-        stream.WriteObject(warning);
-        stream.WriteString(value);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
+        m_stream->WriteObject(warning);
+        m_stream->WriteString(value);
     }
     else
     {
-        stream.WriteResponseHeader(MgPacketParser::mecSuccess, 1);
-        stream.WriteString(value);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccess, 1);
+        m_stream->WriteString(value);
     }
 
-    stream.WriteStreamEnd();
+    m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
 
@@ -371,32 +404,32 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream, STRING value)
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgStream& stream,
-    MgSerializable* obj)
+void MgServiceOperation::WriteResponseStream(MgSerializable* obj)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
-    // ACE_ASSERT(0 != obj);
+    // ACE_ASSERT(NULL != obj);
+    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
 
     MG_TRY()
 
     MgService* service = GetService();
-    assert(0 != service);
+    assert(NULL != service);
 
     if (service->HasWarnings())
     {
         Ptr<MgWarnings> warning = service->GetWarningsObject();
 
-        stream.WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
-        stream.WriteObject(warning);
-        stream.WriteObject(obj);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
+        m_stream->WriteObject(warning);
+        m_stream->WriteObject(obj);
     }
     else
     {
-        stream.WriteResponseHeader(MgPacketParser::mecSuccess, 1);
-        stream.WriteObject(obj);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccess, 1);
+        m_stream->WriteObject(obj);
     }
 
-    stream.WriteStreamEnd();
+    m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
 
@@ -409,32 +442,32 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream,
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgStream& stream,
-    MgStringCollection* stringCollection)
+void MgServiceOperation::WriteResponseStream(MgStringCollection* stringCollection)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
-    // ACE_ASSERT(0 != stringCollection);
+    // ACE_ASSERT(NULL != stringCollection);
+    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
 
     MG_TRY()
 
     MgService* service = GetService();
-    assert(0 != service);
+    assert(NULL != service);
 
     if (service->HasWarnings())
     {
         Ptr<MgWarnings> warning = service->GetWarningsObject();
 
-        stream.WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
-        stream.WriteObject(warning);
-        stream.WriteObject(stringCollection);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccessWithWarning, 2);
+        m_stream->WriteObject(warning);
+        m_stream->WriteObject(stringCollection);
     }
     else
     {
-        stream.WriteResponseHeader(MgPacketParser::mecSuccess, 1);
-        stream.WriteObject(stringCollection);
+        m_stream->WriteResponseHeader(MgPacketParser::mecSuccess, 1);
+        m_stream->WriteObject(stringCollection);
     }
 
-    stream.WriteStreamEnd();
+    m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
 
@@ -447,33 +480,27 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream,
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgStream& stream,
-    MgException* except)
+void MgServiceOperation::WriteResponseStream(MgException* except)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
-    ACE_ASSERT(0 != except);
+    ACE_ASSERT(NULL != except && m_stream != NULL);
 
-    try
-    {
-        except->GetMessage();
-        except->GetDetails();
-        except->GetStackTrace();
+    MG_TRY()
 
-        stream.WriteResponseHeader(MgPacketParser::mecFailure, 1);
-        stream.WriteObject(except);
-        stream.WriteStreamEnd();
-    }
-    catch (MgException* e) // connection lost?
+    if (NULL != m_currConnection)
     {
-        SAFE_RELEASE(e);
-        assert(false);
-    }
-    catch (...)
-    {
-        assert(false);
+        m_currConnection->SetCurrentOperationStatus(MgConnection::OpFailed);
     }
 
-    m_currConnection->SetCurrentOperationStatus(MgConnection::OpFailed);
+    except->GetMessage();
+    except->GetDetails();
+    except->GetStackTrace();
+
+    m_stream->WriteResponseHeader(MgPacketParser::mecFailure, 1);
+    m_stream->WriteObject(except);
+    m_stream->WriteStreamEnd();
+
+    MG_CATCH_AND_THROW(L"MgServiceOperation.WriteResponseStream")
 }
 
 ///----------------------------------------------------------------------------
@@ -490,9 +517,6 @@ void MgServiceOperation::WriteResponseStream(MgStream& stream,
 
 void MgServiceOperation::Authenticate()
 {
-    MgServerManager* serverManager = MgServerManager::GetInstance();
-    assert(NULL != serverManager);
-
     // Perform the license validation.
     if (!IsOverheadOperation())
     {
@@ -512,6 +536,8 @@ void MgServiceOperation::Authenticate()
 
     // Currently, only Server Admin/Site/Resource Service operations need
     // user role authentication. This may change in the future.
+    MgServerManager* serverManager = MgServerManager::GetInstance();
+    assert(NULL != serverManager);
 
     if (serverManager->IsSiteServer())
     {

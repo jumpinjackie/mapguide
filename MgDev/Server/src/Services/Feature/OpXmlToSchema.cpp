@@ -53,11 +53,11 @@ MgOpXmlToSchema::~MgOpXmlToSchema()
 void MgOpXmlToSchema::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpXmlToSchema::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"XmlToSchema");
 
@@ -65,15 +65,15 @@ void MgOpXmlToSchema::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         // Get the xml
         STRING xml;
-        stream->GetString(xml);
+        m_stream->GetString(xml);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"STRING");
@@ -82,9 +82,9 @@ void MgOpXmlToSchema::Execute()
         // Execute the operation
         Ptr<MgFeatureSchemaCollection> schemaCol= m_service->XmlToSchema(xml);
 
-        operationCompleted = true;
+        m_opCompleted = true;
         // Write the response
-        WriteResponseStream(*stream, schemaCol);
+        WriteResponseStream(schemaCol);
     }
     else
     {
@@ -92,7 +92,7 @@ void MgOpXmlToSchema::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpSchemaToXml.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -103,9 +103,9 @@ void MgOpXmlToSchema::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpSchemaToXml.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

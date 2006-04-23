@@ -49,6 +49,8 @@ DWORD UninstallService();
 /// </summary>
 int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 {
+    int nResult = 0;
+
 #ifdef WIN32
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
@@ -60,19 +62,17 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
     #endif
 #endif
 
-    int nResult = 0;
+    // Set the locale to the default code page obtained from the operating system.
+    ::setlocale(LC_ALL, "");
 
-    Ptr<MgException> mgException;
-    try
+    ACE::init();
+
+    // we need initialize Xerces before BDB
+    XMLPlatformUtils::Initialize();
+
+    MG_TRY()
+
     {
-        // Set the locale to the default code page obtained from the operating system.
-        ::setlocale(LC_ALL, "");
-
-        ACE::init();
-
-        // we need initialize Xerces before BDB
-        XMLPlatformUtils::Initialize();
-
         // We only want LM_DEBUG messages with the DEBUG build
         #ifdef _DEBUG
         ACE_LOG_MSG->priority_mask(LM_DEBUG | LM_INFO | LM_NOTICE | LM_WARNING | LM_STARTUP | LM_ERROR | LM_CRITICAL | LM_ALERT | LM_EMERGENCY, ACE_Log_Msg::PROCESS);
@@ -280,80 +280,19 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 #endif
         }
     }
-    catch (MgException* e)
+
+    MG_CATCH(L"main()")
+
+    if (mgException != NULL)
     {
-        if(e)
-        {
-            STRING message = L"";
+        MgServerManager* serverManager = MgServerManager::GetInstance();
+        STRING locale = (NULL == serverManager) ?
+            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+        STRING details = mgException->GetDetails(locale);
 
-            MgServerManager* pServerManager = MgServerManager::GetInstance();
-            if(pServerManager)
-            {
-                message = e->GetDetails(pServerManager->GetDefaultLocale());
-            }
-            else
-            {
-                message = e->GetDetails(MgResources::DefaultLocale);
-            }
-
-            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
-            MG_LOG_SYSTEM_ENTRY(LM_ERROR, message.c_str());
-            MG_LOG_ERROR_ENTRY(message.c_str());
-        }
-
-        SAFE_RELEASE(e);
-
-        nResult = -1;
-    }
-    catch (exception& e)
-    {
-        mgException = MgSystemException::Create(e, L"main()",
-            __LINE__, __WFILE__);
-
-        if (mgException != NULL)
-        {
-            STRING message = L"";
-
-            MgServerManager* pServerManager = MgServerManager::GetInstance();
-            if(pServerManager)
-            {
-                message = mgException->GetDetails(pServerManager->GetDefaultLocale());
-            }
-            else
-            {
-                message = mgException->GetDetails(MgResources::DefaultLocale);
-            }
-
-            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
-            MG_LOG_SYSTEM_ENTRY(LM_ERROR, message.c_str());
-            MG_LOG_ERROR_ENTRY(message.c_str());
-        }
-
-        nResult = -1;
-    }
-    catch (...)
-    {
-        mgException = new MgUnclassifiedException(L"main()",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-
-        if (mgException != NULL)
-        {
-            STRING message = L"";
-
-            MgServerManager* pServerManager = MgServerManager::GetInstance();
-            if(pServerManager)
-            {
-                message = mgException->GetDetails(pServerManager->GetDefaultLocale());
-            }
-            else
-            {
-                message = mgException->GetDetails(MgResources::DefaultLocale);
-            }
-
-            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
-            MG_LOG_SYSTEM_ENTRY(LM_ERROR, message.c_str());
-            MG_LOG_ERROR_ENTRY(message.c_str());
-        }
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        MG_LOG_SYSTEM_ENTRY(LM_ERROR, details.c_str());
+        MG_LOG_ERROR_ENTRY(details.c_str());
 
         nResult = -1;
     }

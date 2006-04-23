@@ -43,9 +43,9 @@ void MgOpAddGroup::Execute()
     ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpAddGroup::Execute()\n" )) );
     ACE_ASSERT( 0 != m_data );
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"AddGroup");
 
@@ -53,18 +53,18 @@ void MgOpAddGroup::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream( m_data->GetStreamHelper() );
+    ACE_ASSERT(m_stream != NULL);
 
     //  Get Arguments
     if ( 2 == m_packet.m_NumArguments )
     {
         STRING group;
-        stream->GetString( group );
+        m_stream->GetString( group );
 
         STRING desc;
-        stream->GetString( desc );
+        m_stream->GetString( desc );
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(group.c_str());
@@ -77,8 +77,8 @@ void MgOpAddGroup::Execute()
 
         m_service->AddGroup( group, desc );
 
-        operationCompleted = true;
-        WriteResponseStream( *stream );
+        m_opCompleted = true;
+        WriteResponseStream();
     }
     else
     {
@@ -86,7 +86,7 @@ void MgOpAddGroup::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpAddGroup.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -97,9 +97,9 @@ void MgOpAddGroup::Execute()
 
     MG_SITE_SERVICE_CATCH( L"MgOpAddGroup.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream( *stream, mgException );
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

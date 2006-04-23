@@ -42,11 +42,11 @@ MgOpMakePackage::~MgOpMakePackage()
 void MgOpMakePackage::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpMakePackage::Execute()\n")));
-    ACE_ASSERT(NULL != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"MakePackage");
 
@@ -54,17 +54,17 @@ void MgOpMakePackage::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (3 == m_packet.m_NumArguments)
     {
         STRING packageName, packageDescription;
         Ptr<MgResourceIdentifier> resource =
-            (MgResourceIdentifier*)stream->GetObject();
-        stream->GetString(packageName);
-        stream->GetString(packageDescription);
+            (MgResourceIdentifier*)m_stream->GetObject();
+        m_stream->GetString(packageName);
+        m_stream->GetString(packageDescription);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -78,8 +78,8 @@ void MgOpMakePackage::Execute()
 
         m_service->MakePackage(resource, packageName, packageDescription);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream);
+        m_opCompleted = true;
+        WriteResponseStream();
     }
     else
     {
@@ -87,7 +87,7 @@ void MgOpMakePackage::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpMakePackage.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -98,9 +98,9 @@ void MgOpMakePackage::Execute()
 
     MG_CATCH(L"MgOpMakePackage.Execute")
 
-    if (mgException != NULL && !operationCompleted && stream != NULL)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

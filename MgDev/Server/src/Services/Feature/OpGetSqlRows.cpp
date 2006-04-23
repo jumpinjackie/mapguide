@@ -53,11 +53,11 @@ MgOpGetSqlRows::~MgOpGetSqlRows()
 void MgOpGetSqlRows::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSqlRows::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"OpGetSqlRows");
 
@@ -65,14 +65,14 @@ void MgOpGetSqlRows::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         INT32 sqlReader;
-        stream->GetInt32(sqlReader);
+        m_stream->GetInt32(sqlReader);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(sqlReader);
@@ -81,9 +81,9 @@ void MgOpGetSqlRows::Execute()
         // Execute the operation
         Ptr<MgBatchPropertyCollection> rows = m_service->GetSqlRows(sqlReader);
 
-        operationCompleted = true;
+        m_opCompleted = true;
         // Write the response
-        WriteResponseStream(*stream, rows);
+        WriteResponseStream(rows);
     }
     else
     {
@@ -91,7 +91,7 @@ void MgOpGetSqlRows::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpGetSqlRows.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -102,9 +102,9 @@ void MgOpGetSqlRows::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpGetSqlRows.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

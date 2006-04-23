@@ -53,11 +53,11 @@ MgOpRequestServer::~MgOpRequestServer()
 void MgOpRequestServer::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRequestServer::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     // Disabled logging this operation because it is called very often
 //    MG_LOG_OPERATION_MESSAGE(L"RequestServer");
@@ -66,14 +66,14 @@ void MgOpRequestServer::Execute()
 
 //    MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         INT16 serviceType;
-        stream->GetInt16(serviceType);
+        m_stream->GetInt16(serviceType);
 
-        argsRead = true;
+        m_argsRead = true;
 
 //        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
 //        MG_LOG_OPERATION_MESSAGE_ADD_INT32(serviceType);
@@ -83,8 +83,8 @@ void MgOpRequestServer::Execute()
 
         STRING serverAddress = m_service->RequestServer(serviceType);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, serverAddress);
+        m_opCompleted = true;
+        WriteResponseStream(serverAddress);
     }
     else
     {
@@ -92,7 +92,7 @@ void MgOpRequestServer::Execute()
 //        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpRequestServer.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -103,9 +103,9 @@ void MgOpRequestServer::Execute()
 
     MG_SITE_SERVICE_CATCH(L"MgOpRequestServer.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
 //        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

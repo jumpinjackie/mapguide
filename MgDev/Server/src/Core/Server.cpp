@@ -91,8 +91,8 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 
     int nResult = 0;
 
-    Ptr<MgException> mgException;
-    try
+    MG_TRY()
+
     {
         // Parse arguments
         ParseArgs(argc, argv);
@@ -370,45 +370,29 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 #endif
         }
     }
-    catch (MgException* e)
+
+    MG_CATCH(L"MgServer.init")
+
+    if (mgException != NULL)
     {
-        // Server will shutdown if we are here
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
+        // Server will shutdown if we are here.
 
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(pServerManager->GetDefaultLocale()).c_str());
-        MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+        MgServerManager* serverManager = MgServerManager::GetInstance();
+        STRING locale = (NULL == serverManager) ?
+            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+        STRING message = mgException->GetMessage(locale);
+        STRING details = mgException->GetDetails(locale);
+        STRING stackTrace = mgException->GetStackTrace(locale);
 
-        SAFE_RELEASE(e);
-
-        nResult = -1;
-    }
-    catch (exception& e)
-    {
-        // Server will shutdown if we are here
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        mgException = MgSystemException::Create(e, L"MgServer.init", __LINE__, __WFILE__);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_SYSTEM_ENTRY(LM_ERROR, mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str());
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        nResult = -1;
-    }
-    catch (...)
-    {
-        // Server will shutdown if we are here
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        mgException = new MgUnclassifiedException(L"MgServer.init", __LINE__, __WFILE__, NULL, L"", NULL);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_SYSTEM_ENTRY(LM_ERROR, mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str());
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        MG_LOG_SYSTEM_ENTRY(LM_ERROR, details.c_str());
+        MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
         nResult = -1;
     }
 
     MG_LOG_TRACE_ENTRY(L"MgServer::init() - End");
+
     return nResult;
 }
 

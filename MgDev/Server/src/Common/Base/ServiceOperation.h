@@ -45,8 +45,10 @@ private:
 public:
 
     virtual MgService* GetService() = 0;
-    virtual void Execute() = 0;
+
     virtual void Init(MgStreamData* data, const MgOperationPacket& packet);
+    virtual void Execute() = 0;
+    virtual bool HandleException(MgException* except);
 
 protected:
 
@@ -60,20 +62,26 @@ protected:
 
     virtual bool IsOverheadOperation() const;
 
-    void WriteResponseStream(MgStream& stream);
-    void WriteResponseStream(MgStream& stream, bool value);
-    void WriteResponseStream(MgStream& stream, INT32 value);
-    void WriteResponseStream(MgStream& stream, INT64 value);
-    void WriteResponseStream(MgStream& stream, STRING value);
-    void WriteResponseStream(MgStream& stream, MgSerializable* obj);
-    void WriteResponseStream(MgStream& stream, MgStringCollection* stringCollection);
-    void WriteResponseStream(MgStream& stream, MgException* except);
+    void WriteResponseStream();
+    void WriteResponseStream(bool value);
+    void WriteResponseStream(INT32 value);
+    void WriteResponseStream(INT64 value);
+    void WriteResponseStream(STRING value);
+    void WriteResponseStream(MgSerializable* obj);
+    void WriteResponseStream(MgStringCollection* stringCollection);
+
+private:
+
+    void WriteResponseStream(MgException* except);
 
 /// Data Members
 
 protected:
 
     MgConnection* m_currConnection;
+    Ptr<MgStream> m_stream;
+    bool m_argsRead;
+    bool m_opCompleted;
 };
 
 /// Inline Methods

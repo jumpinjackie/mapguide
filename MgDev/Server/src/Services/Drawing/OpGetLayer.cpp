@@ -50,11 +50,11 @@ MgOpGetLayer::~MgOpGetLayer()
 void MgOpGetLayer::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetLayer::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"GetLayer");
 
@@ -62,20 +62,20 @@ void MgOpGetLayer::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (3 == m_packet.m_NumArguments)
     {
         Ptr<MgResourceIdentifier> identifier =
-            (MgResourceIdentifier*)stream->GetObject();
+            (MgResourceIdentifier*)m_stream->GetObject();
 
         STRING sectionName;
-        stream->GetString(sectionName);
+        m_stream->GetString(sectionName);
 
         STRING layerName;
-        stream->GetString(layerName);
+        m_stream->GetString(layerName);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -87,8 +87,8 @@ void MgOpGetLayer::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLayer(identifier, sectionName, layerName);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -96,7 +96,7 @@ void MgOpGetLayer::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpGetLayer.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -107,9 +107,9 @@ void MgOpGetLayer::Execute()
 
     MG_SERVER_DRAWING_SERVICE_CATCH(L"MgOpGetLayer.Execute");
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

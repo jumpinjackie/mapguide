@@ -53,11 +53,11 @@ MgOpExecuteSqlNonQuery::~MgOpExecuteSqlNonQuery()
 void MgOpExecuteSqlNonQuery::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpExecuteSqlNonQuery::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"ExecuteSqlNonQuery");
 
@@ -65,17 +65,17 @@ void MgOpExecuteSqlNonQuery::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (2 == m_packet.m_NumArguments)
     {
         // Get the feature source
-        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
         // Get the schema name
         STRING sqlNonSelectStatement;
-        stream->GetString(sqlNonSelectStatement);
+        m_stream->GetString(sqlNonSelectStatement);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -86,9 +86,9 @@ void MgOpExecuteSqlNonQuery::Execute()
         // Execute the operation
         INT32 rowsUpdated = m_service->ExecuteSqlNonQuery(resource, sqlNonSelectStatement);
 
-        operationCompleted = true;
+        m_opCompleted = true;
         // Write the response
-        WriteResponseStream(*stream, rowsUpdated);
+        WriteResponseStream(rowsUpdated);
     }
     else
     {
@@ -96,7 +96,7 @@ void MgOpExecuteSqlNonQuery::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpExecuteSqlNonQuery.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -107,9 +107,9 @@ void MgOpExecuteSqlNonQuery::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpExecuteSqlNonQuery.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

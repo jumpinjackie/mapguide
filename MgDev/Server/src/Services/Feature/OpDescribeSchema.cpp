@@ -53,11 +53,11 @@ MgOpDescribeSchema::~MgOpDescribeSchema()
 void MgOpDescribeSchema::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDescribeSchema::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"DescribeSchema");
 
@@ -65,17 +65,17 @@ void MgOpDescribeSchema::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (2 == m_packet.m_NumArguments)
     {
         // Get the feature source
-        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
         // Get the schema name
         STRING schemaName;
-        stream->GetString(schemaName);
+        m_stream->GetString(schemaName);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -86,9 +86,9 @@ void MgOpDescribeSchema::Execute()
         // Execute the operation
         Ptr<MgFeatureSchemaCollection> schemaCollection = m_service->DescribeSchema(resource, schemaName);
 
-        operationCompleted = true;
+        m_opCompleted = true;
         // Write the response
-        WriteResponseStream(*stream, schemaCollection);
+        WriteResponseStream(schemaCollection);
     }
     else
     {
@@ -96,7 +96,7 @@ void MgOpDescribeSchema::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpDescribeSchema.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -107,9 +107,9 @@ void MgOpDescribeSchema::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpDescribeSchema.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

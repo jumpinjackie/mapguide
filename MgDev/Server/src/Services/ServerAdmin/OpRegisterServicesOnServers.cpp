@@ -54,11 +54,11 @@ MgOpRegisterServicesOnServers::~MgOpRegisterServicesOnServers()
 void MgOpRegisterServicesOnServers::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRegisterServicesOnServers::Execute()\n")));
-    ACE_ASSERT(NULL != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"RegisterServicesOnServers");
 
@@ -66,14 +66,14 @@ void MgOpRegisterServicesOnServers::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         Ptr<MgSerializableCollection> serverInfoList =
-            (MgSerializableCollection*)stream->GetObject();
+            (MgSerializableCollection*)m_stream->GetObject();
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSerializableCollection");
@@ -84,8 +84,8 @@ void MgOpRegisterServicesOnServers::Execute()
         Ptr<MgSerializableCollection> feedbackList =
             m_service->RegisterServicesOnServers(serverInfoList);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, feedbackList);
+        m_opCompleted = true;
+        WriteResponseStream(feedbackList);
     }
     else
     {
@@ -93,7 +93,7 @@ void MgOpRegisterServicesOnServers::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpRegisterServicesOnServers.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -104,9 +104,9 @@ void MgOpRegisterServicesOnServers::Execute()
 
     MG_CATCH(L"MgOpRegisterServicesOnServers.Execute")
 
-    if (mgException != NULL && !operationCompleted && stream != NULL)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

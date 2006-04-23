@@ -50,11 +50,11 @@ MgOpGetLogFile::~MgOpGetLogFile()
 void MgOpGetLogFile::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetLogFile::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"GetLogFile");
 
@@ -62,14 +62,14 @@ void MgOpGetLogFile::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         STRING logfile;
-        stream->GetString(logfile);
+        m_stream->GetString(logfile);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(logfile.c_str());
@@ -80,8 +80,8 @@ void MgOpGetLogFile::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLogFile(logfile);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -89,7 +89,7 @@ void MgOpGetLogFile::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpGetLogFile.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -100,9 +100,9 @@ void MgOpGetLogFile::Execute()
 
     MG_CATCH(L"MgOpGetLogFile.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

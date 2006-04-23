@@ -51,11 +51,11 @@ MgOpGenerateMapUpdate::~MgOpGenerateMapUpdate()
 void MgOpGenerateMapUpdate::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGenerateMapUpdate::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"GenerateMapUpdate");
 
@@ -63,16 +63,16 @@ void MgOpGenerateMapUpdate::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (3 == m_packet.m_NumArguments)
     {
         INT32 seqNo;
-        Ptr<MgMap> map = (MgMap*)stream->GetObject();
-        stream->GetInt32(seqNo);
-        Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)stream->GetObject();
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        m_stream->GetInt32(seqNo);
+        Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -85,8 +85,8 @@ void MgOpGenerateMapUpdate::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateMapUpdate(map, seqNo, dwfVersion);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -94,7 +94,7 @@ void MgOpGenerateMapUpdate::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpGenerateMapUpdate.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -105,9 +105,9 @@ void MgOpGenerateMapUpdate::Execute()
 
     MG_CATCH(L"MgOpGenerateMapUpdate.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
