@@ -53,11 +53,11 @@ MgOpExecuteSqlQuery::~MgOpExecuteSqlQuery()
 void MgOpExecuteSqlQuery::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpExecuteSqlQuery::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"ExecuteSqlQuery");
 
@@ -65,17 +65,17 @@ void MgOpExecuteSqlQuery::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (2 == m_packet.m_NumArguments)
     {
         // Get the feature source
-        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
         // Get the schema name
         STRING sqlStatement;
-        stream->GetString(sqlStatement);
+        m_stream->GetString(sqlStatement);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -86,9 +86,9 @@ void MgOpExecuteSqlQuery::Execute()
         // Execute the operation
         Ptr<MgSqlDataReader> sqlReader = m_service->ExecuteSqlQuery(resource, sqlStatement);
         // Write the response
-        WriteResponseStream(*stream, (MgSqlDataReader*)sqlReader);
+        WriteResponseStream((MgSqlDataReader*)sqlReader);
         // Mark the operation completed
-        operationCompleted = true;
+        m_opCompleted = true;
     }
     else
     {
@@ -96,7 +96,7 @@ void MgOpExecuteSqlQuery::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpExecuteSqlQuery.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -107,9 +107,9 @@ void MgOpExecuteSqlQuery::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpExecuteSqlQuery.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

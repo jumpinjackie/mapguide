@@ -53,11 +53,11 @@ MgOpDestroySession::~MgOpDestroySession()
 void MgOpDestroySession::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDestroySession::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"DestroySession");
 
@@ -65,14 +65,14 @@ void MgOpDestroySession::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         STRING session;
-        stream->GetString(session);
+        m_stream->GetString(session);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(session.c_str());
@@ -82,8 +82,8 @@ void MgOpDestroySession::Execute()
 
         m_service->DestroySession(session);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream);
+        m_opCompleted = true;
+        WriteResponseStream();
     }
     else
     {
@@ -91,7 +91,7 @@ void MgOpDestroySession::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpDestroySession.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -102,9 +102,9 @@ void MgOpDestroySession::Execute()
 
     MG_SITE_SERVICE_CATCH(L"MgOpDestroySession.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

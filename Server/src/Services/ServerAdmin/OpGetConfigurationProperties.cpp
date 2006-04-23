@@ -50,11 +50,11 @@ MgOpGetConfigurationProperties::~MgOpGetConfigurationProperties()
 void MgOpGetConfigurationProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetConfigurationProperties::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"GetConfigurationProperties");
 
@@ -62,14 +62,14 @@ void MgOpGetConfigurationProperties::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         STRING propertySection;
-        stream->GetString(propertySection);
+        m_stream->GetString(propertySection);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(propertySection.c_str());
@@ -81,8 +81,8 @@ void MgOpGetConfigurationProperties::Execute()
         Ptr<MgPropertyCollection> pPropertyCollection;
         pPropertyCollection = m_service->GetConfigurationProperties(propertySection);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, pPropertyCollection);
+        m_opCompleted = true;
+        WriteResponseStream(pPropertyCollection);
     }
     else
     {
@@ -90,7 +90,7 @@ void MgOpGetConfigurationProperties::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpGetConfigurationProperties.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -102,9 +102,9 @@ void MgOpGetConfigurationProperties::Execute()
 
     MG_CATCH(L"MgOpGetConfigurationProperties.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

@@ -55,11 +55,11 @@ MgOpTestConnection::~MgOpTestConnection()
 void MgOpTestConnection::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpTestConnection::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"TestConnection");
 
@@ -67,19 +67,19 @@ void MgOpTestConnection::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (2 == m_packet.m_NumArguments)
     {
         // Get the provider name
         STRING providerName;
-        stream->GetString(providerName);
+        m_stream->GetString(providerName);
 
         // Get the connection string
         STRING connectionString;
-        stream->GetString(connectionString);
+        m_stream->GetString(connectionString);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(providerName.c_str());
@@ -90,9 +90,9 @@ void MgOpTestConnection::Execute()
         // Execute the operation
         bool canConnect = m_service->TestConnection(providerName,connectionString);
 
-        operationCompleted = true;
+        m_opCompleted = true;
         // Write the response
-        WriteResponseStream(*stream, canConnect);
+        WriteResponseStream(canConnect);
     }
     else
     {
@@ -100,7 +100,7 @@ void MgOpTestConnection::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpTestConnection.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -111,9 +111,9 @@ void MgOpTestConnection::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpTestConnection.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

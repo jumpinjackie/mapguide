@@ -53,11 +53,11 @@ MgOpUpdateFeatures::~MgOpUpdateFeatures()
 void MgOpUpdateFeatures::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUpdateFeatures::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"UpdateFeatures");
 
@@ -65,21 +65,21 @@ void MgOpUpdateFeatures::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (3 == m_packet.m_NumArguments)
     {
         // Get the feature source
-        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
 
         // Get properties collection
-        Ptr<MgFeatureCommandCollection> commands = (MgFeatureCommandCollection*)stream->GetObject();
+        Ptr<MgFeatureCommandCollection> commands = (MgFeatureCommandCollection*)m_stream->GetObject();
 
         // Get the filter text
         bool useTransaction;
-        stream->GetBoolean(useTransaction);
+        m_stream->GetBoolean(useTransaction);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -93,9 +93,9 @@ void MgOpUpdateFeatures::Execute()
         // Execute the operation
         Ptr<MgPropertyCollection> rowsAffected = m_service->UpdateFeatures(resource, commands, useTransaction);
 
-        operationCompleted = true;
+        m_opCompleted = true;
         // Write the response
-        WriteResponseStream(*stream, rowsAffected);
+        WriteResponseStream(rowsAffected);
     }
     else
     {
@@ -103,7 +103,7 @@ void MgOpUpdateFeatures::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpUpdateFeatures.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -114,9 +114,9 @@ void MgOpUpdateFeatures::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpUpdateFeatures.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

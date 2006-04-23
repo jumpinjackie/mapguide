@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef IMGOPERATIONHADNLER_H
-#define IMGOPERATIONHADNLER_H
+#ifndef IMGOPERATIONHADNLER_H_
+#define IMGOPERATIONHADNLER_H_
 
 class MgStreamData;
 struct MgOperationPacket;
@@ -27,22 +27,23 @@ struct MgOperationPacket;
 //  processed and executed by the MapGuide server must implement.
 class MG_SERVICE_API IMgOperationHandler
 {
-    public:
+public:
     IMgOperationHandler();
     virtual ~IMgOperationHandler();
 
     ///////////////////////////////////////////////////////////////////
     ///  Methods
 
-    ///  Executes the operation
-    virtual void Execute() = 0;
-
     ///  Initializes the operation from the stream
     virtual void Init(MgStreamData* data, const MgOperationPacket& packet) = 0;
+    ///  Executes the operation
+    virtual void Execute() = 0;
+    ///  Handles the exception
+    virtual bool HandleException(MgException* except) = 0;
 
     ///////////////////////////////////////////////////////////////////
     ///  Member Data
-    protected :
+protected :
     MgStreamData* m_data;
     MgOperationPacket m_packet;
 };

@@ -51,11 +51,11 @@ MgOpGeneratePlot::~MgOpGeneratePlot()
 void MgOpGeneratePlot::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGeneratePlot::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"GeneratePlot");
 
@@ -63,16 +63,16 @@ void MgOpGeneratePlot::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (4 == m_packet.m_NumArguments)
     {
-        Ptr<MgMap> map = (MgMap*)stream->GetObject();
-        Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)stream->GetObject();
-        Ptr<MgLayout> layout = (MgLayout*)stream->GetObject();
-        Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)stream->GetObject();
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)m_stream->GetObject();
+        Ptr<MgLayout> layout = (MgLayout*)m_stream->GetObject();
+        Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -87,20 +87,20 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, plotSpec, layout, dwfVersion);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else if (6 == m_packet.m_NumArguments)
     {
-        Ptr<MgMap> map = (MgMap*)stream->GetObject();
-        Ptr<MgEnvelope> extents = (MgEnvelope*)stream->GetObject();
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgEnvelope> extents = (MgEnvelope*)m_stream->GetObject();
         bool expandToFit = false;
-        stream->GetBoolean(expandToFit);
-        Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)stream->GetObject();
-        Ptr<MgLayout> layout = (MgLayout*)stream->GetObject();
-        Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)stream->GetObject();
+        m_stream->GetBoolean(expandToFit);
+        Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)m_stream->GetObject();
+        Ptr<MgLayout> layout = (MgLayout*)m_stream->GetObject();
+        Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -119,24 +119,24 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, extents, expandToFit, plotSpec, layout, dwfVersion);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else if (7 == m_packet.m_NumArguments)
     {
-        Ptr<MgMap> map = (MgMap*)stream->GetObject();
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         double centerX = 0.0;
-        stream->GetDouble(centerX);
+        m_stream->GetDouble(centerX);
         double centerY = 0.0;
-        stream->GetDouble(centerY);
+        m_stream->GetDouble(centerY);
         Ptr<MgCoordinate> center = new MgCoordinateXY(centerX, centerY);
         double scale = 0.0;
-        stream->GetDouble(scale);
-        Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)stream->GetObject();
-        Ptr<MgLayout> layout = (MgLayout*)stream->GetObject();
-        Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)stream->GetObject();
+        m_stream->GetDouble(scale);
+        Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)m_stream->GetObject();
+        Ptr<MgLayout> layout = (MgLayout*)m_stream->GetObject();
+        Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -155,8 +155,8 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, center, scale, plotSpec, layout, dwfVersion);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -164,7 +164,7 @@ void MgOpGeneratePlot::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpGeneratePlot.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -175,9 +175,9 @@ void MgOpGeneratePlot::Execute()
 
     MG_CATCH(L"MgOpGeneratePlot.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

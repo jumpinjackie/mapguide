@@ -68,44 +68,30 @@ MgServerAdminServiceHandler::~MgServerAdminServiceHandler( void )
 IMgServiceHandler::MgProcessStatus MgServerAdminServiceHandler::ProcessOperation()
 {
     IMgServiceHandler::MgProcessStatus status = IMgServiceHandler::mpsError;
+    auto_ptr<IMgOperationHandler> handler;
 
-    try
+    MG_TRY()
+
+    handler.reset(MgServerAdminOperationFactory::GetOperation(
+        m_packet.m_OperationID, m_packet.m_OperationVersion));
+    assert(NULL != handler.get());
+
+    handler->Init(m_data, m_packet);
+    handler->Execute();
+
+    status = IMgServiceHandler::mpsDone;
+
+    MG_CATCH(L"MgServerAdminServiceHandler.ProcessOperation")
+
+    if (mgException != NULL && NULL != handler.get())
     {
-        auto_ptr<IMgOperationHandler> handler(
-            MgServerAdminOperationFactory::GetOperation(
-            m_packet.m_OperationID, m_packet.m_OperationVersion));
-
-        if (0 != handler.get())
-        {
-            handler->Init(m_data, m_packet);
-            handler->Execute();
-
-            status = IMgServiceHandler::mpsDone;
-        }
+        status = (handler.get()->HandleException(mgException) ?
+            IMgServiceHandler::mpsDone : IMgServiceHandler::mpsError);
     }
-    catch (MgOperationProcessingException* e )
+
+    if (IMgServiceHandler::mpsDone != status)
     {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        SAFE_RELEASE(e);
-    }
-    catch (MgException* e)
-    {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        //  set handler status to mpsDone as we assume we can still propess operations
-        status = IMgServiceHandler::mpsDone;
-
-        SAFE_RELEASE(e);
-    }
-    catch (...)
-    {
+        MG_THROW();
     }
 
     return status;

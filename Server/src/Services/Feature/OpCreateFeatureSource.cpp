@@ -53,11 +53,11 @@ MgOpCreateFeatureSource::~MgOpCreateFeatureSource()
 void MgOpCreateFeatureSource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCreateFeatureSource::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"SelectFeatures");
 
@@ -65,17 +65,17 @@ void MgOpCreateFeatureSource::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (2 == m_packet.m_NumArguments)
     {
         // Get the resource identifier
-        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
 
         // Get the parameters
-        Ptr<MgFeatureSourceParams> params = (MgFeatureSourceParams*)stream->GetObject();
+        Ptr<MgFeatureSourceParams> params = (MgFeatureSourceParams*)m_stream->GetObject();
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -86,10 +86,10 @@ void MgOpCreateFeatureSource::Execute()
         // Execute the operation
         m_service->CreateFeatureSource(resource, params);
 
-        WriteResponseStream(*stream);
+        WriteResponseStream();
 
         // Mark operation is completed successfully
-        operationCompleted = true;
+        m_opCompleted = true;
     }
     else
     {
@@ -97,7 +97,7 @@ void MgOpCreateFeatureSource::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpCreateFeatureSource.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -108,9 +108,9 @@ void MgOpCreateFeatureSource::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpCreateFeatureSource.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

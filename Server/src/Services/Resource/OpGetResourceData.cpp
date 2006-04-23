@@ -53,11 +53,11 @@ MgOpGetResourceData::~MgOpGetResourceData()
 void MgOpGetResourceData::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetResourceData::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"GetResourceData");
 
@@ -65,18 +65,18 @@ void MgOpGetResourceData::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (3 == m_packet.m_NumArguments)
     {
         STRING dataName;
         STRING preProcessTags;
         Ptr<MgResourceIdentifier> resource =
-            (MgResourceIdentifier*)stream->GetObject();
-        stream->GetString(dataName);
-        stream->GetString(preProcessTags);
+            (MgResourceIdentifier*)m_stream->GetObject();
+        m_stream->GetString(dataName);
+        m_stream->GetString(preProcessTags);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -111,8 +111,8 @@ void MgOpGetResourceData::Execute()
             byteReader = byteSource->GetReader();
         }
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -120,7 +120,7 @@ void MgOpGetResourceData::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpGetResourceData.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -131,9 +131,9 @@ void MgOpGetResourceData::Execute()
 
     MG_RESOURCE_SERVICE_CATCH(L"MgOpGetResourceData.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

@@ -53,11 +53,11 @@ MgOpGetRaster::~MgOpGetRaster()
 void MgOpGetRaster::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetRaster::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"GetRaster");
 
@@ -65,23 +65,23 @@ void MgOpGetRaster::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (4 == m_packet.m_NumArguments)
     {
         INT32 featId;
-        stream->GetInt32(featId);
+        m_stream->GetInt32(featId);
 
         INT32 xSize;
-        stream->GetInt32(xSize);
+        m_stream->GetInt32(xSize);
 
         INT32 ySize;
-        stream->GetInt32(ySize);
+        m_stream->GetInt32(ySize);
 
         STRING rasterProp = L"";
-        stream->GetString(rasterProp);
+        m_stream->GetString(rasterProp);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(featId);
@@ -94,9 +94,9 @@ void MgOpGetRaster::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetRaster(featId, xSize, ySize, rasterProp);
 
-        operationCompleted = true;
+        m_opCompleted = true;
         // Write the response
-        WriteResponseStream(*stream, byteReader);
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -104,7 +104,7 @@ void MgOpGetRaster::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpGetRaster.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -115,9 +115,9 @@ void MgOpGetRaster::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpGetRaster.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

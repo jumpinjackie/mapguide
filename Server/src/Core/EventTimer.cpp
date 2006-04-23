@@ -46,7 +46,7 @@ MgTimedEventHandler& MgEventTimer::GetEventHandler() const
     if (NULL == m_eventHandler.get())
     {
         throw new MgNullReferenceException(
-            L"MgEventTimer.Schedule", __LINE__, __WFILE__, NULL, L"", NULL);
+            L"MgEventTimer.GetEventHandler", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     return *m_eventHandler.get();

@@ -53,11 +53,11 @@ MgOpEnumerateRepositories::~MgOpEnumerateRepositories()
 void MgOpEnumerateRepositories::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateRepositories::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateRepositories");
 
@@ -65,14 +65,14 @@ void MgOpEnumerateRepositories::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         STRING type;
-        stream->GetString(type);
+        m_stream->GetString(type);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(type.c_str());
@@ -82,8 +82,8 @@ void MgOpEnumerateRepositories::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateRepositories(type);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -91,7 +91,7 @@ void MgOpEnumerateRepositories::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpEnumerateRepositories.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -102,9 +102,9 @@ void MgOpEnumerateRepositories::Execute()
 
     MG_RESOURCE_SERVICE_CATCH(L"MgOpEnumerateRepositories.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

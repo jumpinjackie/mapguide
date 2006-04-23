@@ -53,11 +53,11 @@ MgOpRenameResourceData::~MgOpRenameResourceData()
 void MgOpRenameResourceData::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenameResourceData::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"RenameResourceData");
 
@@ -65,20 +65,20 @@ void MgOpRenameResourceData::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (4 == m_packet.m_NumArguments)
     {
         STRING oldDataName;
         STRING newDataName;
         Ptr<MgResourceIdentifier> resource =
-            (MgResourceIdentifier*)stream->GetObject();
-        stream->GetString(oldDataName);
-        stream->GetString(newDataName);
+            (MgResourceIdentifier*)m_stream->GetObject();
+        m_stream->GetString(oldDataName);
+        m_stream->GetString(newDataName);
         bool overwrite;
-        stream->GetBoolean(overwrite);
+        m_stream->GetBoolean(overwrite);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -94,8 +94,8 @@ void MgOpRenameResourceData::Execute()
 
         m_service->RenameResourceData(resource, oldDataName, newDataName, overwrite);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream);
+        m_opCompleted = true;
+        WriteResponseStream();
     }
     else
     {
@@ -103,7 +103,7 @@ void MgOpRenameResourceData::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpRenameResourceData.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -114,9 +114,9 @@ void MgOpRenameResourceData::Execute()
 
     MG_RESOURCE_SERVICE_CATCH(L"MgOpRenameResourceData.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

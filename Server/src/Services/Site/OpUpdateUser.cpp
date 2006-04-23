@@ -44,9 +44,9 @@ void MgOpUpdateUser::Execute()
     ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpUpdateUser::Execute()\n" )) );
     ACE_ASSERT( 0 != m_data );
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"UpdateUser");
 
@@ -54,22 +54,22 @@ void MgOpUpdateUser::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream( m_data->GetStreamHelper() );
+    ACE_ASSERT(m_stream != NULL);
 
     //  Get Arguments
     if ( 5 == m_packet.m_NumArguments )
     {
         STRING userID;
-        stream->GetString( userID );
+        m_stream->GetString( userID );
 
         STRING newUserID;
-        stream->GetString( newUserID );
+        m_stream->GetString( newUserID );
 
         STRING newUserName;
-        stream->GetString( newUserName );
+        m_stream->GetString( newUserName );
 
         STRING encryptedPassword, newPassword;
-        stream->GetString(encryptedPassword);
+        m_stream->GetString(encryptedPassword);
 
         if (!encryptedPassword.empty())
         {
@@ -86,9 +86,9 @@ void MgOpUpdateUser::Execute()
         }
 
         STRING newDesc;
-        stream->GetString( newDesc );
+        m_stream->GetString( newDesc );
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(userID.c_str());
@@ -108,8 +108,8 @@ void MgOpUpdateUser::Execute()
         m_service->UpdateUser( userID, newUserID, newUserName,
             newPassword, newDesc );
 
-        operationCompleted = true;
-        WriteResponseStream( *stream );
+        m_opCompleted = true;
+        WriteResponseStream();
     }
     else
     {
@@ -117,7 +117,7 @@ void MgOpUpdateUser::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpUpdateUser.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -128,9 +128,9 @@ void MgOpUpdateUser::Execute()
 
     MG_SITE_SERVICE_CATCH( L"MgOpUpdateUser.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream( *stream, mgException );
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

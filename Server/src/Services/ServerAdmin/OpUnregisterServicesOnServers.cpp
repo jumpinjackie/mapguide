@@ -54,11 +54,11 @@ MgOpUnregisterServicesOnServers::~MgOpUnregisterServicesOnServers()
 void MgOpUnregisterServicesOnServers::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUnregisterServicesOnServers::Execute()\n")));
-    ACE_ASSERT(NULL != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"UnregisterServicesOnServers");
 
@@ -66,14 +66,14 @@ void MgOpUnregisterServicesOnServers::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         Ptr<MgSerializableCollection> serverInfoList =
-            (MgSerializableCollection*)stream->GetObject();
+            (MgSerializableCollection*)m_stream->GetObject();
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSerializableCollection");
@@ -83,8 +83,8 @@ void MgOpUnregisterServicesOnServers::Execute()
 
         m_service->UnregisterServicesOnServers(serverInfoList);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream);
+        m_opCompleted = true;
+        WriteResponseStream();
     }
     else
     {
@@ -92,7 +92,7 @@ void MgOpUnregisterServicesOnServers::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpUnregisterServicesOnServers.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -103,9 +103,9 @@ void MgOpUnregisterServicesOnServers::Execute()
 
     MG_CATCH(L"MgOpUnregisterServicesOnServers.Execute")
 
-    if (mgException != NULL && !operationCompleted && stream != NULL)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

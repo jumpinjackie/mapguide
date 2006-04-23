@@ -51,11 +51,11 @@ MgOpBringOnline::~MgOpBringOnline()
 void MgOpBringOnline::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpBringOnline::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"BringOnline");
 
@@ -63,11 +63,11 @@ void MgOpBringOnline::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (0 == m_packet.m_NumArguments)
     {
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -77,8 +77,8 @@ void MgOpBringOnline::Execute()
 
         m_service->BringOnline();
 
-        operationCompleted = true;
-        WriteResponseStream(*stream);
+        m_opCompleted = true;
+        WriteResponseStream();
     }
     else
     {
@@ -86,7 +86,7 @@ void MgOpBringOnline::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpBringOnline.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -97,9 +97,9 @@ void MgOpBringOnline::Execute()
 
     MG_CATCH(L"MgOpBringOnline.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

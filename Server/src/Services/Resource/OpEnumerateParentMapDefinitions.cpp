@@ -43,11 +43,11 @@ MgOpEnumerateParentMapDefinitions::~MgOpEnumerateParentMapDefinitions()
 void MgOpEnumerateParentMapDefinitions::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateParentMapDefinitions::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateParentMapDefinitions");
 
@@ -55,14 +55,14 @@ void MgOpEnumerateParentMapDefinitions::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         Ptr<MgSerializableCollection> resources =
-            (MgSerializableCollection*)stream->GetObject();
+            (MgSerializableCollection*)m_stream->GetObject();
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSerializableCollection");
@@ -73,8 +73,8 @@ void MgOpEnumerateParentMapDefinitions::Execute()
         Ptr<MgSerializableCollection> mapDefinitions =
             m_service->EnumerateParentMapDefinitions(resources);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, mapDefinitions);
+        m_opCompleted = true;
+        WriteResponseStream(mapDefinitions);
     }
     else
     {
@@ -82,7 +82,7 @@ void MgOpEnumerateParentMapDefinitions::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if (!argsRead)
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpEnumerateParentMapDefinitions.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -93,9 +93,9 @@ void MgOpEnumerateParentMapDefinitions::Execute()
 
     MG_RESOURCE_SERVICE_CATCH(L"MgOpEnumerateParentMapDefinitions.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

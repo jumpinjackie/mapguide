@@ -51,11 +51,11 @@ MgOpEnableMaximumLogSize::~MgOpEnableMaximumLogSize()
 void MgOpEnableMaximumLogSize::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnableMaximumLogSize::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"EnableMaximumLogSize");
 
@@ -63,14 +63,14 @@ void MgOpEnableMaximumLogSize::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (1 == m_packet.m_NumArguments)
     {
         bool useMaxSize;
-        stream->GetBoolean(useMaxSize);
+        m_stream->GetBoolean(useMaxSize);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -80,8 +80,8 @@ void MgOpEnableMaximumLogSize::Execute()
 
         m_service->EnableMaximumLogSize(useMaxSize);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream);
+        m_opCompleted = true;
+        WriteResponseStream();
     }
     else
     {
@@ -89,7 +89,7 @@ void MgOpEnableMaximumLogSize::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpEnableMaximumLogSize.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -100,9 +100,9 @@ void MgOpEnableMaximumLogSize::Execute()
 
     MG_CATCH(L"MgOpEnableMaximumLogSize.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

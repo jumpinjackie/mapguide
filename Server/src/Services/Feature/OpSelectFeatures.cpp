@@ -53,11 +53,11 @@ MgOpSelectFeatures::~MgOpSelectFeatures()
 void MgOpSelectFeatures::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSelectFeatures::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"SelectFeatures");
 
@@ -65,20 +65,20 @@ void MgOpSelectFeatures::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (3 == m_packet.m_NumArguments)
     {
         // Get the feature source
-        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
         // Get the schema name
         STRING className;
-        stream->GetString(className);
+        m_stream->GetString(className);
 
         // Get properties collection
-        Ptr<MgFeatureQueryOptions> qryOptions = (MgFeatureQueryOptions*)stream->GetObject();
+        Ptr<MgFeatureQueryOptions> qryOptions = (MgFeatureQueryOptions*)m_stream->GetObject();
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -91,9 +91,9 @@ void MgOpSelectFeatures::Execute()
         // Execute the operation
         Ptr<MgFeatureReader> featureReader = m_service->SelectFeatures(resource, className, qryOptions);
         // Write the response
-        WriteResponseStream(*stream, featureReader);
+        WriteResponseStream(featureReader);
         // Mark operation is completed successfully
-        operationCompleted = true;
+        m_opCompleted = true;
     }
     else
     {
@@ -101,7 +101,7 @@ void MgOpSelectFeatures::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpSelectFeatures.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -112,9 +112,9 @@ void MgOpSelectFeatures::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpSelectFeatures.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

@@ -53,11 +53,11 @@ MgOpEnumerateResources::~MgOpEnumerateResources()
 void MgOpEnumerateResources::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateResources::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateResources");
 
@@ -65,20 +65,20 @@ void MgOpEnumerateResources::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (6 == m_packet.m_NumArguments)
     {
         INT32 depth, properties;
         STRING type, fromDate, toDate;
-        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)stream->GetObject();
-        stream->GetInt32(depth);
-        stream->GetString(type);
-        stream->GetInt32(properties);
-        stream->GetString(fromDate);
-        stream->GetString(toDate);
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
+        m_stream->GetInt32(depth);
+        m_stream->GetString(type);
+        m_stream->GetInt32(properties);
+        m_stream->GetString(fromDate);
+        m_stream->GetString(toDate);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -100,8 +100,8 @@ void MgOpEnumerateResources::Execute()
             m_service->EnumerateResources(resource, depth, type,
                 properties, fromDate, toDate);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -109,7 +109,7 @@ void MgOpEnumerateResources::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpEnumerateResources.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -120,9 +120,9 @@ void MgOpEnumerateResources::Execute()
 
     MG_RESOURCE_SERVICE_CATCH(L"MgOpEnumerateResources.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

@@ -32,11 +32,11 @@ MgOpRenderMapLegend::~MgOpRenderMapLegend()
 void MgOpRenderMapLegend::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderMapLegend::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"RenderMapLegend");
 
@@ -44,24 +44,24 @@ void MgOpRenderMapLegend::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (5 == m_packet.m_NumArguments)
     {
-        Ptr<MgMap> map = (MgMap*)stream->GetObject();
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
 
         INT32 width = 0;
-        stream->GetInt32(width);
+        m_stream->GetInt32(width);
 
         INT32 height = 0;
-        stream->GetInt32(height);
+        m_stream->GetInt32(height);
 
-        Ptr<MgColor> color = (MgColor*)stream->GetObject();
+        Ptr<MgColor> color = (MgColor*)m_stream->GetObject();
 
         STRING format;
-        stream->GetString(format);
+        m_stream->GetString(format);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -78,8 +78,8 @@ void MgOpRenderMapLegend::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderMapLegend(map, width, height, color, format);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -87,7 +87,7 @@ void MgOpRenderMapLegend::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpRenderMapLegend.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -98,9 +98,9 @@ void MgOpRenderMapLegend::Execute()
 
     MG_CATCH(L"MgOpRenderMapLegend.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

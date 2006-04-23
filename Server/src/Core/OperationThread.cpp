@@ -43,8 +43,8 @@ int MgOperationThread::svc(void)
 {
     INT32 nResult = 0;
 
-    Ptr<MgException> mgException;
-    try
+    MG_TRY()
+
     {
         while (m_bActive)
         {
@@ -205,39 +205,26 @@ int MgOperationThread::svc(void)
             }
         }
     }
-    catch (MgException* e)
+
+    MG_CATCH(L"MgOperationThread.svc")
+
+    if (mgException != NULL)
     {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
+        MgServerManager* serverManager = MgServerManager::GetInstance();
+        STRING locale = (NULL == serverManager) ?
+            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+        STRING message = mgException->GetMessage(locale);
+        STRING details = mgException->GetDetails(locale);
+        STRING stackTrace = mgException->GetStackTrace(locale);
 
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        SAFE_RELEASE(e);
-
-        nResult = -1;
-    }
-    catch (exception& e)
-    {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        mgException = MgSystemException::Create(e, L"MgOperationThread.svc", __LINE__, __WFILE__);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        nResult = -1;
-    }
-    catch (...)
-    {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        mgException = new MgUnclassifiedException(L"MgOperationThread.svc", __LINE__, __WFILE__, NULL, L"", NULL);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
         nResult = -1;
     }
 
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgOperationThread - Exiting thread\n")));
+
     return nResult;
 }
 
@@ -250,10 +237,10 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
     ACE_DEBUG(( LM_DEBUG, ACE_TEXT( "  (%P|%t) MgOperationThread::ProcessMessage\n" )));
 
     IMgServiceHandler::MgProcessStatus stat = IMgServiceHandler::mpsError;
+    MgServerStreamData* pData = NULL;
 
-    Ptr<MgException> mgException;
-    MgServerStreamData* pData = 0;
-    try
+    MG_TRY()
+
     {
         ACE_ASSERT( pMB );
         if ( pMB )
@@ -379,42 +366,32 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
             }
         }
     }
-    catch (MgException* e)
+
+    MG_CATCH(L"MgOperationThread.ProcessMessage")
+
+    if (mgException != NULL)
     {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
+        MgServerManager* serverManager = MgServerManager::GetInstance();
+        STRING locale = (NULL == serverManager) ?
+            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+        STRING message = mgException->GetMessage(locale);
+        STRING details = mgException->GetDetails(locale);
+        STRING stackTrace = mgException->GetStackTrace(locale);
 
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        SAFE_RELEASE(e);
-
-        stat = IMgServiceHandler::mpsError;
-    }
-    catch (exception& e)
-    {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        mgException = MgSystemException::Create(e, L"MgOperationThread.ProcessMessage", __LINE__, __WFILE__);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        stat = IMgServiceHandler::mpsError;
-    }
-    catch (...)
-    {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        mgException = new MgUnclassifiedException(L"MgOperationThread.ProcessMessage", __LINE__, __WFILE__, NULL, L"", NULL);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
         stat = IMgServiceHandler::mpsError;
     }
 
     //  if any message was processed without error, make sure the stream's
     //  error flag is cleared
-    if ( pData != 0 && stat != IMgServiceHandler::mpsError )
-        pData->SetErrorFlag( false );
+//    if ( pData != 0 && stat != IMgServiceHandler::mpsError )
+//        pData->SetErrorFlag( false );
+    if (NULL != pData)
+    {
+        pData->SetErrorFlag(IMgServiceHandler::mpsError == stat);
+    }
 
     return stat;
 };
@@ -427,13 +404,13 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
 {
     ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) MgOperationThread::ProcessOperation\n" )));
 
-    ACE_Time_Value operationTime = 0;
     IMgServiceHandler::MgProcessStatus stat = IMgServiceHandler::mpsError;
     MgConnection* pConnection = NULL;
 
-    Ptr<MgException> mgException;
-    try
+    MG_TRY()
+
     {
+        ACE_Time_Value operationTime = 0;
         ACE_ASSERT( pData );
         if ( pData )
         {
@@ -551,51 +528,48 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
             pConnection->ClearBusy();
         }
     }
-    catch (MgException* e)
+
+    MG_CATCH(L"MgOperationThread.ProcessOperation")
+
+    if (mgException != NULL)
     {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        SAFE_RELEASE(e);
-
-        // Clear the connection busy state so that our idle thread can remove it
-        if(pConnection)
+        if (IMgServiceHandler::mpsDone != stat && NULL != pData)
         {
-            // Mark the connection as no longer busy
-            pConnection->ClearBusy();
+            Ptr<MgStream> stream = new MgStream(pData->GetStreamHelper());
+
+            try
+            {
+                mgException->GetMessage();
+                mgException->GetDetails();
+                mgException->GetStackTrace();
+
+                stream->WriteResponseHeader(MgPacketParser::mecFailure, 1);
+                stream->WriteObject(mgException);
+                stream->WriteStreamEnd();
+            }
+            catch (MgException* e)
+            {
+                SAFE_RELEASE(e);
+                assert(false);
+            }
+            catch (...)
+            {
+                assert(false);
+            }
         }
 
-        stat = IMgServiceHandler::mpsError;
-    }
-    catch (exception& e)
-    {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
+        MgServerManager* serverManager = MgServerManager::GetInstance();
+        STRING locale = (NULL == serverManager) ?
+            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+        STRING message = mgException->GetMessage(locale);
+        STRING details = mgException->GetDetails(locale);
+        STRING stackTrace = mgException->GetStackTrace(locale);
 
-        mgException = MgSystemException::Create(e, L"MgOperationThread.ProcessOperation", __LINE__, __WFILE__);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        // Clear the connection busy state so that our idle thread can remove it
-        if(pConnection)
-        {
-            // Mark the connection as no longer busy
-            pConnection->ClearBusy();
-        }
-
-        stat = IMgServiceHandler::mpsError;
-    }
-    catch (...)
-    {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        mgException = new MgUnclassifiedException(L"MgOperationThread.ProcessOperation", __LINE__, __WFILE__, NULL, L"", NULL);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
         // Clear the connection busy state so that our idle thread can remove it
-        if(pConnection)
+        if (NULL != pConnection)
         {
             // Mark the connection as no longer busy
             pConnection->ClearBusy();
@@ -613,45 +587,29 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
 /// </summary>
 MgStreamHelper::MgStreamStatus MgOperationThread::CheckStream( MgStreamHelper* pHelper )
 {
-    UINT8 dummy = 0;
-
     MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
 
     //  check to see if socket is alive...  TODO:  may be a better way to determine if the
     //  socket has not been closed
-    Ptr<MgException> mgException;
-    try
+    MG_TRY()
+
+    UINT8 dummy = 0;
+
+    stat = pHelper->GetUINT8( dummy, false, true );
+
+    MG_CATCH(L"MgOperationThread.CheckStream")
+
+    if (mgException != NULL)
     {
-        stat = pHelper->GetUINT8( dummy, false, true );
-    }
-    catch (MgException* e)
-    {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
+        MgServerManager* serverManager = MgServerManager::GetInstance();
+        STRING locale = (NULL == serverManager) ?
+            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+        STRING message = mgException->GetMessage(locale);
+        STRING details = mgException->GetDetails(locale);
+        STRING stackTrace = mgException->GetStackTrace(locale);
 
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        SAFE_RELEASE(e);
-
-        stat = MgStreamHelper::mssError;
-    }
-    catch (exception& e)
-    {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        mgException = MgSystemException::Create(e, L"MgOperationThread.CheckStream", __LINE__, __WFILE__);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
-
-        stat = MgStreamHelper::mssError;
-    }
-    catch (...)
-    {
-        MgServerManager* pServerManager = MgServerManager::GetInstance();
-
-        mgException = new MgUnclassifiedException(L"MgOperationThread.CheckStream", __LINE__, __WFILE__, NULL, L"", NULL);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
         stat = MgStreamHelper::mssError;
     }

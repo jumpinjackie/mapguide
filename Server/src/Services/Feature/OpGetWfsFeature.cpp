@@ -53,11 +53,11 @@ MgOpGetWfsFeature::~MgOpGetWfsFeature()
 void MgOpGetWfsFeature::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetWfsFeature::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"GetWfsFeature");
 
@@ -65,33 +65,33 @@ void MgOpGetWfsFeature::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (6 == m_packet.m_NumArguments)
     {
         // Get the feature source
-        Ptr<MgResourceIdentifier> featureSourceId = (MgResourceIdentifier*)stream->GetObject();
+        Ptr<MgResourceIdentifier> featureSourceId = (MgResourceIdentifier*)m_stream->GetObject();
 
         // Get the schema name
         STRING featureClass;
-        stream->GetString(featureClass);
+        m_stream->GetString(featureClass);
 
         // Get the required properties
-        Ptr<MgStringCollection> requiredProperties = (MgStringCollection*)stream->GetObject();
+        Ptr<MgStringCollection> requiredProperties = (MgStringCollection*)m_stream->GetObject();
 
         // Get the srs
         STRING srs;
-        stream->GetString(srs);
+        m_stream->GetString(srs);
 
         // Get the filter
         STRING filter;
-        stream->GetString(filter);
+        m_stream->GetString(filter);
 
         // Get the max features to return
         INT32 maxFeatures;
-        stream->GetInt32(maxFeatures);
+        m_stream->GetInt32(maxFeatures);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -111,10 +111,10 @@ void MgOpGetWfsFeature::Execute()
         Ptr<MgByteReader> byteReader = m_service->GetWfsFeature(featureSourceId, featureClass,
             requiredProperties, srs, filter, maxFeatures);
 
-        operationCompleted = true;
+        m_opCompleted = true;
 
         // Write the response
-        WriteResponseStream(*stream, byteReader);
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -122,7 +122,7 @@ void MgOpGetWfsFeature::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpGetWfsFeature.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -133,9 +133,9 @@ void MgOpGetWfsFeature::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpGetWfsFeature.Execute")
     // Exception occured
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

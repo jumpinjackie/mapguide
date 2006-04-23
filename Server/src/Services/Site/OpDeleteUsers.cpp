@@ -43,9 +43,9 @@ void MgOpDeleteUsers::Execute()
     ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpDeleteUsers::Execute()\n" )) );
     ACE_ASSERT( 0 != m_data );
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"DeleteUsers");
 
@@ -53,15 +53,15 @@ void MgOpDeleteUsers::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream( m_data->GetStreamHelper() );
+    ACE_ASSERT(m_stream != NULL);
 
     //  Get Arguments
     if ( 1 == m_packet.m_NumArguments )
     {
         Ptr<MgStringCollection> collection =
-            (MgStringCollection*) stream->GetObject();
+            (MgStringCollection*) m_stream->GetObject();
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
@@ -72,8 +72,8 @@ void MgOpDeleteUsers::Execute()
 
         m_service->DeleteUsers( collection );
 
-        operationCompleted = true;
-        WriteResponseStream( *stream );
+        m_opCompleted = true;
+        WriteResponseStream();
     }
     else
     {
@@ -81,7 +81,7 @@ void MgOpDeleteUsers::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpDeleteUsers.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -92,9 +92,9 @@ void MgOpDeleteUsers::Execute()
 
     MG_SITE_SERVICE_CATCH( L"MgOpDeleteUsers.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream( *stream, mgException );
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());

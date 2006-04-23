@@ -53,11 +53,11 @@ MgOpQueryFeaturesWms::~MgOpQueryFeaturesWms()
 void MgOpQueryFeaturesWms::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpQueryFeaturesWms::Execute()\n")));
-    ACE_ASSERT(0 != m_data);
+    
 
-    bool operationCompleted = false;
-    bool argsRead = false;
-    Ptr<MgStream> stream;
+
+
+
 
     MG_LOG_OPERATION_MESSAGE(L"QueryFeaturesWms");
 
@@ -65,20 +65,20 @@ void MgOpQueryFeaturesWms::Execute()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
-    stream = new MgStream(m_data->GetStreamHelper());
+    ACE_ASSERT(m_stream != NULL);
 
     if (6 == m_packet.m_NumArguments)
     {
         INT32 x, y, maxFeatures;
         STRING coordinateSpace;
-        Ptr<MgMap> map = (MgMap*)stream->GetObject();
-        Ptr<MgStringCollection> layerNames = (MgStringCollection*)stream->GetObject();
-        stream->GetInt32(x);
-        stream->GetInt32(y);
-        stream->GetInt32(maxFeatures);
-        stream->GetString(coordinateSpace);
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgStringCollection> layerNames = (MgStringCollection*)m_stream->GetObject();
+        m_stream->GetInt32(x);
+        m_stream->GetInt32(y);
+        m_stream->GetInt32(maxFeatures);
+        m_stream->GetString(coordinateSpace);
 
-        argsRead = true;
+        m_argsRead = true;
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -98,8 +98,8 @@ void MgOpQueryFeaturesWms::Execute()
             m_service->QueryFeatures(map, layerNames, x, y, maxFeatures,
             coordinateSpace);
 
-        operationCompleted = true;
-        WriteResponseStream(*stream, byteReader);
+        m_opCompleted = true;
+        WriteResponseStream(byteReader);
     }
     else
     {
@@ -107,7 +107,7 @@ void MgOpQueryFeaturesWms::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
-    if ( !argsRead )
+    if (!m_argsRead)
     {
         throw new MgOperationProcessingException(L"MgOpQueryFeaturesWms.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
@@ -118,9 +118,9 @@ void MgOpQueryFeaturesWms::Execute()
 
     MG_CATCH(L"MgOpQueryFeaturesWms.Execute")
 
-    if (mgException != 0 && !operationCompleted && stream != 0)
+    if (mgException != NULL)
     {
-        WriteResponseStream(*stream, mgException);
+
 
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
