@@ -51,19 +51,7 @@ public:
 
 private:
 
-    RS_Bounds m_extents;
-    double m_mapScale;
-
-    MgSelection* m_selection;
-    RS_String m_layerId;
-    RS_String m_fcName;
-
-    int m_numFeatures;
-    int m_nMaxFeatures;
-
     MgBatchPropertyCollection* m_featprops;
-
-    KeyEncode* m_keyEncode;
 };
 
 #endif
