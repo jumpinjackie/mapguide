@@ -110,6 +110,7 @@
 #include "HttpRequestParameters.cpp"
 #include "WmsLayerDefinitions.cpp"
 #include "WmsFeatureInfo.cpp"
+#include "WmsFeatureProperties.cpp"
 #include "WfsFeatureDefinitions.cpp"
 #include "WfsFeatures.cpp"
 #include "XmlParser.cpp"

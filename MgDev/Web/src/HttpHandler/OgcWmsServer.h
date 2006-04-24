@@ -23,6 +23,7 @@
 #include "OgcDataAccessor.h"
 #include "WmsLayerDefinitions.h"
 #include "WmsFeatureInfo.h"
+#include "WmsFeatureProperties.h"
 
 class MgOgcWmsServer: public MgOgcServer
 {
@@ -86,7 +87,8 @@ private:
     //   subset.)
     void ProcedureEnumLayers            (MgXmlProcessingInstruction& PIEnum);
     void ProcedureEnumFeatureProperties (MgXmlProcessingInstruction& PIEnum);
-
+    void ProcedureEnumFeatureInfo       (MgXmlProcessingInstruction& PIEnum);
+    
     bool ValidateGetCapabilitiesParameters();
     bool ValidateGetFeatureInfoParameters();
     bool ValidateMapParameters();
