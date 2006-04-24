@@ -85,8 +85,10 @@ CPSZ kpszExceptionMessageMissingImageFormat = _("The request must contain a FORM
 
 CPSZ kpszPiEnumLayers                      = _("EnumLayers");
 CPSZ kpszPiEnumFeatureProperties           = _("EnumFeatureProperties");
+CPSZ kpszPiEnumFeatureInfo                 = _("EnumFeatureInfo");
 extern CPSZ kpszPiAttributeUsing;  // for consistency, borrow the "using" attribute from base class.
 CPSZ kpszPiEnumLayersDefaultFormat         = _("&Layer.Name;\n");
+CPSZ kpszPiEnumFeatureInfoDefaultFormat    = _("&FeatureInfo.xml;");
 CPSZ kpszPiEnumFeaturePropertiesDefaultFormat = _("&FeatureProperty.xml;");
 
 extern CPSZ kpszPiAttributeSubset;      // = _("subset");
@@ -624,6 +626,10 @@ bool MgOgcWmsServer::ProcessOtherInstruction(CREFSTRING sProc,MgXmlProcessingIns
     {
         ProcedureEnumFeatureProperties(PI);
     }
+    else if(sProc == kpszPiEnumFeatureInfo)
+    {
+        ProcedureEnumFeatureInfo(PI);
+    }
     else
     {
         return false;
@@ -662,6 +668,23 @@ void MgOgcWmsServer::ProcedureEnumLayers(MgXmlProcessingInstruction& PIEnum)
     }
 }
 
+// Interpret a <?EnumFeatureInfo using= ?> processing instruction
+// This will enumerate all feature info property sets
+void MgOgcWmsServer::ProcedureEnumFeatureInfo(MgXmlProcessingInstruction& PIEnum)
+{
+    STRING sFormat;
+    if(!PIEnum.GetAttribute(kpszPiAttributeUsing,sFormat))
+        sFormat = kpszPiEnumFeatureInfoDefaultFormat;
+
+    CDictionaryStackFrame forFeatureInfo(this);
+
+    while(m_pFeatureInfo->Next())
+    {
+        m_pFeatureInfo->GenerateDefinitions(*m_pTopOfDefinitions);
+        ProcessExpandableText(sFormat);
+    }
+}
+
 // Interpret a <?EnumFeatureProperties using= ?> processing instruction
 // This will enumerate all feature properties
 void MgOgcWmsServer::ProcedureEnumFeatureProperties(MgXmlProcessingInstruction& PIEnum)
@@ -672,10 +695,17 @@ void MgOgcWmsServer::ProcedureEnumFeatureProperties(MgXmlProcessingInstruction& 
 
     CDictionaryStackFrame forFeatureProperties(this);
 
-    while(m_pFeatureInfo->Next())
+    if(m_pFeatureInfo != NULL)
     {
-        m_pFeatureInfo->GenerateDefinitions(*m_pTopOfDefinitions);
-        ProcessExpandableText(sFormat);
+        Ptr<MgWmsFeatureProperties> pProps = m_pFeatureInfo->GetCurrentProperties();
+        if(pProps != NULL)
+        {
+            while(pProps->Next())
+            {
+                pProps->GenerateDefinitions(*m_pTopOfDefinitions);
+                ProcessExpandableText(sFormat);
+            }
+        }
     }
 }
 

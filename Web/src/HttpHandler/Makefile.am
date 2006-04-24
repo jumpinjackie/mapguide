@@ -108,6 +108,7 @@ include_SOURCES = \
   WfsFeatures.cpp \
   WfsGetFeatureParams.cpp \
   WmsFeatureInfo.cpp \
+  WmsFeatureProperties.cpp \
   WmsLayerDefinitions.cpp \
   WmsMapUtil.cpp \
   XmlParser.cpp
@@ -214,6 +215,7 @@ noinst_HEADERS = $(include_SOURCES) \
   WfsFeatures.h \
   WfsGetFeatureParams.h \
   WmsFeatureInfo.h \
+  WmsFeatureProperties.h \
   WmsLayerDefinitions.h \
   WmsMapUtil.h \
   XmlElementEmitter.h \

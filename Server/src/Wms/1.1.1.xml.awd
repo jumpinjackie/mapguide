@@ -67,8 +67,30 @@
   <SRS>&Enum.item.SRS;</SRS>
  </Define>
 
+ <Define item="FeatureInfo.xml">
+  <FeatureInfo>
+   <?EnumFeatureProperties using="&FeatureProperty.xml;" ?>
+  </FeatureInfo>
+ </Define>
+
+ <Define item="FeatureInfo.html">
+  <tr>
+   <td>
+    <table>
+     <?EnumFeatureProperties using="&FeatureProperty.html;" ?>
+    </table>
+   </td>
+  </tr>
+ </Define>
+
+ <Define item="FeatureInfo.text">
+  FeatureInfo:
+  <?EnumFeatureProperties using="&FeatureProperty.text;" ?>
+  
+ </Define>
+ 
  <Define item="FeatureProperty.xml">
-  <Property name="&FeatureProperty.Name;" value="&FeatureProperty.Value;" ></Property>
+  <Property name="&FeatureProperty.Name;" value="&FeatureProperty.Value;"></Property>
  </Define>
  
  <Define item="FeatureProperty.html">
@@ -314,9 +336,9 @@
 
 -->
 <Response request="GetFeatureInfo" content-type="text/xml">
-<GetFeatureInfo>
- <?EnumFeatureProperties using="&FeatureProperty.xml;" ?>
-</GetFeatureInfo>
+ <FeatureInfoCollection>
+  <?EnumFeatureInfo using="&FeatureInfo.xml;" ?>
+ </FeatureInfoCollection>
 </Response>
 
 
@@ -332,7 +354,7 @@
 </head>
 <body>
 <table border="1">
- <?EnumFeatureProperties using="&FeatureProperty.html;" ?>
+ <?EnumFeatureInfo using="&FeatureInfo.html;" ?>
 </table>
 </body>
 </html>
@@ -345,7 +367,7 @@
 
 -->
 <Response request="GetFeatureInfo" content-type="text/plain">
- <?EnumFeatureProperties using="&FeatureProperty.text;" ?>
+ <?EnumFeatureInfo using="&FeatureInfo.text;" ?>
 </Response>
 
 

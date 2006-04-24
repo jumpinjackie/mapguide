@@ -57,7 +57,7 @@ void MgHttpWmsGetFeatureInfo::InitializeRequestParameters(MgOgcWmsServer& oServe
         m_iCoord = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsXCoord);
 
     // Get j pixel coordinate and convert to integer
-    m_iCoord = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsJCoord);
+    m_jCoord = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsJCoord);
     if(m_jCoord == 0)
         m_jCoord = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsYCoord);
 
@@ -189,17 +189,11 @@ void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
         Ptr<MgGeometry> selectionGeometry = GetSelectionGeometry(map);
 
         // Call the C++ API
-        Ptr<MgFeatureInformation> featureInfo = service->QueryFeatures(map, queryLayers, selectionGeometry,
+        Ptr<MgBatchPropertyCollection> propertyCollection = service->QueryFeatureProperties(map, queryLayers, selectionGeometry,
             MgFeatureSpatialOperations::Intersects, m_featureCount);
-
-        // Convert to XML format
-        Ptr<MgByteReader> featureInfoXml = featureInfo->ToXml();
-
-        // Convert to a string
-        STRING xmlString = featureInfoXml->ToString();
         
         // Create the object to store the feature info
-        Ptr<MgWmsFeatureInfo> wmsFeatureInfo = new MgWmsFeatureInfo(xmlString.c_str());
+        Ptr<MgWmsFeatureInfo> wmsFeatureInfo = new MgWmsFeatureInfo(propertyCollection);
 
         // The WMS Server takes ownership of the feature info
         wmsServer->SetFeatureInfo(wmsFeatureInfo);

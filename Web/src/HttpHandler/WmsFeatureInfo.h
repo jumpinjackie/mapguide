@@ -21,26 +21,27 @@
 #include "XmlParser.h"
 #include "Dictionary.h"
 
+class MgWmsFeatureProperties;
+
 class MgWmsFeatureInfo: public IOgcResourceEnumerator, public MgDisposable
 {
 public:
-    MgWmsFeatureInfo(CPSZ inputXml);
+    MgWmsFeatureInfo(MgBatchPropertyCollection* propertyCollection);
+    
     //Default constructor to keep Ptr<> happy
     MgWmsFeatureInfo(){};
     virtual ~MgWmsFeatureInfo();
 
     bool Next();
-
     void GenerateDefinitions(MgUtilDictionary& Dictionary);
+    MgWmsFeatureProperties* GetCurrentProperties();
 
 protected:
     virtual void Dispose(){delete this;}
 
 private:
-   bool   SkipElement(CPSZ pszElementName);
-
-   MgXmlParser* m_xmlParser;
-   bool m_bOk;
+   Ptr<MgBatchPropertyCollection> m_propertyCollection;
+   int m_index;
 };
 
 #endif//_MgWmsFeatureInfo_h
