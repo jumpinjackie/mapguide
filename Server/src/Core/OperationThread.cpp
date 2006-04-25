@@ -137,6 +137,13 @@ int MgOperationThread::svc(void)
                                         ACE_Message_Block* mb = new ACE_Message_Block( pStreamData );
                                         if(mb)
                                         {
+                                            // As soon as we put the new message on the queue another
+                                            // thread can begin processing it.  To eliminate concurrent
+                                            // access on the client handler we need to release the smart
+                                            // pointer reference to it (otherwise it will automatically
+                                            // release it later below).
+                                            pClientHandler = NULL;
+
                                             putq( mb );
                                         }
                                     }
@@ -170,6 +177,13 @@ int MgOperationThread::svc(void)
                                     ACE_Message_Block* mb = new ACE_Message_Block( pStreamData );
                                     if(mb)
                                     {
+                                        // As soon as we put the new message on the queue another
+                                        // thread can begin processing it.  To eliminate concurrent
+                                        // access on the client handler we need to release the smart
+                                        // pointer reference to it (otherwise it will automatically
+                                        // release it later below).
+                                        pClientHandler = NULL;
+
                                         putq( mb );
                                     }
                                 }
