@@ -274,6 +274,9 @@ INT32 MgClientHandler::ProcessInput(ACE_HANDLE handle)
 /// </summary>
 int MgClientHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask mask)
 {
+    if (m_Status == MgClientHandler::hsClosed)
+        return 0;
+
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgClientHandler::handle_close()\n")));
     MG_LOG_TRACE_ENTRY(L"MgClientHandler::handle_close()");
 
