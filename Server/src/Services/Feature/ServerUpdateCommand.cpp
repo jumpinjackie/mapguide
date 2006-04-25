@@ -36,14 +36,14 @@ MgServerUpdateCommand::MgServerUpdateCommand(MgFeatureCommand* command, MgServer
     CHECKNULL(command, L"MgServerUpdateCommand.MgServerUpdateCommand");
     CHECKNULL(connection, L"MgServerUpdateCommand.MgServerUpdateCommand");
 
-    m_srvrFeatConn = connection;
+    m_srvrFeatConn = SAFE_ADDREF((MgServerFeatureConnection*)connection);
     m_featCommand = SAFE_ADDREF((MgUpdateFeatures*)command);
     m_cmdId = cmdId;
 }
 
 MgServerUpdateCommand::~MgServerUpdateCommand()
 {
-    m_srvrFeatConn = NULL; // It is deleted in MgServerUpdateFeatures class
+    m_srvrFeatConn = NULL;
 }
 
 MgProperty* MgServerUpdateCommand::Execute()

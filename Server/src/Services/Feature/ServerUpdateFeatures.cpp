@@ -24,14 +24,11 @@
 
 MgServerUpdateFeatures::MgServerUpdateFeatures()
 {
-    // Connect to provider
     m_SrvrFeatConn = NULL;
 }
 
 MgServerUpdateFeatures::~MgServerUpdateFeatures()
 {
-    if (NULL != m_SrvrFeatConn)
-        delete m_SrvrFeatConn;
 }
 
 void MgServerUpdateFeatures::Connect(MgResourceIdentifier* resource)
