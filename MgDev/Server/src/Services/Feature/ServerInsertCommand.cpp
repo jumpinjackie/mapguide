@@ -36,14 +36,14 @@ MgServerInsertCommand::MgServerInsertCommand(MgFeatureCommand* command, MgServer
     CHECKNULL(command, L"MgServerInsertCommand.MgServerInsertCommand");
     CHECKNULL(connection, L"MgServerInsertCommand.MgServerInsertCommand");
 
-    m_srvrFeatConn = connection;
+    m_srvrFeatConn = SAFE_ADDREF((MgServerFeatureConnection*)connection);
     m_featCommand = SAFE_ADDREF((MgInsertFeatures*)command);
     m_cmdId = cmdId;
 }
 
 MgServerInsertCommand::~MgServerInsertCommand()
 {
-    m_srvrFeatConn = NULL; // It is deleted in MgServerUpdateFeatures class
+    m_srvrFeatConn = NULL;
 }
 
 MgProperty* MgServerInsertCommand::Execute()
