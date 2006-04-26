@@ -963,7 +963,22 @@ WT_Result gdr_process_lineStyle (WT_Line_Style & /*lineStyle*/, WT_File & /*file
 WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file)
 {    
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    wchar_t* name = WT_String::to_wchar(layer.layer_name().length(), layer.layer_name().unicode());
+
+    //Most of the time layers are referred to by their integer id only.
+    //Only the first time they are identified by name which we need to keep
+    //track of.
+
+    //first see if we already have this layer
+    WT_Layer* layer2 = file.layer_list().find_layer_from_index(layer.layer_num());
+
+    //if we don't have it in the list, add it
+    if (!layer2)
+    {      
+        file.layer_list().add_layer(layer);
+        layer2 = &layer;
+    }
+
+    wchar_t* name = WT_String::to_wchar(layer2->layer_name().length(), layer2->layer_name().unicode());
 
     //check if the current layer was requested by looking it up
     //in the W2D layer filter that was passes to the renderer
