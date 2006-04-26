@@ -81,6 +81,9 @@ using namespace DWFCore;
 
 #define ROUND(x) (int)((x) + 0.5)
 
+#define SYMBOL_BITMAP_SIZE 128
+#define SYMBOL_BITMAP_MAX 1024
+
 //using this in contructor
 #pragma warning(disable:4355)
 
@@ -610,81 +613,351 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
         symbol = (RS_InputStream*)m_symbolManager->GetSymbolData(mdef.library().c_str(), /*NOXLATE*/L"symbols.dwf");
     }
 
-    //default symbol
+    //symbol in mapping space units
     double iw = _MeterToMapSize(mdef.units(), mdef.width());
     double ih = _MeterToMapSize(mdef.units(), mdef.height());
 
-    //unrotated symbol bounding box
+    //unrotated symbol bounding box (mapping space)
     RS_Bounds dst(x, y, x+iw, y+ih);
 
-    //default reference point (negated, to mimic the one that is stored in the
-    //symbol library)
-    double refX = -mdef.insx();
-    double refY = -mdef.insy();
+    int devwidth = ROUND(dst.width() * m_scale);
+    int devheight = ROUND(dst.height() * m_scale);
 
+    //get insertion point 
+    double refX = mdef.insx();
+    double refY = mdef.insy();
+
+    //rotation angle
     double angle = mdef.rotation() * M_PI / 180.0;
-
-    m_lastSymbol = mdef;
-
-    if (!symbol)
+ 
+    if (!symbol && is_font_symbol)
     {
-        //non-library symbols (font and SLD)
+        //font symbol
 
-        if (is_font_symbol)
-        {
-            //convert font symbol to a simple label
-            RS_TextDef tdef(RS_HAlignment_Center, RS_VAlignment_Half);
-            RS_FontDef fdef(mdef.library(), mdef.height(), mdef.fontstyle(), mdef.units());
+        m_lastSymbol = mdef;
 
-            tdef.font() = fdef;
-            tdef.color() = mdef.style().color();
-            tdef.rotation() = mdef.rotation();
+        //convert font symbol to a simple label and sent to label manager
+        RS_TextDef tdef(RS_HAlignment_Center, RS_VAlignment_Half);
+        RS_FontDef fdef(mdef.library(), mdef.height(), mdef.fontstyle(), mdef.units());
 
-            //compute placement position for character centerpoint, taking into
-            //account the insertion point.
-            //TODO: is this way of computing insertion point offset correct, when
-            //compared to what SymbolTrans does? Is rotation applied before the symbol
-            //is moved to its insertion point or after? Need to check that.
-            double posx = dst.minx + (0.5 + refX) * dst.width();
-            double posy = dst.miny + (0.5 + refY) * dst.height();
+        tdef.font() = fdef;
+        tdef.color() = mdef.style().color();
+        tdef.rotation() = mdef.rotation();
 
-            m_labeler->ProcessLabel(posx, posy, mdef.name(), tdef);
-        }
-        else
-        {
-            //draw SLD symbol
-            DrawSLDSymbol(dst, mdef);
-        }
+        //compute placement position for character centerpoint, taking into
+        //account the insertion point.
+        //TODO: is this way of computing insertion point offset correct, when
+        //compared to what SymbolTrans does? Is rotation applied before the symbol
+        //is moved to its insertion point or after? Need to check that.
+        double posx = dst.minx + (0.5 - refX) * dst.width();
+        double posy = dst.miny + (0.5 - refY) * dst.height();
+
+        m_labeler->ProcessLabel(posx, posy, mdef.name(), tdef);
     }
     else
     {
-        //case where we are using a symbol from the library
+        //for non-font symbols we will draw into a temporary image
+        //which we can reuse if the symbol is not changing from one
+        //feature to the next
 
-        //default bounds of symbol data in W2D
-        //for symbols created by MapGuide Studio
-        RS_Bounds src(0,0,SYMBOL_MAX,SYMBOL_MAX);
+        //check to see if the last symbol we got was different or if it
+        //is not cached yet
+        if (   mdef.library() != m_lastSymbol.library()
+            || mdef.name() != m_lastSymbol.name()
+            || mdef.rotation() != m_lastSymbol.rotation()
+            || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
+            || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
+            || mdef.style().background().argb() != m_lastSymbol.style().background().argb()
+            || !m_imsym)
+        {
+            m_lastSymbol = mdef;
 
-        double angle = mdef.rotation() * M_PI / 180.0;
+            int imsymw = devwidth;
+            int imsymh = devheight;
 
-        //get reference point
-        //Note that MapGuide symbols use negated translation
-        //coordinates, i.e. a reference point at the center
-        //of the symbols would come in as -0.5, -0.5
-        FindSymbolReferencePoint(symbol, mdef.name(), std::wstring(L""), refX, refY);
+            if (imsymw > SYMBOL_BITMAP_MAX || imsymh > SYMBOL_BITMAP_MAX)
+            {
+                //symbol will be too big so we will draw it as
+                //geometry directly into the map image instead.
+                //So we need to destroy the cached symbol image if any
+                if (m_imsym)
+                {
+                    gdImageDestroy((gdImagePtr)m_imsym);
+                    m_imsym = NULL;
+                }
+            }
+            else
+            {
+                //otherwise allocate a second bitmap where
+                //we will cahce the symbol image for reuse
 
-        //construct new transformer
-        //with updated reference point
-        SymbolTrans st(src, dst, -refX, -refY, angle);
+                //if it is too small, make it bigger
+                //so that we get an antialiased effect
+                if (imsymw < SYMBOL_BITMAP_SIZE/2 && imsymh < SYMBOL_BITMAP_SIZE/2)
+                    imsymw = imsymh = SYMBOL_BITMAP_SIZE;
 
-        //also set flags controlling how W2D are rewritten
-        //into the destination DWF
-        m_bIsSymbolW2D = true;
-        m_mdOverrideColors = mdef;
+                //did we cache an image previously, but it was different size?
+                if (m_imsym 
+                    && (   gdImageSX((gdImagePtr)m_imsym) != imsymw
+                        || gdImageSY((gdImagePtr)m_imsym) != imsymh))
+                {
+                    gdImageDestroy((gdImagePtr)m_imsym);
+                    m_imsym = NULL;
+                }
 
-        //copy symbol W2D into destination
-        AddDWFContent(symbol, &st, mdef.name(), RS_String(L""), RS_String(L""));
+                //allocate the symbol image
+                if (!m_imsym)
+                    m_imsym = gdImageCreateTrueColor(imsymw, imsymh);
+            }
 
-        m_bIsSymbolW2D = false;
+            if (!symbol)
+            {
+                //SLD symbol (i.e. smybol from library is NULL)
+
+                RS_F_Point* poly = NULL;
+                int npts = 0;
+
+                //determine which SLD symbol we need to draw
+                //and pick up its polygon point definition
+                const wchar_t* nm = mdef.name().c_str();
+
+                if (wcscmp(nm, SLD_CIRCLE_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_CIRCLE;
+                    npts = sizeof(SLD_CIRCLE) / (2 * sizeof(double));
+                }
+                else if (wcscmp(nm, SLD_TRIANGLE_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_TRIANGLE;
+                    npts = sizeof(SLD_TRIANGLE) / (2 * sizeof(double));
+                }
+                else if (wcscmp(nm, SLD_STAR_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_STAR;
+                    npts = sizeof(SLD_STAR) / (2 * sizeof(double));
+                }
+                else if (wcscmp(nm, SLD_CROSS_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_CROSS;
+                    npts = sizeof(SLD_CROSS) / (2 * sizeof(double));
+                }
+                else if (wcscmp(nm, SLD_X_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_X;
+                    npts = sizeof(SLD_X) / (2 * sizeof(double));
+                }
+                else
+                {
+                    //default is a square
+                    poly = (RS_F_Point*)SLD_SQUARE;
+                    npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
+                }
+
+                //fill color
+                RS_Color fill = mdef.style().color();
+                int gdcfill = ConvertColor((gdImagePtr)m_imout, fill);
+
+                //outline color
+                RS_Color outline = mdef.style().outline().color();
+                int gdcline = ConvertColor((gdImagePtr)m_imout, outline);
+                
+                //see if symbol will be small enough to draw in cached image
+                if (m_imsym)
+                {
+                    //transform to coordinates of temporary image where we
+                    //draw symbol before transfering to the map
+                    EnsureBufferSize(npts);
+                    RS_D_Point* pts = m_wtPointBuffer;
+
+                    double tempx, tempy;
+
+                    for (int i=0; i<npts; i++)
+                    {
+                        tempx = poly[i].x;
+                        tempy = poly[i].y;
+
+                        pts[i].x = (int)(tempx * (imsymw - 10.) + 5.);
+                        pts[i].y = (int)((imsymh - 10.) - tempy * (imsymh - 10.) + 5.);
+                    }
+
+                    // initialize the temporary symbol image to a transparent background
+                    gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
+                    gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym), 0x7f000000);
+                    gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
+
+                    //draw fill
+                    // TODO: When a filled polygon image is down-sampled, a gray false edge is created.
+                    // This edge can only be seen when the real edge is not being drawn.
+                    gdImageSetThickness((gdImagePtr)m_imsym, 0);
+                    gdImageFilledPolygon((gdImagePtr)m_imsym, (gdPointPtr)pts, npts, gdcfill);
+                    //draw outline with a thickness set so that when scaled down to
+                    //th destination image, the outline is still fully visible
+                    gdImageSetThickness((gdImagePtr)m_imsym, 10);
+                    gdImageOpenPolygon((gdImagePtr)m_imsym, (gdPointPtr)pts, npts, gdcline);
+
+                }
+                else
+                {
+                    //otherwise symbol is big enough to draw as a regular polygon
+
+                    //construct transformer
+                    RS_Bounds src(0.,0.,1.,1.);
+                    double angle = mdef.rotation() * M_PI / 180.0;
+                    SymbolTrans trans(src, dst, mdef.insx(), mdef.insy(), angle);
+
+                    //transform to coordinates of temporary image where we
+                    //draw symbol before transfering to the map
+                    EnsureBufferSize(npts);
+                    RS_D_Point* pts = m_wtPointBuffer;
+
+                    double tempx, tempy;
+
+                    for (int i=0; i<npts; i++)
+                    {
+                        tempx = poly[i].x;
+                        tempy = poly[i].y;
+
+                        //unit square to world
+                        trans.TransformPoint(tempx, tempy);
+
+                        //world to device
+                        pts[i].x = _TX(tempx);
+                        pts[i].y = _TY(tempy);
+                    }
+
+                    //draw fill
+                    gdImageSetAntiAliased((gdImagePtr)m_imout, gdcfill);
+                    gdImageFilledPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
+
+                    //draw outline
+                    gdImageSetAntiAliased((gdImagePtr)m_imout, gdcline);
+                    gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
+                }
+            }
+            else
+            {
+                //dwf symbol from the library
+
+                //default bounds of symbol data in W2D
+                //for symbols created by MapGuide Studio
+                RS_Bounds src(0,0,SYMBOL_MAX,SYMBOL_MAX);
+                double angle = mdef.rotation() * M_PI / 180.0;
+
+                SymbolTrans st = SymbolTrans(src, dst, refX, refY, angle);
+
+                if (m_imsym)
+                {
+                    //case where we will cache the symbol image
+
+                    //we will use unrotated symbol bounding box
+                    //since rotation will be done by the image copy
+                    RS_Bounds dst(0, 0, (double)imsymw, (double)imsymh);
+                    st = SymbolTrans(src, dst, 0.0, 0.0, 0.0);
+
+                    m_imw2d = m_imsym;
+
+                    // initialize the temporary symbol image to a transparent background
+                    gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
+                    gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym), 0x7f000000);
+                    gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
+                }
+                else
+                {
+                    //case where we will draw the W2D directly into
+                    //the destination image because the symbol is too big
+                    //we need to readjust the transform to reflect that
+                    m_imw2d = m_imout;
+                }
+
+                //also set flags controlling how W2D are rewritten
+                //into the destination DWF
+                m_bIsSymbolW2D = true;
+                m_mdOverrideColors = mdef;
+
+                //copy symbol W2D into destination
+                AddDWFContent(symbol, &st, mdef.name(), RS_String(L""), RS_String(L""));
+
+                //make sure we zero out the W2D symbol flags
+                m_bIsSymbolW2D = false;
+                m_imw2d = NULL;
+            }
+
+        }
+
+        if (m_imsym)
+        {
+            //in case we cached a symbol image, draw it to the main 
+            //map image
+
+            //get the source image size
+            int imsymw = gdImageSX((gdImagePtr)m_imsym);
+            int imsymh = gdImageSY((gdImagePtr)m_imsym);
+
+            //construct transformer from cached image space
+            //to rotated map space -- we need this in order to
+            //take into account the insertion point
+            RS_Bounds src(0,0,imsymw,imsymh);
+            double angle = mdef.rotation() * M_PI / 180.0;
+            SymbolTrans trans(src, dst, refX, refY, angle);
+
+            //initialize 4 corner points of symbol -- we will
+            //destructively transform this array to destination map space
+            RS_F_Point b[4];
+            b[0].x = 0.0; b[0].y = 0.0;
+            b[1].x = imsymw; b[1].y = 0.0;
+            b[2].x = imsymw; b[2].y = imsymh;
+            b[3].x = 0.0; b[3].y = imsymh;
+
+            for (int i=0; i<4; i++)
+            {
+                //to world space
+                trans.TransformPoint(b[i].x, b[i].y);
+
+                //world to screen space
+                b[i].x = _TXD(b[i].x);
+                b[i].y = _TYD(b[i].y);
+            }
+
+            //copy symbol image into destination image
+            if (angle == 0.0)
+            {
+                //upper left point
+                int ulx = (int)floor(b[3].x);
+                int uly = (int)floor(b[3].y);
+
+                gdImageCopyResampled((gdImagePtr)m_imout, (gdImagePtr)m_imsym,
+                    ulx, uly, 0, 0, devwidth, devheight, imsymw, imsymh);
+            }
+            else
+            {
+                //for rotated copy, we need to scale down the image first
+                //allocating an extra image here should not be too much of
+                //an overhead since it is usually small
+                gdImagePtr tmp = gdImageCreateTrueColor(devwidth + 2, devheight + 2);
+
+                //make it transparent
+                gdImageAlphaBlending(tmp, 0);
+                gdImageFilledRectangle(tmp, 0, 0, devwidth + 1, devheight + 2, 0x7f000000);
+                gdImageAlphaBlending(tmp, 1);
+
+                //scale down and copy supersampled symbol image into temporary image
+                gdImageCopyResampled(tmp, (gdImagePtr)m_imsym,
+                                     1, 1, 0, 0,
+                                     devwidth, devheight, imsymw, imsymh);
+
+                //for rotated gd copy, we need the midpoint of
+                //the destination bounds
+                int mx = (int)floor(0.5 * (b[0].x + b[2].x));
+                int my = (int)floor(0.5 * (b[0].y + b[2].y));
+
+                //draw rotated symbol onto final destination image
+                gdImageCopyRotated((gdImagePtr)m_imout, (gdImagePtr)tmp,
+                    mx, my, 0, 0, devwidth + 2, devheight + 2,
+                    (int)(mdef.rotation()));
+
+                gdImageDestroy(tmp);
+            }
+        }
     }
 
     if (!allowOverpost)
@@ -709,7 +982,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
         //construct transformer -- same as the
         //one used for the actual symbol drawables
-        SymbolTrans boxtrans(src, dst, -refX, -refY, angle);
+        SymbolTrans boxtrans(src, dst, refX, refY, angle);
 
         RS_F_Point pts[4];
 
@@ -729,204 +1002,6 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
         m_labeler->AddExclusionRegion(pts, 4);
     }
 }
-
-
-void GDRenderer::DrawSLDSymbol(RS_Bounds& dst, RS_MarkerDef& mdef)
-{
-    //construct transformer
-    RS_Bounds src(0.,0.,1.,1.);
-    double angle = mdef.rotation() * M_PI / 180.0;
-    SymbolTrans trans(src, dst, mdef.insx(), mdef.insy(), angle);
-
-    //size of the symbol in pixels, when drawn
-    //we use this number to determine whether to supersample
-    //the symbol into an offscreen gd image or to draw it
-    //directly as a polygon
-    int devwidth = ROUND(dst.width() * m_scale);
-    int devheight = ROUND(dst.height() * m_scale);
-
-    //code below does not like this case
-    if (devwidth == 0 || devheight == 0) return;
-
-    //fill color
-    RS_Color fill = mdef.style().color();
-    int gdcfill = ConvertColor((gdImagePtr)m_imout, fill);
-
-    //outline color
-    RS_Color outline = mdef.style().outline().color();
-    int gdcline = ConvertColor((gdImagePtr)m_imout, outline);
-
-    RS_F_Point* poly = NULL;
-    int npts = 0;
-
-    //determine which SLD symbol we need to draw
-    //and pick up its polygon point definition
-    const wchar_t* nm = mdef.name().c_str();
-
-    if (wcscmp(nm, SLD_CIRCLE_NAME) == 0)
-    {
-        poly = (RS_F_Point*)SLD_CIRCLE;
-        npts = sizeof(SLD_CIRCLE) / (2 * sizeof(double));
-    }
-    else if (wcscmp(nm, SLD_TRIANGLE_NAME) == 0)
-    {
-        poly = (RS_F_Point*)SLD_TRIANGLE;
-        npts = sizeof(SLD_TRIANGLE) / (2 * sizeof(double));
-    }
-    else if (wcscmp(nm, SLD_STAR_NAME) == 0)
-    {
-        poly = (RS_F_Point*)SLD_STAR;
-        npts = sizeof(SLD_STAR) / (2 * sizeof(double));
-    }
-    else if (wcscmp(nm, SLD_CROSS_NAME) == 0)
-    {
-        poly = (RS_F_Point*)SLD_CROSS;
-        npts = sizeof(SLD_CROSS) / (2 * sizeof(double));
-    }
-    else if (wcscmp(nm, SLD_X_NAME) == 0)
-    {
-        poly = (RS_F_Point*)SLD_X;
-        npts = sizeof(SLD_X) / (2 * sizeof(double));
-    }
-    else
-    {
-        //default is a square
-        poly = (RS_F_Point*)SLD_SQUARE;
-        npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
-    }
-
-    const int sym_width = 128;
-    const int sym_height = 128;
-
-    //see if symbol will be small enough to need supersampling
-    if (devwidth <= sym_width/2 && devheight <= sym_height/2)
-    {
-        //transform to coordinates of temporary image where we
-        //draw symbol before transfering to the map
-        EnsureBufferSize(npts);
-        RS_D_Point* pts = m_wtPointBuffer;
-
-        double tempx, tempy;
-
-        for (int i=0; i<npts; i++)
-        {
-            tempx = poly[i].x;
-            tempy = poly[i].y;
-
-            pts[i].x = (int)(tempx * (sym_width - 10.) + 5.);
-            pts[i].y = (int)((sym_height - 10.) - tempy * (sym_height - 10.) + 5.);
-        }
-
-        if (!m_imsym)
-            m_imsym = gdImageCreateTrueColor(sym_width, sym_height);
-
-        // initialize the temporary symbol image to a transparent background
-        gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
-        gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym), 0x7f000000);
-        gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
-
-        //draw fill
-        // TODO: When a filled polygon image is down-sampled, a gray false edge is created.
-        // This edge can only be seen when the real edge is not being drawn.
-        gdImageSetThickness((gdImagePtr)m_imsym, 0);
-        gdImageFilledPolygon((gdImagePtr)m_imsym, (gdPointPtr)pts, npts, gdcfill);
-        //draw outline with a thickness set so that when scaled down to
-        //th destination image, the outline is still fully visible
-        gdImageSetThickness((gdImagePtr)m_imsym, 10);
-        gdImageOpenPolygon((gdImagePtr)m_imsym, (gdPointPtr)pts, npts, gdcline);
-
-
-        //bounds of image in screen space -- used for rotated symbols
-        RS_F_Point b[4];
-
-        //pick up the symbol bounding box from the square sld symbol
-        memcpy(b, SLD_SQUARE, sizeof(RS_F_Point) * 4);
-
-        for (int i=0; i<4; i++)
-        {
-            //from unit square to world space
-            trans.TransformPoint(b[i].x, b[i].y);
-
-            //world to screen space
-            b[i].x = _TXD(b[i].x);
-            b[i].y = _TYD(b[i].y);
-        }
-
-        if (angle == 0.0)
-        {
-            //upper left point
-            int ulx = (int)floor(b[3].x);
-            int uly = (int)floor(b[3].y);
-
-            gdImageCopyResampled((gdImagePtr)m_imout, (gdImagePtr)m_imsym,
-                ulx, uly, 0, 0, devwidth, devheight, sym_width, sym_height);
-        }
-        else
-        {
-            //for rotated copy, we need to scale down the image first
-            //allocating an extra image here should not be too much of
-            //an overhead since it is usually small
-            gdImagePtr tmp = gdImageCreateTrueColor(devwidth + 2, devheight + 2);
-
-            //make it transparent
-            gdImageAlphaBlending(tmp, 0);
-            gdImageFilledRectangle(tmp, 0, 0, devwidth + 1, devheight + 2, 0x7f000000);
-            gdImageAlphaBlending(tmp, 1);
-
-            //scale down and copy supersampled symbol image into temporary image
-            gdImageCopyResampled(tmp, (gdImagePtr)m_imsym,
-                                 1, 1, 0, 0,
-                                 devwidth, devheight, sym_width, sym_height);
-
-            //for rotated gd copy, we need the midpoint of
-            //the destination bounds
-            int mx = (int)floor(0.5 * (b[0].x + b[2].x));
-            int my = (int)floor(0.5 * (b[0].y + b[2].y));
-
-            //draw rotated symbol onto final destination image
-            gdImageCopyRotated((gdImagePtr)m_imout, (gdImagePtr)tmp,
-                mx, my, 0, 0, devwidth + 2, devheight + 2,
-                (int)(-mdef.rotation()));
-
-            gdImageDestroy(tmp);
-        }
-    }
-    else
-    {
-        //otherwise symbol is big enough to draw as a regular polygon
-        //without too much aliasing
-
-        //transform to coordinates of temporary image where we
-        //draw symbol before transfering to the map
-        EnsureBufferSize(npts);
-        RS_D_Point* pts = m_wtPointBuffer;
-
-        double tempx, tempy;
-
-        for (int i=0; i<npts; i++)
-        {
-            tempx = poly[i].x;
-            tempy = poly[i].y;
-
-            //unit square to world
-            trans.TransformPoint(tempx, tempy);
-
-            //world to device
-            pts[i].x = _TX(tempx);
-            pts[i].y = _TY(tempy);
-        }
-
-        //draw fill
-        gdImageSetAntiAliased((gdImagePtr)m_imout, gdcfill);
-        gdImageFilledPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
-
-        //draw outline
-        gdImageSetAntiAliased((gdImagePtr)m_imout, gdcline);
-        gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
-    }
-
-}
-
 
 void GDRenderer::ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef)
 {
@@ -1658,6 +1733,10 @@ void GDRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, con
     m_bLayerPassesFilter = true;
     m_layerFilter = w2dfilter;
 
+    //set output image if not already set
+    if (!m_bIsSymbolW2D)
+        m_imw2d = m_imout;
+
     m_pPool = new LineBufferPool();
 
     WT_File fin;
@@ -1682,6 +1761,10 @@ void GDRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, con
     m_pPool = NULL;
 
     m_input = NULL;
+
+    //clear the output image if we set it in this function
+    if (!m_bIsSymbolW2D)
+        m_imw2d = NULL;
 }
 
 
@@ -1828,29 +1911,57 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
             lb->LineTo(pdst.m_x, pdst.m_y);
     }
 
-    //
-    // Clipping. For GD rendering a simple bounds check is enough,
-    // the renderer itself will take care of the rest
-    //
-    if (checkInBounds)
+    // IMPORTANT: Only do this if the data is a DWF layer
+    // or a DWF symbol that is too large to draw using a 
+    // cached bitmap. Regular DWF Symbols will be transformed
+    // to the correct mapping space location by the symbol code
+    if (!IsSymbolW2D())
     {
-        //check if line buffer is completely outside box
-        if (   lb->bounds().minx > m_extents.maxx
-            || lb->bounds().miny > m_extents.maxy
-            || lb->bounds().maxx < m_extents.minx
-            || lb->bounds().maxy < m_extents.miny)
+        //
+        // Clipping. For GD rendering a simple bounds check is enough,
+        // the renderer itself will take care of the rest
+        //
+        if (checkInBounds)
         {
-            m_pPool->FreeLineBuffer(lb);
-            return NULL;
+            //check if line buffer is completely outside box
+            if (   lb->bounds().minx > m_extents.maxx
+                || lb->bounds().miny > m_extents.maxy
+                || lb->bounds().maxx < m_extents.minx
+                || lb->bounds().maxy < m_extents.miny)
+            {
+                m_pPool->FreeLineBuffer(lb);
+                return NULL;
+            }
         }
     }
 
-    //
-    // Convert to destination W2D space
-    //
-    if (lb->point_count() > 0)
+    // IMPORTANT: Only do this if the data is a DWF layer
+    // or a DWF symbol that is too large to draw using a 
+    // cached bitmap. Regular DWF Symbols will be transformed
+    // to the correct mapping space location by the symbol code
+    if (!IsSymbolW2D() || m_imw2d != m_imsym)
     {
-        _TransformPointsNoClamp(lb->points(), lb->point_count());
+        if (lb->point_count() > 0)
+        {
+            _TransformPointsNoClamp(lb->points(), lb->point_count());
+        }
+    }
+    else
+    {
+        //for symbols just copy the points to the output array 
+        //and only invert the y coordinate -- we need to flip y since
+        //in gd y goes down and in DWF it goes up
+        double* srcpts = lb->points();
+        int count = lb->point_count();
+
+        EnsureBufferSize(count);
+        WT_Logical_Point* wpts = (WT_Logical_Point*)m_wtPointBuffer;
+
+        for (int i=0; i<count; i++)
+        {
+            wpts[i].m_x = (WT_Integer32)*srcpts++;
+            wpts[i].m_y = gdImageSY((gdImagePtr)GetW2DTargetImage()) - (WT_Integer32)*srcpts++;
+        }
     }
 
     //free temporary linebuffer
@@ -1885,7 +1996,14 @@ WT_Integer32 GDRenderer::ScaleW2DNumber(WT_File&     file,
         dMapSpace *= m_xformer->GetLinearScale();
     }
 
-    double dDstSpace = dMapSpace * m_scale;
+    double dDstSpace = dMapSpace;
+
+    //only scale by map scale if we are not a symbol inside a macro
+    //since macro scaling already takes map scale into account
+    if (!m_bIsSymbolW2D)
+    {
+        dDstSpace *= m_scale;
+    }
 
     return (WT_Integer32)dDstSpace;
 }
@@ -1962,99 +2080,6 @@ void GDRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
     }
 }
 
-
-//Finds the given section, representing a MapGuide symbol
-//and looks at its transform
-void GDRenderer::FindSymbolReferencePoint(RS_InputStream*   in,
-                                          const RS_String&  section,
-                                          const RS_String&  passwd,
-                                          double&           x,
-                                          double&           y)
-{
-    try
-    {
-        if (in->available() == 0)
-            return;
-
-        //go to beginning of stream
-        in->seek(SEEK_SET, 0);
-
-        DWFRSInputStream rsin(in);
-
-        DWFPackageReader oReader(rsin, passwd.c_str());
-
-        DWFPackageReader::tPackageInfo tInfo;
-        oReader.getPackageInfo( tInfo );
-
-        if (tInfo.eType != DWFPackageReader::eDWFPackage)
-        {
-            return; //throw exception?
-        }
-
-        //read the manifest
-        DWFManifest& rManifest = oReader.getManifest();
-
-        //now read the sections
-        DWFSection* pSection = NULL;
-        DWFManifest::SectionIterator* iSection = (&rManifest)->getSections();
-
-        if (iSection)
-        {
-            for (; iSection->valid(); iSection->next())
-            {
-                pSection = iSection->get();
-
-                //call this so that the resource data (like transforms and roles) is read in
-                pSection->readDescriptor();
-
-                //DWFGlobalSection* pGlobal = dynamic_cast<DWFGlobalSection*>(pSection);
-                DWFEPlotSection* pEPlot = dynamic_cast<DWFEPlotSection*>(pSection);
-
-                if (pEPlot)
-                {
-                    //compare name stored in section to user requested
-                    //section
-                    //Used for point symbols
-                    DWFString name = pEPlot->title();
-
-                    //skip current section if its name does
-                    //not match the name of the one we need
-                    if (name != section.c_str())
-                        continue;
-
-                    // Get the resources for the section
-
-                    //find the first (and only) graphic resource
-                    DWFIterator<DWFResource*>* piResources = pEPlot->findResourcesByRole(DWFXML::kzRole_Graphics2d);
-
-                    if (piResources)
-                    {
-                        for (; piResources->valid(); piResources->next())
-                        {
-                            DWFResource* pResource = piResources->get();
-
-                            DWFGraphicResource* pGfx = dynamic_cast<DWFGraphicResource*>(pResource);
-
-                            if (pGfx)
-                            {
-                                x = pGfx->transform()[12];
-                                y = pGfx->transform()[13];
-                            }
-                        }
-
-                        DWFCORE_FREE_OBJECT( piResources );
-                        piResources = NULL;
-                    }
-                }
-            }
-
-            DWFCORE_FREE_OBJECT(iSection);
-        }
-    }
-    catch (DWFException& )
-    {
-    }
-}
 
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////

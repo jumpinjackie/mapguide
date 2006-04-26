@@ -95,8 +95,8 @@ WT_Result gdr_process_color (WT_Color & color, WT_File & file)
     WT_RGBA32 rgba = color.rgba();
     RS_Color c(rgba.m_rgb.b,rgba.m_rgb.g,rgba.m_rgb.r,rgba.m_rgb.a);
 
-    int gdc = ConvertColor((gdImagePtr)rewriter->GetImage(), c);
-    gdImageSetAntiAliased((gdImagePtr)rewriter->GetImage(), gdc);
+    int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), c);
+    gdImageSetAntiAliased((gdImagePtr)rewriter->GetW2DTargetImage(), gdc);
 
     file.rendition().color() = color;
 
@@ -137,7 +137,7 @@ WT_Result gdr_process_viewport (WT_Viewport & viewport, WT_File & file)
     if (rewriter->IsSymbolW2D() && ! rewriter->IsViewportSet())
         rewriter->UpdateSymbolTrans(file, viewport);
 
-    //(*rewriter->GetImage()).desired_rendition().viewport() = viewport;
+    //(*rewriter->GetW2DTargetImage()).desired_rendition().viewport() = viewport;
 
     return WT_Result::Success;
 }
@@ -172,7 +172,7 @@ WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
             color = override;
     }
 
-    int gdc = ConvertColor((gdImagePtr)rewriter->GetImage(), color);
+    int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
 
     //transform point and draw the contour set
     int numcntrs = contourSet.contours();
@@ -184,7 +184,7 @@ WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
 
     if (dst_cntr)
     {
-        rs_gdImageMultiPolygon((gdImagePtr)rewriter->GetImage(),
+        rs_gdImageMultiPolygon((gdImagePtr)rewriter->GetW2DTargetImage(),
                     (int*)cntrcounts, numcntrs,
                     (gdPointPtr)(dst_cntr), totalPts,
                     gdc);
@@ -215,7 +215,7 @@ WT_Result gdr_process_gouraudPolyline (WT_Gouraud_Polyline & /*gouraudPolyline*/
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
     //TODO: if the polyline is clipped, the colors will be wrong
     //WT_Gouraud_Polyline poly2(numpts, dstpts, gouraudPolyline.colors(), true);
-    //poly2.serialize(*rewriter->GetImage());
+    //poly2.serialize(*rewriter->GetW2DTargetImage());
     return WT_Result::Success;
 }
 
@@ -224,7 +224,7 @@ WT_Result gdr_process_gouraudPolytriangle (WT_Gouraud_Polytriangle & /*gouraudPo
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
     //TODO: clipping for polytriangles is needed
-    //gouraudPolytriangle.serialize(*rewriter->GetImage());
+    //gouraudPolytriangle.serialize(*rewriter->GetW2DTargetImage());
     return WT_Result::Success;
 }
 
@@ -307,7 +307,7 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
             int width = dstpts[1].x - dstpts[0].x;
             int height = dstpts[1].y - dstpts[2].y; //y is inverted
 
-            gdImageCopyResampled ((gdImagePtr)rewriter->GetImage(), src,
+            gdImageCopyResampled ((gdImagePtr)rewriter->GetW2DTargetImage(), src,
                             left,top,  //dstX, dstY
                             0, 0, //srcX, srcY
                             width, height, //int dstW, int dstH,
@@ -350,7 +350,7 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
 
             double angle = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
 
-            gdImageCopyRotated ((gdImagePtr)rewriter->GetImage(),
+            gdImageCopyRotated ((gdImagePtr)rewriter->GetW2DTargetImage(),
                             resized ? resized : src,
                             midx, midy,  //dstX, dstY
                             0, 0, //srcX, srcY
@@ -383,7 +383,7 @@ WT_Result gdr_process_origin (WT_Origin & origin, WT_File & file)
     //WT_Origin origin2(pts[0]);
     file.update_current_point (origin.origin());
 
-    //origin2.serialize(*rewriter->GetImage());
+    //origin2.serialize(*rewriter->GetW2DTargetImage());
 
     return WT_Result::Success;
 }
@@ -421,9 +421,9 @@ WT_Result gdr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
 
     //simple bounds check before we draw
     if ( !(dstpts[0].x + major < 0
-        || dstpts[0].x - major > ((gdImagePtr)rewriter->GetImage())->sx
+        || dstpts[0].x - major > ((gdImagePtr)rewriter->GetW2DTargetImage())->sx
         || dstpts[0].y + minor < 0
-        || dstpts[0].x - minor > ((gdImagePtr)rewriter->GetImage())->sy))
+        || dstpts[0].x - minor > ((gdImagePtr)rewriter->GetW2DTargetImage())->sy))
     {
         //negate because GD is left-handed coords
         float end   = 360.f - filledEllipse.start_degree();
@@ -437,8 +437,8 @@ WT_Result gdr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
         }
 
         //TODO: tilt. Need to tesselate into a line buffer in order to rotate.
-        int gdc = ConvertColor((gdImagePtr)rewriter->GetImage(), color);
-        gdImageFilledArc((gdImagePtr)rewriter->GetImage(),
+        int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
+        gdImageFilledArc((gdImagePtr)rewriter->GetW2DTargetImage(),
                                 dstpts[0].x, dstpts[0].y,
                                 major, minor,
                                 (int)start, (int)end, //negate because GD is left-handed coords
@@ -481,9 +481,9 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
 
     //simple bounds check before we draw
     if (!(dstpts[0].x + major < 0
-        || dstpts[0].x - major > ((gdImagePtr)rewriter->GetImage())->sx
+        || dstpts[0].x - major > ((gdImagePtr)rewriter->GetW2DTargetImage())->sx
         || dstpts[0].y + minor < 0
-        || dstpts[0].x - minor > ((gdImagePtr)rewriter->GetImage())->sy))
+        || dstpts[0].x - minor > ((gdImagePtr)rewriter->GetW2DTargetImage())->sy))
     {
         //negate because GD is left-handed coords
         float end = 360.f - outlineEllipse.start_degree();
@@ -497,7 +497,7 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
         }
 
         //TODO: tilt. Need to tesselate into a line buffer in order to rotate.
-        int gdc = ConvertColor((gdImagePtr)rewriter->GetImage(), color);
+        int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
 
         ////////////////////////
         // handle thickness
@@ -508,10 +508,10 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
         if (thick > 1)
         {
             brush1 = rs_gdImageThickLineBrush(thick, color);
-            gdImageSetBrush((gdImagePtr)rewriter->GetImage(), brush1);
+            gdImageSetBrush((gdImagePtr)rewriter->GetW2DTargetImage(), brush1);
         }
 
-        gdImageArc((gdImagePtr)rewriter->GetImage(),
+        gdImageArc((gdImagePtr)rewriter->GetW2DTargetImage(),
                                 dstpts[0].x, dstpts[0].y,
                                 major * 2, minor * 2,
                                 (int)start, (int)end,
@@ -519,7 +519,7 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
 
         if (brush1)
         {
-            gdImageSetBrush((gdImagePtr)rewriter->GetImage(), NULL);
+            gdImageSetBrush((gdImagePtr)rewriter->GetW2DTargetImage(), NULL);
             gdImageDestroy(brush1);
         }
     }
@@ -551,7 +551,7 @@ WT_Result gdr_process_polygon (WT_Polygon & polygon, WT_File & file)
             color = override;
     }
 
-    int gdc = ConvertColor((gdImagePtr)rewriter->GetImage(), color);
+    int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
 
     //do all necessary transformations
     const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(
@@ -559,7 +559,7 @@ WT_Result gdr_process_polygon (WT_Polygon & polygon, WT_File & file)
 
     if (dstpts)
     {
-        gdImageFilledPolygon((gdImagePtr)rewriter->GetImage(),
+        gdImageFilledPolygon((gdImagePtr)rewriter->GetW2DTargetImage(),
                             (gdPointPtr)dstpts,
                             polygon.count(),
                             gdc);
@@ -591,7 +591,7 @@ WT_Result gdr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & fi
             color = override;
     }
 
-    int gdc = ConvertColor((gdImagePtr)rewriter->GetImage(), color);
+    int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
 
     WT_Logical_Point* srcpts = polytriangle.points();
 
@@ -601,7 +601,7 @@ WT_Result gdr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & fi
     {
         for (int i=2; i < polytriangle.count(); i++)
         {
-            gdImageFilledPolygon((gdImagePtr)rewriter->GetImage(),
+            gdImageFilledPolygon((gdImagePtr)rewriter->GetW2DTargetImage(),
                                 (gdPointPtr)(dstpts + i - 2),
                                 3,
                                 gdc);
@@ -650,7 +650,7 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
         int width = dstpts[1].x - dstpts[0].x;
         int height = dstpts[1].y - dstpts[2].y; //y is inverted
 
-        gdImageCopyResampled ((gdImagePtr)rewriter->GetImage(), src,
+        gdImageCopyResampled ((gdImagePtr)rewriter->GetW2DTargetImage(), src,
                         left,top,  //dstX, dstY
                         0, 0, //srcX, srcY
                         width, height, //int dstW, int dstH,
@@ -688,7 +688,7 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
 
         double angle = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
 
-        gdImageCopyRotated ((gdImagePtr)rewriter->GetImage(),
+        gdImageCopyRotated ((gdImagePtr)rewriter->GetW2DTargetImage(),
                         resized ? resized : src,
                         midx, midy,  //dstX, dstY
                         0, 0, //srcX, srcY
@@ -740,7 +740,7 @@ WT_Result gdr_process_polyline (WT_Polyline & polyline, WT_File & file)
             color = override;
     }
 
-    int gdc = ConvertColor((gdImagePtr)rewriter->GetImage(), color);
+    int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
 
     //do all necessary transformations and clipping
     const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(
@@ -754,17 +754,17 @@ WT_Result gdr_process_polyline (WT_Polyline & polyline, WT_File & file)
         if (thick > 1)
         {
             brush1 = rs_gdImageThickLineBrush(thick, color);
-            gdImageSetBrush((gdImagePtr)rewriter->GetImage(), brush1);
+            gdImageSetBrush((gdImagePtr)rewriter->GetW2DTargetImage(), brush1);
         }
 
-        gdImageOpenPolygon((gdImagePtr)rewriter->GetImage(),
+        gdImageOpenPolygon((gdImagePtr)rewriter->GetW2DTargetImage(),
                             (gdPointPtr)dstpts,
                             polyline.count(),
                             brush1 ? gdBrushed : gdc);
 
         if (brush1)
         {
-            gdImageSetBrush((gdImagePtr)rewriter->GetImage(), NULL);
+            gdImageSetBrush((gdImagePtr)rewriter->GetW2DTargetImage(), NULL);
             gdImageDestroy(brush1);
         }
     }
@@ -853,7 +853,7 @@ WT_Result gdr_process_visibility (WT_Visibility & visibility, WT_File & file)
 WT_Result gdr_process_codePage (WT_Code_Page & /*codePage*/, WT_File & /*file*/)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //(*rewriter->GetImage()).desired_rendition().code_page() = codePage;
+    //(*rewriter->GetW2DTargetImage()).desired_rendition().code_page() = codePage;
     return WT_Result::Success;
 }
 
@@ -861,7 +861,7 @@ WT_Result gdr_process_codePage (WT_Code_Page & /*codePage*/, WT_File & /*file*/)
 WT_Result gdr_process_plotInfo (WT_Plot_Info & /*plotInfo*/, WT_File & /*file*/)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //plotInfo.serialize(*rewriter->GetImage());
+    //plotInfo.serialize(*rewriter->GetW2DTargetImage());
     return WT_Result::Success;
 }
 
@@ -869,7 +869,7 @@ WT_Result gdr_process_plotInfo (WT_Plot_Info & /*plotInfo*/, WT_File & /*file*/)
 WT_Result gdr_process_background (WT_Background & /*background*/, WT_File & /*file*/)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
-    //background.serialize(*rewriter->GetImage());
+    //background.serialize(*rewriter->GetW2DTargetImage());
     return WT_Result::Success;
 }
 
@@ -883,7 +883,7 @@ WT_Result gdr_process_polymarker (WT_Polymarker & polymarker, WT_File & file)
     dstpts = NULL;
 
     //WT_Polymarker poly2(outpts, dstpts, true);
-    //poly2.serialize(*rewriter->GetImage());
+    //poly2.serialize(*rewriter->GetW2DTargetImage());
 
     return WT_Result::Success;
 }
@@ -896,7 +896,7 @@ WT_Result gdr_process_markerSize (WT_Marker_Size & /*markerSize*/, WT_File & /*f
     //rescale the marker size
     //WT_Integer32 size2 = rewriter->ScaleW2DNumber(file, markerSize.size());
 
-    //(*rewriter->GetImage()).desired_rendition().marker_size() = WT_Marker_Size(size2);
+    //(*rewriter->GetW2DTargetImage()).desired_rendition().marker_size() = WT_Marker_Size(size2);
     return WT_Result::Success;
 }
 

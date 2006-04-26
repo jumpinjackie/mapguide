@@ -759,8 +759,8 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
     //default reference point (negated, to mimic the one that is stored in the
     //symbol library)
-    double refX = -mdef.insx();
-    double refY = -mdef.insy();
+    double refX = mdef.insx();
+    double refY = mdef.insy();
 
     //we will fit all symbol data inside this extent
     //we will then enclose all that data in a Macro
@@ -793,7 +793,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     //construct transformer -- we will use one
     //even for the default symbol -- makes sure
     //it goes through the same transformation path
-    SymbolTrans trans(src, dst, -refX, -refY, angle);
+    SymbolTrans trans(src, dst, refX, refY, angle);
 
     if (!symbol)
     {
@@ -825,8 +825,8 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             //Also convert the insertion point vector from a lower-left corner delta
             //to an offset from the center of the character -- since we use Center/Halfline
             //alignment when we draw it as text
-            double scaledRefX = (0.5 + refX) * fdef.height();
-            double scaledRefY = (0.5 + refY) * fdef.height();
+            double scaledRefX = (0.5 - refX) * fdef.height();
+            double scaledRefY = (0.5 - refY) * fdef.height();
 
             //pass on to label drawing code to draw the text using a macro
             RS_LabelInfo info(x, y, scaledRefX, scaledRefY, tdef.font().units(), tdef, false);
@@ -943,16 +943,6 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         {
             m_lastSymbol = mdef;
 
-            //get reference point
-            //Note that MapGuide symbols use negated translation
-            //coordinates, i.e. a reference point at the center
-            //of the symbols would come in as -0.5, -0.5
-            FindSymbolReferencePoint(symbol, mdef.name(), std::wstring(L""), refX, refY);
-
-            //construct new transformer
-            //with updated reference point
-            SymbolTrans st(src, dst, -refX, -refY, angle);
-
             //also set flags controlling how W2D are rewritten
             //into the destination DWF
             m_bIsSymbolW2D = true;
@@ -962,7 +952,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             BeginMacro(file, 0, SYMBOL_MAX);
 
                 //copy symbol W2D into destination
-                AddDWFContent(symbol, &st, mdef.name(), RS_String(L""), RS_String(L""));
+                AddDWFContent(symbol, &trans, mdef.name(), RS_String(L""), RS_String(L""));
 
             //end macro definition and play the macro
             EndMacro(file);
@@ -991,7 +981,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
         //construct transformer -- same as the
         //one used for the actual symbol drawables
-        SymbolTrans boxtrans(src, dst, -refX, -refY, angle);
+        SymbolTrans boxtrans(src, dst, refX, refY, angle);
 
         EnsureBufferSize(5);
         WT_Logical_Point* pts = m_wtPointBuffer;
@@ -2557,99 +2547,6 @@ void DWFRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
     }
 }
 
-
-//Finds the given section, representing a MapGuide symbol
-//and looks at its transform
-void DWFRenderer::FindSymbolReferencePoint( RS_InputStream*     in,
-                                            const RS_String&    section,
-                                            const RS_String&    passwd,
-                                            double&             x,
-                                            double&             y)
-{
-    try
-    {
-        if (in->available() == 0)
-            return;
-
-        //go to beginning of stream
-        in->seek(SEEK_SET, 0);
-
-        DWFRSInputStream rsin(in);
-
-        DWFPackageReader oReader(rsin, passwd.c_str());
-
-        DWFPackageReader::tPackageInfo tInfo;
-        oReader.getPackageInfo( tInfo );
-
-        if (tInfo.eType != DWFPackageReader::eDWFPackage)
-        {
-            return; //throw exception?
-        }
-
-        //read the manifest
-        DWFManifest& rManifest = oReader.getManifest();
-
-        //now read the sections
-        DWFSection* pSection = NULL;
-        DWFManifest::SectionIterator* iSection = (&rManifest)->getSections();
-
-        if (iSection)
-        {
-            for (; iSection->valid(); iSection->next())
-            {
-                pSection = iSection->get();
-
-                //call this so that the resource data (like transforms and roles) is read in
-                pSection->readDescriptor();
-
-                //DWFGlobalSection* pGlobal = dynamic_cast<DWFGlobalSection*>(pSection);
-                DWFEPlotSection* pEPlot = dynamic_cast<DWFEPlotSection*>(pSection);
-
-                if (pEPlot)
-                {
-                    //compare name stored in section to user requested
-                    //section
-                    //Used for point symbols
-                    DWFString name = pEPlot->title();
-
-                    //skip current section if its name does
-                    //not match the name of the one we need
-                    if (name != section.c_str())
-                        continue;
-
-                    // Get the resources for the section
-
-                    //find the first (and only) graphic resource
-                    DWFIterator<DWFResource*>* piResources = pEPlot->findResourcesByRole(DWFXML::kzRole_Graphics2d);
-
-                    if (piResources)
-                    {
-                        for (; piResources->valid(); piResources->next())
-                        {
-                            DWFResource* pResource = piResources->get();
-
-                            DWFGraphicResource* pGfx = dynamic_cast<DWFGraphicResource*>(pResource);
-
-                            if (pGfx)
-                            {
-                                x = pGfx->transform()[12];
-                                y = pGfx->transform()[13];
-                            }
-                        }
-
-                        DWFCORE_FREE_OBJECT( piResources );
-                        piResources = NULL;
-                    }
-                }
-            }
-
-            DWFCORE_FREE_OBJECT(iSection);
-        }
-    }
-    catch (DWFException& )
-    {
-    }
-}
 
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
