@@ -623,13 +623,13 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
     int devwidth = ROUND(dst.width() * m_scale);
     int devheight = ROUND(dst.height() * m_scale);
 
-    //get insertion point 
+    //get insertion point
     double refX = mdef.insx();
     double refY = mdef.insy();
 
     //rotation angle
     double angle = mdef.rotation() * M_PI / 180.0;
- 
+
     if (!symbol && is_font_symbol)
     {
         //font symbol
@@ -697,7 +697,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     imsymw = imsymh = SYMBOL_BITMAP_SIZE;
 
                 //did we cache an image previously, but it was different size?
-                if (m_imsym 
+                if (m_imsym
                     && (   gdImageSX((gdImagePtr)m_imsym) != imsymw
                         || gdImageSY((gdImagePtr)m_imsym) != imsymh))
                 {
@@ -760,7 +760,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 //outline color
                 RS_Color outline = mdef.style().outline().color();
                 int gdcline = ConvertColor((gdImagePtr)m_imout, outline);
-                
+
                 //see if symbol will be small enough to draw in cached image
                 if (m_imsym)
                 {
@@ -798,12 +798,11 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 }
                 else
                 {
-                    //otherwise symbol is big enough to draw as a regular polygon
+                    //otherwise symbol was too big and must be drawn as a regular polygon
 
                     //construct transformer
                     RS_Bounds src(0.,0.,1.,1.);
-                    double angle = mdef.rotation() * M_PI / 180.0;
-                    SymbolTrans trans(src, dst, mdef.insx(), mdef.insy(), angle);
+                    SymbolTrans trans(src, dst, refX, refY, angle);
 
                     //transform to coordinates of temporary image where we
                     //draw symbol before transfering to the map
@@ -841,8 +840,6 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 //default bounds of symbol data in W2D
                 //for symbols created by MapGuide Studio
                 RS_Bounds src(0,0,SYMBOL_MAX,SYMBOL_MAX);
-                double angle = mdef.rotation() * M_PI / 180.0;
-
                 SymbolTrans st = SymbolTrans(src, dst, refX, refY, angle);
 
                 if (m_imsym)
@@ -851,8 +848,8 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                     //we will use unrotated symbol bounding box
                     //since rotation will be done by the image copy
-                    RS_Bounds dst(0, 0, (double)imsymw, (double)imsymh);
-                    st = SymbolTrans(src, dst, 0.0, 0.0, 0.0);
+                    RS_Bounds dst1(0, 0, (double)imsymw, (double)imsymh);
+                    st = SymbolTrans(src, dst1, 0.0, 0.0, 0.0);
 
                     m_imw2d = m_imsym;
 
@@ -865,7 +862,6 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 {
                     //case where we will draw the W2D directly into
                     //the destination image because the symbol is too big
-                    //we need to readjust the transform to reflect that
                     m_imw2d = m_imout;
                 }
 
@@ -886,7 +882,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
         if (m_imsym)
         {
-            //in case we cached a symbol image, draw it to the main 
+            //in case we cached a symbol image, draw it to the main
             //map image
 
             //get the source image size
@@ -897,7 +893,6 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             //to rotated map space -- we need this in order to
             //take into account the insertion point
             RS_Bounds src(0,0,imsymw,imsymh);
-            double angle = mdef.rotation() * M_PI / 180.0;
             SymbolTrans trans(src, dst, refX, refY, angle);
 
             //initialize 4 corner points of symbol -- we will
@@ -1912,7 +1907,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
     }
 
     // IMPORTANT: Only do this if the data is a DWF layer
-    // or a DWF symbol that is too large to draw using a 
+    // or a DWF symbol that is too large to draw using a
     // cached bitmap. Regular DWF Symbols will be transformed
     // to the correct mapping space location by the symbol code
     if (!IsSymbolW2D())
@@ -1936,7 +1931,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
     }
 
     // IMPORTANT: Only do this if the data is a DWF layer
-    // or a DWF symbol that is too large to draw using a 
+    // or a DWF symbol that is too large to draw using a
     // cached bitmap. Regular DWF Symbols will be transformed
     // to the correct mapping space location by the symbol code
     if (!IsSymbolW2D() || m_imw2d != m_imsym)
@@ -1948,19 +1943,19 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
     }
     else
     {
-        //for symbols just copy the points to the output array 
+        //for symbols just copy the points to the output array
         //and only invert the y coordinate -- we need to flip y since
         //in gd y goes down and in DWF it goes up
         double* srcpts = lb->points();
         int count = lb->point_count();
 
         EnsureBufferSize(count);
-        WT_Logical_Point* wpts = (WT_Logical_Point*)m_wtPointBuffer;
+        RS_D_Point* wpts = m_wtPointBuffer;
 
         for (int i=0; i<count; i++)
         {
-            wpts[i].m_x = (WT_Integer32)*srcpts++;
-            wpts[i].m_y = gdImageSY((gdImagePtr)GetW2DTargetImage()) - (WT_Integer32)*srcpts++;
+            wpts[i].x = (int)*srcpts++;
+            wpts[i].y = gdImageSY((gdImagePtr)GetW2DTargetImage()) - (int)*srcpts++;
         }
     }
 
@@ -1998,8 +1993,7 @@ WT_Integer32 GDRenderer::ScaleW2DNumber(WT_File&     file,
 
     double dDstSpace = dMapSpace;
 
-    //only scale by map scale if we are not a symbol inside a macro
-    //since macro scaling already takes map scale into account
+    //only scale by map scale if we are not a symbol inside a cached image
     if (!m_bIsSymbolW2D)
     {
         dDstSpace *= m_scale;
