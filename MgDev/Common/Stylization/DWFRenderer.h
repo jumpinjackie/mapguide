@@ -290,11 +290,6 @@ public:
 
 private:
     void AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter);
-    void FindSymbolReferencePoint(RS_InputStream*     in,
-                                  const RS_String&    section,
-                                  const RS_String&    passwd,
-                                  double&             x,
-                                  double&             y);
 
     void SetActions(WT_File& file);
 

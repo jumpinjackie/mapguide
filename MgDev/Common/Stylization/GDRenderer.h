@@ -164,8 +164,6 @@ private:
 
     void WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool aa);
 
-    void DrawSLDSymbol(RS_Bounds& dst, RS_MarkerDef& mdef);
-
     //transformation from mapping to W2D space
     inline int _TX(double x);
     inline int _TY(double y);
@@ -218,7 +216,8 @@ private:
 
 public:
 
-    /*Do not export from DLL*/ void* GetImage() { return m_imout; }
+    /*Do not export from DLL*/ void* GetImage() { return m_imout; } //target map image
+    /*Do not export from DLL*/ void* GetW2DTargetImage() { return m_imw2d; } //target image for W2D rewriter
     /*Do not export from DLL*/ bool IsViewportSet() { return m_bHaveViewport; }
     /*Do not export from DLL*/ bool IsSymbolW2D() { return m_bIsSymbolW2D; }
     /*Do not export from DLL*/ void UpdateSymbolTrans(WT_File& file, WT_Viewport& viewport);
@@ -236,11 +235,6 @@ public:
 
 private:
     void AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter);
-    void FindSymbolReferencePoint(RS_InputStream*  in,
-                                  const RS_String& section,
-                                  const RS_String& passwd,
-                                  double&          x,
-                                  double&          y);
 
     void SetActions(WT_File& file);
 
@@ -256,6 +250,11 @@ private:
     bool                m_bHaveViewport;
     bool                m_bLayerPassesFilter;
     RS_String           m_layerFilter;
+
+    //target image for W2D rewriter -- equal to either the target map
+    //image or to a temporary cached symbol image in case we are
+    //processing a symbol from the library
+    void* m_imw2d;
 
     // map/layer/feature info
     RS_MapUIInfo* m_mapInfo;
