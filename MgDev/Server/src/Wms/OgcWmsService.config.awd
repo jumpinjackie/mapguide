@@ -22,21 +22,21 @@
  <Define item="Service.Abstract">MapGuide WMS Server</Define>
  <Define item="Service.AccessConstraints">none</Define>
  <!-- Who to contact -->
- <Define item="Service.Contact.Name">(provide name of contact person)</Define>
- <Define item="Service.Contact.Organization">(provide your organization)</Define>
- <Define item="Service.Contact.Position">(provide your position)</Define>
+ <Define item="Service.Contact.Name"></Define>
+ <Define item="Service.Contact.Organization"></Define>
+ <Define item="Service.Contact.Position"></Define>
  <Define item="Service.Contact.Address.Type">postal</Define>
- <Define item="Service.Contact.Address.Street">(provide your street)</Define>
- <Define item="Service.Contact.Address.City">(provide your city)</Define>
- <Define item="Service.Contact.Address.StateProv">(provide your state or province)</Define>
- <Define item="Service.Contact.Address.PostCode">(provide your postal/zip code)</Define>
- <Define item="Service.Contact.Address.Country">(provide your country)</Define>
- <Define item="Service.Contact.Phone">(provide your complete phone number)</Define>
- <Define item="Service.Contact.Fax">(provide your complete fax number</Define>
- <Define item="Service.Contact.Email">(provide your email address)</Define>
+ <Define item="Service.Contact.Address.Street"></Define>
+ <Define item="Service.Contact.Address.City"></Define>
+ <Define item="Service.Contact.Address.StateProv"></Define>
+ <Define item="Service.Contact.Address.PostCode"></Define>
+ <Define item="Service.Contact.Address.Country"></Define>
+ <Define item="Service.Contact.Phone"></Define>
+ <Define item="Service.Contact.Fax"></Define>
+ <Define item="Service.Contact.Email"></Define>
 
  <!-- The URL elements.  Change to suit, as this is reported -->
- <Define item="SERVER_NAME">(provide your server name)</Define>
+ <Define item="SERVER_NAME">localhost:8008</Define>
  <Define item="SCRIPT_NAME">/mapguide/mapagent/mapagent.fcgi</Define>
 
  <!-- Stock definitions -->
