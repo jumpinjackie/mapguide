@@ -26,6 +26,42 @@
 
 extern CPSZ kpszDefineSupportedFormats; // borrowed. TODO: publish as member variable.
 
+// TODO: migrate these to a common Mg*.h header (not Ogc*.h) for use in other handlers.
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//                                      MgException* or derivative                       //
+//                                      |                 MgOgcWmsException::kpsz...     //
+//                                      |                 |                  OgcServer&  //
+//                                      |                 |                  |           //
+#define CATCH_MGEXCEPTION_HANDLE_AS_OGC(mg_exception_type,ogc_exception_code,ogc_server)  \
+        catch (mg_exception_type* e) {                                                    \
+            STRING sReport = e->GetMessage();                                             \
+            sReport += _("<details>");                                                    \
+            sReport += e->GetDetails();                                                   \
+            sReport += _("</details>");                                                   \
+            ogc_server.ServiceExceptionReportResponse(                                    \
+                MgOgcWmsException(MgOgcWmsException::ogc_exception_code,                  \
+                                  sReport.c_str() ));                                     \
+            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();         \
+            hResult->SetResultObject(capabilities, capabilities->GetMimeType());          \
+            e->Release();                                                                 \
+        }                                                                                 \
+///////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//                                   MgOgcWmsException::kpsz...                          //
+//                                   |                  OgcServer&                       //
+//                                   |                  |                                //
+#define CATCH_ANYTHING_HANDLE_AS_OGC(ogc_exception_code,ogc_server)                       \
+        catch (...) {                                                                     \
+            ogc_server.ServiceExceptionReportResponse(                                    \
+                MgOgcWmsException(MgOgcWmsException::kpszInternalError,                   \
+                                  _("Unexpected exception was thrown.  No additional details available.")));\
+            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();         \
+            hResult->SetResultObject(capabilities, capabilities->GetMimeType());          \
+        }                                                                                 \
+///////////////////////////////////////////////////////////////////////////////////////////
+
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWmsGetMap)
 
 /// <summary>
@@ -127,24 +163,32 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
         // Get the extents
         Ptr<MgEnvelope> extents = MgWmsMapUtil::GetExtents(m_bbox);
 
-        // Get a map object corresponding to the request parameters
-        Ptr<MgMap> map = MgWmsMapUtil::GetMap(m_layers, m_bbox, m_crs,
-            m_width, m_height, resourceService);
+        try {
+            // Get a map object corresponding to the request parameters
+            Ptr<MgMap> map = MgWmsMapUtil::GetMap(m_layers, m_bbox, m_crs,
+                m_width, m_height, resourceService);
 
-        // Get the image format
-        // Note: should be valid, since this mapping has already happened
-        // in the Validate phase.
-        STRING format;
-        wms.MapValue(kpszDefineSupportedFormats,m_format.c_str(),format);
+            // Get the image format
+            // Note: should be valid, since this mapping has already happened
+            // in the Validate phase.
+            STRING format;
+            wms.MapValue(kpszDefineSupportedFormats,m_format.c_str(),format);
 
-        // Render the map
-        Ptr<MgRenderingService> renderingService = (MgRenderingService*)CreateService(MgServiceType::RenderingService);
-        Ptr<MgSelection> selection;
-        Ptr<MgByteReader> mapImage = renderingService->RenderMap(map, selection, extents, m_width, m_height, bkColor, format);
+            // Render the map
+            Ptr<MgRenderingService> renderingService = (MgRenderingService*)CreateService(MgServiceType::RenderingService);
+            Ptr<MgSelection> selection;
+            Ptr<MgByteReader> mapImage = renderingService->RenderMap(map, selection, extents, m_width, m_height, bkColor, format);
 
-        // Set the result
-        STRING sMimeType = mapImage->GetMimeType();
-        hResult->SetResultObject(mapImage, sMimeType.length() > 0 ? sMimeType : m_format);
+            // Set the result
+            STRING sMimeType = mapImage->GetMimeType();
+            hResult->SetResultObject(mapImage, sMimeType.length() > 0 ? sMimeType : m_format);
+        }
+        //  Custom catch clauses.  In short, NO, we do NOT want to let MapGuide exceptions
+        //  pass through.  The buck stops here, with an exception report that WE generate
+        //  according to OGC specifications.
+        CATCH_MGEXCEPTION_HANDLE_AS_OGC(MgInvalidCoordinateSystemException,kpszInvalidCRS,   wms)
+        CATCH_MGEXCEPTION_HANDLE_AS_OGC(MgException,                       kpszInternalError,wms)
+        CATCH_ANYTHING_HANDLE_AS_OGC(                                      kpszInternalError,wms)
     }
     else
     {

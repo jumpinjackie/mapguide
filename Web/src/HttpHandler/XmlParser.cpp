@@ -532,6 +532,15 @@ MgXmlParser::~MgXmlParser()
         delete(m_pCurrent);
 }
 
+// Resets the enumerator.
+void MgXmlParser::Reset()
+{
+    if(m_pCurrent != NULL)
+        delete(m_pCurrent);
+    m_pCurrent = new MgXmlInvalid();
+    m_iPos = UNINITIALIZED_XSIZE_T;
+}
+
 bool MgXmlParser::AtEnd() const
 {
     return (m_iPos >= m_iLen - 1);

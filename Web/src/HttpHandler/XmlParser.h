@@ -320,6 +320,9 @@ public:
     // Returns options currently in effect.
     LONGBITS Options() { return m_dwOptions; }
 
+    // Resets the enumerator.
+    void Reset();
+
 private:
     bool IsDoctype(xsize_t iPos);
     bool IsCdata(xsize_t iPos);

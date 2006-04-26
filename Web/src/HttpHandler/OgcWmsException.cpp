@@ -23,6 +23,8 @@
 CPSZ MgOgcWmsException::kpszInvalidFormat          = _("InvalidFormat");
 CPSZ MgOgcWmsException::kpszInvalidCRS             = _("InvalidCRS");
 CPSZ MgOgcWmsException::kpszMissingCRS             = _("MissingCRS");
+CPSZ MgOgcWmsException::kpszInvalidSRS             = _("InvalidSRS"); // Gotta duplicate these, for certification
+CPSZ MgOgcWmsException::kpszMissingSRS             = _("MissingSRS"); // 
 CPSZ MgOgcWmsException::kpszLayerNotDefined        = _("LayerNotDefined");
 CPSZ MgOgcWmsException::kpszStyleNotDefined        = _("StyleNotDefined");
 CPSZ MgOgcWmsException::kpszLayerNotQueryable      = _("LayerNotQueryable");

@@ -33,6 +33,12 @@ public:
 
     void GenerateDefinitions(MgUtilDictionary& Dictionary);
 
+    // Indicates whether the layer (or layers, in Comma-separated list)
+    // advertises support for the indicated reference system.
+    bool LayerSupportsReferenceSystem(CPSZ pszLayerList,CPSZ pszSRS);
+
+    void Reset();
+
 protected:
     virtual void Dispose(){delete this;}
 
