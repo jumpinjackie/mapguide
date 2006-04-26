@@ -237,6 +237,10 @@ MgUserAndGroupNotEmpty                                = Both the user and group 
 MgUserAndRoleNotEmpty                                 = Both the user and role are not empty.
 MgValueCannotBeLessThanOrEqualToZero                  = The value cannot be less than or equal to zero.
 MgValueCannotBeLessThanZero                           = The value cannot be less than zero.
+MgMissingClassDef                                     = No class definition specified.
+MgClassWOIdentity                                     = A class definition has no identity property.
+MgMissingSrs                                          = No coordinate system specified.
+MgMissingSchema                                       = No schema specified.
 
 # *****************************************************************************
 # D R A W I N G  S E R V I C E
