@@ -37,8 +37,29 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
 
     Ptr<MgCreateSdfParams> params = SAFE_ADDREF(dynamic_cast<MgCreateSdfParams*>(sourceParams));
 
-    //TSW TODO: Data validation!!!
-    //TSW TODO: throw if coordinate system is not defined
+    //Some basic schema validation:
+    //  A schema must be supplied
+    //  The schema must define at least one class
+    //  Each class must have a property identity
+    //
+    Ptr<MgFeatureSchema> schema = params->GetFeatureSchema();
+    if(schema == NULL)
+        throw new MgInvalidArgumentException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSchema", NULL);
+
+    Ptr<MgClassDefinitionCollection> classes = schema->GetClasses();
+    if(classes == NULL || classes->GetCount() == 0)
+        throw new MgInvalidArgumentException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingClassDef", NULL);
+
+    for(INT32 ci = 0; ci < classes->GetCount(); ci++) {
+        Ptr<MgClassDefinition> classDef = classes->GetItem(ci);
+        Ptr<MgPropertyDefinitionCollection> idProps = classDef->GetIdentityProperties();
+        if(idProps == NULL || idProps->GetCount() == 0)
+            throw new MgInvalidArgumentException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgClassWOIdentity", NULL);
+    }
+
+    // A coordinate system must be defined
+    if(params->GetCoordinateSystemWkt().empty())
+        throw new MgInvalidArgumentException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSrs", NULL);
 
     // Connect to provider
     STRING sdfProvider = L"OSGeo.SDF.3.0"; // NOXLATE
@@ -49,7 +70,7 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
 
     if (conn == NULL)
     {
-        throw new MgConnectionFailedException(L"MgServerCreateFeatureSource::CreateFeatureSource()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgConnectionFailedException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
 
