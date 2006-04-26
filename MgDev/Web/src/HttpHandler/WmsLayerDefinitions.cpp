@@ -68,7 +68,14 @@ MgWmsLayerDefinitions::MgWmsLayerDefinitions(CPSZ inputXml)
 {
     // Create an MgXmlParser to parse the layer def XML string
     m_xmlParser = new MgXmlParser(inputXml);
-    
+
+    Reset();
+}
+
+void MgWmsLayerDefinitions::Reset()
+{
+    m_xmlParser->Reset();
+
     // Set parsing options
     m_xmlParser->SetOptions(keSkipWhitespace|keSkipComments|keSkipProcessingInstructions);
 
@@ -83,6 +90,7 @@ MgWmsLayerDefinitions::MgWmsLayerDefinitions(CPSZ inputXml)
         m_xmlParser->Next();
     }
 }
+
 
 MgWmsLayerDefinitions::~MgWmsLayerDefinitions()
 {
@@ -247,3 +255,51 @@ bool MgWmsLayerDefinitions::SkipElement(CPSZ pszElementName)
 
     return Whatever.AtBegin();
 }
+
+
+bool MgWmsLayerDefinitions::LayerSupportsReferenceSystem(CPSZ pszLayerList,CPSZ pszSRS)
+{
+    // Our subject list shall have every layer surrounded by delimiting commas.
+    STRING sList(_(","));
+    sList += pszLayerList;
+    sList += _(",");
+
+    // We'll be searching for a decorated version of our SRS, specifically: SRS="foo"
+    STRING sSRS(_("SRS=\""));
+    sSRS += pszSRS;
+    sSRS += _("\"");
+
+    // Gotta rewind things, in case somebody's already called us.
+    Reset();
+    while(Next()) {
+        MgUtilDictionary oLayerDefinitions(NULL);
+        GenerateDefinitions(oLayerDefinitions);
+        CPSZ pszName = oLayerDefinitions[_("Layer.Name")];
+        if(pszName != NULL) {
+            STRING sName(_(","));
+            sName += pszName;
+            sName += _(",");
+            // Let's see if we're interested in this layer.
+            if(sList.find(sName) != STRING::npos) {
+                // Yup.  Let's see what its bounds are.  Expected to be
+                // zero or more <Bounds SRS="..." .../> elements, and we'll
+                // just do a cheap pattern match on the string contents.
+                CPSZ pszBounds = oLayerDefinitions[_("Layer.Bounds")];
+                if(pszBounds != NULL) {
+                    STRING sBounds(pszBounds);
+                    if(sBounds.find(sSRS) != STRING::npos)
+                        return true;
+                }
+            }
+        }
+    }
+    // All the way through the list, and nothing found.
+    // Fail miserably.
+    return false;
+
+}
+
+
+
+
+

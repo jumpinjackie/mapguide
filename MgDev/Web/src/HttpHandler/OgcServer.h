@@ -86,6 +86,11 @@ public:
     // the same template-guided fixups as HTTP GET has.
     CPSZ ProcessArgumentAs(CPSZ pszOstensibleName,CPSZ pszActualValue);
 
+    // Generate an exception response given the exception indicated.
+    // This loads the template, and attempts to find an Exception response
+    // in it.  Failing that, it generates a default exception response.
+    void ServiceExceptionReportResponse(const MgOgcException& Exception);
+
 protected:
 
     // Method to be implemented by derived classes to validate request parameters
@@ -109,11 +114,6 @@ protected:
     //
     // Returns false if it was not able to find a suitable response object.
     bool GenerateResponse(CPSZ pszRequest,CPSZ pszSpecificMimeType);
-
-    // Generate an exception response given the exception indicated.
-    // This loads the template, and attempts to find an Exception response
-    // in it.  Failing that, it generates a default exception response.
-    void ServiceExceptionReportResponse(const MgOgcException& Exception);
 
     // This is the ExceptionResponse of last resort, using the globally
     // defined response.  Typically, a template file will define its own

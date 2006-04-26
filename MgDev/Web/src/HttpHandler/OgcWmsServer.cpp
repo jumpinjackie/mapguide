@@ -45,7 +45,7 @@ CPSZ kpszDefineSupportedFormats     = _("RenderingService.SupportedFormats");
 CPSZ kpszDefaultSupportedFormats    =  _("<translate from=\"image/jpeg\">JPG</translate>")
                                        _("<translate from=\"image/png\">PNG</translate>")
                                        _("<translate from=\"image/gif\">GIF</translate>")
-                                       _("<translate from=\"image/tiff\">TIFF</translate>")
+                                       _("<translate from=\"image/tiff\">TIF</translate>")
                                        // Below is REQUIRED.  Illegal strings should map to "".
                                        _("<translate></translate>");
                                       
@@ -61,26 +61,28 @@ CPSZ kpszQueryValueGetFeatureInfo   = _("GetFeatureInfo");
 CPSZ kpszQueryValueFeatureInfo      = _("FeatureInfo");  // keyword for pre 1.0.8 versions
 
 // BEGIN LOCALIZATION -- The following strings are all subject to localization.
-CPSZ kpszExceptionMessageMissingServiceWms = _("Expected required SERVICE=WMS argument."); // Localize
-CPSZ kpszExceptionMessageMissingRequest    = _("Expected required REQUEST= argument.");    // Localize
-CPSZ kpszExceptionMessageUnknownRequest    = _("Expected valid REQUEST= argument (such as GetCapabilities.)"); // Localize
-CPSZ kpszInternalErrorMissingGetCapyResponse = _("Unable to generate a GetCapabilities Response --  missing a text/xml Response in the template file."); // Localize
-CPSZ kpszInternalErrorMissingDefinition      = _("Unable to generate a response; missing a required internal definition."); // Localize
+CPSZ kpszExceptionMessageMissingServiceWms    = _("Expected required SERVICE=WMS argument."); // Localize
+CPSZ kpszExceptionMessageMissingRequest       = _("Expected required REQUEST= argument.");    // Localize
+CPSZ kpszExceptionMessageUnknownRequest       = _("Expected valid REQUEST= argument, such as GetCapabilities. (Instead, found request='&Request.request;'.)"); // Localize
+CPSZ kpszInternalErrorMissingGetCapyResponse  = _("Unable to generate a GetCapabilities Response --  missing a text/xml Response in the template file."); // Localize
+CPSZ kpszInternalErrorMissingDefinition       = _("Unable to generate a response; missing a required internal definition."); // Localize
 CPSZ kpszExceptionMessageGetFeatureInfoUnsupported = _("REQUEST=GetFeatureInfo operation is not supported on this server."); // Localize
-CPSZ kpszExceptionMessageQueryLayerNotDefined = _("One or more layers specified in the QUERY_LAYERS argument are not defined in the map."); // Localize
-CPSZ kpszExceptionMessageMapLayersMissing = _("The map request must contain at least one valid layer."); // Localize
-CPSZ kpszExceptionMessageMapLayerNotDefined = _("The map request contains invalid layer names."); // Localize
-CPSZ kpszExceptionMessageMapLayerNotQueryable = _("The GetFeatureInfo request contains the names of layers that are not queryable."); // Localize
-CPSZ kpszExceptionMessageStyleNotDefined = _("An unsupported layer style was requested. Only default layer styles are supported."); // Localize
-CPSZ kpszExceptionMessageMissingQueryPoint = _("The request must contain I and J arguments specifying the query point."); // Localize
-CPSZ kpszExceptionMessageInvalidQueryPoint = _("The point specified by the I and J arguments must fall within the map extent."); // Localize
-CPSZ kpszExceptionMessageMissingMapDimension = _("The request must contain WIDTH and HEIGHT arguments to specify the map size."); // Localize
-CPSZ kpszExceptionMessageInvalidMapDimension = _("The WIDTH and HEIGHT arguments must be positive integer values."); // Localize
-CPSZ kpszExceptionMessageMissingCrs = _("The spatial reference system must be specified using either the CRS or SRS argument."); // Localize
-CPSZ kpszExceptionMessageMissingBoundingBox = _("The bounding box for the map must be specified using the BBOX argument."); // Localize
-CPSZ kpszExceptionMessageInvalidBoundingBox = _("The bounding box for the map must be specified using four numerical values in the order: minX,minY,maxX,maxY."); // Localize
-CPSZ kpszExceptionMessageInvalidImageFormat = _("The request uses an unsupported image format."); // Localize
-CPSZ kpszExceptionMessageMissingImageFormat = _("The request must contain a FORMAT parameter to specify the required image format."); // Localize
+CPSZ kpszExceptionMessageQueryLayerNotDefined = _("One or more layers specified in the QUERY_LAYERS argument are not defined in the map. (Found QUERY_LAYERS=&Request.query_layers;)"); // Localize
+CPSZ kpszExceptionMessageMapLayersMissing     = _("The map request must contain at least one valid layer."); // Localize
+CPSZ kpszExceptionMessageMapLayerNotDefined   = _("The map request contains invalid layer names. (Found LAYERS=&Request.layers;)"); // Localize
+CPSZ kpszExceptionMessageMapLayerNotQueryable = _("The GetFeatureInfo request contains the names of layers that are not queryable. (Found LAYERS=&Request.layers;)"); // Localize
+CPSZ kpszExceptionMessageStyleNotDefined      = _("An unsupported layer style was requested. Only default layer styles are supported."); // Localize
+CPSZ kpszExceptionMessageMissingQueryPoint    = _("The request must contain I and J arguments specifying the query point. (Found I=&Request.I; J=&Request.J;)"); // Localize
+CPSZ kpszExceptionMessageInvalidQueryPoint    = _("The point specified by the I and J arguments must fall within the map extent. (Found I=&Request.I; J=&Request.J; WIDTH=&Request.width; HEIGHT=&Request.height;)"); // Localize
+CPSZ kpszExceptionMessageMissingMapDimension  = _("The request must contain both WIDTH and HEIGHT arguments to specify the map size."); // Localize
+CPSZ kpszExceptionMessageInvalidMapDimension  = _("The WIDTH and HEIGHT arguments must be positive integer values. (Found WIDTH=&Request.width; HEIGHT=&Request.height; )"); // Localize
+CPSZ kpszExceptionMessageMissingCrs           = _("The spatial reference system must be specified using either the CRS or SRS argument. Found neither."); // Localize
+CPSZ kpszExceptionMessageInvalidCrs           = _("The spatial reference system specified is not supported. (Found CRS=&Request.CRS;)"); // Localize
+CPSZ kpszExceptionMessageInvalidSrs           = _("The spatial reference system specified is not supported. (Found SRS=&Request.SRS;)"); // Localize
+CPSZ kpszExceptionMessageMissingBoundingBox   = _("The bounding box for the map must be specified using the BBOX argument."); // Localize
+CPSZ kpszExceptionMessageInvalidBoundingBox   = _("The bounding box for the map must be specified using four numerical values in the order: minX,minY,maxX,maxY. (Found BBOX=&Request.bbox;)"); // Localize
+CPSZ kpszExceptionMessageInvalidImageFormat   = _("The request uses an unsupported image format. (Found FORMAT=&Request.format;)"); // Localize
+CPSZ kpszExceptionMessageMissingImageFormat   = _("The request must contain a FORMAT parameter to specify the required image format."); // Localize
 // END LOCALIZATION
 
 CPSZ kpszPiEnumLayers                      = _("EnumLayers");
@@ -345,10 +347,14 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
 {
     bool bValid = true;
 
-    // Check the image format
+    //
+    //  Search for a FORMAT= parameter, and verify that its value is supported.
+    //
     CPSZ imageFormat = RequestParameter(kpszQueryStringFormat);
     if(imageFormat != NULL && szlen(imageFormat) > 0)
     {
+        // We're expecting a supported formats definition.  There's a hard-coded
+        // default, but the templates can also define one.
         CPSZ pszMap = this->Definition(kpszDefineSupportedFormats);
         if(pszMap) {
             MgXmlParser Xml(pszMap);
@@ -373,10 +379,13 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
         bValid = false;
     }
 
+    //
+    // Look for the LAYERS= parameter and parse its value into the comma-separates list of values.
+    //
+    // Check that a list of layers was specified
+    CPSZ mapLayerList = RequestParameter(kpszQueryStringLayers); // greater scope, we use this again later.
     if(bValid)
     {
-        // Check that a list of layers was specified
-        CPSZ mapLayerList = RequestParameter(kpszQueryStringLayers);
         if(mapLayerList == NULL || szlen(mapLayerList) == 0)
         {
             ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszLayerNotDefined,
@@ -429,6 +438,9 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
         }
     }
 
+    //
+    // Examine the STYLES= parameter; (currently only support default style)
+    //
     if(bValid)
     {
         // Since we only support default styles, check that no specific
@@ -454,25 +466,42 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
         }
     }
 
-    //Check that a spatial reference system was specified
+    //
+    // Examine the SRS= (or CRS=) parameter value.  We also verify that it's advertised
+    // in the capability document.
+    //
     if(bValid)
     {
-        // Look for a CRS parameter
+        bool bArgIsCRS = true;
+        // Look for a CRS parameter a la 1.3.0 (and beyond?)
         CPSZ crs = RequestParameter(kpszQueryStringCrs);
         if(crs == NULL || szlen(crs) == 0)
         {
-            // Look for the older SRS parameter
+            bArgIsCRS = false;
+            // Look for the older SRS parameter (versions prior to 1.3.0)
             crs = RequestParameter(kpszQueryStringSrs);
             if(crs == NULL || szlen(crs) == 0)
             {
                 ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszMissingCRS,
-                                                     kpszExceptionMessageMissingCrs));
+                                                                 kpszExceptionMessageMissingCrs));
                 bValid = false;
             }
         }
+
+        // Now, given our SRS/CRS, and the known list of layers, do we support the
+        // reference system being asked for?
+        if(!m_pLayers->LayerSupportsReferenceSystem(mapLayerList,crs)) {
+            ServiceExceptionReportResponse(MgOgcWmsException(bArgIsCRS ? MgOgcWmsException::kpszInvalidCRS
+                                                                       : MgOgcWmsException::kpszInvalidSRS,
+                                                             bArgIsCRS ? kpszExceptionMessageInvalidCrs
+                                                                       : kpszExceptionMessageInvalidSrs) );
+            bValid = false;
+        }
     }
 
-    //Check that a bounding box was specified
+    //
+    // Examine the BBOX= parameter value.  We ensure that the arguments are in the right order.
+    //
     if(bValid)
     {
         // Look for a CRS parameter
@@ -508,7 +537,9 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
         }
     }
 
-    // Check that a width and height were specified
+    //
+    // Examine the WIDTH= and HEIGHT= parameters, ensuring that both are present and positive.
+    //
     if(bValid)
     {
         CPSZ widthString = RequestParameter(kpszQueryStringWidth);

@@ -34,7 +34,7 @@ public:
 Exception Code        Meaning
 --------------------- -------------------------------------------------------------
 InvalidFormat         Request contains a Format not offered by the server.
-InvalidCRS            Request contains a CRS not offered by the server for one or
+InvalidCRS/-SRS       Request contains a CRS/SRS not offered by the server for one or
                       more of the Layers in the request.
 MissingCRS            Request does not contain a required CRS (or SRS) parameter.
 LayerNotDefined       GetMap request is for a Layer not offered by the server, or
@@ -60,6 +60,8 @@ MissingBoundingBox    Request does not contain a required bounding box parameter
     static CPSZ kpszInvalidFormat;
     static CPSZ kpszInvalidCRS;
     static CPSZ kpszMissingCRS;
+    static CPSZ kpszInvalidSRS;
+    static CPSZ kpszMissingSRS;
     static CPSZ kpszLayerNotDefined;
     static CPSZ kpszStyleNotDefined;
     static CPSZ kpszLayerNotQueryable;
