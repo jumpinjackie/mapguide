@@ -182,6 +182,18 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 
         if(0 == nResult)
         {
+            // Check Coordinate System initialization
+            MgCoordinateSystem coordSys;
+            LibraryStatus libraryStatus = coordSys.GetLibraryStatus();
+            if (libraryStatus == lsInitializationFailed)
+            {
+                throw new MgCoordinateSystemInitializationFailedException(L"MgServer.Init", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+            else if (libraryStatus == lsLoadFailed)
+            {
+                throw new MgCoordinateSystemLoadFailedException(L"MgServer.Init", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+
             // Initialize the License Manager.
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing License Manager.\n")));
             MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();

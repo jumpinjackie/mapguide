@@ -1435,6 +1435,26 @@ STRING MgCoordinateSystem::GetBaseLibrary()
     return CCoordinateSystem::GetBaseLibrary();
 }
 
+LibraryStatus MgCoordinateSystem::GetLibraryStatus()
+{
+    LibraryStatus status = lsInitializationFailed;
+
+    switch (CCoordinateSystem::GetLibraryStatus())
+    {
+    case cslsInitialized:
+        status = lsInitialized;
+        break;
+    case cslsInitializationFailed:
+        status = lsInitializationFailed;
+        break;
+    case cslsLoadFailed:
+        status = lsLoadFailed;
+        break;
+    }
+
+    return status;
+}
+
 STRING MgCoordinateSystem::ConvertEpsgCodeToWkt(INT32 code)
 {
     STRING wkt;

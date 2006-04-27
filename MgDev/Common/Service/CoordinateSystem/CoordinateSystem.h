@@ -18,12 +18,18 @@
 #ifndef _MGCOORDINATESYSTEM_H_
 #define _MGCOORDINATESYSTEM_H_
 
-
 namespace CSLibrary
 {
     class CCoordinateSystem;
 }
 using namespace CSLibrary;
+
+enum LibraryStatus
+{
+    lsInitialized    = 0,
+    lsInitializationFailed,
+    lsLoadFailed
+};
 
 /// \defgroup MgCoordinateSystem  MgCoordinateSystem
 /// \ingroup Coordinate_System_classes
@@ -1273,6 +1279,8 @@ INTERNAL_API:
     /// Returns the base coordinate system library being used.
     ///
     STRING GetBaseLibrary();
+
+    LibraryStatus GetLibraryStatus();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
