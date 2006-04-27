@@ -133,7 +133,9 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled, INT32 nF
         nFdoConnectionPoolSize = MaxFdoConnectionPoolSize;
     }
 
-    m_bFdoConnectionPoolEnabled = bFdoConnectionPoolEnabled;
+    // TODO: Revisit FDO connection pooling when Feature Service and FDO are more caching friendly.
+    // Force the caching to be disabled for now
+    m_bFdoConnectionPoolEnabled = false; // bFdoConnectionPoolEnabled;
     m_nFdoConnectionPoolSize = nFdoConnectionPoolSize;
     m_nFdoConnectionTimeout = nFdoConnectionTimeout;
 
