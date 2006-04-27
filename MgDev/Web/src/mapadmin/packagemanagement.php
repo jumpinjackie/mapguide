@@ -220,7 +220,7 @@ catch ( Exception $e )
 				<input type="hidden" name="<?php echo $overwriteID ?>" value="false" >
 
                 <?php
-                DisplayTitleBar( 'Make Package', '#' );
+                DisplayTitleBar( 'Make Package', 'HelpDocs/managing_packages.htm' );
                 DisplayConfirmationMsg( $packageMakeConfirmationMsg );
                 DisplayErrorMsg( $packageMakeErrorMsg );
                 ?>
@@ -256,7 +256,7 @@ catch ( Exception $e )
 				<br><br>
 
                <?php
-                DisplayTitleBar( 'Load Package', 'HelpDocs/loading_packages.htm' );
+                DisplayTitleBar( 'Load Package', 'HelpDocs/managing_packages.htm' );
                 DisplayConfirmationMsg( $packageLoadConfirmationMsg );
                 DisplayErrorMsg( $packageLoadErrorMsg );
                 ?>

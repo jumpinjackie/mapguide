@@ -120,7 +120,7 @@
             Packages </a></span></font></td>
         </tr>
         <tr> 
-          <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="loading_packages.htm">Loading 
+          <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="managing_packages.htm">Managing 
             Packages </a></span></font></td>
         </tr>
         <tr>
@@ -142,26 +142,30 @@
         <hr color="#464646" NOSHADE size="1" width="100%">
       </div>
       <br>
-      <font size="2">There are six services: Site, Drawing, Feature, Resource, 
-      Mapping, and Rendering. If you are using a single server, that server performs 
-      all of these services. In any case, the site server always handles the first 
-      four services, because they handle data access and manage the resources 
+      <font size="2">There are seven services: Site, Resource, Drawing, Feature, 
+      Mapping, Rendering, and Tile. If you are using a single server, that server 
+      performs all of these services. In any case, the site server always handles 
+      the first two services, because they handle data access and manage the resources 
       for the site. However, if you have two or more servers, you can split off 
-      the Mapping and Rendering services and allocate them to another server or 
-      servers. Mapping and Rendering services are the most processor-intensive 
-      operations and can benefit from having a dedicated server to handle them.</font> 
+      the other services and allocate them to another server or servers. For example, 
+      the Mapping and Rendering services are the most processor-intensive operations 
+      and can benefit from having a dedicated server to handle them.</font> 
       <ul>
         <li class="bullet">The Site service provides basic site-related functionality, 
           such as enumerating users and creating user sessions.</li>
-        <li class="bullet">The Drawing service allows low level access to DWF 
-          data stored in a resource repository as part of a drawing source..</li>
-        <li class="bullet">The Feature service allows low level access to SDF 3
-          data stored in a resource repository as part of a feature source.</li>
         <li class="bullet">The Resource service manages repositories and resources.</li>
+		<li class="bullet">The Drawing service allows low level access to DWF 
+          data stored in a resource repository as part of a drawing source.</li>
+        <li class="bullet">The Feature service allows low level access to SDF+ 
+          data stored in a resource repository as part of a feature source.</li>
+        
         <li class="bullet">The Mapping service creates the view of a map in response 
           to requests from the clients.</li>
         <li class="bullet">The Rendering service creates the final map image for 
-          the HTML viewer from input provided by the Mapping service.</li>
+          the AJAX viewer from input provided by the Mapping service.</li>
+		  
+        <li class="bullet">The Tile service supports smooth pans and zooms in 
+          the AJAX viewer.</li>
       </ul>
       <p class="paragraph">A typical two-server site might divide up the services 
         like this:</p>
