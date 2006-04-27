@@ -144,7 +144,7 @@ String dataSource = "";
             schema.GetClasses().Add(classDef);
 
             //finally, creation of the feature source
-            MgCreateSdfParams sdfParams = new MgCreateSdfParams("LatLong", srs, schema);
+            MgCreateSdfParams sdfParams = new MgCreateSdfParams("LatLong", srsDefMap, schema);
             featureSrvc.CreateFeatureSource(dataSourceId, sdfParams);
 
             //Add layer to map
