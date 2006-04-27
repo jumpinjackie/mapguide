@@ -479,7 +479,7 @@ String StrEscape(String str)
 String StrEscape(String str, bool single)
 {
     String c = single? "'" : "\"";
-    return (str.Replace(c, "\\"+c) + "A");
+    return str.Replace(c, "\\"+c);
 }
 
 </script>
