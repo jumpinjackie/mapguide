@@ -40,7 +40,8 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     //Some basic schema validation:
     //  A schema must be supplied
     //  The schema must define at least one class
-    //  Each class must have a property identity
+    //  Each class must have an identity property
+    //  A coordinate system must be defined
     //
     Ptr<MgFeatureSchema> schema = params->GetFeatureSchema();
     if(schema == NULL)
@@ -50,7 +51,8 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     if(classes == NULL || classes->GetCount() == 0)
         throw new MgInvalidArgumentException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingClassDef", NULL);
 
-    for(INT32 ci = 0; ci < classes->GetCount(); ci++) {
+    for(INT32 ci = 0; ci < classes->GetCount(); ci++)
+    {
         Ptr<MgClassDefinition> classDef = classes->GetItem(ci);
         Ptr<MgPropertyDefinitionCollection> idProps = classDef->GetIdentityProperties();
         if(idProps == NULL || idProps->GetCount() == 0)
