@@ -337,7 +337,7 @@ install-data-hook:
 	@echo '' >> ${prefix}/bin/mgserver.sh
 	@echo 'export GDAL_DATA=$(proj4datadir)' >> ${prefix}/bin/mgserver.sh
 	@echo 'export PROJ_LIB=$(proj4naddir)' >> ${prefix}/bin/mgserver.sh
-	@echo 'export LD_LIBRARY_PATH=$(fdodir)' >> ${prefix}/bin/mgserver.sh
+	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
 	@echo 'pushd ${prefix}/bin' >> ${prefix}/bin/mgserver.sh
 	@echo './mgserver /interactive' >> ${prefix}/bin/mgserver.sh
 	@echo 'popd' >> ${prefix}/bin/mgserver.sh
