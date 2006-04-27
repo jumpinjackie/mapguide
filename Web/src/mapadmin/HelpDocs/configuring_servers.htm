@@ -120,7 +120,7 @@
             Packages </a></span></font></td>
         </tr>
         <tr> 
-          <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="loading_packages.htm">Loading 
+          <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="managing_packages.htm">Managing 
             Packages </a></span></font></td>
         </tr>
         <tr>
@@ -166,12 +166,10 @@
             <p class="numberstep"><font size="2"><span class="bold">2</span> On 
               the Configure Server page, select Offline.</font></p>
             <p class="numberstep"><font size="2"><span class="bold">3</span> Click 
-              Save.</font></p>
-            <p class="numberstep"><font size="2"><span class="bold">4</span> <span class="numberstep">Click 
-              the Back button in your browser.<br>
+              Save.</font><font size="2"><span class="numberstep"><br>
               </span></font><font size="2"><br>
               The status of the server is updated in the server list.</font></p>
-          </td>
+            </td>
         </tr>
         <tr> 
           <td width="49%">&nbsp; </td>
@@ -185,7 +183,7 @@
         <tr> 
           <td width="49%" valign="top"> 
             <p><img src="Images/server_admin_support.png" width="454" height="97"></p>
-            <p class="caption">Changing the CCS12352768 display name</p>
+            <p class="caption">Changing the language code for messages</p>
           </td>
           <td width="51%"> 
             <p class="headstep"><font size="2"><b>To configure a server</b></font></p>
@@ -194,7 +192,8 @@
               and click Configure, or just click the name of the server in the 
               table.</font></p>
             <p class="numberstep"><font size="2"><span class="bold">2</span> Modify 
-              the property information.</font></p>
+              the property information (see the table below for a description 
+              of the properties).</font></p>
             <p class="numberstep"><font size="2"><span class="bold">3</span> Click 
               Save.</font></p>
             <p class="numberstep"><font size="2"><span class="bold">4</span> <span class="numberstep">Click 
@@ -205,6 +204,85 @@
         </tr>
       </table>
       <div class="rule2"> 
+        <table width="100%" border="0">
+          <tr> 
+            <td width="17%"><b>General Properties</b></td>
+            <td width="83%">&nbsp; </td>
+          </tr>
+          <tr> 
+            <td width="17%">Display name</td>
+            <td width="83%">Display name of the server</td>
+          </tr>
+          <tr> 
+            <td width="17%">Default locale</td>
+            <td width="83%">Two-letter code for language in which messages are 
+              displayed (ISO 639-1)</td>
+          </tr>
+          <tr> 
+            <td width="17%">Localization resources path</td>
+            <td width="83%">Path where resource files are stored </td>
+          </tr>
+          <tr> 
+            <td width="17%">TCP/IP maximum transmission unit</td>
+            <td width="83%">TCP/IP maximum transmission unit (value &lt;= 65535)</td>
+          </tr>
+		  <tr> 
+            <td width="17%">Temporary file path</td>
+            <td width="83%">Path where temporary files are stored</td>
+          </tr>
+		  <tr> 
+            <td width="17%">Fdo file path</td>
+            <td width="83%">Path where FDO is installed</td>
+          </tr>
+		  <tr> 
+            <td width="17%">Administrator's email address</td>
+            <td width="83%">Server administrator's email address</td>
+          </tr>
+		  <tr> 
+            <td width="17%">Connection timeout (seconds)</td>
+            <td width="83%">Time duration in seconds for when an idle connection 
+              is dropped</td>
+          </tr>
+		  <tr> 
+            <td width="17%">Connection timer interval (seconds)</td>
+            <td width="83%">Time interval in seconds for when the server checks 
+              for idle connections</td>
+          </tr>
+		  <tr> 
+            <td width="17%">Service registration timer interval (seconds)</td>
+            <td width="83%">Time duration in seconds for when the support server 
+              should register its services with the site server for load balancing. 
+              This happens when the support server starts up but the site server 
+              is offline for some reason. The timer will keep processing this 
+              event until it is successful.</td>
+          </tr>
+		  
+        </table>
+        <table width="100%" border="0">
+          <tr> 
+            <td width="17%"><b> Connection Properties</b></td>
+            <td width="83%">&nbsp; </td>
+          </tr>
+          <tr> 
+            <td width="17%">Maximum connections</td>
+            <td width="83%">Max number of open administration connections (value 
+              &lt;= 1024)</td>
+          </tr>
+          <tr> 
+            <td width="17%">Port</td>
+            <td width="83%">Port to use for administration operations</td>
+          </tr>
+          <tr> 
+            <td width="17%">Queue size</td>
+            <td width="83%">Max number of administration operations to queue (value 
+              &lt;= 1024)</td>
+          </tr>
+          <tr> 
+            <td width="17%">Thread pool size</td>
+            <td width="83%">Number of threads available for processing administration 
+              operations (value &lt;= 1024)</td>
+          </tr>
+        </table>
         <hr color="#464646" NOSHADE size="1" width="100%">
       </div>
       <br>

@@ -120,7 +120,7 @@
             Packages </a></span></font></td>
         </tr>
         <tr> 
-          <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="loading_packages.htm">Loading 
+          <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="managing_packages.htm">Managing 
             Packages </a></span></font></td>
         </tr>
         <tr>
@@ -163,7 +163,8 @@
             <p class="numberstep"><font size="2"><span class="bold">2</span> Under 
               Services, click the service you want to configure.</font></p>
             <p class="numberstep"><font size="2"><span class="bold">3</span> Modify 
-              any of the property information on the page.</font></p>
+              any of the property information on the page (see the table below 
+              for a description of the properties).</font></p>
             <p class="numberstep"><font size="2"><span class="bold">4</span> Click 
               Save.<br>
               </font><br>
@@ -173,6 +174,106 @@
         </tr>
       </table>
       <div class="rule2"> 
+        <table width="100%" border="0">
+          <tr> 
+            <td width="17%"><b>Site Service</b></td>
+            <td width="83%">&nbsp; </td>
+          </tr>
+          <tr> 
+            <td width="17%">Session timeout (seconds)</td>
+            <td width="83%">Time duration in seconds for when an idle connection 
+              is dropped</td>
+          </tr>
+          <tr> 
+            <td width="17%">Session timer interval (seconds)</td>
+            <td width="83%">Time interval in seconds for when the server checks 
+              for idle connections</td>
+          </tr>
+        </table>
+        <table width="100%" border="0">
+          <tr> 
+            <td width="17%"><b>Resource Service</b></td>
+            <td width="83%">&nbsp; </td>
+          </tr>
+          <tr> 
+            <td width="17%">Data file trash folder</td>
+            <td width="83%">Folder where the repository trash files are stored</td>
+          </tr>
+          <tr> 
+            <td width="17%">Library data file folder</td>
+            <td width="83%">Path where the Library resource data files are stored</td>
+          </tr>
+		            <tr> 
+            <td width="17%">Library repository folder</td>
+            <td width="83%">Path where the Library repository is stored</td>
+          </tr>
+		            <tr> 
+            <td width="17%">Session data file folder</td>
+            <td width="83%">Path where the Session resource data files are stored</td>
+          </tr>
+		            <tr> 
+            <td width="17%">Session repository folder</td>
+            <td width="83%">Path where the Session repository is stored</td>
+          </tr>
+		            <tr> 
+            <td width="17%">Site repository folder</td>
+            <td width="83%">Path where the Site repository is stored</td>
+          </tr>
+		            <tr> 
+            <td width="17%">Resource schema folder</td>
+            <td width="83%">Path where the resource schema files are stored</td>
+          </tr>
+		            <tr> 
+            <td width="17%">Repository checkpoints timer interval (seconds)</td>
+            <td width="83%">Time in seconds for when the server performs checkpoints 
+              for all the repositories (value &lt;= 2147483647)</td>
+          </tr>
+		            <tr> 
+            <td width="17%">Packages folder</td>
+            <td width="83%">Path where the resource packages can be found</td>
+          </tr>
+        </table>
+        <table width="100%" border="0">
+          <tr> 
+            <td width="17%"><b>Feature Service</b></td>
+            <td width="83%">&nbsp; </td>
+          </tr>
+          <tr> 
+            <td width="17%">Data connection pool enabled</td>
+            <td width="83%">0 = pool disabled, 1 = pool enabled</td>
+          </tr>
+          <tr> 
+            <td width="17%">Data connection pool size</td>
+            <td width="83%"> Number of connections to cache (value &lt;= 1024)</td>
+          </tr>
+          <tr> 
+            <td width="17%">Data connection timeout</td>
+            <td width="83%">Time duration in seconds for when an idle connection 
+              is dropped (value &lt;= 86400)</td>
+          </tr>
+          <tr> 
+            <td width="17%">Data connection timer interval</td>
+            <td width="83%">Time interval in seconds for when the server checks 
+              for idle connections (value &lt;= 2147483647)</td>
+          </tr>
+          <tr> 
+            <td width="17%">Data cache size</td>
+            <td width="83%">Max number of features to fetch (value &lt;= 2147483647)</td>
+          </tr>
+
+        </table>
+        <table width="100%" border="0">
+          <tr> 
+            <td width="17%"><b>Tile Service</b></td>
+            <td width="83%">&nbsp; </td>
+          </tr>
+          <tr> 
+            <td width="17%">Tile cache path<br>
+            </td>
+            <td width="83%">Root path of the image tile cache</td>
+          </tr>
+
+        </table>
         <hr color="#464646" NOSHADE size="1" width="100%">
       </div>
       <br>
