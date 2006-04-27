@@ -30,6 +30,7 @@ MgConnectionNotOpenException                          = The connection is not op
 MgCoordinateSystemComputationFailedException          = The coordinate system computation failed.
 MgCoordinateSystemConversionFailedException           = The coordinate system conversion failed.
 MgCoordinateSystemInitializationFailedException       = The coordinate system initialization failed.
+MgCoordinateSystemLoadFailedException                 = The coordinate system load failed.
 MgCoordinateSystemMeasureFailedException              = The coordinate system measure failed.
 MgCoordinateSystemTransformFailedException            = The coordinate system transform failed.
 MgDateTimeException                                   = A date and/or time exception occurred.

@@ -42,6 +42,7 @@ public:
     {
         // Initialize the critical section class
         CriticalClass.Initialize();
+        CCoordinateSystem::SetLibraryStatus(cslsInitialized);
     }
     ~CInitCPL()
     {
@@ -58,6 +59,7 @@ public:
     }
 };
 
+CsLibStatus CCoordinateSystem::m_status = cslsInitializationFailed;
 static CInitCPL s_InitCPL;
 CCoordinateSystemCatalog* CCoordinateSystem::m_catalog = NULL;
 
@@ -1158,7 +1160,7 @@ double CCoordinateSystem::GetAzimuth(double x1, double y1, double x2, double y2)
                 double sinAsinDist = delta * cos(lat2Rads);
 
                 double cosAsinDist = cos(lat1Rads) * sin(lat2Rads) - sin(lat1Rads) * cos(lat2Rads);
-                
+
                 //only this term really contributes to cosAsinDist, the part above is
                 //usually 0 or very very close to 0
                 cosAsinDist += sin(lat1Rads) * cos(lat2Rads) * delta * delta / 2.0;
@@ -1932,6 +1934,16 @@ void CCoordinateSystem::DeleteCatalog()
 STRING CCoordinateSystem::GetBaseLibrary()
 {
     return CCoordinateSystem::BaseLibrary;
+}
+
+CsLibStatus CCoordinateSystem::GetLibraryStatus()
+{
+    return CCoordinateSystem::m_status;
+}
+
+void CCoordinateSystem::SetLibraryStatus(CsLibStatus status)
+{
+    CCoordinateSystem::m_status = status;
 }
 
 STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)

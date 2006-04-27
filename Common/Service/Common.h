@@ -99,6 +99,7 @@ class ACE_SOCK_Stream;
 #include "Exception/CoordinateSystemComputationFailedException.h"
 #include "Exception/CoordinateSystemConversionFailedException.h"
 #include "Exception/CoordinateSystemInitializationFailedException.h"
+#include "Exception/CoordinateSystemLoadFailedException.h"
 #include "Exception/CoordinateSystemMeasureFailedException.h"
 #include "Exception/CoordinateSystemTransformFailedException.h"
 #include "Exception/DateTimeException.h"

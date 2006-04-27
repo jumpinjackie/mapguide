@@ -39,6 +39,13 @@ struct ArbitraryCoordinateSystem {
     double conversionToMeters;
 };
 
+enum CsLibStatus
+{
+    cslsInitialized    = 0,
+    cslsInitializationFailed,
+    cslsLoadFailed
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 ///<summary>
 /// The CCoordinateSystem class supplies operations for working with
@@ -62,6 +69,18 @@ public:
     /// Returns the base coordinate system library being used.
     ///</summary>
     static STRING GetBaseLibrary();
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///<summary>
+    /// Returns the coordinate system library initialization status.
+    ///</summary>
+    static CsLibStatus GetLibraryStatus();
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///<summary>
+    /// Sets the coordinate system library initialization status.
+    ///</summary>
+    static void SetLibraryStatus(CsLibStatus status);
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -590,6 +609,8 @@ private:
     STRING m_category;
 
     static CCoordinateSystemCatalog* m_catalog;
+    static CsLibStatus m_status;
+
 };
 
 } // End of namespace

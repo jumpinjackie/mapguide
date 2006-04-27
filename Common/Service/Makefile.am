@@ -72,6 +72,7 @@ include_SOURCES = \
   Exception/CoordinateSystemComputationFailedException.cpp \
   Exception/CoordinateSystemConversionFailedException.cpp \
   Exception/CoordinateSystemInitializationFailedException.cpp \
+  Exception/CoordinateSystemLoadFailedException.cpp \
   Exception/CoordinateSystemMeasureFailedException.cpp \
   Exception/CoordinateSystemTransformFailedException.cpp \
   Exception/DateTimeException.cpp \
@@ -459,6 +460,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/CoordinateSystemComputationFailedException.h \
   Exception/CoordinateSystemConversionFailedException.h \
   Exception/CoordinateSystemInitializationFailedException.h \
+  Exception/CoordinateSystemLoadFailedException.h \
   Exception/CoordinateSystemMeasureFailedException.h \
   Exception/CoordinateSystemTransformFailedException.h \
   Exception/DateTimeException.h \

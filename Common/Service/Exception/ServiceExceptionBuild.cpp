@@ -28,6 +28,7 @@
 #include "CoordinateSystemComputationFailedException.cpp"
 #include "CoordinateSystemConversionFailedException.cpp"
 #include "CoordinateSystemInitializationFailedException.cpp"
+#include "CoordinateSystemLoadFailedException.cpp"
 #include "CoordinateSystemMeasureFailedException.cpp"
 #include "CoordinateSystemTransformFailedException.cpp"
 #include "DateTimeException.cpp"
