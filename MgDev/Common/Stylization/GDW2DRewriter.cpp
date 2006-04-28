@@ -21,6 +21,8 @@
 #include "gd.h"
 #include "GDUtils.h"
 
+#define ROUND(x) (int)((x) + 0.5)
+
 ////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------
 //
@@ -503,7 +505,7 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
         // handle thickness
 
         //get W2D line weight
-        int thick = ROUND(rewriter->ScaleW2DLineWeight(file, file.rendition().line_weight().weight_value()));
+        int thick = ROUND(rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
 
         gdImagePtr brush1 = NULL;
 
@@ -750,7 +752,7 @@ WT_Result gdr_process_polyline (WT_Polyline & polyline, WT_File & file)
 
     if (dstpts)
     {
-        int thick = ROUND(rewriter->ScaleW2DLineWeight(file, file.rendition().line_weight().weight_value()));
+        int thick = ROUND(rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
         gdImagePtr brush1 = NULL;
 
         if (thick > 1)
