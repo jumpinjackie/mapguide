@@ -100,13 +100,13 @@ WT_Result gdr_process_color (WT_Color & color, WT_File & file)
 
     file.rendition().color() = color;
 
-    return WT_Result::Success;
+    return WT_Result::Success; 
 }
 
 
 WT_Result gdr_process_lineWeight (WT_Line_Weight & lineWeight, WT_File & file)
 {
-//  GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
+    //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
     //rescale the line weight
     //int dstWeight = rewriter->ScaleW2DNumber(file, lineWeight.weight_value());
@@ -416,8 +416,8 @@ WT_Result gdr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
     const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(
         file, (WT_Logical_Point*)&oldpos, 1, false);
 
-    WT_Integer32 major = rewriter->ScaleW2DNumber(file, filledEllipse.major());
-    WT_Integer32 minor = rewriter->ScaleW2DNumber(file, filledEllipse.minor());
+    int major = ROUND(rewriter->ScaleW2DNumber(file, filledEllipse.major()));
+    int minor = ROUND(rewriter->ScaleW2DNumber(file, filledEllipse.minor()));
 
     //simple bounds check before we draw
     if ( !(dstpts[0].x + major < 0
@@ -476,8 +476,8 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(
         file, (WT_Logical_Point*)&oldpos, 1, false);
 
-    WT_Integer32 major = rewriter->ScaleW2DNumber(file, outlineEllipse.major());
-    WT_Integer32 minor = rewriter->ScaleW2DNumber(file, outlineEllipse.minor());
+    int major = ROUND(rewriter->ScaleW2DNumber(file, outlineEllipse.major()));
+    int minor = ROUND(rewriter->ScaleW2DNumber(file, outlineEllipse.minor()));
 
     //simple bounds check before we draw
     if (!(dstpts[0].x + major < 0
@@ -501,7 +501,9 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
 
         ////////////////////////
         // handle thickness
-        int thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
+
+        //get W2D line weight
+        int thick = ROUND(rewriter->ScaleW2DLineWeight(file, file.rendition().line_weight().weight_value()));
 
         gdImagePtr brush1 = NULL;
 
@@ -748,7 +750,7 @@ WT_Result gdr_process_polyline (WT_Polyline & polyline, WT_File & file)
 
     if (dstpts)
     {
-        int thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
+        int thick = ROUND(rewriter->ScaleW2DLineWeight(file, file.rendition().line_weight().weight_value()));
         gdImagePtr brush1 = NULL;
 
         if (thick > 1)
