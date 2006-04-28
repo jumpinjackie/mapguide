@@ -214,6 +214,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 	    else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdDaemon)) == 0)
             {
 		bRunServerService = true;
+		ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdDaemonInfo));
             }
 #endif 
             else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdInteractive)) == 0)
@@ -349,6 +350,10 @@ void ShowCommandlineHelp()
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdHelpInfo1), MG_WCHAR_TO_CHAR(MgResources::ServerServiceDisplayName));
 
     // The commands are shown in alphabetical order
+
+#ifndef WIN32
+    ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdDaemonDescription));
+#endif
 
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdHelpDescription));
 
