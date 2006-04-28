@@ -274,6 +274,7 @@ wmsdir = ${prefix}/Wms
 wfsdir = ${prefix}/Wfs
 proj4datadir = ${prefix}/bin/data
 proj4naddir = ${prefix}/bin/nad
+daemondir = /var/lock/mgserver
 fdodir = $(map_fdo_lib)
 
 install-data-local:
@@ -294,6 +295,7 @@ install-data-local:
 	test -d $(proj4datadir) || $(mkinstalldirs) $(proj4datadir)
 	test -d $(proj4naddir) || $(mkinstalldirs) $(proj4naddir)
 	test -d $(fdodir) || $(mkinstalldirs) $(fdodir)
+	test -d $(daemondir) || $(mkinstalldirs) $(daemondir)
 	@cp -fp ../Resources/*.res $(resourcesdir)
 	@cp -fp ../Wms/* $(wmsdir)
 	@cp -fp ../Wfs/* $(wfsdir)
@@ -331,7 +333,7 @@ install-data-hook:
              -e 's#^SiteRepositoryPath.*=.*#SiteRepositoryPath                 = ${prefix}/Repositories/Site/#' \
              -e 's#^PackagesPath.*=.*#PackagesPath                       = ${prefix}/Packages/#' \
              -e 's#^ResourceSchemaFilePath.*=.*#ResourceSchemaFilePath             = ${prefix}/Schema/#' \
-             -e 's#^ResourceDataFileTrashFolderName.*=.*#ResourceDataFileTrashFolderName    = ${prefix}/Trash/#' \
+             -e 's#^ResourceDataFileTrashFolderName.*=.*#ResourceDataFileTrashFolderName    = Trash#' \
            serverconfig.ini > ${prefix}/bin/serverconfig.ini
 	@echo '#!/bin/sh' > ${prefix}/bin/mgserver.sh
 	@echo '' >> ${prefix}/bin/mgserver.sh
@@ -339,9 +341,12 @@ install-data-hook:
 	@echo 'export PROJ_LIB=$(proj4naddir)' >> ${prefix}/bin/mgserver.sh
 	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
 	@echo 'pushd ${prefix}/bin' >> ${prefix}/bin/mgserver.sh
+	@cp -f ${prefix}/bin/mgserver.sh ${prefix}/bin/mgserverd.sh 
 	@echo './mgserver /interactive' >> ${prefix}/bin/mgserver.sh
+	@echo './mgserver /daemon' >> ${prefix}/bin/mgserverd.sh
 	@echo 'popd' >> ${prefix}/bin/mgserver.sh
-	@chmod a+x ${prefix}/bin/mgserver.sh
+	@echo 'popd' >> ${prefix}/bin/mgserverd.sh
+	@chmod a+x ${prefix}/bin/mgserver*.sh
 	@rm -f $(fdodir)/providers.xml
 	@echo '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>' > $(fdodir)/providers.xml
 	@echo '<FeatureProviderRegistry>' >> $(fdodir)/providers.xml
