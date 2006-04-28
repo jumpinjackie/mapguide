@@ -106,6 +106,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     double mdefW = 0.01;
     double mdefH = 0.01;
     RS_Units mdefU = RS_Units_Device;
+    double mdefRot = 0.0;
 
     if (psym && psym->GetSymbol())
     {
@@ -118,6 +119,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
             mdefW = cachedStyle->width();
             mdefH = cachedStyle->height();
             mdefU = cachedStyle->units();
+            mdefRot = cachedStyle->rotation();
             renderer->ProcessMarker(lb, *cachedStyle, pfs->IsAllowOverpost());
         }
         else
@@ -128,6 +130,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
             mdefW = mdef.width();
             mdefH = mdef.height();
             mdefU = mdef.units();
+            mdefRot = mdef.rotation();
 
             renderer->ProcessMarker(lb, mdef, pfs->IsAllowOverpost());
         }
@@ -178,6 +181,28 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                 //between insertion point of symbol and actual geometric point
                 double w = 0.5 * mdefW;
                 double h = 0.5 * mdefH;
+
+                //take into account rotation of the symbol
+                //find increased extents of the symbol bounds
+                //due to the rotation
+                if (mdefRot != 0.0)
+                {
+                    double rotRad = mdefRot * M_PI / 180.0;
+                    double cs = cos(rotRad);
+                    double sn = sin(rotRad);
+                    double wcs = w * cs;
+                    double wsn = w * sn;
+                    double hsn = h * sn;
+                    double hcs = h * cs;
+
+                    double w1 = wcs - hsn;
+                    double h1 = wsn + hcs;
+                    double w2 = wcs + hsn;
+                    double h2 = wsn - hcs;
+
+                    w = rs_max( fabs(w1), fabs(w2) );
+                    h = rs_max( fabs(h1), fabs(h2) );
+                }
 
                 //add 2 pixels to offset
                 double offset = 2.0 * (0.0254 / renderer->GetDpi()); //2 pixels in meters
