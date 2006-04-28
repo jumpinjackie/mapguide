@@ -54,6 +54,10 @@ const STRING MgResources::PreviewReleaseDetected        = L"Preview release dete
 
 // The following resource strings are for the commandline options for the server. These are not in the resources file because
 // the server has not even started at this point.
+const STRING MgResources::ServerCmdDaemon		= L"/daemon"; // Do not translate
+const STRING MgResources::ServerCmdDaemonInfo		= L"Running the server as a daemon (service) \n\n";
+const STRING MgResources::ServerCmdDaemonDescription	= L"	/daemon\n"\
+							  L" 	   Runs the server in the background as a daemon \n\n";
 const STRING MgResources::ServerCmdHelp                 = L"/help"; // Do not translate
 const STRING MgResources::ServerCmdHelpInfo1            = L"\n%s\n\n"\
                                                           L"The following is a list of supported command line options:\n\n";
