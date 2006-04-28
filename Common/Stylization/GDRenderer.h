@@ -28,8 +28,6 @@
 
 #include <vector>
 
-#define ROUND(x) (int)((x) + 0.5)
-
 #include "Renderer.h"
 #include "LineBuffer.h"
 #include "LabelRendererBase.h"
@@ -235,7 +233,6 @@ public:
                                                                   bool              checkInBounds);
 
     /*Do not export from DLL*/  double ScaleW2DNumber(WT_File& file, long number);
-    /*Do not export from DLL*/  double ScaleW2DLineWeight(WT_File& file, long linewt);
 
 private:
     void AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter);
@@ -259,7 +256,6 @@ private:
     //image or to a temporary cached symbol image in case we are
     //processing a symbol from the library
     void* m_imw2d;
-    double m_dSupersampleFactor;
 
     // map/layer/feature info
     RS_MapUIInfo* m_mapInfo;

@@ -66,6 +66,8 @@
 using namespace DWFToolkit;
 using namespace DWFCore;
 
+#define ROUND(x) (int)((x) + 0.5)
+
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
 #define MIN(x,y) ((x) < (y) ? (x) : (y))
 
@@ -131,8 +133,7 @@ m_bHaveViewport(false),
 m_imsym(NULL),
 m_input(NULL),
 m_xformer(),
-m_pPool(NULL),
-m_dSupersampleFactor(1.0)
+m_pPool(NULL)
 {
     if (m_width <= 0)
         m_width = 1;
@@ -688,12 +689,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             else
             {
                 //otherwise allocate a second bitmap where
-                //we will cahce the symbol image for reuse
-
-                //if it is too small, make it bigger
-                //so that we get an antialiased effect
-                if (imsymw < SYMBOL_BITMAP_SIZE/2 && imsymh < SYMBOL_BITMAP_SIZE/2)
-                    imsymw = imsymh = SYMBOL_BITMAP_SIZE;
+                //we will cache the symbol image for reuse
 
                 //did we cache an image previously, but it was different size?
                 if (m_imsym
@@ -763,6 +759,18 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 //see if symbol will be small enough to draw in cached image
                 if (m_imsym)
                 {
+                    int superw = imsymw;
+                    int superh = imsymh;
+
+                    //if it is too small, make it bigger
+                    //so that we get an antialiased effect -- only 
+                    //do this for SLD symbols since DWF symbols are too
+                    //varied and not all of them look good with smoothing applied
+                    if (!symbol && superw < SYMBOL_BITMAP_SIZE/2 && superh < SYMBOL_BITMAP_SIZE/2)
+                        superw = superh = SYMBOL_BITMAP_SIZE;
+
+                    gdImagePtr tmp = gdImageCreateTrueColor(superw, superh);
+                    
                     //transform to coordinates of temporary image where we
                     //draw symbol before transfering to the map
                     EnsureBufferSize(npts);
@@ -775,24 +783,36 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                         tempx = poly[i].x;
                         tempy = poly[i].y;
 
-                        pts[i].x = (int)(tempx * (imsymw - 10.) + 5.);
-                        pts[i].y = (int)((imsymh - 10.) - tempy * (imsymh - 10.) + 5.);
+                        pts[i].x = (int)(tempx * (superw - 10.) + 5.);
+                        pts[i].y = (int)((superh - 10.) - tempy * (superh - 10.) + 5.);
                     }
 
-                    // initialize the temporary symbol image to a transparent background
-                    gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
-                    gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym), 0x7f000000);
-                    gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
+                    // initialize the temporary supersampled symbol image to a transparent background
+                    gdImageAlphaBlending((gdImagePtr)tmp, 0);
+                    gdImageFilledRectangle((gdImagePtr)tmp, 0, 0, gdImageSX((gdImagePtr)tmp)-1, gdImageSY((gdImagePtr)tmp), 0x7f000000);
+                    gdImageAlphaBlending((gdImagePtr)tmp, 1);
 
                     //draw fill
                     // TODO: When a filled polygon image is down-sampled, a gray false edge is created.
                     // This edge can only be seen when the real edge is not being drawn.
-                    gdImageSetThickness((gdImagePtr)m_imsym, 0);
-                    gdImageFilledPolygon((gdImagePtr)m_imsym, (gdPointPtr)pts, npts, gdcfill);
+                    gdImageSetThickness((gdImagePtr)tmp, 0);
+                    gdImageFilledPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdcfill);
                     //draw outline with a thickness set so that when scaled down to
                     //th destination image, the outline is still fully visible
-                    gdImageSetThickness((gdImagePtr)m_imsym, 10);
-                    gdImageOpenPolygon((gdImagePtr)m_imsym, (gdPointPtr)pts, npts, gdcline);
+                    gdImageSetThickness((gdImagePtr)tmp, 10);
+                    gdImageOpenPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdcline);
+
+
+                    // initialize the real cached symbol image to a transparent background
+                    gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
+                    gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym), 0x7f000000);
+                    gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
+
+                    //resample the supersampled temporary image into the cached image
+                    gdImageCopyResampled((gdImagePtr)m_imsym, tmp, 0, 0, 0, 0, 
+                        imsymw, imsymh, superw, superh);
+
+                    gdImageDestroy(tmp);
 
                 }
                 else
@@ -848,9 +868,9 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     //we will use unrotated symbol bounding box
                     //since rotation will be done by the image copy
                     //also we will use a slight boundary offset 
-                    //hardcoded to 2 pixels so that geometry exactly on the edge
+                    //hardcoded to 1 pixel so that geometry exactly on the edge
                     //draws just inside the image
-                    RS_Bounds dst1(2, 2, (double)(imsymw-1), (double)(imsymh-1));
+                    RS_Bounds dst1(1, 1, (double)(imsymw-1), (double)(imsymh-1));
                     st = SymbolTrans(src, dst1, 0.0, 0.0, 0.0);
 
                     m_imw2d = m_imsym;
@@ -859,8 +879,6 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
                     gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym), 0x7f000000);
                     gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
-
-                    m_dSupersampleFactor = rs_max(imsymw, imsymh) / rs_max(devwidth, devheight);
                 }
                 else
                 {
@@ -880,7 +898,6 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 //make sure we zero out the W2D symbol flags
                 m_bIsSymbolW2D = false;
                 m_imw2d = NULL;
-                m_dSupersampleFactor = 1.0;
             }
 
         }
@@ -925,25 +942,30 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 int ulx = (int)floor(b[3].x);
                 int uly = (int)floor(b[3].y);
 
-                gdImageCopyResampled((gdImagePtr)m_imout, (gdImagePtr)m_imsym,
-                    ulx, uly, 0, 0, devwidth, devheight, imsymw, imsymh);
+                //straight copy without resampling since we are
+                //guaranteed for the source image size to equal the
+                //symbol pixel size
+                gdImageCopy((gdImagePtr)m_imout, (gdImagePtr)m_imsym,
+                    ulx, uly, 0, 0, imsymw, imsymh);
             }
             else
             {
                 //for rotated copy, we need to scale down the image first
                 //allocating an extra image here should not be too much of
                 //an overhead since it is usually small
-                gdImagePtr tmp = gdImageCreateTrueColor(devwidth + 2, devheight + 2);
+                gdImagePtr tmp = gdImageCreateTrueColor(imsymw + 2, imsymh + 2);
 
                 //make it transparent
                 gdImageAlphaBlending(tmp, 0);
-                gdImageFilledRectangle(tmp, 0, 0, devwidth + 1, devheight + 2, 0x7f000000);
+                gdImageFilledRectangle(tmp, 0, 0, imsymw + 1, imsymh + 2, 0x7f000000);
                 gdImageAlphaBlending(tmp, 1);
 
-                //scale down and copy supersampled symbol image into temporary image
-                gdImageCopyResampled(tmp, (gdImagePtr)m_imsym,
+                //straight copy without resampling since we are
+                //guaranteed for the source image size to equal the
+                //symbol pixel size
+                gdImageCopy(tmp, (gdImagePtr)m_imsym,
                                      1, 1, 0, 0,
-                                     devwidth, devheight, imsymw, imsymh);
+                                     imsymw, imsymh);
 
                 //for rotated gd copy, we need the midpoint of
                 //the destination bounds
@@ -952,7 +974,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                 //draw rotated symbol onto final destination image
                 gdImageCopyRotated((gdImagePtr)m_imout, (gdImagePtr)tmp,
-                    mx, my, 0, 0, devwidth + 2, devheight + 2,
+                    mx, my, 0, 0, imsymw + 2, imsymh + 2,
                     (int)(mdef.rotation()));
 
                 gdImageDestroy(tmp);
@@ -2006,32 +2028,6 @@ double GDRenderer::ScaleW2DNumber(WT_File&     file,
 
     return dDstSpace;
 }
-
-double GDRenderer::ScaleW2DLineWeight(WT_File& file, long linewt)
-{   
-    double lw = linewt;
-
-    //if we are drawing a symbol, the supersampling we use for small symbols
-    //will make thin (0 width) line weights look very faded -- hence we need to scale up
-    //the line weight by the multisample ratio
-    if (m_bIsSymbolW2D)
-    {
-        if (linewt == 0)
-        {
-            //basically change 0 pixel line weight to the W2D equivalent of
-            //1 pixel line weight so that later scaling results in a non-zero
-            //multiplication factor
-            lw = 1.0 / m_xformer->GetLinearScale();
-        }
-
-        //now apply the supersampling multiplication factor
-        lw *= m_dSupersampleFactor;
-    }
-
-    lw = ScaleW2DNumber(file, lw);
-    return lw;
-}
-
 
 void GDRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 {
