@@ -210,6 +210,12 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 
                 bRunServerService = false;
             }
+#ifndef WIN32  // Linux only Daemon mode 
+	    else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdDaemon)) == 0)
+            {
+		bRunServerService = true;
+            }
+#endif 
             else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdInteractive)) == 0)
             {
                 ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdInteractiveInfo));
@@ -276,7 +282,40 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
                 message = NULL;
             }
 #else
-            // Linux Daemon code
+            // Linux Daemon code	
+	   if (ACE::daemonize(ACE_TEXT("")) == 0)
+	   {
+  		// Open Stdin
+		int nOpen = ACE_OS::open("/dev/null",O_RDWR);	
+		// stdout and stderr go to the same device as stdin.	
+		ACE_OS::dup(nOpen);
+	 	ACE_OS::dup(nOpen);
+
+		int nlock = ACE_OS::open("/var/lock/mgserver/mgserverd.lock",O_RDWR|O_CREAT);
+		// If file cannot be opened exit.
+		if (nlock < 0)
+			exit(1);
+
+		// If file is locked exit 
+		if (lockf(nlock,F_TLOCK,0)  < 0)
+			exit(0);
+	
+		ACE_TCHAR strPID[20];
+		
+		// convert pid to string
+		ACE_OS::sprintf(strPID,"%d\n",ACE_OS::getpid());
+		
+		//record pid to lockfile
+		ACE_OS::write(nlock,strPID,ACE_OS::strlen(strPID)); 
+
+		INT32 nResult = SERVER::instance()->init(argc, argv);
+
+		if (nResult == 0)
+		{
+			nResult = SERVER::instance()->open();
+			SERVER::instance()->fini();
+		}			
+	   }	
 #endif
         }
     }
