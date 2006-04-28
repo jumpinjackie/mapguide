@@ -190,6 +190,9 @@ INTERNAL_API:
     static const STRING ServerShuttingDown;
     static const STRING ServerStarted;
     static const STRING ServerStopped;
+    static const STRING ServerCmdDaemon;
+    static const STRING ServerCmdDaemonInfo;
+    static const STRING ServerCmdDaemonDescription;		
     static const STRING ServerCmdHelp;
     static const STRING ServerCmdHelpInfo1;
     static const STRING ServerCmdHelpInfo2;
