@@ -79,8 +79,6 @@ using namespace DWFCore;
 #define MAXY(x) MAX4(x[1],x[3],x[5],x[7])
 #define MINY(x) MIN4(x[1],x[3],x[5],x[7])
 
-#define ROUND(x) (int)((x) + 0.5)
-
 #define SYMBOL_BITMAP_SIZE 128
 #define SYMBOL_BITMAP_MAX 1024
 
@@ -133,7 +131,8 @@ m_bHaveViewport(false),
 m_imsym(NULL),
 m_input(NULL),
 m_xformer(),
-m_pPool(NULL)
+m_pPool(NULL),
+m_dSupersampleFactor(1.0)
 {
     if (m_width <= 0)
         m_width = 1;
@@ -848,7 +847,10 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                     //we will use unrotated symbol bounding box
                     //since rotation will be done by the image copy
-                    RS_Bounds dst1(0, 0, (double)imsymw, (double)imsymh);
+                    //also we will use a slight boundary offset 
+                    //hardcoded to 2 pixels so that geometry exactly on the edge
+                    //draws just inside the image
+                    RS_Bounds dst1(2, 2, (double)(imsymw-1), (double)(imsymh-1));
                     st = SymbolTrans(src, dst1, 0.0, 0.0, 0.0);
 
                     m_imw2d = m_imsym;
@@ -857,6 +859,8 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
                     gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym), 0x7f000000);
                     gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
+
+                    m_dSupersampleFactor = rs_max(imsymw, imsymh) / rs_max(devwidth, devheight);
                 }
                 else
                 {
@@ -876,6 +880,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 //make sure we zero out the W2D symbol flags
                 m_bIsSymbolW2D = false;
                 m_imw2d = NULL;
+                m_dSupersampleFactor = 1.0;
             }
 
         }
@@ -1973,7 +1978,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
 //scaling into account when carrying over things like line weight,
 //font height, etc. this helper funtion determines and applies
 //that scale
-WT_Integer32 GDRenderer::ScaleW2DNumber(WT_File&     file,
+double GDRenderer::ScaleW2DNumber(WT_File&     file,
                                         WT_Integer32 number)
 {
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
@@ -1999,7 +2004,32 @@ WT_Integer32 GDRenderer::ScaleW2DNumber(WT_File&     file,
         dDstSpace *= m_scale;
     }
 
-    return (WT_Integer32)dDstSpace;
+    return dDstSpace;
+}
+
+double GDRenderer::ScaleW2DLineWeight(WT_File& file, long linewt)
+{   
+    double lw = linewt;
+
+    //if we are drawing a symbol, the supersampling we use for small symbols
+    //will make thin (0 width) line weights look very faded -- hence we need to scale up
+    //the line weight by the multisample ratio
+    if (m_bIsSymbolW2D)
+    {
+        if (linewt == 0)
+        {
+            //basically change 0 pixel line weight to the W2D equivalent of
+            //1 pixel line weight so that later scaling results in a non-zero
+            //multiplication factor
+            lw = 1.0 / m_xformer->GetLinearScale();
+        }
+
+        //now apply the supersampling multiplication factor
+        lw *= m_dSupersampleFactor;
+    }
+
+    lw = ScaleW2DNumber(file, lw);
+    return lw;
 }
 
 
