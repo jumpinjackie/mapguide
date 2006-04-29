@@ -1101,8 +1101,6 @@
         var $dataConnTimeOutPropStr;
         var $dataConnTimerInt;
         var $dataConnTimerIntPropStr;
-        var $dataConnPoolEnabled;
-        var $dataConnPoolEnabledPropStr;
         var $dataConnPoolSize;
         var $dataConnPoolSizePropStr;
         var $dataCacheSize;
@@ -1112,9 +1110,6 @@
         {
             $this->enabled = true;
             $this->enabledID = "featureServiceEnabled";
-            $this->dataConnPoolEnabled = '0';
-            $this->dataConnPoolEnabledPropStr = MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled;
-            $this->dataConnPoolEnabledID = "featureDataConnPoolEnabled";
             $this->dataConnPoolSize = 0;
             $this->dataConnPoolSizePropStr = MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize;
             $this->dataConnPoolSizeID = "featureDataConnPoolSize";
@@ -1132,9 +1127,6 @@
         function GetProps( $serverAdmin )
         {
             $props = $serverAdmin->GetConfigurationProperties( MgConfigProperties::FeatureServicePropertiesSection );
-
-            $prop = $props->GetItem( $this->dataConnPoolEnabledPropStr );
-            $this->dataConnPoolEnabled = $prop->GetValue();
 
             $prop = $props->GetItem( $this->dataConnPoolSizePropStr );
             $this->dataConnPoolSize = $prop->GetValue();
@@ -1169,9 +1161,6 @@
         function SetProps( $serverAdmin )
         {
             $props = new MgPropertyCollection();
-
-            $prop = new MgStringProperty( $this->dataConnPoolEnabledPropStr, $this->dataConnPoolEnabled );
-            $props->Add( $prop );
 
             $prop = new MgStringProperty( $this->dataConnPoolSizePropStr, $this->dataConnPoolSize );
             $props->Add( $prop );
@@ -1210,8 +1199,8 @@
         var $repositoryCheckpointsTimerIntervalPropStr;
         var $packagesPath;
         var $packagesPathPropStr;
-        var $resourcePermissionCacheSize;
-        var $resourcePermissionCacheSizePropStr;
+       // var $resourcePermissionCacheSize;
+       // var $resourcePermissionCacheSizePropStr;
 
 
         function ResourceServicePropsRecord()
@@ -1235,8 +1224,8 @@
             $this->repositoryCheckpointsTimerIntervalPropStr = MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval;
             $this->packagesPath = "";
             $this->packagesPathPropStr = MgConfigProperties::ResourceServicePropertyPackagesPath;
-            $this->resourcePermissionCacheSize = "";
-            $this->resourcePermissionCacheSizePropStr = MgConfigProperties::ResourceServicePropertyResourcePermissionCacheSize;
+         //   $this->resourcePermissionCacheSize = "";
+         //   $this->resourcePermissionCacheSizePropStr = MgConfigProperties::ResourceServicePropertyResourcePermissionCacheSize;
         }
 
         function GetProps( $serverAdmin )
@@ -1278,8 +1267,8 @@
             $this->packagesPath = $prop->GetValue();
             CleanUpPath( $this->packagesPath );
 
-            $prop = $props->GetItem( $this->resourcePermissionCacheSizePropStr );
-            $this->resourcePermissionCacheSize = $prop->GetValue();
+          //  $prop = $props->GetItem( $this->resourcePermissionCacheSizePropStr );
+          //  $this->resourcePermissionCacheSize = $prop->GetValue();
 
             $props = $serverAdmin->GetConfigurationProperties( MgConfigProperties::GeneralPropertiesSection );
 
@@ -1296,7 +1285,7 @@
             global $errInvalidResourceResourceSchemaFolder;
             global $errInvalidRepositoryCheckpointsTimerInterval;
             global $errInvalidPackagesPath;
-            global $errInvalidResourcePermissionCacheSize;
+         //   global $errInvalidResourcePermissionCacheSize;
 
             if ( empty( $this->dataFileTrashFolder ) )
                 throw new Exception( $errInvalidResourceDataFileTrashFolder );
@@ -1316,8 +1305,8 @@
                 throw new Exception( $errInvalidRepositoryCheckpointsTimerInterval );
             if ( empty( $this->packagesPath ) )
                 throw new Exception( $errInvalidPackagesPath );
-            if ( $this->resourcePermissionCacheSize < 0 )
-                throw new Exception( $errInvalidResourcePermissionCacheSize );
+        //    if ( $this->resourcePermissionCacheSize < 0 )
+        //        throw new Exception( $errInvalidResourcePermissionCacheSize );
         }
 
         function SetProps( $serverAdmin )
@@ -1351,8 +1340,8 @@
             $prop = new MgStringProperty( $this->packagesPathPropStr, $this->packagesPath );
             $props->Add( $prop );
 
-            $prop = new MgStringProperty( $this->resourcePermissionCacheSizePropStr, $this->resourcePermissionCacheSize );
-            $props->Add( $prop );
+          //  $prop = new MgStringProperty( $this->resourcePermissionCacheSizePropStr, $this->resourcePermissionCacheSize );
+          //  $props->Add( $prop );
 
             $serverAdmin->SetConfigurationProperties( MgConfigProperties::ResourceServicePropertiesSection, $props );
 
