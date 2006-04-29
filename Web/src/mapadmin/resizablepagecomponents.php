@@ -1211,7 +1211,6 @@
 
 
     define( 'FEATURE_SERVICE_ENABLED_ID',           "featureServiceEnabled" );
-    define( 'FEATURE_SERVICE_CONN_POOL_ENABLED_ID', "featureDataConnPoolEnabled" );
     define( 'FEATURE_SERVICE_CONN_POOL_SIZE_ID',    "featureDataConnPoolSize" );
     define( 'FEATURE_SERVICE_CONN_TIMEOUT_ID',      "featureDataConnTimeOut" );
     define( 'FEATURE_SERVICE_CONN_TIMER_INT_ID',    "featureConnectionTimerInteval" );
@@ -1223,10 +1222,6 @@
             $props->enabled = '1';
         else
             $props->enabled = '0';
-        if ( array_key_exists( FEATURE_SERVICE_CONN_POOL_ENABLED_ID, $post ) )
-            $props->dataConnPoolEnabled = '1';
-        else
-            $props->dataConnPoolEnabled = '0';
         if ( array_key_exists( FEATURE_SERVICE_CONN_POOL_SIZE_ID, $post ) )
             $props->dataConnPoolSize = $post[ FEATURE_SERVICE_CONN_POOL_SIZE_ID ];
         if ( array_key_exists( FEATURE_SERVICE_CONN_TIMEOUT_ID, $post ) )
@@ -1239,7 +1234,7 @@
 
     function DisplayFeatureServicePropVals( $enabled, $props )
     {
-        $sectionFields = array( FEATURE_SERVICE_CONN_POOL_ENABLED_ID, FEATURE_SERVICE_CONN_POOL_SIZE_ID, FEATURE_SERVICE_CONN_TIMEOUT_ID, FEATURE_SERVICE_CONN_TIMER_INT_ID, FEATURE_SERVICE_DATA_CACHE_SIZE_ID );
+        $sectionFields = array( FEATURE_SERVICE_CONN_POOL_SIZE_ID, FEATURE_SERVICE_CONN_TIMEOUT_ID, FEATURE_SERVICE_CONN_TIMER_INT_ID, FEATURE_SERVICE_DATA_CACHE_SIZE_ID );
         DisplayEnabledBar( "Feature Service", FEATURE_SERVICE_ENABLED_ID, $props->enabled, $enabled, $sectionFields );
 
         if ( $enabled && $props->enabled )
@@ -1247,16 +1242,7 @@
         else
             $enabledStr = " disabled ";
 
-        if ( $props->dataConnPoolEnabled != '0' )
-            $dataConnPoolEnabledCheckedStr = ' checked ';
-        else
-            $dataConnPoolEnabledCheckedStr = '';
-
         echo '  <table  border="0" cellspacing="0" class="inputForm">',"\n";
-        echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Data connection pool enabled:</td>',"\n";
-        echo '          <td><input name="',FEATURE_SERVICE_CONN_POOL_ENABLED_ID,'"',$enabledStr,' type="checkbox" ',$dataConnPoolEnabledCheckedStr,'></td>',"\n";
-        echo '      </tr>',"\n";
         echo '      <tr>',"\n";
         echo '          <td class="propsInputLabel">Data connection pool size:</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',FEATURE_SERVICE_CONN_POOL_SIZE_ID,'"',$enabledStr,' type="text" value="',$props->dataConnPoolSize,'"></td>',"\n";
