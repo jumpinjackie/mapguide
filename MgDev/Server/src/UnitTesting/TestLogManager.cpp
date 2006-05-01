@@ -121,9 +121,22 @@ void TestLogManager::TestCase_GetLogsPath()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_TestForDeadLock()
 {
-    ACE_Thread_Manager manager;
-    TestLogManagerThread test(manager);
-    manager.wait();
+    try
+    {
+        ACE_Thread_Manager manager;
+        TestLogManagerThread test(manager);
+        manager.wait();
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -134,27 +147,40 @@ void TestLogManager::TestCase_TestForDeadLock()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_EnumerateLogs()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
 
-    // Create a few files
-    STRING path = pMgLogManager->GetLogsPath();
-    CreateFile(path + TestName, L"");
-    CreateFile(path + JunkName, L"");
-    CreateFile(path + TestName2, L"");
-    CreateFile(path + JunkName2, L"");
+        // Create a few files
+        STRING path = pMgLogManager->GetLogsPath();
+        CreateFile(path + TestName, L"");
+        CreateFile(path + JunkName, L"");
+        CreateFile(path + TestName2, L"");
+        CreateFile(path + JunkName2, L"");
 
-    Ptr<MgPropertyCollection> logs = pMgLogManager->EnumerateLogs();
+        Ptr<MgPropertyCollection> logs = pMgLogManager->EnumerateLogs();
 
-    // Make sure the files show up in the enumeration
-    Ptr<MgStringProperty> testNameProp = new MgStringProperty(L"LogNameProperty", TestName);
-    Ptr<MgStringProperty> junkNameProp = new MgStringProperty(L"LogNameProperty", JunkName);
-    Ptr<MgStringProperty> testName2Prop = new MgStringProperty(L"LogNameProperty", TestName2);
-    Ptr<MgStringProperty> junkName2Prop = new MgStringProperty(L"LogNameProperty", JunkName2);
+        // Make sure the files show up in the enumeration
+        Ptr<MgStringProperty> testNameProp = new MgStringProperty(L"LogNameProperty", TestName);
+        Ptr<MgStringProperty> junkNameProp = new MgStringProperty(L"LogNameProperty", JunkName);
+        Ptr<MgStringProperty> testName2Prop = new MgStringProperty(L"LogNameProperty", TestName2);
+        Ptr<MgStringProperty> junkName2Prop = new MgStringProperty(L"LogNameProperty", JunkName2);
 
-    CPPUNIT_ASSERT(logs->Contains(junkNameProp));
-    CPPUNIT_ASSERT(logs->Contains(testNameProp));
-    CPPUNIT_ASSERT(logs->Contains(junkName2Prop));
-    CPPUNIT_ASSERT(logs->Contains(testName2Prop));
+        CPPUNIT_ASSERT(logs->Contains(junkNameProp));
+        CPPUNIT_ASSERT(logs->Contains(testNameProp));
+        CPPUNIT_ASSERT(logs->Contains(junkName2Prop));
+        CPPUNIT_ASSERT(logs->Contains(testName2Prop));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -165,23 +191,34 @@ void TestLogManager::TestCase_EnumerateLogs()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_DeleteLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
 
-    pMgLogManager->DeleteLog(TestName);
-    pMgLogManager->DeleteLog(NewTestName);
-    pMgLogManager->DeleteLog(JunkName);
-    pMgLogManager->DeleteLog(TestName2);
-    pMgLogManager->DeleteLog(JunkName2);
+        pMgLogManager->DeleteLog(TestName);
+        pMgLogManager->DeleteLog(NewTestName);
+        pMgLogManager->DeleteLog(JunkName);
+        pMgLogManager->DeleteLog(TestName2);
+        pMgLogManager->DeleteLog(JunkName2);
 
-    Ptr<MgPropertyCollection> logs = pMgLogManager->EnumerateLogs();
+        Ptr<MgPropertyCollection> logs = pMgLogManager->EnumerateLogs();
 
-    CPPUNIT_ASSERT(!logs->Contains(TestName));
-    CPPUNIT_ASSERT(!logs->Contains(NewTestName));
-    CPPUNIT_ASSERT(!logs->Contains(JunkName));
-    CPPUNIT_ASSERT(!logs->Contains(TestName2));
-    CPPUNIT_ASSERT(!logs->Contains(JunkName2));
-
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->DeleteLog(L""), MgNullArgumentException*);
+        CPPUNIT_ASSERT(!logs->Contains(TestName));
+        CPPUNIT_ASSERT(!logs->Contains(NewTestName));
+        CPPUNIT_ASSERT(!logs->Contains(JunkName));
+        CPPUNIT_ASSERT(!logs->Contains(TestName2));
+        CPPUNIT_ASSERT(!logs->Contains(JunkName2));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 ///----------------------------------------------------------------------------
 /// Test Case Description:
@@ -191,27 +228,40 @@ void TestLogManager::TestCase_DeleteLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_RenameLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
 
-    // Create test file
-    STRING path = pMgLogManager->GetLogsPath();
-    CreateFile(path + TestName, L"");
+        // Create test file
+        STRING path = pMgLogManager->GetLogsPath();
+        CreateFile(path + TestName, L"");
 
-    // Rename the test file
-    pMgLogManager->RenameLog(TestName, NewTestName);
+        // Rename the test file
+        pMgLogManager->RenameLog(TestName, NewTestName);
 
-    Ptr<MgPropertyCollection> logs = pMgLogManager->EnumerateLogs();
+        Ptr<MgPropertyCollection> logs = pMgLogManager->EnumerateLogs();
 
-    Ptr<MgStringProperty> newTestNameProp = new MgStringProperty(L"LogNameProperty", NewTestName);
-    CPPUNIT_ASSERT(logs->Contains(newTestNameProp));
+        Ptr<MgStringProperty> newTestNameProp = new MgStringProperty(L"LogNameProperty", NewTestName);
+        CPPUNIT_ASSERT(logs->Contains(newTestNameProp));
 
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(L"", NewTestName), MgNullArgumentException*);
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(NewTestName, L""), MgNullArgumentException*);
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(TestName, TestName), MgDuplicateFileException*);
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(L"DoesNotExist.log", L"NewDoesNotExist.log"), MgFileNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(L"", NewTestName), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(NewTestName, L""), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(TestName, TestName), MgDuplicateFileException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(L"DoesNotExist.log", L"NewDoesNotExist.log"), MgFileNotFoundException*);
 #ifdef WIN32
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(NewTestName, L"?"), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(NewTestName, L"?"), MgInvalidArgumentException*);
 #endif
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -221,25 +271,38 @@ void TestLogManager::TestCase_RenameLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_SetAccessLogInfo()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
 
-    // Save original information
-    bool bOriginalEnabled = pMgLogManager->IsAccessLogEnabled();
-    STRING originalName = pMgLogManager->GetAccessLogFileName();
-    STRING originalParams = pMgLogManager->GetAccessLogParameters();
+        // Save original information
+        bool bOriginalEnabled = pMgLogManager->IsAccessLogEnabled();
+        STRING originalName = pMgLogManager->GetAccessLogFileName();
+        STRING originalParams = pMgLogManager->GetAccessLogParameters();
 
-    pMgLogManager->SetAccessLogInfo(false, TestName, TestParameters);
+        pMgLogManager->SetAccessLogInfo(false, TestName, TestParameters);
 
-    bool bEnabled = pMgLogManager->IsAccessLogEnabled();
-    STRING name = pMgLogManager->GetAccessLogFileName();
-    STRING params = pMgLogManager->GetAccessLogParameters();
+        bool bEnabled = pMgLogManager->IsAccessLogEnabled();
+        STRING name = pMgLogManager->GetAccessLogFileName();
+        STRING params = pMgLogManager->GetAccessLogParameters();
 
-    // Restore original info
-    pMgLogManager->SetAccessLogInfo(bOriginalEnabled, originalName, originalParams);
+        // Restore original info
+        pMgLogManager->SetAccessLogInfo(bOriginalEnabled, originalName, originalParams);
 
-    CPPUNIT_ASSERT(bEnabled == false);
-    CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
-    CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+        CPPUNIT_ASSERT(bEnabled == false);
+        CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
+        CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -249,9 +312,22 @@ void TestLogManager::TestCase_SetAccessLogInfo()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_ClearAccessLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bResult = pMgLogManager->ClearAccessLog();
-    CPPUNIT_ASSERT(bResult);
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        bool bResult = pMgLogManager->ClearAccessLog();
+        CPPUNIT_ASSERT(bResult);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -430,25 +506,38 @@ void TestLogManager::TestCase_GetAccessLogInvalid()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_SetAdminLogInfo()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
 
-    // Save original information
-    bool bOriginalEnabled = pMgLogManager->IsAdminLogEnabled();
-    STRING originalName = pMgLogManager->GetAdminLogFileName();
-    STRING originalParams = pMgLogManager->GetAdminLogParameters();
+        // Save original information
+        bool bOriginalEnabled = pMgLogManager->IsAdminLogEnabled();
+        STRING originalName = pMgLogManager->GetAdminLogFileName();
+        STRING originalParams = pMgLogManager->GetAdminLogParameters();
 
-    pMgLogManager->SetAdminLogInfo(false, TestName, TestParameters);
+        pMgLogManager->SetAdminLogInfo(false, TestName, TestParameters);
 
-    bool bEnabled = pMgLogManager->IsAdminLogEnabled();
-    STRING name = pMgLogManager->GetAdminLogFileName();
-    STRING params = pMgLogManager->GetAdminLogParameters();
+        bool bEnabled = pMgLogManager->IsAdminLogEnabled();
+        STRING name = pMgLogManager->GetAdminLogFileName();
+        STRING params = pMgLogManager->GetAdminLogParameters();
 
-    // Restore original info
-    pMgLogManager->SetAdminLogInfo(bOriginalEnabled, originalName, originalParams);
+        // Restore original info
+        pMgLogManager->SetAdminLogInfo(bOriginalEnabled, originalName, originalParams);
 
-    CPPUNIT_ASSERT(bEnabled == false);
-    CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
-    CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+        CPPUNIT_ASSERT(bEnabled == false);
+        CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
+        CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -458,9 +547,22 @@ void TestLogManager::TestCase_SetAdminLogInfo()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_ClearAdminLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bResult = pMgLogManager->ClearAdminLog();
-    CPPUNIT_ASSERT(bResult);
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        bool bResult = pMgLogManager->ClearAdminLog();
+        CPPUNIT_ASSERT(bResult);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -616,25 +718,38 @@ void TestLogManager::TestCase_GetAdminLogInvalid()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_SetAuthenticationLogInfo()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
 
-    // Save original information
-    bool bOriginalEnabled = pMgLogManager->IsAuthenticationLogEnabled();
-    STRING originalName = pMgLogManager->GetAuthenticationLogFileName();
-    STRING originalParams = pMgLogManager->GetAuthenticationLogParameters();
+        // Save original information
+        bool bOriginalEnabled = pMgLogManager->IsAuthenticationLogEnabled();
+        STRING originalName = pMgLogManager->GetAuthenticationLogFileName();
+        STRING originalParams = pMgLogManager->GetAuthenticationLogParameters();
 
-    pMgLogManager->SetAuthenticationLogInfo(false, TestName, TestParameters);
+        pMgLogManager->SetAuthenticationLogInfo(false, TestName, TestParameters);
 
-    bool bEnabled = pMgLogManager->IsAuthenticationLogEnabled();
-    STRING name = pMgLogManager->GetAuthenticationLogFileName();
-    STRING params = pMgLogManager->GetAuthenticationLogParameters();
+        bool bEnabled = pMgLogManager->IsAuthenticationLogEnabled();
+        STRING name = pMgLogManager->GetAuthenticationLogFileName();
+        STRING params = pMgLogManager->GetAuthenticationLogParameters();
 
-    // Restore original info
-    pMgLogManager->SetAuthenticationLogInfo(bOriginalEnabled, originalName, originalParams);
+        // Restore original info
+        pMgLogManager->SetAuthenticationLogInfo(bOriginalEnabled, originalName, originalParams);
 
-    CPPUNIT_ASSERT(bEnabled == false);
-    CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
-    CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+        CPPUNIT_ASSERT(bEnabled == false);
+        CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
+        CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -644,9 +759,22 @@ void TestLogManager::TestCase_SetAuthenticationLogInfo()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_ClearAuthenticationLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bResult = pMgLogManager->ClearAuthenticationLog();
-    CPPUNIT_ASSERT(bResult);
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        bool bResult = pMgLogManager->ClearAuthenticationLog();
+        CPPUNIT_ASSERT(bResult);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -802,25 +930,38 @@ void TestLogManager::TestCase_GetAuthenticationLogInvalid()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_SetErrorLogInfo()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
 
-    // Save original information
-    bool bOriginalEnabled = pMgLogManager->IsErrorLogEnabled();
-    STRING originalName = pMgLogManager->GetErrorLogFileName();
-    STRING originalParams = pMgLogManager->GetErrorLogParameters();
+        // Save original information
+        bool bOriginalEnabled = pMgLogManager->IsErrorLogEnabled();
+        STRING originalName = pMgLogManager->GetErrorLogFileName();
+        STRING originalParams = pMgLogManager->GetErrorLogParameters();
 
-    pMgLogManager->SetErrorLogInfo(false, TestName, TestParameters);
+        pMgLogManager->SetErrorLogInfo(false, TestName, TestParameters);
 
-    bool bEnabled = pMgLogManager->IsErrorLogEnabled();
-    STRING name = pMgLogManager->GetErrorLogFileName();
-    STRING params = pMgLogManager->GetErrorLogParameters();
+        bool bEnabled = pMgLogManager->IsErrorLogEnabled();
+        STRING name = pMgLogManager->GetErrorLogFileName();
+        STRING params = pMgLogManager->GetErrorLogParameters();
 
-    // Restore original info
-    pMgLogManager->SetErrorLogInfo(bOriginalEnabled, originalName, originalParams);
+        // Restore original info
+        pMgLogManager->SetErrorLogInfo(bOriginalEnabled, originalName, originalParams);
 
-    CPPUNIT_ASSERT(bEnabled == false);
-    CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
-    CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+        CPPUNIT_ASSERT(bEnabled == false);
+        CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
+        CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -830,9 +971,22 @@ void TestLogManager::TestCase_SetErrorLogInfo()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_ClearErrorLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bResult = pMgLogManager->ClearErrorLog();
-    CPPUNIT_ASSERT(bResult);
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        bool bResult = pMgLogManager->ClearErrorLog();
+        CPPUNIT_ASSERT(bResult);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -988,25 +1142,38 @@ void TestLogManager::TestCase_GetErrorLogInvalid()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_SetSessionLogInfo()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
 
-    // Save original information
-    bool bOriginalEnabled = pMgLogManager->IsSessionLogEnabled();
-    STRING originalName = pMgLogManager->GetSessionLogFileName();
-    STRING originalParams = pMgLogManager->GetSessionLogParameters();
+        // Save original information
+        bool bOriginalEnabled = pMgLogManager->IsSessionLogEnabled();
+        STRING originalName = pMgLogManager->GetSessionLogFileName();
+        STRING originalParams = pMgLogManager->GetSessionLogParameters();
 
-    pMgLogManager->SetSessionLogInfo(false, TestName, TestParameters);
+        pMgLogManager->SetSessionLogInfo(false, TestName, TestParameters);
 
-    bool bEnabled = pMgLogManager->IsSessionLogEnabled();
-    STRING name = pMgLogManager->GetSessionLogFileName();
-    STRING params = pMgLogManager->GetSessionLogParameters();
+        bool bEnabled = pMgLogManager->IsSessionLogEnabled();
+        STRING name = pMgLogManager->GetSessionLogFileName();
+        STRING params = pMgLogManager->GetSessionLogParameters();
 
-    // Restore original info
-    pMgLogManager->SetSessionLogInfo(bOriginalEnabled, originalName, originalParams);
+        // Restore original info
+        pMgLogManager->SetSessionLogInfo(bOriginalEnabled, originalName, originalParams);
 
-    CPPUNIT_ASSERT(bEnabled == false);
-    CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
-    CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+        CPPUNIT_ASSERT(bEnabled == false);
+        CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
+        CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -1016,9 +1183,22 @@ void TestLogManager::TestCase_SetSessionLogInfo()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_ClearSessionLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bResult = pMgLogManager->ClearSessionLog();
-    CPPUNIT_ASSERT(bResult);
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        bool bResult = pMgLogManager->ClearSessionLog();
+        CPPUNIT_ASSERT(bResult);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -1174,25 +1354,38 @@ void TestLogManager::TestCase_GetSessionLogInvalid()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_SetTraceLogInfo()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
 
-    // Save original information
-    bool bOriginalEnabled = pMgLogManager->IsTraceLogEnabled();
-    STRING originalName = pMgLogManager->GetTraceLogFileName();
-    STRING originalParams = pMgLogManager->GetTraceLogParameters();
+        // Save original information
+        bool bOriginalEnabled = pMgLogManager->IsTraceLogEnabled();
+        STRING originalName = pMgLogManager->GetTraceLogFileName();
+        STRING originalParams = pMgLogManager->GetTraceLogParameters();
 
-    pMgLogManager->SetTraceLogInfo(false, TestName, TestParameters);
+        pMgLogManager->SetTraceLogInfo(false, TestName, TestParameters);
 
-    bool bEnabled = pMgLogManager->IsTraceLogEnabled();
-    STRING name = pMgLogManager->GetTraceLogFileName();
-    STRING params = pMgLogManager->GetTraceLogParameters();
+        bool bEnabled = pMgLogManager->IsTraceLogEnabled();
+        STRING name = pMgLogManager->GetTraceLogFileName();
+        STRING params = pMgLogManager->GetTraceLogParameters();
 
-    // Restore original info
-    pMgLogManager->SetTraceLogInfo(bOriginalEnabled, originalName, originalParams);
+        // Restore original info
+        pMgLogManager->SetTraceLogInfo(bOriginalEnabled, originalName, originalParams);
 
-    CPPUNIT_ASSERT(bEnabled == false);
-    CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
-    CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+        CPPUNIT_ASSERT(bEnabled == false);
+        CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
+        CPPUNIT_ASSERT(wcscmp(params.c_str(), TestParameters) == 0);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -1202,9 +1395,22 @@ void TestLogManager::TestCase_SetTraceLogInfo()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_ClearTraceLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bResult = pMgLogManager->ClearTraceLog();
-    CPPUNIT_ASSERT(bResult);
+    try
+    {
+        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        bool bResult = pMgLogManager->ClearTraceLog();
+        CPPUNIT_ASSERT(bResult);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -1371,6 +1577,9 @@ void TestLogManager::TestCase_LogAccessEntry()
     STRING entry = L"TestAccessEntry";
     MG_LOG_ACCESS_ENTRY(entry);
 
+    // Give the server time to write out the entry as it is on a different thread
+    ACE_OS::sleep(2);
+
     pMgLogManager->SetAccessLogEnabled(bOriginalEnabled);
 
     try
@@ -1412,6 +1621,9 @@ void TestLogManager::TestCase_LogAdminEntry()
     STRING entry = L"TestAdminEntry";
     MG_LOG_ADMIN_ENTRY(entry);
 
+    // Give the server time to write out the entry as it is on a different thread
+    ACE_OS::sleep(2);
+
     pMgLogManager->SetAdminLogEnabled(bOriginalEnabled);
 
     try
@@ -1451,6 +1663,9 @@ void TestLogManager::TestCase_LogAuthenticationEntry()
 
     STRING entry = L"TestAuthenticationEntry";
     MG_LOG_AUTHENTICATION_ENTRY(entry);
+
+    // Give the server time to write out the entry as it is on a different thread
+    ACE_OS::sleep(2);
 
     pMgLogManager->SetAdminLogEnabled(bOriginalEnabled);
 
@@ -1492,6 +1707,9 @@ void TestLogManager::TestCase_LogErrorEntry()
     STRING entry = L"TestErrorEntry";
     MG_LOG_ERROR_ENTRY(entry);
 
+    // Give the server time to write out the entry as it is on a different thread
+    ACE_OS::sleep(2);
+
     pMgLogManager->SetErrorLogEnabled(bOriginalEnabled);
 
     try
@@ -1528,6 +1746,10 @@ void TestLogManager::TestCase_LogSessionEntry()
 
     logMan->SetSessionLogEnabled(true);
     MG_LOG_SESSION_ENTRY(sessionInfo);
+
+    // Give the server time to write out the entry as it is on a different thread
+    ACE_OS::sleep(2);
+
     logMan->SetSessionLogEnabled(originalValue);
 
     try
@@ -1570,6 +1792,9 @@ void TestLogManager::TestCase_LogTraceEntry()
 
     STRING entry = L"TestTraceEntry";
     MG_LOG_TRACE_ENTRY(entry);
+
+    // Give the server time to write out the entry as it is on a different thread
+    ACE_OS::sleep(2);
 
     pMgLogManager->SetTraceLogEnabled(bOriginalEnabled);
 

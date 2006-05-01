@@ -28,6 +28,8 @@
 #include "LogType.h"
 #include "SessionInfo.h"
 
+class MgLogThread;
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Mg Log Manager try/catch/throw macros.
 ///
@@ -279,6 +281,11 @@ public:
     static const STRING DefaultSessionLogFileName;
     static const STRING DefaultTraceLogFileName;
 
+    // Write the log message to the file
+    void WriteLogMessage(enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority);
+
+    void StopLogThread(void);
+
 private:
     // Constructor
     MgLogManager(void);
@@ -329,24 +336,31 @@ private:
 
     STRING m_applicationName;
 
-    std::ofstream m_logStream;
+    std::ofstream m_accessLogStream;
+    std::ofstream m_adminLogStream;
+    std::ofstream m_authenticationLogStream;
+    std::ofstream m_errorLogStream;
+    std::ofstream m_sessionLogStream;
+    std::ofstream m_traceLogStream;
     ACE_OSTREAM_TYPE* m_outputStream;
 
     // ACE wrapper methods to log to the appropriate stream
-    void LogToSysLog(char* application);
-    void LogToOStream(ACE_OSTREAM_TYPE* output);
-    void LogToStderr(void);
+    void LogToSysLog(ACE_Log_Msg* pAce, char* application);
+    void LogToOStream(ACE_Log_Msg* pAce, ACE_OSTREAM_TYPE* output);
+    void LogToStderr(ACE_Log_Msg* pAce);
 
-    // Write the log message to the file
-    void WriteLogMessage(enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority);
+    // Queue the log message
+    void QueueLogEntry(enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority);
 
     // remove the specified log file
     bool RemoveLogFile(CREFSTRING filename);
 
     // Get the contents of the specified log
+    MgByteReader* GetLogHeader(enum MgLogType logType);
+    MgByteReader* GetLogHeader(CREFSTRING filename);
     MgByteReader* GetLogContents(CREFSTRING filename);
     MgByteReader* GetLogContents(CREFSTRING filename, INT32 numEntries);
-    MgByteReader* GetLogContents(enum MgLogType logtype, MgDateTime* fromDate, MgDateTime* toDate);
+    MgByteReader* GetLogContents(enum MgLogType logType, MgDateTime* fromDate, MgDateTime* toDate);
 
     // Replace %y %m and %d in the filename with the year month and day
     STRING BuildFileName(CREFSTRING filename);
@@ -385,10 +399,10 @@ private:
     bool IsMaxSizeExceeded(CREFSTRING logFilename);
 
     // Create an archive of the specified log
-    void ArchiveLog(CREFSTRING logFilename);
+    void ArchiveLog(enum MgLogType logType);
 
     // Check if existing log files contain valid header information
-    void ValidateLogHeaders();
+    void ValidateLogHeaders(enum MgLogType logType);
     bool ValidateAccessLogHeader();
     bool ValidateAdminLogHeader();
     bool ValidateAuthenticationLogHeader();
@@ -414,37 +428,54 @@ private:
     // Helper function to remove the archive frequency specifier from the filename
     STRING RemoveArchiveFrequencySpecifier(CREFSTRING logFilename);
 
+    STRING ValidateLogFileName(CREFSTRING filename);
+
+    bool IsLogFileInUse(CREFSTRING filename, enum MgLogType& logType);
+    bool IsLogInUse(enum MgLogType& logType);
+    void EnableLog(enum MgLogType logType);
+    void DisableLog(enum MgLogType logType);
+    void SetLogHasHeader(enum MgLogType logType, bool bHeader);
+    bool LogHasHeader(enum MgLogType logType);
+
     // Access Log
     bool m_bAccessLogEnabled;
+    bool m_bAccessLogHeader;
     STRING m_AccessLogFileName;
     STRING m_AccessLogParameters;
 
     // Admin Log
     bool m_bAdminLogEnabled;
+    bool m_bAdminLogHeader;
     STRING m_AdminLogFileName;
     STRING m_AdminLogParameters;
 
     // Authentication Log
     bool m_bAuthenticationLogEnabled;
+    bool m_bAuthenticationLogHeader;
     STRING m_AuthenticationLogFileName;
     STRING m_AuthenticationLogParameters;
 
     // Error Log
     bool m_bErrorLogEnabled;
+    bool m_bErrorLogHeader;
     STRING m_ErrorLogFileName;
     STRING m_ErrorLogParameters;
 
     // Session Log
     bool m_bSessionLogEnabled;
+    bool m_bSessionLogHeader;
     STRING m_SessionLogFileName;
     STRING m_SessionLogParameters;
 
     // Trace Log
     bool m_bTraceLogEnabled;
+    bool m_bTraceLogHeader;
     STRING m_TraceLogFileName;
     STRING m_TraceLogParameters;
 
     ACE_Recursive_Thread_Mutex m_mutex;
+    ACE_Thread_Manager m_threadManager;
+    MgLogThread* m_pLogThread;
 
 };
 

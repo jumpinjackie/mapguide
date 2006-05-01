@@ -1420,6 +1420,6 @@ void MgServerManager::StopWorkerThreads()
     // Wait for threads to process STOP
     m_pWorkerThreads->wait();
 
-    m_threadManager.wait();
+    m_threadManager.wait(0,1);
     m_threadManager.close();
 }
