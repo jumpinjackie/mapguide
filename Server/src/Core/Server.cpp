@@ -464,6 +464,10 @@ int MgServer::fini(void)
     }
 #endif
 
+    // Signal the log thread to STOP
+    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+    pMgLogManager->StopLogThread();
+
     return 0;
 }
 
@@ -964,6 +968,7 @@ int MgServer::svc(void)
     }
 
     MG_LOG_TRACE_ENTRY(L"MgServer::svc() - End");
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::svc() - End\n")));
     return nResult;
 }
 

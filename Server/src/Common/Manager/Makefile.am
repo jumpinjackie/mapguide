@@ -36,7 +36,9 @@ include_SOURCES = \
   GroupInfo.cpp \
   LicenseManager.cpp \
   LoadBalanceManager.cpp \
+  LogEntryData.cpp \
   LogManager.cpp \
+  LogThread.cpp \
   PackageLogHandler.cpp \
   PackageLogReader.cpp \
   PackageLogWriter.cpp \
@@ -62,7 +64,9 @@ noinst_HEADERS = $(include_SOURCES) \
   GroupInfo.h \
   LicenseManager.h \
   LoadBalanceManager.h \
+  LogEntryData.h \
   LogManager.h \
+  LogThread.h \
   LogType.h \
   PackageLogHandler.h \
   PackageLogReader.h \

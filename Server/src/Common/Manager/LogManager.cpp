@@ -16,8 +16,10 @@
 //
 
 #include "AceCommon.h"
-#include "LogManager.h"
 #include "Connection.h"
+#include "LogEntryData.h"
+#include "LogManager.h"
+#include "LogThread.h"
 
 const int MAX_BUF       = 16384;
 const int MAX_LINES     = 512;
@@ -78,19 +80,26 @@ const STRING MgLogManager::LogStatusArchive     = L"Archive";
 
 // Constructor
 MgLogManager::MgLogManager(void) :
-    m_outputStream(0),
+    m_outputStream(NULL),
     m_bAccessLogEnabled(true),
+    m_bAccessLogHeader(false),
     m_AccessLogFileName(MgLogManager::DefaultAccessLogFileName),
     m_bAdminLogEnabled(true),
+    m_bAdminLogHeader(false),
     m_AdminLogFileName(MgLogManager::DefaultAdminLogFileName),
     m_bAuthenticationLogEnabled(true),
+    m_bAuthenticationLogHeader(false),
     m_AuthenticationLogFileName(MgLogManager::DefaultAuthenticationLogFileName),
     m_bErrorLogEnabled(true),
+    m_bErrorLogHeader(false),
     m_ErrorLogFileName(MgLogManager::DefaultErrorLogFileName),
     m_bSessionLogEnabled(true),
+    m_bSessionLogHeader(false),
     m_SessionLogFileName(MgLogManager::DefaultSessionLogFileName),
     m_bTraceLogEnabled(false),      // Disabled by default
-    m_TraceLogFileName(MgLogManager::DefaultTraceLogFileName)
+    m_bTraceLogHeader(false),
+    m_TraceLogFileName(MgLogManager::DefaultTraceLogFileName),
+    m_pLogThread(NULL)
 {
 }
 
@@ -99,6 +108,39 @@ MgLogManager::~MgLogManager(void)
 {
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgLogManager::~MgLogManager()\n")));
 
+    // Close the logs
+    if(m_accessLogStream.is_open())
+    {
+        m_accessLogStream.close();
+    }
+
+    if(m_adminLogStream.is_open())
+    {
+        m_adminLogStream.close();
+    }
+
+    if(m_authenticationLogStream.is_open())
+    {
+        m_authenticationLogStream.close();
+    }
+
+    if(m_errorLogStream.is_open())
+    {
+        m_errorLogStream.close();
+    }
+
+    if(m_sessionLogStream.is_open())
+    {
+        m_sessionLogStream.close();
+    }
+
+    if(m_traceLogStream.is_open())
+    {
+        m_traceLogStream.close();
+    }
+
+    delete m_pLogThread;
+    m_pLogThread = NULL;
 }
 
 void MgLogManager::Dispose(void)
@@ -151,8 +193,9 @@ void MgLogManager::Initialize()
     // Load the configuration properties
     LoadConfigurationProperties();
 
-    // Check if any existing log files contain valid header information
-    ValidateLogHeaders();
+    // Create the logging thread
+    m_pLogThread = new MgLogThread(m_threadManager, 1);
+    m_pLogThread->Activate();
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.Initialize")
 }
@@ -176,42 +219,53 @@ void MgLogManager::LoadConfigurationProperties()
     pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyLogsDelimiter, m_delimiter, MgConfigProperties::DefaultGeneralPropertyLogsDelimiter);
     TranslateDelimiter();
 
-
     // Access Log
     pConfiguration->GetBoolValue(MgConfigProperties::AccessLogPropertiesSection, MgConfigProperties::AccessLogPropertyEnabled, bLogEnabled, MgConfigProperties::DefaultAccessLogPropertyEnabled);
     pConfiguration->GetStringValue(MgConfigProperties::AccessLogPropertiesSection, MgConfigProperties::AccessLogPropertyFilename, logFileName, MgConfigProperties::DefaultAccessLogPropertyFilename);
     pConfiguration->GetStringValue(MgConfigProperties::AccessLogPropertiesSection, MgConfigProperties::AccessLogPropertyParameters, logParameters, MgConfigProperties::DefaultAccessLogPropertyParameters);
-    SetAccessLogInfo(bLogEnabled, logFileName, logParameters);
+    m_AccessLogParameters = logParameters;
+    m_AccessLogFileName = ValidateLogFileName(logFileName);
+    SetAccessLogEnabled(bLogEnabled);
 
     // Admin Log
     pConfiguration->GetBoolValue(MgConfigProperties::AdminLogPropertiesSection, MgConfigProperties::AdminLogPropertyEnabled, bLogEnabled, MgConfigProperties::DefaultAdminLogPropertyEnabled);
     pConfiguration->GetStringValue(MgConfigProperties::AdminLogPropertiesSection, MgConfigProperties::AdminLogPropertyFilename, logFileName, MgConfigProperties::DefaultAdminLogPropertyFilename);
     pConfiguration->GetStringValue(MgConfigProperties::AdminLogPropertiesSection, MgConfigProperties::AdminLogPropertyParameters, logParameters, MgConfigProperties::DefaultAdminLogPropertyParameters);
-    SetAdminLogInfo(bLogEnabled, logFileName, logParameters);
+    m_AdminLogParameters = logParameters;
+    m_AdminLogFileName = ValidateLogFileName(logFileName);
+    SetAdminLogEnabled(bLogEnabled);
 
     // Authentication Log
     pConfiguration->GetBoolValue(MgConfigProperties::AuthenticationLogPropertiesSection, MgConfigProperties::AuthenticationLogPropertyEnabled, bLogEnabled, MgConfigProperties::DefaultAuthenticationLogPropertyEnabled);
     pConfiguration->GetStringValue(MgConfigProperties::AuthenticationLogPropertiesSection, MgConfigProperties::AuthenticationLogPropertyFilename, logFileName, MgConfigProperties::DefaultAuthenticationLogPropertyFilename);
     pConfiguration->GetStringValue(MgConfigProperties::AuthenticationLogPropertiesSection, MgConfigProperties::AuthenticationLogPropertyParameters, logParameters, MgConfigProperties::DefaultAuthenticationLogPropertyParameters);
-    SetAuthenticationLogInfo(bLogEnabled, logFileName, logParameters);
+    m_AuthenticationLogParameters = logParameters;
+    m_AuthenticationLogFileName = ValidateLogFileName(logFileName);
+    SetAuthenticationLogEnabled(bLogEnabled);
 
     // Error Log
     pConfiguration->GetBoolValue(MgConfigProperties::ErrorLogPropertiesSection, MgConfigProperties::ErrorLogPropertyEnabled, bLogEnabled, MgConfigProperties::DefaultErrorLogPropertyEnabled);
     pConfiguration->GetStringValue(MgConfigProperties::ErrorLogPropertiesSection, MgConfigProperties::ErrorLogPropertyFilename, logFileName, MgConfigProperties::DefaultErrorLogPropertyFilename);
     pConfiguration->GetStringValue(MgConfigProperties::ErrorLogPropertiesSection, MgConfigProperties::ErrorLogPropertyParameters, logParameters, MgConfigProperties::DefaultErrorLogPropertyParameters);
-    SetErrorLogInfo(bLogEnabled, logFileName, logParameters);
+    m_ErrorLogParameters = logParameters;
+    m_ErrorLogFileName = ValidateLogFileName(logFileName);
+    SetErrorLogEnabled(bLogEnabled);
 
     // Session Log
     pConfiguration->GetBoolValue(MgConfigProperties::SessionLogPropertiesSection, MgConfigProperties::SessionLogPropertyEnabled, bLogEnabled, MgConfigProperties::DefaultSessionLogPropertyEnabled);
     pConfiguration->GetStringValue(MgConfigProperties::SessionLogPropertiesSection, MgConfigProperties::SessionLogPropertyFilename, logFileName, MgConfigProperties::DefaultSessionLogPropertyFilename);
     pConfiguration->GetStringValue(MgConfigProperties::SessionLogPropertiesSection, MgConfigProperties::SessionLogPropertyParameters, logParameters, MgConfigProperties::DefaultSessionLogPropertyParameters);
-    SetSessionLogInfo(bLogEnabled, logFileName, logParameters);
+    m_SessionLogParameters = logParameters;
+    m_SessionLogFileName = ValidateLogFileName(logFileName);
+    SetSessionLogEnabled(bLogEnabled);
 
     // Trace Log
     pConfiguration->GetBoolValue(MgConfigProperties::TraceLogPropertiesSection, MgConfigProperties::TraceLogPropertyEnabled, bLogEnabled, MgConfigProperties::DefaultTraceLogPropertyEnabled);
     pConfiguration->GetStringValue(MgConfigProperties::TraceLogPropertiesSection, MgConfigProperties::TraceLogPropertyFilename, logFileName, MgConfigProperties::DefaultTraceLogPropertyFilename);
     pConfiguration->GetStringValue(MgConfigProperties::TraceLogPropertiesSection, MgConfigProperties::TraceLogPropertyParameters, logParameters, MgConfigProperties::DefaultTraceLogPropertyParameters);
-    SetTraceLogInfo(bLogEnabled, logFileName, logParameters);
+    m_TraceLogParameters = logParameters;
+    m_TraceLogFileName = ValidateLogFileName(logFileName);
+    SetTraceLogEnabled(bLogEnabled);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.LoadConfigurationProperties")
 }
@@ -221,37 +275,11 @@ CREFSTRING MgLogManager::GetLogsPath()
     return m_path;
 }
 
-void MgLogManager::SetAccessLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRING parameters)
-{
-    MG_LOGMANAGER_TRY()
-
-    m_bAccessLogEnabled = bEnabled;
-    m_AccessLogParameters = parameters;
-    SetAccessLogFileName(filename);
-
-    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAccessLogInfo");
-}
-
-bool MgLogManager::IsAccessLogEnabled()
-{
-    return m_bAccessLogEnabled;
-}
-
-void MgLogManager::SetAccessLogEnabled(bool bEnabled)
-{
-    m_bAccessLogEnabled = bEnabled;
-}
-
-STRING MgLogManager::GetAccessLogFileName()
-{
-    return m_AccessLogFileName;
-}
-
-void MgLogManager::SetAccessLogFileName(CREFSTRING filename)
+STRING MgLogManager::ValidateLogFileName(CREFSTRING filename)
 {
     if (filename.empty())
     {
-        throw new MgNullArgumentException(L"MgLogManager.SetAccessLogFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgLogManager.ValidateLogFileName", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     if (filename.find(L"/") != string::npos ||
         filename.find(L"\\") != string::npos)
@@ -261,33 +289,115 @@ void MgLogManager::SetAccessLogFileName(CREFSTRING filename)
         arguments.Add(L"1");
         arguments.Add(filename);
 
-        throw new MgInvalidArgumentException(L"MgLogManager.SetAccessLogFileName",
+        throw new MgInvalidArgumentException(L"MgLogManager.ValidateLogFileName",
             __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
     }
 
-    m_AccessLogFileName = filename;
+    return filename;
+}
+
+void MgLogManager::SetAccessLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRING parameters)
+{
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    // Disable existing log in use if there is one
+    DisableLog(mltAccess);
+
+    SetAccessLogParameters(parameters);
+    SetAccessLogFileName(filename);
+    SetAccessLogEnabled(bEnabled);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAccessLogInfo");
+}
+
+bool MgLogManager::IsAccessLogEnabled()
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    return m_bAccessLogEnabled;
+}
+
+void MgLogManager::SetAccessLogEnabled(bool bEnabled)
+{
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    m_bAccessLogEnabled = bEnabled;
+    if(m_bAccessLogEnabled)
+    {
+        ValidateLogHeaders(mltAccess);
+        EnableLog(mltAccess);
+    }
+    else
+    {
+        DisableLog(mltAccess);
+    }
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAccessLogEnabled")
+}
+
+STRING MgLogManager::GetAccessLogFileName()
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
+    return m_AccessLogFileName;
+}
+
+void MgLogManager::SetAccessLogFileName(CREFSTRING filename)
+{
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    DisableLog(mltAccess);
+    m_AccessLogFileName = ValidateLogFileName(filename);
+    EnableLog(mltAccess);
 }
 
 STRING MgLogManager::GetAccessLogParameters()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_AccessLogParameters;
 }
 
 void MgLogManager::SetAccessLogParameters(CREFSTRING parameters)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     if (0 != parameters.compare(m_AccessLogParameters))
     {
-        STRING filename = BuildFileName(m_AccessLogFileName).c_str();
-        ArchiveLog(filename);
+        ArchiveLog(mltAccess);
     }
     m_AccessLogParameters = parameters;
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAccessLogParameters")
 }
 
 bool MgLogManager::ClearAccessLog()
 {
+    bool bResult = false;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAccess);
+
     // Get the access log filename and path
-    STRING filename = BuildFileName(m_AccessLogFileName).c_str();
-    return RemoveLogFile(filename);
+    STRING filename = BuildFileName(m_AccessLogFileName);
+    bResult = RemoveLogFile(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAccess);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.ClearAccessLog")
+
+    return bResult;
 }
 
 MgByteReader* MgLogManager::GetAccessLog()
@@ -296,9 +406,17 @@ MgByteReader* MgLogManager::GetAccessLog()
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAccess);
+
     // Get the access log filename and path
-    STRING filename = BuildFileName(m_AccessLogFileName).c_str();
+    STRING filename = BuildFileName(m_AccessLogFileName);
     byteReader = GetLogContents(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAccess);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetAccessLog")
 
@@ -311,9 +429,17 @@ MgByteReader* MgLogManager::GetAccessLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAccess);
+
     // Get the access log filename and path
-    STRING filename = BuildFileName(m_AccessLogFileName).c_str();
+    STRING filename = BuildFileName(m_AccessLogFileName);
     byteReader = GetLogContents(filename, numEntries);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAccess);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetAccessLog")
 
@@ -326,7 +452,15 @@ MgByteReader* MgLogManager::GetAccessLog(MgDateTime* fromDate, MgDateTime* toDat
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAccess);
+
     byteReader = GetLogContents(mltAccess, fromDate, toDate);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAccess);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetAccessLog")
 
@@ -337,69 +471,104 @@ void MgLogManager::SetAdminLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRIN
 {
     MG_LOGMANAGER_TRY()
 
-    m_bAdminLogEnabled = bEnabled;
-    m_AdminLogParameters = parameters;
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    // Disable existing log in use if there is one
+    DisableLog(mltAdmin);
+
+    SetAdminLogParameters(parameters);
     SetAdminLogFileName(filename);
+    SetAdminLogEnabled(bEnabled);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAdminLogInfo");
 }
 
 bool MgLogManager::IsAdminLogEnabled()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
     return m_bAdminLogEnabled;
 }
 
 void MgLogManager::SetAdminLogEnabled(bool bEnabled)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     m_bAdminLogEnabled = bEnabled;
+    if(m_bAdminLogEnabled)
+    {
+        ValidateLogHeaders(mltAdmin);
+        EnableLog(mltAdmin);
+    }
+    else
+    {
+        DisableLog(mltAdmin);
+    }
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAdminLogEnabled")
 }
 
 STRING MgLogManager::GetAdminLogFileName()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_AdminLogFileName;
 }
 
 void MgLogManager::SetAdminLogFileName(CREFSTRING filename)
 {
-    if (filename.empty())
-    {
-        throw new MgNullArgumentException(L"MgLogManager.SetAdminLogFileName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (filename.find(L"/") != string::npos ||
-        filename.find(L"\\") != string::npos)
-    {
-        // Does not support paths.  Must be a strict filename only.
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(filename);
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-        throw new MgInvalidArgumentException(L"MgLogManager.SetAdminLogFileName",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
-    }
-
-    m_AdminLogFileName = filename;
+    DisableLog(mltAdmin);
+    m_AdminLogFileName = ValidateLogFileName(filename);
+    EnableLog(mltAdmin);
 }
 
 STRING MgLogManager::GetAdminLogParameters()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_AdminLogParameters;
 }
 
 void MgLogManager::SetAdminLogParameters(CREFSTRING parameters)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     if (0 != parameters.compare(m_AdminLogParameters))
     {
-        STRING filename = BuildFileName(m_AdminLogFileName).c_str();
-        ArchiveLog(filename);
+        ArchiveLog(mltAdmin);
     }
     m_AdminLogParameters = parameters;
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAdminLogParameters")
 }
 
 bool MgLogManager::ClearAdminLog()
 {
+    bool bResult = false;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAdmin);
+
     // Get the admin log filename and path
-    STRING filename = BuildFileName(m_AdminLogFileName).c_str();
-    return RemoveLogFile(filename);
+    STRING filename = BuildFileName(m_AdminLogFileName);
+    bResult = RemoveLogFile(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAdmin);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.ClearAdminLog")
+
+    return bResult;
 }
 
 MgByteReader* MgLogManager::GetAdminLog()
@@ -408,9 +577,17 @@ MgByteReader* MgLogManager::GetAdminLog()
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAdmin);
+
     // Get the admin log filename and path
-    STRING filename = BuildFileName(m_AdminLogFileName).c_str();
+    STRING filename = BuildFileName(m_AdminLogFileName);
     byteReader = GetLogContents(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAdmin);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetAdminLog")
 
@@ -423,9 +600,17 @@ MgByteReader* MgLogManager::GetAdminLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAdmin);
+
     // Get the admin log filename and path
-    STRING filename = BuildFileName(m_AdminLogFileName).c_str();
+    STRING filename = BuildFileName(m_AdminLogFileName);
     byteReader = GetLogContents(filename, numEntries);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAdmin);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetAdminLog")
 
@@ -438,7 +623,15 @@ MgByteReader* MgLogManager::GetAdminLog(MgDateTime* fromDate, MgDateTime* toDate
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAdmin);
+
     byteReader = GetLogContents(mltAdmin, fromDate, toDate);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAdmin);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetAdminLog")
 
@@ -449,69 +642,104 @@ void MgLogManager::SetAuthenticationLogInfo(bool bEnabled, CREFSTRING filename, 
 {
     MG_LOGMANAGER_TRY()
 
-    m_bAuthenticationLogEnabled = bEnabled;
-    m_AuthenticationLogParameters = parameters;
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    // Disable existing log in use if there is one
+    DisableLog(mltAuthentication);
+
+    SetAuthenticationLogParameters(parameters);
     SetAuthenticationLogFileName(filename);
+    SetAuthenticationLogEnabled(bEnabled);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAuthenticationLogInfo");
 }
 
 bool MgLogManager::IsAuthenticationLogEnabled()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
     return m_bAuthenticationLogEnabled;
 }
 
 void MgLogManager::SetAuthenticationLogEnabled(bool bEnabled)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     m_bAuthenticationLogEnabled = bEnabled;
+    if(m_bAuthenticationLogEnabled)
+    {
+        ValidateLogHeaders(mltAuthentication);
+        EnableLog(mltAuthentication);
+    }
+    else
+    {
+        DisableLog(mltAuthentication);
+    }
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAuthenticationLogEnabled")
 }
 
 STRING MgLogManager::GetAuthenticationLogFileName()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_AuthenticationLogFileName;
 }
 
 void MgLogManager::SetAuthenticationLogFileName(CREFSTRING filename)
 {
-    if (filename.empty())
-    {
-        throw new MgNullArgumentException(L"MgLogManager.SetAuthenticationLogFileName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (filename.find(L"/") != string::npos ||
-        filename.find(L"\\") != string::npos)
-    {
-        // Does not support paths.  Must be a strict filename only.
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(filename);
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-        throw new MgInvalidArgumentException(L"MgLogManager.SetAuthenticationLogFileName",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
-    }
-
-    m_AuthenticationLogFileName = filename;
+    DisableLog(mltAuthentication);
+    m_AuthenticationLogFileName = ValidateLogFileName(filename);
+    EnableLog(mltAuthentication);
 }
 
 STRING MgLogManager::GetAuthenticationLogParameters()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_AuthenticationLogParameters;
 }
 
 void MgLogManager::SetAuthenticationLogParameters(CREFSTRING parameters)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     if (0 != parameters.compare(m_AuthenticationLogParameters))
     {
-        STRING filename = BuildFileName(m_AuthenticationLogFileName).c_str();
-        ArchiveLog(filename);
+        ArchiveLog(mltAuthentication);
     }
     m_AuthenticationLogParameters = parameters;
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAuthenticationLogParameters")
 }
 
 bool MgLogManager::ClearAuthenticationLog()
 {
+    bool bResult = false;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAuthentication);
+
     // Get the authentication log filename and path
-    STRING filename = BuildFileName(m_AuthenticationLogFileName).c_str();
-    return RemoveLogFile(filename);
+    STRING filename = BuildFileName(m_AuthenticationLogFileName);
+    bResult = RemoveLogFile(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAuthentication);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.ClearAuthenticationLog")
+
+    return bResult;
 }
 
 MgByteReader* MgLogManager::GetAuthenticationLog()
@@ -520,9 +748,17 @@ MgByteReader* MgLogManager::GetAuthenticationLog()
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAuthentication);
+
     // Get the authentication log filename and path
-    STRING filename = BuildFileName(m_AuthenticationLogFileName).c_str();
+    STRING filename = BuildFileName(m_AuthenticationLogFileName);
     byteReader = GetLogContents(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAuthentication);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetAuthenticationLog")
 
@@ -535,9 +771,17 @@ MgByteReader* MgLogManager::GetAuthenticationLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAuthentication);
+
     // Get the authentication log filename and path
-    STRING filename = BuildFileName(m_AuthenticationLogFileName).c_str();
+    STRING filename = BuildFileName(m_AuthenticationLogFileName);
     byteReader = GetLogContents(filename, numEntries);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAuthentication);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetAuthenticationLog")
 
@@ -550,7 +794,15 @@ MgByteReader* MgLogManager::GetAuthenticationLog(MgDateTime* fromDate, MgDateTim
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltAuthentication);
+
     byteReader = GetLogContents(mltAuthentication, fromDate, toDate);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltAuthentication);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetAuthenticationLog")
 
@@ -562,69 +814,104 @@ void MgLogManager::SetErrorLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRIN
 {
     MG_LOGMANAGER_TRY()
 
-    m_bErrorLogEnabled = bEnabled;
-    m_ErrorLogParameters = parameters;
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    // Disable existing log in use if there is one
+    DisableLog(mltError);
+
+    SetErrorLogParameters(parameters);
     SetErrorLogFileName(filename);
+    SetErrorLogEnabled(bEnabled);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetErrorLogInfo");
 }
 
 bool MgLogManager::IsErrorLogEnabled()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
     return m_bErrorLogEnabled;
 }
 
 void MgLogManager::SetErrorLogEnabled(bool bEnabled)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     m_bErrorLogEnabled = bEnabled;
+    if(m_bErrorLogEnabled)
+    {
+        ValidateLogHeaders(mltError);
+        EnableLog(mltError);
+    }
+    else
+    {
+        DisableLog(mltError);
+    }
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetErrorLogEnabled")
 }
 
 STRING MgLogManager::GetErrorLogFileName()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_ErrorLogFileName;
 }
 
 void MgLogManager::SetErrorLogFileName(CREFSTRING filename)
 {
-    if (filename.empty())
-    {
-        throw new MgNullArgumentException(L"MgLogManager.SetErrorLogFileName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (filename.find(L"/") != string::npos ||
-        filename.find(L"\\") != string::npos)
-    {
-        // Does not support paths.  Must be a strict filename only.
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(filename);
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-        throw new MgInvalidArgumentException(L"MgLogManager.SetErrorLogFileName",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
-    }
-
-    m_ErrorLogFileName = filename;
+    DisableLog(mltError);
+    m_ErrorLogFileName = ValidateLogFileName(filename);
+    EnableLog(mltError);
 }
 
 STRING MgLogManager::GetErrorLogParameters()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_ErrorLogParameters;
 }
 
 void MgLogManager::SetErrorLogParameters(CREFSTRING parameters)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     if (0 != parameters.compare(m_ErrorLogParameters))
     {
-        STRING filename = BuildFileName(m_ErrorLogFileName).c_str();
-        ArchiveLog(filename);
+        ArchiveLog(mltError);
     }
     m_ErrorLogParameters = parameters;
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetErrorLogParameters")
 }
 
 bool MgLogManager::ClearErrorLog()
 {
+    bool bResult = false;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltError);
+
     // Get the error log filename and path
-    STRING filename = BuildFileName(m_ErrorLogFileName).c_str();
-    return RemoveLogFile(filename);
+    STRING filename = BuildFileName(m_ErrorLogFileName);
+    bResult = RemoveLogFile(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltError);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.ClearErrorLog")
+
+    return bResult;
 }
 
 MgByteReader* MgLogManager::GetErrorLog()
@@ -633,9 +920,17 @@ MgByteReader* MgLogManager::GetErrorLog()
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltError);
+
     // Get the error log filename and path
-    STRING filename = BuildFileName(m_ErrorLogFileName).c_str();
+    STRING filename = BuildFileName(m_ErrorLogFileName);
     byteReader = GetLogContents(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltError);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetErrorLog")
 
@@ -648,9 +943,17 @@ MgByteReader* MgLogManager::GetErrorLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltError);
+
     // Get the error log filename and path
-    STRING filename = BuildFileName(m_ErrorLogFileName).c_str();
+    STRING filename = BuildFileName(m_ErrorLogFileName);
     byteReader = GetLogContents(filename, numEntries);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltError);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetErrorLog")
 
@@ -663,7 +966,15 @@ MgByteReader* MgLogManager::GetErrorLog(MgDateTime* fromDate, MgDateTime* toDate
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltError);
+
     byteReader = GetLogContents(mltError, fromDate, toDate);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltError);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetErrorLog")
 
@@ -674,69 +985,104 @@ void MgLogManager::SetSessionLogInfo(bool bEnabled, CREFSTRING filename, CREFSTR
 {
     MG_LOGMANAGER_TRY()
 
-    m_bSessionLogEnabled = bEnabled;
-    m_SessionLogParameters = parameters;
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    // Disable existing log in use if there is one
+    DisableLog(mltSession);
+
+    SetSessionLogParameters(parameters);
     SetSessionLogFileName(filename);
+    SetSessionLogEnabled(bEnabled);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetSessionLogInfo");
 }
 
 bool MgLogManager::IsSessionLogEnabled()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
     return m_bSessionLogEnabled;
 }
 
 void MgLogManager::SetSessionLogEnabled(bool bEnabled)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     m_bSessionLogEnabled = bEnabled;
+    if(m_bSessionLogEnabled)
+    {
+        ValidateLogHeaders(mltSession);
+        EnableLog(mltSession);
+    }
+    else
+    {
+        DisableLog(mltSession);
+    }
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetSessionLogEnabled")
 }
 
 STRING MgLogManager::GetSessionLogFileName()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_SessionLogFileName;
 }
 
 void MgLogManager::SetSessionLogFileName(CREFSTRING filename)
 {
-    if (filename.empty())
-    {
-        throw new MgNullArgumentException(L"MgLogManager.SetSessionLogFileName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (filename.find(L"/") != string::npos ||
-        filename.find(L"\\") != string::npos)
-    {
-        // Does not support paths.  Must be a strict filename only.
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(filename);
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-        throw new MgInvalidArgumentException(L"MgLogManager.SetSessionLogFileName",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
-    }
-
-    m_SessionLogFileName = filename;
+    DisableLog(mltSession);
+    m_SessionLogFileName = ValidateLogFileName(filename);
+    EnableLog(mltSession);
 }
 
 STRING MgLogManager::GetSessionLogParameters()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_SessionLogParameters;
 }
 
 void MgLogManager::SetSessionLogParameters(CREFSTRING parameters)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     if (0 != parameters.compare(m_SessionLogParameters))
     {
-        STRING filename = BuildFileName(m_SessionLogFileName).c_str();
-        ArchiveLog(filename);
+        ArchiveLog(mltSession);
     }
     m_SessionLogParameters = parameters;
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetSessionLogParameters")
 }
 
 bool MgLogManager::ClearSessionLog()
 {
+    bool bResult = false;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltSession);
+
     // Get the session log filename and path
-    STRING filename = BuildFileName(m_SessionLogFileName).c_str();
-    return RemoveLogFile(filename);
+    STRING filename = BuildFileName(m_SessionLogFileName);
+    bResult = RemoveLogFile(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltSession);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.ClearSessionLog")
+
+    return bResult;
 }
 
 MgByteReader* MgLogManager::GetSessionLog()
@@ -745,9 +1091,17 @@ MgByteReader* MgLogManager::GetSessionLog()
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltSession);
+
     // Get the session log filename and path
-    STRING filename = BuildFileName(m_SessionLogFileName).c_str();
+    STRING filename = BuildFileName(m_SessionLogFileName);
     byteReader = GetLogContents(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltSession);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetSessionLog")
 
@@ -760,9 +1114,17 @@ MgByteReader* MgLogManager::GetSessionLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltSession);
+
     // Get the session log filename and path
-    STRING filename = BuildFileName(m_SessionLogFileName).c_str();
+    STRING filename = BuildFileName(m_SessionLogFileName);
     byteReader = GetLogContents(filename, numEntries);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltSession);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetSessionLog")
 
@@ -775,7 +1137,15 @@ MgByteReader* MgLogManager::GetSessionLog(MgDateTime* fromDate, MgDateTime* toDa
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltSession);
+
     byteReader = GetLogContents(mltSession, fromDate, toDate);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltSession);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetSessionLog")
 
@@ -786,69 +1156,104 @@ void MgLogManager::SetTraceLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRIN
 {
     MG_LOGMANAGER_TRY()
 
-    m_bTraceLogEnabled = bEnabled;
-    m_TraceLogParameters = parameters;
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    // Disable existing log in use if there is one
+    DisableLog(mltTrace);
+
+    SetTraceLogParameters(parameters);
     SetTraceLogFileName(filename);
+    SetTraceLogEnabled(bEnabled);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetTraceLogInfo")
 }
 
 bool MgLogManager::IsTraceLogEnabled()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
     return m_bTraceLogEnabled;
 }
 
 void MgLogManager::SetTraceLogEnabled(bool bEnabled)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     m_bTraceLogEnabled = bEnabled;
+    if(m_bTraceLogEnabled)
+    {
+        ValidateLogHeaders(mltTrace);
+        EnableLog(mltTrace);
+    }
+    else
+    {
+        DisableLog(mltTrace);
+    }
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetTraceLogEnabled")
 }
 
 STRING MgLogManager::GetTraceLogFileName()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_TraceLogFileName;
 }
 
 void MgLogManager::SetTraceLogFileName(CREFSTRING filename)
 {
-    if (filename.empty())
-    {
-        throw new MgNullArgumentException(L"MgLogManager.SetTraceLogFileName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (filename.find(L"/") != string::npos ||
-        filename.find(L"\\") != string::npos)
-    {
-        // Does not support paths.  Must be a strict filename only.
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(filename);
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-        throw new MgInvalidArgumentException(L"MgLogManager.SetTraceLogFileName",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
-    }
-
-    m_TraceLogFileName = filename;
+    DisableLog(mltTrace);
+    m_TraceLogFileName = ValidateLogFileName(filename);
+    EnableLog(mltTrace);
 }
 
 STRING MgLogManager::GetTraceLogParameters()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
     return m_TraceLogParameters;
 }
 
 void MgLogManager::SetTraceLogParameters(CREFSTRING parameters)
 {
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     if (0 != parameters.compare(m_TraceLogParameters))
     {
-        STRING filename = BuildFileName(m_TraceLogFileName).c_str();
-        ArchiveLog(filename);
+        ArchiveLog(mltTrace);
     }
     m_TraceLogParameters = parameters;
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetTraceLogParameters")
 }
 
 bool MgLogManager::ClearTraceLog()
 {
+    bool bResult = false;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltTrace);
+
     // Get the trace log filename and path
-    STRING filename = BuildFileName(m_TraceLogFileName).c_str();
-    return RemoveLogFile(filename);
+    STRING filename = BuildFileName(m_TraceLogFileName);
+    bResult = RemoveLogFile(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltTrace);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.ClearTraceLog")
+
+    return bResult;
 }
 
 MgByteReader* MgLogManager::GetTraceLog()
@@ -857,9 +1262,17 @@ MgByteReader* MgLogManager::GetTraceLog()
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltTrace);
+
     // Get the trace log filename and path
-    STRING filename = BuildFileName(m_TraceLogFileName).c_str();
+    STRING filename = BuildFileName(m_TraceLogFileName);
     byteReader = GetLogContents(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltTrace);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetTraceLog")
 
@@ -872,9 +1285,17 @@ MgByteReader* MgLogManager::GetTraceLog(INT32 numEntries)
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltTrace);
+
     // Get the trace log filename and path
-    STRING filename = BuildFileName(m_TraceLogFileName).c_str();
+    STRING filename = BuildFileName(m_TraceLogFileName);
     byteReader = GetLogContents(filename, numEntries);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltTrace);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetTraceLog")
 
@@ -887,7 +1308,15 @@ MgByteReader* MgLogManager::GetTraceLog(MgDateTime* fromDate, MgDateTime* toDate
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltTrace);
+
     byteReader = GetLogContents(mltTrace, fromDate, toDate);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltTrace);
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetTraceLog")
 
@@ -900,40 +1329,58 @@ MgByteReader* MgLogManager::GetLogFile( CREFSTRING filename )
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    enum MgLogType logType = mltSystem; // Assign to log type not associated with a file
+
+    bool bInUse = IsLogFileInUse(filename, logType);
+    if(bInUse)
+    {
+        DisableLog(logType);
+    }
+
     // Get the trace log filename and path
-    STRING fullPath = BuildFileName(filename).c_str();
+    STRING fullPath = BuildFileName(filename);
     byteReader = GetLogContents(fullPath);
+
+    if(bInUse)
+    {
+        EnableLog(logType);
+    }
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetLogFile")
 
     return byteReader.Detach();
 }
 
-void MgLogManager::LogToSysLog(char* application)
+void MgLogManager::LogToSysLog(ACE_Log_Msg* pAce, char* application)
 {
-    ACE_Log_Msg* pAce = ACE_Log_Msg::instance();
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     pAce->open(ACE_TEXT_CHAR_TO_TCHAR(application), ACE_Log_Msg::SYSLOG, ACE_TEXT_CHAR_TO_TCHAR(application));
 }
 
-void MgLogManager::LogToOStream(ACE_OSTREAM_TYPE* output)
+void MgLogManager::LogToOStream(ACE_Log_Msg* pAce, ACE_OSTREAM_TYPE* output)
 {
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     m_outputStream = output;
-    ACE_Log_Msg* pAce = ACE_Log_Msg::instance();
     pAce->msg_ostream(m_outputStream);
     pAce->clr_flags(ACE_Log_Msg::STDERR | ACE_Log_Msg::LOGGER | ACE_Log_Msg::SYSLOG);
     pAce->set_flags(ACE_Log_Msg::OSTREAM);
 }
 
-void MgLogManager::LogToStderr(void)
+void MgLogManager::LogToStderr(ACE_Log_Msg* pAce)
 {
-    ACE_Log_Msg* pAce = ACE_Log_Msg::instance();
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     pAce->clr_flags(ACE_Log_Msg::OSTREAM | ACE_Log_Msg::LOGGER | ACE_Log_Msg::SYSLOG);
     pAce->set_flags(ACE_Log_Msg::STDERR);
 }
 
 void MgLogManager::LogSystemEntry(ACE_Log_Priority priority, CREFSTRING entry)
 {
-    WriteLogMessage(mltSystem, entry, priority);
+    QueueLogEntry(mltSystem, entry, priority);
 }
 
 void MgLogManager::LogAccessEntry(CREFSTRING opId)
@@ -991,7 +1438,7 @@ void MgLogManager::LogAccessEntry(CREFSTRING opId)
         AddOpId(logEntry, opId);
     }
 
-    WriteLogMessage(mltAccess, logEntry, LM_INFO);
+    QueueLogEntry(mltAccess, logEntry, LM_INFO);
 }
 
 void MgLogManager::LogAdminEntry(CREFSTRING opId)
@@ -1049,7 +1496,7 @@ void MgLogManager::LogAdminEntry(CREFSTRING opId)
         AddOpId(logEntry, opId);
     }
 
-    WriteLogMessage(mltAdmin, logEntry, LM_INFO);
+    QueueLogEntry(mltAdmin, logEntry, LM_INFO);
 }
 
 void MgLogManager::LogAuthenticationEntry(CREFSTRING entry)
@@ -1100,7 +1547,7 @@ void MgLogManager::LogAuthenticationEntry(CREFSTRING entry)
         logEntry = entry;
     }
 
-    WriteLogMessage(mltAuthentication, logEntry, LM_INFO);
+    QueueLogEntry(mltAuthentication, logEntry, LM_INFO);
 }
 
 void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING stackTrace)
@@ -1159,7 +1606,7 @@ void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING stackTrace)
         logEntry = entry;
     }
 
-    WriteLogMessage(mltError, logEntry, LM_ERROR);
+    QueueLogEntry(mltError, logEntry, LM_ERROR);
 }
 
 void MgLogManager::LogSessionEntry(const MgSessionInfo& sessionInfo)
@@ -1222,7 +1669,7 @@ void MgLogManager::LogSessionEntry(const MgSessionInfo& sessionInfo)
 
     if (NULL == mgException)
     {
-        WriteLogMessage(mltSession, logEntry, LM_INFO);
+        QueueLogEntry(mltSession, logEntry, LM_INFO);
     }
     else
     {
@@ -1268,17 +1715,21 @@ void MgLogManager::LogTraceEntry(CREFSTRING entry)
         logEntry = entry;
     }
 
-    WriteLogMessage(mltTrace, logEntry, LM_INFO);
+    QueueLogEntry(mltTrace, logEntry, LM_INFO);
 }
 
 
 MgPropertyCollection* MgLogManager::EnumerateLogs()
 {
-    Ptr<MgPropertyCollection> logs =  new MgPropertyCollection(true, true);
-    Ptr<MgStringProperty> pProperty;
+    Ptr<MgPropertyCollection> logs;
+    ACE_DIR* directory = NULL;
+
+    MG_LOGMANAGER_TRY()
+
+    logs = new MgPropertyCollection(true, true);
 
     // Open the logs directory
-    ACE_DIR* directory = ACE_OS::opendir(MG_WCHAR_TO_TCHAR(m_path));
+    directory = ACE_OS::opendir(MG_WCHAR_TO_TCHAR(m_path));
     if (directory == NULL)
     {
         MgStringCollection arguments;
@@ -1286,7 +1737,6 @@ MgPropertyCollection* MgLogManager::EnumerateLogs()
         throw new MgFileIoException(L"MgLogManager.EnumerateLogs", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    MG_LOGMANAGER_TRY()
     dirent* direntry = NULL;
 
     wstring name;
@@ -1299,6 +1749,7 @@ MgPropertyCollection* MgLogManager::EnumerateLogs()
 #endif
 
     // Go through the directory entries
+    Ptr<MgStringProperty> pProperty;
     while ((direntry = ACE_OS::readdir(directory)) != NULL)
     {
         name = MG_TCHAR_TO_WCHAR(direntry->d_name);
@@ -1316,16 +1767,28 @@ MgPropertyCollection* MgLogManager::EnumerateLogs()
             pProperty = new MgStringProperty(MgLogManager::LogNameProperty, name);
             logs->Add(pProperty);
 
+            // Is the log in use?
+            enum MgLogType logType = mltSystem;
+            bool bInUse = IsLogFileInUse(name, logType);
+            if(bInUse)
+            {
+                DisableLog(logType);
+            }
+
             // Add the log type
             wstring type = ReadLogTypeFromLogFile(path);
             pProperty = new MgStringProperty(MgLogManager::LogTypeProperty, type);
             logs->Add(pProperty);
 
+            if(bInUse)
+            {
+                EnableLog(logType);
+            }
+
             // Add the log status
-            wstring status = this->DetermineLogFileStatus(name, type);
+            wstring status = DetermineLogFileStatus(name, type);
             pProperty = new MgStringProperty(MgLogManager::LogStatusProperty, status);
             logs->Add(pProperty);
-
         }
     }
 
@@ -1354,7 +1817,24 @@ void MgLogManager::RenameLog(CREFSTRING oldFileName, CREFSTRING newFileName)
     }
 
     MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    enum MgLogType logType = mltSystem;
+    bool bInUse = IsLogFileInUse(oldFileName, logType);
+    if(bInUse)
+    {
+        DisableLog(logType);
+    }
+
+    // Rename the log file
     MgFileUtil::RenameFile(m_path, oldFileName, newFileName);
+
+    if(bInUse)
+    {
+        EnableLog(logType);
+    }
+
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.RenameLog")
 }
 
@@ -1377,12 +1857,78 @@ void MgLogManager::DeleteLog(CREFSTRING fileName)
     }
 
     MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    enum MgLogType logType = mltSystem;
+    bool bInUse = IsLogFileInUse(fileName, logType);
+    if(bInUse)
+    {
+        DisableLog(logType);
+    }
+
     MgFileUtil::DeleteFile(m_path+fileName);
+
+    if(bInUse)
+    {
+        EnableLog(logType);
+    }
+
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.DeleteLog")
+}
+
+void MgLogManager::QueueLogEntry(enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority)
+{
+    MG_LOGMANAGER_TRY()
+
+    // We want the log thread to handle the log entry for us
+    MgLogEntryData* led;
+    ACE_NEW_NORETURN( led, MgLogEntryData(logType, message, logPriority) );
+
+    ACE_Message_Block* mb;
+    ACE_NEW_NORETURN( mb, ACE_Message_Block( led ) );
+    if(mb)
+    {
+        mb->msg_type(ACE_Message_Block::MB_DATA);
+        int nResult = m_pLogThread->putq(mb);
+        if(nResult == -1)
+        {
+            // Failed to queue the message
+            STRING messageId;
+            MgStringCollection arguments;
+
+            arguments.Add(L"Failed to queue ACE_Message_Block.");
+            messageId = L"MgFormatInnerExceptionMessage";
+
+            MgException* mgException = new MgRuntimeException(L"MgLogManager.QueueLogEntry", __LINE__, __WFILE__, NULL, messageId, &arguments);
+            throw mgException;
+        }
+    }
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.QueueLogEntry")
+}
+
+void MgLogManager::StopLogThread()
+{
+    // Tell the log thread to stop
+    ACE_Message_Block* mb = new ACE_Message_Block(4);
+    if(mb)
+    {
+        mb->msg_type(ACE_Message_Block::MB_STOP);
+        m_pLogThread->putq(mb);
+    }
+
+    // Wait for thread to process STOP
+    m_pLogThread->wait();
+
+    m_threadManager.wait(0,1);
+    m_threadManager.close();
 }
 
 void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority)
 {
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     ACE_Log_Msg* pAce = ACE_Log_Msg::instance();
 
     // System message gets logged to event log
@@ -1392,13 +1938,13 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
 
         MG_LOGMANAGER_TRY()
 
-        LogToSysLog((char *)(MgUtil::WideCharToMultiByte(m_applicationName)).c_str());
+        LogToSysLog(pAce, (char *)(MgUtil::WideCharToMultiByte(m_applicationName)).c_str());
 #ifdef _WIN32
-        pAce->log(logPriority, ACE_TEXT("%W\r\n"), message.c_str());
+        pAce->log(logPriority, ACE_TEXT("%Z\r\n"), message.c_str()); // WAS %W
 #else
-        pAce->log(logPriority, ACE_TEXT("%W\n"), message.c_str());
+        pAce->log(logPriority, ACE_TEXT("%Z\n"), message.c_str()); // WAS %W
 #endif
-        LogToStderr();
+        LogToStderr(pAce);
 
         MG_LOGMANAGER_CATCH(L"MgLogManager.WriteLogMessage")
 
@@ -1413,6 +1959,9 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
     // All other messages will get logged to their respective files
     else
     {
+        std::ofstream* pLogStream = NULL;
+
+        bool bEnabled = false;
         STRING filename;
         STRING logTypeName;
         STRING logParameters;
@@ -1421,114 +1970,141 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
         {
         case mltAccess:
             // Get the access log filename and path
-            filename = BuildFileName(m_AccessLogFileName).c_str();
+            filename = BuildFileName(m_AccessLogFileName);
             logTypeName = MgLogManager::AccessLog;
             logParameters = GetAccessLogParameters();
+            pLogStream = &m_accessLogStream;
+            bEnabled = m_bAccessLogEnabled;
             break;
         case mltAdmin:
             // Get the admin log filename and path
-            filename = BuildFileName(m_AdminLogFileName).c_str();
+            filename = BuildFileName(m_AdminLogFileName);
             logTypeName = MgLogManager::AdminLog;
             logParameters = GetAdminLogParameters();
+            pLogStream = &m_adminLogStream;
+            bEnabled = m_bAdminLogEnabled;
             break;
         case mltAuthentication:
             // Get the authentication log filename and path
-            filename = BuildFileName(m_AuthenticationLogFileName).c_str();
+            filename = BuildFileName(m_AuthenticationLogFileName);
             logTypeName = MgLogManager::AuthenticationLog;
             logParameters = GetAuthenticationLogParameters();
+            pLogStream = &m_authenticationLogStream;
+            bEnabled = m_bAuthenticationLogEnabled;
             break;
         case mltError:
             // Get the error log filename and path
-            filename = BuildFileName(m_ErrorLogFileName).c_str();
+            filename = BuildFileName(m_ErrorLogFileName);
             logTypeName = MgLogManager::ErrorLog;
             logParameters = GetErrorLogParameters();
+            pLogStream = &m_errorLogStream;
+            bEnabled = m_bErrorLogEnabled;
             break;
         case mltSession:
             // Get the session log filename and path
-            filename = BuildFileName(m_SessionLogFileName).c_str();
+            filename = BuildFileName(m_SessionLogFileName);
             logTypeName = MgLogManager::SessionLog;
             logParameters = GetSessionLogParameters();
+            pLogStream = &m_sessionLogStream;
+            bEnabled = m_bSessionLogEnabled;
             break;
         case mltTrace:
             // Get the trace log file and path
-            filename = BuildFileName(m_TraceLogFileName).c_str();
+            filename = BuildFileName(m_TraceLogFileName);
             logTypeName = MgLogManager::TraceLog;
             logParameters = GetTraceLogParameters();
+            pLogStream = &m_traceLogStream;
+            bEnabled = m_bTraceLogEnabled;
             break;
+        default:
+            {
+                STRING buffer;
+                MgUtil::Int32ToString(logType, buffer);
+
+                MgStringCollection arguments;
+                arguments.Add(L"1");
+                arguments.Add(buffer);
+
+                throw new MgInvalidArgumentException(L"MgLogManager.WriteLogMessage",
+                    __LINE__, __WFILE__, &arguments, L"MgInvalidLogType", NULL);
+            }
         }
 
+        // Check to see if the log is still open
+        if(bEnabled)
         {
-            ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
-            pAce->acquire();
-
-            MG_LOGMANAGER_TRY()
-
-            ValidateLogHeaders();
-
-            if (false == CheckArchiveFrequency(logType, filename))
+            if(pLogStream)
             {
-                ArchiveLog(filename);
-            }
+                pAce->acquire();
 
-            m_logStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
+                MG_LOGMANAGER_TRY()
 
-            if (!m_logStream.is_open())
-            {
-                MgStringCollection arguments;
-                arguments.Add(filename);
-                throw new MgFileIoException(L"MgLogManager.WriteLogMessage", __LINE__, __WFILE__, &arguments, L"", NULL);
-            }
+                if (false == CheckArchiveFrequency(logType, filename))
+                {
+                    ArchiveLog(logType);
+                }
 
-            LogToOStream(&m_logStream);
+                if (!pLogStream->is_open())
+                {
+                    MgStringCollection arguments;
+                    arguments.Add(filename);
+                    throw new MgFileIoException(L"MgLogManager.WriteLogMessage", __LINE__, __WFILE__, &arguments, L"", NULL);
+                }
 
-            // Write file header information if the log is empty
-            bool bLogFileEmpty = true;
-            bLogFileEmpty =  (MgFileUtil::GetFileSize(filename) ? false : true);
+                LogToOStream(pAce, pLogStream);
 
-            if (bLogFileEmpty)
-            {
-                STRING headerLine1 = MgLogManager::HeaderLine1 + L" ";
-                headerLine1 += logTypeName;
-                STRING headerLine2 = MgLogManager::HeaderLine2 + L" ";
-                headerLine2 += logParameters;
+                if(!LogHasHeader(logType))
+                {
+                    // Write file header information if the log is empty
+                    bool bLogFileEmpty = true;
+                    bLogFileEmpty =  (MgFileUtil::GetFileSize(filename) ? false : true);
+                    if (bLogFileEmpty)
+                    {
+                        STRING headerLine1 = MgLogManager::HeaderLine1 + L" ";
+                        headerLine1 += logTypeName;
+                        STRING headerLine2 = MgLogManager::HeaderLine2 + L" ";
+                        headerLine2 += logParameters;
 #ifdef _WIN32
-                pAce->log(logPriority, ACE_TEXT("%W\r\n"), headerLine1.c_str());
-                pAce->log(logPriority, ACE_TEXT("%W\r\n"), headerLine2.c_str());
+                        pAce->log(logPriority, ACE_TEXT("%W\r\n"), headerLine1.c_str());
+                        pAce->log(logPriority, ACE_TEXT("%W\r\n"), headerLine2.c_str());
 #else
-                pAce->log(logPriority, ACE_TEXT("%W\n"), headerLine1.c_str());
-                pAce->log(logPriority, ACE_TEXT("%W\n"), headerLine2.c_str());
+                        pAce->log(logPriority, ACE_TEXT("%W\n"), headerLine1.c_str());
+                        pAce->log(logPriority, ACE_TEXT("%W\n"), headerLine2.c_str());
 #endif
-            }  // end write file header
+                        SetLogHasHeader(logType, true);
+                    }  // end write file header
+                }
 
-            // Get the current time in XML standard format.
-            MgDateTime currTime;
-            currTime.SetMicrosecond(0);
-            STRING logTime = currTime.ToXmlString(false);
+                // Get the current time in XML standard format.
+                MgDateTime currTime;
+                currTime.SetMicrosecond(0);
+                STRING logTime = currTime.ToXmlString(false);
 
 #ifdef _WIN32
-            pAce->log(logPriority, ACE_TEXT("<%W> %W\r\n"), logTime.c_str(), message.c_str());
+                pAce->log(logPriority, ACE_TEXT("<%W> %W\r\n"), logTime.c_str(), message.c_str());
 #else
-            pAce->log(logPriority, ACE_TEXT("<%W> %W\n"), logTime.c_str(), message.c_str());
+                pAce->log(logPriority, ACE_TEXT("<%W> %W\n"), logTime.c_str(), message.c_str());
 #endif
-            m_logStream.close();
-            LogToStderr();
+                pLogStream->flush();
+                LogToStderr(pAce);
 
-            MG_LOGMANAGER_CATCH(L"MgLogManager.WriteLogMessage")
+                MG_LOGMANAGER_CATCH(L"MgLogManager.WriteLogMessage")
 
-            if (mgException != 0 && logType != mltError)
-            {
-                STRING entry = L"Unable to log message to " + filename;
-                LogErrorEntry(entry);
+                if (mgException != 0 && logType != mltError)
+                {
+                    STRING entry = L"Unable to log message to " + filename;
+                    LogErrorEntry(entry);
+                }
+
+                // Check if log size has exceeded the maximum size
+                if (IsMaximumLogSizeEnabled() && IsMaxSizeExceeded(filename))
+                {
+                    // Archive the current log
+                    ArchiveLog(logType);
+                }
+
+                pAce->release();
             }
-
-            // Check if log size has exceeded the maximum size
-            if (IsMaximumLogSizeEnabled() && IsMaxSizeExceeded(filename))
-            {
-                // Archive the current log
-                ArchiveLog(filename);
-            }
-
-            pAce->release();
         }
     } // end else
 }
@@ -1552,6 +2128,121 @@ bool MgLogManager::RemoveLogFile(CREFSTRING filename)
     return (nResult == 0) ? true : false;
 }
 
+MgByteReader* MgLogManager::GetLogHeader(enum MgLogType logType)
+{
+    Ptr<MgByteReader> byteReader;
+    byteReader = NULL;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    STRING filename = L"";
+
+    switch(logType)
+    {
+    case mltAccess:
+        filename = BuildFileName(m_AccessLogFileName);
+        break;
+    case mltAdmin:
+        filename = BuildFileName(m_AdminLogFileName);
+        break;
+    case mltAuthentication:
+        filename = BuildFileName(m_AuthenticationLogFileName);
+        break;
+    case mltError:
+        filename = BuildFileName(m_ErrorLogFileName);
+        break;
+    case mltSession:
+        filename = BuildFileName(m_SessionLogFileName);
+        break;
+    case mltTrace:
+        filename = BuildFileName(m_TraceLogFileName);
+        break;
+    default:
+        {
+            STRING buffer;
+            MgUtil::Int32ToString(logType, buffer);
+
+            MgStringCollection arguments;
+            arguments.Add(L"1");
+            arguments.Add(buffer);
+
+            throw new MgInvalidArgumentException(L"MgLogManager.GetLogHeader",
+                __LINE__, __WFILE__, &arguments, L"MgInvalidLogType", NULL);
+        }
+    }
+
+    bool bInUse = IsLogInUse(logType);
+    if(bInUse)
+    {
+        DisableLog(logType);
+    }
+
+    byteReader = GetLogHeader(filename);
+
+    if(bInUse)
+    {
+        EnableLog(logType);
+    }
+
+    MG_LOGMANAGER_CATCH(L"MgLogManager.GetLogHeader")
+
+    return byteReader.Detach();
+}
+
+MgByteReader* MgLogManager::GetLogHeader(CREFSTRING filename)
+{
+    Ptr<MgByteReader> byteReader;
+    byteReader = NULL;
+    FILE* pReadFile = NULL;
+    string contents = "";
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    pReadFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("rb"));
+
+    if (pReadFile != NULL)
+    {
+        const int size = 2048;
+        char* buffer = new char[size];
+        if (buffer == NULL)
+        {
+            ACE_OS::fclose(pReadFile);
+            throw new MgOutOfMemoryException(L"MgLogManager.GetLogHeader", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        // Clear buffer
+        memset(buffer, 0, (size)*sizeof(char));
+
+        ACE_OS::fread(buffer, sizeof(char), size*sizeof(char), pReadFile);
+        contents = buffer;
+
+        // Clean up buffer
+        delete [] buffer;
+        buffer = NULL;
+
+        ACE_OS::fclose(pReadFile);
+    }
+
+    byteReader = MgUtil::GetByteReader(contents);
+
+    MG_LOGMANAGER_CATCH(L"MgLogManager.GetLogHeader")
+    if (mgException != NULL)
+    {
+        if (pReadFile != NULL)
+        {
+            ACE_OS::fclose(pReadFile);
+        }
+        (*mgException).AddRef();
+        mgException->Raise();
+    }
+
+    return byteReader.Detach();
+}
+
 MgByteReader* MgLogManager::GetLogContents(CREFSTRING filename)
 {
     Ptr<MgByteReader> byteReader;
@@ -1561,36 +2252,36 @@ MgByteReader* MgLogManager::GetLogContents(CREFSTRING filename)
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    pReadFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("rb"));
+
+    if (pReadFile != NULL)
     {
-        ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+        ACE_OS::fseek(pReadFile, 0, SEEK_END);
+        INT32 length = ACE_OS::ftell(pReadFile);
+        ACE_OS::fseek(pReadFile, 0, SEEK_SET);
 
-        pReadFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("rb"));
+        //TODO: do we need a maximum size restriction?
+        char* buffer = new char[length+1];
 
-        if (pReadFile != NULL)
+        if (buffer == NULL)
         {
-            ACE_OS::fseek(pReadFile, 0, SEEK_END);
-            INT32 length = ACE_OS::ftell(pReadFile);
-            ACE_OS::fseek(pReadFile, 0, SEEK_SET);
-
-            //TODO: do we need a maximum size restriction?
-            char* buffer = new char[length+1];
-
-            if (buffer == NULL)
-            {
-                ACE_OS::fclose(pReadFile);
-                throw new MgOutOfMemoryException(L"MgLogManager.GetLogContents", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-
-            // Clear buffer
-            memset(buffer, 0, (length+1)*sizeof(char));
-
-            ACE_OS::fread(buffer, sizeof(char), length*sizeof(char), pReadFile);
-            contents = buffer;
-
-            delete [] buffer;
-
             ACE_OS::fclose(pReadFile);
+            throw new MgOutOfMemoryException(L"MgLogManager.GetLogContents", __LINE__, __WFILE__, NULL, L"", NULL);
         }
+
+        // Clear buffer
+        memset(buffer, 0, (length+1)*sizeof(char));
+
+        ACE_OS::fread(buffer, sizeof(char), length*sizeof(char), pReadFile);
+        contents = buffer;
+
+        // Clean up buffer
+        delete [] buffer;
+        buffer = NULL;
+
+        ACE_OS::fclose(pReadFile);
     }
 
     byteReader = MgUtil::GetByteReader(contents);
@@ -1614,9 +2305,13 @@ MgByteReader* MgLogManager::GetLogContents(CREFSTRING filename, INT32 numEntries
     Ptr<MgByteReader> byteReader;
     byteReader = NULL;
     FILE* pReadFile = NULL;
+    Ptr<MgByteSource> byteSource;
+    byteSource = NULL;
     string contents = "";
 
     MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     if (numEntries < 0)
     {
@@ -1628,95 +2323,90 @@ MgByteReader* MgLogManager::GetLogContents(CREFSTRING filename, INT32 numEntries
     char buffer[MAX_BUF+1];
     bool bReadMore;
 
+    pReadFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("rb"));
+    if (pReadFile != NULL)
     {
-        ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+        ACE_OS::fseek(pReadFile, 0, SEEK_END);
+        lastPos = ACE_OS::ftell(pReadFile);
 
-        pReadFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("rb"));
-        if (pReadFile != NULL)
+        INT32 loopCount = 1;
+        numNewLines = 0;
+        bReadMore = true;
+
+        bool lookForNewLine = false;
+        INT32 strPos = 0;
+
+        while (bReadMore)
         {
-            ACE_OS::fseek(pReadFile, 0, SEEK_END);
-            lastPos = ACE_OS::ftell(pReadFile);
+            // Clear buffer
+            memset(buffer, 0, (MAX_BUF+1)*sizeof(char));
 
-            INT32 loopCount = 1;
-            numNewLines = 0;
-            bReadMore = true;
-
-            bool lookForNewLine = false;
-            INT32 strPos = 0;
-
-            while (bReadMore)
+            // Place file pointer to fill an array with MAX_BUF characters of file starting from
+            // the end of the file.
+            if (lastPos > MAX_BUF)
             {
-                // Clear buffer
-                memset(buffer, 0, (MAX_BUF+1)*sizeof(char));
+                ACE_OS::fseek(pReadFile, -(loopCount*MAX_BUF), SEEK_END);
+                lastPos = ACE_OS::ftell(pReadFile);
+                ACE_OS::fread(buffer, sizeof(char), MAX_BUF*sizeof(char), pReadFile);
 
-                // Place file pointer to fill an array with MAX_BUF characters of file starting from
-                // the end of the file.
-                if (lastPos > MAX_BUF)
+                // Search through file backwards to count entries
+                // Each entry starts with a '<' after a new line
+                for (strPos = MAX_BUF; strPos >= 0; strPos--)
                 {
-                    ACE_OS::fseek(pReadFile, -(loopCount*MAX_BUF), SEEK_END);
-                    lastPos = ACE_OS::ftell(pReadFile);
-                    ACE_OS::fread(buffer, sizeof(char), MAX_BUF*sizeof(char), pReadFile);
-
-                    // Search through file backwards to count entries
-                    // Each entry starts with a '<' after a new line
-                    for (strPos = MAX_BUF; strPos >= 0; strPos--)
+                    if (lookForNewLine && '\n' == buffer[strPos])
                     {
-                        if (lookForNewLine && '\n' == buffer[strPos])
-                        {
-                            numNewLines++;
-                        }
-                        lookForNewLine = false;
+                        numNewLines++;
+                    }
+                    lookForNewLine = false;
 
-                        if ('<' == buffer[strPos])
-                        {
-                            lookForNewLine = true;
-                        }
-                        // found the number of entries wanted
-                        if (numNewLines == numEntries)
-                        {
-                            bReadMore = false;
-                            break;
-                        }
+                    if ('<' == buffer[strPos])
+                    {
+                        lookForNewLine = true;
+                    }
+                    // found the number of entries wanted
+                    if (numNewLines == numEntries)
+                    {
+                        bReadMore = false;
+                        break;
                     }
                 }
-                // Place file pointer at beginning of file and fill the buffer with as
-                // much as needed.  Also ensure that each part of the file is not read more than
-                // once.
-                else
-                {
-                    ACE_OS::fseek(pReadFile, 0, SEEK_SET);
-                    ACE_OS::fread(buffer, sizeof(char), lastPos*sizeof(char), pReadFile);
-
-                    for (strPos = lastPos; strPos >= 0; strPos--)
-                    {
-                        if (lookForNewLine && '\n' == buffer[strPos])
-                        {
-                            numNewLines++;
-                        }
-                        lookForNewLine = false;
-
-                        if ('<' == buffer[strPos])
-                        {
-                            lookForNewLine = true;
-                        }
-                        // found the number of entries wanted
-                        if (numNewLines == numEntries)
-                        {
-                            break;
-                        }
-                    }
-
-                    // set readmore to false since there is nothing left to read
-                    bReadMore = false;
-                }
-
-                contents = &buffer[++strPos] + contents;
-                loopCount++;
             }
-            ACE_OS::fclose(pReadFile);
-        }
-    }
+            // Place file pointer at beginning of file and fill the buffer with as
+            // much as needed.  Also ensure that each part of the file is not read more than
+            // once.
+            else
+            {
+                ACE_OS::fseek(pReadFile, 0, SEEK_SET);
+                ACE_OS::fread(buffer, sizeof(char), lastPos*sizeof(char), pReadFile);
 
+                for (strPos = lastPos; strPos >= 0; strPos--)
+                {
+                    if (lookForNewLine && '\n' == buffer[strPos])
+                    {
+                        numNewLines++;
+                    }
+                    lookForNewLine = false;
+
+                    if ('<' == buffer[strPos])
+                    {
+                        lookForNewLine = true;
+                    }
+                    // found the number of entries wanted
+                    if (numNewLines == numEntries)
+                    {
+                        break;
+                    }
+                }
+
+                // set readmore to false since there is nothing left to read
+                bReadMore = false;
+            }
+
+            contents = &buffer[++strPos] + contents;
+            loopCount++;
+        }
+        ACE_OS::fclose(pReadFile);
+    }
 
     byteReader = MgUtil::GetByteReader(contents);
 
@@ -1736,6 +2426,8 @@ MgByteReader* MgLogManager::GetLogContents(CREFSTRING filename, INT32 numEntries
 
 MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* fromDate, MgDateTime* toDate)
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
     if (fromDate == NULL || toDate == NULL)
     {
         throw new MgNullArgumentException(L"MgLogManager.GetLogContents", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1766,6 +2458,7 @@ MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* f
     Ptr<MgByteReader> byteReader;
     byteReader = NULL;
     FILE* pReadFile = NULL;
+    string contents = "";
 
     MG_LOGMANAGER_TRY()
 
@@ -1775,7 +2468,6 @@ MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* f
     entries = NULL;
 
     STRING currentFilename;
-    string contents = "";
 
     // Get the potential file names
     filenames = DeterminePotentialFileNames(logType, fromDate, toDate);
@@ -1807,7 +2499,7 @@ MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* f
 
     char buffer[MAX_BUF+1];
     string logEntry = "";                // current entry read from file
-    STRING wEntry = L"";               // current entry read from file made into a STRING
+    STRING wEntry = L"";
 
     INT32 nSearchedFiles = 0;
     while (nSearchedFiles < filenames->GetCount())
@@ -1818,6 +2510,8 @@ MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* f
         pReadFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(currentFilename), ACE_TEXT("rb"));
         if (pReadFile != NULL)
         {
+            int nNumRead = 0;
+
             // Keep reading lines from the file in a chunk until no more to read or
             // both dates have been found
             bool bReadMore = true;
@@ -1834,10 +2528,15 @@ MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* f
                 if (charsRead < MAX_BUF)
                 {
                     bReadMore = false;
+                    nNumRead = charsRead;
+                }
+                else
+                {
+                    nNumRead = MAX_BUF;
                 }
 
                 char* entryBegin = buffer;
-                for (i = 0; i < MAX_BUF; i++)
+                for (i = 0; i < nNumRead; i++)
                 {
                     if (i == 0)
                     {
@@ -1944,6 +2643,8 @@ MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* f
 
 MgStringCollection* MgLogManager::DeterminePotentialFileNames(enum MgLogType logType, MgDateTime* fromDate, MgDateTime* toDate)
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
     Ptr<MgStringCollection> filenames;
 
     filenames = new MgStringCollection();
@@ -1986,7 +2687,7 @@ MgStringCollection* MgLogManager::DeterminePotentialFileNames(enum MgLogType log
             arguments.Add(L"1");
             arguments.Add(buffer);
 
-            throw new MgInvalidArgumentException(L"MgLogManager.GetLogContents",
+            throw new MgInvalidArgumentException(L"MgLogManager.DeterminePotentialFileNames",
                 __LINE__, __WFILE__, &arguments, L"MgInvalidLogType", NULL);
         }
     }
@@ -2131,42 +2832,48 @@ INT32 MgLogManager::SearchClosestDateAfter(MgStringCollection* lines, MgDateTime
 
             dateTime = GetDateTimeFromEntry(lines->GetItem(key));
 
-            // Found date
-            if (*dateTime == *searchDate)
+            if(dateTime)
             {
-                keepGoing = false;
-            }
-            else if (*dateTime < *searchDate)
-            {
-                start = key + 1;
-            }
-            else
-            {
-                end = key;
-            }
+                // Found date
+                if (*dateTime == *searchDate)
+                {
+                    keepGoing = false;
+                }
+                else if (*dateTime < *searchDate)
+                {
+                    start = key + 1;
+                }
+                else
+                {
+                    end = key;
+                }
 
-            key = start + (end-start)/2;
+                key = start + (end-start)/2;
+            }
         }
 
-        // Check to ensure that a date after was actually found
-        if (*dateTime >= *searchDate)
+        if(dateTime)
         {
-            // check to ensure that there are no previous equal entries in date
-            Ptr<MgDateTime> dateTime2;
-            if (key > 0)
+            // Check to ensure that a date after was actually found
+            if (*dateTime >= *searchDate)
             {
-                dateTime2 = GetDateTimeFromEntry(lines->GetItem(key-1));
-                while (*dateTime == *dateTime2)
+                // check to ensure that there are no previous equal entries in date
+                Ptr<MgDateTime> dateTime2;
+                if (key > 0)
                 {
-                    key--;
-                    if (key == 0)
-                    {
-                        break;
-                    }
                     dateTime2 = GetDateTimeFromEntry(lines->GetItem(key-1));
+                    while (*dateTime == *dateTime2)
+                    {
+                        key--;
+                        if (key == 0)
+                        {
+                            break;
+                        }
+                        dateTime2 = GetDateTimeFromEntry(lines->GetItem(key-1));
+                    }
                 }
+                result = key;
             }
-            result = key;
         }
     }
 
@@ -2206,42 +2913,48 @@ INT32 MgLogManager::SearchClosestDateBefore(MgStringCollection* lines, MgDateTim
 
             dateTime = GetDateTimeFromEntry(lines->GetItem(key));
 
-            // Found date
-            if (*dateTime == *searchDate)
+            if(dateTime)
             {
-                keepGoing = false;
-            }
-            else if (*dateTime < *searchDate)
-            {
-                start = key;
-            }
-            else
-            {
-                end = key - 1;
-            }
+                // Found date
+                if (*dateTime == *searchDate)
+                {
+                    keepGoing = false;
+                }
+                else if (*dateTime < *searchDate)
+                {
+                    start = key;
+                }
+                else
+                {
+                    end = key - 1;
+                }
 
-            key = end - (end-start)/2;
+                key = end - (end-start)/2;
+            }
         }
 
-        // Check to ensure that a date before was actually found
-        if (*dateTime <= *searchDate)
+        if(dateTime)
         {
-            // Check to ensure that the next entries are not equal in date
-            Ptr<MgDateTime> dateTime2;
-            if (key < (lines->GetCount() - 1))
+            // Check to ensure that a date before was actually found
+            if (*dateTime <= *searchDate)
             {
-                dateTime2 = GetDateTimeFromEntry(lines->GetItem(key+1));
-                while (*dateTime == *dateTime2)
+                // Check to ensure that the next entries are not equal in date
+                Ptr<MgDateTime> dateTime2;
+                if (key < (lines->GetCount() - 1))
                 {
-                    key++;
-                    if (key == (lines->GetCount() - 1))
-                    {
-                        break;
-                    }
                     dateTime2 = GetDateTimeFromEntry(lines->GetItem(key+1));
+                    while (*dateTime == *dateTime2)
+                    {
+                        key++;
+                        if (key == (lines->GetCount() - 1))
+                        {
+                            break;
+                        }
+                        dateTime2 = GetDateTimeFromEntry(lines->GetItem(key+1));
+                    }
                 }
+                result = key;
             }
-            result = key;
         }
     }
 
@@ -2255,6 +2968,11 @@ MgDateTime* MgLogManager::GetDateTimeFromEntry(CREFSTRING entry)
     Ptr<MgDateTime> dateTime;
 
     MG_LOGMANAGER_TRY()
+
+    if(entry.size() == 0)
+    {
+        return NULL;
+    }
 
     // Each entry starts with the log time that conforms to XML standard and
     // is enclosed by angle brackets, i.e. <CCYY-MM-DDThh:mm:ss>
@@ -2470,9 +3188,9 @@ void MgLogManager::AddOpsProcessed(REFSTRING entry)
         nOperations = pConnection->GetProcessedOperations();
     }
 
-    string opsProcessed = "";
+    STRING opsProcessed = L"";
     MgUtil::Int32ToString(nOperations, opsProcessed);
-    entry += MgUtil::MultiByteToWideChar(opsProcessed);
+    entry += opsProcessed;
 }
 
 void MgLogManager::AddOpsReceived(REFSTRING entry)
@@ -2487,9 +3205,9 @@ void MgLogManager::AddOpsReceived(REFSTRING entry)
         nOperations = pConnection->GetReceivedOperations();
     }
 
-    string opsReceived = "";
+    STRING opsReceived = L"";
     MgUtil::Int32ToString(nOperations, opsReceived);
-    entry += MgUtil::MultiByteToWideChar(opsReceived);
+    entry += opsReceived;
 }
 
 void MgLogManager::AddUserName(REFSTRING entry)
@@ -2523,13 +3241,66 @@ bool MgLogManager::IsMaxSizeExceeded(CREFSTRING logFileName)
     return bMaxSizeReached;
 }
 
-void MgLogManager::ArchiveLog(CREFSTRING logFileName)
+void MgLogManager::ArchiveLog(enum MgLogType logType)
 {
     ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
+    STRING logFileName = L"";
+    std::ofstream* pLogStream = NULL;
+
+    switch(logType)
+    {
+        case mltAccess:
+            logFileName = BuildFileName(m_AccessLogFileName);
+            pLogStream = &m_accessLogStream;
+            break;
+        case mltAdmin:
+            logFileName = BuildFileName(m_AdminLogFileName);
+            pLogStream = &m_adminLogStream;
+            break;
+        case mltAuthentication:
+            logFileName = BuildFileName(m_AuthenticationLogFileName);
+            pLogStream = &m_authenticationLogStream;
+            break;
+        case mltError:
+            logFileName = BuildFileName(m_ErrorLogFileName);
+            pLogStream = &m_errorLogStream;
+            break;
+        case mltSession:
+            logFileName = BuildFileName(m_SessionLogFileName);
+            pLogStream = &m_sessionLogStream;
+            break;
+        case mltTrace:
+            logFileName = BuildFileName(m_TraceLogFileName);
+            pLogStream = &m_traceLogStream;
+            break;
+        default:
+            {
+                STRING buffer;
+                MgUtil::Int32ToString(logType, buffer);
+
+                MgStringCollection arguments;
+                arguments.Add(L"1");
+                arguments.Add(buffer);
+
+                throw new MgInvalidArgumentException(L"MgLogManager.ArchiveLog",
+                    __LINE__, __WFILE__, &arguments, L"MgInvalidLogType", NULL);
+            }
+    }
+
     if (MgFileUtil::PathnameExists(logFileName))
     {
-        // The archived named will be the current filename suffixed with the current date and time of the archive
+        if(pLogStream)
+        {
+            // Is the stream open?
+            if(pLogStream->is_open())
+            {
+                // Close the log file
+                pLogStream->close();
+            }
+        }
+
+        // The archived named will be the current filename suffixed with the current date of the archive + a unique ID
         STRING archiveName = L"";
 
         // Cache the current extension
@@ -2537,108 +3308,111 @@ void MgLogManager::ArchiveLog(CREFSTRING logFileName)
         STRING logFileExt = L"";
         logFileExt = logFileName.substr(index);
 
-        // Iterate until a unique archive name is available (maximum of 10 iterations).
-        const int nMaxIterations = 10;
-        int nIterations = 0;
+        archiveName.clear();
+        archiveName = logFileName.substr(0, index);
 
-        do
-        {
-            archiveName.clear();
-            archiveName = logFileName.substr(0, index);
+        // Add the date and time suffix to the archive name.
+        ACE_Date_Time date_time;
+        INT32 year = (INT32)date_time.year();
+        INT32 month = (INT32)date_time.month();
+        INT32 day = (INT32)date_time.day();
 
-            // Add the date and time suffix to the archive name.
-            ACE_Date_Time date_time;
-            INT32 year = (INT32)date_time.year();
-            INT32 month = (INT32)date_time.month();
-            INT32 day = (INT32)date_time.day();
-            INT32 hour = (INT32)date_time.hour();
-            INT32 minute = (INT32)date_time.minute();
-            INT32 second = (INT32)date_time.second();
-            INT32 microsec = (INT32)date_time.microsec();
+        STRING uniqueId;
+        MgUtil::GenerateUuid(uniqueId);
 
-            string strYear;
-            string strMonth;
-            string strDay;
-            string strHour;
-            string strMinute;
-            string strSecond;
-            string strMicrosec;
-            MgUtil::Int32ToString(year, strYear);
-            MgUtil::Int32ToString(month, strMonth);
-            MgUtil::Int32ToString(day, strDay);
-            MgUtil::Int32ToString(hour, strHour);
-            MgUtil::Int32ToString(minute, strMinute);
-            MgUtil::Int32ToString(second, strSecond);
-            MgUtil::Int32ToString(microsec, strMicrosec);
+        STRING strYear;
+        STRING strMonth;
+        STRING strDay;
+        MgUtil::Int32ToString(year, strYear);
+        MgUtil::Int32ToString(month, strMonth);
+        MgUtil::Int32ToString(day, strDay);
 
-            archiveName.append(L"_");
-            archiveName.append(MgUtil::MultiByteToWideChar(strYear));
-            archiveName.append(MgUtil::MultiByteToWideChar(strMonth));
-            archiveName.append(MgUtil::MultiByteToWideChar(strDay));
-            archiveName.append(L"_");
-            archiveName.append(MgUtil::MultiByteToWideChar(strHour));
-            archiveName.append(MgUtil::MultiByteToWideChar(strMinute));
-            archiveName.append(MgUtil::MultiByteToWideChar(strSecond));
-            archiveName.append(MgUtil::MultiByteToWideChar(strMicrosec));
-            archiveName.append(logFileExt);
-
-            nIterations++;
-
-        } while( MgFileUtil::PathnameExists(archiveName) && (nIterations < nMaxIterations) );
+        archiveName.append(L"_");
+        archiveName.append(strYear);
+        archiveName.append(L"-");
+        archiveName.append(strMonth);
+        archiveName.append(L"-");
+        archiveName.append(strDay);
+        archiveName.append(L"_");
+        archiveName.append(uniqueId);
+        archiveName.append(logFileExt);
 
         // Create the archive
         MgFileUtil::RenameFile(logFileName, archiveName);
+
+        if(pLogStream)
+        {
+            // Open the new log file
+            pLogStream->open(MgUtil::WideCharToMultiByte(logFileName).c_str(), ios::out | ios::app | ios::binary);
+
+            SetLogHasHeader(logType, false);
+        }
     }
 }
 
-// Walks the existing active log files and check if the parameters list.
 // If the parameters in the header do not match the current logging parameters, the log is archived
 // so that new log will be created based on the current logging parameters.
 //
-void MgLogManager::ValidateLogHeaders()
+void MgLogManager::ValidateLogHeaders(enum MgLogType logType)
 {
-    STRING filename = L"";
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-    // Check Access Log
-    if (!ValidateAccessLogHeader())
+    switch(logType)
     {
-        filename = BuildFileName(m_AccessLogFileName).c_str();
-        ArchiveLog(filename);
-    }
+       case mltAccess:
+            // Check Access Log
+            if (!ValidateAccessLogHeader())
+            {
+                ArchiveLog(logType);
+            }
+            break;
+        case mltAdmin:
+            // Check Admin Log
+            if (!ValidateAdminLogHeader())
+            {
+                ArchiveLog(logType);
+            }
+            break;
+        case mltAuthentication:
+            // Check Authentication Log
+            if (!ValidateAuthenticationLogHeader())
+            {
+                ArchiveLog(logType);
+            }
+            break;
+        case mltError:
+            // Check Error Log
+            if (!ValidateErrorLogHeader())
+            {
+                ArchiveLog(logType);
+            }
+            break;
+        case mltSession:
+            // Check Session Log
+            if (!ValidateSessionLogHeader())
+            {
+                ArchiveLog(logType);
+            }
+            break;
+        case mltTrace:
+            // Check Trace Log
+            if (!ValidateTraceLogHeader())
+            {
+                ArchiveLog(logType);
+            }
+            break;
+        default:
+            {
+                STRING buffer;
+                MgUtil::Int32ToString(logType, buffer);
 
-    // Check Admin Log
-    if (!ValidateAdminLogHeader())
-    {
-        filename = BuildFileName(m_AdminLogFileName).c_str();
-        ArchiveLog(filename);
-    }
+                MgStringCollection arguments;
+                arguments.Add(L"1");
+                arguments.Add(buffer);
 
-    // Check Authentication Log
-    if (!ValidateAuthenticationLogHeader())
-    {
-        filename = BuildFileName(m_AuthenticationLogFileName).c_str();
-        ArchiveLog(filename);
-    }
-
-    // Check Error Log
-    if (!ValidateErrorLogHeader())
-    {
-        filename = BuildFileName(m_ErrorLogFileName).c_str();
-        ArchiveLog(filename);
-    }
-
-    // Check Session Log
-    if (!ValidateSessionLogHeader())
-    {
-        filename = BuildFileName(m_SessionLogFileName).c_str();
-        ArchiveLog(filename);
-    }
-
-    // Check Trace Log
-    if (!ValidateTraceLogHeader())
-    {
-        filename = BuildFileName(m_TraceLogFileName).c_str();
-        ArchiveLog(filename);
+                throw new MgInvalidArgumentException(L"MgLogManager.ValidateLogHeaders",
+                    __LINE__, __WFILE__, &arguments, L"MgInvalidLogType", NULL);
+            }
     }
 }
 
@@ -2647,6 +3421,8 @@ bool MgLogManager::ValidateAccessLogHeader()
     bool bValid = false;
 
     MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltAccess);
@@ -2667,6 +3443,8 @@ bool MgLogManager::ValidateAdminLogHeader()
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltAdmin);
     STRING currentLogParams = GetAdminLogParameters();
@@ -2685,6 +3463,8 @@ bool MgLogManager::ValidateAuthenticationLogHeader()
     bool bValid = false;
 
     MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltAuthentication);
@@ -2705,6 +3485,8 @@ bool MgLogManager::ValidateErrorLogHeader()
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltError);
     STRING currentLogParams = GetErrorLogParameters();
@@ -2723,6 +3505,8 @@ bool MgLogManager::ValidateSessionLogHeader()
     bool bValid = false;
 
     MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltSession);
@@ -2743,6 +3527,8 @@ bool MgLogManager::ValidateTraceLogHeader()
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
     // Compare the log file parameters list with the current logging parameters
     STRING logFileParameters = ReadParametersFromLogFile(mltTrace);
     STRING currentLogParams = GetTraceLogParameters();
@@ -2762,41 +3548,10 @@ STRING MgLogManager::ReadParametersFromLogFile(enum MgLogType logType)
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
     Ptr<MgByteReader> bytes;
-
-    switch(logType)
-    {
-    case mltAccess:
-        bytes = GetAccessLog();
-        break;
-    case mltAdmin:
-        bytes = GetAdminLog();
-        break;
-    case mltAuthentication:
-        bytes = GetAuthenticationLog();
-        break;
-    case mltError:
-        bytes = GetErrorLog();
-        break;
-    case mltSession:
-        bytes = GetSessionLog();
-        break;
-    case mltTrace:
-        bytes = GetTraceLog();
-        break;
-    default:
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(logType, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(L"1");
-            arguments.Add(buffer);
-
-            throw new MgInvalidArgumentException(L"MgLogManager.ReadParametersFromLogFile",
-                __LINE__, __WFILE__, &arguments, L"MgInvalidLogType", NULL);
-        }
-    }
+    bytes = GetLogHeader(logType);
 
     if (bytes->GetLength() > 0)
     {
@@ -2823,7 +3578,38 @@ STRING MgLogManager::ReadParametersFromLogFile(enum MgLogType logType)
                 // The prefix for the header line is OK.  Now lets get the parameters
                 string strParams = strLine2.substr(strHeaderPrefix.length() + 1);
                 logParameters = MgUtil::MultiByteToWideChar(strParams);
+
+                SetLogHasHeader(logType, true);
             }
+        }
+    }
+    else
+    {
+        // The file was empty so the parameters have not been written yet
+        SetLogHasHeader(logType, false);
+
+        switch (logType)
+        {
+        case mltAccess:
+            logParameters = m_AccessLogParameters;
+            break;
+        case mltAdmin:
+            logParameters = m_AdminLogParameters;
+            break;
+        case mltAuthentication:
+            logParameters = m_AuthenticationLogParameters;
+            break;
+        case mltError:
+            logParameters = m_ErrorLogParameters;
+            break;
+        case mltSession:
+            logParameters = m_SessionLogParameters;
+            break;
+        case mltTrace:
+            logParameters = m_TraceLogParameters;
+            break;
+        default:
+            break;
         }
     }
 
@@ -2838,22 +3624,24 @@ STRING MgLogManager::ReadLogTypeFromLogFile(CREFSTRING logFilename)
 
     MG_LOGMANAGER_TRY()
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
     Ptr<MgByteReader> bytes;
-    bytes = GetLogContents(logFilename);
+    bytes = GetLogHeader(logFilename);
 
-    if (bytes->GetLength() > 0)
+    char buffer[4096] = {0};
+    bytes->Read((BYTE_ARRAY_OUT)&buffer, 4095);
+    string contents;
+    contents.assign(buffer);
+
+    if (contents.size() > 0)
     {
-        char buffer[4096] = {0};
-        bytes->Read((BYTE_ARRAY_OUT)&buffer, 4095);
-        string strBuffer;
-        strBuffer.assign(buffer);
-
         // Find the first line in the log
         size_t startLine1 = 0;
-        size_t endLine1 = strBuffer.find("\n");
+        size_t endLine1 = contents.find("\n");
         if (0 != endLine1)
         {
-            string strLineBuf = strBuffer.substr(startLine1, endLine1);
+            string strLineBuf = contents.substr(startLine1, endLine1);
 
             // Check if there is a carriage return (\r) at the end of the line
             size_t endLineBuf = strLineBuf.rfind("\r");
@@ -2868,7 +3656,6 @@ STRING MgLogManager::ReadLogTypeFromLogFile(CREFSTRING logFilename)
                 logType = MgUtil::MultiByteToWideChar(strType);
             }
         }
-
     }
 
     MG_LOGMANAGER_CATCH(L"MgLogManager.ReadLogTypeFromLogFile")
@@ -2881,6 +3668,8 @@ STRING MgLogManager::DetermineLogFileStatus(CREFSTRING logFilename, CREFSTRING l
     STRING logStatus = L"";
 
     MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     STRING currentLogName = L"";
 
@@ -2938,7 +3727,7 @@ STRING MgLogManager::DetermineLogFileStatus(CREFSTRING logFilename, CREFSTRING l
         logStatus = MgLogManager::LogStatusArchive;
     }
 
-    MG_LOGMANAGER_CATCH(L"MgLogManager.DetermineLogFileStatus")
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.DetermineLogFileStatus")
 
     return logStatus;
 }
@@ -2998,6 +3787,8 @@ bool MgLogManager::CheckArchiveFrequency(enum MgLogType logType, CREFSTRING logF
 {
     bool bCurrentLog = true;
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
     // Get the frequency specifier from the filename
     STRING rawFilename;
 
@@ -3021,6 +3812,18 @@ bool MgLogManager::CheckArchiveFrequency(enum MgLogType logType, CREFSTRING logF
     case mltTrace:
         rawFilename = m_TraceLogFileName;
         break;
+    default:
+        {
+            STRING buffer;
+            MgUtil::Int32ToString(logType, buffer);
+
+            MgStringCollection arguments;
+            arguments.Add(L"1");
+            arguments.Add(buffer);
+
+            throw new MgInvalidArgumentException(L"MgLogManager.CheckArchiveFrequency",
+                __LINE__, __WFILE__, &arguments, L"MgInvalidLogType", NULL);
+        }
     }
 
     STRING specifier;
@@ -3084,4 +3887,262 @@ STRING MgLogManager::RemoveArchiveFrequencySpecifier(CREFSTRING logFilename)
     newFileName = MgUtil::ReplaceString(newFileName, L"%d", L"");     // NOXLATE
 
     return newFileName;
+}
+
+bool MgLogManager::IsLogFileInUse(CREFSTRING filename, enum MgLogType& logType)
+{
+    bool bResult = false;
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    logType = mltSystem; // Assign to log type not associated with a file
+
+    // Check if the filename matches any of the log filenames in use
+    if(filename.compare(m_AccessLogFileName) == 0)
+    {
+        // Match
+        logType = mltAccess;
+    }
+    else if(filename.compare(m_AdminLogFileName) == 0)
+    {
+        // Match
+        logType = mltAdmin;
+    }
+    else if(filename.compare(m_AuthenticationLogFileName) == 0)
+    {
+        // Match
+        logType = mltAuthentication;
+    }
+    else if(filename.compare(m_ErrorLogFileName) == 0)
+    {
+        // Match
+        logType = mltError;
+    }
+    else if(filename.compare(m_SessionLogFileName) == 0)
+    {
+        // Match
+        logType = mltSession;
+    }
+    else if(filename.compare(m_TraceLogFileName) == 0)
+    {
+        // Match
+        logType = mltTrace;
+    }
+
+    // Was there a match?
+    if(mltSystem != logType)
+    {
+        bResult = IsLogInUse(logType);
+    }
+
+    return bResult;
+}
+
+bool MgLogManager::IsLogInUse(enum MgLogType& logType)
+{
+    bool bResult = false;
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    switch(logType)
+    {
+        case mltAccess:
+            bResult = m_bAccessLogEnabled;
+            break;
+        case mltAdmin:
+            bResult = m_bAdminLogEnabled;
+            break;
+        case mltAuthentication:
+            bResult = m_bAuthenticationLogEnabled;
+            break;
+        case mltError:
+            bResult = m_bErrorLogEnabled;
+            break;
+        case mltSession:
+            bResult = m_bSessionLogEnabled;
+            break;
+        case mltTrace:
+            bResult = m_bTraceLogEnabled;
+            break;
+        default:
+            break;
+    }
+
+    return bResult;
+}
+
+void MgLogManager::DisableLog(enum MgLogType logType)
+{
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    switch(logType)
+    {
+        case mltAccess:
+            if(m_accessLogStream.is_open())
+            {
+                // Close the file
+                m_accessLogStream.close();
+            }
+            break;
+        case mltAdmin:
+            if(m_adminLogStream.is_open())
+            {
+                // Close the file
+                m_adminLogStream.close();
+            }
+            break;
+        case mltAuthentication:
+            if(m_authenticationLogStream.is_open())
+            {
+                // Close the file
+                m_authenticationLogStream.close();
+            }
+            break;
+        case mltError:
+            if(m_errorLogStream.is_open())
+            {
+                // Close the file
+                m_errorLogStream.close();
+            }
+            break;
+        case mltSession:
+            if(m_sessionLogStream.is_open())
+            {
+                // Close the file
+                m_sessionLogStream.close();
+            }
+            break;
+        case mltTrace:
+            if(m_traceLogStream.is_open())
+            {
+                // Close the file
+                m_traceLogStream.close();
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void MgLogManager::EnableLog(enum MgLogType logType)
+{
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    switch(logType)
+    {
+        case mltAccess:
+            if(!m_accessLogStream.is_open())
+            {
+                // Open the file
+                STRING filename = BuildFileName(m_AccessLogFileName);
+                m_accessLogStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
+            }
+            break;
+        case mltAdmin:
+            if(!m_adminLogStream.is_open())
+            {
+                // Open the file
+                STRING filename = BuildFileName(m_AdminLogFileName);
+                m_adminLogStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
+            }
+            break;
+        case mltAuthentication:
+            if(!m_authenticationLogStream.is_open())
+            {
+                // Open the file
+                STRING filename = BuildFileName(m_AuthenticationLogFileName);
+                m_authenticationLogStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
+            }
+            break;
+        case mltError:
+            if(!m_errorLogStream.is_open())
+            {
+                // Open the file
+                STRING filename = BuildFileName(m_ErrorLogFileName);
+                m_errorLogStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
+            }
+            break;
+        case mltSession:
+            if(!m_sessionLogStream.is_open())
+            {
+                // Open the file
+                STRING filename = BuildFileName(m_SessionLogFileName);
+                m_sessionLogStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
+            }
+            break;
+        case mltTrace:
+            if(!m_traceLogStream.is_open())
+            {
+                // Open the file
+                STRING filename = BuildFileName(m_TraceLogFileName);
+                m_traceLogStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
+            }
+            break;
+        default:
+            break;
+    }
+
+    SetLogHasHeader(logType, false);
+}
+
+void MgLogManager::SetLogHasHeader(enum MgLogType logType, bool bHeader)
+{
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    switch(logType)
+    {
+        case mltAccess:
+            m_bAccessLogHeader = bHeader;
+            break;
+        case mltAdmin:
+            m_bAdminLogHeader = bHeader;
+            break;
+        case mltAuthentication:
+            m_bAuthenticationLogHeader = bHeader;
+            break;
+        case mltError:
+            m_bErrorLogHeader = bHeader;
+            break;
+        case mltSession:
+            m_bSessionLogHeader = bHeader;
+            break;
+        case mltTrace:
+            m_bTraceLogHeader = bHeader;
+            break;
+        default:
+            break;
+    }
+}
+
+bool MgLogManager::LogHasHeader(enum MgLogType logType)
+{
+    bool bResult = false;
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    switch(logType)
+    {
+        case mltAccess:
+            bResult = m_bAccessLogHeader;
+            break;
+        case mltAdmin:
+            bResult = m_bAdminLogHeader;
+            break;
+        case mltAuthentication:
+            bResult = m_bAuthenticationLogHeader;
+            break;
+        case mltError:
+            bResult = m_bErrorLogHeader;
+            break;
+        case mltSession:
+            bResult = m_bSessionLogHeader;
+            break;
+        case mltTrace:
+            bResult = m_bTraceLogHeader;
+            break;
+        default:
+            break;
+    }
+
+    return bResult;
 }
