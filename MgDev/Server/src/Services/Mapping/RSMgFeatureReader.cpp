@@ -135,6 +135,8 @@ RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, const STRING& geom
 
 RSMgFeatureReader::~RSMgFeatureReader()
 {
+    m_reader->Close();
+
     SAFE_RELEASE(m_reader);
     SAFE_RELEASE(m_class);
 
