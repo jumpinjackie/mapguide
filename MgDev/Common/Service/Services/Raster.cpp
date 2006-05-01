@@ -40,6 +40,7 @@ MgRaster::MgRaster()
 MgRaster::~MgRaster()
 {
     SAFE_RELEASE(m_extent);
+    SAFE_RELEASE(m_featureService);
 }
 
 
