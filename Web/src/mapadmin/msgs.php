@@ -56,7 +56,6 @@
     $errInvalidResourceSiteRepositoryFolder = "Resource service site repository folder must be specified.";
     $errInvalidResourceResourceSchemaFolder = "Resource service schema folder must be specified.";
     $errInvalidRepositoryCheckpointsTimerInterval = "Repository checkpoints timer interval is invalid.";
-    $errInvalidResourcePermissionCacheSize = "Permission cache size is invalid.";
     $errInvalidPackagesPath = "Resource service packages folder must be specified.";
     $errInvalidLogRootFolder = "Log root folder must be specified.";
     $errInvalidLogFilename = "Log filename must be specified.";
