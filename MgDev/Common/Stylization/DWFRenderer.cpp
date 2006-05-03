@@ -774,8 +774,8 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     //correct size will be done using the macro attributes, but we 
     //need to take aspect into account ourselves, since macro 
     //only has a single overall scale factor
-    double lastAspect = (m_lastSymbol.width() == 0.0) ? 0.0 : m_lastSymbol.height() / m_lastSymbol.width();
-    double aspect = (mdef.width() == 0.0) ? 0.0 : mdef.height() / mdef.width();
+    double lastAspect = (m_lastSymbol.width() == 0.0) ? DBL_MAX : m_lastSymbol.height() / m_lastSymbol.width();
+    double aspect = (mdef.width() == 0.0) ? DBL_MAX : mdef.height() / mdef.width();
     
     RS_Bounds dst;
 
@@ -786,7 +786,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     }
     else
     {
-        double diff = 0.5 * (aspect - 1.0) * SYMBOL_MAX;
+        double diff = 0.5 * (1.0 - 1.0 / aspect) * SYMBOL_MAX;
         dst = RS_Bounds(diff, 0, SYMBOL_MAX - diff, SYMBOL_MAX);
     }
 
