@@ -97,17 +97,18 @@ int MgOperationThread::svc(void)
                     switch ( stat )
                     {
                         case ( IMgServiceHandler::mpsError ) :
+                        {
                             //  We hit an error in processing.  An exception should have been
                             //  sent back to the client at some point.  If the client is an
                             //  HTTP agent, it will respond with a close control packet.  We will
                             //  try to process this incoming packet, but since there still may be junk
                             //  data on the wire, we will force the close of the client handler
-                            //  if we are already in an error condition.                             
+                            //  if we are already in an error condition.
                             if ( pData->GetErrorFlag() )
                             {
                                 // Remove the client handler from reactor.  This code will also
                                 // be hit if the client handler has been torn down from the connection idle timer
-                                // while we were waiting for additional requests from the client.                                   
+                                // while we were waiting for additional requests from the client.
                                 pClientHandler->reactor()->remove_handler(
                                     pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK );
 
@@ -144,6 +145,10 @@ int MgOperationThread::svc(void)
                                             // release it later below).
                                             pClientHandler = NULL;
 
+                                            //  Cleanup message block
+                                            messageBlock->release();
+                                            messageBlock = NULL;
+
                                             putq( mb );
                                         }
                                     }
@@ -154,17 +159,17 @@ int MgOperationThread::svc(void)
                                 }
                             }
                             break;
+                        }
 
                         case ( IMgServiceHandler::mpsDone ) :
-                            
+                        {
                             // Do we still have a stream?
                             if (NULL == (MgClientHandler*) pClientHandler || MgClientHandler::hsClosed == pClientHandler->GetStatus())
-                            {
                                 break;
-                            }
 
                             //  is there anything else on the stream?
-                            if (MgStreamHelper::mssDone == CheckStream( pClientHandler->GetStreamHelper() ) )
+                            MgStreamHelper::MgStreamStatus csStat = CheckStream( pClientHandler->GetStreamHelper() );
+                            if (MgStreamHelper::mssDone == csStat )
                             {
                                 //  set client handler status before queueing messageblock
                                 pClientHandler->SetStatus( MgClientHandler::hsQueued );
@@ -184,6 +189,10 @@ int MgOperationThread::svc(void)
                                         // release it later below).
                                         pClientHandler = NULL;
 
+                                        //  Cleanup message block
+                                        messageBlock->release();
+                                        messageBlock = NULL;
+
                                         putq( mb );
                                     }
                                 }
@@ -193,29 +202,37 @@ int MgOperationThread::svc(void)
                                 pClientHandler->SetStatus( MgClientHandler::hsIdle );
                             }
                             break;
+                        }
 
                         case ( IMgServiceHandler::mpsClosed ) :
+                        {
                             // Push an error on the handler and remove it from reactor
                             // to force a timely close
                             if (NULL != (MgClientHandler*) pClientHandler)
                             {
                                 pClientHandler->reactor()->remove_handler(
-                                pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
+                                    pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
                             }
                             break;
+                        }
 
                         case ( IMgServiceHandler::mpsOther ) :
+                        {
                             if (NULL != (MgClientHandler*) pClientHandler)
                             {
                                 pClientHandler->SetStatus( MgClientHandler::hsBusy );
                             }
                             break;
+                        }
                     }
                 }
 
                 //  Cleanup message block
-                messageBlock->release();
-                messageBlock = NULL;
+                if (messageBlock != NULL)
+                {
+                    messageBlock->release();
+                    messageBlock = NULL;
+                }
             }
         }
     }
