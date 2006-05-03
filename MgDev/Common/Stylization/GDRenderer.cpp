@@ -630,8 +630,8 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
     //rotation angle
     double angle = mdef.rotation() * M_PI / 180.0;
 
-    double lastAspect = (m_lastSymbol.height() == 0.0) ? 2.0 : m_lastSymbol.width() / m_lastSymbol.height();
-    double aspect = (mdef.height() == 0.0) ? 2.0 : mdef.width() / mdef.height();
+    double lastAspect = (m_lastSymbol.height() == 0.0) ? -1.0 : m_lastSymbol.width() / m_lastSymbol.height();
+    double aspect = (mdef.height() == 0.0) ? -1.0 : mdef.width() / mdef.height();
 
     if (!symbol && is_font_symbol)
     {
