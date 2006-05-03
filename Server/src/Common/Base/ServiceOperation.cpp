@@ -204,6 +204,17 @@ bool MgServiceOperation::HandleException(MgException* except)
     {
         WriteResponseStream(except);
         handled = true;
+
+        // Log the exception
+        MgServerManager* serverManager = MgServerManager::GetInstance();
+        STRING locale = (NULL == serverManager) ?
+            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+        STRING message = except->GetMessage(locale);
+        STRING details = except->GetDetails(locale);
+        STRING stackTrace = except->GetStackTrace(locale);
+
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
     }
     else if (NULL != m_currConnection)
     {
