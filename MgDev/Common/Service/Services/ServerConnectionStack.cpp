@@ -97,11 +97,15 @@ MgServerConnection* MgServerConnectionStack::Pop()
             {
                 // Check to see if stream is still alive... It better be!
                 Ptr<MgStream> stream = conn->GetStream();
-                if (stream != NULL && stream->GetStreamHelper()->IsConnected() == false)
+                if (stream != NULL)
                 {
-                    stream = NULL;
-                    SAFE_RELEASE(conn);
-                    conn = NULL;
+                    Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
+                    if (helper->IsConnected() == false)
+                    {
+                        stream = NULL;
+                        SAFE_RELEASE(conn);
+                        conn = NULL;
+                    }
                 }
             }
         }
