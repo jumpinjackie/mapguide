@@ -1763,6 +1763,9 @@ void GDRenderer::AddDWFContent(RS_InputStream*   in,
                                 _DWFCORE_THROW(DWFMemoryException,L"Out of memory");
                             }
 
+                            RSDWFInputStream rsdwfin(pStream);
+                            AddW2DContent(&rsdwfin, xformer, w2dfilter);
+
                             DWFCORE_FREE_OBJECT(pStream);
                         }
 
