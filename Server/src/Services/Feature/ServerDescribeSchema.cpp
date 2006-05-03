@@ -1428,11 +1428,12 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
     this->ExecuteDescribeSchema(resource, schemaName);
     CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.GetIdentityProperties");
 
-    // Get schema count
+    // There should be at least one schema for the primary feature source
     GisInt32 cnt = m_ffsc->GetCount();
-    for (GisInt32 i = 0; i < cnt; i++)
+    if (cnt > 0)
     {
-        GisPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(i);
+        // Retrieve schema for primary feature source
+        GisPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(0);
 
         // Get all classes for a schema
         GisPtr<FdoClassCollection> fcc = ffs->GetClasses();
@@ -1449,31 +1450,16 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
             STRING qualifiedName = (const wchar_t*)qname;
             STRING::size_type nLength = qualifiedName.length();
 
-            // Parse the extension name from the custom qualified name
+            // Get identity properties for only the primary source (ie extensionName is blank)
             STRING::size_type nExtensionStart = qualifiedName.find(L"[");
-            STRING::size_type nExtensionEnd = qualifiedName.find(L"]", nExtensionStart);
-            STRING extensionName;
-            if (STRING::npos != nExtensionStart)
+            if (STRING::npos == nExtensionStart)
             {
-                extensionName = qualifiedName.substr(nExtensionStart + 1, nExtensionEnd - 1);
-            }
+                // retrieve identity properties from FDO
+                GisPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
 
-            if (name != NULL && qname != NULL)
-            {
-                int idx1 = wcscmp(className.c_str(), qname);
-                int idx2 = wcscmp(className.c_str(), name);
-                int idx3 = wcscmp(className.c_str(), extensionName.c_str());
-
-                // className can be either fully qualified or non-qualified name
-                if (idx1 == 0 || idx2 == 0 || idx3 == 0)
-                {
-                    // retrieve identity properties from FDO
-                    GisPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
-
-                    MgServerGetFeatures msgf;
-                    msgf.GetClassProperties(idProps, fdpdc);
-                    break;
-                }
+                MgServerGetFeatures msgf;
+                msgf.GetClassProperties(idProps, fdpdc);
+                break;
             }
         }
     }
