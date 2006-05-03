@@ -201,6 +201,8 @@ void MgCommand::GetResponseResult(DataTypes retType, MgServerConnection* serverC
 {
     Ptr<MgStream> ptrStream = serverConn->GetStream();
 
+    bool bShouldEnd = true;
+
     switch(retType)
     {
         case knInt8:
@@ -260,6 +262,15 @@ void MgCommand::GetResponseResult(DataTypes retType, MgServerConnection* serverC
         case knObject:
         {
             m_retVal.val.m_obj = ptrStream->GetObject();
+
+            // If we're not returning a socket stream based reader, then no need
+            // to read/write end of stream.
+            MgByteReader* reader = dynamic_cast<MgByteReader*>(m_retVal.val.m_obj);
+            if (reader != NULL && dynamic_cast<ByteSourceSocketStreamImpl*>(reader->GetByteSource()->GetSourceImpl()) != NULL)
+            {
+                bShouldEnd = false;
+            }
+
             break;
         }
         case knVoid:
@@ -281,19 +292,8 @@ void MgCommand::GetResponseResult(DataTypes retType, MgServerConnection* serverC
         }
     }
 
-    bool bShouldEnd = true;
-    if (retType == knObject)
-    {
-        MgByteReader* reader = dynamic_cast<MgByteReader*>(m_retVal.val.m_obj);
-        if (reader != NULL && dynamic_cast<ByteSourceSocketStreamImpl*>(reader->GetByteSource()->GetSourceImpl()) != NULL)
-        {
-            bShouldEnd = false;
-        }
-    }
-
     if (bShouldEnd)
     {
-        // We are not returning a socket stream based reader.  Read/write end of stream
         EndOperation(ptrStream);
     }
 }
