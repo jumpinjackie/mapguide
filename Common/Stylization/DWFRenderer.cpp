@@ -786,7 +786,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     }
     else
     {
-        double diff = 0.5 * (1.0 - aspect) * SYMBOL_MAX;
+        double diff = 0.5 * (aspect - 1.0) * SYMBOL_MAX;
         dst = RS_Bounds(diff, 0, SYMBOL_MAX - diff, SYMBOL_MAX);
     }
 
