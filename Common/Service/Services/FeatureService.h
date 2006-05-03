@@ -213,7 +213,7 @@ PUBLISHED_API:
     /// <!-- Examples (PHP) -->
     /// \htmlinclude PHPExamplesTop.html
     /// \code
-    /// $datastores = $featureService->GetConnectionPropertyValues("Autodesk.Oracle.3.0", "DataStore", "Service=MapGuideService;Username=MapGuideUser;Password=test;DataStore=");
+    /// $datastores = $featureService->GetConnectionPropertyValues("Autodesk.Oracle", "DataStore", "Service=MapGuideService;Username=MapGuideUser;Password=test;DataStore=");
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
@@ -266,7 +266,7 @@ PUBLISHED_API:
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
     /// $boolResult =
-    /// $featureService->TestConnection("Autodesk.Oracle.3.0",
+    /// $featureService->TestConnection("Autodesk.Oracle",
     /// "Service=MapGuideService;Username=MapGuideUser;Password=test;DataStore=MapGuide");
     /// \htmlinclude ExampleBottom.html
     ///
