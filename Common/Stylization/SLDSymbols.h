@@ -145,4 +145,20 @@ static const double SLD_CIRCLE[] = {
     circpt(20)
 };
 
+
+//////////////////////////////////////////////
+
+//simle x symbol for use in error conditions
+
+static const double SLD_ERROR[] = {
+    0., 0.,
+    1., 0.,
+    1., 1.,
+    0., 0.,
+    0., 1.,
+    1., 1.,
+    1., 0.,
+    0., 1.
+};
+
 #endif
