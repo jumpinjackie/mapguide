@@ -330,7 +330,7 @@ EXTERNAL_API:
     /// \code
     /// <?xml version="1.0" encoding="UTF-8"?>
     /// <FdoLongTransactionList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FdoLongTransactionList-1.0.0.xsd">
-    ///    <ProviderName>OSGeo.ArcSDE.3.0</ProviderName>
+    ///    <ProviderName>OSGeo.ArcSDE</ProviderName>
     ///    <LongTransaction IsActive="false" IsFrozen="true">
     ///        <Name>DEFAULT</Name>
     ///        <Description>Instance default version.</Description>

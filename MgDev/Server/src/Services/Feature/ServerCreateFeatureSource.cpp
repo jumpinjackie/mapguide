@@ -64,7 +64,7 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
         throw new MgInvalidArgumentException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSrs", NULL);
 
     // Connect to provider
-    STRING sdfProvider = L"OSGeo.SDF.3.0"; // NOXLATE
+    STRING sdfProvider = L"OSGeo.SDF"; // NOXLATE
     STRING sdfConnString = L""; // NOXLATE
     MgServerFeatureConnection msfc(sdfProvider, sdfConnString);
 
@@ -117,7 +117,7 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     STRING resourceFile = resource->GetName() + L".sdf";
 
     STRING featureSource = L"<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"FeatureSource-1.0.0.xsd\">\n\
-<Provider>OSGeo.SDF.3.0</Provider>\n\
+<Provider>OSGeo.SDF</Provider>\n\
   <Parameter>\n\
     <Name>File</Name>\n";
 

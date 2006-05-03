@@ -71,6 +71,7 @@ public:
     void Close(FdoIConnection* pFdoConnection);
 
     MgSpatialContextInfoMap* GetSpatialContextInfo(MgResourceIdentifier* resourceIdentifier);
+    STRING UpdateProviderName(CREFSTRING providerName);
 
     void RemoveExpiredConnections();
     bool RemoveCachedFdoConnection(CREFSTRING key);
