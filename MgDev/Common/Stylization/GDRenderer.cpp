@@ -741,11 +741,17 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     poly = (RS_F_Point*)SLD_X;
                     npts = sizeof(SLD_X) / (2 * sizeof(double));
                 }
+                else if (wcscmp(nm, SLD_SQUARE_NAME) == 0)
+                {
+                    poly = (RS_F_Point*)SLD_SQUARE;
+                    npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
+                }
                 else
                 {
                     //default is a square
-                    poly = (RS_F_Point*)SLD_SQUARE;
-                    npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
+                    poly = (RS_F_Point*)SLD_ERROR;
+                    npts = sizeof(SLD_ERROR) / (2 * sizeof(double));
+                    nm = NULL;
                 }
 
                 //fill color
@@ -792,16 +798,36 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     gdImageFilledRectangle((gdImagePtr)tmp, 0, 0, gdImageSX((gdImagePtr)tmp)-1, gdImageSY((gdImagePtr)tmp), 0x7f000000);
                     gdImageAlphaBlending((gdImagePtr)tmp, 1);
 
-                    //draw fill
-                    // TODO: When a filled polygon image is down-sampled, a gray false edge is created.
-                    // This edge can only be seen when the real edge is not being drawn.
-                    gdImageSetThickness((gdImagePtr)tmp, 0);
-                    gdImageFilledPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdcfill);
-                    //draw outline with a thickness set so that when scaled down to
-                    //th destination image, the outline is still fully visible
-                    gdImageSetThickness((gdImagePtr)tmp, 10);
-                    gdImageOpenPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdcline);
+                    if (!nm)
+                    {
+                        //unknown symbol or symbol library error
+                        RS_Color red(255, 0, 0, 255);
+                        gdImagePtr brush1 = rs_gdImageThickLineBrush(rs_min(superw, superh) / 17, red);
+                        gdImageSetBrush((gdImagePtr)tmp, brush1);
+                        
+                        gdImageOpenPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdBrushed);
 
+                        gdImageSetBrush(tmp, NULL);
+                        gdImageDestroy(brush1);
+                    }
+                    else
+                    {
+                        //draw fill
+                        // TODO: When a filled polygon image is down-sampled, a gray false edge is created.
+                        // This edge can only be seen when the real edge is not being drawn.
+                        gdImageFilledPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdcfill);
+                        //draw outline with a thickness set so that when scaled down to
+                        //th destination image, the outline is still fully visible
+
+                        gdImagePtr brush1 = rs_gdImageThickLineBrush(rs_min(superw, superh) / 17, outline);
+                        gdImageSetBrush((gdImagePtr)tmp, brush1);
+
+                        gdImageOpenPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdBrushed);
+
+                        gdImageSetBrush(tmp, NULL);
+                        gdImageDestroy(brush1);
+
+                    }
 
                     // initialize the real cached symbol image to a transparent background
                     gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
@@ -843,13 +869,24 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                         pts[i].y = _TY(tempy);
                     }
 
-                    //draw fill
-                    gdImageSetAntiAliased((gdImagePtr)m_imout, gdcfill);
-                    gdImageFilledPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
+                    if (!nm)
+                    {
+                        //unknown symbol or symbol library error
+                        RS_Color red(255, 0, 0, 255);
+                        int gdcred = ConvertColor((gdImagePtr)m_imout, red);
 
-                    //draw outline
-                    gdImageSetAntiAliased((gdImagePtr)m_imout, gdcline);
-                    gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
+                        gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdcred);
+                    }
+                    else
+                    {
+                        //draw fill
+                        gdImageSetAntiAliased((gdImagePtr)m_imout, gdcfill);
+                        gdImageFilledPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
+
+                        //draw outline
+                        gdImageSetAntiAliased((gdImagePtr)m_imout, gdcline);
+                        gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
+                    }
                 }
             }
             else

@@ -878,11 +878,17 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                     poly = (RS_F_Point*)SLD_X;
                     npts = sizeof(SLD_X) / (2 * sizeof(double));
                 }
-                else
+                else if (wcscmp(nm, SLD_SQUARE_NAME) == 0)
                 {
-                    //default is a square
                     poly = (RS_F_Point*)SLD_SQUARE;
                     npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
+                }
+                else
+                {
+                    //default or error
+                    poly = (RS_F_Point*)SLD_ERROR;
+                    npts = sizeof(SLD_ERROR) / (2 * sizeof(double));
+                    nm = NULL;
                 }
 
                 EnsureBufferSize(npts);
@@ -905,21 +911,32 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                 //enclose W2D geometry in a macro
                 BeginMacro(file, 0, SYMBOL_MAX);
 
-                    if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
-                        file->desired_rendition().color() = WT_Color(0,0,255);
+                    if (!nm)
+                    {
+                        //symbol library error or unknown symbol
+
+                        file->desired_rendition().color() = WT_Color(255,0,0);
+                        WT_Polyline symbol(npts, pts, true);
+                        symbol.serialize(*file);
+                    }
                     else
-                        file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().color()));
+                    {
+                        if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
+                            file->desired_rendition().color() = WT_Color(0,0,255);
+                        else
+                            file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().color()));
 
-                    WT_Polygon symbolFill(npts, pts, true);
-                    symbolFill.serialize(*file);
+                        WT_Polygon symbolFill(npts, pts, true);
+                        symbolFill.serialize(*file);
 
-                    if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
-                        file->desired_rendition().color() = WT_Color(127,127,127);
-                    else
-                        file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().outline().color()));
+                        if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
+                            file->desired_rendition().color() = WT_Color(127,127,127);
+                        else
+                            file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().outline().color()));
 
-                    WT_Polyline symbol(npts, pts, true);
-                    symbol.serialize(*file);
+                        WT_Polyline symbol(npts, pts, true);
+                        symbol.serialize(*file);
+                    }
 
                 //end macro definition 
                 EndMacro(file);
