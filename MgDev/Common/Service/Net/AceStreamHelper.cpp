@@ -148,12 +148,15 @@ MgAceStreamHelper::~MgAceStreamHelper()
 //  <returns>
 //  Returns a MgStreamStatus value indicating the status of the operation.
 //  </returns>
-MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData( void* buffer, size_t size,
-    bool blocking, bool peeking)
+MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
+     size_t size, bool blocking, bool peeking)
 {
     ACE_ASSERT( size > 0 );
-
     MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
+
+// TODO: Callers catch exceptions and do NOT always check status codes, so it
+//       may be easier/cleaner to throw exceptions based on status codes here.
+//    MG_TRY()
 
     // Is our internal buffer big enough?  If not, expand it.
     if ( m_readBufSize < size )
@@ -180,7 +183,23 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData( void* buffer, size_t 
 
         ACE_SOCK_Stream stream;
         stream.set_handle( m_handle );
-        ssize_t res = stream.recv( &m_readBuffer[m_readBufEnd], m_readBufSize - m_readBufEnd, 0 );
+
+        // Windows has a timing problem. If trying to receive data too fast,
+        // it will fail. So, use a timeout to let it catch up then retry a
+        // number of times to see if it is a real failure.
+        // This workaround reduces the number of lockups significantly and
+        // eliminates the hanging problem when it takes so long to write a
+        // request to the socket.
+        const ACE_Time_Value timeout(2);
+        int numRetries = 60;
+        ssize_t res = 0;
+
+        do
+        {
+            res = stream.recv(&m_readBuffer[m_readBufEnd], m_readBufSize - m_readBufEnd, 0, &timeout);
+            --numRetries;
+        }
+        while (res < 0 && numRetries > 0);
 
         //  check if there was a failure
         if ( res < 0 )
@@ -229,6 +248,15 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData( void* buffer, size_t 
             }
         }
     }
+
+//    if (MgStreamHelper::mssError == stat)
+//    {
+//        throw new MgOperationProcessingException(L"MgAceStreamHelper.GetData",
+//            __LINE__, __WFILE__, NULL, L"", NULL);
+//    }
+
+//    MG_CATCH_AND_THROW(L"MgAceStreamHelper.GetData")
+
     return stat;
 };
 
@@ -366,12 +394,15 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetINT64( INT64& data, bool bl
 //  <returns>
 //  Returns a MgStreamStatus value indicating the status of the operation.
 //  </returns>
-MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteData( void* buffer, size_t size,
-                                      bool blocking, size_t* bytesWritten )
+MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteData(void* buffer,
+    size_t size, bool blocking, size_t* bytesWritten)
 {
-    MgStreamHelper::MgStreamStatus ret = MgStreamHelper::mssError;
-
     ACE_ASSERT( buffer && size > 0 );
+    MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
+
+// TODO: Callers catch exceptions and do NOT always check status codes, so it
+//       may be easier/cleaner to throw exceptions based on status codes here.
+//    MG_TRY()
 
     //  check parameters
     if ( buffer && size > 0 )
@@ -403,16 +434,24 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteData( void* buffer, size_
 
             if ( res != (ssize_t)size )
             {
-                blocking ? ret = MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
+                blocking ? stat = MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
             }
             else
             {
-                ret = MgStreamHelper::mssDone;
+                stat = MgStreamHelper::mssDone;
             };
         };
     };
 
-    return ret;
+//    if (MgStreamHelper::mssError == stat)
+//    {
+//        throw new MgOperationProcessingException(L"MgAceStreamHelper.WriteData",
+//            __LINE__, __WFILE__, NULL, L"", NULL);
+//    }
+
+//    MG_CATCH_AND_THROW(L"MgAceStreamHelper.WriteData")
+
+    return stat;
 };
 
 //////////////////////////////////////////////////////////////////

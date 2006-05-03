@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGACESTREAMHELPER_H_MG
-#define MGACESTREAMHELPER_H_MG
+#ifndef MGACESTREAMHELPER_H_
+#define MGACESTREAMHELPER_H_
 
 #include "StreamHelper.h"
 
@@ -46,8 +46,6 @@ class MG_SERVICE_API MgAceStreamHelper : public MgStreamHelper
     ////////////////////////////////////
     ////////////////////////////////////
     /// Buffered Reader Methods
-    MgStreamStatus GetData( void* buffer, size_t size, bool blocking = true, bool peeking = false );
-
     MgStreamStatus GetUINT8( UINT8& data, bool blocking = true, bool peeking = false );
 
     MgStreamStatus GetUINT16( UINT16& data, bool blocking = true, bool peeking = false );
@@ -101,13 +99,6 @@ class MG_SERVICE_API MgAceStreamHelper : public MgStreamHelper
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Recursive routine to write an arbitrarily large input buffer to the stream
-    /// If the input fits in our internal buffer, just use the internal buffer.
-    ///
-    MgStreamStatus WriteBytes(const unsigned char* buf, int nBytes);
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
     /// Flushes internal memory buffer to stream helper.  This method
     /// should be called once an entire packet has been assembled.
     ///
@@ -123,12 +114,21 @@ class MG_SERVICE_API MgAceStreamHelper : public MgStreamHelper
 
     void Dispose();
 
-    private:
+private:
 
     ///////////////////////////////////////////////////////////////////////
     /// Private Functions
 
+    MgStreamStatus GetData( void* buffer, size_t size, bool blocking = true, bool peeking = false );
+
     MgStreamStatus WriteData( void* buffer, size_t size, bool blocking = true, size_t* bytesWritten = NULL );
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Recursive routine to write an arbitrarily large input buffer to the stream
+    /// If the input fits in our internal buffer, just use the internal buffer.
+    ///
+    MgStreamStatus WriteBytes(const unsigned char* buf, int nBytes);
 
     MgStreamStatus UpdateReadBuffers( void* buffer, size_t size, bool peeking);
 
@@ -157,4 +157,4 @@ class MG_SERVICE_API MgAceStreamHelper : public MgStreamHelper
 };
 /// \endcond
 
-#endif  //  MGACESTREAMHELPER_H_MG
+#endif  //  MGACESTREAMHELPER_H_
