@@ -1199,8 +1199,6 @@
         var $repositoryCheckpointsTimerIntervalPropStr;
         var $packagesPath;
         var $packagesPathPropStr;
-       // var $resourcePermissionCacheSize;
-       // var $resourcePermissionCacheSizePropStr;
 
 
         function ResourceServicePropsRecord()
@@ -1224,8 +1222,6 @@
             $this->repositoryCheckpointsTimerIntervalPropStr = MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval;
             $this->packagesPath = "";
             $this->packagesPathPropStr = MgConfigProperties::ResourceServicePropertyPackagesPath;
-         //   $this->resourcePermissionCacheSize = "";
-         //   $this->resourcePermissionCacheSizePropStr = MgConfigProperties::ResourceServicePropertyResourcePermissionCacheSize;
         }
 
         function GetProps( $serverAdmin )
@@ -1267,9 +1263,6 @@
             $this->packagesPath = $prop->GetValue();
             CleanUpPath( $this->packagesPath );
 
-          //  $prop = $props->GetItem( $this->resourcePermissionCacheSizePropStr );
-          //  $this->resourcePermissionCacheSize = $prop->GetValue();
-
             $props = $serverAdmin->GetConfigurationProperties( MgConfigProperties::GeneralPropertiesSection );
 
         }
@@ -1285,7 +1278,6 @@
             global $errInvalidResourceResourceSchemaFolder;
             global $errInvalidRepositoryCheckpointsTimerInterval;
             global $errInvalidPackagesPath;
-         //   global $errInvalidResourcePermissionCacheSize;
 
             if ( empty( $this->dataFileTrashFolder ) )
                 throw new Exception( $errInvalidResourceDataFileTrashFolder );
@@ -1305,8 +1297,6 @@
                 throw new Exception( $errInvalidRepositoryCheckpointsTimerInterval );
             if ( empty( $this->packagesPath ) )
                 throw new Exception( $errInvalidPackagesPath );
-        //    if ( $this->resourcePermissionCacheSize < 0 )
-        //        throw new Exception( $errInvalidResourcePermissionCacheSize );
         }
 
         function SetProps( $serverAdmin )
@@ -1339,9 +1329,6 @@
 
             $prop = new MgStringProperty( $this->packagesPathPropStr, $this->packagesPath );
             $props->Add( $prop );
-
-          //  $prop = new MgStringProperty( $this->resourcePermissionCacheSizePropStr, $this->resourcePermissionCacheSize );
-          //  $props->Add( $prop );
 
             $serverAdmin->SetConfigurationProperties( MgConfigProperties::ResourceServicePropertiesSection, $props );
 
