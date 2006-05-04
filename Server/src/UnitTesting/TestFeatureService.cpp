@@ -429,6 +429,10 @@ void TestFeatureService::TestCase_GetCapabilities()
         }
 
         STRING provider = L"OSGeo.SDF.3.0";
+        
+        MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        provider = fdoConnectionManager->UpdateProviderName(provider);
+
 
         Ptr<MgByteReader> reader = pService->GetCapabilities(provider);
         STRING mimetype = reader->GetMimeType();
