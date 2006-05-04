@@ -431,10 +431,14 @@ void TestFeatureService::TestCase_GetCapabilities()
         STRING provider = L"OSGeo.SDF.3.0";
         
         MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        provider = fdoConnectionManager->UpdateProviderName(provider);
+        if(fdoConnectionManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetCapabilities", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        STRING providerNoVersion = fdoConnectionManager->UpdateProviderName(provider);
 
 
-        Ptr<MgByteReader> reader = pService->GetCapabilities(provider);
+        Ptr<MgByteReader> reader = pService->GetCapabilities(providerNoVersion);
         STRING mimetype = reader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimetype.c_str(), MgMimeType::Xml.c_str()) == 0);
 
