@@ -20,6 +20,7 @@
 #include "XmlUtil.h"
 #include "ServiceManager.h"
 #include "LogManager.h"
+#include "LicenseManager.h" // TODO: This include is here to check if we are building MapGuide Enterprise or Open Source
 
 ACE_Recursive_Thread_Mutex MgFdoConnectionManager::sm_mutex;
 
@@ -867,6 +868,7 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
 {
     STRING providerNameNoVersion = providerName;
 
+#ifdef MAPGUIDE_ENTERPRISE
     // Remove the version from the provider name if it is found
     // ie: OSGeo.SDF.3.0 = OSGeo.SDF
     STRING::size_type index = providerNameNoVersion.find(L".");
@@ -879,12 +881,14 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
         if(STRING::npos != index)
         {
             // Found 2nd "."
+            // Update provider name to not include version
             providerNameNoVersion = providerNameNoVersion.substr(0, index);
         }
     }
+#endif
 
     #ifdef WIN32
-    // TODO: Remove this code once the bug in FDO G001 has been fixed.
+    // TODO: Remove this code once the bug in FDO has been fixed.
     // This code is to prevent the following providers from crashing and taking the server down
     // when the appropriate client is not installed:
     //   1) Oracle
@@ -893,7 +897,7 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
     //      Check for "libmysql.dll" if we cannot load it, then there is no MySQL client.
     //
     // Note: This code is for Windows only.
-    if(providerNameNoVersion == L"Autodesk.Oracle")
+    if((providerNameNoVersion == L"Autodesk.Oracle") || (providerNameNoVersion == L"Autodesk.Oracle.3.0"))
     {
         HMODULE hlib = LoadLibraryW(L"oci.dll");
         if (NULL == hlib)
@@ -905,7 +909,7 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
             throw new MgFdoException(L"MgFdoConnectionManager.TrimProviderName", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
         }
     }
-    else if(providerNameNoVersion == L"OSGeo.MySQL")
+    else if((providerNameNoVersion == L"OSGeo.MySQL") || (providerNameNoVersion == L"OSGeo.MySQL.3.0"))
     {
         HMODULE hlib = LoadLibraryW(L"libmysql.dll");
         if (NULL == hlib)
