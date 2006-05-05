@@ -88,6 +88,8 @@ void MgOpSelectFeaturesSpatial::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureAggregateOptions");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgDataReader> dataReader = m_service->SelectAggregate(resource, className, qryOptions);
         // Write the response

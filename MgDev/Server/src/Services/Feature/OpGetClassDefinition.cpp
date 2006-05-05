@@ -90,6 +90,8 @@ void MgOpGetClassDefinition::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(className.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgClassDefinition> classDefinition = m_service->GetClassDefinition(resource,
                                                                                schemaName,

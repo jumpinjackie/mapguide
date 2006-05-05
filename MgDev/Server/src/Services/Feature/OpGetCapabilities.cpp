@@ -79,6 +79,8 @@ void MgOpGetCapabilities::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(providerName.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetCapabilities(providerName);
 

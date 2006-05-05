@@ -90,6 +90,8 @@ void MgOpGetIdentityProperties::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(className.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgPropertyDefinitionCollection> props = m_service->GetIdentityProperties(resource,
                                                                                      schemaName,

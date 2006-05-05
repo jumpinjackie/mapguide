@@ -85,6 +85,8 @@ void MgOpGetSchemaMapping::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(partialConnString.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetSchemaMapping(providerName, partialConnString);
 

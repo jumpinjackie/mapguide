@@ -98,6 +98,8 @@ void MgOpGenerateLegendImage::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(themeCategory);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         Ptr<MgByteReader> byteReader =
             m_service->GenerateLegendImage(resource, scale, width, height, format, geomType, themeCategory);
 

@@ -92,6 +92,8 @@ void MgOpGetConnectionPropertyValues::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(partialConnString.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgStringCollection> strCol = m_service->GetConnectionPropertyValues(providerName, propertyName, partialConnString);
 

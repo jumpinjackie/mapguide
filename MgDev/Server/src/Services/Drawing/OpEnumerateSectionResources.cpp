@@ -80,6 +80,8 @@ void MgOpEnumerateSectionResources::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         Ptr<MgByteReader> byteReader;
 
         byteReader = m_service->EnumerateSectionResources(identifier, sectionName);

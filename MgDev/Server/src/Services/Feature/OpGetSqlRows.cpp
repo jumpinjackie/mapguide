@@ -78,6 +78,8 @@ void MgOpGetSqlRows::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(sqlReader);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgBatchPropertyCollection> rows = m_service->GetSqlRows(sqlReader);
 

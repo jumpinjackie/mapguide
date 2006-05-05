@@ -75,6 +75,8 @@ void MgOpGetCoordinateSpace::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         STRING coordinateSpace = m_service->GetCoordinateSpace(identifier);
 
         m_opCompleted = true;

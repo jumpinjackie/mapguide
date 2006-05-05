@@ -83,6 +83,8 @@ void MgOpDescribeSchemaAsXml::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(schemaName.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         STRING schema= m_service->DescribeSchemaAsXml(resource, schemaName);
 

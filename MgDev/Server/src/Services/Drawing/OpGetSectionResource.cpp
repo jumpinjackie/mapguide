@@ -80,6 +80,8 @@ void MgOpGetSectionResource::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(resourceName.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         Ptr<MgByteReader> byteReader = m_service->GetSectionResource(identifier,resourceName);
 
         m_opCompleted = true;

@@ -78,6 +78,8 @@ void MgOpSchemaToXml::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureSchemaCollection");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         STRING xmlSchema= m_service->SchemaToXml(schema);
 

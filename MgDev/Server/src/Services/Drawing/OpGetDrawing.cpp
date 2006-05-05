@@ -75,6 +75,8 @@ void MgOpGetDrawing::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         Ptr<MgByteReader> byteReader = m_service->GetDrawing(identifier);
 
         m_opCompleted = true;
