@@ -441,7 +441,7 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
     MG_TRY()
 
     {
-        ACE_Time_Value operationTime = 0;
+        ACE_Time_Value operationTime(0);
         ACE_ASSERT( pData );
         if ( pData )
         {
