@@ -918,7 +918,7 @@ INT64 MgServerManager::GetAvailableVirtualMemory()
 /// MgConnectionNotOpenException
 INT32 MgServerManager::GetUptime()
 {
-    ACE_Time_Value upTime = 0;
+    ACE_Time_Value upTime(0);
 
     MG_TRY()
 
