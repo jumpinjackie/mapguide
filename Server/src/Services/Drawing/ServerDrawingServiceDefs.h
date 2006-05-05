@@ -36,7 +36,7 @@ using namespace DWFCore;
     catch (DWFException& e)                                                   \
     {                                                                         \
         MgStringCollection arguments;                                         \
-        arguments.Add(e.message());                                           \
+        arguments.Add(STRING(e.message()));                                   \
         mgException = new MgDwfException(methodName, __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments); \
                                                                               \
     MG_CATCH(methodName)                                                      \
