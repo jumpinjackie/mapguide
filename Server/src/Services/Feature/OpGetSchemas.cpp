@@ -78,6 +78,8 @@ void MgOpGetSchemas::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgStringCollection> strCol = m_service->GetSchemas(resource);
 

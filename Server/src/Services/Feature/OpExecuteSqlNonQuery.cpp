@@ -83,6 +83,8 @@ void MgOpExecuteSqlNonQuery::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(sqlNonSelectStatement.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         INT32 rowsUpdated = m_service->ExecuteSqlNonQuery(resource, sqlNonSelectStatement);
 

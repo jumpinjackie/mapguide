@@ -66,6 +66,8 @@ void MgOpRenderMap::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         Ptr<MgByteReader> byteReader =
             m_service->RenderMap(map, selection, format);
 
@@ -109,6 +111,8 @@ void MgOpRenderMap::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Authenticate();
 
         Ptr<MgByteReader> byteReader =
             m_service->RenderMap(map, selection, extents, width, height, color, format);
@@ -158,6 +162,8 @@ void MgOpRenderMap::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Authenticate();
 
         Ptr<MgByteReader> byteReader =
             m_service->RenderMap(map, selection, center, scale, width, height, color, format);

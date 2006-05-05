@@ -56,6 +56,8 @@ void MgOpClearCache::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         m_service->ClearCache(map);
 
         m_opCompleted = true;

@@ -88,6 +88,8 @@ void MgOpSelectFeatures::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureQueryOptions");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgFeatureReader> featureReader = m_service->SelectFeatures(resource, className, qryOptions);
         // Write the response

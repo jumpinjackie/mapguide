@@ -71,6 +71,8 @@ void MgOpGetTile::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileRow");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         Ptr<MgByteReader> byteReader =
             m_service->GetTile(map, baseMapLayerGroupName, tileCol, tileRow);
 

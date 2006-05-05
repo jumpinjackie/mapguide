@@ -84,6 +84,8 @@ void MgOpGeneratePlot::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgDwfVersion");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, plotSpec, layout, dwfVersion);
 

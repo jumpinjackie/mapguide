@@ -80,6 +80,8 @@ void MgOpEnumerateLayers::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         Ptr<MgStringCollection> strCol;
 
         strCol = m_service->EnumerateLayers(identifier, sectionName);

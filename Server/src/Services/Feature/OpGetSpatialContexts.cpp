@@ -84,6 +84,8 @@ void MgOpGetSpatialContexts::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(activeOnly);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgSpatialContextReader> spatialContextReader = m_service->GetSpatialContexts(resource, activeOnly);
 

@@ -94,6 +94,8 @@ void MgOpQueryFeaturesWms::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(coordinateSpace.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         Ptr<MgByteReader> byteReader =
             m_service->QueryFeatures(map, layerNames, x, y, maxFeatures,
             coordinateSpace);

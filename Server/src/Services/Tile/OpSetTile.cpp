@@ -80,6 +80,8 @@ void MgOpSetTile::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileRow");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         m_service->SetTile(img, map, scaleIndex, baseMapLayerGroupName, tileCol, tileRow);
 
         m_opCompleted = true;

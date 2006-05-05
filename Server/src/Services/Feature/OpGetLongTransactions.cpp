@@ -84,6 +84,8 @@ void MgOpGetLongTransactions::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(activeOnly);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgLongTransactionReader> longTransactionReader = m_service->GetLongTransactions(resource, activeOnly);
 

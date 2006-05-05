@@ -91,6 +91,8 @@ void MgOpGetRaster::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(ySize);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Authenticate();
+
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetRaster(featId, xSize, ySize, rasterProp);
 
