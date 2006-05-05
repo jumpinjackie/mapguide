@@ -868,7 +868,7 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
 {
     STRING providerNameNoVersion = providerName;
 
-#ifdef MAPGUIDE_ENTERPRISE
+#ifdef FDO_RELIANT_VERSION
     // Remove the version from the provider name if it is found
     // ie: OSGeo.SDF.3.0 = OSGeo.SDF
     STRING::size_type index = providerNameNoVersion.find(L".");
