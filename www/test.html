@@ -1,0 +1,101 @@
+<html>
+	<head>
+		<title>MapGuide Open Source</title>
+		<link href="styles/projectcontent.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<script type="text/javascript">
+			// This code removes the project page title and information. It may need to change when
+			// the CEE platform is upgraded.
+			function replaceLinks() {
+			try {
+			var apphead = document.getElementById("apphead");
+			if (apphead != null) {
+			apphead.innerHTML = "";
+			}
+			var projecthome = document.getElementById("projecthome");
+			if (projecthome != null) {
+			var tableCollection = projecthome.getElementsByTagName("table");
+			if (tableCollection[0] != null)	{
+			rowCount = tableCollection[0].rows.length;
+			for (i = 0; i < rowCount; i++) {
+						tableCollection[0].deleteRow(0);
+					}
+				}    
+			}  
+          } catch (e) {
+          }
+      }
+      window.onload=replaceLinks;
+		</script>
+		<div class="h2"><h2>MapGuide Open Source - Project Home</h2>
+		<p><a href="images/MapGuideAjaxViewerHiRes.png">
+					<img src="images/MapGuideAjaxViewerThumb.png" alt="Click For Full Size Image" width="220" height="159" hspace="10" border="0" align="right">
+				</a>
+MapGuide Open Source is a web-based platform that enables users to quickly develop and deploy web mapping applications and geospatial web services.
+
+MapGuide features an interactive viewer that includes support for feature selection, property inspection, map tips, and operations such as buffer, select within, and measure. MapGuide includes an XML database for managing content, and supports most popular geospatial file formats, databases, and standards. MapGuide can be deployed on Linux or Windows, supports Apache and IIS web servers, and offers extensive PHP, .NET, Java, and JavaScript APIs for application development. MapGuide Open Source is licensed under the LGPL.
+</p><p>
+Learn more, get involved or <a href="https://mapguide.osgeo.org/downloads.html">download</a> the software today. There are several ways to participate either as a <a href="user.html">user</a> or <a href="developer.html">contributor</a>.</p>
+
+MapGuide Open Source is a new web  mapping platform that was originally developed by Autodesk and contributed to the Open Source Geospatial Foundation. Learn more, get involved or <a href="https://mapguide.osgeo.org/downloads.html">download</a> the software today. There are several ways to participate either as a <a href="user.html">user</a> or <a href="developer.html">contributor</a>. Your participation is   welcome!
+		</p>
+		<p>MapGuide Open Source 1.0.0 -  is now available. </p>
+		</div>
+		<table cellpadding="2" cellspacing="2">
+			<tr  valign="top" align="left">
+				<td witdth="50%" valign="top" halign="left">
+					<div class="h2"><h2>Announcements</h2>
+						<p><A href="https://mapguide.osgeo.org/servlets/NewsItemView?newsItemID=5">The
+								MapGuide Open: A web mapping development contest with a chance to win a prize.
+							</A>
+						</p><p>
+MapGuide is sponsoring a contest to create a logo and mascot. Please see the <a href="http://wiki.osgeo.org/index.php/MapGuide_Logo/Mascot_Contest"> contest and rules</a>.
+						</p>
+					
+				</td>
+				<td align="left" valign="top" width="50%">
+<div class="h2"><h2>Developer Spotlight</h2>
+						<p > Paul Spencer (pagameba) is one of the <a href="https://www.osgeo.org/content/foundation/members/voting_members.html">voting members</a> of the <a href="https://www.osgeo.org/">OSGeo Foundation</a>. Paul is participating in the governance through the <a href="https://incubator.osgeo.org/">incubation committee</a>. Read on for <a href="https://news.osgeo.org/developer_spot/paul_spencer.html">Paul's interview</a>.
+						</p>
+					</div>
+
+					</div>
+					
+									</td>
+			</tr>
+			<tr>
+				<td width="50%" valign="top">
+					<div class="h2"><h2>Essentials</h2>
+						<p><a href="about.html">About</a></p>
+						<p><a href="features.html">Features</a></p>
+						<p><a href="system_requirements.html">Requirements</a></p>
+						<p><a href="gettingstarted.html">Getting Started</a></p>
+						<p><a href="faq.html">FAQ</a></p>
+						<p><a href="livegallery.html">Live Application Gallery</a></p>
+						<p><a href="gallery.html">Screen Shot Gallery</a>
+          <!--
+		  <p>Samples
+	      <ul type="square">
+			   <li><a href="gallery.html">Gallery</a></li>
+			   <li><a href="applications.html">Applications</a> [Coming Soon]</li>
+		  </ul>
+          </p>
+-->
+						</p>
+					</div>
+				</td>
+				<td width="50%" align="left" valign="top">
+					<div class="h2"><h2>Releases</h2>
+						<p><a href="downloads.html">Downloads</a></p>
+						<p><a href="documentation.html">Documentation</a></p><br>
+					</div>
+					<div class="h2"><h2>Get Involved</h2>
+						<p><a href="user.html">As a User</a></p>
+						<p><a href="developer.html">As a Contributor</a></p>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
