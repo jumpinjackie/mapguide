@@ -87,7 +87,7 @@ void MgOpTestConnection::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(connectionString.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         bool canConnect = m_service->TestConnection(providerName,connectionString);

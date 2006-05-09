@@ -78,7 +78,7 @@ void MgOpEnumerateResourceReferences::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         Ptr<MgByteReader> byteReader =
             m_service->EnumerateReferences(resource);

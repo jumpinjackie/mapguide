@@ -80,8 +80,8 @@ void MgOpSetDocument::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         m_service->SetDocument(identifier, pByteReader);
 

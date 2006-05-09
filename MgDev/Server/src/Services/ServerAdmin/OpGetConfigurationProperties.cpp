@@ -75,8 +75,8 @@ void MgOpGetConfigurationProperties::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(propertySection.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         Ptr<MgPropertyCollection> pPropertyCollection;
         pPropertyCollection = m_service->GetConfigurationProperties(propertySection);

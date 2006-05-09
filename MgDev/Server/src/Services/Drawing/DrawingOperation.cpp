@@ -54,3 +54,14 @@ MgDrawingOperation::MgDrawingOperation()
 MgDrawingOperation::~MgDrawingOperation()
 {
 }
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Perform validation on the operation
+/// </summary>
+///----------------------------------------------------------------------------
+
+void MgDrawingOperation::Validate()
+{
+    CheckLicense();
+}

@@ -78,7 +78,7 @@ void MgOpGetDataRows::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(dataReader);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         Ptr<MgBatchPropertyCollection> rows = m_service->GetDataRows(dataReader);

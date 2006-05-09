@@ -65,3 +65,14 @@ MgStringCollection* MgServerAdminOperation::GetRoles() const
 {
     return GetAdministratorRole();
 }
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Perform validation on the operation
+/// </summary>
+///----------------------------------------------------------------------------
+
+void MgServerAdminOperation::Validate()
+{
+    AuthenticateCurrentUser();
+}

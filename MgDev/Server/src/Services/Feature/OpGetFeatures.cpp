@@ -78,7 +78,7 @@ void MgOpGetFeatures::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(featId);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         Ptr<MgBatchPropertyCollection> features = m_service->GetFeatures(featId);

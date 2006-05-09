@@ -69,6 +69,8 @@ void MgOpNotifyResourcesChanged::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSerializableCollection");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        // Validate() not called here because this is an internal server-only operation.
+        // Instead, MgSecurityManager::Authenticate() should be called to perform authentication.
         MgSecurityManager::Authenticate(MgUserInformation::GetCurrentUserInfo());
 
         m_service->NotifyResourcesChanged(resources);

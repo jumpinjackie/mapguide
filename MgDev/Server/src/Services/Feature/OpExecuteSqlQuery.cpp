@@ -83,7 +83,7 @@ void MgOpExecuteSqlQuery::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(sqlStatement.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         Ptr<MgSqlDataReader> sqlReader = m_service->ExecuteSqlQuery(resource, sqlStatement);

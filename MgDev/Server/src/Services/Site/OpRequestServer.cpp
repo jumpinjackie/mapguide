@@ -79,7 +79,7 @@ void MgOpRequestServer::Execute()
 //        MG_LOG_OPERATION_MESSAGE_ADD_INT32(serviceType);
 //        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         STRING serverAddress = m_service->RequestServer(serviceType);
 

@@ -83,7 +83,7 @@ void MgOpDescribeSchema::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(schemaName.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         Ptr<MgFeatureSchemaCollection> schemaCollection = m_service->DescribeSchema(resource, schemaName);

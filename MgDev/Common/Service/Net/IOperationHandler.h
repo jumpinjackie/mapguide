@@ -35,7 +35,7 @@ public:
     ///  Methods
 
     ///  Initializes the operation from the stream
-    virtual void Init(MgStreamData* data, const MgOperationPacket& packet) = 0;
+    virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet) = 0;
     ///  Executes the operation
     virtual void Execute() = 0;
     ///  Handles the exception

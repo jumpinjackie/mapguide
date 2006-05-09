@@ -84,7 +84,7 @@ void MgOpCreateRepository::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         m_service->CreateRepository(resource, content, header);
 

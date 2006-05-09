@@ -90,7 +90,7 @@ void MgOpRenameResourceData::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(overwrite);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         m_service->RenameResourceData(resource, oldDataName, newDataName, overwrite);
 

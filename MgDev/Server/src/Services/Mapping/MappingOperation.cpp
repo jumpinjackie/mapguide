@@ -50,3 +50,14 @@ MgMappingOperation::MgMappingOperation()
 MgMappingOperation::~MgMappingOperation()
 {
 }
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Perform validation on the operation
+/// </summary>
+///----------------------------------------------------------------------------
+
+void MgMappingOperation::Validate()
+{
+    CheckLicense();
+}

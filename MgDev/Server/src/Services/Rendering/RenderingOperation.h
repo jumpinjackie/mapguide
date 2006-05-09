@@ -40,6 +40,10 @@ class MgRenderingOperation : public MgServiceOperation
 
         virtual MgService* GetService();
 
+    protected:
+
+        virtual void Validate();
+
 /// Member Variables
 
     protected:

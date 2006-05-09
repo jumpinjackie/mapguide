@@ -85,7 +85,7 @@ void MgOpGetLayer::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(layerName.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         Ptr<MgByteReader> byteReader = m_service->GetLayer(identifier, sectionName, layerName);
 

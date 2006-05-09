@@ -83,8 +83,8 @@ void MgOpUpdateServer::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(newAddress.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         m_service->UpdateServer( oldName, newName, newDescription, newAddress );
 

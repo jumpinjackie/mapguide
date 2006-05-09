@@ -74,7 +74,7 @@ void MgOpGetResourceModifiedDate::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         Ptr<MgDateTime> dateTime = m_service->GetResourceModifiedDate(resource);
 

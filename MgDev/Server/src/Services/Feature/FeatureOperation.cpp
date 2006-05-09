@@ -56,3 +56,14 @@ MgFeatureOperation::MgFeatureOperation()
 MgFeatureOperation::~MgFeatureOperation()
 {
 }
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Perform validation on the operation
+/// </summary>
+///----------------------------------------------------------------------------
+
+void MgFeatureOperation::Validate()
+{
+    CheckLicense();
+}

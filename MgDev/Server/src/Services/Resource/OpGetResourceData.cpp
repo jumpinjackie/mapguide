@@ -86,7 +86,7 @@ void MgOpGetResourceData::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(preProcessTags.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         Ptr<MgByteReader> byteReader =
             m_service->GetResourceData(resource, dataName, preProcessTags);

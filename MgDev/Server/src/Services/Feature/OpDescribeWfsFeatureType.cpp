@@ -83,7 +83,7 @@ void MgOpDescribeWfsFeatureType::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->DescribeWfsFeatureType(featureSourceId, featureClasses);

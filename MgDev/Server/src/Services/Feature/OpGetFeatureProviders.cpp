@@ -74,7 +74,7 @@ void MgOpGetFeatureProviders::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetFeatureProviders();

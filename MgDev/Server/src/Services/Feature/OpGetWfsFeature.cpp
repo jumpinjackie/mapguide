@@ -107,7 +107,7 @@ void MgOpGetWfsFeature::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetWfsFeature(featureSourceId, featureClass,

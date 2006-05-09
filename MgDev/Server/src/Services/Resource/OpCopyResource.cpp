@@ -86,7 +86,7 @@ void MgOpCopyResource::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(overwrite);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         m_service->CopyResource(sourceResource, destResource, overwrite);
 

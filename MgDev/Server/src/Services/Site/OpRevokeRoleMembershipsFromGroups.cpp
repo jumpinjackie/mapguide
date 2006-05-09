@@ -72,8 +72,8 @@ void MgOpRevokeRoleMembershipsFromGroups::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         m_service->RevokeRoleMembershipsFromGroups( roles, groups );
 

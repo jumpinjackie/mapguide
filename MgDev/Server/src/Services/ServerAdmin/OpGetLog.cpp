@@ -75,8 +75,8 @@ void MgOpGetLog::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(log.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log);
 
@@ -98,8 +98,8 @@ void MgOpGetLog::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(numEntries);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log, numEntries);
 
@@ -140,8 +140,8 @@ void MgOpGetLog::Execute()
         }
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log, fromDate, toDate);
 

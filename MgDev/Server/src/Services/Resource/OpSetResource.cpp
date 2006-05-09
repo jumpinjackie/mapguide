@@ -84,7 +84,7 @@ void MgOpSetResource::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         m_service->SetResource(resource, content, header);
 
