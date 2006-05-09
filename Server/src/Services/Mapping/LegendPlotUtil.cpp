@@ -55,7 +55,6 @@ const double scaleHeaderFontHeight = 0.003; // meters
 const double scaleLabelFontHeight = 0.002; // meters
 const double scaleLabelOffsetY = 0.1406; // inch
 const double scaleFooterOffsetY = 0.2344; // inch
-const STRING scaleFontName = L"Arial";
 const STRING scaleLabelPrefix = L"Scale 1 : ";
 
 const double northArrowWidth = 1.0;   // inch
@@ -87,12 +86,22 @@ const double legendTextVertAdjust = 0.07;  // inch
 MgLegendPlotUtil::MgLegendPlotUtil(MgResourceService* svcResource)
 {
     m_svcResource = SAFE_ADDREF(svcResource);
+
+    // get the name of the font to use with the legend
+    MgConfiguration* pConf = MgConfiguration::GetInstance();
+    pConf->GetStringValue(MgConfigProperties::MappingServicePropertiesSection,
+                          MgConfigProperties::MappingServicePropertyLegendFont,
+                          m_legendFontName,
+                          MgConfigProperties::DefaultMappingServicePropertyLegendFont);
+    assert(m_legendFontName.length() > 0);
 }
+
 
 MgLegendPlotUtil::~MgLegendPlotUtil()
 {
     SAFE_RELEASE(m_svcResource);
 }
+
 
 void MgLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgMap* map, MgPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY)
 {
@@ -130,11 +139,11 @@ void MgLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgMap* m
     BuildLegendContent(map, dMapScale, legendSpec, legendOffsetX, legendOffsetY, dr, convertUnits);
 }
 
+
 void MgLegendPlotUtil::BuildLegendContent(MgMap* map, double scale, MgPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY, Renderer& dr, double convertUnits)
 {
     RS_TextDef textDef;
-    RS_String fontName = L"Arial";
-    RS_FontDef fontDef(fontName, legendFontHeightMeters, RS_FontStyle_Regular, RS_Units_Device);
+    RS_FontDef fontDef(m_legendFontName, legendFontHeightMeters, RS_FontStyle_Regular, RS_Units_Device);
     textDef.font() = fontDef;
     textDef.halign() = RS_HAlignment_Left;
     textDef.valign() = RS_VAlignment_Base;
@@ -181,6 +190,7 @@ void MgLegendPlotUtil::BuildLegendContent(MgMap* map, double scale, MgPlotSpecif
         ProcessLayersForLegend(map, scale, mggroup, x, y, textDef, dr, legendSpec, legendOffsetY, convertUnits);
     }
 }
+
 
 void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgPlotSpecification* legendSpec, double legendOffsetY, double convertUnits)
 {
@@ -503,6 +513,7 @@ void MgLegendPlotUtil::ExtentFromMapCenter(MgMap* map, double metersPerUnit, RS_
     }
 }
 
+
 void MgLegendPlotUtil::AddTitleElement(MgPrintLayout* layout, STRING& mapName, EPlotRenderer& dr)
 {
     LineBuffer lb(4);
@@ -519,8 +530,7 @@ void MgLegendPlotUtil::AddTitleElement(MgPrintLayout* layout, STRING& mapName, E
 
     // TODO: Adjust text size based on string length
     RS_TextDef textDef;
-    RS_String fontName = L"Arial";
-    RS_FontDef fontDef(fontName, 0.01, (RS_FontStyle_Mask)0, RS_Units_Device);
+    RS_FontDef fontDef(m_legendFontName, 0.01, (RS_FontStyle_Mask)0, RS_Units_Device);
     textDef.font() = fontDef;
     textDef.halign() = RS_HAlignment_Center;
 
@@ -811,12 +821,11 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
 
     // scalebar text
     RS_TextDef textDef;
-    RS_String fontName = scaleFontName;
-    RS_FontDef fontDef(fontName, scaleHeaderFontHeight, (RS_FontStyle_Mask)0, RS_Units_Device);
+    RS_FontDef fontDef(m_legendFontName, scaleHeaderFontHeight, (RS_FontStyle_Mask)0, RS_Units_Device);
     textDef.font() = fontDef;
     textDef.halign() = RS_HAlignment_Center;
     textDef.valign() = RS_VAlignment_Base;
-    textDef.rotation() = 0;
+    textDef.rotation() = 0.0;
 
     // ...scalebar header
     string strLabelText;
@@ -991,11 +1000,11 @@ void MgLegendPlotUtil::AddNorthArrowElement(MgPrintLayout* layout, EPlotRenderer
 
 void MgLegendPlotUtil::AddUrlElement(MgPrintLayout* layout, STRING& mapURL, EPlotRenderer& dr)
 {
-    double x = 0;
-    double y = 0;
+    double x = 0.0;
+    double y = 0.0;
+
     RS_TextDef textDef;
-    RS_String fontName = L"Arial";
-    RS_FontDef fontDef(fontName, 0.003, (RS_FontStyle_Mask)0, RS_Units_Device);
+    RS_FontDef fontDef(m_legendFontName, 0.003, (RS_FontStyle_Mask)0, RS_Units_Device);
     textDef.font() = fontDef;
     textDef.halign() = RS_HAlignment_Left;
     textDef.valign() = RS_VAlignment_Base;
@@ -1025,8 +1034,7 @@ void MgLegendPlotUtil::AddDateTimeElement(MgPrintLayout* layout, EPlotRenderer& 
 
     // Create font and right justify
     RS_TextDef textDef;
-    RS_String fontName = L"Arial";
-    RS_FontDef fontDef(fontName, 0.003, (RS_FontStyle_Mask)0, RS_Units_Device);
+    RS_FontDef fontDef(m_legendFontName, 0.003, (RS_FontStyle_Mask)0, RS_Units_Device);
     textDef.font() = fontDef;
     textDef.halign() = RS_HAlignment_Right;
     textDef.valign() = RS_VAlignment_Base;

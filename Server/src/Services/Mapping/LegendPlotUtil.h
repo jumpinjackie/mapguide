@@ -50,6 +50,7 @@ public:
 private:
 
     MgResourceService* m_svcResource;
+    RS_String m_legendFontName;
 };
 
 #endif
