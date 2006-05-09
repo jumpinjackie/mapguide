@@ -211,6 +211,8 @@ const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTime
 // Mapping Service Properties
 // ******************************************************************
 const STRING MgConfigProperties::MappingServicePropertiesSection                            = L"MappingServiceProperties";
+const STRING MgConfigProperties::MappingServicePropertyLegendFont                           = L"LegendFont";
+const STRING MgConfigProperties::DefaultMappingServicePropertyLegendFont                    = L"Arial";
 
 // ******************************************************************
 // Rendering Service Properties
