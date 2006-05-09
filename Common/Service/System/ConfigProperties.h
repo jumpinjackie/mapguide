@@ -264,12 +264,16 @@ EXTERNAL_API:
     /// Mapping Service properties
     static const STRING MappingServicePropertiesSection;                /// value("MappingServiceProperties")
 
+    /// Sets the font to use when rendering legend elements
+    static const STRING MappingServicePropertyLegendFont;               /// value("LegendFont")
+    static const STRING DefaultMappingServicePropertyLegendFont;        /// value("Arial")
+
     /// RENDERING SERVICE PROPERTIES SECTION -----------------------------------------------------------------------------
 
     /// Rendering Service properties
     static const STRING RenderingServicePropertiesSection;              /// value("RenderingServiceProperties")
 
-    /// Maximum request extent offset to use when requesting features for a tile, specified as a factor of the tile size
+    /// Sets the maximum request extent offset to use when requesting features for a tile, specified as a factor of the tile size
     static const STRING RenderingServicePropertyTileExtentOffset;       /// value("TileExtentOffset")
     static const double DefaultRenderingServicePropertyTileExtentOffset;/// value(0.35)
 
