@@ -78,7 +78,7 @@ void MgOpEnumerateRepositories::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(type.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateRepositories(type);
 

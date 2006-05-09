@@ -52,3 +52,15 @@ MgResourceOperation::MgResourceOperation()
 MgResourceOperation::~MgResourceOperation()
 {
 }
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Perform validation on the operation
+/// </summary>
+///----------------------------------------------------------------------------
+
+void MgResourceOperation::Validate()
+{
+    CheckLicense();
+    AuthenticateCurrentUser();
+}

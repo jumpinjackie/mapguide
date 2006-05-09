@@ -131,7 +131,7 @@ MgStringCollection* MgServiceOperation::GetRoles() const
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Initializes the object from the given stream data and operation packet
-/// parameters. Implements IOperation::Init().
+/// parameters. Implements IOperation::Initialize().
 /// </summary>
 ///
 /// <param name="data">
@@ -148,7 +148,7 @@ MgStringCollection* MgServiceOperation::GetRoles() const
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::Init(MgStreamData* data,
+void MgServiceOperation::Initialize(MgStreamData* data,
     const MgOperationPacket& packet)
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::Init()\n" )));
@@ -526,25 +526,8 @@ void MgServiceOperation::WriteResponseStream(MgException* except)
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::Authenticate()
+void MgServiceOperation::AuthenticateCurrentUser()
 {
-    // Perform the license validation.
-    if (!IsOverheadOperation())
-    {
-        // The license does not need to be checked for ServerAdmin and Site operations
-        // to allow processing of operations, such as viewing error logs, when license check fails.
-        if (m_packet.m_ServiceID != MgPacketParser::msiServerAdmin &&
-            m_packet.m_ServiceID != MgPacketParser::msiSite)
-        {
-            MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
-
-            if (NULL != licenseManager)
-            {
-                licenseManager->CheckLicense();
-            }
-        }
-    }
-
     // Currently, only Server Admin/Site/Resource Service operations need
     // user role authentication. This may change in the future.
     MgServerManager* serverManager = MgServerManager::GetInstance();
@@ -566,3 +549,43 @@ void MgServiceOperation::Authenticate()
         siteService->Authenticate(currUserInfo, requiredRoles, false);
     }
 }
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Checks whether or not a valid license is available to 
+/// perform the current operation.
+/// </summary>
+///
+/// <exceptions>
+/// MgInvalidOperationException
+/// MgNullArgumentException
+/// MgInvalidArgumentException
+/// MgLengthException
+/// MgDateTimeException
+/// MgFileIoException
+/// MgEncryptionException
+/// MgDecryptionException
+/// MgInvalidLicenseException
+/// MgLicenseExpiredException
+/// MgEvaluationExpiredException
+/// MgInvalidSerialNumberException
+/// MgUnclassifiedException
+/// </exceptions>
+///----------------------------------------------------------------------------
+
+void MgServiceOperation::CheckLicense()
+{
+    // Perform the license validation.
+    if (!IsOverheadOperation())
+    {
+        // The license does not need to be checked for ServerAdmin and Site operations
+        // to allow processing of operations, such as viewing error logs, when license check fails.
+        MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
+
+        if (NULL != licenseManager)
+        {
+            licenseManager->CheckLicense();
+        }
+    }
+}
+

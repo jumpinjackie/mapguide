@@ -42,6 +42,8 @@ class MgServerAdminOperation : public MgServiceOperation
 
         virtual MgStringCollection* GetRoles() const;
 
+        virtual void Validate();
+
 /// Member Variables
 
     protected:

@@ -52,3 +52,14 @@ MgRenderingOperation::MgRenderingOperation()
 MgRenderingOperation::~MgRenderingOperation()
 {
 }
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Perform validation on the operation
+/// </summary>
+///----------------------------------------------------------------------------
+
+void MgRenderingOperation::Validate()
+{
+    CheckLicense();
+}

@@ -80,7 +80,7 @@ void MgOpEnumerateLayers::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         Ptr<MgStringCollection> strCol;
 

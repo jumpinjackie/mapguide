@@ -87,6 +87,8 @@ void MgOpAuthenticate::Execute()
 //        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(returnAssignedRoles);
 //        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        // Validate() not called here since this is the operation that performs authentication.
+
         Ptr<MgStringCollection> assignedRoles = m_service->Authenticate(userInfo,
             requiredRoles, returnAssignedRoles);
 

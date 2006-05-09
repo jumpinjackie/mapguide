@@ -83,8 +83,8 @@ void MgOpEnumerateGroups::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(role.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateGroups( user, role );
 

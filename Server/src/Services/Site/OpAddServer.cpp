@@ -78,8 +78,8 @@ void MgOpAddServer::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(address.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         m_service->AddServer( name, desc, address );
 

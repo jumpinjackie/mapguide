@@ -83,8 +83,8 @@ void MgOpEnumerateRoles::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(group.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         Ptr<MgStringCollection> collection = m_service->EnumerateRoles( user, group );
 

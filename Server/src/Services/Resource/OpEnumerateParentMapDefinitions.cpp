@@ -68,7 +68,7 @@ void MgOpEnumerateParentMapDefinitions::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSerializableCollection");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         Ptr<MgSerializableCollection> mapDefinitions =
             m_service->EnumerateParentMapDefinitions(resources);

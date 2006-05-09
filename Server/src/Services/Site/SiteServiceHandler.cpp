@@ -75,7 +75,7 @@ IMgServiceHandler::MgProcessStatus MgSiteServiceHandler::ProcessOperation()
         m_packet.m_OperationID, m_packet.m_OperationVersion));
     assert(NULL != handler.get());
 
-    handler->Init(m_data, m_packet);
+    handler->Initialize(m_data, m_packet);
     handler->Execute();
 
     status = IMgServiceHandler::mpsDone;

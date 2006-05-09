@@ -52,3 +52,20 @@ MgTileOperation::MgTileOperation()
 MgTileOperation::~MgTileOperation()
 {
 }
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Perform validation on the operation
+/// </summary>
+///----------------------------------------------------------------------------
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Perform validation on the operation
+/// </summary>
+///----------------------------------------------------------------------------
+
+void MgTileOperation::Validate()
+{
+    CheckLicense();
+}

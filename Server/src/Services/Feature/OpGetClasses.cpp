@@ -84,7 +84,7 @@ void MgOpGetClasses::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(schemaName.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         Ptr<MgStringCollection> strCol = m_service->GetClasses(resource, schemaName);

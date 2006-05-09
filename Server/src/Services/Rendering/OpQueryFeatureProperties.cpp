@@ -72,7 +72,7 @@ void MgOpQueryFeatureProperties::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"maxFeatures");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         Ptr<MgBatchPropertyCollection> info =
             m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant, maxFeatures);

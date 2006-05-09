@@ -75,8 +75,8 @@ void MgOpGetLogFile::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(logfile.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         Ptr<MgByteReader> byteReader = m_service->GetLogFile(logfile);
 

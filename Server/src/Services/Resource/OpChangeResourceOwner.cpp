@@ -86,7 +86,7 @@ void MgOpChangeResourceOwner::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(includeDescendants);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         m_service->ChangeResourceOwner(resource, owner, includeDescendants);
 

@@ -90,7 +90,7 @@ void MgOpUpdateFeatures::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         Ptr<MgPropertyCollection> rowsAffected = m_service->UpdateFeatures(resource, commands, useTransaction);

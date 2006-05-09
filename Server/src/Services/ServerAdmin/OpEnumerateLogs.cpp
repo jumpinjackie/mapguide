@@ -71,8 +71,8 @@ void MgOpEnumerateLogs::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         Ptr<MgPropertyCollection> logs = m_service->EnumerateLogs();
 

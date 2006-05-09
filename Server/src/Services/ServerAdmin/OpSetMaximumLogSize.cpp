@@ -75,8 +75,8 @@ void MgOpSetMaximumLogSize::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         m_service->SetMaximumLogSize(size);
 

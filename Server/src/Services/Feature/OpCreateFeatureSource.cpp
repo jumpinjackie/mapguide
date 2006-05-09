@@ -83,7 +83,7 @@ void MgOpCreateFeatureSource::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgCreateSdfParams");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        Authenticate();
+        Validate();
 
         // Execute the operation
         m_service->CreateFeatureSource(resource, params);

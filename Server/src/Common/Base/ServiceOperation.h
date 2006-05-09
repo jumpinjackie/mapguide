@@ -46,13 +46,15 @@ public:
 
     virtual MgService* GetService() = 0;
 
-    virtual void Init(MgStreamData* data, const MgOperationPacket& packet);
+    virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
     virtual void Execute() = 0;
     virtual bool HandleException(MgException* except);
 
 protected:
 
-    void Authenticate();
+    virtual void Validate() = 0;
+    void CheckLicense();
+    void AuthenticateCurrentUser();
 
     MgStringCollection* GetAdministratorRole() const;
     MgStringCollection* GetAuthorRole() const;

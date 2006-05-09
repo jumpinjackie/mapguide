@@ -78,6 +78,9 @@ void MgOpCloseFeatureReader::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(featId);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        // Validate() is not be called here because the operation 
+        // should always be allowed to execute.
+
         // Execute the operation
         bool bClosed = m_service->CloseFeatureReader(featId);
 

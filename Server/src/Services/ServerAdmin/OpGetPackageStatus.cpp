@@ -75,8 +75,8 @@ void MgOpGetPackageStatus::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(packageName);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Authenticate operation
-        Authenticate();
+        // Validate operation
+        Validate();
 
         Ptr<MgPackageStatusInformation> statusInfo = m_service->GetPackageStatus(packageName);
 

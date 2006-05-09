@@ -62,3 +62,14 @@ MgStringCollection* MgSiteOperation::GetRoles() const
 {
     return GetAdministratorRole();
 }
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Perform validation on the operation
+/// </summary>
+///----------------------------------------------------------------------------
+
+void MgSiteOperation::Validate()
+{
+    AuthenticateCurrentUser();
+}
