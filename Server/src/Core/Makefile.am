@@ -230,6 +230,7 @@ serverconfig_linux.ini :
              -e 's#^PackagesPath.*=.*#PackagesPath                       = Packages#' \
              -e 's#^ResourceSchemaFilePath.*=.*#ResourceSchemaFilePath             = ../../../Common/Schema#' \
              -e 's#^ResourceDataFileTrashFolderName.*=.*#ResourceDataFileTrashFolderName    = Trash#' \
+             -e 's#^LegendFont.*=.*#LegendFont                         = Complex#' \
            serverconfig.ini > serverconfig_linux.ini
 	@cp -f serverconfig_linux.ini serverconfig.ini
 
