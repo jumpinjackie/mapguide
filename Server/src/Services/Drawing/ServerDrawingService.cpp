@@ -116,6 +116,18 @@ MgByteReader* MgServerDrawingService::DescribeDrawing(MgResourceIdentifier* reso
         size_t nBytes = pStream->available();
         char* pBuffer = DWFCORE_ALLOC_MEMORY( char, nBytes );
         pStream->read(pBuffer, nBytes);
+
+        // Filter the character buffer for any extraneous characters at the end of the manifest.xml
+        char* pDest = strrchr(pBuffer, '>');     // NOXLATE
+        if (0 != pDest)
+        {
+            int nFilteredBytes = (int)(pDest - pBuffer + 1);
+            if (nFilteredBytes < nBytes)
+            {
+                nBytes = nFilteredBytes;
+            }
+        }
+
         char* stream = reinterpret_cast<char*>(pBuffer);
         if (0 == stream)
         {
