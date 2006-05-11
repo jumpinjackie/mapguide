@@ -573,9 +573,12 @@ void MgServerGetFeatures::AddFeatures(INT32 count)
         //some providers will throw if ReadNext is called more than once
         catch (GisException* e)
         {
-            //TODO: not sure if this can happen any longer, so
-            //let's track it with an assert
-            assert(false);
+            // Note: VB 05/10/06 The assert has been commented out as 
+            // Linux does not remove them from a release build. The assert
+            // will cause the server to crash on Linux. The Oracle provider will throw
+            // an exception if the ReadNext() method is called after it returns false.
+            // This is a known problem and it is safe to ignore the exception. 
+            //assert(false);
             e->Release();
         }
     }
