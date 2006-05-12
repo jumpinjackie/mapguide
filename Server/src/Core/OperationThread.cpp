@@ -96,68 +96,22 @@ int MgOperationThread::svc(void)
 
                     switch ( stat )
                     {
+                        //  We hit an error in processing.  An exception should have been
+                        //  sent back to the client at some point.  If the client is an
+                        //  HTTP agent, it will respond with a close control packet.  We will NOT
+                        //  try to process this incoming packet, but since there still may be junk
+                        //  data on the wire, we will force the close of the client handler
+                        //  if we are already in an error condition.
                         case ( IMgServiceHandler::mpsError ) :
                         {
-                            //  We hit an error in processing.  An exception should have been
-                            //  sent back to the client at some point.  If the client is an
-                            //  HTTP agent, it will respond with a close control packet.  We will
-                            //  try to process this incoming packet, but since there still may be junk
-                            //  data on the wire, we will force the close of the client handler
-                            //  if we are already in an error condition.
-                            if ( pData->GetErrorFlag() )
-                            {
-                                // Remove the client handler from reactor.  This code will also
-                                // be hit if the client handler has been torn down from the connection idle timer
-                                // while we were waiting for additional requests from the client.
-                                pClientHandler->reactor()->remove_handler(
-                                    pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK );
+                            // Remove the client handler from reactor.  This code will also
+                            // be hit if the client handler has been torn down from the connection idle timer
+                            // while we were waiting for additional requests from the client.
+                            pClientHandler->reactor()->remove_handler(
+                                pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
 
-                                //  reset the stream error flag
-                                pData->SetErrorFlag( false );
-                            }
-                            else
-                            {
-                                //  Set the stream error flag.
-                                pData->SetErrorFlag( true );
-
-                                //  We have hit an error so an exception should have been sent back
-                                //  to the client.  If the client is an HTTP agent, it will respond
-                                //  with a close control packet.  Check to see if we have received
-                                //  the packet.  If so, push it back on the queue.  If not, go
-                                //  into idle state to wait for the next request.
-                                if ( MgStreamHelper::mssDone == CheckStream( pClientHandler->GetStreamHelper() ) )
-                                {
-                                    //  set client handler status before queueing messageblock
-                                    pClientHandler->SetStatus( MgClientHandler::hsQueued );
-
-                                    //  Create a new messageBlock and put it on the queue
-                                    MgServerStreamData* pStreamData = new MgServerStreamData( *pData );
-                                    if(pStreamData)
-                                    {
-                                        //  create the message block
-                                        ACE_Message_Block* mb = new ACE_Message_Block( pStreamData );
-                                        if(mb)
-                                        {
-                                            // As soon as we put the new message on the queue another
-                                            // thread can begin processing it.  To eliminate concurrent
-                                            // access on the client handler we need to release the smart
-                                            // pointer reference to it (otherwise it will automatically
-                                            // release it later below).
-                                            pClientHandler = NULL;
-
-                                            //  Cleanup message block
-                                            messageBlock->release();
-                                            messageBlock = NULL;
-
-                                            putq( mb );
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    pClientHandler->SetStatus( MgClientHandler::hsIdle );
-                                }
-                            }
+                            //  reset the stream error flag
+                            pData->SetErrorFlag( false );
                             break;
                         }
 
@@ -169,7 +123,8 @@ int MgOperationThread::svc(void)
 
                             //  is there anything else on the stream?
                             MgStreamHelper::MgStreamStatus csStat = CheckStream( pClientHandler->GetStreamHelper() );
-                            if (MgStreamHelper::mssDone == csStat )
+
+                            if (MgStreamHelper::mssDone == csStat)
                             {
                                 //  set client handler status before queueing messageblock
                                 pClientHandler->SetStatus( MgClientHandler::hsQueued );
@@ -197,9 +152,15 @@ int MgOperationThread::svc(void)
                                     }
                                 }
                             }
-                            else
+                            else if (MgStreamHelper::mssNotDone == csStat)
                             {
                                 pClientHandler->SetStatus( MgClientHandler::hsIdle );
+                            }
+                            else
+                            {
+                                pClientHandler->reactor()->remove_handler(
+                                    pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
+
                             }
                             break;
                         }
@@ -323,7 +284,7 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
                                 case ( MgPacketParser::mphOperation ) :
                                     ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) OPERATION PACKET\n" )));
                                     stat = ProcessOperation( pData );
-                                    keepParsing = false; // TODO: Remove this line when support for zero data size is added
+                                    keepParsing = false;
                                     break;
 
                                 case ( MgPacketParser::mphOperationResponse ) :
@@ -417,8 +378,6 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
 
     //  if any message was processed without error, make sure the stream's
     //  error flag is cleared
-//    if ( pData != 0 && stat != IMgServiceHandler::mpsError )
-//        pData->SetErrorFlag( false );
     if (NULL != pData)
     {
         pData->SetErrorFlag(IMgServiceHandler::mpsError == stat);
@@ -620,8 +579,8 @@ MgStreamHelper::MgStreamStatus MgOperationThread::CheckStream( MgStreamHelper* p
 {
     MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
 
-    //  check to see if socket is alive...  TODO:  may be a better way to determine if the
-    //  socket has not been closed
+    // Check to see if the socket is alive.
+    
     MG_TRY()
 
     UINT8 dummy = 0;
