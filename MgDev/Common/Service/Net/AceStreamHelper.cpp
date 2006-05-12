@@ -151,6 +151,12 @@ MgAceStreamHelper::~MgAceStreamHelper()
 MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
      size_t size, bool blocking, bool peeking)
 {
+    // Do not attempt reading zero byte from the socket as this could be problematic.
+    if (0 == size)
+    {
+        return MgStreamHelper::mssDone;
+    }
+
     ACE_ASSERT( size > 0 );
     MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
 
@@ -191,28 +197,26 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
         // eliminates the hanging problem when it takes so long to write a
         // request to the socket.
         const ACE_Time_Value timeout(2);
-        int numRetries = 60;
+        const int maxRetries = 30;
+        int numRetries = 0;
         ssize_t res = 0;
 
         do
         {
             res = stream.recv(&m_readBuffer[m_readBufEnd], m_readBufSize - m_readBufEnd, 0, &timeout);
-            --numRetries;
+            ++numRetries;
         }
-        while (res < 0 && numRetries > 0);
+        while (res < 0 && numRetries < maxRetries);
 
-        //  check if there was a failure
         if ( res < 0 )
         {
-            //  TODO:  check this return value to determine if
-            //  socket is closed or if there was simply no data
-            //  for some other legitimate reason
-
+            // Check this return value to determine if the socket is closed or
+            // if there was simply no data.
 #ifdef _WIN32
             int error = ::WSAGetLastError(); // errno doesn't work correctly on Windows
-            stat = ( error != WSAEWOULDBLOCK ) ? MgStreamHelper::mssError : MgStreamHelper::mssNotDone;
+            stat = (error == WSAEWOULDBLOCK || error == 0) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
 #else
-            stat = ( errno != EWOULDBLOCK ) ? MgStreamHelper::mssError : MgStreamHelper::mssNotDone;
+            stat = (errno == EWOULDBLOCK || errno == 0 || errno == ETIME) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
 #endif
         }
         else
@@ -229,15 +233,13 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
 
             if ( res < 0 )
             {
-                //  TODO:  check this return value to determine if
-                //  socket is closed or if there was simply no data
-                //  for some other legitimate reason
-
+                // Check this return value to determine if the socket is closed or
+                // if there was simply no data.
 #ifdef _WIN32
-            int error = ::WSAGetLastError(); // errno doesn't work correctly on Windows
-            stat = ( error != WSAEWOULDBLOCK ) ? MgStreamHelper::mssError : MgStreamHelper::mssNotDone;
+                int error = ::WSAGetLastError(); // errno doesn't work correctly on Windows
+                stat = (error == WSAEWOULDBLOCK || error == 0) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
 #else
-            stat = ( errno != EWOULDBLOCK ) ? MgStreamHelper::mssError : MgStreamHelper::mssNotDone;
+                stat = (errno == EWOULDBLOCK || errno == 0 || errno == ETIME) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
 #endif
             }
             else
@@ -397,6 +399,12 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetINT64( INT64& data, bool bl
 MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteData(void* buffer,
     size_t size, bool blocking, size_t* bytesWritten)
 {
+    // Do not attempt writing zero byte to the socket as this could be problematic.
+    if (0 == size)
+    {
+        return MgStreamHelper::mssDone;
+    }
+
     ACE_ASSERT( buffer && size > 0 );
     MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
 
@@ -432,13 +440,13 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteData(void* buffer,
             if ( bytesWritten != NULL )
                 *bytesWritten = res;
 
-            if ( res != (ssize_t)size )
+            if ( res == (ssize_t)size )
             {
-                blocking ? stat = MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
+                stat = MgStreamHelper::mssDone;
             }
             else
             {
-                stat = MgStreamHelper::mssDone;
+                stat = blocking ? MgStreamHelper::mssError : MgStreamHelper::mssNotDone;
             };
         };
     };
@@ -563,6 +571,7 @@ bool MgAceStreamHelper::IsConnected()
     UINT8 dummy;
     ACE_Time_Value val(0, 0);
     ssize_t res = stream.recv_n( &dummy, 1, MSG_PEEK, &val);
+
     if ( res < 0 )
     {
 #ifdef _WIN32
@@ -573,5 +582,6 @@ bool MgAceStreamHelper::IsConnected()
        
 #endif
     }
+
     return bConnected;
 }
