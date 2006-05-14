@@ -220,9 +220,16 @@ WT_Result MgServerDrawingServiceUtil::MgWt_process_polymarker(WT_Polymarker &pol
 {
     if ( DetectTargetLayer(file) )
     {
-        // write the polymarker to the output W2D/DWF.
         TargetLayer* targetLayer = (TargetLayer*)file.heuristics().user_data();
-        WD_CHECK(polymarker.serialize(*(targetLayer->pFile)));
+        if (file.heuristics().target_version() >= REVISION_WHEN_MACRO_IS_SUPPORTED)
+        {
+            WT_Macro_Draw macro_draw(polymarker.count(), polymarker.points(), true);
+            WD_CHECK(macro_draw.serialize(*(targetLayer->pFile)));
+        }
+        else
+        {
+            WD_CHECK(polymarker.serialize(*(targetLayer->pFile)));
+        }
     }
 
     return WT_Result::Success;
