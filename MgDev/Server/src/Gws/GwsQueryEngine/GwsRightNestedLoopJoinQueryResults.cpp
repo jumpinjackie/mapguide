@@ -78,13 +78,95 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
             GisPtr<FdoDataValue> val = vals.GetItem (idx);
 
             GisPtr<FdoIdentifier> pFeatureNameProperty = FdoIdentifier::Create(propname);
+
+            // Get the data type of the primary property
+            FdoDataType dtPrimary = val->GetDataType();
+
+            // Get the data type of the secondary property
+            FdoDataType dtSecondary = dtPrimary;
+            if (m_prepquery)
+            {
+                GisPtr<CGwsQueryResultDescriptors> extFeatDsc;
+                m_prepquery->DescribeResults((IGWSExtendedFeatureDescription**)&extFeatDsc);
+                CGwsPropertyDesc propDesc = extFeatDsc->GetPropertyDescriptor(propname);
+                dtSecondary = propDesc.m_dataprop;
+            }
+
+            // Determine which comparison operator to use
+            FdoComparisonOperations comparisonOp = FdoComparisonOperations_EqualTo;
+            switch (dtPrimary)
+            {
+                case FdoDataType_Byte:
+                case FdoDataType_Int16:
+                case FdoDataType_Int32:
+                case FdoDataType_Int64:
+                case FdoDataType_Decimal:
+                case FdoDataType_Single:
+                case FdoDataType_Double:
+                    switch (dtSecondary)
+                    {
+                        case FdoDataType_Byte:
+                        case FdoDataType_Int16:
+                        case FdoDataType_Int32:
+                        case FdoDataType_Int64:
+                        case FdoDataType_Decimal:
+                        case FdoDataType_Single:
+                        case FdoDataType_Double:
+                            comparisonOp = FdoComparisonOperations_EqualTo;
+                            break;
+
+                        case FdoDataType_String:
+                            comparisonOp = FdoComparisonOperations_Like;
+                            break;
+                    }
+                    break;
+                    
+
+                case FdoDataType_String:
+                    switch (dtSecondary)
+                    {
+                        case FdoDataType_String:
+                            comparisonOp = FdoComparisonOperations_EqualTo;
+                            break;
+
+                        case FdoDataType_Byte:
+                        case FdoDataType_Int16:
+                        case FdoDataType_Int32:
+                        case FdoDataType_Int64:
+                        case FdoDataType_Decimal:
+                        case FdoDataType_Single:
+                        case FdoDataType_Double:
+                            // if the string represents a number, or if it does not contain wildcard characters, use like, else do nothing
+                            GisStringP strPrimVal = val->ToString();
+                            GisStringP percent = "%";         // NOXLATE
+                            GisStringP underscore = "_";      // NOXLATE
+                            GisStringP bracket = "[";         // NOXLATE
+                            GisStringP bracketCaret = "[^";   // NOXLATE
+                            if (strPrimVal.IsNumber())
+                            {
+                                comparisonOp = FdoComparisonOperations_Like;
+                            }
+                            else if (!strPrimVal.Contains(percent)
+                                     && !strPrimVal.Contains(underscore)
+                                     && !strPrimVal.Contains(bracket)
+                                     && !strPrimVal.Contains(bracketCaret))
+                            {
+                                comparisonOp = FdoComparisonOperations_Like;
+                            }
+                    }
+                    break;
+            }
+
             if (idx == 0) {
+                // Create the comparison condidtion
                 pFilter = FdoComparisonCondition::Create(pFeatureNameProperty,
-                                                         FdoComparisonOperations_EqualTo,
+                                                         comparisonOp,
                                                          val);
+
+
             } else {
                 GisPtr<FdoFilter> pRhsFilter = FdoComparisonCondition::Create(pFeatureNameProperty,
-                                                                              FdoComparisonOperations_EqualTo,
+                                                                              comparisonOp,
                                                                               val);
                 GisPtr<FdoFilter> pCombinedFilter = FdoFilter::Combine(pFilter,
                                                                        FdoBinaryLogicalOperations_And,

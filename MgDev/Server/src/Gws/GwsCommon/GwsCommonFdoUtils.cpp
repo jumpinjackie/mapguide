@@ -631,9 +631,11 @@ bool GWSFdoUtilities::IsComparableDataTypes (
         case FdoDataType_Int32:
         case FdoDataType_Int64:
         case FdoDataType_Single:
+        case FdoDataType_String:  // Allow numeric type to compare to string here.  When doing comparison, caller will be responsible
+                                  // for making sure the comparsion can succeed.
             return true;
         case FdoDataType_Boolean:
-        case FdoDataType_String:
+        //case FdoDataType_String:
         case FdoDataType_BLOB:
         case FdoDataType_CLOB:
         case FdoDataType_DateTime:
@@ -644,9 +646,8 @@ bool GWSFdoUtilities::IsComparableDataTypes (
 
     case FdoDataType_String:
         switch (val2->GetDataType ()) {
-        case FdoDataType_String:
-            return true;
-
+            // Allow string type to compare to numeric type here.  When doing comparison, caller will be responsible
+            // for making sure the comparison can succeed.
         case FdoDataType_Byte:
         case FdoDataType_Decimal:
         case FdoDataType_Double:
@@ -654,6 +655,16 @@ bool GWSFdoUtilities::IsComparableDataTypes (
         case FdoDataType_Int32:
         case FdoDataType_Int64:
         case FdoDataType_Single:
+        case FdoDataType_String:
+            return true;
+
+        //case FdoDataType_Byte:
+        //case FdoDataType_Decimal:
+        //case FdoDataType_Double:
+        //case FdoDataType_Int16:
+        //case FdoDataType_Int32:
+        //case FdoDataType_Int64:
+        //case FdoDataType_Single:
         case FdoDataType_Boolean:
         case FdoDataType_BLOB:
         case FdoDataType_CLOB:
