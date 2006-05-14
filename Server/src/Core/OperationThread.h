@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGOPERATIONTHREAD_H
-#define MGOPERATIONTHREAD_H
+#ifndef MG_OPERATION_THREAD_H_
+#define MG_OPERATION_THREAD_H_
 
 #include "AceCommon.h"
 #include "ThreadBase.h"
@@ -36,8 +36,6 @@ public:
 private:
     IMgServiceHandler::MgProcessStatus ProcessMessage ( ACE_Message_Block* pMB );
     IMgServiceHandler::MgProcessStatus ProcessOperation ( MgServerStreamData* pData );
-
-    MgStreamHelper::MgStreamStatus CheckStream( MgStreamHelper* pHelper );
 
     ///////////////////////////////////////////////////////
     /// Member data

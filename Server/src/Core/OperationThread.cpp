@@ -94,41 +94,38 @@ int MgOperationThread::svc(void)
 
                     Ptr<MgClientHandler> pClientHandler = pData->GetClientHandler();
 
-                    switch ( stat )
+                    if (NULL != pClientHandler.p)
                     {
-                        //  We hit an error in processing.  An exception should have been
-                        //  sent back to the client at some point.  If the client is an
-                        //  HTTP agent, it will respond with a close control packet.  We will NOT
-                        //  try to process this incoming packet, but since there still may be junk
-                        //  data on the wire, we will force the close of the client handler
-                        //  if we are already in an error condition.
-                        case ( IMgServiceHandler::mpsError ) :
+                        switch ( stat )
                         {
-                            // Remove the client handler from reactor.  This code will also
-                            // be hit if the client handler has been torn down from the connection idle timer
-                            // while we were waiting for additional requests from the client.
-                            pClientHandler->reactor()->remove_handler(
-                                pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
-
-                            //  reset the stream error flag
-                            pData->SetErrorFlag( false );
-                            break;
-                        }
-
-                        case ( IMgServiceHandler::mpsDone ) :
-                        {
-                            // Do we still have a stream?
-                            if (NULL == (MgClientHandler*) pClientHandler || MgClientHandler::hsClosed == pClientHandler->GetStatus())
-                                break;
-
-                            //  is there anything else on the stream?
-                            MgStreamHelper::MgStreamStatus csStat = CheckStream( pClientHandler->GetStreamHelper() );
-
-                            if (MgStreamHelper::mssDone == csStat)
+                            //  We hit an error in processing.  An exception should have been
+                            //  sent back to the client at some point.  If the client is an
+                            //  HTTP agent, it will respond with a close control packet.  We will NOT
+                            //  try to process this incoming packet, but since there still may be junk
+                            //  data on the wire, we will force the close of the client handler
+                            //  if we are already in an error condition.
+                            case ( IMgServiceHandler::mpsError ) :
                             {
+                                // Remove the client handler from reactor.  This code will also
+                                // be hit if the client handler has been torn down from the connection idle timer
+                                // while we were waiting for additional requests from the client.
+                                pClientHandler->reactor()->remove_handler(
+                                    pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
+
+                                //  reset the stream error flag
+                                pData->SetErrorFlag( false );
+                                break;
+                            }
+
+                            case ( IMgServiceHandler::mpsDone ) :
+                            {
+                                // Do we still have a stream?
+                                if (MgClientHandler::hsClosed == pClientHandler->GetStatus())
+                                    break;
+     
                                 //  set client handler status before queueing messageblock
                                 pClientHandler->SetStatus( MgClientHandler::hsQueued );
-
+     
                                 //  Create a new messageBlock and put it on the queue
                                 MgServerStreamData* pStreamData = new MgServerStreamData( *pData );
                                 if(pStreamData)
@@ -143,47 +140,31 @@ int MgOperationThread::svc(void)
                                         // pointer reference to it (otherwise it will automatically
                                         // release it later below).
                                         pClientHandler = NULL;
-
+     
                                         //  Cleanup message block
                                         messageBlock->release();
                                         messageBlock = NULL;
-
+     
                                         putq( mb );
                                     }
                                 }
+                                break;
                             }
-                            else if (MgStreamHelper::mssNotDone == csStat)
+     
+                            case ( IMgServiceHandler::mpsClosed ) :
                             {
-                                pClientHandler->SetStatus( MgClientHandler::hsIdle );
-                            }
-                            else
-                            {
+                                // Push an error on the handler and remove it from reactor
+                                // to force a timely close
                                 pClientHandler->reactor()->remove_handler(
                                     pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
-
+                                break;
                             }
-                            break;
-                        }
 
-                        case ( IMgServiceHandler::mpsClosed ) :
-                        {
-                            // Push an error on the handler and remove it from reactor
-                            // to force a timely close
-                            if (NULL != (MgClientHandler*) pClientHandler)
-                            {
-                                pClientHandler->reactor()->remove_handler(
-                                    pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
-                            }
-                            break;
-                        }
-
-                        case ( IMgServiceHandler::mpsOther ) :
-                        {
-                            if (NULL != (MgClientHandler*) pClientHandler)
+                            case ( IMgServiceHandler::mpsOther ) :
                             {
                                 pClientHandler->SetStatus( MgClientHandler::hsBusy );
+                                break;
                             }
-                            break;
                         }
                     }
                 }
@@ -566,42 +547,6 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
         }
 
         stat = IMgServiceHandler::mpsError;
-    }
-
-    return stat;
-};
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Checks for data in the given MgStreamHelper
-/// </summary>
-MgStreamHelper::MgStreamStatus MgOperationThread::CheckStream( MgStreamHelper* pHelper )
-{
-    MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
-
-    // Check to see if the socket is alive.
-    
-    MG_TRY()
-
-    UINT8 dummy = 0;
-
-    stat = pHelper->GetUINT8( dummy, false, true );
-
-    MG_CATCH(L"MgOperationThread.CheckStream")
-
-    if (mgException != NULL)
-    {
-        MgServerManager* serverManager = MgServerManager::GetInstance();
-        STRING locale = (NULL == serverManager) ?
-            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
-        STRING message = mgException->GetMessage(locale);
-        STRING details = mgException->GetDetails(locale);
-        STRING stackTrace = mgException->GetStackTrace(locale);
-
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
-        MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
-
-        stat = MgStreamHelper::mssError;
     }
 
     return stat;
