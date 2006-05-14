@@ -47,8 +47,6 @@ MgApplicationRepositoryManager::MgApplicationRepositoryManager(
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    // TODO: We may need to re-create the security manager at the beginning of each transaction.
-
     m_securityMan.reset(new MgSecurityManager());
 
     // If the current user name and/or password are not given, then look them

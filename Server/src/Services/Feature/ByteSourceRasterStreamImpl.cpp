@@ -92,6 +92,11 @@ INT64 ByteSourceRasterStreamImpl::GetLength()
     return m_stream->GetLength();
 }
 
+bool ByteSourceRasterStreamImpl::IsRewindable()
+{
+    return true;
+}
+
 void ByteSourceRasterStreamImpl::Rewind()
 {
     m_stream->Reset();

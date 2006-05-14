@@ -169,6 +169,8 @@ protected:
 
 private:
 
+    static const int sm_maxOpRetries;
+
     ACE_Recursive_Thread_Mutex m_mutex;
 
     MgSiteRepository*    m_siteRepository;

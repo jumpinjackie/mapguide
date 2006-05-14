@@ -79,6 +79,9 @@ void MgResourceDataFileManager::SetResourceData(CREFSTRING pathname,
 
     MG_RESOURCE_SERVICE_TRY()
 
+    // Ensure the current operation is transactionally protected.
+    m_repositoryMan.ValidateTransaction();
+
     // TODO: Optimization - Back up the file if it exists?
     MgByteSink byteSink(byteReader);
 
@@ -102,6 +105,9 @@ void MgResourceDataFileManager::DeleteResourceData(CREFSTRING pathname,
 {
     MG_RESOURCE_SERVICE_TRY()
 
+    // Ensure the current operation is transactionally protected.
+    m_repositoryMan.ValidateTransaction();
+
     MgFileUtil::DeleteFile(pathname, strict);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDataFileManager.DeleteResourceData")
@@ -121,6 +127,9 @@ void MgResourceDataFileManager::RenameResourceData(CREFSTRING path,
     CREFSTRING oldFileName, CREFSTRING newFileName, bool overwrite)
 {
     MG_RESOURCE_SERVICE_TRY()
+
+    // Ensure the current operation is transactionally protected.
+    m_repositoryMan.ValidateTransaction();
 
     // TODO: Optimization - Back up the file if it exists?
     MgFileUtil::RenameFile(path, oldFileName, newFileName, overwrite);
@@ -142,6 +151,9 @@ void MgResourceDataFileManager::CopyResourceData(CREFSTRING sourcePathname,
     CREFSTRING destPathname, bool overwrite)
 {
     MG_RESOURCE_SERVICE_TRY()
+
+    // Ensure the current operation is transactionally protected.
+    m_repositoryMan.ValidateTransaction();
 
     // TODO: Optimization - Back up the file if it exists?
     MgFileUtil::CopyFile(sourcePathname, destPathname, overwrite);

@@ -116,7 +116,10 @@ INT32 ByteSourceSocketStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
         stat = helper->GetData(buffer, toReceive);
 
         if (stat != MgStreamHelper::mssDone)
-            throw new MgStreamIoException(L"Read", __LINE__, __WFILE__, NULL, L"", NULL);
+        {
+            throw new MgStreamIoException(L"ByteSourceSocketStreamImpl.Read",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
 
         m_blockRead += toReceive;
         bytesRead = toReceive;
@@ -136,7 +139,10 @@ INT32 ByteSourceSocketStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
             stat = helper->GetData(buffer, blockRemain);
 
             if (stat != MgStreamHelper::mssDone)
-                throw new MgStreamIoException(L"Read", __LINE__, __WFILE__, NULL, L"", NULL);
+            {
+                throw new MgStreamIoException(L"ByteSourceSocketStreamImpl.Read",
+                    __LINE__, __WFILE__, NULL, L"", NULL);
+            }
 
             bytesRead = blockRemain;
         }
@@ -155,7 +161,13 @@ INT64 ByteSourceSocketStreamImpl::GetLength()
     return m_len - m_pos;
 }
 
+bool ByteSourceSocketStreamImpl::IsRewindable()
+{
+    return false;
+}
+
 void ByteSourceSocketStreamImpl::Rewind()
 {
-    throw new MgInvalidOperationException(L"Rewind", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgInvalidOperationException(L"ByteSourceSocketStreamImpl.Rewind",
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }

@@ -39,6 +39,11 @@ EXTERNAL_API:
     ///
     virtual ~MgThirdPartyException() throw();
 
+INTERNAL_API:
+
+    INT32 GetErrorCode() throw();
+    void SetErrorCode(INT32 errorCode) throw();
+
 protected:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -69,6 +74,10 @@ INTERNAL_API:
 CLASS_ID:
 
     static const INT32 m_cls_id = Common_Exception_MgThirdPartyException;
+
+private:
+
+    INT32 m_errorCode;
 };
 
 #endif

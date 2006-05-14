@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_BYTE_SOURCE_DWF_INPUT_STREAM_IMPL_H
-#define MG_BYTE_SOURCE_DWF_INPUT_STREAM_IMPL_H
+#ifndef MG_BYTE_SOURCE_DWF_INPUT_STREAM_IMPL_H_
+#define MG_BYTE_SOURCE_DWF_INPUT_STREAM_IMPL_H_
 
 #include "ServerResourceDllExport.h"
 
@@ -61,6 +61,15 @@ public:
     /// </returns>
     ///
     INT64 GetLength();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if the source is rewindable.
+    ///
+    /// \return
+    /// true if the source is rewindable, false otherwise.
+    ///
+    bool IsRewindable();
 
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>

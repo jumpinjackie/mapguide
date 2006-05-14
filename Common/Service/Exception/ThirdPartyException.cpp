@@ -27,7 +27,8 @@ MgThirdPartyException::MgThirdPartyException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgException(methodName, lineNumber, fileName,
-        whatArguments, whyMessageId, whyArguments)
+        whatArguments, whyMessageId, whyArguments),
+    m_errorCode(0)
 {
     // The following string conversion is used to detect whether or not
     // the given error message is unicode compliant.
@@ -62,4 +63,22 @@ MgThirdPartyException::MgThirdPartyException(CREFSTRING methodName,
 ///
 MgThirdPartyException::~MgThirdPartyException() throw()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Get the error code.
+///
+INT32 MgThirdPartyException::GetErrorCode() throw()
+{
+    return m_errorCode;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Set the error code.
+///
+void MgThirdPartyException::SetErrorCode(INT32 errorCode) throw()
+{
+    m_errorCode = errorCode;
 }

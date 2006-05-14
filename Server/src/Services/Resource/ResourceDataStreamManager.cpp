@@ -65,6 +65,9 @@ void MgResourceDataStreamManager::SetResourceData(const string& dataKey,
 
     MG_RESOURCE_SERVICE_TRY()
 
+    // Ensure the current operation is transactionally protected.
+    m_repositoryMan.ValidateTransaction();
+
     // Create a byte sink.
 
     MgByteSink byteSink(byteReader);
@@ -111,6 +114,9 @@ void MgResourceDataStreamManager::DeleteResourceData(const string& dataKey,
 {
     MG_RESOURCE_SERVICE_TRY()
 
+    // Ensure the current operation is transactionally protected.
+    m_repositoryMan.ValidateTransaction();
+
     // Delete the resource data.
 
     Dbt key;
@@ -149,6 +155,9 @@ void MgResourceDataStreamManager::CopyResourceData(const string& sourceDataKey,
     Dbt data;
 
     MG_RESOURCE_SERVICE_TRY()
+
+    // Ensure the current operation is transactionally protected.
+    m_repositoryMan.ValidateTransaction();
 
     // Get the source MgResourceDataStreamManager.
     MgApplicationRepositoryManager* sourceRepositoryMan =
