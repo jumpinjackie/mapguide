@@ -44,14 +44,40 @@ using namespace DbXml;
     catch (XmlException& e)                                                   \
     {                                                                         \
         MgStringCollection arguments;                                         \
-        arguments.Add(MgUtil::MultiByteToWideChar(string(e.what())));         \
+        STRING message;                                                       \
+                                                                              \
+        if (DB_LOCK_DEADLOCK == e.getDbErrno())                               \
+        {                                                                     \
+            message = MgUtil::GetResourceMessage(                             \
+                MgResources::ResourceService, L"MgRepositoryBusy");           \
+        }                                                                     \
+        else                                                                  \
+        {                                                                     \
+            MgUtil::MultiByteToWideChar(string(e.what()), message);           \
+        }                                                                     \
+                                                                              \
+        arguments.Add(message);                                               \
         mgException = new MgDbXmlException(methodName, __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments); \
+        (static_cast<MgThirdPartyException*>(mgException.p))->SetErrorCode(e.getDbErrno()); \
     }                                                                         \
     catch (DbException& e)                                                    \
     {                                                                         \
         MgStringCollection arguments;                                         \
-        arguments.Add(MgUtil::MultiByteToWideChar(string(e.what())));         \
+        STRING message;                                                       \
+                                                                              \
+        if (DB_LOCK_DEADLOCK == e.get_errno())                                \
+        {                                                                     \
+            message = MgUtil::GetResourceMessage(                             \
+                MgResources::ResourceService, L"MgRepositoryBusy");           \
+        }                                                                     \
+        else                                                                  \
+        {                                                                     \
+            MgUtil::MultiByteToWideChar(string(e.what()), message);           \
+        }                                                                     \
+                                                                              \
+        arguments.Add(message);                                               \
         mgException = new MgDbException(methodName, __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments); \
+        (static_cast<MgThirdPartyException*>(mgException.p))->SetErrorCode(e.get_errno()); \
     }                                                                         \
     catch (DWFException& e)                                                   \
     {                                                                         \

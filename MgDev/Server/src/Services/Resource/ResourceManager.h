@@ -61,7 +61,7 @@ class MgResourceManager
 
 inline bool MgResourceManager::IsTransacted() const
 {
-    return m_environment.IsTransacted();
+    return m_repositoryMan.IsTransacted();
 }
 
 inline DbTxn* MgResourceManager::GetDbTxn() const

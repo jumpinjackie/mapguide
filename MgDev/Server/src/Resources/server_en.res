@@ -283,8 +283,6 @@ MgGroupingNotSupported                                = Grouping is not supporte
 # R E S O U R C E  S E R V I C E
 # *****************************************************************************
 [ResourceService]
-MgSchemaFileNotSpecified                              = No schema file is specified in the XML document.
-MgSchemaFileNotFound                                  = The specified schema file is not found: %1
 MgPackageStatusMessageLoadPackageSucceeded            = LOAD SUCCEEDED: %1 successfully loaded package on %2
 MgPackageStatusMessageMakePackageSucceeded            = MAKE SUCCEEDED: %1 successfully made package on %2
 MgPackageStatusMessageLoadPackageFailed               = LOAD FAILED: %1 failed to load package on %2
@@ -293,6 +291,9 @@ MgPackageStatusMessageLoadPackageInProgress           = Loading package %1 ...
 MgPackageStatusMessageMakePackageInProgress           = Making package %1 ...
 MgPackageStatusMessageNotStarted                      = Not started
 MgPackageStatusMessageUnknown                         = Unknown
+MgRepositoryBusy                                      = Please try your operation later as the repository was busy.
+MgSchemaFileNotFound                                  = The specified schema file is not found: %1
+MgSchemaFileNotSpecified                              = No schema file is specified in the XML document.
 
 # *****************************************************************************
 # S E R V E R A D M I N  S E R V I C E

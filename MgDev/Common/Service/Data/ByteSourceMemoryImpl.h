@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef BYTE_SOURCE_MEMORY_IMPL_H
-#define BYTE_SOURCE_MEMORY_IMPL_H
+#ifndef MG_BYTE_SOURCE_MEMORY_IMPL_H_
+#define MG_BYTE_SOURCE_MEMORY_IMPL_H_
 
 /// INTERNAL_CLASS - NOT EXPOSED
 /// \cond INTERNAL
@@ -85,6 +85,15 @@ public:
     ///
     INT64 GetLength();
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if the source is rewindable.
+    ///
+    /// \return
+    /// true if the source is rewindable, false otherwise.
+    ///
+    bool IsRewindable();
+
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Rewinds to the start of memory.  Length is reset.
@@ -109,4 +118,4 @@ protected:
 };
 /// \endcond INTERNAL
 
-#endif // BYTE_SOURCE_MEMORY_IMPL_H
+#endif // MG_BYTE_SOURCE_MEMORY_IMPL_H_

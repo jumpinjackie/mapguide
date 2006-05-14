@@ -192,6 +192,12 @@ void MgByteReader::Deserialize(MgStream* stream)
     this->m_byteSource->SetMimeType(wcStr);
 }
 
+bool MgByteReader::IsRewindable()
+{
+    CHECKNULL(m_byteSource, L"MgByteReader.IsRewindable");
+    return m_byteSource->GetSourceImpl()->IsRewindable();
+}
+
 ////////////////////////////////////////////////////////////////
 ///<summary>
 /// Rewinds to the start of the reader.  Depending on the source of

@@ -81,6 +81,12 @@ INT64 MgByteSourceDwfInputStreamImpl::GetLength()
     return length;
 }
 
+bool MgByteSourceDwfInputStreamImpl::IsRewindable()
+{
+    // Currently DWFUnzippingInputStream does not support rewinding.
+    return false;
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Rewinds to the start of memory.  Length is reset.
@@ -99,7 +105,8 @@ void MgByteSourceDwfInputStreamImpl::Rewind()
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    m_inputStream->seek(SEEK_SET, 0); // May not be supported.
+    // Currently DWFUnzippingInputStream throws an DWFNotImplementedException.
+    m_inputStream->seek(SEEK_SET, 0);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgByteSourceDwfInputStreamImpl.Rewind")
 }

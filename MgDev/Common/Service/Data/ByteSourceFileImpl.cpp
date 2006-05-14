@@ -63,17 +63,26 @@ ByteSourceFileImpl::~ByteSourceFileImpl()
 INT32 ByteSourceFileImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
 {
     INT32 bytesRead = (INT32)ACE_OS::read(m_file, buffer, length);
-    if(bytesRead < 0)
+
+    if (bytesRead < 0)
     {
-        throw new MgFileIoException(L"ByteSourceFileImpl.Read", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgFileIoException(L"ByteSourceFileImpl.Read",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
     m_size -= bytesRead;
+
     return bytesRead;
 }
 
 INT64 ByteSourceFileImpl::GetLength()
 {
     return m_size;
+}
+
+bool ByteSourceFileImpl::IsRewindable()
+{
+    return true;
 }
 
 void ByteSourceFileImpl::Rewind()
@@ -86,7 +95,8 @@ void ByteSourceFileImpl::Rename(CREFSTRING newName)
 {
     if (m_temporary == false)
     {
-        throw new MgInvalidOperationException(L"ByteSourceFileImpl.Rename",__LINE__,__WFILE__, NULL, L"", NULL);
+        throw new MgInvalidOperationException(L"ByteSourceFileImpl.Rename",
+            __LINE__,__WFILE__, NULL, L"", NULL);
     }
 
     ACE_OS::close(m_file);
@@ -109,10 +119,17 @@ void ByteSourceFileImpl::LoadFile(CREFSTRING filename)
     {
         MgStringCollection arguments;
         arguments.Add(filename);
+
         if(errno == ENOENT)
-            throw new MgFileNotFoundException(L"ByteSourceFileImpl", __LINE__, __WFILE__, &arguments, L"", NULL);
+        {
+            throw new MgFileNotFoundException(L"ByteSourceFileImpl.LoadFile",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
         else
-            throw new MgFileIoException(L"ByteSourceFileImpl", __LINE__, __WFILE__, &arguments, L"", NULL);
+        {
+            throw new MgFileIoException(L"ByteSourceFileImpl.LoadFile",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
     }
 
     m_size = ACE_OS::llseek(m_file, 0, SEEK_END);

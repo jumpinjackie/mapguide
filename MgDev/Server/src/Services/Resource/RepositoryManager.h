@@ -59,9 +59,10 @@ public:
 
     static void CleanRepository(CREFSTRING repositoryType);
 
-    void InitializeTransaction();
-    virtual void CommitTransaction();
-    void AbortTransaction();
+    void Initialize(bool transacted);
+    void Terminate();
+
+    bool IsTransacted() const;
 
     XmlValue GetAccessedTime() const;
     MgRepository& GetRepository() const;
@@ -109,7 +110,10 @@ public:
 
 protected:
 
-    // Helper Methods
+    void CreateTransaction();
+    void ValidateTransaction();
+    virtual void CommitTransaction();
+    void AbortTransaction();
 
     virtual MgResourceContentManager* GetResourceContentManager() = 0;
     virtual MgResourceHeaderManager* GetResourceHeaderManager() = 0;
@@ -142,11 +146,19 @@ private:
     friend class MgApplicationResourceContentManager;
     friend class MgLibraryResourceContentManager;
     friend class MgSessionResourceContentManager;
+    friend class MgResourceDataFileManager;
+    friend class MgResourceDataStreamManager;
 
     MgRepository& m_repository;
+    bool m_transacted;
 };
 
 /// Inline Methods
+
+inline bool MgRepositoryManager::IsTransacted() const
+{
+    return m_transacted;
+}
 
 inline MgRepositoryManager* MgRepositoryManager::GetSourceRepositoryManager()
 {

@@ -28,8 +28,13 @@ ByteSourceMemoryImpl::ByteSourceMemoryImpl(BYTE_ARRAY_IN data, INT32 length)
 {
     //make a copy of the memory
     m_data = new MgByte(data, length);
+
     if(m_data == NULL)
-        throw new MgOutOfMemoryException(L"ByteSourceMemoryImpl", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgOutOfMemoryException(L"ByteSourceMemoryImpl.ByteSourceMemoryImpl",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     m_pos = 0;
 }
 
@@ -76,6 +81,11 @@ INT32 ByteSourceMemoryImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
 INT64 ByteSourceMemoryImpl::GetLength()
 {
     return m_data->GetLength() - m_pos;
+}
+
+bool ByteSourceMemoryImpl::IsRewindable()
+{
+    return true;
 }
 
 void ByteSourceMemoryImpl::Rewind()

@@ -15,11 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_BYTE_SOURCE_IMPL_H
-#define MG_BYTE_SOURCE_IMPL_H
+#ifndef MG_BYTE_SOURCE_IMPL_H_
+#define MG_BYTE_SOURCE_IMPL_H_
 
 /// \cond INTERNAL
-/////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Placeholder for various ByteSourceInfo derived classes, which supply
 /// the actual access to the bytes in the source
@@ -30,13 +30,13 @@ public:
     /// Constructor
     ByteSourceImpl() {}
 
-    //////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Destruct a ByteSourceImpl object
     ///
     virtual ~ByteSourceImpl() {}
 
-    //////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Reads a buffer
     ///
@@ -50,7 +50,7 @@ public:
     ///
     virtual INT32 Read(BYTE_ARRAY_OUT buffer, INT32 length) = 0;
 
-    ////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the remaining length of the byte source.  This length is
     /// adjusted for previous reads.  If the returned length is zero
@@ -62,7 +62,16 @@ public:
     ///
     virtual INT64 GetLength() = 0;
 
-    ////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if the source is rewindable.
+    ///
+    /// \return
+    /// true if the source is rewindable, false otherwise.
+    ///
+    virtual bool IsRewindable() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Rewinds to the start of the source.  Depending on the source of
     /// the reader, Rewind may not be supported.  Readers sourced from
@@ -77,4 +86,4 @@ public:
 };
 /// \endcond INTERNAL
 
-#endif // MG_BYTE_SOURCE_IMPL_H
+#endif // MG_BYTE_SOURCE_IMPL_H_

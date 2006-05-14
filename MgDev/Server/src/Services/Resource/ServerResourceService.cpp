@@ -26,6 +26,52 @@
 #include "SiteRepositoryManager.h"
 #include "SiteResourceContentManager.h"
 
+const int MgServerResourceService::sm_maxOpRetries = 3;
+
+///////////////////////////////////////////////////////////////////////////////
+/// Server Resource Service retry macros.
+///
+#define MG_RESOURCE_SERVICE_BEGIN_OPERATION(transacted)                       \
+    int numRetries = 0;                                                       \
+                                                                              \
+    while (true)                                                              \
+    {                                                                         \
+        try                                                                   \
+        {                                                                     \
+            repositoryMan->Initialize(transacted);                            \
+
+#define MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)                         \
+            break;                                                            \
+        }                                                                     \
+        catch (MgException* e)                                                \
+        {                                                                     \
+            ++numRetries;                                                     \
+                                                                              \
+            if ((e->IsOfClass(Common_Exception_MgDbXmlException) || e->IsOfClass(Common_Exception_MgDbException)) \
+             && (DB_LOCK_DEADLOCK == (static_cast<MgThirdPartyException*>(e))->GetErrorCode())) \
+            {                                                                 \
+                if (numRetries < maxRetries)                                  \
+                {                                                             \
+                    SAFE_RELEASE(e);                                          \
+                }                                                             \
+                else                                                          \
+                {                                                             \
+                    throw e;                                                  \
+                }                                                             \
+            }                                                                 \
+            else                                                              \
+            {                                                                 \
+                throw e;                                                      \
+            }                                                                 \
+        }                                                                     \
+        catch (...)                                                           \
+        {                                                                     \
+            throw;                                                            \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+    repositoryMan->Terminate();                                               \
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
@@ -54,29 +100,36 @@ MgServerResourceService::MgServerResourceService(
     // default repositories?
     // Create a site repository if it does not exists.
 
-    MgSiteRepositoryManager siteRepositoryMan(*m_siteRepository);
     MgResourceIdentifier resource;
 
     resource.SetRepositoryType(MgRepositoryType::Site);
     resource.SetResourceType(MgResourceType::Folder);
 
+    MgSiteRepositoryManager siteRepositoryMan(*m_siteRepository);
+
+    siteRepositoryMan.Initialize(true);
+
     if (!siteRepositoryMan.FindResource(&resource))
     {
         siteRepositoryMan.CreateRepository(&resource, 0, 0);
-        siteRepositoryMan.CommitTransaction();
     }
+
+    siteRepositoryMan.Terminate();
 
     // Create a library repository if it does not exists.
 
+    resource.SetRepositoryType(MgRepositoryType::Library);
+
     MgLibraryRepositoryManager libraryRepositoryMan(*m_libraryRepository, true);
 
-    resource.SetRepositoryType(MgRepositoryType::Library);
+    libraryRepositoryMan.Initialize(true);
 
     if (!libraryRepositoryMan.FindResource(&resource))
     {
         libraryRepositoryMan.CreateRepository(&resource, 0, 0);
-        libraryRepositoryMan.CommitTransaction();
     }
+
+    libraryRepositoryMan.Terminate();
 
     // Create the permission cache.
 
@@ -140,11 +193,14 @@ MgByteReader* MgServerResourceService::EnumerateRepositories(
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MgSessionRepositoryManager repositoryMan(*m_sessionRepository);
+    auto_ptr<MgSessionRepositoryManager> repositoryMan(
+        new MgSessionRepositoryManager(*m_sessionRepository));
 
-    byteReader = repositoryMan.EnumerateRepositories();
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
-    repositoryMan.CommitTransaction();
+    byteReader = repositoryMan->EnumerateRepositories();
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateRepositories")
 
@@ -181,11 +237,31 @@ void MgServerResourceService::CreateRepository(MgResourceIdentifier* resource,
     }
 
     ACE_ASSERT(!resource->GetRepositoryName().empty());
-    MgSessionRepositoryManager repositoryMan(*m_sessionRepository);
+    auto_ptr<MgSessionRepositoryManager> repositoryMan(
+        new MgSessionRepositoryManager(*m_sessionRepository));
+    int maxRetries = sm_maxOpRetries;
 
-    repositoryMan.CreateRepository(resource, content, header);
+    if ((NULL != content && !content->IsRewindable())
+     || (NULL != header  && !header->IsRewindable()))
+    {
+        maxRetries = 0;
+    }
 
-    repositoryMan.CommitTransaction();
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
+
+    if (NULL != content && content->IsRewindable())
+    {
+        content->Rewind();
+    }
+
+    if (NULL != header && header->IsRewindable())
+    {
+        header->Rewind();
+    }
+
+    repositoryMan->CreateRepository(resource, content, header);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.CreateRepository")
 }
@@ -219,14 +295,17 @@ void MgServerResourceService::DeleteRepository(MgResourceIdentifier* resource)
     }
 
     ACE_ASSERT(!resource->GetRepositoryName().empty());
-    MgSessionRepositoryManager repositoryMan(*m_sessionRepository);
+    auto_ptr<MgSessionRepositoryManager> repositoryMan(
+        new MgSessionRepositoryManager(*m_sessionRepository));
 
-    repositoryMan.DeleteRepository(resource);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->DeleteRepository(resource);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     // Update the current set of changed resources.
-    UpdateChangedResources(repositoryMan.GetChangedResources());
+    UpdateChangedResources(repositoryMan->GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.DeleteRepository")
 }
@@ -256,10 +335,29 @@ void MgServerResourceService::UpdateRepository(MgResourceIdentifier* resource,
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
+    int maxRetries = sm_maxOpRetries;
+
+    if ((NULL != content && !content->IsRewindable())
+     || (NULL != header  && !header->IsRewindable()))
+    {
+        maxRetries = 0;
+    }
+
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
+
+    if (NULL != content && content->IsRewindable())
+    {
+        content->Rewind();
+    }
+
+    if (NULL != header && header->IsRewindable())
+    {
+        header->Rewind();
+    }
 
     repositoryMan->UpdateRepository(resource, content, header);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.UpdateRepository")
 }
@@ -293,9 +391,11 @@ MgByteReader* MgServerResourceService::GetRepositoryContent(
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
     byteReader = repositoryMan->GetRepositoryContent(resource);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GetRepositoryContent")
 
@@ -336,11 +436,14 @@ MgByteReader* MgServerResourceService::GetRepositoryHeader(
     }
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
-    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
+    auto_ptr<MgLibraryRepositoryManager> repositoryMan(
+        new MgLibraryRepositoryManager(*m_libraryRepository));
 
-    byteReader = repositoryMan.GetRepositoryHeader(resource);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
-    repositoryMan.CommitTransaction();
+    byteReader = repositoryMan->GetRepositoryHeader(resource);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GetRepositoryHeader")
 
@@ -364,14 +467,28 @@ void MgServerResourceService::ApplyResourcePackage(MgByteReader* packageStream)
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
+    auto_ptr<MgLibraryRepositoryManager> repositoryMan(
+        new MgLibraryRepositoryManager(*m_libraryRepository));
+    int maxRetries = sm_maxOpRetries;
 
-    repositoryMan.ApplyResourcePackage(packageStream);
+    if (!packageStream->IsRewindable())
+    {
+        maxRetries = 0;
+    }
 
-    repositoryMan.CommitTransaction();
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
+
+    if (packageStream->IsRewindable())
+    {
+        packageStream->Rewind();
+    }
+
+    repositoryMan->ApplyResourcePackage(packageStream);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)
 
     // Update the current set of changed resources.
-    UpdateChangedResources(repositoryMan.GetChangedResources());
+    UpdateChangedResources(repositoryMan->GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.ApplyResourcePackage")
 }
@@ -397,14 +514,17 @@ void MgServerResourceService::LoadResourcePackage(CREFSTRING packagePathname,
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
+    auto_ptr<MgLibraryRepositoryManager> repositoryMan(
+        new MgLibraryRepositoryManager(*m_libraryRepository));
 
-    repositoryMan.LoadResourcePackage(packagePathname, logActivities);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->LoadResourcePackage(packagePathname, logActivities);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     // Update the current set of changed resources.
-    UpdateChangedResources(repositoryMan.GetChangedResources());
+    UpdateChangedResources(repositoryMan->GetChangedResources());
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.LoadResourcePackage")
 }
@@ -443,12 +563,15 @@ void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource
     }
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
-    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
+    auto_ptr<MgLibraryRepositoryManager> repositoryMan(
+        new MgLibraryRepositoryManager(*m_libraryRepository));
 
-    repositoryMan.MakeResourcePackage(resource, packagePathname, 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
+    repositoryMan->MakeResourcePackage(resource, packagePathname, 
         packageDescription, logActivities);
 
-    repositoryMan.CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.MakeResourcePackage")
 }
@@ -488,12 +611,15 @@ MgByteReader* MgServerResourceService::EnumerateResources(
     }
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
-    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
+    auto_ptr<MgLibraryRepositoryManager> repositoryMan(
+        new MgLibraryRepositoryManager(*m_libraryRepository));
 
-    byteReader = repositoryMan.EnumerateResources(resource, depth, type,
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
+    byteReader = repositoryMan->EnumerateResources(resource, depth, type,
         properties, fromDate, toDate);
 
-    repositoryMan.CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateResources")
 
@@ -525,10 +651,29 @@ void MgServerResourceService::SetResource(MgResourceIdentifier* resource,
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
+    int maxRetries = sm_maxOpRetries;
+
+    if ((NULL != content && !content->IsRewindable())
+     || (NULL != header  && !header->IsRewindable()))
+    {
+        maxRetries = 0;
+    }
+
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
+
+    if (NULL != content && content->IsRewindable())
+    {
+        content->Rewind();
+    }
+
+    if (NULL != header && header->IsRewindable())
+    {
+        header->Rewind();
+    }
 
     repositoryMan->SetResource(resource, content, header);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)
 
     // Update the current set of changed resources.
     UpdateChangedResources(repositoryMan->GetChangedResources());
@@ -561,9 +706,11 @@ void MgServerResourceService::DeleteResource(MgResourceIdentifier* resource)
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
+
     repositoryMan->DeleteResource(resource);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     // Update the current set of changed resources.
     UpdateChangedResources(repositoryMan->GetChangedResources());
@@ -597,9 +744,11 @@ void MgServerResourceService::MoveResource(MgResourceIdentifier* sourceResource,
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(destResource));
 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
+
     repositoryMan->MoveResource(sourceResource, destResource, overwrite);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     // Update the current set of changed resources.
     UpdateChangedResources(repositoryMan->GetChangedResources());
@@ -633,9 +782,11 @@ void MgServerResourceService::CopyResource(MgResourceIdentifier* sourceResource,
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(destResource));
 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
+
     repositoryMan->CopyResource(sourceResource, destResource, overwrite);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     // Update the current set of changed resources.
     UpdateChangedResources(repositoryMan->GetChangedResources());
@@ -671,9 +822,11 @@ MgByteReader* MgServerResourceService::GetResourceContent(
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
     byteReader = repositoryMan->GetResourceContent(resource, preProcessTags);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GetResourceContent")
 
@@ -712,11 +865,14 @@ MgByteReader* MgServerResourceService::GetResourceHeader(
     }
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
-    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
+    auto_ptr<MgLibraryRepositoryManager> repositoryMan(
+        new MgLibraryRepositoryManager(*m_libraryRepository));
 
-    byteReader = repositoryMan.GetResourceHeader(resource);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
-    repositoryMan.CommitTransaction();
+    byteReader = repositoryMan->GetResourceHeader(resource);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GetResourceHeader")
 
@@ -758,11 +914,14 @@ MgDateTime* MgServerResourceService::GetResourceModifiedDate(
     }
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
-    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
+    auto_ptr<MgLibraryRepositoryManager> repositoryMan(
+        new MgLibraryRepositoryManager(*m_libraryRepository));
 
-    dateTime = repositoryMan.GetResourceModifiedDate(resource);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
-    repositoryMan.CommitTransaction();
+    dateTime = repositoryMan->GetResourceModifiedDate(resource);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GetResourceModifiedDate")
 
@@ -797,9 +956,11 @@ MgByteReader* MgServerResourceService::EnumerateReferences(
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
     byteReader = repositoryMan->EnumerateReferences(resource);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateReferences")
 
@@ -885,16 +1046,18 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
         {
             MgLibraryRepositoryManager libraryRepositoryMan(*m_libraryRepository);
 
+            libraryRepositoryMan.Initialize(false);
             libraryRepositoryMan.EnumerateParentMapDefinitions(childResources,
                 parentResources);
-            libraryRepositoryMan.CommitTransaction();
+            libraryRepositoryMan.Terminate();
         }
 
         MgSessionRepositoryManager sessionRepositoryMan(*m_sessionRepository);
 
+        sessionRepositoryMan.Initialize(false);
         sessionRepositoryMan.EnumerateParentMapDefinitions(childResources,
             parentResources);
-        sessionRepositoryMan.CommitTransaction();
+        sessionRepositoryMan.Terminate();
     }
 
     if (!parentResources.empty())
@@ -947,11 +1110,14 @@ void MgServerResourceService::ChangeResourceOwner(
     }
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
-    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
+    auto_ptr<MgLibraryRepositoryManager> repositoryMan(
+        new MgLibraryRepositoryManager(*m_libraryRepository));
 
-    repositoryMan.ChangeResourceOwner(resource, owner, includeDescendants);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->ChangeResourceOwner(resource, owner, includeDescendants);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.ChangeResourceOwner")
 }
@@ -988,11 +1154,14 @@ void MgServerResourceService::InheritPermissionsFrom(MgResourceIdentifier* resou
     }
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
-    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository);
+    auto_ptr<MgLibraryRepositoryManager> repositoryMan(
+        new MgLibraryRepositoryManager(*m_libraryRepository));
 
-    repositoryMan.InheritPermissionsFrom(resource);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->InheritPermissionsFrom(resource);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.InheritPermissionsFrom")
 }
@@ -1025,9 +1194,11 @@ MgByteReader* MgServerResourceService::EnumerateResourceData(
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
     byteReader = repositoryMan->EnumerateResourceData(resource);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateResourceData")
 
@@ -1059,10 +1230,23 @@ void MgServerResourceService::SetResourceData(MgResourceIdentifier* resource,
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
+    int maxRetries = sm_maxOpRetries;
+
+    if (!data->IsRewindable())
+    {
+        maxRetries = 0;
+    }
+
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
+
+    if (data->IsRewindable())
+    {
+        data->Rewind();
+    }
 
     repositoryMan->SetResourceData(resource, dataName, dataType, data);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)
 
     // Update the current set of changed resources.
     UpdateChangedResources(repositoryMan->GetChangedResources());
@@ -1096,9 +1280,11 @@ void MgServerResourceService::DeleteResourceData(
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
+
     repositoryMan->DeleteResourceData(resource, dataName);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     // Update the current set of changed resources.
     UpdateChangedResources(repositoryMan->GetChangedResources());
@@ -1132,9 +1318,11 @@ void MgServerResourceService::RenameResourceData(MgResourceIdentifier* resource,
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
+
     repositoryMan->RenameResourceData(resource, oldDataName, newDataName, overwrite);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     // Update the current set of changed resources.
     UpdateChangedResources(repositoryMan->GetChangedResources());
@@ -1171,10 +1359,12 @@ MgByteReader* MgServerResourceService::GetResourceData(
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
 
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
     byteReader = repositoryMan->GetResourceData(resource, dataName,
         preProcessTags);
 
-    repositoryMan->CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GetResourceData")
 
@@ -1242,12 +1432,15 @@ MgByteReader* MgServerResourceService::EnumerateUsers(CREFSTRING group,
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateUsers()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    byteReader = repositoryMan.EnumerateUsers(group, role, includePassword,
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
+    byteReader = repositoryMan->EnumerateUsers(group, role, includePassword,
         includeGroups);
 
-    repositoryMan.CommitTransaction();
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateUsers")
 
@@ -1271,11 +1464,14 @@ void MgServerResourceService::AddUser(CREFSTRING userId, CREFSTRING username,
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::AddUser()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.AddUser(userId, username, password, description);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->AddUser(userId, username, password, description);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.AddUser")
 }
@@ -1296,11 +1492,14 @@ void MgServerResourceService::DeleteUsers(MgStringCollection* users)
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::DeleteUsers()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.DeleteUsers(users);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->DeleteUsers(users);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.DeleteUsers")
 }
@@ -1322,13 +1521,16 @@ void MgServerResourceService::UpdateUser(CREFSTRING userId, CREFSTRING newUserId
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::UpdateUser()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.UpdateUser(userId, newUserId, newUsername, newPassword, newDescription);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->UpdateUser(userId, newUserId, newUsername, newPassword, newDescription);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.DeleteUsers")
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.UpdateUser")
 }
 
 ///----------------------------------------------------------------------------
@@ -1351,11 +1553,14 @@ MgByteReader* MgServerResourceService::EnumerateGroups(CREFSTRING user,
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateGroups()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    byteReader = repositoryMan.EnumerateGroups(user, role);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
-    repositoryMan.CommitTransaction();
+    byteReader = repositoryMan->EnumerateGroups(user, role);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateGroups")
 
@@ -1377,11 +1582,14 @@ void MgServerResourceService::AddGroup(CREFSTRING group, CREFSTRING description)
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::AddGroup()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.AddGroup(group, description);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->AddGroup(group, description);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.AddGroup")
 }
@@ -1401,11 +1609,14 @@ void MgServerResourceService::DeleteGroups(MgStringCollection* groups)
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::DeleteGroups()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.DeleteGroups(groups);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->DeleteGroups(groups);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.DeleteGroups")
 }
@@ -1427,11 +1638,14 @@ void MgServerResourceService::UpdateGroup(CREFSTRING group, CREFSTRING newGroup,
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::UpdateGroup()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.UpdateGroup(group, newGroup, newDescription);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->UpdateGroup(group, newGroup, newDescription);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.UpdateGroup")
 }
@@ -1462,11 +1676,14 @@ void MgServerResourceService::GrantGroupMembershipsToUsers( MgStringCollection* 
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GrantGroupMembershipsToUsers()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.GrantGroupMembershipsToUsers(groups, users);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->GrantGroupMembershipsToUsers(groups, users);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GrantGroupMembershipsToUsers")
 }
@@ -1497,11 +1714,14 @@ void MgServerResourceService::RevokeGroupMembershipsFromUsers( MgStringCollectio
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::RevokeGroupMembershipsFromUsers()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.RevokeGroupMembershipsFromUsers(groups, users);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->RevokeGroupMembershipsFromUsers(groups, users);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.RevokeGroupMembershipsFromUsers")
 }
@@ -1540,11 +1760,14 @@ MgStringCollection* MgServerResourceService::EnumerateRoles(CREFSTRING user,
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateRoles()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    roles = repositoryMan.EnumerateRoles(user, group);
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
-    repositoryMan.CommitTransaction();
+    roles = repositoryMan->EnumerateRoles(user, group);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateRoles")
 
@@ -1576,11 +1799,14 @@ void MgServerResourceService::GrantRoleMembershipsToUsers(MgStringCollection* ro
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GrantRoleMembershipsToUsers()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.GrantRoleMembershipsToUsers( roles, users );
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->GrantRoleMembershipsToUsers( roles, users );
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GrantRoleMembershipsToUsers")
 }
@@ -1611,11 +1837,14 @@ void MgServerResourceService::RevokeRoleMembershipsFromUsers(MgStringCollection*
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::RevokeRoleMembershipsFromUsers()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.RevokeRoleMembershipsFromUsers( roles, users );
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->RevokeRoleMembershipsFromUsers( roles, users );
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.RevokeRoleMembershipsFromUsers")
 }
@@ -1646,11 +1875,14 @@ void MgServerResourceService::GrantRoleMembershipsToGroups(MgStringCollection* r
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GrantRoleMembershipsToGroups()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.GrantRoleMembershipsToGroups( roles, groups );
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->GrantRoleMembershipsToGroups( roles, groups );
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GrantRoleMembershipsToGroups")
 }
@@ -1681,11 +1913,14 @@ void MgServerResourceService::RevokeRoleMembershipsFromGroups(MgStringCollection
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::RevokeRoleMembershipsFromGroups()");
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    auto_ptr<MgSiteRepositoryManager> repositoryMan(
+        new MgSiteRepositoryManager(*m_siteRepository));
 
-    repositoryMan.RevokeRoleMembershipsFromGroups( roles, groups );
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan.CommitTransaction();
+    repositoryMan->RevokeRoleMembershipsFromGroups( roles, groups );
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.RevokeRoleMembershipsFromGroups")
 }
@@ -1727,10 +1962,10 @@ MgPermissionCache* MgServerResourceService::CreatePermissionCache(bool startup)
 
     MG_RESOURCE_SERVICE_TRY()
 
-    MgLibraryRepositoryManager repositoryManager(*m_libraryRepository, startup);
+    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository, startup);
     MgResourceHeaderManager* resourceHeaderManager =
         dynamic_cast<MgResourceHeaderManager*>(
-            repositoryManager.GetResourceHeaderManager());
+            repositoryMan.GetResourceHeaderManager());
     ACE_ASSERT(NULL != resourceHeaderManager);
 
     permissionCache = resourceHeaderManager->CreatePermissionCache();

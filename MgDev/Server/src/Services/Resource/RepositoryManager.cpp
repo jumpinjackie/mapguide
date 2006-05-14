@@ -37,6 +37,7 @@
 MgRepositoryManager::MgRepositoryManager(
     MgRepository& repository) :
     m_repository(repository),
+    m_transacted(false),
     m_currUserIsAdmin(false),
     m_currUserIsAuthor(false),
     m_dbTxn(NULL),
@@ -46,8 +47,6 @@ MgRepositoryManager::MgRepositoryManager(
     m_sourceRepositoryMan = this;
 
     ::time(&m_accessedTime);
-
-    InitializeTransaction();
 }
 
 ///----------------------------------------------------------------------------
@@ -389,27 +388,52 @@ void MgRepositoryManager::CleanRepository(CREFSTRING repositoryType)
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Initialize the repository manager.
+///
+void MgRepositoryManager::Initialize(bool transacted)
+{
+    AbortTransaction();
+
+    m_transacted = transacted;
+
+    if (m_transacted)
+    {
+        CreateTransaction();
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Terminate the repository manager.
+///
+void MgRepositoryManager::Terminate()
+{
+    CommitTransaction();
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
-/// Initializes a transaction.
+/// Creates a transaction.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgRepositoryManager::InitializeTransaction()
+void MgRepositoryManager::CreateTransaction()
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    if (NULL != m_dbTxn || NULL != m_xmlTxn.get())
+    if (!m_transacted || NULL != m_dbTxn || NULL != m_xmlTxn.get())
     {
         throw new MgInvalidOperationException(
-            L"MgRepositoryManager.InitializeTransaction", 
+            L"MgRepositoryManager.CreateTransaction",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     MgDbEnvironment* environment = m_repository.GetEnvironment();
     assert(NULL != environment);
 
-    if (environment->IsTransacted())
+    if (NULL != environment && environment->IsTransacted())
     {
         environment->GetDbEnv().txn_begin(0, &m_dbTxn, 0);
         assert(NULL != m_dbTxn);
@@ -418,8 +442,29 @@ void MgRepositoryManager::InitializeTransaction()
             environment->GetXmlManager().createTransaction(m_dbTxn)));
         assert(NULL != m_xmlTxn.get());
     }
+    else
+    {
+        throw new MgInvalidOperationException(
+            L"MgRepositoryManager.CreateTransaction",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgRepositoryManager.InitializeTransaction")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgRepositoryManager.CreateTransaction")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Check if the current operation (normally when writing) is transactionally
+/// protected. If not, then an exception will be thrown.
+///
+void MgRepositoryManager::ValidateTransaction()
+{
+    if (!m_transacted)
+    {
+        throw new MgInvalidOperationException(
+            L"MgRepositoryManager.ValidateTransaction",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -437,6 +482,8 @@ void MgRepositoryManager::CommitTransaction()
         m_dbTxn = NULL;
         m_xmlTxn.reset();
     }
+
+    m_transacted = false;
 }
 
 ///----------------------------------------------------------------------------
@@ -453,6 +500,8 @@ void MgRepositoryManager::AbortTransaction()
         m_dbTxn = NULL;
         m_xmlTxn.reset();
     }
+
+    m_transacted = false;
 }
 
 ///----------------------------------------------------------------------------

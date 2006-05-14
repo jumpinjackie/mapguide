@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _BYTE_SOURCE_RASTERSTREAM_IMPL_H
-#define _BYTE_SOURCE_RASTERSTREAM_IMPL_H
+#ifndef MG_BYTE_SOURCE_RASTER_STREAM_IMPL_H_
+#define MG_BYTE_SOURCE_RASTER_STREAM_IMPL_H_
 
 class GisIStreamReader;
 
@@ -65,6 +65,15 @@ public:
     /// Remaining length of the byte source
     /// </returns>
     INT64 GetLength();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if the source is rewindable.
+    ///
+    /// \return
+    /// true if the source is rewindable, false otherwise.
+    ///
+    bool IsRewindable();
 
     ////////////////////////////////////////////////////////////////
     ///<summary>

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef BYTE_READER_H
-#define BYTE_READER_H
+#ifndef MG_BYTE_READER_H_
+#define MG_BYTE_READER_H_
 
 /// \defgroup MgByteReader MgByteReader
 /// \ingroup Common_Module
@@ -189,6 +189,15 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if the reader is rewindable.
+    ///
+    /// \return
+    /// true if the source is rewindable, false otherwise.
+    ///
+    bool IsRewindable();
+
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Rewinds to the start of the reader.  Depending on the source of
@@ -271,4 +280,4 @@ CLASS_ID:
 };
 /// \}
 
-#endif // BYTE_READER_H
+#endif // MG_BYTE_READER_H_

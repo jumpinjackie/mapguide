@@ -532,20 +532,14 @@ void MgResourceDefinitionManager::PutDocument(XmlDocument& xmlDoc,
 
     try
     {
-        // Perform the XML validation.
+        // Ensure the current operation is transactionally protected.
+        m_repositoryMan.ValidateTransaction();
 
+        // Perform the XML validation.
         ValidateDocument(xmlDoc);
 
         // Insert the resource.
-
-        if (IsTransacted())
-        {
-            m_container.putDocument(GetXmlTxn(), xmlDoc, updateContext, 0);
-        }
-        else
-        {
-            m_container.putDocument(xmlDoc, updateContext, 0);
-        }
+        m_container.putDocument(GetXmlTxn(), xmlDoc, updateContext, 0);
     }
     catch (XmlException& e)
     {
@@ -585,20 +579,14 @@ void MgResourceDefinitionManager::UpdateDocument(XmlDocument& xmlDoc,
 
     try
     {
-        // Perform the XML validation.
+        // Ensure the current operation is transactionally protected.
+        m_repositoryMan.ValidateTransaction();
 
+        // Perform the XML validation.
         ValidateDocument(xmlDoc);
 
         // Update the resource.
-
-        if (IsTransacted())
-        {
-            m_container.updateDocument(GetXmlTxn(), xmlDoc, updateContext);
-        }
-        else
-        {
-            m_container.updateDocument(xmlDoc, updateContext);
-        }
+        m_container.updateDocument(GetXmlTxn(), xmlDoc, updateContext);
     }
     catch (XmlException& e)
     {
@@ -638,16 +626,11 @@ void MgResourceDefinitionManager::DeleteDocument(XmlDocument& xmlDoc,
 
     try
     {
-        // Delete the resource.
+        // Ensure the current operation is transactionally protected.
+        m_repositoryMan.ValidateTransaction();
 
-        if (IsTransacted())
-        {
-            m_container.deleteDocument(GetXmlTxn(), xmlDoc, updateContext);
-        }
-        else
-        {
-            m_container.deleteDocument(xmlDoc, updateContext);
-        }
+        // Delete the resource.
+        m_container.deleteDocument(GetXmlTxn(), xmlDoc, updateContext);
     }
     catch (XmlException& e)
     {

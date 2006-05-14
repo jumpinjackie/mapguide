@@ -29,7 +29,10 @@
 ByteSourceMgStreamImpl::ByteSourceMgStreamImpl(MgStream* stream)
 {
     if (stream == NULL)
-        throw new MgNullReferenceException(L"ByteSourceMgStreamImpl", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgNullReferenceException(L"ByteSourceMgStreamImpl.ByteSourceMgStreamImpl",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     m_stream = SAFE_ADDREF(stream);
 }
@@ -63,7 +66,11 @@ INT32 ByteSourceMgStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
     INT32 bytesReceived = m_stream->GetData(buffer, length);
 
     if (bytesReceived == -1)
-        throw new MgStreamIoException(L"ByteSourceMgStreamImpl", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgStreamIoException(L"ByteSourceMgStreamImpl.Read",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     //nRecv = -errno;
     return bytesReceived;
 }
@@ -75,7 +82,13 @@ INT64 ByteSourceMgStreamImpl::GetLength()
     return 0;
 }
 
+bool ByteSourceMgStreamImpl::IsRewindable()
+{
+    return false;
+}
+
 void ByteSourceMgStreamImpl::Rewind()
 {
-    throw new MgInvalidOperationException(L"Rewind", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgInvalidOperationException(L"ByteSourceMgStreamImpl.Rewind",
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }
