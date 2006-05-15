@@ -214,10 +214,12 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
             // if there was simply no data.
 #ifdef _WIN32
             int error = ::WSAGetLastError(); // errno doesn't work correctly on Windows
-            stat = (error == WSAEWOULDBLOCK || error == 0) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
+            bool bConnected = ( error == WSAEWOULDBLOCK || error == 0 );
 #else
-            stat = (errno == EWOULDBLOCK || errno == 0 || errno == ETIME) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
+            bool bConnected = ( errno == EWOULDBLOCK || errno == 0 || errno == ETIME );
 #endif
+
+            stat = ( bConnected ) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
         }
         else
         {
@@ -237,10 +239,12 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
                 // if there was simply no data.
 #ifdef _WIN32
                 int error = ::WSAGetLastError(); // errno doesn't work correctly on Windows
-                stat = (error == WSAEWOULDBLOCK || error == 0) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
+                bool bConnected = ( error == WSAEWOULDBLOCK || error == 0 );
 #else
-                stat = (errno == EWOULDBLOCK || errno == 0 || errno == ETIME) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
+                bool bConnected = ( errno == EWOULDBLOCK || errno == 0 || errno == ETIME );
 #endif
+
+                stat = ( bConnected ) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
             }
             else
             {
@@ -578,8 +582,7 @@ bool MgAceStreamHelper::IsConnected()
         int error = ::WSAGetLastError(); // errno doesn't work correctly on Windows
         bConnected = ( error == WSAEWOULDBLOCK || error == 0 );
 #else
-        bConnected = ( errno == EWOULDBLOCK || errno == 0 || errno == ETIME);
-       
+        bConnected = ( errno == EWOULDBLOCK || errno == 0 || errno == ETIME );
 #endif
     }
 
