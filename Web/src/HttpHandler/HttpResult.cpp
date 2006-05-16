@@ -199,7 +199,9 @@ INT32 MgHttpResult::GetClassId()
 void MgHttpResult::SetErrorInfo(MgHttpRequest* awRequest,
     MgException* mgException)
 {
+#ifdef _DEBUG
     assert(0 != mgException);
+#endif
 
     STATUS httpStatusCode = HTTP_STATUS_INTERNAL_SERVER_ERROR;
     STRING httpStatusMessage;
@@ -235,9 +237,9 @@ void MgHttpResult::SetErrorInfo(MgHttpRequest* awRequest,
     {
         if (HTTP_STATUS_INTERNAL_SERVER_ERROR == httpStatusCode)
         {
-            assert(false);
-            httpStatusMessage = L"Internal Server Error"; // TODO: Localize.
-            errorMessage = L"Unspecified Error";          // TODO: Localize.
+            // If we are here it is because we failed to get the exception information above
+            httpStatusMessage = L"Invalid exception"; // TODO: Localize.
+            errorMessage = L"Unable to process exception";          // TODO: Localize.
         }
 
         SetStatusCode(httpStatusCode);
@@ -248,10 +250,8 @@ void MgHttpResult::SetErrorInfo(MgHttpRequest* awRequest,
     catch (MgException* e)
     {
         SAFE_RELEASE(e);
-        assert(false);
     }
     catch (...)
     {
-        assert(false);
     }
 }
