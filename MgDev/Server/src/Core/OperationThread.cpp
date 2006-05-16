@@ -191,6 +191,9 @@ int MgOperationThread::svc(void)
         STRING stackTrace = mgException->GetStackTrace(locale);
 
         ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+
+        // Log that the operation thread terminated abnormally
+        message += L" - Operation thread has terminated abnormally!";
         MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
         nResult = -1;
