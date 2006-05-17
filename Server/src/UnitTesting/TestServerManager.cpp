@@ -121,7 +121,7 @@ void TestServerManager::TestCase_GetAdminThreads()
     MgServerManager* pMgServerManager = MgServerManager::GetInstance();
     INT32 threads = pMgServerManager->GetAdminThreads();
 
-    CPPUNIT_ASSERT(threads == 5);
+    CPPUNIT_ASSERT(threads >= 5);
 }
 
 ///----------------------------------------------------------------------------
@@ -134,7 +134,7 @@ void TestServerManager::TestCase_GetClientThreads()
     MgServerManager* pMgServerManager = MgServerManager::GetInstance();
     INT32 threads = pMgServerManager->GetClientThreads();
 
-    CPPUNIT_ASSERT(threads == 10);
+    CPPUNIT_ASSERT(threads >= 10);
 }
 
 ///----------------------------------------------------------------------------
@@ -147,7 +147,7 @@ void TestServerManager::TestCase_GetSiteThreads()
     MgServerManager* pMgServerManager = MgServerManager::GetInstance();
     INT32 threads = pMgServerManager->GetSiteThreads();
 
-    CPPUNIT_ASSERT(threads == 5);
+    CPPUNIT_ASSERT(threads >= 5);
 }
 
 ///----------------------------------------------------------------------------
