@@ -649,13 +649,10 @@ String StrEscape(String str)
 
 String StrEscape(String str, boolean single)
 {
-    String esc = single ? "'" : "\"";
-    if (str.indexOf( esc ) < 0)
-        return str;
+    String org = single ? "'" : "\"";
+    String rep = single ? "\\\\'": "\\\\\"";
 
-    String[] escArg = { esc };
-    Object[] escVal = { "\\" + esc };
-    return str_replace(escArg, escVal , str);
+    return str.replaceAll(org, rep);
 }
 
 String str_replace(String[] args, Object[] vals, String format)
