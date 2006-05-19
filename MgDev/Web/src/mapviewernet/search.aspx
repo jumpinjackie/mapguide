@@ -212,7 +212,7 @@ String searchError;
                                     throw new SearchError(String.Format(MgLocalizer.GetString("SEARCHTYYPENOTSUP", locale), new Object[] { idPropType.ToString() }), searchError);
                             }
                         }
-                        String selText = StrEscape(sel.ToXml());
+                        String selText = EscapeForHtml(sel.ToXml());
 
                         Response.Write(String.Format("<td class=\"{0}\" id=\"{1}:{2}\" onmousemove=\"SelectRow({3})\" onclick=\"CellClicked('{4}')\">&nbsp;{5}</td>\n", (row % 2) == 0 ? "Search" : "Search2", row, i, row, selText, val));
                     }
@@ -285,17 +285,6 @@ void OnError(String title, String msg)
     String templ = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/errorpage.templ"), locale, GetClientOS(Request));
     String[] vals = { popup.ToString(), title, msg };
     Response.Write(Substitute(templ, vals));
-}
-
-String StrEscape(String str)
-{
-    str = str.Replace("'", "&#39;");
-    str = str.Replace("\"", "&#34;");
-    str = str.Replace("\n", "");
-    str = str.Replace("<", "&lt;");
-    str = str.Replace(">", "&gt;");
-
-    return str;
 }
 
 public class SearchError : Exception

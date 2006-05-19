@@ -133,4 +133,15 @@ int GetClientOS(HttpServletRequest request) {
     return 0;
 }
 
+String EscapeForHtml(String str)
+{
+    str = str.replaceAll("'", "&#39;");
+    str = str.replaceAll("\"", "&quot;");
+    str = str.replaceAll("\n", " ");
+    str = str.replaceAll("<", "&lt;");
+    str = str.replaceAll(">", "&gt;");
+    return str;
+}
+
+
 %>

@@ -49,7 +49,7 @@
                   $layerId,
                   $mapName,
                   $sessionId,
-                  $filter,
+                  EscapeForHtml($filter),
                   $matchLimit);
 
 function GetParameters($params)
