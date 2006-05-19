@@ -748,12 +748,34 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                 {
                     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(dl->GetResourceID());
 
+                    //get the resource content to see if there is a coordinate system
+                    Ptr<MgByteReader> rdr = svcResource->GetResourceContent(resId);
+                    STRING st = rdr->ToString();
+
+                    //now look for a coordinate space tag and extract the contents
+                    size_t i0 = st.find(L"<CoordinateSpace>");
+                    size_t i1 = st.find(L"</CoordinateSpace>");
+
+                    if (   i0 != STRING::npos 
+                        && i1 != STRING::npos)
+                    {
+                        i0 += wcslen(L"<CoordinateSpace>");
+                        STRING cs = st.substr(i0, i1 - i0);
+
+                        if (!cs.empty() && cs != dstCs->ToString())
+                        {             
+                            //construct cs transformer if needed
+                            Ptr<MgCoordinateSystem> srcCs = csFactory->Create(cs);
+                            xformer = new MgCSTrans(srcCs, dstCs);
+                        }
+                    }
+
                     //get DWF from drawing service
                     Ptr<MgByteReader> reader = svcDrawing->GetSection(resId, dl->GetSheet());
 
                     RSMgInputStream is(reader);
 
-                    ds->StylizeDrawingLayer( dl, &legendInfo, &is, dl->GetLayerFilter());
+                    ds->StylizeDrawingLayer( dl, &legendInfo, &is, dl->GetLayerFilter(), xformer);
                 }
             }
 
