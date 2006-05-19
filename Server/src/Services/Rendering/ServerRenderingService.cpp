@@ -824,51 +824,51 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         if (maxFeatures <= 0)
             break;
 
-        //get the coordinate system of the layer --> we need this
-        //so that we can convert the input geometry from mapping space
-        //to layer's space
-        Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(layer->GetFeatureSourceId());
-        Ptr<MgSpatialContextReader> csrdr = m_svcFeature->GetSpatialContexts(featResId, true);
-        Ptr<MgCoordinateSystem> layerCs = (MgCoordinateSystem*)NULL;
-
-        if (mapCs && csrdr->ReadNext())
-        {
-            STRING srcwkt = csrdr->GetCoordinateSystemWkt();
-            layerCs = (srcwkt.empty()) ? NULL : m_pCSFactory->Create(srcwkt);
-        }
-
-        //we want to transform query geometry from mapping space to layer space
-        Ptr<MgCoordinateSystemTransform> trans = (MgCoordinateSystemTransform*)NULL;
-
-        if (mapCs && layerCs)
-        {
-            trans = new MgCoordinateSystemTransform(mapCs, layerCs);
-        }
-
-        //if we have a valid transform, get the request geom in layer's space
-        Ptr<MgGeometricEntity> queryGeom = SAFE_ADDREF(geometry);
-
-        if (trans)
-        {
-            //get selection geometry in layer space
-            queryGeom = geometry->Transform(trans);
-        }
-
-        //execute the spatial query
-        Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
-        STRING geomPropName = layer->GetFeatureGeometryName();
-
-        //set the spatial filter for the selection
-        options->SetSpatialFilter(geomPropName, (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
-
-        //unfortunately the layer filter is not stored in the runtime layer
-        //so we will need to get it from the layer definition
+        //get the MDF layer definition
         Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
         auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, layerResId));
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
 
-        if (vl) // vector layer
+        //we can only do geometric query selectionb for vector layers
+        if (vl)
         {
+            //get the coordinate system of the layer --> we need this
+            //so that we can convert the input geometry from mapping space
+            //to layer's space
+            Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(layer->GetFeatureSourceId());
+            Ptr<MgSpatialContextReader> csrdr = m_svcFeature->GetSpatialContexts(featResId, true);
+            Ptr<MgCoordinateSystem> layerCs = (MgCoordinateSystem*)NULL;
+
+            if (mapCs && csrdr->ReadNext())
+            {
+                STRING srcwkt = csrdr->GetCoordinateSystemWkt();
+                layerCs = (srcwkt.empty()) ? NULL : m_pCSFactory->Create(srcwkt);
+            }
+
+            //we want to transform query geometry from mapping space to layer space
+            Ptr<MgCoordinateSystemTransform> trans = (MgCoordinateSystemTransform*)NULL;
+
+            if (mapCs && layerCs)
+            {
+                trans = new MgCoordinateSystemTransform(mapCs, layerCs);
+            }
+
+            //if we have a valid transform, get the request geom in layer's space
+            Ptr<MgGeometricEntity> queryGeom = SAFE_ADDREF(geometry);
+
+            if (trans)
+            {
+                //get selection geometry in layer space
+                queryGeom = geometry->Transform(trans);
+            }
+
+            //execute the spatial query
+            Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+            STRING geomPropName = layer->GetFeatureGeometryName();
+
+            //set the spatial filter for the selection
+            options->SetSpatialFilter(geomPropName, (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
+
             try
             {
                 if (!vl->GetFilter().empty())
@@ -891,16 +891,16 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
                 RS_UIGraphic uig(NULL, 0, L"");
                 RS_LayerUIInfo info(layer->GetName(),
-                                    layer->GetObjectId(), // object ID
-                                    true,       // selectable
-                                    true,       // visible
-                                    true,       // editable
-                                    L"",        // group name
-                                    L"",        // group ID
-                                    true,       // showInLegend
-                                    true,       // expandInLegend
-                                    0.0,        // zOrder
-                                    uig);       // uiGraphic
+                    layer->GetObjectId(), // object ID
+                    true,       // selectable
+                    true,       // visible
+                    true,       // editable
+                    L"",        // group name
+                    L"",        // group ID
+                    true,       // showInLegend
+                    true,       // expandInLegend
+                    0.0,        // zOrder
+                    uig);       // uiGraphic
 
                 //extract hyperlink and tooltip info
                 if (!vl->GetToolTip().empty()) info.hastooltips() = true;
