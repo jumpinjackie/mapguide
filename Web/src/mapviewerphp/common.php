@@ -105,4 +105,12 @@ function GetClientOS() {
     return 2;
 }
 
+function EscapeForHtml($str)
+{
+    $org = array("'", "\"", "\n", "<", ">");
+    $repl = array("&#39;", "&quot;", " ", "&lt;", "&gt;" );
+    return str_replace($org, $repl, $str);
+}
+
+
 ?>

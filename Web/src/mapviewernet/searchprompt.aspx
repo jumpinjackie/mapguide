@@ -61,7 +61,7 @@ int matchLimit = 0;
                     layerId,
                     mapName,
                     sessionId,
-                    filter,
+                    EscapeForHtml(filter),
                     matchLimit.ToString()
                     };
     Response.Write(Substitute(templ, vals));

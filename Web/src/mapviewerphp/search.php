@@ -205,7 +205,7 @@
                                 throw new SearchError(FormatMessage("SEARCHTYYPENOTSUP", $locale, array($idPropType)), $searchError);
                         }
                     }
-                    $selText = StrEscape($sel->ToXml(), true);
+                    $selText = EscapeForHtml($sel->ToXml(), true);
 
                     echo sprintf("<td class=\"%s\" id=\"%d:%d\" onmousemove=\"SelectRow(%d)\" onclick=\"CellClicked('%s')\">&nbsp;%s</td>\n", !($row%2)? "Search" : "Search2", $row, $i, $row, $selText, $val);
                 }
@@ -237,14 +237,6 @@
 
     // Flush output buffer
     ob_end_flush();
-
-function StrEscape($str)
-{
-    $org = array("'",    "\"",   "\n", "<",    ">");
-    $repl = array("&#39;", "&#34;",  "",  "&lt;", "&gt;" );
-
-    return str_replace($org, $repl, $str);
-}
 
 function OnError($title, $msg)
 {

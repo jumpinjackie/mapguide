@@ -70,13 +70,14 @@ String locale;
                     layerId,
                     mapName,
                     sessionId,
-                    filter,
+                    EscapeForHtml(filter),
                     String.valueOf(matchLimit)
                     };
     response.getWriter().write(Substitute(templ, vals));
 %>
 
 <%!
+
 void GetRequestParameters(HttpServletRequest request)
 {
     cmdIndex = GetIntParameter(request, "CMDINDEX");

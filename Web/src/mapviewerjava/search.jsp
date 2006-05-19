@@ -73,7 +73,7 @@ String searchError;
     searchError = MgLocalizer.GetString("SEARCHERROR", locale);
 
     GetRequestParameters(request);
-
+    
     try
     {
         InitializeWebTier();
@@ -222,7 +222,7 @@ String searchError;
                                 throw new SearchError(MessageFormat.format(MgLocalizer.GetString("SEARCHTYYPENOTSUP", locale), new Object[] {String.valueOf(idPropType)}), searchError);
                         }
                     }
-                    String selText = StrEscape(sel.ToXml());
+                    String selText = EscapeForHtml(sel.ToXml());
 
                     outStream.write("<td class=\"" + ((row%2)==0 ? "Search" : "Search2") + "\" id=\"" + row +  ":" + i + "\" onmousemove=\"SelectRow(" + row + ")\" onclick=\"CellClicked('" + selText + "')\">&nbsp;" + val + "</td>\n");
                 }
@@ -278,16 +278,6 @@ void OnError(String title, String msg, PrintWriter outStream, HttpServletRequest
     String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/errorpage.templ"), locale, GetClientOS(request));
     String[] vals = { String.valueOf(popup), title, msg };
     outStream.write(Substitute(templ, vals));
-}
-
-private String StrEscape(String str)
-{
-    str = str.replaceAll("'", "&#39;");
-    str = str.replaceAll("\"", "&#34;");
-    str = str.replaceAll("\n", "");
-    str = str.replaceAll("<", "&lt;");
-    str = str.replaceAll(">", "&gt;");
-    return str;
 }
 
 %>
