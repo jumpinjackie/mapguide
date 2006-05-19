@@ -412,13 +412,13 @@ function OnSelectionChanged() {
                 if(layers.length > 0)
                 {
                     var disable = false;
-                    var selLayers = GetSelectedLayers();
+                    var selLayers = mapFrame.GetSelectedLayers();
                     for(var k=0; k < selLayers.length && !disable; k++)
                     {
                         var selLayer = selLayers[k];
                         for(var j = 0; j < layers.length; j++)
                         {
-                            if(selLayer != layers[j])
+                            if(selLayer.name != layers[j])
                             {
                                 disable = true;
                                 break;
@@ -446,10 +446,6 @@ function OnSelectionChanged() {
             if(EnableCommand(cmd, true))
                 stateChanged = true;
             
-        }
-        else if(cmd.action == 32)
-        {
-            //TODO enabling/disabling select within command
         }
     }
     if(stateChanged && hasToolbar == 1)
