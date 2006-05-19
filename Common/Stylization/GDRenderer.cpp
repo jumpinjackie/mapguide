@@ -584,7 +584,7 @@ void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allow
                                     0.5, 0.5,
                                     mdef.rotation(),
                                     mdef.units(),
-                                    L"", L"",
+                                    L"", SLD_SQUARE_NAME,
                                     m_selFill);
 
     for (int i=0; i<srclb->point_count(); i++)
