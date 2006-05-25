@@ -20,6 +20,7 @@
 #include "LogEntryData.h"
 #include "LogManager.h"
 #include "LogThread.h"
+#include "SessionManager.h"
 
 const int MAX_BUF       = 16384;
 const int MAX_LINES     = 512;
@@ -1536,6 +1537,7 @@ void MgLogManager::LogAuthenticationEntry(CREFSTRING entry)
     }
 
     // Add the given info.
+    AddDelimiter(logEntry);
     logEntry += entry;
 
     MG_LOGMANAGER_CATCH(L"MgLogManager.LogAuthenticationEntry")
@@ -1595,6 +1597,7 @@ void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING stackTrace)
     }
 
     // Add the given info.
+    AddDelimiter(logEntry);
     logEntry += entry;
 
     MG_LOGMANAGER_CATCH(L"MgLogManager.LogErrorEntry")
@@ -1699,7 +1702,19 @@ void MgLogManager::LogTraceEntry(CREFSTRING entry)
         {
             param = paramList->GetItem(i);
 
-            if (MgLogManager::InfoParam == param)
+            if (MgLogManager::ClientParam == param)
+            {
+                AddClient(logEntry);
+            }
+            else if (MgLogManager::ClientIpParam == param)
+            {
+                AddClientIp(logEntry);
+            }
+            else if (MgLogManager::UserParam == param)
+            {
+                AddUserName(logEntry);
+            }
+            else if (MgLogManager::InfoParam == param)
             {
                 AddInfo(logEntry, entry);
             }
@@ -3214,17 +3229,40 @@ void MgLogManager::AddUserName(REFSTRING entry)
 {
     AddDelimiter(entry);
 
+    STRING username = L"";
+
     // Get user.
     MgUserInformation* pUserInfo = MgUserInformation::GetCurrentUserInfo();
     MgConnection* pConnection = MgConnection::GetCurrentConnection();
     if (pUserInfo && pUserInfo->GetUserName().length() > 0)
     {
-        entry += pUserInfo->GetUserName();
+        username = pUserInfo->GetUserName();
     }
     else if (pConnection!= NULL)
     {
-        entry += pConnection->GetUserName();
+        username = pConnection->GetUserName();
     }
+
+    // Do we have a username?
+    if(username.length() == 0)
+    {
+        // Try getting the user name from the session ID
+        if (pUserInfo && pUserInfo->GetMgSessionId().length() > 0)
+        {
+            try
+            {
+                username = MgSessionManager::GetUserName(pUserInfo->GetMgSessionId());
+            }
+            catch(MgSessionExpiredException* e)
+            {
+                // The session ID has expired so we cannot look up the username.
+                SAFE_RELEASE(e);
+                username = L"";
+            }
+        }
+    }
+
+    entry += username;
 }
 
 bool MgLogManager::IsMaxSizeExceeded(CREFSTRING logFileName)
