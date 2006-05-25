@@ -394,7 +394,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     // initialize the renderer with the rendering canvas size - in this
     // case it is not necessarily the same size as the requested image
     // size due to support for non-square pixels
-    GDRenderer dr(drawWidth, drawHeight, bgcolor, true);
+    GDRenderer dr(drawWidth, drawHeight, bgcolor, false);
 
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, &dr, width, height, format, scale, b, false);
@@ -448,7 +448,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                      backgroundColor->GetAlpha());
 
     // initialize the appropriate map renderer
-    GDRenderer dr(width, height, bgcolor, true);
+    GDRenderer dr(width, height, bgcolor, false);
 
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, &dr, width, height, format, scale, b, false);
