@@ -43,6 +43,7 @@ bool InitializeSrsMappings()
 // a means to resolve documents.
 bool MgWmsMapUtil::GetDocument(CPSZ pszDoc,REFSTRING sRet)
 {
+    //TODO: Remove dependency on thread local storage
     MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
     Ptr<MgSite> mgSite;
     mgSite = new MgSite();

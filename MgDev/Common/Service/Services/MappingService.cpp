@@ -39,13 +39,23 @@ MgByteReader* MgMappingService::GenerateMap(MgMap* map, CREFSTRING mapAgentUri, 
 {
     STRING sessionId;
 
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-    if (userInfo != NULL)
-        sessionId = userInfo->GetMgSessionId();
-    else
-        return NULL;
+    if (m_connProp.p != NULL)
+    {
+        Ptr<MgUserInformation> userInfo = m_connProp->GetUserInfo();
+        if (userInfo.p != NULL)
+        {
+            sessionId = userInfo->GetMgSessionId();
+        }
+    }
 
-    return GenerateMap(map, sessionId, mapAgentUri, dwfVersion);
+    if (sessionId.empty())
+    {
+        return NULL;
+    }
+    else
+    {
+        return GenerateMap(map, sessionId, mapAgentUri, dwfVersion);
+    }
 }
 
 /////////////////////////////////////////////////////////////////

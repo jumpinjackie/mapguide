@@ -48,7 +48,7 @@ INTERNAL_API:
     /// \brief
     /// Construct a MgDwfController object
     ///
-    MgDwfController(CREFSTRING mapAgentUri);
+    MgDwfController(MgSiteConnection* siteConn, CREFSTRING mapAgentUri);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

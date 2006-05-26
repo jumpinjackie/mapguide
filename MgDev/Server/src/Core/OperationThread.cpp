@@ -98,6 +98,17 @@ int MgOperationThread::svc(void)
                     {
                         switch ( stat )
                         {
+                            case ( IMgServiceHandler::mpsDone ) :
+                            {
+                                break;
+                            }
+     
+                            case ( IMgServiceHandler::mpsOther ) :
+                            {
+                                pClientHandler->SetStatus( MgClientHandler::hsBusy );
+                                break;
+                            }
+
                             //  We hit an error in processing.  An exception should have been
                             //  sent back to the client at some point.  If the client is an
                             //  HTTP agent, it will respond with a close control packet.  We will NOT
@@ -105,64 +116,21 @@ int MgOperationThread::svc(void)
                             //  data on the wire, we will force the close of the client handler
                             //  if we are already in an error condition.
                             case ( IMgServiceHandler::mpsError ) :
+                            case ( IMgServiceHandler::mpsClosed ) :
+                            default:
                             {
+                                ACE_Reactor* pReactor = pClientHandler->reactor();
+                                ACE_HANDLE handle = pClientHandler->get_handle();
+                                pClientHandler = NULL;
+
+                                //  Cleanup message block
+                                messageBlock->release();
+                                messageBlock = NULL;
+     
                                 // Remove the client handler from reactor.  This code will also
                                 // be hit if the client handler has been torn down from the connection idle timer
                                 // while we were waiting for additional requests from the client.
-                                pClientHandler->reactor()->remove_handler(
-                                    pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
-
-                                //  reset the stream error flag
-                                pData->SetErrorFlag( false );
-                                break;
-                            }
-
-                            case ( IMgServiceHandler::mpsDone ) :
-                            {
-                                // Do we still have a stream?
-                                if (MgClientHandler::hsClosed == pClientHandler->GetStatus())
-                                    break;
-     
-                                //  set client handler status before queueing messageblock
-                                pClientHandler->SetStatus( MgClientHandler::hsQueued );
-     
-                                //  Create a new messageBlock and put it on the queue
-                                MgServerStreamData* pStreamData = new MgServerStreamData( *pData );
-                                if(pStreamData)
-                                {
-                                    //  create the message block
-                                    ACE_Message_Block* mb = new ACE_Message_Block( pStreamData );
-                                    if(mb)
-                                    {
-                                        // As soon as we put the new message on the queue another
-                                        // thread can begin processing it.  To eliminate concurrent
-                                        // access on the client handler we need to release the smart
-                                        // pointer reference to it (otherwise it will automatically
-                                        // release it later below).
-                                        pClientHandler = NULL;
-     
-                                        //  Cleanup message block
-                                        messageBlock->release();
-                                        messageBlock = NULL;
-     
-                                        putq( mb );
-                                    }
-                                }
-                                break;
-                            }
-     
-                            case ( IMgServiceHandler::mpsClosed ) :
-                            {
-                                // Push an error on the handler and remove it from reactor
-                                // to force a timely close
-                                pClientHandler->reactor()->remove_handler(
-                                    pClientHandler->get_handle(), ACE_Event_Handler::READ_MASK);
-                                break;
-                            }
-
-                            case ( IMgServiceHandler::mpsOther ) :
-                            {
-                                pClientHandler->SetStatus( MgClientHandler::hsBusy );
+                                pReactor->remove_handler(handle, ACE_Event_Handler::READ_MASK);
                                 break;
                             }
                         }
@@ -235,11 +203,6 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
             // removal is considered standard operational behaviour.
             if (NULL == pData || NULL == pStreamHelper || MgClientHandler::hsClosed == pHandler->GetStatus())
             {
-                if (NULL != pData)
-                {
-                    pData->SetErrorFlag(true);
-                }
-
                 return IMgServiceHandler::mpsError;
             }
 
@@ -256,86 +219,53 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
                     //  get data information
                     if ( MgStreamParser::ParseDataHeader( pData ) )
                     {
-                        bool keepParsing = true;
-
                         //  process data stream
-                        while ( keepParsing )
+                        MgPacketParser::MgPacketHeader pt = MgPacketParser::GetPacketHeader( pData );
+
+                        switch ( pt )
                         {
-                            MgPacketParser::MgPacketHeader pt = MgPacketParser::GetPacketHeader( pData );
+                            case ( MgPacketParser::mphOperation ) :
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) OPERATION PACKET\n" )));
+                                stat = ProcessOperation( pData );
+                                break;
 
-                            switch ( pt )
+                            case ( MgPacketParser::mphControl ):
                             {
-                                case ( MgPacketParser::mphOperation ) :
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) OPERATION PACKET\n" )));
-                                    stat = ProcessOperation( pData );
-                                    keepParsing = false;
-                                    break;
-
-                                case ( MgPacketParser::mphOperationResponse ) :
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... OPERATION RESPONSE PACKET\n" )));
-                                    stat = IMgServiceHandler::mpsError;
-                                    keepParsing = false;
-                                    break;
-
-                                case ( MgPacketParser::mphArgumentSimple ) :
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... SIMPLE ARGUMENT PACKET\n" )));
-                                    stat = IMgServiceHandler::mpsError;
-                                    keepParsing = false;
-                                    break;
-
-                                case ( MgPacketParser::mphArgumentCollection ):
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... COLLECTION ARGUMENT PACKET\n" )));
-                                    stat = IMgServiceHandler::mpsError;
-                                    keepParsing = false;
-                                    break;
-
-                                case ( MgPacketParser::mphArgumentBinaryStream ) :
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... BINARY STREAM ARGUMENT PACKET\n" )));
-                                    stat = IMgServiceHandler::mpsError;
-                                    keepParsing = false;
-                                    break;
-
-                                case ( MgPacketParser::mphControl ):
-                                    {
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) CONTROL PACKET\n" )));
-                                    // Check for close packet
-                                    MgControlPacket packet;
-                                    MgPacketParser::GetControlPacket( pData, &packet );
-                                    if (MgPacketParser::mciClose == packet.m_ControlID)
-                                    {
-                                        MgStreamParser::ParseEndHeader( pData );
-                                        stat = IMgServiceHandler::mpsClosed;
-                                    }
-                                    keepParsing = false;
-                                    }
-                                    break;
-
-                                case ( MgPacketParser::mphError ):
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... ERROR PACKET\n" )));
-                                    stat = IMgServiceHandler::mpsError;
-                                    keepParsing = false;
-                                    break;
-
-                                default :
-                                    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... Unknown Packet Type\n" )));
-                                    stat = IMgServiceHandler::mpsError;
-                                    keepParsing = false;
-                                    break;
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) CONTROL PACKET\n" )));
+                                // Check for close packet
+                                MgControlPacket packet;
+                                MgPacketParser::GetControlPacket( pData, &packet );
+                                if (MgPacketParser::mciClose == packet.m_ControlID)
+                                {
+                                    MgStreamParser::ParseEndHeader( pData );
+                                    stat = IMgServiceHandler::mpsClosed;
+                                }
+                                break;
                             }
-                        }
 
-                        if ( stat != IMgServiceHandler::mpsError &&
-                            stat != IMgServiceHandler::mpsClosed)
-                        {
-                            //  check for EndStream
-                            if ( !MgStreamParser::ParseEndHeader( pData ) )
-                            {
-                                stat = IMgServiceHandler::mpsError;
-                            }
-                            else
-                            {
-                                stat = IMgServiceHandler::mpsDone;
-                            }
+                            case ( MgPacketParser::mphOperationResponse ) :
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... OPERATION RESPONSE PACKET\n" )));
+                                break;
+
+                            case ( MgPacketParser::mphArgumentSimple ) :
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... SIMPLE ARGUMENT PACKET\n" )));
+                                break;
+
+                            case ( MgPacketParser::mphArgumentCollection ):
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... COLLECTION ARGUMENT PACKET\n" )));
+                                break;
+
+                            case ( MgPacketParser::mphArgumentBinaryStream ) :
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... BINARY STREAM ARGUMENT PACKET\n" )));
+                                break;
+
+                            case ( MgPacketParser::mphError ):
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... ERROR PACKET\n" )));
+                                break;
+
+                            default :
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... Unknown Packet Type\n" )));
+                                break;
                         }
                     }
                 }
@@ -358,13 +288,6 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
         MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
         stat = IMgServiceHandler::mpsError;
-    }
-
-    //  if any message was processed without error, make sure the stream's
-    //  error flag is cleared
-    if (NULL != pData)
-    {
-        pData->SetErrorFlag(IMgServiceHandler::mpsError == stat);
     }
 
     return stat;
@@ -507,31 +430,6 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
 
     if (mgException != NULL)
     {
-        if (IMgServiceHandler::mpsDone != stat && NULL != pData)
-        {
-            Ptr<MgStream> stream = new MgStream(pData->GetStreamHelper());
-
-            try
-            {
-                mgException->GetMessage();
-                mgException->GetDetails();
-                mgException->GetStackTrace();
-
-                stream->WriteResponseHeader(MgPacketParser::mecFailure, 1);
-                stream->WriteObject(mgException);
-                stream->WriteStreamEnd();
-            }
-            catch (MgException* e)
-            {
-                SAFE_RELEASE(e);
-                assert(false);
-            }
-            catch (...)
-            {
-                assert(false);
-            }
-        }
-
         MgServerManager* serverManager = MgServerManager::GetInstance();
         STRING locale = (NULL == serverManager) ?
             MgResources::DefaultLocale : serverManager->GetDefaultLocale();

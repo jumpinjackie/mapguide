@@ -72,7 +72,7 @@ void MgOpGenerateMapUpdate::Execute()
         m_stream->GetInt32(seqNo);
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -87,8 +87,8 @@ void MgOpGenerateMapUpdate::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateMapUpdate(map, seqNo, dwfVersion);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

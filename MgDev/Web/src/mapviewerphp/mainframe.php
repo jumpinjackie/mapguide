@@ -95,8 +95,9 @@ function BuildViewer($forDwf = true)
         $webLayout = null;
         try
         {
+            $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
             $webLayoutId = new MgResourceIdentifier($webLayoutDefinition);
-            $webLayout = new MgWebLayout($webLayoutId);
+            $webLayout = new MgWebLayout($resourceSrvc, $webLayoutId);
         }
         catch(MgUnauthorizedAccessException $e)
         {

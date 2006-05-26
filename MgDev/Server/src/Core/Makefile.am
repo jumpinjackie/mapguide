@@ -36,7 +36,6 @@ mgserver_SOURCES = \
 
 include_SOURCES = \
   ClientAcceptor.cpp \
-  ClientHandler.cpp \
   ConnectionTimeoutEventHandler.cpp \
   DataConnectionTimeoutEventHandler.cpp \
   EventTimer.cpp \
@@ -46,7 +45,6 @@ include_SOURCES = \
   RepositoryCheckpointEventHandler.cpp \
   ResourceChangeEventHandler.cpp \
   Server.cpp \
-  ServerStreamData.cpp \
   ServiceHandlerFactory.cpp \
   ServiceRegistrationEventHandler.cpp \
   SessionTimeoutEventHandler.cpp \
@@ -56,7 +54,6 @@ include_SOURCES = \
 
 noinst_HEADERS = $(include_SOURCES) \
   ClientAcceptor.h \
-  ClientHandler.h \
   ConnectionTimeoutEventHandler.h \
   DataConnectionTimeoutEventHandler.h \
   EventTimer.h \
@@ -65,7 +62,6 @@ noinst_HEADERS = $(include_SOURCES) \
   RepositoryCheckpointEventHandler.h \
   ResourceChangeEventHandler.h \
   Server.h \
-  ServerStreamData.h \
   ServiceHandlerFactory.h \
   ServiceRegistrationEventHandler.h \
   SessionTimeoutEventHandler.h \

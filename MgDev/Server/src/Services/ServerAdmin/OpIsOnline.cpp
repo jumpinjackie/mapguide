@@ -67,15 +67,17 @@ void MgOpIsOnline::Execute()
 
     if (0 == m_packet.m_NumArguments)
     {
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        // Validate() is not be called here. Why NOT?
+
         bool bIsOnline = m_service->IsOnline();
 
-        m_opCompleted = true;
-        WriteResponseStream(bIsOnline);
+        
+        EndExecution(bIsOnline);
     }
     else
     {

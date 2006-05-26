@@ -71,6 +71,11 @@ PUBLISHED_API:
     ///
     MgWarnings* GetWarningsObject();
 
+INTERNAL_API:
+    /// \brief
+    /// Returns user information for this service
+    MgUserInformation* GetUserInfo();
+
 protected:
     /////////////////////////////////////////////////////////////////
     /// \brief

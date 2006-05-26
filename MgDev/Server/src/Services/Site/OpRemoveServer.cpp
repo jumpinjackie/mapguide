@@ -61,7 +61,7 @@ void MgOpRemoveServer::Execute()
         STRING name;
         m_stream->GetString( name );
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(name.c_str());
@@ -72,8 +72,8 @@ void MgOpRemoveServer::Execute()
 
         m_service->RemoveServer( name );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

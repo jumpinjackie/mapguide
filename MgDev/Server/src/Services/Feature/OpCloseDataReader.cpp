@@ -72,7 +72,7 @@ void MgOpCloseDataReader::Execute()
         INT32 dataReader;
         m_stream->GetInt32(dataReader);
 
-        m_argsRead = true;
+        BeginExecution();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(dataReader);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -83,9 +83,9 @@ void MgOpCloseDataReader::Execute()
         // Execute the operation
         bool bClosed = m_service->CloseDataReader(dataReader);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(bClosed);
+        EndExecution(bClosed);
     }
     else
     {

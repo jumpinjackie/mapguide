@@ -74,9 +74,6 @@ MgServerAdmin::~MgServerAdmin()
 /// MgConnectionFailedException
 void MgServerAdmin::Open(CREFSTRING server, MgUserInformation* userInformation)
 {
-    // Set user information into thread.
-    MgUserInformation::SetCurrentUserInfo(userInformation);
-
     INT32 adminPort;
     //get the port for administration connection
     MgConfiguration* config = MgConfiguration::GetInstance();
@@ -87,6 +84,7 @@ void MgServerAdmin::Open(CREFSTRING server, MgUserInformation* userInformation)
 
 
     m_connProp = new MgConnectionProperties(server, adminPort);
+    m_connProp->SetUserInfo(userInformation);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

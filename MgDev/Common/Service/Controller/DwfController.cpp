@@ -30,7 +30,8 @@ MgDwfController::MgDwfController()
     m_operation = unknown;
 }
 
-MgDwfController::MgDwfController(CREFSTRING mapAgentUri)
+MgDwfController::MgDwfController(MgSiteConnection* siteConn, CREFSTRING mapAgentUri)
+: MgController(siteConn)
 {
     m_operation = unknown;
     m_mapAgentUri = mapAgentUri;
@@ -58,12 +59,11 @@ MgByteReader* MgDwfController::GetMap(MgResourceIdentifier* mapDefinition,
 
     //create a session id to associate with this map
     STRING sessionId;
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-    if (userInfo != NULL) sessionId = userInfo->GetMgSessionId();
+    Ptr<MgUserInformation> userInfo = m_siteConn->GetUserInfo();
+    if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
     if (sessionId.empty())
     {
-        MgSiteConnection* mgSiteConnection = MgSiteConnection::GetCurrentConnection();
-        Ptr<MgSite> site = mgSiteConnection->GetSite();
+        Ptr<MgSite> site = m_siteConn->GetSite();
         sessionId = site->CreateSession();
         userInfo->SetMgSessionId(sessionId);
     }

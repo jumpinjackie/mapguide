@@ -92,6 +92,8 @@ void MgHttpWfsGetFeature::Execute(MgHttpResponse& hResponse)
     MgHttpResponseStream responseStream;
     MgOgcServer::SetLoader(GetDocument);
 
+    MgUserInformation::SetCurrentUserInfo(m_userInfo);
+
     // Create the WFS Server object and respond to the request
     MgOgcWfsServer wfsServer(requestParams, responseStream);
     wfsServer.ProcessRequest(this);

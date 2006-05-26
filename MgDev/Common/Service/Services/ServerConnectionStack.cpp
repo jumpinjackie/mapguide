@@ -23,13 +23,13 @@
 /// </summary>
 MgServerConnectionStack::MgServerConnectionStack()
 {
-    m_stack = new ConnectionStack;
+    m_queue = new ConnectionQueue;
     m_inUse = new ConnectionList;
 }
 
 MgServerConnectionStack::~MgServerConnectionStack()
 {
-
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     ConnectionList::iterator iter = m_inUse->begin();
     while (iter != m_inUse->end())
     {
@@ -42,17 +42,17 @@ MgServerConnectionStack::~MgServerConnectionStack()
     m_inUse = NULL;
 
 
-    while (m_stack->size() > 0)
+    while (m_queue->size() > 0)
     {
-        MgServerConnection* conn = m_stack->top();
+        MgServerConnection* conn = m_queue->front();
         if (NULL != conn)
         {
-            m_stack->pop();
+            m_queue->pop_front();
             SAFE_RELEASE(conn);
         }
     }
-    delete m_stack;
-    m_stack = NULL;
+    delete m_queue;
+    m_queue = NULL;
 }
 
 /// <summary>
@@ -63,8 +63,9 @@ MgServerConnectionStack::~MgServerConnectionStack()
 /// <param>
 void MgServerConnectionStack::Push(MgServerConnection* connection)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     m_inUse->remove(connection);
-    m_stack->push(connection);
+    m_queue->push_front(connection);
 }
 
 /// <summary>
@@ -80,15 +81,43 @@ MgServerConnection* MgServerConnectionStack::Pop()
     MgServerConnection* conn = NULL;
 
     ACE_Time_Value now = ACE_High_Res_Timer::gettimeofday();
-    while (conn == NULL && m_stack->size() > 0)
+
+    // Remove a stale connection from the back of the queue
+    if (m_queue->size() > 0)
     {
-        conn = m_stack->top();
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+        conn = m_queue->back();
         if (NULL != conn)
         {
-            m_stack->pop();
             ACE_Time_Value diffTime = now - *(conn->LastUsed());
             double diff = diffTime.sec();
-            if (diff > 60.0 )
+            if (diff > 60.0)
+            {
+                m_queue->pop_back();
+                SAFE_RELEASE(conn);
+                conn = NULL;
+            }
+        }
+    }
+
+
+    // Pull a connection from the front of the queue and make sure it's valid.
+    conn = NULL;
+    while (NULL == conn && m_queue->size() > 0)
+    {
+        // Grab a connection from the queue
+        {
+             ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+            conn = m_queue->front();
+            if (NULL != conn) m_queue->pop_front();
+        }
+
+        // And see if it is still valid
+        if (NULL != conn)
+        {
+            ACE_Time_Value diffTime = now - *(conn->LastUsed());
+            double diff = diffTime.sec();
+            if (diff > 60.0)
             {
                 SAFE_RELEASE(conn);
                 conn = NULL;
@@ -107,6 +136,11 @@ MgServerConnection* MgServerConnectionStack::Pop()
                         conn = NULL;
                     }
                 }
+                else
+                {
+                    SAFE_RELEASE(conn);
+                    conn = NULL;
+                }
             }
         }
     }
@@ -122,6 +156,7 @@ MgServerConnection* MgServerConnectionStack::Pop()
 
 void MgServerConnectionStack::InUse(MgServerConnection* connection)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     SAFE_ADDREF(connection);
     m_inUse->push_back(connection);
 }

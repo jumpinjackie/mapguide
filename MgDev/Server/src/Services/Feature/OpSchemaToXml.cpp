@@ -72,7 +72,7 @@ void MgOpSchemaToXml::Execute()
         // Get the feature source
         Ptr<MgFeatureSchemaCollection> schema = (MgFeatureSchemaCollection*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureSchemaCollection");
@@ -83,9 +83,9 @@ void MgOpSchemaToXml::Execute()
         // Execute the operation
         STRING xmlSchema= m_service->SchemaToXml(schema);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(xmlSchema);
+        EndExecution(xmlSchema);
     }
     else
     {

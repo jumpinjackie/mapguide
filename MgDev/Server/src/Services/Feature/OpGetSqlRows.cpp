@@ -72,7 +72,7 @@ void MgOpGetSqlRows::Execute()
         INT32 sqlReader;
         m_stream->GetInt32(sqlReader);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(sqlReader);
@@ -83,9 +83,9 @@ void MgOpGetSqlRows::Execute()
         // Execute the operation
         Ptr<MgBatchPropertyCollection> rows = m_service->GetSqlRows(sqlReader);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(rows);
+        EndExecution(rows);
     }
     else
     {

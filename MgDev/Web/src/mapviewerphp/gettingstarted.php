@@ -59,7 +59,8 @@
             $site->Open($cred);
             $wli = new MgResourceIdentifier($webLayout);
             $src = new MgByteSource($fixedupHtml, strlen($fixedupHtml));
-            $wl = new MgWebLayout($wli);
+            $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
+            $wl = new MgWebLayout($resourceSrvc, $wli);
             $pagestream = $wl->ProcessGettingStartedPage($src->GetReader(), $dwf);
             if($pagestream == null)
                 echo $fixedupHtml;

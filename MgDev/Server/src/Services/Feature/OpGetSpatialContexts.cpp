@@ -76,7 +76,7 @@ void MgOpGetSpatialContexts::Execute()
         bool activeOnly;
         m_stream->GetBoolean(activeOnly);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -89,9 +89,9 @@ void MgOpGetSpatialContexts::Execute()
         // Execute the operation
         Ptr<MgSpatialContextReader> spatialContextReader = m_service->GetSpatialContexts(resource, activeOnly);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream((MgSpatialContextReader*)spatialContextReader);
+        EndExecution((MgSpatialContextReader*)spatialContextReader);
     }
     else
     {

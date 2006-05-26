@@ -70,7 +70,7 @@ void MgOpEnableMaximumLogSize::Execute()
         bool useMaxSize;
         m_stream->GetBoolean(useMaxSize);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -80,8 +80,8 @@ void MgOpEnableMaximumLogSize::Execute()
 
         m_service->EnableMaximumLogSize(useMaxSize);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

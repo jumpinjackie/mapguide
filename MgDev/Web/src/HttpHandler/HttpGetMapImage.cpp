@@ -91,7 +91,7 @@ void MgHttpGetMapImage::Execute(MgHttpResponse& hResponse)
     Ptr<MgPropertyCollection> commands = params->GetParameters()->GetPropertyCollection();
 
     // Call the HTML controller to render the map image
-    MgHtmlController controller;
+    MgHtmlController controller(m_siteConn);
     Ptr<MgByteReader> reader = controller.GetMapImage(map, selection, m_mapFormat, commands);
 
     // Set the result

@@ -95,8 +95,9 @@ NameValueCollection cmds = null;
 
         //Get an MgWebLayout object
         MgWebLayout webLayout = null;
+        MgResourceService resourceSrvc = site.CreateService(MgServiceType.ResourceService) as MgResourceService;
         MgResourceIdentifier webLayoutId = new MgResourceIdentifier(webLayoutDefinition);
-        webLayout = new MgWebLayout(webLayoutId);
+        webLayout = new MgWebLayout(resourceSrvc, webLayoutId);
 
         //calculate the size of the variable elements of the viewer
         //

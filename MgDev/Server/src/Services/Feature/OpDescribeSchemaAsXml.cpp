@@ -75,7 +75,7 @@ void MgOpDescribeSchemaAsXml::Execute()
         STRING schemaName;
         m_stream->GetString(schemaName);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -88,9 +88,9 @@ void MgOpDescribeSchemaAsXml::Execute()
         // Execute the operation
         STRING schema= m_service->DescribeSchemaAsXml(resource, schemaName);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(schema);
+        EndExecution(schema);
     }
     else
     {

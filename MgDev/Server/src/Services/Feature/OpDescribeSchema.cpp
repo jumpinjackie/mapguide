@@ -75,7 +75,7 @@ void MgOpDescribeSchema::Execute()
         STRING schemaName;
         m_stream->GetString(schemaName);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -88,9 +88,9 @@ void MgOpDescribeSchema::Execute()
         // Execute the operation
         Ptr<MgFeatureSchemaCollection> schemaCollection = m_service->DescribeSchema(resource, schemaName);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(schemaCollection);
+        EndExecution(schemaCollection);
     }
     else
     {

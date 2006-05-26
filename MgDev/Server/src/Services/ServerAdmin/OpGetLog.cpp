@@ -69,7 +69,7 @@ void MgOpGetLog::Execute()
         STRING log;
         m_stream->GetString(log);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(log.c_str());
@@ -80,8 +80,8 @@ void MgOpGetLog::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else if (2 == m_packet.m_NumArguments)
     {
@@ -90,7 +90,7 @@ void MgOpGetLog::Execute()
         m_stream->GetString(log);
         m_stream->GetInt32(numEntries);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(log.c_str());
@@ -103,8 +103,8 @@ void MgOpGetLog::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log, numEntries);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else if (3 == m_packet.m_NumArguments)
     {
@@ -116,7 +116,7 @@ void MgOpGetLog::Execute()
         fromDate = (MgDateTime*)m_stream->GetObject();
         toDate = (MgDateTime*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(log.c_str());
@@ -145,8 +145,8 @@ void MgOpGetLog::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log, fromDate, toDate);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

@@ -76,7 +76,7 @@ void MgOpChangeResourceOwner::Execute()
         m_stream->GetString(owner);
         m_stream->GetBoolean(includeDescendants);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -90,8 +90,8 @@ void MgOpChangeResourceOwner::Execute()
 
         m_service->ChangeResourceOwner(resource, owner, includeDescendants);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

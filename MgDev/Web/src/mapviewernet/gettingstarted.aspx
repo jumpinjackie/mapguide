@@ -45,10 +45,11 @@ bool dwf = false;
             MgUserInformation cred = new MgUserInformation("Administrator", "admin");
             MgSiteConnection site = new MgSiteConnection();
             site.Open(cred);
+            MgResourceService resourceSrvc = site.CreateService(MgServiceType.ResourceService) as MgResourceService;
             MgResourceIdentifier wli = new MgResourceIdentifier(webLayout);
             byte[] hb = Encoding.UTF8.GetBytes(fixedupHtml);
             MgByteSource src = new MgByteSource(hb, hb.Length);
-            MgWebLayout wl = new MgWebLayout(wli);
+            MgWebLayout wl = new MgWebLayout(resourceSrvc, wli);
             MgByteReader pagestream = wl.ProcessGettingStartedPage(src.GetReader(), dwf);
             if(pagestream == null)
                 Response.Write(fixedupHtml);

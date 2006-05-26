@@ -78,7 +78,7 @@ void MgOpEnumerateResources::Execute()
         m_stream->GetString(fromDate);
         m_stream->GetString(toDate);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -100,8 +100,8 @@ void MgOpEnumerateResources::Execute()
             m_service->EnumerateResources(resource, depth, type,
                 properties, fromDate, toDate);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

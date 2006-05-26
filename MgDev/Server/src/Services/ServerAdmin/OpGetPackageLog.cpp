@@ -69,7 +69,7 @@ void MgOpGetPackageLog::Execute()
         STRING package;
         m_stream->GetString(package);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(package.c_str());
@@ -80,8 +80,8 @@ void MgOpGetPackageLog::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetPackageLog(package);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

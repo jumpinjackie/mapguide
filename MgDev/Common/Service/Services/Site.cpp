@@ -177,10 +177,6 @@ STRING MgSite::CreateSession()
     session = *(cmd.GetReturnValue().val.m_str);
     delete cmd.GetReturnValue().val.m_str;
 
-    MgUserInformation* userInformation = MgUserInformation::GetCurrentUserInfo();
-    if(userInformation != NULL)
-        userInformation->SetMgSessionId(session);
-
     MG_SITE_CATCH_AND_THROW( L"MgSite.CreateSession" );
 
     return session;
@@ -215,10 +211,6 @@ void MgSite::DestroySession(CREFSTRING session)
                         MgCommand::knString, &session,      // Argument#1
                         MgCommand::knNone );
 
-    MgUserInformation* userInformation = MgUserInformation::GetCurrentUserInfo();
-    if(userInformation != NULL)
-        userInformation->ClearMgSessionId();
-
     SetWarning(cmd.GetWarningObject());
 
     MG_SITE_CATCH_AND_THROW(L"MgSite.DestroySession")
@@ -236,9 +228,9 @@ void MgSite::DestroySession(CREFSTRING session)
 STRING MgSite::GetCurrentSession()
 {
     STRING sessionId;
-    MgUserInformation* userInformation = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInformation = m_connProp->GetUserInfo();
 
-    if (userInformation != NULL)
+    if (userInformation.p != NULL)
     {
         sessionId = userInformation->GetMgSessionId();
     }
@@ -1205,10 +1197,6 @@ MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
 
     CHECKARGUMENTNULL((MgUserInformation*)userInformation, L"MgSite.Authenticate")
 
-    // Set user information into thread.
-
-    MgUserInformation::SetCurrentUserInfo(userInformation);
-
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     assert(NULL != configuration);
 
@@ -1230,6 +1218,7 @@ MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
 
     assert(m_connProp == NULL);
     m_connProp = new MgConnectionProperties(target, port);
+    m_connProp->SetUserInfo(userInformation);
 
     cmd.ExecuteCommand(m_connProp,                          // Connection
                         MgCommand::knObject,                // Return type

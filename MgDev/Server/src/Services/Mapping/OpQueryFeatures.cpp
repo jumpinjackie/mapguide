@@ -74,7 +74,7 @@ void MgOpMQueryFeatures::Execute()
         m_stream->GetString(layerName);
         m_stream->GetString(coordinateSpace);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -89,8 +89,8 @@ void MgOpMQueryFeatures::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->QueryFeatures(map, layerName, coordinateSpace);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

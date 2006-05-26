@@ -88,7 +88,7 @@ void MgOpUpdateUser::Execute()
         STRING newDesc;
         m_stream->GetString( newDesc );
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(userID.c_str());
@@ -108,8 +108,8 @@ void MgOpUpdateUser::Execute()
         m_service->UpdateUser( userID, newUserID, newUserName,
             newPassword, newDesc );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

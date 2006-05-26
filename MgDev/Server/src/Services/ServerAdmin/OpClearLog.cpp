@@ -69,7 +69,7 @@ void MgOpClearLog::Execute()
         STRING log;
         m_stream->GetString(log);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(log.c_str());
@@ -80,8 +80,8 @@ void MgOpClearLog::Execute()
 
         bool bCleared = m_service->ClearLog(log);
 
-        m_opCompleted = true;
-        WriteResponseStream(bCleared);
+        
+        EndExecution(bCleared);
     }
     else
     {

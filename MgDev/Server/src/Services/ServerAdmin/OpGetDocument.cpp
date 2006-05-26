@@ -69,7 +69,7 @@ void MgOpGetDocument::Execute()
         STRING identifier;
         m_stream->GetString(identifier);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(identifier.c_str());
@@ -80,8 +80,8 @@ void MgOpGetDocument::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetDocument(identifier);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

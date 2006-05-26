@@ -58,7 +58,7 @@ void MgOpEnumerateServers::Execute()
     //  Get Arguments
     if ( 0 == m_packet.m_NumArguments )
     {
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -68,8 +68,8 @@ void MgOpEnumerateServers::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateServers();
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

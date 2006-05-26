@@ -50,7 +50,7 @@ void MgOpClearCache::Execute()
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -60,8 +60,8 @@ void MgOpClearCache::Execute()
 
         m_service->ClearCache(map);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

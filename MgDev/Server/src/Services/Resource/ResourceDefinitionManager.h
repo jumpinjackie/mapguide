@@ -128,8 +128,6 @@ private:
 
     friend class MgResourceHeaderManager;
     friend class MgResourceContentManager;
-
-    static ACE_Recursive_Thread_Mutex sm_mutex;
 };
 
 #endif

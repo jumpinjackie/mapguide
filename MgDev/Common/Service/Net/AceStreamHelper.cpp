@@ -191,22 +191,12 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
         stream.set_handle( m_handle );
 
         // Windows has a timing problem. If trying to receive data too fast,
-        // it will fail. So, use a timeout to let it catch up then retry a
-        // number of times to see if it is a real failure.
+        // it will fail. So, use a timeout to let it catch up.
         // This workaround reduces the number of lockups significantly and
         // eliminates the hanging problem when it takes so long to write a
         // request to the socket.
-        const ACE_Time_Value timeout(2);
-        const int maxRetries = 30;
-        int numRetries = 0;
-        ssize_t res = 0;
-
-        do
-        {
-            res = stream.recv(&m_readBuffer[m_readBufEnd], m_readBufSize - m_readBufEnd, 0, &timeout);
-            ++numRetries;
-        }
-        while (res < 0 && numRetries < maxRetries);
+        const ACE_Time_Value timeout(60);
+        ssize_t res = stream.recv(&m_readBuffer[m_readBufEnd], m_readBufSize - m_readBufEnd, 0, &timeout);
 
         if ( res < 0 )
         {

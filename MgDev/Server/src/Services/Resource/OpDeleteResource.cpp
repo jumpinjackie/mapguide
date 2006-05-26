@@ -72,7 +72,7 @@ void MgOpDeleteResource::Execute()
         Ptr<MgResourceIdentifier> resource =
             (MgResourceIdentifier*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -82,8 +82,8 @@ void MgOpDeleteResource::Execute()
 
         m_service->DeleteResource(resource);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

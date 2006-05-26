@@ -69,7 +69,7 @@ void MgOpGetPackageStatus::Execute()
         STRING packageName;
         m_stream->GetString(packageName);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(packageName);
@@ -80,8 +80,8 @@ void MgOpGetPackageStatus::Execute()
 
         Ptr<MgPackageStatusInformation> statusInfo = m_service->GetPackageStatus(packageName);
 
-        m_opCompleted = true;
-        WriteResponseStream(statusInfo);
+        
+        EndExecution(statusInfo);
     }
     else
     {

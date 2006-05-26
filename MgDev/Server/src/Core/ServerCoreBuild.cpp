@@ -16,7 +16,6 @@
 //
 
 #include "ClientAcceptor.cpp"
-#include "ClientHandler.cpp"
 #include "ConnectionTimeoutEventHandler.cpp"
 #include "DataConnectionTimeoutEventHandler.cpp"
 #include "EventTimer.cpp"
@@ -26,7 +25,6 @@
 #include "RepositoryCheckpointEventHandler.cpp"
 #include "ResourceChangeEventHandler.cpp"
 #include "Server.cpp"
-#include "ServerStreamData.cpp"
 #include "ServiceHandlerFactory.cpp"
 #include "ServiceRegistrationEventHandler.cpp"
 #include "SessionTimeoutEventHandler.cpp"

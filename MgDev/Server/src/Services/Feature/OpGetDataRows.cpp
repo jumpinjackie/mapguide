@@ -72,7 +72,7 @@ void MgOpGetDataRows::Execute()
         INT32 dataReader;
         m_stream->GetInt32(dataReader);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(dataReader);
@@ -83,9 +83,9 @@ void MgOpGetDataRows::Execute()
         // Execute the operation
         Ptr<MgBatchPropertyCollection> rows = m_service->GetDataRows(dataReader);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(rows);
+        EndExecution(rows);
     }
     else
     {

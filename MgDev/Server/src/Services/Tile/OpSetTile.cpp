@@ -64,7 +64,7 @@ void MgOpSetTile::Execute()
         INT32 tileRow = 0;
         m_stream->GetInt32(tileRow);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
@@ -84,8 +84,8 @@ void MgOpSetTile::Execute()
 
         m_service->SetTile(img, map, scaleIndex, baseMapLayerGroupName, tileCol, tileRow);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

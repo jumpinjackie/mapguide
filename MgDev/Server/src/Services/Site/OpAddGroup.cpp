@@ -64,7 +64,7 @@ void MgOpAddGroup::Execute()
         STRING desc;
         m_stream->GetString( desc );
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(group.c_str());
@@ -77,8 +77,8 @@ void MgOpAddGroup::Execute()
 
         m_service->AddGroup( group, desc );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

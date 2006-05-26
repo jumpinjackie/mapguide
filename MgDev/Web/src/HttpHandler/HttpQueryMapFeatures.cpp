@@ -104,7 +104,7 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
     }
 
     // Call the HTML controller to process the request
-    MgHtmlController controller;
+    MgHtmlController controller(m_siteConn);
     Ptr<MgByteReader> featureDescriptionInfo = controller.QueryMapFeatures(
         m_mapName, layerNames, geometry, selectionVariant, m_maxFeatures, m_persist);
 

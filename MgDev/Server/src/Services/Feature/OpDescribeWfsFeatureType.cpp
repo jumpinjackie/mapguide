@@ -75,7 +75,7 @@ void MgOpDescribeWfsFeatureType::Execute()
         // Get the feature class collection
         Ptr<MgStringCollection> featureClasses = (MgStringCollection*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -88,10 +88,10 @@ void MgOpDescribeWfsFeatureType::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->DescribeWfsFeatureType(featureSourceId, featureClasses);
 
-        m_opCompleted = true;
+        
 
         // Write the response
-        WriteResponseStream(byteReader);
+        EndExecution(byteReader);
     }
     else
     {

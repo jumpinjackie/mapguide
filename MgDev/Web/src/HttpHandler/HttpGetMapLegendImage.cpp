@@ -73,7 +73,7 @@ void MgHttpGetMapLegendImage::Execute(MgHttpResponse& hResponse)
     Ptr<MgColor> backgroundColor = new MgColor(255, 255, 255);
 
     // Use the HTML controller to generate the map legend image
-    MgHtmlController controller;
+    MgHtmlController controller(m_siteConn);
     Ptr<MgByteReader> mapLegendImage = controller.GetMapLegendImage(m_mapName,
         m_mapFormat, backgroundColor, m_width, m_height);
 

@@ -21,7 +21,7 @@
 ///////////////////////////////////////////////////////////////////////////
 /// Constructs an MgWebLayout object.
 //
-MgWebLayout::MgWebLayout(MgResourceIdentifier* webLayoutId)
+MgWebLayout::MgWebLayout(MgResourceService* resourceService, MgResourceIdentifier* webLayoutId)
 :  m_scale(-1.),
    m_hyperlinkTarget(MgWebTargetType::TaskPane),
    m_zoomControlVisible(true)
@@ -38,11 +38,7 @@ MgWebLayout::MgWebLayout(MgResourceIdentifier* webLayoutId)
         throw new MgOutOfMemoryException(L"MgWebLayout.MgWebLayout", __LINE__, __WFILE__, NULL, L"", NULL);
 
     //get the resource service to query the web layout definition
-    MgUserInformation* userInformation = MgUserInformation::GetCurrentUserInfo();
-    MgSiteConnection* siteConnection = MgSiteConnection::GetCurrentConnection();
-
-    Ptr<MgResourceService> service = (MgResourceService*)siteConnection->CreateService(MgServiceType::ResourceService);
-    Ptr<MgByteReader> xmlWebLayout = service->GetResourceContent(webLayoutId);
+    Ptr<MgByteReader> xmlWebLayout = resourceService->GetResourceContent(webLayoutId);
 
     ParseWebLayoutDefinition(xmlWebLayout);
 

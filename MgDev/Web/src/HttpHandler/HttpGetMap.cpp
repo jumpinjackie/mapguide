@@ -62,7 +62,7 @@ void MgHttpGetMap::Execute(MgHttpResponse& hResponse)
     Ptr<MgPropertyCollection> commands = params->GetParameters()->GetPropertyCollection();
 
     //execute the request through a dwf controller
-    MgDwfController controller(m_hRequest->GetAgentUri());
+    MgDwfController controller(m_siteConn, m_hRequest->GetAgentUri());
     Ptr<MgByteReader> map = controller.GetMap(mapDefinition,
                                 m_dwfVersion, m_emapVersion,
                                 commands);

@@ -21,8 +21,6 @@
 #include "ResourceContentManager.h"
 #include "TagManager.h"
 
-ACE_Recursive_Thread_Mutex MgResourceDefinitionManager::sm_mutex;
-
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
@@ -451,11 +449,6 @@ bool MgResourceDefinitionManager::GetDocument(const string& resourcePathname,
 
     try
     {
-        //TODO: look for ways to remove this lock.
-        //20051109 fix for a multithreading crash
-        //What exactly is the problem?  Which of these is not thread-safe?
-        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
-
         // Get the resource.
 
         if (IsTransacted())

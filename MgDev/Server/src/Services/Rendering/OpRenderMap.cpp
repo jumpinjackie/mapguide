@@ -56,7 +56,7 @@ void MgOpRenderMap::Execute()
         STRING format;
         m_stream->GetString(format);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -71,8 +71,8 @@ void MgOpRenderMap::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderMap(map, selection, format);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else if (7 == m_packet.m_NumArguments)
     {
@@ -94,7 +94,7 @@ void MgOpRenderMap::Execute()
         STRING format;
         m_stream->GetString(format);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -117,8 +117,8 @@ void MgOpRenderMap::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderMap(map, selection, extents, width, height, color, format);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else if (8 == m_packet.m_NumArguments)
     {
@@ -143,7 +143,7 @@ void MgOpRenderMap::Execute()
         STRING format;
         m_stream->GetString(format);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -168,8 +168,8 @@ void MgOpRenderMap::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderMap(map, selection, center, scale, width, height, color, format);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

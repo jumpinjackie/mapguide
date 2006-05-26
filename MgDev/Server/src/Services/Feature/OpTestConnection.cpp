@@ -79,7 +79,7 @@ void MgOpTestConnection::Execute()
         STRING connectionString;
         m_stream->GetString(connectionString);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(providerName.c_str());
@@ -92,9 +92,9 @@ void MgOpTestConnection::Execute()
         // Execute the operation
         bool canConnect = m_service->TestConnection(providerName,connectionString);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(canConnect);
+        EndExecution(canConnect);
     }
     else
     {

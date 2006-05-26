@@ -75,7 +75,7 @@ void MgOpExecuteSqlNonQuery::Execute()
         STRING sqlNonSelectStatement;
         m_stream->GetString(sqlNonSelectStatement);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -88,9 +88,9 @@ void MgOpExecuteSqlNonQuery::Execute()
         // Execute the operation
         INT32 rowsUpdated = m_service->ExecuteSqlNonQuery(resource, sqlNonSelectStatement);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(rowsUpdated);
+        EndExecution(rowsUpdated);
     }
     else
     {

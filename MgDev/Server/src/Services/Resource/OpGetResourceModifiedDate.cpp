@@ -68,7 +68,7 @@ void MgOpGetResourceModifiedDate::Execute()
         Ptr<MgResourceIdentifier> resource =
             (MgResourceIdentifier*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -78,8 +78,8 @@ void MgOpGetResourceModifiedDate::Execute()
 
         Ptr<MgDateTime> dateTime = m_service->GetResourceModifiedDate(resource);
 
-        m_opCompleted = true;
-        WriteResponseStream(dateTime);
+        
+        EndExecution(dateTime);
     }
     else
     {

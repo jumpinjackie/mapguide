@@ -71,7 +71,7 @@ void MgOpUpdateServer::Execute()
         STRING newAddress;
         m_stream->GetString( newAddress );
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(oldName.c_str());
@@ -88,8 +88,8 @@ void MgOpUpdateServer::Execute()
 
         m_service->UpdateServer( oldName, newName, newDescription, newAddress );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

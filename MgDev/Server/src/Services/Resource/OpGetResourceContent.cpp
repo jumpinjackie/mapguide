@@ -74,7 +74,7 @@ void MgOpGetResourceContent::Execute()
             (MgResourceIdentifier*)m_stream->GetObject();
         m_stream->GetString(preProcessTags);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -107,8 +107,8 @@ void MgOpGetResourceContent::Execute()
             byteReader = byteSource->GetReader();
         }
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

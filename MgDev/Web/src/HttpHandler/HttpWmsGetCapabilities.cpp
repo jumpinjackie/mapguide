@@ -46,6 +46,7 @@ MgHttpWmsGetCapabilities::MgHttpWmsGetCapabilities(MgHttpRequest *hRequest)
 // a means to resolve documents.
 bool GetDocument(CPSZ pszDoc,REFSTRING sRet)
 {
+    //TODO: Remove dependency on thread local storage
     MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
     Ptr<MgSite> mgSite;
     mgSite = new MgSite();
@@ -86,6 +87,8 @@ void MgHttpWmsGetCapabilities::Execute(MgHttpResponse& hResponse)
     // loader documents.
     // (Must be done before instancing an MgOgc{Wms}Server)
     MgOgcServer::SetLoader(GetDocument);
+
+    MgUserInformation::SetCurrentUserInfo(m_userInfo);
 
     // Instance a server-lette
     MgOgcWmsServer wms(requestParams, responseStream);

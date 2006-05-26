@@ -72,7 +72,7 @@ void MgOpEnumerateSectionResources::Execute()
         STRING sectionName;
         m_stream->GetString(sectionName);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -86,8 +86,8 @@ void MgOpEnumerateSectionResources::Execute()
 
         byteReader = m_service->EnumerateSectionResources(identifier, sectionName);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

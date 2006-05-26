@@ -308,6 +308,16 @@ INTERNAL_API:
     /// \exception MgConnectionNotOpenException if the site connection has not been set
     ///
     static MgSiteConnection* GetCurrentConnection();
+
+
+    ///////////////////////////////
+    /// \brief
+    /// Gets the user info for this site
+    ///
+    /// \return
+    /// User info
+    MgUserInformation* GetUserInfo();
+
 protected:
 
     /////////////////////////////////////////////////////////////////

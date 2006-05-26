@@ -143,6 +143,8 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
     // (Must be done before instancing an MgOgc{Wms}Server)
     MgOgcServer::SetLoader(MgWmsMapUtil::GetDocument);
 
+    MgUserInformation::SetCurrentUserInfo(m_userInfo);
+
     // We have to wrap the request parameters, since the outside
     // world is not case-insensitive (with respect to names,) but
     // WMS is.

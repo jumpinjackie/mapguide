@@ -64,7 +64,7 @@ void MgOpGrantRoleMembershipsToGroups::Execute()
         Ptr<MgStringCollection> groups =
             (MgStringCollection*) m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
@@ -77,8 +77,8 @@ void MgOpGrantRoleMembershipsToGroups::Execute()
 
         m_service->GrantRoleMembershipsToGroups( roles, groups );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

@@ -69,7 +69,7 @@ void MgOpCreateSession::Execute()
 
     if (0 == m_packet.m_NumArguments)
     {
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -79,8 +79,8 @@ void MgOpCreateSession::Execute()
 
         STRING sessionId = m_service->CreateSession();
 
-        m_opCompleted = true;
-        WriteResponseStream(sessionId);
+        
+        EndExecution(sessionId);
     }
     else
     {

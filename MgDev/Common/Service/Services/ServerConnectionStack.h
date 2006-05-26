@@ -79,10 +79,11 @@ INTERNAL_API:
 
 private:
 
-    typedef std::stack<MgServerConnection*> ConnectionStack;
+    typedef std::deque<MgServerConnection*> ConnectionQueue;
     typedef std::list<MgServerConnection*> ConnectionList;
 
-    ConnectionStack* m_stack;
+    ACE_Recursive_Thread_Mutex m_mutex;
+    ConnectionQueue* m_queue;
     ConnectionList* m_inUse;
 };
 /// \endcond INTERNAL

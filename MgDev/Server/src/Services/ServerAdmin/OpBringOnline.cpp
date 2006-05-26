@@ -67,7 +67,7 @@ void MgOpBringOnline::Execute()
 
     if (0 == m_packet.m_NumArguments)
     {
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -77,8 +77,8 @@ void MgOpBringOnline::Execute()
 
         m_service->BringOnline();
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

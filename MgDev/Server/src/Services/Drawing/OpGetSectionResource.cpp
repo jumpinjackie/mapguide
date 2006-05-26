@@ -72,7 +72,7 @@ void MgOpGetSectionResource::Execute()
         STRING resourceName;
         m_stream->GetString(resourceName);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -84,8 +84,8 @@ void MgOpGetSectionResource::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetSectionResource(identifier,resourceName);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

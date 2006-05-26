@@ -30,6 +30,16 @@ class MG_SERVICE_API MgController : public MgDisposable
     DECLARE_CLASSNAME(MgController)
 
 protected:
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Construct a MgController object
+    ///
+    /// \return
+    /// Nothing
+    ///
+    MgController(MgSiteConnection* siteConn = NULL);
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Destruct a MgController object
@@ -111,6 +121,8 @@ protected:
     static const STRING     m_mapCmdShowGroups;
     static const STRING     m_mapCmdHideGroups;
     static const STRING     m_mapCmdRefreshLayers;
+    Ptr<MgSiteConnection> m_siteConn;
+
 };
 
 #include "DwfController.h"

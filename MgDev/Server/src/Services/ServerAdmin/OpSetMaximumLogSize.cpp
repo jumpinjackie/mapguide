@@ -70,7 +70,7 @@ void MgOpSetMaximumLogSize::Execute()
         INT32 size;
         m_stream->GetInt32(size);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -80,8 +80,8 @@ void MgOpSetMaximumLogSize::Execute()
 
         m_service->SetMaximumLogSize(size);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

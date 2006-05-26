@@ -75,6 +75,8 @@ void MgHttpWfsGetCapabilities::Execute(MgHttpResponse& hResponse)
 
     MgOgcServer::SetLoader(GetDocument);
 
+    MgUserInformation::SetCurrentUserInfo(m_userInfo);
+
     // Instance a server-lette
     MgOgcWfsServer Wfs(Parms,Out,Features);
 

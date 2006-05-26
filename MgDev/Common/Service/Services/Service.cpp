@@ -80,3 +80,10 @@ INT32 MgService::GetClassId()
 {
     return m_cls_id;
 }
+
+////////////////////////////////////////////////////////////////
+/// Returns user information for this service
+MgUserInformation* MgService::GetUserInfo()
+{
+    return m_connProp->GetUserInfo();
+}

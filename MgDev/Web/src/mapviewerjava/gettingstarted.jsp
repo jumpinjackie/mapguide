@@ -60,10 +60,11 @@ boolean dwf;
             MgUserInformation cred = new MgUserInformation("Administrator", "admin");
             MgSiteConnection site = new MgSiteConnection();
             site.Open(cred);
+            MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
             MgResourceIdentifier wli = new MgResourceIdentifier(webLayout);
             byte[] hb = fixedupHtml.getBytes("UTF-8");
             MgByteSource src = new MgByteSource(hb, hb.length);
-            MgWebLayout wl = new MgWebLayout(wli);
+            MgWebLayout wl = new MgWebLayout(resourceSrvc, wli);
             MgByteReader pagestream = wl.ProcessGettingStartedPage(src.GetReader(), dwf);
             if(pagestream == null)
                 outStream.write(fixedupHtml);

@@ -35,7 +35,7 @@ INTERNAL_API:
     /// \brief
     /// Construct a MgHtmlController object
     ///
-    MgHtmlController();
+    MgHtmlController(MgSiteConnection* siteConn);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

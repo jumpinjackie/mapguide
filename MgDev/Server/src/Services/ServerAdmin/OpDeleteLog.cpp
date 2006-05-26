@@ -69,7 +69,7 @@ void MgOpDeleteLog::Execute()
         STRING fileName;
         m_stream->GetString(fileName);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(fileName.c_str());
@@ -80,8 +80,8 @@ void MgOpDeleteLog::Execute()
 
         m_service->DeleteLog(fileName);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

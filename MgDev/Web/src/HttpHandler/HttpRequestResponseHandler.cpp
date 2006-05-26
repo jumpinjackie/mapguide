@@ -204,12 +204,7 @@ MgService* MgHttpRequestResponseHandler::CreateService(INT16 serviceType)
 {
     MG_HTTP_HANDLER_TRY()
 
-    // We could use the local variables to access this information but this way
-    // the thread local storage infrastructure gets a good workout.
-    MgUserInformation* userInformation = MgUserInformation::GetCurrentUserInfo();
-    MgSiteConnection* mgSiteConnection = MgSiteConnection::GetCurrentConnection();
-
-    Ptr<MgService> service = mgSiteConnection->CreateService(serviceType);
+    Ptr<MgService> service = m_siteConn->CreateService(serviceType);
 
     return SAFE_ADDREF((MgService*)service);
 

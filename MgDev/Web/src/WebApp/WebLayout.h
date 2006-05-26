@@ -33,7 +33,7 @@ PUBLISHED_API:
     /// <summary>
     /// Constructs an MgWebLayout object.
     /// </summary>
-    MgWebLayout(MgResourceIdentifier* webLayoutId);
+    MgWebLayout(MgResourceService* resourceService, MgResourceIdentifier* webLayoutId);
 
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>

@@ -61,7 +61,7 @@ void MgOpRenderMapLegend::Execute()
         STRING format;
         m_stream->GetString(format);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -80,8 +80,8 @@ void MgOpRenderMapLegend::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderMapLegend(map, width, height, color, format);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

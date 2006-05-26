@@ -67,15 +67,17 @@ void MgOpIsMaximumLogSizeEnabled::Execute()
 
     if (0 == m_packet.m_NumArguments)
     {
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        // Validate() is not be called here. Why NOT?
+
         bool bIsMaximumLogSizeEnabled = m_service->IsMaximumLogSizeEnabled();
 
-        m_opCompleted = true;
-        WriteResponseStream(bIsMaximumLogSizeEnabled);
+        
+        EndExecution(bIsMaximumLogSizeEnabled);
     }
     else
     {

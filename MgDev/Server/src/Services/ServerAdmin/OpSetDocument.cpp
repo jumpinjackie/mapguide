@@ -72,7 +72,7 @@ void MgOpSetDocument::Execute()
         Ptr<MgByteReader> pByteReader;
         pByteReader = (MgByteReader*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(identifier.c_str());
@@ -85,8 +85,8 @@ void MgOpSetDocument::Execute()
 
         m_service->SetDocument(identifier, pByteReader);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

@@ -95,8 +95,9 @@ try
     //Get a MgWebLayout object initialized with the specified web layout definition
     //
     MgWebLayout webLayout = null;
+    MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
     MgResourceIdentifier webLayoutId = new MgResourceIdentifier(webLayoutDefinition);
-    webLayout = new MgWebLayout(webLayoutId);
+    webLayout = new MgWebLayout(resourceSrvc, webLayoutId);
 
     //calculate the size of the variable elements of the viewer
     //

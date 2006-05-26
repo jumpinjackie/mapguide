@@ -72,7 +72,7 @@ void MgOpCloseSqlReader::Execute()
         INT32 sqlReader;
         m_stream->GetInt32(sqlReader);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(sqlReader);
@@ -84,9 +84,9 @@ void MgOpCloseSqlReader::Execute()
         // Execute the operation
         bool bClosed = m_service->CloseSqlReader(sqlReader);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(bClosed);
+        EndExecution(bClosed);
     }
     else
     {

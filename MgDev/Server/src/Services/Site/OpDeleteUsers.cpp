@@ -61,7 +61,7 @@ void MgOpDeleteUsers::Execute()
         Ptr<MgStringCollection> collection =
             (MgStringCollection*) m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
@@ -72,8 +72,8 @@ void MgOpDeleteUsers::Execute()
 
         m_service->DeleteUsers( collection );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

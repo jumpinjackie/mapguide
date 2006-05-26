@@ -72,7 +72,7 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgLayout> layout = (MgLayout*)m_stream->GetObject();
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -89,8 +89,8 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, plotSpec, layout, dwfVersion);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else if (6 == m_packet.m_NumArguments)
     {
@@ -102,7 +102,7 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgLayout> layout = (MgLayout*)m_stream->GetObject();
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -118,11 +118,13 @@ void MgOpGeneratePlot::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgDwfVersion");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Validate();
+
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, extents, expandToFit, plotSpec, layout, dwfVersion);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else if (7 == m_packet.m_NumArguments)
     {
@@ -138,7 +140,7 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgLayout> layout = (MgLayout*)m_stream->GetObject();
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -154,11 +156,13 @@ void MgOpGeneratePlot::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgDwfVersion");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        Validate();
+
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, center, scale, plotSpec, layout, dwfVersion);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

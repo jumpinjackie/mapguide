@@ -29,6 +29,7 @@
 #endif
 
 static Ptr<MgServerConnectionPool> g_connectionPool = new MgServerConnectionPool();
+ACE_Recursive_Thread_Mutex MgServerConnection::sm_mutex;
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -248,26 +249,32 @@ MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformati
     CHECKNULL((MgConnectionProperties*)connProp, L"MgServerConnection.Acquire");
 
     Ptr<MgServerConnection> msc;
-    msc = NULL;
-
-    wstring hash = connProp->Hash();
-    MgServerConnectionPool::ConnectionPool::iterator iter = g_connectionPool->pool.find(hash);
     MgServerConnectionStack* stack = NULL;
 
-    if (iter != g_connectionPool->pool.end())
+    // Perform connection pooling.
     {
-        stack = iter->second;
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+
+        wstring hash = connProp->Hash();
+        MgServerConnectionPool::ConnectionPool::iterator iter = g_connectionPool->pool.find(hash);
+
+        if (iter != g_connectionPool->pool.end())
+        {
+            stack = iter->second;
+        }
+
+        if (stack == NULL)
+        {
+            stack = new MgServerConnectionStack();
+            (g_connectionPool->pool)[hash] = stack;
+        }
     }
 
-    if (stack == NULL)
+    if (NULL != stack)
     {
-        stack = new MgServerConnectionStack();
-        (g_connectionPool->pool)[hash] = stack;
+        // Try to get a previously used connection
+        msc = stack->Pop();
     }
-
-    // Try to get a previously used connection
-    msc = stack->Pop();
-    
 
     if (msc == NULL)
     {
@@ -288,7 +295,6 @@ MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformati
         }
     }
 
-    SAFE_ADDREF((MgServerConnection*)msc);
-
-    return msc;
+    return msc.Detach();
 }
+
