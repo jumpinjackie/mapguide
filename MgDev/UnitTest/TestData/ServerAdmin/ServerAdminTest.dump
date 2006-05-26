@@ -186,6 +186,8 @@ INSERT INTO "Params" VALUES(7004, 'PACKAGENAME', '');
 INSERT INTO "Params" VALUES(14, 'ALWAYSPASS', 'Operation returns machine dependent output. Thus, it is executed but not validated');
 INSERT INTO "Params" VALUES(15, 'ALWAYSPASS', 'Operation returns machine dependent output. Thus, it is executed but not validated');
 INSERT INTO "Params" VALUES(6002, 'ALWAYSPASS', 'The operation returns machine dependent output. Thus, it is executed but not validated');
+INSERT INTO "Params" VALUES(7, 'ALWAYSPASS', 'true');
+INSERT INTO "Params" VALUES(8, 'ALWAYSPASS', 'true');
 CREATE TABLE CommonParams (ParamName text, ParamValue text);
 INSERT INTO "CommonParams" VALUES('VERSION', '1.0.0');
 INSERT INTO "CommonParams" VALUES('CREDENTIALS', 'qwerty');
