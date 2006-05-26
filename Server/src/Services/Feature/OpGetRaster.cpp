@@ -81,7 +81,7 @@ void MgOpGetRaster::Execute()
         STRING rasterProp = L"";
         m_stream->GetString(rasterProp);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(featId);
@@ -96,9 +96,9 @@ void MgOpGetRaster::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetRaster(featId, xSize, ySize, rasterProp);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(byteReader);
+        EndExecution(byteReader);
     }
     else
     {

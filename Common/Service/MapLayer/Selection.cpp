@@ -791,8 +791,8 @@ bool MgSelection::CanSetName()
 void MgSelection::Open(MgResourceService* resourceService, CREFSTRING mapName)
 {
     STRING sessionId;
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-    if (userInfo != NULL) sessionId = userInfo->GetMgSessionId();
+    Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
+    if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
     if (sessionId.empty())
     {
         throw new MgSessionExpiredException(L"MgSelection.Open",__LINE__,__WFILE__, NULL, L"", NULL);
@@ -809,8 +809,8 @@ void MgSelection::Open(MgResourceService* resourceService, CREFSTRING mapName)
 void MgSelection::Save(MgResourceService* resourceService, CREFSTRING mapName)
 {
     STRING sessionId;
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-    if (userInfo != NULL) sessionId = userInfo->GetMgSessionId();
+    Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
+    if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
     if (sessionId.empty())
     {
         throw new MgSessionExpiredException(L"MgSelection.Save",__LINE__,__WFILE__, NULL, L"", NULL);

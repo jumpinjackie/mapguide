@@ -69,7 +69,7 @@ void MgOpGetFeatureProviders::Execute()
 
     if (0 == m_packet.m_NumArguments)
     {
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -79,9 +79,9 @@ void MgOpGetFeatureProviders::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetFeatureProviders();
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(byteReader);
+        EndExecution(byteReader);
     }
     else
     {

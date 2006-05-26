@@ -53,13 +53,10 @@ void MgHttpCreateSession::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Get user information
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-
     // Open connection to Mg server
     Ptr<MgSite> mgSite;
     mgSite = new MgSite();
-    mgSite->Open(userInfo);
+    mgSite->Open(m_userInfo);
 
     // Run API command
     STRING ret = mgSite->CreateSession();

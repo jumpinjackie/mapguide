@@ -123,6 +123,16 @@ INTERNAL_API:
     ///
     void Deserialize(MgStream* stream);
 
+    /// \brief
+    /// Sets user information for connection
+    ///
+    void SetUserInfo(MgUserInformation* userInfo);
+
+    /// \brief
+    /// Gets user information for connection
+    ///
+    MgUserInformation* GetUserInfo();
+
 protected:
 
     /// \brief
@@ -140,6 +150,7 @@ private:
     STRING m_url;
     STRING m_target;
     INT32 m_port;
+    Ptr<MgUserInformation> m_userInfo;
 
 CLASS_ID:
     static const INT32 m_cls_id = CoreService_MgConnectionProperties;

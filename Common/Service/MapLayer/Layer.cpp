@@ -732,10 +732,10 @@ void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
         // If we cannot pull the identity properties, silently ignore it.
         try
         {
-            //TODO: Replace with information stored in resource service when TLS userInfo goes away
-            //We should also remove the site connection from TLS as well.  It may make sense to
-            //hold a SiteConnection reference as part of every service.
-            MgSiteConnection* conn = MgSiteConnection::GetCurrentConnection();
+            //TODO: Pull site connection directly from resource service
+            Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
+            Ptr<MgSiteConnection> conn = new MgSiteConnection();
+            conn->Open(userInfo);
 
             Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(conn->CreateService(MgServiceType::FeatureService));
             Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_featureSourceId);

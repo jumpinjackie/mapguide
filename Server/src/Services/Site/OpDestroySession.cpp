@@ -72,7 +72,7 @@ void MgOpDestroySession::Execute()
         STRING session;
         m_stream->GetString(session);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(session.c_str());
@@ -82,8 +82,8 @@ void MgOpDestroySession::Execute()
 
         m_service->DestroySession(session);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

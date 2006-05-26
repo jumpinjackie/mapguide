@@ -70,7 +70,7 @@ void MgOpSetLogDelimiter::Execute()
         STRING delimiter;
         m_stream->GetString(delimiter);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -80,8 +80,8 @@ void MgOpSetLogDelimiter::Execute()
 
         m_service->SetLogDelimiter(delimiter);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

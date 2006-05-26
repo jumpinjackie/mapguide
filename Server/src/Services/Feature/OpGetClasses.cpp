@@ -76,7 +76,7 @@ void MgOpGetClasses::Execute()
         STRING schemaName;
         m_stream->GetString(schemaName);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -89,9 +89,9 @@ void MgOpGetClasses::Execute()
         // Execute the operation
         Ptr<MgStringCollection> strCol = m_service->GetClasses(resource, schemaName);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(strCol);
+        EndExecution(strCol);
     }
     else
     {

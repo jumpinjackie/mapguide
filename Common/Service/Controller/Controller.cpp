@@ -40,13 +40,19 @@ MgController::~MgController()
 }
 
 //////////////////////////////////////////////////////////////////
+// Construct a MgController object
+//
+MgController::MgController(MgSiteConnection* siteConn)
+{
+    m_siteConn = SAFE_ADDREF(siteConn);
+}
+
+//////////////////////////////////////////////////////////////////
 // Get an instance of the specified service
 //
 MgService* MgController::GetService(INT32 serviceType)
 {
-    MgSiteConnection* mgSiteConnection = MgSiteConnection::GetCurrentConnection();
-
-    return (MgService*)mgSiteConnection->CreateService(serviceType);
+    return (MgService*)m_siteConn->CreateService(serviceType);
 }
 
 //////////////////////////////////////////////////////////////////

@@ -73,7 +73,7 @@ void MgOpGetCapabilities::Execute()
         STRING providerName;
         m_stream->GetString(providerName);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(providerName.c_str());
@@ -84,9 +84,9 @@ void MgOpGetCapabilities::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetCapabilities(providerName);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(byteReader);
+        EndExecution(byteReader);
     }
     else
     {

@@ -71,7 +71,7 @@ void MgOpApplyResourcePackage::Execute()
     {
         Ptr<MgByteReader> package = (MgByteReader*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
@@ -81,8 +81,8 @@ void MgOpApplyResourcePackage::Execute()
 
         m_service->ApplyResourcePackage(package);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

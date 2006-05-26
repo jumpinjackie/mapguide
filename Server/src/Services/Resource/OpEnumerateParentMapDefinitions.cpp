@@ -62,7 +62,7 @@ void MgOpEnumerateParentMapDefinitions::Execute()
         Ptr<MgSerializableCollection> resources =
             (MgSerializableCollection*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSerializableCollection");
@@ -73,8 +73,8 @@ void MgOpEnumerateParentMapDefinitions::Execute()
         Ptr<MgSerializableCollection> mapDefinitions =
             m_service->EnumerateParentMapDefinitions(resources);
 
-        m_opCompleted = true;
-        WriteResponseStream(mapDefinitions);
+        
+        EndExecution(mapDefinitions);
     }
     else
     {

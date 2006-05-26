@@ -58,7 +58,7 @@ void MgOpQueryFeatureProperties::Execute()
         INT32 maxFeatures = 0;
         m_stream->GetInt32(maxFeatures);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -77,8 +77,8 @@ void MgOpQueryFeatureProperties::Execute()
         Ptr<MgBatchPropertyCollection> info =
             m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant, maxFeatures);
 
-        m_opCompleted = true;
-        WriteResponseStream(info);
+        
+        EndExecution(info);
     }
     else
     {

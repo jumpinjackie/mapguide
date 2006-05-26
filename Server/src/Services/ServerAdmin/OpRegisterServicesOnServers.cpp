@@ -73,7 +73,7 @@ void MgOpRegisterServicesOnServers::Execute()
         Ptr<MgSerializableCollection> serverInfoList =
             (MgSerializableCollection*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSerializableCollection");
@@ -86,8 +86,8 @@ void MgOpRegisterServicesOnServers::Execute()
         Ptr<MgSerializableCollection> feedbackList =
             m_service->RegisterServicesOnServers(serverInfoList);
 
-        m_opCompleted = true;
-        WriteResponseStream(feedbackList);
+        
+        EndExecution(feedbackList);
     }
     else
     {

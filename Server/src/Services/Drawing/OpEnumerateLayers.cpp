@@ -72,7 +72,7 @@ void MgOpEnumerateLayers::Execute()
         STRING sectionName;
         m_stream->GetString(sectionName);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -86,8 +86,8 @@ void MgOpEnumerateLayers::Execute()
 
         strCol = m_service->EnumerateLayers(identifier, sectionName);
 
-        m_opCompleted = true;
-        WriteResponseStream(strCol);
+        
+        EndExecution(strCol);
     }
     else
     {

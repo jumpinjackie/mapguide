@@ -79,7 +79,7 @@ void MgOpUpdateFeatures::Execute()
         bool useTransaction;
         m_stream->GetBoolean(useTransaction);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -95,9 +95,9 @@ void MgOpUpdateFeatures::Execute()
         // Execute the operation
         Ptr<MgPropertyCollection> rowsAffected = m_service->UpdateFeatures(resource, commands, useTransaction);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(rowsAffected);
+        EndExecution(rowsAffected);
     }
     else
     {

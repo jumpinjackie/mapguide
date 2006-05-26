@@ -21,6 +21,7 @@
 #include "AceCommon.h"
 #include "ThreadBase.h"
 #include "IServiceHandler.h"
+#include "ServerStreamData.h"
 
 class MgOperationThread : public MgThreadBase
 {

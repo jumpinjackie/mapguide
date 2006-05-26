@@ -82,7 +82,7 @@ void MgOpGetConnectionPropertyValues::Execute()
         STRING partialConnString;
         m_stream->GetString(partialConnString);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(providerName.c_str());
@@ -97,9 +97,9 @@ void MgOpGetConnectionPropertyValues::Execute()
         // Execute the operation
         Ptr<MgStringCollection> strCol = m_service->GetConnectionPropertyValues(providerName, propertyName, partialConnString);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream((MgSerializable*)((MgStringCollection*)strCol));
+        EndExecution((MgSerializable*)((MgStringCollection*)strCol));
     }
     else
     {

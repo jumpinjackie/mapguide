@@ -91,7 +91,7 @@ void MgOpGetWfsFeature::Execute()
         INT32 maxFeatures;
         m_stream->GetInt32(maxFeatures);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -113,10 +113,10 @@ void MgOpGetWfsFeature::Execute()
         Ptr<MgByteReader> byteReader = m_service->GetWfsFeature(featureSourceId, featureClass,
             requiredProperties, srs, filter, maxFeatures);
 
-        m_opCompleted = true;
+        
 
         // Write the response
-        WriteResponseStream(byteReader);
+        EndExecution(byteReader);
     }
     else
     {

@@ -69,7 +69,7 @@ void MgOpGetDrawing::Execute()
         Ptr<MgResourceIdentifier> identifier =
             (MgResourceIdentifier*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -79,8 +79,8 @@ void MgOpGetDrawing::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetDrawing(identifier);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

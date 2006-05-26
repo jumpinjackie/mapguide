@@ -195,16 +195,13 @@ void MgServiceOperation::Initialize(MgStreamData* data,
 ///
 bool MgServiceOperation::HandleException(MgException* except)
 {
-    bool handled = false;
+    ACE_ASSERT(!m_opCompleted);
 
     MG_TRY()
 
     // Write the exception if all the data have been read successfully.
     if (m_argsRead && NULL != except && m_stream != NULL)
     {
-        WriteResponseStream(except);
-        handled = true;
-
         // Log the exception
         MgServerManager* serverManager = MgServerManager::GetInstance();
         STRING locale = (NULL == serverManager) ?
@@ -215,6 +212,8 @@ bool MgServiceOperation::HandleException(MgException* except)
 
         ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
         MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
+
+        EndExecution(except);
     }
     else if (NULL != m_currConnection)
     {
@@ -223,21 +222,38 @@ bool MgServiceOperation::HandleException(MgException* except)
 
     MG_CATCH_AND_RELEASE()
 
-    return handled;
+    return m_opCompleted;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Begin executing the operation.
+/// Read the End Header data from the stream.
+///
+void MgServiceOperation::BeginExecution()
+{
+    m_argsRead = MgStreamParser::ParseEndHeader(m_data);
 }
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// End executing the operation.
 /// Write the response stream.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream()
+void MgServiceOperation::EndExecution()
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
-    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
+    ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
 
     MG_TRY()
+
+    MgServerStreamData* serverStreamData = dynamic_cast<MgServerStreamData*>(m_data);
+    ACE_ASSERT(NULL != serverStreamData);
+    Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
+    ACE_ASSERT(NULL != clientHandler.p);
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -257,22 +273,31 @@ void MgServiceOperation::WriteResponseStream()
     m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
+    clientHandler->SetStatus(MgClientHandler::hsIdle);
+    m_opCompleted = true;
 
-    MG_CATCH_AND_THROW(L"MgServiceOperation.WriteResponseStream")
+    MG_CATCH_AND_THROW(L"MgServiceOperation.EndExecution")
 }
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// End executing the operation.
 /// Write the specified BOOL value to the response stream.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(bool value)
+void MgServiceOperation::EndExecution(bool value)
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
-    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
+    ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
 
     MG_TRY()
+
+    MgServerStreamData* serverStreamData = dynamic_cast<MgServerStreamData*>(m_data);
+    ACE_ASSERT(NULL != serverStreamData);
+    Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
+    ACE_ASSERT(NULL != clientHandler.p);
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -294,25 +319,34 @@ void MgServiceOperation::WriteResponseStream(bool value)
     m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
+    clientHandler->SetStatus(MgClientHandler::hsIdle);
+    m_opCompleted = true;
 
-    MG_CATCH_AND_THROW(L"MgServiceOperation.WriteResponseStream")
+    MG_CATCH_AND_THROW(L"MgServiceOperation.EndExecution")
 }
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// End executing the operation.
 /// Write the specified INT32 value to the response stream.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(INT32 value)
+void MgServiceOperation::EndExecution(INT32 value)
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
-    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
+    ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
+
+    MG_TRY()
+
+    MgServerStreamData* serverStreamData = dynamic_cast<MgServerStreamData*>(m_data);
+    ACE_ASSERT(NULL != serverStreamData);
+    Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
+    ACE_ASSERT(NULL != clientHandler.p);
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
-
-    MG_TRY()
 
     if (service->HasWarnings())
     {
@@ -331,25 +365,34 @@ void MgServiceOperation::WriteResponseStream(INT32 value)
     m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
+    clientHandler->SetStatus(MgClientHandler::hsIdle);
+    m_opCompleted = true;
 
-    MG_CATCH_AND_THROW(L"MgServiceOperation.WriteResponseStream")
+    MG_CATCH_AND_THROW(L"MgServiceOperation.EndExecution")
 }
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// End executing the operation.
 /// Write the specified INT64 value to the response stream.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(INT64 value)
+void MgServiceOperation::EndExecution(INT64 value)
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
-    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
+    ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
+
+    MG_TRY()
+
+    MgServerStreamData* serverStreamData = dynamic_cast<MgServerStreamData*>(m_data);
+    ACE_ASSERT(NULL != serverStreamData);
+    Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
+    ACE_ASSERT(NULL != clientHandler.p);
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
-
-    MG_TRY()
 
     if (service->HasWarnings())
     {
@@ -368,25 +411,34 @@ void MgServiceOperation::WriteResponseStream(INT64 value)
     m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
+    clientHandler->SetStatus(MgClientHandler::hsIdle);
+    m_opCompleted = true;
 
-    MG_CATCH_AND_THROW(L"MgServiceOperation.WriteResponseStream")
+    MG_CATCH_AND_THROW(L"MgServiceOperation.EndExecution")
 }
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// End executing the operation.
 /// Write the specified string to the response stream.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(STRING value)
+void MgServiceOperation::EndExecution(STRING value)
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
-    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
+    ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
+
+    MG_TRY()
+
+    MgServerStreamData* serverStreamData = dynamic_cast<MgServerStreamData*>(m_data);
+    ACE_ASSERT(NULL != serverStreamData);
+    Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
+    ACE_ASSERT(NULL != clientHandler.p);
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
-
-    MG_TRY()
 
     if (service->HasWarnings())
     {
@@ -405,23 +457,32 @@ void MgServiceOperation::WriteResponseStream(STRING value)
     m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
+    clientHandler->SetStatus(MgClientHandler::hsIdle);
+    m_opCompleted = true;
 
-    MG_CATCH_AND_THROW(L"MgServiceOperation.WriteResponseStream")
+    MG_CATCH_AND_THROW(L"MgServiceOperation.EndExecution")
 }
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// End executing the operation.
 /// Write the specified object to the response stream.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgSerializable* obj)
+void MgServiceOperation::EndExecution(MgSerializable* obj)
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
     // ACE_ASSERT(NULL != obj);
-    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
+    ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
 
     MG_TRY()
+
+    MgServerStreamData* serverStreamData = dynamic_cast<MgServerStreamData*>(m_data);
+    ACE_ASSERT(NULL != serverStreamData);
+    Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
+    ACE_ASSERT(NULL != clientHandler.p);
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -443,23 +504,32 @@ void MgServiceOperation::WriteResponseStream(MgSerializable* obj)
     m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
+    clientHandler->SetStatus(MgClientHandler::hsIdle);
+    m_opCompleted = true;
 
-    MG_CATCH_AND_THROW(L"MgServiceOperation.WriteResponseStream")
+    MG_CATCH_AND_THROW(L"MgServiceOperation.EndExecution")
 }
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// End executing the operation.
 /// Write the specified string collection to the response stream.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgStringCollection* stringCollection)
+void MgServiceOperation::EndExecution(MgStringCollection* stringCollection)
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
     // ACE_ASSERT(NULL != stringCollection);
-    ACE_ASSERT(m_stream != NULL && NULL != m_currConnection);
+    ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
 
     MG_TRY()
+
+    MgServerStreamData* serverStreamData = dynamic_cast<MgServerStreamData*>(m_data);
+    ACE_ASSERT(NULL != serverStreamData);
+    Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
+    ACE_ASSERT(NULL != clientHandler.p);
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -481,22 +551,31 @@ void MgServiceOperation::WriteResponseStream(MgStringCollection* stringCollectio
     m_stream->WriteStreamEnd();
 
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpOk);
+    clientHandler->SetStatus(MgClientHandler::hsIdle);
+    m_opCompleted = true;
 
-    MG_CATCH_AND_THROW(L"MgServiceOperation.WriteResponseStream")
+    MG_CATCH_AND_THROW(L"MgServiceOperation.EndExecution")
 }
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// End executing the operation.
 /// Write the specified exception to the response stream.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgServiceOperation::WriteResponseStream(MgException* except)
+void MgServiceOperation::EndExecution(MgException* except)
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::WriteResponseStream()\n" )));
-    ACE_ASSERT(NULL != except && m_stream != NULL);
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
+    ACE_ASSERT(NULL != except && m_argsRead && !m_opCompleted && m_stream != NULL);
 
     MG_TRY()
+
+    MgServerStreamData* serverStreamData = dynamic_cast<MgServerStreamData*>(m_data);
+    ACE_ASSERT(NULL != serverStreamData);
+    Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
+    ACE_ASSERT(NULL != clientHandler.p);
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     if (NULL != m_currConnection)
     {
@@ -511,7 +590,10 @@ void MgServiceOperation::WriteResponseStream(MgException* except)
     m_stream->WriteObject(except);
     m_stream->WriteStreamEnd();
 
-    MG_CATCH_AND_THROW(L"MgServiceOperation.WriteResponseStream")
+    clientHandler->SetStatus(MgClientHandler::hsIdle);
+    m_opCompleted = true;
+
+    MG_CATCH_AND_THROW(L"MgServiceOperation.EndExecution")
 }
 
 ///----------------------------------------------------------------------------

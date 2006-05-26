@@ -75,7 +75,7 @@ void MgOpCreateFeatureSource::Execute()
         // Get the parameters
         Ptr<MgFeatureSourceParams> params = (MgFeatureSourceParams*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -88,10 +88,10 @@ void MgOpCreateFeatureSource::Execute()
         // Execute the operation
         m_service->CreateFeatureSource(resource, params);
 
-        WriteResponseStream();
+        EndExecution();
 
         // Mark operation is completed successfully
-        m_opCompleted = true;
+        
     }
     else
     {

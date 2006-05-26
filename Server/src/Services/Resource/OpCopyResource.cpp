@@ -76,7 +76,7 @@ void MgOpCopyResource::Execute()
         bool overwrite;
         m_stream->GetBoolean(overwrite);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -90,8 +90,8 @@ void MgOpCopyResource::Execute()
 
         m_service->CopyResource(sourceResource, destResource, overwrite);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

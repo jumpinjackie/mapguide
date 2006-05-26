@@ -72,7 +72,7 @@ void MgOpCloseFeatureReader::Execute()
         INT32 featId;
         m_stream->GetInt32(featId);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(featId);
@@ -84,9 +84,9 @@ void MgOpCloseFeatureReader::Execute()
         // Execute the operation
         bool bClosed = m_service->CloseFeatureReader(featId);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(bClosed);
+        EndExecution(bClosed);
     }
     else
     {

@@ -68,7 +68,7 @@ void MgOpAddServer::Execute()
         STRING address;
         m_stream->GetString( address );
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(name.c_str());
@@ -83,8 +83,8 @@ void MgOpAddServer::Execute()
 
         m_service->AddServer( name, desc, address );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

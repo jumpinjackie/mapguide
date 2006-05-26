@@ -451,30 +451,6 @@
 			>
 		</File>
 		<File
-			RelativePath="ClientHandler.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="ClientHandler.h"
-			>
-		</File>
-		<File
 			RelativePath="main.cpp"
 			>
 			<FileConfiguration
@@ -548,30 +524,6 @@
 		</File>
 		<File
 			RelativePath=".\ServerCoreBuild.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ServerStreamData.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\ServerStreamData.h"
 			>
 		</File>
 		<File

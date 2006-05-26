@@ -74,7 +74,7 @@ void MgOpSetResource::Execute()
         Ptr<MgByteReader> content = (MgByteReader*)m_stream->GetObject();
         Ptr<MgByteReader> header = (MgByteReader*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -88,8 +88,8 @@ void MgOpSetResource::Execute()
 
         m_service->SetResource(resource, content, header);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

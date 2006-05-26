@@ -80,7 +80,7 @@ void MgOpGetIdentityProperties::Execute()
         STRING className;
         m_stream->GetString(className);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -97,9 +97,9 @@ void MgOpGetIdentityProperties::Execute()
                                                                                      schemaName,
                                                                                      className);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(props);
+        EndExecution(props);
     }
     else
     {

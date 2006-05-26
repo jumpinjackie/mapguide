@@ -197,30 +197,3 @@ void MgStreamData::SetDataRead( INT64 total )
 {
     m_DataRead = total;
 };
-
-///////////////////////////////////////////////////////////////////////////
-//  <summary>
-//  Gets the current error flag,
-//  </summary>
-//
-//  <returns>
-//  Returns true if there had been an error when the data stream
-//  was last processed.  Returns false otherwise.
-//  </returns>
-bool MgStreamData::GetErrorFlag()
-{
-    return m_bError;
-}
-
-///////////////////////////////////////////////////////////////////////////
-//  <summary>
-//  Sets the current error flag,
-//  </summary>
-//
-//  <param name = "flag">
-//  Set to true if there had been a error processing this data stream.
-//  </param>
-void MgStreamData::SetErrorFlag( bool flag )
-{
-    m_bError = flag;
-}

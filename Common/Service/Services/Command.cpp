@@ -33,8 +33,7 @@ void MgCommand::ExecuteCommand(MgConnectionProperties* connProp, DataTypes retTy
         //TODO:  Parse url and pull machine name into target
     }
 
-    //TODO: Pass user info into method and remove TLS
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = connProp->GetUserInfo();
     Ptr<MgServerConnection> serviceConn = MgServerConnection::Acquire(userInfo, connProp);
     Ptr<MgStream> stream = serviceConn->GetStream();
 
@@ -46,7 +45,7 @@ void MgCommand::ExecuteCommand(MgConnectionProperties* connProp, DataTypes retTy
     mop.m_OperationID = cmdCode;
     mop.m_ServiceID = serviceId;
     mop.m_NumArguments = numArguments;
-    mop.m_UserInfo = MgUserInformation::GetCurrentUserInfo();
+    mop.m_UserInfo = userInfo;
 
     BeginOperation(stream, mop);
 

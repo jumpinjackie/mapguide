@@ -70,7 +70,7 @@ void MgOpGenerateMultiPlot::Execute()
         Ptr<MgMapPlotCollection> mapPlots = (MgMapPlotCollection*)m_stream->GetObject();
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMapPlotCollection");
@@ -83,8 +83,8 @@ void MgOpGenerateMultiPlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateMultiPlot(mapPlots, dwfVersion);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

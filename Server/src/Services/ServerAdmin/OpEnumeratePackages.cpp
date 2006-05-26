@@ -66,7 +66,7 @@ void MgOpEnumeratePackages::Execute()
 
     if (0 == m_packet.m_NumArguments)
     {
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -76,8 +76,8 @@ void MgOpEnumeratePackages::Execute()
 
         Ptr<MgStringCollection> packages = m_service->EnumeratePackages();
 
-        m_opCompleted = true;
-        WriteResponseStream(packages);
+        
+        EndExecution(packages);
     }
     else
     {

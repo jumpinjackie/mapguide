@@ -437,7 +437,7 @@ class WebLayoutAPI
 
         $resId = new MgResourceIdentifier($wlId);
 
-        $this->wl = new MgWebLayout($resId);
+        $this->wl = new MgWebLayout($this->resSrvc,$resId);
     }
 
     function FormatProperties($it)

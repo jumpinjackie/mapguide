@@ -67,7 +67,7 @@ void MgOpUpdateGroup::Execute()
         STRING newDesc;
         m_stream->GetString( newDesc );
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(group.c_str());
@@ -82,8 +82,8 @@ void MgOpUpdateGroup::Execute()
 
         m_service->UpdateGroup( group, newGroup, newDesc );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MAP_SERVER_CONNECTION_H
-#define MAP_SERVER_CONNECTION_H
+#ifndef MG_SERVER_CONNECTION_H_
+#define MG_SERVER_CONNECTION_H_
 
 /// \cond INTERNAL
 
@@ -37,7 +37,7 @@ class ACE_Time_Value;
 /// \brief
 /// Represents a connection to a MapGuide server
 /// INTERNAL_ONLY:
-class MG_SERVICE_API MgServerConnection : public MgDisposable
+class MG_SERVICE_API MgServerConnection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgServerConnection)
 
@@ -192,6 +192,7 @@ private:
     MgStreamHelper* GetMgStreamHelper();
 
     static const INT32 m_cls_id = CoreService_ServerConnection;
+    static ACE_Recursive_Thread_Mutex sm_mutex;
 
     bool m_isOpen;
 

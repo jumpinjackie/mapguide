@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGSTREAMDATA_H_MG
-#define MGSTREAMDATA_H_MG
+#ifndef MGSTREAMDATA_H_
+#define MGSTREAMDATA_H_
 
 class MgStreamHelper;
 
@@ -48,8 +48,6 @@ class MG_SERVICE_API MgStreamData : public ACE_Data_Block
     MgStreamHelper* GetStreamHelper();
     UINT32 GetVersion();
     void SetVersion( UINT32 version );
-    bool GetErrorFlag();
-    void SetErrorFlag( bool flag );
 
     ///////////////////////////////////////////////////////////////////////
     ///  Member Variables

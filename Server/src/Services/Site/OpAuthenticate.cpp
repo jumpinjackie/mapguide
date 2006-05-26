@@ -77,7 +77,7 @@ void MgOpAuthenticate::Execute()
         bool returnAssignedRoles;
         m_stream->GetBoolean(returnAssignedRoles);
 
-        m_argsRead = true;
+        BeginExecution();
 
 //        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
 //        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgUserInformation");
@@ -92,8 +92,8 @@ void MgOpAuthenticate::Execute()
         Ptr<MgStringCollection> assignedRoles = m_service->Authenticate(userInfo,
             requiredRoles, returnAssignedRoles);
 
-        m_opCompleted = true;
-        WriteResponseStream(assignedRoles);
+        
+        EndExecution(assignedRoles);
     }
     else
     {

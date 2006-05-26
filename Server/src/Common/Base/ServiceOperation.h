@@ -64,17 +64,19 @@ protected:
 
     virtual bool IsOverheadOperation() const;
 
-    void WriteResponseStream();
-    void WriteResponseStream(bool value);
-    void WriteResponseStream(INT32 value);
-    void WriteResponseStream(INT64 value);
-    void WriteResponseStream(STRING value);
-    void WriteResponseStream(MgSerializable* obj);
-    void WriteResponseStream(MgStringCollection* stringCollection);
+    void BeginExecution();
+
+    void EndExecution();
+    void EndExecution(bool value);
+    void EndExecution(INT32 value);
+    void EndExecution(INT64 value);
+    void EndExecution(STRING value);
+    void EndExecution(MgSerializable* obj);
+    void EndExecution(MgStringCollection* stringCollection);
 
 private:
 
-    void WriteResponseStream(MgException* except);
+    void EndExecution(MgException* except);
 
 /// Data Members
 
@@ -83,6 +85,9 @@ protected:
     MgConnection* m_currConnection;
     Ptr<MgStream> m_stream;
     bool m_argsRead;
+
+private:
+
     bool m_opCompleted;
 };
 

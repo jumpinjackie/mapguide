@@ -73,7 +73,7 @@ void MgOpUnregisterServicesOnServers::Execute()
         Ptr<MgSerializableCollection> serverInfoList =
             (MgSerializableCollection*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSerializableCollection");
@@ -85,8 +85,8 @@ void MgOpUnregisterServicesOnServers::Execute()
 
         m_service->UnregisterServicesOnServers(serverInfoList);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

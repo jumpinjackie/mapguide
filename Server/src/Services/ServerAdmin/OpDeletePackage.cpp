@@ -69,7 +69,7 @@ void MgOpDeletePackage::Execute()
         STRING package;
         m_stream->GetString(package);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(package.c_str());
@@ -80,8 +80,8 @@ void MgOpDeletePackage::Execute()
 
         m_service->DeletePackage(package);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

@@ -75,7 +75,7 @@ void MgOpExecuteSqlQuery::Execute()
         STRING sqlStatement;
         m_stream->GetString(sqlStatement);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -88,9 +88,9 @@ void MgOpExecuteSqlQuery::Execute()
         // Execute the operation
         Ptr<MgSqlDataReader> sqlReader = m_service->ExecuteSqlQuery(resource, sqlStatement);
         // Write the response
-        WriteResponseStream((MgSqlDataReader*)sqlReader);
+        EndExecution((MgSqlDataReader*)sqlReader);
         // Mark the operation completed
-        m_opCompleted = true;
+        
     }
     else
     {

@@ -76,7 +76,7 @@ void MgOpGetLongTransactions::Execute()
         bool activeOnly;
         m_stream->GetBoolean(activeOnly);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -89,9 +89,9 @@ void MgOpGetLongTransactions::Execute()
         // Execute the operation
         Ptr<MgLongTransactionReader> longTransactionReader = m_service->GetLongTransactions(resource, activeOnly);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream((MgLongTransactionReader*)longTransactionReader);
+        EndExecution((MgLongTransactionReader*)longTransactionReader);
     }
     else
     {

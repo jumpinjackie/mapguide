@@ -226,14 +226,6 @@ MgHttpResponse* MgHttpRequest::Execute()
         }
     }
 
-    // Add session identifer to headers passed back
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-    if (userInfo != NULL && !userInfo->GetMgSessionId().empty())
-    {
-        Ptr<MgHttpHeader> header = hResponse->GetHeader();
-        header->AddHeader(MgHttpResourceStrings::reqSession, userInfo->GetMgSessionId());
-    }
-
     MG_HTTP_HANDLER_CATCH(L"MgHttpRequest.Execute")
 
     return SAFE_ADDREF((MgHttpResponse*)hResponse);

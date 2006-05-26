@@ -152,7 +152,7 @@ void MgHttpGetPlot::Execute(MgHttpResponse& hResponse)
     Ptr<MgPropertyCollection> commands = params->GetParameters()->GetPropertyCollection();
 
     //execute the request through a dwf controller
-    MgDwfController controller(m_hRequest->GetAgentUri());
+    MgDwfController controller(m_siteConn,m_hRequest->GetAgentUri());
     Ptr<MgByteReader> reader = controller.GetPlot(m_map, m_plotSpec, m_layout, m_dwfVersion, m_eplotVersion, commands);
 
     hResult->SetResultObject(reader, reader->GetMimeType());

@@ -72,7 +72,7 @@ void MgOpCloseGwsFeatureReader::Execute()
         INT32 gwsFeatureReader;
         m_stream->GetInt32(gwsFeatureReader);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(gwsFeatureReader);
@@ -84,9 +84,9 @@ void MgOpCloseGwsFeatureReader::Execute()
         // Execute the operation
         bool bClosed = m_service->CloseGwsFeatureReader(gwsFeatureReader);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(bClosed);
+        EndExecution(bClosed);
     }
     else
     {

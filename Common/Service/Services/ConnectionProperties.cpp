@@ -180,3 +180,19 @@ void MgConnectionProperties::Deserialize(MgStream* stream)
 {
     UNUSED(stream);
 }
+
+/// \brief
+/// Sets user information for connection
+///
+void MgConnectionProperties::SetUserInfo(MgUserInformation* userInfo)
+{
+    m_userInfo = SAFE_ADDREF(userInfo);
+}
+
+/// \brief
+/// Gets user information for connection
+///
+MgUserInformation* MgConnectionProperties::GetUserInfo()
+{
+    return SAFE_ADDREF((MgUserInformation*)m_userInfo);
+}

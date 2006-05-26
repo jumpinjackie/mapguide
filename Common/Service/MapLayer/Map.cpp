@@ -466,9 +466,9 @@ void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
     m_trackChangesDisabled = true;
 
     STRING sessionId;
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
 
-    if (userInfo != NULL)
+    if (userInfo.p != NULL)
     {
         sessionId = userInfo->GetMgSessionId();
     }

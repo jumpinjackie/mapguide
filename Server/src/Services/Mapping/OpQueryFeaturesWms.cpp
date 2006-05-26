@@ -78,7 +78,7 @@ void MgOpQueryFeaturesWms::Execute()
         m_stream->GetInt32(maxFeatures);
         m_stream->GetString(coordinateSpace);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -100,8 +100,8 @@ void MgOpQueryFeaturesWms::Execute()
             m_service->QueryFeatures(map, layerNames, x, y, maxFeatures,
             coordinateSpace);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

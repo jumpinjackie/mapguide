@@ -73,7 +73,7 @@ void MgOpRequestServer::Execute()
         INT16 serviceType;
         m_stream->GetInt16(serviceType);
 
-        m_argsRead = true;
+        BeginExecution();
 
 //        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
 //        MG_LOG_OPERATION_MESSAGE_ADD_INT32(serviceType);
@@ -83,8 +83,8 @@ void MgOpRequestServer::Execute()
 
         STRING serverAddress = m_service->RequestServer(serviceType);
 
-        m_opCompleted = true;
-        WriteResponseStream(serverAddress);
+        
+        EndExecution(serverAddress);
     }
     else
     {

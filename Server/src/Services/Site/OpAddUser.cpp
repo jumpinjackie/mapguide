@@ -85,7 +85,7 @@ void MgOpAddUser::Execute()
         STRING desc;
         m_stream->GetString( desc );
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(userid.c_str());
@@ -102,8 +102,8 @@ void MgOpAddUser::Execute()
 
         m_service->AddUser( userid, username, password, desc );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

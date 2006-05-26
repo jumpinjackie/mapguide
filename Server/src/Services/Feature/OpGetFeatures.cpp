@@ -72,7 +72,7 @@ void MgOpGetFeatures::Execute()
         INT32 featId;
         m_stream->GetInt32(featId);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(featId);
@@ -83,9 +83,9 @@ void MgOpGetFeatures::Execute()
         // Execute the operation
         Ptr<MgBatchPropertyCollection> features = m_service->GetFeatures(featId);
 
-        m_opCompleted = true;
+        
         // Write the response
-        WriteResponseStream(features);
+        EndExecution(features);
     }
     else
     {

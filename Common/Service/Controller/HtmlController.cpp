@@ -20,7 +20,8 @@
 //////////////////////////////////////////////////////////////////
 // Construct a MgHtmlController object
 //
-MgHtmlController::MgHtmlController()
+MgHtmlController::MgHtmlController(MgSiteConnection* siteConn)
+: MgController(siteConn)
 {
 }
 

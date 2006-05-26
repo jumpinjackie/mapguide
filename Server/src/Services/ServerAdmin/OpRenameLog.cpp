@@ -71,7 +71,7 @@ void MgOpRenameLog::Execute()
         m_stream->GetString(oldFileName);
         m_stream->GetString(newFileName);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(oldFileName.c_str());
@@ -83,8 +83,8 @@ void MgOpRenameLog::Execute()
 
         m_service->RenameLog(oldFileName, newFileName);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

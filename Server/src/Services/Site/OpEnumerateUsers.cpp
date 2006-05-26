@@ -78,7 +78,7 @@ void MgOpEnumerateUsers::Execute()
         bool includeGroups = false;
         m_stream->GetBoolean( includeGroups );
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(group.c_str());
@@ -93,8 +93,8 @@ void MgOpEnumerateUsers::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateUsers( group, role, includeGroups );
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

@@ -56,12 +56,9 @@ void MgHttpGetSiteInfo::Execute(MgHttpResponse& hResponse)
 
     STRING serverAddress = mgSite->GetSiteServerAddress();
 
-    // Get user information
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-
     // Create ServerAdmin object
     Ptr<MgServerAdmin> serverAdmin = new MgServerAdmin();
-    serverAdmin->Open(serverAddress, userInfo);
+    serverAdmin->Open(serverAddress, m_userInfo);
 
     // call the C++ APIs
     Ptr<MgPropertyCollection> properties = serverAdmin->GetInformationProperties();

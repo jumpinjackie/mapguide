@@ -78,7 +78,7 @@ void MgOpSelectFeaturesSpatial::Execute()
         // Get properties collection
         Ptr<MgFeatureAggregateOptions> qryOptions = (MgFeatureAggregateOptions*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -93,9 +93,9 @@ void MgOpSelectFeaturesSpatial::Execute()
         // Execute the operation
         Ptr<MgDataReader> dataReader = m_service->SelectAggregate(resource, className, qryOptions);
         // Write the response
-        WriteResponseStream((MgDataReader*)dataReader);
+        EndExecution((MgDataReader*)dataReader);
 
-        m_opCompleted = true;
+        
     }
     else
     {

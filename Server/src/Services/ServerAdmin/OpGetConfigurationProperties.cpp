@@ -69,7 +69,7 @@ void MgOpGetConfigurationProperties::Execute()
         STRING propertySection;
         m_stream->GetString(propertySection);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(propertySection.c_str());
@@ -81,8 +81,8 @@ void MgOpGetConfigurationProperties::Execute()
         Ptr<MgPropertyCollection> pPropertyCollection;
         pPropertyCollection = m_service->GetConfigurationProperties(propertySection);
 
-        m_opCompleted = true;
-        WriteResponseStream(pPropertyCollection);
+        
+        EndExecution(pPropertyCollection);
     }
     else
     {

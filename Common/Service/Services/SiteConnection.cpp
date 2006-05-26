@@ -67,9 +67,6 @@ void MgSiteConnection::Initialize()
         m_isWebTier    = IsWebTier();
     }
 
-    // Set up current connection for thread
-    MgSiteConnection::SetCurrentConnection(this);
-
     MG_CATCH_AND_THROW(L"MgSiteConnection::Initialize")
 }
 
@@ -80,8 +77,6 @@ void MgSiteConnection::Initialize()
 
 MgSiteConnection::~MgSiteConnection()
 {
-    // Drop current connection for thread
-    MgSiteConnection::SetCurrentConnection(NULL);
 }
 
 
@@ -96,8 +91,6 @@ void MgSiteConnection::Open(MgUserInformation* userInformation)
     {
         throw new MgAuthenticationFailedException(L"MgSiteConnection.Open", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-
-    MgUserInformation::SetCurrentUserInfo(userInformation);
 
     m_connProp = NULL;
 
@@ -137,6 +130,8 @@ void MgSiteConnection::Open(MgUserInformation* userInformation)
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    m_connProp->SetUserInfo(userInformation);
+
     if (!m_connProp->IsLocal())
     {
         Authenticate(userInformation);
@@ -162,6 +157,7 @@ void MgSiteConnection::Open(MgUserInformation* userInformation)
 MgService* MgSiteConnection::CreateService(INT32 serviceType)
 {
     Ptr<MgConnectionProperties> connProp;
+    
 
     if (IsServiceLocal(serviceType))
     {
@@ -478,8 +474,8 @@ MgConnectionProperties* MgSiteConnection::GetConnectionPropertiesFromSiteServer(
         //       balancing is implemented on the Web Tier. Also, the
         //       RequestServer API could be optimized to allow the Web Tier to
         //       notify the site server when a support server is down.
-        MgUserInformation* userInformation = MgUserInformation::GetCurrentUserInfo();
-        assert(NULL != userInformation);
+        Ptr<MgUserInformation> userInformation = m_connProp->GetUserInfo();
+        assert(NULL != userInformation.p);
         Ptr<MgSite> site = new MgSite();
 
         site->Open(userInformation);
@@ -487,6 +483,8 @@ MgConnectionProperties* MgSiteConnection::GetConnectionPropertiesFromSiteServer(
         STRING target = site->RequestServer(serviceType);
 
         connProp = new MgConnectionProperties(target, m_connProp->GetPort());
+        Ptr<MgUserInformation> userInfo = m_connProp->GetUserInfo();
+        connProp->SetUserInfo(userInfo);
     }
 
     return connProp.Detach();
@@ -577,11 +575,11 @@ void MgSiteConnection::Authenticate(MgUserInformation* userInformation)
 MgSite* MgSiteConnection::GetSite()
 {
     // Get user information
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = m_connProp->GetUserInfo();
 
     Ptr<MgSite> site;
 
-    if (NULL != userInfo)
+    if (NULL != userInfo.p)
     {
         site = new MgSite();
         site->Open(userInfo);
@@ -641,4 +639,13 @@ MgSiteConnection* MgSiteConnection::GetCurrentConnection()
     }
 
     return connection;
+}
+
+MgUserInformation* MgSiteConnection::GetUserInfo()
+{
+    if (NULL == m_connProp.p)
+    {
+        throw new MgConnectionNotOpenException(L"MgSiteConnection.GetUserInfo", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    return  m_connProp->GetUserInfo();
 }

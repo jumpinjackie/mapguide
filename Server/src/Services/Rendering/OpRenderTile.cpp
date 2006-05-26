@@ -59,7 +59,7 @@ void MgOpRenderTile::Execute()
         INT32 tileRow = 0;
         m_stream->GetInt32(tileRow);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
@@ -76,8 +76,8 @@ void MgOpRenderTile::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderTile(map, baseMapLayerGroupName, tileCol, tileRow);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

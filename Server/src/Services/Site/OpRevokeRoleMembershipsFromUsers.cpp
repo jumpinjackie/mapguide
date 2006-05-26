@@ -64,7 +64,7 @@ void MgOpRevokeRoleMembershipsFromUsers::Execute()
         Ptr<MgStringCollection> users =
             (MgStringCollection*) m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
@@ -77,8 +77,8 @@ void MgOpRevokeRoleMembershipsFromUsers::Execute()
 
         m_service->RevokeRoleMembershipsFromUsers( roles, users );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

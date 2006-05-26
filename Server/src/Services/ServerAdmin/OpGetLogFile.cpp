@@ -69,7 +69,7 @@ void MgOpGetLogFile::Execute()
         STRING logfile;
         m_stream->GetString(logfile);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(logfile.c_str());
@@ -80,8 +80,8 @@ void MgOpGetLogFile::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLogFile(logfile);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

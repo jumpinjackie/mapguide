@@ -77,7 +77,7 @@ void MgOpSetResourceData::Execute()
         m_stream->GetString(dataType);
         Ptr<MgByteReader> data = (MgByteReader*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -93,8 +93,8 @@ void MgOpSetResourceData::Execute()
 
         m_service->SetResourceData(resource, dataName, dataType, data);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

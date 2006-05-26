@@ -64,7 +64,7 @@ void MgOpMakePackage::Execute()
         m_stream->GetString(packageName);
         m_stream->GetString(packageDescription);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -78,8 +78,8 @@ void MgOpMakePackage::Execute()
 
         m_service->MakePackage(resource, packageName, packageDescription);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

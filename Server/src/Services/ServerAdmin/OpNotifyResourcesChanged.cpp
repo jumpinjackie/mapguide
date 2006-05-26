@@ -63,7 +63,7 @@ void MgOpNotifyResourcesChanged::Execute()
         Ptr<MgSerializableCollection> resources =
             (MgSerializableCollection*)m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSerializableCollection");
@@ -75,8 +75,8 @@ void MgOpNotifyResourcesChanged::Execute()
 
         m_service->NotifyResourcesChanged(resources);
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

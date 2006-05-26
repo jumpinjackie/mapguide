@@ -80,7 +80,7 @@ void MgOpGenerateLegendImage::Execute()
         m_stream->GetInt32(geomType);
         m_stream->GetInt32(themeCategory);
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
@@ -103,8 +103,8 @@ void MgOpGenerateLegendImage::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateLegendImage(resource, scale, width, height, format, geomType, themeCategory);
 
-        m_opCompleted = true;
-        WriteResponseStream(byteReader);
+        
+        EndExecution(byteReader);
     }
     else
     {

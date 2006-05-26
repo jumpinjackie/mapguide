@@ -64,7 +64,7 @@ void MgOpRevokeGroupMembershipsFromUsers::Execute()
         Ptr<MgStringCollection> users =
             (MgStringCollection*) m_stream->GetObject();
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
@@ -77,8 +77,8 @@ void MgOpRevokeGroupMembershipsFromUsers::Execute()
 
         m_service->RevokeGroupMembershipsFromUsers( groups, users );
 
-        m_opCompleted = true;
-        WriteResponseStream();
+        
+        EndExecution();
     }
     else
     {

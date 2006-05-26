@@ -61,7 +61,7 @@ void MgHttpGetDynamicMapOverlayImage::Execute(MgHttpResponse& hResponse)
     ValidateCommonParameters();
 
     // Call the HTML controller to render the map image
-    MgHtmlController controller;
+    MgHtmlController controller(m_siteConn);
     Ptr<MgByteReader> map = controller.GetDynamicMapOverlayImage(m_mapName, m_mapFormat);
 
     // Set the result

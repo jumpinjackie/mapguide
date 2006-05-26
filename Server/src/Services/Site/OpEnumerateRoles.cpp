@@ -75,7 +75,7 @@ void MgOpEnumerateRoles::Execute()
         STRING group;
         m_stream->GetString( group );
 
-        m_argsRead = true;
+        BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(user.c_str());
@@ -88,8 +88,8 @@ void MgOpEnumerateRoles::Execute()
 
         Ptr<MgStringCollection> collection = m_service->EnumerateRoles( user, group );
 
-        m_opCompleted = true;
-        WriteResponseStream(collection);
+        
+        EndExecution(collection);
     }
     else
     {
