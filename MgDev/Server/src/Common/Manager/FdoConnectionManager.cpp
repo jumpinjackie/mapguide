@@ -885,10 +885,10 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
             providerNameNoVersion = providerNameNoVersion.substr(0, index);
         }
     }
-#endif
+#else
 
     #ifdef WIN32
-    // TODO: Remove this code once the bug in FDO has been fixed.
+    // TODO: Remove this code once open source moves to latest version of FDO as the bug is in FDO G001.
     // This code is to prevent the following providers from crashing and taking the server down
     // when the appropriate client is not installed:
     //   1) Oracle
@@ -922,6 +922,8 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
         }
     }
     #endif
+
+#endif
 
     return providerNameNoVersion;
 }
