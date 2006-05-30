@@ -40,7 +40,10 @@ INCLUDES = \
   -I$(map_fdo_include) \
   -I../Include \
   -I../GwsResource \
-  -I./inc
+  -I./inc \
+  -I../../../../Oem/ACE/ACE_wrappers \
+  -I../../../../Common/Service \
+  -I../../../../Common/Service/System
 
 libMgGwsCommon_la_LDFLAGS = -version-info 1:0:0
 

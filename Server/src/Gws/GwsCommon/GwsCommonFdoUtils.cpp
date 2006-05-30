@@ -20,10 +20,10 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
+#include "AceCommon.h"
 #include "stdafx.h"
 
 #include "GwsCommonImp.h"
-
 
 // useful template
 template <typename T> int Compare (T val1, T val2)
@@ -894,8 +894,30 @@ EGwsStatus GwsCommonFdoUtils::DescribeSC (
         while (reader->ReadNext ()) {
             if (wcscmp (reader->GetName (), scname) == 0) {
                 GisString * cswkt = reader->GetCoordinateSystemWkt ();
+                STRING srcwkt = cswkt;
+
+                // If the WKT is not defined, attempt to resolve it from the name.
+                // This is a work around for MG298: WKT not set for WMS and 
+                // WFS spatial contexts.
+                if (srcwkt.empty())
+                {
+                    try
+                    {
+                        Ptr<MgCoordinateSystem> csPtr = new MgCoordinateSystem();
+                        srcwkt = csPtr->ConvertCoordinateSystemCodeToWkt(reader->GetName());
+                    }
+                    catch (MgException* e)
+                    {
+                        SAFE_RELEASE(e);
+                    }
+                    catch(...)
+                    {
+                        // Just use the empty WKT. 
+                    }
+                }
+
                 GisString * desc  = reader->GetDescription ();
-                scdesc.SetCsNameWkt (cswkt);
+                scdesc.SetCsNameWkt (srcwkt.c_str());
                 scdesc.SetSpatialContextDesc (desc);
                 scdesc.SetSpatialContextName (scname);
 

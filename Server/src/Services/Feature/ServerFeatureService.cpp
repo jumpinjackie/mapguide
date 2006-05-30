@@ -1019,7 +1019,29 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
 
     if (mapCs && csrdr->ReadNext())
     {
+        
         STRING srcwkt = csrdr->GetCoordinateSystemWkt();
+
+        // If the WKT is not defined, attempt to resolve it from the name.
+        // This is a work around for MG298: WKT not set for WMS and 
+        // WFS spatial contexts.
+        if (srcwkt.empty())
+        {
+            try
+            {
+                Ptr<MgCoordinateSystem> csPtr = new MgCoordinateSystem();
+                srcwkt = csPtr->ConvertCoordinateSystemCodeToWkt(csrdr->GetName());
+            }
+            catch (MgException* e)
+            {
+                SAFE_RELEASE(e);
+            }
+            catch(...)
+            {
+                // Just use the empty WKT. 
+            }
+        }
+
         layerCs = (srcwkt.empty()) ? NULL : fact.Create(srcwkt);
     }
 
