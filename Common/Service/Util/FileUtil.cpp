@@ -809,10 +809,15 @@ STRING MgFileUtil::GenerateTempFileName(bool useMgTempPath,
     {
         // Note that ::tempnam uses the TMP environment variable as the path
         // to the temporary file. Alternately, ACE_OS::mkstemp() could be used.
+        // Add current thread id to the mix to ensure that the name is unique.
 
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, L""));
-        char* tempFileName = ::tempnam(NULL,
-            MgUtil::WideCharToMultiByte(prefix).c_str());
+        string mbPrefix;
+        ACE_thread_t threadId = ACE_OS::thr_self();
+        MgUtil::Int32ToString(threadId, mbPrefix);
+        mbPrefix.append( MgUtil::WideCharToMultiByte(prefix) );
+
+        char* tempFileName = ::tempnam(NULL, mbPrefix.c_str());
 
         if (0 == tempFileName)
         {
