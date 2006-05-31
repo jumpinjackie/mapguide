@@ -14,7 +14,7 @@ extern "C" {
 
 static string trim(string source)
 {
-    string cs = "\t \n";
+    string cs = "\t \r\n";
     string s = source.erase(0, source.find_first_not_of(cs));
     return s.erase(s.find_last_not_of(cs) + 1) ;
 }
