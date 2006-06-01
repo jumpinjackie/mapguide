@@ -142,9 +142,18 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
                             GisStringP underscore = "_";      // NOXLATE
                             GisStringP bracket = "[";         // NOXLATE
                             GisStringP bracketCaret = "[^";   // NOXLATE
+
+                            // Remove the single quote from the string
+                            GisStringP quote = "'";           // NOXLATE
+                            GisStringP emptyString = "";      // NOXLATE
+                            strPrimVal = strPrimVal.Replace(quote, emptyString);
+
                             if (strPrimVal.IsNumber())
                             {
-                                comparisonOp = FdoComparisonOperations_Like;
+                                GisPtr<FdoDoubleValue> dval = FdoDoubleValue::Create();
+                                dval->SetDouble(strPrimVal.ToDouble());
+                                val = dval;
+                                comparisonOp = FdoComparisonOperations_EqualTo;
                             }
                             else if (!strPrimVal.Contains(percent)
                                      && !strPrimVal.Contains(underscore)
