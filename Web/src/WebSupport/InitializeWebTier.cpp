@@ -88,9 +88,10 @@ void MgInitializeWebTier(CREFSTRING configFile)
 
 void MgUninitializeWebTier()
 {
+    // ACE::fini removes the thread mutex so we cannot use it to protect this call.
     MG_TRY()
 
-    ACE_MT (ACE_GUARD_ACTION(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance(), MgUninitializeWebTierInternal();, ;));
+    MgUninitializeWebTierInternal();
 
     MG_CATCH_AND_THROW(L"MgInitializeWebTier")
 }
