@@ -30,6 +30,19 @@
         font-family: __#@font#__;
         font-size: __#@fontsize#__;
         }
+        .MetricsDiv
+        {
+            position: absolute;
+            visibility: hidden; 
+            top: 0px; 
+            left: 0px;
+        }
+        .Metrics
+        {
+            font-family: __#@font#__;
+            font-size: __#@fontsize#__;
+            font-weight: normal;
+        }
     </style>
     <script language="javascript" src="../viewerfiles/browserdetect.js"></script>
     <script language=javascript>
@@ -48,8 +61,15 @@
             document.getElementById(active).style.border = "solid gray 1px";
         document.onmousedown = OnMouseDown;       
         
+        var taskText = "__#TASKS#__";
+        var taskLen = GetTextLen(taskText);
+        var btnLen = taskLen + 10 + 16 + 13;
+        document.getElementById("btnTask").style.width = btnLen;
+        document.getElementById("btnTask").style.visibility = "visible";
+        document.getElementById("imgOpenClose").style.left = btnLen - 20;
+        
         var width = msie? document.body.clientWidth: window.innerWidth;
-        document.getElementById("taskCell").style.left = (width - 75) + "px";
+        document.getElementById("taskCell").style.left = (width - btnLen - 5) + "px";
         var btn = document.getElementById("imgHome");
         btn.title = parent.taskItemTexts[1];
         btn.src = parent.taskItemTexts[3];
@@ -142,6 +162,12 @@
         document.getElementById("imgOpenClose").src = open? imgCloseArrow.src: imgOpenArrow.src;
     }
     
+    function GetTextLen(text)
+    {
+        var metrics = document.getElementById("Metrics");
+        metrics.innerHTML = text;
+        return metrics.offsetWidth;
+    }
     
     </script>
 
@@ -164,8 +190,8 @@
                  <img class="btnImg" id="imgForward" title="" src="../stdicons/transparentpixel.gif" width=16 height=16>
                </span>
              </td>
-             <td id="taskCell" align=right valign=top width=70 style="position: absolute; left: 225px;">
-               <span class="btn" id="btnTask" style="position: absolute; left: 1px; height: 22; width: 70; cursor: hand;"  onmouseover="HoverButton('btnTask', '')" onmouseout="LeaveButton('btnTask', '')" onclick="OpenTaskMenu()">
+             <td id="taskCell" align=right valign=top style="position: absolute; left: 225px;">
+               <span class="btn" id="btnTask" style="position: absolute; left: 1px; height: 22; width: 70; cursor: hand; visibility: hidden"  onmouseover="HoverButton('btnTask', '')" onmouseout="LeaveButton('btnTask', '')" onclick="OpenTaskMenu()">
                   <img title="" id="imgTask" src="../stdicons/transparentpixel.gif" style="position: absolute; left: 2px;" width=16 height=16 Hspace=2 VSpace=2>
                   <span style="position: absolute; left: 22px; top: 4px;">
                        __#TASKS#__
@@ -175,5 +201,6 @@
              </td>
           </tr>
       </table>
+    <div class="MetricsDiv"><span class="Metrics" id="Metrics"></span></div>
   </body>
 </html>
