@@ -170,6 +170,7 @@ String dataSource = "";
                         //Add the layer to the map, if it's not already in it
                         if (layer == null)
                         {
+                            legendName = MgLocalizer.GetString("MEASURELAYER", locale);
                             layer = new MgLayer(layerDefId, resourceSrvc);
                             layer.SetDisplayInLegend(true);
                             layer.SetLegendLabel(legendName);
