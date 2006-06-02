@@ -129,6 +129,7 @@ MEASUREFEATURECLASS     = Feature class for measure layer
 MEASURESCHEMADESCR      = Temporary measure schema
 MEASUREPARTIAL          = Partial
 MEASURETOTAL            = total
+MEASURELAYER            = Measure
 
 # HtmlViewerAbout
 HTMLABOUTTITLE          = About %s

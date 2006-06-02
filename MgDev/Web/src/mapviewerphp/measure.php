@@ -45,7 +45,7 @@
 
     $dataSource = "Session:" . $sessionId . "//Measure.FeatureSource";
     $layerDef = "Session:" . $sessionId . "//Measure.LayerDefinition";
-
+    
     try
     {
         InitializeWebTier();
@@ -160,6 +160,7 @@
                     //Add the layer to the map, if it's not already in it
                     if($layer == null)
                     {
+                        $legendName = GetLocalizedString("MEASURELAYER", $locale);
                         $layer = new MgLayer($layerDefId, $resourceSrvc);
                         $layer->SetDisplayInLegend(true);
                         $layer->SetLegendLabel($legendName);
