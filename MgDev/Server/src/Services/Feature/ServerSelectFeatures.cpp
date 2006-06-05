@@ -66,8 +66,6 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         // Get the FdoFilter from the options
         // Create Command
         CreateCommand(resource, isSelectAggregate);
-        // Set the FeatureClass Name
-        m_command->SetFeatureClassName((GisString*)className.c_str());
         // Set options (NULL is a valid value)
         m_options = SAFE_ADDREF(options);
         // Apply options to FDO command
@@ -93,9 +91,11 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         // Custom function specified using SelectAggregate,
         // we execute as standard Select command on single property
         // then apply function on top of it.
+        bool useClassName = true;
         if (isSelectAggregate && ContainsCustomFunction(options))
         {
             isSelectAggregate = false;
+            useClassName = false;
         }
 
         Ptr<MgReader> reader;
@@ -104,7 +104,10 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         CreateCommand(resource, isSelectAggregate);
 
         // Set the FeatureClass Name
-        m_command->SetFeatureClassName((GisString*)className.c_str());
+        if (useClassName)
+        {
+            m_command->SetFeatureClassName((GisString*)className.c_str());
+        }
 
         // Set options (NULL is a valid value)
         m_options = SAFE_ADDREF(options);

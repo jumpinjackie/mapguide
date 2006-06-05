@@ -357,19 +357,22 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
 
         EGwsJoinMethod joinmethod = eGwsNestedLoops;
 
-        if (lSupportsOrdering) {
-            if (rSupportsOrdering) {
-                // sort-merge
-                joinmethod = eGwsSortMerge;
+        //
+        // TODO: Enable the commented code when issue with sorted merge is resolved.
+        //
+        //if (lSupportsOrdering) {
+        //    if (rSupportsOrdering) {
+        //        // sort-merge
+        //        joinmethod = eGwsSortMerge;
 
-            } else {
-                // nested loop join and sorted block
-                joinmethod = eGwsNestedLoopSortedBlock;
-            }
-        } else {
-            // nested loop join
-            joinmethod = eGwsNestedLoops;
-        }
+        //    } else {
+        //        // nested loop join and sorted block
+        //        joinmethod = eGwsNestedLoopSortedBlock;
+        //    }
+        //} else {
+        //    // nested loop join
+        //    joinmethod = eGwsNestedLoops;
+        //}
 
         prepQuery = CreatePreparedJoinQuery (pFQuery->Type (),
                                              joinmethod,
