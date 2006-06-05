@@ -190,6 +190,10 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
             // Apply options to FDO command
             ApplyQueryOptions(isSelectAggregate);
         }
+        else
+        {
+            m_command->SetFeatureClassName((GisString*)className.c_str());
+        }
 
         // If custom function is found, then validate that no more than one function/property is specified
         ValidateConstraintsOnCustomFunctions();
