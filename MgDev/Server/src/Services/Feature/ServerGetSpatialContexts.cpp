@@ -90,14 +90,33 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
 
         Ptr<MgSpatialContextData> spatialData = GetSpatialContextData(spatialReader);
         CHECKNULL((MgSpatialContextData*)spatialData, L"MgServerGetSpatialContexts.GetSpatialContexts");
-        // Add spatial data to the spatialcontext reader
-        mgSpatialContextReader->AddSpatialData(spatialData);
 
-        // If only active spatial context is required skip all others
-        if (bActiveOnly)
+        // TODO: Remove this workaround for the SHP FDO provider when the defect 
+        // for the "Default" active spatial contexts being blank is fixed.
+        // START WORKAROUND CODE
+        bool bAddSpatialContext = true;
+
+        STRING name = spatialData->GetName();
+        STRING coordSys = spatialData->GetCoordinateSystem();
+        STRING coordSyswkt = spatialData->GetCoordinateSystemWkt();
+        if((name == L"Default") && (coordSys.empty()) && (coordSyswkt.empty()))
         {
-            if (spatialReader->IsActive())
-                break;
+            // The "Default" coordinate system WKT is empty so we want to skip this one
+            bAddSpatialContext = false;
+        }
+        // END WORKAROUND CODE
+
+        if(bAddSpatialContext)
+        {
+            // Add spatial data to the spatialcontext reader
+            mgSpatialContextReader->AddSpatialData(spatialData);
+
+            // If only active spatial context is required skip all others
+            if (bActiveOnly)
+            {
+                if (spatialReader->IsActive())
+                    break;
+            }
         }
     }
 
