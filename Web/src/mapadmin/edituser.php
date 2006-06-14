@@ -27,7 +27,7 @@ try
     CheckForLogout();
 
     // Are we cancelling?  If so, there is nothing to do.
-    CheckForCancel( 'UserManagement.php' );
+    CheckForCancel( 'usermanagement.php' );
 
     // Local global vals.
     $menuCategory = USER_MANAGEMENT_MENU_ITEM;
@@ -36,7 +36,7 @@ try
     $helpPage = 'HelpDocs/adding_and_deleting_users.htm';
     $pageName = 'EditUserPage';
     $formName = 'EditUserForm';
-    $homePage = 'UserManagement.php';
+    $homePage = 'usermanagement.php';
     $selectedUserID = 'SelectedUser';
     $userID = "";
     $userIDID = 'userID';
@@ -133,7 +133,7 @@ try
         // Everything is OK.
         $confirmationMsg = sprintf( $confSuccessfulUpdate, $userID );
         SaveSessionVars();
-        header( 'Location:  UserManagement.php?'.strip_tags(SID) );
+        header( 'Location:  usermanagement.php?'.strip_tags(SID) );
         exit();
     }
 }
