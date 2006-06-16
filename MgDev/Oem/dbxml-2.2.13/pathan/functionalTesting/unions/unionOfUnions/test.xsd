@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema elementFormDefault='unqualified' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:foo='foofoo'>
+
+  <xs:simpleType name="Number">
+    <xs:restriction base="xs:decimal">
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Date">
+    <xs:restriction base="xs:date">
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String">
+    <xs:restriction base="xs:string">
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="union.numberDate">
+    <xs:union memberTypes="Number Date" />
+  </xs:simpleType>
+
+  <xs:simpleType name="union.allDaGoods">
+    <xs:union memberTypes="union.numberDate String" />
+  </xs:simpleType>
+
+  <xs:element name="container">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="teleTubbyInclusion" type="union.allDaGoods" maxOccurs="unbounded"/>
+        <xs:element name="trueBlue" type="xs:string" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

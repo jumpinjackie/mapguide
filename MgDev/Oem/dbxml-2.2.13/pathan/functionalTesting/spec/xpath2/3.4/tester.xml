@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="spec_examples">
+  <policies>
+    <policy name="arithmetic"/>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>-3 div 2</arg>
+    <output>-1.5
+</output>
+  </base>
+  <base type="pass">
+    <arg>-3 idiv 2</arg>
+    <output>-1
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $unit-price in (12), $unit-discount in (1) return $unit-price - $unit-discount</arg>
+    <output>11
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $bellcost in (3), $whistlecost in (4) return -($bellcost + $whistlecost)</arg>
+    <output>-7
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $bellcost in (3), $whistlecost in (4) return -$bellcost + $whistlecost</arg>
+    <output>1
+</output>
+  </base>
+</test>

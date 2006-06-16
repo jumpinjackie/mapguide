@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Parameters>
+<!--
+   Module section.
+-->
+<Module name="MapGuideApi"/>
+
+<!--
+   Target section.
+-->
+<Target path="./MapGuideApi.i"/>
+
+<!--
+   C++ inline section.
+ -->
+<CppInline>
+#ifdef WIN32
+#pragma warning(disable: 4251)
+#endif
+
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include "AceCommon.h"
+#include "WebApp.h"
+
+#ifdef _WIN32
+#include "WebSupport.h"
+#else
+#include "InitializeWebTier.cpp"
+#include "UnicodeString.h"
+#endif
+#include "HttpHandlerApiDllExport.h"
+#include "HttpHandler.h"
+
+#if defined(PHP) || defined(JAVA)
+typedef std::wstring STRINGPARAM;
+#else
+typedef wchar_t* STRINGPARAM;
+#endif
+ </CppInline>
+
+<!--
+   Type replacements.
+-->
+<TypeReplacements>
+    <TypeReplacement oldtype="CREFSTRING" newtype="STRINGPARAM"/>
+    <TypeReplacement oldtype="INT64" newtype="long long"/>
+</TypeReplacements>
+
+<!--
+   Swig inline section.
+-->
+<SwigInline>
+%include "language.i"   //typemaps specific for each language
+%include "../../../Common/Service/System/ClassId.h"
+
+#if defined(PHPSWIG)
+// We force UTF-8 encoding for PHP
+typedef char*   STRINGPARAM;
+typedef char*   STRING;
+typedef char*   BYTE_ARRAY_IN;
+typedef char*   BYTE_ARRAY_OUT;
+typedef unsigned char BYTE;
+#elseif defined(JAVA)
+typedef std::wstring STRINGPARAM;
+typedef signed char  BYTE;  //mapped to byte in Java
+#else // .Net
+typedef char*   BYTE_ARRAY_IN;
+typedef char*   BYTE_ARRAY_OUT;
+typedef unsigned char  BYTE;    //mapped to byte in C#
+#endif
+
+typedef int          STATUS;
+typedef short        INT8;
+typedef short        INT16;
+typedef int          INT32;
+typedef int          UINT32;
+
+</SwigInline>
+
+<!--
+   C++ Headers section.  If you add headers to this section then you
+   must also add them to Makefile.am in the JavaApi and PhpApi folders.
+-->
+<Headers>
+
+    <!-- API -->
+
+    <Header path="../../../Common/Service/System/Object.h"/>
+    <Header path="../../../Common/Service/System/Disposable.h"/>
+    <Header path="../../../Common/Service/System/GuardDisposable.h"/>
+    <Header path="../../../Common/Service/System/Serializable.h"/>
+    <Header path="../../../Common/Service/System/NamedSerializable.h"/>
+    <Header path="../../../Common/Service/System/UserInformation.h"/>
+    <Header path="../../../Common/Service/System/Warnings.h"/>
+
+    <Header path="../../../Common/Service/Data/ByteReader.h"/>
+    <Header path="../../../Common/Service/Data/ByteSource.h"/>
+    <Header path="../../../Common/Service/Data/ByteSink.h"/>
+    <Header path="../../../Common/Service/Data/DateTime.h"/>
+    <Header path="../../../Common/Service/Data/Color.h"/>
+
+    <Header path="../../../Common/Service/Data/Collection.h"/>
+    <Header path="../../../Common/Service/Data/IntCollection.h"/>
+    <Header path="../../../Common/Service/Data/PropertyCollection.h"/>
+    <Header path="../../../Common/Service/Data/StringCollection.h"/>
+    <Header path="../../../Common/Service/Data/StringPropertyCollection.h"/>
+    <Header path="../../../Common/Service/Data/PropertyDefinitionCollection.h"/>
+    <Header path="../../../Common/Service/Data/BatchPropertyCollection.h"/>
+
+    <Header path="../../../Common/Service/Data/Property.h"/>
+    <Header path="../../../Common/Service/Data/NullableProperty.h"/>
+    <Header path="../../../Common/Service/Data/PropertyDefinition.h"/>
+    <Header path="../../../Common/Service/Data/BlobProperty.h"/>
+    <Header path="../../../Common/Service/Data/BooleanProperty.h"/>
+    <Header path="../../../Common/Service/Data/ByteProperty.h"/>
+    <Header path="../../../Common/Service/Data/ClobProperty.h"/>
+    <Header path="../../../Common/Service/Data/DateTimeProperty.h"/>
+    <Header path="../../../Common/Service/Data/DoubleProperty.h"/>
+    <Header path="../../../Common/Service/Data/Int16Property.h"/>
+    <Header path="../../../Common/Service/Data/Int32Property.h"/>
+    <Header path="../../../Common/Service/Data/Int64Property.h"/>
+    <Header path="../../../Common/Service/Data/SingleProperty.h"/>
+    <Header path="../../../Common/Service/Data/StringProperty.h"/>
+
+    <Header path="../../../Common/Service/Exception/Exception.h" />
+    <Header path="../../../Common/Service/Exception/ApplicationException.h" />
+    <Header path="../../../Common/Service/Exception/SystemException.h" />
+    <Header path="../../../Common/Service/Exception/ThirdPartyException.h" />
+    <Header path="../../../Common/Service/Exception/IoException.h" />
+    <Header path="../../../Common/Service/Exception/FileIoException.h" />
+    <Header path="../../../Common/Service/Exception/StreamIoException.h" />
+    <Header path="../../../Common/Service/Exception/OutOfRangeException.h" />
+    <Header path="../../../Common/Service/Exception/ArgumentOutOfRangeException.h" />
+    <Header path="../../../Common/Service/Exception/ArrayTypeMismatchException.h" />
+    <Header path="../../../Common/Service/Exception/AuthenticationFailedException.h" />
+    <Header path="../../../Common/Service/Exception/ClassNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/ConfigurationException.h" />
+    <Header path="../../../Common/Service/Exception/ConfigurationLoadFailedException.h" />
+    <Header path="../../../Common/Service/Exception/ConfigurationSaveFailedException.h" />
+    <Header path="../../../Common/Service/Exception/ConnectionFailedException.h" />
+    <Header path="../../../Common/Service/Exception/ConnectionNotOpenException.h" />
+    <Header path="../../../Common/Service/Exception/CoordinateSystemComputationFailedException.h" />
+    <Header path="../../../Common/Service/Exception/CoordinateSystemConversionFailedException.h" />
+    <Header path="../../../Common/Service/Exception/CoordinateSystemMeasureFailedException.h" />
+    <Header path="../../../Common/Service/Exception/CoordinateSystemTransformFailedException.h" />
+    <Header path="../../../Common/Service/Exception/DateTimeException.h" />
+    <Header path="../../../Common/Service/Exception/DbException.h" />
+    <Header path="../../../Common/Service/Exception/DbXmlException.h" />
+    <Header path="../../../Common/Service/Exception/DecryptionException.h" />
+    <Header path="../../../Common/Service/Exception/DirectoryNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/DivideByZeroException.h" />
+    <Header path="../../../Common/Service/Exception/DomainException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateDirectoryException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateFileException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateGroupException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateNameException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateObjectException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateParameterException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateRepositoryException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateResourceDataException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateResourceException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateRoleException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateServerException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateSessionException.h" />
+    <Header path="../../../Common/Service/Exception/DuplicateUserException.h" />
+    <Header path="../../../Common/Service/Exception/DwfException.h" />
+    <Header path="../../../Common/Service/Exception/DwfSectionNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/DwfSectionResourceNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/EmptyFeatureSetException.h" />
+    <Header path="../../../Common/Service/Exception/EncryptionException.h" />
+    <Header path="../../../Common/Service/Exception/EndOfStreamException.h" />
+    <Header path="../../../Common/Service/Exception/FdoException.h" />
+    <Header path="../../../Common/Service/Exception/FeatureServiceException.h" />
+    <Header path="../../../Common/Service/Exception/FileNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/GeometryException.h" />
+    <Header path="../../../Common/Service/Exception/GroupNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/IndexOutOfRangeException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidArgumentException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidCastException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidCoordinateSystemException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidCoordinateSystemTypeException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidCoordinateSystemUnitsException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidDwfPackageException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidDwfSectionException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidFeatureSourceException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidIpAddressException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidLicenseException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidLogEntryException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidMapDefinitionException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidOperationException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidPasswordException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidPrintLayoutFontSizeUnitsException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidPrintLayoutPositionUnitsException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidPrintLayoutSizeUnitsException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidPropertyTypeException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidRepositoryNameException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidRepositoryTypeException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidResourceDataNameException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidResourceDataTypeException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidResourceNameException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidResourcePathException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidResourcePreProcessingTypeException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidResourceTypeException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidServerNameException.h" />
+    <Header path="../../../Common/Service/Exception/InvalidStreamHeaderException.h" />
+    <Header path="../../../Common/Service/Exception/LayerNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/LengthException.h" />
+    <Header path="../../../Common/Service/Exception/LicenseException.h" />
+    <Header path="../../../Common/Service/Exception/LicenseExpiredException.h" />
+    <Header path="../../../Common/Service/Exception/LogicException.h" />
+    <Header path="../../../Common/Service/Exception/NotFiniteNumberException.h" />
+    <Header path="../../../Common/Service/Exception/NotImplementedException.h" />
+    <Header path="../../../Common/Service/Exception/NullArgumentException.h" />
+    <Header path="../../../Common/Service/Exception/NullPropertyValueException.h" />
+    <Header path="../../../Common/Service/Exception/NullReferenceException.h" />
+    <Header path="../../../Common/Service/Exception/ObjectNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/OperationProcessingException.h" />
+    <Header path="../../../Common/Service/Exception/OutOfMemoryException.h" />
+    <Header path="../../../Common/Service/Exception/OverflowException.h" />
+    <Header path="../../../Common/Service/Exception/ParameterNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/PathTooLongException.h" />
+    <Header path="../../../Common/Service/Exception/PlatformNotSupportedException.h" />
+    <Header path="../../../Common/Service/Exception/PortNotAvailableException.h" />
+    <Header path="../../../Common/Service/Exception/PrintToScaleModeNotSelectedException.h" />
+    <Header path="../../../Common/Service/Exception/RepositoryCreationFailedException.h" />
+    <Header path="../../../Common/Service/Exception/RepositoryNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/RepositoryNotOpenException.h" />
+    <Header path="../../../Common/Service/Exception/RepositoryOpenFailedException.h" />
+    <Header path="../../../Common/Service/Exception/ResourceDataNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/ResourceNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/ResourcesException.h" />
+    <Header path="../../../Common/Service/Exception/ResourcesLoadFailedException.h" />
+    <Header path="../../../Common/Service/Exception/RoleNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/RuntimeException.h" />
+    <Header path="../../../Common/Service/Exception/ServerNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/ServerNotOnlineException.h" />
+    <Header path="../../../Common/Service/Exception/ServiceNotAvailableException.h" />
+    <Header path="../../../Common/Service/Exception/ServiceNotSupportedException.h" />
+    <Header path="../../../Common/Service/Exception/SessionExpiredException.h" />
+    <Header path="../../../Common/Service/Exception/TemporaryFileNotAvailableException.h" />
+    <Header path="../../../Common/Service/Exception/UnauthorizedAccessException.h" />
+    <Header path="../../../Common/Service/Exception/UnclassifiedException.h" />
+    <Header path="../../../Common/Service/Exception/UnderflowException.h" />
+    <Header path="../../../Common/Service/Exception/UriFormatException.h" />
+    <Header path="../../../Common/Service/Exception/UserNotFoundException.h" />
+    <Header path="../../../Common/Service/Exception/XmlException.h" />
+    <Header path="../../../Common/Service/Exception/XmlParserException.h" />
+
+    <Header path="../../../Common/Service/Services/BaseService.h"/>
+    <Header path="../../../Common/Service/Services/Service.h"/>
+    <Header path="../../../Common/Service/Services/Site.h"/>
+    <Header path="../../../Common/Service/Services/SiteConnection.h"/>
+    <Header path="../../../Common/Service/Services/ResourceIdentifier.h"/>
+    <Header path="../../../Common/Service/Services/ResourceService.h"/>
+    <Header path="../../../Common/Service/Services/Resource.h"/>
+
+    <Header path="../../../Common/Service/Geometry/Coordinate.h"/>
+    <Header path="../../../Common/Service/Geometry/CoordinateXY.h"/>
+    <Header path="../../../Common/Service/Geometry/CoordinateXYM.h"/>
+    <Header path="../../../Common/Service/Geometry/CoordinateXYZ.h"/>
+    <Header path="../../../Common/Service/Geometry/CoordinateXYZM.h"/>
+    <Header path="../../../Common/Service/Geometry/Envelope.h"/>
+    <Header path="../../../Common/Service/Geometry/CoordinateCollection.h"/>
+    <Header path="../../../Common/Service/Geometry/CoordinateIterator.h"/>
+    <Header path="../../../Common/Service/Geometry/Measure.h"/>
+    <Header path="../../../Common/Service/Geometry/Transform.h"/>
+    <Header path="../../../Common/Service/Geometry/GeometricEntity.h"/>/>
+    <Header path="../../../Common/Service/Geometry/Geometry.h"/>
+    <Header path="../../../Common/Service/Geometry/GeometryComponent.h"/>
+    <Header path="../../../Common/Service/Geometry/GeometryCollection.h"/>
+    <Header path="../../../Common/Service/Geometry/Point.h"/>
+    <Header path="../../../Common/Service/Geometry/Curve.h"/>
+    <Header path="../../../Common/Service/Geometry/Region.h"/>
+    <Header path="../../../Common/Service/Geometry/CurveSegment.h"/>
+    <Header path="../../../Common/Service/Geometry/CurveSegmentCollection.h"/>
+    <Header path="../../../Common/Service/Geometry/Ring.h"/>
+    <Header path="../../../Common/Service/Geometry/ArcSegment.h"/>
+    <Header path="../../../Common/Service/Geometry/LinearSegment.h"/>
+    <Header path="../../../Common/Service/Geometry/CurveRing.h"/>
+    <Header path="../../../Common/Service/Geometry/CurveRingCollection.h"/>
+    <Header path="../../../Common/Service/Geometry/LinearRing.h"/>
+    <Header path="../../../Common/Service/Geometry/LinearRingCollection.h"/>
+    <Header path="../../../Common/Service/Geometry/CurveString.h"/>
+    <Header path="../../../Common/Service/Geometry/LineString.h"/>
+    <Header path="../../../Common/Service/Geometry/Polygon.h"/>
+    <Header path="../../../Common/Service/Geometry/CurvePolygon.h"/>
+    <Header path="../../../Common/Service/Geometry/CurveStringCollection.h"/>
+    <Header path="../../../Common/Service/Geometry/LineStringCollection.h"/>
+    <Header path="../../../Common/Service/Geometry/PolygonCollection.h"/>
+    <Header path="../../../Common/Service/Geometry/CurvePolygonCollection.h"/>
+    <Header path="../../../Common/Service/Geometry/PointCollection.h"/>
+    <Header path="../../../Common/Service/Geometry/AggregateGeometry.h"/>
+    <Header path="../../../Common/Service/Geometry/MultiCurvePolygon.h"/>
+    <Header path="../../../Common/Service/Geometry/MultiCurveString.h"/>
+    <Header path="../../../Common/Service/Geometry/MultiGeometry.h"/>
+    <Header path="../../../Common/Service/Geometry/MultiLineString.h"/>
+    <Header path="../../../Common/Service/Geometry/MultiPoint.h"/>
+    <Header path="../../../Common/Service/Geometry/MultiPolygon.h"/>
+    <Header path="../../../Common/Service/Geometry/AgfReaderWriter.h"/>
+    <Header path="../../../Common/Service/Geometry/GeometryFactory.h"/>
+    <Header path="../../../Common/Service/Geometry/WktReaderWriter.h"/>
+
+    <Header path="../../../Common/Service/MapLayer/Layer.h"/>
+    <Header path="../../../Common/Service/MapLayer/LayerGroup.h"/>
+    <Header path="../../../Common/Service/MapLayer/LayerCollection.h"/>
+    <Header path="../../../Common/Service/MapLayer/LayerGroupCollection.h"/>
+    <Header path="../../../Common/Service/MapLayer/Map.h"/>
+    <Header path="../../../Common/Service/MapLayer/MapCollection.h"/>
+    <Header path="../../../Common/Service/MapLayer/ReadOnlyLayerCollection.h"/>
+    <Header path="../../../Common/Service/MapLayer/Selection.h"/>
+
+    <Header path="../../../Common/Service/Services/FeatureCommand.h"/>
+    <Header path="../../../Common/Service/Services/Reader.h"/>
+    <Header path="../../../Common/Service/Services/FeatureReader.h"/>
+    <Header path="../../../Common/Service/Services/FeatureService.h"/>
+    <Header path="../../../Common/Service/Services/SpatialContextReader.h"/>
+    <Header path="../../../Common/Service/Services/FeatureSchema.h"/>
+    <Header path="../../../Common/Service/Services/FeatureSchemaCollection.h"/>
+    <Header path="../../../Common/Service/Services/ClassDefinitionCollection.h"/>
+    <Header path="../../../Common/Service/Services/LongTransactionReader.h"/>
+    <Header path="../../../Common/Service/Services/DataPropertyDefinition.h"/>
+    <Header path="../../../Common/Service/Services/GeometricPropertyDefinition.h"/>
+    <Header path="../../../Common/Service/Services/RasterPropertyDefinition.h"/>
+    <Header path="../../../Common/Service/Services/ClassDefinition.h"/>
+    <Header path="../../../Common/Service/Services/RasterProperty.h"/>
+    <Header path="../../../Common/Service/Services/GeometryProperty.h"/>
+    <Header path="../../../Common/Service/Services/FeatureProperty.h"/>
+    <Header path="../../../Common/Service/Services/ObjectPropertyDefinition.h"/>
+    <Header path="../../../Common/Service/Services/PackageStatusInformation.h"/>
+    <Header path="../../../Common/Service/Services/Raster.h"/>
+    <Header path="../../../Common/Service/Services/SqlDataReader.h"/>
+    <Header path="../../../Common/Service/Services/DataReader.h"/>
+    <Header path="../../../Common/Service/Services/FeatureQueryOptions.h"/>
+    <Header path="../../../Common/Service/Services/FeatureAggregateOptions.h"/>
+    <Header path="../../../Common/Service/Services/FeatureCommandCollection.h"/>
+    <Header path="../../../Common/Service/Services/InsertFeatures.h"/>
+    <Header path="../../../Common/Service/Services/UpdateFeatures.h"/>
+    <Header path="../../../Common/Service/Services/DeleteFeatures.h"/>
+    <Header path="../../../Common/Service/Services/FeatureSourceParams.h"/>
+    <Header path="../../../Common/Service/Services/CreateSdfParams.h"/>
+    <Header path="../../../Common/Service/Services/GwsFeatureReader.h"/>
+
+    <Header path="../../../Common/Service/Services/DrawingService.h"/>
+
+    <Header path="../../../Common/Service/Services/DwfVersion.h"/>
+    <Header path="../../../Common/Service/Services/PlotSpecification.h"/>
+    <Header path="../../../Common/Service/Services/MappingService.h"/>
+    <Header path="../../../Common/Service/Services/Layout.h"/>
+    <Header path="../../../Common/Service/Services/MapPlot.h"/>
+    <Header path="../../../Common/Service/Services/MapPlotCollection.h"/>
+    <Header path="../../../Common/Service/Services/RenderingService.h"/>
+    <Header path="../../../Common/Service/Services/FeatureInformation.h"/>
+    <Header path="../../../Common/Service/Services/TileService.h"/>
+
+    <Header path="../../../Common/Service/Services/ServerAdmin.h"/>
+
+    <Header path="../../../Common/Service/CoordinateSystem/CoordinateSystem.h"/>
+    <Header path="../../../Common/Service/CoordinateSystem/CoordinateSystemFactory.h"/>
+    <Header path="../../../Common/Service/CoordinateSystem/CoordinateSystemMeasure.h"/>
+    <Header path="../../../Common/Service/CoordinateSystem/CoordinateSystemTransform.h"/>
+
+    <Header path="../WebApp/WebCommand.h"/>
+    <Header path="../WebApp/WebUiTargetCommand.h"/>
+    <Header path="../WebApp/WebSearchCommand.h"/>
+    <Header path="../WebApp/WebInvokeUrlCommand.h"/>
+    <Header path="../WebApp/WebInvokeScriptCommand.h"/>
+    <Header path="../WebApp/WebBufferCommand.h"/>
+    <Header path="../WebApp/WebSelectWithinCommand.h"/>
+    <Header path="../WebApp/WebPrintCommand.h"/>
+    <Header path="../WebApp/WebMeasureCommand.h"/>
+    <Header path="../WebApp/WebGetPrintablePageCommand.h"/>
+    <Header path="../WebApp/WebViewOptionsCommand.h"/>
+    <Header path="../WebApp/WebHelpCommand.h"/>
+    <Header path="../WebApp/WebCommandCollection.h"/>
+    <Header path="../WebApp/WebWidget.h"/>
+    <Header path="../WebApp/WebSeparatorWidget.h"/>
+    <Header path="../WebApp/WebCommandWidget.h"/>
+    <Header path="../WebApp/WebFlyoutWidget.h"/>
+    <Header path="../WebApp/WebTaskBarWidget.h"/>
+    <Header path="../WebApp/WebWidgetCollection.h"/>
+    <Header path="../WebApp/WebUiPane.h"/>
+    <Header path="../WebApp/WebUiSizablePane.h"/>
+    <Header path="../WebApp/WebToolbar.h"/>
+    <Header path="../WebApp/WebTaskBar.h"/>
+    <Header path="../WebApp/WebTaskPane.h"/>
+    <Header path="../WebApp/WebInformationPane.h"/>
+    <Header path="../WebApp/WebContextMenu.h"/>
+    <Header path="../WebApp/WebLayout.h"/>
+
+    <!-- Agent -->
+
+    <Header path="../HttpHandler/HttpRequest.h"/>
+    <Header path="../HttpHandler/HttpHeader.h"/>
+    <Header path="../HttpHandler/HttpRequestParam.h"/>
+    <Header path="../HttpHandler/HttpRequestMetadata.h"/>
+    <Header path="../HttpHandler/HttpResponse.h"/>
+    <Header path="../HttpHandler/HttpResult.h"/>
+    <Header path="../HttpHandler/HttpPrimitiveValue.h"/>
+
+</Headers>
+
+</Parameters>

@@ -1,0 +1,5 @@
+child::para[attribute::type=warning] selects all para children of the context node that have a type attribute with value warning
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="para2" type="warning"/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="lastPara" type="warning"/>

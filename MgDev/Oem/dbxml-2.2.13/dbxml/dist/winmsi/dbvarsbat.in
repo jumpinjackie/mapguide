@@ -1,0 +1,12 @@
+@echo off
+
+:: $Id: dbvarsbat.in,v 1.1 2005/03/14 05:08:42 dda Exp $
+:: This file sets the environment variables needed to run Berkeley DB XML.
+
+set DBROOTDIR=
+for /F "tokens=3 delims=	" %%A in ('REG QUERY "HKLM\SOFTWARE\Sleepycat Software\Berkeley DB XML\WIX_DB_VERSION" /v RootDirectory') do set DBROOTDIR=%%A
+
+echo Setting environment variables for Berkeley DB XML, installed in %DBROOTDIR%
+
+set PATH=%DBROOTDIR%\bin;%PATH%
+set CLASSPATH=%CLASSPATH%;%DBROOTDIR%\jar\dbxml.jar;%DBROOTDIR%\jar\db.jar;%DBROOTDIR%\jar\dbxmlexamples.jar;%DBROOTDIR%\jar\dbexamples.jar

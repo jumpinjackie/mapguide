@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="set-theoretic operators"><policies><policy name="set"><addArg>test.xml</addArg></policy><default><program>../../../samples/evaluator/eval</program></default></policies><base type="pass"><arg>(//sophie union //kasia)</arg><output>&lt;sophie&gt;Here is some text&lt;/sophie&gt;
+&lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+&lt;kasia/&gt;
+</output></base><base type="pass"><arg>(//zvonimir union //tenio/descendant::*)</arg><output>&lt;zvonimir/&gt;
+&lt;zvonimir&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+&lt;kasia/&gt;
+</output></base><base type="pass"><arg>(//bluefire union //zvonimir)</arg><output>&lt;zvonimir/&gt;
+&lt;zvonimir&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+</output></base><base type="pass"><arg>(//bluefire union //urbancyclist)</arg><output/></base><base type="pass"><arg>(//sophie | //hermione)</arg><output>&lt;sophie&gt;Here is some text&lt;/sophie&gt;
+&lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+</output></base><base type="pass"><arg>(//zvonimir | //tenio/descendant::*)</arg><output>&lt;zvonimir/&gt;
+&lt;zvonimir&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+&lt;kasia/&gt;
+</output></base><base type="pass"><arg>(//bluefire | //zvonimir)</arg><output>&lt;zvonimir/&gt;
+&lt;zvonimir&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+</output></base><base type="pass"><arg>(//bluefire | //urbancyclist)</arg><output/></base><base type="pass"><arg>/esben/(fred | george)/fred</arg><output>&lt;fred house=&quot;griffyndor&quot;/&gt;
+&lt;fred ambition=&quot;jokeshop&quot;/&gt;
+</output></base><base type="pass"><arg>/*/*/*[@*] intersect //sophie</arg><output>&lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+</output></base><base type="pass"><arg>/*/*/*[@*] intersect //urbancyclist</arg><output/></base><base type="pass"><arg>//urbancyclist intersect /*/*/*[@*]</arg><output/></base><base type="pass"><arg>/fred intersect //fred[@*]</arg><output/></base><base type="pass"><arg>//fred except //fred[@*]</arg><output>&lt;fred&gt;
+    &lt;fred house=&quot;griffyndor&quot;/&gt;
+  &lt;/fred&gt;
+</output></base><base type="pass"><arg>//fred except //zvonimir</arg><output>&lt;fred&gt;
+    &lt;fred house=&quot;griffyndor&quot;/&gt;
+  &lt;/fred&gt;
+&lt;fred house=&quot;griffyndor&quot;/&gt;
+&lt;fred ambition=&quot;jokeshop&quot;/&gt;
+&lt;fred hair=&quot;ginger&quot;/&gt;
+</output></base><base type="pass"><arg>/esben/irena/zvonimir except //zvonimir[2]</arg><output>&lt;zvonimir/&gt;
+</output></base><base type="pass"><arg>//fred[@house] = /esben/fred/fred</arg><output>true
+</output></base><base type="pass"><arg>/esben/tenio = /esben/ron</arg><output>false
+</output></base><base type="pass"><arg>/esben/fred = /esben/fred/fred</arg><output>false
+</output></base><base type="pass"><arg>/esben/irena &lt;&lt; /esben/tenio</arg><output>true
+</output></base><base type="pass"><arg>/esben/irena &gt;&gt; /esben/tenio</arg><output>false
+</output></base><base type="pass"><arg>/esben/irena &lt;&lt; //irena</arg><output>false
+</output></base><base type="pass"><arg>/esben/ron &lt;&lt; /esben/ron/fred</arg><output>true
+</output></base></test>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="xquery_use_cases">
+  <policies>
+    <policy name="seq"/>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>(for $s in doc(&quot;report.xml&quot;)//section[section.title = &quot;Procedure&quot;] return ($s//incision)[2]/instrument)</arg>
+    <output>&lt;instrument&gt;electrocautery&lt;/instrument&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>(for $s in doc(&quot;report.xml&quot;)//section[section.title = &quot;Procedure&quot;] return ($s//instrument)[position()&lt;=2])</arg>
+    <output>&lt;instrument&gt;using electrocautery.&lt;/instrument&gt;
+&lt;instrument&gt;electrocautery&lt;/instrument&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>(for $a in (doc(&quot;report.xml&quot;)//action)[. &gt;&gt; (doc(&quot;report.xml&quot;)//incision)[2]][position()&lt;=2] return $a//instrument )</arg>
+    <output>&lt;instrument&gt;Hasson trocar&lt;/instrument&gt;
+&lt;instrument&gt;trocar&lt;/instrument&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>(for $p in doc(&quot;report.xml&quot;)//section[section.title = &quot;Procedure&quot;] return if (not(some $a in $p//anesthesia satisfies $a &lt;&lt; ($p//incision)[1])) then $p else ())</arg>
+    <output/>
+  </base>
+  <base type="pass"> 
+    <arg>(&quot;&lt;critical_sequence&gt;&quot;, (for $proc in doc(&quot;report.xml&quot;)//section[section.title=&quot;Procedure&quot;][1], $n in $proc//node() return if ((($n &gt;&gt; ($proc//incision)[1]) and empty($n intersect ($proc//incision)[1]//node())) and ($n &lt;&lt; ($proc//incision)[2] and empty($n intersect ($proc//incision)[2]//node()))) then $n else ()), &quot;&lt;/critical_sequence&gt;&quot; )	</arg>
+    <output>&lt;critical_sequence&gt;
+
+      The fascia was identified and
+      
+&lt;action&gt;#2 0 Maxon stay sutures were placed on each side of the midline.
+      &lt;/action&gt;
+#2 0 Maxon stay sutures were placed on each side of the midline.
+      
+
+      
+&lt;/critical_sequence&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>(&quot;&lt;critical_sequence&gt;&quot;, (for $proc in doc(&quot;report.xml&quot;)//section[section.title=&quot;Procedure&quot;][1], $n in ($proc//node() except ($proc//incision)[1]//node()) return if ($n &gt;&gt; ($proc//incision)[1] and $n &lt;&lt; ($proc//incision)[2]) then $n else ()), &quot;&lt;/critical_sequence&gt;&quot; )</arg>
+    <output>&lt;critical_sequence&gt;
+
+      The fascia was identified and
+      
+&lt;action&gt;#2 0 Maxon stay sutures were placed on each side of the midline.
+      &lt;/action&gt;
+#2 0 Maxon stay sutures were placed on each side of the midline.
+      
+
+      
+&lt;/critical_sequence&gt;
+</output>
+  </base>
+</test>

@@ -1,0 +1,44 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+          <OQPlan>U</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="dictionary" nodeType="element"/>
+        <Step axis="child" name="e" nodeType="element"/>
+      </Navigation>
+      <Where>
+        <Operator name="and">
+          <Function name="{http://www.w3.org/2005/04/xpath-functions}:empty">
+            <Navigation>
+              <Variable name="a"/>
+              <Step axis="child" name="vfl" nodeType="element"/>
+            </Navigation>
+          </Function>
+          <Function name="{http://www.w3.org/2005/04/xpath-functions}:empty">
+            <Navigation>
+              <Variable name="a"/>
+              <Step axis="child" name="et" nodeType="element"/>
+            </Navigation>
+          </Function>
+        </Operator>
+      </Where>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="NoVFLnET" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Navigation>
+          <Variable name="a"/>
+          <Step axis="attribute" name="id" nodeType="attribute">
+            <OQPlan>P(node-attribute-equality-string,prefix,@id)</OQPlan>
+          </Step>
+        </Navigation>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

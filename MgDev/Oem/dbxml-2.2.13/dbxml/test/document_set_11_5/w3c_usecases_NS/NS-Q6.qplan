@@ -1,0 +1,39 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q6" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Attributes>
+      <DOMConstructor type="attribute">
+        <Name>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="xmlns:ma" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Name>
+        <Children>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="http://www.example.com/AuctionWatch" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Children>
+      </DOMConstructor>
+    </Attributes>
+    <Children>
+      <Navigation>
+        <QueryPlanFunction result="document" container="11.5.1.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'auction.xml',P(edge-element-equality-string,prefix,Schedule:http://www.example.com/AuctionWatch.Close:http://www.example.com/AuctionWatch))</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="descendant" uri="http://www.example.com/AuctionWatch" name="Auction" nodeType="element">
+          <Predicates>
+            <Step axis="attribute" uri="http://www.example.com/auctioneers#anyzone" name="ID" nodeType="attribute"/>
+          </Predicates>
+        </Step>
+        <Step axis="child" uri="http://www.example.com/AuctionWatch" name="Schedule" nodeType="element"/>
+        <Step axis="child" uri="http://www.example.com/AuctionWatch" name="Close" nodeType="element">
+          <OQPlan>P(edge-element-equality-string,prefix,Schedule:http://www.example.com/AuctionWatch.Close:http://www.example.com/AuctionWatch)</OQPlan>
+        </Step>
+      </Navigation>
+    </Children>
+  </DOMConstructor>
+</XQuery>

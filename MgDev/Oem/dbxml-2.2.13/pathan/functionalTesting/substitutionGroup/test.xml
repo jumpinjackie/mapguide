@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContactsList xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:foo='foofoo' xsi:noNamespaceSchemaLocation='test.xsd'>
+
+  <Contact>
+    <Employee>
+      <Name>
+        <FirstName>Amanda</FirstName>
+        <LastName>Huginkiss</LastName>
+      </Name>
+      <Address>
+        <Street>40 Leighton Road</Street>
+        <Town>Paddington</Town>
+        <City>Paddington</City>
+        <StateRegionCounty>Paddington</StateRegionCounty>
+        <ZipPostalCode>Paddington</ZipPostalCode>
+        <Country>Paddington</Country>
+      </Address>
+    </Employee>
+  </Contact>
+
+  <Contact>
+    <Customer>
+      <Name>
+        <FirstName>Amanda</FirstName>
+        <LastName>Huginkiss</LastName>
+      </Name>
+      <Address>
+        <Street>40 Leighton Road</Street>
+        <Town>Paddington</Town>
+        <City>Paddington</City>
+        <StateRegionCounty>Paddington</StateRegionCounty>
+        <ZipPostalCode>Paddington</ZipPostalCode>
+        <Country>Paddington</Country>
+      </Address>
+    </Customer>
+  </Contact>
+
+</ContactsList>

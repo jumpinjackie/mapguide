@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema elementFormDefault='unqualified' 
+xmlns:xs='http://www.w3.org/2001/XMLSchema' 
+xmlns:xdt='http://www.w3.org/2005/04/xpath-datatypes'
+targetNamespace='http://foo' xmlns:foo='http://foo'>
+
+  <xs:simpleType name="myAtomicType">
+    <xs:restriction base="xdt:anyAtomicType">
+      <xs:whiteSpace value="preserve"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="purchaseOrder" />
+
+</xs:schema>

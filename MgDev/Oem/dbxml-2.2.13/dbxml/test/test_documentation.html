@@ -1,0 +1,229 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+  <head>
+    <title>Test Documentation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="Author" content="Andy Wood">
+  </head>
+  <body>
+    <h1>Test Documentation</h1>
+    <p>
+      <i>$Id: test_documentation.html,v 1.4 2005/04/20 18:31:40 bostic Exp $</i>
+    </p>
+    <hr/>
+
+    <h3>Table of Contents</h3>
+      <ol>
+        <li><b><a href ='#overview'>Overview</a></b></li>
+        <li><b><a href ='#xquery_tests'>XQuery Tests</a></b></li>
+        <li><b><a href ='#dbxml_tests'>DB XML Tests</a></b>
+        <ul>
+          <li><b><a href ='#dbxml_tests_tcl'>Tcl Code</a></b>
+          <li><b><a href ='#dbxml_tests_cxx'>C++ Code</a></b>
+        </ul>
+        </li>
+        <li><b><a href ='#benchmark'>Benchmark</a></b></li>
+        <ul>
+          <li><b><a href ='#benchmark_data'>XBench Data</a></b>
+          <li><b><a href ='#benchmark_code'>Source Code</a></b>
+          <li><b><a href ='#benchmark_load'>Loading Containers</a></b>
+          <li><b><a href ='#benchmark_query'>Querying Containers</a></b>
+       </ul>
+      </ol>
+
+    <href id='overview'/>
+    <h2>Overview</h2>
+      <p>This document summarizes the state of the QA and Testing work done by Andy Wood (Parthenon Computing) as at October 2004. The intended audience is developers.</p>
+
+    <href id='xquery_tests'/>
+    <h2>XQuery Tests</h2>
+      <p>The XQuery test suite runs the W3C Use Cases directly through the XQuery engine - there is no DB XML involvement. The <tt>eval</tt> program is used to drive the tests.</p>
+
+      <p>The queries are configured in "xquery/test/w3c_usecases/*.xquery", and the expected results in "xquery/test/w3c_usecases/*.out". The program writes to "xquery/test/w3c_usecases/actual/*.out", and string comparisons are used.</p>
+
+      <p>The test data (queries and expected results) was put together as part of the Stylus XQuery project. Changes to the XQuery and XPath specifications may require changes to the test data.</p>
+
+      <p>The test code is mostly in "xquery001.tcl".</p>
+
+      <p>The test suite is run interactively as follows (from within the build directory):</p>
+      <pre>
+% source ../test/test.tcl
+% run xquery
+      </pre>
+
+      <p>The test suite is run in batch mode (e.g. by CruiseControl) by the script "run_tests.tcl".</p>
+
+    <href id='dbxml_tests'/>
+    <h2>DB XML Tests</h2>
+
+      <p>The testing framework used for V1.x has been retained and extended for V2.0. A significant difference is the use of C++ programs for some of the tests. These programs can be executed either from the command line or from within the Tcl framework.</p>
+
+      <href id='dbxml_tests_tcl'/>
+      <h3>Tcl Code</h3>
+
+        <p>The framework now handles the container type - whole document (WDS) or node level (NLS) - as a top-level variable, in much the same way as transacted and non-transacted environments are used. Various top-level procedures exist to run the test groups using different permutations of these variables. A brief summary is presented here - type <code>help</code> for more information.</p>
+
+<p>A test group identifies all the tests in one unit, i.e. one Tcl source file.</p>
+        <ul>
+          <li><code>run</code><br/>
+            Runs a specific test group using WDS, with the option ("<code>n</code>)" of using a non-transacted environment. Type <code>run ?</code> for more information
+          </li>
+          <li><code>run_nls</code><br/>
+            As <code>run</code>, but using NLS. Type <code>run_nls ?</code> for more information
+          </li>
+          <li><code>run_all</code><br/>
+            Runs test group(s) under a choice of environments and/or container types. Type <code>run_all ?</code> for more information.
+          </li>
+          <li><code>run_xml</code><br/>
+            Runs the entire test suite - all test groups, using both environment types and both container types. Output is redirected to "ALL.OUT".
+          </li>
+        </ul>
+        <p>All of these procedures analyse the results and report any errors (lines starting with "FAIL" or pending items).</p>
+
+        <p>Test groups can still be executed directly, e.g. <code>xml008</code>.  Default arguments to the procedures are used (no environment, WDS). Note that the results are not analyzed for failures and warnings (this was not an issue for 1.x  since failures were fatal).</p>
+
+        <p>Note that "fail cases" often work by catching a DB XML exception, and checking the suitablity of the message. In the absence of an environment, these messages pollute the test output - but they are not failures.</p>
+
+       <p>The <code>convert</code> procedure generates query plans for the indexing and query processor tests in the 1.x test suite. Type <code>convert ?</code> for more information.</p>
+
+      <p>The test suite is run in batch mode (e.g. by CruiseControl) by the script "run_tests.tcl".</p>
+
+      <h4>Developer Practices</h4>
+        <p>I often "spot check" tests by commenting out the calls to sub-procedures within a test group. The results summary attempts to detect such comments to prevent the code being committed in this state!</p>
+
+       <p>Many of the procedures offer the option of forking - the advantage being that an application crash in one of the test groups does not abort the entire test run. The disadvantage is that we need to find a way of grabbing output from the sub-process - it is currently buffered.</p>
+
+      <href id='dbxml_tests_cxx'/>
+      <h3>C++ Code</h3>
+        <p>C++ code has been used for a few tests (the program name is given):</p>
+        <ul>
+          <li>8.5 - multiple databases (uses <code>dbxml_test_databases</code>)</li>
+          <li>9.3 - a simple resolver (uses <code>dbxml_test_driver</code>)</li>
+          <li>11.1.5 - iterative methods on <tt>XmlResults</tt> (uses <code>dbxml_test_query_processor_api</code>)</li>
+          <li>11.5 - W3C Use Cases (uses <code>dbxml_test_driver</code>)</li>
+          <li>14.4 - updates using DOM methods (uses <code>dbxml_test_driver</code>)</li>
+          <li>17 - input streams (uses <code>dbxml_test_input_streams)</code>)</li>
+        </ul>
+        <p>Additionally, the code that generates query plans from the 1.x test data uses the <code>dbxml_test_driver</code> program.</p>
+
+        <p>A logging system is used - - by default, the log files are written to "test_logs/" in the execution directory. Note that log files are appended to, not overwritten.</p>
+
+        <p>The code is configured in the "test/cpp" directory:</p>
+        <ul>
+          <li><tt>databaseManagement/</tt><br/>
+            The main function and test code for 8.5
+          </li>
+          <li><tt>inputStreams/</tt><br/>
+            The main function and test code for 17.
+          </li>
+          <li><tt>queryProcessorAPI/</tt><br/>
+            The main function and test code for 11.1.5.
+          </li>
+          <li><tt>unitTests/</tt><br/>
+            The code for the <tt>dbxml_test_driver</tt> program - a basic class hierarchy of test code
+          </li>
+          <li><tt>util/</tt><br/>
+            The logging code, and string transcoding code (copied from DB XML code).
+          </li>
+        </ul>
+
+        <h4>Running the Programs Using <tt>Tclsh</tt></h4>
+
+          <p>A utility procedure (<code>run_external_test_program</code> in "xmlutils.tcl") wraps execution of these programs. Output is redirected to files of the form "&lt;program name&gt;.out" and "&lt;program name&gt;.err". Note that the Tcl <tt>exec</tt> command treats any output to stderr as an error - hence the need to redirect this output. The log files that result from program execution are scanned for errors and warnings.</p>
+
+          <p>The Tcl code usually reads the configuration data (program name, information about which documents to load etc.) from "index.xml" files that live in appropriate test directories, e.g. "test/document_set_14/". On some occasions the test data is hardwired.</p>
+
+        <h4>Running the Programs Using the Command Line</h4>
+          <p>All programs can be executed from the command line. Under Unix, ensure that both a DB XML environment directory (e.g. "TESTDIR") and a directory for the log files (e.g. "test_logs") exist prior to execution.</p>
+
+          <p>A number of common options exist. The <tt>main()</tt> function in <tt>dbxml_test_driver</tt> passes unrecognised arguments to sub-classes of <tt>UnitTest</tt>.</p>
+
+          <p>I've added notes to SR 11003 and SR 11009 about running the programs from the command line. Some examples are given here.</p>
+          <ol>
+            <li>W3C Use Cases (11.5)
+              <p>To run the NS tests using WDS and a non-transacted environment, type
+              <pre>
+[prompt]$ rm -rf TESTDIR/ test_logs/; mkdir TESTDIR/ test_logs/
+[prompt]$ ./dbxml_test_driver --datadir ../test/document_set_11_5/w3c_usecases_NS --env ./TESTDIR --id 11.5.1 --logdir ./test_logs
+              </pre>
+              <p>This will write to "dbxml_test_driver.11.5.1.log" in "./test_logs". Add "--nls" to use NLS, and "--transacted" for a transacted environment.</p>
+              <p>Edit the "index.xml" files in "test/document_set_11_5/w3c_usecases_*/" to reinstate the tests that have been commented out.</p>
+             </li>
+
+            <li>DOM Update Tests (14.4)
+               <p>To run the document update tests using eager evaluation , a transacted environment and WDS:</p>
+<pre>
+[prompt]$ ./dbxml_test_driver --env ./TESTDIR/ --datadir ../test/document_set_14/ --id 14.4 --logdir ./test_logs/ --eval eager --transacted --verify
+</pre>
+              <p>Use <tt>--debug</tt> to turn on full DB XML logging, and <tt>--nls</tt> to use NLS. The <tt>--verify</tt> flag scans the log file for errors and warnings.</p>
+
+              <p>Adding additional tests will involve the following:</p>
+              <ul>
+                  <li>add a new &lt;base&gt; element to the "index.xml" file in "../test/document_set_14"</li>
+                  <li>derive a new class from <tt>Functor</tt> in "UpdateDocumentTest.cpp", and implement the <tt>modify()</tt> and <tt>check()</tt> methods</li>
+                  <li>add the name of the test (which matches the &lt;method&gt; element in the "index.xml" file) to the map inside <tt>UpdateDocumentTest::prepare()</tt></li>
+              </ul>
+             </li>
+           </ol>
+
+    <href id='benchmark'/>
+    <h2>Benchmark</h2>
+      <p>The <link href="http://db.uwaterloo.ca/~ddbms/projects/xbench/index.html">XBench site</link> is an excellent reference for this work.</p>
+
+      <href id='benchmark_data'/>
+      <h3>XBench Data</h3>
+        <p>I downloaded XBench and followed the instructions. Under Linux, the TPC-W population generator program needs building. Edit "toxgene/toxgene" and set <tt>MIN_HEAP</tt> to an appropriate value.</p>
+
+        <p>Xbench can generate datasets of varying sizes. Using their terminology, "small" is about 10MB, "normal" about 100MB, "large" about 1GB, and "huge" about 10GB. Under Linux, there appears to be a bug in the population generator that prevents generation of the data-centric "large" datasets (I haven't tried anything bigger).</p>
+
+        <p>I have hacked the "small" datasets to generate additional "medium" (about 50MB), "tiny" (about 1MB) and "miniscule" (less than 20KB) data sets. This has been done for all four data groups.</p>
+
+        <p>Generating the data is a once-only task. The location of the data is specified as an argument to the benchmark programs. I have created four sub-directories of the parent - one for each of the data groups ("DC-MD/" etc.). Each of these sub-directories contains "small/", "medium/" etc.</p>
+
+      <p>The XBench download includes the queries that subsume the W3C Use Case functions. The queries have been written in a form suitable for use in DB XML (the files are configured in "test/benchmark/queries*.xml"). Note that some of the queries were malformed - changes have been made, and are documented as comments in the XML files.</p>
+
+      <href id='benchmark_code'/>
+      <h3>Source Code</h3>
+        <p>The benchmark is split into two areas - loading a container, and querying a container. The work is ultimately done by C++ code that is configured in "src/utils/load_container/" and "src/utils/query_runner/" respectively.</p>
+
+        <p>The test harness code is configured in "test/benchmark/". Two (nearly) distinct strands of work exist.</p>
+
+        <p>A Perl script has been written that does everything - from generating the datasets, to loading and querying the containers. This script, along with a configuration file and some platform specific modifications to the XBench scripts, is configured in "test/benchmark/xbench/". This is the original work done by Gareth.</p>
+
+        <p>A standalone Tclsh harness (i.e. nothing to do with DB XML) is configured in "test/benchmark/". The "xbench.tcl" file permits specific executions of the programs (source this file and type <tt>help</tt> for more information). The "batch_*.tcl" scripts enable batch execution of the programs.</p>
+
+      <href id='benchmark_load'/>
+      <h3>Loading Containers</h3>
+        <p>The C++ <tt>load_container</tt> program ultimately does the work. The <tt>-f</tt> (filelist) option needs to be used for large, multiple document sets under Linux.</p>
+
+        <p>A bulk load is best done using the Tcl batch script. Edit the arrays in "batch_load.tcl" to specify the range of container sizes. As an example (assuming the current directory is "build_unix"), the following creates and loads conainers in the environment "./benchmark/", reading the datasets from "~/xbench-data/":</p>
+<pre>
+tclsh ../test/benchmark/batch_load.tcl benchmark/ ~/xbench-data/ .
+</pre>
+        <p>Type <tt>tclsh ../test/benchmark/batch_load ?</tt> for further information.</p>
+
+        <p><b>Note</b> The Tcl code reports the timings to standard output - sumamrizing these figures is a manual task. Maybe the load container program could be adapted to write the timings to an XML file, similar to the query runner program?</p>
+
+      <href id='benchmark_query'/>
+      <h3>Querying Containers</h3>
+        <p>The C++ <tt>query_runner</tt> program ultimately does the work.</p>
+
+        <p>Note that eager evaluation is used, and that the containers are unindexed. Indexing strategies could be identifed by analysing the schemas for the data sets (in the XBench download).</p>
+
+        <p>The query runner program uses an XML configuration file. This file drives the data groups and container sizes that are to be queried. A sample file that contains all four data groups and a selection of container sizes has been comitted to CVS (in "src/utils/query_runner/"). Edit this file to restrict the scope of the benchmark.</p>
+
+        <p>A Tclsh batch script ("batch_query.tcl") can be used to query a set of containers. This calls the "query_container" procedure in "xbench.tcl". This procedure works by creating a config file on-the-fly from the XML query data. I generated the config file by saving these intermediate config files and then editing.</p>
+
+        <p>Note that I (nearly) always use the query runner program directly, rather than this Tcl script.</p>
+
+        <p>The results from the query runner are written to an XML file. I have written a new stylesheet that generates an HTML summary. Some sort of sanity check on the result counts for NLS and WDS should be made.</p>
+
+        <p>Here is an example of using the query runner:</p>
+        <pre>
+[prompt] $ ./query_runner -c ../src/utils/query_runner/config.xml -f results.xml
+[prompt] $  xsltproc ../src/utils/query_runner/stylesheet.xsl results.xml > query_runner_results.html
+        </pre>
+        <p>Note that the timings are sum of the calls to <tt>XmlContainer::query()</tt> - the actual elapsed time for program execution is considerably longer.</p>
+
+  </body>
+</html>

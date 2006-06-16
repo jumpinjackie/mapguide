@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="spec_expressions">
+  <policies>
+    <policy name="3.9">
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>every $part in //part satisfies $part/@discounted</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>every $part in //part1 satisfies $part/@discounted</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>some $emp in //employee satisfies ($emp/bonus &gt; 0.25 * $emp/salary)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>some $emp in //employee1 satisfies ($emp/bonus &gt; 0.25 * $emp/salary)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>some $x in (1, 2, 3), $y in (2, 3, 4) satisfies $x + $y = 4</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>every $x in (1, 2, 3), $y in (2, 3, 4) satisfies $x + $y = 4</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>some $x in (1, 2, &quot;cat&quot;) satisfies $x * 2 = 4</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>every $x in (1, 2, &quot;cat&quot;) satisfies $x * 2 = 4</arg>
+    <output>false
+</output>
+  </base>
+</test>

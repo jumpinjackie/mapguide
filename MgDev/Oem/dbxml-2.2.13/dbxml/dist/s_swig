@@ -1,0 +1,54 @@
+#!/bin/sh -
+#       $Id: s_swig,v 1.16 2004/11/23 22:07:41 gmf Exp $
+#
+# Run SWIG to generate the various APIs
+
+echo "SWIG files now require SWIG Version 1.3.22 or higher"
+SWIG=swig
+SWIG_DIR=../dist/swig
+SWIG_FILE=$SWIG_DIR/dbxml.i
+
+die() {
+	echo "$@" >&2
+	exit 1
+}
+
+[ -f $SWIG_FILE ] || die "Must be run from the dist directory"
+
+# don't generate for csharp -- it's way out of date for 2.0
+#for api in java python tcl ; do
+for api in java python tcl ; do
+
+	swig_args=""
+	case $api in
+	java)
+		swig_args="-nodefault -package com.sleepycat.dbxml $args"
+		;;
+	esac
+
+	if [ -d ../src/$api ]; then
+	    echo "Building $api API"
+	    $SWIG -Wall -$api -c++ $swig_args -I$SWIG_DIR \
+		-o ../src/$api/dbxml_${api}_wrap.cpp $SWIG_FILE
+	fi
+done
+
+# Fixups for Java
+JAVA_SRCTOP=../src/java
+JAVA_PKGDIR=com/sleepycat/dbxml
+
+cd $JAVA_SRCTOP
+for f in *.java ; do
+	rm -f $JAVA_SRCDIR/$f
+	sed -f ../$SWIG_DIR/java-post.sed $f > $JAVA_PKGDIR/$f || exit $?
+	rm -f $f
+done
+cd ../../dist
+
+# Fixups for Python
+PYTHON_SRC=../src/python
+PYTHON_CXX=dbxml_python_wrap.cpp
+sed -f $SWIG_DIR/python-post.sed $PYTHON_SRC/$PYTHON_CXX > $PYTHON_SRC/$PYTHON_CXX.tmp
+cp $PYTHON_SRC/$PYTHON_CXX.tmp $PYTHON_SRC/$PYTHON_CXX
+
+

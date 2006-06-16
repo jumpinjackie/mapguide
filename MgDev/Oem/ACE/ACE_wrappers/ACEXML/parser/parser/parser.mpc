@@ -1,0 +1,9 @@
+//  -*- MPC -*-
+// parser.mpc,v 1.5 2003/11/10 04:31:58 dhinton Exp
+
+project(ACEXML_Parser): acelib {
+  sharedname    = ACEXML_Parser
+  after        += ACEXML
+  libs         += ACEXML
+  dynamicflags += ACEXML_PARSER_BUILD_DLL
+}

@@ -1,0 +1,144 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="results" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <LetBinding name="a">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.8.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="author" nodeType="element"/>
+          </Navigation>
+        </LetBinding>
+        <ForBinding name="last">
+          <Function name="{http://www.w3.org/2005/04/xpath-functions}:distinct-values">
+            <Navigation>
+              <Variable name="a"/>
+              <Step axis="child" name="last" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,author.last)</OQPlan>
+              </Step>
+            </Navigation>
+          </Function>
+        </ForBinding>
+        <ForBinding name="first">
+          <Function name="{http://www.w3.org/2005/04/xpath-functions}:distinct-values">
+            <Navigation>
+              <Variable name="a"/>
+              <DbXmlFilter>
+                <Navigation>
+                  <Step axis="child" name="last" nodeType="element">
+                    <RQPlan>V(author.last,=,'[to be calculated]')</RQPlan>
+                  </Step>
+                  <DbXmlCompare name="equal">
+                    <Variable name="last"/>
+                  </DbXmlCompare>
+                </Navigation>
+              </DbXmlFilter>
+              <Step axis="child" name="first" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,author.first)</OQPlan>
+              </Step>
+            </Navigation>
+          </Function>
+        </ForBinding>
+        <Sort>
+          <Specification modifier="ascending|empty_least">
+            <Variable name="last"/>
+          </Specification>
+          <Specification modifier="ascending|empty_least">
+            <Variable name="first"/>
+          </Specification>
+        </Sort>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="author" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <DOMConstructor type="element">
+                  <Name>
+                    <Sequence>
+                      <AnyAtomicTypeConstructor value="last" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                    </Sequence>
+                  </Name>
+                  <Children>
+                    <Variable name="last"/>
+                  </Children>
+                </DOMConstructor>
+                <DOMConstructor type="element">
+                  <Name>
+                    <Sequence>
+                      <AnyAtomicTypeConstructor value="first" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                    </Sequence>
+                  </Name>
+                  <Children>
+                    <Variable name="first"/>
+                  </Children>
+                </DOMConstructor>
+              </Children>
+            </DOMConstructor>
+            <FLWOR>
+              <ForBinding name="b">
+                <Navigation>
+                  <QueryPlanFunction result="document" container="11.5.8.dbxml">
+                    <RQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',n(V(author.last,=,'[to be calculated]'),V(author.first,=,'[to be calculated]')))</RQPlan>
+                  </QueryPlanFunction>
+                  <Step axis="child" name="bib" nodeType="element"/>
+                  <Step axis="child" name="book" nodeType="element"/>
+                </Navigation>
+                <Where>
+                  <SomeFLWOR>
+                    <ForBinding name="ba">
+                      <Navigation>
+                        <Variable name="b"/>
+                        <Step axis="child" name="author" nodeType="element"/>
+                      </Navigation>
+                    </ForBinding>
+                    <Operator name="and">
+                      <Navigation>
+                        <Variable name="ba"/>
+                        <Step axis="child" name="last" nodeType="element">
+                          <RQPlan>V(author.last,=,'[to be calculated]')</RQPlan>
+                        </Step>
+                        <DbXmlCompare name="equal">
+                          <Variable name="last"/>
+                        </DbXmlCompare>
+                      </Navigation>
+                      <Navigation>
+                        <Variable name="ba"/>
+                        <Step axis="child" name="first" nodeType="element">
+                          <RQPlan>V(author.first,=,'[to be calculated]')</RQPlan>
+                        </Step>
+                        <DbXmlCompare name="equal">
+                          <Variable name="first"/>
+                        </DbXmlCompare>
+                      </Navigation>
+                    </Operator>
+                  </SomeFLWOR>
+                </Where>
+              </ForBinding>
+              <Navigation>
+                <Variable name="b"/>
+                <Step axis="child" name="title" nodeType="element">
+                  <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+                </Step>
+              </Navigation>
+            </FLWOR>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

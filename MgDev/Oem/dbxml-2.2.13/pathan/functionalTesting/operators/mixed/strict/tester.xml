@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="policy-dependent expressions">
+  <policies>
+    <policy name="strict">
+      <addArg>../test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>(1=1)=1</arg>
+    <output>Equality operator for given types not supported
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1)=0</arg>
+    <output>Equality operator for given types not supported
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1)&gt;1</arg>
+    <output>An attempt to compare a boolean type to a non boolean type has occurred
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1)&lt;1</arg>
+    <output>An attempt to compare a boolean type to a non boolean type has occurred
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) eq 1</arg>
+    <output>Equality operator for given types not supported
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) eq 0</arg>
+    <output>Equality operator for given types not supported
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) gt 1</arg>
+    <output>An attempt to compare a boolean type to a non boolean type has occurred
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) lt 1</arg>
+    <output>An attempt to compare a boolean type to a non boolean type has occurred
+</output>
+  </base>
+  <base comment="according to new specs, any non-empty string evaluates to true" type="pass">
+    <arg>(1=1) and &quot;true&quot;  </arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) and &quot;false&quot;</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) and &quot;Hasselblad&quot;</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) and &quot;&quot;</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) and &quot;1&quot;</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) and &quot;0&quot;</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) and 1</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) and 0</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) and 42</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) and -0</arg>
+    <output>false
+</output>
+  </base>
+  <base comment="NaN evaluates to false" type="pass">
+    <arg>(1=1) and (42E0 mod 0)  </arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1=1) and 1.5e+17</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>3&gt;2&gt;1</arg>
+    <output>syntax error, unexpected _GT_, expecting $end
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $book in (//book) return $book/author eq &quot;Kennedy&quot;</arg>
+    <output>A parameter of the operator is not a single atomic value [err:XPTY0004]
+</output>
+  </base>
+</test>
