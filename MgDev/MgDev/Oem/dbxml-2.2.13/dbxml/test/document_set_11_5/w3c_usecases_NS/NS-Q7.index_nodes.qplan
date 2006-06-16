@@ -1,0 +1,65 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q7" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Attributes>
+      <DOMConstructor type="attribute">
+        <Name>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="xmlns:xlink" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Name>
+        <Children>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="http://www.w3.org/1999/xlink" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Children>
+      </DOMConstructor>
+    </Attributes>
+    <Children>
+      <FLWOR>
+        <ForBinding name="a">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.1.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'auction.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" uri="http://www.example.com/AuctionWatch" name="Auction" nodeType="element"/>
+          </Navigation>
+        </ForBinding>
+        <LetBinding name="seller_id">
+          <Navigation>
+            <Variable name="a"/>
+            <Step axis="child" uri="http://www.example.com/AuctionWatch" name="Trading_Partners" nodeType="element"/>
+            <Step axis="child" uri="http://www.example.com/AuctionWatch" name="Seller" nodeType="element"/>
+            <Step axis="child" uri="*" name="ID" nodeType="element"/>
+          </Navigation>
+        </LetBinding>
+        <LetBinding name="buyer_id">
+          <Navigation>
+            <Variable name="a"/>
+            <Step axis="child" uri="http://www.example.com/AuctionWatch" name="Trading_Partners" nodeType="element"/>
+            <Step axis="child" uri="http://www.example.com/AuctionWatch" name="High_Bidder" nodeType="element"/>
+            <Step axis="child" uri="*" name="ID" nodeType="element"/>
+          </Navigation>
+          <Where>
+            <Operator name="equal">
+              <Function name="{http://www.w3.org/2005/04/xpath-functions}:namespace-uri">
+                <Variable name="seller_id"/>
+              </Function>
+              <Function name="{http://www.w3.org/2005/04/xpath-functions}:namespace-uri">
+                <Variable name="buyer_id"/>
+              </Function>
+            </Operator>
+          </Where>
+        </LetBinding>
+        <Navigation>
+          <Variable name="a"/>
+          <Step axis="child" uri="http://www.example.com/AuctionWatch" name="AuctionHomepage" nodeType="element"/>
+        </Navigation>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

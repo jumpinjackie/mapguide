@@ -1,0 +1,42 @@
+<XQuery>
+  <Parenthesized>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="section_count" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Function name="{http://www.w3.org/2005/04/xpath-functions}:count">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.7.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'book.xml',P(edge-element-presence-none,prefix,section))</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="section" nodeType="element">
+              <OQPlan>P(edge-element-presence-none,prefix,section)</OQPlan>
+            </Step>
+          </Navigation>
+        </Function>
+      </Children>
+    </DOMConstructor>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="figure_count" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Function name="{http://www.w3.org/2005/04/xpath-functions}:count">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.7.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'book.xml',P(node-element-presence-none,=,figure))</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="figure" nodeType="element">
+              <OQPlan>P(node-element-presence-none,=,figure)</OQPlan>
+            </Step>
+          </Navigation>
+        </Function>
+      </Children>
+    </DOMConstructor>
+  </Parenthesized>
+</XQuery>

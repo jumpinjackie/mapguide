@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// security.mpb,v 1.4 2003/12/30 15:18:22 dhinton Exp
+
+project : portableserver {
+  after     += Security
+  libs      += TAO_Security
+  comps     += Security
+  tagchecks += Security
+}

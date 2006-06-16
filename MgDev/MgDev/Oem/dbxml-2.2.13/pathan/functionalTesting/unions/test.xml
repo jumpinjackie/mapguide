@@ -1,0 +1,5 @@
+<container xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:foo='foofoo' xsi:noNamespaceSchemaLocation='test.xsd'>
+  <methodUsedToKillRasputin>Cyanide</methodUsedToKillRasputin>
+</container>
+
+

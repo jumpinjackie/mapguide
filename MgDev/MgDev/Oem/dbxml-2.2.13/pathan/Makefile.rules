@@ -1,0 +1,18 @@
+#############################################################################
+# COMMON MAKEFILE RULES
+#############################################################################
+
+###### Build 
+
+objects: ${SOURCES:.cpp=.lo}
+
+all: objects
+
+###### Include dependences
+
+-include $(patsubst %.cpp,$(srcdir)/objs/%.d,$(filter %.cpp,$(SOURCES)))
+
+###### Include implicit rules
+
+MAKEIMPL = $(srcdir)/Makefile.implicit
+include $(MAKEIMPL)

@@ -1,0 +1,3425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="Sequence testing">
+  <policies>
+    <policy name="CastingRules">
+      <addArg>-N</addArg>
+      <addArg>xs</addArg>
+      <addArg>http://www.w3.org/2001/XMLSchema</addArg>
+      <addArg>-N</addArg>
+      <addArg>xdt</addArg>
+      <addArg>http://www.w3.org/2005/04/xpath-datatypes</addArg>
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>xs:double(&quot;100.565656&quot;) cast as xs:string</arg>
+    <output>100.565656
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;-100.565656&quot;) cast as xs:string</arg>
+    <output>-100.565656
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;-0.000565656&quot;) cast as xs:string</arg>
+    <output>-0.000565656
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;100&quot;) cast as xs:string</arg>
+    <output>100
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;100.565656&quot;) cast as xs:string</arg>
+    <output>100.565656
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;-100.565656&quot;) cast as xs:string</arg>
+    <output>-100.565656
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;-0.000565656&quot;) cast as xs:string</arg>
+    <output>-0.000565656
+</output>
+  </base>  
+  <base type="pass">
+    <arg>xs:gYear(&quot;0002&quot;) cast as xs:string</arg>
+    <output>0002
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;0002-02&quot;) cast as xs:string</arg>
+    <output>0002-02
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;-2001-11-10&quot;) cast as xs:dateTime</arg>
+    <output>-2001-11-10T00:00:00
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2000-01-01T12:30:05.555555&quot;) cast as xs:time</arg>
+    <output>12:30:05.555555
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;-2000-01-01T12:30:05.555555&quot;) cast as xs:time</arg>
+    <output>12:30:05.555555
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2000-01-02T12:12:12.555&quot;) cast as xs:date</arg>
+    <output>2000-01-02
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;-2000-01-02T12:12:12.555&quot;) cast as xs:date</arg>
+    <output>-2000-01-02
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;-1999-05-05T12:30:05.555555&quot;) cast as xs:gYearMonth</arg>
+    <output>-1999-05
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;-1999-05-05&quot;) cast as xs:gYearMonth</arg>
+    <output>-1999-05
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;-1999-05-05T12:30:05.555555&quot;) cast as xs:gYear</arg>
+    <output>-1999
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;-1999-05-05&quot;) cast as xs:gYear</arg>
+    <output>-1999
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;1999-05-05T12:30:05.555555&quot;) cast as xs:gMonthDay</arg>
+    <output>--05-05
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;1999-05-05&quot;) cast as xs:gMonthDay</arg>
+    <output>--05-05
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;1999-05-05T12:30:05.555555&quot;) cast as xs:gDay</arg>
+    <output>---05
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;1999-05-05&quot;) cast as xs:gDay</arg>
+    <output>---05
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;1999-05-05T12:30:05.555555&quot;) cast as xs:gMonth</arg>
+    <output>--05
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;1999-05-05&quot;) cast as xs:gMonth</arg>
+    <output>--05
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;true&quot;) cast as xs:boolean</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;false&quot;) cast as xs:boolean</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1&quot;) cast as xs:boolean</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;0&quot;) cast as xs:boolean</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;0&quot;) cast as xs:boolean</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;NaN&quot;) cast as xs:boolean</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;0&quot;) cast as xs:boolean</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;-0.0&quot;) cast as xs:boolean</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;-1000&quot;) cast as xs:boolean</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) cast as xs:boolean</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;dsl&quot;) cast as xs:QName</arg>
+    <output>:dsl</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;A&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;A&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;A&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1&quot;) castable as xs:float</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1&quot;) castable as xs:double</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1&quot;) castable as xs:decimal</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;PT0S&quot;) castable as xs:duration</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;P0M&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;PT0S&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;2003-08-05T18:38:00&quot;) castable as xs:dateTime</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;18:38:00&quot;) castable as xs:time</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;2003-08-05&quot;) castable as xs:date</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1999-05&quot;) castable as xs:gYearMonth</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1999&quot;) castable as xs:gYear</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;--08-05&quot;) castable as xs:gMonthDay</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;---05&quot;) castable as xs:gDay</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;--05&quot;) castable as xs:gMonth</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;true&quot;) castable as xs:boolean</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;abcd&quot;) castable as xs:base64Binary</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;abcd&quot;) castable as xs:hexBinary</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;http://example.com&quot;) castable as xs:anyURI</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;xs:integer&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+
+
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;A&quot;) castable as xdt:untypedAtomic</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;A&quot;) castable as xs:anySimpleType</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;A&quot;) castable as xs:string</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1&quot;) castable as xs:float</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1&quot;) castable as xs:double</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1&quot;) castable as xs:decimal</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;PT0S&quot;) castable as xs:duration</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;P0M&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;PT0S&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;2003-08-05T18:38:00&quot;) castable as xs:dateTime</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;18:38:00&quot;) castable as xs:time</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;2003-08-05&quot;) castable as xs:date</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1999-05&quot;) castable as xs:gYearMonth</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1999&quot;) castable as xs:gYear</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;--08-05&quot;) castable as xs:gMonthDay</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;---05&quot;) castable as xs:gDay</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;--05&quot;) castable as xs:gMonth</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;true&quot;) castable as xs:boolean</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;abcd&quot;) castable as xs:base64Binary</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;abcd&quot;) castable as xs:hexBinary</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;http://example.com&quot;) castable as xs:anyURI</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;xs:integer&quot;) castable as xs:QName</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+
+
+  <base type="pass">
+    <arg>xs:string(&quot;A&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;A&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;A&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1&quot;) castable as xs:float</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1&quot;) castable as xs:double</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1&quot;) castable as xs:decimal</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;PT0S&quot;) castable as xs:duration</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;P0M&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;PT0S&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;2003-08-05T18:38:00&quot;) castable as xs:dateTime</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;18:38:00&quot;) castable as xs:time</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;2003-08-05&quot;) castable as xs:date</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1999-05&quot;) castable as xs:gYearMonth</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1999&quot;) castable as xs:gYear</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;--08-05&quot;) castable as xs:gMonthDay</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;---05&quot;) castable as xs:gDay</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;--05&quot;) castable as xs:gMonth</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;true&quot;) castable as xs:boolean</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;abcd&quot;) castable as xs:base64Binary</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;abcd&quot;) castable as xs:hexBinary</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;http://example.com&quot;) castable as xs:anyURI</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;xs:integer&quot;) castable as xs:QName</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:float</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:decimal</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:double</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:boolean</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:float</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:decimal</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:double</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:boolean</arg>
+    <output>true</output>
+  </base>
+
+
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:float</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:decimal</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:double</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:boolean</arg>
+    <output>true</output>
+  </base>
+
+
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:duration</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;P0M&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:duration</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:duration</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xs:dateTime</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xs:time</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xs:date</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xs:gYearMonth</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xs:gYear</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xs:gMonth</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xs:gMonthDay</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) castable as xs:gDay</arg>
+    <output>true</output>
+  </base>
+  
+  <base type="pass">
+    <arg>xs:time(&quot;19:11:00&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;19:11:00&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;19:11:00&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;19:11:00&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;19:11:00&quot;) castable as xs:time</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) castable as xs:dateTime</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) castable as xs:date</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) castable as xs:gYearMonth</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) castable as xs:gYear</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) castable as xs:gMonth</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) castable as xs:gMonthDay</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) castable as xs:gDay</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:gYearMonth</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:gYear</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:gMonthDay</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:gDay</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:gMonth</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:float</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:decimal</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:double</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:boolean</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:base64Binary</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:hexBinary</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.com&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.com&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.com&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.com&quot;) castable as xs:anyURI</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:QName</arg>
+    <output>true</output>
+  </base>
+
+  <base type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as foo:Notation</arg>
+    <output>true</output>
+  </base>
+  <base comment="specs not clear about this - Not sure if this should pass or fail -- crioux" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:NOTATION</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1&quot;) castable as xs:NOTATION</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:string(&quot;1&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+  
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+ 
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xdt:yearMonthDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:hexBinary</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:base64Binary</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) castable as xs:NOTATION</arg>
+    <output>false</output>
+  </base>
+
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xdt:untypedAtomic</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:anySimpleType</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:string</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:float</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:double</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:decimal</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:duration</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xdt:dayTimeDuration</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:dateTime</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:time</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:date</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:gYearMonth</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:gYear</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:gMonthDay</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:gDay</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:gMonth</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:base64Binary</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:hexBinary</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:anyURI</arg>
+    <output>false</output>
+  </base>
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) castable as xs:QName</arg>
+    <output>false</output>
+  </base>
+
+
+
+
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;A&quot;) cast as xdt:untypedAtomic</arg>
+    <output>A</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;A&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2005/04/xpath-datatypes}untypedAtomic to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;A&quot;) cast as xs:string</arg>
+    <output>A</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1&quot;) cast as xs:float</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:float</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1&quot;) cast as xs:double</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:double</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1&quot;) cast as xs:decimal</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:decimal</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;PT0S&quot;) cast as xs:duration</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:duration</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;P0M&quot;) cast as xdt:yearMonthDuration</arg>
+    <output>P0M</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xdt:yearMonthDuration</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base> 
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;PT0S&quot;) cast as xdt:dayTimeDuration</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xdt:dayTimeDuration</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;2003-08-05T18:38:00&quot;) cast as xs:dateTime</arg>
+    <output>2003-08-05T18:38:00</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:dateTime</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;18:38:00&quot;) cast as xs:time</arg>
+    <output>18:38:00</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:time</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;2003-08-05&quot;) cast as xs:date</arg>
+    <output>2003-08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:date</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1999-05&quot;) cast as xs:gYearMonth</arg>
+    <output>1999-05</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:gYearMonth</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1999&quot;) cast as xs:gYear</arg>
+    <output>1999</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:gYear</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;--08-05&quot;) cast as xs:gMonthDay</arg>
+    <output>--08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:gMonthDay</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;---05&quot;) cast as xs:gDay</arg>
+    <output>---05</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:gDay</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;--05&quot;) cast as xs:gMonth</arg>
+    <output>--05</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:gMonth</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;true&quot;) cast as xs:boolean</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:boolean</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;abcd&quot;) cast as xs:base64Binary</arg>
+    <output>abcd</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:base64Binary</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;abcd&quot;) cast as xs:hexBinary</arg>
+    <output>ABCD</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello&quot;) cast as xs:hexBinary</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;http://example.com&quot;) cast as xs:anyURI</arg>
+    <output>http://example.com</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello[&quot;) cast as xs:anyURI</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+ 
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;hello*&quot;) cast as xs:QName</arg>
+    <output>Casting from {http://www.w3.org/2005/04/xpath-datatypes}untypedAtomic to {http://www.w3.org/2001/XMLSchema}QName is not supported [err:FORG0001]</output>
+  </base>
+
+
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;A&quot;) cast as xdt:untypedAtomic</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;A&quot;) cast as xs:anySimpleType</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;A&quot;) cast as xs:string</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1&quot;) cast as xs:float</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1&quot;) cast as xs:double</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1&quot;) cast as xs:decimal</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;PT0S&quot;) cast as xs:duration</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;P0M&quot;) cast as xdt:yearMonthDuration</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;PT0S&quot;) cast as xdt:dayTimeDuration</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;2003-08-05T18:38:00&quot;) cast as xs:dateTime</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;18:38:00&quot;) cast as xs:time</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;2003-08-05&quot;) cast as xs:date</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1999-05&quot;) cast as xs:gYearMonth</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1999&quot;) cast as xs:gYear</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;--08-05&quot;) cast as xs:gMonthDay</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;---05&quot;) cast as xs:gDay</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;--05--&quot;) cast as xs:gMonth</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;true&quot;) cast as xs:boolean</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;abcd&quot;) cast as xs:base64Binary</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;abcd&quot;) cast as xs:hexBinary</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;http://example.com&quot;) cast as xs:anyURI</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;xs:integer&quot;) cast as xs:QName</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;hello&quot;) cast as xs:QName</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:string(&quot;A&quot;) cast as xdt:untypedAtomic</arg>
+    <output>A</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;A&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}string to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;A&quot;) cast as xs:string</arg>
+    <output>A</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1&quot;) cast as xs:float</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1&quot;) cast as xs:double</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1&quot;) cast as xs:decimal</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;PT0S&quot;) cast as xs:duration</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;P0M&quot;) cast as xdt:yearMonthDuration</arg>
+    <output>P0M</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;PT0S&quot;) cast as xdt:dayTimeDuration</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;2003-08-05T18:38:00&quot;) cast as xs:dateTime</arg>
+    <output>2003-08-05T18:38:00</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;18:38:00&quot;) cast as xs:time</arg>
+    <output>18:38:00</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;2003-08-05&quot;) cast as xs:date</arg>
+    <output>2003-08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1999-05&quot;) cast as xs:gYearMonth</arg>
+    <output>1999-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;1999&quot;) cast as xs:gYear</arg>
+    <output>1999</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;--08-05&quot;) cast as xs:gMonthDay</arg>
+    <output>--08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;---05&quot;) cast as xs:gDay</arg>
+    <output>---05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;--05&quot;) cast as xs:gMonth</arg>
+    <output>--05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;true&quot;) cast as xs:boolean</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;abcd&quot;) cast as xs:base64Binary</arg>
+    <output>abcd</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;abcd&quot;) cast as xs:hexBinary</arg>
+    <output>ABCD</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;http://example.com&quot;) cast as xs:anyURI</arg>
+    <output>http://example.com</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;xs:integer&quot;) cast as xs:QName</arg>
+    <output>http://www.w3.org/2001/XMLSchema:integer</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;integer&quot;) cast as xs:QName</arg>
+    <output>:integer</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:float</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:double</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:decimal</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:duration</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xdt:yearMonthDuration</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xdt:dayTimeDuration</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:dateTime</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:time</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:date</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:gYearMonth</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:gYear</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:gMonthDay</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:gDay</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:gMonth</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:boolean</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:base64Binary</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello&quot;) cast as xs:hexBinary</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;hello[&quot;) cast as xs:anyURI</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:string(&quot;xf:hello&quot;) cast as xs:QName</arg>
+    <output>No namespace for prefix 'xf'</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) cast as xdt:untypedAtomic</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}float to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) cast as xs:string</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) cast as xs:float</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) cast as xs:decimal</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;INF&quot;) cast as xs:decimal</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;-INF&quot;) cast as xs:decimal</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;NaN&quot;) cast as xs:decimal</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;INF&quot;) cast as xs:integer</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;-INF&quot;) cast as xs:integer</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;NaN&quot;) cast as xs:integer</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) cast as xs:double</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;NaN&quot;) cast as xs:double</arg>
+    <output>NaN</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;INF&quot;) cast as xs:double</arg>
+    <output>INF</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;-INF&quot;) cast as xs:double</arg>
+    <output>-INF</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) cast as xs:boolean</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;NaN&quot;) cast as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;INF&quot;) cast as xs:boolean</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:float(&quot;0&quot;) cast as xs:boolean</arg>
+    <output>false</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) cast as xdt:untypedAtomic</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}double to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) cast as xs:string</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) cast as xs:float</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;NaN&quot;) cast as xs:float</arg>
+    <output>NaN</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;INF&quot;) cast as xs:float</arg>
+    <output>INF</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;-INF&quot;) cast as xs:float</arg>
+    <output>-INF</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) cast as xs:decimal</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;NaN&quot;) cast as xs:decimal</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;INF&quot;) cast as xs:decimal</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;-INF&quot;) cast as xs:decimal</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;NaN&quot;) cast as xs:integer</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;INF&quot;) cast as xs:integer</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;-INF&quot;) cast as xs:integer</arg>
+    <output>Special values like NaN, INF or -INF cannot be cast to decimal [err:FOCA0002]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) cast as xs:double</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) cast as xs:boolean</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;NaN&quot;) cast as xs:boolean</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;INF&quot;) cast as xs:boolean</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:double(&quot;0&quot;) cast as xs:boolean</arg>
+    <output>false</output>
+  </base>
+
+
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) cast as xdt:untypedAtomic</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}decimal to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) cast as xs:string</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) cast as xs:float</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) cast as xs:decimal</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) cast as xs:double</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) cast as xs:boolean</arg>
+    <output>true</output>
+  </base>
+
+
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) cast as xdt:untypedAtomic</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}duration to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) cast as xs:string</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) cast as xs:duration</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;P0M&quot;) cast as xdt:yearMonthDuration</arg>
+    <output>P0M</output>
+  </base>
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) cast as xdt:dayTimeDuration</arg>
+    <output>PT0S</output>
+  </base>
+
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) cast as xdt:untypedAtomic</arg>
+    <output>P0M</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2005/04/xpath-datatypes}yearMonthDuration to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) cast as xs:string</arg>
+    <output>P0M</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) cast as xs:duration</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) cast as xdt:yearMonthDuration</arg>
+    <output>P0M</output>
+  </base>
+
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) cast as xdt:untypedAtomic</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2005/04/xpath-datatypes}dayTimeDuration to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) cast as xs:string</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) cast as xs:duration</arg>
+    <output>PT0S</output>
+  </base>
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) cast as xdt:dayTimeDuration</arg>
+    <output>PT0S</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xdt:untypedAtomic</arg>
+    <output>2003-08-05T19:11:00</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}dateTime to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xs:string</arg>
+    <output>2003-08-05T19:11:00</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xs:dateTime</arg>
+    <output>2003-08-05T19:11:00</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xs:time</arg>
+    <output>19:11:00</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xs:date</arg>
+    <output>2003-08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xs:gYearMonth</arg>
+    <output>2003-08</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xs:gYear</arg>
+    <output>2003</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xs:gMonth</arg>
+    <output>--08</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xs:gMonthDay</arg>
+    <output>--08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-05T19:11:00&quot;) cast as xs:gDay</arg>
+    <output>---05</output>
+  </base>
+  
+  <base type="pass">
+    <arg>xs:time(&quot;19:11:00&quot;) cast as xdt:untypedAtomic</arg>
+    <output>19:11:00</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;19:11:00&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}time to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;19:11:00&quot;) cast as xs:string</arg>
+    <output>19:11:00</output>
+  </base>
+  <base comment="depends on the current time" type="fail">
+    <arg>xs:time(&quot;19:11:00&quot;) cast as xs:dateTime</arg>
+    <output>2003-08-12T19:11:00</output>
+  </base>
+  <base type="pass">
+    <arg>xs:time(&quot;19:11:00&quot;) cast as xs:time</arg>
+    <output>19:11:00</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) cast as xdt:untypedAtomic</arg>
+    <output>2003-08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}date to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) cast as xs:string</arg>
+    <output>2003-08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) cast as xs:dateTime</arg>
+    <output>2003-08-05T00:00:00</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) cast as xs:date</arg>
+    <output>2003-08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) cast as xs:gYearMonth</arg>
+    <output>2003-08</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) cast as xs:gYear</arg>
+    <output>2003</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) cast as xs:gMonth</arg>
+    <output>--08</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) cast as xs:gMonthDay</arg>
+    <output>--08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-05&quot;) cast as xs:gDay</arg>
+    <output>---05</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) cast as xdt:untypedAtomic</arg>
+    <output>2003-08</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}gYearMonth to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) cast as xs:string</arg>
+    <output>2003-08</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) cast as xs:gYearMonth</arg>
+    <output>2003-08</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) cast as xdt:untypedAtomic</arg>
+    <output>2003</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}gYear to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) cast as xs:string</arg>
+    <output>2003</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) cast as xs:gYear</arg>
+    <output>2003</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) cast as xdt:untypedAtomic</arg>
+    <output>--08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}gMonthDay to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) cast as xs:string</arg>
+    <output>--08-05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) cast as xs:gMonthDay</arg>
+    <output>--08-05</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) cast as xdt:untypedAtomic</arg>
+    <output>---05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}gDay to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) cast as xs:string</arg>
+    <output>---05</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) cast as xs:gDay</arg>
+    <output>---05</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) cast as xdt:untypedAtomic</arg>
+    <output>--08</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}gMonth to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) cast as xs:string</arg>
+    <output>--08</output>
+  </base>
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) cast as xs:gMonth</arg>
+    <output>--08</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) cast as xdt:untypedAtomic</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}boolean to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) cast as xs:string</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) cast as xs:float</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) cast as xs:decimal</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) cast as xs:double</arg>
+    <output>1</output>
+  </base>
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) cast as xs:boolean</arg>
+    <output>true</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) cast as xdt:untypedAtomic</arg>
+    <output>abcd</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}base64Binary to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) cast as xs:string</arg>
+    <output>abcd</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) cast as xs:base64Binary</arg>
+    <output>abcd</output>
+  </base>
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) cast as xs:hexBinary</arg>
+    <output>69B71D</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) cast as xdt:untypedAtomic</arg>
+    <output>ABCD</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}hexBinary to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) cast as xs:string</arg>
+    <output>ABCD</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) cast as xs:hexBinary</arg>
+    <output>ABCD</output>
+  </base>
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) cast as xs:base64Binary</arg>
+    <output>q80=</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.com&quot;) cast as xdt:untypedAtomic</arg>
+    <output>http://example.com</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.com&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}anyURI to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.com&quot;) cast as xs:string</arg>
+    <output>http://example.com</output>
+  </base>
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.com&quot;) cast as xs:anyURI</arg>
+    <output>http://example.com</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) cast as xdt:untypedAtomic</arg>
+    <output>xs:integer</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) cast as xs:anySimpleType</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}QName to {http://www.w3.org/2001/XMLSchema}anySimpleType is not supported [err:FORG0001]</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) cast as xs:string</arg>
+    <output>xs:integer</output>
+  </base>
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) cast as xs:QName</arg>
+    <output>http://www.w3.org/2001/XMLSchema:integer</output>
+  </base>
+
+  <base comment="specs not clear about this" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) cast as foo:Notation</arg>
+    <output>http://foo:gif</output>
+  </base>
+  <base comment="specs not clear about this - Not sure if this should pass or fail -- crioux" type="fail">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) cast as xs:NOTATION</arg>
+    <output>http://foo:gif</output>
+  </base>
+
+  <base type="pass">
+    <arg>xdt:untypedAtomic(&quot;1&quot;) cast as xs:NOTATION</arg>
+    <output>Casting from {http://www.w3.org/2005/04/xpath-datatypes}untypedAtomic to {http://www.w3.org/2001/XMLSchema}NOTATION is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:anySimpleType(&quot;1&quot;) cast as xs:NOTATION</arg>
+    <output>Invalid representation of anySimpleType</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:string(&quot;1&quot;) cast as xs:NOTATION</arg>
+    <output>Invalid lexical value [err:FORG0001]</output>
+  </base>
+  
+  <base type="pass">
+    <arg>xs:float(&quot;1&quot;) cast as xs:duration</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}float to {http://www.w3.org/2001/XMLSchema}duration is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:double(&quot;1&quot;) cast as xdt:yearMonthDuration</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}double to {http://www.w3.org/2005/04/xpath-datatypes}yearMonthDuration is not supported [err:FORG0001]</output>
+  </base>  
+  
+  <base type="pass">
+    <arg>xs:decimal(&quot;1&quot;) cast as xdt:dayTimeDuration</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}decimal to {http://www.w3.org/2005/04/xpath-datatypes}dayTimeDuration is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:duration(&quot;PT0S&quot;) cast as xs:dateTime</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}duration to {http://www.w3.org/2001/XMLSchema}dateTime is not supported [err:FORG0001]</output>
+  </base>
+ 
+  <base type="pass">
+    <arg>xdt:yearMonthDuration(&quot;P0M&quot;) cast as xs:float</arg>
+    <output>Casting from {http://www.w3.org/2005/04/xpath-datatypes}yearMonthDuration to {http://www.w3.org/2001/XMLSchema}float is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) cast as xs:float</arg>
+    <output>Casting from {http://www.w3.org/2005/04/xpath-datatypes}dayTimeDuration to {http://www.w3.org/2001/XMLSchema}float is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xdt:dayTimeDuration(&quot;PT0S&quot;) cast as xdt:yearMonthDuration</arg>
+    <output>Invalid representation of duration</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:dateTime(&quot;2003-08-06T12:57:00&quot;) cast as xs:duration</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}dateTime to {http://www.w3.org/2001/XMLSchema}duration is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:time(&quot;12:57:00&quot;) cast as xs:gYearMonth</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}time to {http://www.w3.org/2001/XMLSchema}gYearMonth is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:date(&quot;2003-08-06&quot;) cast as xs:boolean</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}date to {http://www.w3.org/2001/XMLSchema}boolean is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gYearMonth(&quot;2003-08&quot;) cast as xs:gMonthDay</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}gYearMonth to {http://www.w3.org/2001/XMLSchema}gMonthDay is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gYear(&quot;2003&quot;) cast as xs:gMonthDay</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}gYear to {http://www.w3.org/2001/XMLSchema}gMonthDay is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:gMonthDay(&quot;--08-05&quot;) cast as xs:decimal</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}gMonthDay to {http://www.w3.org/2001/XMLSchema}decimal is not supported [err:FORG0001]</output>
+  </base>
+  
+  <base type="pass">
+    <arg>xs:gDay(&quot;---05&quot;) cast as xs:time</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}gDay to {http://www.w3.org/2001/XMLSchema}time is not supported [err:FORG0001]</output>
+  </base>
+  
+  <base type="pass">
+    <arg>xs:gMonth(&quot;--08&quot;) cast as xs:date</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}gMonth to {http://www.w3.org/2001/XMLSchema}date is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:boolean(&quot;true&quot;) cast as xs:duration</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}boolean to {http://www.w3.org/2001/XMLSchema}duration is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:base64Binary(&quot;abcd&quot;) cast as xs:boolean</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}base64Binary to {http://www.w3.org/2001/XMLSchema}boolean is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:hexBinary(&quot;abcd&quot;) cast as xs:double</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}hexBinary to {http://www.w3.org/2001/XMLSchema}double is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:anyURI(&quot;http://example.org&quot;) cast as xs:dateTime</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}anyURI to {http://www.w3.org/2001/XMLSchema}dateTime is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>xs:QName(&quot;xs:integer&quot;) cast as xs:hexBinary</arg>
+    <output>Casting from {http://www.w3.org/2001/XMLSchema}QName to {http://www.w3.org/2001/XMLSchema}hexBinary is not supported [err:FORG0001]</output>
+  </base>
+
+  <base type="pass">
+    <arg>foo:Notation(&quot;http://foo:gif&quot;) cast as xdt:untypedAtomic</arg>
+    <output>Construction of xs:NOTATION is forbidden</output>
+  </base>
+
+
+</test>

@@ -1,0 +1,23 @@
+# Coordinate System Categories Description File
+#
+# The following format is used to define the categories and the coordinate systems in the categories.
+# [CATEGORY]
+# Filename
+
+[EPSG]
+epsg
+
+[ESRI]
+esri
+
+[Great Lakes Grids]
+GL27
+
+[North American Datum 1927]
+nad27
+
+[North American Datum 1983]
+nad83
+
+[World/Continental]
+world

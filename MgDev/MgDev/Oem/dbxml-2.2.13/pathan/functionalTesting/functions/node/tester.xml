@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="functions">
+  <policies>
+    <policy name="nodes">
+      <addArg>-N</addArg>
+      <addArg>ha</addArg>
+      <addArg>http://sluggy.com</addArg>
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>for $i in (children/fred/ron/hermione)[1] return root($i)</arg>
+    <output>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot; ?&gt;&lt;testcase xml:lang=&quot;en&quot; xmlns:hee=&quot;http://theborg.org&quot;&gt;
+  &lt;zvonimir&gt;Some Text&lt;/zvonimir&gt;
+  &lt;zvonimir&gt;Some &lt;!--commented--&gt;Text&lt;/zvonimir&gt;
+  &lt;zvonimir&gt;Some Text&lt;!--with comments--&gt;&lt;/zvonimir&gt;
+  &lt;zvonimir&gt;Some Text&lt;?with processing instructions?&gt;&lt;/zvonimir&gt;
+  &lt;zvonimir&gt;Some Text&lt;irena/&gt;&lt;/zvonimir&gt;
+  &lt;zvonimir&gt;Some &lt;!--commented--&gt;Text&lt;irena/&gt;&lt;/zvonimir&gt;
+  &lt;zvonimir&gt;Some Text&lt;!--with comments--&gt;&lt;irena/&gt;&lt;/zvonimir&gt;
+  &lt;zvonimir&gt;&lt;irena/&gt;Some Text&lt;/zvonimir&gt;
+  &lt;zvonimir&gt;&lt;irena/&gt;Some &lt;!--commented--&gt;Text&lt;/zvonimir&gt;
+  &lt;zvonimir&gt;&lt;irena/&gt;Some Text&lt;!--with comments--&gt;&lt;/zvonimir&gt;
+  &lt;zvonimir&gt;&lt;irena/&gt;Some Text&lt;?with processing instructions?&gt;&lt;/zvonimir&gt;
+  &lt;yves country=&quot;germany&quot;/&gt;
+  &lt;yves country=&quot;france&quot;/&gt;
+  &lt;yves hee:land=&quot;germany&quot;/&gt;
+  &lt;yves country=&quot;germany&quot;/&gt;
+  &lt;yves/&gt;
+  &lt;namespace-stuff xml:lang=&quot;en-us&quot; xmlns:ha=&quot;http://sluggy.com&quot; xmlns:ho=&quot;http://sluggy.com&quot;&gt;
+    &lt;ha:fred xml:lang=&quot;ab&quot;/&gt;
+    &lt;ho:fred xml:lang=&quot;ab&quot;/&gt;
+    &lt;ha:george/&gt;
+    &lt;hee:fred/&gt;
+    &lt;ha:fred/&gt;
+  &lt;/namespace-stuff&gt;
+  &lt;children&gt;
+    &lt;fred&gt;
+      &lt;ron&gt;
+        &lt;hermione&gt;74&lt;/hermione&gt;
+      &lt;/ron&gt;
+      &lt;harry&gt;string&lt;/harry&gt;
+    &lt;/fred&gt;
+    &lt;fred&gt;
+      &lt;harry&gt;8.12948427&lt;/harry&gt;
+      &lt;ron&gt;
+        &lt;hermione/&gt;
+      &lt;/ron&gt;
+    &lt;/fred&gt;
+    &lt;fred&gt;
+      &lt;ron&gt;
+      &lt;/ron&gt;
+      &lt;harry/&gt;
+    &lt;/fred&gt;
+  &lt;/children&gt;
+&lt;/testcase&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>name(//zvonimir[1])</arg>
+    <output>zvonimir
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $i in namespace-stuff/* return name($i)</arg>
+    <output>ha:fred
+ho:fred
+ha:george
+hee:fred
+ha:fred
+</output>
+  </base>
+  <base type="pass">
+    <arg>name(())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>name()</arg>
+    <output>testcase
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $i in //zvonimir[2]/node() return name($i)</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>for $i in //zvonimir[2]/node() return $i[name() = &quot;&quot;]</arg>
+    <output>Some 
+&lt;!--commented--&gt;
+Text
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $n in //namespace-stuff/namespace::* return name($n) </arg>
+    <output>xml
+ha
+ho
+hee
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $a in yves[1]/@* return name($a)</arg>
+    <output>country
+</output>
+  </base>
+  <base type="pass">
+    <arg>name(.)</arg>
+    <output>testcase
+</output>
+  </base>
+  <base type="pass">
+    <arg>name()</arg>
+    <output>testcase
+</output>
+  </base>
+  <base type="pass">
+    <arg>name(())</arg>
+    <output/>
+  </base>
+  <base comment="document" type="pass">
+    <arg>name(/)  </arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>name(/testcase/zvonimir[1])</arg>
+    <output>zvonimir
+</output>
+  </base>
+  <base type="pass">
+    <arg>name(/testcase/namespace-stuff/*[1])</arg>
+    <output>ha:fred
+</output>
+  </base>
+  <base type="pass">
+    <arg>name(/testcase/yves[1]/@country)</arg>
+    <output>country
+</output>
+  </base>
+  <base type="pass">
+    <arg>name(/testcase/namespace::*[2])</arg>
+    <output>hee
+</output>
+  </base>
+  <base type="pass">
+    <arg>name(/testcase/zvonimir[4]/text())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>name(/testcase/zvonimir[4]/processing-instruction())</arg>
+    <output>with
+</output>
+  </base>
+  <base type="pass">
+    <arg>name(/testcase/zvonimir[2]/comment())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>local-name()</arg>
+    <output>testcase
+</output>
+  </base>
+  <base type="pass">
+    <arg>local-name(())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>local-name(.)</arg>
+    <output>testcase
+</output>
+  </base>
+  <base comment="document" type="pass">
+    <arg>local-name(/)  </arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>local-name(/testcase/zvonimir[1])</arg>
+    <output>zvonimir
+</output>
+  </base>
+  <base type="pass">
+    <arg>local-name(/testcase/namespace-stuff/*[1])</arg>
+    <output>fred
+</output>
+  </base>
+  <base type="pass">
+    <arg>local-name(/testcase/yves[1]/@country)</arg>
+    <output>country
+</output>
+  </base>
+  <base type="pass">
+    <arg>local-name(/testcase/namespace::*[2])</arg>
+    <output>hee
+</output>
+  </base>
+  <base type="pass">
+    <arg>local-name(/testcase/zvonimir[4]/text())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>local-name(/testcase/zvonimir[4]/processing-instruction())</arg>
+    <output>with
+</output>
+  </base>
+  <base type="pass">
+    <arg>local-name(/testcase/zvonimir[2]/comment())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>namespace-uri()</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>namespace-uri(())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>namespace-uri(.)</arg>
+    <output/>
+  </base>
+  <base comment="document" type="pass">
+    <arg>namespace-uri(/)  </arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>namespace-uri(/testcase/zvonimir[1])</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>namespace-uri(/testcase/namespace-stuff/*[1])</arg>
+    <output>http://sluggy.com
+</output>
+  </base>
+  <base type="pass">
+    <arg>namespace-uri(/testcase/yves[3]/@*)</arg>
+    <output>http://theborg.org
+</output>
+  </base>
+  <base type="pass">
+    <arg>namespace-uri(/testcase/namespace::*[1])</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>namespace-uri(/testcase/zvonimir[4]/text())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>namespace-uri(/testcase/zvonimir[4]/processing-instruction())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>namespace-uri(/testcase/zvonimir[2]/comment())</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>number()</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(.)</arg>
+    <output>NaN
+</output>
+  </base>
+  <base comment="document" type="pass">
+    <arg>number(/)  </arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(/testcase/children/fred[1]/ron/hermione)</arg>
+    <output>74
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(/testcase/children/fred[1]/harry)</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(/testcase/children/fred[2]/ron/hermione)</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(/testcase/namespace::*[1])</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(/testcase/zvonimir[4]/text())</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(/testcase/zvonimir[4]/processing-instruction())</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(/testcase/zvonimir[2]/comment())</arg>
+    <output>NaN
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(&quot;2&quot;)</arg>
+    <output>2
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(xs:boolean(&quot;true&quot;))</arg>
+    <output>1
+</output>
+  </base>
+  <base type="pass">
+    <arg>number(xs:string(&quot;INF&quot;))</arg>
+    <output>INF
+</output>
+  </base>
+  <base type="pass">
+    <arg>lang(&quot;en&quot;)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>base-uri(zvonimir[1])</arg>
+    <output>file://$PWD$/test.xml
+</output>
+  </base>
+  <base type="pass">
+    <arg>base-uri(/)</arg>
+    <output>file://$PWD$/test.xml
+</output>
+  </base>
+  <base comment="text node" type="pass">
+    <arg>base-uri(zvonimir[1]/node())     </arg>
+    <output>file://$PWD$/test.xml
+</output>
+  </base>
+  <base comment="comment node" type="pass">
+    <arg>base-uri(zvonimir[2]/node()[2])  </arg>
+    <output>file://$PWD$/test.xml
+</output>
+  </base>
+  <base comment="processing instruction" type="pass">
+    <arg>base-uri(zvonimir[4]/node()[2])  </arg>
+    <output>file://$PWD$/test.xml
+</output>
+  </base>
+  <base type="pass">
+    <arg>/testcase/zvonimir[1] &lt;&lt; /testcase/zvonimir[2]</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>/testcase/zvonimir[1] is /testcase/zvonimir[1]</arg>
+    <output>true</output>
+  </base>
+  <base type="pass">
+    <arg>/testcase/zvonimir[2] is /testcase/zvonimir[3]</arg>
+    <output>false</output>
+  </base>
+  <base type="pass">
+    <arg>/testcase/zvonimir[8]/irena &gt;&gt; /testcase/zvonimir[8]</arg>
+    <output>true</output>
+  </base>
+<base type="pass"><arg>/testcase/namespace-stuff[lang(&quot;en&quot;)]</arg><output>&lt;namespace-stuff xml:lang=&quot;en-us&quot; xmlns:ha=&quot;http://sluggy.com&quot; xmlns:ho=&quot;http://sluggy.com&quot;&gt;
+    &lt;ha:fred xml:lang=&quot;ab&quot;/&gt;
+    &lt;ho:fred xml:lang=&quot;ab&quot;/&gt;
+    &lt;ha:george/&gt;
+    &lt;hee:fred xmlns:hee=&quot;http://theborg.org&quot;/&gt;
+    &lt;ha:fred/&gt;
+  &lt;/namespace-stuff&gt;</output></base><base type="pass"><arg>/testcase/namespace-stuff/ha:fred[1][lang(&quot;ab&quot;)]</arg><output>&lt;ha:fred xmlns:ha=&quot;http://sluggy.com&quot; xml:lang=&quot;ab&quot;/&gt;</output></base><base type="pass"><arg>/testcase/namespace-stuff/ha:fred[1][lang(&quot;abc&quot;)]</arg><output></output></base><base type="pass"><arg>/testcase/namespace-stuff[lang(&quot;en-us&quot;)]</arg><output>&lt;namespace-stuff xml:lang=&quot;en-us&quot; xmlns:ha=&quot;http://sluggy.com&quot; xmlns:ho=&quot;http://sluggy.com&quot;&gt;
+    &lt;ha:fred xml:lang=&quot;ab&quot;/&gt;
+    &lt;ho:fred xml:lang=&quot;ab&quot;/&gt;
+    &lt;ha:george/&gt;
+    &lt;hee:fred xmlns:hee=&quot;http://theborg.org&quot;/&gt;
+    &lt;ha:fred/&gt;
+  &lt;/namespace-stuff&gt;</output></base></test>

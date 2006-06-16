@@ -1,0 +1,103 @@
+<XQuery>
+  <FLWOR>
+    <LetBinding name="ent">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+          <OQPlan>V(node-element-equality-string,hw,=,'you')</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="dictionary" nodeType="element"/>
+        <Step axis="child" name="e" nodeType="element"/>
+        <DbXmlFilter>
+          <Navigation>
+            <Step axis="child" name="hwg" nodeType="element"/>
+            <Step axis="child" name="hw" nodeType="element">
+              <OQPlan>V(node-element-equality-string,hw,=,'you')</OQPlan>
+            </Step>
+            <DbXmlCompare name="equal">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="you" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </Navigation>
+        </DbXmlFilter>
+      </Navigation>
+    </LetBinding>
+    <ForBinding name="prevEnt">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+          <OQPlan>U</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="dictionary" nodeType="element"/>
+        <Step axis="child" name="e" nodeType="element">
+          <Predicates>
+            <SomeFLWOR>
+              <ForBinding name="a">
+                <Navigation>
+                  <Step axis="child" name="hwg" nodeType="element"/>
+                  <Step axis="child" name="hw" nodeType="element">
+                    <OQPlan>P(node-element-equality-string,prefix,hw)</OQPlan>
+                  </Step>
+                </Navigation>
+              </ForBinding>
+              <Operator name="node-order">
+                <Variable name="a"/>
+                <Variable name="ent"/>
+              </Operator>
+            </SomeFLWOR>
+            <Operator name="equal">
+              <Function name="{http://www.w3.org/2005/04/xpath-functions}:position"/>
+              <Function name="{http://www.w3.org/2005/04/xpath-functions}:last"/>
+            </Operator>
+          </Predicates>
+        </Step>
+      </Navigation>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="CurrentEntry" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Navigation>
+              <Variable name="ent"/>
+              <Step axis="child" name="hwg" nodeType="element"/>
+              <Step axis="child" name="hw" nodeType="element">
+                <OQPlan>P(node-element-equality-string,prefix,hw)</OQPlan>
+              </Step>
+              <Step axis="child">
+                <ItemType testType="text"/>
+              </Step>
+            </Navigation>
+          </Children>
+        </DOMConstructor>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="PreviousEntry" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Navigation>
+              <Variable name="prevEnt"/>
+              <Step axis="child" name="hwg" nodeType="element"/>
+              <Step axis="child" name="hw" nodeType="element">
+                <OQPlan>P(node-element-equality-string,prefix,hw)</OQPlan>
+              </Step>
+              <Step axis="child">
+                <ItemType testType="text"/>
+              </Step>
+            </Navigation>
+          </Children>
+        </DOMConstructor>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

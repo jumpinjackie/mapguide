@@ -1,0 +1,23 @@
+#
+# Makefile.bor,v 1.4 2003/12/20 14:21:14 jwillemsen Exp
+#
+#----------------------------------------------------------------------------
+#       Borland Workspace
+#----------------------------------------------------------------------------
+
+!include <$(ACE_ROOT)\include\makeinclude\make_flags.bor>
+
+all:
+	$(MAKE) -$(MAKEFLAGS) $(MAKE_FLAGS) -f Makefile.SAXPrint.bor all
+
+clean:
+	$(MAKE) -$(MAKEFLAGS) $(MAKE_FLAGS) -f Makefile.SAXPrint.bor clean
+
+realclean:
+	$(MAKE) -$(MAKEFLAGS) $(MAKE_FLAGS) -f Makefile.SAXPrint.bor realclean
+
+install:
+	$(MAKE) -$(MAKEFLAGS) $(MAKE_FLAGS) -f Makefile.SAXPrint.bor install
+
+regenerate:
+	/usr/bin/perl /build/kitty/ACE_wrappers/bin/mwc.pl -type borland ACEXML.mwc

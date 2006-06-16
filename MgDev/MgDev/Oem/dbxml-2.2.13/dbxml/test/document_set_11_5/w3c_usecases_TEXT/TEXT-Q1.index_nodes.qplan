@@ -1,0 +1,16 @@
+<XQuery>
+  <Navigation>
+    <QueryPlanFunction result="document" container="11.5.6.dbxml">
+      <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'string.xml',n(V(edge-element-substring-string,news_item.title,=,'foo'),V(edge-element-substring-string,news_item.title,=,'oob'),V(edge-element-substring-string,news_item.title,=,'oba'),V(edge-element-substring-string,news_item.title,=,'bar'),V(edge-element-substring-string,news_item.title,=,'arc'),V(edge-element-substring-string,news_item.title,=,'rco'),V(edge-element-substring-string,news_item.title,=,'cor'),V(edge-element-substring-string,news_item.title,=,'orp'),V(edge-element-substring-string,news_item.title,=,'rpo'),V(edge-element-substring-string,news_item.title,=,'por'),V(edge-element-substring-string,news_item.title,=,'ora'),V(edge-element-substring-string,news_item.title,=,'rat'),V(edge-element-substring-string,news_item.title,=,'ati'),V(edge-element-substring-string,news_item.title,=,'tio'),V(edge-element-substring-string,news_item.title,=,'ion')))</OQPlan>
+    </QueryPlanFunction>
+    <Step axis="descendant" name="news_item" nodeType="element"/>
+    <Step axis="child" name="title" nodeType="element">
+      <OQPlan>n(V(edge-element-substring-string,news_item.title,=,'foo'),V(edge-element-substring-string,news_item.title,=,'oob'),V(edge-element-substring-string,news_item.title,=,'oba'),V(edge-element-substring-string,news_item.title,=,'bar'),V(edge-element-substring-string,news_item.title,=,'arc'),V(edge-element-substring-string,news_item.title,=,'rco'),V(edge-element-substring-string,news_item.title,=,'cor'),V(edge-element-substring-string,news_item.title,=,'orp'),V(edge-element-substring-string,news_item.title,=,'rpo'),V(edge-element-substring-string,news_item.title,=,'por'),V(edge-element-substring-string,news_item.title,=,'ora'),V(edge-element-substring-string,news_item.title,=,'rat'),V(edge-element-substring-string,news_item.title,=,'ati'),V(edge-element-substring-string,news_item.title,=,'tio'),V(edge-element-substring-string,news_item.title,=,'ion'))</OQPlan>
+    </Step>
+    <DbXmlContains>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Foobar Corporation" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </DbXmlContains>
+  </Navigation>
+</XQuery>

@@ -1,0 +1,3 @@
+../@lang selects the lang attribute of the parent of the context node
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+{}lang="olist-lang"

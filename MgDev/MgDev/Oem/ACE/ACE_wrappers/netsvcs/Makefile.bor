@@ -1,0 +1,9 @@
+#
+# Makefile.bor,v 4.6 2003/12/21 10:08:34 jwillemsen Exp
+#
+# Makefile for building the netsvcs
+#
+
+DIRS = lib clients servers
+
+!include <$(ACE_ROOT)\include\makeinclude\recurse.bor>

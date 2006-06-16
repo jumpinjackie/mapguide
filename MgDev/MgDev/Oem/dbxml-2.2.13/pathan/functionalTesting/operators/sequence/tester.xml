@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="sequence_operators">
+  <policies>
+    <policy name="flexible">
+      <addArg>-f</addArg>
+    </policy>
+    <policy name="strict"/>
+    <default>
+      <program>../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>(1,2,3,4)=(1,1,1,1)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,2,3,4)=(2,2,2)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,2,3,4)=(5,6,7,8)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,2,3,4)!=(1,2,3,4)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,1,1,1)!=(1,1,1,1)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,2,3,4)!=(5,6,7,8)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,1,1,1)!=(1,1,1)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,1,1)&lt;(1,1,1,1)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,2,3,4)&lt;(1,1,1,1)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,2,3,4)&lt;(2,0,0,0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(0,0,0,0)&gt;=(1,1,1)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(-1,0,1)&gt;=(1,1,1)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(-1,-1,2)&gt;=(1,1,1)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(-1,-1,1)&gt;=(1,1,1)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(2,-1)&gt;=(1,12,362)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,1,1)&lt;=(0,0,0,0)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,1,1)&lt;=(1,1,1,1)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,2,3,4)&lt;=(1,1,1,1)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,2,3,4)&lt;=(2,0,0,0)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(0,0,0,0)&gt;=(1,1,1)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(-1,0,0)&gt;=(1,1,1)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>(-1,-1,1)&gt;=(1,1,1)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(-1,-1,2)&gt;=(1,1,1)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(2,-1)&gt;=(1,12,362)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,2,3,4,5)</arg>
+    <output>1
+2
+3
+4
+5
+</output>
+  </base>
+  <base type="pass">
+    <arg>(1,2,3,4,5)[. mod 2 eq 0]</arg>
+    <output>2
+4
+</output>
+  </base>
+  <base type="pass">
+    <arg>()</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>(&quot;hello&quot;, &quot;goodbye&quot;)[.=&quot;goodbye&quot;]</arg>
+    <output>goodbye
+</output>
+  </base>
+  <base comment="- bug 2141" type="pass">
+    <arg>1 to 7  </arg>
+    <output>1
+2
+3
+4
+5
+6
+7
+</output>
+  </base>
+  <base comment="descending ranges are now prohibited" type="pass">
+    <arg>1 to -7</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>((1,2,3),(4,5,6)) = (1,2,3,4,5,6)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>((1,2),()) = (1,2)</arg>
+    <output>true
+</output>
+  </base>
+  <base comment="if any of the operands are empty, return empty (which evaluates to false)" type="pass">
+    <arg>((),()) = ()  </arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>( () = () ) = ( () = () )</arg>
+    <output>true
+</output>
+  </base>
+</test>

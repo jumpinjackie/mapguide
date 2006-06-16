@@ -1,0 +1,6 @@
+//  -*- MPC -*-
+// FIFO.mpc,v 1.2 2003/11/10 04:31:59 dhinton Exp
+
+project: kokyu {
+  exename = FIFO
+}

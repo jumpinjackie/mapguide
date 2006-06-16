@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="3.2.4">
+  <policies>
+    <policy name="">
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>/para/doc/chapter/section/para</arg>
+    <output>&lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>div1//para</arg>
+    <output>&lt;para type=&quot;warning&quot;&gt;&quot;Divvie&quot; meant &quot;idiot&quot; in the part of Scotland where I was born.&lt;/para&gt;
+&lt;para&gt;But I didn't live there long.&lt;/para&gt;
+&lt;para&gt;It was very nice, though.&lt;/para&gt;
+&lt;para&gt;Test of nested para tags- 
+          &lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+        &lt;/para&gt;
+&lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//div1//para[1]</arg>
+    <output>&lt;para type=&quot;warning&quot;&gt;&quot;Divvie&quot; meant &quot;idiot&quot; in the part of Scotland where I was born.&lt;/para&gt;
+&lt;para&gt;But I didn't live there long.&lt;/para&gt;
+&lt;para&gt;Test of nested para tags- 
+          &lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+        &lt;/para&gt;
+&lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/para/descendant::para[1]</arg>
+    <output>&lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>.</arg>
+    <output>&lt;para xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.theborg.org test.xsd&quot;&gt;
+  &lt;title&gt;A tale of Sound and Fury, Told by an Idiot&lt;/title&gt;
+  &lt;subtitle&gt;signifying nothing&lt;/subtitle&gt;
+  &lt;doc lang=&quot;kurdish&quot; name=&quot;Inanna&quot;&gt;
+    &lt;chapter&gt;&lt;title&gt;Introduction&lt;/title&gt;&lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;title&gt;The Adventures of Stoke Mandeville, Astronaut and Gentleman &lt;/title&gt;
+    &lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;section&gt;
+        &lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+      &lt;/section&gt;
+      &lt;section/&gt;
+    &lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;section/&gt;
+    &lt;/chapter&gt;  
+    &lt;chapter&gt;
+      &lt;section title=&quot;Axes in XPath 2.0&quot;&gt;
+        &lt;list&gt;
+          &lt;member&gt;child&lt;/member&gt;
+          &lt;member&gt;parent&lt;/member&gt;
+          &lt;member&gt;descendant&lt;/member&gt;
+          &lt;member&gt;ancestor&lt;/member&gt;
+          &lt;member&gt;ancestor-or-self&lt;/member&gt;
+          &lt;member&gt;descendant-or-self&lt;/member&gt;
+          &lt;member&gt;namespace&lt;/member&gt;
+          &lt;member&gt;attribute&lt;/member&gt;
+          &lt;member&gt;self&lt;/member&gt;
+          &lt;member&gt;preceding-sibling&lt;/member&gt;
+          &lt;member&gt;following-sibling&lt;/member&gt;
+          &lt;member&gt;preceding&lt;/member&gt;
+          &lt;member&gt;following&lt;/member&gt;
+        &lt;/list&gt;
+      &lt;/section&gt;
+      &lt;section title=&quot;Xpath 2.0&quot;/&gt;
+    &lt;/chapter&gt;  
+    &lt;appendix&gt;
+      &lt;section title=&quot;That's all, folks!&quot;/&gt;
+    &lt;/appendix&gt;
+  &lt;/doc&gt;
+  &lt;div1&gt;
+    &lt;para type=&quot;warning&quot;&gt;&quot;Divvie&quot; meant &quot;idiot&quot; in the part of Scotland where I was born.&lt;/para&gt;
+    &lt;section&gt;
+      &lt;para&gt;But I didn't live there long.&lt;/para&gt;
+      &lt;para&gt;It was very nice, though.&lt;/para&gt;
+      &lt;subsection&gt;
+        &lt;para&gt;Test of nested para tags- 
+          &lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+        &lt;/para&gt;
+      &lt;/subsection&gt;
+    &lt;/section&gt;
+  &lt;/div1&gt;
+&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//subtitle/../title</arg>
+    <output>&lt;title&gt;A tale of Sound and Fury, Told by an Idiot&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/para</arg>
+    <output>&lt;para xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.theborg.org test.xsd&quot;&gt;
+  &lt;title&gt;A tale of Sound and Fury, Told by an Idiot&lt;/title&gt;
+  &lt;subtitle&gt;signifying nothing&lt;/subtitle&gt;
+  &lt;doc lang=&quot;kurdish&quot; name=&quot;Inanna&quot;&gt;
+    &lt;chapter&gt;&lt;title&gt;Introduction&lt;/title&gt;&lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;title&gt;The Adventures of Stoke Mandeville, Astronaut and Gentleman &lt;/title&gt;
+    &lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;section&gt;
+        &lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+      &lt;/section&gt;
+      &lt;section/&gt;
+    &lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;section/&gt;
+    &lt;/chapter&gt;  
+    &lt;chapter&gt;
+      &lt;section title=&quot;Axes in XPath 2.0&quot;&gt;
+        &lt;list&gt;
+          &lt;member&gt;child&lt;/member&gt;
+          &lt;member&gt;parent&lt;/member&gt;
+          &lt;member&gt;descendant&lt;/member&gt;
+          &lt;member&gt;ancestor&lt;/member&gt;
+          &lt;member&gt;ancestor-or-self&lt;/member&gt;
+          &lt;member&gt;descendant-or-self&lt;/member&gt;
+          &lt;member&gt;namespace&lt;/member&gt;
+          &lt;member&gt;attribute&lt;/member&gt;
+          &lt;member&gt;self&lt;/member&gt;
+          &lt;member&gt;preceding-sibling&lt;/member&gt;
+          &lt;member&gt;following-sibling&lt;/member&gt;
+          &lt;member&gt;preceding&lt;/member&gt;
+          &lt;member&gt;following&lt;/member&gt;
+        &lt;/list&gt;
+      &lt;/section&gt;
+      &lt;section title=&quot;Xpath 2.0&quot;/&gt;
+    &lt;/chapter&gt;  
+    &lt;appendix&gt;
+      &lt;section title=&quot;That's all, folks!&quot;/&gt;
+    &lt;/appendix&gt;
+  &lt;/doc&gt;
+  &lt;div1&gt;
+    &lt;para type=&quot;warning&quot;&gt;&quot;Divvie&quot; meant &quot;idiot&quot; in the part of Scotland where I was born.&lt;/para&gt;
+    &lt;section&gt;
+      &lt;para&gt;But I didn't live there long.&lt;/para&gt;
+      &lt;para&gt;It was very nice, though.&lt;/para&gt;
+      &lt;subsection&gt;
+        &lt;para&gt;Test of nested para tags- 
+          &lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+        &lt;/para&gt;
+      &lt;/subsection&gt;
+    &lt;/section&gt;
+  &lt;/div1&gt;
+&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/para/*</arg>
+    <output>&lt;title&gt;A tale of Sound and Fury, Told by an Idiot&lt;/title&gt;
+&lt;subtitle&gt;signifying nothing&lt;/subtitle&gt;
+&lt;doc lang=&quot;kurdish&quot; name=&quot;Inanna&quot;&gt;
+    &lt;chapter&gt;&lt;title&gt;Introduction&lt;/title&gt;&lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;title&gt;The Adventures of Stoke Mandeville, Astronaut and Gentleman &lt;/title&gt;
+    &lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;section&gt;
+        &lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+      &lt;/section&gt;
+      &lt;section/&gt;
+    &lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;section/&gt;
+    &lt;/chapter&gt;  
+    &lt;chapter&gt;
+      &lt;section title=&quot;Axes in XPath 2.0&quot;&gt;
+        &lt;list&gt;
+          &lt;member&gt;child&lt;/member&gt;
+          &lt;member&gt;parent&lt;/member&gt;
+          &lt;member&gt;descendant&lt;/member&gt;
+          &lt;member&gt;ancestor&lt;/member&gt;
+          &lt;member&gt;ancestor-or-self&lt;/member&gt;
+          &lt;member&gt;descendant-or-self&lt;/member&gt;
+          &lt;member&gt;namespace&lt;/member&gt;
+          &lt;member&gt;attribute&lt;/member&gt;
+          &lt;member&gt;self&lt;/member&gt;
+          &lt;member&gt;preceding-sibling&lt;/member&gt;
+          &lt;member&gt;following-sibling&lt;/member&gt;
+          &lt;member&gt;preceding&lt;/member&gt;
+          &lt;member&gt;following&lt;/member&gt;
+        &lt;/list&gt;
+      &lt;/section&gt;
+      &lt;section title=&quot;Xpath 2.0&quot;/&gt;
+    &lt;/chapter&gt;  
+    &lt;appendix&gt;
+      &lt;section title=&quot;That's all, folks!&quot;/&gt;
+    &lt;/appendix&gt;
+  &lt;/doc&gt;
+&lt;div1&gt;
+    &lt;para type=&quot;warning&quot;&gt;&quot;Divvie&quot; meant &quot;idiot&quot; in the part of Scotland where I was born.&lt;/para&gt;
+    &lt;section&gt;
+      &lt;para&gt;But I didn't live there long.&lt;/para&gt;
+      &lt;para&gt;It was very nice, though.&lt;/para&gt;
+      &lt;subsection&gt;
+        &lt;para&gt;Test of nested para tags- 
+          &lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+        &lt;/para&gt;
+      &lt;/subsection&gt;
+    &lt;/section&gt;
+  &lt;/div1&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//title/text()</arg>
+    <output>A tale of Sound and Fury, Told by an Idiot
+Introduction
+The Adventures of Stoke Mandeville, Astronaut and Gentleman 
+</output>
+  </base>
+  <base type="pass">
+    <arg>//doc/@name</arg>
+    <output>{}name=&quot;Inanna&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//doc/@*</arg>
+    <output>{}lang=&quot;kurdish&quot;
+{}name=&quot;Inanna&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/para/div1/section/para[1]</arg>
+    <output>&lt;para&gt;But I didn't live there long.&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/para/div1/section/para[last()]</arg>
+    <output>&lt;para&gt;It was very nice, though.&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/para/*/para</arg>
+    <output>&lt;para type=&quot;warning&quot;&gt;&quot;Divvie&quot; meant &quot;idiot&quot; in the part of Scotland where I was born.&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//doc/chapter[5]/section[2]</arg>
+    <output>&lt;section title=&quot;Xpath 2.0&quot;/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//chapter//para</arg>
+    <output>&lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+</output>
+  </base>
+  <base comment="must select document elt" type="pass">
+    <arg>//para  </arg>
+    <output>&lt;para xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.theborg.org test.xsd&quot;&gt;
+  &lt;title&gt;A tale of Sound and Fury, Told by an Idiot&lt;/title&gt;
+  &lt;subtitle&gt;signifying nothing&lt;/subtitle&gt;
+  &lt;doc lang=&quot;kurdish&quot; name=&quot;Inanna&quot;&gt;
+    &lt;chapter&gt;&lt;title&gt;Introduction&lt;/title&gt;&lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;title&gt;The Adventures of Stoke Mandeville, Astronaut and Gentleman &lt;/title&gt;
+    &lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;section&gt;
+        &lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+      &lt;/section&gt;
+      &lt;section/&gt;
+    &lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;section/&gt;
+    &lt;/chapter&gt;  
+    &lt;chapter&gt;
+      &lt;section title=&quot;Axes in XPath 2.0&quot;&gt;
+        &lt;list&gt;
+          &lt;member&gt;child&lt;/member&gt;
+          &lt;member&gt;parent&lt;/member&gt;
+          &lt;member&gt;descendant&lt;/member&gt;
+          &lt;member&gt;ancestor&lt;/member&gt;
+          &lt;member&gt;ancestor-or-self&lt;/member&gt;
+          &lt;member&gt;descendant-or-self&lt;/member&gt;
+          &lt;member&gt;namespace&lt;/member&gt;
+          &lt;member&gt;attribute&lt;/member&gt;
+          &lt;member&gt;self&lt;/member&gt;
+          &lt;member&gt;preceding-sibling&lt;/member&gt;
+          &lt;member&gt;following-sibling&lt;/member&gt;
+          &lt;member&gt;preceding&lt;/member&gt;
+          &lt;member&gt;following&lt;/member&gt;
+        &lt;/list&gt;
+      &lt;/section&gt;
+      &lt;section title=&quot;Xpath 2.0&quot;/&gt;
+    &lt;/chapter&gt;  
+    &lt;appendix&gt;
+      &lt;section title=&quot;That's all, folks!&quot;/&gt;
+    &lt;/appendix&gt;
+  &lt;/doc&gt;
+  &lt;div1&gt;
+    &lt;para type=&quot;warning&quot;&gt;&quot;Divvie&quot; meant &quot;idiot&quot; in the part of Scotland where I was born.&lt;/para&gt;
+    &lt;section&gt;
+      &lt;para&gt;But I didn't live there long.&lt;/para&gt;
+      &lt;para&gt;It was very nice, though.&lt;/para&gt;
+      &lt;subsection&gt;
+        &lt;para&gt;Test of nested para tags- 
+          &lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+        &lt;/para&gt;
+      &lt;/subsection&gt;
+    &lt;/section&gt;
+  &lt;/div1&gt;
+&lt;/para&gt;
+&lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+&lt;para type=&quot;warning&quot;&gt;&quot;Divvie&quot; meant &quot;idiot&quot; in the part of Scotland where I was born.&lt;/para&gt;
+&lt;para&gt;But I didn't live there long.&lt;/para&gt;
+&lt;para&gt;It was very nice, though.&lt;/para&gt;
+&lt;para&gt;Test of nested para tags- 
+          &lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+        &lt;/para&gt;
+&lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//list/member</arg>
+    <output>&lt;member&gt;child&lt;/member&gt;
+&lt;member&gt;parent&lt;/member&gt;
+&lt;member&gt;descendant&lt;/member&gt;
+&lt;member&gt;ancestor&lt;/member&gt;
+&lt;member&gt;ancestor-or-self&lt;/member&gt;
+&lt;member&gt;descendant-or-self&lt;/member&gt;
+&lt;member&gt;namespace&lt;/member&gt;
+&lt;member&gt;attribute&lt;/member&gt;
+&lt;member&gt;self&lt;/member&gt;
+&lt;member&gt;preceding-sibling&lt;/member&gt;
+&lt;member&gt;following-sibling&lt;/member&gt;
+&lt;member&gt;preceding&lt;/member&gt;
+&lt;member&gt;following&lt;/member&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>.//para</arg>
+    <output>&lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+&lt;para type=&quot;warning&quot;&gt;&quot;Divvie&quot; meant &quot;idiot&quot; in the part of Scotland where I was born.&lt;/para&gt;
+&lt;para&gt;But I didn't live there long.&lt;/para&gt;
+&lt;para&gt;It was very nice, though.&lt;/para&gt;
+&lt;para&gt;Test of nested para tags- 
+          &lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+        &lt;/para&gt;
+&lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//subsection/..</arg>
+    <output>&lt;section&gt;
+      &lt;para&gt;But I didn't live there long.&lt;/para&gt;
+      &lt;para&gt;It was very nice, though.&lt;/para&gt;
+      &lt;subsection&gt;
+        &lt;para&gt;Test of nested para tags- 
+          &lt;para&gt;(This paragraph is inside the other one)&lt;/para&gt;
+        &lt;/para&gt;
+      &lt;/subsection&gt;
+    &lt;/section&gt;
+</output>
+  </base>
+  <base comment="Attributes are of type xs:anyURI for no apparent reason" type="pass">
+    <arg>/para/div1/para[@type=&quot;warning&quot;]</arg>
+    <output>&lt;para type=&quot;warning&quot;&gt;&quot;Divvie&quot; meant &quot;idiot&quot; in the part of Scotland where I was born.&lt;/para&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/descendant::para[5][@type=&quot;warning&quot;]</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//chapter[title=&quot;Introduction&quot;]</arg>
+    <output>&lt;chapter&gt;&lt;title&gt;Introduction&lt;/title&gt;&lt;/chapter&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//chapter[title]</arg>
+    <output>&lt;chapter&gt;&lt;title&gt;Introduction&lt;/title&gt;&lt;/chapter&gt;
+&lt;chapter&gt;
+      &lt;title&gt;The Adventures of Stoke Mandeville, Astronaut and Gentleman &lt;/title&gt;
+    &lt;/chapter&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//doc[@lang and @name]</arg>
+    <output>&lt;doc lang=&quot;kurdish&quot; name=&quot;Inanna&quot;&gt;
+    &lt;chapter&gt;&lt;title&gt;Introduction&lt;/title&gt;&lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;title&gt;The Adventures of Stoke Mandeville, Astronaut and Gentleman &lt;/title&gt;
+    &lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;section&gt;
+        &lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+      &lt;/section&gt;
+      &lt;section/&gt;
+    &lt;/chapter&gt;
+    &lt;chapter&gt;
+      &lt;section/&gt;
+    &lt;/chapter&gt;  
+    &lt;chapter&gt;
+      &lt;section title=&quot;Axes in XPath 2.0&quot;&gt;
+        &lt;list&gt;
+          &lt;member&gt;child&lt;/member&gt;
+          &lt;member&gt;parent&lt;/member&gt;
+          &lt;member&gt;descendant&lt;/member&gt;
+          &lt;member&gt;ancestor&lt;/member&gt;
+          &lt;member&gt;ancestor-or-self&lt;/member&gt;
+          &lt;member&gt;descendant-or-self&lt;/member&gt;
+          &lt;member&gt;namespace&lt;/member&gt;
+          &lt;member&gt;attribute&lt;/member&gt;
+          &lt;member&gt;self&lt;/member&gt;
+          &lt;member&gt;preceding-sibling&lt;/member&gt;
+          &lt;member&gt;following-sibling&lt;/member&gt;
+          &lt;member&gt;preceding&lt;/member&gt;
+          &lt;member&gt;following&lt;/member&gt;
+        &lt;/list&gt;
+      &lt;/section&gt;
+      &lt;section title=&quot;Xpath 2.0&quot;/&gt;
+    &lt;/chapter&gt;  
+    &lt;appendix&gt;
+      &lt;section title=&quot;That's all, folks!&quot;/&gt;
+    &lt;/appendix&gt;
+  &lt;/doc&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>doc/(chapter|appendix)/section</arg>
+    <output>&lt;section&gt;
+        &lt;para&gt;In the beginning, there was XPath 1.0.&lt;/para&gt;
+      &lt;/section&gt;
+&lt;section/&gt;
+&lt;section/&gt;
+&lt;section title=&quot;Axes in XPath 2.0&quot;&gt;
+        &lt;list&gt;
+          &lt;member&gt;child&lt;/member&gt;
+          &lt;member&gt;parent&lt;/member&gt;
+          &lt;member&gt;descendant&lt;/member&gt;
+          &lt;member&gt;ancestor&lt;/member&gt;
+          &lt;member&gt;ancestor-or-self&lt;/member&gt;
+          &lt;member&gt;descendant-or-self&lt;/member&gt;
+          &lt;member&gt;namespace&lt;/member&gt;
+          &lt;member&gt;attribute&lt;/member&gt;
+          &lt;member&gt;self&lt;/member&gt;
+          &lt;member&gt;preceding-sibling&lt;/member&gt;
+          &lt;member&gt;following-sibling&lt;/member&gt;
+          &lt;member&gt;preceding&lt;/member&gt;
+          &lt;member&gt;following&lt;/member&gt;
+        &lt;/list&gt;
+      &lt;/section&gt;
+&lt;section title=&quot;Xpath 2.0&quot;/&gt;
+&lt;section title=&quot;That's all, folks!&quot;/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>book/xs:ID(publisher)/name  </arg>
+    <output/>
+  </base>
+</test>

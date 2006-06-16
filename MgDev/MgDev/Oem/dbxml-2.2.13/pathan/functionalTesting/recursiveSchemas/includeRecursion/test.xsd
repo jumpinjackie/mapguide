@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This schema is interdependent with toInclude.xsd
+     Note nobody would really make a schema like this -->
+<xs:schema elementFormDefault='unqualified' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:foo='foofoo'>
+  
+  <xs:include schemaLocation="toInclude.xsd" />
+  <xs:element name="leaf" type="xs:string" />
+
+  <xs:element name="container">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="section" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

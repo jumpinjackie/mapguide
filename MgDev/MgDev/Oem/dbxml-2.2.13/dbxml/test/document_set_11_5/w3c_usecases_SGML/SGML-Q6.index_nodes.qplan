@@ -1,0 +1,34 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="s">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.5.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',P(edge-element-presence-none,prefix,section))</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="section" nodeType="element">
+              <OQPlan>P(edge-element-presence-none,prefix,section)</OQPlan>
+            </Step>
+            <Step axis="attribute" name="shorttitle" nodeType="attribute"/>
+          </Navigation>
+        </ForBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="stitle" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Variable name="s"/>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

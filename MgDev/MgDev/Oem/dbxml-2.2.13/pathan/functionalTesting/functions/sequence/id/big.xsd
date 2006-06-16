@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:foo="foofoo" elementFormDefault="unqualified" xmlns:lala="http://lala"  >
+
+<xs:element name="top" >
+<xs:complexType>
+<xs:sequence>
+  <xs:element name="att" type="xs:IDREF"/>
+  <xs:element name="atts" type="xs:IDREFS"/>
+  <xs:element name="ele" minOccurs="0" maxOccurs="unbounded">
+  <xs:complexType>
+		<xs:sequence>
+			<xs:element name="poo"/>
+		</xs:sequence>
+    <xs:attribute name="idAtt" type="xs:IDREF" />
+    <xs:attribute name="idAttr" type="xs:IDREFS" />
+    <xs:attribute name="idA" type="xs:ID" />
+  </xs:complexType>
+  </xs:element>
+
+		</xs:sequence>
+</xs:complexType>
+
+</xs:element>
+
+</xs:schema>

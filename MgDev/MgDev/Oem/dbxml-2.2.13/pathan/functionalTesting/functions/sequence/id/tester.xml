@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="functions">
+  <policies>
+    <policy name="sequence">
+      <addArg>big.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>idref(&quot;poo&quot;)</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>idref((&quot;bc(&quot;, &quot;ac&quot;, &quot;cba&quot;))</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>idref((&quot;frog&quot;, &quot;123&quot;, &quot;a&quot;, &quot;poo&quot;))</arg>
+    <output>{}idAttr=&quot;a ab abc&quot;
+&lt;att&gt;a&lt;/att&gt;
+&lt;atts&gt;abc a&lt;/atts&gt;
+&lt;atts&gt;a ab abc&lt;/atts&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>idref(&quot;a&quot;)</arg>
+    <output>{}idAttr=&quot;a ab abc&quot;
+&lt;att&gt;a&lt;/att&gt;
+&lt;atts&gt;abc a&lt;/atts&gt;
+&lt;atts&gt;a ab abc&lt;/atts&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>idref(&quot;ab&quot;)</arg>
+    <output>{}idAttr=&quot;a ab abc&quot;
+{}idAttr=&quot;ab abc&quot;
+&lt;atts&gt;ab&lt;/atts&gt;
+&lt;atts&gt;a ab abc&lt;/atts&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>idref(&quot;abc&quot;)</arg>
+    <output>&lt;att&gt;abc&lt;/att&gt;
+{}idAttr=&quot;a ab abc&quot;
+{}idAtt=&quot;abc&quot;
+{}idAttr=&quot;ab abc&quot;
+&lt;atts&gt;abc a&lt;/atts&gt;
+&lt;atts&gt;a ab abc&lt;/atts&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>idref((&quot;a&quot;, &quot;ab&quot;))</arg>
+    <output>{}idAttr=&quot;a ab abc&quot;
+&lt;att&gt;a&lt;/att&gt;
+{}idAttr=&quot;ab abc&quot;
+&lt;atts&gt;abc a&lt;/atts&gt;
+&lt;atts&gt;ab&lt;/atts&gt;
+&lt;atts&gt;a ab abc&lt;/atts&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>idref((&quot;ab&quot;, &quot;abc&quot;, &quot;def&quot;, &quot;a&quot;))</arg>
+    <output>&lt;att&gt;abc&lt;/att&gt;
+{}idAttr=&quot;a ab abc&quot;
+{}idAtt=&quot;abc&quot;
+&lt;att&gt;a&lt;/att&gt;
+{}idAttr=&quot;ab abc&quot;
+&lt;atts&gt;abc a&lt;/atts&gt;
+&lt;atts&gt;ab&lt;/atts&gt;
+&lt;atts&gt;a ab abc&lt;/atts&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>id(&quot;poo poo pooo1?&quot;)</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>id(&quot;&quot;)</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>id(&quot;  &quot;)</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>id(&quot;a&quot;)</arg>
+    <output>&lt;ele idA=&quot;a&quot; idAttr=&quot;ab abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>id(&quot;ab&quot;)</arg>
+    <output>&lt;ele idA=&quot;ab&quot; idAtt=&quot;abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>id(&quot;abc&quot;)</arg>
+    <output>&lt;ele idA=&quot;abc&quot; idAttr=&quot;a ab abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>id(&quot;ab op abc proi aaa&quot;)</arg>
+    <output>&lt;ele idA=&quot;abc&quot; idAttr=&quot;a ab abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+&lt;ele idA=&quot;ab&quot; idAtt=&quot;abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>id(&quot;ab abc a&quot;)</arg>
+    <output>&lt;ele idA=&quot;abc&quot; idAttr=&quot;a ab abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+&lt;ele idA=&quot;ab&quot; idAtt=&quot;abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+&lt;ele idA=&quot;a&quot; idAttr=&quot;ab abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>id((&quot;ab&quot;, &quot;abc&quot;, &quot;a&quot;))</arg>
+    <output>&lt;ele idA=&quot;abc&quot; idAttr=&quot;a ab abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+&lt;ele idA=&quot;ab&quot; idAtt=&quot;abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+&lt;ele idA=&quot;a&quot; idAttr=&quot;ab abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>id((&quot;ab&quot;, &quot;a ab ab a&quot;, &quot;a ab&quot;))</arg>
+    <output>&lt;ele idA=&quot;ab&quot; idAtt=&quot;abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+&lt;ele idA=&quot;a&quot; idAttr=&quot;ab abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>id((&quot;abc abc ab abc ab&quot;, &quot;abc ab ab ab abc&quot;, &quot;abc abc a ab&quot;))</arg>
+    <output>&lt;ele idA=&quot;abc&quot; idAttr=&quot;a ab abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+&lt;ele idA=&quot;ab&quot; idAtt=&quot;abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+&lt;ele idA=&quot;a&quot; idAttr=&quot;ab abc&quot;&gt;
+&lt;poo/&gt;
+&lt;/ele&gt;
+</output>
+  </base>
+</test>
