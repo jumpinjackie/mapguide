@@ -6,7 +6,7 @@
   <!-- This defines the format of each individual layer 
       advertised by GetCapabilities                    -->
   <!-- Note: Studio published the following metadata fields                                -->
-  <!-- Layer.Name       - The canonical machine-readable name for a layer                  -->
+  <!-- Layer.Name      - The canonical machine-readable name for a layer                   -->
   <!-- Layer.Abstract  - Free-form human readable description for the layer                -->
   <!-- Layer.Bounds    - Structured XML in the form of one or more of these elements       -->
   <!--                     <Bounds SRS= north= south= east= west=/>                        -->
@@ -52,8 +52,12 @@
   <Bounds SRS="EPSG:4326" west="-180" south="-90" east="180" north="90"/>
  </Define>
  
- <Define item="LatLonBoundingBox.xml">
-   <LatLonBoundingBox          minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+ <!-- This pair of definitions works around a current limitation that -->
+ <!-- <?If...?><?Endif?> cannot be nested.                            -->
+ <Define item="LatLonBoundingBox.xml"><?Translate text="&Enum.item.SRS;" with="&LatLonBoundingBox.translate.xml;"?></Define>
+ <Define item="LatLonBoundingBox.translate.xml">
+   <translate from="EPSG:4326" ?><LatLonBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/></translate>
+   <translate></translate>
  </Define>
  
  <Define item="BoundingBox.xml">

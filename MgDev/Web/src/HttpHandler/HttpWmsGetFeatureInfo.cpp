@@ -179,7 +179,7 @@ void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
         Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
 
         // Get an MgMap object corresponding to the request params
-        Ptr<MgMap> map = MgWmsMapUtil::GetMap(m_layers, m_bbox, m_crs, m_width, m_height, resourceService);
+        Ptr<MgMap> map = MgWmsMapUtil::GetMap(*wmsServer, m_layers, m_bbox, m_crs, m_width, m_height, resourceService);
 
         // Create Rendering Service instance
         Ptr<MgRenderingService> service = (MgRenderingService*)(CreateService(MgServiceType::RenderingService));

@@ -18,10 +18,11 @@
 #include "HttpHandler.h"
 #include "WmsMapUtil.h"
 
-static map<STRING, STRING> srsMappings;
-static bool InitializeSrsMappings();
-static bool initMappings = InitializeSrsMappings();
+//static map<STRING, STRING> srsMappings;
+//static bool InitializeSrsMappings();
+//static bool initMappings = InitializeSrsMappings();
 
+/*
 bool InitializeSrsMappings()
 {
     //Declare mappings between supported SRS strings and their WKT equivalents
@@ -38,6 +39,7 @@ bool InitializeSrsMappings()
 
     return true;
 }
+*/
 
 // This simple function is handed into the MgOgcServer system, as
 // a means to resolve documents.
@@ -67,9 +69,10 @@ bool MgWmsMapUtil::GetDocument(CPSZ pszDoc,REFSTRING sRet)
 /// MgMap
 /// This is the requested map
 /// </returns>
-MgMap* MgWmsMapUtil::GetMap(CREFSTRING layerList, CREFSTRING bbox, CREFSTRING crs,
-                                INT32 width, INT32 height,
-                                MgResourceService* resourceService)
+MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
+                            CREFSTRING layerList, CREFSTRING bbox, CREFSTRING sSRS,
+                            INT32 width, INT32 height,
+                            MgResourceService* resourceService)
 {
     INT32 displayDpi = 72;
 
@@ -77,16 +80,13 @@ MgMap* MgWmsMapUtil::GetMap(CREFSTRING layerList, CREFSTRING bbox, CREFSTRING cr
     Ptr<MgEnvelope> extents = GetExtents(bbox);
 
     // Look for a mapping from the specified CRS to a converted value
-    STRING wktSRS = SrsToWkt(crs);
-    if(wktSRS.length() == 0)
-    {
-        // If no mapping exists, just pass in what we have
-        wktSRS = crs;
-    }
+
+    STRING sWKT;
+    SrsToWktMapping(oWms,sSRS,sWKT);
 
     // Create a new, empty map
     Ptr<MgMap> map = new MgMap();
-    map->Create(wktSRS, extents, L"WMS Map");
+    map->Create(sWKT, extents, L"WMS Map");
     map->SetDisplayWidth(width);
     map->SetDisplayHeight(height);
     map->SetDisplayDpi(displayDpi);
@@ -173,8 +173,48 @@ MgColor* MgWmsMapUtil::GetBackgroundColor(CREFSTRING bgColor, bool transparent)
     return color;
 }
 
+
+void MgWmsMapUtil::SrsToWktMapping(MgOgcServer& oWms,STRING sSRS,REFSTRING sWKT)
+{
+    // Plan A is to look for a user-defined mapping.  This allows a config
+    // file to contain overrides for incorrect, incomplete, or new reference 
+    // systems.  Input is an SRS string, output is (user-defined) WKT.
+    // This is turned inside-out from previous algorithm.
+    if(!UserDefinedSrsToWktMapping(oWms,sSRS,sWKT) || sWKT.length() == 0) {
+        // If no user mapping, let's do the default thing, which is to
+        // have the underlying library make the conversion.  It may fail
+        // and throw an exception, which we would then report.
+
+        // "Undocumented" use of MgCoordinateSystem, as per BDC;
+        // ConvertCoordinateSystemCodeToWkt used to be static, but PHP
+        // couldn't support that, so this is "the way" to get a "this"
+        // pointer to use for the method.
+        Ptr<MgCoordinateSystem> coordSys = new MgCoordinateSystem();  
+        // Now, try to convert it to WKT.
+        // This may throw an exception, which is caught outside.
+        sWKT = coordSys->ConvertCoordinateSystemCodeToWkt(sSRS);
+    }
+}
+
+
+bool MgWmsMapUtil::UserDefinedSrsToWktMapping(MgOgcServer& oWms,STRING sSrs,REFSTRING sWkt)
+{
+    // Makes srs arg "case insensitive"
+    sSrs = MgUtil::ToUpper(sSrs);
+
+    // Allows customer to provide overridden WKT for any given SRS value.
+    // If none such, the return is false.
+
+    // TODO: performance optimization: grab and cache the dictionary definition, 
+    // and use the other MapValue overload against that cached definition.
+    return (oWms.MapValue(_("SRS.WKT.map"),sSrs.c_str(),sWkt));
+}
+
+/*
 STRING MgWmsMapUtil::SrsToWkt(CREFSTRING srs)
 {
     // Look for a mapping from the specified SRS to a converted WKT value
     return srsMappings[srs];
 }
+*/
+

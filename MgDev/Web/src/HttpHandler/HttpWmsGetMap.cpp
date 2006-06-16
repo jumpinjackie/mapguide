@@ -167,7 +167,7 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
 
         try {
             // Get a map object corresponding to the request parameters
-            Ptr<MgMap> map = MgWmsMapUtil::GetMap(m_layers, m_bbox, m_crs,
+            Ptr<MgMap> map = MgWmsMapUtil::GetMap(wms,m_layers, m_bbox, m_crs,
                 m_width, m_height, resourceService);
 
             // Get the image format
