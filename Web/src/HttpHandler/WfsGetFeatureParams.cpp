@@ -70,12 +70,8 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestP
     m_srs = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsSrsName);
 
     // Get the SRS in WKT form
-    STRING srsWkt = MgWmsMapUtil::SrsToWkt(m_srs);
-    if(srsWkt.length() > 0)
-    {
-        // If no mapping was found, pass in what we have as-is.
-        m_srs = srsWkt;
-    }
+    STRING srsWkt;
+    MgWmsMapUtil::SrsToWktMapping(oServer,m_srs,srsWkt);
 
     // Get the maximum number of features to return
     string maxFeaturesParam = MgUtil::WideCharToMultiByte(GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsMaxFeatures));

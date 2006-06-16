@@ -6,7 +6,7 @@
   <!-- This defines the format of each individual layer 
       advertised by GetCapabilities                    --> 
   <!-- Note: Studio published the following metadata fields                                -->
-  <!-- Layer.Name       - The canonical machine-readable name for a layer                  -->
+  <!-- Layer.Name      - The canonical machine-readable name for a layer                   -->
   <!-- Layer.Abstract  - Free-form human readable description for the layer                -->
   <!-- Layer.Bounds    - Structured XML in the form of one or more of these elements       -->
   <!--                     <Bounds SRS= north= south= east= west=/>                        -->
@@ -23,7 +23,7 @@
   <!-- Layer.Keywords  - A comma-separated list of keywords associated with this layer.    -->
   <!-- Layer.Opaque    - boolean indicating whether the layer is opaque or transparent.    -->
   <!-- Layer.Queryable - boolean indicating whether the layer supports GetFeatureInfo.     -->
-  <!-- Layer.Title     -- The user-provided human-readable name for the layer.             -->
+  <!-- Layer.Title     - The user-provided human-readable name for the layer.              -->
   <!--                                                                                     -->
   <!-- Layer.NoSubsets is currently not emitted by Studio, its value is defaulted within   -->
   <!-- the OwsWmsService.config.awd file.                                                  -->
@@ -54,9 +54,13 @@
  <Define item="Layer.BoundingBox.default">
   <Bounds SRS="EPSG:4326" west="-180" south="-90" east="180" north="90"/>
  </Define>
- 
- <Define item="LatLonBoundingBox.xml">
-   <LatLonBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+
+ <!-- This pair of definitions works around a current limitation that -->
+ <!-- <?If...?><?Endif?> cannot be nested.                            -->
+ <Define item="LatLonBoundingBox.xml"><?Translate text="&Enum.item.SRS;" with="&LatLonBoundingBox.translate.xml;"?></Define>
+ <Define item="LatLonBoundingBox.translate.xml">
+   <translate from="EPSG:4326" ?><LatLonBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/></translate>
+   <translate></translate>
  </Define>
 
  <Define item="BoundingBox.xml">
