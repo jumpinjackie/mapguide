@@ -18,12 +18,15 @@
 #ifndef _FS_WMS_MAP_UTIL_H
 #define _FS_WMS_MAP_UTIL_H
 
+// TODO: Rename this class, or restructure things, since it seems like
+// Wfs also accesses this for the SrsToWkt mapping.
 class MgWmsMapUtil
 {
 public:
 
-    static MgMap* GetMap(CREFSTRING layerList, CREFSTRING bbox, CREFSTRING crs,
-        INT32 width, INT32 height, MgResourceService* resourceService);
+    static MgMap* GetMap(MgOgcWmsServer& wms,
+                         CREFSTRING layerList, CREFSTRING bbox, CREFSTRING crs,
+                         INT32 width, INT32 height, MgResourceService* resourceService);
 
     static MgEnvelope* GetExtents(CREFSTRING bbox);
 
@@ -31,7 +34,11 @@ public:
 
     static bool GetDocument(const wchar_t* pszDoc, REFSTRING sRet);
 
-    static STRING SrsToWkt(CREFSTRING srs);
+    // Converts srs (ostensibly an "EPSG:xxxx" string) into WKT.
+    // Note: may throw an exception if underlying library doesn't have a mapping.
+    static void SrsToWktMapping(MgOgcServer& oWms,STRING sSrs,REFSTRING sWkt);
+    // Converts srs (ostensibly an "EPSG:xxxx" string) into WKT.
+    static bool UserDefinedSrsToWktMapping(MgOgcServer& oWms,STRING sSrs,REFSTRING sWkt);
 };
 
 #endif  // _FS_WMS_MAP_UTIL_H
