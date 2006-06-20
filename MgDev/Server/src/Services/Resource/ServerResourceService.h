@@ -51,6 +51,9 @@ private:
 
 public:
 
+    virtual void OpenRepositories();
+    virtual void CloseRepositories();
+
     // Repository Management APIs
 
     virtual MgByteReader* EnumerateRepositories(CREFSTRING repositoryType);
@@ -149,7 +152,7 @@ public:
 
     // Resource Permission related methods
 
-    MgPermissionCache* CreatePermissionCache(bool startup = false);
+    MgPermissionCache* CreatePermissionCache();
 
     // Other internal methods
 
@@ -171,13 +174,12 @@ private:
 
     static const int sm_maxOpRetries;
 
-    ACE_Recursive_Thread_Mutex m_mutex;
+    static MgSiteRepository*    sm_siteRepository;
+    static MgSessionRepository* sm_sessionRepository;
+    static MgLibraryRepository* sm_libraryRepository;
 
-    MgSiteRepository*    m_siteRepository;
-    MgSessionRepository* m_sessionRepository;
-    MgLibraryRepository* m_libraryRepository;
-
-    set<STRING> m_changedResources;
+    static ACE_Recursive_Thread_Mutex sm_mutex;
+    static set<STRING> sm_changedResources;
 };
 
 #endif

@@ -110,18 +110,18 @@ void MgSiteConnection::Open(MgUserInformation* userInformation)
     if (m_http)
     {
         // Connection property for HTTP request
-         m_connProp = new MgConnectionProperties(m_url);
+         m_connProp = new MgConnectionProperties(userInformation, m_url);
     }
     // Site connection properties for local site
     // We need to first determine whether it is site server.
     else if (m_isSiteServer)
     {
-        m_connProp = new MgConnectionProperties(L"", 0);
+        m_connProp = new MgConnectionProperties(userInformation, L"", 0);
     }
     // Site connection properties for web-tier or server-2-server interaction
     else if (m_isWebTier || m_isServer)
     {
-        m_connProp = GetSiteConnectionProperties();
+        m_connProp = GetSiteConnectionProperties(userInformation);
     }
 
     if (m_connProp == NULL)
@@ -129,8 +129,6 @@ void MgSiteConnection::Open(MgUserInformation* userInformation)
         throw new MgLogicException(L"MgSiteConnection.Open",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
-
-    m_connProp->SetUserInfo(userInformation);
 
     if (!m_connProp->IsLocal())
     {
@@ -167,7 +165,9 @@ MgService* MgSiteConnection::CreateService(INT32 serviceType)
         // This is based on assumption that a machine hosting
         // a particular service can be directly used without going
         // to site server.
-        connProp = new MgConnectionProperties(L"", 0);
+        Ptr<MgUserInformation> userInformation = m_connProp->GetUserInfo();
+
+        connProp = new MgConnectionProperties(userInformation.p, L"", 0);
     }
     else
     {
@@ -435,7 +435,9 @@ MgConnectionProperties* MgSiteConnection::GetConnectionProperties(INT32 serviceT
     // Send HTTP request to the URL specified for authentication
     if (m_http)
     {
-        connProp = new MgConnectionProperties(m_url);
+        Ptr<MgUserInformation> userInformation = m_connProp->GetUserInfo();
+
+        connProp = new MgConnectionProperties(userInformation.p, m_url);
     }
     else if (m_isWebTier)
     {
@@ -482,9 +484,7 @@ MgConnectionProperties* MgSiteConnection::GetConnectionPropertiesFromSiteServer(
 
         STRING target = site->RequestServer(serviceType);
 
-        connProp = new MgConnectionProperties(target, m_connProp->GetPort());
-        Ptr<MgUserInformation> userInfo = m_connProp->GetUserInfo();
-        connProp->SetUserInfo(userInfo);
+        connProp = new MgConnectionProperties(userInformation.p, target, m_connProp->GetPort());
     }
 
     return connProp.Detach();
@@ -494,7 +494,8 @@ MgConnectionProperties* MgSiteConnection::GetConnectionPropertiesFromSiteServer(
 /// Gets the site ipaddress and port# for connection
 /// </summary>
 
-MgConnectionProperties* MgSiteConnection::GetSiteConnectionProperties()
+MgConnectionProperties* MgSiteConnection::GetSiteConnectionProperties(
+    MgUserInformation* userInformation)
 {
     Ptr<MgConnectionProperties> connProp;
     STRING target = L"";
@@ -515,7 +516,7 @@ MgConnectionProperties* MgSiteConnection::GetSiteConnectionProperties()
                                 MgConfigProperties::DefaultClientConnectionPropertyPort);
 
         // Use the client port for Server/Web Tier communications.
-        connProp = new MgConnectionProperties(target, port);
+        connProp = new MgConnectionProperties(userInformation, target, port);
 
     }
     catch (MgException* me)

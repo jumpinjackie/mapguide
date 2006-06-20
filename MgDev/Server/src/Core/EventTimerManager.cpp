@@ -71,7 +71,7 @@ void MgEventTimerManager::Activate()
 {
     MG_TRY()
 
-    ACE_Time_Value startTime = ACE_OS::gettimeofday() + ACE_Time_Value(180); // 3 minute delay after server startup
+    ACE_Time_Value startTime = ACE_OS::gettimeofday() + ACE_Time_Value(5); // 5-second delay after server startup
 
     for (int i = 0; i < MG_MAX_EVENT_TIMERS; ++i)
     {

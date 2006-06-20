@@ -26,29 +26,31 @@ class MgTileOperation : public MgServiceOperation
 {
 /// Constructors/Destructor
 
-    public:
+public:
 
-        virtual ~MgTileOperation();
+    virtual ~MgTileOperation();
 
-    protected:
+protected:
 
-        MgTileOperation();
+    MgTileOperation();
 
 /// Methods
 
-    public:
+public:
 
-        virtual MgService* GetService();
+    virtual MgService* GetService();
 
-    protected:
+    virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
 
-        virtual void Validate();
+protected:
+
+    virtual void Validate();
 
 /// Member Variables
 
-    protected:
+protected:
 
-        Ptr<MgTileService> m_service;
+    Ptr<MgTileService> m_service;
 };
 
 // Inline Methods

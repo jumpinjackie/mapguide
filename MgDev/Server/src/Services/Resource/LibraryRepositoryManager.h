@@ -30,8 +30,7 @@ class MgLibraryRepositoryManager : public MgApplicationRepositoryManager
 
 public:
 
-    MgLibraryRepositoryManager(MgLibraryRepository& repository,
-        bool startup = false);
+    explicit MgLibraryRepositoryManager(MgLibraryRepository& repository);
     virtual ~MgLibraryRepositoryManager();
 
 private:

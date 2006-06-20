@@ -40,7 +40,7 @@
 ///----------------------------------------------------------------------------
 
 MgApplicationRepositoryManager::MgApplicationRepositoryManager(
-    MgApplicationRepository& repository, bool startup) :
+    MgApplicationRepository& repository) :
     MgRepositoryManager(repository),
     m_dataStreamMan(NULL),
     m_dataFileMan(NULL)
@@ -68,13 +68,6 @@ MgApplicationRepositoryManager::MgApplicationRepositoryManager(
             userName = m_securityMan->GetUserName(sessionId);
             password = m_securityMan->GetPassword(userName);
         }
-    }
-    // At startup, the user name is undefined. We need to use the Administator
-    // account to create fresh repositories if required.
-
-    if (userName.empty() && startup)
-    {
-        userName = MgUser::Administrator;
     }
 
     if (userName.empty())

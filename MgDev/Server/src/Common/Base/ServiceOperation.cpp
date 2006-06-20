@@ -63,7 +63,9 @@ MgServiceOperation::~MgServiceOperation()
                 m_currConnection->SetSessionId(L"");
             }
         }
-   }
+    }
+
+    MgUserInformation::SetCurrentUserInfo(NULL);
 }
 
 ///----------------------------------------------------------------------------
