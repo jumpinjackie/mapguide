@@ -25,31 +25,33 @@ class MgSiteOperation : public MgServiceOperation
 {
 /// Constructors/Destructor
 
-    public:
+public:
 
-        virtual ~MgSiteOperation();
+    virtual ~MgSiteOperation();
 
-    protected:
+protected:
 
-        MgSiteOperation();
+    MgSiteOperation();
 
 /// Methods
 
-    public:
+public:
 
-        virtual MgService* GetService();
+    virtual MgService* GetService();
 
-    protected:
+    virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
 
-        virtual MgStringCollection* GetRoles() const;
+protected:
 
-        virtual void Validate();
+    virtual MgStringCollection* GetRoles() const;
+
+    virtual void Validate();
 
 /// Member Variables
 
-    protected:
+protected:
 
-        Ptr<MgServerSiteService> m_service;
+    Ptr<MgServerSiteService> m_service;
 };
 
 // Inline Methods

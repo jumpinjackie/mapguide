@@ -314,7 +314,6 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 
 #ifdef _DEBUG
             MgEventTimer& connectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::ConnectionTimeout);
-            MgEventTimer& sessionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::SessionTimeout);
             STRING strResourceFilename = pResources->GetResourceFilename(pServerManager->GetDefaultLocale());
 
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Server Information:\n")));
@@ -341,8 +340,15 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Rendering Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Resource Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Site Service Properties:\n")));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timeout               : %d\n"), sessionTimer.GetEventTimeout()));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timer Interval        : %d\n"), sessionTimer.GetInterval()));
+
+            if (pServerManager->IsSiteServer())
+            {
+                MgEventTimer& sessionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::SessionTimeout);
+
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timeout               : %d\n"), sessionTimer.GetEventTimeout()));
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timer Interval        : %d\n"), sessionTimer.GetInterval()));
+            }
+
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Administrative Connection Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Port                          : %d\n"), pServerManager->GetAdminPort()));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Thread Pool Size              : %d\n"), pServerManager->GetAdminThreads()));

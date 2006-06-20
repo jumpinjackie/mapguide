@@ -870,10 +870,13 @@ void MgLoadBalanceManager::EnableServicesOnServers(
         }
         else
         {
-            // There are more than one Site servers within a site?
-            throw new MgLogicException(
+            // The Support server has not been added to the site?
+            MgStringCollection arguments;
+            arguments.Add(serverInfo->GetAddress());
+
+            throw new MgServerNotFoundException(
                 L"MgLoadBalanceManager.EnableServicesOnServers",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                __LINE__, __WFILE__, &arguments, L"", NULL);
         }
     }
 
@@ -900,8 +903,6 @@ void MgLoadBalanceManager::NotifyResourcesChanged(CREFSTRING serverAddress,
     serverAdmin.Open(ipAddress, userInformation);
     serverAdmin.NotifyResourcesChanged(resources);
     serverAdmin.Close();
-
-    MgUserInformation::SetCurrentUserInfo(NULL);
 
     MG_CATCH_AND_THROW(L"MgLoadBalanceManager.NotifyResourcesChanged")
 }

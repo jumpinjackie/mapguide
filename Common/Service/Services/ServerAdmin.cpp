@@ -83,8 +83,7 @@ void MgServerAdmin::Open(CREFSTRING server, MgUserInformation* userInformation)
                         MgConfigProperties::DefaultAdministrativeConnectionPropertyPort);
 
 
-    m_connProp = new MgConnectionProperties(server, adminPort);
-    m_connProp->SetUserInfo(userInformation);
+    m_connProp = new MgConnectionProperties(userInformation, server, adminPort);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

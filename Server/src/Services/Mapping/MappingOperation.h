@@ -22,29 +22,31 @@ class MgMappingOperation : public MgServiceOperation
 {
 /// Constructors/Destructor
 
-    public:
+public:
 
-        virtual ~MgMappingOperation();
+    virtual ~MgMappingOperation();
 
-    protected:
+protected:
 
-        MgMappingOperation();
+    MgMappingOperation();
 
 /// Methods
 
-    public:
+public:
 
-        virtual MgService* GetService();
+    virtual MgService* GetService();
 
-    protected:
+    virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
 
-        virtual void Validate();
+protected:
+
+    virtual void Validate();
 
 /// Member Variables
 
-    protected:
+protected:
 
-        Ptr<MgMappingService> m_service;
+    Ptr<MgMappingService> m_service;
 };
 
 // Inline Methods

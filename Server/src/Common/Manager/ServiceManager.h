@@ -20,14 +20,7 @@
 
 #include "LoadBalanceManager.h"
 
-class MgServerAdminService;
 class MgServerResourceService;
-class MgServerSiteService;
-class MgServerDrawingService;
-class MgServerFeatureService;
-class MgServerMappingService;
-class MgServerRenderingService;
-class MgServerTileService;
 
 class MG_SERVER_MANAGER_API MgServiceManager : public MgGuardDisposable
 {
@@ -78,16 +71,7 @@ private:
     MgServerManager* m_serverManager;
     MgLoadBalanceManager* m_loadBalanceManager;
 
-    Ptr<MgConnectionProperties> m_localConnProp;
-
-    Ptr<MgServerAdminService>       m_adminService;
-    Ptr<MgServerResourceService>    m_resourceService;
-    Ptr<MgServerSiteService>        m_siteService;
-    Ptr<MgServerDrawingService>     m_drawingService;
-    Ptr<MgServerFeatureService>     m_featureService;
-    Ptr<MgServerMappingService>     m_mappingService;
-    Ptr<MgServerRenderingService>   m_renderingService;
-    Ptr<MgServerTileService>        m_tileService;
+    Ptr<MgServerResourceService> m_resourceService;
 };
 
 #endif

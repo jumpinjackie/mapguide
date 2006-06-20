@@ -117,7 +117,7 @@ void MgEventTimer::Schedule(const ACE_Time_Value& startTime)
 
     if (NULL == m_eventHandler.get() || 0 != m_id)
     {
-        throw new MgNullReferenceException(
+        throw new MgInvalidOperationException(
             L"MgEventTimer.Schedule", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 

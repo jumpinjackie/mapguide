@@ -35,6 +35,7 @@ MgTimedEventHandler::MgTimedEventHandler(MgEventTimer& timer) :
 ///
 MgTimedEventHandler::~MgTimedEventHandler()
 {
+    MgUserInformation::SetCurrentUserInfo(NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

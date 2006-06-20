@@ -67,7 +67,12 @@ void MgRepositoryCheckpointEventHandler::HandleEvent(long eventId)
 
         if (NULL != serviceManager)
         {
+            Ptr<MgUserInformation> userInfo = new MgUserInformation(
+                MgUser::Administrator, L"");
+
+            MgUserInformation::SetCurrentUserInfo(userInfo);
             serviceManager->PerformRepositoryCheckpoints();
+            MgUserInformation::SetCurrentUserInfo(NULL);
         }
     }
 

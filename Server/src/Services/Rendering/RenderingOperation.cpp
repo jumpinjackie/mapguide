@@ -31,16 +31,6 @@
 
 MgRenderingOperation::MgRenderingOperation()
 {
-    MG_TRY()
-
-    MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-    assert(NULL != serviceManager);
-
-    m_service = dynamic_cast<MgRenderingService*>(
-        serviceManager->RequestService(MgServiceType::RenderingService));
-    assert(m_service != NULL);
-
-    MG_CATCH_AND_THROW(L"MgRenderingOperation.MgRenderingOperation")
 }
 
 ///----------------------------------------------------------------------------
@@ -51,6 +41,26 @@ MgRenderingOperation::MgRenderingOperation()
 
 MgRenderingOperation::~MgRenderingOperation()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Initialize the operation with the given stream data and operation packet.
+///
+void MgRenderingOperation::Initialize(MgStreamData* data,
+    const MgOperationPacket& packet)
+{
+    // Let the base class do its things so that current user information can be
+    // saved into the thread local storage.
+    MgServiceOperation::Initialize(data, packet);
+
+    // Initialize the service.
+    MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+    assert(NULL != serviceManager);
+
+    m_service = dynamic_cast<MgRenderingService*>(
+        serviceManager->RequestService(MgServiceType::RenderingService));
+    assert(m_service != NULL);
 }
 
 ///----------------------------------------------------------------------------

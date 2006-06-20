@@ -34,8 +34,8 @@
 ///----------------------------------------------------------------------------
 
 MgLibraryRepositoryManager::MgLibraryRepositoryManager(
-    MgLibraryRepository& repository, bool startup) :
-    MgApplicationRepositoryManager(repository, startup),
+    MgLibraryRepository& repository) :
+    MgApplicationRepositoryManager(repository),
     m_resourceContentMan(NULL),
     m_resourceHeaderMan(NULL)
 {

@@ -119,8 +119,6 @@ void MgSite::Close()
 ///
 STRING MgSite::GetSiteServerAddress()
 {
-    Ptr<MgConnectionProperties> pSiteConnProps = (MgConnectionProperties*) 0;   //  casting for linux build
-
     STRING address = L"";
 
     MG_SITE_TRY()
@@ -1217,8 +1215,7 @@ MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
         MgConfigProperties::DefaultSiteConnectionPropertyPort);
 
     assert(m_connProp == NULL);
-    m_connProp = new MgConnectionProperties(target, port);
-    m_connProp->SetUserInfo(userInformation);
+    m_connProp = new MgConnectionProperties(userInformation, target, port);
 
     cmd.ExecuteCommand(m_connProp,                          // Connection
                         MgCommand::knObject,                // Return type

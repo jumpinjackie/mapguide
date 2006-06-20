@@ -26,29 +26,31 @@ class MgRenderingOperation : public MgServiceOperation
 {
 /// Constructors/Destructor
 
-    public:
+public:
 
-        virtual ~MgRenderingOperation();
+    virtual ~MgRenderingOperation();
 
-    protected:
+protected:
 
-        MgRenderingOperation();
+    MgRenderingOperation();
 
 /// Methods
 
-    public:
+public:
 
-        virtual MgService* GetService();
+    virtual MgService* GetService();
 
-    protected:
+    virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
 
-        virtual void Validate();
+protected:
+
+    virtual void Validate();
 
 /// Member Variables
 
-    protected:
+protected:
 
-        Ptr<MgRenderingService> m_service;
+    Ptr<MgRenderingService> m_service;
 };
 
 // Inline Methods

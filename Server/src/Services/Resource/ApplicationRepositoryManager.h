@@ -31,8 +31,7 @@ class MgApplicationRepositoryManager : public MgRepositoryManager
 
 public:
 
-    MgApplicationRepositoryManager(MgApplicationRepository& repository,
-        bool startup = false);
+    explicit MgApplicationRepositoryManager(MgApplicationRepository& repository);
     virtual ~MgApplicationRepositoryManager();
 
 private:

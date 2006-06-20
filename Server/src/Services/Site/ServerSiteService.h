@@ -22,8 +22,6 @@
 #include "ResourceService.h"
 #include "ServerResourceService.h"
 
-class MgLoadBalanceManager;
-
 class MG_SERVER_SITE_API MgServerSiteService
     : public MgService
 {
@@ -31,75 +29,78 @@ class MG_SERVER_SITE_API MgServerSiteService
 
 /// Constructors/Destructor
 
-    public:
-        MgServerSiteService( MgConnectionProperties* connection );
-        ~MgServerSiteService( void );
+public:
+    MgServerSiteService( MgConnectionProperties* connection );
+    ~MgServerSiteService( void );
 
-    private:
-        // Need this to prevent a GCC 3 compile error
-        MgServerSiteService();
+private:
+    // Need this to prevent a GCC 3 compile error
+    MgServerSiteService();
 
 /// Methods
 
-    public:
-        //  User Methods
-        virtual void AddUser( CREFSTRING userID, CREFSTRING userName,
-            CREFSTRING password, CREFSTRING description );
-        virtual void DeleteUsers( MgStringCollection* users );
-        virtual MgByteReader* EnumerateUsers( CREFSTRING group,
-            CREFSTRING role, bool includeGroups );
-        virtual void GrantGroupMembershipsToUsers( MgStringCollection* groups,
-            MgStringCollection* users );
-        virtual void GrantRoleMembershipsToUsers( MgStringCollection* roles,
-            MgStringCollection* users );
-        virtual void RevokeGroupMembershipsFromUsers( MgStringCollection* groups,
-            MgStringCollection* users );
-        virtual void RevokeRoleMembershipsFromUsers( MgStringCollection* roles,
-            MgStringCollection* users );
-        virtual void UpdateUser( CREFSTRING userID, CREFSTRING newUserID,
-            CREFSTRING newUserName, CREFSTRING newPassword,
-            CREFSTRING newDescription );
+public:
+    //  User Methods
+    virtual void AddUser( CREFSTRING userID, CREFSTRING userName,
+        CREFSTRING password, CREFSTRING description );
+    virtual void DeleteUsers( MgStringCollection* users );
+    virtual MgByteReader* EnumerateUsers( CREFSTRING group,
+        CREFSTRING role, bool includeGroups );
+    virtual void GrantGroupMembershipsToUsers( MgStringCollection* groups,
+        MgStringCollection* users );
+    virtual void GrantRoleMembershipsToUsers( MgStringCollection* roles,
+        MgStringCollection* users );
+    virtual void RevokeGroupMembershipsFromUsers( MgStringCollection* groups,
+        MgStringCollection* users );
+    virtual void RevokeRoleMembershipsFromUsers( MgStringCollection* roles,
+        MgStringCollection* users );
+    virtual void UpdateUser( CREFSTRING userID, CREFSTRING newUserID,
+        CREFSTRING newUserName, CREFSTRING newPassword,
+        CREFSTRING newDescription );
 
-        //  Group Methods
-        virtual void AddGroup( CREFSTRING group, CREFSTRING description );
-        virtual void DeleteGroups( MgStringCollection* groups );
-        virtual MgByteReader* EnumerateGroups( CREFSTRING user, CREFSTRING role );
-        virtual void GrantRoleMembershipsToGroups( MgStringCollection* roles,
-            MgStringCollection* groups );
-        virtual void RevokeRoleMembershipsFromGroups( MgStringCollection* roles,
-            MgStringCollection* groups );
-        virtual void UpdateGroup( CREFSTRING group, CREFSTRING newGroup,
-            CREFSTRING newDescription );
+    //  Group Methods
+    virtual void AddGroup( CREFSTRING group, CREFSTRING description );
+    virtual void DeleteGroups( MgStringCollection* groups );
+    virtual MgByteReader* EnumerateGroups( CREFSTRING user, CREFSTRING role );
+    virtual void GrantRoleMembershipsToGroups( MgStringCollection* roles,
+        MgStringCollection* groups );
+    virtual void RevokeRoleMembershipsFromGroups( MgStringCollection* roles,
+        MgStringCollection* groups );
+    virtual void UpdateGroup( CREFSTRING group, CREFSTRING newGroup,
+        CREFSTRING newDescription );
 
-        //  Role Methods
-        virtual MgStringCollection* EnumerateRoles( CREFSTRING user,
-            CREFSTRING group );
+    //  Role Methods
+    virtual MgStringCollection* EnumerateRoles( CREFSTRING user,
+        CREFSTRING group );
 
-        // Server Management Methods
+    // Server Management Methods
 
-        MgByteReader* EnumerateServers();
-        void AddServer(CREFSTRING name, CREFSTRING description,
-            CREFSTRING address);
-        void UpdateServer(CREFSTRING oldName, CREFSTRING newName,
-            CREFSTRING newDescription, CREFSTRING newAddress);
-        void RemoveServer(CREFSTRING name);
-        STRING RequestServer(INT32 serviceType);
+    MgByteReader* EnumerateServers();
+    void AddServer(CREFSTRING name, CREFSTRING description,
+        CREFSTRING address);
+    void UpdateServer(CREFSTRING oldName, CREFSTRING newName,
+        CREFSTRING newDescription, CREFSTRING newAddress);
+    void RemoveServer(CREFSTRING name);
+    STRING RequestServer(INT32 serviceType);
 
-        //  Authentication
-        virtual MgStringCollection* Authenticate(MgUserInformation* userInformation,
-            MgStringCollection* requiredRoles, bool returnAssignedRoles);
-        virtual STRING CreateSession();
-        virtual void DestroySession(CREFSTRING session);
+    //  Authentication
+    virtual MgStringCollection* Authenticate(MgUserInformation* userInformation,
+        MgStringCollection* requiredRoles, bool returnAssignedRoles);
+    virtual STRING CreateSession();
+    virtual void DestroySession(CREFSTRING session);
 
-        //  Inherited from MgDisposable
-        virtual void Dispose();
+    //  Inherited from MgDisposable
+    virtual void Dispose();
 
+protected:
+
+    MgServerResourceService& GetResourceService();
+    
 /// Data Members
 
-    private:
+private:
 
-        MgLoadBalanceManager* m_loadBalanceManager;
-        Ptr<MgServerResourceService> m_resourceService;
+    Ptr<MgServerResourceService> m_resourceService;
 };
 
 #endif
