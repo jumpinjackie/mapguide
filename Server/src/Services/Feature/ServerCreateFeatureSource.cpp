@@ -64,11 +64,7 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
         throw new MgInvalidArgumentException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSrs", NULL);
 
     // Connect to provider
-#ifdef FDO_RELIANT_VERSION
     STRING sdfProvider = L"OSGeo.SDF"; // NOXLATE
-#else
-    STRING sdfProvider = L"OSGeo.SDF.3.0"; // NOXLATE
-#endif
     STRING sdfConnString = L""; // NOXLATE
     MgServerFeatureConnection msfc(sdfProvider, sdfConnString);
 
@@ -120,17 +116,10 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
 
     STRING resourceFile = resource->GetName() + L".sdf";
 
-#ifdef FDO_RELIANT_VERSION
     STRING featureSource = L"<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"FeatureSource-1.0.0.xsd\">\n\
 <Provider>OSGeo.SDF</Provider>\n\
   <Parameter>\n\
     <Name>File</Name>\n";
-#else
-    STRING featureSource = L"<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"FeatureSource-1.0.0.xsd\">\n\
-<Provider>OSGeo.SDF.3.0</Provider>\n\
-  <Parameter>\n\
-    <Name>File</Name>\n";
-#endif
 
     featureSource += L"     <Value>%MG_DATA_FILE_PATH%" + resourceFile + L"</Value>\n";
     featureSource += L"     </Parameter>\n\
