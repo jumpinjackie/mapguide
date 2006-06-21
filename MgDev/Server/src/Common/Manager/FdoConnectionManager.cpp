@@ -868,7 +868,6 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
 {
     STRING providerNameNoVersion = providerName;
 
-#ifdef FDO_RELIANT_VERSION
     // Remove the version from the provider name if it is found
     // ie: OSGeo.SDF.3.0 = OSGeo.SDF
     STRING::size_type index = providerNameNoVersion.find(L".");
@@ -885,45 +884,6 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
             providerNameNoVersion = providerNameNoVersion.substr(0, index);
         }
     }
-#else
-
-    #ifdef WIN32
-    // TODO: Remove this code once open source moves to latest version of FDO as the bug is in FDO G001.
-    // This code is to prevent the following providers from crashing and taking the server down
-    // when the appropriate client is not installed:
-    //   1) Oracle
-    //      Check for "oci.dll" if we cannot load it, then there is no Oracle client.
-    //   2) MySQL
-    //      Check for "libmysql.dll" if we cannot load it, then there is no MySQL client.
-    //
-    // Note: This code is for Windows only.
-    if((providerNameNoVersion == L"Autodesk.Oracle") || (providerNameNoVersion == L"Autodesk.Oracle.3.0"))
-    {
-        HMODULE hlib = LoadLibraryW(L"oci.dll");
-        if (NULL == hlib)
-        {
-            MgStringCollection arguments;
-            arguments.Add(L"No Oracle client installed.");
-
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::TrimProviderName() - No Oracle client installed.\n")));
-            throw new MgFdoException(L"MgFdoConnectionManager.TrimProviderName", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
-        }
-    }
-    else if((providerNameNoVersion == L"OSGeo.MySQL") || (providerNameNoVersion == L"OSGeo.MySQL.3.0"))
-    {
-        HMODULE hlib = LoadLibraryW(L"libmysql.dll");
-        if (NULL == hlib)
-        {
-            MgStringCollection arguments;
-            arguments.Add(L"No MySQL client installed.");
-
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::TrimProviderName() - No MySQL client installed.\n")));
-            throw new MgFdoException(L"MgFdoConnectionManager.TrimProviderName", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
-        }
-    }
-    #endif
-
-#endif
 
     return providerNameNoVersion;
 }
