@@ -34,8 +34,6 @@
     #include <pdhMsg.h>
 #endif
 
-class MgLogManager;
-class MgServiceManager;
 class MgWorkerThread;
 
 typedef ACE_Atomic_Op<ACE_Thread_Mutex, INT32>  SAFE_INT32;
@@ -154,6 +152,7 @@ private:
     static Ptr<MgServerManager> m_serverManager;
     ACE_Unbounded_Set<ACE_HANDLE>* m_pClientHandles;
 
+    ServerStatus m_ssServerStatus;
     bool m_isSiteServer;
     STRING m_localServerAddress;
     STRING m_defaultLocale;
@@ -172,8 +171,6 @@ private:
     STRING m_siteServerAddress;
     INT32 m_nSitePort;
     INT32 m_nSiteThreads;
-
-    ServerStatus m_ssServerStatus;
 
     ACE_Time_Value m_startTime;
     SAFE_INT32 m_totalOperationTime;

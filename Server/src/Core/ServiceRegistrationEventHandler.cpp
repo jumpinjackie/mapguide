@@ -66,7 +66,7 @@ void MgServiceRegistrationEventHandler::HandleEvent(long eventId)
         ACE_ASSERT(NULL != loadBalanceManager);
 
         // Cancel the timer if the event is successfully handled.
-        if (NULL != loadBalanceManager && loadBalanceManager->RegisterServices(false))
+        if (NULL != loadBalanceManager && loadBalanceManager->RegisterServices())
         {
             m_timer.Cancel();
         }

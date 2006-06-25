@@ -69,7 +69,7 @@ public:
         MgSerializableCollection* serverInfoList);
     void UnregisterServicesOnServers(
         MgSerializableCollection* serverInfoList);
-    bool RegisterServices(bool onStartup);
+    bool RegisterServices();
     void UnregisterServices();
     void EnableServices(INT32 serviceFlags);
 

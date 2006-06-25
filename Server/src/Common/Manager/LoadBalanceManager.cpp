@@ -506,6 +506,8 @@ void MgLoadBalanceManager::AddServerToQueue(INT32 serviceType,
     assert(serviceType >= 0 && serviceType < MgServerInformation::sm_knMaxNumberServices);
     assert(!serverAddress.empty());
 
+    // Every server must host the Server Admin service internally, so exclude
+    // it from the server queue.
     if (MgServiceType::ServerAdminService != serviceType)
     {
         MgServerQueue& serverQueue = m_serverQueues[serviceType];
@@ -608,15 +610,21 @@ void MgLoadBalanceManager::UpdateServerQueues(MgServerInformation* serverInfo)
 bool MgLoadBalanceManager::RegisterServices(MgServerInformation* newServerInfo,
     MgServerInformation* removedServerInfo)
 {
-    assert(NULL != newServerInfo);
     bool success = false;
 
     MG_TRY()
 
+    if (NULL == newServerInfo)
+    {
+        throw new MgNullArgumentException(
+            L"MgLoadBalanceManager.RegisterServices",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     // Register the site server and other support servers' services with the new server.
 
     Ptr<MgSerializableCollection> newList = new MgSerializableCollection();
-        newList->Add(newServerInfo);
+    newList->Add(newServerInfo);
     Ptr<MgSerializableCollection> fullList = GetServerInfoList(true, true, newServerInfo, removedServerInfo);
     Ptr<MgSerializableCollection> feedbackList = RegisterServicesOnServers(
         newServerInfo->GetAddress(), fullList);
@@ -695,13 +703,19 @@ bool MgLoadBalanceManager::RegisterServices(MgServerInformation* newServerInfo,
 
 void MgLoadBalanceManager::UnregisterServices(MgServerInformation* removedServerInfo)
 {
-    assert(NULL != removedServerInfo);
-
     MG_TRY()
+
+    if (NULL == removedServerInfo)
+    {
+        throw new MgNullArgumentException(
+            L"MgLoadBalanceManager.UnregisterServices",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     // Un-register the site server and other support servers' services with the removed server.
 
     Ptr<MgSerializableCollection> fullList = CopyServerInfoList(true, true, removedServerInfo);
+    assert(fullList != NULL && fullList->GetCount() > 0);
 
     for (INT32 i = 0; i < fullList->GetCount(); ++i)
     {
@@ -716,7 +730,10 @@ void MgLoadBalanceManager::UnregisterServices(MgServerInformation* removedServer
     // Un-register the removed server's services with other support servers.
 
     Ptr<MgSerializableCollection> removedList = new MgSerializableCollection();
-        removedList->Add(removedServerInfo);
+    Ptr<MgServerInformation> copiedServerInfo = new MgServerInformation(*removedServerInfo);
+
+    copiedServerInfo->SetServiceFlags(0);
+    removedList->Add(copiedServerInfo.p);
 
     for (MgServerMap::const_iterator i = m_supportServerMap.begin();
         i != m_supportServerMap.end(); ++i)
@@ -840,27 +857,30 @@ void MgLoadBalanceManager::EnableServicesOnServers(
 
         if (supportServerInfo != NULL)
         {
+            // The server information have been changed, update the server queue
+            // based on the changes.
+            STRING oldAddress = supportServerInfo->GetAddress();
+            INT32 oldServiceFlags = supportServerInfo->GetServiceFlags();
+
             supportServerInfo->CopyFrom(*serverInfo, sourceFromSiteServer);
-            UpdateServerQueues(supportServerInfo);
-        }
-        else if (0 == MgIpUtil::CompareAddresses(m_localServerInfo->GetAddress(), serverInfo->GetAddress()))
-        {
-            STRING oldAddress = m_localServerInfo->GetAddress();
 
-            m_localServerInfo->CopyFrom(*serverInfo, sourceFromSiteServer);
-
-            if (serverInfo->GetAddress() != oldAddress)
+            if (supportServerInfo->GetAddress() != oldAddress)
             {
                 for (INT32 j = 0; j < MgServerInformation::sm_knMaxNumberServices; ++j)
                 {
-                    UpdateServerInQueue(j, oldAddress, serverInfo->GetAddress());
+                    UpdateServerInQueue(j, oldAddress, supportServerInfo->GetAddress());
                 }
+            }
+
+            if (supportServerInfo->GetServiceFlags() != oldServiceFlags)
+            {
+                UpdateServerQueues(supportServerInfo);
             }
         }
         else if (sourceFromSiteServer && !strict)
         {
-            // Add the server to the map.
-
+            // The server does not exist, add it to the server map and update
+            // the server queue.
             Ptr<MgServerInformation> newServerInfo = new MgServerInformation(
                 *serverInfo);
             UpdateServerQueues(newServerInfo);
@@ -1501,24 +1521,24 @@ void MgLoadBalanceManager::UnregisterServicesOnServers(
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    if (1 != serverInfoList->GetCount())
-    {
-        STRING buffer;
-        MgUtil::Int32ToString(serverInfoList->GetCount(), buffer);
-
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(buffer);
-
-        throw new MgInvalidArgumentException(
-            L"MgLoadBalanceManager.UnregisterServicesOnServers",
-            __LINE__, __WFILE__, &arguments, L"MgInvalidCollectionSize", NULL);
-    }
-
     EnableServicesOnServers(serverInfoList, true);
 
     if (m_serverManager->IsSiteServer() && !m_supportServerMap.empty())
     {
+        if (1 != serverInfoList->GetCount())
+        {
+            STRING buffer;
+            MgUtil::Int32ToString(serverInfoList->GetCount(), buffer);
+
+            MgStringCollection arguments;
+            arguments.Add(L"1");
+            arguments.Add(buffer);
+
+            throw new MgInvalidArgumentException(
+                L"MgLoadBalanceManager.UnregisterServicesOnServers",
+                __LINE__, __WFILE__, &arguments, L"MgInvalidCollectionSize", NULL);
+        }
+
         Ptr<MgServerInformation> serverInfo = GetServerInfo(0, serverInfoList);
         STRING serverAddress = serverInfo->GetAddress();
 
@@ -1559,13 +1579,11 @@ void MgLoadBalanceManager::UnregisterServicesOnServers(
     MG_CATCH_AND_THROW(L"MgLoadBalanceManager.UnregisterServicesOnServers")
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Registers services on the local server and other servers within the site.
-/// </summary>
-///----------------------------------------------------------------------------
-
-bool MgLoadBalanceManager::RegisterServices(bool onStartup)
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Register services on the local server and other servers within the site.
+///
+bool MgLoadBalanceManager::RegisterServices()
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
@@ -1575,99 +1593,79 @@ bool MgLoadBalanceManager::RegisterServices(bool onStartup)
 
     MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::RegisterServices()");
 
-    if (onStartup)
+    if (m_serverManager->IsSiteServer())
     {
-        // On startup (i.e. before the server is online), perform the service
-        // registration for this site server.
-
-        if (!m_serverManager->IsSiteServer())
+        if (!m_supportServerMap.empty())
         {
-            return false;
-        }
+            // Register services on this site server with any currently online support server.
 
-        if (m_supportServerMap.empty())
-        {
-            return true;
-        }
+            Ptr<MgSerializableCollection> onlineList = new MgSerializableCollection();
+            Ptr<MgSerializableCollection> localList = GetServerInfoList(true, false);
+            assert(localList != NULL && 1 == localList->GetCount());
 
-        // Register services on this site server with any currently online support server.
-
-        Ptr<MgSerializableCollection> onlineList = new MgSerializableCollection();
-        Ptr<MgSerializableCollection> localList = GetServerInfoList(true, false);
-        assert(localList != NULL && 1 == localList->GetCount());
-
-        for (MgServerMap::const_iterator i = m_supportServerMap.begin();
-            i != m_supportServerMap.end(); ++i)
-        {
-            MgServerInformation* supportServerInfo = (*i).second;
-
-            // If an error occurs, catch the exception but do not throw it
-            // so that the site server can continue registering
-            // its services with other support servers.
-
-            try
+            for (MgServerMap::const_iterator i = m_supportServerMap.begin();
+                i != m_supportServerMap.end(); ++i)
             {
-                Ptr<MgSerializableCollection> feedbackList = RegisterServicesOnServers(
-                    supportServerInfo->GetAddress(), localList);
+                MgServerInformation* supportServerInfo = (*i).second;
 
-                if (feedbackList == NULL || 1 != feedbackList->GetCount())
+                // If an error occurs, catch the exception but do not throw it
+                // so that the site server can continue registering
+                // its services with other support servers.
+
+                try
+                {
+                    Ptr<MgSerializableCollection> feedbackList = RegisterServicesOnServers(
+                        supportServerInfo->GetAddress(), localList);
+
+                    if (feedbackList == NULL || 1 != feedbackList->GetCount())
+                    {
+                        throw new MgLogicException(
+                            L"MgLoadBalanceManager.RegisterServices",
+                            __LINE__, __WFILE__, NULL, L"", NULL);
+                    }
+
+                    Ptr<MgServerInformation> serverInfo = GetServerInfo(0, feedbackList);
+
+                    supportServerInfo->CopyFrom(*serverInfo, false);
+                    onlineList->Add(supportServerInfo);
+                }
+                catch (MgException* e)
+                {
+                    // Server is down or request gets timed out? Log the message.
+                    STRING locale = m_serverManager->GetDefaultLocale();
+
+                    ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+                    MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
+                    MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+
+                    SAFE_RELEASE(e);
+                }
+                catch (...)
+                {
+                }
+            }
+
+            // Register services on currently online support servers with each other (excluding the site server).
+
+            for (INT32 i = 0; i < onlineList->GetCount(); ++i)
+            {
+                Ptr<MgServerInformation> serverInfo = GetServerInfo(i, onlineList);
+                Ptr<MgSerializableCollection> feedbackList = RegisterServicesOnServers(
+                    serverInfo->GetAddress(), onlineList);
+
+                if (feedbackList == NULL || 1 != feedbackList->GetCount()) // dummy feedback
                 {
                     throw new MgLogicException(
                         L"MgLoadBalanceManager.RegisterServices",
                         __LINE__, __WFILE__, NULL, L"", NULL);
                 }
 
-                Ptr<MgServerInformation> serverInfo = GetServerInfo(0, feedbackList);
-
-                supportServerInfo->CopyFrom(*serverInfo, false);
-                onlineList->Add(supportServerInfo);
+                UpdateServerQueues(serverInfo);
             }
-            catch (MgException* e)
-            {
-                // Server is down or request gets timed out? Log the message.
-                STRING locale = m_serverManager->GetDefaultLocale();
-
-                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
-                MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-                MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
-
-                SAFE_RELEASE(e);
-            }
-            catch (...)
-            {
-            }
-        }
-
-        // Register services on currently online support servers with each other (excluding the site server).
-
-        for (INT32 i = 0; i < onlineList->GetCount(); ++i)
-        {
-            Ptr<MgServerInformation> serverInfo = GetServerInfo(i, onlineList);
-            Ptr<MgSerializableCollection> feedbackList = RegisterServicesOnServers(
-                serverInfo->GetAddress(), onlineList);
-
-            if (feedbackList == NULL || 1 != feedbackList->GetCount()) // TODO: Optimization - nothing should be returned.
-            {
-                throw new MgLogicException(
-                    L"MgLoadBalanceManager.RegisterServices",
-                    __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-
-            UpdateServerQueues(serverInfo);
         }
     }
     else
     {
-        // On timer (i.e. after the server is online), perform the service
-        // registration for this support server.
-
-        if (m_serverManager->IsSiteServer())
-        {
-            throw new MgLogicException(
-                L"MgLoadBalanceManager.RegisterServices",
-                __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
         // Register services on this support server with the site server.
 
         Ptr<MgSerializableCollection> localList = GetServerInfoList(true, false);
@@ -1694,12 +1692,10 @@ bool MgLoadBalanceManager::RegisterServices(bool onStartup)
     return success;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Un-registers services on the local server.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Unregister services on the local server and other servers within the site.
+///
 void MgLoadBalanceManager::UnregisterServices()
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
@@ -1708,8 +1704,16 @@ void MgLoadBalanceManager::UnregisterServices()
 
     MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::UnregisterServices()");
 
-    Ptr<MgSerializableCollection> localList = GetServerInfoList(true, false);
+    Ptr<MgSerializableCollection> localList = CopyServerInfoList(true, false);
     assert(localList != NULL && 1 == localList->GetCount());
+
+    for (INT32 i = 0; i < localList->GetCount(); ++i)
+    {
+        Ptr<MgServerInformation> serverInfo = GetServerInfo(
+            i, localList);
+
+        serverInfo->SetServiceFlags(0);
+    }
 
     if (m_serverManager->IsSiteServer())
     {
@@ -1770,18 +1774,14 @@ void MgLoadBalanceManager::UnregisterServices()
         }
     }
 
-    m_localServerInfo->SetServiceFlags(0);
-    UpdateServerQueues(m_localServerInfo);
-
     MG_CATCH_AND_THROW(L"MgLoadBalanceManager.UnregisterServices")
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Enables and/or disables the specified services on the local server.
-/// </summary>
-///----------------------------------------------------------------------------
-
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enable/disable specified services on the local server and other servers
+/// within the site.
+///
 void MgLoadBalanceManager::EnableServices(INT32 serviceFlags)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
@@ -1793,8 +1793,20 @@ void MgLoadBalanceManager::EnableServices(INT32 serviceFlags)
     m_localServerInfo->SetServiceFlags(serviceFlags);
     UpdateServerQueues(m_localServerInfo);
 
-    Ptr<MgSerializableCollection> localList = GetServerInfoList(true, false);
+    Ptr<MgSerializableCollection> localList = CopyServerInfoList(true, false);
     assert(localList != NULL && 1 == localList->GetCount());
+
+    // If the server is offline, then disable its services on other servers.
+    if (!m_serverManager->IsOnline())
+    {
+        for (INT32 i = 0; i < localList->GetCount(); ++i)
+        {
+            Ptr<MgServerInformation> serverInfo = GetServerInfo(
+                i, localList);
+
+            serverInfo->SetServiceFlags(0);
+        }
+    }
 
     if (m_serverManager->IsSiteServer())
     {
