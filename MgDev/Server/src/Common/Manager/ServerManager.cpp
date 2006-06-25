@@ -31,6 +31,7 @@ Ptr<MgServerManager> MgServerManager::m_serverManager = (MgServerManager*)NULL;
 // Constructor
 MgServerManager::MgServerManager(void) :
     m_pClientHandles(NULL),
+    m_ssServerStatus(MgServerManager::ssOffline),
     m_isSiteServer(true),
     m_totalOperationTime(0),
     m_totalReceivedOperations(0),
@@ -230,8 +231,10 @@ void MgServerManager::Initialize(CREFSTRING locale)
     m_pWorkerThreads = new MgWorkerThread(m_threadManager, workerThreadPoolSize);
     m_pWorkerThreads->Activate();
 
-    MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::Initialize() - Site  server's IP address: " + m_siteServerAddress);
-    MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::Initialize() - Local server's IP address: " + m_localServerAddress);
+    MG_LOG_TRACE_ENTRY(L"MgServerManager::Initialize() - Site  server's IP address: " + m_siteServerAddress);
+    MG_LOG_TRACE_ENTRY(L"MgServerManager::Initialize() - Local server's IP address: " + m_localServerAddress);
+
+    m_ssServerStatus = MgServerManager::ssOnline;
 
     MG_CATCH_AND_THROW(L"MgServerManager.Initialize")
 }
@@ -597,12 +600,32 @@ INT32 MgServerManager::GetSiteThreads()
 
 void MgServerManager::TakeOffline()
 {
-    m_ssServerStatus = MgServerManager::ssOffline;
+    if (MgServerManager::ssOffline != m_ssServerStatus)
+    {
+        MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
+        ACE_ASSERT(NULL != loadBalanceManager);
+
+        if (NULL != loadBalanceManager)
+        {
+            loadBalanceManager->UnregisterServices();
+        }
+
+        m_ssServerStatus = MgServerManager::ssOffline;
+    }
 }
 
 void MgServerManager::BringOnline()
 {
-    m_ssServerStatus = MgServerManager::ssOnline;
+    if (MgServerManager::ssOnline != m_ssServerStatus)
+    {
+        MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
+        ACE_ASSERT(NULL != loadBalanceManager);
+
+        if (NULL != loadBalanceManager && loadBalanceManager->RegisterServices())
+        {
+            m_ssServerStatus = MgServerManager::ssOnline;
+        }
+    }
 }
 
 bool MgServerManager::IsOnline()

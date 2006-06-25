@@ -303,10 +303,10 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
             pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout());
 
-            // Registers services on this server and other servers within the site.
+            // On startup, perform the service registration for the Site server.
+            // Note that this event will be perfomed by a timer for the Support server.
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Registering Services.\n")));
-            // If successful, then terminate the Service Registration timer.
-            if (loadBalanceManager->RegisterServices(true))
+            if (pServerManager->IsSiteServer() && loadBalanceManager->RegisterServices())
             {
                 m_eventTimerManager.GetEventTimer(
                     MgEventTimer::ServiceRegistration).Terminate();
@@ -831,8 +831,6 @@ int MgServer::svc(void)
                         nResult = siteAcceptor.Initialize();
                         if(nResult == 0)
                         {
-                            pServerManager->BringOnline();
-
                             MgResources* pResources = MgResources::GetInstance();
                             STRING message = pResources->FormatMessage(MgResources::ServerStarted, 0);
                             ACE_DEBUG ((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
