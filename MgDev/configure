@@ -1037,8 +1037,6 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
   --with-pic              try to use only PIC/non-PIC objects default=use both
-  --with-coordsys         specify alternative coordinate system source
-                          dirdefault=DEFAULT
   --with-php              specify php headers dir prefix as args default=no
   --with-fdo-include      specifies custom dir for fdo include files
                           default=DEFAULT
@@ -4973,7 +4971,7 @@ test "x$enable_libtool_lock" != xno && enable_libtool_lock=yes
 case $host in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 4976 "configure"' > conftest.$ac_ext
+  echo '#line 4974 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5502,7 +5500,7 @@ chmod -w .
 save_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS -o out/conftest2.$ac_objext"
 compiler_c_o=no
-if { (eval echo configure:5505: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
+if { (eval echo configure:5503: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
   # The compiler can only warn and ignore the option if not recognized
   # So say no if there are warnings
   if test -s out/conftest.err; then
@@ -6686,7 +6684,7 @@ linux-gnu*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*)
-    echo '#line 6689 "configure"' > conftest.$ac_ext
+    echo '#line 6687 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7358,7 +7356,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7361 "configure"
+#line 7359 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7456,7 +7454,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7459 "configure"
+#line 7457 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8595,42 +8593,18 @@ done
 
 
 
-# Check for CoordinateSystem settings
-
-# Check whether --with-coordsys or --without-coordsys was given.
-if test "${with_coordsys+set}" = set; then
-  withval="$with_coordsys"
-  map_coordsys_dir_path=$withval
-else
-  map_coordsys_dir_path="DEFAULT"
-fi;
-
-if test $map_coordsys_dir_path = "DEFAULT"; then
-	map_using_proj4="yes"
-        map_unittesting_dir="UnitTesting"
-	{ echo "$as_me:$LINENO: Using PROJ4 CoordinateSystem" >&5
+map_using_proj4="yes"
+map_unittesting_dir="UnitTesting"
+{ echo "$as_me:$LINENO: Using PROJ4 CoordinateSystem" >&5
 echo "$as_me: Using PROJ4 CoordinateSystem" >&6;}
-	map_coordsys_dir="CoordinateSystem"
+map_coordsys_dir="CoordinateSystem"
 
-	map_coordsys_dir_path="Common/CoordinateSystem"
+map_coordsys_dir_path="Common/CoordinateSystem"
 
-	map_coordsys_include_path="Common/CoordinateSystem"
-
-
-
-else
-	map_using_proj4="no"
-        map_unittesting_dir="UnitTesting_Mentor"
-		{ echo "$as_me:$LINENO: Using Custom Defined CoordinateSystem" >&5
-echo "$as_me: Using Custom Defined CoordinateSystem" >&6;}
-	map_coordsys_dir="${map_coordsys_dir_path##*/}"
-	map_coordsys_include_path="$map_coordsys_dir_path"
-	map_opt_oem_subdirs="Csmap SrsccLib"
+map_coordsys_include_path="Common/CoordinateSystem"
 
 
 
-
-fi
 
 # Check for php
 # Note : Not yet implemented
@@ -8665,10 +8639,10 @@ else
 fi;
 
 if test $custom_inc = "DEFAULT"; then
-  map_fdo_include="/usr/local/fdo-3.0.0/include"
+  map_fdo_include="/usr/local/fdo-3.1.0/include"
   if test -d $map_fdo_include; then
-  	{ echo "$as_me:$LINENO: Building with default location of FDO include files at /usr/local/fdo-3.0.0/include" >&5
-echo "$as_me: Building with default location of FDO include files at /usr/local/fdo-3.0.0/include" >&6;}
+  	{ echo "$as_me:$LINENO: Building with default location of FDO include files at /usr/local/fdo-3.1.0/include" >&5
+echo "$as_me: Building with default location of FDO include files at /usr/local/fdo-3.1.0/include" >&6;}
   else
  	{ { echo "$as_me:$LINENO: error: the default FDO include path $map_fdo_include is not a valid directory. Please use the custom option" >&5
 echo "$as_me: error: the default FDO include path $map_fdo_include is not a valid directory. Please use the custom option" >&2;}
@@ -8696,10 +8670,10 @@ else
 fi;
 
 if test $custom_lib = "DEFAULT"; then
-  map_fdo_lib="/usr/local/fdo-3.0.0/lib"
+  map_fdo_lib="/usr/local/fdo-3.1.0/lib"
   if test -d $map_fdo_lib; then
-  	{ echo "$as_me:$LINENO: Building with default location of FDO libraries at /usr/local/fdo-3.0.0/lib" >&5
-echo "$as_me: Building with default location of FDO libraries at /usr/local/fdo-3.0.0/lib" >&6;}
+  	{ echo "$as_me:$LINENO: Building with default location of FDO libraries at /usr/local/fdo-3.1.0/lib" >&5
+echo "$as_me: Building with default location of FDO libraries at /usr/local/fdo-3.1.0/lib" >&6;}
   else
   	{ { echo "$as_me:$LINENO: error: the default FDO lib path $map_fdo_lib is not a valid directory. Please use the custom option" >&5
 echo "$as_me: error: the default FDO lib path $map_fdo_lib is not a valid directory. Please use the custom option" >&2;}
@@ -8901,32 +8875,18 @@ map_srcdir=`(cd $srcdir && pwd)`
 # MAP_CONFIG_FILES_OEM
                                                   ac_config_files="$ac_config_files Oem/Makefile Oem/DWFTK7.1/Makefile Oem/DWFTK7.1/develop/Makefile Oem/DWFTK7.1/develop/global/Makefile Oem/DWFTK7.1/develop/global/src/Makefile"
 
-if test $map_using_proj4 != "yes"; then
-                      ac_config_files="$ac_config_files Oem/Csmap/Makefile Oem/SrsccLib/Makefile"
-
-fi
 
 # MAP_CONFIG_FILES_COMMON
                                                             ac_config_files="$ac_config_files Common/Makefile Common/MdfModel/Makefile Common/MdfParser/Makefile Common/Security/Makefile Common/Service/Makefile Common/Stylization/Makefile"
 
-if test $map_using_proj4 = "yes"; then
-            ac_config_files="$ac_config_files Common/CoordinateSystem/Makefile"
+          ac_config_files="$ac_config_files Common/CoordinateSystem/Makefile"
 
-else
-            ac_config_files="$ac_config_files Common/CoordinateSystem_Mentor/Makefile"
-
-fi
 
 # MAP_CONFIG_FILES_SERVER
-                                                                                                                                                                                                        ac_config_files="$ac_config_files Server/Makefile Server/src/Makefile Server/src/Gws/Makefile Server/src/Gws/GwsResource/Makefile Server/src/Gws/GwsCommon/Makefile Server/src/Gws/GwsQueryEngine/Makefile Server/src/Common/Makefile Server/src/Common/Base/Makefile Server/src/Common/Factory/Makefile Server/src/Common/Manager/Makefile Server/src/Common/Thread/Makefile Server/src/Services/Makefile Server/src/Services/Feature/Makefile Server/src/Services/Mapping/Makefile Server/src/Services/Resource/Makefile Server/src/Services/Site/Makefile Server/src/Services/Drawing/Makefile Server/src/Services/Rendering/Makefile Server/src/Services/ServerAdmin/Makefile Server/src/Services/Tile/Makefile Server/src/Core/Makefile"
+                                                                                                                                                                                                                  ac_config_files="$ac_config_files Server/Makefile Server/src/Makefile Server/src/Gws/Makefile Server/src/Gws/GwsResource/Makefile Server/src/Gws/GwsCommon/Makefile Server/src/Gws/GwsQueryEngine/Makefile Server/src/Common/Makefile Server/src/Common/Base/Makefile Server/src/Common/Factory/Makefile Server/src/Common/Manager/Makefile Server/src/Common/Thread/Makefile Server/src/Services/Makefile Server/src/Services/Feature/Makefile Server/src/Services/Mapping/Makefile Server/src/Services/Resource/Makefile Server/src/Services/Site/Makefile Server/src/Services/Drawing/Makefile Server/src/Services/Rendering/Makefile Server/src/Services/ServerAdmin/Makefile Server/src/Services/Tile/Makefile Server/src/Core/Makefile"
 
-if test $map_using_proj4 = "yes"; then
-            ac_config_files="$ac_config_files Server/src/UnitTesting/Makefile"
+          ac_config_files="$ac_config_files Server/src/UnitTesting/Makefile"
 
-else
-            ac_config_files="$ac_config_files Server/src/UnitTesting_Mentor/Makefile"
-
-fi
 
 # MAP_CONFIG_FILES_WEBTIER
                                                                       ac_config_files="$ac_config_files Web/Makefile Web/src/Makefile Web/src/WebApp/Makefile Web/src/JavaApi/Makefile Web/src/PhpApi/Makefile Web/src/HttpHandler/Makefile Web/src/FastCgiAgent/Makefile"
@@ -9506,8 +9466,6 @@ do
   "Oem/DWFTK7.1/develop/Makefile" ) CONFIG_FILES="$CONFIG_FILES Oem/DWFTK7.1/develop/Makefile" ;;
   "Oem/DWFTK7.1/develop/global/Makefile" ) CONFIG_FILES="$CONFIG_FILES Oem/DWFTK7.1/develop/global/Makefile" ;;
   "Oem/DWFTK7.1/develop/global/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES Oem/DWFTK7.1/develop/global/src/Makefile" ;;
-  "Oem/Csmap/Makefile" ) CONFIG_FILES="$CONFIG_FILES Oem/Csmap/Makefile" ;;
-  "Oem/SrsccLib/Makefile" ) CONFIG_FILES="$CONFIG_FILES Oem/SrsccLib/Makefile" ;;
   "Common/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/Makefile" ;;
   "Common/MdfModel/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/MdfModel/Makefile" ;;
   "Common/MdfParser/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/MdfParser/Makefile" ;;
@@ -9515,7 +9473,6 @@ do
   "Common/Service/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/Service/Makefile" ;;
   "Common/Stylization/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/Stylization/Makefile" ;;
   "Common/CoordinateSystem/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/CoordinateSystem/Makefile" ;;
-  "Common/CoordinateSystem_Mentor/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/CoordinateSystem_Mentor/Makefile" ;;
   "Server/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/Makefile" ;;
   "Server/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Makefile" ;;
   "Server/src/Gws/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Gws/Makefile" ;;
@@ -9538,7 +9495,6 @@ do
   "Server/src/Services/Tile/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Tile/Makefile" ;;
   "Server/src/Core/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Core/Makefile" ;;
   "Server/src/UnitTesting/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/UnitTesting/Makefile" ;;
-  "Server/src/UnitTesting_Mentor/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/UnitTesting_Mentor/Makefile" ;;
   "Web/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/Makefile" ;;
   "Web/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/Makefile" ;;
   "Web/src/WebApp/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/WebApp/Makefile" ;;
