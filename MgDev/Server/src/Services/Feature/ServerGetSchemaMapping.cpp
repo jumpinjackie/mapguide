@@ -55,13 +55,16 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
 
     GisXmlWriterP writer = GisXmlWriter::Create(fmis);
 
+    GisPtr<FdoXmlSpatialContextFlags> flags = FdoXmlSpatialContextFlags::Create();
+    flags->SetIncludeDefault(true);
+
     // Serialize the spatial contexts
     FdoXmlSpatialContextSerializer::XmlSerialize( 
         fdoConnection,
         FdoXmlSpatialContextWriterP(
             FdoXmlSpatialContextWriter::Create(writer)
         ),
-        NULL
+        flags
     );
 
     // Get the schema
