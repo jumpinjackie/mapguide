@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_CONNECTION_PROPERTIES_H
-#define MG_CONNECTION_PROPERTIES_H
+#ifndef MG_CONNECTION_PROPERTIES_H_
+#define MG_CONNECTION_PROPERTIES_H_
 
 
 class MG_SERVICE_API MgConnectionProperties;
@@ -35,26 +35,29 @@ class MG_SERVICE_API MgConnectionProperties : public MgSerializable
 
 INTERNAL_API:
     /// \brief
-    /// Default constructor
-    ///
-    MgConnectionProperties();
-
-    /// \brief
     /// Constructor for HTTP connection properties
+    ///
+    /// \param userInfo
+    /// User information
+    /// \param url
+    /// URL for HTTP connection
     ///
     /// \exception MgInvalidArgumentException
     ///  if URL is empty
     ///
-    MgConnectionProperties(CREFSTRING url);
+    MgConnectionProperties(MgUserInformation* userInfo, CREFSTRING url);
+
     /// \brief
     /// Constructor for TCP/IP connection properties
     ///
+    /// \param userInfo
+    /// User information
     /// \param target
     /// Target machine's IP address
     /// \param port
-    /// Target machine's port#
+    /// Target machine's port number
     ///
-    MgConnectionProperties(CREFSTRING target, INT32 port);
+    MgConnectionProperties(MgUserInformation* userInfo, CREFSTRING target, INT32 port);
 
     /// \brief
     /// Destructor
@@ -68,6 +71,11 @@ INTERNAL_API:
     /// true if local
     ///
     bool IsLocal();
+
+    /// \brief
+    /// Gets user information for connection
+    ///
+    MgUserInformation* GetUserInfo();
 
     /// \brief
     /// Returns the URL for HTTP connection
@@ -123,16 +131,6 @@ INTERNAL_API:
     ///
     void Deserialize(MgStream* stream);
 
-    /// \brief
-    /// Sets user information for connection
-    ///
-    void SetUserInfo(MgUserInformation* userInfo);
-
-    /// \brief
-    /// Gets user information for connection
-    ///
-    MgUserInformation* GetUserInfo();
-
 protected:
 
     /// \brief
@@ -147,15 +145,22 @@ protected:
 
 private:
 
+    /// \brief
+    /// Default constructor
+    ///
+    MgConnectionProperties();
+
+private:
+
+    Ptr<MgUserInformation> m_userInfo;
     STRING m_url;
     STRING m_target;
     INT32 m_port;
-    Ptr<MgUserInformation> m_userInfo;
 
 CLASS_ID:
     static const INT32 m_cls_id = CoreService_MgConnectionProperties;
 };
 
-#endif // MG_CONNECTION_PROPERTIES_H
+#endif // MG_CONNECTION_PROPERTIES_H_
 
 /// \endcond

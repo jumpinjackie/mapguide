@@ -17,48 +17,55 @@
 
 #include "AceCommon.h"
 
-/// <summary>
+/// \brief
 /// Default constructor
-/// </summary>
+///
 MgConnectionProperties::MgConnectionProperties()
 {
 }
 
-/// <summary>
+/// \brief
 /// Constructor for HTTP connection properties
-/// </summary>
-/// EXCEPTION:
-/// MgInvalidArgumentException, if URL is empty
-MgConnectionProperties::MgConnectionProperties(CREFSTRING url)
+///
+MgConnectionProperties::MgConnectionProperties(MgUserInformation* userInfo, CREFSTRING url)
 {
+    if (NULL == userInfo)
+    {
+        throw new MgNullArgumentException(
+            L"MgConnectionProperties.MgConnectionProperties",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     if (url.empty())
     {
         MgStringCollection arguments;
-        arguments.Add(L"1");
+        arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgConnectionProperties.MgConnectionProperties",
+        throw new MgInvalidArgumentException(
+            L"MgConnectionProperties.MgConnectionProperties",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
+    m_userInfo = SAFE_ADDREF(userInfo);
     m_url = url;
     m_port = 0;
 }
 
-/// <summary>
+/// \brief
 /// Constructor for TCP/IP connection properties
-/// </summary>
-/// <param name="target">
-/// Target machine's IP address
-/// <param>
-/// <param name="port">
-/// Target machine's port#
-/// <param>
-MgConnectionProperties::MgConnectionProperties(CREFSTRING target, INT32 port)
+///
+MgConnectionProperties::MgConnectionProperties(MgUserInformation* userInfo, CREFSTRING target, INT32 port)
 {
-    // Target can be empty
-    m_target = target;
-    // Port
+    if (NULL == userInfo)
+    {
+        throw new MgNullArgumentException(
+            L"MgConnectionProperties.MgConnectionProperties",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    m_userInfo = SAFE_ADDREF(userInfo);
+    m_target = target; // may be empty
     m_port = port;
 }
 
@@ -179,14 +186,6 @@ void MgConnectionProperties::Serialize(MgStream* stream)
 void MgConnectionProperties::Deserialize(MgStream* stream)
 {
     UNUSED(stream);
-}
-
-/// \brief
-/// Sets user information for connection
-///
-void MgConnectionProperties::SetUserInfo(MgUserInformation* userInfo)
-{
-    m_userInfo = SAFE_ADDREF(userInfo);
 }
 
 /// \brief

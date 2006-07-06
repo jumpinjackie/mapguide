@@ -85,11 +85,10 @@ void MgSessionTimeoutEventHandler::HandleEvent(long eventId)
 
             if (NULL != serviceManager)
             {
-                // Use the Administrator account to delete expired session repositories.
-                Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(
+                Ptr<MgUserInformation> userInfo = new MgUserInformation(
                     MgUser::Administrator, L"");
 
-                MgUserInformation::SetCurrentUserInfo(adminUserInfo);
+                MgUserInformation::SetCurrentUserInfo(userInfo);
                 m_expiredSessions = serviceManager->CleanUpRepositories(m_expiredSessions);
                 MgUserInformation::SetCurrentUserInfo(NULL);
             }

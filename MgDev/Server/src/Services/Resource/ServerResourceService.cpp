@@ -28,6 +28,13 @@
 
 const int MgServerResourceService::sm_maxOpRetries = 3;
 
+MgSiteRepository*    MgServerResourceService::sm_siteRepository    = NULL;
+MgSessionRepository* MgServerResourceService::sm_sessionRepository = NULL;
+MgLibraryRepository* MgServerResourceService::sm_libraryRepository = NULL;
+
+ACE_Recursive_Thread_Mutex MgServerResourceService::sm_mutex;
+set<STRING> MgServerResourceService::sm_changedResources;
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Server Resource Service retry macros.
 ///
@@ -80,62 +87,8 @@ const int MgServerResourceService::sm_maxOpRetries = 3;
 
 MgServerResourceService::MgServerResourceService(
     MgConnectionProperties* connection) :
-    MgResourceService(connection),
-    m_siteRepository(NULL),
-    m_sessionRepository(NULL),
-    m_libraryRepository(NULL)
+    MgResourceService(connection)
 {
-    MG_RESOURCE_SERVICE_TRY()
-
-    // Clean up the Session repository after creating the Site repository
-    // to eliminate unnecessary XMLPlatformUtils::Initialize/Terminate calls
-    // made by the BDB XmlManager.
-
-    m_siteRepository = new MgSiteRepository();
-    MgRepositoryManager::CleanRepository(MgRepositoryType::Session);
-    m_sessionRepository = new MgSessionRepository();
-    m_libraryRepository = new MgLibraryRepository();
-
-    // TODO: Remove the following code when the installer is ready to install
-    // default repositories?
-    // Create a site repository if it does not exists.
-
-    MgResourceIdentifier resource;
-
-    resource.SetRepositoryType(MgRepositoryType::Site);
-    resource.SetResourceType(MgResourceType::Folder);
-
-    MgSiteRepositoryManager siteRepositoryMan(*m_siteRepository);
-
-    siteRepositoryMan.Initialize(true);
-
-    if (!siteRepositoryMan.FindResource(&resource))
-    {
-        siteRepositoryMan.CreateRepository(&resource, 0, 0);
-    }
-
-    siteRepositoryMan.Terminate();
-
-    // Create a library repository if it does not exists.
-
-    resource.SetRepositoryType(MgRepositoryType::Library);
-
-    MgLibraryRepositoryManager libraryRepositoryMan(*m_libraryRepository, true);
-
-    libraryRepositoryMan.Initialize(true);
-
-    if (!libraryRepositoryMan.FindResource(&resource))
-    {
-        libraryRepositoryMan.CreateRepository(&resource, 0, 0);
-    }
-
-    libraryRepositoryMan.Terminate();
-
-    // Create the permission cache.
-
-    MgPermissionManager::RefreshPermissionCache(CreatePermissionCache(true));
-
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.MgServerResourceService")
 }
 
 ///----------------------------------------------------------------------------
@@ -156,15 +109,93 @@ MgServerResourceService::MgServerResourceService() : MgResourceService(NULL)
 
 MgServerResourceService::~MgServerResourceService()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Open the repositories.
+/// This method must be called once during the server startup time.
+///
+void MgServerResourceService::OpenRepositories()
+{
+    MG_RESOURCE_SERVICE_TRY()
+
+    ACE_ASSERT(NULL == sm_siteRepository && NULL == sm_sessionRepository && NULL == sm_libraryRepository);
+
+    // Clean up the Session repository after creating the Site repository
+    // to eliminate unnecessary XMLPlatformUtils::Initialize/Terminate calls
+    // made by the BDB XmlManager.
+
+    sm_siteRepository = new MgSiteRepository();
+    MgRepositoryManager::CleanRepository(MgRepositoryType::Session);
+    sm_sessionRepository = new MgSessionRepository();
+    sm_libraryRepository = new MgLibraryRepository();
+
+    // Create a site repository if it does not exists.
+
+    MgResourceIdentifier resource;
+
+    resource.SetRepositoryType(MgRepositoryType::Site);
+    resource.SetResourceType(MgResourceType::Folder);
+
+    MgSiteRepositoryManager siteRepositoryMan(*sm_siteRepository);
+
+    siteRepositoryMan.Initialize(true);
+
+    if (!siteRepositoryMan.FindResource(&resource))
+    {
+        siteRepositoryMan.CreateRepository(&resource, 0, 0);
+    }
+
+    siteRepositoryMan.Terminate();
+
+    // Create the security cache.
+
+    MgSecurityManager::RefreshSecurityCache(CreateSecurityCache());
+
+    // Create a library repository if it does not exists.
+
+    resource.SetRepositoryType(MgRepositoryType::Library);
+
+    MgLibraryRepositoryManager libraryRepositoryMan(*sm_libraryRepository);
+
+    libraryRepositoryMan.Initialize(true);
+
+    if (!libraryRepositoryMan.FindResource(&resource))
+    {
+        libraryRepositoryMan.CreateRepository(&resource, 0, 0);
+    }
+
+    libraryRepositoryMan.Terminate();
+
+    // Create the permission cache.
+
+    MgPermissionManager::RefreshPermissionCache(CreatePermissionCache());
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.OpenRepositories")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Close the repositories.
+/// This method must be called once during the server shutdown time.
+///
+void MgServerResourceService::CloseRepositories()
+{
     MG_TRY()
 
     PerformRepositoryCheckpoints(DB_FORCE);
 
-    MG_CATCH(L"MgServerResourceService.~MgServerResourceService")
+    MG_CATCH_AND_RELEASE()
 
-    delete m_siteRepository;
-    delete m_sessionRepository;
-    delete m_libraryRepository;
+    delete sm_siteRepository;
+    sm_siteRepository = NULL;
+
+    delete sm_sessionRepository;
+    sm_sessionRepository = NULL;
+
+    delete sm_libraryRepository;
+    sm_libraryRepository = NULL;
 }
 
 ///----------------------------------------------------------------------------
@@ -194,7 +225,7 @@ MgByteReader* MgServerResourceService::EnumerateRepositories(
     }
 
     auto_ptr<MgSessionRepositoryManager> repositoryMan(
-        new MgSessionRepositoryManager(*m_sessionRepository));
+        new MgSessionRepositoryManager(*sm_sessionRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
@@ -238,7 +269,7 @@ void MgServerResourceService::CreateRepository(MgResourceIdentifier* resource,
 
     ACE_ASSERT(!resource->GetRepositoryName().empty());
     auto_ptr<MgSessionRepositoryManager> repositoryMan(
-        new MgSessionRepositoryManager(*m_sessionRepository));
+        new MgSessionRepositoryManager(*sm_sessionRepository));
     int maxRetries = sm_maxOpRetries;
 
     if ((NULL != content && !content->IsRewindable())
@@ -296,7 +327,7 @@ void MgServerResourceService::DeleteRepository(MgResourceIdentifier* resource)
 
     ACE_ASSERT(!resource->GetRepositoryName().empty());
     auto_ptr<MgSessionRepositoryManager> repositoryMan(
-        new MgSessionRepositoryManager(*m_sessionRepository));
+        new MgSessionRepositoryManager(*sm_sessionRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -437,7 +468,7 @@ MgByteReader* MgServerResourceService::GetRepositoryHeader(
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
     auto_ptr<MgLibraryRepositoryManager> repositoryMan(
-        new MgLibraryRepositoryManager(*m_libraryRepository));
+        new MgLibraryRepositoryManager(*sm_libraryRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
@@ -468,7 +499,7 @@ void MgServerResourceService::ApplyResourcePackage(MgByteReader* packageStream)
     }
 
     auto_ptr<MgLibraryRepositoryManager> repositoryMan(
-        new MgLibraryRepositoryManager(*m_libraryRepository));
+        new MgLibraryRepositoryManager(*sm_libraryRepository));
     int maxRetries = sm_maxOpRetries;
 
     if (!packageStream->IsRewindable())
@@ -515,7 +546,7 @@ void MgServerResourceService::LoadResourcePackage(CREFSTRING packagePathname,
     }
 
     auto_ptr<MgLibraryRepositoryManager> repositoryMan(
-        new MgLibraryRepositoryManager(*m_libraryRepository));
+        new MgLibraryRepositoryManager(*sm_libraryRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -564,7 +595,7 @@ void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
     auto_ptr<MgLibraryRepositoryManager> repositoryMan(
-        new MgLibraryRepositoryManager(*m_libraryRepository));
+        new MgLibraryRepositoryManager(*sm_libraryRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
@@ -612,7 +643,7 @@ MgByteReader* MgServerResourceService::EnumerateResources(
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
     auto_ptr<MgLibraryRepositoryManager> repositoryMan(
-        new MgLibraryRepositoryManager(*m_libraryRepository));
+        new MgLibraryRepositoryManager(*sm_libraryRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
@@ -866,7 +897,7 @@ MgByteReader* MgServerResourceService::GetResourceHeader(
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
     auto_ptr<MgLibraryRepositoryManager> repositoryMan(
-        new MgLibraryRepositoryManager(*m_libraryRepository));
+        new MgLibraryRepositoryManager(*sm_libraryRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
@@ -915,7 +946,7 @@ MgDateTime* MgServerResourceService::GetResourceModifiedDate(
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
     auto_ptr<MgLibraryRepositoryManager> repositoryMan(
-        new MgLibraryRepositoryManager(*m_libraryRepository));
+        new MgLibraryRepositoryManager(*sm_libraryRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
@@ -1044,7 +1075,7 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
     {
         if (libraryResources > 0)
         {
-            MgLibraryRepositoryManager libraryRepositoryMan(*m_libraryRepository);
+            MgLibraryRepositoryManager libraryRepositoryMan(*sm_libraryRepository);
 
             libraryRepositoryMan.Initialize(false);
             libraryRepositoryMan.EnumerateParentMapDefinitions(childResources,
@@ -1052,7 +1083,7 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
             libraryRepositoryMan.Terminate();
         }
 
-        MgSessionRepositoryManager sessionRepositoryMan(*m_sessionRepository);
+        MgSessionRepositoryManager sessionRepositoryMan(*sm_sessionRepository);
 
         sessionRepositoryMan.Initialize(false);
         sessionRepositoryMan.EnumerateParentMapDefinitions(childResources,
@@ -1111,7 +1142,7 @@ void MgServerResourceService::ChangeResourceOwner(
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
     auto_ptr<MgLibraryRepositoryManager> repositoryMan(
-        new MgLibraryRepositoryManager(*m_libraryRepository));
+        new MgLibraryRepositoryManager(*sm_libraryRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1155,7 +1186,7 @@ void MgServerResourceService::InheritPermissionsFrom(MgResourceIdentifier* resou
 
     ACE_ASSERT(resource->GetRepositoryName().empty());
     auto_ptr<MgLibraryRepositoryManager> repositoryMan(
-        new MgLibraryRepositoryManager(*m_libraryRepository));
+        new MgLibraryRepositoryManager(*sm_libraryRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1393,12 +1424,12 @@ MgApplicationRepositoryManager* MgServerResourceService::CreateApplicationReposi
     if (MgRepositoryType::Library == repositoryType)
     {
         ACE_ASSERT(resource->GetRepositoryName().empty());
-        repositoryMan.reset(new MgLibraryRepositoryManager(*m_libraryRepository));
+        repositoryMan.reset(new MgLibraryRepositoryManager(*sm_libraryRepository));
     }
     else if (MgRepositoryType::Session == repositoryType)
     {
         ACE_ASSERT(!resource->GetRepositoryName().empty());
-        repositoryMan.reset(new MgSessionRepositoryManager(*m_sessionRepository));
+        repositoryMan.reset(new MgSessionRepositoryManager(*sm_sessionRepository));
     }
     else
     {
@@ -1433,7 +1464,7 @@ MgByteReader* MgServerResourceService::EnumerateUsers(CREFSTRING group,
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateUsers()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
@@ -1465,7 +1496,7 @@ void MgServerResourceService::AddUser(CREFSTRING userId, CREFSTRING username,
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::AddUser()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1493,7 +1524,7 @@ void MgServerResourceService::DeleteUsers(MgStringCollection* users)
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::DeleteUsers()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1522,7 +1553,7 @@ void MgServerResourceService::UpdateUser(CREFSTRING userId, CREFSTRING newUserId
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::UpdateUser()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1554,7 +1585,7 @@ MgByteReader* MgServerResourceService::EnumerateGroups(CREFSTRING user,
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateGroups()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
@@ -1583,7 +1614,7 @@ void MgServerResourceService::AddGroup(CREFSTRING group, CREFSTRING description)
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::AddGroup()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1610,7 +1641,7 @@ void MgServerResourceService::DeleteGroups(MgStringCollection* groups)
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::DeleteGroups()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1639,7 +1670,7 @@ void MgServerResourceService::UpdateGroup(CREFSTRING group, CREFSTRING newGroup,
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::UpdateGroup()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1677,7 +1708,7 @@ void MgServerResourceService::GrantGroupMembershipsToUsers( MgStringCollection* 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GrantGroupMembershipsToUsers()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1715,7 +1746,7 @@ void MgServerResourceService::RevokeGroupMembershipsFromUsers( MgStringCollectio
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::RevokeGroupMembershipsFromUsers()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1761,7 +1792,7 @@ MgStringCollection* MgServerResourceService::EnumerateRoles(CREFSTRING user,
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateRoles()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
@@ -1800,7 +1831,7 @@ void MgServerResourceService::GrantRoleMembershipsToUsers(MgStringCollection* ro
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GrantRoleMembershipsToUsers()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1838,7 +1869,7 @@ void MgServerResourceService::RevokeRoleMembershipsFromUsers(MgStringCollection*
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::RevokeRoleMembershipsFromUsers()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1876,7 +1907,7 @@ void MgServerResourceService::GrantRoleMembershipsToGroups(MgStringCollection* r
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GrantRoleMembershipsToGroups()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1914,7 +1945,7 @@ void MgServerResourceService::RevokeRoleMembershipsFromGroups(MgStringCollection
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::RevokeRoleMembershipsFromGroups()");
 
     auto_ptr<MgSiteRepositoryManager> repositoryMan(
-        new MgSiteRepositoryManager(*m_siteRepository));
+        new MgSiteRepositoryManager(*sm_siteRepository));
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
@@ -1937,7 +1968,7 @@ MgSecurityCache* MgServerResourceService::CreateSecurityCache()
 
     MG_RESOURCE_SERVICE_TRY()
 
-    MgSiteRepositoryManager repositoryMan(*m_siteRepository);
+    MgSiteRepositoryManager repositoryMan(*sm_siteRepository);
     MgSiteResourceContentManager* resourceContentMan =
         dynamic_cast<MgSiteResourceContentManager*>(
             repositoryMan.GetResourceContentManager());
@@ -1956,13 +1987,13 @@ MgSecurityCache* MgServerResourceService::CreateSecurityCache()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgPermissionCache* MgServerResourceService::CreatePermissionCache(bool startup)
+MgPermissionCache* MgServerResourceService::CreatePermissionCache()
 {
     Ptr<MgPermissionCache> permissionCache;
 
     MG_RESOURCE_SERVICE_TRY()
 
-    MgLibraryRepositoryManager repositoryMan(*m_libraryRepository, startup);
+    MgLibraryRepositoryManager repositoryMan(*sm_libraryRepository);
     MgResourceHeaderManager* resourceHeaderManager =
         dynamic_cast<MgResourceHeaderManager*>(
             repositoryMan.GetResourceHeaderManager());
@@ -1985,19 +2016,19 @@ void MgServerResourceService::PerformRepositoryCheckpoints(UINT32 flags)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    if (NULL != m_libraryRepository)
+    if (NULL != sm_libraryRepository)
     {
-        m_libraryRepository->PerformCheckpoint(flags);
+        sm_libraryRepository->PerformCheckpoint(flags);
     }
 
-    if (NULL != m_siteRepository)
+    if (NULL != sm_siteRepository)
     {
-        m_siteRepository->PerformCheckpoint(flags);
+        sm_siteRepository->PerformCheckpoint(flags);
     }
 
-    if (NULL != m_sessionRepository)
+    if (NULL != sm_sessionRepository)
     {
-        m_sessionRepository->PerformCheckpoint(flags);
+        sm_sessionRepository->PerformCheckpoint(flags);
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.PerformCheckpoint")
@@ -2009,24 +2040,24 @@ void MgServerResourceService::PerformRepositoryCheckpoints(UINT32 flags)
 ///
 MgSerializableCollection* MgServerResourceService::GetChangedResources()
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
-    if (m_changedResources.empty())
+    if (sm_changedResources.empty())
     {
         return NULL;
     }
 
     Ptr<MgSerializableCollection> resources = new MgSerializableCollection();
 
-    for (set<STRING>::const_iterator i = m_changedResources.begin();
-        i != m_changedResources.end(); ++i)
+    for (set<STRING>::const_iterator i = sm_changedResources.begin();
+        i != sm_changedResources.end(); ++i)
     {
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(*i);
 
         resources->Add(resource.p);
     }
 
-    m_changedResources.clear();
+    sm_changedResources.clear();
 
     return resources.Detach();
 }
@@ -2043,7 +2074,7 @@ void MgServerResourceService::UpdateChangedResources(MgSerializableCollection* r
 
         if (numResources > 0)
         {
-            ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+            ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
             for (INT32 i = 0; i < numResources; ++i)
             {
@@ -2054,7 +2085,7 @@ void MgServerResourceService::UpdateChangedResources(MgSerializableCollection* r
 
                 if (NULL != resource)
                 {
-                    m_changedResources.insert(resource->ToString());
+                    sm_changedResources.insert(resource->ToString());
                 }
             }
         }
@@ -2069,12 +2100,12 @@ void MgServerResourceService::UpdateChangedResources(const set<STRING>& resource
 {
     if (!resources.empty())
     {
-        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
         for (set<STRING>::const_iterator i = resources.begin(); 
             i != resources.end(); ++i)
         {
-            m_changedResources.insert(*i);
+            sm_changedResources.insert(*i);
         }
     }
 }

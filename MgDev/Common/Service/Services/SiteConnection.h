@@ -340,14 +340,16 @@ protected:
 
 private:
 
-    //////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Creates a site helper object based on connection properties
-    ///
-    /// \return
-    /// Nothing
-    ///
-    void CreateSiteHelper();
+    static MgService* CreateService(ServerConnectionType connType, INT32 serviceType, MgConnectionProperties* connProp);
+
+    void Initialize();
+
+    void AuthenticateWithHttpServer(MgUserInformation* userInformation);
+    void AuthenticateWithSiteServer(MgUserInformation* userInformation);
+
+    MgConnectionProperties* GetSiteConnectionProperties(MgUserInformation* userInformation);
+    MgConnectionProperties* GetConnectionProperties(INT32 serviceType);
+    MgConnectionProperties* GetConnectionPropertiesFromSiteServer(INT32 serviceType);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -358,23 +360,7 @@ private:
     /// false - TCP/IP connection
     ///
     bool IsHttpConnection();
-
-    static MgService* CreateService(ServerConnectionType connType, INT32 serviceType, MgConnectionProperties* connProp);
-
-    void AuthenticateWithHttpServer(MgUserInformation* userInformation);
-
-    void AuthenticateWithSiteServer(MgUserInformation* userInformation);
-
-    MgConnectionProperties* GetConnectionProperties(INT32 serviceType);
-
-    MgConnectionProperties* GetConnectionPropertiesFromSiteServer(INT32 serviceType);
-
     bool IsServer();
-
-    void Initialize();
-
-    MgConnectionProperties* GetSiteConnectionProperties();
-
     bool IsWebTier();
 
 private:

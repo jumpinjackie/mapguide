@@ -65,7 +65,12 @@ void MgResourceChangeEventHandler::HandleEvent(long eventId)
     // Dispatch resource change notifications.
     if (MgTimedEvent::ResourceChange == eventId)
     {
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(
+            MgUser::Administrator, L"");
+
+        MgUserInformation::SetCurrentUserInfo(userInfo);
         m_serviceManager->DispatchResourceChangeNotifications();
+        MgUserInformation::SetCurrentUserInfo(NULL);
     }
 
     MG_CATCH_AND_THROW(L"MgResourceChangeEventHandler.HandleEvent")

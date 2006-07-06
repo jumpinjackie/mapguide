@@ -37,21 +37,6 @@
 MgServerSiteService::MgServerSiteService( MgConnectionProperties* connection )
     : MgService (connection)
 {
-    MG_SITE_SERVICE_TRY()
-
-    m_loadBalanceManager = MgLoadBalanceManager::GetInstance();
-    assert(NULL != m_loadBalanceManager);
-
-    MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-    assert(NULL != serviceManager);
-
-    m_resourceService = dynamic_cast<MgServerResourceService*>(
-        serviceManager->RequestService(MgServiceType::ResourceService));
-    assert(m_resourceService != NULL);
-
-    MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
-
-    MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.MgServerSiteService")
 }
 
 ///----------------------------------------------------------------------------
@@ -86,6 +71,33 @@ MgServerSiteService::~MgServerSiteService( void )
 void MgServerSiteService::Dispose()
 {
     delete this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Get the resource service.
+/// The returned service is requested on demand only and will be cached for
+/// future use.
+///
+MgServerResourceService& MgServerSiteService::GetResourceService()
+{
+    if (NULL == m_resourceService.p)
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        assert(NULL != serviceManager);
+        Ptr<MgService> service = serviceManager->RequestService(MgServiceType::ResourceService);
+
+        if (NULL == dynamic_cast<MgServerResourceService*>(service.p))
+        {
+            throw new MgServiceNotAvailableException(
+                L"MgServerSiteService.GetResourceService",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        m_resourceService = static_cast<MgServerResourceService*>(service.Detach());
+    }
+
+    return *m_resourceService.p;
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +136,7 @@ void MgServerSiteService::AddUser( CREFSTRING userID, CREFSTRING userName,
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::AddUser()");
 
-    this->m_resourceService->AddUser( userID, userName, password, description );
+    GetResourceService().AddUser( userID, userName, password, description );
     MgSecurityManager::SetUser(userID, password);
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.AddUser" )
@@ -153,8 +165,8 @@ void MgServerSiteService::DeleteUsers( MgStringCollection* users )
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::DeleteUsers()");
 
-    this->m_resourceService->DeleteUsers( users );
-    MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
+    GetResourceService().DeleteUsers( users );
+    MgSecurityManager::RefreshSecurityCache(GetResourceService().CreateSecurityCache());
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.DeleteUsers" )
 }
@@ -194,17 +206,17 @@ void MgServerSiteService::DeleteUsers( MgStringCollection* users )
 MgByteReader* MgServerSiteService::EnumerateUsers( CREFSTRING group,
         CREFSTRING role, bool includeGroups )
 {
-    MgByteReader* ret = 0;
+    Ptr<MgByteReader> users;
 
     MG_SITE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::EnumerateUsers()");
 
-    ret = this->m_resourceService->EnumerateUsers( group, role, false, includeGroups );
+    users = GetResourceService().EnumerateUsers(group, role, false, includeGroups);
 
-    MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.EnumerateUsers" )
+    MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.EnumerateUsers")
 
-    return ret;
+    return users.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -233,8 +245,8 @@ void MgServerSiteService::GrantGroupMembershipsToUsers( MgStringCollection* grou
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::GrantGroupMembershipsToUsers()");
 
-    this->m_resourceService->GrantGroupMembershipsToUsers( groups, users );
-    MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
+    GetResourceService().GrantGroupMembershipsToUsers( groups, users );
+    MgSecurityManager::RefreshSecurityCache(GetResourceService().CreateSecurityCache());
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.GrantGroupMembershipsToUsers" )
 }
@@ -264,8 +276,8 @@ void MgServerSiteService::GrantRoleMembershipsToUsers( MgStringCollection* roles
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::GrantRoleMembershipsToUsers()");
 
-    this->m_resourceService->GrantRoleMembershipsToUsers( roles, users );
-    MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
+    GetResourceService().GrantRoleMembershipsToUsers( roles, users );
+    MgSecurityManager::RefreshSecurityCache(GetResourceService().CreateSecurityCache());
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.GrantRoleMembershipsToUsers" )
 }
@@ -296,8 +308,8 @@ void MgServerSiteService::RevokeGroupMembershipsFromUsers( MgStringCollection* g
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::RevokeGroupMembershipsFromUsers()");
 
-    this->m_resourceService->RevokeGroupMembershipsFromUsers( groups, users );
-    MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
+    GetResourceService().RevokeGroupMembershipsFromUsers( groups, users );
+    MgSecurityManager::RefreshSecurityCache(GetResourceService().CreateSecurityCache());
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.RevokeGroupMembershipsFromUsers" )
 }
@@ -328,8 +340,8 @@ void MgServerSiteService::RevokeRoleMembershipsFromUsers( MgStringCollection* ro
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::RevokeRoleMembershipsFromUsers()");
 
-    this->m_resourceService->RevokeRoleMembershipsFromUsers( roles, users );
-    MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
+    GetResourceService().RevokeRoleMembershipsFromUsers( roles, users );
+    MgSecurityManager::RefreshSecurityCache(GetResourceService().CreateSecurityCache());
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.RevokeRoleMembershipsFromUsers" )
 }
@@ -371,7 +383,7 @@ void MgServerSiteService::UpdateUser( CREFSTRING userID, CREFSTRING newUserID,
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::UpdateUser()");
 
-    this->m_resourceService->UpdateUser( userID, newUserID, newUserName, newPassword,
+    GetResourceService().UpdateUser( userID, newUserID, newUserName, newPassword,
         newDescription );
 
     if (newUserID.empty() && !newPassword.empty())
@@ -380,7 +392,7 @@ void MgServerSiteService::UpdateUser( CREFSTRING userID, CREFSTRING newUserID,
     }
     else
     {
-        MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
+        MgSecurityManager::RefreshSecurityCache(GetResourceService().CreateSecurityCache());
     }
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.UpdateUser" )
@@ -414,7 +426,7 @@ void MgServerSiteService::AddGroup( CREFSTRING group, CREFSTRING description )
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::AddGroup()");
 
-    this->m_resourceService->AddGroup(group, description);
+    GetResourceService().AddGroup(group, description);
     MgSecurityManager::SetGroup(group);
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.AddGroup" );
@@ -442,8 +454,8 @@ void MgServerSiteService::DeleteGroups( MgStringCollection* groups )
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::DeleteGroups()");
 
-    m_resourceService->DeleteGroups( groups );
-    MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
+    GetResourceService().DeleteGroups( groups );
+    MgSecurityManager::RefreshSecurityCache(GetResourceService().CreateSecurityCache());
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.DeleteGroups" );
 }
@@ -474,17 +486,17 @@ void MgServerSiteService::DeleteGroups( MgStringCollection* groups )
 /// MgRoleNotFoundException
 MgByteReader* MgServerSiteService::EnumerateGroups( CREFSTRING user, CREFSTRING role )
 {
-    Ptr<MgByteReader> ret;
+    Ptr<MgByteReader> groups;
 
     MG_SITE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::EnumerateGroups()");
 
-    ret = this->m_resourceService->EnumerateGroups( user, role );
+    groups = GetResourceService().EnumerateGroups( user, role );
 
-    MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.EnumerateGroups" )
+    MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.EnumerateGroups")
 
-    return SAFE_ADDREF( (MgByteReader*) ret);
+    return groups.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -513,8 +525,8 @@ void MgServerSiteService::GrantRoleMembershipsToGroups( MgStringCollection* role
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::GrantRoleMembershipsToGroups()");
 
-    this->m_resourceService->GrantRoleMembershipsToGroups( roles, groups );
-    MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
+    GetResourceService().GrantRoleMembershipsToGroups( roles, groups );
+    MgSecurityManager::RefreshSecurityCache(GetResourceService().CreateSecurityCache());
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.GrantRoleMembershipsToGroups" )
 }
@@ -545,8 +557,8 @@ void MgServerSiteService::RevokeRoleMembershipsFromGroups( MgStringCollection* r
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::RevokeRoleMembershipsFromGroups()");
 
-    this->m_resourceService->RevokeRoleMembershipsFromGroups( roles, groups );
-    MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
+    GetResourceService().RevokeRoleMembershipsFromGroups( roles, groups );
+    MgSecurityManager::RefreshSecurityCache(GetResourceService().CreateSecurityCache());
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.RevokeRoleMembershipsFromGroups" )
 }
@@ -582,11 +594,11 @@ void MgServerSiteService::UpdateGroup( CREFSTRING group, CREFSTRING newGroup,
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::UpdateGroup()");
 
-    m_resourceService->UpdateGroup( group, newGroup, newDescription );
+    GetResourceService().UpdateGroup( group, newGroup, newDescription );
 
     if (!newGroup.empty())
     {
-        MgSecurityManager::RefreshSecurityCache(m_resourceService->CreateSecurityCache());
+        MgSecurityManager::RefreshSecurityCache(GetResourceService().CreateSecurityCache());
     }
 
     MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.UpdateGroup" );
@@ -622,16 +634,17 @@ void MgServerSiteService::UpdateGroup( CREFSTRING group, CREFSTRING newGroup,
 MgStringCollection* MgServerSiteService::EnumerateRoles( CREFSTRING user,
         CREFSTRING group )
 {
-    Ptr<MgStringCollection> ret;
+    Ptr<MgStringCollection> roles;
+
     MG_SITE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::EnumerateRoles()");
 
-    ret = m_resourceService->EnumerateRoles( user, group );
+    roles = GetResourceService().EnumerateRoles( user, group );
 
-    MG_SITE_SERVICE_CATCH_AND_THROW( L"MgServerSiteService.EnumerateRoles" );
+    MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.EnumerateRoles");
 
-    return SAFE_ADDREF( (MgStringCollection*) ret);
+    return roles.Detach();
 }
 
 ///----------------------------------------------------------------------------
@@ -717,7 +730,7 @@ STRING MgServerSiteService::CreateSession()
         L"", L"", MgResourceType::Folder);
 
     MgSessionManager::AddSession(session, currUserInfo->GetUserName());
-    m_resourceService->CreateRepository(&resource, NULL, NULL);
+    GetResourceService().CreateRepository(&resource, NULL, NULL);
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.CreateSession")
 
@@ -744,7 +757,7 @@ void MgServerSiteService::DestroySession(CREFSTRING session)
     MgResourceIdentifier resource(MgRepositoryType::Session, session,
         L"", L"", MgResourceType::Folder);
 
-    m_resourceService->DeleteRepository(&resource);
+    GetResourceService().DeleteRepository(&resource);
     MgSessionManager::RemoveSession(session);
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.DestroySession")
@@ -769,17 +782,19 @@ void MgServerSiteService::DestroySession(CREFSTRING session)
 
 MgByteReader* MgServerSiteService::EnumerateServers()
 {
-    Ptr<MgByteReader> byteReader;
+    Ptr<MgByteReader> servers;
 
     MG_SITE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::EnumerateServers()");
 
-    byteReader = m_loadBalanceManager->EnumerateServers();
+    MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
+    assert(NULL != loadBalanceManager);
+    servers = loadBalanceManager->EnumerateServers();
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.EnumerateServers")
 
-    return SAFE_ADDREF(byteReader.p);
+    return servers.Detach();
 }
 
 ///----------------------------------------------------------------------------
@@ -812,7 +827,9 @@ void MgServerSiteService::AddServer(CREFSTRING name, CREFSTRING description,
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::AddServer()");
 
-    m_loadBalanceManager->AddServer(name, description, address);
+    MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
+    assert(NULL != loadBalanceManager);
+    loadBalanceManager->AddServer(name, description, address);
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.AddServer");
 }
@@ -852,7 +869,9 @@ void MgServerSiteService::UpdateServer(CREFSTRING oldName, CREFSTRING newName,
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::UpdateServer()");
 
-    m_loadBalanceManager->UpdateServer(oldName, newName, newDescription, newAddress);
+    MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
+    assert(NULL != loadBalanceManager);
+    loadBalanceManager->UpdateServer(oldName, newName, newDescription, newAddress);
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.UpdateServer");
 }
@@ -879,7 +898,9 @@ void MgServerSiteService::RemoveServer(CREFSTRING name)
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::RemoveServer()");
 
-    m_loadBalanceManager->RemoveServer(name);
+    MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
+    assert(NULL != loadBalanceManager);
+    loadBalanceManager->RemoveServer(name);
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.RemoveServer");
 }
@@ -914,7 +935,9 @@ STRING MgServerSiteService::RequestServer(INT32 serviceType)
     MG_CHECK_RANGE(serviceType, 0, MgServerInformation::sm_knMaxNumberServices - 1,
         L"MgServerSiteService.RequestServer");
 
-    serverAddress = m_loadBalanceManager->RequestServer(serviceType);
+    MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
+    assert(NULL != loadBalanceManager);
+    serverAddress = loadBalanceManager->RequestServer(serviceType);
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.RequestServer")
 

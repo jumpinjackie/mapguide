@@ -28,6 +28,12 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
     int nResult = 0;
     bool bRunTests = true;
 
+    // Set the default user information for this test run.
+    // Any specific test case may overwrite these information.
+    Ptr<MgUserInformation> userInfo = new MgUserInformation(
+        MgUser::Administrator, L"");
+    MgUserInformation::SetCurrentUserInfo(userInfo);
+
     CppUnit::TextUi::TestRunner runner;
 
     // Setup which tests to run
@@ -178,6 +184,9 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
 
         nResult = runner.result().testFailuresTotal();
     }
+
+    // Reset the current user information for this test run.
+    MgUserInformation::SetCurrentUserInfo(NULL);
 
     return nResult;
 }

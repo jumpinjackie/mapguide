@@ -303,10 +303,10 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
             pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout());
 
-            // Registers services on this server and other servers within the site.
+            // On startup, perform the service registration for the Site server.
+            // Note that this event will be perfomed by a timer for the Support server.
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Registering Services.\n")));
-            // If successful, then terminate the Service Registration timer.
-            if (loadBalanceManager->RegisterServices(true))
+            if (pServerManager->IsSiteServer() && loadBalanceManager->RegisterServices())
             {
                 m_eventTimerManager.GetEventTimer(
                     MgEventTimer::ServiceRegistration).Terminate();
@@ -314,7 +314,6 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 
 #ifdef _DEBUG
             MgEventTimer& connectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::ConnectionTimeout);
-            MgEventTimer& sessionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::SessionTimeout);
             STRING strResourceFilename = pResources->GetResourceFilename(pServerManager->GetDefaultLocale());
 
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Server Information:\n")));
@@ -341,8 +340,15 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Rendering Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Resource Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Site Service Properties:\n")));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timeout               : %d\n"), sessionTimer.GetEventTimeout()));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timer Interval        : %d\n"), sessionTimer.GetInterval()));
+
+            if (pServerManager->IsSiteServer())
+            {
+                MgEventTimer& sessionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::SessionTimeout);
+
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timeout               : %d\n"), sessionTimer.GetEventTimeout()));
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Session Timer Interval        : %d\n"), sessionTimer.GetInterval()));
+            }
+
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Administrative Connection Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Port                          : %d\n"), pServerManager->GetAdminPort()));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Thread Pool Size              : %d\n"), pServerManager->GetAdminThreads()));
@@ -825,8 +831,6 @@ int MgServer::svc(void)
                         nResult = siteAcceptor.Initialize();
                         if(nResult == 0)
                         {
-                            pServerManager->BringOnline();
-
                             MgResources* pResources = MgResources::GetInstance();
                             STRING message = pResources->FormatMessage(MgResources::ServerStarted, 0);
                             ACE_DEBUG ((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
