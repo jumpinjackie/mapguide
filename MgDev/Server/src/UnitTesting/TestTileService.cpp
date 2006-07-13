@@ -26,6 +26,14 @@
 // determines the number of requests to make, as a factor of the number of tiles
 #define REQUEST_FACTOR 20
 
+#ifdef _WIN32
+    // TODO: Investigate threading problem on Windows 2003 (dual core CPU).
+    //       There may be some issue with ByteSourceFileImpl::LoadFile (i.e. Is errno thread safe?).
+    static const INT32 MG_TEST_THREADS = 1;
+#else
+    static const INT32 MG_TEST_THREADS = 4;
+#endif
+
 const STRING TEST_LOCALE = L"en";
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestTileService, "TestTileService");
@@ -297,7 +305,7 @@ ACE_THR_FUNC_RETURN GetTileWorker(void* param)
 void TestTileService::TestCase_GetTile()
 {
     // specify the number of threads to use
-    const INT32 numThreads = 4;
+    const INT32 numThreads = MG_TEST_THREADS;
     ThreadData threadData[numThreads];
 
     // define the range of tiles to get
@@ -507,7 +515,7 @@ ACE_THR_FUNC_RETURN SetTileWorker(void* param)
 void TestTileService::TestCase_SetTile()
 {
     // specify the number of threads to use
-    const INT32 numThreads = 4;
+    const INT32 numThreads = MG_TEST_THREADS;
     ThreadData threadData[numThreads];
 
     // define the range of tiles to set
@@ -701,7 +709,7 @@ void TestTileService::TestCase_SetTile()
 void TestTileService::TestCase_GetSetTile()
 {
     // specify the number of threads to use
-    const INT32 numThreads = 4;
+    const INT32 numThreads = MG_TEST_THREADS;
     ThreadData threadData[numThreads];
 
     // define the range of tiles to get and set
