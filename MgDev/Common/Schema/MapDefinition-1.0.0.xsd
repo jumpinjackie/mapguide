@@ -159,10 +159,15 @@
           <xs:documentation>The name of the MapDefinition</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="CoordinateSystem" type="xs:string">
+      <xs:element name="CoordinateSystem">
         <xs:annotation>
           <xs:documentation>The coordinate system as WKT used by the MapDefinition</xs:documentation>
         </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+          </xs:restriction>
+        </xs:simpleType>
       </xs:element>
       <xs:element name="Extents" type="Box2DType">
         <xs:annotation>
@@ -216,8 +221,7 @@
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
-        <xs:extension base="MapDefinitionType">
-        </xs:extension>
+        <xs:extension base="MapDefinitionType"/>
       </xs:complexContent>
     </xs:complexType>
   </xs:element>

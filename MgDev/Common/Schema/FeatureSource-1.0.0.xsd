@@ -151,10 +151,15 @@
           <xs:documentation>Name of the spatial context</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="CoordinateSystem" type="xs:string">
+      <xs:element name="CoordinateSystem">
         <xs:annotation>
           <xs:documentation>Coordinate system used for this spatial context</xs:documentation>
         </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+          </xs:restriction>
+        </xs:simpleType>
       </xs:element>
     </xs:sequence>
   </xs:complexType>
