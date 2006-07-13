@@ -11,10 +11,15 @@
             <xs:documentation>Specifies the source (pathname) of the drawing</xs:documentation>
           </xs:annotation>
         </xs:element>
-        <xs:element name="CoordinateSpace" type="xs:string" minOccurs="0">
+        <xs:element name="CoordinateSpace" minOccurs="0">
           <xs:annotation>
             <xs:documentation>Specifies the coordinate space that is assigned to the drawing. Default is LL84, if none specified.</xs:documentation>
           </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1"/>
+            </xs:restriction>
+          </xs:simpleType>
         </xs:element>
         <xs:element name="Sheet" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
