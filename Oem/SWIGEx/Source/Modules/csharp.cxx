@@ -33,6 +33,68 @@ extern ExceptionClass*	rootException;
 extern map<string, int> clsIds;
 extern bool             noConstants;
 
+class CustomFile
+{
+private:
+    FILE* fp;
+    std::string interfaces;
+    std::string code;
+    bool parsed;
+
+    void Parse()
+    {
+        if (fp != NULL)
+        {
+            fseek(fp, 0, SEEK_END);
+            long flen = ftell(fp);
+            std::string buf;
+            buf.resize(flen);
+            fseek(fp, 0, SEEK_SET);
+            fread((void*)buf.c_str(), 1, flen, fp);
+            
+            std::string::size_type pos = buf.find("INTERFACE");
+            std::string::size_type pos2 = 0;
+            while (pos != buf.npos)
+            {
+                pos += strlen("INTERFACE");
+                pos2 = buf.find("\n", pos);
+                if (!interfaces.empty()) { interfaces.append(","); }
+                interfaces.append(buf.substr(pos, pos2-pos));
+                pos = buf.find("INTERFACE", pos2);
+            }
+
+            code = buf.substr(pos2, flen);
+            printf("INTERFACES:%s\n",interfaces.c_str());
+            printf("CODE:\n%s\n",code.c_str());
+            parsed = true;
+        }
+    }
+
+public:
+    CustomFile(String* proxyDir, String* className)
+    :
+    parsed(false),
+    fp(NULL)
+    {
+        std::string fname = (char*) DohData(proxyDir);
+        fname.append("/");
+        fname.append((char*) DohData(className));
+        fp = fopen(fname.c_str(), "rt");
+        if (fp != NULL) printf("Processing custom code file %s\n",fname.c_str());
+        Parse();
+    }
+
+    String *getInterfaces()
+    {
+        return NewString(parsed ? interfaces.c_str() : "");
+    }
+
+    const char *getCustomCode()
+    {
+        return code.c_str();
+    }
+};
+
 class CSHARP : public Language {
   static const char *usage;
   const  String *empty_string;
@@ -80,6 +142,7 @@ class CSHARP : public Language {
   String *destructor_call; //C++ destructor call if any
   String *namespaceName;
   String *unmanagedDllName;
+  String *proxyDir;
 
   enum type_additions {none, pointer, reference};
 
@@ -133,8 +196,8 @@ class CSHARP : public Language {
     imclass_cppcasts_code(NULL),
     destructor_call(NULL),
     namespaceName(NULL),
-    unmanagedDllName(NULL)
-
+    unmanagedDllName(NULL),
+    proxyDir(NULL)
     {
     }
 
@@ -201,19 +264,30 @@ class CSHARP : public Language {
             Swig_arg_error();
           }
         } else if ((strcmp(argv[i],"-dllname") == 0)) {
-			if (argv[i+1]) 
-			{
-				unmanagedDllName = NewString("");
-				Printf(unmanagedDllName, argv[i+1]);
-				Swig_mark_arg(i);
-				Swig_mark_arg(i+1);
-				i++;
-			} 
-			else
-				Swig_arg_error();
+            if (argv[i+1]) 
+            {
+                unmanagedDllName = NewString("");
+                Printf(unmanagedDllName, argv[i+1]);
+                Swig_mark_arg(i);
+                Swig_mark_arg(i+1);
+                i++;
+            }
+            else
+			    Swig_arg_error();
         } else if ((strcmp(argv[i],"-noproxy") == 0)) {
           Swig_mark_arg(i);
           proxy_flag = false;
+        } else if ((strcmp(argv[i],"-proxydir") == 0)) {
+            if (argv[i+1]) 
+            {
+                proxyDir = NewString("");
+                Printf(proxyDir, argv[i+1]);
+                Swig_mark_arg(i);
+                Swig_mark_arg(i+1);
+                i++;
+            }
+            else
+                Swig_arg_error();
         } else if (strcmp(argv[i],"-help") == 0) {
           Printf(stderr,"%s\n", usage);
         }
@@ -1160,6 +1234,13 @@ class CSHARP : public Language {
     // Pure C# interfaces
     const String *pure_interfaces = typemapLookup(derived ? "csinterfaces_derived" : "csinterfaces", typemap_lookup_type, WARN_NONE);
 
+    // Custom proxy code defined in external files
+    if (proxyDir != NULL)
+    {
+        CustomFile customFile(proxyDir, c_classname);
+        pure_interfaces = customFile.getInterfaces();
+    }
+
     if(!isRootException)
     {
         // Start writing the proxy class
@@ -1397,13 +1478,21 @@ class CSHARP : public Language {
       if (Len(proxy_class_constants_code) != 0 )
         Printv(f_proxy, "  // enums and constants\n", proxy_class_constants_code, NIL);
 
-      Printf(f_proxy, "}\n");
+    // Custom proxy code defined in external files
+    if (proxyDir != NULL)
+    {
+        CustomFile customFile(proxyDir, proxy_class_name);
+        Printf(f_proxy, customFile.getCustomCode());
+    }
 
+      Printf(f_proxy, "}\n");
+     
       if(namespaceName != NULL)
       {
         //close namespace 
           Printf(f_proxy, "}\n");
       }
+
 
       Close(f_proxy);
       f_proxy = NULL;
@@ -2288,5 +2377,7 @@ C# Options (available with -csharp)\n\
                          of proxy classes\n\
      -dllname          - set name of the dll containing unmanaged wrappers\n\
                          of proxy classes\n\
+     -proxydir         - Directory containing custom proxy code.  Files are named\n\
+                         {classname}.pxy\n\
 \n";
 
