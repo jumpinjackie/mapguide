@@ -68,7 +68,7 @@ BEGIN_NAMESPACE_MDFMODEL
         GridColorStyle& operator = (const GridColorStyle&);
 
         // HillShade
-        std::auto_ptr<HillShade> m_spHillShade;
+        HillShade* m_spHillShade;
 
         // Transparency Color
         MdfString                m_strTransparencyColor;
@@ -79,8 +79,6 @@ BEGIN_NAMESPACE_MDFMODEL
         // Contrast Factor
         double                   m_dContrastFactor;
     };
-
-    EXPIMP_TEMPLATE template class MDFMODEL_API std::auto_ptr<GridColorStyle>;
 
 END_NAMESPACE_MDFMODEL
 #endif // GRIDCOLORSTYLE_H_

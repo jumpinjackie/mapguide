@@ -88,10 +88,10 @@ BEGIN_NAMESPACE_MDFMODEL
         double m_dRebuildFactor;
 
         // Grid Surface Style
-        std::auto_ptr<MdfModel::GridSurfaceStyle> m_spSurfaceStyle;
+        GridSurfaceStyle* m_spSurfaceStyle;
 
         // Grid Color Style
-        std::auto_ptr<MdfModel::GridColorStyle>   m_spColorStyle;
+        GridColorStyle*   m_spColorStyle;
     };
 
     typedef MdfOwnerCollection<GridScaleRange> GridScaleRangeCollection;

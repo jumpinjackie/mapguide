@@ -49,7 +49,7 @@ BEGIN_NAMESPACE_MDFMODEL
         GridColorRule& operator = (const GridColorRule&);
 
         // Grid Color
-        std::auto_ptr<GridColor> m_spGridColor;
+        GridColor* m_spGridColor;
     };
 
 END_NAMESPACE_MDFMODEL

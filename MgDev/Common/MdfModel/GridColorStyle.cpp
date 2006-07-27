@@ -36,6 +36,7 @@ GridColorStyle::GridColorStyle()
 //-------------------------------------------------------------------------
 GridColorStyle::~GridColorStyle()
 {
+    delete m_spHillShade;
 }
 
 //-------------------------------------------------------------------------
@@ -45,7 +46,7 @@ GridColorStyle::~GridColorStyle()
 //-------------------------------------------------------------------------
 const HillShade* GridColorStyle::GetHillShade() const
 {
-    return this->m_spHillShade.get();
+    return m_spHillShade;
 }
 
 //-------------------------------------------------------------------------
@@ -55,7 +56,7 @@ const HillShade* GridColorStyle::GetHillShade() const
 //-------------------------------------------------------------------------
 HillShade* GridColorStyle::GetHillShade()
 {
-    return this->m_spHillShade.get();
+    return m_spHillShade;
 }
 
 //-------------------------------------------------------------------------
@@ -68,7 +69,11 @@ HillShade* GridColorStyle::GetHillShade()
 //-------------------------------------------------------------------------
 void GridColorStyle::AdoptHillShade(HillShade* pHillShade)
 {
-    this->m_spHillShade.reset(pHillShade);
+    if (m_spHillShade != pHillShade)
+    {
+        delete m_spHillShade;
+        m_spHillShade = pHillShade;
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -78,7 +83,9 @@ void GridColorStyle::AdoptHillShade(HillShade* pHillShade)
 //-------------------------------------------------------------------------
 HillShade* GridColorStyle::OrphanHillShade()
 {
-    return this->m_spHillShade.release();
+    HillShade* pRet = m_spHillShade;
+    m_spHillShade = NULL;
+    return pRet;
 }
 
 //-------------------------------------------------------------------------

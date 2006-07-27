@@ -46,6 +46,8 @@ GridScaleRange::GridScaleRange()
 //-------------------------------------------------------------------------
 GridScaleRange::~GridScaleRange()
 {
+    delete m_spSurfaceStyle;
+    delete m_spColorStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -108,7 +110,7 @@ void GridScaleRange::SetMaxScale( const double& dMaxScale)
 //-------------------------------------------------------------------------
 const MdfModel::GridSurfaceStyle* GridScaleRange::GetSurfaceStyle() const
 {
-    return m_spSurfaceStyle.get();
+    return m_spSurfaceStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -119,7 +121,7 @@ const MdfModel::GridSurfaceStyle* GridScaleRange::GetSurfaceStyle() const
 //-------------------------------------------------------------------------
 MdfModel::GridSurfaceStyle* GridScaleRange::GetSurfaceStyle()
 {
-    return m_spSurfaceStyle.get();
+    return m_spSurfaceStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -133,7 +135,11 @@ MdfModel::GridSurfaceStyle* GridScaleRange::GetSurfaceStyle()
 //-------------------------------------------------------------------------
 void GridScaleRange::AdoptSurfaceStyle(MdfModel::GridSurfaceStyle *pSurfaceStyle)
 {
-    m_spSurfaceStyle.reset(pSurfaceStyle);
+    if (m_spSurfaceStyle != pSurfaceStyle)
+    {
+        delete m_spSurfaceStyle;
+        m_spSurfaceStyle = pSurfaceStyle;
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -144,7 +150,9 @@ void GridScaleRange::AdoptSurfaceStyle(MdfModel::GridSurfaceStyle *pSurfaceStyle
 //-------------------------------------------------------------------------
 MdfModel::GridSurfaceStyle* GridScaleRange::OrphanSurfaceStyle()
 {
-    return m_spSurfaceStyle.release();
+    GridSurfaceStyle* pRet = m_spSurfaceStyle;
+    m_spSurfaceStyle = NULL;
+    return pRet;
 }
 
 //-------------------------------------------------------------------------
@@ -155,7 +163,7 @@ MdfModel::GridSurfaceStyle* GridScaleRange::OrphanSurfaceStyle()
 //-------------------------------------------------------------------------
 const MdfModel::GridColorStyle* GridScaleRange::GetColorStyle() const
 {
-    return m_spColorStyle.get();
+    return m_spColorStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -166,7 +174,7 @@ const MdfModel::GridColorStyle* GridScaleRange::GetColorStyle() const
 //-------------------------------------------------------------------------
 MdfModel::GridColorStyle* GridScaleRange::GetColorStyle()
 {
-    return m_spColorStyle.get();
+    return m_spColorStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -180,7 +188,11 @@ MdfModel::GridColorStyle* GridScaleRange::GetColorStyle()
 //-------------------------------------------------------------------------
 void GridScaleRange::AdoptColorStyle(MdfModel::GridColorStyle *pColorStyle)
 {
-    m_spColorStyle.reset(pColorStyle);
+    if (m_spColorStyle != pColorStyle)
+    {
+        delete m_spColorStyle;
+        m_spColorStyle = pColorStyle;
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -191,7 +203,9 @@ void GridScaleRange::AdoptColorStyle(MdfModel::GridColorStyle *pColorStyle)
 //-------------------------------------------------------------------------
 MdfModel::GridColorStyle* GridScaleRange::OrphanColorStyle()
 {
-    return m_spColorStyle.release();
+    GridColorStyle* pRet = m_spColorStyle;
+    m_spColorStyle = NULL;
+    return pRet;
 }
 
 //-------------------------------------------------------------------------

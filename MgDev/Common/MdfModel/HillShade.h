@@ -68,7 +68,5 @@ BEGIN_NAMESPACE_MDFMODEL
         double    m_dScaleFactor;
     };
 
-    EXPIMP_TEMPLATE template class MDFMODEL_API std::auto_ptr<HillShade>;
-
 END_NAMESPACE_MDFMODEL
 #endif // HILLSHADE_H_
