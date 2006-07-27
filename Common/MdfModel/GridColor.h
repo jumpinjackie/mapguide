@@ -124,7 +124,5 @@ BEGIN_NAMESPACE_MDFMODEL
         ChannelBand m_blueBand;
     };
 
-    EXPIMP_TEMPLATE template class MDFMODEL_API std::auto_ptr<GridColor>;
-
 END_NAMESPACE_MDFMODEL
 #endif // GRIDCOLOR_H_

@@ -74,7 +74,5 @@ class MDFMODEL_API GridSurfaceStyle : public FeatureTypeStyle
         MdfString m_strDefaultColor;
     };
 
-    EXPIMP_TEMPLATE template class MDFMODEL_API std::auto_ptr<GridSurfaceStyle>;
-
 END_NAMESPACE_MDFMODEL
 #endif // GRIDSURFACESTYLE_H_

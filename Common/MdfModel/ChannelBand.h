@@ -74,7 +74,5 @@ BEGIN_NAMESPACE_MDFMODEL
         unsigned char m_nHighChannel;
     };
 
-    EXPIMP_TEMPLATE template class MDFMODEL_API std::auto_ptr<ChannelBand>;
-
 END_NAMESPACE_MDFMODEL
 #endif // CHANNELBAND_H_

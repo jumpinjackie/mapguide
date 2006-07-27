@@ -32,6 +32,7 @@ GridColorRule::GridColorRule()
 //-------------------------------------------------------------------------
 GridColorRule::~GridColorRule()
 {
+    delete m_spGridColor;
 }
 
 //-------------------------------------------------------------------------
@@ -42,7 +43,7 @@ GridColorRule::~GridColorRule()
 //-------------------------------------------------------------------------
 const GridColor* GridColorRule::GetGridColor() const
 {
-    return this->m_spGridColor.get();
+    return m_spGridColor;
 }
 
 //-------------------------------------------------------------------------
@@ -53,7 +54,7 @@ const GridColor* GridColorRule::GetGridColor() const
 //-------------------------------------------------------------------------
 GridColor* GridColorRule::GetGridColor()
 {
-    return this->m_spGridColor.get();
+    return m_spGridColor;
 }
 
 //-------------------------------------------------------------------------
@@ -67,7 +68,11 @@ GridColor* GridColorRule::GetGridColor()
 //-------------------------------------------------------------------------
 void GridColorRule::AdoptGridColor(GridColor *pGridColor)
 {
-    this->m_spGridColor.reset(pGridColor);
+    if (m_spGridColor != pGridColor) 
+    {
+        delete m_spGridColor;
+        m_spGridColor = pGridColor;
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -78,5 +83,7 @@ void GridColorRule::AdoptGridColor(GridColor *pGridColor)
 //-------------------------------------------------------------------------
 GridColor* GridColorRule::OrphanGridColor()
 {
-    return this->m_spGridColor.release();
+    GridColor* pRet = m_spGridColor;
+    m_spGridColor = NULL;
+    return pRet;
 }
