@@ -8,16 +8,13 @@
 <h1>MapGuide Open Source - Getting Started</h1>
 <p><a href="#1">Getting MapGuide Up and Running</a></p>
 <p><a href="#2">Components of the MapGuide Platform</a></p>
-<p><a href="#3">Understanding Resources</a></p>
-<p><a href="#4">Developing MapGuide Applications</a></p>
-
 <div class="h2">
 <h2><a name="1" id="1">Getting MapGuide Up and Running</a></h2>
 <p>To get MapGuide Open Source up and running on your system, follow these five steps:</p>
 <dl>
   <dt>1. Download and install the MapGuide Server and MapGuide Web Server Extensions.</dt>
   <dd>For Windows visit the <a href="downloads.html">downloads page</a> and download MgServerSetup.exe and MgWebServerExtensionsSetup.exe. Then follow the steps in the <a href="docs/InstallConfigureMgOpenSourceOnWindows.pdf" target="_blank">Installing MapGuide on Windows</a> document to install the software.<br /><br />
-    For Linux visit the MapGuide Open Source <a href="downloads.html">downloads page</a> and the Feature Data Objects <a href="https://fdo.osgeo.org/downloads.html">downloads page</a> and download mapguideopensource-1.0.0.tar.gz, mapguideaptinstaller-1.0.0.tar.gz (optional), and fdo-3.0.0_G001.tar.gz. Then follow the steps in the <a href="docs/BuildConfigureMgOpenSourceOnLinux.pdf" target="_blank">Building MapGuide on Linux</a> document to configure, make, and install the software.</dd>
+    For Linux visit the MapGuide Open Source <a href="downloads.html">downloads page</a> and the Feature Data Objects <a href="https://fdo.osgeo.org/downloads.html">downloads page</a> and download mapguideopensource-1.0.1.tar.gz, mapguideaptinstaller-1.0.1.tar.gz (optional), and fdo-3.1.0_R050.tar.gz. Then follow the steps in the <a href="docs/BuildConfigureMgOpenSourceOnLinux.pdf" target="_blank">Building MapGuide on Linux</a> document to configure, make, and install the software.</dd>
   
   <dt>2. Download and extract the sample application.</dt>
   <dd>Visit the <a href="downloads.html">downloads page</a> and download phpviewersample.zip. On Windows extract the files to C:\Program Files\MapGuideOpenSource\WebServerExtensions\www. On Linux extract the files to /usr/local/mapguideopensource/webserverextensions/www. Note that in both cases it should create a folder called phpviewersample under www.</dd>
@@ -56,8 +53,8 @@ At this point you should have MapGuide Open Source up and running. To find out m
 <h3>Autodesk MapGuide&#8482; Studio</h3>
 <p>MapGuide Studio is a commercial authoring tool for MapGuide Open Source offered by Autodesk. MapGuide Studio handles all aspects of preparing maps and geospatial data for use with MapGuide Open Source. Modeled after popular web development tools, Studio provides a unified environment that enables you to rapidly create spatial applications using an intuitive and familiar interface. MapGuide Studio runs only on Microsoft Windows. More information about MapGuide Studio and a downloadable preview version is available at: <a href="http://www.autodesk.com/mapguidestudio">www.autodesk.com/mapguidestudio</a>.</p>
 
-<h3>MapGuide Studio "Lite" [Not Available Yet]</h3>
-<p>MapGuide Studio "Lite" is a web-based application that will be able to author data, layer, and map resources. It is currently under development. Stay tuned, an announcement will be made when it is ready for beta testing.</p>
+<h3>MapGuide Web Studio</h3>
+<p>MapGuide Web Studio is a web-based authoring tool for defining  data source, layer and map resources. MapGuide Web Studio is an AJAX application that works across platforms and with multiple web browsers including FireFox, Safari, and Internet Explorer. Unlike MapGuide Studio, it is not a separate product component, but it is installed as a part of the MapGuide Web Server Extensions.</p>
 
 <h3>MapGuide Site Administrator</h3>
 <p>The MapGuide Site Administrator is an application for managing your site and its servers. This application uses a web-based interface that you can access from any web browser. To start the program, open a browser and enter: http://servername:port/mapguide/mapadmin/login.php, using the name of the site server and port that you specified during installation. You use the MapGuide Site Administrator to add and remove servers, take servers offline for maintenance, modify the configuration of a server, assign services to the servers, and monitor the status of any server. The MapGuide Site Administrator is not a separate product component, but it is installed as a part of the MapGuide Web Server Extensions.</p>
@@ -66,15 +63,7 @@ At this point you should have MapGuide Open Source up and running. To find out m
 The Feature Data Objects (FDO) API is a set of commands for manipulating, defining, and analyzing geospatial information. MapGuide Open Source uses FDO to access data in a variety of geospatial data sources. An FDO Provider is a specific implementation of the FDO API. It is the software component that provides access to data in a particular data format or data store. FDO is a seperate open source project available from <a href="https://fdo.osgeo.org">fdo.osgeo.org</a>. 
 </div>
 
-<div class="h2">
-<h2><a name="3" id="3">Understanding Resources</a></h2>
-<p>[Coming Soon]</p>
-</div>
-
-<div class="h2">
-<h2><a name="4" id="4">Developing MapGuide Applications</a></h2>
-<p>[Coming Soon]</p>
-</div>
+<div class="h2"></div>
 
 </body>
 </html>
