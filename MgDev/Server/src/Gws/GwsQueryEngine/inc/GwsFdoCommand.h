@@ -58,7 +58,7 @@ public:
     EGwsStatus   Status() const;
 
 private:
-    GisPtr<IGWSCoordinateSystemConverter> m_converter;
+    FdoPtr<IGWSCoordinateSystemConverter> m_converter;
     EGwsStatus          m_status;
 };
 
@@ -150,7 +150,7 @@ public:
     const WSTR&             ActiveSpatialContext() const { return m_geometricSC;}
     WSTR                    QualifiedClassName();
     // return property definition
-    FdoPropertyDefinition * GetPropertyDefinition (GisString * propname);
+    FdoPropertyDefinition * GetPropertyDefinition (FdoString * propname);
 
     // Implementation
     //
@@ -211,7 +211,7 @@ protected:
 
     EGwsStatus              SetProperties (CGwsMutableFeature & feature);
 
-    // prepare none-key propeties. Throws GisException that is supposed to be caught by
+    // prepare none-key propeties. Throws FdoException that is supposed to be caught by
     // the public Prepare method
     void                    PrepareNonKeyProperties ();
     void                    PrepareKeyProperties ();
@@ -253,7 +253,7 @@ private:
                                             FdoFilter              *&   pOutFilter);
 protected:
     // Member Data
-    GisPtr<FdoIConnection>                      m_connection;
+    FdoPtr<FdoIConnection>                      m_connection;
     GWSQualifiedName                            m_classname;
     WSTR                                        m_activelt;         // active long transaction
     WSTR                                        m_revisionprop;     // revision property name
@@ -261,18 +261,18 @@ protected:
     WSTR                                        m_geometricSC;      // spatial context name for geometric property
 
     // caller and fs coordinate systems. used to initialize converter
-    GisPtr<IGWSCoordinateSystemConverter>       m_converter;
+    FdoPtr<IGWSCoordinateSystemConverter>       m_converter;
     bool                                        m_bFilterPrepared;
 
-    GisPtr<FdoICommand>                         m_pCommand;
-    GisPtr<FdoPropertyValueCollection>          m_pProperties;
+    FdoPtr<FdoICommand>                         m_pCommand;
+    FdoPtr<FdoPropertyValueCollection>          m_pProperties;
 
     typedef std::map<std::wstring,FdoPropertyDefinition*> PropertyDefinitionMap;
 
     // caching class defintion
-    GisPtr<FdoFeatureSchema>                    m_schema;
-    GisPtr<FdoClassDefinition>                  m_classDef;
-    GisPtr<FdoDataPropertyDefinitionCollection> m_identity;
+    FdoPtr<FdoFeatureSchema>                    m_schema;
+    FdoPtr<FdoClassDefinition>                  m_classDef;
+    FdoPtr<FdoDataPropertyDefinitionCollection> m_identity;
     PropertyDefinitionMap                       m_propdefs;
 
     // caching values and commands for FDO object properties
@@ -486,13 +486,13 @@ public:
     virtual EGwsStatus Init (const wchar_t* pFDOCommandClass = NULL);
 
     GWS_QUERYENGINE_API
-    virtual void       SetOwner (GisString * pOwner)
+    virtual void       SetOwner (FdoString * pOwner)
     {
         if (pOwner)
             m_owner = pOwner;
     }
     GWS_QUERYENGINE_API
-    virtual GisString * Owner() const
+    virtual FdoString * Owner() const
     {
         return m_owner.c_str();
     }

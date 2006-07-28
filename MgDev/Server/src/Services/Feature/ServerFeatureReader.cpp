@@ -67,7 +67,7 @@ MgServerFeatureReader::~MgServerFeatureReader()
 
     SAFE_RELEASE(m_getFeatures);
     SAFE_RELEASE(m_featReaderId);
-    GIS_SAFE_RELEASE(m_fdoReader);
+    FDO_SAFE_RELEASE(m_fdoReader);
 }
 
 //////////////////////////////////////////////
@@ -244,7 +244,7 @@ MgDateTime* MgServerFeatureReader::GetDateTime(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisDateTime val = m_fdoReader->GetDateTime(propertyName.c_str());
+    FdoDateTime val = m_fdoReader->GetDateTime(propertyName.c_str());
     retVal = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
                             (INT8)val.hour, (INT8)val.minute, val.seconds);
 
@@ -470,7 +470,7 @@ MgFeatureReader* MgServerFeatureReader::GetFeatureObject(CREFSTRING propertyName
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisPtr<FdoIFeatureReader> featureObjectReader = m_fdoReader->GetFeatureObject(propertyName.c_str());
+    FdoPtr<FdoIFeatureReader> featureObjectReader = m_fdoReader->GetFeatureObject(propertyName.c_str());
 
     if (featureObjectReader != NULL)
     {
@@ -533,7 +533,7 @@ MgRaster* MgServerFeatureReader::GetRaster(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisPtr<FdoIRaster> raster = m_fdoReader->GetRaster(propertyName.c_str());
+    FdoPtr<FdoIRaster> raster = m_fdoReader->GetRaster(propertyName.c_str());
     CHECKNULL((FdoIRaster*)raster, L"MgServerFeatureReader.GetRaster");
 
     retVal = MgServerFeatureUtil::GetMgRaster(raster, propertyName);
@@ -684,11 +684,11 @@ BYTE_ARRAY_OUT MgServerFeatureReader::GetGeometry(CREFSTRING propertyName, INT32
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetGeometry");
 
-    const GisByte* data = NULL;
+    const FdoByte* data = NULL;
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisInt32 len = 0;
+    FdoInt32 len = 0;
     data = m_fdoReader->GetGeometry(propertyName.c_str(), &len);
     length = len;
 
@@ -708,7 +708,7 @@ const wchar_t* MgServerFeatureReader::GetString(CREFSTRING propName, INT32& leng
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetString");
 
-    GisString* retVal = NULL;
+    FdoString* retVal = NULL;
 
     MG_FEATURE_SERVICE_TRY()
 

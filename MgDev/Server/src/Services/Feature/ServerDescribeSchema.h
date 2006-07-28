@@ -64,7 +64,7 @@ private:
 
     STRING                  m_providerName;
     Ptr<MgServerFeatureConnection> m_connection;
-    GisPtr<FdoFeatureSchemaCollection> m_ffsc;
+    FdoPtr<FdoFeatureSchemaCollection> m_ffsc;
 };
 
 #endif

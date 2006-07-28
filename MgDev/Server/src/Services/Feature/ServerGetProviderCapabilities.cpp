@@ -29,8 +29,8 @@ static std::map<FdoConditionType,  std::string>            s_FdoConditionType;
 static std::map<FdoSpatialOperations,  std::string>        s_FdoSpatialOperations;
 static std::map<FdoDistanceOperations,  std::string>       s_FdoDistanceOperations;
 static std::map<FdoExpressionType,  std::string>           s_FdoExpressionType;
-static std::map<GisGeometryType,  std::string>             s_FdoGeometryType;
-static std::map<GisGeometryComponentType,  std::string>    s_FdoGeometryComponentType;
+static std::map<FdoGeometryType,  std::string>             s_FdoGeometryType;
+static std::map<FdoGeometryComponentType,  std::string>    s_FdoGeometryComponentType;
 
 bool MgServerGetProviderCapabilities::m_isInitialized = MgServerGetProviderCapabilities::Initialize();
 
@@ -47,12 +47,12 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
-    GisPtr<IConnectionManager> connManager = FdoFeatureAccessManager::GetConnectionManager();
+    FdoPtr<IConnectionManager> connManager = FdoFeatureAccessManager::GetConnectionManager();
     CHECKNULL(connManager, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
 
     // TODO: Should this connection be cached?
     // use a smart pointer until the end in case there's an exception
-    GisPtr<FdoIConnection> fdoConn = connManager->CreateConnection(providerName.c_str());
+    FdoPtr<FdoIConnection> fdoConn = connManager->CreateConnection(providerName.c_str());
     CHECKNULL(fdoConn, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
 
     m_xmlUtil = new MgXmlUtil();
@@ -67,7 +67,7 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
 
 MgServerGetProviderCapabilities::~MgServerGetProviderCapabilities()
 {
-    GIS_SAFE_RELEASE(m_fdoConn);
+    FDO_SAFE_RELEASE(m_fdoConn);
 
     if (NULL != m_xmlUtil)
         delete m_xmlUtil;
@@ -133,7 +133,7 @@ void MgServerGetProviderCapabilities::CreateConnectionCapabilities()
     DOMElement* connNode = m_xmlCap->AddChildNode(root, "Connection");
     CHECKNULL(connNode, L"MgServerGetProviderCapabilities::CreateConnectionCapabilities");
 
-    GisPtr<FdoIConnectionCapabilities> ficc = m_fdoConn->GetConnectionCapabilities();
+    FdoPtr<FdoIConnectionCapabilities> ficc = m_fdoConn->GetConnectionCapabilities();
     CHECKNULL((FdoIConnectionCapabilities*)ficc, L"MgServerGetProviderCapabilities::CreateConnectionCapabilities");
 
     // Thread
@@ -142,14 +142,14 @@ void MgServerGetProviderCapabilities::CreateConnectionCapabilities()
     m_xmlCap->AddTextNode(connNode, "ThreadCapability", str.c_str());
 
     // Spatial Context
-    GisInt32 cnt;
+    FdoInt32 cnt;
     FdoSpatialContextExtentType* fscet = ficc->GetSpatialContextTypes(cnt);
     if (cnt > 0 && fscet != NULL)
     {
         DOMElement* scNode = m_xmlCap->AddChildNode(connNode, "SpatialContextExtent");
         CHECKNULL(scNode, L"MgServerGetProviderCapabilities::CreateConnectionCapabilities");
 
-        for (GisInt32 i = 0; i < cnt; i++)
+        for (FdoInt32 i = 0; i < cnt; i++)
         {
             string scStr = s_FdoSpatialContextExtentType[fscet[i]];
             m_xmlCap->AddTextNode(scNode, "Type", scStr.c_str());
@@ -182,7 +182,7 @@ void MgServerGetProviderCapabilities::CreateSchemaCapabilities()
     CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
     CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
 
-    GisPtr<FdoISchemaCapabilities> fsc = m_fdoConn->GetSchemaCapabilities();
+    FdoPtr<FdoISchemaCapabilities> fsc = m_fdoConn->GetSchemaCapabilities();
     CHECKNULL((FdoISchemaCapabilities*)fsc, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
@@ -192,14 +192,14 @@ void MgServerGetProviderCapabilities::CreateSchemaCapabilities()
     CHECKNULL(schemaNode, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
 
     // Add all class types
-    GisInt32 cnt = 0;
+    FdoInt32 cnt = 0;
     FdoClassType* fct = fsc->GetClassTypes(cnt);
     if (cnt > 0 && fct != NULL)
     {
         DOMElement* classNode = m_xmlCap->AddChildNode(schemaNode, "Class");
         CHECKNULL(classNode, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
 
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
             string scStr = s_FdoClassType[fct[i]];
             m_xmlCap->AddTextNode(classNode, "Type", scStr.c_str());
@@ -214,7 +214,7 @@ void MgServerGetProviderCapabilities::CreateSchemaCapabilities()
         DOMElement* dataNode = m_xmlCap->AddChildNode(schemaNode, "Data");
         CHECKNULL(dataNode, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
 
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
             string dtStr = s_FdoDataType[fdt[i]];
             m_xmlCap->AddTextNode(dataNode, "Type", dtStr.c_str());
@@ -253,7 +253,7 @@ void MgServerGetProviderCapabilities::CreateSchemaCapabilities()
         DOMElement* sagtNode = m_xmlCap->AddChildNode(schemaNode, "SupportedAutoGeneratedTypes");
         CHECKNULL(sagtNode, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
 
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
             string sagtStr = s_FdoDataType[sagt[i]];
             m_xmlCap->AddTextNode(sagtNode, "Type", sagtStr.c_str());
@@ -269,7 +269,7 @@ void MgServerGetProviderCapabilities::CreateCommandCapabilities()
     CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
     CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
 
-    GisPtr<FdoICommandCapabilities> fcc = m_fdoConn->GetCommandCapabilities();
+    FdoPtr<FdoICommandCapabilities> fcc = m_fdoConn->GetCommandCapabilities();
     CHECKNULL((FdoICommandCapabilities*)fcc, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
@@ -279,14 +279,14 @@ void MgServerGetProviderCapabilities::CreateCommandCapabilities()
     CHECKNULL(cmdNode, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
 
     // Add all command types
-    GisInt32 cnt = 0;
-    GisInt32* fcmd = fcc->GetCommands(cnt);
+    FdoInt32 cnt = 0;
+    FdoInt32* fcmd = fcc->GetCommands(cnt);
     if (cnt > 0 && fcmd != NULL)
     {
         DOMElement* scNode = m_xmlCap->AddChildNode(cmdNode, "SupportedCommands");
         CHECKNULL(scNode, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
 
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
             string cmdStr = s_FdoCommandType[(FdoCommandType)fcmd[i]];
             if (!cmdStr.empty())
@@ -330,7 +330,7 @@ void MgServerGetProviderCapabilities::CreateFilterCapabilities()
     CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
     CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
 
-    GisPtr<FdoIFilterCapabilities> ffc = m_fdoConn->GetFilterCapabilities();
+    FdoPtr<FdoIFilterCapabilities> ffc = m_fdoConn->GetFilterCapabilities();
     CHECKNULL((FdoIFilterCapabilities*)ffc, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
@@ -340,14 +340,14 @@ void MgServerGetProviderCapabilities::CreateFilterCapabilities()
     CHECKNULL(filterNode, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
 
     // Add all condition types
-    GisInt32 cnt = 0;
+    FdoInt32 cnt = 0;
     FdoConditionType* fct = ffc->GetConditionTypes(cnt);
     if (cnt > 0 && fct != NULL)
     {
         DOMElement* condNode = m_xmlCap->AddChildNode(filterNode, "Condition");
         CHECKNULL(condNode, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
 
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
             string condStr = s_FdoConditionType[fct[i]];
             m_xmlCap->AddTextNode(condNode, "Type", condStr.c_str());
@@ -362,7 +362,7 @@ void MgServerGetProviderCapabilities::CreateFilterCapabilities()
         DOMElement* fsoNode = m_xmlCap->AddChildNode(filterNode, "Spatial");
         CHECKNULL(fsoNode, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
 
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
             string operStr = s_FdoSpatialOperations[fso[i]];
             m_xmlCap->AddTextNode(fsoNode, "Operation", operStr.c_str());
@@ -377,7 +377,7 @@ void MgServerGetProviderCapabilities::CreateFilterCapabilities()
         DOMElement* distNode = m_xmlCap->AddChildNode(filterNode, "Distance");
         CHECKNULL(distNode, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
 
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
             string fdoStr = s_FdoDistanceOperations[fdo[i]];
             m_xmlCap->AddTextNode(distNode, "Operation", fdoStr.c_str());
@@ -398,7 +398,7 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
     CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
     CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
 
-    GisPtr<FdoIExpressionCapabilities> fec = m_fdoConn->GetExpressionCapabilities();
+    FdoPtr<FdoIExpressionCapabilities> fec = m_fdoConn->GetExpressionCapabilities();
     CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
@@ -408,14 +408,14 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
     CHECKNULL(expressionNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
 
     // Add all expression types
-    GisInt32 cnt = 0;
+    FdoInt32 cnt = 0;
     FdoExpressionType* fet = fec->GetExpressionTypes(cnt);
     if (cnt > 0 && fet != NULL)
     {
         DOMElement* typeNode = m_xmlCap->AddChildNode(expressionNode, "Type");
         CHECKNULL(typeNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
 
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
             string typeStr = s_FdoExpressionType[fet[i]];
             m_xmlCap->AddTextNode(typeNode, "Name", typeStr.c_str());
@@ -424,20 +424,20 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
 
     // Add all functions available
     cnt = 0;
-    GisPtr<FdoFunctionDefinitionCollection> ffdc = fec->GetFunctions();
+    FdoPtr<FdoFunctionDefinitionCollection> ffdc = fec->GetFunctions();
     if (NULL != (FdoFunctionDefinitionCollection*)ffdc)
     {
-        GisInt32 funcCnt = ffdc->GetCount();
+        FdoInt32 funcCnt = ffdc->GetCount();
         if (funcCnt > 0)
         {
             // Add function definition collection element if there are any functions available
             DOMElement* funcDefColNode = m_xmlCap->AddChildNode(expressionNode, "FunctionDefinitionCollection");
             CHECKNULL(funcDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
 
-            for (GisInt32 i=0; i < funcCnt; i++)
+            for (FdoInt32 i=0; i < funcCnt; i++)
             {
                 // Add function definition element
-                GisPtr<FdoFunctionDefinition> ffd = ffdc->GetItem(i);
+                FdoPtr<FdoFunctionDefinition> ffd = ffdc->GetItem(i);
                 CHECKNULL((FdoFunctionDefinition*)ffd, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
 
                 DOMElement* funcDefNode = m_xmlCap->AddChildNode(funcDefColNode, "FunctionDefinition");
@@ -457,20 +457,20 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
                 delete[] strDesc;
 
                 // Add argument of each functions if there are any
-                GisPtr<FdoReadOnlyArgumentDefinitionCollection> argCol = ffd->GetArguments();
+                FdoPtr<FdoReadOnlyArgumentDefinitionCollection> argCol = ffd->GetArguments();
                 if (NULL != (FdoReadOnlyArgumentDefinitionCollection*)argCol)
                 {
-                    GisInt32 argCnt = argCol->GetCount();
+                    FdoInt32 argCnt = argCol->GetCount();
                     if (argCnt > 0)
                     {
                         // Add ArgumentDefinitionCollection if there are arguments
                         DOMElement* argDefColNode = m_xmlCap->AddChildNode(funcDefNode, "ArgumentDefinitionCollection");
                         CHECKNULL(argDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
 
-                        for (GisInt32 j=0; j < argCnt; j++)
+                        for (FdoInt32 j=0; j < argCnt; j++)
                         {
                             // Add ArgumentDefinition for each argument
-                            GisPtr<FdoArgumentDefinition> fad = argCol->GetItem(j);
+                            FdoPtr<FdoArgumentDefinition> fad = argCol->GetItem(j);
                             CHECKNULL((FdoArgumentDefinition*)fad, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
 
                             DOMElement* argDefNode = m_xmlCap->AddChildNode(argDefColNode, "ArgumentDefinition");
@@ -501,7 +501,7 @@ void MgServerGetProviderCapabilities::CreateRasterCapabilities()
     CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateRasterCapabilities");
     CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateRasterCapabilities");
 
-    GisPtr<FdoIRasterCapabilities> frc = m_fdoConn->GetRasterCapabilities();
+    FdoPtr<FdoIRasterCapabilities> frc = m_fdoConn->GetRasterCapabilities();
     CHECKNULL((FdoIRasterCapabilities*)frc, L"MgServerGetProviderCapabilities::CreateRasterCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
@@ -530,7 +530,7 @@ void MgServerGetProviderCapabilities::CreateTopologyCapabilities()
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisPtr<FdoITopologyCapabilities> frc = m_fdoConn->GetTopologyCapabilities();
+    FdoPtr<FdoITopologyCapabilities> frc = m_fdoConn->GetTopologyCapabilities();
 
     // Provider has no topology capabilities
     if (NULL == (FdoITopologyCapabilities*)frc)
@@ -573,7 +573,7 @@ void MgServerGetProviderCapabilities::CreateGeometryCapabilities()
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisPtr<FdoIGeometryCapabilities> fgc = m_fdoConn->GetGeometryCapabilities();
+    FdoPtr<FdoIGeometryCapabilities> fgc = m_fdoConn->GetGeometryCapabilities();
 
     // Provider has no geometric capabilities
     if (NULL == (FdoIGeometryCapabilities*)fgc)
@@ -587,34 +587,34 @@ void MgServerGetProviderCapabilities::CreateGeometryCapabilities()
     DOMElement* geometryNode = m_xmlCap->AddChildNode(root, "Geometry");
     CHECKNULL(geometryNode, L"MgServerGetProviderCapabilities.CreateGeometryCapabilities");
 
-    GisInt32 cnt = 0;
-    GisGeometryType* geomType = fgc->GetGeometryTypes(cnt);
+    FdoInt32 cnt = 0;
+    FdoGeometryType* geomType = fgc->GetGeometryTypes(cnt);
     if (cnt > 0 && geomType != NULL)
     {
         DOMElement* geometryTypeNode = m_xmlCap->AddChildNode(geometryNode, "Types");
         CHECKNULL(geometryTypeNode, L"MgServerGetProviderCapabilities.CreateGeometryCapabilities");
 
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
             string geomTypeStr = s_FdoGeometryType[geomType[i]];
             m_xmlCap->AddTextNode(geometryTypeNode, "Type", geomTypeStr.c_str());
         }
     }
 
-    GisGeometryComponentType* geomCompType = fgc->GetGeometryComponentTypes(cnt);
+    FdoGeometryComponentType* geomCompType = fgc->GetGeometryComponentTypes(cnt);
     if (cnt > 0 && geomCompType != NULL)
     {
         DOMElement* geometryCompNode = m_xmlCap->AddChildNode(geometryNode, "Components");
         CHECKNULL(geometryCompNode, L"MgServerGetProviderCapabilities.CreateGeometryCapabilities");
 
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
             string geomCompStr = s_FdoGeometryComponentType[geomCompType[i]];
             m_xmlCap->AddTextNode(geometryCompNode, "Type", geomCompStr.c_str());
         }
     }
 
-    GisInt32 dim = fgc->GetDimensionalities();
+    FdoInt32 dim = fgc->GetDimensionalities();
 
     char buff[8]; buff[0] = 0;
     sprintf(buff, "%d", dim);
@@ -748,24 +748,24 @@ bool MgServerGetProviderCapabilities::Initialize()
     s_FdoExpressionType[FdoExpressionType_Parameter]                    = "Parameter";
 
     // Geometry Type
-    s_FdoGeometryType[GisGeometryType_None]                     = "None";
-    s_FdoGeometryType[GisGeometryType_Point]                    = "Point";
-    s_FdoGeometryType[GisGeometryType_LineString]               = "LineString";
-    s_FdoGeometryType[GisGeometryType_Polygon]                  = "Polygon";
-    s_FdoGeometryType[GisGeometryType_MultiPoint]               = "MultiPoint";
-    s_FdoGeometryType[GisGeometryType_MultiLineString]          = "MultiLineString";
-    s_FdoGeometryType[GisGeometryType_MultiPolygon]             = "MultiPolygon";
-    s_FdoGeometryType[GisGeometryType_MultiGeometry]            = "MultiGeometry";
-    s_FdoGeometryType[GisGeometryType_CurveString]              = "CurveString";
-    s_FdoGeometryType[GisGeometryType_CurvePolygon]             = "CurvePolygon";
-    s_FdoGeometryType[GisGeometryType_MultiCurveString]         = "MultiCurveString";
-    s_FdoGeometryType[GisGeometryType_MultiCurvePolygon]        = "MultiCurvePolygon";
+    s_FdoGeometryType[FdoGeometryType_None]                     = "None";
+    s_FdoGeometryType[FdoGeometryType_Point]                    = "Point";
+    s_FdoGeometryType[FdoGeometryType_LineString]               = "LineString";
+    s_FdoGeometryType[FdoGeometryType_Polygon]                  = "Polygon";
+    s_FdoGeometryType[FdoGeometryType_MultiPoint]               = "MultiPoint";
+    s_FdoGeometryType[FdoGeometryType_MultiLineString]          = "MultiLineString";
+    s_FdoGeometryType[FdoGeometryType_MultiPolygon]             = "MultiPolygon";
+    s_FdoGeometryType[FdoGeometryType_MultiGeometry]            = "MultiGeometry";
+    s_FdoGeometryType[FdoGeometryType_CurveString]              = "CurveString";
+    s_FdoGeometryType[FdoGeometryType_CurvePolygon]             = "CurvePolygon";
+    s_FdoGeometryType[FdoGeometryType_MultiCurveString]         = "MultiCurveString";
+    s_FdoGeometryType[FdoGeometryType_MultiCurvePolygon]        = "MultiCurvePolygon";
 
     // Geometry component type
-    s_FdoGeometryComponentType[GisGeometryComponentType_LinearRing]         = "LinearRing";
-    s_FdoGeometryComponentType[GisGeometryComponentType_CircularArcSegment] = "ArcSegment";
-    s_FdoGeometryComponentType[GisGeometryComponentType_LineStringSegment]  = "LinearSegment";
-    s_FdoGeometryComponentType[GisGeometryComponentType_Ring]               = "CurveRing";
+    s_FdoGeometryComponentType[FdoGeometryComponentType_LinearRing]         = "LinearRing";
+    s_FdoGeometryComponentType[FdoGeometryComponentType_CircularArcSegment] = "ArcSegment";
+    s_FdoGeometryComponentType[FdoGeometryComponentType_LineStringSegment]  = "LinearSegment";
+    s_FdoGeometryComponentType[FdoGeometryComponentType_Ring]               = "CurveRing";
 
     return true;
 }

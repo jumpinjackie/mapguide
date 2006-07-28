@@ -40,7 +40,7 @@ public:
     GWS_COMMON_API
     EGwsStatus      GetStatus  () const ;
     GWS_COMMON_API
-    GisString*      GetMessage    () const;
+    FdoString*      GetMessage    () const;
 
     // get diagnostincs parameters
     GWS_COMMON_API
@@ -50,12 +50,12 @@ public:
     GWS_COMMON_API
     void            SetParameter (const WSTR & name, const WSTR & value);
     GWS_COMMON_API
-    void            SetParameter (GisString *pName, GisString *pValue);
+    void            SetParameter (FdoString *pName, FdoString *pValue);
 
     GWS_COMMON_API
     void            operator= (const CGwsStatus & other);
     GWS_COMMON_API
-    bool            GetParameterAt(unsigned int index, GisString*& pName, GisString*& pValue) const;
+    bool            GetParameterAt(unsigned int index, FdoString*& pName, FdoString*& pValue) const;
     GWS_COMMON_API
     int             GetParameterCount () const;
 

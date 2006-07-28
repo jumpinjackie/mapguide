@@ -61,8 +61,8 @@ EGwsStatus CGwsFdoUpdateCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
             name = QualifiedClassName();
         ((FdoIUpdate *)m_pCommand.p)->SetFeatureClassName(name.c_str());
 
-    } catch(GisException *e) {
-        PushGisException (eGwsFailedToPrepareCommand, e);
+    } catch(FdoException *e) {
+        PushFdoException (eGwsFailedToPrepareCommand, e);
         e->Release();
         fdoes = eGwsFailedToPrepareCommand;
 
@@ -108,7 +108,7 @@ EGwsStatus CGwsFdoUpdateCommand::Execute (CGwsMutableFeature & feat)
     try {
         GetPropertyValues ();   // initialize property value collection
         eGwsOkThrow(SetProperties (feat));
-        GisPtr<FdoFilter>           filter;
+        FdoPtr<FdoFilter>           filter;
         GwsFailedStatus             failed;
 
         eGwsOkThrow (BuildFilter (feat.GetFeatureId (), filter.p));
@@ -116,12 +116,12 @@ EGwsStatus CGwsFdoUpdateCommand::Execute (CGwsMutableFeature & feat)
         ((FdoIUpdate*)m_pCommand.p)->SetFilter (filter);
         if (((FdoIUpdate*)m_pCommand.p)->Execute() < 1) {
             if (m_bSupportLocking) {
-                GisPtr<FdoILockConflictReader> reader = ((FdoIUpdate*)m_pCommand.p)->GetLockConflicts ();
+                FdoPtr<FdoILockConflictReader> reader = ((FdoIUpdate*)m_pCommand.p)->GetLockConflicts ();
                 eGwsOkThrow (ProcessLockConflicts (reader, failed));
             }
         }
-    } catch (GisException * ex) {
-        PushGisException (eGwsFailedToExecuteCommand, ex);
+    } catch (FdoException * ex) {
+        PushFdoException (eGwsFailedToExecuteCommand, ex);
         ex->Release ();
         fdoes = eGwsFailedToExecuteCommand;
 

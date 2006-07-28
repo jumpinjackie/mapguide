@@ -498,21 +498,21 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
     int* ireader = (int*)data;
 
     // the geometry type
-    m_geom_type = (GisGeometryType)*ireader++;
+    m_geom_type = (FdoGeometryType)*ireader++;
 
     switch (m_geom_type)
     {
         //all the linear types...
-    case GisGeometryType_MultiLineString :
-    case GisGeometryType_MultiPolygon:
-    case GisGeometryType_MultiPoint:
-    case GisGeometryType_LineString:
-    case GisGeometryType_Polygon:
-    case GisGeometryType_Point:
+    case FdoGeometryType_MultiLineString :
+    case FdoGeometryType_MultiPolygon:
+    case FdoGeometryType_MultiPoint:
+    case FdoGeometryType_LineString:
+    case FdoGeometryType_Polygon:
+    case FdoGeometryType_Point:
         {
-            bool is_multi = (m_geom_type == GisGeometryType_MultiLineString)
-                || (m_geom_type == GisGeometryType_MultiPolygon
-                || (m_geom_type == GisGeometryType_MultiPoint));
+            bool is_multi = (m_geom_type == FdoGeometryType_MultiLineString)
+                || (m_geom_type == FdoGeometryType_MultiPolygon
+                || (m_geom_type == FdoGeometryType_MultiPoint));
 
             // the coordinate type
             int skip = 0; //0=XY, 1=XYZ or XYM, 2 = XYZM
@@ -531,17 +531,17 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                 if (is_multi) *ireader++;
 
                 //read cordinate typeB
-                GisDimensionality dim = (GisDimensionality)*ireader++;
+                FdoDimensionality dim = (FdoDimensionality)*ireader++;
 
                 skip = 0;
-                if (dim & GisDimensionality_Z) skip++;
-                if (dim & GisDimensionality_M) skip++;
+                if (dim & FdoDimensionality_Z) skip++;
+                if (dim & FdoDimensionality_M) skip++;
 
                 // the number of contours in current polygon/linestring
                 int contour_count = 1; //for linestrings
 
-                if ((m_geom_type == GisGeometryType_Polygon)
-                    || (m_geom_type == GisGeometryType_MultiPolygon))
+                if ((m_geom_type == FdoGeometryType_Polygon)
+                    || (m_geom_type == FdoGeometryType_MultiPolygon))
                     contour_count = *ireader++;
 
                 for (int i=0; i<contour_count; i++)
@@ -550,8 +550,8 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
                     //point geoms do not have a point count, since
                     //each piece is just one point each
-                    if ((m_geom_type != GisGeometryType_MultiPoint)
-                        && (m_geom_type != GisGeometryType_Point))
+                    if ((m_geom_type != FdoGeometryType_MultiPoint)
+                        && (m_geom_type != FdoGeometryType_Point))
                         point_count = *ireader++;
 
                     //*** ireader not valid from here down
@@ -568,8 +568,8 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                         //if current contour is just a point, add a second point
                         //for easier time in the line style algorithm
                         //but only do this for line and polygons, not points!!!!!
-                        if ((m_geom_type != GisGeometryType_MultiPoint)
-                            && (m_geom_type != GisGeometryType_Point))
+                        if ((m_geom_type != FdoGeometryType_MultiPoint)
+                            && (m_geom_type != FdoGeometryType_Point))
                             LineTo(x, y);
                     }
                     else
@@ -591,10 +591,10 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
         }
         break;
 
-    case GisGeometryType_CurveString :
-    case GisGeometryType_CurvePolygon :
-    case GisGeometryType_MultiCurveString :
-    case GisGeometryType_MultiCurvePolygon :
+    case FdoGeometryType_CurveString :
+    case FdoGeometryType_CurvePolygon :
+    case FdoGeometryType_MultiCurveString :
+    case FdoGeometryType_MultiCurvePolygon :
         {
             bool is_multi = false;
 
@@ -603,18 +603,18 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             //change geometry type over to flattened type
             switch (m_geom_type)
             {
-                case GisGeometryType_CurveString :
-                    m_geom_type = GisGeometryType_LineString;
+                case FdoGeometryType_CurveString :
+                    m_geom_type = FdoGeometryType_LineString;
                     break;
-                case GisGeometryType_CurvePolygon :
-                    m_geom_type = GisGeometryType_Polygon;
+                case FdoGeometryType_CurvePolygon :
+                    m_geom_type = FdoGeometryType_Polygon;
                     break;
-                case GisGeometryType_MultiCurveString :
-                    m_geom_type = GisGeometryType_MultiLineString;
+                case FdoGeometryType_MultiCurveString :
+                    m_geom_type = FdoGeometryType_MultiLineString;
                     is_multi = true;
                     break;
-                case GisGeometryType_MultiCurvePolygon :
-                    m_geom_type = GisGeometryType_MultiPolygon;
+                case FdoGeometryType_MultiCurvePolygon :
+                    m_geom_type = FdoGeometryType_MultiPolygon;
                     is_multi = true;
                     break;
             }
@@ -636,17 +636,17 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                 if (is_multi) *ireader++;
 
                 //read cordinate typeB
-                GisDimensionality dim = (GisDimensionality)*ireader++;
+                FdoDimensionality dim = (FdoDimensionality)*ireader++;
 
                 skip = 0;
-                if (dim & GisDimensionality_Z) skip++;
-                if (dim & GisDimensionality_M) skip++;
+                if (dim & FdoDimensionality_Z) skip++;
+                if (dim & FdoDimensionality_M) skip++;
 
                 // the number of contours in current polygon/linestring
                 int contour_count = 1; //for linestrings, no rings, just one
 
-                if ((real_geom_type == GisGeometryType_CurvePolygon)
-                    || (real_geom_type == GisGeometryType_MultiCurvePolygon))
+                if ((real_geom_type == FdoGeometryType_CurvePolygon)
+                    || (real_geom_type == FdoGeometryType_MultiCurvePolygon))
                     contour_count = *ireader++; //#rings for polygons
 
                 for (int i=0; i<contour_count; i++)
@@ -667,7 +667,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
                         switch (seg_type)
                         {
-                        case GisGeometryComponentType_CircularArcSegment:
+                        case FdoGeometryComponentType_CircularArcSegment:
                             dreader = (double*)ireader;
 
                             //circular arc : read midpont and endpoint
@@ -690,7 +690,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
                             break;
 
-                        case GisGeometryComponentType_LineStringSegment:
+                        case FdoGeometryComponentType_LineStringSegment:
 
                             //line string segment -- just read the points
                             //and do LineTos
@@ -715,7 +715,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             }// geom count of multi
         }//case
         break;
-    case GisGeometryType_MultiGeometry :
+    case FdoGeometryType_MultiGeometry :
         //can't do that yet
         break;
     }
@@ -789,19 +789,19 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
     switch (m_geom_type)
     {
         //all the linear types...
-    case GisGeometryType_MultiLineString :
-    case GisGeometryType_MultiPolygon:
-    case GisGeometryType_MultiPoint:
-    case GisGeometryType_LineString:
-    case GisGeometryType_Polygon:
-    case GisGeometryType_Point:
+    case FdoGeometryType_MultiLineString :
+    case FdoGeometryType_MultiPolygon:
+    case FdoGeometryType_MultiPoint:
+    case FdoGeometryType_LineString:
+    case FdoGeometryType_Polygon:
+    case FdoGeometryType_Point:
         {
             //write geometry type
             WRITE_INT(os, m_geom_type);
 
-            bool is_multi = (m_geom_type == GisGeometryType_MultiLineString)
-                || (m_geom_type == GisGeometryType_MultiPolygon
-                || (m_geom_type == GisGeometryType_MultiPoint));
+            bool is_multi = (m_geom_type == FdoGeometryType_MultiLineString)
+                || (m_geom_type == FdoGeometryType_MultiPolygon
+                || (m_geom_type == FdoGeometryType_MultiPoint));
 
             // the coordinate type
             //int skip = 0; //0=XY, 1=XYZ or XYM, 2 = XYZM
@@ -830,27 +830,27 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
                 {
                     switch (m_geom_type)
                     {
-                    case GisGeometryType_MultiLineString:
-                        WRITE_INT(os, GisGeometryType_LineString);
+                    case FdoGeometryType_MultiLineString:
+                        WRITE_INT(os, FdoGeometryType_LineString);
                         break;
-                    case GisGeometryType_MultiPolygon:
-                        WRITE_INT(os, GisGeometryType_Polygon);
+                    case FdoGeometryType_MultiPolygon:
+                        WRITE_INT(os, FdoGeometryType_Polygon);
                         break;
-                    case GisGeometryType_MultiPoint:
-                        WRITE_INT(os, GisGeometryType_Point);
+                    case FdoGeometryType_MultiPoint:
+                        WRITE_INT(os, FdoGeometryType_Point);
                         break;
                     }
                 }
 
                 //write cordinate type
                 //TODO: for now we only save XY
-                WRITE_INT(os, GisDimensionality_XY);
+                WRITE_INT(os, FdoDimensionality_XY);
 
                 // the number of contours in current polygon/linestring
                 int contour_count = 1; //for linestrings
 
-                if ((m_geom_type == GisGeometryType_Polygon)
-                    || (m_geom_type == GisGeometryType_MultiPolygon))
+                if ((m_geom_type == FdoGeometryType_Polygon)
+                    || (m_geom_type == FdoGeometryType_MultiPolygon))
                 {
 
                     contour_count = 1;//TODO: we need to remember contour count
@@ -864,8 +864,8 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
 
                     //point geoms do not have a point count, since
                     //each piece is just one point each
-                    if ((m_geom_type != GisGeometryType_MultiPoint)
-                        && (m_geom_type != GisGeometryType_Point))
+                    if ((m_geom_type != FdoGeometryType_MultiPoint)
+                        && (m_geom_type != FdoGeometryType_Point))
                     {
                         point_count = m_cntrs[i];
                         WRITE_INT(os, point_count);
@@ -891,10 +891,10 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
         }
         break;
 
-    case GisGeometryType_CurveString :
-    case GisGeometryType_CurvePolygon :
-    case GisGeometryType_MultiCurveString :
-    case GisGeometryType_MultiCurvePolygon :
+    case FdoGeometryType_CurveString :
+    case FdoGeometryType_CurvePolygon :
+    case FdoGeometryType_MultiCurveString :
+    case FdoGeometryType_MultiCurvePolygon :
         //TODO: the LineBuffer is already tesselated, so in case of these
         //we need to actually use a tesselated type, i.e. the code above
         break;
@@ -1029,14 +1029,14 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
     {
         switch (m_geom_type)
         {
-        case GisGeometryType_MultiPolygon:
-        case GisGeometryType_Polygon:
+        case FdoGeometryType_MultiPolygon:
+        case FdoGeometryType_Polygon:
             return ClipPolygon(b, dest);
-        case GisGeometryType_MultiLineString :
-        case GisGeometryType_LineString:
+        case FdoGeometryType_MultiLineString :
+        case FdoGeometryType_LineString:
             return ClipPolyline(b, dest);
-        case GisGeometryType_Point:
-        case GisGeometryType_MultiPoint:
+        case FdoGeometryType_Point:
+        case FdoGeometryType_MultiPoint:
             return ClipPoints(b, dest);
         default:
             {

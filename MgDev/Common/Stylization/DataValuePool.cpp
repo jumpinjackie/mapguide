@@ -125,7 +125,7 @@ void DataValuePool::RelinquishBooleanValue(BooleanValue* dv)
 }
 
 
-DateTimeValue* DataValuePool::ObtainDateTimeValue(GisDateTime val)
+DateTimeValue* DataValuePool::ObtainDateTimeValue(FdoDateTime val)
 {
     //if the pool is empty, create new
     if (m_datePool.empty())

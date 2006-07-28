@@ -50,7 +50,7 @@ MgServerGetFeatures::~MgServerGetFeatures()
     if (m_featureReader != NULL)
         m_featureReader->Close();
 
-    GIS_SAFE_RELEASE(m_featureReader);
+    FDO_SAFE_RELEASE(m_featureReader);
 }
 
 
@@ -114,7 +114,7 @@ MgClassDefinition* MgServerGetFeatures::GetMgClassDefinition(bool bSerialize)
     if (NULL == (MgClassDefinition*)m_classDef)
     {
         // Retrieve FdoClassDefinition
-        GisPtr<FdoClassDefinition> fdoClassDefinition = m_featureReader->GetClassDefinition();
+        FdoPtr<FdoClassDefinition> fdoClassDefinition = m_featureReader->GetClassDefinition();
         CHECKNULL((FdoClassDefinition*)fdoClassDefinition, L"MgServerGetFeatures.GetFeatures");
 
         // Convert FdoClassDefinition to MgClassDefinition
@@ -149,14 +149,14 @@ MgClassDefinition* MgServerGetFeatures::GetMgClassDefinition(FdoClassDefinition*
     CHECKNULL((MgPropertyDefinitionCollection*)identityPropDefCol, L"MgClassDefinition.GetMgClassDefinition");
 
     // description
-    GisString* desc = fdoClassDefinition->GetDescription();
+    FdoString* desc = fdoClassDefinition->GetDescription();
     if (desc != NULL)
     {
         mgClassDef->SetDescription(STRING(desc));
     }
 
     // Class name
-    GisString* className = fdoClassDefinition->GetName();
+    FdoString* className = fdoClassDefinition->GetName();
     if (className != NULL)
     {
         mgClassDef->SetName(STRING(className));
@@ -175,17 +175,17 @@ MgClassDefinition* MgServerGetFeatures::GetMgClassDefinition(FdoClassDefinition*
     }
 
     // Retrieve Class properties from FDO
-    GisPtr<FdoPropertyDefinitionCollection> fpdc = fdoClassDefinition->GetProperties();
+    FdoPtr<FdoPropertyDefinitionCollection> fpdc = fdoClassDefinition->GetProperties();
     CHECKNULL((FdoPropertyDefinitionCollection*)fpdc, L"MgClassDefinition.GetMgClassDefinition");
 
     // Retrieve Base class properties from FDO
     // TODO: Should we add Base class properties into the list of properties?
     // TODO: Can this be null?
-    GisPtr<FdoReadOnlyPropertyDefinitionCollection> frpdc = fdoClassDefinition->GetBaseProperties();
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> frpdc = fdoClassDefinition->GetBaseProperties();
 
     // Retrieve identity properties from FDO
     // TODO: Can this be null?
-    GisPtr<FdoDataPropertyDefinitionCollection> fdpdc = fdoClassDefinition->GetIdentityProperties();
+    FdoPtr<FdoDataPropertyDefinitionCollection> fdpdc = fdoClassDefinition->GetIdentityProperties();
 
     // Add properties
     this->GetClassProperties(propDefCol, fpdc);
@@ -193,10 +193,10 @@ MgClassDefinition* MgServerGetFeatures::GetMgClassDefinition(FdoClassDefinition*
     FdoClassType classType = fdoClassDefinition->GetClassType();
     if (classType == FdoClassType_FeatureClass)
     {
-        GisPtr<FdoGeometricPropertyDefinition> geomPropDef = ((FdoFeatureClass*)fdoClassDefinition)->GetGeometryProperty();
+        FdoPtr<FdoGeometricPropertyDefinition> geomPropDef = ((FdoFeatureClass*)fdoClassDefinition)->GetGeometryProperty();
         if (geomPropDef != NULL)
         {
-            GisString* defaultGeomName = geomPropDef->GetName();
+            FdoString* defaultGeomName = geomPropDef->GetName();
             if (defaultGeomName != NULL)
             {
                 mgClassDef->SetDefaultGeometryPropertyName(STRING(defaultGeomName));
@@ -238,7 +238,7 @@ MgClassDefinition* MgServerGetFeatures::GetMgClassDefinition(FdoClassDefinition*
         mgClassDef->SetSerializedXml(str1);
     }
 
-    GisPtr<FdoClassDefinition> baseDefinition = fdoClassDefinition->GetBaseClass();
+    FdoPtr<FdoClassDefinition> baseDefinition = fdoClassDefinition->GetBaseClass();
     if (baseDefinition != NULL)
     {
         Ptr<MgClassDefinition> mgBaseClsDef = GetMgClassDefinition(baseDefinition, bSerialize);
@@ -259,11 +259,11 @@ void MgServerGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* pro
     if (NULL == fdoPropDefCol)
         return;
 
-    GisInt32 cnt = fdoPropDefCol->GetCount();
-    for (GisInt32 i =0; i < cnt; i++)
+    FdoInt32 cnt = fdoPropDefCol->GetCount();
+    for (FdoInt32 i =0; i < cnt; i++)
     {
         // Get Fdo Property
-        GisPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
+        FdoPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
         CHECKNULL((FdoPropertyDefinition*)fpd, L"MgClassDefinition.GetClassProperties");
 
         // Create MgProperty
@@ -289,11 +289,11 @@ void MgServerGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* pro
     if (NULL == fdoPropDefCol)
         return;
 
-    GisInt32 cnt  = fdoPropDefCol->GetCount();
-    for (GisInt32 i =0; i < cnt; i++)
+    FdoInt32 cnt  = fdoPropDefCol->GetCount();
+    for (FdoInt32 i =0; i < cnt; i++)
     {
         // Get Fdo Property
-        GisPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
+        FdoPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
         CHECKNULL((FdoPropertyDefinition*)fpd, L"MgClassDefinition.GetClassProperties");
 
         // Create MgProperty
@@ -368,14 +368,14 @@ MgDataPropertyDefinition* MgServerGetFeatures::GetDataPropertyDefinition(FdoData
     Ptr<MgDataPropertyDefinition> propDef = new MgDataPropertyDefinition(name);
 
     // Get data members from FDO
-    GisString* defaultVal = fdoPropDef->GetDefaultValue();
-    GisInt32 length = fdoPropDef->GetLength();
+    FdoString* defaultVal = fdoPropDef->GetDefaultValue();
+    FdoInt32 length = fdoPropDef->GetLength();
     bool isReadOnly = fdoPropDef->GetReadOnly();
-    GisString* desc = fdoPropDef->GetDescription();
-    GisInt32 precision = fdoPropDef->GetPrecision();
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoInt32 precision = fdoPropDef->GetPrecision();
     bool isNullable = fdoPropDef->GetNullable();
-    GisStringP qname = fdoPropDef->GetQualifiedName();
-    GisInt32 scale = fdoPropDef->GetScale();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
+    FdoInt32 scale = fdoPropDef->GetScale();
     bool isAutoGenerated = fdoPropDef->GetIsAutoGenerated();
 
     // Set it for MapGuide
@@ -398,7 +398,7 @@ MgDataPropertyDefinition* MgServerGetFeatures::GetDataPropertyDefinition(FdoData
     propDef->SetPrecision((INT32)precision);
     propDef->SetNullable(isNullable);
 
-    GisString* qualifiedName = (GisString*)qname;
+    FdoString* qualifiedName = (FdoString*)qname;
     if (qualifiedName != NULL)
     {
         propDef->SetQualifiedName(STRING(qualifiedName));
@@ -420,9 +420,9 @@ MgObjectPropertyDefinition* MgServerGetFeatures::GetObjectPropertyDefinition(Fdo
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgObjectPropertyDefinition> propDef = new MgObjectPropertyDefinition(name);
 
-    GisString* desc = fdoPropDef->GetDescription();
-    GisStringP qname = fdoPropDef->GetQualifiedName();
-    GisString* qualifiedName = (GisString*)qname;
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
+    FdoString* qualifiedName = (FdoString*)qname;
 
     if (qualifiedName != NULL)
     {
@@ -435,10 +435,10 @@ MgObjectPropertyDefinition* MgServerGetFeatures::GetObjectPropertyDefinition(Fdo
         propDef->SetDescription(STRING(desc));
     }
 
-    GisPtr<FdoClassDefinition> fdoClsDef = fdoPropDef->GetClass();
+    FdoPtr<FdoClassDefinition> fdoClsDef = fdoPropDef->GetClass();
     CHECKNULL((FdoClassDefinition*)fdoClsDef, L"MgServerGetFeatures.GetObjectPropertyDefinition")
 
-    GisPtr<FdoDataPropertyDefinition> idenProp = fdoPropDef->GetIdentityProperty(); // Can return NULL
+    FdoPtr<FdoDataPropertyDefinition> idenProp = fdoPropDef->GetIdentityProperty(); // Can return NULL
 
     FdoObjectType objType = fdoPropDef->GetObjectType();
     FdoOrderType orderType = fdoPropDef->GetOrderType();
@@ -466,13 +466,13 @@ MgGeometricPropertyDefinition* MgServerGetFeatures::GetGeometricPropertyDefiniti
     Ptr<MgGeometricPropertyDefinition> propDef = new MgGeometricPropertyDefinition(name);
 
     // Get data members from FDO
-    GisString* desc = fdoPropDef->GetDescription();
-    GisInt32 geomTypes = fdoPropDef->GetGeometryTypes();
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoInt32 geomTypes = fdoPropDef->GetGeometryTypes();
     bool hasElev = fdoPropDef->GetHasElevation();
     bool hasMeasure = fdoPropDef->GetHasMeasure();
-    GisStringP qname = fdoPropDef->GetQualifiedName();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
     bool isReadOnly = fdoPropDef->GetReadOnly();
-    GisString* spatialContextName = fdoPropDef->GetSpatialContextAssociation();
+    FdoString* spatialContextName = fdoPropDef->GetSpatialContextAssociation();
 
     // Set it for MapGuide
     if (desc != NULL)
@@ -483,7 +483,7 @@ MgGeometricPropertyDefinition* MgServerGetFeatures::GetGeometricPropertyDefiniti
     propDef->SetGeometryTypes((INT32)geomTypes);
     propDef->SetHasElevation(hasElev);
     propDef->SetHasMeasure(hasMeasure);
-    GisString* qualifiedName = (GisString*)qname;
+    FdoString* qualifiedName = (FdoString*)qname;
     if (qualifiedName != NULL)
     {
         propDef->SetQualifiedName(STRING(qualifiedName));
@@ -508,11 +508,11 @@ MgRasterPropertyDefinition* MgServerGetFeatures::GetRasterPropertyDefinition(Fdo
     Ptr<MgRasterPropertyDefinition> propDef = new MgRasterPropertyDefinition(name);
 
     // Get data members from FDO
-    GisString* desc = fdoPropDef->GetDescription();
-    GisInt32 xsize = fdoPropDef->GetDefaultImageXSize();
-    GisInt32 ysize = fdoPropDef->GetDefaultImageYSize();
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoInt32 xsize = fdoPropDef->GetDefaultImageXSize();
+    FdoInt32 ysize = fdoPropDef->GetDefaultImageYSize();
     bool isNullable = fdoPropDef->GetNullable();
-    GisStringP qname = fdoPropDef->GetQualifiedName();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
     bool isReadOnly = fdoPropDef->GetReadOnly();
 
     // Set it for MapGuide
@@ -525,7 +525,7 @@ MgRasterPropertyDefinition* MgServerGetFeatures::GetRasterPropertyDefinition(Fdo
     propDef->SetDefaultImageYSize((INT32)ysize);
     propDef->SetNullable(isNullable);
 
-    GisString* qualifiedName = (GisString*)qname;
+    FdoString* qualifiedName = (FdoString*)qname;
     if (qualifiedName != NULL)
     {
         propDef->SetQualifiedName(STRING(qualifiedName));
@@ -571,7 +571,7 @@ void MgServerGetFeatures::AddFeatures(INT32 count)
             }
         }
         //some providers will throw if ReadNext is called more than once
-        catch (GisException* e)
+        catch (FdoException* e)
         {
             // Note: VB 05/10/06 The assert has been commented out as 
             // Linux does not remove them from a release build. The assert
@@ -650,7 +650,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
         }
         case MgPropertyType::Byte: /// Unsigned 8 bit value
         {
-            GisByte val = 0;
+            FdoByte val = 0;
             bool isNull = true;
 
             if (!m_featureReader->IsNull(propName.c_str()))
@@ -670,7 +670,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
 
             if (!m_featureReader->IsNull(propName.c_str()))
             {
-                GisDateTime val = m_featureReader->GetDateTime(propName.c_str());
+                FdoDateTime val = m_featureReader->GetDateTime(propName.c_str());
                 dateTime = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
                                           (INT8)val.hour, (INT8)val.minute, val.seconds);
                 isNull = false;
@@ -712,7 +712,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
         }
         case MgPropertyType::Int16: /// 16 bit signed integer value
         {
-            GisInt16 val = 0;
+            FdoInt16 val = 0;
             bool isNull = true;
 
             if (!m_featureReader->IsNull(propName.c_str()))
@@ -727,7 +727,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
         }
         case MgPropertyType::Int32: // 32 bit signed integer value
         {
-            GisInt32 val = 0;
+            FdoInt32 val = 0;
             bool isNull = true;
 
             if (!m_featureReader->IsNull(propName.c_str()))
@@ -742,7 +742,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
         }
         case MgPropertyType::Int64: // 64 bit signed integer value
         {
-            GisInt64 val = 0;
+            FdoInt64 val = 0;
             bool isNull = true;
 
             if (!m_featureReader->IsNull(propName.c_str()))
@@ -808,7 +808,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
             if (!m_featureReader->IsNull(propName.c_str()))
             {
                 isNull = false;
-                GisPtr<FdoIFeatureReader> featureObject = m_featureReader->GetFeatureObject(propName.c_str());
+                FdoPtr<FdoIFeatureReader> featureObject = m_featureReader->GetFeatureObject(propName.c_str());
                 if (featureObject != NULL)
                 {
                     Ptr<MgServerFeatureReaderIdentifier> sfi = new MgServerFeatureReaderIdentifier(featureObject);
@@ -827,8 +827,8 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
 
             if (!m_featureReader->IsNull(propName.c_str()))
             {
-                GisInt32 length = 0;
-                const GisByte* bytes = m_featureReader->GetGeometry(propName.c_str(), &length);
+                FdoInt32 length = 0;
+                const FdoByte* bytes = m_featureReader->GetGeometry(propName.c_str(), &length);
 
                 if (bytes != NULL)
                 {
@@ -849,7 +849,7 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
 
             if (!m_featureReader->IsNull(propName.c_str()))
             {
-                GisPtr<FdoIRaster> raster = m_featureReader->GetRaster(propName.c_str());
+                FdoPtr<FdoIRaster> raster = m_featureReader->GetRaster(propName.c_str());
                 val = MgServerFeatureUtil::GetMgRaster(raster, propName);
                 isNull = false;
             }
@@ -988,16 +988,16 @@ MgByteReader* MgServerGetFeatures::SerializeToXml(FdoClassDefinition* classDef)
 {
     CHECKNULL(classDef, L"MgServerGetFeatures.SerializeToXml");
 
-    GisString* className = classDef->GetName();
+    FdoString* className = classDef->GetName();
     FdoFeatureSchemaP pSchema = classDef->GetFeatureSchema();
     FdoFeatureSchemaP tempSchema;
     FdoClassDefinitionP featClass;
-    GisInt32 index = 0;
+    FdoInt32 index = 0;
 
     if (pSchema != NULL)
     {
         //Get the position of the class in the collecion
-        GisPtr<FdoClassCollection> fcc = pSchema->GetClasses();
+        FdoPtr<FdoClassCollection> fcc = pSchema->GetClasses();
         index = fcc->IndexOf( className );
 
         // Move class of interest to its own schema
@@ -1014,15 +1014,15 @@ MgByteReader* MgServerGetFeatures::SerializeToXml(FdoClassDefinition* classDef)
         FdoClassesP(tempSchema->GetClasses())->Add(classDef);
     }
 
-    GisIoMemoryStreamP fmis = GisIoMemoryStream::Create();
+    FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
     tempSchema->WriteXml( fmis );
     fmis->Reset();
 
-    GisInt64 len = fmis->GetLength();
-    GisByte *bytes = new GisByte[(size_t)len];
+    FdoInt64 len = fmis->GetLength();
+    FdoByte *bytes = new FdoByte[(size_t)len];
     CHECKNULL(bytes, L"MgServerGetFeatures::SerializeToXml");
 
-    fmis->Read(bytes, (GisSize)len);
+    fmis->Read(bytes, (FdoSize)len);
 
     // Get byte reader from memory stream
     Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes, (INT32)len);
@@ -1089,16 +1089,16 @@ MgByteReader* MgServerGetFeatures::GetLOBFromFdo(CREFSTRING propName, FdoIFeatur
 
     Ptr<MgByteReader> byteReader;
 
-    // TODO: We need to switch to GisIStreamReader when we have streaming capability
+    // TODO: We need to switch to FdoIStreamReader when we have streaming capability
     // in MgByteReader
-    GisPtr<FdoLOBValue> fdoVal = featureReader->GetLOB(propName.c_str());
+    FdoPtr<FdoLOBValue> fdoVal = featureReader->GetLOB(propName.c_str());
     if (fdoVal != NULL)
     {
-        GisPtr<GisByteArray> byteArray = fdoVal->GetData();
+        FdoPtr<FdoByteArray> byteArray = fdoVal->GetData();
         if (byteArray != NULL)
         {
-            GisByte* bytes = byteArray->GetData();
-            GisInt32 len = byteArray->GetCount();
+            FdoByte* bytes = byteArray->GetData();
+            FdoInt32 len = byteArray->GetCount();
             Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
             byteReader = byteSource->GetReader();
         }

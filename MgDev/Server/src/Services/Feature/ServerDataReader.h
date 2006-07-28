@@ -258,7 +258,7 @@ INTERNAL_API:
 
 private:
 
-    GisPtr<FdoIDataReader> m_dataReader;
+    FdoPtr<FdoIDataReader> m_dataReader;
     STRING m_providerName;
     Ptr<MgServerDataProcessor> m_dataProcessor;
     bool m_removeFromPoolOnDestruction;

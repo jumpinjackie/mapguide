@@ -80,7 +80,7 @@ void MgServerFeatureConnection::Initialize()
 
 FdoIConnection* MgServerFeatureConnection::GetConnection()
 {
-    return GIS_SAFE_ADDREF(m_fdoConn);
+    return FDO_SAFE_ADDREF(m_fdoConn);
 }
 
 
@@ -89,7 +89,7 @@ STRING MgServerFeatureConnection::GetProviderName()
     CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.SetConnectionProperties()");
 
     // Get FdoIConnectionInfo
-    GisPtr<FdoIConnectionInfo> fdoConnInfo = m_fdoConn->GetConnectionInfo();
+    FdoPtr<FdoIConnectionInfo> fdoConnInfo = m_fdoConn->GetConnectionInfo();
     CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgServerFeatureConnection.SetConnectionProperties()");
 
     return fdoConnInfo->GetProviderName();
@@ -144,19 +144,19 @@ bool MgServerFeatureConnection::SupportsCommand(INT32 commandType)
 {
     CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.SupportsConfiguration()");
 
-    GisPtr<FdoICommandCapabilities> fcc = m_fdoConn->GetCommandCapabilities();
+    FdoPtr<FdoICommandCapabilities> fcc = m_fdoConn->GetCommandCapabilities();
     CHECKNULL((FdoICommandCapabilities*)fcc, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
 
     bool supports = false;
 
     // Find all supported command types
-    GisInt32 cnt = 0;
-    GisInt32* fcmd = fcc->GetCommands(cnt);
+    FdoInt32 cnt = 0;
+    FdoInt32* fcmd = fcc->GetCommands(cnt);
     if (cnt > 0 && fcmd != NULL)
     {
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
-            if (fcmd[i] == (GisInt32)commandType)
+            if (fcmd[i] == (FdoInt32)commandType)
             {
                 supports = true;
             }

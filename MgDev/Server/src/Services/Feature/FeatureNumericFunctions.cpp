@@ -73,7 +73,7 @@ void MgFeatureNumericFunctions::Initialize(MgReader* reader, FdoFunction* custom
     }
 
     m_reader = SAFE_ADDREF(reader);
-    m_customFunction = GIS_SAFE_ADDREF(customFunction);
+    m_customFunction = FDO_SAFE_ADDREF(customFunction);
     m_propertyAlias = propertyAlias;
 }
 

@@ -64,12 +64,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib GisCommon.lib GisGeometry.lib MgGwsCommond.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib MgGwsCommond.lib"
 				OutputFile="$(OutDir)/MgGwsQueryEngined.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\..\..\Oem\FDO\lib&quot;;&quot;..\..\..\lib\debug&quot;"
 				ModuleDefinitionFile="GwsQueryEngine.def"
-				DelayLoadDLLs="Fdo.dll;GisCommon.dll;GisGeometry.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgGwsQueryEngined.pdb"
 				SubSystem="2"
@@ -149,12 +149,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib GisCommon.lib GisGeometry.lib MgGwsCommon.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib MgGwsCommon.lib"
 				OutputFile="$(OutDir)/MgGwsQueryEngine.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\..\..\Oem\FDO\lib&quot;;&quot;..\..\..\lib\release&quot;"
 				ModuleDefinitionFile="GwsQueryEngine.def"
-				DelayLoadDLLs="fdo.dll;GisCommon.dll;GisGeometry.dll"
+				DelayLoadDLLs="fdo.dll;FdoCommon.dll;FdoGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgGwsQueryEngine.pdb"
 				SubSystem="2"

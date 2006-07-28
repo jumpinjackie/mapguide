@@ -91,18 +91,18 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
 
     // Connect to provider
     MgServerFeatureConnection msfc(providerName, decryptedPartialConnString);
-    GisPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
     CHECKNULL((FdoIConnection*)fdoConn, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
 
     // Get Connection Info
-    GisPtr<FdoIConnectionInfo> connInfo = fdoConn->GetConnectionInfo();
+    FdoPtr<FdoIConnectionInfo> connInfo = fdoConn->GetConnectionInfo();
     CHECKNULL((FdoIConnectionInfo*)connInfo, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
 
     // Get Connection Property Dictionary
-    GisPtr<FdoIConnectionPropertyDictionary> fdoConnPropDict = connInfo->GetConnectionProperties();
+    FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropDict = connInfo->GetConnectionProperties();
     CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropDict, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
 
-    bool enumerable = fdoConnPropDict->IsPropertyEnumerable((GisString*)propertyName.c_str());
+    bool enumerable = fdoConnPropDict->IsPropertyEnumerable((FdoString*)propertyName.c_str());
     if (!enumerable)
     {
         MgStringCollection arguments;
@@ -113,13 +113,13 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
             __LINE__, __WFILE__, &arguments, L"MgPropertyNotEnumerable", NULL);
     }
 
-    GisInt32 cnt = 0;
-    GisString** propertyValues = fdoConnPropDict->EnumeratePropertyValues((GisString*)propertyName.c_str(), cnt);
+    FdoInt32 cnt = 0;
+    FdoString** propertyValues = fdoConnPropDict->EnumeratePropertyValues((FdoString*)propertyName.c_str(), cnt);
 
     if (propertyValues != NULL && cnt > 0)
     {
         stringCol = new MgStringCollection();
-        for( GisInt32 i=0; i < cnt; i++ )
+        for( FdoInt32 i=0; i < cnt; i++ )
         {
             stringCol->Add(propertyValues[i]);
         }

@@ -40,7 +40,7 @@ CGwsJoinQueryResults::CGwsJoinQueryResults()
 }
 
 EGwsStatus CGwsJoinQueryResults::InitializeReader (
-    GisStringCollection             * leftjoincols,
+    FdoStringCollection             * leftjoincols,
     IGWSQuery                       * query,
     CGwsPreparedQuery               * prepquery
 )
@@ -90,7 +90,7 @@ bool CGwsJoinQueryResults::ReadNext ()
 
     } else {
         while (bRes) {
-            GisPtr<IGWSFeatureIterator> riter = GetJoinedFeatures ();
+            FdoPtr<IGWSFeatureIterator> riter = GetJoinedFeatures ();
 
             if (riter->ReadNext ()) {
                 break;
@@ -107,7 +107,7 @@ FdoDataValueCollection * CGwsJoinQueryResults::GetJoinValues ()
 {
     if (! m_bLeftJoinValuesSet) {
         IGWSFeatureIterator * fiter = dynamic_cast<IGWSFeatureIterator *> (m_reader.p);
-        GisPtr<FdoDataValueCollection> coll = fiter->GetDataValues (m_leftcols);
+        FdoPtr<FdoDataValueCollection> coll = fiter->GetDataValues (m_leftcols);
         m_leftJoinVals = coll;
         m_bLeftJoinValuesSet = true;
     }
@@ -117,7 +117,7 @@ FdoDataValueCollection * CGwsJoinQueryResults::GetJoinValues ()
 IGWSFeatureIterator * CGwsJoinQueryResults::GetJoinedFeatures (int iJoin)
 {
     // check join feature index
-    GisPtr<IGWSExtendedFeatureDescription> fdsc;
+    FdoPtr<IGWSExtendedFeatureDescription> fdsc;
     DescribeFeature (& fdsc);
     if (iJoin >= fdsc->GetCount ())
         GWS_THROW (eGwsIndexOutOfBounds);
@@ -150,7 +150,7 @@ IGWSFeatureIterator * CGwsJoinQueryResults::GetJoinedFeatures ()
 }
 
 
-GisInt32 CGwsJoinQueryResults::GetRevisionNumber ()
+FdoInt32 CGwsJoinQueryResults::GetRevisionNumber ()
 {
     // get it from the left side
     IGWSFeatureIterator * fiter = dynamic_cast<IGWSFeatureIterator *> (m_reader.p);
@@ -169,8 +169,8 @@ void CGwsJoinQueryResults::Close ()
     try {
         CGwsFeatureIterator::Close ();
         m_right->CGwsFeatureIterator::Close ();
-    } catch (GisException * gis) {
-        PushGisException (eGwsFdoProviderError, gis);
+    } catch (FdoException * gis) {
+        PushFdoException (eGwsFdoProviderError, gis);
         gis->Release ();
     }
     return ;

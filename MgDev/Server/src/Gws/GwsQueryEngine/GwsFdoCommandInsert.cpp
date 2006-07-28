@@ -62,8 +62,8 @@ EGwsStatus  CGwsFdoInsertCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/
             name = QualifiedClassName();
         ((FdoIInsert *)m_pCommand.p)->SetFeatureClassName(name.c_str());
 
-    } catch(GisException *e) {
-        PushGisException (eGwsFailedToPrepareCommand, e);
+    } catch(FdoException *e) {
+        PushFdoException (eGwsFailedToPrepareCommand, e);
         e->Release();
         fdoes = eGwsFailedToPrepareCommand;
 
@@ -108,7 +108,7 @@ EGwsStatus CGwsFdoInsertCommand::Execute (CGwsMutableFeature & feat)
         GetPropertyValues (); // initialize property value collection
         eGwsOkThrow(SetProperties (feat)) ;
 
-        GisPtr<FdoIFeatureReader> pReader = ((FdoIInsert*)m_pCommand.p)->Execute();
+        FdoPtr<FdoIFeatureReader> pReader = ((FdoIInsert*)m_pCommand.p)->Execute();
         assert (pReader != NULL);
 
         // Read assigned Id
@@ -119,10 +119,10 @@ EGwsStatus CGwsFdoInsertCommand::Execute (CGwsMutableFeature & feat)
             //
             CGwsDataValueCollection  *  keyvals = NULL;
 
-            for (GisInt32 idx = 0; idx < m_identity->GetCount (); idx ++) {
-                GisPtr<FdoDataPropertyDefinition>  keyprop =
+            for (FdoInt32 idx = 0; idx < m_identity->GetCount (); idx ++) {
+                FdoPtr<FdoDataPropertyDefinition>  keyprop =
                                                        m_identity->GetItem (idx);
-                GisPtr<FdoDataValue>               val =
+                FdoPtr<FdoDataValue>               val =
                     GwsQueryUtils::GetDataPropertyValue (pReader,
                                                        keyprop->GetDataType (),
                                                        keyprop->GetName ());
@@ -159,15 +159,15 @@ EGwsStatus CGwsFdoInsertCommand::Execute (CGwsMutableFeature & feat)
             // long ver;
             // Read sequence number
             if (!m_revisionprop.empty()) {
-                GisInt32 revnum = pReader->GetInt32 (m_revisionprop.c_str ());
+                FdoInt32 revnum = pReader->GetInt32 (m_revisionprop.c_str ());
                 feat.SetRevisionNumber (revnum);
             }
             feat.SetFeatureId (GWSFeatureId (keyvals));
         }
         pReader->Close();
 
-    } catch(GisException *e) {
-        PushGisException (eGwsFailedToExecuteCommand, e);
+    } catch(FdoException *e) {
+        PushFdoException (eGwsFailedToExecuteCommand, e);
         e->Release();
         fdoes = eGwsFailedToExecuteCommand;
 
@@ -200,19 +200,19 @@ EGwsStatus CGwsFdoInsertCommand::InsertObjectProperties (const wchar_t* qObjectP
         while(featIter->GetNextFeature
             (pFeature))
         {
-            GisPtr<FdoPropertyValueCollection> pProps = pInsCommand->GetPropertyValues();
+            FdoPtr<FdoPropertyValueCollection> pProps = pInsCommand->GetPropertyValues();
             //loop over the identity properties to get the FK name and type
             assert(m_identity->GetCount () == primaryKey.length());
-            for (GisInt32 idx = 0; idx < m_identity->GetCount (); idx ++) {
-                GisPtr<FdoDataPropertyDefinition>  keyprop;
+            for (FdoInt32 idx = 0; idx < m_identity->GetCount (); idx ++) {
+                FdoPtr<FdoDataPropertyDefinition>  keyprop;
                 keyprop = m_identity->GetItem (idx);
                 //Construct hack foreign key name per Enterpise spec (to be fixed in FDO2)
                 const std::wstring hackFKName =
                     acmapFdoUtils::constructObjectPropertyFK(aTOw(m_classname.Class()), keyprop->GetName());
                 //get the special FK
-                GisPtr<FdoPropertyValue> propertyValue = pProps->GetItem(hackFKName.c_str());
+                FdoPtr<FdoPropertyValue> propertyValue = pProps->GetItem(hackFKName.c_str());
                 //set it's value with the identity of the newly inserted feature
-                GisPtr<FdoDataValue> dataValue = acmapFdoDataConversionUtils::CreateFdoValue(keyprop->GetDataType(), primaryKey[idx]);
+                FdoPtr<FdoDataValue> dataValue = acmapFdoDataConversionUtils::CreateFdoValue(keyprop->GetDataType(), primaryKey[idx]);
                 propertyValue->SetValue(dataValue);
             }
             //insert the class

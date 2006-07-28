@@ -33,13 +33,13 @@ GWSCoordinateSystem::GWSCoordinateSystem ()
 {
     m_cstype = eGwsCSWkt;
 }
-GWSCoordinateSystem::GWSCoordinateSystem (GisString * wktcsname)
+GWSCoordinateSystem::GWSCoordinateSystem (FdoString * wktcsname)
 {
     m_cstype = eGwsCSWkt;
     m_csname = wktcsname;
 }
 GWSCoordinateSystem::GWSCoordinateSystem (
-    GisString * csname,
+    FdoString * csname,
     EGwsCSType  cstype
 )
 {
@@ -54,7 +54,7 @@ GWSCoordinateSystem::~GWSCoordinateSystem ()
 {
 }
 
-GisString* GWSCoordinateSystem::Name () const
+FdoString* GWSCoordinateSystem::Name () const
 {
     return m_csname;
 }
@@ -76,7 +76,7 @@ bool GWSCoordinateSystem::operator== (const GWSCoordinateSystem & other) const
            m_csname == other.m_csname;
 }
 
-GWSCoordinateSystem::operator GisString * () const
+GWSCoordinateSystem::operator FdoString * () const
 {
     return Name ();
 }

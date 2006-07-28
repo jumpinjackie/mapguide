@@ -19,7 +19,7 @@
 #include "DateTimeValue.h"
 #include "DataValuePool.h"
 
-DateTimeValue::DateTimeValue(GisDateTime& val)
+DateTimeValue::DateTimeValue(FdoDateTime& val)
 {
     m_value = val;
     m_strValue = NULL;
@@ -35,13 +35,13 @@ DateTimeValue::~DateTimeValue()
 }
 
 
-void DateTimeValue::Set(GisDateTime& val)
+void DateTimeValue::Set(FdoDateTime& val)
 {
     m_value = val;
 
     if (m_strValue)
     {
-        GisPtr<FdoDateTimeValue> dt = FdoDateTimeValue::Create(m_value);
+        FdoPtr<FdoDateTimeValue> dt = FdoDateTimeValue::Create(m_value);
 
         wcscpy(m_strValue, dt->ToString());
     }
@@ -59,32 +59,32 @@ DataValueType DateTimeValue::GetType()
 
 DataValue* DateTimeValue::Negate(DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic on DateTime");
+    throw FdoException::Create(L"Cannot perform arithmetic on DateTime");
 }
 
 DataValue* DateTimeValue::Add(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic on DateTime");
+    throw FdoException::Create(L"Cannot perform arithmetic on DateTime");
 }
 
 DataValue* DateTimeValue::Subtract(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic on DateTime");
+    throw FdoException::Create(L"Cannot perform arithmetic on DateTime");
 }
 
 DataValue* DateTimeValue::Multiply(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic on DateTime");
+    throw FdoException::Create(L"Cannot perform arithmetic on DateTime");
 }
 
 DataValue* DateTimeValue::Divide(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic on DateTime");
+    throw FdoException::Create(L"Cannot perform arithmetic on DateTime");
 }
 
 bool DateTimeValue::IsEqualTo(DataValue& v2)
 {
-    GisDateTime d2 = v2.GetAsDateTime();
+    FdoDateTime d2 = v2.GetAsDateTime();
 
     if (   d2.year == m_value.year
         && d2.month == m_value.month
@@ -104,7 +104,7 @@ bool DateTimeValue::IsNotEqualTo(DataValue& v2)
 
 bool DateTimeValue::IsGreaterThan(DataValue& v2)
 {
-    GisDateTime d2 = v2.GetAsDateTime();
+    FdoDateTime d2 = v2.GetAsDateTime();
 
     if ((m_value.IsDate() && d2.IsDate()) || (m_value.IsDateTime() && d2.IsDateTime()))
     {
@@ -173,22 +173,22 @@ bool DateTimeValue::IsLessThanOrEqualTo(DataValue& v2)
 
 double DateTimeValue::GetAsDouble()
 {
-    throw GisException::Create(L"Cannot convert DateTime to double");
+    throw FdoException::Create(L"Cannot convert DateTime to double");
 }
 
-GisInt64 DateTimeValue::GetAsInt64()
+FdoInt64 DateTimeValue::GetAsInt64()
 {
-    throw GisException::Create(L"Cannot convert DateTime to Int64");
+    throw FdoException::Create(L"Cannot convert DateTime to Int64");
 }
 
-GisDateTime DateTimeValue::GetAsDateTime()
+FdoDateTime DateTimeValue::GetAsDateTime()
 {
     return m_value;
 }
 
 bool DateTimeValue::GetAsBoolean()
 {
-    throw GisException::Create(L"Cannot convert DateTime to boolean");
+    throw FdoException::Create(L"Cannot convert DateTime to boolean");
 }
 
 wchar_t* DateTimeValue::GetAsString()
@@ -197,7 +197,7 @@ wchar_t* DateTimeValue::GetAsString()
     {
         m_strValue = new wchar_t[MAX_STRING_LENGTH];
 
-        GisPtr<FdoDateTimeValue> dt = FdoDateTimeValue::Create(m_value);
+        FdoPtr<FdoDateTimeValue> dt = FdoDateTimeValue::Create(m_value);
 
         wcscpy(m_strValue, dt->ToString());
     }

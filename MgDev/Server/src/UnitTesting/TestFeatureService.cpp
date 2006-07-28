@@ -166,14 +166,14 @@ void TestFeatureService::TestEnd()
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestFeatureService.TestEnd", 
+            throw new MgNullReferenceException(L"TestFeatureService.TestEnd",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestFeatureService.TestEnd", 
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestEnd",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
@@ -245,10 +245,10 @@ void TestFeatureService::TestCase_GetFeatureProviders()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -296,10 +296,10 @@ void TestFeatureService::TestCase_TestConnectionSDFProvider()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -351,10 +351,10 @@ void TestFeatureService::TestCase_TestFdoConnectionManager()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -401,10 +401,10 @@ void TestFeatureService::TestCase_GetConnectionPropertyValue()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -429,7 +429,7 @@ void TestFeatureService::TestCase_GetCapabilities()
         }
 
         STRING provider = L"OSGeo.SDF.3.0";
-        
+
         MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
         if(fdoConnectionManager == 0)
         {
@@ -453,10 +453,10 @@ void TestFeatureService::TestCase_GetCapabilities()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -498,10 +498,10 @@ void TestFeatureService::TestCase_TestConnectionResourceIdentifier()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -547,10 +547,10 @@ void TestFeatureService::TestCase_GetSchemas()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -597,10 +597,10 @@ void TestFeatureService::TestCase_GetClasses()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -644,10 +644,10 @@ void TestFeatureService::TestCase_GetClassDefinition()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -696,10 +696,10 @@ void TestFeatureService::TestCase_DescribeSchema()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -741,10 +741,10 @@ void TestFeatureService::TestCase_SelectFeatures()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -789,10 +789,10 @@ void TestFeatureService::TestCase_SelectAggregate()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -829,10 +829,10 @@ void TestFeatureService::TestCase_ExecuteSqlQuery()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -869,10 +869,10 @@ void TestFeatureService::TestCase_ExecuteSqlNonQuery()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -921,10 +921,10 @@ void TestFeatureService::TestCase_GetSpatialContexts()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -970,10 +970,10 @@ void TestFeatureService::TestCase_GetLongTransactions()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -1009,10 +1009,10 @@ void TestFeatureService::TestCase_GetFeatures()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -1050,10 +1050,10 @@ void TestFeatureService::TestCase_CloseFeatureReader()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -1089,10 +1089,10 @@ void TestFeatureService::TestCase_GetSqlRows()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -1130,10 +1130,10 @@ void TestFeatureService::TestCase_CloseSqlReader()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -1171,10 +1171,10 @@ void TestFeatureService::TestCase_GetRaster()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -1210,10 +1210,10 @@ void TestFeatureService::TestCase_GetDataRows()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -1251,10 +1251,10 @@ void TestFeatureService::TestCase_CloseDataReader()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -1305,10 +1305,10 @@ void TestFeatureService::TestCase_JoinFeatures()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {
@@ -1337,7 +1337,7 @@ void TestFeatureService::TestCase_CreateFeatureSource()
         Ptr<MgResourceService> pResourceService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_CreateFeatureSource", 
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_CreateFeatureSource",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
@@ -1388,10 +1388,10 @@ void TestFeatureService::TestCase_CreateFeatureSource()
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch(GisException* e)
+    catch(FdoException* e)
     {
-        GIS_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("GisException occured");
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
     }
     catch(...)
     {

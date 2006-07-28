@@ -71,7 +71,7 @@ EGwsStatus CGwsFdoLockingCommand::Execute (const GWSFeatureId & featid)
 {
     Clear ();
     EGwsStatus          fdoes = eGwsOk;
-    GisPtr<FdoFilter>   filter;
+    FdoPtr<FdoFilter>   filter;
     if(!m_bIsPrepared) {
         PushStatus (eGwsFdoQueryIsNotPrepared);
         return eGwsFdoQueryIsNotPrepared;
@@ -96,8 +96,8 @@ EGwsStatus CGwsFdoLockingCommand::Execute (const GWSFeatureId & featid)
             }
         }
 
-    } catch (GisException * e) {
-        PushGisException (eGwsFailed, e);
+    } catch (FdoException * e) {
+        PushFdoException (eGwsFailed, e);
         e->Release ();
         fdoes = eGwsFailed;
     }
@@ -126,7 +126,7 @@ EGwsStatus CGwsFdoLockingCommand::Execute (
                      ((featids.size () % LOCK_BATCH_SIZE) == 0 ? 0 : 1);
 
         for (idx = 0; idx < fcount; idx ++) {
-            GisPtr<FdoFilter>   filter;
+            FdoPtr<FdoFilter>   filter;
 
             BuildFilter (featids,
                          idx * LOCK_BATCH_SIZE,
@@ -163,8 +163,8 @@ EGwsStatus CGwsFdoLockingCommand::Execute (
             PushStatus (eGwsFdoLockConflict);
             fdoes = eGwsFdoLockConflict;
         }
-    } catch (GisException * e) {
-        PushGisException (eGwsFailedToExecuteCommand, e);
+    } catch (FdoException * e) {
+        PushFdoException (eGwsFailedToExecuteCommand, e);
         e->Release ();
         fdoes = eGwsFailedToExecuteCommand;
     }
@@ -213,8 +213,8 @@ EGwsStatus CGwsFdoLockCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
             name = QualifiedClassName();
         ((FdoIAcquireLock *)m_pCommand.p)->SetFeatureClassName(name.c_str());
 
-    } catch(GisException *e) {
-        PushGisException (eGwsFailedToPrepareCommand, e);
+    } catch(FdoException *e) {
+        PushFdoException (eGwsFailedToPrepareCommand, e);
         e->Release ();
         fdoes = eGwsFailedToPrepareCommand;
     }
@@ -227,8 +227,8 @@ void CGwsFdoLockCommand::PrepareInternal()
     CGwsFdoLockingCommand::PrepareInternal ();
 
     try {
-        GisPtr<FdoClassCapabilities> capabilities;
-        GisInt32                     size = 0;
+        FdoPtr<FdoClassCapabilities> capabilities;
+        FdoInt32                     size = 0;
 
         // discover class locking capabilities
         capabilities = m_classDef->GetCapabilities ();
@@ -266,7 +266,7 @@ void CGwsFdoLockCommand::PrepareInternal()
                 }
             }
         }
-    } catch (GisException * gis) {
+    } catch (FdoException * gis) {
         gis->Release ();
 
     }
@@ -294,14 +294,14 @@ EGwsStatus CGwsFdoLockCommand::ExecuteFilter (FdoFilter *pFilter)
         pLockCommand->SetFilter(pFilter);
         PrepareFilter (pFilter);  // do I need to set filter after converting it?
 
-        GisPtr<FdoILockConflictReader> pReader = pLockCommand->Execute();
+        FdoPtr<FdoILockConflictReader> pReader = pLockCommand->Execute();
         if (ProcessLockConflicts (pReader, failed) == eGwsFdoLockConflict) {
             m_rejected.insert (failed.begin (), failed.end ());
             return eGwsFdoLockConflict;
         }
 
-    } catch (GisException *e) {
-        PushGisException (eGwsFailedToExecuteCommand, e);
+    } catch (FdoException *e) {
+        PushFdoException (eGwsFailedToExecuteCommand, e);
         e->Release ();
         fdoes = eGwsFailedToExecuteCommand;
     }

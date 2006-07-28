@@ -42,15 +42,15 @@ IGWSException * IGWSException::Create(GWSStatus * stati)
 }
 
 
-IGWSException* IGWSException::Create(GisString* message, EGwsStatus type)
+IGWSException* IGWSException::Create(FdoString* message, EGwsStatus type)
 {
     return new CGwsException(message, type);
 }
 
 IGWSException* IGWSException::Create(
-    GisString* message,
+    FdoString* message,
     EGwsStatus type,
-    GisException* cause
+    FdoException* cause
 )
 {
     return new CGwsException(message, type, cause);
@@ -58,7 +58,7 @@ IGWSException* IGWSException::Create(
 
 IGWSException* IGWSException::Create(
     EGwsStatus    fes,
-    GisException* pCause
+    FdoException* pCause
 )
 {
     IGWSException * ex = CGwsException::Create (fes);
@@ -72,9 +72,9 @@ IGWSException* IGWSException::Create(
 // be explicitly terminated with a NULL.
 IGWSException* IGWSException::Create(
     EGwsStatus      type,
-    GisException*   pCause,
-    GisString*      pName,
-    GisString*      pValue,
+    FdoException*   pCause,
+    FdoString*      pName,
+    FdoString*      pValue,
     ...)   // for other name value pairs, odd number means empty value.
 {
     std::wstring str;
@@ -88,10 +88,10 @@ IGWSException* IGWSException::Create(
         va_list argList;
         va_start(argList, pValue);
 
-        pName = va_arg(argList, GisString*);
+        pName = va_arg(argList, FdoString*);
         while(pName != NULL)
         {
-            pValue = va_arg(argList, GisString*);
+            pValue = va_arg(argList, FdoString*);
             if (pValue != NULL)
             {
                 pExc->SetParameter(pName, pValue);

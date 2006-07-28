@@ -54,15 +54,15 @@ public:
     virtual void SetOwner(IGWSObject* pObj);
 
     // IGWSConnectionPool implementation
-    virtual FdoIConnection* GetConnection(GisString* name);
+    virtual FdoIConnection* GetConnection(FdoString* name);
 
     // Native methods
 
     // add connection to the pool
-    void AddConnection(GisString* name, FdoIConnection* conn);
+    void AddConnection(FdoString* name, FdoIConnection* conn);
 
     // remove connection from the pool
-    void RemoveConnection(GisString* name);
+    void RemoveConnection(FdoString* name);
 
 protected:
     // Construction/destruction

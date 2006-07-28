@@ -47,7 +47,7 @@ public:
     void  ApplyOrderingOptions();
 
     //bool HasCustomProperty() { return m_customPropertyFound; }
-    //FdoFunction* GetCustomFunction() { return GIS_SAFE_ADDREF(m_customFunction); }
+    //FdoFunction* GetCustomFunction() { return FDO_SAFE_ADDREF(m_customFunction); }
     //STRING GetCustomPropertyName() { return m_customPropertyName; }
 
 private:

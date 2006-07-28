@@ -49,7 +49,7 @@ void CGwsBinaryFeature::Set (unsigned char* pBuf, int len)
     int numProps = m_pProperties->GetCount();
     m_pBinaryReader = new GwsBinaryFeatureReader(pBuf, len, numProps);
 
-    GisPtr<IGWSExtendedFeatureDescription> featDsc;
+    FdoPtr<IGWSExtendedFeatureDescription> featDsc;
     DescribeFeature (&featDsc);
 
     CGwsQueryResultDescriptors * resdscs = dynamic_cast<CGwsQueryResultDescriptors *> (featDsc.p);
@@ -57,12 +57,12 @@ void CGwsBinaryFeature::Set (unsigned char* pBuf, int len)
                                            resdscs->GetPropertyDescriptors ();
 
     for (int i = 0; i < numProps; i ++) {
-        GisPtr<FdoPropertyValue> propval = m_pProperties->GetItem (i);
+        FdoPtr<FdoPropertyValue> propval = m_pProperties->GetItem (i);
         if (propval == NULL)
             continue;
-        GisPtr<FdoValueExpression> valexpr = propval->GetValue ();
-        GisPtr<FdoIdentifier>      ident   = propval->GetName ();
-        // GisString               *  pName   = props[i].m_name.c_str ();
+        FdoPtr<FdoValueExpression> valexpr = propval->GetValue ();
+        FdoPtr<FdoIdentifier>      ident   = propval->GetName ();
+        // FdoString               *  pName   = props[i].m_name.c_str ();
 
         if (props[i].m_ptype == FdoPropertyType_DataProperty) {
             FdoDataValue * dval = dynamic_cast<FdoDataValue *> (valexpr.p);
@@ -151,7 +151,7 @@ void CGwsBinaryFeature::Set (unsigned char* pBuf, int len)
             }
 
         } else if (props[i].m_ptype == FdoPropertyType_GeometricProperty) {
-            GisByteArray * geom = m_pBinaryReader->GetGeometry (i);
+            FdoByteArray * geom = m_pBinaryReader->GetGeometry (i);
             FdoGeometryValue * geomval = dynamic_cast<FdoGeometryValue *> (valexpr.p);
 
             if (geom != NULL) {
@@ -167,14 +167,14 @@ void CGwsBinaryFeature::Set (unsigned char* pBuf, int len)
     }
 
     //set up the feature id
-    GisPtr<CGwsDataValueCollection> keyvals;
-    GisPtr<FdoDataPropertyDefinitionCollection> iddefs =
+    FdoPtr<CGwsDataValueCollection> keyvals;
+    FdoPtr<FdoDataPropertyDefinitionCollection> iddefs =
                                 resdscs->GetIdentityProperties ();
 
     for (int i = 0; iddefs != NULL && i < iddefs->GetCount (); i ++) {
-        GisPtr<FdoDataPropertyDefinition> idprop = iddefs->GetItem (i);
-        GisPtr<FdoPropertyValue> pVal = m_pProperties->FindItem(idprop->GetName ());
-        GisPtr<FdoValueExpression> valexpr = pVal->GetValue();
+        FdoPtr<FdoDataPropertyDefinition> idprop = iddefs->GetItem (i);
+        FdoPtr<FdoPropertyValue> pVal = m_pProperties->FindItem(idprop->GetName ());
+        FdoPtr<FdoValueExpression> valexpr = pVal->GetValue();
         FdoDataValue* val = dynamic_cast<FdoDataValue *> (valexpr.p);
         if (val == NULL)
              continue;

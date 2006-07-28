@@ -77,11 +77,11 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
 
     // get the geometry type
     _ASSERT(path != NULL);
-    int geomType = (path != NULL)? path->geom_type() : GisGeometryType_None;
+    int geomType = (path != NULL)? path->geom_type() : FdoGeometryType_None;
 
     // in the case of linear geometry we'll label along the path, so
     // prepare for that (transform to pixels, group into stitch groups)
-    if (geomType == GisGeometryType_LineString || geomType == GisGeometryType_MultiLineString)
+    if (geomType == FdoGeometryType_LineString || geomType == FdoGeometryType_MultiLineString)
     {
         // indicate that the current group will be labeled along the path
         m_labelGroups.back().m_algo = laCurve;
@@ -164,7 +164,7 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
             offset += path->cntrs()[i];
         }
     }
-    else if (geomType == GisGeometryType_Polygon || geomType == GisGeometryType_MultiPolygon)
+    else if (geomType == FdoGeometryType_Polygon || geomType == FdoGeometryType_MultiPolygon)
     {
         //we only expect one label info per polygon to be passed in from stylization
         _ASSERT(nlabels == 1);

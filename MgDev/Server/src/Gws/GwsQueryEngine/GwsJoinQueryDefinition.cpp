@@ -33,8 +33,8 @@ template<class T>
 GWSJoinQueryDefinition<T>::GWSJoinQueryDefinition  (
     IGWSQueryDefinition * leftQd,
     IGWSQueryDefinition * rightQd,
-    GisStringCollection * leftProp,
-    GisStringCollection * rightProp
+    FdoStringCollection * leftProp,
+    FdoStringCollection * rightProp
 )
 :GWSQueryDefinition<T> ()
 
@@ -64,7 +64,7 @@ GWSJoinQueryDefinition<T>::~GWSJoinQueryDefinition () throw()
 }
 
 template<class T>
-GisStringCollection * GWSJoinQueryDefinition<T>::SelectList ()
+FdoStringCollection * GWSJoinQueryDefinition<T>::SelectList ()
 {
     if (m_leftQd == NULL)
         return NULL;
@@ -99,7 +99,7 @@ IGWSQueryDefinition * GWSJoinQueryDefinition<T>::RightQueryDefinition ()
 }
 
 template<class T>
-GisStringCollection * GWSJoinQueryDefinition<T>::LeftJoinAttributes ()
+FdoStringCollection * GWSJoinQueryDefinition<T>::LeftJoinAttributes ()
 {
     if (m_leftAttrs != NULL)
         m_leftAttrs.p->AddRef ();
@@ -107,7 +107,7 @@ GisStringCollection * GWSJoinQueryDefinition<T>::LeftJoinAttributes ()
 }
 
 template<class T>
-GisStringCollection * GWSJoinQueryDefinition<T>::RightJoinAttributes ()
+FdoStringCollection * GWSJoinQueryDefinition<T>::RightJoinAttributes ()
 {
     if (m_rightAttrs != NULL)
         m_rightAttrs.p->AddRef ();
@@ -117,8 +117,8 @@ GisStringCollection * GWSJoinQueryDefinition<T>::RightJoinAttributes ()
 template<class T>
 IGWSQualifiedNames* GWSJoinQueryDefinition<T>::QualifiedNames ()
 {
-    GisPtr<IGWSQualifiedNames> lqnames = m_leftQd->QualifiedNames ();
-    GisPtr<IGWSQualifiedNames> rqnames = m_rightQd->QualifiedNames ();
+    FdoPtr<IGWSQualifiedNames> lqnames = m_leftQd->QualifiedNames ();
+    FdoPtr<IGWSQualifiedNames> rqnames = m_rightQd->QualifiedNames ();
 
     IGWSQualifiedNames * qnames = IGWSQualifiedNames::Create ();
     int i;
@@ -137,22 +137,22 @@ IGWSQualifiedNames* GWSJoinQueryDefinition<T>::QualifiedNames ()
 }
 
 template<class T>
-GisStringCollection*  GWSJoinQueryDefinition<T>::FeatureSourceNames ()
+FdoStringCollection*  GWSJoinQueryDefinition<T>::FeatureSourceNames ()
 {
-    GisPtr<GisStringCollection> lfsnames = m_leftQd->FeatureSourceNames ();
-    GisPtr<GisStringCollection> rfsnames = m_rightQd->FeatureSourceNames ();
+    FdoPtr<FdoStringCollection> lfsnames = m_leftQd->FeatureSourceNames ();
+    FdoPtr<FdoStringCollection> rfsnames = m_rightQd->FeatureSourceNames ();
 
-    GisStringCollection * fsnames = GisStringCollection::Create ();
+    FdoStringCollection * fsnames = FdoStringCollection::Create ();
     int i;
     for (i = 0; lfsnames != NULL && i < lfsnames->GetCount (); i ++) {
-        GisStringElementP elem = lfsnames->GetItem (i);
+        FdoStringElementP elem = lfsnames->GetItem (i);
         if (! fsnames->Contains (elem)) {
             fsnames->Add (lfsnames->GetString (i));
         }
     }
 
     for (i = 0; rfsnames != NULL && i < rfsnames->GetCount (); i ++) {
-        GisStringElementP elem = rfsnames->GetItem (i);
+        FdoStringElementP elem = rfsnames->GetItem (i);
         if (! fsnames->Contains (elem)) {
             fsnames->Add (rfsnames->GetString (i));
         }
@@ -168,7 +168,7 @@ IGWSFeatureQueryDefinition * GWSJoinQueryDefinition<T>::GetPrimaryQueryDefinitio
 
 
 template<class T>
-void GWSJoinQueryDefinition<T>::Write (GisXmlWriter * writer)
+void GWSJoinQueryDefinition<T>::Write (FdoXmlWriter * writer)
 {
     if (m_leftQd != NULL) {
         GwsQueryDefinitionXmlHelpers::WriteQueryDefinitionWithHeader (m_leftQd, NULL, writer);
@@ -176,13 +176,13 @@ void GWSJoinQueryDefinition<T>::Write (GisXmlWriter * writer)
     if (m_rightQd != NULL) {
         GwsQueryDefinitionXmlHelpers::WriteQueryDefinitionWithHeader (m_rightQd, NULL, writer);
     }
-    GisStringP lattrs = m_leftAttrs->ToString ();
+    FdoStringP lattrs = m_leftAttrs->ToString ();
 
     writer->WriteStartElement (GwsQueryXml::xmlGwsLeftJoinAttributes);
     writer->WriteAttribute (GwsQueryXml::xmlGwsJoinAttibuteNames, lattrs);
     writer->WriteEndElement ();
 
-    GisStringP rattrs = m_rightAttrs->ToString ();
+    FdoStringP rattrs = m_rightAttrs->ToString ();
 
     writer->WriteStartElement (GwsQueryXml::xmlGwsRightJoinAttributes);
     writer->WriteAttribute (GwsQueryXml::xmlGwsJoinAttibuteNames, rattrs);
@@ -191,12 +191,12 @@ void GWSJoinQueryDefinition<T>::Write (GisXmlWriter * writer)
 
 
 template<class T>
-GisXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
-    GisXmlSaxContext* ctx,
-    GisString       * uri,
-    GisString       * name,
-    GisString       * qname,
-    GisXmlAttributeCollection* attrs
+FdoXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
+    FdoXmlSaxContext* ctx,
+    FdoString       * uri,
+    FdoString       * name,
+    FdoString       * qname,
+    FdoXmlAttributeCollection* attrs
 )
 {
     CGwsObject * gwsobj = NULL;
@@ -219,22 +219,22 @@ GisXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
     // left and right attributes reading are the same. Big deal
     } else if (! _wcsicmp (name, GwsQueryXml::xmlGwsLeftJoinAttributes)) {
         for (int i = 0; i < attrs->GetCount (); i ++) {
-            GisPtr<GisXmlAttribute> attr = attrs->GetItem (i);
+            FdoPtr<FdoXmlAttribute> attr = attrs->GetItem (i);
 
-            GisString * name  = attr->GetName ();
-            GisString * value = attr->GetValue ();
+            FdoString * name  = attr->GetName ();
+            FdoString * value = attr->GetValue ();
             if (_wcsicmp (name, GwsQueryXml::xmlGwsJoinAttibuteNames) == 0) {
-                m_leftAttrs = GisStringCollection::Create (value, L",");
+                m_leftAttrs = FdoStringCollection::Create (value, L",");
             }
         }
     } else if (! _wcsicmp (name,GwsQueryXml::xmlGwsRightJoinAttributes)) {
          for (int i = 0; i < attrs->GetCount (); i ++) {
-            GisPtr<GisXmlAttribute> attr = attrs->GetItem (i);
+            FdoPtr<FdoXmlAttribute> attr = attrs->GetItem (i);
 
-            GisString * name  = attr->GetName ();
-            GisString * value = attr->GetValue ();
+            FdoString * name  = attr->GetName ();
+            FdoString * value = attr->GetValue ();
             if (_wcsicmp (name, GwsQueryXml::xmlGwsJoinAttibuteNames) == 0) {
-                m_rightAttrs = GisStringCollection::Create (value, L",");
+                m_rightAttrs = FdoStringCollection::Create (value, L",");
             }
         }
     }
@@ -252,8 +252,8 @@ GisXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
 GWSLeftJoinQueryDefinition::GWSLeftJoinQueryDefinition  (
     IGWSQueryDefinition * leftQd,
     IGWSQueryDefinition * rightQd,
-    GisStringCollection * leftProp,
-    GisStringCollection * rightProp
+    FdoStringCollection * leftProp,
+    FdoStringCollection * rightProp
 )
 :GWSJoinQueryDefinition<IGWSLeftJoinQueryDefinition> (leftQd, rightQd, leftProp, rightProp)
 {
@@ -276,8 +276,8 @@ GWSLeftJoinQueryDefinition::~GWSLeftJoinQueryDefinition () throw()
 GWSEqualJoinQueryDefinition::GWSEqualJoinQueryDefinition  (
     IGWSQueryDefinition * leftQd,
     IGWSQueryDefinition * rightQd,
-    GisStringCollection * leftProp,
-    GisStringCollection * rightProp
+    FdoStringCollection * leftProp,
+    FdoStringCollection * rightProp
 )
 :GWSJoinQueryDefinition<IGWSEqualJoinQueryDefinition> (leftQd, rightQd, leftProp, rightProp)
 {

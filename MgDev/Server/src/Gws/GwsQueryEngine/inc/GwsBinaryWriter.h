@@ -35,13 +35,13 @@ public:
     void WriteUInt32(unsigned i);
     void WriteInt16(short s);
     void WriteUInt16(unsigned short us);
-    void WriteInt64(GisInt64 ll);
+    void WriteInt64(FdoInt64 ll);
     void WriteByte(unsigned char b);
     void WriteChar(char c);
     void WriteString(const wchar_t* src);
     void WriteRawString(const wchar_t* src);
     void WriteBytes(unsigned char* buf, int len);
-    void WriteDateTime(GisDateTime dt);
+    void WriteDateTime(FdoDateTime dt);
     //add more as needed...
 
 private:

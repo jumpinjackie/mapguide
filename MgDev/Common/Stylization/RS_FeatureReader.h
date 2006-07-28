@@ -33,7 +33,7 @@ public:
     virtual bool            IsNull      (const wchar_t* propertyName) = 0;
     virtual bool            GetBoolean  (const wchar_t* propertyName) = 0;
     virtual unsigned char   GetByte     (const wchar_t* propertyName) = 0;
-    virtual GisDateTime     GetDateTime (const wchar_t* propertyName) = 0;
+    virtual FdoDateTime     GetDateTime (const wchar_t* propertyName) = 0;
     virtual float           GetSingle   (const wchar_t* propertyName) = 0;
     virtual double          GetDouble   (const wchar_t* propertyName) = 0;
     virtual short           GetInt16    (const wchar_t* propertyName) = 0;

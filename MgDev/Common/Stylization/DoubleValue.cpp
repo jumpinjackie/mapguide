@@ -143,9 +143,9 @@ bool DoubleValue::GetAsBoolean()
     return (m_value != 0.0);
 }
 
-GisDateTime DoubleValue::GetAsDateTime()
+FdoDateTime DoubleValue::GetAsDateTime()
 {
-    throw GisException::Create(L"Cannot convert double to DateTime");
+    throw FdoException::Create(L"Cannot convert double to DateTime");
 }
 
 wchar_t* DoubleValue::GetAsString()

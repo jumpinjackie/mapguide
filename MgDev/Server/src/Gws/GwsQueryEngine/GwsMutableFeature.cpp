@@ -39,14 +39,14 @@ EGwsStatus IGWSMutableFeature::Create(
     if (pNewFeature == NULL)
         GWS_THROW (eGwsNullPointer);
 
-    GisPtr<IGWSExtendedFeatureDescription> iResdscs;
+    FdoPtr<IGWSExtendedFeatureDescription> iResdscs;
     pFrom->DescribeFeature (& iResdscs);
     int nFailed = 0;
     int nProps = 0;
 
     try {
 
-        GisPtr<CGwsMutableFeature>  mfeature;
+        FdoPtr<CGwsMutableFeature>  mfeature;
 
         IGWSMutableFeature::Create (iResdscs, NULL, (IGWSMutableFeature **)& mfeature.p);
 
@@ -71,7 +71,7 @@ EGwsStatus IGWSMutableFeature::Create(
 
         for (i = 0; i < nProps; i ++) {
             try {
-                GisString * pname = props[i].m_name.c_str ();
+                FdoString * pname = props[i].m_name.c_str ();
                 if (props[i].m_ptype == FdoPropertyType_DataProperty) {
                     if (pFrom->IsNull (pname)) {  // continue for now
                         mfeature->SetNull (props[i].m_name.c_str ());
@@ -115,7 +115,7 @@ EGwsStatus IGWSMutableFeature::Create(
                     case FdoDataType_BLOB:
                     case FdoDataType_CLOB:
                         {
-                            GisPtr<FdoLOBValue> lob = pFrom->GetLOB (pname);
+                            FdoPtr<FdoLOBValue> lob = pFrom->GetLOB (pname);
                             mfeature->SetValue (pname, lob);
                         }
                         break;
@@ -129,7 +129,7 @@ EGwsStatus IGWSMutableFeature::Create(
                     }
 
                 } else if (props[i].m_ptype == FdoPropertyType_GeometricProperty) {
-                    GisByteArray * geom = pFrom->GetGeometry (pname);
+                    FdoByteArray * geom = pFrom->GetGeometry (pname);
                     if (geom != NULL) {
                         mfeature->SetGeometry (pname, geom);
                         geom->Release ();
@@ -138,7 +138,7 @@ EGwsStatus IGWSMutableFeature::Create(
                 } else {
                     continue;
                 }
-            } catch (GisException * ex) {
+            } catch (FdoException * ex) {
                 ex->Release ();
                 nFailed  ++;
             }
@@ -147,7 +147,7 @@ EGwsStatus IGWSMutableFeature::Create(
         * pNewFeature = mfeature;
         (* pNewFeature)->AddRef ();
 
-    } catch (GisException * gis) {
+    } catch (FdoException * gis) {
         GWS_RETHROW (gis, eGwsFailedToCreateMutableFeature);
     }
     if (nFailed == 0)
@@ -222,7 +222,7 @@ void CGwsMutableFeature::DescribeFeature(IGWSExtendedFeatureDescription ** ppRes
 
 void CGwsMutableFeature::InitializePropertyValues ()
 {
-    GisPtr<IGWSExtendedFeatureDescription> featDsc;
+    FdoPtr<IGWSExtendedFeatureDescription> featDsc;
     DescribeFeature (&featDsc);
 
     if (m_pProperties == NULL) {
@@ -231,7 +231,7 @@ void CGwsMutableFeature::InitializePropertyValues ()
         m_pProperties->Clear ();
     }
 
-    GisPtr<GisStringCollection> names =  featDsc->PropertyNames ();
+    FdoPtr<FdoStringCollection> names =  featDsc->PropertyNames ();
 
 
     CGwsQueryResultDescriptors           *  fdesc
@@ -239,7 +239,7 @@ void CGwsMutableFeature::InitializePropertyValues ()
 
     for (int i = 0; i < names->GetCount (); i ++) {
         const CGwsPropertyDesc & desc = fdesc->GetPropertyDescriptor (i);
-        GisPtr<FdoPropertyValue> propval = ConstructPropertyValue (desc);
+        FdoPtr<FdoPropertyValue> propval = ConstructPropertyValue (desc);
         m_pProperties->Add (propval);
     }
 }
@@ -249,7 +249,7 @@ FdoPropertyValue * CGwsMutableFeature::ConstructPropertyValue (
     const CGwsPropertyDesc & desc
 )
 {
-    GisPtr<FdoValueExpression> valexpr = ConstructValueExpression (desc);
+    FdoPtr<FdoValueExpression> valexpr = ConstructValueExpression (desc);
 
     if (valexpr != NULL)
         return FdoPropertyValue::Create (desc.m_name.c_str (), valexpr);
@@ -287,7 +287,7 @@ FdoValueExpression * CGwsMutableFeature::ConstructValueExpression (
 
 void CGwsMutableFeature::SetPropertyValues (IGWSFeature * feature)
 {
-    GisPtr<IGWSExtendedFeatureDescription> featDsc;
+    FdoPtr<IGWSExtendedFeatureDescription> featDsc;
     DescribeFeature (&featDsc);
 
     CGwsQueryResultDescriptors * resdscs = dynamic_cast<CGwsQueryResultDescriptors *> (featDsc.p);
@@ -295,12 +295,12 @@ void CGwsMutableFeature::SetPropertyValues (IGWSFeature * feature)
                                            resdscs->GetPropertyDescriptors ();
 
     for (int i = 0; i < m_pProperties->GetCount (); i ++) {
-        GisPtr<FdoPropertyValue> propval = m_pProperties->GetItem (i);
+        FdoPtr<FdoPropertyValue> propval = m_pProperties->GetItem (i);
         if (propval == NULL)
             continue;
-        GisPtr<FdoValueExpression> valexpr = propval->GetValue ();
-        GisPtr<FdoIdentifier>      ident   = propval->GetName ();
-        GisString               *  pName   = props[i].m_name.c_str ();
+        FdoPtr<FdoValueExpression> valexpr = propval->GetValue ();
+        FdoPtr<FdoIdentifier>      ident   = propval->GetName ();
+        FdoString               *  pName   = props[i].m_name.c_str ();
 
         if (props[i].m_ptype == FdoPropertyType_DataProperty) {
             FdoDataValue * dval = dynamic_cast<FdoDataValue *> (valexpr.p);
@@ -376,8 +376,8 @@ void CGwsMutableFeature::SetPropertyValues (IGWSFeature * feature)
             case FdoDataType_CLOB:
                 {
                     FdoLOBValue * pVal = (FdoLOBValue *) dval;
-                    GisPtr<FdoLOBValue> lob = feature->GetLOB (pName);
-                    GisPtr<GisByteArray> barray = lob->GetData ();
+                    FdoPtr<FdoLOBValue> lob = feature->GetLOB (pName);
+                    FdoPtr<FdoByteArray> barray = lob->GetData ();
                     pVal->SetData (barray);
                 }
                 break;
@@ -394,7 +394,7 @@ void CGwsMutableFeature::SetPropertyValues (IGWSFeature * feature)
             }
 
         } else if (props[i].m_ptype == FdoPropertyType_GeometricProperty) {
-            GisByteArray * geom = feature->GetGeometry (pName);
+            FdoByteArray * geom = feature->GetGeometry (pName);
             FdoGeometryValue * geomval = dynamic_cast<FdoGeometryValue *> (valexpr.p);
 
             if (geom != NULL) {
@@ -411,20 +411,20 @@ void CGwsMutableFeature::SetPropertyValues (IGWSFeature * feature)
 
 
 void CGwsMutableFeature::ValidatePropertyName(
-    GisString                * propName,
+    FdoString                * propName,
     const CGwsPropertyDesc  ** propdesc
 )
 {
     const CGwsPropertyDesc & pdesc =
          ((CGwsQueryResultDescriptors *) m_pFeatDesc.p)->GetPropertyDescriptor (propName);
     if (pdesc.m_name.empty())
-        throw GisException::Create(INVALID_PROPERTY_NAME);
+        throw FdoException::Create(INVALID_PROPERTY_NAME);
     if (propdesc != NULL)
         * propdesc = & pdesc;
 }
 
 void CGwsMutableFeature::ValidatePropertyName(
-    GisString                * propName,
+    FdoString                * propName,
     FdoPropertyType            ptype,
     FdoDataType                datatype,
     const CGwsPropertyDesc  ** propdesc
@@ -433,18 +433,18 @@ void CGwsMutableFeature::ValidatePropertyName(
     const CGwsPropertyDesc & pdesc =
          ((CGwsQueryResultDescriptors *) m_pFeatDesc.p)->GetPropertyDescriptor (propName);
     if (pdesc.m_name.empty())
-        throw GisException::Create(INVALID_PROPERTY_NAME);
+        throw FdoException::Create(INVALID_PROPERTY_NAME);
 
     if (pdesc.m_ptype != ptype ||
         pdesc.m_dataprop != datatype)
-        throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+        throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 
     if (propdesc != NULL)
         * propdesc = & pdesc;
 }
 
 void CGwsMutableFeature::ValidatePropertyName(
-    GisString                * propName,
+    FdoString                * propName,
     FdoPropertyType            ptype,
     const CGwsPropertyDesc  ** propdesc
 )
@@ -452,21 +452,21 @@ void CGwsMutableFeature::ValidatePropertyName(
     const CGwsPropertyDesc & pdesc =
          ((CGwsQueryResultDescriptors *) m_pFeatDesc.p)->GetPropertyDescriptor (propName);
     if (pdesc.m_name.empty())
-        throw GisException::Create(INVALID_PROPERTY_NAME);
+        throw FdoException::Create(INVALID_PROPERTY_NAME);
 
     if (pdesc.m_ptype != ptype)
-        throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+        throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 
     if (propdesc != NULL)
         * propdesc = & pdesc;
 }
 
-GisInt32 CGwsMutableFeature::GetCacheId ()
+FdoInt32 CGwsMutableFeature::GetCacheId ()
 {
     return m_cacheId;
 }
 
-GisInt32 CGwsMutableFeature::GetRevisionNumber ()
+FdoInt32 CGwsMutableFeature::GetRevisionNumber ()
 {
     return m_revisionnumber;
 }
@@ -476,7 +476,7 @@ GWSFeatureId CGwsMutableFeature::GetFeatureId ()
     return m_featureId;
 }
 
-void CGwsMutableFeature::SetRevisionNumber (GisInt32 revnum)
+void CGwsMutableFeature::SetRevisionNumber (FdoInt32 revnum)
 {
     m_revisionnumber = revnum;
 }
@@ -485,7 +485,7 @@ void CGwsMutableFeature::SetFeatureId (const GWSFeatureId & fid)
     m_featureId = fid;
 }
 
-void CGwsMutableFeature::SetCacheId (GisInt32 cacheId)
+void CGwsMutableFeature::SetCacheId (FdoInt32 cacheId)
 {
     m_cacheId = cacheId;
 }
@@ -520,23 +520,23 @@ EGwsLockType CGwsMutableFeature::GetCacheLockType ()
 }
 
 
-bool CGwsMutableFeature::IsPropertyValueSet (GisString* propertyName)
+bool CGwsMutableFeature::IsPropertyValueSet (FdoString* propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem (propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem (propertyName);
     if (pValue == NULL)
         return false;
     return true;
 }
 
 
-bool CGwsMutableFeature::IsNull(GisString * propertyName)
+bool CGwsMutableFeature::IsNull(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
 
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_DataProperty) {
         return ((FdoDataValue *) pVal.p)->IsNull ();
     } else if (desc.m_ptype == FdoPropertyType_GeometricProperty) {
@@ -546,76 +546,76 @@ bool CGwsMutableFeature::IsNull(GisString * propertyName)
     }
 }
 
-GisString* CGwsMutableFeature::GetString(GisString * propertyName)
+FdoString* CGwsMutableFeature::GetString(FdoString * propertyName)
 {
 
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
 
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_DataProperty &&
         desc.m_dataprop == FdoDataType_String)
     {
         return ((FdoStringValue *) pVal.p)->GetString ();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 }
 
-bool  CGwsMutableFeature::GetBoolean(GisString * propertyName)
+bool  CGwsMutableFeature::GetBoolean(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_DataProperty &&
         desc.m_dataprop == FdoDataType_Boolean)
     {
         return ((FdoBooleanValue *) pVal.p)->GetBoolean ();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 
 }
 
-GisByte CGwsMutableFeature::GetByte(GisString * propertyName)
+FdoByte CGwsMutableFeature::GetByte(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_DataProperty &&
         desc.m_dataprop == FdoDataType_Byte)
     {
         return ((FdoByteValue *) pVal.p)->GetByte ();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 }
 
-GisDateTime CGwsMutableFeature::GetDateTime(GisString * propertyName)
+FdoDateTime CGwsMutableFeature::GetDateTime(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_DataProperty &&
         desc.m_dataprop == FdoDataType_DateTime)
     {
         return ((FdoDateTimeValue *) pVal.p)->GetDateTime ();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 }
 
-double CGwsMutableFeature::GetDouble(GisString * propertyName)
+double CGwsMutableFeature::GetDouble(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_DataProperty &&
         desc.m_dataprop == FdoDataType_Double)
     {
@@ -625,158 +625,158 @@ double CGwsMutableFeature::GetDouble(GisString * propertyName)
     {
         return ((FdoDecimalValue *) pVal.p)->GetDecimal ();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 }
 
-GisInt16 CGwsMutableFeature::GetInt16(GisString * propertyName)
+FdoInt16 CGwsMutableFeature::GetInt16(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_DataProperty &&
         desc.m_dataprop == FdoDataType_Int16)
     {
         return ((FdoInt16Value *) pVal.p)->GetInt16 ();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 }
 
-GisInt32 CGwsMutableFeature::GetInt32(GisString * propertyName)
+FdoInt32 CGwsMutableFeature::GetInt32(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_DataProperty &&
         desc.m_dataprop == FdoDataType_Int32)
     {
         return ((FdoInt32Value *) pVal.p)->GetInt32 ();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 }
 
-GisInt64 CGwsMutableFeature::GetInt64(GisString * propertyName)
+FdoInt64 CGwsMutableFeature::GetInt64(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_DataProperty &&
         desc.m_dataprop == FdoDataType_Int64)
     {
         return ((FdoInt64Value *) pVal.p)->GetInt64 ();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 }
 
-float CGwsMutableFeature::GetSingle(GisString * propertyName)
+float CGwsMutableFeature::GetSingle(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_DataProperty &&
         desc.m_dataprop == FdoDataType_Single)
     {
         return ((FdoSingleValue *) pVal.p)->GetSingle ();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 }
 
-FdoLOBValue* CGwsMutableFeature::GetLOB(GisString * propertyName)
+FdoLOBValue* CGwsMutableFeature::GetLOB(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     FdoLOBValue * lob = dynamic_cast<FdoLOBValue*>(pVal.p);
     if (lob != NULL)
         lob->AddRef ();
     return lob;
 }
 
-const GisByte * CGwsMutableFeature::GetGeometry(
-    GisString * propertyName,
-    GisInt32  * count
+const FdoByte * CGwsMutableFeature::GetGeometry(
+    FdoString * propertyName,
+    FdoInt32  * count
 )
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_GeometricProperty) {
         FdoGeometryValue * pGeom = (FdoGeometryValue *) pVal.p;
-        GisPtr<GisByteArray> pVal = pGeom->GetGeometry ();
+        FdoPtr<FdoByteArray> pVal = pGeom->GetGeometry ();
         *count = pVal->GetCount();
         return pVal->GetData();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 }
 
-GisByteArray* CGwsMutableFeature::GetGeometry(GisString * propertyName)
+FdoByteArray* CGwsMutableFeature::GetGeometry(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
 
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
-    GisPtr<FdoValueExpression> pVal = pValue->GetValue();
+    FdoPtr<FdoValueExpression> pVal = pValue->GetValue();
     if (desc.m_ptype == FdoPropertyType_GeometricProperty) {
         FdoGeometryValue * pGeom = (FdoGeometryValue *) pVal.p;
         return pGeom->GetGeometry ();
     }
-    throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 }
 
 
 //TODO: How to get these if we don't support setting them
-GisIStreamReader* CGwsMutableFeature::GetLOBStreamReader(GisString * propertyName)
+FdoIStreamReader* CGwsMutableFeature::GetLOBStreamReader(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
 
     return NULL;
 }
 
-FdoIRaster* CGwsMutableFeature::GetRaster(GisString * propertyName)
+FdoIRaster* CGwsMutableFeature::GetRaster(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     GWS_THROW (eGwsCannotGetPropertyValueOffline);
 }
 
-FdoIFeatureReader* CGwsMutableFeature::GetFeatureObject(GisString * propertyName)
+FdoIFeatureReader* CGwsMutableFeature::GetFeatureObject(FdoString * propertyName)
 {
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     GWS_THROW (eGwsCannotGetPropertyValueOffline);
 }
 
-FdoDataValue * CGwsMutableFeature::GetDataValue (GisString* propertyName)
+FdoDataValue * CGwsMutableFeature::GetDataValue (FdoString* propertyName)
 {
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
     if (desc.m_name.empty ())
-        throw GisException::Create(INVALID_PROPERTY_NAME);
+        throw FdoException::Create(INVALID_PROPERTY_NAME);
     if (desc.m_ptype != FdoPropertyType_DataProperty)
-        throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
-    GisPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
+        throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+    FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     if(pValue == NULL)
-        throw GisException::Create(PROPERTY_VALUE_NOT_SET);
+        throw FdoException::Create(PROPERTY_VALUE_NOT_SET);
     return (FdoDataValue *) pValue->GetValue();
 }
 
 FdoDataValueCollection * CGwsMutableFeature::GetDataValues (
-    GisStringCollection* propertyNames
+    FdoStringCollection* propertyNames
 )
 {
     CGwsDataValueCollection * datavals = NULL;
     for (int i = 0; i < propertyNames->GetCount (); i ++) {
-        GisPtr<FdoDataValue> val = GetDataValue (propertyNames->GetString (i));
+        FdoPtr<FdoDataValue> val = GetDataValue (propertyNames->GetString (i));
         assert (val != NULL);
         if (datavals == NULL)
             datavals = (CGwsDataValueCollection *) CGwsDataValueCollection::Create ();
@@ -789,100 +789,100 @@ FdoDataValueCollection * CGwsMutableFeature::GetDataValues (
 /// <summary>
 /// CGwsMutableFeature::Getters by property index
 /// </summary>
-bool CGwsMutableFeature::IsNull(GisInt32 iProp)
+bool CGwsMutableFeature::IsNull(FdoInt32 iProp)
 {
     return false;
 }
 
-GisString* CGwsMutableFeature::GetString(GisInt32 iProp)
+FdoString* CGwsMutableFeature::GetString(FdoInt32 iProp)
 {
     return NULL;
 }
 
-bool CGwsMutableFeature::GetBoolean(GisInt32 iProp)
+bool CGwsMutableFeature::GetBoolean(FdoInt32 iProp)
 {
     return false;
 }
 
-GisByte CGwsMutableFeature::GetByte(GisInt32 iProp)
+FdoByte CGwsMutableFeature::GetByte(FdoInt32 iProp)
 {
-    return GisByte();
+    return FdoByte();
 }
 
-GisDateTime CGwsMutableFeature::GetDateTime(GisInt32 iProp)
+FdoDateTime CGwsMutableFeature::GetDateTime(FdoInt32 iProp)
 {
-    return GisDateTime();
+    return FdoDateTime();
 }
 
-double CGwsMutableFeature::GetDouble(GisInt32 iProp)
-{
-    return 0.0;
-}
-
-GisInt16 CGwsMutableFeature::GetInt16(GisInt32 iProp)
-{
-    return 0;
-}
-
-GisInt32 CGwsMutableFeature::GetInt32(GisInt32 iProp)
-{
-    return 0;
-}
-
-GisInt64 CGwsMutableFeature::GetInt64(GisInt32 iProp)
-{
-    return 0;
-}
-
-float CGwsMutableFeature::GetSingle(GisInt32 iProp)
+double CGwsMutableFeature::GetDouble(FdoInt32 iProp)
 {
     return 0.0;
 }
 
-FdoLOBValue* CGwsMutableFeature::GetLOB(GisInt32 iProp)
+FdoInt16 CGwsMutableFeature::GetInt16(FdoInt32 iProp)
+{
+    return 0;
+}
+
+FdoInt32 CGwsMutableFeature::GetInt32(FdoInt32 iProp)
+{
+    return 0;
+}
+
+FdoInt64 CGwsMutableFeature::GetInt64(FdoInt32 iProp)
+{
+    return 0;
+}
+
+float CGwsMutableFeature::GetSingle(FdoInt32 iProp)
+{
+    return 0.0;
+}
+
+FdoLOBValue* CGwsMutableFeature::GetLOB(FdoInt32 iProp)
 {
     return NULL;
 }
 
-GisIStreamReader* CGwsMutableFeature::GetLOBStreamReader(GisInt32 iProp)
+FdoIStreamReader* CGwsMutableFeature::GetLOBStreamReader(FdoInt32 iProp)
 {
     return NULL;
 }
 
-FdoIRaster* CGwsMutableFeature::GetRaster(GisInt32 iProp)
+FdoIRaster* CGwsMutableFeature::GetRaster(FdoInt32 iProp)
 {
     return NULL;
 }
 
-const GisByte * CGwsMutableFeature::GetGeometry(GisInt32 iProp, GisInt32 * count)
+const FdoByte * CGwsMutableFeature::GetGeometry(FdoInt32 iProp, FdoInt32 * count)
 {
     return NULL;
 }
 
-GisByteArray* CGwsMutableFeature::GetGeometry(GisInt32 iProp)
+FdoByteArray* CGwsMutableFeature::GetGeometry(FdoInt32 iProp)
 {
     return NULL;
 }
 
-FdoIFeatureReader* CGwsMutableFeature::GetFeatureObject (GisInt32 iProp)
+FdoIFeatureReader* CGwsMutableFeature::GetFeatureObject (FdoInt32 iProp)
 {
     return NULL;
 }
 
 
-void CGwsMutableFeature::ToString(GisInt32 iProp, wchar_t * buff, int len)
+void CGwsMutableFeature::ToString(FdoInt32 iProp, wchar_t * buff, int len)
 {
     try {
         const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
         GwsQueryUtils::ToString (this, desc, buff, len);
-    } catch (GisException * gis) {
+    } catch (FdoException * gis) {
         wcsncpy (buff, L"*ERROR*", len);
         gis->Release ();
     }
 }
 */
 void CGwsMutableFeature::ToString(
-    GisString*  propertyName,
+    FdoString*  propertyName,
     wchar_t *   buff,
     int         len
 )
@@ -890,16 +890,16 @@ void CGwsMutableFeature::ToString(
     try {
         const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
         GwsQueryUtils::ToString (this, desc, buff, len);
-    } catch (GisException * gis) {
+    } catch (FdoException * gis) {
         wcsncpy (buff, L"*ERROR*", len);
         gis->Release ();
     }
 }
 
 
-void CGwsMutableFeature::SetValue(GisString* propertyName, FdoValueExpression* pVal)
+void CGwsMutableFeature::SetValue(FdoString* propertyName, FdoValueExpression* pVal)
 {
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
 
     if (pPropertyValue != NULL) {
@@ -910,19 +910,19 @@ void CGwsMutableFeature::SetValue(GisString* propertyName, FdoValueExpression* p
     }
 }
 
-void CGwsMutableFeature::SetNull(GisString* propertyName)
+void CGwsMutableFeature::SetNull(FdoString* propertyName)
 {
     const CGwsPropertyDesc * desc = NULL;
 
     ValidatePropertyName(propertyName, & desc);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
     if (pPropertyValue == NULL) { // not yet set
         pPropertyValue = ConstructPropertyValue (* desc);
         m_pProperties->Add(pPropertyValue);
     } else {
-        GisPtr<FdoValueExpression> pVal = pPropertyValue->GetValue ();
+        FdoPtr<FdoValueExpression> pVal = pPropertyValue->GetValue ();
         if (desc->m_ptype == FdoPropertyType_DataProperty) {
             ((FdoDataValue *) pVal.p)->SetNull ();
         } else if (desc->m_ptype == FdoPropertyType_GeometricProperty) {
@@ -931,16 +931,16 @@ void CGwsMutableFeature::SetNull(GisString* propertyName)
     }
 }
 
-void CGwsMutableFeature::SetString(GisString* propertyName, GisString* value)
+void CGwsMutableFeature::SetString(FdoString* propertyName, FdoString* value)
 {
     ValidatePropertyName(propertyName,
                          FdoPropertyType_DataProperty,
                          FdoDataType_String,
                          NULL);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
-    GisPtr<FdoDataValue> pVal;
+    FdoPtr<FdoDataValue> pVal;
 
     if (pPropertyValue == NULL) {
         pVal = FdoDataValue::Create(value);
@@ -950,21 +950,21 @@ void CGwsMutableFeature::SetString(GisString* propertyName, GisString* value)
     } else {
         pVal = (FdoDataValue *) pPropertyValue->GetValue ();
         if (pVal->GetDataType () != FdoDataType_String)
-            throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+            throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
         ((FdoStringValue *) pVal.p)->SetString (value);
     }
 }
 
-void CGwsMutableFeature::SetBoolean(GisString* propertyName, bool value)
+void CGwsMutableFeature::SetBoolean(FdoString* propertyName, bool value)
 {
     ValidatePropertyName(propertyName,
                          FdoPropertyType_DataProperty,
                          FdoDataType_Boolean,
                          NULL);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
-    GisPtr<FdoDataValue> pVal;
+    FdoPtr<FdoDataValue> pVal;
 
     if (pPropertyValue == NULL) {
         pVal = FdoDataValue::Create(value);
@@ -974,21 +974,21 @@ void CGwsMutableFeature::SetBoolean(GisString* propertyName, bool value)
     } else {
         pVal = (FdoDataValue *) pPropertyValue->GetValue ();
         if (pVal->GetDataType () != FdoDataType_Boolean)
-            throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+            throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
         ((FdoBooleanValue *) pVal.p)->SetBoolean (value);
     }
 }
 
-void CGwsMutableFeature::SetByte(GisString* propertyName, GisByte value)
+void CGwsMutableFeature::SetByte(FdoString* propertyName, FdoByte value)
 {
     ValidatePropertyName(propertyName,
                          FdoPropertyType_DataProperty,
                          FdoDataType_Byte,
                          NULL);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
-    GisPtr<FdoDataValue> pVal;
+    FdoPtr<FdoDataValue> pVal;
 
     if (pPropertyValue == NULL) {
         pVal = FdoDataValue::Create(value);
@@ -998,21 +998,21 @@ void CGwsMutableFeature::SetByte(GisString* propertyName, GisByte value)
     } else {
         pVal = (FdoDataValue *) pPropertyValue->GetValue ();
         if (pVal->GetDataType () != FdoDataType_Byte)
-            throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+            throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
         ((FdoByteValue *) pVal.p)->SetByte (value);
     }
 }
 
-void CGwsMutableFeature::SetDateTime(GisString* propertyName, GisDateTime value)
+void CGwsMutableFeature::SetDateTime(FdoString* propertyName, FdoDateTime value)
 {
     ValidatePropertyName(propertyName,
                          FdoPropertyType_DataProperty,
                          FdoDataType_DateTime,
                          NULL);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
-    GisPtr<FdoDataValue> pVal;
+    FdoPtr<FdoDataValue> pVal;
 
     if (pPropertyValue == NULL) {
         pVal = FdoDataValue::Create(value);
@@ -1022,12 +1022,12 @@ void CGwsMutableFeature::SetDateTime(GisString* propertyName, GisDateTime value)
     } else {
         pVal = (FdoDataValue *) pPropertyValue->GetValue ();
         if (pVal->GetDataType () != FdoDataType_DateTime)
-            throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+            throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
         ((FdoDateTimeValue *) pVal.p)->SetDateTime (value);
     }
 }
 
-void CGwsMutableFeature::SetDouble(GisString* propertyName, double value)
+void CGwsMutableFeature::SetDouble(FdoString* propertyName, double value)
 {
     const CGwsPropertyDesc * pdesc = NULL;
     ValidatePropertyName(propertyName,
@@ -1036,11 +1036,11 @@ void CGwsMutableFeature::SetDouble(GisString* propertyName, double value)
 
     if (pdesc->m_dataprop != FdoDataType_Double &&
         pdesc->m_dataprop != FdoDataType_Decimal)
-        throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+        throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
-    GisPtr<FdoDataValue> pVal;
+    FdoPtr<FdoDataValue> pVal;
 
     if (pPropertyValue == NULL) {
         pVal = FdoDataValue::Create (value, pdesc->m_dataprop);
@@ -1056,20 +1056,20 @@ void CGwsMutableFeature::SetDouble(GisString* propertyName, double value)
             ((FdoDecimalValue *) pVal.p)->SetDecimal (value);
 
         } else
-            throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+            throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
     }
 }
 
-void CGwsMutableFeature::SetInt16(GisString* propertyName, GisInt16 value)
+void CGwsMutableFeature::SetInt16(FdoString* propertyName, FdoInt16 value)
 {
     ValidatePropertyName(propertyName,
                          FdoPropertyType_DataProperty,
                          FdoDataType_Int16,
                          NULL);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
-    GisPtr<FdoDataValue> pVal;
+    FdoPtr<FdoDataValue> pVal;
 
     if (pPropertyValue == NULL) {
         pVal = FdoDataValue::Create(value);
@@ -1079,21 +1079,21 @@ void CGwsMutableFeature::SetInt16(GisString* propertyName, GisInt16 value)
     } else {
         pVal = (FdoDataValue *) pPropertyValue->GetValue ();
         if (pVal->GetDataType () != FdoDataType_Int16)
-            throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+            throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
         ((FdoInt16Value *) pVal.p)->SetInt16 (value);
     }
 }
 
-void CGwsMutableFeature::SetInt32(GisString* propertyName, GisInt32 value)
+void CGwsMutableFeature::SetInt32(FdoString* propertyName, FdoInt32 value)
 {
     ValidatePropertyName(propertyName,
                          FdoPropertyType_DataProperty,
                          FdoDataType_Int32,
                          NULL);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
-    GisPtr<FdoDataValue> pVal;
+    FdoPtr<FdoDataValue> pVal;
 
     if (pPropertyValue == NULL) {
         pVal = FdoDataValue::Create(value);
@@ -1103,21 +1103,21 @@ void CGwsMutableFeature::SetInt32(GisString* propertyName, GisInt32 value)
     } else {
         pVal = (FdoDataValue *) pPropertyValue->GetValue ();
         if (pVal->GetDataType () != FdoDataType_Int32)
-            throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+            throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
         ((FdoInt32Value *) pVal.p)->SetInt32 (value);
     }
 }
 
-void CGwsMutableFeature::SetInt64(GisString* propertyName, GisInt64 value)
+void CGwsMutableFeature::SetInt64(FdoString* propertyName, FdoInt64 value)
 {
     ValidatePropertyName(propertyName,
                          FdoPropertyType_DataProperty,
                          FdoDataType_Int64,
                          NULL);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
-    GisPtr<FdoDataValue> pVal;
+    FdoPtr<FdoDataValue> pVal;
 
     if (pPropertyValue == NULL) {
         pVal = FdoDataValue::Create(value);
@@ -1127,21 +1127,21 @@ void CGwsMutableFeature::SetInt64(GisString* propertyName, GisInt64 value)
     } else {
         pVal = (FdoDataValue *) pPropertyValue->GetValue ();
         if (pVal->GetDataType () != FdoDataType_Int64)
-            throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+            throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
         ((FdoInt64Value *) pVal.p)->SetInt64 (value);
     }
 }
 
-void CGwsMutableFeature::SetSingle(GisString* propertyName, float value)
+void CGwsMutableFeature::SetSingle(FdoString* propertyName, float value)
 {
     ValidatePropertyName(propertyName,
                          FdoPropertyType_DataProperty,
                          FdoDataType_Single,
                          NULL);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
-    GisPtr<FdoDataValue> pVal;
+    FdoPtr<FdoDataValue> pVal;
 
     if (pPropertyValue == NULL) {
         pVal = FdoDataValue::Create(value);
@@ -1151,28 +1151,28 @@ void CGwsMutableFeature::SetSingle(GisString* propertyName, float value)
     } else {
         pVal = (FdoDataValue *) pPropertyValue->GetValue ();
         if (pVal->GetDataType () != FdoDataType_Single)
-            throw GisException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+            throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
         ((FdoSingleValue *) pVal.p)->SetSingle (value);
     }
 }
 
-void CGwsMutableFeature::SetLOB(GisString* propertyName, FdoLOBValue* pValue)
+void CGwsMutableFeature::SetLOB(FdoString* propertyName, FdoLOBValue* pValue)
 {
     ValidatePropertyName(propertyName, NULL);
     SetValue(propertyName, pValue);
 }
 
-void CGwsMutableFeature::SetGeometry(GisString * propertyName, GisByteArray * geom)
+void CGwsMutableFeature::SetGeometry(FdoString * propertyName, FdoByteArray * geom)
 {
     ValidatePropertyName(propertyName, FdoPropertyType_GeometricProperty, NULL);
 
-    GisPtr<FdoPropertyValue> pPropertyValue =
+    FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
 
-    GisPtr<FdoGeometryValue> pGeometryValue;
+    FdoPtr<FdoGeometryValue> pGeometryValue;
 
     if (pPropertyValue == NULL) {
-        GisPtr<FdoGeometryValue>   pGeometryValue = FdoGeometryValue::Create(geom);
+        FdoPtr<FdoGeometryValue>   pGeometryValue = FdoGeometryValue::Create(geom);
         pPropertyValue = FdoPropertyValue::Create(propertyName, pGeometryValue);
         m_pProperties->Add(pPropertyValue);
 
@@ -1214,34 +1214,34 @@ const CGwsPropertyDesc & CGwsMutableFeature::GetPropertyDescriptor (
     int iProp
 )
 {
-    GisPtr<IGWSExtendedFeatureDescription> featDsc;
+    FdoPtr<IGWSExtendedFeatureDescription> featDsc;
     DescribeFeature (&featDsc);
 
     return ((CGwsQueryResultDescriptors *) featDsc.p)->GetPropertyDescriptor (iProp);
 }
 
 const CGwsPropertyDesc & CGwsMutableFeature::GetPropertyDescriptor (
-    GisString * propname
+    FdoString * propname
 )
 {
-    GisPtr<IGWSExtendedFeatureDescription> featDsc;
+    FdoPtr<IGWSExtendedFeatureDescription> featDsc;
     DescribeFeature (&featDsc);
 
     return ((CGwsQueryResultDescriptors *) featDsc.p)->GetPropertyDescriptor (propname);
 }
 
-GisGeometryType CGwsMutableFeature::GetGeometryType(GisByteArray* pArray)
+FdoGeometryType CGwsMutableFeature::GetGeometryType(FdoByteArray* pArray)
 {
-    GisPtr<GisAgfGeometryFactory> pAgfFactory = GisAgfGeometryFactory::GetInstance();
-    GisPtr<GisIGeometry> pAgfGeometry = pAgfFactory->CreateGeometryFromAgf(pArray);
+    FdoPtr<FdoFgfGeometryFactory> pAgfFactory = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> pAgfGeometry = pAgfFactory->CreateGeometryFromFgf(pArray);
     return pAgfGeometry->GetDerivedType();
 }
 
-GisString* CGwsMutableFeature::GetPrimaryGeometryName()
+FdoString* CGwsMutableFeature::GetPrimaryGeometryName()
 {
     static std::wstring name;
     assert(m_pFeatDesc != NULL);
-    GisPtr<FdoClassDefinition> pClassDef(m_pFeatDesc->ClassDefinition());
+    FdoPtr<FdoClassDefinition> pClassDef(m_pFeatDesc->ClassDefinition());
     GwsCommonFdoUtils::GetGeometryName(pClassDef, name);
     return name.c_str();
 }
@@ -1261,7 +1261,7 @@ const GWSCoordinateSystem & CGwsMutableFeature::GetCSName ()
 unsigned char* CGwsMutableFeature::ToBuffer(int& bufLen)
 {
     GwsBinaryFeatureWriter wrtr;
-    GisPtr<FdoClassDefinition> pClassDef(m_pFeatDesc->ClassDefinition());
+    FdoPtr<FdoClassDefinition> pClassDef(m_pFeatDesc->ClassDefinition());
     wchar_t buf[256];
     int len = m_pFeatDesc->ClassName().ToFullyQualifedString(buf, 256);
     assert(len < 256);

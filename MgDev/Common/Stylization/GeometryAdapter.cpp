@@ -97,7 +97,7 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
         expr->Process(m_exec);
         res = m_exec->GetDoubleResult();
     }
-    catch (GisException* e)
+    catch (FdoException* e)
     {
         _ASSERT(false);
         e->Release();
@@ -148,7 +148,7 @@ bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool & res
         expr->Process(m_exec);
         res = m_exec->GetBooleanResult();
     }
-    catch (GisException* e)
+    catch (FdoException* e)
     {
         _ASSERT(false);
         e->Release();
@@ -189,7 +189,7 @@ bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& 
         expr->Process(m_exec);
         rettmp = m_exec->GetStringResult();
     }
-    catch (GisException* e)
+    catch (FdoException* e)
     {
         e->Release();
         m_exec->Reset();
@@ -265,7 +265,7 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
             expr->Process(m_exec);
             color = (unsigned int)m_exec->GetInt64Result();
         }
-        catch (GisException* e)
+        catch (FdoException* e)
         {
             _ASSERT(false);
             e->Release();
@@ -675,7 +675,7 @@ bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExpression)
             filter = FdoFilter::Parse(pExpression->c_str());
             m_hFilterCache[pExpression] = filter;
         }
-        catch (GisException* e)
+        catch (FdoException* e)
         {
             e->Release();
             filter = NULL;
@@ -694,7 +694,7 @@ bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExpression)
     {
         filter->Process(m_exec);
     }
-    catch (GisException* e)
+    catch (FdoException* e)
     {
         e->Release();
         return false;
@@ -734,7 +734,7 @@ FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* p
         expr = FdoExpression::Parse(pExpression->c_str());
         m_hExpressionCache[pExpression] = expr;
     }
-    catch (GisException* e)
+    catch (FdoException* e)
     {
         e->Release();
         expr = NULL;

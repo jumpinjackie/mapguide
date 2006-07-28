@@ -37,7 +37,7 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     MG_FEATURE_SERVICE_TRY()
 
     // Connect to the provider
-    GisPtr<FdoIConnection> fdoConnection;
+    FdoPtr<FdoIConnection> fdoConnection;
 
     MgServerFeatureConnection msfc(providerName, partialConnString);
     if (( msfc.IsConnectionOpen() ) || ( msfc.IsConnectionPending() ))
@@ -50,12 +50,12 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     }
 
     // Create the memory stream
-    GisIoMemoryStreamP fmis = GisIoMemoryStream::Create();
-    CHECKNULL((GisIoMemoryStream*)fmis, L"MgServerGetSchemaMapping.GetSchemaMapping");
+    FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
+    CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerGetSchemaMapping.GetSchemaMapping");
 
-    GisXmlWriterP writer = GisXmlWriter::Create(fmis);
+    FdoXmlWriterP writer = FdoXmlWriter::Create(fmis);
 
-    GisPtr<FdoXmlSpatialContextFlags> flags = FdoXmlSpatialContextFlags::Create();
+    FdoPtr<FdoXmlSpatialContextFlags> flags = FdoXmlSpatialContextFlags::Create();
     flags->SetIncludeDefault(true);
 
     // Serialize the spatial contexts
@@ -68,11 +68,11 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     );
 
     // Get the schema
-    GisPtr<FdoIDescribeSchema> fdoDescribeSchemaCommand = (FdoIDescribeSchema*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchema);
+    FdoPtr<FdoIDescribeSchema> fdoDescribeSchemaCommand = (FdoIDescribeSchema*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchema);
     CHECKNULL((FdoIDescribeSchema*)fdoDescribeSchemaCommand, L"MgServerGetSchemaMapping.GetSchemaMapping");
 
     // Execute the command
-    GisPtr<FdoFeatureSchemaCollection> fdoFeatureSchemaCollection;
+    FdoPtr<FdoFeatureSchemaCollection> fdoFeatureSchemaCollection;
     fdoFeatureSchemaCollection = fdoDescribeSchemaCommand->Execute();
     CHECKNULL((FdoFeatureSchemaCollection*)fdoFeatureSchemaCollection, L"MgServerGetSchemaMapping.GetSchemaMapping");
 
@@ -80,13 +80,13 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     fdoFeatureSchemaCollection->WriteXml(writer);
 
     // Get the schema mapping
-    GisPtr<FdoIDescribeSchemaMapping> fdoDescribeSchemaMappingCommand = (FdoIDescribeSchemaMapping*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchemaMapping);
+    FdoPtr<FdoIDescribeSchemaMapping> fdoDescribeSchemaMappingCommand = (FdoIDescribeSchemaMapping*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchemaMapping);
     CHECKNULL((FdoIDescribeSchemaMapping*)fdoDescribeSchemaMappingCommand, L"MgServerGetSchemaMapping.GetSchemaMapping");
 
     fdoDescribeSchemaMappingCommand->SetIncludeDefaults(true);
 
     // Execute the command
-    GisPtr<FdoPhysicalSchemaMappingCollection> fdoPhysicalSchemaMappingCollection;
+    FdoPtr<FdoPhysicalSchemaMappingCollection> fdoPhysicalSchemaMappingCollection;
     fdoPhysicalSchemaMappingCollection = fdoDescribeSchemaMappingCommand->Execute();
     CHECKNULL((FdoPhysicalSchemaMappingCollection*)fdoPhysicalSchemaMappingCollection, L"MgServerGetSchemaMapping.GetSchemaMapping");
 
@@ -98,11 +98,11 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
 
     fmis->Reset(); // TODO: We should not be calling reset here. A defect in FDO should be fixed.
 
-    GisInt64 len = fmis->GetLength();
-    m_bytes = new GisByte[(size_t)len];
+    FdoInt64 len = fmis->GetLength();
+    m_bytes = new FdoByte[(size_t)len];
     CHECKNULL(m_bytes, L"MgServerGetSchemaMapping.GetSchemaMapping");
 
-    fmis->Read(m_bytes, (GisSize)len);
+    fmis->Read(m_bytes, (FdoSize)len);
 
     Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)m_bytes, (INT32)len);
     byteSource->SetMimeType(MgMimeType::Xml);

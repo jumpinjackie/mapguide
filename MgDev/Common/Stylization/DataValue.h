@@ -59,7 +59,7 @@ public:
     virtual long long GetAsInt64() = 0;
     virtual wchar_t* GetAsString() = 0;
     virtual bool GetAsBoolean() = 0;
-    virtual GisDateTime GetAsDateTime() = 0;
+    virtual FdoDateTime GetAsDateTime() = 0;
 
     virtual DataValueType GetType() = 0;
 

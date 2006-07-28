@@ -76,8 +76,8 @@ EGwsStatus CGwsFdoUnlockCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
         PushStatus (es);
         fdoes = es;
 
-    } catch(GisException *e) {
-        PushGisException (eGwsFailedToPrepareCommand, e);
+    } catch(FdoException *e) {
+        PushFdoException (eGwsFailedToPrepareCommand, e);
         e->Release ();
         fdoes = eGwsFailedToPrepareCommand;
     }
@@ -108,7 +108,7 @@ EGwsStatus CGwsFdoUnlockCommand::ExecuteFilter (FdoFilter *pFilter)
         PrepareFilter (pFilter);
         // do I need to set filter after converting it?
 
-        GisPtr<FdoILockConflictReader> pReader = pUnlockCommand->Execute();
+        FdoPtr<FdoILockConflictReader> pReader = pUnlockCommand->Execute();
         if (ProcessLockConflicts (pReader, failed) == eGwsFdoLockConflict) {
             m_rejected.insert (failed.begin (), failed.end ());
             eGwsOkThrow (eGwsFdoLockConflict);
@@ -118,8 +118,8 @@ EGwsStatus CGwsFdoUnlockCommand::ExecuteFilter (FdoFilter *pFilter)
         PushStatus (es);
         fdoes = es;
 
-    } catch(GisException *e) {
-        PushGisException (eGwsFailedToExecuteCommand, e);
+    } catch(FdoException *e) {
+        PushFdoException (eGwsFailedToExecuteCommand, e);
         e->Release ();
         fdoes = eGwsFailedToPrepareCommand;
     }

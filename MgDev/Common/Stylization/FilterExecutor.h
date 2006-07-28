@@ -105,7 +105,7 @@ public:
     bool GetResult();
     bool GetBooleanResult();
     double GetDoubleResult();
-    GisInt64 GetInt64Result();
+    FdoInt64 GetInt64Result();
     wchar_t* GetStringResult();
 
 private:

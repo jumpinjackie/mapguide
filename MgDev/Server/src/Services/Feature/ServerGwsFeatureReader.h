@@ -287,7 +287,7 @@ INTERNAL_API:
     ~MgServerGwsFeatureReader();
 
 
-    void PrepareGwsGetFeatures(CREFSTRING extensionName, GisStringCollection* relationNames);
+    void PrepareGwsGetFeatures(CREFSTRING extensionName, FdoStringCollection* relationNames);
 
     void DeterminePropertyFeatureSource(
         CREFSTRING inputPropName,
@@ -300,10 +300,10 @@ INTERNAL_API:
 
 private:
 
-    GisPtr<IGWSFeatureIterator> m_gwsFeatureIterator;
+    FdoPtr<IGWSFeatureIterator> m_gwsFeatureIterator;
     Ptr<MgServerGwsGetFeatures> m_gwsGetFeatures;
     GwsFeatureIteratorMap m_secondaryGwsFeatureIteratorMap;
-    GisPtr<IGWSFeatureIterator> m_gwsFeatureIteratorCopy;
+    FdoPtr<IGWSFeatureIterator> m_gwsFeatureIteratorCopy;
 
     void DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName);
 

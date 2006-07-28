@@ -46,7 +46,7 @@ void CGwsPooledFeature::Set (IGWSFeature * feature)
 }
 
 
-GisInt32 CGwsPooledFeature::GetRevisionNumber ()
+FdoInt32 CGwsPooledFeature::GetRevisionNumber ()
 {
     return CGwsMutableFeature::GetRevisionNumber ();
 }

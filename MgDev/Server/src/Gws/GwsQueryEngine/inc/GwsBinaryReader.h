@@ -51,12 +51,12 @@ public:
     unsigned short ReadUInt16();
     int ReadInt32();
     unsigned ReadUInt32();
-    GisInt64 ReadInt64();
+    FdoInt64 ReadInt64();
     unsigned char ReadByte();
     char ReadChar();
     wchar_t* ReadString();
     wchar_t* ReadRawString(unsigned mbstrlen);
-    GisDateTime ReadDateTime();
+    FdoDateTime ReadDateTime();
     //add more as needed...
 
 private:

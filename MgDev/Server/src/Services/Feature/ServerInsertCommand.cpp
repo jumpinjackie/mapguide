@@ -62,23 +62,23 @@ MgProperty* MgServerInsertCommand::Execute()
         throw new MgFeatureServiceException(L"MgServerInsertCommand::Execute", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    GisPtr<FdoIConnection> fdoConn = m_srvrFeatConn->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = m_srvrFeatConn->GetConnection();
 
     // Create the SQL command
-    GisPtr<FdoIInsert> fdoCommand = (FdoIInsert*)fdoConn->CreateCommand(FdoCommandType_Insert);
+    FdoPtr<FdoIInsert> fdoCommand = (FdoIInsert*)fdoConn->CreateCommand(FdoCommandType_Insert);
     CHECKNULL((FdoIInsert*)fdoCommand, L"MgServerInsertCommand.Execute");
 
     fdoCommand->SetFeatureClassName(clsName.c_str());
 
     // TODO: Fdo returns NULL here for Oracle and SDF, ArcSDE supports it.
-    GisPtr<FdoBatchParameterValueCollection> bParamValCol = fdoCommand->GetBatchParameterValues();
+    FdoPtr<FdoBatchParameterValueCollection> bParamValCol = fdoCommand->GetBatchParameterValues();
     if (bParamValCol != NULL && bParamValCol->GetCount() > 1)
     {
         prop = BatchInsert(srcCol, bParamValCol, fdoCommand, fdoConn);
     }
     else
     {
-        GisPtr<FdoPropertyValueCollection> propValCol = fdoCommand->GetPropertyValues();
+        FdoPtr<FdoPropertyValueCollection> propValCol = fdoCommand->GetPropertyValues();
         prop = SingleInsert(srcCol, propValCol, fdoCommand, fdoConn);
     }
 
@@ -94,10 +94,10 @@ MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection
     for (INT32 i = 0; i < cnt; i++)
     {
         Ptr<MgPropertyCollection> propCol = srcCol->GetItem(i);
-        GisPtr<FdoParameterValueCollection> paramCol = MgServerFeatureUtil::CreateFdoParameterCollection(propCol);
+        FdoPtr<FdoParameterValueCollection> paramCol = MgServerFeatureUtil::CreateFdoParameterCollection(propCol);
         bParamValCol->Add(paramCol);
     }
-    GisPtr<FdoIFeatureReader> reader = fdoCommand->Execute();
+    FdoPtr<FdoIFeatureReader> reader = fdoCommand->Execute();
     CHECKNULL((FdoIFeatureReader*)reader, L"MgServerInsertCommand.BatchInsert");
 
     // TODO: This is FDO defect, they should not require ReadNext() for class definition
@@ -142,13 +142,13 @@ MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollectio
         propValCol->Clear();
         MgServerFeatureUtil::FillFdoPropertyCollection(propCol, propValCol);
 
-        GisPtr<FdoIFeatureReader> reader = fdoCommand->Execute();
+        FdoPtr<FdoIFeatureReader> reader = fdoCommand->Execute();
         CHECKNULL((FdoIFeatureReader*)reader, L"MgServerInsertCommand.SingleInsert");
 
         if (keyProps == NULL)
         {
-            GisPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
-            GisPtr<FdoDataPropertyDefinitionCollection> idProps = classDef->GetIdentityProperties();
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            FdoPtr<FdoDataPropertyDefinitionCollection> idProps = classDef->GetIdentityProperties();
             if (idProps->GetCount() > 0)
             {
                 keyProps = new MgPropertyDefinitionCollection();

@@ -64,7 +64,7 @@ public:
     /// Given name, return Fdo connection.
     /// Must throw GisException in case if name cannot be resolved.
     /// </summary>
-    virtual FdoIConnection * GetConnection (GisString * name) = 0;
+    virtual FdoIConnection * GetConnection (FdoString * name) = 0;
 };
 
 
@@ -76,7 +76,7 @@ public:
 ///
 /// </summary>
 class IGWSQueryDefinition : public IGWSObject,
-                            public GisXmlSaxHandler
+                            public FdoXmlSaxHandler
 
 {
 public:
@@ -88,20 +88,20 @@ public:
     /// <param name="reader">Xml reader.</param>
     /// <returns>Returns nothing.</returns>
     GWS_QUERYENGINE_API
-    static IGWSQueryDefinition * FromXmlReader (GisString    * elementName,
-                                                GisXmlReader * reader);
+    static IGWSQueryDefinition * FromXmlReader (FdoString    * elementName,
+                                                FdoXmlReader * reader);
 
     /// <summary>
     /// Creates empty query definition from the xml attributes collection.
-    /// Returned pointer could be dynamicaly casted to the GisXmlSaxHandler *.
-    /// If this handler returned from the GisXmlSaxHandler::XmlStartElement
+    /// Returned pointer could be dynamicaly casted to the FdoXmlSaxHandler *.
+    /// If this handler returned from the FdoXmlSaxHandler::XmlStartElement
     /// it will be initialized with the Gws Query
     /// </summary>
     /// <param name="attrs">Xml attributes.</param>
     /// <returns>Returns nothing.</returns>
     GWS_QUERYENGINE_API
     static IGWSQueryDefinition * FromXmlAttributes (
-                                          GisXmlAttributeCollection* attrs);
+                                          FdoXmlAttributeCollection* attrs);
 
 
     /// <summary>
@@ -110,8 +110,8 @@ public:
     /// <param name="elementName">Xml Element name for the query.</param>
     /// <param name="writer">Xml writer.</param>
     /// <returns>Returns nothing.</returns>
-    virtual void                ToXmlWriter ( GisString * elementName,
-                                              GisXmlWriter * writer) = 0;
+    virtual void                ToXmlWriter ( FdoString * elementName,
+                                              FdoXmlWriter * writer) = 0;
 
     /// <summary>
     /// Returns type of the query.
@@ -123,7 +123,7 @@ public:
     /// Select list. Attribute names in result.
     /// </summary>
     /// <returns>Returns nothing.</returns>
-    virtual GisStringCollection * SelectList () = 0;
+    virtual FdoStringCollection * SelectList () = 0;
 
     /// <summary>
     /// Returns class names referenced by the query definition
@@ -138,7 +138,7 @@ public:
     /// all classes are referenced implicitly
     /// </summary>
     /// <returns>Returns nothing.</returns>
-    virtual GisStringCollection* FeatureSourceNames () = 0;
+    virtual FdoStringCollection* FeatureSourceNames () = 0;
 
 
     /// <summary>
@@ -175,7 +175,7 @@ public:
     /// <param name="propertyName">Input filter.</param>
     /// <returns>Returns the query definition.</returns>
     static GWS_QUERYENGINE_API IGWSFeatureQueryDefinition * Create (
-                    GisStringCollection *    selList,
+                    FdoStringCollection *    selList,
                     const GWSQualifiedName & classname,
                     FdoFilter              * filter);
     /// <summary>
@@ -188,7 +188,7 @@ public:
     /// Returns order by columns
     /// </summary>
     /// <returns>Returns column collection.</returns>
-    virtual GisStringCollection    * OrderBy    () = 0;
+    virtual FdoStringCollection    * OrderBy    () = 0;
 
 };
 
@@ -215,13 +215,13 @@ public:
     /// Left join attributes
     /// </summary>
     /// <returns>Returns the query definition.</returns>
-    virtual GisStringCollection * LeftJoinAttributes () = 0;
+    virtual FdoStringCollection * LeftJoinAttributes () = 0;
 
     /// <summary>
     /// Right join attributes
     /// </summary>
     /// <returns>Returns the attribute collection.</returns>
-    virtual GisStringCollection * RightJoinAttributes () = 0;
+    virtual FdoStringCollection * RightJoinAttributes () = 0;
 };
 
 /// <summary>
@@ -245,8 +245,8 @@ public:
     static GWS_QUERYENGINE_API IGWSLeftJoinQueryDefinition * Create (
                     IGWSQueryDefinition *    left_qdef,
                     IGWSQueryDefinition *    right_qdef,
-                    GisStringCollection    * left_attrs,
-                    GisStringCollection    * right_attrs);
+                    FdoStringCollection    * left_attrs,
+                    FdoStringCollection    * right_attrs);
 };
 
 /// <summary>
@@ -272,8 +272,8 @@ public:
     static GWS_QUERYENGINE_API IGWSEqualJoinQueryDefinition * Create (
                     IGWSQueryDefinition *    left_qdef,
                     IGWSQueryDefinition *    right_qdef,
-                    GisStringCollection    * left_attrs,
-                    GisStringCollection    * right_attrs);
+                    FdoStringCollection    * left_attrs,
+                    FdoStringCollection    * right_attrs);
 };
 
 
@@ -313,7 +313,7 @@ public:
     /// int id. See IGWSFeature.
     /// </summary>
     /// <returns>Returns qualified name.</returns>
-    virtual GisStringCollection    *  PropertyNames () = 0;
+    virtual FdoStringCollection    *  PropertyNames () = 0;
 
     /// <summary>
     /// number of extended feature descriptions of the joined classes,
@@ -344,7 +344,7 @@ public:
     /// </summary>
     /// <param name="propertyName">Input property Name</param>
     /// <returns>0-based index of the property name</returns>
-    virtual int                       Contains (GisString* propertyName) = 0;
+    virtual int                       Contains (FdoString* propertyName) = 0;
 
     /// </summary>
     /// Returns the property defintion by the property name. NULL if
@@ -352,7 +352,7 @@ public:
     /// </summary>
     /// <param name="propertyName">Input property name to find.</param>
     /// <returns>Returns property definition of the property.</returns>
-    virtual FdoPropertyDefinition  *  FindPropertyDefinition (GisString* propertyName) = 0;
+    virtual FdoPropertyDefinition  *  FindPropertyDefinition (FdoString* propertyName) = 0;
 };
 
 
@@ -476,14 +476,14 @@ public:
     /// cached feature
     /// </summary>
     /// <returns>Returns cache id.</returns>
-    virtual GisInt32            GetCacheId () = 0;
+    virtual FdoInt32            GetCacheId () = 0;
 
     /// <summary>
     /// Method returns the name of the layer source to which the feature
     /// belongs. Returns NULL if the feature has not been added to a layer.
     /// </summary>
     /// <returns>Returns layer source name</returns>
-    virtual GisString*          GetLayerSource () = 0;
+    virtual FdoString*          GetLayerSource () = 0;
 
     /// <summary>
     /// Methods returns true if the cached feature is a newly added feature
@@ -522,7 +522,7 @@ public:
     /// If feature doesn't have revision number -1 is returned
     /// </summary>
     /// <returns>Returns feature revision number.</returns>
-    virtual GisInt32            GetRevisionNumber () = 0;
+    virtual FdoInt32            GetRevisionNumber () = 0;
 
     /// <summary>
     /// Methods returns feature id of the feature in the underlying Feature Source.
@@ -536,40 +536,40 @@ public:
     /// If the feature is an instance of an FDO FeatureClass, this helper method returns
     /// the FDO geometry type of the primary geometry value. May throw exception.
     /// </summary>
-    virtual GisGeometryType     GetGeometryType(GisByteArray* pArray) = 0;
+    virtual FdoGeometryType     GetGeometryType(FdoByteArray* pArray) = 0;
 
     /// <summary>
     /// If the feature is an instance of an FDO FeatureClass, this helper method returns
     /// the name of the primary geometry value. May throw exception.
     /// </summary>
-    virtual GisString*          GetPrimaryGeometryName() = 0;
+    virtual FdoString*          GetPrimaryGeometryName() = 0;
 
     /// <summary>
     /// Getters by property name
     /// </summary>
     /// <param name="propertyName">Input property name.</param>
     /// <returns>Returns as indicated.</returns>
-    virtual bool                IsNull      (GisString * propertyName) = 0;
-    virtual GisString   *       GetString   (GisString * propertyName) = 0;
-    virtual bool                GetBoolean  (GisString * propertyName) = 0;
-    virtual GisByte             GetByte     (GisString * propertyName) = 0;
-    virtual GisDateTime         GetDateTime (GisString * propertyName) = 0;
-    virtual double              GetDouble   (GisString * propertyName) = 0;
-    virtual GisInt16            GetInt16    (GisString * propertyName) = 0;
-    virtual GisInt32            GetInt32    (GisString * propertyName) = 0;
-    virtual GisInt64            GetInt64    (GisString * propertyName) = 0;
-    virtual float               GetSingle   (GisString * propertyName) = 0;
-    virtual FdoLOBValue*        GetLOB      (GisString * propertyName) = 0;
-    virtual GisIStreamReader*   GetLOBStreamReader (GisString * propertyName) = 0;
-    virtual FdoIRaster*         GetRaster   (GisString * propertyName) = 0;
-    virtual const GisByte *     GetGeometry (GisString * propertyName, GisInt32 * count) = 0;
-    virtual GisByteArray*       GetGeometry (GisString * propertyName) = 0;
-    virtual FdoIFeatureReader*  GetFeatureObject (GisString * propertyName) = 0;
+    virtual bool                IsNull      (FdoString * propertyName) = 0;
+    virtual FdoString   *       GetString   (FdoString * propertyName) = 0;
+    virtual bool                GetBoolean  (FdoString * propertyName) = 0;
+    virtual FdoByte             GetByte     (FdoString * propertyName) = 0;
+    virtual FdoDateTime         GetDateTime (FdoString * propertyName) = 0;
+    virtual double              GetDouble   (FdoString * propertyName) = 0;
+    virtual FdoInt16            GetInt16    (FdoString * propertyName) = 0;
+    virtual FdoInt32            GetInt32    (FdoString * propertyName) = 0;
+    virtual FdoInt64            GetInt64    (FdoString * propertyName) = 0;
+    virtual float               GetSingle   (FdoString * propertyName) = 0;
+    virtual FdoLOBValue*        GetLOB      (FdoString * propertyName) = 0;
+    virtual FdoIStreamReader*   GetLOBStreamReader (FdoString * propertyName) = 0;
+    virtual FdoIRaster*         GetRaster   (FdoString * propertyName) = 0;
+    virtual const FdoByte *     GetGeometry (FdoString * propertyName, FdoInt32 * count) = 0;
+    virtual FdoByteArray*       GetGeometry (FdoString * propertyName) = 0;
+    virtual FdoIFeatureReader*  GetFeatureObject (FdoString * propertyName) = 0;
 
     /// <summary>
     /// Returns the coordinate system name of the geometry properties
     /// </summary>
-    /// <returns>GisString.</returns>
+    /// <returns>FdoString.</returns>
     virtual const GWSCoordinateSystem &  GetCSName () = 0;
 
     /// <summary>
@@ -577,7 +577,7 @@ public:
     /// </summary>
     /// <param name="propertyName">Input property name.</param>
     /// <returns>Returns data value.</returns>
-    virtual FdoDataValue *      GetDataValue (GisString* propertyName) = 0;
+    virtual FdoDataValue *      GetDataValue (FdoString* propertyName) = 0;
 
     /// <summary>
     /// Get data property values specified by the property names.
@@ -587,7 +587,7 @@ public:
     /// <param name="propertyNames">Input property name collection.</param>
     /// <returns>Returns data value collection.</returns>
     virtual FdoDataValueCollection *
-                                GetDataValues (GisStringCollection* propertyNames) = 0;
+                                GetDataValues (FdoStringCollection* propertyNames) = 0;
 
     /// <summary>
     /// Geting string representaion of the property value
@@ -597,7 +597,7 @@ public:
     /// <param name="buff">Input/output string.</param>
     /// <param name="iProp">Input length of buffer.</param>
     /// <returns>Returns nothing.</returns>
-    virtual void                ToString    (GisString * propName, wchar_t * buff, int len) = 0;
+    virtual void                ToString    (FdoString * propName, wchar_t * buff, int len) = 0;
 
 
     /// <summary>
@@ -630,22 +630,22 @@ public:
 
     // declarations below are to avoids ambiquity (methods are defined both
     // in IGWSFeature and FdoIFeatureReader)
-    virtual bool                IsNull (GisString * propName) = 0;
-    virtual GisString   *       GetString   (GisString * propertyName) = 0;
-    virtual bool                GetBoolean  (GisString * propertyName) = 0;
-    virtual GisByte             GetByte     (GisString * propertyName) = 0;
-    virtual GisDateTime         GetDateTime (GisString * propertyName) = 0;
-    virtual double              GetDouble   (GisString * propertyName) = 0;
-    virtual GisInt16            GetInt16    (GisString * propertyName) = 0;
-    virtual GisInt32            GetInt32    (GisString * propertyName) = 0;
-    virtual GisInt64            GetInt64    (GisString * propertyName) = 0;
-    virtual float               GetSingle   (GisString * propertyName) = 0;
-    virtual FdoLOBValue*        GetLOB      (GisString * propertyName) = 0;
-    virtual GisIStreamReader*   GetLOBStreamReader (GisString * propertyName) = 0;
-    virtual FdoIRaster*         GetRaster   (GisString * propertyName) = 0;
-    virtual const GisByte *     GetGeometry (GisString * propertyName, GisInt32 * count) = 0;
-    virtual GisByteArray*       GetGeometry (GisString * propertyName) = 0;
-    virtual FdoIFeatureReader*  GetFeatureObject (GisString * propertyName) = 0;
+    virtual bool                IsNull (FdoString * propName) = 0;
+    virtual FdoString   *       GetString   (FdoString * propertyName) = 0;
+    virtual bool                GetBoolean  (FdoString * propertyName) = 0;
+    virtual FdoByte             GetByte     (FdoString * propertyName) = 0;
+    virtual FdoDateTime         GetDateTime (FdoString * propertyName) = 0;
+    virtual double              GetDouble   (FdoString * propertyName) = 0;
+    virtual FdoInt16            GetInt16    (FdoString * propertyName) = 0;
+    virtual FdoInt32            GetInt32    (FdoString * propertyName) = 0;
+    virtual FdoInt64            GetInt64    (FdoString * propertyName) = 0;
+    virtual float               GetSingle   (FdoString * propertyName) = 0;
+    virtual FdoLOBValue*        GetLOB      (FdoString * propertyName) = 0;
+    virtual FdoIStreamReader*   GetLOBStreamReader (FdoString * propertyName) = 0;
+    virtual FdoIRaster*         GetRaster   (FdoString * propertyName) = 0;
+    virtual const FdoByte *     GetGeometry (FdoString * propertyName, FdoInt32 * count) = 0;
+    virtual FdoByteArray*       GetGeometry (FdoString * propertyName) = 0;
+    virtual FdoIFeatureReader*  GetFeatureObject (FdoString * propertyName) = 0;
 
     /// <summary>
     /// moves the current position on the next feture and returns it
@@ -705,7 +705,7 @@ public:
     /// </summary>
     /// <param name="propertyName">Input property name.</param>
     /// <returns>boolean.</returns>
-    virtual bool      IsPropertyValueSet (GisString* propertyName) = 0;
+    virtual bool      IsPropertyValueSet (FdoString* propertyName) = 0;
 
     /// <summary>
     /// Sets the values for property name.  Exceptions may be thrown on
@@ -714,19 +714,19 @@ public:
     /// <param name="propertyName">Input property name.</param>
     /// <param name="value">Input value.</param>
     /// <returns>Returns nothing.</returns>
-    virtual void      SetNull(GisString* propertyName) = 0;
-    virtual void      SetString(GisString* propertyName, GisString* pValue) = 0;
-    virtual void      SetBoolean(GisString* propertyName, bool value) = 0;
-    virtual void      SetByte(GisString* propertyName, GisByte value) = 0;
-    virtual void      SetDateTime(GisString* propertyName, GisDateTime value) = 0;
-    virtual void      SetDouble(GisString* propertyName, double value) = 0;
-    virtual void      SetInt16(GisString* propertyName, GisInt16 value) = 0;
-    virtual void      SetInt32(GisString* propertyName, GisInt32 value) = 0;
-    virtual void      SetInt64(GisString* propertyName, GisInt64 value) = 0;
-    virtual void      SetSingle(GisString* propertyName, float value) = 0;
-    virtual void      SetLOB(GisString* propertyName, FdoLOBValue* pValue) = 0;
-    virtual void      SetGeometry (GisString* propertyName, GisByteArray * pValue) = 0;
-    virtual void      SetValue (GisString* propertyName, FdoValueExpression* pVal) = 0;
+    virtual void      SetNull(FdoString* propertyName) = 0;
+    virtual void      SetString(FdoString* propertyName, FdoString* pValue) = 0;
+    virtual void      SetBoolean(FdoString* propertyName, bool value) = 0;
+    virtual void      SetByte(FdoString* propertyName, FdoByte value) = 0;
+    virtual void      SetDateTime(FdoString* propertyName, FdoDateTime value) = 0;
+    virtual void      SetDouble(FdoString* propertyName, double value) = 0;
+    virtual void      SetInt16(FdoString* propertyName, FdoInt16 value) = 0;
+    virtual void      SetInt32(FdoString* propertyName, FdoInt32 value) = 0;
+    virtual void      SetInt64(FdoString* propertyName, FdoInt64 value) = 0;
+    virtual void      SetSingle(FdoString* propertyName, float value) = 0;
+    virtual void      SetLOB(FdoString* propertyName, FdoLOBValue* pValue) = 0;
+    virtual void      SetGeometry (FdoString* propertyName, FdoByteArray * pValue) = 0;
+    virtual void      SetValue (FdoString* propertyName, FdoValueExpression* pVal) = 0;
 
     /// <summary>
     /// Sets the corrdinate system name and type of feature geometry
@@ -758,7 +758,7 @@ public:
     /// <summary>
     /// Set feature revision number.
     /// </summary>
-    virtual void      SetRevisionNumber (GisInt32 revnum) = 0;
+    virtual void      SetRevisionNumber (FdoInt32 revnum) = 0;
 
     /// <summary>
     /// Set cache lock type.
@@ -773,13 +773,13 @@ public:
     /// <summary>
     /// Set locg cache id.
     /// </summary>
-    virtual void      SetCacheId (GisInt32 cacheId) = 0;
+    virtual void      SetCacheId (FdoInt32 cacheId) = 0;
 
     /// <summary>
     /// Sets the layer source of the mutable feature
     /// </summary>
     /// <returns>nothing</returns>
-    virtual void      SetLayerSource (GisString *) = 0;
+    virtual void      SetLayerSource (FdoString *) = 0;
 
 };
 

@@ -61,8 +61,8 @@ EGwsStatus CGwsFdoDeleteCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
 
         ((FdoIDelete *)m_pCommand.p)->SetFeatureClassName(name.c_str());
 
-    } catch(GisException *e) {
-        PushGisException (eGwsFailedToPrepareCommand, e);
+    } catch(FdoException *e) {
+        PushFdoException (eGwsFailedToPrepareCommand, e);
         e->Release();
         fdoes = eGwsFailedToPrepareCommand;
 
@@ -101,7 +101,7 @@ EGwsStatus CGwsFdoDeleteCommand::Execute (const GWSFeatureId & featid)
     }
 
     try {
-        GisPtr<FdoFilter>      filter;
+        FdoPtr<FdoFilter>      filter;
         GwsFailedStatus        failed;
 
         eGwsOkThrow (BuildFilter (featid, filter.p));
@@ -109,12 +109,12 @@ EGwsStatus CGwsFdoDeleteCommand::Execute (const GWSFeatureId & featid)
         ((FdoIDelete*)m_pCommand.p)->SetFilter (filter);
         if (((FdoIDelete*)m_pCommand.p)->Execute() < 1) {
             if (m_bSupportLocking) {
-                GisPtr<FdoILockConflictReader> reader = ((FdoIDelete*)m_pCommand.p)->GetLockConflicts ();
+                FdoPtr<FdoILockConflictReader> reader = ((FdoIDelete*)m_pCommand.p)->GetLockConflicts ();
                 eGwsOkThrow (ProcessLockConflicts (reader, failed));
             }
         }
-    } catch(GisException *e) {
-        PushGisException (eGwsFailedToPrepareCommand, e);
+    } catch(FdoException *e) {
+        PushFdoException (eGwsFailedToPrepareCommand, e);
         e->Release();
         fdoes = eGwsFailedToPrepareCommand;
 

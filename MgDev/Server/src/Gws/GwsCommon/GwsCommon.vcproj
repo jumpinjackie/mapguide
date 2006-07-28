@@ -64,11 +64,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib GisCommon.lib GisGeometry.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib"
 				OutputFile="$(OutDir)/MgGwsCommond.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;GisCommon.dll;GisGeometry.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgGwsCommond.pdb"
 				SubSystem="2"
@@ -146,11 +146,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib GisCommon.lib GisGeometry.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib"
 				OutputFile="$(OutDir)/MgGwsCommon.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;GisCommon.dll;GisGeometry.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgGwsCommon.pdb"
 				SubSystem="2"

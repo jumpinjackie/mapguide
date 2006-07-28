@@ -28,7 +28,7 @@ MgServerDataReader::MgServerDataReader(FdoIDataReader* dataReader, CREFSTRING pr
 {
     MG_FEATURE_SERVICE_TRY()
 
-    m_dataReader = GIS_SAFE_ADDREF(dataReader);
+    m_dataReader = FDO_SAFE_ADDREF(dataReader);
     m_providerName = providerName;
     m_dataProcessor = NULL;
     m_removeFromPoolOnDestruction = false;
@@ -107,7 +107,7 @@ STRING MgServerDataReader::GetPropertyName(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisString* str = m_dataReader->GetPropertyName(index);
+    FdoString* str = m_dataReader->GetPropertyName(index);
     if (str != NULL)
     {
         retVal = (wchar_t*)str;
@@ -249,7 +249,7 @@ MgDateTime* MgServerDataReader::GetDateTime(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisDateTime val = m_dataReader->GetDateTime(propertyName.c_str());
+    FdoDateTime val = m_dataReader->GetDateTime(propertyName.c_str());
     retVal = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
                             (INT8)val.hour, (INT8)val.minute, val.seconds);
 
@@ -483,7 +483,7 @@ MgRaster* MgServerDataReader::GetRaster(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisPtr<FdoIRaster> raster = m_dataReader->GetRaster(propertyName.c_str());
+    FdoPtr<FdoIRaster> raster = m_dataReader->GetRaster(propertyName.c_str());
     CHECKNULL((FdoIRaster*)raster, L"MgServerDataReader.GetRaster");
 
     retVal = MgServerFeatureUtil::GetMgRaster(raster, propertyName);
@@ -528,15 +528,15 @@ MgByteReader* MgServerDataReader::GetLOB(CREFSTRING propName)
 
     Ptr<MgByteReader> retVal;
 
-    // TODO: We need to switch to GisIStreamReader when we have streaming capability in MgByteReader
-    GisPtr<FdoLOBValue> fdoVal = m_dataReader->GetLOB(propName.c_str());
+    // TODO: We need to switch to FdoIStreamReader when we have streaming capability in MgByteReader
+    FdoPtr<FdoLOBValue> fdoVal = m_dataReader->GetLOB(propName.c_str());
     if (fdoVal != NULL)
     {
-        GisPtr<GisByteArray> byteArray = fdoVal->GetData();
+        FdoPtr<FdoByteArray> byteArray = fdoVal->GetData();
         if (byteArray != NULL)
         {
-            GisByte* bytes = byteArray->GetData();
-            GisInt32 len = byteArray->GetCount();
+            FdoByte* bytes = byteArray->GetData();
+            FdoInt32 len = byteArray->GetCount();
             Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
 
             // TODO: We need to differentiate between CLOB and BLOB
@@ -713,9 +713,9 @@ BYTE_ARRAY_OUT MgServerDataReader::GetGeometry(CREFSTRING propertyName, INT32& l
 
     // TODO: Can we have an equivalent method as we have in FeatureReader to get
     // TODO: direct pointer on geometry
-    GisPtr<GisByteArray> byteArray = m_dataReader->GetGeometry(propertyName.c_str());
+    FdoPtr<FdoByteArray> byteArray = m_dataReader->GetGeometry(propertyName.c_str());
     length = (INT32)byteArray->GetCount();
-    GisByte* data = byteArray->GetData();
+    FdoByte* data = byteArray->GetData();
 
     return (BYTE_ARRAY_OUT)data;
 }
@@ -731,7 +731,7 @@ const wchar_t* MgServerDataReader::GetString(CREFSTRING propName, INT32& length)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetString");
 
-    GisString* retVal = NULL;
+    FdoString* retVal = NULL;
 
     MG_FEATURE_SERVICE_TRY()
 

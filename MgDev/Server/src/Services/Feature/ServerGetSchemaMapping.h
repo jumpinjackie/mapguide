@@ -33,7 +33,7 @@ public:
     MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString);
 
 private:
-    GisByte* m_bytes;
+    FdoByte* m_bytes;
 };
 
 #endif

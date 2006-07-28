@@ -43,8 +43,8 @@ EGwsStatus CGwsSortMergeJoinQueryResults::InitializeReader (
     EGwsStatus                  stat = eGwsOk;
     CGwsPreparedQuery         * leftquery = prepquery->LeftQuery ();
     CGwsPreparedQuery         * rightquery = prepquery->RightQuery ();
-    GisPtr<GisStringCollection> leftcols = prepquery->LeftProperties ();
-    GisPtr<GisStringCollection> rightcols = prepquery->RightProperties ();
+    FdoPtr<FdoStringCollection> leftcols = prepquery->LeftProperties ();
+    FdoPtr<FdoStringCollection> rightcols = prepquery->RightProperties ();
 
     stat = CGwsJoinQueryResults::InitializeReader (leftcols, query, leftquery);
     if (IGWSException::IsError (stat)) {
@@ -53,7 +53,7 @@ EGwsStatus CGwsSortMergeJoinQueryResults::InitializeReader (
     }
     m_prepquery = prepquery;
 
-    GisPtr<IGWSFeatureIterator> right;
+    FdoPtr<IGWSFeatureIterator> right;
     stat = rightquery->Execute (& right);
     if (IGWSException::IsError (stat)) {
         PushStatus  (stat);

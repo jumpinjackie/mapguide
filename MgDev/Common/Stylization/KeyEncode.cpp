@@ -150,7 +150,7 @@ const unsigned char* KeyEncode::EncodeKey(RS_FeatureReader* reader)
 
 void KeyEncode::WriteDouble(double d)
 {
-    GisInt64 swap = *(GisInt64*)&d;
+    FdoInt64 swap = *(FdoInt64*)&d;
     WriteInt64(swap);
 }
 
@@ -184,7 +184,7 @@ void KeyEncode::WriteUInt16(unsigned short us)
     m_stream.write(&swap, sizeof(unsigned short));
 }
 
-void KeyEncode::WriteInt64(GisInt64 ll)
+void KeyEncode::WriteInt64(FdoInt64 ll)
 {
     unsigned int word = (unsigned int) (ll & 0xFFFFFFFF);
     WriteUInt32(word);
@@ -223,7 +223,7 @@ void KeyEncode::WriteBytes(unsigned char* buf, size_t len)
     m_stream.write(buf, len);
 }
 
-void KeyEncode::WriteDateTime(GisDateTime dt)
+void KeyEncode::WriteDateTime(FdoDateTime dt)
 {
     //serialize date time in MapGuide HTTP protocol format
     //where seconds and microseconds are separate

@@ -25,23 +25,23 @@ public:
     ~GwsBinaryFeatureReader() {}
 
     //write property value
-    GisString* QualifiedClassName();
+    FdoString* QualifiedClassName();
     int SetPosition(int propertyIndex);
 
     // Getter by the property index
-    virtual bool            IsNull      (GisInt32 iProp);
-    virtual GisString   *   GetString   (GisInt32 iProp);
-    virtual bool            GetBoolean  (GisInt32 iProp);
-    virtual GisByte         GetByte     (GisInt32 iProp);
-    virtual GisDateTime     GetDateTime (GisInt32 iProp);
-    virtual double          GetDouble   (GisInt32 iProp);
-    virtual GisInt16        GetInt16    (GisInt32 iProp);
-    virtual GisInt32        GetInt32    (GisInt32 iProp);
-    virtual GisInt64        GetInt64    (GisInt32 iProp);
-    virtual float           GetSingle   (GisInt32 iProp);
-    virtual const GisByte * GetGeometry (GisInt32 iProp, GisInt32 * count);
-    virtual GisByteArray*   GetGeometry (GisInt32 iProp);
-    //virtual FdoIFeatureReader* GetFeatureObject (GisInt32 iProp);
+    virtual bool            IsNull      (FdoInt32 iProp);
+    virtual FdoString   *   GetString   (FdoInt32 iProp);
+    virtual bool            GetBoolean  (FdoInt32 iProp);
+    virtual FdoByte         GetByte     (FdoInt32 iProp);
+    virtual FdoDateTime     GetDateTime (FdoInt32 iProp);
+    virtual double          GetDouble   (FdoInt32 iProp);
+    virtual FdoInt16        GetInt16    (FdoInt32 iProp);
+    virtual FdoInt32        GetInt32    (FdoInt32 iProp);
+    virtual FdoInt64        GetInt64    (FdoInt32 iProp);
+    virtual float           GetSingle   (FdoInt32 iProp);
+    virtual const FdoByte * GetGeometry (FdoInt32 iProp, FdoInt32 * count);
+    virtual FdoByteArray*   GetGeometry (FdoInt32 iProp);
+    //virtual FdoIFeatureReader* GetFeatureObject (FdoInt32 iProp);
 
 private:
     BinaryReader m_rdr;

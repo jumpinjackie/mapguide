@@ -40,15 +40,15 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource) : m_filter(NULL
         throw new MgConnectionFailedException(L"MgServerSelectFeatures::SelectFeatures()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     // Create FdoISelectAggregate command
-    GisPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
     m_command = (FdoISelect*)fdoConn->CreateCommand(FdoCommandType_Select);
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.MgSelectCommand");
 }
 
 MgSelectCommand::~MgSelectCommand()
 {
-    GIS_SAFE_RELEASE(m_command);
-    GIS_SAFE_RELEASE(m_filter);
+    FDO_SAFE_RELEASE(m_command);
+    FDO_SAFE_RELEASE(m_filter);
 }
 
 FdoIdentifierCollection* MgSelectCommand::GetPropertyNames()
@@ -124,13 +124,13 @@ FdoFilter* MgSelectCommand::GetGroupingFilter()
     return NULL;
 }
 
-void MgSelectCommand::SetFeatureClassName(GisString* value)
+void MgSelectCommand::SetFeatureClassName(FdoString* value)
 {
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetFeatureClassName");
     m_command->SetFeatureClassName(value);
 }
 
-void MgSelectCommand::SetFilter(GisString* value)
+void MgSelectCommand::SetFilter(FdoString* value)
 {
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetFilter");
     m_command->SetFilter(value);
@@ -141,14 +141,14 @@ void MgSelectCommand::SetFilter(FdoFilter* value)
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetFilter");
     m_command->SetFilter(value);
 
-    GIS_SAFE_RELEASE(m_filter);
-    m_filter = GIS_SAFE_ADDREF(value);
+    FDO_SAFE_RELEASE(m_filter);
+    m_filter = FDO_SAFE_ADDREF(value);
 }
 
 MgReader* MgSelectCommand::Execute()
 {
     // Execute the command
-    GisPtr<FdoIFeatureReader> featureReader = m_command->Execute();
+    FdoPtr<FdoIFeatureReader> featureReader = m_command->Execute();
     CHECKNULL((FdoIFeatureReader*)featureReader, L"MgSelectCommand.Execute");
 
     // Create a feature reader identifier
@@ -169,29 +169,29 @@ MgReader* MgSelectCommand::Execute()
 
 bool MgSelectCommand::IsSupportedFunction(FdoFunction* fdoFunc)
 {
-    GisPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
     return this->IsFdoSupportedFunction(fdoConn, fdoFunc);
 }
 
 bool MgSelectCommand::SupportsSelectGrouping()
 {
-    GisPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
     return MgFeatureServiceCommand::SupportsSelectGrouping(fdoConn);
 }
 
 bool MgSelectCommand::SupportsSelectOrdering()
 {
-    GisPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
     return MgFeatureServiceCommand::SupportsSelectOrdering(fdoConn);
 }
 
 bool MgSelectCommand::SupportsSelectDistinct()
 {
-    GisPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
     return MgFeatureServiceCommand::SupportsSelectDistinct(fdoConn);
 }
 
 FdoFilter* MgSelectCommand::GetFilter()
 {
-    return GIS_SAFE_ADDREF(m_filter);
+    return FDO_SAFE_ADDREF(m_filter);
 }

@@ -39,9 +39,9 @@ public:
     void WriteAssociationProperty(FdoAssociationPropertyDefinition* apd,
                                   FdoIFeatureReader* reader);
     //write the feature
-    void WriteFeature(FdoClassDefinition* fc, GisString* fcName,
+    void WriteFeature(FdoClassDefinition* fc, FdoString* fcName,
                       FdoPropertyValueCollection* pvc);
-    void WriteFeature(FdoClassDefinition* fc, GisString* fcName,
+    void WriteFeature(FdoClassDefinition* fc, FdoString* fcName,
                       FdoPropertyValueCollection* pvc,
                       FdoIFeatureReader* reader);
 protected:

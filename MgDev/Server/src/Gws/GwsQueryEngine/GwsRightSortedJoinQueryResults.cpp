@@ -43,7 +43,7 @@ CGwsRightSortedJoinQueryResults::~CGwsRightSortedJoinQueryResults () throw()
 EGwsStatus CGwsRightSortedJoinQueryResults::InitializeReader (
     IGWSQuery           * query,
     FdoIFeatureReader   * reader,
-    GisStringCollection * joincols
+    FdoStringCollection * joincols
 )
 {
     return CGwsRightJoinQueryResults::InitializeReader (query, reader, joincols);
@@ -105,7 +105,7 @@ bool CGwsRightSortedJoinQueryResults::ReadNext()
     IGWSFeatureIterator * fiter = dynamic_cast<IGWSFeatureIterator *> (m_reader.p);
 
     while (bRes) {
-        GisPtr<FdoDataValueCollection> joinvals = fiter->GetDataValues (m_joincols);
+        FdoPtr<FdoDataValueCollection> joinvals = fiter->GetDataValues (m_joincols);
         m_joinvals = joinvals;
         int res = m_joinkeys.Compare (m_joinvals);
 
@@ -139,6 +139,7 @@ bool CGwsRightSortedJoinQueryResults::ReadNext()
 
         } else if (res == -2) {
             // left is null
+            m_pos = eAfterJoinRow;
             bRes = false;
 
         }

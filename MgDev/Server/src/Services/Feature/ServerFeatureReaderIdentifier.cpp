@@ -22,15 +22,15 @@
 
 MgServerFeatureReaderIdentifier::MgServerFeatureReaderIdentifier(FdoIFeatureReader* featureReader)
 {
-    m_featureReader = GIS_SAFE_ADDREF(featureReader);
+    m_featureReader = FDO_SAFE_ADDREF(featureReader);
 }
 
 MgServerFeatureReaderIdentifier::~MgServerFeatureReaderIdentifier()
 {
-    GIS_SAFE_RELEASE(m_featureReader);
+    FDO_SAFE_RELEASE(m_featureReader);
 }
 
 FdoIFeatureReader* MgServerFeatureReaderIdentifier::GetFeatureReader()
 {
-    return GIS_SAFE_ADDREF(m_featureReader);
+    return FDO_SAFE_ADDREF(m_featureReader);
 }

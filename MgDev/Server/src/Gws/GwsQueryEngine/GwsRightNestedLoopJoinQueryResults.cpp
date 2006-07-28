@@ -44,7 +44,7 @@ CGwsRightNestedLoopJoinQueryResults::~CGwsRightNestedLoopJoinQueryResults () thr
 EGwsStatus CGwsRightNestedLoopJoinQueryResults::InitializeReader (
     IGWSQuery                  * query,
     CGwsPreparedQuery          * prepquery,
-    GisStringCollection        * joincols
+    FdoStringCollection        * joincols
 )
 {
     m_bClosed = true;
@@ -71,13 +71,13 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
     try {
         Close ();
 
-        GisPtr<FdoFilter> pFilter;
+        FdoPtr<FdoFilter> pFilter;
 
         for (int idx = 0; idx < m_joincols->GetCount (); idx ++) {
-            GisString          * propname = m_joincols->GetString (idx);
-            GisPtr<FdoDataValue> val = vals.GetItem (idx);
+            FdoString          * propname = m_joincols->GetString (idx);
+            FdoPtr<FdoDataValue> val = vals.GetItem (idx);
 
-            GisPtr<FdoIdentifier> pFeatureNameProperty = FdoIdentifier::Create(propname);
+            FdoPtr<FdoIdentifier> pFeatureNameProperty = FdoIdentifier::Create(propname);
 
             // Get the data type of the primary property
             FdoDataType dtPrimary = val->GetDataType();
@@ -86,7 +86,7 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
             FdoDataType dtSecondary = dtPrimary;
             if (m_prepquery)
             {
-                GisPtr<CGwsQueryResultDescriptors> extFeatDsc;
+                FdoPtr<CGwsQueryResultDescriptors> extFeatDsc;
                 m_prepquery->DescribeResults((IGWSExtendedFeatureDescription**)&extFeatDsc);
                 CGwsPropertyDesc propDesc = extFeatDsc->GetPropertyDescriptor(propname);
                 dtSecondary = propDesc.m_dataprop;
@@ -120,7 +120,7 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
                             break;
                     }
                     break;
-                    
+
 
                 case FdoDataType_String:
                     switch (dtSecondary)
@@ -137,20 +137,20 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
                         case FdoDataType_Single:
                         case FdoDataType_Double:
                             // if the string represents a number, or if it does not contain wildcard characters, use like, else do nothing
-                            GisStringP strPrimVal = val->ToString();
-                            GisStringP percent = "%";         // NOXLATE
-                            GisStringP underscore = "_";      // NOXLATE
-                            GisStringP bracket = "[";         // NOXLATE
-                            GisStringP bracketCaret = "[^";   // NOXLATE
+                            FdoStringP strPrimVal = val->ToString();
+                            FdoStringP percent = "%";         // NOXLATE
+                            FdoStringP underscore = "_";      // NOXLATE
+                            FdoStringP bracket = "[";         // NOXLATE
+                            FdoStringP bracketCaret = "[^";   // NOXLATE
 
                             // Remove the single quote from the string
-                            GisStringP quote = "'";           // NOXLATE
-                            GisStringP emptyString = "";      // NOXLATE
+                            FdoStringP quote = "'";           // NOXLATE
+                            FdoStringP emptyString = "";      // NOXLATE
                             strPrimVal = strPrimVal.Replace(quote, emptyString);
 
                             if (strPrimVal.IsNumber())
                             {
-                                GisPtr<FdoDoubleValue> dval = FdoDoubleValue::Create();
+                                FdoPtr<FdoDoubleValue> dval = FdoDoubleValue::Create();
                                 dval->SetDouble(strPrimVal.ToDouble());
                                 val = dval;
                                 comparisonOp = FdoComparisonOperations_EqualTo;
@@ -169,15 +169,15 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
             if (idx == 0) {
                 // Create the comparison condidtion
                 pFilter = FdoComparisonCondition::Create(pFeatureNameProperty,
-                                                         comparisonOp,
-                                                         val);
+                                                             comparisonOp,
+                                                             val);
 
 
             } else {
-                GisPtr<FdoFilter> pRhsFilter = FdoComparisonCondition::Create(pFeatureNameProperty,
+                FdoPtr<FdoFilter> pRhsFilter = FdoComparisonCondition::Create(pFeatureNameProperty,
                                                                               comparisonOp,
                                                                               val);
-                GisPtr<FdoFilter> pCombinedFilter = FdoFilter::Combine(pFilter,
+                FdoPtr<FdoFilter> pCombinedFilter = FdoFilter::Combine(pFilter,
                                                                        FdoBinaryLogicalOperations_And,
                                                                        pRhsFilter);
                 pFilter = pCombinedFilter;
@@ -196,8 +196,8 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
 
         stat = CGwsRightJoinQueryResults::SetRelatedValues (vals);
 
-    } catch (GisException *e) {
-        PushGisException (eGwsFailed, e);
+    } catch (FdoException *e) {
+        PushFdoException (eGwsFailed, e);
         e->Release();
         stat = eGwsFailed;
     }

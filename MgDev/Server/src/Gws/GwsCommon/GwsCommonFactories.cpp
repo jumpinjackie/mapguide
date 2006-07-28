@@ -36,7 +36,7 @@ IGWSLongFeatureIdSet* IGWSLongFeatureIdSet::Create(long* cacheIds, long count)
     for(long i=0;i<count;i++)
         pIdSet->Add(cacheIds[i]);
 
-    GIS_SAFE_ADDREF(pIdSet);
+    FDO_SAFE_ADDREF(pIdSet);
     return pIdSet;
 }
 
@@ -44,6 +44,6 @@ IGWSLongFeatureIdSet* IGWSLongFeatureIdSet::Create()
 {
     CGwsFeatureIdSet<long, IGWSLongFeatureIdSet>* pIdSet = new CGwsFeatureIdSet<long, IGWSLongFeatureIdSet>();
 
-    GIS_SAFE_ADDREF(pIdSet);
+    FDO_SAFE_ADDREF(pIdSet);
     return pIdSet;
 }

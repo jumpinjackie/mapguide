@@ -59,28 +59,28 @@ DataValueType BooleanValue::GetType()
 
 DataValue* BooleanValue::Negate(DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic operation on boolean");
+    throw FdoException::Create(L"Cannot perform arithmetic operation on boolean");
 }
 
 
 DataValue* BooleanValue::Add(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic operation on boolean");
+    throw FdoException::Create(L"Cannot perform arithmetic operation on boolean");
 }
 
 DataValue* BooleanValue::Subtract(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic operation on boolean");
+    throw FdoException::Create(L"Cannot perform arithmetic operation on boolean");
 }
 
 DataValue* BooleanValue::Multiply(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic operation on boolean");
+    throw FdoException::Create(L"Cannot perform arithmetic operation on boolean");
 }
 
 DataValue* BooleanValue::Divide(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic operation on boolean");
+    throw FdoException::Create(L"Cannot perform arithmetic operation on boolean");
 }
 
 bool BooleanValue::IsEqualTo(DataValue& v2)
@@ -96,32 +96,32 @@ bool BooleanValue::IsNotEqualTo(DataValue& v2)
 
 bool BooleanValue::IsGreaterThan(DataValue& /*v2*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic comparison on boolean");
+    throw FdoException::Create(L"Cannot perform arithmetic comparison on boolean");
 }
 
 bool BooleanValue::IsGreaterThanOrEqualTo(DataValue& /*v2*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic comparison on boolean");
+    throw FdoException::Create(L"Cannot perform arithmetic comparison on boolean");
 }
 
 bool BooleanValue::IsLessThan(DataValue& /*v2*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic comparison on boolean");
+    throw FdoException::Create(L"Cannot perform arithmetic comparison on boolean");
 }
 
 bool BooleanValue::IsLessThanOrEqualTo(DataValue& /*v2*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic comparison on boolean");
+    throw FdoException::Create(L"Cannot perform arithmetic comparison on boolean");
 }
 
 double BooleanValue::GetAsDouble()
 {
-    throw GisException::Create(L"Cannot convert boolean to double");
+    throw FdoException::Create(L"Cannot convert boolean to double");
 }
 
 long long BooleanValue::GetAsInt64()
 {
-    throw GisException::Create(L"Cannot convert boolean to Int64");
+    throw FdoException::Create(L"Cannot convert boolean to Int64");
 }
 
 bool BooleanValue::GetAsBoolean()
@@ -129,9 +129,9 @@ bool BooleanValue::GetAsBoolean()
     return m_value;
 }
 
-GisDateTime BooleanValue::GetAsDateTime()
+FdoDateTime BooleanValue::GetAsDateTime()
 {
-    throw GisException::Create(L"Cannot convert boolean to DateTime");
+    throw FdoException::Create(L"Cannot convert boolean to DateTime");
 }
 
 wchar_t* BooleanValue::GetAsString()

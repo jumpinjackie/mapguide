@@ -36,7 +36,7 @@ GWSFeatureQueryDefinition::GWSFeatureQueryDefinition ()
 }
 
 GWSFeatureQueryDefinition::GWSFeatureQueryDefinition (
-    GisStringCollection    * sellist,
+    FdoStringCollection    * sellist,
     const GWSQualifiedName & classname,
     FdoFilter              * filter
 )
@@ -60,7 +60,7 @@ const GWSQualifiedName & GWSFeatureQueryDefinition::ClassName () const
     return m_classname;
 }
 
-GisStringCollection * GWSFeatureQueryDefinition::SelectList ()
+FdoStringCollection * GWSFeatureQueryDefinition::SelectList ()
 {
     if (m_sellist != NULL) {
         m_sellist.p->AddRef ();
@@ -76,9 +76,9 @@ IGWSQualifiedNames * GWSFeatureQueryDefinition::QualifiedNames ()
     return qnames;
 }
 
-GisStringCollection* GWSFeatureQueryDefinition::FeatureSourceNames ()
+FdoStringCollection* GWSFeatureQueryDefinition::FeatureSourceNames ()
 {
-    GisStringCollection * fsnames = GisStringCollection::Create ();
+    FdoStringCollection * fsnames = FdoStringCollection::Create ();
 
     if (m_classname.FeatureSource () != NULL && * m_classname.FeatureSource () != 0) {
         fsnames->Add (m_classname.FeatureSource ());
@@ -98,7 +98,7 @@ FdoFilter * GWSFeatureQueryDefinition::Filter ()
     return FdoFilter::Parse (m_filter->ToString() );
 }
 
-GisStringCollection * GWSFeatureQueryDefinition::OrderBy    ()
+FdoStringCollection * GWSFeatureQueryDefinition::OrderBy    ()
 {
     return NULL;
 }
@@ -110,7 +110,7 @@ IGWSFeatureQueryDefinition * GWSFeatureQueryDefinition::GetPrimaryQueryDefinitio
 }
 
 
-void GWSFeatureQueryDefinition::Write (GisXmlWriter * writer)
+void GWSFeatureQueryDefinition::Write (FdoXmlWriter * writer)
 {
     writer->WriteStartElement (GwsQueryXml::xmlGwsQualifiedClassName);
     writer->WriteAttribute (GwsQueryXml::xmlGwsClassFeatureSource,m_classname.FeatureSource ());
@@ -125,7 +125,7 @@ void GWSFeatureQueryDefinition::Write (GisXmlWriter * writer)
     }
 
     if (m_filter != NULL) {
-        GisString * str = m_filter->ToString ();
+        FdoString * str = m_filter->ToString ();
         writer->WriteStartElement (GwsQueryXml::xmlGwsFilter);
         writer->WriteAttribute (GwsQueryXml::xmlGwsFilterStringValue, str);
         writer->WriteEndElement ();
@@ -133,12 +133,12 @@ void GWSFeatureQueryDefinition::Write (GisXmlWriter * writer)
 }
 
 
-GisXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
-    GisXmlSaxContext    * ctx,
-    GisString           * uri,
-    GisString           * name,
-    GisString           * qname,
-    GisXmlAttributeCollection* attrs
+FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
+    FdoXmlSaxContext    * ctx,
+    FdoString           * uri,
+    FdoString           * name,
+    FdoString           * qname,
+    FdoXmlAttributeCollection* attrs
 )
 {
     if (! _wcsicmp (name, GwsQueryXml::xmlGwsQualifiedClassName)) {
@@ -146,10 +146,10 @@ GisXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
         WSTR    schema;
         WSTR    classname;
         for (int i = 0; i < attrs->GetCount (); i ++) {
-            GisPtr<GisXmlAttribute> attr = attrs->GetItem (i);
+            FdoPtr<FdoXmlAttribute> attr = attrs->GetItem (i);
 
-            GisString * name  = attr->GetName ();
-            GisString * value = attr->GetValue ();
+            FdoString * name  = attr->GetName ();
+            FdoString * value = attr->GetValue ();
             if (_wcsicmp (name, GwsQueryXml::xmlGwsClassFeatureSource) == 0) {
                 fsname = value;
             } else if (_wcsicmp (name, GwsQueryXml::xmlGwsClassSchema) == 0) {
@@ -163,19 +163,19 @@ GisXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
             m_classname = GWSQualifiedName (fsname.c_str (), schema.c_str (), classname.c_str ());
 
         } else {
-            throw GisException::Create (L"Failed to parse xml");
+            throw FdoException::Create (L"Failed to parse xml");
         }
     } else if (! _wcsicmp (name, GwsQueryXml::xmlGwsQuerySelectList)) {
-        m_sellist = GisStringCollection::Create();
+        m_sellist = FdoStringCollection::Create();
         CGwsStringCollectionSaxHandler::GetHandler ()->SetDestination (m_sellist);
         return CGwsStringCollectionSaxHandler::GetHandler ();
 
     } else if (! _wcsicmp (name, GwsQueryXml::xmlGwsFilter)) {
 
         for (int i = 0; i < attrs->GetCount (); i ++) {
-            GisPtr<GisXmlAttribute> attr = attrs->GetItem (i);
+            FdoPtr<FdoXmlAttribute> attr = attrs->GetItem (i);
             if (_wcsicmp (attr->GetName (), GwsQueryXml::xmlGwsFilterStringValue) == 0) {
-                GisString * value = attr->GetValue ();
+                FdoString * value = attr->GetValue ();
                 if (* value != 0)
                     m_filter = FdoFilter::Parse (value); // exception is caught
                                                          // by the outermost caller

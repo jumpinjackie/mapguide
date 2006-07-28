@@ -20,10 +20,10 @@
 
 MgServerGetFeatureProviders::MgServerGetFeatureProviders()
 {
-    GisPtr<IProviderRegistry> providerReg = FdoFeatureAccessManager::GetProviderRegistry();
+    FdoPtr<IProviderRegistry> providerReg = FdoFeatureAccessManager::GetProviderRegistry();
     CHECKNULL(providerReg, L"MgServerGetFeatureProviders.MgServerGetFeatureProviders()");
 
-    GisPtr<IConnectionManager> connManager = FdoFeatureAccessManager::GetConnectionManager();
+    FdoPtr<IConnectionManager> connManager = FdoFeatureAccessManager::GetConnectionManager();
     CHECKNULL(connManager, L"MgServerGetFeatureProviders.MgServerGetFeatureProviders()");
 
     m_fdoProviderCol = providerReg->GetProviders();
@@ -40,8 +40,8 @@ MgServerGetFeatureProviders::MgServerGetFeatureProviders()
 
 MgServerGetFeatureProviders::~MgServerGetFeatureProviders()
 {
-    GIS_SAFE_RELEASE(m_providerReg);
-    GIS_SAFE_RELEASE(m_connManager);
+    FDO_SAFE_RELEASE(m_providerReg);
+    FDO_SAFE_RELEASE(m_connManager);
 
     // do not release this one
     m_fdoProviderCol = NULL;
@@ -71,10 +71,10 @@ void MgServerGetFeatureProviders::CreateFeatureProvidersDocument()
     INT32 cnt = m_fdoProviderCol->GetCount();
     for (INT32 i = 0; i < cnt; i++)
     {
-        GisPtr<FdoProvider> fdoProvider = m_fdoProviderCol->GetItem(i);
+        FdoPtr<FdoProvider> fdoProvider = m_fdoProviderCol->GetItem(i);
 
         // Get ProviderName
-        GisString* providerName = fdoProvider->GetName();
+        FdoString* providerName = fdoProvider->GetName();
 
         const char *name        = MgUtil::WideCharToMultiByte(providerName);
         const char *dispname    = MgUtil::WideCharToMultiByte(fdoProvider->GetDisplayName());
@@ -107,12 +107,12 @@ void MgServerGetFeatureProviders::CreateFeatureProvidersDocument()
     }
 }
 
-void MgServerGetFeatureProviders::AddConnectionProperties(DOMElement* providerElem, GisString* providerName)
+void MgServerGetFeatureProviders::AddConnectionProperties(DOMElement* providerElem, FdoString* providerName)
 {
     CHECKNULL(providerElem, L"MgServerGetFeatureProviders.AddConnectionProperties");
 
     // Get Properties
-    GisInt32 totalProperties = 0;
+    FdoInt32 totalProperties = 0;
 
     // Add ConnnectionProperties element (mandatory element)
     DOMElement* connPropRootElem = m_xmlUtil->AddChildNode(providerElem, "ConnectionProperties" /* NOXLATE */ );
@@ -124,22 +124,22 @@ void MgServerGetFeatureProviders::AddConnectionProperties(DOMElement* providerEl
 
     // Get FdoIConnection instance
     // TODO: Should this connection be cached?
-    GisPtr<FdoIConnection> fdoConn = m_connManager->CreateConnection(providerName);
+    FdoPtr<FdoIConnection> fdoConn = m_connManager->CreateConnection(providerName);
     CHECKNULL((FdoIConnection*)fdoConn, L"MgServerGetFeatureProviders.AddConnectionProperties");
 
     // Get FdoIConnectionInfo
-    GisPtr<FdoIConnectionInfo> fdoConnInfo = fdoConn->GetConnectionInfo();
+    FdoPtr<FdoIConnectionInfo> fdoConnInfo = fdoConn->GetConnectionInfo();
     CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgServerGetFeatureProviders.AddConnectionProperties");
 
     // Get FdoIConnectionPropertyDictionary
-    GisPtr<FdoIConnectionPropertyDictionary> fdoConnPropertyDict = fdoConnInfo->GetConnectionProperties();
+    FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropertyDict = fdoConnInfo->GetConnectionProperties();
     CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropertyDict, L"MgServerGetFeatureProviders.AddConnectionProperties");
 
     // Get list of all properties
-    GisString** properties = fdoConnPropertyDict->GetPropertyNames(totalProperties);
+    FdoString** properties = fdoConnPropertyDict->GetPropertyNames(totalProperties);
     CHECKNULL(properties, L"MgServerGetFeatureProviders.AddConnectionProperties");
 
-    for ( GisInt32 i=0; i < totalProperties; i++ )
+    for ( FdoInt32 i=0; i < totalProperties; i++ )
     {
         AddConnectionProperty(connPropRootElem, properties[i], fdoConnPropertyDict);
     }
@@ -148,7 +148,7 @@ void MgServerGetFeatureProviders::AddConnectionProperties(DOMElement* providerEl
 }
 
 void MgServerGetFeatureProviders::AddConnectionProperty(DOMElement* connPropRootElem,
-                                                   GisString* propertyName,
+                                                   FdoString* propertyName,
                                                    FdoIConnectionPropertyDictionary* fdoConnPropertyDict)
 {
     CHECKNULL(connPropRootElem,     L"MgServerGetFeatureProviders.AddConnectionProperty");
@@ -185,7 +185,7 @@ void MgServerGetFeatureProviders::AddConnectionProperty(DOMElement* connPropRoot
     delete[] propName;
 
     // Add Localized Name
-    GisString* propLocalizedName = fdoConnPropertyDict->GetLocalizedName(propertyName);
+    FdoString* propLocalizedName = fdoConnPropertyDict->GetLocalizedName(propertyName);
     if (propLocalizedName)
     {
         const char *localname = MgUtil::WideCharToMultiByte(propLocalizedName);
@@ -194,7 +194,7 @@ void MgServerGetFeatureProviders::AddConnectionProperty(DOMElement* connPropRoot
     }
 
     // Add Default value
-    GisString* propDefaultValue = fdoConnPropertyDict->GetPropertyDefault(propertyName);
+    FdoString* propDefaultValue = fdoConnPropertyDict->GetPropertyDefault(propertyName);
     if (propDefaultValue)
     {
         const char *defvalue = MgUtil::WideCharToMultiByte(propDefaultValue);
@@ -205,9 +205,9 @@ void MgServerGetFeatureProviders::AddConnectionProperty(DOMElement* connPropRoot
     // Add the values of enumerable properties if we can
     if (isEnumerable)
     {
-        GisInt32 propCnt;
-        GisString** propValues = fdoConnPropertyDict->EnumeratePropertyValues(propertyName, propCnt);
-        for ( GisInt32 j = 0; j < propCnt; j++ )
+        FdoInt32 propCnt;
+        FdoString** propValues = fdoConnPropertyDict->EnumeratePropertyValues(propertyName, propCnt);
+        for ( FdoInt32 j = 0; j < propCnt; j++ )
         {
             const char *value = MgUtil::WideCharToMultiByte(propValues[j]);
             m_xmlUtil->AddTextNode(connPropElem, "Value" /* NOXLATE */, value);

@@ -49,26 +49,26 @@ CGwsStringCollectionSaxHandler * CGwsStringCollectionSaxHandler::GetHandler ()
     return & m_shandler;
 }
 
-void CGwsStringCollectionSaxHandler::SetDestination (GisStringCollection * strcoll)
+void CGwsStringCollectionSaxHandler::SetDestination (FdoStringCollection * strcoll)
 {
     m_strcoll = strcoll;
 }
 
-void CGwsStringCollectionSaxHandler::Write (GisXmlWriter * writer, GisStringCollection * sellist)
+void CGwsStringCollectionSaxHandler::Write (FdoXmlWriter * writer, FdoStringCollection * sellist)
 {
     if (sellist) {
-        GisStringP str = sellist->ToString (CGwsStringCollectionSaxHandler::m_sdelimiter);
+        FdoStringP str = sellist->ToString (CGwsStringCollectionSaxHandler::m_sdelimiter);
         writer->WriteCharacters (str);
     }
 }
 
 
-void CGwsStringCollectionSaxHandler::XmlCharacters(GisXmlSaxContext* ctx, GisString* chars)
+void CGwsStringCollectionSaxHandler::XmlCharacters(FdoXmlSaxContext* ctx, FdoString* chars)
 {
     ctx; // For "unreferenced formal parameter" warning
 
     if (m_strcoll) {
-        GisPtr<GisStringCollection> tcoll = GisStringCollection::Create (chars, m_sdelimiter);
+        FdoPtr<FdoStringCollection> tcoll = FdoStringCollection::Create (chars, m_sdelimiter);
         m_strcoll->Append (* tcoll);
     }
 }

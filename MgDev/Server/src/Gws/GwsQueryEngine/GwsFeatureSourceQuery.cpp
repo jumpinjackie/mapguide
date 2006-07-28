@@ -34,7 +34,7 @@
 
 static bool supportOrdering (FdoIConnection * conn)
 {
-    GisPtr<FdoICommandCapabilities> ptrCap;
+    FdoPtr<FdoICommandCapabilities> ptrCap;
     ptrCap = conn->GetCommandCapabilities();
     assert (ptrCap);
     if (ptrCap == NULL)
@@ -145,7 +145,7 @@ void CGwsFeatureSourceQuery::Prepare ()
 
     try {
         m_pQuery = Prepare (m_qrydef, L"");
-    } catch (GisException * ex) {
+    } catch (FdoException * ex) {
         GWS_RETHROW (ex, eGwsFailedToPrepareQuery);
     }
 
@@ -173,7 +173,7 @@ CGwsPreparedQuery * CGwsFeatureSourceQuery::Prepare (
 
 CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
     IGWSFeatureQueryDefinition * pFQuery,
-    GisStringCollection        * orderByCols,
+    FdoStringCollection        * orderByCols,
     const WSTR                 & suffix
 )
 {
@@ -182,10 +182,10 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
     const GWSQualifiedName      classname = pFQuery->ClassName ();
 
     // fdo connection for the prepared query from the pool
-    GisPtr<FdoIConnection>      conn = m_connectionpool->GetConnection (
+    FdoPtr<FdoIConnection>      conn = m_connectionpool->GetConnection (
                                                             classname.FeatureSource ());
     CGwsPreparedFeatureQuery *  pQuery = CreatePreparedFeatureQuery (conn, classname);
-    GisPtr<GisStringCollection> sellist = pFQuery->SelectList ();
+    FdoPtr<FdoStringCollection> sellist = pFQuery->SelectList ();
     WSTR                        madesuffix;
 
     if (suffix.empty ())
@@ -193,7 +193,7 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
     else
         madesuffix = suffix;
 
-    GisPtr<IGWSCoordinateSystemConverter> csconverter;
+    FdoPtr<IGWSCoordinateSystemConverter> csconverter;
     if (m_csfactory && ! m_csname.IsEmpty ()) {
         // if coordinate system factory and coordinate system name
         // are both set, create conveter
@@ -212,7 +212,7 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
     {
         stat = pQuery->Init ( sellist, orderByCols, pFQuery->Filter ());
     }
-    catch (GisException* ex)
+    catch (FdoException* ex)
     {
         delete pQuery;
         GWS_RETHROW (ex, eGwsFailedToPrepareQuery);
@@ -230,7 +230,7 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
     {
         stat = pQuery->Prepare ();
     }
-    catch (GisException* ex)
+    catch (FdoException* ex)
     {
         delete pQuery;
         GWS_RETHROW (ex, eGwsFailedToPrepareQuery);
@@ -257,15 +257,15 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
     CGwsPreparedQuery        *  pRightQuery = NULL;
 
     try {
-        GisPtr<IGWSQueryDefinition> lqdef = pFQuery->LeftQueryDefinition ();
-        GisPtr<GisStringCollection> lCols = pFQuery->LeftJoinAttributes ();
+        FdoPtr<IGWSQueryDefinition> lqdef = pFQuery->LeftQueryDefinition ();
+        FdoPtr<FdoStringCollection> lCols = pFQuery->LeftJoinAttributes ();
         if (lCols == NULL) {
             PushStatus (eGwsMissingLeftJoinAttributes);
             eGwsOkThrow (eGwsMissingLeftJoinAttributes);
         }
 
-        GisPtr<IGWSQueryDefinition> rqdef = pFQuery->RightQueryDefinition ();
-        GisPtr<GisStringCollection> rCols = pFQuery->RightJoinAttributes ();
+        FdoPtr<IGWSQueryDefinition> rqdef = pFQuery->RightQueryDefinition ();
+        FdoPtr<FdoStringCollection> rCols = pFQuery->RightJoinAttributes ();
         if (lCols->GetCount () != rCols->GetCount ()) {
             PushStatus (eGwsJoinPropertiesCardinalityViolation);
             eGwsOkThrow (eGwsJoinPropertiesCardinalityViolation);
@@ -290,7 +290,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
         if (lqdef->Type () == eGwsQueryFeature) {
             // left node is a primary query
             IGWSFeatureQueryDefinition     * lfqdef = static_cast<IGWSFeatureQueryDefinition*>(lqdef.p);
-            GisPtr<FdoIConnection>  conn =
+            FdoPtr<FdoIConnection>  conn =
                         m_connectionpool->GetConnection (
                                                 lfqdef->ClassName ().FeatureSource ());
             lSupportsOrdering = supportOrdering (conn);
@@ -304,7 +304,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
             {
                 // if left part is ordered and ordering is identical to
                 // the left join attrbites use this orderin
-                GisPtr<GisStringCollection> l =  lJoin->LeftProperties ();
+                FdoPtr<FdoStringCollection> l =  lJoin->LeftProperties ();
                 if (l->GetCount () == lCols->GetCount ()) {
                     int i;
                     for (i = 0; i < l->GetCount (); i ++) {
@@ -323,7 +323,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
 
         if (rqdef->Type () == eGwsQueryFeature) {
             IGWSFeatureQueryDefinition     * rfqdef = static_cast<IGWSFeatureQueryDefinition*>(rqdef.p);
-            GisPtr<FdoIConnection>  conn =
+            FdoPtr<FdoIConnection>  conn =
                         m_connectionpool->GetConnection (
                                                 rfqdef->ClassName ().FeatureSource ());
             rSupportsOrdering = supportOrdering (conn);
@@ -348,8 +348,8 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
 
         int i = 0;
         for (i = 0; i < lCols->GetCount (); i ++) {
-            GisPtr<FdoPropertyDefinition> lpdef = lpq->GetPropertyDefinition (lCols->GetString (i));
-            GisPtr<FdoPropertyDefinition> rpdef = rpq->GetPropertyDefinition (rCols->GetString (i));
+            FdoPtr<FdoPropertyDefinition> lpdef = lpq->GetPropertyDefinition (lCols->GetString (i));
+            FdoPtr<FdoPropertyDefinition> rpdef = rpq->GetPropertyDefinition (rCols->GetString (i));
 
             // will throw EGwsStatus if invalid
             ValidateJoinAttributes (lpdef, rpdef, lCols->GetString (i), rCols->GetString (i));
@@ -395,7 +395,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
         prepQuery = NULL;
         GWS_THROW (estat);
     }
-    catch (GisException* ex)
+    catch (FdoException* ex)
     {
         if (prepQuery != NULL)
             delete prepQuery;
@@ -413,8 +413,8 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
 void CGwsFeatureSourceQuery::ValidateJoinAttributes (
     FdoPropertyDefinition * lpdef,
     FdoPropertyDefinition * rpdef,
-    GisString             * lcol,
-    GisString             * rcol
+    FdoString             * lcol,
+    FdoString             * rcol
 )
 {
     if (lpdef == NULL) {
@@ -484,8 +484,8 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::CreatePreparedJoinQuery(
     EGwsJoinMethod             joinmethod,
     CGwsPreparedQuery        * lpq,
     CGwsPreparedQuery        * rpq,
-    GisStringCollection      * lcols,
-    GisStringCollection      * rcols
+    FdoStringCollection      * lcols,
+    FdoStringCollection      * rcols
 )
 {
     if (jtype == eGwsQueryLeftOuterJoin)

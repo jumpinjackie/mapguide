@@ -42,12 +42,12 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
 {
     m_classDef = other.m_classDef;
     m_classname = other.m_classname;
-    m_propertynames = GisStringCollection::Create (other.m_propertynames);
+    m_propertynames = FdoStringCollection::Create (other.m_propertynames);
     m_propdsc = other.m_propdsc;
     m_suffix = other.m_suffix;
     CGwsQueryResultDescriptors & src = (CGwsQueryResultDescriptors &) other;
     for (int i = 0; i < src.GetCount (); i ++) {
-        GisPtr<IGWSExtendedFeatureDescription> fdsc = src.GetItem (i);
+        FdoPtr<IGWSExtendedFeatureDescription> fdsc = src.GetItem (i);
         Add (fdsc);
     }
 }
@@ -56,14 +56,14 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
 CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     FdoClassDefinition     * classDef,
     const GWSQualifiedName & classname,
-    GisStringCollection    * propnames
+    FdoStringCollection    * propnames
 )
 {
     m_classDef = classDef;
     if (classDef != NULL)
         classDef->AddRef ();
     m_classname = classname;
-    m_propertynames = GisStringCollection::Create ();
+    m_propertynames = FdoStringCollection::Create ();
     appendPropertyNames (propnames, classDef, m_propertynames, m_propdsc);
 }
 
@@ -77,15 +77,15 @@ CGwsQueryResultDescriptors::~CGwsQueryResultDescriptors () throw()
 }
 
 void CGwsQueryResultDescriptors::appendPropertyNames (
-    GisStringCollection       * propnamestoadd,
+    FdoStringCollection       * propnamestoadd,
     FdoClassDefinition        * classDef,
-    GisStringCollection       * propnames,
+    FdoStringCollection       * propnames,
     std::vector<CGwsPropertyDesc> & propdsc
 )
 {
-    GisPtr<FdoPropertyDefinitionCollection> properties;
+    FdoPtr<FdoPropertyDefinitionCollection> properties;
 
-    GisPtr<FdoClassDefinition> baseClass = classDef->GetBaseClass ();
+    FdoPtr<FdoClassDefinition> baseClass = classDef->GetBaseClass ();
     if (baseClass != NULL) {
         appendPropertyNames (propnamestoadd, baseClass, propnames, propdsc);
     }
@@ -94,7 +94,7 @@ void CGwsQueryResultDescriptors::appendPropertyNames (
     if (properties == NULL)
         return;
     for (int i = 0; i < properties->GetCount (); i ++) {
-        GisPtr<FdoPropertyDefinition>   pFdoProperty = properties->GetItem (i);
+        FdoPtr<FdoPropertyDefinition>   pFdoProperty = properties->GetItem (i);
         if (propnamestoadd == NULL ||
             propnamestoadd->IndexOf (pFdoProperty->GetName ()) >= 0)
             pushPropDefinition (pFdoProperty, propnames,propdsc);
@@ -103,7 +103,7 @@ void CGwsQueryResultDescriptors::appendPropertyNames (
 
 void CGwsQueryResultDescriptors::pushPropDefinition (
     FdoPropertyDefinition     * propdef,
-    GisStringCollection       * propnames,
+    FdoStringCollection       * propnames,
     std::vector<CGwsPropertyDesc> & propdsc
 )
 {
@@ -133,7 +133,7 @@ void CGwsQueryResultDescriptors::pushPropDefinition (
         haselevation = pGeomDef->GetHasElevation ();
         hasmeasure = pGeomDef->GetHasMeasure ();
         geometrytypes = pGeomDef->GetGeometryTypes ();
-        GisString * sc = pGeomDef->GetSpatialContextAssociation ();
+        FdoString * sc = pGeomDef->GetSpatialContextAssociation ();
         spatialcontext = sc != NULL ? sc : L"";
     }
 
@@ -192,7 +192,7 @@ IGWSExtendedFeatureDescription * CGwsQueryResultDescriptors::GetItem (
     }
 
     for (int i = 0; res == NULL && i < GetCount (); i ++) {
-        GisPtr<IGWSExtendedFeatureDescription> fdesc = GetItem (i);
+        FdoPtr<IGWSExtendedFeatureDescription> fdesc = GetItem (i);
         res = fdesc->GetItem (name);
     }
     if (res == NULL)
@@ -201,7 +201,7 @@ IGWSExtendedFeatureDescription * CGwsQueryResultDescriptors::GetItem (
 }
 
 
-GisStringCollection  * CGwsQueryResultDescriptors::PropertyNames ()
+FdoStringCollection  * CGwsQueryResultDescriptors::PropertyNames ()
 {
     if (m_propertynames != NULL)
         m_propertynames.p->AddRef ();
@@ -230,7 +230,7 @@ const CGwsPropertyDesc & CGwsQueryResultDescriptors::GetPropertyDescriptor (int 
 }
 
 const CGwsPropertyDesc & CGwsQueryResultDescriptors::GetPropertyDescriptor (
-    GisString * name
+    FdoString * name
 )
 {
 
@@ -256,12 +256,12 @@ const std::vector<CGwsPropertyDesc> & CGwsQueryResultDescriptors::GetPropertyDes
     return m_propdsc;
 }
 
-int CGwsQueryResultDescriptors::Contains (GisString* propertyName)
+int CGwsQueryResultDescriptors::Contains (FdoString* propertyName)
 {
-    GisPtr<GisStringCollection> pPropNames = PropertyNames();
+    FdoPtr<FdoStringCollection> pPropNames = PropertyNames();
     for(int i=0;i<pPropNames->GetCount();i++)
     {
-        GisString* pComp = pPropNames->GetString(i);
+        FdoString* pComp = pPropNames->GetString(i);
         if( _wcsicmp( propertyName, pComp ) == 0)
             return i;
     }
@@ -272,7 +272,7 @@ FdoDataPropertyDefinitionCollection *
     CGwsQueryResultDescriptors::GetIdentityProperties ()
 {
     if (m_identprops == NULL) {
-        GisPtr<FdoClassDefinition> classdef = ClassDefinition ();
+        FdoPtr<FdoClassDefinition> classdef = ClassDefinition ();
         GwsCommonFdoUtils::GetFdoClassIdentityProperties (classdef, m_identprops.p);
     }
     if (m_identprops != NULL)
@@ -282,7 +282,7 @@ FdoDataPropertyDefinitionCollection *
 
 
 FdoPropertyDefinition * CGwsQueryResultDescriptors::FindPropertyDefinition (
-    GisString* propertyName
+    FdoString* propertyName
 )
 {
     for (size_t i = 0; i < m_propdsc.size (); i ++) {

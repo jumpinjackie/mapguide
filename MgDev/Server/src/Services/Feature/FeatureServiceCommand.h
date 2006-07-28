@@ -36,8 +36,8 @@ public:
     virtual void SetGroupingFilter( FdoFilter* filter ) = 0;
     virtual FdoFilter* GetGroupingFilter( ) = 0;
 
-    virtual void SetFeatureClassName(GisString* value) = 0;
-    virtual void SetFilter(GisString* value) = 0;
+    virtual void SetFeatureClassName(FdoString* value) = 0;
+    virtual void SetFilter(FdoString* value) = 0;
     virtual void SetFilter(FdoFilter* value) = 0;
 
     virtual FdoFilter* GetFilter() = 0;

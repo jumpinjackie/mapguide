@@ -56,7 +56,7 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
         throw new MgConnectionFailedException(L"MgServerGetSpatialContexts::GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    GisPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
     m_providerName = msfc.GetProviderName();
     m_spatialContextInfoMap.reset(msfc.GetSpatialContextInfoMap());
 
@@ -68,11 +68,11 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
         throw new MgInvalidOperationException(L"MgServerGetSpatialContexts.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    GisPtr<FdoIGetSpatialContexts> fdoCommand = (FdoIGetSpatialContexts*)fdoConn->CreateCommand(FdoCommandType_GetSpatialContexts);
+    FdoPtr<FdoIGetSpatialContexts> fdoCommand = (FdoIGetSpatialContexts*)fdoConn->CreateCommand(FdoCommandType_GetSpatialContexts);
     CHECKNULL((FdoIGetSpatialContexts*)fdoCommand, L"MgServerGetSpatialContexts.GetSpatialContexts");
 
     // Execute the command
-    GisPtr<FdoISpatialContextReader> spatialReader = fdoCommand->Execute();
+    FdoPtr<FdoISpatialContextReader> spatialReader = fdoCommand->Execute();
     CHECKNULL((FdoISpatialContextReader*)spatialReader, L"MgServerGetSpatialContexts.GetSpatialContexts");
 
     mgSpatialContextReader = new MgSpatialContextReader();
@@ -130,12 +130,12 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     Ptr<MgSpatialContextData> spatialData = new MgSpatialContextData();
 
     // Name must exist
-    GisString* name = spatialReader->GetName();
-    CHECKNULL((GisString*)name, L"MgServerGetSpatialContexts.GetSpatialContexts");
+    FdoString* name = spatialReader->GetName();
+    CHECKNULL((FdoString*)name, L"MgServerGetSpatialContexts.GetSpatialContexts");
     spatialData->SetName(STRING(name));
 
     // Co-ordinate system
-    GisString* csName = spatialReader->GetCoordinateSystem();
+    FdoString* csName = spatialReader->GetCoordinateSystem();
     if (csName != NULL)
     {
         if (wcslen(csName) <= 0)
@@ -156,14 +156,14 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     }
 
     // WKT for co-ordinate system
-    GisString* csWkt = spatialReader->GetCoordinateSystemWkt();
+    FdoString* csWkt = spatialReader->GetCoordinateSystemWkt();
     if (csWkt != NULL)
     {
         spatialData->SetCoordinateSystemWkt(STRING(csWkt));
     }
 
     // Desc for spatial context
-    GisString* desc = spatialReader->GetDescription();
+    FdoString* desc = spatialReader->GetDescription();
     if (desc != NULL)
     {
         spatialData->SetDescription(STRING(desc));
@@ -174,7 +174,7 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     spatialData->SetExtentType((INT32)extentType);
 
     // Extent (Geometry data)
-    GisPtr<GisByteArray> byteArray = spatialReader->GetExtent();
+    FdoPtr<FdoByteArray> byteArray = spatialReader->GetExtent();
 
     if (byteArray.p != NULL)
     {

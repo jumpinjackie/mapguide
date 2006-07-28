@@ -33,7 +33,7 @@
 FdoDataValue * GwsQueryUtils::GetDataPropertyValue (
     FdoIReader  *   reader,
     FdoDataType     dataprop,
-    GisString   *   name
+    FdoString   *   name
 )
 {
     if (reader->IsNull (name))
@@ -69,8 +69,8 @@ FdoDataValue * GwsQueryUtils::GetDataPropertyValue (
     case FdoDataType_BLOB:
     case FdoDataType_CLOB:
         {
-            GisPtr<FdoLOBValue> bval = (FdoBLOBValue *) reader->GetLOB (name);
-            GisPtr<GisByteArray> bdata = bval->GetData ();
+            FdoPtr<FdoLOBValue> bval = (FdoBLOBValue *) reader->GetLOB (name);
+            FdoPtr<FdoByteArray> bdata = bval->GetData ();
             return FdoDataValue::Create (bdata, dataprop);
         }
     case FdoDataType_DateTime:
@@ -109,7 +109,7 @@ void GwsQueryUtils::ToString (
 
     case FdoPropertyType_GeometricProperty:
         {
-            GisPtr<GisByteArray> barr = feature->GetGeometry(desc.m_name.c_str ());
+            FdoPtr<FdoByteArray> barr = feature->GetGeometry(desc.m_name.c_str ());
             wcsncpy (buff,  L"GeometricProperty", len);
         }
         return;
@@ -131,7 +131,7 @@ void GwsQueryUtils::ToString (
             break;
 
         case FdoDataType_Byte: {
-                GisByte val = feature->GetByte (desc.m_name.c_str ());
+                FdoByte val = feature->GetByte (desc.m_name.c_str ());
                 swprintf (tbuff, 256, L"%d", val);
                 wcsncpy (buff,  tbuff, len);
             }
@@ -146,21 +146,21 @@ void GwsQueryUtils::ToString (
             break;
 
         case FdoDataType_Int16: {
-                GisInt16 val = feature->GetInt16 (desc.m_name.c_str ());
+                FdoInt16 val = feature->GetInt16 (desc.m_name.c_str ());
                 swprintf (tbuff, 256, L"%d", val);
                 wcsncpy (buff,  tbuff, len);
             }
             break;
 
         case FdoDataType_Int32: {
-                GisInt32 val = feature->GetInt32 (desc.m_name.c_str ());
+                FdoInt32 val = feature->GetInt32 (desc.m_name.c_str ());
                 swprintf (tbuff, 256, L"%ld", val);
                 wcsncpy (buff,  tbuff, len);
             }
             break;
 
         case FdoDataType_Int64: {
-                GisInt64 val = feature->GetInt64 (desc.m_name.c_str ());
+                FdoInt64 val = feature->GetInt64 (desc.m_name.c_str ());
                 #ifdef WIN32
                 _i64tow (val, tbuff, 10);
                 #else
@@ -183,10 +183,10 @@ void GwsQueryUtils::ToString (
 
         case FdoDataType_CLOB:
             {
-                GisPtr<FdoCLOBValue> lob = (FdoCLOBValue *) feature->GetLOB (desc.m_name.c_str ());
-                GisPtr<GisByteArray> bdata = lob->GetData ();
+                FdoPtr<FdoCLOBValue> lob = (FdoCLOBValue *) feature->GetLOB (desc.m_name.c_str ());
+                FdoPtr<FdoByteArray> bdata = lob->GetData ();
                 WSTR                 wbuff;
-                GisByte            * bytes = bdata->GetData ();
+                FdoByte            * bytes = bdata->GetData ();
 
                 // what is clob representation?
                 // unicode? codepage if not unicode?
@@ -207,10 +207,10 @@ void GwsQueryUtils::ToString (
 
         case FdoDataType_BLOB:
             {
-                GisPtr<FdoLOBValue>  lob = feature->GetLOB (desc.m_name.c_str ());
-                GisPtr<GisByteArray> bdata = lob->GetData ();
+                FdoPtr<FdoLOBValue>  lob = feature->GetLOB (desc.m_name.c_str ());
+                FdoPtr<FdoByteArray> bdata = lob->GetData ();
                 WSTR                 wbuff;
-                GisByte            * bytes = bdata->GetData ();
+                FdoByte            * bytes = bdata->GetData ();
                 for (int i = 0; i < bdata->GetCount (); i ++) {
                     wchar_t symbol [16];
                     if (i != 0)
@@ -224,7 +224,7 @@ void GwsQueryUtils::ToString (
             break;
 
         case FdoDataType_DateTime: {
-            GisDateTime dt = feature->GetDateTime (desc.m_name.c_str ());
+            FdoDateTime dt = feature->GetDateTime (desc.m_name.c_str ());
             swprintf (tbuff, 256, L"%d-%d-%d %2d:%2d:%2.4f",
                              dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.seconds);
             wcsncpy (buff,  tbuff, len);
@@ -242,8 +242,8 @@ void GwsQueryUtils::ToString (
 }
 
 static bool CompareStringCollections (
-    GisStringCollection * slist1,
-    GisStringCollection * slist2
+    FdoStringCollection * slist1,
+    FdoStringCollection * slist2
 )
 {
 
@@ -274,8 +274,8 @@ bool GwsQueryUtils::QueryDefinitionsEqual (
     if (qdef1->Type () != qdef2->Type ())
         return false;
 
-    GisPtr<GisStringCollection> slist1;
-    GisPtr<GisStringCollection> slist2;
+    FdoPtr<FdoStringCollection> slist1;
+    FdoPtr<FdoStringCollection> slist2;
 
     if (qdef1->Type () == eGwsQueryFeature) {
         IGWSFeatureQueryDefinition * fqdef1 = dynamic_cast<IGWSFeatureQueryDefinition *> (qdef1);
@@ -284,11 +284,11 @@ bool GwsQueryUtils::QueryDefinitionsEqual (
         if (! (fqdef1->ClassName () == fqdef2->ClassName ()))
             return false;
 
-        GisPtr<FdoFilter> flt1 = fqdef1->Filter ();
-        GisPtr<FdoFilter> flt2 = fqdef2->Filter ();
+        FdoPtr<FdoFilter> flt1 = fqdef1->Filter ();
+        FdoPtr<FdoFilter> flt2 = fqdef2->Filter ();
 
-        GisString * fstr1 = flt1 != NULL ? flt1->ToString () : L"f";
-        GisString * fstr2 = flt2 != NULL ? flt2->ToString () : L"f";
+        FdoString * fstr1 = flt1 != NULL ? flt1->ToString () : L"f";
+        FdoString * fstr2 = flt2 != NULL ? flt2->ToString () : L"f";
         if (wcscmp (fstr1, fstr2) != 0)
             return false;
 
@@ -313,8 +313,8 @@ bool GwsQueryUtils::QueryDefinitionsEqual (
         if (! CompareStringCollections (slist1, slist2))
             return false;
 
-        GisPtr<IGWSQueryDefinition> jqdefp1;
-        GisPtr<IGWSQueryDefinition> jqdefp2;
+        FdoPtr<IGWSQueryDefinition> jqdefp1;
+        FdoPtr<IGWSQueryDefinition> jqdefp2;
 
         jqdefp1 = jqdef1->LeftQueryDefinition ();
         jqdefp2 = jqdef2->LeftQueryDefinition ();

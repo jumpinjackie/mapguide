@@ -56,7 +56,7 @@ public:
                                                         CSysTransformer*        xformer
                                                     );
 
-    STYLIZATION_API virtual void SetGeometryAdapter( GisGeometryType type,
+    STYLIZATION_API virtual void SetGeometryAdapter( FdoGeometryType type,
                                                      GeometryAdapter* sg);
 
     STYLIZATION_API virtual void SetStylizeFeature(  FdoClassDefinition* classDef,
