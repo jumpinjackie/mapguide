@@ -59,12 +59,12 @@ const GWSFeatureId & GWSExtendedFeatureId::FeatureId () const
 }
 
 
-GisInt32 GWSExtendedFeatureId::GetCount() const
+FdoInt32 GWSExtendedFeatureId::GetCount() const
 {
     return m_fid.GetCount ();
 }
 
-FdoDataValue * GWSExtendedFeatureId::GetItem(GisInt32 index) const
+FdoDataValue * GWSExtendedFeatureId::GetItem(FdoInt32 index) const
 {
     return m_fid.GetItem (index);
 }

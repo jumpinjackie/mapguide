@@ -58,7 +58,7 @@ public:
 
     virtual unsigned char   GetByte     (const wchar_t* propertyName);
 
-    virtual GisDateTime     GetDateTime (const wchar_t* propertyName);
+    virtual FdoDateTime     GetDateTime (const wchar_t* propertyName);
 
     virtual float           GetSingle   (const wchar_t* propertyName);
 

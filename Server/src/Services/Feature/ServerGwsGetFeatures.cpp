@@ -38,12 +38,12 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureRe
     m_featureSet = NULL;
     m_classDef = NULL;
     m_relationNames = NULL;
-    m_gwsFeatureReader = GIS_SAFE_ADDREF(gwsFeatureReader);
+    m_gwsFeatureReader = FDO_SAFE_ADDREF(gwsFeatureReader);
 }
 
 MgServerGwsGetFeatures::~MgServerGwsGetFeatures()
 {
-    GIS_SAFE_RELEASE(m_gwsFeatureReader);
+    FDO_SAFE_RELEASE(m_gwsFeatureReader);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
     if (NULL == (MgClassDefinition*)m_classDef)
     {
         // Retrieve FdoClassDefinition
-        GisPtr<FdoClassDefinition> fdoClassDefinition = m_gwsFeatureReader->GetClassDefinition();
+        FdoPtr<FdoClassDefinition> fdoClassDefinition = m_gwsFeatureReader->GetClassDefinition();
         CHECKNULL((FdoClassDefinition*)fdoClassDefinition, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
         // Convert FdoClassDefinition to MgClassDefinition
@@ -120,19 +120,19 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
         {
 
             // Retrieve the secondary feature source iterators, get the property definitions and add to class definition
-            GisPtr<IGWSExtendedFeatureDescription> desc;
+            FdoPtr<IGWSExtendedFeatureDescription> desc;
             m_gwsFeatureReader->DescribeFeature(&desc);
 
             for (int i = 0; i < desc->GetCount(); i++)
             {
-                GisPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureReader->GetJoinedFeatures(i);
+                FdoPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureReader->GetJoinedFeatures(i);
                 CHECKNULL(featureIter, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
                 // Retrieve the secondary class definitions
-                GisPtr<FdoClassDefinition> secFdoClassDefinition = featureIter->GetClassDefinition();
+                FdoPtr<FdoClassDefinition> secFdoClassDefinition = featureIter->GetClassDefinition();
                 CHECKNULL((FdoClassDefinition*)secFdoClassDefinition, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
-                GisStringP qname = secFdoClassDefinition->GetQualifiedName();
+                FdoStringP qname = secFdoClassDefinition->GetQualifiedName();
 
                 // Convert FdoClassDefinition to MgClassDefinition
                 Ptr<MgClassDefinition> secMgClassDef = this->GetMgClassDefinition(secFdoClassDefinition, bSerialize);
@@ -161,13 +161,13 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
             MgServerDescribeSchema msds;
             Ptr<MgClassDefinitionCollection> mcdc = new MgClassDefinitionCollection();
             mcdc->Add(mgClassDef);
-            GisPtr<FdoClassCollection> fcc;
+            FdoPtr<FdoClassCollection> fcc;
             fcc = FdoClassCollection::Create(NULL);
             msds.GetFdoClassCollection(fcc, mcdc);
             int nFccCount = fcc->GetCount();
 
             // Get the FdoClassDefinition
-            GisPtr<FdoClassDefinition> fdc = msds.GetFdoClassDefinition(mgClassDef, fcc);
+            FdoPtr<FdoClassDefinition> fdc = msds.GetFdoClassDefinition(mgClassDef, fcc);
 
             // Pass the FdoClassDefinition to SerializeToXml
             if (bSerialize)
@@ -228,14 +228,14 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(FdoClassDefiniti
     CHECKNULL((MgPropertyDefinitionCollection*)identityPropDefCol, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     // description
-    GisString* desc = fdoClassDefinition->GetDescription();
+    FdoString* desc = fdoClassDefinition->GetDescription();
     if (desc != NULL)
     {
         mgClassDef->SetDescription(STRING(desc));
     }
 
     // Class name
-    GisString* className = fdoClassDefinition->GetName();
+    FdoString* className = fdoClassDefinition->GetName();
     if (className != NULL)
     {
         mgClassDef->SetName(STRING(className));
@@ -254,17 +254,17 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(FdoClassDefiniti
     }
 
     // Retrieve Class properties from FDO
-    GisPtr<FdoPropertyDefinitionCollection> fpdc = fdoClassDefinition->GetProperties();
+    FdoPtr<FdoPropertyDefinitionCollection> fpdc = fdoClassDefinition->GetProperties();
     CHECKNULL((FdoPropertyDefinitionCollection*)fpdc, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     // Retrieve Base class properties from FDO
     // TODO: Should we add Base class properties into the list of properties?
     // TODO: Can this be null?
-    GisPtr<FdoReadOnlyPropertyDefinitionCollection> frpdc = fdoClassDefinition->GetBaseProperties();
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> frpdc = fdoClassDefinition->GetBaseProperties();
 
     // Retrieve identity properties from FDO
     // TODO: Can this be null?
-    GisPtr<FdoDataPropertyDefinitionCollection> fdpdc = fdoClassDefinition->GetIdentityProperties();
+    FdoPtr<FdoDataPropertyDefinitionCollection> fdpdc = fdoClassDefinition->GetIdentityProperties();
 
     // Add properties
     this->GetClassProperties(propDefCol, fpdc);
@@ -272,10 +272,10 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(FdoClassDefiniti
     FdoClassType classType = fdoClassDefinition->GetClassType();
     if (classType == FdoClassType_FeatureClass)
     {
-        GisPtr<FdoGeometricPropertyDefinition> geomPropDef = ((FdoFeatureClass*)fdoClassDefinition)->GetGeometryProperty();
+        FdoPtr<FdoGeometricPropertyDefinition> geomPropDef = ((FdoFeatureClass*)fdoClassDefinition)->GetGeometryProperty();
         if (geomPropDef != NULL)
         {
-            GisString* defaultGeomName = geomPropDef->GetName();
+            FdoString* defaultGeomName = geomPropDef->GetName();
             if (defaultGeomName != NULL)
             {
                 mgClassDef->SetDefaultGeometryPropertyName(STRING(defaultGeomName));
@@ -317,7 +317,7 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(FdoClassDefiniti
         mgClassDef->SetSerializedXml(str1);
     }
 
-    GisPtr<FdoClassDefinition> baseDefinition = fdoClassDefinition->GetBaseClass();
+    FdoPtr<FdoClassDefinition> baseDefinition = fdoClassDefinition->GetBaseClass();
     if (baseDefinition != NULL)
     {
         Ptr<MgClassDefinition> mgBaseClsDef = GetMgClassDefinition(baseDefinition, bSerialize);
@@ -338,11 +338,11 @@ void MgServerGwsGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* 
     if (NULL == fdoPropDefCol)
         return;
 
-    GisInt32 cnt = fdoPropDefCol->GetCount();
-    for (GisInt32 i =0; i < cnt; i++)
+    FdoInt32 cnt = fdoPropDefCol->GetCount();
+    for (FdoInt32 i =0; i < cnt; i++)
     {
         // Get Fdo Property
-        GisPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
+        FdoPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
         CHECKNULL((FdoPropertyDefinition*)fpd, L"MgServerGwsGetFeatures.GetClassProperties");
 
         // Create MgProperty
@@ -366,11 +366,11 @@ void MgServerGwsGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* 
     if (NULL == fdoPropDefCol)
         return;
 
-    GisInt32 cnt  = fdoPropDefCol->GetCount();
-    for (GisInt32 i =0; i < cnt; i++)
+    FdoInt32 cnt  = fdoPropDefCol->GetCount();
+    for (FdoInt32 i =0; i < cnt; i++)
     {
         // Get Fdo Property
-        GisPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
+        FdoPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
         CHECKNULL((FdoPropertyDefinition*)fpd, L"MgServerGwsGetFeatures.GetClassProperties");
 
         // Create MgProperty
@@ -444,14 +444,14 @@ MgDataPropertyDefinition* MgServerGwsGetFeatures::GetDataPropertyDefinition(FdoD
     Ptr<MgDataPropertyDefinition> propDef = new MgDataPropertyDefinition(name);
 
     // Get data members from FDO
-    GisString* defaultVal = fdoPropDef->GetDefaultValue();
-    GisInt32 length = fdoPropDef->GetLength();
+    FdoString* defaultVal = fdoPropDef->GetDefaultValue();
+    FdoInt32 length = fdoPropDef->GetLength();
     bool isReadOnly = fdoPropDef->GetReadOnly();
-    GisString* desc = fdoPropDef->GetDescription();
-    GisInt32 precision = fdoPropDef->GetPrecision();
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoInt32 precision = fdoPropDef->GetPrecision();
     bool isNullable = fdoPropDef->GetNullable();
-    GisStringP qname = fdoPropDef->GetQualifiedName();
-    GisInt32 scale = fdoPropDef->GetScale();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
+    FdoInt32 scale = fdoPropDef->GetScale();
     bool isAutoGenerated = fdoPropDef->GetIsAutoGenerated();
 
     // Set it for MapGuide
@@ -474,7 +474,7 @@ MgDataPropertyDefinition* MgServerGwsGetFeatures::GetDataPropertyDefinition(FdoD
     propDef->SetPrecision((INT32)precision);
     propDef->SetNullable(isNullable);
 
-    GisString* qualifiedName = (GisString*)qname;
+    FdoString* qualifiedName = (FdoString*)qname;
     if (qualifiedName != NULL)
     {
         propDef->SetQualifiedName(STRING(qualifiedName));
@@ -496,13 +496,13 @@ MgGeometricPropertyDefinition* MgServerGwsGetFeatures::GetGeometricPropertyDefin
     Ptr<MgGeometricPropertyDefinition> propDef = new MgGeometricPropertyDefinition(name);
 
     // Get data members from FDO
-    GisString* desc = fdoPropDef->GetDescription();
-    GisInt32 geomTypes = fdoPropDef->GetGeometryTypes();
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoInt32 geomTypes = fdoPropDef->GetGeometryTypes();
     bool hasElev = fdoPropDef->GetHasElevation();
     bool hasMeasure = fdoPropDef->GetHasMeasure();
-    GisStringP qname = fdoPropDef->GetQualifiedName();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
     bool isReadOnly = fdoPropDef->GetReadOnly();
-    GisString* spatialContextName = fdoPropDef->GetSpatialContextAssociation();
+    FdoString* spatialContextName = fdoPropDef->GetSpatialContextAssociation();
 
     // Set it for MapGuide
     if (desc != NULL)
@@ -513,7 +513,7 @@ MgGeometricPropertyDefinition* MgServerGwsGetFeatures::GetGeometricPropertyDefin
     propDef->SetGeometryTypes((INT32)geomTypes);
     propDef->SetHasElevation(hasElev);
     propDef->SetHasMeasure(hasMeasure);
-    GisString* qualifiedName = (GisString*)qname;
+    FdoString* qualifiedName = (FdoString*)qname;
     if (qualifiedName != NULL)
     {
         propDef->SetQualifiedName(STRING(qualifiedName));
@@ -648,7 +648,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
         }
         case MgPropertyType::Byte: /// Unsigned 8 bit value
         {
-            GisByte val = 0;
+            FdoByte val = 0;
             bool isNull = true;
 
             IGWSFeatureIterator* gwsFeatureIter = NULL;
@@ -677,7 +677,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
             {
                 if (!gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
                 {
-                    GisDateTime val = gwsFeatureIter->GetDateTime(parsedPropertyName.c_str());
+                    FdoDateTime val = gwsFeatureIter->GetDateTime(parsedPropertyName.c_str());
                     dateTime = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
                                               (INT8)val.hour, (INT8)val.minute, val.seconds);
                     isNull = false;
@@ -730,7 +730,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
         }
         case MgPropertyType::Int16: /// 16 bit signed integer value
         {
-            GisInt16 val = 0;
+            FdoInt16 val = 0;
             bool isNull = true;
 
             IGWSFeatureIterator* gwsFeatureIter = NULL;
@@ -750,7 +750,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
         }
         case MgPropertyType::Int32: // 32 bit signed integer value
         {
-            GisInt32 val = 0;
+            FdoInt32 val = 0;
             bool isNull = true;
 
             IGWSFeatureIterator* gwsFeatureIter = NULL;
@@ -770,7 +770,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
         }
         case MgPropertyType::Int64: // 64 bit signed integer value
         {
-            GisInt64 val = 0;
+            FdoInt64 val = 0;
             bool isNull = true;
 
             IGWSFeatureIterator* gwsFeatureIter = NULL;
@@ -860,7 +860,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
                 if (!gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
                 {
                     isNull = false;
-                    GisPtr<FdoIFeatureReader> featureObject = gwsFeatureIter->GetFeatureObject(parsedPropertyName.c_str());
+                    FdoPtr<FdoIFeatureReader> featureObject = gwsFeatureIter->GetFeatureObject(parsedPropertyName.c_str());
                     if (featureObject != NULL)
                     {
                         Ptr<MgServerFeatureReaderIdentifier> sfi = new MgServerFeatureReaderIdentifier(featureObject);
@@ -884,8 +884,8 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
             {
                 if (!gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
                 {
-                    GisInt32 length = 0;
-                    const GisByte* bytes = gwsFeatureIter->GetGeometry(parsedPropertyName.c_str(), &length);
+                    FdoInt32 length = 0;
+                    const FdoByte* bytes = gwsFeatureIter->GetGeometry(parsedPropertyName.c_str(), &length);
 
                     if (bytes != NULL)
                     {
@@ -911,7 +911,7 @@ MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, 
             {
                 if (!gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
                 {
-                    GisPtr<FdoIRaster> raster = gwsFeatureIter->GetRaster(parsedPropertyName.c_str());
+                    FdoPtr<FdoIRaster> raster = gwsFeatureIter->GetRaster(parsedPropertyName.c_str());
                     val = MgServerFeatureUtil::GetMgRaster(raster, parsedPropertyName);
                     isNull = false;
                 }
@@ -1050,16 +1050,16 @@ MgByteReader* MgServerGwsGetFeatures::SerializeToXml(FdoClassDefinition* classDe
 {
     CHECKNULL(classDef, L"MgServerGwsGetFeatures.SerializeToXml");
 
-    GisString* className = classDef->GetName();
+    FdoString* className = classDef->GetName();
     FdoFeatureSchemaP pSchema = classDef->GetFeatureSchema();
     FdoFeatureSchemaP tempSchema;
     FdoClassDefinitionP featClass;
-    GisInt32 index = 0;
+    FdoInt32 index = 0;
 
     if (pSchema != NULL)
     {
         //Get the position of the class in the collecion
-        GisPtr<FdoClassCollection> fcc = pSchema->GetClasses();
+        FdoPtr<FdoClassCollection> fcc = pSchema->GetClasses();
         index = fcc->IndexOf( className );
 
         // Move class of interest to its own schema
@@ -1074,15 +1074,15 @@ MgByteReader* MgServerGwsGetFeatures::SerializeToXml(FdoClassDefinition* classDe
         FdoClassesP(tempSchema->GetClasses())->Add(classDef);
     }
 
-    GisIoMemoryStreamP fmis = GisIoMemoryStream::Create();
+    FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
     tempSchema->WriteXml( fmis );
     fmis->Reset();
 
-    GisInt64 len = fmis->GetLength();
-    GisByte *bytes = new GisByte[(size_t)len];
+    FdoInt64 len = fmis->GetLength();
+    FdoByte *bytes = new FdoByte[(size_t)len];
     CHECKNULL(bytes, L"MgServerGwsGetFeatures::SerializeToXml");
 
-    fmis->Read(bytes, (GisSize)len);
+    fmis->Read(bytes, (FdoSize)len);
 
     // Get byte reader from memory stream
     Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes, (INT32)len);
@@ -1153,9 +1153,9 @@ MgObjectPropertyDefinition* MgServerGwsGetFeatures::GetObjectPropertyDefinition(
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgObjectPropertyDefinition> propDef = new MgObjectPropertyDefinition(name);
 
-    GisString* desc = fdoPropDef->GetDescription();
-    GisStringP qname = fdoPropDef->GetQualifiedName();
-    GisString* qualifiedName = (GisString*)qname;
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
+    FdoString* qualifiedName = (FdoString*)qname;
 
     if (qualifiedName != NULL)
     {
@@ -1168,10 +1168,10 @@ MgObjectPropertyDefinition* MgServerGwsGetFeatures::GetObjectPropertyDefinition(
         propDef->SetDescription(STRING(desc));
     }
 
-    GisPtr<FdoClassDefinition> fdoClsDef = fdoPropDef->GetClass();
+    FdoPtr<FdoClassDefinition> fdoClsDef = fdoPropDef->GetClass();
     CHECKNULL((FdoClassDefinition*)fdoClsDef, L"MgServerGwsGetFeatures.GetObjectPropertyDefinition")
 
-    GisPtr<FdoDataPropertyDefinition> idenProp = fdoPropDef->GetIdentityProperty(); // Can return NULL
+    FdoPtr<FdoDataPropertyDefinition> idenProp = fdoPropDef->GetIdentityProperty(); // Can return NULL
 
     FdoObjectType objType = fdoPropDef->GetObjectType();
     FdoOrderType orderType = fdoPropDef->GetOrderType();
@@ -1198,11 +1198,11 @@ MgRasterPropertyDefinition* MgServerGwsGetFeatures::GetRasterPropertyDefinition(
     Ptr<MgRasterPropertyDefinition> propDef = new MgRasterPropertyDefinition(name);
 
     // Get data members from FDO
-    GisString* desc = fdoPropDef->GetDescription();
-    GisInt32 xsize = fdoPropDef->GetDefaultImageXSize();
-    GisInt32 ysize = fdoPropDef->GetDefaultImageYSize();
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoInt32 xsize = fdoPropDef->GetDefaultImageXSize();
+    FdoInt32 ysize = fdoPropDef->GetDefaultImageYSize();
     bool isNullable = fdoPropDef->GetNullable();
-    GisStringP qname = fdoPropDef->GetQualifiedName();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
     bool isReadOnly = fdoPropDef->GetReadOnly();
 
     // Set it for MapGuide
@@ -1215,7 +1215,7 @@ MgRasterPropertyDefinition* MgServerGwsGetFeatures::GetRasterPropertyDefinition(
     propDef->SetDefaultImageYSize((INT32)ysize);
     propDef->SetNullable(isNullable);
 
-    GisString* qualifiedName = (GisString*)qname;
+    FdoString* qualifiedName = (FdoString*)qname;
     if (qualifiedName != NULL)
     {
         propDef->SetQualifiedName(STRING(qualifiedName));
@@ -1233,16 +1233,16 @@ MgByteReader* MgServerGwsGetFeatures::GetLOBFromFdo(CREFSTRING propName, IGWSFea
 
     Ptr<MgByteReader> byteReader;
 
-    // TODO: We need to switch to GisIStreamReader when we have streaming capability
+    // TODO: We need to switch to FdoIStreamReader when we have streaming capability
     // in MgByteReader
-    GisPtr<FdoLOBValue> fdoVal = gwsFeatureIterator->GetLOB(propName.c_str());
+    FdoPtr<FdoLOBValue> fdoVal = gwsFeatureIterator->GetLOB(propName.c_str());
     if (fdoVal != NULL)
     {
-        GisPtr<GisByteArray> byteArray = fdoVal->GetData();
+        FdoPtr<FdoByteArray> byteArray = fdoVal->GetData();
         if (byteArray != NULL)
         {
-            GisByte* bytes = byteArray->GetData();
-            GisInt32 len = byteArray->GetCount();
+            FdoByte* bytes = byteArray->GetData();
+            FdoInt32 len = byteArray->GetCount();
             Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
             byteReader = byteSource->GetReader();
         }
@@ -1281,9 +1281,9 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
 
     // Check if the input propName is prefixed with the relationName
     // by comparing with primary feature source property names
-    GisPtr<IGWSExtendedFeatureDescription> primaryDesc;
+    FdoPtr<IGWSExtendedFeatureDescription> primaryDesc;
     m_gwsFeatureReader->DescribeFeature(&primaryDesc);
-    GisPtr<GisStringCollection> primaryPropNames = primaryDesc->PropertyNames();
+    FdoPtr<FdoStringCollection> primaryPropNames = primaryDesc->PropertyNames();
     int nPrimaryDescCount = primaryDesc->GetCount();
 
     int primaryIndex = primaryPropNames->IndexOf(inputPropName.c_str());
@@ -1304,18 +1304,18 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
 
             if (secondaryFeatureIter->ReadNext())
             {
-                GisPtr<IGWSExtendedFeatureDescription> secondaryDesc;
+                FdoPtr<IGWSExtendedFeatureDescription> secondaryDesc;
                 secondaryFeatureIter->DescribeFeature(&secondaryDesc);
 
                 GWSQualifiedName secQualifiedClassName = secondaryDesc->ClassName();
 
-                GisString* featureSource = secQualifiedClassName.FeatureSource();
+                FdoString* featureSource = secQualifiedClassName.FeatureSource();
 
-                GisPtr<GisStringCollection> secondaryPropNames = secondaryDesc->PropertyNames();
+                FdoPtr<FdoStringCollection> secondaryPropNames = secondaryDesc->PropertyNames();
 
                 // cycle thru secondaryPropNames looking for substring occurrence in inputPropName
-                GisInt32 secPropCnt = secondaryPropNames->GetCount();
-                for (GisInt32 secPropIndex = 0; secPropIndex < secPropCnt; secPropIndex++)
+                FdoInt32 secPropCnt = secondaryPropNames->GetCount();
+                for (FdoInt32 secPropIndex = 0; secPropIndex < secPropCnt; secPropIndex++)
                 {
                     STRING secondaryProp = (STRING)secondaryPropNames->GetString(secPropIndex);
                     STRING::size_type nPropStartIndex = inputPropName.find(secondaryProp);
@@ -1340,9 +1340,9 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
 }
 
 
-void MgServerGwsGetFeatures::SetRelationNames(GisStringCollection* relationNames)
+void MgServerGwsGetFeatures::SetRelationNames(FdoStringCollection* relationNames)
 {
-    m_relationNames = GIS_SAFE_ADDREF(relationNames);
+    m_relationNames = FDO_SAFE_ADDREF(relationNames);
 }
 
 void MgServerGwsGetFeatures::SetExtensionName(CREFSTRING extensionName)
@@ -1350,9 +1350,9 @@ void MgServerGwsGetFeatures::SetExtensionName(CREFSTRING extensionName)
     m_extensionName = extensionName;
 }
 
-GisStringCollection* MgServerGwsGetFeatures::GetRelationNames()
+FdoStringCollection* MgServerGwsGetFeatures::GetRelationNames()
 {
-    return GIS_SAFE_ADDREF((GisStringCollection*)m_relationNames);
+    return FDO_SAFE_ADDREF((FdoStringCollection*)m_relationNames);
 }
 
 STRING MgServerGwsGetFeatures::GetExtensionName()

@@ -47,14 +47,14 @@ void GwsCommonFdoUtils::GetClassDefinition (
     FdoClassDefinition   * & classDef
 )
 {
-    GisPtr<FdoIDescribeSchema>  descSchema =
+    FdoPtr<FdoIDescribeSchema>  descSchema =
             (FdoIDescribeSchema *) pConn->CreateCommand (FdoCommandType_DescribeSchema);
 
-    GisPtr <FdoFeatureSchemaCollection> schemas =
+    FdoPtr <FdoFeatureSchemaCollection> schemas =
             (FdoFeatureSchemaCollection *) descSchema->Execute ();
 
     schema = (FdoFeatureSchema *)schemas->GetItem (classname.Schema());
-    GisPtr<FdoClassCollection> pClasses = schema->GetClasses();
+    FdoPtr<FdoClassCollection> pClasses = schema->GetClasses();
     classDef = pClasses->GetItem(classname.Name());
 }
 
@@ -66,8 +66,8 @@ bool GwsCommonFdoUtils::GetFdoClassIdentityProperties (
     // identity properties are acquired from the principal base class
 
     pClassDef->AddRef ();
-    GisPtr<FdoClassDefinition> childClass = pClassDef;
-    GisPtr<FdoClassDefinition> baseClass;
+    FdoPtr<FdoClassDefinition> childClass = pClassDef;
+    FdoPtr<FdoClassDefinition> baseClass;
     pIdentityProps = NULL;
 
     while ((baseClass = childClass->GetBaseClass ()) != NULL) {
@@ -91,16 +91,16 @@ bool GwsCommonFdoUtils::GetFdoClassIdentityProperties (
 ///////////////////////////////////////////////////////////////////////////////
 FdoPropertyDefinition * GwsCommonFdoUtils::GetPropertyDefinition (
     FdoClassDefinition  * pClassDef,
-    GisString           * PropertyName
+    FdoString           * PropertyName
 )
 {
     pClassDef->AddRef ();
-    GisPtr<FdoClassDefinition> classDef = pClassDef;
+    FdoPtr<FdoClassDefinition> classDef = pClassDef;
     FdoPropertyDefinition    * propDef  = NULL;
 
     for (; propDef == NULL && classDef != NULL ; classDef = classDef->GetBaseClass ())
     {
-        GisPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties ();
+        FdoPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties ();
         propDef = propdsc->FindItem (PropertyName);
     }
     return propDef;
@@ -111,6 +111,9 @@ int GWSFdoUtilities::CompareDataValues (
     FdoDataValue * val2
 )
 {
+    FdoStringP myStrVal1 = val1->ToString();
+    FdoStringP myStrVal2 = val2->ToString();
+
     // assuming NULL's are equal, which is not really true.
     // result of will NULL comparison is unknown, but we don't support it
 
@@ -124,16 +127,16 @@ int GWSFdoUtilities::CompareDataValues (
         return 2;
 
     bool        bVal2;
-    GisByte     byteVal2;
+    FdoByte     byteVal2;
 
 
     double      doubleVal2;
     float       floatVal2;
-    GisInt16    int16Val2;
-    GisInt32    int32Val2;
-    GisInt64    int64Val2;
-    GisString * strVal2;
-    GisDateTime dtVal2;
+    FdoInt16    int16Val2;
+    FdoInt32    int32Val2;
+    FdoInt64    int64Val2;
+    FdoString * strVal2;
+    FdoDateTime dtVal2;
 
     switch (val1->GetDataType ()) {
     case FdoDataType_Boolean:
@@ -145,8 +148,8 @@ int GWSFdoUtilities::CompareDataValues (
                 return Compare<bool> (val, bVal2);
 
             case FdoDataType_Byte:
-                byteVal2 = (GisByte) (* (FdoByteValue *)  val2);
-                return Compare<GisByte> ((GisByte)val, byteVal2);
+                byteVal2 = (FdoByte) (* (FdoByteValue *)  val2);
+                return Compare<FdoByte> ((FdoByte)val, byteVal2);
 
             case FdoDataType_Decimal:
             case FdoDataType_Double:
@@ -157,16 +160,16 @@ int GWSFdoUtilities::CompareDataValues (
                 return Compare<double> ((double)val, doubleVal2);
 
             case FdoDataType_Int16:
-                int16Val2 = (GisInt16) (* (FdoInt16Value *)  val2);
-                return Compare<GisInt16> ((GisInt16)val, int16Val2);
+                int16Val2 = (FdoInt16) (* (FdoInt16Value *)  val2);
+                return Compare<FdoInt16> ((FdoInt16)val, int16Val2);
 
             case FdoDataType_Int32:
-                int32Val2 = (GisInt32) (* (FdoInt32Value *)  val2);
-                return Compare<GisInt32> ((GisInt32)val, int32Val2);
+                int32Val2 = (FdoInt32) (* (FdoInt32Value *)  val2);
+                return Compare<FdoInt32> ((FdoInt32)val, int32Val2);
 
             case FdoDataType_Int64:
-                int64Val2 = (GisInt64) (* (FdoInt64Value *)  val2);
-                return Compare<GisInt64> ((GisInt64)val, int64Val2);
+                int64Val2 = (FdoInt64) (* (FdoInt64Value *)  val2);
+                return Compare<FdoInt64> ((FdoInt64)val, int64Val2);
 
             case FdoDataType_Single:
                 floatVal2 = (float) (* (FdoSingleValue *)  val2);
@@ -184,15 +187,15 @@ int GWSFdoUtilities::CompareDataValues (
         }
     case FdoDataType_Byte:
         {
-            GisByte  val = (GisByte) (* (FdoByteValue *)  val1);;
+            FdoByte  val = (FdoByte) (* (FdoByteValue *)  val1);;
             switch (val2->GetDataType ()) {
             case FdoDataType_Boolean:
                 bVal2 = (bool) (* (FdoBooleanValue *)  val2);
-                return Compare<GisByte> (val, (GisByte)bVal2);
+                return Compare<FdoByte> (val, (FdoByte)bVal2);
 
             case FdoDataType_Byte:
-                byteVal2 = (GisByte) (* (FdoByteValue *)  val2);
-                return Compare<GisByte> (val, byteVal2);
+                byteVal2 = (FdoByte) (* (FdoByteValue *)  val2);
+                return Compare<FdoByte> (val, byteVal2);
 
             case FdoDataType_Decimal:
             case FdoDataType_Double:
@@ -203,16 +206,16 @@ int GWSFdoUtilities::CompareDataValues (
                 return Compare<double> ((double)val, doubleVal2);
 
             case FdoDataType_Int16:
-                int16Val2 = (GisInt16) (* (FdoInt16Value *)  val2);
-                return Compare<GisInt16> ((GisInt16)val, int16Val2);
+                int16Val2 = (FdoInt16) (* (FdoInt16Value *)  val2);
+                return Compare<FdoInt16> ((FdoInt16)val, int16Val2);
 
             case FdoDataType_Int32:
-                int32Val2 = (GisInt32) (* (FdoInt32Value *)  val2);
-                return Compare<GisInt32> ((GisInt32)val, int32Val2);
+                int32Val2 = (FdoInt32) (* (FdoInt32Value *)  val2);
+                return Compare<FdoInt32> ((FdoInt32)val, int32Val2);
 
             case FdoDataType_Int64:
-                int64Val2 = (GisInt64) (* (FdoInt64Value *)  val2);
-                return Compare<GisInt64> ((GisInt64)val, int64Val2);
+                int64Val2 = (FdoInt64) (* (FdoInt64Value *)  val2);
+                return Compare<FdoInt64> ((FdoInt64)val, int64Val2);
 
             case FdoDataType_Single:
                 floatVal2 = (float) (* (FdoSingleValue *)  val2);
@@ -244,7 +247,7 @@ int GWSFdoUtilities::CompareDataValues (
                 break;
 
             case FdoDataType_Byte:
-                byteVal2 = (GisByte) (* (FdoByteValue *)  val2);
+                byteVal2 = (FdoByte) (* (FdoByteValue *)  val2);
                 return Compare<double>(val, (double) byteVal2);
 
             case FdoDataType_Decimal:
@@ -256,16 +259,16 @@ int GWSFdoUtilities::CompareDataValues (
                 return Compare<double>(val, doubleVal2);
 
             case FdoDataType_Int16:
-                int16Val2 = (GisInt16) (* (FdoInt16Value *)  val2);
+                int16Val2 = (FdoInt16) (* (FdoInt16Value *)  val2);
                 return Compare<double>(val, (double) int16Val2);
 
             case FdoDataType_Int32:
-                int32Val2 = (GisInt32) (* (FdoInt32Value *)  val2);
+                int32Val2 = (FdoInt32) (* (FdoInt32Value *)  val2);
                 return Compare<double>(val, (double) int32Val2);
 
 
             case FdoDataType_Int64:
-                int64Val2 = (GisInt64) (* (FdoInt64Value *)  val2);
+                int64Val2 = (FdoInt64) (* (FdoInt64Value *)  val2);
                 return Compare<double>(val, (double) int64Val2);
 
             case FdoDataType_Single:
@@ -284,17 +287,17 @@ int GWSFdoUtilities::CompareDataValues (
         }
     case FdoDataType_Int16:
         {
-            GisInt16 val = (GisInt16) (* (FdoInt16Value *)  val1);
+            FdoInt16 val = (FdoInt16) (* (FdoInt16Value *)  val1);
 
             switch (val2->GetDataType ()) {
             case FdoDataType_Boolean:
                 bVal2 = (bool) (* (FdoBooleanValue *)  val2);
-                return Compare<GisInt16>(val, (GisInt16) bVal2);
+                return Compare<FdoInt16>(val, (FdoInt16) bVal2);
                 break;
 
             case FdoDataType_Byte:
-                byteVal2 = (GisByte) (* (FdoByteValue *)  val2);
-                return Compare<GisInt16>(val, (GisInt16) byteVal2);
+                byteVal2 = (FdoByte) (* (FdoByteValue *)  val2);
+                return Compare<FdoInt16>(val, (FdoInt16) byteVal2);
 
             case FdoDataType_Decimal:
             case FdoDataType_Double:
@@ -305,17 +308,17 @@ int GWSFdoUtilities::CompareDataValues (
                 return Compare<double>((double) val, doubleVal2);
 
             case FdoDataType_Int16:
-                int16Val2 = (GisInt16) (* (FdoInt16Value *)  val2);
+                int16Val2 = (FdoInt16) (* (FdoInt16Value *)  val2);
                 return Compare<double>(val, int16Val2);
 
             case FdoDataType_Int32:
-                int32Val2 = (GisInt32) (* (FdoInt32Value *)  val2);
-                return Compare<GisInt32>((GisInt32)val, int32Val2);
+                int32Val2 = (FdoInt32) (* (FdoInt32Value *)  val2);
+                return Compare<FdoInt32>((FdoInt32)val, int32Val2);
 
 
             case FdoDataType_Int64:
-                int64Val2 = (GisInt64) (* (FdoInt64Value *)  val2);
-                return Compare<GisInt64>((GisInt64)val, int64Val2);
+                int64Val2 = (FdoInt64) (* (FdoInt64Value *)  val2);
+                return Compare<FdoInt64>((FdoInt64)val, int64Val2);
 
             case FdoDataType_Single:
                 floatVal2 = (float) (* (FdoSingleValue *)  val2);
@@ -335,17 +338,17 @@ int GWSFdoUtilities::CompareDataValues (
 
     case FdoDataType_Int32:
         {
-            GisInt32 val = (GisInt32) (* (FdoInt32Value *)  val1);
+            FdoInt32 val = (FdoInt32) (* (FdoInt32Value *)  val1);
 
             switch (val2->GetDataType ()) {
             case FdoDataType_Boolean:
                 bVal2 = (bool) (* (FdoBooleanValue *)  val2);
-                return Compare<GisInt32>(val, (GisInt32) bVal2);
+                return Compare<FdoInt32>(val, (FdoInt32) bVal2);
                 break;
 
             case FdoDataType_Byte:
-                byteVal2 = (GisByte) (* (FdoByteValue *)  val2);
-                return Compare<GisInt32>(val, (GisInt32) byteVal2);
+                byteVal2 = (FdoByte) (* (FdoByteValue *)  val2);
+                return Compare<FdoInt32>(val, (FdoInt32) byteVal2);
 
             case FdoDataType_Decimal:
             case FdoDataType_Double:
@@ -356,16 +359,16 @@ int GWSFdoUtilities::CompareDataValues (
                 return Compare<double>((double) val, doubleVal2);
 
             case FdoDataType_Int16:
-                int16Val2 = (GisInt16) (* (FdoInt16Value *)  val2);
-                return Compare<GisInt32>(val, (GisInt32)int16Val2);
+                int16Val2 = (FdoInt16) (* (FdoInt16Value *)  val2);
+                return Compare<FdoInt32>(val, (FdoInt32)int16Val2);
 
             case FdoDataType_Int32:
-                int32Val2 = (GisInt32) (* (FdoInt32Value *)  val2);
-                return Compare<GisInt32>(val, int32Val2);
+                int32Val2 = (FdoInt32) (* (FdoInt32Value *)  val2);
+                return Compare<FdoInt32>(val, int32Val2);
 
             case FdoDataType_Int64:
-                int64Val2 = (GisInt64) (* (FdoInt64Value *)  val2);
-                return Compare<GisInt64>((GisInt64)val, int64Val2);
+                int64Val2 = (FdoInt64) (* (FdoInt64Value *)  val2);
+                return Compare<FdoInt64>((FdoInt64)val, int64Val2);
 
             case FdoDataType_Single:
                 floatVal2 = (float) (* (FdoSingleValue *)  val2);
@@ -385,17 +388,17 @@ int GWSFdoUtilities::CompareDataValues (
 
     case FdoDataType_Int64:
         {
-            GisInt64 val = (GisInt64) (* (FdoInt64Value *)  val1);
+            FdoInt64 val = (FdoInt64) (* (FdoInt64Value *)  val1);
 
             switch (val2->GetDataType ()) {
             case FdoDataType_Boolean:
                 bVal2 = (bool) (* (FdoBooleanValue *)  val2);
-                return Compare<GisInt64>(val, (GisInt64) bVal2);
+                return Compare<FdoInt64>(val, (FdoInt64) bVal2);
                 break;
 
             case FdoDataType_Byte:
-                byteVal2 = (GisByte) (* (FdoByteValue *)  val2);
-                return Compare<GisInt64>(val, (GisInt64) byteVal2);
+                byteVal2 = (FdoByte) (* (FdoByteValue *)  val2);
+                return Compare<FdoInt64>(val, (FdoInt64) byteVal2);
 
             case FdoDataType_Decimal:
             case FdoDataType_Double:
@@ -406,16 +409,16 @@ int GWSFdoUtilities::CompareDataValues (
                 return Compare<double>((double) val, doubleVal2);
 
             case FdoDataType_Int16:
-                int16Val2 = (GisInt16) (* (FdoInt16Value *)  val2);
-                return Compare<GisInt64>(val, (GisInt64)int16Val2);
+                int16Val2 = (FdoInt16) (* (FdoInt16Value *)  val2);
+                return Compare<FdoInt64>(val, (FdoInt64)int16Val2);
 
             case FdoDataType_Int32:
-                int32Val2 = (GisInt32) (* (FdoInt32Value *)  val2);
-                return Compare<GisInt64>(val, (GisInt64)int32Val2);
+                int32Val2 = (FdoInt32) (* (FdoInt32Value *)  val2);
+                return Compare<FdoInt64>(val, (FdoInt64)int32Val2);
 
             case FdoDataType_Int64:
-                int64Val2 = (GisInt64) (* (FdoInt64Value *)  val2);
-                return Compare<GisInt64>(val, int64Val2);
+                int64Val2 = (FdoInt64) (* (FdoInt64Value *)  val2);
+                return Compare<FdoInt64>(val, int64Val2);
 
             case FdoDataType_Single:
                 floatVal2 = (float) (* (FdoSingleValue *)  val2);
@@ -444,7 +447,7 @@ int GWSFdoUtilities::CompareDataValues (
                 break;
 
             case FdoDataType_Byte:
-                byteVal2 = (GisByte) (* (FdoByteValue *)  val2);
+                byteVal2 = (FdoByte) (* (FdoByteValue *)  val2);
                 return Compare<float>(val, (float) byteVal2);
 
             case FdoDataType_Decimal:
@@ -456,16 +459,16 @@ int GWSFdoUtilities::CompareDataValues (
                 return Compare<double>((double)val, doubleVal2);
 
             case FdoDataType_Int16:
-                int16Val2 = (GisInt16) (* (FdoInt16Value *)  val2);
+                int16Val2 = (FdoInt16) (* (FdoInt16Value *)  val2);
                 return Compare<float>(val, (float) int16Val2);
 
             case FdoDataType_Int32:
-                int32Val2 = (GisInt32) (* (FdoInt32Value *)  val2);
+                int32Val2 = (FdoInt32) (* (FdoInt32Value *)  val2);
                 return Compare<float>(val, (float) int32Val2);
 
 
             case FdoDataType_Int64:
-                int64Val2 = (GisInt64) (* (FdoInt64Value *)  val2);
+                int64Val2 = (FdoInt64) (* (FdoInt64Value *)  val2);
                 return Compare<float>(val, (float) int64Val2);
 
             case FdoDataType_Single:
@@ -485,7 +488,7 @@ int GWSFdoUtilities::CompareDataValues (
 
     case FdoDataType_String:
         {
-            GisString*  val = ((FdoStringValue *) val1)->GetString ();
+            FdoString*  val = ((FdoStringValue *) val1)->GetString ();
             switch (val2->GetDataType ()) {
             case FdoDataType_String:
                 {
@@ -540,7 +543,7 @@ int GWSFdoUtilities::CompareDataValues (
 
     case FdoDataType_DateTime:
         {
-            GisDateTime val = (GisDateTime) (* (FdoDateTimeValue *)  val1);
+            FdoDateTime val = (FdoDateTime) (* (FdoDateTimeValue *)  val1);
 
             switch (val2->GetDataType ()) {
             case FdoDataType_Boolean:
@@ -560,7 +563,7 @@ int GWSFdoUtilities::CompareDataValues (
 
             case FdoDataType_DateTime:
                 {
-                    GisDateTime dtVal2 = (GisDateTime) (* (FdoDateTimeValue *)  val2);
+                    FdoDateTime dtVal2 = (FdoDateTime) (* (FdoDateTimeValue *)  val2);
                     int         res = 0;
                     res = Compare<int>(val.year, dtVal2.year);
                     if (res != 0)
@@ -716,11 +719,11 @@ WSTR GwsCommonFdoUtils::GetRevisionProperty (FdoClassDefinition * classdef)
 {
     // discover revision property. Revision property is defined
     // for a given class
-    GisPtr<FdoReadOnlyPropertyDefinitionCollection> pBaseProperties = classdef->GetBaseProperties();
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> pBaseProperties = classdef->GetBaseProperties();
 
     // See if property with this name already exists:
     for (int idx=0; pBaseProperties != NULL && idx < pBaseProperties->GetCount(); idx++) {
-        GisPtr<FdoPropertyDefinition> pBaseProperty;
+        FdoPtr<FdoPropertyDefinition> pBaseProperty;
         pBaseProperty = (FdoPropertyDefinition*)pBaseProperties->GetItem(idx);
         if (! _wcsicmp (pBaseProperty->GetName(), REVISIONNUMBER_PROPNAME)) {
             return pBaseProperty->GetName();
@@ -733,7 +736,7 @@ WSTR GwsCommonFdoUtils::GetRevisionProperty (FdoClassDefinition * classdef)
 ///////////////////////////////////////////////////////////////////////////////
 GWSExtendedFeatureId GwsCommonFdoUtils::MakeFeatureId (
     const GWSQualifiedName            & classname,
-    GisPtr<FdoPropertyValueCollection>  ident,
+    FdoPtr<FdoPropertyValueCollection>  ident,
     const wchar_t                     * ltname
 )
 {
@@ -748,8 +751,8 @@ GWSExtendedFeatureId GwsCommonFdoUtils::MakeFeatureId (
         int size = ident->GetCount ();
 
         for (int i = 0; i < size ; i ++) {
-            GisPtr<FdoPropertyValue>    propval;
-            GisPtr<FdoDataValue>        value;
+            FdoPtr<FdoPropertyValue>    propval;
+            FdoPtr<FdoDataValue>        value;
             propval = ident->GetItem (i);
             value = (FdoDataValue *) propval->GetValue ();
             keyvals->Add (value);
@@ -757,7 +760,7 @@ GWSExtendedFeatureId GwsCommonFdoUtils::MakeFeatureId (
         }
         return GWSExtendedFeatureId (classname, keyvals);
 
-    } catch (GisException * e) {
+    } catch (FdoException * e) {
         assert (false);
         e->Release ();
     }
@@ -799,22 +802,22 @@ bool GwsCommonFdoUtils::GetGeometryName (FdoClassDefinition *pClassDef, std::wst
             return false;
         }
 
-        GisPtr<FdoGeometricPropertyDefinition> pgDef = pFeatClass->GetGeometryProperty();
+        FdoPtr<FdoGeometricPropertyDefinition> pgDef = pFeatClass->GetGeometryProperty();
         if (pgDef != NULL) {
             name = pgDef->GetName();
             return true;
         }
     }
-    GisInt32 idx;
+    FdoInt32 idx;
 
-    GisPtr<FdoClassDefinition>  classDef = pClassDef;
-    GIS_SAFE_ADDREF(pClassDef);
+    FdoPtr<FdoClassDefinition>  classDef = pClassDef;
+    FDO_SAFE_ADDREF(pClassDef);
     for (; classDef != NULL ; classDef = classDef->GetBaseClass ())
     {
-        GisPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties ();
+        FdoPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties ();
         // discover geometric property name. Use the first one if there are many.
         for (idx = 0; idx < propdsc->GetCount(); idx ++) {
-            GisPtr<FdoPropertyDefinition>   prop;
+            FdoPtr<FdoPropertyDefinition>   prop;
             prop = propdsc->GetItem(idx);
             if (prop->GetPropertyType () == FdoPropertyType_GeometricProperty)
             {
@@ -846,21 +849,21 @@ EGwsStatus GwsCommonFdoUtils::DescribeClassSC (
     GwsSpatialContextDescription & desc
 )
 {
-    GisPtr<FdoFeatureSchema>   schema;
-    GisPtr<FdoClassDefinition> classDef;
+    FdoPtr<FdoFeatureSchema>   schema;
+    FdoPtr<FdoClassDefinition> classDef;
 
     GwsCommonFdoUtils::GetClassDefinition (conn, classname, schema.p, classDef.p);
 
     for (; classDef != NULL ; classDef = classDef->GetBaseClass ()) {
-        GisPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties ();
+        FdoPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties ();
         // discover geometric property name. Use the first one if there are many.
         for (int idx = 0; idx < propdsc->GetCount(); idx ++) {
-            GisPtr<FdoPropertyDefinition>   prop;
+            FdoPtr<FdoPropertyDefinition>   prop;
             prop = propdsc->GetItem (idx);
 
             if (prop->GetPropertyType () == FdoPropertyType_GeometricProperty) {
                 FdoGeometricPropertyDefinition* geomProp = static_cast<FdoGeometricPropertyDefinition*>(prop.p);
-                GisString* pSC = geomProp->GetSpatialContextAssociation();
+                FdoString* pSC = geomProp->GetSpatialContextAssociation();
                 if(pSC != NULL) {
                     return GwsCommonFdoUtils::DescribeSC (conn, pSC, desc);
                 }
@@ -873,12 +876,12 @@ EGwsStatus GwsCommonFdoUtils::DescribeClassSC (
 
 EGwsStatus GwsCommonFdoUtils::DescribeSC (
     FdoIConnection               * conn,
-    GisString                    * scname,
+    FdoString                    * scname,
     GwsSpatialContextDescription & scdesc
 )
 {
-    GisPtr<FdoIGetSpatialContexts>   cmd;
-    GisPtr<FdoISpatialContextReader> reader;
+    FdoPtr<FdoIGetSpatialContexts>   cmd;
+    FdoPtr<FdoISpatialContextReader> reader;
     scdesc.SetClassName (GWSQualifiedName ());
     scdesc.SetPropertyName (NULL);
     scdesc.SetSpatialContextName (NULL);
@@ -893,7 +896,7 @@ EGwsStatus GwsCommonFdoUtils::DescribeSC (
         reader = cmd->Execute ();
         while (reader->ReadNext ()) {
             if (wcscmp (reader->GetName (), scname) == 0) {
-                GisString * cswkt = reader->GetCoordinateSystemWkt ();
+                FdoString * cswkt = reader->GetCoordinateSystemWkt ();
                 STRING srcwkt = cswkt;
 
                 // If the WKT is not defined, attempt to resolve it from the name.
@@ -916,16 +919,16 @@ EGwsStatus GwsCommonFdoUtils::DescribeSC (
                     }
                 }
 
-                GisString * desc  = reader->GetDescription ();
+                FdoString * desc  = reader->GetDescription ();
                 scdesc.SetCsNameWkt (srcwkt.c_str());
                 scdesc.SetSpatialContextDesc (desc);
                 scdesc.SetSpatialContextName (scname);
 
-                GisPtr<GisByteArray> pByteArray = reader->GetExtent();
+                FdoPtr<FdoByteArray> pByteArray = reader->GetExtent();
                 if (pByteArray) {
-                    GisPtr<GisAgfGeometryFactory> pAwkbFactory = GisAgfGeometryFactory::GetInstance();
-                    GisPtr<GisIGeometry> pGeometry = pAwkbFactory->CreateGeometryFromAgf(pByteArray);
-                    GisPtr<GisIEnvelope> pEnvelope = pGeometry->GetEnvelope();
+                    FdoPtr<FdoFgfGeometryFactory> pAwkbFactory = FdoFgfGeometryFactory::GetInstance();
+                    FdoPtr<FdoIGeometry> pGeometry = pAwkbFactory->CreateGeometryFromFgf(pByteArray);
+                    FdoPtr<FdoIEnvelope> pEnvelope = pGeometry->GetEnvelope();
                     scdesc.SetExtents (pEnvelope);
                 }
 
@@ -934,7 +937,7 @@ EGwsStatus GwsCommonFdoUtils::DescribeSC (
         }
         return eGwsSCNotFound;
 
-    } catch (GisException * gis) {
+    } catch (FdoException * gis) {
         gis->Release ();
     }
     // in case when exception thrown, assume that sc are not

@@ -200,8 +200,8 @@ void MgServerFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING na
     dataMax = DoubleMaxValue;
     numCats = 0;
 
-    GisPtr<FdoExpressionCollection> exprCol = customFunction->GetArguments();
-    GisInt32 cnt = exprCol->GetCount();
+    FdoPtr<FdoExpressionCollection> exprCol = customFunction->GetArguments();
+    FdoInt32 cnt = exprCol->GetCount();
 
     if (cnt < 2)
     {
@@ -212,29 +212,29 @@ void MgServerFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING na
         throw new MgFeatureServiceException(L"MgServerFeatureUtil.GetArguments", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    GisString *arg0 = NULL, *arg1 = NULL, *arg2 = NULL, *arg3 = NULL;
+    FdoString *arg0 = NULL, *arg1 = NULL, *arg2 = NULL, *arg3 = NULL;
 
     // TODO: Change the logic below to access function arguments through an iterator
 
     // We skip first argument as it is name of property
-    GisInt32 argCnt = 0;
-    GisPtr<FdoExpression> expr0 = exprCol->GetItem(argCnt);
+    FdoInt32 argCnt = 0;
+    FdoPtr<FdoExpression> expr0 = exprCol->GetItem(argCnt);
     CHECKNULL((FdoExpression*)expr0, L"MgServerFeatureUtil.GetArguments");
     arg0 = expr0->ToString(); // Name of function
 
-    GisPtr<FdoExpression> expr1 = exprCol->GetItem(argCnt+1);
+    FdoPtr<FdoExpression> expr1 = exprCol->GetItem(argCnt+1);
     CHECKNULL((FdoExpression*)expr1, L"MgServerFeatureUtil.GetArguments");
     arg1 = expr1->ToString(); // No of categories
 
     if (cnt > 2)
     {
-        GisPtr<FdoExpression> expr2 = exprCol->GetItem(argCnt+2);
+        FdoPtr<FdoExpression> expr2 = exprCol->GetItem(argCnt+2);
         CHECKNULL((FdoExpression*)expr2, L"MgServerFeatureUtil.GetArguments");
         arg2 = expr2->ToString(); // Min Range
 
         if (cnt > 3)
         {
-            GisPtr<FdoExpression> expr3 = exprCol->GetItem(argCnt+3);
+            FdoPtr<FdoExpression> expr3 = exprCol->GetItem(argCnt+3);
             CHECKNULL((FdoExpression*)expr3, L"MgServerFeatureUtil.GetArguments");
             arg3 = expr3->ToString(); // Max Range
         }
@@ -313,7 +313,7 @@ bool MgServerFeatureUtil::FindCustomFunction(FdoFunction* customFunction, INT32 
 
     if (customFunction != NULL)
     {
-        GisString* func = customFunction->GetName();
+        FdoString* func = customFunction->GetName();
         if (func != NULL)
         {
             funcName = STRING(func);
@@ -330,8 +330,8 @@ void MgServerFeatureUtil::ValidateCustomConstraints(FdoFunction* customFunction)
     if (customFunction == NULL) { return; } // Nothing to do here
 
     // Custom (Distribution) methods should have atleast two properties. Name of property and Number of categories
-    GisPtr<FdoExpressionCollection> exprCol = customFunction->GetArguments();
-    GisInt32 cnt = exprCol->GetCount();
+    FdoPtr<FdoExpressionCollection> exprCol = customFunction->GetArguments();
+    FdoInt32 cnt = exprCol->GetCount();
 
     INT32 funcCode;
     bool supported = FindCustomFunction(STRING(customFunction->GetName()), funcCode);
@@ -437,7 +437,7 @@ MgRaster* MgServerFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
             INT32 xSize = raster->GetImageXSize();
             INT32 ySize = raster->GetImageYSize();
 
-            GisPtr<GisByteArray> agfBounds = (GisByteArray*) raster->GetBounds();
+            FdoPtr<FdoByteArray> agfBounds = (FdoByteArray*) raster->GetBounds();
             Ptr<MgByteSource> byteSource = new MgByteSource(agfBounds->GetData(), agfBounds->GetCount());
             Ptr<MgByteReader> byteReader = byteSource->GetReader();
             MgAgfReaderWriter agfReader;
@@ -449,7 +449,7 @@ MgRaster* MgServerFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
             retVal->SetImageYSize(ySize);
             retVal->SetBounds(mgEnvelope);
 
-            GisPtr<FdoRasterDataModel> dm = raster->GetDataModel();
+            FdoPtr<FdoRasterDataModel> dm = raster->GetDataModel();
 
             retVal->SetBitsPerPixel(dm->GetBitsPerPixel());
             retVal->SetDataModelType(dm->GetDataModelType());
@@ -457,24 +457,24 @@ MgRaster* MgServerFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
             //if image is color mapped, get the palette
             if (dm->GetBitsPerPixel() == 8)
             {
-                GisPtr<FdoIRasterPropertyDictionary> props = raster->GetAuxiliaryProperties();
+                FdoPtr<FdoIRasterPropertyDictionary> props = raster->GetAuxiliaryProperties();
 
                 //try to get the palette -- if there isn't one,
                 //an exception will be thrown. It's simpler to catch
                 //it than check if such a property exists.
                 try
                 {
-                    GisPtr<FdoDataValue> dv = props->GetProperty(L"Palette");
+                    FdoPtr<FdoDataValue> dv = props->GetProperty(L"Palette");
                     if (dv.p)
                     {
                         FdoBLOBValue* blob = (FdoBLOBValue*)(dv.p);
-                        GisPtr<GisByteArray> ba = blob->GetData();
+                        FdoPtr<FdoByteArray> ba = blob->GetData();
 
                         Ptr<MgByte> pal = new MgByte(ba->GetData(), ba->GetCount());
                         retVal->SetPalette(pal);
                     }
                 }
-                catch (GisException* e)
+                catch (FdoException* e)
                 {
                     e->Release();
                     retVal->SetPalette(NULL);
@@ -508,7 +508,7 @@ MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rast
 
     Ptr<MgByteReader> byteReader;
 
-    GisPtr<FdoIRaster> fdoRaster = reader->GetRaster(rasterPropName.c_str());
+    FdoPtr<FdoIRaster> fdoRaster = reader->GetRaster(rasterPropName.c_str());
     CHECKNULL((FdoIRaster*)fdoRaster, L"MgServerFeatureUtil.GetRaster");
 
     // TODO: Should we support RasterModel properties and Tiling information ???
@@ -516,16 +516,16 @@ MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rast
     fdoRaster->SetImageYSize(ySize);
 
     // Get the stream reader
-    GisPtr<GisIStreamReader> streamReader = fdoRaster->GetStreamReader();
+    FdoPtr<FdoIStreamReader> streamReader = fdoRaster->GetStreamReader();
 
     // TODO: FDO Defect - streamReader->GetType() is private;
-    GisStreamReaderType type = GisStreamReaderType_Byte;
+    FdoStreamReaderType type = FdoStreamReaderType_Byte;
 
-    if (type == GisStreamReaderType_Byte)
+    if (type == FdoStreamReaderType_Byte)
     {
-        GisPtr<GisIStreamReaderTmpl<GisByte> > byteStreamReader =
-            GIS_SAFE_ADDREF(dynamic_cast<GisIStreamReaderTmpl<GisByte>*>((GisIStreamReader*)streamReader));
-        CHECKNULL((GisIStreamReaderTmpl<GisByte>*)byteStreamReader, L"MgServerFeatureUtil.GetRaster");
+        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader =
+            FDO_SAFE_ADDREF(dynamic_cast<FdoIStreamReaderTmpl<FdoByte>*>((FdoIStreamReader*)streamReader));
+        CHECKNULL((FdoIStreamReaderTmpl<FdoByte>*)byteStreamReader, L"MgServerFeatureUtil.GetRaster");
 
         ByteSourceRasterStreamImpl* rasterStream = new ByteSourceRasterStreamImpl(byteStreamReader);
         Ptr<MgByteSource> byteSource = new MgByteSource(rasterStream);
@@ -583,7 +583,7 @@ void MgServerFeatureUtil::FillFdoPropertyCollection(MgPropertyCollection* srcCol
     for (INT32 i = 0; i < cnt; i++)
     {
         Ptr<MgProperty> prop = srcCol->GetItem(i);
-        GisPtr<FdoPropertyValue> fdoProp = MgPropertyToFdoProperty(prop);
+        FdoPtr<FdoPropertyValue> fdoProp = MgPropertyToFdoProperty(prop);
         paramCol->Add(fdoProp);
     }
 }
@@ -591,13 +591,13 @@ void MgServerFeatureUtil::FillFdoPropertyCollection(MgPropertyCollection* srcCol
 FdoParameterValueCollection* MgServerFeatureUtil::CreateFdoParameterCollection(MgPropertyCollection* srcCol)
 {
     CHECKNULL(srcCol, L"MgServerFeatureUtil.FillFdoPropertyCollection")
-    GisPtr<FdoParameterValueCollection> paramCol = FdoParameterValueCollection::Create();
+    FdoPtr<FdoParameterValueCollection> paramCol = FdoParameterValueCollection::Create();
 
     INT32 cnt = srcCol->GetCount();
     for (INT32 i = 0; i < cnt; i++)
     {
         Ptr<MgProperty> prop = srcCol->GetItem(i);
-        GisPtr<FdoParameterValue> fdoProp = MgPropertyToFdoParameter(prop);
+        FdoPtr<FdoParameterValue> fdoProp = MgPropertyToFdoParameter(prop);
         paramCol->Add(fdoProp);
     }
 
@@ -609,7 +609,7 @@ FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcPr
     CHECKNULL(srcProp, L"MgServerFeatureUtil.MgPropertyToFdoProperty")
 
     INT16 propType = srcProp->GetPropertyType();
-    GisPtr<FdoLiteralValue> fdoVal;
+    FdoPtr<FdoLiteralValue> fdoVal;
 
     switch(propType)
     {
@@ -621,7 +621,7 @@ FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcPr
             Ptr<MgByte> byte = sink.ToBuffer();
             INT32 length = byte->GetLength();
             BYTE_ARRAY_OUT bytes = byte->Bytes();
-            GisPtr<GisByteArray> array = GisByteArray::Create((GisByte*)bytes, length);
+            FdoPtr<FdoByteArray> array = FdoByteArray::Create((FdoByte*)bytes, length);
 
             fdoVal = FdoBLOBValue::Create(array);
             break;
@@ -637,7 +637,7 @@ FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcPr
         {
             BYTE value = ((MgByteProperty*)srcProp)->GetValue();
 
-            fdoVal = FdoByteValue::Create((GisByte)value);
+            fdoVal = FdoByteValue::Create((FdoByte)value);
             break;
         }
         case MgPropertyType::Clob:
@@ -648,7 +648,7 @@ FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcPr
             Ptr<MgByte> byte = sink.ToBuffer();
             INT32 length = byte->GetLength();
             BYTE_ARRAY_OUT bytes = byte->Bytes();
-            GisPtr<GisByteArray> array = GisByteArray::Create((GisByte*)bytes, length);
+            FdoPtr<FdoByteArray> array = FdoByteArray::Create((FdoByte*)bytes, length);
 
             fdoVal = FdoCLOBValue::Create(array);
             break;
@@ -657,13 +657,13 @@ FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcPr
         {
             Ptr<MgDateTime> value = ((MgDateTimeProperty*)srcProp)->GetValue();
 
-            GisDateTime time;
-            time.day = (GisInt8)value->GetDay();
-            time.hour = (GisInt8)value->GetHour();
-            time.minute = (GisInt8)value->GetMinute();
-            time.month = (GisInt8)value->GetMonth();
+            FdoDateTime time;
+            time.day = (FdoInt8)value->GetDay();
+            time.hour = (FdoInt8)value->GetHour();
+            time.minute = (FdoInt8)value->GetMinute();
+            time.month = (FdoInt8)value->GetMonth();
             time.seconds = (float)(value->GetSecond() + (value->GetMicrosecond() / 1000000.0));
-            time.year = (GisInt16)value->GetYear();
+            time.year = (FdoInt16)value->GetYear();
 
             fdoVal = FdoDateTimeValue::Create(time);
             break;
@@ -683,26 +683,26 @@ FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcPr
             INT32 length = byte->GetLength();
             BYTE_ARRAY_OUT bytes = byte->Bytes();
 
-            GisPtr<GisByteArray> array = GisByteArray::Create((GisByte*)bytes, length);
+            FdoPtr<FdoByteArray> array = FdoByteArray::Create((FdoByte*)bytes, length);
             fdoVal = FdoGeometryValue::Create(array);
             break;
         }
         case MgPropertyType::Int16:
         {
             INT16 value = ((MgInt16Property*)srcProp)->GetValue();
-            fdoVal = FdoInt16Value::Create((GisInt16)value);
+            fdoVal = FdoInt16Value::Create((FdoInt16)value);
             break;
         }
         case MgPropertyType::Int32:
         {
             INT32 value = ((MgInt32Property*)srcProp)->GetValue();
-            fdoVal = FdoInt32Value::Create((GisInt32)value);
+            fdoVal = FdoInt32Value::Create((FdoInt32)value);
             break;
         }
         case MgPropertyType::Int64:
         {
             INT64 value = ((MgInt64Property*)srcProp)->GetValue();
-            fdoVal = FdoInt64Value::Create((GisInt64)value);
+            fdoVal = FdoInt64Value::Create((FdoInt64)value);
             break;
         }
         case MgPropertyType::Single:
@@ -736,7 +736,7 @@ FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcPr
 
 FdoParameterValue* MgServerFeatureUtil::MgPropertyToFdoParameter(MgProperty* srcProp)
 {
-    GisPtr<FdoLiteralValue> fdoValue = MgPropertyToFdoDataValue(srcProp);
+    FdoPtr<FdoLiteralValue> fdoValue = MgPropertyToFdoDataValue(srcProp);
     STRING str = srcProp->GetName();
 
     assert(!str.empty());
@@ -746,7 +746,7 @@ FdoParameterValue* MgServerFeatureUtil::MgPropertyToFdoParameter(MgProperty* src
 
 FdoPropertyValue* MgServerFeatureUtil::MgPropertyToFdoProperty(MgProperty* srcProp)
 {
-    GisPtr<FdoLiteralValue> fdoValue = MgPropertyToFdoDataValue(srcProp);
+    FdoPtr<FdoLiteralValue> fdoValue = MgPropertyToFdoDataValue(srcProp);
     STRING str = srcProp->GetName();
 
     assert(!str.empty());

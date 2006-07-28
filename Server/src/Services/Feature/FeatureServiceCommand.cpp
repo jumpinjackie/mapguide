@@ -45,18 +45,18 @@ bool MgFeatureServiceCommand::IsFdoSupportedFunction(FdoIConnection* connection,
 {
     CHECKNULL(connection, L"MgServerSelectFeatures.SupportsFunction");
 
-    GisPtr<FdoIExpressionCapabilities> fec = connection->GetExpressionCapabilities();
+    FdoPtr<FdoIExpressionCapabilities> fec = connection->GetExpressionCapabilities();
     CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgServerSelectFeatures.SupportsFunction");
 
     bool supports = false;
 
-    GisPtr<FdoFunctionDefinitionCollection> ffdc = fec->GetFunctions();
+    FdoPtr<FdoFunctionDefinitionCollection> ffdc = fec->GetFunctions();
     if (NULL != (FdoFunctionDefinitionCollection*)ffdc)
     {
-        GisInt32 funcCnt = ffdc->GetCount();
-        for (GisInt32 i=0; i < funcCnt; i++)
+        FdoInt32 funcCnt = ffdc->GetCount();
+        for (FdoInt32 i=0; i < funcCnt; i++)
         {
-            GisPtr<FdoFunctionDefinition> ffd = ffdc->GetItem(i);
+            FdoPtr<FdoFunctionDefinition> ffd = ffdc->GetItem(i);
             CHECKNULL((FdoFunctionDefinition*)ffd, L"MgServerSelectFeatures.SupportsFunction");
 
             // TODO: Just comparing name is enough?
@@ -65,8 +65,8 @@ bool MgFeatureServiceCommand::IsFdoSupportedFunction(FdoIConnection* connection,
             //
             // Comparing argument count is not sufficient because, there can be optional arguments
             // as well. Therefore, we should just restrict to name comparision only
-            GisString* funcNameAllowed = ffd->GetName();
-            GisString* funcNameSupplied = fdoFunc->GetName();
+            FdoString* funcNameAllowed = ffd->GetName();
+            FdoString* funcNameSupplied = fdoFunc->GetName();
             size_t cmp = _wcsicmp(funcNameAllowed, funcNameSupplied);
             if (cmp == 0)
             {
@@ -82,7 +82,7 @@ bool MgFeatureServiceCommand::SupportsSelectDistinct(FdoIConnection* connection)
 {
     CHECKNULL((FdoIConnection*)connection, L"MgServerFeatureConnection.SupportsConfiguration()");
 
-    GisPtr<FdoICommandCapabilities> fcc = connection->GetCommandCapabilities();
+    FdoPtr<FdoICommandCapabilities> fcc = connection->GetCommandCapabilities();
     CHECKNULL((FdoICommandCapabilities*)fcc, L"MgFeatureServiceCommand.SupportsSelectDistinct");
 
     bool supports = fcc->SupportsSelectDistinct();
@@ -95,7 +95,7 @@ bool MgFeatureServiceCommand::SupportsSelectOrdering(FdoIConnection* connection)
 {
     CHECKNULL((FdoIConnection*)connection, L"MgServerFeatureConnection.SupportsConfiguration()");
 
-    GisPtr<FdoICommandCapabilities> fcc = connection->GetCommandCapabilities();
+    FdoPtr<FdoICommandCapabilities> fcc = connection->GetCommandCapabilities();
     CHECKNULL((FdoICommandCapabilities*)fcc, L"MgFeatureServiceCommand.SupportsSelectOrdering");
 
     bool supports = fcc->SupportsSelectOrdering();
@@ -107,7 +107,7 @@ bool MgFeatureServiceCommand::SupportsSelectGrouping(FdoIConnection* connection)
 {
     CHECKNULL((FdoIConnection*)connection, L"MgServerFeatureConnection.SupportsConfiguration()");
 
-    GisPtr<FdoICommandCapabilities> fcc = connection->GetCommandCapabilities();
+    FdoPtr<FdoICommandCapabilities> fcc = connection->GetCommandCapabilities();
     CHECKNULL((FdoICommandCapabilities*)fcc, L"MgFeatureServiceCommand.SupportsSelectGrouping");
 
     bool supports = fcc->SupportsSelectGrouping();

@@ -45,10 +45,10 @@
 #include "ServerGetSchemaMapping.h"
 #include "FilterUtil.h"
 
-#include <fdo/Xml/FeatureSerializer.h>
-#include <fdo/Xml/FeatureWriter.h>
-#include <fdo/Xml/FeaturePropertyWriter.h>
-#include <fdo/Xml/FeatureFlags.h>
+#include <Fdo/Xml/FeatureSerializer.h>
+#include <Fdo/Xml/FeatureWriter.h>
+#include <Fdo/Xml/FeaturePropertyWriter.h>
+#include <Fdo/Xml/FeatureFlags.h>
 
 
 //////////////////////////////////////////////////////////////////
@@ -1105,12 +1105,12 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     Ptr<MgFeatureReader> rdr = SelectFeatures(fs, featureName, options);
 
     //get underlying FDO feature reader
-    GisPtr<FdoIFeatureReader> fdoRdr = ((MgServerFeatureReader*)(rdr.p))->GetInternalReader();
+    FdoPtr<FdoIFeatureReader> fdoRdr = ((MgServerFeatureReader*)(rdr.p))->GetInternalReader();
 
     //generate a file name to serialize wfs data
     STRING fileName = MgFileUtil::GenerateTempFileName(false, L"wfs", L"xml");
 
-    GisPtr<FdoXmlFeatureFlags> flags = FdoXmlFeatureFlags::Create();
+    FdoPtr<FdoXmlFeatureFlags> flags = FdoXmlFeatureFlags::Create();
     flags->SetWriteCollection(true);
     flags->SetWriteMember(true);
     flags->SetCollectionUri(L"http://www.opengis.net/wfs");
@@ -1129,9 +1129,9 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     flags->SetDefaultNamespace(L"http://www.mynamespace.com/myns");
 
     //create the FDO xml serializer stack and write out the features
-    GisPtr<GisXmlWriter> xmlWriter = GisXmlWriter::Create(fileName.c_str(), false);
-    GisPtr<FdoXmlFeaturePropertyWriter> propWriter = FdoXmlFeaturePropertyWriter::Create(xmlWriter);
-    GisPtr<FdoXmlFeatureWriter> featWriter = FdoXmlFeatureWriter::Create(propWriter, flags);
+    FdoPtr<FdoXmlWriter> xmlWriter = FdoXmlWriter::Create(fileName.c_str(), false);
+    FdoPtr<FdoXmlFeaturePropertyWriter> propWriter = FdoXmlFeaturePropertyWriter::Create(xmlWriter);
+    FdoPtr<FdoXmlFeatureWriter> featWriter = FdoXmlFeatureWriter::Create(propWriter, flags);
 
     FdoXmlFeatureSerializer::XmlSerialize(fdoRdr, featWriter, flags);
 

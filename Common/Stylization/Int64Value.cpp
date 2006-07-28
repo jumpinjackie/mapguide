@@ -144,9 +144,9 @@ bool Int64Value::GetAsBoolean()
     return (m_value != 0);
 }
 
-GisDateTime Int64Value::GetAsDateTime()
+FdoDateTime Int64Value::GetAsDateTime()
 {
-    throw GisException::Create(L"Cannot convert Int64 to DateTime");
+    throw FdoException::Create(L"Cannot convert Int64 to DateTime");
 }
 
 wchar_t* Int64Value::GetAsString()

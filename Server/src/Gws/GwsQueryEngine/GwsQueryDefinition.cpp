@@ -26,14 +26,14 @@
 
 
 
-class GwsQueryXmlSaxHandler: public GisXmlSaxHandler
+class GwsQueryXmlSaxHandler: public FdoXmlSaxHandler
 {
 public:
 
     std::vector<IGWSQueryDefinition *>    m_qdefs;
     WSTR                                  m_elemname;
 
-    GwsQueryXmlSaxHandler (GisString * elementName)
+    GwsQueryXmlSaxHandler (FdoString * elementName)
     {
         m_elemname = elementName;
     }
@@ -46,12 +46,12 @@ public:
         m_qdefs.clear ();
     }
 
-    GisXmlSaxHandler * XmlStartElement(
-        GisXmlSaxContext         * ctx,
-        GisString                * uri,
-        GisString                * name,
-        GisString                * qname,
-        GisXmlAttributeCollection* attrs
+    FdoXmlSaxHandler * XmlStartElement(
+        FdoXmlSaxContext         * ctx,
+        FdoString                * uri,
+        FdoString                * name,
+        FdoString                * qname,
+        FdoXmlAttributeCollection* attrs
      )
     {
         if (! _wcsicmp (name, m_elemname.c_str ())) {
@@ -59,7 +59,7 @@ public:
                 GwsQueryDefinitionXmlHelpers::ReadQueryDefinition (attrs);
             m_qdefs.push_back (qdef);
         }
-        return GisXmlSaxHandler::XmlStartElement (ctx, uri, name, qname, attrs);
+        return FdoXmlSaxHandler::XmlStartElement (ctx, uri, name, qname, attrs);
     }
 };
 
@@ -83,8 +83,8 @@ GWSQueryDefinition<T>::~GWSQueryDefinition () throw()
 
 template<class T>
 void GWSQueryDefinition<T>::ToXmlWriter (
-    GisString    * elementName,
-    GisXmlWriter * writer
+    FdoString    * elementName,
+    FdoXmlWriter * writer
 )
 {
     GwsQueryDefinitionXmlHelpers::WriteQueryDefinitionWithHeader (this, elementName, writer);
@@ -93,8 +93,8 @@ void GWSQueryDefinition<T>::ToXmlWriter (
 
 EGwsStatus GwsQueryDefinitionXmlHelpers::WriteQueryDefinitionWithHeader (
     IGWSQueryDefinition * qdef,
-    GisString           * elementName,
-    GisXmlWriter        * writer
+    FdoString           * elementName,
+    FdoXmlWriter        * writer
 )
 {
     if (elementName == NULL || * elementName == 0)
@@ -137,17 +137,17 @@ EGwsStatus GwsQueryDefinitionXmlHelpers::WriteQueryDefinitionWithHeader (
 }
 
 IGWSQueryDefinition * GwsQueryDefinitionXmlHelpers::ReadQueryDefinition (
-    GisXmlAttributeCollection* attrs
+    FdoXmlAttributeCollection* attrs
 )
 {
 
     IGWSQueryDefinition * qrydef = NULL;
-    for (GisInt32 i = 0; i < attrs->GetCount (); i ++) {
+    for (FdoInt32 i = 0; i < attrs->GetCount (); i ++) {
 
-        GisPtr<GisXmlAttribute> attr = attrs->GetItem (i);
+        FdoPtr<FdoXmlAttribute> attr = attrs->GetItem (i);
 
-        GisString * name  = attr->GetName ();
-        GisString * value = attr->GetValue ();
+        FdoString * name  = attr->GetName ();
+        FdoString * value = attr->GetValue ();
         if (_wcsicmp (name, GwsQueryXml::xmlGwsQueryTypeAttribute) == 0) {
             if (_wcsicmp (value, GwsQueryXml::xmlGwsQueryTypeFeature) == 0) {
                 qrydef = new GWSFeatureQueryDefinition ();
@@ -165,18 +165,18 @@ IGWSQueryDefinition * GwsQueryDefinitionXmlHelpers::ReadQueryDefinition (
     return qrydef;
 }
 
-GisString * GwsQueryDefinitionXmlHelpers::QueryXmlHeader ()
+FdoString * GwsQueryDefinitionXmlHelpers::QueryXmlHeader ()
 {
     return GwsQueryXml::xmlGwsQuery;
 }
 
 
 IGWSQueryDefinition * IGWSQueryDefinition::FromXmlReader (
-    GisString    * elementName,
-    GisXmlReader * reader
+    FdoString    * elementName,
+    FdoXmlReader * reader
 )
 {
-    GisPtr<GisXmlSaxContext> ctx = GisXmlSaxContext::Create (reader);
+    FdoPtr<FdoXmlSaxContext> ctx = FdoXmlSaxContext::Create (reader);
     GwsQueryXmlSaxHandler handler (elementName);
     reader->Parse (& handler, ctx, true);
 
@@ -193,7 +193,7 @@ IGWSQueryDefinition * IGWSQueryDefinition::FromXmlReader (
 
 
 IGWSQueryDefinition * IGWSQueryDefinition::FromXmlAttributes (
-    GisXmlAttributeCollection* attrs
+    FdoXmlAttributeCollection* attrs
 )
 {
     return GwsQueryDefinitionXmlHelpers::ReadQueryDefinition (attrs);

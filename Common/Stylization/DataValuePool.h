@@ -113,7 +113,7 @@ public:
 
     BooleanValue* ObtainBooleanValue(bool val);
 
-    DateTimeValue* ObtainDateTimeValue(GisDateTime val);
+    DateTimeValue* ObtainDateTimeValue(FdoDateTime val);
 
     void RelinquishDataValue(DataValue* dv);
 

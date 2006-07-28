@@ -62,11 +62,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib cppunitd.lib GisCommon.lib"
+				AdditionalDependencies="ACEd.lib cppunitd.lib FdoCommon.lib"
 				OutputFile="$(OutDir)/MgUnitTestingd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\CppUnit-1.9.14\lib&quot;;..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="GisCommon.dll"
+				DelayLoadDLLs="FdoCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgUnitTestingd.pdb"
 				SubSystem="2"
@@ -142,11 +142,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib cppunit.lib GisCommon.lib"
+				AdditionalDependencies="ACE.lib cppunit.lib FdoCommon.lib"
 				OutputFile="$(OutDir)/MgUnitTesting.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\CppUnit-1.9.14\lib&quot;;..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="GisCommon.dll"
+				DelayLoadDLLs="FdoCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgUnitTesting.pdb"
 				SubSystem="2"

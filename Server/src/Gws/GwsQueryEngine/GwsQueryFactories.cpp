@@ -28,7 +28,7 @@
 /////////////////////////////////////////////////////////////////////
 
 IGWSFeatureQueryDefinition * IGWSFeatureQueryDefinition::Create (
-    GisStringCollection *    sellist,
+    FdoStringCollection *    sellist,
     const GWSQualifiedName & classname,
     FdoFilter             *  filter
 )
@@ -43,8 +43,8 @@ IGWSFeatureQueryDefinition * IGWSFeatureQueryDefinition::Create (
 IGWSLeftJoinQueryDefinition * IGWSLeftJoinQueryDefinition::Create (
     IGWSQueryDefinition *    left_qdef,
     IGWSQueryDefinition *    right_qdef,
-    GisStringCollection    * left_attrs,
-    GisStringCollection    * right_attrs
+    FdoStringCollection    * left_attrs,
+    FdoStringCollection    * right_attrs
 )
 {
     IGWSLeftJoinQueryDefinition * pQdef;
@@ -59,8 +59,8 @@ IGWSLeftJoinQueryDefinition * IGWSLeftJoinQueryDefinition::Create (
 IGWSEqualJoinQueryDefinition * IGWSEqualJoinQueryDefinition::Create (
     IGWSQueryDefinition *    left_qdef,
     IGWSQueryDefinition *    right_qdef,
-    GisStringCollection    * left_attrs,
-    GisStringCollection    * right_attrs
+    FdoStringCollection    * left_attrs,
+    FdoStringCollection    * right_attrs
 )
 {
     IGWSEqualJoinQueryDefinition * pQdef;

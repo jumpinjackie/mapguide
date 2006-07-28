@@ -112,12 +112,12 @@ void BinaryWriter::WriteUInt16(unsigned short us)
     m_pos += sizeof(unsigned short);
 }
 
-void BinaryWriter::WriteInt64(GisInt64 ll)
+void BinaryWriter::WriteInt64(FdoInt64 ll)
 {
-    CheckResize(sizeof(GisInt64));
+    CheckResize(sizeof(FdoInt64));
     //TODO: endian
-    *(GisInt64*)(m_data+m_pos) = ll;
-    m_pos += sizeof(GisInt64);
+    *(FdoInt64*)(m_data+m_pos) = ll;
+    m_pos += sizeof(FdoInt64);
 }
 
 void BinaryWriter::WriteByte(unsigned char b)
@@ -252,8 +252,8 @@ void BinaryWriter::WriteBytes(unsigned char* buf, int len)
     m_pos += len;
 }
 
-//serializes a GisDateTime
-void BinaryWriter::WriteDateTime(GisDateTime dt)
+//serializes a FdoDateTime
+void BinaryWriter::WriteDateTime(FdoDateTime dt)
 {
     WriteInt16(dt.year);
     WriteChar(dt.month);

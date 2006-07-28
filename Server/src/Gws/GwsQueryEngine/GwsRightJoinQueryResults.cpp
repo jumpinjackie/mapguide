@@ -54,7 +54,7 @@ CGwsRightJoinQueryResults::~CGwsRightJoinQueryResults  () throw()
 EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
     IGWSQuery           * query,
     FdoIFeatureReader   * reader,
-    GisStringCollection * joincols
+    FdoStringCollection * joincols
 )
 {
     m_reader = reader;
@@ -74,7 +74,7 @@ EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
     if (joincols != NULL)
         joincols->AddRef ();
 
-    GisPtr<IGWSExtendedFeatureDescription> ifdsc;
+    FdoPtr<IGWSExtendedFeatureDescription> ifdsc;
 
     DescribeFeature (& ifdsc);
     m_pool = new CGwsFeaturesPool (ifdsc);
@@ -87,7 +87,7 @@ EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
 EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
     IGWSQuery                * query,
     CGwsPreparedQuery        * prepquery,
-    GisStringCollection      * joincols
+    FdoStringCollection      * joincols
 )
 {
     m_reader = NULL;
@@ -100,7 +100,7 @@ EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
     if (joincols != NULL)
         joincols->AddRef ();
 
-    GisPtr<IGWSExtendedFeatureDescription> ifdsc;
+    FdoPtr<IGWSExtendedFeatureDescription> ifdsc;
 
     DescribeFeature (& ifdsc);
     m_pool = new CGwsFeaturesPool (ifdsc);
@@ -148,13 +148,13 @@ IGWSFeature * CGwsRightJoinQueryResults::GetPooledFeature ()
     if (m_poolpos < m_pool->GetCount ()) {
         return m_pool->GetFeature (m_poolpos);
     }
-    throw GisException::Create (L"Feature iterator is closed");
+    throw FdoException::Create (L"Feature iterator is closed");
 }
 
-GisInt32 CGwsRightJoinQueryResults::GetRevisionNumber ()
+FdoInt32 CGwsRightJoinQueryResults::GetRevisionNumber ()
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetRevisionNumber ();
     }
     return CGwsFeatureIterator::GetRevisionNumber ();
@@ -163,106 +163,106 @@ GisInt32 CGwsRightJoinQueryResults::GetRevisionNumber ()
 GWSFeatureId CGwsRightJoinQueryResults::GetFeatureId ()
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetFeatureId ();
     }
     return CGwsFeatureIterator::GetFeatureId ();
 }
 
 
-bool CGwsRightJoinQueryResults::IsNull (GisString* propertyName)
+bool CGwsRightJoinQueryResults::IsNull (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->IsNull (propertyName);
     }
     return CGwsFeatureIterator::IsNull (propertyName);
 }
 
-GisString * CGwsRightJoinQueryResults::GetString (GisString * propertyName)
+FdoString * CGwsRightJoinQueryResults::GetString (FdoString * propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetString (propertyName);
     }
     return CGwsFeatureIterator::GetString (propertyName);
 }
 
-bool CGwsRightJoinQueryResults::GetBoolean  (GisString* propertyName)
+bool CGwsRightJoinQueryResults::GetBoolean  (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetBoolean (propertyName);
     }
     return CGwsFeatureIterator::GetBoolean (propertyName);
 }
 
-GisByte  CGwsRightJoinQueryResults::GetByte (GisString* propertyName)
+FdoByte  CGwsRightJoinQueryResults::GetByte (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetByte (propertyName);
     }
     return CGwsFeatureIterator::GetByte (propertyName);
 }
 
-GisDateTime CGwsRightJoinQueryResults::GetDateTime (GisString* propertyName)
+FdoDateTime CGwsRightJoinQueryResults::GetDateTime (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetDateTime (propertyName);
     }
     return CGwsFeatureIterator::GetDateTime (propertyName);
 }
 
-double CGwsRightJoinQueryResults::GetDouble   (GisString* propertyName)
+double CGwsRightJoinQueryResults::GetDouble   (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetDouble (propertyName);
     }
     return CGwsFeatureIterator::GetDouble (propertyName);
 }
 
-GisInt16 CGwsRightJoinQueryResults::GetInt16 (GisString* propertyName)
+FdoInt16 CGwsRightJoinQueryResults::GetInt16 (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetInt16 (propertyName);
     }
     return CGwsFeatureIterator::GetInt16 (propertyName);
 }
 
-GisInt32 CGwsRightJoinQueryResults::GetInt32 (GisString* propertyName)
+FdoInt32 CGwsRightJoinQueryResults::GetInt32 (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetInt32 (propertyName);
     }
     return CGwsFeatureIterator::GetInt32 (propertyName);
 }
-GisInt64 CGwsRightJoinQueryResults::GetInt64    (GisString* propertyName)
+FdoInt64 CGwsRightJoinQueryResults::GetInt64    (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetInt64 (propertyName);
     }
     return CGwsFeatureIterator::GetInt64 (propertyName);
 }
 
-float CGwsRightJoinQueryResults::GetSingle   (GisString* propertyName)
+float CGwsRightJoinQueryResults::GetSingle   (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetSingle (propertyName);
     }
     return CGwsFeatureIterator::GetSingle (propertyName);
 }
 
-FdoLOBValue* CGwsRightJoinQueryResults::GetLOB (GisString* propertyName)
+FdoLOBValue* CGwsRightJoinQueryResults::GetLOB (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         // TODO: Not implemented yet
         assert (false);
         return NULL;
@@ -270,10 +270,10 @@ FdoLOBValue* CGwsRightJoinQueryResults::GetLOB (GisString* propertyName)
     return CGwsFeatureIterator::GetLOB (propertyName);
 }
 
-GisIStreamReader* CGwsRightJoinQueryResults::GetLOBStreamReader(const wchar_t* propertyName )
+FdoIStreamReader* CGwsRightJoinQueryResults::GetLOBStreamReader(const wchar_t* propertyName )
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         // TODO: Not implemented yet
         assert (false);
         return NULL;
@@ -281,10 +281,10 @@ GisIStreamReader* CGwsRightJoinQueryResults::GetLOBStreamReader(const wchar_t* p
     return CGwsFeatureIterator::GetLOBStreamReader (propertyName);
 }
 
-FdoIRaster* CGwsRightJoinQueryResults::GetRaster (GisString* propertyName)
+FdoIRaster* CGwsRightJoinQueryResults::GetRaster (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         // TODO: Not implemented yet
         assert (false);
         return NULL;
@@ -292,46 +292,46 @@ FdoIRaster* CGwsRightJoinQueryResults::GetRaster (GisString* propertyName)
     return CGwsFeatureIterator::GetRaster (propertyName);
 }
 
-const GisByte * CGwsRightJoinQueryResults::GetGeometry (GisString* propertyName, GisInt32 * count)
+const FdoByte * CGwsRightJoinQueryResults::GetGeometry (FdoString* propertyName, FdoInt32 * count)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetGeometry (propertyName, count);
     }
     return CGwsFeatureIterator::GetGeometry (propertyName, count);
 }
 
-GisByteArray* CGwsRightJoinQueryResults::GetGeometry (GisString* propertyName)
+FdoByteArray* CGwsRightJoinQueryResults::GetGeometry (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetGeometry (propertyName);
     }
     return CGwsFeatureIterator::GetGeometry (propertyName);
 }
 
-FdoIFeatureReader* CGwsRightJoinQueryResults::GetFeatureObject(GisString* propertyName)
+FdoIFeatureReader* CGwsRightJoinQueryResults::GetFeatureObject(FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetFeatureObject (propertyName);
     }
     return CGwsFeatureIterator::GetFeatureObject (propertyName);
 }
 
-FdoDataValue *  CGwsRightJoinQueryResults::GetDataValue (GisString* propertyName)
+FdoDataValue *  CGwsRightJoinQueryResults::GetDataValue (FdoString* propertyName)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetDataValue (propertyName);
     }
     return CGwsFeatureIterator::GetDataValue (propertyName);
 }
 
-FdoDataValueCollection * CGwsRightJoinQueryResults::GetDataValues (GisStringCollection* propertyNames)
+FdoDataValueCollection * CGwsRightJoinQueryResults::GetDataValues (FdoStringCollection* propertyNames)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetDataValues (propertyNames);
     }
     return CGwsFeatureIterator::GetDataValues (propertyNames);
@@ -339,144 +339,144 @@ FdoDataValueCollection * CGwsRightJoinQueryResults::GetDataValues (GisStringColl
 
 /*
 
-bool CGwsRightJoinQueryResults::IsNull (GisInt32 iProp)
+bool CGwsRightJoinQueryResults::IsNull (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->IsNull (iProp);
     }
     return CGwsFeatureIterator::IsNull (iProp);
 }
 
-GisString * CGwsRightJoinQueryResults::GetString (GisInt32 iProp)
+FdoString * CGwsRightJoinQueryResults::GetString (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetString (iProp);
     }
     return CGwsFeatureIterator::GetString (iProp);
 }
-bool CGwsRightJoinQueryResults::GetBoolean  (GisInt32 iProp)
+bool CGwsRightJoinQueryResults::GetBoolean  (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetBoolean (iProp);
     }
     return CGwsFeatureIterator::GetBoolean (iProp);
 }
-GisByte CGwsRightJoinQueryResults::GetByte (GisInt32 iProp)
+FdoByte CGwsRightJoinQueryResults::GetByte (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetByte (iProp);
     }
     return CGwsFeatureIterator::GetByte (iProp);
 }
-GisDateTime CGwsRightJoinQueryResults::GetDateTime (GisInt32 iProp)
+FdoDateTime CGwsRightJoinQueryResults::GetDateTime (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetDateTime (iProp);
     }
     return CGwsFeatureIterator::GetDateTime (iProp);
 }
-double CGwsRightJoinQueryResults::GetDouble (GisInt32 iProp)
+double CGwsRightJoinQueryResults::GetDouble (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetDouble (iProp);
     }
     return CGwsFeatureIterator::GetDouble (iProp);
 }
-GisInt16 CGwsRightJoinQueryResults::GetInt16 (GisInt32 iProp)
+FdoInt16 CGwsRightJoinQueryResults::GetInt16 (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetInt16 (iProp);
     }
     return CGwsFeatureIterator::GetInt16 (iProp);
 }
-GisInt32 CGwsRightJoinQueryResults::GetInt32(GisInt32 iProp)
+FdoInt32 CGwsRightJoinQueryResults::GetInt32(FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetInt32 (iProp);
     }
     return CGwsFeatureIterator::GetInt32 (iProp);
 }
-GisInt64 CGwsRightJoinQueryResults::GetInt64 (GisInt32 iProp)
+FdoInt64 CGwsRightJoinQueryResults::GetInt64 (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetInt64 (iProp);
     }
     return CGwsFeatureIterator::GetInt64 (iProp);
 }
-float CGwsRightJoinQueryResults::GetSingle (GisInt32 iProp)
+float CGwsRightJoinQueryResults::GetSingle (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetSingle (iProp);
     }
     return CGwsFeatureIterator::GetSingle (iProp);
 }
-FdoLOBValue* CGwsRightJoinQueryResults::GetLOB (GisInt32 iProp)
+FdoLOBValue* CGwsRightJoinQueryResults::GetLOB (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetLOB (iProp);
     }
     return CGwsFeatureIterator::GetLOB (iProp);
 }
-GisIStreamReader* CGwsRightJoinQueryResults::GetLOBStreamReader (GisInt32 iProp)
+FdoIStreamReader* CGwsRightJoinQueryResults::GetLOBStreamReader (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetLOBStreamReader (iProp);
     }
     return CGwsFeatureIterator::GetLOBStreamReader (iProp);
 }
-FdoIRaster* CGwsRightJoinQueryResults::GetRaster   (GisInt32 iProp)
+FdoIRaster* CGwsRightJoinQueryResults::GetRaster   (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetRaster (iProp);
     }
     return CGwsFeatureIterator::GetRaster (iProp);
 }
-const GisByte * CGwsRightJoinQueryResults::GetGeometry (GisInt32 iProp, GisInt32 * count)
+const FdoByte * CGwsRightJoinQueryResults::GetGeometry (FdoInt32 iProp, FdoInt32 * count)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetGeometry (iProp, count);
     }
     return CGwsFeatureIterator::GetGeometry (iProp, count);
 }
-GisByteArray*   CGwsRightJoinQueryResults::GetGeometry (GisInt32 iProp)
+FdoByteArray*   CGwsRightJoinQueryResults::GetGeometry (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetGeometry (iProp);
     }
     return CGwsFeatureIterator::GetGeometry (iProp);
 }
-FdoIFeatureReader* CGwsRightJoinQueryResults::GetFeatureObject (GisInt32 iProp)
+FdoIFeatureReader* CGwsRightJoinQueryResults::GetFeatureObject (FdoInt32 iProp)
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetFeatureObject (iProp);
     }
     return CGwsFeatureIterator::GetFeatureObject (iProp);
 }
 
 void CGwsRightJoinQueryResults::ToString (
-    GisInt32    iProp,
+    FdoInt32    iProp,
     wchar_t *   buff,
     int         len
 )
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->ToString (iProp, buff, len);
     }
     return CGwsFeatureIterator::ToString (iProp, buff, len);
@@ -485,13 +485,13 @@ void CGwsRightJoinQueryResults::ToString (
 */
 
 void CGwsRightJoinQueryResults::ToString (
-    GisString*  propertyName,
+    FdoString*  propertyName,
     wchar_t *   buff,
     int         len
 )
 {
     if (m_usepool) {
-        GisPtr<IGWSFeature> f = GetPooledFeature ();
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->ToString (propertyName, buff, len);
     }
     return CGwsFeatureIterator::ToString (propertyName, buff, len);

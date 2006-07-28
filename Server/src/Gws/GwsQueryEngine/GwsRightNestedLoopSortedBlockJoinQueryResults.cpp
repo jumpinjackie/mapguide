@@ -40,7 +40,7 @@ CGwsRightNestedLoopSortedBlockJoinQueryResults::~CGwsRightNestedLoopSortedBlockJ
 EGwsStatus CGwsRightNestedLoopSortedBlockJoinQueryResults::InitializeReader  (
     IGWSQuery                  * query,
     CGwsPreparedQuery          * prepquery,
-    GisStringCollection        * joincols
+    FdoStringCollection        * joincols
 )
 {
     return CGwsRightNestedLoopJoinQueryResults::InitializeReader (query, prepquery, joincols);

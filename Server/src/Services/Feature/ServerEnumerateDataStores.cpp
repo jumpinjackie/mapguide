@@ -39,8 +39,8 @@ MgByteReader* MgServerEnumerateDataStores::EnumerateDataStores(CREFSTRING provid
     MG_FEATURE_SERVICE_TRY()
 
     // Connect to the provider
-    GisPtr<FdoIConnection> fdoConnection;
-    GisPtr<FdoIDataStoreReader> fdoDataStoreReader;
+    FdoPtr<FdoIConnection> fdoConnection;
+    FdoPtr<FdoIDataStoreReader> fdoDataStoreReader;
 
     MgServerFeatureConnection msfc(providerName, partialConnString);
     if (( msfc.IsConnectionOpen() ) || ( msfc.IsConnectionPending() ))
@@ -52,7 +52,7 @@ MgByteReader* MgServerEnumerateDataStores::EnumerateDataStores(CREFSTRING provid
         throw new MgConnectionFailedException(L"MgServerEnumerateDataStores::EnumerateDataStores()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    GisPtr<FdoIListDataStores> fdoCommand = (FdoIListDataStores*)fdoConnection->CreateCommand(FdoCommandType_ListDataStores);
+    FdoPtr<FdoIListDataStores> fdoCommand = (FdoIListDataStores*)fdoConnection->CreateCommand(FdoCommandType_ListDataStores);
     CHECKNULL((FdoIListDataStores*)fdoCommand, L"MgServerEnumerateDataStores.EnumerateDataStores");
 
     fdoCommand->SetIncludeNonFdoEnabledDatastores(true);
@@ -66,7 +66,7 @@ MgByteReader* MgServerEnumerateDataStores::EnumerateDataStores(CREFSTRING provid
 
     while(fdoDataStoreReader->ReadNext())
     {
-        GisString* dataStoreName = fdoDataStoreReader->GetName();
+        FdoString* dataStoreName = fdoDataStoreReader->GetName();
         const char *name = MgUtil::WideCharToMultiByte(dataStoreName);
 
         DOMElement* featureProviderElem = m_xmlUtil->AddChildNode(rootElem, "DataStore" /* NOXLATE */);

@@ -27,7 +27,7 @@ MgServerSqlDataReader::MgServerSqlDataReader(FdoISQLDataReader* sqlReader, CREFS
 {
     MG_FEATURE_SERVICE_TRY()
 
-    m_sqlReader = GIS_SAFE_ADDREF(sqlReader);
+    m_sqlReader = FDO_SAFE_ADDREF(sqlReader);
     m_providerName = providerName;
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.MgServerSqlDataReader")
@@ -41,7 +41,7 @@ MgServerSqlDataReader::MgServerSqlDataReader()
 
 MgServerSqlDataReader::~MgServerSqlDataReader()
 {
-    GIS_SAFE_RELEASE(m_sqlReader);
+    FDO_SAFE_RELEASE(m_sqlReader);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ STRING MgServerSqlDataReader::GetPropertyName(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisString* str = m_sqlReader->GetColumnName(index);
+    FdoString* str = m_sqlReader->GetColumnName(index);
     if (str != NULL)
     {
         retVal = (wchar_t*)str;
@@ -240,7 +240,7 @@ MgDateTime* MgServerSqlDataReader::GetDateTime(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    GisDateTime val = m_sqlReader->GetDateTime(propertyName.c_str());
+    FdoDateTime val = m_sqlReader->GetDateTime(propertyName.c_str());
     retVal = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
                             (INT8)val.hour, (INT8)val.minute, val.seconds);
 
@@ -470,15 +470,15 @@ MgByteReader* MgServerSqlDataReader::GetLOB(CREFSTRING propName)
 
     Ptr<MgByteReader> byteReader;
 
-    // TODO: We need to switch to GisIStreamReader when we have streaming capability in MgByteReader
-    GisPtr<FdoLOBValue> fdoVal = m_sqlReader->GetLOB(propName.c_str());
+    // TODO: We need to switch to FdoIStreamReader when we have streaming capability in MgByteReader
+    FdoPtr<FdoLOBValue> fdoVal = m_sqlReader->GetLOB(propName.c_str());
     if (fdoVal != NULL)
     {
-        GisPtr<GisByteArray> byteArray = fdoVal->GetData();
+        FdoPtr<FdoByteArray> byteArray = fdoVal->GetData();
         if (byteArray != NULL)
         {
-            GisByte* bytes = byteArray->GetData();
-            GisInt32 len = byteArray->GetCount();
+            FdoByte* bytes = byteArray->GetData();
+            FdoInt32 len = byteArray->GetCount();
             Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
             // TODO: We need to differentiate between CLOB and BLOB
             // TODO: How do we fine the MimeType of data for CLOB
@@ -607,9 +607,9 @@ BYTE_ARRAY_OUT MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName, INT32
 
     // TODO: Can we have an equivalent method as we have in FeatureReader to get
     // TODO: direct pointer on geometry
-    GisPtr<GisByteArray> byteArray = m_sqlReader->GetGeometry(propertyName.c_str());
+    FdoPtr<FdoByteArray> byteArray = m_sqlReader->GetGeometry(propertyName.c_str());
     length = (INT32)byteArray->GetCount();
-    GisByte* data = byteArray->GetData();
+    FdoByte* data = byteArray->GetData();
 
     return (BYTE_ARRAY_OUT)data;
 }
@@ -625,7 +625,7 @@ const wchar_t* MgServerSqlDataReader::GetString(CREFSTRING propName, INT32& leng
 {
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetString");
 
-    GisString* retVal;
+    FdoString* retVal;
 
     MG_FEATURE_SERVICE_TRY()
 

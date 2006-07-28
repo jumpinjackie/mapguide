@@ -51,10 +51,10 @@ MgProperty* MgServerDeleteCommand::Execute()
     STRING clsName = m_featCommand->GetFeatureClassName();
     STRING filterText = m_featCommand->GetFilterText();
 
-    GisPtr<FdoIConnection> fdoConn = m_srvrFeatConn->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = m_srvrFeatConn->GetConnection();
 
     // Create the SQL command
-    GisPtr<FdoIDelete> fdoCommand = (FdoIDelete*)fdoConn->CreateCommand(FdoCommandType_Delete);
+    FdoPtr<FdoIDelete> fdoCommand = (FdoIDelete*)fdoConn->CreateCommand(FdoCommandType_Delete);
     CHECKNULL((FdoIDelete*)fdoCommand, L"MgServerDeleteCommand.Execute");
 
     fdoCommand->SetFeatureClassName(clsName.c_str());

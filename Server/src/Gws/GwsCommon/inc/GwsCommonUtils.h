@@ -90,7 +90,7 @@ protected:
 };
 
 // String collection SAX handler. Use to read XML file
-class CGwsStringCollectionSaxHandler: public GisXmlSaxHandler
+class CGwsStringCollectionSaxHandler: public FdoXmlSaxHandler
 {
 public:
                  CGwsStringCollectionSaxHandler ();
@@ -102,19 +102,19 @@ public:
     static       CGwsStringCollectionSaxHandler * GetHandler ();
 
     GWS_COMMON_API
-    void         SetDestination (GisStringCollection * strcoll);
+    void         SetDestination (FdoStringCollection * strcoll);
     GWS_COMMON_API
-    virtual void XmlCharacters(GisXmlSaxContext* ctx, GisString* chars);
+    virtual void XmlCharacters(FdoXmlSaxContext* ctx, FdoString* chars);
 
     GWS_COMMON_API
-    static void Write (GisXmlWriter * writer, GisStringCollection * sellist);
+    static void Write (FdoXmlWriter * writer, FdoStringCollection * sellist);
 
 protected:
     static CGwsStringCollectionSaxHandler m_shandler;
     static wchar_t                      * m_sdelimiter;
 
 protected:
-    GisStringCollection * m_strcoll;
+    FdoStringCollection * m_strcoll;
 };
 
 // spatial context desctiption
@@ -132,7 +132,7 @@ public:
                 const WSTR & scname,
                 const WSTR & desc,
                 const WSTR & csname,
-                GisIEnvelope * extents)
+                FdoIEnvelope * extents)
     {
         m_classname = classname;
         m_propname = propname;
@@ -177,31 +177,31 @@ public:
     }
 
     GWS_COMMON_API
-    GisString * PropertyName () const
+    FdoString * PropertyName () const
     {
         return m_propname.c_str ();
     }
 
     GWS_COMMON_API
-    GisString * SpatialContextName () const
+    FdoString * SpatialContextName () const
     {
         return m_scname.c_str ();
     }
 
     GWS_COMMON_API
-    GisString * SpatialContextDesc () const
+    FdoString * SpatialContextDesc () const
     {
         return m_desc.c_str ();
     }
 
     GWS_COMMON_API
-    GisString * CsNameWkt () const
+    FdoString * CsNameWkt () const
     {
         return m_csnamewkt.c_str ();
     }
 
     GWS_COMMON_API
-    GisIEnvelope * Extents ()
+    FdoIEnvelope * Extents ()
     {
         if (m_extents != NULL)
             m_extents.p->AddRef ();
@@ -215,7 +215,7 @@ public:
     }
 
     GWS_COMMON_API
-    void SetPropertyName (GisString *  pname)
+    void SetPropertyName (FdoString *  pname)
     {
         if (pname == NULL)
             m_propname.clear ();
@@ -224,7 +224,7 @@ public:
     }
 
     GWS_COMMON_API
-    void SetSpatialContextName (GisString * scname)
+    void SetSpatialContextName (FdoString * scname)
     {
         if (scname == NULL)
             m_scname.clear ();
@@ -233,7 +233,7 @@ public:
     }
 
     GWS_COMMON_API
-    void SetSpatialContextDesc (GisString * scdesc)
+    void SetSpatialContextDesc (FdoString * scdesc)
     {
         if (scdesc == NULL)
             m_desc.clear ();
@@ -242,7 +242,7 @@ public:
     }
 
     GWS_COMMON_API
-    void SetCsNameWkt (GisString * csnamewkt)
+    void SetCsNameWkt (FdoString * csnamewkt)
     {
         if (csnamewkt == NULL)
             m_csnamewkt.clear ();
@@ -251,7 +251,7 @@ public:
     }
 
     GWS_COMMON_API
-    void SetExtents (GisIEnvelope * env)
+    void SetExtents (FdoIEnvelope * env)
     {
         m_extents = env;
         if (m_extents != NULL)
@@ -264,7 +264,7 @@ private:
     WSTR             m_scname;      // spatial context name
     WSTR             m_desc;        // sc description
     WSTR             m_csnamewkt;   // wkt coord sys name
-    GisPtr<GisIEnvelope> m_extents;
+    FdoPtr<FdoIEnvelope> m_extents;
 };
 
 // vector of spatial context descriptors
@@ -293,7 +293,7 @@ namespace GwsCommonFdoUtils
     GWS_COMMON_API
     FdoPropertyDefinition * GetPropertyDefinition (
                                 FdoClassDefinition                  * pClassDef,
-                                GisString                           * PropertyName);
+                                FdoString                           * PropertyName);
 
     // make Fdo Qualified class name from the qualified name,
     // Data source portion of the classname is ignored.
@@ -320,7 +320,7 @@ namespace GwsCommonFdoUtils
     GWS_COMMON_API
     GWSExtendedFeatureId  MakeFeatureId (
                                 const GWSQualifiedName          &   classname,
-                                GisPtr<FdoPropertyValueCollection>  ident,
+                                FdoPtr<FdoPropertyValueCollection>  ident,
                                 const wchar_t                     * ltname);
     // retrieves geometry name from the class definition
     GWS_COMMON_API
@@ -344,7 +344,7 @@ namespace GwsCommonFdoUtils
     GWS_COMMON_API
     EGwsStatus       DescribeSC (
                         FdoIConnection * conn,
-                        GisString * scname,
+                        FdoString * scname,
                         GwsSpatialContextDescription & desc);
 };
 

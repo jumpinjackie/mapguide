@@ -32,7 +32,7 @@ void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoIFeatur
     if (pd->GetPropertyType() == FdoPropertyType_DataProperty)
         dpd = (FdoDataPropertyDefinition*)pd;
 
-    GisString* name = pd->GetName();
+    FdoString* name = pd->GetName();
 
     if (reader->IsNull(name))
     {
@@ -95,7 +95,7 @@ void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoIFeatur
     else
     {
         //we have a geometric property
-        GisPtr<GisByteArray> byteArray = reader->GetGeometry(name);
+        FdoPtr<FdoByteArray> byteArray = reader->GetGeometry(name);
 
         //Note we do not need to write the length of a byte array since we know it
         //by subtracting the offsets into property values in the data record
@@ -107,7 +107,7 @@ void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoPropert
                                            bool forAssociation)
 {
     FdoDataPropertyDefinition* dpd = NULL;
-    GisPtr<FdoValueExpression> expression;
+    FdoPtr<FdoValueExpression> expression;
 
     if (pd->GetPropertyType() == FdoPropertyType_DataProperty)
         dpd = (FdoDataPropertyDefinition*)pd;
@@ -183,7 +183,7 @@ void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoPropert
     else
     {
         //we have a geometric property
-        GisPtr<GisByteArray> byteArray = ((FdoGeometryValue*)(expression.p))->GetGeometry();
+        FdoPtr<FdoByteArray> byteArray = ((FdoGeometryValue*)(expression.p))->GetGeometry();
 
         //Note we do not need to write the length of a byte array since we know it
         //by subtracting the offsets into property values in the data record
@@ -199,7 +199,7 @@ bool GwsBinaryFeatureWriter::WriteAssociationProperty(FdoAssociationPropertyDefi
     bool  oneIdentIsNull = false;
     bool  written = false;
 
-    GisPtr<FdoDataPropertyDefinitionCollection> idents = apd->GetIdentityProperties();
+    FdoPtr<FdoDataPropertyDefinitionCollection> idents = apd->GetIdentityProperties();
     if( idents->GetCount() == 0 )
     {
         // Search for property values with names build from the association property name and the
@@ -208,17 +208,17 @@ bool GwsBinaryFeatureWriter::WriteAssociationProperty(FdoAssociationPropertyDefi
         // name: "AssocProp.Id". If that property value is found and set, then that means an association
         // exists between the new object(we are about to insert) and the object identified by the value
         // of the property value(AssocProp.Id)
-        GisPtr<FdoClassDefinition>cls = apd->GetAssociatedClass();
+        FdoPtr<FdoClassDefinition>cls = apd->GetAssociatedClass();
         idents = cls->GetIdentityProperties();
     }
 
     for(int i=0; i<idents->GetCount(); i++ )
     {
-        GisPtr<FdoDataPropertyDefinition>prop = idents->GetItem( i );
+        FdoPtr<FdoDataPropertyDefinition>prop = idents->GetItem( i );
         std::wstring wstr = apd->GetName();
         wstr += L".";
         wstr += prop->GetName();
-        GisPtr<FdoPropertyValue> pv = pvc->FindItem( wstr.c_str() );
+        FdoPtr<FdoPropertyValue> pv = pvc->FindItem( wstr.c_str() );
         if(pv != NULL)
         {
             if( errorIfSet )
@@ -248,7 +248,7 @@ void GwsBinaryFeatureWriter::WriteAssociationProperty(FdoAssociationPropertyDefi
     if( apd->GetIsReadOnly() )
         return;
 
-    GisPtr<FdoDataPropertyDefinitionCollection> idents = apd->GetIdentityProperties();
+    FdoPtr<FdoDataPropertyDefinitionCollection> idents = apd->GetIdentityProperties();
     if( idents->GetCount() == 0 )
     {
         // Search for property values with names build from the association property name and the
@@ -257,29 +257,29 @@ void GwsBinaryFeatureWriter::WriteAssociationProperty(FdoAssociationPropertyDefi
         // name: "AssocProp.Id". If that property value is found and set, then that means an association
         // exists between the new object(we are about to insert) and the object identified by the value
         // of the property value(AssocProp.Id)
-        GisPtr<FdoClassDefinition>cls = apd->GetAssociatedClass();
+        FdoPtr<FdoClassDefinition>cls = apd->GetAssociatedClass();
         idents = cls->GetIdentityProperties();
     }
     if( reader->IsNull( apd->GetName() ) )
         return;
 
-    GisPtr<FdoIFeatureReader>loc_reader = reader->GetFeatureObject( apd->GetName() );
+    FdoPtr<FdoIFeatureReader>loc_reader = reader->GetFeatureObject( apd->GetName() );
     if( ! loc_reader->ReadNext() )
         return;
     for(int i=0; i<idents->GetCount(); i++ )
     {
-        GisPtr<FdoDataPropertyDefinition>prop = idents->GetItem( i );
+        FdoPtr<FdoDataPropertyDefinition>prop = idents->GetItem( i );
         if( ! loc_reader->IsNull( prop->GetName() ) )
             WriteProperty( prop, loc_reader);
     }
 }
 
-void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc, GisString* fcName,
+void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc, FdoString* fcName,
                                           FdoPropertyValueCollection* pvc)
 {
-    GisPtr<FdoReadOnlyPropertyDefinitionCollection> bpdc = fc->GetBaseProperties();
-    GisPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
-    //GisPtr<FdoDataPropertyDefinitionCollection> idpdc = FindIDProps(fc);
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> bpdc = fc->GetBaseProperties();
+    FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
+    //FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = FindIDProps(fc);
 
     //write feature class ID
     m_wrtr.WriteString(fcName);
@@ -303,7 +303,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc, GisString* fcN
     //base properties first
     for (int i=0; i<bpdc->GetCount(); i++)
     {
-        GisPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)bpdc->GetItem(i);
+        FdoPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)bpdc->GetItem(i);
 
         //save offset of property data to the reserved position at the
         //beginning of the record
@@ -321,7 +321,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc, GisString* fcN
                 WriteAssociationProperty((FdoAssociationPropertyDefinition*)pd.p, pvc);
             else
             {
-                GisPtr<FdoPropertyValue> pv = pvc->FindItem(pd->GetName());
+                FdoPtr<FdoPropertyValue> pv = pvc->FindItem(pd->GetName());
                 if(pv != NULL)
                     WriteProperty(pd, pv);
                 else
@@ -338,7 +338,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc, GisString* fcN
     //class properties
     for (int i=0; i<pdc->GetCount(); i++)
     {
-        GisPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)pdc->GetItem(i);
+        FdoPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)pdc->GetItem(i);
 
         //save offset of property data to the reserved position at the
         //beginning of the record
@@ -356,7 +356,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc, GisString* fcN
                 WriteAssociationProperty((FdoAssociationPropertyDefinition*)pd.p, pvc);
             else
             {
-                GisPtr<FdoPropertyValue> pv = pvc->FindItem(pd->GetName());
+                FdoPtr<FdoPropertyValue> pv = pvc->FindItem(pd->GetName());
                 if(pv != NULL)
                     WriteProperty(pd, pv);
                 else
@@ -377,12 +377,12 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc, GisString* fcN
 //with property values in the given FeatureReader. The PropertyValueCollection
 //represents properties to be updated in an old feature record represented by
 //the given FeatureReader.
-void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc,  GisString* fcName,
+void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc,  FdoString* fcName,
                                           FdoPropertyValueCollection* pvc,
                                           FdoIFeatureReader* reader)
 {
-    GisPtr<FdoReadOnlyPropertyDefinitionCollection> bpdc = fc->GetBaseProperties();
-    GisPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> bpdc = fc->GetBaseProperties();
+    FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
 
     //find number of properties we will store into the data record
     //we will use this number to save an offset into the data records for each property
@@ -406,7 +406,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc,  GisString* fc
     //base properties first
     for (int i=0; i<bpdc->GetCount(); i++)
     {
-        GisPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)bpdc->GetItem(i);
+        FdoPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)bpdc->GetItem(i);
 
         //save offset of property data to the reserved position at the
         //beginning of the record
@@ -427,7 +427,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc,  GisString* fc
             }
             else
             {
-                GisPtr<FdoPropertyValue> pv((FdoPropertyValue*)pvc->FindItem(pd->GetName()));
+                FdoPtr<FdoPropertyValue> pv((FdoPropertyValue*)pvc->FindItem(pd->GetName()));
                 if(pv != NULL)
                     WriteProperty(pd, pv);
                 else
@@ -444,7 +444,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc,  GisString* fc
     //class properties
     for (int i=0; i<pdc->GetCount(); i++)
     {
-        GisPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)pdc->GetItem(i);
+        FdoPtr<FdoPropertyDefinition> pd = (FdoPropertyDefinition*)pdc->GetItem(i);
 
         //save offset of property data to the reserved position at the
         //beginning of the record
@@ -467,7 +467,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc,  GisString* fc
             else
             {
 
-                GisPtr<FdoPropertyValue> pv((FdoPropertyValue*)pvc->GetItem(pd->GetName()));
+                FdoPtr<FdoPropertyValue> pv((FdoPropertyValue*)pvc->GetItem(pd->GetName()));
                 if(pv != NULL)
                     WriteProperty(pd, pv);
                 else
@@ -484,8 +484,8 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc,  GisString* fc
 
 FdoDataPropertyDefinitionCollection* GwsBinaryFeatureWriter::FindIDProps(FdoClassDefinition* fc)
 {
-    GisPtr <FdoDataPropertyDefinitionCollection> idpdc = fc->GetIdentityProperties();
-    GisPtr<FdoClassDefinition> base = GIS_SAFE_ADDREF(fc);
+    FdoPtr <FdoDataPropertyDefinitionCollection> idpdc = fc->GetIdentityProperties();
+    FdoPtr<FdoClassDefinition> base = FDO_SAFE_ADDREF(fc);
 
     //go up class hierarchy to find base class (it has the identity properties)
     while ((base = base->GetBaseClass()) != NULL)
@@ -494,5 +494,5 @@ FdoDataPropertyDefinitionCollection* GwsBinaryFeatureWriter::FindIDProps(FdoClas
     if (idpdc->GetCount() == 0)
         return NULL;
 
-    return (GIS_SAFE_ADDREF (idpdc.p));
+    return (FDO_SAFE_ADDREF (idpdc.p));
 }

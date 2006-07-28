@@ -74,7 +74,7 @@ MgPropertyCollection* MgServerUpdateFeatures::Execute(MgResourceIdentifier* reso
 
     propCol = new MgPropertyCollection();
 
-    GisPtr<FdoIConnection> fdoConn = m_SrvrFeatConn->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = m_SrvrFeatConn->GetConnection();
     if (useTransaction)
     {
         transaction = fdoConn->BeginTransaction();

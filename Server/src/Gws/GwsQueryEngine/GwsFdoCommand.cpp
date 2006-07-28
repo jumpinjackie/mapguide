@@ -119,13 +119,13 @@ EGwsStatus CGwsFdoCommand::Prepare ()
             PushStatus (eGwsFailed);
             return eGwsFailed;
         }
-        GisPtr<FdoISchemaCapabilities> ptrCap;
+        FdoPtr<FdoISchemaCapabilities> ptrCap;
         ptrCap = m_connection->GetSchemaCapabilities();
         assert (ptrCap);
         m_bSupportBlobs = false;
         m_bSupportClobs = false;
         if (ptrCap) {
-            GisInt32 len = 0;
+            FdoInt32 len = 0;
             // we want to skip these properties
             FdoDataType* types = ptrCap->GetDataTypes(len);
             for (int i = 0; i < len; i ++) {
@@ -136,11 +136,11 @@ EGwsStatus CGwsFdoCommand::Prepare ()
             }
         }
         m_bSupportLocking = false;
-        GisPtr<FdoIConnectionCapabilities> connCap;
+        FdoPtr<FdoIConnectionCapabilities> connCap;
         connCap = m_connection->GetConnectionCapabilities();
         if (connCap) {
             if (connCap->SupportsLocking()) {
-                GisPtr<FdoClassCapabilities> cap = m_classDef->GetCapabilities ();
+                FdoPtr<FdoClassCapabilities> cap = m_classDef->GetCapabilities ();
                 if (cap != NULL) {
                     m_bSupportLocking = cap->SupportsLocking ();
                 }
@@ -157,8 +157,8 @@ EGwsStatus CGwsFdoCommand::Prepare ()
 
         m_bIsPrepared = true;
 
-    } catch (GisException * ex) {
-        PushGisException (eGwsFailed, ex);
+    } catch (FdoException * ex) {
+        PushFdoException (eGwsFailed, ex);
         ex->Release ();
         stat = eGwsFailed;
 
@@ -174,7 +174,7 @@ WSTR CGwsFdoCommand::QualifiedClassName()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-FdoPropertyDefinition * CGwsFdoCommand::GetPropertyDefinition (GisString * propname)
+FdoPropertyDefinition * CGwsFdoCommand::GetPropertyDefinition (FdoString * propname)
 {
     PropertyDefinitionMap::iterator iter = m_propdefs.find (propname);
     if (iter == m_propdefs.end ()) {
@@ -239,16 +239,16 @@ void CGwsFdoCommand::PrepareInternal ()
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoCommand::PrepareNonKeyProperties ()
 {
-    GisInt32 idx;
+    FdoInt32 idx;
 
-    GisPtr<FdoClassDefinition>  classDef = m_classDef;
+    FdoPtr<FdoClassDefinition>  classDef = m_classDef;
     m_geometricprop.clear ();
     for (; classDef != NULL ; classDef = classDef->GetBaseClass ())
     {
-        GisPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties ();
+        FdoPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties ();
         // discover geometric property name. Use the first one if there are many.
         for (idx = 0; idx < propdsc->GetCount(); idx ++) {
-            GisPtr<FdoPropertyDefinition>   prop;
+            FdoPtr<FdoPropertyDefinition>   prop;
             prop = propdsc->GetItem (idx);
 
             m_propdefs.insert(PropertyDefinitionMap::value_type(prop->GetName (), prop));
@@ -258,7 +258,7 @@ void CGwsFdoCommand::PrepareNonKeyProperties ()
             {
                 m_geometricprop = prop->GetName ();
                 FdoGeometricPropertyDefinition* geomProp = static_cast<FdoGeometricPropertyDefinition*>(prop.p);
-                GisString* pSC = geomProp->GetSpatialContextAssociation();
+                FdoString* pSC = geomProp->GetSpatialContextAssociation();
                 if(pSC != NULL) {
                     m_geometricSC = pSC;
 
@@ -297,11 +297,11 @@ void CGwsFdoCommand::PrepareKeyProperties ()
 void CGwsFdoCommand::PrepareObjectProperties ()
 {
 #ifdef IMPLEMENT_THIS_METHOD // and test
-    GisPtr<FdoClassDefinition>  classDef = m_classDef;
+    FdoPtr<FdoClassDefinition>  classDef = m_classDef;
     for (; classDef != NULL; classDef = classDef->GetBaseClass ()) {
-        GisPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties();
-        for (GisInt32 idx = 0; idx < propdsc->GetCount (); idx ++) {
-            GisPtr<FdoPropertyDefinition>   prop;
+        FdoPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties();
+        for (FdoInt32 idx = 0; idx < propdsc->GetCount (); idx ++) {
+            FdoPtr<FdoPropertyDefinition>   prop;
             prop = propdsc->GetItem (idx);
             assert (prop != NULL);
             if (prop->GetPropertyType () == FdoPropertyType_ObjectProperty)
@@ -317,8 +317,8 @@ void CGwsFdoCommand::PrepareObjectProperties ()
                 //should not be there
                 assert(it == m_objPropCommands.end());
 
-                GisPtr<FdoClassDefinition> pDef = objprop->GetClass();
-                GisPtr<FdoFeatureSchema> pSchema = pDef->GetFeatureSchema();
+                FdoPtr<FdoClassDefinition> pDef = objprop->GetClass();
+                FdoPtr<FdoFeatureSchema> pSchema = pDef->GetFeatureSchema();
 
                 const char* pFeatureSourceName = NULL;
                 const AcMapFdoFeatureSource* pFS = Session()->FeatureSource();
@@ -385,8 +385,8 @@ void CGwsFdoCommand::SetValue (
     FdoPropertyValueCollection * pPropertyValues = GetPropertyValues();
     assert(pPropertyValues);
 
-    GisPtr<FdoPropertyValue>     pPropertyValue;
-    GisPtr<FdoIdentifier>        ident = pPropVal->GetName ();
+    FdoPtr<FdoPropertyValue>     pPropertyValue;
+    FdoPtr<FdoIdentifier>        ident = pPropVal->GetName ();
 
     pPropertyValue = pPropertyValues->FindItem (ident->GetName ());
     if (pPropertyValue != NULL) {
@@ -402,8 +402,8 @@ EGwsStatus CGwsFdoCommand::SetProperties (CGwsMutableFeature & feature)
     EGwsStatus stat = eGwsOk;
 
     for (int i = 0; i < feature.GetCount (); i ++) {
-        GisPtr<FdoPropertyValue> val = feature.GetPropertyValue (i);
-        GisPtr<FdoIdentifier> ident = val->GetName ();
+        FdoPtr<FdoPropertyValue> val = feature.GetPropertyValue (i);
+        FdoPtr<FdoIdentifier> ident = val->GetName ();
         PropertyDefinitionMap::iterator iter = m_propdefs.find (ident->GetName ());
         if (iter == m_propdefs.end ()) {
             stat = eGwsInvalidPropertyName;
@@ -429,7 +429,7 @@ EGwsStatus CGwsFdoCommand::SetProperties (CGwsMutableFeature & feature)
             }
         } else if ((*iter).second->GetPropertyType () == FdoPropertyType_GeometricProperty) {
             // applying conversion
-            GisPtr<FdoPropertyValue> cval = ConvertGeometryProperty (
+            FdoPtr<FdoPropertyValue> cval = ConvertGeometryProperty (
                                                     feature.GetCSName (),
                                                     val);
             SetValue (cval);
@@ -460,18 +460,18 @@ FdoPropertyValue * CGwsFdoCommand::ConvertGeometryProperty (
     // cs converter converts in place. In order not to
     // change source geometry, create a copy of it
     // not very efficient, but looks like the only way ...
-    GisPtr<FdoValueExpression> gval = val->GetValue ();
-    GisPtr<FdoIdentifier>      ident = val->GetName ();
+    FdoPtr<FdoValueExpression> gval = val->GetValue ();
+    FdoPtr<FdoIdentifier>      ident = val->GetName ();
     FdoGeometryValue         * geomval = dynamic_cast<FdoGeometryValue *> (gval.p);
     assert (geomval);
 
-    GisPtr<GisByteArray>       barray = geomval->GetGeometry();
-    GisPtr<GisByteArray>       carray = GisByteArray::Create (barray->GetData (),
+    FdoPtr<FdoByteArray>       barray = geomval->GetGeometry();
+    FdoPtr<FdoByteArray>       carray = FdoByteArray::Create (barray->GetData (),
                                                               barray->GetCount ());
 
     eGwsOkThrow (m_converter->ConvertBackward (carray));
 
-    GisPtr<FdoGeometryValue> cgeomval = FdoGeometryValue::Create (carray);
+    FdoPtr<FdoGeometryValue> cgeomval = FdoGeometryValue::Create (carray);
     return FdoPropertyValue::Create (ident, cgeomval);
 }
 
@@ -486,8 +486,8 @@ EGwsStatus CGwsFdoCommand::BuildInFilter (
     EGwsStatus  stat  = eGwsOk;
     try {
         stat = CGwsFdoCommand::BuildInFilter(m_identity, featIds, lbound, ubound, pOutFilter);
-    } catch (GisException *e) {
-        PushGisException (eGwsFailed, e);
+    } catch (FdoException *e) {
+        PushFdoException (eGwsFailed, e);
         e->Release();
         stat = eGwsFailed;
     }
@@ -504,8 +504,8 @@ EGwsStatus CGwsFdoCommand::BuildInFilter (
 )
 {
     EGwsStatus                             stat  = eGwsOk;
-    GisPtr<FdoValueExpressionCollection>   invalues;
-    GisPtr<FdoInCondition>                 inclause;
+    FdoPtr<FdoValueExpressionCollection>   invalues;
+    FdoPtr<FdoInCondition>                 inclause;
 
     assert (identity->GetCount () == 1);
     assert (lbound >= 0);
@@ -515,11 +515,11 @@ EGwsStatus CGwsFdoCommand::BuildInFilter (
 
     for (int i = lbound; i < ubound; i ++) {
         assert (featIds[i].GetCount () == 1);
-        GisPtr<FdoDataValue>      pValue = featIds[i].GetItem (0);
+        FdoPtr<FdoDataValue>      pValue = featIds[i].GetItem (0);
         invalues->Add (pValue);
     }
-    GisPtr<FdoPropertyDefinition> prop = identity->GetItem (0);
-    GisPtr<FdoIdentifier>         name = FdoIdentifier::Create(prop->GetName());
+    FdoPtr<FdoPropertyDefinition> prop = identity->GetItem (0);
+    FdoPtr<FdoIdentifier>         name = FdoIdentifier::Create(prop->GetName());
 
     inclause = FdoInCondition::Create (name, invalues);
 
@@ -538,8 +538,8 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
     EGwsStatus stat             = eGwsOk;
     try {
         stat = CGwsFdoCommand::BuildFilter(m_identity, featId, pOutFilter);
-    } catch (GisException *e) {
-        PushGisException (eGwsFailed, e);
+    } catch (FdoException *e) {
+        PushFdoException (eGwsFailed, e);
         e->Release();
         stat = eGwsFailed;
     }
@@ -555,24 +555,24 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
 {
     EGwsStatus stat             = eGwsOk;
 
-    GisPtr<FdoFilter> pFilter;
-    GisInt32          idx;
+    FdoPtr<FdoFilter> pFilter;
+    FdoInt32          idx;
 
     for (idx = 0; idx < identity->GetCount(); idx ++) {
-        GisPtr<FdoPropertyDefinition>   prop;
+        FdoPtr<FdoPropertyDefinition>   prop;
         prop = identity->GetItem (idx);
 
-        GisPtr<FdoIdentifier> pFeatureNameProperty = FdoIdentifier::Create(prop->GetName());
-        GisPtr<FdoDataValue>  pFeatureNameValue = featId.GetItem (idx);
+        FdoPtr<FdoIdentifier> pFeatureNameProperty = FdoIdentifier::Create(prop->GetName());
+        FdoPtr<FdoDataValue>  pFeatureNameValue = featId.GetItem (idx);
         if (idx == 0) {
             pFilter = FdoComparisonCondition::Create(pFeatureNameProperty,
                                                     FdoComparisonOperations_EqualTo,
                                                     pFeatureNameValue);
         } else {
-            GisPtr<FdoFilter> pRhsFilter = FdoComparisonCondition::Create(pFeatureNameProperty,
+            FdoPtr<FdoFilter> pRhsFilter = FdoComparisonCondition::Create(pFeatureNameProperty,
                                                                         FdoComparisonOperations_EqualTo,
                                                                         pFeatureNameValue);
-            GisPtr<FdoFilter> pCombinedFilter = FdoFilter::Combine(pFilter,
+            FdoPtr<FdoFilter> pCombinedFilter = FdoFilter::Combine(pFilter,
                                                                 FdoBinaryLogicalOperations_And,
                                                                 pRhsFilter);
 
@@ -598,8 +598,8 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
 
     try {
         stat = BuildFilter(m_connection, m_identity, featids, lbound, ubound, pOutFilter);
-    } catch (GisException *e) {
-        PushGisException (eGwsFailed, e);
+    } catch (FdoException *e) {
+        PushFdoException (eGwsFailed, e);
         e->Release();
         stat = eGwsFailed;
     }
@@ -621,10 +621,10 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
 
     bool                           bSupportIn = false;
     {
-        GisPtr<FdoIFilterCapabilities> fltCap;
+        FdoPtr<FdoIFilterCapabilities> fltCap;
         fltCap = conn->GetFilterCapabilities();
         if(fltCap != NULL) {
-            GisInt32 size = 0;
+            FdoInt32 size = 0;
             FdoConditionType* types = fltCap->GetConditionTypes(size);
             for (int i = 0; i < size; i ++) {
                 if (types [i] == FdoConditionType_In) {
@@ -641,14 +641,14 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
 
     EGwsStatus   stat  = eGwsOk;
 
-    GisPtr<FdoFilter> filter;
+    FdoPtr<FdoFilter> filter;
     for (int i = lbound; i < ubound; i ++) {
-        GisPtr<FdoFilter> f;
+        FdoPtr<FdoFilter> f;
         BuildFilter (identity, featids[i], f.p);
         if ( i == 0)
             filter = f;
         else {
-            GisPtr<FdoFilter> pCombinedFilter = FdoFilter::Combine(filter,
+            FdoPtr<FdoFilter> pCombinedFilter = FdoFilter::Combine(filter,
                                                                     FdoBinaryLogicalOperations_Or,
                                                                     f);
             filter = pCombinedFilter;
@@ -678,7 +678,7 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
     EGwsStatus   stat  = eGwsOk;
 
     try {
-        GisPtr<FdoPropertyDefinition>   prop;
+        FdoPtr<FdoPropertyDefinition>   prop;
         prop = m_identity->GetItem (0);
 
         // these are data types we support in this case
@@ -690,19 +690,19 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
             dataprop->GetDataType () != FdoDataType_Int64)
             return eGwsFdoInvalidPropertyType;
 
-        GisPtr<FdoIdentifier> pName   = FdoIdentifier::Create(prop->GetName());
-        GisPtr<FdoFilter>     filter;
+        FdoPtr<FdoIdentifier> pName   = FdoIdentifier::Create(prop->GetName());
+        FdoPtr<FdoFilter>     filter;
 
         for (int i = 0; i < nCount; i ++) {
-            GisPtr<FdoDataValue>  pValue  = FdoInt32Value::Create (idSet->Id(i));
-            GisPtr<FdoFilter>     f       = FdoComparisonCondition::Create(
+            FdoPtr<FdoDataValue>  pValue  = FdoInt32Value::Create (idSet->Id(i));
+            FdoPtr<FdoFilter>     f       = FdoComparisonCondition::Create(
                                                      pName,
                                                      FdoComparisonOperations_EqualTo,
                                                      pValue);
             if ( i == 0)
                 filter = f;
             else {
-                GisPtr<FdoFilter> pCombinedFilter = FdoFilter::Combine(filter,
+                FdoPtr<FdoFilter> pCombinedFilter = FdoFilter::Combine(filter,
                                                                        FdoBinaryLogicalOperations_Or,
                                                                        f);
                 filter = pCombinedFilter;
@@ -711,8 +711,8 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
         pOutFilter = filter;
         if (filter != NULL)
             filter.p->AddRef ();
-    } catch (GisException *e) {
-        PushGisException (eGwsFailed, e);
+    } catch (FdoException *e) {
+        PushFdoException (eGwsFailed, e);
         e->Release();
         stat = eGwsFailed;
     }
@@ -763,7 +763,7 @@ EGwsStatus CGwsFdoCommand::ProcessLockConflicts (
             FdoConflictType     ctype = pReader->GetConflictType ();
 
             if (ctype == FdoConflictType_LockConflict) {
-                GisString      *    owner = pReader->GetLockOwner();
+                FdoString      *    owner = pReader->GetLockOwner();
                 CGwsStatus stat (eGwsFdoLockConflict);
                 stat.SetParameter (L"Username", owner);
                 stat.SetParameter (L"FeatureId", wbuff);
@@ -771,7 +771,7 @@ EGwsStatus CGwsFdoCommand::ProcessLockConflicts (
                 failed.insert (GwsFailedStatus::value_type (featId.FeatureId (),stat));
 
             } else if (ctype == FdoConflictType_VersionConflict) {
-                GisString     *     version = pReader->GetLongTransaction ();
+                FdoString     *     version = pReader->GetLongTransaction ();
                 CGwsStatus stat (eGwsFdoVersionConflict);
                 stat.SetParameter (L"Version", version);
                 stat.SetParameter (L"FeatureId", wbuff);
@@ -786,7 +786,7 @@ EGwsStatus CGwsFdoCommand::ProcessLockConflicts (
                 failed.insert (GwsFailedStatus::value_type (featId.FeatureId (),stat));
             }
 
-        } catch (GisException * e) {
+        } catch (FdoException * e) {
             assert ("Gis exception while getting lock conflicts");
             e->Release ();  // just silenly eat this
         }

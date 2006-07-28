@@ -81,7 +81,7 @@ public:
     ///allows user to set a custom stylization object for certain
     ///geometry types
     ///</summary>
-    virtual void SetGeometryAdapter( GisGeometryType type,
+    virtual void SetGeometryAdapter( FdoGeometryType type,
                                      GeometryAdapter* sg) = 0;
 
     ///<summary>

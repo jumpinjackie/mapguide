@@ -72,27 +72,27 @@ DataValueType StringValue::GetType()
 
 DataValue* StringValue::Negate(DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic operation on string");
+    throw FdoException::Create(L"Cannot perform arithmetic operation on string");
 }
 
 DataValue* StringValue::Add(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic operation on string");
+    throw FdoException::Create(L"Cannot perform arithmetic operation on string");
 }
 
 DataValue* StringValue::Subtract(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic operation on string");
+    throw FdoException::Create(L"Cannot perform arithmetic operation on string");
 }
 
 DataValue* StringValue::Multiply(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic operation on string");
+    throw FdoException::Create(L"Cannot perform arithmetic operation on string");
 }
 
 DataValue* StringValue::Divide(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
-    throw GisException::Create(L"Cannot perform arithmetic operation on string");
+    throw FdoException::Create(L"Cannot perform arithmetic operation on string");
 }
 
 bool StringValue::IsEqualTo(DataValue& v2)
@@ -241,9 +241,9 @@ bool StringValue::GetAsBoolean()
     return false;
 }
 
-GisDateTime StringValue::GetAsDateTime()
+FdoDateTime StringValue::GetAsDateTime()
 {
-    throw GisException::Create(L"Cannot convert string to DateTime");
+    throw FdoException::Create(L"Cannot convert string to DateTime");
 }
 
 

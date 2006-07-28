@@ -100,8 +100,8 @@ CGwsPreparedFeatureQuery::~CGwsPreparedFeatureQuery ()
 }
 
 EGwsStatus CGwsPreparedFeatureQuery::Init (
-    GisStringCollection      * sellist,
-    GisStringCollection      * orderBy,
+    FdoStringCollection      * sellist,
+    FdoStringCollection      * orderBy,
     FdoFilter                * pFilter
 )
 {
@@ -145,9 +145,9 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
                  (FdoISelect *) m_connection->CreateCommand (FdoCommandType_Select);
         selcmd->SetFeatureClassName(GwsCommonFdoUtils::MakeFdoQualifiedName (m_classname).c_str());
         if (orderBy != NULL && orderBy->GetCount () > 0) {
-            GisPtr<FdoIdentifierCollection> order = selcmd->GetOrdering ();
+            FdoPtr<FdoIdentifierCollection> order = selcmd->GetOrdering ();
             for (int i = 0; i < orderBy->GetCount (); i ++) {
-                GisPtr<FdoIdentifier> ident = FdoIdentifier::Create (orderBy->GetString (i));
+                FdoPtr<FdoIdentifier> ident = FdoIdentifier::Create (orderBy->GetString (i));
                 order->Add (ident);
             }
         }
@@ -156,8 +156,8 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
 
 //        selcmd->SetFilter (pFilter);
 
-    } catch (GisException * gis) {
-        PushGisException (eGwsFdoProviderError, gis);
+    } catch (FdoException * gis) {
+        PushFdoException (eGwsFdoProviderError, gis);
         stat = eGwsFdoProviderError;
     }
 
@@ -186,10 +186,10 @@ void CGwsPreparedFeatureQuery::PrepareInternal ()
         assert(m_identity != NULL);
         WSTRARRAY strNames;
         bool     bFoundRevision = false;
-        for (GisInt32 idx = 0; idx < m_identity->GetCount(); idx ++)
+        for (FdoInt32 idx = 0; idx < m_identity->GetCount(); idx ++)
         {
-            GisPtr<FdoDataPropertyDefinition> pPropdef = m_identity->GetItem(idx);
-            GisString*                        pName = pPropdef->GetName();
+            FdoPtr<FdoDataPropertyDefinition> pPropdef = m_identity->GetItem(idx);
+            FdoString*                        pName = pPropdef->GetName();
             bool                              bFound = false;
 
             for (unsigned int i = 0; i < m_selectList.size(); i++)
@@ -206,7 +206,7 @@ void CGwsPreparedFeatureQuery::PrepareInternal ()
         if(!bFoundRevision && !m_revisionprop.empty())
             strNames.push_back(m_revisionprop.c_str());
 
-        GisPtr<FdoIdentifierCollection> lst = ((FdoIBaseSelect*)m_pCommand.p)->GetPropertyNames();
+        FdoPtr<FdoIdentifierCollection> lst = ((FdoIBaseSelect*)m_pCommand.p)->GetPropertyNames();
         if (lst != NULL)
         {
             lst->Clear();
@@ -215,13 +215,13 @@ void CGwsPreparedFeatureQuery::PrepareInternal ()
                 //add identity properties
                 for (unsigned int i = 0; i < strNames.size(); i++)
                 {
-                    GisPtr<FdoIdentifier> pIdent = FdoIdentifier::Create (strNames[i].c_str());
+                    FdoPtr<FdoIdentifier> pIdent = FdoIdentifier::Create (strNames[i].c_str());
                     lst->Add(pIdent);
                 }
             }
             for (unsigned int i = 0; i < m_selectList.size(); i++)
             {
-                GisPtr<FdoIdentifier> pIdent = FdoIdentifier::Create (m_selectList[i].c_str());
+                FdoPtr<FdoIdentifier> pIdent = FdoIdentifier::Create (m_selectList[i].c_str());
                 lst->Add(pIdent);
             }
         }
@@ -241,15 +241,15 @@ EGwsStatus CGwsPreparedFeatureQuery::SetFilter (FdoFilter * pFilter)
     return eGwsOk;
 }
 
-GisStringCollection * CGwsPreparedFeatureQuery::GetOrderBy ()
+FdoStringCollection * CGwsPreparedFeatureQuery::GetOrderBy ()
 {
-    GisPtr<FdoIdentifierCollection> ordering = ((FdoISelect *) m_pCommand.p)->GetOrdering ();
-    GisStringCollection           * orderBy  = NULL;
+    FdoPtr<FdoIdentifierCollection> ordering = ((FdoISelect *) m_pCommand.p)->GetOrdering ();
+    FdoStringCollection           * orderBy  = NULL;
 
     for (int i = 0; i < ordering->GetCount (); i ++) {
-        GisPtr<FdoIdentifier> ident = ordering->GetItem (i);
+        FdoPtr<FdoIdentifier> ident = ordering->GetItem (i);
         if (orderBy == NULL) {
-            orderBy  = GisStringCollection::Create ();
+            orderBy  = FdoStringCollection::Create ();
         }
         orderBy->Add (ident->GetText ());
     }
@@ -263,11 +263,11 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
 {
     EGwsStatus stat = eGwsOk;
     try {
-        GisPtr<FdoFilter> filter = ((FdoISelect *)m_pCommand.p)->GetFilter ();
+        FdoPtr<FdoFilter> filter = ((FdoISelect *)m_pCommand.p)->GetFilter ();
         PrepareFilter (filter);
         // do I need to set filter after converting it?
 
-        GisPtr<FdoIFeatureReader> reader = ((FdoISelect *)m_pCommand.p)->Execute ();
+        FdoPtr<FdoIFeatureReader> reader = ((FdoISelect *)m_pCommand.p)->Execute ();
 
         CGwsFeatureIterator * pResults = CreateFeatureIterator (eGwsFeatureIterator);
         stat = pResults->InitializeReader (reader, m_pQuery, this);
@@ -275,8 +275,8 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
             pResults->AddRef ();
             * results = pResults;
         }
-    } catch (GisException * gis) {
-        PushGisException (eGwsFailedToExecuteCommand, gis);
+    } catch (FdoException * gis) {
+        PushFdoException (eGwsFailedToExecuteCommand, gis);
         gis->Release ();
         return eGwsFailedToExecuteCommand;
     }
@@ -300,7 +300,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
     IGWSFeatureIterator   ** results
 )
 {
-    GisPtr<FdoFilter> filter;
+    FdoPtr<FdoFilter> filter;
     EGwsStatus        stat = eGwsOk;
 
     try   {
@@ -322,7 +322,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
     IGWSFeatureIterator         ** results
 )
 {
-    GisPtr<FdoFilter> filter;
+    FdoPtr<FdoFilter> filter;
     EGwsStatus        stat = eGwsOk;
 
     try   {

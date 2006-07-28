@@ -29,7 +29,7 @@ class GisXmlReader;
 ///  - diagnostics area
 ///  - xml in and out
 /// <summary>
-class CGwsObject : public GisXmlSaxHandler
+class CGwsObject : public FdoXmlSaxHandler
 {
 protected:
     GWS_COMMON_API      CGwsObject ();
@@ -53,16 +53,16 @@ public:
     // xml filing in/out
     // this methods may throw GisXmlException
     GWS_COMMON_API
-    virtual void        Write (GisXmlWriter * writer);
+    virtual void        Write (FdoXmlWriter * writer);
 
     // push GwsStatus
     GWS_COMMON_API
     void                PushStatus (const CGwsStatus & stat) const;
 
-    // push GisException
+    // push FdoException
     GWS_COMMON_API
-    void                PushGisException (const CGwsStatus & stat,
-                                      GisException * gis) const;
+    void                PushFdoException (const CGwsStatus & stat,
+                                      FdoException * gis) const;
 
     // remove condition
     GWS_COMMON_API

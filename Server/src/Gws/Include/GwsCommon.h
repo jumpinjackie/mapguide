@@ -314,22 +314,22 @@ public:
     GWS_COMMON_API
                       GWSQualifiedName ();
     GWS_COMMON_API
-                      GWSQualifiedName (GisString * datasource, GisString * schema, GisString * name);
+                      GWSQualifiedName (FdoString * datasource, FdoString * schema, FdoString * name);
     GWS_COMMON_API
-                      GWSQualifiedName (GisString * schema, GisString * name);
+                      GWSQualifiedName (FdoString * schema, FdoString * name);
     GWS_COMMON_API
-                      GWSQualifiedName (GisString * name);
+                      GWSQualifiedName (FdoString * name);
     GWS_COMMON_API
                       GWSQualifiedName (const GWSQualifiedName & other);
     GWS_COMMON_API
     virtual           ~GWSQualifiedName();
 
     GWS_COMMON_API
-    GisString *       FeatureSource () const;
+    FdoString *       FeatureSource () const;
     GWS_COMMON_API
-    GisString *       Schema () const;
+    FdoString *       Schema () const;
     GWS_COMMON_API
-    GisString *       Name () const;
+    FdoString *       Name () const;
 
     GWS_COMMON_API
     void              operator= (const GWSQualifiedName & other);
@@ -359,9 +359,9 @@ public:
     int               ToFullyQualifedString  (wchar_t * str, int numchars) const;
 
 private:
-    GisStringP        m_featuresource;
-    GisStringP        m_schema;
-    GisStringP        m_name;
+    FdoStringP        m_featuresource;
+    FdoStringP        m_schema;
+    FdoStringP        m_name;
 };
 
 
@@ -406,13 +406,13 @@ public:
 
     /// <summary>Gets the number of values in the identifier.</summary>
     /// <returns>Returns number of items in the collection</returns>
-    GWS_COMMON_API  GisInt32       GetCount() const;
+    GWS_COMMON_API  FdoInt32       GetCount() const;
 
     /// <summary>Gets the item in the collection at the specified index. Throws an
     /// invalid argument exception if the index is out of range.</summary>
     /// <param name="index">Input index</param>
     /// <returns>Returns the item in the collection at the specified index</returns>
-    GWS_COMMON_API FdoDataValue *  GetItem(GisInt32 index) const;
+    GWS_COMMON_API FdoDataValue *  GetItem(FdoInt32 index) const;
 
 
     /// <summary>Less than operator.  Note this operation compares
@@ -461,7 +461,7 @@ public:
 
 
 private:
-    GisPtr<FdoDataValueCollection> m_values;
+    FdoPtr<FdoDataValueCollection> m_values;
 };
 
 /// <summary>
@@ -504,13 +504,13 @@ class GWSExtendedFeatureId
 
     /// <summary>Gets the number of values in the identifier.</summary>
     /// <returns>Returns number of items in the collection</returns>
-    GWS_COMMON_API  GisInt32   GetCount() const;
+    GWS_COMMON_API  FdoInt32   GetCount() const;
 
     /// <summary>Gets the item in the collection at the specified index. Throws an
     /// invalid argument exception if the index is out of range.</summary>
     /// <param name="index">Input index</param>
     /// <returns>Returns the item in the collection at the specified index</returns>
-    GWS_COMMON_API FdoDataValue * GetItem(GisInt32 index) const;
+    GWS_COMMON_API FdoDataValue * GetItem(FdoInt32 index) const;
 
 
     /// <summary>less than operator</summary>
@@ -555,12 +555,12 @@ public:
 
     /// <summary>Constructs wkt coordinate system name</summary>
     /// <param name="wkncsname">coordinate system name.</param>
-    GWS_COMMON_API          GWSCoordinateSystem (GisString * wkncsname);
+    GWS_COMMON_API          GWSCoordinateSystem (FdoString * wkncsname);
 
     /// <summary>Constructs coordinate system name</summary>
     /// <param name="csname">coordinate system name.</param>
     /// <param name="cstype">coordinate system type.</param>
-    GWS_COMMON_API          GWSCoordinateSystem (GisString * csname,
+    GWS_COMMON_API          GWSCoordinateSystem (FdoString * csname,
                                                  EGwsCSType cstype);
 
     /// <summary>Copy constructor.</summary>
@@ -571,7 +571,7 @@ public:
     GWS_COMMON_API virtual  ~GWSCoordinateSystem ();
 
     /// <summary>Get coordinate system name.</summary>
-    GWS_COMMON_API GisString* Name () const;
+    GWS_COMMON_API FdoString* Name () const;
 
     /// <summary>Get coordinate system type.</summary>
     GWS_COMMON_API EGwsCSType Type () const;
@@ -581,7 +581,7 @@ public:
     const GWSCoordinateSystem & operator= (const GWSCoordinateSystem & other);
 
     /// <summary>Casting name to string.</summary>
-    GWS_COMMON_API             operator GisString * () const;
+    GWS_COMMON_API             operator FdoString * () const;
 
     /// <summary>Equal operator.</summary>
     GWS_COMMON_API
@@ -592,7 +592,7 @@ public:
     bool                       IsEmpty () const;
 
 private:
-    GisStringP          m_csname;
+    FdoStringP          m_csname;
     EGwsCSType          m_cstype;
 };
 
@@ -615,7 +615,7 @@ public:
     /// Gets the message associated with the error if any.
     /// </summary>
     /// <returns>Returns the error message.</returns>
-    virtual GisString*      GetMessage() const = 0;
+    virtual FdoString*      GetMessage() const = 0;
 
     /// <summary>
     /// Gets the name value pair at index. These values may be the name of the
@@ -625,7 +625,7 @@ public:
     /// <param name="name">Output name of the parameter.</param>
     /// <param name="value">Output value of the parameter.</param>
     /// <returns>Returns false if there is no pair at this index.</returns>
-    virtual bool            GetParameterAt(unsigned int index, GisString*& name, GisString*& value) const = 0;
+    virtual bool            GetParameterAt(unsigned int index, FdoString*& name, FdoString*& value) const = 0;
 
     /// <summary>
     /// Gets number of parameters
@@ -688,7 +688,7 @@ protected:
 /// <summary>
 /// This interface describes the exception object thrown by GWS functions.
 /// </summary>
-class IGWSException : public GisException
+class IGWSException : public FdoException
 
 {
 public:
@@ -698,18 +698,18 @@ public:
     GWS_COMMON_API
     static IGWSException        * Create (EGwsStatus stat);
     GWS_COMMON_API
-    static IGWSException        * Create (GisString* message,
+    static IGWSException        * Create (FdoString* message,
                                           EGwsStatus stat);
     GWS_COMMON_API
-    static IGWSException        * Create (GisString* message,
+    static IGWSException        * Create (FdoString* message,
                                           EGwsStatus stat,
-                                          GisException* cause);
+                                          FdoException* cause);
     GWS_COMMON_API
     static IGWSException        * Create  (GWSStatus * stat);
 
     GWS_COMMON_API
     static IGWSException        * Create  (EGwsStatus    fes,
-                                           GisException* pCause);
+                                           FdoException* pCause);
 
     GWS_COMMON_API
     static IGWSException        * Create  (EGwsStatus type,
@@ -718,23 +718,23 @@ public:
     // the list must be explicitly terminated with a NULL
     GWS_COMMON_API
     static IGWSException        * Create(EGwsStatus type,
-                                         GisException* pCause,
-                                         GisString* name,
-                                         GisString* value,
+                                         FdoException* pCause,
+                                         FdoString* name,
+                                         FdoString* value,
                                          ...);   // for other name value pairs, odd number means empty value.
 
     /// <summary>Gets the message associated with this exception. If no
     /// message and no cause are associated with this exception then null is
     /// returned.</summary>
     /// <returns>Returns the error message</returns>
-    virtual GisString*     GetExceptionMessage() = 0;
+    virtual FdoString*     GetExceptionMessage() = 0;
 
     /// <summary>Gets the message associated with this exception. If no
     /// message is associated with this exception then null is
     /// returned. The returned string should be deleted by the caller.
     /// </summary>
     /// <returns>Returns the error message</returns>
-    virtual GisString*     ToString() = 0;
+    virtual FdoString*     ToString() = 0;
 
     /// <summary>Gets the Gws Status associated with this exception.
     /// </summary>
@@ -750,8 +750,8 @@ public:
     /// <param name="value">Output value of the parameter.</param>
     /// <returns>Returns false if there is no pair at this index.</returns>
     virtual bool            GetParameterAt(unsigned int index,
-                                           GisString*& name,
-                                           GisString*& value) const = 0;
+                                           FdoString*& name,
+                                           FdoString*& value) const = 0;
 
     /// <summary>
     /// Gets number of parameters
@@ -765,7 +765,7 @@ public:
     /// <param name="name">Output name of the parameter.</param>
     /// <param name="value">Value of the parameter.</param>
     /// <returns>Returns nothing.</returns>
-    virtual void            SetParameter (GisString *pName, GisString *pValue) = 0;
+    virtual void            SetParameter (FdoString *pName, FdoString *pValue) = 0;
 
 
     /// <summary>Checks whether EGwsStatus indicates failure condition.
@@ -889,7 +889,7 @@ public:
     /// Returns the size of the set.
     /// </summary>
     /// <returns>Returns size of the id set.</returns>
-    virtual GisInt32            Size() const = 0;
+    virtual FdoInt32            Size() const = 0;
 
     /// <summary>
     /// Returns a boolean indicating whether or not the value is contained
@@ -919,7 +919,7 @@ public:
     /// </summary>
     /// <param name="index">Input index.</param>
     /// <returns>The value at that index.</returns>
-    virtual const long&         Id(GisInt32 index) = 0;
+    virtual const long&         Id(FdoInt32 index) = 0;
 
     /// <summary>
     /// Clears the contents of the set.
@@ -971,7 +971,7 @@ public:
     /// status if gemetry was not converted.
     /// </summary>
     /// <returns>EGwsStatus</returns>
-    virtual EGwsStatus     ConvertForward(GisByteArray *pGeom) = 0;
+    virtual EGwsStatus     ConvertForward(FdoByteArray *pGeom) = 0;
 
 
     /// <summary>
@@ -981,7 +981,7 @@ public:
     /// status if gemetry was not converted.
     /// </summary>
     /// <returns>EGwsStatus</returns>
-    virtual EGwsStatus     ConvertForward(GisByte *pGeom, int nCount) = 0;
+    virtual EGwsStatus     ConvertForward(FdoByte *pGeom, int nCount) = 0;
 
 
     /// <summary>
@@ -991,7 +991,7 @@ public:
     /// status if gemetry was not converted.
     /// </summary>
     /// <returns>EGwsStatus</returns>
-    virtual EGwsStatus     ConvertBackward(GisByteArray *pGeom) = 0;
+    virtual EGwsStatus     ConvertBackward(FdoByteArray *pGeom) = 0;
 
      /// <summary>
     /// Convert geometry byte buffer  from the destination
@@ -1000,7 +1000,7 @@ public:
     /// status if gemetry was not converted.
     /// </summary>
     /// <returns>EGwsStatus</returns>
-    virtual EGwsStatus     ConvertBackward(GisByte *pGeom, int nCount) = 0;
+    virtual EGwsStatus     ConvertBackward(FdoByte *pGeom, int nCount) = 0;
 
 #ifdef _CS_DEBUG
     virtual void           Clear () = 0;

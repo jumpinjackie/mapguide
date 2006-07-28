@@ -48,8 +48,8 @@ EGwsStatus CGwsNestedLoopsJoinQueryResults::InitializeReader (
     EGwsStatus                  stat = eGwsOk;
     CGwsPreparedQuery         * leftquery = prepquery->LeftQuery ();
     CGwsPreparedQuery         * rightquery = prepquery->RightQuery ();
-    GisPtr<GisStringCollection> leftcols = prepquery->LeftProperties ();
-    GisPtr<GisStringCollection> rightcols = prepquery->RightProperties ();
+    FdoPtr<FdoStringCollection> leftcols = prepquery->LeftProperties ();
+    FdoPtr<FdoStringCollection> rightcols = prepquery->RightProperties ();
 
     stat = CGwsJoinQueryResults::InitializeReader (leftcols, query, leftquery);
     if (IGWSException::IsError (stat)) {

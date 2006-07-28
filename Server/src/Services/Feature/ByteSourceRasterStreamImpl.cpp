@@ -27,13 +27,13 @@
 ///<param name="stream">ACE socket stream</param>
 ///<param name="length">Length of the stream</param>
 ///
-ByteSourceRasterStreamImpl::ByteSourceRasterStreamImpl(GisIStreamReaderTmpl<GisByte>* stream)
+ByteSourceRasterStreamImpl::ByteSourceRasterStreamImpl(FdoIStreamReaderTmpl<FdoByte>* stream)
 {
     if (stream == NULL)
     {
         throw new MgNullReferenceException(L"ByteSourceRasterStreamImpl", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    m_stream = GIS_SAFE_ADDREF(stream);
+    m_stream = FDO_SAFE_ADDREF(stream);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ ByteSourceRasterStreamImpl::ByteSourceRasterStreamImpl(GisIStreamReaderTmpl<GisB
 ///
 ByteSourceRasterStreamImpl::~ByteSourceRasterStreamImpl()
 {
-    GIS_SAFE_RELEASE(m_stream);
+    FDO_SAFE_RELEASE(m_stream);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ INT32 ByteSourceRasterStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
     }
 
     // Read data for the specified length from current index position
-    INT32 bytesRead = m_stream->ReadNext(buffer, 0, (GisInt32)length);
+    INT32 bytesRead = m_stream->ReadNext(buffer, 0, (FdoInt32)length);
 
     return bytesRead;
 }

@@ -55,8 +55,8 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
     }
 
     // TODO: Check whether this command is supported by the provider
-    GisPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
-    GisPtr<FdoIDescribeSchema> fdoCommand = (FdoIDescribeSchema*)fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
+    FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
+    FdoPtr<FdoIDescribeSchema> fdoCommand = (FdoIDescribeSchema*)fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
     CHECKNULL((FdoIDescribeSchema*)fdoCommand, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
     if (!schemaName.empty())
@@ -131,7 +131,7 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
 
             if (NULL != secondaryFeatureSource)
             {
-                GisPtr<FdoFeatureSchemaCollection> ffsc2;
+                FdoPtr<FdoFeatureSchemaCollection> ffsc2;
                 STRING providerName2;
 
                 Ptr<MgServerFeatureConnection> connection2 = new MgServerFeatureConnection(secondaryFeatureSource);
@@ -145,8 +145,8 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
                 }
 
                 // Check whether this command is supported by the provider
-                GisPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
-                GisPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
+                FdoPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
+                FdoPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
                 CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.ExecuteDescribeSchema");
 
                 // Execute the command
@@ -154,10 +154,10 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
 
                 // Extract the schemas from the secondary collection and add them to the main collection
                 // Get schema count
-                GisInt32 cnt = ffsc2->GetCount();
-                for (GisInt32 i = 0; i < cnt; i++)
+                FdoInt32 cnt = ffsc2->GetCount();
+                for (FdoInt32 i = 0; i < cnt; i++)
                 {
-                    GisPtr<FdoFeatureSchema> ffs = ffsc2->GetItem(i);
+                    FdoPtr<FdoFeatureSchema> ffs = ffsc2->GetItem(i);
                     STRING fdoSchemaName = (wchar_t*)ffs->GetName();
 
                     if (fdoSchemaName != secSchemaName)
@@ -171,7 +171,7 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
                     modifiedSchemaName =  L"[" + extensionName + L"]";
                     modifiedSchemaName += L"[" + attributeRelateName + L"]";
                     modifiedSchemaName += fdoSchemaName;
-                    GisString* msn = modifiedSchemaName.c_str();
+                    FdoString* msn = modifiedSchemaName.c_str();
                     ffs->SetName(msn);
 
                     // Add this schema to the collection if it isn't already there
@@ -206,7 +206,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
     CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.DescribeSchema");
 
     // Get schema count
-    GisInt32 schemaCnt = m_ffsc->GetCount();
+    FdoInt32 schemaCnt = m_ffsc->GetCount();
 
     //
     // A new MgFeatureSchema needs to be created for each primary schema in m_ffsc
@@ -218,7 +218,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
     for (int nSchemaIndex = 0; nSchemaIndex < schemaCnt; nSchemaIndex++)
     {
         // Retrieve schema from the collection
-        GisPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(nSchemaIndex);
+        FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(nSchemaIndex);
         STRING schemaName = (wchar_t*)ffs->GetName();
 
         // Check if this schema is from secondary source which will be prefixed with [ExtensionName][RelationName],
@@ -233,23 +233,23 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
         classCol = schema->GetClasses();
 
         // Set the schema name and description
-        GisStringP fSchemaName = ffs->GetName();
+        FdoStringP fSchemaName = ffs->GetName();
         schema->SetName(STRING(fSchemaName));
 
-        GisStringP fSchemaDesc = ffs->GetDescription();
+        FdoStringP fSchemaDesc = ffs->GetDescription();
         schema->SetDescription(STRING(fSchemaDesc));
 
         // Get all classes for the schema
-        GisPtr<FdoClassCollection> fcc = ffs->GetClasses();
-        GisInt32 classCnt = fcc->GetCount();
+        FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+        FdoInt32 classCnt = fcc->GetCount();
 
         // Add the primary class definitions to the MgClassDefinitionCollection
-        for (GisInt32 nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
+        for (FdoInt32 nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
         {
-            GisPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
+            FdoPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
 
-            GisStringP qname = fc->GetQualifiedName();
-            GisStringP name = fc->GetName();
+            FdoStringP qname = fc->GetQualifiedName();
+            FdoStringP name = fc->GetName();
 
             if (name != NULL && qname != NULL)
             {
@@ -314,7 +314,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
             // Cycle thru m_ffsc for schemaName
             for (int nIndex = 0; nIndex < schemaCnt; nIndex++)
             {
-                GisPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(nIndex);
+                FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(nIndex);
                 STRING schemaName = (wchar_t*)ffs->GetName();
 
                 // Check if this schema is from secondary source
@@ -325,12 +325,12 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                 }
 
                 // get the class collection for for this schema
-                GisPtr<FdoClassCollection> fcc = ffs->GetClasses();
-                GisInt32 classCnt = fcc->GetCount();
+                FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+                FdoInt32 classCnt = fcc->GetCount();
 
                 for (int nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
                 {
-                    GisPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
+                    FdoPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
 
                     STRING className = (wchar_t*)fc->GetName();
                     if (className == primClassName)
@@ -386,7 +386,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                 Ptr<MgResourceIdentifier> secondaryFeatureSource = new MgResourceIdentifier(secondaryResourceId);
                 if (NULL != secondaryFeatureSource)
                 {
-                    GisPtr<FdoFeatureSchemaCollection> ffsc2;
+                    FdoPtr<FdoFeatureSchemaCollection> ffsc2;
                     STRING providerName2;
 
                     Ptr<MgServerFeatureConnection> connection2 = new MgServerFeatureConnection(secondaryFeatureSource);
@@ -400,8 +400,8 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                     }
 
                     // Get the schema collection for the secondary resource
-                    GisPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
-                    GisPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
+                    FdoPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
+                    FdoPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
                     CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.DescribeSchema");
                     ffsc2 = fdoCommand2->Execute();
 
@@ -411,7 +411,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                     for (int nSecSchemaIndex = 0; nSecSchemaIndex < nSecSchemaCnt; nSecSchemaIndex++)
                     {
                         // retrieve the schema
-                        GisPtr<FdoFeatureSchema> ffs = ffsc2->GetItem(nSecSchemaIndex);
+                        FdoPtr<FdoFeatureSchema> ffs = ffsc2->GetItem(nSecSchemaIndex);
                         STRING fdoSchemaName = (wchar_t*)ffs->GetName();
 
                         if (fdoSchemaName != secSchemaName)
@@ -420,15 +420,15 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                         }
 
                         // get the class collection for schema
-                        GisPtr<FdoClassCollection> fcc = ffs->GetClasses();
-                        GisInt32 classCnt = fcc->GetCount();
+                        FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+                        FdoInt32 classCnt = fcc->GetCount();
 
                         // cycle thru class collection for secClassName
                         for (int nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
                         {
                             Ptr<MgPropertyDefinitionCollection> mpdc = extClassDefinition->GetProperties();
 
-                            GisPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
+                            FdoPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
 
                             STRING qualifiedName = (const wchar_t*)fc->GetQualifiedName();
                             STRING className = (wchar_t*)fc->GetName();
@@ -439,7 +439,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                             }
 
                             // Set the parent name for the secondary class definition
-                            GisPtr<FdoSchemaElement> parent = fc->GetParent();
+                            FdoPtr<FdoSchemaElement> parent = fc->GetParent();
                             if (!secSchemaName.empty())
                             {
                                 parent->SetName(secSchemaName.c_str());
@@ -533,7 +533,7 @@ STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
 
     CHECKNULL((MgFeatureSchemaCollection*)schema, L"MgServerDescribeSchema.SchemaToXml");
 
-    GisPtr<FdoFeatureSchemaCollection> fdoSchemaCol = this->GetFdoFeatureSchemaCollection(schema);
+    FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = this->GetFdoFeatureSchemaCollection(schema);
 
     xmlSchema = this->GetSerializedXml(fdoSchemaCol);
 
@@ -547,7 +547,7 @@ STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
 //TODO: I will take this out as I do not know how to instantiate FdoFeatureSchemaCollection
 FdoFeatureSchemaCollection* MgServerDescribeSchema::GetFdoFeatureSchemaCollection(MgFeatureSchemaCollection* mgSchemaCol)
 {
-    GisPtr<FdoFeatureSchemaCollection> fdoSchemaCol;
+    FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -560,7 +560,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::GetFdoFeatureSchemaCollectio
     for (i=0; i<count; i++)
     {
         Ptr<MgFeatureSchema> mgSchema = mgSchemaCol->GetItem(i);
-        GisPtr<FdoFeatureSchema> fdoSchema = this->GetFdoFeatureSchema(mgSchema);
+        FdoPtr<FdoFeatureSchema> fdoSchema = this->GetFdoFeatureSchema(mgSchema);
         if (fdoSchemaCol->Contains(fdoSchema))
         {
             throw new MgDuplicateObjectException(L"MgServerDescribeSchema.GetFdoFeatureSchemaCollection", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -580,7 +580,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::GetFdoFeatureSchemaCollectio
 //////////////////////////////////////////////////////////////////
 FdoFeatureSchema* MgServerDescribeSchema::GetFdoFeatureSchema(MgFeatureSchema* mgSchema)
 {
-    GisPtr<FdoFeatureSchema> fdoSchema;
+    FdoPtr<FdoFeatureSchema> fdoSchema;
 
     MG_FEATURE_SERVICE_TRY()
     CHECKNULL(mgSchema, L"MgServerDescribeSchema.GetFdoFeatureSchema");
@@ -591,16 +591,16 @@ FdoFeatureSchema* MgServerDescribeSchema::GetFdoFeatureSchema(MgFeatureSchema* m
     STRING name = mgSchema->GetName();
     if (!name.empty())
     {
-        fdoSchema->SetName((GisString*) name.c_str());
+        fdoSchema->SetName((FdoString*) name.c_str());
     }
 
     STRING description = mgSchema->GetDescription();
     if (!description.empty())
     {
-        fdoSchema->SetDescription((GisString*) description.c_str());
+        fdoSchema->SetDescription((FdoString*) description.c_str());
     }
 
-    GisPtr<FdoClassCollection> fdoClassCol = fdoSchema->GetClasses();
+    FdoPtr<FdoClassCollection> fdoClassCol = fdoSchema->GetClasses();
     Ptr<MgClassDefinitionCollection> awClassCol = mgSchema->GetClasses();
 
     this->GetFdoClassCollection(fdoClassCol, awClassCol);
@@ -623,10 +623,10 @@ void MgServerDescribeSchema::GetFdoClassCollection(FdoClassCollection* fdoClassC
     for (i=0; i<count; i++)
     {
         Ptr<MgClassDefinition> mgClassDef = mgClassDefCol->GetItem(i);
-        GisPtr<FdoClassDefinition> fdoClassDef = this->GetFdoClassDefinition(mgClassDef, fdoClassCol);
+        FdoPtr<FdoClassDefinition> fdoClassDef = this->GetFdoClassDefinition(mgClassDef, fdoClassCol);
         CHECKNULL(fdoClassDef, L"MgServerDescribeSchema.GetFdoClassCollection")
 
-        GisStringP name = fdoClassDef->GetName();
+        FdoStringP name = fdoClassDef->GetName();
         if (!FdoClassExist(name, fdoClassCol))
             fdoClassCol->Add(fdoClassDef);
     }
@@ -638,7 +638,7 @@ void MgServerDescribeSchema::GetFdoClassCollection(FdoClassCollection* fdoClassC
 //////////////////////////////////////////////////////////////////
 FdoClassDefinition* MgServerDescribeSchema::GetFdoClassDefinition(MgClassDefinition* mgClassDef, FdoClassCollection* fdoClassCol)
 {
-    GisPtr<FdoClassDefinition> fdoClassDef;
+    FdoPtr<FdoClassDefinition> fdoClassDef;
 
     MG_FEATURE_SERVICE_TRY()
     CHECKNULL(mgClassDef, L"MgServerDescribeSchema.GetFdoClassDefinition");
@@ -667,22 +667,22 @@ FdoClassDefinition* MgServerDescribeSchema::GetFdoClassDefinition(MgClassDefinit
 
     CHECKNULL(fdoClassDef, L"MgServerDescribeSchema.GetFdoClassDefinition");
 
-    GisPtr<FdoPropertyDefinitionCollection> fdoPropDefCol = fdoClassDef->GetProperties();
+    FdoPtr<FdoPropertyDefinitionCollection> fdoPropDefCol = fdoClassDef->GetProperties();
     CHECKNULL((FdoPropertyDefinitionCollection*) fdoPropDefCol, L"MgServerDescribeSchema.GetFdoClassDefinition");
 
-    GisPtr<FdoDataPropertyDefinitionCollection> fdoIdentityPropDefCol = (FdoDataPropertyDefinitionCollection*)fdoClassDef->GetIdentityProperties();
+    FdoPtr<FdoDataPropertyDefinitionCollection> fdoIdentityPropDefCol = (FdoDataPropertyDefinitionCollection*)fdoClassDef->GetIdentityProperties();
     CHECKNULL((FdoDataPropertyDefinitionCollection*)fdoIdentityPropDefCol, L"MgServerDescribeSchema.GetFdoClassDefinition");
 
     //Set description
     STRING desc = mgClassDef->GetDescription();
     if (!desc.empty())
     {
-        fdoClassDef->SetDescription((GisString*) desc.c_str());
+        fdoClassDef->SetDescription((FdoString*) desc.c_str());
     }
 
     if (!name.empty())
     {
-        fdoClassDef->SetName((GisString*) name.c_str());
+        fdoClassDef->SetName((FdoString*) name.c_str());
     }
 
     bool isComputed = mgClassDef->IsComputed();
@@ -713,7 +713,7 @@ FdoClassDefinition* MgServerDescribeSchema::GetFdoClassDefinition(MgClassDefinit
     Ptr<MgClassDefinition> awBaseDef = mgClassDef->GetBaseClassDefinition();
     if (awBaseDef != NULL)
     {
-        GisPtr<FdoClassDefinition> fdoBaseDef;
+        FdoPtr<FdoClassDefinition> fdoBaseDef;
         STRING bname = awBaseDef->GetName();
         assert(!bname.empty());
         if (!bname.empty()) // Empty name is an error
@@ -724,7 +724,7 @@ FdoClassDefinition* MgServerDescribeSchema::GetFdoClassDefinition(MgClassDefinit
                 fdoBaseDef = GetFdoClassDefinition(awBaseDef, fdoClassCol); // Create a new one
                 if (fdoBaseDef != NULL)
                 {
-                    GisStringP nameBase = fdoBaseDef->GetName();
+                    FdoStringP nameBase = fdoBaseDef->GetName();
                     if (!FdoClassExist(nameBase, fdoClassCol))
                         fdoClassCol->Add(fdoBaseDef);
                 }
@@ -735,8 +735,8 @@ FdoClassDefinition* MgServerDescribeSchema::GetFdoClassDefinition(MgClassDefinit
 
     if (!geomName.empty())
     {
-        GisPtr<FdoGeometricPropertyDefinition> defaultGeom = (FdoGeometricPropertyDefinition*)fdoPropDefCol->GetItem(geomName.c_str());
-        GisPtr<FdoFeatureClass> ffClass = GIS_SAFE_ADDREF((FdoFeatureClass*)((FdoClassDefinition*)fdoClassDef));
+        FdoPtr<FdoGeometricPropertyDefinition> defaultGeom = (FdoGeometricPropertyDefinition*)fdoPropDefCol->GetItem(geomName.c_str());
+        FdoPtr<FdoFeatureClass> ffClass = FDO_SAFE_ADDREF((FdoFeatureClass*)((FdoClassDefinition*)fdoClassDef));
         ffClass->SetGeometryProperty(defaultGeom);
     }
 
@@ -765,7 +765,7 @@ void MgServerDescribeSchema::GetClassProperties(FdoPropertyDefinitionCollection*
         CHECKNULL((MgPropertyDefinition*)awpd, L"MgServerDescribeSchema.GetClassProperties");
 
         // Create Fdo Property
-        GisPtr<FdoPropertyDefinition> fdoProp = this->GetFdoPropertyDefinition(awpd, fdoClassCol);
+        FdoPtr<FdoPropertyDefinition> fdoProp = this->GetFdoPropertyDefinition(awpd, fdoClassCol);
         // Add it to class definition
         if (fdoProp != NULL)
         {
@@ -795,7 +795,7 @@ void MgServerDescribeSchema::GetClassProperties(FdoDataPropertyDefinitionCollect
         CHECKNULL((MgPropertyDefinition*) mgPropDef, L"MgServerDescribeSchema.GetClassProperties");
 
         //Create Fdo property
-        GisPtr<FdoDataPropertyDefinition> fdoPropDef = (FdoDataPropertyDefinition*)this->GetFdoPropertyDefinition(mgPropDef, NULL);
+        FdoPtr<FdoDataPropertyDefinition> fdoPropDef = (FdoDataPropertyDefinition*)this->GetFdoPropertyDefinition(mgPropDef, NULL);
         //Add it to class definition
         if (fdoPropDef != NULL)
         {
@@ -811,7 +811,7 @@ FdoPropertyDefinition* MgServerDescribeSchema::GetFdoPropertyDefinition(MgProper
 {
     CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgServerDescribeSchema.GetFdoPropertyDefinition");
 
-    GisPtr<FdoPropertyDefinition> fdoPropDef;
+    FdoPtr<FdoPropertyDefinition> fdoPropDef;
     MG_FEATURE_SERVICE_TRY()
 
     INT16 fpt = mgPropDef->GetPropertyType();
@@ -860,7 +860,7 @@ FdoPropertyDefinition* MgServerDescribeSchema::GetFdoPropertyDefinition(MgProper
 //////////////////////////////////////////////////////////////////
 FdoDataPropertyDefinition* MgServerDescribeSchema::GetDataPropertyDefinition(MgDataPropertyDefinition* mgPropDef)
 {
-    GisPtr<FdoDataPropertyDefinition> fdoPropDef;
+    FdoPtr<FdoDataPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -872,7 +872,7 @@ FdoDataPropertyDefinition* MgServerDescribeSchema::GetDataPropertyDefinition(MgD
 
     fdoPropDef = FdoDataPropertyDefinition::Create();
     STRING name = mgPropDef->GetName();
-    fdoPropDef->SetName((GisString*)name.c_str());
+    fdoPropDef->SetName((FdoString*)name.c_str());
 
     //Get data members
     STRING defaultVal = mgPropDef->GetDefaultValue();
@@ -891,21 +891,21 @@ FdoDataPropertyDefinition* MgServerDescribeSchema::GetDataPropertyDefinition(MgD
 
     if (!defaultVal.empty())
     {
-        fdoPropDef->SetDefaultValue((GisString*) defaultVal.c_str());
+        fdoPropDef->SetDefaultValue((FdoString*) defaultVal.c_str());
     }
 
-    fdoPropDef->SetLength((GisInt32)length);
+    fdoPropDef->SetLength((FdoInt32)length);
     fdoPropDef->SetReadOnly(isReadOnly);
 
     if (!desc.empty())
     {
-        fdoPropDef->SetDescription((GisString*)desc.c_str());
+        fdoPropDef->SetDescription((FdoString*)desc.c_str());
     }
 
-    fdoPropDef->SetPrecision((GisInt32)precision);
+    fdoPropDef->SetPrecision((FdoInt32)precision);
     fdoPropDef->SetNullable(isNullable);
 
-    fdoPropDef->SetScale((GisInt32)scale);
+    fdoPropDef->SetScale((FdoInt32)scale);
     fdoPropDef->SetIsAutoGenerated(isAutoGenerated);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetFdoClassCollection")
@@ -917,7 +917,7 @@ FdoDataPropertyDefinition* MgServerDescribeSchema::GetDataPropertyDefinition(MgD
 //////////////////////////////////////////////////////////////////
 FdoObjectPropertyDefinition* MgServerDescribeSchema::GetObjectPropertyDefinition(MgObjectPropertyDefinition* objPropDef, FdoClassCollection* fdoClassCol)
 {
-    GisPtr<FdoObjectPropertyDefinition> fdoPropDef;
+    FdoPtr<FdoObjectPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
     CHECKNULL((MgObjectPropertyDefinition*)objPropDef, L"MgServerDescribeSchema.GetObjectPropertyDefinition");
@@ -931,10 +931,10 @@ FdoObjectPropertyDefinition* MgServerDescribeSchema::GetObjectPropertyDefinition
     Ptr<MgClassDefinition> clsDef = objPropDef->GetClassDefinition();
     Ptr<MgDataPropertyDefinition> idProp = objPropDef->GetIdentityProperty();
     // Convert MgObjectProperty data members to Fdo data members
-    GisPtr<FdoClassDefinition> fdoClsDef = this->GetFdoClassDefinition(clsDef, fdoClassCol);
+    FdoPtr<FdoClassDefinition> fdoClsDef = this->GetFdoClassDefinition(clsDef, fdoClassCol);
     CHECKNULL(fdoClsDef, L"MgServerDescribeSchema.GetObjectPropertyDefinition")
 
-    GisPtr<FdoDataPropertyDefinition> fdoDataPropDef = this->GetDataPropertyDefinition(idProp);
+    FdoPtr<FdoDataPropertyDefinition> fdoDataPropDef = this->GetDataPropertyDefinition(idProp);
     FdoObjectType fdoObjectType = MgServerFeatureUtil::MgObjectPropertyTypeToFdoObjectType(objType);
     FdoOrderType fdoOrderType = MgServerFeatureUtil::MgOrderingOptionToFdoOrderType(orderType);
     // Set them to Fdo object property
@@ -947,7 +947,7 @@ FdoObjectPropertyDefinition* MgServerDescribeSchema::GetObjectPropertyDefinition
 
     if (fdoClassCol != NULL)
     {
-        GisStringP clsName = fdoClsDef->GetName();
+        FdoStringP clsName = fdoClsDef->GetName();
         if (!FdoClassExist(clsName, fdoClassCol))
             fdoClassCol->Add(fdoClsDef);
     }
@@ -961,14 +961,14 @@ FdoObjectPropertyDefinition* MgServerDescribeSchema::GetObjectPropertyDefinition
 //////////////////////////////////////////////////////////////////
 FdoGeometricPropertyDefinition* MgServerDescribeSchema::GetGeometricPropertyDefinition(MgGeometricPropertyDefinition* mgPropDef)
 {
-    GisPtr<FdoGeometricPropertyDefinition> fdoPropDef;
+    FdoPtr<FdoGeometricPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
     CHECKNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgServerDescribeSchema.GetGeometricPropertyDefinition");
 
     STRING name = mgPropDef->GetName();
     fdoPropDef = FdoGeometricPropertyDefinition::Create();
-    fdoPropDef->SetName((GisString*) name.c_str());
+    fdoPropDef->SetName((FdoString*) name.c_str());
 
     //Get data members
     STRING desc = mgPropDef->GetDescription();
@@ -982,17 +982,17 @@ FdoGeometricPropertyDefinition* MgServerDescribeSchema::GetGeometricPropertyDefi
     //Set it for Fdo
     if (!desc.empty())
     {
-        fdoPropDef->SetDescription((GisString*) desc.c_str());
+        fdoPropDef->SetDescription((FdoString*) desc.c_str());
     }
 
-    fdoPropDef->SetGeometryTypes((GisInt32)geomTypes);
+    fdoPropDef->SetGeometryTypes((FdoInt32)geomTypes);
     fdoPropDef->SetHasElevation(hasElev);
     fdoPropDef->SetHasMeasure(hasMeasure);
 
     fdoPropDef->SetReadOnly(isReadOnly);
     if(spatialContextName.empty())
     {
-        fdoPropDef->SetSpatialContextAssociation((GisString*)spatialContextName.c_str());
+        fdoPropDef->SetSpatialContextAssociation((FdoString*)spatialContextName.c_str());
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetGeometricPropertyDefinition")
@@ -1004,14 +1004,14 @@ FdoGeometricPropertyDefinition* MgServerDescribeSchema::GetGeometricPropertyDefi
 //////////////////////////////////////////////////////////////////
 FdoRasterPropertyDefinition* MgServerDescribeSchema::GetRasterPropertyDefinition(MgRasterPropertyDefinition* mgPropDef)
 {
-    GisPtr<FdoRasterPropertyDefinition> fdoPropDef;
+    FdoPtr<FdoRasterPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
     CHECKNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgServerDescribeSchema.GetRasterPropertyDefinition");
 
     fdoPropDef = FdoRasterPropertyDefinition::Create();
     STRING name = mgPropDef->GetName();
-    fdoPropDef->SetName((GisString*) name.c_str());
+    fdoPropDef->SetName((FdoString*) name.c_str());
 
     //Get data members
     STRING desc = mgPropDef->GetDescription();
@@ -1024,11 +1024,11 @@ FdoRasterPropertyDefinition* MgServerDescribeSchema::GetRasterPropertyDefinition
     //Set it for Fdo
     if (!desc.empty())
     {
-        fdoPropDef->SetDescription((GisString*) desc.c_str());
+        fdoPropDef->SetDescription((FdoString*) desc.c_str());
     }
 
-    fdoPropDef->SetDefaultImageXSize((GisInt32)xsize);
-    fdoPropDef->SetDefaultImageYSize((GisInt32)ysize);
+    fdoPropDef->SetDefaultImageXSize((FdoInt32)xsize);
+    fdoPropDef->SetDefaultImageYSize((FdoInt32)ysize);
     fdoPropDef->SetNullable(isNullable);
 
     //Cannot set qualified name in fdo
@@ -1159,24 +1159,24 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::XmlToSchema(CREFSTRING xml)
 
     size_t len = mbString.length();
 
-    GisByte* gisBytes = (GisByte*) mbString.c_str();
+    FdoByte* gisBytes = (FdoByte*) mbString.c_str();
 
-    GisPtr<GisIoMemoryStream> stream = GisIoMemoryStream::Create();
-    stream->Write(gisBytes, (GisSize)len);
+    FdoPtr<FdoIoMemoryStream> stream = FdoIoMemoryStream::Create();
+    stream->Write(gisBytes, (FdoSize)len);
 
-    GisPtr<FdoFeatureSchemaCollection> fdoSchemaCol = FdoFeatureSchemaCollection::Create((FdoSchemaElement*)NULL);
+    FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = FdoFeatureSchemaCollection::Create((FdoSchemaElement*)NULL);
     stream->Reset();
     fdoSchemaCol->ReadXml(stream);
 
     // Get schema count
-    GisInt32 cnt = fdoSchemaCol->GetCount();
-    for (GisInt32 i = 0; i < cnt; i++)
+    FdoInt32 cnt = fdoSchemaCol->GetCount();
+    for (FdoInt32 i = 0; i < cnt; i++)
     {
-        GisPtr<FdoFeatureSchema> fdoSchema = fdoSchemaCol->GetItem(i);
-        GisStringP name = fdoSchema->GetName();
+        FdoPtr<FdoFeatureSchema> fdoSchema = fdoSchemaCol->GetItem(i);
+        FdoStringP name = fdoSchema->GetName();
         CHECKNULL(name, L"MgServerDescribeSchema.XmlToSchema");
 
-        GisStringP description = fdoSchema->GetDescription();
+        FdoStringP description = fdoSchema->GetDescription();
 
         STRING tmpName(name);
         STRING tmpDesc(description);
@@ -1185,15 +1185,15 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::XmlToSchema(CREFSTRING xml)
         Ptr<MgClassDefinitionCollection> classCol = mgSchema->GetClasses();
 
         // Get all classes for a schema
-        GisPtr<FdoClassCollection> fdoClassCol = fdoSchema->GetClasses();
-        GisInt32 classCnt = fdoClassCol->GetCount();
+        FdoPtr<FdoClassCollection> fdoClassCol = fdoSchema->GetClasses();
+        FdoInt32 classCnt = fdoClassCol->GetCount();
 
-        for (GisInt32 j = 0; j < classCnt; j++)
+        for (FdoInt32 j = 0; j < classCnt; j++)
         {
-            GisPtr<FdoClassDefinition> fdoClassDef = fdoClassCol->GetItem(j);
+            FdoPtr<FdoClassDefinition> fdoClassDef = fdoClassCol->GetItem(j);
             // TODO: Should we return qualified or non-qualified name
-            GisStringP qname = fdoClassDef->GetQualifiedName();
-            GisStringP name = fdoClassDef->GetName();
+            FdoStringP qname = fdoClassDef->GetQualifiedName();
+            FdoStringP name = fdoClassDef->GetName();
 
             if (name != NULL && qname != NULL)
             {
@@ -1220,18 +1220,18 @@ STRING MgServerDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoS
     MG_FEATURE_SERVICE_TRY()
     CHECKNULL(fdoSchemaCol, L"MgServerDescribeSchema.GetSerializedXml");
 
-    GisIoMemoryStreamP fmis = GisIoMemoryStream::Create();
-    CHECKNULL((GisIoMemoryStream*)fmis, L"MgServerDescribeSchema.DescribeSchema");
+    FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
+    CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerDescribeSchema.DescribeSchema");
 
     // Write to memory stream
     fdoSchemaCol->WriteXml(fmis);
     fmis->Reset(); // TODO: We should not be calling reset here. A defect in FDO should be fixed.
 
-    GisInt64 len = fmis->GetLength();
-    GisByte *bytes = new GisByte[(size_t)len];
+    FdoInt64 len = fmis->GetLength();
+    FdoByte *bytes = new FdoByte[(size_t)len];
     CHECKNULL(bytes, L"MgServerDescribeSchema.DescribeSchema");
 
-    fmis->Read(bytes, (GisSize)len);
+    fmis->Read(bytes, (FdoSize)len);
 
     Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes, (INT32)len);
     byteSource->SetMimeType(MgMimeType::Xml);
@@ -1264,13 +1264,13 @@ MgStringCollection* MgServerDescribeSchema::GetSchemas(MgResourceIdentifier* res
     CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.DescribeSchema");
 
     strCol = new MgStringCollection();
-    GisInt32 cnt = m_ffsc->GetCount();
+    FdoInt32 cnt = m_ffsc->GetCount();
 
-    for (GisInt32 i = 0; i < cnt; i++)
+    for (FdoInt32 i = 0; i < cnt; i++)
     {
-        GisPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(i);
+        FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(i);
         // TODO: Should we return qualified or non-qualified name
-        GisStringP pname = ffs->GetQualifiedName();
+        FdoStringP pname = ffs->GetQualifiedName();
         if (pname != NULL)
         {
             int len = (int)wcslen(pname);
@@ -1304,19 +1304,19 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
 
     strCol = new MgStringCollection();
     // Get schema count
-    GisInt32 cnt = m_ffsc->GetCount();
-    for (GisInt32 i = 0; i < cnt; i++)
+    FdoInt32 cnt = m_ffsc->GetCount();
+    for (FdoInt32 i = 0; i < cnt; i++)
     {
-        GisPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(i);
+        FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(i);
         // Get all classes for a schema
-        GisPtr<FdoClassCollection> fcc = ffs->GetClasses();
-        GisInt32 classCnt = fcc->GetCount();
+        FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+        FdoInt32 classCnt = fcc->GetCount();
 
-        for (GisInt32 j = 0; j < classCnt; j++)
+        for (FdoInt32 j = 0; j < classCnt; j++)
         {
-            GisPtr<FdoClassDefinition> fc = fcc->GetItem(j);
+            FdoPtr<FdoClassDefinition> fc = fcc->GetItem(j);
             // TODO: Should we return qualified or non-qualified name
-            GisStringP pname = fc->GetQualifiedName();
+            FdoStringP pname = fc->GetQualifiedName();
             if (pname != NULL)
             {
                 strCol->Add(STRING(pname));
@@ -1354,20 +1354,20 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
 
     // classDefinition = new MgClassDefinition();
     // Get schema count
-    GisInt32 cnt = m_ffsc->GetCount();
-    for (GisInt32 i = 0; i < cnt; i++)
+    FdoInt32 cnt = m_ffsc->GetCount();
+    for (FdoInt32 i = 0; i < cnt; i++)
     {
-        GisPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(i);
+        FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(i);
         // Get all classes for a schema
-        GisPtr<FdoClassCollection> fcc = ffs->GetClasses();
-        GisInt32 classCnt = fcc->GetCount();
+        FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+        FdoInt32 classCnt = fcc->GetCount();
 
-        for (GisInt32 j = 0; j < classCnt; j++)
+        for (FdoInt32 j = 0; j < classCnt; j++)
         {
-            GisPtr<FdoClassDefinition> fc = fcc->GetItem(j);
+            FdoPtr<FdoClassDefinition> fc = fcc->GetItem(j);
             // TODO: Should we return qualified or non-qualified name
-            GisStringP qname = fc->GetQualifiedName();
-            GisStringP name = fc->GetName();
+            FdoStringP qname = fc->GetQualifiedName();
+            FdoStringP name = fc->GetName();
 
             if (name != NULL && qname != NULL)
             {
@@ -1429,23 +1429,23 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
     CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.GetIdentityProperties");
 
     // There should be at least one schema for the primary feature source
-    GisInt32 cnt = m_ffsc->GetCount();
+    FdoInt32 cnt = m_ffsc->GetCount();
     if (cnt > 0)
     {
         // Retrieve schema for primary feature source
-        GisPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(0);
+        FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(0);
 
         // Get all classes for a schema
-        GisPtr<FdoClassCollection> fcc = ffs->GetClasses();
-        GisInt32 classCnt = fcc->GetCount();
+        FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+        FdoInt32 classCnt = fcc->GetCount();
 
-        for (GisInt32 j = 0; j < classCnt; j++)
+        for (FdoInt32 j = 0; j < classCnt; j++)
         {
-            GisPtr<FdoClassDefinition> fc = fcc->GetItem(j);
+            FdoPtr<FdoClassDefinition> fc = fcc->GetItem(j);
 
             // check both the qualified and non-qualified names
-            GisStringP qname = fc->GetQualifiedName();
-            GisStringP name = fc->GetName();
+            FdoStringP qname = fc->GetQualifiedName();
+            FdoStringP name = fc->GetName();
 
             STRING qualifiedName = (const wchar_t*)qname;
             STRING::size_type nLength = qualifiedName.length();
@@ -1455,7 +1455,7 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
             if (STRING::npos == nExtensionStart)
             {
                 // retrieve identity properties from FDO
-                GisPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
+                FdoPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
 
                 MgServerGetFeatures msgf;
                 msgf.GetClassProperties(idProps, fdpdc);

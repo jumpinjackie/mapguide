@@ -35,9 +35,9 @@ GWSQualifiedName::GWSQualifiedName ()
 
 
 GWSQualifiedName::GWSQualifiedName (
-    GisString * FeatureSource,
-    GisString * schema,
-    GisString * name
+    FdoString * FeatureSource,
+    FdoString * schema,
+    FdoString * name
 )
 {
     if (FeatureSource != NULL)
@@ -49,8 +49,8 @@ GWSQualifiedName::GWSQualifiedName (
 }
 
 GWSQualifiedName::GWSQualifiedName (
-    GisString * schema,
-    GisString * name
+    FdoString * schema,
+    FdoString * name
 )
 {
     if (schema != NULL)
@@ -59,7 +59,7 @@ GWSQualifiedName::GWSQualifiedName (
         m_name = name;
 }
 
-GWSQualifiedName::GWSQualifiedName (GisString * name)
+GWSQualifiedName::GWSQualifiedName (FdoString * name)
 {
     if (name == NULL)
         return;
@@ -107,17 +107,17 @@ GWSQualifiedName::~GWSQualifiedName ()
 {
 }
 
-GisString * GWSQualifiedName::FeatureSource () const
+FdoString * GWSQualifiedName::FeatureSource () const
 {
     return m_featuresource;
 }
 
-GisString * GWSQualifiedName::Schema () const
+FdoString * GWSQualifiedName::Schema () const
 {
     return m_schema;
 }
 
-GisString * GWSQualifiedName::Name () const
+FdoString * GWSQualifiedName::Name () const
 {
     return m_name;
 }
@@ -131,7 +131,7 @@ void GWSQualifiedName::operator=(const GWSQualifiedName & other)
 
 bool GWSQualifiedName::operator==(const GWSQualifiedName & other) const
 {
-    if (_wcsicmp ((GisString *)m_featuresource, (GisString *) other.m_featuresource) == 0 &&
+    if (_wcsicmp ((FdoString *)m_featuresource, (FdoString *) other.m_featuresource) == 0 &&
         m_schema == other.m_schema &&
         m_name == other.m_name)
         return true;
@@ -140,8 +140,8 @@ bool GWSQualifiedName::operator==(const GWSQualifiedName & other) const
 
 bool GWSQualifiedName::operator>(const GWSQualifiedName & other) const
 {
-    int iCmp = _wcsicmp ((GisString *)m_featuresource,
-                        (GisString *)other.m_featuresource);
+    int iCmp = _wcsicmp ((FdoString *)m_featuresource,
+                        (FdoString *)other.m_featuresource);
     if (iCmp > 0)
         return true;
     if (iCmp < 0)
@@ -160,7 +160,7 @@ bool GWSQualifiedName::operator>(const GWSQualifiedName & other) const
 
 bool GWSQualifiedName::operator<(const GWSQualifiedName & other) const
 {
-    int iCmp = _wcsicmp ((GisString *) m_featuresource, (GisString *) other.m_featuresource);
+    int iCmp = _wcsicmp ((FdoString *) m_featuresource, (FdoString *) other.m_featuresource);
 
     if (iCmp < 0)
         return true;
@@ -182,7 +182,7 @@ int GWSQualifiedName::ToString (wchar_t * res, int len) const
 {
     size_t retlen = 0;
     if (res != NULL) {
-        GisStringP str;
+        FdoStringP str;
         str = m_schema;
         str += L":";
         str += m_name;
@@ -198,7 +198,7 @@ int GWSQualifiedName::ToFullyQualifedString(wchar_t * res, int len) const
 {
     size_t retlen = 0;
     if (res != NULL) {
-        GisStringP str;
+        FdoStringP str;
         str = m_schema;
         str += L":";
         str += m_name;

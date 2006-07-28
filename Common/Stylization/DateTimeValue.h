@@ -23,11 +23,11 @@ class DateTimeValue : public DataValue
 //let only the DataValuePool create and destroy DataValues
 friend class DataValuePool;
 private:
-    DateTimeValue(GisDateTime& val);
+    DateTimeValue(FdoDateTime& val);
     virtual ~DateTimeValue();
 
 public:
-    void Set(GisDateTime& val);
+    void Set(FdoDateTime& val);
 
     DataValue* Clone(DataValuePool* pPool);
     DataValue* Add(DataValue& v2, DataValuePool* pPool);
@@ -47,13 +47,13 @@ public:
     long long GetAsInt64();
     wchar_t* GetAsString();
     bool GetAsBoolean();
-    GisDateTime GetAsDateTime();
+    FdoDateTime GetAsDateTime();
 
     DataValueType GetType();
 
 private:
 
-    GisDateTime m_value;
+    FdoDateTime m_value;
     wchar_t* m_strValue;
 
 };

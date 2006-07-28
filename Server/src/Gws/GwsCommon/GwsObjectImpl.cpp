@@ -75,7 +75,7 @@ EGwsStatus CGwsStatus::GetStatus() const
     return m_status;
 }
 
-GisString *CGwsStatus::GetMessage () const
+FdoString *CGwsStatus::GetMessage () const
 {
     if (m_message.empty ()) {
         CGwsResourceModule::GwsStatusMessage (m_status, ((CGwsStatus *)this)->m_message);
@@ -100,7 +100,7 @@ void CGwsStatus::SetParameter (const WSTR & name, const WSTR & value)
     }
 }
 
-void CGwsStatus::SetParameter (GisString *pName, GisString *pValue)
+void CGwsStatus::SetParameter (FdoString *pName, FdoString *pValue)
 {
     if (!pName)
     {
@@ -123,7 +123,7 @@ void CGwsStatus::SetParameter (GisString *pName, GisString *pValue)
 }
 
 bool
-CGwsStatus::GetParameterAt(unsigned int index, GisString*& pName, GisString*& pValue) const
+CGwsStatus::GetParameterAt(unsigned int index, FdoString*& pName, FdoString*& pValue) const
 {
     if (index >= m_parameters.size())
     {
@@ -184,18 +184,18 @@ void CGwsObject::PushStatus (const CGwsStatus & stat) const
     mutex.Unlock();
 }
 
-void CGwsObject::PushGisException (
+void CGwsObject::PushFdoException (
     const CGwsStatus & stat,
-    GisException     * gis
+    FdoException     * gis
 ) const
 {
-    GisException    * e = gis;
+    FdoException    * e = gis;
     e->AddRef ();
 
     // do I need to reverse gis exception chain?
     while (e != NULL) {
         PushStatus (CGwsStatus (eGwsFdoProviderError, e->GetExceptionMessage ()));
-        GisException * e1 = e->GetCause ();
+        FdoException * e1 = e->GetCause ();
         e->Release ();
         e = e1;
 
@@ -269,7 +269,7 @@ bool CGwsObject::IsWarning  (EGwsStatus stat)
 }
 
 
-void CGwsObject::Write (GisXmlWriter * writer)
+void CGwsObject::Write (FdoXmlWriter * writer)
 {
     writer; // For "unreferenced formal parameter" warning
 }

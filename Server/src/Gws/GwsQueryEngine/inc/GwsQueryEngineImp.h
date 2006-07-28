@@ -52,7 +52,7 @@ namespace GwsQueryUtils
     GWS_QUERYENGINE_API FdoDataValue * GetDataPropertyValue (
                                 FdoIReader  *   reader,
                                 FdoDataType     dataprop,
-                                GisString   *   name);
+                                FdoString   *   name);
 
 
     // converts property specified by its descriptor into wchar string

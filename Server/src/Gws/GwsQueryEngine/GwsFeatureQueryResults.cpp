@@ -94,7 +94,7 @@ const GWSCoordinateSystem & CGwsFeatureIterator::GetCSName ()
         return m_converter->DestinationCS ();
 
     WSTR sc = pfquery->ActiveSpatialContext ();
-    GisPtr<FdoIConnection> conn = pfquery->GetFdoConnection ();
+    FdoPtr<FdoIConnection> conn = pfquery->GetFdoConnection ();
     GwsSpatialContextDescription scdesc;
     if (! IGWSException::IsError (GwsCommonFdoUtils::DescribeSC (conn, sc.c_str (), scdesc)))
         csname = GWSCoordinateSystem (scdesc.CsNameWkt ());
@@ -104,7 +104,7 @@ const GWSCoordinateSystem & CGwsFeatureIterator::GetCSName ()
 
 bool CGwsFeatureIterator::InitializeMutableFeature ()
 {
-    GisPtr<IGWSExtendedFeatureDescription> ifdesc;
+    FdoPtr<IGWSExtendedFeatureDescription> ifdesc;
     DescribeFeature (& ifdesc);
 
     CGwsMutableFeature * feat = NULL;
@@ -135,8 +135,8 @@ bool CGwsFeatureIterator::NextFeature (IGWSFeature ** feature)
             AddRef ();
         }
 
-    } catch (GisException * gis) {
-        PushGisException (eGwsFdoProviderError, gis);
+    } catch (FdoException * gis) {
+        PushFdoException (eGwsFdoProviderError, gis);
         gis->Release ();
     }
     return bRet;
@@ -147,25 +147,25 @@ void CGwsFeatureIterator::DescribeFeature(IGWSExtendedFeatureDescription ** ppRe
     m_prepquery->DescribeResults (ppResDesc);
 }
 
-GisInt32 CGwsFeatureIterator::GetCacheId ()
+FdoInt32 CGwsFeatureIterator::GetCacheId ()
 {
     if (m_bExposeFeatureIdAsCacheId) {
         GWSFeatureId id = GetFeatureId();
         if(id.GetCount() != 1)
             GWS_THROW(eGwsInvalidCacheId);
 
-        GisPtr<FdoDataValue> pVal = id.GetItem(0);
+        FdoPtr<FdoDataValue> pVal = id.GetItem(0);
 
-        GisInt16 int16Val;
-        GisInt32 int32Val;
+        FdoInt16 int16Val;
+        FdoInt32 int32Val;
         switch(pVal->GetDataType())
         {
             case FdoDataType_Int16:
-                int16Val = (GisInt16) (* (FdoInt16Value *)  pVal.p);
-                return (GisInt32)int16Val;
+                int16Val = (FdoInt16) (* (FdoInt16Value *)  pVal.p);
+                return (FdoInt32)int16Val;
 
             case FdoDataType_Int32:
-                int32Val = (GisInt32) (* (FdoInt32Value *)  pVal.p);
+                int32Val = (FdoInt32) (* (FdoInt32Value *)  pVal.p);
                 return int32Val;
             default: break;
         }
@@ -173,7 +173,7 @@ GisInt32 CGwsFeatureIterator::GetCacheId ()
     return 0;   // not feature id in this case
 }
 
-GisInt32 CGwsFeatureIterator::GetRevisionNumber ()
+FdoInt32 CGwsFeatureIterator::GetRevisionNumber ()
 {
     if (m_reader == NULL)
         return -1;
@@ -189,20 +189,20 @@ GisInt32 CGwsFeatureIterator::GetRevisionNumber ()
 
 GWSFeatureId CGwsFeatureIterator::GetFeatureId ()
 {
-    GisPtr<IGWSExtendedFeatureDescription> extFeatDsc;
+    FdoPtr<IGWSExtendedFeatureDescription> extFeatDsc;
 
     DescribeFeature (&extFeatDsc);
 
     CGwsQueryResultDescriptors *  fdesc = (CGwsQueryResultDescriptors *) extFeatDsc.p;
-    GisPtr<CGwsDataValueCollection> keyvals;
+    FdoPtr<CGwsDataValueCollection> keyvals;
 
-    GisPtr<FdoDataPropertyDefinitionCollection> iddefs =
+    FdoPtr<FdoDataPropertyDefinitionCollection> iddefs =
                                 fdesc->GetIdentityProperties ();
 
     for (int i = 0; iddefs != NULL && i < iddefs->GetCount (); i ++) {
-        GisPtr<FdoDataPropertyDefinition> idprop = iddefs->GetItem (i);
+        FdoPtr<FdoDataPropertyDefinition> idprop = iddefs->GetItem (i);
 
-        GisPtr<FdoDataValue> val =
+        FdoPtr<FdoDataValue> val =
             GwsQueryUtils::GetDataPropertyValue (m_reader,
                                                idprop->GetDataType (),
                                                idprop->GetName ());
@@ -249,8 +249,8 @@ void CGwsFeatureIterator::Close ()
         return;
     try {
         m_reader->Close ();
-    } catch (GisException * gis) {
-        PushGisException (eGwsFdoProviderError, gis);
+    } catch (FdoException * gis) {
+        PushFdoException (eGwsFdoProviderError, gis);
         gis->Release ();
     }
     return ;
@@ -260,99 +260,99 @@ void CGwsFeatureIterator::Close ()
 const CGwsPropertyDesc &
     CGwsFeatureIterator::GetPropertyDescriptor (int iProp)
 {
-    GisPtr<IGWSExtendedFeatureDescription> featDsc;
+    FdoPtr<IGWSExtendedFeatureDescription> featDsc;
     DescribeFeature (&featDsc);
 
     return ((CGwsQueryResultDescriptors *) featDsc.p)->GetPropertyDescriptor (iProp);
 }
 
 const CGwsPropertyDesc &
-    CGwsFeatureIterator::GetPropertyDescriptor (GisString * propname)
+    CGwsFeatureIterator::GetPropertyDescriptor (FdoString * propname)
 {
-    GisPtr<IGWSExtendedFeatureDescription> featDsc;
+    FdoPtr<IGWSExtendedFeatureDescription> featDsc;
     DescribeFeature (&featDsc);
 
     return ((CGwsQueryResultDescriptors *) featDsc.p)->GetPropertyDescriptor (propname);
 }
 
-GisString * CGwsFeatureIterator::GetString (GisString * propname)
+FdoString * CGwsFeatureIterator::GetString (FdoString * propname)
 {
     CheckReader ();
     return m_reader->GetString (propname);
 }
 
-bool CGwsFeatureIterator::GetBoolean(GisString* propname)
+bool CGwsFeatureIterator::GetBoolean(FdoString* propname)
 {
     CheckReader ();
     return m_reader->GetBoolean (propname);
 }
 
-GisByte CGwsFeatureIterator::GetByte(GisString* propname)
+FdoByte CGwsFeatureIterator::GetByte(FdoString* propname)
 {
     CheckReader ();
     return m_reader->GetByte (propname);
 }
 
-GisDateTime CGwsFeatureIterator::GetDateTime(GisString* propname)
+FdoDateTime CGwsFeatureIterator::GetDateTime(FdoString* propname)
 {
     CheckReader ();
     return m_reader->GetDateTime (propname);
 }
 
-double CGwsFeatureIterator::GetDouble(GisString* propname)
+double CGwsFeatureIterator::GetDouble(FdoString* propname)
 {
     CheckReader ();
     return m_reader->GetDouble (propname);
 }
 
-GisInt16 CGwsFeatureIterator::GetInt16(GisString* propname)
+FdoInt16 CGwsFeatureIterator::GetInt16(FdoString* propname)
 {
     CheckReader ();
     return m_reader->GetInt16 (propname);
 }
 
-GisInt32 CGwsFeatureIterator::GetInt32(GisString* propname)
+FdoInt32 CGwsFeatureIterator::GetInt32(FdoString* propname)
 {
     CheckReader ();
     return m_reader->GetInt32 (propname);
 }
 
-GisInt64 CGwsFeatureIterator::GetInt64(GisString* propname)
+FdoInt64 CGwsFeatureIterator::GetInt64(FdoString* propname)
 {
     CheckReader ();
     return m_reader->GetInt64 (propname);
 }
 
-float CGwsFeatureIterator::GetSingle(GisString* propname)
+float CGwsFeatureIterator::GetSingle(FdoString* propname)
 {
     CheckReader ();
     return m_reader->GetSingle (propname);
 }
 
-FdoLOBValue * CGwsFeatureIterator::GetLOB(GisString* propertyName)
+FdoLOBValue * CGwsFeatureIterator::GetLOB(FdoString* propertyName)
 {
     CheckReader ();
     return m_reader->GetLOB (propertyName);
 }
 
-GisIStreamReader* CGwsFeatureIterator::GetLOBStreamReader(const wchar_t* propertyName )
+FdoIStreamReader* CGwsFeatureIterator::GetLOBStreamReader(const wchar_t* propertyName )
 {
     CheckReader ();
     return m_reader->GetLOBStreamReader (propertyName);
 }
 
-bool CGwsFeatureIterator::IsNull(GisString* propertyName)
+bool CGwsFeatureIterator::IsNull(FdoString* propertyName)
 {
     CheckReader ();
     return m_reader->IsNull (propertyName);
 }
-FdoIRaster*  CGwsFeatureIterator::GetRaster(GisString* propertyName)
+FdoIRaster*  CGwsFeatureIterator::GetRaster(FdoString* propertyName)
 {
     CheckReader ();
     return m_reader->GetRaster (propertyName);
 }
 
-FdoDataValue * CGwsFeatureIterator::GetDataValue (GisString* propertyName)
+FdoDataValue * CGwsFeatureIterator::GetDataValue (FdoString* propertyName)
 {
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
     if (desc.m_name.empty ())
@@ -361,12 +361,12 @@ FdoDataValue * CGwsFeatureIterator::GetDataValue (GisString* propertyName)
 }
 
 FdoDataValueCollection * CGwsFeatureIterator::GetDataValues (
-    GisStringCollection* propertyNames
+    FdoStringCollection* propertyNames
 )
 {
     CGwsDataValueCollection * vals = NULL;
     for (int i = 0; i < propertyNames->GetCount (); i ++) {
-        GisPtr<FdoDataValue> val = GetDataValue (propertyNames->GetString (i));
+        FdoPtr<FdoDataValue> val = GetDataValue (propertyNames->GetString (i));
         assert (val != NULL);
         if (vals == NULL)
             vals = (CGwsDataValueCollection *) CGwsDataValueCollection::Create ();
@@ -376,19 +376,19 @@ FdoDataValueCollection * CGwsFeatureIterator::GetDataValues (
 }
 
 
-GisInt32 CGwsFeatureIterator::GetDepth()
+FdoInt32 CGwsFeatureIterator::GetDepth()
 {
     CheckReader ();
     return m_reader->GetDepth ();
 
 }
-const GisByte * CGwsFeatureIterator::GetGeometry(
-    GisString * propertyName,
-    GisInt32  * count
+const FdoByte * CGwsFeatureIterator::GetGeometry(
+    FdoString * propertyName,
+    FdoInt32  * count
 )
 {
     CheckReader ();
-    GisByte * gvalue = (GisByte *) m_reader->GetGeometry (propertyName, count);
+    FdoByte * gvalue = (FdoByte *) m_reader->GetGeometry (propertyName, count);
     if (m_converter != NULL && ! m_bGeometryConverted) {
         EGwsStatus stat = m_converter->ConvertForward (gvalue, * count);
         if (IGWSException::IsError (stat))
@@ -398,10 +398,10 @@ const GisByte * CGwsFeatureIterator::GetGeometry(
     return gvalue;
 
 }
-GisByteArray* CGwsFeatureIterator::GetGeometry(GisString* propertyName)
+FdoByteArray* CGwsFeatureIterator::GetGeometry(FdoString* propertyName)
 {
     CheckReader ();
-    GisByteArray * gvalue = m_reader->GetGeometry (propertyName);
+    FdoByteArray * gvalue = m_reader->GetGeometry (propertyName);
     if (m_converter != NULL && ! m_bGeometryConverted) {
         EGwsStatus stat = m_converter->ConvertForward (gvalue);
         if (IGWSException::IsError (stat))
@@ -410,104 +410,104 @@ GisByteArray* CGwsFeatureIterator::GetGeometry(GisString* propertyName)
     }
     return gvalue;
 }
-FdoIFeatureReader* CGwsFeatureIterator::GetFeatureObject(GisString* propertyName)
+FdoIFeatureReader* CGwsFeatureIterator::GetFeatureObject(FdoString* propertyName)
 {
     CheckReader ();
     return m_reader->GetFeatureObject (propertyName);
 }
 
 /*
-bool CGwsFeatureIterator::IsNull(GisInt32 iProp)
+bool CGwsFeatureIterator::IsNull(FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->IsNull (desc.m_name.c_str ());
 }
-GisString * CGwsFeatureIterator::GetString (GisInt32 iProp)
+FdoString * CGwsFeatureIterator::GetString (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetString (desc.m_name.c_str ());
 }
-bool CGwsFeatureIterator::GetBoolean  (GisInt32 iProp)
+bool CGwsFeatureIterator::GetBoolean  (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetBoolean (desc.m_name.c_str ());
 }
-GisByte CGwsFeatureIterator::GetByte     (GisInt32 iProp)
+FdoByte CGwsFeatureIterator::GetByte     (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetByte (desc.m_name.c_str ());
 }
-GisDateTime CGwsFeatureIterator::GetDateTime (GisInt32 iProp)
+FdoDateTime CGwsFeatureIterator::GetDateTime (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetDateTime (desc.m_name.c_str ());
 }
-double CGwsFeatureIterator::GetDouble   (GisInt32 iProp)
+double CGwsFeatureIterator::GetDouble   (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetDouble (desc.m_name.c_str ());
 }
-GisInt16 CGwsFeatureIterator::GetInt16    (GisInt32 iProp)
+FdoInt16 CGwsFeatureIterator::GetInt16    (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetInt16 (desc.m_name.c_str ());
 }
-GisInt32 CGwsFeatureIterator::GetInt32    (GisInt32 iProp)
+FdoInt32 CGwsFeatureIterator::GetInt32    (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetInt32 (desc.m_name.c_str ());
 }
-GisInt64 CGwsFeatureIterator::GetInt64    (GisInt32 iProp)
+FdoInt64 CGwsFeatureIterator::GetInt64    (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetInt64 (desc.m_name.c_str ());
 }
-float CGwsFeatureIterator::GetSingle   (GisInt32 iProp)
+float CGwsFeatureIterator::GetSingle   (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetSingle (desc.m_name.c_str ());
 }
-FdoLOBValue* CGwsFeatureIterator::GetLOB (GisInt32 iProp)
+FdoLOBValue* CGwsFeatureIterator::GetLOB (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetLOB (desc.m_name.c_str ());
 }
-GisIStreamReader* CGwsFeatureIterator::GetLOBStreamReader (GisInt32 iProp)
+FdoIStreamReader* CGwsFeatureIterator::GetLOBStreamReader (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetLOBStreamReader (desc.m_name.c_str ());
 }
-FdoIRaster*     CGwsFeatureIterator::GetRaster   (GisInt32 iProp)
+FdoIRaster*     CGwsFeatureIterator::GetRaster   (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetRaster (desc.m_name.c_str ());
 }
-const GisByte * CGwsFeatureIterator::GetGeometry (GisInt32 iProp, GisInt32 * count)
+const FdoByte * CGwsFeatureIterator::GetGeometry (FdoInt32 iProp, FdoInt32 * count)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetGeometry (desc.m_name.c_str (), count);
 }
-GisByteArray*   CGwsFeatureIterator::GetGeometry (GisInt32 iProp)
+FdoByteArray*   CGwsFeatureIterator::GetGeometry (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
     return m_reader->GetGeometry (desc.m_name.c_str ());
 }
-FdoIFeatureReader* CGwsFeatureIterator::GetFeatureObject (GisInt32 iProp)
+FdoIFeatureReader* CGwsFeatureIterator::GetFeatureObject (FdoInt32 iProp)
 {
     CheckReader ();
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
@@ -525,17 +525,17 @@ bool CGwsFeatureIterator::ReadNext()
     return m_reader->ReadNext ();
 }
 
-GisGeometryType CGwsFeatureIterator::GetGeometryType(GisByteArray* pArray)
+FdoGeometryType CGwsFeatureIterator::GetGeometryType(FdoByteArray* pArray)
 {
-    GisPtr<GisAgfGeometryFactory> pAgfFactory = GisAgfGeometryFactory::GetInstance();
-    GisPtr<GisIGeometry> pAgfGeometry = pAgfFactory->CreateGeometryFromAgf(pArray);
+    FdoPtr<FdoFgfGeometryFactory> pAgfFactory = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> pAgfGeometry = pAgfFactory->CreateGeometryFromFgf(pArray);
     return pAgfGeometry->GetDerivedType();
 }
 
-GisString* CGwsFeatureIterator::GetPrimaryGeometryName()
+FdoString* CGwsFeatureIterator::GetPrimaryGeometryName()
 {
     static std::wstring name;
-    GisPtr<FdoClassDefinition> pClassDef(GetClassDefinition());
+    FdoPtr<FdoClassDefinition> pClassDef(GetClassDefinition());
     GwsCommonFdoUtils::GetGeometryName(pClassDef, name);
     return name.c_str();
 }
@@ -547,7 +547,7 @@ FdoClassDefinition* CGwsFeatureIterator::GetClassDefinition()
 }
 /*
 void CGwsFeatureIterator::ToString (
-    GisInt32    iProp,
+    FdoInt32    iProp,
     wchar_t *   buff,
     int         len
 )
@@ -558,7 +558,7 @@ void CGwsFeatureIterator::ToString (
 */
 
 void CGwsFeatureIterator::ToString (
-    GisString * propname,
+    FdoString * propname,
     wchar_t *   buff,
     int         len
 )
@@ -610,14 +610,14 @@ unsigned char* CGwsFeatureIterator::ToBuffer(int& bufLen)
     m_pBinaryWriter = new GwsBinaryFeatureWriter();
 
 
-    GisPtr<IGWSExtendedFeatureDescription> ifdesc;
+    FdoPtr<IGWSExtendedFeatureDescription> ifdesc;
     DescribeFeature (& ifdesc);
     wchar_t buf[256];
     int len = ifdesc->ClassName().ToFullyQualifedString(buf, 256);
     assert(len < 256);
     len;
 
-    GisPtr<FdoClassDefinition> pClassDef = ifdesc->ClassDefinition();
+    FdoPtr<FdoClassDefinition> pClassDef = ifdesc->ClassDefinition();
     m_pBinaryWriter->WriteFeature(pClassDef, buf, NULL, m_reader);
     return m_pBinaryWriter->ToBuffer(bufLen);
 }

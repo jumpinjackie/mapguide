@@ -191,7 +191,7 @@ MgProperty* MgServerSqlProcessor::GetMgProperty(CREFSTRING propName, INT16 type)
             }
             case MgPropertyType::Byte: /// Unsigned 8 bit value
             {
-                GisByte val = 0;
+                FdoByte val = 0;
                 bool isNull = true;
 
                 if (!m_sqlDataReader->IsNull(propName.c_str()))
@@ -250,7 +250,7 @@ MgProperty* MgServerSqlProcessor::GetMgProperty(CREFSTRING propName, INT16 type)
             }
             case MgPropertyType::Int16: /// 16 bit signed integer value
             {
-                GisInt16 val = 0;
+                FdoInt16 val = 0;
                 bool isNull = true;
 
                 if (!m_sqlDataReader->IsNull(propName.c_str()))
@@ -265,7 +265,7 @@ MgProperty* MgServerSqlProcessor::GetMgProperty(CREFSTRING propName, INT16 type)
             }
             case MgPropertyType::Int32: // 32 bit signed integer value
             {
-                GisInt32 val = 0;
+                FdoInt32 val = 0;
                 bool isNull = true;
 
                 if (!m_sqlDataReader->IsNull(propName.c_str()))
@@ -280,7 +280,7 @@ MgProperty* MgServerSqlProcessor::GetMgProperty(CREFSTRING propName, INT16 type)
             }
             case MgPropertyType::Int64: // 64 bit signed integer value
             {
-                GisInt64 val = 0;
+                FdoInt64 val = 0;
                 bool isNull = true;
 
                 if (!m_sqlDataReader->IsNull(propName.c_str()))

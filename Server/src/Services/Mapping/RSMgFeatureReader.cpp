@@ -23,7 +23,7 @@
 #include "RSMgInputStream.h"
 #include "LineBuffer.h"
 
-//we want to catch the MgException and rethrow a GisException which
+//we want to catch the MgException and rethrow a FdoException which
 //the Stylizer knows how to catch and release. It does not know about
 //MgExceptions so it can't properly release them
 #define RSFR_TRY() try {
@@ -31,7 +31,7 @@
                        catch (MgException* awe)         \
                        {                                \
                            awe->Release();              \
-                           throw GisException::Create();\
+                           throw FdoException::Create();\
                        }
 
 
@@ -180,13 +180,13 @@ unsigned char RSMgFeatureReader::GetByte(const wchar_t* propertyName)
     RSFR_CATCH()
 }
 
-GisDateTime RSMgFeatureReader::GetDateTime(const wchar_t* propertyName)
+FdoDateTime RSMgFeatureReader::GetDateTime(const wchar_t* propertyName)
 {
     RSFR_TRY()
 
     Ptr<MgDateTime> mgdate = m_reader->GetDateTime(propertyName);
 
-    GisDateTime date;
+    FdoDateTime date;
     date.day = mgdate->GetDay();
     date.hour = mgdate->GetHour();
     date.minute = mgdate->GetMinute();
@@ -371,7 +371,7 @@ const wchar_t* RSMgFeatureReader::GetAsString(const wchar_t* propertyName)
             break;
         case FdoDataType_DateTime:
             {
-                GisPtr<FdoDateTimeValue> dt = FdoDateTimeValue::Create(GetDateTime(propertyName));
+                FdoPtr<FdoDateTimeValue> dt = FdoDateTimeValue::Create(GetDateTime(propertyName));
                 m_cachePropValue = dt->ToString();
             }
             break;
@@ -431,7 +431,7 @@ const wchar_t* RSMgFeatureReader::GetAsString(const wchar_t* propertyName)
             break;
         }
     }
-    catch (GisException* e)
+    catch (FdoException* e)
     {
         e->Release();
 

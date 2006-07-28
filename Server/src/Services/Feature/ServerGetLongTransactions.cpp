@@ -57,7 +57,7 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
         throw new MgConnectionFailedException(L"MgServerGetLongTransactions::GetLongTransactions()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    GisPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
     m_providerName = msfc.GetProviderName();
 
     // Check whether command is supported by provider
@@ -68,11 +68,11 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
         throw new MgInvalidOperationException(L"MgServerGetLongTransactions.GetLongTransactions", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    GisPtr<FdoIGetLongTransactions> fdoCommand = (FdoIGetLongTransactions*)fdoConn->CreateCommand(FdoCommandType_GetLongTransactions);
+    FdoPtr<FdoIGetLongTransactions> fdoCommand = (FdoIGetLongTransactions*)fdoConn->CreateCommand(FdoCommandType_GetLongTransactions);
     CHECKNULL((FdoIGetLongTransactions*)fdoCommand, L"MgServerGetLongTransactions.GetLongTransactions");
 
     // Execute the command
-    GisPtr<FdoILongTransactionReader> longTransactionReader = fdoCommand->Execute();
+    FdoPtr<FdoILongTransactionReader> longTransactionReader = fdoCommand->Execute();
     CHECKNULL((FdoILongTransactionReader*)longTransactionReader, L"MgServerGetLongTransactions.GetLongTransactions");
 
     mgLongTransactionReader = new MgLongTransactionReader();
@@ -111,26 +111,26 @@ MgLongTransactionData* MgServerGetLongTransactions::GetLongTransactionData(FdoIL
     Ptr<MgLongTransactionData> longTransactionData = new MgLongTransactionData();
 
     // Name must exist
-    GisString* name = longTransactionReader->GetName();
-    CHECKNULL((GisString*)name, L"MgServerGetLongTransactions.GetLongTransactions");
+    FdoString* name = longTransactionReader->GetName();
+    CHECKNULL((FdoString*)name, L"MgServerGetLongTransactions.GetLongTransactions");
     longTransactionData->SetName(STRING(name));
 
     // Desc for spatial context
-    GisString* desc = longTransactionReader->GetDescription();
+    FdoString* desc = longTransactionReader->GetDescription();
     if (desc != NULL)
     {
         longTransactionData->SetDescription(STRING(desc));
     }
 
     // Desc for spatial context
-    GisString* owner = longTransactionReader->GetOwner();
+    FdoString* owner = longTransactionReader->GetOwner();
     if (owner != NULL)
     {
         longTransactionData->SetOwner(STRING(owner));
     }
 
     // Creation date
-    GisDateTime dateTime = longTransactionReader->GetCreationDate();
+    FdoDateTime dateTime = longTransactionReader->GetCreationDate();
     double seconds;
     double microsecs = modf(dateTime.seconds, &seconds);
 

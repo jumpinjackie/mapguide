@@ -73,7 +73,7 @@ void MgGwsConnectionPool::SetOwner (IGWSObject * pObj)
 
 // Gws Query engine expects that this method throws exception
 // in case when connection is not found in the pool
-FdoIConnection * MgGwsConnectionPool::GetConnection (GisString * name)
+FdoIConnection * MgGwsConnectionPool::GetConnection (FdoString * name)
 {
     if (name == NULL || * name == 0) {
         throw IGWSException::Create (eGwsDataSourceNotFound);
@@ -96,7 +96,7 @@ FdoIConnection * MgGwsConnectionPool::GetConnection (GisString * name)
 }
 
 void MgGwsConnectionPool::AddConnection (
-    GisString       * name,
+    FdoString       * name,
     FdoIConnection  * conn
 )
 {
@@ -114,7 +114,7 @@ void MgGwsConnectionPool::AddConnection (
 }
 
 
-void MgGwsConnectionPool::RemoveConnection (GisString * name)
+void MgGwsConnectionPool::RemoveConnection (FdoString * name)
 {
     if (name == NULL || * name == 0)
         throw IGWSException::Create (eGwsNullPointer);

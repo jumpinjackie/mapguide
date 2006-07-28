@@ -28,7 +28,7 @@ GwsBinaryFeatureReader::GwsBinaryFeatureReader(unsigned char* pBuf, int len, int
     m_totalProps = totalProps;
 }
 
-GisString* GwsBinaryFeatureReader::QualifiedClassName()
+FdoString* GwsBinaryFeatureReader::QualifiedClassName()
 {
     return m_className.c_str();
 }
@@ -62,19 +62,19 @@ int GwsBinaryFeatureReader::SetPosition(int propertyIndex)
     return len;
 }
 
-bool GwsBinaryFeatureReader::IsNull(GisInt32 iProp)
+bool GwsBinaryFeatureReader::IsNull(FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     return (len == 0) ? true : false;
 }
 
-GisString * GwsBinaryFeatureReader::GetString (GisInt32 iProp)
+FdoString * GwsBinaryFeatureReader::GetString (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
     return m_rdr.ReadRawString(len);
 }
-bool GwsBinaryFeatureReader::GetBoolean  (GisInt32 iProp)
+bool GwsBinaryFeatureReader::GetBoolean  (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
@@ -83,7 +83,7 @@ bool GwsBinaryFeatureReader::GetBoolean  (GisInt32 iProp)
     return (ret != 0);
 }
 
-GisByte GwsBinaryFeatureReader::GetByte     (GisInt32 iProp)
+FdoByte GwsBinaryFeatureReader::GetByte     (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
@@ -91,7 +91,7 @@ GisByte GwsBinaryFeatureReader::GetByte     (GisInt32 iProp)
     return m_rdr.ReadByte();
 }
 
-GisDateTime GwsBinaryFeatureReader::GetDateTime (GisInt32 iProp)
+FdoDateTime GwsBinaryFeatureReader::GetDateTime (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
@@ -99,7 +99,7 @@ GisDateTime GwsBinaryFeatureReader::GetDateTime (GisInt32 iProp)
     return m_rdr.ReadDateTime();
 }
 
-double GwsBinaryFeatureReader::GetDouble   (GisInt32 iProp)
+double GwsBinaryFeatureReader::GetDouble   (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
@@ -107,7 +107,7 @@ double GwsBinaryFeatureReader::GetDouble   (GisInt32 iProp)
     return m_rdr.ReadDouble();
 }
 
-GisInt16 GwsBinaryFeatureReader::GetInt16    (GisInt32 iProp)
+FdoInt16 GwsBinaryFeatureReader::GetInt16    (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
@@ -115,7 +115,7 @@ GisInt16 GwsBinaryFeatureReader::GetInt16    (GisInt32 iProp)
     return m_rdr.ReadInt16();
 }
 
-GisInt32 GwsBinaryFeatureReader::GetInt32    (GisInt32 iProp)
+FdoInt32 GwsBinaryFeatureReader::GetInt32    (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
@@ -123,7 +123,7 @@ GisInt32 GwsBinaryFeatureReader::GetInt32    (GisInt32 iProp)
     return m_rdr.ReadInt32();
 }
 
-GisInt64 GwsBinaryFeatureReader::GetInt64    (GisInt32 iProp)
+FdoInt64 GwsBinaryFeatureReader::GetInt64    (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
@@ -131,7 +131,7 @@ GisInt64 GwsBinaryFeatureReader::GetInt64    (GisInt32 iProp)
     return m_rdr.ReadInt64();
 }
 
-float GwsBinaryFeatureReader::GetSingle   (GisInt32 iProp)
+float GwsBinaryFeatureReader::GetSingle   (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
@@ -139,7 +139,7 @@ float GwsBinaryFeatureReader::GetSingle   (GisInt32 iProp)
     return m_rdr.ReadSingle();
 }
 
-const GisByte * GwsBinaryFeatureReader::GetGeometry (GisInt32 iProp, GisInt32 * count)
+const FdoByte * GwsBinaryFeatureReader::GetGeometry (FdoInt32 iProp, FdoInt32 * count)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
@@ -147,20 +147,20 @@ const GisByte * GwsBinaryFeatureReader::GetGeometry (GisInt32 iProp, GisInt32 * 
     void* ptr = m_rdr.GetDataAtCurrentPosition();
 
     //TODO: we are trying to change FDO to return the simple pointer to
-    //the data instead of creating a GisByteArray.
+    //the data instead of creating a FdoByteArray.
     *count = len;
-    return (const GisByte*)ptr;
+    return (const FdoByte*)ptr;
 }
 
-GisByteArray*   GwsBinaryFeatureReader::GetGeometry (GisInt32 iProp)
+FdoByteArray*   GwsBinaryFeatureReader::GetGeometry (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
     void* ptr = m_rdr.GetDataAtCurrentPosition();
-    return GisByteArray::Create((unsigned char*)ptr, len);
+    return FdoByteArray::Create((unsigned char*)ptr, len);
 }
 /*
-FdoIFeatureReader* GwsBinaryFeatureReader::GetFeatureObject (GisInt32 iProp)
+FdoIFeatureReader* GwsBinaryFeatureReader::GetFeatureObject (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);

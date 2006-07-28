@@ -34,6 +34,6 @@
 #endif
 
 #include <Fdo.h>
-#include <./common/Xml/Xml.h>
-#include <./common/Xml/Writer.h>
-#include <./common/Xml/Reader.h>
+#include <./Common/Xml/Xml.h>
+#include <./Common/Xml/Writer.h>
+#include <./Common/Xml/Reader.h>

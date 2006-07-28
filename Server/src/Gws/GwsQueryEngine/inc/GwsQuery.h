@@ -159,7 +159,7 @@ public:
     GWS_QUERYENGINE_API             CGwsQueryResultDescriptors (
                                            FdoClassDefinition     * classDef,
                                             const GWSQualifiedName & classname,
-                                            GisStringCollection    * propnames);
+                                            FdoStringCollection    * propnames);
     GWS_QUERYENGINE_API             CGwsQueryResultDescriptors (const CGwsQueryResultDescriptors & other);
     GWS_QUERYENGINE_API
     virtual                         ~CGwsQueryResultDescriptors () throw();
@@ -178,11 +178,11 @@ public:
     GWS_QUERYENGINE_API
     virtual IGWSExtendedFeatureDescription * GetItem (const GWSQualifiedName & name);
     GWS_QUERYENGINE_API
-    virtual GisStringCollection    * PropertyNames ();
+    virtual FdoStringCollection    * PropertyNames ();
     GWS_QUERYENGINE_API
-    virtual int                      Contains (GisString* propertyName);
+    virtual int                      Contains (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual FdoPropertyDefinition  * FindPropertyDefinition (GisString* propertyName);
+    virtual FdoPropertyDefinition  * FindPropertyDefinition (FdoString* propertyName);
 
     // adding descriptor
     GWS_QUERYENGINE_API
@@ -191,7 +191,7 @@ public:
     GWS_QUERYENGINE_API
     const CGwsPropertyDesc &         GetPropertyDescriptor (int idx);
     GWS_QUERYENGINE_API
-    const CGwsPropertyDesc &         GetPropertyDescriptor (GisString * name);
+    const CGwsPropertyDesc &         GetPropertyDescriptor (FdoString * name);
     GWS_QUERYENGINE_API
     const CGwsPropertyDesc &         GetGeometryPropertyDescriptor ();
 
@@ -209,22 +209,22 @@ public:
 
 protected:
      void                           appendPropertyNames (
-                                        GisStringCollection         * propnamestoadd,
+                                        FdoStringCollection         * propnamestoadd,
                                         FdoClassDefinition          * fdoclass,
-                                        GisStringCollection         * propnames,
+                                        FdoStringCollection         * propnames,
                                         std::vector<CGwsPropertyDesc> & propdsc);
     void                            pushPropDefinition (
                                         FdoPropertyDefinition       * propdef,
-                                        GisStringCollection         * propnames,
+                                        FdoStringCollection         * propnames,
                                         std::vector<CGwsPropertyDesc> & propdsc);
 
 protected:
     // primary feature description
-    GisPtr<FdoClassDefinition>          m_classDef;
+    FdoPtr<FdoClassDefinition>          m_classDef;
     GWSQualifiedName                    m_classname;
     std::vector<CGwsPropertyDesc>       m_propdsc;
-    GisPtr<GisStringCollection>         m_propertynames;
-    GisPtr<FdoDataPropertyDefinitionCollection> m_identprops;
+    FdoPtr<FdoStringCollection>         m_propertynames;
+    FdoPtr<FdoDataPropertyDefinitionCollection> m_identprops;
 
     // joined properties
     std::vector<IGWSExtendedFeatureDescription*>
@@ -314,8 +314,8 @@ public:
         return eGwsQueryFeature;
     }
     GWS_QUERYENGINE_API
-    EGwsStatus              Init (GisStringCollection * sellist,
-                                  GisStringCollection * orderBy,
+    EGwsStatus              Init (FdoStringCollection * sellist,
+                                  FdoStringCollection * orderBy,
                                   FdoFilter           * filter);
 
     GWS_QUERYENGINE_API
@@ -346,7 +346,7 @@ public:
     GWS_QUERYENGINE_API
     virtual FdoDataPropertyDefinitionCollection * GetIdentityProperties ();
     GWS_QUERYENGINE_API
-    virtual GisStringCollection *  GetOrderBy ();
+    virtual FdoStringCollection *  GetOrderBy ();
 
 protected:
     WSTRARRAY               m_selectList;
@@ -367,8 +367,8 @@ public:
     GWS_QUERYENGINE_API      CGwsPreparedJoinQuery (EGwsJoinMethod             joinmethod,
                                                    CGwsPreparedQuery        * lpq,
                                                    CGwsPreparedQuery        * rpq,
-                                                   GisStringCollection      * lcols,
-                                                   GisStringCollection      * rcols,
+                                                   FdoStringCollection      * lcols,
+                                                   FdoStringCollection      * rcols,
                                                    CGwsFeatureSourceQuery   * query);
 
     GWS_QUERYENGINE_API
@@ -377,13 +377,13 @@ public:
     CGwsPreparedQuery   *   LeftQuery () {return m_leftquery;}
     CGwsPreparedQuery   *   RightQuery () {return m_rightquery;}
 
-    GisStringCollection *   LeftProperties ()
+    FdoStringCollection *   LeftProperties ()
     {
         if (m_leftCols != NULL)
             m_leftCols.p->AddRef ();
         return m_leftCols;
     }
-    GisStringCollection *   RightProperties ()
+    FdoStringCollection *   RightProperties ()
     {
         if (m_rightCols != NULL)
             m_rightCols.p->AddRef ();
@@ -422,8 +422,8 @@ public:
 protected:
     CGwsPreparedQuery         * m_leftquery;
     CGwsPreparedQuery         * m_rightquery;
-    GisPtr<GisStringCollection> m_leftCols;
-    GisPtr<GisStringCollection> m_rightCols;
+    FdoPtr<FdoStringCollection> m_leftCols;
+    FdoPtr<FdoStringCollection> m_rightCols;
     EGwsJoinMethod              m_joinmethod;
 };
 
@@ -438,8 +438,8 @@ public:
     GWS_QUERYENGINE_API     CGwsPreparedLeftJoinQuery (EGwsJoinMethod             joinmethod,
                                                        CGwsPreparedQuery        * lpq,
                                                        CGwsPreparedQuery        * rpq,
-                                                       GisStringCollection      * lcols,
-                                                       GisStringCollection      * rcols,
+                                                       FdoStringCollection      * lcols,
+                                                       FdoStringCollection      * rcols,
                                                        CGwsFeatureSourceQuery   * query);
 
     GWS_QUERYENGINE_API
@@ -464,8 +464,8 @@ public:
     GWS_QUERYENGINE_API     CGwsPreparedEqualJoinQuery (EGwsJoinMethod             joinmethod,
                                                        CGwsPreparedQuery        * lpq,
                                                        CGwsPreparedQuery        * rpq,
-                                                       GisStringCollection      * lcols,
-                                                       GisStringCollection      * rcols,
+                                                       FdoStringCollection      * lcols,
+                                                       FdoStringCollection      * rcols,
                                                        CGwsFeatureSourceQuery   * query);
 
     GWS_QUERYENGINE_API
@@ -548,8 +548,8 @@ public:
                         EGwsJoinMethod             joinmethod,
                         CGwsPreparedQuery        * lpq,
                         CGwsPreparedQuery        * rpq,
-                        GisStringCollection      * lcols,
-                        GisStringCollection      * rcols);
+                        FdoStringCollection      * lcols,
+                        FdoStringCollection      * rcols);
 
     GWS_QUERYENGINE_API
     virtual CGwsPreparedQuery * Prepare (
@@ -558,7 +558,7 @@ public:
     GWS_QUERYENGINE_API
     virtual CGwsPreparedFeatureQuery * PrepareFeatureQuery (
                         IGWSFeatureQueryDefinition * pQryDef,
-                        GisStringCollection        * orderCols,
+                        FdoStringCollection        * orderCols,
                         const WSTR                 & suffix);
     GWS_QUERYENGINE_API
     virtual CGwsPreparedJoinQuery * PrepareJoinQuery (
@@ -569,8 +569,8 @@ public:
     void                               ValidateJoinAttributes (
                                             FdoPropertyDefinition * lpdef,
                                             FdoPropertyDefinition * rpdef,
-                                            GisString             * lname,
-                                            GisString             * rname);
+                                            FdoString             * lname,
+                                            FdoString             * rname);
 
     // returns the primary (left hand) prepared query
     GWS_QUERYENGINE_API
@@ -580,11 +580,11 @@ public:
     CGwsPreparedQuery *                 GetPreparedQuery () {return m_pQuery; }
 
 protected:
-    GisPtr<IGWSConnectionPool>   m_connectionpool;
-    GisPtr<IGWSQueryDefinition>  m_qrydef;
+    FdoPtr<IGWSConnectionPool>   m_connectionpool;
+    FdoPtr<IGWSQueryDefinition>  m_qrydef;
     CGwsPreparedQuery        *   m_pQuery;   // prepared query
     WSTR                         m_revprop;
-    GisPtr<IGWSCoordinateSystemConverterFactory> m_csfactory;
+    FdoPtr<IGWSCoordinateSystemConverterFactory> m_csfactory;
     GWSCoordinateSystem          m_csname;
 };
 
@@ -627,9 +627,9 @@ public:
     GWS_QUERYENGINE_API
     virtual void            Close ();
     GWS_QUERYENGINE_API
-    virtual GisInt32        GetCacheId ();
+    virtual FdoInt32        GetCacheId ();
     GWS_QUERYENGINE_API
-    virtual GisInt32        GetRevisionNumber ();
+    virtual FdoInt32        GetRevisionNumber ();
     GWS_QUERYENGINE_API
     virtual GWSFeatureId    GetFeatureId ();
     GWS_QUERYENGINE_API
@@ -641,93 +641,93 @@ public:
     GWS_QUERYENGINE_API
     virtual EGwsLockType    GetCacheLockType ();
     GWS_QUERYENGINE_API
-    virtual GisString*      GetLayerSource (){ return m_strLayerSource.c_str(); }
+    virtual FdoString*      GetLayerSource (){ return m_strLayerSource.c_str(); }
     GWS_QUERYENGINE_API
-    virtual void            SetLayerSource (GisString* strLayerSource){ m_strLayerSource = strLayerSource; }
+    virtual void            SetLayerSource (FdoString* strLayerSource){ m_strLayerSource = strLayerSource; }
 
     GWS_QUERYENGINE_API
     virtual IGWSFeatureIterator* GetJoinedFeatures (int i);
 
     // getters by the prperty name
     GWS_QUERYENGINE_API
-    virtual bool            IsNull      (GisString* propertyName);
+    virtual bool            IsNull      (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisString   *   GetString   (GisString * propname);
+    virtual FdoString   *   GetString   (FdoString * propname);
     GWS_QUERYENGINE_API
-    virtual bool            GetBoolean  (GisString* propertyName);
+    virtual bool            GetBoolean  (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisByte         GetByte     (GisString* propertyName);
+    virtual FdoByte         GetByte     (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisDateTime     GetDateTime (GisString* propertyName);
+    virtual FdoDateTime     GetDateTime (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual double          GetDouble   (GisString* propertyName);
+    virtual double          GetDouble   (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisInt16        GetInt16    (GisString* propertyName);
+    virtual FdoInt16        GetInt16    (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisInt32        GetInt32    (GisString* propertyName);
+    virtual FdoInt32        GetInt32    (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisInt64        GetInt64    (GisString* propertyName);
+    virtual FdoInt64        GetInt64    (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual float           GetSingle   (GisString* propertyName);
+    virtual float           GetSingle   (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual FdoLOBValue*    GetLOB      (GisString* propertyName);
+    virtual FdoLOBValue*    GetLOB      (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisIStreamReader* GetLOBStreamReader(const wchar_t* propertyName );
+    virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName );
     GWS_QUERYENGINE_API
-    virtual FdoIRaster*     GetRaster   (GisString* propertyName);
+    virtual FdoIRaster*     GetRaster   (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisInt32        GetDepth    ();
+    virtual FdoInt32        GetDepth    ();
     GWS_QUERYENGINE_API
-    virtual const GisByte * GetGeometry (GisString* propertyName, GisInt32 * count) ;
+    virtual const FdoByte * GetGeometry (FdoString* propertyName, FdoInt32 * count) ;
     GWS_QUERYENGINE_API
-    virtual GisByteArray*   GetGeometry (GisString* propertyName);
+    virtual FdoByteArray*   GetGeometry (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual FdoIFeatureReader* GetFeatureObject(GisString* propertyName);
+    virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual FdoDataValue *  GetDataValue (GisString* propertyName);
+    virtual FdoDataValue *  GetDataValue (FdoString* propertyName);
     GWS_QUERYENGINE_API
     virtual FdoDataValueCollection *
-        GetDataValues (GisStringCollection* propertyNames);
+        GetDataValues (FdoStringCollection* propertyNames);
 /*
     // Getter by the property index
     GWS_QUERYENGINE_API
-    virtual bool            IsNull      (GisInt32 iProp);
+    virtual bool            IsNull      (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisString   *   GetString   (GisInt32 iProp);
+    virtual FdoString   *   GetString   (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual bool            GetBoolean  (GisInt32 iProp);
+    virtual bool            GetBoolean  (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisByte         GetByte     (GisInt32 iProp);
+    virtual FdoByte         GetByte     (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisDateTime     GetDateTime (GisInt32 iProp);
+    virtual FdoDateTime     GetDateTime (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual double          GetDouble   (GisInt32 iProp);
+    virtual double          GetDouble   (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisInt16        GetInt16    (GisInt32 iProp);
+    virtual FdoInt16        GetInt16    (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisInt32        GetInt32    (GisInt32 iProp);
+    virtual FdoInt32        GetInt32    (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisInt64        GetInt64    (GisInt32 iProp);
+    virtual FdoInt64        GetInt64    (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual float           GetSingle   (GisInt32 iProp);
+    virtual float           GetSingle   (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual FdoLOBValue*    GetLOB      (GisInt32 iProp);
+    virtual FdoLOBValue*    GetLOB      (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisIStreamReader* GetLOBStreamReader (GisInt32 iProp);
+    virtual FdoIStreamReader* GetLOBStreamReader (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual FdoIRaster*     GetRaster   (GisInt32 iProp);
+    virtual FdoIRaster*     GetRaster   (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual const GisByte * GetGeometry (GisInt32 iProp, GisInt32 * count);
+    virtual const FdoByte * GetGeometry (FdoInt32 iProp, FdoInt32 * count);
     GWS_QUERYENGINE_API
-    virtual GisByteArray*   GetGeometry (GisInt32 iProp);
+    virtual FdoByteArray*   GetGeometry (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual FdoIFeatureReader* GetFeatureObject (GisInt32 iProp);
+    virtual FdoIFeatureReader* GetFeatureObject (FdoInt32 iProp);
 
     GWS_QUERYENGINE_API
-    virtual void            ToString    (GisInt32 iProp, wchar_t * buff, int len);
+    virtual void            ToString    (FdoInt32 iProp, wchar_t * buff, int len);
 */
     GWS_QUERYENGINE_API
-    virtual void            ToString    (GisString* propertyName, wchar_t * buff, int len);
+    virtual void            ToString    (FdoString* propertyName, wchar_t * buff, int len);
     GWS_QUERYENGINE_API
     virtual unsigned char*  ToBuffer(int& bufLen);
 
@@ -736,9 +736,9 @@ public:
     GWS_QUERYENGINE_API
     virtual FdoClassDefinition* GetClassDefinition();
     GWS_QUERYENGINE_API
-    virtual GisGeometryType GetGeometryType(GisByteArray* pArray);
+    virtual FdoGeometryType GetGeometryType(FdoByteArray* pArray);
     GWS_QUERYENGINE_API
-    virtual GisString*      GetPrimaryGeometryName();
+    virtual FdoString*      GetPrimaryGeometryName();
     // get data property value
     GWS_QUERYENGINE_API
     virtual FdoDataValue *  GetPropertyValue (const CGwsPropertyDesc &);
@@ -752,12 +752,12 @@ public:
     virtual const CGwsPropertyDesc &
                             GetPropertyDescriptor (int iProp);
     //NOTE! This reader is not AddRef'd so don't call release on it, or
-    //put it in a GisPtr<>.
+    //put it in a FdoPtr<>.
     FdoIFeatureReader*      GetFdoReader(void) { return m_reader; }
 
     GWS_QUERYENGINE_API
     virtual const CGwsPropertyDesc &
-                            GetPropertyDescriptor (GisString * propname);
+                            GetPropertyDescriptor (FdoString * propname);
 
 protected:
     // throw an exception if m_reader is null. m_reader maybe
@@ -765,10 +765,10 @@ protected:
     void                    CheckReader ();
 
 protected:
-    GisPtr<FdoIFeatureReader>              m_reader;
+    FdoPtr<FdoIFeatureReader>              m_reader;
 
     // reference to query
-    GisPtr<IGWSQuery>                      m_query;
+    FdoPtr<IGWSQuery>                      m_query;
 
     // reference to prepared query that
     // is used to creted iterator
@@ -781,9 +781,9 @@ protected:
     // In the join case, CGwsFeatureIterator wraps another
     // CGwsFeatureIterator and we don't need to do convertion
     // in this case.
-    GisPtr<IGWSCoordinateSystemConverter>  m_converter;
+    FdoPtr<IGWSCoordinateSystemConverter>  m_converter;
 
-    GisPtr<IGWSMutableFeature>             m_mutableFeature;
+    FdoPtr<IGWSMutableFeature>             m_mutableFeature;
     bool                                   m_bMutableFeatureSet;
     std::wstring                           m_strLayerSource;
     bool                                   m_bExposeFeatureIdAsCacheId;
@@ -809,7 +809,7 @@ public:
 
     GWS_QUERYENGINE_API
     virtual EGwsStatus          InitializeReader (
-                                    GisStringCollection   * leftjoincols,
+                                    FdoStringCollection   * leftjoincols,
                                     IGWSQuery             * query,
                                     CGwsPreparedQuery     * prepquery);
 
@@ -828,7 +828,7 @@ public:
     IGWSFeatureIterator *       GetJoinedFeatures ();
 
     GWS_QUERYENGINE_API
-    virtual GisInt32            GetRevisionNumber ();
+    virtual FdoInt32            GetRevisionNumber ();
     GWS_QUERYENGINE_API
     virtual GWSFeatureId        GetFeatureId      ();
     GWS_QUERYENGINE_API
@@ -841,7 +841,7 @@ public:
 
 protected:
     CGwsRightJoinQueryResults             * m_right;
-    GisPtr<GisStringCollection>             m_leftcols;
+    FdoPtr<FdoStringCollection>             m_leftcols;
     GWSFeatureId                            m_leftJoinVals;
     bool                                    m_bLeftJoinValuesSet;
 };
@@ -864,12 +864,12 @@ public:
     virtual EGwsStatus          InitializeReader (
                                     IGWSQuery           * query,
                                     FdoIFeatureReader   * reader,
-                                    GisStringCollection * joincols);
+                                    FdoStringCollection * joincols);
     GWS_QUERYENGINE_API
     virtual EGwsStatus          InitializeReader (
                                     IGWSQuery           * query,
                                     CGwsPreparedQuery   * prepquery,
-                                    GisStringCollection * joincols);
+                                    FdoStringCollection * joincols);
 
     GWS_QUERYENGINE_API
     void                        SetNeverUsePooling ();
@@ -877,7 +877,7 @@ public:
     GWS_QUERYENGINE_API
     virtual EGwsStatus          SetRelatedValues (const GWSFeatureId & vals);
     GWS_QUERYENGINE_API
-    virtual GisInt32            GetRevisionNumber ();
+    virtual FdoInt32            GetRevisionNumber ();
     GWS_QUERYENGINE_API
     virtual GWSFeatureId        GetFeatureId ();
     GWS_QUERYENGINE_API
@@ -887,89 +887,89 @@ public:
 
     // getters by the property name
     GWS_QUERYENGINE_API
-    virtual bool                IsNull      (GisString* propertyName);
+    virtual bool                IsNull      (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisString   *       GetString   (GisString * propname);
+    virtual FdoString   *       GetString   (FdoString * propname);
     GWS_QUERYENGINE_API
-    virtual bool                GetBoolean  (GisString* propertyName);
+    virtual bool                GetBoolean  (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisByte             GetByte     (GisString* propertyName);
+    virtual FdoByte             GetByte     (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisDateTime         GetDateTime (GisString* propertyName);
+    virtual FdoDateTime         GetDateTime (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual double              GetDouble   (GisString* propertyName);
+    virtual double              GetDouble   (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisInt16            GetInt16    (GisString* propertyName);
+    virtual FdoInt16            GetInt16    (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisInt32            GetInt32    (GisString* propertyName);
+    virtual FdoInt32            GetInt32    (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisInt64            GetInt64    (GisString* propertyName);
+    virtual FdoInt64            GetInt64    (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual float               GetSingle   (GisString* propertyName);
+    virtual float               GetSingle   (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual FdoLOBValue*        GetLOB      (GisString* propertyName);
+    virtual FdoLOBValue*        GetLOB      (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual GisIStreamReader*   GetLOBStreamReader(const wchar_t* propertyName );
+    virtual FdoIStreamReader*   GetLOBStreamReader(const wchar_t* propertyName );
     GWS_QUERYENGINE_API
-    virtual FdoIRaster*         GetRaster   (GisString* propertyName);
+    virtual FdoIRaster*         GetRaster   (FdoString* propertyName);
 
     GWS_QUERYENGINE_API
-    virtual const GisByte *     GetGeometry (GisString* propertyName, GisInt32 * count) ;
+    virtual const FdoByte *     GetGeometry (FdoString* propertyName, FdoInt32 * count) ;
     GWS_QUERYENGINE_API
-    virtual GisByteArray*       GetGeometry (GisString* propertyName);
+    virtual FdoByteArray*       GetGeometry (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual FdoIFeatureReader*  GetFeatureObject(GisString* propertyName);
+    virtual FdoIFeatureReader*  GetFeatureObject(FdoString* propertyName);
 
     GWS_QUERYENGINE_API
-    virtual FdoDataValue *      GetDataValue (GisString* propertyName);
+    virtual FdoDataValue *      GetDataValue (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual FdoDataValueCollection * GetDataValues (GisStringCollection* propertyNames);
+    virtual FdoDataValueCollection * GetDataValues (FdoStringCollection* propertyNames);
 /*
     // Getter by the property index
     GWS_QUERYENGINE_API
-    virtual bool                IsNull      (GisInt32 iProp);
+    virtual bool                IsNull      (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisString   *       GetString   (GisInt32 iProp);
+    virtual FdoString   *       GetString   (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual bool                GetBoolean  (GisInt32 iProp);
+    virtual bool                GetBoolean  (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisByte             GetByte     (GisInt32 iProp);
+    virtual FdoByte             GetByte     (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisDateTime         GetDateTime (GisInt32 iProp);
+    virtual FdoDateTime         GetDateTime (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual double              GetDouble   (GisInt32 iProp);
+    virtual double              GetDouble   (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisInt16            GetInt16    (GisInt32 iProp);
+    virtual FdoInt16            GetInt16    (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisInt32            GetInt32    (GisInt32 iProp);
+    virtual FdoInt32            GetInt32    (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisInt64            GetInt64    (GisInt32 iProp);
+    virtual FdoInt64            GetInt64    (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual float               GetSingle   (GisInt32 iProp);
+    virtual float               GetSingle   (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual FdoLOBValue*        GetLOB      (GisInt32 iProp);
+    virtual FdoLOBValue*        GetLOB      (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual GisIStreamReader*   GetLOBStreamReader (GisInt32 iProp);
+    virtual FdoIStreamReader*   GetLOBStreamReader (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual FdoIRaster*         GetRaster   (GisInt32 iProp);
+    virtual FdoIRaster*         GetRaster   (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual const GisByte *     GetGeometry (GisInt32 iProp, GisInt32 * count);
+    virtual const FdoByte *     GetGeometry (FdoInt32 iProp, FdoInt32 * count);
     GWS_QUERYENGINE_API
-    virtual GisByteArray*       GetGeometry (GisInt32 iProp);
+    virtual FdoByteArray*       GetGeometry (FdoInt32 iProp);
     GWS_QUERYENGINE_API
-    virtual FdoIFeatureReader*  GetFeatureObject (GisInt32 iProp);
+    virtual FdoIFeatureReader*  GetFeatureObject (FdoInt32 iProp);
 
     GWS_QUERYENGINE_API
-    virtual void                ToString    (GisInt32 iProp, wchar_t * buff, int len);
+    virtual void                ToString    (FdoInt32 iProp, wchar_t * buff, int len);
 */
     GWS_QUERYENGINE_API
-    virtual void                ToString    (GisString* propertyName, wchar_t * buff, int len);
+    virtual void                ToString    (FdoString* propertyName, wchar_t * buff, int len);
 
 protected:
     IGWSFeature *               GetPooledFeature ();
 
 protected:
-    GisPtr<GisStringCollection>
+    FdoPtr<FdoStringCollection>
                             m_joincols;
     GWSFeatureId            m_joinkeys;
     GWSFeatureId            m_joinvals;
@@ -1089,7 +1089,7 @@ public:
     virtual EGwsStatus          InitializeReader (
                                     IGWSQuery           * query,
                                     FdoIFeatureReader   * reader,
-                                    GisStringCollection * joincols);
+                                    FdoStringCollection * joincols);
 
     GWS_QUERYENGINE_API
     virtual bool                ReadNext();
@@ -1133,7 +1133,7 @@ public:
     virtual EGwsStatus          InitializeReader  (
                                     IGWSQuery                  * query,
                                     CGwsPreparedQuery          * prepquery,
-                                    GisStringCollection        * joincols);
+                                    FdoStringCollection        * joincols);
 
     GWS_QUERYENGINE_API
     virtual bool                ReadNext();
@@ -1171,7 +1171,7 @@ public:
     virtual EGwsStatus          InitializeReader (
                                     IGWSQuery                  * query,
                                     CGwsPreparedQuery          * prepquery,
-                                    GisStringCollection        * joincols);
+                                    FdoStringCollection        * joincols);
 
     GWS_QUERYENGINE_API
     virtual bool                ReadNext();

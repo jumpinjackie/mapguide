@@ -27,7 +27,7 @@
 
 #define MG_FEATURE_SERVICE_CATCH(methodName)                                  \
     }                                                                         \
-    catch (GisException* e)                                                   \
+    catch (FdoException* e)                                                   \
     {                                                                         \
         STRING messageId;                                                     \
         MgStringCollection arguments;                                         \
@@ -39,7 +39,7 @@
             arguments.Add(buf);                                               \
         }                                                                     \
                                                                               \
-        GIS_SAFE_RELEASE(e);                                                  \
+        FDO_SAFE_RELEASE(e);                                                  \
         mgException = new MgFdoException(methodName, __LINE__, __WFILE__, NULL, messageId, &arguments); \
                                                                               \
     MG_CATCH(methodName)                                                      \

@@ -35,7 +35,7 @@ MgServerSqlCommand::MgServerSqlCommand()
 
 MgServerSqlCommand::~MgServerSqlCommand()
 {
-    GIS_SAFE_RELEASE(m_fdoConn);
+    FDO_SAFE_RELEASE(m_fdoConn);
 }
 
 // Executes the describe schema command and serializes the schema to XML
@@ -49,13 +49,13 @@ MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource
     Validate(resource, sqlStatement, FdoCommandType_SQLCommand);
 
     // Create the SQL command
-    GisPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)m_fdoConn->CreateCommand(FdoCommandType_SQLCommand);
+    FdoPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)m_fdoConn->CreateCommand(FdoCommandType_SQLCommand);
     CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgServerSqlCommand.ExecuteQuery");
 
-    fdoCommand->SetSQLStatement((GisString*)sqlStatement.c_str());
+    fdoCommand->SetSQLStatement((FdoString*)sqlStatement.c_str());
 
     // Execute the command
-    GisPtr<FdoISQLDataReader> sqlReader = fdoCommand->ExecuteReader();
+    FdoPtr<FdoISQLDataReader> sqlReader = fdoCommand->ExecuteReader();
     CHECKNULL((FdoISQLDataReader*)sqlReader, L"MgServerSqlCommand.ExecuteQuery");
 
     mgSqlDataReader = new MgServerSqlDataReader((FdoISQLDataReader*)sqlReader, m_providerName);
@@ -77,10 +77,10 @@ INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFST
     Validate(resource, sqlStatement, FdoCommandType_SQLCommand);
 
     // Create the SQL command
-    GisPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)m_fdoConn->CreateCommand(FdoCommandType_SQLCommand);
+    FdoPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)m_fdoConn->CreateCommand(FdoCommandType_SQLCommand);
     CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgServerSqlCommand.ExecuteQuery");
 
-    fdoCommand->SetSQLStatement((GisString*)sqlStatement.c_str());
+    fdoCommand->SetSQLStatement((FdoString*)sqlStatement.c_str());
 
     // Execute the command
     rowsAffected = fdoCommand->ExecuteNonQuery();

@@ -300,7 +300,7 @@ INTERNAL_API:
 
     virtual INT32 GetClassId() { return m_cls_id; }
 
-    FdoIFeatureReader* GetInternalReader() { return GIS_SAFE_ADDREF(m_fdoReader); }
+    FdoIFeatureReader* GetInternalReader() { return FDO_SAFE_ADDREF(m_fdoReader); }
 
 private:
 

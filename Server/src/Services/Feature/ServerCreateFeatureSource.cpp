@@ -21,7 +21,7 @@
 #include "ServerGetFeatures.h"
 #include "ServerDescribeSchema.h"
 
-#include "fdo/Commands/DataStore/ICreateDataStore.h"
+#include "Fdo/Commands/DataStore/ICreateDataStore.h"
 
 MgServerCreateFeatureSource::MgServerCreateFeatureSource()
 {
@@ -68,7 +68,7 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     STRING sdfConnString = L""; // NOXLATE
     MgServerFeatureConnection msfc(sdfProvider, sdfConnString);
 
-    GisPtr<FdoIConnection> conn =  msfc.GetConnection();
+    FdoPtr<FdoIConnection> conn =  msfc.GetConnection();
 
     if (conn == NULL)
     {
@@ -80,8 +80,8 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     STRING tempFileName = MgFileUtil::GenerateTempFileName(true, STRING(L"tmp"), STRING(L"sdf"));
 
     // Use the custom command to initially create the datastore
-    GisPtr<FdoICreateDataStore> createDsCmd = dynamic_cast<FdoICreateDataStore*>(conn->CreateCommand(FdoCommandType_CreateDataStore));
-    GisPtr<FdoIDataStorePropertyDictionary> dsProp = createDsCmd->GetDataStoreProperties();
+    FdoPtr<FdoICreateDataStore> createDsCmd = dynamic_cast<FdoICreateDataStore*>(conn->CreateCommand(FdoCommandType_CreateDataStore));
+    FdoPtr<FdoIDataStorePropertyDictionary> dsProp = createDsCmd->GetDataStoreProperties();
     dsProp->SetProperty (L"File", tempFileName.c_str());
     createDsCmd->Execute();
 
@@ -92,7 +92,7 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     conn->Open();
 
     // Create the spatialcontext
-    GisPtr<FdoICreateSpatialContext> spatialContext = (FdoICreateSpatialContext*)conn->CreateCommand(FdoCommandType_CreateSpatialContext);
+    FdoPtr<FdoICreateSpatialContext> spatialContext = (FdoICreateSpatialContext*)conn->CreateCommand(FdoCommandType_CreateSpatialContext);
     spatialContext->SetCoordinateSystemWkt(params->GetCoordinateSystemWkt().c_str());
     spatialContext->SetDescription(params->GetSpatialContextDescription().c_str());
     spatialContext->SetName(params->GetSpatialContextName().c_str());
@@ -103,8 +103,8 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     // Create and set the schema
     MgServerDescribeSchema descSchema;
     Ptr<MgFeatureSchema> featureSchema = params->GetFeatureSchema();
-    GisPtr<FdoFeatureSchema> fdoSchema = descSchema.GetFdoFeatureSchema(featureSchema);
-    GisPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
+    FdoPtr<FdoFeatureSchema> fdoSchema = descSchema.GetFdoFeatureSchema(featureSchema);
+    FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
     applyschema->SetFeatureSchema(fdoSchema);
     applyschema->Execute();
 

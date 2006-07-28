@@ -39,8 +39,8 @@ public:
     virtual void SetGroupingFilter( FdoFilter* filter );
     virtual FdoFilter* GetGroupingFilter( );
 
-    virtual void SetFeatureClassName(GisString* value);
-    virtual void SetFilter(GisString* value);
+    virtual void SetFeatureClassName(FdoString* value);
+    virtual void SetFilter(FdoString* value);
     virtual void SetFilter(FdoFilter* value);
 
     virtual FdoFilter* GetFilter();

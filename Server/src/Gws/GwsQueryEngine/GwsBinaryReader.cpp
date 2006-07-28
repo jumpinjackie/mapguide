@@ -152,13 +152,13 @@ unsigned short BinaryReader::ReadUInt16()
     return ret;
 }
 
-GisInt64 BinaryReader::ReadInt64()
+FdoInt64 BinaryReader::ReadInt64()
 {
-    _ASSERT(m_pos <= m_len - (int)sizeof(GisInt64));
+    _ASSERT(m_pos <= m_len - (int)sizeof(FdoInt64));
 
     //TODO: endian
-    GisInt64 ret = *(GisInt64*)(m_data + m_pos);
-    m_pos += sizeof(GisInt64);
+    FdoInt64 ret = *(FdoInt64*)(m_data + m_pos);
+    m_pos += sizeof(FdoInt64);
     return ret;
 }
 
@@ -260,10 +260,10 @@ wchar_t* BinaryReader::ReadRawString(unsigned mbstrlen)
 }
 
 
-//deserializes a GisDateTime
-GisDateTime BinaryReader::ReadDateTime()
+//deserializes a FdoDateTime
+FdoDateTime BinaryReader::ReadDateTime()
 {
-    GisDateTime ret;
+    FdoDateTime ret;
 
     ret.year = ReadInt16();
     ret.month = ReadChar();

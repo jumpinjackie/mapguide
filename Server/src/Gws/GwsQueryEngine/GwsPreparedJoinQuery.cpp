@@ -33,8 +33,8 @@ CGwsPreparedJoinQuery::CGwsPreparedJoinQuery (
     EGwsJoinMethod             joinmethod,
     CGwsPreparedQuery        * lpq,
     CGwsPreparedQuery        * rpq,
-    GisStringCollection      * lcols,
-    GisStringCollection      * rcols,
+    FdoStringCollection      * lcols,
+    FdoStringCollection      * rcols,
     CGwsFeatureSourceQuery   * query
 )
 {
@@ -63,8 +63,8 @@ EGwsStatus CGwsPreparedJoinQuery::Init ()
 {
     assert (m_leftquery != NULL && m_rightquery != NULL);
     // make sure
-    GisPtr<IGWSExtendedFeatureDescription> lqdesc;
-    GisPtr<IGWSExtendedFeatureDescription> rqdesc;
+    FdoPtr<IGWSExtendedFeatureDescription> lqdesc;
+    FdoPtr<IGWSExtendedFeatureDescription> rqdesc;
 
     m_leftquery->DescribeResults (&lqdesc);
     m_rightquery->DescribeResults (&rqdesc);
@@ -96,8 +96,8 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
     IGWSFeatureIterator ** results
 )
 {
-    GisPtr<IGWSFeatureIterator> left;
-    GisPtr<IGWSFeatureIterator> right;
+    FdoPtr<IGWSFeatureIterator> left;
+    FdoPtr<IGWSFeatureIterator> right;
 
     if (results == NULL)
         return eGwsFailed;
@@ -127,8 +127,8 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
         }
         assert (reader);
 
-    } catch (GisException * gis) {
-        PushGisException (eGwsFailedToExecuteCommand, gis);
+    } catch (FdoException * gis) {
+        PushFdoException (eGwsFailedToExecuteCommand, gis);
         gis->Release ();
         return eGwsFailedToExecuteCommand;
     }
@@ -186,8 +186,8 @@ CGwsPreparedLeftJoinQuery::CGwsPreparedLeftJoinQuery (
     EGwsJoinMethod             joinmethod,
     CGwsPreparedQuery        * lpq,
     CGwsPreparedQuery        * rpq,
-    GisStringCollection      * lcols,
-    GisStringCollection      * rcols,
+    FdoStringCollection      * lcols,
+    FdoStringCollection      * rcols,
     CGwsFeatureSourceQuery   * query
 )
 : CGwsPreparedJoinQuery (joinmethod, lpq, rpq, lcols, rcols, query)
@@ -207,8 +207,8 @@ CGwsPreparedEqualJoinQuery::CGwsPreparedEqualJoinQuery (
     EGwsJoinMethod             joinmethod,
     CGwsPreparedQuery        * lpq,
     CGwsPreparedQuery        * rpq,
-    GisStringCollection      * lcols,
-    GisStringCollection      * rcols,
+    FdoStringCollection      * lcols,
+    FdoStringCollection      * rcols,
     CGwsFeatureSourceQuery   * query
 )
 : CGwsPreparedJoinQuery (joinmethod, lpq, rpq, lcols, rcols, query)

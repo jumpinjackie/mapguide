@@ -25,12 +25,12 @@ namespace GwsQueryDefinitionXmlHelpers
 {
     GWS_QUERYENGINE_API
     EGwsStatus            WriteQueryDefinitionWithHeader (IGWSQueryDefinition * qdef,
-                                                          GisString           * elementName,
-                                                          GisXmlWriter        * writer);
+                                                          FdoString           * elementName,
+                                                          FdoXmlWriter        * writer);
     GWS_QUERYENGINE_API
-    IGWSQueryDefinition * ReadQueryDefinition (GisXmlAttributeCollection* attrs);
+    IGWSQueryDefinition * ReadQueryDefinition (FdoXmlAttributeCollection* attrs);
     GWS_QUERYENGINE_API
-    GisString *           QueryXmlHeader ();
+    FdoString *           QueryXmlHeader ();
 };
 
 /// <summary>
@@ -45,10 +45,10 @@ public:
                                 GWSQueryDefinition ();
     virtual                     ~GWSQueryDefinition () throw();
 
-    void                        ToXmlWriter (GisString  * elementName, GisXmlWriter * writer);
+    void                        ToXmlWriter (FdoString  * elementName, FdoXmlWriter * writer);
 
     virtual EGwsQueryType       Type () const = 0;
-    virtual GisStringCollection * SelectList () = 0;
+    virtual FdoStringCollection * SelectList () = 0;
 
 protected:
 };
@@ -60,37 +60,37 @@ class GWSFeatureQueryDefinition : public GWSQueryDefinition<IGWSFeatureQueryDefi
 {
 public:
                                 GWSFeatureQueryDefinition  (
-                                        GisStringCollection    * sellist,
+                                        FdoStringCollection    * sellist,
                                         const GWSQualifiedName & name,
                                         FdoFilter              * filter);
                                 GWSFeatureQueryDefinition  ();
     virtual                     ~GWSFeatureQueryDefinition () throw();
 
     virtual const GWSQualifiedName& ClassName () const;
-    virtual GisStringCollection   * SelectList ();
+    virtual FdoStringCollection   * SelectList ();
 
     virtual FdoFilter *             Filter     ();
     virtual IGWSQualifiedNames*     QualifiedNames ();
-    virtual GisStringCollection*    FeatureSourceNames ();
+    virtual FdoStringCollection*    FeatureSourceNames ();
     virtual EGwsQueryType           Type () const {return eGwsQueryFeature; }
-    virtual GisStringCollection *   OrderBy    ();
+    virtual FdoStringCollection *   OrderBy    ();
     virtual IGWSFeatureQueryDefinition *
                                      GetPrimaryQueryDefinition ();
 
 protected:
-    virtual void                Write    (GisXmlWriter * writer);
-    // GisXmlSaxHandler protocol
-    virtual GisXmlSaxHandler*   XmlStartElement (
-                                          GisXmlSaxContext* ctx,
-                                          GisString       * uri,
-                                          GisString       * name,
-                                          GisString       * qname,
-                                          GisXmlAttributeCollection* attrs);
+    virtual void                Write    (FdoXmlWriter * writer);
+    // FdoXmlSaxHandler protocol
+    virtual FdoXmlSaxHandler*   XmlStartElement (
+                                          FdoXmlSaxContext* ctx,
+                                          FdoString       * uri,
+                                          FdoString       * name,
+                                          FdoString       * qname,
+                                          FdoXmlAttributeCollection* attrs);
 
 protected:
-    GisPtr<GisStringCollection> m_sellist;
+    FdoPtr<FdoStringCollection> m_sellist;
     GWSQualifiedName            m_classname;
-    GisPtr<FdoFilter>           m_filter;
+    FdoPtr<FdoFilter>           m_filter;
 };
 
 
@@ -105,39 +105,39 @@ public:
                                 GWSJoinQueryDefinition  (
                                     IGWSQueryDefinition * leftQd,
                                     IGWSQueryDefinition * rightQd,
-                                    GisStringCollection * leftProp,
-                                    GisStringCollection * rightProp);
+                                    FdoStringCollection * leftProp,
+                                    FdoStringCollection * rightProp);
                                 GWSJoinQueryDefinition ();
 
     virtual                     ~GWSJoinQueryDefinition () throw();
 
     virtual FdoFilter           * Filter     ();
-    virtual GisStringCollection * SelectList ();
+    virtual FdoStringCollection * SelectList ();
 
     virtual IGWSQueryDefinition * LeftQueryDefinition ();
     virtual IGWSQueryDefinition * RightQueryDefinition ();
-    virtual GisStringCollection * LeftJoinAttributes ();
-    virtual GisStringCollection * RightJoinAttributes ();
+    virtual FdoStringCollection * LeftJoinAttributes ();
+    virtual FdoStringCollection * RightJoinAttributes ();
     virtual IGWSQualifiedNames*   QualifiedNames ();
-    virtual GisStringCollection*  FeatureSourceNames ();
+    virtual FdoStringCollection*  FeatureSourceNames ();
     virtual IGWSFeatureQueryDefinition *
                                   GetPrimaryQueryDefinition ();
 
 protected:
-    // GisXmlSaxHandler protocol
-    virtual void                  Write    (GisXmlWriter * writer);
-    virtual GisXmlSaxHandler*     XmlStartElement (
-                                          GisXmlSaxContext* ctx,
-                                          GisString       * uri,
-                                          GisString       * name,
-                                          GisString       * qname,
-                                          GisXmlAttributeCollection* attrs);
+    // FdoXmlSaxHandler protocol
+    virtual void                  Write    (FdoXmlWriter * writer);
+    virtual FdoXmlSaxHandler*     XmlStartElement (
+                                          FdoXmlSaxContext* ctx,
+                                          FdoString       * uri,
+                                          FdoString       * name,
+                                          FdoString       * qname,
+                                          FdoXmlAttributeCollection* attrs);
 
 protected:
-    GisPtr<IGWSQueryDefinition>   m_leftQd;
-    GisPtr<IGWSQueryDefinition>   m_rightQd;
-    GisPtr<GisStringCollection>   m_leftAttrs;
-    GisPtr<GisStringCollection>   m_rightAttrs;
+    FdoPtr<IGWSQueryDefinition>   m_leftQd;
+    FdoPtr<IGWSQueryDefinition>   m_rightQd;
+    FdoPtr<FdoStringCollection>   m_leftAttrs;
+    FdoPtr<FdoStringCollection>   m_rightAttrs;
 };
 
 // Left join query definition
@@ -147,8 +147,8 @@ public:
                                 GWSLeftJoinQueryDefinition  (
                                     IGWSQueryDefinition * leftQd,
                                     IGWSQueryDefinition * rightQd,
-                                    GisStringCollection * leftProp,
-                                    GisStringCollection * rightProp);
+                                    FdoStringCollection * leftProp,
+                                    FdoStringCollection * rightProp);
                                 GWSLeftJoinQueryDefinition ();
 
     virtual                     ~GWSLeftJoinQueryDefinition () throw();
@@ -165,8 +165,8 @@ public:
                                 GWSEqualJoinQueryDefinition  (
                                     IGWSQueryDefinition * leftQd,
                                     IGWSQueryDefinition * rightQd,
-                                    GisStringCollection * leftProp,
-                                    GisStringCollection * rightProp);
+                                    FdoStringCollection * leftProp,
+                                    FdoStringCollection * rightProp);
                                 GWSEqualJoinQueryDefinition ();
 
     virtual                     ~GWSEqualJoinQueryDefinition () throw();

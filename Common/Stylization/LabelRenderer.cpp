@@ -76,14 +76,14 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 
     // get the geometry type
     _ASSERT(path != NULL);
-    int geomType = (path != NULL)? path->geom_type() : GisGeometryType_None;
+    int geomType = (path != NULL)? path->geom_type() : FdoGeometryType_None;
 
     //TODO: take into account advanced labeling flag
     //if (labels->advanced()) ... etc.
 
     // in the case of linear geometry we'll label along the path, so
     // prepare for that (transform to pixels, group into stitch groups)
-    if (geomType == GisGeometryType_LineString || geomType == GisGeometryType_MultiLineString)
+    if (geomType == FdoGeometryType_LineString || geomType == FdoGeometryType_MultiLineString)
     {
         // indicate that the current group will be labeled along the path
         m_labelGroups.back().m_algo = laCurve;

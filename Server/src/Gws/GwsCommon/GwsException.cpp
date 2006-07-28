@@ -22,15 +22,15 @@
 // get and print each of the exception messages in the chain.  Exceptions
 // have a reference count and should be released after use.
 //
-//  This follows somewhat the definition of GisException.  There are some
+//  This follows somewhat the definition of FdoException.  There are some
 // differences.
 //  The description of the actions of GetExceptionMessage and ToString in
-// GisException indicate they return the message for the first exception
+// FdoException indicate they return the message for the first exception
 // in the chain which has a message are incorrect.  GetExceptionMessage
 // return only the message for the current exception and ToString only
 // returns NULL.
 //  This class also returns the current exception message from these
-// functions, note that GisString is a const pointer by definition.
+// functions, note that FdoString is a const pointer by definition.
 
 
 /////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ CGwsException::CGwsException (const CGwsStatus & status)
 
 
 CGwsException::CGwsException(
-    GisString* pMessage,
+    FdoString* pMessage,
     EGwsStatus type
 )
 :m_status (type, pMessage)
@@ -78,12 +78,12 @@ CGwsException::CGwsException(
 
 
 // constructor
-// calls default constructor for GisException and GisIDisposable
+// calls default constructor for FdoException and GisIDisposable
 // sets m_message and m_cause to null and ref count to 1
 CGwsException::CGwsException(
-    GisString*      pMessage,
+    FdoString*      pMessage,
     EGwsStatus      type,
-    GisException*   pCause
+    FdoException*   pCause
 )
 :m_status (type, pMessage)
 {
@@ -103,12 +103,12 @@ void CGwsException::Dispose()
 }
 
 
-GisString* CGwsException::GetExceptionMessage()
+FdoString* CGwsException::GetExceptionMessage()
 {
     return m_status.GetMessage ();
 }
 
-GisString* CGwsException::ToString()
+FdoString* CGwsException::ToString()
 {
     return m_status.GetMessage ();
 }
@@ -122,8 +122,8 @@ EGwsStatus CGwsException::GetStatus () const
 
 bool CGwsException::GetParameterAt(
     unsigned int    index,
-    GisString*&     name,
-    GisString*&     value
+    FdoString*&     name,
+    FdoString*&     value
 ) const
 {
     return m_status.GetParameterAt (index, name, value);
@@ -134,7 +134,7 @@ int CGwsException::GetParameterCount () const
     return m_status.GetParameterCount ();
 }
 
-void CGwsException::SetParameter (GisString *name, GisString *value)
+void CGwsException::SetParameter (FdoString *name, FdoString *value)
 {
     m_status.SetParameter (name, value);
 }
@@ -143,7 +143,7 @@ void CGwsException::SetParameter (GisString *name, GisString *value)
 void CGwsException::PushStatus(const CGwsStatus& status)
 {
     CGwsException * exception = new CGwsException (status);
-    GisException * rootcause = GetRootCause ();
+    FdoException * rootcause = GetRootCause ();
     rootcause->SetCause (exception);
 }
 

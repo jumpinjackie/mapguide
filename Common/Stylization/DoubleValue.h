@@ -48,7 +48,7 @@ public:
     long long GetAsInt64();
     wchar_t* GetAsString();
     bool GetAsBoolean();
-    GisDateTime GetAsDateTime();
+    FdoDateTime GetAsDateTime();
 
     DataValueType GetType();
 

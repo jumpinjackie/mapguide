@@ -28,21 +28,21 @@ public:
             CGwsException   ();
             CGwsException   (EGwsStatus type);
             CGwsException   (const CGwsStatus & status);
-            CGwsException   (GisString* message, EGwsStatus type);
-            CGwsException   (GisString* message, EGwsStatus type, GisException* cause);
+            CGwsException   (FdoString* message, EGwsStatus type);
+            CGwsException   (FdoString* message, EGwsStatus type, FdoException* cause);
 
     virtual ~CGwsException();
 
     virtual void Dispose();
 
-    virtual const GisString*    GetExceptionMessage();
-    virtual GisString*          ToString();
+    virtual const FdoString*    GetExceptionMessage();
+    virtual FdoString*          ToString();
     virtual EGwsStatus          GetStatus () const;
     virtual bool                GetParameterAt(unsigned int index,
-                                               GisString*& name,
-                                               GisString*& value) const;
+                                               FdoString*& name,
+                                               FdoString*& value) const;
     virtual int                 GetParameterCount () const;
-    virtual void                SetParameter (GisString *pName, GisString *pValue);
+    virtual void                SetParameter (FdoString *pName, FdoString *pValue);
 
     virtual void                PushStatus(const CGwsStatus& status);
 

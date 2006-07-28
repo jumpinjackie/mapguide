@@ -45,7 +45,7 @@ GWSFeatureId::GWSFeatureId (FdoDataValueCollection * vals)
 GWSFeatureId::GWSFeatureId (int id)
 {
     m_values = CreateDataValueCollection ();
-    GisPtr<FdoDataValue> idval = FdoDataValue::Create (id);
+    FdoPtr<FdoDataValue> idval = FdoDataValue::Create (id);
     m_values->Add (idval);
 }
 
@@ -57,18 +57,18 @@ GWSFeatureId::~GWSFeatureId(void)
 FdoDataValueCollection * GWSFeatureId::CreateDataValueCollection ()
 {
     FdoDataValueCollection * coll = CGwsDataValueCollection::Create ();
-    GIS_SAFE_ADDREF (coll);
+    FDO_SAFE_ADDREF (coll);
     return coll;
 }
 
-FdoDataValue * GWSFeatureId::GetItem (GisInt32 idx) const
+FdoDataValue * GWSFeatureId::GetItem (FdoInt32 idx) const
 {
     if (m_values == NULL)
         return NULL;
     return m_values->GetItem (idx);
 }
 
-GisInt32 GWSFeatureId::GetCount () const
+FdoInt32 GWSFeatureId::GetCount () const
 {
     if (m_values == NULL)
         return 0;
@@ -111,8 +111,8 @@ int GWSFeatureId::Compare (const GWSFeatureId& other) const
 
     int res = 0;
     for (int i = 0; res == 0 && i < iCount1; i ++) {
-        GisPtr<FdoDataValue> val1 = GetItem (i);
-        GisPtr<FdoDataValue> val2 = other.GetItem (i);
+        FdoPtr<FdoDataValue> val1 = GetItem (i);
+        FdoPtr<FdoDataValue> val2 = other.GetItem (i);
         res = GWSFdoUtilities::CompareDataValues (val1, val2);
 
     }
@@ -122,7 +122,7 @@ int GWSFeatureId::Compare (const GWSFeatureId& other) const
 bool GWSFeatureId::IsNull () const
 {
     for (int i = 0; i < GetCount (); i ++) {
-        GisPtr<FdoDataValue> val1 = GetItem (i);
+        FdoPtr<FdoDataValue> val1 = GetItem (i);
         if (val1 == NULL || val1->IsNull ()) {
             return true;
         }
@@ -135,7 +135,7 @@ int GWSFeatureId::ToString  (wchar_t * str, int numchars) const
 {
     WSTR wstr;
     for (int i = 0; i < GetCount (); i ++) {
-        GisPtr<FdoDataValue> val1 = GetItem (i);
+        FdoPtr<FdoDataValue> val1 = GetItem (i);
         if (i > 0)
             wstr.append (L",");
         if (val1 == NULL || val1->IsNull ()) {

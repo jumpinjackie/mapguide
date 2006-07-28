@@ -65,7 +65,7 @@ MgFdoConnectionManager::~MgFdoConnectionManager(void)
                 pFdoConnectionCacheEntry->pFdoConnection->Close();
 
                 // Release any resource
-                GIS_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+                FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
             }
 
             delete pFdoConnectionCacheEntry;
@@ -75,7 +75,7 @@ MgFdoConnectionManager::~MgFdoConnectionManager(void)
 
     m_FdoConnectionCache.clear();
 
-    GIS_SAFE_RELEASE(m_connManager);
+    FDO_SAFE_RELEASE(m_connManager);
 
     MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.~MgFdoConnectionManager")
 }
@@ -161,7 +161,7 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
-    GisPtr<FdoIConnection> pFdoConnection;
+    FdoPtr<FdoIConnection> pFdoConnection;
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -213,7 +213,7 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
                 CacheFdoConnection(pFdoConnection, resourceIdentifier->ToString(), MgUtil::MultiByteToWideChar(featureSourceXmlContent));
 
                 // Increase the reference count before returning it because this entry has been pooled
-                GIS_SAFE_ADDREF(pFdoConnection.p);
+                FDO_SAFE_ADDREF(pFdoConnection.p);
             }
         }
     }
@@ -228,7 +228,7 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
-    GisPtr<FdoIConnection> pFdoConnection;
+    FdoPtr<FdoIConnection> pFdoConnection;
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -279,7 +279,7 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
                     CacheFdoConnection(pFdoConnection, key, data);
 
                     // Increase the reference count before returning it because this entry has been pooled
-                    GIS_SAFE_ADDREF(pFdoConnection.p);
+                    FDO_SAFE_ADDREF(pFdoConnection.p);
                 }
             }
         }
@@ -313,7 +313,7 @@ void MgFdoConnectionManager::Close(FdoIConnection* pFdoConnection)
     }
 
     // Release reference
-    GIS_SAFE_RELEASE(pFdoConnection);
+    FDO_SAFE_RELEASE(pFdoConnection);
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.Close")
 }
@@ -341,7 +341,7 @@ void MgFdoConnectionManager::RemoveExpiredConnections()
                 pFdoConnectionCacheEntry->pFdoConnection->Close();
 
                 // Release any resource
-                GIS_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+                FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
 
                 delete pFdoConnectionCacheEntry;
                 pFdoConnectionCacheEntry = NULL;
@@ -381,7 +381,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* 
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FindFdoConnection")
 
-    return GIS_SAFE_ADDREF(pFdoConnection);
+    return FDO_SAFE_ADDREF(pFdoConnection);
 }
 
 
@@ -395,7 +395,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING providerNam
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FindFdoConnection")
 
-    return GIS_SAFE_ADDREF(pFdoConnection);
+    return FDO_SAFE_ADDREF(pFdoConnection);
 }
 
 
@@ -504,14 +504,14 @@ void MgFdoConnectionManager::GetSpatialContextInfoFromXml(MgXmlUtil* pXmlUtil, M
         wstring name;
         pXmlUtil->GetElementValue((DOMElement*)node, "Name", name, false);
 
-        GisString* propertyName = name.c_str();
+        FdoString* propertyName = name.c_str();
         CHECKNULL(propertyName, L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");
 
         // CoordinateSystem element
         wstring coordinateSystem;
         pXmlUtil->GetElementValue((DOMElement*)node, "CoordinateSystem", coordinateSystem, false);
 
-        GisString* propertyCoordinateSystem = coordinateSystem.c_str();
+        FdoString* propertyCoordinateSystem = coordinateSystem.c_str();
         CHECKNULL(propertyCoordinateSystem, L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");
 
         spatialContextInfoMap->insert( MgSpatialContextInfoPair(name, coordinateSystem) );
@@ -527,11 +527,11 @@ void MgFdoConnectionManager::SetConnectionProperties(FdoIConnection* pFdoConnect
     CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SetConnectionProperties()");
 
     // Get FdoIConnectionInfo
-    GisPtr<FdoIConnectionInfo> fdoConnInfo = pFdoConnection->GetConnectionInfo();
+    FdoPtr<FdoIConnectionInfo> fdoConnInfo = pFdoConnection->GetConnectionInfo();
     CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgFdoConnectionManager.SetConnectionProperties()");
 
     // Get FdoIConnectionPropertyDictionary
-    GisPtr<FdoIConnectionPropertyDictionary> fdoConnPropertyDict = fdoConnInfo->GetConnectionProperties();
+    FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropertyDict = fdoConnInfo->GetConnectionProperties();
     CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropertyDict, L"MgFdoConnectionManager.SetConnectionProperties");
 
     // Get all nodes of properties
@@ -569,13 +569,13 @@ void MgFdoConnectionManager::SetConnectionProperties(FdoIConnection* pFdoConnect
                 __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
         }
 
-        GisString* propertyName = name.c_str();
+        FdoString* propertyName = name.c_str();
         CHECKNULL(propertyName, L"MgFdoConnectionManager.SetConnectionProperties");
 
         // Property value can be null ( optional properties may not have values )
         if (!value.empty())
         {
-            GisString* propertyValue = value.c_str();
+            FdoString* propertyValue = value.c_str();
             if (propertyValue != NULL)
             {
                 fdoConnPropertyDict->SetProperty(propertyName,  propertyValue);
@@ -603,7 +603,7 @@ void MgFdoConnectionManager::ActivateSpatialContext(FdoIConnection* pFdoConnecti
     // Spatial Context can be executed when connection is already open
     if (pFdoConnection->GetConnectionState() == FdoConnectionState_Open)
     {
-        GisPtr<FdoIActivateSpatialContext> fdoCommand = (FdoIActivateSpatialContext*)pFdoConnection->CreateCommand(FdoCommandType_ActivateSpatialContext);
+        FdoPtr<FdoIActivateSpatialContext> fdoCommand = (FdoIActivateSpatialContext*)pFdoConnection->CreateCommand(FdoCommandType_ActivateSpatialContext);
         CHECKNULL((FdoIActivateSpatialContext*)fdoCommand, L"MgFdoConnectionManager.ActivateSpatialContext");
         // Set the spatial context from the feature source
         fdoCommand->SetName(spatialContextName.c_str());
@@ -632,7 +632,7 @@ void MgFdoConnectionManager::ActivateLongTransaction(FdoIConnection* pFdoConnect
     // Long transaction can be executed when connection is already open
     if (pFdoConnection->GetConnectionState() == FdoConnectionState_Open)
     {
-        GisPtr<FdoIActivateLongTransaction> fdoCommand = (FdoIActivateLongTransaction*)pFdoConnection->CreateCommand(FdoCommandType_ActivateLongTransaction);
+        FdoPtr<FdoIActivateLongTransaction> fdoCommand = (FdoIActivateLongTransaction*)pFdoConnection->CreateCommand(FdoCommandType_ActivateLongTransaction);
         CHECKNULL((FdoIActivateLongTransaction*)fdoCommand, L"MgFdoConnectionManager.ActivateLongTransaction");
         // Set the spatial context from the feature source
         fdoCommand->SetName(longTransactionName.c_str());
@@ -646,7 +646,7 @@ bool MgFdoConnectionManager::SupportsConfiguration(FdoIConnection* pFdoConnectio
 {
     CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SupportsConfiguration()");
 
-    GisPtr<FdoIConnectionCapabilities> ficc = pFdoConnection->GetConnectionCapabilities();
+    FdoPtr<FdoIConnectionCapabilities> ficc = pFdoConnection->GetConnectionCapabilities();
     CHECKNULL((FdoIConnectionCapabilities*)ficc, L"MgFdoConnectionManager.SupportsConfiguration");
 
     return ficc->SupportsConfiguration();
@@ -734,8 +734,8 @@ void MgFdoConnectionManager::SetConfiguration(CREFSTRING providerName, FdoIConne
 
     if(bytes)
     {
-        GisIoMemoryStreamP stream = GisIoMemoryStream::Create();
-        stream->Write((GisByte*)bytes->Bytes(), (GisSize)bytes->GetLength());
+        FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create();
+        stream->Write((FdoByte*)bytes->Bytes(), (FdoSize)bytes->GetLength());
         pFdoConnection->SetConfiguration(stream);
     }
 }
@@ -745,19 +745,19 @@ bool MgFdoConnectionManager::SupportsCommand(FdoIConnection* pFdoConnection, INT
 {
     CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SupportsCommand()");
 
-    GisPtr<FdoICommandCapabilities> fcc = pFdoConnection->GetCommandCapabilities();
+    FdoPtr<FdoICommandCapabilities> fcc = pFdoConnection->GetCommandCapabilities();
     CHECKNULL((FdoICommandCapabilities*)fcc, L"MgFdoConnectionManager::SupportsCommand");
 
     bool supports = false;
 
     // Find all supported command types
-    GisInt32 cnt = 0;
-    GisInt32* fcmd = fcc->GetCommands(cnt);
+    FdoInt32 cnt = 0;
+    FdoInt32* fcmd = fcc->GetCommands(cnt);
     if (cnt > 0 && fcmd != NULL)
     {
-        for (GisInt32 i=0; i < cnt; i++)
+        for (FdoInt32 i=0; i < cnt; i++)
         {
-            if (fcmd[i] == (GisInt32)commandType)
+            if (fcmd[i] == (FdoInt32)commandType)
             {
                 supports = true;
             }
@@ -814,7 +814,7 @@ void MgFdoConnectionManager::Open(FdoIConnection* pFdoConnection)
             pFdoConnection->Open();
         }
     }
-    catch (GisException* e)
+    catch (FdoException* e)
     {
         STRING messageId;
         MgStringCollection arguments;
@@ -826,7 +826,7 @@ void MgFdoConnectionManager::Open(FdoIConnection* pFdoConnection)
             arguments.Add(buf);
         }
 
-        GIS_SAFE_RELEASE(e);
+        FDO_SAFE_RELEASE(e);
 
         throw new MgFdoException(L"MgFdoConnectionManager.Open",
             __LINE__, __WFILE__, NULL, messageId, &arguments);
@@ -923,7 +923,7 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
                         pFdoConnectionCacheEntry->pFdoConnection->Close();
 
                         // Release any resource
-                        GIS_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+                        FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
 
                         delete pFdoConnectionCacheEntry;
                         pFdoConnectionCacheEntry = NULL;
@@ -1024,7 +1024,7 @@ bool MgFdoConnectionManager::FdoConnectionCacheFull(void)
                         pFdoConnectionCacheEntry->pFdoConnection->Close();
 
                         // Release any resource
-                        GIS_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+                        FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
 
                         delete pFdoConnectionCacheEntry;
                         pFdoConnectionCacheEntry = NULL;

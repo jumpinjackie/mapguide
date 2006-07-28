@@ -52,16 +52,16 @@ MgProperty* MgServerUpdateCommand::Execute()
     STRING filterText = m_featCommand->GetFilterText();
     Ptr<MgPropertyCollection> propCol = m_featCommand->GetPropertyValues();
 
-    GisPtr<FdoIConnection> fdoConn = m_srvrFeatConn->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = m_srvrFeatConn->GetConnection();
 
     // Create the SQL command
-    GisPtr<FdoIUpdate> fdoCommand = (FdoIUpdate*)fdoConn->CreateCommand(FdoCommandType_Update);
+    FdoPtr<FdoIUpdate> fdoCommand = (FdoIUpdate*)fdoConn->CreateCommand(FdoCommandType_Update);
     CHECKNULL((FdoIUpdate*)fdoCommand, L"MgServerUpdateCommand.Execute");
 
     fdoCommand->SetFeatureClassName(clsName.c_str());
     fdoCommand->SetFilter(filterText.c_str());
 
-    GisPtr<FdoPropertyValueCollection> paramValCol = fdoCommand->GetPropertyValues();
+    FdoPtr<FdoPropertyValueCollection> paramValCol = fdoCommand->GetPropertyValues();
     MgServerFeatureUtil::FillFdoPropertyCollection(propCol, paramValCol);
 
     INT32 recordsUpdated = fdoCommand->Execute();

@@ -43,10 +43,10 @@ public:
     void GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
                             FdoDataPropertyDefinitionCollection* fdoPropDefCol);
 
-    void SetRelationNames(GisStringCollection* relationNames);
+    void SetRelationNames(FdoStringCollection* relationNames);
     void SetExtensionName(CREFSTRING extensionName);
 
-    GisStringCollection* GetRelationNames();
+    FdoStringCollection* GetRelationNames();
     STRING GetExtensionName();
 
 protected:
@@ -81,7 +81,7 @@ private:
     IGWSFeatureIterator*                 m_gwsFeatureReader;
     Ptr<MgFeatureSet>                    m_featureSet;
     Ptr<MgClassDefinition>               m_classDef;
-    GisPtr<GisStringCollection>          m_relationNames;
+    FdoPtr<FdoStringCollection>          m_relationNames;
     STRING                               m_extensionName;
 };
 

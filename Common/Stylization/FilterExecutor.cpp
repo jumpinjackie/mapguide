@@ -141,13 +141,13 @@ double RS_FilterExecutor::GetDoubleResult()
     return ret;
 }
 
-GisInt64 RS_FilterExecutor::GetInt64Result()
+FdoInt64 RS_FilterExecutor::GetInt64Result()
 {
     //only one DataValue should be left on the evaluation stack after
     //executing a query
     _ASSERT(m_retvals.size() == 1);
 
-    GisInt64 ret = m_retvals.top()->GetAsInt64();
+    FdoInt64 ret = m_retvals.top()->GetAsInt64();
 
     while (!m_retvals.empty())
         m_pPool->RelinquishDataValue(m_retvals.pop());
@@ -180,8 +180,8 @@ wchar_t* RS_FilterExecutor::GetStringResult()
 
 void RS_FilterExecutor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
 {
-    GisPtr<FdoFilter> left = filter.GetLeftOperand();
-    GisPtr<FdoFilter> right = filter.GetRightOperand();
+    FdoPtr<FdoFilter> left = filter.GetLeftOperand();
+    FdoPtr<FdoFilter> right = filter.GetRightOperand();
 
     //evaluate left hand side
     left->Process(this);
@@ -217,7 +217,7 @@ void RS_FilterExecutor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& f
         m_retvals.push(m_pPool->ObtainBooleanValue(argLeft->GetAsBoolean() || argRight->GetAsBoolean()));
         break;
     default:
-        throw GisException::Create(L"Invalid logical operation type");break;
+        throw FdoException::Create(L"Invalid logical operation type");break;
     }
 
     m_pPool->RelinquishDataValue(argLeft);
@@ -226,7 +226,7 @@ void RS_FilterExecutor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& f
 
 void RS_FilterExecutor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
 {
-    GisPtr<FdoFilter> right = filter.GetOperand();
+    FdoPtr<FdoFilter> right = filter.GetOperand();
 
     //evaluate right hand side
     right->Process(this);
@@ -240,7 +240,7 @@ void RS_FilterExecutor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& fil
         m_retvals.push(m_pPool->ObtainBooleanValue(!argRight->GetAsBoolean()));
         break;
     default:
-        throw GisException::Create(L"Invalid logical operation type");break;
+        throw FdoException::Create(L"Invalid logical operation type");break;
     }
 
     m_pPool->RelinquishDataValue(argRight);
@@ -249,8 +249,8 @@ void RS_FilterExecutor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& fil
 
 void RS_FilterExecutor::ProcessComparisonCondition(FdoComparisonCondition& filter)
 {
-    GisPtr<FdoExpression> left = filter.GetLeftExpression();
-    GisPtr<FdoExpression> right = filter.GetRightExpression();
+    FdoPtr<FdoExpression> left = filter.GetLeftExpression();
+    FdoPtr<FdoExpression> right = filter.GetRightExpression();
 
     right->Process(this);
     left->Process(this);
@@ -281,7 +281,7 @@ void RS_FilterExecutor::ProcessComparisonCondition(FdoComparisonCondition& filte
         break;
     case FdoComparisonOperations_Like : m_retvals.push(m_pPool->ObtainBooleanValue(MatchesHere(argRight->GetAsString(), argLeft->GetAsString())));
         break;
-    default: throw GisException::Create(L"Invalid comparison operation type");
+    default: throw FdoException::Create(L"Invalid comparison operation type");
     }
 
     m_pPool->RelinquishDataValue(argRight);
@@ -291,20 +291,20 @@ void RS_FilterExecutor::ProcessComparisonCondition(FdoComparisonCondition& filte
 void RS_FilterExecutor::ProcessInCondition(FdoInCondition& filter)
 {
     //first get the value of the property we are checking
-    GisPtr<FdoIdentifier> prop = filter.GetPropertyName();
+    FdoPtr<FdoIdentifier> prop = filter.GetPropertyName();
     ProcessIdentifier(*(prop.p));
 
     //get the property value off the stack
     DataValue* argLeft = m_retvals.pop();
 
-    GisPtr<FdoValueExpressionCollection> vals = filter.GetValues();
+    FdoPtr<FdoValueExpressionCollection> vals = filter.GetValues();
 
     bool result = false;
 
     //see if the value collection contains the property value
     for (int i=0; i<vals->GetCount(); i++)
     {
-        GisPtr<FdoValueExpression> expr = vals->GetItem(i);
+        FdoPtr<FdoValueExpression> expr = vals->GetItem(i);
         expr->Process(this);
 
         DataValue* argRight = m_retvals.pop();
@@ -327,7 +327,7 @@ void RS_FilterExecutor::ProcessInCondition(FdoInCondition& filter)
 void RS_FilterExecutor::ProcessNullCondition(FdoNullCondition& filter)
 {
     //first get the value of the property we are checking
-    GisPtr<FdoIdentifier> prop = filter.GetPropertyName();
+    FdoPtr<FdoIdentifier> prop = filter.GetPropertyName();
 
     bool isnull = m_reader->IsNull(prop->GetName());
 
@@ -336,18 +336,18 @@ void RS_FilterExecutor::ProcessNullCondition(FdoNullCondition& filter)
 
 void RS_FilterExecutor::ProcessSpatialCondition(FdoSpatialCondition& /*filter*/)
 {
-    throw GisException::Create(L"Spatial conditions not supported");
+    throw FdoException::Create(L"Spatial conditions not supported");
 }
 
 void RS_FilterExecutor::ProcessDistanceCondition(FdoDistanceCondition& /*filter*/)
 {
-    throw GisException::Create(L"DISTANCE condition not supported");
+    throw FdoException::Create(L"DISTANCE condition not supported");
 }
 
 void RS_FilterExecutor::ProcessBinaryExpression(FdoBinaryExpression& expr)
 {
-    GisPtr<FdoExpression> left = expr.GetLeftExpression();
-    GisPtr<FdoExpression> right = expr.GetRightExpression();
+    FdoPtr<FdoExpression> left = expr.GetLeftExpression();
+    FdoPtr<FdoExpression> right = expr.GetRightExpression();
 
     right->Process(this);
     left->Process(this);
@@ -371,7 +371,7 @@ void RS_FilterExecutor::ProcessBinaryExpression(FdoBinaryExpression& expr)
         m_retvals.push(argLeft->Divide(*argRight, m_pPool));
         break;
     default:
-        throw GisException::Create(L"Unknown binary operation");
+        throw FdoException::Create(L"Unknown binary operation");
     }
 
     m_pPool->RelinquishDataValue(argLeft);
@@ -380,7 +380,7 @@ void RS_FilterExecutor::ProcessBinaryExpression(FdoBinaryExpression& expr)
 
 void RS_FilterExecutor::ProcessUnaryExpression(FdoUnaryExpression& expr)
 {
-    GisPtr<FdoExpression> right = expr.GetExpression();
+    FdoPtr<FdoExpression> right = expr.GetExpression();
 
     right->Process(this);
 
@@ -389,14 +389,14 @@ void RS_FilterExecutor::ProcessUnaryExpression(FdoUnaryExpression& expr)
     switch (expr.GetOperation())
     {
     case FdoUnaryOperations_Negate: m_retvals.push(argRight->Negate(m_pPool));
-    default : throw GisException::Create(L"Unknown unary operation");
+    default : throw FdoException::Create(L"Unknown unary operation");
     }
 
 }
 
 void RS_FilterExecutor::ProcessFunction(FdoFunction& expr)
 {
-    GisString* name = expr.GetName();
+    FdoString* name = expr.GetName();
 
     if (_wcsnicmp(name, L"ARGB", 4) == 0)
     {
@@ -405,15 +405,15 @@ void RS_FilterExecutor::ProcessFunction(FdoFunction& expr)
     }
     else if (_wcsnicmp(name, L"CONCAT", 6) == 0)
     {
-        GisPtr<FdoExpressionCollection> args = expr.GetArguments();
+        FdoPtr<FdoExpressionCollection> args = expr.GetArguments();
 
         if (args->GetCount() != 2)
-            throw GisException::Create(L"Invalid number of arguments.");
+            throw FdoException::Create(L"Invalid number of arguments.");
 
-        GisPtr<FdoExpression> left = args->GetItem(0);
+        FdoPtr<FdoExpression> left = args->GetItem(0);
         left->Process(this);
 
-        GisPtr<FdoExpression> right = args->GetItem(1);
+        FdoPtr<FdoExpression> right = args->GetItem(1);
         right->Process(this);
 
         DataValue* argRight = m_retvals.pop();
@@ -459,12 +459,12 @@ void RS_FilterExecutor::ProcessFunction(FdoFunction& expr)
     }
     else if (_wcsnicmp(name, L"DECAP", 5) == 0)
     {
-        GisPtr<FdoExpressionCollection> args = expr.GetArguments();
+        FdoPtr<FdoExpressionCollection> args = expr.GetArguments();
 
         if (args->GetCount() != 1)
-            throw GisException::Create(L"Incorrect number of arguments for function DECAP");
+            throw FdoException::Create(L"Incorrect number of arguments for function DECAP");
 
-        GisPtr<FdoExpression> val = args->GetItem(0);
+        FdoPtr<FdoExpression> val = args->GetItem(0);
         val->Process(this);
 
         DataValue* dvVal = m_retvals.pop();
@@ -498,13 +498,13 @@ void RS_FilterExecutor::ProcessFunction(FdoFunction& expr)
     }
     else
     {
-        throw GisException::Create(L"Function not supported");
+        throw FdoException::Create(L"Function not supported");
     }
 }
 
 void RS_FilterExecutor::ProcessIdentifier(FdoIdentifier& expr)
 {
-    GisString* name = expr.GetName();
+    FdoString* name = expr.GetName();
 
     //did we cache the last attribute get?
     DataValue* cached = NULL;
@@ -564,16 +564,16 @@ void RS_FilterExecutor::ProcessIdentifier(FdoIdentifier& expr)
                 dv = m_pPool->ObtainStringValue((wchar_t*)m_reader->GetString(name), false);
                 break;
             case FdoDataType_BLOB :
-                throw GisException::Create(L"BLOB property value encountered!");
+                throw FdoException::Create(L"BLOB property value encountered!");
                 break;
             case FdoDataType_CLOB :
-                throw GisException::Create(L"CLOB property value encountered!");
+                throw FdoException::Create(L"CLOB property value encountered!");
                 break;
             case -1 :
-                throw GisException::Create(L"Geometry property value encountered!");
+                throw FdoException::Create(L"Geometry property value encountered!");
                 break;
                 //TODO: GEOMETRY! yay!
-            default: throw GisException::Create(L"Unknown data type encountered!");
+            default: throw FdoException::Create(L"Unknown data type encountered!");
         }
 
         //now cache the last property get
@@ -589,7 +589,7 @@ void RS_FilterExecutor::ProcessIdentifier(FdoIdentifier& expr)
 
 void RS_FilterExecutor::ProcessParameter(FdoParameter& /*expr*/)
 {
-    throw GisException::Create(L"Parameters not supported");
+    throw FdoException::Create(L"Parameters not supported");
 }
 
 void RS_FilterExecutor::ProcessBooleanValue(FdoBooleanValue& expr)
@@ -644,22 +644,22 @@ void RS_FilterExecutor::ProcessStringValue(FdoStringValue& expr)
 
 void RS_FilterExecutor::ProcessBLOBValue(FdoBLOBValue& /*expr*/)
 {
-    throw GisException::Create(L"BLOBs not supported");
+    throw FdoException::Create(L"BLOBs not supported");
 }
 
 void RS_FilterExecutor::ProcessCLOBValue(FdoCLOBValue& /*expr*/)
 {
-    throw GisException::Create(L"CLOBs not supported");
+    throw FdoException::Create(L"CLOBs not supported");
 }
 
 void RS_FilterExecutor::ProcessGeometryValue(FdoGeometryValue& /*expr*/)
 {
-    throw GisException::Create(L"Geometry value not supported");
+    throw FdoException::Create(L"Geometry value not supported");
 }
 
 void RS_FilterExecutor::ProcessComputedIdentifier(FdoComputedIdentifier &)
 {
-    throw GisException::Create(L"Computed identifier not supported");
+    throw FdoException::Create(L"Computed identifier not supported");
 }
 
 
@@ -818,39 +818,39 @@ bool RS_FilterExecutor::MatchBracket(wchar_t* pattern, wchar_t* src)
 
 void RS_FilterExecutor::ExecuteARGB(FdoFunction& function)
 {
-    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+    FdoPtr<FdoExpressionCollection> args = function.GetArguments();
 
     int count = args->GetCount();
 
     //make sure we have 4 arguments. ARGB
     if (count != 4)
-        throw GisException::Create(L"Incorrect number of arguments for function ARGB");
+        throw FdoException::Create(L"Incorrect number of arguments for function ARGB");
 
     //evaluate each argument
     for (int i=count-1; i>=0; i--)
     {
-        GisPtr<FdoExpression> arg = args->GetItem(i);
+        FdoPtr<FdoExpression> arg = args->GetItem(i);
         arg->Process(this);
     }
 
     //A
     DataValue* dvAlpha = m_retvals.pop();
-    GisInt64 alpha = (int)dvAlpha->GetAsInt64();
+    FdoInt64 alpha = (int)dvAlpha->GetAsInt64();
     m_pPool->RelinquishDataValue(dvAlpha);
 
     //R
     DataValue* dvRed = m_retvals.pop();
-    GisInt64 red = dvRed->GetAsInt64();
+    FdoInt64 red = dvRed->GetAsInt64();
     m_pPool->RelinquishDataValue(dvRed);
 
     //G
     DataValue* dvGreen = m_retvals.pop();
-    GisInt64 green = dvGreen->GetAsInt64();
+    FdoInt64 green = dvGreen->GetAsInt64();
     m_pPool->RelinquishDataValue(dvGreen);
 
     //B
     DataValue* dvBlue = m_retvals.pop();
-    GisInt64 blue = dvBlue->GetAsInt64();
+    FdoInt64 blue = dvBlue->GetAsInt64();
     m_pPool->RelinquishDataValue(dvBlue);
 
     //clean up
@@ -859,7 +859,7 @@ void RS_FilterExecutor::ExecuteARGB(FdoFunction& function)
     blue &= 0xFF;
     alpha &= 0xFF;
 
-    GisInt64 color = (alpha << 24) | (red << 16) | (green << 8) | blue;
+    FdoInt64 color = (alpha << 24) | (red << 16) | (green << 8) | blue;
 
     m_retvals.push(m_pPool->ObtainInt64Value(color));
 }
@@ -867,11 +867,11 @@ void RS_FilterExecutor::ExecuteARGB(FdoFunction& function)
 
 void RS_FilterExecutor::ExecuteSession(FdoFunction& function)
 {
-    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+    FdoPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have zero arguments
     if (args->GetCount() != 0)
-        throw GisException::Create(L"Incorrect number of arguments for function SESSION");
+        throw FdoException::Create(L"Incorrect number of arguments for function SESSION");
 
     wchar_t* res = new wchar_t[m_session.length()+1];
     wcscpy(res, m_session.c_str());
@@ -882,11 +882,11 @@ void RS_FilterExecutor::ExecuteSession(FdoFunction& function)
 
 void RS_FilterExecutor::ExecuteMapName(FdoFunction& function)
 {
-    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+    FdoPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have zero arguments
     if (args->GetCount() != 0)
-        throw GisException::Create(L"Incorrect number of arguments for function MAPNAME");
+        throw FdoException::Create(L"Incorrect number of arguments for function MAPNAME");
 
     wchar_t* res = new wchar_t[m_mapName.length()+1];
     wcscpy(res, m_mapName.c_str());
@@ -897,11 +897,11 @@ void RS_FilterExecutor::ExecuteMapName(FdoFunction& function)
 
 void RS_FilterExecutor::ExecuteLayerID(FdoFunction& function)
 {
-    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+    FdoPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have zero arguments
     if (args->GetCount() != 0)
-        throw GisException::Create(L"Incorrect number of arguments for function LAYERID");
+        throw FdoException::Create(L"Incorrect number of arguments for function LAYERID");
 
     wchar_t* res = new wchar_t[m_layerID.length()+1];
     wcscpy(res, m_layerID.c_str());
@@ -912,11 +912,11 @@ void RS_FilterExecutor::ExecuteLayerID(FdoFunction& function)
 
 void RS_FilterExecutor::ExecuteFeatureClass(FdoFunction& function)
 {
-    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+    FdoPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have zero arguments
     if (args->GetCount() != 0)
-        throw GisException::Create(L"Incorrect number of arguments for function FEATURECLASS");
+        throw FdoException::Create(L"Incorrect number of arguments for function FEATURECLASS");
 
     wchar_t* res = new wchar_t[m_featCls.length()+1];
     wcscpy(res, m_featCls.c_str());
@@ -927,11 +927,11 @@ void RS_FilterExecutor::ExecuteFeatureClass(FdoFunction& function)
 
 void RS_FilterExecutor::ExecuteFeatureID(FdoFunction& function)
 {
-    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+    FdoPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have zero arguments
     if (args->GetCount() != 0)
-        throw GisException::Create(L"Incorrect number of arguments for function FEATUREID");
+        throw FdoException::Create(L"Incorrect number of arguments for function FEATUREID");
 
     // generate base 64 id
     const unsigned char* base64 = m_keyEncode->EncodeKey(m_reader);
@@ -973,14 +973,14 @@ void RS_FilterExecutor::ExecuteFeatureID(FdoFunction& function)
 //
 void RS_FilterExecutor::ExecuteUrlEncode(FdoFunction& function)
 {
-    GisPtr<FdoExpressionCollection> args = function.GetArguments();
+    FdoPtr<FdoExpressionCollection> args = function.GetArguments();
 
     // make sure we have one argument
     if (args->GetCount() != 1)
-        throw GisException::Create(L"Incorrect number of arguments for function URLENCODE");
+        throw FdoException::Create(L"Incorrect number of arguments for function URLENCODE");
 
     // evaluate the argument
-    GisPtr<FdoExpression> arg = args->GetItem(0);
+    FdoPtr<FdoExpression> arg = args->GetItem(0);
     arg->Process(this);
 
     // get the string to encode

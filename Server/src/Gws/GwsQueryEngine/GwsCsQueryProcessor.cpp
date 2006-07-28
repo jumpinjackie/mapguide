@@ -55,8 +55,8 @@ void CGwsCSQueryProcessor::ProcessSpatialCondition(FdoSpatialCondition& sc)
 
     //at this point either tesselation or cs conversion has to happen (not NULL)
     //so we have to extract the geometry
-    GisPtr<FdoExpression> pGeometry = sc.GetGeometry();
-    GisPtr<GisByteArray> pBa = static_cast<FdoGeometryValue*>((FdoExpression*)pGeometry)->GetGeometry();
+    FdoPtr<FdoExpression> pGeometry = sc.GetGeometry();
+    FdoPtr<FdoByteArray> pBa = static_cast<FdoGeometryValue*>((FdoExpression*)pGeometry)->GetGeometry();
 
     //first we have to apply tesselation if it is necessary
     if (! pBa) {

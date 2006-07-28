@@ -18,7 +18,7 @@
 #ifndef MG_BYTE_SOURCE_RASTER_STREAM_IMPL_H_
 #define MG_BYTE_SOURCE_RASTER_STREAM_IMPL_H_
 
-class GisIStreamReader;
+class FdoIStreamReader;
 
 /////////////////////////////////////////////////////////////////
 ///<summary>
@@ -33,7 +33,7 @@ public:
     /// Construct a ByteSourceRasterStreamImpl object
     ///</summary>
     ///<param name="stream">MgStream object</param>
-    ByteSourceRasterStreamImpl(GisIStreamReaderTmpl<GisByte>* stream);
+    ByteSourceRasterStreamImpl(FdoIStreamReaderTmpl<FdoByte>* stream);
 
     //////////////////////////////////////////////////////////////////
     ///<summary>
@@ -88,7 +88,7 @@ public:
     void Rewind();
 
 private:
-    GisIStreamReaderTmpl<GisByte>* m_stream;
+    FdoIStreamReaderTmpl<FdoByte>* m_stream;
 };
 
 #endif

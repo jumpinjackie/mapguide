@@ -314,23 +314,23 @@ MgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcFea
     if (!geom.empty())
     {
         //Set up RESAMPLE command
-        GisPtr<FdoExpressionCollection> funcParams = FdoExpressionCollection::Create();
-        GisPtr<FdoIdentifier> rasterProp = FdoIdentifier::Create(geom.c_str());
+        FdoPtr<FdoExpressionCollection> funcParams = FdoExpressionCollection::Create();
+        FdoPtr<FdoIdentifier> rasterProp = FdoIdentifier::Create(geom.c_str());
         funcParams->Add(rasterProp);
-        GisPtr<FdoDataValue> minX = FdoDataValue::Create(extent.minx, FdoDataType_Double);
+        FdoPtr<FdoDataValue> minX = FdoDataValue::Create(extent.minx, FdoDataType_Double);
         funcParams->Add(minX);
-        GisPtr<FdoDataValue> minY = FdoDataValue::Create(extent.miny, FdoDataType_Double);
+        FdoPtr<FdoDataValue> minY = FdoDataValue::Create(extent.miny, FdoDataType_Double);
         funcParams->Add(minY);
-        GisPtr<FdoDataValue> maxX = FdoDataValue::Create(extent.maxx, FdoDataType_Double);
+        FdoPtr<FdoDataValue> maxX = FdoDataValue::Create(extent.maxx, FdoDataType_Double);
         funcParams->Add(maxX);
-        GisPtr<FdoDataValue> maxY = FdoDataValue::Create(extent.maxy, FdoDataType_Double);
+        FdoPtr<FdoDataValue> maxY = FdoDataValue::Create(extent.maxy, FdoDataType_Double);
         funcParams->Add(maxY);
-        GisPtr<FdoDataValue> height = FdoDataValue::Create(devHeight);
+        FdoPtr<FdoDataValue> height = FdoDataValue::Create(devHeight);
         funcParams->Add(height);
-        GisPtr<FdoDataValue> width = FdoDataValue::Create(devWidth);
+        FdoPtr<FdoDataValue> width = FdoDataValue::Create(devWidth);
         funcParams->Add(width);
 
-        GisPtr<FdoFunction> clipFunc = FdoFunction::Create(L"RESAMPLE", funcParams);
+        FdoPtr<FdoFunction> clipFunc = FdoFunction::Create(L"RESAMPLE", funcParams);
 
         STRING func = clipFunc->ToString();
         options->AddComputedProperty(L"clipped_raster", func);

@@ -24,7 +24,7 @@ template< typename T , class Interface>
 class CGwsFeatureIdSet : public GWSObject<Interface>
 {
 public:
-    typedef std::map<T, GisInt32> IdToIdxMap;
+    typedef std::map<T, FdoInt32> IdToIdxMap;
 
     CGwsFeatureIdSet(void)
     {
@@ -36,7 +36,7 @@ public:
         Clear();
     }
 
-    virtual GisInt32 Size() const
+    virtual FdoInt32 Size() const
     {
         return count;
     }
@@ -65,7 +65,7 @@ public:
         if(iter == mMapIds.end())
             return false;
 
-        GisInt32 pos = iter->second;
+        FdoInt32 pos = iter->second;
         mMapIds.erase(iter);
 
         //mVecIds.erase(remove(mVecIds.begin(), mVecIds.end(), id), mVecIds.end());
@@ -85,10 +85,10 @@ public:
         return true;
     }
 
-    virtual const T& Id(GisInt32 index)
+    virtual const T& Id(FdoInt32 index)
     {
         typename GWSObject< Interface >::ThisLock lock(this);
-        if(index < 0 || index > (GisInt32)mVecIds.size()-1)
+        if(index < 0 || index > (FdoInt32)mVecIds.size()-1)
             GWS_THROW(eGwsIndexOutOfBounds);
         return mVecIds[index];
     }
@@ -105,16 +105,16 @@ public:
 protected:
     GWSFeatureId                ConstructId(long id) const
     {
-        GisPtr<FdoInt32Value> pVal  = FdoInt32Value::Create (id);
-        GisPtr<FdoDataValueCollection> keyvals = CGwsDataValueCollection::Create ();
-        keyvals->Add (pVal);
+        //GisPtr<FdoInt32Value> pVal  = FdoInt32Value::Create (id);
+        //GisPtr<FdoDataValueCollection> keyvals = CGwsDataValueCollection::Create ();
+        //keyvals->Add (pVal);
         return GWSFeatureId(keyvals);
     }
 
 private:
     IdToIdxMap                  mMapIds;
     std::vector<T>              mVecIds;
-    GisInt32                    count;
+    FdoInt32                    count;
 };
 
 #endif

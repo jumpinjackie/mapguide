@@ -108,7 +108,7 @@ int MgWorkerThread::svc(void)
 
                             SAFE_RELEASE(e);
                         }
-                        catch(GisException* e)
+                        catch(FdoException* e)
                         {
                             STRING messageId;
                             MgStringCollection arguments;
@@ -126,7 +126,7 @@ int MgWorkerThread::svc(void)
                             ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
                             MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
 
-                            GIS_SAFE_RELEASE(e);
+                            FDO_SAFE_RELEASE(e);
                         }
                         catch (exception& e)
                         {

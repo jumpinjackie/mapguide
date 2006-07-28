@@ -127,7 +127,7 @@ public:
         {
             ThisLock lock(this);
             m_opHandler = pHandler;
-            GIS_SAFE_ADDREF(pHandler);
+            FDO_SAFE_ADDREF(pHandler);
         }
     }
 
@@ -214,7 +214,7 @@ protected:
     long                            m_dwRef;
     IGWSObject*                     m_pOwner;
     _CritSec                        m_critsec;
-    GisPtr<IGWSOperationHandler>    m_opHandler;
+    FdoPtr<IGWSOperationHandler>    m_opHandler;
 };
 
 template <class ChildInterface, class ChildClass, class Interface, class ThreadModel = GWSThreadModel>
@@ -255,7 +255,7 @@ public:
     typedef typename GWSChildren::iterator               GWSChildIterator;
 
     template <class Derived>
-    void Add(GisString * name, ChildInterface** pChild)
+    void Add(FdoString * name, ChildInterface** pChild)
     {
         if(pChild == NULL)
             throw CGwsException::Create(eGwsNullPointer);
@@ -269,7 +269,7 @@ public:
         return AddInternal(name, *pChild);
     }
 
-    virtual void AddInternal(GisString * name, ChildInterface* pChild)
+    virtual void AddInternal(FdoString * name, ChildInterface* pChild)
     {
         //true indicates the child has been removed from the
         //official list of children
@@ -295,7 +295,7 @@ public:
         mCount++;
     }
 
-    virtual void Remove(GisString * name)
+    virtual void Remove(FdoString * name)
     {
         typename GWSObject< Interface, ThreadModel >::ThisLock lock(this);
         GWSChildIterator iter = mChildren.find(name);
@@ -324,7 +324,7 @@ public:
         mCount--;
     }
 
-    virtual ChildInterface* Find(GisString * name) const
+    virtual ChildInterface* Find(FdoString * name) const
     {
         typename GWSChildren::const_iterator iter = mChildren.find(name);
         if(iter != mChildren.end())
@@ -340,7 +340,7 @@ public:
         return NULL;
     }
 
-    virtual bool Contains(GisString * name) const
+    virtual bool Contains(FdoString * name) const
     {
         typename GWSChildren::const_iterator iter = mChildren.find(name);
         if(iter != mChildren.end() && !(*iter).second.IsRemoved())
@@ -348,7 +348,7 @@ public:
         return false;
     }
 
-    virtual void Rename(GisString* oldName, GisString* newName)
+    virtual void Rename(FdoString* oldName, FdoString* newName)
     {
         typename GWSObject< Interface, ThreadModel >::ThisLock lock(this);
         GWSChildIterator iter = mChildren.find(oldName);
@@ -361,13 +361,13 @@ public:
         mChildren.insert(val);
     }
 
-    virtual int Names(GisStringCollection** ppNames) const
+    virtual int Names(FdoStringCollection** ppNames) const
     {
         if(ppNames == NULL)
             return 0;
 
         if(*ppNames == NULL)
-            *ppNames = GisStringCollection::Create();
+            *ppNames = FdoStringCollection::Create();
 
         typename GWSChildren::const_iterator it;
         int i = 0;

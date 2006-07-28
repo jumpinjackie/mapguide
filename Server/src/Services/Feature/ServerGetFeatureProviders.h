@@ -37,10 +37,10 @@ private:
     void CreateFeatureProvidersDocument();
 
     void AddConnectionProperties( DOMElement* providerElem,
-                                  GisString* providerName);
+                                  FdoString* providerName);
 
     void AddConnectionProperty( DOMElement* connPropRootElem,
-                                GisString* propertyName,
+                                FdoString* propertyName,
                                 FdoIConnectionPropertyDictionary* fdoConnPropertyDict);
 
     IProviderRegistry*      m_providerReg;

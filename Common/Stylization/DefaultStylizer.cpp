@@ -124,7 +124,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     //*****************************************
     //It needs to be done per feature if there is inheritance of feature classes
     //but is so horribly slow that in all other cases it needs to be optimized away
-    //GisPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
+    //FdoPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
 
     FeatureTypeStyleVisitor visitor;
 
@@ -242,7 +242,7 @@ void DefaultStylizer::StylizeGridLayer(   const MdfModel::GridLayerDefinition* l
     //*****************************************
     //It needs to be done per feature if there is inheritance of feature classes
     //but is so horribly slow that in all other cases it needs to be optimized away
-    //GisPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
+    //FdoPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
 
     //main loop over raster data
     while (features->ReadNext())
@@ -298,7 +298,7 @@ void DefaultStylizer::StylizeDrawingLayer(  const MdfModel::DrawingLayerDefiniti
 
 //WARNING: given pointer to the new stylizer will be destroyed
 //by the stylizer (in its destructor)
-void DefaultStylizer::SetGeometryAdapter( GisGeometryType type, GeometryAdapter* sg)
+void DefaultStylizer::SetGeometryAdapter( FdoGeometryType type, GeometryAdapter* sg)
 {
     GeometryAdapter* old = (GeometryAdapter*)m_hGeomStylizers[type];
 
@@ -325,35 +325,35 @@ GeometryAdapter* DefaultStylizer::FindGeomAdapter(int geomType)
     //otherwise need to create one based on the geometry type
     switch (geomType)
     {
-    case GisGeometryType_LineString:
-        m_hGeomStylizers[GisGeometryType_LineString] = new PolylineAdapter(m_lbPool);
+    case FdoGeometryType_LineString:
+        m_hGeomStylizers[FdoGeometryType_LineString] = new PolylineAdapter(m_lbPool);
         break;
-    case GisGeometryType_MultiLineString:
-        m_hGeomStylizers[GisGeometryType_MultiLineString] = new PolylineAdapter(m_lbPool);
+    case FdoGeometryType_MultiLineString:
+        m_hGeomStylizers[FdoGeometryType_MultiLineString] = new PolylineAdapter(m_lbPool);
         break;
-    case GisGeometryType_CurveString:
-        m_hGeomStylizers[GisGeometryType_CurveString] = new PolylineAdapter(m_lbPool);
+    case FdoGeometryType_CurveString:
+        m_hGeomStylizers[FdoGeometryType_CurveString] = new PolylineAdapter(m_lbPool);
         break;
-    case GisGeometryType_MultiCurveString:
-        m_hGeomStylizers[GisGeometryType_MultiCurveString] = new PolylineAdapter(m_lbPool);
+    case FdoGeometryType_MultiCurveString:
+        m_hGeomStylizers[FdoGeometryType_MultiCurveString] = new PolylineAdapter(m_lbPool);
         break;
-    case GisGeometryType_Polygon:
-        m_hGeomStylizers[GisGeometryType_Polygon] = new PolygonAdapter(m_lbPool);
+    case FdoGeometryType_Polygon:
+        m_hGeomStylizers[FdoGeometryType_Polygon] = new PolygonAdapter(m_lbPool);
         break;
-    case GisGeometryType_MultiPolygon:
-        m_hGeomStylizers[GisGeometryType_MultiPolygon] = new PolygonAdapter(m_lbPool);
+    case FdoGeometryType_MultiPolygon:
+        m_hGeomStylizers[FdoGeometryType_MultiPolygon] = new PolygonAdapter(m_lbPool);
         break;
-    case GisGeometryType_CurvePolygon:
-        m_hGeomStylizers[GisGeometryType_CurvePolygon] = new PolygonAdapter(m_lbPool);
+    case FdoGeometryType_CurvePolygon:
+        m_hGeomStylizers[FdoGeometryType_CurvePolygon] = new PolygonAdapter(m_lbPool);
         break;
-    case GisGeometryType_MultiCurvePolygon:
-        m_hGeomStylizers[GisGeometryType_MultiCurvePolygon] = new PolygonAdapter(m_lbPool);
+    case FdoGeometryType_MultiCurvePolygon:
+        m_hGeomStylizers[FdoGeometryType_MultiCurvePolygon] = new PolygonAdapter(m_lbPool);
         break;
-    case GisGeometryType_Point:
-        m_hGeomStylizers[GisGeometryType_Point] = new PointAdapter(m_lbPool);
+    case FdoGeometryType_Point:
+        m_hGeomStylizers[FdoGeometryType_Point] = new PointAdapter(m_lbPool);
         break;
-    case GisGeometryType_MultiPoint:
-        m_hGeomStylizers[GisGeometryType_MultiPoint] = new PointAdapter(m_lbPool);
+    case FdoGeometryType_MultiPoint:
+        m_hGeomStylizers[FdoGeometryType_MultiPoint] = new PointAdapter(m_lbPool);
         break;
     default :
         break;

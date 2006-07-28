@@ -41,12 +41,12 @@ private:
     void WriteUInt32(unsigned i);
     void WriteInt16(short s);
     void WriteUInt16(unsigned short us);
-    void WriteInt64(GisInt64 ll);
+    void WriteInt64(FdoInt64 ll);
     void WriteByte(unsigned char b);
     void WriteChar(char c);
     void WriteString(const wchar_t* src);
     void WriteBytes(unsigned char* buf, size_t len);
-    void WriteDateTime(GisDateTime dt);
+    void WriteDateTime(FdoDateTime dt);
     void WriteStream(RS_InputStream* is);
 
     RSBufferOutputStream m_stream;

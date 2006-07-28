@@ -63,12 +63,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib Fdo.lib GisCommon.lib pdh.lib"
+				AdditionalDependencies="ACEd.lib Fdo.lib FdoCommon.lib pdh.lib"
 				OutputFile="$(OutDir)/MgServerManagerd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\..\Oem\dbxml-2.2.13\lib&quot;;..\..\..\..\Oem\FDO\lib"
 				IgnoreDefaultLibraryNames=""
-				DelayLoadDLLs="Fdo.dll;GisCommon.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerManagerd.pdb"
 				SubSystem="2"
@@ -144,11 +144,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib Fdo.lib GisCommon.lib pdh.lib"
+				AdditionalDependencies="ACE.lib Fdo.lib FdoCommon.lib pdh.lib"
 				OutputFile="$(OutDir)/MgServerManager.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\..\Oem\dbxml-2.2.13\lib&quot;;..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;GisCommon.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerManager.pdb"
 				SubSystem="2"

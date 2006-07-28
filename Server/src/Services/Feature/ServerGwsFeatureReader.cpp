@@ -29,7 +29,7 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader(IGWSFeatureIterator* gwsFeatu
 {
     MG_FEATURE_SERVICE_TRY()
 
-    m_gwsFeatureIterator = GIS_SAFE_ADDREF(gwsFeatureIterator);
+    m_gwsFeatureIterator = FDO_SAFE_ADDREF(gwsFeatureIterator);
     m_gwsGetFeatures = new MgServerGwsGetFeatures(gwsFeatureIterator);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.MgServerGwsFeatureReader")
@@ -81,12 +81,12 @@ bool MgServerGwsFeatureReader::ReadNext()
     {
         // retrieve the secondary feature source iterators, advance the iterators and store into a collection
         m_secondaryGwsFeatureIteratorMap.clear();
-        GisPtr<IGWSExtendedFeatureDescription> desc;
+        FdoPtr<IGWSExtendedFeatureDescription> desc;
         m_gwsFeatureIterator->DescribeFeature(&desc);
 
         for (int i = 0; i < desc->GetCount(); i++)
         {
-            GisPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureIterator->GetJoinedFeatures(i);
+            FdoPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureIterator->GetJoinedFeatures(i);
             CHECKNULL(featureIter, L"MgServerGwsFeatureReader.ReadNext");
             if (featureIter->ReadNext())
             {
@@ -118,7 +118,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinition()
     MG_FEATURE_SERVICE_TRY()
 
     Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy);
-    gwsGetFeatures->SetRelationNames(GisPtr<GisStringCollection>(m_gwsGetFeatures->GetRelationNames()));
+    gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
     gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
     classDef = gwsGetFeatures->GetMgClassDefinition(false);
 
@@ -148,7 +148,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinitionNoXml()
     MG_FEATURE_SERVICE_TRY()
 
     Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy);
-    gwsGetFeatures->SetRelationNames(GisPtr<GisStringCollection>(m_gwsGetFeatures->GetRelationNames()));
+    gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
     gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
     classDef = gwsGetFeatures->GetMgClassDefinition(false);
 
@@ -254,7 +254,7 @@ MgDateTime* MgServerGwsFeatureReader::GetDateTime(CREFSTRING propertyName)
     DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetDateTime");
 
-    GisDateTime val = gwsFeatureIter->GetDateTime(parsedPropertyName.c_str());
+    FdoDateTime val = gwsFeatureIter->GetDateTime(parsedPropertyName.c_str());
     retVal = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
                             (INT8)val.hour, (INT8)val.minute, val.seconds);
 
@@ -494,7 +494,7 @@ MgFeatureReader* MgServerGwsFeatureReader::GetFeatureObject(CREFSTRING propertyN
     DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetFeatureObject");
 
-    GisPtr<FdoIFeatureReader> featureObjectReader = gwsFeatureIter->GetFeatureObject(parsedPropertyName.c_str());
+    FdoPtr<FdoIFeatureReader> featureObjectReader = gwsFeatureIter->GetFeatureObject(parsedPropertyName.c_str());
 
     if (featureObjectReader != NULL)
     {
@@ -557,7 +557,7 @@ MgRaster* MgServerGwsFeatureReader::GetRaster(CREFSTRING propertyName)
     DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetRaster");
 
-    GisPtr<FdoIRaster> raster = gwsFeatureIter->GetRaster(parsedPropertyName.c_str());
+    FdoPtr<FdoIRaster> raster = gwsFeatureIter->GetRaster(parsedPropertyName.c_str());
     CHECKNULL((FdoIRaster*)raster, L"MgServerGwsFeatureReader.GetRaster");
 
     retVal = MgServerFeatureUtil::GetMgRaster(raster, parsedPropertyName);
@@ -685,7 +685,7 @@ void MgServerGwsFeatureReader::Close()
 /// <returns>Returns a ByteReader object</returns>
 BYTE_ARRAY_OUT MgServerGwsFeatureReader::GetGeometry(CREFSTRING propertyName, INT32& length)
 {
-    const GisByte* data = NULL;
+    const FdoByte* data = NULL;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -695,7 +695,7 @@ BYTE_ARRAY_OUT MgServerGwsFeatureReader::GetGeometry(CREFSTRING propertyName, IN
     DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetGeometry");
 
-    GisInt32 len = 0;
+    FdoInt32 len = 0;
     data = gwsFeatureIter->GetGeometry(parsedPropertyName.c_str(), &len);
     length = len;
 
@@ -713,7 +713,7 @@ BYTE_ARRAY_OUT MgServerGwsFeatureReader::GetGeometry(CREFSTRING propertyName, IN
 /// <returns>Returns the string value.</returns>
 const wchar_t* MgServerGwsFeatureReader::GetString(CREFSTRING propName, INT32& length)
 {
-    GisString* retVal;
+    FdoString* retVal;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -764,21 +764,21 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
 
     // Check if the input propName is prefixed with the relationName
     // by comparing with primary feature source property names
-    GisPtr<IGWSExtendedFeatureDescription> primaryDesc;
+    FdoPtr<IGWSExtendedFeatureDescription> primaryDesc;
     m_gwsFeatureIterator->DescribeFeature(&primaryDesc);
-    GisPtr<GisStringCollection> primaryPropNames = primaryDesc->PropertyNames();
+    FdoPtr<FdoStringCollection> primaryPropNames = primaryDesc->PropertyNames();
 
     int primaryIndex = primaryPropNames->IndexOf(inputPropName.c_str());
     if( -1 != primaryIndex)
     {
         // No prefix, but the property name does exist in the primary feature source
         relationName.clear();
-        GisPtr<IGWSExtendedFeatureDescription> primaryDesc;
+        FdoPtr<IGWSExtendedFeatureDescription> primaryDesc;
         m_gwsFeatureIterator->DescribeFeature(&primaryDesc);
 
         GWSQualifiedName primQualifiedClassName = primaryDesc->ClassName();
 
-        GisString* fclassName = primQualifiedClassName.Name();
+        FdoString* fclassName = primQualifiedClassName.Name();
         className = (wchar_t*)fclassName;
 
         parsedPropName = inputPropName;
@@ -794,20 +794,20 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
             secondaryFeatureIter = iter->second;
             CHECKNULL(secondaryFeatureIter, L"MgServerGwsFeatureReader.DeterminePropertyFeatureSource");
 
-            GisPtr<IGWSExtendedFeatureDescription> secondaryDesc;
+            FdoPtr<IGWSExtendedFeatureDescription> secondaryDesc;
             secondaryFeatureIter->DescribeFeature(&secondaryDesc);
 
             GWSQualifiedName secQualifiedClassName = secondaryDesc->ClassName();
 
-            GisString* featureSource = secQualifiedClassName.FeatureSource();
-            GisString* fclassName = secQualifiedClassName.Name();
+            FdoString* featureSource = secQualifiedClassName.FeatureSource();
+            FdoString* fclassName = secQualifiedClassName.Name();
             className = (wchar_t*)fclassName;
 
-            GisPtr<GisStringCollection> secondaryPropNames = secondaryDesc->PropertyNames();
+            FdoPtr<FdoStringCollection> secondaryPropNames = secondaryDesc->PropertyNames();
 
             // cycle thru secondaryPropNames looking for substring occurrence in inputPropName
-            GisInt32 secPropCnt = secondaryPropNames->GetCount();
-            for (GisInt32 secPropIndex = 0; secPropIndex < secPropCnt; secPropIndex++)
+            FdoInt32 secPropCnt = secondaryPropNames->GetCount();
+            for (FdoInt32 secPropIndex = 0; secPropIndex < secPropCnt; secPropIndex++)
             {
                 STRING secondaryProp = (STRING)secondaryPropNames->GetString(secPropIndex);
                 STRING::size_type nPropStartIndex = inputPropName.find(secondaryProp);
@@ -837,7 +837,7 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
 }
 
 
-void MgServerGwsFeatureReader::PrepareGwsGetFeatures(CREFSTRING extensionName, GisStringCollection* relationNames)
+void MgServerGwsFeatureReader::PrepareGwsGetFeatures(CREFSTRING extensionName, FdoStringCollection* relationNames)
 {
     m_gwsGetFeatures->SetExtensionName(extensionName);
     m_gwsGetFeatures->SetRelationNames(relationNames);
@@ -852,5 +852,5 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
 
 void MgServerGwsFeatureReader::SetGwsIteratorCopy(IGWSFeatureIterator* iterCopy)
 {
-    m_gwsFeatureIteratorCopy = GIS_SAFE_ADDREF(iterCopy);
+    m_gwsFeatureIteratorCopy = FDO_SAFE_ADDREF(iterCopy);
 }
