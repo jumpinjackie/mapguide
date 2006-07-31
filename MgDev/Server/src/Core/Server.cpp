@@ -286,7 +286,7 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             fdoLibrary += L"fdo.dll";
             hlib = LoadLibraryW(fdoLibrary.c_str());
             #else
-            fdoLibrary += L"libFdo.so";
+            fdoLibrary += L"libFDO.so";
             hlib = dlopen(MG_WCHAR_TO_TCHAR(fdoLibrary), RTLD_NOW);
             #endif
 
