@@ -114,4 +114,16 @@
 #include "Services/SqlDataReader.h"
 #include "Services/UpdateFeatures.h"
 
+#include "MapLayer/LayerType.h"
+#include "MapLayer/LayerGroupType.h"
+#include "MapLayer/LayerBase.h"
+#include "MapLayer/LayerCollection.h"
+#include "MapLayer/LayerGroup.h"
+#include "MapLayer/LayerGroupCollection.h"
+#include "MapLayer/MapBase.h"
+#include "MapLayer/MapCollection.h"
+#include "MapLayer/ReadOnlyLayerCollection.h"
+#include "MapLayer/SelectionBase.h"
+
+
 #endif
