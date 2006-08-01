@@ -762,8 +762,20 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
 
             if (!m_featureReader->IsNull(propName.c_str()))
             {
-                val = m_featureReader->GetString(propName.c_str());
-                isNull = false;
+                // A try/catch block is used here for case where the FDO computed
+                // property field is used.  When the property value is null, the computed 
+                // property isNull flag is not set  which causes the IsNull() test to fail, and
+                // leading to GetString() to result in an exception.  
+                // Instead, it will be handled by catching the exception and setting the isNull flag.
+                try
+                {
+                    val = m_featureReader->GetString(propName.c_str());
+                    isNull = false;
+                }
+                catch (...)
+                {
+                    isNull = true;
+                }
             }
 
             prop = new MgStringProperty(propName, val);
