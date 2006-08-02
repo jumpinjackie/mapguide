@@ -772,9 +772,18 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
                     val = m_featureReader->GetString(propName.c_str());
                     isNull = false;
                 }
-                catch (...)
+                catch (GisException* e)
                 {
                     isNull = true;
+                    GIS_SAFE_RELEASE(e);
+                }
+                catch (MgException* e)
+                {
+                    isNull = true;
+                    SAFE_RELEASE(e);
+                }
+                catch (...)
+                {
                 }
             }
 
