@@ -105,9 +105,9 @@ public:
 protected:
     GWSFeatureId                ConstructId(long id) const
     {
-        //GisPtr<FdoInt32Value> pVal  = FdoInt32Value::Create (id);
-        //GisPtr<FdoDataValueCollection> keyvals = CGwsDataValueCollection::Create ();
-        //keyvals->Add (pVal);
+        FdoPtr<FdoInt32Value> pVal  = FdoInt32Value::Create (id);
+        FdoPtr<FdoDataValueCollection> keyvals = CGwsDataValueCollection::Create ();
+        keyvals->Add (pVal);
         return GWSFeatureId(keyvals);
     }
 
