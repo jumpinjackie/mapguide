@@ -43,7 +43,7 @@ private:
     void GetValue(REFSTRING val);
     void Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias);
 
-    void ExecuteOperation(std::vector<STRING>& values, std::vector<STRING>& distValues);
+    void ExecuteOperation(std::map<STRING, char>& values, std::vector<STRING>& distValues);
     MgReader* GetReader(std::vector<STRING>& distValues);
 
     void CheckSupportedPropertyType();

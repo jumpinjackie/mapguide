@@ -82,21 +82,28 @@ MgReader* MgFeatureStringFunctions::Execute()
     CHECKNULL((MgReader*)m_reader, L"MgFeatureStringFunctions.Execute");
     CHECKNULL(m_customFunction, L"MgFeatureStringFunctions.Execute");
 
-    std::vector<STRING> v1, v2;
+    std::vector<STRING> v2;
 
     MG_LOG_TRACE_ENTRY(L"MgFeatureStringFunctions::Execute");
-    // TODO: Can this be optimized to process them as they are read?
     // TODO: Should we put a limit on double buffer
+
+    std::map<STRING, char> mMap;
+    typedef std::pair<STRING, char> String_Pair;
+
     while(m_reader->ReadNext())
     {
         STRING val = L"";
 
+        // Get the value
         GetValue(val);
-        v1.push_back(val);
+
+        // Insert the value into the std::map
+        mMap.insert( String_Pair(val, '7') );  // 7 is just arbitrary placeholder
     }
 
     // Execute the operation on the collected values
-    ExecuteOperation(v1,v2);
+    ExecuteOperation(mMap, v2);
+
     // Create FeatureReader from distribution values
     Ptr<MgReader> reader = GetReader(v2);
 
@@ -140,7 +147,7 @@ void MgFeatureStringFunctions::GetValue(REFSTRING val)
             default:
             {
                 throw new MgInvalidPropertyTypeException(
-                    L"MgFeatureStringFunctions.CheckSupportedPropertyType", __LINE__, __WFILE__, NULL, L"", NULL);
+                    L"MgFeatureStringFunctions.GetValue", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
     }
@@ -148,9 +155,9 @@ void MgFeatureStringFunctions::GetValue(REFSTRING val)
 
 
 // Execute the function
-void MgFeatureStringFunctions::ExecuteOperation(std::vector<STRING>& values, std::vector<STRING>& distValues)
+void MgFeatureStringFunctions::ExecuteOperation(std::map<STRING, char>& values, std::vector<STRING>& distValues)
 {
-    INT32 funcCode = -1;
+   INT32 funcCode = -1;
 
     // Get the arguments from the FdoFunction
     STRING propertyName;
@@ -162,7 +169,10 @@ void MgFeatureStringFunctions::ExecuteOperation(std::vector<STRING>& values, std
         {
             case UNIQUE:
             {
-                MgUniqueFunction<STRING>::Execute(values, distValues);
+                distValues.reserve(values.size());
+                std::map<STRING, char>::iterator iter2;
+                for (iter2 = values.begin(); iter2 != values.end(); iter2++)
+                    distValues.push_back(iter2->first);
                 break;
             }
             default:
@@ -172,13 +182,11 @@ void MgFeatureStringFunctions::ExecuteOperation(std::vector<STRING>& values, std
                 MgStringCollection arguments;
                 arguments.Add(message);
                 throw new MgFeatureServiceException(
-                    L"MgServerSelectFeatures.GetEqualCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
+                    L"MgServerSelectFeatures.ExecuteOperation", __LINE__, __WFILE__, &arguments, L"", NULL);
             }
         }
     }
 }
-
-
 
 // Create the reader for string properties
 MgReader* MgFeatureStringFunctions::GetReader(std::vector<STRING>& distValues)
@@ -196,7 +204,7 @@ MgReader* MgFeatureStringFunctions::GetReader(std::vector<STRING>& distValues)
         default:
         {
             throw new MgInvalidPropertyTypeException(
-                L"MgFeatureStringFunctions.CheckSupportedPropertyType", __LINE__, __WFILE__, NULL, L"", NULL);
+                L"MgFeatureStringFunctions.GetReader", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
     return SAFE_ADDREF((MgDataReader*)dataReader);

@@ -33,6 +33,7 @@ MgFeatureGeometricFunctions::MgFeatureGeometricFunctions()
     m_reader = NULL;
     m_customFunction = NULL;
     m_propertyAlias = L"";
+    m_extentsInitialized = false;
 }
 
 MgFeatureGeometricFunctions::MgFeatureGeometricFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
@@ -66,6 +67,7 @@ void MgFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* cust
     m_reader = SAFE_ADDREF(reader);
     m_customFunction = GIS_SAFE_ADDREF(customFunction);
     m_propertyAlias = propertyAlias;
+    m_extentsInitialized = false;
 }
 
 
@@ -86,18 +88,27 @@ MgReader* MgFeatureGeometricFunctions::Execute()
     Ptr<MgGeometryCollection> geomCol = new MgGeometryCollection();
 
     MG_LOG_TRACE_ENTRY(L"MgFeatureGeometricFunctions::Execute");
-    // TODO: Can this be optimized to process them as they are read?
     while(m_reader->ReadNext())
     {
+        // Get the geometry
         Ptr<MgGeometry> val = GetValue();
-        if (val != NULL)
+
+        // Get the envelope
+        Ptr<MgEnvelope> envl = val->Envelope();
+        Ptr<MgCoordinate> lcoord;
+        Ptr<MgCoordinate> rcoord;
+        if (envl != NULL)
         {
-            geomCol->Add(val);
+            lcoord = envl->GetLowerLeftCoordinate();
+            rcoord = envl->GetUpperRightCoordinate();
         }
+
+        // Compare with min/max coordinates
+        ComputeExtents(lcoord, rcoord);
     }
 
-    // Execute the operation on the collected values
-    Ptr<MgGeometryCollection> finalResult = ExecuteOperation(geomCol);
+    // Execute the operation on the collected extents
+    Ptr<MgGeometryCollection> finalResult = ExecuteOperation();
 
     // Create FeatureReader from geometric values
     Ptr<MgReader> reader = GetReader(finalResult);
@@ -105,6 +116,106 @@ MgReader* MgFeatureGeometricFunctions::Execute()
     return SAFE_ADDREF((MgReader*)reader);
 }
 
+void MgFeatureGeometricFunctions::ComputeExtents(MgCoordinate* lowerLeft, 
+                                                    MgCoordinate* upperRight)
+{
+    CHECKNULL((MgCoordinate*)lowerLeft, L"MgFeatureGeometricFunctions.ComputeExtents");
+    CHECKNULL((MgCoordinate*)upperRight, L"MgFeatureGeometricFunctions.ComputeExtents");
+
+    if (!m_extentsInitialized)
+    {
+        m_minX = lowerLeft->GetX();
+        m_minY = lowerLeft->GetY();
+        m_minZ = lowerLeft->GetZ();
+        m_minM = lowerLeft->GetM();
+
+        m_maxX = upperRight->GetX();
+        m_maxY = upperRight->GetY();
+        m_maxZ = upperRight->GetZ();
+        m_maxM = upperRight->GetM();
+
+        m_extentsInitialized = true;
+    }
+    else
+    {
+        if (lowerLeft->GetX() < m_minX)
+            m_minX = lowerLeft->GetX();
+        if (lowerLeft->GetY() < m_minY)
+            m_minY = lowerLeft->GetY();
+        if (lowerLeft->GetZ() < m_minZ)
+            m_minZ = lowerLeft->GetZ();
+        if (lowerLeft->GetM() < m_minM)
+            m_minM = lowerLeft->GetM();
+
+        if (upperRight->GetX() > m_maxX)
+            m_maxX = upperRight->GetX();
+        if (upperRight->GetY() > m_maxY)
+            m_maxY = upperRight->GetY();
+        if (upperRight->GetZ() > m_maxZ)
+            m_maxZ = upperRight->GetZ();
+        if (upperRight->GetM() > m_maxM)
+            m_maxM = upperRight->GetM();
+    }
+}
+
+MgGeometryCollection* MgFeatureGeometricFunctions::ExecuteOperation()
+{
+    INT32 funcCode = -1;
+
+    Ptr<MgGeometryCollection> result = (MgGeometryCollection*)NULL;
+
+    // Get the arguments from the FdoFunction
+    STRING propertyName;
+    bool supported = MgServerFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
+
+    if (supported)
+    {
+        switch(funcCode)
+        {
+            case EXTENT:
+            {
+                // Create the geometry collection for the extents
+                MgGeometryFactory factory;
+
+                // TODO: Assuming we are two dimensional for now.
+
+                //Ptr<MgCoordinate> coord1 = factory.CreateCoordinateXYZM(minX, minY, minZ, minM);
+                //Ptr<MgCoordinate> coord2 = factory.CreateCoordinateXYZM(maxX, maxY, maxZ, maxM);
+
+                Ptr<MgCoordinate> coord1 = factory.CreateCoordinateXY(m_minX, m_minY);
+                Ptr<MgCoordinate> coord2 = factory.CreateCoordinateXY(m_maxX, m_minY);
+                Ptr<MgCoordinate> coord3 = factory.CreateCoordinateXY(m_maxX, m_maxY);
+                Ptr<MgCoordinate> coord4 = factory.CreateCoordinateXY(m_minX, m_maxY);
+
+                Ptr<MgCoordinateCollection> coordCol = new MgCoordinateCollection();
+                coordCol->Add(coord1);
+                coordCol->Add(coord2);
+                coordCol->Add(coord3);
+                coordCol->Add(coord4);
+
+                Ptr<MgLinearRing> outerRing = factory.CreateLinearRing(coordCol);
+                Ptr<MgGeometry> geom = factory.CreatePolygon(outerRing, NULL);
+        
+                result = new MgGeometryCollection();
+                result->Add(geom);
+             
+                break;
+            }
+            default:
+            {
+                STRING message = MgServerFeatureUtil::GetMessage(L"MgCustomFunctionNotSupported");
+
+                MgStringCollection arguments;
+                arguments.Add(message);
+                throw new MgFeatureServiceException(
+                    L"MgFeatureGeometricFunctions.ExecuteOperation",
+                    __LINE__, __WFILE__, &arguments, L"", NULL);
+            }
+        }
+    }
+
+    return SAFE_ADDREF((MgGeometryCollection*)result);
+}
 
 // Check whether property type is a supported type
 void MgFeatureGeometricFunctions::CheckSupportedPropertyType()
@@ -149,7 +260,7 @@ MgGeometry* MgFeatureGeometricFunctions::GetValue()
             default:
             {
                 throw new MgInvalidPropertyTypeException(
-                    L"MgFeatureGeometricFunctions.CheckSupportedPropertyType",
+                    L"MgFeatureGeometricFunctions.GetValue",
                     __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
@@ -159,167 +270,7 @@ MgGeometry* MgFeatureGeometricFunctions::GetValue()
 }
 
 
-// Execute the function
-MgGeometryCollection* MgFeatureGeometricFunctions::ExecuteOperation(MgGeometryCollection* geomCol)
-{
-    INT32 funcCode = -1;
 
-    Ptr<MgGeometryCollection> result = (MgGeometryCollection*)NULL;
-
-    // Get the arguments from the FdoFunction
-    STRING propertyName;
-    bool supported = MgServerFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
-
-    if (supported)
-    {
-        switch(funcCode)
-        {
-            case EXTENT:
-            {
-                result = ComputeExtents(geomCol);
-                break;
-            }
-            default:
-            {
-                STRING message = MgServerFeatureUtil::GetMessage(L"MgCustomFunctionNotSupported");
-
-                MgStringCollection arguments;
-                arguments.Add(message);
-                throw new MgFeatureServiceException(
-                    L"MgFeatureGeometricFunctions.ExecuteOperation",
-                    __LINE__, __WFILE__, &arguments, L"", NULL);
-            }
-        }
-    }
-
-    return SAFE_ADDREF((MgGeometryCollection*)result);
-}
-
-MgGeometryCollection* MgFeatureGeometricFunctions::ComputeExtents(MgGeometryCollection* geomCol)
-{
-    Ptr<MgGeometryCollection> result = (MgGeometryCollection*)NULL;
-
-    // NULL input or no geometry, we have nothing to do
-    if ((geomCol == NULL) ||
-        (0 == geomCol->GetCount()))
-    {
-        return result; // NULL
-    }
-
-    CoordinateCollection lowerLeft;
-    CoordinateCollection upperRight;
-
-    INT32 cnt = geomCol->GetCount();
-    for (int i = 0; i < cnt; i++)
-    {
-        Ptr<MgGeometry> geom = geomCol->GetItem(i);
-        if (geom != NULL)
-        {
-            Ptr<MgEnvelope> envl = geom->Envelope();
-            if (envl != NULL)
-            {
-                Ptr<MgCoordinate> lcoord = envl->GetLowerLeftCoordinate();
-                Ptr<MgCoordinate> rcoord = envl->GetUpperRightCoordinate();
-
-                AddCoordinate(lcoord, lowerLeft);
-                AddCoordinate(rcoord, upperRight);
-            }
-        }
-    }
-
-    // Extent will be sent back as polygon (rectangle)
-    Ptr<MgGeometry> extent = ComputeExtents(lowerLeft, upperRight);
-
-    // The reason to return collection instead of a single geometry is
-    // that it might be required in future. But there is no use-case
-    // right now which has this requirement.
-    // This is just a room for extensiblity.
-    Ptr<MgGeometryCollection> resultGeomCol = new MgGeometryCollection();
-    resultGeomCol->Add(extent);
-
-    return SAFE_ADDREF((MgGeometryCollection*)resultGeomCol);
-}
-
-MgGeometry* MgFeatureGeometricFunctions::ComputeExtents(CoordinateCollection& lowerLeft,
-                                                        CoordinateCollection& upperRight)
-{
-    // TODO:
-    // How to deal here with more than two dimension
-    // It is possible to have different geometry types in a single class
-    // some may be two dimensional and others may be 3 or 4.
-    double minX = MgServerFeatureUtil::Minimum(lowerLeft.x_coords);
-    double minY = MgServerFeatureUtil::Minimum(lowerLeft.y_coords);
-    double minZ = MgServerFeatureUtil::Minimum(lowerLeft.z_coords);
-    double minM = MgServerFeatureUtil::Minimum(lowerLeft.m_coords);
-
-    double maxX = MgServerFeatureUtil::Maximum(upperRight.x_coords);
-    double maxY = MgServerFeatureUtil::Maximum(upperRight.y_coords);
-    double maxZ = MgServerFeatureUtil::Maximum(upperRight.z_coords);
-    double maxM = MgServerFeatureUtil::Maximum(upperRight.m_coords);
-
-    MgGeometryFactory factory;
-
-    // TODO: Assuming we are two dimensional for now.
-
-    //Ptr<MgCoordinate> coord1 = factory.CreateCoordinateXYZM(minX, minY, minZ, minM);
-    //Ptr<MgCoordinate> coord2 = factory.CreateCoordinateXYZM(maxX, maxY, maxZ, maxM);
-
-    Ptr<MgCoordinate> coord1 = factory.CreateCoordinateXY(minX, minY);
-    Ptr<MgCoordinate> coord2 = factory.CreateCoordinateXY(maxX, minY);
-    Ptr<MgCoordinate> coord3 = factory.CreateCoordinateXY(maxX, maxY);
-    Ptr<MgCoordinate> coord4 = factory.CreateCoordinateXY(minX, maxY);
-
-    Ptr<MgCoordinateCollection> coordCol = new MgCoordinateCollection();
-    coordCol->Add(coord1);
-    coordCol->Add(coord2);
-    coordCol->Add(coord3);
-    coordCol->Add(coord4);
-
-    Ptr<MgLinearRing> outerRing = factory.CreateLinearRing(coordCol);
-    Ptr<MgGeometry> geom = factory.CreatePolygon(outerRing, NULL);
-
-    return SAFE_ADDREF((MgGeometry*)geom);
-}
-
-void MgFeatureGeometricFunctions::AddCoordinate(MgCoordinate* coord,
-                                                CoordinateCollection& coords)
-{
-    if (coord == NULL) { return; } // Nothing to do if NULL;
-
-    INT32 geomType = coord->GetDimension();
-
-    switch (geomType)
-    {
-        case MgCoordinateDimension::XY:
-        {
-            coords.x_coords.push_back(coord->GetX());
-            coords.y_coords.push_back(coord->GetY());
-            break;
-        }
-        case MgCoordinateDimension::XYZ:
-        {
-            coords.x_coords.push_back(coord->GetX());
-            coords.y_coords.push_back(coord->GetY());
-            coords.z_coords.push_back(coord->GetZ());
-            break;
-        }
-        case (MgCoordinateDimension::XY | MgCoordinateDimension::M):
-        {
-            coords.x_coords.push_back(coord->GetX());
-            coords.y_coords.push_back(coord->GetY());
-            coords.m_coords.push_back(coord->GetM());
-            break;
-        }
-        case (MgCoordinateDimension::XYZ | MgCoordinateDimension::M):
-        {
-            coords.x_coords.push_back(coord->GetX());
-            coords.y_coords.push_back(coord->GetY());
-            coords.z_coords.push_back(coord->GetZ());
-            coords.m_coords.push_back(coord->GetM());
-            break;
-        }
-    }
-}
 
 // Create the reader for string properties
 MgReader* MgFeatureGeometricFunctions::GetReader(MgGeometryCollection* geomCol)
