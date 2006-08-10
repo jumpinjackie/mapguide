@@ -74,7 +74,7 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
     *tmp = L'\0';
     int status = swscanf(sd, L"%lf%s", &d, tmp);
 
-    if (status == 1 || wcslen(tmp) == 0)
+    if (status == 1 || (status && !wcslen(tmp)))
     {
         res = d;
         return true; //value is constant
