@@ -222,6 +222,11 @@ const STRING MgConfigProperties::RenderingServicePropertyTileExtentOffset       
 const double MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset            = 0.35;
 
 // ******************************************************************
+// Font Alias Mappings section
+// ******************************************************************
+const STRING MgConfigProperties::FontAliasMappingSection                                    = L"FontAliases";
+
+// ******************************************************************
 // Resource Service Properties
 // ******************************************************************
 const STRING MgConfigProperties::ResourceServicePropertiesSection                               = L"ResourceServiceProperties";

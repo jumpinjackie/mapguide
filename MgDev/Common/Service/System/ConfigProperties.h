@@ -277,6 +277,11 @@ EXTERNAL_API:
     static const STRING RenderingServicePropertyTileExtentOffset;       /// value("TileExtentOffset")
     static const double DefaultRenderingServicePropertyTileExtentOffset;/// value(0.35)
 
+    /// FONT ALIASES SECTION -----------------------------------------------------------------------------
+
+    /// font alias mappings
+    static const STRING FontAliasMappingSection;                               /// value("FontAliases")
+
     /// RESOURCE SERVICE PROPERTIES SECTION ------------------------------------------------------------------------------
 
     /// Resource Service properties.  Note that in V1.0 this property section is only defined on the Site Server.

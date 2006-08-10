@@ -26,6 +26,7 @@
 #include "FdoConnectionManager.h"
 #include "SignalHandler.h"
 #include "ServerAdmin.h"
+#include "FontManager.h"
 
 #ifdef _DEBUG
 void DebugOutput(const ACE_TCHAR* format, ...)
@@ -228,6 +229,10 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 
             pConfiguration->GetBoolValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled, bDataConnectionPoolEnabled, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled);
             pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize, nDataConnectionPoolSize, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize);
+
+            // Add additional font mappings to the FontManager
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Adding Font Manager Mappings.\n")));
+            AddFontManagerFontAliases();
 
             // Initialize and load the FDO library
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing FDO.\n")));
@@ -974,6 +979,24 @@ int MgServer::svc(void)
     MG_LOG_TRACE_ENTRY(L"MgServer::svc() - End");
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::svc() - End\n")));
     return nResult;
+}
+
+void MgServer::AddFontManagerFontAliases()
+{
+    FontManager* fontManager = FontManager::Instance();
+    MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
+
+    Ptr<MgPropertyCollection> pMappings = pConfiguration->GetProperties(MgConfigProperties::FontAliasMappingSection);
+    if (pMappings != NULL)
+    {
+        for (int i = 0; i < pMappings->GetCount(); i++)
+        {
+            Ptr<MgStringProperty> pProperty = (MgStringProperty*)pMappings->GetItem(i);
+            STRING name = pProperty->GetName();
+            STRING value = pProperty->GetValue();
+            fontManager->AddFontAlias(name.c_str(), value.c_str());
+        }
+    }
 }
 
 int MgServer::open(void *args)

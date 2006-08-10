@@ -114,6 +114,7 @@ public:
 private:
 
     void ParseArgs(INT32 argc, ACE_TCHAR *argv[]);
+    void AddFontManagerFontAliases();
 
     ///////////////////////////////////////////////////////
     /// Member data

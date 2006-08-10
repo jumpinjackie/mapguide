@@ -23,7 +23,10 @@ INCLUDES = \
   -I../../../Common/Service \
   -I../../../Common/Service/Services \
   -I../../../Common/Service/System \
-  -I../../../Common/Service/Geometry
+  -I../../../Common/Service/Geometry \
+  -I../../../Oem/gd/freetype/include \
+  -I../../../Common/MdfModel \
+  -I../../../Common/Stylization
 
 bin_PROGRAMS = mgserver
 
