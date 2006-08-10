@@ -89,7 +89,11 @@ INT32 MgSpatialContextReader::GetExtentType()
 MgByteReader* MgSpatialContextReader::GetExtent()
 {
     Ptr<MgSpatialContextData> sData = (MgSpatialContextData*)m_spatialContextCol.GetItem(m_currPos);
-    return sData->GetExtent();
+    Ptr<MgByte> extents = sData->GetExtent();
+
+    Ptr<MgByteSource> byteSource = new MgByteSource(extents);
+    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+    return SAFE_ADDREF((MgByteReader*)byteReader);
 }
 
 //////////////////////////////////////////////////////////////

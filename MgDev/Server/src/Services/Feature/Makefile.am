@@ -28,6 +28,7 @@ libMgServerFeatureService_la_SOURCES = \
 include_SOURCES = \
   FeatureOperation.cpp \
   FeatureOperationFactory.cpp \
+  FeatureServiceCache.cpp \
   FeatureServiceHandler.cpp \
   GwsConnectionPool.cpp \
   OpCloseGwsFeatureReader.cpp \
@@ -107,6 +108,7 @@ include_SOURCES = \
 noinst_HEADERS = $(include_SOURCES) \
   FeatureOperation.h \
   FeatureOperationFactory.h \
+  FeatureServiceCache.h \
   FeatureServiceHandler.h \
   ServerFeatureService.h \
   GwsConnectionPool.h \

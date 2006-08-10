@@ -636,6 +636,7 @@ public:
                                                           CREFSTRING className);
 
     bool CloseGwsFeatureReader(INT32 gwsFeatureReader);
+    virtual void UpdateFeatureServiceCache();
 
 private:
     //////////////////////////////////////////////////////////////////

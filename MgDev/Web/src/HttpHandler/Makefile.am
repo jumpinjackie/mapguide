@@ -41,6 +41,8 @@ include_SOURCES = \
   HttpEnumerateUsers.cpp \
   HttpExecuteSqlQuery.cpp \
   HttpGetCapabilities.cpp \
+  HttpGetClassDefinition.cpp \
+  HttpGetClasses.cpp \
   HttpGetConnectionPropertyValues.cpp \
   HttpGetDrawing.cpp \
   HttpGetDrawingCoordinateSpace.cpp \
@@ -52,6 +54,7 @@ include_SOURCES = \
   HttpGetFeatureProviders.cpp \
   HttpGetFeatureSetEnvelope.cpp \
   HttpGetHtmlViewerPage.cpp \
+  HttpGetIdentityProperties.cpp \
   HttpGetLegendImage.cpp \
   HttpGetLongTransactions.cpp \
   HttpGetMap.cpp \
@@ -65,6 +68,7 @@ include_SOURCES = \
   HttpGetResourceData.cpp \
   HttpGetResourceHeader.cpp \
   HttpGetSchemaMapping.cpp \
+  HttpGetSchemas.cpp \
   HttpGetSiteInfo.cpp \
   HttpGetSiteVersion.cpp \
   HttpGetSpatialContexts.cpp \
@@ -138,6 +142,8 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpEnumerateUsers.h \
   HttpExecuteSqlQuery.h \
   HttpGetCapabilities.h \
+  HttpGetClassDefinition.h \
+  HttpGetClasses.h \
   HttpGetConnectionPropertyValues.h \
   HttpGetDrawing.h \
   HttpGetDrawingCoordinateSpace.h \
@@ -149,6 +155,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpGetFeatureProviders.h \
   HttpGetFeatureSetEnvelope.h \
   HttpGetHtmlViewerPage.h \
+  HttpGetIdentityProperties.h \
   HttpGetLegendImage.h \
   HttpGetLongTransactions.h \
   HttpGetMap.h \
@@ -162,6 +169,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpGetResourceData.h \
   HttpGetResourceHeader.h \
   HttpGetSchemaMapping.h \
+  HttpGetSchemas.h \
   HttpGetSiteInfo.h \
   HttpGetSiteVersion.h \
   HttpGetSpatialContexts.h \

@@ -62,6 +62,10 @@
 #include "HttpGetLongTransactions.h"
 #include "HttpEnumerateDataStores.h"
 #include "HttpGetSchemaMapping.h"
+#include "HttpGetSchemas.h"
+#include "HttpGetClasses.h"
+#include "HttpGetClassDefinition.h"
+#include "HttpGetIdentityProperties.h"
 
 // Http Mapping Service operations
 #include "HttpGetMap.h"
@@ -349,6 +353,10 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opWfsDescribeFeatureType] = MgHttpWfsDescribeFeatureType::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateDataStores] = MgHttpEnumerateDataStores::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetSchemaMapping] = MgHttpGetSchemaMapping::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetSchemas] = MgHttpGetSchemas::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetClasses] = MgHttpGetClasses::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetClassDefinition] = MgHttpGetClassDefinition::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetIdentityProperties] = MgHttpGetIdentityProperties::CreateObject;
 
     httpPostHandlerCreators.push_back(MgHttpWfsGetCapabilities::ProcessPostRequest);
     httpPostHandlerCreators.push_back(MgHttpWfsDescribeFeatureType::ProcessPostRequest);

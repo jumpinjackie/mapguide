@@ -32,6 +32,7 @@ public:
         DataConnectionTimeout               = 40,
         RepositoryCheckpoint                = 50,
         ResourceChange                      = 60,
+        FeatureServiceCacheTimeLimit        = 70,
     };
 
 /// Constructors/Destructor

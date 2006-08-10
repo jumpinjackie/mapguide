@@ -1198,3 +1198,12 @@ MgByteReader* MgServerFeatureService::GetSchemaMapping(CREFSTRING providerName, 
     MgServerGetSchemaMapping msgsm;
     return msgsm.GetSchemaMapping(providerName, partialConnString);
 }
+
+void MgServerFeatureService::UpdateFeatureServiceCache()
+{
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    if(featureServiceCache)
+    {
+        featureServiceCache->RemoveExpiredEntries();
+    }
+}

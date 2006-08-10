@@ -239,6 +239,18 @@ EXTERNAL_API:
     /// Feature Service properties.  Note that in V1.0 this property section is only defined on the Site Server.
     static const STRING FeatureServicePropertiesSection;                        /// value("FeatureServiceProperties")
 
+    /// Sets the maximum number of internal data objects to cache
+    static const STRING FeatureServicePropertyCacheSize;                        /// value("CacheSize")
+    static const INT32 DefaultFeatureServicePropertyCacheSize;                  /// value(100)
+
+    /// Sets the maximum amount of time (in seconds) to cache the internal data objects
+    static const STRING FeatureServicePropertyCacheTimeLimit;                   /// value("CacheTimeLimit")
+    static const INT32 DefaultFeatureServicePropertyCacheTimeLimit;             /// value(86400)
+
+    /// Sets the time duration (in seconds) between cache timelimit checks
+    static const STRING FeatureServicePropertyCacheTimerInterval;                /// value("CacheTimerInterval")
+    static const INT32 DefaultFeatureServicePropertyCacheTimerInterval;         /// value(3600)
+
     /// Sets the maximum number of features fetched to reduce the network traffic
     static const STRING FeatureServicePropertyDataCacheSize;                    /// value("DataCacheSize")
     static const INT32 DefaultFeatureServicePropertyDataCacheSize;              /// value(100)

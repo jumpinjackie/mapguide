@@ -17,6 +17,7 @@
 
 #include "FeatureOperation.cpp"
 #include "FeatureOperationFactory.cpp"
+#include "FeatureServiceCache.cpp"
 #include "FeatureServiceHandler.cpp"
 #include "OpCreateFeatureSource.cpp"
 #include "OpDescribeSchema.cpp"

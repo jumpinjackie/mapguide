@@ -83,6 +83,10 @@ MgTimedEventHandler* MgTimedEventHandler::Create(MgEventTimer::Type type,
             eventHandler.reset(isSiteServer ? new MgResourceChangeEventHandler(timer) : NULL);
             break;
 
+        case MgEventTimer::FeatureServiceCacheTimeLimit:
+            eventHandler.reset(new MgFeatureServiceCacheTimeLimitEventHandler(timer));
+            break;
+
         default:
             throw new MgInvalidArgumentException(
                 L"MgTimedEventHandler.Create", __LINE__, __WFILE__, NULL, L"", NULL);

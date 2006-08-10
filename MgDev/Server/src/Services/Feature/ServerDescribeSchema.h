@@ -56,15 +56,11 @@ public:
 
 private:
     bool FdoClassExist(const wchar_t* name, FdoClassCollection* clsCol);
-    void ExecuteDescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName);
+    FdoFeatureSchemaCollection* ExecuteDescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName);
     STRING GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol);
 
     void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
     void ValidateFeatureSource(string& featureSourceXmlContent);
-
-    STRING                  m_providerName;
-    Ptr<MgServerFeatureConnection> m_connection;
-    GisPtr<FdoFeatureSchemaCollection> m_ffsc;
 };
 
 #endif

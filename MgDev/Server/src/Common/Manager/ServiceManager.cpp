@@ -447,3 +447,22 @@ void MgServiceManager::DispatchResourceChangeNotifications()
 
     MG_THROW()
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Notify the feature service to update the cache.
+///
+void MgServiceManager::NotifyFeatureServiceCache()
+{
+    MG_TRY()
+
+    Ptr<MgServerFeatureService> featureService = dynamic_cast<MgServerFeatureService*>(
+        RequestLocalService(MgServiceType::FeatureService));
+
+    if (featureService != NULL)
+    {
+        featureService->UpdateFeatureServiceCache();
+    }
+
+    MG_CATCH(L"MgServiceManager.NotifyFeatureServiceCache")
+}
