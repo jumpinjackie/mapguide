@@ -71,7 +71,7 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
     //for example "100 + stuff" would successfully parse a number, yet it is not
     //just a number.
     wchar_t* tmp = (wchar_t*)alloca((wcslen(sd)+1)*sizeof(wchar_t));
-    *tmp = L'0';
+    *tmp = L'\0';
     int status = swscanf(sd, L"%lf%s", &d, tmp);
 
     if (status == 1 || wcslen(tmp) == 0)
