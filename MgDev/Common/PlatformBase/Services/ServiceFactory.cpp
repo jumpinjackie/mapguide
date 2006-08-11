@@ -143,6 +143,9 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_FeatureService_ClassDefinitionCollection, MgClassDefinitionCollection::CreateObject);
     fact->Register(PlatformBase_FeatureService_CreateSdfParams, MgCreateSdfParams::CreateObject);
     fact->Register(PlatformBase_ResourceService_ResourceIdentifier, MgResourceIdentifier::CreateObject);
+// TODO: Come back and move the following to product-specific DLL registration
+// code.
+    fact->Register(PlatformBase_MapLayer_Layer, MgLayerBase::CreateObject);
 
     EXCEPTION_CLASS_CREATOR(MgArrayTypeMismatchException)
     EXCEPTION_CLASS_CREATOR(MgInvalidMapDefinitionException)
