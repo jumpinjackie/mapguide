@@ -66,9 +66,15 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
 
     double d = 0.0;
 
-    int status = swscanf(sd, L"%lf", &d);
+    //we will look if there is any other stuff behind any numeric data
+    //in order to detect if we are dealing with just a number or an expression
+    //for example "100 + stuff" would successfully parse a number, yet it is not
+    //just a number.
+    wchar_t* tmp = (wchar_t*)alloca((wcslen(sd)+1)*sizeof(wchar_t));
+    *tmp = L'\0';
+    int status = swscanf(sd, L"%lf%s", &d, tmp);
 
-    if (status == 1)
+    if (status == 1 || (status && !wcslen(tmp)))
     {
         res = d;
         return true; //value is constant
@@ -485,9 +491,22 @@ bool GeometryAdapter::ConvertMarkerDef(MdfModel::Symbol* marker, RS_MarkerDef& m
     double val;
     bool const1 = EvalDouble(marker->GetSizeX(), val);
     mdef.width() = MdfModel::LengthConverter::UnitToMeters(marker->GetUnit(), val);
+
+    if (mdef.width() < 0.0)
+    {
+        _ASSERT(false); //should not get negative width and height
+        mdef.width() = - mdef.width();
+    }
+
     const1 = EvalDouble(marker->GetSizeY(), val) && const1;
     mdef.height() = MdfModel::LengthConverter::UnitToMeters(marker->GetUnit(), val);
     const1 = EvalDouble(marker->GetRotation(), mdef.rotation()) && const1;
+
+    if (mdef.height() < 0.0)
+    {
+        _ASSERT(false); //should not get negative width and height
+        mdef.height() = - mdef.height();
+    }
 
     const1 = EvalDouble(marker->GetInsertionPointX(), mdef.insx()) && const1;
     const1 = EvalDouble(marker->GetInsertionPointY(), mdef.insy()) && const1;
