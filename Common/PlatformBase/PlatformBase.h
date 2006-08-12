@@ -20,7 +20,7 @@
 
 #include "GeometryCommon.h"
 
-// Foundation exports
+// PlatformBase exports
 #ifdef WIN32
 #ifdef PLATFORMBASE_EXPORTS
 #    define MG_PLATFORMBASE_API __declspec(dllexport)
@@ -107,7 +107,7 @@
 #include "Services/ResourceService.h"
 #include "Services/Service.h"
 #include "Services/SiteConnectionBase.h"
-#include "Services/ServiceFactory.h"
+#include "Services/ServiceRegistry.h"
 #include "Services/SpatialContextData.h"
 #include "Services/SpatialContextExtentType.h"
 #include "Services/SpatialContextReader.h"

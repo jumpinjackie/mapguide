@@ -27,7 +27,7 @@ MgSiteConnectionBase::MgSiteConnectionBase()
 
 MgService* MgSiteConnectionBase::CreateService(INT32 serviceType)
 {
-    MgServiceFactory* fact = MgServiceFactory::GetInstance();
+    MgServiceRegistry* fact = MgServiceRegistry::GetInstance();
     return fact->CreateService(serviceType);
 }
 

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MG_SELECTION_H_
-#define _MG_SELECTION_H_
+#ifndef _MG_SELECTION_BASE_H_
+#define _MG_SELECTION_BASE_H_
 
 /// \defgroup MgSelection MgSelection
 /// \ingroup Mapping_Service_Module
@@ -29,7 +29,7 @@ class MG_PLATFORMBASE_API MgMemoryStreamHelper;
 class MG_PLATFORMBASE_API MgSelectionBase : public MgResource
 {
     DECLARE_CREATE_OBJECT()
-    DECLARE_CLASSNAME(MgSelection)
+    DECLARE_CLASSNAME(MgSelectionBase)
 
 PUBLISHED_API:
     /////////////////////////////////////////////////////////////////
@@ -392,7 +392,7 @@ PUBLISHED_API:
     ///
     /// \htmlinclude ExampleBottom.html
     ///
-    void Save(MgResourceService* resourceService, CREFSTRING mapName);
+    virtual void Save(MgResourceService* resourceService, CREFSTRING mapName);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -504,7 +504,7 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_MapLayer_SelectionBase;
 
-private:
+protected:
 
     typedef std::list<wstring> SelectionList;
     typedef std::map<wstring, SelectionList*> SelectedClassMap;

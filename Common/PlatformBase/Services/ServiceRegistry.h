@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGSERVICEFACTORY_H_
-#define MGSERVICEFACTORY_H_
+#ifndef MGSERVICEREGISTRY_H_
+#define MGSERVICEREGISTRY_H_
 
 #include "PlatformBase.h"
 
@@ -37,17 +37,17 @@ typedef MgService* (*ServiceCreatorFunc)();
 /// INTERNAL_CLASS
 /// \cond INTERNAL
 /// \brief
-/// Service registration for Foundation derived applications
-class MG_PLATFORMBASE_API MgServiceFactory : public MgDisposable
+/// Service registration for PlatformBase derived applications
+class MG_PLATFORMBASE_API MgServiceRegistry : public MgDisposable
 {
-    DECLARE_CLASSNAME(MgServiceFactory)
+    DECLARE_CLASSNAME(MgServiceRegistry)
 
 INTERNAL_API:
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Object constructor
     ///
-    MgServiceFactory();
+    MgServiceRegistry();
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -56,7 +56,7 @@ INTERNAL_API:
     /// \return
     /// Service factory for application
     ///
-    static MgServiceFactory* GetInstance();
+    static MgServiceRegistry* GetInstance();
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -81,7 +81,7 @@ private:
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Internal singleton variable
-    static Ptr<MgServiceFactory> m_serviceFactory;
+    static Ptr<MgServiceRegistry> m_serviceRegistry;
 
     /////////////////////////////////////////////////////////////////
     /// \brief
