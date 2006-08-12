@@ -20,7 +20,7 @@
 
 
 class MgSiteConnection :
-    public MgSiteConnectionBase
+    public MgServiceFactory
 {
 public:
     MgSiteConnection(void);
