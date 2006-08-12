@@ -26,50 +26,50 @@
 
 #include "Foundation.h"
 
-// Process-wide MgServiceFactory
-Ptr<MgServiceFactory> MgServiceFactory::m_serviceFactory = (MgServiceFactory*)NULL;
+// Process-wide MgServiceRegistry
+Ptr<MgServiceRegistry> MgServiceRegistry::m_serviceRegistry = (MgServiceRegistry*)NULL;
 
-MgServiceFactory::MgServiceFactory()
+MgServiceRegistry::MgServiceRegistry()
 {
 }
 
-MgServiceFactory* MgServiceFactory::GetInstance()
+MgServiceRegistry* MgServiceRegistry::GetInstance()
 {
     MG_TRY()
 
-    ACE_TRACE ("MgServiceFactory::GetInstance");
+    ACE_TRACE ("MgServiceRegistry::GetInstance");
 
-    if (MgServiceFactory::m_serviceFactory == NULL)
+    if (MgServiceRegistry::m_serviceRegistry == NULL)
     {
         // Perform Double-Checked Locking Optimization.
         ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance (), 0));
-        if (MgServiceFactory::m_serviceFactory == NULL)
+        if (MgServiceRegistry::m_serviceRegistry == NULL)
         {
-            MgServiceFactory::m_serviceFactory = new MgServiceFactory();
+            MgServiceRegistry::m_serviceRegistry = new MgServiceRegistry();
         }
     }
 
-    MG_CATCH_AND_THROW(L"MgServiceFactory.GetInstance")
+    MG_CATCH_AND_THROW(L"MgServiceRegistry.GetInstance")
 
     // To avoid overhead and maintain thread safety,
     // do not assign this returned static singleton to a Ptr object.
-    return MgServiceFactory::m_serviceFactory;
+    return MgServiceRegistry::m_serviceRegistry;
 }
 
 
-void MgServiceFactory::Dispose()
+void MgServiceRegistry::Dispose()
 {
     delete this;
 }
 
 
-MgService* MgServiceFactory::CreateService(INT16 serviceType, ServerConnectionType connType)
+MgService* MgServiceRegistry::CreateService(INT16 serviceType, ServerConnectionType connType)
 {
     ServiceRegistry registry = m_serviceCreators[connType];
     const ServiceCreatorFunc& func = registry[serviceType];
     if (NULL == func)
     {
-        throw new MgServiceNotSupportedException(L"MgServiceFactory.CreateService", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgServiceNotSupportedException(L"MgServiceRegistry.CreateService", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     MgService* obj = (*func)();
@@ -77,12 +77,12 @@ MgService* MgServiceFactory::CreateService(INT16 serviceType, ServerConnectionTy
 }
 
 
-void MgServiceFactory::RegisterService(INT16 serviceType, ServiceCreatorFunc creator, ServerConnectionType connType)
+void MgServiceRegistry::RegisterService(INT16 serviceType, ServiceCreatorFunc creator, ServerConnectionType connType)
 
 {
     if (NULL == creator)
     {
-        throw new MgInvalidArgumentException(L"MgServiceFactory.RegisterClass", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgServiceRegistry.RegisterClass", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     m_serviceCreators[connType][serviceType] = creator;

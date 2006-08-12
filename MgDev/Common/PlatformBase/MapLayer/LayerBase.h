@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MG_LAYER_H_
-#define _MG_LAYER_H_
+#ifndef _MG_LAYER_BASE_H_
+#define _MG_LAYER_BASE_H_
 
 class MgLayerGroup;
 class MgLayerCollection;
@@ -790,7 +790,7 @@ INTERNAL_API:
     //////////////////////////////////////////////////////////////////
     /// Parse the layer definition XML and extracts scale ranges,
     /// feature source and feature class from it
-    void GetLayerInfoFromDefinition(MgResourceService* resourceService);
+    virtual void GetLayerInfoFromDefinition(MgResourceService* resourceService);
 
     //////////////////////////////////////////////////////////////////
     /// Returns id property list
@@ -830,7 +830,7 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_MapLayer_Layer;
 
-private:
+protected:
     Ptr<MgResourceIdentifier> m_definition;
     STRING                m_name;
     STRING                m_objectId;

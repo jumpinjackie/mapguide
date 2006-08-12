@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MG_MAP_H_
-#define _MG_MAP_H_
+#ifndef _MG_MAP_BASE_H_
+#define _MG_MAP_BASE_H_
 
 /// \defgroup MgMap MgMap
 /// \ingroup Mapping_Service_Module

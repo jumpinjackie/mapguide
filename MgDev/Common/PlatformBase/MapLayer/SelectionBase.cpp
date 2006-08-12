@@ -791,19 +791,6 @@ bool MgSelectionBase::CanSetName()
 void MgSelectionBase::Open(MgResourceService* resourceService, CREFSTRING mapName)
 {
     throw new MgNotImplementedException(L"MgSelectionBase.Save", __LINE__, __WFILE__, NULL, L"", NULL);
-    //TODO TSW: Refactor to MapGuide dll
-    /*
-    STRING sessionId;
-    Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
-    if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
-    if (sessionId.empty())
-    {
-        throw new MgSessionExpiredException(L"MgSelection.Open",__LINE__,__WFILE__, NULL, L"", NULL);
-    }
-
-    Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(GetResourceName(sessionId, mapName));
-    MgResource::Open(resourceService, resId);
-    */
 }
 
 
@@ -813,19 +800,6 @@ void MgSelectionBase::Open(MgResourceService* resourceService, CREFSTRING mapNam
 void MgSelectionBase::Save(MgResourceService* resourceService, CREFSTRING mapName)
 {
     throw new MgNotImplementedException(L"MgSelectionBase.Save", __LINE__, __WFILE__, NULL, L"", NULL);
-    //TODO TSW: Refactor to MapGuide dll
-    /*
-    STRING sessionId;
-    Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
-    if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
-    if (sessionId.empty())
-    {
-        throw new MgSessionExpiredException(L"MgSelection.Save",__LINE__,__WFILE__, NULL, L"", NULL);
-    }
-
-    Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(GetResourceName(sessionId, mapName));
-    MgResource::Save(resourceService, resId);
-    */
 }
 
 
