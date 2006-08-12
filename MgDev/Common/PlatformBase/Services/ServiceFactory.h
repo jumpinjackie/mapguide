@@ -23,23 +23,6 @@
 #endif
 
 /// \cond INTERNAL
-//////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Enumeration for the server connection type.
-/// INTERNAL API ONLY.  DO NOT DOCUMENT.
-///
-enum ServerConnectionType
-{
-    sctNone = 0,                        /// No connection type defined
-    sctLocalInProc,                     /// No proxy class needed
-    sctRemoteServerToServer,            /// Proxy implementation used
-    sctServerToHttp                     /// Http requests are made
-};
-/// \endcond INTERNAL
-
-
-
-/// \cond INTERNAL
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Site connection base class.  Provides Service access for application
@@ -47,27 +30,27 @@ enum ServerConnectionType
 /// application environment to provide an API accessible MgSiteConnection
 ///
 ///
-class MG_PLATFORMBASE_API MgSiteConnectionBase  : public MgDisposable
+class MG_PLATFORMBASE_API MgServiceFactory  : public MgDisposable
 {
-    DECLARE_CLASSNAME(MgSiteConnectionBase)
+    DECLARE_CLASSNAME(MgServiceFactory)
 
 INTERNAL_API:
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Creates a site connection.
+    /// Creates a service factory.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgSiteConnectionBase();
+    /// MgServiceFactory();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgSiteConnectionBase();
+    /// MgServiceFactory();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgSiteConnectionBase();
+    /// MgServiceFactory();
     /// \htmlinclude SyntaxBottom.html
     ///
-    MgSiteConnectionBase();
+    MgServiceFactory();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -97,7 +80,7 @@ INTERNAL_API:
 
 INTERNAL_API:
 
-    virtual ~MgSiteConnectionBase();
+    virtual ~MgServiceFactory();
 
 };
 /// \}

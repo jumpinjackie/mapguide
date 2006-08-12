@@ -106,7 +106,7 @@
 #include "Services/Resource.h"
 #include "Services/ResourceService.h"
 #include "Services/Service.h"
-#include "Services/SiteConnectionBase.h"
+#include "Services/ServiceFactory.h"
 #include "Services/ServiceRegistry.h"
 #include "Services/SpatialContextData.h"
 #include "Services/SpatialContextExtentType.h"

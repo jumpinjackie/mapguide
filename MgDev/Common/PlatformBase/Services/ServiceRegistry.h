@@ -20,6 +20,21 @@
 
 #include "PlatformBase.h"
 
+/// \cond INTERNAL
+//////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumeration for the server connection type.
+/// INTERNAL API ONLY.  DO NOT DOCUMENT.
+///
+enum ServerConnectionType
+{
+    sctNone = 0,                        /// No connection type defined
+    sctLocalInProc,                     /// No proxy class needed
+    sctRemoteServerToServer,            /// Proxy implementation used
+    sctServerToHttp                     /// Http requests are made
+};
+/// \endcond INTERNAL
+
 #define DECLARE_CREATE_SERVICE() \
 public: \
     static MgService* CreateService();

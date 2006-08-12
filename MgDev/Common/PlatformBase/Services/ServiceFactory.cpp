@@ -21,17 +21,17 @@
 #undef CreateService
 #endif
 
-MgSiteConnectionBase::MgSiteConnectionBase()
+MgServiceFactory::MgServiceFactory()
 {
 }
 
-MgService* MgSiteConnectionBase::CreateService(INT32 serviceType)
+MgService* MgServiceFactory::CreateService(INT32 serviceType)
 {
     MgServiceRegistry* fact = MgServiceRegistry::GetInstance();
     return fact->CreateService(serviceType);
 }
 
-MgSiteConnectionBase::~MgSiteConnectionBase()
+MgServiceFactory::~MgServiceFactory()
 {
 }
 

@@ -701,19 +701,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\ServiceFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\ServiceFactory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\ServiceRegistry.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Services\ServiceRegistry.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Services\SiteConnectionBase.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Services\SiteConnectionBase.h"
 				>
 			</File>
 			<File
