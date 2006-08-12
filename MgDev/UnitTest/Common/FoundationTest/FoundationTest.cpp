@@ -46,7 +46,7 @@ bool bStatic = InitializeStatic();
 
 bool InitializeStatic()
 {
-    MgServiceFactory* fact = MgServiceFactory::GetInstance();
+    MgServiceRegistry* fact = MgServiceRegistry::GetInstance();
 
     fact->RegisterService(MgServiceType::ResourceService, MgTestResourceService::CreateService);
 
