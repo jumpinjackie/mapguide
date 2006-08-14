@@ -111,32 +111,43 @@ function sendToHost($host, $port, $method, $path, $data, $useragent=0) {
       // }
       $body .= "--$boundary\r\n";
       if (substr($value,0,5) == '<?xml') {
-          $body .= "Content-Disposition: form-data; name=\"".$index."\"; filename=\"blah.xml\"\r\n";
+          $body .= "Content-Disposition: form-data; name=\"".strtoupper($index)."\"; filename=\"blah.xml\"\r\n";
           $body .= "Content-type: text/xml\r\n";
-      } else if ($index == 'filename') {
-          $body .= "Content-Disposition: form-data; name=\"".$index."\"; filename=\"blah.xml\"\r\n";
-          $body .= "Content-type: application/octet-stream\r\n";
-          
-          $h = fopen( $value, 'rb');
-          while (!feof($h)) {
-              $body.= fread($h, 4096);
-          }
-          //$body .= fread($h, filesize($value));
-          fclose($h);
-          //write other form vars needed for file upload to mapagent
-          $body .= "--$boundary\r\n";
-          $body .= "Content-Disposition: form-data; name=\"DATANAME\"; value=\"".$value."\"\r\n";
-          $body .= "--$boundary\r\n";
-          $body .= "Content-Disposition: form-data; name=\"DATALENGTH\"; value=\"".filesize($value)."\"\r\n";
-          continue;
       } else {
-          $body .= "Content-Disposition: form-data; name=\"".$index."\"\r\n";
+          $body .= "Content-Disposition: form-data; name=\"".strtoupper($index)."\"\r\n";
       }
       //if (get_magic_quotes_gpc()) {
           $value = stripslashes($value);
       //}
       $body .= "\r\n".rawurldecode($value)."\r\n";
     }
+    //if there are files (uploads), attach them
+    foreach( $_FILES as $index => $value )
+    {
+        if ($index == 'DATA') {
+            //write additional form vars needed for file upload to mapagent
+            $body .= "--$boundary\r\n";
+            $body .= "Content-Disposition: form-data; name=\"DATANAME\"\r\n";    
+            $body .= "\r\n".$value['name']."\r\n";
+            $body .= "--$boundary\r\n";
+            $body .= "Content-Disposition: form-data; name=\"DATALENGTH\"\r\n";              
+            $body .= "\r\n".$_FILES[$index]['size']."\r\n";
+            $body .= "--$boundary\r\n";
+            $body .= "Content-Disposition: form-data; name=\"".$index."\"; filename=\"".$_FILES['DATA']['name']."\"\r\n";
+            $body .= "Content-type: application/octet-stream\r\n";
+            $body .= "\r\n";
+        
+            $h = fopen( $_FILES['DATA']['tmp_name'], 'rb');
+            while (!feof($h)) {
+                $body.= fread($h, 4096);
+            }
+            //$body .= fread($h, filesize($value));
+            fclose($h);
+            $body .= "\r\n";
+            
+        }
+    }
+    
     $body .= "--$boundary--\r\n";
     $header .= "Content-length: " . strlen($body) . "\r\n";
     $header .= "Connection: close\r\n\r\n";

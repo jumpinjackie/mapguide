@@ -1058,7 +1058,22 @@ Object.extend(  WSFeatureSource.prototype, {
                     this.content.appendChild(oNode);
                 }                
         }
+    },
+    setFilePath: function(szFilePath) {
+
+        var oParam = this.content.findFirstNode('Parameter');
+        if (oParam.getNodeText('Name') == 'File') {
+            var szPath = oParam.getNodeText('Value');
+            if (szPath == szFilePath) {
+                return;
+            } else {
+                //modify content
+                oParam.setNodeText('Value', szFilePath);
+                this.setDirty();
+            }
+        }
     }
+    
 });
 var WSLayerDefinition = Class.create();
 Object.extend(WSLayerDefinition.prototype, WSBaseObj.prototype);

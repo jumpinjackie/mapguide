@@ -868,6 +868,7 @@ WSApplication.prototype = {
          }
          for (var i=0; i<a.length; i++) {
              this.addResource(a[i]);
+             a[i].addContentListener(this);
              this.getResourceManager().addResource(a[i]);
          }
      },

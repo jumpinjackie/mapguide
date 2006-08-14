@@ -3511,7 +3511,10 @@ Object.extend(WSFeatureSourceView.prototype, {
         if (this.bManaged) {
             //managed FeatureSource
             this._oSettingsPanel.getObj('data').disabled = true;
+            //define onload that will set up the form for submissions
             Event.observe(this._oSettingsPanel.getObj('uploadPane'), "load", this._uploadPaneLoaded.bind(this));
+            //set the src of the form subpanel to have it load
+            this._oSettingsPanel.getObj('uploadPane').src = 'featureupload.html';
             this._enumerateData();
         } else {
             //unmanaged FeatureSource
@@ -3525,12 +3528,29 @@ Object.extend(WSFeatureSourceView.prototype, {
      * sets form variables for iframe subpanel to allow uploading data files
      */
     _uploadPaneLoaded: function() {
+        //jxTrace('upload panel loaded');
         //TODO: handle Firefox js 'unreponsive script' timeout by chunking upload.
+        this.oUploadPane = (this._oSettingsPanel.getObj('uploadPane').contentDocument)?
+            this._oSettingsPanel.getObj('uploadPane').contentDocument:
+            this._oSettingsPanel.getObj('uploadPane').document.frames['uploadPane'].document;
+        //set the location to the form
+        if (this.oUploadPane.location.href.indexOf("featureupload.html") == -1) {
+            //refresh list of data files
+            this.oUploadPane.onload = this._uploadPaneLoaded;
+            this.oUploadPane.location = "featureupload.html";
+            return;
+        }
+        this._enumerateData();
         //set form variables
-        this.oUploadPane = this._oSettingsPanel.getObj('uploadPane').contentDocument;
         this.oUploadPane.getElementById('uploadForm').action = this.obj.app.getBroker().mapAgentURL;
         this.oUploadPane.getElementById('resource').value = this.obj.rid;
-        this.oUploadPane.getElementById('datatype').value = this.obj.getContentValue('Value');
+        var szSelectValue = this.oSelect.options[this.oSelect.selectedIndex].value;
+        
+        //DefaultFileLocation isn't handled by MgApplicationRepositoryManager::SetResourceData
+        //in the server so leave this as file, even for shapefile uploads.
+        //this.oUploadPane.getElementById('datatype').value = (szSelectValue == 'SHP')?'DefaultFileLocation':'File';
+        this.oUploadPane.getElementById('datatype').value = 'File';
+        
         //the form needs user and pass for authentication
         var oBroker = this.viewManager.app.getBroker();
         this.oUploadPane.getElementById('username').value = oBroker.user;
@@ -3561,6 +3581,7 @@ Object.extend(WSFeatureSourceView.prototype, {
             oList.removeChild(oList.childNodes[0]);
         }
         
+        var nFiles = 0;
         while (oRd) {
             var szName = oRd.getNodeText('Name');
             oRd = oNode.findNextNode('ResourceData');
@@ -3569,6 +3590,22 @@ Object.extend(WSFeatureSourceView.prototype, {
             a.innerHTML = szName;
             li.appendChild(a);
             oList.appendChild(li);
+            nFiles++;
+        }
+        
+        //disable the data type selector if there are any data files in the resource - it
+        //isn't practical to change type once files are in the repository
+        if (nFiles) {
+            this._oSettingsPanel.getObj('providerType').disabled = true;
+        }
+        //if this is an SDF file, append it to the data location and update the xml
+        //setFilePath will mark the document as dirty.
+        //TODO: handle upload of a replacement file
+        if (nFiles == 1 &&
+            this.oSelect.options[this.oSelect.selectedIndex].value == 'SDF' &&
+            this._oSettingsPanel.getObj('data').value.indexOf(szName) == -1){
+            this._oSettingsPanel.getObj('data').value += szName;
+            this.obj.setFilePath(this._oSettingsPanel.getObj('data').value);
         }
         
     },
