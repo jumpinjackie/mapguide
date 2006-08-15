@@ -86,7 +86,7 @@ VectorLayerDefinition::FeatureNameType VectorLayerDefinition::GetFeatureNameType
 //-------------------------------------------------------------------------
 // PURPOSE: Sets a value determining the meaning of the FeatureName property value.
 // PARAMETERS:
-//		featureNameType - The type of value stored in the FeatureName property.
+//          featureNameType - The type of value stored in the FeatureName property.
 //-------------------------------------------------------------------------
 void VectorLayerDefinition::SetFeatureNameType(VectorLayerDefinition::FeatureNameType featureNameType)
 {

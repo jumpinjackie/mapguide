@@ -57,7 +57,7 @@ LayerDefinition::~LayerDefinition()
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the read only ResourceID property. The
 //          ResourceID represents the name of the file that is the source
-//			of all the data.
+//          of all the data.
 // RETURNS: Name of the file.
 //-------------------------------------------------------------------------
 const MdfString& LayerDefinition::GetResourceID()const
@@ -67,8 +67,8 @@ const MdfString& LayerDefinition::GetResourceID()const
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method to the ResourceID property. The
-//			ResourceID property is name of the file that is the source of
-//			all the data.
+//          ResourceID property is name of the file that is the source of
+//          all the data.
 // PARAMETERS:
 //      Input:
 //          strSourceID - resource file name.
@@ -90,8 +90,8 @@ const double LayerDefinition::GetOpacity()const
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method to a double Opacity property.
 //          This method does not check the incoming value to validate that it falls
-//			within the range 0 to 1. It is up to the user to ensure that the correct
-//			information is passed in.
+//          within the range 0 to 1. It is up to the user to ensure that the correct
+//          information is passed in.
 // PARAMETERS:
 //      Input:
 //          opacity - a double representing the opacity from 0 (transparent) to 1 (opaque).

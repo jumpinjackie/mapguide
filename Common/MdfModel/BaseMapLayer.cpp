@@ -228,7 +228,7 @@ bool BaseMapLayer::IsExpandInLegend()const
 // PARAMETERS:
 //      Input:
 //          bExpandInLegend - if true then theming will be displayed in the
-//							  legend.
+//                            legend.
 //-------------------------------------------------------------------------
 void BaseMapLayer::SetExpandInLegend(bool bExpandInLegend)
 {

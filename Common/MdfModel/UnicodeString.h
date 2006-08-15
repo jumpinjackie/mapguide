@@ -23,7 +23,7 @@
 using namespace std;
 
 // Define character type for UTF-16.  This is used by Xerces C++.
-#ifdef _NATIVE_WCHAR_T_DEFINED 
+#ifdef _NATIVE_WCHAR_T_DEFINED
     typedef wchar_t  XMLCh;
 #else
     typedef unsigned short  XMLCh;
