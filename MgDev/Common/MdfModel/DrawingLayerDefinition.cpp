@@ -100,7 +100,7 @@ void DrawingLayerDefinition::SetLayerFilter(const MdfString& strLayerFilter)
 //          The MinScale value is inclusive i.e. If the Map's scale falls on
 //          the MinScale value it is deemed to be within the ScaleRange.
 //          The min and max scale values are used to define a range of values
-//			within which the DrawingLayerDefinition is drawn.
+//          within which the DrawingLayerDefinition is drawn.
 // RETURNS: The minimum value.
 //-------------------------------------------------------------------------
 double DrawingLayerDefinition::GetMinScale()const
@@ -113,7 +113,7 @@ double DrawingLayerDefinition::GetMinScale()const
 //          The MinScale value is inclusive i.e. If the Map's scale falls on
 //          the MinScale value it is deemed to be within the ScaleRange.
 //          The min and max scale values are used to define a range of values
-//			within which the DrawingLayerDefinition is drawn.
+//          within which the DrawingLayerDefinition is drawn.
 // PARAMETERS:
 //      Input:
 //          dMinScale - the minimum value.
@@ -126,7 +126,7 @@ void DrawingLayerDefinition::SetMinScale( const double& dMinScale)
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the maximum value component of this DrawingLayerDefinition.
 //          The min and max scale values are used to define a range of values
-//			within which the DrawingLayerDefinition is drawn.
+//          within which the DrawingLayerDefinition is drawn.
 // RETURNS: The maximum value.
 //-------------------------------------------------------------------------
 double DrawingLayerDefinition::GetMaxScale()const
@@ -137,7 +137,7 @@ double DrawingLayerDefinition::GetMaxScale()const
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method to the maximum value component of this DrawingLayerDefinition.
 //          The min and max scale values are used to define a range of values
-//			within which the DrawingLayerDefinition is drawn.
+//          within which the DrawingLayerDefinition is drawn.
 // PARAMETERS:
 //      Input:
 //          dMaxScale - The maximum value.

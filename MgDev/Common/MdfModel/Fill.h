@@ -58,9 +58,6 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // The Expression:Color string representation for the background color.
         MdfString m_strBackColor;
-
-        // Determines if the background for the fill pattern is transparent.
-        bool m_bTransparentBackground;
     };
 
 END_NAMESPACE_MDFMODEL

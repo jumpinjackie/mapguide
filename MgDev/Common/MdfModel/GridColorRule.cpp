@@ -68,7 +68,7 @@ GridColor* GridColorRule::GetGridColor()
 //-------------------------------------------------------------------------
 void GridColorRule::AdoptGridColor(GridColor *pGridColor)
 {
-    if (m_spGridColor != pGridColor) 
+    if (m_spGridColor != pGridColor)
     {
         delete m_spGridColor;
         m_spGridColor = pGridColor;
