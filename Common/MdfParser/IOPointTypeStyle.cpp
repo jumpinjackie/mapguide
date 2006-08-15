@@ -25,10 +25,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOPointTypeStyle::IOPointTypeStyle()
 {
+    this->_pointTypeStyle = NULL;
+    this->scaleRange = NULL;
 }
 
 IOPointTypeStyle::IOPointTypeStyle(VectorScaleRange * scaleRange)
 {
+    this->_pointTypeStyle = NULL;
     this->scaleRange = scaleRange;
 }
 

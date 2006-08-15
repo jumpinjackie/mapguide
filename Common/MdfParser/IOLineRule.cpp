@@ -26,10 +26,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOLineRule::IOLineRule()
 {
+    this->_lineRule = NULL;
+    this->lineTypeStyle = NULL;
 }
 
 IOLineRule::IOLineRule(LineTypeStyle * lineTypeStyle)
 {
+    this->_lineRule = NULL;
     this->lineTypeStyle = lineTypeStyle;
 }
 

@@ -25,11 +25,11 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
-IOGridColorStyle::IOGridColorStyle():scaleRange(NULL), colorStyle(NULL)
+IOGridColorStyle::IOGridColorStyle():colorStyle(NULL), scaleRange(NULL)
 {
 }
 
-IOGridColorStyle::IOGridColorStyle(GridScaleRange * pScaleRange):scaleRange(pScaleRange), colorStyle(NULL)
+IOGridColorStyle::IOGridColorStyle(GridScaleRange * pScaleRange):colorStyle(NULL), scaleRange(pScaleRange)
 {
 }
 

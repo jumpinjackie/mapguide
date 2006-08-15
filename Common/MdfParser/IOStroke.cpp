@@ -26,6 +26,7 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOStroke::IOStroke(std::wstring elementName)
 {
+    this->_stroke = NULL;
     this->m_elementName = elementName;
 }
 

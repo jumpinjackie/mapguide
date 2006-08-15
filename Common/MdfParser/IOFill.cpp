@@ -24,6 +24,7 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOFill::IOFill()
 {
+    this->_fill = NULL;
 }
 
 IOFill::IOFill(Fill * fill)

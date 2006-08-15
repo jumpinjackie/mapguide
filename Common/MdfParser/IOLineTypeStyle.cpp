@@ -25,10 +25,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOLineTypeStyle::IOLineTypeStyle()
 {
+    this->_lineTypeStyle = NULL;
+    this->scaleRange = NULL;
 }
 
 IOLineTypeStyle::IOLineTypeStyle(VectorScaleRange * scaleRange)
 {
+    this->_lineTypeStyle = NULL;
     this->scaleRange = scaleRange;
 }
 

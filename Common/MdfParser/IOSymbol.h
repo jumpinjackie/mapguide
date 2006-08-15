@@ -32,6 +32,7 @@ class IOSymbol : public SAX2ElementHandler
         Symbol * m_symbol;
 
     public:
+        IOSymbol();
         virtual void ElementChars(const wchar_t *ch);
 
         Symbol* GetSymbol();

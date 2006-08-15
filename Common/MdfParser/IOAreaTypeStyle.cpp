@@ -25,10 +25,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOAreaTypeStyle::IOAreaTypeStyle()
 {
+    this->_areaTypeStyle = NULL;
+    this->scaleRange = NULL;
 }
 
 IOAreaTypeStyle::IOAreaTypeStyle(VectorScaleRange * scaleRange)
 {
+    this->_areaTypeStyle = NULL;
     this->scaleRange = scaleRange;
 }
 

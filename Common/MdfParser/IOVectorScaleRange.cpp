@@ -28,10 +28,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOVectorScaleRange::IOVectorScaleRange()
 {
+    this->_scaleRange = NULL;
+    this->layer = NULL;
 }
 
 IOVectorScaleRange::IOVectorScaleRange(VectorLayerDefinition *layer)
 {
+    this->_scaleRange = NULL;
     this->layer = layer;
 }
 

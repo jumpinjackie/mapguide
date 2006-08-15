@@ -35,6 +35,7 @@ class IOMarkSymbol : public IOSymbol
         IOFill*     m_ioFill;
 
     public:
+        IOMarkSymbol();
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);
         virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);

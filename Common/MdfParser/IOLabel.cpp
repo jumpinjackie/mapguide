@@ -25,11 +25,14 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOLabel::IOLabel()
 {
+    this->_label = NULL;
+    this->rule = NULL;
     this->m_handlingPlacement = false;
 }
 
 IOLabel::IOLabel(Rule * rule)
 {
+    this->_label = NULL;
     this->rule = rule;
     this->m_handlingPlacement = false;
 }

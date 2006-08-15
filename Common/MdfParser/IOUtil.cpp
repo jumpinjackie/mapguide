@@ -93,7 +93,7 @@ std::string EncodeString(std::wstring str)
     out.reserve(s.length());
     const char* ret = s.c_str();
     size_t length = s.length();
- 
+
     for(size_t i = 0; i < length; i++)
     {
         if (ret[i] == '&')          out.append("&amp;"); // NOXLATE

@@ -26,10 +26,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOAreaSymbolization2D::IOAreaSymbolization2D()
 {
+    this->_areaSymbolization = NULL;
+    this->areaRule = NULL;
 }
 
 IOAreaSymbolization2D::IOAreaSymbolization2D(AreaRule * areaRule)
 {
+    this->_areaSymbolization = NULL;
     this->areaRule = areaRule;
 }
 

@@ -27,6 +27,12 @@ using namespace MDFPARSER_NAMESPACE;
 // When a MarkSymbol is successfully parsed by this class, it must be accessed by the
 // parent class and then managed appropriately.  It will not be deleted by this class.
 
+IOMarkSymbol::IOMarkSymbol() : IOSymbol()
+{
+    this->m_ioStroke = NULL;
+    this->m_ioFill = NULL;
+}
+
 void IOMarkSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     this->m_currElemName = name;
