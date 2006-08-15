@@ -143,7 +143,7 @@ void MgServerConnectionImp::Disconnect()
         char buf[256];
 
         ssize_t len = 0;
-        while ((len = mServer->recv((void*)buf, 256)) > 0)
+        while ((len = mServer->recv((void*)buf, 256, MG_MSG_NOSIGNAL)) > 0)
         {
             // clearing out buffer
         }

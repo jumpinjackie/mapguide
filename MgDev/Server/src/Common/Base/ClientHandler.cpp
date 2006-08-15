@@ -71,7 +71,7 @@ MgClientHandler::~MgClientHandler()
     char buf[256];
 
     ssize_t len = 0;
-    while ((len = m_SockStream.recv((void*)buf, 256)) > 0)
+    while ((len = m_SockStream.recv((void*)buf, 256, MG_MSG_NOSIGNAL)) > 0)
     {
         // clearing out buffer
     }

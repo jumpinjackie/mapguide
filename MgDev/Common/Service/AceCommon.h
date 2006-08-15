@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _ACE_COMMON_H
-#define _ACE_COMMON_H
+#ifndef ACE_COMMON_H_
+#define ACE_COMMON_H_
 
 // Enable logging, our log files use this
 #ifdef ACE_NLOGGING
@@ -124,5 +124,12 @@ typedef ACE_LOCK_SOCK_Acceptor<ACE_SYNCH_MUTEX> SOCK_Acceptor;
 #   define MG_HTONL(X) ACE_SWAP_LONG (X)
 #   define MG_NTOHL(X) ACE_SWAP_LONG (X)
 # endif /* ACE_LITTLE_ENDIAN */
+
+// Flag used for SIGPIPE handling
+#ifdef _WIN32
+    static const int MG_MSG_NOSIGNAL = 0;
+#else
+    static const int MG_MSG_NOSIGNAL = MSG_NOSIGNAL;
+#endif
 
 #endif

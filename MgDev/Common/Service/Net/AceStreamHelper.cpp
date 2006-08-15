@@ -196,7 +196,13 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
         // eliminates the hanging problem when it takes so long to write a
         // request to the socket.
         const ACE_Time_Value timeout(60);
-        ssize_t res = stream.recv(&m_readBuffer[m_readBufEnd], m_readBufSize - m_readBufEnd, 0, &timeout);
+
+        // On Linux, use MSG_NOSIGNAL to turn off raising of SIGPIPE on
+        // stream sockets when the other end disappears.
+        // Note that neither trapping the SIGPIPE signal via an
+        // ACE_Event_Handler nor calling ACE_OS::signal(SIGPIPE, SIG_IGN)
+        // seems to work.
+        ssize_t res = stream.recv(&m_readBuffer[m_readBufEnd], m_readBufSize - m_readBufEnd, MG_MSG_NOSIGNAL, &timeout);
 
         if ( res < 0 )
         {
@@ -221,7 +227,7 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
         if (MgStreamHelper::mssNotDone == stat && blocking)
         {
             // Still not enough data.  Have to block and fill only what was asked for.
-            res = stream.recv_n( &m_readBuffer[m_readBufEnd], size - (m_readBufEnd-m_readBufStart) );
+            res = stream.recv_n(&m_readBuffer[m_readBufEnd], size - (m_readBufEnd-m_readBufStart), MG_MSG_NOSIGNAL);
 
             if ( res < 0 )
             {
@@ -418,13 +424,20 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteData(void* buffer,
 
         ssize_t res = 0;
 
+        // On Linux, use MSG_NOSIGNAL to request not to send SIGPIPE on
+        // errors on stream oriented sockets when the other end breaks
+        // the connection. The EPIPE error is still returned.
+        // Note that neither trapping the SIGPIPE signal via an
+        // ACE_Event_Handler nor calling ACE_OS::signal(SIGPIPE, SIG_IGN)
+        // seems to work.
+
         if ( blocking )
         {
-            res = stream.send_n( buffer, size );
+            res = stream.send_n(buffer, size, MG_MSG_NOSIGNAL);
         }
         else
         {
-            res = stream.send( buffer, size );
+            res = stream.send(buffer, size, MG_MSG_NOSIGNAL);
         };
 
         //  check for failure
@@ -564,7 +577,7 @@ bool MgAceStreamHelper::IsConnected()
     stream.set_handle( m_handle );
     UINT8 dummy;
     ACE_Time_Value val(0, 0);
-    ssize_t res = stream.recv_n( &dummy, 1, MSG_PEEK, &val);
+    ssize_t res = stream.recv_n(&dummy, 1, MSG_PEEK | MG_MSG_NOSIGNAL, &val);
 
     if ( res < 0 )
     {
