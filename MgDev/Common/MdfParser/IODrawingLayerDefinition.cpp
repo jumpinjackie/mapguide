@@ -25,6 +25,7 @@ using namespace MDFPARSER_NAMESPACE;
 
 IODrawingLayerDefinition::IODrawingLayerDefinition()
 {
+    this->_layer = NULL;
 }
 
 IODrawingLayerDefinition::IODrawingLayerDefinition(DrawingLayerDefinition * layer)

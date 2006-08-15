@@ -26,6 +26,7 @@ using namespace MDFPARSER_NAMESPACE;
 IOBaseMapLayer::IOBaseMapLayer()
 : IOMapLayerCommon()
 {
+    this->baseMapLayers = NULL;
 }
 
 IOBaseMapLayer::IOBaseMapLayer(BaseMapLayerCollection * baseMapLayers)

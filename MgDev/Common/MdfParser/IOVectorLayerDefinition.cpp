@@ -26,6 +26,7 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOVectorLayerDefinition::IOVectorLayerDefinition()
 {
+    this->_layer = NULL;
 }
 
 IOVectorLayerDefinition::IOVectorLayerDefinition(VectorLayerDefinition *layer)

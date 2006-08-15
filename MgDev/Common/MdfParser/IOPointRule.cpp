@@ -26,10 +26,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOPointRule::IOPointRule()
 {
+    this->_pointRule = NULL;
+    this->pointTypeStyle = NULL;
 }
 
 IOPointRule::IOPointRule(PointTypeStyle * pointTypeStyle)
 {
+    this->_pointRule = NULL;
     this->pointTypeStyle = pointTypeStyle;
 }
 

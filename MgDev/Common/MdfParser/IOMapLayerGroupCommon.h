@@ -30,8 +30,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOMapLayerGroupCommon : public SAX2ElementHandler
 {
     protected:
-        MapDefinition * map;
         MapLayerGroupCommon * _layerGroup;
+        MapDefinition * map;
         IOMapLayerGroupCommon();
 
     public:

@@ -27,11 +27,11 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
-IOGridScaleRange::IOGridScaleRange():layer(NULL), _scaleRange(NULL)
+IOGridScaleRange::IOGridScaleRange():_scaleRange(NULL), layer(NULL)
 {
 }
 
-IOGridScaleRange::IOGridScaleRange(GridLayerDefinition *player):layer(player), _scaleRange(NULL)
+IOGridScaleRange::IOGridScaleRange(GridLayerDefinition *player):_scaleRange(NULL), layer(player)
 {
 }
 

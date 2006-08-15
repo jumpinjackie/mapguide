@@ -23,11 +23,11 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
-IOGridSurfaceStyle::IOGridSurfaceStyle():scaleRange(NULL), surfaceStyle(NULL)
+IOGridSurfaceStyle::IOGridSurfaceStyle():surfaceStyle(NULL), scaleRange(NULL)
 {
 }
 
-IOGridSurfaceStyle::IOGridSurfaceStyle(GridScaleRange * pScaleRange):scaleRange(pScaleRange), surfaceStyle(NULL)
+IOGridSurfaceStyle::IOGridSurfaceStyle(GridScaleRange * pScaleRange):surfaceStyle(NULL), scaleRange(pScaleRange)
 {
 }
 

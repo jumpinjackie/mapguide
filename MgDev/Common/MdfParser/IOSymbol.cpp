@@ -22,6 +22,11 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+IOSymbol::IOSymbol()
+{
+    this->m_symbol = NULL;
+}
+
 void IOSymbol::ElementChars(const wchar_t *ch)
 {
     if (this->m_currElemName == L"Unit") // NOXLATE

@@ -25,6 +25,7 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOMapLayerCommon::IOMapLayerCommon()
 {
+    this->mapLayerCommon = NULL;
 }
 
 IOMapLayerCommon::~IOMapLayerCommon()

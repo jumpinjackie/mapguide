@@ -25,7 +25,7 @@ using namespace MDFPARSER_NAMESPACE;
 // When a W2DSymbol is successfully parsed by this class, it must be accessed by the
 // parent class and then managed appropriately.  It will not be deleted by this class.
 
-IOW2DSymbol::IOW2DSymbol()
+IOW2DSymbol::IOW2DSymbol() : IOSymbol()
 {
     this->m_ioResourceRef = NULL;
 }

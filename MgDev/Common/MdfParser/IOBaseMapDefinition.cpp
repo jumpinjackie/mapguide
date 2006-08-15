@@ -29,6 +29,7 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOBaseMapDefinition::IOBaseMapDefinition()
 {
+    this->map = NULL;
 }
 
 IOBaseMapDefinition::IOBaseMapDefinition(MapDefinition *map)

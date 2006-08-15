@@ -25,10 +25,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOMapLayerGroupCommon::IOMapLayerGroupCommon()
 {
+    this->_layerGroup = NULL;
+    this->map = NULL;
 }
 
 IOMapLayerGroupCommon::IOMapLayerGroupCommon(MapDefinition * map)
 {
+    this->_layerGroup = NULL;
     this->map = map;
 }
 

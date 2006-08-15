@@ -34,7 +34,6 @@ class IOExtra : public SAX2ElementHandler
         double maxX;
         double minY;
         double maxY;
-
         MapDefinition * map;
 
     public:

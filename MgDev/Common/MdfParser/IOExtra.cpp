@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOExtra.h"
+#include <float.h>
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -24,11 +25,20 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOExtra::IOExtra()
 {
+    this->minX = +DBL_MAX;
+    this->maxX = -DBL_MAX;
+    this->minY = +DBL_MAX;
+    this->maxY = -DBL_MAX;
+    this->map  = NULL;
 }
 
 IOExtra::IOExtra(MapDefinition *map)
 {
-    this->map = map;
+    this->minX = +DBL_MAX;
+    this->maxX = -DBL_MAX;
+    this->minY = +DBL_MAX;
+    this->maxY = -DBL_MAX;
+    this->map  = map;
 }
 
 IOExtra::~IOExtra()

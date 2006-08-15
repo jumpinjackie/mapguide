@@ -27,9 +27,8 @@ IOGridLayerDefinition::IOGridLayerDefinition():_layer(NULL)
 {
 }
 
-IOGridLayerDefinition::IOGridLayerDefinition(GridLayerDefinition *layer)
+IOGridLayerDefinition::IOGridLayerDefinition(GridLayerDefinition *layer):_layer(layer)
 {
-    this->_layer = layer;
 }
 
 IOGridLayerDefinition::~IOGridLayerDefinition()

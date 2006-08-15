@@ -25,10 +25,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOLineSymbolization2D::IOLineSymbolization2D()
 {
+    this->_lineSymbolization = NULL;
+    this->lineRule = NULL;
 }
 
 IOLineSymbolization2D::IOLineSymbolization2D(LineRule * lineRule)
 {
+    this->_lineSymbolization = NULL;
     this->lineRule = lineRule;
 }
 

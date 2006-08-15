@@ -30,11 +30,16 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOPointSymbolization2D::IOPointSymbolization2D()
 {
+    this->_PointSymbolization2D = NULL;
+    this->pointRule = NULL;
+    this->ioSymbol = NULL;
 }
 
 IOPointSymbolization2D::IOPointSymbolization2D(PointRule * pointRule)
 {
+    this->_PointSymbolization2D = NULL;
     this->pointRule = pointRule;
+    this->ioSymbol = NULL;
 }
 
 IOPointSymbolization2D::~IOPointSymbolization2D()

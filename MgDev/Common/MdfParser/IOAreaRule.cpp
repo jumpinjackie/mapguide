@@ -26,10 +26,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOAreaRule::IOAreaRule()
 {
+    this->_areaRule = NULL;
+    this->areaTypeStyle = NULL;
 }
 
 IOAreaRule::IOAreaRule(AreaTypeStyle * areaTypeStyle)
 {
+    this->_areaRule = NULL;
     this->areaTypeStyle = areaTypeStyle;
 }
 

@@ -45,8 +45,13 @@ public:
 static CInitXerces s_InitXerces;
 
 
-SAX2Parser::SAX2Parser()
+SAX2Parser::SAX2Parser() : DefaultHandler()
 {
+    m_Parser       = NULL;
+    m_HandlerStack = NULL;
+    m_tagOpen      = false;
+    m_charsInTag   = false;
+
     Flush();
     Initialize();
 }
@@ -211,7 +216,6 @@ void SAX2Parser::ParseFile(char* str)
     {
         m_succeeded = false;
     }
-
 }
 
 

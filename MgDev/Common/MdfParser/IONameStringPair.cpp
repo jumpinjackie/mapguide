@@ -24,10 +24,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IONameStringPair::IONameStringPair()
 {
+    this->_nameStringPair = NULL;
+    this->layer = NULL;
 }
 
 IONameStringPair::IONameStringPair(VectorLayerDefinition *layer)
 {
+    this->_nameStringPair = NULL;
     this->layer = layer;
 }
 
