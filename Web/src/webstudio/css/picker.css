@@ -1,0 +1,89 @@
+/**
+ * @project         MapGuide Open Source Web Studio
+ * @revision        $Id: picker.css,v 1.10 2006/06/09 13:44:31 pspencer Exp $
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * released under LGPL License with MapGuide Open Source (see index.html)
+ */
+
+/*
+ * Styles for style pickers such as line styles and area fill styles
+ */
+div.stylePickerContainer {
+  position: absolute; 
+  width: 100%; 
+  height: 160px;
+  left: 0px; 
+  top: 20px; 
+  overflow: hidden;
+  z-index: 1;
+}
+
+div.stylePicker {
+  position: absolute; 
+  width: 100%; 
+  height: 160px;
+  overflow: auto;
+  border: 1px solid #333;
+  z-index: 1;
+  background-color: #fff;
+}
+
+div.stylePicker ul {
+  position: relative;
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  list-style-type: none;
+}
+
+div.stylePicker li {
+  position: relative;
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  height:20px;
+}
+
+div.stylePicker a {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  white-space: nowrap;
+  /* this value needs to be the height of it's parent
+     minus it's own margin, padding and border values */ 
+  line-height:20px;
+  /* height needs to be set for IE.  Same value as line height. */
+  height: 20px;
+  color: #000;
+  background-position: right top;
+  background-repeat: no-repeat;
+}
+
+div.stylePicker a:hover {
+  background-color: #E1EDFA; 
+  /*background-color: #ffffcc; */
+}
+
+div.stylePicker a.selected {
+  font-weight: bold;
+  background-color: #ffffb3;
+}
+
+/* styles for specific types of pickers in the various dialogs */
+
+div.pointPicker a, div.pointPicker div.stylePicker a {
+  padding-left:2px;
+}
+
+div.linePicker a, div.linePicker div.stylePicker a {
+  padding-left:2px;
+}
+
+div.areaPicker a, div.areaPicker div.stylePicker a {
+  padding-left:2px;
+}
+
+div.fontPicker a, div.fontPicker div.stylePicker a {
+}

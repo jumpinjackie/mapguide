@@ -1,0 +1,41 @@
+<h1>Style Point Dialog</h1>
+<p>The style point dialog is opened when you click on a style preview in the Layer Styles panel and the geometric type of the feature class is point.  The style point dialog allows you to choose a symbol type, style and orientation.</p>
+<h2>Symbol</h2>
+<p>To enable a point symbol, select a symbol type from the symbol select box.  You can choose from pre-defined mark symbols, fonts, and library symbols.  You can also choose not to display a symbol by selecting 'No Symbol'.</p>
+<h3>Mark symbols</h3>
+<p>Mark symbols are pre-defined by the server.  You can select from the following mark symbols:</p>
+<ul>
+    <li><img src="images/point_square.png" width="11" height="11">Square</li>
+    <li><img src="images/point_circle.png" width="11" height="11">Circle</li>
+    <li><img src="images/point_triangle.png" width="11" height="11">Triangle</li>
+    <li><img src="images/point_star.png" width="11" height="11">Star</li>
+    <li><img src="images/point_x.png" width="11" height="11">Cross</li>
+    <li><img src="images/point_cross.png" width="11" height="11">Plus</li>
+</ul>
+<p>If you choose a mark symbol, you can set the width and height of the symbol.</p>
+<h3>Font symbols</h3>
+<p>You can use a true-type font character as a point symbol.  Choose 'Font Symbol' from the Symbol list and then type in the font name, character to use, and size</p>
+<h3>Symbol Library</h3>
+<p>You can use a symbol from a Symbol Library as a point symbol.  Choose 'Symbol Library' from the Symbol list and then choose a Symbol Libary resource, one of the symbols in the library, and its size</p>
+<h2>Style</h2>
+<dl>
+    <dt>Fill Color</dt>
+    <dd>Enter an 8 digit hex code (AARRGGBB) for the fill color.</dd>
+    <dt>Border Color</dt>
+    <dd>Enter an 8 digit hex code (AARRGGBB) for the border color.</dd>
+</dl>
+<h2>Orientation</h2>
+<p>You can choose how to orient the symbol relative to its geographic location using the following properties:</p>
+<dl>
+    <dt>Reference Point</dt>
+    <dd>The reference point (x and y) determines what point in the symbol is to be placed at the geographic location represented by the point.  By default, a symbol is centered over its point.</dd>
+    <dt>Rotation</dt>
+    <dd>A point symbol may be rotated around its point.  You may enter a rotation angle between 0 and 360 degrees, or click the [...] button to launch the expression builder to create a <a href="javascript:setHelpTopic('dialg_expressionbuilder.html#number')">number expression</a> to use as the rotation angle.</dd>
+</dl>
+<h2>Units</h2>
+<dl>
+    <dt>Units</dt>
+    <dd>This controls the units used when interpreting the size of a symbol.  Select from Points (72 points per inch), Millimeters, Inches or Centimeters.</dd>
+    <dt>Size Context</dt>
+    <dd>This indicates what the units are relative to.  The options are map space and device space.  By default device space is used.</dd>
+</dl>
