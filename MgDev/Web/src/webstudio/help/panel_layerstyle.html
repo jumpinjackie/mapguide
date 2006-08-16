@@ -1,0 +1,42 @@
+<h1>Layer Style Panel</h1>
+<p>The layer style panel is used to style a layer.  It consists of a toolbar and a list of scale ranges defined for the layer.  Layer styles apply to specific scale ranges.  A layer can be styled the same for all scales by creating a single scale range and entering 0 for both the minimum and maximum scale.  Within a scale range, a style is defined by one or more rules.  A rule contains an expression, a style, a feature label and a legend label.  If the expression is left empty then the rule applies to all features in that scale range.  Otherwise, the rule only applies to features that are selected by the expression.</p>
+<p>Features within a layer are rendered by finding the first scale range and rule that apply to the feature.  Scale ranges and rules are processed from the top of the list to the bottom.  It is valid to define scale ranges that overlap and rules that can select the same features because the server will render the feature with the first rule that it finds.  Other scale ranges and rules will not be considered once a suitable rule has been found.</p>
+<h2>Style Toolbar</h2>
+<img src='images/layerstyletoolbar.png' width='238' height='36'>
+<p>The style toolbar contains tools for manipulating scale ranges and rules.  The first two tools are used to create new scale ranges and new rules respectively.  The remaining tools apply to the currently selected scale range or rule.  To select a scale range or rule, click in one of the associated input boxes or on the gray box to the left of the scale range or rule.  The currently selected scale range or rule is highlighted with a blue background.  If a rule is selected, its associated scale range is also highlighted with a lighter background.</p>
+<dl>
+    <dt><img src='images/icon_add_scale.png' width='20' height='20'>Add Scale Range</dt>
+    <dd>Append a new scale range to the layer style.</dd>
+    <dt><img src='images/icon_add_rule.png' width='20' height='20'>Add Rule</dt>
+    <dd>Append a new rule to the currently selected scale range.</dd>
+    <dt><img src='images/icon_theme.png' width='20' height='20'>Theme</dt>
+    <dd>Not implemented</dd>
+    <dt><img src='images/icon_duplicate.png' width='20' height='20'>Duplicate Range/Rule</dt>
+    <dd>Duplicate the currently selected scale range or rule.</dd>
+    <dt><img src='images/icon_move_up.png' width='20' height='20'>Move Range/Rule Up</dt>
+    <dd>Move the currently selected scale range or rule up in its list.</dd>
+    <dt><img src='images/icon_move_down.png' width='20' height='20'>Move Range/Rule Down</dt>
+    <dd>Move the currently selected scale range or rule down in its list.</dd>
+    <dt><img src='images/icon_delete.png' width='20' height='20'>Delete Range/Rule</dt>
+    <dd>Delete the currently selected scale range or rule.  Deleting a scale range also deletes all its rules.</dd>
+</dl>
+<h2>Scale Ranges</h2>
+<p>For each scale range, you can configure the following properties:</p>
+<dl>
+    <dt>Min Scale</dt>
+    <dd>The minimum scale for which this range is valid.  When the map is below this scale, this range does not apply.</dd>
+    <dt>Max Scale</dt>
+    <dd>The maximum scale for which this range is valid.  When the map is above this scale, this range does not apply.</dd>
+</dl>
+<h2>Rules</h2>
+<p>Each scale range can have one or more associated rules.  Rules have the following properties:</p>
+<dl>
+    <dt>Condition</dt>
+    <dd>The condition cell contains the condition for this rule, which is a <a href="javascript:setHelpTopic('dialog_expressionbuilder.html#filter')">filter expression</a> that determines which features match this rule.  The condition may be empty, which means that all features in this scale range will match this rule.</dd>
+    <dt>Style</dt>
+    <dd>The style cell contains a preview of the style of this rule.  Clicking the cell will launch a <a href="javascript:setHelpTopic('dialog_stylepoint.html')">point</a>, <a href="javascript:setHelpTopic('dialog_styleline.html')">line</a>, or <a href="javascript:setHelpTopic('dialog_stylearea.html')">area</a> dialog depending on the geometric type of the layer.  The preview of the style is simulated by the web browser and is not intended to be an accurate representation of the layer style.  It is provided as a quick visual clue of the style.</dd>
+    <dt>Feature Label</dt>
+    <dd>The feature label cell contains a preview of the label which will be rendered with this feature.  The label can be configured by clicking the cell to launch the <a href="javascript:setHelpTopic('dialog_stylelabel.html')">Style Label</a> dialog.</dd>
+    <dt>Legend Label</dt>
+    <dd>The legend label cell contains the text that will be displayed in the map legend for this rule.  The legend label may be empty.</dd>
+</dl>   
