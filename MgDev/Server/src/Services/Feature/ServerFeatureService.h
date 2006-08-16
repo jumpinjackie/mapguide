@@ -636,7 +636,12 @@ public:
                                                           CREFSTRING className);
 
     bool CloseGwsFeatureReader(INT32 gwsFeatureReader);
+
+    // Feature Service cache methods
     virtual void UpdateFeatureServiceCache();
+    virtual void RemoveFeatureServiceCacheEntries(MgSerializableCollection* changedResources);
+    virtual void RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource);
+    virtual void ClearFeatureServiceCache();
 
 private:
     //////////////////////////////////////////////////////////////////

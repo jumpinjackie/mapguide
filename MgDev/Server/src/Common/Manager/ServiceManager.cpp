@@ -432,6 +432,15 @@ void MgServiceManager::DispatchResourceChangeNotifications()
                 resourceService->EnumerateParentMapDefinitions(changedResources);
 
             m_loadBalanceManager->DispatchResourceChangeNotifications(changedMaps);
+
+            // Remove the Feature Service cache entries associated with the changed resources
+            Ptr<MgServerFeatureService> featureService = dynamic_cast<MgServerFeatureService*>(
+                RequestLocalService(MgServiceType::FeatureService));
+
+            if (featureService != NULL)
+            {
+                featureService->RemoveFeatureServiceCacheEntries(changedResources);
+            }
         }
     }
 

@@ -36,6 +36,7 @@ MgFeatureServiceCache::MgFeatureServiceCache(void)
 
     m_cacheLimit = MgConfigProperties::DefaultFeatureServicePropertyCacheSize;
     m_cacheTimeLimit = MgConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit;
+
 }
 
 /// <summary>
@@ -43,40 +44,7 @@ MgFeatureServiceCache::MgFeatureServiceCache(void)
 /// </summary>
 MgFeatureServiceCache::~MgFeatureServiceCache(void)
 {
-    if (m_featureSchemaCollection != NULL)
-    {
-        m_featureSchemaCollection->Clear();
-    }
-
-    if (m_featureSchemaXmlCollection != NULL)
-    {
-        m_featureSchemaXmlCollection->Clear();
-    }
-
-    if (m_schemasCollection != NULL)
-    {
-        m_schemasCollection->Clear();
-    }
-
-    if (m_spatialContextCollection != NULL)
-    {
-        m_spatialContextCollection->Clear();
-    }
-
-    if (m_classesCollection != NULL)
-    {
-        m_classesCollection->Clear();
-    }
-
-    if (m_classDefinitionCollection != NULL)
-    {
-        m_classDefinitionCollection->Clear();
-    }
-
-    if (m_identityPropertiesCollection != NULL)
-    {
-        m_identityPropertiesCollection->Clear();
-    }
+    ClearCache();
 }
 
 /// <summary>
@@ -611,126 +579,127 @@ void MgFeatureServiceCache::RemoveExpiredEntries()
 {
     ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
+    RemoveExpiredEntries(m_featureSchemaCollection);
+    RemoveExpiredEntries(m_featureSchemaXmlCollection);
+    RemoveExpiredEntries(m_schemasCollection);
+    RemoveExpiredEntries(m_spatialContextCollection);
+    RemoveExpiredEntries(m_classesCollection);
+    RemoveExpiredEntries(m_classDefinitionCollection);
+    RemoveExpiredEntries(m_identityPropertiesCollection);
+}
+
+void MgFeatureServiceCache::RemoveEntry(MgResourceIdentifier* resource)
+{
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    RemoveEntry(resource, m_featureSchemaCollection);
+    RemoveEntry(resource, m_featureSchemaXmlCollection);
+    RemoveEntry(resource, m_schemasCollection);
+    RemoveEntry(resource, m_spatialContextCollection);
+    RemoveEntry(resource, m_classesCollection);
+    RemoveEntry(resource, m_classDefinitionCollection);
+    RemoveEntry(resource, m_identityPropertiesCollection);
+}
+
+void MgFeatureServiceCache::RemoveExpiredEntries(MgDisposableCollection* collection)
+{
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     // Get the current datetime
     ACE_Time_Value now = ACE_High_Res_Timer::gettimeofday();
 
-    int i;
-    INT32 size = m_featureSchemaCollection->GetCount();
-    for(i=0;i<size;i++)
+    if(collection)
     {
-        Ptr<MgFeatureSchemaCacheEntry> cacheEntry;
-        cacheEntry = (MgFeatureSchemaCacheEntry*)(m_featureSchemaCollection->GetItem(i));
-        if(cacheEntry)
+        int nIndex;
+        INT32 size = collection->GetCount();
+        for(nIndex=0;nIndex<size;nIndex++)
         {
-            ACE_Time_Value diffTime = now - cacheEntry->m_timeStamp;
-            long diff = diffTime.sec();
-            if(diff  > m_cacheTimeLimit)
+            Ptr<MgFeatureServiceCacheEntry > cacheEntry;
+            cacheEntry = (MgFeatureServiceCacheEntry *)(collection->GetItem(nIndex));
+            if(cacheEntry)
             {
-                // Entry has reached the timelimit
-                m_featureSchemaCollection->Remove(cacheEntry);
+                ACE_Time_Value diffTime = now - cacheEntry->m_timeStamp;
+                long diff = diffTime.sec();
+                if(diff  > m_cacheTimeLimit)
+                {
+                    // Entry has reached the timelimit
+                    collection->Remove(cacheEntry);
+
+                    // Reset the index because we have removed an entry
+                    nIndex = -1;
+
+                    // Update the size
+                    size = collection->GetCount();
+                }
             }
         }
     }
+}
 
-    size = m_featureSchemaXmlCollection->GetCount();
-    for(i=0;i<size;i++)
+void MgFeatureServiceCache::RemoveEntry(MgResourceIdentifier* resource, MgDisposableCollection* collection)
+{
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    if((resource) && (collection))
     {
-        Ptr<MgFeatureSchemaXmlCacheEntry> cacheEntry;
-        cacheEntry = (MgFeatureSchemaXmlCacheEntry*)(m_featureSchemaXmlCollection->GetItem(i));
-        if(cacheEntry)
+        int nIndex;
+        INT32 size = collection->GetCount();
+        for(nIndex=0;nIndex<size;nIndex++)
         {
-            ACE_Time_Value diffTime = now - cacheEntry->m_timeStamp;
-            long diff = diffTime.sec();
-            if(diff  > m_cacheTimeLimit)
+            Ptr<MgFeatureServiceCacheEntry > cacheEntry;
+            cacheEntry = (MgFeatureServiceCacheEntry *)(collection->GetItem(nIndex));
+            if(cacheEntry)
             {
-                // Entry has reached the timelimit
-                m_featureSchemaXmlCollection->Remove(cacheEntry);
+                if(cacheEntry->m_resource == resource->ToString())
+                {
+                    // Found a match
+                    collection->Remove(cacheEntry);
+
+                    // Reset the index because we have removed an entry
+                    nIndex = -1;
+
+                    // Update the size
+                    size = collection->GetCount();
+                }
             }
         }
     }
+}
 
-    size = m_schemasCollection->GetCount();
-    for(i=0;i<size;i++)
+void MgFeatureServiceCache::ClearCache()
+{
+    if (m_featureSchemaCollection != NULL)
     {
-        Ptr<MgSchemasCacheEntry> cacheEntry;
-        cacheEntry = (MgSchemasCacheEntry*)(m_schemasCollection->GetItem(i));
-        if(cacheEntry)
-        {
-            ACE_Time_Value diffTime = now - cacheEntry->m_timeStamp;
-            long diff = diffTime.sec();
-            if(diff  > m_cacheTimeLimit)
-            {
-                // Entry has reached the timelimit
-                m_schemasCollection->Remove(cacheEntry);
-            }
-        }
+        m_featureSchemaCollection->Clear();
     }
 
-    size = m_spatialContextCollection->GetCount();
-    for(i=0;i<size;i++)
+    if (m_featureSchemaXmlCollection != NULL)
     {
-        Ptr<MgSpatialContextCacheEntry> cacheEntry;
-        cacheEntry = (MgSpatialContextCacheEntry*)(m_spatialContextCollection->GetItem(i));
-        if(cacheEntry)
-        {
-            ACE_Time_Value diffTime = now - cacheEntry->m_timeStamp;
-            long diff = diffTime.sec();
-            if(diff  > m_cacheTimeLimit)
-            {
-                // Entry has reached the timelimit
-                m_spatialContextCollection->Remove(cacheEntry);
-            }
-        }
+        m_featureSchemaXmlCollection->Clear();
     }
 
-    size = m_classesCollection->GetCount();
-    for(i=0;i<size;i++)
+    if (m_schemasCollection != NULL)
     {
-        Ptr<MgClassesCacheEntry> cacheEntry;
-        cacheEntry = (MgClassesCacheEntry*)(m_classesCollection->GetItem(i));
-        if(cacheEntry)
-        {
-            ACE_Time_Value diffTime = now - cacheEntry->m_timeStamp;
-            long diff = diffTime.sec();
-            if(diff  > m_cacheTimeLimit)
-            {
-                // Entry has reached the timelimit
-                m_classesCollection->Remove(cacheEntry);
-            }
-        }
+        m_schemasCollection->Clear();
     }
 
-    size = m_classDefinitionCollection->GetCount();
-    for(i=0;i<size;i++)
+    if (m_spatialContextCollection != NULL)
     {
-        Ptr<MgClassDefinitionCacheEntry> cacheEntry;
-        cacheEntry = (MgClassDefinitionCacheEntry*)(m_classDefinitionCollection->GetItem(i));
-        if(cacheEntry)
-        {
-            ACE_Time_Value diffTime = now - cacheEntry->m_timeStamp;
-            long diff = diffTime.sec();
-            if(diff  > m_cacheTimeLimit)
-            {
-                // Entry has reached the timelimit
-                m_classDefinitionCollection->Remove(cacheEntry);
-            }
-        }
+        m_spatialContextCollection->Clear();
     }
 
-    size = m_identityPropertiesCollection->GetCount();
-    for(i=0;i<size;i++)
+    if (m_classesCollection != NULL)
     {
-        Ptr<MgIdentityPropertiesCacheEntry> cacheEntry;
-        cacheEntry = (MgIdentityPropertiesCacheEntry*)(m_identityPropertiesCollection->GetItem(i));
-        if(cacheEntry)
-        {
-            ACE_Time_Value diffTime = now - cacheEntry->m_timeStamp;
-            long diff = diffTime.sec();
-            if(diff  > m_cacheTimeLimit)
-            {
-                // Entry has reached the timelimit
-                m_identityPropertiesCollection->Remove(cacheEntry);
-            }
-        }
+        m_classesCollection->Clear();
+    }
+
+    if (m_classDefinitionCollection != NULL)
+    {
+        m_classDefinitionCollection->Clear();
+    }
+
+    if (m_identityPropertiesCollection != NULL)
+    {
+        m_identityPropertiesCollection->Clear();
     }
 }

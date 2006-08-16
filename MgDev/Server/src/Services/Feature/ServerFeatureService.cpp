@@ -442,6 +442,9 @@ MgPropertyCollection* MgServerFeatureService::UpdateFeatures( MgResourceIdentifi
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::UpdateFeatures()");
 
+    // Remove any cached references to this resource because it has been updated (Insert/Update/Delete).
+    RemoveFeatureServiceCacheEntry(resource);
+
     MgServerUpdateFeatures asuf;
     return asuf.Execute(resource, commands, useTransaction);
 }
@@ -1205,5 +1208,42 @@ void MgServerFeatureService::UpdateFeatureServiceCache()
     if(featureServiceCache)
     {
         featureServiceCache->RemoveExpiredEntries();
+    }
+}
+
+void MgServerFeatureService::RemoveFeatureServiceCacheEntries(MgSerializableCollection* changedResources)
+{
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    if(featureServiceCache)
+    {
+        if(changedResources)
+        {
+            // We have a list of changed resources
+            INT32 numResources = changedResources->GetCount();
+            for (INT32 i = 0; i < numResources; ++i)
+            {
+                Ptr<MgSerializable> serializableObj = changedResources->GetItem(i);
+                MgResourceIdentifier* resource = dynamic_cast<MgResourceIdentifier*>(serializableObj.p);
+                featureServiceCache->RemoveEntry(resource);
+            }
+        }
+    }
+}
+
+void MgServerFeatureService::RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource)
+{
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    if(featureServiceCache)
+    {
+        featureServiceCache->RemoveEntry(resource);
+    }
+}
+
+void MgServerFeatureService::ClearFeatureServiceCache()
+{
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    if(featureServiceCache)
+    {
+        featureServiceCache->ClearCache();
     }
 }

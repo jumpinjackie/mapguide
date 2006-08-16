@@ -20,14 +20,25 @@
 
 #include "ServerFeatureDllExport.h"
 
-class MgFeatureSchemaCacheEntry : public MgGuardDisposable
+class MgFeatureServiceCacheEntry : public MgGuardDisposable
+{
+public:
+    MgFeatureServiceCacheEntry () { };
+    virtual ~MgFeatureServiceCacheEntry () { };
+    virtual void Dispose() = 0;
+
+    STRING m_resource;
+    ACE_Time_Value m_timeStamp;
+};
+
+
+class MgFeatureSchemaCacheEntry : public MgFeatureServiceCacheEntry 
 {
 public:
     MgFeatureSchemaCacheEntry(CREFSTRING resource, CREFSTRING schemaName, MgFeatureSchemaCollection* featureSchemaCollection)
     {
         m_resource = resource;
         m_schemaName = schemaName;
-
         m_timeStamp = ACE_High_Res_Timer::gettimeofday();
         m_featureSchemaCollection = SAFE_ADDREF(featureSchemaCollection);
     }
@@ -35,16 +46,14 @@ public:
     virtual ~MgFeatureSchemaCacheEntry() {}
     virtual void Dispose() { delete this; }
 
-    STRING m_resource;
     STRING m_schemaName;
-    ACE_Time_Value m_timeStamp;
     Ptr<MgFeatureSchemaCollection> m_featureSchemaCollection;
 
 protected:
     MgFeatureSchemaCacheEntry() {}
 };
 
-class MgFeatureSchemaXmlCacheEntry : public MgGuardDisposable
+class MgFeatureSchemaXmlCacheEntry : public MgFeatureServiceCacheEntry 
 {
 public:
     MgFeatureSchemaXmlCacheEntry(CREFSTRING resource, CREFSTRING schemaName, CREFSTRING schemaXml)
@@ -58,16 +67,14 @@ public:
     virtual ~MgFeatureSchemaXmlCacheEntry() {}
     virtual void Dispose() { delete this; }
 
-    STRING m_resource;
     STRING m_schemaName;
-    ACE_Time_Value m_timeStamp;
     STRING m_schemaXml;
 
 protected:
     MgFeatureSchemaXmlCacheEntry() { }
 };
 
-class MgSchemasCacheEntry : public MgGuardDisposable
+class MgSchemasCacheEntry : public MgFeatureServiceCacheEntry 
 {
 public:
     MgSchemasCacheEntry(CREFSTRING resource, MgStringCollection* schemas)
@@ -80,15 +87,13 @@ public:
     virtual ~MgSchemasCacheEntry() {}
     virtual void Dispose() { delete this; }
 
-    STRING m_resource;
-    ACE_Time_Value m_timeStamp;
     Ptr<MgStringCollection> m_schemasCollection;
 
 protected:
     MgSchemasCacheEntry() { }
 };
 
-class MgSpatialContextCacheEntry : public MgGuardDisposable
+class MgSpatialContextCacheEntry : public MgFeatureServiceCacheEntry 
 {
 public:
     MgSpatialContextCacheEntry(CREFSTRING resource, bool bActive, MgSpatialContextReader* spatialContextReader)
@@ -102,16 +107,14 @@ public:
     virtual ~MgSpatialContextCacheEntry() {}
     virtual void Dispose() { delete this; }
 
-    STRING m_resource;
     bool m_bActive;
-    ACE_Time_Value m_timeStamp;
     Ptr<MgSpatialContextReader> m_spatialContextReader;
 
 protected:
     MgSpatialContextCacheEntry() { }
 };
 
-class MgClassesCacheEntry : public MgGuardDisposable
+class MgClassesCacheEntry : public MgFeatureServiceCacheEntry 
 {
 public:
     MgClassesCacheEntry(CREFSTRING resource, CREFSTRING schemaName, MgStringCollection* classes)
@@ -125,16 +128,14 @@ public:
     virtual ~MgClassesCacheEntry() {}
     virtual void Dispose() { delete this; }
 
-    STRING m_resource;
     STRING m_schemaName;
-    ACE_Time_Value m_timeStamp;
     Ptr<MgStringCollection> m_classesCollection;
 
 protected:
     MgClassesCacheEntry() { }
 };
 
-class MgClassDefinitionCacheEntry : public MgGuardDisposable
+class MgClassDefinitionCacheEntry : public MgFeatureServiceCacheEntry 
 {
 public:
     MgClassDefinitionCacheEntry(CREFSTRING resource, CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDefinition)
@@ -149,17 +150,15 @@ public:
     virtual ~MgClassDefinitionCacheEntry() {}
     virtual void Dispose() { delete this; }
 
-    STRING m_resource;
     STRING m_schemaName;
     STRING m_className;
-    ACE_Time_Value m_timeStamp;
     Ptr<MgClassDefinition> m_classDefinition;
 
 protected:
     MgClassDefinitionCacheEntry() { }
 };
 
-class MgIdentityPropertiesCacheEntry : public MgGuardDisposable
+class MgIdentityPropertiesCacheEntry : public MgFeatureServiceCacheEntry 
 {
 public:
     MgIdentityPropertiesCacheEntry(CREFSTRING resource, CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* identityPropertiesCollection)
@@ -174,10 +173,8 @@ public:
     virtual ~MgIdentityPropertiesCacheEntry() {}
     virtual void Dispose() { delete this; }
 
-    STRING m_resource;
     STRING m_schemaName;
     STRING m_className;
-    ACE_Time_Value m_timeStamp;
     Ptr<MgPropertyDefinitionCollection> m_identityPropertiesCollection;
 
 protected:
@@ -198,7 +195,11 @@ public:
     static MgFeatureServiceCache* GetInstance(void);
 
     void Initialize(INT32 cacheLimit, INT32 cacheTimeLimit);
+
+    // The following functions work with all cache entries
+    void ClearCache();
     void RemoveExpiredEntries();
+    void RemoveEntry(MgResourceIdentifier* resource);
 
     // Feature Schema Cache
     void AddFeatureSchema(MgResourceIdentifier* resource, CREFSTRING schemaName, MgFeatureSchemaCollection* featureSchemaCollection);
@@ -252,6 +253,8 @@ protected:
     MgFeatureServiceCache(void);
 
 private:
+    void RemoveExpiredEntries(MgDisposableCollection* collection);
+    void RemoveEntry(MgResourceIdentifier* resource, MgDisposableCollection* collection);
 
     /// Pointer to a process-wide singleton.
     static Ptr<MgFeatureServiceCache> m_FeatureServiceCache;
