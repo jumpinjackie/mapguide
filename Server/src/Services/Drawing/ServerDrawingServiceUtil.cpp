@@ -79,7 +79,7 @@ WT_Result MgServerDrawingServiceUtil::MgWt_process_layer(WT_Layer &layer, WT_Fil
 
     if (layerName)
     {
-        layerList->Add(MgUtil::MultiByteToWideChar(string(layerName.ascii())));
+        layerList->Add(WT_String::to_wchar(layerName.length(), layerName.unicode()));
     }
 
     return WT_Result::Success;
