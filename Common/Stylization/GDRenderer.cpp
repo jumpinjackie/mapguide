@@ -259,7 +259,7 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
     if (format == L"GIF")       // MgImageFormats::Gif
         data = (unsigned char*)gdImageGifPtr(im, &size);
     else if (format == L"JPG")  // MgImageFormats::Jpeg
-        data = (unsigned char*)gdImageJpegPtr(im, &size, 7);
+        data = (unsigned char*)gdImageJpegPtr(im, &size, 75);
 //  else if (format == L"TIF")  // MgImageFormats::Tiff
 //      data = (unsigned char*)gdImageTiffPtr(im, &size);
     else if (format == L"PNG")  // MgImageFormats::Png
