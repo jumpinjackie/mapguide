@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = ServerRenderingService.vcproj ServerRenderingService.rc
+EXTRA_DIST = ServerKmlService.vcproj ServerKmlService.rc
 
 prefix=@prefix@/server
 
@@ -17,38 +17,28 @@ INCLUDES = \
   -I../../../../Common/Stylization \
   -I../Mapping
 
-lib_LTLIBRARIES = libMgServerRenderingService.la
+lib_LTLIBRARIES = libMgServerKmlService.la
 
-libMgServerRenderingService_la_SOURCES = \
-  ServerRenderingServiceBuild.cpp
+libMgServerKmlService_la_SOURCES = \
+  ServerKmlServiceBuild.cpp
 
 include_SOURCES = \
-  RenderingOperation.cpp \
-  RenderingOperationFactory.cpp \
-  RenderingServiceHandler.cpp \
-  ServerRenderingService.cpp \
-  OpRenderDynamicOverlay.cpp \
-  OpRenderMap.cpp \
-  OpRenderTile.cpp \
-  OpQueryFeatures.cpp \
-  OpQueryFeatureProperties.cpp \
-  FeatureInfoRenderer.cpp \
-  FeaturePropRenderer.cpp \
-  OpRenderMapLegend.cpp
+  KmlOperation.cpp \
+  KmlOperationFactory.cpp \
+  KmlServiceHandler.cpp \
+  ServerKmlService.cpp \
+  OpGetMapKml.cpp \
+  OpGetLayerKml.cpp \
+  OpGetFeaturesKml.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
-  RenderingOperationFactory.h \
-  RenderingOperation.h \
-  RenderingServiceHandler.h \
-  ServerRenderingDllExport.h \
-  ServerRenderingService.h \
-  OpRenderDynamicOverlay.h \
-  OpRenderMap.h \
-  OpRenderTile.h \
-  OpQueryFeatures.h \
-  OpQueryFeatureProperties.h \
-  FeatureInfoRenderer.h \
-  FeaturePropRenderer.h \
-  OpRenderMapLegend.h
+  KmlOperationFactory.h \
+  KmlOperation.h \
+  KmlServiceHandler.h \
+  ServerKmlDllExport.h \
+  ServerKmlService.h \
+  OpGetMapKml.h \
+  OpGetLayerKml.h \
+  OpGetFeaturesKml.h
 
-libMgServerRenderingService_la_LDFLAGS = -version-info 7:0:0
+libMgServerKmlService_la_LDFLAGS = -version-info 7:0:0

@@ -70,6 +70,9 @@ include_SOURCES = \
   HttpGetSpatialContexts.cpp \
   HttpGetTileImage.cpp \
   HttpGetVisibleMapExtent.cpp \
+  HttpKmlGetMap.cpp \
+  HttpKmlGetLayer.cpp \
+  HttpKmlGetFeatures.cpp \
   HttpHeader.cpp \
   HttpInheritPermissionsFrom.cpp \
   HttpMoveResource.cpp \
@@ -171,6 +174,9 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpHandlerApiDllExport.h \
   HttpHeader.h \
   HttpInheritPermissionsFrom.h \
+  HttpKmlGetMap.h \
+  HttpKmlGetLayer.h \
+  HttpKmlGetFeatures.h \
   HttpMoveResource.h \
   HttpPrimitiveValue.h \
   HttpPrimitiveValueTypes.h \

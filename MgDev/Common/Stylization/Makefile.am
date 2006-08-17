@@ -34,6 +34,10 @@ libMgStylization_la_SOURCES = \
   EMapRenderer.cpp \
   EPlotRenderer.cpp \
   EMapUpdateRenderer.cpp \
+  KmlRenderer.cpp \
+  KmlContent.cpp \
+  KmlLineStyle.cpp \
+  KmlPolyStyle.cpp \
   Centroid.cpp \
   W2DRewriter.cpp \
   SymbolTrans.cpp \
@@ -79,6 +83,10 @@ noinst_HEADERS = \
   EMapRenderer.h \
   EPlotRenderer.h \
   EMapUpdateRenderer.h \
+  KmlRenderer.h \
+  KmlContent.h \
+  KmlLineStyle.h \
+  KmlPolyStyle.h \
   Centroid.h \
   DWFRSInputStream.h \
   RSDWFInputStream.h \
