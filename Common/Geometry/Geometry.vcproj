@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\bin\Debug"
-			IntermediateDirectory="..\bin\Debug\Geometry"
+			OutputDirectory="..\bin\debug"
+			IntermediateDirectory="..\obj\debug\Geometry"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -67,6 +67,7 @@
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Debug"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				ImportLibrary="..\lib\debug\Geometryd.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -96,8 +97,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\bin\Release"
-			IntermediateDirectory="..\bin\Release\Geometry"
+			OutputDirectory="..\bin\release"
+			IntermediateDirectory="..\obj\release\Geometry"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -147,6 +148,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="../lib/release/Geometry.lib"
 				TargetMachine="1"
 			/>
 			<Tool

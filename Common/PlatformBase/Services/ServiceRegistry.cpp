@@ -117,7 +117,7 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_Property_Int32Property, MgInt32Property::CreateObject);
     fact->Register(PlatformBase_Property_Int64Property, MgInt64Property::CreateObject);
     fact->Register(PlatformBase_Property_SingleProperty, MgSingleProperty::CreateObject);
-    fact->Register(PlatformBase_CoreService_Warning, MgWarnings::CreateObject);
+    fact->Register(PlatformBase_Service_Warning, MgWarnings::CreateObject);
     fact->Register(PlatformBase_FeatureService_ClassDefinition, MgClassDefinition::CreateObject);
     fact->Register(PlatformBase_FeatureService_DataPropertyDefinition, MgDataPropertyDefinition::CreateObject);
     fact->Register(PlatformBase_FeatureService_GeometricPropertyDefinition, MgGeometricPropertyDefinition::CreateObject);
@@ -145,18 +145,30 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_ResourceService_ResourceIdentifier, MgResourceIdentifier::CreateObject);
 // TODO: Come back and move the following to product-specific DLL registration
 // code.
-    fact->Register(PlatformBase_MapLayer_Layer, MgLayerBase::CreateObject);
+    fact->Register(PlatformBase_MapLayer_LayerBase, MgLayerBase::CreateObject);
 
     EXCEPTION_CLASS_CREATOR(MgArrayTypeMismatchException)
+    EXCEPTION_CLASS_CREATOR(MgDuplicateResourceDataException)
+    EXCEPTION_CLASS_CREATOR(MgDuplicateResourceException)
+    EXCEPTION_CLASS_CREATOR(MgEmptyFeatureSetException)
+    EXCEPTION_CLASS_CREATOR(MgFdoException)
+    EXCEPTION_CLASS_CREATOR(MgFeatureServiceException)
     EXCEPTION_CLASS_CREATOR(MgInvalidMapDefinitionException)
     EXCEPTION_CLASS_CREATOR(MgInvalidRepositoryNameException)
     EXCEPTION_CLASS_CREATOR(MgInvalidRepositoryTypeException)
+    EXCEPTION_CLASS_CREATOR(MgInvalidResourceDataNameException)
+    EXCEPTION_CLASS_CREATOR(MgInvalidResourceDataTypeException)
     EXCEPTION_CLASS_CREATOR(MgInvalidResourceNameException)
     EXCEPTION_CLASS_CREATOR(MgInvalidResourcePathException)
+    EXCEPTION_CLASS_CREATOR(MgInvalidResourcePreProcessingTypeException)
     EXCEPTION_CLASS_CREATOR(MgInvalidResourceTypeException)
-    EXCEPTION_CLASS_CREATOR(MgInvalidResourceNameException)
+    EXCEPTION_CLASS_CREATOR(MgLayerNotFoundException)
+    EXCEPTION_CLASS_CREATOR(MgResourceBusyException)
+    EXCEPTION_CLASS_CREATOR(MgResourceDataNotFoundException)
+    EXCEPTION_CLASS_CREATOR(MgResourceNotFoundException)
+    EXCEPTION_CLASS_CREATOR(MgServiceNotAvailableException)
     EXCEPTION_CLASS_CREATOR(MgServiceNotSupportedException)
-
+    EXCEPTION_CLASS_CREATOR(MgUserNotFoundException)
 
     return true;
 }

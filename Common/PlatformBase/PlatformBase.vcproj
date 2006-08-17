@@ -67,6 +67,7 @@
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				ImportLibrary="..\lib\debug\PlatformBased.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -97,7 +98,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\bin\release"
-			IntermediateDirectory="..\obj\PlatformBase\release"
+			IntermediateDirectory="..\obj\release\PlatformBase"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -146,6 +147,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="../lib/release/PlatformBase.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -329,6 +331,46 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Exception\DuplicateResourceDataException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\DuplicateResourceDataException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\DuplicateResourceException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\DuplicateResourceException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\EmptyFeatureSetException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\EmptyFeatureSetException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\FdoException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\FdoException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\FeatureServiceException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\FeatureServiceException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception\InvalidMapDefinitionException.cpp"
 				>
 			</File>
@@ -353,6 +395,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Exception\InvalidResourceDataNameException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\InvalidResourceDataNameException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\InvalidResourceDataTypeException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\InvalidResourceDataTypeException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception\InvalidResourceNameException.cpp"
 				>
 			</File>
@@ -369,6 +427,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Exception\InvalidResourcePreProcessingTypeException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\InvalidResourcePreProcessingTypeException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception\InvalidResourceTypeException.cpp"
 				>
 			</File>
@@ -377,11 +443,59 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Exception\LayerNotFoundException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\LayerNotFoundException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\ResourceBusyException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\ResourceBusyException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\ResourceDataNotFoundException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\ResourceDataNotFoundException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\ResourceNotFoundException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\ResourceNotFoundException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\ServiceNotAvailableException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\ServiceNotAvailableException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception\ServiceNotSupportedException.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Exception\ServiceNotSupportedException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\UserNotFoundException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\UserNotFoundException.h"
 				>
 			</File>
 		</Filter>

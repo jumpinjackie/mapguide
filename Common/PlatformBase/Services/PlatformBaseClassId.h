@@ -27,20 +27,6 @@
 #define PLATFORMBASE_FEATURESERVICE_ID      11750
 #define PLATFORMBASE_MAPLAYER_ID            12000
 
-/*
-#define MAPPINGSERVICE_ID          10000
-#define RENDERINGSERVICE_ID        11000
-
-#define TILESERVICE_ID             13000
-#define SERVERADMIN_ID             14000
-#define SITE_ID                    15000
-#define CONTROLLER_ID              16000
-#define COORDINATE_SYSTEM_ID       17000
-#define GEOMETRY_ID                18000
-#define MAPLAYER_ID                19000
-#define MAPAGENT_ID                20000
-#define WEBAPP_ID                  21000
-*/
 // Platform Collection
 #define PlatformBase_Collection_IntCollection                   PLATFORMBASE_COLLECTION_ID+0
 #define PlatformBase_Collection_PropertyDefinitionCollection    PLATFORMBASE_COLLECTION_ID+1
@@ -62,38 +48,48 @@
 #define PlatformBase_Property_SingleProperty                    PLATFORMBASE_DATA_ID+11
 
 // Platform Exceptions
-#define PlatformBase_Exception_MgArrayTypeMismatchException         PLATFORMBASE_EXCEPTION_ID+0
-#define PlatformBase_Exception_MgInvalidMapDefinitionException      PLATFORMBASE_EXCEPTION_ID+1
-#define PlatformBase_Exception_MgInvalidRepositoryNameException     PLATFORMBASE_EXCEPTION_ID+2
-#define PlatformBase_Exception_MgInvalidRepositoryTypeException     PLATFORMBASE_EXCEPTION_ID+3
-#define PlatformBase_Exception_MgInvalidResourceNameException       PLATFORMBASE_EXCEPTION_ID+4
-#define PlatformBase_Exception_MgInvalidResourcePathException       PLATFORMBASE_EXCEPTION_ID+5
-#define PlatformBase_Exception_MgInvalidResourceTypeException       PLATFORMBASE_EXCEPTION_ID+6
-#define PlatformBase_Exception_MgResourceNameException              PLATFORMBASE_EXCEPTION_ID+7
-#define PlatformBase_Exception_MgServiceNotSupportedException       PLATFORMBASE_EXCEPTION_ID+8
-
-
+#define PlatformBase_Exception_MgArrayTypeMismatchException                 PLATFORMBASE_EXCEPTION_ID+0
+#define PlatformBase_Exception_MgDuplicateResourceDataException             PLATFORMBASE_EXCEPTION_ID+1
+#define PlatformBase_Exception_MgDuplicateResourceException                 PLATFORMBASE_EXCEPTION_ID+2
+#define PlatformBase_Exception_MgEmptyFeatureSetException                   PLATFORMBASE_EXCEPTION_ID+3
+#define PlatformBase_Exception_MgFdoException                               PLATFORMBASE_EXCEPTION_ID+4
+#define PlatformBase_Exception_MgFeatureServiceException                    PLATFORMBASE_EXCEPTION_ID+5
+#define PlatformBase_Exception_MgInvalidMapDefinitionException              PLATFORMBASE_EXCEPTION_ID+6
+#define PlatformBase_Exception_MgInvalidRepositoryNameException             PLATFORMBASE_EXCEPTION_ID+7
+#define PlatformBase_Exception_MgInvalidRepositoryTypeException             PLATFORMBASE_EXCEPTION_ID+8
+#define PlatformBase_Exception_MgInvalidResourceDataNameException           PLATFORMBASE_EXCEPTION_ID+9
+#define PlatformBase_Exception_MgInvalidResourceDataTypeException           PLATFORMBASE_EXCEPTION_ID+10
+#define PlatformBase_Exception_MgInvalidResourceNameException               PLATFORMBASE_EXCEPTION_ID+11
+#define PlatformBase_Exception_MgInvalidResourcePathException               PLATFORMBASE_EXCEPTION_ID+12
+#define PlatformBase_Exception_MgInvalidResourcePreProcessingTypeException  PLATFORMBASE_EXCEPTION_ID+13
+#define PlatformBase_Exception_MgInvalidResourceTypeException               PLATFORMBASE_EXCEPTION_ID+14
+#define PlatformBase_Exception_MgLayerNotFoundException                     PLATFORMBASE_EXCEPTION_ID+15
+#define PlatformBase_Exception_MgResourceBusyException                      PLATFORMBASE_EXCEPTION_ID+16
+#define PlatformBase_Exception_MgResourceDataNotFoundException              PLATFORMBASE_EXCEPTION_ID+17
+#define PlatformBase_Exception_MgResourceNotFoundException                  PLATFORMBASE_EXCEPTION_ID+18
+#define PlatformBase_Exception_MgServiceNotAvailableException               PLATFORMBASE_EXCEPTION_ID+19
+#define PlatformBase_Exception_MgServiceNotSupportedException               PLATFORMBASE_EXCEPTION_ID+20
+#define PlatformBase_Exception_MgUserNotFoundException                      PLATFORMBASE_EXCEPTION_ID+21
 
 // MapLayer API
-#define PlatformBase_MapLayer_Map                                      PLATFORMBASE_MAPLAYER_ID+0
+#define PlatformBase_MapLayer_MapBase                                  PLATFORMBASE_MAPLAYER_ID+0
 #define PlatformBase_MapLayer_LayerGroup                               PLATFORMBASE_MAPLAYER_ID+1
 #define PlatformBase_MapLayer_LayerCollection                          PLATFORMBASE_MAPLAYER_ID+2
-#define PlatformBase_MapLayer_Layer                                    PLATFORMBASE_MAPLAYER_ID+3
+#define PlatformBase_MapLayer_LayerBase                                PLATFORMBASE_MAPLAYER_ID+3
 #define PlatformBase_MapLayer_LayerGroupCollection                     PLATFORMBASE_MAPLAYER_ID+4
 #define PlatformBase_MapLayer_MapCollection                            PLATFORMBASE_MAPLAYER_ID+5
 #define PlatformBase_MapLayer_ReadOnlyLayerCollection                  PLATFORMBASE_MAPLAYER_ID+6
 #define PlatformBase_MapLayer_SelectionBase                            PLATFORMBASE_MAPLAYER_ID+7
 
 // Core Service
-#define PlatformBase_CoreService_CoreService                        PLATFORMBASE_CORESERVICE_ID+0
-#define PlatformBase_CoreService_ServerConnection                   PLATFORMBASE_CORESERVICE_ID+1
-#define PlatformBase_CoreService_Service                            PLATFORMBASE_CORESERVICE_ID+2
-#define PlatformBase_CoreService_Stream                             PLATFORMBASE_CORESERVICE_ID+4
-#define PlatformBase_CoreService_MgSiteConnection                   PLATFORMBASE_CORESERVICE_ID+5
-#define PlatformBase_CoreService_MgConnectionProperties             PLATFORMBASE_CORESERVICE_ID+6
-#define PlatformBase_CoreService_MgServerInformation                PLATFORMBASE_CORESERVICE_ID+7
-#define PlatformBase_CoreService_MgPackageStatusInformation         PLATFORMBASE_CORESERVICE_ID+8
-#define PlatformBase_CoreService_Warning                            PLATFORMBASE_CORESERVICE_ID+9
+#define PlatformBase_Service_ServerConnection                   PLATFORMBASE_CORESERVICE_ID+0
+#define PlatformBase_Service_Service                            PLATFORMBASE_CORESERVICE_ID+1
+#define PlatformBase_Service_Stream                             PLATFORMBASE_CORESERVICE_ID+2
+#define PlatformBase_Service_MgSiteConnection                   PLATFORMBASE_CORESERVICE_ID+3
+#define PlatformBase_Service_MgConnectionProperties             PLATFORMBASE_CORESERVICE_ID+4
+#define PlatformBase_Service_MgServerInformation                PLATFORMBASE_CORESERVICE_ID+5
+#define PlatformBase_Service_MgPackageStatusInformation         PLATFORMBASE_CORESERVICE_ID+6
+#define PlatformBase_Service_Warning                            PLATFORMBASE_CORESERVICE_ID+7
 
 // Feature Service
 #define PlatformBase_FeatureService_ClassDefinition                 PLATFORMBASE_FEATURESERVICE_ID+0

@@ -71,6 +71,7 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgFoundationd.pdb"
 				SubSystem="2"
+				ImportLibrary="..\lib\debug\Foundationd.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -154,6 +155,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="../lib/release/Foundation.lib"
 				TargetMachine="1"
 			/>
 			<Tool

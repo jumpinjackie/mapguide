@@ -155,7 +155,7 @@ private:
     Ptr<MgStringCollection> m_arguments;
 
 CLASS_ID:
-    static const INT32 m_cls_id = PlatformBase_CoreService_Warning;
+    static const INT32 m_cls_id = PlatformBase_Service_Warning;
 };
 /// \}
 

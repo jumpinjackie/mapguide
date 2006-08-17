@@ -17,8 +17,8 @@
 
 /// INTERNAL USE ONLY 
 
-#ifndef MGCOMMONDEFS_H_
-#define MGCOMMONDEFS_H_
+#ifndef MGFOUNDATIONDEFS_H_
+#define MGFOUNDATIONDEFS_H_
 
 #ifdef WIN32
 #include <basetsd.h>

@@ -61,6 +61,13 @@ PUBLISHED_API:
 
     /// text/html
     static const STRING Html;     ///\if INTERNAL value("text/html") \endif
+
+    /// application/vnd.google-earth.kml+xml 
+    static const STRING Kml;      ///\if INTERNAL value("application/vnd.google-earth.kml+xml") \endif 
+   
+    /// application/vnd.google-earth.kmz 
+    static const STRING Kmz;      ///\if INTERNAL value("application/vnd.google-earth.kmz") \endif 
+
 };
 /// \}
 
