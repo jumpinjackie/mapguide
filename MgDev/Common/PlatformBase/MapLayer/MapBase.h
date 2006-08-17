@@ -531,7 +531,7 @@ PUBLISHED_API:
     /// \param mapName (String/string)
     /// A string that specifies the name of the map.
     ///
-    void Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName);
+    virtual void Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -1046,7 +1046,7 @@ protected:
     virtual const char* GetResourceTypeName();
 
 CLASS_ID:
-    static const INT32 m_cls_id = PlatformBase_MapLayer_Map;
+    static const INT32 m_cls_id = PlatformBase_MapLayer_MapBase;
 
 protected:
     STRING                    m_name;

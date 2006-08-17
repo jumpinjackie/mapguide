@@ -53,12 +53,16 @@ PUBLISHED_API:
     /// Tile Service
     static const INT16 TileService          = 5;
 
+    //////////////////////////////////////////////////////////////// 
+    /// Kml Service 
+    static const INT16 KmlService           = 6; 
+
 
 INTERNAL_API:
     /// NOTES: The numeric values of all the service types are also used by
     ///        sequential containers for fast indexed-based lookups.
-    static const INT16 ServerAdminService   = 6;    /// Server Administration Service
-    static const INT16 SiteService          = 7;    /// Site Service
+    static const INT16 ServerAdminService   = 7;    /// Server Administration Service
+    static const INT16 SiteService          = 8;    /// Site Service
 };
 
 

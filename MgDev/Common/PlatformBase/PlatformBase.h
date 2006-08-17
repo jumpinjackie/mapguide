@@ -51,13 +51,27 @@
 
 // Exceptions
 #include "Exception/ArrayTypeMismatchException.h"
+#include "Exception/DuplicateResourceDataException.h"
+#include "Exception/DuplicateResourceException.h"
+#include "Exception/EmptyFeatureSetException.h"
+#include "Exception/FdoException.h"
+#include "Exception/FeatureServiceException.h"
 #include "Exception/InvalidMapDefinitionException.h"
 #include "Exception/InvalidRepositoryNameException.h"
 #include "Exception/InvalidRepositoryTypeException.h"
+#include "Exception/InvalidResourceDataNameException.h"
+#include "Exception/InvalidResourceDataTypeException.h"
 #include "Exception/InvalidResourceNameException.h"
 #include "Exception/InvalidResourcePathException.h"
+#include "Exception/InvalidResourcePreProcessingTypeException.h"
 #include "Exception/InvalidResourceTypeException.h"
+#include "Exception/LayerNotFoundException.h"
+#include "Exception/ResourceBusyException.h"
+#include "Exception/ResourceDataNotFoundException.h"
+#include "Exception/ResourceNotFoundException.h"
+#include "Exception/ServiceNotAvailableException.h"
 #include "Exception/ServiceNotSupportedException.h"
+#include "Exception/UserNotFoundException.h"
 
 // Predeclare certain headers required by headers below
 #include "Services/ResourceDefs.h"

@@ -27,8 +27,8 @@ MgServiceFactory::MgServiceFactory()
 
 MgService* MgServiceFactory::CreateService(INT32 serviceType)
 {
-    MgServiceRegistry* fact = MgServiceRegistry::GetInstance();
-    return fact->CreateService(serviceType);
+    MgServiceRegistry* registry = MgServiceRegistry::GetInstance();
+    return registry->CreateService(serviceType);
 }
 
 MgServiceFactory::~MgServiceFactory()

@@ -22,7 +22,8 @@
 /// \ingroup Common_Module
 /// \{
 
-class MG_PLATFORMBASE_API MgConnectionProperties;
+class MgConnectionProperties;
+class MgUserInformation;
 
 /////////////////////////////////////////////////////////////////
 /// \brief
@@ -71,6 +72,15 @@ PUBLISHED_API:
     ///
     MgWarnings* GetWarningsObject();
 
+INTERNAL_API:
+
+    /// Internal placeholder used to support user to service binding
+    virtual MgUserInformation* GetUserInfo();
+
+    /// Internal placeholder used to support connectivity of a Service with
+    /// another entity
+    virtual void SetConnectionProperties(MgConnectionProperties* connProp);
+
 protected:
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -100,7 +110,7 @@ protected:
     Ptr<MgWarnings> m_warning;
 
 CLASS_ID:
-    static const INT32 m_cls_id = PlatformBase_CoreService_Service;
+    static const INT32 m_cls_id = PlatformBase_Service_Service;
 };
 /// \}
 

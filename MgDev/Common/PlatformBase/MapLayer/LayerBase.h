@@ -828,7 +828,7 @@ protected:
     }
 
 CLASS_ID:
-    static const INT32 m_cls_id = PlatformBase_MapLayer_Layer;
+    static const INT32 m_cls_id = PlatformBase_MapLayer_LayerBase;
 
 protected:
     Ptr<MgResourceIdentifier> m_definition;

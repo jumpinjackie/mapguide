@@ -64,6 +64,31 @@ bool MgService::HasWarnings()
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
+/// Placeholder to associate user information with a service.
+/// Not implemented in the base Service class.
+/// </summary>
+MgUserInformation* MgService::GetUserInfo()
+{
+    MG_TRY()
+        throw new MgNotImplementedException(L"MgService.GetUserInfo", __LINE__, __WFILE__, NULL, L"", NULL);
+    MG_CATCH_AND_THROW(L"MgService.GetUserInfo");
+    return NULL;
+}
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Placeholder to associate user information with a service.
+/// Not implemented in the base Service class.
+/// </summary>
+void MgService::SetConnectionProperties(MgConnectionProperties* connProp)
+{
+    MG_TRY()
+        throw new MgNotImplementedException(L"MgService.SetConnectionProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+    MG_CATCH_AND_THROW(L"MgService.SetConnectionProperties");
+}
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
 /// Returns the classId.
 /// </summary>
 INT32 MgService::GetClassId()

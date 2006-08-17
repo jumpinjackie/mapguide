@@ -20,6 +20,10 @@
 
 #include "PlatformBase.h"
 
+#ifdef _WIN32
+#undef CreateService
+#endif
+
 /// \cond INTERNAL
 //////////////////////////////////////////////////////////////////////////////
 /// \brief
