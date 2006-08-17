@@ -130,11 +130,23 @@ MgLongTransactionData* MgServerGetLongTransactions::GetLongTransactionData(FdoIL
     }
 
     // Creation date
-    GisDateTime dateTime = longTransactionReader->GetCreationDate();
-    double seconds;
-    double microsecs = modf(dateTime.seconds, &seconds);
+    Ptr<MgDateTime> mgDateTime;
 
-    Ptr<MgDateTime> mgDateTime = new MgDateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour, dateTime.minute, (INT8)(int)seconds, (INT32)microsecs);
+    GisDateTime dateTime = longTransactionReader->GetCreationDate();
+    if(dateTime.IsDateTime())
+    {
+        // Valid datetime
+        double seconds;
+        double microsecs = modf(dateTime.seconds, &seconds);
+
+        mgDateTime = new MgDateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour, dateTime.minute, (INT8)(int)seconds, (INT32)microsecs);
+    }
+    else
+    {
+        // Invalid datetime, so use current date
+        mgDateTime = new MgDateTime();
+    }
+
     longTransactionData->SetCreationDate(mgDateTime);
 
     // Whether it is active or not
