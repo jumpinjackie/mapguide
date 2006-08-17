@@ -1,0 +1,664 @@
+//
+//  Copyright (C) 2004-2006  Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+#include "AceCommon.h"
+#include "ServerKmlService.h"
+#include "KmlDefs.h"
+#include "Stylization.h"
+#include "StylizationUtil.h"
+#include "KmlRenderer.h"
+#include "RSMGFeatureReader.h"
+#include "RSMgInputStream.h"
+#include "DefaultStylizer.h"
+#include "Bounds.h"
+#include "MimeType.h"
+#include "MgCSTrans.h"
+#include "SAX2Parser.h"
+
+const STRING LL84_WKT = L"GEOGCS[\"LL84\",DATUM[\"WGS 84\",SPHEROID[\"WGS 84\",6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0],UNIT[\"Degrees\",0.01745329252]]";
+const STRING GOOGLE_EARTH_WKT = LL84_WKT;
+
+MgServerKmlService::MgServerKmlService(MgConnectionProperties* connection) : MgKmlService(connection)
+{
+    m_csFactory = new MgCoordinateSystemFactory();
+}
+
+
+MgServerKmlService::MgServerKmlService() : MgKmlService(NULL)
+{
+}
+
+
+MgServerKmlService::~MgServerKmlService()
+{
+}
+
+
+MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CREFSTRING format)
+{
+    Ptr<MgByteReader> byteReader;
+
+    MG_TRY()
+
+    if (NULL == map)
+    {
+        throw new MgNullArgumentException(L"MgServerKmlService.GetMapKml", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    KmlContent kmlContent;
+    kmlContent.StartDocument();
+    
+    //write the map name
+    STRING mapName = map->GetName();
+    kmlContent.WriteString("<name><![CDATA[");
+    kmlContent.WriteString(mapName);
+    kmlContent.WriteString("]]></name>");
+    
+    if(m_svcResource == NULL)
+    {
+        InitializeResourceService();
+    }
+
+    //write the map description, if any
+    Ptr<MgResourceIdentifier> mapResId = map->GetMapDefinition();
+
+    //get the map definition
+    auto_ptr<MdfModel::MapDefinition> mdf(MgStylizationUtil::GetMapDefinition(m_svcResource, mapResId));
+    STRING metadata = mdf->GetMetadata();
+    
+    if(!metadata.empty())
+    {
+        size_t offset = 0;
+        STRING description = ReadElement(metadata, L"Description", offset);
+        if(!description.empty())
+        {
+            kmlContent.WriteString("<description><![CDATA[");
+            kmlContent.WriteString(description);
+            kmlContent.WriteString("]]></description>");
+        }
+    }
+    kmlContent.WriteString("<visibility>1</visibility>");
+    Ptr<MgLayerCollection> layers = map->GetLayers();
+    Ptr<MgEnvelope> extent = map->GetMapExtent();
+    if(extent != NULL)
+    {
+        STRING mapWkt = map->GetMapSRS();
+        if(!mapWkt.empty())
+        {
+            Ptr<MgCoordinateSystem> mapCs = (mapWkt.empty()) ? NULL : m_csFactory->Create(mapWkt);
+            Ptr<MgCoordinateSystem> llCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
+            Ptr<MgCoordinateSystemTransform> trans = new MgCoordinateSystemTransform(mapCs, llCs);
+            extent = trans->Transform(extent);
+        }
+        
+        WriteRegion(extent, kmlContent);
+    }
+    for(int i = 0; i < layers->GetCount(); i++)
+    {
+        Ptr<MgLayer> layer = layers->GetItem(i);
+        AppendLayer(layer, extent, agentUri, format, kmlContent);
+    }
+    kmlContent.EndDocument();
+    std::string contentString = kmlContent.GetString();
+    Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
+    if(format.compare(L"XML") == 0)
+    {
+        byteSource->SetMimeType(MgMimeType::Xml);    
+    }
+    else // default to KML
+    {
+        byteSource->SetMimeType(MgMimeType::Kml);
+    }
+    byteReader = byteSource->GetReader();
+
+    MG_CATCH_AND_THROW(L"MgServerKmlService.GetMapKml")
+
+    return SAFE_ADDREF(byteReader.p);
+}
+
+MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extents, 
+    INT32 width, INT32 height, double dpi, CREFSTRING agentUri, CREFSTRING format)
+{
+    Ptr<MgByteReader> byteReader;
+
+    MG_TRY()
+
+    if (NULL == layer)
+    {
+        throw new MgNullArgumentException(L"MgServerKmlService.GetLayerKml", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if(m_svcResource == NULL)
+    {
+        InitializeResourceService();
+    }
+
+    double scale = GetScale(extents, width, height, dpi);
+
+    //get layer definition
+    Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
+
+    KmlContent kmlContent;
+    kmlContent.StartDocument();
+    kmlContent.WriteString("<visibility>1</visibility>");
+    Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
+    Ptr<MgEnvelope> destExtent = GetLayerExtent(layer, destCs);
+    if(destExtent != NULL)
+    {
+        double widthMeters = destCs->ConvertCoordinateSystemUnitsToMeters(destExtent->GetWidth());
+        double heightMeters = destCs->ConvertCoordinateSystemUnitsToMeters(destExtent->GetHeight());
+        double dimension = sqrt(widthMeters * heightMeters);
+    
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+        MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+        if(vl != NULL)
+        {                   
+            //get the scale ranges
+            MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+            MdfModel::VectorScaleRange* range = NULL;
+
+            for (int i = 0; i < scaleRanges->GetCount(); i++)
+            {
+                range = scaleRanges->GetAt(i);
+                double minScale = range->GetMinScale();
+                double maxScale = range->GetMaxScale();
+                if(scale > minScale && scale <= maxScale)
+                {
+                    AppendScaleRange(layer, destExtent, agentUri, dimension, 
+                        minScale, maxScale, format, kmlContent);
+                }
+            }
+        }
+        else if(dl != NULL)
+        {
+            double minScale = dl->GetMinScale();
+            double maxScale = dl->GetMaxScale();
+            if(scale > minScale && scale <= maxScale)
+            {
+                AppendScaleRange(layer, destExtent, agentUri, dimension, 
+                    minScale, maxScale, format, kmlContent);
+            }
+        }                
+    }
+    kmlContent.EndDocument();
+    std::string contentString = kmlContent.GetString();
+    Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
+    if(format.compare(L"XML") == 0)
+    {
+        byteSource->SetMimeType(MgMimeType::Xml);    
+    }
+    else // default to KML
+    {
+        byteSource->SetMimeType(MgMimeType::Kml);
+    }
+    byteReader = byteSource->GetReader();    
+    
+    MG_CATCH_AND_THROW(L"MgServerKmlService.GetLayerKml")
+
+    return SAFE_ADDREF(byteReader.p);
+}
+
+MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* extents, 
+    INT32 width, INT32 height, double dpi, CREFSTRING format)
+{
+    Ptr<MgByteReader> byteReader;
+
+    MG_TRY()
+
+    if (NULL == layer)
+    {
+        throw new MgNullArgumentException(L"MgServerKmlService.GetFeaturesKml", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    double scale = GetScale(extents, width, height, dpi);
+
+    KmlContent kmlContent;
+    kmlContent.StartDocument();
+    kmlContent.WriteString("<visibility>1</visibility>");
+    AppendFeatures(layer, extents, scale, dpi, kmlContent);
+    kmlContent.EndDocument();
+    std::string contentString = kmlContent.GetString();
+    Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
+    if(format.compare(L"XML") == 0)
+    {
+        byteSource->SetMimeType(MgMimeType::Xml);    
+    }
+    else // default to KML
+    {
+        byteSource->SetMimeType(MgMimeType::Kml);
+    }
+    byteReader = byteSource->GetReader();    
+    
+    MG_CATCH_AND_THROW(L"MgServerKmlService.GetFeaturesKml")
+
+    return SAFE_ADDREF(byteReader.p);
+}
+
+void MgServerKmlService::AppendLayer(MgLayer* layer, 
+                                     MgEnvelope* extent, 
+                                     CREFSTRING agentUri, 
+                                     CREFSTRING format, 
+                                     KmlContent& kmlContent)
+{
+    kmlContent.WriteString("<NetworkLink>");
+    kmlContent.WriteString("<visibility>");
+    kmlContent.WriteString(layer->GetVisible() ? "1" : "0");
+    kmlContent.WriteString("</visibility>");
+    kmlContent.WriteString("<name>");
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLegendLabel()));
+    kmlContent.WriteString("</name>");
+    kmlContent.WriteString("<Link>");
+    kmlContent.WriteString("<href>");
+    kmlContent.WriteString(agentUri);
+    kmlContent.WriteString("?OPERATION=GetLayerKml&amp;VERSION=1&amp;LAYERDEFINITION=");
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()));
+    kmlContent.WriteString("&amp;FORMAT=");
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(format));
+    kmlContent.WriteString("</href>");
+    kmlContent.WriteString("<viewRefreshMode>onStop</viewRefreshMode>");
+    kmlContent.WriteString("<viewRefreshTime>1</viewRefreshTime>");
+    kmlContent.WriteString("<viewFormat>BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&amp;WIDTH=[horizPixels]&amp;HEIGHT=[vertPixels]</viewFormat>");
+    kmlContent.WriteString("</Link>");
+    kmlContent.WriteString("</NetworkLink>");
+}
+
+void MgServerKmlService::AppendScaleRange(MgLayer* layer, 
+                                          MgEnvelope* extent, 
+                                          CREFSTRING agentUri, 
+                                          double dimension, 
+                                          double minScale, 
+                                          double maxScale, 
+                                          CREFSTRING format, 
+                                          KmlContent& kmlContent)
+{
+    char buffer[256];
+    kmlContent.WriteString("<NetworkLink>");
+    kmlContent.WriteString("<name>");
+    sprintf(buffer,"%f - %f", minScale, maxScale);
+    kmlContent.WriteString(buffer);
+    kmlContent.WriteString("</name>");
+    WriteRegion(extent, kmlContent, dimension, minScale, maxScale);
+    kmlContent.WriteString("<Link>");
+    kmlContent.WriteString("<href>");
+    kmlContent.WriteString(agentUri);
+    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;DPI=96&amp;LAYERDEFINITION=");
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()));
+    sprintf(buffer,"&amp;SCALERANGE=%f,%f", minScale, maxScale);
+    kmlContent.WriteString(buffer);
+    kmlContent.WriteString("&amp;FORMAT=");
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(format));
+    kmlContent.WriteString("</href>");
+    kmlContent.WriteString("<viewRefreshMode>onStop</viewRefreshMode>");
+    kmlContent.WriteString("<viewRefreshTime>1</viewRefreshTime>");
+    kmlContent.WriteString("<viewFormat>BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&amp;WIDTH=[horizPixels]&amp;HEIGHT=[vertPixels]</viewFormat>");
+    kmlContent.WriteString("</Link>");
+    kmlContent.WriteString("</NetworkLink>");
+}
+
+void MgServerKmlService::AppendFeatures(MgLayer* layer, 
+                                        MgEnvelope* extents, 
+                                        double scale,
+                                        double dpi,
+                                        KmlContent& kmlContent)
+{
+    
+    if(m_svcResource == NULL)
+    {
+        InitializeResourceService();
+    }
+
+    //get layer definition
+    Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
+    MgCSTrans* csTrans = NULL;
+    RS_UIGraphic uig(NULL, 0, layer->GetLegendLabel());
+    RS_LayerUIInfo layerInfo( layer->GetName(),
+                                       layer->GetObjectId(),
+                                       layer->GetSelectable(),
+                                       layer->GetVisible(),
+                                       false,
+                                       L"",
+                                       L"",
+                                       layer->GetDisplayInLegend(),
+                                       layer->GetExpandInLegend(),
+                                       -layer->GetDisplayOrder(),
+                                       uig);
+    Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
+    KmlRenderer renderer(&kmlContent, scale, dpi);
+    DefaultStylizer stylizer;
+    stylizer.Initialize(&renderer);
+    MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+    MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+    if(vl != NULL)
+    {
+        if(m_svcFeature == NULL)
+        {
+            InitializeFeatureService();
+        }
+
+        Ptr<MgCoordinateSystem> layerCs = GetCoordinateSystem(new MgResourceIdentifier(vl->GetResourceID()));
+        if(layerCs != NULL)
+        {
+            csTrans = new MgCSTrans(layerCs, destCs);
+        }
+        RS_Bounds rsExtent(extents->GetLowerLeftCoordinate()->GetX(),
+            extents->GetLowerLeftCoordinate()->GetY(),
+            extents->GetUpperRightCoordinate()->GetX(),
+            extents->GetUpperRightCoordinate()->GetY());
+        Ptr<MgFeatureReader> featureReader = MgStylizationUtil::ExecuteFeatureQuery(m_svcFeature, rsExtent, vl, NULL, destCs, layerCs);
+        if (featureReader.p)
+        {
+            //wrap in an RS_FeatureReader
+            RSMgFeatureReader rsrdr(featureReader, vl->GetGeometry());
+            RS_FeatureClassInfo fcInfo(vl->GetFeatureName());
+            MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
+            for (int j=0; j<pmappings->GetCount(); j++)
+            {
+                MdfModel::NameStringPair* m = pmappings->GetAt(j);
+                fcInfo.add_mapping(m->GetName(), m->GetValue());
+            }
+            renderer.StartLayer(&layerInfo, &fcInfo);
+            stylizer.StylizeFeatures(vl, &rsrdr, csTrans, NULL, NULL);
+            renderer.EndLayer();
+        }
+    }
+    else if(dl != NULL)
+    {
+        if(m_svcDrawing == NULL)
+        {
+            InitializeDrawingService();
+        }
+        
+        // make sure we have a valid scale range
+        if (scale >= dl->GetMinScale() && scale < dl->GetMaxScale())
+        {
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(dl->GetResourceID());
+
+            //get the resource content to see if there is a coordinate system
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(resId);
+            STRING st = rdr->ToString();
+
+            //now look for a coordinate space tag and extract the contents
+            size_t offset = 0;
+            STRING cs = ReadElement(st, L"CoordinateSpace", offset);
+            if (!cs.empty() && cs != destCs->ToString())
+            {             
+                //construct cs transformer if needed
+                Ptr<MgCoordinateSystem> srcCs = m_csFactory->Create(cs);
+                csTrans = new MgCSTrans(srcCs, destCs);
+            }
+
+            //get DWF from drawing service
+            Ptr<MgByteReader> reader = m_svcDrawing->GetSection(resId, dl->GetSheet());
+
+            RSMgInputStream is(reader);
+
+            stylizer.StylizeDrawingLayer( dl, &layerInfo, &is, dl->GetLayerFilter(), csTrans);
+        }
+    }
+    if(csTrans != NULL)
+    {
+        delete csTrans;
+        csTrans = NULL;
+    }
+}
+    
+double MgServerKmlService::GetScale(MgEnvelope* llExtents, int width, int height, double dpi)
+{
+    Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
+    double mapWidth = destCs->ConvertCoordinateSystemUnitsToMeters(llExtents->GetWidth());
+    double mapHeight = destCs->ConvertCoordinateSystemUnitsToMeters(llExtents->GetHeight());
+    double screenWidth = width / dpi * METERS_PER_INCH;
+    double screenHeight = height / dpi * METERS_PER_INCH;
+    double xScale = mapWidth / screenWidth;
+    double yScale = mapHeight / screenHeight;
+    return min(xScale, yScale);
+}
+
+MgEnvelope* MgServerKmlService::GetLayerExtent(MgLayer* layer, MgCoordinateSystem* destCs)
+{
+    Ptr<MgEnvelope> envelope;
+    
+    if(layer != NULL)
+    {
+        if(m_svcResource == NULL)
+        {
+            InitializeResourceService();
+        }
+        Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+        MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+        Ptr<MgCoordinateSystemTransform> csTrans;
+        if(vl != NULL)
+        {
+            if(m_svcFeature == NULL)
+            {
+                InitializeFeatureService();
+            }
+            Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(vl->GetResourceID());
+            Ptr<MgSpatialContextReader> scReader = m_svcFeature->GetSpatialContexts(featResId);
+            if(scReader.p != NULL)
+            {
+                if(scReader->ReadNext())
+                {
+                    //get the layer coordinate system
+                    STRING layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
+                    Ptr<MgCoordinateSystem> layerCs = (layerCoordSysWkt.empty()) ? NULL : m_csFactory->Create(layerCoordSysWkt);
+                    if(layerCs != NULL)
+                    {
+                        csTrans = new MgCoordinateSystemTransform(layerCs, destCs);
+
+                        Ptr<MgByteReader> extentReader = scReader->GetExtent();
+                        if(extentReader.p != NULL)
+                        {
+                            MgAgfReaderWriter agfReader;
+                            Ptr<MgGeometry> geom = agfReader.Read(extentReader);
+                            if (geom != NULL)
+                            {
+                                envelope = geom->Envelope();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if(dl != NULL)
+        {
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(dl->GetResourceID());
+
+            //get the resource content to see if there is a coordinate system
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(resId);
+            STRING st = rdr->ToString();
+
+            //now look for a coordinate space tag and extract the contents
+            size_t offset = 0;
+            STRING cs = ReadElement(st, L"CoordinateSpace", offset);
+            if (!cs.empty() && cs != destCs->ToString())
+            {             
+                //construct cs transformer if needed
+                Ptr<MgCoordinateSystem> srcCs = m_csFactory->Create(cs);
+                csTrans = new MgCoordinateSystemTransform(srcCs, destCs);
+            }
+
+            offset = 0;
+            do
+            {
+                STRING sheet = ReadElement(st, L"Sheet", offset);
+                if(!sheet.empty())
+                {
+                    size_t sheetOffset = 0;
+                    STRING sheetName = ReadElement(sheet, L"Name", sheetOffset);
+                    if(sheetName.compare(dl->GetSheet()) == 0)
+                    {
+                        sheetOffset = 0;
+                        STRING extent = ReadElement(sheet, L"Extent", sheetOffset);
+                        if(!extent.empty())
+                        {
+                            size_t extentOffset = 0;
+                            STRING minX = ReadElement(extent, L"MinX", extentOffset);
+                            if(!minX.empty())
+                            {
+                                extentOffset = 0;
+                                STRING minY = ReadElement(extent, L"MinY", extentOffset);
+                                if(!minY.empty())
+                                {
+                                    extentOffset = 0;
+                                    STRING maxX = ReadElement(extent, L"MaxX", extentOffset);
+                                    if(!maxX.empty())
+                                    {
+                                        extentOffset = 0;
+                                        STRING maxY = ReadElement(extent, L"MaxY", extentOffset);
+                                        if(!maxY.empty())
+                                        {
+                                            double xMin = MgUtil::StringToDouble(minX);
+                                            double yMin = MgUtil::StringToDouble(minY);
+                                            double xMax = MgUtil::StringToDouble(maxX);
+                                            double yMax = MgUtil::StringToDouble(maxY);
+                                            envelope = new MgEnvelope(xMin, yMin, xMax, yMax);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            while(offset != STRING::npos);
+        }
+        if(envelope != NULL && csTrans != NULL)
+        {
+            envelope = csTrans->Transform(envelope);
+        }
+    }
+    return SAFE_ADDREF((MgEnvelope*)envelope);
+}
+    
+STRING MgServerKmlService::ReadElement(STRING input, STRING elementName, size_t& offset)
+{
+    STRING content;
+    STRING startTag = L"<" + elementName + L">";
+    STRING endTag = L"</" + elementName + L">";
+    size_t startPos = input.find(startTag, offset);
+    if (startPos != STRING::npos)
+    {
+        size_t endPos = input.find(endTag, startPos);
+        if(endPos != STRING::npos)
+        {
+            offset = endPos + endTag.length();
+            startPos += startTag.length();
+            content = input.substr(startPos, endPos - startPos);
+        }
+        else
+        {
+            offset = STRING::npos;
+        }
+    }
+    else
+    {
+        offset = STRING::npos;
+    }
+    return content;
+}
+
+void MgServerKmlService::WriteRegion(MgEnvelope* extent, KmlContent& kmlContent, double dimension, double minScale, double maxScale, double dpi)
+{
+    if(extent != NULL)
+    {
+        char buffer[256];
+
+        // Region Data
+        double north = extent->GetUpperRightCoordinate()->GetY();
+        double south = extent->GetLowerLeftCoordinate()->GetY();
+        double east = extent->GetUpperRightCoordinate()->GetX();
+        double west = extent->GetLowerLeftCoordinate()->GetX();
+        kmlContent.WriteString("<Region>"); 
+        kmlContent.WriteString("<LatLonAltBox>"); 
+        sprintf(buffer, "<north>%f</north><south>%f</south><east>%f</east><west>%f</west>",
+            north, south, east, west);
+        kmlContent.WriteString(buffer); 
+        kmlContent.WriteString("</LatLonAltBox>"); 
+        if(dimension > 0)
+        {
+            double pixelSize = METERS_PER_INCH / dpi;
+            int minPix = (int)(dimension / maxScale / pixelSize);
+            int maxPix = minScale > 0 ? (int)(dimension / minScale / pixelSize) : -1;
+            kmlContent.WriteString("<Lod>"); 
+            sprintf(buffer, "<minLodPixels>%d</minLodPixels><maxLodPixels>%d</maxLodPixels>",
+                minPix, maxPix);
+            kmlContent.WriteString(buffer); 
+            kmlContent.WriteString("</Lod>"); 
+        }
+        kmlContent.WriteString("</Region>");
+    }
+}
+
+//gets an instance of the resource service using the service manager
+void MgServerKmlService::InitializeResourceService()
+{
+    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+    assert(NULL != serviceMan);
+
+    m_svcResource = dynamic_cast<MgResourceService*>(
+        serviceMan->RequestService(MgServiceType::ResourceService));
+    assert(m_svcResource != NULL);
+}
+
+//gets an instance of the feature service using the service manager
+void MgServerKmlService::InitializeFeatureService()
+{
+    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+    assert(NULL != serviceMan);
+
+    m_svcFeature = dynamic_cast<MgFeatureService*>(
+        serviceMan->RequestService(MgServiceType::FeatureService));
+    assert(m_svcFeature != NULL);
+}
+
+//gets an instance of the drawing service using the service manager
+void MgServerKmlService::InitializeDrawingService()
+{
+    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+    assert(NULL != serviceMan);
+
+    m_svcDrawing = dynamic_cast<MgDrawingService*>(
+        serviceMan->RequestService(MgServiceType::DrawingService));
+    assert(m_svcDrawing != NULL);
+}
+
+MgCoordinateSystem* MgServerKmlService::GetCoordinateSystem(MgResourceIdentifier* featureSourceResId)
+{
+    Ptr<MgCoordinateSystem> layerCs;
+    if(m_svcFeature == NULL)
+    {
+        InitializeFeatureService();
+    }
+    Ptr<MgSpatialContextReader> scReader = m_svcFeature->GetSpatialContexts(featureSourceResId);
+    if(scReader.p != NULL)
+    {
+        if(scReader->ReadNext())
+        {
+            //get the layer coordinate system
+            STRING layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
+            layerCs = (layerCoordSysWkt.empty()) ? NULL : m_csFactory->Create(layerCoordSysWkt);
+        }
+    }
+    return SAFE_ADDREF(layerCs.p);
+}
+
