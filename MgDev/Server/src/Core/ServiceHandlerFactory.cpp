@@ -26,6 +26,7 @@
 #include "ServerAdminServiceHandler.h"
 #include "SiteServiceHandler.h"
 #include "TileServiceHandler.h"
+#include "KmlServiceHandler.h"
 
 //  References the static singleton MgServiceHandlerFactory object
 static auto_ptr<MgServiceHandlerFactory> s_pFactory;
@@ -135,6 +136,10 @@ IMgServiceHandler* MgServiceHandlerFactory::GetHandler(UINT32 serviceId,
 
         case MgPacketParser::msiTile:
             serviceHandler = new MgTileServiceHandler(data, packet);
+            break;
+
+        case MgPacketParser::msiKml:
+            serviceHandler = new MgKmlServiceHandler(data, packet);
             break;
 
         case MgPacketParser::msiUnknown:

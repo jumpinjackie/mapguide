@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Geometry;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\Services\Drawing;..\..\Services\Feature;..\..\Services\Mapping;..\..\Services\Rendering;..\..\Services\Resource;..\..\Services\ServerAdmin;..\..\Services\Site;..\..\Services\Tile"
+				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Geometry;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\Services\Drawing;..\..\Services\Feature;..\..\Services\Mapping;..\..\Services\Rendering;..\..\Services\Resource;..\..\Services\ServerAdmin;..\..\Services\Site;..\..\Services\Tile;..\..\Services\Kml"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_FACTORY_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Geometry;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\Services\Drawing;..\..\Services\Feature;..\..\Services\Mapping;..\..\Services\Rendering;..\..\Services\Resource;..\..\Services\ServerAdmin;..\..\Services\Site;..\..\Services\Tile"
+				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Geometry;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\Services\Drawing;..\..\Services\Feature;..\..\Services\Mapping;..\..\Services\Rendering;..\..\Services\Resource;..\..\Services\ServerAdmin;..\..\Services\Site;..\..\Services\Tile;..\..\Services\Kml"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_FACTORY_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"

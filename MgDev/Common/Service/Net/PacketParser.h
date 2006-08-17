@@ -61,7 +61,8 @@ class MG_SERVICE_API MgPacketParser
             msiServerAdmin       =   0x1111FE07,
             msiSite              =   0x1111FE08,
             msiTile              =   0x1111FE09,
-            msiEND               =   0x1111FE0A
+            msiKml               =   0x1111FE0A,
+            msiEND               =   0x1111FE0B
         };
 
         enum MgECode

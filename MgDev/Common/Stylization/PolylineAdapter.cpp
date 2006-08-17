@@ -69,7 +69,6 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     for (int i=0; i<lrc->GetCount(); i++)
     {
         rule = static_cast<MdfModel::LineRule*>(lrc->GetAt(i));
-
         if (!ExecFdoFilter(&rule->GetFilter()))
         {
             rule = NULL; //don't stylize with failed rule
@@ -87,13 +86,14 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
 
     RS_String tip; //TODO: this should be quick since we are not assigning
     RS_String eurl;
+    const RS_String &theme = rule->GetLegendLabel();
 
     if (tooltip && !tooltip->empty())
         EvalString(*tooltip, tip);
     if (url && !url->empty())
         EvalString(*url, eurl);
 
-    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl);
+    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, theme.empty() ? NULL : &theme);
 
     for (int i=0; i<lsymc->GetCount(); i++)
     {

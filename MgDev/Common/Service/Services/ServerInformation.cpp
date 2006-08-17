@@ -39,8 +39,9 @@ const MgServerInformation::MgServiceInfoMap MgServerInformation::sm_serviceInfoM
     { MgServiceType::MappingService    , L"MappingService"    , 0x00000008 },
     { MgServiceType::RenderingService  , L"RenderingService"  , 0x00000010 },
     { MgServiceType::TileService       , L"TileService"       , 0x00000020 },
-    { MgServiceType::ServerAdminService, L"ServerAdminService", 0x00000040 },
-    { MgServiceType::SiteService       , L"SiteService"       , 0x00000080 },
+    { MgServiceType::KmlService        , L"KmlService"        , 0x00000040 },
+    { MgServiceType::ServerAdminService, L"ServerAdminService", 0x00000080 },
+    { MgServiceType::SiteService       , L"SiteService"       , 0x00000100 },
 };
 
 //////////////////////////////////////////////////////////////

@@ -167,6 +167,16 @@ public:
     // PREDEFINED TILE REQUEST PARAMETERS
     static const STRING reqTileMapDefinition;
 
+    // PREDEFINED KML REQUEST PARAMETERS
+    static const STRING reqKmlMapDefinition;
+    static const STRING reqKmlLayerDefinition;
+    static const STRING reqKmlBoundingBox;
+    static const STRING reqKmlFormat;
+    static const STRING reqKmlScaleRange;
+    static const STRING reqKmlWidth;
+    static const STRING reqKmlHeight;
+    static const STRING reqKmlDpi;
+
     // PREDEFINED WEB MAP SERVICE REQUEST PARAMETERS
     static const STRING reqWmsRequest;
     static const STRING reqWmsService;
@@ -269,6 +279,11 @@ public:
     // Tile services
     static const STRING opGetTileImage;
     static const STRING opClearTileCache;
+
+    // Kml services
+    static const STRING opGetMapKml;
+    static const STRING opGetLayerKml;
+    static const STRING opGetFeaturesKml;
 
     // WMS Operation Requests
     static const STRING opWmsGetCapabilities;

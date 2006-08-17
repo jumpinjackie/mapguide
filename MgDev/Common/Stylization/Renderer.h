@@ -76,7 +76,8 @@ public:
     ///</summary>
     virtual void StartFeature (RS_FeatureReader* feature,
                                const RS_String*  tooltip = NULL,
-                               const RS_String*  url = NULL) = 0;
+                               const RS_String*  url = NULL, 
+                               const RS_String* theme = NULL) = 0;
 
     ///<summary>
     /// Done processing current feature.
@@ -190,6 +191,7 @@ public:
     //------------------------------------------------------
 
     virtual bool UseLocalOverposting() = 0;
+
 };
 
 #endif

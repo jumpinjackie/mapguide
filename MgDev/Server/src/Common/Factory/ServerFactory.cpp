@@ -25,6 +25,7 @@
 #include "ServerResourceService.h"
 #include "ServerSiteService.h"
 #include "ServerTileService.h"
+#include "ServerKmlService.h"
 
 static bool InitializeStaticData();
 
@@ -77,6 +78,9 @@ extern "C" void* CreateMgServerService(INT32 serviceType, MgConnectionProperties
             break;
         case MgServiceType::TileService:
             service = new MgServerTileService(mapConnection);
+            break;
+        case MgServiceType::KmlService:
+            service = new MgServerKmlService(mapConnection);
             break;
         default:
             break;

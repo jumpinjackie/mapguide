@@ -102,7 +102,8 @@ public:
 
     virtual void StartFeature(RS_FeatureReader* feature,
                               const RS_String*  tooltip = NULL,
-                              const RS_String*  url = NULL);
+                              const RS_String*  url = NULL,
+                              const RS_String* theme = NULL);
 
     virtual RS_MapUIInfo* GetMapInfo();
 

@@ -388,6 +388,12 @@ bool MgSiteConnection::IsServiceLocal(INT32 serviceType)
                                     isHosting,
                                     MgConfigProperties::DefaultHostPropertyTileService);
                 break;
+            case MgServiceType::KmlService:
+                m_config->GetBoolValue(MgConfigProperties::HostPropertiesSection,
+                                    MgConfigProperties::HostPropertyKmlService,
+                                    isHosting,
+                                    MgConfigProperties::DefaultHostPropertyKmlService);
+                break;
             case MgServiceType::ServerAdminService:
                 if (IsServer())
                 {

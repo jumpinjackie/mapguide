@@ -150,7 +150,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                 //if (url && !url->empty())
                 //    EvalString(*url, eurl);
 
-                renderer->StartFeature(features, tip.empty() ? NULL : &tip, eurl.empty() ? NULL : &eurl);
+                renderer->StartFeature(features, tip.empty() ? NULL : &tip, eurl.empty() ? NULL : &eurl, NULL);
                 renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_RGBA, imgW, imgH, intExt);
 
                 delete [] dst;

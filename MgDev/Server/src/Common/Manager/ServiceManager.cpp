@@ -25,6 +25,7 @@
 #include "ServerMappingService.h"
 #include "ServerRenderingService.h"
 #include "ServerTileService.h"
+#include "ServerKmlService.h"
 
 // Process-wide MgServiceManager
 Ptr<MgServiceManager> MgServiceManager::sm_serviceManager = (MgServiceManager*)NULL;

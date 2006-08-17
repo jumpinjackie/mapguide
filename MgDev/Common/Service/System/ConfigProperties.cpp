@@ -186,6 +186,8 @@ const STRING MgConfigProperties::HostPropertySiteService                        
 const bool   MgConfigProperties::DefaultHostPropertySiteService                             = false;
 const STRING MgConfigProperties::HostPropertyTileService                                    = L"TileService";
 const bool   MgConfigProperties::DefaultHostPropertyTileService                             = false;
+const STRING MgConfigProperties::HostPropertyKmlService                                     = L"KmlService";
+const bool   MgConfigProperties::DefaultHostPropertyKmlService                              = false;
 
 // ******************************************************************
 // Drawing Service Properties
@@ -428,6 +430,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviHostProperties[] =
     { MgConfigProperties::HostPropertyServerAdminService                            , MgPropertyType::Boolean   , 1                                     , 1                                     , L""                                       },
     { MgConfigProperties::HostPropertySiteService                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::HostPropertyTileService                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::HostPropertyKmlService                                    , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

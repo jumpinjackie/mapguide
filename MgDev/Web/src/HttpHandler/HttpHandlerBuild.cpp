@@ -97,6 +97,9 @@
 #include "HttpWfsGetCapabilities.cpp"
 #include "HttpWfsGetFeature.cpp"
 #include "HttpWfsDescribeFeatureType.cpp"
+#include "HttpKmlGetMap.cpp"
+#include "HttpKmlGetLayer.cpp"
+#include "HttpKmlGetFeatures.cpp"
 #include "WmsMapUtil.cpp"
 
 

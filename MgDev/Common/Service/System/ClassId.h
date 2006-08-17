@@ -37,6 +37,7 @@
 #define MAPLAYER_ID                19000
 #define MAPAGENT_ID                20000
 #define WEBAPP_ID                  21000
+#define KMLSERVICE_ID              22000
 
 // CoreData Collection
 #define CoreData_Collection_Collection                     COREDATA_COLLECTION_ID+0
@@ -296,6 +297,9 @@
 
 // Tile Service
 #define TileService_TileService                           TILESERVICE_ID+0
+
+// Tile Service
+#define KmlService_KmlService                             KMLSERVICE_ID+0
 
 // Server Admin
 #define ServerAdmin_ServerAdmin                           SERVERADMIN_ID+0

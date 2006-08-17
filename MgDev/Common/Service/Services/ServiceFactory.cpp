@@ -390,6 +390,9 @@ extern "C" void* CreateMgService(ServerConnectionType sct, INT32 serviceType, Mg
             case MgServiceType::TileService:
                 service = new MgProxyTileService(connProp);
                 break;
+            case MgServiceType::KmlService:
+                service = new MgProxyKmlService(connProp);
+                break;
             case MgServiceType::ServerAdminService:
                 // Admin Service is a server object.
                 break;
