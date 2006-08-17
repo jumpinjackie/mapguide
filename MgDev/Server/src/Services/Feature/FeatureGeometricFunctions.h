@@ -54,10 +54,8 @@ private:
 
     void Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias);
 
-    MgGeometryCollection* ExecuteOperation(MgGeometryCollection* geomCollection);
-    MgGeometryCollection* ComputeExtents(MgGeometryCollection* geomCol);
-    MgGeometry* ComputeExtents(CoordinateCollection& lowerLeft, CoordinateCollection& upperRight);
-    void AddCoordinate(MgCoordinate* coord, CoordinateCollection& coords);
+    void ComputeExtents(MgCoordinate* lowerLeft, MgCoordinate* upperRight);
+    MgGeometryCollection* ExecuteOperation();
 
     MgReader* GetReader(MgGeometryCollection* returnGeom);
 
@@ -70,6 +68,16 @@ private:
     Ptr<MgReader> m_reader;
     FdoFunction* m_customFunction;
     STRING m_propertyAlias;
+
+    bool m_extentsInitialized;
+    double m_minX;
+    double m_minY;
+    double m_minZ;
+    double m_minM;
+    double m_maxX;
+    double m_maxY;
+    double m_maxZ;
+    double m_maxM;
 };
 
 #endif
