@@ -586,6 +586,42 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="KmlRenderer"
+			>
+			<File
+				RelativePath=".\KmlContent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\KmlContent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\KmlLineStyle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\KmlLineStyle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\KmlPolyStyle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\KmlPolyStyle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\KmlRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\KmlRenderer.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\stdafx.h"
 			>

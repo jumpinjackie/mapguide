@@ -81,6 +81,11 @@
 #include "HttpGetTileImage.h"
 #include "HttpClearTileCache.h"
 
+// Http Kml Service operations
+#include "HttpKmlGetMap.h"
+#include "HttpKmlGetLayer.h"
+#include "HttpKmlGetFeatures.h"
+
 // Http Wms operations
 #include "OgcDataAccessor.h"
 #include "HttpWmsGetCapabilities.h"
@@ -349,6 +354,9 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opWfsDescribeFeatureType] = MgHttpWfsDescribeFeatureType::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateDataStores] = MgHttpEnumerateDataStores::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetSchemaMapping] = MgHttpGetSchemaMapping::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetMapKml] = MgHttpKmlGetMap::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetLayerKml] = MgHttpKmlGetLayer::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetFeaturesKml] = MgHttpKmlGetFeatures::CreateObject;
 
     httpPostHandlerCreators.push_back(MgHttpWfsGetCapabilities::ProcessPostRequest);
     httpPostHandlerCreators.push_back(MgHttpWfsDescribeFeatureType::ProcessPostRequest);

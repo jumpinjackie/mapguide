@@ -234,6 +234,21 @@ const STRING MgHttpResourceStrings::reqTileMapDefinition = L"MAPDEFINITION";
 const STRING MgHttpResourceStrings::opGetTileImage = L"GETTILEIMAGE";
 const STRING MgHttpResourceStrings::opClearTileCache = L"CLEARTILECACHE";
 
+// Predefined Kml Service Request Parameters
+const STRING MgHttpResourceStrings::reqKmlMapDefinition = L"MAPDEFINITION";
+const STRING MgHttpResourceStrings::reqKmlLayerDefinition = L"LAYERDEFINITION";
+const STRING MgHttpResourceStrings::reqKmlBoundingBox = L"BBOX";
+const STRING MgHttpResourceStrings::reqKmlFormat = L"FORMAT";
+const STRING MgHttpResourceStrings::reqKmlScaleRange = L"SCALERANGE";
+const STRING MgHttpResourceStrings::reqKmlWidth = L"WIDTH";
+const STRING MgHttpResourceStrings::reqKmlHeight = L"HEIGHT";
+const STRING MgHttpResourceStrings::reqKmlDpi = L"DPI";
+
+// Kml Service Operation Requests
+const STRING MgHttpResourceStrings::opGetMapKml = L"GETMAPKML";
+const STRING MgHttpResourceStrings::opGetLayerKml = L"GETLAYERKML";
+const STRING MgHttpResourceStrings::opGetFeaturesKml = L"GETFEATURESKML";
+
 // Predefined Web Map Service Request Parameters
 const STRING MgHttpResourceStrings::reqWmsRequest = L"REQUEST";
 const STRING MgHttpResourceStrings::reqWmsService = L"SERVICE";

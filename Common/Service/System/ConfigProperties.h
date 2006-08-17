@@ -212,6 +212,11 @@ EXTERNAL_API:
     static const STRING HostPropertyResourceService;                    /// value("ResourceService")
     static const bool DefaultHostPropertyResourceService;               /// value(false)
 
+    /// Enables/disables the Kml Service.  Note that in V1.0 this service is only
+    /// available on the Site Server and must be enabled there.
+    static const STRING HostPropertyKmlService;                         /// value("KmlService")
+    static const bool DefaultHostPropertyKmlService;                    /// value(false)
+
 INTERNAL_API:
 
     /// Enables/disables the ServerAdmin Service (for internal use only).

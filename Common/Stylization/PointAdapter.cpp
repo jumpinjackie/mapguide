@@ -88,6 +88,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
     RS_String tip; //TODO: this should be quick since we are not assigning
     RS_String eurl;
+    const RS_String &theme = rule->GetLegendLabel();
 
     if (tooltip && !tooltip->empty())
         EvalString(*tooltip, tip);
@@ -110,7 +111,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
     if (psym && psym->GetSymbol())
     {
-        renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl);
+        renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, theme.empty() ? NULL : &theme);
 
         //quick check if style is already cached
         RS_MarkerDef* cachedStyle = m_hPointSymCache[psym];

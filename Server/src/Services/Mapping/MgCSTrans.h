@@ -18,7 +18,7 @@
 class MgCoordinateSystem;
 class MgCoordinateSystemTransform;
 
-class MgCSTrans : public CSysTransformer
+class MG_SERVER_MAPPING_API MgCSTrans : public CSysTransformer
 {
 public:
 

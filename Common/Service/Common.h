@@ -235,6 +235,7 @@ class ACE_SOCK_Stream;
 #include "Services/MappingService.h"
 #include "Services/RenderingService.h"
 #include "Services/TileService.h"
+#include "Services/KmlService.h"
 
 #include "Services/ProxyDrawingService.h"
 #include "Services/ProxyFeatureService.h"
@@ -242,6 +243,7 @@ class ACE_SOCK_Stream;
 #include "Services/ProxyRenderingService.h"
 #include "Services/ProxyResourceService.h"
 #include "Services/ProxyTileService.h"
+#include "Services/ProxyKmlService.h"
 
 #include "Controller/Controller.h"
 #include "Controller/DwfController.h"
