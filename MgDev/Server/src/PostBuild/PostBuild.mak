@@ -352,14 +352,14 @@ CreatePathsRelease :
     if NOT EXIST ..\..\bin\release\Repositories\Site\nul mkdir ..\..\bin\release\Repositories\Site
     if NOT EXIST ..\..\bin\release\Repositories\TileCache\nul mkdir ..\..\bin\release\Repositories\TileCache
 
-release : ..\..\bin\debug\MgFoundation.dll \
-          ..\..\bin\debug\MgFoundation.pdb \
-          ..\..\bin\debug\MgGeometry.dll \
-          ..\..\bin\debug\MgGeometry.pdb \
-          ..\..\bin\debug\MgPlatformBase.dll \
-          ..\..\bin\debug\MgPlatformBase.pdb \
-          ..\..\bin\debug\MgMapGuideCommon.dll \
-          ..\..\bin\debug\MgMapGuideCommon.pdb \
+release : ..\..\bin\release\MgFoundation.dll \
+          ..\..\bin\release\MgFoundation.pdb \
+          ..\..\bin\release\MgGeometry.dll \
+          ..\..\bin\release\MgGeometry.pdb \
+          ..\..\bin\release\MgPlatformBase.dll \
+          ..\..\bin\release\MgPlatformBase.pdb \
+          ..\..\bin\release\MgMapGuideCommon.dll \
+          ..\..\bin\release\MgMapGuideCommon.pdb \
           ..\..\bin\release\MgCoordinateSystem.dll \
           ..\..\bin\release\MgCoordinateSystem.pdb \
           ..\..\bin\release\MgMdfModel.dll \

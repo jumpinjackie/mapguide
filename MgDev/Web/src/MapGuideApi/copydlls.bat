@@ -34,8 +34,17 @@ REM and that this batch file is being run in the MapGuideApi folder
 echo Copying ACE Release DLL to %WEB_BIN_RELEASE%
 copy "..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.dll" %WEB_BIN_RELEASE%
 
-echo Copying MgCommon Release DLL to %WEB_BIN_RELEASE%
-copy %COMMON_BIN_RELEASE%\MgCommon.dll %WEB_BIN_RELEASE%
+echo Copying MgFoundation Release DLL to %WEB_BIN_RELEASE%
+copy %COMMON_BIN_RELEASE%\MgFoundation.dll %WEB_BIN_RELEASE%
+
+echo Copying MgGeometry Release DLL to %WEB_BIN_RELEASE%
+copy %COMMON_BIN_RELEASE%\MgGeometry.dll %WEB_BIN_RELEASE%
+
+echo Copying MgPlatformBase Release DLL to %WEB_BIN_RELEASE%
+copy %COMMON_BIN_RELEASE%\MgPlatformBase.dll %WEB_BIN_RELEASE%
+
+echo Copying MgMapGuideCommon Release DLL to %WEB_BIN_RELEASE%
+copy %COMMON_BIN_RELEASE%\MgMapGuideCommon.dll %WEB_BIN_RELEASE%
 
 echo Copying MgCoordinateSystem Release DLL to %WEB_BIN_RELEASE%
 copy %COMMON_BIN_RELEASE%\MgCoordinateSystem.dll %WEB_BIN_RELEASE%
@@ -65,8 +74,17 @@ REM and that this batch file is being run in the MapGuideApi folder
 echo Copying ACE Debug DLL to %WEB_BIN_DEBUG%
 copy "..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll" %WEB_BIN_DEBUG%
 
-echo Copying MgCommon Debug DLL to %WEB_BIN_DEBUG%
-copy %COMMON_BIN_DEBUG%\MgCommond.dll %WEB_BIN_DEBUG%
+echo Copying MgFoundation Debug DLL to %WEB_BIN_DEBUG%
+copy %COMMON_BIN_DEBUG%\MgFoundationd.dll %WEB_BIN_DEBUG%
+
+echo Copying MgGeometry Debug DLL to %WEB_BIN_DEBUG%
+copy %COMMON_BIN_DEBUG%\MgGeometryd.dll %WEB_BIN_DEBUG%
+
+echo Copying MgPlatformBase Debug DLL to %WEB_BIN_DEBUG%
+copy %COMMON_BIN_DEBUG%\MgPlatformBased.dll %WEB_BIN_DEBUG%
+
+echo Copying MgMapGuideCommon Debug DLL to %WEB_BIN_DEBUG%
+copy %COMMON_BIN_DEBUG%\MgMapGuideCommond.dll %WEB_BIN_DEBUG%
 
 echo Copying MgCoordinateSystem Debug DLL to %WEB_BIN_DEBUG%
 copy %COMMON_BIN_DEBUG%\MgCoordinateSystemd.dll %WEB_BIN_DEBUG%
