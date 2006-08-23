@@ -964,13 +964,13 @@ INT32 MgServerManager::GetUptime()
 /// MgConnectionNotOpenException
 INT32 MgServerManager::GetAverageOperationTime()
 {
-    double avgTime = -1;
+    double avgTime = 0.0;
 
     MG_TRY()
 
     if (GetTotalProcessedOperations() > 0)
     {
-        avgTime = (double)(GetTotalOperationTime()) / (double)(GetTotalProcessedOperations());
+        avgTime = ((double)(GetTotalOperationTime()) * 1000.0) / (double)(GetTotalProcessedOperations());
     }
 
 

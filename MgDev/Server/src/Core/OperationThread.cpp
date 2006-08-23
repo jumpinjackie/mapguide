@@ -406,7 +406,7 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
             // We increment operations processed for successful operations only.
             if (IMgServiceHandler::mpsDone == stat)
             {
-                INT32 opTime = operationTime.msec();
+                INT32 opTime = operationTime.sec();
 
                 pConnection->IncrementProcessedOperations();
                 pConnection->SetCurrentOperationTime(opTime);
