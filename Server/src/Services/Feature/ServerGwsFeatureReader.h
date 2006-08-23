@@ -308,7 +308,7 @@ private:
     void DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName);
 
 CLASS_ID:
-    static const INT32 m_cls_id = FeatureService_GwsFeatureReader;
+    static const INT32 m_cls_id = PlatformBase_FeatureService_GwsFeatureReader;
 
 };
 

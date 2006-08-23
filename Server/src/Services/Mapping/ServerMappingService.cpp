@@ -46,6 +46,8 @@
 const STRING SRS_LL84 = L"GEOGCS[\"LL84\",DATUM[\"WGS 84\",SPHEROID[\"WGS 84\",6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0],UNIT[\"Degrees\",0.01745329252]]";
 
 
+IMPLEMENT_CREATE_SERVICE(MgServerMappingService)
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
@@ -55,23 +57,13 @@ const STRING SRS_LL84 = L"GEOGCS[\"LL84\",DATUM[\"WGS 84\",SPHEROID[\"WGS 84\",6
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-MgServerMappingService::MgServerMappingService(MgConnectionProperties* connection) :
-    MgMappingService(connection)
+MgServerMappingService::MgServerMappingService() :
+    MgMappingService()
 {
     m_svcFeature = NULL;
     m_svcResource = NULL;
     m_svcDrawing = NULL;
     m_pCSFactory = new MgCoordinateSystemFactory();
-}
-
-
-///----------------------------------------------------------------------------
-/// <summary>
-/// Default constructor. Need this to prevent a GCC 3 compile error.
-/// </summary>
-///----------------------------------------------------------------------------
-MgServerMappingService::MgServerMappingService() : MgMappingService(NULL)
-{
 }
 
 
@@ -216,7 +208,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     //iterate over layers
     for (int i = 0; i < mglayers->GetCount(); i++)
     {
-        Ptr<MgLayer> mgLayer = mglayers->GetItem(i);
+        Ptr<MgLayerBase> mgLayer = mglayers->GetItem(i);
         Ptr<MgLayerGroup> mgParent = mgLayer->GetGroup();
 
         //get layer definition
@@ -473,7 +465,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
 
         for (int k=0; k<layers->GetCount(); k++)
         {
-            Ptr<MgLayer> mglayer = layers->GetItem(k);
+            Ptr<MgLayerBase> mglayer = layers->GetItem(k);
             Ptr<MgLayerGroup> mggroup = mglayer->GetGroup();
 
             //base map layers are not editable
@@ -537,10 +529,10 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
                             //see also similar code in GenerateMap above
 
                             //find the corresponding MgLayer first
-                            Ptr<MgLayer> layerToAdd = (MgLayer*)NULL;
+                            Ptr<MgLayerBase> layerToAdd = (MgLayer*)NULL;
                             for (int i=0; i<layers->GetCount(); i++)
                             {
-                                Ptr<MgLayer> temp = layers->GetItem(i);
+                                Ptr<MgLayerBase> temp = layers->GetItem(i);
 
                                 if (temp->GetObjectId() == changelist->GetObjectId())
                                 {
@@ -628,7 +620,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
 
         for (int u=0; u<layers->GetCount(); u++)
         {
-            Ptr<MgLayer> lr = layers->GetItem(u);
+            Ptr<MgLayerBase> lr = layers->GetItem(u);
             rolc->Add(lr);
         }
 
@@ -1207,7 +1199,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
         for (int u=0; u<layers->GetCount(); u++)
         {
-            Ptr<MgLayer> lr = layers->GetItem(u);
+            Ptr<MgLayerBase> lr = layers->GetItem(u);
             rolc->Add(lr);
         }
 
@@ -1757,4 +1749,9 @@ void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>
             break;
         }
     }
+}
+
+void MgServerMappingService::SetConnectionProperties(MgConnectionProperties*)
+{
+    // Do nothing.  No connection properties are required for Server-side service objects.
 }

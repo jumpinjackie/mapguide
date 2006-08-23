@@ -25,7 +25,6 @@
 #include "LogManager.h"
 #include "FdoConnectionManager.h"
 #include "SignalHandler.h"
-#include "ServerAdmin.h"
 
 #ifdef _DEBUG
 void DebugOutput(const ACE_TCHAR* format, ...)

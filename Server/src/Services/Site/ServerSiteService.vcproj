@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Security;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\..\..\Common\Service\Util;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\..\Common\ServerUtil;..\Resource"
+				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Security;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\..\Common\ServerUtil;..\Resource"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_SITE_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Security;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\..\..\Common\Service\Util;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\..\Common\ServerUtil;..\Resource"
+				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Security;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\..\Common\ServerUtil;..\Resource"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_SITE_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"

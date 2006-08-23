@@ -18,7 +18,7 @@
 #ifndef _MG_SERVER_FEATURE_UTIL_H_
 #define _MG_SERVER_FEATURE_UTIL_H_
 
-#include "Common.h"
+#include "MapGuideCommon.h"
 #include "Fdo.h"
 
 #define EQUAL_CATEGORY      0

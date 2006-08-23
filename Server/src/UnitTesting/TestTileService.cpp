@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "TestTileService.h"
 #include "../UnitTesting/CppUnitExtensions.h"
 #include "ServiceManager.h"

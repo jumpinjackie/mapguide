@@ -18,9 +18,9 @@
 #ifndef _MG_SERVERGETLONGTRANSACTIONS_H_
 #define _MG_SERVERGETLONGTRANSACTIONS_H_
 
-#include "Common.h"
-#include "XmlDefs.h"
-#include "XmlUtil.h"
+#include "MapGuideCommon.h"
+#include "System/XmlDefs.h"
+#include "System/XmlUtil.h"
 #include "Fdo.h"
 
 class MgServerGetLongTransactions

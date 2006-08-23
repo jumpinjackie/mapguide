@@ -19,8 +19,6 @@
 #include "ServerFeatureUtil.h"
 #include "FeatureDistribution.h"
 #include "FeatureNumericFunctions.h"
-#include "ProxyFeatureReader.h"
-#include "ProxyDataReader.h"
 #include "math.h"
 #include "float.h"
 #include <algorithm>

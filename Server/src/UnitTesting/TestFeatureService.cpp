@@ -15,15 +15,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "TestFeatureService.h"
 #include "CppUnitExtensions.h"
 #include "ServiceManager.h"
 #include "FdoConnectionManager.h"
-#include "FeatureService.h"
+#include "Services/FeatureService.h"
 #include "ServerFeatureService.h"
 #include "Fdo.h"
-#include "FeatureGeometricType.h"
 
 const STRING TEST_LOCALE = L"en";
 

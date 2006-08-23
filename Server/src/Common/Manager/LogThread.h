@@ -18,7 +18,7 @@
 #ifndef MG_LOG_THREAD_H
 #define MG_LOG_THREAD_H
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ThreadBase.h"
 
 class MgLogThread : public MgThreadBase

@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\Common;..\..\Common\Base;..\..\Common\Manager"
+				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_SERVERADMIN_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\Common;..\..\Common\Base;..\..\Common\Manager"
+				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_SERVERADMIN_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"

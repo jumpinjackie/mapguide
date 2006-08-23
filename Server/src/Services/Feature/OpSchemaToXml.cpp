@@ -16,9 +16,6 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
-#include "BaseService.h"
-#include "FeatureService.h"
-#include "FeatureSchemaCollection.h"
 #include "OpSchemaToXml.h"
 #include "ServerFeatureService.h"
 #include "LogManager.h"

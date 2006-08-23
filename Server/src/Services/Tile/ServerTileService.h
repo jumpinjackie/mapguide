@@ -26,8 +26,9 @@ class MG_SERVER_TILE_API MgServerTileService : public MgTileService
     DECLARE_CLASSNAME(MgServerTileService)
 
 public:
-    MgServerTileService(MgConnectionProperties* connection);
+    MgServerTileService();
     ~MgServerTileService(void);
+    DECLARE_CREATE_SERVICE()
 
     virtual MgByteReader* GetTile(MgMap* map,
                                   CREFSTRING baseMapLayerGroupName,
@@ -45,9 +46,9 @@ public:
 
     virtual void NotifyResourcesChanged(MgSerializableCollection* resources);
 
+    void SetConnectionProperties(MgConnectionProperties* connProp);
+
 private:
-    // need this to prevent a GCC 3 compile error
-    MgServerTileService();
 
     // member data
     Ptr<MgTileCache> m_tileCache;

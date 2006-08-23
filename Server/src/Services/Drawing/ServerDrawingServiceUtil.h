@@ -30,8 +30,6 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
 
-#include "BaseService.h"
-#include "ResourceService.h"
 #include "ServerResourceService.h"
 
 #include <assert.h>

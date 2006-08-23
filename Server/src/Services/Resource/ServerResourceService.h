@@ -39,13 +39,11 @@ class MG_SERVER_RESOURCE_API MgServerResourceService : public MgResourceService
 
 public:
 
-    explicit MgServerResourceService(MgConnectionProperties* connection);
+    explicit MgServerResourceService();
     virtual ~MgServerResourceService();
+    DECLARE_CREATE_SERVICE()
 
 private:
-
-    // Need this to prevent a GCC 3 compile error
-    MgServerResourceService();
 
 /// Methods
 
@@ -163,6 +161,8 @@ public:
 
     virtual MgSerializableCollection* GetChangedResources();
     virtual void UpdateChangedResources(MgSerializableCollection* changedResources);
+
+    void SetConnectionProperties(MgConnectionProperties* connProp);
 
 protected:
 

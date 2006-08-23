@@ -17,8 +17,6 @@
 
 #include "HttpHandler.h"
 #include "HttpGetPlot.h"
-#include "Map.h"
-#include "Controller.h"
 
 const double IN_TO_MM = 25.4;  // inches to millimeters conversion
 

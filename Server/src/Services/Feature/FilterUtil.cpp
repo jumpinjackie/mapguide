@@ -15,10 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "Common.h"
+#include "MapGuideCommon.h"
 #include "FilterUtil.h"
-#include "XmlDefs.h"
-#include "XmlUtil.h"
+#include "System/XmlDefs.h"
+#include "System/XmlUtil.h"
 #include "CoordinateSystem/CoordinateSystemTransform.h"
 
 //compare strings that represent XML element names

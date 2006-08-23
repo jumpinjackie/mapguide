@@ -15,11 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ServerDrawingServiceDefs.h"
 #include "ServerDrawingServiceUtil.h"
 #include "ServiceManager.h"
-#include "XmlUtil.h"
+#include "System/XmlUtil.h"
 
 ///----------------------------------------------------------------------------
 /// <summary>

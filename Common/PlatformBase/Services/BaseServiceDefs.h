@@ -20,7 +20,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Service types for MgServiceFactory::CreateService().
+/// Service types for Platform services.
 class MG_PLATFORMBASE_API MgServiceType
 {
 PUBLISHED_API:

@@ -261,7 +261,7 @@ private:
     STRING m_providerName;
 
 CLASS_ID:
-    static const INT32 m_cls_id = FeatureService_SqlDataReader;
+    static const INT32 m_cls_id = PlatformBase_FeatureService_SqlDataReader;
 
 };
 

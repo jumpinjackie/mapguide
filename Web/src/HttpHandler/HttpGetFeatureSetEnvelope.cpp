@@ -17,8 +17,6 @@
 
 #include "HttpHandler.h"
 #include "HttpGetFeatureSetEnvelope.h"
-#include "Map.h"
-#include "Selection.h"
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpGetFeatureSetEnvelope)
 

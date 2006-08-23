@@ -18,7 +18,6 @@
 #include "ServerFeatureServiceDefs.h"
 #include "ServerGetLongTransactions.h"
 #include "ServerFeatureConnection.h"
-#include "LongTransactionData.h"
 #include "ServerFeatureUtil.h"
 #include <math.h>
 

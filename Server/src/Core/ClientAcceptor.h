@@ -18,7 +18,7 @@
 #ifndef MGCLIENTACCEPTOR_H
 #define MGCLIENTACCEPTOR_H
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ClientHandler.h"
 
 class MgClientAcceptor : public ACE_Event_Handler

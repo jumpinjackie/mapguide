@@ -29,8 +29,6 @@
 
 #include "ServerMappingService.h"
 #include "MappingOperation.h"
-#include "CustomLogoInfo.h"
-#include "CustomTextInfo.h"
 #include "MgCSTrans.h"
 
 #include <assert.h>

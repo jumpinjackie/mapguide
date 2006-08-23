@@ -19,7 +19,6 @@
 #include "HttpWmsGetCapabilities.h"
 
 #include "OgcFramework.h"
-#include "ServerAdmin.h"
 #include "XmlParser.h"
 #include "OgcWmsServer.h"
 #include "WmsLayerDefinitions.h"

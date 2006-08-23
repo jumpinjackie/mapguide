@@ -18,7 +18,7 @@
 #ifndef MGSIGNALHANDLER_H
 #define MGSIGNALHANDLER_H
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 
 class MgSignalHandler : public ACE_Event_Handler
 {

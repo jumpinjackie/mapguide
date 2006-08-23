@@ -24,14 +24,11 @@ class MgHttpRequestResponseHandler;
 class MgHttpResponse;
 
 // External headers
-#include "AceCommon.h"
-#include "ResourceService.h"
-#include "DrawingService.h"
-#include "FeatureService.h"
-#include "MappingService.h"
-#include "Site.h"
+#include "MapGuideCommon.h"
 
 #include <assert.h>
+
+#include "HttpHandlerClassId.h"
 
 // Common HttpHandler headers
 #include "HttpHandlerApiDllExport.h"

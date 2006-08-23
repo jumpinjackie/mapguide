@@ -17,7 +17,6 @@
 
 #include "HttpHandler.h"
 #include "HttpGetMap.h"
-#include "Controller.h"
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpGetMap)
 

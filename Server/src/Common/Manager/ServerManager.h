@@ -25,8 +25,7 @@
 #endif
 
 #include "ServerManagerDllExport.h"
-#include "AceCommon.h"
-#include "BaseService.h"
+#include "MapGuideCommon.h"
 #include <fstream>
 
 #ifdef WIN32

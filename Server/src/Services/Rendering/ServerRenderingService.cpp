@@ -15,10 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ServerRenderingService.h"
-#include "MappingService.h"
-
 #include "Renderer.h"
 #include "Stylizer.h"
 #include "DefaultStylizer.h"
@@ -32,12 +30,12 @@
 
 #include "LegendPlotUtil.h"
 
-#include "TileDefs.h"
 
 
 // the maximum number of allowed pixels for rendered images
 static const INT32 MAX_PIXELS = 16384*16384;
 
+IMPLEMENT_CREATE_SERVICE(MgServerRenderingService)
 
 // used when we want to process a given number of features
 bool StylizeThatMany(void* data)
@@ -50,7 +48,7 @@ bool StylizeThatMany(void* data)
 }
 
 
-MgServerRenderingService::MgServerRenderingService(MgConnectionProperties* connection) : MgRenderingService(connection)
+MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
 {
     m_pCSFactory = new MgCoordinateSystemFactory();
 
@@ -66,11 +64,6 @@ MgServerRenderingService::MgServerRenderingService(MgConnectionProperties* conne
 
     m_svcDrawing = dynamic_cast<MgDrawingService*>(serviceMan->RequestService(MgServiceType::DrawingService));
     assert(m_svcDrawing != NULL);
-}
-
-
-MgServerRenderingService::MgServerRenderingService() : MgRenderingService(NULL)
-{
 }
 
 
@@ -197,7 +190,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     Ptr<MgReadOnlyLayerCollection> roLayers = new MgReadOnlyLayerCollection();
     for (int i=0; i<layers->GetCount(); i++)
     {
-        Ptr<MgLayer> layer = layers->GetItem(i);
+        Ptr<MgLayerBase> layer = layers->GetItem(i);
         Ptr<MgLayerGroup> parentGroup = layer->GetGroup();
         if (parentGroup == baseGroup)
             roLayers->Add(layer);
@@ -268,7 +261,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     Ptr<MgReadOnlyLayerCollection> roLayers = new MgReadOnlyLayerCollection();
     for (int i=0; i<layers->GetCount(); i++)
     {
-        Ptr<MgLayer> layer = layers->GetItem(i);
+        Ptr<MgLayerBase> layer = layers->GetItem(i);
         INT32 layerType = layer->GetLayerType();
         if (layerType == MgLayerType::Dynamic)
             roLayers->Add(layer);
@@ -586,7 +579,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             Ptr<MgLayerCollection> layers = map->GetLayers();
             for (INT32 i=0; i<layers->GetCount(); i++)
             {
-                Ptr<MgLayer> layer = layers->GetItem(i);
+                Ptr<MgLayerBase> layer = layers->GetItem(i);
                 tempLayers->Add(layer);
             }
         }
@@ -611,7 +604,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
                 for (int s=0; s<selLayers->GetCount(); s++)
                 {
-                    Ptr<MgLayer> selLayer = selLayers->GetItem(s);
+                    Ptr<MgLayerBase> selLayer = selLayers->GetItem(s);
 
                     // generate a filter for the selected features
                     overrideFilters->Add(selection->GenerateFilter(selLayer, selLayer->GetFeatureClassName()));
@@ -809,7 +802,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     for (int p=0; p<layers->GetCount(); p++)
     {
         //find the layer we need to select features from
-        Ptr<MgLayer> layer = layers->GetItem(p);
+        Ptr<MgLayerBase> layer = layers->GetItem(p);
 
         //do we want to select on this layer -- if caller
         //gave us a layer name collection, check if the layer
@@ -962,4 +955,9 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     }
 
     selRenderer->EndMap();
+}
+
+void MgServerRenderingService::SetConnectionProperties(MgConnectionProperties*)
+{
+    // Do nothing.  No connection properties are required for Server-side service objects.
 }

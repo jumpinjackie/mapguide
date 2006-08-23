@@ -19,8 +19,6 @@
 #define MGTILEOPERATION_H_
 
 #include "ServiceOperation.h"
-#include "BaseService.h"
-#include "TileService.h"
 
 class MgTileOperation : public MgServiceOperation
 {

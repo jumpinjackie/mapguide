@@ -29,8 +29,12 @@ class MG_SERVER_RENDERING_API MgServerRenderingService : public MgRenderingServi
     DECLARE_CLASSNAME(MgServerRenderingService)
 
 public:
-    MgServerRenderingService(MgConnectionProperties* connection);
+    MgServerRenderingService();
     ~MgServerRenderingService(void);
+
+    DECLARE_CREATE_SERVICE()
+
+    void SetConnectionProperties(MgConnectionProperties* connProp);
 
     virtual MgByteReader* RenderTile(MgMap* map,
                                      CREFSTRING baseMapLayerGroupName,
@@ -81,9 +85,6 @@ public:
                                         INT32 maxFeatures);
 
 private:
-    /// Default constructor that does nothing. Its purpose is to keep
-    /// the code from causing a compiler error when using gcc.
-    MgServerRenderingService();
 
     // used for tile generation
     MgByteReader* RenderTile(MgMap* map,

@@ -17,7 +17,7 @@
 
 #include "ServerRenderingDllExport.h"
 #include "ServerMappingDllExport.h"
-#include "Common.h"
+#include "MapGuideCommon.h"
 #include "FeaturePropRenderer.h"
 #include "RSBufferOutputStream.h"
 #include "KeyEncode.h"

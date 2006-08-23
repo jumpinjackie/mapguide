@@ -17,7 +17,6 @@
 
 #include "HttpHandler.h"
 #include "HttpGetLegendImage.h"
-#include "Controller.h"
 
 const INT32 DefaultWidth = 16;
 const INT32 DefaultHeight = 16;

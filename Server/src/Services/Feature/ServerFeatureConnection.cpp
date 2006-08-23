@@ -18,7 +18,6 @@
 #include "ServerFeatureServiceDefs.h"
 #include "ServerFeatureConnection.h"
 #include "ServiceManager.h"
-#include "ResourceService.h"
 #include "ServerFeatureUtil.h"
 #include "FdoConnectionManager.h"
 

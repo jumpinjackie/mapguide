@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ServerFactory.h"
 #include "ServerAdminService.h"
 #include "ServerDrawingService.h"
@@ -34,56 +34,16 @@ static bool initStatic = InitializeStaticData();
 
 bool InitializeStaticData()
 {
-    // Sample code to add class map
-    // classCreators[ResourceService_ResourceIdentifier] = MgResourceIdentifier::CreateObject;
+    MgServiceRegistry* registry = MgServiceRegistry::GetInstance();
+    registry->RegisterService(MgServiceType::DrawingService, MgServerDrawingService::CreateService, sctLocalInProc);
+    registry->RegisterService(MgServiceType::FeatureService, MgServerFeatureService::CreateService, sctLocalInProc);
+    registry->RegisterService(MgServiceType::MappingService, MgServerMappingService::CreateService, sctLocalInProc);
+    registry->RegisterService(MgServiceType::RenderingService, MgServerRenderingService::CreateService, sctLocalInProc);
+    registry->RegisterService(MgServiceType::ResourceService, MgServerResourceService::CreateService, sctLocalInProc);
+    registry->RegisterService(MgServiceType::TileService, MgServerTileService::CreateService, sctLocalInProc);
+    registry->RegisterService(MgServiceType::KmlService, MgServerKmlService::CreateService, sctLocalInProc);
+    registry->RegisterService(MgServiceType::ServerAdminService, MgServerAdminService::CreateService, sctLocalInProc);
+    registry->RegisterService(MgServiceType::SiteService, MgServerSiteService::CreateService, sctLocalInProc);
+
     return true;
-}
-
-extern "C" void* CreateMgServerObject(int classId)
-{
-    //find the object in the map
-    MgObject*(*createFunc)() = classCreators[classId];
-    if(createFunc == NULL)
-        return NULL;
-
-    MgObject* obj = (*createFunc)();
-    return obj;
-}
-
-extern "C" void* CreateMgServerService(INT32 serviceType, MgConnectionProperties* mapConnection)
-{
-    MgService* service = NULL;
-    switch(serviceType)
-    {
-        case MgServiceType::DrawingService:
-            service = new MgServerDrawingService(mapConnection);
-            break;
-        case MgServiceType::FeatureService:
-            service = new MgServerFeatureService(mapConnection);
-            break;
-        case MgServiceType::MappingService:
-            service = new MgServerMappingService(mapConnection);
-            break;
-        case MgServiceType::RenderingService:
-            service = new MgServerRenderingService(mapConnection);
-            break;
-        case MgServiceType::ResourceService:
-            service = new MgServerResourceService(mapConnection);
-            break;
-        case MgServiceType::ServerAdminService:
-            service = new MgServerAdminService(mapConnection);
-            break;
-        case MgServiceType::SiteService:
-            service = new MgServerSiteService(mapConnection);
-            break;
-        case MgServiceType::TileService:
-            service = new MgServerTileService(mapConnection);
-            break;
-        case MgServiceType::KmlService:
-            service = new MgServerKmlService(mapConnection);
-            break;
-        default:
-            break;
-    }
-    return service;
 }

@@ -112,7 +112,7 @@ private:
     INT32 m_type;
 
 CLASS_ID:
-    static const INT32 m_cls_id = MapAgent_MgHttpPrimitiveValue;
+    static const INT32 m_cls_id = HttpHandler_MapAgent_HttpPrimitiveValue;
 };
 
 #endif

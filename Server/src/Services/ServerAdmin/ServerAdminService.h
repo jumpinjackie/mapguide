@@ -18,7 +18,7 @@
 #ifndef MGSERVERADMINSERVICE_H_
 #define MGSERVERADMINSERVICE_H_
 
-#include "ServerAdminDefs.h"
+#include "Services/ServerAdminDefs.h"
 #include "ServerAdminDllExport.h"
 
 class MgLoadBalanceManager;
@@ -30,12 +30,9 @@ DECLARE_CLASSNAME(MgServerAdminService)
 /// Constructors/Destructor
 
 public:
-    explicit MgServerAdminService(MgConnectionProperties* connection);
+    explicit MgServerAdminService();
     ~MgServerAdminService(void);
-
-private:
-    /// Default constructor. Need this to prevent a GCC 3 compile error.
-    MgServerAdminService();
+    DECLARE_CREATE_SERVICE()
 
 /// Methods
 
@@ -85,6 +82,9 @@ public:
     void DeletePackage(CREFSTRING packageName);
     MgPackageStatusInformation* GetPackageStatus(CREFSTRING packageName);
     MgByteReader* GetPackageLog(CREFSTRING packageName);
+
+    // Internal use methods
+    void SetConnectionProperties(MgConnectionProperties* connProp);
 
 protected:
     //  Inherited from MgDisposable

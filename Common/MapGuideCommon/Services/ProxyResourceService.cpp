@@ -1044,3 +1044,14 @@ void MgProxyResourceService::SetConnectionProperties(MgConnectionProperties* con
 {
     m_connProp = SAFE_ADDREF(connProp);
 }
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Internal method to return user information for service
+///
+/// \return
+/// MgUserInformation for service
+MgUserInformation* MgProxyResourceService::GetUserInfo()
+{
+    return m_connProp->GetUserInfo();
+}

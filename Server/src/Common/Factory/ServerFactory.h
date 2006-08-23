@@ -18,7 +18,6 @@
 #ifndef MGSERVERFACTORY_H_
 #define MGSERVERFACTORY_H_
 
-#include "BaseService.h"
 #include "ServerFactoryDllExport.h"
 
 extern "C" MG_SERVER_FACTORY_API void* CreateMgServerObject(int classId);

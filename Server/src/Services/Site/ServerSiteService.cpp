@@ -17,12 +17,13 @@
 
 #include "SiteServiceDefs.h"
 #include "ServerSiteService.h"
-#include "Util.h"
 #include "SecurityManager.h"
 #include "SessionManager.h"
 #include "LoadBalanceManager.h"
 #include "ServiceManager.h"
 #include "SiteServiceUtil.h"
+
+IMPLEMENT_CREATE_SERVICE(MgServerSiteService)
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -34,18 +35,8 @@
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-MgServerSiteService::MgServerSiteService( MgConnectionProperties* connection )
-    : MgService (connection)
-{
-}
-
-///----------------------------------------------------------------------------
-/// <summary>
-/// Default constructor. Need this to prevent a GCC 3 compile error.
-/// </summary>
-///----------------------------------------------------------------------------
-
-MgServerSiteService::MgServerSiteService() : MgService(NULL)
+MgServerSiteService::MgServerSiteService()
+    : MgService()
 {
 }
 
@@ -942,4 +933,9 @@ STRING MgServerSiteService::RequestServer(INT32 serviceType)
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.RequestServer")
 
     return serverAddress;
+}
+
+void MgServerSiteService::SetConnectionProperties(MgConnectionProperties*)
+{
+    // Do nothing.  No connection properties are required for Server-side service objects.
 }

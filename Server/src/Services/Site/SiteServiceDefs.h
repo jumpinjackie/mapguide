@@ -18,10 +18,9 @@
 #ifndef MG_SITE_SERVICE_DEFS_H
 #define MG_SITE_SERVICE_DEFS_H
 
-#include "AceCommon.h"
-#include "BaseService.h"
-#include "XmlDefs.h"
-#include "XmlUtil.h"
+#include "MapGuideCommon.h"
+#include "System/XmlDefs.h"
+#include "System/XmlUtil.h"
 
 #include <assert.h>
 

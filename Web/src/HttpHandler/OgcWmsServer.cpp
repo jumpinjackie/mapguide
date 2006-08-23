@@ -17,7 +17,7 @@
 
 #include "OgcFramework.h"
 #include "OgcWmsServer.h"
-#include "Common.h"
+#include "MapGuideCommon.h"
 
 CPSZ kpszQueryValueWms              = _("WMS");
 CPSZ kpszQueryStringInfoFormat      = _("info_format");

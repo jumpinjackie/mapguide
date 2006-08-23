@@ -18,9 +18,9 @@
 #ifndef _MG_SERVER_DESCRIBE_SCHEMA_H
 #define _MG_SERVER_DESCRIBE_SCHEMA_H
 
-#include "Common.h"
-#include "XmlDefs.h"
-#include "XmlUtil.h"
+#include "MapGuideCommon.h"
+#include "System/XmlDefs.h"
+#include "System/XmlUtil.h"
 #include "Fdo.h"
 
 class MgServerDescribeSchema

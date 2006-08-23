@@ -61,13 +61,10 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
 
     public:
 
-        MgServerMappingService(MgConnectionProperties* connection);
+        MgServerMappingService();
         virtual ~MgServerMappingService();
 
-    private:
-
-        // Need this to prevent a GCC 3 compile error
-        MgServerMappingService();
+        DECLARE_CREATE_SERVICE()
 
 // Methods
 
@@ -121,6 +118,8 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
             CREFSTRING format,
             INT32 geomType,
             INT32 themeCategory);
+
+        void SetConnectionProperties(MgConnectionProperties* connProp);
 
 // Data Members
 

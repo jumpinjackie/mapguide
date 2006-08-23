@@ -63,11 +63,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="aced.lib"
+				OutputFile="$(OutDir)\MgMapGuideCommond.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				ImportLibrary="..\lib\debug\MapGuideCommond.lib"
+				ImportLibrary="..\lib\debug\MgMapGuideCommond.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -141,13 +142,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ace.lib"
+				OutputFile="$(OutDir)\MgMapGuideCommon.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="../lib/release/MapGuideCommon.lib"
+				ImportLibrary="../lib/release/MgMapGuideCommon.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1052,6 +1054,14 @@
 			</File>
 			<File
 				RelativePath=".\System\MapGuideCommonFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\System\MapGuideStream.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\System\MapGuideStream.h"
 				>
 			</File>
 			<File

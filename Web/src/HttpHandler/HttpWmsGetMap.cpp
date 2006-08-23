@@ -22,8 +22,6 @@
 #include "OgcFramework.h"
 #include "OgcWmsServer.h"
 
-#include "ImageFormats.h"
-
 extern CPSZ kpszDefineSupportedFormats; // borrowed. TODO: publish as member variable.
 
 // TODO: migrate these to a common Mg*.h header (not Ogc*.h) for use in other handlers.

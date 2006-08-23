@@ -16,10 +16,7 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
-#include "AceCommon.h"
-#include "BaseService.h"
-#include "ResourceIdentifier.h"
-#include "FeatureService.h"
+#include "MapGuideCommon.h"
 #include "OpTestFeatureSourceConnection.h"
 #include "ServerFeatureService.h"
 #include "LogManager.h"

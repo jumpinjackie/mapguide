@@ -92,7 +92,7 @@
 // Further abstraction of other types
 // Here is where we suddenly have to drink the koolaid.
 // "Resistance Is Futile -- You Will Be Assimilated!"
-#include "Common.h"
+#include "MapGuideCommon.h"
 
 typedef unsigned long LONGBITS;
 

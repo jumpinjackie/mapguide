@@ -19,8 +19,6 @@
 #define MG_KML_OPERATION_H_
 
 #include "ServiceOperation.h"
-#include "BaseService.h"
-#include "KmlService.h"
 
 class MgKmlOperation : public MgServiceOperation
 {

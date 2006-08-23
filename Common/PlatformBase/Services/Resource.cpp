@@ -83,7 +83,9 @@ void MgResource::SerializeToRepository(MgResourceService* resourceService, bool 
 {
     //let the object serialize itself in a memory stream
     Ptr<MgMemoryStreamHelper> streamHelper = new MgMemoryStreamHelper();
+    
     Ptr<MgStream> stream = new MgStream(streamHelper);
+
     Serialize(stream);
 
     //Make a byte reader out of the memory stream

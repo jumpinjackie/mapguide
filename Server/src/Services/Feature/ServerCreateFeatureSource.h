@@ -18,7 +18,7 @@
 #ifndef _MG_SERVER_CREATE_FEATURE_SOURCE_H
 #define _MG_SERVER_CREATE_FEATURE_SOURCE_H
 
-#include "Common.h"
+#include "MapGuideCommon.h"
 #include "Fdo.h"
 
 class MgServerCreateFeatureSource

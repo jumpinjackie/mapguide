@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Common\CoordinateSystem;..\..\..\Common\Service;..\..\..\Common\Service\Controller;..\..\..\Common\Service\Geometry;..\..\..\Common\Service\MapLayer;..\..\..\Common\Service\Services;..\..\..\Common\Service\System"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_MAPAGENT_API_EXPORT"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Common\CoordinateSystem;..\..\..\Common\Service;..\..\..\Common\Service\Controller;..\..\..\Common\Service\Geometry;..\..\..\Common\Service\MapLayer;..\..\..\Common\Service\Services;..\..\..\Common\Service\System"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_MAPAGENT_API_EXPORT"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -2377,6 +2377,10 @@
 		</File>
 		<File
 			RelativePath=".\HttpHandlerBuild.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\HttpHandlerClassId.h"
 			>
 		</File>
 		<File

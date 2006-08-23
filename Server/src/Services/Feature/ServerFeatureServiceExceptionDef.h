@@ -18,7 +18,7 @@
 #ifndef MG_FEATURE_SERVICE_EXCEPTION_DEF_H
 #define MG_FEATURE_SERVICE_EXCEPTION_DEF_H
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "Fdo.h"
 
 

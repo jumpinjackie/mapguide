@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ClientHandler.h"
 #include "Connection.h"
 #include "LogManager.h"
@@ -188,7 +188,7 @@ int MgClientHandler::handle_input(ACE_HANDLE handle)
             m_pStreamHelper = new MgAceStreamHelper( handle );
         }
 
-        stream = new MgStream( m_pStreamHelper );
+        stream = new MgMapGuideStream( m_pStreamHelper );
 
         // TODO: use locale from client connection
         mgException->GetMessage(MgResources::DefaultLocale);

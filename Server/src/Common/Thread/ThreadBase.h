@@ -19,7 +19,7 @@
 #define MGTHREADBASE_H
 
 #include "ServerThreadDllExport.h"
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 
 class MG_SERVER_THREAD_API MgThreadBase : public ACE_Task<ACE_MT_SYNCH>
 {

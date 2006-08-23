@@ -17,7 +17,6 @@
 
 #include "HttpHandler.h"
 #include "HttpSelectFeaturesSpatially.h"
-#include "FeatureSpatialOperations.h"
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpSelectFeaturesSpatially)
 

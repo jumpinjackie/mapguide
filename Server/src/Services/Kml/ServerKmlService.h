@@ -59,8 +59,12 @@ class MG_SERVER_KML_API MgServerKmlService : public MgKmlService
     DECLARE_CLASSNAME(MgServerKmlService)
 
 public:
-    MgServerKmlService(MgConnectionProperties* connection);
+    MgServerKmlService();
     ~MgServerKmlService(void);
+
+    DECLARE_CREATE_SERVICE()
+
+    void SetConnectionProperties(MgConnectionProperties* connProp);
 
     virtual MgByteReader* GetMapKml(MgMap* map, CREFSTRING agentUri, CREFSTRING format);
 
@@ -69,9 +73,6 @@ public:
     virtual MgByteReader* GetFeaturesKml(MgLayer* layer, MgEnvelope* extents, INT32 width, INT32 height, double dpi, CREFSTRING format);
 
 private:
-    /// Default constructor that does nothing. Its purpose is to keep
-    /// the code from causing a compiler error when using gcc.
-    MgServerKmlService();
 
     void AppendLayer(MgLayer* layer, 
         MgEnvelope* extent, 

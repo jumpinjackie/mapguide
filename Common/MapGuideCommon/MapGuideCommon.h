@@ -34,6 +34,7 @@
 #include "System/MapGuideCommonClassId.h"
 #include "System/ConfigProperties.h"
 #include "System/UserInformation.h"
+#include "System/MapGuideStream.h"
 #include "Util/IpUtil.h"
 
 #include "MapLayer/Layer.h"

@@ -18,11 +18,11 @@
 #ifndef _MG_SERVER_GET_FEATURES_H_
 #define _MG_SERVER_GET_FEATURES_H_
 
-#include "Common.h"
+#include "MapGuideCommon.h"
 #include "Fdo.h"
 #include "ServerFeatureProcessor.h"
 #include "ServerFeatureReaderIdentifier.h"
-#include "FeatureService.h"
+#include "Services/FeatureService.h"
 
 class MgServerGetFeatures : public MgServerFeatureProcessor
 {

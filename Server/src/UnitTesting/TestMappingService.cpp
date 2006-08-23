@@ -15,11 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
-#include "Common.h"
+#include "MapGuideCommon.h"
+#include "MapGuideCommon.h"
 #include "TestMappingService.h"
 #include "ServiceManager.h"
-#include "MappingDefs.h"
 #include "ServerMappingService.h"
 #include "ServerResourceService.h"
 #include "../Common/Manager/FdoConnectionManager.h"

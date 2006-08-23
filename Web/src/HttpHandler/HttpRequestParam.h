@@ -202,7 +202,7 @@ class MG_MAPAGENT_API MgHttpRequestParam : public MgDisposable
         string m_xmlPostData;
 
 CLASS_ID:
-        static const INT32 m_cls_id = MapAgent_MgHttpRequestParam;
+        static const INT32 m_cls_id = HttpHandler_MapAgent_HttpRequestParam;
 };
 
 #endif

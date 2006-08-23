@@ -18,10 +18,10 @@
 #ifndef _MGSERVERSQLPROCESSOR_H_
 #define _MGSERVERSQLPROCESSOR_H_
 
-#include "Common.h"
+#include "MapGuideCommon.h"
 #include "Fdo.h"
 #include "ServerSqlDataReader.h"
-#include "FeatureService.h"
+#include "Services/FeatureService.h"
 
 class MgServerSqlProcessor : public MgDisposable
 {

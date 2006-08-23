@@ -128,7 +128,7 @@ class MG_MAPAGENT_API MgHttpRequestMetadata : public MgDisposable
     private:
         MgStringPropertyCollection m_reqMetadataCollection;
 CLASS_ID:
-        static const INT32 m_cls_id = MapAgent_MgHttpRequestMetadata;
+        static const INT32 m_cls_id = HttpHandler_MapAgent_HttpRequestMetadata;
 };
 
 #endif

@@ -76,25 +76,6 @@ MgStreamHelper::MgStreamStatus MgStreamWriter::WriteOperationHeader(MgOperationP
         throw new MgNotImplementedException(L"MgStreamWriter.WriteOperationHeader", __LINE__, __WFILE__, NULL, L"", NULL);
     MG_CATCH_AND_THROW(L"MgStreamWriter.WriteOperationHeader")
 
-    /*
-    // Packet header
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32(operPacket.m_PacketHeader);
-    // Packet version
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32(operPacket.m_PacketVersion);
-    // ServiceId
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32(operPacket.m_ServiceID);
-    // Operation Id
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32(operPacket.m_OperationID);
-    // Operation Version
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32(operPacket.m_OperationVersion);
-
-    // # arguments, first argument is user information
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32(operPacket.m_NumArguments+1);
-
-    // UserInformation
-    if (MgStreamHelper::mssDone == stat) stat = WriteObject(operPacket.m_UserInfo);
-    */
-
     return stat;
 }
 
@@ -135,19 +116,13 @@ MgStreamHelper::MgStreamStatus MgStreamWriter::WriteOperationResponseHeader( MgO
 {
     MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssDone;
 
-    MG_TRY()
-        throw new MgNotImplementedException(L"MgStreamWriter.WriteOperationResponseHeader", __LINE__, __WFILE__, NULL, L"", NULL);
-    MG_CATCH_AND_THROW(L"MgStreamWriter.WriteOperationResponseHeader")
-
-    /*
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32( mop.m_PacketHeader );
+    if (MgStreamHelper::mssDone == stat) stat = MgStreamWriter::m_sHelper->WriteUINT32( mop.m_PacketHeader );
     // Version
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32( mop.m_PacketVersion );
+    if (MgStreamHelper::mssDone == stat) stat = MgStreamWriter::m_sHelper->WriteUINT32( mop.m_PacketVersion );
     // Get the code
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32( mop.m_ECode );
+    if (MgStreamHelper::mssDone == stat) stat = MgStreamWriter::m_sHelper->WriteUINT32( mop.m_ECode );
     // No. of return values
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32( mop.m_NumReturnValues );
-    */
+    if (MgStreamHelper::mssDone == stat) stat = MgStreamWriter::m_sHelper->WriteUINT32( mop.m_NumReturnValues );
 
     return stat;
 }

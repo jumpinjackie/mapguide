@@ -17,7 +17,6 @@
 
 #include "ServerMappingServiceDefs.h"
 #include "Stylization.h"
-#include "FeatureReader.h"
 #include "RSMgFeatureReader.h"
 #include "RSMgRaster.h"
 #include "RSMgInputStream.h"

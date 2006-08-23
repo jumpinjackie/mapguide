@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\fcgi\fcgi-2.4.0\include&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\MdfModel;..\..\..\Common\Service;..\..\..\Common\Service\Controller;..\..\..\Common\Service\Geometry;..\..\..\Common\Service\MapLayer;..\..\..\Common\Service\Services;..\..\..\Common\Service\System;..\HttpHandler;..\WebSupport"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\fcgi\fcgi-2.4.0\include&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\Geometry;..\HttpHandler;..\WebSupport"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\fcgi\fcgi-2.4.0\include&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\MdfModel;..\..\..\Common\Service;..\..\..\Common\Service\Controller;..\..\..\Common\Service\Geometry;..\..\..\Common\Service\MapLayer;..\..\..\Common\Service\Services;..\..\..\Common\Service\System;..\HttpHandler;..\WebSupport"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\fcgi\fcgi-2.4.0\include&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\Geometry;..\HttpHandler;..\WebSupport"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"

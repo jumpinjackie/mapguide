@@ -105,7 +105,7 @@ class MG_MAPAGENT_API MgHttpRequest : public MgDisposable
         STRING m_agentUri;
 
 CLASS_ID:
-        static const INT32 m_cls_id = MapAgent_MgHttpRequest;
+        static const INT32 m_cls_id = HttpHandler_MapAgent_HttpRequest;
 };
 
 #endif

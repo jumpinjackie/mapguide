@@ -1,9 +1,27 @@
-..\..\bin\debug\MgCommond.dll : ..\..\..\Common\bin\debug\MgCommond.dll
-    xcopy /r /d /y ..\..\..\Common\bin\debug\MgCommond.dll ..\..\bin\debug\
+..\..\bin\debug\MgFoundationd.dll : ..\..\..\Common\bin\debug\MgFoundationd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgFoundationd.dll ..\..\bin\debug\
 
-..\..\bin\debug\MgCommond.pdb : ..\..\..\Common\bin\debug\MgCommond.pdb
-    xcopy /r /d /y ..\..\..\Common\bin\debug\MgCommond.pdb ..\..\bin\debug\
+..\..\bin\debug\MgFoundationd.pdb : ..\..\..\Common\bin\debug\MgFoundationd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgFoundationd.pdb ..\..\bin\debug\   
+    
+..\..\bin\debug\MgPlatformBased.dll : ..\..\..\Common\bin\debug\MgPlatformBased.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgPlatformBased.dll ..\..\bin\debug\
 
+..\..\bin\debug\MgPlatformBased.pdb : ..\..\..\Common\bin\debug\MgPlatformBased.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgPlatformBased.pdb ..\..\bin\debug\
+    
+..\..\bin\debug\MgGeometryd.dll : ..\..\..\Common\bin\debug\MgGeometryd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgGeometryd.dll ..\..\bin\debug\
+
+..\..\bin\debug\MgGeometryd.pdb : ..\..\..\Common\bin\debug\MgGeometryd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgGeometryd.pdb ..\..\bin\debug\
+    
+..\..\bin\debug\MgMapGuideCommond.dll : ..\..\..\Common\bin\debug\MgMapGuideCommond.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgMapGuideCommond.dll ..\..\bin\debug\
+
+..\..\bin\debug\MgMapGuideCommond.pdb : ..\..\..\Common\bin\debug\MgMapGuideCommond.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgMapGuideCommond.pdb ..\..\bin\debug\
+    
 ..\..\bin\debug\MgCoordinateSystemd.dll : ..\..\..\Common\bin\debug\MgCoordinateSystemd.dll
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgCoordinateSystemd.dll ..\..\bin\debug\
 
@@ -117,8 +135,14 @@ CreatePathsDebug :
     if NOT EXIST ..\..\bin\debug\Repositories\Site\nul mkdir ..\..\bin\debug\Repositories\Site
     if NOT EXIST ..\..\bin\debug\Repositories\TileCache\nul mkdir ..\..\bin\debug\Repositories\TileCache
 
-debug : ..\..\bin\debug\MgCommond.dll \
-        ..\..\bin\debug\MgCommond.pdb \
+debug : ..\..\bin\debug\MgFoundationd.dll \
+        ..\..\bin\debug\MgFoundationd.pdb \
+        ..\..\bin\debug\MgGeometryd.dll \
+        ..\..\bin\debug\MgGeometryd.pdb \
+        ..\..\bin\debug\MgPlatformBased.dll \
+        ..\..\bin\debug\MgPlatformBased.pdb \
+        ..\..\bin\debug\MgMapGuideCommond.dll \
+        ..\..\bin\debug\MgMapGuideCommond.pdb \
         ..\..\bin\debug\MgCoordinateSystemd.dll \
         ..\..\bin\debug\MgCoordinateSystemd.pdb \
         ..\..\bin\debug\MgMdfModeld.dll \
@@ -191,11 +215,29 @@ debug : ..\..\bin\debug\MgCommond.dll \
         CopyOgcFilesDebug
 
 
-..\..\bin\release\MgCommon.dll : ..\..\..\Common\bin\release\MgCommon.dll
-    xcopy /r /d /y ..\..\..\Common\bin\release\MgCommon.dll ..\..\bin\release\
+..\..\bin\release\MgFoundation.dll : ..\..\..\Common\bin\release\MgFoundation.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release\MgFoundation.dll ..\..\bin\release\
 
-..\..\bin\release\MgCommon.pdb : ..\..\..\Common\bin\release\MgCommon.pdb
-    xcopy /r /d /y ..\..\..\Common\bin\release\MgCommon.pdb ..\..\bin\release\
+..\..\bin\release\MgFoundation.pdb : ..\..\..\Common\bin\release\MgFoundation.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release\MgFoundation.pdb ..\..\bin\release\
+       
+..\..\bin\release\MgPlatformBase.dll : ..\..\..\Common\bin\release\MgPlatformBase.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release\MgPlatformBase.dll ..\..\bin\release\
+
+..\..\bin\release\MgPlatformBase.pdb : ..\..\..\Common\bin\release\MgPlatformBase.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release\MgPlatformBase.pdb ..\..\bin\release\
+    
+..\..\bin\release\MgGeometry.dll : ..\..\..\Common\bin\release\MgGeometry.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release\MgGeometry.dll ..\..\bin\release\
+
+..\..\bin\release\MgGeometry.pdb : ..\..\..\Common\bin\release\MgGeometry.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release\MgGeometry.pdb ..\..\bin\release\
+    
+..\..\bin\release\MgMapGuideCommon.dll : ..\..\..\Common\bin\release\MgMapGuideCommon.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release\MgMapGuideCommon.dll ..\..\bin\release\
+
+..\..\bin\release\MgMapGuideCommon.pdb : ..\..\..\Common\bin\release\MgMapGuideCommon.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release\MgMapGuideCommon.pdb ..\..\bin\release\
 
 ..\..\bin\release\MgCoordinateSystem.dll : ..\..\..\Common\bin\release\MgCoordinateSystem.dll
     xcopy /r /d /y ..\..\..\Common\bin\release\MgCoordinateSystem.dll ..\..\bin\release\
@@ -310,8 +352,14 @@ CreatePathsRelease :
     if NOT EXIST ..\..\bin\release\Repositories\Site\nul mkdir ..\..\bin\release\Repositories\Site
     if NOT EXIST ..\..\bin\release\Repositories\TileCache\nul mkdir ..\..\bin\release\Repositories\TileCache
 
-release : ..\..\bin\release\MgCommon.dll \
-          ..\..\bin\release\MgCommon.pdb \
+release : ..\..\bin\debug\MgFoundation.dll \
+          ..\..\bin\debug\MgFoundation.pdb \
+          ..\..\bin\debug\MgGeometry.dll \
+          ..\..\bin\debug\MgGeometry.pdb \
+          ..\..\bin\debug\MgPlatformBase.dll \
+          ..\..\bin\debug\MgPlatformBase.pdb \
+          ..\..\bin\debug\MgMapGuideCommon.dll \
+          ..\..\bin\debug\MgMapGuideCommon.pdb \
           ..\..\bin\release\MgCoordinateSystem.dll \
           ..\..\bin\release\MgCoordinateSystem.pdb \
           ..\..\bin\release\MgMdfModel.dll \
@@ -385,8 +433,14 @@ release : ..\..\bin\release\MgCommon.dll \
 
 
 cleandebug:
-    if EXIST ..\..\bin\debug\MgCommond.dll                   del /F ..\..\bin\debug\MgCommond.dll
-    if EXIST ..\..\bin\debug\MgCommond.pdb                   del /F ..\..\bin\debug\MgCommond.pdb
+    if EXIST ..\..\bin\debug\MgFoundationd.dll               del /F ..\..\bin\debug\MgFoundationd.dll
+    if EXIST ..\..\bin\debug\MgFoundationd.pdb               del /F ..\..\bin\debug\MgFoundationd.pdb
+    if EXIST ..\..\bin\debug\MgGeometryd.dll                 del /F ..\..\bin\debug\MgGeometryd.dll
+    if EXIST ..\..\bin\debug\MgGeometryd.pdb                 del /F ..\..\bin\debug\MgGeometryd.pdb
+    if EXIST ..\..\bin\debug\MgPlatformBased.dll             del /F ..\..\bin\debug\MgPlatformBased.dll
+    if EXIST ..\..\bin\debug\MgPlatformBased.pdb             del /F ..\..\bin\debug\MgPlatformBased.pdb
+    if EXIST ..\..\bin\debug\MgMapGuideCommond.dll           del /F ..\..\bin\debug\MgMapGuideCommond.dll
+    if EXIST ..\..\bin\debug\MgMapGuideCommond.pdb           del /F ..\..\bin\debug\MgMapGuideCommond.pdb
     if EXIST ..\..\bin\debug\MgCoordinateSystemd.dll         del /F ..\..\bin\debug\MgCoordinateSystemd.dll
     if EXIST ..\..\bin\debug\MgCoordinateSystemd.pdb         del /F ..\..\bin\debug\MgCoordinateSystemd.pdb
     if EXIST ..\..\bin\debug\MgMdfModeld.dll                 del /F ..\..\bin\debug\MgMdfModeld.dll
@@ -455,8 +509,14 @@ cleandebug:
 
 
 cleanrelease:
-    if EXIST ..\..\bin\release\MgCommon.dll                  del /F ..\..\bin\release\MgCommon.dll
-    if EXIST ..\..\bin\release\MgCommon.pdb                  del /F ..\..\bin\release\MgCommon.pdb
+    if EXIST ..\..\bin\release\MgFoundation.dll                del /F ..\..\bin\release\MgFoundation.dll
+    if EXIST ..\..\bin\release\MgFoundation.pdb                del /F ..\..\bin\release\MgFoundation.pdb
+    if EXIST ..\..\bin\release\MgGeometry.dll                  del /F ..\..\bin\release\MgGeometry.dll
+    if EXIST ..\..\bin\release\MgGeometry.pdb                  del /F ..\..\bin\release\MgGeometry.pdb
+    if EXIST ..\..\bin\release\MgPlatformBase.dll              del /F ..\..\bin\release\MgPlatformBase.dll
+    if EXIST ..\..\bin\release\MgPlatformBase.pdb              del /F ..\..\bin\release\MgPlatformBase.pdb
+    if EXIST ..\..\bin\release\MgMapGuideCommon.dll            del /F ..\..\bin\release\MgMapGuideCommon.dll
+    if EXIST ..\..\bin\release\MgMapGuideCommon.pdb            del /F ..\..\bin\release\MgMapGuideCommon.pdb
     if EXIST ..\..\bin\release\MgCoordinateSystem.dll        del /F ..\..\bin\release\MgCoordinateSystem.dll
     if EXIST ..\..\bin\release\MgCoordinateSystem.pdb        del /F ..\..\bin\release\MgCoordinateSystem.pdb
     if EXIST ..\..\bin\release\MgMdfModel.dll                del /F ..\..\bin\release\MgMdfModel.dll

@@ -15,9 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
-#include "BaseService.h"
-#include "DrawingService.h"
+#include "MapGuideCommon.h"
 #include "DrawingOperation.h"
 #include "ServiceManager.h"
 

@@ -18,10 +18,10 @@
 #ifndef _MGSERVERGWSGETFEATURES_H_
 #define _MGSERVERGWSGETFEATURES_H_
 
-#include "Common.h"
+#include "MapGuideCommon.h"
 #include "Fdo.h"
 #include "ServerGwsFeatureReader.h"
-#include "FeatureService.h"
+#include "Services/FeatureService.h"
 #include "GwsQueryEngine.h"
 
 class MgServerGwsGetFeatures : public MgServerFeatureProcessor
