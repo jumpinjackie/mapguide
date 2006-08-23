@@ -18,7 +18,7 @@
 #ifndef _MG_SERVER_FEATURE_CONNECTION_H
 #define _MG_SERVER_FEATURE_CONNECTION_H
 
-#include "Common.h"
+#include "MapGuideCommon.h"
 #include "Fdo.h"
 #include "FdoConnectionManager.h"
 

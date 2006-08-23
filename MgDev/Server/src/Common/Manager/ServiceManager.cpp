@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "MapGuideCommon.h"
 #include "ServiceManager.h"
-#include "ResourceService.h"
 #include "ServerAdminService.h"
 #include "ServerResourceService.h"
 #include "ServerSiteService.h"
@@ -198,8 +198,8 @@ MgService* MgServiceManager::RequestProxyService(INT32 serviceType)
 
     if (mgException != NULL)
     {
-        if (mgException->IsOfClass(Common_Exception_MgConnectionFailedException)
-         || mgException->IsOfClass(Common_Exception_MgConnectionNotOpenException))
+        if (mgException->IsOfClass(MapGuide_Exception_MgConnectionFailedException)
+         || mgException->IsOfClass(MapGuide_Exception_MgConnectionNotOpenException))
         {
             // Remove the server from the queues. Server is down?
             for (INT32 i = 0; i < MgServerInformation::sm_knMaxNumberServices; ++i)
@@ -254,8 +254,8 @@ MgStringCollection* MgServiceManager::CleanUpRepositories(
             MG_CATCH(L"MgServiceManager.CleanUpRepositories")
 
             if (mgException != NULL // dead locks?
-                && !mgException->IsOfClass(Common_Exception_MgResourceNotFoundException)
-                && !mgException->IsOfClass(Common_Exception_MgRepositoryNotFoundException))
+                && !mgException->IsOfClass(PlatformBase_Exception_MgResourceNotFoundException)
+                && !mgException->IsOfClass(MapGuide_Exception_MgRepositoryNotFoundException))
             {
                 undeletedSessions->Add(session);
             }

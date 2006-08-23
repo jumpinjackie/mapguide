@@ -310,6 +310,6 @@ private:
     bool m_removeFromPoolOnDestruction;
 
 CLASS_ID:
-    static const INT32 m_cls_id = FeatureService_FeatureReader;
+    static const INT32 m_cls_id = PlatformBase_FeatureService_FeatureReader;
 };
 #endif

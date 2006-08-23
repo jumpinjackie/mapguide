@@ -18,7 +18,7 @@
 #ifndef MGSERVER_H_
 #define MGSERVER_H_
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "EventTimerManager.h"
 
 #ifdef WIN32

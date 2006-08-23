@@ -62,6 +62,13 @@ INTERNAL_API:
     ///
     MgStreamHelper* GetStreamHelper();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the stream helper for this stream
+    ///
+    ///
+    void SetStreamHelper(MgStreamHelper* helper);
+
 protected:
 
     //////////////////////////////////////////////////////////////////
@@ -80,6 +87,7 @@ protected:
     virtual void Dispose();
 
 CLASS_ID:
+
     static const INT32 m_cls_id = Foundation_Data_Stream;
 };
 /// \endcond

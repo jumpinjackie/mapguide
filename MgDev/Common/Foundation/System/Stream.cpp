@@ -73,3 +73,14 @@ MgStreamHelper* MgStream::GetStreamHelper()
 {
     return MgStreamReader::GetStreamHelper();
 }
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Sets the stream helper for this stream
+///
+///
+void MgStream::SetStreamHelper(MgStreamHelper* helper)
+{
+    MgStreamWriter::m_sHelper = SAFE_ADDREF(helper);
+    MgStreamReader::m_sHelper = SAFE_ADDREF(helper);
+}

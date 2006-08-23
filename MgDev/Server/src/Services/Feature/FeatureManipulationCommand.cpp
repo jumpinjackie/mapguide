@@ -16,11 +16,10 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
-#include "AceCommon.h"
-#include "FeatureService.h"
+#include "MapGuideCommon.h"
+#include "Services/FeatureService.h"
 #include "FeatureManipulationCommand.h"
 #include "ServerFeatureConnection.h"
-#include "FeatureCommand.h"
 #include "ServerFeatureUtil.h"
 #include "ServerInsertCommand.h"
 #include "ServerUpdateCommand.h"

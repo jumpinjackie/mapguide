@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "PackageLogReader.h"
 
 static const int MG_PACKAGE_LOG_MAX_ROWS    = 256;

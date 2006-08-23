@@ -70,7 +70,7 @@ class MG_MAPAGENT_API MgHttpResponse : public MgDisposable
         Ptr<MgHttpHeader> m_header;
         Ptr<MgHttpResult> m_result;
 CLASS_ID:
-        static const INT32 m_cls_id = MapAgent_MgHttpResponse;
+        static const INT32 m_cls_id = HttpHandler_MapAgent_HttpResponse;
 };
 
 #endif

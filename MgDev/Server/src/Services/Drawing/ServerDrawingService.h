@@ -19,7 +19,6 @@
 #define MGSERVERDRAWINGSERVICE_H_
 
 #include "ServerDrawingDllExport.h"
-#include "ResourceService.h"
 #include "ServerResourceService.h"
 
 class MG_SERVER_DRAWING_API MgServerDrawingService : public MgDrawingService
@@ -262,14 +261,13 @@ public:
     /// <summary>
     /// Construct an MgServerDrawingService object
     /// </summary>
-    MgServerDrawingService(MgConnectionProperties* connection);
+    MgServerDrawingService();
+
+    DECLARE_CREATE_SERVICE()
+
+    void SetConnectionProperties(MgConnectionProperties* connProp);
 
 private:
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// Default constructor - needed to prevent a compile error under GCC 3
-    /// </summary>
-    MgServerDrawingService();
 
     void CleanUpTempFiles();
 

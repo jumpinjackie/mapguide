@@ -16,8 +16,8 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
-#include "AceCommon.h"
-#include "FeatureService.h"
+#include "MapGuideCommon.h"
+#include "Services/FeatureService.h"
 #include "FeatureServiceCommand.h"
 #include "SelectCommand.h"
 #include "SelectAggregateCommand.h"

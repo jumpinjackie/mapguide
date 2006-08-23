@@ -25,8 +25,7 @@
 #endif
 
 #include "ServerManagerDllExport.h"
-#include "AceCommon.h"
-#include "ResourceService.h"
+#include "MapGuideCommon.h"
 #include "Fdo.h"
 #include "ServerFeatureServiceExceptionDef.h"
 

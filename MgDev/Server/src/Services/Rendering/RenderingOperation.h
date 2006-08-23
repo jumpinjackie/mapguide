@@ -19,8 +19,6 @@
 #define MGRENDERINGOPERATION_H_
 
 #include "ServiceOperation.h"
-#include "BaseService.h"
-#include "RenderingService.h"
 
 class MgRenderingOperation : public MgServiceOperation
 {

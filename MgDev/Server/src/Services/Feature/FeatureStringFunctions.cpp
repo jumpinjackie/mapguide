@@ -19,8 +19,6 @@
 #include "ServerFeatureUtil.h"
 #include "FeatureDistribution.h"
 #include "FeatureStringFunctions.h"
-#include "ProxyFeatureReader.h"
-#include "ProxyDataReader.h"
 #include "DataReaderCreator.h"
 #include "StringDataReaderCreator.h"
 #include <algorithm>

@@ -49,6 +49,14 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Internal method to return user information for service
+    ///
+    /// \return
+    /// MgUserInformation for service
+    virtual MgUserInformation* GetUserInfo();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Gets a list session repositories.
     ///
     /// \param repositoryType

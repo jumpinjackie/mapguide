@@ -23,8 +23,6 @@
 #include "ServerDataReaderPool.h"
 #include "ServerFeatureReaderIdentifierPool.h"
 #include "ByteSourceRasterStreamImpl.h"
-#include "ObjectPropertyType.h"
-#include "OrderingOption.h"
 
 static std::map<FdoPropertyType, INT32>                 s_FdoPropertyType;
 static std::map<FdoDataType, INT32>                     s_FeatureUtilFdoDataType;

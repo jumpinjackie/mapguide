@@ -18,7 +18,7 @@
 #ifndef MGRESOURCEPACKAGEMANIFESTHANDLER_H_
 #define MGRESOURCEPACKAGEMANIFESTHANDLER_H_
 
-#include "XmlUtil.h"
+#include "System/XmlUtil.h"
 
 class MgResourcePackageManifestHandler
 {

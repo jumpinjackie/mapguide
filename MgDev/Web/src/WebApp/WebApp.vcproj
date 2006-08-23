@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\Service;..\..\..\Common\Service\Geometry;..\..\..\Common\Service\Services;..\..\..\Common\Service\System;..\..\..\Common\Service\Util"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_WEBAPP_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\Service;..\..\..\Common\Service\Geometry;..\..\..\Common\Service\Services;..\..\..\Common\Service\System;..\..\..\Common\Service\Util"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_WEBAPP_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -196,6 +196,10 @@
 		</File>
 		<File
 			RelativePath=".\WebAppBuild.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\WebAppClassId.h"
 			>
 		</File>
 		<File

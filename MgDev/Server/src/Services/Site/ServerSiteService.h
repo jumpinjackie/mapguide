@@ -19,7 +19,6 @@
 #define MGSERVERSITESERVICE_H_
 
 #include "ServerSiteDllExport.h"
-#include "ResourceService.h"
 #include "ServerResourceService.h"
 
 class MG_SERVER_SITE_API MgServerSiteService
@@ -30,12 +29,11 @@ class MG_SERVER_SITE_API MgServerSiteService
 /// Constructors/Destructor
 
 public:
-    MgServerSiteService( MgConnectionProperties* connection );
+    MgServerSiteService();
     ~MgServerSiteService( void );
+    DECLARE_CREATE_SERVICE()
 
 private:
-    // Need this to prevent a GCC 3 compile error
-    MgServerSiteService();
 
 /// Methods
 
@@ -91,6 +89,9 @@ public:
 
     //  Inherited from MgDisposable
     virtual void Dispose();
+
+    // Internal use methods
+    void SetConnectionProperties(MgConnectionProperties* connProp);
 
 protected:
 

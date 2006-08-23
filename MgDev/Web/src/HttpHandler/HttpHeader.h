@@ -164,7 +164,7 @@ class MG_MAPAGENT_API MgHttpHeader : public MgDisposable
     private:
         MgStringPropertyCollection m_headerCollection;
 CLASS_ID:
-        static const INT32 m_cls_id = MapAgent_MgHttpHeader;
+        static const INT32 m_cls_id = HttpHandler_MapAgent_HttpHeader;
 };
 
 #endif

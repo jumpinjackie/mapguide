@@ -19,7 +19,7 @@
 #define STYLIZATIONUTIL_H
 
 #include "ServerMappingDllExport.h"
-#include "Common.h"
+#include "MapGuideCommon.h"
 
 //fwd declare
 class MgResourceService;

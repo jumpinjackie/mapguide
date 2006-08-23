@@ -16,7 +16,7 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
-#include "FeatureService.h"
+#include "Services/FeatureService.h"
 #include "ServerFeatureConnection.h"
 #include "ServerUpdateFeatures.h"
 #include "ServerFeatureUtil.h"

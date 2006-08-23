@@ -16,8 +16,8 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
-#include "AceCommon.h"
-#include "FeatureService.h"
+#include "MapGuideCommon.h"
+#include "Services/FeatureService.h"
 #include "ServerDataProcessor.h"
 #include "ServerDataReader.h"
 #include "ServerDataReaderPool.h"

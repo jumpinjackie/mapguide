@@ -184,7 +184,7 @@ private:
     STRING    m_contentType;
 
 CLASS_ID:
-    static const INT32 m_cls_id = MapAgent_MgHttpResult;
+    static const INT32 m_cls_id = HttpHandler_MapAgent_HttpResult;
 };
 
 #endif

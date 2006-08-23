@@ -15,31 +15,24 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ServerAdminService.h"
 #include "PackageManager.h"
 #include "ServerManager.h"
 #include "LoadBalanceManager.h"
 #include "LogManager.h"
 
+IMPLEMENT_CREATE_SERVICE(MgServerAdminService)
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Constructor
 /// </summary>
-MgServerAdminService::MgServerAdminService(
-    MgConnectionProperties* connection) :
-    MgService(connection)
+MgServerAdminService::MgServerAdminService() :
+    MgService()
 {
     m_loadBalanceMan = MgLoadBalanceManager::GetInstance();
     assert(NULL != m_loadBalanceMan);
-}
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Default constructor. Need this to prevent a GCC 3 compile error.
-/// </summary>
-MgServerAdminService::MgServerAdminService() : MgService(NULL)
-{
 }
 
 //////////////////////////////////////////////////////////////////
@@ -937,4 +930,9 @@ void MgServerAdminService::SetDocument(CREFSTRING identifier, MgByteReader* data
     pMan->SetDocument(identifier, data);
 
     MG_CATCH_AND_THROW(L"MgServerAdminService.SetDocument")
+}
+
+void MgServerAdminService::SetConnectionProperties(MgConnectionProperties*)
+{
+    // Do nothing.  No connection properties are required for Server-side service objects.
 }

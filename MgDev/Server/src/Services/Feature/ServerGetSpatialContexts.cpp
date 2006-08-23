@@ -18,7 +18,6 @@
 #include "ServerFeatureServiceDefs.h"
 #include "ServerGetSpatialContexts.h"
 #include "ServerFeatureConnection.h"
-#include "SpatialContextData.h"
 #include "ServerFeatureUtil.h"
 
 #define CHECKOPEN(methodName) \

@@ -18,7 +18,7 @@
 #ifndef MG_OPERATION_THREAD_H_
 #define MG_OPERATION_THREAD_H_
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ThreadBase.h"
 #include "IServiceHandler.h"
 #include "ServerStreamData.h"

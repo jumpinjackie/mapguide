@@ -19,7 +19,7 @@
 #define _MG_SERVER_FEATURE_SERVICE_H_
 
 #include "ServerFeatureDllExport.h"
-#include "FeatureService.h"
+#include "Services/FeatureService.h"
 
 class MG_SERVER_FEATURE_API MgServerFeatureService : public MgFeatureService
 {
@@ -31,7 +31,7 @@ public:
     /// <summary>
     /// Construct an MgServerFeatureService object
     /// </summary>
-    MgServerFeatureService(MgConnectionProperties* connection);
+    MgServerFeatureService();
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -637,12 +637,11 @@ public:
 
     bool CloseGwsFeatureReader(INT32 gwsFeatureReader);
 
+    DECLARE_CREATE_SERVICE()
+
+    void SetConnectionProperties(MgConnectionProperties* connProp);
+
 private:
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// Default constructor - needed to prevent a compile error under GCC 3
-    /// </summary>
-    MgServerFeatureService();
 
     void FeatureSourceToString(MgResourceIdentifier* resource, string& resourceContent);
 };

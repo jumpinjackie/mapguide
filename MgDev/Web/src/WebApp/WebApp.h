@@ -19,14 +19,15 @@
 #define _MGWEBAPP_H_
 
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
+#include "System/XmlDefs.h"
+#include "System/XmlUtil.h"
 
 #pragma warning(disable:4273)
 
-#include "XmlDefs.h"
-#include "XmlUtil.h"
-
 #include "WebAppExport.h"
+
+#include "WebAppClassId.h"
 
 #include "WebActions.h"
 #include "WebTargetType.h"

@@ -17,8 +17,6 @@
 
 #include "HttpHandler.h"
 #include "HttpResult.h"
-#include "AceCommon.h"
-#include "Resources.h"
 
 #ifdef WIN32
     #undef GetMessage

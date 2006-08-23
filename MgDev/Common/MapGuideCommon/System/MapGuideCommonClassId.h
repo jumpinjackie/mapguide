@@ -106,12 +106,6 @@
 // Drawing Service
 #define MapGuide_DrawingService_DrawingService          MAPGUIDE_DRAWINGSERVICE_ID+0
 
-// Feature Service
-#define MapGuide_FeatureService_DataReader                         MAPGUIDE_FEATURESERVICE_ID+0
-#define MapGuide_FeatureService_FeatureReader                      MAPGUIDE_FEATURESERVICE_ID+1
-#define MapGuide_FeatureService_GwsFeatureReader                   MAPGUIDE_FEATURESERVICE_ID+2
-#define MapGuide_FeatureService_SqlDataReader                      MAPGUIDE_FEATURESERVICE_ID+3
-
 // Mapping Service
 #define MapGuide_MappingService_MappingService                      MAPGUIDE_MAPPINGSERVICE_ID+0
 #define MapGuide_MappingService_DwfVersion                          MAPGUIDE_MAPPINGSERVICE_ID+1

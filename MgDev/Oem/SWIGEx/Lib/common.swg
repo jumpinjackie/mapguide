@@ -13,7 +13,7 @@
  * this copyright message remains intact.
  ************************************************************************/
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #ifdef PHP
 #include "PhpLocalizer.cpp"
 #endif

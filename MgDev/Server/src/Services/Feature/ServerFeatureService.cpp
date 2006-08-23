@@ -16,9 +16,6 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
-#include "BaseService.h"
-#include "ResourceService.h"
-#include "FeatureService.h"
 #include "ServerFeatureService.h"
 #include "ServerGetFeatureProviders.h"
 #include "ServerGetProviderCapabilities.h"
@@ -50,24 +47,15 @@
 #include <Fdo/Xml/FeaturePropertyWriter.h>
 #include <Fdo/Xml/FeatureFlags.h>
 
+IMPLEMENT_CREATE_SERVICE(MgServerFeatureService)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Default constructor - needed to prevent a compile error under GCC 3
 /// </summary>
-MgServerFeatureService::MgServerFeatureService() : MgFeatureService(NULL)
+MgServerFeatureService::MgServerFeatureService() : MgFeatureService()
 {
 }
-
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Construct an MgServerFeatureService object
-/// </summary>
-MgServerFeatureService::MgServerFeatureService(MgConnectionProperties* connection) : MgFeatureService(connection)
-{
-}
-
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -1197,4 +1185,9 @@ MgByteReader* MgServerFeatureService::GetSchemaMapping(CREFSTRING providerName, 
 
     MgServerGetSchemaMapping msgsm;
     return msgsm.GetSchemaMapping(providerName, partialConnString);
+}
+
+void MgServerFeatureService::SetConnectionProperties(MgConnectionProperties*)
+{
+    // Do nothing.  No connection properties are required for Server-side service objects.
 }

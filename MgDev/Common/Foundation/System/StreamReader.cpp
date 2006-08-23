@@ -79,23 +79,6 @@ void MgStreamReader::GetOperationHeader(MgOperationPacket& operPacket)
     MG_TRY()
         throw new MgNotImplementedException(L"MgStreamReader.GetOperationHeader", __LINE__, __WFILE__, NULL, L"", NULL);
     MG_CATCH_AND_THROW(L"MgStreamReader.GetOperationHeader")
-
-    /*
-    CHECKNULL(m_sHelper, L"GetOperationHeader");
-
-    // Packet header
-    m_sHelper->GetUINT32(operPacket.m_PacketHeader);
-    // Packet version
-    m_sHelper->GetUINT32(operPacket.m_PacketVersion);
-    // ServiceId
-    m_sHelper->GetUINT32(operPacket.m_ServiceID);
-    // Operation Id
-    m_sHelper->GetUINT32(operPacket.m_OperationID);
-    // Operation Version
-    m_sHelper->GetUINT32(operPacket.m_OperationVersion);
-    // Arguments
-    m_sHelper->GetUINT32(operPacket.m_NumArguments);
-    */
 }
 
 
@@ -111,18 +94,6 @@ void MgStreamReader::GetOperationResponseHeader(MgOperationResponsePacket& mop)
     MG_TRY()
         throw new MgNotImplementedException(L"MgStreamReader.GetOperationResponseHeader", __LINE__, __WFILE__, NULL, L"", NULL);
     MG_CATCH_AND_THROW(L"MgStreamReader.GetOperationResponseHeader")
-
-    /*
-    CHECKNULL(m_sHelper, L"GetOperationResponseHeader");
-
-    m_sHelper->GetUINT32( mop.m_PacketHeader, true, false );
-    // Version
-    m_sHelper->GetUINT32( mop.m_PacketVersion, true, false );
-    // Get the code
-    m_sHelper->GetUINT32( mop.m_ECode, true, false );
-    // No. of return values
-    m_sHelper->GetUINT32( mop.m_NumReturnValues, true, false );
-    */
 }
 
 //////////////////////////////////////////////////////////////////

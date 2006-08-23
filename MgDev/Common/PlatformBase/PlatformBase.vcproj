@@ -63,11 +63,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ACEd.lib"
+				OutputFile="$(OutDir)\MgPlatformBased.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				ImportLibrary="..\lib\debug\PlatformBased.lib"
+				ImportLibrary="..\lib\debug\MgPlatformBased.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -141,13 +142,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ACE.lib"
+				OutputFile="$(OutDir)\MgPlatformBase.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="../lib/release/PlatformBase.lib"
+				ImportLibrary="../lib/release/MgPlatformBase.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -812,14 +814,6 @@
 			</File>
 			<File
 				RelativePath=".\Services\Service.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Services\ServiceFactory.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Services\ServiceFactory.h"
 				>
 			</File>
 			<File

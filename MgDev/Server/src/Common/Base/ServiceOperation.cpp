@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ServiceOperation.h"
 #include "Connection.h"
 #include "LicenseManager.h"
@@ -171,7 +171,7 @@ void MgServiceOperation::Initialize(MgStreamData* data,
     }
 
     // Pull first argument. It is the user information.
-    m_stream = new MgStream(m_data->GetStreamHelper());
+    m_stream = new MgMapGuideStream(m_data->GetStreamHelper());
     Ptr<MgUserInformation> currUserInfo = dynamic_cast<MgUserInformation*>(m_stream->GetObject());
     assert(currUserInfo != NULL);
 

@@ -198,7 +198,7 @@ MgStream* MgServerConnection::GetStream()
     if (m_stream == NULL)
     {
         Ptr<MgStreamHelper> helper = GetMgStreamHelper();
-        m_stream = new MgStream(helper);
+        m_stream = new MgMapGuideStream(helper);
         m_stream->SetConnection(this);
     }
 

@@ -22,7 +22,7 @@
 // Just want the banana...
 // #include "Util/Byte.h"
 // but gotta ask for the whole gorilla...
-#include "Common.h"
+#include "MapGuideCommon.h"
 
 /*
 // A standalone (CGI) implementation of the Ogc framework

@@ -63,11 +63,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ACEd.lib geos.lib"
+				OutputFile="$(OutDir)\MgGeometryd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Debug"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				ImportLibrary="..\lib\debug\Geometryd.lib"
+				ImportLibrary="..\lib\debug\MgGeometryd.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -142,13 +143,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ACE.lib geos.lib"
+				OutputFile="$(OutDir)\MgGeometry.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Release"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="../lib/release/Geometry.lib"
+				ImportLibrary="../lib/release/MgGeometry.lib"
 				TargetMachine="1"
 			/>
 			<Tool

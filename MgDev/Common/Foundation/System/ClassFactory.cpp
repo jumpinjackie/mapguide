@@ -96,7 +96,9 @@ bool InitializeStaticData()
     fact->Register(Foundation_Data_DateTime, MgDateTime::CreateObject);
     fact->Register(Foundation_Collection_PropertyCollection,  MgPropertyCollection::CreateObject);
     fact->Register(Foundation_Collection_StringCollection, MgStringCollection::CreateObject);
+    fact->Register(Foundation_Collection_BatchPropertyCollection, MgBatchPropertyCollection::CreateObject);
     fact->Register(Foundation_Property_StringProperty,MgStringProperty::CreateObject);
+    fact->Register(Foundation_Property_PropertyDefinition,MgPropertyDefinition::CreateObject);
 
     EXCEPTION_CLASS_CREATOR(MgArgumentOutOfRangeException)
     EXCEPTION_CLASS_CREATOR(MgClassNotFoundException)

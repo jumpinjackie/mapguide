@@ -16,9 +16,7 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
-#include "BaseService.h"
-#include "ResourceIdentifier.h"
-#include "FeatureService.h"
+#include "Services/FeatureService.h"
 #include "OpCloseDataReader.h"
 #include "ServerFeatureService.h"
 #include "LogManager.h"

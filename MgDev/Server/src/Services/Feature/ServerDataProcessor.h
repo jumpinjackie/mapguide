@@ -18,11 +18,11 @@
 #ifndef _MGSERVERDATAPROCESSOR_H_
 #define _MGSERVERDATAPROCESSOR_H_
 
-#include "Common.h"
+#include "MapGuideCommon.h"
 #include "Fdo.h"
 #include "ServerFeatureProcessor.h"
 #include "ServerDataReader.h"
-#include "FeatureService.h"
+#include "Services/FeatureService.h"
 
 class MgServerDataProcessor : public MgServerFeatureProcessor
 {

@@ -16,8 +16,8 @@
 //
 
 #include "FdoConnectionManager.h"
-#include "XmlDefs.h"
-#include "XmlUtil.h"
+#include "System/XmlDefs.h"
+#include "System/XmlUtil.h"
 #include "ServiceManager.h"
 #include "LogManager.h"
 #include "LicenseManager.h" // TODO: This include is here to check if we are building MapGuide Enterprise or Open Source

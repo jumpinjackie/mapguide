@@ -18,11 +18,9 @@
 #ifndef MG_FEATURE_SERVICE_DEF_H
 #define MG_FEATURE_SERVICE_DEF_H
 
-#include "AceCommon.h"
-#include "BaseService.h"
-#include "FeatureService.h"
-#include "XmlDefs.h"
-#include "XmlUtil.h"
+#include "MapGuideCommon.h"
+#include "System/XmlDefs.h"
+#include "System/XmlUtil.h"
 #include "Fdo.h"
 #include "ServerFeatureServiceExceptionDef.h"
 

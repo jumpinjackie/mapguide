@@ -15,9 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ServerKmlService.h"
-#include "KmlDefs.h"
+#include "Services/KmlDefs.h"
 #include "Stylization.h"
 #include "StylizationUtil.h"
 #include "KmlRenderer.h"
@@ -25,21 +25,17 @@
 #include "RSMgInputStream.h"
 #include "DefaultStylizer.h"
 #include "Bounds.h"
-#include "MimeType.h"
 #include "MgCSTrans.h"
 #include "SAX2Parser.h"
 
 const STRING LL84_WKT = L"GEOGCS[\"LL84\",DATUM[\"WGS 84\",SPHEROID[\"WGS 84\",6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0],UNIT[\"Degrees\",0.01745329252]]";
 const STRING GOOGLE_EARTH_WKT = LL84_WKT;
 
-MgServerKmlService::MgServerKmlService(MgConnectionProperties* connection) : MgKmlService(connection)
+IMPLEMENT_CREATE_SERVICE(MgServerKmlService)
+
+MgServerKmlService::MgServerKmlService() : MgKmlService()
 {
     m_csFactory = new MgCoordinateSystemFactory();
-}
-
-
-MgServerKmlService::MgServerKmlService() : MgKmlService(NULL)
-{
 }
 
 
@@ -109,7 +105,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CRE
     }
     for(int i = 0; i < layers->GetCount(); i++)
     {
-        Ptr<MgLayer> layer = layers->GetItem(i);
+        Ptr<MgLayer> layer = dynamic_cast<MgLayer*>(layers->GetItem(i));
         AppendLayer(layer, extent, agentUri, format, kmlContent);
     }
     kmlContent.EndDocument();
@@ -660,5 +656,10 @@ MgCoordinateSystem* MgServerKmlService::GetCoordinateSystem(MgResourceIdentifier
         }
     }
     return SAFE_ADDREF(layerCs.p);
+}
+
+void MgServerKmlService::SetConnectionProperties(MgConnectionProperties*)
+{
+    // Do nothing.  No connection properties are required for Server-side service objects.
 }
 

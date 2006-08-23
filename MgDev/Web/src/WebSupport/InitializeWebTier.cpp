@@ -15,9 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
-#include "Configuration.h"
-#include "Resources.h"
+#include "MapGuideCommon.h"
 
 
 // Initialize only once per process

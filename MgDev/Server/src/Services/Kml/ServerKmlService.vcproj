@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Data;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Mapping;..\..\..\..\Common\Stylization;..\..\..\..\Common\MdfParser;..\..\..\..\Common\MdfModel;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Mapping;..\..\..\..\Common\Stylization;..\..\..\..\Common\MdfParser;..\..\..\..\Common\MdfModel;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_KML_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -123,7 +123,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\..\Common\Service;..\..\..\..\Common\Service\Data;..\..\..\..\Common\Service\Services;..\..\..\..\Common\Service\System;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Mapping;..\..\..\..\Common\Stylization;..\..\..\..\Common\MdfParser;..\..\..\..\Common\MdfModel;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Mapping;..\..\..\..\Common\Stylization;..\..\..\..\Common\MdfParser;..\..\..\..\Common\MdfModel;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_KML_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"

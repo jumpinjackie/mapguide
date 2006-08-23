@@ -17,7 +17,7 @@
 
 /// INTERNAL_CLASS - NOT EXPOSED
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ServerFeatureServiceDefs.h"
 #include "ByteSourceRasterStreamImpl.h"
 //////////////////////////////////////////////////////////////////

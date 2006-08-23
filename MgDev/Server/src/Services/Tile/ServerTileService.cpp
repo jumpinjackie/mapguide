@@ -15,18 +15,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ServerTileService.h"
 
+IMPLEMENT_CREATE_SERVICE(MgServerTileService)
 
-MgServerTileService::MgServerTileService(MgConnectionProperties* connection) : MgTileService(connection)
+MgServerTileService::MgServerTileService() : MgTileService()
 {
     m_tileCache = new MgTileCache();
-}
-
-
-MgServerTileService::MgServerTileService() : MgTileService(NULL)
-{
 }
 
 
@@ -168,4 +164,9 @@ void MgServerTileService::NotifyResourcesChanged(MgSerializableCollection* resou
     }
 
     MG_CATCH_AND_THROW(L"MgServerTileService.NotifyResourcesChanged")
+}
+
+void MgServerTileService::SetConnectionProperties(MgConnectionProperties*)
+{
+    // Do nothing.  No connection properties are required for Server-side service objects.
 }

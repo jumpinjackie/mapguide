@@ -35,6 +35,8 @@ MgLibraryRepository* MgServerResourceService::sm_libraryRepository = NULL;
 ACE_Recursive_Thread_Mutex MgServerResourceService::sm_mutex;
 set<STRING> MgServerResourceService::sm_changedResources;
 
+IMPLEMENT_CREATE_SERVICE(MgServerResourceService)
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Server Resource Service retry macros.
 ///
@@ -54,7 +56,7 @@ set<STRING> MgServerResourceService::sm_changedResources;
         {                                                                     \
             ++numRetries;                                                     \
                                                                               \
-            if ((e->IsOfClass(Common_Exception_MgDbXmlException) || e->IsOfClass(Common_Exception_MgDbException)) \
+            if ((e->IsOfClass(MapGuide_Exception_MgDbXmlException) || e->IsOfClass(MapGuide_Exception_MgDbException)) \
              && (DB_LOCK_DEADLOCK == (static_cast<MgThirdPartyException*>(e))->GetErrorCode())) \
             {                                                                 \
                 if (numRetries < maxRetries)                                  \
@@ -85,19 +87,8 @@ set<STRING> MgServerResourceService::sm_changedResources;
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgServerResourceService::MgServerResourceService(
-    MgConnectionProperties* connection) :
-    MgResourceService(connection)
-{
-}
-
-///----------------------------------------------------------------------------
-/// <summary>
-/// Default constructor. Need this to prevent a GCC 3 compile error.
-/// </summary>
-///----------------------------------------------------------------------------
-
-MgServerResourceService::MgServerResourceService() : MgResourceService(NULL)
+MgServerResourceService::MgServerResourceService() :
+    MgResourceService()
 {
 }
 
@@ -2108,4 +2099,9 @@ void MgServerResourceService::UpdateChangedResources(const set<STRING>& resource
             sm_changedResources.insert(*i);
         }
     }
+}
+
+void MgServerResourceService::SetConnectionProperties(MgConnectionProperties*)
+{
+    // Do nothing.  No connection properties are required for Server-side service objects.
 }

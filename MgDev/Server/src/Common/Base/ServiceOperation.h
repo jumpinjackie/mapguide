@@ -19,8 +19,7 @@
 #define MGSERVICEOPERATION_H_
 
 #include "ServerBaseDllExport.h"
-#include "AceCommon.h"
-#include "BaseService.h"
+#include "MapGuideCommon.h"
 
 class MgConnection;
 

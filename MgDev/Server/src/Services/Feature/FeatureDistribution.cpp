@@ -18,8 +18,6 @@
 #include "ServerFeatureServiceDefs.h"
 #include "FeatureDistribution.h"
 #include "ServerFeatureUtil.h"
-#include "ProxyFeatureReader.h"
-#include "ProxyDataReader.h"
 #include "math.h"
 #include "float.h"
 #include <algorithm>

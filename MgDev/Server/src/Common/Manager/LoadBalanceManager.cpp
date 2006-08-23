@@ -16,9 +16,7 @@
 //
 
 #include "LoadBalanceManager.h"
-#include "Util.h"
 #include "ServiceManager.h"
-#include "ServerAdmin.h"
 #include "SecurityManager.h"
 #include "LogManager.h"
 
@@ -686,8 +684,8 @@ bool MgLoadBalanceManager::RegisterServices(MgServerInformation* newServerInfo,
     {
         success = true;
     }
-    else if (!mgException->IsOfClass(Common_Exception_MgConnectionFailedException)
-          && !mgException->IsOfClass(Common_Exception_MgConnectionNotOpenException))
+    else if (!mgException->IsOfClass(MapGuide_Exception_MgConnectionFailedException)
+          && !mgException->IsOfClass(MapGuide_Exception_MgConnectionNotOpenException))
     {
         MG_THROW()
     }

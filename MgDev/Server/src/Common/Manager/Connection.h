@@ -25,7 +25,7 @@
 #include "ace/Unbounded_Set.h"
 
 #include "ServerManagerDllExport.h"
-#include "Common.h"
+#include "MapGuideCommon.h"
 
 /// This class is responsible for managing state information for a connection.
 ///

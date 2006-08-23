@@ -217,7 +217,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
     Ptr<MgLayerCollection> layers = map->GetLayers();
     for (int i = 0; i < layers->GetCount(); i++)
     {
-        Ptr<MgLayer> mapLayer = layers->GetItem(i);
+        Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
         // layer is not currently visible -- don't add to legend
         if (!mapLayer->IsVisible())
@@ -408,7 +408,7 @@ void MgLegendPlotUtil::ComputeLegendOffsetAndSize(MgPrintLayout* layout, double 
     Ptr<MgLayerCollection> layers = map->GetLayers();
     for (int i = 0; i < layers->GetCount(); i++)
     {
-        Ptr<MgLayer> mapLayer = layers->GetItem(i);
+        Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
         if (!mapLayer->IsVisible())
             continue;
 

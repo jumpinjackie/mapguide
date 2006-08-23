@@ -18,7 +18,6 @@
 #include "ServerManager.h"
 #include "ProductVersion.h"
 #include "ServiceManager.h"
-#include "ServerAdminDefs.h"
 #include "WorkerThread.h"
 #include "WorkerThreadData.h"
 

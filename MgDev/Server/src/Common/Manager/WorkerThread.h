@@ -18,7 +18,7 @@
 #ifndef MGWORKERTHREAD_H
 #define MGWORKERTHREAD_H
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 #include "ThreadBase.h"
 
 class MgWorkerThread : public MgThreadBase

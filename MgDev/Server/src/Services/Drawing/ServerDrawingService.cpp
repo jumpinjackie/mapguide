@@ -15,13 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "AceCommon.h"
+#include "MapGuideCommon.h"
 
-#include "BaseService.h"
-#include "ResourceIdentifier.h"
-#include "DrawingService.h"
 #include "ServerDrawingService.h"
-#include "ResourceService.h"
 #include "ServerResourceService.h"
 #include "ServerDrawingServiceDefs.h"
 #include "ServerDrawingServiceUtil.h"
@@ -32,6 +28,8 @@
 #include "dwf/package/GlobalSection.h"
 #include "dwf/package/EPlotSection.h"
 #include "dwf/package/writer/extensions/6.01/PackageVersionExtension.h"
+
+IMPLEMENT_CREATE_SERVICE(MgServerDrawingService)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -1153,19 +1151,10 @@ STRING MgServerDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Default constructor - needed to prevent a compile error under GCC 3
-/// </summary>
-MgServerDrawingService::MgServerDrawingService() : MgDrawingService(NULL)
-{
-}
-
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
 /// Construct an MgServerDrawingService object
 /// </summary>
-MgServerDrawingService::MgServerDrawingService(MgConnectionProperties* connection) :
-    MgDrawingService(connection),
+MgServerDrawingService::MgServerDrawingService() :
+    MgDrawingService(),
     m_bOpenTempDwfFile(false),
     m_bOpenTempW2dFile(false),
     m_bOpenTempOutputW2dFile(false)
@@ -1225,4 +1214,9 @@ void MgServerDrawingService::CleanUpTempFiles()
             m_bOpenTempOutputW2dFile = false;
         }
     }
+}
+
+void MgServerDrawingService::SetConnectionProperties(MgConnectionProperties*)
+{
+    // Do nothing.  No connection properties are required for Server-side service objects.
 }

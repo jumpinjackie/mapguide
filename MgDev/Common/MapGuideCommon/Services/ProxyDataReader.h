@@ -378,7 +378,7 @@ private:
     MgFeatureService* m_service; // Do not want to implement a default constructor
 
 CLASS_ID:
-    static const INT32 m_cls_id = MapGuide_FeatureService_DataReader;
+    static const INT32 m_cls_id = PlatformBase_FeatureService_DataReader;
 
 };
 /// \endcond

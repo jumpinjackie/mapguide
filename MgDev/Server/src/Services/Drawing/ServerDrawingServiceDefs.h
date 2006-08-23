@@ -18,10 +18,7 @@
 #ifndef MG_SERVER_DRAWING_SERVICE_DEF_H_
 #define MG_SERVER_DRAWING_SERVICE_DEF_H_
 
-#include "AceCommon.h"
-#include "BaseService.h"
-#include "DrawingService.h"
-#include "ResourceService.h"
+#include "MapGuideCommon.h"
 
 #include "dwfcore/Core.h"
 #include "dwfcore/Exception.h"

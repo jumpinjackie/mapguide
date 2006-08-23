@@ -18,11 +18,9 @@
 #ifndef MG_RESOURCE_SERVICE_DEFS_H_
 #define MG_RESOURCE_SERVICE_DEFS_H_
 
-#include "AceCommon.h"
-#include "BaseService.h"
-#include "ResourceService.h"
-#include "XmlDefs.h"
-#include "XmlUtil.h"
+#include "MapGuideCommon.h"
+#include "System/XmlDefs.h"
+#include "System/XmlUtil.h"
 
 #include <assert.h>
 #include <map>

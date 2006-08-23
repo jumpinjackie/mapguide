@@ -19,7 +19,6 @@
 #include "HttpWfsDescribeFeatureType.h"
 
 #include "OgcFramework.h"
-#include "ServerAdmin.h"
 #include "XmlParser.h"
 #include "OgcWfsServer.h"
 

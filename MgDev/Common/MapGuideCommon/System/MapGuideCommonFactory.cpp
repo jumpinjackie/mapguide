@@ -93,10 +93,10 @@ bool InitializeStaticData()
     fact->Register(MapGuide_Service_ServerInformation, MgServerInformation::CreateObject);
     fact->Register(MapGuide_Service_PackageStatusInformation, MgPackageStatusInformation::CreateObject);
     fact->Register(MapGuide_Service_UserInformation, MgUserInformation::CreateObject);
-    fact->Register(MapGuide_FeatureService_DataReader, MgProxyDataReader::CreateObject);
-    fact->Register(MapGuide_FeatureService_FeatureReader, MgProxyFeatureReader::CreateObject);
-    fact->Register(MapGuide_FeatureService_GwsFeatureReader, MgProxyGwsFeatureReader::CreateObject);
-    fact->Register(MapGuide_FeatureService_SqlDataReader, MgProxySqlDataReader::CreateObject);
+    fact->Register(PlatformBase_FeatureService_DataReader, MgProxyDataReader::CreateObject);
+    fact->Register(PlatformBase_FeatureService_FeatureReader, MgProxyFeatureReader::CreateObject);
+    fact->Register(PlatformBase_FeatureService_GwsFeatureReader, MgProxyGwsFeatureReader::CreateObject);
+    fact->Register(PlatformBase_FeatureService_SqlDataReader, MgProxySqlDataReader::CreateObject);
     fact->Register(MapGuide_MappingService_DwfVersion, MgDwfVersion::CreateObject);
     fact->Register(MapGuide_MappingService_PlotSpecification, MgPlotSpecification::CreateObject);
     fact->Register(MapGuide_MappingService_PrintLayout, MgPrintLayout::CreateObject);
@@ -107,10 +107,11 @@ bool InitializeStaticData()
     MgServiceRegistry* registry = MgServiceRegistry::GetInstance();
     registry->RegisterService(MgServiceType::DrawingService, MgProxyDrawingService::CreateService, sctRemoteServerToServer);
     registry->RegisterService(MgServiceType::MappingService, MgProxyMappingService::CreateService, sctRemoteServerToServer);
+    registry->RegisterService(MgServiceType::FeatureService, MgProxyFeatureService::CreateService, sctRemoteServerToServer);
     registry->RegisterService(MgServiceType::RenderingService, MgProxyRenderingService::CreateService, sctRemoteServerToServer);
     registry->RegisterService(MgServiceType::ResourceService, MgProxyResourceService::CreateService, sctRemoteServerToServer);
     registry->RegisterService(MgServiceType::TileService, MgProxyTileService::CreateService, sctRemoteServerToServer);
-    registry->RegisterService(MgServiceType::TileService, MgProxyKmlService::CreateService, sctRemoteServerToServer);
+    registry->RegisterService(MgServiceType::KmlService, MgProxyKmlService::CreateService, sctRemoteServerToServer);
 
     return true;
 }

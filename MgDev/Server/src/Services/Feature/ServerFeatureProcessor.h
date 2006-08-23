@@ -18,9 +18,9 @@
 #ifndef _MGSERVERFEATUREPROCESSOR_H_
 #define _MGSERVERFEATUREPROCESSOR_H_
 
-#include "Common.h"
+#include "MapGuideCommon.h"
 #include "Fdo.h"
-#include "FeatureService.h"
+#include "Services/FeatureService.h"
 
 enum MgServerFeatureProcessorType
 {

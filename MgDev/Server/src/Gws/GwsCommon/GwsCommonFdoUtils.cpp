@@ -20,7 +20,7 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "AceCommon.h"
+#include "GeometryCommon.h"
 #include "stdafx.h"
 
 #include "GwsCommonImp.h"

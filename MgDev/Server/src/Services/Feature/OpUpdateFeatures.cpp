@@ -16,12 +16,8 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
-#include "BaseService.h"
-#include "ResourceIdentifier.h"
-#include "FeatureService.h"
 #include "OpUpdateFeatures.h"
 #include "ServerFeatureService.h"
-#include "Data/IntCollection.h" // TODO: Move to Common.h
 #include "LogManager.h"
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>

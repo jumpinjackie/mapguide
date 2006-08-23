@@ -214,27 +214,27 @@ protected:
     ///////////////////////////////////////////////////////////////////////////
     // get the boolean value from the specified element
     //
-    bool GetBooleanFromElement(DOMElement* elt);
+    bool GetBooleanFromElement(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // get the integer value from the specified element
     //
-    INT32 GetIntegerFromElement(DOMElement* elt);
+    INT32 GetIntegerFromElement(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // get the double value from the specified element
     //
-    double GetDoubleFromElement(DOMElement* elt);
+    double GetDoubleFromElement(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // get the string value from the specified element
     //
-    STRING GetStringFromElement(DOMElement* elt);
+    STRING GetStringFromElement(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse a Command element and returns an MgWebCommand object
     //
-    MgWebCommand* ParseCommand(DOMElement* elt);
+    MgWebCommand* ParseCommand(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse basic command specific elements
@@ -274,7 +274,7 @@ protected:
     ///////////////////////////////////////////////////////////////////////////
     // parse a UIItem element and returns an MgWebWidget object
     //
-    MgWebWidget* ParseWidget(DOMElement* elt);
+    MgWebWidget* ParseWidget(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse a command widget
@@ -289,52 +289,52 @@ protected:
     ///////////////////////////////////////////////////////////////////////////
     // parse the Map element
     //
-    void ParseMapProperties(DOMElement* elt);
+    void ParseMapProperties(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse the InformationPane element
     //
-    void ParseInformationPane(DOMElement* elt);
+    void ParseInformationPane(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse the StatusBar element
     //
-    void ParseStatusBar(DOMElement* elt);
+    void ParseStatusBar(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse the ToolBar element
     //
-    void ParseToolBar(DOMElement* elt);
+    void ParseToolBar(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse the ContextMenu element
     //
-    void ParseContextMenu(DOMElement* elt);
+    void ParseContextMenu(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse the TaskPane element
     //
-    void ParseTaskPane(DOMElement* elt);
+    void ParseTaskPane(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse the TaskBar element
     //
-    void ParseTaskBar(DOMElement* elt);
+    void ParseTaskBar(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse a task bar button
     //
-    void ParseTaskBarButton(DOMElement* elt, MgWebTaskBarWidget* btn);
+    void ParseTaskBarButton(XERCES_CPP_NAMESPACE::DOMElement* elt, MgWebTaskBarWidget* btn);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse the CommandSet element
     //
-    void ParseCommandSet(DOMElement* elt);
+    void ParseCommandSet(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // parse the ZoomControl element
     //
-    void ParseZoomControl(DOMElement* elt);
+    void ParseZoomControl(XERCES_CPP_NAMESPACE::DOMElement* elt);
 
     ///////////////////////////////////////////////////////////////////////////
     // Validate that the target viewer type is valid

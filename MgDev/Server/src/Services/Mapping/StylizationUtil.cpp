@@ -25,7 +25,6 @@
 #include "Stylizer.h"
 #include "SymbolVisitor.h"
 #include "SLDSymbols.h"
-#include "TileDefs.h"
 
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
@@ -394,7 +393,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
         MgCSTrans* xformer = NULL;
         MdfModel::LayerDefinition* ldf = NULL;
 
-        Ptr<MgLayer> mapLayer = layers->GetItem(i);
+        Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
         //don't send data if layer is not currently visible
         if (!mapLayer->IsVisibleAtScale(scale)) continue;

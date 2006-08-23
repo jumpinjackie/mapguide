@@ -17,7 +17,6 @@
 
 #include "HttpHandler.h"
 #include "HttpGetDynamicMapOverlayImage.h"
-#include "Controller.h"
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpGetDynamicMapOverlayImage)
 
