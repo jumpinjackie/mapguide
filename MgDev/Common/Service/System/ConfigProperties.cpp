@@ -23,6 +23,15 @@
 ///
 #define MG_CONFIG_MAX_INT32                             2147483647 // 0x7FFFFFFF
 
+#define MG_CONFIG_MIN_FS_CACHE_SIZE                     0
+#define MG_CONFIG_MAX_FS_CACHE_SIZE                     5000
+
+#define MG_CONFIG_MIN_FS_CACHE_TIMELIMIT                0
+#define MG_CONFIG_MAX_FS_CACHE_TIMELIMIT                MG_CONFIG_MAX_INT32
+
+#define MG_CONFIG_MIN_FS_CACHE_TIMERINTERVAL            0
+#define MG_CONFIG_MAX_FS_CACHE_TIMERINTERVAL            86400 // 24 hours
+
 #define MG_CONFIG_MIN_CACHE_SIZE                        1
 #define MG_CONFIG_MAX_CACHE_SIZE                        MG_CONFIG_MAX_INT32
 
@@ -449,6 +458,9 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviDrawingServiceProperties[
 
 const MgConfigValidationInfo MgConfigProperties::sm_cviFeatureServiceProperties[] =
 {
+    { MgConfigProperties::FeatureServicePropertyCacheSize                           , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_SIZE           , MG_CONFIG_MAX_FS_CACHE_SIZE           , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyCacheTimeLimit                      , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_TIMELIMIT      , MG_CONFIG_MAX_FS_CACHE_TIMELIMIT      , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyCacheTimerInterval                  , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_TIMERINTERVAL  , MG_CONFIG_MAX_FS_CACHE_TIMERINTERVAL  , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataCacheSize                       , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled           , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize              , MgPropertyType::Int32     , MG_CONFIG_MIN_CONNECTION_POOL_SIZE    , MG_CONFIG_MAX_CONNECTION_POOL_SIZE    , L""                                       },
