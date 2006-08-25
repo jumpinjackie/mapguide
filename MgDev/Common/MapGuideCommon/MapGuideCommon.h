@@ -35,6 +35,7 @@
 #include "System/ConfigProperties.h"
 #include "System/UserInformation.h"
 #include "System/MapGuideStream.h"
+#include "System/CryptographyManager.h"
 #include "Util/IpUtil.h"
 
 #include "MapLayer/Layer.h"

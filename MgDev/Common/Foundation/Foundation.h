@@ -79,7 +79,6 @@
 #include "System/GuardDisposable.h"
 #include "System/Serializable.h"
 #include "System/NamedSerializable.h"
-#include "System/CryptographyManager.h"
 #include "Data/Byte.h"
 #include "Data/MimeType.h"
 #include "System/ServerConnectionBase.h"

@@ -17,6 +17,7 @@
 
 #include "Foundation.h"
 #include "UnicodeString.h"
+#include <math.h>
 
 #include <algorithm>
 #include <iomanip>

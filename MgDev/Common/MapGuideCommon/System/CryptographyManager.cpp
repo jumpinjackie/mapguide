@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "Foundation.h"
+#include "MapGuideCommon.h"
 #include "CryptographyManager.h"
 #include "CryptographyUtil.h"
 
