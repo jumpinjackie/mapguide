@@ -22,7 +22,7 @@
 class MgStream;
 
 class MgLongTransactionData;
-template class Ptr<MgLongTransactionData>;
+template class MG_PLATFORMBASE_API Ptr<MgLongTransactionData>;
 
 /// \cond INTERNAL
 class MG_PLATFORMBASE_API MgLongTransactionData : public MgNamedSerializable

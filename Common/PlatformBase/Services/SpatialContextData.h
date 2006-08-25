@@ -21,7 +21,7 @@
 class MgStream;
 
 class MgSpatialContextData;
-template class Ptr<MgSpatialContextData>;
+template class MG_PLATFORMBASE_API Ptr<MgSpatialContextData>;
 
 /// \cond INTERNAL
 // INTERNAL_CLASS
