@@ -135,7 +135,7 @@
 /// \brief
 /// Encryption methods.
 ///
-class MG_FOUNDATION_API MgCryptographyManager : public MgDisposable
+class MG_MAPGUIDE_API MgCryptographyManager : public MgDisposable
 {
     DECLARE_CLASSNAME(MgCryptographyManager)
 

@@ -29,3 +29,14 @@ void MgSiteConnection::Dispose()
 {
     delete this;
 }
+
+MgService* MgSiteConnection::CreateService(INT32 serviceType)
+{
+    MgService* svc = NULL;
+    MgServiceRegistry* registry = MgServiceRegistry::GetInstance();
+    if (NULL != registry)
+    {
+        svc = registry->CreateService(serviceType);
+    }
+    return svc;
+}

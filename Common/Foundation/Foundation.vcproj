@@ -887,14 +887,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\System\CryptographyManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\System\CryptographyManager.h"
-				>
-			</File>
-			<File
 				RelativePath=".\System\Disposable.cpp"
 				>
 			</File>
