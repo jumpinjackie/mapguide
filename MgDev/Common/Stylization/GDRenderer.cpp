@@ -620,8 +620,28 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
     //unrotated symbol bounding box (mapping space)
     RS_Bounds dst(x, y, x+iw, y+ih);
 
-    int devwidth = ROUND(dst.width() * m_scale);
-    int devheight = ROUND(dst.height() * m_scale);
+    //convert to pixel size
+    iw *= m_scale;
+    ih *= m_scale;
+
+    //if it's too big, make it smaller
+    //it cannot be too big since we allocate iw * ih * 4 bytes of
+    //memory to cache the symbol image -- this code simply truncates
+    //the size, ignoring changes in aspect ratio
+    const double MAX_SIZE = 4096.0;
+    if (iw > MAX_SIZE)
+    {
+        iw = MAX_SIZE;
+        dst.maxx = dst.minx + iw / m_scale;
+    }
+    if (ih > MAX_SIZE)
+    {
+        ih = MAX_SIZE;
+        dst.maxy = dst.miny + ih / m_scale;
+    }
+
+    int devwidth = ROUND(iw);
+    int devheight = ROUND(ih);
 
     //get insertion point
     double refX = mdef.insx();
