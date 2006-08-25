@@ -30,7 +30,7 @@ class MG_MAPGUIDE_API MgConnectionProperties;
 #include <map>
 
 class MgServerConnectionPool;
-template class Ptr<MgServerConnectionPool>;
+template class MG_MAPGUIDE_API Ptr<MgServerConnectionPool>;
 
 /// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////
