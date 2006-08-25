@@ -965,6 +965,10 @@
 			RelativePath=".\PlatformBase.h"
 			>
 		</File>
+		<File
+			RelativePath=".\PlatformBase.rc"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

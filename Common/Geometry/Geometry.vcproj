@@ -2143,6 +2143,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Geometry.rc"
+			>
+		</File>
+		<File
 			RelativePath=".\GeometryBuild.cpp"
 			>
 		</File>
