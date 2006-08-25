@@ -1097,6 +1097,10 @@
 			RelativePath=".\MapGuideCommon.h"
 			>
 		</File>
+		<File
+			RelativePath=".\MapGuideCommon.rc"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
