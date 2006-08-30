@@ -8,14 +8,18 @@ libMgMdfModel_la_SOURCES = \
   AreaRule.cpp \
   AreaSymbolization2D.cpp \
   AreaTypeStyle.cpp \
+  AttributeRelate.cpp \
   BaseMapLayer.cpp \
   BaseMapLayerGroup.cpp \
   BlockSymbol.cpp \
   Box2D.cpp \
+  CalculatedProperty.cpp \
   ChannelBand.cpp \
   ConvertUTF.c \
   DisplayScale.cpp \
   DrawingLayerDefinition.cpp \
+  Extension.cpp \
+  FeatureSource.cpp \
   FeatureTypeStyle.cpp \
   Fill.cpp \
   FontSymbol.cpp \
@@ -35,20 +39,23 @@ libMgMdfModel_la_SOURCES = \
   LineTypeStyle.cpp \
   MapDefinition.cpp \
   MapLayer.cpp \
-  MapLayerGroupCommon.cpp \
   MapLayerGroup.cpp \
+  MapLayerGroupCommon.cpp \
   MarkSymbol.cpp \
   MdfModel.cpp \
   NameStringPair.cpp \
   PointRule.cpp \
   PointSymbolization2D.cpp \
   PointTypeStyle.cpp \
+  RelateProperty.cpp \
   Rule.cpp \
   Stroke.cpp \
+  SupplementalSpatialContextInfo.cpp \
   Symbol.cpp \
   Symbolization.cpp \
   TextSymbol.cpp \
   UnicodeString.cpp \
+  Vector.cpp \
   VectorLayerDefinition.cpp \
   VectorScaleRange.cpp \
   W2DSymbol.cpp
@@ -57,15 +64,19 @@ noinst_HEADERS = \
   AreaRule.h \
   AreaSymbolization2D.h \
   AreaTypeStyle.h \
+  AttributeRelate.h \
   Base64.h \
-  BaseMapLayerGroup.h \
   BaseMapLayer.h \
+  BaseMapLayerGroup.h \
   BlockSymbol.h \
   Box2D.h \
+  CalculatedProperty.h \
   ChannelBand.h \
   ConvertUTF.h \
   DisplayScale.h \
   DrawingLayerDefinition.h \
+  Extension.h \
+  FeatureSource.h \
   FeatureTypeStyle.h \
   Fill.h \
   FontSymbol.h \
@@ -77,9 +88,9 @@ noinst_HEADERS = \
   GridSurfaceStyle.h \
   HillShade.h \
   IFeatureTypeStyleVisitor.h \
-  ImageSymbol.h \
-  ISymbolizationVisitor.h \
   ISymbolVisitor.h \
+  ISymbolizationVisitor.h \
+  ImageSymbol.h \
   Label.h \
   LayerDefinition.h \
   LengthConverter.h \
@@ -87,9 +98,9 @@ noinst_HEADERS = \
   LineSymbolization2D.h \
   LineTypeStyle.h \
   MapDefinition.h \
-  MapLayerGroupCommon.h \
-  MapLayerGroup.h \
   MapLayer.h \
+  MapLayerGroup.h \
+  MapLayerGroupCommon.h \
   MarkSymbol.h \
   MdfModel.h \
   MdfOwnerCollection.h \
@@ -97,16 +108,19 @@ noinst_HEADERS = \
   PointRule.h \
   PointSymbolization2D.h \
   PointTypeStyle.h \
+  RelateProperty.h \
   Rule.h \
   SizeContexts.h \
-  stdafx.h \
   Stroke.h \
+  SupplementalSpatialContextInfo.h \
   Symbol.h \
   Symbolization.h \
   TextSymbol.h \
   UnicodeString.h \
+  Vector.h \
   VectorLayerDefinition.h \
   VectorScaleRange.h \
   W2DSymbol.h
+  stdafx.h \
 
 libMgMdfModel_la_LDFLAGS = -version-info 7:0:0

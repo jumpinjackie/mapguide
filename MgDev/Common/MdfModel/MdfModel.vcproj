@@ -210,6 +210,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\AttributeRelate.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\AttributeRelate.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Base64.h"
 			>
 		</File>
@@ -246,6 +254,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\CalculatedProperty.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\CalculatedProperty.h"
+			>
+		</File>
+		<File
 			RelativePath=".\ChannelBand.cpp"
 			>
 		</File>
@@ -275,6 +291,22 @@
 		</File>
 		<File
 			RelativePath=".\DrawingLayerDefinition.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Extension.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Extension.h"
+			>
+		</File>
+		<File
+			RelativePath=".\FeatureSource.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\FeatureSource.h"
 			>
 		</File>
 		<File
@@ -514,6 +546,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\RelateProperty.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\RelateProperty.h"
+			>
+		</File>
+		<File
 			RelativePath="Rule.cpp"
 			>
 		</File>
@@ -535,6 +575,14 @@
 		</File>
 		<File
 			RelativePath="Stroke.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SupplementalSpatialContextInfo.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SupplementalSpatialContextInfo.h"
 			>
 		</File>
 		<File
@@ -567,6 +615,14 @@
 		</File>
 		<File
 			RelativePath=".\UnicodeString.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Vector.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Vector.h"
 			>
 		</File>
 		<File
