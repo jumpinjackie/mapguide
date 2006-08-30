@@ -120,7 +120,7 @@ noinst_HEADERS = \
   Vector.h \
   VectorLayerDefinition.h \
   VectorScaleRange.h \
-  W2DSymbol.h
-  stdafx.h \
+  W2DSymbol.h \
+  stdafx.h
 
 libMgMdfModel_la_LDFLAGS = -version-info 7:0:0
