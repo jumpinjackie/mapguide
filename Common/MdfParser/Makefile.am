@@ -9,16 +9,21 @@ INCLUDES = \
 lib_LTLIBRARIES = libMgMdfParser.la
 
 libMgMdfParser_la_SOURCES = \
+  FSDSAX2Parser.cpp \
   IOAreaRule.cpp \
   IOAreaSymbolization2D.cpp \
   IOAreaTypeStyle.cpp \
+  IOAttributeRelate.cpp \
   IOBaseMapDefinition.cpp \
   IOBaseMapLayer.cpp \
   IOBaseMapLayerGroup.cpp \
   IOBlockSymbol.cpp \
+  IOCalculatedProperty.cpp \
   IOChannelBand.cpp \
   IODrawingLayerDefinition.cpp \
+  IOExtension.cpp \
   IOExtra.cpp \
+  IOFeatureSource.cpp \
   IOFill.cpp \
   IOFontSymbol.cpp \
   IOGridColor.cpp \
@@ -34,17 +39,19 @@ libMgMdfParser_la_SOURCES = \
   IOLineSymbolization2D.cpp \
   IOLineTypeStyle.cpp \
   IOMapDefinition.cpp \
-  IOMapLayerCommon.cpp \
   IOMapLayer.cpp \
-  IOMapLayerGroupCommon.cpp \
+  IOMapLayerCommon.cpp \
   IOMapLayerGroup.cpp \
+  IOMapLayerGroupCommon.cpp \
   IOMarkSymbol.cpp \
   IONameStringPair.cpp \
   IOPointRule.cpp \
   IOPointSymbolization2D.cpp \
   IOPointTypeStyle.cpp \
+  IORelateProperty.cpp \
   IOResourceRef.cpp \
   IOStroke.cpp \
+  IOSupplementalSpatialContextInfo.cpp \
   IOSymbol.cpp \
   IOUtil.cpp \
   IOVectorLayerDefinition.cpp \
@@ -54,16 +61,21 @@ libMgMdfParser_la_SOURCES = \
   SAX2Parser.cpp
 
 noinst_HEADERS = \
+  FSDSAX2Parser.h \
   IOAreaRule.h \
   IOAreaSymbolization2D.h \
   IOAreaTypeStyle.h \
+  IOAttributeRelate.h \
   IOBaseMapDefinition.h \
-  IOBaseMapLayerGroup.h \
   IOBaseMapLayer.h \
+  IOBaseMapLayerGroup.h \
   IOBlockSymbol.h \
+  IOCalculatedProperty.h \
   IOChannelBand.h \
   IODrawingLayerDefinition.h \
+  IOExtension.h \
   IOExtra.h \
+  IOFeatureSource.h \
   IOFill.h \
   IOFontSymbol.h \
   IOGridColor.h \
@@ -79,17 +91,19 @@ noinst_HEADERS = \
   IOLineSymbolization2D.h \
   IOLineTypeStyle.h \
   IOMapDefinition.h \
-  IOMapLayerCommon.h \
-  IOMapLayerGroupCommon.h \
-  IOMapLayerGroup.h \
   IOMapLayer.h \
+  IOMapLayerCommon.h \
+  IOMapLayerGroup.h \
+  IOMapLayerGroupCommon.h \
   IOMarkSymbol.h \
   IONameStringPair.h \
   IOPointRule.h \
   IOPointSymbolization2D.h \
   IOPointTypeStyle.h \
+  IORelateProperty.h \
   IOResourceRef.h \
   IOStroke.h \
+  IOSupplementalSpatialContextInfo.h \
   IOSymbol.h \
   IOUtil.h \
   IOVectorLayerDefinition.h \

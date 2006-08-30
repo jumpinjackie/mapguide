@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "NameStringPair.h"
 #include "VectorLayerDefinition.h"
+#include "FeatureSource.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -32,10 +33,12 @@ class IONameStringPair : public SAX2ElementHandler
     private:
         NameStringPair * _nameStringPair;
         VectorLayerDefinition * layer;
+        FeatureSource *featureSource;
 
     public:
         IONameStringPair();
         IONameStringPair(VectorLayerDefinition * layer);
+        IONameStringPair(FeatureSource * featureSource);
         ~IONameStringPair();
         void Write(MdfStream &fd, NameStringPair *strStrPair);
 

@@ -184,6 +184,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\FSDSAX2Parser.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\FSDSAX2Parser.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOAreaRule.cpp"
 			>
 		</File>
@@ -205,6 +213,14 @@
 		</File>
 		<File
 			RelativePath=".\IOAreaTypeStyle.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOAttributeRelate.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOAttributeRelate.h"
 			>
 		</File>
 		<File
@@ -240,6 +256,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOCalculatedProperty.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOCalculatedProperty.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOChannelBand.cpp"
 			>
 		</File>
@@ -256,11 +280,27 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOExtension.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOExtension.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOExtra.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\IOExtra.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOFeatureSource.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOFeatureSource.h"
 			>
 		</File>
 		<File
@@ -456,6 +496,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IORelateProperty.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IORelateProperty.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOResourceRef.cpp"
 			>
 		</File>
@@ -469,6 +517,14 @@
 		</File>
 		<File
 			RelativePath="IOStroke.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSupplementalSpatialContextInfo.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSupplementalSpatialContextInfo.h"
 			>
 		</File>
 		<File

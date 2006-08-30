@@ -23,15 +23,20 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 IONameStringPair::IONameStringPair()
+: _nameStringPair(NULL), layer(NULL), featureSource(NULL)
 {
     this->_nameStringPair = NULL;
     this->layer = NULL;
 }
 
-IONameStringPair::IONameStringPair(VectorLayerDefinition *layer)
+IONameStringPair::IONameStringPair(VectorLayerDefinition *pLayer)
+: _nameStringPair(NULL), layer(pLayer), featureSource(NULL)
 {
-    this->_nameStringPair = NULL;
-    this->layer = layer;
+}
+
+IONameStringPair::IONameStringPair(FeatureSource *pFeatureSource)
+: _nameStringPair(NULL), layer(NULL), featureSource(pFeatureSource)
+{
 }
 
 IONameStringPair::~IONameStringPair()
@@ -41,10 +46,21 @@ IONameStringPair::~IONameStringPair()
 void IONameStringPair::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"PropertyMapping") // NOXLATE
+    if (NULL != layer)
     {
-        m_startElemName = name;
-        this->_nameStringPair = new NameStringPair(L"", L"");
+        if (m_currElemName == L"PropertyMapping") // NOXLATE
+        {
+            m_startElemName = name;
+            this->_nameStringPair = new NameStringPair(L"", L"");
+        }
+    }
+    else if (NULL != featureSource)
+    {
+        if (m_currElemName == L"Parameter") // NOXLATE
+        {
+            m_startElemName = name;
+            this->_nameStringPair = new NameStringPair(L"", L"");
+        }
     }
 }
 
@@ -60,10 +76,15 @@ void IONameStringPair::EndElement(const wchar_t *name, HandlerStack *handlerStac
 {
     if (m_startElemName == name)
     {
-        this->layer->GetPropertyMappings()->Adopt(this->_nameStringPair);
+        if (NULL != this->layer)
+            this->layer->GetPropertyMappings()->Adopt(this->_nameStringPair);
+        else if (NULL != this->featureSource)
+            this->featureSource->GetParameters()->Adopt(this->_nameStringPair);
+
         handlerStack->pop();
         this->layer = NULL;
         this->_nameStringPair = NULL;
+        this->featureSource = NULL;
         m_startElemName = L"";
         delete this;
     }
