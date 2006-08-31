@@ -394,6 +394,7 @@ include_SOURCES = \
   Util/Byte.cpp \
   Util/FileUtil.cpp \
   Util/IpUtil.cpp \
+  Util/SetLocale.cpp \
   Util/Util.cpp \
   Util/XmlUtil.cpp
 
@@ -841,6 +842,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Util/FileUtil.h \
   Util/IpUtil.h \
   Util/LinuxMemoryStatus.h \
+  Util/SetLocale.h \
   Util/Util.h \
   Util/XmlDefs.h \
   Util/XmlUtil.h

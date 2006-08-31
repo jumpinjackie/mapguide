@@ -18,5 +18,6 @@
 #include "Byte.cpp"
 #include "IpUtil.cpp"
 #include "FileUtil.cpp"
+#include "SetLocale.cpp"
 #include "Util.cpp"
 #include "XmlUtil.cpp"

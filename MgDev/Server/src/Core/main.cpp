@@ -62,8 +62,8 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
     #endif
 #endif
 
-    // Set the locale to the default code page obtained from the operating system.
-    ::setlocale(LC_ALL, "");
+    // Set the locale to the C locale
+    ::setlocale(LC_ALL, "C");
 
     ACE::init();
 

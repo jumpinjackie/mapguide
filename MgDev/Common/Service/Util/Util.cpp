@@ -18,6 +18,7 @@
 #include "AceCommon.h"
 #include "ServiceFactory.h"
 #include "UnicodeString.h"
+#include "SetLocale.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -807,7 +808,7 @@ void MgUtil::Int32ToLocaleSpecificString(INT32 val, string& str)
 
     s << std::setprecision(0) << std::fixed;
 
-    setlocale(LC_NUMERIC, "");  // set the locale to the default obtained from the OS
+    MgSetLocale mgSetLocale(LC_NUMERIC, ""); // set the locale to the default obtained from the OS
     locale loc( setlocale(LC_NUMERIC, NULL) );  // create an instance of locale from querying the current locale
     s.imbue(loc);  // set the locale for the stream
 
