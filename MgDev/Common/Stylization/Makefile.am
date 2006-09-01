@@ -119,7 +119,7 @@ noinst_HEADERS = \
   SymbolVisitor.h \
   SLDSymbols.h
 
-CXXFLAGS = @CXXFLAGS@ -DDWFTK_BUILD_EXPAT
+AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_BUILD_EXPAT
 
 libMgStylization_la_LIBADD = \
   ../../Oem/gd/gd/libgd.a \

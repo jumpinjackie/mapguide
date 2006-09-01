@@ -7,13 +7,10 @@ prefix=@prefix@/server
 INCLUDES = \
   -I../../../Oem/ACE/ACE_wrappers \
   -I../../../Oem/CppUnit-1.9.14/include \
-  -I../../../Common/Service \
-  -I../../../Common/Service/CoordinateSystem \
-  -I../../../Common/Service/Services \
-  -I../../../Common/Service/System \
-  -I../../../Common/Service/Geometry \
-  -I../../../Common/Service/Geometry/Buffer \
-  -I../../../Common/Service/MapLayer \
+  -I../../../Common/Foundation \
+  -I../../../Common/Geometry \
+  -I../../../Common/PlatformBase \
+  -I../../../Common/MapGuideCommon \
   -I../Common \
   -I../Common/Manager \
   -I../Services/Feature \

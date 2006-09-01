@@ -14,22 +14,23 @@ INCLUDES = \
   -I../Common/Thread \
   -I../Services/Drawing \
   -I../Services/Feature \
+  -I../Services/Kml \
   -I../Services/Mapping \
   -I../Services/Rendering \
   -I../Services/Resource \
   -I../Services/ServerAdmin \
   -I../Services/Site \
   -I../Services/Tile \
-  -I../../../Common/Service \
-  -I../../../Common/Service/Services \
-  -I../../../Common/Service/System \
-  -I../../../Common/Service/Geometry
+  -I../../../Common/Foundation \
+  -I../../../Common/Geometry \
+  -I../../../Common/PlatformBase \
+  -I../../../Common/MapGuideCommon 
 
 bin_PROGRAMS = mgserver
 
 ServerCoreBuild.o : Makefile
 
-CXXFLAGS = @CXXFLAGS@ -DACE_HAS_SVC_DLL=1
+AM_CXXFLAGS = @CXXFLAGS@ -DACE_HAS_SVC_DLL=1
 
 mgserver_SOURCES = \
   ServerCoreBuild.cpp
@@ -83,13 +84,17 @@ mgserver_LDADD = \
   -lxalan-c \
   -lxerces-c \
   -lpathan \
-  -lMgCommon \
+  -lMgFoundation \
+  -lMgGeometry \
+  -lMgPlatformBase \
+  -lMgMapGuideCommon \
   -lMgCoordinateSystem \
   -lMgServerAdminService \
   -lMgServerBase \
   -lMgServerDrawingService \
   -lMgServerFactory \
   -lMgServerFeatureService \
+  -lMgServerKmlService \
   -lMgServerManager \
   -lMgServerMappingService \
   -lMgServerRenderingService \
@@ -113,13 +118,17 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -R$(map_srcdir)/Common/MdfModel/.libs \
   -R$(map_srcdir)/Common/MdfParser/.libs \
   -R$(map_srcdir)/Common/Stylization/.libs \
-  -R$(map_srcdir)/Common/Service/.libs \
+  -R$(map_srcdir)/Common/Foundation/.libs \
+  -R$(map_srcdir)/Common/Geometry/.libs \
+  -R$(map_srcdir)/Common/PlatformBase/.libs \
+  -R$(map_srcdir)/Common/MapGuideCommon/.libs \
   -R$(map_srcdir)/Server/src/Common/Base/.libs \
   -R$(map_srcdir)/Server/src/Common/Manager/.libs \
   -R$(map_srcdir)/Server/src/Common/Factory/.libs \
   -R$(map_srcdir)/Server/src/Common/Thread/.libs \
   -R$(map_srcdir)/Server/src/Services/Drawing/.libs \
   -R$(map_srcdir)/Server/src/Services/Feature/.libs \
+  -R$(map_srcdir)/Server/src/Services/Kml/.libs \
   -R$(map_srcdir)/Server/src/Services/Mapping/.libs \
   -R$(map_srcdir)/Server/src/Services/Rendering/.libs \
   -R$(map_srcdir)/Server/src/Services/Resource/.libs \
@@ -137,13 +146,17 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -L../../../Common/MdfModel \
   -L../../../Common/MdfParser \
   -L../../../Common/Stylization \
-  -L../../../Common/Service \
+  -L../../../Common/Foundation \
+  -L../../../Common/Geometry \
+  -L../../../Common/PlatformBase \
+  -L../../../Common/MapGuideCommon \
   -L../Common/Base \
   -L../Common/Manager \
   -L../Common/Factory \
   -L../Common/Thread \
   -L../Services/Drawing \
   -L../Services/Feature \
+  -L../Services/Kml \
   -L../Services/Mapping \
   -L../Services/Rendering \
   -L../Services/Resource \

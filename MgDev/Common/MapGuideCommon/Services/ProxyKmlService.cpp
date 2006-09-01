@@ -87,8 +87,8 @@ MgByteReader* MgProxyKmlService::GetMapKml(
 MgByteReader* MgProxyKmlService::GetLayerKml(
     MgLayer* layer,
     MgEnvelope* extents,
-    int width,
-    int height,
+    INT32 width,
+    INT32 height,
     double dpi,
     CREFSTRING agentUri,
     CREFSTRING format)

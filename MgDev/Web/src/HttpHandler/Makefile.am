@@ -4,13 +4,11 @@ EXTRA_DIST = HttpHandler.rc HttpHandler.vcproj
 
 prefix=@prefix@/webserverextensions
 
-INCLUDES    = -I../../../Common/Service \
-              -I../../../Common/Service/Services \
-              -I../../../Common/Service/Geometry \
-              -I../../../Common/Service/MapLayer \
-              -I../../../Common/Service/System \
-              -I../../../Oem/ACE/ACE_wrappers \
-              -I../../../Common/Service/Controller
+INCLUDES    = -I../../../Common/Foundation \
+              -I../../../Common/Geometry \
+              -I../../../Common/PlatformBase \
+              -I../../../Common/MapGuideCommon \
+              -I../../../Oem/ACE/ACE_wrappers 
 
 lib_LTLIBRARIES = libMgHttpHandler.la
 
@@ -227,7 +225,14 @@ noinst_HEADERS = $(include_SOURCES) \
   XmlElementEmitter.h \
   XmlParser.h
 
-libMgHttpHandler_la_LIBADD = -lMgCommon
+libMgHttpHandler_la_LIBADD = \
+    -lMgFoundation \
+    -lMgGeometry \
+    -lMgPlatformBase \
+    -lMgMapGuideCommon 
 
 libMgHttpHandler_la_LDFLAGS = -version-info 7:0:0 \
-    -L../../../Common/Service
+    -L../../../Common/Foundation \
+    -L../../../Common/Geometry \
+    -L../../../Common/PlatformBase \
+    -L../../../Common/MapGuideCommon 

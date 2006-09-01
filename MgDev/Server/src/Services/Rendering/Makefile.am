@@ -6,9 +6,10 @@ prefix=@prefix@/server
 
 INCLUDES = \
   -I../../../../Oem/ACE/ACE_wrappers \
-  -I../../../../Common/Service \
-  -I../../../../Common/Service/Services \
-  -I../../../../Common/Service/System \
+  -I../../../../Common/Foundation \
+  -I../../../../Common/Geometry \
+  -I../../../../Common/PlatformBase \
+  -I../../../../Common/MapGuideCommon \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \

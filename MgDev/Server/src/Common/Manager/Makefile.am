@@ -10,13 +10,13 @@ INCLUDES = \
   -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
   -I../../../../Common \
   -I../../../../Common/Security \
-  -I../../../../Common/Service \
-  -I../../../../Common/Service/Util \
-  -I../../../../Common/Service/Services \
-  -I../../../../Common/Service/System \
-  -I../../../../Common/Service/Geometry \
+  -I../../../../Common/Foundation \
+  -I../../../../Common/Geometry \
+  -I../../../../Common/MapGuideCommon \
+  -I../../../../Common/PlatformBase \
   -I../../Services/Drawing \
   -I../../Services/Feature \
+  -I../../Services/Kml \
   -I../../Services/Mapping \
   -I../../Services/Rendering \
   -I../../Services/Resource \

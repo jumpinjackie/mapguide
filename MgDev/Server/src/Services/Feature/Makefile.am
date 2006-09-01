@@ -10,11 +10,10 @@ INCLUDES = \
   -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
   -I../../Gws/Include \
   -I../../../../Common/Security \
-  -I../../../../Common/Service \
-  -I../../../../Common/Service/Util \
-  -I../../../../Common/Service/Services \
-  -I../../../../Common/Service/System \
-  -I../../../../Common/Service/Geometry \
+  -I../../../../Common/Foundation \
+  -I../../../../Common/Geometry \
+  -I../../../../Common/PlatformBase \
+  -I../../../../Common/MapGuideCommon \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \

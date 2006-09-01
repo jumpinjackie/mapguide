@@ -21,7 +21,7 @@
 #include "Stylization.h"
 #include "StylizationUtil.h"
 #include "KmlRenderer.h"
-#include "RSMGFeatureReader.h"
+#include "RSMgFeatureReader.h"
 #include "RSMgInputStream.h"
 #include "DefaultStylizer.h"
 #include "Bounds.h"
@@ -57,13 +57,13 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CRE
 
     KmlContent kmlContent;
     kmlContent.StartDocument();
-    
+
     //write the map name
     STRING mapName = map->GetName();
     kmlContent.WriteString("<name><![CDATA[");
     kmlContent.WriteString(mapName);
     kmlContent.WriteString("]]></name>");
-    
+
     if(m_svcResource == NULL)
     {
         InitializeResourceService();
@@ -75,7 +75,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CRE
     //get the map definition
     auto_ptr<MdfModel::MapDefinition> mdf(MgStylizationUtil::GetMapDefinition(m_svcResource, mapResId));
     STRING metadata = mdf->GetMetadata();
-    
+
     if(!metadata.empty())
     {
         size_t offset = 0;
@@ -100,7 +100,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CRE
             Ptr<MgCoordinateSystemTransform> trans = new MgCoordinateSystemTransform(mapCs, llCs);
             extent = trans->Transform(extent);
         }
-        
+
         WriteRegion(extent, kmlContent);
     }
     for(int i = 0; i < layers->GetCount(); i++)
@@ -113,7 +113,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CRE
     Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
     if(format.compare(L"XML") == 0)
     {
-        byteSource->SetMimeType(MgMimeType::Xml);    
+        byteSource->SetMimeType(MgMimeType::Xml);
     }
     else // default to KML
     {
@@ -126,7 +126,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CRE
     return SAFE_ADDREF(byteReader.p);
 }
 
-MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extents, 
+MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extents,
     INT32 width, INT32 height, double dpi, CREFSTRING agentUri, CREFSTRING format)
 {
     Ptr<MgByteReader> byteReader;
@@ -159,11 +159,11 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
         double widthMeters = destCs->ConvertCoordinateSystemUnitsToMeters(destExtent->GetWidth());
         double heightMeters = destCs->ConvertCoordinateSystemUnitsToMeters(destExtent->GetHeight());
         double dimension = sqrt(widthMeters * heightMeters);
-    
+
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
         MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
         if(vl != NULL)
-        {                   
+        {
             //get the scale ranges
             MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
             MdfModel::VectorScaleRange* range = NULL;
@@ -175,7 +175,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
                 double maxScale = range->GetMaxScale();
                 if(scale > minScale && scale <= maxScale)
                 {
-                    AppendScaleRange(layer, destExtent, agentUri, dimension, 
+                    AppendScaleRange(layer, destExtent, agentUri, dimension,
                         minScale, maxScale, format, kmlContent);
                 }
             }
@@ -186,30 +186,30 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
             double maxScale = dl->GetMaxScale();
             if(scale > minScale && scale <= maxScale)
             {
-                AppendScaleRange(layer, destExtent, agentUri, dimension, 
+                AppendScaleRange(layer, destExtent, agentUri, dimension,
                     minScale, maxScale, format, kmlContent);
             }
-        }                
+        }
     }
     kmlContent.EndDocument();
     std::string contentString = kmlContent.GetString();
     Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
     if(format.compare(L"XML") == 0)
     {
-        byteSource->SetMimeType(MgMimeType::Xml);    
+        byteSource->SetMimeType(MgMimeType::Xml);
     }
     else // default to KML
     {
         byteSource->SetMimeType(MgMimeType::Kml);
     }
-    byteReader = byteSource->GetReader();    
-    
+    byteReader = byteSource->GetReader();
+
     MG_CATCH_AND_THROW(L"MgServerKmlService.GetLayerKml")
 
     return SAFE_ADDREF(byteReader.p);
 }
 
-MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* extents, 
+MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* extents,
     INT32 width, INT32 height, double dpi, CREFSTRING format)
 {
     Ptr<MgByteReader> byteReader;
@@ -232,23 +232,23 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
     Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
     if(format.compare(L"XML") == 0)
     {
-        byteSource->SetMimeType(MgMimeType::Xml);    
+        byteSource->SetMimeType(MgMimeType::Xml);
     }
     else // default to KML
     {
         byteSource->SetMimeType(MgMimeType::Kml);
     }
-    byteReader = byteSource->GetReader();    
-    
+    byteReader = byteSource->GetReader();
+
     MG_CATCH_AND_THROW(L"MgServerKmlService.GetFeaturesKml")
 
     return SAFE_ADDREF(byteReader.p);
 }
 
-void MgServerKmlService::AppendLayer(MgLayer* layer, 
-                                     MgEnvelope* extent, 
-                                     CREFSTRING agentUri, 
-                                     CREFSTRING format, 
+void MgServerKmlService::AppendLayer(MgLayer* layer,
+                                     MgEnvelope* extent,
+                                     CREFSTRING agentUri,
+                                     CREFSTRING format,
                                      KmlContent& kmlContent)
 {
     kmlContent.WriteString("<NetworkLink>");
@@ -273,13 +273,13 @@ void MgServerKmlService::AppendLayer(MgLayer* layer,
     kmlContent.WriteString("</NetworkLink>");
 }
 
-void MgServerKmlService::AppendScaleRange(MgLayer* layer, 
-                                          MgEnvelope* extent, 
-                                          CREFSTRING agentUri, 
-                                          double dimension, 
-                                          double minScale, 
-                                          double maxScale, 
-                                          CREFSTRING format, 
+void MgServerKmlService::AppendScaleRange(MgLayer* layer,
+                                          MgEnvelope* extent,
+                                          CREFSTRING agentUri,
+                                          double dimension,
+                                          double minScale,
+                                          double maxScale,
+                                          CREFSTRING format,
                                           KmlContent& kmlContent)
 {
     char buffer[256];
@@ -306,13 +306,13 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
     kmlContent.WriteString("</NetworkLink>");
 }
 
-void MgServerKmlService::AppendFeatures(MgLayer* layer, 
-                                        MgEnvelope* extents, 
+void MgServerKmlService::AppendFeatures(MgLayer* layer,
+                                        MgEnvelope* extents,
                                         double scale,
                                         double dpi,
                                         KmlContent& kmlContent)
 {
-    
+
     if(m_svcResource == NULL)
     {
         InitializeResourceService();
@@ -379,7 +379,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
         {
             InitializeDrawingService();
         }
-        
+
         // make sure we have a valid scale range
         if (scale >= dl->GetMinScale() && scale < dl->GetMaxScale())
         {
@@ -393,7 +393,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             size_t offset = 0;
             STRING cs = ReadElement(st, L"CoordinateSpace", offset);
             if (!cs.empty() && cs != destCs->ToString())
-            {             
+            {
                 //construct cs transformer if needed
                 Ptr<MgCoordinateSystem> srcCs = m_csFactory->Create(cs);
                 csTrans = new MgCSTrans(srcCs, destCs);
@@ -413,7 +413,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
         csTrans = NULL;
     }
 }
-    
+
 double MgServerKmlService::GetScale(MgEnvelope* llExtents, int width, int height, double dpi)
 {
     Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
@@ -429,7 +429,7 @@ double MgServerKmlService::GetScale(MgEnvelope* llExtents, int width, int height
 MgEnvelope* MgServerKmlService::GetLayerExtent(MgLayer* layer, MgCoordinateSystem* destCs)
 {
     Ptr<MgEnvelope> envelope;
-    
+
     if(layer != NULL)
     {
         if(m_svcResource == NULL)
@@ -486,7 +486,7 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MgLayer* layer, MgCoordinateSyste
             size_t offset = 0;
             STRING cs = ReadElement(st, L"CoordinateSpace", offset);
             if (!cs.empty() && cs != destCs->ToString())
-            {             
+            {
                 //construct cs transformer if needed
                 Ptr<MgCoordinateSystem> srcCs = m_csFactory->Create(cs);
                 csTrans = new MgCoordinateSystemTransform(srcCs, destCs);
@@ -545,7 +545,7 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MgLayer* layer, MgCoordinateSyste
     }
     return SAFE_ADDREF((MgEnvelope*)envelope);
 }
-    
+
 STRING MgServerKmlService::ReadElement(STRING input, STRING elementName, size_t& offset)
 {
     STRING content;
@@ -584,22 +584,22 @@ void MgServerKmlService::WriteRegion(MgEnvelope* extent, KmlContent& kmlContent,
         double south = extent->GetLowerLeftCoordinate()->GetY();
         double east = extent->GetUpperRightCoordinate()->GetX();
         double west = extent->GetLowerLeftCoordinate()->GetX();
-        kmlContent.WriteString("<Region>"); 
-        kmlContent.WriteString("<LatLonAltBox>"); 
+        kmlContent.WriteString("<Region>");
+        kmlContent.WriteString("<LatLonAltBox>");
         sprintf(buffer, "<north>%f</north><south>%f</south><east>%f</east><west>%f</west>",
             north, south, east, west);
-        kmlContent.WriteString(buffer); 
-        kmlContent.WriteString("</LatLonAltBox>"); 
+        kmlContent.WriteString(buffer);
+        kmlContent.WriteString("</LatLonAltBox>");
         if(dimension > 0)
         {
             double pixelSize = METERS_PER_INCH / dpi;
             int minPix = (int)(dimension / maxScale / pixelSize);
             int maxPix = minScale > 0 ? (int)(dimension / minScale / pixelSize) : -1;
-            kmlContent.WriteString("<Lod>"); 
+            kmlContent.WriteString("<Lod>");
             sprintf(buffer, "<minLodPixels>%d</minLodPixels><maxLodPixels>%d</maxLodPixels>",
                 minPix, maxPix);
-            kmlContent.WriteString(buffer); 
-            kmlContent.WriteString("</Lod>"); 
+            kmlContent.WriteString(buffer);
+            kmlContent.WriteString("</Lod>");
         }
         kmlContent.WriteString("</Region>");
     }
