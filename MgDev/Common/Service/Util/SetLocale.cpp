@@ -16,6 +16,7 @@
 //
 
 #include "AceCommon.h"
+#include <locale.h>
 #include "SetLocale.h"
 
 
