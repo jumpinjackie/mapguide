@@ -42,8 +42,8 @@ INCLUDES = \
   -I../GwsResource \
   -I./inc \
   -I../../../../Oem/ACE/ACE_wrappers \
-  -I../../../../Common/Service \
-  -I../../../../Common/Service/System
+  -I../../../../Common/Foundation \
+  -I../../../../Common/Geometry
 
 libMgGwsCommon_la_LDFLAGS = -version-info 1:0:0
 

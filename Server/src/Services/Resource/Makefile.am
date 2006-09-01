@@ -13,10 +13,10 @@ INCLUDES = \
   -I../../../../Oem/dbxml-2.2.13/dbxml/src \
   -I../../../../Oem/DWFTK7.1/develop/global/src \
   -I../../../../Common/Security \
-  -I../../../../Common/Service \
-  -I../../../../Common/Service/Util \
-  -I../../../../Common/Service/Services \
-  -I../../../../Common/Service/System \
+  -I../../../../Common/Foundation \
+  -I../../../../Common/Geometry \
+  -I../../../../Common/PlatformBase \
+  -I../../../../Common/MapGuideCommon \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \
@@ -24,7 +24,7 @@ INCLUDES = \
   -I../Feature \
   -I../Site
 
-CXXFLAGS = @CXXFLAGS@ -DDWFTK_USE_DWFCORE_ZLIB
+AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_USE_DWFCORE_ZLIB
 
 lib_LTLIBRARIES = libMgServerResourceService.la
 
@@ -188,10 +188,13 @@ noinst_HEADERS = $(include_SOURCES) \
   ZipFileWriter.h \
   ../../Common/stdafx.h
 
-libMgServerResourceService_la_LIBADD = -lMgCommon -lMgServerBase -lMgServerManager -lxerces-c -lpathan -lxquery -ldb_cxx -ldbxml
+libMgServerResourceService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lMgServerBase -lMgServerManager -lxerces-c -lpathan -lxquery -ldb_cxx -ldbxml
 
 libMgServerResourceService_la_LDFLAGS = -version-info 7:0:0 \
-  -L../../../../Common/Service \
+  -L../../../../Common/Foundation \
+  -L../../../../Common/Geometry \
+  -L../../../../Common/PlatformBase \
+  -L../../../../Common/MapGuideCommon \
   -L../../Common/Base \
   -L../../Common/Manager \
   -L../../../../Oem/dbxml-2.2.13/install/lib

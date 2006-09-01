@@ -4,12 +4,10 @@ EXTRA_DIST = FastCgiAgent.rc FastCgiAgent.vcproj
 
 prefix=@prefix@/webserverextensions
 
-INCLUDES    = -I../../../Common/Service \
-              -I../../../Common/Service/Services \
-              -I../../../Common/Service/Geometry \
-              -I../../../Common/Service/MapLayer \
-              -I../../../Common/Service/System \
-              -I../../../Common/Service/Controller \
+INCLUDES    = -I../../../Common/Foundation \
+              -I../../../Common/Geometry \
+              -I../../../Common/PlatformBase \
+              -I../../../Common/MapGuideCommon \
               -I../../../Common/MdfModel \
               -I../../../Oem/ACE/ACE_wrappers \
               -I../../../Oem/fcgi/fcgi-2.4.0/include \
@@ -36,11 +34,13 @@ noinst_HEADERS = CgiGetParser.h \
 mapagent_LDADD = -lACE \
                  -lxerces-c \
                  ../../../Oem/fcgi/fcgi-2.4.0/libfcgi/.libs/libfcgi.so \
-                 -lMgCommon \
+                 -lMgFoundation \
+                 -lMgGeometry \
+                 -lMgPlatformBase \
                  -lMgCoordinateSystem \
                  -lMgMdfModel \
                  -lMgMdfParser \
-                 -lMgHttpHandler
+                 -lMgHttpHandler 
 
 mapagent_LDFLAGS = -version-info 7:0:0 \
             -L../../../Oem/ACE/ACE_wrappers/ace \
@@ -48,5 +48,8 @@ mapagent_LDFLAGS = -version-info 7:0:0 \
             -L$(top_builddir)/$(map_coordsys_dir_path) \
             -L../../../Common/MdfModel \
             -L../../../Common/MdfParser \
-            -L../../../Common/Service \
+            -L../../../Common/Foundation \
+            -L../../../Common/Geometry \
+            -L../../../Common/PlatformBase \
+            -L../../../Common/MapGuideCommon \
             -L../HttpHandler

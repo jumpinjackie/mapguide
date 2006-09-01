@@ -6,15 +6,15 @@ prefix=@prefix@/server
 
 INCLUDES = \
   -I../../../../Oem/ACE/ACE_wrappers \
-  -I../../../../Common/Service \
-  -I../../../../Common/Service/Services \
-  -I../../../../Common/Service/System \
-  -I../../../../Common/Service/Geometry \
-  -I../../../../Common/Service/MapLayer \
+  -I../../../../Common/Foundation \
+  -I../../../../Common/Geometry \
+  -I../../../../Common/MapGuideCommon \
+  -I../../../../Common/PlatformBase \
   -I../../Common \
   -I../../Common/Manager \
   -I../../Services/Drawing \
   -I../../Services/Feature \
+  -I../../Services/Kml \
   -I../../Services/Mapping \
   -I../../Services/Rendering \
   -I../../Services/Resource \

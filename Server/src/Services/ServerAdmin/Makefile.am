@@ -6,9 +6,10 @@ prefix=@prefix@/server
 
 INCLUDES = \
   -I../../../../Oem/ACE/ACE_wrappers \
-  -I../../../../Common/Service \
-  -I../../../../Common/Service/Services \
-  -I../../../../Common/Service/System \
+  -I../../../../Common/Foundation \
+  -I../../../../Common/Geometry \
+  -I../../../../Common/PlatformBase \
+  -I../../../../Common/MapGuideCommon \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager
@@ -84,6 +85,6 @@ noinst_HEADERS = $(include_SOURCES) \
   ServerAdminOperationFactory.h \
   ServerAdminService.h \
   ServerAdminServiceHandler.h \
-  ../../../../Common/Service/Services/Service.h
+  ../../../../Common/PlatformBase/Services/Service.h
 
 libMgServerAdminService_la_LDFLAGS = -version-info 7:0:0

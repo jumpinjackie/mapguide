@@ -37,12 +37,6 @@ class MG_FOUNDATION_API MgClassFactory : public MgDisposable
 INTERNAL_API:
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// Object constructor
-    ///
-    MgClassFactory();
-
-    /////////////////////////////////////////////////////////////////
-    /// \brief
     /// Returns global object instance
     ///
     /// \return
@@ -71,6 +65,12 @@ protected:
     virtual void Dispose();
 
 private:
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Object constructor
+    ///
+    MgClassFactory();
+
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Internal singleton variable

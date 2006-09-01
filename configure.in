@@ -268,7 +268,10 @@ AC_CONFIG_FILES([Common/Makefile \
 		Common/MdfModel/Makefile \
 		Common/MdfParser/Makefile \
 		Common/Security/Makefile \
-		Common/Service/Makefile \
+		Common/Foundation/Makefile \
+		Common/Geometry/Makefile \
+		Common/PlatformBase/Makefile \
+		Common/MapGuideCommon/Makefile \
 		Common/Stylization/Makefile])
 AC_CONFIG_FILES([Common/CoordinateSystem/Makefile])
 
@@ -286,6 +289,7 @@ AC_CONFIG_FILES([Server/Makefile \
 		Server/src/Common/Thread/Makefile \
 		Server/src/Services/Makefile \
 		Server/src/Services/Feature/Makefile \
+		Server/src/Services/Kml/Makefile \
 		Server/src/Services/Mapping/Makefile \
 		Server/src/Services/Resource/Makefile \
 		Server/src/Services/Site/Makefile \

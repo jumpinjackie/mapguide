@@ -6,10 +6,10 @@ prefix=@prefix@/server
 
 INCLUDES = \
   -I../../../../Common/Security \
-  -I../../../../Common/Service \
-  -I../../../../Common/Service/Services \
-  -I../../../../Common/Service/System \
-  -I../../../../Common/Service/Util \
+  -I../../../../Common/Foundation \
+  -I../../../../Common/Geometry \
+  -I../../../../Common/PlatformBase \
+  -I../../../../Common/MapGuideCommon \
   -I../../../../Oem/ACE/ACE_wrappers \
   -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
   -I../../Common \

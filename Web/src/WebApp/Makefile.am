@@ -73,16 +73,18 @@ noinst_HEADERS = $(include_SOURCES) \
 
 libMgWebApp_la_SOURCES = WebAppBuild.cpp
 
-INCLUDES = -I../../../Common/Service \
-           -I../../../Common/Service/Util \
-           -I../../../Common/Service/Services \
-           -I../../../Common/Service/System \
+INCLUDES = -I../../../Common/Foundation \
+           -I../../../Common/Geometry \
+           -I../../../Common/PlatformBase \
+           -I../../../Common/MapGuideCommon \
            -I../../../Oem/dbxml-2.2.13/xerces-c-src/src \
-           -I../../../Oem/ACE/ACE_wrappers \
-           -I../../../Common/Service/Geometry
+           -I../../../Oem/ACE/ACE_wrappers
 
-libMgWebApp_la_LIBADD = -lxerces-c -lMgCommon
+libMgWebApp_la_LIBADD = -lxerces-c -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon 
 
 libMgWebApp_la_LDFLAGS = -version-info 7:0:0 \
             -L../../../Oem/dbxml-2.2.13/install/lib \
-            -L../../../Common/Service
+            -L../../../Common/Foundation \
+            -L../../../Common/Geometry \
+            -L../../../Common/PlatformBase \
+            -L../../../Common/MapGuideCommon 

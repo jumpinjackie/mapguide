@@ -6,10 +6,10 @@ prefix=@prefix@/server
 
 INCLUDES = \
   -I../../../../Oem/ACE/ACE_wrappers \
-  -I../../../../Common/Service \
-  -I../../../../Common/Service/Util \
-  -I../../../../Common/Service/Services \
-  -I../../../../Common/Service/System \
+  -I../../../../Common/Foundation \
+  -I../../../../Common/Geometry \
+  -I../../../../Common/PlatformBase \
+  -I../../../../Common/MapGuideCommon \
   -I../../../../Oem/DWFTK7.1/develop/global/src \
   -I../../../../Oem/DWFTK7.1/develop/global/src/dwf \
   -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
@@ -19,7 +19,7 @@ INCLUDES = \
   -I../../Common/ServerUtil \
   -I../Resource
 
-CXXFLAGS = @CXXFLAGS@ -DDWFTK_BUILD_EXPAT -DDWFTK_USE_DWFCORE_ZLIB
+AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_BUILD_EXPAT -DDWFTK_USE_DWFCORE_ZLIB
 
 lib_LTLIBRARIES = libMgServerDrawingService.la
 
@@ -61,10 +61,13 @@ noinst_HEADERS = $(include_SOURCES) \
   ServerDrawingService.h \
   ServerDrawingServiceUtil.h \
   ServerDrawingServiceDefs.h \
-  ../../../../Common/Service/Services/Service.h
+  ../../../../Common/PlatformBase/Services/Service.h
 
-libMgServerDrawingService_la_LIBADD = -lMgCommon -lxerces-c
+libMgServerDrawingService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lxerces-c
 
 libMgServerDrawingService_la_LDFLAGS = -version-info 7:0:0 \
   -L../../../../Oem/dbxml-2.2.13/install/lib \
-  -L../../../../Common/Service
+  -L../../../../Common/Foundation \
+  -L../../../../Common/Geometry \
+  -L../../../../Common/PlatformBase \
+  -L../../../../Common/MapGuideCommon
