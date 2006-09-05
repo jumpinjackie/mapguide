@@ -230,6 +230,8 @@ INCLUDES = \
 
 libMgFoundation_la_LIBADD = \
   -lACE \
+  -lMgMdfParser \
+  -lMgMdfModel \
   -lxerces-c
   
 

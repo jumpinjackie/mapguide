@@ -246,6 +246,8 @@ INCLUDES = \
 
 libMgMapGuideCommon_la_LIBADD = \
   -lACE \
+  -lMgMdfParser \
+  -lMgMdfModel \
   -lMgPlatformBase \
   -lMgFoundation \
   -lMgGeometry \

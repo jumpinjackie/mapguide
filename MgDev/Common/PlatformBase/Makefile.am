@@ -200,6 +200,8 @@ INCLUDES = \
 
 libMgPlatformBase_la_LIBADD = \
   -lACE \
+  -lMdfModel \
+  -lMdfParser \
   -lMgCoordinateSystem \
   -lMgFoundation \
   -lMgGeometry
