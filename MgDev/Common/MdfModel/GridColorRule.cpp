@@ -25,6 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 GridColorRule::GridColorRule()
 {
+    m_spGridColor = NULL;
 }
 
 //-------------------------------------------------------------------------
@@ -32,7 +33,8 @@ GridColorRule::GridColorRule()
 //-------------------------------------------------------------------------
 GridColorRule::~GridColorRule()
 {
-    delete m_spGridColor;
+    if (m_spGridColor != NULL)
+        delete m_spGridColor;
 }
 
 //-------------------------------------------------------------------------
@@ -70,7 +72,8 @@ void GridColorRule::AdoptGridColor(GridColor *pGridColor)
 {
     if (m_spGridColor != pGridColor)
     {
-        delete m_spGridColor;
+        if (m_spGridColor != NULL)
+            delete m_spGridColor;
         m_spGridColor = pGridColor;
     }
 }

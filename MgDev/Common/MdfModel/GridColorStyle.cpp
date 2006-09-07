@@ -27,6 +27,8 @@ using namespace MDFMODEL_NAMESPACE;
 GridColorStyle::GridColorStyle()
     : FeatureTypeStyle()
 {
+    m_spHillShade = NULL;
+    m_strTransparencyColor = L"";
     m_dBrightnessFactor = 0;
     m_dContrastFactor = 0;
 }
@@ -36,7 +38,8 @@ GridColorStyle::GridColorStyle()
 //-------------------------------------------------------------------------
 GridColorStyle::~GridColorStyle()
 {
-    delete m_spHillShade;
+    if (m_spHillShade != NULL)
+        delete m_spHillShade;
 }
 
 //-------------------------------------------------------------------------
@@ -71,7 +74,8 @@ void GridColorStyle::AdoptHillShade(HillShade* pHillShade)
 {
     if (m_spHillShade != pHillShade)
     {
-        delete m_spHillShade;
+        if (m_spHillShade != NULL)
+            delete m_spHillShade;
         m_spHillShade = pHillShade;
     }
 }
