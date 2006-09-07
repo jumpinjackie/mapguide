@@ -33,8 +33,7 @@ GridColorRule::GridColorRule()
 //-------------------------------------------------------------------------
 GridColorRule::~GridColorRule()
 {
-    if (m_spGridColor != NULL)
-        delete m_spGridColor;
+    delete m_spGridColor;
 }
 
 //-------------------------------------------------------------------------
@@ -72,8 +71,7 @@ void GridColorRule::AdoptGridColor(GridColor *pGridColor)
 {
     if (m_spGridColor != pGridColor)
     {
-        if (m_spGridColor != NULL)
-            delete m_spGridColor;
+        delete m_spGridColor;
         m_spGridColor = pGridColor;
     }
 }

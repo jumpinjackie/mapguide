@@ -48,10 +48,8 @@ GridScaleRange::GridScaleRange()
 //-------------------------------------------------------------------------
 GridScaleRange::~GridScaleRange()
 {
-    if (m_spSurfaceStyle != NULL)
-        delete m_spSurfaceStyle;
-    if (m_spColorStyle != NULL)
-        delete m_spColorStyle;
+    delete m_spSurfaceStyle;
+    delete m_spColorStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -141,8 +139,7 @@ void GridScaleRange::AdoptSurfaceStyle(MdfModel::GridSurfaceStyle *pSurfaceStyle
 {
     if (m_spSurfaceStyle != pSurfaceStyle)
     {
-        if (m_spSurfaceStyle != NULL)
-            delete m_spSurfaceStyle;
+        delete m_spSurfaceStyle;
         m_spSurfaceStyle = pSurfaceStyle;
     }
 }
@@ -195,8 +192,7 @@ void GridScaleRange::AdoptColorStyle(MdfModel::GridColorStyle *pColorStyle)
 {
     if (m_spColorStyle != pColorStyle)
     {
-        if (m_spColorStyle != NULL)
-            delete m_spColorStyle;
+        delete m_spColorStyle;
         m_spColorStyle = pColorStyle;
     }
 }
