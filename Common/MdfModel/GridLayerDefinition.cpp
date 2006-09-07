@@ -31,6 +31,9 @@ using namespace MDFMODEL_NAMESPACE;
 GridLayerDefinition::GridLayerDefinition(const MdfString& strDataResourceID)
     : LayerDefinition(strDataResourceID)
 {
+    m_strFeatureName = L"";
+    m_strGeometry = L"";
+    m_strFilter = L"";
 }
 
 //-------------------------------------------------------------------------

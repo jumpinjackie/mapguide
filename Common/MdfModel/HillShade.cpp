@@ -28,6 +28,7 @@ HillShade::HillShade()
     m_dAzimuth = 0;
     m_dAltitude = 90;
     m_dScaleFactor = 1;
+    m_strBandName = L"";
 }
 
 //-------------------------------------------------------------------------

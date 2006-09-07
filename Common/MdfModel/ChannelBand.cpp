@@ -25,6 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 ChannelBand::ChannelBand()
 {
+    this->m_strBand = L"";
     m_dLowBand = 0;
     m_dHighBand = 0;
     m_nLowChannel = 0;

@@ -26,6 +26,8 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 GridSurfaceStyle::GridSurfaceStyle()
 {
+    m_strElevationBandName = L"";
+    m_strDefaultColor = L"";
     m_dZeroValue = 0;
     m_dScaleFactor = 1;
 }
