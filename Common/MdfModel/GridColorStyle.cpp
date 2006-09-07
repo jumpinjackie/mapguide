@@ -38,8 +38,7 @@ GridColorStyle::GridColorStyle()
 //-------------------------------------------------------------------------
 GridColorStyle::~GridColorStyle()
 {
-    if (m_spHillShade != NULL)
-        delete m_spHillShade;
+    delete m_spHillShade;
 }
 
 //-------------------------------------------------------------------------
@@ -74,8 +73,7 @@ void GridColorStyle::AdoptHillShade(HillShade* pHillShade)
 {
     if (m_spHillShade != pHillShade)
     {
-        if (m_spHillShade != NULL)
-            delete m_spHillShade;
+        delete m_spHillShade;
         m_spHillShade = pHillShade;
     }
 }
