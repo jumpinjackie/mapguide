@@ -200,14 +200,17 @@ INCLUDES = \
 
 libMgPlatformBase_la_LIBADD = \
   -lACE \
-  -lMdfModel \
-  -lMdfParser \
+  -lMgMdfModel \
+  -lMgMdfParser \
   -lMgCoordinateSystem \
   -lMgFoundation \
-  -lMgGeometry
+  -lMgGeometry 
 
 libMgPlatformBase_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../Foundation \
   -L../Geometry \
-  -L$(top_builddir)/$(map_coordsys_dir_path)
+  -L$(top_builddir)/$(map_coordsys_dir_path) \
+  -L../MdfParser \
+  -L../MdfModel
+  

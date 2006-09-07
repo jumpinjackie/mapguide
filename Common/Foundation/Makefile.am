@@ -237,4 +237,6 @@ libMgFoundation_la_LIBADD = \
 
 libMgFoundation_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
-  -L../../Oem/dbxml-2.2.13/install/lib
+  -L../../Oem/dbxml-2.2.13/install/lib \
+  -L../MdfParser \
+  -L../MdfModel 

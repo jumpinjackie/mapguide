@@ -30,6 +30,8 @@
 #ifndef _BUFFER_H_
 #define _BUFFER_H_
 
+#define BOOL bool
+
 #ifndef WIN32
     #define FALSE false
     #define TRUE true
