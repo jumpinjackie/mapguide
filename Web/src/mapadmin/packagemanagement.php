@@ -335,7 +335,7 @@ catch ( Exception $e )
                 </table>
 
                 <?php
-                DisplayPaginationControl( $currPage, $numPackages, $pageSize, 'loadpackages.php' );
+                DisplayPaginationControl( $currPage, $numPackages, $pageSize, 'packagemanagement.php' );
                 ?>
 
                 <?php
