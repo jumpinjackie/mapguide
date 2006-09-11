@@ -46,34 +46,8 @@ MgFdoConnectionManager::~MgFdoConnectionManager(void)
 {
     MG_FDOCONNECTION_MANAGER_TRY()
 
-    size_t cacheSize = m_FdoConnectionCache.size();
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::~MgFdoConnectionManager()\n")));
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Releasing %d cached FDO connections.\n"), cacheSize));
-
     // Cleanup the FDO connection cache
-    for (FdoConnectionCache::iterator iter = m_FdoConnectionCache.begin();iter != m_FdoConnectionCache.end(); iter++)
-    {
-        STRING key = iter->first;
-        FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
-        if(pFdoConnectionCacheEntry)
-        {
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    InUse=%d : %W\n"), pFdoConnectionCacheEntry->bInUse, key.c_str()));
-
-            if(pFdoConnectionCacheEntry->pFdoConnection)
-            {
-                // Close the connection
-                pFdoConnectionCacheEntry->pFdoConnection->Close();
-
-                // Release any resource
-                GIS_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
-            }
-
-            delete pFdoConnectionCacheEntry;
-            pFdoConnectionCacheEntry = NULL;
-        }
-    }
-
-    m_FdoConnectionCache.clear();
+    ClearCache();
 
     GIS_SAFE_RELEASE(m_connManager);
 
@@ -85,7 +59,6 @@ void MgFdoConnectionManager::Dispose(void)
 {
     delete this;
 }
-
 
 // Get pointer to a process-wide MgFdoConnectionManager.
 MgFdoConnectionManager* MgFdoConnectionManager::GetInstance()
@@ -134,9 +107,7 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled, INT32 nF
         nFdoConnectionPoolSize = MaxFdoConnectionPoolSize;
     }
 
-    // TODO: Revisit FDO connection pooling when Feature Service and FDO are more caching friendly.
-    // Force the caching to be disabled for now
-    m_bFdoConnectionPoolEnabled = false; // bFdoConnectionPoolEnabled;
+    m_bFdoConnectionPoolEnabled = bFdoConnectionPoolEnabled;
     m_nFdoConnectionPoolSize = nFdoConnectionPoolSize;
     m_nFdoConnectionTimeout = nFdoConnectionTimeout;
 
@@ -211,9 +182,6 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
             {
                 // Add this entry to the cache
                 CacheFdoConnection(pFdoConnection, resourceIdentifier->ToString(), MgUtil::MultiByteToWideChar(featureSourceXmlContent));
-
-                // Increase the reference count before returning it because this entry has been pooled
-                GIS_SAFE_ADDREF(pFdoConnection.p);
             }
         }
     }
@@ -277,9 +245,6 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
                     STRING key = providerNameNoVersion + L" - " + connectionString;
                     STRING data = L"";
                     CacheFdoConnection(pFdoConnection, key, data);
-
-                    // Increase the reference count before returning it because this entry has been pooled
-                    GIS_SAFE_ADDREF(pFdoConnection.p);
                 }
             }
         }
@@ -298,19 +263,6 @@ void MgFdoConnectionManager::Close(FdoIConnection* pFdoConnection)
     CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.Close()");
 
     MG_FDOCONNECTION_MANAGER_TRY()
-
-    for (FdoConnectionCache::iterator iter = m_FdoConnectionCache.begin();iter != m_FdoConnectionCache.end(); iter++)
-    {
-        FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
-        if(pFdoConnectionCacheEntry)
-        {
-            if(pFdoConnectionCacheEntry->pFdoConnection == pFdoConnection)
-            {
-                pFdoConnectionCacheEntry->bInUse = false;
-                break;
-            }
-        }
-    }
 
     // Release reference
     GIS_SAFE_RELEASE(pFdoConnection);
@@ -381,7 +333,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* 
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FindFdoConnection")
 
-    return GIS_SAFE_ADDREF(pFdoConnection);
+    return pFdoConnection;
 }
 
 
@@ -395,7 +347,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING providerNam
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FindFdoConnection")
 
-    return GIS_SAFE_ADDREF(pFdoConnection);
+    return pFdoConnection;
 }
 
 
@@ -420,13 +372,12 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING key,
             {
                 if(pFdoConnectionCacheEntry->data == data)
                 {
-                    // We have a match, is it in use?
-                    if(!pFdoConnectionCacheEntry->bInUse)
+                    // We have a match
+                    if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() == 1)
                     {
                         // It is not in use so claim it
-                        pFdoConnectionCacheEntry->bInUse = true;
                         pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
-                        pFdoConnection = pFdoConnectionCacheEntry->pFdoConnection;
+                        pFdoConnection = GIS_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
                         break;
                     }
                 }
@@ -913,11 +864,12 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
             FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
             if(pFdoConnectionCacheEntry)
             {
-                // We have a match, is it in use?
-                if(!pFdoConnectionCacheEntry->bInUse)
+                if(pFdoConnectionCacheEntry->pFdoConnection)
                 {
-                    // It is not in use so remove it
-                    if(pFdoConnectionCacheEntry->pFdoConnection)
+                    INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
+
+                    // We have a match, is it in use?
+                    if(1 == refCount)
                     {
                         // Close the connection
                         pFdoConnectionCacheEntry->pFdoConnection->Close();
@@ -936,17 +888,17 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
                     }
                     else
                     {
-                        // NULL pointer
-                        break;
+                        // The resource is still in use and so it cannot be removed
+                        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager.RemoveCachedFdoConnection() - FDO connection in use!\n")));
+
+                        // Next cached FDO connection
+                        iter++;
                     }
                 }
                 else
                 {
-                    // The resource is still in use and so it cannot be removed
-                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager.RemoveCachedFdoConnection() - FDO connection in use!\n")));
-
-                    // Next cached FDO connection
-                    iter++;
+                    // NULL pointer
+                    break;
                 }
             }
             else
@@ -979,11 +931,13 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
     if(pFdoConnectionCacheEntry)
     {
         pFdoConnectionCacheEntry->data = data;
-        pFdoConnectionCacheEntry->bInUse = true;
         pFdoConnectionCacheEntry->pFdoConnection = pFdoConnection;
         pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
 
         m_FdoConnectionCache.insert(FdoConnectionCache_Pair(key, pFdoConnectionCacheEntry));
+
+        // Increase the reference count before returning it because this entry has been cached
+        GIS_SAFE_ADDREF(pFdoConnection);
     }
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.CacheFdoConnection")
@@ -1014,11 +968,12 @@ bool MgFdoConnectionManager::FdoConnectionCacheFull(void)
             FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
             if(pFdoConnectionCacheEntry)
             {
-                // Is it in use?
-                if(!pFdoConnectionCacheEntry->bInUse)
+                if(pFdoConnectionCacheEntry->pFdoConnection)
                 {
-                    // If not then remove it
-                    if(pFdoConnectionCacheEntry->pFdoConnection)
+                    INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
+                    
+                    // Is it in use?
+                    if(1 == refCount)
                     {
                         // Close the connection
                         pFdoConnectionCacheEntry->pFdoConnection->Close();
@@ -1036,14 +991,14 @@ bool MgFdoConnectionManager::FdoConnectionCacheFull(void)
                     }
                     else
                     {
-                        // NULL pointer
-                        break;
+                        // Next cached connection
+                        iter++;
                     }
                 }
                 else
                 {
-                    // Next cached connection
-                    iter++;
+                    // NULL pointer
+                    break;
                 }
             }
             else
@@ -1059,14 +1014,91 @@ bool MgFdoConnectionManager::FdoConnectionCacheFull(void)
     return bCacheFull;
 }
 
+void MgFdoConnectionManager::ClearCache()
+{
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
+#ifdef _DEBUG
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::ClearCache() - FDO cache BEFORE\n")));
+    ShowCache();
+#endif
+
+    size_t cacheSize = m_FdoConnectionCache.size();
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::ClearCache()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Releasing %d cached FDO connections.\n"), cacheSize));
+
+    // Cleanup the FDO connection cache
+    FdoConnectionCache::iterator iter = m_FdoConnectionCache.begin();
+
+    while(m_FdoConnectionCache.end() != iter)
+    {
+        STRING key = iter->first;
+        FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+        if(pFdoConnectionCacheEntry)
+        {
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    %W - "), key.c_str()));
+
+            if(pFdoConnectionCacheEntry->pFdoConnection)
+            {
+                INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
+
+                if(1 == refCount)
+                {
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Removed\n")));
+
+                    // The FDO cache is the only one with a reference
+                    // Close the connection
+                    pFdoConnectionCacheEntry->pFdoConnection->Close();
+
+                    // Release any resource
+                    GIS_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+
+                    delete pFdoConnectionCacheEntry;
+                    pFdoConnectionCacheEntry = NULL;
+
+                    m_FdoConnectionCache.erase(iter++);
+                }
+                else
+                {
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Still in use!!\n")));
+                    // Next cached connection
+                    iter++;
+                }
+            }
+            else
+            {
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Removed (NULL connection)\n")));
+
+                // Remove NULL FDO connection entry
+                delete pFdoConnectionCacheEntry;
+                pFdoConnectionCacheEntry = NULL;
+
+                m_FdoConnectionCache.erase(iter++);
+            }
+        }
+        else
+        {
+            // NULL pointer
+            break;
+        }
+    }
+
+#ifdef _DEBUG
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::ClearCache() - FDO cache AFTER\n")));
+    ShowCache();
+    cacheSize = m_FdoConnectionCache.size();
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) FDO cached connections still in use %d.\n"), cacheSize));
+#endif
+}
+
 #ifdef _DEBUG
 void MgFdoConnectionManager::ShowCache(void)
 {
     MG_FDOCONNECTION_MANAGER_TRY()
 
     size_t cacheSize = m_FdoConnectionCache.size();
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n\n(%P|%t) MgFdoConnectionManager::ShowCache()\n")));
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Cached FDO connections = %d\n"), cacheSize));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::ShowCache()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Cached FDO connections = %d\n"), cacheSize));
 
     // Show the contents of the FDO connection cache
     int nIndex = 1;
@@ -1076,7 +1108,7 @@ void MgFdoConnectionManager::ShowCache(void)
         FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
         if(pFdoConnectionCacheEntry)
         {
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  %4d) InUse=%d : %W\n"), nIndex++, pFdoConnectionCacheEntry->bInUse, key.c_str()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  %4d) %W\n"), nIndex++, key.c_str()));
         }
     }
 

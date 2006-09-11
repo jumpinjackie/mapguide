@@ -40,7 +40,6 @@ class MgXmlUtil;
 typedef struct {
     STRING data; // XML content or connection string
     FdoIConnection* pFdoConnection;
-    bool bInUse;
     ACE_Time_Value lastUsed;
 
 } FdoConnectionCacheEntry;
@@ -65,6 +64,7 @@ public:
     // This initializes the FDO connection manager
     void Initialize(bool bFdoConnectionPoolEnabled, INT32 nFdoConnectionPoolSize, INT32 nFdoConnectionTimeout);
     static void Terminate();
+    void ClearCache();
 
     FdoIConnection* Open(MgResourceIdentifier* resourceIdentifier);
     FdoIConnection* Open(CREFSTRING providerName, CREFSTRING connectionString);

@@ -695,9 +695,12 @@ BYTE_ARRAY_OUT MgServerGwsFeatureReader::GetGeometry(CREFSTRING propertyName, IN
     DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetGeometry");
 
-    GisInt32 len = 0;
-    data = gwsFeatureIter->GetGeometry(parsedPropertyName.c_str(), &len);
-    length = len;
+    if(!gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
+    {
+        GisInt32 len = 0;
+        data = gwsFeatureIter->GetGeometry(parsedPropertyName.c_str(), &len);
+        length = len;
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetGeometry");
 

@@ -18,6 +18,7 @@
 #include "ServerManager.h"
 #include "ProductVersion.h"
 #include "ServiceManager.h"
+#include "ServerFeatureService.h"
 #include "ServerAdminDefs.h"
 #include "WorkerThread.h"
 #include "WorkerThreadData.h"
@@ -608,6 +609,29 @@ void MgServerManager::TakeOffline()
         if (NULL != loadBalanceManager)
         {
             loadBalanceManager->UnregisterServices();
+        }
+
+        // TODO: Currently, Feature Service will always be there, but in the future Feature Service 
+        // may or not be present on this server and so the code below will need to be modified.
+
+        // Clear the Feature Service cache
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        assert(NULL != serviceManager);
+
+        Ptr<MgServerFeatureService> featureService = dynamic_cast<MgServerFeatureService*>(
+            serviceManager->RequestService(MgServiceType::FeatureService));
+        assert(featureService != NULL);
+
+        if (featureService != NULL)
+        {
+            featureService->ClearFeatureServiceCache();
+        }
+
+        // Clear the FDO connection cache
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(NULL != pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ClearCache();
         }
 
         m_ssServerStatus = MgServerManager::ssOffline;
