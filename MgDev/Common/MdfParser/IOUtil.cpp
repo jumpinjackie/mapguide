@@ -21,16 +21,20 @@
 
 BEGIN_NAMESPACE_MDFPARSER
 
+bool tabsEnabled = true;
 int tabcount = 0;
 
 std::string tab()
 {
-    std::string ret;
-    for(int x = 0; x < tabcount; x++)
+    if (tabsEnabled)
     {
-        ret += "  ";
+        std::string ret;
+        for(int x = 0; x < tabcount; x++)
+        {
+            ret += "  ";
+        }
+        return ret;
     }
-    return ret;
 }
 
 void inctab()
@@ -44,6 +48,11 @@ void dectab()
 void zerotab()
 {
     tabcount = 0;
+}
+
+void disableTabs()
+{
+    tabsEnabled = false;
 }
 
 void UP(char ** str)
