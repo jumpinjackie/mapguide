@@ -57,6 +57,7 @@ BEGIN_NAMESPACE_MDFPARSER
     void inctab();
     void dectab();
     void zerotab();
+    void disableTabs();
 
     template<typename T, typename Derived, typename ModelElement>
     bool WriteSymbolizationData(MdfStream &fd, T *pSymbolization)

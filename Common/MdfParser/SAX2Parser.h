@@ -96,6 +96,7 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
         ~SAX2Parser();
         void Flush();
         void Initialize();
+        void DisableTabs();
         void ParseFile(std::string str);
         void ParseFile(char* str);
         void ParseString(const char* str, int numBytes);

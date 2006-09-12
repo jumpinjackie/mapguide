@@ -90,13 +90,19 @@ void SAX2Parser::Initialize()
     m_HandlerStack = new HandlerStack();
     m_Parser = XMLReaderFactory::createXMLReader();
 
-    m_Parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, false);
+    m_Parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, false); // true for validation
     m_Parser->setFeature(XMLUni::fgXercesSchema, true);
     m_Parser->setFeature(XMLUni::fgXercesSchemaFullChecking, false);
-    m_Parser->setFeature(XMLUni::fgSAX2CoreValidation, false);
+    m_Parser->setFeature(XMLUni::fgSAX2CoreValidation, false); // true for validation
     m_Parser->setContentHandler(this);
     m_prevOpenTag = L"";
     m_strbuffer = L"";
+}
+
+
+void SAX2Parser::DisableTabs()
+{
+    disableTabs();
 }
 
 
