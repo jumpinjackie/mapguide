@@ -321,6 +321,48 @@ public:
     MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
                                         CREFSTRING className,
                                         MgFeatureQueryOptions* options );
+    
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Select features returns feature information from an Fdo Provider.  An MgFeatureReader
+    /// object provides one way, read-only iteration over the features.  The various properties
+    /// of a feature class are accessed by name using methods of the MgFeatureReader.
+    ///
+    /// The desired feature class is specified by name. A subset of the feature properties
+    /// can be specified using the properties string collection.  Futhermore, an Fdo filter text
+    /// can be applied to limit the result set. The expected expected coordinate system name can
+    /// be specified.
+    /// </summary>
+    /// <param name="resource">Input
+    /// A resource identifier referring to feature source
+    /// </param>
+    /// <param name="className">Input
+    /// A valid class name on which select operation needs to be executed. It should not be NULL.
+    /// </param>
+    /// <param name="options">Input
+    /// MgFeatureQueryOptions instance containing all required filters for this select operation
+    /// </param>
+    /// <param name="coordinateSystem">Input
+    /// A valid coordinate system name. Retrieved features will be in the specified coordinate system.
+    /// </param>
+    /// <returns>
+    /// MgFeatureReader which operates on the instance of actual reader returned from the
+    /// FdoProvider.
+    /// </returns>
+    /// EXCEPTIONS:
+    /// MgFeatureSourceException
+    /// MgInvalidArgumentException
+    /// MgFdoException
+    /// NOTE:
+    /// 1. Please refer to Overview section of this document or Fdo provider documents
+    ///    for details on connection properties, schema, classes, class proeprties and
+    ///    filter text.
+    /// 2. Interrogation of class definition would allow to determine properties of classes
+    ///    which can be used for filter text.
+    MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
+                                        CREFSTRING className,
+                                        MgFeatureQueryOptions* options,
+                                        CREFSTRING coordinateSystem );
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -389,6 +431,34 @@ public:
     MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
                                           MgFeatureCommandCollection* commands,
                                           bool useTransaction );
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the locked features
+    /// </summary>
+    ///
+    /// <param name="resource">Input
+    /// A resource identifier for the feature source.
+    /// </param>
+    /// <param name="className">Input
+    /// The name of the feature class on which
+    /// the select operation is performed.
+    /// </param>
+    /// <param name="options">Input
+    /// An MgFeatureAggregateOptions instance
+    /// containing all the criteria and filters
+    /// required for this select operation.
+    /// <param>
+    /// <returns>
+    /// Returns an MgFeatureReader containing the locked features.
+    /// </returns>
+    /// 
+    /// EXCEPTIONS:
+    /// MgFeatureServiceException
+    /// MgInvalidArgumentException
+    MgFeatureReader* GetLockedFeatures( MgResourceIdentifier* resource,
+                                        CREFSTRING className,
+                                        MgFeatureQueryOptions* options );
 
     //////////////////////////////////////////////////////////////////
     /// <summary>

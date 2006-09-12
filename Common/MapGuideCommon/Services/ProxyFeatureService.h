@@ -385,6 +385,54 @@ INTERNAL_API:
     MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
                                         CREFSTRING className,
                                         MgFeatureQueryOptions* options );
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Selects features from a feature source according to the
+    /// criteria set in the MgFeatureQueryOptions argument The
+    /// criteria are applied to all of the features in the feature
+    /// source. Use the coordinateSystem argument to set the target
+    /// coordinate system if you want to transform.
+    /// If you want to apply the criteria to a subset of the
+    /// features, use the \link MgFeatureService::SelectAggregate MgFeatureService::SelectAggregate Method \endlink.
+    /// See \link FiltersAndExpressions Filters and expressions \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader SelectFeatures(MgResourceIdentifier resource, string className, MgFeatureQueryOptions options, string coordinateSystem);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader SelectFeatures(MgResourceIdentifier resource, String className, MgFeatureQueryOptions options, String coordinateSystem);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader SelectFeatures(MgResourceIdentifier resource, string className, MgFeatureQueryOptions options, string coordinateSystem);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param className (String/string)
+    /// The name of the feature class from which
+    /// the properties of interest are selected.
+    /// \param options (MgFeatureQueryOptions)
+    /// MgFeatureQueryOptions instance
+    /// containing all required filters for this
+    /// select operation.
+    /// \param coordinateSystem (String/string)
+    /// The name of the coordinate system to transform to.
+    ///
+    /// \return
+    /// Returns an MgFeatureReader containing the set of selected
+    /// features.
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgFdoException
+    ///
+    virtual MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
+                                                CREFSTRING className,
+                                                MgFeatureQueryOptions* options,
+                                                CREFSTRING coordinateSystem );
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -458,6 +506,45 @@ INTERNAL_API:
     MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
                                      MgFeatureCommandCollection* commands,
                                      bool useTransaction );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the locked features
+    ///
+    /// \remarks
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader GetLockedFeatures(MgResourceIdentifier resource, string className, MgFeatureAggregateOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader GetLockedFeatures(MgResourceIdentifier resource, String className, MgFeatureAggregateOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader GetLockedFeatures(MgResourceIdentifier resource, string className, MgFeatureAggregateOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param className (String/string)
+    /// The name of the feature class on which
+    /// the select operation is performed.
+    /// \param options (MgFeatureAggregateOptions)
+    /// An MgFeatureAggregateOptions instance
+    /// containing all the criteria and filters
+    /// required for this select operation.
+    ///
+    /// \return
+    /// Returns an MgFeatureReader containing the locked features.
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception ...
+    ///
+    virtual MgFeatureReader* GetLockedFeatures( MgResourceIdentifier* resource,
+                                                CREFSTRING className,
+                                                MgFeatureQueryOptions* options );
 
     /////////////////////////////////////////////////////////////////
     /// \brief

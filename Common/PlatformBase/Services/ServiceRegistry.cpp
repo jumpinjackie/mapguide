@@ -138,6 +138,8 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_FeatureService_DeleteFeatures, MgDeleteFeatures::CreateObject);
     fact->Register(PlatformBase_FeatureService_InsertFeatures, MgInsertFeatures::CreateObject);
     fact->Register(PlatformBase_FeatureService_UpdateFeatures, MgUpdateFeatures::CreateObject);
+    fact->Register(PlatformBase_FeatureService_LockFeatures, MgLockFeatures::CreateObject);
+    fact->Register(PlatformBase_FeatureService_UnlockFeatures, MgUnlockFeatures::CreateObject);
     fact->Register(PlatformBase_FeatureService_FeatureSchema, MgFeatureSchema::CreateObject);
     fact->Register(PlatformBase_FeatureService_FeatureSchemaCollection, MgFeatureSchemaCollection::CreateObject);
     fact->Register(PlatformBase_FeatureService_ClassDefinitionCollection, MgClassDefinitionCollection::CreateObject);
