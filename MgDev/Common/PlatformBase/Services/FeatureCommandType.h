@@ -39,11 +39,17 @@ PUBLISHED_API:
     /////////////////////////////////////////////////////
     /// Specifies the type of an MgDeleteFeatures object.
     static const int DeleteFeatures = 2;
+    /////////////////////////////////////////////////////
+    /// Specifies the type of an MgLockFeatures object.
+    static const int LockFeatures = 3;
+    /////////////////////////////////////////////////////
+    /// Specifies the type of an MgUnlockFeatures object.
+    static const int UnlockFeatures = 4;
 INTERNAL_API:
 
     static void ValidateRange(INT32 value)
     {
-        if (value < 0 || value > 2)
+        if (value < 0 || value > 4)
         {
             STRING buffer;
             MgUtil::Int32ToString(value, buffer);

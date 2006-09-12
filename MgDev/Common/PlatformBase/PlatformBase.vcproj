@@ -701,6 +701,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\LockFeatures.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\LockFeatures.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\LongTransactionData.cpp"
 				>
 			</File>
@@ -850,6 +858,14 @@
 			</File>
 			<File
 				RelativePath=".\Services\SqlDataReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\UnlockFeatures.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\UnlockFeatures.h"
 				>
 			</File>
 			<File

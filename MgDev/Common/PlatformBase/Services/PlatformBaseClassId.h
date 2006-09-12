@@ -125,7 +125,8 @@
 #define PlatformBase_FeatureService_ClassDefinitionCollection       PLATFORMBASE_FEATURESERVICE_ID+30
 #define PlatformBase_FeatureService_CreateSdfParams                 PLATFORMBASE_FEATURESERVICE_ID+31
 #define PlatformBase_FeatureService_GwsFeatureReader                PLATFORMBASE_FEATURESERVICE_ID+32
-
+#define PlatformBase_FeatureService_LockFeatures                    PLATFORMBASE_FEATURESERVICE_ID+33
+#define PlatformBase_FeatureService_UnlockFeatures                  PLATFORMBASE_FEATURESERVICE_ID+34
 
 // Resource Service
 #define PlatformBase_ResourceService_ResourceIdentifier                PLATFORMBASE_RESOURCESERVICE_ID+0

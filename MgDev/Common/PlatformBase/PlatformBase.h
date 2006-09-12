@@ -126,6 +126,8 @@
 #include "Services/SpatialContextReader.h"
 #include "Services/SqlDataReader.h"
 #include "Services/UpdateFeatures.h"
+#include "Services/LockFeatures.h"
+#include "Services/UnlockFeatures.h"
 
 #include "MapLayer/LayerType.h"
 #include "MapLayer/LayerGroupType.h"
