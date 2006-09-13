@@ -25,7 +25,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="copy .\php.i .\language.i&#x0D;&#x0A;..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\SQLiteApiGen.xml&#x0D;&#x0A;..\..\..\SwigEx\Win32\swig -c++ -php -baseexception SqliteException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((SqliteDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -o SQLitePhpApi_wrap.cpp SQLitePhpApi.i&#x0D;&#x0A;"
+				CommandLine="copy .\php.i .\language.i&#x0D;&#x0A;..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\SQLiteApiGen.xml PHP&#x0D;&#x0A;..\..\..\SwigEx\Win32\swig -c++ -php -baseexception SqliteException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((SqliteDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -o SQLitePhpApi_wrap.cpp SQLitePhpApi.i&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -109,7 +109,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="copy .\php.i .\language.i&#x0D;&#x0A;..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\SQLiteApiGen.xml&#x0D;&#x0A;..\..\..\SwigEx\Win32\swig -c++ -php -baseexception SqliteException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((SqliteDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -o SQLitePhpApi_wrap.cpp SQLitePhpApi.i&#x0D;&#x0A;"
+				CommandLine="copy .\php.i .\language.i&#x0D;&#x0A;..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\SQLiteApiGen.xml PHP&#x0D;&#x0A;..\..\..\SwigEx\Win32\swig -c++ -php -baseexception SqliteException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((SqliteDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -o SQLitePhpApi_wrap.cpp SQLitePhpApi.i&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
