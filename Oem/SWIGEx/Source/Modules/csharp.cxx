@@ -41,16 +41,22 @@ private:
     std::string code;
     bool parsed;
 
+    void ReadString(std::string& str, FILE* fp)
+    {
+        int len = 1;
+        char buf[1024];
+        while ((len = fread(buf, 1, 1024, fp)) > 0)
+        {
+            str.append(buf, len);
+        }
+    }
+
     void Parse()
     {
         if (fp != NULL)
         {
-            fseek(fp, 0, SEEK_END);
-            long flen = ftell(fp);
-            std::string buf;
-            buf.resize(flen);
-            fseek(fp, 0, SEEK_SET);
-            fread((void*)buf.c_str(), 1, flen, fp);
+            string buf;
+            ReadString(buf, fp);
             
             std::string::size_type pos = buf.find("INTERFACE");
             std::string::size_type pos2 = 0;
@@ -63,9 +69,7 @@ private:
                 pos = buf.find("INTERFACE", pos2);
             }
 
-            code = buf.substr(pos2, flen);
-            printf("INTERFACES:%s\n",interfaces.c_str());
-            printf("CODE:\n%s\n",code.c_str());
+            code = buf.substr(pos2);
             parsed = true;
         }
     }
@@ -80,8 +84,23 @@ public:
         fname.append("/");
         fname.append((char*) DohData(className));
         fp = fopen(fname.c_str(), "rt");
-        if (fp != NULL) printf("Processing custom code file %s\n",fname.c_str());
-        Parse();
+        if (NULL != fp)
+        {
+            Parse();
+            fclose(fp);
+            fp = NULL;
+        }
+
+        fname.append("Prop");
+        fp = fopen(fname.c_str(), "rt");
+        if (NULL != fp)
+        {
+            string buf;
+            ReadString(buf, fp);
+            code.append(buf);
+            fclose(fp);
+            fp = NULL;
+        }
     }
 
     String *getInterfaces()

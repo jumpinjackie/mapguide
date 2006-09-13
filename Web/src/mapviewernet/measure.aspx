@@ -293,7 +293,7 @@ MgLayer FindLayer(MgLayerCollection layers, String layerDef)
     int i=0;
     for(i = 0; i < layers.GetCount(); i++)
     {
-        MgLayer layer1 = layers.GetItem(i);
+        MgLayer layer1 = (MgLayer) layers.GetItem(i);
         if(layer1.GetLayerDefinition().ToString() == layerDef)
         {
             layer = layer1;

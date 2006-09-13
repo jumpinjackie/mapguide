@@ -111,7 +111,7 @@ MgGeometry MultiGeometryFromSelection(MgFeatureService featureSrvc, MgMap map, S
 
     for(int i = 0; i < selLayers.GetCount(); i++)
     {
-        MgLayer layer = selLayers.GetItem(i);
+        MgLayer layer = (MgLayer) selLayers.GetItem(i);
         String filter = sel.GenerateFilter(layer, layer.GetFeatureClassName());
 
         MgFeatureQueryOptions query = new MgFeatureQueryOptions();

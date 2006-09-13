@@ -160,7 +160,7 @@ PUBLISHED_API:
     /// \return
     /// return the red value
     ///
-    INT16 GetRed();
+    INT16 GetRed(); /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -180,7 +180,7 @@ PUBLISHED_API:
     /// \return
     /// return the blue value
     ///
-    INT16 GetBlue();
+    INT16 GetBlue(); /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -200,7 +200,7 @@ PUBLISHED_API:
     /// \return
     /// return the green value
     ///
-    INT16 GetGreen();
+    INT16 GetGreen(); /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -220,7 +220,7 @@ PUBLISHED_API:
     /// \return
     /// return the alpha value
     ///
-    INT16 GetAlpha();
+    INT16 GetAlpha(); /// __get
 
 INTERNAL_API:
 
