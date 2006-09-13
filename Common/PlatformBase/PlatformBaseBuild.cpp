@@ -83,6 +83,7 @@
 #include  "Services/GeometricPropertyDefinition.cpp"
 #include  "Services/GeometryProperty.cpp"
 #include  "Services/InsertFeatures.cpp"
+#include  "Services/LockFeatures.cpp"
 #include  "Services/LongTransactionData.cpp"
 #include  "Services/LongTransactionReader.cpp"
 #include  "Services/ObjectPropertyDefinition.cpp"
@@ -99,6 +100,7 @@
 #include  "Services/SpatialContextData.cpp"
 #include  "Services/SpatialContextReader.cpp"
 #include  "Services/SqlDataReader.cpp"
+#include  "Services/UnlockFeatures.cpp"
 #include  "Services/UpdateFeatures.cpp"
 #include  "Services/Warnings.cpp"
 

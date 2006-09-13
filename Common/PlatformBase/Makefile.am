@@ -76,6 +76,7 @@ include_SOURCES = \
   Services/GeometricPropertyDefinition.cpp \
   Services/GeometryProperty.cpp \
   Services/InsertFeatures.cpp \
+  Services/LockFeatures.cpp \
   Services/LongTransactionData.cpp \
   Services/LongTransactionReader.cpp \
   Services/ObjectPropertyDefinition.cpp \
@@ -92,6 +93,7 @@ include_SOURCES = \
   Services/SpatialContextData.cpp \
   Services/SpatialContextReader.cpp \
   Services/SqlDataReader.cpp \
+  Services/UnlockFeatures.cpp \
   Services/UpdateFeatures.cpp \
   Services/Warnings.cpp  
 
