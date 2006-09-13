@@ -35,6 +35,7 @@ MgLayer::MgLayer()
 MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService)
     : MgLayerBase(layerDefinition, resourceService)
 {
+    GetLayerInfoFromDefinition(resourceService);
 }
 
 
@@ -54,8 +55,6 @@ MgLayer::~MgLayer()
 void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
 {
     MG_TRY()
-
-    MgLayer::GetLayerInfoFromDefinition(resourceService);
 
     // Generate Id field information for feature sources
     m_idProps.clear();

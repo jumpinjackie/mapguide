@@ -159,6 +159,17 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Destruct the object.
+    ///
+    /// \return
+    /// Nothing
+    ///
+    virtual ~MgException() throw();
+
+INTERNAL_API:
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Serialize data to TCP/IP stream.
     ///
     /// \param stream
@@ -174,15 +185,6 @@ EXTERNAL_API:
     /// Stream
     ///
     virtual void Deserialize(MgStream* stream) throw();
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Destruct the object.
-    ///
-    /// \return
-    /// Nothing
-    ///
-    virtual ~MgException() throw();
 
 protected:
 

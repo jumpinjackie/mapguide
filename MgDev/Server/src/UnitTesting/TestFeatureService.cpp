@@ -280,7 +280,7 @@ void TestFeatureService::TestCase_TestConnectionSDFProvider()
         Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(MgUser::Administrator, L"");
         MgUserInformation::SetCurrentUserInfo(adminUserInfo);
 
-        const STRING provider = L"OSGeo.SDF.3.0";
+        const STRING provider = L"OSGeo.SDF.3.2";
 #ifdef _WIN32
         const STRING connectionString = L"File=..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
 #else
@@ -321,7 +321,7 @@ void TestFeatureService::TestCase_TestFdoConnectionManager()
             throw new MgNullReferenceException(L"TestFeatureService.TestCase_TestFdoConnectionManager", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        const STRING provider = L"OSGeo.SDF.3.0";
+        const STRING provider = L"OSGeo.SDF.3.2";
 #ifdef _WIN32
         const STRING connectionString = L"File=..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
 #else
@@ -389,7 +389,7 @@ void TestFeatureService::TestCase_GetConnectionPropertyValue()
         CPPUNIT_ASSERT_THROW_MG(pService->GetConnectionPropertyValues(provider, property, connectionString),
             MgInvalidArgumentException*);
 
-        provider = L"OSGeo.SDF.3.0";
+        provider = L"OSGeo.SDF.3.2";
         property = L"ReadOnly";
         Ptr<MgStringCollection> properties = pService->GetConnectionPropertyValues(provider, property, connectionString);
         CPPUNIT_ASSERT(properties->GetCount() > 0);
@@ -427,7 +427,7 @@ void TestFeatureService::TestCase_GetCapabilities()
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetCapabilities", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        STRING provider = L"OSGeo.SDF.3.0";
+        STRING provider = L"OSGeo.SDF.3.2";
 
         MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
         if(fdoConnectionManager == 0)

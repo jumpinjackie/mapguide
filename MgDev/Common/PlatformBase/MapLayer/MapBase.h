@@ -804,6 +804,8 @@ EXTERNAL_API:
     ///
     STRING GetBackgroundColor();
 
+INTERNAL_API:
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Serialize data to a TCP/IP stream.
@@ -821,8 +823,6 @@ EXTERNAL_API:
     /// Stream.
     ///
     virtual void Deserialize(MgStream* stream);
-
-INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief

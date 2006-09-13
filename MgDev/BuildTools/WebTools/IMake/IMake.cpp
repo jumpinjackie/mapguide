@@ -12,7 +12,7 @@ enum Language
     java
 };
 
-static char version[] = "1.0";
+static char version[] = "1.1";
 
 static string module;
 static string target;
@@ -371,7 +371,6 @@ void tokenize(string filename, vector<string>& tokens)
                         break;
 
                     case ';':
-                        if(translateMode)
                         {
                             //preserve doc comment at the end of the ; if any
                             bool isComment = false;
@@ -404,8 +403,6 @@ void tokenize(string filename, vector<string>& tokens)
                             if(!isComment)
                                 tokens.push_back(";");
                         }
-                        else
-                            tokens.push_back(";");
                         break;
 
                     case ':':
@@ -499,8 +496,10 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
     int nesting = 0;
     bool destructor = false;
     bool firstToken = true;
-    bool assignmentAdded;
+    bool assignmentAdded = false;
 
+    FILE* propertyFile = NULL;
+ 
     for(int i = begin; i <= end; i++)
     {
         assignmentAdded = false;
@@ -561,6 +560,62 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
                 }
             }
         }
+        else
+        {
+            // Doc comment may contain a directive for emitting .Net properties
+            if(language == csharp && 0 != strstr(token.c_str(), "///"))
+            {
+                bool setProp = false;
+                bool getProp = false;
+                if (string::npos != token.find("__set")) { setProp = true; }
+                if (string::npos != token.find("__get")) { getProp = true; }
+
+                size_t methodStart = i-3>=0 ? tokens[i-3].find("Get") : string::npos;
+
+                if (string::npos != methodStart && (setProp || getProp))
+                {
+                    if (NULL == propertyFile)
+                    {
+                        string fname = ".\\custom\\";
+                        fname.append(className);
+                        fname.append("Prop");
+                        propertyFile = fopen(fname.c_str(),"w");
+                        if (NULL == propertyFile)
+                        {
+                            printf("Unable to open autogen property file %s\n", fname.c_str());
+                        }
+                        else
+                        {
+                            printf("Writing autogen property file %s\n", fname.c_str());
+                        }
+                    }
+
+                    if (NULL != propertyFile)
+                    {
+                        string propName = tokens[i-3].substr(3);
+                        string propType = tokens[i-4];
+                        if (propType == "*")
+                        {
+                            propType = tokens[i-5];
+                            propType.append(tokens[i-4]);
+                        }
+                        else if (propType == "BYTE") {propType = "unsigned char"; }
+                        else if (propType == "INT8") {propType = "short"; }
+                        else if (propType == "INT16") {propType = "short"; }
+                        else if (propType == "INT32") {propType = "int"; }
+                        else if (propType == "UINT32") {propType = "int"; }
+                        else if (propType == "STRING") {propType = "string"; }
+
+                        fprintf(propertyFile, "public %s %s\n{\n",propType.c_str(), propName.c_str());
+
+                        if (setProp) { fprintf(propertyFile, "   set { Set%s(value); }\n", propName.c_str()); }
+                        if (getProp) { fprintf(propertyFile, "   get { return Get%s(); }\n", propName.c_str()); }
+
+                        fprintf(propertyFile, "}\n");\
+                    }
+                }
+            }
+        }
 
         if(token.length() > 0)
             fprintf(outfile, "%s ", token.c_str());
@@ -590,6 +645,11 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
     if (destructor == false && !translateMode)
     {
         fprintf(outfile, "virtual ~%s();\r\n  ", className.c_str());
+    }
+
+    if (NULL != propertyFile)
+    {
+        fclose(propertyFile);
     }
 }
 
@@ -679,7 +739,7 @@ void processHeaderFile(string header)
             }
 
             //output the class header
-            if(language == java || language == csharp)
+            if(translateMode && (language == java || language == csharp))
                 fprintf(outfile, "public ");
 
             fprintf(outfile, "class %s", className.c_str());
@@ -742,9 +802,6 @@ void processHeaderFile(string header)
                 fprintf(outfile, ";\n\n");
             else
                 fprintf(outfile, "\n\n");
-
-            if(language == java)
-                fclose(outfile);
 
         }
 
@@ -885,10 +942,11 @@ void createInterfaceFile(char* paramFile)
 void usage()
 {
     printf("\nUsage:");
-    printf("\nIMake <parameterFile> [lang generation_path_or_folder]");
+    printf("\nIMake parameterFile lang [generation_path_or_folder]");
     printf("\n      parameterFile: XML description of generation parameters\n");
-    printf("\n      lang: Do not generate for SWIG. Translate C++ classes to the specified language (PHP, C# or Java).\n");
-    printf("\n      generation_path_or_folder: For PHP and C#, pathname of the constant file.\n");
+    printf("\n      lang: Target language (PHP, C# or Java).\n");
+    printf("\n      generation_path_or_folder: Do not generate SWIG.  Generate constant definitions.");
+    printf("\n                                 For PHP and C#, pathname of the constant file.");
     printf("\n                                 For Java, folder where the constant files are created");
     exit(1);
 }
@@ -898,29 +956,29 @@ int main(int argc, char* argv[])
     printf("\nIMake - SWIG Interface generator");
     printf("\nVersion %s", version);
 
-    if(argc < 2)
+    if(argc < 3)
         usage();
 
+    if (argc > 4)
+        usage();
+
+    translateMode = false;
     language = unknown;
+
+    if(!strcmp(argv[2], "PHP"))
+        language = php;
+    else if(!strcmp(argv[2], "C#"))
+        language = csharp;
+    else if(!strcmp(argv[2], "Java"))
+        language = java;
+    else
+        usage();
 
     if(argc == 4)
     {
         translateMode = true;
         target = argv[3];
-
-        if(!strcmp(argv[2], "PHP"))
-            language = php;
-        else if(!strcmp(argv[2], "C#"))
-            language = csharp;
-        else if(!strcmp(argv[2], "Java"))
-            language = java;
-        else
-            usage();
     }
-    else if(argc == 2)
-        translateMode = false;
-    else
-        usage();
 
     createInterfaceFile(argv[1]);
 

@@ -235,11 +235,11 @@ PUBLISHED_API:
     ///Returns the type of pixel color data (RGB, RGBA, Bitonal, etc.)
     INT32 GetDataModelType();
 
+INTERNAL_API:
+
     ///If the raster uses a color map, returns the color map contents
     ///otherwise NULL
     MgByte* GetPalette();
-
-INTERNAL_API:
 
     /// \brief
     /// Set the minimum bounding box around the image.

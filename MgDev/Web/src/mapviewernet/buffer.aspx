@@ -181,7 +181,7 @@ String dataSource = "";
         int bufferFeatures = 0;
         for (int li = 0; li < selLayers.GetCount(); li++)
         {
-            MgLayer selLayer = selLayers.GetItem(li);
+            MgLayer selLayer = (MgLayer) selLayers.GetItem(li);
             bool inputLayer = false;
             String selLayerName = selLayer.GetName();
             for (int il = 0; il < layerNames.Length; il++)
@@ -418,7 +418,7 @@ MgLayer FindLayer(MgLayerCollection layers, String layerName)
     int i = 0;
     for(i = 0; i < layers.GetCount(); i++)
     {
-        MgLayer layer1 = layers.GetItem(i);
+        MgLayer layer1 = (MgLayer) layers.GetItem(i);
 
         if(layer1.GetName() == layerName)
         {

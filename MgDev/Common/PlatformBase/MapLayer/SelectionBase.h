@@ -421,7 +421,7 @@ PUBLISHED_API:
     ///
     STRING GetResourceName(CREFSTRING sessionId, CREFSTRING mapName);
 
-EXTERNAL_API:
+INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -440,8 +440,6 @@ EXTERNAL_API:
     /// Stream
     ///
     virtual void Deserialize(MgStream* stream);
-
-INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
