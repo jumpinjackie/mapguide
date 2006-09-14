@@ -385,7 +385,7 @@ MgApi_wrap.cpp : \
     ../HttpHandler/HttpResponse.h \
     ../HttpHandler/HttpResult.h \
     ../HttpHandler/HttpPrimitiveValue.h
-	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/MapGuideApiGen.xml
+	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/MapGuideApiGen.xml Java
 	cp -f java.i language.i
 	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/Constants.xml Java .
 	../../../Oem/SWIGEx/Linux/swig -dllname MapGuideJavaApi -c++ -java -DJAVA -package org.osgeo.mapguide -root MgObject -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((MgDisposable*)arg1)->Release()" -rethrow "e->Raise();" -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ../../../Oem/SWIGEx/Lib MapGuideApi.i

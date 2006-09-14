@@ -385,7 +385,7 @@ MgApi_wrap.cpp : \
     ../HttpHandler/HttpPrimitiveValue.h
 	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/Constants.xml PHP ./constants.php
 	cp -f php.i language.i
-	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/MapGuideApiGen.xml
+	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/MapGuideApiGen.xml PHP
 	../../../Oem/SWIGEx/Linux/swig -c++ -php -DPHPSWIG -baseexception MgException \
           -clsidcode getclassid.code \
           -clsiddata m_cls_id \
