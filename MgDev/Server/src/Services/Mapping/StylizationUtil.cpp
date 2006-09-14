@@ -819,9 +819,29 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                 }
             }
 
-        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.GenerateMapUpdate");
+        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.StylizeLayers");
         if (mgException.p)
         {
+            // TODO: Eventually this should be used to indicate visually to the client what 
+            //       layer failed in addition to logging the error.
+            MgServerManager* serverManager = MgServerManager::GetInstance();
+            STRING locale = (NULL == serverManager) ? MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+
+            // Get the layer that failed
+            MgStringCollection arguments;
+            arguments.Add(mapLayer->GetName());
+
+            // Get the reason why the layer failed to stylize
+            MgStringCollection argumentsWhy;
+            argumentsWhy.Add(mgException->GetMessage(locale));
+
+            Ptr<MgStylizeLayerFailedException> exception;
+            exception = new MgStylizeLayerFailedException(L"MgStylizationUtil.StylizeLayers", __LINE__, __WFILE__, &arguments, L"MgFormatInnerExceptionMessage", &argumentsWhy);
+
+            STRING message = exception->GetMessage(locale);
+            STRING stackTrace = exception->GetStackTrace(locale);
+            MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
+
 #ifdef _DEBUG
             wstring err = L"\n %t Error during stylization of layer ";
             err += mapLayer->GetName();

@@ -204,6 +204,7 @@ class ACE_SOCK_Stream;
 #include "Exception/ServiceNotAvailableException.h"
 #include "Exception/ServiceNotSupportedException.h"
 #include "Exception/SessionExpiredException.h"
+#include "Exception/StylizeLayerFailedException.h"
 #include "Exception/TemporaryFileNotAvailableException.h"
 #include "Exception/UnauthorizedAccessException.h"
 #include "Exception/UnclassifiedException.h"

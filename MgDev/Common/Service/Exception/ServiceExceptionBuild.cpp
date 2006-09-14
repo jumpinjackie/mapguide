@@ -138,6 +138,7 @@
 #include "ServiceNotSupportedException.cpp"
 #include "SessionExpiredException.cpp"
 #include "StreamIoException.cpp"
+#include "StylizeLayerFailedException.cpp"
 #include "SystemException.cpp"
 #include "TemporaryFileNotAvailableException.cpp"
 #include "ThirdPartyException.cpp"

@@ -182,6 +182,7 @@ include_SOURCES = \
   Exception/ServiceNotSupportedException.cpp \
   Exception/SessionExpiredException.cpp \
   Exception/StreamIoException.cpp \
+  Exception/StylizeLayerFailedException.cpp \
   Exception/SystemException.cpp \
   Exception/TemporaryFileNotAvailableException.cpp \
   Exception/ThirdPartyException.cpp \
@@ -572,6 +573,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/ServiceNotSupportedException.h \
   Exception/SessionExpiredException.h \
   Exception/StreamIoException.h \
+  Exception/StylizeLayerFailedException.h \
   Exception/SystemException.h \
   Exception/TemporaryFileNotAvailableException.h \
   Exception/ThirdPartyException.h \

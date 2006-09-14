@@ -194,6 +194,7 @@
 #define Common_Exception_MgInvalidSerialNumberException                     COREDATA_EXCEPTION_ID+131
 #define Common_Exception_MgResourceBusyException                            COREDATA_EXCEPTION_ID+132
 #define Common_Exception_MgCoordinateSystemLoadFailedException              COREDATA_EXCEPTION_ID+133
+#define Common_Exception_MgStylizeLayerFailedException                      COREDATA_EXCEPTION_ID+134
 
 // CoreData Property
 #define CoreData_Property_BlobProperty                    COREDATA_PROPERTY_ID+0
