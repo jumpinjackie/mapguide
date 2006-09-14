@@ -283,6 +283,7 @@ static void ShutdownRequestThread(void * arg)
         // so just wack the whole process - yes, this will toast
         // any requests in progress, but at least its a clean 
         // shutdown (its better than TerminateProcess())
+        Sleep(120000); // 2 minutes
         exit(0);
     }
        
