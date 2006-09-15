@@ -202,7 +202,7 @@ String locale;
         int bufferFeatures = 0;
         for(int li =0; li < selLayers.GetCount(); li++)
         {
-            MgLayer selLayer = selLayers.GetItem(li);
+            MgLayer selLayer = (MgLayer) selLayers.GetItem(li);
             boolean inputLayer = false;
             String selLayerName = selLayer.GetName();
             for(int il = 0; il < layerNames.length; il++)
@@ -418,7 +418,7 @@ MgLayer FindLayer(MgLayerCollection layers, String layerName) throws MgException
     int i;
     for(i = 0; i < layers.GetCount(); i++)
     {
-        MgLayer layer1 = layers.GetItem(i);
+        MgLayer layer1 = (MgLayer) layers.GetItem(i);
         if(layer1.GetName().equals(layerName))
         {
             layer = layer1;

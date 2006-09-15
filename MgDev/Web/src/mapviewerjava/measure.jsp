@@ -305,7 +305,7 @@ MgLayer FindLayer(MgLayerCollection layers, String layerDef) throws MgException
     int i;
     for(i = 0; i < layers.GetCount(); i++)
     {
-        MgLayer layer1 = layers.GetItem(i);
+        MgLayer layer1 = (MgLayer) layers.GetItem(i);
         if(layer1.GetLayerDefinition().ToString().equals(layerDef))
         {
             layer = layer1;
