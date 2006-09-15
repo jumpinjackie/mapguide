@@ -223,7 +223,7 @@ ArrayList BuildLayerTree(MgMap map) throws MgException
     MgLayerCollection layers = map.GetLayers();
     for(int i = 0; i < layers.GetCount(); i++)
     {
-        MgLayer rtLayer= layers.GetItem(i);
+        MgLayer rtLayer = (MgLayer) layers.GetItem(i);
         TreeItem node = new TreeItem(rtLayer.GetName(), false, rtLayer);
         MgLayerGroup parentGroup = rtLayer.GetGroup();
         if(parentGroup == null)
@@ -249,7 +249,7 @@ HashMap BuildLayerMap(MgMap map) throws MgException
     MgLayerCollection layers = map.GetLayers();
     for(int i = 0; i < layers.GetCount(); i++)
     {
-        MgLayer rtLayer = layers.GetItem(i);
+        MgLayer rtLayer = (MgLayer) layers.GetItem(i);
         layerMap.put(rtLayer.GetObjectId(), rtLayer);
     }
     return layerMap;

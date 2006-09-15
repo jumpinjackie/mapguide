@@ -74,7 +74,7 @@ try
             response.getWriter().write("Error: There must be exactly one feature in the set."); ///NOXLATE dbg report only
             return;
         }
-        MgLayer layer = layers.GetItem(0);
+        MgLayer layer = (MgLayer) layers.GetItem(0);
         String featureClassName = layer.GetFeatureClassName();
         String filter = sel.GenerateFilter(layer, featureClassName);
         MgFeatureService featureSrvc = (MgFeatureService)site.CreateService(MgServiceType.FeatureService);
