@@ -16,8 +16,8 @@
 //
 
 #include "PlatformBase.h"
-#include "Exception\ServiceNotAvailableException.h"
-#include "Exception\NotImplementedException.h"
+#include "Exception/ServiceNotAvailableException.h"
+#include "Exception/NotImplementedException.h"
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
