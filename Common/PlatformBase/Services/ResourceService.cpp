@@ -16,6 +16,8 @@
 //
 
 #include "PlatformBase.h"
+#include "Exception\ServiceNotAvailableException.h"
+#include "Exception\NotImplementedException.h"
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -127,4 +129,46 @@ MgByteReader* MgResourceService::GetResourceData(
     STRING preProcessTags(L"");
 
     return GetResourceData(resource, dataName, preProcessTags);
+}
+
+
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Sets the metadata of the specified resource.
+/// </summary>
+/// <param name="resource">
+/// Resource identifier describing the resource.
+/// </param>
+/// <param name="content">
+/// MgByteReader
+/// </param>
+/// <returns>
+/// MgByteReader object representing the metadata.
+/// </returns>
+/// EXCEPTIONS:
+///
+void MgResourceService::SetMetadata(
+	MgResourceIdentifier* resource, MgByteReader* content)
+{
+	throw new MgNotImplementedException(L"MgByteReader.SetMetadata", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the metadata of the specified resource.
+/// </summary>
+/// <param name="resource">
+/// Resource identifier describing the resource.
+/// </param>
+/// <returns>
+/// MgByteReader object representing the metadata.
+/// </returns>
+/// EXCEPTIONS:
+///
+MgByteReader* MgResourceService::GetMetadata(
+	MgResourceIdentifier* resource)
+{
+	throw new MgNotImplementedException(L"MgByteReader.GetMetadata", __LINE__, __WFILE__, NULL, L"", NULL);
 }

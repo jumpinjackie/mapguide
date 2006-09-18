@@ -525,7 +525,52 @@ PUBLISHED_API:
     ///
     virtual void SetResource(MgResourceIdentifier* resource, MgByteReader* content, MgByteReader* header) = 0;
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// \brief
+	/// Sets the Metadata Stream for the given Resources. 
+	///
+	/// <!-- Syntax in .Net, Java, and PHP -->
+	/// \htmlinclude DotNetSyntaxTop.html
+	/// virtual void SetMetadata(MgResourceIdentifier resource, MgByteReader content);
+	/// \htmlinclude SyntaxBottom.html
+	/// \htmlinclude JavaSyntaxTop.html
+	/// virtual void SetMetadata(MgResourceIdentifier resource, MgByteReader content);
+	/// \htmlinclude SyntaxBottom.html
+	/// \htmlinclude PHPSyntaxTop.html
+	/// virtual void SetMetadata(MgResourceIdentifier resource, MgByteReader content);
+	/// \htmlinclude SyntaxBottom.html
+	///
+	/// \param resource (MgResourceIdentifier)
+	/// The resource in the repository that gets metadata attached to. Note the resource has to exist else this method fails
+	/// \n
+	/// The extension of
+	/// the location must match one of the types defined in \link MgResourceType MgResourceType \endlink.
+	/// It is case sensitive.
+	///
+	/// \param content (MgByteReader)
+	/// The metadata content in XML format. This can be set to
+	/// null, in which case the content is cleared. 
+	///
+	/// The schema of the Content is user driven and not given. Most people will use it for FGDC or ISO Metadata.
+	///
+	///
+	/// \return
+	/// Returns nothing.
+	///
+	/// \exception MgInvalidResourceTypeException
+	///
+	/// \todo
+	/// [[replace example, xref to Dev Guide]]
+	///
+	/// \see
+	/// GetMetadata
+	///
+	/// \ingroup WorkingWithResources
+	///
+	virtual void SetMetadata(MgResourceIdentifier* resource, MgByteReader* content) = 0;
+
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Deletes an existing resource and its associated data from the
     /// repository.
@@ -790,6 +835,42 @@ PUBLISHED_API:
     /// \ingroup WorkingWithResources
     ///
     MgByteReader* GetResourceContent(MgResourceIdentifier* resource);
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// \brief
+	/// Gets the Metadata content of a resource.
+	///
+	/// <!-- Syntax in .Net, Java, and PHP -->
+	/// \htmlinclude DotNetSyntaxTop.html
+	/// MgByteReader GetMetadata(MgResourceIdentifier resource);
+	/// \htmlinclude SyntaxBottom.html
+	/// \htmlinclude JavaSyntaxTop.html
+	/// MgByteReader GetMetadata(MgResourceIdentifier resource);
+	/// \htmlinclude SyntaxBottom.html
+	/// \htmlinclude PHPSyntaxTop.html
+	/// MgByteReader GetMetadata(MgResourceIdentifier resource);
+	/// \htmlinclude SyntaxBottom.html
+	///
+	/// \param resource (MgResourceIdentifier)
+	/// The resource in the repository has metadata attached to. Note the resource has to exist else this method fails.
+	///
+	/// \return
+	/// The metadata content in XML format. This can null in which case the resource has no metadata attached.
+	/// The schema of the Content is user driven and not given. Most people will use it for FGDC or ISO Metadata.
+	///
+	/// \exception MgInvalidResourceTypeException
+	///
+	/// \todo
+	/// [[replace example, xref to Dev Guide]]
+	///
+	/// \see
+	/// SetMetadata
+	///
+	/// \ingroup WorkingWithResources
+	///
+	virtual MgByteReader* GetMetadata(MgResourceIdentifier* resource);
+
+
 
     //////////////////////////////////////////////////////////////////////////////////////
     /// \brief
