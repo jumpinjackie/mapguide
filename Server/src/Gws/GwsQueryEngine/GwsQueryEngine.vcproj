@@ -196,6 +196,22 @@
 			Name="Inc"
 			>
 			<File
+				RelativePath=".\inc\GwsBinaryFeatureReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inc\GwsBinaryFeatureWriter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inc\GwsBinaryReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inc\GwsBinaryWriter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Inc\GwsFdoCommand.h"
 				>
 			</File>
@@ -213,6 +229,10 @@
 			</File>
 			<File
 				RelativePath=".\Inc\GwsQueryEngineImp.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inc\utf8_.h"
 				>
 			</File>
 		</Filter>
