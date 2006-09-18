@@ -216,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inc\GwsOperationHandler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Inc\GwsResourceUtil.h"
 				>
 			</File>

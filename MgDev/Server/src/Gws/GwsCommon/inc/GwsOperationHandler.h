@@ -1,4 +1,3 @@
-// $Header: //map/Mako/Develop/Source/Components/GWS/GWSCommon/inc/GwsOperationHandler.h#3 $
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
 //
