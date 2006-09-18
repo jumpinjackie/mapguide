@@ -527,7 +527,7 @@ PUBLISHED_API:
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// \brief
-	/// Sets the Metadata Stream for the given Resources. 
+	/// Sets the Metadata Stream for the given Resources.
 	///
 	/// <!-- Syntax in .Net, Java, and PHP -->
 	/// \htmlinclude DotNetSyntaxTop.html
@@ -549,7 +549,7 @@ PUBLISHED_API:
 	///
 	/// \param content (MgByteReader)
 	/// The metadata content in XML format. This can be set to
-	/// null, in which case the content is cleared. 
+	/// null, in which case the content is cleared.
 	///
 	/// The schema of the Content is user driven and not given. Most people will use it for FGDC or ISO Metadata.
 	///
@@ -567,9 +567,9 @@ PUBLISHED_API:
 	///
 	/// \ingroup WorkingWithResources
 	///
-	virtual void SetMetadata(MgResourceIdentifier* resource, MgByteReader* content) = 0;
+	virtual void SetMetadata(MgResourceIdentifier* resource, MgByteReader* content);
 
-	
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Deletes an existing resource and its associated data from the
@@ -1016,7 +1016,7 @@ PUBLISHED_API:
     /// $resourceID= new MgResourceIdentifier("Library://Geography/");
     /// $resourceService->InheritPermissionsFrom($resourceID);
     /// \endcode
-    /// \htmlinclude ExampleBottom.html    
+    /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgPermissionDeniedException
     /// \exception MgResourceNotFoundException
