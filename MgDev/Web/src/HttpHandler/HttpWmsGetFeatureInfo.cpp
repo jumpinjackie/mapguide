@@ -69,6 +69,10 @@ void MgHttpWmsGetFeatureInfo::InitializeRequestParameters(MgOgcWmsServer& oServe
 
     // Get the requested reference system
     m_crs = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsCrs);
+    if(m_crs.length() == 0)
+    {
+        m_crs = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsSrs);
+    }
 
     // Get the requested bounds
     m_bbox = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsBbox);
