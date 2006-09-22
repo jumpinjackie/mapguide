@@ -186,7 +186,6 @@ protected:
 
 private:
 
-    STRING          m_propertyName;
     INT32           m_value;
 
 CLASS_ID:

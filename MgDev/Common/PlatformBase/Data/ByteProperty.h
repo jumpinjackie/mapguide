@@ -187,7 +187,6 @@ protected:
 
 private:
 
-    STRING          m_propertyName;
     BYTE            m_value;
 
 CLASS_ID:

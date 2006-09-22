@@ -170,7 +170,8 @@ void MgSpatialContextReader::Close()
 //////////////////////////////////////////////////////////////
 INT32 MgSpatialContextReader::AddSpatialData(MgSpatialContextData* data)
 {
-    return m_spatialContextCol.Add(data);
+    m_spatialContextCol.Add(data);
+    return m_spatialContextCol.GetCount();
 }
 
 //////////////////////////////////////////////////////////////

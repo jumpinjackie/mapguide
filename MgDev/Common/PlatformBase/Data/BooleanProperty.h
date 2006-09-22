@@ -186,7 +186,6 @@ protected:
 
 private:
 
-    STRING          m_propertyName;
     bool            m_value;
 
 CLASS_ID:

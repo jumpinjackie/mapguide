@@ -145,18 +145,31 @@ void MgStringPropertyCollection::SetValue(CREFSTRING keyname, CREFSTRING value)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+/// Adds the specified item to the end of the collection.
 /// </summary>
 /// <param name="keyname">Input key</param>
 /// <param name="value">Input value</param>
 /// <returns>
-/// Returns the index of the newly added item.
+/// Returns nothing.
 /// </returns>
-INT32 MgStringPropertyCollection::Add(CREFSTRING keyname, CREFSTRING value)
+void MgStringPropertyCollection::Add(CREFSTRING keyname, CREFSTRING value)
 {
     Ptr<MgStringProperty> strPtr = new MgStringProperty(keyname, value);
-    INT32 cnt = m_strProperty->Add(strPtr);
-    return cnt;
+    m_strProperty->Add(strPtr);
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Adds the specified item to the end of the collection.
+/// </summary>
+/// <param name="keyname">Input key</param>
+/// <param name="value">Input value</param>
+/// <returns>
+/// Returns nothing.
+/// </returns>
+void MgStringPropertyCollection::Add(MgStringProperty* value)
+{
+    m_strProperty->Add(value);
 }
 
 
@@ -168,25 +181,27 @@ INT32 MgStringPropertyCollection::Add(CREFSTRING keyname, CREFSTRING value)
 /// <returns>
 /// Returns the item in the collection at the specified index.
 /// </returns>
-MgStringProperty* MgStringPropertyCollection::GetItem(INT32 index) const
+MgStringProperty* MgStringPropertyCollection::GetItem(INT32 index)
 {
     Ptr<MgStringProperty> strPtr = (MgStringProperty*)m_strProperty->GetItem(index);
     return SAFE_ADDREF((MgStringProperty*)strPtr);
 }
 
-
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Adds the specified property to the end of the collection. Returns the index of the newly added item.
+/// Sets the item in the collection at the specified index. Throws an invalid argument exception if the index is out of range.
 /// </summary>
-/// <param name="property">Input property</param>
+/// <param name="index">Input index</param>
+/// <param name="value">Value to set</param>
 /// <returns>
-/// Returns the index of the newly added item.
+/// Returns nothing.
 /// </returns>
-INT32 MgStringPropertyCollection::Add(MgStringProperty* property)
+void MgStringPropertyCollection::SetItem(INT32 index, MgStringProperty* value)
 {
-    INT32 cnt = m_strProperty->Add(property);
-    return cnt;
+    if (NULL != value)
+    {
+        m_strProperty->SetItem(index, value);
+    }
 }
 
 
@@ -206,6 +221,20 @@ void MgStringPropertyCollection::Insert(INT32 index, CREFSTRING keyname, CREFSTR
     m_strProperty->Insert(index, strPtr);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Inserts the specified item at the specified index within the collection.
+/// Items following the insertion point are moved down to accommodate the new item.
+/// </summary>
+/// <param name="index">Input index</param>
+/// <param name="value">Input value</param>
+/// <returns>Returns nothing.</returns>
+/// EXCEPTIONS:
+/// InvalidArgument if index is out of range
+void MgStringPropertyCollection::Insert(INT32 index, MgStringProperty* value)
+{
+    m_strProperty->Insert(index, value);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -224,13 +253,44 @@ void MgStringPropertyCollection::Clear()
 /// </summary>
 /// <param name="value">Input value</param>
 /// <returns>Returns nothing.</returns>
-/// EXCEPTIONS:
-/// InvalidArgument if the item does not exist within the collection.
-void MgStringPropertyCollection::Remove(CREFSTRING keyname)
+bool MgStringPropertyCollection::Remove(CREFSTRING keyname)
 {
-    Ptr<MgStringProperty> strPtr = (MgStringProperty*)m_strProperty->FindItem(keyname);
-    if (strPtr != NULL)
-    m_strProperty->Remove(strPtr);
+    bool removed = false;
+    try
+    {
+        Ptr<MgStringProperty> strPtr = (MgStringProperty*)m_strProperty->FindItem(keyname);
+        if (strPtr != NULL)
+        {
+            m_strProperty->Remove(strPtr);
+            removed = true;
+        }
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+    }
+    return removed;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Removes the specified item from the collection.
+/// </summary>
+/// <param name="value">Input value</param>
+/// <returns>Returns nothing.</returns>
+bool MgStringPropertyCollection::Remove(MgStringProperty* value)
+{
+    bool removed = true;
+    try
+    {
+        m_strProperty->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 
@@ -261,6 +321,22 @@ bool MgStringPropertyCollection::Contains(CREFSTRING keyname)
     return m_strProperty->Contains(keyname);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns true if the collection contains the specified item, false otherwise.
+/// </summary>
+/// <param name="value">Input value</param>
+/// <returns>
+/// Returns true if the collection contains the specified item, false otherwise.
+/// </returns>
+bool MgStringPropertyCollection::Contains(MgStringProperty* value)
+{
+    if (NULL == value)
+    {
+        return false;
+    }
+    return m_strProperty->Contains(value->GetName());
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -275,6 +351,22 @@ INT32 MgStringPropertyCollection::IndexOf(CREFSTRING keyname)
     return m_strProperty->IndexOf(keyname);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns the index of the specified item in the collection or -1 if the item does not exist.
+/// </summary>
+/// <param name="value">Input value</param>
+/// <returns>
+/// Returns the index of the specified item in the collection or -1 if the item does not exist.
+/// </returns>
+INT32 MgStringPropertyCollection::IndexOf(MgStringProperty* value)
+{
+    if (NULL == value)
+    {
+        return -1;
+    }
+    return m_strProperty->IndexOf(value->GetName());
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

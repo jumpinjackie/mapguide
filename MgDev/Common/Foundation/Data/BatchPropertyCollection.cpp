@@ -64,15 +64,15 @@ void MgBatchPropertyCollection::SetItem(INT32 index, MgPropertyCollection* value
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+/// Adds the specified item to the end of the collection. 
 /// </summary>
 /// <param name="value">Input value</param>
 /// <returns>
 /// Returns the index of the newly added item.
 /// </returns>
-INT32 MgBatchPropertyCollection::Add(MgPropertyCollection* value)
+void MgBatchPropertyCollection::Add(MgPropertyCollection* value)
 {
-    return m_dCollection->Add(value);
+    m_dCollection->Add(value);
 }
 
 
@@ -98,9 +98,19 @@ void MgBatchPropertyCollection::Insert(INT32 index, MgPropertyCollection* value)
 /// <param name="value">Input value</param>
 /// <returns>Returns nothing.</returns>
 /// <exception>InvalidArgument if the item does not exist within the collection.</exception>
-void MgBatchPropertyCollection::Remove(MgPropertyCollection* value)
+bool MgBatchPropertyCollection::Remove(MgPropertyCollection* value)
 {
-    m_dCollection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_dCollection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 

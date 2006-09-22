@@ -56,15 +56,15 @@ void MgFeatureSchemaCollection::SetItem(INT32 index, MgFeatureSchema* value)
 
 //////////////////////////////////////////////////////////
 ///<summary>
-///Adds the specified item to the end of the collection. Returns the index of the newly added item.
+///Adds the specified item to the end of the collection.
 ///</summary>
 ///<param name="value">Input value</param>
 ///<returns>
-///Returns the index of the newly added item.
+///Returns nothing
 ///</returns>
-INT32 MgFeatureSchemaCollection::Add(MgFeatureSchema* value)
+void MgFeatureSchemaCollection::Add(MgFeatureSchema* value)
 {
-    return m_dCollection->Add(value);
+    m_dCollection->Add(value);
 }
 
 //////////////////////////////////////////////////////////
@@ -103,9 +103,19 @@ void MgFeatureSchemaCollection::Clear()
 ///</returns>
 ///<exception>
 ///InvalidArgument if the item does not exist within the collection.</exception>
-void MgFeatureSchemaCollection::Remove(MgFeatureSchema* value)
+bool MgFeatureSchemaCollection::Remove(MgFeatureSchema* value)
 {
-    m_dCollection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_dCollection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 

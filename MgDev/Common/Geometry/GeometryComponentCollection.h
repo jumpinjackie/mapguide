@@ -69,16 +69,15 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified object to the end of the collection. Returns the
-    /// index of the newly added object.
+    /// Adds the specified object to the end of the collection. 
     ///
     /// \param value
     /// Object to add to the collection.
     ///
     /// \return
-    /// Index of the newly added object.
+    /// Returns nothing
     ///
-    virtual INT32 Add(MgGeometryComponent* value);
+    virtual void Add(MgGeometryComponent* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -104,15 +103,15 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified object from the collection. Throws an invalid
-    /// argument exception if the item does not exist within the collection.
+    /// Removes the specified object from the collection. 
     ///
     /// \param value
     /// Object reference to remove.
     ///
-    /// \exception MgObjectNotFoundException
+    /// \return
+    /// Returns true if successful.
     ///
-    virtual void Remove(const MgGeometryComponent* value);
+    virtual bool Remove(const MgGeometryComponent* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

@@ -188,7 +188,6 @@ protected:
 
 private:
 
-    STRING          m_propertyName;
     Ptr<MgRaster>   m_value;
 
 CLASS_ID:

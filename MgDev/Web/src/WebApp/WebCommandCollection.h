@@ -139,12 +139,11 @@ INTERNAL_API:
 
     /// <summary>
     /// Removes an item from the collection
-    /// Throws an invalid argument exception if the item does not exist within the collection.
     /// </summary>
     /// <param name="value">
     /// Command to be removed
     /// </param>
-    void Remove(MgWebCommand* value);
+    bool Remove(MgWebCommand* value);
 
     /// <summary>
     /// Removes an item from the collection at the specified index

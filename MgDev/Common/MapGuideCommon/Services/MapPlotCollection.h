@@ -218,25 +218,23 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void Remove(MgMapPlot value);
+    /// bool Remove(MgMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void Remove(MgMapPlot value);
+    /// bool Remove(MgMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void Remove(MgMapPlot value);
+    /// bool Remove(MgMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgMapPlot)
     /// MgMapPlot to be removed
     ///
     /// \return
-    /// Returns nothing.
+    /// Returns true if removal was successful.
     ///
-    /// \exception MgInvalidArgumentException if the MapPlot does not exist within
-    ///  the collection.
     ///
-    void Remove(MgMapPlot* value);
+    bool Remove(MgMapPlot* value);
 
     ///////////////////////////////////////////////////////////////
     /// \brief

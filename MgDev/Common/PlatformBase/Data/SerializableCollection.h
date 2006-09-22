@@ -47,17 +47,17 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+    /// Adds the specified item to the end of the collection. Returns nothing
     ///
     /// \param value
     /// Input value
     ///
     /// \return
-    /// Returns the index of the newly added item.
+    /// Returns nothing
     ///
     /// \exception MgDuplicateObjectException if it is duplicate.
     ///
-    virtual INT32 Add(MgSerializable* value);
+    virtual void Add(MgSerializable* value);
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -85,11 +85,9 @@ EXTERNAL_API:
     /// Input value
     ///
     /// \return
-    /// Returns nothing.
+    /// Returns true if successful.
     ///
-    /// \exception MgObjectNotFoundException if the item does not exist within the collection.
-    ///
-    virtual void Remove(MgSerializable* value);
+    virtual bool Remove(MgSerializable* value);
 
     //////////////////////////////////////////////////////////
     /// \brief

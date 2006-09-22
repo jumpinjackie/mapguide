@@ -120,17 +120,27 @@ void MgLayerGroupCollection::Clear()
 }
 
 // Removes an item from the collection
-// Throws an invalid argument exception if the item does not exist within the collection.
+// Returns true if successful.
 //
-void MgLayerGroupCollection::Remove(MgLayerGroup* value)
+bool MgLayerGroupCollection::Remove(MgLayerGroup* value)
 {
-    Ptr<MgLayerGroup> group = SAFE_ADDREF(value);
+    bool removed = true;
+    try
+    {
+        Ptr<MgLayerGroup> group = SAFE_ADDREF(value);
 
-    //value is released by m_groups base class
-    m_groups->Remove(value);
+        //value is released by m_groups base class
+        m_groups->Remove(value);
 
-    if (m_owner)
-        m_owner->OnGroupRemoved(group);
+        if (m_owner)
+            m_owner->OnGroupRemoved(group);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 // Removes an item from the collection at the specified index

@@ -108,8 +108,7 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified coordinate to the end of the collection. Returns the
-    /// index of the newly added point.
+    /// Adds the specified coordinate to the end of the collection.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -126,9 +125,9 @@ PUBLISHED_API:
     /// point to add to the collection.
     ///
     /// \return
-    /// Index of the newly added point.
+    /// Returns nothing.
     ///
-    virtual INT32 Add(MgPoint* value);
+    virtual void Add(MgPoint* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -176,26 +175,26 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified point from the collection. Throws an invalid
-    /// argument exception if the item does not exist within the collection.
+    /// Removes the specified point from the collection. 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void Remove(const MgPoint value);
+    /// virtual bool Remove(const MgPoint value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void Remove(const MgPoint value);
+    /// virtual bool Remove(const MgPoint value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void Remove(const MgPoint value);
+    /// virtual bool Remove(const MgPoint value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgPoint)
     /// point reference to remove.
     ///
-    /// \exception MgObjectNotFoundException
+    /// \return
+    /// Returns true if removal was successful.
     ///
-    virtual void Remove(const MgPoint* value);
+    virtual bool Remove(const MgPoint* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

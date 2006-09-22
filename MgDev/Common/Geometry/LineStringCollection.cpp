@@ -66,9 +66,9 @@ void MgLineStringCollection::SetItem(INT32 index, MgLineString* value)
 // Adds the specified line string to the end of the collection. Returns the
 // index of the newly added line string.
 //
-INT32 MgLineStringCollection::Add(MgLineString* value)
+void MgLineStringCollection::Add(MgLineString* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -94,9 +94,19 @@ void MgLineStringCollection::Clear()
 // Removes the specified line string from the collection. Throws an invalid
 // argument exception if the item does not exist within the collection.
 //
-void MgLineStringCollection::Remove(const MgLineString* value)
+bool MgLineStringCollection::Remove(const MgLineString* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -201,7 +201,6 @@ protected:
     virtual void Dispose();
 
 private:
-    STRING          m_propertyName;
     STRING          m_value;
 
 CLASS_ID:

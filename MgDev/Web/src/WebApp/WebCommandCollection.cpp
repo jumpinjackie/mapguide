@@ -117,10 +117,20 @@ void MgWebCommandCollection::Clear()
 // Removes an item from the collection
 // Throws an invalid argument exception if the item does not exist within the collection.
 //
-void MgWebCommandCollection::Remove(MgWebCommand* value)
+bool MgWebCommandCollection::Remove(MgWebCommand* value)
 {
-    //value is released by m_commands base class
-    m_commands->Remove(value);
+    bool removed = true;
+    try
+    {
+        //value is released by m_commands base class
+        m_commands->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -109,8 +109,7 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified coordinate to the end of the collection. Returns the
-    /// index of the newly added polygon.
+    /// Adds the specified coordinate to the end of the collection. 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -127,9 +126,9 @@ PUBLISHED_API:
     /// polygon to add to the collection.
     ///
     /// \return
-    /// Index of the newly added polygon.
+    /// Returns nothing
     ///
-    virtual INT32 Add(MgPolygon* value);
+    virtual void Add(MgPolygon* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -177,26 +176,26 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified polygon from the collection. Throws an invalid
-    /// argument exception if the item does not exist within the collection.
+    /// Removes the specified polygon from the collection.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void Remove(const MgPolygon value);
+    /// virtual bool Remove(const MgPolygon value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void Remove(const MgPolygon value);
+    /// virtual bool Remove(const MgPolygon value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void Remove(const MgPolygon value);
+    /// virtual bool Remove(const MgPolygon value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgPolygon)
     /// polygon reference to remove.
     ///
-    /// \exception MgObjectNotFoundException
+    /// \return
+    /// Returns true if removal was successful.
     ///
-    virtual void Remove(const MgPolygon* value);
+    virtual bool Remove(const MgPolygon* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

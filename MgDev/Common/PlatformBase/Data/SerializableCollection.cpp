@@ -61,15 +61,15 @@ INT32 MgSerializableCollection::GetClassId()
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+/// Adds the specified item to the end of the collection.
 /// </summary>
 /// <param name="value">Input value</param>
 /// <returns>
-/// Returns the index of the newly added item.
+/// Returns nothing.
 /// </returns>
-INT32 MgSerializableCollection::Add(MgSerializable* value)
+void MgSerializableCollection::Add(MgSerializable* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 
@@ -93,11 +93,20 @@ void MgSerializableCollection::Insert(INT32 index, MgSerializable* value)
 /// Removes the specified item from the collection.
 /// </summary>
 /// <param name="value">Input value</param>
-/// <returns>Returns nothing.</returns>
-/// <exception>InvalidArgument if the item does not exist within the collection.</exception>
-void MgSerializableCollection::Remove(MgSerializable* value)
+/// <returns>Returns true if successful.</returns>
+bool MgSerializableCollection::Remove(MgSerializable* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 

@@ -110,27 +110,26 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified coordinate to the end of the collection. Returns the
-    /// index of the newly added coordinate.
+    /// Adds the specified coordinate to the end of the collection. 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual int Add(MgCoordinate value);
+    /// void Add(MgCoordinate value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual int Add(MgCoordinate value);
+    /// void Add(MgCoordinate value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual int Add(MgCoordinate value);
+    /// void Add(MgCoordinate value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgCoordinate)
     /// Coordinate to add to the collection.
     ///
     /// \return
-    /// Index of the newly added coordinate.
+    /// Returns nothing
     ///
-    virtual INT32 Add(MgCoordinate* value);
+    virtual void Add(MgCoordinate* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -178,26 +177,27 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified coordinate from the collection. Throws an invalid
-    /// argument exception if the item does not exist within the collection.
+    /// Removes the specified coordinate from the collection.  Returns false if
+    /// the coordinate could not be removed.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void Remove(const MgCoordinate value);
+    /// bool Remove(const MgCoordinate value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void Remove(const MgCoordinate value);
+    /// bool Remove(const MgCoordinate value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void Remove(const MgCoordinate value);
+    /// bool Remove(const MgCoordinate value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgCoordinate)
     /// Coordinate reference to remove.
     ///
-    /// \exception MgObjectNotFoundException
+    /// \return
+    /// Returns true if removal was successful.
     ///
-    virtual void Remove(const MgCoordinate* value);
+    virtual bool Remove(const MgCoordinate* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

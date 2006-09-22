@@ -108,27 +108,26 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified coordinate to the end of the collection. Returns the
-    /// index of the newly added curve ring.
+    /// Adds the specified coordinate to the end of the collection. 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual int Add(MgCurveRing value);
+    /// virtual void Add(MgCurveRing value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual int Add(MgCurveRing value);
+    /// virtual void Add(MgCurveRing value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual int Add(MgCurveRing value);
+    /// virtual void Add(MgCurveRing value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgCurveRing)
     /// curve ring to add to the collection.
     ///
     /// \return
-    /// Index of the newly added curve ring.
+    /// Returns nothing
     ///
-    virtual INT32 Add(MgCurveRing* value);
+    virtual void Add(MgCurveRing* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -176,26 +175,27 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified curve ring from the collection. Throws an invalid
-    /// argument exception if the item does not exist within the collection.
+    /// Removes the specified curve ring from the collection.  Returns true if
+    /// the curve ring was successfully removed.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void Remove(const MgCurveRing value);
+    /// bool Remove(const MgCurveRing value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void Remove(const MgCurveRing value);
+    /// bool Remove(const MgCurveRing value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void Remove(const MgCurveRing value);
+    /// bool Remove(const MgCurveRing value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgCurveRing)
     /// curve ring reference to remove.
     ///
-    /// \exception MgObjectNotFoundException
+    /// \return
+    /// Returns true if curve ring was removed.
     ///
-    virtual void Remove(const MgCurveRing* value);
+    virtual bool Remove(const MgCurveRing* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

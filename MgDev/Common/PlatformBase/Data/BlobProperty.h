@@ -186,7 +186,6 @@ protected:
 
 private:
 
-    STRING              m_propertyName;
     Ptr<MgByteReader>   m_value;
 
 CLASS_ID:

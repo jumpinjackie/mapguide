@@ -63,12 +63,11 @@ void MgCurvePolygonCollection::SetItem(INT32 index, MgCurvePolygon* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified curve polygon to the end of the collection. Returns the
-// index of the newly added curve polygon.
+// Adds the specified curve polygon to the end of the collection. 
 //
-INT32 MgCurvePolygonCollection::Add(MgCurvePolygon* value)
+void MgCurvePolygonCollection::Add(MgCurvePolygon* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -91,12 +90,21 @@ void MgCurvePolygonCollection::Clear()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Removes the specified curve polygon from the collection. Throws an invalid
-// argument exception if the item does not exist within the collection.
+// Removes the specified curve polygon from the collection. 
 //
-void MgCurvePolygonCollection::Remove(const MgCurvePolygon* value)
+bool MgCurvePolygonCollection::Remove(const MgCurvePolygon* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 ///////////////////////////////////////////////////////////////////////////

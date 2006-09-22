@@ -88,28 +88,28 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+    /// Adds the specified item to the end of the collection.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// int Add(MgClassDefinition value);
+    /// void Add(MgClassDefinition value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// int Add(MgClassDefinition value);
+    /// void Add(MgClassDefinition value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// int Add(MgClassDefinition value);
+    /// void Add(MgClassDefinition value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgClassDefinition)
     /// Input value
     ///
     /// \return
-    /// Returns the index of the newly added item.
+    /// Returns nothing
     ///
     /// \exception MgDuplicateObjectException if the index is a duplicate.
     ///
-    INT32 Add(MgClassDefinition* value);
+    void Add(MgClassDefinition* value);
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -146,24 +146,23 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void Remove(MgClassDefinition value);
+    /// bool Remove(MgClassDefinition value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void Remove(MgClassDefinition value);
+    /// bool Remove(MgClassDefinition value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void Remove(MgClassDefinition value);
+    /// bool Remove(MgClassDefinition value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgClassDefinition)
     /// Input value
     ///
     /// \return
-    /// Returns nothing.
+    /// Returns true if removal was successful
     ///
-    /// \exception MgObjectNotFoundException if the item does not exist within the collection.
     ///
-    void Remove(MgClassDefinition* value);
+    bool Remove(MgClassDefinition* value);
 
     /// \brief
     /// Gets the item in the collection at the specified index.

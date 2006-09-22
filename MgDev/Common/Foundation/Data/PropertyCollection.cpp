@@ -77,15 +77,15 @@ void MgPropertyCollection::SetItem(INT32 index, MgProperty* value)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+/// Adds the specified item to the end of the collection.
 /// </summary>
 /// <param name="value">Input value</param>
 /// <returns>
-/// Returns the index of the newly added item.
+/// Returns nothing
 /// </returns>
-INT32 MgPropertyCollection::Add(MgProperty* value)
+void MgPropertyCollection::Add(MgProperty* value)
 {
-    return m_nCollection->Add(value);
+    m_nCollection->Add(value);
 }
 
 
@@ -110,12 +110,21 @@ void MgPropertyCollection::Insert(INT32 index, MgProperty* value)
 /// Removes the specified item from the collection.
 /// </summary>
 /// <param name="value">Input value</param>
-/// <returns>Returns nothing.</returns>
-/// EXCEPTIONS:
-/// InvalidArgument if the item does not exist within the collection.
-void MgPropertyCollection::Remove(MgProperty* value)
+/// <returns>Returns true if successful</returns>
+///
+bool MgPropertyCollection::Remove(MgProperty* value)
 {
-    m_nCollection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_nCollection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 

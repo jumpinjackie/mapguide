@@ -35,9 +35,9 @@ void MgConfigurationSectionCollection::Dispose()
 }
 
 
-INT32 MgConfigurationSectionCollection::Add(MgConfigurationSection* value)
+void MgConfigurationSectionCollection::Add(MgConfigurationSection* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 
@@ -47,9 +47,19 @@ void MgConfigurationSectionCollection::Insert(INT32 index, MgConfigurationSectio
 }
 
 
-void MgConfigurationSectionCollection::Remove(MgConfigurationSection* value)
+bool MgConfigurationSectionCollection::Remove(MgConfigurationSection* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 

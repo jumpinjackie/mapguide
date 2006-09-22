@@ -61,12 +61,11 @@ void MgCoordinateCollection::SetItem(INT32 index, MgCoordinate* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified coodinate to the end of the collection. Returns the
-// index of the newly added coordinate.
+// Adds the specified coodinate to the end of the collection. 
 //
-INT32 MgCoordinateCollection::Add(MgCoordinate* value)
+void MgCoordinateCollection::Add(MgCoordinate* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -92,9 +91,19 @@ void MgCoordinateCollection::Clear()
 // Removes the specified coordinate from the collection. Throws an invalid
 // argument exception if the item does not exist within the collection.
 //
-void MgCoordinateCollection::Remove(const MgCoordinate* value)
+bool MgCoordinateCollection::Remove(const MgCoordinate* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -63,12 +63,11 @@ void MgCurveRingCollection::SetItem(INT32 index, MgCurveRing* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified coodinate to the end of the collection. Returns the
-// index of the newly added curve ring.
+// Adds the specified coodinate to the end of the collection. 
 //
-INT32 MgCurveRingCollection::Add(MgCurveRing* value)
+void MgCurveRingCollection::Add(MgCurveRing* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -91,12 +90,21 @@ void MgCurveRingCollection::Clear()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Removes the specified curve ring from the collection. Throws an invalid
-// argument exception if the item does not exist within the collection.
+// Removes the specified curve ring from the collection. 
 //
-void MgCurveRingCollection::Remove(const MgCurveRing* value)
+bool MgCurveRingCollection::Remove(const MgCurveRing* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 ///////////////////////////////////////////////////////////////////////////

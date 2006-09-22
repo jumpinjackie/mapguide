@@ -73,15 +73,15 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+    /// Adds the specified item to the end of the collection.
     ///
     /// \param value
     /// Input value
     ///
     /// \return
-    /// Returns the index of the newly added item
+    /// Returns nothing
     ///
-    virtual INT32 Add(MgDisposable* value);
+    virtual void Add(MgDisposable* value);
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -112,17 +112,16 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified item from the collection. Throws an invalid argument exception if the item does not exist within the collection.
+    /// Removes the specified item from the collection. 
     ///
     /// \param value
     /// Input value
     ///
     /// \return
-    /// Returns nothing
+    /// Returns true if removal was successful
     ///
-    /// \exception MgObjectNotFoundException
     ///
-    virtual void Remove(const MgDisposable* value);
+    virtual bool Remove(const MgDisposable* value);
 
     //////////////////////////////////////////////////////////
     /// \brief

@@ -63,12 +63,11 @@ void MgLinearRingCollection::SetItem(INT32 index, MgLinearRing* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified linear ring to the end of the collection. Returns the
-// index of the newly added linear ring.
+// Adds the specified linear ring to the end of the collection. 
 //
-INT32 MgLinearRingCollection::Add(MgLinearRing* value)
+void MgLinearRingCollection::Add(MgLinearRing* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -91,12 +90,21 @@ void MgLinearRingCollection::Clear()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Removes the specified linear ring from the collection. Throws an invalid
-// argument exception if the item does not exist within the collection.
+// Removes the specified linear ring from the collection. 
 //
-void MgLinearRingCollection::Remove(const MgLinearRing* value)
+bool MgLinearRingCollection::Remove(const MgLinearRing* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 ///////////////////////////////////////////////////////////////////////////

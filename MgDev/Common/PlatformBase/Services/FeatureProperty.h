@@ -198,7 +198,6 @@ protected:
 
 private:
 
-    STRING m_propertyName;
     Ptr<MgFeatureReader> m_value;
 
 CLASS_ID:
