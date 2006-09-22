@@ -187,7 +187,6 @@ protected:
     virtual void Dispose();
 
 private:
-    STRING          m_propertyName;
     INT64           m_value;
 
 CLASS_ID:

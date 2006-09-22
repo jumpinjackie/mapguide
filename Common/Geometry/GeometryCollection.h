@@ -112,27 +112,26 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified object to the end of the collection. Returns the
-    /// index of the newly added object.
+    /// Adds the specified object to the end of the collection. 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual int Add(MgGeometry value);
+    /// void Add(MgGeometry value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual int Add(MgGeometry value);
+    /// void Add(MgGeometry value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual int Add(MgGeometry value);
+    /// void Add(MgGeometry value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgGeometry)
     /// Object to add to the collection.
     ///
     /// \return
-    /// Index of the newly added object.
+    /// Returns nothing
     ///
-    virtual INT32 Add(MgGeometry* value);
+    virtual void Add(MgGeometry* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -180,26 +179,27 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified object from the collection. Throws an invalid
-    /// argument exception if the item does not exist within the collection.
+    /// Removes the specified object from the collection. Returns true if removal
+    /// was successful.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void Remove(const MgGeometry value);
+    /// bool Remove(const MgGeometry value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void Remove(const MgGeometry value);
+    /// bool Remove(const MgGeometry value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void Remove(const MgGeometry value);
+    /// bool Remove(const MgGeometry value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgGeometry)
     /// Object reference to remove.
     ///
-    /// \exception MgObjectNotFoundException
+    /// \return
+    /// Returns true if object was removed.
     ///
-    virtual void Remove(const MgGeometry* value);
+    virtual bool Remove(const MgGeometry* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

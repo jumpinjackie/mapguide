@@ -101,10 +101,9 @@ void MgIntCollection::SetItem(INT32 index, INT32 value)
 /// <returns>
 /// Returns the index of the newly added item.
 /// </returns>
-INT32 MgIntCollection::Add(INT32 value)
+void MgIntCollection::Add(INT32 value)
 {
     m_intProperty.push_back(value);
-    return this->GetCount();
 }
 
 
@@ -144,11 +143,21 @@ void MgIntCollection::Clear()
 /// <returns>Returns nothing.</returns>
 /// EXCEPTIONS:
 /// InvalidArgument if the item does not exist within the collection.
-void MgIntCollection::Remove(INT32 value)
+bool MgIntCollection::Remove(INT32 value)
 {
-    INT32 index = this->IndexOf(value);
-    ValidateIndex(index);
-    m_intProperty.erase( m_intProperty.begin( ) + index );
+    bool removed = true;
+    try
+    {
+        INT32 index = this->IndexOf(value);
+        ValidateIndex(index);
+        m_intProperty.erase( m_intProperty.begin( ) + index );
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 

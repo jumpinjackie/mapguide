@@ -88,7 +88,7 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+    /// Adds the specified item to the end of the collection.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -105,11 +105,11 @@ PUBLISHED_API:
     /// Input value
     ///
     /// \return
-    /// Returns the index of the newly added item.
+    /// Returns nothing.
     ///
     /// \exception MgDuplicateObjectException if the index is a duplicate.
     ///
-    INT32 Add(MgFeatureSchema* value);
+    void Add(MgFeatureSchema* value);
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -146,24 +146,22 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void Remove(MgFeatureSchema value);
+    /// bool Remove(MgFeatureSchema value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void Remove(MgFeatureSchema value);
+    /// bool Remove(MgFeatureSchema value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void Remove(MgFeatureSchema value);
+    /// bool Remove(MgFeatureSchema value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgFeatureSchema)
     /// Input value
     ///
     /// \return
-    /// Returns nothing.
+    /// Returns true if removal was successful.
     ///
-    /// \exception MgObjectNotFoundException if the item does not exist within the collection.
-    ///
-    void Remove(MgFeatureSchema* value);
+    bool Remove(MgFeatureSchema* value);
 
     /// \brief
     /// Gets the item in the collection at the specified index.

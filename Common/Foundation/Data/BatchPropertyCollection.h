@@ -85,7 +85,7 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+    /// Adds the specified item to the end of the collection. 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -102,11 +102,11 @@ PUBLISHED_API:
     /// Input value
     ///
     /// \return
-    /// Returns the index of the newly added item.
+    /// Returns nothing.
     ///
     /// \exception MgDuplicateObjectException if it is duplicate.
     ///
-    virtual INT32 Add(MgPropertyCollection* value);
+    virtual void Add(MgPropertyCollection* value);
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -143,24 +143,23 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void Remove(MgPropertyCollection value);
+    /// virtual bool Remove(MgPropertyCollection value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void Remove(MgPropertyCollection value);
+    /// virtual bool Remove(MgPropertyCollection value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void Remove(MgPropertyCollection value);
+    /// virtual bool Remove(MgPropertyCollection value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgPropertyCollection)
     /// Input value
     ///
     /// \return
-    /// Returns nothing.
+    /// Returns true if removal was successful.
     ///
-    /// \exception MgObjectNotFoundException if the item does not exist within the collection.
     ///
-    virtual void Remove(MgPropertyCollection* value);
+    virtual bool Remove(MgPropertyCollection* value);
 
     //////////////////////////////////////////////////////////
     /// \brief

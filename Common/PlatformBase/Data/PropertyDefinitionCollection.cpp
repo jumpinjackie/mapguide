@@ -78,15 +78,15 @@ void MgPropertyDefinitionCollection::SetItem(INT32 index, MgPropertyDefinition* 
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+/// Adds the specified item to the end of the collection.
 /// </summary>
 /// <param name="value">Input value</param>
 /// <returns>
-/// Returns the index of the newly added item.
+/// Returns nothing
 /// </returns>
-INT32 MgPropertyDefinitionCollection::Add(MgPropertyDefinition* value)
+void MgPropertyDefinitionCollection::Add(MgPropertyDefinition* value)
 {
-    return m_pCollection->Add(value);
+    m_pCollection->Add(value);
 }
 
 
@@ -111,12 +111,20 @@ void MgPropertyDefinitionCollection::Insert(INT32 index, MgPropertyDefinition* v
 /// Removes the specified item from the collection.
 /// </summary>
 /// <param name="value">Input value</param>
-/// <returns>Returns nothing.</returns>
-/// EXCEPTIONS:
-/// InvalidArgument if the item does not exist within the collection.
-void MgPropertyDefinitionCollection::Remove(MgPropertyDefinition* value)
+/// <returns>Returns true if successful.</returns>
+bool MgPropertyDefinitionCollection::Remove(MgPropertyDefinition* value)
 {
-    m_pCollection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_pCollection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 

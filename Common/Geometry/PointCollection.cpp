@@ -66,9 +66,9 @@ void MgPointCollection::SetItem(INT32 index, MgPoint* value)
 // Adds the specified point to the end of the collection. Returns the
 // index of the newly added point.
 //
-INT32 MgPointCollection::Add(MgPoint* value)
+void MgPointCollection::Add(MgPoint* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -94,9 +94,19 @@ void MgPointCollection::Clear()
 // Removes the specified point from the collection. Throws an invalid
 // argument exception if the item does not exist within the collection.
 //
-void MgPointCollection::Remove(const MgPoint* value)
+bool MgPointCollection::Remove(const MgPoint* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 ///////////////////////////////////////////////////////////////////////////

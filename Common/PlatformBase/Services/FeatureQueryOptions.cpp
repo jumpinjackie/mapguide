@@ -75,7 +75,8 @@ INT32 MgFeatureQueryOptions::AddFeatureProperty(CREFSTRING propertyName)
 {
     CHECKNULL(m_classProperties, L"MgFeatureQueryOptions.AddFeatureProperty");
 
-    return m_classProperties->Add(propertyName);
+    m_classProperties->Add(propertyName);
+    return m_classProperties->GetCount();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -100,7 +101,8 @@ INT32 MgFeatureQueryOptions::AddComputedProperty(CREFSTRING aliasName, CREFSTRIN
 {
     CHECKNULL(m_computedProperties, L"MgFeatureQueryOptions.AddFeatureProperty");
 
-    return m_computedProperties->Add(aliasName, expression);
+    m_computedProperties->Add(aliasName, expression);
+    return m_computedProperties->GetCount();
 }
 
 //////////////////////////////////////////////////////////////////

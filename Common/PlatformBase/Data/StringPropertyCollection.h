@@ -116,7 +116,7 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+    /// Adds the specified item to the end of the collection. 
     ///
     /// \param keyname
     /// Name for input value
@@ -124,11 +124,23 @@ EXTERNAL_API:
     /// Input value
     ///
     /// \return
-    /// Returns the index of the newly added item.
+    /// Returns nothing.
     ///
     /// \exception MgInvalidArgumentException if the key is empty.
     ///
-    virtual INT32 Add(CREFSTRING keyname,CREFSTRING value);
+    virtual void Add(CREFSTRING keyname,CREFSTRING value);
+
+    //////////////////////////////////////////////////////////
+    /// \brief
+    /// Adds item to the collection.
+    ///
+    /// \param property
+    /// Property to add
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    void Add(MgStringProperty* value);
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -151,6 +163,25 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
+    /// Inserts the specified item at the specified index position within the collection.
+    /// Items following the insertion point are moved down to accommodate the new item.
+    ///
+    /// \param index
+    /// Insertion point
+    /// \param keyname
+    /// Input key
+    /// \param value
+    /// Input value
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    /// \exception MgIndexOutOfRangeException if the index is out of range.
+    ///
+    virtual void Insert(INT32 index, MgStringProperty* value);
+
+    //////////////////////////////////////////////////////////
+    /// \brief
     /// Removes all items from the collection.
     ///
     /// \return
@@ -166,11 +197,21 @@ EXTERNAL_API:
     /// Key for item
     ///
     /// \return
-    /// Returns nothing.
+    /// Returns true if removal was successful.
     ///
-    /// \exception MgObjectNotFoundException if the key does not exist.
+    virtual bool Remove(CREFSTRING keyname);
+
+    //////////////////////////////////////////////////////////
+    /// \brief
+    /// Removes the specified item from the collection.
     ///
-    virtual void Remove(CREFSTRING keyname);
+    /// \param value
+    /// Property to remove
+    ///
+    /// \return
+    /// Returns true if removal was successful.
+    ///
+    virtual bool Remove(MgStringProperty* value);
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -200,6 +241,18 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
+    /// Returns true if the collection contains the specified item, false otherwise.
+    ///
+    /// \param value
+    /// Property to find
+    ///
+    /// \return
+    /// Returns true if the collection contains the specified item, false otherwise.
+    ///
+    virtual bool Contains(MgStringProperty* value);
+
+    //////////////////////////////////////////////////////////
+    /// \brief
     /// Returns the index of the specified item in the collection or -1 if the item does not exist.
     ///
     /// \param keyname
@@ -209,6 +262,47 @@ EXTERNAL_API:
     /// Returns the index of the specified item in the collection or -1 if the item does not exist.
     ///
     virtual INT32 IndexOf(CREFSTRING keyname);
+
+    //////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the index of the specified item in the collection or -1 if the item does not exist.
+    ///
+    /// \param value
+    /// Property to search for
+    ///
+    /// \return
+    /// Returns the index of the specified item in the collection or -1 if the item does not exist.
+    ///
+    virtual INT32 IndexOf(MgStringProperty* value);
+
+    //////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the item in the collection at the specified index position.
+    ///
+    /// \param index
+    /// Input index
+    ///
+    /// \return
+    /// Returns the item in the collection at the specified index position.
+    ///
+    /// \exception MgInvalidArgumentException
+    ///
+    MgStringProperty* GetItem(INT32 index);
+
+    //////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the item in the collection at the specified index position.
+    ///
+    /// \param index
+    /// Input index
+    ///
+    /// \param value
+    /// Value to set
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    void SetItem(INT32 index, MgStringProperty* value);
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -251,32 +345,6 @@ INTERNAL_API:
     /// Stream
     ///
     virtual void Deserialize(MgStream* stream);
-
-    //////////////////////////////////////////////////////////
-    /// \brief
-    /// Gets the item in the collection at the specified index position.
-    ///
-    /// \param index
-    /// Input index
-    ///
-    /// \return
-    /// Returns the item in the collection at the specified index position.
-    ///
-    /// \exception MgInvalidArgumentException
-    ///
-    MgStringProperty* GetItem(INT32 index) const;
-
-    //////////////////////////////////////////////////////////
-    /// \brief
-    /// Adds item to the collection.
-    ///
-    /// \param property
-    /// Property to add
-    ///
-    /// \return
-    /// Returns index in the collection.
-    ///
-    INT32 Add(MgStringProperty* property);
 
     //////////////////////////////////////////////////////////
     /// \brief

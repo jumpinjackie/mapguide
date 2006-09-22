@@ -253,7 +253,6 @@ private:
     static bool Initialize();
     static bool smb_initialize;
 
-//  STRING          m_propertyName;
     STRING          m_qualifiedName;
     STRING          m_description;
     INT16           m_propertyType;

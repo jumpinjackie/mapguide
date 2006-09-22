@@ -66,9 +66,9 @@ void MgPolygonCollection::SetItem(INT32 index, MgPolygon* value)
 // Adds the specified polygon to the end of the collection. Returns the
 // index of the newly added polygon.
 //
-INT32 MgPolygonCollection::Add(MgPolygon* value)
+void MgPolygonCollection::Add(MgPolygon* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -94,9 +94,19 @@ void MgPolygonCollection::Clear()
 // Removes the specified polygon from the collection. Throws an invalid
 // argument exception if the item does not exist within the collection.
 //
-void MgPolygonCollection::Remove(const MgPolygon* value)
+bool MgPolygonCollection::Remove(const MgPolygon* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 ///////////////////////////////////////////////////////////////////////////

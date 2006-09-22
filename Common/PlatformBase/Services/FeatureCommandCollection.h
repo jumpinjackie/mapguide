@@ -115,7 +115,6 @@ PUBLISHED_API:
     /////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Adds the specified command to the end of the collection.
-    /// Returns the index of the newly added command.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -133,9 +132,9 @@ PUBLISHED_API:
     /// or MgUpdateFeatures
     ///
     /// \return
-    /// Returns the index of the newly added command
+    /// Returns nothing.
     ///
-    INT32 Add(MgFeatureCommand* command);
+    void Add(MgFeatureCommand* command);
 
     /// \brief
     /// Inserts the specified command at the specified index within the collection.
@@ -188,24 +187,23 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void Remove(MgFeatureCommand command);
+    /// bool Remove(MgFeatureCommand command);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void Remove(MgFeatureCommand command);
+    /// bool Remove(MgFeatureCommand command);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void Remove(MgFeatureCommand command);
+    /// bool Remove(MgFeatureCommand command);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param command (MgFeatureCommand)
     /// Input command
     ///
     /// \return
-    /// Returns nothing
+    /// Returns true if removal was successful.
     ///
-    /// \exception MgInvalidArgumentException if the command does not exist within the collection.
-    ///
-    void Remove(MgFeatureCommand* command);
+
+    bool Remove(MgFeatureCommand* command);
 
     /// \brief
     /// Removes the specified command from the collection.

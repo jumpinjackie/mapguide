@@ -94,16 +94,15 @@ void MgStringCollection::SetItem(INT32 index, CREFSTRING value)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+/// Adds the specified item to the end of the collection.
 /// </summary>
 /// <param name="value">Input value</param>
 /// <returns>
-/// Returns the index of the newly added item.
+/// Returns nothing.
 /// </returns>
-INT32 MgStringCollection::Add(CREFSTRING value)
+void MgStringCollection::Add(CREFSTRING value)
 {
     m_strProperty.push_back(value);
-    return this->GetCount();
 }
 
 
@@ -140,14 +139,23 @@ void MgStringCollection::Clear()
 /// Removes the specified item from the collection.
 /// </summary>
 /// <param name="value">Input value</param>
-/// <returns>Returns nothing.</returns>
-/// EXCEPTIONS:
-/// InvalidArgument if the item does not exist within the collection.
-void MgStringCollection::Remove(CREFSTRING value)
+/// <returns>Returns true if successful</returns>
+///
+bool MgStringCollection::Remove(CREFSTRING value)
 {
-    INT32 index = this->IndexOf(value);
-    ValidateIndex(index);
-    m_strProperty.erase( m_strProperty.begin( ) + index );
+    bool removed = true;
+    try
+    {
+        INT32 index = this->IndexOf(value);
+        ValidateIndex(index);
+        m_strProperty.erase( m_strProperty.begin( ) + index );
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 

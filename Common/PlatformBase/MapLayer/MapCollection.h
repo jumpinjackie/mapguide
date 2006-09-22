@@ -218,25 +218,23 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void Remove(MgMap value);
+    /// bool Remove(MgMap value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void Remove(MgMap value);
+    /// bool Remove(MgMap value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void Remove(MgMap value);
+    /// bool Remove(MgMap value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgMap)
     /// MgMap to be removed
     ///
     /// \return
-    /// Returns nothing.
+    /// Returns true if removal was successful.
     ///
-    /// \exception MgInvalidArgumentException if the map does not exist within
-    ///  the collection.
     ///
-    void Remove(MgMapBase* value);
+    bool Remove(MgMapBase* value);
 
     ///////////////////////////////////////////////////////////////
     /// \brief

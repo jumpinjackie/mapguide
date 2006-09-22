@@ -63,12 +63,11 @@ void MgCurveSegmentCollection::SetItem(INT32 index, MgCurveSegment* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified coodinate to the end of the collection. Returns the
-// index of the newly added curve segment.
+// Adds the specified coodinate to the end of the collection. 
 //
-INT32 MgCurveSegmentCollection::Add(MgCurveSegment* value)
+void MgCurveSegmentCollection::Add(MgCurveSegment* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -91,12 +90,21 @@ void MgCurveSegmentCollection::Clear()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Removes the specified curve segment from the collection. Throws an invalid
-// argument exception if the item does not exist within the collection.
+// Removes the specified curve segment from the collection. 
 //
-void MgCurveSegmentCollection::Remove(const MgCurveSegment* value)
+bool MgCurveSegmentCollection::Remove(const MgCurveSegment* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 ///////////////////////////////////////////////////////////////////////////

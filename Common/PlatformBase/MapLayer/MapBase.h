@@ -935,32 +935,32 @@ INTERNAL_API:
     /// \brief
     /// Callback method invoked when a group is removed from the group collection
     ///
-    void OnGroupRemoved(MgLayerGroup* group);
+    virtual void OnGroupRemoved(MgLayerGroup* group);
 
     /// \brief
     /// Callback method invoked when a group is added to the group collection
     ///
-    void OnGroupAdded(MgLayerGroup* group);
+    virtual void OnGroupAdded(MgLayerGroup* group);
 
     /// \brief
     /// Callback method invoked when a group visibility has changed
     ///
-    void OnGroupVisibilityChanged(MgLayerGroup* group, CREFSTRING visibility);
+    virtual void OnGroupVisibilityChanged(MgLayerGroup* group, CREFSTRING visibility);
 
     /// \brief
     /// Callback method invoked when the display in legend state of a group has changed
     ///
-    void OnGroupDisplayInLegendChanged(MgLayerGroup* group, CREFSTRING displayInLegendState);
+    virtual void OnGroupDisplayInLegendChanged(MgLayerGroup* group, CREFSTRING displayInLegendState);
 
     /// \brief
     /// Callback method invoked when the legend label of a group has changed
     ///
-    void OnGroupLegendLabelChanged(MgLayerGroup* group, CREFSTRING legendLabel);
+    virtual void OnGroupLegendLabelChanged(MgLayerGroup* group, CREFSTRING legendLabel);
 
     /// \brief
     /// Callback method invoked when the parent of a group has changed
     ///
-    void OnGroupParentChanged(MgLayerGroup* group, CREFSTRING parentId);
+    virtual void OnGroupParentChanged(MgLayerGroup* group, CREFSTRING parentId);
 
     /// \brief
     /// Callback method invoked when a layer is removed from the layer collection

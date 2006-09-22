@@ -108,8 +108,7 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified coordinate to the end of the collection. Returns the
-    /// index of the newly added line string.
+    /// Adds the specified coordinate to the end of the collection. 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -126,9 +125,9 @@ PUBLISHED_API:
     /// line string to add to the collection.
     ///
     /// \return
-    /// Index of the newly added line string.
+    /// Returns nothing.
     ///
-    virtual INT32 Add(MgLineString* value);
+    virtual void Add(MgLineString* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -176,26 +175,26 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified line string from the collection. Throws an invalid
-    /// argument exception if the item does not exist within the collection.
+    /// Removes the specified line string from the collection.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void Remove(const MgLineString value);
+    /// virtual bool Remove(const MgLineString value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void Remove(const MgLineString value);
+    /// bool Remove(const MgLineString value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void Remove(const MgLineString value);
+    /// bool Remove(const MgLineString value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgLineString)
     /// line string reference to remove.
     ///
-    /// \exception MgObjectNotFoundException
+    /// \return
+    /// Returns true if removal was successful.
     ///
-    virtual void Remove(const MgLineString* value);
+    virtual bool Remove(const MgLineString* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

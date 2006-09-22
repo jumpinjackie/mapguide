@@ -113,12 +113,10 @@ INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>
     /// Removes an widget from the collection
-    /// Throws an invalid argument exception if the widget does not exist within the collection.
-    /// </summary>
     /// <param name="value">
     /// Command to be removed
     /// </param>
-    void Remove(MgWebWidget* value);
+    bool Remove(MgWebWidget* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>

@@ -108,27 +108,26 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified coordinate to the end of the collection. Returns the
-    /// index of the newly added curve polygon.
+    /// Adds the specified coordinate to the end of the collection. 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual int Add(MgCurvePolygon value);
+    /// void Add(MgCurvePolygon value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual int Add(MgCurvePolygon value);
+    /// void Add(MgCurvePolygon value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual int Add(MgCurvePolygon value);
+    /// void Add(MgCurvePolygon value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgCurvePolygon)
     /// curve polygon to add to the collection.
     ///
     /// \return
-    /// Index of the newly added curve polygon.
+    /// Returns nothing
     ///
-    virtual INT32 Add(MgCurvePolygon* value);
+    virtual void Add(MgCurvePolygon* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -176,26 +175,26 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified curve polygon from the collection. Throws an invalid
-    /// argument exception if the item does not exist within the collection.
-    ///
+    /// Removes the specified curve polygon from the collection.  Returns false if
+    /// the curve polygon could not be removed.
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void Remove(const MgCurvePolygon value);
+    /// bool Remove(const MgCurvePolygon value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void Remove(const MgCurvePolygon value);
+    /// bool Remove(const MgCurvePolygon value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void Remove(const MgCurvePolygon value);
+    /// bool Remove(const MgCurvePolygon value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgCurvePolygon)
     /// curve polygon reference to remove.
     ///
-    /// \exception MgObjectNotFoundException
+    /// \return
+    /// Returns true if the curve polygon was removed
     ///
-    virtual void Remove(const MgCurvePolygon* value);
+    virtual bool Remove(const MgCurvePolygon* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

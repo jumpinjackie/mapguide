@@ -212,13 +212,13 @@ void MgNamedCollection::SetItem(INT32 index, MgNamedSerializable* value)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+/// Adds the specified item to the end of the collection.
 /// </summary>
 /// <param name="value">Input value</param>
 /// <returns>
-/// Returns the index of the newly added item.
+/// Returns nothing
 /// </returns>
-INT32 MgNamedCollection::Add(MgNamedSerializable* value)
+void MgNamedCollection::Add(MgNamedSerializable* value)
 {
     CheckDuplicate(value, -1);
 
@@ -227,7 +227,7 @@ INT32 MgNamedCollection::Add(MgNamedSerializable* value)
         InsertMap(value);
 
     // Add it to the list
-    return m_dCollection->Add(value);
+    m_dCollection->Add(value);
 }
 
 
@@ -274,18 +274,28 @@ void MgNamedCollection::Clear()
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Removes the specified item from the collection. Throws an invalid argument exception if the item does not exist within the collection.
+/// Removes the specified item from the collection.
 /// </summary>
 /// <param name="value">Input value</param>
-/// <returns>Returns nothing.</returns>
-void MgNamedCollection::Remove(const MgNamedSerializable* value)
+/// <returns>Returns true if successful.</returns>
+bool MgNamedCollection::Remove(const MgNamedSerializable* value)
 {
-    // Remove the item from the map
-    if (m_pNameMap)
-        RemoveMap(value);
+    bool removed = true;
+    try
+    {
+        // Remove the item from the map
+        if (m_pNameMap)
+            RemoveMap(value);
 
-    // Remove it from the list
-    m_dCollection->Remove(value);
+        // Remove it from the list
+        m_dCollection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 

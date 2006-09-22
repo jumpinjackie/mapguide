@@ -66,7 +66,8 @@ void MgLongTransactionReader::Close()
 //////////////////////////////////////////////////////////////
 INT32 MgLongTransactionReader::AddLongTransactionData(MgLongTransactionData* data)
 {
-    return m_longTransactionCol.Add(data);
+    m_longTransactionCol.Add(data);
+    return m_longTransactionCol.GetCount();
 }
 
 //////////////////////////////////////////////////////////////

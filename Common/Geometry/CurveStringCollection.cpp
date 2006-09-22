@@ -66,9 +66,9 @@ void MgCurveStringCollection::SetItem(INT32 index, MgCurveString* value)
 // Adds the specified coodinate to the end of the collection. Returns the
 // index of the newly added curve string.
 //
-INT32 MgCurveStringCollection::Add(MgCurveString* value)
+void MgCurveStringCollection::Add(MgCurveString* value)
 {
-    return m_collection->Add(value);
+    m_collection->Add(value);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -94,9 +94,19 @@ void MgCurveStringCollection::Clear()
 // Removes the specified curve string from the collection. Throws an invalid
 // argument exception if the item does not exist within the collection.
 //
-void MgCurveStringCollection::Remove(const MgCurveString* value)
+bool MgCurveStringCollection::Remove(const MgCurveString* value)
 {
-    m_collection->Remove(value);
+    bool removed = true;
+    try
+    {
+        m_collection->Remove(value);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 ///////////////////////////////////////////////////////////////////////////

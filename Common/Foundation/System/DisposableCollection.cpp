@@ -108,19 +108,19 @@ void MgDisposableCollection::SetItem(INT32 index, MgDisposable* value)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+/// Adds the specified item to the end of the collection.
 /// </summary>
 /// <param name="value">Input value</param>
 /// <returns>
-/// Returns the index of the newly added item.
+/// Returns nothing.
 /// </returns>
-INT32 MgDisposableCollection::Add(MgDisposable* value)
+void MgDisposableCollection::Add(MgDisposable* value)
 {
     if (m_size == m_capacity)
         resize();
 
     m_list[m_size] = SAFE_ADDREF(value);
-    return m_size++;
+    m_size++;
 }
 
 
@@ -172,11 +172,11 @@ void MgDisposableCollection::Clear()
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Removes the specified item from the collection. Throws an invalid argument exception if the item does not exist within the collection.
+/// Removes the specified item from the collection.
 /// </summary>
 /// <param name="value">Input value</param>
-/// <returns>Returns nothing.</returns>
-void MgDisposableCollection::Remove(const MgDisposable* value)
+/// <returns>Returns true if successful</returns>
+bool MgDisposableCollection::Remove(const MgDisposable* value)
 {
     INT32    i;
     for (i = 0; i < m_size; i++)
@@ -186,7 +186,7 @@ void MgDisposableCollection::Remove(const MgDisposable* value)
     }
 
     if (i == m_size)
-        throw new MgObjectNotFoundException(L"Remove", __LINE__, __WFILE__, NULL, L"", NULL); // EXC::Create(GisException::NLSGetMessage(GIS_NLSID(GIS_6_OBJECTNOTFOUND)));
+        return false;
 
     SAFE_RELEASE(m_list[i]);
 
@@ -197,6 +197,7 @@ void MgDisposableCollection::Remove(const MgDisposable* value)
     }
 
     m_list[--m_size] = NULL;
+    return true;
 }
 
 

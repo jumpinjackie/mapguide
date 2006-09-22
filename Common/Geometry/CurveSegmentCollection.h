@@ -108,27 +108,26 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified coordinate to the end of the collection. Returns the
-    /// index of the newly added curve segment.
+    /// Adds the specified coordinate to the end of the collection. 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual int Add(MgCurveSegment value);
+    /// void Add(MgCurveSegment value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual int Add(MgCurveSegment value);
+    /// void Add(MgCurveSegment value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual int Add(MgCurveSegment value);
+    /// void Add(MgCurveSegment value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgCurveSegment)
     /// Curve segment to add to the collection.
     ///
     /// \return
-    /// Index of the newly added curve segment.
+    /// Returns nothing
     ///
-    virtual INT32 Add(MgCurveSegment* value);
+    virtual void Add(MgCurveSegment* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -176,26 +175,27 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified curve segment from the collection. Throws an invalid
-    /// argument exception if the item does not exist within the collection.
+    /// Removes the specified curve segment from the collection. Returns true
+    /// if the curve segment was successfully removed.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void Remove(const MgCurveSegment value);
+    /// bool Remove(const MgCurveSegment value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void Remove(const MgCurveSegment value);
+    /// bool Remove(const MgCurveSegment value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void Remove(const MgCurveSegment value);
+    /// bool Remove(const MgCurveSegment value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgCurveSegment)
     /// Curve segment reference to remove.
     ///
-    /// \exception MgObjectNotFoundException
+    /// \return
+    /// Returns true if curve segment was successfully removed.
     ///
-    virtual void Remove(const MgCurveSegment* value);
+    virtual bool Remove(const MgCurveSegment* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

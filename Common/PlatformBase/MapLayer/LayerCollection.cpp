@@ -139,17 +139,27 @@ void MgLayerCollection::Clear()
 }
 
 // Removes an item from the collection
-// Throws an invalid argument exception if the item does not exist within the collection.
+// Returns true if successful.
 //
-void MgLayerCollection::Remove(MgLayerBase* value)
+bool MgLayerCollection::Remove(MgLayerBase* value)
 {
-    Ptr<MgLayerBase> layer = SAFE_ADDREF(value);
+    bool removed = true;
+    try
+    {
+        Ptr<MgLayerBase> layer = SAFE_ADDREF(value);
 
-    //value is released by m_layers base class
-    m_layers->Remove(value);
+        //value is released by m_layers base class
+        m_layers->Remove(value);
 
-    if (m_owner)
-        m_owner->OnLayerRemoved(layer);
+        if (m_owner)
+            m_owner->OnLayerRemoved(layer);
+    }
+    catch (MgException* e)
+    {
+        e->Release();
+        removed = false;
+    }
+    return removed;
 }
 
 // Removes an item from the collection at the specified index

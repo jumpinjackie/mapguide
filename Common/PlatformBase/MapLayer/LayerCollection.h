@@ -219,25 +219,23 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void Remove(MgLayer value);
+    /// bool Remove(MgLayer value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void Remove(MgLayer value);
+    /// bool Remove(MgLayer value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void Remove(MgLayer value);
+    /// bool Remove(MgLayer value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgLayer)
     /// Layer to be removed.
     ///
     /// \return
-    /// Returns nothing.
+    /// Returns true if removal was successful.
     ///
-    /// \exception MgInvalidAgumentException if the layer does not exist
-    ///  within the collection.
     ///
-    void Remove(MgLayerBase* value);
+    bool Remove(MgLayerBase* value);
 
     //////////////////////////////////////////////////////////
     /// \brief

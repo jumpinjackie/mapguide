@@ -40,17 +40,17 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified item to the end of the collection. Returns the index of the newly added item.
+    /// Adds the specified item to the end of the collection.
     ///
     /// \param value
     /// Input value
     ///
     /// \return
-    /// Returns the index of the newly added item.
+    /// Returns nothing
     ///
     /// \exception MgDuplicateObjectException if it is duplicate.
     ///
-    INT32 Add(MgConfigurationSection* value);
+    void Add(MgConfigurationSection* value);
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -78,11 +78,9 @@ INTERNAL_API:
     /// Input value
     ///
     /// \return
-    /// Returns nothing.
+    /// Returns true if successful.
     ///
-    /// \exception MgObjectNotFoundException if the item does not exist within the collection.
-    ///
-    void Remove(MgConfigurationSection* value);
+    bool Remove(MgConfigurationSection* value);
 
     //////////////////////////////////////////////////////////
     /// \brief

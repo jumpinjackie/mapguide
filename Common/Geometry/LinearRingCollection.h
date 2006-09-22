@@ -108,27 +108,26 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified coordinate to the end of the collection. Returns the
-    /// index of the newly added linear ring.
+    /// Adds the specified coordinate to the end of the collection. 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual int Add(MgLinearRing value);
+    /// void Add(MgLinearRing value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual int Add(MgLinearRing value);
+    /// void Add(MgLinearRing value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual int Add(MgLinearRing value);
+    /// void Add(MgLinearRing value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgLinearRing)
     /// linear ring to add to the collection.
     ///
     /// \return
-    /// Index of the newly added linear ring.
+    /// Returns nothing
     ///
-    virtual INT32 Add(MgLinearRing* value);
+    virtual void Add(MgLinearRing* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -176,26 +175,27 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified linear ring from the collection. Throws an invalid
-    /// argument exception if the item does not exist within the collection.
+    /// Removes the specified linear ring from the collection. Returns true
+    /// if removal was successful.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void Remove(const MgLinearRing value);
+    /// bool Remove(const MgLinearRing value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void Remove(const MgLinearRing value);
+    /// bool Remove(const MgLinearRing value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void Remove(const MgLinearRing value);
+    /// bool Remove(const MgLinearRing value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param value (MgLinearRing)
     /// linear ring reference to remove.
     ///
-    /// \exception MgObjectNotFoundException
+    /// \return
+    /// Returns true if successful.
     ///
-    virtual void Remove(const MgLinearRing* value);
+    virtual bool Remove(const MgLinearRing* value);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
