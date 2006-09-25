@@ -92,6 +92,7 @@ class MDFPARSER_API FSDSAX2Parser : public DefaultHandler
         ~FSDSAX2Parser();
         void Flush();
         void Initialize();
+        void DisableTabs();
         void ParseFile(std::string str);
         void ParseFile(char* str);
         void ParseString(const char* str, unsigned int numBytes);

@@ -65,6 +65,11 @@ namespace MdfParser
         m_strbuffer = L"";
     }
 
+    void FSDSAX2Parser::DisableTabs()
+    {
+        disableTabs();
+    }
+
     void FSDSAX2Parser::error(const SAXException &exc)
     {
         this->m_strParserError = toMdfString(XMLString::transcode(exc.getMessage()));
