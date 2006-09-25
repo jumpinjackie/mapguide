@@ -29,6 +29,15 @@
 
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
+
+// Linux version of GetTickCount()
+#include <sys/times.h>
+
+long GetTickCount()
+{
+    tms tm;
+    return times(&tm);
+}
 #endif
 
 
@@ -132,7 +141,7 @@ MgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFea
                                                         MgCoordinateSystem* layerCs)
 {
 #ifdef _DEBUG
-    DWORD dwStart = GetTickCount();
+    long dwStart = GetTickCount();
 #endif
 
     //get feature source id
@@ -398,7 +407,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                       double scale)
 {
 #ifdef _DEBUG
-    DWORD dwStart = GetTickCount();
+    long dwStart = GetTickCount();
     printf("\nStylizeLayers() **MAPSTART** Layers: %d\n", layers->GetCount());
 #endif
 
@@ -453,7 +462,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
             if (vl)
             {
 #ifdef _DEBUG
-                DWORD dwLayerStart = GetTickCount();
+                long dwLayerStart = GetTickCount();
 #endif
 
                 // make sure we have a valid scale range
@@ -747,7 +756,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
             else if (gl)
             {
 #ifdef _DEBUG
-                DWORD dwLayerStart = GetTickCount();
+                long dwLayerStart = GetTickCount();
 #endif
 
                 // make sure we have a valid scale range
@@ -921,7 +930,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
             else if (dl) //drawing layer
             {
 #ifdef _DEBUG
-                DWORD dwLayerStart = GetTickCount();
+                long dwLayerStart = GetTickCount();
 #endif
 
                 // make sure we have a valid scale range
