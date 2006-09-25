@@ -26,15 +26,13 @@ int tabcount = 0;
 
 std::string tab()
 {
+    std::string ret;
     if (tabsEnabled)
     {
-        std::string ret;
-        for(int x = 0; x < tabcount; x++)
-        {
-            ret += "  ";
-        }
-        return ret;
+        ret.reserve(tabcount);
+        ret.append(tabcount, ' ');
     }
+    return ret;
 }
 
 void inctab()
