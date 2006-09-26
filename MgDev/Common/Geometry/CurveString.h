@@ -115,7 +115,7 @@ PUBLISHED_API:
     /// \return
     /// The number of curve segments.
     ///
-    virtual INT32 GetCount();
+    virtual INT32 GetCount();  /// __get
 
     ///////////////////////////////////////////////////////////////////////
     /// \brief
@@ -140,7 +140,7 @@ PUBLISHED_API:
     /// \return
     /// The MgCurveSegment at the specified index.
     ///
-    virtual MgCurveSegment* GetSegment(INT32 index);
+    virtual MgCurveSegment* GetSegment(INT32 index);  
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -153,7 +153,7 @@ PUBLISHED_API:
     /// virtual MgCoordinate GetStartCoordinate();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual MgCoordinate* GetStartCoordinate();
+    virtual MgCoordinate* GetStartCoordinate();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -166,7 +166,7 @@ PUBLISHED_API:
     /// virtual MgCoordinate GetEndCoordinate();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual MgCoordinate* GetEndCoordinate();
+    virtual MgCoordinate* GetEndCoordinate();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -179,7 +179,7 @@ PUBLISHED_API:
     /// virtual int GetGeometryType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetGeometryType();
+    virtual INT32 GetGeometryType();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -192,7 +192,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

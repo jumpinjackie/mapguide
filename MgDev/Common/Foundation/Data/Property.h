@@ -60,7 +60,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property type. See MgPropertyType.
     ///
-    virtual INT16 GetPropertyType() = 0;
+    virtual INT16 GetPropertyType() = 0;  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -80,7 +80,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property name.
     ///
-    STRING GetName();
+    STRING GetName();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief

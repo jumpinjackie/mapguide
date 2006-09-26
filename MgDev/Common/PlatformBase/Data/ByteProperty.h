@@ -76,7 +76,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-    BYTE GetValue();
+    BYTE GetValue();  /// __get, __set
 
     ////////////////////////////////////////////////////
     /// \brief
@@ -96,7 +96,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property type MgPropertyType::Byte.
     ///
-    INT16 GetPropertyType();
+    INT16 GetPropertyType();   /// __get
 
     //////////////////////////////////////////////////////////////////////////
     /// \brief

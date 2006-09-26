@@ -55,7 +55,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -68,7 +68,7 @@ PUBLISHED_API:
     /// virtual double GetX();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual double GetX();
+    virtual double GetX();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -81,7 +81,7 @@ PUBLISHED_API:
     /// virtual double GetY();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual double GetY();
+    virtual double GetY();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -94,7 +94,7 @@ PUBLISHED_API:
     /// virtual double GetZ();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual double GetZ();
+    virtual double GetZ();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -107,7 +107,7 @@ PUBLISHED_API:
     /// virtual double GetM();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual double GetM();
+    virtual double GetM();  /// __get
 
 INTERNAL_API:
 

@@ -104,7 +104,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the name of the long transaction.
     ///
-    STRING GetName();
+    STRING GetName();   /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -125,7 +125,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the description of the long transaction.
     ///
-    STRING GetDescription();
+    STRING GetDescription();   /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -153,7 +153,7 @@ PUBLISHED_API:
     /// direct descendants for the long transaction currently being
     /// read.
     ///
-    MgLongTransactionReader* GetChildren();
+    MgLongTransactionReader* GetChildren();   /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -181,7 +181,7 @@ PUBLISHED_API:
     /// direct ascendants for the long transaction currently being
     /// read.
     ///
-    MgLongTransactionReader* GetParents();
+    MgLongTransactionReader* GetParents();   /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -201,7 +201,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the owner name.
     ///
-    STRING GetOwner();
+    STRING GetOwner();   /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -223,7 +223,7 @@ PUBLISHED_API:
     /// Returns an MgDateTime object containing the date when the
     /// long transaction was created.
     ///
-    MgDateTime* GetCreationDate();
+    MgDateTime* GetCreationDate();   /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief

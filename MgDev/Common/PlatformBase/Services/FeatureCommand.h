@@ -54,7 +54,7 @@ PUBLISHED_API:
     /// Returns one of the constants defined in
     /// MgFeatureCommandType.
     ///
-    virtual INT32 GetCommandType() const = 0;
+    virtual INT32 GetCommandType() const = 0;  /// __get
 };
 /// \}
 

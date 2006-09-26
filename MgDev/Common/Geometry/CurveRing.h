@@ -52,7 +52,7 @@ PUBLISHED_API:
     /// virtual int GetComponentType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetComponentType();
+    virtual INT32 GetComponentType();  /// __get
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -72,7 +72,7 @@ PUBLISHED_API:
     /// \return
     /// The number of curve segments.
     ///
-    virtual INT32 GetCount();
+    virtual INT32 GetCount();  /// __get
 
     ////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -96,7 +96,7 @@ PUBLISHED_API:
     /// \return
     /// The MgCurveSegment at the specified index.
     ///
-    virtual MgCurveSegment* GetSegment(INT32 index);
+    virtual MgCurveSegment* GetSegment(INT32 index);  
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -109,7 +109,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

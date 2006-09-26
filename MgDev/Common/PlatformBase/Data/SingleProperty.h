@@ -77,7 +77,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-    float GetValue();
+    float GetValue();  /// __get, __set
 
     /////////////////////////////////////////////////////////
     /// \brief
@@ -98,7 +98,7 @@ PUBLISHED_API:
     /// Returns the property type MgPropertyType::Single.
     ///
     ///
-    INT16 GetPropertyType();
+    INT16 GetPropertyType();  /// __get
 
     ////////////////////////////////////////////////////////////////
     /// \brief

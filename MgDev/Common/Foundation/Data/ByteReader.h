@@ -123,7 +123,7 @@ PUBLISHED_API:
     /// string representing the type, for example text/xml
     ///
     ///
-    STRING GetMimeType();
+    STRING GetMimeType();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -159,7 +159,7 @@ EXTERNAL_API:
     /// \return
     /// Remaining length of underlying byte source
     ///
-    virtual INT64 GetLength();
+    virtual INT64 GetLength(); 
 
 INTERNAL_API:
     //////////////////////////////////////////////////////////////////

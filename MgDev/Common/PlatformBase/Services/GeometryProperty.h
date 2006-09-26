@@ -84,7 +84,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-    MgByteReader* GetValue();
+    MgByteReader* GetValue();  /// __get, __set
 
     ///////////////////////////////////////////////////////////
     /// \brief
@@ -104,7 +104,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property type MgPropertyType::Geometry.
     ///
-    INT16 GetPropertyType();
+    INT16 GetPropertyType();   /// __get
 
     ///////////////////////////////////////////////////////////////////////
     /// \brief

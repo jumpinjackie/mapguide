@@ -65,7 +65,7 @@ PUBLISHED_API:
     /// \return
     /// Returns MgFeatureCommandType::UnlockFeatures.
     ///
-    virtual INT32 GetCommandType() const; 
+    virtual INT32 GetCommandType() const;   /// __get
     
     ////////////////////////////////////////////////////
     /// \brief
@@ -85,7 +85,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the name of the feature class.
     ///
-    STRING GetFeatureClassName() const;
+    STRING GetFeatureClassName() const;  /// __get
     
     ////////////////////////////////////////////////////
     /// \brief
@@ -105,7 +105,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the filter text.
     ///
-    STRING GetFilterText() const;
+    STRING GetFilterText() const;   /// __get
     
 INTERNAL_API:
 

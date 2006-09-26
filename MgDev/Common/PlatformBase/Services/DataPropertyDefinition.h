@@ -75,7 +75,7 @@ PUBLISHED_API:
     /// Returns the data type of this property. See MgPropertyType
     /// for the different data types.
     ///
-    INT32 GetDataType();
+    INT32 GetDataType();  /// __get, __set
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -96,7 +96,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the length of a String, BLOB, or CLOB data property.
     ///
-    INT32 GetLength();
+    INT32 GetLength();  /// __get, __set
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -121,7 +121,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the precision.
     ///
-    INT32 GetPrecision();
+    INT32 GetPrecision();  /// __get, __set
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -146,7 +146,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the scale.
     ///
-    INT32 GetScale();
+    INT32 GetScale();  /// __get, __set
 
     //////////////////////////////////////////////////////////////
     /// \brief
@@ -188,7 +188,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the default value.
     ///
-    STRING GetDefaultValue();
+    STRING GetDefaultValue();  /// __get, __set
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -210,7 +210,7 @@ PUBLISHED_API:
     /// Returns true if the property's value can be null; otherwise
     /// returns false.
     ///
-    bool GetNullable();
+    bool GetNullable();  /// __get, __set
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -232,7 +232,7 @@ PUBLISHED_API:
     /// Returns a Boolean value that indicates whether this property
     /// is read-only.
     ///
-    bool GetReadOnly();
+    bool GetReadOnly();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief

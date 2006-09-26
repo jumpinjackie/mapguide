@@ -86,7 +86,7 @@ PUBLISHED_API:
     /// \return
     /// Returns MgFeatureCommandType::DeleteFeatures.
     ///
-    INT32 GetCommandType() const;
+    INT32 GetCommandType() const;  /// __get
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -106,7 +106,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the feature class name of the feature objects to be deleted
     ///
-    STRING GetFeatureClassName() const;
+    STRING GetFeatureClassName() const;  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -128,7 +128,7 @@ PUBLISHED_API:
     /// Returns the filter used to select the features to be deleted
     /// from the datastore.
     ///
-    STRING GetFilterText() const;
+    STRING GetFilterText() const;  /// __get
 
 EXTERNAL_API:
 

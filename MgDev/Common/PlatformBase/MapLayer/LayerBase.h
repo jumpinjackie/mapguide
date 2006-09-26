@@ -99,7 +99,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetName();
+    STRING GetName();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -148,7 +148,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetObjectId();
+    STRING GetObjectId();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -168,7 +168,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the type of the layer.
     ///
-    INT32 GetLayerType();
+    INT32 GetLayerType();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -199,7 +199,7 @@ PUBLISHED_API:
     /// stored internally, versus how they are shown in e.g.
     /// Studio.]]
     ///
-    MgLayerGroup* GetGroup();
+    MgLayerGroup* GetGroup();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -304,7 +304,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetVisible();
+    bool GetVisible();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -399,7 +399,7 @@ PUBLISHED_API:
     /// \todo
     /// [[Job for Philip: Do I have that in the example????]]
     ///
-    bool GetSelectable();
+    bool GetSelectable();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -448,7 +448,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgResourceIdentifier* GetLayerDefinition();
+    MgResourceIdentifier* GetLayerDefinition();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -520,7 +520,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetDisplayInLegend();
+    bool GetDisplayInLegend();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -572,7 +572,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetExpandInLegend();
+    bool GetExpandInLegend();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -597,7 +597,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetLegendLabel();
+    STRING GetLegendLabel();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -641,7 +641,7 @@ PUBLISHED_API:
     /// Returns the feature source or an empty string if this layer is not a feature layer
     /// false otherwise.
     ///
-    STRING GetFeatureSourceId();
+    STRING GetFeatureSourceId();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -662,7 +662,7 @@ PUBLISHED_API:
     /// Returns the feature class name or an empty string if this layer is not a feature layer
     /// false otherwise.
     ///
-    STRING GetFeatureClassName();
+    STRING GetFeatureClassName();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -683,7 +683,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the feature geometry name or an empty string if this layer is not a feature layer
     ///
-    STRING GetFeatureGeometryName();
+    STRING GetFeatureGeometryName();  /// _get
 
 INTERNAL_API:
 

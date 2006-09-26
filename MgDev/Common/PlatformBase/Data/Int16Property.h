@@ -76,7 +76,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-    INT16 GetValue();
+    INT16 GetValue();  /// __get, __set
 
     ////////////////////////////////////////////////////////
     /// \brief
@@ -97,7 +97,7 @@ PUBLISHED_API:
     /// Returns the property type MgPropertyType::Int16.
     ///
     ///
-    INT16 GetPropertyType();
+    INT16 GetPropertyType();  /// __get
 
     ////////////////////////////////////////////////////////////////////
     /// \brief

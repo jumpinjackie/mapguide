@@ -79,7 +79,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-    double GetValue();
+    double GetValue();   /// __get, __set
 
     //////////////////////////////////////////////////////
     /// \brief
@@ -99,7 +99,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property type MgPropertyType::Double.
     ///
-    INT16 GetPropertyType();
+    INT16 GetPropertyType();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief

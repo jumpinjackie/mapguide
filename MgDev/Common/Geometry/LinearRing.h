@@ -55,7 +55,7 @@ PUBLISHED_API:
     /// virtual int GetComponentType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetComponentType();
+    virtual INT32 GetComponentType();  /// __get
 
     //////////////////////////////////////////////////////////////
     /// \brief
@@ -89,7 +89,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

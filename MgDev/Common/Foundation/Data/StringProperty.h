@@ -80,7 +80,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-    STRING GetValue();
+    STRING GetValue();  /// __get
 
     /////////////////////////////////////////////////////////
     /// \brief
@@ -101,7 +101,7 @@ PUBLISHED_API:
     /// Returns the property type MgPropertyType::String.
     ///
     ///
-    INT16 GetPropertyType();
+    INT16 GetPropertyType();  /// __get
 
     ////////////////////////////////////////////////////////////////////////
     /// \brief

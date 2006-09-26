@@ -141,7 +141,7 @@ PUBLISHED_API:
     /// \return
     /// An MgCurveRing that defines the exterior ring of the polygon.
     ///
-    virtual MgCurveRing* GetExteriorRing();
+    virtual MgCurveRing* GetExteriorRing();  /// __get
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -161,7 +161,7 @@ PUBLISHED_API:
     /// \return
     /// The number of interior rings.
     ///
-    virtual INT32 GetInteriorRingCount();
+    virtual INT32 GetInteriorRingCount();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -186,7 +186,7 @@ PUBLISHED_API:
     /// \return
     /// The MgCurveRing at the specified index.
     ///
-    virtual MgCurveRing* GetInteriorRing(INT32 index);
+    virtual MgCurveRing* GetInteriorRing(INT32 index);  
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -199,7 +199,7 @@ PUBLISHED_API:
     /// virtual int GetGeometryType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetGeometryType();
+    virtual INT32 GetGeometryType();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -212,7 +212,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

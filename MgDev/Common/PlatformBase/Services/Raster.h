@@ -90,7 +90,7 @@ PUBLISHED_API:
     /// \return
     /// Returns MgEnvelope object containing bounds
     ///
-    MgEnvelope* GetBounds();
+    MgEnvelope* GetBounds();   /// __get
 
     /// \brief
     /// Gets the size of image file in the horizontal
@@ -110,7 +110,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the horizontal image size in pixels (number of columns).
     ///
-    INT32 GetImageXSize();
+    INT32 GetImageXSize();   /// __get, __set
 
     /// \brief
     /// Sets the size of image file in the horizontal
@@ -168,7 +168,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the vertical image size in pixels (number of rows).
     ///
-    INT32 GetImageYSize();
+    INT32 GetImageYSize();   /// __get, __set
 
     /// \brief
     /// Sets the size of image file in the vertical
@@ -227,13 +227,13 @@ PUBLISHED_API:
     /// \return
     /// Streamed raster image
     ///
-    MgByteReader* GetStream();
+    MgByteReader* GetStream();   
 
     ///Returns the number of bits per pixel
-    INT32 GetBitsPerPixel();
+    INT32 GetBitsPerPixel();   /// __get
 
     ///Returns the type of pixel color data (RGB, RGBA, Bitonal, etc.)
-    INT32 GetDataModelType();
+    INT32 GetDataModelType();   /// __get
 
 INTERNAL_API:
 

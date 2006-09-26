@@ -48,7 +48,7 @@ PUBLISHED_API:
     /// \return
     /// An MgPoint that defines a point in the region.
     ///
-    virtual MgPoint* GetPointInRegion();
+    virtual MgPoint* GetPointInRegion();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -69,7 +69,7 @@ PUBLISHED_API:
     /// \return
     /// The coordinates of this geometric entity
     ///
-    virtual MgCoordinateIterator* GetCoordinates() = 0;
+    virtual MgCoordinateIterator* GetCoordinates() = 0;  /// __get
 
 INTERNAL_API:
 

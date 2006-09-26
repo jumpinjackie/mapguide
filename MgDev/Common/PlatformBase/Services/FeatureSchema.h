@@ -93,7 +93,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the name of the schema.
     ///
-    STRING GetName();
+    STRING GetName();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -136,7 +136,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the description of the schema.
     ///
-    STRING GetDescription();
+    STRING GetDescription();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief

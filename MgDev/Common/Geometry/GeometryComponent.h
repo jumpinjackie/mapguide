@@ -59,7 +59,7 @@ PUBLISHED_API:
     /// Returns one of the values defined in
     /// MgGeometryComponentType.
     ///
-    virtual INT32 GetComponentType() = 0;
+    virtual INT32 GetComponentType() = 0;  /// __get
 
 INTERNAL_API:
 

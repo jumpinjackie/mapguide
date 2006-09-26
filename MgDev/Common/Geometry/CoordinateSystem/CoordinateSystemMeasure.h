@@ -137,7 +137,7 @@ PUBLISHED_API:
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
     ///
-    virtual double GetDistance(MgCoordinate* coord1, MgCoordinate* coord2);
+    virtual double GetDistance(MgCoordinate* coord1, MgCoordinate* coord2);  
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -185,7 +185,7 @@ PUBLISHED_API:
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
     ///
-    virtual double GetDistance(double x1, double y1, double x2, double y2);
+    virtual double GetDistance(double x1, double y1, double x2, double y2);  
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -240,7 +240,7 @@ PUBLISHED_API:
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
     ///
-    virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2);
+    virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2);  
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -290,7 +290,7 @@ PUBLISHED_API:
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
     ///
-    virtual double GetAzimuth(double x1, double y1, double x2, double y2);
+    virtual double GetAzimuth(double x1, double y1, double x2, double y2);  
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -353,7 +353,7 @@ PUBLISHED_API:
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
     ///
-    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);
+    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);  
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -408,7 +408,7 @@ PUBLISHED_API:
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
     ///
-    virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance);
+    virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance);  
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -447,7 +447,7 @@ PUBLISHED_API:
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
     ///
-    virtual MgEnvelope* GetEnvelope();
+    virtual MgEnvelope* GetEnvelope();  /// __get
 
 INTERNAL_API:
     virtual ~MgCoordinateSystemMeasure();

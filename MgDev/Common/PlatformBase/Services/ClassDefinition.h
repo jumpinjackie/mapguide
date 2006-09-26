@@ -72,7 +72,7 @@ PUBLISHED_API:
     /// Returns a collection of the property definitions for this
     /// class.
     ///
-    MgPropertyDefinitionCollection* GetProperties();
+    MgPropertyDefinitionCollection* GetProperties();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -95,7 +95,7 @@ PUBLISHED_API:
     /// Returns a collection of data property definitions that can
     /// be used to uniquely identify instances of this class.
     ///
-    MgPropertyDefinitionCollection* GetIdentityProperties();
+    MgPropertyDefinitionCollection* GetIdentityProperties();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -115,7 +115,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the name of the default geometry property.
     ///
-    STRING GetDefaultGeometryPropertyName();
+    STRING GetDefaultGeometryPropertyName();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -182,7 +182,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the feature class name.
     ///
-    STRING GetName();
+    STRING GetName();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -225,7 +225,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the feature class description.
     ///
-    STRING GetDescription();
+    STRING GetDescription();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -246,7 +246,7 @@ PUBLISHED_API:
     /// Returns the feature class definition or NULL if no base
     /// class is defined.
     ///
-    MgClassDefinition* GetBaseClassDefinition();
+    MgClassDefinition* GetBaseClassDefinition();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief

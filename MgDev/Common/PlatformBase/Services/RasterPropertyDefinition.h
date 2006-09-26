@@ -74,7 +74,7 @@ PUBLISHED_API:
     /// Returns true if this property is read-only; otherwise
     /// returns false.
     ///
-    bool GetReadOnly();
+    bool GetReadOnly();   /// __get, __set
 
     ///////////////////////////////////////////////////////////////
     /// \brief
@@ -96,7 +96,7 @@ PUBLISHED_API:
     /// Returns a Boolean value that indicates whether this
     /// property's value can be null.
     ///
-    bool GetNullable();
+    bool GetNullable();   /// __get, __set
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -118,7 +118,7 @@ PUBLISHED_API:
     /// Returns the default horizontal image size in pixels (number
     /// of columns).
     ///
-    INT32 GetDefaultImageXSize();
+    INT32 GetDefaultImageXSize();   /// __get, __set
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -140,7 +140,7 @@ PUBLISHED_API:
     /// Returns the default vertical image size in pixels (number of
     /// rows).
     ///
-    INT32 GetDefaultImageYSize();
+    INT32 GetDefaultImageYSize();   /// __get, __set
 
     /////////////////////////////////////////////////////////////////////////////////////////
     /// \brief

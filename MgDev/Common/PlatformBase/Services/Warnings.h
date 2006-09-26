@@ -83,7 +83,7 @@ PUBLISHED_API:
     /// \return
     /// Number of warning messages
     ///
-    INT32 GetCount();
+    INT32 GetCount();   /// __get
 
 INTERNAL_API:
 

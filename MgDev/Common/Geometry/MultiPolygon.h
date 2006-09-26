@@ -83,7 +83,7 @@ PUBLISHED_API:
     /// virtual int GetCount();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetCount();
+    virtual INT32 GetCount();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -108,7 +108,7 @@ PUBLISHED_API:
     /// \return
     /// The MgPolygon at the specified index
     ///
-    virtual MgPolygon* GetPolygon(INT32 index);
+    virtual MgPolygon* GetPolygon(INT32 index);  
 
     /////////////////////////////////////////////////////////////////
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -122,7 +122,7 @@ PUBLISHED_API:
     /// virtual int GetGeometryType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetGeometryType();
+    virtual INT32 GetGeometryType();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -136,7 +136,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -223,7 +223,7 @@ PUBLISHED_API:
     /// \return
     /// The coordinates of this geometric entity
     ///
-    virtual MgCoordinateIterator* GetCoordinates();
+    virtual MgCoordinateIterator* GetCoordinates();  /// __get
 
 INTERNAL_API:
 
