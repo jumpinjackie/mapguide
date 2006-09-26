@@ -28,6 +28,30 @@ MgObject::~MgObject()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Get the unique identifier for the class.
+///
+/// \return
+/// Class Identifier.
+///
+INT32 MgObject::GetClassId()
+{
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Get the name of the class.
+///
+/// \return
+/// Returns the name of the class.
+///
+STRING MgObject::GetClassName()
+{ 
+    return L"Not Defined";   // NOXLATE
+}  
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Determine if this object is of the specified class.

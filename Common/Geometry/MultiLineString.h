@@ -82,7 +82,7 @@ PUBLISHED_API:
     /// virtual int GetCount();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetCount();
+    virtual INT32 GetCount();  /// __get
 
     //////////////////////////////////////////////////////////////////////
     /// \brief
@@ -107,7 +107,7 @@ PUBLISHED_API:
     /// \return
     /// The MgLineString at the specified index.
     ///
-    virtual MgLineString* GetLineString(INT32 index);
+    virtual MgLineString* GetLineString(INT32 index);  
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -120,7 +120,7 @@ PUBLISHED_API:
     /// virtual int GetGeometryType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetGeometryType();
+    virtual INT32 GetGeometryType();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -133,7 +133,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

@@ -65,7 +65,7 @@ PUBLISHED_API:
     /// \return
     /// The number of geometries.
     ///
-    virtual INT32 GetCount() = 0;
+    virtual INT32 GetCount() = 0;  /// __get
 
 INTERNAL_API:
 

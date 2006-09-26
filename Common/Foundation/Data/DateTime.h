@@ -178,7 +178,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the day component of this object.
     ///
-    INT8 GetDay();
+    INT8 GetDay();  /// __get, __set
 
     /// \brief
     /// Gets the month component of this object
@@ -197,7 +197,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the month component of this object.
     ///
-    INT8 GetMonth();
+    INT8 GetMonth();  /// __get, __set
 
     /// \brief
     /// Gets the year component of this object
@@ -216,7 +216,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the year component of this object.
     ///
-    INT16 GetYear();
+    INT16 GetYear();  /// __get, __set
 
     /// \brief
     /// Gets the hour component of this object
@@ -235,7 +235,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the hour component of this object.
     ///
-    INT8 GetHour();
+    INT8 GetHour();  /// __get, __set
 
     /// \brief
     /// Gets the minute component of this object
@@ -254,7 +254,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the minute component of this object.
     ///
-    INT8 GetMinute();
+    INT8 GetMinute();  /// __get, __set
 
     /// \brief
     /// Gets the second component of this object
@@ -273,7 +273,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the second component of this object.
     ///
-    INT8 GetSecond();
+    INT8 GetSecond();  /// __get, __set
 
     /// \brief
     /// Gets the microsecond component of this object
@@ -292,7 +292,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the microsecond component of this object.
     ///
-    INT32 GetMicrosecond();
+    INT32 GetMicrosecond();  /// __get, __set
 
     /// \brief
     /// Sets the day component of this object

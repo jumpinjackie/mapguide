@@ -57,7 +57,7 @@ PUBLISHED_API:
     /// \return
     /// An MgCoordinate that defines the starting coordinate.
     ///
-    virtual MgCoordinate* GetStartCoordinate() = 0;
+    virtual MgCoordinate* GetStartCoordinate() = 0;  /// __get
 
     ////////////////////////////////////////////////////////
     /// \brief
@@ -77,7 +77,7 @@ PUBLISHED_API:
     /// \return
     /// An MgCoordinate that defines the ending coordinate.
     ///
-    virtual MgCoordinate* GetEndCoordinate() = 0;
+    virtual MgCoordinate* GetEndCoordinate() = 0;  /// __get
 
 INTERNAL_API:
     //////////////////////////////////////////////////////////////////

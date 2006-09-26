@@ -108,7 +108,7 @@ PUBLISHED_API:
     /// virtual MgCoordinate GetStartCoordinate();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual MgCoordinate* GetStartCoordinate();
+    virtual MgCoordinate* GetStartCoordinate();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -121,7 +121,7 @@ PUBLISHED_API:
     /// virtual MgCoordinate GetEndCoordinate();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual MgCoordinate* GetEndCoordinate();
+    virtual MgCoordinate* GetEndCoordinate();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -134,7 +134,7 @@ PUBLISHED_API:
     /// virtual int GetGeometryType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetGeometryType();
+    virtual INT32 GetGeometryType();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -147,7 +147,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

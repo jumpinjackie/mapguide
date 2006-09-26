@@ -210,7 +210,7 @@ PUBLISHED_API:
     /// \return
     /// Returns MgFeatureCommandType::InsertFeatures.
     ///
-    INT32 GetCommandType() const;
+    INT32 GetCommandType() const;   /// __get
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -230,7 +230,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the collection of property values to be inserted.
     ///
-    MgPropertyCollection* GetPropertyValues() const;
+    MgPropertyCollection* GetPropertyValues() const;   /// __get
 
     /////////////////////////////////////////////////////////
     /// \brief
@@ -250,7 +250,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the feature class name specified in the constructor.
     ///
-    STRING GetFeatureClassName() const;
+    STRING GetFeatureClassName() const;   /// __get
 
 EXTERNAL_API:
 

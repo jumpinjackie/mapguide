@@ -77,7 +77,7 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgClassDefinition object.
     ///
-    MgClassDefinition* GetClassDefinition();
+    MgClassDefinition* GetClassDefinition();   /// __get, __set
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -98,7 +98,7 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgObjectPropertyType value.
     ///
-    INT32 GetObjectType();
+    INT32 GetObjectType();   /// __get, __set
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -124,7 +124,7 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgOrderingOption value.
     ///
-    INT32 GetOrderType();
+    INT32 GetOrderType();   /// __get, __set
 
     //////////////////////////////////////////////////////////////
     /// \brief
@@ -152,7 +152,7 @@ PUBLISHED_API:
     /// the object property is MgObjectPropertyType::Collection or
     /// MgObjectPropertyType::OrderedCollection.
     ///
-    MgDataPropertyDefinition* GetIdentityProperty();
+    MgDataPropertyDefinition* GetIdentityProperty();   /// __get, __set
 
     ////////////////////////////////////////////////////////////////////////////////////
     /// \brief

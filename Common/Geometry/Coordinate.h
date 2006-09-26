@@ -70,7 +70,7 @@ PUBLISHED_API:
     /// defines the dimensions supported by this coordinate.
     ///
     ///
-    virtual INT32 GetDimension() = 0;
+    virtual INT32 GetDimension() = 0;  /// __get
 
     ////////////////////////////////////////
     /// \brief
@@ -91,7 +91,7 @@ PUBLISHED_API:
     /// Returns the X value.
     ///
     ///
-    virtual double GetX() = 0;
+    virtual double GetX() = 0;  /// __get
 
     ////////////////////////////////////////
     /// \brief
@@ -112,7 +112,7 @@ PUBLISHED_API:
     /// Returns the Y value.
     ///
     ///
-    virtual double GetY() = 0;
+    virtual double GetY() = 0;  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -134,7 +134,7 @@ PUBLISHED_API:
     /// set.
     ///
     ///
-    virtual double GetZ() = 0;
+    virtual double GetZ() = 0;  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -156,7 +156,7 @@ PUBLISHED_API:
     /// set.
     ///
     ///
-    virtual double GetM() = 0;
+    virtual double GetM() = 0;  /// __get
 
     ////////////////////////////////////////////////////////////
     /// \brief

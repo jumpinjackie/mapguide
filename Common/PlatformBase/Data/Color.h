@@ -140,7 +140,7 @@ PUBLISHED_API:
     /// \return
     /// return the color value
     ///
-    STRING GetColor();
+    STRING GetColor();   /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief

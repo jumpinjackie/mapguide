@@ -81,7 +81,7 @@ PUBLISHED_API:
     /// virtual int GetCount();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetCount();
+    virtual INT32 GetCount();  /// __get
 
     ///////////////////////////////////////////////////////////////////////
     /// \brief
@@ -106,7 +106,7 @@ PUBLISHED_API:
     /// \return
     /// The MgPoint at the specified index.
     ///
-    virtual MgPoint* GetPoint(INT32 index);
+    virtual MgPoint* GetPoint(INT32 index);  
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -119,7 +119,7 @@ PUBLISHED_API:
     /// virtual int GetGeometryType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetGeometryType();
+    virtual INT32 GetGeometryType();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -132,7 +132,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

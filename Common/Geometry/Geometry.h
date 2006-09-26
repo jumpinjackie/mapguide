@@ -77,7 +77,7 @@ PUBLISHED_API:
     /// Returns the value defined in MgGeometryType corresponding to
     /// this geometry.
     ///
-    virtual INT32 GetGeometryType() = 0;
+    virtual INT32 GetGeometryType() = 0;  /// __get
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief

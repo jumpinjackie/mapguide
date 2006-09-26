@@ -599,12 +599,16 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
                             propType = tokens[i-5];
                             propType.append(tokens[i-4]);
                         }
-                        else if (propType == "BYTE") {propType = "unsigned char"; }
+                        else if (propType == "BYTE") {propType = "byte"; }
                         else if (propType == "INT8") {propType = "short"; }
                         else if (propType == "INT16") {propType = "short"; }
                         else if (propType == "INT32") {propType = "int"; }
-                        else if (propType == "UINT32") {propType = "int"; }
+                        else if (propType == "UINT32") {propType = "uint"; }
+                        else if (propType == "INT64") {propType = "long"; }
                         else if (propType == "STRING") {propType = "string"; }
+
+                        string::size_type pos = propType.find('*');
+                        if (string::npos != pos) propType[pos] = ' ';
 
                         fprintf(propertyFile, "public %s %s\n{\n",propType.c_str(), propName.c_str());
 

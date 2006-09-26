@@ -57,7 +57,7 @@ PUBLISHED_API:
     /// virtual int GetComponentType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetComponentType();
+    virtual INT32 GetComponentType();  /// __get
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -77,7 +77,7 @@ PUBLISHED_API:
     /// \return
     /// An MgCoordinate defining the control coordinate.
     ///
-    virtual MgCoordinate* GetControlCoordinate();
+    virtual MgCoordinate* GetControlCoordinate(); /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -90,7 +90,7 @@ PUBLISHED_API:
     /// virtual MgCoordinate GetStartCoordinate();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual MgCoordinate* GetStartCoordinate();
+    virtual MgCoordinate* GetStartCoordinate(); /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -103,7 +103,7 @@ PUBLISHED_API:
     /// virtual MgCoordinate GetEndCoordinate();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual MgCoordinate* GetEndCoordinate();
+    virtual MgCoordinate* GetEndCoordinate(); /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -116,7 +116,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

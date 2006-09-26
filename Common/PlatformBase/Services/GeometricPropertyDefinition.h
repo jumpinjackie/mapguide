@@ -73,7 +73,7 @@ PUBLISHED_API:
     /// Returns the bit-wise OR combination of one or more of the
     /// MgFeatureGeometricType constants.
     ///
-    INT32 GetGeometryTypes();
+    INT32 GetGeometryTypes();  /// __get, __set
 
     //////////////////////////////////////////////////////////////
     /// \brief
@@ -95,7 +95,7 @@ PUBLISHED_API:
     /// Returns a Boolean value that indicates whether this
     /// geometric property is read-only.
     ///
-    bool GetReadOnly();
+    bool GetReadOnly();   /// __get, __set
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -119,7 +119,7 @@ PUBLISHED_API:
     /// the geometry contained in this property includes elevation
     /// (Z-coordinate) values
     ///
-    bool GetHasElevation();
+    bool GetHasElevation();   /// __get, __set
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -151,7 +151,7 @@ PUBLISHED_API:
     /// property include measurement values (M-ordinates); otherwise
     /// returns false.
     ///
-    bool GetHasMeasure();
+    bool GetHasMeasure();   /// __get, __set
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -176,7 +176,7 @@ PUBLISHED_API:
     ///
     /// \see
     /// MgFeatureService::GetSpatialContexts.
-    STRING GetSpatialContextAssociation();
+    STRING GetSpatialContextAssociation();   /// __get, __set
 
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief

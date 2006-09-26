@@ -139,7 +139,7 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    virtual STRING GetRepositoryType();
+    virtual STRING GetRepositoryType();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -224,7 +224,7 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    virtual STRING GetRepositoryName();
+    virtual STRING GetRepositoryName();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -333,7 +333,7 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    virtual STRING GetPath();
+    virtual STRING GetPath();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -407,7 +407,7 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    virtual STRING GetName();
+    virtual STRING GetName();   /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -479,7 +479,7 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    virtual STRING GetResourceType();
+    virtual STRING GetResourceType();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief

@@ -86,7 +86,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetName();
+    STRING GetName();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -115,7 +115,7 @@ PUBLISHED_API:
     /// [[Job for Philip: Clarify -- is this unique with the
     /// repository? or where?]]
     ///
-    STRING GetObjectId();
+    STRING GetObjectId();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -135,7 +135,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the type of the layer group.
     ///
-    INT32 GetLayerGroupType();
+    INT32 GetLayerGroupType();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -161,7 +161,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgLayerGroup* GetGroup();
+    MgLayerGroup* GetGroup();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -216,7 +216,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetVisible();
+    bool GetVisible();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -304,7 +304,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetDisplayInLegend();
+    bool GetDisplayInLegend();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -356,7 +356,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetExpandInLegend();
+    bool GetExpandInLegend();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -381,7 +381,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetLegendLabel();
+    STRING GetLegendLabel();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief

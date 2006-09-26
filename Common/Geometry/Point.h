@@ -72,7 +72,7 @@ PUBLISHED_API:
     /// virtual int GetGeometryType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetGeometryType();
+    virtual INT32 GetGeometryType();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -92,7 +92,7 @@ PUBLISHED_API:
     /// \return
     /// The MgCoordinate that defines this point.
     ///
-    virtual MgCoordinate* GetCoordinate();
+    virtual MgCoordinate* GetCoordinate();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -106,7 +106,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();
+    virtual INT32 GetDimension();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -193,7 +193,7 @@ PUBLISHED_API:
     /// \return
     /// The coordinates of this geometric entity
     ///
-    virtual MgCoordinateIterator* GetCoordinates();
+    virtual MgCoordinateIterator* GetCoordinates();  /// __get
 
 INTERNAL_API:
 

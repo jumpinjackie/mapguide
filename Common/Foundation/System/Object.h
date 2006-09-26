@@ -33,7 +33,7 @@ EXTERNAL_API:
     /// \return
     /// Class Identifier.
     ///
-    virtual INT32 GetClassId() { return 0; }
+    virtual INT32 GetClassId();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -42,7 +42,7 @@ EXTERNAL_API:
     /// \return
     /// Returns the name of the class.
     ///
-    virtual STRING GetClassName() { return L"Not Defined"; }
+    virtual STRING GetClassName();
 
 INTERNAL_API:
 

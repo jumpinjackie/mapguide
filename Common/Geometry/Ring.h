@@ -42,7 +42,7 @@ PUBLISHED_API:
     /// \return
     /// An MgPoint that defines a point in the ring.
     ///
-    virtual MgPoint* GetPointInRing();
+    virtual MgPoint* GetPointInRing();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -63,7 +63,7 @@ PUBLISHED_API:
     /// \return
     /// The coordinates of this geometric entity
     ///
-    virtual MgCoordinateIterator* GetCoordinates() = 0;
+    virtual MgCoordinateIterator* GetCoordinates() = 0;  /// __get
 
 INTERNAL_API:
 

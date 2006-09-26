@@ -283,7 +283,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetName();
+    STRING GetName();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -308,7 +308,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetSessionId();
+    STRING GetSessionId();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -334,7 +334,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetObjectId();
+    STRING GetObjectId();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -361,7 +361,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgResourceIdentifier* GetMapDefinition();
+    MgResourceIdentifier* GetMapDefinition();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -387,7 +387,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetMapSRS();
+    STRING GetMapSRS();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -413,7 +413,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgEnvelope* GetMapExtent();
+    MgEnvelope* GetMapExtent();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -438,7 +438,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgLayerCollection* GetLayers();
+    MgLayerCollection* GetLayers();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -464,7 +464,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgLayerGroupCollection* GetLayerGroups();
+    MgLayerGroupCollection* GetLayerGroups();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -601,7 +601,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgPoint* GetViewCenter();
+    MgPoint* GetViewCenter();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -626,7 +626,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    double GetViewScale();
+    double GetViewScale();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -652,7 +652,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgEnvelope* GetDataExtent();
+    MgEnvelope* GetDataExtent();   /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -677,7 +677,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    INT32 GetDisplayDpi();
+    INT32 GetDisplayDpi();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -706,7 +706,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    INT32 GetDisplayWidth();
+    INT32 GetDisplayWidth();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -736,7 +736,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    INT32 GetDisplayHeight();
+    INT32 GetDisplayHeight();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -761,7 +761,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    INT32 GetFiniteDisplayScaleCount();
+    INT32 GetFiniteDisplayScaleCount();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -802,7 +802,7 @@ EXTERNAL_API:
     /// \return
     /// Background color.
     ///
-    STRING GetBackgroundColor();
+    STRING GetBackgroundColor();  
 
 INTERNAL_API:
 

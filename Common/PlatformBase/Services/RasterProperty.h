@@ -78,7 +78,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property value.
     ///
-    MgRaster* GetValue();
+    MgRaster* GetValue();   /// __get, __set
 
     /////////////////////////////////////////////////////////
     /// \brief
@@ -98,7 +98,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property type MgPropertyType::Raster.
     ///
-    INT16 GetPropertyType();
+    INT16 GetPropertyType();   /// __get
 
     ///////////////////////////////////////////////////////////////////
     /// \brief

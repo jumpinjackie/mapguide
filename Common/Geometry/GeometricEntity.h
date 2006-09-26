@@ -59,7 +59,7 @@ PUBLISHED_API:
     /// \return
     /// Returns one of the values defined in MgGeometricDimension.
     ///
-    virtual INT32 GetDimension() = 0;
+    virtual INT32 GetDimension() = 0;  /// __get
 
     ////////////////////////////////////////////////////
     /// \brief
@@ -236,7 +236,7 @@ PUBLISHED_API:
     /// \return
     /// The area of this geometric entity.
     ///
-    virtual  double GetArea();
+    virtual  double GetArea();  /// __get
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -257,7 +257,7 @@ PUBLISHED_API:
     /// \return
     /// Length of this geometric entity
     ///
-    virtual  double GetLength();
+    virtual  double GetLength();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -277,7 +277,7 @@ PUBLISHED_API:
     /// \return
     /// A centroid point
     ///
-    virtual  MgPoint* GetCentroid();
+    virtual  MgPoint* GetCentroid();  /// __get
 
 INTERNAL_API:
 

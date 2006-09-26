@@ -35,7 +35,7 @@ IMPLEMENT_DYNCREATE(MgClobProperty);
 MgClobProperty::MgClobProperty(CREFSTRING name, MgByteReader* value)
 {
     SetName(name);
-    m_value = value;
+    m_value = SAFE_ADDREF(value);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -44,6 +44,7 @@ MgClobProperty::MgClobProperty(CREFSTRING name, MgByteReader* value)
 /// </summary>
 MgClobProperty::MgClobProperty()
 {
+    m_value = NULL;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -98,7 +99,7 @@ MgByteReader* MgClobProperty::GetValue()
 void MgClobProperty::SetValue(MgByteReader* value)
 {
     CheckNull();
-    m_value = value;
+    m_value = SAFE_ADDREF(value);
 }
 
 
@@ -124,12 +125,18 @@ void MgClobProperty::ToXml(string &str, bool includeType, string rootElmName)
 
     str += "<Name>";
     str += MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())) + "</Name>";
+
     if (includeType)
     {
         str += "<Type>clob</Type>";
     }
+
     str += "<Value>";
-    str += MgUtil::GetStringFromReader(this->GetValue()) + "</Value>";
+    if (m_value != NULL)
+    {
+        str += MgUtil::GetStringFromReader(this->GetValue());
+    }
+    str += "</Value>";
 
     str += "</" + rootElmName + ">";
 }

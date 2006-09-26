@@ -91,7 +91,7 @@ PUBLISHED_API:
     /// identifies the concrete type.
     ///
     ///
-    INT16 GetPropertyType();
+    INT16 GetPropertyType();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -135,7 +135,7 @@ PUBLISHED_API:
     /// \return
     /// Returns a String containing the description of the property.
     ///
-    STRING GetDescription();
+    STRING GetDescription();  /// __get, __set
 
     ///////////////////////////////////////////////////////////////////////
     /// \brief
@@ -181,7 +181,7 @@ PUBLISHED_API:
     /// \return
     /// Returns a String containing the qualified name.
     ///
-    STRING GetQualifiedName();
+    STRING GetQualifiedName();  /// __get, __set
 
 EXTERNAL_API:
 

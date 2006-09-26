@@ -135,7 +135,7 @@ PUBLISHED_API:
     /// \return
     /// Returns MgFeatureCommandType::UpdateFeatures.
     ///
-    INT32 GetCommandType() const;
+    INT32 GetCommandType() const;   /// __get
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -157,7 +157,7 @@ PUBLISHED_API:
     /// Returns the collection of properties specified in the
     /// constructor.
     ///
-    MgPropertyCollection* GetPropertyValues() const;
+    MgPropertyCollection* GetPropertyValues() const;   /// __get
 
     /////////////////////////////////////////////////////////
     /// \brief
@@ -177,7 +177,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the feature class name specified in the constructor.
     ///
-    STRING GetFeatureClassName() const;
+    STRING GetFeatureClassName() const;   /// __get
 
     //////////////////////////////////////////////////////////////
     /// \brief
@@ -197,7 +197,7 @@ PUBLISHED_API:
     /// \return
     /// Returns he filter specified specified in the constructor.
     ///
-    STRING GetFilterText() const;
+    STRING GetFilterText() const;   /// __get
 
 EXTERNAL_API:
 

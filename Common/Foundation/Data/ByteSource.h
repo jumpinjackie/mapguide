@@ -124,7 +124,7 @@ PUBLISHED_API:
     /// \return
     /// string representing the type, for example text/xml
     ///
-    STRING GetMimeType();
+    STRING GetMimeType();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -168,7 +168,7 @@ PUBLISHED_API:
     /// \return
     /// A MgByteReader object
     ///
-    MgByteReader* GetReader();
+    MgByteReader* GetReader(); // _get
 
 INTERNAL_API:
 

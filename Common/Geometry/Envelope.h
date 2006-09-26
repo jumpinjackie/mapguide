@@ -162,7 +162,7 @@ PUBLISHED_API:
     /// \return
     /// An MgCoordinate that defines the lower left corner of the envelope.
     ///
-    MgCoordinate* GetLowerLeftCoordinate();
+    MgCoordinate* GetLowerLeftCoordinate();  /// __get
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -182,7 +182,7 @@ PUBLISHED_API:
     /// \return
     /// An MgCoordinate that defines the upper right corner of the envelope.
     ///
-    MgCoordinate* GetUpperRightCoordinate();
+    MgCoordinate* GetUpperRightCoordinate();  /// __get
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -202,7 +202,7 @@ PUBLISHED_API:
     /// \return
     /// A double representing the width of the envelope.
     ///
-    double GetWidth();
+    double GetWidth();  /// __get
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -222,7 +222,7 @@ PUBLISHED_API:
     /// \return
     /// A double representing the height of the envelope.
     ///
-    double GetHeight();
+    double GetHeight();  /// __get
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -242,7 +242,7 @@ PUBLISHED_API:
     /// \return
     /// A double representing the depth of the envelope.
     ///
-    double GetDepth();
+    double GetDepth();  /// __get
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
