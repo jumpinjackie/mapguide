@@ -57,7 +57,11 @@ namespace OSGeo.MapGuide
         [Test]
         public void ByteReader()
         {
-           
+            MgByteSource source = new MgByteSource("d:/MgDev/UnitTest/TestData/DrawingService/SpaceShip.dwf");
+            source.MimeType = MgMimeType.Dwf;
+            MgByteReader reader = source.GetReader();
+
+            Assert.AreEqual(MgMimeType.Dwf, reader.MimeType);
         }
 
         [Test]
@@ -67,11 +71,6 @@ namespace OSGeo.MapGuide
             source.MimeType = "text/plain";
 
             Assert.AreEqual(MgMimeType.Text, source.MimeType);
-        }
-
-        [Test]
-        public void Property()
-        {
         }
 
         [Test]
@@ -122,12 +121,12 @@ namespace OSGeo.MapGuide
         {
             MgBooleanProperty bp = new MgBooleanProperty("BoolPropName", true);
 
-            Assert.AreEqual(true, bp.Value);
+            Assert.IsTrue(bp.Value);
             Assert.AreEqual("BoolPropName", bp.Name);
             Assert.AreEqual(MgPropertyType.Boolean, bp.PropertyType);
 
             bp.Value = false;
-            Assert.AreEqual(false, bp.Value);
+            Assert.IsFalse(bp.Value);
         }
 
         [Test]
@@ -229,7 +228,7 @@ namespace OSGeo.MapGuide
         [Test]
         public void LayerBase()
         {
-            Assert.Ignore();
+            Assert.Ignore("Resource Service required to construct MgLayer");
 
             //MgUserInformation user = new MgUserInformation("Administrator", "admin");
             //MgSiteConnection siteConnection = new MgSiteConnection();
@@ -287,16 +286,16 @@ namespace OSGeo.MapGuide
             Assert.AreEqual("AnotherTestLayerGroupName", lg.Group.Name);
 
             lg.Visible = true;
-            Assert.AreEqual(true, lg.Visible);
+            Assert.IsTrue(lg.Visible);
             lg.Visible = false;
-            Assert.AreEqual(false, lg.Visible);
+            Assert.IsFalse(lg.Visible);
 
             lg.DisplayInLegend = true;
-            Assert.AreEqual(true, lg.DisplayInLegend);
+            Assert.IsTrue(lg.DisplayInLegend);
             lg.DisplayInLegend = false;
-            Assert.AreEqual(false, lg.DisplayInLegend);
+            Assert.IsFalse(lg.DisplayInLegend);
 
-            Assert.AreEqual(false, lg.ExpandInLegend);
+            Assert.IsFalse(lg.ExpandInLegend);
 
             lg.LegendLabel = "TestLegendLabel";
             Assert.AreEqual("TestLegendLabel", lg.LegendLabel);
@@ -382,23 +381,26 @@ namespace OSGeo.MapGuide
             Assert.AreEqual("123", dpd.DefaultValue);
 
             dpd.Nullable = true;
-            Assert.AreEqual(true, dpd.Nullable);
+            Assert.IsTrue(dpd.Nullable);
 
             dpd.ReadOnly = false;
-            Assert.AreEqual(false, dpd.ReadOnly);
+            Assert.IsFalse(dpd.ReadOnly);
         }
 
         [Test]
         public void DeleteFeatures()
         {
             MgDeleteFeatures df = new MgDeleteFeatures("dfClassName", "dfFilterText");
-            Assert.Ignore();
+            Assert.Ignore("Properties not visible");
         }
 
         [Test]
         public void FeatureProperty()
         {
-            Assert.Ignore();
+            MgFeatureProperty fp = new MgFeatureProperty("FeatureProp", null);
+            Assert.AreEqual("FeatureProp", fp.Name);
+            Assert.AreEqual(MgPropertyType.Feature, fp.PropertyType);
+            Assert.IsNull(fp.Value);
         }
 
         [Test]
@@ -421,15 +423,15 @@ namespace OSGeo.MapGuide
             Assert.AreEqual(MgGeometryType.LineString, gpd.GeometryTypes);
 
             gpd.ReadOnly = false;
-            Assert.AreEqual(false, gpd.ReadOnly);
+            Assert.IsFalse(gpd.ReadOnly);
             gpd.ReadOnly = true;
-            Assert.AreEqual(true, gpd.ReadOnly);
+            Assert.IsTrue(gpd.ReadOnly);
 
             gpd.HasElevation = true;
-            Assert.AreEqual(true, gpd.HasElevation);
+            Assert.IsTrue(gpd.HasElevation);
 
             gpd.HasMeasure = true;
-            Assert.AreEqual(true, gpd.HasMeasure);
+            Assert.IsTrue(gpd.HasMeasure);
 
             gpd.SpatialContextAssociation = "spatialContextAssociation";
             Assert.AreEqual("spatialContextAssociation", gpd.SpatialContextAssociation);
@@ -454,19 +456,19 @@ namespace OSGeo.MapGuide
         [Test]
         public void InsertFeatures()
         {
-            Assert.Ignore();
+            Assert.Ignore("Properties not visible");
         }
 
         [Test]
         public void LockFeatures()
         {
-            Assert.Ignore();
+            Assert.Ignore("MgLockFeatures not visible");
         }
 
         [Test]
         public void LongTransactionReader()
         {
-            Assert.Ignore();
+            Assert.Ignore("MgLongTransactionReader constructor not visible");
         }
 
         [Test]
@@ -493,7 +495,7 @@ namespace OSGeo.MapGuide
         [Test]
         public void Raster()
         {
-            Assert.Ignore();
+            Assert.Ignore("MgRaster constructor not visible");
         }
 
         [Test]
@@ -512,10 +514,10 @@ namespace OSGeo.MapGuide
             MgRasterPropertyDefinition rpd = new MgRasterPropertyDefinition("rasterPropDef");
 
             rpd.ReadOnly = true;
-            Assert.AreEqual(true, rpd.ReadOnly);
+            Assert.IsTrue(rpd.ReadOnly);
 
             rpd.Nullable = true;
-            Assert.AreEqual(true, rpd.Nullable);
+            Assert.IsTrue(rpd.Nullable);
 
             rpd.DefaultImageXSize = 600;
             Assert.AreEqual(600, rpd.DefaultImageXSize);
@@ -550,25 +552,25 @@ namespace OSGeo.MapGuide
         [Test]
         public void SpatialContextReader()
         {
-            Assert.Ignore();
+            Assert.Ignore("MgSpatialContextReader constructor not visible");
         }
 
         [Test]
         public void UnlockFeatures()
         {
-            Assert.Ignore();
+            Assert.Ignore("MgUnlockFeatures not visible");
         }
 
         [Test]
         public void UpdateFeatures()
         {
-            Assert.Ignore();
+            Assert.Ignore("Properties not visible");
         }
 
         [Test]
         public void Warnings()
         {
-            Assert.Ignore();
+            Assert.Ignore("MgWarnings constructor not visible");
         }
 
         // Geometry
@@ -629,7 +631,7 @@ namespace OSGeo.MapGuide
         {
             MgGeometryFactory gf = new MgGeometryFactory();
             MgCoordinate coord = gf.CreateCoordinateXY(100, 100);
-            Assert.Ignore();
+            Assert.Ignore("Properties not visible");
         }
 
         [Test]
@@ -637,7 +639,7 @@ namespace OSGeo.MapGuide
         {
             MgGeometryFactory gf = new MgGeometryFactory();
             MgCoordinate coord = gf.CreateCoordinateXYM(100, 100, 10);
-            Assert.Ignore();
+            Assert.Ignore("Properties not visible");
         }
 
         [Test]
@@ -645,7 +647,7 @@ namespace OSGeo.MapGuide
         {
             MgGeometryFactory gf = new MgGeometryFactory();
             MgCoordinate coord = gf.CreateCoordinateXYZ(100, 100, 10);
-            Assert.Ignore();
+            Assert.Ignore("Properties not visible");
         }
 
         [Test]
@@ -653,7 +655,7 @@ namespace OSGeo.MapGuide
         {
             MgGeometryFactory gf = new MgGeometryFactory();
             MgCoordinate coord = gf.CreateCoordinateXYZM(100, 100, 10, 5);
-            Assert.Ignore();
+            Assert.Ignore("Properties not visible");
         }
 
         [Test]
