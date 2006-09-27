@@ -35,6 +35,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteReaderTest.cs" />
     <Compile Include="CollectionTest.cs" />
     <Compile Include="GeomBuild.cs" />
     <Compile Include="PropertiesTest.cs" />

@@ -19,6 +19,41 @@
 
 IMPLEMENT_DYNCREATE(MgByteReader);
 
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates a byte reader from a file
+///
+MgByteReader::MgByteReader(CREFSTRING fileName, CREFSTRING mimeType, bool removeFile)
+{
+    Ptr<MgByteSource> source = new MgByteSource(fileName, removeFile);
+    source->SetMimeType(mimeType);
+    SetByteSource(SAFE_ADDREF((MgByteSource*)source));
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates a byte reader from a string
+///
+MgByteReader::MgByteReader(CREFSTRING contents, CREFSTRING mimeType)
+{
+    string utf8 = MgUtil::WideCharToMultiByte(contents);
+    Ptr<MgByteSource> source = new MgByteSource((BYTE_ARRAY_IN)utf8.c_str(), utf8.length());
+    source->SetMimeType(mimeType);
+    SetByteSource(SAFE_ADDREF((MgByteSource*)source));
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates a byte reader from an array of bytes
+///
+MgByteReader::MgByteReader(BYTE_ARRAY_IN contents, INT32 length, CREFSTRING mimeType)
+{
+    Ptr<MgByteSource> source = new MgByteSource(contents, length);
+    source->SetMimeType(mimeType);
+    SetByteSource(SAFE_ADDREF((MgByteSource*)source));
+}
+
 //////////////////////////////////////////////////////////////////
 ///<summary>
 /// Construct a MgByteReader object from a byte source
@@ -120,6 +155,17 @@ STRING MgByteReader::GetMimeType()
 {
     CHECKNULL(m_byteSource, L"MgByteReader.GetMimeType");
     return m_byteSource->GetMimeType();
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Writes the the contents of the reader to a file.
+///
+void MgByteReader::ToFile(CREFSTRING fileName)
+{
+    CHECKNULL(m_byteSource, L"MgByteReader.ToFile");
+    Ptr<MgByteSink> sink = new MgByteSink(this);
+    sink->ToFile(fileName);
 }
 
 //////////////////////////////////////////////////////////////////
