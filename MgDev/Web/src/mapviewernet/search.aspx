@@ -117,9 +117,9 @@ String searchError;
                 String templ = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/search.templ"), locale, GetClientOS(Request));
 
                 String[] vals = {
-                            colCount.ToString(),
-                            target.ToString(),
-                            popup.ToString()
+                            colCount.ToString(NumberFormatInfo.InvariantInfo),
+                            target.ToString(NumberFormatInfo.InvariantInfo),
+                            popup.ToString(NumberFormatInfo.InvariantInfo)
                             };
                 Response.Write(Substitute(templ, vals));
 
@@ -283,7 +283,7 @@ void OnError(String title, String msg)
     Response.Clear();
 
     String templ = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/errorpage.templ"), locale, GetClientOS(Request));
-    String[] vals = { popup.ToString(), title, msg };
+    String[] vals = { popup.ToString(NumberFormatInfo.InvariantInfo), title, msg };
     Response.Write(Substitute(templ, vals));
 }
 

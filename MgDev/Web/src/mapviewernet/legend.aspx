@@ -457,7 +457,7 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
                 }
             }
         }
-        output = output + String.Format("{0}.lyrtype = {1};\n", layerVarName, type.ToString() );
+        output = output + String.Format("{0}.lyrtype = {1};\n", layerVarName, type.ToString(NumberFormatInfo.InvariantInfo) );
     }
     catch(MgException e)
     {

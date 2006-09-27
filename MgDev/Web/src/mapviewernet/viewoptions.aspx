@@ -41,9 +41,9 @@ String locale;
 
     String templ = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/viewoptions.templ"), locale, GetClientOS(Request));
     String[] vals = {
-                    tgt.ToString(),
-                    popup.ToString(),
-                    dwf.ToString()
+                    tgt.ToString(NumberFormatInfo.InvariantInfo),
+                    popup.ToString(NumberFormatInfo.InvariantInfo),
+                    dwf.ToString(NumberFormatInfo.InvariantInfo)
                     };
     Response.Write(Substitute(templ, vals));
 %>

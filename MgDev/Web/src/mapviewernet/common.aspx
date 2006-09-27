@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
 <%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="OSGeo.MapGuide" %>
 
 <script runat="server">
@@ -90,7 +91,7 @@ double GetDoubleParameter(NameValueCollection parameters, String name)
     String strval = GetParameter(parameters, name);
     if ("" == strval)
         return 0;
-    return Convert.ToDouble(strval);
+    return Convert.ToDouble(strval, NumberFormatInfo.InvariantInfo);
 
 }
 
