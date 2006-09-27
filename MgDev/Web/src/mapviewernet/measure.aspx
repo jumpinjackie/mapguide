@@ -228,12 +228,12 @@ String dataSource = "";
         String vpath = GetSurroundVirtualPath(Request);
         String[] vals = {
                     locale,
-                    target.ToString(),
-                    popup.ToString(),
+                    target.ToString(NumberFormatInfo.InvariantInfo),
+                    popup.ToString(NumberFormatInfo.InvariantInfo),
                     mapName,
                     sessionId,
-                    total.ToString(),
-                    distance.ToString(),
+                    total.ToString(NumberFormatInfo.InvariantInfo),
+                    distance.ToString(NumberFormatInfo.InvariantInfo),
                     "1",
                     vpath + "measure.aspx",
                     vpath + "measure.aspx"
@@ -344,7 +344,7 @@ void ClearDataSource(MgFeatureService featureSrvc, MgResourceIdentifier dataSour
 void OnError(String title, String msg)
 {
     String templ = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/errorpage.templ"), locale, GetClientOS(Request));
-    String[] vals = { popup.ToString(), title, msg };
+    String[] vals = { popup.ToString(NumberFormatInfo.InvariantInfo), title, msg };
     Response.Write(Substitute(templ, vals));
 }
 

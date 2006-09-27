@@ -43,7 +43,7 @@ String locale = "";
     templ = MgLocalizer.Localize(templ, locale, GetClientOS(Request));
 
     String[] vals = {
-                    popup.ToString(),
+                    popup.ToString(NumberFormatInfo.InvariantInfo),
                     GetSurroundVirtualPath(Request) + "selectwithin.aspx",
                     mapName,
                     sessionId,

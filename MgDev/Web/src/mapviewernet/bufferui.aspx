@@ -39,7 +39,7 @@ int us = 0;
 
     String vpath = GetSurroundVirtualPath(Request);
     String[] vals = {
-                    popup.ToString(),
+                    popup.ToString(NumberFormatInfo.InvariantInfo),
                     vpath + "colorpicker.aspx",
                     locale,
                     vpath + "buffer.aspx",
@@ -47,7 +47,7 @@ int us = 0;
                     us == 1? "" : "selected",
                     mapName,
                     sessionId,
-                    popup.ToString(),
+                    popup.ToString(NumberFormatInfo.InvariantInfo),
                     locale,
                     };
 

@@ -50,19 +50,19 @@ int matchLimit = 0;
     templ = MgLocalizer.Localize(templ, locale, GetClientOS(Request));
 
     String[] vals = {
-                    target.ToString(),
-                    popup.ToString(),
-                    cmdIndex.ToString(),
-                    clientWidth.ToString(),
+                    target.ToString(NumberFormatInfo.InvariantInfo),
+                    popup.ToString(NumberFormatInfo.InvariantInfo),
+                    cmdIndex.ToString(NumberFormatInfo.InvariantInfo),
+                    clientWidth.ToString(NumberFormatInfo.InvariantInfo),
                     GetSurroundVirtualPath(Request) + "search.aspx",
-                    cmdIndex.ToString(),
-                    target.ToString(),
-                    popup.ToString(),
+                    cmdIndex.ToString(NumberFormatInfo.InvariantInfo),
+                    target.ToString(NumberFormatInfo.InvariantInfo),
+                    popup.ToString(NumberFormatInfo.InvariantInfo),
                     layerId,
                     mapName,
                     sessionId,
                     EscapeForHtml(filter),
-                    matchLimit.ToString()
+                    matchLimit.ToString(NumberFormatInfo.InvariantInfo)
                     };
     Response.Write(Substitute(templ, vals));
 %>
