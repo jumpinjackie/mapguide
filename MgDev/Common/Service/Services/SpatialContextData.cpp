@@ -144,7 +144,12 @@ void MgSpatialContextData::Serialize(MgStream* stream)
     stream->WriteString(m_wktStr);
     stream->WriteInt32(m_extentType);
 
-    Ptr<MgByteSource> byteSource = new MgByteSource(m_extent);
+    // hack to handle null extent
+    Ptr<MgByte> tmpExtent = m_extent;
+    if (tmpExtent == NULL)
+        tmpExtent = new MgByte();
+
+    Ptr<MgByteSource> byteSource = new MgByteSource(tmpExtent);
     Ptr<MgByteReader> byteReader = byteSource->GetReader();
     stream->WriteStream(byteReader);
 
