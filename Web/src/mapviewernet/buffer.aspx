@@ -350,7 +350,7 @@ String dataSource = "";
         templ = MgLocalizer.Localize(templ, locale, GetClientOS(Request));
 
         String[] vals = {
-                    popup.ToString(),
+                    popup.ToString(NumberFormatInfo.InvariantInfo),
                     MgLocalizer.GetString("BUFFERREPORTTITLE", locale),
                     msg};
         Response.Write(Substitute(templ, vals));
@@ -462,7 +462,7 @@ void ClearDataSource(MgFeatureService featureSrvc, MgResourceIdentifier dataSour
 void OnError(String title, String msg)
 {
     String templ = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/errorpage.templ"), locale, GetClientOS(Request));
-    String[] vals = { popup.ToString(), title, msg };
+    String[] vals = { popup.ToString(NumberFormatInfo.InvariantInfo), title, msg };
     Response.Write(Substitute(templ, vals));
 }
 

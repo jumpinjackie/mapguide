@@ -70,7 +70,7 @@ String hlTgtName;
         String template = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/dwfmappane.templ"), locale, GetClientOS(Request));
         String[] vals = {
                         mapRequest,
-                        infoWidth.ToString(),
+                        infoWidth.ToString(NumberFormatInfo.InvariantInfo),
                         (0!=showLegend) || (0!=showProperties)? "true":"false",
                         0!=showLegend? "true":"false",
                         0!=showProperties? "true":"false",

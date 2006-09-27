@@ -46,11 +46,11 @@ double total = 0;
     String vpath = GetSurroundVirtualPath(Request);
     String[] vals = {
                     locale,
-                    target.ToString(),
-                    popup.ToString(),
+                    target.ToString(NumberFormatInfo.InvariantInfo),
+                    popup.ToString(NumberFormatInfo.InvariantInfo),
                     mapName,
                     sessionId,
-                    total.ToString(),
+                    total.ToString(NumberFormatInfo.InvariantInfo),
                     "0",
                     "0",
                     vpath + "measure.aspx",

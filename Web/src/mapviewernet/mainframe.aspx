@@ -165,7 +165,7 @@ NameValueCollection cmds = null;
         if (null != ptCenter)
         {
             MgCoordinate coord = ptCenter.GetCoordinate();
-            center = String.Format("new Point({0}, {1})", coord.GetX().ToString(), coord.GetY().ToString());
+            center = String.Format("new Point({0}, {1})", coord.GetX().ToString(NumberFormatInfo.InvariantInfo), coord.GetY().ToString(NumberFormatInfo.InvariantInfo));
         }
 
         //Process commands and declare command objects
@@ -381,7 +381,7 @@ NameValueCollection cmds = null;
             }
 
             cmdObjects = cmdObjects + cmdObject;
-            cmds[name] = i.ToString();
+            cmds[name] = i.ToString(NumberFormatInfo.InvariantInfo);
         }
         userCodeCalls = userCodeCalls + "\n}\n";
 
@@ -430,23 +430,23 @@ NameValueCollection cmds = null;
         {
             frameset = LoadTemplate(Request, "../viewerfiles/framesettaskbar.templ");
             String[] vals = {
-                        statusbarHeight.ToString(),
-                        taskWidth.ToString(),
-                        toolbarHeight.ToString(),
+                        statusbarHeight.ToString(NumberFormatInfo.InvariantInfo),
+                        taskWidth.ToString(NumberFormatInfo.InvariantInfo),
+                        toolbarHeight.ToString(NumberFormatInfo.InvariantInfo),
                         srcToolbar,
                         vpath + "mapframe.aspx",
                         mapDefinitionUrl,
                         viewerType,
                         showLegend? "1" : "0",
                         showProperties? "1" : "0",
-                        infoWidth.ToString(),
+                        infoWidth.ToString(NumberFormatInfo.InvariantInfo),
                         locale,
-                        webLayout.GetHyperlinkTarget().ToString(),
+                        webLayout.GetHyperlinkTarget().ToString(NumberFormatInfo.InvariantInfo),
                         webLayout.GetHyperlinkTargetFrame(),
                         webLayout.IsZoomControlVisible()? "1": "0",
                         sessionParam,
                         vpath + "formframe.aspx",
-                        toolbarHeight.ToString(),
+                        toolbarHeight.ToString(NumberFormatInfo.InvariantInfo),
                         srcTaskBar,
                         srcTaskFrame,
                         srcStatusbar
@@ -457,18 +457,18 @@ NameValueCollection cmds = null;
         {
             frameset = LoadTemplate(Request, "../viewerfiles/framesetnotaskbar.templ");
             String[] vals = {
-                        toolbarHeight.ToString(),
-                        statusbarHeight.ToString(),
+                        toolbarHeight.ToString(NumberFormatInfo.InvariantInfo),
+                        statusbarHeight.ToString(NumberFormatInfo.InvariantInfo),
                         srcToolbar,
-                        taskWidth.ToString(),
+                        taskWidth.ToString(NumberFormatInfo.InvariantInfo),
                         vpath + "mapframe.aspx",
                         mapDefinitionUrl,
                         viewerType,
                         showLegend? "1" : "0",
                         showProperties? "1" : "0",
-                        infoWidth.ToString(),
+                        infoWidth.ToString(NumberFormatInfo.InvariantInfo),
                         locale,
-                        webLayout.GetHyperlinkTarget().ToString(),
+                        webLayout.GetHyperlinkTarget().ToString(NumberFormatInfo.InvariantInfo),
                         webLayout.GetHyperlinkTargetFrame(),
                         webLayout.IsZoomControlVisible()? "1": "0",
                         sessionParam,
@@ -497,9 +497,9 @@ NameValueCollection cmds = null;
                     defHome? "1" : "0",
                     webLayoutDefinition,
                     mapDef,
-                    taskWidth.ToString(),
+                    taskWidth.ToString(NumberFormatInfo.InvariantInfo),
                     center,
-                    webLayout.GetScale().ToString(),
+                    webLayout.GetScale().ToString(NumberFormatInfo.InvariantInfo),
                     StrEscape(title, false),
                     (forDwf == 1)? "1" : "0",
                     cmdObjects,
