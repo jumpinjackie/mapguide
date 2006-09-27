@@ -78,6 +78,91 @@ class MG_FOUNDATION_API MgByteReader : public MgSerializable
     DECLARE_CLASSNAME(MgByteReader)
 
 PUBLISHED_API:
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates a byte reader from a file
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgByteReader(string fileName, string mimeType, bool removeFile);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgByteReader(String fileName, String mimeType, bool removeFile);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgByteReader(string fileName, string mimeType, bool removeFile);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param fileName (string/String/string)
+    /// Name of file on disk.
+    ///
+    /// \param mimeType (string/String/string)
+    /// Mime type for content
+    ///
+    /// \param removeFile (bool)
+    /// Remove file when byte reader is deleted
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    MgByteReader(CREFSTRING fileName, CREFSTRING mimeType, bool removeFile);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates a byte reader from a string
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgByteReader(string content, string mimeType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgByteReader(String content, String mimeType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgByteReader(string content, string mimeType);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param content (string/String/string)
+    /// String contents for byte reader.
+    ///
+    /// \param mimeType (string/String/string)
+    /// Mime type for content.
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    MgByteReader(CREFSTRING contents, CREFSTRING mimeType);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates a byte reader from an array of bytes
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgByteReader(Byte[] content, string mimeType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgByteReader(byte[] content, String mimeType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgByteReader(string content, string mimeType);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param content (Byte[]/byte[]/string)
+    /// Binary contents for byte reader.
+    ///
+    /// \param length (int/int/int)
+    /// Length of contents.
+    ///
+    /// \param mimeType (string/String/string)
+    /// Mime type for content.
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    MgByteReader(BYTE_ARRAY_IN contents, INT32 length, CREFSTRING mimeType);
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Reads a buffer
@@ -148,7 +233,28 @@ PUBLISHED_API:
     ///
     STRING ToString();
 
-EXTERNAL_API:
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Writes the the contents of the reader to a file.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void ToFile(string fileName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void ToFile(String fileName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void ToFile(string fileName);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    /// \exception MgFileIoException is thrown if file cannot be written
+    ///
+    void ToFile(CREFSTRING fileName);
+
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the remaining length of the underlying byte source.
@@ -160,6 +266,28 @@ EXTERNAL_API:
     /// Remaining length of underlying byte source
     ///
     virtual INT64 GetLength(); 
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if the reader is rewindable.
+    ///
+    /// \return
+    /// true if the source is rewindable, false otherwise.
+    ///
+    bool IsRewindable();
+
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Rewinds to the start of the reader.  Depending on the source of
+    /// the reader, Rewind may not be supported.  Readers sourced from
+    /// true streams cannot be rewound.
+    ///
+    /// \return
+    /// Nothing
+    ///
+    /// \exception MgIoException if reader cannot be rewound
+    ///
+    void Rewind();
 
 INTERNAL_API:
     //////////////////////////////////////////////////////////////////
@@ -188,28 +316,6 @@ INTERNAL_API:
     /// Stream
     ///
     virtual void Deserialize(MgStream* stream);
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Determines if the reader is rewindable.
-    ///
-    /// \return
-    /// true if the source is rewindable, false otherwise.
-    ///
-    bool IsRewindable();
-
-    ////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Rewinds to the start of the reader.  Depending on the source of
-    /// the reader, Rewind may not be supported.  Readers sourced from
-    /// true streams cannot be rewound.
-    ///
-    /// \return
-    /// Nothing
-    ///
-    /// \exception MgIoException if reader cannot be rewound
-    ///
-    virtual void Rewind();
 
     //////////////////////////////////////////////////////////////////
     /// \brief

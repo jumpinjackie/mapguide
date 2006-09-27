@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 using NUnit.Framework;
 using OSGeo.MapGuide;
@@ -619,7 +620,25 @@ namespace OSGeo.MapGuide
         [Test]
         public void StringCollection()
         {
-            Assert.Ignore(".Net collection mapping not implemented yet.");
+            StringCollection strColl = new StringCollection();
+            strColl.Add("string1");
+            strColl.Add("string2");
+            strColl.Add("string3");
+            strColl.Add("string3");
+
+            MgStringCollection coll1 = new MgStringCollection();
+            coll1.Add("Hello");
+
+            MgStringCollection coll2 = new MgStringCollection(strColl);
+            Assert.AreEqual(4, coll2.GetCount());
+            StringCollection coll3 = coll2;
+            Assert.AreEqual(4, coll3.Count);
+            for (int i = 0; i < 4; i++)
+            {
+                Assert.AreEqual(strColl[i], coll2.GetItem(i));
+                Assert.AreEqual(strColl[i], coll3[i]);
+            }
+            
         }
 
         [Test]
