@@ -92,7 +92,7 @@ MgFdoConnectionManager* MgFdoConnectionManager::GetInstance()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled, INT32 nFdoConnectionPoolSize, INT32 nFdoConnectionTimeout)
+void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled, INT32 nFdoConnectionPoolSize, INT32 nFdoConnectionTimeout, STRING excludedProviders)
 {
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -110,6 +110,9 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled, INT32 nF
     m_bFdoConnectionPoolEnabled = bFdoConnectionPoolEnabled;
     m_nFdoConnectionPoolSize = nFdoConnectionPoolSize;
     m_nFdoConnectionTimeout = nFdoConnectionTimeout;
+
+    // Parse the comma delimited string into a string collection
+    m_excludedProviders = MgStringCollection::ParseCollection(excludedProviders, L",");
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.Initialize")
 }
@@ -178,10 +181,14 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
 
         if(m_bFdoConnectionPoolEnabled)
         {
-            if(!FdoConnectionCacheFull())
+            // Check to see if this provider has been excluded from caching
+            if(!IsExcludedProvider(providerName))
             {
-                // Add this entry to the cache
-                CacheFdoConnection(pFdoConnection, resourceIdentifier->ToString(), MgUtil::MultiByteToWideChar(featureSourceXmlContent));
+                if(!FdoConnectionCacheFull())
+                {
+                    // Add this entry to the cache
+                    CacheFdoConnection(pFdoConnection, resourceIdentifier->ToString(), MgUtil::MultiByteToWideChar(featureSourceXmlContent));
+                }
             }
         }
     }
@@ -239,12 +246,16 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
 
             if(m_bFdoConnectionPoolEnabled)
             {
-                if(!FdoConnectionCacheFull())
+                // Check to see if this provider has been excluded from caching
+                if(!IsExcludedProvider(providerNameNoVersion))
                 {
-                    // Add this entry to the cache
-                    STRING key = providerNameNoVersion + L" - " + connectionString;
-                    STRING data = L"";
-                    CacheFdoConnection(pFdoConnection, key, data);
+                    if(!FdoConnectionCacheFull())
+                    {
+                        // Add this entry to the cache
+                        STRING key = providerNameNoVersion + L" - " + connectionString;
+                        STRING data = L"";
+                        CacheFdoConnection(pFdoConnection, key, data);
+                    }
                 }
             }
         }
@@ -1117,3 +1128,19 @@ void MgFdoConnectionManager::ShowCache(void)
     MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.ShowCache")
 }
 #endif
+
+bool MgFdoConnectionManager::IsExcludedProvider(CREFSTRING providerName)
+{
+    bool bResult = false;
+
+    if(m_excludedProviders)
+    {
+        if(m_excludedProviders.p)
+        {
+            bResult = m_excludedProviders->Contains(providerName);
+        }
+    }
+
+    return bResult;
+}
+

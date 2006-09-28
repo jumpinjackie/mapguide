@@ -62,7 +62,7 @@ public:
     static MgFdoConnectionManager* GetInstance(void);
 
     // This initializes the FDO connection manager
-    void Initialize(bool bFdoConnectionPoolEnabled, INT32 nFdoConnectionPoolSize, INT32 nFdoConnectionTimeout);
+    void Initialize(bool bFdoConnectionPoolEnabled, INT32 nFdoConnectionPoolSize, INT32 nFdoConnectionTimeout, STRING excludedProviders);
     static void Terminate();
     void ClearCache();
 
@@ -105,6 +105,8 @@ private:
     void ValidateFeatureSource(string& featureSourceXmlContent);
     void Open(FdoIConnection* pFdoConnection);
 
+    bool IsExcludedProvider(CREFSTRING providerName);
+
     static Ptr<MgFdoConnectionManager> sm_fdoConnectionManager;
     static ACE_Recursive_Thread_Mutex  sm_mutex;
     IConnectionManager*                m_connManager;
@@ -114,6 +116,8 @@ private:
     bool m_bFdoConnectionPoolEnabled;
     INT32 m_nFdoConnectionPoolSize;
     INT32 m_nFdoConnectionTimeout;
+    Ptr<MgStringCollection> m_excludedProviders;
+
 };
 
 #endif

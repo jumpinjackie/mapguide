@@ -227,9 +227,11 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             // Feature Service
             bool bDataConnectionPoolEnabled = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled;
             INT32 nDataConnectionPoolSize = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize;
+            STRING dataConnectionPoolExcludedProviders = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders;
 
             pConfiguration->GetBoolValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled, bDataConnectionPoolEnabled, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled);
             pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize, nDataConnectionPoolSize, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize);
+            pConfiguration->GetStringValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders, dataConnectionPoolExcludedProviders, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders);
 
             // Add additional font mappings to the FontManager
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Adding Font Manager Mappings.\n")));
@@ -265,6 +267,9 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 
                 delete [] pathBuffer;
                 pathBuffer = NULL;
+
+                // Dump the paths to the trace log
+                MG_LOG_TRACE_ENTRY(L"PATH = " + updatedPath);
             }
             #else
             void* hlib = NULL;
@@ -283,6 +288,9 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             updatedPath += MgUtil::WideCharToMultiByte(fdoPath);
 
             setenv("LD_LIBRARY_PATH", updatedPath.c_str(), 1);
+
+            // Dump the paths to the trace log
+            MG_LOG_TRACE_ENTRY(L"LD_LIBRARY_PATH = " + updatedPath);
             #endif
 
             // Load the Fdo library
@@ -307,7 +315,7 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Initializing FDO Connection Manager.\n")));
             MgEventTimer& dataConnectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::DataConnectionTimeout);
             MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-            pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout());
+            pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout(), dataConnectionPoolExcludedProviders);
 
             // Initialize the Feature Service Cache
             INT32 cacheLimit;
@@ -357,10 +365,11 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Connection Timer Interval     : %d\n"), connectionTimer.GetInterval()));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Drawing Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Feature Service Properties:\n")));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Enabled  : %s\n"), bDataConnectionPoolEnabled == true ? ACE_TEXT("true") : ACE_TEXT("false")));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Size     : %d\n"), nDataConnectionPoolSize));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timeout       : %d\n"), dataConnectionTimer.GetEventTimeout()));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timer Interval: %d\n"), dataConnectionTimer.GetInterval()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Enabled           : %s\n"), bDataConnectionPoolEnabled == true ? ACE_TEXT("true") : ACE_TEXT("false")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Excluded Providers: %s\n"), MG_WCHAR_TO_TCHAR(dataConnectionPoolExcludedProviders)));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Size              : %d\n"), nDataConnectionPoolSize));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timeout                : %d\n"), dataConnectionTimer.GetEventTimeout()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timer Interval         : %d\n"), dataConnectionTimer.GetInterval()));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Mapping Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Rendering Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Resource Service Properties:\n")));
