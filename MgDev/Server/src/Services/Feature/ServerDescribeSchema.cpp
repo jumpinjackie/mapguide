@@ -66,6 +66,124 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgReso
     ffsc = fdoCommand->Execute();
     CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
+    // Finished with primary feature source, so now cycle through any secondary sources
+    // Retrieve XML from repository
+    string featureSourceXmlContent;
+    RetrieveFeatureSource(resource, featureSourceXmlContent);
+
+    // Need to parse XML and get properties
+    MgXmlUtil xmlUtil;
+    xmlUtil.ParseString(featureSourceXmlContent.c_str());
+
+    DOMElement* rootNode = xmlUtil.GetRootNode();
+    DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
+    CHECKNULL(extensionNodeList, L"MgServerDescribeSchema.ExecuteDescribeSchema()");
+
+    int extensionNodes = (int)extensionNodeList->getLength();
+
+    for (int i = 0; i < extensionNodes; i++)
+    {
+        DOMNode* extensionNode = extensionNodeList->item(i);
+        CHECKNULL(extensionNode, L"MgServerDescribeSchema.ExecuteDescribeSchema");
+
+        DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
+        int nNameNodes = (int)nameNodeList->getLength();
+
+        // get the extension name node
+        DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
+
+        // get the extension name value
+        STRING extensionName;
+        xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, extensionName);
+
+        // Determine the number of secondary sources (AttributeRelate nodes)
+        DOMNodeList* attributeRelateNodeList = xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
+        int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
+
+        for (int arNodesIndex = 0; arNodesIndex < nAttributeRelateNodes; arNodesIndex++)
+        {
+            // get the atribute relate node
+            DOMNode* attributeRelateNode = attributeRelateNodeList->item(arNodesIndex);
+
+            // get the resource id of the secondary feature source
+            STRING secondaryResourceId;
+            xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", secondaryResourceId);
+
+            // Get the name for the join relationship (attribute relate name)
+            STRING attributeRelateName;
+            xmlUtil.GetElementValue(attributeRelateNode, "Name", attributeRelateName);
+
+            // Get the secondary feature class (AttributeClass)
+            STRING attributeClass;
+            xmlUtil.GetElementValue(attributeRelateNode, "AttributeClass", attributeClass);
+
+            // Parse the schema name form the classname;
+            STRING::size_type nDelimiter = attributeClass.find(L":");
+            STRING secSchemaName;
+            STRING secClassName;
+            secSchemaName = attributeClass.substr(0, nDelimiter);
+            secClassName = attributeClass.substr(nDelimiter + 1);
+
+            // Establish connection to provider for secondary feature source
+            Ptr<MgResourceIdentifier> secondaryFeatureSource = new MgResourceIdentifier(secondaryResourceId);
+
+            if (NULL != secondaryFeatureSource)
+            {
+                GisPtr<FdoFeatureSchemaCollection> ffsc2;
+                STRING providerName2;
+
+                Ptr<MgServerFeatureConnection> connection2 = new MgServerFeatureConnection(secondaryFeatureSource);
+                if ( connection2->IsConnectionOpen() )
+                {
+                    providerName2 = connection2->GetProviderName();
+                }
+                else
+                {
+                    throw new MgConnectionFailedException(L"MgServerDescribeSchema::ExecuteDescribeSchema()", __LINE__, __WFILE__, NULL, L"", NULL);
+                }
+
+                // Check whether this command is supported by the provider
+                GisPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
+                GisPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
+                CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.ExecuteDescribeSchema");
+
+                // Execute the command
+                ffsc2 = fdoCommand2->Execute();
+
+                // Extract the schemas from the secondary collection and add them to the main collection
+                // Get schema count
+                GisInt32 cnt = ffsc2->GetCount();
+                for (GisInt32 i = 0; i < cnt; i++)
+                {
+                    GisPtr<FdoFeatureSchema> ffs = ffsc2->GetItem(i);
+                    STRING fdoSchemaName = (wchar_t*)ffs->GetName();
+
+                    if (fdoSchemaName != secSchemaName)
+                    {
+                        continue;
+                    }
+
+
+                    // Prefix the schema name with the extension and attribute relate names
+                    STRING modifiedSchemaName;
+                    modifiedSchemaName =  L"[" + extensionName + L"]";
+                    modifiedSchemaName += L"[" + attributeRelateName + L"]";
+                    modifiedSchemaName += fdoSchemaName;
+                    GisString* msn = modifiedSchemaName.c_str();
+                    ffs->SetName(msn);
+
+                    // Add this schema to the collection if it isn't already there
+                    if (!ffsc->Contains(ffs))
+                    {
+                        ffsc->Add(ffs);
+                    }
+                }
+            }
+
+        }  // End of for-loop that iterates thru the secondary sources
+
+    }  // End of for loop that iteratates thru the extensions in the feature source
+
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.ExecuteDescribeSchema")
 
     return ffsc.Detach();
@@ -1265,39 +1383,28 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
     classDefinition = featureServiceCache->ContainsClassDefinition(resource, schemaName, className);
     if(NULL == classDefinition)
     {
-        GisPtr<FdoFeatureSchemaCollection> ffsc;
-        ffsc = ExecuteDescribeSchema(resource, schemaName); // No schema name
-        CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgServerDescribeSchema.GetClassDefinition");
+        Ptr<MgFeatureSchemaCollection> schemaCollection = DescribeSchema(resource, schemaName);
+        INT32 count = schemaCollection->GetCount();
 
-        // classDefinition = new MgClassDefinition();
-        // Get schema count
-        GisInt32 cnt = ffsc->GetCount();
-        for (GisInt32 i = 0; i < cnt; i++)
+        for (INT32 featureSchemaIndex = 0; featureSchemaIndex < count; featureSchemaIndex++)
         {
-            GisPtr<FdoFeatureSchema> ffs = ffsc->GetItem(i);
-            // Get all classes for a schema
-            GisPtr<FdoClassCollection> fcc = ffs->GetClasses();
-            GisInt32 classCnt = fcc->GetCount();
+            Ptr<MgFeatureSchema> schema = schemaCollection->GetItem(featureSchemaIndex);
+            //Get all classes for a schema
+            Ptr<MgClassDefinitionCollection> classesCollection = schema->GetClasses();
+            INT32 classesCount = classesCollection->GetCount();
 
-            for (GisInt32 j = 0; j < classCnt; j++)
+            for (INT32 classesIndex = 0; classesIndex < classesCount; classesIndex++)
             {
-                GisPtr<FdoClassDefinition> fc = fcc->GetItem(j);
-                // TODO: Should we return qualified or non-qualified name
-                GisStringP qname = fc->GetQualifiedName();
-                GisStringP name = fc->GetName();
-
-                if (name != NULL && qname != NULL)
+                Ptr<MgClassDefinition> classDef = classesCollection->GetItem(classesIndex);
+                STRING name = classDef->GetName();
+             
+                if (name != className)
                 {
-                    int idx1 = wcscmp(className.c_str(), qname);
-                    int idx2 = wcscmp(className.c_str(), name);
-                    // className can be either fully qualified or non-qualified name
-                    if (idx1 == 0 || idx2 == 0)
-                    {
-                        // TODO: Separate the utility methods from MgServerGetFeatures
-                        MgServerGetFeatures msgf;
-                        classDefinition = msgf.GetMgClassDefinition(fc, true);
-                        break;
-                    }
+                    continue;
+                }
+                else
+                {
+                    classDefinition = classDef;
                 }
             }
         }

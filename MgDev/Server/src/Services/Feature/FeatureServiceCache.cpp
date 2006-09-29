@@ -135,6 +135,12 @@ MgFeatureSchemaCollection* MgFeatureServiceCache::ContainsFeatureSchema(MgResour
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
+    if (resource->GetRepositoryType().empty())
+    {
+        throw new MgInvalidRepositoryTypeException(
+            L"MgFeatureServiceCache.ContainsFeatureSchema", __LINE__,  __WFILE__, NULL, L"", NULL);
+    }
+
     Ptr<MgFeatureSchemaCollection> featureSchemaCollection;
 
     INT32 size = m_featureSchemaCollection->GetCount();
