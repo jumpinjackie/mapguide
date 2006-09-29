@@ -290,7 +290,8 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             setenv("LD_LIBRARY_PATH", updatedPath.c_str(), 1);
 
             // Dump the paths to the trace log
-            MG_LOG_TRACE_ENTRY(L"LD_LIBRARY_PATH = " + updatedPath);
+            STRING libraryPath = MgUtil::MultiByteToWideChar(updatedPath);
+            MG_LOG_TRACE_ENTRY(L"LD_LIBRARY_PATH = " + libraryPath);
             #endif
 
             // Load the Fdo library
