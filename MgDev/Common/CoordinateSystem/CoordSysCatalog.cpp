@@ -21,6 +21,9 @@
 
 #define COORDINATE_SYSTEM_DESCRIPTION_FILENAME L"categories.txt"
 #define PROJ_NAD_PATH "PROJ_LIB"
+#define PROJ_NAD_REG_KEY L"SOFTWARE\\MapGuideOpenSource\\Coordsys\\"
+#define PROJ_NAD_REG_PATH L"PROJ_LIB"
+#define MAX_PATH_SIZE 4095
 
 CCoordinateSystemCatalog::CCoordinateSystemCatalog()
 {
@@ -132,6 +135,30 @@ void CCoordinateSystemCatalog::ReadCategoryDictionary(CREFSTRING fileName)
 
 #ifdef _WIN32
 
+    // If we failed to read the path from an environment variable,
+    // see if it is set in the registry
+    if(path.empty())
+    {
+        wchar_t wszPath[MAX_PATH_SIZE] = L"";
+        HKEY hKey;
+        LONG lResult = ERROR_SUCCESS;
+
+        // Attempt to open the registry key
+        lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, PROJ_NAD_REG_KEY, 0, KEY_QUERY_VALUE, &hKey);
+        if (lResult == ERROR_SUCCESS)
+        {
+            DWORD dwReqSize = MAX_PATH_SIZE;
+
+            // Attempt to read the value
+            lResult = RegQueryValueEx(hKey, PROJ_NAD_REG_PATH, NULL, NULL, (LPBYTE) wszPath, &dwReqSize);
+            if(lResult == ERROR_SUCCESS && ::wcslen(wszPath) > 0)
+            {
+                path = wszPath;    
+            }
+            RegCloseKey(hKey);
+        }
+    }
+
     // Attempt to open from current directory
     FILE* file = _wfopen(fileName.c_str(), L"rt");
 
@@ -143,6 +170,7 @@ void CCoordinateSystemCatalog::ReadCategoryDictionary(CREFSTRING fileName)
         wName.append(fileName);
         file = _wfopen(wName.c_str(), L"rt");
     }
+
 #else
     // Linux - attempt to open from current directory
     char* szFileName = Convert_Wide_To_Ascii(fileName.c_str());
