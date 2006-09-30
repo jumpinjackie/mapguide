@@ -1036,3 +1036,17 @@ STRING MgUtil::ToUpper(CREFSTRING source)
     std::transform(up.begin(), up.end(), up.begin(), ::toupper);
     return up;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Perform a simple encoding on the specified string to prevent Cross Site 
+/// Scripting attacks.
+///
+void MgUtil::CheckXss(STRING& str)
+{
+    // TODO: For Tux+1, perform some validation instead of encoding and throw 
+    //       an exception appropriately.
+
+    std::replace(str.begin(), str.end(), L'<', L'(');
+    std::replace(str.begin(), str.end(), L'>', L')');
+}

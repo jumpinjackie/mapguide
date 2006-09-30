@@ -504,6 +504,12 @@ void MgConfiguration::SetProperties(CREFSTRING section,
                 STRING value = pProperty->GetValue();
 
                 ValidateValue(section, name, value);
+
+                // Foil Cross Site Scripting attacks.
+                // TODO: For Tux+1, perform some validation instead of encoding and throw 
+                //       an exception appropriately.
+                MgUtil::CheckXss(value);
+
                 success = m_config.SetStringValue(sectionKey,
                     MG_WCHAR_TO_TCHAR(name), MG_WCHAR_TO_TCHAR(value));
 

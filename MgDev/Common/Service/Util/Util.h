@@ -486,6 +486,8 @@ INTERNAL_API:
     static void TrimEndingZeros(string& str);
     static void TrimEndingZeros(STRING& str);
 
+    static void CheckXss(STRING& str);
+
     static const double DefaultCompareTolerance;
     static const STRING LinuxFilesystemMeminfo;
     static const STRING LinuxFilesystemStat;
