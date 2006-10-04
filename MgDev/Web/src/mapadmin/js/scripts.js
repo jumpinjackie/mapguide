@@ -248,7 +248,7 @@ function DisplayServerStatus( serverToMonitorID )
         return;
 		
     var destination = "viewserverstatus.php?serverToMonitor="+serverToMonitorElement.value;
-	statusWindow = window.open( destination, "ServerStatusWindow", "width=600, height=600, scrollbars, resizable, menubar=yes, toolbar=yes" );
+	statusWindow = window.open( destination, "ServerStatusWindow", "width=600, height=640, scrollbars, resizable, menubar=yes, toolbar=yes" );
 }
 
 function DisplayPackageLog( selectedPackageName )
