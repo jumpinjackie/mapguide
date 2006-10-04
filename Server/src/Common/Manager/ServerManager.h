@@ -172,7 +172,7 @@ private:
     INT32 m_nSiteThreads;
 
     ACE_Time_Value m_startTime;
-    SAFE_INT32 m_totalOperationTime;
+    SAFE_INT32 m_totalOperationTime;        // This value is tracked in seconds
     SAFE_INT32 m_totalReceivedOperations;
     SAFE_INT32 m_totalProcessedOperations;
 

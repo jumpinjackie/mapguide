@@ -128,6 +128,12 @@
                 $prop = $props->GetItem( MgServerInformationProperties::TotalOperationTime );
                 $this->totalOpTime = $prop->GetValue();
 
+                $prop = $props->GetItem( MgServerInformationProperties::TotalProcessedOperations );
+                $this->totalOpsProcessed = $prop->GetValue();
+
+                $prop = $props->GetItem( MgServerInformationProperties::TotalReceivedOperations );
+                $this->totalOpsReceived = $prop->GetValue();
+
                 $prop = $props->GetItem( MgServerInformationProperties::TotalPhysicalMemory );
                 $this->totalPhysicalMemory = $prop->GetValue();
 
@@ -146,7 +152,6 @@
             function DisplayValsOnPage()
             {
                 $formattedUpTime = FormatTime( $this->upTime, SECONDS );
-                $formattedTotalOpTime = FormatTime( $this->totalOpTime, MILLISECONDS );
 
                 echo '  <table width="100%" border="0" cellspacing="2" cellpadding="2" class="dataTable">', "\n";
                 echo '      <tr>',"\n";
@@ -185,7 +190,15 @@
                 echo '      </tr>',"\n";
                 echo '      <tr>',"\n";
                 echo '          <td class="serverStatusLabel">Total operation time:</td>',"\n";
-                echo '          <td class="serverStatusValue">',$formattedTotalOpTime,'</td>',"\n";
+                echo '          <td class="serverStatusValue">',$this->totalOpTime,' seconds</td>',"\n";
+                echo '      </tr>',"\n";
+                echo '      <tr>',"\n";
+                echo '          <td class="serverStatusLabel">Total operations processed:</td>',"\n";
+                echo '          <td class="serverStatusValue">',$this->totalOpsProcessed,'</td>',"\n";
+                echo '      </tr>',"\n";
+                echo '      <tr>',"\n";
+                echo '          <td class="serverStatusLabel">Total operations received:</td>',"\n";
+                echo '          <td class="serverStatusValue">',$this->totalOpsReceived,'</td>',"\n";
                 echo '      </tr>',"\n";
                 echo '      <tr>',"\n";
                 echo '          <td colspan="2">&nbsp;</td>',"\n";
