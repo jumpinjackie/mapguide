@@ -40,7 +40,7 @@ public:
     STRING GetCoordinateSystem();
     STRING GetCoordinateSystemWkt();
     INT32 GetExtentType();
-    MgByteReader* GetExtent();
+    MgByte* GetExtent();
     double GetXYTolerance();
     double GetZTolerance();
     bool IsActive();
@@ -49,7 +49,7 @@ public:
     void SetDescription(CREFSTRING desc);
     void SetCoordinateSystem(CREFSTRING coordSystem);
     void SetExtentType(INT32 extentType);
-    void SetExtent(MgByteReader* byteReader);
+    void SetExtent(MgByte* extent);
     void SetXYTolerance(double xyTol);
     void SetZTolerance(double zTol);
     void SetActiveStatus(bool active);
@@ -73,8 +73,8 @@ private:
     STRING m_desc;
     STRING m_coord;
     STRING m_wktStr;
-    INT32  m_extent;
-    Ptr<MgByteReader> m_byteReader;
+    INT32  m_extentType;
+    Ptr<MgByte> m_extent;
     double m_xyTolerance;
     double m_zTolerance;
     bool m_isActive;

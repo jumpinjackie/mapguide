@@ -28,7 +28,7 @@ MgSpatialContextData::MgSpatialContextData()
     m_name = L"";
     m_desc = L"";
     m_coord = L"";
-    m_extent = 0;
+    m_extentType = 0;
     m_xyTolerance = 0;
     m_zTolerance = 0;
     m_isActive = false;
@@ -60,13 +60,13 @@ STRING MgSpatialContextData::GetCoordinateSystem()
 //////////////////////////////////////////////////////////////
 INT32 MgSpatialContextData::GetExtentType()
 {
-    return m_extent;
+    return m_extentType;
 }
 
 //////////////////////////////////////////////////////////////
-MgByteReader* MgSpatialContextData::GetExtent()
+MgByte* MgSpatialContextData::GetExtent()
 {
-    return SAFE_ADDREF((MgByteReader*)m_byteReader);
+    return SAFE_ADDREF((MgByte*)m_extent);
 }
 
 //////////////////////////////////////////////////////////////
@@ -108,13 +108,13 @@ void MgSpatialContextData::SetCoordinateSystem(CREFSTRING coordSystem)
 //////////////////////////////////////////////////////////////
 void MgSpatialContextData::SetExtentType(INT32 extentType)
 {
-    m_extent = extentType;
+    m_extentType = extentType;
 }
 
 //////////////////////////////////////////////////////////////
-void MgSpatialContextData::SetExtent(MgByteReader* byteReader)
+void MgSpatialContextData::SetExtent(MgByte* extent)
 {
-    m_byteReader = SAFE_ADDREF(byteReader);
+    m_extent = SAFE_ADDREF(extent);
 }
 
 //////////////////////////////////////////////////////////////
@@ -142,8 +142,12 @@ void MgSpatialContextData::Serialize(MgStream* stream)
     stream->WriteString(m_desc);
     stream->WriteString(m_coord);
     stream->WriteString(m_wktStr);
-    stream->WriteInt32(m_extent);
-    stream->WriteStream(m_byteReader);
+    stream->WriteInt32(m_extentType);
+
+    Ptr<MgByteSource> byteSource = new MgByteSource(m_extent);
+    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+    stream->WriteStream(byteReader);
+
     stream->WriteDouble(m_xyTolerance);
     stream->WriteDouble(m_zTolerance);
     stream->WriteBoolean(m_isActive);
@@ -156,9 +160,10 @@ void MgSpatialContextData::Deserialize(MgStream* stream)
     stream->GetString(m_desc);
     stream->GetString(m_coord);
     stream->GetString(m_wktStr);
-    stream->GetInt32(m_extent);
+    stream->GetInt32(m_extentType);
 
-    m_byteReader = stream->GetStream();
+    Ptr<MgByteSink> byteSink = new MgByteSink(stream->GetStream());
+    m_extent = byteSink->ToBuffer();
 
     stream->GetDouble(m_xyTolerance);
     stream->GetDouble(m_zTolerance);
@@ -198,21 +203,24 @@ void MgSpatialContextData::ToXml(string& str)
     str += "<CoordinateSystemWkt>" + MgUtil::WideCharToMultiByte(m_wktStr) + "</CoordinateSystemWkt>";
 
     // Extent Type
-    if (m_extent == MgSpatialContextExtentType::scDynamic)
+    if (m_extentType == MgSpatialContextExtentType::scDynamic)
     {
         str += "<ExtentType>Dynamic</ExtentType>";
     }
-    else if (m_extent == MgSpatialContextExtentType::scStatic)
+    else if (m_extentType == MgSpatialContextExtentType::scStatic)
     {
         str += "<ExtentType>Static</ExtentType>";
     }
 
     // Geometry data in Hex
     str += "<Extent>";
-    if (m_byteReader != NULL)
+    if (m_extent != NULL)
     {
+        Ptr<MgByteSource> byteSource = new MgByteSource(m_extent);
+        Ptr<MgByteReader> byteReader = byteSource->GetReader();
+
         MgAgfReaderWriter agfReader;
-        Ptr<MgGeometry> geom = agfReader.Read(m_byteReader);
+        Ptr<MgGeometry> geom = agfReader.Read(byteReader);
         if (geom != NULL)
         {
             Ptr<MgEnvelope> geomEnvl = geom->Envelope();

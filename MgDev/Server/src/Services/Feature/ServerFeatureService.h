@@ -707,6 +707,12 @@ public:
 
     bool CloseGwsFeatureReader(INT32 gwsFeatureReader);
 
+    // Feature Service cache methods
+    virtual void UpdateFeatureServiceCache();
+    virtual void RemoveFeatureServiceCacheEntries(MgSerializableCollection* changedResources);
+    virtual void RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource);
+    virtual void ClearFeatureServiceCache();
+
     DECLARE_CREATE_SERVICE()
 
     void SetConnectionProperties(MgConnectionProperties* connProp);

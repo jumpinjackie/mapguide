@@ -20,6 +20,7 @@
 #include "DataConnectionTimeoutEventHandler.cpp"
 #include "EventTimer.cpp"
 #include "EventTimerManager.cpp"
+#include "FeatureServiceCacheTimeLimitEventHandler.cpp"
 #include "main.cpp"
 #include "OperationThread.cpp"
 #include "RepositoryCheckpointEventHandler.cpp"

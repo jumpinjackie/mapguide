@@ -46,77 +46,84 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
         throw new MgNullArgumentException(L"MgServerGetSpatialContexts.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    // Connect to provider
-    MgServerFeatureConnection msfc(resId);
-
-    // connection must be open to retrieve list of active contexts
-    if ( !msfc.IsConnectionOpen() )
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    mgSpatialContextReader = featureServiceCache->ContainsSpatialContext(resId, bActiveOnly);
+    if(NULL == mgSpatialContextReader)
     {
-        throw new MgConnectionFailedException(L"MgServerGetSpatialContexts::GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+        // Connect to provider
+        MgServerFeatureConnection msfc(resId);
 
-    FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
-    m_providerName = msfc.GetProviderName();
-    m_spatialContextInfoMap.reset(msfc.GetSpatialContextInfoMap());
-
-    // Check whether command is supported by provider
-    if (!msfc.SupportsCommand((INT32)FdoCommandType_GetSpatialContexts))
-    {
-        // TODO: specify which argument and message, once we have the mechanism
-        STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");
-        throw new MgInvalidOperationException(L"MgServerGetSpatialContexts.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    FdoPtr<FdoIGetSpatialContexts> fdoCommand = (FdoIGetSpatialContexts*)fdoConn->CreateCommand(FdoCommandType_GetSpatialContexts);
-    CHECKNULL((FdoIGetSpatialContexts*)fdoCommand, L"MgServerGetSpatialContexts.GetSpatialContexts");
-
-    // Execute the command
-    FdoPtr<FdoISpatialContextReader> spatialReader = fdoCommand->Execute();
-    CHECKNULL((FdoISpatialContextReader*)spatialReader, L"MgServerGetSpatialContexts.GetSpatialContexts");
-
-    mgSpatialContextReader = new MgSpatialContextReader();
-    while (spatialReader->ReadNext())
-    {
-        // If only active spatial context is required skip all others
-        if (bActiveOnly)
+        // connection must be open to retrieve list of active contexts
+        if ( !msfc.IsConnectionOpen() )
         {
-            if (!spatialReader->IsActive())
-                continue;
+            throw new MgConnectionFailedException(L"MgServerGetSpatialContexts::GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        // Set providername for which spatial reader is executed
-        mgSpatialContextReader->SetProviderName(m_providerName);
+        FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+        m_providerName = msfc.GetProviderName();
+        m_spatialContextInfoMap.reset(msfc.GetSpatialContextInfoMap());
 
-        Ptr<MgSpatialContextData> spatialData = GetSpatialContextData(spatialReader);
-        CHECKNULL((MgSpatialContextData*)spatialData, L"MgServerGetSpatialContexts.GetSpatialContexts");
-
-        // TODO: Remove this workaround for the SHP FDO provider when the defect 
-        // for the "Default" active spatial contexts being blank is fixed.
-        // START WORKAROUND CODE
-        bool bAddSpatialContext = true;
-
-        STRING name = spatialData->GetName();
-        STRING coordSys = spatialData->GetCoordinateSystem();
-        STRING coordSyswkt = spatialData->GetCoordinateSystemWkt();
-        if((name == L"Default") && (coordSys.empty()) && (coordSyswkt.empty()))
+        // Check whether command is supported by provider
+        if (!msfc.SupportsCommand((INT32)FdoCommandType_GetSpatialContexts))
         {
-            // The "Default" coordinate system WKT is empty so we want to skip this one
-            bAddSpatialContext = false;
+            // TODO: specify which argument and message, once we have the mechanism
+            STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");
+            throw new MgInvalidOperationException(L"MgServerGetSpatialContexts.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
         }
-        // END WORKAROUND CODE
 
-        if(bAddSpatialContext)
+        FdoPtr<FdoIGetSpatialContexts> fdoCommand = (FdoIGetSpatialContexts*)fdoConn->CreateCommand(FdoCommandType_GetSpatialContexts);
+        CHECKNULL((FdoIGetSpatialContexts*)fdoCommand, L"MgServerGetSpatialContexts.GetSpatialContexts");
+
+        // Execute the command
+        FdoPtr<FdoISpatialContextReader> spatialReader = fdoCommand->Execute();
+        CHECKNULL((FdoISpatialContextReader*)spatialReader, L"MgServerGetSpatialContexts.GetSpatialContexts");
+
+        mgSpatialContextReader = new MgSpatialContextReader();
+        while (spatialReader->ReadNext())
         {
-            // Add spatial data to the spatialcontext reader
-            mgSpatialContextReader->AddSpatialData(spatialData);
-
             // If only active spatial context is required skip all others
             if (bActiveOnly)
             {
-                if (spatialReader->IsActive())
-                    break;
+                if (!spatialReader->IsActive())
+                    continue;
+            }
+
+            // Set providername for which spatial reader is executed
+            mgSpatialContextReader->SetProviderName(m_providerName);
+
+            Ptr<MgSpatialContextData> spatialData = GetSpatialContextData(spatialReader);
+            CHECKNULL((MgSpatialContextData*)spatialData, L"MgServerGetSpatialContexts.GetSpatialContexts");
+
+            // TODO: Remove this workaround for the SHP FDO provider when the defect 
+            // for the "Default" active spatial contexts being blank is fixed.
+            // START WORKAROUND CODE
+            bool bAddSpatialContext = true;
+
+            STRING name = spatialData->GetName();
+            STRING coordSys = spatialData->GetCoordinateSystem();
+            STRING coordSyswkt = spatialData->GetCoordinateSystemWkt();
+            if((name == L"Default") && (coordSys.empty()) && (coordSyswkt.empty()))
+            {
+                // The "Default" coordinate system WKT is empty so we want to skip this one
+                bAddSpatialContext = false;
+            }
+            // END WORKAROUND CODE
+
+            if(bAddSpatialContext)
+            {
+                // Add spatial data to the spatialcontext reader
+                mgSpatialContextReader->AddSpatialData(spatialData);
+
+                // If only active spatial context is required skip all others
+                if (bActiveOnly)
+                {
+                    if (spatialReader->IsActive())
+                        break;
+                }
             }
         }
+
+        featureServiceCache->AddSpatialContext(resId, bActiveOnly, mgSpatialContextReader);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSpatialContexts.GetSpatialContexts")
@@ -179,10 +186,8 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     {
         INT32 size = (INT32)byteArray->GetCount();
         BYTE_ARRAY_IN bytes = (BYTE_ARRAY_IN)byteArray->GetData();
-        Ptr<MgByteSource> byteSource = new MgByteSource(bytes, size);
-        Ptr<MgByteReader> byteReader = byteSource->GetReader();
-
-        spatialData->SetExtent(byteReader);
+        Ptr<MgByte> extent = new MgByte(bytes, size);
+        spatialData->SetExtent(extent);
     }
 
     // XY Tolerance

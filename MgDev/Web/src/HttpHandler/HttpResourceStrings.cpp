@@ -156,7 +156,10 @@ const STRING MgHttpResourceStrings::opGetSpatialContexts = L"GETSPATIALCONTEXTS"
 const STRING MgHttpResourceStrings::opGetLongTransactions = L"GETLONGTRANSACTIONS";
 const STRING MgHttpResourceStrings::opEnumerateDataStores = L"ENUMERATEDATASTORES";
 const STRING MgHttpResourceStrings::opGetSchemaMapping = L"GETSCHEMAMAPPING";
-
+const STRING MgHttpResourceStrings::opGetSchemas = L"GETSCHEMAS";
+const STRING MgHttpResourceStrings::opGetClasses = L"GETCLASSES";
+const STRING MgHttpResourceStrings::opGetClassDefinition = L"GETCLASSDEFINITION";
+const STRING MgHttpResourceStrings::opGetIdentityProperties = L"GETIDENTITYPROPERTIES";
 
 // Predefined Drawing Service Request Parameters
 const STRING MgHttpResourceStrings::reqDrawingResourceId = L"RESOURCEID";

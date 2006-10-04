@@ -39,23 +39,21 @@ MgServerDescribeSchema::~MgServerDescribeSchema()
 
 
 //////////////////////////////////////////////////////////////////
-void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName)
+FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName)
 {
+    FdoPtr<FdoFeatureSchemaCollection> ffsc;
+
     MG_FEATURE_SERVICE_TRY()
 
     // Connect to provider
-    m_connection = new MgServerFeatureConnection(resource);
-    if ( m_connection->IsConnectionOpen() )
-    {
-        m_providerName = m_connection->GetProviderName();
-    }
-    else
+    Ptr<MgServerFeatureConnection> connection = new MgServerFeatureConnection(resource);
+    if (!(connection->IsConnectionOpen()))
     {
         throw new MgConnectionFailedException(L"MgServerDescribeSchema::ExecuteDescribeSchema()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // TODO: Check whether this command is supported by the provider
-    FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = connection->GetConnection();
     FdoPtr<FdoIDescribeSchema> fdoCommand = (FdoIDescribeSchema*)fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
     CHECKNULL((FdoIDescribeSchema*)fdoCommand, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
@@ -65,135 +63,19 @@ void MgServerDescribeSchema::ExecuteDescribeSchema(MgResourceIdentifier* resourc
     }
 
     // Execute the command
-    m_ffsc = fdoCommand->Execute();
-    CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.ExecuteDescribeSchema");
-
-    // Finished with primary feature source, so now cycle through any secondary sources
-    // Retrieve XML from repository
-    string featureSourceXmlContent;
-    RetrieveFeatureSource(resource, featureSourceXmlContent);
-
-    // Need to parse XML and get properties
-    MgXmlUtil xmlUtil;
-    xmlUtil.ParseString(featureSourceXmlContent.c_str());
-
-    DOMElement* rootNode = xmlUtil.GetRootNode();
-    DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
-    CHECKNULL(extensionNodeList, L"MgServerDescribeSchema.ExecuteDescribeSchema()");
-
-    int extensionNodes = (int)extensionNodeList->getLength();
-
-    for (int i = 0; i < extensionNodes; i++)
-    {
-        DOMNode* extensionNode = extensionNodeList->item(i);
-        CHECKNULL(extensionNode, L"MgServerDescribeSchema.ExecuteDescribeSchema");
-
-        DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
-        int nNameNodes = (int)nameNodeList->getLength();
-
-        // get the extension name node
-        DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
-
-        // get the extension name value
-        STRING extensionName;
-        xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, extensionName);
-
-        // Determine the number of secondary sources (AttributeRelate nodes)
-        DOMNodeList* attributeRelateNodeList = xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
-        int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
-
-        for (int arNodesIndex = 0; arNodesIndex < nAttributeRelateNodes; arNodesIndex++)
-        {
-            // get the atribute relate node
-            DOMNode* attributeRelateNode = attributeRelateNodeList->item(arNodesIndex);
-
-            // get the resource id of the secondary feature source
-            STRING secondaryResourceId;
-            xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", secondaryResourceId);
-
-            // Get the name for the join relationship (attribute relate name)
-            STRING attributeRelateName;
-            xmlUtil.GetElementValue(attributeRelateNode, "Name", attributeRelateName);
-
-            // Get the secondary feature class (AttributeClass)
-            STRING attributeClass;
-            xmlUtil.GetElementValue(attributeRelateNode, "AttributeClass", attributeClass);
-
-            // Parse the schema name form the classname;
-            STRING::size_type nDelimiter = attributeClass.find(L":");
-            STRING secSchemaName;
-            STRING secClassName;
-            secSchemaName = attributeClass.substr(0, nDelimiter);
-            secClassName = attributeClass.substr(nDelimiter + 1);
-
-            // Establish connection to provider for secondary feature source
-            Ptr<MgResourceIdentifier> secondaryFeatureSource = new MgResourceIdentifier(secondaryResourceId);
-
-            if (NULL != secondaryFeatureSource)
-            {
-                FdoPtr<FdoFeatureSchemaCollection> ffsc2;
-                STRING providerName2;
-
-                Ptr<MgServerFeatureConnection> connection2 = new MgServerFeatureConnection(secondaryFeatureSource);
-                if ( connection2->IsConnectionOpen() )
-                {
-                    providerName2 = connection2->GetProviderName();
-                }
-                else
-                {
-                    throw new MgConnectionFailedException(L"MgServerDescribeSchema::ExecuteDescribeSchema()", __LINE__, __WFILE__, NULL, L"", NULL);
-                }
-
-                // Check whether this command is supported by the provider
-                FdoPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
-                FdoPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
-                CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.ExecuteDescribeSchema");
-
-                // Execute the command
-                ffsc2 = fdoCommand2->Execute();
-
-                // Extract the schemas from the secondary collection and add them to the main collection
-                // Get schema count
-                FdoInt32 cnt = ffsc2->GetCount();
-                for (FdoInt32 i = 0; i < cnt; i++)
-                {
-                    FdoPtr<FdoFeatureSchema> ffs = ffsc2->GetItem(i);
-                    STRING fdoSchemaName = (wchar_t*)ffs->GetName();
-
-                    if (fdoSchemaName != secSchemaName)
-                    {
-                        continue;
-                    }
-
-
-                    // Prefix the schema name with the extension and attribute relate names
-                    STRING modifiedSchemaName;
-                    modifiedSchemaName =  L"[" + extensionName + L"]";
-                    modifiedSchemaName += L"[" + attributeRelateName + L"]";
-                    modifiedSchemaName += fdoSchemaName;
-                    FdoString* msn = modifiedSchemaName.c_str();
-                    ffs->SetName(msn);
-
-                    // Add this schema to the collection if it isn't already there
-                    if (!m_ffsc->Contains(ffs))
-                    {
-                        m_ffsc->Add(ffs);
-                    }
-                }
-            }
-
-        }  // End of for-loop that iterates thru the secondary sources
-
-    }  // End of for loop that iteratates thru the extensions in the feature source
+    ffsc = fdoCommand->Execute();
+    CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.ExecuteDescribeSchema")
+
+    return ffsc.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
 MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName)
 {
-    Ptr<MgFeatureSchemaCollection> fsCollection = new MgFeatureSchemaCollection();
+    Ptr<MgFeatureSchemaCollection> fsCollection;
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -202,311 +84,321 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
         throw new MgNullArgumentException(L"MgServerDescribeSchema.DescribeSchema", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    this->ExecuteDescribeSchema(resource, schemaName);
-    CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.DescribeSchema");
-
-    // Get schema count
-    FdoInt32 schemaCnt = m_ffsc->GetCount();
-
-    //
-    // A new MgFeatureSchema needs to be created for each primary schema in m_ffsc
-    //
-
-    Ptr<MgFeatureSchema> schema;
-    Ptr<MgClassDefinitionCollection> classCol;
-
-    for (int nSchemaIndex = 0; nSchemaIndex < schemaCnt; nSchemaIndex++)
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    fsCollection = featureServiceCache->ContainsFeatureSchema(resource, schemaName);
+    if(NULL == fsCollection)
     {
-        // Retrieve schema from the collection
-        FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(nSchemaIndex);
-        STRING schemaName = (wchar_t*)ffs->GetName();
+        fsCollection = new MgFeatureSchemaCollection();
 
-        // Check if this schema is from secondary source which will be prefixed with [ExtensionName][RelationName],
-        // ie [ExtensionName][RelationName]SchemaName
-        if (schemaName.find(L"[") == 0)
-        {
-            // Found a schema for secondary source, so just skip over it for now
-            continue;
-        }
+        FdoPtr<FdoFeatureSchemaCollection> ffsc;
+        ffsc = ExecuteDescribeSchema(resource, schemaName);
+        CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgServerDescribeSchema.DescribeSchema");
 
-        schema = new MgFeatureSchema();
-        classCol = schema->GetClasses();
-
-        // Set the schema name and description
-        FdoStringP fSchemaName = ffs->GetName();
-        schema->SetName(STRING(fSchemaName));
-
-        FdoStringP fSchemaDesc = ffs->GetDescription();
-        schema->SetDescription(STRING(fSchemaDesc));
-
-        // Get all classes for the schema
-        FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
-        FdoInt32 classCnt = fcc->GetCount();
-
-        // Add the primary class definitions to the MgClassDefinitionCollection
-        for (FdoInt32 nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
-        {
-            FdoPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
-
-            FdoStringP qname = fc->GetQualifiedName();
-            FdoStringP name = fc->GetName();
-
-            if (name != NULL && qname != NULL)
-            {
-                MgServerGetFeatures msgf;
-                Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fc, true);
-                classCol->Add(classDefinition);
-            }
-        }
+        // Get schema count
+        FdoInt32 schemaCnt = ffsc->GetCount();
 
         //
-        // A new MgClassDefinition needs to be created for each extension and added to the classCollection
+        // A new MgFeatureSchema needs to be created for each primary schema in m_ffsc
         //
 
-        // Retrieve XML from repository
-        string featureSourceXmlContent;
-        RetrieveFeatureSource(resource, featureSourceXmlContent);
+        Ptr<MgFeatureSchema> schema;
+        Ptr<MgClassDefinitionCollection> classCol;
 
-        // Parse the XML and get properties
-        MgXmlUtil xmlUtil;
-        xmlUtil.ParseString(featureSourceXmlContent.c_str());
-
-        // Determine how may extension nodes
-        DOMElement* rootNode = xmlUtil.GetRootNode();
-        DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
-        CHECKNULL(extensionNodeList, L"MgServerDescribeSchema.DescribeSchema()");
-        int nExtensionNodes = (int)extensionNodeList->getLength();
-
-        // For each extension node
-        for (int nExtNodeIndex = 0; nExtNodeIndex < nExtensionNodes; nExtNodeIndex++)
+        for (int nSchemaIndex = 0; nSchemaIndex < schemaCnt; nSchemaIndex++)
         {
-            Ptr<MgClassDefinition> extClassDefinition;
+            // Retrieve schema from the collection
+            FdoPtr<FdoFeatureSchema> ffs = ffsc->GetItem(nSchemaIndex);
+            STRING schemaName = (wchar_t*)ffs->GetName();
 
-            DOMNode* extensionNode = extensionNodeList->item(nExtNodeIndex);
-            CHECKNULL(extensionNode, L"MgServerDescribeSchema.DescribeSchema");
-
-            DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
-            int nNameNodes = (int)nameNodeList->getLength();
-
-            // get the extension name node
-            DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
-
-            // get the extension name value
-            STRING extensionName;
-            xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, extensionName);
-
-            // get FeatureClass element - this tells us which class is extended (SchemaName:ClassName)
-            STRING featureClass;
-            xmlUtil.GetElementValue(extensionNode, "FeatureClass", featureClass);
-
-            // Parse the schemaname from the classname
-            STRING::size_type nDelimiter = featureClass.find(L":");
-            STRING primSchemaName;
-            STRING primClassName;
-
-            if(STRING::npos == nDelimiter)
+            // Check if this schema is from secondary source which will be prefixed with [ExtensionName][RelationName],
+            // ie [ExtensionName][RelationName]SchemaName
+            if (schemaName.find(L"[") == 0)
             {
-                primSchemaName = L"";
-                primClassName = featureClass;
-            }
-            else
-            {
-                primSchemaName = featureClass.substr(0, nDelimiter);
-                primClassName = featureClass.substr(nDelimiter + 1);
-            }
-
-            if (schemaName != primSchemaName)
-            {
+                // Found a schema for secondary source, so just skip over it for now
                 continue;
             }
 
-            // Cycle thru m_ffsc for schemaName
-            for (int nIndex = 0; nIndex < schemaCnt; nIndex++)
+            schema = new MgFeatureSchema();
+            classCol = schema->GetClasses();
+
+            // Set the schema name and description
+            FdoStringP fSchemaName = ffs->GetName();
+            schema->SetName(STRING(fSchemaName));
+
+            FdoStringP fSchemaDesc = ffs->GetDescription();
+            schema->SetDescription(STRING(fSchemaDesc));
+
+            // Get all classes for the schema
+            FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+            FdoInt32 classCnt = fcc->GetCount();
+
+            // Add the primary class definitions to the MgClassDefinitionCollection
+            for (FdoInt32 nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
             {
-                FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(nIndex);
-                STRING schemaName = (wchar_t*)ffs->GetName();
+                FdoPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
 
-                // Check if this schema is from secondary source
-                if (schemaName.find(L"[") == 0)
+                FdoStringP qname = fc->GetQualifiedName();
+                FdoStringP name = fc->GetName();
+
+                if (name != NULL && qname != NULL)
                 {
-                    // Found a schema for secondary source, so just skip over it
-                    continue;
+                    MgServerGetFeatures msgf;
+                    Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fc, true);
+                    classCol->Add(classDefinition);
                 }
-
-                // get the class collection for for this schema
-                FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
-                FdoInt32 classCnt = fcc->GetCount();
-
-                for (int nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
-                {
-                    FdoPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
-
-                    STRING className = (wchar_t*)fc->GetName();
-                    if (className == primClassName)
-                    {
-                        // get the class definition
-                        MgServerGetFeatures msgf;
-                        extClassDefinition = msgf.GetMgClassDefinition(fc, true);
-                    }
-                }
-
-                break;
-            }
-
-            if (NULL == extClassDefinition)
-            {
-                continue;
             }
 
             //
-            // Finished adding primary class properties to the extension class definition
-            // Now add the secondary class properties.
+            // A new MgClassDefinition needs to be created for each extension and added to the classCollection
             //
 
-            // Determine the number of secondary sources (AttributeRelate nodes)
-            DOMNodeList* attributeRelateNodeList = xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
-            int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
+            // Retrieve XML from repository
+            string featureSourceXmlContent;
+            RetrieveFeatureSource(resource, featureSourceXmlContent);
 
-            for (int arNodesIndex = 0; arNodesIndex < nAttributeRelateNodes; arNodesIndex++)
+            // Parse the XML and get properties
+            MgXmlUtil xmlUtil;
+            xmlUtil.ParseString(featureSourceXmlContent.c_str());
+
+            // Determine how may extension nodes
+            DOMElement* rootNode = xmlUtil.GetRootNode();
+            DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
+            CHECKNULL(extensionNodeList, L"MgServerDescribeSchema.DescribeSchema()");
+            int nExtensionNodes = (int)extensionNodeList->getLength();
+
+            // For each extension node
+            for (int nExtNodeIndex = 0; nExtNodeIndex < nExtensionNodes; nExtNodeIndex++)
             {
-                // get the attribute relate node
-                DOMNode* attributeRelateNode = attributeRelateNodeList->item(arNodesIndex);
+                Ptr<MgClassDefinition> extClassDefinition;
 
-                // Get the name of the secondary feature class (AttributeClass)
-                STRING attributeClass;
-                xmlUtil.GetElementValue(attributeRelateNode, "AttributeClass", attributeClass);
+                DOMNode* extensionNode = extensionNodeList->item(nExtNodeIndex);
+                CHECKNULL(extensionNode, L"MgServerDescribeSchema.DescribeSchema");
 
-                // Parse the schema name from the class name;
-                STRING::size_type nDelimiter = attributeClass.find(L":");
-                STRING secSchemaName;
-                STRING secClassName;
+                DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
+                int nNameNodes = (int)nameNodeList->getLength();
+
+                // get the extension name node
+                DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
+
+                // get the extension name value
+                STRING extensionName;
+                xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, extensionName);
+
+                // get FeatureClass element - this tells us which class is extended (SchemaName:ClassName)
+                STRING featureClass;
+                xmlUtil.GetElementValue(extensionNode, "FeatureClass", featureClass);
+
+                // Parse the schemaname from the classname
+                STRING::size_type nDelimiter = featureClass.find(L":");
+                STRING primSchemaName;
+                STRING primClassName;
 
                 if(STRING::npos == nDelimiter)
                 {
-                    secSchemaName = L"";
-                    secClassName = attributeClass;
+                    primSchemaName = L"";
+                    primClassName = featureClass;
                 }
                 else
                 {
-                    secSchemaName = attributeClass.substr(0, nDelimiter);
-                    secClassName = attributeClass.substr(nDelimiter + 1);
+                    primSchemaName = featureClass.substr(0, nDelimiter);
+                    primClassName = featureClass.substr(nDelimiter + 1);
                 }
 
-                // Get the relation name
-                STRING relationName;
-                xmlUtil.GetElementValue(attributeRelateNode, "Name", relationName);
-
-                // get the resource id of the secondary feature source
-                STRING secondaryResourceId;
-                xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", secondaryResourceId);
-
-                // Establish connection to provider for secondary feature source
-                Ptr<MgResourceIdentifier> secondaryFeatureSource = new MgResourceIdentifier(secondaryResourceId);
-                if (NULL != secondaryFeatureSource)
+                if (schemaName != primSchemaName)
                 {
-                    FdoPtr<FdoFeatureSchemaCollection> ffsc2;
-                    STRING providerName2;
+                    continue;
+                }
 
-                    Ptr<MgServerFeatureConnection> connection2 = new MgServerFeatureConnection(secondaryFeatureSource);
-                    if ( connection2->IsConnectionOpen() )
+                // Cycle thru m_ffsc for schemaName
+                for (int nIndex = 0; nIndex < schemaCnt; nIndex++)
+                {
+                    FdoPtr<FdoFeatureSchema> ffs = ffsc->GetItem(nIndex);
+                    STRING schemaName = (wchar_t*)ffs->GetName();
+
+                    // Check if this schema is from secondary source
+                    if (schemaName.find(L"[") == 0)
                     {
-                        providerName2 = connection2->GetProviderName();
+                        // Found a schema for secondary source, so just skip over it
+                        continue;
+                    }
+
+                    // get the class collection for for this schema
+                    FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+                    FdoInt32 classCnt = fcc->GetCount();
+
+                    for (int nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
+                    {
+                        FdoPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
+
+                        STRING className = (wchar_t*)fc->GetName();
+                        if (className == primClassName)
+                        {
+                            // get the class definition
+                            MgServerGetFeatures msgf;
+                            extClassDefinition = msgf.GetMgClassDefinition(fc, true);
+                        }
+                    }
+
+                    break;
+                }
+
+                if (NULL == extClassDefinition)
+                {
+                    continue;
+                }
+
+                //
+                // Finished adding primary class properties to the extension class definition
+                // Now add the secondary class properties.
+                //
+
+                // Determine the number of secondary sources (AttributeRelate nodes)
+                DOMNodeList* attributeRelateNodeList = xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
+                int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
+
+                for (int arNodesIndex = 0; arNodesIndex < nAttributeRelateNodes; arNodesIndex++)
+                {
+                    // get the attribute relate node
+                    DOMNode* attributeRelateNode = attributeRelateNodeList->item(arNodesIndex);
+
+                    // Get the name of the secondary feature class (AttributeClass)
+                    STRING attributeClass;
+                    xmlUtil.GetElementValue(attributeRelateNode, "AttributeClass", attributeClass);
+
+                    // Parse the schema name from the class name;
+                    STRING::size_type nDelimiter = attributeClass.find(L":");
+                    STRING secSchemaName;
+                    STRING secClassName;
+
+                    if(STRING::npos == nDelimiter)
+                    {
+                        secSchemaName = L"";
+                        secClassName = attributeClass;
                     }
                     else
                     {
-                        throw new MgConnectionFailedException(L"MgServerDescribeSchema::DescribeSchema()", __LINE__, __WFILE__, NULL, L"", NULL);
+                        secSchemaName = attributeClass.substr(0, nDelimiter);
+                        secClassName = attributeClass.substr(nDelimiter + 1);
                     }
 
-                    // Get the schema collection for the secondary resource
-                    FdoPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
-                    FdoPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
-                    CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.DescribeSchema");
-                    ffsc2 = fdoCommand2->Execute();
+                    // Get the relation name
+                    STRING relationName;
+                    xmlUtil.GetElementValue(attributeRelateNode, "Name", relationName);
 
-                    int nSecSchemaCnt = (int)ffsc2->GetCount();
+                    // get the resource id of the secondary feature source
+                    STRING secondaryResourceId;
+                    xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", secondaryResourceId);
 
-                    // cycle thru FdoFeatureSchemaCollection for secSchemaName
-                    for (int nSecSchemaIndex = 0; nSecSchemaIndex < nSecSchemaCnt; nSecSchemaIndex++)
+                    // Establish connection to provider for secondary feature source
+                    Ptr<MgResourceIdentifier> secondaryFeatureSource = new MgResourceIdentifier(secondaryResourceId);
+                    if (NULL != secondaryFeatureSource)
                     {
-                        // retrieve the schema
-                        FdoPtr<FdoFeatureSchema> ffs = ffsc2->GetItem(nSecSchemaIndex);
-                        STRING fdoSchemaName = (wchar_t*)ffs->GetName();
+                        FdoPtr<FdoFeatureSchemaCollection> ffsc2;
+                        STRING providerName2;
 
-                        if (fdoSchemaName != secSchemaName)
+                        Ptr<MgServerFeatureConnection> connection2 = new MgServerFeatureConnection(secondaryFeatureSource);
+                        if ( connection2->IsConnectionOpen() )
                         {
-                            continue;
+                            providerName2 = connection2->GetProviderName();
+                        }
+                        else
+                        {
+                            throw new MgConnectionFailedException(L"MgServerDescribeSchema::DescribeSchema()", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
 
-                        // get the class collection for schema
-                        FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
-                        FdoInt32 classCnt = fcc->GetCount();
+                        // Get the schema collection for the secondary resource
+                        FdoPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
+                        FdoPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
+                        CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.DescribeSchema");
+                        ffsc2 = fdoCommand2->Execute();
 
-                        // cycle thru class collection for secClassName
-                        for (int nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
+                        int nSecSchemaCnt = (int)ffsc2->GetCount();
+
+                        // cycle thru FdoFeatureSchemaCollection for secSchemaName
+                        for (int nSecSchemaIndex = 0; nSecSchemaIndex < nSecSchemaCnt; nSecSchemaIndex++)
                         {
-                            Ptr<MgPropertyDefinitionCollection> mpdc = extClassDefinition->GetProperties();
+                            // retrieve the schema
+                            FdoPtr<FdoFeatureSchema> ffs = ffsc2->GetItem(nSecSchemaIndex);
+                            STRING fdoSchemaName = (wchar_t*)ffs->GetName();
 
-                            FdoPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
-
-                            STRING qualifiedName = (const wchar_t*)fc->GetQualifiedName();
-                            STRING className = (wchar_t*)fc->GetName();
-
-                            if (className != secClassName)
+                            if (fdoSchemaName != secSchemaName)
                             {
                                 continue;
                             }
 
-                            // Set the parent name for the secondary class definition
-                            FdoPtr<FdoSchemaElement> parent = fc->GetParent();
-                            if (!secSchemaName.empty())
+                            // get the class collection for schema
+                            FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+                            FdoInt32 classCnt = fcc->GetCount();
+
+                            // cycle thru class collection for secClassName
+                            for (int nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
                             {
-                                parent->SetName(secSchemaName.c_str());
-                            }
+                                Ptr<MgPropertyDefinitionCollection> mpdc = extClassDefinition->GetProperties();
 
-                            // get the secondary class definition
-                            MgServerGetFeatures msgf;
-                            Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fc, true);
+                                FdoPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
 
-                            // retrieve the secondary properties and prefix them with the relation name
-                            Ptr<MgPropertyDefinitionCollection> mpdc2 = classDefinition->GetProperties();
-                            INT32 mpdc2Count = mpdc2->GetCount();
+                                STRING qualifiedName = (const wchar_t*)fc->GetQualifiedName();
+                                STRING className = (wchar_t*)fc->GetName();
 
-                            // Prefix the secondary properties with relationName and add to the extClassDefinition
-                            for (INT32 secPropIndex = 0; secPropIndex < mpdc2Count; secPropIndex++)
-                            {
-                                Ptr<MgPropertyDefinition> propDef = mpdc2->GetItem(secPropIndex);
-                                STRING secPropName = propDef->GetName();
-                                secPropName = relationName + secPropName;
-                                propDef->SetName(secPropName);
-                                mpdc->Add(propDef);
-                            }
+                                if (className != secClassName)
+                                {
+                                    continue;
+                                }
+
+                                // Set the parent name for the secondary class definition
+                                FdoPtr<FdoSchemaElement> parent = fc->GetParent();
+                                if (!secSchemaName.empty())
+                                {
+                                    parent->SetName(secSchemaName.c_str());
+                                }
+
+                                // get the secondary class definition
+                                MgServerGetFeatures msgf;
+                                Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fc, true);
+
+                                // retrieve the secondary properties and prefix them with the relation name
+                                Ptr<MgPropertyDefinitionCollection> mpdc2 = classDefinition->GetProperties();
+                                INT32 mpdc2Count = mpdc2->GetCount();
+
+                                // Prefix the secondary properties with relationName and add to the extClassDefinition
+                                for (INT32 secPropIndex = 0; secPropIndex < mpdc2Count; secPropIndex++)
+                                {
+                                    Ptr<MgPropertyDefinition> propDef = mpdc2->GetItem(secPropIndex);
+                                    STRING secPropName = propDef->GetName();
+                                    secPropName = relationName + secPropName;
+                                    propDef->SetName(secPropName);
+                                    mpdc->Add(propDef);
+                                }
+
+                                break;
+
+                            }  // end loop thru secondary class collection
 
                             break;
 
-                        }  // end loop thru secondary class collection
+                        } // end loop thru secondary schemas
 
-                        break;
+                    } // end if (NULL != secfeatureSource)
 
-                    } // end loop thru secondary schemas
+                }  // end loop thru all attribute relates (joins)
 
-                } // end if (NULL != secfeatureSource)
+                if (!extensionName.empty())
+                {
+                    extClassDefinition->SetName(extensionName);
+                }
 
-            }  // end loop thru all attribute relates (joins)
+                // Add the extension class definition to theMgClassDefinitionCollection
+                classCol->Add(extClassDefinition);
 
-            if (!extensionName.empty())
-            {
-                extClassDefinition->SetName(extensionName);
-            }
+            }  // Repeat for all extensions
 
-            // Add the extension class definition to theMgClassDefinitionCollection
-            classCol->Add(extClassDefinition);
+            // Add the schema to the MgFeatureSchemaCollection
+            fsCollection->Add(schema);
 
-        }  // Repeat for all extensions
+        }  // End loop thru all schemas
 
-        // Add the schema to the MgFeatureSchemaCollection
-        fsCollection->Add(schema);
-
-    }  // End loop thru all schemas
+        featureServiceCache->AddFeatureSchema(resource, schemaName, fsCollection);
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.DescribeSchema")
 
@@ -527,8 +419,15 @@ STRING MgServerDescribeSchema::DescribeSchemaAsXml(MgResourceIdentifier* resourc
         throw new MgNullArgumentException(L"MgServerDescribeSchema.DescribeSchemaAsXml", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    Ptr<MgFeatureSchemaCollection> fsc = DescribeSchema(resource, schemaName);
-    schema = SchemaToXml(fsc);
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    schema = featureServiceCache->ContainsFeatureSchemaXml(resource, schemaName);
+    if(0 == schema.size())
+    {
+        Ptr<MgFeatureSchemaCollection> fsc = DescribeSchema(resource, schemaName);
+        schema = SchemaToXml(fsc);
+
+        featureServiceCache->AddFeatureSchemaXml(resource, schemaName, schema);
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.DescribeSchema")
 
@@ -551,9 +450,9 @@ STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
 
     CHECKNULL((MgFeatureSchemaCollection*)schema, L"MgServerDescribeSchema.SchemaToXml");
 
-    FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = this->GetFdoFeatureSchemaCollection(schema);
+    FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = GetFdoFeatureSchemaCollection(schema);
 
-    xmlSchema = this->GetSerializedXml(fdoSchemaCol);
+    xmlSchema = GetSerializedXml(fdoSchemaCol);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.SchemaToXml")
 
@@ -578,7 +477,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::GetFdoFeatureSchemaCollectio
     for (i=0; i<count; i++)
     {
         Ptr<MgFeatureSchema> mgSchema = mgSchemaCol->GetItem(i);
-        FdoPtr<FdoFeatureSchema> fdoSchema = this->GetFdoFeatureSchema(mgSchema);
+        FdoPtr<FdoFeatureSchema> fdoSchema = GetFdoFeatureSchema(mgSchema);
         if (fdoSchemaCol->Contains(fdoSchema))
         {
             throw new MgDuplicateObjectException(L"MgServerDescribeSchema.GetFdoFeatureSchemaCollection", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -621,7 +520,7 @@ FdoFeatureSchema* MgServerDescribeSchema::GetFdoFeatureSchema(MgFeatureSchema* m
     FdoPtr<FdoClassCollection> fdoClassCol = fdoSchema->GetClasses();
     Ptr<MgClassDefinitionCollection> awClassCol = mgSchema->GetClasses();
 
-    this->GetFdoClassCollection(fdoClassCol, awClassCol);
+    GetFdoClassCollection(fdoClassCol, awClassCol);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetFdoFeatureSchema")
 
@@ -641,7 +540,7 @@ void MgServerDescribeSchema::GetFdoClassCollection(FdoClassCollection* fdoClassC
     for (i=0; i<count; i++)
     {
         Ptr<MgClassDefinition> mgClassDef = mgClassDefCol->GetItem(i);
-        FdoPtr<FdoClassDefinition> fdoClassDef = this->GetFdoClassDefinition(mgClassDef, fdoClassCol);
+        FdoPtr<FdoClassDefinition> fdoClassDef = GetFdoClassDefinition(mgClassDef, fdoClassCol);
         CHECKNULL(fdoClassDef, L"MgServerDescribeSchema.GetFdoClassCollection")
 
         FdoStringP name = fdoClassDef->GetName();
@@ -723,10 +622,10 @@ FdoClassDefinition* MgServerDescribeSchema::GetFdoClassDefinition(MgClassDefinit
     Ptr<MgPropertyDefinitionCollection> awDataPropDefCol = mgClassDef->GetIdentityProperties();
 
     //Add properties
-    this->GetClassProperties(fdoPropDefCol, mgPropDefCol, fdoClassCol);
+    GetClassProperties(fdoPropDefCol, mgPropDefCol, fdoClassCol);
 
     //Add identity properties
-    this->GetClassProperties(fdoIdentityPropDefCol, awDataPropDefCol);
+    GetClassProperties(fdoIdentityPropDefCol, awDataPropDefCol);
 
     Ptr<MgClassDefinition> awBaseDef = mgClassDef->GetBaseClassDefinition();
     if (awBaseDef != NULL)
@@ -783,7 +682,7 @@ void MgServerDescribeSchema::GetClassProperties(FdoPropertyDefinitionCollection*
         CHECKNULL((MgPropertyDefinition*)awpd, L"MgServerDescribeSchema.GetClassProperties");
 
         // Create Fdo Property
-        FdoPtr<FdoPropertyDefinition> fdoProp = this->GetFdoPropertyDefinition(awpd, fdoClassCol);
+        FdoPtr<FdoPropertyDefinition> fdoProp = GetFdoPropertyDefinition(awpd, fdoClassCol);
         // Add it to class definition
         if (fdoProp != NULL)
         {
@@ -813,7 +712,7 @@ void MgServerDescribeSchema::GetClassProperties(FdoDataPropertyDefinitionCollect
         CHECKNULL((MgPropertyDefinition*) mgPropDef, L"MgServerDescribeSchema.GetClassProperties");
 
         //Create Fdo property
-        FdoPtr<FdoDataPropertyDefinition> fdoPropDef = (FdoDataPropertyDefinition*)this->GetFdoPropertyDefinition(mgPropDef, NULL);
+        FdoPtr<FdoDataPropertyDefinition> fdoPropDef = (FdoDataPropertyDefinition*)GetFdoPropertyDefinition(mgPropDef, NULL);
         //Add it to class definition
         if (fdoPropDef != NULL)
         {
@@ -839,20 +738,20 @@ FdoPropertyDefinition* MgServerDescribeSchema::GetFdoPropertyDefinition(MgProper
         // Represents a Data Property type.
         case MgFeaturePropertyType::DataProperty:
         {
-            fdoPropDef = this->GetDataPropertyDefinition((MgDataPropertyDefinition*)mgPropDef);
+            fdoPropDef = GetDataPropertyDefinition((MgDataPropertyDefinition*)mgPropDef);
             break;
         }
         // Represents an Object Property type.
         case MgFeaturePropertyType::ObjectProperty:
         {
-            fdoPropDef = this->GetObjectPropertyDefinition((MgObjectPropertyDefinition*)mgPropDef, fdoClassCol);
+            fdoPropDef = GetObjectPropertyDefinition((MgObjectPropertyDefinition*)mgPropDef, fdoClassCol);
             break;
         }
 
         // Represents a Geometric Property type.
         case MgFeaturePropertyType::GeometricProperty:
         {
-            fdoPropDef = this->GetGeometricPropertyDefinition((MgGeometricPropertyDefinition*)mgPropDef);
+            fdoPropDef = GetGeometricPropertyDefinition((MgGeometricPropertyDefinition*)mgPropDef);
             break;
         }
         // Represents an Association Property type.
@@ -865,7 +764,7 @@ FdoPropertyDefinition* MgServerDescribeSchema::GetFdoPropertyDefinition(MgProper
         // Represents a Raster (image) Property type.
         case MgFeaturePropertyType::RasterProperty:
         {
-            fdoPropDef = this->GetRasterPropertyDefinition((MgRasterPropertyDefinition*)mgPropDef);
+            fdoPropDef = GetRasterPropertyDefinition((MgRasterPropertyDefinition*)mgPropDef);
             break;
         }
     }
@@ -904,7 +803,7 @@ FdoDataPropertyDefinition* MgServerDescribeSchema::GetDataPropertyDefinition(MgD
     bool isAutoGenerated = mgPropDef->IsAutoGenerated();
 
     //Set it for Fdo
-    FdoDataType dataType = this->GetFdoDataType(mgPropDef->GetDataType());
+    FdoDataType dataType = GetFdoDataType(mgPropDef->GetDataType());
     fdoPropDef->SetDataType(dataType);
 
     if (!defaultVal.empty())
@@ -949,10 +848,10 @@ FdoObjectPropertyDefinition* MgServerDescribeSchema::GetObjectPropertyDefinition
     Ptr<MgClassDefinition> clsDef = objPropDef->GetClassDefinition();
     Ptr<MgDataPropertyDefinition> idProp = objPropDef->GetIdentityProperty();
     // Convert MgObjectProperty data members to Fdo data members
-    FdoPtr<FdoClassDefinition> fdoClsDef = this->GetFdoClassDefinition(clsDef, fdoClassCol);
+    FdoPtr<FdoClassDefinition> fdoClsDef = GetFdoClassDefinition(clsDef, fdoClassCol);
     CHECKNULL(fdoClsDef, L"MgServerDescribeSchema.GetObjectPropertyDefinition")
 
-    FdoPtr<FdoDataPropertyDefinition> fdoDataPropDef = this->GetDataPropertyDefinition(idProp);
+    FdoPtr<FdoDataPropertyDefinition> fdoDataPropDef = GetDataPropertyDefinition(idProp);
     FdoObjectType fdoObjectType = MgServerFeatureUtil::MgObjectPropertyTypeToFdoObjectType(objType);
     FdoOrderType fdoOrderType = MgServerFeatureUtil::MgOrderingOptionToFdoOrderType(orderType);
     // Set them to Fdo object property
@@ -1239,7 +1138,7 @@ STRING MgServerDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoS
     CHECKNULL(fdoSchemaCol, L"MgServerDescribeSchema.GetSerializedXml");
 
     FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
-    CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerDescribeSchema.DescribeSchema");
+    CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerDescribeSchema.GetSerializedXml");
 
     // Write to memory stream
     fdoSchemaCol->WriteXml(fmis);
@@ -1247,7 +1146,7 @@ STRING MgServerDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoS
 
     FdoInt64 len = fmis->GetLength();
     FdoByte *bytes = new FdoByte[(size_t)len];
-    CHECKNULL(bytes, L"MgServerDescribeSchema.DescribeSchema");
+    CHECKNULL(bytes, L"MgServerDescribeSchema.GetSerializedXml");
 
     fmis->Read(bytes, (FdoSize)len);
 
@@ -1260,7 +1159,7 @@ STRING MgServerDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoS
 
     delete [] bytes;
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.DescribeSchema")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetSerializedXml")
 
     return serializedXml;
 }
@@ -1278,32 +1177,39 @@ MgStringCollection* MgServerDescribeSchema::GetSchemas(MgResourceIdentifier* res
         throw new MgNullArgumentException(L"MgServerDescribeSchema.GetSchemas", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    this->ExecuteDescribeSchema(resource,L""); // No schema name
-    CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.DescribeSchema");
-
-    strCol = new MgStringCollection();
-    FdoInt32 cnt = m_ffsc->GetCount();
-
-    for (FdoInt32 i = 0; i < cnt; i++)
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    strCol = featureServiceCache->ContainsSchemas(resource);
+    if(NULL == strCol)
     {
-        FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(i);
-        // TODO: Should we return qualified or non-qualified name
-        FdoStringP pname = ffs->GetQualifiedName();
-        if (pname != NULL)
+        FdoPtr<FdoFeatureSchemaCollection> ffsc;
+        ffsc = ExecuteDescribeSchema(resource,L""); // No schema name
+        CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgServerDescribeSchema.GetSchemas");
+
+        strCol = new MgStringCollection();
+        FdoInt32 cnt = ffsc->GetCount();
+
+        for (FdoInt32 i = 0; i < cnt; i++)
         {
-            int len = (int)wcslen(pname);
-            if (len > 0)
+            FdoPtr<FdoFeatureSchema> ffs = ffsc->GetItem(i);
+            // TODO: Should we return qualified or non-qualified name
+            FdoStringP pname = ffs->GetQualifiedName();
+            if (pname != NULL)
             {
-                strCol->Add(STRING(pname));
+                int len = (int)wcslen(pname);
+                if (len > 0)
+                {
+                    strCol->Add(STRING(pname));
+                }
             }
         }
+
+        featureServiceCache->AddSchemas(resource, strCol);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetSchemas")
 
     return strCol.Detach();
 }
-
 
 //////////////////////////////////////////////////////////////////
 MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName)
@@ -1317,36 +1223,43 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
         throw new MgNullArgumentException(L"MgServerDescribeSchema.GetClasses", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    this->ExecuteDescribeSchema(resource, schemaName); // No schema name
-    CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.GetClasses");
-
-    strCol = new MgStringCollection();
-    // Get schema count
-    FdoInt32 cnt = m_ffsc->GetCount();
-    for (FdoInt32 i = 0; i < cnt; i++)
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    strCol = featureServiceCache->ContainsClasses(resource, schemaName);
+    if(NULL == strCol)
     {
-        FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(i);
-        // Get all classes for a schema
-        FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
-        FdoInt32 classCnt = fcc->GetCount();
+        FdoPtr<FdoFeatureSchemaCollection> ffsc;
+        ffsc = ExecuteDescribeSchema(resource, schemaName); // No schema name
+        CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgServerDescribeSchema.GetClasses");
 
-        for (FdoInt32 j = 0; j < classCnt; j++)
+        strCol = new MgStringCollection();
+        // Get schema count
+        FdoInt32 cnt = ffsc->GetCount();
+        for (FdoInt32 i = 0; i < cnt; i++)
         {
-            FdoPtr<FdoClassDefinition> fc = fcc->GetItem(j);
-            // TODO: Should we return qualified or non-qualified name
-            FdoStringP pname = fc->GetQualifiedName();
-            if (pname != NULL)
+            FdoPtr<FdoFeatureSchema> ffs = ffsc->GetItem(i);
+            // Get all classes for a schema
+            FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+            FdoInt32 classCnt = fcc->GetCount();
+
+            for (FdoInt32 j = 0; j < classCnt; j++)
             {
-                strCol->Add(STRING(pname));
+                FdoPtr<FdoClassDefinition> fc = fcc->GetItem(j);
+                // TODO: Should we return qualified or non-qualified name
+                FdoStringP pname = fc->GetQualifiedName();
+                if (pname != NULL)
+                {
+                    strCol->Add(STRING(pname));
+                }
             }
         }
+
+        featureServiceCache->AddClasses(resource, schemaName, strCol);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetClasses")
 
     return strCol.Detach();
 }
-
 
 //////////////////////////////////////////////////////////////////
 MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdentifier* resource,
@@ -1367,47 +1280,54 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
         throw new MgClassNotFoundException(L"MgServerDescribeSchema.GetClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    this->ExecuteDescribeSchema(resource, schemaName); // No schema name
-    CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.GetClassDefinition");
-
-    // classDefinition = new MgClassDefinition();
-    // Get schema count
-    FdoInt32 cnt = m_ffsc->GetCount();
-    for (FdoInt32 i = 0; i < cnt; i++)
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    classDefinition = featureServiceCache->ContainsClassDefinition(resource, schemaName, className);
+    if(NULL == classDefinition)
     {
-        FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(i);
-        // Get all classes for a schema
-        FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
-        FdoInt32 classCnt = fcc->GetCount();
+        FdoPtr<FdoFeatureSchemaCollection> ffsc;
+        ffsc = ExecuteDescribeSchema(resource, schemaName); // No schema name
+        CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgServerDescribeSchema.GetClassDefinition");
 
-        for (FdoInt32 j = 0; j < classCnt; j++)
+        // classDefinition = new MgClassDefinition();
+        // Get schema count
+        FdoInt32 cnt = ffsc->GetCount();
+        for (FdoInt32 i = 0; i < cnt; i++)
         {
-            FdoPtr<FdoClassDefinition> fc = fcc->GetItem(j);
-            // TODO: Should we return qualified or non-qualified name
-            FdoStringP qname = fc->GetQualifiedName();
-            FdoStringP name = fc->GetName();
+            FdoPtr<FdoFeatureSchema> ffs = ffsc->GetItem(i);
+            // Get all classes for a schema
+            FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+            FdoInt32 classCnt = fcc->GetCount();
 
-            if (name != NULL && qname != NULL)
+            for (FdoInt32 j = 0; j < classCnt; j++)
             {
-                int idx1 = wcscmp(className.c_str(), qname);
-                int idx2 = wcscmp(className.c_str(), name);
-                // className can be either fully qualified or non-qualified name
-                if (idx1 == 0 || idx2 == 0)
+                FdoPtr<FdoClassDefinition> fc = fcc->GetItem(j);
+                // TODO: Should we return qualified or non-qualified name
+                FdoStringP qname = fc->GetQualifiedName();
+                FdoStringP name = fc->GetName();
+
+                if (name != NULL && qname != NULL)
                 {
-                    // TODO: Separate the utility methods from MgServerGetFeatures
-                    MgServerGetFeatures msgf;
-                    classDefinition = msgf.GetMgClassDefinition(fc, true);
-                    break;
+                    int idx1 = wcscmp(className.c_str(), qname);
+                    int idx2 = wcscmp(className.c_str(), name);
+                    // className can be either fully qualified or non-qualified name
+                    if (idx1 == 0 || idx2 == 0)
+                    {
+                        // TODO: Separate the utility methods from MgServerGetFeatures
+                        MgServerGetFeatures msgf;
+                        classDefinition = msgf.GetMgClassDefinition(fc, true);
+                        break;
+                    }
                 }
             }
         }
+
+        featureServiceCache->AddClassDefinition(resource, schemaName, className, classDefinition);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetClassDefinition")
 
     return classDefinition.Detach();
 }
-
 
 //////////////////////////////////////////////////////////////////
 bool MgServerDescribeSchema::FdoClassExist(const wchar_t* name, FdoClassCollection* clsCol)
@@ -1441,51 +1361,59 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
         throw new MgClassNotFoundException(L"MgServerDescribeSchema.GetIdentityProperties", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    idProps = new MgPropertyDefinitionCollection();
-
-    this->ExecuteDescribeSchema(resource, schemaName);
-    CHECKNULL((FdoFeatureSchemaCollection*)m_ffsc, L"MgServerDescribeSchema.GetIdentityProperties");
-
-    // There should be at least one schema for the primary feature source
-    FdoInt32 cnt = m_ffsc->GetCount();
-    if (cnt > 0)
+    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+    idProps = featureServiceCache->ContainsIdentityProperties(resource, schemaName, className);
+    if(NULL == idProps)
     {
-        // Retrieve schema for primary feature source
-        FdoPtr<FdoFeatureSchema> ffs = m_ffsc->GetItem(0);
+        idProps = new MgPropertyDefinitionCollection();
 
-        // Get all classes for a schema
-        FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
-        FdoInt32 classCnt = fcc->GetCount();
+        FdoPtr<FdoFeatureSchemaCollection> ffsc;
+        ffsc = ExecuteDescribeSchema(resource, schemaName);
+        CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgServerDescribeSchema.GetIdentityProperties");
 
-        for (FdoInt32 j = 0; j < classCnt; j++)
+        // There should be at least one schema for the primary feature source
+        FdoInt32 cnt = ffsc->GetCount();
+        if (cnt > 0)
         {
-            FdoPtr<FdoClassDefinition> fc = fcc->GetItem(j);
+            // Retrieve schema for primary feature source
+            FdoPtr<FdoFeatureSchema> ffs = ffsc->GetItem(0);
 
-            // check both the qualified and non-qualified names
-            FdoStringP qname = fc->GetQualifiedName();
-            FdoStringP name = fc->GetName();
+            // Get all classes for a schema
+            FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
+            FdoInt32 classCnt = fcc->GetCount();
 
-            int idx1 = wcscmp(className.c_str(), qname);
-            int idx2 = wcscmp(className.c_str(), name);
-            // className can be either fully qualified or non-qualified name
-            if (idx1 == 0 || idx2 == 0)
+            for (FdoInt32 j = 0; j < classCnt; j++)
             {
-                STRING qualifiedName = (const wchar_t*)qname;
-                STRING::size_type nLength = qualifiedName.length();
+                FdoPtr<FdoClassDefinition> fc = fcc->GetItem(j);
 
-                // Get identity properties for only the primary source (ie extensionName is blank)
-                STRING::size_type nExtensionStart = qualifiedName.find(L"[");
-                if (STRING::npos == nExtensionStart)
+                // check both the qualified and non-qualified names
+                FdoStringP qname = fc->GetQualifiedName();
+                FdoStringP name = fc->GetName();
+
+                int idx1 = wcscmp(className.c_str(), qname);
+                int idx2 = wcscmp(className.c_str(), name);
+                // className can be either fully qualified or non-qualified name
+                if (idx1 == 0 || idx2 == 0)
                 {
-                    // retrieve identity properties from FDO
-                    FdoPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
+                    STRING qualifiedName = (const wchar_t*)qname;
+                    STRING::size_type nLength = qualifiedName.length();
 
-                    MgServerGetFeatures msgf;
-                    msgf.GetClassProperties(idProps, fdpdc);
-                    break;
+                    // Get identity properties for only the primary source (ie extensionName is blank)
+                    STRING::size_type nExtensionStart = qualifiedName.find(L"[");
+                    if (STRING::npos == nExtensionStart)
+                    {
+                        // retrieve identity properties from FDO
+                        FdoPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
+
+                        MgServerGetFeatures msgf;
+                        msgf.GetClassProperties(idProps, fdpdc);
+                        break;
+                    }
                 }
             }
         }
+
+        featureServiceCache->AddIdentityProperties(resource, schemaName, className, idProps);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetIdentityProperties")

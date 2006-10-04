@@ -57,6 +57,8 @@ public:
     void NotifyResourcesChanged(MgSerializableCollection* resources);
     void DispatchResourceChangeNotifications();
 
+    void NotifyFeatureServiceCache();
+
 private:
 
     MgService* RequestLocalService(INT32 serviceType);

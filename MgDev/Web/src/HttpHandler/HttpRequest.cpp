@@ -61,6 +61,10 @@
 #include "HttpGetSpatialContexts.h"
 #include "HttpGetLongTransactions.h"
 #include "HttpEnumerateDataStores.h"
+#include "HttpGetSchemas.h"
+#include "HttpGetClasses.h"
+#include "HttpGetClassDefinition.h"
+#include "HttpGetIdentityProperties.h"
 #include "HttpGetSchemaMapping.h"
 
 // Http Mapping Service operations
@@ -354,6 +358,10 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opWfsDescribeFeatureType] = MgHttpWfsDescribeFeatureType::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateDataStores] = MgHttpEnumerateDataStores::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetSchemaMapping] = MgHttpGetSchemaMapping::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetSchemas] = MgHttpGetSchemas::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetClasses] = MgHttpGetClasses::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetClassDefinition] = MgHttpGetClassDefinition::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetIdentityProperties] = MgHttpGetIdentityProperties::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetMapKml] = MgHttpKmlGetMap::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetLayerKml] = MgHttpKmlGetLayer::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetFeaturesKml] = MgHttpKmlGetFeatures::CreateObject;

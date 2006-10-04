@@ -168,7 +168,7 @@ MgClassDefinition* MgServerGetFeatures::GetMgClassDefinition(FdoClassDefinition*
         mgClassDef->MakeClassComputed(isComputed);
     }
 
-    bool isAbstract = fdoClassDefinition->GetIsComputed();
+    bool isAbstract = fdoClassDefinition->GetIsAbstract();
     if (isAbstract)
     {
         mgClassDef->MakeClassAbstract(isAbstract);
