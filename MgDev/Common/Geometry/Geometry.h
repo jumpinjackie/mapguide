@@ -464,7 +464,7 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param distance (double)
-    /// The distance from the geometry in units.
+    /// The distance from the geometry in units.  This value cannot be zero.
     /// \param measure (MgMeasure)
     /// The MgMeasure instance to use when computing
     /// the buffer. If null, a linear distance
