@@ -2244,7 +2244,7 @@ Object.extend(WSMapDefinitionView.prototype, {
     handleChooseCoordinateSystem: function(button, dialog) {
         if (button == 'ok') {
             this._oSettingsPanel.getObj('coordinatesystem').value = dialog.getWKT();
-            this.obj.setContentValue('', dialog.getWKT());
+            this.obj.setContentValue('CoordinateSystem', dialog.getWKT());
         }
         dialog.close();
     },
@@ -3540,6 +3540,7 @@ Object.extend(WSFeatureSourceView.prototype, {
             this.oUploadPane.location = "featureupload.html";
             return;
         }
+        Event.stopObserving(this._oSettingsPanel.getObj('uploadPane'), "load", this._uploadPaneLoaded.bind(this));
         this._enumerateData();
         //set form variables
         this.oUploadPane.getElementById('uploadForm').action = this.obj.app.getBroker().mapAgentURL;
