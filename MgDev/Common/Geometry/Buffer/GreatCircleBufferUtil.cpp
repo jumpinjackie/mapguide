@@ -218,11 +218,11 @@ void GreatCircleBufferUtil::InitPolyObject()
 //
 //------------------------------------------------------------------------------
 
-bool GreatCircleBufferUtil::CreateOffsetChainLBL(bool bLBL)
+BOOL GreatCircleBufferUtil::CreateOffsetChainLBL(BOOL bLBL)
 {
     m_bCreatOffsetChainLBL = bLBL;
 
-    return true;
+    return TRUE;
 }
 
 //------------------------------------------------------------------------------
@@ -303,7 +303,7 @@ void GreatCircleBufferUtil::CreatePointBuffer(const OpsFloatPoint &point,
 //
 //
 //            <-  *   <-
-//         /                \                   //other chars to avoid Linus warning
+//         /                \                   //other chars to avoid Linux warning
 //
 //     |                  ^
 //     V                  |
@@ -420,7 +420,7 @@ void GreatCircleBufferUtil::CreateLineSegmentBuffer(const OpsFloatPoint endPoint
 //                   .
 //                   .
 //                   .     Azimuth (Angle with respect to the North)
-//                   .----\                           //other chars to avoid Linus warning
+//                   .----\                           //other chars to avoid Linux warning
 //                   .    |
 //                   .    V
 //                P0 * ------------- * P1
@@ -486,14 +486,12 @@ double GreatCircleBufferUtil::GetAzimuth(const OpsFloatPoint &fP0, const OpsFloa
 void GreatCircleBufferUtil::PolygonizeCircle(const OpsFloatPoint &center,
     OpsFloatPoint vertices[]) const
 {
-    double degreeGap = 360.0 / m_nSegmentsPerCircle;
-
     double degree = 360.0;
     INT32 i;
     for (i = 0; i < m_nSegmentsPerCircle; i++)
     {
         GetOffsetPoint(degree, center, vertices[i]);
-        degree -= degreeGap;
+        degree -= m_dDeltaThetaDeg;
     }
     vertices[i].x = vertices[0].x;
     vertices[i].y = vertices[0].y;
@@ -510,7 +508,7 @@ void GreatCircleBufferUtil::PolygonizeCircle(const OpsFloatPoint &center,
 //                   .
 //                   .
 //                   .     Azimuth (Angle with respect to the North)
-//                   .----\                   //other chars to avoid Linus warning
+//                   .----\                   //other chars to avoid Linux warning
 //                   .    |
 //                   .    V
 //                P0 * ---------------- * P
@@ -553,7 +551,7 @@ void GreatCircleBufferUtil::GetOffsetPoint(double dAzimuth,
 //                   .
 //                   .
 //                   .     Azimuth (Angle with respect to the North)
-//                   .----\               //other chars to avoid Linus warning
+//                   .----\               //other chars to avoid Linux warning
 //                   .    |
 //                   .    V
 //                P0 * ---------------- * P
@@ -585,8 +583,6 @@ void GreatCircleBufferUtil::GetOffsetPoint(double dAzimuth,
     const OpsFloatPoint &fP0, OpsFloatPoint &fP, double dOffsetDistance) const
 {
     Ptr<MgCoordinate> coordMCS = m_transform->Float2Double(fP0);
-
-    Ptr<MgCoordinateSystem> coordSys = m_measure->GetCoordSys();
 
     double offset = m_transform->Float2Double(dOffsetDistance);
 
@@ -638,7 +634,7 @@ double GreatCircleBufferUtil::GetDistance(const OpsFloatPoint &fP0, const OpsFlo
 //                    .
 //                    .
 //        theta1      .     theta2
-//              /-----.------\            //other chars to avoid Linus warning
+//              /-----.------\            //other chars to avoid Linux warning
 //             |        .      |
 //             V        .P0    V
 //    P1 * ---------- * ------------ * P2
@@ -700,7 +696,7 @@ void GreatCircleBufferUtil::PolygonizeCircularArc(const OpsFloatPoint &fP0,
     // compute the angle, Phi, subtended by the arc
     //
     //                  North
-    //                    .------------\              //other chars to avoid Linus warning
+    //                    .------------\              //other chars to avoid Linux warning
     //                    .             |
     //                    .    theta2  |
     //                    .---\         |
@@ -712,7 +708,7 @@ void GreatCircleBufferUtil::PolygonizeCircularArc(const OpsFloatPoint &fP0,
     //                    |<---/        /
     //                    |     \       /
     //                    |<----\---/     Phi
-    //                    |      \                    //other chars to avoid Linus warning
+    //                    |      \                    //other chars to avoid Linux warning
     //                    *       *
     //                    P         P2
 
@@ -721,9 +717,7 @@ void GreatCircleBufferUtil::PolygonizeCircularArc(const OpsFloatPoint &fP0,
     // make sure we don't redundantly compute the start point
 
     if (dPhi == dTheta2)
-    {
         dPhi += m_dDeltaThetaDeg;
-    }
 
     nVertices = 1;
 
@@ -802,21 +796,15 @@ BufferUtility::SideOfLine GreatCircleBufferUtil::LineSide(const OpsFloatPoint &f
     double dThetaV = GetAzimuth(fP0, fP);
 
     if (dThetaV1 < 0.0)
-    {
         dThetaV1 += 360.0;
-    }
 
     if (dThetaV < 0.0)
-    {
         dThetaV += 360.0;
-    }
 
     double dThetaDiff = dThetaV - dThetaV1;
 
     if (dThetaDiff < 0.0)
-    {
         dThetaDiff += 360.0;
-    }
 
     if (dThetaDiff < 180.0)
         return LeftOfLine;
@@ -927,10 +915,10 @@ void GreatCircleBufferUtil::CreateOffsetChains(const OpsFloatPoint vertices[],
     m_vChainEdgesCount = &vChainEdgesCount;
 
     // ideally, we would like to warn in debug mode of degenerate conditions
-    // but for some of the data from older SDFs, the ASSERT could get fired
+    // but for some of the data from older SDFs, the assert could get fired
     // many many times
 
-    // ASSERT(nVertices >= 2);
+//    assert(nVertices >= 2);
 
     // the normal case is a non-degenerate polyobject (i.e., more than one
     // vertex)
@@ -992,8 +980,6 @@ void GreatCircleBufferUtil::CreateOffsetChains(const OpsFloatPoint vertices[],
             AddChainEdges(m_pfBufferVerts, m_nSegmentsPerCircle + 1);
         }
     }
-
-
 }
 
 //------------------------------------------------------------------------------
@@ -1110,7 +1096,7 @@ void GreatCircleBufferUtil::DoCreateOffsetChains(const OpsFloatPoint vertices[],
 //            CreateLineSegmentBuffer() function.
 //
 //            <-  *   <-
-//         /                \                   //other chars to avoid Linus warning
+//         /                \                   //other chars to avoid Linux warning
 //
 //     |                  ^
 //     V                  |
@@ -1278,7 +1264,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
         //       V            |
         //                    |
         //        theta1      |     theta2
-        //              /-----|-------\               //other chars to avoid Linus warning
+        //              /-----|-------\               //other chars to avoid Linux warning
         //             |        |       |
         //             V vertices[i+1]|        vertices[i+2]
         //    P1 * ---------- * ------|----------- *
@@ -1309,7 +1295,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
         //                       .
         //                    .
         //                    .------\  theta1
-        //                    .        \                   //other chars to avoid Linus warning
+        //                    .        \                   //other chars to avoid Linux warning
         //                    .        |
         //                    .        V               m_pfBufferVerts[j]
         //     vertices[i+1]    * ----------*  <-  <-  *------- * vertices[i+2]
@@ -1342,7 +1328,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
         //                           .
         //                        .
         //                        .-----\  theta1
-        //                        .       \            //other chars to avoid Linus warning
+        //                        .       \            //other chars to avoid Linux warning
         //                        .       |
         //                        .       |
         //     vertices[i+1]        * -----|--------------- * vertices[i+2]
@@ -1385,7 +1371,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
     //                <-        *        <-
     //                        |
     //          /                |                ^
-    //         V                |                 \          //other chars to avoid Linus warning
+    //         V                |                 \          //other chars to avoid Linux warning
     //                        |
     //            theta2      |     theta1
     //       |          /-----|-------\            ^
@@ -1432,7 +1418,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
         //       V            |
         //                    |
         //        theta1      |     theta2
-        //              /-----|-------\               //other chars to avoid Linus warning
+        //              /-----|-------\               //other chars to avoid Linux warning
         //             |        |       |
         //             V vertices[i-1]|        vertices[i-2]
         //    P1 * ---------- * ------|----------- *
@@ -1463,7 +1449,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
         //                       .
         //                    .
         //                    .------\  theta1
-        //                    .        \               //other chars to avoid Linus warning
+        //                    .        \               //other chars to avoid Linux warning
         //                    .        |
         //                    .        V               m_pfBufferVerts[j]
         //     vertices[i-1]    * ----------*  <-  <-  *------- * vertices[i-2]
@@ -1494,7 +1480,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
         //                           .
         //                        .
         //                        .-----\  theta1
-        //                        .       \                //other chars to avoid Linus warning
+        //                        .       \                //other chars to avoid Linux warning
         //                        .       |
         //                        .       |
         //     vertices[i-1]        * -----|--------------- * vertices[i-2]
@@ -1537,7 +1523,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
     //                <-        *        <-
     //                        |
     //          /                |                ^
-    //         V                |                 \          //other chars to avoid Linus warning
+    //         V                |                 \          //other chars to avoid Linux warning
     //                        |
     //            theta2      |     theta1
     //       |          /-----|-------\            ^
@@ -1577,7 +1563,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
 //                            .
 //                            .
 //                            .     OffsetAzimuth
-//                            .----\                  //other chars to avoid Linus warning
+//                            .----\                  //other chars to avoid Linux warning
 //                            .    |
 //                            .    V
 //                     P2  P1 * ------------- * ------ * P3

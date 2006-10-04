@@ -15,13 +15,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+/// \ingroup Geometry_Module
 
 //------------------------------------------------------------------------------
 //
 // FILE: GreatCircleBufferUtil.h.
 //
-// PURPOSE: Declaration of the GreatCircleBufferUtil class. The GreatCircleBufferUtil class
-//          contains declarations and utility methods used in the construction
+// PURPOSE: Declaration of the GreatCircleBufferUtil class. The GreatCircleBufferUtil
+//          class contains declarations and utility methods used in the construction
 //          of point, polyline, and polygon buffer zones in great circle mode.
 //
 //------------------------------------------------------------------------------
@@ -50,7 +51,7 @@ public:
     virtual void Initialize(INT32 nSegsPerCircle);
     virtual void InitPolyObject();
 
-    virtual bool CreateOffsetChainLBL(bool bLBL);
+    virtual BOOL CreateOffsetChainLBL(BOOL bLBL);
 
     /// utility methods
 

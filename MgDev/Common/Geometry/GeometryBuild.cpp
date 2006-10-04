@@ -79,6 +79,7 @@
 #include "Buffer/ortree.cpp"
 #include "Buffer/planeswp.cpp"
 #include "Buffer/plgnbufr.cpp"
+#include "Buffer/plgnsbak.cpp"
 #include "Buffer/plinbufr.cpp"
 #include "Buffer/pobjbufr.cpp"
 #include "Buffer/ppgunion.cpp"

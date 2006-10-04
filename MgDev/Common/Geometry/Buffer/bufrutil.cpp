@@ -57,7 +57,8 @@ const int BufferUtility::MaxEdgesPerChain = 1024;
 
 BufferUtility::BufferUtility(float fOffsetDist) :
     m_pfBufferVerts(NULL),
-    m_offsetDist(fOffsetDist)
+    m_offsetDist(fOffsetDist),
+    m_hookEdgeLength(MinHookEdgeLength)
 {
 
 } // end: constructor
@@ -88,8 +89,9 @@ BufferUtility::BufferUtility(float fOffsetDist) :
 //------------------------------------------------------------------------------
 
 BufferUtility::BufferUtility(int nSegsPerCircle, float offsetDist) :
+    m_pfBufferVerts(NULL),
     m_offsetDist(offsetDist),
-    m_pfBufferVerts(NULL)
+    m_hookEdgeLength(MinHookEdgeLength)
 {
     Initialize(nSegsPerCircle);
 
@@ -478,7 +480,7 @@ void BufferUtility::PolygonizeCircularArc(const OpsFloatPoint &startPt,
 
     double angle = ::ceil(startAngle / m_dDeltaThetaRad) * m_dDeltaThetaRad;
 
-    // make sure we dont redundantly compute the start point
+    // make sure we don't redundantly compute the start point
 
     if (angle == startAngle)
         angle += m_dDeltaThetaRad;
@@ -1084,8 +1086,7 @@ void BufferUtility::CreateConvexOffsetChains(const OpsFloatPoint vertices[],
     for (i = 0, j = 1; i < nVertices - 2; i++) {
         // determine which way the line turns at the next vertex
 
-        turn = GetTurnType(vertices[i], vertices[i+1],
-            vertices[i+2]);
+        turn = GetTurnType(vertices[i], vertices[i+1], vertices[i+2]);
 
         // if a left turn is made, then polygonize the arc centered on the
         // vertex where the turn is made, and continue generating the convex
@@ -1162,7 +1163,7 @@ void BufferUtility::CreateConvexOffsetChains(const OpsFloatPoint vertices[],
             arcEndPoint.x = static_cast<float>(vertices[i-1].x + offsetVector.x);
             arcEndPoint.y = static_cast<float>(vertices[i-1].y + offsetVector.y);
             PolygonizeCircularArc(arcStartPoint, arcEndPoint,
-                vertices[i-1],  &m_pfBufferVerts[j], nArcVertices);
+                vertices[i-1], &m_pfBufferVerts[j], nArcVertices);
             j += nArcVertices;
         }
 

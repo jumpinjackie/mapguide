@@ -128,15 +128,13 @@ MgGeometry* MgGeometry::Boundary()
 
 ///////////////////////////////////////////////////////////////////////////
 // Returns a geometry that represents all points whose distance from this
-// geometric entiry is less than or equal to a given distance. By default
+// geometric entity is less than or equal to a given distance. By default
 // distance computation is done using a linear algorithm unless a custom
 // measure is supplied.
 //
 MgGeometry* MgGeometry::Buffer(double distance, MgMeasure* measure)
 {
-    MgBuffer buffer;
-
-    if (distance <= 0.0)
+    if (distance == 0.0)
     {
         STRING buffer;
         MgUtil::DoubleToString(distance, buffer);
@@ -146,9 +144,10 @@ MgGeometry* MgGeometry::Buffer(double distance, MgMeasure* measure)
         arguments.Add(buffer);
 
         throw new MgInvalidArgumentException(L"MgGeometry.Buffer",
-            __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanZero", NULL);
+            __LINE__, __WFILE__, &arguments, L"MgValueCannotBeZero", NULL);
     }
 
+    MgBuffer buffer;
     return buffer.CreateBuffer(this, distance, measure);
 }
 

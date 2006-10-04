@@ -39,11 +39,9 @@
 //
 //         polygonObj     - passes a reference to the polygon object that the
 //                          buffer is to be generated for.
-//         nSegsPerCircle - passes the number of segments that would be used in
-//                          the polygonization of a complete circle. This para-
-//                          meter specifies the smoothness of polygonized offset
-//                          arcs.
-//         pBufferUtil     - passes the buffer offset distance.
+//         pBufferUtil    - passes the number of segments that would be used in
+//                          the polygonization of a complete circle, and also
+//                          the buffer offset distance.
 //
 //     Output:
 //
@@ -74,11 +72,9 @@
 //
 //         polygon        - passes a reference to the OpsPolygon object that
 //                          the buffer is to be generated for.
-//         nSegsPerCircle - passes the number of segments that would be used in
-//                          the polygonization of a complete circle. This para-
-//                          meter specifies the smoothness of polygonized offset
-//                          arcs.
-//         pBufferUtil     - passes the buffer offset distance.
+//         pBufferUtil    - passes the number of segments that would be used in
+//                          the polygonization of a complete circle, and also
+//                          the buffer offset distance.
 //
 //     Output:
 //
@@ -109,11 +105,9 @@ PolygonBuffer::PolygonBuffer(const OpsPolygon &polygon, BufferUtility *pBufferUt
 //
 //         polyPolygon    - passes a reference to the OpsPolyPolygon object that
 //                          the buffer is to be generated for.
-//         nSegsPerCircle - passes the number of segments that would be used in
-//                          the polygonization of a complete circle. This para-
-//                          meter specifies the smoothness of polygonized offset
-//                          arcs.
-//         pBufferUtil     - passes the buffer offset distance.
+//         pBufferUtil    - passes the number of segments that would be used in
+//                          the polygonization of a complete circle, and also
+//                          the buffer offset distance.
 //
 //     Output:
 //

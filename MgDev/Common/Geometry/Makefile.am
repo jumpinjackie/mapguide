@@ -72,6 +72,7 @@ include_SOURCES = \
   Buffer/ortree.cpp \
   Buffer/planeswp.cpp \
   Buffer/plgnbufr.cpp \
+  Buffer/plgnsbak.cpp \
   Buffer/plinbufr.cpp \
   Buffer/pobjbufr.cpp \
   Buffer/ppgunion.cpp \
@@ -203,6 +204,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Buffer/ortree.h \
   Buffer/planeswp.h \
   Buffer/plgnbufr.h \
+  Buffer/plgnsbak.h \
   Buffer/plinbufr.h \
   Buffer/pobjbufr.h \
   Buffer/ppgunion.h \

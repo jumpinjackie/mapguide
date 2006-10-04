@@ -236,6 +236,7 @@ MgUserAndGroupNotEmpty                                = Both the user and group 
 MgUserAndRoleNotEmpty                                 = Both the user and role are not empty.
 MgValueCannotBeLessThanOrEqualToZero                  = The value cannot be less than or equal to zero.
 MgValueCannotBeLessThanZero                           = The value cannot be less than zero.
+MgValueCannotBeZero                                   = The value cannot be zero.
 
 # *****************************************************************************
 # D R A W I N G  S E R V I C E
