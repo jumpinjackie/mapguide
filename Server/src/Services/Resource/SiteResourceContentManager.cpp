@@ -2424,8 +2424,22 @@ MgSecurityCache* MgSiteResourceContentManager::CreateSecurityCache()
             if (nodeResults.next(nodeValue))
             {
                 assert(1 == nodeResults.size());
-                MgUtil::MultiByteToWideChar(nodeValue.asString(), password);
-                userInfo->SetPassword(password, true);
+
+                // Decrypt passwords in advance (instead of on demand) to
+                // resolve the problem on Linux where WFS servers fail
+                // requests with an authentication error.
+
+                MG_CRYPTOGRAPHY_TRY()
+
+                MgCryptographyUtil cryptoUtil;
+                string decryptedPassword;
+
+                cryptoUtil.DecryptPassword(nodeValue.asString(), decryptedPassword);
+                MgUtil::MultiByteToWideChar(decryptedPassword, password);
+
+                MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgSiteResourceContentManager.CreateSecurityCache")
+
+                userInfo->SetPassword(password, false);
             }
 
             userInfoMap.insert(MgUserInfoMap::value_type(
