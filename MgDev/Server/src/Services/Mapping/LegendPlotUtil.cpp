@@ -1177,8 +1177,8 @@ void MgLegendPlotUtil::AddCustomLogoElement(MgPrintLayout* layout, EPlotRenderer
 
         if (sizeUnits == L"inches")  // NOXLATE
         {
-            logoWidth *= logoInfo.GetWidth() * IN_TO_M;
-            logoHeight *= logoInfo.GetHeight() * IN_TO_M;
+            logoWidth = logoInfo.GetWidth() * IN_TO_M;
+            logoHeight = logoInfo.GetHeight() * IN_TO_M;
         }
         else if (sizeUnits == L"meters")  // NOXLATE
         {
