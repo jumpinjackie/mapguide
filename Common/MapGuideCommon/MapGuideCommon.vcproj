@@ -649,6 +649,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Exception\StylizeLayerFailedException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\StylizeLayerFailedException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception\UnauthorizedAccessException.cpp"
 				>
 			</File>
