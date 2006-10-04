@@ -250,6 +250,10 @@ public:
     static const STRING opGetLongTransactions;
     static const STRING opEnumerateDataStores;
     static const STRING opGetSchemaMapping;
+    static const STRING opGetSchemas;
+    static const STRING opGetClasses;
+    static const STRING opGetClassDefinition;
+    static const STRING opGetIdentityProperties;
 
     // Drawing services
     static const STRING opGetDrawingSectionResource;

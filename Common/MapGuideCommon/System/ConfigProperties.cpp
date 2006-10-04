@@ -22,6 +22,15 @@
 ///
 #define MG_CONFIG_MAX_INT32                             2147483647 // 0x7FFFFFFF
 
+#define MG_CONFIG_MIN_FS_CACHE_SIZE                     0
+#define MG_CONFIG_MAX_FS_CACHE_SIZE                     5000
+
+#define MG_CONFIG_MIN_FS_CACHE_TIMELIMIT                0
+#define MG_CONFIG_MAX_FS_CACHE_TIMELIMIT                MG_CONFIG_MAX_INT32
+
+#define MG_CONFIG_MIN_FS_CACHE_TIMERINTERVAL            0
+#define MG_CONFIG_MAX_FS_CACHE_TIMERINTERVAL            86400 // 24 hours
+
 #define MG_CONFIG_MIN_CACHE_SIZE                        1
 #define MG_CONFIG_MAX_CACHE_SIZE                        MG_CONFIG_MAX_INT32
 
@@ -197,6 +206,12 @@ const STRING MgConfigProperties::DrawingServicePropertiesSection                
 // Feature Service Properties
 // ******************************************************************
 const STRING MgConfigProperties::FeatureServicePropertiesSection                            = L"FeatureServiceProperties";
+const STRING MgConfigProperties::FeatureServicePropertyCacheSize                            = L"CacheSize";
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyCacheSize                     = 100;
+const STRING MgConfigProperties::FeatureServicePropertyCacheTimeLimit                       = L"CacheSizeTimeLimit";
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit                = 86400;
+const STRING MgConfigProperties::FeatureServicePropertyCacheTimerInterval                   = L"CacheSizeTimerInterval";
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyCacheTimerInterval            = 3600;
 const STRING MgConfigProperties::FeatureServicePropertyDataCacheSize                        = L"DataCacheSize";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize                 = 100;
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled            = L"DataConnectionPoolEnabled";
@@ -440,6 +455,9 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviDrawingServiceProperties[
 
 const MgConfigValidationInfo MgConfigProperties::sm_cviFeatureServiceProperties[] =
 {
+    { MgConfigProperties::FeatureServicePropertyCacheSize                           , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_SIZE           , MG_CONFIG_MAX_FS_CACHE_SIZE           , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyCacheTimeLimit                      , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_TIMELIMIT      , MG_CONFIG_MAX_FS_CACHE_TIMELIMIT      , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyCacheTimerInterval                  , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_TIMERINTERVAL  , MG_CONFIG_MAX_FS_CACHE_TIMERINTERVAL  , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataCacheSize                       , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled           , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize              , MgPropertyType::Int32     , MG_CONFIG_MIN_CONNECTION_POOL_SIZE    , MG_CONFIG_MAX_CONNECTION_POOL_SIZE    , L""                                       },

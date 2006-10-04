@@ -25,6 +25,7 @@
 #include "LogManager.h"
 #include "FdoConnectionManager.h"
 #include "SignalHandler.h"
+#include "FeatureServiceCache.h"
 
 #ifdef _DEBUG
 void DebugOutput(const ACE_TCHAR* format, ...)
@@ -301,6 +302,25 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
             MgEventTimer& dataConnectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::DataConnectionTimeout);
             MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
             pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout());
+
+            // Initialize the Feature Service Cache
+            INT32 cacheLimit;
+            INT32 cacheTimeLimit;
+
+            // Get the cache size
+            pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection,
+                                MgConfigProperties::FeatureServicePropertyCacheSize,
+                                cacheLimit,
+                                MgConfigProperties::DefaultFeatureServicePropertyCacheSize);
+
+            // Get the cache entry timelimit
+            pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection,
+                                MgConfigProperties::FeatureServicePropertyCacheTimeLimit,
+                                cacheTimeLimit,
+                                MgConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit);
+
+            MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
+            featureServiceCache->Initialize(cacheLimit, cacheTimeLimit);
 
             // On startup, perform the service registration for the Site server.
             // Note that this event will be perfomed by a timer for the Support server.

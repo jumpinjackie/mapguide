@@ -29,9 +29,10 @@ public:
     MgServerGetSpatialContexts();
     ~MgServerGetSpatialContexts();
     MgSpatialContextReader* GetSpatialContexts(MgResourceIdentifier* resId, bool bActiveOnly);
-    MgSpatialContextData* GetSpatialContextData(FdoISpatialContextReader* spatialReader);
 
 private:
+    MgSpatialContextData* GetSpatialContextData(FdoISpatialContextReader* spatialReader);
+
     STRING  m_providerName;
     auto_ptr<MgSpatialContextInfoMap> m_spatialContextInfoMap;
 };

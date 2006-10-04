@@ -41,6 +41,7 @@ include_SOURCES = \
   DataConnectionTimeoutEventHandler.cpp \
   EventTimer.cpp \
   EventTimerManager.cpp \
+  FeatureServiceCacheTimeLimitEventHandler.cpp \
   main.cpp \
   OperationThread.cpp \
   RepositoryCheckpointEventHandler.cpp \
@@ -59,6 +60,7 @@ noinst_HEADERS = $(include_SOURCES) \
   DataConnectionTimeoutEventHandler.h \
   EventTimer.h \
   EventTimerManager.h \
+  FeatureServiceCacheTimeLimitEventHandler.h \
   OperationThread.h \
   RepositoryCheckpointEventHandler.h \
   ResourceChangeEventHandler.h \
