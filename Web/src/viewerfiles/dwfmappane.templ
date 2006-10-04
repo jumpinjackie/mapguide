@@ -82,12 +82,10 @@ function Refresh() {
     emapViewer.Refresh();
 }
 function GetMapWidth() {
-    bb = emapViewer.Document.CoordinateSpace.InitialExtent;
-    return Math.abs(bb.MaxX - bb.MinX);
+    return emapViewer.MapWidth;
 }
 function GetMapHeight() {
-    bb = emapViewer.Document.CoordinateSpace.InitialExtent;
-    return Math.abs(bb.MaxY - bb.MinY);
+    return emapViewer.MapHeight;
 }
 function GetSessionId() {
     return emapViewer.Document.Properties("_AW_Session").Value;

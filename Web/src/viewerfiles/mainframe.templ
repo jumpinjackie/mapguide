@@ -288,6 +288,7 @@ function FormatMessage(fmt, params) {
             }
             function OnScaleChanged(scale) {
             curScale = scale;
+            DisplayMapSize();
             if(hasStatusbar == 1)
             {
                 sbFrame.SetMapScaleMsg("1: " + FormatScale(scale));
