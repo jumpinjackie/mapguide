@@ -77,6 +77,7 @@
 #include "pobjbufr.h"
 #include "plinbufr.h"
 #include "plgnbufr.h"
+#include "plgnsbak.h"
 #include "ppgunion.h"
 #include "BorderWalker.h"
 #include "LatLonBorderWalker.h"

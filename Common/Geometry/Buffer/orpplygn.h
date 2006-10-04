@@ -45,7 +45,6 @@ public:
     OrientedPolyPolygon(const OrientedPolyPolygon &orientedPolyPolygon);
     OrientedPolyPolygon &operator=(const OrientedPolyPolygon &orientedPolyPolygon);
 
-
     /// methods to access the boundaries, and query boundary information
 
     int GetNBoundaries() const;
@@ -65,6 +64,10 @@ public:
 
     BOOL BoundaryContained(const OpsFloatExtent &boundaryExt,
         const OpsDoublePoint &interiorPt, BOOL strictContainment) const;
+
+    /// method to reverse the orientation of all boundaries
+
+    void ReverseBoundaries() const;
 
 private:
     int m_nBoundaries;

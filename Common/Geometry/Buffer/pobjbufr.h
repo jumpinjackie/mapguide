@@ -73,7 +73,7 @@ protected:
 
     /// method to generate the buffer zone
 
-    void GenerateBufferZone(const OpsFloatPoint vertices[],
+    virtual void GenerateBufferZone(const OpsFloatPoint vertices[],
         const int nPolyVerts[], int nPolyObjects, ProgressCallback &callback,
         OrientedPolyPolygon &bufferZone);
 

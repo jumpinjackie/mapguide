@@ -117,7 +117,7 @@ LatLonBorderWalker::~LatLonBorderWalker()
 //                   .
 //                   .
 //                   .     Azimuth (Angle with respect to the North)
-//                   .----\               //other chars to avoid Linus warning
+//                   .----\               //other chars to avoid Linux warning
 //                   .    |
 //                   .    V
 //                P0 * ------------- * P1
@@ -192,7 +192,7 @@ LatLonBorderWalker::AzimuthType LatLonBorderWalker::GetLLAzimuthType(MgCoordinat
 //                VN .
 //                   .
 //                   .     Azimuth (Angle with respect to the North)
-//                   .----\                   //other chars to avoid Linus warning
+//                   .----\                   //other chars to avoid Linux warning
 //                   .    |
 //                   .    V
 //                P0 * ------------- * P1

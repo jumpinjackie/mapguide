@@ -437,6 +437,41 @@ BOOL OrientedPolyPolygon::BoundaryContained(const OpsFloatExtent &boundaryExt,
 
 //------------------------------------------------------------------------------
 //
+// METHOD: ReverseBoundaries().
+//
+// PURPOSE: Reverses the orientation of all boundaries in this oriented
+//          poly-polygon.
+//
+// PARAMETERS:
+//
+//     None.
+//
+// RETURNS: None.
+//
+// EXCEPTIONS: None.
+//
+//------------------------------------------------------------------------------
+
+void OrientedPolyPolygon::ReverseBoundaries() const
+{
+    OpsFloatPoint tmp;
+    for (int i = 0; i < m_nBoundaries; i++)
+    {
+        int numPoints = m_nBoundaryVerts[i];
+        int numToSwap = numPoints / 2;
+
+        for (int k = 0; k < numToSwap; k++)
+        {
+            tmp = m_boundaries[i][k];
+            m_boundaries[i][k] = m_boundaries[i][numPoints - 1 - k];
+            m_boundaries[i][numPoints - 1 - k] = tmp;
+        }
+    }
+}
+
+
+//------------------------------------------------------------------------------
+//
 // METHOD: Cleanup().
 //
 // PURPOSE: Release all dynamically allocated memory.

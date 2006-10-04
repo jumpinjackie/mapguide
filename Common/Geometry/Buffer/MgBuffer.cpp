@@ -47,7 +47,7 @@ const float MINIMUM_OFFSET              = 5.0f;
 //         geometries  - A collection of geometries to buffer.
 //         offset      - The offset distance for the buffer calculation
 //                       in MapDefinition coordinate system units.  This
-//                       offset should be zero or positive.
+//                       offset cannot be zero.
 //         merge       - True if all input geometries are to be merged into
 //                       a single BufferFeature, false otherwise.
 //
@@ -74,11 +74,8 @@ MgGeometryCollection* MgBuffer::CreateBuffer(MgGeometryCollection* geometries, d
     Ptr<MgGeometryCollection> geomCol = (MgGeometryCollection*)NULL;
 
     //  check parameters
-    if ( geometries == NULL || offset < 0.0 ||
-         IsDoubleNan( offset ) || offset > DoubleMaxValue )
-    {
+    if ( geometries == NULL || IsDoubleNan( offset ) || fabs(offset) > DoubleMaxValue )
         return NULL;
-    }
 
     // Compute envelope for the entire collection
     Ptr<MgEnvelope> envelope = FindEnvelope(geometries, offset);
@@ -214,6 +211,10 @@ MgPolygon* MgBuffer::CreatePolygon(BufferParams* bufferParams, const OrientedPol
 void MgBuffer::CreatePointBuffer(BufferParams* bufferParams, MgPoint* mgPoint,
                                  std::vector<OrientedPolyPolygon*>& bufferPolygons)
 {
+    // negative offsets don't make sense for points
+    if (bufferParams->offset < 0.0f)
+        return;
+
     VALIDATE_NULL(mgPoint);
 
     Ptr<MgCoordinate> coord = mgPoint->GetCoordinate();
@@ -227,7 +228,7 @@ void MgBuffer::CreatePointBuffer(BufferParams* bufferParams, MgPoint* mgPoint,
     BorderWalker* borderWalker = NULL;
 
     MgCoordinateSystemMeasure* newMeasure = dynamic_cast<MgCoordinateSystemMeasure*>(m_measure.p);
-    if ((m_measure == NULL) || (newMeasure == NULL) || ((Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys()))->GetType() == MgCoordinateSystemType::Arbitrary))
+    if ((newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
     {
         bufferUtil = new BufferUtility(POINT_BUFFER_SMOOTHNESS, bufferParams->offset);
     }
@@ -260,6 +261,10 @@ void MgBuffer::CreatePointBuffer(BufferParams* bufferParams, MgPoint* mgPoint,
 void MgBuffer::CreateCurveStringBuffer(BufferParams* bufferParams, MgCurveString* curveString,
                                        std::vector<OrientedPolyPolygon*>& bufferPolygons)
 {
+    // negative offsets don't make sense for curve strings
+    if (bufferParams->offset < 0.0f)
+        return;
+
     VALIDATE_NULL(curveString);
 
     INT32 segCount = curveString->GetCount();
@@ -279,7 +284,7 @@ void MgBuffer::CreateCurveStringBuffer(BufferParams* bufferParams, MgCurveString
     BorderWalker* borderWalker = NULL;
 
     MgCoordinateSystemMeasure* newMeasure = dynamic_cast<MgCoordinateSystemMeasure*>(m_measure.p);
-    if ((m_measure == NULL) || (newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
+    if ((newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
     {
         bufferUtil = new BufferUtility(POLYLINE_BUFFER_SMOOTHNESS, bufferParams->offset);
     }
@@ -309,6 +314,10 @@ void MgBuffer::CreateCurveStringBuffer(BufferParams* bufferParams, MgCurveString
 void MgBuffer::CreateLineStringBuffer(BufferParams* bufferParams, MgLineString* lineString,
                                       std::vector<OrientedPolyPolygon*>& bufferPolygons)
 {
+    // negative offsets don't make sense for line strings
+    if (bufferParams->offset < 0.0f)
+        return;
+
     VALIDATE_NULL(lineString);
 
     Ptr<MgCoordinateIterator> iterator = lineString->GetCoordinates();
@@ -338,7 +347,7 @@ void MgBuffer::CreateLineStringBuffer(BufferParams* bufferParams, MgLineString* 
     BorderWalker* borderWalker = NULL;
 
     MgCoordinateSystemMeasure* newMeasure = dynamic_cast<MgCoordinateSystemMeasure*>(m_measure.p);
-    if ((m_measure == NULL) || (newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
+    if ((newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
     {
         bufferUtil = new BufferUtility(POLYLINE_BUFFER_SMOOTHNESS, bufferParams->offset);
     }
@@ -409,20 +418,29 @@ void MgBuffer::CreatePolygonBuffer(BufferParams* bufferParams, MgPolygon* polygo
         BorderWalker* borderWalker = NULL;
 
         MgCoordinateSystemMeasure* newMeasure = dynamic_cast<MgCoordinateSystemMeasure*>(m_measure.p);
-        if ((m_measure == NULL) || (newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
+        if ((newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
         {
-            bufferUtil = new BufferUtility(POLYGON_BUFFER_SMOOTHNESS, bufferParams->offset);
+            bufferUtil = new BufferUtility(POLYGON_BUFFER_SMOOTHNESS, fabs(bufferParams->offset));
         }
         else
         {
             borderWalker = new LatLonBorderWalker(bufferParams->transform, newMeasure);
-            bufferUtil = new GreatCircleBufferUtil(POLYGON_BUFFER_SMOOTHNESS, bufferParams->offset,
+            bufferUtil = new GreatCircleBufferUtil(POLYGON_BUFFER_SMOOTHNESS, fabs(bufferParams->offset),
                 bufferParams->transform, borderWalker, newMeasure);
         }
-        PolygonBuffer polygonBuffer(opsPolyPolygon, bufferUtil);
 
         OrientedPolyPolygon* bufferPolygon = new OrientedPolyPolygon();
-        polygonBuffer.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+
+        if (bufferParams->offset >= 0.0f)
+        {
+            PolygonBuffer polygonBuffer(opsPolyPolygon, bufferUtil);
+            polygonBuffer.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+        }
+        else
+        {
+            PolygonSetback polygonSetback(opsPolyPolygon, bufferUtil);
+            polygonSetback.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+        }
 
         bufferPolygons.push_back(bufferPolygon);
 
@@ -480,20 +498,29 @@ void MgBuffer::CreateCurvePolygonBuffer(BufferParams* bufferParams, MgCurvePolyg
         BorderWalker* borderWalker = NULL;
 
         MgCoordinateSystemMeasure* newMeasure = dynamic_cast<MgCoordinateSystemMeasure*>(m_measure.p);
-        if ((m_measure == NULL) || (newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
+        if ((newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
         {
-            bufferUtil = new BufferUtility(POLYGON_BUFFER_SMOOTHNESS, bufferParams->offset);
+            bufferUtil = new BufferUtility(POLYGON_BUFFER_SMOOTHNESS, fabs(bufferParams->offset));
         }
         else
         {
             borderWalker = new LatLonBorderWalker(bufferParams->transform, newMeasure);
-            bufferUtil = new GreatCircleBufferUtil(POLYGON_BUFFER_SMOOTHNESS, bufferParams->offset,
+            bufferUtil = new GreatCircleBufferUtil(POLYGON_BUFFER_SMOOTHNESS, fabs(bufferParams->offset),
                 bufferParams->transform, borderWalker, newMeasure);
         }
-        PolygonBuffer polygonBuffer(opsPolyPolygon, bufferUtil);
 
         OrientedPolyPolygon* bufferPolygon = new OrientedPolyPolygon();
-        polygonBuffer.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+
+        if (bufferParams->offset >= 0.0f)
+        {
+            PolygonBuffer polygonBuffer(opsPolyPolygon, bufferUtil);
+            polygonBuffer.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+        }
+        else
+        {
+            PolygonSetback polygonSetback(opsPolyPolygon, bufferUtil);
+            polygonSetback.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+        }
 
         bufferPolygons.push_back(bufferPolygon);
 
@@ -512,7 +539,8 @@ int MgBuffer::CoordinateIteratorToFloatArray(BufferParams* bufferParams, MgCoord
                                              OpsFloatPointArray& vertices, int& currentIndex)
 {
     assert(iter != NULL);
-    if (iter == NULL) { return 0; }
+    if (iter == NULL)
+        return 0;
 
     int noOfCoord = 0;
     while( iter->MoveNext() )
@@ -520,7 +548,7 @@ int MgBuffer::CoordinateIteratorToFloatArray(BufferParams* bufferParams, MgCoord
         Ptr<MgCoordinate> coord = iter->GetCurrent();
 
         // Array is incremented in double the size specified
-        CheckOpsFloatPointArray(vertices,currentIndex);
+        CheckOpsFloatPointArray(vertices, currentIndex);
 
         double x = coord->GetX();
         double y = coord->GetY();
@@ -536,6 +564,10 @@ int MgBuffer::CoordinateIteratorToFloatArray(BufferParams* bufferParams, MgCoord
 void MgBuffer::CreateMultiLineStringBuffer(BufferParams* bufferParams, MgMultiLineString* multiLineString,
                                            std::vector<OrientedPolyPolygon*>& bufferPolygons)
 {
+    // negative offsets don't make sense for line strings
+    if (bufferParams->offset < 0.0f)
+        return;
+
     VALIDATE_NULL(multiLineString);
 
     int nPolylines = multiLineString->GetCount();
@@ -563,7 +595,7 @@ void MgBuffer::CreateMultiLineStringBuffer(BufferParams* bufferParams, MgMultiLi
         BorderWalker* borderWalker = NULL;
 
         MgCoordinateSystemMeasure* newMeasure = dynamic_cast<MgCoordinateSystemMeasure*>(m_measure.p);
-        if ((m_measure == NULL) || (newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
+        if ((newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
         {
             bufferUtil = new BufferUtility(POLYLINE_BUFFER_SMOOTHNESS, bufferParams->offset);
         }
@@ -607,6 +639,10 @@ void MgBuffer::CreateMultiPolygonBuffer(BufferParams* bufferParams, MgMultiPolyg
 void MgBuffer::CreateMultiCurveStringBuffer(BufferParams* bufferParams, MgMultiCurveString* multiCurveString,
                                             std::vector<OrientedPolyPolygon*>& bufferPolygons)
 {
+    // negative offsets don't make sense for curve strings
+    if (bufferParams->offset < 0.0f)
+        return;
+
     VALIDATE_NULL(multiCurveString)
 
     INT32 nCurveStrings = multiCurveString->GetCount();
@@ -648,6 +684,10 @@ void MgBuffer::CreateMultiGeometryBuffer(BufferParams* bufferParams, MgMultiGeom
 void MgBuffer::CreateMultiPointBuffer(BufferParams* bufferParams, MgMultiPoint* multiPoint,
                                       std::vector<OrientedPolyPolygon*>& bufferPolygons)
 {
+    // negative offsets don't make sense for points
+    if (bufferParams->offset < 0.0f)
+        return;
+
     VALIDATE_NULL(multiPoint)
 
     INT32 num = multiPoint->GetCount();
@@ -680,9 +720,7 @@ MgEnvelope* MgBuffer::FindEnvelope(MgGeometryCollection* geometries, double offs
 
     // Check to see if any feature geometry was added to the extents.
     if ( envelope->IsNull() )
-    {
         return NULL;
-    }
 
     // Expand extents by offset!!
     envelope->Grow( offset );
@@ -726,14 +764,15 @@ MgBuffer::BufferParams* MgBuffer::CreateBufferParams(MgEnvelope* envelope, doubl
     bufferParams->transform = new FloatTransform(envelope);
 
     bufferParams->offset = bufferParams->transform->Double2Float(offset);
-    bufferParams->offset = (bufferParams->offset >= MINIMUM_OFFSET) ? bufferParams->offset : MINIMUM_OFFSET;
+    if (fabs(bufferParams->offset) < MINIMUM_OFFSET)
+        bufferParams->offset = (bufferParams->offset < 0.0f) ? -MINIMUM_OFFSET : MINIMUM_OFFSET;
 
     return bufferParams;
 }
 
 void MgBuffer::ClearVector(std::vector<OrientedPolyPolygon*>& bufferPolygons)
 {
-    int cnt =  (int)bufferPolygons.size();
+    int cnt = (int)bufferPolygons.size();
 
     for (int i = 0; i < cnt; i++)
     {
@@ -757,7 +796,7 @@ void MgBuffer::CreateBuffer(MgGeometryCollection* geometries, BufferParams* buff
 
         // Geometry Type Point and offset is zero, nothing to do
         INT32 type = geometry->GetGeometryType();
-        if ((type == MgGeometryType::Point) && (bufferParams->offset == 0))
+        if ((type == MgGeometryType::Point) && (bufferParams->offset <= 0.0f))
         {
             continue;
         }
@@ -779,7 +818,8 @@ MgGeometryCollection* MgBuffer::OrientedPolygonsToGeometries(BufferParams* buffe
     int cnt = (int)bufferPolygons.size();
 
     assert(cnt != 0);
-    if (cnt == 0)  { return NULL; }
+    if (cnt == 0)
+        return NULL;
 
     // Create collection to add MgMultiPolygon objects
     Ptr<MgGeometryCollection> geomCol = new MgGeometryCollection();
@@ -839,7 +879,8 @@ int MgBuffer::CurveSegmentToOpsFloatPointArray(BufferParams* bufferParams, MgCur
                                                 OpsFloatPointArray& vertices, int& currIndex)
 {
     int noOfCoords = 0;
-    if (segment == NULL) { return noOfCoords; }
+    if (segment == NULL)
+        return noOfCoords;
 
     INT32 type = segment->GetComponentType();
     assert(( type == MgGeometryComponentType::ArcSegment )  ||
@@ -902,7 +943,8 @@ int MgBuffer::CurveRingToOpsFloatPointArray(BufferParams* bufferParams, MgCurveR
                                             OpsFloatPointArray& vertices, int& currIndex)
 {
     int noOfCoords = 0;
-    if (ring == NULL) { return noOfCoords; }
+    if (ring == NULL)
+        return noOfCoords;
 
     INT32 cnt = ring->GetCount();
 

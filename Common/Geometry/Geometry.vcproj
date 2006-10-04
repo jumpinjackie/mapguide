@@ -686,6 +686,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Buffer\plgnsbak.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Buffer\plgnsbak.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Buffer\plinbufr.cpp"
 				>
 				<FileConfiguration
