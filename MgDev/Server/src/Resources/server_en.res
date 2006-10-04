@@ -138,6 +138,7 @@ MgServiceNotAvailableException                        = The specified service is
 MgServiceNotSupportedException                        = The specified service is not supported.
 MgSessionExpiredException                             = Session has expired or is invalid. Please log in again.
 MgStreamIoException                                   = A stream IO exception occurred.
+MgStylizeLayerFailedException                         = Failed to stylize layer: %1
 MgTemporaryFileNotAvailableException                  = Temporary file is not available.
 MgUnauthorizedAccessException                         = Unauthorized access.
 MgUnclassifiedException                               = An unclassified exception occurred.
