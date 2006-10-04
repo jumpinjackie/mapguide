@@ -1,5 +1,5 @@
 <StudioLiteConfig>
-  <DefaultSite>http://fabio/mapguide</DefaultSite>
+  <DefaultSite>http://localhost:8008/mapguide</DefaultSite>
   <DefaultUserName>Administrator</DefaultUserName>
   <DefaultTechnology>php</DefaultTechnology>
 </StudioLiteConfig>
