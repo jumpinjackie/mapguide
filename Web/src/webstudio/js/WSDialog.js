@@ -309,12 +309,12 @@ Object.extend(WSFileDialog.prototype, {
             switch(type) {
                 case 'folder':
                     a.className = 'ResourceFolder';
-                    a.ondblclick = this.redrawPath.bind(this, resource.getResourceID());
+                    Event.observe(a, 'dblclick', this.redrawPath.bind(this, resource.getResourceID()));
                     break;
                 default:
                     a.className = type;
-                    a.onclick = this.selectResource.bindAsEventListener(this);
-                    a.ondblclick = this.selectResource.bindAsEventListener(this);
+                    Event.observe( a, 'click', this.selectResource.bindAsEventListener(this));
+                    Event.observe(a, 'dblclick', this.selectResource.bindAsEventListener(this));
                     a.resource = resource;
             }
             var span = document.createElement('span');
