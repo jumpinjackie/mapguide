@@ -1384,7 +1384,6 @@ Object.extend(  WSLayerDefinition.prototype, {
 
             var vectorScaleRange = new DomNode();
             vectorScaleRange.nodeName = 'VectorScaleRange';
-            
             /* now set up a default scale range for the layer to make it valid xml */
             var geomType = this.featureTypes[this.featureClasses[0].type].geometryNode.attributes['fdo:geometricTypes'];
 
@@ -1425,9 +1424,8 @@ Object.extend(  WSLayerDefinition.prototype, {
             
             var node = this.content.findFirstNode('VectorLayerDefinition');
             node.appendChild(vectorScaleRange);
-        } else {
-            this.parseVectorScaleRanges();
         }
+        this.parseVectorScaleRanges();
     },
     createDefaultFill: function() {
         var fill = DomNodeFactory.create('Fill');
