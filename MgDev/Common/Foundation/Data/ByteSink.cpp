@@ -122,7 +122,7 @@ void MgByteSink::ToStream(ACE_SOCK_Stream* stream)
 
     while((bytesReceived = m_reader->Read(bytes, 4096)) > 0)
     {
-        if ((bytesSent = (int)stream->send_n(bytes, bytesReceived)) != bytesReceived)
+        if ((bytesSent = (int)stream->send_n(bytes, bytesReceived, MG_MSG_NOSIGNAL)) != bytesReceived)
         {
             //should get the error from ACE and put it in the exception
             throw new MgStreamIoException(L"MgByteSink.ToStream",

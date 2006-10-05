@@ -211,4 +211,11 @@ typedef ACE_LOCK_SOCK_Acceptor<ACE_SYNCH_MUTEX> SOCK_Acceptor;
 #   define MG_NTOHL(X) ACE_SWAP_LONG (X)
 # endif /* ACE_LITTLE_ENDIAN */
 
+// Flag used for SIGPIPE handling
+#ifdef _WIN32
+    static const int MG_MSG_NOSIGNAL = 0;
+#else
+    static const int MG_MSG_NOSIGNAL = MSG_NOSIGNAL;
+#endif
+
 #endif
