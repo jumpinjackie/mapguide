@@ -279,10 +279,13 @@ String dataSource = "";
                     if (merge == 0)
                     {
                         geomBuffer = geom.Buffer(dist, measure);
-                        if (srsXform != null)
-                            geomBuffer = (MgGeometry)geomBuffer.Transform(srsXform);
-                        AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
-                        bufferFeatures++;
+                        if (geomBuffer != null)
+                        {
+                            if (srsXform != null)
+                                geomBuffer = (MgGeometry)geomBuffer.Transform(srsXform);
+                            AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
+                            bufferFeatures++;
+                        }
                     }
                     else
                     {
@@ -310,8 +313,11 @@ String dataSource = "";
 
                 MgGeometryFactory geomFactory = new MgGeometryFactory();
                 geomBuffer = geomFactory.CreateMultiGeometry(inputGeometries).Buffer(dist, measure);
-                AddFeatureToCollection(propCollection, agfRW, featId, geomBuffer);
-                bufferFeatures = 1;
+                if (geomBuffer != null)
+                {
+                    AddFeatureToCollection(propCollection, agfRW, featId, geomBuffer);
+                    bufferFeatures = 1;
+                }
             }
         }
 
