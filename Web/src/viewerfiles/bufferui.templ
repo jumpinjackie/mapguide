@@ -107,9 +107,9 @@
         {
             var field = document.getElementById("distance");
             var num = parseFloat(field.value);
-            if(isNaN(num) || num <= 0)
+            if(isNaN(num) || num == 0)
             {
-                alert("__#BUFFERERRORNEGATIVEDISTANCE#__");
+                alert("__#BUFFERERRORZERODISTANCE#__");
                 field.focus();
                 return false;
             }

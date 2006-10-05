@@ -99,7 +99,7 @@ BUFFERBORDERLINEPATTERN         = Line pattern:
 BUFFERBORDERLINECOLOR           = Line color:
 BUFFERBORDERLINETHICKNESS       = Line thickness:
 BUFFERHELP                      = <li><p align="left">Results of the buffer are put into a new layer above the top feature layer. This buffer layer has the name you enter here.</li><li><p align="left">To create multiple buffer layers, use different buffer names.</li><li><p align="left">To hide buffer layers, turn them off.</li><li><p align="left">Buffer layers are temporary and are removed when you close the viewer.</li>
-BUFFERERRORNEGATIVEDISTANCE     = Please enter a positive distance.
+BUFFERERRORZERODISTANCE         = Please enter a nonzero distance.
 BUFFERERRORNOLAYERNAME          = Please enter a layer name.
 BUFFERERRORNEGATIVETHICKNESS    = Please enter positive or null thickness.
 BUFFERERRORNOSELECTION          = Please select feature(s) to calculate a buffer around.
