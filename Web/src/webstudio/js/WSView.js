@@ -2249,7 +2249,7 @@ Object.extend(WSMapDefinitionView.prototype, {
     handleChooseCoordinateSystem: function(button, dialog) {
         if (button == 'ok') {
             this._oSettingsPanel.getObj('coordinatesystem').value = dialog.getWKT();
-            this.obj.setContentValue('', dialog.getWKT());
+            this.obj.setContentValue('CoordinateSystem', dialog.getWKT());
         }
         dialog.close();
     },
@@ -2591,7 +2591,7 @@ Object.extend(WSMapDefinitionView.prototype, {
 this.viewManager.fileDialog.chooseResource({handler:this.handleChooseResource.bind(this),types:this.viewManager.fileDialog.getFilter('LayerDefinition'),path:fs.getPath()});
     },
     handleChooseResource: function(button,dialog) {
-        if (button == 'Select') {
+        if (button == 'Select' || button == 'Okay') {
             var rid = dialog.getResource();
             if (this.activeTab == this.groupTab) {
                 this._oLayersPanel.getObj('map.layer.resourceid').value = rid;
@@ -2904,7 +2904,7 @@ this.viewManager.fileDialog.chooseResource({handler:this.handleChooseResource.bi
     this.viewManager.fileDialog.chooseResource({handler:this.handleAddLayer.bind(this),types:this.viewManager.fileDialog.getFilter('LayerDefinition')});
     },
     handleAddLayer: function(button,dialog) {
-        if (button == 'Select') {
+        if (button == 'Select' || button == 'Okay') {
             var rid = dialog.getResource();
             
             switch(this.activeTab) {
