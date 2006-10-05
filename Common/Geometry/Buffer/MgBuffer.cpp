@@ -64,18 +64,21 @@ MgGeometry* MgBuffer::CreateBuffer(MgGeometry* geometry, double offset, MgMeasur
     geomCol->Add(geometry);
 
     Ptr<MgGeometryCollection> geomCol1 = CreateBuffer(geomCol, offset, false);
-    assert(geomCol1->GetCount() == 1);
+    if (geomCol1 == NULL)
+        return NULL;
 
-    return geomCol1->GetItem(0);
+    assert(geomCol1->GetCount() <= 1);
+
+    return (geomCol1->GetCount() == 1)? geomCol1->GetItem(0) : NULL;
 }
 
 MgGeometryCollection* MgBuffer::CreateBuffer(MgGeometryCollection* geometries, double offset, bool merge)
 {
-    Ptr<MgGeometryCollection> geomCol = (MgGeometryCollection*)NULL;
-
     //  check parameters
     if ( geometries == NULL || IsDoubleNan( offset ) || fabs(offset) > DoubleMaxValue )
         return NULL;
+
+    Ptr<MgGeometryCollection> geomCol;
 
     // Compute envelope for the entire collection
     Ptr<MgEnvelope> envelope = FindEnvelope(geometries, offset);
@@ -91,7 +94,6 @@ MgGeometryCollection* MgBuffer::CreateBuffer(MgGeometryCollection* geometries, d
 
         // Create buffer around all geometries
         CreateBuffer(geometries, bufferParams, bufferPolygons);
-        assert(bufferPolygons.size() > 0);
 
         // Convert oriented polygons to geometries
         geomCol = OrientedPolygonsToGeometries(bufferParams, bufferPolygons, merge);
@@ -189,7 +191,7 @@ MgPolygon* MgBuffer::CreatePolygon(BufferParams* bufferParams, const OrientedPol
 {
     MgGeometryFactory factory;
     Ptr<MgLinearRingCollection> innerRingCol = new MgLinearRingCollection();
-    Ptr<MgLinearRing> outerRing = (MgLinearRing*)NULL;
+    Ptr<MgLinearRing> outerRing;
 
     int numBoundraries = orientedPolygon.GetNBoundaries();
     for (int i = 0; i < numBoundraries; i++)
@@ -239,14 +241,16 @@ void MgBuffer::CreatePointBuffer(BufferParams* bufferParams, MgPoint* mgPoint,
             bufferParams->transform, borderWalker, newMeasure);
     }
 
-    OpsFloatPoint point;
     OrientedPolyPolygon* bufferPolygon = new OrientedPolyPolygon();
 
+    OpsFloatPoint point;
     bufferParams->transform->Double2Float(x, y, point);
-
     bufferUtil->CreatePointBuffer(point, *bufferPolygon);
 
-    bufferPolygons.push_back(bufferPolygon);
+    if (bufferPolygon->GetNBoundaries() > 0)
+        bufferPolygons.push_back(bufferPolygon);
+    else
+        delete bufferPolygon;
 
     if (bufferUtil != NULL)
         delete bufferUtil;
@@ -294,12 +298,16 @@ void MgBuffer::CreateCurveStringBuffer(BufferParams* bufferParams, MgCurveString
         bufferUtil = new GreatCircleBufferUtil(POLYLINE_BUFFER_SMOOTHNESS, bufferParams->offset,
             bufferParams->transform, borderWalker, newMeasure);
     }
-    PolylineBuffer lineBuffer(opsPolyline, bufferUtil);
 
     OrientedPolyPolygon* bufferPolygon = new OrientedPolyPolygon();
+
+    PolylineBuffer lineBuffer(opsPolyline, bufferUtil);
     lineBuffer.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
 
-    bufferPolygons.push_back(bufferPolygon);
+    if (bufferPolygon->GetNBoundaries() > 0)
+        bufferPolygons.push_back(bufferPolygon);
+    else
+        delete bufferPolygon;
 
     if (bufferUtil != NULL)
         delete bufferUtil;
@@ -357,12 +365,16 @@ void MgBuffer::CreateLineStringBuffer(BufferParams* bufferParams, MgLineString* 
         bufferUtil = new GreatCircleBufferUtil(POLYLINE_BUFFER_SMOOTHNESS, bufferParams->offset,
             bufferParams->transform, borderWalker, newMeasure);
     }
-    PolylineBuffer lineBuffer(opsPolyline, bufferUtil);
 
     OrientedPolyPolygon* bufferPolygon = new OrientedPolyPolygon();
+
+    PolylineBuffer lineBuffer(opsPolyline, bufferUtil);
     lineBuffer.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
 
-    bufferPolygons.push_back(bufferPolygon);
+    if (bufferPolygon->GetNBoundaries() > 0)
+        bufferPolygons.push_back(bufferPolygon);
+    else
+        delete bufferPolygon;
 
     if (bufferUtil != NULL)
         delete bufferUtil;
@@ -442,7 +454,10 @@ void MgBuffer::CreatePolygonBuffer(BufferParams* bufferParams, MgPolygon* polygo
             polygonSetback.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
         }
 
-        bufferPolygons.push_back(bufferPolygon);
+        if (bufferPolygon->GetNBoundaries() > 0)
+            bufferPolygons.push_back(bufferPolygon);
+        else
+            delete bufferPolygon;
 
         if (bufferUtil != NULL)
             delete bufferUtil;
@@ -522,7 +537,10 @@ void MgBuffer::CreateCurvePolygonBuffer(BufferParams* bufferParams, MgCurvePolyg
             polygonSetback.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
         }
 
-        bufferPolygons.push_back(bufferPolygon);
+        if (bufferPolygon->GetNBoundaries() > 0)
+            bufferPolygons.push_back(bufferPolygon);
+        else
+            delete bufferPolygon;
 
         if (bufferUtil != NULL)
             delete bufferUtil;
@@ -605,12 +623,16 @@ void MgBuffer::CreateMultiLineStringBuffer(BufferParams* bufferParams, MgMultiLi
             bufferUtil = new GreatCircleBufferUtil(POLYLINE_BUFFER_SMOOTHNESS, bufferParams->offset,
                 bufferParams->transform, borderWalker, newMeasure);
         }
-        PolylineBuffer lineBuffer(opsPolyPolyline, bufferUtil);
 
         OrientedPolyPolygon* bufferPolygon = new OrientedPolyPolygon();
+
+        PolylineBuffer lineBuffer(opsPolyPolyline, bufferUtil);
         lineBuffer.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
 
-        bufferPolygons.push_back(bufferPolygon);
+        if (bufferPolygon->GetNBoundaries() > 0)
+            bufferPolygons.push_back(bufferPolygon);
+        else
+            delete bufferPolygon;
 
         if (bufferUtil != NULL)
             delete bufferUtil;
@@ -703,7 +725,8 @@ void MgBuffer::CreateMultiPointBuffer(BufferParams* bufferParams, MgMultiPoint* 
 MgEnvelope* MgBuffer::FindEnvelope(MgGeometryCollection* geometries, double offset)
 {
     assert( geometries != NULL );
-    if (geometries == NULL) { return NULL; }
+    if (geometries == NULL)
+        return NULL;
 
     Ptr<MgEnvelope> envelope = new MgEnvelope();
     INT32 geomCnt = geometries->GetCount();
@@ -732,10 +755,13 @@ MgEnvelope* MgBuffer::FindEnvelope(MgGeometryCollection* geometries, double offs
 MgPolygon* MgBuffer::CreateMgPolygon(BufferParams* bufferParams, std::vector<OrientedPolyPolygon*>& bufferPolygons)
 {
     OrientedPolyPolygon* featurePolygon = CreateOrientedPolyPolygon(bufferParams, bufferPolygons);
-    Ptr<MgPolygon> polygon = CreatePolygon(bufferParams, *featurePolygon);
+    if (featurePolygon == NULL)
+        return NULL;
 
+    MgPolygon* polygon = CreatePolygon(bufferParams, *featurePolygon);
     delete featurePolygon;
-    return SAFE_ADDREF((MgPolygon*)polygon);
+
+    return polygon;
 }
 
 OrientedPolyPolygon* MgBuffer::CreateOrientedPolyPolygon(BufferParams* bufferParams, std::vector<OrientedPolyPolygon*>& bufferPolygons)
@@ -791,15 +817,13 @@ void MgBuffer::CreateBuffer(MgGeometryCollection* geometries, BufferParams* buff
     for (INT32 i = 0; i < geomCnt; i++ )
     {
         Ptr<MgGeometry> geometry = geometries->GetItem(i);
-        // Geometry is NULL, nothing to do
-        if ( geometry == NULL) { continue; }
+        if ( geometry == NULL)
+            continue;
 
         // Geometry Type Point and offset is zero, nothing to do
         INT32 type = geometry->GetGeometryType();
         if ((type == MgGeometryType::Point) && (bufferParams->offset <= 0.0f))
-        {
             continue;
-        }
 
         // Calculate buffer for each geometry
         std::vector<OrientedPolyPolygon*> geometryPolygons;
@@ -807,17 +831,16 @@ void MgBuffer::CreateBuffer(MgGeometryCollection* geometries, BufferParams* buff
 
         // Calculate combined PolyPolygon for the geometry ( A geometry can have multiple geometries )
         OrientedPolyPolygon* featurePolygon = CreateOrientedPolyPolygon(bufferParams, geometryPolygons);
-        ClearVector(geometryPolygons); // remove all oriented poly instances
+        if (featurePolygon != NULL)
+            bufferPolygons.push_back(featurePolygon);
 
-        bufferPolygons.push_back(featurePolygon);
+        ClearVector(geometryPolygons); // remove all oriented poly instances
     }
 }
 
 MgGeometryCollection* MgBuffer::OrientedPolygonsToGeometries(BufferParams* bufferParams, std::vector<OrientedPolyPolygon*>& bufferPolygons, bool merge)
 {
     int cnt = (int)bufferPolygons.size();
-
-    assert(cnt != 0);
     if (cnt == 0)
         return NULL;
 
@@ -827,7 +850,8 @@ MgGeometryCollection* MgBuffer::OrientedPolygonsToGeometries(BufferParams* buffe
     if (merge)
     {
         Ptr<MgPolygon> polygon = CreateMgPolygon(bufferParams, bufferPolygons);
-        geomCol->Add(polygon);
+        if (polygon != NULL)
+            geomCol->Add(polygon);
     }
     else
     {

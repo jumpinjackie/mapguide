@@ -262,13 +262,23 @@ void PolygonSetback::GenerateBufferZone(const OpsFloatPoint vertices[],
     const int nPolyVerts[], int nPolyObjects, ProgressCallback &callback,
     OrientedPolyPolygon &bufferPolygon)
 {
-    // call the base class first - this will generate an OrientedPolyPolygon
-    // with reversed orientation
+    // We'll get a PlaneSweepException if the setback distance causes the
+    // polygon to shrink to zero area.  Catch this and don't pass it on.
 
-    PolyObjectBuffer::GenerateBufferZone(vertices, nPolyVerts, nPolyObjects, callback, bufferPolygon);
+    try
+    {
+        // call the base class first - this will generate an OrientedPolyPolygon
+        // with reversed orientation
 
-    // reverse the boundaries / points of the polygon
+        PolyObjectBuffer::GenerateBufferZone(vertices, nPolyVerts, nPolyObjects, callback, bufferPolygon);
 
-    bufferPolygon.ReverseBoundaries();
+        // reverse the boundaries / points of the polygon
+
+        bufferPolygon.ReverseBoundaries();
+    }
+    catch (PlaneSweepException* ex)
+    {
+        delete ex;
+    }
 
 } // end: GenerateBufferZone()

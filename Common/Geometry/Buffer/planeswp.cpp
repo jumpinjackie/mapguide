@@ -1212,6 +1212,8 @@ void PlaneSweep::ClampIntersection(const OpsDoublePoint *minVert1,
 //
 // EXCEPTIONS: A CMemoryException is thrown if there is insufficient memory
 //             available to construct the output polygon.
+//             A PlaneSweepException is thrown if the resulting output polygon
+//             has zero boundaries.
 //
 //------------------------------------------------------------------------------
 
