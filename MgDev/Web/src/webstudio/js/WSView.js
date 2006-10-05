@@ -931,7 +931,7 @@ Object.extend(WSLayerDefinitionView.prototype, {
                             path:fs.getPath()});
     },
     handleChoice: function(button,dialog) {
-        if (button == 'Select') {
+        if (button == 'Select' || button == 'Open') {
             this.bContentLoaded = false;
             this.bFeatureSchemaLoaded = false;
             this.bFeatureSchemaRendered = false;
