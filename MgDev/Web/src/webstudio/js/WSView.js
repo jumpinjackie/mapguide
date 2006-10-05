@@ -2253,6 +2253,49 @@ Object.extend(WSMapDefinitionView.prototype, {
         }
         dialog.close();
     },
+    setDefaultCrsAndExtents: function(rid) {
+        console.log('setDefaultCrsAndExtents '+ rid);
+        var r = new WSGetResourceContent(rid);
+        var b = this.viewManager.app.getBroker();
+        b.dispatchRequest(r, this.layerResourceLoaded.bind(this));
+    },
+    layerResourceLoaded: function(r) {
+        console.log('layerResourceLoaded');
+        if (r.status == 200 && r.responseXML) {
+            var node = new DomNode(r.responseXML);
+            var resourceId = node.getNodeText('ResourceId');
+            console.log('getting spatial contexts for ' + resourceId);
+            var r = new WSGetSpatialContexts(resourceId);
+            var b = this.viewManager.app.getBroker();
+            b.dispatchRequest(r, this.spatialContextsLoaded.bind(this));
+        }
+    },
+    spatialContextsLoaded: function(r) {
+        console.log('spatialContextsLoaded');
+        if (r.status == 200 && r.responseXML) {
+            var node = new DomNode(r.responseXML);
+            var wkt = node.getNodeText('CoordinateSystemWkt');
+            var ll = node.findFirstNode('LowerLeftCoordinate');
+            var minx = ll.getNodeText('X');
+            var miny = ll.getNodeText('Y');
+            var ur = node.findFirstNode('UpperRightCoordinate');
+            var maxx = ur.getNodeText('X');
+            var maxy = ur.getNodeText('Y');
+
+            this._oSettingsPanel.getObj('coordinatesystem').value = wkt;
+            this.obj.setContentValue('CoordinateSystem', wkt);
+            
+            this._oSettingsPanel.getObj('minx').value = minx;
+            this._oSettingsPanel.getObj('miny').value = miny;
+            this._oSettingsPanel.getObj('maxx').value = maxx;
+            this._oSettingsPanel.getObj('maxy').value = maxy;
+            
+            this.obj.setContentValue('MinX', minx);
+            this.obj.setContentValue('MinY', miny);
+            this.obj.setContentValue('MaxX', maxx);
+            this.obj.setContentValue('MaxY', maxy);
+        }
+    },
     changeSetting: function(name, xmlName) {
         var domObj = this._oSettingsPanel.getObj(name);
         this.obj.changeSetting(xmlName, domObj.value);
@@ -2913,6 +2956,11 @@ this.viewManager.fileDialog.chooseResource({handler:this.handleChooseResource.bi
                     var parent = (this.activeTab == this.groupTab) ? this.activeTab.currentSelection.data :
                                                                      this.groupRoot.data;
                     if (!parent.groups) { parent = parent.parent; }
+                    if (this.obj.mapLayers.length == 0) {
+                        //need to set the coordinate system and extents from this layer
+                        this.setDefaultCrsAndExtents(rid);
+                    }
+                    
                     /* three things to do:
                      * 1. create a new group in the underlying object
                      * 2. create a new tree element in the interface
@@ -2944,6 +2992,11 @@ this.viewManager.fileDialog.chooseResource({handler:this.handleChooseResource.bi
                      
                      break;
                 case this.baseTab:
+                    if (this.obj.baseMapLayers.length == 0) {
+                        //need to set the coordinate system and extents from this layer
+                        this.setDefaultCrsAndExtents(rid);
+                    }
+                
                     var parent = this.activeTab.currentSelection.data;
                     if (!parent.groups) { parent = parent.parent; }
                     var layer = this.obj.createBaseMapLayer(parent, rid);
