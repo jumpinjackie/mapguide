@@ -786,21 +786,21 @@ Object.extend(WSLayerDefinitionView.prototype, {
             return;
         }
         this.viewManager.requests=0;
-        if (this._oPreviewPanel.content.childNodes.length == 0) {
+        var b = this.obj.app.getBroker();
+        if (!this.mapFrame) {
             //this._oPreviewPanel.setBusy(true);
-            var b = this.obj.app.getBroker();
-            var mapFrame = document.createElement('iframe');
-            mapFrame.className = 'previewFrame';
-            mapFrame.frameBorder = '0';
-            mapFrame.marginHeight = '0';
-            mapFrame.marginWidth = '0';
-            mapFrame.width = '100%';
-            mapFrame.height = '100%';
+            this.mapFrame = document.createElement('iframe');
+            this.mapFrame.className = 'previewFrame';
+            this.mapFrame.frameBorder = '0';
+            this.mapFrame.marginHeight = '0';
+            this.mapFrame.marginWidth = '0';
+            this.mapFrame.width = '100%';
+            this.mapFrame.height = '100%';
             Event.observe(this._oPreviewPanel, 'load',this._oPreviewPanel.setBusy.bind(this, false));
-            this._oPreviewPanel.content.appendChild(mapFrame);
-        }
+            this._oPreviewPanel.content.appendChild(this.mapFrame);
+        } 
         //for preview refresh, we recreate the content each time
-        mapFrame.src = b.mapGuideURL +
+        this.mapFrame.src = b.mapGuideURL +
                         'mapviewerphp/ajaxviewer.php?' +
                         'WEBLAYOUT=' +
                         this.previewDefinition +
@@ -2138,14 +2138,14 @@ Object.extend(WSMapDefinitionView.prototype, {
         
         if (this._oPreviewPanel.content.childNodes.length == 0) {
             var b = this.obj.app.getBroker();
-            var mapFrame = document.createElement('iframe');
-            this._oPreviewPanel.content.appendChild(mapFrame);
-            mapFrame.className = 'previewFrame';
-            mapFrame.frameBorder = '0';
-            mapFrame.marginHeight = '0';
-            mapFrame.marginWidth = '0';
+            this.mapFrame = document.createElement('iframe');
+            this._oPreviewPanel.content.appendChild(this.mapFrame);
+            this.mapFrame.className = 'previewFrame';
+            this.mapFrame.frameBorder = '0';
+            this.mapFrame.marginHeight = '0';
+            this.mapFrame.marginWidth = '0';
         }
-        mapFrame.src = b.mapGuideURL +
+        this.mapFrame.src = b.mapGuideURL +
                         'mapviewerphp/ajaxviewer.php?' +
                         'WEBLAYOUT=' + this.previewDefinition +
                         '&USERNAME=' + b.user +
@@ -3765,20 +3765,20 @@ Object.extend(WSWebLayoutView.prototype, {
         if (this._oPreviewPanel.content.childNodes.length == 0) {
             //this._oPreviewPanel.setBusy(true);
             var b = this.obj.app.getBroker();
-            var mapFrame = document.createElement('iframe');
-            this._oPreviewPanel.content.appendChild(mapFrame);
-            mapFrame.className = 'previewFrame';
-            mapFrame.frameBorder = '0';
-            mapFrame.marginHeight = '0';
-            mapFrame.marginWidth = '0';
-            mapFrame.src = b.mapGuideURL +
-                            'mapviewerphp/ajaxviewer.php?' +
-                            'WEBLAYOUT=' + this.obj.getResourceID() +
-                            '&USERNAME=' + b.user +
-                            '&PASSWORD=' + b.pass;
+            this.mapFrame = document.createElement('iframe');
+            this._oPreviewPanel.content.appendChild(this.mapFrame);
+            this.mapFrame.className = 'previewFrame';
+            this.mapFrame.frameBorder = '0';
+            this.mapFrame.marginHeight = '0';
+            this.mapFrame.marginWidth = '0';
             Event.observe(this._oPreviewPanel, 'load', this._oPreviewPanel.setBusy.bind(this, false));
-            this._oPreviewPanel.content.appendChild(mapFrame);
+            this._oPreviewPanel.content.appendChild(this.mapFrame);
         }
+        this.mapFrame.src = b.mapGuideURL +
+                        'mapviewerphp/ajaxviewer.php?' +
+                        'WEBLAYOUT=' + this.obj.getResourceID() +
+                        '&USERNAME=' + b.user +
+                        '&PASSWORD=' + b.pass;
     }
 });
 
