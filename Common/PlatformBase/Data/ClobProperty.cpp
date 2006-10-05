@@ -134,7 +134,8 @@ void MgClobProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += "<Value>";
     if (m_value != NULL)
     {
-        str += MgUtil::GetStringFromReader(this->GetValue());
+        Ptr<MgByteReader> reader = this->GetValue();
+        str += MgUtil::GetStringFromReader(reader);
     }
     str += "</Value>";
 
