@@ -760,12 +760,6 @@ Object.extend(WSLayerDefinitionView.prototype, {
             r = new WSSetResource(this.previewDefinition, unescape(szLayoutXML), null);
             b.dispatchRequest(r,this.layoutWasSet.bind(this));
         }
-        /*save a copy of the resource to the session
-         *this needs to be dispatched here so that it's ready when layoutWasSet
-         *is called to render the preview.
-         */
-        this.updateSessionLayer();
-
         this.checkRenderStatus();
     },
     /**
@@ -786,21 +780,21 @@ Object.extend(WSLayerDefinitionView.prototype, {
             return;
         }
         this.viewManager.requests=0;
+        var b = this.obj.app.getBroker();
         if (this._oPreviewPanel.content.childNodes.length == 0) {
             //this._oPreviewPanel.setBusy(true);
-            var b = this.obj.app.getBroker();
-            var mapFrame = document.createElement('iframe');
-            mapFrame.className = 'previewFrame';
-            mapFrame.frameBorder = '0';
-            mapFrame.marginHeight = '0';
-            mapFrame.marginWidth = '0';
-            mapFrame.width = '100%';
-            mapFrame.height = '100%';
+            this.mapFrame = document.createElement('iframe');
+            this.mapFrame.className = 'previewFrame';
+            this.mapFrame.frameBorder = '0';
+            this.mapFrame.marginHeight = '0';
+            this.mapFrame.marginWidth = '0';
+            this.mapFrame.width = '100%';
+            this.mapFrame.height = '100%';
             Event.observe(this._oPreviewPanel, 'load',this._oPreviewPanel.setBusy.bind(this, false));
-            this._oPreviewPanel.content.appendChild(mapFrame);
+            this._oPreviewPanel.content.appendChild(this.mapFrame);
         }
         //for preview refresh, we recreate the content each time
-        mapFrame.src = b.mapGuideURL +
+        this.mapFrame.src = b.mapGuideURL +
                         'mapviewerphp/ajaxviewer.php?' +
                         'WEBLAYOUT=' +
                         this.previewDefinition +
@@ -832,6 +826,12 @@ Object.extend(WSLayerDefinitionView.prototype, {
         Event.observe(oPreview.loadingObj.link, 'click', this.updateSessionLayer.bind(this));
     },
     featureSchemaLoaded : function () {
+        /*save a copy of the resource to the session
+         *this needs to be dispatched here so that it's ready when layoutWasSet
+         *is called to render the preview.
+         */
+        this.updateSessionLayer();
+
         //jxTrace('WSLayerDefinitionView::featureSchemaLoaded()');
         this.bFeatureSchemaLoaded = true;
         this.checkRenderStatus();
@@ -2135,17 +2135,16 @@ Object.extend(WSMapDefinitionView.prototype, {
             return;
         }
         this.viewManager.requests = 0;
-        
+        var b = this.obj.app.getBroker();
         if (this._oPreviewPanel.content.childNodes.length == 0) {
-            var b = this.obj.app.getBroker();
-            var mapFrame = document.createElement('iframe');
-            this._oPreviewPanel.content.appendChild(mapFrame);
-            mapFrame.className = 'previewFrame';
-            mapFrame.frameBorder = '0';
-            mapFrame.marginHeight = '0';
-            mapFrame.marginWidth = '0';
+            this.mapFrame = document.createElement('iframe');
+            this._oPreviewPanel.content.appendChild(this.mapFrame);
+            this.mapFrame.className = 'previewFrame';
+            this.mapFrame.frameBorder = '0';
+            this.mapFrame.marginHeight = '0';
+            this.mapFrame.marginWidth = '0';
         }
-        mapFrame.src = b.mapGuideURL +
+        this.mapFrame.src = b.mapGuideURL +
                         'mapviewerphp/ajaxviewer.php?' +
                         'WEBLAYOUT=' + this.previewDefinition +
                         '&USERNAME=' + b.user +
@@ -3763,22 +3762,22 @@ Object.extend(WSWebLayoutView.prototype, {
         }
     },
     preview: function() {
+        var b = this.obj.app.getBroker();
         if (this._oPreviewPanel.content.childNodes.length == 0) {
             //this._oPreviewPanel.setBusy(true);
-            var b = this.obj.app.getBroker();
-            var mapFrame = document.createElement('iframe');
-            this._oPreviewPanel.content.appendChild(mapFrame);
-            mapFrame.className = 'previewFrame';
-            mapFrame.frameBorder = '0';
-            mapFrame.marginHeight = '0';
-            mapFrame.marginWidth = '0';
-            mapFrame.src = b.mapGuideURL +
+            this.mapFrame = document.createElement('iframe');
+            this._oPreviewPanel.content.appendChild(this.mapFrame);
+            this.mapFrame.className = 'previewFrame';
+            this.mapFrame.frameBorder = '0';
+            this.mapFrame.marginHeight = '0';
+            this.mapFrame.marginWidth = '0';
+            this.mapFrame.src = b.mapGuideURL +
                             'mapviewerphp/ajaxviewer.php?' +
                             'WEBLAYOUT=' + this.obj.getResourceID() +
                             '&USERNAME=' + b.user +
                             '&PASSWORD=' + b.pass;
             Event.observe(this._oPreviewPanel, 'load', this._oPreviewPanel.setBusy.bind(this, false));
-            this._oPreviewPanel.content.appendChild(mapFrame);
+            this._oPreviewPanel.content.appendChild(this.mapFrame);
         }
     }
 });

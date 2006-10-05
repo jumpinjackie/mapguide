@@ -1425,9 +1425,8 @@ Object.extend(  WSLayerDefinition.prototype, {
             
             var node = this.content.findFirstNode('VectorLayerDefinition');
             node.appendChild(vectorScaleRange);
-        } else {
-            this.parseVectorScaleRanges();
         }
+        this.parseVectorScaleRanges();
     },
     createDefaultFill: function() {
         var fill = DomNodeFactory.create('Fill');
