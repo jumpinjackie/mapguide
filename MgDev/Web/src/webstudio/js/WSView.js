@@ -931,7 +931,7 @@ Object.extend(WSLayerDefinitionView.prototype, {
                             path:fs.getPath()});
     },
     handleChoice: function(button,dialog) {
-        if (button == 'Select') {
+        if (button == 'Select' || button == 'Open') {
             this.bContentLoaded = false;
             this.bFeatureSchemaLoaded = false;
             this.bFeatureSchemaRendered = false;
@@ -2586,7 +2586,7 @@ Object.extend(WSMapDefinitionView.prototype, {
 this.viewManager.fileDialog.chooseResource({handler:this.handleChooseResource.bind(this),types:this.viewManager.fileDialog.getFilter('LayerDefinition'),path:fs.getPath()});
     },
     handleChooseResource: function(button,dialog) {
-        if (button == 'Select') {
+        if (button == 'Select' || button == 'Open') {
             var rid = dialog.getResource();
             if (this.activeTab == this.groupTab) {
                 this._oLayersPanel.getObj('map.layer.resourceid').value = rid;
@@ -2899,7 +2899,7 @@ this.viewManager.fileDialog.chooseResource({handler:this.handleChooseResource.bi
     this.viewManager.fileDialog.chooseResource({handler:this.handleAddLayer.bind(this),types:this.viewManager.fileDialog.getFilter('LayerDefinition')});
     },
     handleAddLayer: function(button,dialog) {
-        if (button == 'Select') {
+        if (button == 'Select' || button == 'Open') {
             var rid = dialog.getResource();
             
             switch(this.activeTab) {
