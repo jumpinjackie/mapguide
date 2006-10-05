@@ -2136,8 +2136,8 @@ Object.extend(WSMapDefinitionView.prototype, {
         }
         this.viewManager.requests = 0;
         
+        var b = this.obj.app.getBroker();
         if (this._oPreviewPanel.content.childNodes.length == 0) {
-            var b = this.obj.app.getBroker();
             this.mapFrame = document.createElement('iframe');
             this._oPreviewPanel.content.appendChild(this.mapFrame);
             this.mapFrame.className = 'previewFrame';
@@ -3762,9 +3762,9 @@ Object.extend(WSWebLayoutView.prototype, {
         }
     },
     preview: function() {
+        var b = this.obj.app.getBroker();
         if (this._oPreviewPanel.content.childNodes.length == 0) {
             //this._oPreviewPanel.setBusy(true);
-            var b = this.obj.app.getBroker();
             this.mapFrame = document.createElement('iframe');
             this._oPreviewPanel.content.appendChild(this.mapFrame);
             this.mapFrame.className = 'previewFrame';
