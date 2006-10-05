@@ -452,6 +452,12 @@ PUBLISHED_API:
     /// distance. By default, the distance computation is done using
     /// a linear algorithm unless a custom measure is supplied.
     ///
+    /// \remarks
+    /// This method returns NULL when using a negative offset with
+    /// points, lines, and curves.  When using a negative offset with
+    /// polygons, the method returns NULL if the offset causes the
+    /// buffered polygon to shrink to zero area.
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual MgGeometry Buffer(double distance, MgMeasure measure);
@@ -466,12 +472,12 @@ PUBLISHED_API:
     /// \param distance (double)
     /// The distance from the geometry in units.  This value cannot be zero.
     /// \param measure (MgMeasure)
-    /// The MgMeasure instance to use when computing
-    /// the buffer. If null, a linear distance
-    /// algorithm is used.
+    /// The MgMeasure instance to use when computing the buffer. If null,
+    /// a linear distance algorithm is used.
     ///
     /// \return
-    /// An MgGeometry that represents the geometric entity's buffer.
+    /// An MgGeometry that represents the geometric entity's buffer, or
+    /// NULL if the geometry cannot be buffered.
     ///
     virtual MgGeometry* Buffer(double distance, MgMeasure* measure);
 
