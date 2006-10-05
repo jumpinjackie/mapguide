@@ -726,6 +726,7 @@ Object.extend(WSLayerDefinitionView.prototype, {
         //TODO: do this with an object literal and a common replace fn
         if (szMapXML)
         {
+            //debugger;
             this.viewManager.requests++;
             szMapXML = szMapXML.replace(/%layername%/, this.obj.name);
             szMapXML = szMapXML.replace(/%name%/, 'Preview - ' + this.obj.name);
@@ -747,25 +748,21 @@ Object.extend(WSLayerDefinitionView.prototype, {
             var r = new WSSetResource(mapDefinition, unescape(szMapXML), null);
             //jxTrace('Preview MapDefinition: '+unescape(szMapXML));
             var b = this.obj.app.getBroker();
-            b.dispatchRequest(r,this.layoutWasSet.bind(this));
+            b.dispatchRequest(r,this.layoutWasSet.bind(this, 'SetMapDefinition'));
         }
         var szLayoutXML = new String(this.viewManager.previewLayoutTemplate);
         if (szLayoutXML)
         {
+            //debugger;
             this.viewManager.requests++;
             //replace the layout's map with the preview map and push to session
             szLayoutXML = szLayoutXML.replace(/%rid%/, mapDefinition);
             //don't show the infopane for a layer preview
             szLayoutXML = szLayoutXML.replace(/%infopane%/, 'false');
             r = new WSSetResource(this.previewDefinition, unescape(szLayoutXML), null);
-            b.dispatchRequest(r,this.layoutWasSet.bind(this));
+            b.dispatchRequest(r,this.layoutWasSet.bind(this, 'SetPreviewLayout'));
         }
-        /*save a copy of the resource to the session
-         *this needs to be dispatched here so that it's ready when layoutWasSet
-         *is called to render the preview.
-         */
-        this.updateSessionLayer();
-
+        
         this.checkRenderStatus();
     },
     /**
@@ -775,12 +772,14 @@ Object.extend(WSLayerDefinitionView.prototype, {
      * but has not saved it. 
      */
     updateSessionLayer: function() {
+        //debugger;
         this._oPreviewPanel.setBusy(true);
         this.viewManager.requests++;
         this.obj.saveToSession();        
     },
-    layoutWasSet : function() {
+    layoutWasSet : function(why) {
         //jxTrace('WSLayerDefinitionView::layoutWasSet()');
+        //var reason = why;
         if (this.viewManager.requests > 1) {
             this.viewManager.requests--;
             return;
@@ -835,6 +834,12 @@ Object.extend(WSLayerDefinitionView.prototype, {
         //jxTrace('WSLayerDefinitionView::featureSchemaLoaded()');
         this.bFeatureSchemaLoaded = true;
         this.checkRenderStatus();
+        /*save a copy of the resource to the session
+         *this needs to be dispatched here so that it's ready when layoutWasSet
+         *is called to render the preview.
+         */
+        this.updateSessionLayer();
+        
     },
     resourceReferencesLoaded: function() {
         //jxTrace('WSLayerDefinitionView::resourceReferencesLoaded()');
@@ -975,7 +980,7 @@ Object.extend(WSLayerDefinitionView.prototype, {
         this.setMaxScaleWatcher = this.setMaxScale.bindAsEventListener(this);
         this.editExpressionWatcher = this.editExpression.bindAsEventListener(this);
         this.editAreaStyleWatcher = this.editAreaStyle.bindAsEventListener(this);
-        this.editLineStyleWatcher = this.editLineStyle.bindAsEventListener(this);
+        this.edpreviewitLineStyleWatcher = this.editLineStyle.bindAsEventListener(this);
         this.editPointStyleWatcher = this.editPointStyle.bindAsEventListener(this);
         this.editLabelStyleWatcher = this.editLabelStyle.bindAsEventListener(this);
         
