@@ -688,9 +688,12 @@ BYTE_ARRAY_OUT MgServerFeatureReader::GetGeometry(CREFSTRING propertyName, INT32
 
     MG_FEATURE_SERVICE_TRY()
 
-    FdoInt32 len = 0;
-    data = m_fdoReader->GetGeometry(propertyName.c_str(), &len);
-    length = len;
+    if(!m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        FdoInt32 len = 0;
+        data = m_fdoReader->GetGeometry(propertyName.c_str(), &len);
+        length = len;
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetGeometry");
 
