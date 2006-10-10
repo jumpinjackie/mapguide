@@ -607,9 +607,14 @@ BYTE_ARRAY_OUT MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName, INT32
 
     // TODO: Can we have an equivalent method as we have in FeatureReader to get
     // TODO: direct pointer on geometry
-    FdoPtr<FdoByteArray> byteArray = m_sqlReader->GetGeometry(propertyName.c_str());
-    length = (INT32)byteArray->GetCount();
-    FdoByte* data = byteArray->GetData();
+    FdoByte* data = NULL;
+
+    if(!m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        FdoPtr<FdoByteArray> byteArray = m_sqlReader->GetGeometry(propertyName.c_str());
+        length = (INT32)byteArray->GetCount();
+        FdoByte* data = byteArray->GetData();
+    }
 
     return (BYTE_ARRAY_OUT)data;
 }

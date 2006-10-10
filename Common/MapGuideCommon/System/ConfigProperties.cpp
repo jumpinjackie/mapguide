@@ -89,6 +89,9 @@
 #define MG_CONFIG_MAX_PATH_LENGTH                       255
 #define MG_CONFIG_PATH_RESERVED_CHARACTERS              L"*?\"<>|"
 
+#define MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH             0
+#define MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH             1024
+
 // Default configuration filenames
 const STRING MgConfigProperties::DefaultConfigurationFilename                               = L"webconfig.ini";
 const STRING MgConfigProperties::ServerConfigurationFilename                                = L"serverconfig.ini";
@@ -216,6 +219,8 @@ const STRING MgConfigProperties::FeatureServicePropertyDataCacheSize            
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize                 = 100;
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled            = L"DataConnectionPoolEnabled";
 const bool   MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled     = false;
+const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders  = L"DataConnectionPoolExcludedProviders";
+const STRING MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders = L"OSGeo.SDF,OSGeo.SHP";
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize               = L"DataConnectionPoolSize";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize        = 100;
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimeout                = L"DataConnectionTimeout";
@@ -460,6 +465,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviFeatureServiceProperties[
     { MgConfigProperties::FeatureServicePropertyCacheTimerInterval                  , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_TIMERINTERVAL  , MG_CONFIG_MAX_FS_CACHE_TIMERINTERVAL  , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataCacheSize                       , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled           , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders , MgPropertyType::String    , MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH   , MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH   , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize              , MgPropertyType::Int32     , MG_CONFIG_MIN_CONNECTION_POOL_SIZE    , MG_CONFIG_MAX_CONNECTION_POOL_SIZE    , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionTimeout               , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval         , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },

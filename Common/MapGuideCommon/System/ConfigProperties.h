@@ -265,6 +265,10 @@ EXTERNAL_API:
     static const STRING FeatureServicePropertyDataConnectionPoolEnabled;        /// value("DataConnectionPoolEnabled")
     static const bool DefaultFeatureServicePropertyDataConnectionPoolEnabled;   /// value(false)
 
+    /// Sets the excluded privders from the pooled data connections
+    static const STRING FeatureServicePropertyDataConnectionPoolExcludedProviders;          /// value("DataConnectionPoolExcludedProviders")
+    static const STRING DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders;   /// value("OSGeo.SDF,OSGeo.SHP")
+
     /// Sets the number of pooled data connections
     static const STRING FeatureServicePropertyDataConnectionPoolSize;           /// value("DataConnectionPoolSize")
     static const INT32 DefaultFeatureServicePropertyDataConnectionPoolSize;     /// value(100)
