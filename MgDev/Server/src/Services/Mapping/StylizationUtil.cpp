@@ -992,7 +992,14 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
             Ptr<MgStylizeLayerFailedException> exception;
             exception = new MgStylizeLayerFailedException(L"MgStylizationUtil.StylizeLayers", __LINE__, __WFILE__, &arguments, L"MgFormatInnerExceptionMessage", &argumentsWhy);
 
-            STRING message = exception->GetMessage(locale);
+            // The commented line below is what will be used for the next release.
+            // STRING message = exception->GetMessage(locale);
+            // The code below is added because of artifact MG420. 
+            STRING message = L"Failed to stylize layer: ";
+            message += mapLayer->GetName();
+            message += L"\n";
+            message += mgException->GetMessage(locale);
+
             STRING stackTrace = exception->GetStackTrace(locale);
             MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
