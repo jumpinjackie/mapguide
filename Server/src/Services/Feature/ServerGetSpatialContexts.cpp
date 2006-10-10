@@ -165,7 +165,31 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     FdoString* csWkt = spatialReader->GetCoordinateSystemWkt();
     if (csWkt != NULL)
     {
-        spatialData->SetCoordinateSystemWkt(STRING(csWkt));
+        // This is a work around for MG298: WKT not set for WMS and 
+        // WFS spatial contexts.
+        STRING srsWkt = csWkt;
+        if (srsWkt.empty())
+        {
+            try
+            {
+                Ptr<MgCoordinateSystem> csPtr = new MgCoordinateSystem();
+                srsWkt = csPtr->ConvertCoordinateSystemCodeToWkt(STRING(csName));
+            }
+            catch (MgException* e)
+            {
+                SAFE_RELEASE(e);
+            }
+            catch(...)
+            {
+                // Just use the empty WKT. 
+            }
+
+            spatialData->SetCoordinateSystemWkt(srsWkt);
+        }
+        else
+        {
+            spatialData->SetCoordinateSystemWkt(STRING(csWkt));
+        }
     }
 
     // Desc for spatial context
