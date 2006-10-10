@@ -86,7 +86,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetName();  /// __get
+    virtual STRING GetName();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -115,7 +115,7 @@ PUBLISHED_API:
     /// [[Job for Philip: Clarify -- is this unique with the
     /// repository? or where?]]
     ///
-    STRING GetObjectId();  
+    virtual STRING GetObjectId();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -135,7 +135,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the type of the layer group.
     ///
-    INT32 GetLayerGroupType();  /// __get
+    virtual INT32 GetLayerGroupType();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -161,7 +161,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgLayerGroup* GetGroup();  /// __get, __set
+    virtual MgLayerGroup* GetGroup();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -185,7 +185,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-    void SetGroup(MgLayerGroup* group);
+    virtual void SetGroup(MgLayerGroup* group);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -216,7 +216,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetVisible();  /// __get, __set
+    virtual bool GetVisible();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -246,7 +246,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-    void SetVisible(bool visible);
+    virtual void SetVisible(bool visible);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -277,7 +277,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool IsVisible();
+    virtual bool IsVisible();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -304,7 +304,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetDisplayInLegend();  /// __get, __set
+    virtual bool GetDisplayInLegend();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -329,7 +329,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-    void SetDisplayInLegend(bool displayInLegend);
+    virtual void SetDisplayInLegend(bool displayInLegend);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -356,7 +356,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetExpandInLegend();  /// __get
+    virtual bool GetExpandInLegend();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -381,7 +381,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetLegendLabel();  /// __get, __set
+    virtual STRING GetLegendLabel();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -404,7 +404,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-    void SetLegendLabel(CREFSTRING legendLabel);
+    virtual void SetLegendLabel(CREFSTRING legendLabel);
 
 INTERNAL_API:
 
@@ -446,20 +446,20 @@ INTERNAL_API:
     /// \brief
     /// Attaches this group to a set of groups
     ///
-    void SetContainer(MgLayerGroupCollection* cont);
+    virtual void SetContainer(MgLayerGroupCollection* cont);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Specifies whether the entry for the group should initially
     /// be expanded in the legend, if possible.
     ///
-    void SetExpandInLegend(bool expandInLegend);
+    virtual void SetExpandInLegend(bool expandInLegend);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the type of the layer group
     ///
-    void SetLayerGroupType(INT32 layerGroupType);
+    virtual void SetLayerGroupType(INT32 layerGroupType);
 
 protected:
     /// \brief

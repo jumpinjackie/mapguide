@@ -148,10 +148,10 @@ MgByteReader* MgResourceService::GetResourceData(
 /// </returns>
 /// EXCEPTIONS:
 ///
-void MgResourceService::SetMetadata(
-	MgResourceIdentifier* resource, MgByteReader* content)
+void MgResourceService::SetResourceMetadata(
+    MgResourceIdentifier* resource, MgByteReader* content)
 {
-	throw new MgNotImplementedException(L"MgByteReader.SetMetadata", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"MgResourceService.SetResourceMetadata", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 
@@ -167,8 +167,27 @@ void MgResourceService::SetMetadata(
 /// </returns>
 /// EXCEPTIONS:
 ///
-MgByteReader* MgResourceService::GetMetadata(
-	MgResourceIdentifier* resource)
+MgByteReader* MgResourceService::GetResourceMetadata(
+    MgResourceIdentifier* resource)
 {
-	throw new MgNotImplementedException(L"MgByteReader.GetMetadata", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"MgResourceService.GetResourceMetadata", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Checks to see if resource exists.
+/// </summary>
+/// <param name="resource">
+/// Resource identifier describing the resource.
+/// </param>
+/// <returns>
+/// True if resource exists, false otherwise
+/// </returns>
+/// EXCEPTIONS:
+///
+bool MgResourceService::ResourceExists(
+    MgResourceIdentifier* resource)
+{
+    throw new MgNotImplementedException(L"MgResourceService.ResourceExists", __LINE__, __WFILE__, NULL, L"", NULL);
 }
