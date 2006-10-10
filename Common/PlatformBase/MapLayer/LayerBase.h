@@ -99,7 +99,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetName();  /// __get, __set
+    virtual STRING GetName();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -123,7 +123,7 @@ PUBLISHED_API:
     /// \param name (String/string)
     /// Layer name.
     ///
-    void SetName(CREFSTRING name);
+    virtual void SetName(CREFSTRING name);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -148,7 +148,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetObjectId();  
+    virtual STRING GetObjectId();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -168,7 +168,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the type of the layer.
     ///
-    INT32 GetLayerType();  /// __get
+    virtual INT32 GetLayerType();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -199,7 +199,7 @@ PUBLISHED_API:
     /// stored internally, versus how they are shown in e.g.
     /// Studio.]]
     ///
-    MgLayerGroup* GetGroup();  /// __get, __set
+    virtual MgLayerGroup* GetGroup();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -223,7 +223,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-   void SetGroup(MgLayerGroup* group);
+   virtual void SetGroup(MgLayerGroup* group);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -250,7 +250,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool NeedsRefresh();
+    virtual bool NeedsRefresh();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -271,7 +271,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-    void ForceRefresh();
+    virtual void ForceRefresh();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -304,7 +304,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetVisible();  /// __get, __set
+    virtual bool GetVisible();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -339,7 +339,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-    void SetVisible(bool visible);
+    virtual void SetVisible(bool visible);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -370,7 +370,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool IsVisible();
+    virtual bool IsVisible();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -399,7 +399,7 @@ PUBLISHED_API:
     /// \todo
     /// [[Job for Philip: Do I have that in the example????]]
     ///
-    bool GetSelectable();  /// __get, __set
+    virtual bool GetSelectable();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -423,7 +423,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-    void SetSelectable(bool selectable);
+    virtual void SetSelectable(bool selectable);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -448,7 +448,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgResourceIdentifier* GetLayerDefinition();  /// __get
+    virtual MgResourceIdentifier* GetLayerDefinition();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -493,7 +493,7 @@ PUBLISHED_API:
     /// \todo
     ///   * [[Job for Philip: I need an example showing that.]]
     ///
-    void SetLayerDefinition(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService);
+    virtual void SetLayerDefinition(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -520,7 +520,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetDisplayInLegend();  /// __get, __set
+    virtual bool GetDisplayInLegend();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -545,7 +545,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-    void SetDisplayInLegend(bool displayInLegend);
+    virtual void SetDisplayInLegend(bool displayInLegend);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -572,7 +572,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    bool GetExpandInLegend();  /// __get
+    virtual bool GetExpandInLegend();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -597,7 +597,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetLegendLabel();  /// __get, __set
+    virtual STRING GetLegendLabel();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -620,7 +620,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-    void SetLegendLabel(CREFSTRING legendLabel);
+    virtual void SetLegendLabel(CREFSTRING legendLabel);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -641,7 +641,7 @@ PUBLISHED_API:
     /// Returns the feature source or an empty string if this layer is not a feature layer
     /// false otherwise.
     ///
-    STRING GetFeatureSourceId();  /// __get
+    virtual STRING GetFeatureSourceId();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -662,7 +662,7 @@ PUBLISHED_API:
     /// Returns the feature class name or an empty string if this layer is not a feature layer
     /// false otherwise.
     ///
-    STRING GetFeatureClassName();  /// __get
+    virtual STRING GetFeatureClassName();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -683,7 +683,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the feature geometry name or an empty string if this layer is not a feature layer
     ///
-    STRING GetFeatureGeometryName();  /// _get
+    virtual STRING GetFeatureGeometryName();  /// _get
 
 INTERNAL_API:
 
@@ -736,20 +736,20 @@ INTERNAL_API:
     /// \brief
     /// Attaches this layer to a set of layers
     ///
-    void SetContainer(MgLayerCollection* cont);
+    virtual void SetContainer(MgLayerCollection* cont);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Specifies whether the entry for the layer should initially
     /// be expanded in the legend, if possible.
     ///
-    void SetExpandInLegend(bool expandInLegend);
+    virtual void SetExpandInLegend(bool expandInLegend);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the type of the layer
     ///
-    void SetLayerType(INT32 layerType);
+    virtual void SetLayerType(INT32 layerType);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -757,35 +757,35 @@ INTERNAL_API:
     /// this method allows you to change the visibility of base
     /// layers.
     ///
-    void ForceVisible(bool visible);
+    virtual void ForceVisible(bool visible);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Turn on/off the refresh flag for this layer
     ///
-    void ForceRefresh(bool on);
+    virtual void ForceRefresh(bool on);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the zorder value for this layer
     ///
-    double GetDisplayOrder();
+    virtual double GetDisplayOrder();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the zorder value for this layer
     ///
-    void SetDisplayOrder(double zorder);
+    virtual void SetDisplayOrder(double zorder);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the scale ranges for this layer
     ///
-    void SetScaleRanges(const SCALERANGES& scaleRanges);
+    virtual void SetScaleRanges(const SCALERANGES& scaleRanges);
 
     //////////////////////////////////////////////////////////////////
     /// Determine if this layer is visible at the specified scale
-    bool IsVisibleAtScale(double scale);
+    virtual bool IsVisibleAtScale(double scale);
 
     //////////////////////////////////////////////////////////////////
     /// Parse the layer definition XML and extracts scale ranges,
@@ -794,7 +794,7 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// Returns id property list
-    IdPropertyList& GetIdPropertyList();
+    virtual IdPropertyList& GetIdPropertyList();
 
 protected:
     /// \brief

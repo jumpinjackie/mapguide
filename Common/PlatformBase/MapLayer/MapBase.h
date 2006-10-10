@@ -283,7 +283,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetName();  /// __get
+    virtual STRING GetName();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -334,7 +334,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetObjectId();  
+    virtual STRING GetObjectId();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -361,7 +361,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgResourceIdentifier* GetMapDefinition();  /// __get
+    virtual MgResourceIdentifier* GetMapDefinition();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -387,7 +387,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    STRING GetMapSRS();  /// __get
+    virtual STRING GetMapSRS();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -413,7 +413,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgEnvelope* GetMapExtent();  /// __get
+    virtual MgEnvelope* GetMapExtent();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -438,7 +438,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgLayerCollection* GetLayers();  
+    virtual MgLayerCollection* GetLayers();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -464,7 +464,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgLayerGroupCollection* GetLayerGroups();  
+    virtual MgLayerGroupCollection* GetLayerGroups();  
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -601,7 +601,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgPoint* GetViewCenter();  /// __get
+    virtual MgPoint* GetViewCenter();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -626,7 +626,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    double GetViewScale();  /// __get
+    virtual double GetViewScale();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -652,7 +652,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    MgEnvelope* GetDataExtent();   /// __get
+    virtual MgEnvelope* GetDataExtent();   /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -677,7 +677,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    INT32 GetDisplayDpi();  /// __get
+    virtual INT32 GetDisplayDpi();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -706,7 +706,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    INT32 GetDisplayWidth();  /// __get
+    virtual INT32 GetDisplayWidth();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -736,7 +736,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    INT32 GetDisplayHeight();  /// __get
+    virtual INT32 GetDisplayHeight();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -761,7 +761,7 @@ PUBLISHED_API:
     /// See \link MgMap MgMap Class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    INT32 GetFiniteDisplayScaleCount();  /// __get
+    virtual INT32 GetFiniteDisplayScaleCount();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -791,7 +791,7 @@ PUBLISHED_API:
     ///
     /// \exception MgOutOfRangeException if the index is invalid.
     ///
-    double GetFiniteDisplayScaleAt(INT32 index);
+    virtual double GetFiniteDisplayScaleAt(INT32 index);
 
 EXTERNAL_API:
 
@@ -802,7 +802,7 @@ EXTERNAL_API:
     /// \return
     /// Background color.
     ///
-    STRING GetBackgroundColor();  
+    virtual STRING GetBackgroundColor();  
 
 INTERNAL_API:
 
@@ -844,11 +844,11 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// Set the refresh mode for all layers in this map
-    void SetLayerRefreshMode(LayerRefreshMode refreshMode);
+    virtual void SetLayerRefreshMode(LayerRefreshMode refreshMode);
 
     //////////////////////////////////////////////////////////////////
     /// Get the refresh mode for all layers in this map
-    LayerRefreshMode GetLayerRefreshMode();
+    virtual LayerRefreshMode GetLayerRefreshMode();
 
     /// \brief
     /// Destruct a MgMap object
@@ -864,7 +864,7 @@ INTERNAL_API:
     /// \param center
     /// Center of the map
     ///
-    void SetViewCenter(MgPoint* center);
+    virtual void SetViewCenter(MgPoint* center);
 
     /// \brief
     /// Sets the current scale of the map
@@ -872,7 +872,7 @@ INTERNAL_API:
     /// \param scale
     /// Scale of the map
     ///
-    void SetViewScale(double scale);
+    virtual void SetViewScale(double scale);
 
     /// \brief
     /// Sets the extent of the data to be generated for the map in the spatial reference system of the map.
@@ -881,7 +881,7 @@ INTERNAL_API:
     /// \param extent
     /// Data extent
     ///
-    void SetDataExtent(MgEnvelope* extent);
+    virtual void SetDataExtent(MgEnvelope* extent);
 
     /// \brief
     /// Sets the number of dots per inch of the map display
@@ -890,7 +890,7 @@ INTERNAL_API:
     /// \param dpi
     /// Number of dots per inch of the map display
     ///
-    void SetDisplayDpi(INT32 dpi);
+    virtual void SetDisplayDpi(INT32 dpi);
 
     /// \brief
     /// Sets the current width of the map display in pixels
@@ -899,7 +899,7 @@ INTERNAL_API:
     /// \param width
     /// Width of the map display in pixels
     ///
-    void SetDisplayWidth(INT32 width);
+    virtual void SetDisplayWidth(INT32 width);
 
     /// \brief
     /// Sets the current height of the map display in pixels
@@ -908,7 +908,7 @@ INTERNAL_API:
     /// \param height
     /// Height of the map display in pixels
     ///
-    void SetDisplayHeight(INT32 height);
+    virtual void SetDisplayHeight(INT32 height);
 
     /// \brief
     /// Gets the meters per unit for the map coordinate system.  This is calculated
@@ -917,7 +917,7 @@ INTERNAL_API:
     /// \return
     /// Number of meters for each coordsys unit
     ///
-    double GetMetersPerUnit();
+    virtual double GetMetersPerUnit();
 
     /// \brief
     /// Searches the list of finite display scales for the scale nearest the
@@ -1006,19 +1006,19 @@ INTERNAL_API:
     /// \brief
     /// Get the changelists. Returns an empty collection of no changes were tracked
     ///
-    MgNamedCollection* GetChangeLists();
+    virtual MgNamedCollection* GetChangeLists();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Clear any changes that have been made to layer or groups of this map
     ///
-    void ClearChanges();
+    virtual void ClearChanges();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Reset refresh flag for all the layers of this map
     ///
-    void ResetLayersRefresh();
+    virtual void ResetLayersRefresh();
 
 protected:
 
