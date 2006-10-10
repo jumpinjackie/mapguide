@@ -28,6 +28,15 @@
 
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
+
+// Linux version of GetTickCount()
+#include <sys/times.h>
+
+long GetTickCount()
+{
+    tms tm;
+    return times(&tm);
+}
 #endif
 
 
@@ -130,6 +139,10 @@ MgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFea
                                                         MgCoordinateSystem* mapCs,
                                                         MgCoordinateSystem* layerCs)
 {
+#ifdef _DEBUG
+    long dwStart = GetTickCount();
+#endif
+
     //get feature source id
     STRING sfeatResId = vl->GetResourceID();
     Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(sfeatResId);
@@ -237,6 +250,10 @@ MgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFea
             rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), NULL);
         }
     }
+
+#ifdef _DEBUG
+    printf("  ExecuteFeatureQuery() total time = %6.4f (s)\n", (GetTickCount()-dwStart)/1000.0); 
+#endif
 
     return SAFE_ADDREF(rdr.p);
 }
@@ -388,12 +405,21 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                       bool checkRefreshFlag,
                                       double scale)
 {
+    #ifdef _DEBUG
+    long dwStart = GetTickCount();
+    printf("\nStylizeLayers() **MAPSTART** Layers: %d\n", layers->GetCount());
+    #endif
+
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
         MgCSTrans* xformer = NULL;
         MdfModel::LayerDefinition* ldf = NULL;
 
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
+
+        #ifdef _DEBUG
+        printf("  StylizeLayers() **LAYERSTART** Layer: %d - %S\n", i, (mapLayer->GetName()).c_str());
+        #endif
 
         //don't send data if layer is not currently visible
         if (!mapLayer->IsVisibleAtScale(scale)) continue;
@@ -434,6 +460,10 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
             if (vl)
             {
+                #ifdef _DEBUG
+                long dwLayerStart = GetTickCount();
+                #endif
+
                 // make sure we have a valid scale range
                 MdfModel::VectorScaleRange* scaleRange = Stylizer::FindScaleRange(*vl->GetScaleRanges(), scale);
 
@@ -458,15 +488,83 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     }
 
                     //now get the coordinate system of the layer data
-                    //TODO: this can be cached per resource, since it is
-                    //unlikely to ever change
-                    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(featResId, true);
+                    // Feature Service caches these so we only take the performance hit on
+                    // the 1st one that is not cached.
+
+                    // Need to determine the name of the spatial context for this layer
+                    MdfModel::MdfString featureName = vl->GetFeatureName();
+
+                    // Parse the feature name for the schema and class
+                    STRING::size_type nDelimiter = featureName.find(L":");
+                    STRING schemaName;
+                    STRING className;
+
+                    if(STRING::npos == nDelimiter)
+                    {
+                        schemaName = L"";
+                        className = featureName;
+                    }
+                    else
+                    {
+                        schemaName = featureName.substr(0, nDelimiter);
+                        className = featureName.substr(nDelimiter + 1);
+                    }
+
+                    STRING spatialContextAssociation = L"";
+
+                    // Get the class definition so that we can find the spatial context association
+                    Ptr<MgClassDefinition> classDef = svcFeature->GetClassDefinition(featResId, schemaName, className);
+                    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
+
+                    // Find the spatial context for the geometric property. Use the first one if there are many defined.
+                    for(int index=0;index<propDefCol->GetCount();index++)
+                    {
+                        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
+                        if (propDef->GetPropertyType () == MgFeaturePropertyType::GeometricProperty)
+                        {
+                            // We found the geometric property
+                            MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(propDef.p);
+                            spatialContextAssociation = geomProp->GetSpatialContextAssociation();
+                            break;
+                        }
+                    }
+
+                    // We want all of the spatial contexts
+                    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(featResId, false);
+
+                    // This is the strategy we use for picking the spatial context
+                    // Find the 1st spatial context that satisfies one of the following: (Processed in order)
+                    // 1) Matches the association spatial context name
+                    // 2) The 1st spatial context returned
+                    // 3) FAIL - none of the above could be satisfied
 
                     Ptr<MgCoordinateSystem> srcCs = (MgCoordinateSystem*)NULL;
 
-                    if (dstCs && csrdr->ReadNext())
+                    if (dstCs)
                     {
-                        STRING srcwkt = csrdr->GetCoordinateSystemWkt();
+                        STRING srcwkt = L"";
+                        STRING csrName = L"";
+                        bool bHaveFirstSpatialContext = false;
+
+                        while(csrdr->ReadNext())
+                        {
+                            csrName = csrdr->GetName();
+                            if((!spatialContextAssociation.empty()) && (csrName == spatialContextAssociation))
+                            {
+                                // Match found for the association)
+                                srcwkt = csrdr->GetCoordinateSystemWkt();
+                                break;
+                            }
+                            else if(!bHaveFirstSpatialContext)
+                            {
+                                // This is the 1st spatial context returned
+                                // This will be overwritten if we find the association
+                                srcwkt = csrdr->GetCoordinateSystemWkt();
+                                bHaveFirstSpatialContext = true;
+                            }
+                        }
+
+                        // Create coordinate system transformer
 
                         // If the WKT is not defined, attempt to resolve it from the name.
                         // This is a work around for MG298: WKT not set for WMS and 
@@ -476,7 +574,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                             try
                             {
                                 Ptr<MgCoordinateSystem> csPtr = new MgCoordinateSystem();
-                                srcwkt = csPtr->ConvertCoordinateSystemCodeToWkt(csrdr->GetName());
+                                srcwkt = csPtr->ConvertCoordinateSystemCodeToWkt(csrName);
                             }
                             catch (MgException* e)
                             {
@@ -494,6 +592,11 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         {
                             xformer = new MgCSTrans(srcCs, dstCs);
                         }
+                    }
+                    else
+                    {
+                        // No coordinate system!!! 
+                        // We fail here and do not use a default
                     }
 
                     //extract hyperlink and tooltip info
@@ -665,9 +768,18 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         }
                     }
                 }
+
+
+                #ifdef _DEBUG
+                printf("  StylizeLayers() **LAYEREND** Vector layer time = %6.4f (s)\n\n", (GetTickCount()-dwLayerStart)/1000.0);
+                #endif
             }
             else if (gl)
             {
+                #ifdef _DEBUG
+                long dwLayerStart = GetTickCount();
+                #endif
+
                 // make sure we have a valid scale range
                 MdfModel::GridScaleRange* scaleRange = Stylizer::FindScaleRange(*gl->GetScaleRanges(), scale);
 
@@ -681,15 +793,83 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     RS_Bounds extent = dr->GetBounds();
 
                     //now get the coordinate system of the layer data
-                    //TODO: this can be cached per resource, since it is
-                    //unlikely to ever change
-                    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(featResId, true);
+                    // Feature Service caches these so we only take the performance hit on
+                    // the 1st one that is not cached.
+
+                    // Need to determine the name of the spatial context for this layer
+                    MdfModel::MdfString featureName = gl->GetFeatureName();
+
+                    // Parse the feature name for the schema and class
+                    STRING::size_type nDelimiter = featureName.find(L":");
+                    STRING schemaName;
+                    STRING className;
+
+                    if(STRING::npos == nDelimiter)
+                    {
+                        schemaName = L"";
+                        className = featureName;
+                    }
+                    else
+                    {
+                        schemaName = featureName.substr(0, nDelimiter);
+                        className = featureName.substr(nDelimiter + 1);
+                    }
+
+                    STRING spatialContextAssociation = L"";
+
+                    // Get the class definition so that we can find the spatial context association
+                    Ptr<MgClassDefinition> classDef = svcFeature->GetClassDefinition(featResId, schemaName, className);
+                    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
+
+                    // Find the spatial context for the geometric property. Use the first one if there are many defined.
+                    for(int index=0;index<propDefCol->GetCount();index++)
+                    {
+                        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
+                        if (propDef->GetPropertyType () == MgFeaturePropertyType::GeometricProperty)
+                        {
+                            // We found the geometric property
+                            MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(propDef.p);
+                            spatialContextAssociation = geomProp->GetSpatialContextAssociation();
+                            break;
+                        }
+                    }
+
+                    // We want all of the spatial contexts
+                    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(featResId, false);
+
+                    // This is the strategy we use for picking the spatial context
+                    // Find the 1st spatial context that satisfies one of the following: (Processed in order)
+                    // 1) Matches the association spatial context name
+                    // 2) The 1st spatial context returned
+                    // 3) FAIL - none of the above could be satisfied
 
                     Ptr<MgCoordinateSystem> srcCs = (MgCoordinateSystem*)NULL;
 
-                    if (dstCs && csrdr->ReadNext())
+                    if (dstCs)
                     {
-                        STRING srcwkt = csrdr->GetCoordinateSystemWkt();
+                        STRING srcwkt = L"";
+                        STRING csrName = L"";
+                        bool bHaveFirstSpatialContext = false;
+
+                        while(csrdr->ReadNext())
+                        {
+                            csrName = csrdr->GetName();
+                            if((!spatialContextAssociation.empty()) && (csrName == spatialContextAssociation))
+                            {
+                                // Match found for the association)
+                                srcwkt = csrdr->GetCoordinateSystemWkt();
+                                break;
+                            }
+                            else if(!bHaveFirstSpatialContext)
+                            {
+                                // This is the 1st spatial context returned
+                                // This will be overwritten if we find the association
+                                srcwkt = csrdr->GetCoordinateSystemWkt();
+                                bHaveFirstSpatialContext = true;
+                            }
+                        }
+
+                        // Create coordinate system transformer
 
                         // If the WKT is not defined, attempt to resolve it from the name.
                         // This is a work around for MG298: WKT not set for WMS and 
@@ -699,7 +879,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                             try
                             {
                                 Ptr<MgCoordinateSystem> csPtr = new MgCoordinateSystem();
-                                srcwkt = csPtr->ConvertCoordinateSystemCodeToWkt(csrdr->GetName());
+                                srcwkt = csPtr->ConvertCoordinateSystemCodeToWkt(csrName);
                             }
                             catch (MgException* e)
                             {
@@ -717,6 +897,11 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         {
                             xformer = new MgCSTrans(srcCs, dstCs);
                         }
+                    }
+                    else
+                    {
+                        // No coordinate system!!! 
+                        // We fail here and do not use a default
                     }
 
                     //grid layer does not yet have hyperlink or tooltip
@@ -779,9 +964,17 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         dr->EndLayer();
                     }
                 }
+
+                #ifdef _DEBUG
+                printf("  StylizeLayers() **LAYEREND** Grid layer time = %6.4f (s)\n\n", (GetTickCount()-dwLayerStart)/1000.0);
+                #endif
             }
             else if (dl) //drawing layer
             {
+                #ifdef _DEBUG
+                long dwLayerStart = GetTickCount();
+                #endif
+
                 // make sure we have a valid scale range
                 if (scale >= dl->GetMinScale() && scale < dl->GetMaxScale())
                 {
@@ -816,6 +1009,10 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     ds->StylizeDrawingLayer( dl, &legendInfo, &is, dl->GetLayerFilter(), xformer);
                 }
+
+                #ifdef _DEBUG
+                printf("  StylizeLayers() **LAYEREND** Drawing layer time = %6.4f (s)\n\n", (GetTickCount()-dwLayerStart)/1000.0);
+                #endif
             }
 
         MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.StylizeLayers");
@@ -866,6 +1063,10 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
             ldf = NULL;
         }
     }
+
+    #ifdef _DEBUG
+    printf("StylizeLayers() **MAPDONE** Layers: %d  Total Time = %6.4f (s)\n\n", layers->GetCount(), (GetTickCount()-dwStart)/1000.0);
+    #endif
 }
 
 
