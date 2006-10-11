@@ -18,7 +18,7 @@
 <hr />
 <dl>
   <dt><a name="1" id="1">1. What map authoring tools are available for MapGuide Open Source?</a></dt>
-  <dd>Today Autodesk MapGuide Studio is the only authoring environment available for MapGuide Open Source. A free preview is available at <a href="http://www.autodesk.com/mapguidestudio">www.autodesk.com/mapguidestudio</a>. A free, open source, web-based application for authoring maps is in development now and is planned to be available later in the spring of 2006.  </dd>
+  <dd>MapGuide Open Source 1.0.1 includes Web Studio for authoring layers and maps. There is also a commercial desktop product called Autodesk MapGuide Studio that is available for MapGuide Open Source. A free trial version is available at <a href="http://www.autodesk.com/mapguidestudio">www.autodesk.com/mapguidestudio</a>. </dd>
 
   <dt><a name="2" id="2">2. What are base layers? How are they different from regular layers?</a></dt>
   <dd>The map content for base layers is displayed using tiles. These tiles are rendered on demand and stored in a server-side cache. As you pan and zoom, any newly visible tiles are requested from the server. Assuming the cache for your map is reasonably populated, these pan and zoom operations should work smoothly. Note that this tile behavior applies only to the AJAX viewer. DWF Viewer handles base layers the same as regular layers.<br /><br />Base layers are best used to display map content which doesn't change frequently, e.g. static data such as geographical features.  </dd>
