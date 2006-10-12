@@ -35,28 +35,46 @@ namespace MdfModel
          // Construction, destruction, initialization
         RelateProperty();
         RelateProperty(const MdfString &featureClassProperty,
-                       const MdfString &attributeClassProperty);
+                       const MdfString &attributeClassProperty,
+                       const MdfString &primaryAttributeRelateName = L"");
         virtual ~RelateProperty();
 
         // Operations
-        // Property : FeatureClassProperty
-        const MdfString& GetFeatureClassProperty() const;
-        void SetFeatureClassProperty(const MdfString &name);
+        // Property : FeatureClassProperty. It might be either class name (in
+        // the case of the convential join) or primary AttributeRelate name and a class name
+        // (in the case of a chain)
+        const MdfString& GetFeatureClassProperty(bool bStripPrimaryAttributeRelateName = false) const;
+        void SetFeatureClassProperty(const MdfString& PropertyName, const MdfString &primaryAttributeRelateName = L"");
+
+        // Property: parces a Feature Class property and returns the primary
+        // join name
+        const MdfString& GetPrimaryAttributeRelateName() const;
 
         // Property : AttributeClassProperty
         const MdfString& GetAttributeClassProperty()const;
         void SetAttributeClassProperty(const MdfString& expression);
 
+        // Operations: parses the string "PrimaryAttributeReale.PropertyName"
+        static void ParseDelimitedClassName (const MdfString& delimitedName,
+                            MdfString& AttributeRelateName,
+                            MdfString& PropertyName);
     private:
         // Hidden copy constructor and assignment operator.
         RelateProperty(const RelateProperty&);
         RelateProperty& operator=(const RelateProperty&);
 
-        // FeatureClassProperty
+        // AttributeClassProperty name
+        MdfString m_strAttributeClassProperty;
+
+        // complete FeatureClassProperty string that includes primary
+        // AttributeRelate as a prefix with "." delimiter
+        MdfString m_strPrefixedFeatureClassProperty;
+
+        // FeatureClassProperty name
         MdfString m_strFeatureClassProperty;
 
-        // AttributeClassProperty
-        MdfString m_strAttributeClassProperty;
+        // primary AttributeRelate name
+        MdfString m_strPrimaryAttributeRelate;
     };
 
     typedef MdfOwnerCollection<RelateProperty> RelatePropertyCollection;

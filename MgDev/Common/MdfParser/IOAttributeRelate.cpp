@@ -65,6 +65,8 @@ void IOAttributeRelate::ElementChars(const wchar_t *ch)
         (this->m_pAttributeRelate)->SetResourceId(ch);
     else if (m_currElemName == L"Name") // NOXLATE
         (this->m_pAttributeRelate)->SetName(ch);
+    else if (m_currElemName == L"AttributeNameDelimiter") // NOXLATE
+        (this->m_pAttributeRelate)->SetAttributeNameDelimiter(ch);
 	else if (m_currElemName == L"RelateType") // NOXLATE
         (this->m_pAttributeRelate)->SetRelateType(ReadType(ch));
 	else if (m_currElemName == L"ForceOneToOne") // NOXLATE
@@ -102,6 +104,11 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
     fd << tab() << "<Name>"; // NOXLATE
     fd << EncodeString(pAttributeRelate->GetName());
     fd << "</Name>" << std::endl; // NOXLATE
+
+    // Property: AttributeNameDelimiter
+    fd << tab() << "<AttributeNameDelimiter>"; // NOXLATE
+    fd << EncodeString(pAttributeRelate->GetAttributeNameDelimiter());
+    fd << "</AttributeNameDelimiter>" << std::endl; // NOXLATE
 
     // Property: RelateType
     fd << tab() << "<RelateType>"; // NOXLATE
