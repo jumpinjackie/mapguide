@@ -127,6 +127,10 @@ void MgServerSiteService::AddUser( CREFSTRING userID, CREFSTRING userName,
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::AddUser()");
 
+    // Foil Cross Site Scripting attacks.
+    MgUtil::CheckXss(userName);
+    MgUtil::CheckXss(description);
+
     GetResourceService().AddUser( userID, userName, password, description );
     MgSecurityManager::SetUser(userID, password);
 
@@ -374,6 +378,10 @@ void MgServerSiteService::UpdateUser( CREFSTRING userID, CREFSTRING newUserID,
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::UpdateUser()");
 
+    // Foil Cross Site Scripting attacks.
+    MgUtil::CheckXss(newUserName);
+    MgUtil::CheckXss(newDescription);
+
     GetResourceService().UpdateUser( userID, newUserID, newUserName, newPassword,
         newDescription );
 
@@ -416,6 +424,9 @@ void MgServerSiteService::AddGroup( CREFSTRING group, CREFSTRING description )
     MG_SITE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::AddGroup()");
+
+    // Foil Cross Site Scripting attacks.
+    MgUtil::CheckXss(description);
 
     GetResourceService().AddGroup(group, description);
     MgSecurityManager::SetGroup(group);
@@ -584,6 +595,9 @@ void MgServerSiteService::UpdateGroup( CREFSTRING group, CREFSTRING newGroup,
     MG_SITE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::UpdateGroup()");
+
+    // Foil Cross Site Scripting attacks.
+    MgUtil::CheckXss(newDescription);
 
     GetResourceService().UpdateGroup( group, newGroup, newDescription );
 
@@ -818,6 +832,10 @@ void MgServerSiteService::AddServer(CREFSTRING name, CREFSTRING description,
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::AddServer()");
 
+    // Foil Cross Site Scripting attacks.
+    MgUtil::CheckXss(name);
+    MgUtil::CheckXss(description);
+
     MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
     assert(NULL != loadBalanceManager);
     loadBalanceManager->AddServer(name, description, address);
@@ -859,6 +877,10 @@ void MgServerSiteService::UpdateServer(CREFSTRING oldName, CREFSTRING newName,
     MG_SITE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::UpdateServer()");
+
+    // Foil Cross Site Scripting attacks.
+    MgUtil::CheckXss(newName);
+    MgUtil::CheckXss(newDescription);
 
     MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
     assert(NULL != loadBalanceManager);

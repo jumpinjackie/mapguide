@@ -311,6 +311,14 @@ INTERNAL_API:
     /// \exception MgInvalidArgumentException
     ///
     static void CheckBeginEnd(CREFSTRING str, CREFSTRING sChar);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Perform Cross Site Scripting Attack validations against the specified
+    /// string.
+    ///
+    static void CheckXss(const STRING& str);
+
     //////////////////////////////////////////////
     /// \brief
     /// Creates an object based on its class Id
@@ -489,6 +497,8 @@ INTERNAL_API:
     static const double DefaultCompareTolerance;
     static const STRING LinuxFilesystemMeminfo;
     static const STRING LinuxFilesystemStat;
+
+    static const STRING sm_xssReservedCharacters;
 
 private:
 

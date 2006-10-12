@@ -683,6 +683,9 @@ void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property,
 {
     MG_CONFIGURATION_TRY()
 
+    // Foil Cross Site Scripting attacks.
+    MgUtil::CheckXss(value);
+
     const MgConfigValidationInfo* validationInfo = GetConfigValidationInfo(
         section, property);
 
