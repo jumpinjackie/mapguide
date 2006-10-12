@@ -613,7 +613,7 @@ BYTE_ARRAY_OUT MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName, INT32
     {
         GisPtr<GisByteArray> byteArray = m_sqlReader->GetGeometry(propertyName.c_str());
         length = (INT32)byteArray->GetCount();
-        GisByte* data = byteArray->GetData();
+        data = byteArray->GetData();
     }
 
     return (BYTE_ARRAY_OUT)data;
