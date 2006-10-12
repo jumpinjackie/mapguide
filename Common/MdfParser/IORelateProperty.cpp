@@ -49,7 +49,14 @@ void IORelateProperty::StartElement(const wchar_t *name, HandlerStack *handlerSt
 void IORelateProperty::ElementChars(const wchar_t *ch)
 {
     if (m_currElemName == L"FeatureClassProperty") // NOXLATE
-        (this->m_pRelateProperty)->SetFeatureClassProperty(ch);
+    {
+        // parse input string to separate primary AttributeRelate
+        // prefix and a property name
+        MdfString primaryAttributeRelateName;
+        MdfString propertyName;
+        RelateProperty::ParseDelimitedClassName (ch, primaryAttributeRelateName, propertyName);
+        (this->m_pRelateProperty)->SetFeatureClassProperty(propertyName, primaryAttributeRelateName);
+    }
     else if (m_currElemName == L"AttributeClassProperty") // NOXLATE
         (this->m_pRelateProperty)->SetAttributeClassProperty(ch);
 }
@@ -73,7 +80,8 @@ void IORelateProperty::Write(MdfStream &fd,  RelateProperty *pRelateProperty)
 
     // Property: FeatureClassProperty
     fd << tab() << "<FeatureClassProperty>"; // NOXLATE
-    fd << EncodeString(pRelateProperty->GetFeatureClassProperty());
+    // use false parameter to get the complete property name with the prefix
+    fd << EncodeString(pRelateProperty->GetFeatureClassProperty(false));
     fd << "</FeatureClassProperty>" << std::endl; // NOXLATE
     
     // Property: AttributeClassProperty

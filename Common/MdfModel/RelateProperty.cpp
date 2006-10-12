@@ -24,6 +24,8 @@
 #include "RelateProperty.h"
 
 using namespace MDFMODEL_NAMESPACE;
+
+static MdfString stChainDelimiterSymbol = L".";
         
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the RelateProperty
@@ -33,15 +35,18 @@ using namespace MDFMODEL_NAMESPACE;
 RelateProperty::RelateProperty()
 {
     //Default Values
-	this->m_strFeatureClassProperty = L"";
 	this->m_strAttributeClassProperty = L"";
+    this->m_strFeatureClassProperty = L"";
+	this->m_strPrefixedFeatureClassProperty = L"";
+    this->m_strPrimaryAttributeRelate = L"";
 }
 
 RelateProperty::RelateProperty(const MdfString &rstrFeatureClassProperty,
-                               const MdfString &rstrAttributeClassProperty)
+                               const MdfString &rstrAttributeClassProperty,
+                               const MdfString &primaryAttributeRelateName)
 {
-    this->m_strFeatureClassProperty = rstrFeatureClassProperty;
-    this->m_strAttributeClassProperty = rstrAttributeClassProperty;
+    this->SetAttributeClassProperty(rstrAttributeClassProperty);
+    this->SetFeatureClassProperty(rstrFeatureClassProperty, primaryAttributeRelateName);
 }
 
 //-------------------------------------------------------------------------
@@ -55,20 +60,45 @@ RelateProperty::~RelateProperty()
 // PURPOSE: Accessor method for the FeatureClassProperty property.
 // RETURNS: A config file name
 //-------------------------------------------------------------------------
-const MdfString& RelateProperty::GetFeatureClassProperty() const
+const MdfString& RelateProperty::GetFeatureClassProperty(bool bStripPrimaryAttributeRelateName) const
 {
-    return this->m_strFeatureClassProperty;
+    return (true == bStripPrimaryAttributeRelateName)
+        ? this->m_strFeatureClassProperty : this->m_strPrefixedFeatureClassProperty;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method to the FeatureClassProperty property.
 // PARAMETERS:
 //      Input:
-//          name - FeatureClassProperty of exntesion
+//          primaryAttributeRelateName - name of the primary join (in the 
+//             case of a chain) or empty string
+//          propertyName - FeatureClassProperty 
 //-------------------------------------------------------------------------
-void RelateProperty::SetFeatureClassProperty(const MdfString& featureClass)
+void RelateProperty::SetFeatureClassProperty(
+    const MdfString& propertyName,
+    const MdfString& primaryAttributeRelateName)
 {
-    this->m_strFeatureClassProperty = featureClass;
+    this->m_strFeatureClassProperty = propertyName;
+    this->m_strPrimaryAttributeRelate = primaryAttributeRelateName;
+
+    // make a complete prefixed name
+    this->m_strPrefixedFeatureClassProperty = L"";
+    if (primaryAttributeRelateName.length() > 0)
+    {
+        this->m_strPrefixedFeatureClassProperty += primaryAttributeRelateName;
+        this->m_strPrefixedFeatureClassProperty += stChainDelimiterSymbol; // add "."
+    }
+    this->m_strPrefixedFeatureClassProperty += propertyName;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the primary AttributeRelate property.
+// RETURNS: A string representing the primary AttributeRelate name if
+// any or empty string.
+//-------------------------------------------------------------------------
+const MdfString& RelateProperty::GetPrimaryAttributeRelateName() const
+{
+    return this->m_strPrimaryAttributeRelate;
 }
 
 //-------------------------------------------------------------------------
@@ -86,6 +116,26 @@ const MdfString& RelateProperty::GetAttributeClassProperty()const
 void RelateProperty::SetAttributeClassProperty(const MdfString& attributeClass)
 {
 	this->m_strAttributeClassProperty = attributeClass;
+}
+
+void RelateProperty::ParseDelimitedClassName (
+    const MdfString& delimitedName,
+    MdfString& AttributeRelateName,
+    MdfString& ClassName)
+{
+    size_t pos = delimitedName.find(stChainDelimiterSymbol);
+    if (pos == std::wstring::npos)
+    {
+        // string has no delimiter; no primary AttribuetRelate
+        AttributeRelateName = L"";
+        ClassName = delimitedName;
+    }
+    else
+    {
+        // primary AttributeRelate is found
+        AttributeRelateName = delimitedName.substr(0, pos);
+        ClassName = delimitedName.substr(++pos);
+    }
 }
 
 //End of file.

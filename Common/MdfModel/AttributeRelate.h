@@ -63,6 +63,10 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetAttributeClass()const;
         void SetAttributeClass(const MdfString& featureClass);
 
+        // Property: AttributeNameDelimiter
+        const MdfString& GetAttributeNameDelimiter() const;
+        void SetAttributeNameDelimiter(const MdfString& delimiterStr);
+
 		// Attribute : RelateType
 		RelateType			GetRelateType() const;
 		void 				SetRelateType (RelateType type);	
@@ -87,6 +91,8 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // AttributeClass
         MdfString m_strAttributeClass;
+
+        MdfString m_strAttributeNameDelimiter;
 
 		// Join type attribute
 		RelateType	m_eRelateType;

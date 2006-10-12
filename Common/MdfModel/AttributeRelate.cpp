@@ -36,6 +36,8 @@ AttributeRelate::AttributeRelate()
 	this->m_strName = L"";
 	this->m_strResourceId = L"";
 	this->m_strAttributeClass = L"";
+    // hard code "|" as a default delimiter symbol
+    this->m_strAttributeNameDelimiter = L"|"; 
 	this->m_eRelateType = LeftOuter;
 	this->m_bForceOneToOne = true;
 }
@@ -46,6 +48,8 @@ AttributeRelate::AttributeRelate(const MdfString& joinName)
 	this->m_strName = joinName;
 	this->m_strResourceId = L"";
 	this->m_strAttributeClass = L"";
+    // hard code "|" as a default delimiter symbol
+    this->m_strAttributeNameDelimiter = L"|"; 
 	this->m_eRelateType = LeftOuter;
 	this->m_bForceOneToOne = true;
 }
@@ -122,6 +126,24 @@ const MdfString& AttributeRelate::GetAttributeClass()const
 void AttributeRelate::SetAttributeClass(const MdfString& attributeClass)
 {
 	this->m_strAttributeClass = attributeClass;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the AttributeNameDelimiter property.
+// RETURNS: A string representing the AttributeNameDelimiter. The 
+// default delimiter is hard coded to "|"
+//-------------------------------------------------------------------------
+const MdfString& AttributeRelate::GetAttributeNameDelimiter() const
+{
+    return this->m_strAttributeNameDelimiter;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the AttributeNameDelimiter property.
+//-------------------------------------------------------------------------
+void AttributeRelate::SetAttributeNameDelimiter(const MdfString& delimiterStr)
+{
+    this->m_strAttributeNameDelimiter = delimiterStr;
 }
 
 //-------------------------------------------------------------------------
