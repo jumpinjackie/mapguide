@@ -38,6 +38,8 @@ const double MgUtil::DefaultCompareTolerance = 0.01; // 1% margin of error
 const STRING MgUtil::LinuxFilesystemMeminfo              = L"/proc/meminfo";     // NOXLATE
 const STRING MgUtil::LinuxFilesystemStat                 = L"/proc/stat";        // NOXLATE
 
+const STRING MgUtil::sm_xssReservedCharacters = L"[]=<>";
+
 void MgUtil::InitializeUuidGenerator()
 {
     if (false == uuidInitialized)
@@ -539,6 +541,16 @@ void MgUtil::CheckBeginEnd(CREFSTRING str, CREFSTRING sChar)
                 __LINE__,  __WFILE__, &arguments, L"MgInvalidStringTrim", NULL);
         }
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Perform Cross Site Scripting Attack validations against the specified
+/// string.
+///
+void MgUtil::CheckXss(const STRING& str)
+{
+    CheckReservedCharacter(str, sm_xssReservedCharacters);
 }
 
 ///////////////////////////////////////////////////////////////////////////
