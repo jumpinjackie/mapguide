@@ -1460,11 +1460,17 @@ void MgServerManager::StopWorkerThreads()
     if(mb)
     {
         mb->msg_type(ACE_Message_Block::MB_STOP);
-        m_pWorkerThreads->putq(mb);
+        if (m_pWorkerThreads)
+        {
+            m_pWorkerThreads->putq(mb);
+        }
     }
 
     // Wait for threads to process STOP
-    m_pWorkerThreads->wait();
+    if (m_pWorkerThreads)
+    {
+        m_pWorkerThreads->wait();
+    }
 
     m_threadManager.wait(0,1);
     m_threadManager.close();
