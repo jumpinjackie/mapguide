@@ -387,6 +387,10 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING key,
                     {
                         // It is not in use so claim it
                         pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
+                        if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                        {
+                            pFdoConnectionCacheEntry->pFdoConnection->Open();
+                        }
                         pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
                         break;
                     }
