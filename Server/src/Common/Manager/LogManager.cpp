@@ -282,16 +282,19 @@ STRING MgLogManager::ValidateLogFileName(CREFSTRING filename)
     {
         throw new MgNullArgumentException(L"MgLogManager.ValidateLogFileName", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    if (filename.find(L"/") != string::npos ||
-        filename.find(L"\\") != string::npos)
+    if (STRING::npos != filename.find(L"\\") ||
+        STRING::npos != filename.find(L"/"))
     {
         // Does not support paths.  Must be a strict filename only.
         MgStringCollection arguments;
         arguments.Add(L"1");
         arguments.Add(filename);
 
+        MgStringCollection whyArguments;
+        whyArguments.Add(L"\\/");
+
         throw new MgInvalidArgumentException(L"MgLogManager.ValidateLogFileName",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
     }
 
     return filename;
@@ -1860,15 +1863,18 @@ void MgLogManager::DeleteLog(CREFSTRING fileName)
         throw new MgNullArgumentException(L"MgLogManager.DeleteLog", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    if (fileName.find(L"/") != string::npos ||
-        fileName.find(L"\\") != string::npos)
+    if (STRING::npos != fileName.find(L"\\") ||
+        STRING::npos != fileName.find(L"/"))
     {
         MgStringCollection arguments;
         arguments.Add(L"1");
         arguments.Add(fileName);
 
+        MgStringCollection whyArguments;
+        whyArguments.Add(L"\\/");
+
         throw new MgInvalidArgumentException(L"MgLogManager.DeleteLog",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
     }
 
     MG_LOGMANAGER_TRY()

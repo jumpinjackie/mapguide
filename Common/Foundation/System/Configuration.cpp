@@ -20,6 +20,8 @@
 // Process-wide MgConfiguration
 Ptr<MgConfiguration> MgConfiguration::sm_configuration = (MgConfiguration*)NULL;
 
+const STRING MgConfiguration::sm_reservedCharacters = L"[]=";
+
 /// <summary>
 /// Constructor
 /// </summary>
@@ -685,6 +687,8 @@ void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property,
 
     // Foil Cross Site Scripting attacks.
     MgUtil::CheckXss(value);
+
+    MgUtil::CheckReservedCharacters(value, sm_reservedCharacters);
 
     const MgConfigValidationInfo* validationInfo = GetConfigValidationInfo(
         section, property);

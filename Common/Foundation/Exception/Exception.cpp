@@ -41,7 +41,7 @@ MgException::MgException(CREFSTRING methodName, INT32 lineNumber,
     {
         for (INT32 i = 0; i < whatArguments->GetCount(); ++i)
         {
-            m_whatArguments.Add(whatArguments->GetItem(i));
+            m_whatArguments.Add(MgUtil::EncodeXss(whatArguments->GetItem(i)));
         }
     }
 
@@ -49,7 +49,7 @@ MgException::MgException(CREFSTRING methodName, INT32 lineNumber,
     {
         for (INT32 i = 0; i < whyArguments->GetCount(); ++i)
         {
-            m_whyArguments.Add(whyArguments->GetItem(i));
+            m_whyArguments.Add(MgUtil::EncodeXss(whyArguments->GetItem(i)));
         }
     }
 
@@ -131,7 +131,7 @@ STRING MgException::GetLocale() throw()
 ///
 void MgException::AddMethodName(CREFSTRING methodName) throw()
 {
-    m_methodNames.Add(methodName);
+    m_methodNames.Add(MgUtil::EncodeXss(methodName));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -153,7 +153,7 @@ void MgException::AddLineNumber(INT32 lineNumber) throw()
 ///
 void MgException::AddFileName(CREFSTRING fileName) throw()
 {
-    m_fileNames.Add(fileName);
+    m_fileNames.Add(MgUtil::EncodeXss(fileName));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

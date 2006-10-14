@@ -289,7 +289,7 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidArgumentException
     ///
-    static void CheckReservedCharacter(CREFSTRING str, CREFSTRING reservedChar, bool anyOne = true);
+    static void CheckReservedCharacters(CREFSTRING str, CREFSTRING reservedChars, bool anyOne = true);
     //////////////////////////////////////////////
     /// \brief
     /// Check for spaces at beginning and end of string
@@ -317,7 +317,14 @@ INTERNAL_API:
     /// Perform Cross Site Scripting Attack validations against the specified
     /// string.
     ///
-    static void CheckXss(const STRING& str);
+    static void CheckXss(CREFSTRING str);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Perform some encoding on the specified string to prevent Cross Site 
+    /// Scripting attacks.
+    ///
+    static STRING EncodeXss(CREFSTRING str);
 
     //////////////////////////////////////////////
     /// \brief

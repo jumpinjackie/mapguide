@@ -38,7 +38,7 @@ const double MgUtil::DefaultCompareTolerance = 0.01; // 1% margin of error
 const STRING MgUtil::LinuxFilesystemMeminfo              = L"/proc/meminfo";     // NOXLATE
 const STRING MgUtil::LinuxFilesystemStat                 = L"/proc/stat";        // NOXLATE
 
-const STRING MgUtil::sm_xssReservedCharacters = L"[]=<>";
+const STRING MgUtil::sm_xssReservedCharacters = L"<>&";
 
 void MgUtil::InitializeUuidGenerator()
 {
@@ -470,7 +470,7 @@ string MgUtil::Trim(const string& source, const string& t)
 ///</summary>
 ///EXCEPTIONS
 ///  MgInvalidArgumentException
-void MgUtil::CheckReservedCharacter(CREFSTRING str, CREFSTRING reservedChar, bool anyOne)
+void MgUtil::CheckReservedCharacters(CREFSTRING str, CREFSTRING reservedChars, bool anyOne)
 {
     int index = -1;
     int orgLen = (int)str.length();
@@ -480,9 +480,9 @@ void MgUtil::CheckReservedCharacter(CREFSTRING str, CREFSTRING reservedChar, boo
         CheckSpacesAtBeginEnd(str);
 
         if (anyOne)
-            index = (int)str.find_first_of(reservedChar);
+            index = (int)str.find_first_of(reservedChars);
         else
-            index = (int)str.find(reservedChar);
+            index = (int)str.find(reservedChars);
 
         if ( index >= 0 )
         {
@@ -490,8 +490,11 @@ void MgUtil::CheckReservedCharacter(CREFSTRING str, CREFSTRING reservedChar, boo
             arguments.Add(L"1");
             arguments.Add(str);
 
+            MgStringCollection whyArguments;
+            whyArguments.Add(reservedChars);
+
             throw new MgInvalidArgumentException(L"CheckReseveredCharater",
-                __LINE__,  __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+                __LINE__,  __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
         }
     }
 
@@ -548,9 +551,25 @@ void MgUtil::CheckBeginEnd(CREFSTRING str, CREFSTRING sChar)
 /// Perform Cross Site Scripting Attack validations against the specified
 /// string.
 ///
-void MgUtil::CheckXss(const STRING& str)
+void MgUtil::CheckXss(CREFSTRING str)
 {
-    CheckReservedCharacter(str, sm_xssReservedCharacters);
+    CheckReservedCharacters(str, sm_xssReservedCharacters);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Perform some encoding on the specified string to prevent Cross Site 
+/// Scripting attacks.
+///
+STRING MgUtil::EncodeXss(CREFSTRING str)
+{
+    STRING encodedStr = str;
+
+    encodedStr = ReplaceString(encodedStr, L"&", L"&amp;"); // This must be encoded first.
+    encodedStr = ReplaceString(encodedStr, L"<", L"&lt;");
+    encodedStr = ReplaceString(encodedStr, L">", L"&gt;");
+
+    return encodedStr;
 }
 
 ///////////////////////////////////////////////////////////////////////////
