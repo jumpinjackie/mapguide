@@ -273,6 +273,8 @@ private:
     /// Pointer to a process-wide singleton.
     static Ptr<MgConfiguration> sm_configuration;
 
+    static const STRING sm_reservedCharacters;
+
     /// Needed for thread-safety
     ACE_Recursive_Thread_Mutex m_mutex;
 

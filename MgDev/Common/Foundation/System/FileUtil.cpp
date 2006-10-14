@@ -20,6 +20,8 @@
 
 ACE_Recursive_Thread_Mutex MgFileUtil::sm_mutex;
 
+const STRING MgFileUtil::sm_reservedCharacters = L"\\/:*?\"<>|";
+
 static int MgDirEntrySelector(const dirent *d)
 {
     return (0 != ACE_OS::strcmp(d->d_name, ACE_TEXT(".")) &&
@@ -70,15 +72,18 @@ void MgFileUtil::ValidateFileName(CREFSTRING fileName)
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
-    if (STRING::npos != fileName.find_first_of(L"\\/:*?\"<>|")) 
+    if (STRING::npos != fileName.find_first_of(sm_reservedCharacters)) 
     {
         MgStringCollection arguments;
         arguments.Add(L"1");
         arguments.Add(fileName);
 
+        MgStringCollection whyArguments;
+        whyArguments.Add(sm_reservedCharacters);
+
         throw new MgInvalidArgumentException(
             L"MgFileUtil.ValidateFileName",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
     }
 
     if (L'.' == fileName[0] || L'.' == fileName[fileName.length() - 1])
@@ -736,8 +741,11 @@ void MgFileUtil::RenameFile(CREFSTRING oldPathname, CREFSTRING newPathname,
                 arguments.Add(L"2");
                 arguments.Add(newPathname);
 
+                MgStringCollection whyArguments;
+                whyArguments.Add(L"");
+
                 throw new MgInvalidArgumentException(L"MgFileUtil.RenameFile",
-                    __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+                    __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
             }
                 break;
 

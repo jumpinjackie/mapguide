@@ -495,8 +495,11 @@ MgByteReader* MgServerManager::GetDocument(CREFSTRING identifier)
         arguments.Add(L"1");
         arguments.Add(identifier);
 
+        MgStringCollection whyArguments;
+        whyArguments.Add(L"");
+
         throw new MgInvalidArgumentException(L"MgServerManager.GetDocument",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
     }
 
     MG_CATCH_AND_THROW(L"MgServerManager.GetDocument")
@@ -556,8 +559,11 @@ void MgServerManager::SetDocument(CREFSTRING identifier, MgByteReader* data)
         arguments.Add(L"1");
         arguments.Add(identifier);
 
+        MgStringCollection whyArguments;
+        whyArguments.Add(L"");
+
         throw new MgInvalidArgumentException(L"MgServerManager.SetDocument",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
     }
 
     MG_CATCH_AND_THROW(L"MgServerManager.SetDocument")

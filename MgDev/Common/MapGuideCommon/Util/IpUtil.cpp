@@ -227,14 +227,17 @@ void MgIpUtil::ValidateAddress(CREFSTRING address, bool strict)
             L"MgIpUtil.ValidateAddress", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    if (wstring::npos != address.rfind(L':'))
+    if (STRING::npos != address.rfind(L':'))
     {
         MgStringCollection arguments;
         arguments.Add(L"1");
         arguments.Add(address);
 
+        MgStringCollection whyArguments;
+        whyArguments.Add(L":");
+
         throw new MgInvalidArgumentException(L"MgIpUtil.ValidateAddress",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
     }
 
     if (strict)

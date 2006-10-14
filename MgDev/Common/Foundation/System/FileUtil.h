@@ -107,6 +107,8 @@ class MG_FOUNDATION_API MgFileUtil
     private:
 
     static ACE_Recursive_Thread_Mutex sm_mutex;
+
+    static const STRING sm_reservedCharacters;
 };
 
 /// Inline Methods

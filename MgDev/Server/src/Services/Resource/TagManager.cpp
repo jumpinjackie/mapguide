@@ -101,8 +101,11 @@ void MgTagManager::CheckTagString(CREFSTRING str)
         arguments.Add(L"1");
         arguments.Add(str);
 
+        MgStringCollection whyArguments;
+        whyArguments.Add(MgTagReservedCharacterSet);
+
         throw new MgInvalidArgumentException(L"MgTagManager.CheckTagString",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
     }
 }
 

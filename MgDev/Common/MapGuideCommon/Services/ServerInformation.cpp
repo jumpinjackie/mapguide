@@ -239,14 +239,17 @@ void MgServerInformation::CheckName(CREFSTRING name)
 /// </param>
 void MgServerInformation::CheckDescription(CREFSTRING description)
 {
-    if (wstring::npos != description.find_first_of(L"[]="))
+    if (STRING::npos != description.find_first_of(L"[]="))
     {
         MgStringCollection arguments;
         arguments.Add(L"1");
         arguments.Add(description);
 
+        MgStringCollection whyArguments;
+        whyArguments.Add(L"[]=");
+
         throw new MgInvalidArgumentException(L"MgServerInformation.CheckDescription",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", NULL);
+            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
     }
 }
 

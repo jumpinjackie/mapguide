@@ -563,7 +563,7 @@ void MgResourceIdentifier::CheckRepositoryName()
     try
     {
         MgUtil::CheckSpacesAtBeginEnd(m_repositoryName);
-        MgUtil::CheckReservedCharacter(m_repositoryName, MgReservedCharacterSet::Name);
+        MgUtil::CheckReservedCharacters(m_repositoryName, MgReservedCharacterSet::Name);
     }
     catch (MgException* e)
     {
@@ -590,10 +590,10 @@ void MgResourceIdentifier::CheckPath()
     try
     {
         MgUtil::CheckSpacesAtBeginEnd(m_path);
-        MgUtil::CheckReservedCharacter(m_path, MgReservedCharacterSet::Path);
-        MgUtil::CheckReservedCharacter(m_path, L"//", false);
-        MgUtil::CheckReservedCharacter(m_path, L" /", false);
-        MgUtil::CheckReservedCharacter(m_path, L"/ ", false);
+        MgUtil::CheckReservedCharacters(m_path, MgReservedCharacterSet::Path);
+        MgUtil::CheckReservedCharacters(m_path, L"//", false);
+        MgUtil::CheckReservedCharacters(m_path, L" /", false);
+        MgUtil::CheckReservedCharacters(m_path, L"/ ", false);
         MgUtil::CheckSlashAtBeginEnd(m_path);
     }
     catch (MgException* e)
@@ -638,7 +638,7 @@ void MgResourceIdentifier::CheckName()
     try
     {
         MgUtil::CheckSpacesAtBeginEnd(m_name);
-        MgUtil::CheckReservedCharacter(m_name, MgReservedCharacterSet::Name);
+        MgUtil::CheckReservedCharacters(m_name, MgReservedCharacterSet::Name);
     }
     catch (MgException* e)
     {
