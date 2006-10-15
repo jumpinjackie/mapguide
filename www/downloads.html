@@ -2,8 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>MapGuide Open Source - Downloads</title>
-</head>
+<title>MapGuide Open Source - Downloads</title></head>
 <body>
 <h1>MapGuide Open Source - Downloads</h1>
 <div class="h2">
@@ -29,7 +28,13 @@
 	  <ul type="square">
 	    <li><a href="https://mapguide.osgeo.org/files/documents/12/288/MgServerSetup.1.0.2.exe">MgServerSetup.1.0.2.exe</a>&nbsp;[15,102 kb]<br />
 	    md5: af52d515a6f8e6a7894e3ba1adec99a0<br />
-		Self extracting executable that will install the MapGuide Server on Microsoft Windows.</li>
+		Self extracting executable that will install the MapGuide Server on Microsoft Windows.<br />
+	    <strong>NOTE: This installer is installing the FDO files in the wrong directory. An updated installer that resolves the issue will be posted here shortly. Until then, to get the server to work, you will need to manually move all the files in <br />
+	    C:\Program Files\MapGuideOpenSource\Server\Bin\FDO\bin<br />
+	    to </strong><br />
+	    <strong>C:\Program Files\MapGuideOpenS</strong><strong>ource\Server\Bin\FDO<br />
+        (i.e., up one directory). Also note that the providers.xml file in the same directory, must be edited so that the two occurrences of C:\Program Files\MapGuideOpenSource\Server\Bin\FDO\bin are changed to C:\Program Files\MapGuideOpenS</strong><strong>ource\Server\Bin\FDO.</strong><strong><br />
+        </strong></li>
       </ul>
 	  <ul type="square">
 	    <li><a href="https://mapguide.osgeo.org/files/documents/12/289/MgWebServerExtensionsSetup.1.0.2.exe">MgWebServerExtensionsSetup.1.0.2.exe</a>&nbsp;[31,349 kb]<br />
