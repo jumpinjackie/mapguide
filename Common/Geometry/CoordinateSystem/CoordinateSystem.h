@@ -1269,6 +1269,24 @@ PUBLISHED_API:
     ///
     INT32 ConvertWktToEpsgCode(CREFSTRING wkt);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the base coordinate system library being used.
+    ///
+    STRING GetBaseLibrary();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns true if the specified coordinate system is valid.
+    ///
+    /// \param ogcWkt
+    /// The wkt string to validate.
+    ///
+    /// \return
+    /// true if the specified coordinate system is valid, false otherwise.
+    ///
+    bool IsValid(CREFSTRING ogcWkt);
+
 INTERNAL_API:
     MgCoordinateSystem();
     MgCoordinateSystem(CREFSTRING ogcWkt);
@@ -1276,10 +1294,8 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Returns the base coordinate system library being used.
+    /// Returns the library status.
     ///
-    STRING GetBaseLibrary();
-
     LibraryStatus GetLibraryStatus();
 
     ///////////////////////////////////////////////////////////////////////////

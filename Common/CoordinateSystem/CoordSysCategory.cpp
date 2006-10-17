@@ -65,7 +65,7 @@ size_t CCoordinateSystemCategory::ContainsCode(CREFSTRING coordSysCode)
     for(index=0;index<m_coordinateSystems->size();index++)
     {
         CCoordinateSystemInformation* coordSysInfo = m_coordinateSystems->at(index);
-        if(coordSysInfo->m_code == coordSysCode)
+        if(_wcsicmp(coordSysInfo->m_code.c_str(), coordSysCode.c_str()) == 0)
         {
             bFound = true;
             break;

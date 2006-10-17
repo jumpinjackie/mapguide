@@ -305,3 +305,18 @@ const STRING MgHttpResourceStrings::opGetSiteInfo = L"GETSITEINFO";
 const STRING MgHttpResourceStrings::opCreateSession = L"CREATESESSION";
 const STRING MgHttpResourceStrings::opGetDwfViewerPage = L"GETDWFVIEWERPAGE";
 const STRING MgHttpResourceStrings::opGetHtmlViewerPage = L"GETHTMLVIEWERPAGE";
+
+// Coordinate System Operation Requests
+const STRING MgHttpResourceStrings::opCsConvertWktToCoordinateSystemCode = L"CS.CONVERTWKTTOCOORDINATESYSTEMCODE";
+const STRING MgHttpResourceStrings::opCsConvertCoordinateSystemCodeToWkt = L"CS.CONVERTCOORDINATESYSTEMCODETOWKT";
+const STRING MgHttpResourceStrings::opCsConvertEpsgCodeToWkt = L"CS.CONVERTEPSGCODETOWKT";
+const STRING MgHttpResourceStrings::opCsConvertWktToEpsgCode = L"CS.CONVERTWKTTOEPSGCODE";
+const STRING MgHttpResourceStrings::opCsEnumerateCategories = L"CS.ENUMERATECATEGORIES";
+const STRING MgHttpResourceStrings::opCsEnumerateCoordinateSystems = L"CS.ENUMERATECOORDINATESYSTEMS";
+const STRING MgHttpResourceStrings::opCsGetBaseLibrary = L"CS.GETBASELIBRARY";
+const STRING MgHttpResourceStrings::opCsIsValid = L"CS.ISVALID";
+
+// Coordinate System Request Parameters
+const STRING MgHttpResourceStrings::reqCsWkt = L"CSWKT";
+const STRING MgHttpResourceStrings::reqCsCode = L"CSCODE";
+const STRING MgHttpResourceStrings::reqCsCategory = L"CSCATEGORY";

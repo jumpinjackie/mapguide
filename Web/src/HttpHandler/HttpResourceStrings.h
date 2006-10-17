@@ -311,6 +311,21 @@ public:
     static const STRING opCreateSession;
     static const STRING opGetDwfViewerPage;
     static const STRING opGetHtmlViewerPage;
+
+    // Coordinate System Operation Requests
+    static const STRING opCsConvertWktToCoordinateSystemCode;
+    static const STRING opCsConvertCoordinateSystemCodeToWkt;
+    static const STRING opCsConvertEpsgCodeToWkt;
+    static const STRING opCsConvertWktToEpsgCode;
+    static const STRING opCsEnumerateCategories;
+    static const STRING opCsEnumerateCoordinateSystems;
+    static const STRING opCsGetBaseLibrary;
+    static const STRING opCsIsValid;
+
+    // Coordinate System Request Parameters
+    static const STRING reqCsWkt;
+    static const STRING reqCsCode;
+    static const STRING reqCsCategory;
 };
 
 #endif

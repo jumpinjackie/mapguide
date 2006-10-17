@@ -107,6 +107,16 @@
 #include "HttpGetDwfViewerPage.h"
 #include "HttpGetHtmlViewerPage.h"
 
+// Coordinate System
+#include "HttpCsConvertWktToCoordinateSystemCode.h"
+#include "HttpCsConvertCoordinateSystemCodeToWkt.h"
+#include "HttpCsConvertEpsgCodeToWkt.h"
+#include "HttpCsConvertWktToEpsgCode.h"
+#include "HttpCsEnumerateCategories.h"
+#include "HttpCsEnumerateCoordinateSystems.h"
+#include "HttpCsGetBaseLibrary.h"
+#include "HttpCsIsValid.h"
+
 #include <algorithm>
 using namespace std;
 
@@ -365,6 +375,14 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opGetMapKml] = MgHttpKmlGetMap::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetLayerKml] = MgHttpKmlGetLayer::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetFeaturesKml] = MgHttpKmlGetFeatures::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opCsConvertWktToCoordinateSystemCode] = MgHttpCsConvertWktToCoordinateSystemCode::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opCsConvertCoordinateSystemCodeToWkt] = MgHttpCsConvertCoordinateSystemCodeToWkt::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opCsConvertEpsgCodeToWkt] = MgHttpCsConvertEpsgCodeToWkt::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opCsConvertWktToEpsgCode] = MgHttpCsConvertWktToEpsgCode::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opCsEnumerateCategories] = MgHttpCsEnumerateCategories::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opCsEnumerateCoordinateSystems] = MgHttpCsEnumerateCoordinateSystems::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opCsGetBaseLibrary] = MgHttpCsGetBaseLibrary::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opCsIsValid] = MgHttpCsIsValid::CreateObject;
 
     httpPostHandlerCreators.push_back(MgHttpWfsGetCapabilities::ProcessPostRequest);
     httpPostHandlerCreators.push_back(MgHttpWfsDescribeFeatureType::ProcessPostRequest);

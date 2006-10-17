@@ -30,6 +30,8 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_CreateInvalidCoordinateSystem);
     CPPUNIT_TEST(TestCase_EnumerateCategories);
     CPPUNIT_TEST(TestCase_EnumerateCoordSys);
+    CPPUNIT_TEST(TestCase_GetBaseLibrary);
+    CPPUNIT_TEST(TestCase_IsValid);
 
     CPPUNIT_TEST(TestCase_ValidateCoordinateSystemArbitrary);
     CPPUNIT_TEST(TestCase_Arbitrary_ConvertFromLonLat);
@@ -232,6 +234,8 @@ public:
     void TestCase_CreateInvalidCoordinateSystem();
     void TestCase_EnumerateCategories();
     void TestCase_EnumerateCoordSys();
+    void TestCase_GetBaseLibrary();
+    void TestCase_IsValid();
 
     void TestCase_ValidateCoordinateSystemArbitrary();
     void TestCase_Arbitrary_ConvertFromLonLat();

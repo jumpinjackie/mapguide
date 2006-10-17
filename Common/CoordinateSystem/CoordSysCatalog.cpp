@@ -100,7 +100,7 @@ CCoordinateSystemCategory* CCoordinateSystemCatalog::GetCoordinateSystemCategory
         for (i = 0; i < numCats; i++)
         {
             tmpCategory = m_categories->GetItem(i);
-            if (categoryName == tmpCategory->GetCategoryName())
+            if(_wcsicmp(categoryName.c_str(), tmpCategory->GetCategoryName().c_str()) == 0)
             {
                 category = tmpCategory;
                 break;

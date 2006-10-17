@@ -22,6 +22,14 @@ include_SOURCES = \
   HttpCopyResource.cpp \
   HttpCreateRepository.cpp \
   HttpCreateSession.cpp \
+  HttpCsConvertWktToCoordinateSystemCode.cpp \
+  HttpCsConvertCoordinateSystemCodeToWkt.cpp \
+  HttpCsConvertEpsgCodeToWkt.cpp \
+  HttpCsConvertWktToEpsgCode.cpp \
+  HttpCsEnumerateCategories.cpp \
+  HttpCsEnumerateCoordinateSystems.cpp \
+  HttpCsGetBaseLibrary.cpp \
+  HttpCsIsValid.cpp \
   HttpDeleteRepository.cpp \
   HttpDeleteResource.cpp \
   HttpDeleteResourceData.cpp \
@@ -126,6 +134,14 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpCopyResource.h \
   HttpCreateRepository.h \
   HttpCreateSession.h \
+  HttpCsConvertWktToCoordinateSystemCode.h \
+  HttpCsConvertCoordinateSystemCodeToWkt.h \
+  HttpCsConvertEpsgCodeToWkt.h \
+  HttpCsConvertWktToEpsgCode.h \
+  HttpCsEnumerateCategories.h \
+  HttpCsEnumerateCoordinateSystems.h \
+  HttpCsGetBaseLibrary.h \
+  HttpCsIsValid.h \
   HttpDeleteRepository.h \
   HttpDeleteResource.h \
   HttpDeleteResourceData.h \
