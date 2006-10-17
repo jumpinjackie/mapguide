@@ -27,6 +27,8 @@
 
 #ifndef _WIN32
 #include <wctype.h>
+#else
+#pragma warning(disable: 4996)
 #endif
 
 #define EARTH_RADIUS_METERS 6378100.0
@@ -230,25 +232,25 @@ CCoordinateSystem* CCoordinateSystem::Clone()
 ///</summary>
 CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
 {
-    m_latLonSrs = NULL;
-    m_transformForward = NULL;
-    m_transformInverse = NULL;
-
-    m_ogcWkt = ogcWkt;
-
-    // Check for LOCALCS
-    size_t position = m_ogcWkt.find(L"LOCALCS"); // NOXLATE
-    if(position != wstring::npos)
-    {
-        // Substitute LOCAL_CS for LOCALCS
-        m_ogcWkt = m_ogcWkt.replace(position, 7, L"LOCAL_CS"); // NOXLATE
-    }
-
-    // Initialize the catalog cache if it has not been created yet
-    InitializeCatalog();
-
     try
     {
+        m_latLonSrs = NULL;
+        m_transformForward = NULL;
+        m_transformInverse = NULL;
+
+        m_ogcWkt = ogcWkt;
+
+        // Check for LOCALCS
+        size_t position = m_ogcWkt.find(L"LOCALCS"); // NOXLATE
+        if(position != wstring::npos)
+        {
+            // Substitute LOCAL_CS for LOCALCS
+            m_ogcWkt = m_ogcWkt.replace(position, 7, L"LOCAL_CS"); // NOXLATE
+        }
+
+        // Initialize the catalog cache if it has not been created yet
+        InitializeCatalog();
+
         m_ogrSrs = new OGRSpatialReference();
         if(m_ogrSrs)
         {
@@ -406,7 +408,20 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                             }
                             else
                             {
-                                throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, L"Could not parse the OGC WKT.");
+                                STRING message = L"Could not parse the OGC WKT.";
+
+                                const char* error = CPLGetLastErrorMsg();
+                                if(error)
+                                {
+                                    wchar_t* strError = Convert_Ascii_To_Wide(error);
+                                    message += L" ";
+                                    message += strError;
+
+                                    delete strError;
+                                    strError = NULL;
+                                }
+
+                                throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, message);
                             }
                         }
                         else
@@ -459,7 +474,20 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
 
                     if(OGRERR_NONE != error)
                     {
-                        throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, L"Could not convert OGC WKT to PROJ4.");
+                        STRING message = L"Could not convert OGC WKT to PROJ4.";
+
+                        const char* error = CPLGetLastErrorMsg();
+                        if(error)
+                        {
+                            wchar_t* strError = Convert_Ascii_To_Wide(error);
+                            message += L" ";
+                            message += strError;
+
+                            delete strError;
+                            strError = NULL;
+                        }
+
+                        throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, message);
                     }
 
                     // We try and pull this information out of the WKT, but they are not guaranteed to be there.
@@ -551,7 +579,20 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
             }
             else
             {
-                throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, L"Could not parse the OGC WKT.");
+                STRING message = L"Could not parse the OGC WKT.";
+
+                const char* error = CPLGetLastErrorMsg();
+                if(error)
+                {
+                    wchar_t* strError = Convert_Ascii_To_Wide(error);
+                    message += L" ";
+                    message += strError;
+
+                    delete strError;
+                    strError = NULL;
+                }
+
+                throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, message);
             }
         }
         else
@@ -1438,7 +1479,20 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
 
     if(error != OGRERR_NONE)
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, L"Could not determine code because of internal OGR error.");
+        STRING message = L"Could not determine code because of internal OGR error.";
+
+        const char* error = CPLGetLastErrorMsg();
+        if(error)
+        {
+            wchar_t* strError = Convert_Ascii_To_Wide(error);
+            message += L" ";
+            message += strError;
+
+            delete strError;
+            strError = NULL;
+        }
+
+        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, message);
     }
 
     if(code.empty())
@@ -1624,7 +1678,20 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
 
     if(error != OGRERR_NONE)
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, L"Unsupported coordinate system code.");
+        STRING message = L"Unsupported coordinate system code.";
+
+        const char* error = CPLGetLastErrorMsg();
+        if(error)
+        {
+            wchar_t* strError = Convert_Ascii_To_Wide(error);
+            message += L" ";
+            message += strError;
+
+            delete strError;
+            strError = NULL;
+        }
+
+        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, message);
     }
 
     if(ogcWkt.empty())
@@ -1949,16 +2016,20 @@ void CCoordinateSystem::SetLibraryStatus(CsLibStatus status)
 STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
 {
     STRING wkt;
+    OGRErr error = OGRERR_NONE;
+    char* epsgWkt = NULL;
 
     try
     {
+        // Initialize the catalog cache if it has not been created yet
+        InitializeCatalog();
+
         OGRSpatialReference ogrSrs;
 
         // Use the OGR Conversion Library to import the EPSG code
-        OGRErr error = ogrSrs.importFromEPSG(code);
+        error = ogrSrs.importFromEPSG(code);
         if(OGRERR_NONE == error)
         {
-            char* epsgWkt = NULL;
             error = ogrSrs.exportToWkt(&epsgWkt);
             if(OGRERR_NONE == error)
             {
@@ -1974,34 +2045,63 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
                             csWkt = NULL;
                         }
                     }
-
-                    delete [] epsgWkt;
-                    epsgWkt = NULL;
                 }
             }
-            else
-            {
-                if(epsgWkt)
-                {
-                    delete [] epsgWkt;
-                    epsgWkt = NULL;
-                }
-
-                throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, L"Failed to convert EPSG code to WKT.");
-            }
-        }
-        else
-        {
-            throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, L"Failed to convert EPSG code to WKT.");
         }
     }
     catch(CException* ex)
     {
+        if(epsgWkt)
+        {
+            delete [] epsgWkt;
+            epsgWkt = NULL;
+        }
+
         throw ex;
     }
     catch(...)
     {
+        if(epsgWkt)
+        {
+            delete [] epsgWkt;
+            epsgWkt = NULL;
+        }
+
         throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, L"Unexpected error.");
+    }
+
+    if(epsgWkt)
+    {
+        delete [] epsgWkt;
+        epsgWkt = NULL;
+    }
+
+    if(OGRERR_NONE != error)
+    {
+        const char* error = CPLGetLastErrorMsg();
+
+        char buffer[255];
+        itoa(code, buffer, 10);
+        wchar_t* strCode = Convert_Ascii_To_Wide(buffer);
+        
+        STRING message = L"Failed to convert EPSG code \"";
+        message += strCode;
+        message += L"\" to WKT.";
+
+        delete strCode;
+        strCode = NULL;
+
+        if(error)
+        {
+            wchar_t* strError = Convert_Ascii_To_Wide(error);
+            message += L" ";
+            message += strError;
+
+            delete strError;
+            strError = NULL;
+        }
+
+        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, message);
     }
 
     return wkt;
@@ -2010,15 +2110,19 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
 long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
 {
     long code;
+    OGRErr error = OGRERR_NONE;
 
     try
     {
+        // Initialize the catalog cache if it has not been created yet
+        InitializeCatalog();
+
         OGRSpatialReference ogrSrs;
 
         // Use the OGR Conversion Library to import the OGC WKT
         char* epsgWkt = Convert_Wide_To_Ascii(wkt.c_str());
         char* temp = epsgWkt;
-        OGRErr error = ogrSrs.importFromWkt(&temp);
+        error = ogrSrs.importFromWkt(&temp);
 
         // Free resources
         delete [] epsgWkt;
@@ -2054,10 +2158,6 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
                 throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, L"Failed to convert WKT to EPSG code.");
             }
         }
-        else
-        {
-            throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, L"Failed to convert WKT to EPSG code.");
-        }
     }
     catch(CException* ex)
     {
@@ -2066,6 +2166,32 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
     catch(...)
     {
         throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, L"Unexpected error.");
+    }
+
+    if(OGRERR_NONE != error)
+    {
+        const char* error = CPLGetLastErrorMsg();
+
+        char buffer[255];
+        itoa(code, buffer, 10);
+        wchar_t* strCode = Convert_Ascii_To_Wide(buffer);
+        
+        STRING message = L"Failed to convert WKT to EPSG code.";
+
+        delete strCode;
+        strCode = NULL;
+
+        if(error)
+        {
+            wchar_t* strError = Convert_Ascii_To_Wide(error);
+            message += L" ";
+            message += strError;
+
+            delete strError;
+            strError = NULL;
+        }
+
+        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, message);
     }
 
     return code;

@@ -404,6 +404,59 @@ void TestCoordinateSystem::TestCase_EnumerateCoordSys()
         coordSystems = coordinateSystem.EnumerateCoordinateSystems(L"EPSG");
         CPPUNIT_ASSERT(coordSystems);
         CPPUNIT_ASSERT(coordSystems->GetCount() > 0);
+
+        coordSystems = coordinateSystem.EnumerateCoordinateSystems(L"ePsG");
+        CPPUNIT_ASSERT(coordSystems);
+        CPPUNIT_ASSERT(coordSystems->GetCount() > 0);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+void TestCoordinateSystem::TestCase_GetBaseLibrary()
+{
+    try
+    {
+        STRING library;
+        Ptr<MgCoordinateSystem> coordinateSystem = new MgCoordinateSystem();
+        CPPUNIT_ASSERT(coordinateSystem);
+
+        library = coordinateSystem->GetBaseLibrary();
+        CPPUNIT_ASSERT(library == L"PROJ4 Coordinate System Library");
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+void TestCoordinateSystem::TestCase_IsValid()
+{
+    try
+    {
+        bool bResult;
+        Ptr<MgCoordinateSystem> coordinateSystem = new MgCoordinateSystem();
+        CPPUNIT_ASSERT(coordinateSystem);
+
+        bResult = coordinateSystem->IsValid(EPSG_4326_Wkt);
+        CPPUNIT_ASSERT(bResult == true);
+
+        bResult = coordinateSystem->IsValid(InvalidWkt);
+        CPPUNIT_ASSERT(bResult == false);
     }
     catch(MgException* e)
     {
@@ -851,6 +904,9 @@ void TestCoordinateSystem::TestCase_Arbitrary_ConvertCode()
         STRING code = coordinateSystem.ConvertWktToCoordinateSystemCode(ogcWkt);
         CPPUNIT_ASSERT(_wcsicmp(L"*XY-MI*", code.c_str()) == 0);
         STRING wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(code);
+        CPPUNIT_ASSERT(wkt.length() > 0);
+
+        wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(L"*xy-mi*");
         CPPUNIT_ASSERT(wkt.length() > 0);
     }
     catch(MgException* e)
@@ -2077,6 +2133,9 @@ void TestCoordinateSystem::TestCase_Geographic_ConvertCode()
         CPPUNIT_ASSERT(_wcsicmp(L"EPSG:4326", code.c_str()) == 0);
         STRING wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(code);
         CPPUNIT_ASSERT(wkt.length() > 0);
+
+        wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(L"ePsG:4326");
+        CPPUNIT_ASSERT(wkt.length() > 0);
     }
     catch(MgException* e)
     {
@@ -2552,6 +2611,9 @@ void TestCoordinateSystem::TestCase_Projected_ConvertCode()
         STRING code = coordinateSystem.ConvertWktToCoordinateSystemCode(ogcWkt);
         CPPUNIT_ASSERT(_wcsicmp(L"EPSG:26767", code.c_str()) == 0);
         STRING wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(code);
+        CPPUNIT_ASSERT(wkt.length() > 0);
+
+        wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(L"ePsG:26767");
         CPPUNIT_ASSERT(wkt.length() > 0);
     }
     catch(MgException* e)
@@ -5661,6 +5723,11 @@ void TestCoordinateSystem::TestCase_EPSG()
 
         ogcWkt = coordinateSystem->ConvertCoordinateSystemCodeToWkt(L"EPSG:4326");
         CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt);
+
+        ogcWkt = coordinateSystem->ConvertCoordinateSystemCodeToWkt(L"ePsG:4326");
+        CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt);
+
+        CPPUNIT_ASSERT_THROW_MG(ogcWkt = coordinateSystem->ConvertCoordinateSystemCodeToWkt(L"test:4000"), MgCoordinateSystemConversionFailedException*);
 
         ogcWkt = coordinateSystem->ConvertEpsgCodeToWkt(4326);
         CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt_Alt);

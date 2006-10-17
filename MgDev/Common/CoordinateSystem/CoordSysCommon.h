@@ -44,6 +44,7 @@ typedef vector<STRING> StringVector;
 #ifndef _WIN32
 //Linux: different naming for string functions
 #define _stricmp strcasecmp
+#define _wcsicmp  wcscasecmp
 #endif
 
 #endif //_CCOORDINATESYSTEMCOMMON_H_

@@ -210,3 +210,6 @@
         x_0=500000
         no_defs<>
 
+# Longitude / Latitude (WGS 84)
+<ll84> +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs  <>
+

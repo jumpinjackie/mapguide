@@ -78,7 +78,7 @@ bool CCoordinateSystemCategoryCollection::Contains(CREFSTRING categoryName)
         CCoordinateSystemCategory* category = m_collection->at(index);
         if(category)
         {
-            if(category->GetCategoryName() == categoryName)
+            if(_wcsicmp(category->GetCategoryName().c_str(), categoryName.c_str()) == 0)
             {
                 bFound = true;
                 break;

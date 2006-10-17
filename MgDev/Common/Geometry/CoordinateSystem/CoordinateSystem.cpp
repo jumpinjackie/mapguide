@@ -147,6 +147,27 @@ void MgCoordinateSystem::Initialize(CREFSTRING ogcWkt)
     }
 }
 
+bool MgCoordinateSystem::IsValid(CREFSTRING ogcWkt)
+{
+    bool bResult = false;
+
+    try
+    {
+        CCoordinateSystemFactory factory;
+        CCoordinateSystem* coordSys = factory.Create(ogcWkt);
+        delete coordSys;
+        coordSys = NULL;
+        bResult = true;
+    }
+    catch(CException* e)
+    {
+        // The coordinate system is not valid
+        delete e;
+    }
+
+    return bResult;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 ///<summary>
 /// The MgCoordinateSystem class supplies operations for working with
