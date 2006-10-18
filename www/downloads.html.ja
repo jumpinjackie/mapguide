@@ -38,7 +38,7 @@
   </ul>
 	  <ul type="square">
 	    <li><a href="https://mapguide.osgeo.org/files/documents/12/235/MgWebServerExtensionsSetup.exe">MgWebServerExtensionsSetup.exe</a>&nbsp;[31,237 kb]<br />
-	      <a href="https://mapguide.osgeo.org/files/documents/12/235/MgWebServerExtensionsSetup_jpn.exe">MgWebServerExtensionsSetup.exe</a>&nbsp;（日本語版）[31,509
+	      <a href="https://mapguide.osgeo.org/files/documents/12/300/MgWebServerExtensionsSetup_jpn.exe">MgWebServerExtensionsSetup_jpn.exe</a>&nbsp;（日本語版）[31,509
 	      kb]<br />
 	    md5: d85d5e8bc0ce73efec014f1ddd388363<br />
 		自己解凍実行形式でMapGuide WebサーバエクステンションをMicrosoft Windowsにインストールします。 その際に、Apache
