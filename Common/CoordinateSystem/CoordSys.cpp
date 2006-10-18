@@ -2081,7 +2081,12 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
         const char* error = CPLGetLastErrorMsg();
 
         char buffer[255];
+        #ifdef WIN32
         itoa(code, buffer, 10);
+        #else
+        snprintf(buffer, 255, "%d", code);
+        #endif
+
         wchar_t* strCode = Convert_Ascii_To_Wide(buffer);
         
         STRING message = L"Failed to convert EPSG code \"";
@@ -2173,7 +2178,11 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
         const char* error = CPLGetLastErrorMsg();
 
         char buffer[255];
+        #ifdef WIN32
         itoa(code, buffer, 10);
+        #else
+        snprintf(buffer, 255, "%d", code);
+        #endif
         wchar_t* strCode = Convert_Ascii_To_Wide(buffer);
         
         STRING message = L"Failed to convert WKT to EPSG code.";
