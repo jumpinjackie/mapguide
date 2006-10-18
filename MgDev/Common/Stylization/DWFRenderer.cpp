@@ -719,18 +719,19 @@ void DWFRenderer::ProcessRaster(unsigned char*    data,
 //-----------------------------------------------------------------------------
 void DWFRenderer::ProcessMarker(LineBuffer* srclb,
                                 RS_MarkerDef& mdef,
-                                bool allowOverpost)
+                                bool allowOverpost,
+								RS_Bounds* bounds)
 {
     for (int i=0; i<srclb->point_count(); i++)
     {
         //if marker is processed from here it should be added to the
         //feature W2D, not the labeling W2D -- need the API to reflect that.
-        ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], mdef, allowOverpost);
+        ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], mdef, allowOverpost, bounds);
     }
 }
 
 
-void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost)
+void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
 {
     WT_File* file = m_w2dFile;
 
@@ -1051,6 +1052,15 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             PlayMacro(file, 1, rs_max(mdef.width(), mdef.height()), mdef.units(), x, y);
         file->write("))");
     }
+
+	//set actual (unrotated) bounds with new insertion point if a pointer was passed in
+	if (bounds)
+	{
+		bounds->minx = -refX * mdef.width();
+		bounds->maxx = (1.0 - refX) * mdef.width();
+		bounds->miny = -refY * mdef.height();
+		bounds->maxy = (1.0 - refY) * mdef.height();
+	}
 
     if (m_obsMesh)
         m_obsMesh->ProcessPoint(x, y);

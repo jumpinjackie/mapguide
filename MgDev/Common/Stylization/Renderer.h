@@ -117,7 +117,8 @@ public:
     ///</summary>
     virtual void ProcessMarker(LineBuffer*       lb,
                                RS_MarkerDef&     mdef,
-                               bool              allowOverpost
+                               bool              allowOverpost,
+							   RS_Bounds*        bounds = NULL
                                ) = 0;
 
     //TODO: DEPRECATED! Use PrcessLabelGroup() instead

@@ -268,7 +268,7 @@ void KmlRenderer::ProcessRaster(unsigned char* data,
 }
 
 
-void KmlRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost)
+void KmlRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
 {
     for(int i = 0; i < srclb->point_count(); i++)
     {

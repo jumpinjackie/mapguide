@@ -103,7 +103,8 @@ public:
 
     STYLIZATION_API virtual void ProcessMarker(LineBuffer*       lb,
                                                RS_MarkerDef&     mdef,
-                                               bool              allowOverpost);
+                                               bool              allowOverpost,
+											   RS_Bounds*        bounds = NULL);
 
     STYLIZATION_API virtual void ProcessLabel(double x, double y,
                                               const RS_String& text, RS_TextDef& tdef);
@@ -181,7 +182,7 @@ protected:
     objdefres_list m_lAttributeResources;
     RS_FeatureClassInfo* m_featureClassInfo;
 
-    void ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost);
+    void ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
     DWFToolkit::DWFSection* m_pPage;
 
