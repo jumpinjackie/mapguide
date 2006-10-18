@@ -3,7 +3,7 @@
 		<title>MapGuide Open Source</title>
 		<link href="styles/projectcontent.css" rel="stylesheet" type="text/css">
 
-	</head>
+	<meta http-equiv="Content-Type" content="text/html; charset=EUC-JP"></head>
 	<body>
 		<script type="text/javascript">
 			// This code removes the project page title and information. It may need to change when
@@ -33,19 +33,19 @@
 <tr>
 <td valign="top" width="70%">
 		<div class="h2">
-		<h2>MapGuide Open Source - ƒvƒƒWƒFƒNƒgƒz[ƒ€</h2>
+		<h2>MapGuide Open Source - ¥×¥í¥¸¥§¥¯¥È¥Û¡¼¥à</h2>
 		<p><a href="images/MapGuideAjaxViewerHiRes.png">
 					<img src="images/MapGuideAjaxViewerThumb.png" alt="Click For Full Size Image" width="220" height="159" hspace="10" border="0" align="right">
 				</a>
-MapGuide Open Source‚ÍWebƒx[ƒX‚Ìƒvƒ‰ƒbƒgƒtƒH[ƒ€‚ÅAƒ†[ƒU‚ªWebƒ}ƒbƒsƒ“ƒOƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Æ’n—‹óŠÔWebƒT[ƒrƒX‚ð‚·‚Î‚â‚­\’z‚µ‚Ä“WŠJ‚·‚é‚±‚Æ‚ª‰Â”\‚Å‚·BMapGuide‚ÍƒtƒB[ƒ`ƒƒ‚Ì‘I‘ðAƒvƒƒpƒeƒB‚ÌŒŸ¸Aƒ}ƒbƒvƒ`ƒbƒv‚ÌƒTƒ|[ƒg‚ÆAƒoƒbƒtƒ@A”ÍˆÍ‘I‘ðA‘ª’è‚È‚Ç‚Ì‘€ì‚É‚Â‚¢‚ÄAƒCƒ“ƒ^ƒ‰ƒNƒeƒBƒu‚Èƒrƒ…[ƒA‚ð’ñ‹Ÿ‚µ‚Ü‚·BMapGuide‚É‚ÍƒRƒ“ƒeƒ“ƒcŠÇ—‚Ì‚½‚ß‚ÌXMLƒf[ƒ^ƒx[ƒX‚ªŠÜ‚Ü‚êA‘å”¼‚Ì‚æ‚­Žg—p‚³‚ê‚Ä‚¢‚é’n—‹óŠÔƒtƒ@ƒCƒ‹ƒtƒH[ƒ}ƒbƒgAƒf[ƒ^ƒx[ƒXA‹ÆŠE•W€‚ðƒTƒ|[ƒg‚µ‚Ä‚¢‚Ü‚·BMapGuide‚ÍLinux‚Ü‚½‚ÍWindowsã‚Å“WŠJ‚Å‚«AWebƒT[ƒo‚ÍApache‚ÆIIS‚ðƒTƒ|[ƒg‚µAƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌŠJ”­‚É‚ÍPHPA.NETAJavaAJavaScript‚ÌAPI‚ð’ñ‹Ÿ‚µ‚Ä‚¢‚Ü‚·B‚È‚¨AMapGuide‚ÍLGPL‚Ì‚à‚Æ‚Åƒ‰ƒCƒZƒ“ƒX‚³‚ê‚Ä‚¢‚Ü‚·B
+MapGuide Open Source¤ÏWeb¥Ù¡¼¥¹¤Î¥×¥é¥Ã¥È¥Õ¥©¡¼¥à¤Ç¡¢¥æ¡¼¥¶¤¬Web¥Þ¥Ã¥Ô¥ó¥°¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤ÈÃÏÍý¶õ´ÖWeb¥µ¡¼¥Ó¥¹¤ò¤¹¤Ð¤ä¤¯¹½ÃÛ¤·¤ÆÅ¸³«¤¹¤ë¤³¤È¤¬²ÄÇ½¤Ç¤¹¡£MapGuide¤Ï¥Õ¥£¡¼¥Á¥ã¤ÎÁªÂò¡¢¥×¥í¥Ñ¥Æ¥£¤Î¸¡ºº¡¢¥Þ¥Ã¥×¥Á¥Ã¥×¤Î¥µ¥Ý¡¼¥È¤È¡¢¥Ð¥Ã¥Õ¥¡¡¢ÈÏ°ÏÁªÂò¡¢Â¬Äê¤Ê¤É¤ÎÁàºî¤Ë¤Ä¤¤¤Æ¡¢¥¤¥ó¥¿¥é¥¯¥Æ¥£¥Ö¤Ê¥Ó¥å¡¼¥¢¤òÄó¶¡¤·¤Þ¤¹¡£MapGuide¤Ë¤Ï¥³¥ó¥Æ¥ó¥Ä´ÉÍý¤Î¤¿¤á¤ÎXML¥Ç¡¼¥¿¥Ù¡¼¥¹¤¬´Þ¤Þ¤ì¡¢ÂçÈ¾¤Î¤è¤¯»ÈÍÑ¤µ¤ì¤Æ¤¤¤ëÃÏÍý¶õ´Ö¥Õ¥¡¥¤¥ë¥Õ¥©¡¼¥Þ¥Ã¥È¡¢¥Ç¡¼¥¿¥Ù¡¼¥¹¡¢¶È³¦É¸½à¤ò¥µ¥Ý¡¼¥È¤·¤Æ¤¤¤Þ¤¹¡£MapGuide¤ÏLinux¤Þ¤¿¤ÏWindows¾å¤ÇÅ¸³«¤Ç¤­¡¢Web¥µ¡¼¥Ð¤ÏApache¤ÈIIS¤ò¥µ¥Ý¡¼¥È¤·¡¢¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤Î³«È¯¤Ë¤ÏPHP¡¢.NET¡¢Java¡¢JavaScript¤ÎAPI¤òÄó¶¡¤·¤Æ¤¤¤Þ¤¹¡£¤Ê¤ª¡¢MapGuide¤ÏLGPL¤Î¤â¤È¤Ç¥é¥¤¥»¥ó¥¹¤µ¤ì¤Æ¤¤¤Þ¤¹¡£
 </p>
 		<p>
-MapGuide‚É‚Â‚¢‚Ä‚à‚Á‚ÆŠw‚ÑAŽQ‰Á‚µA<a href="https://mapguide.osgeo.org/downloads.html">ƒ_ƒEƒ“ƒ[ƒh</a>‚µ‚Ä‚­‚¾‚³‚¢B <a href="user.html">ƒ†[ƒU</a>‚ ‚é‚¢‚Í<a href="developer.html">ƒRƒ“ƒgƒŠƒrƒ…[ƒ^</a>‚Æ‚µ‚ÄŽQ‰Á‚·‚é‚½‚ß‚Ì‚¢‚­‚Â‚©‚Ì•û–@‚ª‚ ‚è‚Ü‚·B</p></div>
+MapGuide¤Ë¤Ä¤¤¤Æ¤â¤Ã¤È³Ø¤Ó¡¢»²²Ã¤·¡¢<a href="https://mapguide.osgeo.org/downloads.html">¥À¥¦¥ó¥í¡¼¥É</a>¤·¤Æ¤¯¤À¤µ¤¤¡£ <a href="user.html">¥æ¡¼¥¶</a>¤¢¤ë¤¤¤Ï<a href="developer.html">¥³¥ó¥È¥ê¥Ó¥å¡¼¥¿</a>¤È¤·¤Æ»²²Ã¤¹¤ë¤¿¤á¤Î¤¤¤¯¤Ä¤«¤ÎÊýË¡¤¬¤¢¤ê¤Þ¤¹¡£</p></div>
 				
-<div class="h2"><h2>ƒAƒiƒEƒ“ƒX</h2>
-  <p>2006”N10ŒŽ14“ú - MapGuide Open Source 1.0.2‚ªƒŠƒŠ[ƒX‚³‚ê‚Ü‚µ‚½B@‚±‚ÌƒŠƒŠ[ƒX‚É‚Í‘½”‚ÌƒoƒOƒtƒBƒbƒNƒX‚ÆMapGuide
-    Web Studio‚ÌÅ‰‚Ìƒo[ƒWƒ‡ƒ“‚ªŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·BÚ‚µ‚¢î•ñ‚Í<a href="https://www.osgeo.org/files/documents/12/290/ReleaseNotes1.0.2.html" title="https://mapguide.osgeo.org/files/documents/12/236/releasenotes.html">ƒŠƒŠ[ƒXƒm[ƒg</a>‚ðŽQÆ‚µ‚Ä‚­‚¾‚³‚¢Bi’ˆÓF‚Ü‚¾“ú–{Œê”Å‚Í‚ ‚è‚Ü‚¹‚ñj</p>
-2006”N7ŒŽ26“ú - MapGuide Open Source 1.0.1 ‚ªƒŠƒŠ[ƒX‚³‚ê‚Ü‚µ‚½B@‚±‚ÌƒŠƒŠ[ƒX‚É‚Í‘½”‚ÌƒoƒOƒtƒBƒbƒNƒX‚ÆMapGuide Web Studio‚ÌÅ‰‚Ìƒo[ƒWƒ‡ƒ“‚ªŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·BÚ‚µ‚¢î•ñ‚Í<a href="https://mapguide.osgeo.org/files/documents/12/236/releasenotes.html">ƒŠƒŠ[ƒXƒm[ƒg</a>‚ðŽQÆ‚µ‚Ä‚­‚¾‚³‚¢B
+<div class="h2"><h2>¥¢¥Ê¥¦¥ó¥¹</h2>
+  <p>2006Ç¯10·î14Æü - MapGuide Open Source 1.0.2¤¬¥ê¥ê¡¼¥¹¤µ¤ì¤Þ¤·¤¿¡£¡¡¤³¤Î¥ê¥ê¡¼¥¹¤Ë¤ÏÂ¿¿ô¤Î¥Ð¥°¥Õ¥£¥Ã¥¯¥¹¤ÈMapGuide
+    Web Studio¤ÎºÇ½é¤Î¥Ð¡¼¥¸¥ç¥ó¤¬´Þ¤Þ¤ì¤Æ¤¤¤Þ¤¹¡£¾Ü¤·¤¤¾ðÊó¤Ï<a href="https://www.osgeo.org/files/documents/12/290/ReleaseNotes1.0.2.html" title="https://mapguide.osgeo.org/files/documents/12/236/releasenotes.html">¥ê¥ê¡¼¥¹¥Î¡¼¥È</a>¤ò»²¾È¤·¤Æ¤¯¤À¤µ¤¤¡£¡ÊÃí°Õ¡§¤Þ¤ÀÆüËÜ¸ìÈÇ¤Ï¤¢¤ê¤Þ¤»¤ó¡Ë</p>
+2006Ç¯7·î26Æü - MapGuide Open Source 1.0.1 ¤¬¥ê¥ê¡¼¥¹¤µ¤ì¤Þ¤·¤¿¡£¡¡¤³¤Î¥ê¥ê¡¼¥¹¤Ë¤ÏÂ¿¿ô¤Î¥Ð¥°¥Õ¥£¥Ã¥¯¥¹¤ÈMapGuide Web Studio¤ÎºÇ½é¤Î¥Ð¡¼¥¸¥ç¥ó¤¬´Þ¤Þ¤ì¤Æ¤¤¤Þ¤¹¡£¾Ü¤·¤¤¾ðÊó¤Ï<a href="https://mapguide.osgeo.org/files/documents/12/236/releasenotes.html">¥ê¥ê¡¼¥¹¥Î¡¼¥È</a>¤ò»²¾È¤·¤Æ¤¯¤À¤µ¤¤¡£
 </div>
 </td>				
 <td  valign="top" halign="left" width="55%">
@@ -54,14 +54,14 @@ MapGuide‚É‚Â‚¢‚Ä‚à‚Á‚ÆŠw‚ÑAŽQ‰Á‚µA<a href="https://mapguide.osgeo.org/download
 		<tr>
 				<td   align="left" valign="top">
 					<div class="h2">
-					<h2>Žå—v€–Ú</h2>
-						<a href="about.html">»•i‚É‚Â‚¢‚Ä</a>
-						<br /><a href="features.html">‹@”\</a>
-						<br /><a href="system_requirements.html">“®ì—vŒ</a>
-						<br /><a href="gettingstarted.html">‚Í‚¶‚ß‚Ìˆê•à</a>
+					<h2>¼çÍ×¹àÌÜ</h2>
+						<a href="about.html">À½ÉÊ¤Ë¤Ä¤¤¤Æ</a>
+						<br /><a href="features.html">µ¡Ç½</a>
+						<br /><a href="system_requirements.html">Æ°ºîÍ×·ï</a>
+						<br /><a href="gettingstarted.html">¤Ï¤¸¤á¤Î°ìÊâ</a>
 						<br /><a href="faq.html">FAQ</a>
-						<br /><a href="livegallery.html">ƒ‰ƒCƒuƒAƒvƒŠƒP[ƒVƒ‡ƒ“</a>
-						<br /><a href="gallery.html">ƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg</a>
+						<br /><a href="livegallery.html">¥é¥¤¥Ö¥¢¥×¥ê¥±¡¼¥·¥ç¥ó</a>
+						<br /><a href="gallery.html">¥¹¥¯¥ê¡¼¥ó¥·¥ç¥Ã¥È</a>
 					</div>
 
           <!--
@@ -76,16 +76,16 @@ MapGuide‚É‚Â‚¢‚Ä‚à‚Á‚ÆŠw‚ÑAŽQ‰Á‚µA<a href="https://mapguide.osgeo.org/download
 </tr><tr>
 				<td align="left" valign="top">
 					<div class="h2">
-					<h2>ƒŠƒŠ[ƒX</h2>
+					<h2>¥ê¥ê¡¼¥¹</h2>
                        
-                    <a href="downloads.html">ƒ_ƒEƒ“ƒ[ƒh</a>
+                    <a href="downloads.html">¥À¥¦¥ó¥í¡¼¥É</a>
 						<br />
-						<a href="documentation.html">ƒhƒLƒ…ƒƒ“ƒg</a>
+						<a href="documentation.html">¥É¥­¥å¥á¥ó¥È</a>
 					</div>
 					<div class="h2">
-					<h4>ŽQ‰Á‚µ‚æ‚¤</h4>
-						<a href="user.html">ƒ†[ƒU‚Æ‚µ‚Ä</a>
-						<br /><a href="developer.html">ƒRƒ“ƒgƒŠƒrƒ…[ƒ^‚Æ‚µ‚Ä</a>
+					<h4>»²²Ã¤·¤è¤¦</h4>
+						<a href="user.html">¥æ¡¼¥¶¤È¤·¤Æ</a>
+						<br /><a href="developer.html">¥³¥ó¥È¥ê¥Ó¥å¡¼¥¿¤È¤·¤Æ</a>
 					</div>
 				</td>
 </tr>
