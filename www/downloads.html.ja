@@ -14,7 +14,10 @@
       LinuxにMapGuide Open Sourceをコンフィギュア、メイク、インストールするためには、これらのリンクをご利用ください。立ち上げと実行の方法に関する説明は<a href="docs/BuildConfigureMgOpenSourceOnLinux_japanese.pdf" target="_blank">「MapGuide OpenSource Linux上に構築して設定する」(Building MapGuide on Linux)</a>ドキュメントをお読みください。
 	  MapGuide Open Source 1.0.1のソースコードディストリビューションは、FDO 3.1が必要です。これはFDOの<a href="https://fdo.osgeo.org/downloads.html">ダウンロード</a>ページにあります。 
       <ul type="square">
-	    <li><a href="https://mapguide.osgeo.org/files/documents/12/233/mapguide-1.0.1.tar.gz">mapguideopensource-1.0.1.tar.gz</a>&nbsp;[69,197 kb]<br />
+	    <li><a href="https://mapguide.osgeo.org/files/documents/12/233/mapguide-1.0.1.tar.gz">mapguideopensource-1.0.1.tar.gz</a>&nbsp;[69,197
+	      kb]<br />
+		  <a href="https://mapguide.osgeo.org/files/documents/12/233/mapguide-1.0.1.tar.gz">mapguide-1.0.1-japanese.tar.gz</a>&nbsp;（日本語版）[70,224
+	      kb]<br />
 	    md5: d3eda1f555d601cbd4fd7dd495f3fe80<br />
 		コンフィギュア、メイク、メイクのインストールスクリプトと共に、MapGuideサーバとMapGuide Webサーバエクステンション両方のソースコードが含まれたtar形式の圧縮ファイル。<a href="https://fdo.osgeo.org">fdo.osgeo.org</a>から入手できるFDO
 		APIを必要とします。</li>
@@ -35,7 +38,7 @@
   </ul>
 	  <ul type="square">
 	    <li><a href="https://mapguide.osgeo.org/files/documents/12/235/MgWebServerExtensionsSetup.exe">MgWebServerExtensionsSetup.exe</a>&nbsp;[31,237 kb]<br />
-	      <a href="https://mapguide.osgeo.org/files/documents/12/235/MgWebServerExtensionsSetup.exe">MgWebServerExtensionsSetup.exe</a>&nbsp;（日本語版）[31,237
+	      <a href="https://mapguide.osgeo.org/files/documents/12/235/MgWebServerExtensionsSetup_jpn.exe">MgWebServerExtensionsSetup.exe</a>&nbsp;（日本語版）[31,509
 	      kb]<br />
 	    md5: d85d5e8bc0ce73efec014f1ddd388363<br />
 		自己解凍実行形式でMapGuide WebサーバエクステンションをMicrosoft Windowsにインストールします。 その際に、Apache
