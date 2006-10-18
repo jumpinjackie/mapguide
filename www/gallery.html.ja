@@ -12,12 +12,12 @@
 <table width="100%">
 <tr><td>
 <div class="h2">
-<h2>AJAXベースのMapGuideビューア</h2>
-        <a href="nonav/images/ajaxviewer.png" target="_blank"><img src="images/ajaxviewer_thumb.png" alt="AJAX Viewer" width="200" height="145" hspace="15" border="0" align="left"/></a>AJAXビューアはブラウザのプラグインのダウンロードをせずに、Safariを含むほとんどあらゆるブラウザにおける地図表示と対話を提供します。このビューアは、どのプラットフォームのどのユーザも、特定のブラウザを必要とせずにデザインとマップにアクセスすることができます。</div>
+<h2>AJAXベースのMapGuide Viewer</h2>
+        <a href="nonav/images/ajaxviewer.png" target="_blank"><img src="images/ajaxviewer_thumb.png" alt="AJAX Viewer" width="200" height="145" hspace="15" border="0" align="left"/></a>AJAX Viewerはブラウザのプラグインのダウンロードをせずに、Safariを含むほとんどあらゆるブラウザにおける地図表示と対話を提供します。このビューアは、どのプラットフォームのどのユーザも、特定のブラウザを必要とせずにデザインとマップにアクセスすることができます。</div>
 </td></tr>
 <tr><td><div class="h2">
-<h2>DWFベースのMapGuideビューア</h2>
-        <a href="nonav/images/dwfviewer.png" target="_blank"><img src="images/dwfviewer_thumb.png" alt="DWF Viewer" width="200" height="145" hspace="15" border="0" align="left"/></a>DWFビューアはActiveXコントロールを使用し、 Internet Explorerが動作するWindows上で地図表示と対話を提供します。このビューアは強力かつ軽々と地図、デザイン、関連データの表示を実現します。DWFテクノロジを用いることで、野外に空間データを持ち出すことが容易になる「非接続モード」をサポートすると同時に、高品質の印刷とプロッティングを実現しています。</div>
+<h2>DWFベースのMapGuide Viewer</h2>
+        <a href="nonav/images/dwfviewer.png" target="_blank"><img src="images/dwfviewer_thumb.png" alt="DWF Viewer" width="200" height="145" hspace="15" border="0" align="left"/></a>DWF ViewerはActiveXコントロールを使用し、 Internet Explorerが動作するWindows上で地図表示と対話を提供します。このビューアは強力かつ軽々と地図、デザイン、関連データの表示を実現します。DWFテクノロジを用いることで、野外に空間データを持ち出すことが容易になる「非接続モード」をサポートすると同時に、高品質の印刷とプロッティングを実現しています。</div>
 </td></tr>
 <tr><td><div class="h2">
 <h2>空間分析とレポート作成</h2>

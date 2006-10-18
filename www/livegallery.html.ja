@@ -15,13 +15,16 @@
   <table width="100%" cellspacing="5">
 <tr>
       <td height="148"><img src="images/ajaxviewer_thumb.png" alt="AJAX Viewer" width="200" height="145" hspace="5" border="0" align="left"/></td>
-      <td>WebエクステンションAPIを使用してMapGuideアプリケーションを組み立てる方法をデモします。このアプリケーションはSheboygan市のデータをもとにしています。このアプリケーションは3種類の方法で提供されています。
+      <td>Web Extentions APIを使用してMapGuideアプリケーションを組み立てる方法をデモします。このアプリケーションはSheboygan市のデータをもとにしています。このアプリケーションは3種類の方法で提供されています。
         <ul type="square">
-  <li><a href="http://data.mapguide.com/mapguide/phpviewersample/ajaxviewersample.php" target="_blank">AJAXビューア</a></li>
+  <li><a href="http://data.mapguide.com/mapguide/phpviewersample/ajaxviewersample.php" target="_blank">AJAX
+      Viewer</a></li>
   <br />
-  <li><a href="http://data.mapguide.com/mapguide/phpviewersample/ajaxtiledviewersample.php" target="_blank">AJAXビューア（タイルマップレンダリング）</a></li>
+  <li><a href="http://data.mapguide.com/mapguide/phpviewersample/ajaxtiledviewersample.php" target="_blank">AJAX
+      Viewer（タイルマップレンダリング）</a></li>
   <br />
-  <li><a href="http://data.mapguide.com/mapguide/phpviewersample/dwfviewersample.php" target="_blank">DWFビューア</a> (Autodesk DWFビューアが必要です。<a href="http://www.autodesk.com/dwfviewer" target="_blank">こちら</a>から入手してください)</li>
+  <li><a href="http://data.mapguide.com/mapguide/phpviewersample/dwfviewersample.php" target="_blank">DWF
+      Viewer</a> (Autodesk DWFビューアが必要です。<a href="http://www.autodesk.com/dwfviewer" target="_blank">こちら</a>から入手してください)</li>
 </ul>
 </td>
 </tr>
@@ -60,7 +63,7 @@
       <td><p>Call before you digは、カナダのGeomapが作成したアプリケーションで、掘削によって影響を受けるおそれのある既存の設備をチェックすることで、その場所が掘削に適切であることを確認する目的のために、MapGuideがどのように使用可能であるかを示しています。このアプリケーションは以下の方法で利用可能です。</p>
         <ul type="square">
           <li><a href="http://data.mapguide.com/infoexcavation/php/default.php?mode=ajax" target="_blank">AJAX</a></li>
-  <li><a href="http://data.mapguide.com/mapguide/phpviewersample/dwfviewersample.php" target="_blank">DWFビューア</a> (Autodesk DWFビューアが必要です。<a href="http://www.autodesk.com/dwfviewer" target="_blank">こちら</a>から入手してください)</li>
+  <li><a href="http://data.mapguide.com/mapguide/phpviewersample/dwfviewersample.php" target="_blank">DWF Viewer</a> (Autodesk DWF Viewerが必要です。<a href="http://www.autodesk.com/dwfviewer" target="_blank">こちら</a>から入手してください)</li>
         </ul>      </td>
     </tr>
     <tr>
