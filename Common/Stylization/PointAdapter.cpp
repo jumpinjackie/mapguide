@@ -109,6 +109,11 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     RS_Units mdefU = RS_Units_Device;
     double mdefRot = 0.0;
 
+	//the actual position used for the marker by the Renderer
+	//may be returned in this structure to help place
+	//labels better
+	RS_Bounds bounds = RS_Bounds(1.,1.,0.,0.); // init invalid
+
     if (psym && psym->GetSymbol())
     {
         renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, theme.empty() ? NULL : &theme);
@@ -121,7 +126,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
             mdefH = cachedStyle->height();
             mdefU = cachedStyle->units();
             mdefRot = cachedStyle->rotation();
-            renderer->ProcessMarker(lb, *cachedStyle, pfs->IsAllowOverpost());
+            renderer->ProcessMarker(lb, *cachedStyle, pfs->IsAllowOverpost(), &bounds);
         }
         else
         {
@@ -133,7 +138,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
             mdefU = mdef.units();
             mdefRot = mdef.rotation();
 
-            renderer->ProcessMarker(lb, mdef, pfs->IsAllowOverpost());
+            renderer->ProcessMarker(lb, mdef, pfs->IsAllowOverpost(), &bounds);
         }
     }
 
@@ -176,12 +181,34 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                 //psym->GetSymbol() and that expressions have
                 //been evaluated
 
+                double op_pts[16];
+                
+                // calculate a 2 pixel offset to allow for label ghosting
+                double offset = 2.0 * (0.0254 / renderer->GetDpi()); //2 pixels in meters 
+                
+                //in case of mapping space we need to scale by map scale
+                if (mdefU != RS_Units_Device)
+                    offset *= renderer->GetMapScale();
+
                 //compute how far label needs to be offset from
                 //center point of symbol
-                //TODO: do we need to take into account difference
-                //between insertion point of symbol and actual geometric point
+
                 double w = 0.5 * mdefW;
                 double h = 0.5 * mdefH;
+                double ch = 0;		// vertical center point
+                double cw = 0;		// horizontal center point
+
+                w += offset;
+                h += offset;
+                
+                bool useBounds = bounds.IsValid();
+                if (useBounds)
+                {
+                    bounds.maxx += offset;    bounds.maxy += offset;
+                    bounds.minx -= offset;    bounds.miny -= offset;
+                    ch = (bounds.maxy + bounds.miny)/2.;
+                    cw = (bounds.maxx + bounds.minx)/2.;
+                }
 
                 //take into account rotation of the symbol
                 //find increased extents of the symbol bounds
@@ -191,56 +218,84 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                     double rotRad = mdefRot * M_PI / 180.0;
                     double cs = cos(rotRad);
                     double sn = sin(rotRad);
-                    double wcs = w * cs;
-                    double wsn = w * sn;
-                    double hsn = h * sn;
-                    double hcs = h * cs;
 
-                    double w1 = wcs - hsn;
-                    double h1 = wsn + hcs;
-                    double w2 = wcs + hsn;
-                    double h2 = wsn - hcs;
+                    double wcs, nwcs, wsn, nwsn, hsn, nhsn, hcs, nhcs, cwsn, cwcs, chsn, chcs;
+                    // check to see if the bounds have been set
+                    if (useBounds)
+                    {
+                        wcs = bounds.maxx * cs;   nwcs = bounds.minx * cs;
+                        wsn = bounds.maxx * sn;   nwsn = bounds.minx * sn;
+                        hsn = bounds.maxy * sn;   nhsn = bounds.miny * sn;
+                        hcs = bounds.maxy * cs;   nhcs = bounds.miny * cs;
+                    }
+                    else
+                    {
+                        wcs = w * cs;   nwcs = -wcs;
+                        wsn = w * sn;   nwsn = -wsn;
+                        hsn = h * sn;   nhsn = -hsn;
+                        hcs = h * cs;   nhcs = -hcs;
+                    }
+                   
+                    cwsn = cw * sn;		chsn = ch * sn; 
+                    cwcs = cw * cs;		chcs = ch * cs;
 
-                    w = rs_max( fabs(w1), fabs(w2) );
-                    h = rs_max( fabs(h1), fabs(h2) );
+                    // find the octant that the marker is rotated into, and shift the points accordingly.
+                    // this way, the overpost points are still within 22.5 degrees of an axis-aligned box.
+                    // (position 0 will always be the closest to Center-Right)
+                    double nangle = mdefRot + (mdefRot > 0 ? -(int)(mdefRot/360.)*360. : ((int)(mdefRot/360.) + 1)*360.);
+                    int i = ((int)((nangle/45.) + .5)) << 1; // i is 2 * the octant
+                    op_pts[i++] = wcs - chsn;  op_pts[i++] = wsn + chcs;   i &= 0x0000000f; // & 15 does (mod 16)
+                    op_pts[i++] = wcs - hsn;   op_pts[i++] = wsn + hcs;    i &= 0x0000000f;
+                    op_pts[i++] = cwcs - hsn;  op_pts[i++] = cwsn + hcs;   i &= 0x0000000f;
+                    op_pts[i++] = nwcs - hsn;  op_pts[i++] = nwsn + hcs;   i &= 0x0000000f;
+                    op_pts[i++] = nwcs - chsn; op_pts[i++] = nwsn + chcs;  i &= 0x0000000f;
+                    op_pts[i++] = nwcs - nhsn; op_pts[i++] = nwsn + nhcs;  i &= 0x0000000f;
+                    op_pts[i++] = cwcs -nhsn;  op_pts[i++] = cwsn + nhcs;  i &= 0x0000000f;
+                    op_pts[i++] = wcs - nhsn;  op_pts[i]   = wsn + nhcs;
                 }
-
-                //add 2 pixels to offset
-                double offset = 2.0 * (0.0254 / renderer->GetDpi()); //2 pixels in meters
-
-                //in case of mapping space we need to scale by map scale
-                if (mdefU != RS_Units_Device)
-                    offset *= renderer->GetMapScale();
-
-                w += offset;
-                h += offset;
+                else
+                {
+                    if (!useBounds)
+                    {
+                        bounds.maxx = w;	bounds.minx = -w;
+                        bounds.maxy = h;	bounds.miny = -h;
+                    }
+                    op_pts[0] = bounds.maxx;	op_pts[1] = ch;
+                    op_pts[2] = bounds.maxx;	op_pts[3] = bounds.maxy;
+                    op_pts[4] = cw;				op_pts[5] = bounds.maxy;
+                    op_pts[6] = bounds.minx;	op_pts[7] = bounds.maxy;
+                    op_pts[8] = bounds.minx;	op_pts[9] = ch;
+                    op_pts[10] = bounds.minx;	op_pts[11] = bounds.miny;
+                    op_pts[12] = cw;			op_pts[13] = bounds.miny;
+                    op_pts[14] = bounds.maxx;	op_pts[15] = bounds.miny;
+                }
 
                 RS_LabelInfo candidates[8];
 
                 def.halign() = RS_HAlignment_Left;
                 def.valign() = RS_VAlignment_Half;
-                candidates[0] = RS_LabelInfo(cx, cy, w, 0, mdefU, def, false);
+                candidates[0] = RS_LabelInfo(cx, cy, op_pts[0], op_pts[1], mdefU, def, false);
 
                 def.valign() = RS_VAlignment_Descent;
-                candidates[1] = RS_LabelInfo(cx, cy, w, h, mdefU, def, false);
+                candidates[1] = RS_LabelInfo(cx, cy, op_pts[2], op_pts[3], mdefU, def, false);
 
                 def.halign() = RS_HAlignment_Center;
-                candidates[2] = RS_LabelInfo(cx, cy, 0, h, mdefU, def, false);
+                candidates[2] = RS_LabelInfo(cx, cy, op_pts[4], op_pts[5], mdefU, def, false);
 
                 def.halign() = RS_HAlignment_Right;
-                candidates[3] = RS_LabelInfo(cx, cy, -w, h, mdefU, def, false);
+                candidates[3] = RS_LabelInfo(cx, cy, op_pts[6], op_pts[7], mdefU, def, false);
 
                 def.valign() = RS_VAlignment_Half;
-                candidates[4] = RS_LabelInfo(cx, cy, -w, 0, mdefU, def, false);
+                candidates[4] = RS_LabelInfo(cx, cy, op_pts[8], op_pts[9], mdefU, def, false);
 
                 def.valign() = RS_VAlignment_Ascent;
-                candidates[5] = RS_LabelInfo(cx, cy, -w, -h, mdefU, def, false);
+                candidates[5] = RS_LabelInfo(cx, cy, op_pts[10], op_pts[11], mdefU, def, false);
 
                 def.halign() = RS_HAlignment_Center;
-                candidates[6] = RS_LabelInfo(cx, cy, 0, -h, mdefU, def, false);
+                candidates[6] = RS_LabelInfo(cx, cy, op_pts[12], op_pts[13], mdefU, def, false);
 
                 def.halign() = RS_HAlignment_Left;
-                candidates[7] = RS_LabelInfo(cx, cy, w, -h, mdefU, def, false);
+                candidates[7] = RS_LabelInfo(cx, cy, op_pts[14], op_pts[15], mdefU, def, false);
 
                 renderer->ProcessLabelGroup(candidates, 8, txt, RS_OverpostType_FirstFit, true, lb);
             }

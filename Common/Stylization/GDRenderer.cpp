@@ -573,7 +573,7 @@ void GDRenderer::ProcessRaster(unsigned char* data,
 }
 
 
-void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost)
+void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
 {
     RS_MarkerDef use_mdef = mdef;
 
@@ -592,12 +592,12 @@ void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allow
     {
         //if marker is processed from here it should be added to the
         //feature W2D, not the labeling W2D -- need the API to reflect that.
-        ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], use_mdef, allowOverpost);
+		ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], use_mdef, allowOverpost, (i==0) ? bounds : NULL);
     }
 }
 
 
-void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost)
+void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
 {
     RS_InputStream* symbol = NULL;
     bool is_font_symbol = !(mdef.library().empty() || wcsstr(mdef.library().c_str(), L"Library://"));
@@ -1083,6 +1083,15 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
         m_labeler->AddExclusionRegion(pts, 4);
     }
+
+	//set actual (unrotated) bounds with new insertion point if a pointer was passed in
+	if (bounds)
+	{
+		bounds->minx = -refX * mdef.width();
+		bounds->maxx = (1.0 - refX) * mdef.width();
+		bounds->miny = -refY * mdef.height();
+		bounds->maxy = (1.0 - refY) * mdef.height();
+	}
 }
 
 void GDRenderer::ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef)

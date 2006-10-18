@@ -85,7 +85,7 @@ public:
                                                int width, int height,
                                                RS_Bounds extents);
 
-    STYLIZATION_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost);
+    STYLIZATION_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
     STYLIZATION_API virtual void ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef);
 
@@ -161,7 +161,7 @@ private:
 
     LineBuffer* ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidth, double drawingScale, double dpi);
 
-    void ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost);
+    void ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
     void WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool aa);
 
