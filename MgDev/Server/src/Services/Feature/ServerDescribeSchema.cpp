@@ -1495,27 +1495,18 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
 
                 // check both the qualified and non-qualified names
                 FdoStringP qname = fc->GetQualifiedName();
-                FdoStringP name = fc->GetName();
+                STRING qualifiedName = (const wchar_t*)qname;
 
-                int idx1 = wcscmp(className.c_str(), qname);
-                int idx2 = wcscmp(className.c_str(), name);
-                // className can be either fully qualified or non-qualified name
-                if (idx1 == 0 || idx2 == 0)
+                // Get identity properties for only the primary source (ie extensionName is blank)
+                STRING::size_type nExtensionStart = qualifiedName.find(L"[");
+                if (STRING::npos == nExtensionStart)
                 {
-                    STRING qualifiedName = (const wchar_t*)qname;
-                    STRING::size_type nLength = qualifiedName.length();
+                    // retrieve identity properties from FDO
+                    FdoPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
 
-                    // Get identity properties for only the primary source (ie extensionName is blank)
-                    STRING::size_type nExtensionStart = qualifiedName.find(L"[");
-                    if (STRING::npos == nExtensionStart)
-                    {
-                        // retrieve identity properties from FDO
-                        FdoPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
-
-                        MgServerGetFeatures msgf;
-                        msgf.GetClassProperties(idProps, fdpdc);
-                        break;
-                    }
+                    MgServerGetFeatures msgf;
+                    msgf.GetClassProperties(idProps, fdpdc);
+                    break;
                 }
             }
         }
