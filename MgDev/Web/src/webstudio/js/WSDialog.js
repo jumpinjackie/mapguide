@@ -717,7 +717,7 @@ Object.extend(WSStylePointDialog.prototype, {
                 if (color != '') {
                     var edge = new WSStrokeType();
                     edge.set('LineStyle', 'Solid');
-                    edge.set('Thickness', 'Solid');
+                    edge.set('Thickness', '0');
                     edge.set('Color', color);
                     edge.set('Unit', this.getSelect('dialog.stylepoint.units'));
                     symbol.set('Edge', edge);
