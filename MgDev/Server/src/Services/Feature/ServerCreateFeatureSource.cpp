@@ -80,7 +80,7 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     STRING tempFileName = MgFileUtil::GenerateTempFileName(true, STRING(L"tmp"), STRING(L"sdf"));
 
     // Use the custom command to initially create the datastore
-    GisPtr<FdoICreateDataStore> createDsCmd = dynamic_cast<FdoICreateDataStore*>(conn->CreateCommand(FdoCommandType_CreateDataStore));
+    GisPtr<FdoICreateDataStore> createDsCmd = static_cast<FdoICreateDataStore*>(conn->CreateCommand(FdoCommandType_CreateDataStore));
     GisPtr<FdoIDataStorePropertyDictionary> dsProp = createDsCmd->GetDataStoreProperties();
     dsProp->SetProperty (L"File", tempFileName.c_str());
     createDsCmd->Execute();
@@ -158,5 +158,5 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
         resourceService->SetResourceData(resource, resourceFile, MgResourceDataType::File, sdfReader);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerCreateFeatureSource.ExecuteDescribeSchema")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerCreateFeatureSource.CreateFeatureSource")
 }
