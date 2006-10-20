@@ -156,7 +156,7 @@
 -->
 <Response request="GetCapabilities" content-type="text/xml">
 <!DOCTYPE WMT_MS_Capabilities SYSTEM
- "http://www.digitalearth.gov/wmt/xml/capabilities_1_0_0.dtd"
+ "http://schemas.opengis.net/wms/1.1.1/capabilities_1_1_1.dtd"
  [
   <!ELEMENT VendorSpecificCapabilities EMPTY>
  ]>
