@@ -1344,32 +1344,47 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
     size_t num_lines = line_breaks.size();
 
     //find vertical shift increment for each line
-    WT_Integer32 line_hgt = (WT_Integer32)_MeterToW2DMacroUnit(tdef.font().units(), tdef.font().height());
+    double line_hgt = _MeterToW2DMacroUnit(tdef.font().units(), tdef.font().height());
 
-    //depending on alignment we may go up or down with the line increment
-    //take that into account by shifting initial y value
+    //account for any rotation of the text
+    WT_Integer32 line_hgt_x = 0;
+    WT_Integer32 line_hgt_y = (WT_Integer32)line_hgt;
+    if (tdef.rotation() != 0.0)
+    {
+        double angle = tdef.rotation() * M_PI / 180.0;
+        line_hgt_x = (WT_Integer32)(-line_hgt * sin(angle));
+        line_hgt_y = (WT_Integer32)( line_hgt * cos(angle));
+    }
+
+    //Depending on vertical alignment we may go up or down with the line
+    //increment.  Take that into account by shifting initial y value.  In
+    //the case of rotated text it's a shift in both x and y.
+    int xpos = x;
     int ypos = y;
 
     switch (tdef.valign())
     {
     case RS_VAlignment_Descent:
     case RS_VAlignment_Base:
-        ypos += ((int)num_lines - 1) * line_hgt;
+        xpos += ((int)num_lines - 1) * line_hgt_x;
+        ypos += ((int)num_lines - 1) * line_hgt_y;
         break;
     case RS_VAlignment_Half:
-        ypos += ((int)num_lines - 1) * line_hgt / 2;
+        xpos += ((int)num_lines - 1) * line_hgt_x / 2;
+        ypos += ((int)num_lines - 1) * line_hgt_y / 2;
         break;
     case RS_VAlignment_Cap:
     case RS_VAlignment_Ascent:
+        //xpos = x;
         //ypos = y;
         break;
     }
 
     //now draw each text line
-    for (size_t i=0; i<num_lines; i++, ypos -= line_hgt)
+    for (size_t i=0; i<num_lines; i++, xpos -= line_hgt_x, ypos -= line_hgt_y)
     {
         WT_String wtstr(Util_ConvertString(line_breaks[i]));
-        WT_Logical_Point pt(x, ypos);
+        WT_Logical_Point pt(xpos, ypos);
         WT_Text wttext(pt, wtstr);
         wttext.serialize(*file);
     }
