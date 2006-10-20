@@ -49,15 +49,10 @@
           <xs:documentation>The path in the site repository where the resources are created</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="CoordinateSystem">
+      <xs:element name="CoordinateSystem" type="xs:string">
         <xs:annotation>
           <xs:documentation>The default coordinate system to assign to the resulting data resources if none is found</xs:documentation>
         </xs:annotation>
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:minLength value="1"/>
-          </xs:restriction>
-        </xs:simpleType>
       </xs:element>
       <xs:element name="GenerateSpatialDataSources" type="xs:boolean">
         <xs:annotation>
