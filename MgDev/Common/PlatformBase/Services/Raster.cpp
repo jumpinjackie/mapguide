@@ -250,7 +250,7 @@ void MgRaster::NullCheck()
         MgStringCollection arguments;
         arguments.Add(L"Raster");
 
-        throw new MgNullPropertyValueException(L"MgServerGetLongTransactions.GetLongTransactions",
+        throw new MgNullPropertyValueException(L"MgRaster.NullCheck",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }

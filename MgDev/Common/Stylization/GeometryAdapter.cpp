@@ -32,6 +32,7 @@ GeometryAdapter::GeometryAdapter(LineBufferPool* lbp)
     m_lbPool = lbp;
 }
 
+
 GeometryAdapter::~GeometryAdapter()
 {
     //free up cached fdo filters
@@ -44,7 +45,6 @@ GeometryAdapter::~GeometryAdapter()
 
     m_hFilterCache.clear();
 
-
     //free up cached fdo expressions
     for (std::map<const void*, FdoExpression*>::iterator iter = m_hExpressionCache.begin();
         iter != m_hExpressionCache.end(); iter++)
@@ -54,7 +54,6 @@ GeometryAdapter::~GeometryAdapter()
     }
 
     m_hExpressionCache.clear();
-
 }
 
 
@@ -114,6 +113,7 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
     return false;
 }
 
+
 bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool & res)
 {
     //check for boolean constants first...
@@ -163,6 +163,7 @@ bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool & res
 
     return false; //value was expression, so not cacheable
 }
+
 
 bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& res)
 {
@@ -293,6 +294,7 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
     return isConst;
 }
 
+
 bool GeometryAdapter::ConvertLineThickness(const MdfModel::MdfString& expr, double& thickness)
 {
     return EvalDouble(expr, thickness);
@@ -320,6 +322,7 @@ bool GeometryAdapter::ConvertStroke(MdfModel::Stroke* stroke, RS_LineStroke& rss
     }
 }
 
+
 bool GeometryAdapter::ConvertStroke(MdfModel::LineSymbolization2D* lsym, RS_LineStroke& rsstroke)
 {
     if (lsym == NULL)
@@ -327,6 +330,7 @@ bool GeometryAdapter::ConvertStroke(MdfModel::LineSymbolization2D* lsym, RS_Line
 
     return ConvertStroke(lsym->GetStroke(), rsstroke);
 }
+
 
 bool GeometryAdapter::ConvertFill(MdfModel::AreaSymbolization2D* fill, RS_FillStyle& rsfill)
 {
@@ -363,6 +367,7 @@ bool GeometryAdapter::ConvertFill(MdfModel::Fill* mdffill, RS_FillStyle&   rsfil
     return const1 && const2;
 }
 
+
 bool GeometryAdapter::ConvertTextHAlign(const MdfModel::MdfString& halign, RS_HAlignment& rshalign)
 {
 
@@ -389,7 +394,6 @@ bool GeometryAdapter::ConvertTextHAlign(const MdfModel::MdfString& halign, RS_HA
         return true;
     }
 
-
     //otherwise we need to evaluate as expression
     //if it expression, the value will come back without quotes
     RS_String str = L"";
@@ -413,12 +417,13 @@ bool GeometryAdapter::ConvertTextHAlign(const MdfModel::MdfString& halign, RS_HA
         rshalign = RS_HAlignment_Path;
     }
 
+    // not cacheable
     return false;
 }
 
+
 bool GeometryAdapter::ConvertTextVAlign(const MdfModel::MdfString& valign, RS_VAlignment& rsvalign)
 {
-
     //first check if the expression is a constant.
     //In that case it can be cached
     if (valign == L"'Bottom'")
@@ -447,7 +452,6 @@ bool GeometryAdapter::ConvertTextVAlign(const MdfModel::MdfString& valign, RS_VA
         return true;
     }
 
-
     //otherwise we need to evaluate as expression
     //if it expression, the value will come back without quotes
     RS_String str = L"";
@@ -475,10 +479,9 @@ bool GeometryAdapter::ConvertTextVAlign(const MdfModel::MdfString& valign, RS_VA
         rsvalign = RS_VAlignment_Ascent;
     }
 
+    // not cacheable
     return false;
-
 }
-
 
 
 bool GeometryAdapter::ConvertMarkerDef(MdfModel::Symbol* marker, RS_MarkerDef& mdef)
@@ -511,7 +514,6 @@ bool GeometryAdapter::ConvertMarkerDef(MdfModel::Symbol* marker, RS_MarkerDef& m
     const1 = EvalDouble(marker->GetInsertionPointX(), mdef.insx()) && const1;
     const1 = EvalDouble(marker->GetInsertionPointY(), mdef.insy()) && const1;
 
-
     if (type == SymbolVisitor::stW2D)
     {
         MdfModel::W2DSymbol* w2dsym = (MdfModel::W2DSymbol*)marker;
@@ -536,13 +538,13 @@ bool GeometryAdapter::ConvertMarkerDef(MdfModel::Symbol* marker, RS_MarkerDef& m
 
         switch (shape)
         {
-        case MdfModel::MarkSymbol::Square :   mdef.name() = SLD_SQUARE_NAME; break;
-        case MdfModel::MarkSymbol::Circle :   mdef.name() = SLD_CIRCLE_NAME; break;
-        case MdfModel::MarkSymbol::Cross :    mdef.name() = SLD_CROSS_NAME;  break;
-        case MdfModel::MarkSymbol::Star :     mdef.name() = SLD_STAR_NAME;   break;
-        case MdfModel::MarkSymbol::Triangle : mdef.name() = SLD_TRIANGLE_NAME;break;
-        case MdfModel::MarkSymbol::X :        mdef.name() = SLD_X_NAME; break;
-        default: break;
+            case MdfModel::MarkSymbol::Square :   mdef.name() = SLD_SQUARE_NAME; break;
+            case MdfModel::MarkSymbol::Circle :   mdef.name() = SLD_CIRCLE_NAME; break;
+            case MdfModel::MarkSymbol::Cross :    mdef.name() = SLD_CROSS_NAME;  break;
+            case MdfModel::MarkSymbol::Star :     mdef.name() = SLD_STAR_NAME;   break;
+            case MdfModel::MarkSymbol::Triangle : mdef.name() = SLD_TRIANGLE_NAME;break;
+            case MdfModel::MarkSymbol::X :        mdef.name() = SLD_X_NAME; break;
+            default: break;
         }
 
         const1 = ConvertFill(marksym->GetFill(), mdef.style()) && const1;
@@ -590,15 +592,15 @@ bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tde
 
     switch (text->GetBackgroundStyle())
     {
-    case MdfModel::TextSymbol::Transparent :
-        tdef.textbg() = RS_TextBackground_None;
-        break;
-    case MdfModel::TextSymbol::Ghosted :
-        tdef.textbg() = RS_TextBackground_Ghosted;
-        break;
-    case MdfModel::TextSymbol::Opaque :
-        tdef.textbg() = RS_TextBackground_Opaque;
-        break;
+        case MdfModel::TextSymbol::Transparent :
+            tdef.textbg() = RS_TextBackground_None;
+            break;
+        case MdfModel::TextSymbol::Ghosted :
+            tdef.textbg() = RS_TextBackground_Ghosted;
+            break;
+        case MdfModel::TextSymbol::Opaque :
+            tdef.textbg() = RS_TextBackground_Opaque;
+            break;
     }
 
     RS_FontStyle_Mask style = RS_FontStyle_Regular;
@@ -633,7 +635,6 @@ bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tde
 
     bool const9 = ConvertTextVAlign(text->GetVerticalAlignment(), tdef.valign());
 
-
     return const1 && const2 && const3 && const4 && const5 && const6 && const7 && const8 && const9;
 }
 
@@ -662,6 +663,7 @@ void GeometryAdapter::AddLabel(double x, double y,
         renderer->ProcessLabelGroup(&info, 1, txt, type, exclude, lb);
     }
 }
+
 
 //---------------------------------------------------------------
 //parses and caches an FDO filter from a pointer to an MDF string.
