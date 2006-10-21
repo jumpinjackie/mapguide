@@ -1007,6 +1007,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\System\SetLocale.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\System\SetLocale.h"
+				>
+			</File>
+			<File
 				RelativePath=".\System\Stream.cpp"
 				>
 			</File>
