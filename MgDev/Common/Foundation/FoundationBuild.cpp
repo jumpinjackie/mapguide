@@ -104,6 +104,7 @@
 #include "System/Resources.cpp"
 #include "System/Serializable.cpp"
 #include "System/ServerConnectionBase.cpp"
+#include "System/SetLocale.cpp"
 #include "System/Stream.cpp"
 #include "System/StreamData.cpp"
 #include "System/StreamHelper.cpp"

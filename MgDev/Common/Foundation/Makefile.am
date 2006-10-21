@@ -95,6 +95,7 @@ include_SOURCES = \
   System/Resources.cpp \
   System/Serializable.cpp \
   System/ServerConnectionBase.cpp \
+  System/SetLocale.cpp \
   System/Stream.cpp \
   System/StreamData.cpp \
   System/StreamHelper.cpp \
@@ -209,6 +210,7 @@ noinst_HEADERS = $(include_SOURCES) \
   System/Resources.h \
   System/Serializable.h \
   System/ServerConnectionBase.h \
+  System/SetLocale.h \
   System/Stream.h \
   System/StreamHeader.h \
   System/StreamHelper.h \
