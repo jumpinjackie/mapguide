@@ -41,7 +41,11 @@ bool MgConfigurationHeap::ImportConfig(CREFSTRING fileName)
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
+#ifdef WIN32
+    FILE* inFile = _wfopen(fileName.c_str(), L"r,ccs=UTF-8");
+#else
     FILE* inFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(fileName), ACE_TEXT("r"));
+#endif
     if (!inFile)
     {
         return false;
@@ -148,8 +152,11 @@ bool MgConfigurationHeap::ExportConfig(CREFSTRING fileName)
 
     MG_TRY()
 
+#ifdef WIN32
+    outFile = _wfopen(fileName.c_str(), L"w,ccs=UTF-8");
+#else
     outFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(fileName), ACE_TEXT("w"));
-    if (!outFile)
+#endif    if (!outFile)
     {
         return false;
     }

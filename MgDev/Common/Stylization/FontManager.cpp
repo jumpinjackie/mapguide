@@ -71,6 +71,13 @@ FontManager::~FontManager(void)
         ++it;
     }
 
+    // free up font map entries
+    for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); fmi++)
+    {
+        delete (*fmi).first;
+        delete (*fmi).second;
+    }
+
     //  clear map
     m_facemap.clear ();
 
@@ -407,6 +414,15 @@ void FontManager::create_font (FT_Face face, FT_Long index, wchar_t const * file
     m_fontlist.push_front( font );
 }
 
+// Add an alias for a font.  Aliases are useful for specifying non-ascii names
+// for a font. Or if the user wants, to remap a font name to a completely
+// different font.
+void FontManager::AddFontAlias(const wchar_t * alias, const wchar_t * asciiName)
+{
+    if (alias != NULL && asciiName != NULL)
+        m_fontAliases.insert(FontMapPair(new wstring(alias), new wstring(asciiName)));
+}
+
 //
 FontList* FontManager::GetFontList()
 {
@@ -416,6 +432,17 @@ FontList* FontManager::GetFontList()
 //
 const RS_Font* FontManager::FindFont( const wchar_t* fontname, bool bold, bool italic)
 {
+    // If there is an alias for the font use that instead
+    for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); fmi++)
+    {
+        const wchar_t * alias = (*fmi).first->c_str();
+        if (wcscmp(alias, fontname) == 0)
+        {
+            fontname = (*fmi).second->c_str();
+            break;
+        }
+    }
+
     FontListIterator it = m_fontlist.begin();
 
     size_t len = wcslen(fontname);
