@@ -46,6 +46,9 @@ typedef struct FaceMapEntry {
 typedef map<string, FaceMapEntryType*> FaceMap;
 typedef FaceMap::value_type FaceMapPair;
 typedef FaceMap::iterator FaceMapIterator;
+typedef map<wstring*, wstring*> FontMap;
+typedef FontMap::value_type FontMapPair;
+typedef FontMap::iterator FontMapIterator;
 
 class FontManager
 {
@@ -58,6 +61,8 @@ class FontManager
 
         void init_font_list();
         void create_font (FT_Face face, FT_Long index, wchar_t const * filename);
+
+        STYLIZATION_API void AddFontAlias(const wchar_t* alias, const wchar_t* asciiName);
 
         FontList*   GetFontList();
 
@@ -73,6 +78,7 @@ class FontManager
         FT_Library  m_library;
         FaceMap     m_facemap;
         FontList    m_fontlist;
+        FontMap     m_fontAliases;
 
         static FontManager    m_manager;
 };
