@@ -34,6 +34,7 @@ libMgStylization_la_SOURCES = \
   EMapRenderer.cpp \
   EPlotRenderer.cpp \
   EMapUpdateRenderer.cpp \
+  PolygonUtils.cpp \
   KmlRenderer.cpp \
   KmlContent.cpp \
   KmlLineStyle.cpp \
@@ -83,6 +84,7 @@ noinst_HEADERS = \
   EMapRenderer.h \
   EPlotRenderer.h \
   EMapUpdateRenderer.h \
+  PolygonUtils.h \
   KmlRenderer.h \
   KmlContent.h \
   KmlLineStyle.h \

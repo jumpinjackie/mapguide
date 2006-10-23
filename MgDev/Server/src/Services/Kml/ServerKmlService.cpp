@@ -162,6 +162,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
 
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
         MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+        MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
         if(vl != NULL)
         {
             //get the scale ranges
@@ -176,7 +177,25 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
                 if(scale > minScale && scale <= maxScale)
                 {
                     AppendScaleRange(layer, destExtent, agentUri, dimension,
-                        minScale, maxScale, format, kmlContent);
+                        minScale, maxScale, dpi, format, kmlContent);
+                }
+            }
+        }
+        else if(gl != NULL)
+        {
+            //get the scale ranges
+            MdfModel::GridScaleRangeCollection* scaleRanges = gl->GetScaleRanges();
+            MdfModel::GridScaleRange* range = NULL;
+
+            for (int i = 0; i < scaleRanges->GetCount(); i++)
+            {
+                range = scaleRanges->GetAt(i);
+                double minScale = range->GetMinScale();
+                double maxScale = range->GetMaxScale();
+                if(scale > minScale && scale <= maxScale)
+                {
+                    AppendRasterScaleRange(layer, destExtent, agentUri, dimension,
+                        minScale, maxScale, dpi, format, kmlContent);
                 }
             }
         }
@@ -187,7 +206,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
             if(scale > minScale && scale <= maxScale)
             {
                 AppendScaleRange(layer, destExtent, agentUri, dimension,
-                    minScale, maxScale, format, kmlContent);
+                    minScale, maxScale, dpi, format, kmlContent);
             }
         }
     }
@@ -223,22 +242,52 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
 
     double scale = GetScale(extents, width, height, dpi);
 
-    KmlContent kmlContent;
-    kmlContent.StartDocument();
-    kmlContent.WriteString("<visibility>1</visibility>");
-    AppendFeatures(layer, extents, scale, dpi, kmlContent);
-    kmlContent.EndDocument();
-    std::string contentString = kmlContent.GetString();
-    Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
-    if(format.compare(L"XML") == 0)
+    if(m_svcResource == NULL)
     {
-        byteSource->SetMimeType(MgMimeType::Xml);
+        InitializeResourceService();
     }
-    else // default to KML
+    Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
+    MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
+    if(gl != NULL)
     {
-        byteSource->SetMimeType(MgMimeType::Kml);
+        // Create a new, empty map
+        Ptr<MgMap> map = new MgMap();
+        map->Create(GOOGLE_EARTH_WKT, extents, L"Google Earth Map");
+        map->SetDisplayWidth(width);
+        map->SetDisplayHeight(height);
+        map->SetDisplayDpi(dpi);
+        map->SetViewScale(scale);
+        map->GetLayers()->Add(layer);
+        layer->ForceRefresh();
+                
+        if(m_svcRendering == NULL)
+        {
+            InitializeRenderingService();
+        }
+        Ptr<MgSelection> selection;
+        Ptr<MgColor> bkColor = new MgColor();
+        byteReader = m_svcRendering->RenderMap(map, selection, extents, width, height, bkColor, L"PNG");
     }
-    byteReader = byteSource->GetReader();
+    else
+    {
+        KmlContent kmlContent;
+        kmlContent.StartDocument();
+        kmlContent.WriteString("<visibility>1</visibility>");
+        AppendFeatures(layer, extents, scale, dpi, kmlContent);
+        kmlContent.EndDocument();
+        std::string contentString = kmlContent.GetString();
+        Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
+        if(format.compare(L"XML") == 0)
+        {
+            byteSource->SetMimeType(MgMimeType::Xml);
+        }
+        else // default to KML
+        {
+            byteSource->SetMimeType(MgMimeType::Kml);
+        }
+        byteReader = byteSource->GetReader();
+    }
 
     MG_CATCH_AND_THROW(L"MgServerKmlService.GetFeaturesKml")
 
@@ -279,6 +328,7 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
                                           double dimension,
                                           double minScale,
                                           double maxScale,
+                                          double dpi,
                                           CREFSTRING format,
                                           KmlContent& kmlContent)
 {
@@ -292,9 +342,9 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
     kmlContent.WriteString("<Link>");
     kmlContent.WriteString("<href>");
     kmlContent.WriteString(agentUri);
-    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;DPI=96&amp;LAYERDEFINITION=");
+    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;LAYERDEFINITION=");
     kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()));
-    sprintf(buffer,"&amp;SCALERANGE=%f,%f", minScale, maxScale);
+    sprintf(buffer,"&amp;SCALERANGE=%f,%f&amp;DPI=%f", minScale, maxScale, dpi);
     kmlContent.WriteString(buffer);
     kmlContent.WriteString("&amp;FORMAT=");
     kmlContent.WriteString(MgUtil::WideCharToMultiByte(format));
@@ -304,6 +354,47 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
     kmlContent.WriteString("<viewFormat>BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&amp;WIDTH=[horizPixels]&amp;HEIGHT=[vertPixels]</viewFormat>");
     kmlContent.WriteString("</Link>");
     kmlContent.WriteString("</NetworkLink>");
+}
+
+void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
+                                          MgEnvelope* extent,
+                                          CREFSTRING agentUri,
+                                          double dimension,
+                                          double minScale,
+                                          double maxScale,
+                                          double dpi,
+                                          CREFSTRING format,
+                                          KmlContent& kmlContent)
+{
+    char buffer[1024];
+    kmlContent.WriteString("<GroundOverlay>");
+    kmlContent.WriteString("<name>");
+    sprintf(buffer,"%f - %f", minScale, maxScale);
+    kmlContent.WriteString(buffer);
+    kmlContent.WriteString("</name>");
+    //<!-- inherited from Overlay element -->
+    //<color>ffffffff</color>                   <!-- kml:color -->
+    //<drawOrder>0</drawOrder>                  <!-- int -->  
+    sprintf(buffer, "<LatLonBox><north>%f</north><south>%f</south><east>%f</east><west>%f</west><rotation>0</rotation></LatLonBox>",
+        extent->GetUpperRightCoordinate()->GetY(), extent->GetLowerLeftCoordinate()->GetY(),
+        extent->GetUpperRightCoordinate()->GetX(), extent->GetLowerLeftCoordinate()->GetX());
+    kmlContent.WriteString(buffer);  
+    WriteRegion(extent, kmlContent, dimension, minScale, maxScale);
+    kmlContent.WriteString("<Icon>");
+    kmlContent.WriteString("<href>");
+    kmlContent.WriteString(agentUri);
+    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;LAYERDEFINITION=");
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()));
+    sprintf(buffer,"&amp;SCALERANGE=%f,%f&amp;DPI=%f", minScale, maxScale, dpi);
+    kmlContent.WriteString(buffer);
+    kmlContent.WriteString("&amp;FORMAT=");
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(format));
+    kmlContent.WriteString("</href>");
+    kmlContent.WriteString("<viewRefreshMode>onStop</viewRefreshMode>");
+    kmlContent.WriteString("<viewRefreshTime>1</viewRefreshTime>");
+    kmlContent.WriteString("<viewFormat>BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&amp;WIDTH=[horizPixels]&amp;HEIGHT=[vertPixels]</viewFormat>");
+    kmlContent.WriteString("</Icon>");
+    kmlContent.WriteString("</GroundOverlay>");
 }
 
 void MgServerKmlService::AppendFeatures(MgLayer* layer,
@@ -335,11 +426,17 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
                                        -layer->GetDisplayOrder(),
                                        uig);
     Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
-    KmlRenderer renderer(&kmlContent, scale, dpi);
+    
+    RS_Bounds bounds(extents->GetLowerLeftCoordinate()->GetX(),
+        extents->GetLowerLeftCoordinate()->GetY(),
+        extents->GetUpperRightCoordinate()->GetX(),
+        extents->GetUpperRightCoordinate()->GetY());
+    KmlRenderer renderer(&kmlContent, bounds, scale, dpi);
     DefaultStylizer stylizer;
     stylizer.Initialize(&renderer);
     MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
     MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+//    MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());    
     if(vl != NULL)
     {
         if(m_svcFeature == NULL)
@@ -373,6 +470,36 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             renderer.EndLayer();
         }
     }
+/*    else if(gl != NULL)
+    {
+        int widthPix = 600;
+        int heightPix = 300;
+        
+        if(m_svcFeature == NULL)
+        {
+            InitializeFeatureService();
+        }
+
+        Ptr<MgCoordinateSystem> layerCs = GetCoordinateSystem(new MgResourceIdentifier(gl->GetResourceID()));
+        if(layerCs != NULL)
+        {
+            csTrans = new MgCSTrans(layerCs, destCs);
+        }
+        RS_Bounds rsExtent(extents->GetLowerLeftCoordinate()->GetX(),
+            extents->GetLowerLeftCoordinate()->GetY(),
+            extents->GetUpperRightCoordinate()->GetX(),
+            extents->GetUpperRightCoordinate()->GetY());
+        Ptr<MgFeatureReader> featureReader = MgStylizationUtil::ExecuteRasterQuery(m_svcFeature, rsExtent, gl, NULL, destCs, layerCs, widthPix, heightPix);
+        if (featureReader.p)
+        {
+            //wrap in an RS_FeatureReader
+            RSMgFeatureReader rsrdr(featureReader, gl->GetGeometry());
+            RS_FeatureClassInfo fcInfo(gl->GetFeatureName());
+            renderer.StartLayer(&layerInfo, &fcInfo);
+            stylizer.StylizeGridLayer(gl, &rsrdr, csTrans, NULL, NULL);
+            renderer.EndLayer();
+        }
+    }*/
     else if(dl != NULL)
     {
         if(m_svcDrawing == NULL)
@@ -440,14 +567,16 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MgLayer* layer, MgCoordinateSyste
         auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
         MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+        MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
         Ptr<MgCoordinateSystemTransform> csTrans;
-        if(vl != NULL)
+        if(vl != NULL || gl != NULL)
         {
+            Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(vl != NULL ? vl->GetResourceID() : gl->GetResourceID());
+            
             if(m_svcFeature == NULL)
             {
                 InitializeFeatureService();
             }
-            Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(vl->GetResourceID());
             Ptr<MgSpatialContextReader> scReader = m_svcFeature->GetSpatialContexts(featResId);
             if(scReader.p != NULL)
             {
@@ -538,6 +667,7 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MgLayer* layer, MgCoordinateSyste
             }
             while(offset != STRING::npos);
         }
+
         if(envelope != NULL && csTrans != NULL)
         {
             envelope = csTrans->Transform(envelope);
@@ -636,6 +766,17 @@ void MgServerKmlService::InitializeDrawingService()
     m_svcDrawing = dynamic_cast<MgDrawingService*>(
         serviceMan->RequestService(MgServiceType::DrawingService));
     assert(m_svcDrawing != NULL);
+}
+
+//gets an instance of the drawing service using the service manager
+void MgServerKmlService::InitializeRenderingService()
+{
+    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+    assert(NULL != serviceMan);
+
+    m_svcRendering = dynamic_cast<MgRenderingService*>(
+        serviceMan->RequestService(MgServiceType::RenderingService));
+    assert(m_svcRendering != NULL);
 }
 
 MgCoordinateSystem* MgServerKmlService::GetCoordinateSystem(MgResourceIdentifier* featureSourceResId)
