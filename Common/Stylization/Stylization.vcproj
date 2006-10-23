@@ -462,6 +462,14 @@
 				RelativePath=".\LineBuffer.h"
 				>
 			</File>
+			<File
+				RelativePath=".\PolygonUtils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PolygonUtils.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Interfaces"

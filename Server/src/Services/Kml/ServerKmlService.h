@@ -85,7 +85,18 @@ private:
         CREFSTRING agentUri, 
         double dimension, 
         double minScale, 
-        double maxScale, 
+        double maxScale,
+        double dpi,
+        CREFSTRING format, 
+        KmlContent& kmlContent);
+
+    void AppendRasterScaleRange(MgLayer* layer, 
+        MgEnvelope* extent, 
+        CREFSTRING agentUri, 
+        double dimension, 
+        double minScale, 
+        double maxScale,
+        double dpi,
         CREFSTRING format, 
         KmlContent& kmlContent);
 
@@ -98,6 +109,7 @@ private:
     void InitializeResourceService();
     void InitializeFeatureService();
     void InitializeDrawingService();
+    void InitializeRenderingService();
 
     void WriteRegion(MgEnvelope* extent, KmlContent& kmlContent, double dimension = 0, double minScale = 0, double maxScale = 0, double dpi = 0);
 
@@ -110,6 +122,7 @@ private:
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgFeatureService> m_svcFeature;
     Ptr<MgDrawingService> m_svcDrawing;
+    Ptr<MgRenderingService> m_svcRendering;
     Ptr<MgCoordinateSystemFactory> m_csFactory;
 };
 

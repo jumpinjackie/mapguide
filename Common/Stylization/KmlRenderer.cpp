@@ -21,30 +21,13 @@
 #include "LineStyle.h"
 #include "SLDSymbols.h"
 #include "UnicodeString.h"
-
-/*#define ROUND(x) (int)((x) + 0.5)
-
-#define MAX(x,y) ((x) > (y) ? (x) : (y))
-#define MIN(x,y) ((x) < (y) ? (x) : (y))
-
-#define MAX4(x,y,z,w) \
-    ((MAX((x),(y))) > (MAX((z),(w))) ? (MAX((x),(y))) : (MAX((z),(w))))
-#define MIN4(x,y,z,w) \
-    ((MIN((x),(y))) < (MIN((z),(w))) ? (MIN((x),(y))) : (MIN((z),(w))))
-
-#define MAXX(x) MAX4(x[0],x[2],x[4],x[6])
-#define MINX(x) MIN4(x[0],x[2],x[4],x[6])
-#define MAXY(x) MAX4(x[1],x[3],x[5],x[7])
-#define MINY(x) MIN4(x[1],x[3],x[5],x[7])
-
-#define SYMBOL_BITMAP_SIZE 128
-#define SYMBOL_BITMAP_MAX 1024*/
+#include "PolygonUtils.h"
 
 //using this in contructor
 #pragma warning(disable:4355)
 
 //default constructor
-KmlRenderer::KmlRenderer(KmlContent* kmlContent, double scale, double dpi) :
+KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, double scale, double dpi) :
     m_mainContent(kmlContent),
     m_kmlContent(kmlContent),
     m_styleContent(NULL),
@@ -52,7 +35,8 @@ KmlRenderer::KmlRenderer(KmlContent* kmlContent, double scale, double dpi) :
     m_layerInfo(NULL),
     m_featureClassInfo(NULL),
     m_scale(scale),
-    m_styleId(0)
+    m_styleId(0),
+    m_extents(extents)
 {
     m_kmlContent = m_mainContent;
     m_pixelSize = METERS_PER_INCH / dpi;
@@ -182,44 +166,80 @@ void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
 void KmlRenderer::ProcessPolygon(LineBuffer* lb,
                                 RS_FillStyle& fill)
 {
-    char buffer[256];
-
     //write style
     WriteStyle(fill);
-    
-    m_kmlContent->WriteString("<MultiGeometry>");
-    int point_offset = 0;
-    int numCntrs = lb->cntr_count();
-    for(int i = 0; i < numCntrs; i++)
+        
+    if(lb != NULL)
     {
-        int cntr_size = lb->cntrs()[i];
-
-        m_kmlContent->WriteString("<Polygon>");
-        m_kmlContent->WriteString("<outerBoundaryIs>");
-        m_kmlContent->WriteString("<LinearRing>");
-        m_kmlContent->WriteString("<coordinates>");
-        double* points = lb->points();
-        for(int j = 0; j < cntr_size * 2; j += 2)
+        if(lb->cntr_count() == 1)
         {
-            double x = points[point_offset + j];
-            double y = points[point_offset + j + 1];
-            if(j > 0)
-            {
-                m_kmlContent->WriteString(",");
-            }
-            sprintf(buffer, "%f, %f, 0.00000", x, y);
-            m_kmlContent->WriteString(buffer);
+            m_kmlContent->WriteString("<Polygon>");
+            m_kmlContent->WriteString("<outerBoundaryIs>");
+            WriteLinearRing(lb->points(), 0, lb->point_count());
+            m_kmlContent->WriteString("</outerBoundaryIs>");
+            m_kmlContent->WriteString("</Polygon>");
         }
-        m_kmlContent->WriteString("</coordinates>");
-        m_kmlContent->WriteString("</LinearRing>");
-        m_kmlContent->WriteString("</outerBoundaryIs>");
-        m_kmlContent->WriteString("</Polygon>");
+        else
+        {
+            m_kmlContent->WriteString("<MultiGeometry>");
+            PolygonUtils::SORTEDRINGS rings;
+            PolygonUtils::DetermineInteriorAndExteriorPolygons(lb, rings);
+            for (PolygonUtils::SORTEDRINGS::iterator sIter = rings.begin(); sIter != rings.end(); sIter++)
+            {
+                RingData* pRingData = sIter->second;
 
-        point_offset += cntr_size * 2;
+                // only create polygons for outer rings
+                if (pRingData->m_type != RingData::Outer)
+                    continue;
+
+                if(pRingData->m_ringPoints != NULL)
+                {
+                    // write the outer ring
+                    m_kmlContent->WriteString("<Polygon>");
+                    m_kmlContent->WriteString("<outerBoundaryIs>");
+                    WriteLinearRing(pRingData->m_ringPoints, pRingData->m_ringPointOffset, pRingData->m_ringPointCount);
+                    m_kmlContent->WriteString("</outerBoundaryIs>");
+
+                    // write the inner rings, if any
+                    RingData* pChild = pRingData->m_child;
+                    while(pChild != NULL)
+                    {
+                        if(pChild->m_ringPoints != NULL)
+                        {
+                            m_kmlContent->WriteString("<innerBoundaryIs>");
+                            WriteLinearRing(pChild->m_ringPoints, pChild->m_ringPointOffset, pChild->m_ringPointCount);
+                            m_kmlContent->WriteString("</innerBoundaryIs>");
+                        }
+                        pChild = pChild->m_child;
+                    }
+                    m_kmlContent->WriteString("</Polygon>");
+                }
+            }
+            PolygonUtils::Cleanup(rings);
+            m_kmlContent->WriteString("</MultiGeometry>");
+        }
     }
-    m_kmlContent->WriteString("</MultiGeometry>");
 }
 
+void KmlRenderer::WriteLinearRing(double* points, int offset, int numPoints)
+{
+    char buffer[256];
+    m_kmlContent->WriteString("<LinearRing>");
+    m_kmlContent->WriteString("<coordinates>");
+    int pointOffset;
+    for(int i = 0; i < numPoints; i ++)
+    {
+        if(i > 0)
+        {
+            m_kmlContent->WriteString(",");
+        }
+        pointOffset = offset + (i * 2);
+        sprintf(buffer, "%f, %f, 0.00000", points[pointOffset], points[pointOffset + 1]);
+        m_kmlContent->WriteString(buffer);
+    }
+    m_kmlContent->WriteString("</coordinates>");
+    m_kmlContent->WriteString("</LinearRing>");
+}
 
 void KmlRenderer::ProcessPolyline(LineBuffer* srclb,
                                  RS_LineStroke& lsym)
