@@ -1488,26 +1488,115 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
             GisPtr<FdoClassCollection> fcc = ffs->GetClasses();
             GisInt32 classCnt = fcc->GetCount();
 
+            bool bHaveIdProps = false;
+
             for (GisInt32 j = 0; j < classCnt; j++)
             {
                 GisPtr<FdoClassDefinition> fc = fcc->GetItem(j);
 
                 GisStringP qname = fc->GetQualifiedName();
+                GisStringP name = fc->GetName();
 
-                STRING qualifiedName = (const wchar_t*)qname;
-
-                // Get identity properties for only the primary source (ie extensionName is blank)
-                STRING::size_type nExtensionStart = qualifiedName.find(L"[");
-                if (STRING::npos == nExtensionStart)
+                int idx1 = wcscmp(className.c_str(), qname);
+                int idx2 = wcscmp(className.c_str(), name);
+                // classname can be either fully qualified or non-qualified name
+                if (idx1 == 0 || idx2 == 0)
                 {
-                    // retrieve identity properties from FDO
-                    GisPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
+                    STRING qualifiedName = (const wchar_t*)qname;
 
-                    MgServerGetFeatures msgf;
-                    msgf.GetClassProperties(idProps, fdpdc);
-                    break;
+                    // Get identity properties for only the primary source (ie extensionName is blank)
+                    STRING::size_type nExtensionStart = qualifiedName.find(L"[");
+                    if (STRING::npos == nExtensionStart)
+                    {
+                        // retrieve identity properties from FDO
+                        GisPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
+
+                        MgServerGetFeatures msgf;
+                        msgf.GetClassProperties(idProps, fdpdc);
+                        bHaveIdProps = true;
+                        break;
+                    }
                 }
-            }
+            }  // End loop thru the class collection
+
+            // If cannot find matching class in the class collection, it must be an extension class
+            // So get the identity properties from the primary feature class source
+            if (!bHaveIdProps && classCnt > 0)
+            {
+                // Get the className for the primary source that is being extended
+                // Retrieve XML from repository
+                string featureSourceXmlContent;
+                RetrieveFeatureSource(resource, featureSourceXmlContent);
+
+                // Need to parse XML and get properties
+                MgXmlUtil xmlUtil;
+                xmlUtil.ParseString(featureSourceXmlContent.c_str());
+
+                DOMElement* rootNode = xmlUtil.GetRootNode();
+                DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
+                CHECKNULL(extensionNodeList, L"MgServerDescribeSchema.GetIdentityProperties");
+
+                int extensionNodes = (int)extensionNodeList->getLength();
+                STRING extensionFeatureClass;
+
+                for (int i = 0; i < extensionNodes; i++)
+                {
+                    DOMNode* extensionNode = extensionNodeList->item(i);
+                    CHECKNULL(extensionNode, L"MgServerDescribeSchema.GetIdentityProperties");
+
+                    DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
+                    int nNameNodes = (int)nameNodeList->getLength();
+
+                    // get the extension name node
+                    DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
+
+                    // get the extension name value
+                    STRING extensionName;
+                    xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, extensionName);
+
+                    if (className == extensionName)
+                    {
+                        DOMNodeList* featureClassNodeList = xmlUtil.GetNodeList(extensionNode, "FeatureClass");
+                        int nFeatureClassNodes = (int)featureClassNodeList->getLength();
+
+                        // get the extension feature class node
+                        DOMNode* extensionFeatureClassNode = featureClassNodeList->item(nFeatureClassNodes - 1);
+
+                        // get the extension feature class value
+                        xmlUtil.GetTextFromElement((DOMElement*)extensionFeatureClassNode, extensionFeatureClass);
+
+                        // Loop thru the class collection
+                        for (int classIndex = 0; classIndex < classCnt; classIndex++)
+                        {
+                            GisPtr<FdoClassDefinition> fc = fcc->GetItem(classIndex);
+
+                            GisStringP qname = fc->GetQualifiedName();
+                            GisStringP name = fc->GetName();
+
+                            // classname can be either fully qualified or non-qualified name
+                            int idx1 = wcscmp(extensionFeatureClass.c_str(), qname);
+                            int idx2 = wcscmp(extensionFeatureClass.c_str(), name);
+
+                            if (idx1 == 0 || idx2 == 0)
+                            {
+                                STRING qualifiedName = (const wchar_t*)qname;
+
+                                // Get identity properties for only the primary source (ie extensionName is blank)
+                                STRING::size_type nExtensionStart = qualifiedName.find(L"[");
+                                if (STRING::npos == nExtensionStart)
+                                {
+                                    // retrieve identity properties from FDO
+                                    GisPtr<FdoDataPropertyDefinitionCollection> fdpdc = fc->GetIdentityProperties();
+
+                                    MgServerGetFeatures msgf;
+                                    msgf.GetClassProperties(idProps, fdpdc);
+                                    break;
+                                }
+                            }  // end if (qualifiedName == extensionFeatureClass)
+                        }  // end loop thru class collection
+                    }  // end if (className == extensionName)
+                }  // end loop thru extension nodes
+            }  // end find identity properties for extension class
         }
 
         featureServiceCache->AddIdentityProperties(resource, schemaName, className, idProps);
