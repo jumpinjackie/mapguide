@@ -71,8 +71,8 @@
       <td><a href="http://demo.pat.ca/pacificMGE" target="_blank">このサイト</a>はPacific Alliance Technologiesによって作成され、MapGuide Open Sourceを用いたWeb GISをデモしています。</td>
     </tr>
     <tr>
-      <td height="147"><a href="http://data.mapguide.com/mapguide/devguide/"><img src="images/devsample_thumb.png" alt="Go to Application" width="200" height="140" hspace="5" border="0" align="left"/></a></td>
-      <td><a href="http://data.mapguide.com/mapguide/devguide/">このサイト</a>にはMapGuideのために共通で利用されるスクリプトとAPIコードサンプルがあります。このソースコードはこのサイトからダウンロードできます。</td>
+      <td height="147"><a href="http://data.mapguide.com/mapguide/devguide/index.php"><img src="images/devsample_thumb.png" alt="Go to Application" width="200" height="140" hspace="5" border="0" align="left"/></a></td>
+      <td><a href="http://data.mapguide.com/mapguide/devguide/index.php">このサイト</a>にはMapGuideのために共通で利用されるスクリプトとAPIコードサンプルがあります。このソースコードはこのサイトからダウンロードできます。</td>
     </tr>
 
   </table>
