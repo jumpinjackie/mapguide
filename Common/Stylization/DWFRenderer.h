@@ -206,6 +206,7 @@ private:
     void BeginOverpostGroup(WT_File* file, RS_OverpostType type, bool render, bool exclude);
     void EndOverpostGroup(WT_File* file);
 
+    size_t SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_breaks);
     void ProcessMultilineText(WT_File* file, const RS_String& txt, RS_TextDef& tdef, int x, int y);
 
     //

@@ -1309,11 +1309,99 @@ void DWFRenderer::PlayMacro(WT_File* file, int id, double sizeMeters, RS_Units u
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
+// Finds occurences of line breaks and adds the start pointer of each
+// line to the supplied array.  Line breaks can be any of the following:
+//   "\\n"                      // sequence currently used by MG OS / Enterprise
+//   \n\r  (char 13 + char 10)  // common in RDBMS like Oracle
+//   \r\n  (char 10 + char 13)
+//   \n    (char 13)            // used by MG 6.5
+//   \r    (char 10)            // common in Linux
+size_t DWFRenderer::SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_breaks)
+{
+    _ASSERT(label != NULL);
+    if (label == NULL)
+        return 0;
+
+    // first line
+    line_breaks.push_back(label);
+
+    for (;;)
+    {
+        // find the next line break - note that we must search
+        // for the 2-character sequences FIRST
+        wchar_t* found;
+        for (;;)
+        {
+            found = ::wcsstr(label, L"\\n");
+            if (found != NULL)
+            {
+                // null terminate line break (2 characters)
+                *found++ = 0;
+                *found++ = 0;
+                break;
+            }
+
+            found = ::wcsstr(label, L"\n\r");
+            if (found != NULL)
+            {
+                // null terminate line break (2 characters)
+                *found++ = 0;
+                *found++ = 0;
+                break;
+            }
+
+            found = ::wcsstr(label, L"\r\n");
+            if (found != NULL)
+            {
+                // null terminate line break (2 characters)
+                *found++ = 0;
+                *found++ = 0;
+                break;
+            }
+
+            found = ::wcsstr(label, L"\n");
+            if (found != NULL)
+            {
+                // null terminate line break (1 character)
+                *found++ = 0;
+                break;
+            }
+
+            found = ::wcsstr(label, L"\r");
+            if (found != NULL)
+            {
+                // null terminate line break (1 character)
+                *found++ = 0;
+            }
+
+            break;
+        }
+
+        if (found == NULL)
+            break;
+
+        label = found;
+        line_breaks.push_back(label);
+    }
+
+    return line_breaks.size();
+}
+
+
 void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_TextDef& tdef, int x, int y)
 {
-    //check if we need to break up
-    //in MapGuide a newline in a string is indicated by a \n string, not the \n character
-    if (!wcsstr(txt.c_str(), L"\\n"))
+    //make a temporary copy
+    size_t len = wcslen(txt.c_str());
+    wchar_t* cpy = (wchar_t*)alloca((len + 1) * sizeof(wchar_t));
+    wcscpy(cpy, txt.c_str());
+
+    //break it up
+    std::vector<wchar_t*> line_breaks;
+    size_t num_lines = SplitLabel(cpy, line_breaks);
+
+    //optimization
+    if (num_lines <= 1)
     {
         WT_String wtstr(Util_ConvertString(txt.c_str()));
         WT_Logical_Point pt(x, y);
@@ -1321,27 +1409,6 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
         wttext.serialize(*file);
         return;
     }
-
-    //otherwise we need to break up into several strings
-
-    //make a copy, TODO: this can be more efficient by using global string buffer
-    size_t len = wcslen(txt.c_str());
-    wchar_t* cpy = new wchar_t[len + 1];
-    wcscpy(cpy, txt.c_str());
-
-    //look for occurences of newline combo and remember start pointers
-    //of each line
-    std::vector<wchar_t*> line_breaks;
-
-    line_breaks.push_back(cpy); //first line
-    wchar_t* lbr = cpy;
-    while ((lbr = ::wcsstr(lbr, L"\\n")) != 0)
-    {
-        *lbr++ = 0; *lbr++ = 0; //null terminate line break
-        line_breaks.push_back(lbr);
-    }
-
-    size_t num_lines = line_breaks.size();
 
     //find vertical shift increment for each line
     double line_hgt = _MeterToW2DMacroUnit(tdef.font().units(), tdef.font().height());
@@ -1388,9 +1455,6 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
         WT_Text wttext(pt, wtstr);
         wttext.serialize(*file);
     }
-
-    //memory leaks are not cool
-    delete [] cpy;
 }
 
 

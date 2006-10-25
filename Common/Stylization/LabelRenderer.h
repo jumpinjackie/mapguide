@@ -21,9 +21,6 @@
 #include "LabelRendererBase.h"
 #include "SimpleOverpost.h"
 
-class GDRenderer;
-struct RS_Font;
-
 
 //////////////////////////////////////////////////////////////////////////////
 //used to accumulate labels
@@ -100,26 +97,19 @@ private:
 
     bool ProcessLabelInternal(LR_LabelInfo& info, bool render, bool exclude, bool check);
 
-    void ApplyTextAlignment(RS_TextDef& tdef, double actual_height, RS_F_Point* extent, RS_F_Point& ins_point, const RS_Font* font);
-
     bool DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclude, bool check);
     bool DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude, bool check);
 
     double ComputeCharacterPositions(LR_LabelInfo& info, double* seglens, double position, float* kerned_spacing, double measured_width, CharPos* ret);
 
     bool OverlapsStuff(RS_F_Point* pts, int npts);
-    void DeviceToMappingBounds(RS_Bounds& b);
-    void ComputeBounds(RS_F_Point* RESTRICT pts, int npts, RS_Bounds& b);
-    void RotatedBounds(double x, double y, double width, double height, double angle_cw_rad, RS_F_Point* b);
 
     std::vector<LR_LabelInfo> StitchPolylines(std::vector<LR_LabelInfo>& labels);
-    bool CloseEnough(RS_F_Point& p1, RS_F_Point& p2);
 
     // member data
     std::vector<LR_OverpostGroup>   m_labelGroups;
     std::map<RS_String, size_t>     m_hStitchTable;
     bool                            m_bOverpostGroupOpen;
-    GDRenderer*                     m_renderer;
     SimpleOverpost                  m_overpost;
 };
 

@@ -42,6 +42,7 @@ struct RS_Font;
 class GDRenderer : public Renderer
 {
     friend class LabelRenderer;
+    friend class LabelRendererBase;
     friend class LabelRendererLocal;
 
 public:
@@ -146,7 +147,7 @@ public:
 
     void MeasureString(const RS_String& s,
                        double           height,
-                       const RS_Font* font,
+                       const RS_Font*   font,
                        double           angle,
                        RS_F_Point*      res,
                        float*           offsets);

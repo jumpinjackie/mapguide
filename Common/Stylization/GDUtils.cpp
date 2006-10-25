@@ -207,13 +207,13 @@ void rs_gdImageMultiPolygon(gdImagePtr im, int* cntrs, int nCntrs, gdPointPtr p,
 void rs_gdImageCircleForBrush(gdImagePtr im, int x, int y, int rad, RS_Color& color)
 {
     int gdc = ConvertColor(im, color);
-    float rad2 = rad*rad;
+    float rad2 = (float)rad*rad;
 
     for (int j = -rad, k = y+j; j <= rad; j++, k++)
     {
         float j_offset = j + 0.5f;
 
-        float hlen = sqrt((float)(rad2 - j_offset*j_offset));
+        float hlen = sqrt(rad2 - j_offset*j_offset);
 
         int solidwid = (int)hlen;
 

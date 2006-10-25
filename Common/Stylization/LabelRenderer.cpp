@@ -31,8 +31,8 @@ extern int ConvertColor(gdImagePtr i, RS_Color& c);
 
 
 //////////////////////////////////////////////////////////////////////////////
-LabelRenderer::LabelRenderer(GDRenderer* renderer)
-: m_renderer(renderer),
+LabelRenderer::LabelRenderer(GDRenderer* renderer) 
+: LabelRendererBase(renderer),
   m_bOverpostGroupOpen(false)
 {
 }
@@ -307,110 +307,12 @@ bool LabelRenderer::ProcessLabelInternal(LR_LabelInfo& info,
 
 
 //////////////////////////////////////////////////////////////////////////////
-//modifies the text extent (and insertion point) to take into account text alignment
-void LabelRenderer::ApplyTextAlignment(RS_TextDef& tdef, double actual_height, RS_F_Point* extent, RS_F_Point& ins_point, const RS_Font* font)
-{
-    // adjustments for horizontal and vertical alignment
-    double hAlignOffset = 0.0;
-    double vAlignOffset = 0.0;
-
-    // --------------------
-    // horizontal alignment
-    // --------------------
-
-    // get the width vector from the (rotated) text bounding box
-    double dxwA = extent[1].x - extent[0].x;
-    double dywA = extent[1].y - extent[0].y;
-    double dxwB = extent[2].x - extent[3].x;
-    double dywB = extent[2].y - extent[3].y;
-    double dxw  = 0.5*(dxwA + dxwB);
-    double dyw  = 0.5*(dywA + dywB);
-
-    RS_HAlignment hAlign = tdef.halign();
-    switch (hAlign)
-    {
-    case RS_HAlignment_Left:
-        break;
-
-    case RS_HAlignment_Center:
-        hAlignOffset += 0.5*dxw;
-        vAlignOffset += 0.5*dyw;
-        break;
-
-    case RS_HAlignment_Right:
-        hAlignOffset += dxw;
-        vAlignOffset += dyw;
-        break;
-    }
-
-    // ------------------
-    // vertical alignment
-    // ------------------
-
-    double em_square_size = font->m_units_per_EM;
-    double font_cap_height = font->m_height * actual_height / em_square_size;
-    double font_ascent     = font->m_ascender * actual_height / em_square_size;
-    double font_descent    = font->m_descender * actual_height / em_square_size;
-
-    // get the height vector
-    double dyh = 0.0;
-
-    RS_VAlignment vAlign = tdef.valign();
-    switch (vAlign)
-    {
-    case RS_VAlignment_Descent:
-        dyh = -font_descent;
-        break;
-
-    case RS_VAlignment_Base:
-        break;
-
-    case RS_VAlignment_Half:
-        dyh = 0.5*font_cap_height;
-        break;
-
-    case RS_VAlignment_Cap:
-        dyh = font_cap_height;
-        break;
-
-    case RS_VAlignment_Ascent:
-        dyh = font_ascent;
-        break;
-    }
-
-    // add in the rotated vertical alignment contribution
-    double angle = tdef.rotation() * M_PI / 180.0;
-
-    //take into account that y axis goes down in our coordinate system
-    dyh = -dyh;
-    angle = -angle;
-
-    double cs = cos(angle);
-    double sn = sin(angle);
-    hAlignOffset +=  -sn*dyh;
-    vAlignOffset +=  cs*dyh;
-
-    // adjust the bounding box
-    for (int i=0; i<4; i++)
-    {
-        extent[i].x -= hAlignOffset;
-        extent[i].y -= vAlignOffset;
-    }
-
-    //adjust insertion point
-    ins_point.x -= hAlignOffset;
-    ins_point.y -= vAlignOffset;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
 void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
 {
-    //find axis aligned bounds to use for overposting
+    //use axis aligned bounds for overposting
     //TODO: can be improved to use the given polygon as is
     //instead of taking its bounds
     RS_Bounds axis_bounds;
-
     ComputeBounds(pts, npts, axis_bounds);
 
     //convert to mapping space for overpost tracking
@@ -425,7 +327,7 @@ void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRenderer::OverlapsStuff(RS_F_Point* pts, int npts)
 {
-    //use axis aligned bounds to use for overposting
+    //use axis aligned bounds for overposting
     //TODO: can be improved to use the given polygon as is
     //instead of taking its bounds
     RS_Bounds axis_bounds;
@@ -441,45 +343,13 @@ bool LabelRenderer::OverlapsStuff(RS_F_Point* pts, int npts)
 
 
 //////////////////////////////////////////////////////////////////////////////
-void LabelRenderer::DeviceToMappingBounds(RS_Bounds& b)
-{
-    b.minx = m_renderer->_ITXD(b.minx);
-    b.maxx = m_renderer->_ITXD(b.maxx);
-
-    //y goes down in screen space, up in mapping space -- so reverse them
-    double swap = b.miny;
-    b.miny = m_renderer->_ITYD(b.maxy);
-    b.maxy = m_renderer->_ITYD(swap);
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-//computes axis aligned bounds of a point set
-void LabelRenderer::ComputeBounds(RS_F_Point* RESTRICT pts, int npts, RS_Bounds& b)
-{
-    if (!npts) return;
-
-    b.minx = b.maxx = pts[0].x;
-    b.miny = b.maxy = pts[0].y;
-
-    for (int i=1; i<npts; i++)
-    {
-        if (pts[i].x < b.minx)
-            b.minx = pts[i].x;
-        else if (pts[i].x > b.maxx)
-            b.maxx = pts[i].x;
-
-        if (pts[i].y < b.miny)
-            b.miny = pts[i].y;
-        else if (pts[i].y > b.maxy)
-            b.maxy = pts[i].y;
-    }
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
 bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclude, bool check)
 {
+    // font matching
+    const RS_Font* font = m_renderer->FindFont(info.m_tdef.font());
+    if (!font)
+        return false;
+
     //determine pixel space font height
     double hgt = m_renderer->_MeterToMapSize(info.m_tdef.font().units(), info.m_tdef.font().height());
     hgt *= m_renderer->GetMapToScreenScale() * 0.75;
@@ -493,47 +363,87 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
 
     //radian CCW rotation
     double rotation = info.m_tdef.rotation() * M_PI / 180.0;
+    double cos_a = cos(rotation);
+    double sin_a = sin(rotation);
+
+    // font height gives the distance from one baseline to the next
+    // increase this by a factor of 1.05 (what GD uses)
+    double font_height = font->m_height * hgt / font->m_units_per_EM;
+    double line_height = 1.05 * font_height;
+
+    // transform insertion point into pixel space
+    RS_F_Point ins_point(m_renderer->_TXD(info.m_x), m_renderer->_TYD(info.m_y));
+
+    //-------------------------------------------------------
+    // break up the string up into individual lines
+    //-------------------------------------------------------
+
+    // make a temporary copy
+    size_t len = wcslen(info.m_text.c_str());
+    wchar_t* cpy = (wchar_t*)alloca((len + 1) * sizeof(wchar_t));
+    wcscpy(cpy, info.m_text.c_str());
+
+    // break it up
+    std::vector<wchar_t*> line_breaks;
+    size_t num_lines = SplitLabel(cpy, line_breaks);
 
     //-------------------------------------------------------
     // text extent and alignment computation
     //-------------------------------------------------------
 
-    //font matching
-    //TODO: not working right now
-    const RS_Font* font = m_renderer->FindFont(info.m_tdef.font());
-    if (!font)
-        return false;
-
-    //get overall string size and char spacing
     RS_F_Point fpts[4];
-    float* spacing = (float*)alloca(info.m_text.length() * 2 * sizeof(float));
-    m_renderer->MeasureString(info.m_text.c_str(), hgt, font, 0.0, fpts, spacing);
+    RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
+    RS_Bounds unrotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
 
-    //the width and height of this particular string
-    //TODO: we can be more precise if we get height on per character basis
-    double texthgt = fabs(fpts[2].y - fpts[0].y);
-    double textwid = fabs(fpts[1].x - fpts[0].x);
+    double* hAlignOffsets = (double*)alloca(num_lines * sizeof(double));
+    double* vAlignOffsets = (double*)alloca(num_lines * sizeof(double));
+    double* textWidths    = (double*)alloca(num_lines * sizeof(double));
 
-    //get overall extent and char spacing, including rotation
-    m_renderer->MeasureString(info.m_text.c_str(), hgt, font, rotation, fpts, NULL);
+    // base vertical offset is the same for each line of text
+    double vAlignBaseOffset = GetVerticalAlignmentOffset(info.m_tdef, font, hgt, line_height, num_lines);
 
-    //transform insertion point into pixel space
-    RS_F_Point ins_point(m_renderer->_TXD(info.m_x), m_renderer->_TYD(info.m_y));
-
-    for (int i=0; i<4; i++)
+    for (size_t k=0; k<num_lines; ++k)
     {
-        fpts[i].x += ins_point.x;
-        fpts[i].y += ins_point.y;
+        wchar_t* txt = line_breaks.at(k);
+
+        // get the unrotated extent of this sub-string
+        m_renderer->MeasureString(txt, hgt, font, 0.0, fpts, NULL);
+
+        // horizontal offset depends on the sub-string width, while
+        // vertical offset depends on the line of text
+        hAlignOffsets[k] = GetHorizontalAlignmentOffset(info.m_tdef, fpts);
+        vAlignOffsets[k] = vAlignBaseOffset + k*line_height;
+
+        // remember the width
+        textWidths[k] = fpts[1].x - fpts[0].x;
+
+        // process the extent points
+        for (int j=0; j<4; ++j)
+        {
+            // translate to account for the alignment
+            fpts[j].x += hAlignOffsets[k];
+            fpts[j].y += vAlignOffsets[k];
+
+            // update the overall unrotated bounds
+            unrotatedBounds.add_point(fpts[j]);
+
+            // rotate and translate to the insertion point
+            double tmpX = fpts[j].x;
+            double tmpY = fpts[j].y;
+            fpts[j].x = ins_point.x + tmpX * cos_a + tmpY * sin_a;
+            fpts[j].y = ins_point.y - tmpX * sin_a + tmpY * cos_a;
+
+            // update the overall rotated bounds
+            rotatedBounds.add_point(fpts[j]);
+        }
     }
 
-    //apply text alignment to bounding box
-    //this will modify both the insertion point and the extent
-    ApplyTextAlignment(info.m_tdef, hgt, fpts, ins_point, font);
+    rotatedBounds.get_points(fpts);
 
 #ifdef DEBUG_LABELS
     // this debugging code draws a box around the label (using its bounds)
     RS_D_Point dpts[4];
-    for (int j=0; j<4; j++)
+    for (int j=0; j<4; ++j)
     {
         dpts[j].x = (int)fpts[j].x;
         dpts[j].y = (int)fpts[j].y;
@@ -557,71 +467,77 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
 
     if (render)
     {
-        //ghosting offset
-        int offset = 0;
-
-        //take into account ghosting making text bounds bigger
-        if (info.m_tdef.textbg() == RS_TextBackground_Ghosted)
-            offset = 1;
-
-        int posx = (int)floor(ins_point.x+0.5);
-        int posy = (int)floor(ins_point.y+0.5);
-
-        //get descent from font metrics -- we will use this for underline
-        //and opaque bbox
-        //TODO: not sure if we should always draw the opaque bbox with the 
-        //descent or only when underline is present...
-        double descent = (double)font->m_descender * hgt / (double)font->m_units_per_EM;
-
-        if (info.m_tdef.textbg() == RS_TextBackground_Ghosted)
+        // draw the opaque background first, if requested
+        if (info.m_tdef.textbg() == RS_TextBackground_Opaque)
         {
-            m_renderer->DrawString(info.m_text, posx-offset, posy, hgt, font, info.m_tdef.bgcolor(), rotation);
-            m_renderer->DrawString(info.m_text, posx+offset, posy, hgt, font, info.m_tdef.bgcolor(), rotation);
-            m_renderer->DrawString(info.m_text, posx, posy-offset, hgt, font, info.m_tdef.bgcolor(), rotation);
-            m_renderer->DrawString(info.m_text, posx, posy+offset, hgt, font, info.m_tdef.bgcolor(), rotation);
-        }
-        else if (info.m_tdef.textbg() == RS_TextBackground_Opaque)
-        {
-            //set up rotated bounds
-            RS_F_Point b[4];
+            // get the overall unrotated bounds
+            unrotatedBounds.get_points(fpts);
 
-            RotatedBounds(ins_point.x, ins_point.y + descent, textwid, texthgt + descent, rotation, b);
+            // rotate and translate it
+            for (int j=0; j<4; ++j)
+            {
+                double tmpX = fpts[j].x;
+                double tmpY = fpts[j].y;
+                fpts[j].x = ins_point.x + tmpX * cos_a + tmpY * sin_a;
+                fpts[j].y = ins_point.y - tmpX * sin_a + tmpY * cos_a;
+            }
 
+            // draw a filled rectangle
             RS_D_Point dpts[4];
             for (int j=0; j<4; j++)
             {
-                dpts[j].x = ROUND(b[j].x);
-                dpts[j].y = ROUND(b[j].y);
+                dpts[j].x = ROUND(fpts[j].x);
+                dpts[j].y = ROUND(fpts[j].y);
             }
 
             gdImageFilledPolygon((gdImagePtr)m_renderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.bgcolor()));
         }
 
-        m_renderer->DrawString(info.m_text, posx, posy, hgt, font, info.m_tdef.color(), rotation);
-
-        //render underline
-        if (info.m_tdef.font().style() & RS_FontStyle_Underline)
+        for (size_t k=0; k<num_lines; ++k)
         {
-            //estimate underline line width as % of font height
-            double line_width = (double)font->m_underline_thickness * hgt / (double)font->m_units_per_EM;
-            double line_pos = - (double)font->m_underline_position * hgt / (double)font->m_units_per_EM;
+            RS_String txt = line_breaks.at(k);
 
-            //set up a rotated thin rectangle representing the 
-            //underline
-            RS_F_Point b[4];
+            // add the rotated original offset for this line to the insertion point
+            // to get the actual draw point
+            double insX = ins_point.x + hAlignOffsets[k] * cos_a + vAlignOffsets[k] * sin_a;
+            double insY = ins_point.y - hAlignOffsets[k] * sin_a + vAlignOffsets[k] * cos_a;
 
-            RotatedBounds(ins_point.x, ins_point.y + line_pos, textwid, 0, rotation, b);
+            int posx = (int)floor(insX + 0.5);
+            int posy = (int)floor(insY + 0.5);
 
-            RS_D_Point dpts[4];
-            for (int j=0; j<4; j++)
+            // render the ghosted text, if requested
+            if (info.m_tdef.textbg() == RS_TextBackground_Ghosted)
             {
-                dpts[j].x = ROUND(b[j].x);
-                dpts[j].y = ROUND(b[j].y);
+                m_renderer->DrawString(txt, posx-1, posy, hgt, font, info.m_tdef.bgcolor(), rotation);
+                m_renderer->DrawString(txt, posx+1, posy, hgt, font, info.m_tdef.bgcolor(), rotation);
+                m_renderer->DrawString(txt, posx, posy-1, hgt, font, info.m_tdef.bgcolor(), rotation);
+                m_renderer->DrawString(txt, posx, posy+1, hgt, font, info.m_tdef.bgcolor(), rotation);
             }
 
-            gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), ROUND(line_width));
-            gdImageLine((gdImagePtr)m_renderer->GetImage(), dpts[0].x, dpts[0].y, dpts[1].x, dpts[1].y, ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.color()));
-            gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), 0);
+            // render the primary text
+            m_renderer->DrawString(txt, posx, posy, hgt, font, info.m_tdef.color(), rotation);
+
+            // render the underline, if requested
+            if (info.m_tdef.font().style() & RS_FontStyle_Underline)
+            {
+                // estimate underline line width as % of font height
+                double line_width = (double)font->m_underline_thickness * hgt / (double)font->m_units_per_EM;
+                double line_pos = - (double)font->m_underline_position * hgt / (double)font->m_units_per_EM;
+
+                // the line's start point is the insertion point, but shifted vertically by line_pos
+                double x0 = insX + line_pos * sin_a;
+                double y0 = insY + line_pos * cos_a;
+
+                // the end point is a horizontal shift by the text width
+                double x1 = x0 + textWidths[k] * cos_a;
+                double y1 = y0 - textWidths[k] * sin_a;
+
+                // draw the thick line
+                gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), ROUND(line_width));
+                gdImageSetAntiAliased((gdImagePtr)m_renderer->GetImage(), ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.color()));
+                gdImageLine((gdImagePtr)m_renderer->GetImage(), ROUND(x0), ROUND(y0), ROUND(x1), ROUND(y1), gdAntiAliased);
+                gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), 0);
+            }
         }
     }
 
@@ -632,6 +548,11 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude, bool check)
 {
+    // font matching
+    const RS_Font* font = m_renderer->FindFont(info.m_tdef.font());
+    if (!font)
+        return false;
+
     //determine pixel space font height
     double hgt = m_renderer->_MeterToMapSize(info.m_tdef.font().units(), info.m_tdef.font().height());
     hgt *= m_renderer->GetMapToScreenScale() * 0.75;
@@ -647,15 +568,10 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
     // text extent and alignment computation
     //-------------------------------------------------------
 
-    //font matching
-    const RS_Font* font = m_renderer->FindFont(info.m_tdef.font());
-    if (!font)
-        return false;
-
     //get overall extent and char spacing
     RS_F_Point fpts[4];
     float* spacing = (float*)alloca(info.m_text.length() * 2 * sizeof(float));
-    m_renderer->MeasureString(info.m_text.c_str(), hgt, font, 0.0, fpts, spacing);
+    m_renderer->MeasureString(info.m_text, hgt, font, 0.0, fpts, spacing);
 
     //the width and height of this particular string
     //TODO: we can be more precise if we get height on per character basis
@@ -788,8 +704,6 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
             }
         }
 
-
-
         //add bounds to exclusion regions if needed
         //once again, do this per character to get tighter bounds around the label
         if (exclude)
@@ -806,20 +720,11 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
 
         if (render)
         {
-            //wrap a single character in a NULL terminated string
-            wchar_t c[] = {0, 0};
-
-            //ghosting offset
-            int offset = 0;
-
-            //take into account ghosting making text bounds bigger
-            if (info.m_tdef.textbg() == RS_TextBackground_Ghosted)
-                offset = 1;
-
             //draw the characters, each in its computed position
-            for (size_t i=0; i<numchars; i++)
+            RS_String c;
+            for (size_t i=0; i<numchars; ++i)
             {
-                c[0] = info.m_text[i];
+                c = info.m_text[i];
 
                 //compute screen position and round
                 int posx = ROUND(pos[i].x);
@@ -827,10 +732,10 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
 
                 if (info.m_tdef.textbg() == RS_TextBackground_Ghosted)
                 {
-                    m_renderer->DrawString(c, posx-offset, posy, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
-                    m_renderer->DrawString(c, posx+offset, posy, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
-                    m_renderer->DrawString(c, posx, posy-offset, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
-                    m_renderer->DrawString(c, posx, posy+offset, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
+                    m_renderer->DrawString(c, posx-1, posy, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
+                    m_renderer->DrawString(c, posx+1, posy, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
+                    m_renderer->DrawString(c, posx, posy-1, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
+                    m_renderer->DrawString(c, posx, posy+1, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
                 }
 
                 m_renderer->DrawString(c, posx, posy, hgt, font, info.m_tdef.color(), pos[i].anglerad);
@@ -912,7 +817,6 @@ cont_loop:
 //allotted space
 double LabelRenderer::ComputeCharacterPositions(LR_LabelInfo& info, double* seglens, double position, float* kerned_spacing, double measured_width, CharPos* ret)
 {
-
     //determine in which direction we should follow the polyline
     //so that the label points up more likely than down
     //find the length of polyline that requires inverting versus
@@ -1084,47 +988,6 @@ double LabelRenderer::ComputeCharacterPositions(LR_LabelInfo& info, double* segl
 
 
 //////////////////////////////////////////////////////////////////////////////
-//Applies a given angle to an axis aligned bounding box.
-//Rotation point is lower left
-inline void LabelRenderer::RotatedBounds(double x, double y, double width, double height, double angle_cw_rad, RS_F_Point* b)
-{
-#ifdef HEIDI
-    //HEIDI has y coordinate going up
-
-    double sina = sin(-angle_ccw_rad);
-    double cosa = cos(-angle_ccw_rad);
-
-    //apply rotation
-    //taking into account that y goes down (so subtract instead of adding for y)
-    b[0].x = x;
-    b[0].y = y;
-    b[1].x = b[0].x +  width * cosa;
-    b[1].y = b[0].y + (width * sina);
-    b[2].x = b[0].x +  width * cosa - height * sina;
-    b[2].y = b[0].y + (width * sina + height * cosa);
-    b[3].x = b[0].x                 - height * sina;
-    b[3].y = b[0].y + (               height * cosa);
-#else
-    //y goes down case
-
-    double sina = sin(angle_cw_rad);
-    double cosa = cos(angle_cw_rad);
-
-    //apply rotation
-    //taking into account that y goes down (so subtract instead of adding for y)
-    b[0].x = x;
-    b[0].y = y;
-    b[1].x = b[0].x +  width * cosa;
-    b[1].y = b[0].y - (width * sina);
-    b[2].x = b[0].x +  width * cosa - height * sina;
-    b[2].y = b[0].y - (width * sina + height * cosa);
-    b[3].x = b[0].x                 - height * sina;
-    b[3].y = b[0].y - (               height * cosa);
-#endif
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
 std::vector<LR_LabelInfo> LabelRenderer::StitchPolylines(std::vector<LR_LabelInfo>& labels)
 {
     std::vector<LR_LabelInfo> src = labels; //make a copy
@@ -1256,12 +1119,4 @@ std::vector<LR_LabelInfo> LabelRenderer::StitchPolylines(std::vector<LR_LabelInf
     }
 
     return ret;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-bool LabelRenderer::CloseEnough(RS_F_Point& p1, RS_F_Point& p2)
-{
-    double delta = fabs(p2.y - p1.y) + fabs(p2.x - p1.x);
-    return (delta <= 2.0); //2 pixels is close enough
 }

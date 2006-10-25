@@ -49,6 +49,7 @@ libMgStylization_la_SOURCES = \
   GDFillPatterns.cpp \
   GDUtils.cpp \
   LabelRenderer.cpp \
+  LabelRendererBase.cpp \
   LabelRendererLocal.cpp \
   SimpleOverpost.cpp \
   RS_ByteData.cpp \
