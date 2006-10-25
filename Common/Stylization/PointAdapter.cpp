@@ -242,8 +242,10 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                     // find the octant that the marker is rotated into, and shift the points accordingly.
                     // this way, the overpost points are still within 22.5 degrees of an axis-aligned box.
                     // (position 0 will always be the closest to Center-Right)
-                    double nangle = mdefRot + (mdefRot > 0 ? -(int)(mdefRot/360.)*360. : ((int)(mdefRot/360.) + 1)*360.);
-                    int i = ((int)((nangle/45.) + .5)) << 1; // i is 2 * the octant
+                    double nangle = fmod(mdefRot, 360.);
+                    if (nangle < 0)
+                        nangle += 360.;
+                    int i = (((int)((nangle/45.) + .5)) << 1) & 0x0000000f; // i is 2 * the octant
                     op_pts[i++] = wcs - chsn;  op_pts[i++] = wsn + chcs;   i &= 0x0000000f; // & 15 does (mod 16)
                     op_pts[i++] = wcs - hsn;   op_pts[i++] = wsn + hcs;    i &= 0x0000000f;
                     op_pts[i++] = cwcs - hsn;  op_pts[i++] = cwsn + hcs;   i &= 0x0000000f;
