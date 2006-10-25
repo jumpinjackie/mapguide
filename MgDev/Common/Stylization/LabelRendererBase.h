@@ -21,7 +21,9 @@
 #include "RendererStyles.h"
 #include "Bounds.h"
 
+class GDRenderer;
 class LineBuffer;
+struct RS_Font;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -29,6 +31,7 @@ class LabelRendererBase
 {
 
 public:
+    LabelRendererBase(GDRenderer* renderer);
 
     virtual ~LabelRendererBase() {};
 
@@ -47,6 +50,21 @@ public:
     virtual void BlastLabels() = 0;
 
     virtual void AddExclusionRegion(RS_F_Point* pts, int npts) = 0;
+
+protected:
+    size_t SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_breaks);
+
+    double GetHorizontalAlignmentOffset(RS_TextDef& tdef, RS_F_Point* extent);
+    double GetVerticalAlignmentOffset(RS_TextDef& tdef, const RS_Font* font, double actual_height, double line_height, size_t numLines);
+
+    void DeviceToMappingBounds(RS_Bounds& b);
+    void ComputeBounds(RS_F_Point* RESTRICT pts, int npts, RS_Bounds& b);
+    void RotatedBounds(double x, double y, double width, double height, double angle_cw_rad, RS_F_Point* b);
+
+    bool CloseEnough(RS_F_Point& p1, RS_F_Point& p2);
+
+protected:
+    GDRenderer* m_renderer;
 };
 
 #endif

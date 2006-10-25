@@ -407,6 +407,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LabelRendererBase.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\LabelRendererBase.h"
 				>
 			</File>

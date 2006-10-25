@@ -18,6 +18,8 @@
 #ifndef BOUNDS_H
 #define BOUNDS_H
 
+#include "RendererStyles.h"
+
 #define rs_max(a,b)            (((a) > (b)) ? (a) : (b))
 #define rs_min(a,b)            (((a) < (b)) ? (a) : (b))
 
@@ -61,6 +63,22 @@ struct RS_Bounds
     bool IsValid()
     {
         return (width() >= 0) && (height() >=0);
+    }
+
+    void add_point(const RS_F_Point& pt)
+    {
+        if (pt.x < minx) minx = pt.x;
+        if (pt.y < miny) miny = pt.y;
+        if (pt.x > maxx) maxx = pt.x;
+        if (pt.y > maxy) maxy = pt.y;
+    }
+
+    void get_points(RS_F_Point* pts)
+    {
+        pts[0].x = minx;    pts[0].y = miny;
+        pts[1].x = maxx;    pts[1].y = miny;
+        pts[2].x = maxx;    pts[2].y = maxy;
+        pts[3].x = minx;    pts[3].y = maxy;
     }
 };
 
