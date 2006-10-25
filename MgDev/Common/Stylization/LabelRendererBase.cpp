@@ -220,17 +220,7 @@ void LabelRendererBase::ComputeBounds(RS_F_Point* RESTRICT pts, int npts, RS_Bou
     b.miny = b.maxy = pts[0].y;
 
     for (int i=1; i<npts; i++)
-    {
-        if (pts[i].x < b.minx)
-            b.minx = pts[i].x;
-        else if (pts[i].x > b.maxx)
-            b.maxx = pts[i].x;
-
-        if (pts[i].y < b.miny)
-            b.miny = pts[i].y;
-        else if (pts[i].y > b.maxy)
-            b.maxy = pts[i].y;
-    }
+        b.add_point(pts[i]);
 }
 
 

@@ -742,9 +742,7 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
     // The computed height can have roundoff in it, and the rendering code is
     // very sensitive to it.  Remove this roundoff by rounding the height to
     // the nearest 1/65536ths of a point.
-    info.m_hgt *= 65536.0;
-    info.m_hgt = ROUND(info.m_hgt);
-    info.m_hgt /= 65536.0;
+    hgt = floor(hgt * 65536.0 + 0.5) / 65536.0;
 
     //radian CCW rotation
     double rotation = info.m_tdef.rotation() * M_PI / 180.0;
@@ -814,8 +812,6 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
     //allocate the data we need
     info.m_numelems = 1;
     info.m_oriented_bounds = new RS_F_Point[4];
-    if (info.m_oriented_bounds == NULL)
-        return false;
 
     //store the oriented bounds with the label
     rotatedBounds.get_points(info.m_oriented_bounds);
@@ -932,16 +928,8 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
         copy_info.m_numpts = 0;
 
         copy_info.m_charpos = new CharPos[copy_info.m_numelems];
-        if (copy_info.m_charpos == NULL)
-            return false;
-
         copy_info.m_oriented_bounds = new RS_F_Point[4*copy_info.m_numelems];
-        if (copy_info.m_oriented_bounds == NULL)
-            return false;
-
         copy_info.m_spacing = new double[copy_info.m_numelems - 1];
-        if (copy_info.m_spacing == NULL)
-            return false;
 
         //parametric position for current repeated label
         //positions are spaced in such a way that each label has
