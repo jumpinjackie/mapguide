@@ -357,9 +357,7 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
     // The computed height can have roundoff in it, and the rendering code is
     // very sensitive to it.  Remove this roundoff by rounding the height to
     // the nearest 1/65536ths of a point.
-    hgt *= 65536.0;
-    hgt = ROUND(hgt);
-    hgt /= 65536.0;
+    hgt = floor(hgt * 65536.0 + 0.5) / 65536.0;
 
     //radian CCW rotation
     double rotation = info.m_tdef.rotation() * M_PI / 180.0;
@@ -404,7 +402,7 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
 
     for (size_t k=0; k<num_lines; ++k)
     {
-        wchar_t* txt = line_breaks.at(k);
+        wchar_t* txt = line_breaks[k];
 
         // get the unrotated extent of this sub-string
         m_renderer->MeasureString(txt, hgt, font, 0.0, fpts, NULL);
@@ -560,9 +558,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
     // The computed height can have roundoff in it, and the rendering code is
     // very sensitive to it.  Remove this roundoff by rounding the height to
     // the nearest 1/65536ths of a point.
-    hgt *= 65536.0;
-    hgt = ROUND(hgt);
-    hgt /= 65536.0;
+    hgt = floor(hgt * 65536.0 + 0.5) / 65536.0;
 
     //-------------------------------------------------------
     // text extent and alignment computation
