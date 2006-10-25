@@ -742,7 +742,7 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
     // The computed height can have roundoff in it, and the rendering code is
     // very sensitive to it.  Remove this roundoff by rounding the height to
     // the nearest 1/65536ths of a point.
-    hgt = floor(hgt * 65536.0 + 0.5) / 65536.0;
+    info.m_hgt = floor(info.m_hgt * 65536.0 + 0.5) / 65536.0;
 
     //radian CCW rotation
     double rotation = info.m_tdef.rotation() * M_PI / 180.0;
@@ -875,7 +875,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
     // The computed height can have roundoff in it, and the rendering code is
     // very sensitive to it.  Remove this roundoff by rounding the height to
     // the nearest 1/65536ths of a point.
-    hgt = floor(hgt * 65536.0 + 0.5) / 65536.0;
+    info.m_hgt = floor(info.m_hgt * 65536.0 + 0.5) / 65536.0;
 
     //-------------------------------------------------------
     // text extent and alignment computation
