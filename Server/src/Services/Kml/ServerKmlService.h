@@ -106,6 +106,8 @@ private:
         double dpi,
         KmlContent& kmlContent);
 
+    MgByteSource* GetByteSource(KmlContent& kmlContent, CREFSTRING format);
+
     void InitializeResourceService();
     void InitializeFeatureService();
     void InitializeDrawingService();

@@ -90,10 +90,10 @@ void KmlRenderer::EndLayer()
     for(ThemeMap::iterator iter = m_themeMap.begin(); iter != m_themeMap.end(); iter++)
     {
         m_kmlContent->WriteString("<Folder>");
-        m_kmlContent->WriteString("<name><![CDATA[");
-        m_kmlContent->WriteString((*iter).first);
+        m_kmlContent->WriteString("<name><![CDATA[", false);
+        m_kmlContent->WriteString((*iter).first, false);
         m_kmlContent->WriteString("]]></name>");
-        m_kmlContent->WriteString((*iter).second->GetString());
+        m_kmlContent->WriteString((*iter).second->GetString(), false);
         m_kmlContent->WriteString("</Folder>");
     }
 
@@ -138,7 +138,7 @@ void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
         (url != NULL && url->length() > 0))
     {
         m_kmlContent->WriteString("<description>");
-        m_kmlContent->WriteString("<![CDATA[");
+        m_kmlContent->WriteString("<![CDATA[", false);
         if(tooltip != NULL && tooltip->length() > 0)
         {
             //replace line breaks
@@ -149,12 +149,12 @@ void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
                 newTT = newTT.replace(lb, 2, L"<br/>");
                 lb = newTT.find(L"\\n", lb);
             }
-            m_kmlContent->WriteString(newTT);
-            m_kmlContent->WriteString("<br/>");
+            m_kmlContent->WriteString(newTT, false);
+            m_kmlContent->WriteString("<br/>", false);
         }
         if(url != NULL && url->length() > 0)
         {
-            m_kmlContent->WriteString(*url);
+            m_kmlContent->WriteString(*url, false);
         }
         m_kmlContent->WriteString("]]>");
         m_kmlContent->WriteString("</description>");
@@ -229,12 +229,8 @@ void KmlRenderer::WriteLinearRing(double* points, int offset, int numPoints)
     int pointOffset;
     for(int i = 0; i < numPoints; i ++)
     {
-        if(i > 0)
-        {
-            m_kmlContent->WriteString(",");
-        }
         pointOffset = offset + (i * 2);
-        sprintf(buffer, "%f, %f, 0.00000", points[pointOffset], points[pointOffset + 1]);
+        sprintf(buffer, "%f, %f, 0.00000%s", points[pointOffset], points[pointOffset + 1], (i < numPoints - 1) ? "," : "");
         m_kmlContent->WriteString(buffer);
     }
     m_kmlContent->WriteString("</coordinates>");
@@ -299,9 +295,9 @@ void KmlRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
 void KmlRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost)
 {
     char buffer[256];
-    m_kmlContent->WriteString("<name>");
-    m_kmlContent->WriteString(mdef.name());
-    m_kmlContent->WriteString("</name>");
+    m_kmlContent->WriteString("<name><![CDATA[", false);
+    m_kmlContent->WriteString(mdef.name(), false);
+    m_kmlContent->WriteString("]]></name>");
     m_kmlContent->WriteString("<Point>");
     m_kmlContent->WriteString("<coordinates>");
     sprintf(buffer, "%f, %f, 0.00000", x, y);
@@ -322,9 +318,9 @@ void KmlRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                    LineBuffer*      path)
 {
     char buffer[256];
-    m_kmlContent->WriteString("<name>");
-    m_kmlContent->WriteString(text);
-    m_kmlContent->WriteString("</name>");
+    m_kmlContent->WriteString("<name><![CDATA[", false);
+    m_kmlContent->WriteString(text, false);
+    m_kmlContent->WriteString("]]></name>");
 /*    m_kmlContent->WriteString("<MultiGeometry>");
     for(int i = 0; i < nlabels; i++)
     {

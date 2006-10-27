@@ -7,6 +7,7 @@ prefix=@prefix@/server
 INCLUDES = \
   -I../../../../Oem/ACE/ACE_wrappers \
   -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
+  -I../../../../Oem/DWFTK7.1/develop/global/src \
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry \
   -I../../../../Common/PlatformBase \
@@ -20,6 +21,8 @@ INCLUDES = \
   -I../../../../Common/CoordinateSystem \
   -I../../../../Common/Stylization \
   -I../Mapping
+
+AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_USE_DWFCORE_ZLIB
 
 lib_LTLIBRARIES = libMgServerKmlService.la
 
