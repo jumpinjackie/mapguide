@@ -28,6 +28,9 @@
 #include "MgCSTrans.h"
 #include "SAX2Parser.h"
 
+//Zip support from DWF toolkit
+#include "dwfcore/ZipFileDescriptor.h"
+
 const STRING LL84_WKT = L"GEOGCS[\"LL84\",DATUM[\"WGS 84\",SPHEROID[\"WGS 84\",6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0],UNIT[\"Degrees\",0.01745329252]]";
 const STRING GOOGLE_EARTH_WKT = LL84_WKT;
 
@@ -60,8 +63,8 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CRE
 
     //write the map name
     STRING mapName = map->GetName();
-    kmlContent.WriteString("<name><![CDATA[");
-    kmlContent.WriteString(mapName);
+    kmlContent.WriteString("<name><![CDATA[", false);
+    kmlContent.WriteString(mapName, false);
     kmlContent.WriteString("]]></name>");
 
     if(m_svcResource == NULL)
@@ -82,8 +85,8 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CRE
         STRING description = ReadElement(metadata, L"Description", offset);
         if(!description.empty())
         {
-            kmlContent.WriteString("<description><![CDATA[");
-            kmlContent.WriteString(description);
+            kmlContent.WriteString("<description><![CDATA[", false);
+            kmlContent.WriteString(description, false);
             kmlContent.WriteString("]]></description>");
         }
     }
@@ -109,17 +112,12 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CRE
         AppendLayer(layer, extent, agentUri, format, kmlContent);
     }
     kmlContent.EndDocument();
-    std::string contentString = kmlContent.GetString();
-    Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
-    if(format.compare(L"XML") == 0)
+    
+    Ptr<MgByteSource> byteSource = GetByteSource(kmlContent, format);
+    if(byteSource != NULL)
     {
-        byteSource->SetMimeType(MgMimeType::Xml);
+        byteReader = byteSource->GetReader();
     }
-    else // default to KML
-    {
-        byteSource->SetMimeType(MgMimeType::Kml);
-    }
-    byteReader = byteSource->GetReader();
 
     MG_CATCH_AND_THROW(L"MgServerKmlService.GetMapKml")
 
@@ -211,17 +209,12 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
         }
     }
     kmlContent.EndDocument();
-    std::string contentString = kmlContent.GetString();
-    Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
-    if(format.compare(L"XML") == 0)
+    
+    Ptr<MgByteSource> byteSource = GetByteSource(kmlContent, format);
+    if(byteSource != NULL)
     {
-        byteSource->SetMimeType(MgMimeType::Xml);
+        byteReader = byteSource->GetReader();
     }
-    else // default to KML
-    {
-        byteSource->SetMimeType(MgMimeType::Kml);
-    }
-    byteReader = byteSource->GetReader();
 
     MG_CATCH_AND_THROW(L"MgServerKmlService.GetLayerKml")
 
@@ -256,7 +249,7 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
         map->Create(GOOGLE_EARTH_WKT, extents, L"Google Earth Map");
         map->SetDisplayWidth(width);
         map->SetDisplayHeight(height);
-        map->SetDisplayDpi(dpi);
+        map->SetDisplayDpi((int)dpi);
         map->SetViewScale(scale);
         map->GetLayers()->Add(layer);
         layer->ForceRefresh();
@@ -276,17 +269,11 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
         kmlContent.WriteString("<visibility>1</visibility>");
         AppendFeatures(layer, extents, scale, dpi, kmlContent);
         kmlContent.EndDocument();
-        std::string contentString = kmlContent.GetString();
-        Ptr<MgByteSource> byteSource = new MgByteSource( (unsigned char*)contentString.c_str(), (INT32)contentString.length());
-        if(format.compare(L"XML") == 0)
+        Ptr<MgByteSource> byteSource = GetByteSource(kmlContent, format);
+        if(byteSource != NULL)
         {
-            byteSource->SetMimeType(MgMimeType::Xml);
+            byteReader = byteSource->GetReader();
         }
-        else // default to KML
-        {
-            byteSource->SetMimeType(MgMimeType::Kml);
-        }
-        byteReader = byteSource->GetReader();
     }
 
     MG_CATCH_AND_THROW(L"MgServerKmlService.GetFeaturesKml")
@@ -304,15 +291,15 @@ void MgServerKmlService::AppendLayer(MgLayer* layer,
     kmlContent.WriteString("<visibility>");
     kmlContent.WriteString(layer->GetVisible() ? "1" : "0");
     kmlContent.WriteString("</visibility>");
-    kmlContent.WriteString("<name>");
-    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLegendLabel()));
-    kmlContent.WriteString("</name>");
+    kmlContent.WriteString("<name><![CDATA[", false);
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLegendLabel()), false);
+    kmlContent.WriteString("]]></name>");
     kmlContent.WriteString("<Link>");
     kmlContent.WriteString("<href>");
-    kmlContent.WriteString(agentUri);
-    kmlContent.WriteString("?OPERATION=GetLayerKml&amp;VERSION=1&amp;LAYERDEFINITION=");
-    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()));
-    kmlContent.WriteString("&amp;FORMAT=");
+    kmlContent.WriteString(agentUri, false);
+    kmlContent.WriteString("?OPERATION=GetLayerKml&amp;VERSION=1&amp;LAYERDEFINITION=", false);
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
+    kmlContent.WriteString("&amp;FORMAT=", false);
     kmlContent.WriteString(MgUtil::WideCharToMultiByte(format));
     kmlContent.WriteString("</href>");
     kmlContent.WriteString("<viewRefreshMode>onStop</viewRefreshMode>");
@@ -334,19 +321,19 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
 {
     char buffer[256];
     kmlContent.WriteString("<NetworkLink>");
-    kmlContent.WriteString("<name>");
+    kmlContent.WriteString("<name><![CDATA[", false);
     sprintf(buffer,"%f - %f", minScale, maxScale);
-    kmlContent.WriteString(buffer);
-    kmlContent.WriteString("</name>");
+    kmlContent.WriteString(buffer, false);
+    kmlContent.WriteString("]]></name>");
     WriteRegion(extent, kmlContent, dimension, minScale, maxScale);
     kmlContent.WriteString("<Link>");
     kmlContent.WriteString("<href>");
-    kmlContent.WriteString(agentUri);
-    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;LAYERDEFINITION=");
-    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()));
-    sprintf(buffer,"&amp;SCALERANGE=%f,%f&amp;DPI=%f", minScale, maxScale, dpi);
-    kmlContent.WriteString(buffer);
-    kmlContent.WriteString("&amp;FORMAT=");
+    kmlContent.WriteString(agentUri, false);
+    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;LAYERDEFINITION=", false);
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
+    sprintf(buffer,"&amp;DPI=%f", dpi);
+    kmlContent.WriteString(buffer, false);
+    kmlContent.WriteString("&amp;FORMAT=", false);
     kmlContent.WriteString(MgUtil::WideCharToMultiByte(format));
     kmlContent.WriteString("</href>");
     kmlContent.WriteString("<viewRefreshMode>onStop</viewRefreshMode>");
@@ -368,10 +355,10 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
 {
     char buffer[1024];
     kmlContent.WriteString("<GroundOverlay>");
-    kmlContent.WriteString("<name>");
+    kmlContent.WriteString("<name><![CDATA[", false);
     sprintf(buffer,"%f - %f", minScale, maxScale);
-    kmlContent.WriteString(buffer);
-    kmlContent.WriteString("</name>");
+    kmlContent.WriteString(buffer, false);
+    kmlContent.WriteString("]]></name>");
     //<!-- inherited from Overlay element -->
     //<color>ffffffff</color>                   <!-- kml:color -->
     //<drawOrder>0</drawOrder>                  <!-- int -->  
@@ -382,16 +369,16 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
     WriteRegion(extent, kmlContent, dimension, minScale, maxScale);
     kmlContent.WriteString("<Icon>");
     kmlContent.WriteString("<href>");
-    kmlContent.WriteString(agentUri);
-    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;LAYERDEFINITION=");
-    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()));
-    sprintf(buffer,"&amp;SCALERANGE=%f,%f&amp;DPI=%f", minScale, maxScale, dpi);
-    kmlContent.WriteString(buffer);
-    kmlContent.WriteString("&amp;FORMAT=");
+    kmlContent.WriteString(agentUri, false);
+    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;LAYERDEFINITION=", false);
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
+    sprintf(buffer,"&amp;DPI=%f", dpi);
+    kmlContent.WriteString(buffer, false);
+    kmlContent.WriteString("&amp;FORMAT=", false);
     kmlContent.WriteString(MgUtil::WideCharToMultiByte(format));
     kmlContent.WriteString("</href>");
     kmlContent.WriteString("<viewRefreshMode>onStop</viewRefreshMode>");
-    kmlContent.WriteString("<viewRefreshTime>1</viewRefreshTime>");
+    kmlContent.WriteString("<viewRefreshTime>0</viewRefreshTime>");
     kmlContent.WriteString("<viewFormat>BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&amp;WIDTH=[horizPixels]&amp;HEIGHT=[vertPixels]</viewFormat>");
     kmlContent.WriteString("</Icon>");
     kmlContent.WriteString("</GroundOverlay>");
@@ -803,4 +790,49 @@ void MgServerKmlService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
 }
+
+MgByteSource* MgServerKmlService::GetByteSource(KmlContent& kmlContent, CREFSTRING format)
+{
+    MgByteSource* byteSource = NULL;
+    string kmlString = kmlContent.GetString();
+    const char* kmlBuf = kmlString.c_str();
+    int kmlLen = kmlString.length();
+    if(format.compare(L"KMZ") == 0)
+    {
+        STRING zipTmpFile = MgFileUtil::GenerateTempFileName();
+        //ACE_OS::creat(MG_WCHAR_TO_TCHAR(zipTmpFile), 0);
+        DWFString dwfFileName(zipTmpFile.c_str());
+        DWFFile dwfFile(dwfFileName);
+        DWFZipFileDescriptor zipFileDesc(dwfFile, DWFCore::DWFZipFileDescriptor::eZipFastest);
+        zipFileDesc.open();
+        DWFString innerFilename(L"doc.kml");
+        DWFOutputStream* dwfOutputStream = zipFileDesc.zip(innerFilename);
+        if(dwfOutputStream != NULL)
+        {
+            dwfOutputStream->write((const void*)kmlBuf, (size_t)kmlLen);
+            dwfOutputStream->flush();
+            DWFCORE_FREE_OBJECT(dwfOutputStream);
+            
+            zipFileDesc.close();
+           
+            byteSource = new MgByteSource(zipTmpFile, true);
+            byteSource->SetMimeType(MgMimeType::Kmz);
+        }
+    }
+    else
+    {
+        byteSource = new MgByteSource( (unsigned char*)kmlBuf, (INT32)kmlLen);
+        if(format.compare(L"XML") == 0)
+        {
+            byteSource->SetMimeType(MgMimeType::Xml);
+        }
+        else // default to KML
+        {
+            byteSource->SetMimeType(MgMimeType::Kml);
+        }
+    }
+
+    return byteSource;
+}
+
 

@@ -37,6 +37,7 @@ void KmlContent::StartDocument()
 {
     WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     WriteString("<kml xmlns=\"http://earth.google.com/kml/2.1\">");
+    WriteString("<NetworkLinkControl><minRefreshPeriod>2</minRefreshPeriod></NetworkLinkControl>");
     WriteString("<Document>");
 }
 
@@ -46,28 +47,37 @@ void KmlContent::EndDocument()
     WriteString("</kml>");
 }
 
-void KmlContent::WriteString(const char* mbString)
+void KmlContent::WriteString(const char* szString, int length, bool lineBreak)
 {
-    m_content.sputn(mbString, (std::streamsize)strlen(mbString));
+    m_content.sputn(szString, length);
+    if(lineBreak)
+    {
+        m_content.sputc('\n');
+    }
 }
 
-void KmlContent::WriteString(const std::string& mbString)
+void KmlContent::WriteString(const char* szString, bool lineBreak /*= true*/)
 {
-    m_content.sputn(mbString.c_str(), (std::streamsize)mbString.length());
+    WriteString(szString, (std::streamsize)strlen(szString), lineBreak);
 }
 
-void KmlContent::WriteString(const wchar_t* wString)
+void KmlContent::WriteString(const std::string& mbString, bool lineBreak /*= true*/)
+{
+    WriteString(mbString.c_str(), (std::streamsize)mbString.length(), lineBreak);
+}
+
+void KmlContent::WriteString(const wchar_t* wszString, bool lineBreak /*= true*/)
 {
     std::string mbString;
-    UnicodeString::WideCharToMultiByte(wString, mbString);
-    WriteString(mbString);
+    UnicodeString::WideCharToMultiByte(wszString, mbString);
+    WriteString(mbString, lineBreak);
 }
 
-void KmlContent::WriteString(const std::wstring& wString)
+void KmlContent::WriteString(const std::wstring& wString, bool lineBreak /*= true*/)
 {
     std::string mbString;
     UnicodeString::WideCharToMultiByte(wString.c_str(), mbString);
-    WriteString(mbString);
+    WriteString(mbString, lineBreak);
 }
 
 std::string KmlContent::GetString()

@@ -33,14 +33,14 @@ public:
     STYLIZATION_API void StartDocument();
     STYLIZATION_API void EndDocument();
 
-    STYLIZATION_API void WriteString(const char* mbString);
-    STYLIZATION_API void WriteString(const wchar_t* wString);
-    STYLIZATION_API void WriteString(const std::string& mbString);
-    STYLIZATION_API void WriteString(const std::wstring& wString);
+    STYLIZATION_API void WriteString(const char* szString, bool lineBreak = true);
+    STYLIZATION_API void WriteString(const wchar_t* wszString, bool lineBreak = true);
+    STYLIZATION_API void WriteString(const std::string& mbString, bool lineBreak = true);
+    STYLIZATION_API void WriteString(const std::wstring& wString, bool lineBreak = true);
     
     STYLIZATION_API std::string GetString();
 private:
-
+    void WriteString(const char* szString, int length, bool lineBreak);
     std::stringbuf m_content;
 };
 
