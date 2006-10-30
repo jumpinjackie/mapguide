@@ -56,6 +56,7 @@ private:
     STRING m_mapDefinition;
     STRING m_agentUri;
     STRING m_format;
+    double m_dpi;
 };
 
 #endif  // _FS_KML_GET_MAP_H

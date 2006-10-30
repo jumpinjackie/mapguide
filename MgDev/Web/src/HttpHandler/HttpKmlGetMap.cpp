@@ -44,6 +44,17 @@ MgHttpKmlGetMap::MgHttpKmlGetMap(MgHttpRequest *hRequest)
 
     // Get the requested format
     m_format = params->GetParameterValue(MgHttpResourceStrings::reqKmlFormat);
+
+    // Get the map resolution
+    STRING dpi = params->GetParameterValue(MgHttpResourceStrings::reqKmlDpi);
+    if(!dpi.empty())
+    {
+        m_dpi = MgUtil::StringToDouble(dpi);
+    }
+    else
+    {
+        m_dpi = 96; // default
+    }
 }
 
 /// <summary>
@@ -76,7 +87,7 @@ void MgHttpKmlGetMap::Execute(MgHttpResponse& hResponse)
     Ptr<MgKmlService> kmlService = dynamic_cast<MgKmlService*>(CreateService(MgServiceType::KmlService));
     
     // Get the KML representation of the map
-    Ptr<MgByteReader> reader = kmlService->GetMapKml(map, m_agentUri, m_format);
+    Ptr<MgByteReader> reader = kmlService->GetMapKml(map, m_dpi, m_agentUri, m_format);
 
     // Set the result
     hResult->SetResultObject(reader, reader->GetMimeType());
