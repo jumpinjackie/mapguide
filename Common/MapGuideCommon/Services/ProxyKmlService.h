@@ -49,6 +49,7 @@ EXTERNAL_API:
     ///
     virtual MgByteReader* GetMapKml(
         MgMap* map,
+        double dpi,
         CREFSTRING agentUri,
         CREFSTRING format);
 

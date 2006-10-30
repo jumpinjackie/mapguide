@@ -41,9 +41,11 @@ void MgOpGetMapKml::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (3 == m_packet.m_NumArguments)
+    if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        double dpi;
+        m_stream->GetDouble(dpi);
         STRING agentUri;
         m_stream->GetString(agentUri);
         STRING format;
@@ -53,6 +55,7 @@ void MgOpGetMapKml::Execute()
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"double");
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(agentUri.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -60,7 +63,7 @@ void MgOpGetMapKml::Execute()
         Validate();
 
         Ptr<MgByteReader> kml =
-            m_service->GetMapKml(map, agentUri, format);
+            m_service->GetMapKml(map, dpi, agentUri, format);
 
         EndExecution(kml);
     }

@@ -39,6 +39,10 @@ PUBLISHED_API:
     /// Input
     /// map object for which to generate KML.
     ///
+    /// \param dpi
+    /// Input
+    /// resolution in dots per inch
+    ///
     /// \param agentUri
     /// Input
     /// URI of map agent that issued request
@@ -52,6 +56,7 @@ PUBLISHED_API:
     ///
     virtual MgByteReader* GetMapKml(
         MgMap* map,
+        double dpi,
         CREFSTRING agentUri,
         CREFSTRING format) = 0;
 

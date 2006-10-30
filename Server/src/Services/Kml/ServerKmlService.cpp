@@ -47,7 +47,7 @@ MgServerKmlService::~MgServerKmlService()
 }
 
 
-MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CREFSTRING format)
+MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING agentUri, CREFSTRING format)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -104,7 +104,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, CREFSTRING agentUri, CRE
             extent = trans->Transform(extent);
         }
 
-        WriteRegion(extent, kmlContent);
+        WriteRegion(extent, kmlContent, dpi);
     }
     for(int i = 0; i < layers->GetCount(); i++)
     {
@@ -325,7 +325,7 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
     sprintf(buffer,"%f - %f", minScale, maxScale);
     kmlContent.WriteString(buffer, false);
     kmlContent.WriteString("]]></name>");
-    WriteRegion(extent, kmlContent, dimension, minScale, maxScale);
+    WriteRegion(extent, kmlContent, dpi, dimension, minScale, maxScale);
     kmlContent.WriteString("<Link>");
     kmlContent.WriteString("<href>");
     kmlContent.WriteString(agentUri, false);
@@ -366,7 +366,7 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
         extent->GetUpperRightCoordinate()->GetY(), extent->GetLowerLeftCoordinate()->GetY(),
         extent->GetUpperRightCoordinate()->GetX(), extent->GetLowerLeftCoordinate()->GetX());
     kmlContent.WriteString(buffer);  
-    WriteRegion(extent, kmlContent, dimension, minScale, maxScale);
+    WriteRegion(extent, kmlContent, dpi, dimension, minScale, maxScale);
     kmlContent.WriteString("<Icon>");
     kmlContent.WriteString("<href>");
     kmlContent.WriteString(agentUri, false);
@@ -690,7 +690,7 @@ STRING MgServerKmlService::ReadElement(STRING input, STRING elementName, size_t&
     return content;
 }
 
-void MgServerKmlService::WriteRegion(MgEnvelope* extent, KmlContent& kmlContent, double dimension, double minScale, double maxScale, double dpi)
+void MgServerKmlService::WriteRegion(MgEnvelope* extent, KmlContent& kmlContent, double dpi, double dimension, double minScale, double maxScale)
 {
     if(extent != NULL)
     {

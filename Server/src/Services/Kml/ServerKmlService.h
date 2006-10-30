@@ -66,7 +66,7 @@ public:
 
     void SetConnectionProperties(MgConnectionProperties* connProp);
 
-    virtual MgByteReader* GetMapKml(MgMap* map, CREFSTRING agentUri, CREFSTRING format);
+    virtual MgByteReader* GetMapKml(MgMap* map, double dpi, CREFSTRING agentUri, CREFSTRING format);
 
     virtual MgByteReader* GetLayerKml(MgLayer* layer, MgEnvelope* extents, INT32 width, INT32 height, double dpi, CREFSTRING agentUri, CREFSTRING format);
 
@@ -113,7 +113,7 @@ private:
     void InitializeDrawingService();
     void InitializeRenderingService();
 
-    void WriteRegion(MgEnvelope* extent, KmlContent& kmlContent, double dimension = 0, double minScale = 0, double maxScale = 0, double dpi = 0);
+    void WriteRegion(MgEnvelope* extent, KmlContent& kmlContent, double dpi, double dimension = 0, double minScale = 0, double maxScale = 0);
 
     MgCoordinateSystem* GetCoordinateSystem(MgResourceIdentifier* featureSourceResId);
 

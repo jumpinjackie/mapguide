@@ -63,6 +63,7 @@ void MgProxyKmlService::SetWarning(MgWarnings* warning)
 // Retrieve a map definition in KML format
 MgByteReader* MgProxyKmlService::GetMapKml(
     MgMap* map,
+    double dpi,
     CREFSTRING agentUri,
     CREFSTRING format)
 {
@@ -70,12 +71,13 @@ MgByteReader* MgProxyKmlService::GetMapKml(
     cmd.ExecuteCommand(m_connProp,                                      // Connection
                         MgCommand::knObject,                            // Return type expected
                         MgKmlServiceOpId::GetMapKml,                    // Command Code
-                        3,                                              // No of arguments
+                        4,                                              // No of arguments
                         Kml_Service,                                    // Service Id
                         1,                                              // Operation version
                         MgCommand::knObject, map,                       // Argument#1
-                        MgCommand::knString, &agentUri,                 // Argument#2
-                        MgCommand::knString, &format,                   // Argument#3
+                        MgCommand::knDouble, dpi,                       // Argument#2
+                        MgCommand::knString, &agentUri,                 // Argument#3
+                        MgCommand::knString, &format,                   // Argument#4
                         MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
