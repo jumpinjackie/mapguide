@@ -156,7 +156,8 @@ bool MgConfigurationHeap::ExportConfig(CREFSTRING fileName)
     outFile = _wfopen(fileName.c_str(), L"w,ccs=UTF-8");
 #else
     outFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(fileName), ACE_TEXT("w"));
-#endif    if (!outFile)
+#endif
+    if (!outFile)
     {
         return false;
     }
