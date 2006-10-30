@@ -34,6 +34,8 @@ CPSZ kpszQueryStringHeight          = _("height");
 CPSZ kpszFilenameGlobalConfigWms    = _("Wms:OgcWmsService.config");
 CPSZ kpszFilenameTemplatePrefixWms  = _("Wms:");
 
+CPSZ kpszDefineReferenceSystems     = _("ReferenceSystems");
+CPSZ kpszDefineItem                 = _("item");
 // Supported image formats
 // This is the name of the define used to
 // identify supported formats.  It is to contain
@@ -488,14 +490,54 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
             }
         }
 
-        // Now, given our SRS/CRS, and the known list of layers, do we support the
-        // reference system being asked for?
-        if(!m_pLayers->LayerSupportsReferenceSystem(mapLayerList,crs)) {
-            ServiceExceptionReportResponse(MgOgcWmsException(bArgIsCRS ? MgOgcWmsException::kpszInvalidCRS
-                                                                       : MgOgcWmsException::kpszInvalidSRS,
-                                                             bArgIsCRS ? kpszExceptionMessageInvalidCrs
-                                                                       : kpszExceptionMessageInvalidSrs) );
-            bValid = false;
+        if(bValid)
+        {
+            bool bGlobalMatch =  false;
+
+            // Search the globally supported reference systems for a match for the
+            // requested SRS.
+            CPSZ globalSRSs = this->Definition(kpszDefineReferenceSystems);
+            if(globalSRSs != NULL)
+            {
+                MgXmlParser parser(globalSRSs);
+                while(!parser.AtEnd()) 
+                {
+                    if(parser.Current().Type() == keBeginElement) 
+                    {
+                        MgXmlSynchronizeOnElement srsItemElement(parser, kpszDefineItem);
+                        MgXmlBeginElement* pBegin;
+                        // Are we at the beginning of an <item> element?
+                        if(srsItemElement.AtBegin(&pBegin)) 
+                        {
+                            parser.Next();
+                            STRING sText = parser.Current().Contents();
+                            if(SZ_EQI(sText.c_str(), crs))
+                            {
+                                bGlobalMatch = true;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            parser.Next();
+                        }
+                    }
+                    else
+                    {
+                        parser.Next();
+                    }
+                }
+            }
+
+            // Now, given our SRS/CRS, and the known list of layers, do we support the
+            // reference system being asked for?
+            if(!bGlobalMatch && !m_pLayers->LayerSupportsReferenceSystem(mapLayerList,crs)) {
+                ServiceExceptionReportResponse(MgOgcWmsException(bArgIsCRS ? MgOgcWmsException::kpszInvalidCRS
+                                                                           : MgOgcWmsException::kpszInvalidSRS,
+                                                                 bArgIsCRS ? kpszExceptionMessageInvalidCrs
+                                                                           : kpszExceptionMessageInvalidSrs) );
+                bValid = false;
+            }
         }
     }
 

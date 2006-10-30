@@ -254,7 +254,7 @@
  -->
   <Layer>
     <Title>&Service.Title;</Title>
-    <SRS>EPSG:4326</SRS>
+    <?Enum list="&ReferenceSystems;" using="&RS.xml;"?>
     <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90"/>
     <BoundingBox SRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
    <?EnumLayers using="&Layer.xml;" ?>
