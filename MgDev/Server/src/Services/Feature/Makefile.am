@@ -102,7 +102,8 @@ include_SOURCES = \
   OpEnumerateDataStores.cpp \
   OpGetSchemaMapping.cpp \
   ServerEnumerateDataStores.cpp \
-  ServerGetSchemaMapping.cpp
+  ServerGetSchemaMapping.cpp \
+  OpSetLongTransaction.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   FeatureOperation.h \
@@ -200,7 +201,8 @@ noinst_HEADERS = $(include_SOURCES) \
   OpEnumerateDataStores.h \
   OpGetSchemaMapping.h \
   ServerEnumerateDataStores.h \
-  ServerGetSchemaMapping.h
+  ServerGetSchemaMapping.h \
+  OpSetLongTransaction.h
 
 libMgServerFeatureService_la_LIBADD = -lMgGwsCommon -lMgGwsQueryEngine
 

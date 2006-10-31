@@ -15,13 +15,19 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_FEATURE_SERVICE_DEFS_H
-#define MG_FEATURE_SERVICE_DEFS_H
+#ifndef MG_OP_SET_LONG_TRANSACTION_H
+#define MG_OP_SET_LONG_TRANSACTION_H
 
-#include "MapGuideCommon.h"
-#include "System/XmlDefs.h"
-#include "System/XmlUtil.h"
-#include "Fdo.h"
-#include "ServerFeatureServiceExceptionDef.h"
+#include "FeatureOperation.h"
+
+class MgOpSetLongTransaction : public MgFeatureOperation
+{
+public:
+
+    MgOpSetLongTransaction();
+    virtual ~MgOpSetLongTransaction();
+
+    virtual void Execute();
+};
 
 #endif

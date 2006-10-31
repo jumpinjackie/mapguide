@@ -41,6 +41,7 @@
 #include "ServerEnumerateDataStores.h"
 #include "ServerGetSchemaMapping.h"
 #include "FilterUtil.h"
+#include "LongTransactionManager.h"
 
 #include <Fdo/Xml/FeatureSerializer.h>
 #include <Fdo/Xml/FeatureWriter.h>
@@ -508,7 +509,7 @@ MgPropertyCollection* MgServerFeatureService::UpdateFeatures( MgResourceIdentifi
 /// <returns>
 /// Returns an MgFeatureReader containing the locked features.
 /// </returns>
-/// 
+///
 /// EXCEPTIONS:
 /// MgFeatureServiceException
 /// MgInvalidArgumentException
@@ -679,6 +680,58 @@ MgLongTransactionReader* MgServerFeatureService::GetLongTransactions(MgResourceI
     MgServerGetLongTransactions msglt;
     return msglt.GetLongTransactions(resource, bActiveOnly);
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Set the active long transaction name for a feature source.
+///
+/// The long transaction name is associated with the caller's session.  If
+/// no session is set then the method throws an MgSessionNotFoundException.
+/// </summary>
+/// <param name="featureSourceId">Input
+/// A resource identifier identifying a feature source in the repository.
+/// </param>
+/// <param name="longTransactionName">Input
+/// The long transaction name to set.
+/// </param>
+/// <returns>
+/// Returns true if the name was successfully set; otherwise returns false.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgNullArgumentException
+/// MgInvalidResourceTypeException
+/// MgSessionNotFoundException
+bool MgServerFeatureService::SetLongTransaction( MgResourceIdentifier* featureSourceId,
+                                                 CREFSTRING longTransactionName)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SetLongTransaction()");
+
+    CHECKARGUMENTNULL(featureSourceId, L"MgServerFeatureService.SetLongTransaction");
+
+    if (featureSourceId->GetResourceType() != MgResourceType::FeatureSource)
+        throw new MgInvalidResourceTypeException(L"MgServerFeatureService.SetLongTransaction", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    MG_FEATURE_SERVICE_TRY()
+
+    // we require a session ID
+    STRING sessionId;
+    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    if (userInfo != NULL)
+        sessionId = userInfo->GetMgSessionId();
+
+    if (sessionId.empty())
+        throw new MgSessionNotFoundException(L"MgServerFeatureService.SetLongTransaction", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    // set the name in the manager
+    MgLongTransactionManager::SetLongTransactionName(sessionId, featureSourceId, longTransactionName);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.SetLongTransaction")
+
+    return true;
+}
+
 
 //////////////////////////////////////////////////////////////////
 /// \brief
@@ -1042,7 +1095,6 @@ MgPropertyDefinitionCollection* MgServerFeatureService::GetIdentityProperties(Mg
 }
 
 
-
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Retrieves feature information based on the supplied criteria.
@@ -1167,7 +1219,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     }
     else
     {
-        // No coordinate system!!! 
+        // No coordinate system!!!
         // We fail here and do not use a default
     }
 
@@ -1285,9 +1337,10 @@ bool MgServerFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReader)
     return retVal;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// This method enumerates all the providers and if they are FDO enabled for 
+/// This method enumerates all the providers and if they are FDO enabled for
 /// the specified provider and partial connection string.
 ///
 /// \param providerName (String/string)
@@ -1305,9 +1358,10 @@ MgByteReader* MgServerFeatureService::EnumerateDataStores(CREFSTRING providerNam
     return mseds.EnumerateDataStores(providerName, partialConnString);
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// This method returns all of the logical to physical schema mappings for 
+/// This method returns all of the logical to physical schema mappings for
 /// the specified provider and partial connection string.
 ///
 /// \param providerName (String/string)
@@ -1325,6 +1379,8 @@ MgByteReader* MgServerFeatureService::GetSchemaMapping(CREFSTRING providerName, 
     return msgsm.GetSchemaMapping(providerName, partialConnString);
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
 void MgServerFeatureService::UpdateFeatureServiceCache()
 {
     MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
@@ -1334,6 +1390,8 @@ void MgServerFeatureService::UpdateFeatureServiceCache()
     }
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
 void MgServerFeatureService::RemoveFeatureServiceCacheEntries(MgSerializableCollection* changedResources)
 {
     MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
@@ -1353,6 +1411,8 @@ void MgServerFeatureService::RemoveFeatureServiceCacheEntries(MgSerializableColl
     }
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
 void MgServerFeatureService::RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource)
 {
     MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
@@ -1362,6 +1422,8 @@ void MgServerFeatureService::RemoveFeatureServiceCacheEntry(MgResourceIdentifier
     }
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
 void MgServerFeatureService::ClearFeatureServiceCache()
 {
     MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
@@ -1371,6 +1433,8 @@ void MgServerFeatureService::ClearFeatureServiceCache()
     }
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
 void MgServerFeatureService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
