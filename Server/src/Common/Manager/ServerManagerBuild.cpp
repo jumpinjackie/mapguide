@@ -26,6 +26,7 @@
 #include "LogEntryData.cpp"
 #include "LogManager.cpp"
 #include "LogThread.cpp"
+#include "LongTransactionManager.cpp"
 #include "PackageLogHandler.cpp"
 #include "PackageLogReader.cpp"
 #include "PackageLogWriter.cpp"

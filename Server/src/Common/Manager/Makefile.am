@@ -39,6 +39,7 @@ include_SOURCES = \
   LogEntryData.cpp \
   LogManager.cpp \
   LogThread.cpp \
+  LongTransactionManager.cpp \
   PackageLogHandler.cpp \
   PackageLogReader.cpp \
   PackageLogWriter.cpp \
@@ -68,6 +69,7 @@ noinst_HEADERS = $(include_SOURCES) \
   LogManager.h \
   LogThread.h \
   LogType.h \
+  LongTransactionManager.h \
   PackageLogHandler.h \
   PackageLogReader.h \
   PackageLogWriter.h \

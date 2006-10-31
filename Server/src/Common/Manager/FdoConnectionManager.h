@@ -37,7 +37,8 @@ class MgXmlUtil;
 #define MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(methodName)   MG_FEATURE_SERVICE_CATCH_AND_THROW(methodName)
 
 typedef struct {
-    STRING data; // XML content or connection string
+    STRING data;    // XML content or connection string
+    STRING ltName;  // current long transaction name for this connection
     FdoIConnection* pFdoConnection;
     ACE_Time_Value lastUsed;
 
@@ -85,8 +86,8 @@ private:
 
     FdoIConnection* FindFdoConnection(MgResourceIdentifier* resourceIdentifier);
     FdoIConnection* FindFdoConnection(CREFSTRING providerName, CREFSTRING connectionString);
-    FdoIConnection* SearchFdoConnectionCache(CREFSTRING key, CREFSTRING data);
-    void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, CREFSTRING data);
+    FdoIConnection* SearchFdoConnectionCache(CREFSTRING key, CREFSTRING data, CREFSTRING ltName);
+    void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, CREFSTRING data, CREFSTRING ltName);
     bool FdoConnectionCacheFull(void);
 
     void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
