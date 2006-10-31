@@ -20,7 +20,6 @@
 #include "Connection.h"
 #include "LicenseManager.h"
 #include "LogManager.h"
-#include "SessionManager.h"
 #include "ServiceManager.h"
 #include "ServerSiteService.h"
 
