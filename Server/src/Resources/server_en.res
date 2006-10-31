@@ -137,6 +137,7 @@ MgServerNotOnlineException                            = The Server is not online
 MgServiceNotAvailableException                        = The specified service is not available.
 MgServiceNotSupportedException                        = The specified service is not supported.
 MgSessionExpiredException                             = Session has expired or is invalid. Please log in again.
+MgSessionNotFoundException                            = A required session was not found.
 MgStreamIoException                                   = A stream IO exception occurred.
 MgStylizeLayerFailedException                         = Failed to stylize layer: %1
 MgTemporaryFileNotAvailableException                  = Temporary file is not available.
