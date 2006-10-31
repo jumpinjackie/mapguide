@@ -27,6 +27,7 @@
 #include "SignalHandler.h"
 #include "FeatureServiceCache.h"
 #include "FontManager.h"
+#include "LongTransactionManager.h"
 
 #ifdef _DEBUG
 void DebugOutput(const ACE_TCHAR* format, ...)
@@ -484,6 +485,7 @@ int MgServer::fini(void)
     MgFdoConnectionManager::Terminate();
     MgServiceManager::Terminate();
     MgLoadBalanceManager::Terminate();
+    MgLongTransactionManager::Terminate();
 
     MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
     ACE_ASSERT(NULL != licenseManager);

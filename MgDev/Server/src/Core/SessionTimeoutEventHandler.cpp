@@ -19,6 +19,7 @@
 #include "SessionTimeoutEventHandler.h"
 #include "SessionManager.h"
 #include "ServiceManager.h"
+#include "LongTransactionManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -80,6 +81,8 @@ void MgSessionTimeoutEventHandler::HandleEvent(long eventId)
 
         if (m_expiredSessions->GetCount() > 0)
         {
+            MgLongTransactionManager::RemoveLongTransactionNames(m_expiredSessions);
+
             MgServiceManager* serviceManager = MgServiceManager::GetInstance();
             ACE_ASSERT(NULL != serviceManager);
 
