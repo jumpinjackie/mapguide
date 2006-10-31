@@ -245,6 +245,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../Common/PlatformBase/Exception/ServiceNotAvailableException.h" />
     <Header path="../../../Common/PlatformBase/Exception/ServiceNotSupportedException.h" />
     <Header path="../../../Common/MapGuideCommon/Exception/SessionExpiredException.h" />
+    <Header path="../../../Common/MapGuideCommon/Exception/SessionNotFoundException.h" />
     <Header path="../../../Common/Foundation/Exception/TemporaryFileNotAvailableException.h" />
     <Header path="../../../Common/MapGuideCommon/Exception/UnauthorizedAccessException.h" />
     <Header path="../../../Common/Foundation/Exception/UnclassifiedException.h" />
