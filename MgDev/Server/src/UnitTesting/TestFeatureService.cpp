@@ -28,13 +28,16 @@ const STRING TEST_LOCALE = L"en";
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestFeatureService, "TestFeatureService");
 
+
 void TestFeatureService::setUp()
 {
 }
 
+
 void TestFeatureService::tearDown()
 {
 }
+
 
 void TestFeatureService::TestStart()
 {
@@ -62,47 +65,32 @@ void TestFeatureService::TestStart()
             throw new MgServiceNotAvailableException(L"TestResourceService.setUp", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        Ptr<MgUserInformation> userInfo;
-
-        Ptr<MgByteSource> contentSource;
-        contentSource = NULL;
-
-        Ptr<MgByteSource> dataSource;
-        dataSource = NULL;
-
-        Ptr<MgByteSource> contentSource2;
-        Ptr<MgByteSource> contentSource3;
-        Ptr<MgByteSource> dataSource2;
-        Ptr<MgByteSource> dataSource3;
-        Ptr<MgByteSource> dataSource4;
-        Ptr<MgByteSource> dataSource5;
-
-        //Sets the user information for the current thread to be administrator
+        //Set the user information for the current thread to be administrator
         MgUserInformation::SetCurrentUserInfo(NULL);
-        userInfo = new MgUserInformation(L"Administrator", L"admin");
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
         if (userInfo != NULL)
         {
             userInfo->SetLocale(TEST_LOCALE);
             MgUserInformation::SetCurrentUserInfo(userInfo);
 
-            MgResourceIdentifier resourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+            MgResourceIdentifier resourceIdentifier1(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
             MgResourceIdentifier resourceIdentifier2(L"Library://UnitTests/Data/Redding_Parcels.FeatureSource");
             MgResourceIdentifier resourceIdentifier3(L"Library://UnitTests/Data/Sheboygan_BuildingOutlines.FeatureSource");
 
 #ifdef WIN32
-            STRING resourceContentFileName  = L"..\\UnitTestFiles\\Sheboygan_Parcels.FeatureSource";
+            STRING resourceContentFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.FeatureSource";
             STRING resourceContentFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.FeatureSource";
             STRING resourceContentFileName3 = L"..\\UnitTestFiles\\Sheboygan_BuildingOutlines.FeatureSource";
-            STRING dataFileName  = L"..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
+            STRING dataFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
             STRING dataFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.shp";
             STRING dataFileName3 = L"..\\UnitTestFiles\\Redding_Parcels.dbf";
             STRING dataFileName4 = L"..\\UnitTestFiles\\Redding_Parcels.shx";
             STRING dataFileName5 = L"..\\UnitTestFiles\\Sheboygan_BuildingOutlines.sdf";
 #else
-            STRING resourceContentFileName  = L"../UnitTestFiles/Sheboygan_Parcels.FeatureSource";
+            STRING resourceContentFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.FeatureSource";
             STRING resourceContentFileName2 = L"../UnitTestFiles/Redding_Parcels.FeatureSource";
             STRING resourceContentFileName3 = L"../UnitTestFiles/Sheboygan_BuildingOutlines.FeatureSource";
-            STRING dataFileName  = L"../UnitTestFiles/Sheboygan_Parcels.sdf";
+            STRING dataFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.sdf";
             STRING dataFileName2 = L"../UnitTestFiles/Redding_Parcels.shp";
             STRING dataFileName3 = L"../UnitTestFiles/Redding_Parcels.dbf";
             STRING dataFileName4 = L"../UnitTestFiles/Redding_Parcels.shx";
@@ -110,44 +98,38 @@ void TestFeatureService::TestStart()
 #endif
 
             //Add a new resource
-            contentSource = new MgByteSource(resourceContentFileName);
-            Ptr<MgByteReader> contentReader = contentSource->GetReader();
-            pService->SetResource(&resourceIdentifier, contentReader, NULL);
+            Ptr<MgByteSource> contentSource1 = new MgByteSource(resourceContentFileName1);
+            Ptr<MgByteReader> contentReader1 = contentSource1->GetReader();
+            pService->SetResource(&resourceIdentifier1, contentReader1, NULL);
 
-            contentSource2 = new MgByteSource(resourceContentFileName2);
+            Ptr<MgByteSource> contentSource2 = new MgByteSource(resourceContentFileName2);
             Ptr<MgByteReader> contentReader2 = contentSource2->GetReader();
             pService->SetResource(&resourceIdentifier2, contentReader2, NULL);
 
-            contentSource3 = new MgByteSource(resourceContentFileName3);
+            Ptr<MgByteSource> contentSource3 = new MgByteSource(resourceContentFileName3);
             Ptr<MgByteReader> contentReader3 = contentSource3->GetReader();
             pService->SetResource(&resourceIdentifier3, contentReader3, NULL);
 
             //Set the resource data
-            dataSource = new MgByteSource(dataFileName);
-            Ptr<MgByteReader> dataReader;
-            dataReader = dataSource->GetReader();
-            pService->SetResourceData(&resourceIdentifier, L"Sheboygan_Parcels.sdf", L"File", dataReader);
+            Ptr<MgByteSource> dataSource1 = new MgByteSource(dataFileName1);
+            Ptr<MgByteReader> dataReader1 = dataSource1->GetReader();
+            pService->SetResourceData(&resourceIdentifier1, L"Sheboygan_Parcels.sdf", L"File", dataReader1);
 
-            dataSource2 = new MgByteSource(dataFileName2);
-            Ptr<MgByteReader> dataReader2;
-            dataReader2 = dataSource2->GetReader();
+            Ptr<MgByteSource> dataSource2 = new MgByteSource(dataFileName2);
+            Ptr<MgByteReader> dataReader2 = dataSource2->GetReader();
             pService->SetResourceData(&resourceIdentifier2, L"Redding_Parcels.shp", L"File", dataReader2);
 
-            dataSource3 = new MgByteSource(dataFileName3);
-            Ptr<MgByteReader> dataReader3;
-            dataReader3 = dataSource3->GetReader();
+            Ptr<MgByteSource> dataSource3 = new MgByteSource(dataFileName3);
+            Ptr<MgByteReader> dataReader3 = dataSource3->GetReader();
             pService->SetResourceData(&resourceIdentifier2, L"Redding_Parcels.dbf", L"File", dataReader3);
 
-            dataSource4 = new MgByteSource(dataFileName4);
-            Ptr<MgByteReader> dataReader4;
-            dataReader4 = dataSource4->GetReader();
+            Ptr<MgByteSource> dataSource4 = new MgByteSource(dataFileName4);
+            Ptr<MgByteReader> dataReader4 = dataSource4->GetReader();
             pService->SetResourceData(&resourceIdentifier2, L"Redding_Parcels.shx", L"File", dataReader4);
 
-            dataSource5 = new MgByteSource(dataFileName5);
-            Ptr<MgByteReader> dataReader5;
-            dataReader5 = dataSource5->GetReader();
+            Ptr<MgByteSource> dataSource5 = new MgByteSource(dataFileName5);
+            Ptr<MgByteReader> dataReader5 = dataSource5->GetReader();
             pService->SetResourceData(&resourceIdentifier3, L"Sheboygan_BuildingOutlines.sdf", L"File", dataReader5);
-
         }
     }
     catch(MgException* e)
@@ -157,6 +139,7 @@ void TestFeatureService::TestStart()
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
 }
+
 
 void TestFeatureService::TestEnd()
 {
@@ -213,6 +196,7 @@ void TestFeatureService::TestEnd()
     ACE_DEBUG((LM_INFO, ACE_TEXT("\nFeature Service tests completed.\n\n")));
 }
 
+
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
@@ -255,10 +239,11 @@ void TestFeatureService::TestCase_GetFeatureProviders()
     }
 }
 
+
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case gets the feature providers.
+/// This test case tests connections to the SDF provider.
 ///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_TestConnectionSDFProvider()
 {
@@ -306,10 +291,11 @@ void TestFeatureService::TestCase_TestConnectionSDFProvider()
     }
 }
 
+
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case tests the FDO coonection manager.
+/// This test case tests the FDO connection manager.
 ///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_TestFdoConnectionManager()
 {
@@ -361,25 +347,26 @@ void TestFeatureService::TestCase_TestFdoConnectionManager()
     }
 }
 
+
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case gets the connection property value
+/// This test case gets the connection property values.
 ///----------------------------------------------------------------------------
-void TestFeatureService::TestCase_GetConnectionPropertyValue()
+void TestFeatureService::TestCase_GetConnectionPropertyValues()
 {
     try
     {
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetConnectionPropertyValue", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetConnectionPropertyValues", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetConnectionPropertyValue", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetConnectionPropertyValues", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         STRING provider = L"";
@@ -411,6 +398,12 @@ void TestFeatureService::TestCase_GetConnectionPropertyValue()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case gets the provider capabilities.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_GetCapabilities()
 {
     try
@@ -463,6 +456,12 @@ void TestFeatureService::TestCase_GetCapabilities()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case tests a connection to a resource.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_TestConnectionResourceIdentifier()
 {
     try
@@ -508,6 +507,12 @@ void TestFeatureService::TestCase_TestConnectionResourceIdentifier()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises getting schemas.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_GetSchemas()
 {
     try
@@ -557,6 +562,12 @@ void TestFeatureService::TestCase_GetSchemas()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises getting classes.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_GetClasses()
 {
     try
@@ -607,6 +618,12 @@ void TestFeatureService::TestCase_GetClasses()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises getting class definitions.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_GetClassDefinition()
 {
     try
@@ -654,6 +671,12 @@ void TestFeatureService::TestCase_GetClassDefinition()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises describing schemas.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_DescribeSchema()
 {
     try
@@ -706,6 +729,12 @@ void TestFeatureService::TestCase_DescribeSchema()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises selecting features.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_SelectFeatures()
 {
     try
@@ -751,6 +780,12 @@ void TestFeatureService::TestCase_SelectFeatures()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises selecting aggregate features.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_SelectAggregate()
 {
     try
@@ -799,6 +834,13 @@ void TestFeatureService::TestCase_SelectAggregate()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises executing SQL queries containing SELECT
+/// statements.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_ExecuteSqlQuery()
 {
     try
@@ -839,6 +881,13 @@ void TestFeatureService::TestCase_ExecuteSqlQuery()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises executing SQL queries not containing
+/// SELECT statements.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_ExecuteSqlNonQuery()
 {
     try
@@ -879,6 +928,12 @@ void TestFeatureService::TestCase_ExecuteSqlNonQuery()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises getting spatial contexts.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_GetSpatialContexts()
 {
     try
@@ -931,6 +986,12 @@ void TestFeatureService::TestCase_GetSpatialContexts()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises getting long transactions.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_GetLongTransactions()
 {
     try
@@ -980,6 +1041,83 @@ void TestFeatureService::TestCase_GetLongTransactions()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises setting long transaction names.
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_SetLongTransaction()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_SetLongTransaction", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_SetLongTransaction", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        STRING longTransactionName = L"Live";
+
+        // verify exception when passing in a NULL resource
+        CPPUNIT_ASSERT_THROW_MG(pService->SetLongTransaction(NULL, longTransactionName), MgNullArgumentException*);
+
+        // verify exception when passing in an invalid resource type
+        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
+        CPPUNIT_ASSERT_THROW_MG(pService->SetLongTransaction(resource, longTransactionName), MgInvalidResourceTypeException*);
+
+        resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
+        CPPUNIT_ASSERT_THROW_MG(pService->SetLongTransaction(resource, longTransactionName), MgInvalidResourceTypeException*);
+
+        // verify exception when session is not set
+        resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+        CPPUNIT_ASSERT_THROW_MG(pService->SetLongTransaction(resource, longTransactionName), MgSessionNotFoundException*);
+
+        // set the user information for the current thread to be administrator - this
+        // alone doesn't create a session
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(MgUser::Administrator, L"");
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+        CPPUNIT_ASSERT_THROW_MG(pService->SetLongTransaction(resource, longTransactionName), MgSessionNotFoundException*);
+
+        // now set a session
+        userInfo->SetMgSessionId(userInfo->CreateMgSessionId());
+        CPPUNIT_ASSERT(pService->SetLongTransaction(resource, longTransactionName));
+
+        // setting the same LT name twice shouldn't matter
+        CPPUNIT_ASSERT(pService->SetLongTransaction(resource, longTransactionName));
+
+        // should be able to clear the LT name
+        CPPUNIT_ASSERT(pService->SetLongTransaction(resource, L""));
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises getting features.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_GetFeatures()
 {
     try
@@ -1019,6 +1157,12 @@ void TestFeatureService::TestCase_GetFeatures()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises closing a feature reader.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_CloseFeatureReader()
 {
     try
@@ -1060,6 +1204,12 @@ void TestFeatureService::TestCase_CloseFeatureReader()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises getting SQL rows.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_GetSqlRows()
 {
     try
@@ -1099,6 +1249,12 @@ void TestFeatureService::TestCase_GetSqlRows()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises closing a SQL reader.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_CloseSqlReader()
 {
     try
@@ -1140,6 +1296,12 @@ void TestFeatureService::TestCase_CloseSqlReader()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises getting a raster.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_GetRaster()
 {
     try
@@ -1181,6 +1343,12 @@ void TestFeatureService::TestCase_GetRaster()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises getting data rows.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_GetDataRows()
 {
     try
@@ -1220,6 +1388,12 @@ void TestFeatureService::TestCase_GetDataRows()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises closing a data reader.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_CloseDataReader()
 {
     try
@@ -1261,6 +1435,12 @@ void TestFeatureService::TestCase_CloseDataReader()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises joinging features.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_JoinFeatures()
 {
     try
@@ -1284,16 +1464,16 @@ void TestFeatureService::TestCase_JoinFeatures()
         Ptr<MgFeatureReader> reader = pService->SelectFeatures(lFeatureSource, L"Ext1", NULL);
 
         bool bReadNextResult = reader->ReadNext();
-        bReadNextResult = reader->ReadNext();
-        bReadNextResult = reader->ReadNext();
+             bReadNextResult = reader->ReadNext();
+             bReadNextResult = reader->ReadNext();
         bool bIsNullResult = reader->IsNull(L"Join1NAME");
-        STRING s = reader->GetString(L"NAME");
+        STRING s1 = reader->GetString(L"NAME");
         STRING s2 = reader->GetString(L"Join1NAME");
         STRING s3 = reader->GetString(L"Join1ID");
 
         CPPUNIT_ASSERT(bReadNextResult);
         CPPUNIT_ASSERT(bIsNullResult == false);
-        CPPUNIT_ASSERT(s == L"NIEMUTH, ROGER L.");
+        CPPUNIT_ASSERT(s1 == L"NIEMUTH, ROGER L.");
         CPPUNIT_ASSERT(s2 == L"Wells Fargo");
         CPPUNIT_ASSERT(s3 == L"10573");
 
@@ -1315,6 +1495,12 @@ void TestFeatureService::TestCase_JoinFeatures()
     }
 }
 
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises creating a feature source.
+///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_CreateFeatureSource()
 {
     try

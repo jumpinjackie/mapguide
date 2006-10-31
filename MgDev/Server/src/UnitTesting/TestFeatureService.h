@@ -28,7 +28,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetFeatureProviders);
     CPPUNIT_TEST(TestCase_TestConnectionSDFProvider);
     CPPUNIT_TEST(TestCase_TestFdoConnectionManager);
-    CPPUNIT_TEST(TestCase_GetConnectionPropertyValue);
+    CPPUNIT_TEST(TestCase_GetConnectionPropertyValues);
     CPPUNIT_TEST(TestCase_GetCapabilities);
     CPPUNIT_TEST(TestCase_TestConnectionResourceIdentifier);
     CPPUNIT_TEST(TestCase_GetSchemas);
@@ -43,6 +43,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_ExecuteSqlNonQuery);
     CPPUNIT_TEST(TestCase_GetSpatialContexts);
     CPPUNIT_TEST(TestCase_GetLongTransactions);
+    CPPUNIT_TEST(TestCase_SetLongTransaction);
     CPPUNIT_TEST(TestCase_GetFeatures);
     CPPUNIT_TEST(TestCase_CloseFeatureReader);
     CPPUNIT_TEST(TestCase_GetSqlRows);
@@ -65,7 +66,7 @@ public:
     void TestCase_GetFeatureProviders();
     void TestCase_TestConnectionSDFProvider();
     void TestCase_TestFdoConnectionManager();
-    void TestCase_GetConnectionPropertyValue();
+    void TestCase_GetConnectionPropertyValues();
     void TestCase_GetCapabilities();
     void TestCase_TestConnectionProviderConnectionString();
     void TestCase_TestConnectionResourceIdentifier();
@@ -80,6 +81,7 @@ public:
     void TestCase_ExecuteSqlNonQuery();
     void TestCase_GetSpatialContexts();
     void TestCase_GetLongTransactions();
+    void TestCase_SetLongTransaction();
     void TestCase_GetFeatures();
     void TestCase_CloseFeatureReader();
     void TestCase_GetSqlRows();
