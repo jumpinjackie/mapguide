@@ -93,4 +93,4 @@
 #include "OpGetSchemaMapping.cpp"
 #include "ServerEnumerateDataStores.cpp"
 #include "ServerGetSchemaMapping.cpp"
-
+#include "OpSetLongTransaction.cpp"

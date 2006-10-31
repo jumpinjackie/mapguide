@@ -33,8 +33,7 @@ MgServerGetLongTransactions::~MgServerGetLongTransactions()
 {
 }
 
-// Executes the describe schema command and serializes the schema to XML
-
+// Executes the get long transactions command and serializes the schema to XML
 MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgResourceIdentifier* resId, bool bActiveOnly)
 {
     Ptr<MgLongTransactionReader> mgLongTransactionReader;
@@ -77,22 +76,22 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
     mgLongTransactionReader = new MgLongTransactionReader();
     while (longTransactionReader->ReadNext())
     {
-        // If only active spatial context is required skip all others
+        // If only active long transaction is required skip all others
         if (bActiveOnly)
         {
             if (!longTransactionReader->IsActive())
                 continue;
         }
 
-        // Set providername for which spatial reader is executed
+        // Set providername for which long transaction reader is executed
         mgLongTransactionReader->SetProviderName(m_providerName);
 
+        // Add transaction data to the long transaction reader
         Ptr<MgLongTransactionData> longTransactionData = GetLongTransactionData(longTransactionReader);
         CHECKNULL((MgLongTransactionData*)longTransactionData, L"MgServerGetLongTransactions.GetLongTransactions");
-        // Add spatial data to the spatialcontext reader
         mgLongTransactionReader->AddLongTransactionData(longTransactionData);
 
-        // If only active spatial context is required skip all others
+        // If only active long transaction is required skip all others
         if (bActiveOnly)
         {
             if (longTransactionReader->IsActive())
@@ -114,14 +113,14 @@ MgLongTransactionData* MgServerGetLongTransactions::GetLongTransactionData(FdoIL
     CHECKNULL((FdoString*)name, L"MgServerGetLongTransactions.GetLongTransactions");
     longTransactionData->SetName(STRING(name));
 
-    // Desc for spatial context
+    // Desc for long transaction
     FdoString* desc = longTransactionReader->GetDescription();
     if (desc != NULL)
     {
         longTransactionData->SetDescription(STRING(desc));
     }
 
-    // Desc for spatial context
+    // Owner for long transaction
     FdoString* owner = longTransactionReader->GetOwner();
     if (owner != NULL)
     {
@@ -150,7 +149,7 @@ MgLongTransactionData* MgServerGetLongTransactions::GetLongTransactionData(FdoIL
     bool isActive = longTransactionReader->IsActive();
     longTransactionData->SetActiveStatus(isActive);
 
-    // Whether it is active or not
+    // Whether it is frozen or not
     bool isFrozen = longTransactionReader->IsFrozen();
     longTransactionData->SetFrozenStatus(isFrozen);
 

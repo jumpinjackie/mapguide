@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_OP_GET_LONG_TRANSACTION_H
-#define MG_OP_GET_LONG_TRANSACTION_H
+#ifndef MG_OP_GET_LONG_TRANSACTIONS_H
+#define MG_OP_GET_LONG_TRANSACTIONS_H
 
 #include "FeatureOperation.h"
 

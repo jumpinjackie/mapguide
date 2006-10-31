@@ -35,6 +35,7 @@
 #include "OpGetFeatures.h"
 #include "OpCloseFeatureReader.h"
 #include "OpGetLongTransactions.h"
+#include "OpSetLongTransaction.h"
 #include "OpGetSchemas.h"
 #include "OpGetClasses.h"
 #include "OpGetClassDefinition.h"
@@ -364,6 +365,18 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case 1:
             handler.reset(new MgOpGetLongTransactions());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::SetLongTransaction_Id:
+        switch (operationVersion)
+        {
+        case 1:
+            handler.reset(new MgOpSetLongTransaction());
             break;
         default:
             throw new MgInvalidOperationVersionException(

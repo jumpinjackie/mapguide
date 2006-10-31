@@ -590,6 +590,30 @@ public:
     MgLongTransactionReader* GetLongTransactions( MgResourceIdentifier* resource,
                                                   bool bActiveOnly = false);
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Set the active long transaction name for a feature source.
+    ///
+    /// \remarks
+    /// The long transaction name is associated with the caller's session.  If
+    /// no session is set then the method throws an MgSessionNotFoundException.
+    ///
+    /// \param featureSourceId (MgResourceIdentifier)
+    /// A resource identifier identifying a feature source in the repository.
+    /// \param longTransactionName (String/string)
+    /// The long transaction name to set.
+    ///
+    /// \return
+    /// Returns true if the name was successfully set; otherwise
+    /// returns false.
+    ///
+    /// \exception MgNullArgumentException
+    /// \exception MgInvalidResourceTypeException
+    /// \exception MgSessionNotFoundException
+    ///
+    bool SetLongTransaction( MgResourceIdentifier* featureSourceId,
+                             CREFSTRING longTransactionName);
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Retrieves schema information about a set of feature classes for a given feature source.
