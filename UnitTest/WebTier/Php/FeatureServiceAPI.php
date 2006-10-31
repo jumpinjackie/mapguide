@@ -17,6 +17,7 @@ class FeatureServiceAPI
     private $featureSrvc;
     private $mimeType;
 
+
     function __construct($db)
     {
         $this->mimeType="text/xml";
@@ -34,6 +35,7 @@ class FeatureServiceAPI
         $this->arrayParam = array();
     }
 
+
     function __destruct()
     {
         unset($this->site);
@@ -42,7 +44,8 @@ class FeatureServiceAPI
         unset($this->arrayParam);
     }
 
-    function GetFeatureProviders ($paramSet)
+
+    function GetFeatureProviders($paramSet)
     {
         try
         {
@@ -58,6 +61,7 @@ class FeatureServiceAPI
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     function GetProviderCapabilities($paramSet)
     {
@@ -79,6 +83,7 @@ class FeatureServiceAPI
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     function GetConnectionPropertyValues($paramSet)
     {
@@ -106,6 +111,7 @@ class FeatureServiceAPI
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     function DescribeFeatureSchema($paramSet)
     {
@@ -137,6 +143,8 @@ class FeatureServiceAPI
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
+
     function SelectFeatures($paramSet)
     {
         try
@@ -198,33 +206,34 @@ class FeatureServiceAPI
         }
     }
 
+
     //TODO: Verify the implementation is correct
     function SelectAggregates($paramSet)
     {
         try
         {
-        $repId = null;
-        $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"RESOURCEID\"");
-        $this->arrayParam["RESOURCEID"]=$this->unitTestParamVm->GetString("ParamValue");
+            $repId = null;
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"RESOURCEID\"");
+            $this->arrayParam["RESOURCEID"]=$this->unitTestParamVm->GetString("ParamValue");
 
-        $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"CLASSNAME\"");
-        $this->arrayParam["CLASSNAME"]=$this->unitTestParamVm->GetString("ParamValue");
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"CLASSNAME\"");
+            $this->arrayParam["CLASSNAME"]=$this->unitTestParamVm->GetString("ParamValue");
 
-        $collection = new MgStringCollection();
+            $collection = new MgStringCollection();
 
-        if (array_key_exists("RESOURCEID", $this->arrayParam))
-        {
-        $repId = new MgResourceIdentifier($this->arrayParam["RESOURCEID"]);
-        }
+            if (array_key_exists("RESOURCEID", $this->arrayParam))
+            {
+                $repId = new MgResourceIdentifier($this->arrayParam["RESOURCEID"]);
+            }
 
-        $options = new MgFeatureAggregateOptions();
+            $options = new MgFeatureAggregateOptions();
 
-        $featureReader = $this->featureSrvc->SelectAggregate($repId, $this->arrayParam['CLASSNAME'], $options);
+            $featureReader = $this->featureSrvc->SelectAggregate($repId, $this->arrayParam['CLASSNAME'], $options);
 
-        $byteReader = $featureReader->ToXml();
-        $featureReader->Close();
+            $byteReader = $featureReader->ToXml();
+            $featureReader->Close();
 
-        return Utils::GetResponse($byteReader);
+            return Utils::GetResponse($byteReader);
         }
 
         catch (MgException $e)
@@ -236,6 +245,7 @@ class FeatureServiceAPI
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     function ExecuteSqlQuery($paramSet)
     {
@@ -267,8 +277,8 @@ class FeatureServiceAPI
         {
             return new Result($s->GetMessage(), "text/plain");
         }
-
     }
+
 
     function GetSpatialContexts($paramSet)
     {
@@ -310,8 +320,8 @@ class FeatureServiceAPI
         {
             return new Result($s->GetMessage(), "text/plain");
         }
-
     }
+
 
     function GetLongTransactions($paramSet)
     {
@@ -353,8 +363,51 @@ class FeatureServiceAPI
         {
             return new Result($s->GetMessage(), "text/plain");
         }
-
     }
+
+
+    function SetLongTransaction($paramSet)
+    {
+        try
+        {
+            $repId = null;
+
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"RESOURCEID\"");
+            $this->arrayParam['RESOURCEID']=$this->unitTestParamVm->GetString("ParamValue")."";
+
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"LONGTRANSACTIONNAME\"");
+            $this->arrayParam['LONGTRANSACTIONNAME']=$this->unitTestParamVm->GetString("ParamValue")."";
+
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"CREATESESSION\"");
+            $this->arrayParam['CREATESESSION']=$this->unitTestParamVm->GetString("ParamValue")."";
+
+            if (array_key_exists("RESOURCEID", $this->arrayParam))
+            {
+                $repId = new MgResourceIdentifier($this->arrayParam["RESOURCEID"]);
+            }
+
+            if ($this->arrayParam['CREATESESSION']=="TRUE")
+            {
+                $mgsite = $this->site->GetSite();
+                $sessionID = $mgsite->CreateSession();
+                $this->cred->SetMgSessionId($sessionID);
+            }
+
+            $response = $this->featureSrvc->SetLongTransaction($repId, $this->arrayParam['LONGTRANSACTIONNAME']);
+            $result = new Result(Utils::BooleanToString($response), "text/plain");
+
+            return $result;
+        }
+        catch (MgException $e)
+        {
+            return new Result(get_class($e), "text/plain");
+        }
+        catch (SqliteException $s)
+        {
+            return new Result($s->GetMessage(), "text/plain");
+        }
+    }
+
 
     function TestConnection($paramSet)
     {
@@ -388,7 +441,6 @@ class FeatureServiceAPI
 
             return $result;
         }
-
         catch (MgException $e)
         {
             return new Result(get_class($e), "text/plain");
@@ -398,6 +450,7 @@ class FeatureServiceAPI
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     function GetSchemas($paramSet)
     {
@@ -426,6 +479,7 @@ class FeatureServiceAPI
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     function GetClasses($paramSet)
     {

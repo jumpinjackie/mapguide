@@ -14,6 +14,7 @@ class FeatureServiceHttpRequests
     private $URL;
     private $db;
 
+
     function __construct($db, $newURL)
     {
         $this->db=$db;
@@ -22,11 +23,13 @@ class FeatureServiceHttpRequests
         $this->URL = $newURL;
     }
 
+
     function __destruct()
     {
         $this->unitTestParamVm->SqlFinalize();
         unset($this->httpRequest);
     }
+
 
     function GetFeatureProviders($paramSet)
     {
@@ -42,6 +45,7 @@ class FeatureServiceHttpRequests
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     function GetProviderCapabilities($paramSet)
     {
@@ -60,6 +64,7 @@ class FeatureServiceHttpRequests
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     function GetConnectionPropertyValues($paramSet)
     {
@@ -85,6 +90,7 @@ class FeatureServiceHttpRequests
         }
     }
 
+
     function DescribeFeatureSchema($paramSet)
     {
         try
@@ -105,6 +111,7 @@ class FeatureServiceHttpRequests
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     function SelectFeatures($paramSet)
     {
@@ -132,6 +139,7 @@ class FeatureServiceHttpRequests
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     function SelectAggregates($paramSet)
     {
@@ -169,6 +177,7 @@ class FeatureServiceHttpRequests
         }
     }
 
+
     function ExecuteSqlQuery($paramSet)
     {
         try
@@ -189,6 +198,7 @@ class FeatureServiceHttpRequests
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     //TODO:How to represent the check box in the request
     function GetSpatialContexts($paramSet)
@@ -211,6 +221,7 @@ class FeatureServiceHttpRequests
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
 
     //TODO:How to represent the check box in the request
     function GetLongTransactions($paramSet)
@@ -264,5 +275,4 @@ class FeatureServiceHttpRequests
         }
     }
 }
-
 ?>

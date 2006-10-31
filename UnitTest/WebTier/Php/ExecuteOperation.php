@@ -236,6 +236,10 @@ class ExecuteOperation
         {
             $actualResult = $this->featureServiceOperation->GetLongTransactions($paramSet);
         }
+        elseif ($operationName == "SETLONGTRANSACTION")
+        {
+            $actualResult = $this->featureServiceOperation->SetLongTransaction($paramSet);
+        }
         elseif ($operationName == "TESTCONNECTION")
         {
             $actualResult = $this->featureServiceOperation->TestConnection($paramSet);
