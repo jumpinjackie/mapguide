@@ -917,6 +917,48 @@ MgLongTransactionReader* MgProxyFeatureService::GetLongTransactions(MgResourceId
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Set the active long transaction name for a feature source.
+///
+/// The long transaction name is associated with the caller's session.  If
+/// no session is set then the method throws an MgSessionNotFoundException.
+/// </summary>
+/// <param name="featureSourceId">Input
+/// A resource identifier identifying a feature source in the repository.
+/// </param>
+/// <param name="longTransactionName">Input
+/// The long transaction name to set.
+/// </param>
+/// <returns>
+/// Returns true if the name was successfully set; otherwise
+/// returns false.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgNullArgumentException
+/// MgInvalidResourceTypeException
+/// MgSessionNotFoundException
+bool MgProxyFeatureService::SetLongTransaction( MgResourceIdentifier* featureSourceId,
+                                                CREFSTRING longTransactionName)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knInt8,                           // Return type expected
+                       MgFeatureServiceOpId::SetLongTransaction_Id, // Command Code
+                       2,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       1,                                           // Operation version
+                       MgCommand::knObject, featureSourceId,        // Argument#1
+                       MgCommand::knString, &longTransactionName,   // Argument#2
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (bool)cmd.GetReturnValue().val.m_i8;
+}
+
+
 //////////////////////////////////////////////////////////////////
 // Retrieves WFS schema information for the specified feature classes
 MgByteReader* MgProxyFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
