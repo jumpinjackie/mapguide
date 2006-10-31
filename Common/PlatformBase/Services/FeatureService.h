@@ -589,7 +589,7 @@ PUBLISHED_API:
                                                 CREFSTRING className,
                                                 MgFeatureQueryOptions* options,
                                                 CREFSTRING coordinateSystem ) = 0;
- 
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Selects groups of features from a feature source and applies
@@ -634,8 +634,8 @@ PUBLISHED_API:
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Executes the MgDeleteFeatures, MgInsertFeatures, 
-    /// MgUpdateFeatures, MgLockFeatures or MgUnlockFeatures commands 
+    /// Executes the MgDeleteFeatures, MgInsertFeatures,
+    /// MgUpdateFeatures, MgLockFeatures or MgUnlockFeatures commands
     /// contained in the given MgFeatureCommandCollection object.
     ///
     /// \remarks
@@ -683,7 +683,7 @@ PUBLISHED_API:
     ///     type is MgPropertyType::Int32, and its value is the number of
     ///     features updated.</li>
     ///   <li>If the command is of type MgLockFeatures, the property
-    ///     type is MgPropertyType::Feature, and its value is the number 
+    ///     type is MgPropertyType::Feature, and its value is the number
     ///     of features locked.</li>
     ///   <li>If the command is of type MgUnLockFeatures, the property
     ///     type is MgPropertyType::Int32, and its value is the number of
@@ -912,6 +912,41 @@ PUBLISHED_API:
     virtual MgLongTransactionReader* GetLongTransactions( MgResourceIdentifier* resource,
                                                           bool bActiveOnly = false) = 0;
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Set the active long transaction name for a feature source.
+    ///
+    /// \remarks
+    /// The long transaction name is associated with the caller's session.  If
+    /// no session is set then the method throws an MgSessionNotFoundException.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual bool SetLongTransaction(MgResourceIdentifier resource, string longTransactionName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual boolean SetLongTransaction(MgResourceIdentifier resource, String longTransactionName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual bool SetLongTransaction(MgResourceIdentifier resource, string longTransactionName);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param featureSourceId (MgResourceIdentifier)
+    /// A resource identifier identifying a feature source in the repository.
+    /// \param longTransactionName (String/string)
+    /// The long transaction name to set.
+    ///
+    /// \return
+    /// Returns true if the name was successfully set; otherwise
+    /// returns false.
+    ///
+    /// \exception MgNullArgumentException
+    /// \exception MgInvalidResourceTypeException
+    /// \exception MgSessionNotFoundException
+    ///
+    virtual bool SetLongTransaction( MgResourceIdentifier* featureSourceId,
+                                     CREFSTRING longTransactionName) = 0;
+
     /////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets a list of the names of all of the schemas available in
@@ -1116,7 +1151,7 @@ PUBLISHED_API:
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// This method enumerates all the providers and if they are FDO enabled for 
+    /// This method enumerates all the providers and if they are FDO enabled for
     /// the specified provider and partial connection string.
     ///
     /// \param providerName (String/string)
@@ -1130,7 +1165,7 @@ PUBLISHED_API:
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// This method returns all of the logical to physical schema mappings for 
+    /// This method returns all of the logical to physical schema mappings for
     /// the specified provider and partial connection string.
     ///
     /// \param providerName (String/string)

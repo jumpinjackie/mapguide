@@ -67,6 +67,7 @@
 #include  "Exception/ServerNotFoundException.cpp"
 #include  "Exception/ServerNotOnlineException.cpp"
 #include  "Exception/SessionExpiredException.cpp"
+#include  "Exception/SessionNotFoundException.cpp"
 #include  "Exception/StylizeLayerFailedException.cpp"
 #include  "Exception/UnauthorizedAccessException.cpp"
 #include  "Exception/UriFormatException.cpp"
@@ -124,5 +125,3 @@
 #include  "System/UserInformation.cpp"
 #include  "System/CryptographyManager.cpp"
 #include  "Util/IpUtil.cpp"
-
-

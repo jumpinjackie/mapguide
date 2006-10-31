@@ -649,6 +649,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Exception\SessionNotFoundException.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Exception\SessionNotFoundException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception\StylizeLayerFailedException.cpp"
 				>
 			</File>

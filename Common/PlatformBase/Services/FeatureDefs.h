@@ -62,9 +62,9 @@ INTERNAL_API:
 
     static const int EnumerateDataStores_Id         = 0x1111ED20;
     static const int GetSchemaMapping_Id            = 0x1111ED21;
-
     static const int SelectFeaturesWithCS_Id        = 0x1111ED22;
     static const int GetLockedFeatures_Id           = 0x1111ED23;
+    static const int SetLongTransaction_Id          = 0x1111ED24;
 };
 /// \endcond
 

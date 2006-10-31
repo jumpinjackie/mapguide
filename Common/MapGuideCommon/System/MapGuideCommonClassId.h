@@ -84,6 +84,8 @@
 #define MapGuide_Exception_MgUnauthorizedAccessException                MAPGUIDE_EXCEPTION_ID+49
 #define MapGuide_Exception_MgUriFormatException                         MAPGUIDE_EXCEPTION_ID+50
 #define MapGuide_Exception_MgStylizeLayerFailedException                MAPGUIDE_EXCEPTION_ID+51
+#define MapGuide_Exception_MgSessionNotFoundException                   MAPGUIDE_EXCEPTION_ID+52
+
 
 // MapLayer API
 #define MapGuide_MapLayer_Map           MAPGUIDE_MAPLAYER_ID+0

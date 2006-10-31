@@ -84,6 +84,7 @@ bool InitializeStaticData()
     EXCEPTION_CLASS_CREATOR(MgServerNotFoundException)
     EXCEPTION_CLASS_CREATOR(MgServerNotOnlineException)
     EXCEPTION_CLASS_CREATOR(MgSessionExpiredException)
+    EXCEPTION_CLASS_CREATOR(MgSessionNotFoundException)
     EXCEPTION_CLASS_CREATOR(MgUnauthorizedAccessException)
     EXCEPTION_CLASS_CREATOR(MgUriFormatException)
 

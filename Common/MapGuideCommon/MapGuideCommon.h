@@ -91,6 +91,7 @@
 #include "Exception/ServerNotFoundException.h"
 #include "Exception/ServerNotOnlineException.h"
 #include "Exception/SessionExpiredException.h"
+#include "Exception/SessionNotFoundException.h"
 #include "Exception/StylizeLayerFailedException.h"
 #include "Exception/UnauthorizedAccessException.h"
 #include "Exception/UriFormatException.h"

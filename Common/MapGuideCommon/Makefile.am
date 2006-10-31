@@ -60,6 +60,7 @@ include_SOURCES = \
   Exception/ServerNotFoundException.cpp \
   Exception/ServerNotOnlineException.cpp \
   Exception/SessionExpiredException.cpp \
+  Exception/SessionNotFoundException.cpp \
   Exception/StylizeLayerFailedException.cpp \
   Exception/UnauthorizedAccessException.cpp \
   Exception/UriFormatException.cpp \
@@ -171,6 +172,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/ServerNotFoundException.h \
   Exception/ServerNotOnlineException.h \
   Exception/SessionExpiredException.h \
+  Exception/SessionNotFoundException.h \
   Exception/StylizeLayerFailedException.h \
   Exception/UnauthorizedAccessException.h \
   Exception/UriFormatException.h \
