@@ -22,6 +22,7 @@
 #include "LoadBalanceManager.h"
 #include "ServiceManager.h"
 #include "SiteServiceUtil.h"
+#include "LongTransactionManager.h"
 
 IMPLEMENT_CREATE_SERVICE(MgServerSiteService)
 
@@ -763,6 +764,7 @@ void MgServerSiteService::DestroySession(CREFSTRING session)
         L"", L"", MgResourceType::Folder);
 
     GetResourceService().DeleteRepository(&resource);
+    MgLongTransactionManager::RemoveLongTransactionNames(session);
     MgSessionManager::RemoveSession(session);
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.DestroySession")
