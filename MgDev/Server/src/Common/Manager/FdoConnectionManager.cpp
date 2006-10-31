@@ -20,6 +20,7 @@
 #include "System/XmlUtil.h"
 #include "ServiceManager.h"
 #include "LogManager.h"
+#include "LongTransactionManager.h"
 #include "LicenseManager.h" // TODO: This include is here to check if we are building MapGuide Enterprise or Open Source
 
 ACE_Recursive_Thread_Mutex MgFdoConnectionManager::sm_mutex;
@@ -98,7 +99,7 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled, INT32 nF
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager::Initialize()\n")));
     MG_LOG_TRACE_ENTRY(L"MgFdoConnectionManager::Initialize()");
 
-    m_connManager =  FdoFeatureAccessManager::GetConnectionManager();
+    m_connManager = FdoFeatureAccessManager::GetConnectionManager();
     CHECKNULL(m_connManager, L"MgFdoConnectionManager.Initialize()");
 
     if((MaxFdoConnectionPoolSize < nFdoConnectionPoolSize) || (1 > nFdoConnectionPoolSize))
@@ -143,7 +144,7 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
     if(m_bFdoConnectionPoolEnabled)
     {
         // Search the cache for an FDO connection matching this resourceIdentifier
-        // The content must also match as the information may change
+        // The content and long transaction name must also match, as the information may change
         pFdoConnection = FindFdoConnection(resourceIdentifier);
     }
 
@@ -164,6 +165,9 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
         GetConnectionPropertiesFromXml(&xmlUtil, providerName, configDocumentName, longTransactionName);
 
         providerName = UpdateProviderName(providerName);
+
+        // Update the long transaction name to any active one for the current request
+        MgLongTransactionManager::GetLongTransactionName(resourceIdentifier, longTransactionName);
 
         // Create a new connection and add it to the cache
         pFdoConnection = m_connManager->CreateConnection(providerName.c_str());
@@ -186,7 +190,9 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
                 if(!FdoConnectionCacheFull())
                 {
                     // Add this entry to the cache
-                    CacheFdoConnection(pFdoConnection, resourceIdentifier->ToString(), MgUtil::MultiByteToWideChar(featureSourceXmlContent));
+                    CacheFdoConnection(pFdoConnection, resourceIdentifier->ToString(),
+                                       MgUtil::MultiByteToWideChar(featureSourceXmlContent),
+                                       longTransactionName);
                 }
             }
         }
@@ -253,7 +259,8 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
                         // Add this entry to the cache
                         STRING key = providerNameNoVersion + L" - " + connectionString;
                         STRING data = L"";
-                        CacheFdoConnection(pFdoConnection, key, data);
+                        STRING ltName = L"";
+                        CacheFdoConnection(pFdoConnection, key, data, ltName);
                     }
                 }
             }
@@ -339,7 +346,13 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* 
     string featureSourceXmlContent;
     RetrieveFeatureSource(resourceIdentifier, featureSourceXmlContent);
 
-    pFdoConnection = SearchFdoConnectionCache(resourceIdentifier->ToString(), MgUtil::MultiByteToWideChar(featureSourceXmlContent));
+    // Get the active long transaction name for the current request
+    STRING ltName = L"";
+    MgLongTransactionManager::GetLongTransactionName(resourceIdentifier, ltName);
+
+    pFdoConnection = SearchFdoConnectionCache(resourceIdentifier->ToString(),
+                                              MgUtil::MultiByteToWideChar(featureSourceXmlContent),
+                                              ltName);
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FindFdoConnection")
 
@@ -353,7 +366,9 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING providerNam
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
-    pFdoConnection = SearchFdoConnectionCache(providerName, connectionString);
+    STRING ltName = L"";
+
+    pFdoConnection = SearchFdoConnectionCache(providerName, connectionString, ltName);
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FindFdoConnection")
 
@@ -361,7 +376,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING providerNam
 }
 
 
-FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING key, CREFSTRING data)
+FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING key, CREFSTRING data, CREFSTRING ltName)
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
@@ -382,17 +397,21 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING key,
             {
                 if(pFdoConnectionCacheEntry->data == data)
                 {
-                    // We have a match
-                    if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() == 1)
+                    // We have a data match
+                    if(pFdoConnectionCacheEntry->ltName == ltName)
                     {
-                        // It is not in use so claim it
-                        pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
-                        if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                        // We have a long transaction name match
+                        if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() == 1)
                         {
-                            pFdoConnectionCacheEntry->pFdoConnection->Open();
+                            // It is not in use so claim it
+                            pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
+                            if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                            {
+                                pFdoConnectionCacheEntry->pFdoConnection->Open();
+                            }
+                            pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
+                            break;
                         }
-                        pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
-                        break;
                     }
                 }
             }
@@ -803,6 +822,7 @@ void MgFdoConnectionManager::Open(FdoIConnection* pFdoConnection)
     }
 }
 
+
 MgSpatialContextInfoMap* MgFdoConnectionManager::GetSpatialContextInfo(MgResourceIdentifier* resourceIdentifier)
 {
     MgSpatialContextInfoMap* spatialContextInfoMap = NULL;
@@ -829,6 +849,7 @@ MgSpatialContextInfoMap* MgFdoConnectionManager::GetSpatialContextInfo(MgResourc
     return spatialContextInfoMap;
 }
 
+
 STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
 {
     STRING providerNameNoVersion = providerName;
@@ -852,6 +873,7 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING providerName)
 
     return providerNameNoVersion;
 }
+
 
 bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
 {
@@ -933,7 +955,8 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
     return (connections == connectionsRemoved);
 }
 
-void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, CREFSTRING data)
+
+void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, CREFSTRING data, CREFSTRING ltName)
 {
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -945,6 +968,7 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
     if(pFdoConnectionCacheEntry)
     {
         pFdoConnectionCacheEntry->data = data;
+        pFdoConnectionCacheEntry->ltName = ltName;
         pFdoConnectionCacheEntry->pFdoConnection = pFdoConnection;
         pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
 
@@ -956,6 +980,7 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.CacheFdoConnection")
 }
+
 
 bool MgFdoConnectionManager::FdoConnectionCacheFull(void)
 {
@@ -1028,6 +1053,7 @@ bool MgFdoConnectionManager::FdoConnectionCacheFull(void)
 
     return bCacheFull;
 }
+
 
 void MgFdoConnectionManager::ClearCache()
 {
@@ -1106,6 +1132,7 @@ void MgFdoConnectionManager::ClearCache()
 #endif
 }
 
+
 #ifdef _DEBUG
 void MgFdoConnectionManager::ShowCache(void)
 {
@@ -1133,16 +1160,14 @@ void MgFdoConnectionManager::ShowCache(void)
 }
 #endif
 
+
 bool MgFdoConnectionManager::IsExcludedProvider(CREFSTRING providerName)
 {
     bool bResult = false;
 
-    if(m_excludedProviders)
+    if(m_excludedProviders.p)
     {
-        if(m_excludedProviders.p)
-        {
-            bResult = m_excludedProviders->Contains(providerName);
-        }
+        bResult = m_excludedProviders->Contains(providerName);
     }
 
     return bResult;
