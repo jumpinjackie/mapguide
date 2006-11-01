@@ -182,3 +182,11 @@ void MgCoordinateXYM::ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOnl
         coordDim = L"";
     }
 }
+
+//////////////////////////////////////////////////////////////////
+// Get the unique identifier for the class
+//
+INT32 MgCoordinateXYM::GetClassId()
+{
+    return m_cls_id;
+}

@@ -570,8 +570,17 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
                 if (string::npos != token.find("__set")) { setProp = true; }
                 if (string::npos != token.find("__get")) { getProp = true; }
 
-                size_t methodStart = i-3>=0 ? tokens[i-3].find("Get") : string::npos;
-
+                size_t methodStart = string::npos;
+                int j=0;
+                if (setProp || getProp)
+                {
+                    for (j = 3; j < 6; j++)
+                    {
+                        methodStart = i-j>=0 ? tokens[i-j].find("Get") : string::npos;
+                        if (string::npos != methodStart) break;
+                    }
+                }
+   
                 if (string::npos != methodStart && (setProp || getProp))
                 {
                     if (NULL == propertyFile)
@@ -592,12 +601,12 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
 
                     if (NULL != propertyFile)
                     {
-                        string propName = tokens[i-3].substr(3);
-                        string propType = tokens[i-4];
+                        string propName = tokens[i-j].substr(3);
+                        string propType = tokens[i-j-1];
                         if (propType == "*")
                         {
-                            propType = tokens[i-5];
-                            propType.append(tokens[i-4]);
+                            propType = tokens[i-j-2];
+                            propType.append(tokens[i-j-1]);
                         }
                         else if (propType == "BYTE") {propType = "byte"; }
                         else if (propType == "INT8") {propType = "short"; }

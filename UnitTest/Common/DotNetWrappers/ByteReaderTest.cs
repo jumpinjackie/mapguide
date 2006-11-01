@@ -95,7 +95,7 @@ namespace OSGeo.MapGuide
             Assert.AreEqual(testString.Length, reader.GetLength());
             string buf = reader.ToString();
             Assert.AreEqual(testString, buf);
-            Assert.AreEqual(0, reader.GetLength());
+            Assert.AreEqual(testString.Length, reader.GetLength());
             reader.Rewind();
              Assert.AreEqual(testString.Length, reader.GetLength());
         }
