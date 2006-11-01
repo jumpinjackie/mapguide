@@ -162,3 +162,11 @@ void MgCoordinateXY::ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOnly
     awktStr += MgUtil::MultiByteToWideChar(coordAwkt);
     coordDim = L"";
 }
+
+//////////////////////////////////////////////////////////////////
+// Get the unique identifier for the class
+//
+INT32 MgCoordinateXY::GetClassId()
+{
+    return m_cls_id;
+}

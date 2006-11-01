@@ -195,3 +195,11 @@ void MgCoordinateXYZM::ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOn
         coordDim = L"";
     }
 }
+
+//////////////////////////////////////////////////////////////////
+// Get the unique identifier for the class
+//
+INT32 MgCoordinateXYZM::GetClassId()
+{
+    return m_cls_id;
+}

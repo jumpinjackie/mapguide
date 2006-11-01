@@ -180,7 +180,17 @@ STRING MgByteReader::ToString()
 
     MgByteSink byteSink(this);
 
+    if (IsRewindable())
+    {
+        Rewind();
+    }
+
     byteSink.ToString(str);
+
+    if (IsRewindable())
+    {
+        Rewind();
+    }
 
     return str;
 }

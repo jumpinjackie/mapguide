@@ -391,7 +391,8 @@ namespace OSGeo.MapGuide
         public void DeleteFeatures()
         {
             MgDeleteFeatures df = new MgDeleteFeatures("dfClassName", "dfFilterText");
-            Assert.Ignore("Properties not visible");
+            Assert.AreEqual("dfClassName", df.FeatureClassName);
+            Assert.AreEqual("dfFilterText", df.FilterText);
         }
 
         [Test]
@@ -456,12 +457,16 @@ namespace OSGeo.MapGuide
         [Test]
         public void InsertFeatures()
         {
-            Assert.Ignore("Properties not visible");
+            MgPropertyCollection propColl = new MgPropertyCollection();
+            propColl.Add(new MgInt32Property("intProp", 10));
+            MgInsertFeatures inf = new MgInsertFeatures("ClassName", propColl);
+            Assert.AreEqual("ClassName", inf.FeatureClassName);
         }
 
         [Test]
         public void LockFeatures()
         {
+            
             Assert.Ignore("MgLockFeatures not visible");
         }
 
@@ -564,7 +569,12 @@ namespace OSGeo.MapGuide
         [Test]
         public void UpdateFeatures()
         {
-            Assert.Ignore("Properties not visible");
+            MgPropertyCollection propColl = new MgPropertyCollection();
+            propColl.Add(new MgInt32Property("intProp", 10));
+            MgUpdateFeatures uf = new MgUpdateFeatures("ClassName", propColl, "filter");
+            Assert.AreEqual("ClassName", uf.FeatureClassName);
+            Assert.AreEqual("ClassName", uf.FeatureClassName);
+
         }
 
         [Test]
@@ -615,9 +625,9 @@ namespace OSGeo.MapGuide
         public void ArcSegment()
         {
             MgGeometryFactory gf = new MgGeometryFactory();
-            MgCoordinate start = gf.CreateCoordinateXY(0, 0);
-            MgCoordinate end = gf.CreateCoordinateXY(10, 10);
-            MgCoordinate control = gf.CreateCoordinateXY(5, 5);
+            MgCoordinateXY start = gf.CreateCoordinateXY(0, 0) as MgCoordinateXY;
+            MgCoordinateXY end = gf.CreateCoordinateXY(10, 10) as MgCoordinateXY;
+            MgCoordinateXY control = gf.CreateCoordinateXY(5, 5) as MgCoordinateXY;
             MgArcSegment arcSegment = gf.CreateArcSegment(start, end, control);
 
             Assert.AreEqual(MgGeometryComponentType.ArcSegment, arcSegment.ComponentType);
@@ -630,32 +640,56 @@ namespace OSGeo.MapGuide
         public void CoordinateXY()
         {
             MgGeometryFactory gf = new MgGeometryFactory();
-            MgCoordinate coord = gf.CreateCoordinateXY(100, 100);
-            Assert.Ignore("Properties not visible");
+            MgCoordinateXY coord = gf.CreateCoordinateXY(100, 100) as MgCoordinateXY;
+            Assert.AreEqual(100, coord.X);
+            Assert.AreEqual(100, coord.Y);
+            MgCoordinate coord2 = coord;
+            Assert.AreEqual(100, coord2.X);
+            Assert.AreEqual(100, coord2.Y);
         }
 
         [Test]
         public void CoordinateXYM()
         {
             MgGeometryFactory gf = new MgGeometryFactory();
-            MgCoordinate coord = gf.CreateCoordinateXYM(100, 100, 10);
-            Assert.Ignore("Properties not visible");
+            MgCoordinateXYM coord = gf.CreateCoordinateXYM(100, 100, 10) as MgCoordinateXYM;
+            Assert.AreEqual(100, coord.X);
+            Assert.AreEqual(100, coord.Y);
+            Assert.AreEqual(10, coord.M);
+            MgCoordinate coord2 = coord;
+            Assert.AreEqual(100, coord2.X);
+            Assert.AreEqual(100, coord2.Y);
+            Assert.AreEqual(10, coord2.M);
         }
 
         [Test]
         public void CoordinateXYZ()
         {
             MgGeometryFactory gf = new MgGeometryFactory();
-            MgCoordinate coord = gf.CreateCoordinateXYZ(100, 100, 10);
-            Assert.Ignore("Properties not visible");
+            MgCoordinateXYZ coord = gf.CreateCoordinateXYZ(100, 100, 10) as MgCoordinateXYZ;
+            Assert.AreEqual(100, coord.X);
+            Assert.AreEqual(100, coord.Y);
+            Assert.AreEqual(10, coord.Z);
+            MgCoordinate coord2 = coord;
+            Assert.AreEqual(100, coord2.X);
+            Assert.AreEqual(100, coord2.Y);
+            Assert.AreEqual(10, coord2.Z);
         }
 
         [Test]
         public void CoordinateXYZM()
         {
             MgGeometryFactory gf = new MgGeometryFactory();
-            MgCoordinate coord = gf.CreateCoordinateXYZM(100, 100, 10, 5);
-            Assert.Ignore("Properties not visible");
+            MgCoordinateXYZM coord = gf.CreateCoordinateXYZM(100, 100, 10, 5) as MgCoordinateXYZM;
+            Assert.AreEqual(100, coord.X);
+            Assert.AreEqual(100, coord.Y);
+            Assert.AreEqual(10, coord.Z);
+            Assert.AreEqual(5, coord.M);
+            MgCoordinate coord2 = coord;
+            Assert.AreEqual(100, coord2.X);
+            Assert.AreEqual(100, coord2.Y);
+            Assert.AreEqual(10, coord2.Z);
+            Assert.AreEqual(5, coord2.M);
         }
 
         [Test]

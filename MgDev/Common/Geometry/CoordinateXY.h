@@ -162,6 +162,15 @@ INTERNAL_API:
     ///
     virtual void ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOnly);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Get the unique identifier for the class
+    ///
+    /// \return
+    /// Class Identifider.
+    ///
+    virtual INT32 GetClassId();
+
 protected:
 
     //////////////////////////////////////////////
@@ -174,6 +183,7 @@ private:
     double      m_x;
     double      m_y;
 
+CLASS_ID:
     static const INT32 m_cls_id = Geometry_CoordinateXY;
 };
 /// \}
