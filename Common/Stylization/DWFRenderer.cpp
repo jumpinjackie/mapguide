@@ -782,15 +782,9 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     RS_Bounds dst;
 
     if (aspect <= 1.0)
-    {
-        double diff = 0.5 * (1.0 - aspect) * SYMBOL_MAX;
-        dst = RS_Bounds(0, diff, SYMBOL_MAX, SYMBOL_MAX - diff);
-    }
+        dst = RS_Bounds(0, 0, SYMBOL_MAX, aspect * SYMBOL_MAX);
     else
-    {
-        double diff = 0.5 * (1.0 - 1.0 / aspect) * SYMBOL_MAX;
-        dst = RS_Bounds(diff, 0, SYMBOL_MAX - diff, SYMBOL_MAX);
-    }
+        dst = RS_Bounds(0, 0, SYMBOL_MAX / aspect, SYMBOL_MAX);
 
     //construct transformer -- we will use one
     //even for the default symbol -- makes sure
