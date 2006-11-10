@@ -67,6 +67,10 @@ MgHttpKmlGetLayer::MgHttpKmlGetLayer(MgHttpRequest *hRequest)
     {
         m_dpi = 96; // default
     }
+
+    // Get the draw order
+    STRING drawOrder = params->GetParameterValue(MgHttpResourceStrings::reqKmlDrawOrder);
+    m_drawOrder = drawOrder.empty() ? 0 : MgUtil::StringToInt32(drawOrder);
 }
 
 /// <summary>
@@ -101,7 +105,7 @@ void MgHttpKmlGetLayer::Execute(MgHttpResponse& hResponse)
     Ptr<MgEnvelope> extents = MgHttpKmlGetFeatures::GetExtents(m_boundingBox);
 
     // Get the KML representation of the map
-    Ptr<MgByteReader> reader = kmlService->GetLayerKml(layer, extents, m_width, m_height, m_dpi, m_agentUri, m_format);
+    Ptr<MgByteReader> reader = kmlService->GetLayerKml(layer, extents, m_width, m_height, m_dpi, m_drawOrder, m_agentUri, m_format);
 
     // Set the result
     hResult->SetResultObject(reader, reader->GetMimeType());

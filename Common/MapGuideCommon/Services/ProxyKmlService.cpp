@@ -92,6 +92,7 @@ MgByteReader* MgProxyKmlService::GetLayerKml(
     INT32 width,
     INT32 height,
     double dpi,
+    INT32 drawOrder,
     CREFSTRING agentUri,
     CREFSTRING format)
 {
@@ -99,7 +100,7 @@ MgByteReader* MgProxyKmlService::GetLayerKml(
     cmd.ExecuteCommand(m_connProp,                                      // Connection
                         MgCommand::knObject,                            // Return type expected
                         MgKmlServiceOpId::GetLayerKml,                  // Command Code
-                        7,                                              // No of arguments
+                        8,                                              // No of arguments
                         Kml_Service,                                    // Service Id
                         1,                                              // Operation version
                         MgCommand::knObject, layer,                     // Argument#1
@@ -107,8 +108,9 @@ MgByteReader* MgProxyKmlService::GetLayerKml(
                         MgCommand::knInt32, width,                      // Argument#3
                         MgCommand::knInt32, height,                     // Argument#4
                         MgCommand::knDouble, dpi,                       // Argument#5
-                        MgCommand::knString, &agentUri,                 // Argument#6
-                        MgCommand::knString, &format,                   // Argument#7
+                        MgCommand::knInt32, drawOrder,                  // Argument#6
+                        MgCommand::knString, &agentUri,                 // Argument#7
+                        MgCommand::knString, &format,                   // Argument#8
                         MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
@@ -123,13 +125,14 @@ MgByteReader* MgProxyKmlService::GetFeaturesKml(
     INT32 width,
     INT32 height,
     double dpi,
+    INT32 drawOrder,
     CREFSTRING format)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                      // Connection
                         MgCommand::knObject,                            // Return type expected
                         MgKmlServiceOpId::GetFeaturesKml,               // Command Code
-                        6,                                              // No of arguments
+                        7,                                              // No of arguments
                         Kml_Service,                                    // Service Id
                         1,                                              // Operation version
                         MgCommand::knObject, layer,                     // Argument#1
@@ -137,7 +140,8 @@ MgByteReader* MgProxyKmlService::GetFeaturesKml(
                         MgCommand::knInt32, width,                      // Argument#3
                         MgCommand::knInt32, height,                     // Argument#4
                         MgCommand::knDouble, dpi,                       // Argument#5
-                        MgCommand::knString, &format,                   // Argument#6
+                        MgCommand::knInt32, drawOrder,                  // Argument#6
+                        MgCommand::knString, &format,                   // Argument#7
                         MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());

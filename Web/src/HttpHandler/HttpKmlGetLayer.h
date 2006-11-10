@@ -59,6 +59,7 @@ private:
     INT32 m_width;
     INT32 m_height;
     double m_dpi;
+    INT32 m_drawOrder;
     STRING m_boundingBox;
 };
 

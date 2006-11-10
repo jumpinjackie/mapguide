@@ -172,10 +172,10 @@ public:
     static const STRING reqKmlLayerDefinition;
     static const STRING reqKmlBoundingBox;
     static const STRING reqKmlFormat;
-    static const STRING reqKmlScaleRange;
     static const STRING reqKmlWidth;
     static const STRING reqKmlHeight;
     static const STRING reqKmlDpi;
+    static const STRING reqKmlDrawOrder;
 
     // PREDEFINED WEB MAP SERVICE REQUEST PARAMETERS
     static const STRING reqWmsRequest;

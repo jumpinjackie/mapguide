@@ -41,7 +41,7 @@ void MgOpGetLayerKml::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (7 == m_packet.m_NumArguments)
+    if (8 == m_packet.m_NumArguments)
     {
         Ptr<MgLayer> layer = (MgLayer*)m_stream->GetObject();
         Ptr<MgEnvelope> extents = (MgEnvelope*)m_stream->GetObject();
@@ -51,6 +51,8 @@ void MgOpGetLayerKml::Execute()
         m_stream->GetInt32(height);
         double dpi;
         m_stream->GetDouble(dpi);
+        INT32 drawOrder;
+        m_stream->GetInt32(drawOrder);
         STRING agentUri;
         m_stream->GetString(agentUri);
         STRING format;
@@ -63,6 +65,7 @@ void MgOpGetLayerKml::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"INT32");
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"INT32");
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"double");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"INT32");
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(agentUri.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -70,7 +73,7 @@ void MgOpGetLayerKml::Execute()
         Validate();
 
         Ptr<MgByteReader> kml =
-            m_service->GetLayerKml(layer, extents, width, height, dpi, agentUri, format);
+            m_service->GetLayerKml(layer, extents, width, height, dpi, drawOrder, agentUri, format);
 
         EndExecution(kml);
     }
