@@ -242,10 +242,10 @@ const STRING MgHttpResourceStrings::reqKmlMapDefinition = L"MAPDEFINITION";
 const STRING MgHttpResourceStrings::reqKmlLayerDefinition = L"LAYERDEFINITION";
 const STRING MgHttpResourceStrings::reqKmlBoundingBox = L"BBOX";
 const STRING MgHttpResourceStrings::reqKmlFormat = L"FORMAT";
-const STRING MgHttpResourceStrings::reqKmlScaleRange = L"SCALERANGE";
 const STRING MgHttpResourceStrings::reqKmlWidth = L"WIDTH";
 const STRING MgHttpResourceStrings::reqKmlHeight = L"HEIGHT";
 const STRING MgHttpResourceStrings::reqKmlDpi = L"DPI";
+const STRING MgHttpResourceStrings::reqKmlDrawOrder = L"DRAWORDER";
 
 // Kml Service Operation Requests
 const STRING MgHttpResourceStrings::opGetMapKml = L"GETMAPKML";

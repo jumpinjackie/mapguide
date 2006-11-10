@@ -57,6 +57,8 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
     {
         throw new MgNullArgumentException(L"MgServerKmlService.GetMapKml", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+        
+    STRING sessionId = GetSessionId();
 
     KmlContent kmlContent;
     kmlContent.StartDocument();
@@ -66,6 +68,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
     kmlContent.WriteString("<name><![CDATA[", false);
     kmlContent.WriteString(mapName, false);
     kmlContent.WriteString("]]></name>");
+    kmlContent.WriteString("<open>1</open>");
 
     if(m_svcResource == NULL)
     {
@@ -106,10 +109,11 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
 
         WriteRegion(extent, kmlContent, dpi);
     }
-    for(int i = 0; i < layers->GetCount(); i++)
+    int numLayers = layers->GetCount();
+    for(int i = 0; i < numLayers; i++)
     {
         Ptr<MgLayer> layer = dynamic_cast<MgLayer*>(layers->GetItem(i));
-        AppendLayer(layer, extent, agentUri, format, kmlContent);
+        AppendLayer(layer, extent, numLayers - i, agentUri, format, sessionId, kmlContent);
     }
     kmlContent.EndDocument();
     
@@ -125,7 +129,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
 }
 
 MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extents,
-    INT32 width, INT32 height, double dpi, CREFSTRING agentUri, CREFSTRING format)
+    INT32 width, INT32 height, double dpi, INT32 drawOrder, CREFSTRING agentUri, CREFSTRING format)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -135,6 +139,8 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
     {
         throw new MgNullArgumentException(L"MgServerKmlService.GetLayerKml", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    STRING sessionId = GetSessionId();
 
     if(m_svcResource == NULL)
     {
@@ -175,7 +181,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
                 if(scale > minScale && scale <= maxScale)
                 {
                     AppendScaleRange(layer, destExtent, agentUri, dimension,
-                        minScale, maxScale, dpi, format, kmlContent);
+                        minScale, maxScale, dpi, drawOrder, format, sessionId, kmlContent);
                 }
             }
         }
@@ -193,20 +199,20 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
                 if(scale > minScale && scale <= maxScale)
                 {
                     AppendRasterScaleRange(layer, destExtent, agentUri, dimension,
-                        minScale, maxScale, dpi, format, kmlContent);
+                        minScale, maxScale, dpi, drawOrder, format, sessionId, kmlContent);
                 }
             }
         }
-        else if(dl != NULL)
+        /*else if(dl != NULL)
         {
             double minScale = dl->GetMinScale();
             double maxScale = dl->GetMaxScale();
             if(scale > minScale && scale <= maxScale)
             {
                 AppendScaleRange(layer, destExtent, agentUri, dimension,
-                    minScale, maxScale, dpi, format, kmlContent);
+                    minScale, maxScale, dpi, drawOrder, format, sessionId, kmlContent);
             }
-        }
+        }*/
     }
     kmlContent.EndDocument();
     
@@ -222,7 +228,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
 }
 
 MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* extents,
-    INT32 width, INT32 height, double dpi, CREFSTRING format)
+    INT32 width, INT32 height, double dpi, INT32 drawOrder, CREFSTRING format)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -267,7 +273,7 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
         KmlContent kmlContent;
         kmlContent.StartDocument();
         kmlContent.WriteString("<visibility>1</visibility>");
-        AppendFeatures(layer, extents, scale, dpi, kmlContent);
+        AppendFeatures(layer, extents, scale, dpi, drawOrder, kmlContent);
         kmlContent.EndDocument();
         Ptr<MgByteSource> byteSource = GetByteSource(kmlContent, format);
         if(byteSource != NULL)
@@ -283,10 +289,13 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
 
 void MgServerKmlService::AppendLayer(MgLayer* layer,
                                      MgEnvelope* extent,
+                                     INT32 drawOrder,
                                      CREFSTRING agentUri,
                                      CREFSTRING format,
+                                     CREFSTRING sessionId,
                                      KmlContent& kmlContent)
 {
+    char buffer[256];
     kmlContent.WriteString("<NetworkLink>");
     kmlContent.WriteString("<visibility>");
     kmlContent.WriteString(layer->GetVisible() ? "1" : "0");
@@ -299,8 +308,12 @@ void MgServerKmlService::AppendLayer(MgLayer* layer,
     kmlContent.WriteString(agentUri, false);
     kmlContent.WriteString("?OPERATION=GetLayerKml&amp;VERSION=1&amp;LAYERDEFINITION=", false);
     kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
+    sprintf(buffer,"&amp;DRAWORDER=%d", drawOrder);
+    kmlContent.WriteString(buffer, false);
     kmlContent.WriteString("&amp;FORMAT=", false);
-    kmlContent.WriteString(MgUtil::WideCharToMultiByte(format));
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(format), false);
+    kmlContent.WriteString("&amp;SESSION=", false);
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(sessionId));
     kmlContent.WriteString("</href>");
     kmlContent.WriteString("<viewRefreshMode>onStop</viewRefreshMode>");
     kmlContent.WriteString("<viewRefreshTime>1</viewRefreshTime>");
@@ -316,7 +329,9 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
                                           double minScale,
                                           double maxScale,
                                           double dpi,
+                                          INT32 drawOrder,
                                           CREFSTRING format,
+                                          CREFSTRING sessionId,
                                           KmlContent& kmlContent)
 {
     char buffer[256];
@@ -326,6 +341,7 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
     kmlContent.WriteString(buffer, false);
     kmlContent.WriteString("]]></name>");
     WriteRegion(extent, kmlContent, dpi, dimension, minScale, maxScale);
+    kmlContent.WriteString("<open>1</open>");
     kmlContent.WriteString("<Link>");
     kmlContent.WriteString("<href>");
     kmlContent.WriteString(agentUri, false);
@@ -333,8 +349,12 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
     kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
     sprintf(buffer,"&amp;DPI=%f", dpi);
     kmlContent.WriteString(buffer, false);
+    sprintf(buffer,"&amp;DRAWORDER=%d", drawOrder);
+    kmlContent.WriteString(buffer, false);
     kmlContent.WriteString("&amp;FORMAT=", false);
-    kmlContent.WriteString(MgUtil::WideCharToMultiByte(format));
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(format), false);
+    kmlContent.WriteString("&amp;SESSION=", false);
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(sessionId));
     kmlContent.WriteString("</href>");
     kmlContent.WriteString("<viewRefreshMode>onStop</viewRefreshMode>");
     kmlContent.WriteString("<viewRefreshTime>1</viewRefreshTime>");
@@ -350,11 +370,15 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
                                           double minScale,
                                           double maxScale,
                                           double dpi,
+                                          INT32 drawOrder,
                                           CREFSTRING format,
+                                          CREFSTRING sessionId,
                                           KmlContent& kmlContent)
 {
     char buffer[1024];
     kmlContent.WriteString("<GroundOverlay>");
+    sprintf(buffer,"<drawOrder>%d</drawOrder>", drawOrder);
+    kmlContent.WriteString(buffer);
     kmlContent.WriteString("<name><![CDATA[", false);
     sprintf(buffer,"%f - %f", minScale, maxScale);
     kmlContent.WriteString(buffer, false);
@@ -375,7 +399,9 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
     sprintf(buffer,"&amp;DPI=%f", dpi);
     kmlContent.WriteString(buffer, false);
     kmlContent.WriteString("&amp;FORMAT=", false);
-    kmlContent.WriteString(MgUtil::WideCharToMultiByte(format));
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(format), false);
+    kmlContent.WriteString("&amp;SESSION=", false);
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(sessionId));
     kmlContent.WriteString("</href>");
     kmlContent.WriteString("<viewRefreshMode>onStop</viewRefreshMode>");
     kmlContent.WriteString("<viewRefreshTime>0</viewRefreshTime>");
@@ -388,6 +414,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
                                         MgEnvelope* extents,
                                         double scale,
                                         double dpi,
+                                        INT32 drawOrder,
                                         KmlContent& kmlContent)
 {
 
@@ -418,11 +445,11 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
         extents->GetLowerLeftCoordinate()->GetY(),
         extents->GetUpperRightCoordinate()->GetX(),
         extents->GetUpperRightCoordinate()->GetY());
-    KmlRenderer renderer(&kmlContent, bounds, scale, dpi);
+    KmlRenderer renderer(&kmlContent, bounds, scale, dpi, drawOrder);
     DefaultStylizer stylizer;
     stylizer.Initialize(&renderer);
     MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
-    MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+//    MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
 //    MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());    
     if(vl != NULL)
     {
@@ -487,7 +514,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             renderer.EndLayer();
         }
     }*/
-    else if(dl != NULL)
+    /*else if(dl != NULL)
     {
         if(m_svcDrawing == NULL)
         {
@@ -520,7 +547,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
 
             stylizer.StylizeDrawingLayer( dl, &layerInfo, &is, dl->GetLayerFilter(), csTrans);
         }
-    }
+    }*/
     if(csTrans != NULL)
     {
         delete csTrans;
@@ -833,6 +860,34 @@ MgByteSource* MgServerKmlService::GetByteSource(KmlContent& kmlContent, CREFSTRI
     }
 
     return byteSource;
+}
+
+STRING MgServerKmlService::GetSessionId()
+{
+    STRING sessionId;
+    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    if (userInfo != NULL)
+    {
+        sessionId = userInfo->GetMgSessionId();
+        if(sessionId.empty())
+        {
+            Ptr<MgSiteConnection> conn = new MgSiteConnection();
+            if(conn != NULL)
+            {
+                conn->Open(userInfo);
+                Ptr<MgSite> site = conn->GetSite();
+                if(site != NULL)
+                {
+                    sessionId = site->CreateSession();
+                    if(!sessionId.empty())
+                    {
+                        userInfo->SetMgSessionId(sessionId);
+                    }
+                }
+            }
+        }
+    }
+    return sessionId;
 }
 
 

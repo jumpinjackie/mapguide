@@ -41,7 +41,7 @@ const double METERS_PER_INCH = 0.0254;
 class KmlRenderer : public Renderer
 {
 public:
-    STYLIZATION_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, double scale, double dpi);
+    STYLIZATION_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, double scale, double dpi, int drawOrder);
     STYLIZATION_API ~KmlRenderer();
 
     ///////////////////////////////////
@@ -121,6 +121,7 @@ private:
     void WriteStyle(RS_FillStyle& fill);
     void WriteStyle(RS_LineStroke& lsym);
     void WriteLinearRing(double* points, int offset, int numPoints);
+    void WriteCoordinates(double* points, int offset, int numPoints);
     void ClearThemes();
     void ClearStyles();
 
@@ -137,6 +138,7 @@ private:
     KmlLineStyleIdMap m_lineStyleMap;
     KmlPolyStyleIdMap m_polyStyleMap;
     double m_pixelSize;
+    int m_drawOrder;
 };
 
 #endif

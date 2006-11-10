@@ -77,6 +77,10 @@ EXTERNAL_API:
     /// Input
     /// resolution in dots per inch
     ///
+    /// \param drawOrder
+    /// Input
+    /// the draw order for the layer
+    ///
     /// \param agentUri
     /// Input
     /// URI of map agent that issued request
@@ -94,6 +98,7 @@ EXTERNAL_API:
         INT32 width,
         INT32 height,
         double dpi,
+        INT32 drawOrder,
         CREFSTRING agentUri,
         CREFSTRING format);
 
@@ -121,13 +126,13 @@ EXTERNAL_API:
     /// Input
     /// resolution in dots per inch
     ///
+    /// \param drawOrder
+    /// Input
+    /// the draw order for the layer containing these features
+    ///
     /// \param format
     /// Input
     /// requested response format
-    ///
-    /// \param scale
-    /// Input
-    /// scale for rendering
     ///
     /// \return
     /// A byte reader containing the generated KML.
@@ -138,6 +143,7 @@ EXTERNAL_API:
         INT32 width,
         INT32 height,
         double dpi,
+        INT32 drawOrder,
         CREFSTRING format);
 
 

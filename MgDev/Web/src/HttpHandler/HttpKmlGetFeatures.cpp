@@ -79,6 +79,10 @@ MgHttpKmlGetFeatures::MgHttpKmlGetFeatures(MgHttpRequest *hRequest)
     {
         m_dpi = 96; // default
     }
+
+    // Get the draw order
+    STRING drawOrder = params->GetParameterValue(MgHttpResourceStrings::reqKmlDrawOrder);
+    m_drawOrder = drawOrder.empty() ? 0 : MgUtil::StringToInt32(drawOrder);
 }
 
 /// <summary>
@@ -113,7 +117,7 @@ void MgHttpKmlGetFeatures::Execute(MgHttpResponse& hResponse)
     Ptr<MgKmlService> kmlService = dynamic_cast<MgKmlService*>(CreateService(MgServiceType::KmlService));
     
     // Get the KML geometries
-    Ptr<MgByteReader> reader = kmlService->GetFeaturesKml(layer, extents, m_width, m_height, m_dpi, m_format);
+    Ptr<MgByteReader> reader = kmlService->GetFeaturesKml(layer, extents, m_width, m_height, m_dpi, m_drawOrder, m_format);
 
     // Set the result
     hResult->SetResultObject(reader, reader->GetMimeType());

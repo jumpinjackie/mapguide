@@ -68,16 +68,18 @@ public:
 
     virtual MgByteReader* GetMapKml(MgMap* map, double dpi, CREFSTRING agentUri, CREFSTRING format);
 
-    virtual MgByteReader* GetLayerKml(MgLayer* layer, MgEnvelope* extents, INT32 width, INT32 height, double dpi, CREFSTRING agentUri, CREFSTRING format);
+    virtual MgByteReader* GetLayerKml(MgLayer* layer, MgEnvelope* extents, INT32 width, INT32 height, double dpi, INT32 drawOrder, CREFSTRING agentUri, CREFSTRING format);
 
-    virtual MgByteReader* GetFeaturesKml(MgLayer* layer, MgEnvelope* extents, INT32 width, INT32 height, double dpi, CREFSTRING format);
+    virtual MgByteReader* GetFeaturesKml(MgLayer* layer, MgEnvelope* extents, INT32 width, INT32 height, double dpi, INT32 drawOrder, CREFSTRING format);
 
 private:
 
     void AppendLayer(MgLayer* layer, 
-        MgEnvelope* extent, 
+        MgEnvelope* extent,
+        INT32 drawOrder,
         CREFSTRING agentUri, 
-        CREFSTRING format, 
+        CREFSTRING format,
+        CREFSTRING sessionId,
         KmlContent& kmlContent);
 
     void AppendScaleRange(MgLayer* layer, 
@@ -87,7 +89,9 @@ private:
         double minScale, 
         double maxScale,
         double dpi,
+        INT32 drawOrder,
         CREFSTRING format, 
+        CREFSTRING sessionId,
         KmlContent& kmlContent);
 
     void AppendRasterScaleRange(MgLayer* layer, 
@@ -97,13 +101,16 @@ private:
         double minScale, 
         double maxScale,
         double dpi,
+        INT32 drawOrder,
         CREFSTRING format, 
+        CREFSTRING sessionId,
         KmlContent& kmlContent);
 
     void AppendFeatures(MgLayer* layer, 
         MgEnvelope* extents, 
         double scale, 
         double dpi,
+        INT32 drawOrder,
         KmlContent& kmlContent);
 
     MgByteSource* GetByteSource(KmlContent& kmlContent, CREFSTRING format);
@@ -120,6 +127,7 @@ private:
     STRING ReadElement(STRING input, STRING elementName, size_t& offset);
     MgEnvelope* GetLayerExtent(MgLayer* layer, MgCoordinateSystem* destCs);
     double GetScale(MgEnvelope* llExtents, int width, int height, double dpi);
+    STRING GetSessionId();
     
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgFeatureService> m_svcFeature;

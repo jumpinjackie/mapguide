@@ -26,8 +26,10 @@
 //using this in contructor
 #pragma warning(disable:4355)
 
+const double ELEV_FACTOR = 0.1;
+
 //default constructor
-KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, double scale, double dpi) :
+KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, double scale, double dpi, int drawOrder) :
     m_mainContent(kmlContent),
     m_kmlContent(kmlContent),
     m_styleContent(NULL),
@@ -36,7 +38,8 @@ KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, double scal
     m_featureClassInfo(NULL),
     m_scale(scale),
     m_styleId(0),
-    m_extents(extents)
+    m_extents(extents),
+    m_drawOrder(drawOrder)
 {
     m_kmlContent = m_mainContent;
     m_pixelSize = METERS_PER_INCH / dpi;
@@ -49,11 +52,11 @@ KmlRenderer::~KmlRenderer()
     ClearStyles();
 }
 
-void KmlRenderer::StartMap(RS_MapUIInfo* mapInfo,
-                          RS_Bounds&    extents,
-                          double        mapScale,
-                          double        dpi,
-                          double        metersPerUnit,
+void KmlRenderer::StartMap(RS_MapUIInfo* /*mapInfo*/,
+                          RS_Bounds&    /*extents*/,
+                          double        /*mapScale*/,
+                          double        /*dpi*/,
+                          double        /*metersPerUnit*/,
                           CSysTransformer* /*xformToLL*/)
 {
     m_featureCount = 0;
@@ -174,6 +177,7 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb,
         if(lb->cntr_count() == 1)
         {
             m_kmlContent->WriteString("<Polygon>");
+            m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
             m_kmlContent->WriteString("<outerBoundaryIs>");
             WriteLinearRing(lb->points(), 0, lb->point_count());
             m_kmlContent->WriteString("</outerBoundaryIs>");
@@ -182,6 +186,7 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb,
         else
         {
             m_kmlContent->WriteString("<MultiGeometry>");
+            m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
             PolygonUtils::SORTEDRINGS rings;
             PolygonUtils::DetermineInteriorAndExteriorPolygons(lb, rings);
             for (PolygonUtils::SORTEDRINGS::iterator sIter = rings.begin(); sIter != rings.end(); sIter++)
@@ -223,68 +228,62 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb,
 
 void KmlRenderer::WriteLinearRing(double* points, int offset, int numPoints)
 {
-    char buffer[256];
     m_kmlContent->WriteString("<LinearRing>");
+    WriteCoordinates(points, offset, numPoints);
+    m_kmlContent->WriteString("</LinearRing>");
+}
+
+void KmlRenderer::WriteCoordinates(double* points, int offset, int numPoints)
+{
+    char buffer[256];
     m_kmlContent->WriteString("<coordinates>");
     int pointOffset;
+    double elevation = ELEV_FACTOR * m_drawOrder;
     for(int i = 0; i < numPoints; i ++)
     {
         pointOffset = offset + (i * 2);
-        sprintf(buffer, "%f, %f, 0.00000%s", points[pointOffset], points[pointOffset + 1], (i < numPoints - 1) ? "," : "");
+        sprintf(buffer, "%f, %f, %f%s", points[pointOffset], points[pointOffset + 1], elevation, (i < numPoints - 1) ? "," : "");
         m_kmlContent->WriteString(buffer);
     }
     m_kmlContent->WriteString("</coordinates>");
-    m_kmlContent->WriteString("</LinearRing>");
 }
 
 void KmlRenderer::ProcessPolyline(LineBuffer* srclb,
                                  RS_LineStroke& lsym)
 {
-    char buffer[256];
-    
     //write style
     WriteStyle(lsym);
 
     m_kmlContent->WriteString("<MultiGeometry>");
-    int point_offset = 0;
+    m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
+    int offset = 0;
     int numCntrs = srclb->cntr_count();
     for(int i = 0; i < numCntrs; i++)
     {
         int cntr_size = srclb->cntrs()[i];
 
         m_kmlContent->WriteString("<LineString>");
-        m_kmlContent->WriteString("<coordinates>");
         double* points = srclb->points();
-        for(int j = 0; j < cntr_size * 2; j += 2)
-        {
-            double x = points[point_offset + j];
-            double y = points[point_offset + j + 1];
-            if(j > 0)
-            {
-                m_kmlContent->WriteString(",");
-            }
-            sprintf(buffer, "%f, %f, 0.00000", x, y);
-            m_kmlContent->WriteString(buffer);
-        }
-        m_kmlContent->WriteString("</coordinates>");
+        WriteCoordinates(points, offset, cntr_size);
         m_kmlContent->WriteString("</LineString>");
 
-        point_offset += cntr_size * 2;
+        offset += cntr_size * 2;
     }
     m_kmlContent->WriteString("</MultiGeometry>");
 }
 
 
-void KmlRenderer::ProcessRaster(unsigned char* data,
-                               int length,
-                               RS_ImageFormat format,
-                               int width, int height,
-                               RS_Bounds extents)
+void KmlRenderer::ProcessRaster(unsigned char* /*data*/,
+                               int /*length*/,
+                               RS_ImageFormat /*format*/,
+                               int /*width*/, 
+                               int /*height*/,
+                               RS_Bounds /*extents*/)
 {
 }
 
 
-void KmlRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
+void KmlRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* /*bounds*/)
 {
     for(int i = 0; i < srclb->point_count(); i++)
     {
@@ -292,32 +291,33 @@ void KmlRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
     }
 }
 
-void KmlRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost)
+void KmlRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool /*allowOverpost*/)
 {
     char buffer[256];
     m_kmlContent->WriteString("<name><![CDATA[", false);
     m_kmlContent->WriteString(mdef.name(), false);
     m_kmlContent->WriteString("]]></name>");
     m_kmlContent->WriteString("<Point>");
+    m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
     m_kmlContent->WriteString("<coordinates>");
-    sprintf(buffer, "%f, %f, 0.00000", x, y);
+    sprintf(buffer, "%f, %f, %f", x, y, ELEV_FACTOR * m_drawOrder);
     m_kmlContent->WriteString(buffer);
     m_kmlContent->WriteString("</coordinates>");
     m_kmlContent->WriteString("</Point>");
 }
 
-void KmlRenderer::ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef)
+void KmlRenderer::ProcessLabel(double /*x*/, double /*y*/, const RS_String& /*text*/, RS_TextDef& /*tdef*/)
 {
 }
 
-void KmlRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
-                                   int              nlabels,
+void KmlRenderer::ProcessLabelGroup(RS_LabelInfo*    /*labels*/,
+                                   int              /*nlabels*/,
                                    const RS_String& text,
-                                   RS_OverpostType  type,
-                                   bool             exclude,
-                                   LineBuffer*      path)
+                                   RS_OverpostType  /*type*/,
+                                   bool             /*exclude*/,
+                                   LineBuffer*      /*path*/)
 {
-    char buffer[256];
+//    char buffer[256];
     m_kmlContent->WriteString("<name><![CDATA[", false);
     m_kmlContent->WriteString(text, false);
     m_kmlContent->WriteString("]]></name>");
@@ -335,7 +335,7 @@ void KmlRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 }
 
 
-void KmlRenderer::SetSymbolManager(RS_SymbolManager* manager)
+void KmlRenderer::SetSymbolManager(RS_SymbolManager* /*manager*/)
 {
 }
 
@@ -403,11 +403,11 @@ bool KmlRenderer::UseLocalOverposting()
 //into the current output W2D. The given coord sys
 //transformation is applied and geometry will be clipped
 //to the RS_Bounds context of the DWFRenderer
-void KmlRenderer::AddDWFContent(RS_InputStream*   in,
-                               CSysTransformer*  xformer,
-                               const RS_String&  section,
-                               const RS_String&  passwd,
-                               const RS_String&  w2dfilter)
+void KmlRenderer::AddDWFContent(RS_InputStream*   /*in*/,
+                               CSysTransformer*  /*xformer*/,
+                               const RS_String&  /*section*/,
+                               const RS_String&  /*passwd*/,
+                               const RS_String&  /*w2dfilter*/)
 {
 }
 
@@ -534,5 +534,7 @@ void KmlRenderer::WriteStyle(RS_LineStroke& lsym)
     sprintf(buffer, "<styleUrl>#%d</styleUrl>", thisStyleId);
     m_kmlContent->WriteString(buffer);
 }
+
+
 
 

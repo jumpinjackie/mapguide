@@ -61,6 +61,7 @@ private:
     double m_dpi;
     INT32 m_width;
     INT32 m_height;
+    INT32 m_drawOrder;
 };
 
 #endif  // _FS_KML_GET_FEATURES_H
