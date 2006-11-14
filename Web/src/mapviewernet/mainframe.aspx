@@ -50,7 +50,6 @@ NameValueCollection cmds = null;
         GetRequestParameters();
 
         //Open connection with the server
-        bool anonymousLogin = false;
         bool createSession = true;
 
         MgUserInformation cred = new MgUserInformation();
@@ -65,17 +64,8 @@ NameValueCollection cmds = null;
         }
         else
         {
-            if (forDwf != 0)
-            {
-                anonymousLogin = true;
-                cred.SetMgUsernamePassword("Anonymous", "");
-            }
-            else
-            {
-                //AJAX viewer enforce login here. DWF viewer enforces loggin during the inital GETMAP request
-                RequestAuthentication();
-                return;
-            }
+            RequestAuthentication();
+            return;
         }
 
         MgSiteConnection site = new MgSiteConnection();
