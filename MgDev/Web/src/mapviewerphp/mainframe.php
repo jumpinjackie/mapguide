@@ -49,7 +49,6 @@ function BuildViewer($forDwf = true)
 
         //Open a connection with the server
         //
-        $anonymousLogin = false;
         $createSession = true;
 
         $cred = new MgUserInformation();
@@ -64,17 +63,8 @@ function BuildViewer($forDwf = true)
         }
         else
         {
-            if($forDwf)
-            {
-                $anonymousLogin = true;
-                $cred->SetMgUsernamePassword("Anonymous", "");
-            }
-            else
-            {
-                //HTML viewer enforce login here. DWF viewer enforces loggin during the inital GETMAP request
-                requestAuthentication();
-                return;
-            }
+            requestAuthentication();
+            return;
         }
 
         $site = new MgSiteConnection();
