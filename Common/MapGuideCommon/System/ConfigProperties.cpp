@@ -89,6 +89,9 @@
 #define MG_CONFIG_MAX_PATH_LENGTH                       255
 #define MG_CONFIG_PATH_RESERVED_CHARACTERS              L"*?\"<>|"
 
+#define MG_CONFIG_MIN_SERIAL_NUMBER_LENGTH              0
+#define MG_CONFIG_MAX_SERIAL_NUMBER_LENGTH              12
+
 #define MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH             0
 #define MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH             1024
 
@@ -112,6 +115,8 @@ const STRING MgConfigProperties::GeneralPropertyDisplayName                     
 const STRING MgConfigProperties::DefaultGeneralPropertyDisplayName                          = L"";
 const STRING MgConfigProperties::GeneralPropertyFdoPath                                     = L"FdoPath";
 const STRING MgConfigProperties::DefaultGeneralPropertyFdoPath                              = L"";
+const STRING MgConfigProperties::GeneralPropertyLicenseServerPath                           = L"LicenseServerPath";
+const STRING MgConfigProperties::DefaultGeneralPropertyLicenseServerPath                    = L"";
 const STRING MgConfigProperties::GeneralPropertyLogsDelimiter                               = L"LogsDelimiter";
 const STRING MgConfigProperties::DefaultGeneralPropertyLogsDelimiter                        = L"\t";
 const STRING MgConfigProperties::GeneralPropertyLogsPath                                    = L"LogsPath";
@@ -122,6 +127,8 @@ const STRING MgConfigProperties::GeneralPropertyMaxLogFileSizeEnabled           
 const bool   MgConfigProperties::DefaultGeneralPropertyMaxLogFileSizeEnabled                = false;
 const STRING MgConfigProperties::GeneralPropertyResourcesPath                               = L"ResourcesPath";
 const STRING MgConfigProperties::DefaultGeneralPropertyResourcesPath                        = L"Resources/";
+const STRING MgConfigProperties::GeneralPropertySerialNumber                                = L"SerialNumber";
+const STRING MgConfigProperties::DefaultGeneralPropertySerialNumber                         = L"";
 const STRING MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval            = L"ServiceRegistrationTimerInterval";
 const INT32  MgConfigProperties::DefaultGeneralPropertyServiceRegistrationTimerInterval     = 60;
 const STRING MgConfigProperties::GeneralPropertyTcpIpMtu                                    = L"TcpIpMtu";
@@ -399,10 +406,12 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviGeneralProperties[] =
     { MgConfigProperties::GeneralPropertyDefaultLocale                              , MgPropertyType::String    , MG_CONFIG_MIN_LOCALE_LENGTH           , MG_CONFIG_MAX_LOCALE_LENGTH           , L""                                       },
     { MgConfigProperties::GeneralPropertyDisplayName                                , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
     { MgConfigProperties::GeneralPropertyFdoPath                                    , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::GeneralPropertyLicenseServerPath                          , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
     { MgConfigProperties::GeneralPropertyLogsDelimiter                              , MgPropertyType::String    , 1                                     , 128                                   , L""                                       },
     { MgConfigProperties::GeneralPropertyMaxLogFileSize                             , MgPropertyType::Int32     , 1                                     , 2000000                               , L""                                       },
     { MgConfigProperties::GeneralPropertyMaxLogFileSizeEnabled                      , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::GeneralPropertyResourcesPath                              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::GeneralPropertySerialNumber                               , MgPropertyType::String    , MG_CONFIG_MIN_SERIAL_NUMBER_LENGTH    , MG_CONFIG_MAX_SERIAL_NUMBER_LENGTH    , L""                                       },
     { MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval           , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
     { MgConfigProperties::GeneralPropertyTcpIpMtu                                   , MgPropertyType::Int32     , 1                                     , 65535                                 , L""                                       },
     { MgConfigProperties::GeneralPropertyTempPath                                   , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
