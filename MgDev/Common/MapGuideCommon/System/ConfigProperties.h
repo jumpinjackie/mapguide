@@ -66,6 +66,10 @@ EXTERNAL_API:
     static const STRING GeneralPropertyFdoPath;                         /// value("FdoPath")
     static const STRING DefaultGeneralPropertyFdoPath;                  /// value("")
 
+    /// Path of the license server
+    static const STRING GeneralPropertyLicenseServerPath;               /// value("LicenseServerPath")
+    static const STRING DefaultGeneralPropertyLicenseServerPath;        /// value("");
+
     /// Sets the field delimiter in the logs
     static const STRING GeneralPropertyLogsDelimiter;                   /// value("LogsDelimiter")
     static const STRING DefaultGeneralPropertyLogsDelimiter;            /// value("\t")
@@ -85,6 +89,10 @@ EXTERNAL_API:
     /// Root folder for server's localization resources
     static const STRING GeneralPropertyResourcesPath;                   /// value("ResourcesPath")
     static const STRING DefaultGeneralPropertyResourcesPath;            /// value("Resources/")
+
+    /// Product serial number
+    static const STRING GeneralPropertySerialNumber;                    /// value("SerialNumber")
+    static const STRING DefaultGeneralPropertySerialNumber;             /// value("");
 
     /// Sets the time duration (in seconds) between service registrations
     static const STRING GeneralPropertyServiceRegistrationTimerInterval;        /// value("ServiceRegistrationTimerInterval")
