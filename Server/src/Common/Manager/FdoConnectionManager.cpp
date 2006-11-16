@@ -21,7 +21,6 @@
 #include "ServiceManager.h"
 #include "LogManager.h"
 #include "LongTransactionManager.h"
-#include "LicenseManager.h" // TODO: This include is here to check if we are building MapGuide Enterprise or Open Source
 
 ACE_Recursive_Thread_Mutex MgFdoConnectionManager::sm_mutex;
 
