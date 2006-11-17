@@ -54,70 +54,70 @@ const STRING MgResources::PreviewReleaseDetected        = L"Preview release dete
 
 // The following resource strings are for the commandline options for the server. These are not in the resources file because
 // the server has not even started at this point.
-const STRING MgResources::ServerCmdDaemon		= L"/daemon"; // Do not translate
-const STRING MgResources::ServerCmdDaemonInfo		= L"Running the server as a daemon (service). \n\n";
-const STRING MgResources::ServerCmdDaemonDescription	= L"  /daemon\n"\
-							  L"      Runs the server in the background as a daemon. \n\n";
-const STRING MgResources::ServerCmdHelp                 = L"/help"; // Do not translate
-const STRING MgResources::ServerCmdHelpInfo1            = L"\n%s\n\n"\
+const STRING MgResources::ServerCmdDaemon               = L"daemon"; // Do not translate
+const STRING MgResources::ServerCmdDaemonInfo           = L"Running the server as a daemon (service). \n\n";
+const STRING MgResources::ServerCmdDaemonDescription    = L"  daemon\n"\
+                                                          L"      Runs the server in the background as a daemon. \n\n";
+const STRING MgResources::ServerCmdHelp                 = L"help"; // Do not translate
+const STRING MgResources::ServerCmdHelpInfo1            = L"\n%s %s\n\n"\
                                                           L"The following is a list of supported command line options:\n\n";
 const STRING MgResources::ServerCmdHelpInfo2            = L"\nNote: Only 1 command line option can be used at a time.\n\n";
-const STRING MgResources::ServerCmdHelpDescription      = L"  /? or /help\n"\
+const STRING MgResources::ServerCmdHelpDescription      = L"  ? or help\n"\
                                                           L"      Displays this information.\n\n";
 
-const STRING MgResources::ServerCmdInstall              = L"/install"; // Do not translate
+const STRING MgResources::ServerCmdInstall              = L"install"; // Do not translate
 const STRING MgResources::ServerCmdInstallInfo          = L"Installing server service \"%s\".\nServer service display name \"%s\".\nService will be automatically started if installed successfully.\n";
-const STRING MgResources::ServerCmdInstallDescription   = L"  /install <Name>\n"\
+const STRING MgResources::ServerCmdInstallDescription   = L"  install <Name>\n"\
                                                           L"      Installs the server as a service. Automatically starts the service.\n\n"\
                                                           L"      Default service display name installed:\n"\
                                                           L"      \"%s\"\n\n"\
                                                           L"      You can use a different display name for the service if you specify an\n"\
                                                           L"      optional \"Name\".\n\n";
 
-const STRING MgResources::ServerCmdUninstall            = L"/uninstall"; // Do not translate
+const STRING MgResources::ServerCmdUninstall            = L"uninstall"; // Do not translate
 const STRING MgResources::ServerCmdUninstallInfo        = L"Uninstalling server service \"%s\".\n";
-const STRING MgResources::ServerCmdUninstallDescription = L"  /uninstall\n"\
+const STRING MgResources::ServerCmdUninstallDescription = L"  uninstall\n"\
                                                           L"      Uninstalls an installed server service. Automatically stops the service\n"\
                                                           L"      before uninstalling.\n\n";
 
-const STRING MgResources::ServerCmdTestFdo              = L"/testfdo"; // Do not translate
+const STRING MgResources::ServerCmdTestFdo              = L"testfdo"; // Do not translate
 const STRING MgResources::ServerCmdTestFdoInfo          = L"Running the FDO unit tests.\n\n";
-const STRING MgResources::ServerCmdTestFdoDescription   = L"  /testfdo <Filename>\n"\
+const STRING MgResources::ServerCmdTestFdoDescription   = L"  testfdo <Filename>\n"\
                                                           L"      Runs the FDO unit tests.\n\n"\
                                                           L"      Default output of the FDO unit tests will be the console unless you\n"\
                                                           L"      specify an optional \"Filename\". The output to the \"Filename\" will be\n"\
                                                           L"      in XML.\n\n";
 
-const STRING MgResources::ServerCmdTestMode             = L"/testmode"; // Do not translate
-const STRING MgResources::ServerCmdTestModeInfo         = L"Running the server unit tests.\n\n";
-const STRING MgResources::ServerCmdTestModeDescription  = L"  /testmode /t <Test> /o <Filename>\n"\
-                                                          L"      Runs the server unit tests.\n\n"\
+const STRING MgResources::ServerCmdTestMode             = L"testmode"; // Do not translate
+const STRING MgResources::ServerCmdTest                 = L"test"; // Do not translate
+const STRING MgResources::ServerCmdTestInfo             = L"Running the server unit tests.\n\n";
+const STRING MgResources::ServerCmdTestDescription      = L"  test <Test> <Filename>\n"\
+                                                          L"      Runs the server unit test(s).\n\n"\
                                                           L"      By default all of the unit tests will be run unless you specify an\n"\
                                                           L"      optional \"Test\" to run. If you specify \"List\" as the test to run you\n"\
                                                           L"      will get a list of the available unit tests.\n\n"\
                                                           L"      Default output of the unit tests will be the console unless you specify\n"\
                                                           L"      an optional \"Filename\". The output to the \"Filename\" will be in XML.\n\n";
 
-const STRING MgResources::ServerCmdTestModeDefaultFileName = L"results.xml";
-const STRING MgResources::ServerCmdTestModeDefaultTests    = L"All";
-const STRING MgResources::ServerCmdTestModeListTests       = L"List";
-const STRING MgResources::ServerCmdTestModeOptionOutput    = L"/o";
-const STRING MgResources::ServerCmdTestModeOptionTest      = L"/t";
+const STRING MgResources::ServerCmdTestDefaultFileName  = L"results.xml";
+const STRING MgResources::ServerCmdTestDefaultTests     = L"All";
+const STRING MgResources::ServerCmdTestListTests        = L"List";
 
 
-const STRING MgResources::ServerCmdInteractive            = L"/interactive"; // Do not translate
-const STRING MgResources::ServerCmdInteractiveInfo        = L"Running the server interactively as an application instead of as a service.\n\n";
-const STRING MgResources::ServerCmdInteractiveDescription = L"  /interactive\n"\
+const STRING MgResources::ServerCmdInteractive          = L"interactive"; // Do not translate
+const STRING MgResources::ServerCmdRun                  = L"run"; // Do not translate
+const STRING MgResources::ServerCmdRunInfo              = L"Running the server interactively as an application instead of as a service.\n\n";
+const STRING MgResources::ServerCmdRunDescription       = L"  run\n"\
                                                             L"      Runs the server interactively as an application instead of a service.\n\n";
 
-const STRING MgResources::ServerCmdStart                = L"/start"; // Do not translate
+const STRING MgResources::ServerCmdStart                = L"start"; // Do not translate
 const STRING MgResources::ServerCmdStartInfo            = L"Starting the server service.\n\n";
-const STRING MgResources::ServerCmdStartDescription     = L"  /start\n"\
+const STRING MgResources::ServerCmdStartDescription     = L"  start\n"\
                                                           L"      Starts the server service. Note: The service must be installed.\n\n";
 
-const STRING MgResources::ServerCmdStop                 = L"/stop"; // Do not translate
+const STRING MgResources::ServerCmdStop                 = L"stop"; // Do not translate
 const STRING MgResources::ServerCmdStopInfo             = L"Stopping the server service.\n\n";
-const STRING MgResources::ServerCmdStopDescription      = L"  /stop\n"\
+const STRING MgResources::ServerCmdStopDescription      = L"  stop\n"\
                                                           L"      Stops the server service. Note: The service must be installed.\n\n";
 
 const STRING MgResources::ServerCmdUnrecognizedInfo     = L"Unrecognized option: \"%s\".\n";

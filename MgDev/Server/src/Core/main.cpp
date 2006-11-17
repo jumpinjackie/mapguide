@@ -19,6 +19,7 @@
 #include "Server.h"
 #include "ServerManager.h"
 #include "LogManager.h"
+#include "ProductVersion.h"
 #include <xercesc/util/PlatformUtils.hpp>
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -128,8 +129,30 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 #endif
             }
 
+            // Remove the "/" character
+            INT32 parameterSize = ACE_OS::strlen(argv[1]);
+            ACE_TCHAR* parameter = new ACE_TCHAR[parameterSize+1];
+            INT32 pos = 0;
+            for(INT32 i=0;i<parameterSize;i++)
+            {
+                if((i == 0) && (argv[1][0] == ACE_TEXT('/')))
+                {
+                    // Skip this character
+                }
+                else
+                {
+                    parameter[pos] = argv[1][i];
+
+                    // Next position
+                    pos++;
+                }
+            }
+
+            // Null terminate the string
+            parameter[pos] = 0;
+
             // There are command line arguments
-            if((ACE_OS::strcasecmp(argv[1], ACE_TEXT("/?")) == 0) || (ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdHelp)) == 0))
+            if((ACE_OS::strcasecmp(parameter, ACE_TEXT("?")) == 0) || (ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdHelp)) == 0))
             {
                 // Display the server command line options
                 ShowCommandlineHelp();
@@ -138,7 +161,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
                 bRunServerService = false;
             }
 #ifdef WIN32
-            else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdInstall)) == 0)
+            else if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdInstall)) == 0)
             {
                 // Install the server service. Automatically start it
                 ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdInstallInfo), MG_WCHAR_TO_CHAR(MgResources::ServerServiceName), MG_WCHAR_TO_CHAR(serviceDisplayName));
@@ -158,7 +181,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
                     message = NULL;
                 }
             }
-            else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdUninstall)) == 0)
+            else if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdUninstall)) == 0)
             {
                 // Uninstall the server service
                 ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdUninstallInfo), MG_WCHAR_TO_CHAR(MgResources::ServerServiceName));
@@ -178,7 +201,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
                     message = NULL;
                 }
             }
-            else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdStart)) == 0)
+            else if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdStart)) == 0)
             {
                 // Start the server service
                 ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdStartInfo));
@@ -186,7 +209,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
                 SERVER::instance()->start_svc();
                 bRunServerService = false;
             }
-            else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdStop)) == 0)
+            else if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdStop)) == 0)
             {
                 // Stop the server service
                 ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdStopInfo));
@@ -195,10 +218,11 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
                 bRunServerService = false;
             }
 #endif
-            else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestMode)) == 0)
+            else if((ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTest)) == 0) ||
+                    (ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestMode)) == 0))
             {
                 // Run the server unit tests
-                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdTestModeInfo));
+                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdTestInfo));
 
                 // Run the server as a regular application
                 nResult = SERVER::instance()->init(argc, argv);
@@ -211,15 +235,16 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
                 bRunServerService = false;
             }
 #ifndef WIN32  // Linux only Daemon mode 
-	    else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdDaemon)) == 0)
+	    else if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdDaemon)) == 0)
             {
 		bRunServerService = true;
 		ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdDaemonInfo));
             }
 #endif 
-            else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdInteractive)) == 0)
+            else if((ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdRun)) == 0) ||
+                    (ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdInteractive)) == 0))
             {
-                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdInteractiveInfo));
+                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdRunInfo));
 
 #ifdef WIN32
                 HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
@@ -237,7 +262,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 
                 bRunServerService = false;
             }
-            else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestFdo)) == 0)
+            else if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestFdo)) == 0)
             {
                 // Run the fdo unit tests
                 ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdTestFdoInfo));
@@ -256,15 +281,19 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
             {
                 // Unrecognized command line option
 #ifdef WIN32
-                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdUnrecognizedInfo), MG_WCHAR_TO_CHAR(argv[1]));
+                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdUnrecognizedInfo), MG_WCHAR_TO_CHAR(parameter));
 #else
-                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdUnrecognizedInfo), MG_TCHAR_TO_CHAR(argv[1]));
+                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdUnrecognizedInfo), MG_TCHAR_TO_CHAR(parameter));
 #endif
                 ShowCommandlineHelp();
 
                 // Don't try and run it
                 bRunServerService = false;
             }
+
+            // Free resources
+            delete [] parameter;
+            parameter = NULL;
         }
 
         if(bRunServerService)
@@ -277,7 +306,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
                 DWORD dwError = GetLastError();
                 ACE_WCHAR_T* message = GetErrorMessage(dwError);
 
-                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerServiceStartFailure), dwError, MG_WCHAR_TO_CHAR(message), MG_WCHAR_TO_CHAR(MgResources::ServerCmdInteractive));
+                ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerServiceStartFailure), dwError, MG_WCHAR_TO_CHAR(message), MG_WCHAR_TO_CHAR(MgResources::ServerCmdRun));
 
                 delete [] message;
                 message = NULL;
@@ -347,7 +376,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 void ShowCommandlineHelp()
 {
     // This shows the supported commnad line options for the various platforms
-    ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdHelpInfo1), MG_WCHAR_TO_CHAR(MgResources::ServerServiceDisplayName));
+    ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdHelpInfo1), MG_WCHAR_TO_CHAR(MgResources::ServerServiceDisplayName), MG_WCHAR_TO_CHAR(ProductVersion));
 
     // The commands are shown in alphabetical order
 
@@ -362,7 +391,7 @@ void ShowCommandlineHelp()
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdInstallDescription), MG_WCHAR_TO_CHAR(MgResources::ServerServiceDisplayName));
 #endif
 
-    ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdInteractiveDescription));
+    ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdRunDescription));
 
 #ifdef WIN32
     // Windows only commands
@@ -372,7 +401,7 @@ void ShowCommandlineHelp()
 
     // Add the supported commands
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdTestFdoDescription));
-    ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdTestModeDescription));
+    ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdTestDescription));
 
 #ifdef WIN32
     // Windows only commands

@@ -39,7 +39,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
     // Setup which tests to run
     if(test.size() > 0)
     {
-        if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestModeDefaultTests)) == 0)
+        if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestDefaultTests)) == 0)
         {
             // Add all of the tests
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests. <<<<<\n\n")));
@@ -56,84 +56,85 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestModeListTests)) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestListTests)) == 0)
         {
             // Title
             ACE_OS::printf("The following unit tests are available:\n\n");
 
             // Available tests
-            ACE_OS::printf("  TestCoordinateSystem\n");
-            ACE_OS::printf("  TestFeatureService\n");
-            ACE_OS::printf("  TestGeometry\n");
-            ACE_OS::printf("  TestLogManager\n");
-            ACE_OS::printf("  TestMappingService\n");
-            ACE_OS::printf("  TestRenderingService\n");
-            ACE_OS::printf("  TestResourceService\n");
-            ACE_OS::printf("  TestTileService\n");
-            ACE_OS::printf("  TestServerAdminService\n");
-            ACE_OS::printf("  TestServerManager\n");
-            ACE_OS::printf("  TestServiceManager\n");
-            ACE_OS::printf("  TestSiteService\n");
+            ACE_OS::printf("  All\n");
+            ACE_OS::printf("  CoordinateSystem\n");
+            ACE_OS::printf("  FeatureService\n");
+            ACE_OS::printf("  Geometry\n");
+            ACE_OS::printf("  LogManager\n");
+            ACE_OS::printf("  MappingService\n");
+            ACE_OS::printf("  RenderingService\n");
+            ACE_OS::printf("  ResourceService\n");
+            ACE_OS::printf("  TileService\n");
+            ACE_OS::printf("  ServerAdminService\n");
+            ACE_OS::printf("  ServerManager\n");
+            ACE_OS::printf("  ServiceManager\n");
+            ACE_OS::printf("  SiteService\n");
             ACE_OS::printf("\n");
 
             bRunTests = false;
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestCoordinateSystem")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("CoordinateSystem")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Coordinate System tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestCoordinateSystem").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestFeatureService")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("FeatureService")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Feature Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestGeometry")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("Geometry")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Geometry tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestGeometry").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestLogManager")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("LogManager")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Log Manager tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestMappingService")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("MappingService")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Mapping Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestRenderingService")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("RenderingService")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Rendering Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestResourceService")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("ResourceService")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Resource Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestTileService")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TileService")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Tile Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestServerAdminService")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("ServerAdminService")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only ServerAdmin Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerAdminService").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestServerManager")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("ServerManager")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Server Manager tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerManager").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestServiceManager")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("ServiceManager")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Service Manager tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TestSiteService")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("SiteService")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Site Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
