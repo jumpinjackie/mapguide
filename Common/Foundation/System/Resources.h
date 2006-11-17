@@ -200,9 +200,10 @@ INTERNAL_API:
     static const STRING ServerCmdInstall;
     static const STRING ServerCmdInstallInfo;
     static const STRING ServerCmdInstallDescription;
-    static const STRING ServerCmdInteractive;
-    static const STRING ServerCmdInteractiveInfo;
-    static const STRING ServerCmdInteractiveDescription;
+    static const STRING ServerCmdInteractive; // Backwards compatibility
+    static const STRING ServerCmdRun;
+    static const STRING ServerCmdRunInfo;
+    static const STRING ServerCmdRunDescription;
     static const STRING ServerCmdStart;
     static const STRING ServerCmdStartInfo;
     static const STRING ServerCmdStartDescription;
@@ -212,14 +213,13 @@ INTERNAL_API:
     static const STRING ServerCmdTestFdo;
     static const STRING ServerCmdTestFdoInfo;
     static const STRING ServerCmdTestFdoDescription;
-    static const STRING ServerCmdTestMode;
-    static const STRING ServerCmdTestModeInfo;
-    static const STRING ServerCmdTestModeDescription;
-    static const STRING ServerCmdTestModeDefaultFileName;
-    static const STRING ServerCmdTestModeDefaultTests;
-    static const STRING ServerCmdTestModeListTests;
-    static const STRING ServerCmdTestModeOptionOutput;
-    static const STRING ServerCmdTestModeOptionTest;
+    static const STRING ServerCmdTest;
+    static const STRING ServerCmdTestInfo;
+    static const STRING ServerCmdTestDescription;
+    static const STRING ServerCmdTestDefaultFileName;
+    static const STRING ServerCmdTestDefaultTests;
+    static const STRING ServerCmdTestListTests;
+    static const STRING ServerCmdTestMode; // Backwards compatibility
     static const STRING ServerCmdUninstall;
     static const STRING ServerCmdUninstallInfo;
     static const STRING ServerCmdUninstallDescription;

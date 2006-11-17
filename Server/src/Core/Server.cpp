@@ -525,65 +525,53 @@ void MgServer::ParseArgs (INT32 argc, ACE_TCHAR *argv[])
 
     if(argc > 1)
     {
-        if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestMode)) == 0)
+        // Remove the "/" character
+        INT32 parameterSize = ACE_OS::strlen(argv[1]);
+        ACE_TCHAR* parameter = new ACE_TCHAR[parameterSize+1];
+        INT32 pos = 0;
+        for(INT32 i=0;i<parameterSize;i++)
+        {
+            if((i == 0) && (argv[1][0] == ACE_TEXT('/')))
+            {
+                // Skip this character
+            }
+            else
+            {
+                parameter[pos] = argv[1][i];
+
+                // Next position
+                pos++;
+            }
+        }
+
+        // Null terminate the string
+        parameter[pos] = 0;
+
+        if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTest)) == 0)
         {
             // Test mode
             m_bTestMode = true;
             m_strTestFileName = L"";    // Default to no output filename
-            m_strTestName = MgResources::ServerCmdTestModeDefaultTests;     // Default to all of the tests
+            m_strTestName = MgResources::ServerCmdTestDefaultTests;     // Default to all of the tests
 
-            for(int i=2;i<argc;i++)
+            // If there is a 2nd parameter it is the test to run
+            if(argc > 2)
             {
-                // Check for /t or /o as the options
-                if(ACE_OS::strcasecmp(argv[i], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestModeOptionTest)) == 0)
-                {
-                    if(argc > (i+1))
-                    {
-                        // Check next option
-                        if((ACE_OS::strcasecmp(argv[i+1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestModeOptionTest)) == 0) ||
-                           (ACE_OS::strcasecmp(argv[i+1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestModeOptionOutput)) == 0))
-                        {
-                            // This is another option
-                            m_strTestName = MgResources::ServerCmdTestModeDefaultTests;     // Default to all of the tests
-                        }
-                        else
-                        {
-                            m_strTestName = MG_TCHAR_TO_WCHAR(argv[i+1]);
-                        }
-                    }
-                    else
-                    {
-                        m_strTestName = MgResources::ServerCmdTestModeDefaultTests;     // Default to all of the tests
-                    }
-                }
-                else if(ACE_OS::strcasecmp(argv[i], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestModeOptionOutput)) == 0)
-                {
-                    if(argc > (i+1))
-                    {
-                        // Check next option
-                        if((ACE_OS::strcasecmp(argv[i+1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestModeOptionTest)) == 0) ||
-                           (ACE_OS::strcasecmp(argv[i+1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestModeOptionOutput)) == 0))
-                        {
-                            // This is another option
-                            m_strTestFileName = MgResources::ServerCmdTestModeDefaultFileName;     // Use default filename
-                        }
-                        else
-                        {
-                            m_strTestFileName = MG_TCHAR_TO_WCHAR(argv[i+1]);
-                        }
-                    }
-                    else
-                    {
-                        m_strTestFileName = MgResources::ServerCmdTestModeDefaultFileName;     // Use default filename
-                    }
-                }
+                m_strTestName = MG_TCHAR_TO_WCHAR(argv[2]);
+            }
+
+            // If there is a 3rd parameter it is the output filename
+            if(argc > 3)
+            {
+                m_strTestFileName = MG_TCHAR_TO_WCHAR(argv[3]);
             }
         }
-        else if(ACE_OS::strcasecmp(argv[1], MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestFdo)) == 0)
+        else if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestFdo)) == 0)
         {
             // Test FDO
             m_bTestFdo = true;
 
+            // If there is a 2nd parameter it is the output filename
             if(argc > 2)
             {
                 m_strTestFileName = MG_TCHAR_TO_WCHAR(argv[2]);
@@ -938,6 +926,9 @@ int MgServer::svc(void)
                         }
                         else
                         {
+                            // Deactivate event timers.
+                            m_eventTimerManager.Deactivate();
+
                             // Site port in use
                             // Throw exception
                             wchar_t buffer[255];
@@ -950,6 +941,9 @@ int MgServer::svc(void)
                     }
                     else
                     {
+                        // Deactivate event timers.
+                        m_eventTimerManager.Deactivate();
+
                         // Admin port in use
                         // Throw exception
                         wchar_t buffer[255];
@@ -962,6 +956,9 @@ int MgServer::svc(void)
                 }
                 else
                 {
+                    // Deactivate event timers.
+                    m_eventTimerManager.Deactivate();
+
                     // Client port in use
                     // Throw exception
                     wchar_t buffer[255];
