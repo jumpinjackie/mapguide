@@ -21,6 +21,7 @@ INCLUDES = \
   -I../Services/ServerAdmin \
   -I../Services/Site \
   -I../Services/Tile \
+  -I../../../Common \
   -I../../../Common/Foundation \
   -I../../../Common/Geometry \
   -I../../../Common/PlatformBase \
