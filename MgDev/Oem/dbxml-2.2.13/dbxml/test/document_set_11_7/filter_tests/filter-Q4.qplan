@@ -1,0 +1,12 @@
+<XQuery>
+  <Navigation>
+    <QueryPlanFunction result="collection" container="11.7.2.dbxml">
+      <OQPlan>P(node-element-presence-none,=,a)</OQPlan>
+    </QueryPlanFunction>
+    <DbXmlFilter>
+      <Navigation>
+        <Step axis="descendant" name="a" nodeType="element"/>
+      </Navigation>
+    </DbXmlFilter>
+  </Navigation>
+</XQuery>

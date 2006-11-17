@@ -1,0 +1,4 @@
+<!ELEMENT chapter (title, section*)>
+<!ELEMENT section (title, section*)>
+<!ELEMENT title (#PCDATA)>
+

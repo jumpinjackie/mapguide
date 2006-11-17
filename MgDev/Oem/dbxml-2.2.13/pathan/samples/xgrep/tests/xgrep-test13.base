@@ -1,0 +1,3 @@
+child::*/child::para selects all para grandchildren of the context node
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="para3"/>

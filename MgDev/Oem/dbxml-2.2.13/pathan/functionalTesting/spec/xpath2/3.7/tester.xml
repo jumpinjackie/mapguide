@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="spec_expressions">
+  <policies>
+    <policy name="for_expressions">
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>for $i in (1, 2), $j in (3, 4) return ($i, $j)</arg>
+    <output>1
+3
+1
+4
+2
+3
+2
+4
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $a in distinct-values(//author) return ($a, for $b in //book[author = $a] return $b/title)</arg>
+    <output>W. Stevens
+&lt;title&gt;TCP/IP Illustrated&lt;/title&gt;
+&lt;title&gt;Advanced Programming in the Unix environment&lt;/title&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>for $a in //author return ($a, for $b in //book[author = $a] return $b/title)</arg>
+    <output>&lt;author&gt;W. Stevens&lt;/author&gt;
+&lt;title&gt;TCP/IP Illustrated&lt;/title&gt;
+&lt;title&gt;Advanced Programming in the Unix environment&lt;/title&gt;
+&lt;author&gt;W. Stevens&lt;/author&gt;
+&lt;title&gt;TCP/IP Illustrated&lt;/title&gt;
+&lt;title&gt;Advanced Programming in the Unix environment&lt;/title&gt;
+</output>
+  </base>
+</test>

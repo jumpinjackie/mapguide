@@ -1,0 +1,45 @@
+<testcase xmlns:hee="http://theborg.org" xmlns:prefix="lala" xml:lang="en-us" xsi:schemaLocation="http://www.theborg.org test.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
+  <zvonimir>Some Text</zvonimir>
+  <zvonimir>Some <!--commented-->Text</zvonimir>
+  <zvonimir>Some Text<!--with comments--></zvonimir>
+  <zvonimir>Some /different/ Text<?with processing instructions?></zvonimir>
+  <zvonimir>Some Text<irena/></zvonimir>
+  <zvonimir>Some <!--commented-->Text<irena/></zvonimir>
+  <zvonimir>Some Text<!--with comments--><irena/></zvonimir>
+  <zvonimir><irena/>Some Text</zvonimir>
+  <zvonimir><irena/>Some <!--commented-->Text</zvonimir>
+  <zvonimir><irena/>Some Text<!--with comments--></zvonimir>
+  <zvonimir><irena/>Some Text<?with processing instructions?></zvonimir>
+  <yves country="germany"/>
+  <yves country="france"/>
+  <yves land="germany"/>
+  <yves country="germany"/>
+  <yves />
+  <namespace-stuff xmlns:ha="http://sluggy.com" xmlns:ho="http://sluggy.com"  xml:lang="en-us">
+    <ha:fred />
+    <ho:fred />
+    <ha:george />
+    <hee:fred />
+    <fred ha:sthe="http://bluestoday" />
+  </namespace-stuff>
+  <default-namespace xmlns="lala"/>
+  <children>
+    <fred>
+      <ron>
+        <hermione />
+      </ron>
+      <harry />
+    </fred>
+    <fred>
+      <harry />
+      <ron>
+        <hermione />
+      </ron>
+    </fred>
+    <fred>
+      <ron>
+      </ron>
+      <harry />
+    </fred>
+  </children>
+</testcase>

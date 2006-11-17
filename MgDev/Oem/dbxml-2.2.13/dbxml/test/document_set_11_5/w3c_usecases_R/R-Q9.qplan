@@ -1,0 +1,103 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <LetBinding name="end_dates">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'items.xml',P(node-element-equality-date,prefix,end_date))</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="item_tuple" nodeType="element"/>
+            <Step axis="child" name="end_date" nodeType="element">
+              <OQPlan>P(node-element-equality-date,prefix,end_date)</OQPlan>
+            </Step>
+          </Navigation>
+        </LetBinding>
+        <ForBinding name="m">
+          <Function name="{http://www.w3.org/2005/04/xpath-functions}:distinct-values">
+            <FLWOR>
+              <ForBinding name="e">
+                <Variable name="end_dates"/>
+              </ForBinding>
+              <Function name="{http://www.w3.org/2005/04/xpath-functions}:month-from-date">
+                <Variable name="e"/>
+              </Function>
+            </FLWOR>
+          </Function>
+        </ForBinding>
+        <LetBinding name="item">
+          <Navigation>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'items.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <Step axis="descendant" name="item_tuple" nodeType="element">
+              <Predicates>
+                <Operator name="and">
+                  <Operator name="equal">
+                    <Function name="{http://www.w3.org/2005/04/xpath-functions}:year-from-date">
+                      <Step axis="child" name="end_date" nodeType="element">
+                        <OQPlan>P(node-element-equality-date,prefix,end_date)</OQPlan>
+                      </Step>
+                    </Function>
+                    <Sequence>
+                      <AnyAtomicTypeConstructor value="1999" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                    </Sequence>
+                  </Operator>
+                  <Operator name="equal">
+                    <Function name="{http://www.w3.org/2005/04/xpath-functions}:month-from-date">
+                      <Step axis="child" name="end_date" nodeType="element">
+                        <OQPlan>P(node-element-equality-date,prefix,end_date)</OQPlan>
+                      </Step>
+                    </Function>
+                    <Variable name="m"/>
+                  </Operator>
+                </Operator>
+              </Predicates>
+            </Step>
+          </Navigation>
+        </LetBinding>
+        <Sort>
+          <Specification modifier="ascending|empty_least">
+            <Variable name="m"/>
+          </Specification>
+        </Sort>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="monthly_result" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="month" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <Variable name="m"/>
+              </Children>
+            </DOMConstructor>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="item_count" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <Function name="{http://www.w3.org/2005/04/xpath-functions}:count">
+                  <Variable name="item"/>
+                </Function>
+              </Children>
+            </DOMConstructor>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

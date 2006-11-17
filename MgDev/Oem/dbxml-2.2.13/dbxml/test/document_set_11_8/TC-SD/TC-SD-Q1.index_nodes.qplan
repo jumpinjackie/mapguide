@@ -1,0 +1,22 @@
+<XQuery>
+  <Navigation>
+    <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+      <OQPlan>V(node-element-equality-string,hw,=,'the')</OQPlan>
+    </QueryPlanFunction>
+    <Step axis="child" name="dictionary" nodeType="element"/>
+    <Step axis="child" name="e" nodeType="element"/>
+    <DbXmlFilter>
+      <Navigation>
+        <Step axis="child" name="hwg" nodeType="element"/>
+        <Step axis="child" name="hw" nodeType="element">
+          <OQPlan>V(node-element-equality-string,hw,=,'the')</OQPlan>
+        </Step>
+        <DbXmlCompare name="equal">
+          <Sequence>
+            <AnyAtomicTypeConstructor value="the" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </DbXmlCompare>
+      </Navigation>
+    </DbXmlFilter>
+  </Navigation>
+</XQuery>

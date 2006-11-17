@@ -1,0 +1,23 @@
+<XQuery>
+  <Navigation>
+    <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+      <OQPlan>V(node-element-equality-string,name_of_country,=,'Canada')</OQPlan>
+    </QueryPlanFunction>
+    <Step axis="child" name="catalog" nodeType="element"/>
+    <Step axis="child" name="item" nodeType="element"/>
+    <DbXmlFilter>
+      <Navigation>
+        <Step axis="child" name="authors" nodeType="element"/>
+        <Step axis="child" name="author" nodeType="element"/>
+        <Step axis="child" name="contact_information" nodeType="element"/>
+        <Step axis="child" name="mailing_address" nodeType="element"/>
+        <Step axis="child" name="name_of_country" nodeType="element"/>
+        <DbXmlCompare name="equal">
+          <Sequence>
+            <AnyAtomicTypeConstructor value="Canada" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </DbXmlCompare>
+      </Navigation>
+    </DbXmlFilter>
+  </Navigation>
+</XQuery>
