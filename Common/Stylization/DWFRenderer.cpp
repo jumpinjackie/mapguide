@@ -242,6 +242,11 @@ DWFRenderer::~DWFRenderer()
         delete m_obsMesh; //should not get here
 
     delete (NodeTable*)m_hObjNodes;
+
+    // could be non-NULL if an exception was raised before this was
+    // added to the attribute resources collection
+    if (m_attributes)
+        delete m_attributes;
 }
 
 //-----------------------------------------------------------------------------
@@ -360,8 +365,15 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
     if (classInfo && legendInfo &&
        (legendInfo->selectable() || legendInfo->hastooltips() || legendInfo->hashyperlinks()))
     {
-        _ASSERT(m_attributes == NULL);
         _ASSERT(m_featureClass == NULL);
+
+        // could be non-NULL if an exception was raised before this was
+        // added to the attribute resources collection
+        if (m_attributes)
+        {
+            delete m_attributes;
+            m_attributes = NULL;
+        }
 
         m_attributes = DWFCORE_ALLOC_OBJECT (
             DWFToolkit::DWFObjectDefinitionResource(
