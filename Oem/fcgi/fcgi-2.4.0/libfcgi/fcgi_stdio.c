@@ -109,6 +109,8 @@ FCGI_FILE _fcgi_sF[3];
  */
 static int acceptCalled = FALSE;
 static int isCGI = FALSE;
+static char** origenv = NULL;
+static int origenvsize = 0;
 
 int FCGI_Accept(void)
 {
@@ -120,6 +122,11 @@ int FCGI_Accept(void)
         isCGI = FCGX_IsCGI();
         acceptCalled = TRUE;
         atexit(&FCGI_Finish);
+        origenv = environ;
+        while (NULL != *origenv) { ++origenvsize; ++origenv; }
+        origenv = environ;
+        environ = NULL;
+
     } else if(isCGI) {
         /*
          * Not first call to FCGI_Accept and running as CGI means
@@ -137,6 +144,9 @@ int FCGI_Accept(void)
     } else {
         FCGX_Stream *in, *out, *error;
         FCGX_ParamArray envp;
+        char** env = NULL;
+        char** env2 = NULL;
+        int envsize = 0;
         int acceptResult = FCGX_Accept(&in, &out, &error, &envp);
         if(acceptResult < 0) {
             return acceptResult;
@@ -147,7 +157,19 @@ int FCGI_Accept(void)
         FCGI_stdout->fcgx_stream = out;
         FCGI_stderr->stdio_stream = NULL;
         FCGI_stderr->fcgx_stream = error;
-        environ = envp;
+
+        // Construct environ out of envp and the original environment
+        env = envp;
+        while (NULL != *env) { ++envsize; ++env; }
+
+        environ = (char**) malloc(sizeof(char*)*(envsize+origenvsize+1));
+        
+        env = envp;
+        env2 = environ;
+        while (NULL != *env) { *env2 = *env; ++env; ++env2; }
+        env = origenv;
+        while (NULL != *env) { *env2 = *env; ++env; ++env2; }
+        *env2 = NULL;      
     }
     return 0;
 }
@@ -186,7 +208,10 @@ void FCGI_Finish(void)
     FCGI_stdin->fcgx_stream = NULL;
     FCGI_stdout->fcgx_stream = NULL;
     FCGI_stderr->fcgx_stream = NULL;
-    environ = NULL;
+    if (NULL != environ) {
+        free(environ);
+        environ = NULL;
+    }
 }
 
 /*
