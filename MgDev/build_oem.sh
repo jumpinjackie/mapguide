@@ -350,7 +350,7 @@ clean_imake ()
 # Script loop 
 #**********************************************************
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos swigex bdxml cppunit imake;
+for lib in ace dwfcore dwftk dwfemap geos swigex bdxml cppunit libfcgi imake;
 do
 	echo "$lib: Initialization..........................."
 	init_"$lib"
