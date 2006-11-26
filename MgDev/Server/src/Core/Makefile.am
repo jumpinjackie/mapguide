@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = serverconfig.ini ServerCore.vcproj ServerCore.rc
+EXTRA_DIST = serverconfig.ini ServerCore.vcproj ServerCore.rc ServerFactory.cpp
 
 prefix=@prefix@/server
 

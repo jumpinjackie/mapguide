@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = Foundation.vcproj
+EXTRA_DIST = Foundation.vcproj Foundation.rc
 
 lib_LTLIBRARIES = libMgFoundation.la
 
@@ -212,6 +212,7 @@ noinst_HEADERS = $(include_SOURCES) \
   System/ServerConnectionBase.h \
   System/SetLocale.h \
   System/Stream.h \
+  System/StreamData.h \
   System/StreamHeader.h \
   System/StreamHelper.h \
   System/StreamParser.h \
