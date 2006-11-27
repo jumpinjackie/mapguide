@@ -1,4 +1,4 @@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = Base Factory Manager Thread
-DIST_SUBDIRS = Base Factory Manager Thread
+SUBDIRS = Base Manager Thread
+DIST_SUBDIRS = Base Manager Thread
 EXTRA_DIST = Dll.cpp
