@@ -51,6 +51,7 @@ include_SOURCES = \
   RepositoryCheckpointEventHandler.cpp \
   ResourceChangeEventHandler.cpp \
   Server.cpp \
+  ServerFactory.cpp \
   ServiceHandlerFactory.cpp \
   ServiceRegistrationEventHandler.cpp \
   SessionTimeoutEventHandler.cpp \
@@ -98,7 +99,6 @@ mgserver_LDADD = \
   -lMgServerAdminService \
   -lMgServerBase \
   -lMgServerDrawingService \
-  -lMgServerFactory \
   -lMgServerFeatureService \
   -lMgServerKmlService \
   -lMgServerManager \
@@ -130,7 +130,6 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -R$(map_srcdir)/Common/MapGuideCommon/.libs \
   -R$(map_srcdir)/Server/src/Common/Base/.libs \
   -R$(map_srcdir)/Server/src/Common/Manager/.libs \
-  -R$(map_srcdir)/Server/src/Common/Factory/.libs \
   -R$(map_srcdir)/Server/src/Common/Thread/.libs \
   -R$(map_srcdir)/Server/src/Services/Drawing/.libs \
   -R$(map_srcdir)/Server/src/Services/Feature/.libs \
@@ -158,7 +157,6 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -L../../../Common/MapGuideCommon \
   -L../Common/Base \
   -L../Common/Manager \
-  -L../Common/Factory \
   -L../Common/Thread \
   -L../Services/Drawing \
   -L../Services/Feature \
