@@ -202,8 +202,9 @@ MgDateTime::MgDateTime(const string& xmlDateTime)
     Initialize();
 
     bool utc = false;
-    bool valid = false;
     int numFields = 0;
+    int year, month, day, hour, minute;
+    year = month = day = hour = minute = -1;
     float seconds = 0.0;
 
     // Parse the XML date time string.
@@ -215,12 +216,12 @@ MgDateTime::MgDateTime(const string& xmlDateTime)
             utc = true;
         }
 
+        // Note that using "%hd-%c-%cT%c:%c:%f" with data members does not work so well.
         numFields = ::sscanf(xmlDateTime.c_str(), "%d-%d-%dT%d:%d:%f",
-            &m_year, &m_month, &m_day, &m_hour, &m_minute, &seconds);
-        valid = (6 == numFields);
+            &year, &month, &day, &hour, &minute, &seconds);
     }
 
-    if (!valid)
+    if (6 != numFields)
     {
         STRING buffer;
         MgUtil::MultiByteToWideChar(xmlDateTime, buffer);
@@ -232,6 +233,12 @@ MgDateTime::MgDateTime(const string& xmlDateTime)
         throw new MgInvalidArgumentException(L"MgDateTime.MgDateTime",
             __LINE__, __WFILE__, &arguments, L"MgInvalidXmlDateTime", NULL);
     }
+
+    m_year   = year;
+    m_month  = (INT8)month;
+    m_day    = (INT8)day;
+    m_hour   = (INT8)hour;
+    m_minute = (INT8)minute;
 
     SplitSeconds(seconds);
 
