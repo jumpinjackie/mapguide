@@ -87,7 +87,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying target to lib/"
-				CommandLine="if not exist ..\..\lib mkdir ..\..\lib&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; ..\..\lib\&quot;$(TargetName)&quot;.lib&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;&quot;$(TargetName)&quot;.pdb ..\..\lib\&quot;$(TargetName)&quot;.pdb"
+				CommandLine="if not exist ..\..\lib mkdir ..\..\lib&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; ..\..\lib\&quot;$(TargetName)&quot;.lib&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;&quot;$(TargetName)&quot;.pdb ..\..\lib\&quot;$(TargetName)&quot;.pdb&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -165,7 +165,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying target to lib/"
-				CommandLine="if not exist ..\..\lib mkdir ..\..\lib&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; ..\..\lib\&quot;$(TargetName)&quot;.lib"
+				CommandLine="if not exist ..\..\lib mkdir ..\..\lib&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; ..\..\lib\&quot;$(TargetName)&quot;.lib&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -396,10 +396,6 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\include\cppunit\TextTestRunner.h"
-				>
 			</File>
 			<File
 				RelativePath="..\..\include\cppunit\ui\text\TextTestRunner.h"
@@ -1773,18 +1769,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="..\..\configure.in"
-			>
-		</File>
-		<File
-			RelativePath="..\..\include\cppunit\Makefile.am"
-			>
-		</File>
-		<File
-			RelativePath="Makefile.am"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
