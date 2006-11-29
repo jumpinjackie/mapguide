@@ -95,7 +95,8 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name)
 
     //Property: Unit
     fd << tab() << "<Unit>"; // NOXLATE
-    fd << EncodeString(*LengthConverter::UnitToEnglish(stroke->GetUnit()));
+    std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(stroke->GetUnit()));
+    fd << EncodeString(*str);
     fd << "</Unit>" << std::endl; // NOXLATE
 
     dectab();
