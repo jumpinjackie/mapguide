@@ -64,7 +64,8 @@ void IOSymbol::Write(MdfStream &fd, Symbol *m_symbol)
 {
     // Property: Unit
     fd << tab() << "<Unit>"; // NOXLATE
-    fd << EncodeString(*LengthConverter::UnitToEnglish(m_symbol->GetUnit()));
+    std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(m_symbol->GetUnit()));
+    fd << EncodeString(*str);
     fd << "</Unit>" << std::endl; // NOXLATE
 
     // Property: SizeContext
