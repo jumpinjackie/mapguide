@@ -581,6 +581,8 @@ void MgServer::ParseArgs (INT32 argc, ACE_TCHAR *argv[])
                 m_strTestFileName = L"";
             }
         }
+
+        delete[] parameter;
     }
 }
 
