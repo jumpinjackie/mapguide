@@ -205,7 +205,7 @@ MgByteReader* MgRaster::GetStream()
         byteReader = m_featureService->GetRaster(m_handle, m_xSize, m_ySize, m_rasterPropName);
     }
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 void MgRaster::SetHandle(INT32 handle)
