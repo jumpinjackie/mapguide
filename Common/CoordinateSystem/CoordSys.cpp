@@ -294,7 +294,7 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
 
                 // Set the units
                 wchar_t* csUnits = Convert_Ascii_To_Wide(units);
-                m_units = csUnits;
+                m_units = (NULL == csUnits) ? L"" : csUnits;
                 delete [] csUnits;
                 csUnits = NULL;
 
@@ -417,7 +417,7 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                                     message += L" ";
                                     message += strError;
 
-                                    delete strError;
+                                    delete [] strError;
                                     strError = NULL;
                                 }
 
@@ -483,7 +483,7 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                             message += L" ";
                             message += strError;
 
-                            delete strError;
+                            delete [] strError;
                             strError = NULL;
                         }
 
@@ -588,7 +588,7 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                     message += L" ";
                     message += strError;
 
-                    delete strError;
+                    delete [] strError;
                     strError = NULL;
                 }
 
@@ -1488,7 +1488,7 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
             message += L" ";
             message += strError;
 
-            delete strError;
+            delete [] strError;
             strError = NULL;
         }
 
@@ -1687,7 +1687,7 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
             message += L" ";
             message += strError;
 
-            delete strError;
+            delete [] strError;
             strError = NULL;
         }
 
@@ -2093,7 +2093,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
         message += strCode;
         message += L"\" to WKT.";
 
-        delete strCode;
+        delete [] strCode;
         strCode = NULL;
 
         if(error)
@@ -2102,7 +2102,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
             message += L" ";
             message += strError;
 
-            delete strError;
+            delete [] strError;
             strError = NULL;
         }
 
@@ -2187,7 +2187,7 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
         
         STRING message = L"Failed to convert WKT to EPSG code.";
 
-        delete strCode;
+        delete [] strCode;
         strCode = NULL;
 
         if(error)
@@ -2196,7 +2196,7 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
             message += L" ";
             message += strError;
 
-            delete strError;
+            delete [] strError;
             strError = NULL;
         }
 
