@@ -167,7 +167,8 @@ void MgSpatialContextData::Deserialize(MgStream* stream)
     stream->GetString(m_wktStr);
     stream->GetInt32(m_extentType);
 
-    Ptr<MgByteSink> byteSink = new MgByteSink(stream->GetStream());
+    Ptr<MgByteReader> byteReader = stream->GetStream();
+    Ptr<MgByteSink> byteSink = new MgByteSink(byteReader);
     m_extent = byteSink->ToBuffer();
 
     stream->GetDouble(m_xyTolerance);
