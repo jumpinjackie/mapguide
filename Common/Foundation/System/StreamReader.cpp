@@ -341,7 +341,7 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
 {
     CHECKNULL(m_sHelper, L"GetStream");
 
-    MgByteReader* byteReader = NULL;
+    Ptr<MgByteReader> byteReader;
     MgBinaryStreamArgumentPacket bsap;
 
     GetBinaryStreamHeader(bsap);
@@ -369,7 +369,8 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
         ByteSourceSocketStreamImpl* socketSource = new ByteSourceSocketStreamImpl(bsap.m_Length, GetConnection());
         Ptr<MgByteSource> ptrByteSource = new MgByteSource(socketSource);
         byteReader = ptrByteSource->GetReader();
-        return byteReader;
+
+        return byteReader.Detach();
     }
     else if (bsap.m_Length > MgByte::MaxSize)
     {
@@ -449,7 +450,7 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
         byteReader = ptrByteSource->GetReader();
     }
 
-    return byteReader;
+    return byteReader.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -530,7 +531,7 @@ MgObject* MgStreamReader::GetObject()
     //deserialize the object
     (obj)->Deserialize((MgStream*)this);
 
-    return SAFE_ADDREF((MgSerializable*)obj);
+    return obj.Detach();
 }
 
 ///<summary>
