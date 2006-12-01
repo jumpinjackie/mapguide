@@ -26,13 +26,7 @@
 // determines the number of requests to make, as a factor of the number of tiles
 #define REQUEST_FACTOR 20
 
-#ifdef _WIN32
-    // TODO: Investigate threading problem on Windows 2003 (dual core CPU).
-    //       There may be some issue with ByteSourceFileImpl::LoadFile (i.e. Is errno thread safe?).
-    static const INT32 MG_TEST_THREADS = 1;
-#else
-    static const INT32 MG_TEST_THREADS = 4;
-#endif
+static const INT32 MG_TEST_THREADS = 4;
 
 const STRING TEST_LOCALE = L"en";
 
@@ -709,7 +703,14 @@ void TestTileService::TestCase_SetTile()
 void TestTileService::TestCase_GetSetTile()
 {
     // specify the number of threads to use
+#ifdef _WIN32
+    // TODO: Investigate threading problem on Windows 2003 (dual core CPU).
+    //       There may be some issue with ByteSourceFileImpl::LoadFile (i.e. Is errno thread safe?).
+    const INT32 numThreads = 1;
+#else
     const INT32 numThreads = MG_TEST_THREADS;
+#endif
+
     ThreadData threadData[numThreads];
 
     // define the range of tiles to get and set
