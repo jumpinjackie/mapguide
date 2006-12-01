@@ -346,6 +346,11 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
                     MgEventTimer::ServiceRegistration).Terminate();
             }
 
+            // Register the MgException locale callback so that exception messages will be generated in the
+            // user's locale.  The Server uses thread locale storage to save user information so this callback
+            // is easy to implement.
+            MgException::RegisterLocaleCallback(MgServer::LocaleCallback);
+
 #ifdef _DEBUG
             MgEventTimer& connectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::ConnectionTimeout);
             STRING strResourceFilename = pResources->GetResourceFilename(pServerManager->GetDefaultLocale());
@@ -1091,6 +1096,24 @@ void MgServer::stop_requested (DWORD controlCode)
     ACE_Reactor::instance()->end_reactor_event_loop();
 }
 #endif
+
+STRING MgServer::LocaleCallback()
+{
+    STRING locale;
+
+    MG_TRY()
+
+    MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+
+    if (NULL != currUserInfo)
+    {
+        locale = currUserInfo->GetLocale();
+    }
+
+    MG_CATCH_AND_THROW(L"MgServer.LocaleCallback")
+
+    return locale;
+}
 
 #if defined (ACE_HAS_EXPLICIT_TEMPLATE_INSTANTIATION)
 template class ACE_LOCK_SOCK_Acceptor<ACE_SYNCH_MUTEX>;
