@@ -314,7 +314,21 @@ protected:
 
 INTERNAL_API:
 
+    typedef STRING (*LocaleCallbackFunc)();
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Registers an application specific callback function to retrieve the
+    /// current user locale.
+    ///
+    static void RegisterLocaleCallback(LocaleCallbackFunc func);
+
+
     DECLARE_EXCEPTION_ABSTRACT(MgException)
+
+private:
+
+    static LocaleCallbackFunc sm_localeCallbackFunc;
 
 CLASS_ID:
 

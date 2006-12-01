@@ -24,6 +24,8 @@
 
 IMPLEMENT_EXCEPTION_ABSTRACT(MgException)
 
+MgException::LocaleCallbackFunc MgException::sm_localeCallbackFunc = NULL;
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Construct a MgException.
@@ -79,25 +81,16 @@ void MgException::Dispose() throw()
 ///
 STRING MgException::GetLocale() throw()
 {
-    //TSW TODO:  Talked to Reva about how we want to deal with this.  We need to register a
-    // callback function so we can hook this functionality at the application level.
-    // If the hook isn't present, then we should fallback to the config file
-    // TODO: If callbackFunctionRegistered  locale = (*callbackFunction)()
-
     STRING locale;
 
-    /* TODO: Replace this stuff with a callback to the server
     MG_TRY()
 
-    MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
-
-    if (NULL != currUserInfo)
+    if (NULL != sm_localeCallbackFunc)
     {
-        locale = currUserInfo->GetLocale();
+        locale = (*sm_localeCallbackFunc)();
     }
 
     MG_CATCH_AND_RELEASE()
-    */
 
     if (locale.empty())
     {
@@ -543,4 +536,15 @@ STRING MgException::GetDetails() throw()
 STRING MgException::GetStackTrace() throw()
 {
     return GetStackTrace(GetLocale());
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Registers an application specific callback function to retrieve the
+/// current user locale.
+///
+void MgException::RegisterLocaleCallback(LocaleCallbackFunc func)
+{
+    sm_localeCallbackFunc = func;
 }

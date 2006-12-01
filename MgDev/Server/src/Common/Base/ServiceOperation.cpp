@@ -203,10 +203,22 @@ bool MgServiceOperation::HandleException(MgException* except)
     // Write the exception if all the data have been read successfully.
     if (m_argsRead && NULL != except && m_stream != NULL)
     {
-        // Log the exception
-        MgServerManager* serverManager = MgServerManager::GetInstance();
-        STRING locale = (NULL == serverManager) ?
-            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+        // Log the exception using Server locale or User locale if it exists
+        STRING locale = MgResources::DefaultLocale;
+        MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+        if (NULL != currUserInfo)
+        {
+            locale = currUserInfo->GetLocale();
+        }
+        if (locale.empty())
+        {           
+            MgServerManager* serverManager = MgServerManager::GetInstance();
+            if (NULL != serverManager)
+            {
+                locale = serverManager->GetDefaultLocale();
+            }
+        }
+
         STRING message = except->GetMessage(locale);
         STRING details = except->GetDetails(locale);
         STRING stackTrace = except->GetStackTrace(locale);
@@ -671,4 +683,5 @@ void MgServiceOperation::CheckLicense()
         }
     }
 }
+
 
