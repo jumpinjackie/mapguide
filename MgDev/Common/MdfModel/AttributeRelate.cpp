@@ -36,8 +36,7 @@ AttributeRelate::AttributeRelate()
 	this->m_strName = L"";
 	this->m_strResourceId = L"";
 	this->m_strAttributeClass = L"";
-    // hard code "|" as a default delimiter symbol
-    this->m_strAttributeNameDelimiter = L"|"; 
+    this->m_strAttributeNameDelimiter = L""; 
 	this->m_eRelateType = LeftOuter;
 	this->m_bForceOneToOne = true;
 }
@@ -48,8 +47,7 @@ AttributeRelate::AttributeRelate(const MdfString& joinName)
 	this->m_strName = joinName;
 	this->m_strResourceId = L"";
 	this->m_strAttributeClass = L"";
-    // hard code "|" as a default delimiter symbol
-    this->m_strAttributeNameDelimiter = L"|"; 
+    this->m_strAttributeNameDelimiter = L""; 
 	this->m_eRelateType = LeftOuter;
 	this->m_bForceOneToOne = true;
 }
