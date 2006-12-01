@@ -361,28 +361,3 @@ install-data-hook:
 	@echo 'popd' >> ${prefix}/bin/mgserver.sh
 	@echo 'popd' >> ${prefix}/bin/mgserverd.sh
 	@chmod a+x ${prefix}/bin/mgserver*.sh
-	@rm -f $(fdodir)/providers.xml
-	@echo '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>' > $(fdodir)/providers.xml
-	@echo '<FeatureProviderRegistry>' >> $(fdodir)/providers.xml
-	@echo '' >> $(fdodir)/providers.xml
-	@echo '  <FeatureProvider>' >> $(fdodir)/providers.xml
-	@echo '    <Name>OSGeo.SHP.3.2</Name>' >> $(fdodir)/providers.xml
-	@echo '    <DisplayName>OSGeo FDO Provider for SHP</DisplayName>' >> $(fdodir)/providers.xml
-	@echo '    <Description>Read/write access to spatial and attribute data in an ESRI SHP file.</Description>' >> $(fdodir)/providers.xml
-	@echo '    <IsManaged>False</IsManaged>' >> $(fdodir)/providers.xml
-	@echo '    <Version>3.2.0.0</Version>' >> $(fdodir)/providers.xml
-	@echo '    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>' >> $(fdodir)/providers.xml
-	@echo '    <LibraryPath>$(fdodir)/libShpProvider.so</LibraryPath>' >> $(fdodir)/providers.xml
-	@echo '  </FeatureProvider>' >> $(fdodir)/providers.xml
-	@echo '' >> $(fdodir)/providers.xml
-	@echo '  <FeatureProvider>' >> $(fdodir)/providers.xml
-	@echo '    <Name>OSGeo.SDF.3.2</Name>' >> $(fdodir)/providers.xml
-	@echo '    <DisplayName>OSGeo FDO Provider for SDF</DisplayName>' >> $(fdodir)/providers.xml
-	@echo '    <Description>Read/write access to Autodesk spatial database format, a file-based personal geodatabase that supports multiple features/attributes, spatial indexing, and file-locking.</Description>' >> $(fdodir)/providers.xml
-	@echo '    <IsManaged>False</IsManaged>' >> $(fdodir)/providers.xml
-	@echo '    <Version>3.2.0.0</Version>' >> $(fdodir)/providers.xml
-	@echo '    <FeatureDataObjectsVersion>3.2.0.0</FeatureDataObjectsVersion>' >> $(fdodir)/providers.xml
-	@echo '    <LibraryPath>$(fdodir)/libSDFProvider.so</LibraryPath>' >> $(fdodir)/providers.xml
-	@echo '  </FeatureProvider>' >> $(fdodir)/providers.xml
-	@echo '' >> $(fdodir)/providers.xml
-	@echo '</FeatureProviderRegistry>' >> $(fdodir)/providers.xml
