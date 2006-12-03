@@ -70,6 +70,14 @@ Links to commercial and open source applications and tools designed to work with
 	    <li><a href="http://www.autodesk.com/mapguidestudio" target="_blank">Autodesk MapGuide Studio</a></li>
 	    <li><a href="http://www.autodesk.com/dwfviewer" target="_blank">Autodesk DWF Viewer</a></li>
       </ul>
+      <p>Note: The released MapGuide Studio will disallow connecting to the MapGuide Open Source 1.1 server with a &quot;The Studio version is incompatible with the site version&quot; error dialog. An interim resolution to this issue is as follows: </p>
+      <ol>
+        <li> Find Autodesk.MapGuide.Studio.Site.dll in the Studio install location (C:\Program Files\Autodesk\MapGuideStudio2007) and make a copy of it so that this fix can be undone.</li>
+        <li> Download the <a href="https://mapguide.osgeo.org/files/documents/12/327/Autodesk.MapGuide.Studio.Site.zip">patch</a>.</li>
+        <li>Unzip the patch file to the Studio install location and overwrite Autodesk.MapGuide.Studio.Site.dll.</li>
+      </ol>
+      <p>The properties of the DLL should show a version of 1.1.0.0 and the version comments should be &quot;Patch for MGOS 1.1&quot;.<br />
+      </p>
 </div>
 
 <h1><a name="LatestStableRelease" id="LatestStableRelease"></a>Latest Stable Release</h1>
