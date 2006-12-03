@@ -5,8 +5,13 @@
 <title>MapGuide Open Source - Downloads</title></head>
 <body>
 <h1>MapGuide Open Source - Downloads</h1>
+<ul>
+  <li><a href="#MapGuideOpenSource110RC1">MapGuide Open Source 1.1.0 RC1</a></li>
+  <li><a href="#LatestStableRelease">Latest stable release: 1.0.2</a></li>
+  <li><a href="#PreviousReleases">Previous releases</a>  </li>
+</ul>
 <div class="h2">
-<h2>MapGuide Open Source 1.1.0 Release Candidate 1 (RC1) </h2>
+<h2><a name="MapGuideOpenSource110RC1" id="MapGuideOpenSource110RC1"></a>MapGuide Open Source 1.1.0 Release Candidate 1 (RC1) </h2>
 <p><a href="https://mapguide.osgeo.org/files/documents/12/311/ReleaseNotesMapGuideOpenSource-1.1.0RC1.html">Release Notes</a> - Up-to-date notes about this release. </p>
 <h3><a name="sourcecode-1.1.x" id="sourcecode-1.1.x">Source Code</a></h3>
 Use these links to configure, make, and install MapGuide Open Source on Linux. Read the <a href="1.1/docs/BuildInstallQuickStartLinux.html" target="_blank">Building MapGuide on Linux</a> document for instructions on how to get it up and running.
@@ -67,7 +72,7 @@ Links to commercial and open source applications and tools designed to work with
       </ul>
 </div>
 
-<h1>Latest Stable Release</h1>
+<h1><a name="LatestStableRelease" id="LatestStableRelease"></a>Latest Stable Release</h1>
 <div class="h2">
 <h2>MapGuide Open Source 1.0.2</h2>
 <p><a href="https://mapguide.osgeo.org/files/documents/12/290/ReleaseNotes1.0.2.html" title="Release Notes">Release Notes</a> - Enhancements and Bug Fixes in this Release. </p>
@@ -116,7 +121,7 @@ Links to commercial and open source applications and tools designed to work with
       </ul>
 </div>
 
-<h1>Previous Releases</h1>
+<h1><a name="PreviousReleases" id="PreviousReleases"></a>Previous Releases</h1>
 
 <div class="h2">
 <h2>MapGuide Open Source 1.0.1</h2>
