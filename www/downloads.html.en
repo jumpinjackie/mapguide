@@ -6,6 +6,47 @@
 <body>
 <h1>MapGuide Open Source - Downloads</h1>
 <div class="h2">
+<h2>MapGuide Open Source 1.1.0 Release Candidate 1 (RC1) </h2>
+<p><a href="https://mapguide.osgeo.org/files/documents/12/311/ReleaseNotesMapGuideOpenSource-1.1.0RC1.html">Release Notes</a> - Up-to-date notes about this release. </p>
+<h3><a name="sourcecode-1.1.0RC1" id="sourcecode-1.1.0RC1">Source Code</a></h3>
+Use these links to configure, make, and install MapGuide Open Source on Linux. Read the <a href="1.1/docs/BuildInstallQuickStartLinux.html" target="_blank">Building MapGuide on Linux</a> document for instructions on how to get it up and running.
+	  Note that the source code distribution of MapGuide Open Source 1.1.0RC1 requires FDO 3.2, which can be obtained from the FDO <a href="https://fdo.osgeo.org/downloads.html">downloads</a> page.
+      <ul type="square">
+        <li><a href="https://mapguide.osgeo.org/files/documents/12/314/mapguide-1.1.0RC1.tar.gz">mapguide-1.1.0RC1.tar.gz</a>&nbsp;[69,843 kb]<br />
+          md5: f5b775a4a731c9221ffa1f3cccd48a1f<br />
+        Compressed tar file that contains source code for both the MapGuide Server and MapGuide Web Server Extensions with configure / make / make install scripts. Requires the FDO API which is available from <a href="https://fdo.osgeo.org">fdo.osgeo.org</a>.</li>
+      </ul>
+      <ul type="square">
+        <li><a href="https://mapguide.osgeo.org/files/documents/12/312/mapguideaptinstaller-1.1.0RC1.tar.gz">mapguideaptinstaller-1.1.0.tar.gz</a>&nbsp;[18,443 kb]<br />
+          md5: 1408690a49ac5a3438c95a3631ece672<br />
+        Compressed tar file that contains source code for the Apache Web Server, PHP, and Tomcat with shell scripts to automatically build and configure these tools for use with MapGuide Open Source.</li>
+      </ul>
+      <h3><a name="windowsinstallers" id="windowsinstallers">Windows Installers</a></h3>
+      Use these links to install MapGuide Open Source on Microsoft Windows. Read the <a href="docs/InstallConfigureMgOpenSourceOnWindows.pdf" target="_blank">Installing MapGuide Open Source on Windows</a> document for instructions on how to get it up and running.
+      <ul type="square">
+        <li><a href="https://mapguide.osgeo.org/files/documents/12/313/MGServerSetup-1.1.0RC1.exe">MGServerSetup-1.1.0RC1.exe</a>&nbsp;[21,412 kb] <br />
+          md5: e92675a9573694b5e646207d1e2e75fa<br />
+          Self extracting executable that will install the MapGuide Server on Microsoft Windows. <strong><br />
+        </strong></li>
+      </ul>
+      <ul type="square">
+        <li><a href="https://mapguide.osgeo.org/files/documents/12/315/MgWebServerExtensionsSetup-1.1.0RC1.exe">MgWebServerExtensionsSetup-1.1.0RC1.exe</a>&nbsp;[31,123 kb]<br />
+          md5: 5dc354cdc1f3dc107af56b3b0802a7c5<br />
+          Self extracting executable that will install the MapGuide Web Server Extensions on Microsoft Windows with the option to either install the Apache Web Server, PHP, and Tomcat or to configure an existing Microsoft IIS installation.<br />
+        </li>
+      </ul>
+</div>
+
+<div class="h2">
+<h2><a name="links" id="links">Links to Related Applications and Tools</a></h2>Links to commercial and open source applications and tools designed to work with this release of MapGuide Open Source. 
+	  <ul type="square">
+	    <li><a href="http://www.autodesk.com/mapguidestudio" target="_blank">Autodesk MapGuide Studio</a></li>
+	    <li><a href="http://www.autodesk.com/dwfviewer" target="_blank">Autodesk DWF Viewer</a></li>
+      </ul>
+</div>
+
+<h1>Latest Stable Release</h1>
+<div class="h2">
 <h2>MapGuide Open Source 1.0.2</h2>
 <p><a href="https://mapguide.osgeo.org/files/documents/12/290/ReleaseNotes1.0.2.html" title="Release Notes">Release Notes</a> - Enhancements and Bug Fixes in this Release. </p>
 
@@ -44,6 +85,16 @@
 	    </li>
       </ul>
 </div>
+
+<div class="h2">
+<h2><a name="links" id="links">Links to Related Applications and Tools</a></h2>Links to commercial and open source applications and tools designed to work with this release of MapGuide Open Source. 
+	  <ul type="square">
+	    <li><a href="http://www.autodesk.com/mapguidestudio" target="_blank">Autodesk MapGuide Studio</a></li>
+	    <li><a href="http://www.autodesk.com/dwfviewer" target="_blank">Autodesk DWF Viewer</a></li>
+      </ul>
+</div>
+
+<h1>Previous Releases</h1>
 
 <div class="h2">
 <h2>MapGuide Open Source 1.0.1</h2>
@@ -138,14 +189,6 @@
 	    <li><a href="https://mapguide.osgeo.org/files/documents/12/59/Sheboygan.mgp">Sheboygan.mgp</a>&nbsp;[13,546 kb]<br />
 	    md5: a712dbba31b9b34f1fd3de416e016d43<br />
 		Sample package of data, layer, map, and web layout resources for use with the sample application.</li>
-      </ul>
-</div>
-
-<div class="h2">
-<h2><a name="links" id="links">Links to Related Applications and Tools</a></h2>Links to commercial and open source applications and tools designed to work with this release of MapGuide Open Source. 
-	  <ul type="square">
-	    <li><a href="http://www.autodesk.com/mapguidestudio" target="_blank">Autodesk MapGuide Studio</a></li>
-	    <li><a href="http://www.autodesk.com/dwfviewer" target="_blank">Autodesk DWF Viewer</a></li>
       </ul>
 </div>
 
