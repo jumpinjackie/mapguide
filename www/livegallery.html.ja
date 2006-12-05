@@ -74,6 +74,23 @@
       <td height="147"><a href="http://data.mapguide.com/mapguide/devguide/index.php"><img src="images/devsample_thumb.png" alt="Go to Application" width="200" height="140" hspace="5" border="0" align="left"/></a></td>
       <td><a href="http://data.mapguide.com/mapguide/devguide/index.php">このサイト</a>にはMapGuideのために共通で利用されるスクリプトとAPIコードサンプルがあります。このソースコードはこのサイトからダウンロードできます。</td>
     </tr>
+    <tr>
+      <td height="147"><a href="http://data.mapguide.com/mapguide/gt/index.php"><img src="images/gt.png" alt="Go to Application" width="200" height="140" hspace="5" border="0" align="left"/></a></td>
+      <td><a href="http://data.mapguide.com/mapguide/gt/index.php">This site</a> features 3 generic tasks 
+	  <ul>
+		  <li><strong>Shareable Markups</strong> - creating a persistent, shareable markup layer using the feature source api. 
+		  <br /></li>
+		  <li><strong>Ad Hoc Queries</strong> -  creating ad hoc queries using the feature source and FDO api. 
+		  <br /></li>
+		  <li><strong>Dynamic Themes</strong> - creating dynamic themes on a layer.
+		  <br /> </li>
+
+	  </ul>
+	  
+	  The source code is available for download from the site.
+	  
+	  </td>
+    </tr>
 
   </table>
   <p>&nbsp;</p>
