@@ -162,7 +162,10 @@ void MgLongTransactionData::ToXml(string& str)
     str += "<Name>" + MgUtil::WideCharToMultiByte(m_name) + "</Name>";
     str += "<Description>" + MgUtil::WideCharToMultiByte(m_desc) + "</Description>";
     str += "<Owner>" + MgUtil::WideCharToMultiByte(m_owner) + "</Owner>";
-    str += "<CreationDate>"  + MgUtil::WideCharToMultiByte(m_dateTime->ToString())  +  "</CreationDate>";
+    str += "<CreationDate>";
+    if (m_dateTime != NULL)
+        str += MgUtil::WideCharToMultiByte(m_dateTime->ToString());
+    str += "</CreationDate>";
 
     str += "</LongTransaction>";
 }
