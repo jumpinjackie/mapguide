@@ -138,7 +138,7 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetUINT16(UINT16& data, boo
 {
     INT16 nValue = 0;
 
-    MgStreamStatus stat = GetData(&nValue, sizeof(INT16), blocking, peeking);
+    MgStreamHelper::MgStreamStatus stat = GetData(&nValue, sizeof(INT16), blocking, peeking);
     data = MG_NTOHS(nValue);
 
     return stat;
@@ -181,7 +181,7 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetINT64(INT64& data, bool 
     UINT32 lowWord;
     UINT32 hiWord;
 
-    MgStreamStatus stat = GetUINT32(lowWord, blocking, peeking);
+    MgStreamHelper::MgStreamStatus stat = GetUINT32(lowWord, blocking, peeking);
     if(stat == MgStreamHelper::mssDone)
         if((stat = GetUINT32(hiWord, blocking, peeking)) == MgStreamHelper::mssDone)
             data = ((UINT64)hiWord << 32) | lowWord;
@@ -198,7 +198,7 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetNullTermString( REFSTRIN
         len = GetLength();
     }
 
-    MgStreamStatus stat = GetData(buf, len, true, true);
+    MgStreamHelper::MgStreamStatus stat = GetData(buf, len, true, true);
     if(stat == MgStreamHelper::mssDone)
     {
         char* endBuf = strchr(buf, '\0');
@@ -304,7 +304,7 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::WriteNullTermString( CREFST
 {
     string mbStr = MgUtil::WideCharToMultiByte(data);
     MgStreamHelper::MgStreamStatus stat =
-    WriteBytes((const unsigned char*)mbStr.c_str(),(int)mbStr.length()+1);
+        WriteBytes((const unsigned char*)mbStr.c_str(),(int)mbStr.length()+1);
     return stat;
 }
 

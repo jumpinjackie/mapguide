@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGSTREAMHELPER_H_MG
-#define MGSTREAMHELPER_H_MG
+#ifndef MG_STREAM_HELPER_H_
+#define MG_STREAM_HELPER_H_
 
 class MgStreamHelper;
 template class MG_FOUNDATION_API Ptr<MgStreamHelper>;
@@ -37,7 +37,6 @@ class MG_FOUNDATION_API MgStreamHelper : public MgGuardDisposable
     ///  Enumerations
     public:
 
-    ///  TODO
     enum MgStreamStatus
     {
         mssError     = 0x1111F901,
@@ -130,4 +129,4 @@ class MG_FOUNDATION_API MgStreamHelper : public MgGuardDisposable
 };
 /// \endcond
 
-#endif  //  MGSTREAMHELPER_H_MG
+#endif  //  MG_STREAM_HELPER_H_

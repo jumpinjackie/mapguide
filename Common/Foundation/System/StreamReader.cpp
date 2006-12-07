@@ -54,7 +54,7 @@ MgStreamReader::~MgStreamReader()
 ///<param>
 void MgStreamReader::GetStreamHeader(MgStreamHeader& msh)
 {
-    CHECKNULL(m_sHelper, L"GetStreamHeader");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetStreamHeader");
 
     // Stream header
     m_sHelper->GetUINT32( msh.m_streamStart );
@@ -102,7 +102,7 @@ void MgStreamReader::GetOperationResponseHeader(MgOperationResponsePacket& mop)
 ///</summary>
 void MgStreamReader::GetArgumentHeader(MgArgumentPacket& map)
 {
-    CHECKNULL(m_sHelper, L"ReadArgumentHeader");
+    CHECKNULL(m_sHelper, L"MgStreamReader.ReadArgumentHeader");
 
     // Read packet header
     m_sHelper->GetUINT32( map.m_PacketHeader, true, false );
@@ -120,7 +120,7 @@ void MgStreamReader::GetArgumentHeader(MgArgumentPacket& map)
 
 void MgStreamReader::GetBinaryStreamHeader(MgBinaryStreamArgumentPacket& bsap)
 {
-    CHECKNULL(m_sHelper, L"GetBinaryStreamHeader");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetBinaryStreamHeader");
 
     // Packet header
     m_sHelper->GetUINT32(bsap.m_PacketHeader);
@@ -145,7 +145,7 @@ void MgStreamReader::GetBinaryStreamHeader(MgBinaryStreamArgumentPacket& bsap)
 ///</returns>
 void MgStreamReader::GetString(REFSTRING wcStr)
 {
-    CHECKNULL(m_sHelper, L"GetString");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetString");
 
     string str;
     MgArgumentPacket map;
@@ -153,7 +153,10 @@ void MgStreamReader::GetString(REFSTRING wcStr)
     GetArgumentHeader(map);
 
     if (map.m_ArgumentType != (UINT32)MgPacketParser::matString)
-        throw new MgInvalidStreamHeaderException(L"GetString", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException(L"MgStreamReader.GetString",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     str.resize((size_t)map.m_Length); // resize string to hold the required bytes
     m_sHelper->GetData( (void*)str.c_str(), (size_t)map.m_Length, true, false );
@@ -172,13 +175,16 @@ void MgStreamReader::GetString(REFSTRING wcStr)
 ///</returns>
 void MgStreamReader::GetInt64(INT64& value)
 {
-    CHECKNULL(m_sHelper, L"GetInt64");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetInt64");
 
     MgArgumentPacket map;
     GetArgumentHeader(map);
 
     if (map.m_ArgumentType != (UINT32)MgPacketParser::matINT64)
-        throw new MgInvalidStreamHeaderException(L"GetInt64", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException(L"MgStreamReader.GetInt64",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     m_sHelper->GetINT64(value);
 }
@@ -195,13 +201,16 @@ void MgStreamReader::GetInt64(INT64& value)
 ///</returns>
 void MgStreamReader::GetInt32(INT32& value)
 {
-    CHECKNULL(m_sHelper, L"GetInt32");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetInt32");
 
     MgArgumentPacket map;
     GetArgumentHeader(map);
 
     if (map.m_ArgumentType != (UINT32)MgPacketParser::matINT32)
-        throw new MgInvalidStreamHeaderException(L"GetInt32", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException(L"MgStreamReader.GetInt32",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     UINT32 uVal = 0;
     m_sHelper->GetUINT32(uVal);
@@ -220,13 +229,16 @@ void MgStreamReader::GetInt32(INT32& value)
 ///</returns>
 void  MgStreamReader::GetInt16(INT16& value)
 {
-    CHECKNULL(m_sHelper, L"GetInt16");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetInt16");
 
     MgArgumentPacket map;
     GetArgumentHeader(map);
 
     if (map.m_ArgumentType != (UINT32)MgPacketParser::matINT16)
-        throw new MgInvalidStreamHeaderException(L"GetInt16", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException(L"MgStreamReader.GetInt16",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     UINT16 val;
     m_sHelper->GetUINT16(val);
@@ -246,13 +258,16 @@ void  MgStreamReader::GetInt16(INT16& value)
 ///</returns>
 void MgStreamReader::GetSingle(float& value)
 {
-    CHECKNULL(m_sHelper, L"GetSingle");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetSingle");
 
     MgArgumentPacket map;
     GetArgumentHeader(map);
 
     if (map.m_ArgumentType != (UINT32)MgPacketParser::matFloat)
-        throw new MgInvalidStreamHeaderException( L"GetSingle", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException(L"MgStreamReader.GetSingle",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     m_sHelper->GetData( &value, sizeof(float), true, false );
 }
@@ -269,13 +284,16 @@ void MgStreamReader::GetSingle(float& value)
 ///</returns>
 void MgStreamReader::GetDouble(double& value)
 {
-    CHECKNULL(m_sHelper, L"GetDouble");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetDouble");
 
     MgArgumentPacket map;
     GetArgumentHeader(map);
 
     if (map.m_ArgumentType != (UINT32)MgPacketParser::matDouble)
-        throw new MgInvalidStreamHeaderException( L"GetDouble", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException(L"MgStreamReader.GetDouble",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     m_sHelper->GetData( &value, sizeof(double), true, false );
 }
@@ -292,13 +310,16 @@ void MgStreamReader::GetDouble(double& value)
 ///</returns>
 void MgStreamReader::GetBoolean(bool& value)
 {
-    CHECKNULL(m_sHelper, L"GetBoolean");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetBoolean");
 
     MgArgumentPacket map;
     GetArgumentHeader(map);
 
     if (map.m_ArgumentType != (UINT32)MgPacketParser::matINT8)
-        throw new MgInvalidStreamHeaderException( L"GetBoolean", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException(L"MgStreamReader.GetBoolean",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     UINT8 tempValue;
     m_sHelper->GetUINT8(tempValue);
@@ -317,13 +338,16 @@ void MgStreamReader::GetBoolean(bool& value)
 ///</returns>
 void MgStreamReader::GetByte(BYTE& value)
 {
-    CHECKNULL(m_sHelper, L"GetByte");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetByte");
 
     MgArgumentPacket map;
     GetArgumentHeader(map);
 
     if (map.m_ArgumentType != (UINT32)MgPacketParser::matINT8)
-        throw new MgInvalidStreamHeaderException( L"GetByte", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException(L"MgStreamReader.GetByte",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     UINT8 val;
     m_sHelper->GetUINT8(val);
@@ -339,15 +363,22 @@ void MgStreamReader::GetByte(BYTE& value)
 ///</returns>
 MgByteReader* MgStreamReader::GetStream(bool enableDirect)
 {
-    CHECKNULL(m_sHelper, L"GetStream");
-
     Ptr<MgByteReader> byteReader;
+    char* temp = NULL;
+
+    MG_TRY()
+
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetStream");
+
     MgBinaryStreamArgumentPacket bsap;
 
     GetBinaryStreamHeader(bsap);
 
     if (bsap.m_ArgumentType != (UINT32)MgPacketParser::mphArgumentBinaryStream)
-        throw new MgInvalidStreamHeaderException( L"GetStream", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException(L"MgStreamReader.GetStream",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     bool isNullByteReader = false;
     GetBoolean(isNullByteReader);
@@ -383,10 +414,17 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
         {
             MgStringCollection arguments;
             arguments.Add(tempName);
-            if(errno == EEXIST)
-                throw new MgFileNotFoundException(L"GetStream", __LINE__, __WFILE__, &arguments, L"", NULL);
+
+            if (errno == EEXIST)
+            {
+                throw new MgFileNotFoundException(L"MgStreamReader.GetStream",
+                    __LINE__, __WFILE__, &arguments, L"", NULL);
+			}
             else
-                throw new MgFileIoException(L"GetStream", __LINE__, __WFILE__, &arguments, L"", NULL);
+            {
+                throw new MgFileIoException(L"MgStreamReader.GetStream",
+                    __LINE__, __WFILE__, &arguments, L"", NULL);
+            }
         }
     }
     else
@@ -395,7 +433,6 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
     }
 
 
-    char* temp = NULL;
     UINT32 allocLen = 0;
     UINT32 len = 0;
 
@@ -407,7 +444,11 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
         {
             if (len > allocLen)
             {
-                if (temp != NULL) { delete [] temp; }
+                if (NULL != temp)
+                {
+                    delete [] temp;
+                }
+
                 temp = new char[len];
                 allocLen = len;
             }
@@ -436,8 +477,6 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
         }
     } while ( len > 0 );
 
-    delete [] temp;
-
     if (ACE_INVALID_HANDLE == file)
     {
         Ptr<MgByteSource> ptrByteSource = new MgByteSource(bytes);
@@ -449,6 +488,15 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
         Ptr<MgByteSource> ptrByteSource = new MgByteSource(tempName, true);
         byteReader = ptrByteSource->GetReader();
     }
+
+    MG_CATCH(L"MgStreamReader.GetStream")
+
+    if (NULL != temp)
+    {
+        delete [] temp;
+    }
+
+    MG_THROW()
 
     return byteReader.Detach();
 }
@@ -465,7 +513,7 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
 ///</returns>
 MgStreamHelper::MgStreamStatus MgStreamReader::GetData(void* value, INT32 length)
 {
-    CHECKNULL(m_sHelper, L"GetData");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetData");
 
     return m_sHelper->GetData( value, length , true, false);
 }
@@ -482,13 +530,16 @@ MgStreamHelper::MgStreamStatus MgStreamReader::GetData(void* value, INT32 length
 ///</returns>
 void MgStreamReader::GetClassId(INT32& value)
 {
-    CHECKNULL(m_sHelper, L"GetClassId");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetClassId");
 
     MgArgumentPacket map;
     GetArgumentHeader(map);
 
     if ((UINT32)MgPacketParser::matClassId != map.m_ArgumentType)
-        throw new MgInvalidStreamHeaderException( L"GetClassId", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException(L"MgStreamReader.GetClassId",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     UINT32 uVal = 0;
     m_sHelper->GetUINT32(uVal);
@@ -503,13 +554,16 @@ void MgStreamReader::GetClassId(INT32& value)
 ///</returns>
 void MgStreamReader::GetStreamEnd()
 {
-    CHECKNULL(m_sHelper, L"GetStreamEnd");
+    CHECKNULL(m_sHelper, L"MgStreamReader.GetStreamEnd");
 
     UINT32 dataRead;
     m_sHelper->GetUINT32( dataRead );
 
     if ( MgStreamParser::mshStreamEnd != dataRead )
-        throw new MgInvalidStreamHeaderException( L"GetStreamEnd", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidStreamHeaderException( L"MgStreamReader.GetStreamEnd",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 }
 
 
