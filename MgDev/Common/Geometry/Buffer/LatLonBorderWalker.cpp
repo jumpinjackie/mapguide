@@ -376,7 +376,7 @@ void LatLonBorderWalker::AddCrossBorderPoints(int nP0Index, int nP1Index,
     //         ----------------------------------------------
     //
 
-    else
+    else if (azimuthTypeMCS == PositiveAzimuth)
     {
         // Add BP0 to the West border points list.
 
@@ -448,7 +448,10 @@ void LatLonBorderWalker::CheckBorderCrossingVertices(const OpsFloatPoint *fpVert
 
         else if (azimuthTypeLL != azimuthTypeMCS)
         {
-            throw new BorderWalkerException(BorderWalkerException::VerticesCrossingBorderError);
+            if (CheckBorderCrossing(p0MCS, p1MCS))
+            {
+                throw new BorderWalkerException(BorderWalkerException::VerticesCrossingBorderError);
+            }
         }
     }
 }
@@ -647,12 +650,16 @@ void LatLonBorderWalker::ScanVertices()
 
         else if (azimuthTypeLL != azimuthTypeMCS)
         {
-            if (!m_bLinkedVertsInitialized)
+            if (CheckBorderCrossing(p0MCS, p1MCS))
             {
-                InitLinkedVertices();
-            }
 
-            AddCrossBorderPoints(i, i + 1, azimuthTypeMCS);
+                if (!m_bLinkedVertsInitialized)
+                {
+                    InitLinkedVertices();
+                }
+
+                AddCrossBorderPoints(i, i + 1, azimuthTypeMCS);
+            }
         }
     }
 } // end: ScanVertices()
