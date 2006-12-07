@@ -49,10 +49,10 @@ Use these links to configure, make, and install MapGuide Open Source on Linux. R
 	    <li><a href="https://mapguide.osgeo.org/files/documents/12/326/phpviewersample-1.1.zip">phpviewersample-1.1.zip</a>&nbsp;[117 kb]<br />
 	    md5: 1d9e243e1a11333d87e390d70b4616db<br />
 		Sample application written in PHP that demonstrates how to use the MapGuide APIs.</li><br />
-	    <li><a href="https://mapguide.osgeo.org/files/documents/12/57/dotnetviewersample.zip">dotnetviewersample-1.1.zip</a>&nbsp;[114 kb]<br />
+	    <li><a href="https://mapguide.osgeo.org/files/documents/12/324/dotnetviewersample-1.1.zip">dotnetviewersample-1.1.zip</a>&nbsp;[114 kb]<br />
 	    md5: 8c13b5f61ba3807aaabb4335bb7b3367<br />
 		Sample application written in ASP.NET that demonstrates how to use the MapGuide APIs.</li><br />
-	    <li><a href="https://mapguide.osgeo.org/files/documents/12/58/javaviewersample.zip">javaviewersample-1.1.zip</a>&nbsp;[118 kb]<br />
+	    <li><a href="https://mapguide.osgeo.org/files/documents/12/325/javaviewersample-1.1.zip">javaviewersample-1.1.zip</a>&nbsp;[118 kb]<br />
 	    md5: bfb590d8b5dca8118a06d3bb8f46f2dd<br />
 		Sample application written in JSP that demonstrates how to use the MapGuide APIs.</li>
       </ul>
