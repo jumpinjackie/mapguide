@@ -160,10 +160,6 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
     ACE_ASSERT( size > 0 );
     MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
 
-// TODO: Callers catch exceptions and do NOT always check status codes, so it
-//       may be easier/cleaner to throw exceptions based on status codes here.
-//    MG_TRY()
-
     // Is our internal buffer big enough?  If not, expand it.
     if ( m_readBufSize < size )
     {
@@ -251,20 +247,12 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
         }
     }
 
-//    if (MgStreamHelper::mssError == stat)
-//    {
-//        throw new MgOperationProcessingException(L"MgAceStreamHelper.GetData",
-//            __LINE__, __WFILE__, NULL, L"", NULL);
-//    }
-
-//    MG_CATCH_AND_THROW(L"MgAceStreamHelper.GetData")
-
     return stat;
 };
 
 MgStreamHelper::MgStreamStatus MgAceStreamHelper::UpdateReadBuffers( void* buffer, size_t size, bool peeking)
 {
-    MgStreamStatus stat = MgStreamHelper::mssNotDone;
+    MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssNotDone;
 
     if ((m_readBufEnd - m_readBufStart) >= size)
     {
@@ -318,7 +306,7 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetUINT16( UINT16& data, bool 
 {
     INT16 nValue = 0;
 
-    MgStreamStatus stat = GetData( &nValue, sizeof(INT16), blocking, peeking );
+    MgStreamHelper::MgStreamStatus stat = GetData( &nValue, sizeof(INT16), blocking, peeking );
 
     data = MG_NTOHS(nValue);
 
@@ -361,7 +349,7 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetINT64( INT64& data, bool bl
     UINT32 lowWord;
     UINT32 hiWord;
 
-    MgStreamStatus stat = GetUINT32(lowWord, blocking, peeking);
+    MgStreamHelper::MgStreamStatus stat = GetUINT32(lowWord, blocking, peeking);
     if (MgStreamHelper::mssDone == stat) { stat = GetUINT32(hiWord, blocking, peeking); }
 
     if (MgStreamHelper::mssDone == stat) { data = (((INT64)hiWord) << 32) | lowWord; }
@@ -408,10 +396,6 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteData(void* buffer,
     ACE_ASSERT( buffer && size > 0 );
     MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
 
-// TODO: Callers catch exceptions and do NOT always check status codes, so it
-//       may be easier/cleaner to throw exceptions based on status codes here.
-//    MG_TRY()
-
     //  check parameters
     if ( buffer && size > 0 )
     {
@@ -457,14 +441,6 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteData(void* buffer,
             };
         };
     };
-
-//    if (MgStreamHelper::mssError == stat)
-//    {
-//        throw new MgOperationProcessingException(L"MgAceStreamHelper.WriteData",
-//            __LINE__, __WFILE__, NULL, L"", NULL);
-//    }
-
-//    MG_CATCH_AND_THROW(L"MgAceStreamHelper.WriteData")
 
     return stat;
 };
@@ -520,7 +496,7 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteBytes(const unsigned char
 ///</summary>
 MgStreamHelper::MgStreamStatus MgAceStreamHelper::Flush()
 {
-    MgStreamStatus stat = MgStreamHelper::mssNotDone;
+    MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssNotDone;
     while (m_writeBufLength > 0 && MgStreamHelper::mssError != stat)
     {
         size_t bytesWritten = 0;
