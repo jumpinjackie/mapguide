@@ -442,8 +442,6 @@ void PolyObjectBuffer::CreateBufferZone(ProgressCallback &callback,
         }
     }
 
-    MG_THROW()
-
 } // end: CreateBufferZone()
 
 //------------------------------------------------------------------------------
