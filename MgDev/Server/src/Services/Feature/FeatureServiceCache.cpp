@@ -445,11 +445,19 @@ MgStringCollection* MgFeatureServiceCache::ContainsClasses(MgResourceIdentifier*
     return classesCollection.Detach();
 }
 
-void MgFeatureServiceCache::AddClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDefinition)
+void MgFeatureServiceCache::AddClassDefinition(MgResourceIdentifier* resource,
+    CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDefinition)
 {
     ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-    if(0 < m_cacheLimit)
+    if (NULL == resource || NULL == classDefinition)
+    {
+        throw new MgNullArgumentException(
+            L"MgFeatureServiceCache.AddClassDefinition",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if (0 < m_cacheLimit)
     {
         // Check to see if there is room in the cache
         INT32 size = m_classDefinitionCollection->GetCount();

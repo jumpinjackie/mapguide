@@ -1324,7 +1324,7 @@ MgStringCollection* MgServerDescribeSchema::GetSchemas(MgResourceIdentifier* res
         featureServiceCache->AddSchemas(resource, strCol);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetSchemas")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetSchemas")
 
     return strCol.Detach();
 }
@@ -1374,7 +1374,7 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
         featureServiceCache->AddClasses(resource, schemaName, strCol);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetClasses")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetClasses")
 
     return strCol.Detach();
 }
@@ -1390,17 +1390,22 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
 
     if (NULL == resource)
     {
-        throw new MgNullArgumentException(L"MgServerDescribeSchema.GetClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(
+            L"MgServerDescribeSchema.GetClassDefinition",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     if (className.empty())
     {
-        throw new MgClassNotFoundException(L"MgServerDescribeSchema.GetClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgClassNotFoundException(
+            L"MgServerDescribeSchema.GetClassDefinition",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
     classDefinition = featureServiceCache->ContainsClassDefinition(resource, schemaName, className);
-    if(NULL == classDefinition)
+
+    if (NULL == classDefinition)
     {
         Ptr<MgFeatureSchemaCollection> schemaCollection = DescribeSchema(resource, schemaName);
         INT32 count = schemaCollection->GetCount();
@@ -1428,10 +1433,19 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
             }
         }
 
-        featureServiceCache->AddClassDefinition(resource, schemaName, className, classDefinition);
+        if (NULL == classDefinition)
+        {
+            throw new MgClassNotFoundException(
+                L"MgServerDescribeSchema.GetClassDefinition",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        else
+        {
+            featureServiceCache->AddClassDefinition(resource, schemaName, className, classDefinition);
+        }
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetClassDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetClassDefinition")
 
     return classDefinition.Detach();
 }
@@ -1603,7 +1617,7 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
         featureServiceCache->AddIdentityProperties(resource, schemaName, className, idProps);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemas.GetIdentityProperties")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetIdentityProperties")
 
     return idProps.Detach();
 }
