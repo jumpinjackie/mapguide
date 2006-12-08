@@ -46,6 +46,8 @@ m_blockRead(0)
 ///
 ByteSourceSocketStreamImpl::~ByteSourceSocketStreamImpl()
 {
+    MG_TRY()
+
     if (m_conn != NULL)
     {
         // Read everything out of the stream.  Developers
@@ -65,6 +67,8 @@ ByteSourceSocketStreamImpl::~ByteSourceSocketStreamImpl()
     m_pos = 0;
     m_blockSize = 0;
     m_blockRead = 0;
+
+    MG_CATCH_AND_RELEASE()
 }
 
 //////////////////////////////////////////////////////////////////
@@ -85,9 +89,12 @@ INT32 ByteSourceSocketStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
         return 0;
     }
 
+    INT32 bytesRead = 0;
+
+    MG_TRY()
+
     INT64 remaining = m_len - m_pos;
     INT32 toReceive = remaining > (INT64) length ? length : (INT32) remaining;
-    INT32 bytesRead = 0;
 
     Ptr<MgStream> stream = m_conn->GetStream();
     Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
@@ -155,6 +162,8 @@ INT32 ByteSourceSocketStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
     }
 
     m_pos += bytesRead;
+
+    MG_CATCH_AND_THROW(L"ByteSourceSocketStreamImpl.Read")
 
     return bytesRead;
 }
