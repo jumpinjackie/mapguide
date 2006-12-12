@@ -101,13 +101,16 @@ FdoPropertyValueCollection * CGwsFdoUpdateCommand::GetPropertyValues ()
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoUpdateCommand::Execute (CGwsMutableFeature & feat)
 {
+
     Clear ();
 
     EGwsStatus fdoes = eGwsOk;
+    bool       bRet  = false;
+
 
     try {
         GetPropertyValues ();   // initialize property value collection
-        eGwsOkThrow(SetProperties (feat));
+        eGwsOkThrow(SetProperties (feat, false));
         FdoPtr<FdoFilter>           filter;
         GwsFailedStatus             failed;
 

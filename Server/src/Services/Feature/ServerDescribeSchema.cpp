@@ -403,6 +403,10 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                     STRING relationName;
                     xmlUtil.GetElementValue(attributeRelateNode, "Name", relationName);
 
+                    // Get the attribute name delimiter ( if none specified, default will be "" (blank) )
+                    STRING attributeNameDelimiter;
+                    xmlUtil.GetElementValue(attributeRelateNode, "AttributeNameDelimiter", attributeNameDelimiter, false);
+
                     // get the resource id of the secondary feature source
                     STRING secondaryResourceId;
                     xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", secondaryResourceId);
@@ -483,7 +487,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                                 {
                                     Ptr<MgPropertyDefinition> propDef = mpdc2->GetItem(secPropIndex);
                                     STRING secPropName = propDef->GetName();
-                                    secPropName = relationName + secPropName;
+                                    secPropName = relationName + attributeNameDelimiter + secPropName;
                                     propDef->SetName(secPropName);
                                     mpdc->Add(propDef);
                                 }

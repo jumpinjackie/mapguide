@@ -23,6 +23,8 @@
 #define FETCH_SIZE 50   // fetch size for multi-feature commands
 
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 // Forward declarations
@@ -43,9 +45,8 @@ typedef GwsFailedStatus::iterator           GwsFailedStatusIterator;
 class CGwsCSQueryProcessor: public FdoIFilterProcessor
 {
 public:
-                 CGwsCSQueryProcessor (
-                        IGWSCoordinateSystemConverter  *pConverter);
-    virtual      ~CGwsCSQueryProcessor ();
+    GWS_QUERYENGINE_API             CGwsCSQueryProcessor (IGWSCoordinateSystemConverter  *pConverter);
+    GWS_QUERYENGINE_API             virtual      ~CGwsCSQueryProcessor ();
     virtual void ProcessSpatialCondition(FdoSpatialCondition& filter);
     virtual void ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter);
     virtual void ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter);
@@ -55,11 +56,115 @@ public:
     virtual void ProcessDistanceCondition(FdoDistanceCondition& filter);
     virtual void Dispose();
 
-    EGwsStatus   Status() const;
+    GWS_QUERYENGINE_API             EGwsStatus   Status() const;
+
+    template<typename T> void ProcessGeometry (T & sc)
+    {
+        if (IGWSException::IsError(m_status) ||
+            m_converter == NULL ||
+            m_converter->SourceCS ().IsEmpty () ||
+            m_converter->DestinationCS ().IsEmpty ())
+        {
+            //we stop processing if error happened earlier or converter is not set
+            return;
+        }
+
+        //at this point either tesselation or cs conversion has to happen (not NULL)
+        //so we have to extract the geometry
+        FdoPtr<FdoExpression> pGeometry = sc.GetGeometry();
+        FdoPtr<FdoByteArray> pBa = static_cast<FdoGeometryValue*>((FdoExpression*)pGeometry)->GetGeometry();
+
+        //first we have to apply tesselation if it is necessary
+        if (! pBa) {
+            return;
+        }
+
+        m_status=m_converter->ConvertBackward (pBa);
+
+        //re-align the rectangle if necessary
+        if(m_bAlignPolygonFilter && m_converter->IsInitialized())
+        {
+            //if bRealigned is false it just means pBA was not what we
+            //expected, i.e. a single 5 point XY polyon - let SDF deal with it
+#ifdef DEBUG
+            bool bRealigned =
+#endif
+                ReAlignProjectedRectangle(pBa);
+        }
+        //at the end either the error happen or the cs conversion/tesselation
+        //actually happened, so we have to set the geometry back
+        if (!IGWSException::IsError (m_status))
+        {
+            static_cast<FdoGeometryValue*>((FdoExpression*)pGeometry)->SetGeometry(pBa);
+        }
+    }
+    void SetAlignPolygonFilter(bool bAlign) { m_bAlignPolygonFilter = bAlign; }
+
+    bool ReAlignProjectedRectangle(FdoByteArray* pByte)
+    {
+        int* ireader = (int*)pByte->GetData();
+        // the geometry type
+        int geom_type = (FdoGeometryType)*ireader++;
+        if(geom_type == FdoGeometryType_Polygon)
+        {
+            //read cordinate type and contour count
+            FdoDimensionality dim = (FdoDimensionality)*ireader++;
+            int contour_count = *ireader++;
+            //there should only be one ring and no Z and M
+            if(contour_count == 1 &&
+              !(dim && FdoDimensionality_Z) &&
+              !(dim && FdoDimensionality_M))
+            {
+                int point_count = *ireader++;
+                //should be a rectangle with last point repeated
+                if(point_count == 5)
+                {
+                    double minX, maxX, minY, maxY;
+                    //*** ireader not valid from here down
+                    double* dreader = (double*) ireader;
+                    //collect min,max XY
+                    minX = maxX = *dreader++;
+                    minY = maxY = *dreader++;
+                    int num_points=1;
+
+                    while(num_points<point_count)
+                    {
+                        double x = *dreader++;
+                        if(x < minX)
+                            minX = x;
+                        else if(x > maxX)
+                            maxX = x;
+
+                        double y = *dreader++;
+                        if(y < minY)
+                            minY = y;
+                        else if(y > maxY)
+                            maxY = y;
+                        num_points++;
+                    }
+                    //replace values
+                    dreader = (double*) ireader;
+                    *dreader++ = minX;
+                    *dreader++ = minY;
+                    *dreader++ = maxX;
+                    *dreader++ = minY;
+                    *dreader++ = maxX;
+                    *dreader++ = maxY;
+                    *dreader++ = minX;
+                    *dreader++ = maxY;
+                    *dreader++ = minX;
+                    *dreader++ = minY;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 private:
     FdoPtr<IGWSCoordinateSystemConverter> m_converter;
     EGwsStatus          m_status;
+    bool                m_bAlignPolygonFilter;
 };
 
 
@@ -113,6 +218,7 @@ public:
     GWS_QUERYENGINE_API
     void                    GetCSConverter (IGWSCoordinateSystemConverter ** converter);
 
+
     // just do basic preparation (
     //  - get properties and key descriptors
     //  - call PrepareInternal
@@ -135,12 +241,20 @@ public:
 
     GWS_QUERYENGINE_API
     const GWSQualifiedName& ClassName() const { return m_classname; }
+
     GWS_QUERYENGINE_API
     FdoClassDefinition *    ClassDefinition ()
     {
-        if (m_classDef != NULL)
-            m_classDef.p->AddRef ();
+        FDO_SAFE_ADDREF(m_classDef.p);
         return m_classDef;
+    }
+
+    GWS_QUERYENGINE_API
+    void                    SetClassDefinition (FdoClassDefinition * pClassDef)
+    {
+        FDO_SAFE_RELEASE(m_classDef.p);
+        m_classDef = pClassDef;
+        FDO_SAFE_ADDREF(pClassDef);
     }
 
     const WSTR&             RevisionPropertyName() const { return m_revisionprop; }
@@ -209,7 +323,8 @@ protected:
 
     virtual void            SetFilterInternal (FdoFilter * filter) = 0;
 
-    EGwsStatus              SetProperties (CGwsMutableFeature & feature);
+    EGwsStatus              SetProperties (CGwsMutableFeature & feature,
+                                           bool bSetIdentityProperties);
 
     // prepare none-key propeties. Throws FdoException that is supposed to be caught by
     // the public Prepare method
@@ -229,6 +344,7 @@ protected:
                                              int                         ubound,
                                              FdoFilter              *&   pOutFilter);
 
+
     // process lock conflicts returned in lock conflict reader.
     EGwsStatus              ProcessLockConflicts (
                                                   FdoILockConflictReader      * pReader,
@@ -236,7 +352,7 @@ protected:
                                                  ) const;
 
      // Prepares filter by applying cs conversions to spatial predicates
-    void                    PrepareFilter (FdoFilter * ifiler);
+    void                    PrepareFilter (FdoFilter * ifiler, bool bAlignPolygon = false);
 
 private:
     void                    SetValue (FdoPropertyValue      *  pPropVal);
@@ -270,7 +386,6 @@ protected:
     typedef std::map<std::wstring,FdoPropertyDefinition*> PropertyDefinitionMap;
 
     // caching class defintion
-    FdoPtr<FdoFeatureSchema>                    m_schema;
     FdoPtr<FdoClassDefinition>                  m_classDef;
     FdoPtr<FdoDataPropertyDefinitionCollection> m_identity;
     PropertyDefinitionMap                       m_propdefs;
@@ -320,10 +435,8 @@ public:
 protected:
     virtual FdoPropertyValueCollection * GetPropertyValues ();
     virtual void         PrepareInternal();
-    virtual void         SetFilterInternal (FdoFilter * filter)
-    {
-        filter; // For "unreferenced formal parameter" warning
-    };
+    virtual void         SetFilterInternal (FdoFilter * filter) {};
+
 };
 
 
@@ -355,6 +468,7 @@ protected:
     virtual FdoPropertyValueCollection *  GetPropertyValues ();
     virtual void            PrepareInternal();
     virtual void            SetFilterInternal (FdoFilter * filter);
+
 };
 
 
@@ -384,6 +498,7 @@ public:
 protected:
     virtual void           PrepareInternal();
     virtual void           SetFilterInternal (FdoFilter * filter);
+
 };
 
 
@@ -461,6 +576,7 @@ protected:
 
 protected:
     FdoLockType             m_lockType;
+
 };
 
 

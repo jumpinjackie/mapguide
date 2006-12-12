@@ -24,12 +24,14 @@
 #include "Services/FeatureService.h"
 #include "GwsQueryEngine.h"
 
+class MgServerGwsFeatureReader;
+
 class MgServerGwsGetFeatures : public MgServerFeatureProcessor
 {
 public:
 
     MgServerGwsGetFeatures();
-    MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureReader);
+    MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureReader, MgServerGwsFeatureReader* serverGwsFeatureReader);
     ~MgServerGwsGetFeatures();
 
     MgFeatureSet* GetFeatures(INT32 count = 0);
@@ -79,10 +81,14 @@ private:
 private:
 
     IGWSFeatureIterator*                 m_gwsFeatureReader;
+    MgServerGwsFeatureReader*      m_serverGwsFeatureReader;
     Ptr<MgFeatureSet>                    m_featureSet;
     Ptr<MgClassDefinition>               m_classDef;
     FdoPtr<FdoStringCollection>          m_relationNames;
     STRING                               m_extensionName;
+
+    bool                                          m_bAdvanceSecondaryIterator;
+
 };
 
 #endif

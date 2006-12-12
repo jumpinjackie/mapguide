@@ -161,7 +161,7 @@ public:
 protected:
 
     EGwsStatus                m_status;
-    GisPtr<IGWSException>     m_exception;
+    FdoPtr<IGWSException>     m_exception;
     bool                      m_bCanceled;   // cancel flag
 
     // progress message
@@ -177,4 +177,6 @@ public:
     CGwsMessage() {}
     virtual ~CGwsMessage() {}
 };
+
+#endif
 

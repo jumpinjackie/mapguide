@@ -23,26 +23,26 @@ class GwsBinaryFeatureWriter
 public:
     GwsBinaryFeatureWriter() : m_wrtr(256) {}
     ~GwsBinaryFeatureWriter() {}
-
+    
     //get the buffer
     unsigned char* ToBuffer(int& bufLen);
     void Reset() { m_wrtr.Reset(); }
-
+    
     //write property value
-    void WriteProperty(FdoPropertyDefinition* pd, FdoPropertyValue* pv,
+    void WriteProperty(FdoPropertyDefinition* pd, FdoPropertyValue* pv, 
                        bool forAssociation = false );
     void WriteProperty(FdoPropertyDefinition* pd, FdoIFeatureReader* reader);
 
     //write associtation property value
-    bool WriteAssociationProperty(FdoAssociationPropertyDefinition* apd,
+	bool WriteAssociationProperty(FdoAssociationPropertyDefinition* apd, 
                                   FdoPropertyValueCollection* pvc);
-    void WriteAssociationProperty(FdoAssociationPropertyDefinition* apd,
+    void WriteAssociationProperty(FdoAssociationPropertyDefinition* apd, 
                                   FdoIFeatureReader* reader);
     //write the feature
-    void WriteFeature(FdoClassDefinition* fc, FdoString* fcName,
+    void WriteFeature(FdoClassDefinition* fc, FdoString* fcName, 
                       FdoPropertyValueCollection* pvc);
     void WriteFeature(FdoClassDefinition* fc, FdoString* fcName,
-                      FdoPropertyValueCollection* pvc,
+                      FdoPropertyValueCollection* pvc, 
                       FdoIFeatureReader* reader);
 protected:
     FdoDataPropertyDefinitionCollection* FindIDProps(FdoClassDefinition* fc);
@@ -52,4 +52,3 @@ private:
 
 
 #endif //GWS_BINARYFEATUREWRITER_H
-

@@ -33,6 +33,7 @@
 #define LOCK_BATCH_SIZE 150     // batch size for locking
 
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // class CGwsFdoLockingCommand
@@ -77,6 +78,7 @@ EGwsStatus CGwsFdoLockingCommand::Execute (const GWSFeatureId & featid)
         return eGwsFdoQueryIsNotPrepared;
     }
 
+
     try {
         fdoes = BuildFilter (featid, filter.p);   // build filter
         if (! IsError (fdoes))
@@ -113,12 +115,10 @@ EGwsStatus CGwsFdoLockingCommand::Execute (
     int                            ubound
 )
 {
-    lbound; // For "unreferenced formal parameter" warning
-    ubound; // For "unreferenced formal parameter" warning
-
     Clear ();
     int          idx;
     EGwsStatus   fdoes = eGwsOk;
+
 
     try {
         int fcount = (int)
@@ -172,6 +172,7 @@ EGwsStatus CGwsFdoLockingCommand::Execute (
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // class CGwsFdoLockCommand
@@ -219,6 +220,7 @@ EGwsStatus CGwsFdoLockCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
         fdoes = eGwsFailedToPrepareCommand;
     }
     return fdoes;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -266,10 +268,11 @@ void CGwsFdoLockCommand::PrepareInternal()
                 }
             }
         }
-    } catch (FdoException * gis) {
-        gis->Release ();
+    } catch (FdoException * fdoEx) {
+        fdoEx->Release ();
 
     }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -307,3 +310,5 @@ EGwsStatus CGwsFdoLockCommand::ExecuteFilter (FdoFilter *pFilter)
     }
     return fdoes;
 }
+
+

@@ -94,12 +94,14 @@ void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoIFeatur
     }
     else
     {
+
         //we have a geometric property
         FdoPtr<FdoByteArray> byteArray = reader->GetGeometry(name);
 
         //Note we do not need to write the length of a byte array since we know it
         //by subtracting the offsets into property values in the data record
-        m_wrtr.WriteBytes(byteArray->GetData(), byteArray->GetCount());
+        if (byteArray)
+            m_wrtr.WriteBytes(byteArray->GetData(), byteArray->GetCount());
     }
 }
 
@@ -125,6 +127,7 @@ void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoPropert
 
     if (dpd)
     {
+
         FdoDataValue* dv = (FdoDataValue*)expression.p;
         if(dv == NULL || dv->IsNull())
             return;
@@ -439,6 +442,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc,  FdoString* fc
             WriteProperty(pd, reader);
         }
         //}
+
     }
 
     //class properties

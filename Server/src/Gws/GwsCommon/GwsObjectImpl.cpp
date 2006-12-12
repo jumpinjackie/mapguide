@@ -147,6 +147,7 @@ CGwsStatus::GetParameterAt(unsigned int index, FdoString*& pName, FdoString*& pV
 int CGwsStatus::GetParameterCount () const
 {
     return (int) m_parameters.size();
+
 }
 
 void CGwsStatus::operator= (const CGwsStatus & other)
@@ -162,7 +163,6 @@ void CGwsStatus::operator= (const CGwsStatus & other)
 // class CGwsObject
 //
 /////////////////////////////////////////////////////////////////////
-
 CGwsObject::CGwsObject ()
 {
 }
@@ -174,6 +174,7 @@ CGwsObject::CGwsObject (const CGwsObject & other)
 
 CGwsObject::~CGwsObject ()
 {
+
 }
 
 void CGwsObject::PushStatus (const CGwsStatus & stat) const
@@ -186,13 +187,13 @@ void CGwsObject::PushStatus (const CGwsStatus & stat) const
 
 void CGwsObject::PushFdoException (
     const CGwsStatus & stat,
-    FdoException     * gis
+    FdoException     * fdoEx
 ) const
 {
-    FdoException    * e = gis;
+    FdoException    * e = fdoEx;
     e->AddRef ();
 
-    // do I need to reverse gis exception chain?
+    // do I need to reverse fdo exception chain?
     while (e != NULL) {
         PushStatus (CGwsStatus (eGwsFdoProviderError, e->GetExceptionMessage ()));
         FdoException * e1 = e->GetCause ();
@@ -201,7 +202,9 @@ void CGwsObject::PushFdoException (
 
     }
     PushStatus (stat);
+
 }
+
 
 
 int CGwsObject::NumStatuses () const
@@ -216,11 +219,13 @@ const CGwsStatus & CGwsObject::Status (int idx) const
         return  m_statuses[NumStatuses() - idx - 1];
     }
     return s_status;
+
 }
 
 
 void CGwsObject::RemoveStatusAt (int idx)
 {
+
     if (idx >= NumStatuses ())
         return;
 
@@ -271,5 +276,6 @@ bool CGwsObject::IsWarning  (EGwsStatus stat)
 
 void CGwsObject::Write (FdoXmlWriter * writer)
 {
-    writer; // For "unreferenced formal parameter" warning
 }
+
+

@@ -20,10 +20,10 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "GeometryCommon.h"
 #include "stdafx.h"
 
 #include "GwsCommonImp.h"
+
 
 // useful template
 template <typename T> int Compare (T val1, T val2)
@@ -47,6 +47,7 @@ void GwsCommonFdoUtils::GetClassDefinition (
     FdoClassDefinition   * & classDef
 )
 {
+
     FdoPtr<FdoIDescribeSchema>  descSchema =
             (FdoIDescribeSchema *) pConn->CreateCommand (FdoCommandType_DescribeSchema);
 
@@ -104,6 +105,7 @@ FdoPropertyDefinition * GwsCommonFdoUtils::GetPropertyDefinition (
         propDef = propdsc->FindItem (PropertyName);
     }
     return propDef;
+
 }
 
 int GWSFdoUtilities::CompareDataValues (
@@ -111,9 +113,6 @@ int GWSFdoUtilities::CompareDataValues (
     FdoDataValue * val2
 )
 {
-    FdoStringP myStrVal1 = val1->ToString();
-    FdoStringP myStrVal2 = val2->ToString();
-
     // assuming NULL's are equal, which is not really true.
     // result of will NULL comparison is unknown, but we don't support it
 
@@ -138,6 +137,8 @@ int GWSFdoUtilities::CompareDataValues (
     FdoString * strVal2;
     FdoDateTime dtVal2;
 
+
+
     switch (val1->GetDataType ()) {
     case FdoDataType_Boolean:
         {
@@ -154,9 +155,9 @@ int GWSFdoUtilities::CompareDataValues (
             case FdoDataType_Decimal:
             case FdoDataType_Double:
                 if (val2->GetDataType () == FdoDataType_Decimal)
-                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
-                else
                     doubleVal2 = (double) (* (FdoDecimalValue *)  val2);
+                else
+                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
                 return Compare<double> ((double)val, doubleVal2);
 
             case FdoDataType_Int16:
@@ -200,9 +201,10 @@ int GWSFdoUtilities::CompareDataValues (
             case FdoDataType_Decimal:
             case FdoDataType_Double:
                 if (val2->GetDataType () == FdoDataType_Decimal)
-                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
-                else
                     doubleVal2 = (double) (* (FdoDecimalValue *)  val2);
+                else
+                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
+
                 return Compare<double> ((double)val, doubleVal2);
 
             case FdoDataType_Int16:
@@ -236,9 +238,10 @@ int GWSFdoUtilities::CompareDataValues (
         {
             double val;
             if (val1->GetDataType () == FdoDataType_Decimal)
-                val = (double) (* (FdoDoubleValue *)  val1);
-            else
                 val = (double) (* (FdoDecimalValue *)  val1);
+            else
+                val = (double) (* (FdoDoubleValue *)  val1);
+
 
             switch (val2->GetDataType ()) {
             case FdoDataType_Boolean:
@@ -253,9 +256,9 @@ int GWSFdoUtilities::CompareDataValues (
             case FdoDataType_Decimal:
             case FdoDataType_Double:
                 if (val2->GetDataType () == FdoDataType_Decimal)
-                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
-                else
                     doubleVal2 = (double) (* (FdoDecimalValue *)  val2);
+                else
+                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
                 return Compare<double>(val, doubleVal2);
 
             case FdoDataType_Int16:
@@ -302,9 +305,9 @@ int GWSFdoUtilities::CompareDataValues (
             case FdoDataType_Decimal:
             case FdoDataType_Double:
                 if (val2->GetDataType () == FdoDataType_Decimal)
-                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
-                else
                     doubleVal2 = (double) (* (FdoDecimalValue *)  val2);
+                else
+                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
                 return Compare<double>((double) val, doubleVal2);
 
             case FdoDataType_Int16:
@@ -353,9 +356,9 @@ int GWSFdoUtilities::CompareDataValues (
             case FdoDataType_Decimal:
             case FdoDataType_Double:
                 if (val2->GetDataType () == FdoDataType_Decimal)
-                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
-                else
                     doubleVal2 = (double) (* (FdoDecimalValue *)  val2);
+                else
+                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
                 return Compare<double>((double) val, doubleVal2);
 
             case FdoDataType_Int16:
@@ -403,9 +406,9 @@ int GWSFdoUtilities::CompareDataValues (
             case FdoDataType_Decimal:
             case FdoDataType_Double:
                 if (val2->GetDataType () == FdoDataType_Decimal)
-                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
-                else
                     doubleVal2 = (double) (* (FdoDecimalValue *)  val2);
+                else
+                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
                 return Compare<double>((double) val, doubleVal2);
 
             case FdoDataType_Int16:
@@ -453,9 +456,9 @@ int GWSFdoUtilities::CompareDataValues (
             case FdoDataType_Decimal:
             case FdoDataType_Double:
                 if (val2->GetDataType () == FdoDataType_Decimal)
-                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
-                else
                     doubleVal2 = (double) (* (FdoDecimalValue *)  val2);
+                else
+                    doubleVal2 = (double) (* (FdoDoubleValue *)  val2);
                 return Compare<double>((double)val, doubleVal2);
 
             case FdoDataType_Int16:
@@ -597,6 +600,8 @@ bool GWSFdoUtilities::IsComparableDataTypes (
     FdoDataPropertyDefinition * val2
 )
 {
+
+
     switch (val1->GetDataType ()) {
     case FdoDataType_Boolean:
         switch (val2->GetDataType ()) {
@@ -634,11 +639,9 @@ bool GWSFdoUtilities::IsComparableDataTypes (
         case FdoDataType_Int32:
         case FdoDataType_Int64:
         case FdoDataType_Single:
-        case FdoDataType_String:  // Allow numeric type to compare to string here.  When doing comparison, caller will be responsible
-                                  // for making sure the comparsion can succeed.
             return true;
         case FdoDataType_Boolean:
-        //case FdoDataType_String:
+        case FdoDataType_String:
         case FdoDataType_BLOB:
         case FdoDataType_CLOB:
         case FdoDataType_DateTime:
@@ -649,8 +652,9 @@ bool GWSFdoUtilities::IsComparableDataTypes (
 
     case FdoDataType_String:
         switch (val2->GetDataType ()) {
-            // Allow string type to compare to numeric type here.  When doing comparison, caller will be responsible
-            // for making sure the comparison can succeed.
+        case FdoDataType_String:
+            return true;
+
         case FdoDataType_Byte:
         case FdoDataType_Decimal:
         case FdoDataType_Double:
@@ -658,16 +662,6 @@ bool GWSFdoUtilities::IsComparableDataTypes (
         case FdoDataType_Int32:
         case FdoDataType_Int64:
         case FdoDataType_Single:
-        case FdoDataType_String:
-            return true;
-
-        //case FdoDataType_Byte:
-        //case FdoDataType_Decimal:
-        //case FdoDataType_Double:
-        //case FdoDataType_Int16:
-        //case FdoDataType_Int32:
-        //case FdoDataType_Int64:
-        //case FdoDataType_Single:
         case FdoDataType_Boolean:
         case FdoDataType_BLOB:
         case FdoDataType_CLOB:
@@ -717,6 +711,7 @@ WSTR GwsCommonFdoUtils::MakeFdoQualifiedName(const GWSQualifiedName & classname)
 
 WSTR GwsCommonFdoUtils::GetRevisionProperty (FdoClassDefinition * classdef)
 {
+
     // discover revision property. Revision property is defined
     // for a given class
     FdoPtr<FdoReadOnlyPropertyDefinitionCollection> pBaseProperties = classdef->GetBaseProperties();
@@ -740,8 +735,6 @@ GWSExtendedFeatureId GwsCommonFdoUtils::MakeFeatureId (
     const wchar_t                     * ltname
 )
 {
-    ltname; // For "unreferenced formal parameter" warning
-
     static GWSExtendedFeatureId s_fid;
 
     try {
@@ -761,7 +754,7 @@ GWSExtendedFeatureId GwsCommonFdoUtils::MakeFeatureId (
         return GWSExtendedFeatureId (classname, keyvals);
 
     } catch (FdoException * e) {
-        assert (false);
+        assert ("Unfortunate Fdo exception" == NULL);
         e->Release ();
     }
     return s_fid;
@@ -854,6 +847,7 @@ EGwsStatus GwsCommonFdoUtils::DescribeClassSC (
 
     GwsCommonFdoUtils::GetClassDefinition (conn, classname, schema.p, classDef.p);
 
+
     for (; classDef != NULL ; classDef = classDef->GetBaseClass ()) {
         FdoPtr<FdoPropertyDefinitionCollection> propdsc = classDef->GetProperties ();
         // discover geometric property name. Use the first one if there are many.
@@ -874,12 +868,14 @@ EGwsStatus GwsCommonFdoUtils::DescribeClassSC (
 }
 
 
+
 EGwsStatus GwsCommonFdoUtils::DescribeSC (
     FdoIConnection               * conn,
     FdoString                    * scname,
     GwsSpatialContextDescription & scdesc
 )
 {
+
     FdoPtr<FdoIGetSpatialContexts>   cmd;
     FdoPtr<FdoISpatialContextReader> reader;
     scdesc.SetClassName (GWSQualifiedName ());
@@ -897,32 +893,12 @@ EGwsStatus GwsCommonFdoUtils::DescribeSC (
         while (reader->ReadNext ()) {
             if (wcscmp (reader->GetName (), scname) == 0) {
                 FdoString * cswkt = reader->GetCoordinateSystemWkt ();
-                STRING srcwkt = cswkt;
-
-                // If the WKT is not defined, attempt to resolve it from the name.
-                // This is a work around for MG298: WKT not set for WMS and 
-                // WFS spatial contexts.
-                if (srcwkt.empty())
-                {
-                    try
-                    {
-                        Ptr<MgCoordinateSystem> csPtr = new MgCoordinateSystem();
-                        srcwkt = csPtr->ConvertCoordinateSystemCodeToWkt(reader->GetName());
-                    }
-                    catch (MgException* e)
-                    {
-                        SAFE_RELEASE(e);
-                    }
-                    catch(...)
-                    {
-                        // Just use the empty WKT. 
-                    }
-                }
-
                 FdoString * desc  = reader->GetDescription ();
-                scdesc.SetCsNameWkt (srcwkt.c_str());
+                double xytol = reader->GetXYTolerance();
+                scdesc.SetCsNameWkt (cswkt);
                 scdesc.SetSpatialContextDesc (desc);
                 scdesc.SetSpatialContextName (scname);
+                scdesc.SetXYTolerance(xytol);
 
                 FdoPtr<FdoByteArray> pByteArray = reader->GetExtent();
                 if (pByteArray) {
@@ -937,10 +913,15 @@ EGwsStatus GwsCommonFdoUtils::DescribeSC (
         }
         return eGwsSCNotFound;
 
-    } catch (FdoException * gis) {
-        gis->Release ();
+    } catch (FdoException * fdoEx) {
+        fdoEx->Release ();
     }
     // in case when exception thrown, assume that sc are not
     // supported.
     return eGwsNotSupported;
+
 }
+
+
+
+

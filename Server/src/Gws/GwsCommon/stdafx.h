@@ -26,7 +26,12 @@
 # pragma warning (disable:4996)
 #endif
 
+// #define WIN32_LEAN_AND_MEAN      // Exclude rarely-used stuff from Windows headers
+// Windows Header Files:
+//#define WIN32_LEAN_AND_MEAN       // Exclude rarely-used stuff from Windows headers
 #ifdef WIN32
 #include <windows.h>
 #include <limits.h>
 #endif
+
+#include <assert.h>

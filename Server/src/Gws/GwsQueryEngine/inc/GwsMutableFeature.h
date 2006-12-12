@@ -117,7 +117,7 @@ public:
             vals->AddRef ();
     }
 
-    void                        InitializePropertyValues ();
+    GWS_QUERYENGINE_API void                InitializePropertyValues ();
 
     void                        SetPropertyValues (IGWSFeature * feature);
 
@@ -140,6 +140,9 @@ public:
     virtual void                SetCacheLockType (EGwsLockType locktype);
     virtual void                SetCacheStatus (long status);
     virtual void                SetCacheId (FdoInt32 cacheId);
+
+    void                        SetSourceCSName (const GWSCoordinateSystem & csname);
+    const GWSCoordinateSystem & GetSourceCSName ();
 
 protected:
     // ValidataPropertyName methods throw exeption
@@ -175,7 +178,10 @@ protected:
     EGwsLockType                              m_cacheLockType;
     long                                      m_cacheStatus;
     WSTR                                      m_strLayerSource;
-    GWSCoordinateSystem                       m_csname;
+
+    // coordinate systems
+    GWSCoordinateSystem                       m_csname; // coordinate system
+    GWSCoordinateSystem                       m_srccsname; // coordinate system override
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -211,6 +217,7 @@ public:
     virtual GWSFeatureId        GetFeatureId ();
     // sets pooled feature from the feature
     void                        Set (IGWSFeature * feature);
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -246,5 +253,6 @@ protected:
     FdoPtr<IGWSExtendedFeatureDescription>
                                      m_pFeatDesc;
 };
+
 
 #endif

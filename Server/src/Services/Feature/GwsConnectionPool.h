@@ -19,6 +19,7 @@
 #define _MG_GWS_CONNECTION_POOL_H_
 
 #include "GwsQueryEngine.h"
+#include "GwsCommonImp.h"
 
 #ifndef WIN32
     #define _wcsicmp  wcscasecmp

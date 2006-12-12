@@ -42,7 +42,8 @@ CGwsNestedLoopSortedBlockJoinQueryResults::~CGwsNestedLoopSortedBlockJoinQueryRe
 
 EGwsStatus CGwsNestedLoopSortedBlockJoinQueryResults::InitializeReader (
     IGWSQuery                       * query,
-    CGwsPreparedJoinQuery           * prepquery
+    CGwsPreparedJoinQuery           * prepquery,
+    bool                            bScrollable
 )
 {
     EGwsStatus                  stat = eGwsOk;
@@ -51,7 +52,7 @@ EGwsStatus CGwsNestedLoopSortedBlockJoinQueryResults::InitializeReader (
     FdoPtr<FdoStringCollection> leftcols = prepquery->LeftProperties ();
     FdoPtr<FdoStringCollection> rightcols = prepquery->RightProperties ();
 
-    stat = CGwsJoinQueryResults::InitializeReader (leftcols, query, leftquery);
+    stat = CGwsJoinQueryResults::InitializeReader (leftcols, query, leftquery, bScrollable);
     if (IGWSException::IsError (stat)) {
         PushStatus  (stat);
         return stat;
@@ -60,7 +61,7 @@ EGwsStatus CGwsNestedLoopSortedBlockJoinQueryResults::InitializeReader (
 
     CGwsRightJoinQueryResults * results =
             (CGwsRightJoinQueryResults *) rightquery->CreateFeatureIterator (eGwsRightNestedLoopSortedBlockIterator);
-    stat = results->InitializeReader (query, rightquery, rightcols);
+    stat = results->InitializeReader (query, rightquery, rightcols, bScrollable);
 
     if (IGWSException::IsError (stat)) {
         delete results;
@@ -69,4 +70,5 @@ EGwsStatus CGwsNestedLoopSortedBlockJoinQueryResults::InitializeReader (
         m_right->AddRef ();
     }
     return stat;
+
 }

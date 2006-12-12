@@ -16,15 +16,12 @@
 //
 
 #include "stdafx.h"
-#include "GwsCommonImp.h"
+#include "GWSCommonImp.h"
 BOOL APIENTRY DllMain( HANDLE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
                      )
 {
-    hModule;    // For "unreferenced formal parameter" warning
-    lpReserved; // For "unreferenced formal parameter" warning
-
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
@@ -35,3 +32,4 @@ BOOL APIENTRY DllMain( HANDLE hModule,
     }
     return TRUE;
 }
+

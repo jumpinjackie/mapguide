@@ -12,6 +12,8 @@ libMgGwsQueryEngine_la_SOURCES = \
   GwsBinaryWriter.cpp \
   GwsCsQueryProcessor.cpp \
   GwsExtendedFeatureDescription.cpp \
+  GwsFlatGwsIterator.cpp \
+  GwsFlatFdoReader.cpp \
   GwsFdoCommand.cpp \
   GwsFdoCommandDelete.cpp \
   GwsFdoCommandInsert.cpp \
@@ -24,6 +26,7 @@ libMgGwsQueryEngine_la_SOURCES = \
   GwsFeaturesPool.cpp \
   GwsJoinQueryDefinition.cpp \
   GwsJoinQueryResults.cpp \
+  GwsMultiSelectIterator.cpp \
   GwsMutableFeature.cpp \
   GwsNestedLoopsJoinQueryResults.cpp \
   GwsNestedLoopSortedBlockJoinQueryResults.cpp \
@@ -53,6 +56,7 @@ noinst_HEADERS = $(include_SOURCES) \
   inc/GwsBinaryReader.h \
   inc/GwsBinaryWriter.h \
   inc/GwsFdoCommand.h \
+  inc/GwsFlatFdoReader.h \
   inc/GwsMutableFeature.h \
   inc/GwsQuery.h \
   inc/GwsQueryDefinition.h \

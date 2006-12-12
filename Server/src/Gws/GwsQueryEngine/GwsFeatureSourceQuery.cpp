@@ -103,12 +103,30 @@ void CGwsFeatureSourceQuery::DescribeResults (
 }
 
 
+
 void CGwsFeatureSourceQuery::SetDestinationCS (
     const GWSCoordinateSystem &  csname
 )
 {
     m_csname = csname;
 }
+
+
+const GWSCoordinateSystem & CGwsFeatureSourceQuery::GetDestinationCS ()
+{
+    return m_csname;
+}
+
+void CGwsFeatureSourceQuery::SetSourceCS (const GWSCoordinateSystem & csname)
+{
+    m_srccsname = csname;
+}
+
+const GWSCoordinateSystem &  CGwsFeatureSourceQuery::GetSourceCS ()
+{
+    return m_srccsname;
+}
+
 
 void CGwsFeatureSourceQuery::SetCSFactory (
     IGWSCoordinateSystemConverterFactory * csfactory
@@ -117,11 +135,6 @@ void CGwsFeatureSourceQuery::SetCSFactory (
     m_csfactory = csfactory;
     if (csfactory != NULL)
         csfactory->AddRef ();
-}
-
-const GWSCoordinateSystem & CGwsFeatureSourceQuery::GetDestinationCS ()
-{
-    return m_csname;
 }
 
 
@@ -143,6 +156,9 @@ void CGwsFeatureSourceQuery::Prepare ()
     if (m_pQuery != NULL)
         return;  // query was already preapared. Ignore
 
+    if(m_qrydef == NULL)
+        return;
+
     try {
         m_pQuery = Prepare (m_qrydef, L"");
     } catch (FdoException * ex) {
@@ -154,6 +170,12 @@ void CGwsFeatureSourceQuery::Prepare ()
     }
 }
 
+void CGwsFeatureSourceQuery::SetClassDefinition(FdoClassDefinition* pClassDef)
+{
+    FDO_SAFE_ADDREF(pClassDef);
+    m_classDef = pClassDef;
+}
+
 CGwsPreparedQuery * CGwsFeatureSourceQuery::Prepare (
     IGWSQueryDefinition * qrydef,
     const WSTR          & suffix
@@ -161,7 +183,12 @@ CGwsPreparedQuery * CGwsFeatureSourceQuery::Prepare (
 {
     switch (qrydef->Type ()) {
     case eGwsQueryFeature:
-        return PrepareFeatureQuery ((IGWSFeatureQueryDefinition *) qrydef, NULL, suffix);
+        {
+            FdoPtr<FdoStringCollection> orderByList = qrydef->GetOrderBy();
+            FdoOrderingOption orderingOption = qrydef->GetOrderingOption();
+            return PrepareFeatureQuery (
+                (IGWSFeatureQueryDefinition *) qrydef, orderByList, orderingOption, suffix, m_classDef);
+        }
 
     case eGwsQueryLeftOuterJoin:
     case eGwsQueryEqualJoin:
@@ -174,7 +201,9 @@ CGwsPreparedQuery * CGwsFeatureSourceQuery::Prepare (
 CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
     IGWSFeatureQueryDefinition * pFQuery,
     FdoStringCollection        * orderByCols,
-    const WSTR                 & suffix
+    FdoOrderingOption            orderingOption,
+    const WSTR                 & suffix,
+    FdoClassDefinition         * pClassDef
 )
 {
     EGwsStatus                  stat = eGwsOk;
@@ -194,29 +223,31 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
         madesuffix = suffix;
 
     FdoPtr<IGWSCoordinateSystemConverter> csconverter;
-    if (m_csfactory && ! m_csname.IsEmpty ()) {
+    if (m_csfactory) {
         // if coordinate system factory and coordinate system name
         // are both set, create conveter
         stat = m_csfactory->Create (& csconverter);
 
-        if (! IGWSException::IsError (stat))
-            stat = csconverter->SetDestinationCS (m_csname);
+        if (! IGWSException::IsError (stat)) {
+            if (! m_csname.IsEmpty ())
+                stat = csconverter->SetDestinationCS (m_csname);
+        }
+
+        if (! IGWSException::IsError (stat)) {
+            if (! m_srccsname.IsEmpty ())
+                stat = csconverter->SetSourceCS (m_srccsname);
+        }
 
         if (IGWSException::IsError (stat)) {
             delete pQuery;
             GWS_THROW (stat);
         }
     }
-
-    try
-    {
-        stat = pQuery->Init ( sellist, orderByCols, pFQuery->Filter ());
-    }
-    catch (FdoException* ex)
-    {
-        delete pQuery;
-        GWS_RETHROW (ex, eGwsFailedToPrepareQuery);
-    }
+    //Optimization - if the class def is available. This call must be before
+    //the Init() method of the command to avoid a describe schema call to the provider.
+    if(pClassDef != NULL)
+        pQuery->SetClassDefinition(pClassDef);
+    stat = pQuery->Init ( sellist, orderByCols, orderingOption, pFQuery->Filter ());
 
     if (IGWSException::IsError (stat)) {
         delete pQuery;
@@ -226,15 +257,7 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
     if (csconverter != NULL)
         pQuery->SetCSConverter (csconverter);
 
-    try
-    {
-        stat = pQuery->Prepare ();
-    }
-    catch (FdoException* ex)
-    {
-        delete pQuery;
-        GWS_RETHROW (ex, eGwsFailedToPrepareQuery);
-    }
+    stat = pQuery->Prepare ();
 
     if (IGWSException::IsError (stat)) {
         delete pQuery;
@@ -245,7 +268,6 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
     pQuery->m_resultDescriptor->SetSuffix (madesuffix);
     return pQuery;
 }
-
 
 CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
     IGWSJoinQueryDefinition     * pFQuery,
@@ -294,7 +316,8 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
                         m_connectionpool->GetConnection (
                                                 lfqdef->ClassName ().FeatureSource ());
             lSupportsOrdering = supportOrdering (conn);
-            pLeftQuery = PrepareFeatureQuery (lfqdef, lSupportsOrdering ? lCols : NULL, subsuffix);
+            pLeftQuery = PrepareFeatureQuery (
+                lfqdef, lSupportsOrdering ? lCols : NULL, lfqdef->GetOrderingOption(), subsuffix);
 
         } else {
             pLeftQuery = Prepare (lqdef, subsuffix);
@@ -330,6 +353,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
 
             pRightQuery = PrepareFeatureQuery (rfqdef,
                                             lSupportsOrdering && rSupportsOrdering ? rCols : NULL,
+                                            rfqdef->GetOrderingOption(),
                                             subsuffix);
 
         } else {
@@ -346,33 +370,46 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
         CGwsPreparedFeatureQuery * lpq = pLeftQuery->GetPrimaryQuery ();
         CGwsPreparedFeatureQuery * rpq = pRightQuery->GetPrimaryQuery ();
 
+        // will throw EGwsStatus if invalid
         int i = 0;
         for (i = 0; i < lCols->GetCount (); i ++) {
-            FdoPtr<FdoPropertyDefinition> lpdef = lpq->GetPropertyDefinition (lCols->GetString (i));
-            FdoPtr<FdoPropertyDefinition> rpdef = rpq->GetPropertyDefinition (rCols->GetString (i));
-
-            // will throw EGwsStatus if invalid
-            ValidateJoinAttributes (lpdef, rpdef, lCols->GetString (i), rCols->GetString (i));
+            FdoString* lProp = lCols->GetString (i);
+            FdoString* rProp = rCols->GetString (i);
+            FdoPtr<FdoPropertyDefinition> rpdef = rpq->GetPropertyDefinition (rProp);
+            FdoPtr<FdoPropertyDefinition> lpdef = lpq->GetPropertyDefinition (lProp);
+            if(NULL == lpdef) {
+                // check for join query def and check right side
+                CGwsPreparedJoinQuery* plj = dynamic_cast<CGwsPreparedJoinQuery*>(pLeftQuery);
+                if(NULL != plj) {
+                    CGwsPreparedFeatureQuery* prq = plj->RightQuery()->GetPrimaryQuery();
+                    std::wstring strname(lProp);
+                    size_t delimpos = strname.find(pFQuery->JoinDelimiter());
+                    if(std::wstring::npos != delimpos) {
+                        std::wstring propname = strname.substr(delimpos+1);
+                        lpdef = prq->GetPropertyDefinition (propname.c_str());
+                        ValidateJoinAttributes (lpdef, rpdef, propname.c_str(), rProp);
+                        continue;
+                    }
+                }
+            }
+            ValidateJoinAttributes (lpdef, rpdef, lProp, rProp);
         }
 
         EGwsJoinMethod joinmethod = eGwsNestedLoops;
 
-        //
-        // TODO: Enable the commented code when issue with sorted merge is resolved.
-        //
-        //if (lSupportsOrdering) {
-        //    if (rSupportsOrdering) {
-        //        // sort-merge
-        //        joinmethod = eGwsSortMerge;
+        if (lSupportsOrdering) {
+            if (rSupportsOrdering) {
+                // sort-merge
+                joinmethod = eGwsSortMerge;
 
-        //    } else {
-        //        // nested loop join and sorted block
-        //        joinmethod = eGwsNestedLoopSortedBlock;
-        //    }
-        //} else {
-        //    // nested loop join
-        //    joinmethod = eGwsNestedLoops;
-        //}
+            } else {
+                // nested loop join and sorted block
+                joinmethod = eGwsNestedLoopSortedBlock;
+            }
+        } else {
+            // nested loop join
+            joinmethod = eGwsNestedLoops;
+        }
 
         prepQuery = CreatePreparedJoinQuery (pFQuery->Type (),
                                              joinmethod,
@@ -383,9 +420,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
 
         eGwsOkThrow (prepQuery->Init ());
 
-    }
-    catch (EGwsStatus estat)
-    {
+    } catch (EGwsStatus estat) {
         if (prepQuery != NULL)
             delete prepQuery;
         else {
@@ -394,17 +429,6 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
         }
         prepQuery = NULL;
         GWS_THROW (estat);
-    }
-    catch (FdoException* ex)
-    {
-        if (prepQuery != NULL)
-            delete prepQuery;
-        else {
-            delete pLeftQuery;
-            delete pRightQuery;
-        }
-        prepQuery = NULL;
-        GWS_RETHROW (ex, eGwsFailedToPrepareQuery);
     }
 
     return prepQuery;
@@ -509,6 +533,16 @@ void CGwsFeatureSourceQuery::SetFilter (FdoFilter * filter)
     m_pQuery->SetFilter (filter);
 }
 
+FdoFilter * CGwsFeatureSourceQuery::GetFilter ()
+{
+    if (m_pQuery == NULL) {
+        Prepare ();
+    }
+
+    assert (m_pQuery); // successful preparation must initialize m_pQuery
+    return m_pQuery->GetFilter ();
+}
+
 
 
 const WSTR & CGwsFeatureSourceQuery::GetRevisionPropertyName ()
@@ -518,14 +552,14 @@ const WSTR & CGwsFeatureSourceQuery::GetRevisionPropertyName ()
 
 
 
-void CGwsFeatureSourceQuery::Execute (IGWSFeatureIterator ** results)
+void CGwsFeatureSourceQuery::Execute (IGWSFeatureIterator ** results, bool bScrollable /*false*/)
 {
     if (m_pQuery == NULL) {
         Prepare ();
     }
     assert (m_pQuery); // successful preparation must initialize m_pQuery
 
-    EGwsStatus stat = m_pQuery->Execute (results);
+    EGwsStatus stat = m_pQuery->Execute (results, bScrollable);
     if (IGWSException::IsError (stat)) {
         GWS_THROW_DIAG (eGwsFailedToExecuteQuery, dynamic_cast<CGwsObject *> (m_pQuery));
     }
@@ -589,3 +623,4 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::GetPrimaryPreparedQuery ()
     return m_pQuery->GetPrimaryQuery ();
 
 }
+

@@ -57,6 +57,7 @@ CGwsPreparedJoinQuery::~CGwsPreparedJoinQuery ()
 {
     delete m_leftquery;
     delete m_rightquery;
+
 }
 
 EGwsStatus CGwsPreparedJoinQuery::Init ()
@@ -93,9 +94,11 @@ FdoDataPropertyDefinitionCollection * CGwsPreparedJoinQuery::GetIdentityProperti
 
 
 EGwsStatus CGwsPreparedJoinQuery::Execute (
-    IGWSFeatureIterator ** results
+    IGWSFeatureIterator ** results,
+    bool bScrollable /*false*/
 )
 {
+
     FdoPtr<IGWSFeatureIterator> left;
     FdoPtr<IGWSFeatureIterator> right;
 
@@ -116,7 +119,7 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
         }
 
         if (reader != NULL) {
-            stat = reader->InitializeReader (m_pQuery, this);
+            stat = reader->InitializeReader (m_pQuery, this, bScrollable);
             if (IGWSException::IsError (stat)) {
                 CopyStatus (* reader);
                 delete  reader;
@@ -127,9 +130,9 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
         }
         assert (reader);
 
-    } catch (FdoException * gis) {
-        PushFdoException (eGwsFailedToExecuteCommand, gis);
-        gis->Release ();
+    } catch (FdoException * fdoEx) {
+        PushFdoException (eGwsFailedToExecuteCommand, fdoEx);
+        fdoEx->Release ();
         return eGwsFailedToExecuteCommand;
     }
     return eGwsOk;
@@ -137,12 +140,22 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
 
 EGwsStatus CGwsPreparedJoinQuery::Execute (
     FdoFilter            * filter,
-    IGWSFeatureIterator ** results
+    IGWSFeatureIterator ** results,
+    bool                   bScrollable
 )
 {
-    filter; // For "unreferenced formal parameter" warning
-    results; // For "unreferenced formal parameter" warning
-    return eGwsFailed;
+    EGwsStatus                 stat = eGwsOk;
+
+    try   {
+        eGwsOkThrow (SetFilter (filter));
+        return Execute (results,bScrollable);
+
+    } catch (EGwsStatus es) {
+        PushStatus (es);
+        stat = es;
+    }
+    return stat;
+
 }
 
 EGwsStatus CGwsPreparedJoinQuery::Execute (
@@ -150,22 +163,46 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
     IGWSFeatureIterator ** results
 )
 {
-    featid; // For "unreferenced formal parameter" warning
-    results; // For "unreferenced formal parameter" warning
-    return eGwsFailed;
+    CGwsPreparedFeatureQuery * pquery = NULL;
+    FdoPtr<FdoFilter>          filter;
+    EGwsStatus                 stat = eGwsOk;
+
+    try   {
+        pquery = GetPrimaryQuery ();
+
+        eGwsOkThrow (pquery->BuildFilter (featid, filter.p));
+        return Execute (filter, results);
+
+    } catch (EGwsStatus es) {
+        PushStatus (es);
+        stat = es;
+    }
+    return stat;
+
 }
 EGwsStatus CGwsPreparedJoinQuery::Execute (
     const GwsFeaturesIdVector & featids,
     int lbound,
     int ubound,
-    IGWSFeatureIterator ** results
+    IGWSFeatureIterator ** results,
+    bool bScrollable
 )
 {
-    featids; // For "unreferenced formal parameter" warning
-    lbound; // For "unreferenced formal parameter" warning
-    ubound; // For "unreferenced formal parameter" warning
-    results; // For "unreferenced formal parameter" warning
-    return eGwsFailed;
+    CGwsPreparedFeatureQuery * pquery = NULL;
+    FdoPtr<FdoFilter>          filter;
+    EGwsStatus                 stat = eGwsOk;
+
+    try   {
+        pquery = GetPrimaryQuery ();
+
+        eGwsOkThrow (pquery->BuildFilter (featids, lbound, ubound, filter.p));
+        return Execute (filter, results, bScrollable);
+
+    } catch (EGwsStatus es) {
+        PushStatus (es);
+        stat = es;
+    }
+    return stat;
 }
 
 EGwsStatus CGwsPreparedJoinQuery::SetFilter (FdoFilter * filter)
@@ -174,6 +211,14 @@ EGwsStatus CGwsPreparedJoinQuery::SetFilter (FdoFilter * filter)
     if (m_leftquery != NULL)
         return m_leftquery->SetFilter (filter);
     return eGwsFailed;
+}
+
+FdoFilter * CGwsPreparedJoinQuery::GetFilter ()
+{
+    // the leftmost query is the one
+    if (m_leftquery != NULL)
+        return m_leftquery->GetFilter ();
+    return NULL;
 }
 
 
@@ -192,6 +237,7 @@ CGwsPreparedLeftJoinQuery::CGwsPreparedLeftJoinQuery (
 )
 : CGwsPreparedJoinQuery (joinmethod, lpq, rpq, lcols, rcols, query)
 {
+
 }
 
 CGwsPreparedLeftJoinQuery::~CGwsPreparedLeftJoinQuery ()
@@ -213,6 +259,7 @@ CGwsPreparedEqualJoinQuery::CGwsPreparedEqualJoinQuery (
 )
 : CGwsPreparedJoinQuery (joinmethod, lpq, rpq, lcols, rcols, query)
 {
+
 }
 
 CGwsPreparedEqualJoinQuery::~CGwsPreparedEqualJoinQuery ()

@@ -32,7 +32,7 @@ HMODULE CGwsResourceModule::shMod;
 // Something is seriously wrong if the string is over this size.
 static int MAX_BUF_SIZE = 8192;
 
-CGwsResourceModule module(L"GwsResource");
+CGwsResourceModule module(L"GWSResource");
 
 CGwsResourceModule::CGwsResourceModule(const wchar_t* fileName)
 {
@@ -41,6 +41,7 @@ CGwsResourceModule::CGwsResourceModule(const wchar_t* fileName)
     shMod = ::LoadLibraryExW(fileName, NULL, LOAD_LIBRARY_AS_DATAFILE);
 #endif
 }
+
 
 
 CGwsResourceModule::~CGwsResourceModule()
@@ -54,13 +55,13 @@ CGwsResourceModule::~CGwsResourceModule()
 }
 
 
-#ifdef _WIN32
 // this function gets around the problem with loading strings
 // since the ::LoadString function won't tell you what the string size is
 // One might need to increase the size of the buffer.
 bool
 CGwsResourceModule::GetString(unsigned int id, std::wstring &str)
 {
+#ifdef _WIN32
     // as long as FIXED_BUF_SIZE is sufficiently large this
     // will be the fastest way to load a string.  However for
     // truly pathological cases, we will allocate increasingly
@@ -69,6 +70,7 @@ CGwsResourceModule::GetString(unsigned int id, std::wstring &str)
     int nBufSize = FIXED_BUF_SIZE;
     wchar_t *pBuf = buf;
 
+#pragma message("TODO: Determine if LoadStringW is thread safe")
     int nLen = ::LoadStringW(shMod, id, pBuf, FIXED_BUF_SIZE);
     if (0 == nLen)
     {
@@ -101,9 +103,11 @@ CGwsResourceModule::GetString(unsigned int id, std::wstring &str)
         str = pBuf;
         delete [] pBuf;
     }
+#else
+    str = L"Message is defined for Windows only";
+#endif
     return true;
 }
-#endif
 
 #ifdef _WIN32
 #define GET_STR(x,str) case (##x) : \
@@ -258,8 +262,12 @@ void CGwsResourceModule::GwsStatusMessage (EGwsStatus fes, std::wstring &str)
     GET_STR (eGwsCannotMakeUniqueGwsName, str);
     GET_STR (eGwsFailedToUpdateLayerSourceVersion, str);
     GET_STR (eGwsWarningExtentsNotYetAvailable, str);
+    GET_STR (eGwsFailedToRefreshFeatures, str);
+    GET_STR (eGwsNoLayers, str);
+    GET_STR (eGwsFeatureSourceIsReadOnly, str);
+    GET_STR (eGwsFeatureClassHasNoIdentity, str);
     default:
-        str = L"message is not defined yet.";
+        str = L"GWS message resource id is not defined.";
         break;
 
     }
@@ -270,7 +278,7 @@ void CGwsResourceModule::FeatureStatusMessage (
     std::wstring        & str
 )
 {
-    switch(fstat) {
+    switch(fstat)   {
     GET_STR (eGwsSucceeded, str);
     GET_STR (eGwsRevisionNumberConflict, str);
     GET_STR (eGwsLockRejected, str);
@@ -285,8 +293,18 @@ void CGwsResourceModule::FeatureStatusMessage (
     GET_STR (eGwsNewFeatureCannotBeRemoved, str);
     GET_STR (eGwsNewFeatureRemoved, str);
     GET_STR (eGwsNotProcessed, str);
+    GET_STR (eGwsRefreshFailedToReloadEditSetFeature, str);
+    GET_STR (eGwsRefreshCacheFeatureIsUpTodate, str);
+    GET_STR (eGwsRefreshDeletedFeatureInCache, str);
+    GET_STR (eGwsRefreshReloadedFeatureInCache, str);
+    GET_STR (eGwsRefreshFeatureNotFound, str);
     default:
-        str = L"message is not defined yet.";
+        str = L"GWS feature status message is not defined.";
         break;
     }
+
 }
+
+
+
+// eof

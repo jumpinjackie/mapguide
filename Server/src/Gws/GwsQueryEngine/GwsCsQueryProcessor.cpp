@@ -36,6 +36,7 @@ CGwsCSQueryProcessor::CGwsCSQueryProcessor(IGWSCoordinateSystemConverter *pConve
     m_converter = pConverter;
     if (pConverter != NULL)
         pConverter->AddRef ();
+    m_bAlignPolygonFilter = false;
 }
 
 CGwsCSQueryProcessor::~CGwsCSQueryProcessor()
@@ -44,33 +45,7 @@ CGwsCSQueryProcessor::~CGwsCSQueryProcessor()
 
 void CGwsCSQueryProcessor::ProcessSpatialCondition(FdoSpatialCondition& sc)
 {
-    if (IGWSException::IsError(m_status) ||
-        m_converter == NULL ||
-        m_converter->SourceCS ().IsEmpty () ||
-        m_converter->DestinationCS ().IsEmpty ())
-    {
-        //we stop processing if error happened earlier or converter is not set
-        return;
-    }
-
-    //at this point either tesselation or cs conversion has to happen (not NULL)
-    //so we have to extract the geometry
-    FdoPtr<FdoExpression> pGeometry = sc.GetGeometry();
-    FdoPtr<FdoByteArray> pBa = static_cast<FdoGeometryValue*>((FdoExpression*)pGeometry)->GetGeometry();
-
-    //first we have to apply tesselation if it is necessary
-    if (! pBa) {
-        return;
-    }
-
-    m_status=m_converter->ConvertBackward (pBa);
-
-    //at the end either the error happen or the cs conversion/tesselation
-    //actually happened, so we have to set the geometry back
-    if (!IGWSException::IsError (m_status))
-    {
-        static_cast<FdoGeometryValue*>((FdoExpression*)pGeometry)->SetGeometry(pBa);
-    }
+    ProcessGeometry<FdoSpatialCondition> (sc);
 }
 
 EGwsStatus CGwsCSQueryProcessor::Status() const
@@ -80,33 +55,36 @@ EGwsStatus CGwsCSQueryProcessor::Status() const
 
 void CGwsCSQueryProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
 {
-    filter; // For "unreferenced formal parameter" warning
+    FdoPtr<FdoFilter> lop = filter.GetLeftOperand ();
+    lop->Process (this);
+
+    FdoPtr<FdoFilter> rop = filter.GetRightOperand ();
+    rop->Process (this);
 }
 
 void CGwsCSQueryProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
 {
-    filter; // For "unreferenced formal parameter" warning
+    FdoPtr<FdoFilter> op = filter.GetOperand ();
+    op->Process (this);
 }
 
 void CGwsCSQueryProcessor::ProcessComparisonCondition(FdoComparisonCondition& filter)
 {
-    filter; // For "unreferenced formal parameter" warning
 }
 
 void CGwsCSQueryProcessor::ProcessInCondition(FdoInCondition& filter)
 {
-    filter; // For "unreferenced formal parameter" warning
 }
 
 void CGwsCSQueryProcessor::ProcessNullCondition(FdoNullCondition& filter)
 {
-    filter; // For "unreferenced formal parameter" warning
 }
 
-void CGwsCSQueryProcessor::ProcessDistanceCondition(FdoDistanceCondition& filter)
+void CGwsCSQueryProcessor::ProcessDistanceCondition(FdoDistanceCondition& sc)
 {
-    filter; // For "unreferenced formal parameter" warning
+    ProcessGeometry<FdoDistanceCondition> (sc);
 }
+
 
 void CGwsCSQueryProcessor::Dispose()
 {

@@ -104,4 +104,6 @@ void CGwsPropertyDesc::operator= (const CGwsPropertyDesc & other)
     m_geometrytypes = other.m_geometrytypes;
     m_bReadOnly = other.m_bReadOnly;
     m_spatialcontext = other.m_spatialcontext;
+
+
 }

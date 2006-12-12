@@ -39,7 +39,7 @@ class CGwsFeatureIterator;
         class CGwsSortMergeJoinQueryResults;
     class CGwsRightJoinQueryResults;
         class CGwsRightSortedJoinQueryResults;
-
+    class CGwsMultiSelectIterator; // could wrap all of the above
 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -159,6 +159,9 @@ public:
     GWS_QUERYENGINE_API             CGwsQueryResultDescriptors (
                                            FdoClassDefinition     * classDef,
                                             const GWSQualifiedName & classname,
+                                            const FdoString        * joinName,
+                                            const FdoString        * joinDelimiter,
+                                            bool                     forceOneToOne,
                                             FdoStringCollection    * propnames);
     GWS_QUERYENGINE_API             CGwsQueryResultDescriptors (const CGwsQueryResultDescriptors & other);
     GWS_QUERYENGINE_API
@@ -217,7 +220,9 @@ protected:
                                         FdoPropertyDefinition       * propdef,
                                         FdoStringCollection         * propnames,
                                         std::vector<CGwsPropertyDesc> & propdsc);
-
+    virtual const FdoString*        JoinName() { return m_joinName.empty() ? NULL : m_joinName.c_str(); }
+    virtual const FdoString*        JoinDelimiter() { return m_joinDelimiter.empty() ? NULL : m_joinDelimiter.c_str(); }
+    virtual bool                    ForceOneToOneJoin() { return m_forceOneToOne; }
 protected:
     // primary feature description
     FdoPtr<FdoClassDefinition>          m_classDef;
@@ -226,10 +231,14 @@ protected:
     FdoPtr<FdoStringCollection>         m_propertynames;
     FdoPtr<FdoDataPropertyDefinitionCollection> m_identprops;
 
+    // join name
+    WSTR                                m_joinName;
+    WSTR                                m_joinDelimiter;
+    bool                                m_forceOneToOne;
+
     // joined properties
     std::vector<IGWSExtendedFeatureDescription*>
                                         m_descriptors;
-    // suffix defines the position of the description in the joined
     // query results. It is used to genratate cached data class name
     WSTR                                m_suffix;
 
@@ -237,7 +246,7 @@ protected:
     GWSCoordinateSystem                 m_csname;
 };
 
-
+typedef enum _GwsExtendedSelProvider { eSDF, eSHP, eCGFI } EGwsExtendedSelProvider;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -248,19 +257,29 @@ class GWS_QUERYENGINE_API CGwsPreparedQuery
 {
 public:
                             CGwsPreparedQuery ();
+                            CGwsPreparedQuery (bool bSdfExtendedQuery);
     virtual                 ~CGwsPreparedQuery ();
     virtual EGwsQueryType   QueryType () const = 0;
     virtual void            DescribeResults (IGWSExtendedFeatureDescription ** ppResDesc);
-    virtual EGwsStatus      Execute (IGWSFeatureIterator   ** results) = 0;
+
+    virtual EGwsStatus      Execute (IGWSFeatureIterator   ** results, bool bScrollable = false) = 0;
+
     virtual EGwsStatus      Execute (FdoFilter * filter,
-                                     IGWSFeatureIterator ** results) = 0;
+                                     IGWSFeatureIterator ** results,
+                                     bool bScrollable = false) = 0;
+
     virtual EGwsStatus      Execute (const GWSFeatureId & featid,
                                      IGWSFeatureIterator ** results) = 0;
+
     virtual EGwsStatus      Execute (const GwsFeaturesIdVector & featids,
                                      int lbound,
                                      int ubound,
-                                     IGWSFeatureIterator ** results) = 0;
+                                     IGWSFeatureIterator ** results,
+                                     bool bScrollable = false) = 0;
+
     virtual EGwsStatus      SetFilter (FdoFilter * filter) = 0;
+    virtual FdoFilter *     GetFilter () = 0;
+
     // returns primary prepared query (left hand query for the join and
     // inself in feature query case)
     virtual CGwsPreparedFeatureQuery *
@@ -275,13 +294,19 @@ public:
                             GetPreparedQueryType ();
 public:
     int                     GetPathLength () {return m_pathlength;}
+    void                    GetQueryDefinition (IGWSQueryDefinition ** ppQdef);
 
 protected:
     CGwsQueryResultDescriptors * m_resultDescriptor;
-    CGwsFeatureSourceQuery    *  m_pQuery;
+    CGwsFeatureSourceQuery     * m_pQuery;
 
     // path length to the primary join feature
     int                          m_pathlength;
+
+    //boolean to determine if the query is using the sdf extended scrollable
+    //reader
+    bool                         m_bExtendedQuerySupported;
+    EGwsExtendedSelProvider      mExSelProv;
 };
 
 
@@ -316,6 +341,7 @@ public:
     GWS_QUERYENGINE_API
     EGwsStatus              Init (FdoStringCollection * sellist,
                                   FdoStringCollection * orderBy,
+                                  FdoOrderingOption     orderingOption,
                                   FdoFilter           * filter);
 
     GWS_QUERYENGINE_API
@@ -326,10 +352,12 @@ public:
 
 
     GWS_QUERYENGINE_API
-    virtual EGwsStatus      Execute (IGWSFeatureIterator ** results);
+    virtual EGwsStatus      Execute (IGWSFeatureIterator ** results, bool bScrollable = false);
+
     GWS_QUERYENGINE_API
     virtual EGwsStatus      Execute (FdoFilter * filter,
-                                     IGWSFeatureIterator ** results);
+                                     IGWSFeatureIterator ** results,
+                                     bool bScrollable = false);
     GWS_QUERYENGINE_API
     virtual EGwsStatus      Execute (const GWSFeatureId & featid,
                                      IGWSFeatureIterator ** results);
@@ -337,9 +365,16 @@ public:
     virtual EGwsStatus      Execute (const GwsFeaturesIdVector & featids,
                                      int lbound,
                                      int ubound,
-                                     IGWSFeatureIterator ** results);
+                                     IGWSFeatureIterator ** results,
+                                     bool bScrollable = false);
     GWS_QUERYENGINE_API
     virtual EGwsStatus      SetFilter (FdoFilter * filter);
+    GWS_QUERYENGINE_API
+    virtual FdoFilter    *  GetFilter ();
+
+    GWS_QUERYENGINE_API
+    virtual void            SetRealignRectangleFilter (bool bRealign) { m_bIsAxisAlignedRectangleFilter = bRealign; }
+
 
     GWS_QUERYENGINE_API
     virtual CGwsPreparedFeatureQuery *  GetPrimaryQuery () ;
@@ -347,10 +382,14 @@ public:
     virtual FdoDataPropertyDefinitionCollection * GetIdentityProperties ();
     GWS_QUERYENGINE_API
     virtual FdoStringCollection *  GetOrderBy ();
+    GWS_QUERYENGINE_API
+    virtual FdoOrderingOption      GetOrderingOption ();
 
 protected:
+
     WSTRARRAY               m_selectList;
     bool                    m_bIsSelectDistinct;
+    bool                    m_bIsAxisAlignedRectangleFilter;
 };
 
 
@@ -395,20 +434,26 @@ public:
     virtual EGwsJoinMethod  JoinMethod () const { return m_joinmethod; }
 
     GWS_QUERYENGINE_API
-    virtual EGwsStatus      Execute (IGWSFeatureIterator ** results);
+    virtual EGwsStatus      Execute (IGWSFeatureIterator ** results, bool bScrollable = false);
+
     GWS_QUERYENGINE_API
     virtual EGwsStatus      Execute (FdoFilter * filter,
-                 IGWSFeatureIterator ** results);
+                                     IGWSFeatureIterator ** results,
+                                     bool bScrollable = false);
     GWS_QUERYENGINE_API
     virtual EGwsStatus      Execute (const GWSFeatureId & featid,
-                 IGWSFeatureIterator ** results);
+                                     IGWSFeatureIterator ** results);
     GWS_QUERYENGINE_API
     virtual EGwsStatus      Execute (const GwsFeaturesIdVector & featids,
                                      int lbound,
                                      int ubound,
-                                     IGWSFeatureIterator ** results);
+                                     IGWSFeatureIterator ** results,
+                                     bool bScrollable = false);
+
     GWS_QUERYENGINE_API
     virtual EGwsStatus      SetFilter (FdoFilter * filter);
+    GWS_QUERYENGINE_API
+    virtual FdoFilter *     GetFilter ();
 
     GWS_QUERYENGINE_API
     EGwsStatus              Init     ();
@@ -476,6 +521,7 @@ public:
     {
         return eGwsQueryEqualJoin;
     }
+
 };
 
 
@@ -501,9 +547,11 @@ public:
     GWS_QUERYENGINE_API
     virtual void            SetFilter (FdoFilter * filter);
     GWS_QUERYENGINE_API
+    virtual FdoFilter *     GetFilter ();
+    GWS_QUERYENGINE_API
     virtual void            Prepare ();
     GWS_QUERYENGINE_API
-    virtual void            Execute (IGWSFeatureIterator ** results);
+    virtual void            Execute (IGWSFeatureIterator ** results, bool bScrollable = false);
     GWS_QUERYENGINE_API
     virtual void            Execute (FdoFilter * filter,
                                      IGWSFeatureIterator ** results);
@@ -521,12 +569,18 @@ public:
 
     GWS_QUERYENGINE_API
     virtual void            SetDestinationCS (const GWSCoordinateSystem & csname);
-    GWS_QUERYENGINE_API
-    virtual void            SetCSFactory (IGWSCoordinateSystemConverterFactory * csfactory);
 
     GWS_QUERYENGINE_API
     virtual const GWSCoordinateSystem & GetDestinationCS ();
 
+    GWS_QUERYENGINE_API
+    virtual void            SetSourceCS (const GWSCoordinateSystem & csname);
+
+    GWS_QUERYENGINE_API
+    virtual const GWSCoordinateSystem &  GetSourceCS ();
+
+    GWS_QUERYENGINE_API
+    virtual void            SetCSFactory (IGWSCoordinateSystemConverterFactory * csfactory);
     GWS_QUERYENGINE_API
     virtual IGWSCoordinateSystemConverterFactory * GetCSFactory ();
 
@@ -559,7 +613,9 @@ public:
     virtual CGwsPreparedFeatureQuery * PrepareFeatureQuery (
                         IGWSFeatureQueryDefinition * pQryDef,
                         FdoStringCollection        * orderCols,
-                        const WSTR                 & suffix);
+                        FdoOrderingOption            orderingOption,
+                        const WSTR                 & suffix,
+                        FdoClassDefinition         * pClassDef = NULL);
     GWS_QUERYENGINE_API
     virtual CGwsPreparedJoinQuery * PrepareJoinQuery (
                                             IGWSJoinQueryDefinition   * pQryDef,
@@ -579,13 +635,26 @@ public:
     // return prepared query
     CGwsPreparedQuery *                 GetPreparedQuery () {return m_pQuery; }
 
+    GWS_QUERYENGINE_API
+    void                                SetClassDefinition(FdoClassDefinition* pClassDef);
+
 protected:
     FdoPtr<IGWSConnectionPool>   m_connectionpool;
     FdoPtr<IGWSQueryDefinition>  m_qrydef;
     CGwsPreparedQuery        *   m_pQuery;   // prepared query
     WSTR                         m_revprop;
+
+
+    // coordinate systems
+
+    // factory
     FdoPtr<IGWSCoordinateSystemConverterFactory> m_csfactory;
+    // destination coordinate system
     GWSCoordinateSystem          m_csname;
+    // soorce coordinate system override
+    GWSCoordinateSystem          m_srccsname;
+    //primary class definition - optimization
+    FdoPtr<FdoClassDefinition>  m_classDef;
 };
 
 
@@ -599,9 +668,6 @@ class GwsBinaryFeatureWriter;
 class CGwsFeatureIterator : public GWSObject<IGWSFeatureIterator>,
                             public CGwsObject
 {
-friend class CGwsPreparedFeatureQuery;
-friend class CGwsRightSortedJoinQueryResults;
-friend class CGwsRightJoinQueryResults;
 public:
     GWS_QUERYENGINE_API     CGwsFeatureIterator ();
     GWS_QUERYENGINE_API
@@ -611,12 +677,13 @@ public:
     virtual EGwsStatus      InitializeReader (
                                     FdoIFeatureReader               * pReader,
                                     IGWSQuery                       * fquery,
-                                    CGwsPreparedFeatureQuery        * prepquery);
+                                    CGwsPreparedFeatureQuery        * prepquery,
+                                    bool                            bIsScrollable);
 
     // this method is used in the non -cache case in order to expose
     // integer feature ids as cached id
     GWS_QUERYENGINE_API
-    void                    SetExposeFeatureIdAsCacheId (bool bFlag);
+    virtual void            SetExposeFeatureIdAsCacheId (bool bFlag);
 
     GWS_QUERYENGINE_API
     virtual void            DescribeFeature(IGWSExtendedFeatureDescription ** ppResDesc);
@@ -644,6 +711,8 @@ public:
     virtual FdoString*      GetLayerSource (){ return m_strLayerSource.c_str(); }
     GWS_QUERYENGINE_API
     virtual void            SetLayerSource (FdoString* strLayerSource){ m_strLayerSource = strLayerSource; }
+    GWS_QUERYENGINE_API
+    virtual bool            ExposeFeatureIdAsCacheId() { return m_bExposeFeatureIdAsCacheId; }
 
     GWS_QUERYENGINE_API
     virtual IGWSFeatureIterator* GetJoinedFeatures (int i);
@@ -688,44 +757,15 @@ public:
     GWS_QUERYENGINE_API
     virtual FdoDataValueCollection *
         GetDataValues (FdoStringCollection* propertyNames);
-/*
-    // Getter by the property index
-    GWS_QUERYENGINE_API
-    virtual bool            IsNull      (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoString   *   GetString   (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual bool            GetBoolean  (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoByte         GetByte     (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoDateTime     GetDateTime (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual double          GetDouble   (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoInt16        GetInt16    (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoInt32        GetInt32    (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoInt64        GetInt64    (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual float           GetSingle   (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoLOBValue*    GetLOB      (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoIStreamReader* GetLOBStreamReader (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoIRaster*     GetRaster   (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual const FdoByte * GetGeometry (FdoInt32 iProp, FdoInt32 * count);
-    GWS_QUERYENGINE_API
-    virtual FdoByteArray*   GetGeometry (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoIFeatureReader* GetFeatureObject (FdoInt32 iProp);
 
+    // returns unconverted geometry. Coordinate system transaformations are not applied
     GWS_QUERYENGINE_API
-    virtual void            ToString    (FdoInt32 iProp, wchar_t * buff, int len);
-*/
+    virtual FdoByteArray*   GetOriginalGeometry (FdoString* propertyName);
+
+    // returns true if geometry id being converted
+    GWS_QUERYENGINE_API
+    virtual bool            ConvertingGeometry ();
+
     GWS_QUERYENGINE_API
     virtual void            ToString    (FdoString* propertyName, wchar_t * buff, int len);
     GWS_QUERYENGINE_API
@@ -743,21 +783,48 @@ public:
     GWS_QUERYENGINE_API
     virtual FdoDataValue *  GetPropertyValue (const CGwsPropertyDesc &);
     GWS_QUERYENGINE_API
-    IGWSMutableFeature *    GetSimpleFeature ();
+    virtual IGWSMutableFeature *    GetSimpleFeature ();
     GWS_QUERYENGINE_API
     virtual bool            InitializeMutableFeature ();
 
+    GWS_QUERYENGINE_API
+    virtual CGwsPreparedQuery* PrepQuery() { return m_prepquery; }
+
+    //SdfIScrollableFeatureReader implementation.
+    GWS_QUERYENGINE_API
+    virtual int             Count();
+    GWS_QUERYENGINE_API
+    virtual bool            ReadFirst();
+    GWS_QUERYENGINE_API
+    virtual bool            ReadLast();
+    GWS_QUERYENGINE_API
+    virtual bool            ReadPrevious();
+    GWS_QUERYENGINE_API
+    virtual bool            ReadAt(FdoPropertyValueCollection* key);
+    GWS_QUERYENGINE_API
+    virtual bool            ReadAtIndex( unsigned int recordindex );
+    GWS_QUERYENGINE_API
+    virtual unsigned int    IndexOf(FdoPropertyValueCollection* key);
+
+    GWS_QUERYENGINE_API
+    virtual bool            Scrollable();
+
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        ResolveJoinIdVector(std::vector<FdoInt32>& idVec) { return GetCacheId(); }
+
+    GWS_QUERYENGINE_API
+        virtual bool                ReadAtCacheId(FdoInt32 cacheId) { return false; }
+    GWS_QUERYENGINE_API
+    virtual std::vector<FdoInt32>* GetJoinIdVector(FdoInt32 jCacheId) { return NULL; }
 public:
     GWS_QUERYENGINE_API
     virtual const CGwsPropertyDesc &
                             GetPropertyDescriptor (int iProp);
-    //NOTE! This reader is not AddRef'd so don't call release on it, or
-    //put it in a FdoPtr<>.
-    FdoIFeatureReader*      GetFdoReader(void) { return m_reader; }
-
     GWS_QUERYENGINE_API
     virtual const CGwsPropertyDesc &
                             GetPropertyDescriptor (FdoString * propname);
+    GWS_QUERYENGINE_API
+    virtual IGWSFeatureIterator*    GetPrimaryIterator();
 
 protected:
     // throw an exception if m_reader is null. m_reader maybe
@@ -766,6 +833,9 @@ protected:
 
 protected:
     FdoPtr<FdoIFeatureReader>              m_reader;
+
+    //tracks whether the reader is scrollable or not
+    bool                                   m_bScrollableReader;
 
     // reference to query
     FdoPtr<IGWSQuery>                      m_query;
@@ -787,10 +857,14 @@ protected:
     bool                                   m_bMutableFeatureSet;
     std::wstring                           m_strLayerSource;
     bool                                   m_bExposeFeatureIdAsCacheId;
+    FdoDataType                            m_cacheIdType;
+    std::wstring                           m_idname;
+
 
     // flag indicating that geometry has been already converted
     bool                                   m_bGeometryConverted;
     GwsBinaryFeatureWriter*                m_pBinaryWriter;
+    EGwsExtendedSelProvider                m_extProviderType;
 };
 
 
@@ -803,6 +877,7 @@ protected:
 class CGwsJoinQueryResults : public CGwsFeatureIterator
 {
 public:
+
     GWS_QUERYENGINE_API         CGwsJoinQueryResults   ();
     GWS_QUERYENGINE_API
     virtual                     ~CGwsJoinQueryResults  () throw();
@@ -811,12 +886,14 @@ public:
     virtual EGwsStatus          InitializeReader (
                                     FdoStringCollection   * leftjoincols,
                                     IGWSQuery             * query,
-                                    CGwsPreparedQuery     * prepquery);
+                                    CGwsPreparedQuery     * prepquery,
+                                    bool                  bScrollable);
 
     GWS_QUERYENGINE_API
     virtual EGwsStatus          InitializeReader (
                                     IGWSQuery             * query,
-                                    CGwsPreparedJoinQuery * prepquery) = 0;
+                                    CGwsPreparedJoinQuery * prepquery,
+                                    bool bScrollable = false) = 0;
 
     GWS_QUERYENGINE_API
     virtual bool                ReadNext ();
@@ -824,7 +901,7 @@ public:
     GWS_QUERYENGINE_API
     virtual IGWSFeatureIterator *  GetJoinedFeatures (int i);
 
-    // get right hade side joined features
+    // get right hand side joined features
     IGWSFeatureIterator *       GetJoinedFeatures ();
 
     GWS_QUERYENGINE_API
@@ -839,11 +916,29 @@ public:
 
     FdoDataValueCollection *    GetJoinValues ();
 
+    GWS_QUERYENGINE_API
+    bool                        CacheReadNext ();
+
+    GWS_QUERYENGINE_API
+    virtual FdoDataValueCollection * GetDataValues (FdoStringCollection* propertyNames);
+
+    //SdfIScrollableFeatureReader implementation.
+    GWS_QUERYENGINE_API
+    virtual int             Count();
+    GWS_QUERYENGINE_API
+    virtual bool            ReadAtIndex( unsigned int recordindex );
+    GWS_QUERYENGINE_API
+    virtual bool            Scrollable();
+
 protected:
     CGwsRightJoinQueryResults             * m_right;
     FdoPtr<FdoStringCollection>             m_leftcols;
     GWSFeatureId                            m_leftJoinVals;
     bool                                    m_bLeftJoinValuesSet;
+    bool                                    m_started;
+    bool                                    m_forceOneToOne;
+private:
+    bool    SetupRightSide(bool leftResult);
 };
 
 
@@ -856,6 +951,7 @@ protected:
 class CGwsRightJoinQueryResults : public CGwsFeatureIterator
 {
 public:
+
     GWS_QUERYENGINE_API          CGwsRightJoinQueryResults   ();
     GWS_QUERYENGINE_API
     virtual                     ~CGwsRightJoinQueryResults  () throw();
@@ -864,12 +960,14 @@ public:
     virtual EGwsStatus          InitializeReader (
                                     IGWSQuery           * query,
                                     FdoIFeatureReader   * reader,
-                                    FdoStringCollection * joincols);
+                                    FdoStringCollection * joincols,
+                                    bool                bScrollable);
     GWS_QUERYENGINE_API
     virtual EGwsStatus          InitializeReader (
                                     IGWSQuery           * query,
                                     CGwsPreparedQuery   * prepquery,
-                                    FdoStringCollection * joincols);
+                                    FdoStringCollection * joincols,
+                                    bool bScrollable);
 
     GWS_QUERYENGINE_API
     void                        SetNeverUsePooling ();
@@ -884,6 +982,7 @@ public:
     virtual void                DescribeFeature(IGWSExtendedFeatureDescription ** ppResDesc);
     GWS_QUERYENGINE_API
     virtual IGWSFeatureIterator* GetJoinedFeatures (int i);
+
 
     // getters by the property name
     GWS_QUERYENGINE_API
@@ -918,50 +1017,17 @@ public:
     GWS_QUERYENGINE_API
     virtual FdoByteArray*       GetGeometry (FdoString* propertyName);
     GWS_QUERYENGINE_API
+    virtual FdoByteArray *      GetOriginalGeometry (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual bool                ConvertingGeometry ();
+    GWS_QUERYENGINE_API
     virtual FdoIFeatureReader*  GetFeatureObject(FdoString* propertyName);
 
     GWS_QUERYENGINE_API
     virtual FdoDataValue *      GetDataValue (FdoString* propertyName);
     GWS_QUERYENGINE_API
     virtual FdoDataValueCollection * GetDataValues (FdoStringCollection* propertyNames);
-/*
-    // Getter by the property index
-    GWS_QUERYENGINE_API
-    virtual bool                IsNull      (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoString   *       GetString   (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual bool                GetBoolean  (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoByte             GetByte     (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoDateTime         GetDateTime (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual double              GetDouble   (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoInt16            GetInt16    (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoInt32            GetInt32    (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoInt64            GetInt64    (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual float               GetSingle   (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoLOBValue*        GetLOB      (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoIStreamReader*   GetLOBStreamReader (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoIRaster*         GetRaster   (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual const FdoByte *     GetGeometry (FdoInt32 iProp, FdoInt32 * count);
-    GWS_QUERYENGINE_API
-    virtual FdoByteArray*       GetGeometry (FdoInt32 iProp);
-    GWS_QUERYENGINE_API
-    virtual FdoIFeatureReader*  GetFeatureObject (FdoInt32 iProp);
 
-    GWS_QUERYENGINE_API
-    virtual void                ToString    (FdoInt32 iProp, wchar_t * buff, int len);
-*/
     GWS_QUERYENGINE_API
     virtual void                ToString    (FdoString* propertyName, wchar_t * buff, int len);
 
@@ -980,6 +1046,7 @@ protected:
     bool                    m_usepool;
 
     bool                    m_neverusepooling;
+
 };
 
 
@@ -1002,13 +1069,16 @@ public:
     GWS_QUERYENGINE_API
     virtual EGwsStatus      InitializeReader (
                                     IGWSQuery                       * query,
-                                    CGwsPreparedJoinQuery           * prepquery);
+                                    CGwsPreparedJoinQuery           * prepquery,
+                                    bool                            bScrollable = false);
 
     GWS_QUERYENGINE_API
     virtual EJoinResultsType Type () const
     {
         return kGwsSortMergeResults;
     }
+protected:
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1030,14 +1100,14 @@ public:
     GWS_QUERYENGINE_API
     virtual EGwsStatus          InitializeReader (
                 IGWSQuery                       * query,
-                CGwsPreparedJoinQuery           * prepquery);
+                CGwsPreparedJoinQuery           * prepquery,
+                bool                            bScrollable = false);
     GWS_QUERYENGINE_API
     virtual EJoinResultsType    Type () const
     {
         return kGwsNestedLoopResults;
     }
 };
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -1059,7 +1129,8 @@ public:
     GWS_QUERYENGINE_API
     virtual EGwsStatus      InitializeReader (
                                 IGWSQuery                       * query,
-                                CGwsPreparedJoinQuery           * prepquery);
+                                CGwsPreparedJoinQuery           * prepquery,
+                                bool                            bScrollable = false);
     GWS_QUERYENGINE_API
     virtual EJoinResultsType Type () const
     {
@@ -1089,7 +1160,8 @@ public:
     virtual EGwsStatus          InitializeReader (
                                     IGWSQuery           * query,
                                     FdoIFeatureReader   * reader,
-                                    FdoStringCollection * joincols);
+                                    FdoStringCollection * joincols,
+                                    bool                bScrollable);
 
     GWS_QUERYENGINE_API
     virtual bool                ReadNext();
@@ -1133,7 +1205,8 @@ public:
     virtual EGwsStatus          InitializeReader  (
                                     IGWSQuery                  * query,
                                     CGwsPreparedQuery          * prepquery,
-                                    FdoStringCollection        * joincols);
+                                    FdoStringCollection        * joincols,
+                                    bool                        bScrollable);
 
     GWS_QUERYENGINE_API
     virtual bool                ReadNext();
@@ -1171,7 +1244,8 @@ public:
     virtual EGwsStatus          InitializeReader (
                                     IGWSQuery                  * query,
                                     CGwsPreparedQuery          * prepquery,
-                                    FdoStringCollection        * joincols);
+                                    FdoStringCollection        * joincols,
+                                    bool                        bScrollable);
 
     GWS_QUERYENGINE_API
     virtual bool                ReadNext();
@@ -1179,6 +1253,186 @@ public:
     virtual void                Close ();
     GWS_QUERYENGINE_API
     virtual EGwsStatus          SetRelatedValues (const GWSFeatureId & vals);
+protected:
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// class CGwsMultiSelectIterator
+// Wrapper, implemeting multiple selects during iteration
+// Must be able to wrap all iterator types
+//
+///////////////////////////////////////////////////////////////////////////////
+class CGwsMultiSelectIterator : public CGwsFeatureIterator
+{
+public:
+    GWS_QUERYENGINE_API     CGwsMultiSelectIterator ();
+    GWS_QUERYENGINE_API
+    virtual                 ~CGwsMultiSelectIterator () throw();
+
+
+    // Unexposed and asserting. Shouldn't be called
+    //
+    virtual EGwsStatus      InitializeReader (
+                                    FdoIFeatureReader               * pReader,
+                                    IGWSQuery                       * fquery,
+                                    CGwsPreparedFeatureQuery        * prepquery,
+                                    bool                            bScrollable);
+
+
+    // This one must be used instead
+    //
+    GWS_QUERYENGINE_API
+    EGwsStatus              InitializeReader (
+                                    IGWSQuery                       * fquery,
+                                    FdoFilter                       * pLayerFilter,
+                                    const std::vector<FdoPtr<FdoFilter> > & filterSet);
+
+    // Call member iterator, and if it is finished, execute next query
+    //
+    GWS_QUERYENGINE_API
+    virtual bool            ReadNext();
+    GWS_QUERYENGINE_API
+    virtual bool            NextFeature (IGWSFeature ** feature);
+
+    // Overloaded CGwsFeatureIterator methods, changing members and propagating them
+    // to the member iterator
+    //
+    GWS_QUERYENGINE_API
+    virtual void            SetExposeFeatureIdAsCacheId (bool bFlag);
+    GWS_QUERYENGINE_API
+    virtual void            SetLayerSource (FdoString* strLayerSource);
+
+    // Only not overloaded method. Must be OK as it is
+    //
+//    GWS_QUERYENGINE_API
+//    virtual FdoString*      GetLayerSource (){ return m_strLayerSource.c_str(); }
+
+    // Overloaded CGwsFeatureIterator methods, simply readdressing the calls to memeber iterator
+    //
+    GWS_QUERYENGINE_API
+    virtual void            DescribeFeature(IGWSExtendedFeatureDescription ** ppResDesc);
+    GWS_QUERYENGINE_API
+    virtual void            Close ();
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        GetCacheId ();
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        GetRevisionNumber ();
+    GWS_QUERYENGINE_API
+    virtual GWSFeatureId    GetFeatureId ();
+    GWS_QUERYENGINE_API
+    virtual bool            IsNew ();
+    GWS_QUERYENGINE_API
+    virtual bool            IsModified ();
+    GWS_QUERYENGINE_API
+    virtual bool            IsDeleted ();
+    GWS_QUERYENGINE_API
+    virtual EGwsLockType    GetCacheLockType ();
+    GWS_QUERYENGINE_API
+    virtual IGWSFeatureIterator* GetJoinedFeatures (int i);
+    GWS_QUERYENGINE_API
+    virtual bool            IsNull      (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoString   *   GetString   (FdoString * propname);
+    GWS_QUERYENGINE_API
+    virtual bool            GetBoolean  (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoByte         GetByte     (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoDateTime     GetDateTime (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual double          GetDouble   (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoInt16        GetInt16    (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        GetInt32    (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoInt64        GetInt64    (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual float           GetSingle   (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoLOBValue*    GetLOB      (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName );
+    GWS_QUERYENGINE_API
+    virtual FdoIRaster*     GetRaster   (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        GetDepth    ();
+    GWS_QUERYENGINE_API
+    virtual const FdoByte * GetGeometry (FdoString* propertyName, FdoInt32 * count) ;
+    GWS_QUERYENGINE_API
+    virtual FdoByteArray*   GetGeometry (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoDataValue *  GetDataValue (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoDataValueCollection *
+        GetDataValues (FdoStringCollection* propertyNames);
+    GWS_QUERYENGINE_API
+    virtual FdoByteArray*   GetOriginalGeometry (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual bool            ConvertingGeometry ();
+    GWS_QUERYENGINE_API
+    virtual void            ToString    (FdoString* propertyName, wchar_t * buff, int len);
+    GWS_QUERYENGINE_API
+    virtual unsigned char*  ToBuffer(int& bufLen);
+    GWS_QUERYENGINE_API
+    virtual const GWSCoordinateSystem & GetCSName ();
+    GWS_QUERYENGINE_API
+    virtual FdoClassDefinition* GetClassDefinition();
+    GWS_QUERYENGINE_API
+    virtual FdoGeometryType GetGeometryType(FdoByteArray* pArray);
+    GWS_QUERYENGINE_API
+    virtual FdoString*      GetPrimaryGeometryName();
+    GWS_QUERYENGINE_API
+    virtual FdoDataValue *  GetPropertyValue (const CGwsPropertyDesc &);
+    GWS_QUERYENGINE_API
+    virtual bool            InitializeMutableFeature ();
+    GWS_QUERYENGINE_API
+    virtual const CGwsPropertyDesc &
+                            GetPropertyDescriptor (int iProp);
+    GWS_QUERYENGINE_API
+    virtual const CGwsPropertyDesc &
+                            GetPropertyDescriptor (FdoString * propname);
+
+    GWS_QUERYENGINE_API
+    virtual IGWSMutableFeature *    GetSimpleFeature ();
+
+    GWS_QUERYENGINE_API
+    virtual int             Count();
+    GWS_QUERYENGINE_API
+    virtual bool            ReadFirst();
+    GWS_QUERYENGINE_API
+    virtual bool            ReadLast();
+    GWS_QUERYENGINE_API
+    virtual bool            ReadPrevious();
+    GWS_QUERYENGINE_API
+    virtual bool            ReadAt(FdoPropertyValueCollection* key);
+    GWS_QUERYENGINE_API
+    virtual bool            ReadAtIndex( unsigned int recordindex );
+    GWS_QUERYENGINE_API
+    virtual unsigned int    IndexOf(FdoPropertyValueCollection* key);
+
+    GWS_QUERYENGINE_API
+    virtual bool            Scrollable();
+
+    GWS_QUERYENGINE_API
+    virtual IGWSFeatureIterator*    GetPrimaryIterator();
+
+protected:
+    // throws an exception if m_iter is null.
+    void                    CheckIterator ();
+
+    // Executes next query
+    EGwsStatus              Execute ();
+
+protected:
+    FdoPtr<CGwsFeatureIterator>            m_iter;
+    unsigned int                           m_queryIdx;
+    FdoPtr<FdoFilter>                      m_layerFilter;
+    std::vector<FdoPtr<FdoFilter> >        m_filterSet;
 };
 
 #endif
+

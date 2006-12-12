@@ -283,7 +283,7 @@ INTERNAL_API:
 
     MgServerGwsFeatureReader();
 
-    MgServerGwsFeatureReader(IGWSFeatureIterator* gwsFeatureIterator);
+    MgServerGwsFeatureReader(IGWSFeatureIterator* gwsFeatureIterator, bool bForceOneToOne = true, MgStringCollection* attributeNameDelimiters = NULL);
     ~MgServerGwsFeatureReader();
 
 
@@ -298,12 +298,24 @@ INTERNAL_API:
 
     void SetGwsIteratorCopy(IGWSFeatureIterator* iterCopy);
 
+    GwsFeatureIteratorMap GetSecondaryGwsFeatureIteratorMap();
+    void SetGwsFeatureIteratorMap(GwsFeatureIteratorMap featureIterMap);
+
+    void SetAdvancePrimaryIterator(bool bAdvancePrimary);
+
+    MgStringCollection* GetAttributeNameDelimiters();
+    bool IsForceOneToOne();
+
 private:
 
     FdoPtr<IGWSFeatureIterator> m_gwsFeatureIterator;
     Ptr<MgServerGwsGetFeatures> m_gwsGetFeatures;
     GwsFeatureIteratorMap m_secondaryGwsFeatureIteratorMap;
     FdoPtr<IGWSFeatureIterator> m_gwsFeatureIteratorCopy;
+
+    bool m_bAdvancePrimaryIterator;
+    bool m_bForceOneToOne;
+    Ptr<MgStringCollection> m_attributeNameDelimiters;
 
     void DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName);
 

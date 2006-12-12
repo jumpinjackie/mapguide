@@ -24,6 +24,7 @@
 
 #include "GwsQueryEngineImp.h"
 
+
 wchar_t * GwsQueryXml::xmlGwsQuery                  = L"Query";
 wchar_t * GwsQueryXml::xmlGwsQualifiedClassName     = L"Qualified_Class_Name";
 wchar_t * GwsQueryXml::xmlGwsClassFeatureSource     = L"Feature_Source";

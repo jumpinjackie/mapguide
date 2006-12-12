@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\..\..\Oem\FDO\inc&quot;;.\Inc;..\GwsCommon\Inc;..\Include"
+				AdditionalIncludeDirectories="..\..\..\..\Oem\FDO\inc;.\Inc;..\GwsCommon\Inc;..\Include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;GWSQUERYENGINE_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -52,6 +52,7 @@
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
+				DisableSpecificWarnings="4100;4127;4189;4702"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -137,6 +138,7 @@
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4100;4127;4189;4702"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -213,6 +215,10 @@
 			</File>
 			<File
 				RelativePath=".\Inc\GwsFdoCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inc\GwsFlatFdoReader.h"
 				>
 			</File>
 			<File
@@ -305,11 +311,23 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GwsFlatFdoReader.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GwsFlatGwsIterator.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\GwsJoinQueryDefinition.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\GwsJoinQueryResults.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GwsMultiSelectIterator.cpp"
 			>
 		</File>
 		<File

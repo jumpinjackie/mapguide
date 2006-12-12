@@ -96,7 +96,7 @@ public:
 //be implementable on *nix as well.
 class GWSSemaphore {
 #ifdef _WIN32
-    private:
+private:
         HANDLE semaphore;
 
     public:
@@ -343,9 +343,9 @@ private:
       Exit();
       THREAD_RETURN(0);
     }
+
 };
 
-/*
 template <class Handler> class CGwsOperationHandler;
 
 template<class Handler, class GWSMessage = CGwsMessage>
@@ -382,19 +382,6 @@ public:
         return m_bRunning;
     }
 
-    virtual EGwsStatus GetCompletionStatus (IGWSException ** diag)
-    {
-        if (m_bRunning)
-            return eGwsWarningStillLoadingCache;
-        if (m_completion == NULL)
-            return eGwsOk;
-        if (diag != NULL) {
-            * diag = m_completion;
-            (*diag)->AddRef ();
-        }
-        return m_completion->GetStatus ();
-    }
-
 protected:
     virtual GWSMessageQueue<GWSMessage>* GetThreadParam()
     {
@@ -416,7 +403,7 @@ protected:
     CGwsOperationHandler<Handler>* m_pHandler;
     THREAD_HANDLE*                 mHandle;
     bool                           m_bRunning;
-    GisPtr<IGWSException>          m_completion;
+    FdoPtr<IGWSException>          m_completion;
 };
 
 template<class Handler, class GWSMessage>
@@ -455,7 +442,7 @@ public:
 protected:
     GWSMessageQueue<GWSMessage> m_messageQueue;
 };
-*/
+
 #pragma warning( disable : 4311 )
 #pragma warning( disable : 4312 )
 #endif
@@ -471,7 +458,6 @@ public:
         *ppOrig = pExchange;
         return ppRet;
     }
-
     typedef GWSMutexBase CriticalSection;
 };
 
@@ -479,6 +465,8 @@ class GWSMultiThreadModel
 {
 public:
     static unsigned long THREAD_CALL Increment(long* p) throw()
+
+
     {
 #ifdef WIN32
         return InterlockedIncrement(p);
@@ -521,7 +509,7 @@ public:
 #endif
     }
 
-    typedef GWSMutex CriticalSection;
-};
+    typedef GWSMutex CriticalSection;};
 
 #endif //_GWSTHREADS_H
+

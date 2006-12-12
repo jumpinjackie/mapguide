@@ -62,7 +62,7 @@ void CGwsBinaryFeature::Set (unsigned char* pBuf, int len)
             continue;
         FdoPtr<FdoValueExpression> valexpr = propval->GetValue ();
         FdoPtr<FdoIdentifier>      ident   = propval->GetName ();
-        // FdoString               *  pName   = props[i].m_name.c_str ();
+        FdoString               *  pName   = props[i].m_name.c_str ();
 
         if (props[i].m_ptype == FdoPropertyType_DataProperty) {
             FdoDataValue * dval = dynamic_cast<FdoDataValue *> (valexpr.p);
@@ -88,8 +88,8 @@ void CGwsBinaryFeature::Set (unsigned char* pBuf, int len)
 
             case FdoDataType_Decimal:
                 {
-                FdoByteValue* pByteVal = (FdoByteValue*)dval;
-                pByteVal->SetByte(m_pBinaryReader->GetByte (i));
+                FdoDecimalValue* pDecimalVal = (FdoDecimalValue*)dval;
+                pDecimalVal->SetDecimal(m_pBinaryReader->GetDouble (i));
                 }
                 break;
             case FdoDataType_Double:
@@ -151,8 +151,13 @@ void CGwsBinaryFeature::Set (unsigned char* pBuf, int len)
             }
 
         } else if (props[i].m_ptype == FdoPropertyType_GeometricProperty) {
-            FdoByteArray * geom = m_pBinaryReader->GetGeometry (i);
-            FdoGeometryValue * geomval = dynamic_cast<FdoGeometryValue *> (valexpr.p);
+            FdoByteArray * geom = NULL;
+            FdoGeometryValue * geomval = NULL;
+
+            if (! m_pBinaryReader->IsNull (i)) {
+                geom = m_pBinaryReader->GetGeometry (i);
+                geomval = dynamic_cast<FdoGeometryValue *> (valexpr.p);
+            }
 
             if (geom != NULL) {
                 geomval->SetGeometry (geom);
@@ -164,8 +169,8 @@ void CGwsBinaryFeature::Set (unsigned char* pBuf, int len)
             assert(false); //unsupported property type
             continue;
         }
-    }
 
+    }
     //set up the feature id
     FdoPtr<CGwsDataValueCollection> keyvals;
     FdoPtr<FdoDataPropertyDefinitionCollection> iddefs =

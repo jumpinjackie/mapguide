@@ -18,10 +18,13 @@
 #ifndef GwsCommonUtils_h
 #define GwsCommonUtils_h
 
+
 // forward declarations
 class CGwsObject;
 
 // typedefs
+typedef std::wstring               WSTR;
+typedef std::vector<WSTR>          WSTRARRAY;
 typedef std::vector<GWSFeatureId>  GwsFeaturesIdVector;
 
 //Useful Macros for generating message ids and throwing exceptions with status
@@ -31,10 +34,10 @@ typedef std::vector<GWSFeatureId>  GwsFeaturesIdVector;
 #define GWS_THROW(stat) throw IGWSException::Create(stat)
 #define GWS_THROW2(stat,diaginfo) throw IGWSException::Create(stat,diaginfo)
 #define GWS_THROW_DIAG(stat,diaginfo) throw GwsCommonFdoUtils::Create (stat,diaginfo)
-#define GWS_RETHROW(gisException, stat) \
-        IGWSException* pContainerExc = IGWSException::Create(stat, gisException); \
-        if (gisException != NULL) \
-            gisException->Release(); \
+#define GWS_RETHROW(fdoException, stat) \
+        IGWSException* pContainerExc = IGWSException::Create(stat, fdoException); \
+        if (fdoException != NULL) \
+            fdoException->Release(); \
         throw pContainerExc
 // throws status if status is an error
 #define GWS_OKTHROW(stat) if (IGWSException::IsError (stat)) \
@@ -50,6 +53,23 @@ typedef std::vector<GWSFeatureId>  GwsFeaturesIdVector;
 #define GWS_TRACE(x)
 #endif
 
+// case insensitive comparison for wstrings to be used in stl map
+// templates
+/*
+typedef struct less_ignore_case_fast : std::less <const std::wstring>
+{
+    bool operator()(const std::wstring& s1, const std::wstring& s2) const
+    {
+        return _wcsicmp (s1.c_str(), s2.c_str()) < 0;
+    };
+} GwsIgnoreCase;
+*/
+
+// String to String case insensitive map
+typedef std::map<WSTR,WSTR,GwsIgnoreCase> GwsStrToStrMap;
+
+// Diagnostics parameters
+typedef GwsStrToStrMap GwsDiagParameters;
 
 // Data value collection the has create method
 class CGwsDataValueCollection: public FdoDataValueCollection
@@ -123,7 +143,9 @@ class GwsSpatialContextDescription
 {
 public:
     GWS_COMMON_API
-    GwsSpatialContextDescription () {}
+    GwsSpatialContextDescription ()
+        : m_csname()
+    {}
 
     GWS_COMMON_API
     GwsSpatialContextDescription (
@@ -132,13 +154,15 @@ public:
                 const WSTR & scname,
                 const WSTR & desc,
                 const WSTR & csname,
+                const double xytol,
                 FdoIEnvelope * extents)
+        : m_csname(csname.c_str(), eGwsCSWkt)
     {
         m_classname = classname;
         m_propname = propname;
         m_scname = scname;
         m_desc = desc;
-        m_csnamewkt = csname;
+        m_XYTolerance = xytol;
         SetExtents (extents);
     }
 
@@ -147,10 +171,11 @@ public:
                 const WSTR & scname,
                 const WSTR & desc,
                 const WSTR & csname)
+        : m_csname(csname.c_str(), eGwsCSWkt)
     {
         m_scname = scname;
         m_desc = desc;
-        m_csnamewkt = csname;
+        m_XYTolerance = .001;
     }
 
     GWS_COMMON_API
@@ -167,7 +192,8 @@ public:
         m_propname = other.m_propname;
         m_scname = other.m_scname;
         m_desc = other.m_desc;
-        m_csnamewkt = other.m_csnamewkt;
+        m_csname = other.m_csname;
+        m_XYTolerance = other.m_XYTolerance;
         m_extents = other.m_extents;
     }
     GWS_COMMON_API
@@ -195,9 +221,15 @@ public:
     }
 
     GWS_COMMON_API
-    FdoString * CsNameWkt () const
+    const GWSCoordinateSystem & CsName () const
     {
-        return m_csnamewkt.c_str ();
+        return m_csname;
+    }
+
+    GWS_COMMON_API
+    double XYTolerance () const
+    {
+        return m_XYTolerance;
     }
 
     GWS_COMMON_API
@@ -207,6 +239,7 @@ public:
             m_extents.p->AddRef ();
         return m_extents;
     }
+
 
     GWS_COMMON_API
     void SetClassName (const GWSQualifiedName & name)
@@ -244,10 +277,13 @@ public:
     GWS_COMMON_API
     void SetCsNameWkt (FdoString * csnamewkt)
     {
-        if (csnamewkt == NULL)
-            m_csnamewkt.clear ();
-        else
-            m_csnamewkt = csnamewkt;
+        m_csname = GWSCoordinateSystem(csnamewkt ? csnamewkt : L"", eGwsCSWkt);
+    }
+
+    GWS_COMMON_API
+    void SetCsNameAbbr (FdoString * csname)
+    {
+        m_csname = GWSCoordinateSystem(csname ? csname : L"", eGwsCSAbbr);
     }
 
     GWS_COMMON_API
@@ -258,12 +294,20 @@ public:
             m_extents.p->AddRef ();
     }
 
+    GWS_COMMON_API
+    void SetXYTolerance (double xytol)
+    {
+        m_XYTolerance = xytol;
+    }
+
+
 private:
     GWSQualifiedName m_classname;   // qualified class name
     WSTR             m_propname;    // property name
     WSTR             m_scname;      // spatial context name
     WSTR             m_desc;        // sc description
-    WSTR             m_csnamewkt;   // wkt coord sys name
+    GWSCoordinateSystem  m_csname;  // coord sys name
+    double           m_XYTolerance; // XY data tolerance
     FdoPtr<FdoIEnvelope> m_extents;
 };
 
@@ -273,8 +317,9 @@ typedef std::vector<GwsSpatialContextDescription> GwsSCDescriptors;
 // Gws Common FDO utilities
 namespace GwsCommonFdoUtils
 {
+
     // given fdo connection and qualified class name, return class definition.
-    // Method throws GisException in case of failure
+    // Method throws FdoException in case of failure
     GWS_COMMON_API
     void GetClassDefinition (
                         FdoIConnection         * pConn,
@@ -346,6 +391,7 @@ namespace GwsCommonFdoUtils
                         FdoIConnection * conn,
                         FdoString * scname,
                         GwsSpatialContextDescription & desc);
+
 };
 
 #ifdef _DEBUG
@@ -361,5 +407,6 @@ namespace GwsDebugUtils
 };
 
 #endif
+
 
 #endif

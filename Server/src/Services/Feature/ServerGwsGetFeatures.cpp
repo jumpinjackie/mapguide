@@ -31,7 +31,7 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures()
 }
 
 
-MgServerGwsGetFeatures::MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureReader)
+MgServerGwsGetFeatures::MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureReader, MgServerGwsFeatureReader* serverGwsFeatureReader)
 {
     CHECKNULL(gwsFeatureReader, L"MgServerGwsGetFeatures.MgServerGwsGetFeatures");
 
@@ -39,6 +39,7 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureRe
     m_classDef = NULL;
     m_relationNames = NULL;
     m_gwsFeatureReader = FDO_SAFE_ADDREF(gwsFeatureReader);
+    m_serverGwsFeatureReader = serverGwsFeatureReader;       // This should not be addreffed 
 }
 
 MgServerGwsGetFeatures::~MgServerGwsGetFeatures()
@@ -118,43 +119,75 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
         // Advance the primary feature source iterator
         if (m_gwsFeatureReader->ReadNext())
         {
-
             // Retrieve the secondary feature source iterators, get the property definitions and add to class definition
             FdoPtr<IGWSExtendedFeatureDescription> desc;
             m_gwsFeatureReader->DescribeFeature(&desc);
 
-            for (int i = 0; i < desc->GetCount(); i++)
+            Ptr<MgStringCollection> attributeNameDelimiters;
+            int nSecondaryFeatures = desc->GetCount();
+            if (nSecondaryFeatures > 0)
             {
-                FdoPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureReader->GetJoinedFeatures(i);
-                CHECKNULL(featureIter, L"MgServerGwsGetFeatures.GetMgClassDefinition");
+                // Retrive the secondary feature attribute name delimiters
+                attributeNameDelimiters = m_serverGwsFeatureReader->GetAttributeNameDelimiters();
+                CHECKNULL((MgStringCollection*)attributeNameDelimiters, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
-                // Retrieve the secondary class definitions
-                FdoPtr<FdoClassDefinition> secFdoClassDefinition = featureIter->GetClassDefinition();
-                CHECKNULL((FdoClassDefinition*)secFdoClassDefinition, L"MgServerGwsGetFeatures.GetMgClassDefinition");
-
-                FdoStringP qname = secFdoClassDefinition->GetQualifiedName();
-
-                // Convert FdoClassDefinition to MgClassDefinition
-                Ptr<MgClassDefinition> secMgClassDef = this->GetMgClassDefinition(secFdoClassDefinition, bSerialize);
-                CHECKNULL((MgClassDefinition*)secMgClassDef, L"MgServerGwsGetFeatures.GetMgClassDefinition");
-
-                // retrieve the secondary properites and prefix them with the relation name
-                Ptr<MgPropertyDefinitionCollection> mpdc2 = secMgClassDef->GetProperties();
-                INT32 mpdc2Count = mpdc2->GetCount();
-
-                // Add the secondary properties to the classDefinition
-                Ptr<MgPropertyDefinitionCollection> mpdc = mgClassDef->GetProperties();
-                for (INT32 secPropIndex = 0; secPropIndex < mpdc2Count; secPropIndex++)
+                if (attributeNameDelimiters->GetCount() != nSecondaryFeatures)
                 {
-                    Ptr<MgPropertyDefinition> propDef = mpdc2->GetItem(secPropIndex);
-                    STRING secPropName = propDef->GetName();
-                    STRING relationName = (wchar_t*)m_relationNames->GetString(i + 1);
-                    secPropName = relationName + secPropName;
-                    propDef->SetName(secPropName);
-                    mpdc->Add(propDef);
+                    // Should never get here
+                    throw new MgInvalidArgumentException(L"MgServerGwsGetFeatures.GetMgClassDefinition", __LINE__, __WFILE__, NULL, L"MgInvalidCollectionSize", NULL);
                 }
+            }
 
-                mgClassDef->SetName(m_extensionName);
+            GwsFeatureIteratorMap secondaryGwsFeatureIteratorMap;
+            for (int i = 0; i < nSecondaryFeatures; i++)
+            {
+                try
+                {
+                    FdoPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureReader->GetJoinedFeatures(i);
+                    if (featureIter)
+                    {
+                        STRING attributeNameDelimiter = attributeNameDelimiters->GetItem(i);
+
+                        if (featureIter->ReadNext())
+                        {
+                            secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, featureIter));
+                            m_serverGwsFeatureReader->SetGwsFeatureIteratorMap(secondaryGwsFeatureIteratorMap);
+                        }
+
+                        // Retrieve the secondary class definitions
+                        FdoPtr<FdoClassDefinition> secFdoClassDefinition = featureIter->GetClassDefinition();
+                        CHECKNULL((FdoClassDefinition*)secFdoClassDefinition, L"MgServerGwsGetFeatures.GetMgClassDefinition");
+
+                        FdoStringP qname = secFdoClassDefinition->GetQualifiedName();
+
+                        // Convert FdoClassDefinition to MgClassDefinition
+                        Ptr<MgClassDefinition> secMgClassDef = this->GetMgClassDefinition(secFdoClassDefinition, bSerialize);
+                        CHECKNULL((MgClassDefinition*)secMgClassDef, L"MgServerGwsGetFeatures.GetMgClassDefinition");
+
+                        // retrieve the secondary properites and prefix them with the relation name
+                        Ptr<MgPropertyDefinitionCollection> mpdc2 = secMgClassDef->GetProperties();
+                        INT32 mpdc2Count = mpdc2->GetCount();
+
+                        // Add the secondary properties to the classDefinition
+                        Ptr<MgPropertyDefinitionCollection> mpdc = mgClassDef->GetProperties();
+                        for (INT32 secPropIndex = 0; secPropIndex < mpdc2Count; secPropIndex++)
+                        {
+                            Ptr<MgPropertyDefinition> propDef = mpdc2->GetItem(secPropIndex);
+                            STRING secPropName = propDef->GetName();
+                            STRING relationName = (wchar_t*)m_relationNames->GetString(i + 1);
+                            secPropName = relationName + attributeNameDelimiter + secPropName;
+                            propDef->SetName(secPropName);
+                            mpdc->Add(propDef);
+                        }
+                    }
+
+                    mgClassDef->SetName(m_extensionName);
+                }
+                catch (FdoException* e)
+                {
+                    FDO_SAFE_RELEASE(e);
+                    continue;
+                }
             }
 
             // Convert MgClassDefinition to FdoClassDefinition.
@@ -258,12 +291,9 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(FdoClassDefiniti
     CHECKNULL((FdoPropertyDefinitionCollection*)fpdc, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     // Retrieve Base class properties from FDO
-    // TODO: Should we add Base class properties into the list of properties?
-    // TODO: Can this be null?
     FdoPtr<FdoReadOnlyPropertyDefinitionCollection> frpdc = fdoClassDefinition->GetBaseProperties();
 
     // Retrieve identity properties from FDO
-    // TODO: Can this be null?
     FdoPtr<FdoDataPropertyDefinitionCollection> fdpdc = fdoClassDefinition->GetIdentityProperties();
 
     // Add properties
@@ -334,7 +364,7 @@ void MgServerGwsGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* 
 {
     // CHECKNULL((FdoPropertyDefinitionCollection*)propDefCol, L"MgClassDefinition.GetClassProperties");
 
-    // TODO: Assuming FdoPropertyDefinition can be null
+    // Assuming FdoPropertyDefinition can be null
     if (NULL == fdoPropDefCol)
         return;
 
@@ -362,7 +392,7 @@ void MgServerGwsGetFeatures::GetClassProperties(MgPropertyDefinitionCollection* 
 {
     // CHECKNULL((FdoDataPropertyDefinitionCollection*)propDefCol, L"MgClassDefinition.GetClassProperties");
 
-    // TODO: Assuming FdoPropertyDefinition can be null
+    // Assuming FdoPropertyDefinition can be null
     if (NULL == fdoPropDefCol)
         return;
 
@@ -541,7 +571,6 @@ void MgServerGwsGetFeatures::AddFeatures(INT32 count)
     CHECKNULL((MgClassDefinition*)classDef, L"MgServerGwsGetFeatures.AddFeatures");
 
     // Access the property definition collection
-    // Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
     Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetPropertiesIncludingBase();
     CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerGwsGetFeatures.AddFeatures");
 
@@ -569,7 +598,8 @@ void MgServerGwsGetFeatures::AddFeatures(INT32 count)
             // Read next throws exception which it should not (therefore we just ignore it)
             try
             {
-                found = m_gwsFeatureReader->ReadNext();
+                m_serverGwsFeatureReader->SetAdvancePrimaryIterator(false);
+                found = m_serverGwsFeatureReader->ReadNext();
             }
             catch(...)
             {
@@ -1257,7 +1287,7 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
 
     bool bPropertyFound = false;
 
-    IGWSFeatureIterator* secondaryFeatureIter = NULL;
+    FdoPtr<IGWSFeatureIterator> secondaryFeatureIter;
 
     // Parse the input property name to determine the feature source,
     // and the property name.  The qualified name could
@@ -1297,13 +1327,20 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
     else
     {
         // cycle thru secondary feature sources and check property names
-        for (int descIndex = 0; descIndex < nPrimaryDescCount; descIndex++)
-        {
-            secondaryFeatureIter = m_gwsFeatureReader->GetJoinedFeatures(descIndex);
-            CHECKNULL(secondaryFeatureIter, L"MgServerGwsFeatureReader.DeterminePropertyFeatureSource");
 
-            if (secondaryFeatureIter->ReadNext())
+        GwsFeatureIteratorMap secondaryGwsFeatureIteratorMap = m_serverGwsFeatureReader->GetSecondaryGwsFeatureIteratorMap();
+        if (!secondaryGwsFeatureIteratorMap.empty())
+        {
+            for (GwsFeatureIteratorMap::iterator iter = secondaryGwsFeatureIteratorMap.begin();
+                iter != secondaryGwsFeatureIteratorMap.end();
+                iter++)
             {
+                secondaryFeatureIter = FDO_SAFE_ADDREF(iter->second);
+                if (secondaryFeatureIter == NULL)
+                {
+                    continue;
+                }
+
                 FdoPtr<IGWSExtendedFeatureDescription> secondaryDesc;
                 secondaryFeatureIter->DescribeFeature(&secondaryDesc);
 
@@ -1313,31 +1350,49 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
 
                 FdoPtr<FdoStringCollection> secondaryPropNames = secondaryDesc->PropertyNames();
 
+                STRING attributeNameDelimiter = iter->first;
+
                 // cycle thru secondaryPropNames looking for substring occurrence in inputPropName
+
+                // If the delimiter is not blank, then look for it.  
+                // Else parse the extened property name by trying to match it to the known secondary property names.
+
+                STRING::size_type delimiterIndex = inputPropName.find(attributeNameDelimiter);
                 FdoInt32 secPropCnt = secondaryPropNames->GetCount();
+                relationName.clear();
                 for (FdoInt32 secPropIndex = 0; secPropIndex < secPropCnt; secPropIndex++)
                 {
-                    STRING secondaryProp = (STRING)secondaryPropNames->GetString(secPropIndex);
-                    STRING::size_type nPropStartIndex = inputPropName.find(secondaryProp);
-                    if (std::wstring::npos != nPropStartIndex)
+                    if (!attributeNameDelimiter.empty() && STRING::npos != delimiterIndex)
                     {
-                        parsedPropName = inputPropName.substr(nPropStartIndex).c_str();
-                        relationName = inputPropName.substr(0, nPropStartIndex).c_str();
-
-                        if ( wcscmp(featureSource, relationName.c_str()) == 0 )
+                        parsedPropName = inputPropName.substr(delimiterIndex +1).c_str();
+                        relationName = inputPropName.substr(0, delimiterIndex).c_str();
+                    }
+                    else
+                    {
+                        STRING secondaryProp = (STRING)secondaryPropNames->GetString(secPropIndex);
+                        STRING::size_type nPropStartIndex = inputPropName.find(secondaryProp);
+                        if (std::wstring::npos != nPropStartIndex)
                         {
-                            *gwsFeatureIter = secondaryFeatureIter;
-                            bPropertyFound = true;
-                            break;
+                            parsedPropName = inputPropName.substr(nPropStartIndex).c_str();
+                            relationName = inputPropName.substr(0, nPropStartIndex).c_str();
                         }
                     }
-                }
-            }
-        }
-    }
+                    if ( wcscmp(featureSource, relationName.c_str()) == 0 )
+                    {
+                        *gwsFeatureIter = secondaryFeatureIter;
+                        bPropertyFound = true;
+                        iter = secondaryGwsFeatureIteratorMap.end();
+                        iter--;
+                        break;
+                    }
+                }  //end loop through secondary property names
+            }  // end loop through secondary iterators
+        }  // end if ( !secondaryIteratorMap.empty() )
+    }  // end check secondary feature sources
 
     return bPropertyFound;
 }
+
 
 
 void MgServerGwsGetFeatures::SetRelationNames(FdoStringCollection* relationNames)
@@ -1359,3 +1414,4 @@ STRING MgServerGwsGetFeatures::GetExtensionName()
 {
     return m_extensionName;
 }
+

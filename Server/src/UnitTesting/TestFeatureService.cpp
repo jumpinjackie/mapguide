@@ -76,25 +76,33 @@ void TestFeatureService::TestStart()
             MgResourceIdentifier resourceIdentifier1(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
             MgResourceIdentifier resourceIdentifier2(L"Library://UnitTests/Data/Redding_Parcels.FeatureSource");
             MgResourceIdentifier resourceIdentifier3(L"Library://UnitTests/Data/Sheboygan_BuildingOutlines.FeatureSource");
+            MgResourceIdentifier resourceIdentifier4(L"Library://UnitTests/Data/Sheboygan_VotingDistricts.FeatureSource");
+            MgResourceIdentifier resourceIdentifier5(L"Library://UnitTests/Data/TestChainedInner1ToManyJoin.FeatureSource");
 
 #ifdef WIN32
             STRING resourceContentFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.FeatureSource";
             STRING resourceContentFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.FeatureSource";
             STRING resourceContentFileName3 = L"..\\UnitTestFiles\\Sheboygan_BuildingOutlines.FeatureSource";
+            STRING resourceContentFileName4 = L"..\\UnitTestFiles\\Sheboygan_VotingDistricts.FeatureSource";
+            STRING resourceContentFileName5=  L"..\\UnitTestFiles\\TESTChainedInner1ToManyJoin.FeatureSource";
             STRING dataFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
             STRING dataFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.shp";
             STRING dataFileName3 = L"..\\UnitTestFiles\\Redding_Parcels.dbf";
             STRING dataFileName4 = L"..\\UnitTestFiles\\Redding_Parcels.shx";
             STRING dataFileName5 = L"..\\UnitTestFiles\\Sheboygan_BuildingOutlines.sdf";
+            STRING dataFileName6 = L"..\\UnitTestFiles\\Sheboygan_VotingDistricts.sdf";
 #else
             STRING resourceContentFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.FeatureSource";
             STRING resourceContentFileName2 = L"../UnitTestFiles/Redding_Parcels.FeatureSource";
             STRING resourceContentFileName3 = L"../UnitTestFiles/Sheboygan_BuildingOutlines.FeatureSource";
+            STRING resourceContentFileName4 = L"../UnitTestFiles/Sheboygan_VotingDistricts.FeatureSource";
+            STRING resourceContentFileName5 = L"../UnitTestFiles/TESTChainedInner1ToManyJoin.FeatureSource";
             STRING dataFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.sdf";
             STRING dataFileName2 = L"../UnitTestFiles/Redding_Parcels.shp";
             STRING dataFileName3 = L"../UnitTestFiles/Redding_Parcels.dbf";
             STRING dataFileName4 = L"../UnitTestFiles/Redding_Parcels.shx";
             STRING dataFileName5 = L"../UnitTestFiles/Sheboygan_BuildingOutlines.sdf";
+            STRING dataFileName6 = L"../UnitTestFiles/Sheboygan_VotingDistricts.sdf";
 #endif
 
             //Add a new resource
@@ -109,6 +117,14 @@ void TestFeatureService::TestStart()
             Ptr<MgByteSource> contentSource3 = new MgByteSource(resourceContentFileName3);
             Ptr<MgByteReader> contentReader3 = contentSource3->GetReader();
             pService->SetResource(&resourceIdentifier3, contentReader3, NULL);
+
+            Ptr<MgByteSource> contentSource4 = new MgByteSource(resourceContentFileName4);
+            Ptr<MgByteReader> contentReader4 = contentSource4->GetReader();
+            pService->SetResource(&resourceIdentifier4, contentReader4, NULL);
+
+            Ptr<MgByteSource> contentSource5 = new MgByteSource(resourceContentFileName5);
+            Ptr<MgByteReader> contentReader5 = contentSource5->GetReader();
+            pService->SetResource(&resourceIdentifier5, contentReader5, NULL);
 
             //Set the resource data
             Ptr<MgByteSource> dataSource1 = new MgByteSource(dataFileName1);
@@ -130,6 +146,15 @@ void TestFeatureService::TestStart()
             Ptr<MgByteSource> dataSource5 = new MgByteSource(dataFileName5);
             Ptr<MgByteReader> dataReader5 = dataSource5->GetReader();
             pService->SetResourceData(&resourceIdentifier3, L"Sheboygan_BuildingOutlines.sdf", L"File", dataReader5);
+
+            Ptr<MgByteSource> dataSource6 = new MgByteSource(dataFileName6);
+            Ptr<MgByteReader> dataReader6 = dataSource6->GetReader();
+            pService->SetResourceData(&resourceIdentifier4, L"Sheboygan_VotingDistricts.sdf", L"File", dataReader6);
+
+            Ptr<MgByteSource> dataSource7 = new MgByteSource(dataFileName1);
+            Ptr<MgByteReader> dataReader7 = dataSource7->GetReader();
+            pService->SetResourceData(&resourceIdentifier5, L"Sheboygan_Parcels.sdf", L"File", dataReader7);
+
         }
     }
     catch(MgException* e)
@@ -1439,7 +1464,7 @@ void TestFeatureService::TestCase_CloseDataReader()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case exercises joinging features.
+/// This test case exercises joining features.
 ///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_JoinFeatures()
 {
@@ -1494,6 +1519,71 @@ void TestFeatureService::TestCase_JoinFeatures()
         throw;
     }
 }
+
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises joining features defined as chained, inner, 1-to-many.
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_JoinFeaturesChainedInner1ToMany()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_JoinFeaturesChainedInner1ToMany",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_JoinFeaturesChainedInner1ToMany",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> lFeatureSource = new MgResourceIdentifier(L"Library://UnitTests/Data/TestChainedInner1ToManyJoin.FeatureSource");
+
+        Ptr<MgFeatureReader> reader = pService->SelectFeatures(lFeatureSource, L"Ext1", NULL);
+
+        bool bReadNextResult = reader->ReadNext();
+        bool bIsNullResult = reader->IsNull(L"Join1NAME");
+        bool bIsNullResult2 = reader->IsNull(L"Join2|NAME");
+        STRING s1 = reader->GetString(L"NAME");
+        STRING s2 = reader->GetString(L"Join1NAME");
+        STRING s3 = reader->GetString(L"Join1ID");
+        STRING s4 = reader->GetString(L"Join2|NAME");
+        STRING s5 = reader->GetString(L"Join2|ID");
+
+        CPPUNIT_ASSERT(bReadNextResult);
+        CPPUNIT_ASSERT(bIsNullResult == false);
+        CPPUNIT_ASSERT(bIsNullResult2 == false);
+        CPPUNIT_ASSERT(s1 == L"CITY OF SHEBOYGAN");
+        CPPUNIT_ASSERT(s2 == L"Johnson Bank");
+        CPPUNIT_ASSERT(s3 == L"30320");
+        CPPUNIT_ASSERT(s4 == L"Voting District Seven");
+        CPPUNIT_ASSERT(s5 == L"7");
+
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
 
 
 ///----------------------------------------------------------------------------

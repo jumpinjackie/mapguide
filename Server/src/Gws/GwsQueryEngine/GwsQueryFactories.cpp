@@ -41,6 +41,9 @@ IGWSFeatureQueryDefinition * IGWSFeatureQueryDefinition::Create (
 }
 
 IGWSLeftJoinQueryDefinition * IGWSLeftJoinQueryDefinition::Create (
+    const FdoString     * joinName,
+    const FdoString     * joinDelimiter,
+    bool                  forceOneToOne,
     IGWSQueryDefinition *    left_qdef,
     IGWSQueryDefinition *    right_qdef,
     FdoStringCollection    * left_attrs,
@@ -48,15 +51,22 @@ IGWSLeftJoinQueryDefinition * IGWSLeftJoinQueryDefinition::Create (
 )
 {
     IGWSLeftJoinQueryDefinition * pQdef;
-    pQdef = new GWSLeftJoinQueryDefinition (left_qdef,
+    pQdef = new GWSLeftJoinQueryDefinition (joinName,
+                                            joinDelimiter,
+                                            forceOneToOne,
+                                            left_qdef,
                                             right_qdef,
                                             left_attrs,
                                             right_attrs);
     pQdef->AddRef ();
     return pQdef;
+
 }
 
 IGWSEqualJoinQueryDefinition * IGWSEqualJoinQueryDefinition::Create (
+    const FdoString     * joinName,
+    const FdoString     * joinDelimiter,
+    bool                  forceOneToOne,
     IGWSQueryDefinition *    left_qdef,
     IGWSQueryDefinition *    right_qdef,
     FdoStringCollection    * left_attrs,
@@ -64,12 +74,16 @@ IGWSEqualJoinQueryDefinition * IGWSEqualJoinQueryDefinition::Create (
 )
 {
     IGWSEqualJoinQueryDefinition * pQdef;
-    pQdef = new GWSEqualJoinQueryDefinition (left_qdef,
+    pQdef = new GWSEqualJoinQueryDefinition (joinName,
+                                             joinDelimiter,
+                                             forceOneToOne,
+                                             left_qdef,
                                              right_qdef,
                                              left_attrs,
                                              right_attrs);
     pQdef->AddRef ();
     return pQdef;
+
 }
 
 IGWSQuery * IGWSQuery::Create (
@@ -85,4 +99,6 @@ IGWSQuery * IGWSQuery::Create (
 
     query->Initialize (pool, qdef);
     return query;
+
 }
+

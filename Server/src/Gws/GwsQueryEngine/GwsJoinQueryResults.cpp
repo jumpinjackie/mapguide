@@ -37,18 +37,24 @@ CGwsJoinQueryResults::CGwsJoinQueryResults()
     m_prepquery = NULL;
     m_leftcols = NULL;
     m_bLeftJoinValuesSet = false;
+    m_bScrollableReader = true;
+    m_forceOneToOne = true;
 }
 
 EGwsStatus CGwsJoinQueryResults::InitializeReader (
     FdoStringCollection             * leftjoincols,
     IGWSQuery                       * query,
-    CGwsPreparedQuery               * prepquery
+    CGwsPreparedQuery               * prepquery,
+    bool                            bScrollable
 )
 {
     EGwsStatus stat = eGwsOk;
+    m_started = false;
+
+    m_bScrollableReader = bScrollable;
 
     IGWSFeatureIterator * left = NULL;
-    stat = prepquery->Execute (& left);
+    stat = prepquery->Execute (& left, m_bScrollableReader);
     if (IGWSException::IsError (stat)) {
         PushStatus  (stat);
         return stat;
@@ -64,6 +70,11 @@ EGwsStatus CGwsJoinQueryResults::InitializeReader (
     m_leftcols = leftjoincols;
     if (leftjoincols != NULL)
         leftjoincols->AddRef ();
+
+    FdoPtr<IGWSQueryDefinition> qDef;
+    m_query->GetQueryDefinition(&qDef);
+    IGWSJoinQueryDefinition* jqDef = dynamic_cast<IGWSJoinQueryDefinition*>(qDef.p);
+    m_forceOneToOne = (NULL != jqDef) ? jqDef->ForceOneToOne() : true;
 
     return stat;
 }
@@ -84,6 +95,32 @@ bool CGwsJoinQueryResults::ReadNext ()
 {
     m_bLeftJoinValuesSet = false;
     bool bRes = CGwsFeatureIterator::ReadNext ();
+    return SetupRightSide(bRes);
+}
+
+bool CGwsJoinQueryResults::CacheReadNext ()
+{
+    if(!m_forceOneToOne) {
+        if(m_started) {
+            // read right hand side first
+            if(false == m_bLeftJoinValuesSet)
+                GetJoinedFeatures ();
+            if(m_right != NULL) {
+                if(m_right->ReadNext())
+                    return true;
+                else {
+                    m_started = false;
+                    return false;
+                }
+            }
+        }
+    }
+    m_bLeftJoinValuesSet = false;
+    m_started = CGwsFeatureIterator::ReadNext ();
+    return SetupRightSide(m_started);
+}
+
+bool CGwsJoinQueryResults::SetupRightSide(bool bRes) {
 
     if (m_prepquery->QueryType () == eGwsQueryLeftOuterJoin) {
         return bRes;
@@ -112,6 +149,34 @@ FdoDataValueCollection * CGwsJoinQueryResults::GetJoinValues ()
         m_bLeftJoinValuesSet = true;
     }
     return NULL; // m_leftJoinVals;
+}
+
+FdoDataValueCollection * CGwsJoinQueryResults::GetDataValues (
+    FdoStringCollection* propertyNames
+)
+{
+    CGwsDataValueCollection * vals = NULL;
+    for (int i = 0; i < propertyNames->GetCount (); i ++) {
+        FdoString* name = propertyNames->GetString (i);
+        FdoPtr<FdoDataValue> val = GetDataValue (name);
+        if(NULL == val) {
+            // try the right side
+            FdoPtr<IGWSExtendedFeatureDescription> pFeatDesc;
+            DescribeFeature(&pFeatDesc);
+            if(NULL != pFeatDesc) {
+                std::wstring strname(name);
+                size_t delimpos = strname.find(pFeatDesc->JoinDelimiter());
+                if(std::wstring::npos != delimpos) {
+                    std::wstring propname = strname.substr(delimpos+1);
+                    val = m_right->GetDataValue(propname.c_str());
+                }
+            }
+        }
+        if (vals == NULL)
+            vals = (CGwsDataValueCollection *) CGwsDataValueCollection::Create ();
+        vals->Add (val);
+    }
+    return vals;
 }
 
 IGWSFeatureIterator * CGwsJoinQueryResults::GetJoinedFeatures (int iJoin)
@@ -147,8 +212,8 @@ IGWSFeatureIterator * CGwsJoinQueryResults::GetJoinedFeatures ()
     }
     m_right->AddRef ();
     return m_right;
-}
 
+}
 
 FdoInt32 CGwsJoinQueryResults::GetRevisionNumber ()
 {
@@ -169,9 +234,28 @@ void CGwsJoinQueryResults::Close ()
     try {
         CGwsFeatureIterator::Close ();
         m_right->CGwsFeatureIterator::Close ();
-    } catch (FdoException * gis) {
-        PushFdoException (eGwsFdoProviderError, gis);
-        gis->Release ();
+    } catch (FdoException * fdoEx) {
+        PushFdoException (eGwsFdoProviderError, fdoEx);
+        fdoEx->Release ();
     }
     return ;
+}
+
+int
+CGwsJoinQueryResults::Count()
+{
+    // call the base class for left outer one-to-one case
+    return CGwsFeatureIterator::Count();
+}
+
+bool
+CGwsJoinQueryResults::ReadAtIndex( unsigned int recordindex )
+{
+    bool bRes = CGwsFeatureIterator::ReadAtIndex(recordindex);
+    m_bLeftJoinValuesSet = false;
+    return SetupRightSide(bRes);
+}
+
+bool CGwsJoinQueryResults::Scrollable() {
+    return true;
 }

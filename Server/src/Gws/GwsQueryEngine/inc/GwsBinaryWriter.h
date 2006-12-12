@@ -38,7 +38,7 @@ public:
     void WriteInt64(FdoInt64 ll);
     void WriteByte(unsigned char b);
     void WriteChar(char c);
-    void WriteString(const wchar_t* src);
+    void WriteString(const wchar_t* src); 
     void WriteRawString(const wchar_t* src);
     void WriteBytes(unsigned char* buf, int len);
     void WriteDateTime(FdoDateTime dt);
@@ -58,4 +58,3 @@ private:
 
 
 #endif
-

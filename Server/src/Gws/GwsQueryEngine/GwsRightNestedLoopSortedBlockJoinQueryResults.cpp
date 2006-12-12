@@ -40,10 +40,11 @@ CGwsRightNestedLoopSortedBlockJoinQueryResults::~CGwsRightNestedLoopSortedBlockJ
 EGwsStatus CGwsRightNestedLoopSortedBlockJoinQueryResults::InitializeReader  (
     IGWSQuery                  * query,
     CGwsPreparedQuery          * prepquery,
-    FdoStringCollection        * joincols
+    FdoStringCollection        * joincols,
+    bool                       bScrollable
 )
 {
-    return CGwsRightNestedLoopJoinQueryResults::InitializeReader (query, prepquery, joincols);
+    return CGwsRightNestedLoopJoinQueryResults::InitializeReader (query, prepquery, joincols, bScrollable);
 
 }
 
@@ -73,22 +74,22 @@ EGwsStatus CGwsRightNestedLoopSortedBlockJoinQueryResults::SetRelatedValues (
     const GWSFeatureId & vals
 )
 {
-    if (m_joinkeys == vals) {
-        if (! m_neverusepooling) {
-            // this completes features pool
-            if (! m_bClosed) {
-                while (ReadNext ())
-                    ;
-                Close ();
+        if (m_joinkeys == vals) {
+            if (! m_neverusepooling) {
+                // this completes features pool
+                if (! m_bClosed) {
+                    while (ReadNext ())
+                        ;
+                    Close ();
+                }
             }
+            m_usepool = true;
+            m_poolpos = -1;
+            return eGwsOk;
         }
-        m_usepool = true;
+        m_pool->Reset ();
+        m_usepool = false;
         m_poolpos = -1;
-        return eGwsOk;
-    }
-    m_pool->Reset ();
-    m_usepool = false;
-    m_poolpos = -1;
 
-    return CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (vals);
+        return CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (vals);
 }

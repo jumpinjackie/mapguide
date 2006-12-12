@@ -182,6 +182,9 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/Sheboygan_Parcels.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/Sheboygan_BuildingOutlines.FeatureSource ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/Sheboygan_BuildingOutlines.sdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/Sheboygan_VotingDistricts.FeatureSource ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/Sheboygan_VotingDistricts.sdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/TESTChainedInner1ToManyJoin.FeatureSource ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SHP/Redding_Parcels.FeatureSource ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SHP/Redding_Parcels.shp ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SHP/Redding_Parcels.dbf ../UnitTestFiles

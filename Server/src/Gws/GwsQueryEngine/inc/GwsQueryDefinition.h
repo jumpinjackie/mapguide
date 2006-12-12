@@ -31,6 +31,18 @@ namespace GwsQueryDefinitionXmlHelpers
     IGWSQueryDefinition * ReadQueryDefinition (FdoXmlAttributeCollection* attrs);
     GWS_QUERYENGINE_API
     FdoString *           QueryXmlHeader ();
+    GWS_QUERYENGINE_API
+    bool                  CompareQueries(IGWSQueryDefinition* firstQuery
+                                         , IGWSQueryDefinition* secondQuery);
+    GWS_QUERYENGINE_API
+    bool                  CompareStringCollection(FdoStringCollection* firstString
+                                         , FdoStringCollection* secondString);
+    GWS_QUERYENGINE_API
+    bool                  CompareQualifiedNames(IGWSQualifiedNames* firstNames
+                                         , IGWSQualifiedNames* secondNames);
+    template<typename T>
+    bool CompareToStringValues(T* firstVal, T* secondVal);
+
 };
 
 /// <summary>
@@ -50,7 +62,15 @@ public:
     virtual EGwsQueryType       Type () const = 0;
     virtual FdoStringCollection * SelectList () = 0;
 
+    virtual FdoStringCollection* GetOrderBy ();
+    virtual void                 SetOrderBy (FdoStringCollection* orderByList);
+
+    virtual FdoOrderingOption    GetOrderingOption ();
+    virtual void                 SetOrderingOption (FdoOrderingOption orderingOption);
+
 protected:
+    FdoPtr<FdoStringCollection> m_orderByList;
+    FdoOrderingOption           m_orderingOption;
 };
 
 /// <summary>
@@ -73,9 +93,9 @@ public:
     virtual IGWSQualifiedNames*     QualifiedNames ();
     virtual FdoStringCollection*    FeatureSourceNames ();
     virtual EGwsQueryType           Type () const {return eGwsQueryFeature; }
-    virtual FdoStringCollection *   OrderBy    ();
     virtual IGWSFeatureQueryDefinition *
                                      GetPrimaryQueryDefinition ();
+
 
 protected:
     virtual void                Write    (FdoXmlWriter * writer);
@@ -103,6 +123,9 @@ class GWSJoinQueryDefinition : public GWSQueryDefinition<T>
 {
 public:
                                 GWSJoinQueryDefinition  (
+                                    const FdoString     * joinName,
+                                    const FdoString     * joinDelimiter,
+                                    bool                  forceOneToOne,
                                     IGWSQueryDefinition * leftQd,
                                     IGWSQueryDefinition * rightQd,
                                     FdoStringCollection * leftProp,
@@ -122,7 +145,9 @@ public:
     virtual FdoStringCollection*  FeatureSourceNames ();
     virtual IGWSFeatureQueryDefinition *
                                   GetPrimaryQueryDefinition ();
-
+    virtual const FdoString*      JoinName() { return m_joinName.empty() ? NULL : m_joinName.c_str(); }
+    virtual const FdoString*      JoinDelimiter() { return m_joinDelimiter.empty() ? L"" : m_joinDelimiter.c_str(); }  // RKL:  if m_joinDelimiter.empty() return "", instead of NULL
+    virtual bool                  ForceOneToOne() { return m_forceOneToOne; }
 protected:
     // FdoXmlSaxHandler protocol
     virtual void                  Write    (FdoXmlWriter * writer);
@@ -138,18 +163,26 @@ protected:
     FdoPtr<IGWSQueryDefinition>   m_rightQd;
     FdoPtr<FdoStringCollection>   m_leftAttrs;
     FdoPtr<FdoStringCollection>   m_rightAttrs;
+    WSTR                          m_joinName;
+    WSTR                          m_joinDelimiter;
+    bool                          m_forceOneToOne;
 };
 
 // Left join query definition
 class GWSLeftJoinQueryDefinition :  public GWSJoinQueryDefinition<IGWSLeftJoinQueryDefinition>
 {
+    friend class CGwsLeftJoinQueryDefCollection;
+
 public:
-                                GWSLeftJoinQueryDefinition  (
+    GWS_QUERYENGINE_API         GWSLeftJoinQueryDefinition  (
+                                    const FdoString     * joinName,
+                                    const FdoString     * joinDelimiter,
+                                    bool                  forceOneToOne,
                                     IGWSQueryDefinition * leftQd,
                                     IGWSQueryDefinition * rightQd,
                                     FdoStringCollection * leftProp,
                                     FdoStringCollection * rightProp);
-                                GWSLeftJoinQueryDefinition ();
+    GWS_QUERYENGINE_API         GWSLeftJoinQueryDefinition ();
 
     virtual                     ~GWSLeftJoinQueryDefinition () throw();
 
@@ -160,18 +193,27 @@ public:
 // Equal join query definition
 class GWSEqualJoinQueryDefinition :  public GWSJoinQueryDefinition<IGWSEqualJoinQueryDefinition>
 {
+    friend class CGwsEqualJoinQueryDefCollection;
+
 public:
 
-                                GWSEqualJoinQueryDefinition  (
+    GWS_QUERYENGINE_API         GWSEqualJoinQueryDefinition  (
+                                    const FdoString     * joinName,
+                                    const FdoString     * joinDelimiter,
+                                    bool                  forceOneToOne,
                                     IGWSQueryDefinition * leftQd,
                                     IGWSQueryDefinition * rightQd,
                                     FdoStringCollection * leftProp,
                                     FdoStringCollection * rightProp);
-                                GWSEqualJoinQueryDefinition ();
+    GWS_QUERYENGINE_API         GWSEqualJoinQueryDefinition ();
 
     virtual                     ~GWSEqualJoinQueryDefinition () throw();
 
     virtual EGwsQueryType       Type () const {return eGwsQueryEqualJoin; }
 };
 
+
+
 #endif
+
+

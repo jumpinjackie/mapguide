@@ -54,10 +54,13 @@ CGwsRightJoinQueryResults::~CGwsRightJoinQueryResults  () throw()
 EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
     IGWSQuery           * query,
     FdoIFeatureReader   * reader,
-    FdoStringCollection * joincols
+    FdoStringCollection * joincols,
+    bool                bScrollable
 )
 {
     m_reader = reader;
+    m_bScrollableReader = bScrollable;
+
     CGwsFeatureIterator * fiter = dynamic_cast <CGwsFeatureIterator *> (reader);
     if (fiter != NULL) {
         fiter->AddRef ();
@@ -68,7 +71,7 @@ EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
     if (query != NULL)
         query->AddRef ();
     if (fiter != NULL)
-        m_prepquery = fiter->m_prepquery;
+        m_prepquery = fiter->PrepQuery();
 
     m_joincols = joincols;
     if (joincols != NULL)
@@ -87,15 +90,18 @@ EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
 EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
     IGWSQuery                * query,
     CGwsPreparedQuery        * prepquery,
-    FdoStringCollection      * joincols
+    FdoStringCollection      * joincols,
+    bool                    bScrollable
 )
 {
     m_reader = NULL;
+    m_bScrollableReader = bScrollable;
+
     m_query = query;
     if (query != NULL)
         query->AddRef ();
-    m_prepquery = prepquery;
 
+    m_prepquery = prepquery;
     m_joincols = joincols;
     if (joincols != NULL)
         joincols->AddRef ();
@@ -263,7 +269,7 @@ FdoLOBValue* CGwsRightJoinQueryResults::GetLOB (FdoString* propertyName)
 {
     if (m_usepool) {
         FdoPtr<IGWSFeature> f = GetPooledFeature ();
-        // TODO: Not implemented yet
+        // Not implemented yet
         assert (false);
         return NULL;
     }
@@ -274,7 +280,7 @@ FdoIStreamReader* CGwsRightJoinQueryResults::GetLOBStreamReader(const wchar_t* p
 {
     if (m_usepool) {
         FdoPtr<IGWSFeature> f = GetPooledFeature ();
-        // TODO: Not implemented yet
+        // Not implemented yet
         assert (false);
         return NULL;
     }
@@ -285,7 +291,7 @@ FdoIRaster* CGwsRightJoinQueryResults::GetRaster (FdoString* propertyName)
 {
     if (m_usepool) {
         FdoPtr<IGWSFeature> f = GetPooledFeature ();
-        // TODO: Not implemented yet
+        // Not implemented yet
         assert (false);
         return NULL;
     }
@@ -310,11 +316,25 @@ FdoByteArray* CGwsRightJoinQueryResults::GetGeometry (FdoString* propertyName)
     return CGwsFeatureIterator::GetGeometry (propertyName);
 }
 
+FdoByteArray * CGwsRightJoinQueryResults::GetOriginalGeometry (FdoString* propertyName)
+{
+    // TODO: check convesion.
+    // This is not actual for now since the right side has to be data table in
+    // map, but ...
+    return GetGeometry (propertyName);
+}
+
+bool CGwsRightJoinQueryResults::ConvertingGeometry ()
+{
+    return CGwsFeatureIterator::ConvertingGeometry ();
+}
+
 FdoIFeatureReader* CGwsRightJoinQueryResults::GetFeatureObject(FdoString* propertyName)
 {
     if (m_usepool) {
         FdoPtr<IGWSFeature> f = GetPooledFeature ();
         return f->GetFeatureObject (propertyName);
+        return NULL;
     }
     return CGwsFeatureIterator::GetFeatureObject (propertyName);
 }
@@ -496,3 +516,5 @@ void CGwsRightJoinQueryResults::ToString (
     }
     return CGwsFeatureIterator::ToString (propertyName, buff, len);
 }
+
+
