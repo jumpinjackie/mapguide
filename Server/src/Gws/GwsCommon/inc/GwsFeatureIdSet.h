@@ -54,7 +54,7 @@ public:
             return false;
         mVecIds.push_back(id);
         count++;
-        assert(count == mVecIds.size());
+        assert(count == (int)mVecIds.size());
         return true;
     }
 
@@ -81,7 +81,7 @@ public:
         }
 
         count--;
-        assert(count == mVecIds.size());
+        assert(count == (int)mVecIds.size());
         return true;
     }
 

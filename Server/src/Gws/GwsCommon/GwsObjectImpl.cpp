@@ -276,6 +276,7 @@ bool CGwsObject::IsWarning  (EGwsStatus stat)
 
 void CGwsObject::Write (FdoXmlWriter * writer)
 {
+    writer; // For "unreferenced formal parameter" warning
 }
 
 

@@ -22,6 +22,9 @@ BOOL APIENTRY DllMain( HANDLE hModule,
                        LPVOID lpReserved
                      )
 {
+    hModule;    // For "unreferenced formal parameter" warning
+    lpReserved; // For "unreferenced formal parameter" warning
+
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
@@ -32,4 +35,3 @@ BOOL APIENTRY DllMain( HANDLE hModule,
     }
     return TRUE;
 }
-
