@@ -81,6 +81,7 @@ FdoDataValue * GwsQueryUtils::GetDataPropertyValue (
         assert(false);
     }
     return NULL;
+
 }
 
 void GwsQueryUtils::ToString (
@@ -239,6 +240,7 @@ void GwsQueryUtils::ToString (
     }
     assert (false);
     return;
+
 }
 
 static bool CompareStringCollections (
@@ -328,4 +330,125 @@ bool GwsQueryUtils::QueryDefinitionsEqual (
             return false;
     }
     return true;
+
 }
+
+
+FdoPropertyDefinition * GwsQueryHelpers::ClonePropertyDefinition (
+    FdoString             * newName,
+    FdoPropertyDefinition * pDefIn,
+    bool                    forceCloneReadOnly
+)
+{
+
+    std::wstring wpubname;
+
+    if (pDefIn == NULL)
+        return NULL;
+
+    if (newName != NULL)
+        wpubname = newName;
+    else
+        wpubname = pDefIn->GetName ();
+
+    FdoString * pubname = wpubname.c_str ();
+
+    FdoPropertyDefinition * pDefOut = NULL;
+
+    if (pDefIn->GetPropertyType () == FdoPropertyType_DataProperty) {
+        pDefOut = FdoDataPropertyDefinition::Create (pubname, L"");
+        FdoDataPropertyDefinition * pOut = dynamic_cast<FdoDataPropertyDefinition*> (pDefOut);
+        FdoDataPropertyDefinition * pIn = dynamic_cast<FdoDataPropertyDefinition*> (pDefIn);
+
+        pOut->SetDataType(pIn->GetDataType ());
+        pOut->SetReadOnly(forceCloneReadOnly?true:pIn->GetReadOnly ());
+        pOut->SetLength(pIn->GetLength ());
+        pOut->SetPrecision(pIn->GetPrecision ());
+        pOut->SetScale(pIn->GetScale ());
+        pOut->SetNullable(pIn->GetNullable ());
+        pOut->SetDefaultValue(pIn->GetDefaultValue ());
+    }
+    if (pDefIn->GetPropertyType () == FdoPropertyType_GeometricProperty) {
+
+        pDefOut = FdoGeometricPropertyDefinition::Create (pubname, L"");
+        FdoGeometricPropertyDefinition * pOut = dynamic_cast<FdoGeometricPropertyDefinition*> (pDefOut);
+        FdoGeometricPropertyDefinition * pIn = dynamic_cast<FdoGeometricPropertyDefinition*> (pDefIn);
+
+        pOut->SetGeometryTypes (pIn->GetGeometryTypes ());
+        pOut->SetReadOnly(forceCloneReadOnly?true:pIn->GetReadOnly ());
+        pOut->SetHasElevation(pIn->GetHasElevation ());
+        pOut->SetHasMeasure (pIn->GetHasMeasure ());
+        pOut->SetSpatialContextAssociation (pIn->GetSpatialContextAssociation ());
+
+    }
+
+    if (pDefIn->GetPropertyType () == FdoPropertyType_ObjectProperty) {
+        pDefOut = FdoObjectPropertyDefinition::Create (pubname, L"");
+        FdoObjectPropertyDefinition * pOut = dynamic_cast<FdoObjectPropertyDefinition*> (pDefOut);
+        FdoObjectPropertyDefinition * pIn = dynamic_cast<FdoObjectPropertyDefinition*> (pDefIn);
+
+        FdoPtr<FdoClassDefinition> clsdef = pIn->GetClass();
+        pOut->SetClass (clsdef);
+        FdoPtr<FdoDataPropertyDefinition> idprop = pIn->GetIdentityProperty ();
+        pOut->SetIdentityProperty (idprop);
+        pOut->SetObjectType (pIn->GetObjectType ());
+        pOut->SetOrderType (pIn->GetOrderType ());
+    }
+
+    if (pDefIn->GetPropertyType () == FdoPropertyType_AssociationProperty) {
+        pDefOut = FdoAssociationPropertyDefinition::Create (pubname, L"");
+        FdoAssociationPropertyDefinition * pOut = dynamic_cast<FdoAssociationPropertyDefinition*> (pDefOut);
+        FdoAssociationPropertyDefinition * pIn = dynamic_cast<FdoAssociationPropertyDefinition*> (pDefIn);
+
+        FdoPtr<FdoClassDefinition> clsdef = pIn->GetAssociatedClass();
+        pOut->SetAssociatedClass (clsdef);
+        pOut->SetReverseName (pIn->GetReverseName ());
+        pOut->SetDeleteRule (pIn->GetDeleteRule ());
+        pOut->SetLockCascade (pIn->GetLockCascade ());
+        pOut->SetIsReadOnly (forceCloneReadOnly?true:pIn->GetIsReadOnly ());
+        pOut->SetMultiplicity (pIn->GetMultiplicity ());
+        pOut->SetReverseMultiplicity (pIn->GetReverseMultiplicity ());
+    }
+
+    if (pDefIn->GetPropertyType () == FdoPropertyType_RasterProperty) {
+        pDefOut = FdoRasterPropertyDefinition::Create (pubname, L"");
+        FdoRasterPropertyDefinition * pOut = dynamic_cast<FdoRasterPropertyDefinition*> (pDefOut);
+        FdoRasterPropertyDefinition * pIn = dynamic_cast<FdoRasterPropertyDefinition*> (pDefIn);
+
+        pOut->SetReadOnly(forceCloneReadOnly?true:pIn->GetReadOnly ());
+        pOut->SetNullable(pIn->GetNullable ());
+        FdoPtr<FdoRasterDataModel> rdm = pIn->GetDefaultDataModel ();
+        pOut->SetDefaultDataModel (rdm);
+        pOut->SetDefaultImageXSize (pIn->GetDefaultImageXSize ());
+        pOut->SetDefaultImageYSize (pIn->GetDefaultImageYSize ());
+        pOut->SetSpatialContextAssociation (pIn->GetSpatialContextAssociation ());
+
+    }
+    return pDefOut;
+}
+
+void GwsQueryHelpers::CreateFlatFdoReader (
+    IGWSFeatureIterator * pFrom,
+    FdoIFeatureReader  ** pFdoReader
+)
+{
+    * pFdoReader = new CGwsFlatFdoReader (pFrom);
+}
+
+void  GwsQueryHelpers::CreateFlatGwsIterator (
+    IGWSFeatureIterator * pFrom,
+    IGWSFeatureIterator ** pGwsIterator
+)
+{
+    * pGwsIterator = new CGwsFlatGwsIterator (pFrom);
+    (* pGwsIterator)->AddRef ();
+
+}
+
+void GwsQueryHelpers::BuildFlatDescription(IGWSQueryDefinition* pQryDef,
+                                           IGWSExtendedFeatureDescription* pJoinDesc,
+                                           IGWSExtendedFeatureDescription** ppResDesc) {
+    CGwsFlatFdoReader::BuildFlatDescription(pQryDef,pJoinDesc,ppResDesc);
+}
+
+

@@ -42,6 +42,7 @@ CGwsFdoUnlockCommand::CGwsFdoUnlockCommand (
     const GWSQualifiedName    &classname
 )
 :CGwsFdoLockingCommand (session, classname)
+
 {
 }
 
@@ -125,3 +126,5 @@ EGwsStatus CGwsFdoUnlockCommand::ExecuteFilter (FdoFilter *pFilter)
     }
     return fdoes;
 }
+
+

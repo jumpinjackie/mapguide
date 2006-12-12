@@ -44,11 +44,12 @@ CGwsRightNestedLoopJoinQueryResults::~CGwsRightNestedLoopJoinQueryResults () thr
 EGwsStatus CGwsRightNestedLoopJoinQueryResults::InitializeReader (
     IGWSQuery                  * query,
     CGwsPreparedQuery          * prepquery,
-    FdoStringCollection        * joincols
+    FdoStringCollection        * joincols,
+    bool                        bScrollable
 )
 {
     m_bClosed = true;
-    return CGwsRightJoinQueryResults::InitializeReader (query, prepquery, joincols);
+    return CGwsRightJoinQueryResults::InitializeReader (query, prepquery, joincols, bScrollable);
 }
 
 bool CGwsRightNestedLoopJoinQueryResults::ReadNext()
@@ -66,12 +67,13 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
     const GWSFeatureId & vals
  )
 {
+
     EGwsStatus stat = eGwsOk;
 
     try {
         Close ();
 
-        FdoPtr<FdoFilter> pFilter;
+        FdoPtr<FdoFilter> pFilter = NULL;
 
         for (int idx = 0; idx < m_joincols->GetCount (); idx ++) {
             FdoString          * propname = m_joincols->GetString (idx);

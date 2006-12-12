@@ -24,14 +24,35 @@
 
 #include "GwsQueryEngineImp.h"
 #include "GwsBinaryFeatureWriter.h"
+#include "GwsFlatFdoReader.h"
 
 //TODO: Resourceify this
 #define INVALID_PROPERTY_NAME  L"Invalid qualified property name"
 #define PROPERTY_VALUE_NOT_SET  L"Property value has not been set on the feature."
 #define PROPERTY_WRONG_PROPERTY_TYPE  L"Wrong property type."
 
+EGwsStatus IGWSMutableFeature::CreatePrimary(
+    IGWSFeature         * pFrom,
+    IGWSMutableFeature ** pNewFeature) {
+
+    CGwsFlatGwsIterator* flatIter = dynamic_cast<CGwsFlatGwsIterator*>(pFrom);
+    if(NULL == flatIter)
+        return IGWSMutableFeature::Create(pFrom,pNewFeature);
+    else
+        return IGWSMutableFeature::Create(flatIter->GetPrimaryIterator(),pNewFeature);
+}
+
 EGwsStatus IGWSMutableFeature::Create(
     IGWSFeature         * pFrom,
+    IGWSMutableFeature ** pNewFeature
+)
+{
+    return IGWSMutableFeature::Create(pFrom, NULL, pNewFeature);
+}
+
+EGwsStatus IGWSMutableFeature::Create(
+    IGWSFeature         * pFrom,
+    IGWSObject         * owner,
     IGWSMutableFeature ** pNewFeature
 )
 {
@@ -40,7 +61,7 @@ EGwsStatus IGWSMutableFeature::Create(
         GWS_THROW (eGwsNullPointer);
 
     FdoPtr<IGWSExtendedFeatureDescription> iResdscs;
-    pFrom->DescribeFeature (& iResdscs);
+        pFrom->DescribeFeature (& iResdscs);
     int nFailed = 0;
     int nProps = 0;
 
@@ -48,7 +69,7 @@ EGwsStatus IGWSMutableFeature::Create(
 
         FdoPtr<CGwsMutableFeature>  mfeature;
 
-        IGWSMutableFeature::Create (iResdscs, NULL, (IGWSMutableFeature **)& mfeature.p);
+        IGWSMutableFeature::Create (iResdscs, owner, (IGWSMutableFeature **)& mfeature.p);
 
         mfeature->SetFeatureId (pFrom->GetFeatureId ());
         mfeature->SetRevisionNumber (pFrom->GetRevisionNumber ());
@@ -72,11 +93,11 @@ EGwsStatus IGWSMutableFeature::Create(
         for (i = 0; i < nProps; i ++) {
             try {
                 FdoString * pname = props[i].m_name.c_str ();
+                if (pFrom->IsNull (pname)) {  // continue for now
+                    mfeature->SetNull (props[i].m_name.c_str ());
+                    continue;
+                }
                 if (props[i].m_ptype == FdoPropertyType_DataProperty) {
-                    if (pFrom->IsNull (pname)) {  // continue for now
-                        mfeature->SetNull (props[i].m_name.c_str ());
-                        continue;
-                    }
 
                     switch (props[i].m_dataprop) {
                     case FdoDataType_Boolean:
@@ -131,7 +152,8 @@ EGwsStatus IGWSMutableFeature::Create(
                 } else if (props[i].m_ptype == FdoPropertyType_GeometricProperty) {
                     FdoByteArray * geom = pFrom->GetGeometry (pname);
                     if (geom != NULL) {
-                        mfeature->SetGeometry (pname, geom);
+                        FdoPtr<FdoByteArray> pNewGeom = FdoByteArray::Create(geom->GetData(), geom->GetCount());
+                        mfeature->SetGeometry (pname, pNewGeom);
                         geom->Release ();
                     }
 
@@ -147,8 +169,8 @@ EGwsStatus IGWSMutableFeature::Create(
         * pNewFeature = mfeature;
         (* pNewFeature)->AddRef ();
 
-    } catch (FdoException * gis) {
-        GWS_RETHROW (gis, eGwsFailedToCreateMutableFeature);
+    } catch (FdoException * fdoEx) {
+        GWS_RETHROW (fdoEx, eGwsFailedToCreateMutableFeature);
     }
     if (nFailed == 0)
         return eGwsOk;
@@ -171,8 +193,10 @@ EGwsStatus IGWSMutableFeature::Create(
          (CGwsMutableFeature *)
             CGwsMutableFeature::CreateInstance<CGwsMutableFeature>(owner);
     feature->Initialize (pefdsc);
+
     * pNewFeature = feature;
     return eGwsOk;
+
 }
 
 EGwsStatus IGWSMutableFeature::Create(IGWSExtendedFeatureDescription * pefdsc,
@@ -198,6 +222,16 @@ CGwsMutableFeature::CGwsMutableFeature()
     m_cacheStatus = 0;
 }
 
+void CGwsMutableFeature::SetSourceCSName (const GWSCoordinateSystem & csname)
+{
+    m_srccsname = csname;
+}
+
+const GWSCoordinateSystem & CGwsMutableFeature::GetSourceCSName ()
+{
+    return m_srccsname;
+}
+
 
 void CGwsMutableFeature::Initialize (IGWSExtendedFeatureDescription * pFeatDesc)
 
@@ -212,6 +246,8 @@ void CGwsMutableFeature::Initialize (IGWSExtendedFeatureDescription * pFeatDesc)
     m_cacheLockType = eGwsLockNolock;
     m_cacheStatus = 0;
     m_csname = pFeatDesc->GetCoordinateSystem ();
+
+
 }
 
 void CGwsMutableFeature::DescribeFeature(IGWSExtendedFeatureDescription ** ppResDesc)
@@ -253,7 +289,7 @@ FdoPropertyValue * CGwsMutableFeature::ConstructPropertyValue (
 
     if (valexpr != NULL)
         return FdoPropertyValue::Create (desc.m_name.c_str (), valexpr);
-    // TODO: unsupported property value to be implemented
+    //  unsupported property value to be implemented
     assert (false);
     return NULL;
 }
@@ -265,7 +301,66 @@ FdoValueExpression * CGwsMutableFeature::ConstructValueExpression (
     FdoValueExpression * valexpr = NULL;
 
     if (desc.m_ptype == FdoPropertyType_DataProperty)
+    {
         valexpr = FdoDataValue::Create (desc.m_dataprop);
+
+        if ( desc.m_nullable && desc.m_dataprop == FdoDataType_String )
+        {
+            // sometimes a string type field may be nullable, but does not accept a zero length string.
+            // e.g. the cities table in Defect 770036 attachment
+            ((FdoDataValue *)valexpr)->SetNull();
+        }
+        else if ( !desc.m_nullable )
+        {
+            // this is a data property that cannot be null.  Give it some value.
+            switch (desc.m_dataprop) {
+            case FdoDataType_String:
+                ((FdoStringValue *)valexpr)->SetString( L"" );
+                break;
+            case FdoDataType_Boolean:
+                ((FdoBooleanValue *)valexpr)->SetBoolean( false );
+                break;
+            case FdoDataType_Byte:
+                ((FdoByteValue *)valexpr)->SetByte( 0 );
+                break;
+            case FdoDataType_DateTime:
+                {
+                    FdoDateTime fdoDt;
+                    fdoDt.year = 0;
+                    fdoDt.month = 0;
+                    fdoDt.day = 0;
+                    fdoDt.hour = 0;
+                    fdoDt.minute = 0;
+                    fdoDt.seconds = 0.0;
+                    ((FdoDateTimeValue *)valexpr)->SetDateTime( fdoDt );
+                }
+                break;
+            case FdoDataType_Double:
+                ((FdoDoubleValue *)valexpr)->SetDouble( 0.0 );
+                break;
+            case FdoDataType_Decimal:
+                ((FdoDecimalValue *)valexpr)->SetDecimal( 0.0 );
+                break;
+            case FdoDataType_Single:
+                ((FdoSingleValue *)valexpr)->SetSingle( 0.0 );
+                break;
+            case FdoDataType_Int16:
+                ((FdoInt16Value *)valexpr)->SetInt16( 0 );
+                break;
+            case FdoDataType_Int32:
+                ((FdoInt32Value *)valexpr)->SetInt32( 0 );
+                break;
+            case FdoDataType_Int64:
+                ((FdoInt64Value *)valexpr)->SetInt64( 0 );
+                break;
+            case FdoDataType_BLOB:
+            case FdoDataType_CLOB:
+            default:
+                // Leave null value.
+                break;
+            }
+        }
+    }
 
     else if (desc.m_ptype == FdoPropertyType_GeometricProperty) {
         valexpr = FdoGeometryValue::Create();
@@ -287,6 +382,7 @@ FdoValueExpression * CGwsMutableFeature::ConstructValueExpression (
 
 void CGwsMutableFeature::SetPropertyValues (IGWSFeature * feature)
 {
+
     FdoPtr<IGWSExtendedFeatureDescription> featDsc;
     DescribeFeature (&featDsc);
 
@@ -303,102 +399,27 @@ void CGwsMutableFeature::SetPropertyValues (IGWSFeature * feature)
         FdoString               *  pName   = props[i].m_name.c_str ();
 
         if (props[i].m_ptype == FdoPropertyType_DataProperty) {
-            FdoDataValue * dval = dynamic_cast<FdoDataValue *> (valexpr.p);
-            if (feature->IsNull (pName)) {
-                dval->SetNull ();
-                continue;
+            FdoPtr<FdoDataValue> srcVal;
+            try {
+                srcVal = feature->GetDataValue (pName);
+            } catch (FdoException * e) {
+                // the value is not set.
+                e->Release ();
             }
-
-            switch (props[i].m_dataprop) {
-            case FdoDataType_Boolean:
-                {
-                FdoBooleanValue* pBoolVal = (FdoBooleanValue *) dval;
-                pBoolVal->SetBoolean(feature->GetBoolean(pName));
-                }
-                break;
-
-            case FdoDataType_Byte:
-                {
-                FdoByteValue* pByteVal = (FdoByteValue*)dval;
-                pByteVal->SetByte(feature->GetByte (pName));
-                }
-                break;
-
-            case FdoDataType_Decimal:
-                {
-                FdoByteValue* pByteVal = (FdoByteValue*)dval;
-                pByteVal->SetByte(feature->GetByte (pName));
-                }
-                break;
-            case FdoDataType_Double:
-                {
-                FdoDoubleValue* pVal = (FdoDoubleValue*)dval;
-                pVal->SetDouble(feature->GetDouble(pName));
-                }
-                break;
-
-            case FdoDataType_Int16:
-                {
-                FdoInt16Value* pVal = (FdoInt16Value*)dval;
-                pVal->SetInt16(feature->GetInt16(pName));
-                }
-                break;
-
-            case FdoDataType_Int32:
-                {
-                FdoInt32Value* pVal = (FdoInt32Value*)dval;
-                pVal->SetInt32(feature->GetInt32(pName));
-                }
-                break;
-
-            case FdoDataType_Int64:
-                {
-                FdoInt64Value* pVal = (FdoInt64Value*)dval;
-                pVal->SetInt64(feature->GetInt64(pName));
-                }
-                break;
-
-            case FdoDataType_Single:
-                {
-                FdoSingleValue* pVal = (FdoSingleValue*)dval;
-                pVal->SetSingle(feature->GetSingle(pName));
-                }
-                break;
-
-            case FdoDataType_String:
-                {
-                FdoStringValue* pVal = (FdoStringValue*)dval;
-                pVal->SetString(feature->GetString(pName));
-                }
-                break;
-
-            case FdoDataType_BLOB:
-            case FdoDataType_CLOB:
-                {
-                    FdoLOBValue * pVal = (FdoLOBValue *) dval;
-                    FdoPtr<FdoLOBValue> lob = feature->GetLOB (pName);
-                    FdoPtr<FdoByteArray> barray = lob->GetData ();
-                    pVal->SetData (barray);
-                }
-                break;
-
-            case FdoDataType_DateTime:
-                {
-                FdoDateTimeValue* pVal = (FdoDateTimeValue*)dval;
-                pVal->SetDateTime (feature->GetDateTime (pName));
-                }
-                break;
-
-            default:
-                break;
-            }
+            SetValue (pName, srcVal);
 
         } else if (props[i].m_ptype == FdoPropertyType_GeometricProperty) {
-            FdoByteArray * geom = feature->GetGeometry (pName);
-            FdoGeometryValue * geomval = dynamic_cast<FdoGeometryValue *> (valexpr.p);
+            FdoByteArray * geom = NULL;
+            FdoGeometryValue * geomval = NULL;
+
+            if (! feature->IsNull (pName)) {
+                geom = feature->GetGeometry (pName);
+                geomval = dynamic_cast<FdoGeometryValue *> (valexpr.p);
+            }
 
             if (geom != NULL) {
-                geomval->SetGeometry (geom);
+                FdoPtr<FdoByteArray> pNewGeom = FdoByteArray::Create(geom->GetData(), geom->GetCount());
+                geomval->SetGeometry (pNewGeom);
                 geom->Release ();
             } else
                 geomval->SetNullValue ();
@@ -406,7 +427,9 @@ void CGwsMutableFeature::SetPropertyValues (IGWSFeature * feature)
         } else {
             continue;
         }
+
     }
+
 }
 
 
@@ -441,6 +464,7 @@ void CGwsMutableFeature::ValidatePropertyName(
 
     if (propdesc != NULL)
         * propdesc = & pdesc;
+
 }
 
 void CGwsMutableFeature::ValidatePropertyName(
@@ -459,6 +483,7 @@ void CGwsMutableFeature::ValidatePropertyName(
 
     if (propdesc != NULL)
         * propdesc = & pdesc;
+
 }
 
 FdoInt32 CGwsMutableFeature::GetCacheId ()
@@ -686,6 +711,7 @@ float CGwsMutableFeature::GetSingle(FdoString * propertyName)
         return ((FdoSingleValue *) pVal.p)->GetSingle ();
     }
     throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+
 }
 
 FdoLOBValue* CGwsMutableFeature::GetLOB(FdoString * propertyName)
@@ -717,6 +743,7 @@ const FdoByte * CGwsMutableFeature::GetGeometry(
         return pVal->GetData();
     }
     throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
+
 }
 
 FdoByteArray* CGwsMutableFeature::GetGeometry(FdoString * propertyName)
@@ -749,12 +776,14 @@ FdoIRaster* CGwsMutableFeature::GetRaster(FdoString * propertyName)
 {
     FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     GWS_THROW (eGwsCannotGetPropertyValueOffline);
+    return NULL;
 }
 
 FdoIFeatureReader* CGwsMutableFeature::GetFeatureObject(FdoString * propertyName)
 {
     FdoPtr<FdoPropertyValue> pValue = m_pProperties->FindItem(propertyName);
     GWS_THROW (eGwsCannotGetPropertyValueOffline);
+    return NULL;
 }
 
 FdoDataValue * CGwsMutableFeature::GetDataValue (FdoString* propertyName)
@@ -783,104 +812,9 @@ FdoDataValueCollection * CGwsMutableFeature::GetDataValues (
         datavals->Add (val);
     }
     return datavals;
+
 }
 
-/*
-/// <summary>
-/// CGwsMutableFeature::Getters by property index
-/// </summary>
-bool CGwsMutableFeature::IsNull(FdoInt32 iProp)
-{
-    return false;
-}
-
-FdoString* CGwsMutableFeature::GetString(FdoInt32 iProp)
-{
-    return NULL;
-}
-
-bool CGwsMutableFeature::GetBoolean(FdoInt32 iProp)
-{
-    return false;
-}
-
-FdoByte CGwsMutableFeature::GetByte(FdoInt32 iProp)
-{
-    return FdoByte();
-}
-
-FdoDateTime CGwsMutableFeature::GetDateTime(FdoInt32 iProp)
-{
-    return FdoDateTime();
-}
-
-double CGwsMutableFeature::GetDouble(FdoInt32 iProp)
-{
-    return 0.0;
-}
-
-FdoInt16 CGwsMutableFeature::GetInt16(FdoInt32 iProp)
-{
-    return 0;
-}
-
-FdoInt32 CGwsMutableFeature::GetInt32(FdoInt32 iProp)
-{
-    return 0;
-}
-
-FdoInt64 CGwsMutableFeature::GetInt64(FdoInt32 iProp)
-{
-    return 0;
-}
-
-float CGwsMutableFeature::GetSingle(FdoInt32 iProp)
-{
-    return 0.0;
-}
-
-FdoLOBValue* CGwsMutableFeature::GetLOB(FdoInt32 iProp)
-{
-    return NULL;
-}
-
-FdoIStreamReader* CGwsMutableFeature::GetLOBStreamReader(FdoInt32 iProp)
-{
-    return NULL;
-}
-
-FdoIRaster* CGwsMutableFeature::GetRaster(FdoInt32 iProp)
-{
-    return NULL;
-}
-
-const FdoByte * CGwsMutableFeature::GetGeometry(FdoInt32 iProp, FdoInt32 * count)
-{
-    return NULL;
-}
-
-FdoByteArray* CGwsMutableFeature::GetGeometry(FdoInt32 iProp)
-{
-    return NULL;
-}
-
-FdoIFeatureReader* CGwsMutableFeature::GetFeatureObject (FdoInt32 iProp)
-{
-    return NULL;
-}
-
-
-void CGwsMutableFeature::ToString(FdoInt32 iProp, wchar_t * buff, int len)
-{
-    try {
-        const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-        GwsQueryUtils::ToString (this, desc, buff, len);
-    } catch (FdoException * gis) {
-        wcsncpy (buff, L"*ERROR*", len);
-        gis->Release ();
-    }
-}
-*/
 void CGwsMutableFeature::ToString(
     FdoString*  propertyName,
     wchar_t *   buff,
@@ -890,18 +824,18 @@ void CGwsMutableFeature::ToString(
     try {
         const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
         GwsQueryUtils::ToString (this, desc, buff, len);
-    } catch (FdoException * gis) {
+    } catch (FdoException * fdoEx) {
         wcsncpy (buff, L"*ERROR*", len);
-        gis->Release ();
+        fdoEx->Release ();
     }
 }
 
 
 void CGwsMutableFeature::SetValue(FdoString* propertyName, FdoValueExpression* pVal)
 {
-    FdoPtr<FdoPropertyValue> pPropertyValue =
-                                m_pProperties->FindItem (propertyName);
+    FdoPtr<FdoPropertyValue>     pPropertyValue = NULL;
 
+    pPropertyValue = m_pProperties->FindItem (propertyName);
     if (pPropertyValue != NULL) {
         pPropertyValue->SetValue(pVal);
     } else {
@@ -919,7 +853,7 @@ void CGwsMutableFeature::SetNull(FdoString* propertyName)
     FdoPtr<FdoPropertyValue> pPropertyValue =
                                 m_pProperties->FindItem (propertyName);
     if (pPropertyValue == NULL) { // not yet set
-        pPropertyValue = ConstructPropertyValue (* desc);
+        FdoPtr<FdoPropertyValue>  pPropertyValue = ConstructPropertyValue (* desc);
         m_pProperties->Add(pPropertyValue);
     } else {
         FdoPtr<FdoValueExpression> pVal = pPropertyValue->GetValue ();
@@ -1058,6 +992,7 @@ void CGwsMutableFeature::SetDouble(FdoString* propertyName, double value)
         } else
             throw FdoException::Create(PROPERTY_WRONG_PROPERTY_TYPE);
     }
+
 }
 
 void CGwsMutableFeature::SetInt16(FdoString* propertyName, FdoInt16 value)
@@ -1188,6 +1123,8 @@ int CGwsMutableFeature::GetCount ()
         return m_pProperties->GetCount ();
 
     return 0;
+
+
 }
 
 FdoPropertyValue * CGwsMutableFeature::GetPropertyValue (int idx)
@@ -1232,9 +1169,9 @@ const CGwsPropertyDesc & CGwsMutableFeature::GetPropertyDescriptor (
 
 FdoGeometryType CGwsMutableFeature::GetGeometryType(FdoByteArray* pArray)
 {
-    FdoPtr<FdoFgfGeometryFactory> pAgfFactory = FdoFgfGeometryFactory::GetInstance();
-    FdoPtr<FdoIGeometry> pAgfGeometry = pAgfFactory->CreateGeometryFromFgf(pArray);
-    return pAgfGeometry->GetDerivedType();
+    FdoPtr<FdoFgfGeometryFactory> pFgfFactory = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> pFgfGeometry = pFgfFactory->CreateGeometryFromFgf(pArray);
+    return pFgfGeometry->GetDerivedType();
 }
 
 FdoString* CGwsMutableFeature::GetPrimaryGeometryName()
@@ -1265,8 +1202,7 @@ unsigned char* CGwsMutableFeature::ToBuffer(int& bufLen)
     wchar_t buf[256];
     int len = m_pFeatDesc->ClassName().ToFullyQualifedString(buf, 256);
     assert(len < 256);
-    len;
-
     wrtr.WriteFeature(pClassDef, buf, m_pProperties);
     return wrtr.ToBuffer(bufLen);
 }
+

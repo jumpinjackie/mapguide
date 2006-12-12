@@ -43,10 +43,11 @@ CGwsRightSortedJoinQueryResults::~CGwsRightSortedJoinQueryResults () throw()
 EGwsStatus CGwsRightSortedJoinQueryResults::InitializeReader (
     IGWSQuery           * query,
     FdoIFeatureReader   * reader,
-    FdoStringCollection * joincols
+    FdoStringCollection * joincols,
+    bool                bScrollable
 )
 {
-    return CGwsRightJoinQueryResults::InitializeReader (query, reader, joincols);
+    return CGwsRightJoinQueryResults::InitializeReader (query, reader, joincols, bScrollable);
 }
 
 EGwsStatus CGwsRightSortedJoinQueryResults::SetRelatedValues (const GWSFeatureId & vals)
@@ -105,7 +106,8 @@ bool CGwsRightSortedJoinQueryResults::ReadNext()
     IGWSFeatureIterator * fiter = dynamic_cast<IGWSFeatureIterator *> (m_reader.p);
 
     while (bRes) {
-        FdoPtr<FdoDataValueCollection> joinvals = fiter->GetDataValues (m_joincols);
+        FdoPtr<FdoDataValueCollection> joinvals =
+                                            fiter->GetDataValues (m_joincols);
         m_joinvals = joinvals;
         int res = m_joinkeys.Compare (m_joinvals);
 
@@ -139,10 +141,13 @@ bool CGwsRightSortedJoinQueryResults::ReadNext()
 
         } else if (res == -2) {
             // left is null
-            m_pos = eAfterJoinRow;
             bRes = false;
 
         }
     }
     return bRes;
 }
+
+
+
+

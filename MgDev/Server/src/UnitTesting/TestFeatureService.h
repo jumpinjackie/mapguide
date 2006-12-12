@@ -52,6 +52,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetDataRows);
     CPPUNIT_TEST(TestCase_CloseDataReader);
     CPPUNIT_TEST(TestCase_JoinFeatures);
+    CPPUNIT_TEST(TestCase_JoinFeaturesChainedInner1ToMany);
     CPPUNIT_TEST(TestCase_CreateFeatureSource);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
@@ -90,6 +91,7 @@ public:
     void TestCase_GetDataRows();
     void TestCase_CloseDataReader();
     void TestCase_JoinFeatures();
+    void TestCase_JoinFeaturesChainedInner1ToMany();
     void TestCase_CreateFeatureSource();
 };
 

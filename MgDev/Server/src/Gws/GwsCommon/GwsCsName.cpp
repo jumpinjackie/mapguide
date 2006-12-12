@@ -32,6 +32,7 @@
 GWSCoordinateSystem::GWSCoordinateSystem ()
 {
     m_cstype = eGwsCSWkt;
+    m_csname = L"";
 }
 GWSCoordinateSystem::GWSCoordinateSystem (FdoString * wktcsname)
 {
@@ -39,7 +40,7 @@ GWSCoordinateSystem::GWSCoordinateSystem (FdoString * wktcsname)
     m_csname = wktcsname;
 }
 GWSCoordinateSystem::GWSCoordinateSystem (
-    FdoString * csname,
+    FdoString * csname, 
     EGwsCSType  cstype
 )
 {
@@ -85,3 +86,5 @@ bool GWSCoordinateSystem::IsEmpty () const
 {
     return m_csname.GetLength () == 0;
 }
+
+

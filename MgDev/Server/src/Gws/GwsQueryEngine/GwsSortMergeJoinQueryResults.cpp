@@ -37,7 +37,8 @@ CGwsSortMergeJoinQueryResults::CGwsSortMergeJoinQueryResults (
 
 EGwsStatus CGwsSortMergeJoinQueryResults::InitializeReader (
     IGWSQuery                       * query,
-    CGwsPreparedJoinQuery           * prepquery
+    CGwsPreparedJoinQuery           * prepquery,
+    bool                            bScrollable
 )
 {
     EGwsStatus                  stat = eGwsOk;
@@ -46,7 +47,7 @@ EGwsStatus CGwsSortMergeJoinQueryResults::InitializeReader (
     FdoPtr<FdoStringCollection> leftcols = prepquery->LeftProperties ();
     FdoPtr<FdoStringCollection> rightcols = prepquery->RightProperties ();
 
-    stat = CGwsJoinQueryResults::InitializeReader (leftcols, query, leftquery);
+    stat = CGwsJoinQueryResults::InitializeReader (leftcols, query, leftquery, bScrollable);
     if (IGWSException::IsError (stat)) {
         PushStatus  (stat);
         return stat;
@@ -54,7 +55,7 @@ EGwsStatus CGwsSortMergeJoinQueryResults::InitializeReader (
     m_prepquery = prepquery;
 
     FdoPtr<IGWSFeatureIterator> right;
-    stat = rightquery->Execute (& right);
+    stat = rightquery->Execute (& right, bScrollable);
     if (IGWSException::IsError (stat)) {
         PushStatus  (stat);
         return stat;
@@ -62,7 +63,7 @@ EGwsStatus CGwsSortMergeJoinQueryResults::InitializeReader (
 
     CGwsRightJoinQueryResults * results = (CGwsRightJoinQueryResults *) rightquery->CreateFeatureIterator (eGwsRightSortMergeJoinIterator);
 
-    stat = results->InitializeReader (query, right, rightcols);
+    stat = results->InitializeReader (query, right, rightcols, bScrollable);
 
     if (IGWSException::IsError (stat)) {
         delete results;
@@ -78,3 +79,4 @@ EGwsStatus CGwsSortMergeJoinQueryResults::InitializeReader (
 CGwsSortMergeJoinQueryResults::~CGwsSortMergeJoinQueryResults () throw()
 {
 }
+

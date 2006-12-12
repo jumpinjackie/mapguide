@@ -45,6 +45,9 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     m_propertynames = FdoStringCollection::Create (other.m_propertynames);
     m_propdsc = other.m_propdsc;
     m_suffix = other.m_suffix;
+    m_joinName = other.m_joinName;
+    m_joinDelimiter = other.m_joinDelimiter;
+    m_forceOneToOne = other.m_forceOneToOne;
     CGwsQueryResultDescriptors & src = (CGwsQueryResultDescriptors &) other;
     for (int i = 0; i < src.GetCount (); i ++) {
         FdoPtr<IGWSExtendedFeatureDescription> fdsc = src.GetItem (i);
@@ -56,6 +59,9 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
 CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     FdoClassDefinition     * classDef,
     const GWSQualifiedName & classname,
+    const FdoString        * joinName,
+    const FdoString        * joinDelimiter,
+    bool                     forceOneToOne,
     FdoStringCollection    * propnames
 )
 {
@@ -63,8 +69,14 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     if (classDef != NULL)
         classDef->AddRef ();
     m_classname = classname;
+    if(NULL != joinName)
+        m_joinName = joinName;
+    if(NULL != joinDelimiter)
+        m_joinDelimiter = joinDelimiter;
+    m_forceOneToOne = forceOneToOne;
     m_propertynames = FdoStringCollection::Create ();
     appendPropertyNames (propnames, classDef, m_propertynames, m_propdsc);
+
 }
 
 CGwsQueryResultDescriptors::~CGwsQueryResultDescriptors () throw()
@@ -83,11 +95,13 @@ void CGwsQueryResultDescriptors::appendPropertyNames (
     std::vector<CGwsPropertyDesc> & propdsc
 )
 {
+
     FdoPtr<FdoPropertyDefinitionCollection> properties;
 
     FdoPtr<FdoClassDefinition> baseClass = classDef->GetBaseClass ();
     if (baseClass != NULL) {
         appendPropertyNames (propnamestoadd, baseClass, propnames, propdsc);
+
     }
 
     properties = classDef->GetProperties ();
@@ -193,11 +207,18 @@ IGWSExtendedFeatureDescription * CGwsQueryResultDescriptors::GetItem (
 
     for (int i = 0; res == NULL && i < GetCount (); i ++) {
         FdoPtr<IGWSExtendedFeatureDescription> fdesc = GetItem (i);
-        res = fdesc->GetItem (name);
+        try {
+            res = fdesc->GetItem (name);
+        } catch (IGWSException* pex) {
+            // eat failed to describe. this is expected in join case
+            if(eGwsFailedToDesribeClass != pex->GetStatus())
+                throw;
+        }
     }
     if (res == NULL)
         GWS_THROW (eGwsFailedToDesribeClass);
     return res;
+
 }
 
 
@@ -227,6 +248,7 @@ const CGwsPropertyDesc & CGwsQueryResultDescriptors::GetPropertyDescriptor (int 
     if (0 <= idx && idx < (int) m_propdsc.size ())
         return m_propdsc [idx];
     return s_pdesc;
+
 }
 
 const CGwsPropertyDesc & CGwsQueryResultDescriptors::GetPropertyDescriptor (
@@ -249,6 +271,7 @@ const CGwsPropertyDesc & CGwsQueryResultDescriptors::GetGeometryPropertyDescript
     }
     return s_pdesc;
 }
+
 
 
 const std::vector<CGwsPropertyDesc> & CGwsQueryResultDescriptors::GetPropertyDescriptors ()
@@ -278,6 +301,7 @@ FdoDataPropertyDefinitionCollection *
     if (m_identprops != NULL)
         m_identprops.p->AddRef ();
     return m_identprops;
+
 }
 
 
@@ -301,4 +325,14 @@ const WSTR & CGwsQueryResultDescriptors::GetSuffix () const
 void CGwsQueryResultDescriptors::SetSuffix (const WSTR & suffix)
 {
     m_suffix = suffix;
+
 }
+
+
+
+
+
+
+
+
+

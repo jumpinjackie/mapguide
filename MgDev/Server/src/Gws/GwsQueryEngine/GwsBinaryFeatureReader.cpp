@@ -78,7 +78,6 @@ bool GwsBinaryFeatureReader::GetBoolean  (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
-    len;
     unsigned char ret = m_rdr.ReadByte();
     return (ret != 0);
 }
@@ -87,7 +86,6 @@ FdoByte GwsBinaryFeatureReader::GetByte     (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
-    len;
     return m_rdr.ReadByte();
 }
 
@@ -95,7 +93,6 @@ FdoDateTime GwsBinaryFeatureReader::GetDateTime (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
-    len;
     return m_rdr.ReadDateTime();
 }
 
@@ -103,7 +100,6 @@ double GwsBinaryFeatureReader::GetDouble   (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
-    len;
     return m_rdr.ReadDouble();
 }
 
@@ -111,7 +107,6 @@ FdoInt16 GwsBinaryFeatureReader::GetInt16    (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
-    len;
     return m_rdr.ReadInt16();
 }
 
@@ -119,7 +114,6 @@ FdoInt32 GwsBinaryFeatureReader::GetInt32    (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
-    len;
     return m_rdr.ReadInt32();
 }
 
@@ -127,7 +121,6 @@ FdoInt64 GwsBinaryFeatureReader::GetInt64    (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
-    len;
     return m_rdr.ReadInt64();
 }
 
@@ -135,7 +128,6 @@ float GwsBinaryFeatureReader::GetSingle   (FdoInt32 iProp)
 {
     int len = SetPosition (iProp);
     assert(len != 0);
-    len;
     return m_rdr.ReadSingle();
 }
 

@@ -128,7 +128,6 @@ void GWSQualifiedName::operator=(const GWSQualifiedName & other)
     m_schema = other.m_schema;
     m_name = other.m_name;
 }
-
 bool GWSQualifiedName::operator==(const GWSQualifiedName & other) const
 {
     if (_wcsicmp ((FdoString *)m_featuresource, (FdoString *) other.m_featuresource) == 0 &&
@@ -136,8 +135,8 @@ bool GWSQualifiedName::operator==(const GWSQualifiedName & other) const
         m_name == other.m_name)
         return true;
     return false;
-}
 
+}
 bool GWSQualifiedName::operator>(const GWSQualifiedName & other) const
 {
     int iCmp = _wcsicmp ((FdoString *)m_featuresource,
@@ -211,3 +210,4 @@ int GWSQualifiedName::ToFullyQualifedString(wchar_t * res, int len) const
     }
     return (int)retlen;
 }
+

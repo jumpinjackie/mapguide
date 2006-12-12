@@ -20,16 +20,14 @@
 #include <GwsThreads.h>
 #include <GwsObject.h>
 
-#include "GwsCommonUtils.h"
-
 #include "GwsResourceUtil.h"
+#include "GwsCommonUtils.h"
 #include "GwsObjectImpl.h"
 #include "GwsException.h"
 #include "GwsFeatureIdSet.h"
 
 #define gws_max(a,b)            (((a) > (b)) ? (a) : (b))
 #define gws_min(a,b)            (((a) < (b)) ? (a) : (b))
-
 #ifndef REVISIONNUMBER_PROPNAME
 #define REVISIONNUMBER_PROPNAME L"RevisionNumber"
 #endif
@@ -38,3 +36,9 @@
 // unset or unset sequence value
 #define INVALID_SEQUENCE_VALUE -1
 #endif
+
+
+
+
+
+

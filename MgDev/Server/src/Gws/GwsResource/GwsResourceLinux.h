@@ -192,4 +192,12 @@ static const wchar_t* IDS_STRING_eGwsNotProcessed;
 static const wchar_t* IDS_STRING_eGwsCannotRemoveModifedFeatureOffline;
 static const wchar_t* IDS_STRING_eGwsNewFeatureCannotBeRemoved;
 static const wchar_t* IDS_STRING_eGwsNewFeatureRemoved;
-
+static const wchar_t* IDS_STRING_eGwsFailedToRefreshFeatures;
+static const wchar_t* IDS_STRING_eGwsNoLayers;
+static const wchar_t* IDS_STRING_eGwsFeatureSourceIsReadOnly;
+static const wchar_t* IDS_STRING_eGwsFeatureClassHasNoIdentity;
+static const wchar_t* IDS_STRING_eGwsRefreshFailedToReloadEditSetFeature;
+static const wchar_t* IDS_STRING_eGwsRefreshCacheFeatureIsUpTodate;
+static const wchar_t* IDS_STRING_eGwsRefreshDeletedFeatureInCache;
+static const wchar_t* IDS_STRING_eGwsRefreshReloadedFeatureInCache;
+static const wchar_t* IDS_STRING_eGwsRefreshFeatureNotFound;

@@ -44,6 +44,7 @@ CGwsFeaturesPool::~CGwsFeaturesPool    ()
         CGwsPooledFeature * pfeature = m_pool [i];
         pfeature->Release ();
     }
+
 }
 
 int CGwsFeaturesPool::GetCount ()
@@ -85,3 +86,5 @@ void CGwsFeaturesPool::AddFeature (IGWSFeature * feat)
     m_used ++;
     pfeature->Set (feat);
 }
+
+

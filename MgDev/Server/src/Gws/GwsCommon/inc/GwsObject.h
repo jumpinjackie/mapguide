@@ -68,8 +68,11 @@ protected:
     }
 
 public:
+    //template <class ChildInterface, class ChildClass, class Interface, class ThreadModel >
+    //friend class GWSObjectCollection;
     typedef typename ThreadModel::CriticalSection _CritSec;
     typedef GWSObjectLock< Interface, ThreadModel >  ThisLock;
+
 
     virtual void AddRef()
     {
@@ -410,4 +413,4 @@ protected:
     int mCount;
 };
 
-#endif
+#endif /*GWSOBJECT_H*/

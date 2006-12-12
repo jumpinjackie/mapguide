@@ -44,7 +44,6 @@ void GwsDebugUtils::TraceToFile (
     const WSTR & msg
 )
 {
-    // TODO - fix this under Linux
 //  char * fname = getenv(evar.c_str ());
     char * fname = NULL;
     if (fname == NULL || * fname == 0)

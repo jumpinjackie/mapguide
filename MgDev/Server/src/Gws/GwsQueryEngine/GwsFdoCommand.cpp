@@ -40,6 +40,7 @@ CGwsFdoCommand::CGwsFdoCommand(
     m_bSupportClobs = false;
     m_bSkipUnsupportedProperties = true;
     m_bSupportLocking = false;
+
 }
 
 CGwsFdoCommand::CGwsFdoCommand(
@@ -75,14 +76,15 @@ CGwsFdoCommand::~CGwsFdoCommand ()
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
 {
-    pFDOCommandClass; // For "unreferenced formal parameter" warning
-
     // initilaize class definition
-    GwsCommonFdoUtils::GetClassDefinition (m_connection,
-                                           m_classname,
-                                           m_schema.p,
-                                           m_classDef.p);
-
+    if(m_classDef == NULL)
+    {
+        FdoPtr<FdoFeatureSchema> pSchema;
+        GwsCommonFdoUtils::GetClassDefinition (m_connection,
+                                               m_classname,
+                                               pSchema.p,
+                                               m_classDef.p);
+    }
     return eGwsOk;
 }
 
@@ -115,10 +117,9 @@ EGwsStatus CGwsFdoCommand::Prepare ()
     try {
         assert(m_classDef != NULL);
 
-        if (!GwsCommonFdoUtils::GetFdoClassIdentityProperties (m_classDef, m_identity.p)) {
-            PushStatus (eGwsFailed);
-            return eGwsFailed;
-        }
+        GwsCommonFdoUtils::GetFdoClassIdentityProperties (m_classDef, m_identity.p);
+
+
         FdoPtr<FdoISchemaCapabilities> ptrCap;
         ptrCap = m_connection->GetSchemaCapabilities();
         assert (ptrCap);
@@ -190,7 +191,6 @@ FdoPropertyDefinition * CGwsFdoCommand::GetPropertyDefinition (FdoString * propn
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Execute (CGwsMutableFeature & feature)
 {
-    feature; // For "unreferenced formal parameter" warning
     return eGwsNotSupported;
 }
 
@@ -208,7 +208,6 @@ EGwsStatus CGwsFdoCommand::Execute (IGWSMutableFeature * feature)
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Execute (const GWSFeatureId & featid)
 {
-    featid; // For "unreferenced formal parameter" warning
     return eGwsNotSupported;
 }
 
@@ -225,15 +224,13 @@ EGwsStatus CGwsFdoCommand::Execute (
     int                            ubound
 )
 {
-    featids; // For "unreferenced formal parameter" warning
-    lbound; // For "unreferenced formal parameter" warning
-    ubound; // For "unreferenced formal parameter" warning
     return eGwsNotSupported;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoCommand::PrepareInternal ()
 {
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -267,7 +264,7 @@ void CGwsFdoCommand::PrepareNonKeyProperties ()
                     if (m_converter) {
                         // check to see whether converter is already
                         // initialized by the source cs system
-                        if (* m_converter->SourceCS () == 0) {
+                        if (m_converter->SourceCS ().IsEmpty ()) {
                             GwsSpatialContextDescription scdesc;
                             EGwsStatus stat =
                                 GwsCommonFdoUtils::DescribeSC (m_connection,
@@ -277,7 +274,7 @@ void CGwsFdoCommand::PrepareNonKeyProperties ()
                             // currently this fact is silently ignored
                             // Should we throw an exception instead?
                             if (!IGWSException::IsError (stat))
-                                m_converter->SetSourceCS (scdesc.CsNameWkt ());
+                                m_converter->SetSourceCS (scdesc.CsName ());
                         }
                     }
                 }
@@ -339,14 +336,26 @@ void CGwsFdoCommand::PrepareObjectProperties ()
 #endif
 }
 
-void CGwsFdoCommand::PrepareFilter (FdoFilter * filter)
+void CGwsFdoCommand::PrepareFilter (FdoFilter * filter, bool bAlignPolygon /*FALSE*/)
 {
     if (filter == NULL)
         return;
     if (m_converter == NULL)
         return;
     CGwsCSQueryProcessor qcconverter (m_converter);
+
+    if(bAlignPolygon)
+        qcconverter.SetAlignPolygonFilter(true);
+
+#ifdef _DEBUG
+    FdoString * str1 = filter->ToString ();
+#endif
+
     filter->Process (& qcconverter);
+#ifdef _DEBUG
+    FdoString * str2 = filter->ToString ();
+#endif
+
     if (IGWSException::IsError (qcconverter.Status()))
         GWS_THROW (qcconverter.Status());
 
@@ -385,19 +394,23 @@ void CGwsFdoCommand::SetValue (
     FdoPropertyValueCollection * pPropertyValues = GetPropertyValues();
     assert(pPropertyValues);
 
-    FdoPtr<FdoPropertyValue>     pPropertyValue;
+    FdoPtr<FdoPropertyValue>     pPropertyValue = NULL;
     FdoPtr<FdoIdentifier>        ident = pPropVal->GetName ();
 
     pPropertyValue = pPropertyValues->FindItem (ident->GetName ());
     if (pPropertyValue != NULL) {
-        pPropertyValue->SetValue(pPropVal->GetValue ());
+        FdoPtr<FdoValueExpression> valExpr = pPropVal->GetValue ();
+        pPropertyValue->SetValue(valExpr);
     } else {
         pPropertyValues->Add(pPropVal);
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-EGwsStatus CGwsFdoCommand::SetProperties (CGwsMutableFeature & feature)
+EGwsStatus CGwsFdoCommand::SetProperties (
+    CGwsMutableFeature & feature,
+    bool                 bSetIdentityProperties
+)
 {
     EGwsStatus stat = eGwsOk;
 
@@ -411,6 +424,12 @@ EGwsStatus CGwsFdoCommand::SetProperties (CGwsMutableFeature & feature)
         }
         if ((*iter).second->GetPropertyType () == FdoPropertyType_DataProperty) {
             FdoDataPropertyDefinition * dataprop = static_cast<FdoDataPropertyDefinition*>((*iter).second);
+
+
+            // do not set identity properties if not requested
+            if (! bSetIdentityProperties && m_identity->Contains (dataprop))
+                continue;
+
 
             if (m_bSkipUnsupportedProperties) {
 
@@ -446,7 +465,7 @@ FdoPropertyValue * CGwsFdoCommand::ConvertGeometryProperty (
 {
     // no conversion
     if (m_converter == NULL ||
-        csname.IsEmpty () == 0 ||
+        csname.IsEmpty () ||
         m_converter->SourceCS ().IsEmpty ())
     {
         val->AddRef ();
@@ -455,7 +474,15 @@ FdoPropertyValue * CGwsFdoCommand::ConvertGeometryProperty (
 
     // initialize converter by the destination cs
     // potential subject of optimization.
-    eGwsOkThrow (m_converter->SetDestinationCS (csname));
+    EGwsStatus es = eGwsOk;
+    if (! (csname == m_converter->DestinationCS ()))
+        es = m_converter->SetDestinationCS (csname);
+
+    if (IGWSException::IsError (es)) {
+        PushStatus (es);
+        val->AddRef ();
+        return val;
+    }
 
     // cs converter converts in place. In order not to
     // change source geometry, create a copy of it
@@ -466,6 +493,7 @@ FdoPropertyValue * CGwsFdoCommand::ConvertGeometryProperty (
     assert (geomval);
 
     FdoPtr<FdoByteArray>       barray = geomval->GetGeometry();
+    assert (barray);    // this is geometry condition
     FdoPtr<FdoByteArray>       carray = FdoByteArray::Create (barray->GetData (),
                                                               barray->GetCount ());
 
@@ -485,6 +513,11 @@ EGwsStatus CGwsFdoCommand::BuildInFilter (
 {
     EGwsStatus  stat  = eGwsOk;
     try {
+        if (m_identity == NULL) {
+            PushStatus (eGwsFeatureClassHasNoIdentity);
+            return eGwsFeatureClassHasNoIdentity;
+        }
+
         stat = CGwsFdoCommand::BuildInFilter(m_identity, featIds, lbound, ubound, pOutFilter);
     } catch (FdoException *e) {
         PushFdoException (eGwsFailed, e);
@@ -493,7 +526,6 @@ EGwsStatus CGwsFdoCommand::BuildInFilter (
     }
     return stat;
 }
-
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::BuildInFilter (
     FdoDataPropertyDefinitionCollection* identity,
@@ -537,6 +569,10 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
 {
     EGwsStatus stat             = eGwsOk;
     try {
+        if (m_identity == NULL) {
+            PushStatus (eGwsFeatureClassHasNoIdentity);
+            return eGwsFeatureClassHasNoIdentity;
+        }
         stat = CGwsFdoCommand::BuildFilter(m_identity, featId, pOutFilter);
     } catch (FdoException *e) {
         PushFdoException (eGwsFailed, e);
@@ -553,9 +589,10 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
     FdoFilter               *& pOutFilter
 )
 {
+
     EGwsStatus stat             = eGwsOk;
 
-    FdoPtr<FdoFilter> pFilter;
+    FdoPtr<FdoFilter> pFilter = NULL;
     FdoInt32          idx;
 
     for (idx = 0; idx < identity->GetCount(); idx ++) {
@@ -597,6 +634,11 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
     EGwsStatus   stat  = eGwsOk;
 
     try {
+        if (m_identity == NULL) {
+            PushStatus (eGwsFeatureClassHasNoIdentity);
+            return eGwsFeatureClassHasNoIdentity;
+        }
+
         stat = BuildFilter(m_connection, m_identity, featids, lbound, ubound, pOutFilter);
     } catch (FdoException *e) {
         PushFdoException (eGwsFailed, e);
@@ -605,7 +647,6 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
     }
     return stat;
 }
-
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::BuildFilter (
     FdoIConnection               * conn,
@@ -671,7 +712,7 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
     assert (nCount >= 0);
 
     // Use only in case when identity is a single integer property
-    if (m_identity->GetCount () != 1)
+    if (m_identity == NULL || m_identity->GetCount () != 1)
         return eGwsFdoInvalidPropertyType;
 
     // do not build in filter (for now)
@@ -707,6 +748,7 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
                                                                        f);
                 filter = pCombinedFilter;
             }
+
         }
         pOutFilter = filter;
         if (filter != NULL)
@@ -755,7 +797,7 @@ EGwsStatus CGwsFdoCommand::ProcessLockConflicts (
                                   GwsCommonFdoUtils::MakeFeatureId (m_classname,
                                                               pReader->GetIdentity (),
                                                               m_activelt.c_str());
-            //  failed.insert (featId.FeatureId ());
+          //  failed.insert (featId.FeatureId ());
 
             wchar_t wbuff [256];
             featId.ToString (wbuff, 256);
@@ -787,7 +829,7 @@ EGwsStatus CGwsFdoCommand::ProcessLockConflicts (
             }
 
         } catch (FdoException * e) {
-            assert ("Gis exception while getting lock conflicts");
+            assert ("Fdo exception while getting lock conflicts");
             e->Release ();  // just silenly eat this
         }
         stat = eGwsFdoLockConflict;

@@ -98,10 +98,6 @@ FdoFilter * GWSFeatureQueryDefinition::Filter ()
     return FdoFilter::Parse (m_filter->ToString() );
 }
 
-FdoStringCollection * GWSFeatureQueryDefinition::OrderBy    ()
-{
-    return NULL;
-}
 
 IGWSFeatureQueryDefinition * GWSFeatureQueryDefinition::GetPrimaryQueryDefinition ()
 {
@@ -141,6 +137,7 @@ FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
     FdoXmlAttributeCollection* attrs
 )
 {
+
     if (! _wcsicmp (name, GwsQueryXml::xmlGwsQualifiedClassName)) {
         WSTR    fsname;
         WSTR    schema;
@@ -157,6 +154,7 @@ FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
             } else if (_wcsicmp (name, GwsQueryXml::xmlGwsClassName) == 0) {
                 classname = value;
             }
+
         }
 
         if (! schema.empty () && ! classname.empty ()) {
@@ -185,4 +183,7 @@ FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
     }
 
     return CGwsObject::XmlStartElement (ctx, uri, name, qname, attrs);
+
 }
+
+

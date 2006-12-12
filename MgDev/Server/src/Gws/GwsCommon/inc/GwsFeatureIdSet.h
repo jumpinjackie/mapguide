@@ -54,7 +54,7 @@ public:
             return false;
         mVecIds.push_back(id);
         count++;
-        assert(count == (int)mVecIds.size());
+        assert(count == mVecIds.size());
         return true;
     }
 
@@ -81,7 +81,7 @@ public:
         }
 
         count--;
-        assert(count == (int)mVecIds.size());
+        assert(count == mVecIds.size());
         return true;
     }
 
@@ -117,4 +117,4 @@ private:
     FdoInt32                    count;
 };
 
-#endif
+#endif /* GwsFeatureIdSet_h */

@@ -24,6 +24,8 @@
 
 #include "GwsQueryEngineImp.h"
 #include "GwsBinaryFeatureWriter.h"
+#include "SDF/IScrollableFeatureReader.h"
+#include "SHP/IScrollableFeatureReader.h"
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -40,6 +42,9 @@ CGwsFeatureIterator::CGwsFeatureIterator ()
     m_bExposeFeatureIdAsCacheId = false;
     m_bGeometryConverted = false;
     m_pBinaryWriter = NULL;
+    m_cacheIdType = FdoDataType_String;
+    m_bScrollableReader = false;
+
 }
 
 
@@ -58,11 +63,24 @@ CGwsFeatureIterator::~CGwsFeatureIterator () throw()
 EGwsStatus CGwsFeatureIterator::InitializeReader (
     FdoIFeatureReader               * pReader,
     IGWSQuery                       * fquery,
-    CGwsPreparedFeatureQuery        * prepquery
+    CGwsPreparedFeatureQuery        * prepquery,
+    bool                            bIsScrollable
 )
 {
     assert (pReader != NULL && fquery != NULL);
     m_reader = pReader;
+
+    m_bScrollableReader = bIsScrollable;
+
+    if(dynamic_cast<SdfIScrollableFeatureReader*>(pReader) != NULL)
+        m_extProviderType = eSDF;
+    else if(dynamic_cast<ShpIScrollableFeatureReader*>(pReader) != NULL)
+        m_extProviderType = eSHP;
+    else if(dynamic_cast<CGwsFeatureIterator*>(pReader) != NULL)
+        m_extProviderType = eCGFI;
+   else
+        m_bScrollableReader = false;
+
     if (pReader)
         pReader->AddRef ();
 
@@ -81,7 +99,8 @@ EGwsStatus CGwsFeatureIterator::InitializeReader (
 
     m_mutableFeature = NULL;
     m_bMutableFeatureSet = false;
-    InitializeMutableFeature ();
+    //deferred to GetSimpleFeature()
+    //InitializeMutableFeature ();
     return eGwsOk;
 }
 
@@ -90,15 +109,20 @@ const GWSCoordinateSystem & CGwsFeatureIterator::GetCSName ()
     static GWSCoordinateSystem csname;
     CGwsPreparedFeatureQuery * pfquery = m_prepquery->GetPrimaryQuery ();
     pfquery->GetCSConverter (& m_converter);
-    if (m_converter != NULL && * m_converter->DestinationCS () != 0)
+    if (m_converter != NULL &&
+        m_converter->IsInitialized ())
         return m_converter->DestinationCS ();
+    if (m_converter != NULL &&
+        ! m_converter->SourceCS().IsEmpty ())
+        return m_converter->SourceCS ();
 
     WSTR sc = pfquery->ActiveSpatialContext ();
     FdoPtr<FdoIConnection> conn = pfquery->GetFdoConnection ();
     GwsSpatialContextDescription scdesc;
     if (! IGWSException::IsError (GwsCommonFdoUtils::DescribeSC (conn, sc.c_str (), scdesc)))
-        csname = GWSCoordinateSystem (scdesc.CsNameWkt ());
+        csname = GWSCoordinateSystem (scdesc.CsName ());
     return csname;
+
 }
 
 
@@ -114,11 +138,33 @@ bool CGwsFeatureIterator::InitializeMutableFeature ()
     m_bMutableFeatureSet = false;
 
     return true;
+
 }
 
 void CGwsFeatureIterator::SetExposeFeatureIdAsCacheId (bool bFlag)
 {
     m_bExposeFeatureIdAsCacheId = bFlag;
+    if (m_bExposeFeatureIdAsCacheId) {
+        // do some prepartions ...
+
+         FdoPtr<IGWSExtendedFeatureDescription> extFeatDsc;
+
+        DescribeFeature (&extFeatDsc);
+
+        CGwsQueryResultDescriptors *  fdesc = (CGwsQueryResultDescriptors *) extFeatDsc.p;
+
+        FdoPtr<FdoDataPropertyDefinitionCollection> iddefs =
+                                fdesc->GetIdentityProperties ();
+        if (fdesc->GetCount () > 1) {
+            m_bExposeFeatureIdAsCacheId = false;
+            return;
+        }
+
+        FdoPtr<FdoDataPropertyDefinition> idprop = iddefs->GetItem (0);
+        m_cacheIdType = idprop->GetDataType ();
+        m_idname = idprop->GetName ();
+
+    }
 }
 
 
@@ -135,11 +181,12 @@ bool CGwsFeatureIterator::NextFeature (IGWSFeature ** feature)
             AddRef ();
         }
 
-    } catch (FdoException * gis) {
-        PushFdoException (eGwsFdoProviderError, gis);
-        gis->Release ();
+    } catch (FdoException * fdoEx) {
+        PushFdoException (eGwsFdoProviderError, fdoEx);
+        fdoEx->Release ();
     }
     return bRet;
+
 }
 
 void CGwsFeatureIterator::DescribeFeature(IGWSExtendedFeatureDescription ** ppResDesc)
@@ -150,25 +197,10 @@ void CGwsFeatureIterator::DescribeFeature(IGWSExtendedFeatureDescription ** ppRe
 FdoInt32 CGwsFeatureIterator::GetCacheId ()
 {
     if (m_bExposeFeatureIdAsCacheId) {
-        GWSFeatureId id = GetFeatureId();
-        if(id.GetCount() != 1)
-            GWS_THROW(eGwsInvalidCacheId);
-
-        FdoPtr<FdoDataValue> pVal = id.GetItem(0);
-
-        FdoInt16 int16Val;
-        FdoInt32 int32Val;
-        switch(pVal->GetDataType())
-        {
-            case FdoDataType_Int16:
-                int16Val = (FdoInt16) (* (FdoInt16Value *)  pVal.p);
-                return (FdoInt32)int16Val;
-
-            case FdoDataType_Int32:
-                int32Val = (FdoInt32) (* (FdoInt32Value *)  pVal.p);
-                return int32Val;
-            default: break;
-        }
+        if (m_cacheIdType == FdoDataType_Int16)
+            return (FdoInt32) m_reader->GetInt16 (m_idname.c_str ());
+        else if (m_cacheIdType == FdoDataType_Int32)
+            return m_reader->GetInt32 (m_idname.c_str ());
     }
     return 0;   // not feature id in this case
 }
@@ -220,15 +252,15 @@ GWSFeatureId CGwsFeatureIterator::GetFeatureId ()
 
 bool CGwsFeatureIterator::IsNew ()
 {
-    return false;
+     return false;
 }
 bool CGwsFeatureIterator::IsModified ()
 {
-    return false;
+     return false;
 }
 bool CGwsFeatureIterator::IsDeleted ()
 {
-    return false;
+     return false;
 }
 
 EGwsLockType CGwsFeatureIterator::GetCacheLockType ()
@@ -238,7 +270,6 @@ EGwsLockType CGwsFeatureIterator::GetCacheLockType ()
 
 IGWSFeatureIterator* CGwsFeatureIterator::GetJoinedFeatures (int i)
 {
-    i; // For "unreferenced formal parameter" warning
     return NULL;
 }
 
@@ -249,9 +280,9 @@ void CGwsFeatureIterator::Close ()
         return;
     try {
         m_reader->Close ();
-    } catch (FdoException * gis) {
-        PushFdoException (eGwsFdoProviderError, gis);
-        gis->Release ();
+    } catch (FdoException * fdoEx) {
+        PushFdoException (eGwsFdoProviderError, fdoEx);
+        fdoEx->Release ();
     }
     return ;
 }
@@ -329,6 +360,7 @@ float CGwsFeatureIterator::GetSingle(FdoString* propname)
     return m_reader->GetSingle (propname);
 }
 
+
 FdoLOBValue * CGwsFeatureIterator::GetLOB(FdoString* propertyName)
 {
     CheckReader ();
@@ -389,7 +421,7 @@ const FdoByte * CGwsFeatureIterator::GetGeometry(
 {
     CheckReader ();
     FdoByte * gvalue = (FdoByte *) m_reader->GetGeometry (propertyName, count);
-    if (m_converter != NULL && ! m_bGeometryConverted) {
+    if (m_converter != NULL && ! m_bGeometryConverted && gvalue) {
         EGwsStatus stat = m_converter->ConvertForward (gvalue, * count);
         if (IGWSException::IsError (stat))
             GWS_THROW (stat);
@@ -402,7 +434,7 @@ FdoByteArray* CGwsFeatureIterator::GetGeometry(FdoString* propertyName)
 {
     CheckReader ();
     FdoByteArray * gvalue = m_reader->GetGeometry (propertyName);
-    if (m_converter != NULL && ! m_bGeometryConverted) {
+    if (m_converter != NULL && ! m_bGeometryConverted && gvalue) {
         EGwsStatus stat = m_converter->ConvertForward (gvalue);
         if (IGWSException::IsError (stat))
             GWS_THROW (stat);
@@ -410,111 +442,27 @@ FdoByteArray* CGwsFeatureIterator::GetGeometry(FdoString* propertyName)
     }
     return gvalue;
 }
+
+FdoByteArray * CGwsFeatureIterator::GetOriginalGeometry (FdoString* propertyName)
+{
+    CheckReader ();
+    return m_reader->GetGeometry (propertyName);
+}
+
+bool CGwsFeatureIterator::ConvertingGeometry ()
+{
+    if (m_converter != NULL && m_converter->IsInitialized ()) {
+        return true;
+    }
+    return false;
+}
+
 FdoIFeatureReader* CGwsFeatureIterator::GetFeatureObject(FdoString* propertyName)
 {
     CheckReader ();
     return m_reader->GetFeatureObject (propertyName);
 }
 
-/*
-bool CGwsFeatureIterator::IsNull(FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->IsNull (desc.m_name.c_str ());
-}
-FdoString * CGwsFeatureIterator::GetString (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetString (desc.m_name.c_str ());
-}
-bool CGwsFeatureIterator::GetBoolean  (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetBoolean (desc.m_name.c_str ());
-}
-FdoByte CGwsFeatureIterator::GetByte     (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetByte (desc.m_name.c_str ());
-}
-FdoDateTime CGwsFeatureIterator::GetDateTime (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetDateTime (desc.m_name.c_str ());
-}
-double CGwsFeatureIterator::GetDouble   (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetDouble (desc.m_name.c_str ());
-}
-FdoInt16 CGwsFeatureIterator::GetInt16    (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetInt16 (desc.m_name.c_str ());
-}
-FdoInt32 CGwsFeatureIterator::GetInt32    (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetInt32 (desc.m_name.c_str ());
-}
-FdoInt64 CGwsFeatureIterator::GetInt64    (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetInt64 (desc.m_name.c_str ());
-}
-float CGwsFeatureIterator::GetSingle   (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetSingle (desc.m_name.c_str ());
-}
-FdoLOBValue* CGwsFeatureIterator::GetLOB (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetLOB (desc.m_name.c_str ());
-}
-FdoIStreamReader* CGwsFeatureIterator::GetLOBStreamReader (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetLOBStreamReader (desc.m_name.c_str ());
-}
-FdoIRaster*     CGwsFeatureIterator::GetRaster   (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetRaster (desc.m_name.c_str ());
-}
-const FdoByte * CGwsFeatureIterator::GetGeometry (FdoInt32 iProp, FdoInt32 * count)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetGeometry (desc.m_name.c_str (), count);
-}
-FdoByteArray*   CGwsFeatureIterator::GetGeometry (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetGeometry (desc.m_name.c_str ());
-}
-FdoIFeatureReader* CGwsFeatureIterator::GetFeatureObject (FdoInt32 iProp)
-{
-    CheckReader ();
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    return m_reader->GetFeatureObject (desc.m_name.c_str ());
-}
-
-*/
 
 bool CGwsFeatureIterator::ReadNext()
 {
@@ -527,9 +475,9 @@ bool CGwsFeatureIterator::ReadNext()
 
 FdoGeometryType CGwsFeatureIterator::GetGeometryType(FdoByteArray* pArray)
 {
-    FdoPtr<FdoFgfGeometryFactory> pAgfFactory = FdoFgfGeometryFactory::GetInstance();
-    FdoPtr<FdoIGeometry> pAgfGeometry = pAgfFactory->CreateGeometryFromFgf(pArray);
-    return pAgfGeometry->GetDerivedType();
+    FdoPtr<FdoFgfGeometryFactory> pFgfFactory = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> pFgfGeometry = pFgfFactory->CreateGeometryFromFgf(pArray);
+    return pFgfGeometry->GetDerivedType();
 }
 
 FdoString* CGwsFeatureIterator::GetPrimaryGeometryName()
@@ -545,17 +493,6 @@ FdoClassDefinition* CGwsFeatureIterator::GetClassDefinition()
     CheckReader ();
     return m_reader->GetClassDefinition ();
 }
-/*
-void CGwsFeatureIterator::ToString (
-    FdoInt32    iProp,
-    wchar_t *   buff,
-    int         len
-)
-{
-    const CGwsPropertyDesc & desc = GetPropertyDescriptor (iProp);
-    GwsQueryUtils::ToString (this, desc, buff, len);
-}
-*/
 
 void CGwsFeatureIterator::ToString (
     FdoString * propname,
@@ -582,8 +519,9 @@ FdoDataValue * CGwsFeatureIterator::GetPropertyValue (
 IGWSMutableFeature * CGwsFeatureIterator::GetSimpleFeature ()
 {
     if (m_mutableFeature == NULL)
-        return NULL;
+        InitializeMutableFeature();
 
+    assert(m_mutableFeature != NULL);
     if (! m_bMutableFeatureSet) {
         CGwsMutableFeature * feat = (CGwsMutableFeature *) m_mutableFeature.p;
         feat->SetPropertyValues (this);
@@ -596,9 +534,11 @@ IGWSMutableFeature * CGwsFeatureIterator::GetSimpleFeature ()
     return m_mutableFeature;
 }
 
+//this method throws an exception if the reader is NULL;
 void CGwsFeatureIterator::CheckReader ()
 {
-  if (m_reader == NULL)
+    assert(m_reader != NULL);
+    if(m_reader == NULL)
         GWS_THROW(eGwsClosedFeatureIterator);
 }
 
@@ -615,9 +555,157 @@ unsigned char* CGwsFeatureIterator::ToBuffer(int& bufLen)
     wchar_t buf[256];
     int len = ifdesc->ClassName().ToFullyQualifedString(buf, 256);
     assert(len < 256);
-    len;
 
     FdoPtr<FdoClassDefinition> pClassDef = ifdesc->ClassDefinition();
     m_pBinaryWriter->WriteFeature(pClassDef, buf, NULL, m_reader);
     return m_pBinaryWriter->ToBuffer(bufLen);
+}
+
+//SdfIScrollableFeatureReader implementation.
+int
+CGwsFeatureIterator::Count()
+{
+    CheckReader();
+    if(!m_bScrollableReader) GWS_THROW(eGwsNotSupported);
+
+    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((SdfIScrollableFeatureReader*)m_reader.p)->Count();
+    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((ShpIScrollableFeatureReader*)m_reader.p)->Count();
+    if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
+        return ((CGwsFeatureIterator*)m_reader.p)->Count();
+    assert(false);
+    return 0;
+}
+
+bool
+CGwsFeatureIterator::ReadFirst()
+{
+    CheckReader();
+    if(!m_bScrollableReader) GWS_THROW(eGwsNotSupported);
+
+    m_bMutableFeatureSet = false;
+    m_bGeometryConverted = false;
+
+    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((SdfIScrollableFeatureReader*)m_reader.p)->ReadFirst();
+    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((ShpIScrollableFeatureReader*)m_reader.p)->ReadFirst();
+    if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
+        return ((CGwsFeatureIterator*)m_reader.p)->ReadFirst();
+    assert(false);
+    return false;
+}
+bool
+CGwsFeatureIterator::ReadLast()
+{
+    CheckReader();
+    if(!m_bScrollableReader) GWS_THROW(eGwsNotSupported);
+
+    m_bMutableFeatureSet = false;
+    m_bGeometryConverted = false;
+
+    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((SdfIScrollableFeatureReader*)m_reader.p)->ReadLast();
+    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((ShpIScrollableFeatureReader*)m_reader.p)->ReadLast();
+    if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
+        return ((CGwsFeatureIterator*)m_reader.p)->ReadLast();
+    assert(false);
+    return false;
+}
+
+bool
+CGwsFeatureIterator::ReadPrevious()
+{
+    CheckReader();
+    if(!m_bScrollableReader) GWS_THROW(eGwsNotSupported);
+
+    m_bMutableFeatureSet = false;
+    m_bGeometryConverted = false;
+
+    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((SdfIScrollableFeatureReader*)m_reader.p)->ReadPrevious();
+    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((ShpIScrollableFeatureReader*)m_reader.p)->ReadPrevious();
+    if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
+        return ((CGwsFeatureIterator*)m_reader.p)->ReadPrevious();
+    assert(false);
+    return false;
+}
+
+bool
+CGwsFeatureIterator::ReadAt(FdoPropertyValueCollection* key)
+{
+    CheckReader();
+    if(!m_bScrollableReader) GWS_THROW(eGwsNotSupported);
+
+    m_bMutableFeatureSet = false;
+    m_bGeometryConverted = false;
+
+    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((SdfIScrollableFeatureReader*)m_reader.p)->ReadAt(key);
+    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((ShpIScrollableFeatureReader*)m_reader.p)->ReadAt(key);
+    if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
+        return ((CGwsFeatureIterator*)m_reader.p)->ReadAt(key);
+    assert(false);
+    return false;
+}
+
+bool
+CGwsFeatureIterator::ReadAtIndex( unsigned int recordindex )
+{
+    CheckReader();
+    if(!m_bScrollableReader) GWS_THROW(eGwsNotSupported);
+
+    m_bMutableFeatureSet = false;
+    m_bGeometryConverted = false;
+
+    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((SdfIScrollableFeatureReader*)m_reader.p)->ReadAtIndex(recordindex);
+    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((ShpIScrollableFeatureReader*)m_reader.p)->ReadAtIndex(recordindex);
+    if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
+        return ((CGwsFeatureIterator*)m_reader.p)->ReadAtIndex(recordindex);
+    assert(false);
+    return false;
+}
+
+
+unsigned int
+CGwsFeatureIterator::IndexOf(FdoPropertyValueCollection* key)
+{
+    CheckReader();
+    if(!m_bScrollableReader) GWS_THROW(eGwsNotSupported);
+
+    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((SdfIScrollableFeatureReader*)m_reader.p)->IndexOf(key);
+    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((ShpIScrollableFeatureReader*)m_reader.p)->IndexOf(key);
+    if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
+        return ((CGwsFeatureIterator*)m_reader.p)->IndexOf(key);
+    assert(false);
+    return 0;
+}
+
+bool
+CGwsFeatureIterator::Scrollable()
+{
+    CheckReader();
+    if(NULL == m_reader || !m_bScrollableReader)
+        return false;
+    if( (NULL == dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p)) &&
+        (NULL == dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p)) &&
+        (NULL == dynamic_cast<CGwsFeatureIterator*>(m_reader.p)))
+        return false;
+
+    return true;
+}
+
+IGWSFeatureIterator*
+CGwsFeatureIterator::GetPrimaryIterator()
+{
+    AddRef();
+    return this;
 }

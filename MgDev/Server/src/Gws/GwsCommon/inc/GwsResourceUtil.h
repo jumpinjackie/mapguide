@@ -25,10 +25,8 @@ public:
     CGwsResourceModule(const wchar_t* fileName);
     virtual ~CGwsResourceModule();
 
-#ifdef _WIN32
     GWS_COMMON_API
     static bool GetString(unsigned int id, std::wstring &str);
-#endif
     GWS_COMMON_API
     static void GwsStatusMessage (EGwsStatus fes, std::wstring &str);
     GWS_COMMON_API
@@ -41,4 +39,8 @@ private:
 
 };
 
-#endif
+
+#endif // GWSRESOURCEMODULE_H
+
+
+// eof

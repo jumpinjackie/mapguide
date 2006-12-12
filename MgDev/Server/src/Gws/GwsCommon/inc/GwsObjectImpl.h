@@ -18,11 +18,11 @@
 #ifndef GWSOBJECTIMPL_H
 #define GWSOBJECTIMPL_H
 
-#include "GwsStatus.h"
+#include "GwsCommon.h"	// for class GWSStatus
 
 // forward definitions
-class GisXmlWriter;
-class GisXmlReader;
+class FdoXmlWriter;
+class FdoXmlReader;
 
 /// <summary>
 /// Principal base class for all Gws classes.
@@ -51,7 +51,7 @@ public:
     void                CopyStatus (const CGwsObject & other);
 
     // xml filing in/out
-    // this methods may throw GisXmlException
+    // this methods may throw FdoXmlException
     GWS_COMMON_API
     virtual void        Write (FdoXmlWriter * writer);
 
@@ -62,7 +62,7 @@ public:
     // push FdoException
     GWS_COMMON_API
     void                PushFdoException (const CGwsStatus & stat,
-                                      FdoException * gis) const;
+                                      FdoException * fdoEx) const;
 
     // remove condition
     GWS_COMMON_API
@@ -89,4 +89,4 @@ inline void eGwsOkThrow(EGwsStatus fdoes)
         throw fdoes;
 }
 
-#endif
+#endif /* GWSOBJECTIMPL_H */

@@ -36,9 +36,9 @@
 #endif
 
 // forward definitions
-class IGWSFeatureIterator;
 class IGWSFeatureQueryDefinition;
-
+class IGWSFeatureIterator;
+typedef IGWSFeatureIterator IGWSScrollableIterator;
 
 /// <summary>
 /// Types of supported query definitions
@@ -62,7 +62,7 @@ class IGWSConnectionPool : public IGWSObject
 public:
     /// <summary>
     /// Given name, return Fdo connection.
-    /// Must throw GisException in case if name cannot be resolved.
+    /// Must throw FdoException in case if name cannot be resolved.
     /// </summary>
     virtual FdoIConnection * GetConnection (FdoString * name) = 0;
 };
@@ -158,6 +158,30 @@ public:
     /// <returns>Returns nothing.</returns>
     virtual IGWSFeatureQueryDefinition *
                                  GetPrimaryQueryDefinition () = 0;
+
+    /// <summary>
+    /// Returns order by columns
+    /// </summary>
+    /// <returns>Returns column collection.</returns>
+    virtual FdoStringCollection* GetOrderBy () = 0;
+
+    /// <summary>
+    /// Sets order by columns
+    /// </summary>
+    /// <returns>Returns nothing.</returns>
+    virtual void                 SetOrderBy (FdoStringCollection* orderByList) = 0;
+
+    /// <summary>
+    /// Gets whether the sort order is ascending or descending.
+    /// </summary>
+    /// <returns>Returns the fdo ordering option.</returns>
+    virtual FdoOrderingOption    GetOrderingOption () = 0;
+
+    /// <summary>
+    /// Sets whether the sort order is ascending or descending.
+    /// </summary>
+    /// <returns>Returns nothing.</returns>
+    virtual void                 SetOrderingOption (FdoOrderingOption orderingOption) = 0;
 };
 
 /// <summary>
@@ -178,18 +202,12 @@ public:
                     FdoStringCollection *    selList,
                     const GWSQualifiedName & classname,
                     FdoFilter              * filter);
+
     /// <summary>
     /// Returns constant reference to a class name
     /// </summary>
     /// <returns>Returns qualified name.</returns>
     virtual const GWSQualifiedName & ClassName () const= 0;
-
-    /// <summary>
-    /// Returns order by columns
-    /// </summary>
-    /// <returns>Returns column collection.</returns>
-    virtual FdoStringCollection    * OrderBy    () = 0;
-
 };
 
 
@@ -222,6 +240,24 @@ public:
     /// </summary>
     /// <returns>Returns the attribute collection.</returns>
     virtual FdoStringCollection * RightJoinAttributes () = 0;
+
+    /// </summary>
+    /// Returns the join name.
+    /// </summary>
+    /// <returns>Returns the join name.</returns>
+    virtual const FdoString* JoinName() = 0;
+
+    /// </summary>
+    /// Returns the join delimiter.
+    /// </summary>
+    /// <returns>Returns the join delimiter.</returns>
+    virtual const FdoString* JoinDelimiter() = 0;
+
+    /// </summary>
+    /// Returns the force one-to-one flag.
+    /// </summary>
+    /// <returns>Returns the force one-to-one flag.</returns>
+    virtual bool ForceOneToOne() = 0;
 };
 
 /// <summary>
@@ -243,6 +279,9 @@ public:
     /// </param>
     /// </summary>
     static GWS_QUERYENGINE_API IGWSLeftJoinQueryDefinition * Create (
+                    const FdoString     * joinName,
+                    const FdoString     * joinDelimiter,
+                    bool                  forceOneToOne,
                     IGWSQueryDefinition *    left_qdef,
                     IGWSQueryDefinition *    right_qdef,
                     FdoStringCollection    * left_attrs,
@@ -270,6 +309,9 @@ public:
     /// </param>
     /// </summary>
     static GWS_QUERYENGINE_API IGWSEqualJoinQueryDefinition * Create (
+                    const FdoString     * joinName,
+                    const FdoString     * joinDelimiter,
+                    bool                  forceOneToOne,
                     IGWSQueryDefinition *    left_qdef,
                     IGWSQueryDefinition *    right_qdef,
                     FdoStringCollection    * left_attrs,
@@ -353,13 +395,31 @@ public:
     /// <param name="propertyName">Input property name to find.</param>
     /// <returns>Returns property definition of the property.</returns>
     virtual FdoPropertyDefinition  *  FindPropertyDefinition (FdoString* propertyName) = 0;
+
+    /// </summary>
+    /// Returns the join name. NULL not a join.
+    /// </summary>
+    /// <returns>Returns the join name.</returns>
+    virtual const FdoString  *  JoinName () = 0;
+
+    /// </summary>
+    /// Returns the join delimiter. NULL not a join.
+    /// </summary>
+    /// <returns>Returns the join delimiter.</returns>
+    virtual const FdoString  *  JoinDelimiter () = 0;
+
+    /// </summary>
+    /// Returns the force one to one flag. This only applies to joined data.
+    /// </summary>
+    /// <returns>Returns the force one to one flag.</returns>
+    virtual bool ForceOneToOneJoin() = 0;
 };
 
 
 
 /// <summary>
 /// This interface represents runtime query objects.  These functions throw
-/// GisException * on error.
+/// FdoException * on error.
 ///
 /// </summary>
 class IGWSQuery : public IGWSObject
@@ -405,6 +465,7 @@ public:
     /// <returns>Returns nothing.</returns>
     virtual void        SetFilter (FdoFilter * filter) = 0;
 
+
     /// <summary>
     /// Prepares query
     /// </summary>
@@ -422,17 +483,33 @@ public:
     virtual void        SetDestinationCS (const GWSCoordinateSystem & csname) = 0;
 
     /// <summary>
+    /// Get the destination coordinate system name.
+    /// </summary>
+    /// <returns>String.</returns>
+    virtual const GWSCoordinateSystem & GetDestinationCS () = 0;
+
+    /// <summary>
+    /// Set the source coordinate system override.
+    /// All resulting geometries will be treated in this coordinate system.
+    /// </summary>
+    /// <param name="csname">Coordinate system name.</param>
+    /// <returns>Returns nothing.</returns>
+    virtual void        SetSourceCS  (const GWSCoordinateSystem & csname) = 0;
+
+    /// <summary>
+    /// Get the source coordinate system override.
+    /// </summary>
+    /// <param name="csname">Coordinate system name.</param>
+    /// <returns>Returns nothing.</returns>
+    virtual const GWSCoordinateSystem &  GetSourceCS () = 0;
+
+    /// <summary>
     /// Set coordinate system converter factory. Query processor uses it
     /// to create converters.
     /// </summary>
     /// <param name="csfactory">Coordinate system converter factory.</param>
     virtual void        SetCSFactory (IGWSCoordinateSystemConverterFactory * csfactory) = 0;
 
-    /// <summary>
-    /// Get the destination coordinate system name.
-    /// </summary>
-    /// <returns>String.</returns>
-    virtual const GWSCoordinateSystem & GetDestinationCS () = 0;
 
     /// <summary>
     /// Get the coordinate system converter factory.
@@ -444,11 +521,11 @@ public:
     /// Executes query and returns query results
     /// </summary>
     /// <param name="results">Output feature set iterator.</param>
+    /// <param name="bScrollable">Specify if a scrollable reader is desired.</param>
     /// <returns>Returns nothing.</returns>
-    virtual void        Execute (IGWSFeatureIterator ** results) = 0;
+    virtual void        Execute (IGWSFeatureIterator ** results, bool bScrollable = false) = 0;
+
 };
-
-
 
 /// <summary>
 /// This interface represents read only feature. It also includes the feature
@@ -613,13 +690,12 @@ public:
 
 
 /// <summary>
-/// This interface represents feature iterator. Feature iterator is a
-/// a forward read-only cursor returned as a result of feature or layer
+/// This interface represents non specific feature iterator.
+//  A read-only cursor returned as a result of feature or layer
 /// query execution.
 /// </summary>
 class IGWSFeatureIterator : public IGWSFeature,
                             public FdoIFeatureReader
-
 {
 public:
     /// <summary>
@@ -661,6 +737,25 @@ public:
     /// <returns>Returns a feature iterator.</returns>
     virtual IGWSFeatureIterator* GetJoinedFeatures (int i) = 0;
 
+    /// <summary>
+    /// returns true if this iterator is a valid, scrollable iterator
+    /// </summary>
+    virtual bool Scrollable() = 0;
+
+    //scrollable iterator interface
+    virtual int                 Count() = 0;
+    virtual bool                ReadFirst() = 0;
+    virtual bool                ReadLast() = 0;
+    virtual bool                ReadPrevious() = 0;
+    virtual bool                ReadAt(FdoPropertyValueCollection* key) = 0;
+    virtual bool                ReadAtIndex( unsigned int recordindex ) = 0;
+    virtual unsigned int        IndexOf(FdoPropertyValueCollection* key) = 0;
+
+    /// <summary>
+    /// Gets the original (unconverted) geometry value of the specified
+    /// property as a byte array.
+    /// </summary>
+    virtual FdoByteArray*       GetOriginalGeometry(FdoString* propertyName) = 0;
 };
 
 /// <summary>
@@ -683,6 +778,15 @@ public:
     static GWS_QUERYENGINE_API EGwsStatus
                             Create(IGWSFeature        * pFrom,
                                    IGWSMutableFeature** pNewFeature);
+
+    static GWS_QUERYENGINE_API EGwsStatus
+                            Create(IGWSFeature        * pFrom,
+                                   IGWSObject         * owner,
+                                   IGWSMutableFeature** pNewFeature);
+
+    static GWS_QUERYENGINE_API EGwsStatus
+                            CreatePrimary(IGWSFeature        * pFrom,
+                                          IGWSMutableFeature** pNewFeature);
 
     static GWS_QUERYENGINE_API EGwsStatus
                             Create(IGWSExtendedFeatureDescription * pefdsc,
@@ -729,12 +833,29 @@ public:
     virtual void      SetValue (FdoString* propertyName, FdoValueExpression* pVal) = 0;
 
     /// <summary>
-    /// Sets the corrdinate system name and type of feature geometry
+    /// Sets the coordinate system name and type of feature geometry
     /// properties.
     /// </summary>
     /// <param name="csname">Coordinate system name.</param>
     /// <returns>Returns nothing.</returns>
     virtual void      SetCSName (const GWSCoordinateSystem & csname) = 0;
+
+
+    /// <summary>
+    /// Sets the source coordinate system override.
+    /// If set, feature geometry will be converted to it when saving feature
+    /// in the feature source
+    /// </summary>
+    /// <param name="csname">Coordinate system name.</param>
+    /// <returns>Returns nothing.</returns>
+    virtual void      SetSourceCSName (const GWSCoordinateSystem & csname) = 0;
+
+    /// <summary>
+    /// Gets the source coordinate system override.
+    /// </summary>
+    /// <returns>Coordinate system name.</returns>
+    virtual const GWSCoordinateSystem & GetSourceCSName () = 0;
+
 
     /// <summary>
     /// Get the property values
@@ -783,5 +904,47 @@ public:
 
 };
 
-#endif /* GWSQUERYENGINE_EXPORTS */
+namespace GwsQueryHelpers
+{
 
+
+    /// <summary>
+    /// Creates the "flat" Fdo Feature reader from the Gws Feature iterator
+    /// If there join iterator yield multiple features, only the first
+    /// feature from such iterator will be present in the "flat" results
+    /// </summary>
+    /// <returns>nothing</returns>
+    GWS_QUERYENGINE_API
+    void  CreateFlatFdoReader (IGWSFeatureIterator * pFrom,
+                               FdoIFeatureReader  ** pFdoReader);
+
+    /// <summary>
+    /// Creates the "flat" Gws Feature iterator from the Gws Feature iterator
+    /// If there join iterator yield multiple features, only the first
+    /// feature from such iterator will be present in the "flat" results
+    /// </summary>
+    /// <returns>nothing</returns>
+    GWS_QUERYENGINE_API
+    void  CreateFlatGwsIterator (IGWSFeatureIterator *  pFrom,
+                                 IGWSFeatureIterator ** pGwsIterator);
+
+    /// <summary>
+    /// Clones property definition and assignes new name to the
+    /// output definition
+    /// If newName is null, the exact copy is made
+    /// </summary>
+    /// <returns>FdoPropertyDefinition *</returns>
+
+    GWS_QUERYENGINE_API
+    FdoPropertyDefinition * ClonePropertyDefinition (
+                               FdoString * newName,
+                               FdoPropertyDefinition * pDefIn,
+                               bool forceCloneReadOnly = false);
+
+    GWS_QUERYENGINE_API
+    void BuildFlatDescription(IGWSQueryDefinition* pQryDef,
+                              IGWSExtendedFeatureDescription* pJoinDesc,
+                              IGWSExtendedFeatureDescription** ppResDesc);
+};
+
+#endif /* GWSQUERYENGINE_EXPORTS */

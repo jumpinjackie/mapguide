@@ -898,6 +898,8 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
 
             // For each join to a secondary source need to do the following
+            bool bForceOneToOne = true;
+            Ptr<MgStringCollection> attributeNameDelimiters = new MgStringCollection();
             for (int attributeRelateIndex = 0; attributeRelateIndex < nAttributeRelateNodes; attributeRelateIndex++)
             {
                 DOMNode* attributeRelateNode = attributeRelateNodeList->item(attributeRelateIndex);
@@ -910,6 +912,35 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 wstring szAttributeRelateName;
                 xmlUtil.GetElementValue(attributeRelateNode, "Name", szAttributeRelateName);
                 STRING secondaryConnectionName = szAttributeRelateName;
+
+                // Get the RelateType (join type).  Default is Left Outer join.
+                wstring szRelateType;
+                xmlUtil.GetElementValue(attributeRelateNode, "RelateType", szRelateType, false);
+                if (szRelateType.empty())
+                {
+                    szRelateType = L"LeftOuter";     // NOXLATE
+                }
+
+                // Get the ForceOneToOne field, which specifies if multiple matching secondary features 
+                // are retrieved via a 1-to-1 or 1-to-many relationship.  Default is 1-to-1 relationship.
+                wstring szForceOneToOne;
+                xmlUtil.GetElementValue(attributeRelateNode, "ForceOneToOne", szForceOneToOne, false);
+                if (szForceOneToOne.empty())
+                {
+                    szForceOneToOne = L"true";     // NOXLATE
+                }
+                // If there is at least one relation is defined as a one-to-many, then the one-to-many result will apply to all join results.
+                if (!MgUtil::StringToBoolean(szForceOneToOne))
+                {
+                    bForceOneToOne = false;
+                }
+
+                // Get the AttributeNameDelimiter field, which specifies the delimiter between the JoinName (attribute relate name)
+                // and the property name for an extended property.  Default delimiter is "" (blank).
+                wstring szAttributeNameDelimiter;
+                xmlUtil.GetElementValue(attributeRelateNode, "AttributeNameDelimiter", szAttributeNameDelimiter, false);
+                STRING attributeNameDelimiter = szAttributeNameDelimiter;
+                attributeNameDelimiters->Add(attributeNameDelimiter);
 
                 // Establish connection to provider for secondary feature source
                 Ptr<MgResourceIdentifier> secondaryFeatureSource = new MgResourceIdentifier(szSecondaryResourceId);
@@ -956,7 +987,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 DOMNodeList* relatePropertyNodeList = xmlUtil.GetNodeList(attributeRelateNode, "RelateProperty");
                 int nRelatePropertyNodes = relatePropertyNodeList->getLength();
 
-                // For each RelatePropery need to do the following
+                // For each RelateProperty need to do the following
                 for (int relatePropertyNodeIndex = 0; relatePropertyNodeIndex < nRelatePropertyNodes; relatePropertyNodeIndex++)
                 {
                     DOMNode* relatePropertyNode = relatePropertyNodeList->item(relatePropertyNodeIndex);
@@ -979,27 +1010,34 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 // Create the QueryDefinition
                 if (NULL != rqd)
                 {
-                    jqd = IGWSLeftJoinQueryDefinition::Create(lqd, rqd, lattrs, rattrs);
+                    FdoString* joinName = szAttributeRelateName.c_str();
+                    FdoString* joinDelimiter = L".";
+                    if (0 == szRelateType.compare(L"Inner"))     // NOXLATE
+                    {
+                        jqd = IGWSEqualJoinQueryDefinition::Create(joinName, joinDelimiter, bForceOneToOne, lqd, rqd, lattrs, rattrs);
+                    }
+                    else   //if (0 == szRelateType.compare(L"LeftOuter"))
+                    {
+                        jqd = IGWSLeftJoinQueryDefinition::Create(joinName, joinDelimiter, bForceOneToOne, lqd, rqd, lattrs, rattrs);
+                    }
                     lqd = jqd;
                 }
 
             } // Repeat for each secondary source
             qd = lqd;
 
-            //Pass the QueryDefinition to the JoinEngine
-            // Create query object by passing connection pool object and query definition
             FdoPtr<IGWSQuery> query = IGWSQuery::Create(pool, qd, NULL);
             FdoPtr<IGWSFeatureIterator> iter;
             FdoPtr<IGWSFeatureIterator> iterCopy;
 
             // Prepare and Execute Query
             query->Prepare();
-            query->Execute(&iter);
-            query->Execute(&iterCopy);
+            query->Execute(&iter, true);
+            query->Execute(&iterCopy, true);
 
             FdoPtr<FdoStringCollection> fsNames = qd->FeatureSourceNames();
 
-            gwsFeatureReader = new MgServerGwsFeatureReader(iter);
+            gwsFeatureReader = new MgServerGwsFeatureReader(iter, bForceOneToOne, attributeNameDelimiters);
             gwsFeatureReader->PrepareGwsGetFeatures(parsedExtensionName, fsNames);
             gwsFeatureReader->SetGwsIteratorCopy(iterCopy);
         }

@@ -38,18 +38,18 @@
 #define GWSThreadModel GWSSingleThreadModel
 #endif
 
-//string-related definitions
+// string related definitions
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
 #define _wcsicmp wcscasecmp
 #endif
 
-typedef std::wstring               WSTR;
-typedef std::vector<WSTR>          WSTRARRAY;
+typedef std::wstring        WSTR;
+typedef std::vector<WSTR>   WSTRARRAY;
 
 // case insensitive comparison for wstrings to be used in stl map
 // templates
-typedef struct less_ignore_case_fast : std::less <const std::wstring>
+typedef struct less_ignore_case_fast : std::less<const std::wstring>
 {
     bool operator()(const std::wstring& s1, const std::wstring& s2) const
     {
@@ -63,9 +63,8 @@ typedef std::map<WSTR,WSTR,GwsIgnoreCase> GwsStrToStrMap;
 // Diagnostics parameters
 typedef GwsStrToStrMap GwsDiagParameters;
 
-
 // statuses enumerator
-typedef enum _EGwsStatus {
+typedef enum EGwsStatus {
      // Good
      eGwsOk      = 0
 
@@ -220,6 +219,10 @@ typedef enum _EGwsStatus {
     ,eGwsNotAllFeatureSourcesConnected
     ,eGwsFailedToUpdateLayerSourceVersion
     ,eGwsProviderNotRegistered
+    ,eGwsFailedToRefreshFeatures
+    ,eGwsNoLayers
+    ,eGwsFeatureSourceIsReadOnly
+    ,eGwsFeatureClassHasNoIdentity
 
 } EGwsStatus;
 
@@ -262,6 +265,22 @@ typedef enum _EGwsStatus {
 /// <param name="eGwsNotProcessed">
 /// Feature was not processed because operation has been terminated prematurely.
 /// </param>
+/// <param name="eGwsRefreshFailedToReloadEditSetFeature">
+/// Feature was not refreshed because it is part of the edit set.
+/// </param>
+/// <param name="eGwsRefreshCacheFeatureIsUpTodate">
+/// Feature is up-to-date.
+/// </param>
+/// <param name="eGwsRefreshDeletedFeatureInCache">
+/// Feature has been deleted from the cache during refresh.
+/// </param>
+/// <param name="eGwsRefreshReloadedFeatureInCache">
+/// Feature has been refreshed in the cache.
+/// </param>
+/// <param name="eGwsRefreshFeatureNotFound">
+/// Feature was not found in the feature source and in the cache.
+/// </param>
+
 typedef enum _EGwsFeatureStatus{
      eGwsSucceeded
     ,eGwsRevisionNumberConflict
@@ -277,6 +296,11 @@ typedef enum _EGwsFeatureStatus{
     ,eGwsNewFeatureCannotBeRemoved
     ,eGwsNewFeatureRemoved
     ,eGwsNotProcessed
+    ,eGwsRefreshFailedToReloadEditSetFeature
+    ,eGwsRefreshCacheFeatureIsUpTodate
+    ,eGwsRefreshDeletedFeatureInCache
+    ,eGwsRefreshReloadedFeatureInCache
+    ,eGwsRefreshFeatureNotFound
 } EGwsFeatureStatus;
 
 /// <summary>
@@ -381,8 +405,8 @@ public:
     /// <returns>Returns nothing.</returns>
     GWS_COMMON_API                 GWSFeatureId (FdoDataValueCollection * values);
 
-    ///<summary>Constructs a Feature identifier from the single int</summary>
-    /// <param name="id">Input feature id as int</param>
+    ///<summary>Constructs a Feature identifier from the single long</summary>
+    /// <param name="id">Input feature id as long</param>
     /// <returns></returns>
     GWS_COMMON_API                 GWSFeatureId (int id);
 
@@ -808,6 +832,8 @@ protected:
 };
 
 
+
+
 /// <summary>
 /// This interface represents a set of qualified names.
 /// </summary>
@@ -815,7 +841,7 @@ class IGWSQualifiedNames : public IGWSObject
 {
 public:
     /// <summary>
-    /// Create a new, empty collection of connection parameters
+    /// Create a new, empty collection of qualified names
     /// </summary>
     /// <returns>Returns a new empty collection.</returns>
     static GWS_COMMON_API IGWSQualifiedNames * Create ();
@@ -824,7 +850,7 @@ public:
     /// Returns index of a qualified name in the collection
     /// Returns -1 if the qualified name was not found
     /// </summary>
-    /// <returns>Returns a new empty collection.</returns>
+    /// <returns>Index.</returns>
     virtual int IndexOf (const GWSQualifiedName & qname) const = 0;
 
     /// <summary>
@@ -833,28 +859,33 @@ public:
     /// <param name="qname">Input qualified name to insert.</param>
     /// <returns>Returns true if successful otherwise returns false.</returns>
     virtual bool Insert(const GWSQualifiedName & qname) = 0;
+
     /// <summary>
     /// Get a qualified name by index
     /// </summary>
     /// <param name="index">Input index.</param>
     /// <returns>Qualified Name at index, or empty qualified name if not found</returns>
     virtual const GWSQualifiedName & Get (int index) const = 0;
+
     /// <summary>
     /// Remove a qualifed name
     /// </summary>
     /// <param name="qname">Input qualified name to remove.</param>
     /// <returns>true if successful</returns>
     virtual bool Remove(const GWSQualifiedName & qname) = 0;
+
     /// <summary>
     /// Remove a qualifed name by its index
     /// </summary>
     /// <param name="index">Input index.</param>
     /// <returns>true if successful</returns>
+
     virtual bool Remove(int index) = 0;
     /// <summary>
     /// Returns the number of names.
     /// </summary>
     /// <returns>Returns count of qualified names in the collection.</returns>
+
     virtual int Count() const = 0;
     /// <summary>
     /// Removes all qualified names
@@ -930,9 +961,67 @@ public:
 
 
 /// <summary>
+/// This interface represents a set of unique feature ids. It supports O(log(n))
+/// performance for Contains() and Add(). Remove is O(log(n)) from the
+/// end, O(n) in general. The Id() method executes in constant, O(1) time.
+/// </summary>
+class IGWSFeatureIdSet : public IGWSObject
+{
+public:
+    /// <summary>
+    /// Create a new, empty id set.
+    /// </summary>
+    /// <returns>Returns new id set.</returns>
+    static GWS_COMMON_API IGWSFeatureIdSet* Create();
+
+    /// <summary>
+    /// Returns the size of the set.
+    /// </summary>
+    /// <returns>Returns size of the id set.</returns>
+    virtual FdoInt32            Size() const = 0;
+
+    /// <summary>
+    /// Returns a boolean indicating whether or not the value is contained
+    /// in the set.
+    /// </summary>
+    /// <param name="id">Input id.</param>
+    /// <returns>Returns true if id is in the set.</returns>
+    virtual bool                Contains(const GWSFeatureId& id) const = 0;
+
+    /// <summary>
+    /// Adds a value to the set.
+    /// </summary>
+    /// <param name="id">Input id to add.</param>
+    /// <returns>A boolean indicating the id was added to the set.</returns>
+    virtual bool                Add(const GWSFeatureId& id) = 0;
+
+    /// <summary>
+    /// Removes a value to the set.
+    /// </summary>
+    /// <param name="id">Input id to remove.</param>
+    /// <returns>A boolean indicating the id was removed from the set.</returns>
+    virtual bool                Remove(const GWSFeatureId& id) = 0;
+
+    /// <summary>
+    /// Returns a value from the set give the specified 0-based index. May throw
+    /// an exception if the index is out of the bounds of 0 to Size().
+    /// </summary>
+    /// <param name="index">Input index.</param>
+    /// <returns>The value at that index.</returns>
+    virtual const GWSFeatureId& Id(FdoInt32 index) = 0;
+
+    /// <summary>
+    /// Clears the contents of the set.
+    /// </summary>
+    /// <returns>Returns nothing.</returns>
+    virtual void                Clear() = 0;
+};
+
+
+/// <summary>
 /// This interface represents a coordinate system converter.
 /// Object implementing this class must provide conversion
-/// of the GisGeometry specified as byte array from the source
+/// of the FdoGeometry specified as byte array from the source
 /// coordinate system to the destination one.
 /// </summary>
 class IGWSCoordinateSystemConverter: public IGWSObject
@@ -993,7 +1082,7 @@ public:
     /// <returns>EGwsStatus</returns>
     virtual EGwsStatus     ConvertBackward(FdoByteArray *pGeom) = 0;
 
-     /// <summary>
+    /// <summary>
     /// Convert geometry byte buffer  from the destination
     /// cs to the source cs.
     /// Does not throw an exception but return error
@@ -1001,6 +1090,13 @@ public:
     /// </summary>
     /// <returns>EGwsStatus</returns>
     virtual EGwsStatus     ConvertBackward(FdoByte *pGeom, int nCount) = 0;
+
+    /// <summary>
+    /// Checks whether coordinate system converter is initialized.
+    /// Returns true if converter is initialized and false otherwise
+    /// </summary>
+    /// <returns>boolean</returns>
+    virtual bool           IsInitialized () = 0;
 
 #ifdef _CS_DEBUG
     virtual void           Clear () = 0;
@@ -1037,6 +1133,15 @@ public:
     virtual EGwsStatus      Create (const GWSCoordinateSystem & scsname,
                                     const GWSCoordinateSystem & dcsname,
                                     IGWSCoordinateSystemConverter ** converter) = 0;
+
+    /// <summary>
+    /// Converts the specified WKT string definition to an equivalent abbreviated name
+    /// </summary>
+    /// <param name="pWkt">WKT CS definition string.</param>
+    /// <param name="pAbbr">Abbreviated CS name. In/Out parameter</param>
+    /// <param name="abbrLen">Number of characters in the buffer pointed to by pAbbr</param>
+    /// <returns>EGwsStatus</returns>
+    virtual EGwsStatus      WktToAbbrev(FdoString* pWkt, wchar_t* pAbbr, int abbrLen) = 0;
 };
 
 /// <summary>
@@ -1168,4 +1273,3 @@ namespace GWSFdoUtilities
 
 
 #endif /* GWSCOMMON_EXPORTS */
-

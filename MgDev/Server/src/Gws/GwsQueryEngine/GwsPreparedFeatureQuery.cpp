@@ -23,13 +23,27 @@
 #include <stdafx.h>
 
 #include "GwsQueryEngineImp.h"
+#include <SDF/IExtendedSelect.h>
+#include <SDF/SdfCommandType.h>
+#include <SHP/IExtendedSelect.h>
+#include <SHP/ShpCommandType.h>
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsPreparedQuery
 //
 /////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 CGwsPreparedQuery::CGwsPreparedQuery ()
+: m_bExtendedQuerySupported(false)
+{
+    m_resultDescriptor = NULL;
+    m_pQuery = NULL;
+    m_pathlength = 0;
+}
+
+CGwsPreparedQuery::CGwsPreparedQuery (bool bExtendedQuery)
+: m_bExtendedQuerySupported(bExtendedQuery)
 {
     m_resultDescriptor = NULL;
     m_pQuery = NULL;
@@ -70,6 +84,7 @@ CGwsFeatureIterator * CGwsPreparedQuery::CreateFeatureIterator (EGwsFeatureItera
         return new CGwsRightNestedLoopSortedBlockJoinQueryResults ();
     }
     return NULL;
+
 }
 
 EGwsPreparedQueryType CGwsPreparedQuery::GetPreparedQueryType ()
@@ -77,7 +92,17 @@ EGwsPreparedQueryType CGwsPreparedQuery::GetPreparedQueryType ()
     return eGwsPreparedFeatureQuery;
 }
 
-
+void CGwsPreparedQuery::GetQueryDefinition (IGWSQueryDefinition ** ppQdef)
+{
+    if (m_pQuery != NULL)
+    {
+        m_pQuery->GetQueryDefinition(ppQdef);
+    }
+    else
+    {
+        *ppQdef = NULL;
+    }
+}
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -93,6 +118,7 @@ CGwsPreparedFeatureQuery::CGwsPreparedFeatureQuery (
 {
     m_pQuery = pQuery;
     m_bIsSelectDistinct = false;
+    m_bIsAxisAlignedRectangleFilter = false;
 }
 
 CGwsPreparedFeatureQuery::~CGwsPreparedFeatureQuery ()
@@ -102,6 +128,7 @@ CGwsPreparedFeatureQuery::~CGwsPreparedFeatureQuery ()
 EGwsStatus CGwsPreparedFeatureQuery::Init (
     FdoStringCollection      * sellist,
     FdoStringCollection      * orderBy,
+    FdoOrderingOption          orderingOption,
     FdoFilter                * pFilter
 )
 {
@@ -118,8 +145,17 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
         // Client ideally should do init once and repeatedly call SetFilter
         // and execute
         assert(m_classDef != NULL); //set in CGwsFdoCommand::Init ();
-
-        m_resultDescriptor = new CGwsQueryResultDescriptors (m_classDef, m_classname, sellist);
+        FdoPtr<IGWSQueryDefinition> qDef;
+        m_pQuery->GetQueryDefinition(&qDef);
+        IGWSJoinQueryDefinition* jqd = dynamic_cast<IGWSJoinQueryDefinition*>(qDef.p);
+        if(m_resultDescriptor != NULL)
+        {
+            m_resultDescriptor->Release();
+        }
+        if(jqd)
+            m_resultDescriptor = new CGwsQueryResultDescriptors (m_classDef, m_classname, jqd->JoinName(), jqd->JoinDelimiter(), jqd->ForceOneToOne(), sellist);
+        else
+            m_resultDescriptor = new CGwsQueryResultDescriptors (m_classDef, m_classname, NULL, NULL, true, sellist);
         m_resultDescriptor->AddRef ();
 
         const CGwsPropertyDesc & propdsc = m_resultDescriptor->GetGeometryPropertyDescriptor ();
@@ -128,7 +164,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
             GwsCommonFdoUtils::DescribeSC (m_connection,
                                            propdsc.m_spatialcontext.c_str (),
                                            desc);
-            m_resultDescriptor->SetCSName (desc.CsNameWkt ());
+            m_resultDescriptor->SetCSName (desc.CsName ());
         }
 
         if (sellist != NULL) {
@@ -138,11 +174,35 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
         }
 
         m_revisionprop.clear ();
-
         m_revisionprop = GwsCommonFdoUtils::GetRevisionProperty (m_classDef);
 
-        FdoISelect * selcmd =
-                 (FdoISelect *) m_connection->CreateCommand (FdoCommandType_Select);
+        //attempt to build an scrollable select command and, if that fails,
+        //attempt to build a standard select comand
+        FdoISelect * selcmd = NULL;
+        FdoInt32 size = 0;
+        FdoPtr<FdoICommandCapabilities> ptrCap = m_connection->GetCommandCapabilities();
+        FdoInt32* pTypes = ptrCap->GetCommands(size);
+        for(int i = 0; i < size; i++ )
+        {
+            if( pTypes[i] == SdfCommandType_ExtendedSelect)
+            {
+                m_bExtendedQuerySupported = true;
+                selcmd = (SdfIExtendedSelect *) m_connection->CreateCommand (SdfCommandType_ExtendedSelect);
+                mExSelProv = eSDF;
+                break;
+            }
+            if( pTypes[i] == ShpCommandType_ExtendedSelect)
+            {
+                m_bExtendedQuerySupported = true;
+                selcmd = (ShpIExtendedSelect *) m_connection->CreateCommand (ShpCommandType_ExtendedSelect);
+                mExSelProv = eSHP;
+                break;
+            }
+        }
+
+        if(!m_bExtendedQuerySupported)
+            selcmd = (FdoISelect *) m_connection->CreateCommand (FdoCommandType_Select);
+
         selcmd->SetFeatureClassName(GwsCommonFdoUtils::MakeFdoQualifiedName (m_classname).c_str());
         if (orderBy != NULL && orderBy->GetCount () > 0) {
             FdoPtr<FdoIdentifierCollection> order = selcmd->GetOrdering ();
@@ -150,14 +210,31 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
                 FdoPtr<FdoIdentifier> ident = FdoIdentifier::Create (orderBy->GetString (i));
                 order->Add (ident);
             }
+            if(m_bExtendedQuerySupported)
+            {
+                if(mExSelProv == eSDF)
+                {
+                    SdfIExtendedSelect* pExSelCmd = (SdfIExtendedSelect*)selcmd;
+                    pExSelCmd->SetOrderingOption(orderBy->GetString(0), orderingOption);
+                }
+                else if(mExSelProv == eSHP)
+                {
+                    ShpIExtendedSelect* pExSelCmd = (ShpIExtendedSelect*)selcmd;
+                    pExSelCmd->SetOrderingOption(orderBy->GetString(0), orderingOption);
+                }//etc.
+            }
+            else
+            {
+                selcmd->SetOrderingOption(orderingOption);
+            }
         }
         m_pCommand = selcmd;
         SetFilter (pFilter);
 
 //        selcmd->SetFilter (pFilter);
 
-    } catch (FdoException * gis) {
-        PushFdoException (eGwsFdoProviderError, gis);
+    } catch (FdoException * fdoEx) {
+        PushFdoException (eGwsFdoProviderError, fdoEx);
         stat = eGwsFdoProviderError;
     }
 
@@ -183,10 +260,9 @@ void CGwsPreparedFeatureQuery::PrepareInternal ()
     if(m_selectList.size() > 0)
     {
         //add in the select ilst, along with the identity properties, revision number
-        assert(m_identity != NULL);
         WSTRARRAY strNames;
         bool     bFoundRevision = false;
-        for (FdoInt32 idx = 0; idx < m_identity->GetCount(); idx ++)
+        for (FdoInt32 idx = 0; m_identity != NULL && idx < m_identity->GetCount(); idx ++)
         {
             FdoPtr<FdoDataPropertyDefinition> pPropdef = m_identity->GetItem(idx);
             FdoString*                        pName = pPropdef->GetName();
@@ -232,19 +308,28 @@ void CGwsPreparedFeatureQuery::SetFilterInternal (FdoFilter * pFilter)
 {
     assert (m_pCommand);
     ((FdoISelect *) m_pCommand.p)->SetFilter (pFilter);
+
 }
 
 EGwsStatus CGwsPreparedFeatureQuery::SetFilter (FdoFilter * pFilter)
 {
     SetFeatureCommandFilter (pFilter);
-//    ((FdoISelect *) m_pCommand.p)->SetFilter (pFilter);
     return eGwsOk;
+}
+
+FdoFilter * CGwsPreparedFeatureQuery::GetFilter ()
+{
+    assert (m_pCommand);
+    return ((FdoISelect *) m_pCommand.p)->GetFilter ();
+
 }
 
 FdoStringCollection * CGwsPreparedFeatureQuery::GetOrderBy ()
 {
     FdoPtr<FdoIdentifierCollection> ordering = ((FdoISelect *) m_pCommand.p)->GetOrdering ();
     FdoStringCollection           * orderBy  = NULL;
+
+    if(NULL == ordering) return NULL;
 
     for (int i = 0; i < ordering->GetCount (); i ++) {
         FdoPtr<FdoIdentifier> ident = ordering->GetItem (i);
@@ -256,28 +341,52 @@ FdoStringCollection * CGwsPreparedFeatureQuery::GetOrderBy ()
     return orderBy;
 }
 
+FdoOrderingOption CGwsPreparedFeatureQuery::GetOrderingOption ()
+{
+    FdoOrderingOption orderOption = ((FdoISelect *) m_pCommand.p)->GetOrderingOption ();
+    return orderOption;
+}
+
 
 EGwsStatus CGwsPreparedFeatureQuery::Execute (
-    IGWSFeatureIterator    ** results
+    IGWSFeatureIterator    ** results,
+    bool                   bScrollable /*false*/
 )
 {
     EGwsStatus stat = eGwsOk;
     try {
         FdoPtr<FdoFilter> filter = ((FdoISelect *)m_pCommand.p)->GetFilter ();
-        PrepareFilter (filter);
+        PrepareFilter (filter, m_bIsAxisAlignedRectangleFilter);
         // do I need to set filter after converting it?
 
-        FdoPtr<FdoIFeatureReader> reader = ((FdoISelect *)m_pCommand.p)->Execute ();
+        //Code for executing an extended query - if it's requested (bScrollable)
+        //AND if it's supported (m_bSdfExtendedQuerySupported)
+        bool bGotScrollableIterator = false;
+        FdoPtr<FdoIFeatureReader> reader = NULL;
+        if(bScrollable && m_bExtendedQuerySupported)
+        {
+            if(mExSelProv == eSDF)
+                reader = ((SdfIExtendedSelect *)m_pCommand.p)->ExecuteScrollable();
+            else if(mExSelProv == eSHP)
+                reader = ((ShpIExtendedSelect *)m_pCommand.p)->ExecuteScrollable();
+        }
+        //If extended query failed or was skipped, do standard query
+        if(NULL == reader)
+        {
+            reader = ((FdoISelect *)m_pCommand.p)->Execute ();
+        }
+        else
+            bGotScrollableIterator = true;
 
         CGwsFeatureIterator * pResults = CreateFeatureIterator (eGwsFeatureIterator);
-        stat = pResults->InitializeReader (reader, m_pQuery, this);
+        stat = pResults->InitializeReader (reader, m_pQuery, this, bGotScrollableIterator);
         if (! IGWSException::IsError (stat)) {
             pResults->AddRef ();
             * results = pResults;
         }
-    } catch (FdoException * gis) {
-        PushFdoException (eGwsFailedToExecuteCommand, gis);
-        gis->Release ();
+    } catch (FdoException * fdoEx) {
+        PushFdoException (eGwsFailedToExecuteCommand, fdoEx);
+        fdoEx->Release ();
         return eGwsFailedToExecuteCommand;
     }
 
@@ -286,11 +395,12 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
 
 EGwsStatus CGwsPreparedFeatureQuery::Execute (
     FdoFilter               * filter,
-    IGWSFeatureIterator    ** results
+    IGWSFeatureIterator    ** results,
+    bool                      bScrollable
 )
 {
     SetFilter (filter);
-    return Execute (results);
+    return Execute (results,bScrollable);
 }
 
 
@@ -319,7 +429,8 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
     const GwsFeaturesIdVector    & featids,
     int                            lBound,
     int                            uBound,
-    IGWSFeatureIterator         ** results
+    IGWSFeatureIterator         ** results,
+    bool                           bScrollable
 )
 {
     FdoPtr<FdoFilter> filter;
@@ -327,7 +438,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
 
     try   {
         eGwsOkThrow (BuildFilter (featids, lBound, uBound, filter.p));
-        return Execute (filter, results);
+        return Execute (filter, results, bScrollable);
 
     } catch (EGwsStatus es) {
         PushStatus (es);

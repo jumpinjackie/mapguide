@@ -24,14 +24,14 @@
 
 #include "GwsCommonImp.h"
 
+
 CGwsQualifiedNames::CGwsQualifiedNames ()
 {
 }
-
-CGwsQualifiedNames::~CGwsQualifiedNames () throw ()
+CGwsQualifiedNames::~CGwsQualifiedNames () throw()
 {
-}
 
+}
 int CGwsQualifiedNames::IndexOf (const GWSQualifiedName & qname) const
 {
     std::vector<GWSQualifiedName>::const_iterator iter;
@@ -43,8 +43,7 @@ int CGwsQualifiedNames::IndexOf (const GWSQualifiedName & qname) const
     }
     return -1;
 }
-
-bool CGwsQualifiedNames::Insert(const GWSQualifiedName & qname)
+bool  CGwsQualifiedNames::Insert(const GWSQualifiedName & qname)
 {
     if (IndexOf (qname) == -1) {
         m_names.push_back (qname);
@@ -59,8 +58,8 @@ const GWSQualifiedName & CGwsQualifiedNames::Get (int idx) const
     if (idx < (int) m_names.size () && idx >= 0)
         return m_names [idx];
     return name;
-}
 
+}
 bool CGwsQualifiedNames::Remove(const GWSQualifiedName & qname)
 {
     std::vector<GWSQualifiedName>::iterator iter;
@@ -72,7 +71,6 @@ bool CGwsQualifiedNames::Remove(const GWSQualifiedName & qname)
     }
     return false;
 }
-
 bool CGwsQualifiedNames::Remove(int idx)
 {
     std::vector<GWSQualifiedName>::iterator iter;
@@ -89,7 +87,6 @@ int CGwsQualifiedNames::Count() const
 {
     return (int) m_names.size ();
 }
-
 void CGwsQualifiedNames::Clear()
 {
     m_names.clear ();

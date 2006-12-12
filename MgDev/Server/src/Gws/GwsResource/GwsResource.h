@@ -185,24 +185,35 @@
 #define IDS_PROGRESS_PROCESSINGLAYER    1167
 #define IDS_STRING1168                  1168
 #define IDS_STRING_eGwsProviderNotRegistered 1168
-#define IDS_STRING_eGwsSucceeded 1169
+#define IDS_STRING_eGwsSucceeded        1169
 #define IDS_STRING_eGwsRevisionNumberConflict 1170
-#define IDS_STRING_eGwsLockRejected 1171
-#define IDS_STRING_eGwsUnlockRejected 1172
-#define IDS_STRING_eGwsLockedOffline 1173
+#define IDS_STRING_eGwsLockRejected     1171
+#define IDS_STRING_eGwsUnlockRejected   1172
+#define IDS_STRING_eGwsLockedOffline    1173
 #define IDS_STRING_eGwsCannotUnlockOffline 1174
 #define IDS_STRING_eGwsFeatureAlreadyInEditSet 1175
 #define IDS_STRING_eGwsSkippedNewFeature 1176
 #define IDS_STRING_eGwsSkippedNotLockedFeature 1177
-#define IDS_STRING_eGwsFeatureNotSaved 1178
-#define IDS_STRING_eGwsNotProcessed 1179
+#define IDS_STRING_eGwsFeatureNotSaved  1178
+#define IDS_STRING_eGwsNotProcessed     1179
 #define IDS_STRING_eGwsCannotRemoveModifedFeatureOffline 1180
 #define IDS_STRING_eGwsNewFeatureCannotBeRemoved 1181
 #define IDS_STRING_eGwsNewFeatureRemoved 1182
-
+#define IDS_STRING_eGwsRefreshFailedToReloadEditSetFeature 1183
+#define IDS_STRING_eGwsRefreshCacheFeatureIsUpTodate 1184
+#define IDS_STRING_eGwsRefreshDeletedFeatureInCache 1185
+#define IDS_STRING_eGwsRefreshReloadedFeatureInCache 1186
+#define IDS_STRING_eGwsRefreshFeatureNotFound 1187
+#define IDS_STRING_eGwsFailedToRefreshFeatures 1188
+#define IDS_PROGRESS_REFRESHINGLAYERSOURCE 1189
+#define IDS_STRING_eGwsNoLayers         1190
+#define IDS_STRING_eGwsFeatureSourceIsReadOnly 1191
+#define IDS_STRING_eGwsFeatureClassHasNoIdentity 1192
+#define IDS_PROGRESS_LAYEREXTENTS       1193
+#define IDS_PROGRESS_LAYER              1194
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1131

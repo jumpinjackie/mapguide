@@ -67,6 +67,7 @@ IGWSException* IGWSException::Create(
 }
 
 
+
 // This function simplifies the creation of an exception with a single
 // status, but with 0 or more name value pairs.  This list needs to
 // be explicitly terminated with a NULL.
@@ -87,12 +88,9 @@ IGWSException* IGWSException::Create(
         pExc->SetParameter(pName, pValue);
         va_list argList;
         va_start(argList, pValue);
-
-        pName = va_arg(argList, FdoString*);
-        while(pName != NULL)
+        while(pName = va_arg(argList, FdoString*))
         {
-            pValue = va_arg(argList, FdoString*);
-            if (pValue != NULL)
+            if (pValue = va_arg(argList, FdoString*))
             {
                 pExc->SetParameter(pName, pValue);
             }

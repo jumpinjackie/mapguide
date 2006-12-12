@@ -32,6 +32,7 @@ BinaryReader::BinaryReader(unsigned char* data, int len)
     m_wcsCacheLen = 0;
     m_wcsCacheCurrent = 0;
     m_wcsCache = NULL;
+
 }
 
 BinaryReader::~BinaryReader()
@@ -189,12 +190,14 @@ wchar_t* BinaryReader::ReadString()
     //this includes null terminator character
     unsigned mbstrlen = ReadUInt32();
 
+
     return ReadRawString(mbstrlen);
 }
 
 
 wchar_t* BinaryReader::ReadRawString(unsigned mbstrlen)
 {
+
     //check if we have read this string already (it will be cached)
     wchar_t* thestring = (m_wcsCachedStrings)[m_pos];
     if (thestring != NULL)
@@ -241,8 +244,8 @@ wchar_t* BinaryReader::ReadRawString(unsigned mbstrlen)
     //Note: we pass in m_len as number of characters to read, but we know
     //the string must be null terminated, so the function will terminate before that
     int count = ut_utf8_to_unicode((char*)(m_data + m_pos), mbstrlen, m_wcsCache + m_wcsCacheCurrent, mbstrlen);
+
     _ASSERT(count > 0 && count < (int)mbstrlen);
-    count;
 
     //remember offset of current string
     unsigned offset = m_wcsCacheCurrent;

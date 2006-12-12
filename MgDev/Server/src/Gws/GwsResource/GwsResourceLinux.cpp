@@ -190,4 +190,13 @@ const wchar_t* IDS_STRING_eGwsNotProcessed                              = L"Feat
 const wchar_t* IDS_STRING_eGwsCannotRemoveModifedFeatureOffline         = L"Modified feature cannot be removed from the edit set offline.";
 const wchar_t* IDS_STRING_eGwsNewFeatureCannotBeRemoved                 = L"Cannot removed new feature from the edit set." ;
 const wchar_t* IDS_STRING_eGwsNewFeatureRemoved                         = L"New feature has been removed from the edit set.";
+const wchar_t* IDS_STRING_eGwsFailedToRefreshFeatures                   = L"Failed to refresh features";
+const wchar_t* IDS_STRING_eGwsNoLayers                                  = L"No layers have been defined.";
+const wchar_t* IDS_STRING_eGwsFeatureSourceIsReadOnly                   = L"Feature source cannot be updated.";
+const wchar_t* IDS_STRING_eGwsFeatureClassHasNoIdentity                 = L"Instance cannot be updated because the feature class doesn't have identity properties";
+const wchar_t* IDS_STRING_eGwsRefreshFailedToReloadEditSetFeature       = L"Feature was not refreshed because it is part of the edit set.";
+const wchar_t* IDS_STRING_eGwsRefreshCacheFeatureIsUpTodate             = L"Feature is up-to-date.";
+const wchar_t* IDS_STRING_eGwsRefreshDeletedFeatureInCache              = L"Feature has been deleted from the cache during refresh.";
+const wchar_t* IDS_STRING_eGwsRefreshReloadedFeatureInCache             = L"Feature has been refreshed in the cache.";
+const wchar_t* IDS_STRING_eGwsRefreshFeatureNotFound                     = L"Feature was not found either in the feature source or in the cache.";
 

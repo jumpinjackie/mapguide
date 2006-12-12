@@ -33,6 +33,7 @@
 // functions, note that FdoString is a const pointer by definition.
 
 
+
 /////////////////////////////////////////////////////////////////////
 //
 // Includes
@@ -78,7 +79,7 @@ CGwsException::CGwsException(
 
 
 // constructor
-// calls default constructor for FdoException and GisIDisposable
+// calls default constructor for FdoException and FdoIDisposable
 // sets m_message and m_cause to null and ref count to 1
 CGwsException::CGwsException(
     FdoString*      pMessage,
@@ -112,6 +113,7 @@ FdoString* CGwsException::ToString()
 {
     return m_status.GetMessage ();
 }
+
 
 
 EGwsStatus CGwsException::GetStatus () const
@@ -152,3 +154,9 @@ const CGwsException& CGwsException::operator =(const CGwsException& other)
     m_status = other.m_status;
     return * this;
 }
+
+
+
+
+// eof
+

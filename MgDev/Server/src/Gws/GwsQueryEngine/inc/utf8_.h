@@ -25,4 +25,3 @@ int ut_utf8_from_unicode(const wchar_t* Wtext, size_t in_size, char* str_out, in
 
 char* gws_mbscat(char *strDestination, const char *strSource);
 
-

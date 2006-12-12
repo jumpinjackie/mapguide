@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "utf8_.h"
-
 #ifdef _WIN32
 #include <mbstring.h>
 #else
@@ -105,7 +104,7 @@ int EncodeUTF8(     const UCS2_char_t*   zUCS2String,
                 return -1;
                 //_DWFCORE_THROW( DWFOverflowException, L"Buffer too small" );
             }
-
+ 
             if (pOut)
             {
                 *(pOut++) = cHi;
@@ -119,7 +118,7 @@ int EncodeUTF8(     const UCS2_char_t*   zUCS2String,
                 return -1;
                 //_DWFCORE_THROW( DWFOverflowException, L"Buffer too small" );
             }
-
+ 
             if (pOut)
             {
                 *(pOut++) = (0xc0 | (cLo << 2) | (cHi >> 6));           // 110lllhh
@@ -134,7 +133,7 @@ int EncodeUTF8(     const UCS2_char_t*   zUCS2String,
                 return -1;
                 //_DWFCORE_THROW( DWFOverflowException, L"Buffer too small" );
             }
-
+ 
             if (pOut)
             {
                 *(pOut++) = (0xe0 | (cLo >> 4));                        // 1110llll
@@ -196,7 +195,7 @@ int EncodeUTF8( const UCS4_char_t*   zUCS4String,
             //_DWFCORE_THROW( DWFNotImplementedException, L"Unicode surrogate pairs not yet supported" );
         }
         else if (a >= 0x80)
-        {
+        { 
             return -1;
             //_DWFCORE_THROW( DWFInvalidArgumentException, L"Not a valid Unicode string" );
         }
@@ -285,7 +284,7 @@ int EncodeUTF8( const UCS4_char_t*   zUCS4String,
                 *(pOut++) = (0x80 | (d & 0x3f));                        // 10dddddd
             }
         }
-        else
+        else 
         {
             if ((++nUsed > nAllowed) && pOut)
             {

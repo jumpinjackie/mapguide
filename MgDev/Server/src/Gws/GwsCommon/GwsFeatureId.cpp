@@ -57,7 +57,6 @@ GWSFeatureId::~GWSFeatureId(void)
 FdoDataValueCollection * GWSFeatureId::CreateDataValueCollection ()
 {
     FdoDataValueCollection * coll = CGwsDataValueCollection::Create ();
-    FDO_SAFE_ADDREF (coll);
     return coll;
 }
 
@@ -128,6 +127,7 @@ bool GWSFeatureId::IsNull () const
         }
     }
     return false;
+
 }
 
 
@@ -148,4 +148,9 @@ int GWSFeatureId::ToString  (wchar_t * str, int numchars) const
     wcsncpy (str, wstr.c_str (), len);
     *(str + len) = 0;
     return len;
+
+
 }
+
+
+

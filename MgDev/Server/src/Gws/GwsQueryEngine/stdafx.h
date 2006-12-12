@@ -27,11 +27,17 @@
 #endif
 
 #ifdef WIN32
+#define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
+// Windows Header Files:
+
 #include <windows.h>
 #include <limits.h>
 #else
 #define _ASSERT(x)
 #endif
+
+//#include "io.h"
+#include "assert.h"
 
 #include <Fdo.h>
 #include <./Common/Xml/Xml.h>

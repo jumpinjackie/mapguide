@@ -91,6 +91,7 @@ void CGwsFdoDeleteCommand::SetFilterInternal (FdoFilter * filter)
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoDeleteCommand::Execute (const GWSFeatureId & featid)
 {
+
     Clear ();
 
     EGwsStatus fdoes = eGwsOk;

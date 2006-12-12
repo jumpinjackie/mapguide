@@ -27,12 +27,13 @@
 IGWSQualifiedNames * IGWSQualifiedNames::Create ()
 {
     return CGwsQualifiedNames::CreateInstance<CGwsQualifiedNames>();
+
 }
 
 IGWSLongFeatureIdSet* IGWSLongFeatureIdSet::Create(long* cacheIds, long count)
 {
     CGwsFeatureIdSet<long, IGWSLongFeatureIdSet>* pIdSet = new CGwsFeatureIdSet<long, IGWSLongFeatureIdSet>();
-
+    
     for(long i=0;i<count;i++)
         pIdSet->Add(cacheIds[i]);
 
@@ -43,7 +44,15 @@ IGWSLongFeatureIdSet* IGWSLongFeatureIdSet::Create(long* cacheIds, long count)
 IGWSLongFeatureIdSet* IGWSLongFeatureIdSet::Create()
 {
     CGwsFeatureIdSet<long, IGWSLongFeatureIdSet>* pIdSet = new CGwsFeatureIdSet<long, IGWSLongFeatureIdSet>();
+    
+    FDO_SAFE_ADDREF(pIdSet);
+    return pIdSet;
+}
 
+IGWSFeatureIdSet* IGWSFeatureIdSet::Create()
+{
+    CGwsFeatureIdSet<GWSFeatureId, IGWSFeatureIdSet>* pIdSet = new CGwsFeatureIdSet<GWSFeatureId, IGWSFeatureIdSet>();
+    
     FDO_SAFE_ADDREF(pIdSet);
     return pIdSet;
 }
