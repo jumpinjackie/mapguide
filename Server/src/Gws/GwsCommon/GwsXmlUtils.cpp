@@ -65,7 +65,7 @@ void CGwsStringCollectionSaxHandler::Write (FdoXmlWriter * writer, FdoStringColl
 
 void CGwsStringCollectionSaxHandler::XmlCharacters(FdoXmlSaxContext* ctx, FdoString* chars)
 {
-    ctx; // For "unreferenced formal parameter" warning
+    ctx = 0; // For "unreferenced formal parameter" warning
 
     if (m_strcoll) {
         FdoPtr<FdoStringCollection> tcoll = FdoStringCollection::Create (chars, m_sdelimiter);

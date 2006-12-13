@@ -178,9 +178,11 @@ double StringValue::GetAsDouble()
     else
         hasInvalidSeparator = wcschr(m_value, L'.');
 
+    int ret = 0;
+
     if (!hasInvalidSeparator)
     {
-        int ret = swscanf(m_value, L"%lf", &d);
+        ret = swscanf(m_value, L"%lf", &d);
         _ASSERT(ret == 1);
     }
     else
@@ -207,7 +209,7 @@ double StringValue::GetAsDouble()
             setlocale(LC_NUMERIC, "C");
         }
 
-        int ret = swscanf(m_value, L"%lf", &d);
+        ret = swscanf(m_value, L"%lf", &d);
         _ASSERT(ret == 1);
 
         //restore the original locale
@@ -225,7 +227,8 @@ long long StringValue::GetAsInt64()
 
     //n = _wtoi64(m_value);
 
-    int ret = swscanf(m_value, L"%ld", &n);
+    int ret = 0;
+    ret = swscanf(m_value, L"%ld", &n);
     _ASSERT(ret == 1);
 
     return n;

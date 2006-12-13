@@ -117,6 +117,10 @@ public:
 
 private:
 
+    // Unimplemented Constructors/Methods
+    KmlRenderer(const KmlRenderer&);
+    KmlRenderer& operator=(const KmlRenderer&);
+
     void ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost);
     void WriteStyle(RS_FillStyle& fill);
     void WriteStyle(RS_LineStroke& lsym);

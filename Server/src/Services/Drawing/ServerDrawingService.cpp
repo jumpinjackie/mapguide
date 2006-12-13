@@ -119,7 +119,7 @@ MgByteReader* MgServerDrawingService::DescribeDrawing(MgResourceIdentifier* reso
         char* pDest = strrchr(pBuffer, '>');     // NOXLATE
         if (0 != pDest)
         {
-            int nFilteredBytes = (int)(pDest - pBuffer + 1);
+            size_t nFilteredBytes = pDest - pBuffer + 1;
             if (nFilteredBytes < nBytes)
             {
                 nBytes = nFilteredBytes;

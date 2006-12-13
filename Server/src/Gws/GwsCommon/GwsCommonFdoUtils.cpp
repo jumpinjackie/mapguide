@@ -720,20 +720,25 @@ WSTR GwsCommonFdoUtils::MakeFdoQualifiedName(const GWSQualifiedName & classname)
 
 WSTR GwsCommonFdoUtils::GetRevisionProperty (FdoClassDefinition * classdef)
 {
+    WSTR revision;
 
     // discover revision property. Revision property is defined
     // for a given class
     FdoPtr<FdoReadOnlyPropertyDefinitionCollection> pBaseProperties = classdef->GetBaseProperties();
 
     // See if property with this name already exists:
-    for (int idx=0; pBaseProperties != NULL && idx < pBaseProperties->GetCount(); idx++) {
+    for (int idx=0; pBaseProperties != NULL && idx < pBaseProperties->GetCount(); idx++)
+    {
         FdoPtr<FdoPropertyDefinition> pBaseProperty;
         pBaseProperty = (FdoPropertyDefinition*)pBaseProperties->GetItem(idx);
-        if (! _wcsicmp (pBaseProperty->GetName(), REVISIONNUMBER_PROPNAME)) {
-            return pBaseProperty->GetName();
+        if (! _wcsicmp (pBaseProperty->GetName(), REVISIONNUMBER_PROPNAME))
+        {
+            revision = pBaseProperty->GetName();
+            break;
         }
     }
-    return L"";
+
+    return revision;
 }
 
 
@@ -754,7 +759,7 @@ GWSExtendedFeatureId GwsCommonFdoUtils::MakeFeatureId (
 
         int size = ident->GetCount ();
 
-        for (int i = 0; i < size ; i ++) {
+        for (int i = 0; i < size ; i++) {
             FdoPtr<FdoPropertyValue>    propval;
             FdoPtr<FdoDataValue>        value;
             propval = ident->GetItem (i);

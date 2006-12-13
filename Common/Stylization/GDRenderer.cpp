@@ -1610,7 +1610,8 @@ void GDRenderer::DrawString( const RS_String& s,
 
     //draw the string
     int gdc = ConvertColor((gdImagePtr)m_imout, (RS_Color&)color);
-    char* err = gdImageStringFT((gdImagePtr)m_imout, NULL, gdc, futf8, height, angle, x, y, sutf8);
+    char* err = 0;
+    err = gdImageStringFT((gdImagePtr)m_imout, NULL, gdc, futf8, height, angle, x, y, sutf8);
 
 #ifdef _DEBUG
     if (err) printf ("gd text error : %s\n", err);
@@ -1644,7 +1645,8 @@ void GDRenderer::MeasureString(const RS_String&  s,
     gdFTStringExtra extra;
     memset(&extra, 0, sizeof(gdFTStringExtra));
     extra.flags |= gdFTEX_XSHOW;
-    char* err = gdImageStringFTEx ((gdImagePtr) NULL, (int*)&extent[0], 0, futf8, (float)height, angle, 0, 0, sutf8, (offsets) ? &extra : NULL);
+    char* err = 0;
+    err = gdImageStringFTEx ((gdImagePtr) NULL, (int*)&extent[0], 0, futf8, (float)height, angle, 0, 0, sutf8, (offsets) ? &extra : NULL);
 
     for (int i=0; i<4; i++)
     {

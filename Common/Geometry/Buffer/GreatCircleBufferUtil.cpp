@@ -584,7 +584,7 @@ void GreatCircleBufferUtil::GetOffsetPoint(double dAzimuth,
 {
     Ptr<MgCoordinate> coordMCS = m_transform->Float2Double(fP0);
 
-    double offset = m_transform->Float2Double(dOffsetDistance);
+    double offset = m_transform->Float2Double((float)dOffsetDistance);
 
     Ptr<MgCoordinate> returnCoord = m_measure->GetCoordinate(coordMCS, dAzimuth, offset);
 
@@ -938,7 +938,10 @@ void GreatCircleBufferUtil::CreateOffsetChains(const OpsFloatPoint vertices[],
         }
         catch (BorderWalkerException* e)
         {
-            assert(e->GetErrorCode() == BorderWalkerException::VerticesCrossingBorderError);
+            if (BorderWalkerException::VerticesCrossingBorderError != e->GetErrorCode())
+            {
+                assert(false);
+            }
 
             CreateOffsetChainsLBL(vertices, nVertices);
         }

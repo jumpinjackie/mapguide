@@ -42,8 +42,8 @@ MgByteReader* MgWebLayout::ProcessGettingStartedPage(MgByteReader* htmlGettingSt
     }
 
     bool first = true;
-    int dtBegin, ddEnd, endOfCommands = string::npos;
-    for(int cur = 0; cur != string::npos; ) {
+    size_t dtBegin, ddEnd, endOfCommands = string::npos;
+    for(size_t cur = 0; cur != string::npos; ) {
         //look for next <dt> tag
         dtBegin = htmlIn.find("<dt>", cur);
         if(dtBegin != string::npos) {
@@ -58,12 +58,12 @@ MgByteReader* MgWebLayout::ProcessGettingStartedPage(MgByteReader* htmlGettingSt
                 return NULL;
             endOfCommands = ddEnd + 5;
             //get the command code
-            int codeBegin = htmlIn.find("<a name=\"", dtBegin);
+            size_t codeBegin = htmlIn.find("<a name=\"", dtBegin);
             if(codeBegin == string::npos || codeBegin > ddEnd)
                 return NULL;
             // commands are encoded with this form: WS1a9193826455f5ff9110c71085341391d-5ca2
             // we retain only the last 4 digits
-            int codeEnd = htmlIn.find('"', codeBegin += 45);
+            size_t codeEnd = htmlIn.find('"', codeBegin += 45);
             if(codeEnd == string::npos)
                 return NULL;
             Ptr<MgWebCommand> cmd = GetCommandFromCode(htmlIn.substr(codeBegin, codeEnd - codeBegin));
