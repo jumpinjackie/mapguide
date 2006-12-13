@@ -547,7 +547,8 @@ void MgServer::ParseArgs (INT32 argc, ACE_TCHAR *argv[])
         // Null terminate the string
         parameter[pos] = 0;
 
-        if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTest)) == 0)
+        if((ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTest)) == 0) ||
+           (ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestMode)) == 0))
         {
             // Test mode
             m_bTestMode = true;
