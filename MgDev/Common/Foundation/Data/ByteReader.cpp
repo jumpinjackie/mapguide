@@ -38,7 +38,7 @@ MgByteReader::MgByteReader(CREFSTRING fileName, CREFSTRING mimeType, bool remove
 MgByteReader::MgByteReader(CREFSTRING contents, CREFSTRING mimeType)
 {
     string utf8 = MgUtil::WideCharToMultiByte(contents);
-    Ptr<MgByteSource> source = new MgByteSource((BYTE_ARRAY_IN)utf8.c_str(), utf8.length());
+    Ptr<MgByteSource> source = new MgByteSource((BYTE_ARRAY_IN)utf8.c_str(), (INT32)utf8.length());
     source->SetMimeType(mimeType);
     SetByteSource(SAFE_ADDREF((MgByteSource*)source));
 }

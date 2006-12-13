@@ -2531,7 +2531,7 @@ MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* f
         pReadFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(currentFilename), ACE_TEXT("rb"));
         if (pReadFile != NULL)
         {
-            int nNumRead = 0;
+            INT32 nNumRead = 0;
 
             // Keep reading lines from the file in a chunk until no more to read or
             // both dates have been found
@@ -2549,7 +2549,7 @@ MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* f
                 if (charsRead < MAX_BUF)
                 {
                     bReadMore = false;
-                    nNumRead = charsRead;
+                    nNumRead = (INT32)charsRead;
                 }
                 else
                 {

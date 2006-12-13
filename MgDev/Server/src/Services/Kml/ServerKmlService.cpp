@@ -823,7 +823,7 @@ MgByteSource* MgServerKmlService::GetByteSource(KmlContent& kmlContent, CREFSTRI
     MgByteSource* byteSource = NULL;
     string kmlString = kmlContent.GetString();
     const char* kmlBuf = kmlString.c_str();
-    int kmlLen = kmlString.length();
+    size_t kmlLen = kmlString.length();
     if(format.compare(L"KMZ") == 0)
     {
         STRING zipTmpFile = MgFileUtil::GenerateTempFileName();
@@ -836,7 +836,7 @@ MgByteSource* MgServerKmlService::GetByteSource(KmlContent& kmlContent, CREFSTRI
         DWFOutputStream* dwfOutputStream = zipFileDesc.zip(innerFilename);
         if(dwfOutputStream != NULL)
         {
-            dwfOutputStream->write((const void*)kmlBuf, (size_t)kmlLen);
+            dwfOutputStream->write((const void*)kmlBuf, kmlLen);
             dwfOutputStream->flush();
             DWFCORE_FREE_OBJECT(dwfOutputStream);
             

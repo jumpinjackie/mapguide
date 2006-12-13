@@ -62,7 +62,7 @@ PSTRBUNDLE GetStringBundle(string& locale_)
                     line = trim(string(l));
                 if(line.empty() || line.at(0) == '#')
                     continue;
-                int sep = line.find('=');
+                size_t sep = line.find('=');
                 if (sep == string::npos)
                     continue;
                 string key = trim(line.substr(0, sep));
@@ -88,14 +88,14 @@ static char* Localize(const char* text_, const char* locale_, int os)
     PSTRBUNDLE sb = GetStringBundle(locale);
     if(sb == NULL)
         return estrdup("");
-    int len = text.length();
-    for(int i = 0; i < len; )
+    size_t len = text.length();
+    for(size_t i = 0; i < len; )
     {
         bool fontTag = false;
-        int pos1 = text.find("__#", i);
+        size_t pos1 = text.find("__#", i);
         if (pos1 != string::npos)
         {
-            int pos2 = text.find("#__", pos1 + 3);
+            size_t pos2 = text.find("#__", pos1 + 3);
             if (pos2 != string::npos)
             {
                 string id = text.substr(pos1 + 3, pos2 - pos1 - 3);
@@ -105,7 +105,7 @@ static char* Localize(const char* text_, const char* locale_, int os)
                     locStr = "";
                 else
                     locStr = it->second;
-                int locLen = locStr.length();
+                size_t locLen = locStr.length();
 
                 string begin, end;
                 if (pos1 > 0)

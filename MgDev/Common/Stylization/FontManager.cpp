@@ -34,7 +34,7 @@ void make_lower_case( char* s )
 {
     while (*s)
     {
-        *s = tolower((int) *s);
+        *s = (char)tolower((int) *s);
         s++;
     }
 }
