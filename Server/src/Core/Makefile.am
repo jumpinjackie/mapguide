@@ -222,7 +222,7 @@ UnitTesting :
 	@echo "if test -z \"\$$PROJ_LIB\"; then export PROJ_LIB=$(map_srcdir)/Oem/proj-4.4.9/nad; fi;" >> unittest.sh
 	@echo "echo GDAL_DATA=\$$GDAL_DATA" >> unittest.sh
 	@echo "echo PROJ_LIB=\$$PROJ_LIB" >> unittest.sh
-	@echo "./mgserver /testmode" >> unittest.sh
+	@echo "./mgserver test" >> unittest.sh
 	@chmod a+x unittest.sh
 
 unittest.sh : serverconfig_linux.ini UnitTestFiles $(map_unittesting_dir)
@@ -359,8 +359,8 @@ install-data-hook:
 	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
 	@echo 'pushd ${prefix}/bin' >> ${prefix}/bin/mgserver.sh
 	@cp -f ${prefix}/bin/mgserver.sh ${prefix}/bin/mgserverd.sh 
-	@echo './mgserver /interactive' >> ${prefix}/bin/mgserver.sh
-	@echo './mgserver /daemon' >> ${prefix}/bin/mgserverd.sh
+	@echo './mgserver run' >> ${prefix}/bin/mgserver.sh
+	@echo './mgserver daemon' >> ${prefix}/bin/mgserverd.sh
 	@echo 'popd' >> ${prefix}/bin/mgserver.sh
 	@echo 'popd' >> ${prefix}/bin/mgserverd.sh
 	@chmod a+x ${prefix}/bin/mgserver*.sh
