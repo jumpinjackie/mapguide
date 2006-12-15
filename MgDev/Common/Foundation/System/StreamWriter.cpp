@@ -156,18 +156,12 @@ MgStreamHelper::MgStreamStatus MgStreamWriter::WriteString(CREFSTRING value)
 {
     MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssDone;
 
-    string mbStr;
-    MgUtil::WideCharToMultiByte(value, mbStr);
-    // Write the lenght of string
-    int strLength = (int)mbStr.length() + 1;
-
     MgArgumentPacket map;
     map.m_PacketHeader = (UINT32)MgPacketParser::mphArgumentSimple;
     map.m_ArgumentType = (UINT32)MgPacketParser::matString;
-    map.m_Length = strLength;
 
     stat = WriteArgumentHeader(map);
-    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteBytes((const unsigned char*)mbStr.c_str(), strLength);
+    if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteString(value);
 
     return stat;
 }
@@ -438,7 +432,7 @@ MgStreamHelper::MgStreamStatus MgStreamWriter::WriteResponseHeader(MgPacketParse
 
     MgStreamHeader msh;
     msh.m_streamStart = (UINT32)MgStreamParser::mshStreamStart;
-    msh.m_streamVersion = 1;
+    msh.m_streamVersion = MgStreamParser::StreamVersion;
     msh.m_streamDataHdr = (UINT32)MgStreamParser::mshStreamData;
 
     stat = WriteStreamHeader(msh);
@@ -461,7 +455,7 @@ MgStreamHelper::MgStreamStatus MgStreamWriter::WriteControlPacket(MgControlPacke
     // Send stream header
     MgStreamHeader msh;
     msh.m_streamStart = (UINT32) MgStreamParser::mshStreamStart;
-    msh.m_streamVersion = 1;
+    msh.m_streamVersion = MgStreamParser::StreamVersion;
     msh.m_streamDataHdr = MgStreamParser::mshStreamData;
 
     stat = WriteStreamHeader(msh);

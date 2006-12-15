@@ -1024,6 +1024,20 @@ protected:
 
     void TrackChange(CREFSTRING objectId, bool layer, MgObjectChange::ChangeType type, CREFSTRING param);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Unpacks Layers and groups from Memory stream (lazy initialization)
+    /// This is a stub method to be overloaded by application specific code
+    ///
+    virtual void UnpackLayersAndGroups();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Packs Layers and groups to a Memory stream (lazy initialization)
+    /// This is a stub method to be overloaded by application specific code
+    ///
+    virtual MgMemoryStreamHelper* PackLayersAndGroups();
+
     /// \brief
     /// Get the unique identifier for the class
     ///

@@ -147,7 +147,6 @@ void MgStreamReader::GetString(REFSTRING wcStr)
 {
     CHECKNULL(m_sHelper, L"MgStreamReader.GetString");
 
-    string str;
     MgArgumentPacket map;
 
     GetArgumentHeader(map);
@@ -158,9 +157,7 @@ void MgStreamReader::GetString(REFSTRING wcStr)
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    str.resize((size_t)map.m_Length); // resize string to hold the required bytes
-    m_sHelper->GetData( (void*)str.c_str(), (size_t)map.m_Length, true, false );
-    MgUtil::MultiByteToWideChar(str, wcStr);
+    m_sHelper->GetString(wcStr);
 }
 
 //////////////////////////////////////////////////////////////////

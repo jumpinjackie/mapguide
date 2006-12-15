@@ -30,6 +30,7 @@ MgNamedCollection::MgNamedCollection(bool caseSensitive)
     m_dCollection = new MgDisposableCollection();
 
     m_bAllowDuplicate = false;
+    m_bCheckDuplicate = true;
     m_bCaseSensitive = caseSensitive;
     m_pNameMap = NULL;
 }
@@ -46,6 +47,7 @@ MgNamedCollection::MgNamedCollection(bool allowDuplicate, bool caseSensitive)
     m_dCollection = new MgDisposableCollection();
 
     m_bAllowDuplicate = allowDuplicate;
+    m_bCheckDuplicate = true;
     m_bCaseSensitive = caseSensitive;
     m_pNameMap = NULL;
 }
@@ -489,7 +491,7 @@ int MgNamedCollection::Compare(CREFSTRING str1, CREFSTRING str2) const
 //////////////////////////////////////////////////////////////////
 void MgNamedCollection::CheckDuplicate(MgNamedSerializable* item, INT32 index)
 {
-    if (!m_bAllowDuplicate)
+    if (!m_bAllowDuplicate && m_bCheckDuplicate)
     {
         Ptr<MgNamedSerializable> foundItem1 = FindItem(item->GetName());
         Ptr<MgNamedSerializable> foundItem2;
@@ -601,4 +603,10 @@ bool MgNamedCollection::GetAllowDuplicate()
 bool MgNamedCollection::GetCaseSenstive()
 {
     return m_bCaseSensitive;
+}
+
+//////////////////////////////////////////////////////////////////
+void MgNamedCollection::SetCheckForDuplicates(bool bDup)
+{
+    m_bCheckDuplicate = bDup;
 }

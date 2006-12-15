@@ -51,6 +51,7 @@ void MgOpSetTile::Execute()
         Ptr<MgByteReader> img = (MgByteReader*)m_stream->GetObject();
 
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
 
         INT32 scaleIndex = 0;
         m_stream->GetInt32(scaleIndex);

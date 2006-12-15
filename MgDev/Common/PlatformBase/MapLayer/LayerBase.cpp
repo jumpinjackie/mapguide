@@ -37,8 +37,6 @@ MgLayerBase::MgLayerBase()
       m_layers(NULL),
       m_displayOrder(0.0)
 {
-    //Generate a unique id for this layer
-    MgUtil::GenerateUuid(m_objectId);
 }
 
 
@@ -361,34 +359,9 @@ STRING MgLayerBase::GetFeatureClassName()
 //
 void MgLayerBase::Serialize(MgStream* stream)
 {
-    stream->WriteObject(m_definition);
-    stream->WriteString(m_name);
-    stream->WriteString(m_objectId);
-    stream->WriteInt32(m_type);
-    stream->WriteBoolean(m_visible);
-    stream->WriteBoolean(m_selectable);
-    stream->WriteBoolean(m_displayInLegend);
-    stream->WriteBoolean(m_expandInLegend);
-    stream->WriteString(m_legendLabel);
-    stream->WriteBoolean(m_needRefresh);
-    stream->WriteDouble(m_displayOrder);
-    INT32 scaleValueCount = (INT32) m_scaleRanges.size();
-    stream->WriteInt32(scaleValueCount);
-    if(scaleValueCount > 0)
-    {
-        for(SCALERANGES::const_iterator it = m_scaleRanges.begin(); it != m_scaleRanges.end(); it++)
-            stream->WriteDouble(*it);
-    }
-    stream->WriteString(m_featureSourceId);
-    stream->WriteString(m_featureName);
-    stream->WriteString(m_geometry);
-
-    stream->WriteInt32((INT32)m_idProps.size());
-    for (IdPropertyList::iterator ids = m_idProps.begin(); ids != m_idProps.end(); ids++)
-    {
-        stream->WriteInt16(ids->type);
-        stream->WriteString(ids->name);
-    }
+    MG_TRY()
+    throw new MgNotImplementedException(L"MgLayerBase.Serialize", __LINE__, __WFILE__, NULL, L"", NULL);
+    MG_CATCH_AND_THROW(L"MgLayerBase.Serialize");
 }
 
 
@@ -397,39 +370,9 @@ void MgLayerBase::Serialize(MgStream* stream)
 //
 void MgLayerBase::Deserialize(MgStream* stream)
 {
-    m_definition = (MgResourceIdentifier*)stream->GetObject();
-    stream->GetString(m_name);
-    stream->GetString(m_objectId);
-    stream->GetInt32(m_type);
-    stream->GetBoolean(m_visible);
-    stream->GetBoolean(m_selectable);
-    stream->GetBoolean(m_displayInLegend);
-    stream->GetBoolean(m_expandInLegend);
-    stream->GetString(m_legendLabel);
-    stream->GetBoolean(m_needRefresh);
-    stream->GetDouble(m_displayOrder);
-
-    INT32 scaleValueCount;
-    stream->GetInt32(scaleValueCount);
-    for(INT32 i = 0; i < scaleValueCount; i++)
-    {
-        double scaleValue;
-        stream->GetDouble(scaleValue);
-        m_scaleRanges.push_back(scaleValue);
-    }
-    stream->GetString(m_featureSourceId);
-    stream->GetString(m_featureName);
-    stream->GetString(m_geometry);
-
-    INT32 idCount = 0;
-    stream->GetInt32(idCount);
-    for (int n = 0; n < idCount; n++)
-    {
-        IdProperty idProp;
-        stream->GetInt16(idProp.type);
-        stream->GetString(idProp.name);
-        m_idProps.push_back(idProp);
-    }
+    MG_TRY()
+    throw new MgNotImplementedException(L"MgLayerBase.Deserialize", __LINE__, __WFILE__, NULL, L"", NULL);
+    MG_CATCH_AND_THROW(L"MgLayerBase.Deserialize");
 }
 
 

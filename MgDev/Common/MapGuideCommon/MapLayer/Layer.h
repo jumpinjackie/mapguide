@@ -81,6 +81,24 @@ INTERNAL_API:
     /// feature source and feature class from it
     void GetLayerInfoFromDefinition(MgResourceService* resourceService);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serialize data to a stream
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    virtual void Serialize(MgStream* stream);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Deserialize data from a stream
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    virtual void Deserialize(MgStream* stream);
+
 protected:
     /// \brief
     /// Destruct a MgLayer object

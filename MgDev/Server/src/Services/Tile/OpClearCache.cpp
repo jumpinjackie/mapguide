@@ -49,6 +49,7 @@ void MgOpClearCache::Execute()
     if (1 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
 
         BeginExecution();
 

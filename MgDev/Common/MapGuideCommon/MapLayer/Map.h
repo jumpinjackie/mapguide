@@ -368,7 +368,31 @@ PUBLISHED_API:
     ///
     virtual void Open(MgResourceService* resourceService, CREFSTRING mapName);
 
- 
+    ///////////////////////////////////////////////////////////////
+    /// \brief
+    /// Saves the Map using the specified resource service.
+    ///
+    /// \remarks
+    /// This method assumes a valid resource identifier has already
+    /// been established via either Open or Save.
+    ///
+    /// \param resourceService
+    /// Resource service.
+    ///
+    void Save(MgResourceService* resourceService);
+
+    //////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Saves the Map using the specified resource service and
+    /// resource identifier.
+    ///
+    /// \param resourceService
+    /// Resource service to use to save the Map.
+    /// \param resourceId
+    /// Resource identifier.
+    ///
+    void Save(MgResourceService* resourceService, MgResourceIdentifier* resourceId);
+
 INTERNAL_API:
 
     /// \brief
@@ -379,12 +403,48 @@ INTERNAL_API:
     ///
     virtual ~MgMap();
 
-   
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serialize data to a TCP/IP stream.
+    ///
+    /// \param stream
+    /// Stream.
+    ///
+    virtual void Serialize(MgStream* stream);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Deserialize data from a TCP/IP stream.
+    ///
+    /// \param stream
+    /// Stream.
+    ///
+    virtual void Deserialize(MgStream* stream);  
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets internal resource service references.  Used for Lazy loading
+    ///
+    /// \param service
+    /// Resource Service
+    ///
+    void SetDelayedLoadResourceService(MgResourceService* service);
 
   
-
-
 protected:
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Unpacks Layers and groups from Memory stream (lazy initialization)
+    ///
+    virtual void UnpackLayersAndGroups();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Packs Layers and groups to a Memory stream (lazy initialization)
+    /// Pack will only occur if changes have been made to the layers and groups
+    ///
+    virtual MgMemoryStreamHelper* PackLayersAndGroups();
 
     /// \brief
     /// Get the unique identifier for the class
@@ -407,7 +467,17 @@ protected:
 
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_MapLayer_Map;
-    
+
+private:
+
+    // Version for serialization 
+    static const int m_serializeVersion = (2<<16) + 0;
+
+    static STRING m_layerGroupTag;
+    Ptr<MgMemoryStreamHelper> m_layerGroupHelper;
+    Ptr<MgResourceService> m_resourceService;
+    bool m_inSave;
+
 
 };
 /// \}

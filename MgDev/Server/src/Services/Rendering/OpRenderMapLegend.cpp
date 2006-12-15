@@ -49,6 +49,7 @@ void MgOpRenderMapLegend::Execute()
     if (5 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
 
         INT32 width = 0;
         m_stream->GetInt32(width);

@@ -43,3 +43,74 @@ bool MgStreamHelper::IsConnected()
 {
     return true;
 }
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Standard protocol handling for strings.  Uses WriteBytes internally
+///
+MgStreamHelper::MgStreamStatus MgStreamHelper::WriteString(CREFSTRING str)
+{
+    MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
+
+    UINT8 charSize = sizeof(wchar_t);
+    stat = WriteUINT8(charSize);
+
+    UINT32 len = (UINT32) str.length()+1;
+    if (mssDone ==  stat) stat = WriteUINT32(len);
+    if (mssDone ==  stat) stat = WriteBytes((unsigned char*) str.c_str(), len*charSize);
+
+    return stat;
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Standard protocol handling for strings.  Uses GetData internally
+///
+MgStreamHelper::MgStreamStatus MgStreamHelper::GetString(REFSTRING wcStr)
+{
+    MgStreamHelper::MgStreamStatus stat = MgStreamHelper::mssError;
+    UINT8 charSize = 0;
+    stat = GetUINT8(charSize);
+
+    UINT32 len = 0;
+    if (mssDone ==  stat) stat = GetUINT32(len);
+
+    if (mssDone != stat) return stat;
+
+    UINT8 currSize = sizeof(wchar_t);
+    if (currSize == charSize)
+    {
+        wcStr.reserve(len);
+        wcStr.resize(len-1);
+        stat = GetData( (void*)wcStr.c_str(), len*charSize , true, false );
+    }
+    else if (2 == currSize && 4 == charSize)
+    {
+        // Do UTF32 to UTF16 conversion
+        LCh* wideStr = new LCh[len];
+        stat = GetData( wideStr, len*charSize, true, false );
+        if (mssDone == stat)
+        {
+            UnicodeString::UTF32toUTF16(wideStr, (xstring&) wcStr);     
+        }
+        delete [] wideStr;
+    }
+    else if (4 == currSize && 2 == charSize)
+    {
+        // Do UTF16 to UTF32 conversion
+        XMLCh* wideStr = new XMLCh[len];
+        stat = GetData( wideStr, len*charSize, true, false );
+        if (mssDone == stat)
+        {
+            UnicodeString::UTF16toUTF32(wideStr, (lstring&) wcStr);
+        }
+        delete [] wideStr;
+    }
+    else
+    {
+        throw new MgStreamIoException(L"MgStreamHelper.GetString", __LINE__, __WFILE__, NULL, L"MgInvalidTCPProtocol", NULL);
+        stat = MgStreamHelper::mssError;
+    }
+
+    return stat;
+}

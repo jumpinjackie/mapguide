@@ -119,3 +119,96 @@ void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
 
     MG_CATCH_AND_THROW(L"MgLayer.GetLayerInfoFromDefinition")
 }
+
+//////////////////////////////////////////////////////////////
+// Serialize data to a stream
+//
+void MgLayer::Serialize(MgStream* stream)
+{
+    Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
+    stream->WriteObject(m_definition);
+
+    helper->WriteString(m_name);
+    helper->WriteString(m_objectId);
+    helper->WriteUINT32(m_type);
+    UINT8 flags = 0;
+    if (m_visible) flags += 1;
+    if (m_selectable) flags += 2;
+    if (m_displayInLegend) flags += 4;
+    if (m_expandInLegend) flags += 8;
+    if (m_needRefresh) flags += 16;
+    helper->WriteUINT8(flags);
+    helper->WriteString(m_legendLabel);
+    helper->WriteBytes((const unsigned char*)&m_displayOrder, sizeof(double));
+
+    UINT32 scaleValueCount = (UINT32) m_scaleRanges.size();
+    helper->WriteUINT32(scaleValueCount);
+    if(scaleValueCount > 0)
+    {
+        for(SCALERANGES::const_iterator it = m_scaleRanges.begin(); it != m_scaleRanges.end(); it++)
+            helper->WriteBytes((const unsigned char*)&(*it), sizeof(double));
+    }
+    helper->WriteString(m_featureSourceId);
+    helper->WriteString(m_featureName);
+    helper->WriteString(m_geometry);
+
+    helper->WriteUINT32((UINT32)m_idProps.size());
+    for (IdPropertyList::iterator ids = m_idProps.begin(); ids != m_idProps.end(); ids++)
+    {
+        helper->WriteUINT16(ids->type);
+        helper->WriteString(ids->name);
+    }
+}
+
+
+//////////////////////////////////////////////////////////////
+// Deserialize data from a stream
+//
+void MgLayer::Deserialize(MgStream* stream)
+{
+    Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
+
+    m_definition = (MgResourceIdentifier*) stream->GetObject();
+
+    helper->GetString(m_name);
+    helper->GetString(m_objectId);
+    UINT32 type;
+    helper->GetUINT32(type);
+    m_type = type;
+    UINT8 flags = 0;
+    helper->GetUINT8(flags);
+    m_visible = (flags & 1) > 0;
+    m_selectable = (flags & 2) > 0;
+    m_displayInLegend = (flags & 4) > 0;
+    m_expandInLegend = (flags & 8) > 0;
+    m_needRefresh = (flags & 16) > 0;
+
+    helper->GetString(m_legendLabel);
+    helper->GetData((void*)&m_displayOrder, sizeof(double));
+
+    UINT32 scaleValueCount = 0;
+    helper->GetUINT32(scaleValueCount);
+    for(UINT32 i = 0; i < scaleValueCount; i++)
+    {
+        double scaleValue;
+        helper->GetData((void*)&scaleValue, sizeof(double));
+        m_scaleRanges.push_back(scaleValue);
+    }
+
+    helper->GetString(m_featureSourceId);
+    helper->GetString(m_featureName);
+    helper->GetString(m_geometry);
+
+    UINT32 idCount = 0;
+    helper->GetUINT32(idCount);
+    for (UINT32 n = 0; n < idCount; n++)
+    {
+        IdProperty idProp;
+        UINT16 idType;
+        helper->GetUINT16(idType);
+        idProp.type = idType;
+        helper->GetString(idProp.name);
+        m_idProps.push_back(idProp);
+    }
+}
+
