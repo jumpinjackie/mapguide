@@ -51,11 +51,6 @@ MgOpIsMaximumLogSizeEnabled::~MgOpIsMaximumLogSizeEnabled()
 void MgOpIsMaximumLogSizeEnabled::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpIsMaximumLogSizeEnabled::Execute()\n")));
-    
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"IsMaximumLogSizeEnabled");
 
@@ -72,11 +67,10 @@ void MgOpIsMaximumLogSizeEnabled::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Validate() is not be called here. Why NOT?
+        Validate();
 
         bool bIsMaximumLogSizeEnabled = m_service->IsMaximumLogSizeEnabled();
 
-        
         EndExecution(bIsMaximumLogSizeEnabled);
     }
     else
@@ -98,8 +92,6 @@ void MgOpIsMaximumLogSizeEnabled::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

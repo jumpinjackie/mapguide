@@ -50,11 +50,6 @@ MgOpGetInformationProperties::~MgOpGetInformationProperties()
 void MgOpGetInformationProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetInformationProperties::Execute()\n")));
-    
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetInformationProperties");
 
@@ -71,13 +66,12 @@ void MgOpGetInformationProperties::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Validate() is not be called here. Why NOT?
+        Validate();
 
-        Ptr<MgPropertyCollection> pPropertyCollection;
-        pPropertyCollection = m_service->GetInformationProperties();
-
+        Ptr<MgPropertyCollection> propertyCollection = 
+            m_service->GetInformationProperties();
         
-        EndExecution(pPropertyCollection);
+        EndExecution(propertyCollection);
     }
     else
     {
@@ -98,8 +92,6 @@ void MgOpGetInformationProperties::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
