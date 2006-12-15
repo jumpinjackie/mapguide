@@ -51,11 +51,6 @@ MgOpIsOnline::~MgOpIsOnline()
 void MgOpIsOnline::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpIsOnline::Execute()\n")));
-    
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"IsOnline");
 
@@ -72,10 +67,9 @@ void MgOpIsOnline::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Validate() is not be called here. Why NOT?
+        Validate();
 
         bool bIsOnline = m_service->IsOnline();
-
         
         EndExecution(bIsOnline);
     }
@@ -98,8 +92,6 @@ void MgOpIsOnline::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

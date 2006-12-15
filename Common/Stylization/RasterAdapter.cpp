@@ -197,7 +197,8 @@ void RasterAdapter::DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, in
         //now read the padding bytes if any
         if (pad)
         {
-            int read = (int) is->read(padding, pad);
+            int read = 0;
+            read = (int)is->read(padding, pad);
             _ASSERT(pad == read);
         }
     }
