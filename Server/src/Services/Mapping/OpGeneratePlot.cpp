@@ -68,6 +68,8 @@ void MgOpGeneratePlot::Execute()
     if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
         Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)m_stream->GetObject();
         Ptr<MgLayout> layout = (MgLayout*)m_stream->GetObject();
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
@@ -95,6 +97,8 @@ void MgOpGeneratePlot::Execute()
     else if (6 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
         Ptr<MgEnvelope> extents = (MgEnvelope*)m_stream->GetObject();
         bool expandToFit = false;
         m_stream->GetBoolean(expandToFit);
@@ -129,6 +133,8 @@ void MgOpGeneratePlot::Execute()
     else if (7 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
         double centerX = 0.0;
         m_stream->GetDouble(centerX);
         double centerY = 0.0;

@@ -211,6 +211,7 @@ MgInvalidServiceType                                  = The service type is inva
 MgInvalidSessionsId                                   = The session ID is invalid because the session separator character was not found.
 MgInvalidStringConversion                             = The string is invalid and cannot be converted.
 MgInvalidStringTrim                                   = The string was trimmed and it's size now differs from the original.
+MgInvalidTCPProtocol                                  = The TCP/IP protocol is mismatched between the Server and Web Extensions.  Please install the same version of Server and Web Extensions.
 MgInvalidValueOutsideRange                            = The value is invalid because it must be between the valid range of values.
 MgInvalidValueTooBig                                  = The value is invalid because it is too large.
 MgInvalidValueTooSmall                                = The value is invalid because it is too small.

@@ -69,6 +69,8 @@ void MgOpGenerateMapUpdate::Execute()
     {
         INT32 seqNo;
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
         m_stream->GetInt32(seqNo);
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 

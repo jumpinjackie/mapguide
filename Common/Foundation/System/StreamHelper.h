@@ -124,6 +124,18 @@ class MG_FOUNDATION_API MgStreamHelper : public MgGuardDisposable
     ///
     virtual bool IsConnected();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Standard protocol handling for strings.  Uses WriteBytes internally
+    ///
+    virtual MgStreamStatus WriteString(CREFSTRING str);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Standard protocol handling for strings.  Uses GetData internally
+    ///
+    virtual MgStreamStatus GetString(REFSTRING str);
+
     protected:
     virtual void Dispose();
 };

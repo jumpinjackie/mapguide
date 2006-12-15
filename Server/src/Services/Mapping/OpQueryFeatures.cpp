@@ -71,6 +71,8 @@ void MgOpMQueryFeatures::Execute()
     {
         STRING layerName, coordinateSpace;
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
         m_stream->GetString(layerName);
         m_stream->GetString(coordinateSpace);
 

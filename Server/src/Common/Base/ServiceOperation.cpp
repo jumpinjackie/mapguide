@@ -187,6 +187,15 @@ void MgServiceOperation::Initialize(MgStreamData* data,
     // Decrement number of arguments since we have pulled the first one.
     m_packet.m_NumArguments--;
 
+    // Grab a resource service.  This is required by many operations for
+    // lazy initialization support of MgMap
+    MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+    assert(NULL != serviceManager);
+
+    m_resourceService = dynamic_cast<MgResourceService*>(
+        serviceManager->RequestService(MgServiceType::ResourceService));
+    assert(m_resourceService != NULL);
+
     MG_CATCH_AND_THROW(L"MgServiceOperation.Init")
 }
 

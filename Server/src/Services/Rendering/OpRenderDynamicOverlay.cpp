@@ -49,6 +49,8 @@ void MgOpRenderDynamicOverlay::Execute()
     if (3 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
         Ptr<MgSelection> selection = (MgSelection*)m_stream->GetObject();
         if(selection)
             selection->SetMap(map);

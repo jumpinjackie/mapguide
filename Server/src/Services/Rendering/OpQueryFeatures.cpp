@@ -49,6 +49,8 @@ void MgOpQueryFeatures::Execute()
     if (5 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
         Ptr<MgStringCollection> layerNames = (MgStringCollection*)m_stream->GetObject();
         Ptr<MgGeometry> geom = (MgGeometry*)m_stream->GetObject();
 

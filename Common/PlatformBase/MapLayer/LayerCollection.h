@@ -370,6 +370,10 @@ INTERNAL_API:
     ///
     MgMapBase* GetMap();
 
+    /// \brief
+    /// Enable/disable duplicates check.  Used during Deserialization
+    void SetCheckForDuplicates(bool bDup); 
+
 protected:
     /// \brief
     /// To shut Ptr<> up

@@ -68,6 +68,13 @@ void MgOpGenerateMultiPlot::Execute()
     if (2 == m_packet.m_NumArguments)
     {
         Ptr<MgMapPlotCollection> mapPlots = (MgMapPlotCollection*)m_stream->GetObject();
+        for (int i=0; i<mapPlots->GetCount(); i++)
+        {
+            Ptr<MgMapPlot> mapPlot = mapPlots->GetItem(i);
+            Ptr<MgMap> map = mapPlot->GetMap();
+            map->SetDelayedLoadResourceService(m_resourceService);
+        }
+
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
 
         BeginExecution();

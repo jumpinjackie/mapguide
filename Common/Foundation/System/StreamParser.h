@@ -43,6 +43,11 @@ class MG_FOUNDATION_API MgStreamParser
             mshStreamEnd     =   0x1111F803
         };
 
+        // Stream version follows a 16 bit major, 16 bit minor
+        // convention.  Minors should be interop compatible.
+        // Major versions are not.
+        static const UINT32 StreamVersion = (3<<16) + 0;
+
     ///////////////////////////////////////////////////////////////////////
     ///  Methods
     public :

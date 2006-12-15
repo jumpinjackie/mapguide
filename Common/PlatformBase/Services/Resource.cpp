@@ -42,14 +42,12 @@ void MgResource::Open(MgResourceService* resourceService, MgResourceIdentifier* 
     SAFE_ADDREF((MgResourceIdentifier*)m_resId);
 
     Ptr<MgByteReader> breader = resourceService->GetResourceData(m_resId, m_resourceDataTag);
-
+   
     //get the byte reader content into a memory stream
-    Ptr<MgMemoryStreamHelper> streamHelper = new MgMemoryStreamHelper();
-    unsigned char buf[8192];
-    int byteCount;
-    while((byteCount = breader->Read((BYTE_ARRAY_OUT)&buf, sizeof(buf))) > 0)
-        streamHelper->WriteBytes(buf, byteCount);
-
+    MgByteSink sink(breader);
+    Ptr<MgByte> bytes = sink.ToBuffer();
+    Ptr<MgMemoryStreamHelper> streamHelper = 
+        new MgMemoryStreamHelper((INT8*) bytes->Bytes(), bytes->GetLength(), false);
     Ptr<MgStream> stream = new MgStream(streamHelper);
 
     //let the object deserialize itself from the memory stream

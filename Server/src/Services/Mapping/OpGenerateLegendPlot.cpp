@@ -70,6 +70,8 @@ void MgOpGenerateLegendPlot::Execute()
     if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
         double scale = 0.0;
         m_stream->GetDouble(scale);
         Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)m_stream->GetObject();

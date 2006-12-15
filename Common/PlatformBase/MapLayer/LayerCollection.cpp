@@ -217,3 +217,8 @@ MgMapBase* MgLayerCollection::GetMap()
 {
     return m_owner;
 }
+
+void MgLayerCollection::SetCheckForDuplicates(bool bDup)
+{
+    m_layers->SetCheckForDuplicates(bDup);
+}

@@ -69,6 +69,8 @@ void MgOpGenerateMap::Execute()
     {
         STRING sessionId, mapAgentUri;
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
         m_stream->GetString(sessionId);
         m_stream->GetString(mapAgentUri);
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();

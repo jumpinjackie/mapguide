@@ -325,12 +325,14 @@ void MgUserInformation::Serialize(MgStream* stream)
         credentials = cryptoManager.EncryptCredentials(m_username, m_password);
     }
 
-    stream->WriteInt32(m_type);
-    stream->WriteString(credentials);
-    stream->WriteString(m_sessionId);
-    stream->WriteString(m_locale);
-    stream->WriteString(m_clientAgent);
-    stream->WriteString(m_clientIp);
+    Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
+
+    helper->WriteUINT32(m_type);
+    helper->WriteString(credentials);
+    helper->WriteString(m_sessionId);
+    helper->WriteString(m_locale);
+    helper->WriteString(m_clientAgent);
+    helper->WriteString(m_clientIp);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -340,15 +342,17 @@ void MgUserInformation::Serialize(MgStream* stream)
 
 void MgUserInformation::Deserialize(MgStream* stream)
 {
-    INT32 type;
+    UINT32 type;
     STRING credentials;
 
-    stream->GetInt32(type);
-    stream->GetString(credentials);
-    stream->GetString(m_sessionId);
-    stream->GetString(m_locale);
-    stream->GetString(m_clientAgent);
-    stream->GetString(m_clientIp);
+    Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
+
+    helper->GetUINT32(type);
+    helper->GetString(credentials);
+    helper->GetString(m_sessionId);
+    helper->GetString(m_locale);
+    helper->GetString(m_clientAgent);
+    helper->GetString(m_clientIp);
 
     m_type = (UserInformationType) type;
 

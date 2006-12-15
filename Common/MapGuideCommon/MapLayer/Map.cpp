@@ -25,13 +25,16 @@ using namespace std;
 
 IMPLEMENT_CREATE_OBJECT(MgMap)
 
+STRING MgMap::m_layerGroupTag = L"LayerGroupData";
+
 
 //////////////////////////////////////////////////////////////
 // Constructs an empty un-initialized MgMap object.
 // The object cannot be used until either the Create or Open method is called.
 //
 MgMap::MgMap()
-    : MgMapBase()
+    : MgMapBase(),
+    m_inSave(false)
 {
 }
 
@@ -329,6 +332,7 @@ void MgMap::Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName)
 //
 void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
 {
+    m_resourceService = SAFE_ADDREF(resourceService);
     m_trackChangesDisabled = true;
 
     STRING sessionId;
@@ -352,7 +356,78 @@ void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Session:" + sessionId + L"//" + mapName + L"." + MgResourceType::Map);
     MgResource::Open(resourceService, resId);
 
+    //Note:  Layer and Groups are loaded on demand by UnpackLayerAndGroups
+
     m_trackChangesDisabled = false;
+}
+
+// Saves the resource using the specified resource service and resource identifier.
+// This method assumes a valid resource identifier has already been established
+// for this resource via either Open or Save
+//
+void MgMap::Save(MgResourceService* resourceService)
+{
+    if(m_resId == (MgResourceIdentifier*)NULL)
+        throw new MgNullReferenceException(L"MgMap.Save", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    m_inSave = true;
+
+    MG_TRY()
+
+    SerializeToRepository(resourceService, false);
+
+    Ptr<MgMemoryStreamHelper> streamHelper = PackLayersAndGroups();
+    if (NULL != (MgMemoryStreamHelper*) streamHelper)
+    {
+        //Make a byte reader out of the memory stream
+        Ptr<MgByteSource> bsource = new MgByteSource((BYTE_ARRAY_IN)streamHelper->GetBuffer(), streamHelper->GetLength());
+        Ptr<MgByteReader> resourceData = bsource->GetReader();
+
+        resourceService->SetResourceData(m_resId, m_layerGroupTag, L"Stream", resourceData);
+    }
+
+    MG_CATCH(L"MgMap.Save")
+    if (NULL != mgException)
+    {
+        m_inSave = false;
+        MG_THROW();
+    }
+
+    m_inSave = false;
+}
+
+// Saves the resource using the specified resource service and resource identifier.
+//
+void MgMap::Save(MgResourceService* resourceService, MgResourceIdentifier* resourceId)
+{
+    m_resId = SAFE_ADDREF(resourceId);
+    if(m_resId == (MgResourceIdentifier*)NULL)
+        throw new MgNullReferenceException(L"MgMap.Save", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    m_inSave = true;
+
+    MG_TRY()
+
+    SerializeToRepository(resourceService, true);
+
+    Ptr<MgMemoryStreamHelper> streamHelper = PackLayersAndGroups();
+    if (NULL != (MgMemoryStreamHelper*) streamHelper)
+    {
+        //Make a byte reader out of the memory stream
+        Ptr<MgByteSource> bsource = new MgByteSource((BYTE_ARRAY_IN)streamHelper->GetBuffer(), streamHelper->GetLength());
+        Ptr<MgByteReader> resourceData = bsource->GetReader();
+
+        resourceService->SetResourceData(m_resId, m_layerGroupTag, L"Stream", resourceData);
+    }
+
+    MG_CATCH(L"MgMap.Save")
+    if (NULL != mgException)
+    {
+        m_inSave = false;
+        MG_THROW();
+    }
+
+    m_inSave = false;
 }
 
 
@@ -368,4 +443,379 @@ MgMap::~MgMap()
 void MgMap::Dispose()
 {
     delete this;
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Unpacks Layers and groups from Memory stream - Lazy Initialization
+///
+/// How does lazy initialization work?  Basically, the layers, groups, and
+/// changeList collections are stored in a separate binary blob within MgMap.
+/// For large maps, the "layers groups" blob can be tens/hundreds of kbytes.
+/// In some cases, the application does not actually need this information from
+/// MgMap so serializing it is a big waste of resources.
+///
+/// All saved MgMap objects know how to pull the layer groups blob on the fly
+/// using the internal m_resourceService/m_resId.  If GetLayers(), GetLayerGroups() or
+/// TrackChange() is called then the blob will automatically be pulled.  Note:
+/// m_resourceService must be set using SetDelayedLoadResourceService if MgMap
+/// is not set using Create or Open  (ie. when deserialized).
+///
+/// The "layers groups" blob is only serialized on the wire if it has changed.
+/// If none of the collections contain data then they are assumed to be unchanged.
+///
+/// The same applies to the Save.  If the collections do not contain data then they
+/// will not be saved. 
+///
+void MgMap::UnpackLayersAndGroups()
+{
+    // Temporary byte array for on-demand loading
+    Ptr<MgByte> bytes;
+
+    if (NULL == (MgMemoryStreamHelper*) m_layerGroupHelper)
+    {
+        if (m_changeLists->GetCount() || m_layers->GetCount() || m_groups->GetCount())
+        {
+            // Already unpacked, just return.
+            return;
+        }
+
+        // Need to query from Resource Service
+        if (NULL != (MgResourceService*) m_resourceService)
+        {
+            Ptr<MgByteReader> breader = m_resourceService->GetResourceData(m_resId, m_layerGroupTag);
+   
+            MgByteSink sink(breader);
+            bytes = sink.ToBuffer();
+            m_layerGroupHelper = new MgMemoryStreamHelper((INT8*) bytes->Bytes(), bytes->GetLength(), false);
+        }
+        else
+        {
+            // If this exception is thrown then the calling code should probably initialize the
+            // resource service using SetDelayedLoadResourceService()
+            throw new MgInvalidOperationException(L"MgMap.UnpackLayersAndGroups", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+    }
+
+    m_trackChangesDisabled = true;
+
+    Ptr<MgStream> stream = new MgStream(m_layerGroupHelper);
+    MgStreamReader* streamReader = (MgStreamReader*)stream;
+
+    //change lists
+    INT32 changeListCount;
+    streamReader->GetInt32(changeListCount);
+
+    m_changeLists->SetCheckForDuplicates(false);
+
+    for(INT32 i = 0; i < changeListCount; i++)
+    {
+        STRING objectId;
+        bool isLayer;
+
+        streamReader->GetBoolean(isLayer);
+        streamReader->GetString(objectId);
+
+        Ptr<MgChangeList> changeList = new MgChangeList(objectId, isLayer);
+        m_changeLists->Add(changeList);
+
+        INT32 changeCount;
+        streamReader->GetInt32(changeCount);
+        for(INT32 j = 0; j < changeCount; j++)
+        {
+            INT32 type;
+            stream->GetInt32(type);
+
+            Ptr<MgObjectChange> change = new MgObjectChange((MgObjectChange::ChangeType)type);
+
+            STRING param;
+            streamReader->GetString(param);
+            change->SetParam(param);
+
+            changeList->AddChange(change);
+        }
+    }
+
+    m_changeLists->SetCheckForDuplicates(true);
+
+    //groups
+    //this maps speeds up the process of attaching groups together and attaching layers to groups
+    map<STRING, MgLayerGroup*> knownGroups;
+
+    map<STRING, MgLayerGroup*>::const_iterator itKg;
+    INT32 groupCount;
+    streamReader->GetInt32(groupCount);
+
+    STRING parentGroupName;
+    for(int groupIndex = 0; groupIndex < groupCount; groupIndex++)
+    {
+        streamReader->GetString(parentGroupName);
+        Ptr<MgLayerGroup> group = (MgLayerGroup*)streamReader->GetObject();
+        STRING groupName = group->GetName();
+
+        knownGroups[groupName] = group;
+
+        if(parentGroupName.length() > 0)
+        {
+            //attach this group to its parent
+            itKg = knownGroups.find(parentGroupName);
+            assert(itKg != knownGroups.end());
+            group->SetGroup(itKg->second);
+        }
+
+        m_groups->Add(group);
+    }
+
+    //layers
+    INT32 layerCount;
+    streamReader->GetInt32(layerCount);
+
+    m_layers->SetCheckForDuplicates(false);
+
+    for(int layerIndex = 0; layerIndex < layerCount; layerIndex++)
+    {
+        streamReader->GetString(parentGroupName);
+        Ptr<MgLayerBase> layer = (MgLayerBase*)streamReader->GetObject();
+
+        if(parentGroupName.length() > 0)
+        {
+            //attach this group to its parent
+            itKg = knownGroups.find(parentGroupName);
+            assert(itKg != knownGroups.end());
+            layer->SetGroup(itKg->second);
+        }
+
+        m_layers->Add(layer);
+    }
+
+    m_layers->SetCheckForDuplicates(true);
+
+    //done with this list
+    knownGroups.clear();
+
+
+    // Throw away the blob data.  It is no longer valid.
+    streamReader = NULL;
+    stream = NULL;
+    m_layerGroupHelper = NULL;
+    bytes = NULL;
+
+    m_trackChangesDisabled = false;
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Packs Layers and groups to a Memory stream (lazy initialization)
+///
+MgMemoryStreamHelper* MgMap::PackLayersAndGroups()
+{
+    if (0 == m_changeLists->GetCount() && 0 == m_layers->GetCount() &&
+        0 == m_groups->GetCount())
+    {
+        // Nothing to pack, or data has not changed.  Return NULL;
+        return NULL;
+    }
+
+    m_trackChangesDisabled = true;
+
+    Ptr<MgMemoryStreamHelper> streamHelper = new MgMemoryStreamHelper();
+    Ptr<MgStream> stream = new MgStream(streamHelper);
+
+    //change lists
+    INT32 changeListCount = m_changeLists->GetCount();
+    stream->WriteInt32(changeListCount);
+    for(INT32 i = 0; i < changeListCount; i++)
+    {
+        Ptr<MgChangeList> changeList = (MgChangeList*)m_changeLists->GetItem(i);
+        stream->WriteBoolean(changeList->IsLayer());
+        stream->WriteString(changeList->GetObjectId());
+        stream->WriteInt32(changeList->GetChangeCount());
+        for(INT32 j = 0; j < changeList->GetChangeCount(); j++)
+        {
+            Ptr<MgObjectChange> change = (MgObjectChange*)changeList->GetChangeAt(j);
+            stream->WriteInt32((INT32)change->GetType());
+            stream->WriteString(change->GetParam());
+        }
+    }
+
+    //groups
+    INT32 groupCount = m_groups->GetCount();
+    stream->WriteInt32(groupCount);
+    for(int groupIndex = 0; groupIndex < groupCount; groupIndex++)
+    {
+        Ptr<MgLayerGroup> group = m_groups->GetItem(groupIndex);
+        Ptr<MgLayerGroup> parent = group->GetGroup();
+        stream->WriteString(parent != NULL? parent->GetName(): L"");
+        stream->WriteObject(group);
+    }
+    //layers
+    INT32 layerCount = m_layers->GetCount();
+    stream->WriteInt32(layerCount);
+
+    for(int layerIndex = 0; layerIndex < layerCount; layerIndex++)
+    {
+        Ptr<MgLayerBase> layer = m_layers->GetItem(layerIndex);
+        //if the refresh flag must be globally set or reset, do it for this layer
+        //before it's serialized
+        if(m_layerRefreshMode != unspecified)
+        {
+            if(m_layerRefreshMode == refreshNone)
+                layer->ForceRefresh(false);
+            else
+                layer->ForceRefresh(true);
+        }
+
+        Ptr<MgLayerGroup> parent = layer->GetGroup();
+        stream->WriteString(parent != NULL? parent->GetName(): L"");
+
+        stream->WriteObject(layer);
+    }
+
+    m_trackChangesDisabled = false;
+
+    stream = NULL;
+    return streamHelper.Detach();
+}
+
+
+//////////////////////////////////////////////////////////////
+// Serialize data to a stream
+//
+void MgMap::Serialize(MgStream* stream)
+{
+    //version of object in case we need to revision again
+    stream->WriteInt32(m_serializeVersion);
+
+    //resource id for MgMap
+    stream->WriteObject(m_resId);
+    //map name
+    stream->WriteString(m_name);
+    //map unique id
+    stream->WriteString(m_objectId);
+    //map definition id
+    stream->WriteObject(m_mapDefinitionId);
+    //coordinate system
+    stream->WriteString(m_srs);
+    //map extent - cannot be NULL - set by Create() or Open()
+    stream->WriteObject(m_mapExtent);
+    //center
+    // cannot be NULL - set by Create() or Open()s
+    stream->WriteObject(m_center);
+    //scale
+    stream->WriteDouble(m_scale);
+    //data extent
+    stream->WriteObject(m_dataExtent);
+    //display dpi
+    stream->WriteInt32(m_displayDpi);
+    //display size
+    stream->WriteInt32(m_displayWidth);
+    stream->WriteInt32(m_displayHeight);
+    //background color
+    stream->WriteString(m_backColor);
+    //meters per unit
+    stream->WriteDouble(m_metersPerUnit);
+
+    //finite display scales
+    INT32 scaleCount = (INT32)m_finiteDisplayScales.size();
+    stream->WriteInt32(scaleCount);
+    if (scaleCount > 0)
+    {
+        for (FINITESCALES::const_iterator it = m_finiteDisplayScales.begin(); it != m_finiteDisplayScales.end(); it++)
+            stream->WriteDouble(*it);
+    }
+
+    // Serialize Layers and Groups as a blob.
+    Ptr<MgMemoryStreamHelper> streamHelper = PackLayersAndGroups();
+    if (m_inSave || NULL == (MgMemoryStreamHelper*) streamHelper)
+    {
+        // Data has not changed.  Do not serialize.  And never serialize blob when saving.
+        stream->WriteInt32(0);
+    }
+    else
+    {
+        stream->WriteInt32(streamHelper->GetLength());
+        Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
+        helper->WriteBytes((const unsigned char*) streamHelper->GetBuffer(), streamHelper->GetLength());
+    }
+}
+
+
+//////////////////////////////////////////////////////////////
+// Deserialize data from a stream
+//
+void MgMap::Deserialize(MgStream* stream)
+{
+    MgStreamReader* streamReader = (MgStreamReader*)stream;
+
+    m_trackChangesDisabled = true;
+
+    INT32 version = 0;
+    //version of object
+    stream->GetInt32(version);
+
+    if (version != m_serializeVersion)
+    {
+        throw new MgStreamIoException(L"MgMap.Deserialize", __LINE__, __WFILE__, NULL, L"MgInvalidTCPProtocol", NULL);
+    }
+
+    //resource id for MgMap
+    m_resId = (MgResourceIdentifier*)streamReader->GetObject();
+    //map name
+    streamReader->GetString(m_name);
+    //map unique id
+    streamReader->GetString(m_objectId);
+    //map definition id
+    m_mapDefinitionId = (MgResourceIdentifier*)streamReader->GetObject();
+    //coordinate system
+    streamReader->GetString(m_srs);
+    //map extent
+    m_mapExtent = (MgEnvelope*)streamReader->GetObject();
+    //center
+    m_center = (MgPoint*)streamReader->GetObject();
+    //scale
+    streamReader->GetDouble(m_scale);
+    //data extent  - use GetObject when MgEnvelope will serialize
+    m_dataExtent = (MgEnvelope*)streamReader->GetObject();
+    //display dpi
+    streamReader->GetInt32(m_displayDpi);
+    //display size
+    streamReader->GetInt32(m_displayWidth);
+    streamReader->GetInt32(m_displayHeight);
+    //background color
+    streamReader->GetString(m_backColor);
+    //meters per unit
+    streamReader->GetDouble(m_metersPerUnit);
+
+    //finite display scales
+    INT32 scaleCount;
+    streamReader->GetInt32(scaleCount);
+    for (INT32 i=0; i<scaleCount; i++)
+    {
+        double displayScale;
+        streamReader->GetDouble(displayScale);
+        m_finiteDisplayScales.push_back(displayScale);
+    }
+
+       
+    INT32 nBytes = 0;
+    streamReader->GetInt32(nBytes);
+    m_layerGroupHelper = NULL;
+    if (nBytes > 0)
+    {
+        INT8* buf = new INT8[nBytes];
+        streamReader->GetData((void*) buf, nBytes);
+        m_layerGroupHelper = new MgMemoryStreamHelper(buf, nBytes, true);
+    }
+
+    m_trackChangesDisabled = false;
+}
+
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Sets internal resource service references.  Used for Lazy loading
+///
+void MgMap::SetDelayedLoadResourceService(MgResourceService* service)
+{
+    m_resourceService = SAFE_ADDREF(service);
 }

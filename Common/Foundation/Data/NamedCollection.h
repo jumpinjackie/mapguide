@@ -262,12 +262,12 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream);
 
-public:
 
     MgNamedCollection(bool allowDuplicate, bool caseSensitive);
     MgNamedCollection(bool caseSensitive = true);
     bool GetAllowDuplicate();
     bool GetCaseSenstive();
+    void SetCheckForDuplicates(bool bDup);
 
 protected:
 
@@ -314,6 +314,7 @@ private:
 
     bool m_bAllowDuplicate;
     bool m_bCaseSensitive;
+    bool m_bCheckDuplicate;
 
 CLASS_ID:
     static const INT32 m_cls_id = Foundation_Collection_NamedCollection;

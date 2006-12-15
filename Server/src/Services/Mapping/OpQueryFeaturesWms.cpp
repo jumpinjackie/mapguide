@@ -72,6 +72,8 @@ void MgOpQueryFeaturesWms::Execute()
         INT32 x, y, maxFeatures;
         STRING coordinateSpace;
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
         Ptr<MgStringCollection> layerNames = (MgStringCollection*)m_stream->GetObject();
         m_stream->GetInt32(x);
         m_stream->GetInt32(y);

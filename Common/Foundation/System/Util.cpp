@@ -534,8 +534,7 @@ void MgUtil::CheckBeginEnd(CREFSTRING str, CREFSTRING sChar)
     int orgLen = (int)str.length();
     if ( orgLen > 0 )
     {
-        int TrimLen = (int)Trim(str, sChar).length();
-        if ( orgLen != TrimLen )
+        if (NULL != wcschr(sChar.c_str(), str[0]) || NULL != wcschr(sChar.c_str(), str[orgLen-1]) )
         {
             MgStringCollection arguments;
             arguments.Add(L"1");

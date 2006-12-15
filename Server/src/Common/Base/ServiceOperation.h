@@ -83,6 +83,7 @@ protected:
 
     MgConnection* m_currConnection;
     Ptr<MgStream> m_stream;
+    Ptr<MgResourceService> m_resourceService;
     bool m_argsRead;
 
 private:

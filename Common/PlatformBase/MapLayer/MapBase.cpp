@@ -112,6 +112,9 @@ MgEnvelope* MgMapBase::GetMapExtent()
 //
 MgLayerCollection* MgMapBase::GetLayers()
 {
+    MG_TRY()
+    UnpackLayersAndGroups();
+    MG_CATCH_AND_THROW(L"MgMapBase.GetLayers");
     return SAFE_ADDREF((MgLayerCollection*)m_layers);
 }
 
@@ -121,6 +124,9 @@ MgLayerCollection* MgMapBase::GetLayers()
 //
 MgLayerGroupCollection* MgMapBase::GetLayerGroups()
 {
+    MG_TRY()
+    UnpackLayersAndGroups();
+    MG_CATCH_AND_THROW(L"MgMapBase.GetLayerGroups");
     return SAFE_ADDREF((MgLayerGroupCollection*)m_groups);
 }
 
@@ -132,10 +138,8 @@ MgLayerGroupCollection* MgMapBase::GetLayerGroups()
 void MgMapBase::Create(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName)
 {
     MG_TRY()
-
-    throw new MgNotImplementedException(L"MgMap.Crate", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    MG_CATCH_AND_THROW(L"MgMap.Create")
+    throw new MgNotImplementedException(L"MgMapBase.Create", __LINE__, __WFILE__, NULL, L"", NULL);
+    MG_CATCH_AND_THROW(L"MgMapBase.Create")
 }
 
 
@@ -188,7 +192,7 @@ void MgMapBase::Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapN
 
     m_trackChangesDisabled = false;
 
-    MG_CATCH_AND_THROW(L"MgMap.Create")
+    MG_CATCH_AND_THROW(L"MgMapBase.Create")
 }
 
 
@@ -197,7 +201,9 @@ void MgMapBase::Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapN
 //
 void MgMapBase::Open(MgResourceService* resourceService, CREFSTRING mapName)
 {
+    MG_TRY()
     throw new MgNotImplementedException(L"MgMapBase.Open", __LINE__, __WFILE__, NULL, L"", NULL);
+    MG_CATCH_AND_THROW(L"MgMapBase.Open")
 }
 
 
@@ -366,97 +372,34 @@ STRING MgMapBase::GetBackgroundColor()
     return m_backColor;
 }
 
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Unpacks Layers and groups from Memory stream (lazy initialization)
+/// This is a stub method to be overloaded by application specific code
+///
+void MgMapBase::UnpackLayersAndGroups()
+{
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Packs Layers and groups to a Memory stream (lazy initialization)
+/// This is a stub method to be overloaded by application specific code
+///
+MgMemoryStreamHelper* MgMapBase::PackLayersAndGroups()
+{
+    return NULL;
+}
+
 
 //////////////////////////////////////////////////////////////
 // Serialize data to a stream
 //
 void MgMapBase::Serialize(MgStream* stream)
 {
-    //map name
-    stream->WriteString(m_name);
-    //map unique id
-    stream->WriteString(m_objectId);
-    //map definition id
-    stream->WriteObject(m_mapDefinitionId);
-    //coordinate system
-    stream->WriteString(m_srs);
-    //map extent - cannot be NULL - set by Create() or Open()
-    stream->WriteObject(m_mapExtent);
-    //center
-    // cannot be NULL - set by Create() or Open()s
-    stream->WriteObject(m_center);
-    //scale
-    stream->WriteDouble(m_scale);
-    //data extent
-    stream->WriteObject(m_dataExtent);
-    //display dpi
-    stream->WriteInt32(m_displayDpi);
-    //display size
-    stream->WriteInt32(m_displayWidth);
-    stream->WriteInt32(m_displayHeight);
-    //background color
-    stream->WriteString(m_backColor);
-    //meters per unit
-    stream->WriteDouble(m_metersPerUnit);
-
-    //finite display scales
-    INT32 scaleCount = (INT32)m_finiteDisplayScales.size();
-    stream->WriteInt32(scaleCount);
-    if (scaleCount > 0)
-    {
-        for (FINITESCALES::const_iterator it = m_finiteDisplayScales.begin(); it != m_finiteDisplayScales.end(); it++)
-            stream->WriteDouble(*it);
-    }
-
-    //groups
-    INT32 groupCount = m_groups->GetCount();
-    stream->WriteInt32(groupCount);
-    for(int groupIndex = 0; groupIndex < groupCount; groupIndex++)
-    {
-        Ptr<MgLayerGroup> group = m_groups->GetItem(groupIndex);
-        Ptr<MgLayerGroup> parent = group->GetGroup();
-        stream->WriteString(parent != NULL? parent->GetName(): L"");
-        stream->WriteObject(group);
-    }
-    //layers
-    INT32 layerCount = m_layers->GetCount();
-    stream->WriteInt32(layerCount);
-
-    for(int layerIndex = 0; layerIndex < layerCount; layerIndex++)
-    {
-        Ptr<MgLayerBase> layer = m_layers->GetItem(layerIndex);
-        //if the refresh flag must be globally set or reset, do it for this layer
-        //before it's serialized
-        if(m_layerRefreshMode != unspecified)
-        {
-            if(m_layerRefreshMode == refreshNone)
-                layer->ForceRefresh(false);
-            else
-                layer->ForceRefresh(true);
-        }
-
-        Ptr<MgLayerGroup> parent = layer->GetGroup();
-        stream->WriteString(parent != NULL? parent->GetName(): L"");
-
-        stream->WriteObject(layer);
-    }
-
-    //change lists
-    INT32 changeListCount = m_changeLists->GetCount();
-    stream->WriteInt32(changeListCount);
-    for(INT32 i = 0; i < changeListCount; i++)
-    {
-        Ptr<MgChangeList> changeList = (MgChangeList*)m_changeLists->GetItem(i);
-        stream->WriteBoolean(changeList->IsLayer());
-        stream->WriteString(changeList->GetObjectId());
-        stream->WriteInt32(changeList->GetChangeCount());
-        for(INT32 j = 0; j < changeList->GetChangeCount(); j++)
-        {
-            Ptr<MgObjectChange> change = (MgObjectChange*)changeList->GetChangeAt(j);
-            stream->WriteInt32((INT32)change->GetType());
-            stream->WriteString(change->GetParam());
-        }
-    }
+    MG_TRY()
+    throw new MgNotImplementedException(L"MgMapBase.Serialize", __LINE__, __WFILE__, NULL, L"", NULL);
+    MG_CATCH_AND_THROW(L"MgMapBase.Serialize")
 }
 
 
@@ -465,130 +408,9 @@ void MgMapBase::Serialize(MgStream* stream)
 //
 void MgMapBase::Deserialize(MgStream* stream)
 {
-    MgStreamReader* streamReader = (MgStreamReader*)stream;
-
-    m_trackChangesDisabled = true;
-
-    //map name
-    streamReader->GetString(m_name);
-    //map unique id
-    streamReader->GetString(m_objectId);
-    //map definition id
-    m_mapDefinitionId = (MgResourceIdentifier*)streamReader->GetObject();
-    //coordinate system
-    streamReader->GetString(m_srs);
-    //map extent
-    m_mapExtent = (MgEnvelope*)streamReader->GetObject();
-    //center
-    m_center = (MgPoint*)streamReader->GetObject();
-    //scale
-    streamReader->GetDouble(m_scale);
-    //data extent  - use GetObject when MgEnvelope will serialize
-    m_dataExtent = (MgEnvelope*)streamReader->GetObject();
-    //display dpi
-    streamReader->GetInt32(m_displayDpi);
-    //display size
-    streamReader->GetInt32(m_displayWidth);
-    streamReader->GetInt32(m_displayHeight);
-    //background color
-    streamReader->GetString(m_backColor);
-    //meters per unit
-    streamReader->GetDouble(m_metersPerUnit);
-
-    //finite display scales
-    INT32 scaleCount;
-    streamReader->GetInt32(scaleCount);
-    for (INT32 i=0; i<scaleCount; i++)
-    {
-        double displayScale;
-        streamReader->GetDouble(displayScale);
-        m_finiteDisplayScales.push_back(displayScale);
-    }
-
-    //groups
-    //this maps speeds up the process of attaching groups together and attaching layers to groups
-    map<STRING, MgLayerGroup*> knownGroups;
-
-    map<STRING, MgLayerGroup*>::const_iterator itKg;
-    INT32 groupCount;
-    streamReader->GetInt32(groupCount);
-
-    STRING parentGroupName;
-    for(int groupIndex = 0; groupIndex < groupCount; groupIndex++)
-    {
-        streamReader->GetString(parentGroupName);
-        Ptr<MgLayerGroup> group = (MgLayerGroup*)streamReader->GetObject();
-        STRING groupName = group->GetName();
-
-        knownGroups[groupName] = group;
-
-        if(parentGroupName.length() > 0)
-        {
-            //attach this group to its parent
-            itKg = knownGroups.find(parentGroupName);
-            assert(itKg != knownGroups.end());
-            group->SetGroup(itKg->second);
-        }
-
-        m_groups->Add(group);
-    }
-
-    //layers
-    INT32 layerCount;
-    streamReader->GetInt32(layerCount);
-
-    for(int layerIndex = 0; layerIndex < layerCount; layerIndex++)
-    {
-        streamReader->GetString(parentGroupName);
-        Ptr<MgLayerBase> layer = (MgLayerBase*)streamReader->GetObject();
-
-        if(parentGroupName.length() > 0)
-        {
-            //attach this group to its parent
-            itKg = knownGroups.find(parentGroupName);
-            assert(itKg != knownGroups.end());
-            layer->SetGroup(itKg->second);
-        }
-
-        m_layers->Add(layer);
-    }
-
-    //done with this list
-    knownGroups.clear();
-
-    //change lists
-    INT32 changeListCount;
-    streamReader->GetInt32(changeListCount);
-
-    for(INT32 i = 0; i < changeListCount; i++)
-    {
-        STRING objectId;
-        bool isLayer;
-
-        streamReader->GetBoolean(isLayer);
-        streamReader->GetString(objectId);
-
-        Ptr<MgChangeList> changeList = new MgChangeList(objectId, isLayer);
-        m_changeLists->Add(changeList);
-
-        INT32 changeCount;
-        streamReader->GetInt32(changeCount);
-        for(INT32 j = 0; j < changeCount; j++)
-        {
-            INT32 type;
-            stream->GetInt32(type);
-
-            Ptr<MgObjectChange> change = new MgObjectChange((MgObjectChange::ChangeType)type);
-
-            STRING param;
-            streamReader->GetString(param);
-            change->SetParam(param);
-
-            changeList->AddChange(change);
-        }
-    }
-
-    m_trackChangesDisabled = false;
+    MG_TRY()
+    throw new MgNotImplementedException(L"MgMapBase.Deserialize", __LINE__, __WFILE__, NULL, L"", NULL);
+    MG_CATCH_AND_THROW(L"MgMapBase.Deserialize")
 }
 
 
@@ -848,13 +670,15 @@ void MgMapBase::TrackChange(CREFSTRING objectId, bool layer, MgObjectChange::Cha
 
     MG_TRY()
 
+    UnpackLayersAndGroups();
+
     //check if there is already a changelist for this object. If not, created it
     Ptr<MgChangeList> changeList = (MgChangeList*)m_changeLists->FindItem(objectId);
     if(changeList == NULL)
     {
         changeList = new MgChangeList(objectId, layer);
         if(changeList == NULL)
-            throw new MgOutOfMemoryException(L"MgMap.TrackChange", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgOutOfMemoryException(L"MgMapBase.TrackChange", __LINE__, __WFILE__, NULL, L"", NULL);
 
         m_changeLists->Add(changeList);
     }
@@ -862,13 +686,13 @@ void MgMapBase::TrackChange(CREFSTRING objectId, bool layer, MgObjectChange::Cha
     //create a change record and adds it to the change list
     Ptr<MgObjectChange> change = new MgObjectChange(type);
     if(change == NULL)
-        throw new MgOutOfMemoryException(L"MgMap.TrackChange", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgOutOfMemoryException(L"MgMapBase.TrackChange", __LINE__, __WFILE__, NULL, L"", NULL);
 
     change->SetParam(param);
 
     changeList->AddChange(change);
 
-    MG_CATCH_AND_THROW(L"MgMap.TrackChange")
+    MG_CATCH_AND_THROW(L"MgMapBase.TrackChange")
 }
 
 

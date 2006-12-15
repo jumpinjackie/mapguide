@@ -725,7 +725,9 @@ void MgResourceIdentifier::CheckType(CREFSTRING repositoryType,
 ///</param>
 void MgResourceIdentifier::Serialize(MgStream* stream)
 {
-    stream->WriteString(this->ToString());
+    Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
+    STRING resId = ToString();
+    helper->WriteString(resId);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -737,9 +739,10 @@ void MgResourceIdentifier::Serialize(MgStream* stream)
 ///</param>
 void MgResourceIdentifier::Deserialize(MgStream* stream)
 {
-    STRING resource;
-    ((MgStreamReader*)stream)->GetString(resource);
-    this->SetResource(resource);
+    Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
+    STRING resId;
+    helper->GetString(resId);
+    SetResource(resId);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
