@@ -40,10 +40,19 @@
 MapGuide Open SourceはWebベースのプラットフォームで、ユーザがWebマッピングアプリケーションと地理空間Webサービスをすばやく構築して展開することが可能です。MapGuideはフィーチャの選択、プロパティの検査、マップチップのサポートと、バッファ、範囲選択、測定などの操作について、インタラクティブなビューアを提供します。MapGuideにはコンテンツ管理のためのXMLデータベースが含まれ、大半のよく使用されている地理空間ファイルフォーマット、データベース、業界標準をサポートしています。MapGuideはLinuxまたはWindows上で展開でき、WebサーバはApacheとIISをサポートし、アプリケーションの開発にはPHP、.NET、Java、JavaScriptのAPIを提供しています。なお、MapGuideはLGPLのもとでライセンスされています。
 </p>
 		<p>
-MapGuideについてもっと学び、参加し、<a href="https://mapguide.osgeo.org/downloads.html">ダウンロード</a>してください。 <a href="user.html">ユーザ</a>あるいは<a href="developer.html">コントリビュータ</a>として参加するためのいくつかの方法があります。</p></div>
+MapGuideについてもっと学び、参加し、<a href="https://mapguide.osgeo.org/downloads.html">ダウンロード</a>してください。 <a href="user.html">ユーザ</a>あるいは<a href="developer.html">コントリビュータ</a>として参加するためのいくつかの方法があります。<br>
+<br>
+<strong>日本語メーリングリストのご案内</strong><br>
+MapGuide Open Sourceの活用について、情報交換、意見交換をする自由参加の日本語メーリングリストにご参加ください。<br>
+このリストはどなたでも参加できます。興味のある方は積極的に登録をお願いします。登録は<a href="https://japan.osgeo.org/servlets/ProjectMailingListList">ここから</a>行えます。</p>
+		</div>
 				
 <div class="h2"><h2>アナウンス</h2>
-  <p>2006年10月14日 - MapGuide Open Source 1.0.2がリリースされました。　このリリースには多数のバグフィックスとMapGuide
+   <p>2006年12月3日 - MapGuide Open Source 1.1.0 Release Candidate
+     1 (RC1)がテスト用として利用可能になりました。今回はFDO 3.3のAPIとGoogle EarthのKMLのダイレクトサポートが主な項目です。
+     [<a href="downloads.html">ダウンロード</a>] [<a href="1.1/documentation.html">ドキュメント（英語）</a>]
+     なお、日本語環境での動作は保証されていません。</p>
+   <p>2006年10月14日 - MapGuide Open Source 1.0.2がリリースされました。　このリリースには多数のバグフィックスとMapGuide
     Web Studioの最初のバージョンが含まれています。詳しい情報は<a href="https://www.osgeo.org/files/documents/12/290/ReleaseNotes1.0.2.html" title="https://mapguide.osgeo.org/files/documents/12/236/releasenotes.html">リリースノート</a>を参照してください。（注意：まだ日本語版はありません）</p>
 2006年7月26日 - MapGuide Open Source 1.0.1 がリリースされました。　このリリースには多数のバグフィックスとMapGuide Web Studioの最初のバージョンが含まれています。詳しい情報は<a href="https://mapguide.osgeo.org/files/documents/12/236/releasenotes.html">リリースノート</a>を参照してください。
 </div>
