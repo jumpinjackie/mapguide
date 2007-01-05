@@ -177,7 +177,7 @@ INT32 MgConnectionProperties::GetClassId()
 /// </summary>
 void MgConnectionProperties::Serialize(MgStream* stream)
 {
-    UNUSED(stream);
+    MG_UNUSED_ARG(stream);
 }
 
 /// <summary>
@@ -185,7 +185,7 @@ void MgConnectionProperties::Serialize(MgStream* stream)
 /// </summary>
 void MgConnectionProperties::Deserialize(MgStream* stream)
 {
-    UNUSED(stream);
+    MG_UNUSED_ARG(stream);
 }
 
 /// \brief

@@ -104,7 +104,7 @@ bool MgServerConnectionImp::Connect(const char* ipAddress, int portno)
     if (-1 == connectResult)
     {
         int err = ACE_OS::last_error();
-        UNUSED(err);
+        MG_UNUSED_ARG(err);
         // Could not connect
         delete mServer;
         mServer = NULL;

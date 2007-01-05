@@ -749,7 +749,7 @@ GWSExtendedFeatureId GwsCommonFdoUtils::MakeFeatureId (
     const wchar_t                     * ltname
 )
 {
-    ltname; // For "unreferenced formal parameter" warning
+    static_cast<void>(&(ltname)); // For "unreferenced formal parameter" warning
 
     static GWSExtendedFeatureId s_fid;
 

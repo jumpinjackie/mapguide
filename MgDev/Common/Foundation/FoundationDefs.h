@@ -168,16 +168,7 @@ typedef unsigned char* BYTE_ARRAY_IN;
 /// Byte array.
 typedef unsigned char* BYTE_ARRAY_OUT;
 
-#ifdef _WIN32
-#define UNUSED(var)
-#define UNUSED_BOOL(var)
-#define UNUSED_ENUM(var, type)
-#define UNUSED_STR(var)
-#else
-#define UNUSED(var)  (var=0)
-#define UNUSED_BOOL(var)  (var=false)
-#define UNUSED_ENUM(var, type)  (var=(type)0)
-#define UNUSED_STR(var)  (var.length())
-#endif
+// Keep compilers quiet about unused parameters.
+#define MG_UNUSED_ARG(a) static_cast<void>(&(a))
 
-#endif // MGCOMMONDEFS_H_
+#endif // MGFOUNDATIONDEFS_H_
