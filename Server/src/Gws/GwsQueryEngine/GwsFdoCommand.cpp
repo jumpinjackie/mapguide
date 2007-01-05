@@ -76,7 +76,7 @@ CGwsFdoCommand::~CGwsFdoCommand ()
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
 {
-    pFDOCommandClass; // For "unreferenced formal parameter" warning
+    static_cast<void>(&(pFDOCommandClass)); // For "unreferenced formal parameter" warning
 
     // initilaize class definition
     if(m_classDef == NULL)
@@ -193,7 +193,7 @@ FdoPropertyDefinition * CGwsFdoCommand::GetPropertyDefinition (FdoString * propn
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Execute (CGwsMutableFeature & feature)
 {
-    feature; // For "unreferenced formal parameter" warning
+    static_cast<void>(&(feature)); // For "unreferenced formal parameter" warning
     return eGwsNotSupported;
 }
 
@@ -211,7 +211,7 @@ EGwsStatus CGwsFdoCommand::Execute (IGWSMutableFeature * feature)
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Execute (const GWSFeatureId & featid)
 {
-    featid; // For "unreferenced formal parameter" warning
+    static_cast<void>(&(featid)); // For "unreferenced formal parameter" warning
     return eGwsNotSupported;
 }
 
@@ -228,9 +228,9 @@ EGwsStatus CGwsFdoCommand::Execute (
     int                            ubound
 )
 {
-    featids; // For "unreferenced formal parameter" warning
-    lbound; // For "unreferenced formal parameter" warning
-    ubound; // For "unreferenced formal parameter" warning
+    static_cast<void>(&(featids)); // For "unreferenced formal parameter" warning
+    static_cast<void>(&(lbound)); // For "unreferenced formal parameter" warning
+    static_cast<void>(&(ubound)); // For "unreferenced formal parameter" warning
     return eGwsNotSupported;
 }
 

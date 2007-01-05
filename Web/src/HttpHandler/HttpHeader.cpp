@@ -206,7 +206,7 @@ MgStringCollection* MgHttpHeader::GetHeaderNames()
 /// </returns>
 MgStringCollection* MgHttpHeader::GetHeaders(CREFSTRING name)
 {
-    UNUSED_STR(name);
+    MG_UNUSED_ARG(name);
 
     // TODO: Return proper string collection here
     Ptr<MgStringCollection> mgsCollection;

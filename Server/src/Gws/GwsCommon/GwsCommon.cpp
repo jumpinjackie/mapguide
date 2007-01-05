@@ -22,8 +22,8 @@ BOOL APIENTRY DllMain( HANDLE hModule,
                        LPVOID lpReserved
                      )
 {
-    hModule = 0;    // For "unreferenced formal parameter" warning
-    lpReserved = 0; // For "unreferenced formal parameter" warning
+    static_cast<void>(&(hModule));    // For "unreferenced formal parameter" warning
+    static_cast<void>(&(lpReserved)); // For "unreferenced formal parameter" warning
 
     switch (ul_reason_for_call)
     {

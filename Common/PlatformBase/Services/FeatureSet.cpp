@@ -46,7 +46,7 @@ MgFeatureSet::~MgFeatureSet()
 /// set based on the result of a select command</remarks>
 void MgFeatureSet::FromReader(MgFeatureReader* featureReader)
 {
-    UNUSED(featureReader);
+    MG_UNUSED_ARG(featureReader);
 }
 
 //////////////////////////////////////////////////////////////////
