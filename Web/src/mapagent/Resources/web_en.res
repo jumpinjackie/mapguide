@@ -30,6 +30,7 @@ MgConnectionNotOpenException                          = The connection is not op
 MgCoordinateSystemComputationFailedException          = The coordinate system computation failed.
 MgCoordinateSystemConversionFailedException           = The coordinate system conversion failed.
 MgCoordinateSystemInitializationFailedException       = The coordinate system initialization failed.
+MgCoordinateSystemLoadFailedException                 = The coordinate system load failed.
 MgCoordinateSystemMeasureFailedException              = The coordinate system measure failed.
 MgCoordinateSystemTransformFailedException            = The coordinate system transform failed.
 MgDateTimeException                                   = A date and/or time exception occurred.
@@ -95,6 +96,7 @@ MgInvalidResourcePathException                        = Invalid resource path: %
 MgInvalidResourcePreProcessingTypeException           = Invalid resource pre-processing type.
 MgInvalidResourceTypeException                        = Invalid resource type.
 MgInvalidServerNameException                          = Invalid server name: %1
+MgInvalidSerialNumberException                        = Invalid serial number: %1
 MgInvalidStreamHeaderException                        = Invalid stream header exception.
 MgIoException                                         = An IO exception occurred.
 MgLayerNotFoundException                              = The specified layer was not found: %1
@@ -135,7 +137,9 @@ MgServerNotOnlineException                            = The Server is not online
 MgServiceNotAvailableException                        = The specified service is not available.
 MgServiceNotSupportedException                        = The specified service is not supported.
 MgSessionExpiredException                             = Session has expired or is invalid. Please log in again.
+MgSessionNotFoundException                            = A required session was not found.
 MgStreamIoException                                   = A stream IO exception occurred.
+MgStylizeLayerFailedException                         = Failed to stylize layer: %1
 MgTemporaryFileNotAvailableException                  = Temporary file is not available.
 MgUnauthorizedAccessException                         = Unauthorized access.
 MgUnclassifiedException                               = An unclassified exception occurred.
@@ -150,6 +154,7 @@ MgXmlParserException                                  = An exception occurred in
 # *****************************************************************************
 [ErrorDescription]
 MgArgumentsMismatch                                   = The arguments needed do not match the arguments provided.
+MgClassWOIdentity                                     = A class definition has no identity property.
 MgCollectionEmpty                                     = The collection cannot be empty. 
 MgConfigurationPropertyLengthIsInvalid                = The value of property %1 under section %2 is %3. Its length must be %4
 MgConfigurationPropertyLengthIsOutOfRange             = The value of property %1 under section %2 is %3. Its length must be between %4 and %5
@@ -218,9 +223,13 @@ MgInvalidWebWidgetType                                = The web widget type is i
 MgInvalidXmlDateTime                                  = The Xml date time is invalid because not all of the fields were found.
 MgInvalidYear                                         = The year is invalid because it must be between 1 and 9999.
 MgMapLayerGroupNameNotFound                           = The map layer group name was not found.
+MgMissingClassDef                                     = No class definition specified.
+MgMissingSchema                                       = No schema specified.
+MgMissingSrs                                          = No coordinate system specified.
 MgNameNotFound                                        = The name was not found.
 MgPropertyValuesEmpty                                 = The property values cannot be empty. 
 MgReaderIdNotFound                                    = The reader ID was not found.
+MgRepositoryAlreadyOpened                             = The repository is already opened by another process (e.g. If you are running the server interactively as an application from the command line, are you also running the server as a service?).
 MgResourceDataFilePathEmpty                           = The resource data file path is empty.
 MgResourceNameDoesNotContainSectionName               = The resource name does not contain a section name.
 MgResourceNameSeparatorNotFound                       = The resource name separator was not found.
@@ -250,6 +259,11 @@ MgValueCannotBeZero                                   = The value cannot be zero
 [FeatureService]
 
 # *****************************************************************************
+# K M L  S E R V I C E
+# *****************************************************************************
+[KmlService]
+
+# *****************************************************************************
 # M A P P I N G  S E R V I C E
 # *****************************************************************************
 [MappingService]
@@ -263,12 +277,12 @@ MgValueCannotBeZero                                   = The value cannot be zero
 # R E S O U R C E  S E R V I C E
 # *****************************************************************************
 [ResourceService]
-MgPackageStatusMessageLoadPackageSucceeded            = LOAD SUCCEEDED: %1 successfully loaded package on %2
-MgPackageStatusMessageMakePackageSucceeded            = MAKE SUCCEEDED: %1 successfully made package on %2
 MgPackageStatusMessageLoadPackageFailed               = LOAD FAILED: %1 failed to load package on %2
-MgPackageStatusMessageMakePackageFailed               = MAKE FAILED: %1 failed to make package on %2
 MgPackageStatusMessageLoadPackageInProgress           = Loading package %1 ...
+MgPackageStatusMessageLoadPackageSucceeded            = LOAD SUCCEEDED: %1 successfully loaded package on %2
+MgPackageStatusMessageMakePackageFailed               = MAKE FAILED: %1 failed to make package on %2
 MgPackageStatusMessageMakePackageInProgress           = Making package %1 ...
+MgPackageStatusMessageMakePackageSucceeded            = MAKE SUCCEEDED: %1 successfully made package on %2
 MgPackageStatusMessageNotStarted                      = Not started
 MgPackageStatusMessageUnknown                         = Unknown
 

@@ -73,7 +73,7 @@ void MgRepository::VerifySafeDatabaseAccess(CREFSTRING dirPath,
 
         throw new MgRepositoryOpenFailedException(
             L"MgRepository.VerifySafeDatabaseAccess",
-            __LINE__, __WFILE__, &arguments, L"", NULL);
+            __LINE__, __WFILE__, &arguments, L"MgRepositoryAlreadyOpened", NULL);
     }
 }
 
