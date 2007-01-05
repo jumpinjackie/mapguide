@@ -35,7 +35,7 @@ class MDFPARSER_API IOAttributeRelate : public SAX2ElementHandler
         Extension *m_pExtension;
 
 		void WriteType(MdfStream &fd, AttributeRelate *pAttributeRelate);
-		AttributeRelate::RelateType IOAttributeRelate::ReadType(const wchar_t *name);
+		AttributeRelate::RelateType ReadType(const wchar_t *name);
 
     public:
         IOAttributeRelate();

@@ -828,7 +828,7 @@ protected:
     IGWSException(){}
     virtual ~IGWSException() {}
 
-    virtual void IGWSException::Dispose(){}
+    virtual void Dispose(){}
 };
 
 

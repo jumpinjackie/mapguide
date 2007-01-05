@@ -231,11 +231,9 @@ IGWSQueryDefinition * IGWSQueryDefinition::FromXmlAttributes (
 }
 
 
-
-
-template GWSQueryDefinition<IGWSEqualJoinQueryDefinition>;
-template GWSQueryDefinition<IGWSLeftJoinQueryDefinition>;
-template GWSQueryDefinition<IGWSFeatureQueryDefinition>;
+template class GWSQueryDefinition<IGWSEqualJoinQueryDefinition>;
+template class GWSQueryDefinition<IGWSLeftJoinQueryDefinition>;
+template class GWSQueryDefinition<IGWSFeatureQueryDefinition>;
 
 
 bool
