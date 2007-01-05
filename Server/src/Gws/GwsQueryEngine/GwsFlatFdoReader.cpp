@@ -847,11 +847,11 @@ static void SortByDV(CGwsFeatureIterator* pIter, FdoString* propName, FdoOrderin
 template <class T>
 static void bpo(std::multimap<T,FdoInt32>& propmap, FdoOrderingOption order, std::vector<FdoInt32>& propertyOrder) {
     if(FdoOrderingOption_Ascending==order) {
-        std::multimap<T,FdoInt32>::iterator mmIter;
+        typename std::multimap<T,FdoInt32>::iterator mmIter;
         for(mmIter = propmap.begin(); mmIter!= propmap.end(); mmIter++)
             propertyOrder.push_back(mmIter->second);
     } else {
-        std::multimap<T,FdoInt32>::reverse_iterator mmIter;
+        typename std::multimap<T,FdoInt32>::reverse_iterator mmIter;
         for(mmIter = propmap.rbegin(); mmIter!= propmap.rend(); mmIter++)
             propertyOrder.push_back(mmIter->second);
     }

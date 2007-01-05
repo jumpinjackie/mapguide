@@ -3579,7 +3579,7 @@ class JAVA : public Language {
    * director-based class.
    * ----------------------------------------------------------------------------- */
 
-  virtual int JAVA::abstractClassTest(Node *n) {
+  virtual int abstractClassTest(Node *n) {
     if (!Cmp(Getattr(n, "feature:director"), "1"))
       return 0;
     return Language::abstractClassTest(n);
@@ -3607,4 +3607,5 @@ Java Options (available with -java)\n\
      -root <name>    - set the name of the root class\n\
      -dllname <name>    - set the name of JNI dll\n\
 \n";
+
 

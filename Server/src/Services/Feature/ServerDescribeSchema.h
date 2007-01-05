@@ -34,8 +34,8 @@ public:
     MgStringCollection* GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName);
     MgClassDefinition*  GetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className);
     STRING SchemaToXml(MgFeatureSchemaCollection* schema);
-    FdoFeatureSchemaCollection* MgServerDescribeSchema::GetFdoFeatureSchemaCollection(MgFeatureSchemaCollection* mgSchemaCol);
-    FdoFeatureSchema* MgServerDescribeSchema::GetFdoFeatureSchema(MgFeatureSchema* mgSchema);
+    FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection(MgFeatureSchemaCollection* mgSchemaCol);
+    FdoFeatureSchema* GetFdoFeatureSchema(MgFeatureSchema* mgSchema);
     void GetFdoClassCollection(FdoClassCollection* fdoClassCol, MgClassDefinitionCollection* mgClassDefCol);
 
     FdoClassDefinition* GetFdoClassDefinition(MgClassDefinition* mgClassDef, FdoClassCollection* fdoClassCol);

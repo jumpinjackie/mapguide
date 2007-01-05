@@ -69,7 +69,7 @@ INTERNAL_API:
     /// \brief
     /// Returns the ace handle
     ///
-    ACE_HANDLE MgServerConnectionImp::GetHandle();
+    ACE_HANDLE GetHandle();
 
 private:
     ACE_SOCK_Stream* mServer;
