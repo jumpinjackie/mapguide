@@ -154,6 +154,7 @@ MgXmlParserException                                  = An exception occurred in
 # *****************************************************************************
 [ErrorDescription]
 MgArgumentsMismatch                                   = The arguments needed do not match the arguments provided.
+MgClassWOIdentity                                     = A class definition has no identity property.
 MgCollectionEmpty                                     = The collection cannot be empty. 
 MgConfigurationPropertyLengthIsInvalid                = The value of property %1 under section %2 is %3. Its length must be %4
 MgConfigurationPropertyLengthIsOutOfRange             = The value of property %1 under section %2 is %3. Its length must be between %4 and %5
@@ -222,9 +223,13 @@ MgInvalidWebWidgetType                                = The web widget type is i
 MgInvalidXmlDateTime                                  = The Xml date time is invalid because not all of the fields were found.
 MgInvalidYear                                         = The year is invalid because it must be between 1 and 9999.
 MgMapLayerGroupNameNotFound                           = The map layer group name was not found.
+MgMissingClassDef                                     = No class definition specified.
+MgMissingSchema                                       = No schema specified.
+MgMissingSrs                                          = No coordinate system specified.
 MgNameNotFound                                        = The name was not found.
 MgPropertyValuesEmpty                                 = The property values cannot be empty. 
 MgReaderIdNotFound                                    = The reader ID was not found.
+MgRepositoryAlreadyOpened                             = The repository is already opened by another process (e.g. If you are running the server interactively as an application from the command line, are you also running the server as a service?).
 MgResourceDataFilePathEmpty                           = The resource data file path is empty.
 MgResourceNameDoesNotContainSectionName               = The resource name does not contain a section name.
 MgResourceNameSeparatorNotFound                       = The resource name separator was not found.
@@ -242,10 +247,6 @@ MgUserAndRoleNotEmpty                                 = Both the user and role a
 MgValueCannotBeLessThanOrEqualToZero                  = The value cannot be less than or equal to zero.
 MgValueCannotBeLessThanZero                           = The value cannot be less than zero.
 MgValueCannotBeZero                                   = The value cannot be zero.
-MgMissingClassDef                                     = No class definition specified.
-MgClassWOIdentity                                     = A class definition has no identity property.
-MgMissingSrs                                          = No coordinate system specified.
-MgMissingSchema                                       = No schema specified.
 
 # *****************************************************************************
 # D R A W I N G  S E R V I C E
@@ -256,22 +257,27 @@ MgMissingSchema                                       = No schema specified.
 # F E A T U R E  S E R V I C E
 # *****************************************************************************
 [FeatureService]
+MgBatchInsertNotSupported                             = Provider does not support batch insert. Only one Feature instance is allowed.
+MgCommandNotSupported                                 = Command is not supported by Provider.
+MgCustomFunctionNotSupported                          = Aggregate function specified not supported or invalid data type
+MgGroupingNotSupported                                = Grouping is not supported by provider
+MgInsertError                                         = Error occurred while insert operation, no ID to retrieve
+MgInvalidComputedProperty                             = Invalid Computed property specified, Make sure valid no of arguments are specified
+MgInvalidConnectionString                             = Invalid Connection String.
 MgInvalidFdoProvider                                  = Invalid Feature Provider specified.
 MgInvalidPropertyName                                 = Invalid Property Name found.
 MgMissingConfiguration                                = No configuration specified.
-MgInvalidConnectionString                             = Invalid Connection String.
-MgPropertyNotEnumerable                               = Property specified is not enumerable.
-MgMissingRasterProperty                               = No Raster Property available in the class.
-MgCommandNotSupported                                 = Command is not supported by Provider.
-MgOnlyOnePropertyAllowed                              = Only one aggregate function of this kind is supported
-MgInvalidComputedProperty                             = Invalid Computed property specified, Make sure valid no of arguments are specified
-MgCustomFunctionNotSupported                          = Aggregate function specified not supported or invalid data type
 MgMissingPropertyAlias                                = Alias for computed property is missing
-MgBatchInsertNotSupported                             = Provider does not support batch insert. Only one Feature instance is allowed.
+MgMissingRasterProperty                               = No Raster Property available in the class.
 MgNoFeaturesForInsert                                 = No Features for Insert supplied
-MgInsertError                                         = Error occurred while insert operation, no ID to retrieve
+MgOnlyOnePropertyAllowed                              = Only one aggregate function of this kind is supported
 MgOrderingOptionNotSupported                          = Ordering Option is not supported by provider
-MgGroupingNotSupported                                = Grouping is not supported by provider
+MgPropertyNotEnumerable                               = Property specified is not enumerable.
+
+# *****************************************************************************
+# K M L  S E R V I C E
+# *****************************************************************************
+[KmlService]
 
 # *****************************************************************************
 # M A P P I N G  S E R V I C E
@@ -287,12 +293,12 @@ MgGroupingNotSupported                                = Grouping is not supporte
 # R E S O U R C E  S E R V I C E
 # *****************************************************************************
 [ResourceService]
-MgPackageStatusMessageLoadPackageSucceeded            = LOAD SUCCEEDED: %1 successfully loaded package on %2
-MgPackageStatusMessageMakePackageSucceeded            = MAKE SUCCEEDED: %1 successfully made package on %2
 MgPackageStatusMessageLoadPackageFailed               = LOAD FAILED: %1 failed to load package on %2
-MgPackageStatusMessageMakePackageFailed               = MAKE FAILED: %1 failed to make package on %2
 MgPackageStatusMessageLoadPackageInProgress           = Loading package %1 ...
+MgPackageStatusMessageLoadPackageSucceeded            = LOAD SUCCEEDED: %1 successfully loaded package on %2
+MgPackageStatusMessageMakePackageFailed               = MAKE FAILED: %1 failed to make package on %2
 MgPackageStatusMessageMakePackageInProgress           = Making package %1 ...
+MgPackageStatusMessageMakePackageSucceeded            = MAKE SUCCEEDED: %1 successfully made package on %2
 MgPackageStatusMessageNotStarted                      = Not started
 MgPackageStatusMessageUnknown                         = Unknown
 MgRepositoryBusy                                      = Please try your operation later as the repository was busy.
@@ -322,3 +328,8 @@ MgUserFullNameAnonymous                               = Anonymous User
 MgUserFullNameAuthor                                  = Map Author
 MgUserFullNameWfsUser                                 = WFS User
 MgUserFullNameWmsUser                                 = WMS User
+
+# *****************************************************************************
+# T I L E  S E R V I C E
+# *****************************************************************************
+[TileService]
