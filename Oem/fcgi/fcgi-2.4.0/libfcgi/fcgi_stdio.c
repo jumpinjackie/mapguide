@@ -122,10 +122,13 @@ int FCGI_Accept(void)
         isCGI = FCGX_IsCGI();
         acceptCalled = TRUE;
         atexit(&FCGI_Finish);
-        origenv = environ;
-        while (NULL != *origenv) { ++origenvsize; ++origenv; }
-        origenv = environ;
-        environ = NULL;
+        if (!isCGI)
+        {
+            origenv = environ;
+            while (NULL != *origenv) { ++origenvsize; ++origenv; }
+            origenv = environ;
+            environ = NULL;
+        }
 
     } else if(isCGI) {
         /*
