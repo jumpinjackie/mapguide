@@ -202,17 +202,10 @@ String dataSource = "";
             MgResourceIdentifier featSourceId = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
             MgSpatialContextReader ctxs = featureSrvc.GetSpatialContexts(featSourceId, true);
             String srsDefDs = "";
-            if (ctxs != null)
-            {
-                ctxs.ReadNext();
+            if (ctxs != null && ctxs.ReadNext())
                 srsDefDs = ctxs.GetCoordinateSystemWkt();
-                if (srsDefDs == null || srsDefDs.Length == 0)
-                {
-                    excludedLayers++;
-                    continue;
-                }
-            }
-            else
+
+            if (srsDefDs == null || srsDefDs.Length == 0)
             {
                 excludedLayers++;
                 continue;
