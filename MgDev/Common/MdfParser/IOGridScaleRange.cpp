@@ -27,6 +27,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, GridScaleRange);
+ELEM_MAP_ENTRY(2, SurfaceStyle);
+ELEM_MAP_ENTRY(3, ColorStyle);
+ELEM_MAP_ENTRY(4, MinScale);
+ELEM_MAP_ENTRY(5, MaxScale);
+ELEM_MAP_ENTRY(6, RebuildFactor);
+
 IOGridScaleRange::IOGridScaleRange():_scaleRange(NULL), layer(NULL)
 {
 }
@@ -42,25 +50,37 @@ IOGridScaleRange::~IOGridScaleRange()
 void IOGridScaleRange::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"GridScaleRange") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eGridScaleRange:
         m_startElemName = name;
         this->_scaleRange = new GridScaleRange();
-    }
-    else
-    {
-        if (m_currElemName == L"SurfaceStyle") // NOXLATE
+        break;
+
+    case eSurfaceStyle:
         {
             IOGridSurfaceStyle *IO = new IOGridSurfaceStyle(this->_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
-        else if (m_currElemName == L"ColorStyle") // NOXLATE
+        break;
+
+    case eColorStyle:
         {
             IOGridColorStyle *IO = new IOGridColorStyle(this->_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -78,6 +98,9 @@ void IOGridScaleRange::EndElement(const wchar_t *name, HandlerStack *handlerStac
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_scaleRange->SetUnknownXml(UnknownXml());
+
         this->layer->GetScaleRanges()->Adopt(this->_scaleRange);
         handlerStack->pop();
         this->layer = NULL;
@@ -130,6 +153,12 @@ void IOGridScaleRange::Write(MdfStream &fd,  GridScaleRange *scaleRange)
     fd << tab() << "<RebuildFactor>"; // NOXLATE
     fd << DoubleToStr(scaleRange->GetRebuildFactor());
     fd << "</RebuildFactor>" << std::endl; // NOXLATE
+
+        // Write any previously found unknown XML
+    if (!scaleRange->GetUnknownXml().empty())
+    {
+        fd << toCString(scaleRange->GetUnknownXml()); 
+    }
 
     dectab();
     fd << tab() << "</GridScaleRange>" << std::endl; // NOXLATE

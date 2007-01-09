@@ -21,6 +21,7 @@
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
 #include "Rule.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -35,7 +36,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // It is possible for FeatureTypeStyle's concrete classes to contain
     // only Labels.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API FeatureTypeStyle
+    class MDFMODEL_API FeatureTypeStyle : public MdfRootObject
     {
     public:
         // Construction, destruction, initialization.

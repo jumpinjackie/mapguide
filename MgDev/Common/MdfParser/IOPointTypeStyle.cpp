@@ -23,6 +23,12 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, PointTypeStyle);
+ELEM_MAP_ENTRY(2, PointRule);
+ELEM_MAP_ENTRY(3, DisplayAsText);
+ELEM_MAP_ENTRY(4, AllowOverpost);
+
 IOPointTypeStyle::IOPointTypeStyle()
 {
     this->_pointTypeStyle = NULL;
@@ -42,16 +48,29 @@ IOPointTypeStyle::~IOPointTypeStyle()
 void IOPointTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"PointTypeStyle") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case ePointTypeStyle:
         m_startElemName = name;
         this->_pointTypeStyle = new PointTypeStyle();
-    }
-    else if (m_currElemName == L"PointRule") // NOXLATE
-    {
-        IOPointRule *IO = new IOPointRule(this->_pointTypeStyle);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        break;
+    
+    case ePointRule:
+        {
+            IOPointRule *IO = new IOPointRule(this->_pointTypeStyle);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -67,6 +86,9 @@ void IOPointTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStac
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_pointTypeStyle->SetUnknownXml(UnknownXml());
+
         this->scaleRange->GetFeatureTypeStyles()->Adopt(this->_pointTypeStyle);
         handlerStack->pop();
         this->scaleRange = NULL;
@@ -97,6 +119,12 @@ void IOPointTypeStyle::Write(MdfStream &fd, PointTypeStyle *pointTypeStyle)
         IOPointRule *IO = new IOPointRule();
         IO->Write(fd, static_cast<PointRule*>(pointTypeStyle->GetRules()->GetAt(x)));
         delete IO;
+    }
+
+    // Write any previously found unknown XML
+    if (!pointTypeStyle->GetUnknownXml().empty())
+    {
+        fd << toCString(pointTypeStyle->GetUnknownXml()); 
     }
 
     dectab();

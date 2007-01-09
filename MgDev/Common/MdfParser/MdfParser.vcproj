@@ -328,6 +328,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOGridColorBands.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\IOGridColorRule.cpp"
 			>
 		</File>
@@ -536,6 +540,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOUnknown.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOUnknown.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOUtil.cpp"
 			>
 		</File>
@@ -577,6 +589,10 @@
 		</File>
 		<File
 			RelativePath=".\MdfParser.rc"
+			>
+		</File>
+		<File
+			RelativePath=".\SAX2ElementHandler.cpp"
 			>
 		</File>
 		<File

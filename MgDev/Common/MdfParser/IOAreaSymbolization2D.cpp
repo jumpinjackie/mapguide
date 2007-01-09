@@ -24,6 +24,11 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, AreaSymbolization2D);
+ELEM_MAP_ENTRY(2, Fill);
+ELEM_MAP_ENTRY(3, Stroke);
+
 IOAreaSymbolization2D::IOAreaSymbolization2D()
 {
     this->_areaSymbolization = NULL;
@@ -43,27 +48,42 @@ IOAreaSymbolization2D::~IOAreaSymbolization2D()
 void IOAreaSymbolization2D::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"AreaSymbolization2D")  // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eAreaSymbolization2D:
         m_startElemName = name;
         this->_areaSymbolization = new AreaSymbolization2D();
         // delete the fill and edge that are created by default - recreate if present when parsing
         delete this->_areaSymbolization->OrphanFill();
         delete this->_areaSymbolization->OrphanEdge();
-    }
-    else if (m_currElemName == L"Fill") // NOXLATE
-    {
-        this->_areaSymbolization->AdoptFill(new Fill());
-        IOFill *IO = new IOFill(this->_areaSymbolization->GetFill());
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
-    }
-    else if (m_currElemName == L"Stroke") // NOXLATE
-    {
-        this->_areaSymbolization->AdoptEdge(new Stroke());
-        IOStroke *IO = new IOStroke(this->_areaSymbolization->GetEdge(), m_currElemName);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        break;
+
+    case eFill:
+        {
+            this->_areaSymbolization->AdoptFill(new Fill());
+            IOFill *IO = new IOFill(this->_areaSymbolization->GetFill());
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eStroke:
+        {
+            this->_areaSymbolization->AdoptEdge(new Stroke());
+            IOStroke *IO = new IOStroke(this->_areaSymbolization->GetEdge(), m_currElemName);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -76,6 +96,9 @@ void IOAreaSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handle
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_areaSymbolization->SetUnknownXml(UnknownXml());
+
         if (this->_areaSymbolization != NULL)
             this->areaRule->AdoptSymbolization(this->_areaSymbolization);
         handlerStack->pop();
@@ -98,6 +121,12 @@ void IOAreaSymbolization2D::Write(MdfStream &fd, AreaSymbolization2D * areaSymbo
     //Property: Edge
     if (areaSymbolization != NULL && areaSymbolization->GetEdge() != NULL)
         IOStroke::Write(fd, areaSymbolization->GetEdge(), "Stroke"); // NOXLATE
+
+    // Write any previously found unknown XML
+    if (!areaSymbolization->GetUnknownXml().empty())
+    {
+        fd << toCString(areaSymbolization->GetUnknownXml()); 
+    }
 
     dectab();
     fd << tab() << "</AreaSymbolization2D>" << std::endl; // NOXLATE

@@ -23,6 +23,10 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, LineTypeStyle);
+ELEM_MAP_ENTRY(2, LineRule);
+
 IOLineTypeStyle::IOLineTypeStyle()
 {
     this->_lineTypeStyle = NULL;
@@ -42,16 +46,29 @@ IOLineTypeStyle::~IOLineTypeStyle()
 void IOLineTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"LineTypeStyle") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eLineTypeStyle:
         m_startElemName = name;
-        this->_lineTypeStyle = new LineTypeStyle(); // NOXLATE
-    }
-    else if (m_currElemName == L"LineRule") // NOXLATE
-    {
-        IOLineRule *IO = new IOLineRule(this->_lineTypeStyle);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        this->_lineTypeStyle = new LineTypeStyle();
+        break;
+    
+    case eLineRule:
+        {
+            IOLineRule *IO = new IOLineRule(this->_lineTypeStyle);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -64,6 +81,9 @@ void IOLineTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_lineTypeStyle->SetUnknownXml(UnknownXml());
+
         this->scaleRange->GetFeatureTypeStyles()->Adopt(this->_lineTypeStyle);
         handlerStack->pop();
         this->scaleRange = NULL;
@@ -84,6 +104,12 @@ void IOLineTypeStyle::Write(MdfStream &fd, LineTypeStyle *lineTypeStyle)
         IOLineRule *IO = new IOLineRule();
         IO->Write(fd, static_cast<LineRule*>(lineTypeStyle->GetRules()->GetAt(x)));
         delete IO;
+    }
+
+    // Write any previously found unknown XML
+    if (!lineTypeStyle->GetUnknownXml().empty())
+    {
+        fd << toCString(lineTypeStyle->GetUnknownXml()); 
     }
 
     dectab();

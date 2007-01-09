@@ -21,6 +21,7 @@
 #include "MdfModel.h"
 #include "SizeContexts.h"
 #include "LengthConverter.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -32,7 +33,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // point geometric primitives. Its use of expressions for its properties
     // allows it to support multivariate theming. Symbol is an abstract class.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API Symbol
+    class MDFMODEL_API Symbol : public MdfRootObject
     {
     public:
 

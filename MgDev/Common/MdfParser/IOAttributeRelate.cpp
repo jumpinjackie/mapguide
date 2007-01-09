@@ -24,6 +24,16 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, AttributeRelate);
+ELEM_MAP_ENTRY(2, RelateProperty);
+ELEM_MAP_ENTRY(3, AttributeClass);
+ELEM_MAP_ENTRY(4, ResourceId);
+ELEM_MAP_ENTRY(5, Name);
+ELEM_MAP_ENTRY(6, AttributeNameDelimiter);
+ELEM_MAP_ENTRY(7, RelateType);
+ELEM_MAP_ENTRY(8, ForceOneToOne);
+
 IOAttributeRelate::IOAttributeRelate()
     : m_pAttributeRelate(NULL), m_pExtension(NULL)
 {
@@ -41,19 +51,29 @@ IOAttributeRelate::~IOAttributeRelate()
 void IOAttributeRelate::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"AttributeRelate") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eAttributeRelate:
         m_startElemName = name;
         m_pAttributeRelate = new AttributeRelate();
-    }
-    else
-    {
-        if (m_currElemName == L"RelateProperty") // NOXLATE
+        break;
+
+    case eRelateProperty:
         {
             IORelateProperty *IO = new IORelateProperty(this->m_pAttributeRelate);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -77,6 +97,9 @@ void IOAttributeRelate::EndElement(const wchar_t *name, HandlerStack *handlerSta
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->m_pAttributeRelate->SetUnknownXml(UnknownXml());
+
         m_pExtension->GetAttributeRelates()->Adopt(m_pAttributeRelate);
         handlerStack->pop();
         this->m_pAttributeRelate = NULL;
@@ -125,6 +148,12 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
     {
         std::auto_ptr<IORelateProperty> spIO(new IORelateProperty());
         spIO->Write(fd, pAttributeRelate->GetRelateProperties()->GetAt(x));
+    }
+
+    // Write any previously found unknown XML
+    if (!pAttributeRelate->GetUnknownXml().empty())
+    {
+        fd << toCString(pAttributeRelate->GetUnknownXml()); 
     }
 
     dectab();

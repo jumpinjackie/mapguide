@@ -19,6 +19,7 @@
 #define HILLSHADE_H_
 
 #include <vector>
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -27,7 +28,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // Class HillShade is used to specify how to shade given a band and a light
     // source.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API HillShade
+    class MDFMODEL_API HillShade : public MdfRootObject
     {
     public:
         HillShade();

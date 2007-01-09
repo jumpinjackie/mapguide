@@ -22,6 +22,10 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, SupplementalSpatialContextInfo);
+ELEM_MAP_ENTRY(2, Name);
+ELEM_MAP_ENTRY(3, CoordinateSystem);
 
 IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo()
     : _ssContextInfo(NULL), featureSource(NULL)
@@ -40,13 +44,24 @@ IOSupplementalSpatialContextInfo::~IOSupplementalSpatialContextInfo()
 void IOSupplementalSpatialContextInfo::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (NULL != featureSource)
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
-        if (m_currElemName == L"SupplementalSpatialContextInfo") // NOXLATE
+    case eSupplementalSpatialContextInfo:
+        if (NULL != featureSource)
         {
             m_startElemName = name;
             this->_ssContextInfo = new SupplementalSpatialContextInfo(L"", L"");
         }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -62,6 +77,9 @@ void IOSupplementalSpatialContextInfo::EndElement(const wchar_t *name, HandlerSt
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_ssContextInfo->SetUnknownXml(UnknownXml());
+
         if (NULL != this->featureSource)
             this->featureSource->GetSupplementalSpatialContextInfo()->Adopt(this->_ssContextInfo);
 
@@ -83,4 +101,10 @@ void IOSupplementalSpatialContextInfo::Write(MdfStream &fd, SupplementalSpatialC
     fd << tab() << "<CoordinateSystem>"; // NOXLATE
     fd << EncodeString(ssContextInfo->GetCoordinateSystem());
     fd << "</CoordinateSystem>" << std::endl; // NOXLATE
+
+    // Write any previously found unknown XML
+    if (!ssContextInfo->GetUnknownXml().empty())
+    {
+        fd << toCString(ssContextInfo->GetUnknownXml()); 
+    }
 }

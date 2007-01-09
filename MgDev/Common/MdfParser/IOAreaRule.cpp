@@ -24,6 +24,13 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, AreaRule);
+ELEM_MAP_ENTRY(2, AreaSymbolization2D);
+ELEM_MAP_ENTRY(3, Label);
+ELEM_MAP_ENTRY(4, LegendLabel);
+ELEM_MAP_ENTRY(5, Filter);
+
 IOAreaRule::IOAreaRule()
 {
     this->_areaRule = NULL;
@@ -43,23 +50,37 @@ IOAreaRule::~IOAreaRule()
 void IOAreaRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"AreaRule") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eAreaRule:
         m_startElemName = name;
         this->_areaRule = new AreaRule();
+        break;
 
-    }
-    else if (m_currElemName == L"AreaSymbolization2D") // NOXLATE
-    {
-        IOAreaSymbolization2D *IO = new IOAreaSymbolization2D(this->_areaRule);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
-    }
-    else if (m_currElemName == L"Label") // NOXLATE
-    {
-        IOLabel *IO = new IOLabel(this->_areaRule);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+    case eAreaSymbolization2D:
+        {
+            IOAreaSymbolization2D *IO = new IOAreaSymbolization2D(this->_areaRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eLabel:
+        {
+            IOLabel *IO = new IOLabel(this->_areaRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -75,6 +96,9 @@ void IOAreaRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_areaRule->SetUnknownXml(UnknownXml());
+
         this->areaTypeStyle->GetRules()->Adopt(this->_areaRule);
         handlerStack->pop();
         this->areaTypeStyle= NULL;
@@ -115,6 +139,12 @@ void IOAreaRule::Write(MdfStream &fd, AreaRule *areaRule)
     IOAreaSymbolization2D *IO = new IOAreaSymbolization2D();
     IO->Write(fd, symbolization);
     delete IO;
+
+        // Write any previously found unknown XML
+    if (!areaRule->GetUnknownXml().empty())
+    {
+        fd << toCString(areaRule->GetUnknownXml()); 
+    }
 
     dectab();
     fd << tab() << "</AreaRule>" << std::endl; // NOXLATE

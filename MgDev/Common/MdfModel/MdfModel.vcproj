@@ -514,6 +514,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\MdfRootObject.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MdfRootObject.h"
+			>
+		</File>
+		<File
 			RelativePath=".\NameStringPair.cpp"
 			>
 		</File>

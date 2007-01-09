@@ -25,6 +25,23 @@ using namespace MDFPARSER_NAMESPACE;
 // When a W2DSymbol is successfully parsed by this class, it must be accessed by the
 // parent class and then managed appropriately.  It will not be deleted by this class.
 
+CREATE_ELEMENT_MAP;
+// Inherited Symbol Elements
+ELEM_MAP_ENTRY(1, Unit);
+ELEM_MAP_ENTRY(2, SizeContext);
+ELEM_MAP_ENTRY(3, SizeX);
+ELEM_MAP_ENTRY(4, SizeY);
+ELEM_MAP_ENTRY(5, InsertionPointX);
+ELEM_MAP_ENTRY(6, InsertionPointY);
+ELEM_MAP_ENTRY(7, Rotation);
+ELEM_MAP_ENTRY(8, MaintainAspect);
+// Local Elements
+ELEM_MAP_ENTRY(9, W2D);
+ELEM_MAP_ENTRY(10, W2DSymbol);
+ELEM_MAP_ENTRY(11, FillColor);
+ELEM_MAP_ENTRY(12, LineColor);
+ELEM_MAP_ENTRY(13, TextColor);
+
 IOW2DSymbol::IOW2DSymbol() : IOSymbol()
 {
     this->m_ioResourceRef = NULL;
@@ -33,16 +50,29 @@ IOW2DSymbol::IOW2DSymbol() : IOSymbol()
 void IOW2DSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     this->m_currElemName = name;
-    if (this->m_currElemName == L"W2D") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eW2D:
         this->m_startElemName = name;
         this->m_symbol = new W2DSymbol(L"", L"");
-    }
-    else if (this->m_currElemName == L"W2DSymbol") // NOXLATE
-    {
-        this->m_ioResourceRef = new IOResourceRef(name);
-        handlerStack->push(this->m_ioResourceRef);
-        this->m_ioResourceRef->StartElement(name, handlerStack);
+        break;
+
+    case eW2DSymbol:
+        {
+            this->m_ioResourceRef = new IOResourceRef(name);
+            handlerStack->push(this->m_ioResourceRef);
+            this->m_ioResourceRef->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -63,6 +93,9 @@ void IOW2DSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (this->m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->m_symbol->SetUnknownXml(UnknownXml());
+
         // copy the values found by the IOResourceRef into our symbol
         W2DSymbol* symbol = static_cast<W2DSymbol*>(this->m_symbol);
         if (this->m_ioResourceRef)
@@ -110,6 +143,12 @@ void IOW2DSymbol::Write(MdfStream &fd, W2DSymbol *symbol)
         fd << tab() << "<TextColor>"; // NOXLATE
         fd << EncodeString(symbol->GetTextColor());
         fd << "</TextColor>" << std::endl; // NOXLATE
+    }
+
+    // Write any previously found unknown XML
+    if (!symbol->GetUnknownXml().empty())
+    {
+        fd << toCString(symbol->GetUnknownXml()); 
     }
 
     dectab();

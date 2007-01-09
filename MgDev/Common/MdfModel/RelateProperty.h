@@ -20,6 +20,7 @@
 
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
+#include "MdfRootObject.h"
 
 namespace MdfModel
 {
@@ -29,7 +30,7 @@ namespace MdfModel
 // RelateProperty class defines the calculated properties from attributes
 // from the same feature class
 //-------------------------------------------------------------------------
-    class MDFMODEL_API RelateProperty
+    class MDFMODEL_API RelateProperty : public MdfRootObject
     {
     public:
          // Construction, destruction, initialization

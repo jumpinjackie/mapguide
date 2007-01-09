@@ -19,6 +19,7 @@
 #define FILL_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -27,7 +28,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // Class Fill is an abstract base that defines how to color/paint
     // feature geometry.
     //---------------------------------------------------------------------
-    class MDFMODEL_API Fill
+    class MDFMODEL_API Fill : public MdfRootObject
     {
     public:
         // Construction, destruction, initialization

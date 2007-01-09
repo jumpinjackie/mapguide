@@ -22,6 +22,13 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, HillShade);
+ELEM_MAP_ENTRY(2, Band);
+ELEM_MAP_ENTRY(3, Azimuth);
+ELEM_MAP_ENTRY(4, Altitude);
+ELEM_MAP_ENTRY(5, ScaleFactor);
+
 IOHillShade::IOHillShade():colorStyle(NULL),hillShade(NULL)
 {
 }
@@ -37,10 +44,21 @@ IOHillShade::~IOHillShade()
 void IOHillShade::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"HillShade") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eHillShade:
         m_startElemName = name;
         this->hillShade = new HillShade();
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -60,6 +78,9 @@ void IOHillShade::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->hillShade->SetUnknownXml(UnknownXml());
+
         this->colorStyle->AdoptHillShade(this->hillShade);
         handlerStack->pop();
         this->colorStyle = NULL;
@@ -95,6 +116,12 @@ void IOHillShade::Write(MdfStream &fd,  HillShade *pHillShade)
         fd << tab() << "<ScaleFactor>"; // NOXLATE
         fd << pHillShade->GetScaleFactor();
         fd << "</ScaleFactor>" << std::endl; // NOXLATE
+    }
+
+    // Write any previously found unknown XML
+    if (!pHillShade->GetUnknownXml().empty())
+    {
+        fd << toCString(pHillShade->GetUnknownXml()); 
     }
 
     dectab();

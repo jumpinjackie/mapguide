@@ -27,6 +27,23 @@ using namespace MDFPARSER_NAMESPACE;
 // When a MarkSymbol is successfully parsed by this class, it must be accessed by the
 // parent class and then managed appropriately.  It will not be deleted by this class.
 
+CREATE_ELEMENT_MAP;
+// Inherited Symbol Elements
+ELEM_MAP_ENTRY(1, Unit);
+ELEM_MAP_ENTRY(2, SizeContext);
+ELEM_MAP_ENTRY(3, SizeX);
+ELEM_MAP_ENTRY(4, SizeY);
+ELEM_MAP_ENTRY(5, InsertionPointX);
+ELEM_MAP_ENTRY(6, InsertionPointY);
+ELEM_MAP_ENTRY(7, Rotation);
+ELEM_MAP_ENTRY(8, MaintainAspect);
+// Local Elements
+ELEM_MAP_ENTRY(9, Mark);
+ELEM_MAP_ENTRY(10, Fill);
+ELEM_MAP_ENTRY(11, Edge);
+ELEM_MAP_ENTRY(12, Shape);
+
+
 IOMarkSymbol::IOMarkSymbol() : IOSymbol()
 {
     this->m_ioStroke = NULL;
@@ -36,29 +53,46 @@ IOMarkSymbol::IOMarkSymbol() : IOSymbol()
 void IOMarkSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     this->m_currElemName = name;
-    if (this->m_currElemName == L"Mark") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
-        this->m_startElemName = name;
-        MarkSymbol* markSymbol = new MarkSymbol(MarkSymbol::Square);
-        delete markSymbol->OrphanFill();
-        delete markSymbol->OrphanEdge();
-        this->m_symbol = markSymbol;
-    }
-    else if (this->m_currElemName == L"Fill") // NOXLATE
-    {
-        MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
-        symbol->AdoptFill(new Fill());
-        this->m_ioFill = new IOFill(symbol->GetFill());
-        handlerStack->push(this->m_ioFill);
-        this->m_ioFill->StartElement(name, handlerStack);
-    }
-    else if (this->m_currElemName == L"Edge") // NOXLATE
-    {
-        MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
-        symbol->AdoptEdge(new Stroke());
-        this->m_ioStroke = new IOStroke(symbol->GetEdge(), this->m_currElemName);
-        handlerStack->push(this->m_ioStroke);
-        this->m_ioStroke->StartElement(name, handlerStack);
+    case eMark:
+        {
+            this->m_startElemName = name;
+            MarkSymbol* markSymbol = new MarkSymbol(MarkSymbol::Square);
+            delete markSymbol->OrphanFill();
+            delete markSymbol->OrphanEdge();
+            this->m_symbol = markSymbol;
+        }
+        break;
+
+    case eFill:
+        {
+            MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
+            symbol->AdoptFill(new Fill());
+            this->m_ioFill = new IOFill(symbol->GetFill());
+            handlerStack->push(this->m_ioFill);
+            this->m_ioFill->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eEdge:
+        {
+            MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
+            symbol->AdoptEdge(new Stroke());
+            this->m_ioStroke = new IOStroke(symbol->GetEdge(), this->m_currElemName);
+            handlerStack->push(this->m_ioStroke);
+            this->m_ioStroke->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -88,6 +122,9 @@ void IOMarkSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (this->m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->m_symbol->SetUnknownXml(UnknownXml());
+
         handlerStack->pop();
         this->m_startElemName = L"";
     }
@@ -123,6 +160,12 @@ void IOMarkSymbol::Write(MdfStream &fd, MarkSymbol *symbol)
     //Property: Edge
     if (symbol->GetEdge() != NULL)
         IOStroke::Write(fd, symbol->GetEdge(), "Edge"); // NOXLATE
+
+    // Write any previously found unknown XML
+    if (!symbol->GetUnknownXml().empty())
+    {
+        fd << toCString(symbol->GetUnknownXml()); 
+    }
 
     dectab();
     fd << tab() << "</Mark>" << std::endl; // NOXLATE

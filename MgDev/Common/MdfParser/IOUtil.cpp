@@ -159,4 +159,20 @@ std::string BoolToStr(bool b)
     return std::string("false"); // NOXLATE
 }
 
+std::string startStr(const std::string elementName)
+{
+    std::string out("<"); // NOXLATE
+    out.append(elementName); 
+    out.append(">");  // NOXLATE
+    return out;
+}
+
+std::string endStr(const std::string elementName)
+{
+    std::string out("</"); // NOXLATE
+    out.append(elementName); 
+    out.append(">");  // NOXLATE
+    return out;
+}
+
 END_NAMESPACE_MDFPARSER

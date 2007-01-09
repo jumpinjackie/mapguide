@@ -28,6 +28,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, PointSymbolization2D);
+ELEM_MAP_ENTRY(2, Mark);
+ELEM_MAP_ENTRY(3, Image);
+ELEM_MAP_ENTRY(4, Font);
+ELEM_MAP_ENTRY(5, W2D);
+ELEM_MAP_ENTRY(6, Block);
+
 IOPointSymbolization2D::IOPointSymbolization2D()
 {
     this->_PointSymbolization2D = NULL;
@@ -49,23 +57,37 @@ IOPointSymbolization2D::~IOPointSymbolization2D()
 void IOPointSymbolization2D::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"PointSymbolization2D") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    if (m_currElemId == ePointSymbolization2D)
     {
         m_startElemName = name;
         this->_PointSymbolization2D = new PointSymbolization2D();
     }
+    else if (m_currElemId == eUnknown)
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
     else
     {
-        if (m_currElemName == L"Mark") // NOXLATE
+        switch (m_currElemId)
+        {
+        case eMark:
             this->ioSymbol = new IOMarkSymbol();
-        else if (m_currElemName == L"Image") // NOXLATE
+            break;
+        case eImage:
             this->ioSymbol = new IOImageSymbol();
-        else if (m_currElemName == L"Font") // NOXLATE
+            break;
+        case eFont:
             this->ioSymbol = new IOFontSymbol();
-        else if (m_currElemName == L"W2D") // NOXLATE
+            break;
+        case eW2D:
             this->ioSymbol = new IOW2DSymbol();
-        else if (m_currElemName == L"Block") // NOXLATE
+            break;
+        case eBlock:
             this->ioSymbol = new IOBlockSymbol();
+            break;
+        }
         if (this->ioSymbol)
         {
             handlerStack->push(this->ioSymbol);
@@ -84,6 +106,9 @@ void IOPointSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handl
     {
         if (this->_PointSymbolization2D != NULL)
         {
+            if (!UnknownXml().empty())
+                this->_PointSymbolization2D->SetUnknownXml(UnknownXml());
+
             this->pointRule->AdoptSymbolization(this->_PointSymbolization2D);
             if (this->ioSymbol != NULL)
             {
@@ -121,6 +146,12 @@ void IOPointSymbolization2D::Write(MdfStream &fd, PointSymbolization2D *PointSym
         IOW2DSymbol::Write(fd, w2DSymbol);
     else if (blockSymbol)
         IOBlockSymbol::Write(fd, blockSymbol);
+
+    // Write any previously found unknown XML
+    if (!PointSymbolization2D->GetUnknownXml().empty())
+    {
+        fd << toCString(PointSymbolization2D->GetUnknownXml()); 
+    }
 
     dectab();
     fd << tab() << "</PointSymbolization2D>" << std::endl; // NOXLATE

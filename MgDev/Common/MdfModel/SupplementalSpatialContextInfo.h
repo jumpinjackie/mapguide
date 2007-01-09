@@ -20,6 +20,7 @@
 
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -29,7 +30,7 @@ BEGIN_NAMESPACE_MDFMODEL
     //  for a spatial context when the coordinate system is missing from the
     //  feature source.
     // ------------------------------------------------------------------------
-    class MDFMODEL_API SupplementalSpatialContextInfo
+class MDFMODEL_API SupplementalSpatialContextInfo : public MdfRootObject
     {
     public:
         //Constructors,  

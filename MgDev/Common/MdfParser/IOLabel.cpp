@@ -23,6 +23,29 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, Label);
+ELEM_MAP_ENTRY(2, AdvancedPlacement);
+ELEM_MAP_ENTRY(3, ScaleLimit);
+ELEM_MAP_ENTRY(4, Text);
+ELEM_MAP_ENTRY(5, FontName);
+ELEM_MAP_ENTRY(6, ForegroundColor);
+ELEM_MAP_ENTRY(7, BackgroundColor);
+ELEM_MAP_ENTRY(8, BackgroundStyle);
+ELEM_MAP_ENTRY(9, HorizontalAlignment);
+ELEM_MAP_ENTRY(10, VerticalAlignment);
+ELEM_MAP_ENTRY(11, Bold);
+ELEM_MAP_ENTRY(12, Italic);
+ELEM_MAP_ENTRY(13, Underlined);
+ELEM_MAP_ENTRY(14, Unit);
+ELEM_MAP_ENTRY(15, SizeContext);
+ELEM_MAP_ENTRY(16, SizeX);
+ELEM_MAP_ENTRY(17, SizeY);
+ELEM_MAP_ENTRY(18, InsertionPointX);
+ELEM_MAP_ENTRY(19, InsertionPointY);
+ELEM_MAP_ENTRY(20, Rotation);
+ELEM_MAP_ENTRY(21, MaintainAspect);
+
 IOLabel::IOLabel()
 {
     this->_label = NULL;
@@ -44,15 +67,29 @@ IOLabel::~IOLabel()
 void IOLabel::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"Label") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eLabel:
         m_startElemName = name;
         this->_label = new Label();
-    }
-    else if (m_currElemName == L"AdvancedPlacement" && this->_label) // NOXLATE
-    {
-        this->_label->GetSymbol()->SetAdvancedPlacement(true);
-        this->m_handlingPlacement = true;
+        break;
+
+    case eAdvancedPlacement:
+        if (this->_label) 
+        {
+            this->_label->GetSymbol()->SetAdvancedPlacement(true);
+            this->m_handlingPlacement = true;
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -126,6 +163,9 @@ void IOLabel::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_label->SetUnknownXml(UnknownXml());
+
         this->rule->AdoptLabel(this->_label);
         handlerStack->pop();
         this->rule= NULL;
@@ -229,6 +269,12 @@ void IOLabel::Write(MdfStream &fd, Label *label)
                 dectab();
             }
             fd << tab() << "</AdvancedPlacement>" << std::endl; // NOXLATE
+        }
+
+        // Write any previously found unknown XML
+        if (!label->GetUnknownXml().empty())
+        {
+            fd << toCString(label->GetUnknownXml()); 
         }
 
         dectab();

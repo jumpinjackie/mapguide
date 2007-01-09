@@ -24,6 +24,13 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, Extension);
+ELEM_MAP_ENTRY(2, CalculatedProperty);
+ELEM_MAP_ENTRY(3, AttributeRelate);
+ELEM_MAP_ENTRY(4, Name);
+ELEM_MAP_ENTRY(5, FeatureClass);
+
 IOExtension::IOExtension()
     : m_pExtension(NULL), m_pFeatureSource(NULL)
 {
@@ -41,25 +48,36 @@ IOExtension::~IOExtension()
 void IOExtension::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"Extension") // NOXLATE
-    {
-        m_startElemName = name;
-        m_pExtension = new Extension();
-    }
-    else
-    {
-        if (m_currElemName == L"CalculatedProperty") // NOXLATE
-        {
-            IOCalculatedProperty *IO = new IOCalculatedProperty(this->m_pExtension);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        else if (m_currElemName == L"AttributeRelate") // NOXLATE
-        {
-            IOAttributeRelate *IO = new IOAttributeRelate(this->m_pExtension);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId) {
+        case eExtension:
+            m_startElemName = name;
+            m_pExtension = new Extension();
+            break;
+
+        case eCalculatedProperty:
+            {
+                IOCalculatedProperty *IO = new IOCalculatedProperty(this->m_pExtension);
+                handlerStack->push(IO);
+                IO->StartElement(name, handlerStack);
+            }
+            break;
+
+        case eAttributeRelate:
+            {
+                IOAttributeRelate *IO = new IOAttributeRelate(this->m_pExtension);
+                handlerStack->push(IO);
+                IO->StartElement(name, handlerStack);
+            }
+            break;
+
+        case eUnknown:
+            ParseUnknownXml(name, handlerStack);
+            break;
+
+        default:
+            break;
     }
 }
 
@@ -75,6 +93,9 @@ void IOExtension::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            m_pExtension->SetUnknownXml(UnknownXml());
+
         m_pFeatureSource->GetExtensions()->Adopt(m_pExtension);
         handlerStack->pop();
         this->m_pExtension = NULL;
@@ -112,7 +133,14 @@ void IOExtension::Write(MdfStream &fd,  Extension *pExtension)
         spIO->Write(fd, pExtension->GetAttributeRelates()->GetAt(x));
     }
 
+        // Write any previously found unknown XML
+    if (!pExtension->GetUnknownXml().empty())
+    {
+        fd << toCString(pExtension->GetUnknownXml()); 
+    }
+
     dectab();
     fd << tab() << "</Extension>" << std::endl; // NOXLATE
 }
+
 

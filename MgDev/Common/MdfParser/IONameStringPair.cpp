@@ -22,6 +22,12 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, PropertyMapping);
+ELEM_MAP_ENTRY(2, Parameter);
+ELEM_MAP_ENTRY(3, Name);
+ELEM_MAP_ENTRY(4, Value);
+
 IONameStringPair::IONameStringPair()
 : _nameStringPair(NULL), layer(NULL), featureSource(NULL)
 {
@@ -46,21 +52,32 @@ IONameStringPair::~IONameStringPair()
 void IONameStringPair::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (NULL != layer)
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
-        if (m_currElemName == L"PropertyMapping") // NOXLATE
+    case ePropertyMapping:
+        if (NULL != layer)
         {
             m_startElemName = name;
             this->_nameStringPair = new NameStringPair(L"", L"");
         }
-    }
-    else if (NULL != featureSource)
-    {
-        if (m_currElemName == L"Parameter") // NOXLATE
+        break;
+
+    case eParameter:
+        if (NULL != featureSource)
         {
             m_startElemName = name;
             this->_nameStringPair = new NameStringPair(L"", L"");
         }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -76,6 +93,9 @@ void IONameStringPair::EndElement(const wchar_t *name, HandlerStack *handlerStac
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_nameStringPair->SetUnknownXml(UnknownXml());
+
         if (NULL != this->layer)
             this->layer->GetPropertyMappings()->Adopt(this->_nameStringPair);
         else if (NULL != this->featureSource)
@@ -101,4 +121,10 @@ void IONameStringPair::Write(MdfStream &fd, NameStringPair *nameStringPair)
     fd << tab() << "<Value>"; // NOXLATE
     fd << EncodeString(nameStringPair->GetValue());
     fd << "</Value>" << std::endl; // NOXLATE
+
+    // Write any previously found unknown XML
+    if (!nameStringPair->GetUnknownXml().empty())
+    {
+        fd << toCString(nameStringPair->GetUnknownXml()); 
+    }
 }

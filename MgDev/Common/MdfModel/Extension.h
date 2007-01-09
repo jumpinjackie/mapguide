@@ -21,6 +21,7 @@
 #include "MdfModel.h"
 #include "AttributeRelate.h"
 #include "CalculatedProperty.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
     
@@ -28,7 +29,7 @@ BEGIN_NAMESPACE_MDFMODEL
 // DESCRIPTION:
 // Extension class defines the joins between feature classes
 //-------------------------------------------------------------------------
-    class MDFMODEL_API Extension
+class MDFMODEL_API Extension : public MdfRootObject
     {
     public:
          // Construction, destruction, initialization

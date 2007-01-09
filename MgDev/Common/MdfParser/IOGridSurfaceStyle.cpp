@@ -23,6 +23,13 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, SurfaceStyle);
+ELEM_MAP_ENTRY(2, Band);
+ELEM_MAP_ENTRY(3, ZeroValue);
+ELEM_MAP_ENTRY(4, ScaleFactor);
+ELEM_MAP_ENTRY(5, DefaultColor);
+
 IOGridSurfaceStyle::IOGridSurfaceStyle():surfaceStyle(NULL), scaleRange(NULL)
 {
 }
@@ -38,10 +45,21 @@ IOGridSurfaceStyle::~IOGridSurfaceStyle()
 void IOGridSurfaceStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"SurfaceStyle") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eSurfaceStyle:
         m_startElemName = name;
         this->surfaceStyle = new GridSurfaceStyle();
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -61,7 +79,10 @@ void IOGridSurfaceStyle::EndElement(const wchar_t *name, HandlerStack *handlerSt
 {
     if (m_startElemName == name)
     {
-        //this->scaleRange->GetGridStyles()->Adopt(this->surfaceStyle);
+         if (!UnknownXml().empty())
+            this->surfaceStyle->SetUnknownXml(UnknownXml());
+
+       //this->scaleRange->GetGridStyles()->Adopt(this->surfaceStyle);
         this->scaleRange->AdoptSurfaceStyle(this->surfaceStyle);
         handlerStack->pop();
         this->scaleRange = NULL;
@@ -101,6 +122,12 @@ void IOGridSurfaceStyle::Write(MdfStream &fd,  GridSurfaceStyle *pSurfaceStyle)
     fd << tab() << "<DefaultColor>"; // NOXLATE
     fd << EncodeString(pSurfaceStyle->GetDefaultColor());
     fd << "</DefaultColor>" << std::endl; // NOXLATE
+
+    // Write any previously found unknown XML
+    if (!pSurfaceStyle->GetUnknownXml().empty())
+    {
+        fd << toCString(pSurfaceStyle->GetUnknownXml()); 
+    }
 
     dectab();
     fd << tab() << "</SurfaceStyle>" << std::endl; // NOXLATE

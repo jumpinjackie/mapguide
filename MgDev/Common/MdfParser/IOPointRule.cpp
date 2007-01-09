@@ -24,6 +24,13 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, PointRule);
+ELEM_MAP_ENTRY(2, PointSymbolization2D);
+ELEM_MAP_ENTRY(3, Label);
+ELEM_MAP_ENTRY(4, LegendLabel);
+ELEM_MAP_ENTRY(5, Filter);
+
 IOPointRule::IOPointRule()
 {
     this->_pointRule = NULL;
@@ -43,22 +50,37 @@ IOPointRule::~IOPointRule()
 void IOPointRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"PointRule") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case ePointRule:
         m_startElemName = name;
         this->_pointRule = new PointRule();
-    }
-    else if (m_currElemName == L"PointSymbolization2D") // NOXLATE
-    {
-        IOPointSymbolization2D *IO = new IOPointSymbolization2D(this->_pointRule);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
-    }
-    else if (m_currElemName == L"Label") // NOXLATE
-    {
-        IOLabel *IO = new IOLabel(this->_pointRule);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        break;
+    
+    case ePointSymbolization2D:
+        {
+            IOPointSymbolization2D *IO = new IOPointSymbolization2D(this->_pointRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eLabel:
+        {
+            IOLabel *IO = new IOLabel(this->_pointRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -74,6 +96,9 @@ void IOPointRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_pointRule->SetUnknownXml(UnknownXml());
+
         this->pointTypeStyle->GetRules()->Adopt(this->_pointRule);
         handlerStack->pop();
         this->pointTypeStyle= NULL;
@@ -115,6 +140,12 @@ void IOPointRule::Write(MdfStream &fd, PointRule *pointRule)
         IOPointSymbolization2D *IO = new IOPointSymbolization2D();
         IO->Write(fd, symbolization2d);
         delete IO;
+    }
+
+    // Write any previously found unknown XML
+    if (!pointRule->GetUnknownXml().empty())
+    {
+        fd << toCString(pointRule->GetUnknownXml()); 
     }
 
     dectab();

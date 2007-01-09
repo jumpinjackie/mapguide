@@ -73,5 +73,8 @@ BEGIN_NAMESPACE_MDFPARSER
         return false;
     }
 
+    std::string startStr(const std::string elementName);
+    std::string endStr(const std::string elementName);
+
 END_NAMESPACE_MDFPARSER
 #endif // _IOUTIL_H

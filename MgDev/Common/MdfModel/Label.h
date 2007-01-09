@@ -20,6 +20,7 @@
 
 #include "MdfModel.h"
 #include "TextSymbol.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -31,7 +32,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // text label. Other types of Symbols can be used by themselves, or in
     // combination, to create more intricate labels.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API Label
+    class MDFMODEL_API Label : public MdfRootObject
     {
     public:
         // Orientation Enum is used to control the orientation of a Label with
