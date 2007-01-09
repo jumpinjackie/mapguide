@@ -191,17 +191,10 @@
             $featSourceId = new MgResourceIdentifier($selLayer->GetFeatureSourceId());
             $ctxs = $featureSrvc->GetSpatialContexts($featSourceId, true);
             $srsDefDs = "";
-            if($ctxs != null)
-            {
-                $ctxs->ReadNext();
+            if($ctxs != null && $ctxs->ReadNext())
                 $srsDefDs = $ctxs->GetCoordinateSystemWkt();
-                if($srsDefDs == "")
-                {
-                    $excludedLayers ++;
-                    continue;
-                }
-            }
-            else
+
+            if($srsDefDs == "")
             {
                 $excludedLayers ++;
                 continue;
@@ -213,7 +206,7 @@
 
             if($arbitraryDsSrs)
                 $dsSrsUnits = $srsDs->GetUnits();
-                
+
             // exclude layer if:
             //  the map is non-arbitrary and the layer is arbitrary or vice-versa
             //     or
@@ -474,9 +467,9 @@ function AddFeatureToCollection($propCollection, $agfRW, $featureId, $featureGeo
 function GetMapSrs($map)
 {
     $srs = $map->GetMapSRS();
-    if($srs != "") 
+    if($srs != "")
         return $srs;
-       
+
     //No SRS, set to ArbitrayXY meters
     //
     return "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";

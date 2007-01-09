@@ -221,17 +221,10 @@ String locale;
             MgResourceIdentifier featSourceId = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
             MgSpatialContextReader ctxs = featureSrvc.GetSpatialContexts(featSourceId, true);
             String srsDefDs = "";
-            if(ctxs != null)
-            {
-                ctxs.ReadNext();
+            if(ctxs != null && ctxs.ReadNext())
                 srsDefDs = ctxs.GetCoordinateSystemWkt();
-                if(srsDefDs == null || srsDefDs.length() == 0)
-                {
-                    excludedLayers++;
-                    continue;
-                }
-            }
-            else
+
+            if(srsDefDs == null || srsDefDs.length() == 0)
             {
                 excludedLayers++;
                 continue;
@@ -505,16 +498,16 @@ void AddFeatureToCollection(MgBatchPropertyCollection propCollection, MgAgfReade
 
 String GetMapSrs(MgMap map)
 {
-    try 
+    try
     {
         String srs = map.GetMapSRS();
-        if(!srs.equals("")) 
+        if(!srs.equals(""))
             return srs;
     }
     catch(MgException e)
     {
     }
-       
+
     //No SRS, set to ArbitrayXY meters
     //
     return "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
