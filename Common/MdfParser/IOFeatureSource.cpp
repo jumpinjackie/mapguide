@@ -26,6 +26,16 @@ using namespace MDFPARSER_NAMESPACE;
 #include "IOExtension.h"
 #include "IOSupplementalSpatialContextInfo.h"
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, FeatureSource);
+ELEM_MAP_ENTRY(2, Parameter);
+ELEM_MAP_ENTRY(3, Extension);
+ELEM_MAP_ENTRY(4, SupplementalSpatialContextInfo);
+ELEM_MAP_ENTRY(5, Provider);
+ELEM_MAP_ENTRY(6, ConfigurationDocument);
+ELEM_MAP_ENTRY(7, LongTransaction);
+
+
 IOFeatureSource::IOFeatureSource()
     : m_pFeatureSource(NULL)
 {
@@ -43,31 +53,44 @@ IOFeatureSource::~IOFeatureSource()
 void IOFeatureSource::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"FeatureSource") // NOXLATE
-    {
-        m_startElemName = name;
-    }
-    else
-    {
-        if (m_currElemName == L"Parameter") // NOXLATE
-        {
-            IONameStringPair *IO = new IONameStringPair(this->m_pFeatureSource);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        else if (m_currElemName == L"Extension") // NOXLATE
-        {
-            IOExtension *IO = new IOExtension(this->m_pFeatureSource);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        else if (m_currElemName == L"SupplementalSpatialContextInfo") // NOXLATE
-        {
-            IOSupplementalSpatialContextInfo *IO =
-                new IOSupplementalSpatialContextInfo(this->m_pFeatureSource);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId) {
+        case eFeatureSource:
+            m_startElemName = name;
+            break;
+
+        case eParameter:
+            {
+                IONameStringPair *IO = new IONameStringPair(this->m_pFeatureSource);
+                handlerStack->push(IO);
+                IO->StartElement(name, handlerStack);
+            }
+            break;
+
+        case eExtension:
+            {
+                IOExtension *IO = new IOExtension(this->m_pFeatureSource);
+                handlerStack->push(IO);
+                IO->StartElement(name, handlerStack);
+            }
+            break;
+
+        case eSupplementalSpatialContextInfo:
+            {
+                IOSupplementalSpatialContextInfo *IO =
+                    new IOSupplementalSpatialContextInfo(this->m_pFeatureSource);
+                handlerStack->push(IO);
+                IO->StartElement(name, handlerStack);
+            }
+            break;
+
+        case eUnknown:
+            ParseUnknownXml(name, handlerStack);
+            break;
+
+        default:
+            break;
     }
 }
 
@@ -85,6 +108,9 @@ void IOFeatureSource::EndElement(const wchar_t *name, HandlerStack *handlerStack
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->m_pFeatureSource->SetUnknownXml(UnknownXml());
+
         handlerStack->pop();
         this->m_pFeatureSource = NULL;
         m_startElemName = L"";
@@ -141,7 +167,14 @@ void IOFeatureSource::Write(MdfStream &fd,  FeatureSource *pFeatureSource)
         spIO->Write(fd, pFeatureSource->GetExtensions()->GetAt(x));
     }
 
+    // Write any previously found unknown XML
+    if (!pFeatureSource->GetUnknownXml().empty())
+    {
+        fd << toCString(pFeatureSource->GetUnknownXml()); 
+    }
+
     dectab();
     fd << tab() << "</FeatureSource>" << std::endl; // NOXLATE
 }
+
 

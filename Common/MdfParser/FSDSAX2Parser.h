@@ -69,18 +69,13 @@ class MDFPARSER_API FSDSAX2Parser : public DefaultHandler
         // Unfortunately, the SAX2 Parser doesn't necessarily send all the
         // characters that appear inside a tag in one call of characters()-
         // for example with escape characters it separates them into separate calls.
-        // Therefore, m_strbuffer is used to accumulate the characters, openTag and
-        // prevOpenTag are used to determine if we're still reading characters in the 
-        // same open tag, and tagOpen and charsInTag are used in the case when you have 
-        // no characters in between a tag (i.e. <Metadata></Metadata>) to make sure
-        // that whitespace or line returns don't get assigned to it instead.
+        // Therefore, m_strbuffer is used to accumulate the characters.  tagOpen is
+        // used in the case when you have characters outside a tag (i.e. <Metadata></Metadata>)
+        // to make sure that whitespace or line returns don't get assigned to it instead.
         std::wstring m_strbuffer;
-        
-        std::wstring m_openTag;
-        std::wstring m_prevOpenTag;
-        MdfString m_strParserError;
         bool m_tagOpen;
-        bool m_charsInTag;
+
+        MdfString m_strParserError;
 
         void WriteDefinition(FeatureSource *pFeatureSource, MdfStream &fd);
 

@@ -24,6 +24,13 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, Stroke);
+ELEM_MAP_ENTRY(2, LineStyle);
+ELEM_MAP_ENTRY(3, Thickness);
+ELEM_MAP_ENTRY(4, Color);
+ELEM_MAP_ENTRY(5, Unit);
+
 IOStroke::IOStroke(std::wstring elementName)
 {
     this->_stroke = NULL;
@@ -42,9 +49,25 @@ IOStroke::~IOStroke()
 
 void IOStroke::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
+    // Note: this->m_elementName is not part of the Element Map, so the
+    // eStroke value is substituted - but sStroke will not be the correct
+    // string, and cannot not be used in place of m_elementName.
+
     m_currElemName = name;
     if (m_currElemName == this->m_elementName)
+    {
+        m_currElemId = eStroke;
         m_startElemName = name;
+    }
+    else
+    {
+        m_currElemId = _ElementIdFromName(name);
+    }
+
+    if (eUnknown == m_currElemId)
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOStroke::ElementChars(const wchar_t *ch)
@@ -66,6 +89,9 @@ void IOStroke::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_stroke->SetUnknownXml(UnknownXml());
+
         handlerStack->pop();
         this->_stroke = NULL;
         m_startElemName = L"";
@@ -98,6 +124,12 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name)
     std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(stroke->GetUnit()));
     fd << EncodeString(*str);
     fd << "</Unit>" << std::endl; // NOXLATE
+
+        // Write any previously found unknown XML
+    if (!stroke->GetUnknownXml().empty())
+    {
+        fd << toCString(stroke->GetUnknownXml()); 
+    }
 
     dectab();
     fd << tab() << "</" << name << ">" << std::endl; // NOXLATE

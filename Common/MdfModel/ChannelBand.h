@@ -19,6 +19,7 @@
 #define CHANNELBAND_H_
 
 #include <vector>
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -27,7 +28,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // Class ChannelBand is used to map the band's value to a valid color channel value.
     // It defines how to scale numbers into a color channel.
     //-----------------------------------------------------------------------------
-    class MDFMODEL_API ChannelBand
+    class MDFMODEL_API ChannelBand : public MdfRootObject
     {
     public:
         ChannelBand();

@@ -22,6 +22,7 @@
 #include "NameStringPair.h"
 #include "Extension.h"
 #include "SupplementalSpatialContextInfo.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -31,7 +32,7 @@ BEGIN_NAMESPACE_MDFMODEL
 // needed to connect to a feature source.  It also contains extensions that
 // contain joins for the feature classes in the feature source.
 //-------------------------------------------------------------------------
-    class MDFMODEL_API FeatureSource
+class MDFMODEL_API FeatureSource : public MdfRootObject
     {
     public:
          // Construction, destruction, initialization

@@ -23,6 +23,10 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, AreaTypeStyle);
+ELEM_MAP_ENTRY(2, AreaRule);
+
 IOAreaTypeStyle::IOAreaTypeStyle()
 {
     this->_areaTypeStyle = NULL;
@@ -42,16 +46,29 @@ IOAreaTypeStyle::~IOAreaTypeStyle()
 void IOAreaTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"AreaTypeStyle") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eAreaTypeStyle:
         m_startElemName = name;
         this->_areaTypeStyle = new AreaTypeStyle();
-    }
-    else if (m_currElemName == L"AreaRule") // NOXLATE
-    {
-        IOAreaRule *IO = new IOAreaRule(this->_areaTypeStyle);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        break;
+
+    case eAreaRule:
+        {
+            IOAreaRule *IO = new IOAreaRule(this->_areaTypeStyle);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -64,6 +81,9 @@ void IOAreaTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_areaTypeStyle->SetUnknownXml(UnknownXml());
+
         this->scaleRange->GetFeatureTypeStyles()->Adopt(this->_areaTypeStyle);
         handlerStack->pop();
         this->scaleRange = NULL;
@@ -84,6 +104,12 @@ void IOAreaTypeStyle::Write(MdfStream &fd, AreaTypeStyle * areaTypeStyle)
         IOAreaRule *IO = new IOAreaRule();
         IO->Write(fd, static_cast<AreaRule*>(areaTypeStyle->GetRules()->GetAt(x)));
         delete IO;
+    }
+
+        // Write any previously found unknown XML
+    if (!areaTypeStyle->GetUnknownXml().empty())
+    {
+        fd << toCString(areaTypeStyle->GetUnknownXml()); 
     }
 
     dectab();

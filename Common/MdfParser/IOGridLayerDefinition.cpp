@@ -23,6 +23,15 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, GridLayerDefinition);
+ELEM_MAP_ENTRY(2, GridScaleRange);
+ELEM_MAP_ENTRY(3, ResourceId);
+ELEM_MAP_ENTRY(4, FeatureName);
+ELEM_MAP_ENTRY(5, Geometry);
+ELEM_MAP_ENTRY(6, Filter);
+ELEM_MAP_ENTRY(7, Opacity);
+
 IOGridLayerDefinition::IOGridLayerDefinition():_layer(NULL)
 {
 }
@@ -38,15 +47,28 @@ IOGridLayerDefinition::~IOGridLayerDefinition()
 void IOGridLayerDefinition::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"GridLayerDefinition") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eGridLayerDefinition:
         m_startElemName = name;
-    }
-    else if (m_currElemName == L"GridScaleRange") // NOXLATE
-    {
-        IOGridScaleRange *IO = new IOGridScaleRange(this->_layer);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        break;
+
+    case eGridScaleRange:
+        {
+            IOGridScaleRange *IO = new IOGridScaleRange(this->_layer);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -68,6 +90,9 @@ void IOGridLayerDefinition::EndElement(const wchar_t *name, HandlerStack *handle
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_layer->SetUnknownXml(UnknownXml());
+
         handlerStack->pop();
         this->_layer = NULL;
         m_startElemName = L"";
@@ -120,6 +145,12 @@ void IOGridLayerDefinition::Write(MdfStream &fd, GridLayerDefinition *gridLayer)
         IOGridScaleRange * IO = new IOGridScaleRange();
         IO->Write(fd, gridLayer->GetScaleRanges()->GetAt(x));
         delete IO;
+    }
+
+    // Write any previously found unknown XML
+    if (!gridLayer->GetUnknownXml().empty())
+    {
+        fd << toCString(gridLayer->GetUnknownXml()); 
     }
 
     dectab();

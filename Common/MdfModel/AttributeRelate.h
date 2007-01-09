@@ -20,6 +20,7 @@
 
 #include "MdfModel.h"
 #include "RelateProperty.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -28,7 +29,7 @@ BEGIN_NAMESPACE_MDFMODEL
 // AttributeRelate class defines the attribute class in the target feature
 // source
 //-------------------------------------------------------------------------
-    class MDFMODEL_API AttributeRelate
+class MDFMODEL_API AttributeRelate : public MdfRootObject
     {
     public:
 

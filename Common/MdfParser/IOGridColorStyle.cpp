@@ -25,6 +25,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, ColorStyle);
+ELEM_MAP_ENTRY(2, HillShade);
+ELEM_MAP_ENTRY(3, ColorRule);
+ELEM_MAP_ENTRY(4, TransparencyColor);
+ELEM_MAP_ENTRY(5, BrightnessFactor);
+ELEM_MAP_ENTRY(6, ContrastFactor);
+
 IOGridColorStyle::IOGridColorStyle():colorStyle(NULL), scaleRange(NULL)
 {
 }
@@ -40,22 +48,37 @@ IOGridColorStyle::~IOGridColorStyle()
 void IOGridColorStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"ColorStyle") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eColorStyle:
         m_startElemName = name;
         this->colorStyle = new GridColorStyle();
-    }
-    else if (m_currElemName == L"HillShade") // NOXLATE
-    {
-        IOHillShade *IO = new IOHillShade(this->colorStyle);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
-    }
-    else if (m_currElemName == L"ColorRule") // NOXLATE
-    {
-        IOGridColorRule *IO = new IOGridColorRule(this->colorStyle);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        break;
+
+    case eHillShade:
+        {
+            IOHillShade *IO = new IOHillShade(this->colorStyle);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eColorRule:
+        {
+            IOGridColorRule *IO = new IOGridColorRule(this->colorStyle);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -73,6 +96,9 @@ void IOGridColorStyle::EndElement(const wchar_t *name, HandlerStack *handlerStac
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->colorStyle->SetUnknownXml(UnknownXml());
+
         this->scaleRange->AdoptColorStyle(this->colorStyle);
         handlerStack->pop();
         this->scaleRange = NULL;
@@ -130,6 +156,12 @@ void IOGridColorStyle::Write(MdfStream &fd,  GridColorStyle *pColorStyle)
             IO->Write(fd, pColorRule);
             delete IO;
         }
+    }
+
+    // Write any previously found unknown XML
+    if (!pColorStyle->GetUnknownXml().empty())
+    {
+        fd << toCString(pColorStyle->GetUnknownXml()); 
     }
 
     dectab();

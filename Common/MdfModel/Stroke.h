@@ -21,6 +21,7 @@
 #include "MdfModel.h"
 #include "SizeContexts.h"
 #include "LengthConverter.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -30,7 +31,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // concrete classes are used by LineSymbolization and AreaSymbolization to
     // define the stylization for lines and polygon outlines.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API Stroke
+    class MDFMODEL_API Stroke : public MdfRootObject
     {
     public:
         // Construction, destruction, initialization

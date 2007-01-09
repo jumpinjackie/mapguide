@@ -26,6 +26,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, VectorScaleRange);
+ELEM_MAP_ENTRY(2, AreaTypeStyle);
+ELEM_MAP_ENTRY(3, LineTypeStyle);
+ELEM_MAP_ENTRY(4, PointTypeStyle);
+ELEM_MAP_ENTRY(5, MinScale);
+ELEM_MAP_ENTRY(6, MaxScale);
+
 IOVectorScaleRange::IOVectorScaleRange()
 {
     this->_scaleRange = NULL;
@@ -45,28 +53,45 @@ IOVectorScaleRange::~IOVectorScaleRange()
 void IOVectorScaleRange::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"VectorScaleRange") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eVectorScaleRange:
         m_startElemName = name;
         this->_scaleRange = new VectorScaleRange();
-    }
-    else if (m_currElemName == L"AreaTypeStyle") // NOXLATE
-    {
-        IOAreaTypeStyle *IO = new IOAreaTypeStyle(this->_scaleRange);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
-    }
-    else if (m_currElemName == L"LineTypeStyle") // NOXLATE
-    {
-        IOLineTypeStyle *IO = new IOLineTypeStyle(this->_scaleRange);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
-    }
-    else if (m_currElemName == L"PointTypeStyle") // NOXLATE
-    {
-        IOPointTypeStyle *IO = new IOPointTypeStyle(this->_scaleRange);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        break;
+
+    case eAreaTypeStyle:
+        {
+            IOAreaTypeStyle *IO = new IOAreaTypeStyle(this->_scaleRange);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eLineTypeStyle:
+        {
+            IOLineTypeStyle *IO = new IOLineTypeStyle(this->_scaleRange);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case ePointTypeStyle:
+        {
+            IOPointTypeStyle *IO = new IOPointTypeStyle(this->_scaleRange);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -82,6 +107,9 @@ void IOVectorScaleRange::EndElement(const wchar_t *name, HandlerStack *handlerSt
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_scaleRange->SetUnknownXml(UnknownXml());
+
         this->layer->GetScaleRanges()->Adopt(this->_scaleRange);
         handlerStack->pop();
         this->layer = NULL;
@@ -133,6 +161,12 @@ void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange)
             IO->Write(fd, dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)));
             delete IO;
         }
+    }
+
+    // Write any previously found unknown XML
+    if (!scaleRange->GetUnknownXml().empty())
+    {
+        fd << toCString(scaleRange->GetUnknownXml()); 
     }
 
     dectab();

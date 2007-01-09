@@ -90,6 +90,7 @@
               <xs:documentation>The zoomed out part of the scale range.  Assume application's maximum value if the value is not specified. Exclusive.</xs:documentation>
             </xs:annotation>
           </xs:element>
+          <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -140,6 +141,7 @@
               <xs:documentation>The stylization to be applied to the features for a given scale range.</xs:documentation>
             </xs:annotation>
           </xs:element>
+          <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -188,6 +190,7 @@
           </xs:annotation>
         </xs:element>
       </xs:choice>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="PointTypeStyleType">
@@ -210,6 +213,7 @@
           <xs:documentation>One or more PointRules defining the PointTypeStyle</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="PointRuleType">
@@ -235,6 +239,7 @@
       <xs:choice minOccurs="0">
         <xs:element name="PointSymbolization2D" type="PointSymbolization2DType"/>
       </xs:choice>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="PointSymbolizationType">
@@ -246,33 +251,36 @@
     <xs:annotation>
       <xs:documentation>The different types of point geometries.</xs:documentation>
     </xs:annotation>
-    <xs:choice>
-      <xs:element name="Mark" type="MarkSymbolType">
-        <xs:annotation>
-          <xs:documentation>Predefined shape such as square or circle.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="Image" type="ImageSymbolType">
-        <xs:annotation>
-          <xs:documentation>Raster or image symbol. Note that these do not scale well, but sometimes this is all that you have. Supported formats are application specific.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="Font" type="FontSymbolType">
-        <xs:annotation>
-          <xs:documentation>Specify the symbol using a font character.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="W2D" type="W2DSymbolType">
-        <xs:annotation>
-          <xs:documentation>Vector symbol defined using a W2D stream.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="Block" type="BlockSymbolType">
-        <xs:annotation>
-          <xs:documentation>Vector symbol specifed from a block.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-    </xs:choice>
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="Mark" type="MarkSymbolType">
+          <xs:annotation>
+            <xs:documentation>Predefined shape such as square or circle.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Image" type="ImageSymbolType">
+          <xs:annotation>
+            <xs:documentation>Raster or image symbol. Note that these do not scale well, but sometimes this is all that you have. Supported formats are application specific.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Font" type="FontSymbolType">
+          <xs:annotation>
+            <xs:documentation>Specify the symbol using a font character.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="W2D" type="W2DSymbolType">
+          <xs:annotation>
+            <xs:documentation>Vector symbol defined using a W2D stream.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Block" type="BlockSymbolType">
+          <xs:annotation>
+            <xs:documentation>Vector symbol specifed from a block.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+    </xs:sequence>
   </xs:complexType>
   <xs:complexType name="LineTypeStyleType">
     <xs:annotation>
@@ -284,6 +292,7 @@
           <xs:documentation>Rules to define a theme.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="LineRuleType">
@@ -309,6 +318,7 @@
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="LineSymbolization2D" type="StrokeType"/>
       </xs:choice>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="AreaSymbolizationType">
@@ -333,6 +343,7 @@
               <xs:documentation>The style of the polygon edge.</xs:documentation>
             </xs:annotation>
           </xs:element>
+          <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -347,6 +358,7 @@
           <xs:documentation>Rules to define a theme.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="AreaRuleType">
@@ -376,6 +388,7 @@
           </xs:annotation>
         </xs:element>
       </xs:choice>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="StrokeType">
@@ -392,6 +405,7 @@
           <xs:documentation>Unit of measurement that the thickness is specified in</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="FillType">
@@ -406,6 +420,7 @@
           <xs:documentation>The background color. Not applicable to solid fills. </xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:simpleType name="BackgroundStyleType">
@@ -514,6 +529,7 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -583,6 +599,7 @@
               <xs:documentation>No edge is drawin if not specified.</xs:documentation>
             </xs:annotation>
           </xs:element>
+          <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -602,6 +619,7 @@
           <xs:documentation>The name to show the end user.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:simpleType name="ShapeType">
@@ -623,32 +641,35 @@
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="SymbolType">
-        <xs:choice>
-          <xs:element name="Image">
-            <xs:annotation>
-              <xs:documentation>Reference to the image.</xs:documentation>
-            </xs:annotation>
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="ResourceId">
-                  <xs:annotation>
-                    <xs:documentation>The reference to the resource.</xs:documentation>
-                  </xs:annotation>
-                </xs:element>
-                <xs:element name="LibraryItemName" minOccurs="0">
-                  <xs:annotation>
-                    <xs:documentation>If ResourceId specifies a library, this identifies the name of a library item.</xs:documentation>
-                  </xs:annotation>
-                </xs:element>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="Content" type="xs:hexBinary">
-            <xs:annotation>
-              <xs:documentation>BinHex data for image. </xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:choice>
+        <xs:sequence>
+          <xs:choice>
+            <xs:element name="Image">
+              <xs:annotation>
+                <xs:documentation>Reference to the image.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="ResourceId">
+                    <xs:annotation>
+                      <xs:documentation>The reference to the resource.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="LibraryItemName" minOccurs="0">
+                    <xs:annotation>
+                      <xs:documentation>If ResourceId specifies a library, this identifies the name of a library item.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="Content" type="xs:hexBinary">
+              <xs:annotation>
+                <xs:documentation>BinHex data for image. </xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+          <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -669,6 +690,7 @@
           <xs:element name="Italic" type="xs:boolean" minOccurs="0"/>
           <xs:element name="Underlined" type="xs:boolean" minOccurs="0"/>
           <xs:element name="ForegroundColor" type="xs:string"/>
+          <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -711,6 +733,7 @@
               <xs:documentation>If specified all text in the symbol is drawn in this color.</xs:documentation>
             </xs:annotation>
           </xs:element>
+          <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -734,6 +757,7 @@
               <xs:documentation>Static color.</xs:documentation>
             </xs:annotation>
           </xs:element>
+          <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -760,6 +784,7 @@
             </xs:annotation>
           </xs:element>
           <xs:element name="GridScaleRange" type="GridScaleRangeType" maxOccurs="unbounded"/>
+          <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -794,6 +819,7 @@
           <xs:documentation>Default is 255.  Range is 0:255.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="GridColorBandsType">
@@ -810,15 +836,18 @@
     <xs:annotation>
       <xs:documentation>The color to use for a grid rule.</xs:documentation>
     </xs:annotation>
-    <xs:choice>
-      <xs:element name="ExplicitColor" type="xs:string">
-        <xs:annotation>
-          <xs:documentation>Explicit ARGB color.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="Band" type="xs:string"/>
-      <xs:element name="Bands" type="GridColorBandsType"/>
-    </xs:choice>
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="ExplicitColor" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Explicit ARGB color.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Band" type="xs:string"/>
+        <xs:element name="Bands" type="GridColorBandsType"/>
+      </xs:choice>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+    </xs:sequence>
   </xs:complexType>
   <xs:complexType name="GridColorRuleType">
     <xs:annotation>
@@ -841,6 +870,7 @@
         </xs:annotation>
       </xs:element>
       <xs:element name="Color" type="GridColorType"/>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="HillshadeType">
@@ -868,6 +898,7 @@
           <xs:documentation>Default is 1. Applied to band prior to computing hillshade.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="GridColorStylizationType">
@@ -892,6 +923,7 @@
         </xs:annotation>
       </xs:element>
       <xs:element name="ColorRule" type="GridColorRuleType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="GridSurfaceStylizationType">
@@ -919,6 +951,7 @@
           <xs:documentation>The color that will show if there is no ColorStyle defined at a pixel.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="GridScaleRangeType">
@@ -947,6 +980,15 @@
           <xs:documentation>When the user has zoomed in by this amount, a request for more detailed raster data is made.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
+    <xs:complexType name="ExtendedDataType">
+        <xs:annotation>
+            <xs:documentation>A type allocating space for future, additional, and validatable data for this feature source</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:any maxOccurs="unbounded" processContents="lax"/>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>

@@ -20,6 +20,7 @@
 
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -28,7 +29,7 @@ BEGIN_NAMESPACE_MDFMODEL
     //  Class NameStringPair represents a pair of strings.  The first is the
     //  name and the second is the associated text.
     // ------------------------------------------------------------------------
-    class MDFMODEL_API NameStringPair
+class MDFMODEL_API NameStringPair : public MdfRootObject
     {
     public:
         //Constructors,

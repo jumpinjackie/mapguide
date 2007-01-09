@@ -20,7 +20,9 @@
 
 #include <string>
 #include <stack>
+#include <vector>
 #include "MdfParser.h"
+#include "UnicodeString.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -44,20 +46,57 @@ typedef std::stack<SAX2ElementHandler *> HandlerStack;
 
 class MDFPARSER_API SAX2ElementHandler {
     public:
-        virtual ~SAX2ElementHandler() {};
+        virtual ~SAX2ElementHandler() {}
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack) = 0;
         virtual void ElementChars(const wchar_t *ch) = 0;
         virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack) = 0;
 
     protected:
+        void ParseUnknownXml(const wchar_t *name, HandlerStack *handlerStack);
+        std::wstring& UnknownXml() { return m_unknownXml; }
+
+        std::wstring m_unknownXml;
+
         // m_startElemName stores the name of the XML tag that initiated
         // the creation of this SAX2ElementHandler object.
         std::wstring m_startElemName;
         // m_currElemName stores the name of the last XML start tag.
         std::wstring m_currElemName;
 
+        int m_currElemId;
 };
+
+// For each element type, the following macros define a method, _ElementIdFromName()
+// and two variables, eElementName - an integer ID which can be used in case
+// statements, and sElementName - a std::string which can be used in serialization.
+// CREATE_ELEMENT_MAP is called first, and then ELEM_MAP_ENTRY for each element
+// type.  The IDs provided to ELEM_MAP_ENTRY must be consecutive, starting from 1.
+//
+#define CREATE_ELEMENT_MAP                                                      \
+    static std::vector<std::wstring> _elementMap;                               \
+    static std::string _CreateMapEntry(const wchar_t* wName, const char* sName) \
+    {                                                                           \
+        _elementMap.push_back(wName);                                           \
+        return sName;                                                           \
+    }                                                                           \
+    static int _ElementIdFromName(const wchar_t* name)                          \
+    {                                                                           \
+        std::vector<std::wstring>::const_iterator iter = _elementMap.begin();   \
+        int id = 1;                                                             \
+        for (iter++; iter != _elementMap.end(); iter++)                         \
+        {                                                                       \
+            if (0 == ::wcscmp(iter->c_str(), name))                             \
+                return id;                                                      \
+            id++;                                                               \
+        }                                                                       \
+        return 0;                                                               \
+    }                                                                           \
+    ELEM_MAP_ENTRY(0, Unknown)
+
+#define ELEM_MAP_ENTRY(ID, NAME)                                                \
+    static const std::string s##NAME = _CreateMapEntry(L###NAME, #NAME);        \
+    static const int e##NAME = ID
 
 END_NAMESPACE_MDFPARSER
 #endif // _SAX2ELEMENTHANDLER_H

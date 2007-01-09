@@ -23,6 +23,7 @@
 #include "GridSurfaceStyle.h"
 #include "GridColorStyle.h"
 #include <vector>
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -35,7 +36,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // collection. Each will result in the drawing of some of the layer's geometric
     // primitives and/or their labels.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API GridScaleRange
+    class MDFMODEL_API GridScaleRange : public MdfRootObject
     {
     public:
         // Represents the maximum value for the map scale.

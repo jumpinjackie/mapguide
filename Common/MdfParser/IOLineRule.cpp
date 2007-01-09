@@ -24,6 +24,13 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, LineRule);
+ELEM_MAP_ENTRY(2, LineSymbolization2D);
+ELEM_MAP_ENTRY(3, Label);
+ELEM_MAP_ENTRY(4, LegendLabel);
+ELEM_MAP_ENTRY(5, Filter);
+
 IOLineRule::IOLineRule()
 {
     this->_lineRule = NULL;
@@ -43,22 +50,37 @@ IOLineRule::~IOLineRule()
 void IOLineRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"LineRule") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eLineRule:
         m_startElemName = name;
         this->_lineRule = new LineRule();
-    }
-    else if (m_currElemName == L"LineSymbolization2D") // NOXLATE
-    {
-        IOLineSymbolization2D *IO = new IOLineSymbolization2D(this->_lineRule);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
-    }
-    else if (m_currElemName == L"Label") // NOXLATE
-    {
-        IOLabel *IO = new IOLabel(this->_lineRule);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        break;
+
+    case eLineSymbolization2D:
+        {
+            IOLineSymbolization2D *IO = new IOLineSymbolization2D(this->_lineRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eLabel:
+        {
+            IOLabel *IO = new IOLabel(this->_lineRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -74,6 +96,9 @@ void IOLineRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_lineRule->SetUnknownXml(UnknownXml());
+
         this->lineTypeStyle->GetRules()->Adopt(this->_lineRule);
         handlerStack->pop();
         this->lineTypeStyle= NULL;
@@ -114,6 +139,12 @@ void IOLineRule::Write(MdfStream &fd, LineRule *lineRule)
         IOLineSymbolization2D *IO = new IOLineSymbolization2D();
         IO->Write(fd, lineRule->GetSymbolizations()->GetAt(x));
         delete IO;
+    }
+
+    // Write any previously found unknown XML
+    if (!lineRule->GetUnknownXml().empty())
+    {
+        fd << toCString(lineRule->GetUnknownXml()); 
     }
 
     dectab();

@@ -15,37 +15,40 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SYMBOLIZATION_H_
-#define SYMBOLIZATION_H_
+#ifndef MDFROOTOBJECT_H_
+#define MDFROOTOBJECT_H_
 
 #include "MdfModel.h"
-#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
-    class ISymbolizationVisitor;
-
-    //---------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // Class Fill is an abstract base that defines how to color/paint
-    // feature geometry.
-    //---------------------------------------------------------------------
-    class MDFMODEL_API Symbolization : public MdfRootObject
+    // Common base class for all MdfModel classes.  Provides support for
+    // round-tripping unknown XML data from/to future schema versions.
+    //-------------------------------------------------------------------------
+    class MDFMODEL_API MdfRootObject
     {
     public:
-        // Construction, destruction, initialization
-        Symbolization();
-        virtual ~Symbolization();
+        // Destruction
+        virtual ~MdfRootObject() {}
 
         // Operations
+        // Property : UnknownXml
+        const MdfString& GetUnknownXml() const;
+        void SetUnknownXml(const MdfString& pstrUnknownXml);
 
-        // Visitor Pattern method to be implemented by all concrete
-        // subclasses.
-        virtual void AcceptVisitor(ISymbolizationVisitor& isyVisitor) = 0;
+    protected:
+        // Construction, initialization
+        // Default constructor is protected to make this class abstract.
+        MdfRootObject() {}
 
     private:
         // Data members
+        // Cache for parser, keeping unknown XML for round-tripping.
+        MdfString m_strUnknownXml;
+
     };
 
 END_NAMESPACE_MDFMODEL
-#endif //SYMBOLIZATION_H_
+#endif //MDFROOTOBJECT_H_

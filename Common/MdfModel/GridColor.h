@@ -20,6 +20,7 @@
 
 #include <vector>
 #include "ChannelBand.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -29,7 +30,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // The grid color is used to stylize the pixel using the given or calculated
     // color.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API GridColor
+    class MDFMODEL_API GridColor : public MdfRootObject
     {
     public:
         virtual ~GridColor();

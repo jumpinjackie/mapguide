@@ -25,13 +25,41 @@ using namespace MDFPARSER_NAMESPACE;
 // When a BlockSymbol is successfully parsed by this class, it must be accessed by the
 // parent class and then managed appropriately.  It will not be deleted by this class.
 
+CREATE_ELEMENT_MAP;
+// Inherited Symbol Elements
+ELEM_MAP_ENTRY(1, Unit);
+ELEM_MAP_ENTRY(2, SizeContext);
+ELEM_MAP_ENTRY(3, SizeX);
+ELEM_MAP_ENTRY(4, SizeY);
+ELEM_MAP_ENTRY(5, InsertionPointX);
+ELEM_MAP_ENTRY(6, InsertionPointY);
+ELEM_MAP_ENTRY(7, Rotation);
+ELEM_MAP_ENTRY(8, MaintainAspect);
+// Local Elements
+ELEM_MAP_ENTRY(9, Block);
+ELEM_MAP_ENTRY(10, DrawingName);
+ELEM_MAP_ENTRY(11, BlockName);
+ELEM_MAP_ENTRY(12, BlockColor);
+ELEM_MAP_ENTRY(13, LayerColor);
+
 void IOBlockSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     this->m_currElemName = name;
-    if (this->m_currElemName == L"Block") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eBlock:
         this->m_startElemName = name;
         this->m_symbol = new BlockSymbol();
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -54,6 +82,9 @@ void IOBlockSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->m_symbol->SetUnknownXml(UnknownXml());
+
         handlerStack->pop();
         this->m_startElemName = L"";
     }
@@ -90,6 +121,12 @@ void IOBlockSymbol::Write(MdfStream &fd, BlockSymbol *symbol)
         fd << tab() << "<LayerColor>"; // NOXLATE
         fd << EncodeString(symbol->GetLayerColor());
         fd << "</LayerColor>" << std::endl; // NOXLATE
+    }
+
+    // Write any previously found unknown XML
+    if (!symbol->GetUnknownXml().empty())
+    {
+        fd << toCString(symbol->GetUnknownXml()); 
     }
 
     dectab();

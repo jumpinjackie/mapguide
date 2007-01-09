@@ -25,13 +25,43 @@ using namespace MDFPARSER_NAMESPACE;
 // When a FontSymbol is successfully parsed by this class, it must be accessed by the
 // parent class and then managed appropriately.  It will not be deleted by this class.
 
+CREATE_ELEMENT_MAP;
+// Inherited Symbol Elements
+ELEM_MAP_ENTRY(1, Unit);
+ELEM_MAP_ENTRY(2, SizeContext);
+ELEM_MAP_ENTRY(3, SizeX);
+ELEM_MAP_ENTRY(4, SizeY);
+ELEM_MAP_ENTRY(5, InsertionPointX);
+ELEM_MAP_ENTRY(6, InsertionPointY);
+ELEM_MAP_ENTRY(7, Rotation);
+ELEM_MAP_ENTRY(8, MaintainAspect);
+// Local Elements
+ELEM_MAP_ENTRY(9, Font);
+ELEM_MAP_ENTRY(10, FontName);
+ELEM_MAP_ENTRY(11, Character);
+ELEM_MAP_ENTRY(12, Bold);
+ELEM_MAP_ENTRY(13, Italic);
+ELEM_MAP_ENTRY(14, Underlined);
+ELEM_MAP_ENTRY(15, ForegroundColor);
+
 void IOFontSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     this->m_currElemName = name;
-    if (this->m_currElemName == L"Font") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eFont:
         this->m_startElemName = name;
         this->m_symbol = new FontSymbol();
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -58,6 +88,9 @@ void IOFontSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->m_symbol->SetUnknownXml(UnknownXml());
+
         handlerStack->pop();
         this->m_startElemName = L"";
     }
@@ -111,6 +144,12 @@ void IOFontSymbol::Write(MdfStream &fd, FontSymbol *symbol)
     fd << tab() << "<ForegroundColor>"; // NOXLATE
     fd << EncodeString(symbol->GetForegroundColor());
     fd << "</ForegroundColor>" << std::endl; // NOXLATE
+
+    // Write any previously found unknown XML
+    if (!symbol->GetUnknownXml().empty())
+    {
+        fd << toCString(symbol->GetUnknownXml()); 
+    }
 
     dectab();
     fd << tab() << "</Font>" << std::endl; // NOXLATE

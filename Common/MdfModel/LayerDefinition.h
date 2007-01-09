@@ -19,6 +19,7 @@
 #define LAYERDEFINITION_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -31,7 +32,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // LayerDefinitions are encapsulated by MapLayer objects that make up a Map. They
     // are referenced primarily by their Uri.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API LayerDefinition
+class MDFMODEL_API LayerDefinition : public MdfRootObject
     {
     public:
         // Construction, destruction, initialization

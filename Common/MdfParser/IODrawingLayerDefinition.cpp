@@ -23,6 +23,15 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, DrawingLayerDefinition);
+ELEM_MAP_ENTRY(2, Opacity);
+ELEM_MAP_ENTRY(3, ResourceId);
+ELEM_MAP_ENTRY(4, Sheet);
+ELEM_MAP_ENTRY(5, LayerFilter);
+ELEM_MAP_ENTRY(6, MinScale);
+ELEM_MAP_ENTRY(7, MaxScale);
+
 IODrawingLayerDefinition::IODrawingLayerDefinition()
 {
     this->_layer = NULL;
@@ -40,9 +49,20 @@ IODrawingLayerDefinition::~IODrawingLayerDefinition()
 void IODrawingLayerDefinition::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"DrawingLayerDefinition") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eDrawingLayerDefinition:
         m_startElemName = name;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -66,6 +86,9 @@ void IODrawingLayerDefinition::EndElement(const wchar_t *name, HandlerStack *han
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_layer->SetUnknownXml(UnknownXml());
+
         handlerStack->pop();
         this->_layer = NULL;
         m_startElemName = L"";
@@ -121,6 +144,12 @@ void IODrawingLayerDefinition::Write(MdfStream &fd, DrawingLayerDefinition *draw
         fd << tab() << "<MaxScale>"; // NOXLATE
         fd << DoubleToStr(drawingLayer->GetMaxScale());
         fd << "</MaxScale>" << std::endl; // NOXLATE
+    }
+
+    // Write any previously found unknown XML
+    if (!drawingLayer->GetUnknownXml().empty())
+    {
+        fd << toCString(drawingLayer->GetUnknownXml()); 
     }
 
     dectab();

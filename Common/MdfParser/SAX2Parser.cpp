@@ -50,7 +50,6 @@ SAX2Parser::SAX2Parser() : DefaultHandler()
     m_Parser       = NULL;
     m_HandlerStack = NULL;
     m_tagOpen      = false;
-    m_charsInTag   = false;
 
     Flush();
     Initialize();
@@ -95,7 +94,6 @@ void SAX2Parser::Initialize()
     m_Parser->setFeature(XMLUni::fgXercesSchemaFullChecking, false);
     m_Parser->setFeature(XMLUni::fgSAX2CoreValidation, false); // true for validation
     m_Parser->setContentHandler(this);
-    m_prevOpenTag = L"";
     m_strbuffer = L"";
 }
 
@@ -341,7 +339,9 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
                               const   Attributes&     attributes)
 {
     std::wstring str = X2W(localname);
-    m_openTag = str;
+    m_strbuffer = L"";   // discard any text between start tags
+    m_tagOpen = true;
+
     // If the stack is empty, then check to see if we've encountered the
     // start of one of the below definitions. Allocate space for the object
     // we will be creating, create the appropriate IO object, passing in the reference
@@ -386,30 +386,16 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
     {
         (m_HandlerStack->top())->StartElement(str.c_str(), m_HandlerStack);
     }
-    m_tagOpen = true;
-    m_charsInTag = false;
 }
 
 
 void SAX2Parser::characters(const XMLCh* const    chars,
                             const unsigned int    length)
 {
-    if (m_openTag.compare(m_prevOpenTag) != 0)
-    {
-        if (!m_HandlerStack->empty())
-        {
-            if (m_charsInTag)
-                (m_HandlerStack->top())->ElementChars(m_strbuffer.c_str());
-            m_strbuffer = L"";
-        }
-    }
-
-    m_strbuffer += X2W(chars);
-
-    m_prevOpenTag = m_openTag;
-
+    // The character data may be split into multiple calls, so just store it for now.
+    // Also, do not record text outside of start/end tags
     if (m_tagOpen)
-        m_charsInTag = true;
+        m_strbuffer += X2W(chars);
 }
 
 
@@ -418,9 +404,15 @@ void SAX2Parser::endElement(const XMLCh* const uri,
                             const XMLCh* const qname)
 {
     m_tagOpen = false;
-    m_prevOpenTag = L"";
     if (!m_HandlerStack->empty())
     {
+        // Now is the time to make the ElementChars() call.
+        if (!m_strbuffer.empty())
+        {
+            (m_HandlerStack->top())->ElementChars(m_strbuffer.c_str());
+             m_strbuffer = L"";
+        }
+
         (m_HandlerStack->top())->EndElement(X2W(localname), m_HandlerStack);
     }
 }

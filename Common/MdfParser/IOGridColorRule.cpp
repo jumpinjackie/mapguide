@@ -25,6 +25,13 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, ColorRule);
+ELEM_MAP_ENTRY(2, Color);
+ELEM_MAP_ENTRY(3, Label);
+ELEM_MAP_ENTRY(4, LegendLabel);
+ELEM_MAP_ENTRY(5, Filter);
+
 IOGridColorRule::IOGridColorRule():colorStyle(NULL), colorRule(NULL)
 {
 }
@@ -40,22 +47,37 @@ IOGridColorRule::~IOGridColorRule()
 void IOGridColorRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == L"ColorRule") // NOXLATE
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eColorRule:
         m_startElemName = name;
         this->colorRule = new GridColorRule();
-    }
-    else if (m_currElemName == L"Color")  // NOXLATE
-    {
-        IOGridColor *IO = new IOGridColor(this->colorRule);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
-    }
-    else if (m_currElemName == L"Label") // NOXLATE
-    {
-        IOLabel *IO = new IOLabel(this->colorRule);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        break;
+
+    case eColor:
+        {
+            IOGridColor *IO = new IOGridColor(this->colorRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eLabel:
+        {
+            IOLabel *IO = new IOLabel(this->colorRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -71,6 +93,9 @@ void IOGridColorRule::EndElement(const wchar_t *name, HandlerStack *handlerStack
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->colorRule->SetUnknownXml(UnknownXml());
+
         this->colorStyle->GetRules()->Adopt(this->colorRule);
         handlerStack->pop();
         this->colorStyle = NULL;
@@ -109,6 +134,12 @@ void IOGridColorRule::Write(MdfStream &fd,  GridColorRule *pColorRule)
     IOGridColor* pIO = new IOGridColor();
     pIO->Write(fd, pColorRule->GetGridColor());
     delete pIO;
+
+    // Write any previously found unknown XML
+    if (!pColorRule->GetUnknownXml().empty())
+    {
+        fd << toCString(pColorRule->GetUnknownXml()); 
+    }
 
     dectab();
     fd << tab() << "</ColorRule>" << std::endl; // NOXLATE

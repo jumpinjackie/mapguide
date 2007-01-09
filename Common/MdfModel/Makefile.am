@@ -43,6 +43,7 @@ libMgMdfModel_la_SOURCES = \
   MapLayerGroupCommon.cpp \
   MarkSymbol.cpp \
   MdfModel.cpp \
+  MdfRootObject.cpp \
   NameStringPair.cpp \
   PointRule.cpp \
   PointSymbolization2D.cpp \
@@ -104,6 +105,7 @@ noinst_HEADERS = \
   MarkSymbol.h \
   MdfModel.h \
   MdfOwnerCollection.h \
+  MdfRootObject.h \
   NameStringPair.h \
   PointRule.h \
   PointSymbolization2D.h \

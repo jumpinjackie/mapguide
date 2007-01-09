@@ -20,6 +20,7 @@
 
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
     
@@ -28,7 +29,7 @@ BEGIN_NAMESPACE_MDFMODEL
 // CalculatedProperty class defines the calculated properties from attributes
 // from the same feature class
 //-------------------------------------------------------------------------
-    class MDFMODEL_API CalculatedProperty
+class MDFMODEL_API CalculatedProperty : public MdfRootObject
     {
     public:
          // Construction, destruction, initialization

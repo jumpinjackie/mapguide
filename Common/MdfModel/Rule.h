@@ -21,6 +21,7 @@
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
 #include "Label.h"
+#include "MdfRootObject.h"
 
 namespace MdfParser
 {
@@ -39,7 +40,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // Filtering criteria takes the form of a tree that uses logical operators
     // to combine attribute-based and geometry-based filters.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API Rule
+class MDFMODEL_API Rule : public MdfRootObject
     {
         friend class MdfParser::IOAreaRule;
         friend class MdfParser::IOLineRule;

@@ -22,6 +22,18 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+// From Grid Color - Start Elements
+ELEM_MAP_ENTRY(1, RedBand);
+ELEM_MAP_ENTRY(2, GreenBand);
+ELEM_MAP_ENTRY(3, BlueBand);
+// Local Elements
+ELEM_MAP_ENTRY(4, Band);
+ELEM_MAP_ENTRY(5, LowBand);
+ELEM_MAP_ENTRY(6, HighBand);
+ELEM_MAP_ENTRY(7, LowChannel);
+ELEM_MAP_ENTRY(8, HighChannel);
+
 IOChannelBand::IOChannelBand(const std::wstring &strElemName)
 : m_pChannel(NULL), m_strElemName(strElemName)
 {
@@ -39,11 +51,24 @@ IOChannelBand::~IOChannelBand()
 void IOChannelBand::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-    if (m_currElemName == m_strElemName)
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
     {
+    case eRedBand:
+    case eGreenBand:
+    case eBlueBand:
         m_startElemName = name;
         if (NULL == this->m_pChannel)
             m_pChannel = new ChannelBand();
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -70,6 +95,9 @@ void IOChannelBand::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->m_pChannel->SetUnknownXml(UnknownXml());
+
         handlerStack->pop();
         this->m_pChannel     = NULL;
         m_startElemName = L"";
@@ -115,6 +143,11 @@ void IOChannelBand::Write(MdfStream &fd, const ChannelBand *pChannel)
         fd << "</HighChannel>" << std::endl; // NOXLATE
     }
 
+    // Write any previously found unknown XML
+    if (!pChannel->GetUnknownXml().empty())
+    {
+        fd << toCString(pChannel->GetUnknownXml()); 
+    }
     dectab();
     fd << tab() << "</" << EncodeString(this->m_strElemName) << '>'  << std::endl; // NOXLATE
 }

@@ -27,6 +27,7 @@ libMgMdfParser_la_SOURCES = \
   IOFill.cpp \
   IOFontSymbol.cpp \
   IOGridColor.cpp \
+  IOGridColorBands.cpp \
   IOGridColorRule.cpp \
   IOGridColorStyle.cpp \
   IOGridLayerDefinition.cpp \
@@ -53,11 +54,13 @@ libMgMdfParser_la_SOURCES = \
   IOStroke.cpp \
   IOSupplementalSpatialContextInfo.cpp \
   IOSymbol.cpp \
+  IOUnknown.cpp \
   IOUtil.cpp \
   IOVectorLayerDefinition.cpp \
   IOVectorScaleRange.cpp \
   IOW2DSymbol.cpp \
   MdfParser.cpp \
+  SAX2ElementHandler.cpp \
   SAX2Parser.cpp
 
 noinst_HEADERS = \
@@ -105,6 +108,7 @@ noinst_HEADERS = \
   IOStroke.h \
   IOSupplementalSpatialContextInfo.h \
   IOSymbol.h \
+  IOUnknown.h \
   IOUtil.h \
   IOVectorLayerDefinition.h \
   IOVectorScaleRange.h \
