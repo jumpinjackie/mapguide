@@ -173,6 +173,7 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
         ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml \
         ..\..\bin\UnitTestFiles\TEST.FeatureSource \
+        ..\..\bin\UnitTestFiles\TEST.sdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
         ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
@@ -393,6 +394,7 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
           ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml \
           ..\..\bin\UnitTestFiles\TEST.FeatureSource \
+          ..\..\bin\UnitTestFiles\TEST.sdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
           ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
@@ -477,6 +479,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml    del /F ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
@@ -556,6 +559,7 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml    del /F ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
@@ -664,11 +668,11 @@ cleanrelease:
 
 ..\..\bin\UnitTestFiles\TEST.FeatureSource : "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.FeatureSource"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
-    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.FeatureSource" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SDF\Test.FeatureSource" ..\..\bin\UnitTestFiles\
+    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.FeatureSource" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.FeatureSource" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\TEST.sdf : "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.sdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
-    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.sdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SDF\Test.sdf" ..\..\bin\UnitTestFiles\
+    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.sdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.sdf" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource : "..\..\..\UnitTest\TestData\FeatureService\SDF\Sheboygan_Parcels.FeatureSource"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
