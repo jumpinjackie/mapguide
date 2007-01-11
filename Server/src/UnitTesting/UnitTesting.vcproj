@@ -277,6 +277,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\TestSiteManager.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TestSiteManager.h"
+			>
+		</File>
+		<File
 			RelativePath=".\TestSiteService.cpp"
 			>
 		</File>

@@ -47,13 +47,8 @@ bool GetDocument(CPSZ pszDoc,REFSTRING sRet)
 {
     //TODO: Remove dependency on thread local storage
     MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-    Ptr<MgSite> mgSite;
-    mgSite = new MgSite();
-    mgSite->Open(userInfo);
-    STRING serverAddress = mgSite->GetSiteServerAddress();
-
     Ptr<MgServerAdmin> serverAdmin = new MgServerAdmin();
-    serverAdmin->Open(serverAddress,userInfo);
+    serverAdmin->Open(userInfo);
 
     Ptr<MgByteReader> brDoc;
     brDoc = serverAdmin->GetDocument(pszDoc);

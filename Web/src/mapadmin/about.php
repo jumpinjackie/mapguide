@@ -32,9 +32,8 @@
         $appVersion = SITE_ADMINISTRATOR_VERSION;
         $errorMsg = "";
 
-        $siteServerAddress = $site->GetSiteServerAddress();
         $serverAdmin = new MgServerAdmin();
-        $serverAdmin->Open( $siteServerAddress, $userInfo );
+        $serverAdmin->Open( $userInfo );
         $serverVersion = GetVersion( $serverAdmin );
     }
     catch ( MgException $e )

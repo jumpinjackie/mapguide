@@ -88,13 +88,19 @@ MgServerConnection::~MgServerConnection()
 void MgServerConnection::Open(MgUserInformation* userInformation, MgConnectionProperties* connProp)
 {
     m_connProp = SAFE_ADDREF(connProp);
-    bool connected = m_serverConnImp->Connect((MgUtil::WideCharToMultiByte(m_connProp->GetTarget())).c_str(), m_connProp->GetPort());
+    bool connected = m_serverConnImp->Connect((
+        MgUtil::WideCharToMultiByte(m_connProp->GetTarget())).c_str(), 
+        m_connProp->GetPort());
 
     // Could not connect
     if (!connected)
+    {
         throw new MgConnectionFailedException(L"MgServerConnection.Open", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    m_isOpen = true;
+    }
+    else
+    {
+        m_isOpen = true;
+    }
 }
 
 //////////////////////////////////////////////////////////////////

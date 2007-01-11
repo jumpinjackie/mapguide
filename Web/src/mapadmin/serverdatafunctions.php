@@ -623,7 +623,7 @@
 
         // Put Site Server in $targetTable.
         $serverRec = new ServerTableRecord( "Site Server", "" );
-        $serverKey = $site->GetSiteServerAddress();
+        $serverKey = $site->GetCurrentSiteAddress();
         $targetTable[ $serverKey ] = $serverRec;
 
         $dbData = $site->EnumerateServers();
@@ -642,7 +642,6 @@
             $targetTable[ $key ] = $val;
 
         // Get values for Online and Services fields
-        $siteServerAddress = $site->GetSiteServerAddress();
         foreach ( $targetTable as $key => $val )
         {
             try
@@ -1789,9 +1788,8 @@
         global $site;
         global $userInfo;
 
-        $siteServerAddress = $site->GetSiteServerAddress();
         $serverAdmin = new MgServerAdmin();
-        $serverAdmin->Open( $siteServerAddress, $userInfo );
+        $serverAdmin->Open( $userInfo );
 
         // Call server to get comprehensive list of packages.
 
@@ -1836,9 +1834,8 @@
             return false;
 
         // Delete the package
-        $siteServerAddress = $site->GetSiteServerAddress();
         $serverAdmin = new MgServerAdmin();
-        $serverAdmin->Open( $siteServerAddress, $userInfo );
+        $serverAdmin->Open( $userInfo );
         $serverAdmin->DeletePackage( $packageName );
         $serverAdmin->Close();
 
@@ -1865,9 +1862,8 @@
         $targetTable = array();
         $packages = GetPackageList();
 
-        $siteServerAddress = $site->GetSiteServerAddress();
         $serverAdmin = new MgServerAdmin();
-        $serverAdmin->Open( $siteServerAddress, $userInfo );
+        $serverAdmin->Open( $userInfo );
 
         $iPackage = -1;
         foreach ( $packages as $val )
@@ -1951,9 +1947,8 @@
             global $errInvalidWMSFile;
 
             // Get WMS reader
-            $siteServer = $site->GetSiteServerAddress();
             $serverAdmin = new MgServerAdmin();
-            $serverAdmin->Open( $siteServer, $userInfo );
+            $serverAdmin->Open( $userInfo );
             $wmsReader = $serverAdmin->GetDocument( 'Wms:OgcWmsService.config' );
             $serverAdmin->Close();
 
@@ -2008,9 +2003,8 @@
             global $errInvalidWMSFile;
 
             // Get WMS reader
-            $siteServer = $site->GetSiteServerAddress();
             $serverAdmin = new MgServerAdmin();
-            $serverAdmin->Open( $siteServer, $userInfo );
+            $serverAdmin->Open( $userInfo );
             $wmsReader = $serverAdmin->GetDocument( 'Wms:OgcWmsService.config' );
 
             // Set WMS metadata
@@ -2111,9 +2105,8 @@
             global $errInvalidWFSFile;
 
             // Get WFS reader
-            $siteServer = $site->GetSiteServerAddress();
             $serverAdmin = new MgServerAdmin();
-            $serverAdmin->Open( $siteServer, $userInfo );
+            $serverAdmin->Open( $userInfo );
             $wfsReader = $serverAdmin->GetDocument( 'Wfs:OgcWfsService.config' );
             $serverAdmin->Close();
 
@@ -2168,9 +2161,8 @@
             global $errInvalidWFSFile;
 
             // Get WFS reader
-            $siteServer = $site->GetSiteServerAddress();
             $serverAdmin = new MgServerAdmin();
-            $serverAdmin->Open( $siteServer, $userInfo );
+            $serverAdmin->Open( $userInfo );
             $wfsReader = $serverAdmin->GetDocument( 'Wfs:OgcWfsService.config' );
 
             // Set WFS metadata

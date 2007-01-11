@@ -338,7 +338,7 @@ EXTERNAL_API:
     /// \exception MgConnectionFailedException
     ///
     void Open(MgUserInformation* userInformation);
-
+    void Open(MgUserInformation* userInformation, MgSiteInfo* siteInfo);
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Closes the current Site Server connection.
@@ -349,16 +349,6 @@ EXTERNAL_API:
     /// \exception MgConnectionNotOpenException
     ///
     void Close();
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Gets the address of the Site Server.  This value may be used in ServerAdmin to open a connection to the
-    /// Site Server for administration purposes.
-    ///
-    /// \return
-    /// Returns the site server address.
-    ///
-    STRING GetSiteServerAddress();
 
     /// \brief
     /// HasWarning() method reports if there is a current warning.
@@ -772,6 +762,10 @@ EXTERNAL_API:
     ///
     void RemoveServer(CREFSTRING name);
 
+    MgSiteInfo* GetSiteServerInfo(INT32 index);
+    INT32 GetSiteServerCount();
+    STRING GetCurrentSiteAddress();
+
 INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -796,6 +790,9 @@ INTERNAL_API:
     ///
     /// \param userInformation
     /// User information to authenticate against.
+    /// \param siteInfo
+    /// Used to specify which site server to connect to. If NULL, the next 
+    /// available site server is used.
     /// \param requiredRoles
     /// Required roles to validate against.
     /// \param returnAssignedRoles
@@ -810,6 +807,7 @@ INTERNAL_API:
     /// \exception MgUnauthorizedAccessException
     ///
     MgStringCollection* Authenticate(MgUserInformation* userInformation,
+        MgSiteInfo* siteInfo,
         MgStringCollection* requiredRoles, bool returnAssignedRoles);
 
  protected:

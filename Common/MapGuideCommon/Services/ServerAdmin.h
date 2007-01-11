@@ -69,6 +69,21 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Opens a connection to a Server.
+    ///
+    /// \param userInformation
+    /// User information - credentials, locale, session identifier
+    ///
+    /// \return
+    /// Nothing
+    ///
+    /// \exception MgServerNotFoundException
+    /// \exception MgConnectionFailedException
+    ///
+    void Open(MgUserInformation* userInformation);
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Closes the current Server connection.
     ///
     /// \return

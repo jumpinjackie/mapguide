@@ -144,6 +144,22 @@ bool MgSessionCache::IsUserInSession(CREFSTRING user,
 MgSessionInfo* MgSessionCache::GetSessionInfo(CREFSTRING session,
     bool strict) const
 {
+#ifdef _DEBUG
+    // Session Affinity: Check that the session was created by this server 
+    if(!session.empty())
+    {
+        STRING hexString = session.substr(session.length() - MgSiteInfo::HexStringLength);
+        Ptr<MgSiteInfo> sessionSiteInfo = new MgSiteInfo(hexString);
+        if(sessionSiteInfo->GetStatus() == MgSiteInfo::Ok)
+        {
+            MgSiteManager* siteManager = MgSiteManager::GetInstance();
+            Ptr<MgSiteInfo> firstSite = siteManager->GetSiteInfo(0);
+            assert(sessionSiteInfo->GetTarget().compare(firstSite->GetTarget()) == 0);
+            assert(sessionSiteInfo->GetPort(MgSiteInfo::Site) == firstSite->GetPort(MgSiteInfo::Site));
+        }
+    }
+#endif //_DEBUG
+
     MgSessionInfo* sessionInfo = NULL;
     MgSessionInfoMap::const_iterator i = m_sessionInfoMap.find(session);
 

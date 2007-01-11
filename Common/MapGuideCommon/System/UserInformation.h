@@ -37,6 +37,8 @@ enum UserInformationType
 class MgUserInformation;
 template class MG_MAPGUIDE_API Ptr<MgUserInformation>;
 
+class MgSiteInfo;
+
 
 /// \defgroup MgUserInformation MgUserInformation
 /// \ingroup Common_Module
@@ -317,6 +319,7 @@ INTERNAL_API:
     /// New session id
     ///
     STRING CreateMgSessionId();
+    STRING CreateMgSessionId(MgSiteInfo* siteInfo);
 
     ///////////////////////////////
     /// \brief

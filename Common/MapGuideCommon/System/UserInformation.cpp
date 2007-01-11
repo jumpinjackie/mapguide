@@ -221,6 +221,29 @@ STRING MgUserInformation::CreateMgSessionId()
 
 ///////////////////////////////
 ///<summary>
+///Create a sessionid, and encode the IP address of the site server that
+///created it into the ID
+///</summary>
+STRING MgUserInformation::CreateMgSessionId(MgSiteInfo* siteInfo)
+{
+    STRING id = CreateMgSessionId();
+
+    STRING hexAddress;
+    if(siteInfo != NULL)
+    {
+        hexAddress = siteInfo->ToHexString();
+        if(!hexAddress.empty())
+        {
+            id.append(L"_");
+            id.append(hexAddress);
+        }
+    }
+
+    return id;
+}
+
+///////////////////////////////
+///<summary>
 ///Clears the current sessionid
 ///</summary>
 void MgUserInformation::ClearMgSessionId()

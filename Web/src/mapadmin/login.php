@@ -29,10 +29,12 @@
         $homePage = NULL;
         $adminID = "";
         $adminIDID = 'adminID';
+        $serverSelectionID = 'SiteServer';
         $adminPassword = "";
         $adminPasswordID = 'adminPassword';
         $locale = "en"; // localizable string
         $errorMsg = "";
+        $numSites = 0;
 
         if ( FirstTimeHere( $pageName ) )
         {
@@ -75,21 +77,57 @@
             $userInfo->SetClientAgent( $clientAgent );
             $clientIp = array_key_exists( 'REMOTE_ADDR', $_SERVER ) ?  $_SERVER['REMOTE_ADDR'] : "";
             $userInfo->SetClientIp( $clientIp );
-
+            
             // Create a Site object and open the Site Server.
             $site = new MgSite();
             $site->Open( $userInfo );
-
+            
             // Check that we have Administrator permission.
             $servers = $site->EnumerateServers();
+            
+            // Determine the available site servers
+            $numSites = $site->GetSiteServerCount();
+            
+            if($numSites == 1)
+            {
+                // Create session
+                $adminSession = $site->CreateSession();
+                
+                // Save session variables
+                SaveSessionVars();
+                
+                // Success - switch to ServerManagement page.
+                header( 'Location:  servermanagement.php?'.strip_tags(SID) );
+                exit();
+            }
+            else
+            {
+                $siteInfo = GetSiteServerSelection($serverSelectionID);
+                if($siteInfo != NULL)
+                {            
+                    // Close the existing site connection
+                    if($site != NULL)
+                    {
+                        $site->Close();
+                    }
+                    
+                    // Determine the selected site
+                    $site = new MgSite();
+                        
+                    // Create a connection to the selected site
+                    $site->Open($userInfo, $siteInfo);
+                    
+                    // Create a session
+                    $adminSession = $site->CreateSession();
+                    $userInfo->SetMgSessionId($adminSession);
 
-            // Create session
-            $adminSession = $site->CreateSession();
-
-            // Success - switch to ServerManagement page.
-            SaveSessionVars();
-            header( 'Location:  servermanagement.php?'.strip_tags(SID) );
-            exit();
+                    // Save the session variables. All requests will now be directed to
+                    // our selected server since it hosts the current session.
+                    SaveSessionVars();
+                    header( 'Location:  servermanagement.php?'.strip_tags(SID) );
+                    exit();
+                }
+            }
         }
     }
     catch ( MgException $e )
@@ -128,6 +166,15 @@
 
                 <!-- Input Area -->
                 <table border="0" cellspacing="0" class="inputForm">
+                    <?php
+                    if($site != NULL && $numSites > 1)
+                    {
+                        echo '<tr><td class="loginInputLabel">Site Server:</td>', "\n";
+                        echo '<td class="loginInputFormValue">';
+                        DisplaySiteServerSelector($serverSelectionID);
+                        echo '</td></tr>', "\n";
+                    }
+                    ?>
                     <tr>
                         <td class="loginInputLabel">Administrator ID:</td>
                         <td class="loginInputFormValue"><input class="loginInputFormValue" name="<?php echo $adminIDID?>" type="text" class="TableCell" size="50" value="<?php echo $adminID ?>"></td>

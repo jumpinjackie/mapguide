@@ -30,9 +30,8 @@ try
         global $site;
         global $userInfo;
 
-        $siteServerAddress = $site->GetSiteServerAddress();
         $serverAdmin = new MgServerAdmin();
-        $serverAdmin->Open( $siteServerAddress, $userInfo );
+        $serverAdmin->Open( $userInfo );
         $logReader = $serverAdmin->GetPackageLog( $packageName );
         $serverAdmin->Close();
 

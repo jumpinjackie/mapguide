@@ -55,6 +55,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerManager").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
         }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestListTests)) == 0)
         {
@@ -75,6 +76,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_OS::printf("  ServerManager\n");
             ACE_OS::printf("  ServiceManager\n");
             ACE_OS::printf("  SiteService\n");
+            ACE_OS::printf("  SiteManager\n");
             ACE_OS::printf("\n");
 
             bRunTests = false;
@@ -139,6 +141,11 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Site Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
         }
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("SiteManager")) == 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Site Manager tests. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
+        }
         else
         {
             // Test suite not found
@@ -162,6 +169,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerManager").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
+        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
     }
 
     if(bRunTests)

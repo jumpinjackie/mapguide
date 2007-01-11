@@ -50,9 +50,8 @@ try
     $pageEnabled = false;
     $bSiteServer = false;
 
-
     // Get Server
-    $siteServerAddress = $site->GetSiteServerAddress();
+    $siteServerAddress = $site->GetCurrentSiteAddress();
     GetServerSelection( $selectedServerID, $selectedServer );
     $serverRec = GetDataForServer( $selectedServer );
     if ( $serverRec == NULL )

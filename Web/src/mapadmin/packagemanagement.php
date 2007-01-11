@@ -64,9 +64,9 @@ try
 	// Construct suggestedPackageName
 	$dateData = getdate();
 	$dateStr = sprintf( "%04u%02u%02u", $dateData[ 'year' ], $dateData[ 'mon' ], $dateData[ 'mday' ] );
-	$siteServer = $site->GetSiteServerAddress();
+	$siteServer = $site->GetCurrentSiteAddress();
 	$serverAdmin = new MgServerAdmin();
-    $serverAdmin->Open( $siteServer, $userInfo );
+    $serverAdmin->Open( $userInfo );
 	$genProps = new GeneralPropsRecord();
     $genProps->GetProps( $serverAdmin );
 	$serverAdmin->Close();

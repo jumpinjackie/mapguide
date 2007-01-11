@@ -38,6 +38,7 @@ libMgUnitTesting_la_SOURCES = \
   TestServiceManager.cpp \
   TestSiteService.cpp \
   TestTileService.cpp \
+  TestSiteManager.cpp \
   UnitTesting.cpp
 
 noinst_HEADERS = \
@@ -55,6 +56,7 @@ noinst_HEADERS = \
   TestServiceManager.h \
   TestSiteService.h \
   TestTileService.h \
+  TestSiteManager.h \
   UnitTesting.h
 
 libMgUnitTesting_la_LIBADD = -lcppunit
