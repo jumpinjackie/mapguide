@@ -108,6 +108,8 @@ include_SOURCES = \
   Services/ServerConnectionStack.cpp \
   Services/ServerInformation.cpp \
   Services/Site.cpp \
+  Services/SiteManager.cpp \
+  Services/SiteInfo.cpp \
   Services/SiteConnection.cpp \
   Services/TileDefs.cpp \
   Services/TileService.cpp \
@@ -221,6 +223,8 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/ServerConnectionStack.h \
   Services/ServerInformation.h \
   Services/Site.h \
+  Services/SiteManager.h \
+  Services/SiteInfo.h \
   Services/SiteConnection.h \
   Services/TileDefs.h \
   Services/TileService.h \

@@ -76,7 +76,7 @@ try
 
 
     // Get Server
-    $siteServer = $site->GetSiteServerAddress();
+    $siteServerAddress = $site->GetCurrentSiteAddress();
     GetServerSelection( $selectedServerID, $selectedServer );
     $serverRec = GetDataForServer( $selectedServer );
     if ( $serverRec == NULL )
@@ -86,7 +86,7 @@ try
 
     // Are we configuring the site or a support server?
     $pageEnabled = true;
-    $configuringSupportServer = $siteServer != $selectedServer;
+    $configuringSupportServer = $siteServerAddress != $selectedServer;
 
     // Is a refresh needed?
     if ( FirstTimeHere( $pageName ) )

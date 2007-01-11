@@ -28,9 +28,8 @@ try
         global $site;
         global $userInfo;
 
-        $siteServerAddress = $site->GetSiteServerAddress();
         $serverAdmin = new MgServerAdmin();
-        $serverAdmin->Open( $siteServerAddress, $userInfo );
+        $serverAdmin->Open( $userInfo );
 
         set_time_limit(0);
         $serverAdmin->LoadPackage( $packageName );

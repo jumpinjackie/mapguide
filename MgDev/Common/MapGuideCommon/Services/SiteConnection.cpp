@@ -118,9 +118,15 @@ void MgSiteConnection::Open(MgUserInformation* userInformation)
         m_connProp = new MgConnectionProperties(userInformation, L"", 0);
     }
     // Site connection properties for web-tier or server-2-server interaction
-    else if (m_isWebTier || m_isServer)
+    else if (m_isWebTier)
     {
-        m_connProp = GetSiteConnectionProperties(userInformation);
+        MgSiteManager* siteManager = MgSiteManager::GetInstance();
+        m_connProp = siteManager->GetConnectionProperties(userInformation, MgSiteInfo::Client, true);
+    }
+    else if(m_isServer)
+    {
+        MgSiteManager* siteManager = MgSiteManager::GetInstance();
+        m_connProp = siteManager->GetConnectionProperties(userInformation, MgSiteInfo::Client, false);
     }
 
     if (m_connProp == NULL)
@@ -303,7 +309,8 @@ bool MgSiteConnection::IsServer()
          IsServiceLocal(MgServiceType::MappingService)   ||
          IsServiceLocal(MgServiceType::RenderingService) ||
          IsServiceLocal(MgServiceType::ResourceService)  ||
-         IsServiceLocal(MgServiceType::TileService) )
+         IsServiceLocal(MgServiceType::TileService)      ||
+         IsServiceLocal(MgServiceType::KmlService) )
     {
         isServer = true;
     }
@@ -497,51 +504,6 @@ MgConnectionProperties* MgSiteConnection::GetConnectionPropertiesFromSiteServer(
         STRING target = site->RequestServer(serviceType);
 
         connProp = new MgConnectionProperties(userInformation.p, target, m_connProp->GetPort());
-    }
-
-    return connProp.Detach();
-}
-
-/// <summary>
-/// Gets the site ipaddress and port# for connection
-/// </summary>
-
-MgConnectionProperties* MgSiteConnection::GetSiteConnectionProperties(
-    MgUserInformation* userInformation)
-{
-    Ptr<MgConnectionProperties> connProp;
-    STRING target = L"";
-    INT32 port = 0;
-
-    try
-    {
-        // Get ip address for site server
-        m_config->GetStringValue(   MgConfigProperties::SiteConnectionPropertiesSection,
-                                    MgConfigProperties::SiteConnectionPropertyIpAddress,
-                                    target,
-                                    MgConfigProperties::DefaultSiteConnectionPropertyIpAddress);
-
-        // Get the client port
-        m_config->GetIntValue(  MgConfigProperties::ClientConnectionPropertiesSection,
-                                MgConfigProperties::ClientConnectionPropertyPort,
-                                port,
-                                MgConfigProperties::DefaultClientConnectionPropertyPort);
-
-        // Use the client port for Server/Web Tier communications.
-        connProp = new MgConnectionProperties(userInformation, target, port);
-
-    }
-    catch (MgException* me)
-    {
-        // Site property address/client port not found, invalid config.ini
-        SAFE_RELEASE(me);
-
-        MgStringCollection arguments;
-        arguments.Add(m_config->GetFileName());
-
-        throw new MgConfigurationException(
-            L"MgSiteConnection.GetSiteConnectionProperties", 
-            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return connProp.Detach();

@@ -44,6 +44,17 @@ MgDwfController::MgDwfController(MgSiteConnection* siteConn, CREFSTRING mapAgent
 MgByteReader* MgDwfController::GetMap(MgResourceIdentifier* mapDefinition,
     CREFSTRING dwfVersion, CREFSTRING eMapVersion, MgPropertyCollection* mapViewCommands)
 {
+    //create a session id to associate with this map
+    STRING sessionId;
+    Ptr<MgUserInformation> userInfo = m_siteConn->GetUserInfo();
+    if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
+    if (sessionId.empty())
+    {
+        Ptr<MgSite> site = m_siteConn->GetSite();
+        sessionId = site->CreateSession();
+        userInfo->SetMgSessionId(sessionId);
+    }
+
     //get an instance of the resource service
     Ptr<MgResourceService> resourceService = (MgResourceService*)GetService(MgServiceType::ResourceService);
 
@@ -55,17 +66,6 @@ MgByteReader* MgDwfController::GetMap(MgResourceIdentifier* mapDefinition,
 
     //apply commands
     ApplyMapViewCommands(map, mapViewCommands);
-
-    //create a session id to associate with this map
-    STRING sessionId;
-    Ptr<MgUserInformation> userInfo = m_siteConn->GetUserInfo();
-    if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
-    if (sessionId.empty())
-    {
-        Ptr<MgSite> site = m_siteConn->GetSite();
-        sessionId = site->CreateSession();
-        userInfo->SetMgSessionId(sessionId);
-    }
 
     //save the map state in the session repository
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Session:" + sessionId + L"//" + mapDefinition->GetName() + L"." + MgResourceType::Map);

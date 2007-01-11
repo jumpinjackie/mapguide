@@ -1029,6 +1029,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\SiteInfo.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\SiteInfo.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\SiteManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\SiteManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\TileDefs.cpp"
 				>
 			</File>

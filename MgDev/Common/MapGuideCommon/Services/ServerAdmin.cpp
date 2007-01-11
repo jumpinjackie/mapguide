@@ -52,18 +52,13 @@ MgServerAdmin::~MgServerAdmin()
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>
-/// Opens a connection to a specified Server.
+/// Opens a connection to a specified support Server.
 /// <param name="server">
 /// Server IP address or DNS name.
 /// </summary>
 /// </param>
-// <param name="credentials">
+/// <param name="userInformation">
 /// UserCredentials to authenticate against
-/// </param>
-/// <param name="locale">
-/// Administrator's locale.  Server should honor all operations on this connection
-/// using the Administrator's locale.  In the first revision, this may only apply to
-/// error and warning messages.
 /// </param>
 /// <returns>
 /// Nothing
@@ -72,18 +67,30 @@ MgServerAdmin::~MgServerAdmin()
 /// EXCEPTIONS:
 /// MgServerNotFoundException
 /// MgConnectionFailedException
-void MgServerAdmin::Open(CREFSTRING server, MgUserInformation* userInformation)
+void MgServerAdmin::Open(CREFSTRING supportServer, MgUserInformation* userInformation)
 {
-    INT32 adminPort;
-    //get the port for administration connection
-    MgConfiguration* config = MgConfiguration::GetInstance();
-    config->GetIntValue(MgConfigProperties::AdministrativeConnectionPropertiesSection,
-                        MgConfigProperties::AdministrativeConnectionPropertyPort,
-                        adminPort,
-                        MgConfigProperties::DefaultAdministrativeConnectionPropertyPort);
+    MgSiteManager* siteManager = MgSiteManager::GetInstance();
+    m_connProp = siteManager->GetSupportServerConnectionProperties(supportServer, userInformation, MgSiteInfo::Admin);
+}
 
-
-    m_connProp = new MgConnectionProperties(userInformation, server, adminPort);
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Opens a connection to a server.
+/// </summary>
+/// <param name="userInformation">
+/// UserCredentials to authenticate against
+/// </param>
+/// <returns>
+/// Nothing
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgServerNotFoundException
+/// MgConnectionFailedException
+void MgServerAdmin::Open(MgUserInformation* userInformation)
+{
+    MgSiteManager* siteManager = MgSiteManager::GetInstance();
+    m_connProp = siteManager->GetConnectionProperties(userInformation, MgSiteInfo::Admin, true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

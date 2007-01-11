@@ -99,6 +99,8 @@
 #include "Net/IOperationHandler.h"
 #include "Services/Command.h"
 #include "Services/Site.h"
+#include "Services/SiteInfo.h"
+#include "Services/SiteManager.h"
 #include "Services/ConnectionProperties.h"
 #include "Services/SiteConnection.h"
 #include "Services/DrawingDefs.h"

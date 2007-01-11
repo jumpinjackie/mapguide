@@ -115,6 +115,8 @@
 #include  "Services/ServerConnectionStack.cpp"
 #include  "Services/ServerInformation.cpp"
 #include  "Services/Site.cpp"
+#include  "Services/SiteManager.cpp"
+#include  "Services/SiteInfo.cpp"
 #include  "Services/SiteConnection.cpp"
 #include  "Services/TileDefs.cpp"
 #include  "Services/TileService.cpp"

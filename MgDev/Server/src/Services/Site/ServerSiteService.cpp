@@ -720,7 +720,9 @@ STRING MgServerSiteService::CreateSession()
 
     if (session.empty())
     {
-        session = currUserInfo->CreateMgSessionId();
+        MgSiteManager* siteManager = MgSiteManager::GetInstance();
+        Ptr<MgSiteInfo> siteInfo = siteManager->GetSiteInfo(0);
+        session = currUserInfo->CreateMgSessionId(siteInfo);
         currUserInfo->SetMgSessionId(session);
     }
     else

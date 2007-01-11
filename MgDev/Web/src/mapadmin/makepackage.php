@@ -28,9 +28,8 @@ try
         global $site;
         global $userInfo;
 		
-        $siteServerAddress = $site->GetSiteServerAddress();
         $serverAdmin = new MgServerAdmin();
-        $serverAdmin->Open( $siteServerAddress, $userInfo );
+        $serverAdmin->Open( $userInfo );
 		
 		// Make sure folder name begins with "Library://" and ends with "/"
 		if ( ( strcasecmp( "Library", $folderName ) == 0 ) || ( strcasecmp( "Library:", $folderName ) == 0 ) )

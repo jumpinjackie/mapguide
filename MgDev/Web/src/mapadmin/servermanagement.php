@@ -65,8 +65,8 @@ try
     $currPage = 1;
 
 
-    $siteServerAddress = $site->GetSiteServerAddress();
-
+    $siteServerAddress = $site->GetCurrentSiteAddress();
+ 
     if ( array_key_exists( $selectedServerID, $_POST ) )
     {
         $selectedServer = $_POST[ $selectedServerID ];

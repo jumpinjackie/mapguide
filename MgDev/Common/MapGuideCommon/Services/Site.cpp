@@ -78,7 +78,7 @@ INT32 MgSite::GetClassId()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
-/// Opens a connection to the Site Server.
+/// Opens a connection to a Site Server.
 /// </summary>
 
 void MgSite::Open(MgUserInformation* userInformation)
@@ -87,7 +87,23 @@ void MgSite::Open(MgUserInformation* userInformation)
 
     // Authenticate the user.
 
-    Authenticate(userInformation, NULL, false);
+    Authenticate(userInformation, NULL, NULL, false);
+
+    MG_SITE_CATCH_AND_THROW(L"MgSite.Open")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Opens a connection to the specified Site Server.
+/// </summary>
+
+void MgSite::Open(MgUserInformation* userInformation, MgSiteInfo* siteInfo)
+{
+    MG_SITE_TRY()
+
+    // Authenticate the user.
+
+    Authenticate(userInformation, siteInfo, NULL, false);
 
     MG_SITE_CATCH_AND_THROW(L"MgSite.Open")
 }
@@ -109,30 +125,42 @@ void MgSite::Close()
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>
-/// Gets the address of the Site Server.  This value may be used in ServerAdmin to open a connection to the
-/// Site Server for administration purposes.
+/// Gets the addresses of the Site Servers.  
 /// </summary>
 /// <returns>
 /// Returns the site server address.
 /// </returns>
 ///
-STRING MgSite::GetSiteServerAddress()
+MgSiteInfo* MgSite::GetSiteServerInfo(INT32 index)
 {
-    STRING address = L"";
-
-    MG_SITE_TRY()
-
-    // Get Site Server Address
-    MgConfiguration* pConfig = MgConfiguration::GetInstance();
-    pConfig->GetStringValue(   MgConfigProperties::SiteConnectionPropertiesSection,
-                               MgConfigProperties::SiteConnectionPropertyIpAddress,
-                               address,
-                               MgConfigProperties::DefaultSiteConnectionPropertyIpAddress);
-
-    MG_SITE_CATCH_AND_THROW( L"MgSite::GetSiteServerAddress" )
-
-    return address;
+    MgSiteManager* siteManager = MgSiteManager::GetInstance();
+    return siteManager->GetSiteInfo(index);
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the addresses of the Site Servers.  
+/// </summary>
+/// <returns>
+/// Returns the site server address.
+/// </returns>
+///
+INT32 MgSite::GetSiteServerCount()
+{
+    MgSiteManager* siteManager = MgSiteManager::GetInstance();
+    return siteManager->GetSiteCount();
+}
+
+STRING MgSite::GetCurrentSiteAddress()
+{
+    STRING target = L"";
+    if(m_connProp != NULL)
+    {
+        target = m_connProp->GetTarget();
+    }
+    return target;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -1186,7 +1214,7 @@ STRING MgSite::RequestServer(INT32 serviceType)
 }
 
 MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
-    MgStringCollection* requiredRoles, bool returnAssignedRoles)
+    MgSiteInfo* siteInfo, MgStringCollection* requiredRoles, bool returnAssignedRoles)
 {
     MgCommand cmd;
 
@@ -1197,24 +1225,18 @@ MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     assert(NULL != configuration);
 
-    // Get the IP address and port for the site server.
-
-    STRING target;
-    INT32 port = 0;
-
-    configuration->GetStringValue(
-        MgConfigProperties::SiteConnectionPropertiesSection,
-        MgConfigProperties::SiteConnectionPropertyIpAddress,
-        target,
-        MgConfigProperties::DefaultSiteConnectionPropertyIpAddress);
-    configuration->GetIntValue(
-        MgConfigProperties::SiteConnectionPropertiesSection,
-        MgConfigProperties::SiteConnectionPropertyPort,
-        port,
-        MgConfigProperties::DefaultSiteConnectionPropertyPort);
-
     assert(m_connProp == NULL);
-    m_connProp = new MgConnectionProperties(userInformation, target, port);
+    MgSiteManager* siteManager = MgSiteManager::GetInstance();
+    if(siteInfo != NULL)
+    {
+        m_connProp = siteManager->GetConnectionProperties(userInformation, 
+            siteInfo, MgSiteInfo::Site);
+    }
+    else
+    {
+        m_connProp = siteManager->GetConnectionProperties(userInformation, 
+            MgSiteInfo::Site, true);
+    }
 
     cmd.ExecuteCommand(m_connProp,                          // Connection
                         MgCommand::knObject,                // Return type

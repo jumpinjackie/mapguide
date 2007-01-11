@@ -94,6 +94,7 @@ bool InitializeStaticData()
     fact->Register(MapGuide_Service_ServerInformation, MgServerInformation::CreateObject);
     fact->Register(MapGuide_Service_PackageStatusInformation, MgPackageStatusInformation::CreateObject);
     fact->Register(MapGuide_Service_UserInformation, MgUserInformation::CreateObject);
+    fact->Register(MapGuide_Service_SiteInfo, MgSiteInfo::CreateObject);
     fact->Register(PlatformBase_FeatureService_DataReader, MgProxyDataReader::CreateObject);
     fact->Register(PlatformBase_FeatureService_FeatureReader, MgProxyFeatureReader::CreateObject);
     fact->Register(PlatformBase_FeatureService_GwsFeatureReader, MgProxyGwsFeatureReader::CreateObject);

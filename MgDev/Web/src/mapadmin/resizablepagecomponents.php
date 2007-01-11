@@ -67,6 +67,7 @@
     define( 'CONFIGURE_LOGS_TITLE',             "Configure Logs" );
     define( 'CONFIGURE_SERVICES_TITLE',         "Configure Services" );
     define( 'LOG_MANAGEMENT_TITLE',             "Manage Logs" );
+    define( 'SELECT_SITE_SERVER_TITLE',         "Select Site Server" );
 
     define( 'ADD_GROUP_TITLE',                  "Add Group" );
     define( 'EDIT_GROUP_TITLE',                 "Edit Group" );
@@ -454,6 +455,63 @@
             echo '<br>',"\n";
         }
     }
+    
+    function DisplaySiteServerSelector( $selectedSiteServerID )
+    {
+        global $site;
+        
+        echo '<select class="serverSelector" name="',$selectedSiteServerID.NO_PERSISTENCE_FLAG,'" size="1" >', "\n";
+        for($i = 0; $i < $site->GetSiteServerCount(); $i++)
+        {
+            $selectedStr = "";
+            $siteInfo = $site->GetSiteServerInfo($i);
+            if($siteInfo != NULL)
+            {
+                $target = $siteInfo->GetTarget();
+                $port = $siteInfo->GetPort(MgSiteInfo_Admin);
+                echo '<option class="serverSelector" ',$selectedStr,'>',$target,':',$port,'</option>', "\n";
+            }
+        }
+        echo '</select>', "\n";
+    }
+    
+    function GetSiteServerSelection( $selectedSiteServerID )
+    {
+        global $site;
+        global $_POST;
+        global $_GET;
+        global $errNotFound;
+        $selectedSite = NULL;
+        $selectedSiteServerName = "";
+        if ( array_key_exists( $selectedSiteServerID.NO_PERSISTENCE_FLAG, $_POST ) )
+        {
+            $selectedSiteServerName = $_POST[ $selectedSiteServerID.NO_PERSISTENCE_FLAG ];
+        }
+        else
+        {
+            if ( array_key_exists( $selectedSiteServerID, $_GET ) )
+                $selectedSiteServerName = $_GET[ $selectedSiteServerID ];
+        }
+        if($site != NULL && $selectedSiteServerName != "")
+        {
+            for($i = 0; $i < $site->GetSiteServerCount(); $i++)
+            {
+                $siteInfo = $site->GetSiteServerInfo($i);
+                if($siteInfo != NULL)
+                {
+                    $target = $siteInfo->GetTarget();
+                    $port = $siteInfo->GetPort(MgSiteInfo_Admin);
+                    $id = $target.":".strval($port);
+                    if($id == $selectedSiteServerName)
+                    {
+                        $selectedSite = $siteInfo;
+                    }
+                }
+            }
+        }
+        return $selectedSite;
+    }
+
 
     class ToolbarButtonRecord
     {
@@ -763,7 +821,8 @@
         if ( $serviceSelector == NULL )
             return;
 
-        if ( $serviceSelector->serverAddress == $site->GetSiteServerAddress() )
+        $siteServerAddress = $site->GetCurrentSiteAddress();
+        if ( $serviceSelector->serverAddress == $siteServerAddress )
         {
             echo '<input type="checkbox" checked disabled>Site<br>', "\n";
             echo '<input type="checkbox" checked disabled><a href="servicesproperties.php?Server=',$serviceSelector->serverAddress,'">Resource</a><br>', "\n";
