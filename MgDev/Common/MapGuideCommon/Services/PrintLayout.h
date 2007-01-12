@@ -213,13 +213,13 @@ CLASS_ID:
 
 INTERNAL_API:
     /// Layout element constants
-    static const double MgPrintLayout::LegendWidth;
-    static const double MgPrintLayout::LegendPadding;
-    static const double MgPrintLayout::HeaderHeight;
-    static const double MgPrintLayout::ScalebarHeight;
-    static const double MgPrintLayout::ScalebarPadding;
-    static const double MgPrintLayout::FooterHeight;
-    static const double MgPrintLayout::GroupIndent;
+    static const double LegendWidth;
+    static const double LegendPadding;
+    static const double HeaderHeight;
+    static const double ScalebarHeight;
+    static const double ScalebarPadding;
+    static const double FooterHeight;
+    static const double GroupIndent;
 
     //////////////////////////////////////////////////////////////////
     /// \brief
