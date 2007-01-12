@@ -109,4 +109,19 @@ private:
 // This is used to protect library calls
 static CustomCriticalSection CriticalClass;
 
+class AutoCriticalClass
+{
+public:
+
+    AutoCriticalClass()
+    {
+        CriticalClass.Enter();
+    }
+
+    ~AutoCriticalClass()
+    {
+        CriticalClass.Leave();
+    }
+};
+
 #endif
