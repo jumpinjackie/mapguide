@@ -18,12 +18,11 @@
 #ifndef _MG_OBJECT_PROPERTY_DEFINITION_H
 #define _MG_OBJECT_PROPERTY_DEFINITION_H
 
-/// \defgroup MgObjectPropertyDefinition MgObjectPropertyDefinition
-/// \ingroup Feature_Service_classes
-/// \{
-
-
 class MgClassDefinition;
+
+/// \defgroup MgObjectPropertyDefinition MgObjectPropertyDefinition
+/// \ingroup Feature_Schema_Module
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief

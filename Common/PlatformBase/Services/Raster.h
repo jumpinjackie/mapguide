@@ -18,7 +18,7 @@
 #ifndef _MG_RASTER_H
 #define _MG_RASTER_H
 
-/// \ingroup Feature_Service_Module
+/// \cond INTERNAL
 
 class MgStream;
 class MgFeatureService;
@@ -302,5 +302,6 @@ CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_Raster;
 
 };
+/// \endcond
 
 #endif

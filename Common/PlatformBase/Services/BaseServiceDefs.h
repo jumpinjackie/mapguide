@@ -18,6 +18,10 @@
 #ifndef MGBASESERVICEDEFS_H
 #define MGBASESERVICEDEFS_H
 
+/// \defgroup MgServiceType
+/// \ingroup Common_Core_Module
+/// \{
+
 //////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Service types for Platform services.
@@ -64,6 +68,7 @@ INTERNAL_API:
     static const INT16 ServerAdminService   = 7;    /// Server Administration Service
     static const INT16 SiteService          = 8;    /// Site Service
 };
+/// \}
 
 
 ///////////////////////////////////////////////////////////////////////////////

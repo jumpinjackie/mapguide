@@ -18,7 +18,7 @@
 #ifndef _MG_MAP_BASE_H_
 #define _MG_MAP_BASE_H_
 
-/// \defgroup MgMap MgMap
+/// \defgroup MgMapBase MgMapBase
 /// \ingroup Mapping_Service_Module
 /// \{
 

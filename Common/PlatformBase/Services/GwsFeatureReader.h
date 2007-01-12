@@ -19,7 +19,7 @@
 #define _MG_GWS_FEATURE_READER_H
 
 
-/// \ingroup Feature_Service_Module
+/// \cond INTERNAL
 
 ////////////////////////////////////////////////////////////////
 /// \brief
