@@ -48,13 +48,18 @@ public:
     }
     ~CInitCPL()
     {
-        // free PROJ4 resources
-        pj_deallocate_grids();
+        {
+            // Lock all threads
+            AutoCriticalClass acc;
 
-        // free CPL resources
-        CSVDeaccess(NULL);
-        CPLFinderClean();
-        CPLCleanupTLS();
+            // free PROJ4 resources
+            pj_deallocate_grids();
+
+            // free CPL resources
+            CSVDeaccess(NULL);
+            CPLFinderClean();
+            CPLCleanupTLS();
+        }
 
         // free CoordinateSystem resources
         CCoordinateSystem::DeleteCatalog();
@@ -232,6 +237,9 @@ CCoordinateSystem* CCoordinateSystem::Clone()
 ///</summary>
 CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
 {
+    // Lock all threads
+    AutoCriticalClass acc;
+
     try
     {
         m_latLonSrs = NULL;
@@ -691,6 +699,9 @@ void CCoordinateSystem::ConvertFromLonLat(double lon, double lat, double& x, dou
     x = 0.0;
     y = 0.0;
 
+    // Lock all threads
+    AutoCriticalClass acc;
+
     try
     {
         // Check to see if the conversion is allowed, if not throw an exception
@@ -741,6 +752,9 @@ void CCoordinateSystem::ConvertFromLonLat(double lon, double lat, double& x, dou
 ///</returns>
 void CCoordinateSystem::ConvertFromLonLat(double lon[], double lat[], double x[], double y[], int arraySize)
 {
+    // Lock all threads
+    AutoCriticalClass acc;
+
     try
     {
         double dCoords[3] = { 0.0, 0.0, 0.0 };
@@ -802,6 +816,9 @@ void CCoordinateSystem::ConvertToLonLat(double x, double y, double& lon, double&
     lat = 0.0;
     lon = 0.0;
 
+    // Lock all threads
+    AutoCriticalClass acc;
+
     try
     {
         // Check to see if the conversion is allowed, if not throw an exception
@@ -852,6 +869,9 @@ void CCoordinateSystem::ConvertToLonLat(double x, double y, double& lon, double&
 ///</returns>
 void CCoordinateSystem::ConvertToLonLat(double x[], double y[], double lon[], double lat[], int arraySize)
 {
+    // Lock all threads
+    AutoCriticalClass acc;
+
     try
     {
         double dCoords[3] = { 0.0, 0.0, 0.0 };
@@ -1024,6 +1044,9 @@ double CCoordinateSystem::MeasureGreatCircleDistance(double x1, double y1, doubl
         throw new CInvalidCoordinateSystemTypeException(L"CCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, L"MeasureGreatCircleDistance does not work with Arbitrary coordinate systems.");
     }
 
+    // Lock all threads
+    AutoCriticalClass acc;
+
     try
     {
         // Calculate Great Circle distance using the following formula:
@@ -1126,6 +1149,9 @@ double CCoordinateSystem::MeasureGreatCircleDistance(double x1, double y1, doubl
 double CCoordinateSystem::GetAzimuth(double x1, double y1, double x2, double y2)
 {
     double azimuth = 0.0;
+
+    // Lock all threads
+    AutoCriticalClass acc;
 
     try
     {
@@ -1250,6 +1276,9 @@ void CCoordinateSystem::GetCoordinate(double xStart, double yStart, double azimu
     x = 0.0;
     y = 0.0;
 
+    // Lock all threads
+    AutoCriticalClass acc;
+
     try
     {
         if(m_coordinateSystemType == CCoordinateSystemType::Arbitrary)
@@ -1363,6 +1392,9 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
     wchar_t* csUnits = NULL;
     char* proj4 = NULL;
     wchar_t* csProj4 = NULL;
+
+    // Lock all threads
+    AutoCriticalClass acc;
 
     try
     {
@@ -1523,6 +1555,9 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
     char* proj4Defn = NULL;
     wchar_t* csWkt = NULL;
     char* wkt = NULL;
+
+    // Lock all threads
+    AutoCriticalClass acc;
 
     try
     {
@@ -1965,7 +2000,8 @@ void CCoordinateSystem::InitializeCatalog()
     if(m_catalog == NULL )
     {
         // Lock all threads while we create the catalog
-        CriticalClass.Enter();
+        AutoCriticalClass acc;
+
         // We have to check for NULL again because we might have been locked out by another
         // thread that just finished initializing the catalog.
         if(m_catalog == NULL )
@@ -1973,7 +2009,6 @@ void CCoordinateSystem::InitializeCatalog()
             // Create the catalog. We only want to do this once!
             m_catalog = new CCoordinateSystemCatalog();
         }
-        CriticalClass.Leave();
 
         // Throw exception if we failed to initialize the catalog
         if (m_catalog == NULL)
@@ -1989,12 +2024,10 @@ void CCoordinateSystem::DeleteCatalog()
     if (m_catalog != NULL)
     {
         // Lock all threads while we delete the catalog
-        CriticalClass.Enter();
+        AutoCriticalClass acc;
 
         delete m_catalog;
         m_catalog = NULL;
-
-        CriticalClass.Leave();
     }
 }
 
@@ -2018,6 +2051,9 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
     STRING wkt;
     OGRErr error = OGRERR_NONE;
     char* epsgWkt = NULL;
+
+    // Lock all threads
+    AutoCriticalClass acc;
 
     try
     {
@@ -2116,6 +2152,9 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
 {
     long code;
     OGRErr error = OGRERR_NONE;
+
+    // Lock all threads
+    AutoCriticalClass acc;
 
     try
     {
