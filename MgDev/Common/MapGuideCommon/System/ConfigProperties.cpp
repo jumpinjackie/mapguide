@@ -65,6 +65,9 @@
 #define MG_CONFIG_MAX_FILE_NAME_LENGTH                  128
 #define MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS         L"\\/:*?\"<>|"
 
+#define MG_CONFIG_MIN_FONT_NAME_LENGTH                  1
+#define MG_CONFIG_MAX_FONT_NAME_LENGTH                  255
+
 #define MG_CONFIG_MIN_FOLDER_NAME_LENGTH                1
 #define MG_CONFIG_MAX_FOLDER_NAME_LENGTH                128
 #define MG_CONFIG_FOLDER_NAME_RESERVED_CHARACTERS       MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS
@@ -121,6 +124,8 @@ const STRING MgConfigProperties::GeneralPropertyLogsDelimiter                   
 const STRING MgConfigProperties::DefaultGeneralPropertyLogsDelimiter                        = L"\t";
 const STRING MgConfigProperties::GeneralPropertyLogsPath                                    = L"LogsPath";
 const STRING MgConfigProperties::DefaultGeneralPropertyLogsPath                             = L"Logs/";
+const STRING MgConfigProperties::GeneralPropertyMachineIp                                   = L"MachineIp";
+const STRING MgConfigProperties::DefaultGeneralPropertyMachineIp                            = L"127.0.0.1";
 const STRING MgConfigProperties::GeneralPropertyMaxLogFileSize                              = L"MaxLogFileSize";
 const INT32  MgConfigProperties::DefaultGeneralPropertyMaxLogFileSize                       = 1024;
 const STRING MgConfigProperties::GeneralPropertyMaxLogFileSizeEnabled                       = L"MaxLogFileSizeEnabled";
@@ -193,6 +198,8 @@ const STRING MgConfigProperties::HostPropertyDrawingService                     
 const bool   MgConfigProperties::DefaultHostPropertyDrawingService                          = false;
 const STRING MgConfigProperties::HostPropertyFeatureService                                 = L"FeatureService";
 const bool   MgConfigProperties::DefaultHostPropertyFeatureService                          = false;
+const STRING MgConfigProperties::HostPropertyKmlService                                     = L"KmlService"; 
+const bool   MgConfigProperties::DefaultHostPropertyKmlService                              = false; 
 const STRING MgConfigProperties::HostPropertyMappingService                                 = L"MappingService";
 const bool   MgConfigProperties::DefaultHostPropertyMappingService                          = false;
 const STRING MgConfigProperties::HostPropertyRenderingService                               = L"RenderingService";
@@ -204,8 +211,6 @@ const STRING MgConfigProperties::HostPropertySiteService                        
 const bool   MgConfigProperties::DefaultHostPropertySiteService                             = false;
 const STRING MgConfigProperties::HostPropertyTileService                                    = L"TileService";
 const bool   MgConfigProperties::DefaultHostPropertyTileService                             = false;
-const STRING MgConfigProperties::HostPropertyKmlService                                     = L"KmlService"; 
-const bool   MgConfigProperties::DefaultHostPropertyKmlService                              = false; 
 
 // ******************************************************************
 // Drawing Service Properties
@@ -408,6 +413,8 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviGeneralProperties[] =
     { MgConfigProperties::GeneralPropertyFdoPath                                    , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::GeneralPropertyLicenseServerPath                          , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
     { MgConfigProperties::GeneralPropertyLogsDelimiter                              , MgPropertyType::String    , 1                                     , 128                                   , L""                                       },
+    { MgConfigProperties::GeneralPropertyLogsPath                                   , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::GeneralPropertyMachineIp                                  , MgPropertyType::String    , MG_CONFIG_MIN_IP_ADDRESS_LENGTH       , MG_CONFIG_MAX_IP_ADDRESS_LENGTH       , L""                                       },
     { MgConfigProperties::GeneralPropertyMaxLogFileSize                             , MgPropertyType::Int32     , 1                                     , 2000000                               , L""                                       },
     { MgConfigProperties::GeneralPropertyMaxLogFileSizeEnabled                      , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::GeneralPropertyResourcesPath                              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
@@ -457,13 +464,13 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviHostProperties[] =
 {
     { MgConfigProperties::HostPropertyDrawingService                                , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::HostPropertyFeatureService                                , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::HostPropertyKmlService                                    , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::HostPropertyMappingService                                , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::HostPropertyRenderingService                              , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::HostPropertyResourceService                               , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::HostPropertyServerAdminService                            , MgPropertyType::Boolean   , 1                                     , 1                                     , L""                                       },
     { MgConfigProperties::HostPropertySiteService                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::HostPropertyTileService                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::HostPropertyKmlService                                    , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
@@ -488,6 +495,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviFeatureServiceProperties[
 
 const MgConfigValidationInfo MgConfigProperties::sm_cviMappingServiceProperties[] =
 {
+    { MgConfigProperties::MappingServicePropertyLegendFont                          , MgPropertyType::String    , MG_CONFIG_MIN_FONT_NAME_LENGTH        , MG_CONFIG_MAX_FONT_NAME_LENGTH        , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

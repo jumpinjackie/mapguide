@@ -78,6 +78,10 @@ EXTERNAL_API:
     static const STRING GeneralPropertyLogsPath;                        /// value("LogsPath")
     static const STRING DefaultGeneralPropertyLogsPath;                 /// value("Logs/")
 
+    /// Sets the Machine IP address
+    static const STRING GeneralPropertyMachineIp;                       /// value("MachineIp")
+    static const STRING DefaultGeneralPropertyMachineIp;                /// value("127.0.0.1")
+
     /// Sets the maximum log file size (in kilobytes)
     static const STRING GeneralPropertyMaxLogFileSize;                  /// value("MaxLogFileSize")
     static const INT32 DefaultGeneralPropertyMaxLogFileSize;            /// value(64)
@@ -207,6 +211,10 @@ EXTERNAL_API:
     static const STRING HostPropertyFeatureService;                     /// value("FeatureService")
     static const bool DefaultHostPropertyFeatureService;                /// value(false)
 
+    /// Enables/disables the Kml Service.
+    static const STRING HostPropertyKmlService;                         /// value("KmlService") 
+    static const bool DefaultHostPropertyKmlService;                    /// value(false) 
+
     /// Enables/disables the Mapping Service
     static const STRING HostPropertyMappingService;                     /// value("MappingService")
     static const bool DefaultHostPropertyMappingService;                /// value(false)
@@ -219,12 +227,6 @@ EXTERNAL_API:
     /// available on the Site Server and must be enabled there.
     static const STRING HostPropertyResourceService;                    /// value("ResourceService")
     static const bool DefaultHostPropertyResourceService;               /// value(false)
-
-    /// Enables/disables the Kml Service.  Note that in V1.0 this service is only 
-    /// available on the Site Server and must be enabled there. 
-    static const STRING HostPropertyKmlService;                         /// value("KmlService") 
-    static const bool DefaultHostPropertyKmlService;                    /// value(false) 
-
 
 INTERNAL_API:
 
