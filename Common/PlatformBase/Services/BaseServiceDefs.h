@@ -19,7 +19,7 @@
 #define MGBASESERVICEDEFS_H
 
 /// \defgroup MgServiceType
-/// \ingroup Common_Core_Module
+/// \ingroup Common_Module
 /// \{
 
 //////////////////////////////////////////////////////////////////////////////
