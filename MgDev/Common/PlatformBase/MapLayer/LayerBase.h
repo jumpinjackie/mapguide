@@ -34,7 +34,7 @@ template class MG_PLATFORMBASE_API Ptr<MgLayerGroup>;
 
 typedef vector<double> SCALERANGES;
 
-/// \defgroup MgLayer MgLayer
+/// \defgroup MgLayerBase MgLayerBase
 /// \ingroup Mapping_Service_Module
 /// \{
 

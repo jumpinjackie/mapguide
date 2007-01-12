@@ -18,7 +18,9 @@
 #ifndef _MGUPDATEFEATURES_H
 #define _MGUPDATEFEATURES_H
 
-/// \ingroup Feature_Service_Module
+/// \defgroup MgUpdateFeatures
+/// \ingroup Feature_Service_classes
+/// \{
 
 class MgUpdateFeatures;
 template class MG_PLATFORMBASE_API Ptr<MgUpdateFeatures>;
@@ -255,5 +257,6 @@ private:
     Ptr<MgPropertyCollection> m_properties;
 
 };
+/// \}
 
 #endif // _MGUPDATEFEATURES_H

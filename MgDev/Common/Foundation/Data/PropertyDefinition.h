@@ -19,7 +19,7 @@
 #define _MG_PROPERTY_DEFINITION_H_
 
 /// \defgroup MgPropertyDefinition MgPropertyDefinition
-/// \ingroup Feature_Service_classes
+/// \ingroup Feature_Schema_Module
 /// \{
 
 /////////////////////////////////////////////////////////////////

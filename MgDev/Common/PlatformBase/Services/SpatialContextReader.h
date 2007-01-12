@@ -18,9 +18,11 @@
 #ifndef _MG_SPATIAL_CONTEXT_READER_H
 #define _MG_SPATIAL_CONTEXT_READER_H
 
-/// \ingroup Feature_Service_Module
-
 class MgSpatialContextData;
+
+/// \defgroup MgSpatialContextReader
+/// \ingroup Feature_Service_classes
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief
@@ -384,5 +386,6 @@ INTERNAL_API:
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_SpatialContextReader;
 };
+/// \}
 
 #endif

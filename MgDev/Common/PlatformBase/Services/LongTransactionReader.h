@@ -18,9 +18,11 @@
 #ifndef _MG_LONG_TRANSACTION_READER_H
 #define _MG_LONG_TRANSACTION_READER_H
 
-/// \ingroup Feature_Service_classes
-
 class MgLongTransactionData;
+
+/// \defgroup MgLongTransactionReader
+/// \ingroup Feature_Service_classes
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief
@@ -383,5 +385,6 @@ INTERNAL_API:
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_LongTransactionReader;
 };
+/// \}
 
 #endif

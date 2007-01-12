@@ -18,11 +18,12 @@
 #ifndef _MGLOCKFEATURES_H
 #define _MGLOCKFEATURES_H
 
-
-/// \ingroup Feature_Service_classes
-
 class MgLockFeatures;
 template class MG_PLATFORMBASE_API Ptr<MgLockFeatures>;
+
+/// \defgroup MgLockFeatures
+/// \ingroup Feature_Service_classes
+/// \{
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -148,5 +149,6 @@ private:
     STRING m_className;
     STRING m_filterText;
 };
+/// \}
 
 #endif//_MGLOCKFEATURES_H

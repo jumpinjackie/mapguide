@@ -20,6 +20,7 @@
 
 #include "GeometryCommon.h"
 
+/// \ingroup Exceptions_Module
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// The exception is thrown when the coordinate system load fails.

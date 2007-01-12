@@ -18,7 +18,7 @@
 #ifndef _MG_SELECTION_BASE_H_
 #define _MG_SELECTION_BASE_H_
 
-/// \defgroup MgSelection MgSelection
+/// \defgroup MgSelectionBase MgSelectionBase
 /// \ingroup Mapping_Service_Module
 /// \{
 

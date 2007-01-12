@@ -18,7 +18,9 @@
 #ifndef _MGINSERTFEATURES_H
 #define _MGINSERTFEATURES_H
 
+/// \defgroup MgInsertFeatures
 /// \ingroup Feature_Service_classes
+/// \{
 
 class MgInsertFeatures;
 template class MG_PLATFORMBASE_API Ptr<MgInsertFeatures>;
@@ -304,5 +306,6 @@ private:
     STRING m_className;
     Ptr<MgBatchPropertyCollection> m_properties;
 };
+/// \}
 
 #endif // _MGINSERTFEATURES_H

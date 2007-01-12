@@ -19,7 +19,9 @@
 #define _MGUNLOCKFEATURES_H
 
 
+/// \defgroup MgUnlockFeatures
 /// \ingroup Feature_Service_classes
+/// \{
 
 class MgUnlockFeatures;
 template class MG_PLATFORMBASE_API Ptr<MgUnlockFeatures>;
@@ -141,5 +143,6 @@ private:
     STRING m_className;
     STRING m_filterText;
 };
+/// \}
 
 #endif//_MGUNLOCKFEATURES_H

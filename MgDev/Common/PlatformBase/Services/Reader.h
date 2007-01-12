@@ -18,9 +18,11 @@
 #ifndef _MG_READER_H
 #define _MG_READER_H
 
-/// \ingroup Feature_Service_Module
-
 class MgRaster;
+
+/// \defgroup MgReader
+/// \ingroup Feature_Service_classes
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief
@@ -667,5 +669,6 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream) = 0;
 };
+/// \}
 
 #endif
