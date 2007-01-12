@@ -43,7 +43,9 @@ MgServerManager::MgServerManager(void) :
     m_pSiteMessageQueue(NULL),
     m_pWorkerThreads(NULL)
 {
+    m_localServerAddress = MgConfigProperties::DefaultGeneralPropertyMachineIp;
     m_defaultLocale = MgConfigProperties::DefaultGeneralPropertyDefaultLocale;
+    m_displayName = MgConfigProperties::DefaultGeneralPropertyDisplayName;
 
     // Admin
     m_nAdminPort    = MgConfigProperties::DefaultAdministrativeConnectionPropertyPort;
@@ -60,8 +62,6 @@ MgServerManager::MgServerManager(void) :
     m_nSiteThreads = MgConfigProperties::DefaultSiteConnectionPropertyThreadPoolSize;
 
     m_startTime = ACE_OS::gettimeofday();
-
-    m_displayName = MgConfigProperties::DefaultGeneralPropertyDisplayName;
 }
 
 // Destructor
@@ -130,9 +130,19 @@ void MgServerManager::Initialize(CREFSTRING locale)
     // Set the locale
     m_defaultLocale = locale;
 
+    m_pClientHandles = new ACE_Unbounded_Set<ACE_HANDLE>;
+
+    // Load the configuration properties
+    LoadConfigurationProperties();
+
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
 
-    m_pClientHandles = new ACE_Unbounded_Set<ACE_HANDLE>;
+    // Determine if this server is a site or support server.
+    pConfiguration->GetBoolValue(
+        MgConfigProperties::HostPropertiesSection,
+        MgConfigProperties::HostPropertySiteService,
+        m_isSiteServer,
+        MgConfigProperties::DefaultHostPropertySiteService);
 
     // Admin Connection
     pConfiguration->GetIntValue(MgConfigProperties::AdministrativeConnectionPropertiesSection, MgConfigProperties::AdministrativeConnectionPropertyPort, m_nAdminPort, MgConfigProperties::DefaultAdministrativeConnectionPropertyPort);
@@ -153,76 +163,61 @@ void MgServerManager::Initialize(CREFSTRING locale)
     pConfiguration->GetIntValue(MgConfigProperties::SiteConnectionPropertiesSection, MgConfigProperties::SiteConnectionPropertyPort, m_nSitePort, MgConfigProperties::DefaultSiteConnectionPropertyPort);
     pConfiguration->GetIntValue(MgConfigProperties::SiteConnectionPropertiesSection, MgConfigProperties::SiteConnectionPropertyThreadPoolSize, m_nSiteThreads, MgConfigProperties::DefaultSiteConnectionPropertyThreadPoolSize);
 
-    // Load the configuration properties
-    LoadConfigurationProperties();
+    MgIpUtil::HostNameToAddress(siteServerAddress, m_siteServerAddress);
 
-    // Verify whether or not this server is the site server.
+    // Validate IP configurations for this server.
+    STRING localServerAddress, hostAddress;
 
-    bool siteServiceEnabled;
+    pConfiguration->GetStringValue(
+        MgConfigProperties::GeneralPropertiesSection, 
+        MgConfigProperties::GeneralPropertyMachineIp, 
+        localServerAddress, 
+        MgConfigProperties::DefaultGeneralPropertyMachineIp);
 
-    pConfiguration->GetBoolValue(
-        MgConfigProperties::HostPropertiesSection,
-        MgConfigProperties::HostPropertySiteService,
-        siteServiceEnabled,
-        MgConfigProperties::DefaultHostPropertySiteService);
-
-    if (MgIpUtil::IsLocalHost(siteServerAddress))
+    if (m_isSiteServer && MgIpUtil::IsLocalHost(localServerAddress, false))
     {
-        if (!siteServiceEnabled)
+        localServerAddress = siteServerAddress;
+    }
+
+    MgIpUtil::HostNameToAddress(localServerAddress, m_localServerAddress);
+
+    if (MgIpUtil::HostNameToAddress(L"localhost", hostAddress, false)
+        && (MgIpUtil::IsIpAddress(hostAddress, false) == MgIpUtil::IsIpAddress(m_localServerAddress, false))
+        && (0 != MgIpUtil::CompareAddresses(hostAddress, m_localServerAddress)))
+    {
+        MgStringCollection arguments;
+        arguments.Add(localServerAddress);
+
+        throw new MgInvalidIpAddressException(
+            L"MgServerManager.Initialize", __LINE__, __WFILE__, &arguments,
+            L"MgInvalidIpConfigurationForLocalMachine", NULL);
+    }
+    
+    if (m_isSiteServer)
+    {
+        if (0 != MgIpUtil::CompareAddresses(m_siteServerAddress, m_localServerAddress))
         {
+            MgStringCollection arguments;
+            arguments.Add(localServerAddress);
+            arguments.Add(siteServerAddress);
+
             throw new MgLogicException(
-                L"MgServerManager.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
+                L"MgServerManager.Initialize", __LINE__, __WFILE__, NULL,
+                L"MgInvalidIpConfigurationForSiteServer", &arguments);
         }
     }
     else
     {
-        if (siteServiceEnabled)
+        if (0 == MgIpUtil::CompareAddresses(m_siteServerAddress, m_localServerAddress))
         {
+            MgStringCollection arguments;
+            arguments.Add(localServerAddress);
+            arguments.Add(siteServerAddress);
+
             throw new MgLogicException(
-                L"MgServerManager.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
+                L"MgServerManager.Initialize", __LINE__, __WFILE__, NULL,
+                L"MgInvalidIpConfigurationForSupportServer", &arguments);
         }
-
-        m_isSiteServer = false;
-    }
-
-    // Determine the local server address.
-
-    m_localServerAddress = L"localhost";
-
-    if (m_isSiteServer)
-    {
-        STRING localServerAddress;
-
-        if (MgIpUtil::IsLocalHost(siteServerAddress, false)
-            || !MgIpUtil::IsIpAddress(siteServerAddress, false))
-        {
-            MgIpUtil::HostNameToAddress(siteServerAddress, localServerAddress);
-        }
-
-        if (localServerAddress.empty() || MgIpUtil::IsLocalHost(localServerAddress, false))
-        {
-            m_localServerAddress = siteServerAddress;
-        }
-        else
-        {
-            m_localServerAddress = localServerAddress;
-        }
-    }
-
-    if (MgIpUtil::IsLocalHost(m_localServerAddress, false))
-    {
-        m_localServerAddress = MgIpUtil::GetLocalHostAddress();
-    }
-
-    // Determine the site server address.
-
-    if (m_isSiteServer)
-    {
-        m_siteServerAddress = m_localServerAddress;
-    }
-    else
-    {
-        MgIpUtil::HostNameToAddress(siteServerAddress, m_siteServerAddress);
     }
 
     // Create the worker thread pool
@@ -427,7 +422,7 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
     pProperty = new MgStringProperty(MgServerInformationProperties::DisplayName, m_displayName);
     pProperties->Add(pProperty);
 
-    // Add the Operations info
+     // Add the Operations info
     INT32 nTotalReceivedOperations = GetTotalReceivedOperations();
     pProperty = new MgInt32Property(MgServerInformationProperties::TotalReceivedOperations, nTotalReceivedOperations);
     pProperties->Add(pProperty);

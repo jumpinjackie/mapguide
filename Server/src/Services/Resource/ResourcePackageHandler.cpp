@@ -80,7 +80,7 @@ void MgResourcePackageHandler::InitializeStatus(CREFSTRING packageApiName,
 
         if (serverName.empty())
         {
-            MgIpUtil::HostAddressToName(serverAddress, serverName);
+            MgIpUtil::HostAddressToName(serverAddress, serverName, false);
         }
 
         statusInfo.SetServerName(serverName);
