@@ -88,7 +88,7 @@ noinst_HEADERS = $(include_SOURCES) \
   SessionCache.h \
   SessionInfo.h \
   SessionManager.h \
-  UnmanagedDataManager,h \
+  UnmanagedDataManager.h \
   UserInfo.h \
   WorkerThread.h \
   WorkerThreadData.h
