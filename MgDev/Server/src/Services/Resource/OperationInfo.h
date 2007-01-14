@@ -50,6 +50,9 @@ INTERNAL_API:
     static const STRING DeleteResourceData;
     static const STRING RenameResourceData;
     static const STRING GetResourceData;
+
+    static const STRING EnumerateUnmanagedData;
+    static const STRING EnumerateUnmanagedDataMappings;
 };
 
 class MgOperationInfo

@@ -55,9 +55,11 @@ include_SOURCES = \
   SessionCache.cpp \
   SessionInfo.cpp \
   SessionManager.cpp \
+  UnmanagedDataManager.cpp \
   UserInfo.cpp \
   WorkerThread.cpp \
   WorkerThreadData.cpp
+  
 
 noinst_HEADERS = $(include_SOURCES) \
   Connection.h \
@@ -86,6 +88,7 @@ noinst_HEADERS = $(include_SOURCES) \
   SessionCache.h \
   SessionInfo.h \
   SessionManager.h \
+  UnmanagedDataManager,h \
   UserInfo.h \
   WorkerThread.h \
   WorkerThreadData.h

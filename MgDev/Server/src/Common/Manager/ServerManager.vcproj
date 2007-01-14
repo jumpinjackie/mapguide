@@ -799,6 +799,22 @@
 			>
 		</File>
 		<File
+			RelativePath=".\UnmanagedDataManager.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\UnmanagedDataManager.h"
+			>
+		</File>
+		<File
 			RelativePath=".\UserInfo.cpp"
 			>
 			<FileConfiguration

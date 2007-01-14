@@ -112,6 +112,8 @@
 #include "HttpKmlGetMap.cpp"
 #include "HttpKmlGetLayer.cpp"
 #include "HttpKmlGetFeatures.cpp"
+#include "HttpEnumerateUnmanagedData.cpp"
+#include "HttpEnumerateUnmanagedDataMappings.cpp"
 #include "WmsMapUtil.cpp"
 
 

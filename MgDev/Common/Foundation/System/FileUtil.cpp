@@ -142,7 +142,7 @@ bool MgFileUtil::EndsWithExtension(CREFSTRING pathname, CREFSTRING extension)
 
     bool result = false;
     size_t len = extension.length();
-    size_t pos = pathname.find_last_of(L'.');
+    size_t pos = pathname.find_last_of(L'.') + 1;
 
     if (STRING::npos != pos && (pathname.length() == pos + len))
     {
@@ -153,6 +153,7 @@ bool MgFileUtil::EndsWithExtension(CREFSTRING pathname, CREFSTRING extension)
             result = true;
         }
     }
+
 
     return result;
 }

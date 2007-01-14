@@ -1055,3 +1055,52 @@ MgUserInformation* MgProxyResourceService::GetUserInfo()
 {
     return m_connProp->GetUserInfo();
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerates the unmanaged data files
+/// Resources of all types can be enumerated all at once, or only
+/// resources of a given type.
+///
+MgStringCollection* MgProxyResourceService::EnumerateUnmanagedData(
+    CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth)
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,
+                        MgCommand::knObject,
+                        MgResourceService::opIdEnumerateUnmanagedData,
+                        3,
+                        Resource_Service,
+                        1,
+                        MgCommand::knString, &mappingName,
+                        MgCommand::knString, &dataTypeFilter,
+                        MgCommand::knInt32, depth,
+                        MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgStringCollection*)cmd.GetReturnValue().val.m_obj;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerates the unmanaged data mappings
+///
+MgStringCollection* MgProxyResourceService::EnumerateUnmanagedDataMappings()
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,
+                        MgCommand::knObject,
+                        MgResourceService::opIdEnumerateUnmanagedDataMappings,
+                        0,
+                        Resource_Service,
+                        1,
+                        MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgStringCollection*)cmd.GetReturnValue().val.m_obj;
+}

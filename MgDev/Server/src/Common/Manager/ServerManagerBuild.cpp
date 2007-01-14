@@ -45,3 +45,4 @@
 #include "UserInfo.cpp"
 #include "WorkerThread.cpp"
 #include "WorkerThreadData.cpp"
+#include "UnmanagedDataManager.cpp"

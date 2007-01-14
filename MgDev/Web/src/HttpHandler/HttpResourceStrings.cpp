@@ -98,6 +98,8 @@ const STRING MgHttpResourceStrings::reqOverwrite = L"OVERWRITE";
 const STRING MgHttpResourceStrings::reqPackage = L"PACKAGE";
 const STRING MgHttpResourceStrings::reqOwner = L"OWNER";
 const STRING MgHttpResourceStrings::reqIncludeDescendants = L"INCLUDEDESCENDANTS";
+const STRING MgHttpResourceStrings::reqMappingName = L"MAPPINGNAME";
+const STRING MgHttpResourceStrings::reqDataTypeFilter = L"DATATYPEFILTER";
 
 // Resource Service Operation Requests
 const STRING MgHttpResourceStrings::opEnumerateRepositories = L"ENUMERATEREPOSITORIES";
@@ -124,6 +126,9 @@ const STRING MgHttpResourceStrings::opSetResourceData = L"SETRESOURCEDATA";
 const STRING MgHttpResourceStrings::opDeleteResourceData = L"DELETERESOURCEDATA";
 const STRING MgHttpResourceStrings::opRenameResourceData = L"RENAMERESOURCEDATA";
 const STRING MgHttpResourceStrings::opGetResourceData = L"GETRESOURCEDATA";
+
+const STRING MgHttpResourceStrings::opEnumerateUnmanagedData = L"ENUMERATEUNMANAGEDDATA";
+const STRING MgHttpResourceStrings::opEnumerateUnmanagedDataMappings = L"ENUMERATEUNMANAGEDDATAMAPPINGS";
 
 // Predefined Feature Service Request Parameters
 const STRING MgHttpResourceStrings::reqFeatProperty = L"PROPERTY";
