@@ -1674,6 +1674,25 @@ INTERNAL_API:
     virtual MgSerializableCollection* EnumerateParentMapDefinitions(
         MgSerializableCollection* resources) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enumerate unmanaged data
+    ///
+    /// \return
+    /// MgStringCollection list of unmanaged data paths
+    ///
+    virtual MgStringCollection* EnumerateUnmanagedData(
+        CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enumerate unmanaged data mappings
+    ///
+    /// \return
+    /// MgStringCollection list of unmanaged data mappings
+    ///
+    virtual MgStringCollection* EnumerateUnmanagedDataMappings();
+
 protected:
 
     /////////////////////////////////////////////////////////////////
@@ -1729,6 +1748,8 @@ INTERNAL_API:
         opIdInheritPermissionsFrom          = 0x1111EF17,
         opIdGetResourceModifiedDate         = 0x1111EF18,
         opIdEnumerateParentMapDefinitions   = 0x1111EF19,
+        opIdEnumerateUnmanagedData          = 0x1111EF1A,
+        opIdEnumerateUnmanagedDataMappings  = 0x1111EF1B,
     };
 };
 

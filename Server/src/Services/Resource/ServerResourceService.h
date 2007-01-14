@@ -144,6 +144,11 @@ public:
 
     MgStringCollection* EnumerateRoles(CREFSTRING user, CREFSTRING group);
 
+	// Unmanaged Data APIs
+
+    virtual MgStringCollection* EnumerateUnmanagedData(CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth);
+    virtual MgStringCollection* EnumerateUnmanagedDataMappings();
+
     // Site Security related methods
 
     MgSecurityCache* CreateSecurityCache();

@@ -260,6 +260,11 @@ const double MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset
 const STRING MgConfigProperties::FontAliasMappingSection                                    = L"FontAliases";
 
 // ******************************************************************
+// Unmanaged Data Mappings section
+// ******************************************************************
+const STRING MgConfigProperties::UnmanagedDataMappingsSection                               = L"UnmanagedDataMappings";
+
+// ******************************************************************
 // Resource Service Properties
 // ******************************************************************
 const STRING MgConfigProperties::ResourceServicePropertiesSection                               = L"ResourceServiceProperties";

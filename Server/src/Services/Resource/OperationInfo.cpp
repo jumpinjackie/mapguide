@@ -46,6 +46,9 @@ const STRING MgOperationName::DeleteResourceData=L"DELETERESOURCEDATA";
 const STRING MgOperationName::RenameResourceData=L"RENAMERESOURCEDATA";
 const STRING MgOperationName::GetResourceData=L"GETRESOURCEDATA";
 
+const STRING MgOperationName::EnumerateUnmanagedData=L"ENUMERATEUNMANAGEDDATA";
+const STRING MgOperationName::EnumerateUnmanagedDataMappings=L"ENUMERATEUNMANAGEDDATAMAPPINGS";
+
 const STRING MgOperationInfo::sm_currentVersion = L"1.0.0";
 const MgOperationParameter MgOperationInfo::sm_blankParameter;
 

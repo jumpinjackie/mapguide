@@ -25,6 +25,7 @@
 #include "SessionRepositoryManager.h"
 #include "SiteRepositoryManager.h"
 #include "SiteResourceContentManager.h"
+#include "UnmanagedDataManager.h"
 
 const int MgServerResourceService::sm_maxOpRetries = 3;
 
@@ -1795,6 +1796,60 @@ MgStringCollection* MgServerResourceService::EnumerateRoles(CREFSTRING user,
 
     return roles.Detach();
 }
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets a list of unmanaged data paths
+/// </summary>
+///
+/// <returns>
+/// Result containing the appropriate list of data paths.
+/// </returns>
+///
+///----------------------------------------------------------------------------
+
+MgStringCollection* MgServerResourceService::EnumerateUnmanagedData(
+	CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth)
+{
+    Ptr<MgStringCollection> dataPaths;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateUnmanagedData()");
+
+    dataPaths = MgUnmanagedDataManager::GetInstance()->EnumerateUnmanagedData(mappingName, dataTypeFilter, depth);
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateUnmanagedData")
+
+    return dataPaths.Detach();
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets a list of unmanaged data mappings
+/// </summary>
+///
+/// <returns>
+/// Result containing the list of data mappings.
+/// </returns>
+///
+///----------------------------------------------------------------------------
+
+MgStringCollection* MgServerResourceService::EnumerateUnmanagedDataMappings()
+{
+    Ptr<MgStringCollection> mappings;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateUnmanagedDataMappings()");
+
+    mappings = MgUnmanagedDataManager::GetInstance()->EnumerateUnmanagedDataMappings();
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateUnmanagedDataMappings")
+
+    return mappings.Detach();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>

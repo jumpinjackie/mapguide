@@ -1468,3 +1468,42 @@ void MgApplicationRepositoryManager::CopyResourceData(
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationRepositoryManager.CopyResourceData")
 }
+
+/*
+MgStringCollection* MgApplicationRepositoryManager::EnumerateUnmanagedData(
+    CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth)
+{
+	// TODO:
+    //throw new MgNotImplementedException(L"MgResourceService.EnumerateUnmanagedData", __LINE__, __WFILE__, NULL, L"", NULL);
+    Ptr<MgStringCollection> dataPaths;
+
+	dataPaths = new MgStringCollection();
+	dataPaths->Add(L"Ueto Aya");
+	dataPaths->Add(L"Ito Misaki");
+
+
+    return dataPaths.Detach();
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerates the unmanaged data
+/// Resources of all types can be enumerated all at once, or only
+/// resources of a given type.
+///
+MgStringCollection* MgApplicationRepositoryManager::EnumerateUnmanagedDataMappings()
+{
+	// TODO:
+    //throw new MgNotImplementedException(L"MgResourceService.EnumerateUnmanagedDataMappings", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    Ptr<MgStringCollection> mappings;
+
+	mappings = new MgStringCollection();
+	mappings->Add(L"Song Hye Gyo");
+	mappings->Add(L"Kim Tae Hee");
+	mappings->Add(L"Kim Sun Ah");
+
+
+    return mappings.Detach();
+}
+*/

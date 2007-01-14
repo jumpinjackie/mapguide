@@ -314,6 +314,9 @@ EXTERNAL_API:
     /// font alias mappings
     static const STRING FontAliasMappingSection;                               /// value("FontAliases")
 
+    /// unmanaged data mappings
+    static const STRING UnmanagedDataMappingsSection;                          /// value("UnmanagedDataMappings")
+
     /// RESOURCE SERVICE PROPERTIES SECTION ------------------------------------------------------------------------------
 
     /// Resource Service properties.  Note that in V1.0 this property section is only defined on the Site Server.

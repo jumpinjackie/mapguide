@@ -44,6 +44,8 @@ include_SOURCES = \
   HttpEnumerateResourceData.cpp \
   HttpEnumerateResourceReferences.cpp \
   HttpEnumerateResources.cpp \
+  HttpEnumerateUnmanagedData.cpp \
+  HttpEnumerateUnmanagedDataMappings.cpp \
   HttpEnumerateUsers.cpp \
   HttpExecuteSqlQuery.cpp \
   HttpGetCapabilities.cpp \
@@ -156,6 +158,8 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpEnumerateResourceData.h \
   HttpEnumerateResourceReferences.h \
   HttpEnumerateResources.h \
+  HttpEnumerateUnmanagedData.h \
+  HttpEnumerateUnmanagedDataMappings.h \
   HttpEnumerateUsers.h \
   HttpExecuteSqlQuery.h \
   HttpGetCapabilities.h \

@@ -191,3 +191,25 @@ bool MgResourceService::ResourceExists(
 {
     throw new MgNotImplementedException(L"MgResourceService.ResourceExists", __LINE__, __WFILE__, NULL, L"", NULL);
 }
+
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerates the unmanaged data
+/// Resources of all types can be enumerated all at once, or only
+/// resources of a given type.
+///
+MgStringCollection* MgResourceService::EnumerateUnmanagedData(
+    CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth)
+{
+    throw new MgNotImplementedException(L"MgResourceService.EnumerateUnmanagedData", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerates the unmanaged data mappings
+///
+MgStringCollection* MgResourceService::EnumerateUnmanagedDataMappings()
+{
+    throw new MgNotImplementedException(L"MgResourceService.EnumerateUnmanagedDataMappings", __LINE__, __WFILE__, NULL, L"", NULL);
+}

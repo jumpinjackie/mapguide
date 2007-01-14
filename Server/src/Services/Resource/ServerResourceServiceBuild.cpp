@@ -54,6 +54,8 @@
 #include "OpSetResource.cpp"
 #include "OpSetResourceData.cpp"
 #include "OpUpdateRepository.cpp"
+#include "OpEnumerateUnmanagedData.cpp"
+#include "OpEnumerateUnmanagedDataMappings.cpp"
 #include "Repository.cpp"
 #include "RepositoryManager.cpp"
 #include "ResourceContainer.cpp"
