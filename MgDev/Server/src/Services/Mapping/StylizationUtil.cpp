@@ -252,7 +252,7 @@ MgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFea
     }
 
 #ifdef _DEBUG
-    printf("  ExecuteFeatureQuery() total time = %6.4f (s)\n", (GetTickCount()-dwStart)/1000.0); 
+    printf("  ExecuteFeatureQuery() total time = %6.4f (s)\n", (GetTickCount()-dwStart)/1000.0);
 #endif
 
     return SAFE_ADDREF(rdr.p);
@@ -422,10 +422,22 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
         #endif
 
         //don't send data if layer is not currently visible
-        if (!mapLayer->IsVisibleAtScale(scale)) continue;
+        if (!mapLayer->IsVisibleAtScale(scale))
+            continue;
 
         //don't send data if the refresh flag is not set
-        if (checkRefreshFlag && !mapLayer->NeedsRefresh()) continue;
+        if (checkRefreshFlag)
+        {
+            bool needsRefresh = false;
+            MgMapBase::LayerRefreshMode refreshMode = map->GetLayerRefreshMode();
+            if (refreshMode == MgMapBase::unspecified)
+                needsRefresh = mapLayer->NeedsRefresh();
+            else
+                needsRefresh = (refreshMode == MgMapBase::refreshAll);
+
+            if (!needsRefresh)
+                continue;
+        }
 
         MG_SERVER_MAPPING_SERVICE_TRY()
 
@@ -574,7 +586,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     }
                     else
                     {
-                        // No coordinate system!!! 
+                        // No coordinate system!!!
                         // We fail here and do not use a default
                     }
 
@@ -858,7 +870,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     }
                     else
                     {
-                        // No coordinate system!!! 
+                        // No coordinate system!!!
                         // We fail here and do not use a default
                     }
 
@@ -946,14 +958,14 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     size_t i0 = st.find(L"<CoordinateSpace>");
                     size_t i1 = st.find(L"</CoordinateSpace>");
 
-                    if (   i0 != STRING::npos 
+                    if (   i0 != STRING::npos
                         && i1 != STRING::npos)
                     {
                         i0 += wcslen(L"<CoordinateSpace>");
                         STRING cs = st.substr(i0, i1 - i0);
 
                         if (!cs.empty() && cs != dstCs->ToString())
-                        {             
+                        {
                             //construct cs transformer if needed
                             Ptr<MgCoordinateSystem> srcCs = csFactory->Create(cs);
                             xformer = new MgCSTrans(srcCs, dstCs);
@@ -976,7 +988,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
         MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.StylizeLayers");
         if (mgException.p)
         {
-            // TODO: Eventually this should be used to indicate visually to the client what 
+            // TODO: Eventually this should be used to indicate visually to the client what
             //       layer failed in addition to logging the error.
             MgServerManager* serverManager = MgServerManager::GetInstance();
             STRING locale = (NULL == serverManager) ?  MgResources::DefaultLocale : serverManager->GetDefaultLocale();
