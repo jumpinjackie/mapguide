@@ -471,7 +471,7 @@ CLASS_ID:
 private:
 
     // Version for serialization 
-    static const int m_serializeVersion = (2<<16) + 0;
+    static const int m_serializeVersion = (3<<16) + 0;
 
     static STRING m_layerGroupTag;
     Ptr<MgMemoryStreamHelper> m_layerGroupHelper;
