@@ -193,19 +193,21 @@ void MgDwfController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* map
             if(layerIds != NULL && layerIds->GetCount() > 0)
             {
                 bool forceAll = (layerIds->GetCount() == 1) && (layerIds->GetItem(0) == L"*");
-
-                Ptr<MgLayerCollection> layers = map->GetLayers();
-                for(INT32 index = 0; index < layerIds->GetCount(); index++)
+                if (forceAll)
                 {
-                    Ptr<MgLayer> layer;
-                    for(INT32 li = 0; li < layers->GetCount(); li++)
+                    map->SetLayerRefreshMode(MgMap::refreshAll);
+                }
+                else
+                {
+                    Ptr<MgLayerCollection> layers = map->GetLayers();
+                    for(INT32 index = 0; index < layerIds->GetCount(); index++)
                     {
-                        layer = (MgLayer*)layers->GetItem(li);
-                        if(forceAll)
-                            layer->ForceRefresh(true);
-                        else
+                        STRING id = layerIds->GetItem(index);
+
+                        Ptr<MgLayerBase> layer;
+                        for(INT32 li = 0; li < layers->GetCount(); li++)
                         {
-                            STRING id = layerIds->GetItem(index);
+                            layer = layers->GetItem(li);
                             if(!layer->GetObjectId().compare(id))
                             {
                                 layer->ForceRefresh(true);
@@ -213,8 +215,6 @@ void MgDwfController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* map
                             }
                         }
                     }
-                    if(forceAll)
-                        break;
                 }
             }
         }

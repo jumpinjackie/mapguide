@@ -149,12 +149,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
         map->SetViewScale(scale);
 
         //refresh all layers that are visible
-        Ptr<MgLayerCollection> layers = map->GetLayers();
-        for(int layerIndex = 0; layerIndex < layers->GetCount(); layerIndex++)
-        {
-            Ptr<MgLayerBase> layer = layers->GetItem(layerIndex);
-            layer->ForceRefresh(true);
-        }
+        map->SetLayerRefreshMode(MgMap::refreshAll);
     }
 
     //Set display dpi

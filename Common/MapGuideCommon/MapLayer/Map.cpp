@@ -43,7 +43,7 @@ MgMap::MgMap()
 // This method is used for Mg Viewers or for offline map production.
 //
 void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName)
-{    
+{
     MG_TRY()
 
     m_trackChangesDisabled = true;
@@ -465,7 +465,7 @@ void MgMap::Dispose()
 /// If none of the collections contain data then they are assumed to be unchanged.
 ///
 /// The same applies to the Save.  If the collections do not contain data then they
-/// will not be saved. 
+/// will not be saved.
 ///
 void MgMap::UnpackLayersAndGroups()
 {
@@ -484,7 +484,7 @@ void MgMap::UnpackLayersAndGroups()
         if (NULL != (MgResourceService*) m_resourceService)
         {
             Ptr<MgByteReader> breader = m_resourceService->GetResourceData(m_resId, m_layerGroupTag);
-   
+
             MgByteSink sink(breader);
             bytes = sink.ToBuffer();
             m_layerGroupHelper = new MgMemoryStreamHelper((INT8*) bytes->Bytes(), bytes->GetLength(), false);
@@ -539,7 +539,7 @@ void MgMap::UnpackLayersAndGroups()
     m_changeLists->SetCheckForDuplicates(true);
 
     //groups
-    //this maps speeds up the process of attaching groups together and attaching layers to groups
+    //this map speeds up the process of attaching groups together and attaching layers to groups
     map<STRING, MgLayerGroup*> knownGroups;
 
     map<STRING, MgLayerGroup*>::const_iterator itKg;
@@ -651,19 +651,9 @@ MgMemoryStreamHelper* MgMap::PackLayersAndGroups()
     //layers
     INT32 layerCount = m_layers->GetCount();
     stream->WriteInt32(layerCount);
-
     for(int layerIndex = 0; layerIndex < layerCount; layerIndex++)
     {
         Ptr<MgLayerBase> layer = m_layers->GetItem(layerIndex);
-        //if the refresh flag must be globally set or reset, do it for this layer
-        //before it's serialized
-        if(m_layerRefreshMode != unspecified)
-        {
-            if(m_layerRefreshMode == refreshNone)
-                layer->ForceRefresh(false);
-            else
-                layer->ForceRefresh(true);
-        }
 
         Ptr<MgLayerGroup> parent = layer->GetGroup();
         stream->WriteString(parent != NULL? parent->GetName(): L"");
@@ -714,6 +704,8 @@ void MgMap::Serialize(MgStream* stream)
     stream->WriteString(m_backColor);
     //meters per unit
     stream->WriteDouble(m_metersPerUnit);
+    //layer refresh mode
+    stream->WriteInt32((INT32)m_layerRefreshMode);
 
     //finite display scales
     INT32 scaleCount = (INT32)m_finiteDisplayScales.size();
@@ -785,6 +777,8 @@ void MgMap::Deserialize(MgStream* stream)
     streamReader->GetString(m_backColor);
     //meters per unit
     streamReader->GetDouble(m_metersPerUnit);
+    //layer refresh mode
+    streamReader->GetInt32((INT32&)m_layerRefreshMode);
 
     //finite display scales
     INT32 scaleCount;
@@ -796,7 +790,6 @@ void MgMap::Deserialize(MgStream* stream)
         m_finiteDisplayScales.push_back(displayScale);
     }
 
-       
     INT32 nBytes = 0;
     streamReader->GetInt32(nBytes);
     m_layerGroupHelper = NULL;
