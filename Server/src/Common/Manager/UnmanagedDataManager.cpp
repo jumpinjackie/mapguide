@@ -24,25 +24,25 @@
 // Process-wide MgUnmanagedDataManager
 Ptr<MgUnmanagedDataManager> MgUnmanagedDataManager::sm_unmanagedDataManager = (MgUnmanagedDataManager*)NULL;
 
-const STRING MgUnmanagedDataManager::Sdf                  = L"SDF";
-const STRING MgUnmanagedDataManager::Shp                  = L"SHP";
-const STRING MgUnmanagedDataManager::Dwf                  = L"DWF";
-const STRING MgUnmanagedDataManager::Raster               = L"RASTER";
+const STRING MgUnmanagedDataManager::Sdf                  = L".SDF";
+const STRING MgUnmanagedDataManager::Shp                  = L".SHP";
+const STRING MgUnmanagedDataManager::Dwf                  = L".DWF";
+const STRING MgUnmanagedDataManager::Raster               = L".RASTER";
 const STRING MgUnmanagedDataManager::Odbc                 = L"ODBC";
 const STRING MgUnmanagedDataManager::Folder               = L"FOLDER";
-const STRING MgUnmanagedDataManager::Jpg                  = L"JPG";
-const STRING MgUnmanagedDataManager::Jpeg                 = L"JPEG";
-const STRING MgUnmanagedDataManager::Jpe                  = L"JPE";
-const STRING MgUnmanagedDataManager::Png                  = L"PNG";
-const STRING MgUnmanagedDataManager::Bmp                  = L"BMP";
-const STRING MgUnmanagedDataManager::Cal                  = L"CAL";
-const STRING MgUnmanagedDataManager::Tga                  = L"TGA";
-const STRING MgUnmanagedDataManager::Tif                  = L"TIF";
-const STRING MgUnmanagedDataManager::Tiff                 = L"TIFF";
-const STRING MgUnmanagedDataManager::Sid                  = L"SID";
-const STRING MgUnmanagedDataManager::Ecw                  = L"ECW";
-const STRING MgUnmanagedDataManager::Bil                  = L"BIL";
-const STRING MgUnmanagedDataManager::Mdb                  = L"MDB";
+const STRING MgUnmanagedDataManager::Jpg                  = L".JPG";
+const STRING MgUnmanagedDataManager::Jpeg                 = L".JPEG";
+const STRING MgUnmanagedDataManager::Jpe                  = L".JPE";
+const STRING MgUnmanagedDataManager::Png                  = L".PNG";
+const STRING MgUnmanagedDataManager::Bmp                  = L".BMP";
+const STRING MgUnmanagedDataManager::Cal                  = L".CAL";
+const STRING MgUnmanagedDataManager::Tga                  = L".TGA";
+const STRING MgUnmanagedDataManager::Tif                  = L".TIF";
+const STRING MgUnmanagedDataManager::Tiff                 = L".TIFF";
+const STRING MgUnmanagedDataManager::Sid                  = L".SID";
+const STRING MgUnmanagedDataManager::Ecw                  = L".ECW";
+const STRING MgUnmanagedDataManager::Bil                  = L".BIL";
+const STRING MgUnmanagedDataManager::Mdb                  = L".MDB";
 const STRING MgUnmanagedDataManager::OpenSquareBracket    = L"[";
 const STRING MgUnmanagedDataManager::ClosedSquareBracket  = L"]";
 
