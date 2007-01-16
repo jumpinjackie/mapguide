@@ -717,17 +717,25 @@ void MgMap::Serialize(MgStream* stream)
     }
 
     // Serialize Layers and Groups as a blob.
-    Ptr<MgMemoryStreamHelper> streamHelper = PackLayersAndGroups();
-    if (m_inSave || NULL == (MgMemoryStreamHelper*) streamHelper)
+    if (m_inSave)
     {
-        // Data has not changed.  Do not serialize.  And never serialize blob when saving.
+        // Never serialize blob when saving.
         stream->WriteInt32(0);
     }
     else
     {
-        stream->WriteInt32(streamHelper->GetLength());
-        Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
-        helper->WriteBytes((const unsigned char*) streamHelper->GetBuffer(), streamHelper->GetLength());
+        Ptr<MgMemoryStreamHelper> streamHelper = PackLayersAndGroups();
+        if (NULL == (MgMemoryStreamHelper*) streamHelper)
+        {
+           // Data has not changed.  Do not serialize.
+           stream->WriteInt32(0);
+        }
+        else
+        {
+           stream->WriteInt32(streamHelper->GetLength());
+           Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
+           helper->WriteBytes((const unsigned char*) streamHelper->GetBuffer(), streamHelper->GetLength());
+        }
     }
 }
 
