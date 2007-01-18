@@ -378,14 +378,11 @@ void EMapUpdateRenderer::CmdAddLayer(const RS_String& guid)
 
 void EMapUpdateRenderer::CmdRemoveLayer(const RS_String& guid)
 {
-    //get the previously accumulated layer information
-    RS_LayerUIInfo layerInfo = m_hLayerInfoMap[guid];
-
-    //see if we actually got a valid structure
-    _ASSERT(!layerInfo.guid().empty());
+    //verify the guid is valid
+    _ASSERT(!guid.empty());
 
     DWFEMapRemoveLayerCommand* cmd = DWFCORE_ALLOC_OBJECT (
-                                    DWFEMapRemoveLayerCommand( layerInfo.guid().c_str()));
+                                    DWFEMapRemoveLayerCommand( guid.c_str()));
 
     ((DWFEMapTransactionSection*)m_pPage)->addCommand(cmd);
 }
@@ -443,14 +440,11 @@ void EMapUpdateRenderer::CmdAddLayerGroup(const RS_String& guid)
 
 void EMapUpdateRenderer::CmdRemoveLayerGroup(const RS_String& guid)
 {
-    //get the previously accumulated layer information
-    RS_LayerUIInfo layerInfo = m_hGroups[guid];
-
-    //see if we actually got a valid structure
-    _ASSERT(!layerInfo.guid().empty());
+    //verify the guid is valid
+    _ASSERT(!guid.empty());
 
     DWFEMapRemoveLayerGroupCommand* cmd = DWFCORE_ALLOC_OBJECT (
-                                    DWFEMapRemoveLayerGroupCommand( layerInfo.guid().c_str()));
+                                    DWFEMapRemoveLayerGroupCommand( guid.c_str()));
 
     ((DWFEMapTransactionSection*)m_pPage)->addCommand(cmd);
 }
