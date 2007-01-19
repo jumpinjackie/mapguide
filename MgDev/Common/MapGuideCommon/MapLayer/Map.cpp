@@ -447,25 +447,26 @@ void MgMap::Dispose()
 
 //////////////////////////////////////////////////////////////////
 /// \brief
-/// Unpacks Layers and groups from Memory stream - Lazy Initialization
+/// Unpacks layers and groups from memory stream - lazy initialization
 ///
-/// How does lazy initialization work?  Basically, the layers, groups, and
-/// changeList collections are stored in a separate binary blob within MgMap.
-/// For large maps, the "layers groups" blob can be tens/hundreds of kbytes.
-/// In some cases, the application does not actually need this information from
-/// MgMap so serializing it is a big waste of resources.
+/// How does lazy initialization work?  Basically, the layer and group
+/// collections are stored in a separate binary blob within MgMap.  For
+/// large maps, the "layers groups" blob can be tens/hundreds of kbytes.
+/// In some cases, the application does not actually need this information
+/// from MgMap so serializing it is a big waste of resources.
 ///
-/// All saved MgMap objects know how to pull the layer groups blob on the fly
-/// using the internal m_resourceService/m_resId.  If GetLayers(), GetLayerGroups() or
-/// TrackChange() is called then the blob will automatically be pulled.  Note:
-/// m_resourceService must be set using SetDelayedLoadResourceService if MgMap
-/// is not set using Create or Open  (ie. when deserialized).
+/// All saved MgMap objects know how to pull the layer groups blob on the
+/// fly using the internal m_resourceService/m_resId.  If GetLayers() or
+/// GetLayerGroups() is called then the blob will automatically be pulled.
+/// Note: m_resourceService must be set using SetDelayedLoadResourceService
+/// if MgMap is not set using Create or Open (i.e. when deserialized).
 ///
-/// The "layers groups" blob is only serialized on the wire if it has changed.
-/// If none of the collections contain data then they are assumed to be unchanged.
+/// The "layers groups" blob is only serialized on the wire if it has
+/// changed.  If none of the collections contain data then they are assumed
+/// to be unchanged.
 ///
-/// The same applies to the Save.  If the collections do not contain data then they
-/// will not be saved.
+/// The same applies to the Save.  If the collections do not contain data
+/// then they will not be saved.
 ///
 void MgMap::UnpackLayersAndGroups()
 {
@@ -474,7 +475,7 @@ void MgMap::UnpackLayersAndGroups()
 
     if (NULL == (MgMemoryStreamHelper*) m_layerGroupHelper)
     {
-        if (m_changeLists->GetCount() || m_layers->GetCount() || m_groups->GetCount())
+        if (m_layers->GetCount() || m_groups->GetCount())
         {
             // Already unpacked, just return.
             return;
@@ -501,42 +502,6 @@ void MgMap::UnpackLayersAndGroups()
 
     Ptr<MgStream> stream = new MgStream(m_layerGroupHelper);
     MgStreamReader* streamReader = (MgStreamReader*)stream;
-
-    //change lists
-    INT32 changeListCount;
-    streamReader->GetInt32(changeListCount);
-
-    m_changeLists->SetCheckForDuplicates(false);
-
-    for(INT32 i = 0; i < changeListCount; i++)
-    {
-        STRING objectId;
-        bool isLayer;
-
-        streamReader->GetBoolean(isLayer);
-        streamReader->GetString(objectId);
-
-        Ptr<MgChangeList> changeList = new MgChangeList(objectId, isLayer);
-        m_changeLists->Add(changeList);
-
-        INT32 changeCount;
-        streamReader->GetInt32(changeCount);
-        for(INT32 j = 0; j < changeCount; j++)
-        {
-            INT32 type;
-            stream->GetInt32(type);
-
-            Ptr<MgObjectChange> change = new MgObjectChange((MgObjectChange::ChangeType)type);
-
-            STRING param;
-            streamReader->GetString(param);
-            change->SetParam(param);
-
-            changeList->AddChange(change);
-        }
-    }
-
-    m_changeLists->SetCheckForDuplicates(true);
 
     //groups
     //this map speeds up the process of attaching groups together and attaching layers to groups
@@ -593,7 +558,6 @@ void MgMap::UnpackLayersAndGroups()
     //done with this list
     knownGroups.clear();
 
-
     // Throw away the blob data.  It is no longer valid.
     streamReader = NULL;
     stream = NULL;
@@ -605,12 +569,11 @@ void MgMap::UnpackLayersAndGroups()
 
 //////////////////////////////////////////////////////////////////
 /// \brief
-/// Packs Layers and groups to a Memory stream (lazy initialization)
+/// Packs layers and groups to a memory stream (lazy initialization)
 ///
 MgMemoryStreamHelper* MgMap::PackLayersAndGroups()
 {
-    if (0 == m_changeLists->GetCount() && 0 == m_layers->GetCount() &&
-        0 == m_groups->GetCount())
+    if (0 == m_layers->GetCount() && 0 == m_groups->GetCount())
     {
         // Nothing to pack, or data has not changed.  Return NULL;
         return NULL;
@@ -620,23 +583,6 @@ MgMemoryStreamHelper* MgMap::PackLayersAndGroups()
 
     Ptr<MgMemoryStreamHelper> streamHelper = new MgMemoryStreamHelper();
     Ptr<MgStream> stream = new MgStream(streamHelper);
-
-    //change lists
-    INT32 changeListCount = m_changeLists->GetCount();
-    stream->WriteInt32(changeListCount);
-    for(INT32 i = 0; i < changeListCount; i++)
-    {
-        Ptr<MgChangeList> changeList = (MgChangeList*)m_changeLists->GetItem(i);
-        stream->WriteBoolean(changeList->IsLayer());
-        stream->WriteString(changeList->GetObjectId());
-        stream->WriteInt32(changeList->GetChangeCount());
-        for(INT32 j = 0; j < changeList->GetChangeCount(); j++)
-        {
-            Ptr<MgObjectChange> change = (MgObjectChange*)changeList->GetChangeAt(j);
-            stream->WriteInt32((INT32)change->GetType());
-            stream->WriteString(change->GetParam());
-        }
-    }
 
     //groups
     INT32 groupCount = m_groups->GetCount();
@@ -648,16 +594,15 @@ MgMemoryStreamHelper* MgMap::PackLayersAndGroups()
         stream->WriteString(parent != NULL? parent->GetName(): L"");
         stream->WriteObject(group);
     }
+
     //layers
     INT32 layerCount = m_layers->GetCount();
     stream->WriteInt32(layerCount);
     for(int layerIndex = 0; layerIndex < layerCount; layerIndex++)
     {
         Ptr<MgLayerBase> layer = m_layers->GetItem(layerIndex);
-
         Ptr<MgLayerGroup> parent = layer->GetGroup();
         stream->WriteString(parent != NULL? parent->GetName(): L"");
-
         stream->WriteObject(layer);
     }
 
@@ -714,6 +659,23 @@ void MgMap::Serialize(MgStream* stream)
     {
         for (FINITESCALES::const_iterator it = m_finiteDisplayScales.begin(); it != m_finiteDisplayScales.end(); it++)
             stream->WriteDouble(*it);
+    }
+
+    //change lists
+    INT32 changeListCount = m_changeLists->GetCount();
+    stream->WriteInt32(changeListCount);
+    for(INT32 i = 0; i < changeListCount; i++)
+    {
+        Ptr<MgChangeList> changeList = (MgChangeList*)m_changeLists->GetItem(i);
+        stream->WriteBoolean(changeList->IsLayer());
+        stream->WriteString(changeList->GetObjectId());
+        stream->WriteInt32(changeList->GetChangeCount());
+        for(INT32 j = 0; j < changeList->GetChangeCount(); j++)
+        {
+            Ptr<MgObjectChange> change = (MgObjectChange*)changeList->GetChangeAt(j);
+            stream->WriteInt32((INT32)change->GetType());
+            stream->WriteString(change->GetParam());
+        }
     }
 
     // Serialize Layers and Groups as a blob.
@@ -798,6 +760,43 @@ void MgMap::Deserialize(MgStream* stream)
         m_finiteDisplayScales.push_back(displayScale);
     }
 
+    //change lists
+    INT32 changeListCount;
+    streamReader->GetInt32(changeListCount);
+
+    m_changeLists->SetCheckForDuplicates(false);
+
+    for(INT32 i = 0; i < changeListCount; i++)
+    {
+        STRING objectId;
+        bool isLayer;
+
+        streamReader->GetBoolean(isLayer);
+        streamReader->GetString(objectId);
+
+        Ptr<MgChangeList> changeList = new MgChangeList(objectId, isLayer);
+        m_changeLists->Add(changeList);
+
+        INT32 changeCount;
+        streamReader->GetInt32(changeCount);
+        for(INT32 j = 0; j < changeCount; j++)
+        {
+            INT32 type;
+            stream->GetInt32(type);
+
+            Ptr<MgObjectChange> change = new MgObjectChange((MgObjectChange::ChangeType)type);
+
+            STRING param;
+            streamReader->GetString(param);
+            change->SetParam(param);
+
+            changeList->AddChange(change);
+        }
+    }
+
+    m_changeLists->SetCheckForDuplicates(true);
+
+    //blob for layers and groups
     INT32 nBytes = 0;
     streamReader->GetInt32(nBytes);
     m_layerGroupHelper = NULL;
