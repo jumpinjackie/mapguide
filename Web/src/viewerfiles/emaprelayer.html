@@ -20,7 +20,8 @@
     </script>
 
     <script language="javascript" for="EMapEventRelayer" event="OnDigitizedRectangle(map, rect)">
-        if(parent.digihandler != null) {
+        if(parent.digihandler != null)
+        {
             y = rect.Y1; rect.Y1 = rect.Y2; rect.Y2 = y;
             parent.OnDigitizeEnd(rect);
         }

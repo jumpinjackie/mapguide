@@ -41,10 +41,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA,
 or see http://www.gnu.org/copyleft/lesser.html
 */
 
-
 var jg_ihtm, jg_ie, jg_fast, jg_dom, jg_moz,
 jg_n4 = (document.layers && typeof document.classes != "undefined");
-
 
 function chkDHTM(x, i)
 {
@@ -933,7 +931,6 @@ text both horizontally (e.g. right) and vertically within that rectangle */
 
     this.setPrintable(false);
 }
-
 
 
 function integer_compare(x,y)

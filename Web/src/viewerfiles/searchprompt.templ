@@ -1,9 +1,9 @@
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>__#SEARCHDLGTITLE#__</title>
-    <link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
-    <style type="text/css">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>__#SEARCHDLGTITLE#__</title>
+<link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
+<style type="text/css">
     td.Title
     {
         font-family: __#@font#__;
@@ -31,58 +31,61 @@
         font-family: __#@font#__;
         font-size: __#@fontsize#__;
     }
-    </style>
-    <script language="javascript" src="../viewerfiles/browserdetect.js"></script>
-    <script language=javascript>
-        var target = %s;
-        var popup = %s;
-        var cmdIndex = %s;
-        var width = %s;
-        
-        function InitDocument()
-        {
-            var cmd = GetParent().commands[cmdIndex];
-            document.getElementById("title").innerHTML = cmd.label;
-            document.getElementById("prompt").innerHTML = cmd.prompt;
-            if(!msie)
-                document.getElementById("lf").innerHTML = "<br>";
-                
-            if(!popup)
-                document.onmousedown = OnMouseDown;  
+</style>
 
-            var field = document.getElementById("Fld")
-            field.style.width = (width - 25) + "px";
-            field.focus();
-        }
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language=javascript>
 
-        function OnMouseDown(e)
-        {
-            GetParent().ForwardMouseDown(document, e);
-        }
+var target = %s;
+var popup = %s;
+var cmdIndex = %s;
+var width = %s;
 
-        function GetParent()
-        {
-            if(popup)
-                return opener;
-            else
-                return parent.parent;
-        }
-        
-        function SetMatchLabel()
-        {
-            var cmd = GetParent().commands[cmdIndex];
-            var colDef = "<input type=\"hidden\" name=\"COLS\" value=\"" + cmd.resultColumns.length + "\">";
-            for(var i = 0; i < cmd.resultColumns.length; i++)
-            {
-                colDef += "<input type=\"hidden\" name=\"CN" + i + "\" value=\"" + cmd.resultColumns[i].displayName + "\">";
-                colDef += "<input type=\"hidden\" name=\"CP" + i + "\" value=\"" + cmd.resultColumns[i].propertyName + "\">";
-            }
-            document.getElementById("MatchLabel").innerHTML = colDef;
-        }
-        
-    </script>
-  </head>
-  <body class="SearchPrompt" onload="InitDocument()" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5 bottommargin=5 rightmargin=5>
+function InitDocument()
+{
+    var cmd = GetParent().commands[cmdIndex];
+    document.getElementById("title").innerHTML = cmd.label;
+    document.getElementById("prompt").innerHTML = cmd.prompt;
+    if(!msie)
+        document.getElementById("lf").innerHTML = "<br>";
+
+    if(!popup)
+        document.onmousedown = OnMouseDown;
+
+    var field = document.getElementById("Fld")
+    field.style.width = (width - 25) + "px";
+    field.focus();
+}
+
+function OnMouseDown(e)
+{
+    GetParent().ForwardMouseDown(document, e);
+}
+
+function GetParent()
+{
+    if(popup)
+        return opener;
+    else
+        return parent.parent;
+}
+
+function SetMatchLabel()
+{
+    var cmd = GetParent().commands[cmdIndex];
+    var colDef = "<input type=\"hidden\" name=\"COLS\" value=\"" + cmd.resultColumns.length + "\">";
+    for(var i = 0; i < cmd.resultColumns.length; i++)
+    {
+        colDef += "<input type=\"hidden\" name=\"CN" + i + "\" value=\"" + cmd.resultColumns[i].displayName + "\">";
+        colDef += "<input type=\"hidden\" name=\"CP" + i + "\" value=\"" + cmd.resultColumns[i].propertyName + "\">";
+    }
+    document.getElementById("MatchLabel").innerHTML = colDef;
+}
+
+</script>
+
+</head>
+<body class="SearchPrompt" onload="InitDocument()" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5 bottommargin=5 rightmargin=5>
     <table class="RegText" border="0" cellspacing="0" width="100%%">
         <tr><td class="Title"><span id="title"></span><hr></td></tr>
         <tr><td class="InfoText" id="prompt"></td></tr>
@@ -103,5 +106,5 @@
         <br><br>
         <input class="Ctrl" style="width: 70px;" type="submit" value="__#SEARCHPROMPTFIND#__">
     </form>
-    </body>
+</body>
 </html>

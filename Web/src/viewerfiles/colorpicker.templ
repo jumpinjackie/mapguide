@@ -1,270 +1,266 @@
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>__#COLORPICKERDLGTITLE#__</title>
-    <style type="text/css">
-      td.SubTitle
-      {
-      font-family: __#@font#__;
-      font-weight: bold;
-      font-size: __#@fontsize#__;
-      background-color: #DCDCDC;
-      color: black;
-      height: 20px;
-      }
-      .RegText
-      {
-      font-family: __#@font#__;
-      font-size: __#@fontsize#__;
-      }
-      .Ctrl
-      {
-      font-family: __#@font#__;
-      font-size: __#@fontsize#__;
-      }
-      td.clr
-      {
-      border: 1px black solid;
-      width: 16px;
-      }
-      td.selswatch
-      {
-      border: 1px black solid;
-      }
-    </style>
-    <script language="javascript" src="../viewerfiles/browserdetect.js"></script>
-    <script language=javascript>
-    var imgspin = new Image(28,22);
-    imgspin.src = "../stdicons/cp_arr.gif";
-    var imgspindis = new Image(28,22);
-    imgspindis.src = "../stdicons/cp_arr_dis.gif";
-    var r = 0, g = 0, b = 0;
-    var initColor = "%s";
-    var allowTransparency = %s;
-    var transparent = %s;
-    var hex = false;
-    
-    function InitDocument()
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>__#COLORPICKERDLGTITLE#__</title>
+<style type="text/css">
+    td.SubTitle
     {
-        if(!allowTransparency)
-            transparent = false;
-            
-        document.getElementById("TransDiv").style.display = allowTransparency? "block": "none";
-        document.getElementById("trans").checked = transparent;
-        document.getElementById("hex").checked = hex;
-        
-        document.getElementById("R").onblur = OnValidateColorField;
-        document.getElementById("G").onblur = OnValidateColorField;
-        document.getElementById("B").onblur = OnValidateColorField;
-        
-        SelectColor(initColor);
-        
-        OnTransparencyChanged();
+        font-family: __#@font#__;
+        font-weight: bold;
+        font-size: __#@fontsize#__;
+        background-color: #DCDCDC;
+        color: black;
+        height: 20px;
     }
-    
-    function SelectColor(clr)
+    .RegText
     {
-        if(clr.length != 6)
-            clr = "000000";
-        SetSelectedColor(parseInt(clr.substr(0, 2), 16),
-                parseInt(clr.substr(2, 2), 16),
-                parseInt(clr.substr(4, 2), 16));
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
     }
-    
-    function EnableControls()
+    .Ctrl
     {
-        EnableSpinControls(!transparent);
-        document.getElementById("R").disabled = transparent;
-        document.getElementById("G").disabled = transparent;
-        document.getElementById("B").disabled = transparent;
-        document.getElementById("hex").disabled = transparent;
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
     }
-    
-    function SetSelectedColor(red,green,blue)
+    td.clr
     {
-        r = Normalize(red);
-        g = Normalize(green);
-        b = Normalize(blue);
-        
-        var rs = ToStr(r), gs = ToStr(g), bs = ToStr(b);
-        
-        document.getElementById("R").value = rs;
-        document.getElementById("G").value = gs;
-        document.getElementById("B").value = bs;
+        border: 1px black solid;
+        width: 16px;
+    }
+    td.selswatch
+    {
+        border: 1px black solid;
+    }
+</style>
 
-        var swst = document.getElementById("selswatch").style;
-        if(!transparent)
-        {
-            if(hex)
-                swst.backgroundColor = "#" + rs + gs + bs;
-            else
-                swst.backgroundColor = "#" + MakeRgb(r,g,b);
-        }
-        else
-            swst.backgroundColor = "white";
-    }
-    
-    function MakeRgb(r,g,b)
-    {
-        return ToHexStr(r) + ToHexStr(g) + ToHexStr(b);
-    }
-    
-    function Normalize(clr)
-    {
-        if(clr < 0)
-            return 0;
-        else if(clr > 255)
-            return 255;
-        else
-            return clr;
-    }
-    
-    
-    function ToStr(clr)
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language=javascript>
+
+var imgspin = new Image(28,22);
+imgspin.src = "../stdicons/cp_arr.gif";
+var imgspindis = new Image(28,22);
+imgspindis.src = "../stdicons/cp_arr_dis.gif";
+var r = 0, g = 0, b = 0;
+var initColor = "%s";
+var allowTransparency = %s;
+var transparent = %s;
+var hex = false;
+
+function InitDocument()
+{
+    if(!allowTransparency)
+        transparent = false;
+
+    document.getElementById("TransDiv").style.display = allowTransparency? "block": "none";
+    document.getElementById("trans").checked = transparent;
+    document.getElementById("hex").checked = hex;
+
+    document.getElementById("R").onblur = OnValidateColorField;
+    document.getElementById("G").onblur = OnValidateColorField;
+    document.getElementById("B").onblur = OnValidateColorField;
+
+    SelectColor(initColor);
+    OnTransparencyChanged();
+}
+
+function SelectColor(clr)
+{
+    if(clr.length != 6)
+        clr = "000000";
+    SetSelectedColor(parseInt(clr.substr(0, 2), 16), parseInt(clr.substr(2, 2), 16), parseInt(clr.substr(4, 2), 16));
+}
+
+function EnableControls()
+{
+    EnableSpinControls(!transparent);
+    document.getElementById("R").disabled = transparent;
+    document.getElementById("G").disabled = transparent;
+    document.getElementById("B").disabled = transparent;
+    document.getElementById("hex").disabled = transparent;
+}
+
+function SetSelectedColor(red,green,blue)
+{
+    r = Normalize(red);
+    g = Normalize(green);
+    b = Normalize(blue);
+
+    var rs = ToStr(r), gs = ToStr(g), bs = ToStr(b);
+    document.getElementById("R").value = rs;
+    document.getElementById("G").value = gs;
+    document.getElementById("B").value = bs;
+
+    var swst = document.getElementById("selswatch").style;
+    if(!transparent)
     {
         if(hex)
-            return ToHexStr(clr);
-            
-        return clr.toString(10);
-    }
-    
-    function ToHexStr(clr)
-    {
-        var cs = clr.toString(16);
-        if(cs.length == 1)
-            cs = "0" + cs;
-        return cs.toUpperCase();
-    }
-
-    
-    function EnableSpinControls(enable)
-    {
-        document.getElementById("redspin").src = (enable? imgspin.src: imgspindis.src);
-        document.getElementById("greenspin").src = (enable? imgspin.src: imgspindis.src);
-        document.getElementById("bluespin").src = (enable? imgspin.src: imgspindis.src);
-    }
-    
-    function IncrRed()
-    {
-        if(transparent)
-            return;
-        r = IncrClr(r);
-        SetSelectedColor(r,g,b);
-    }
-
-    function DecrRed()
-    {
-        if(transparent)
-            return;
-        r = DecrClr(r);
-        SetSelectedColor(r,g,b);
-    }
-    
-    function IncrClr(c)
-    {
-        if( ++ c >= 255)
-            c = 255;
-        return c;
-    }
-
-    function DecrClr(c)
-    {
-        if(--c <= 0)
-            c = 0;
-        return c;
-    }
-
-    function IncrGreen()
-    {
-        if(transparent)
-            return;
-        g = IncrClr(g);
-        SetSelectedColor(r,g,b);
-    }
-
-    function DecrGreen()
-    {
-        if(transparent)
-            return;
-        g = DecrClr(g);
-        SetSelectedColor(r,g,b);
-    }
-
-    function IncrBlue()
-    {
-        if(transparent)
-            return;
-        b = IncrClr(b);
-        SetSelectedColor(r,g,b);
-    }
-
-    function DecrBlue()
-    {
-        if(transparent)
-            return;
-        b = DecrClr(b);
-        SetSelectedColor(r,g,b);
-    }
-
-    function OnOk()
-    {
-        try
-        {
-            opener.OnColorPicked(MakeRgb(r,g,b), transparent);
-        }
-        catch(e){}
-        window.close();
-    }
-    
-    function OnCancel()
-    {
-        window.close();
-    }
-    
-    function OnTransparencyChanged()
-    {
-        transparent = document.getElementById("trans").checked;
-        EnableControls(transparent);
-        document.getElementById("selswatch").style.border = transparent? "0px": "1px black solid";
-        SetSelectedColor(r,g,b);
-    }
-    
-    function OnFormatChanged()
-    {
-        hex = document.getElementById("hex").checked;
-        SetSelectedColor(r,g,b);
-    }
-    
-    function OnValidateColorField(e)
-    {
-        if(msie)
-            tgt = event.srcElement;
+            swst.backgroundColor = "#" + rs + gs + bs;
         else
-            tgt = e.target;
-            
-        v = tgt.value;
-        i = parseInt(v, hex? 16: 10);
-        i = Normalize(i);
-        
-        if(tgt.id == "R")
-            r = i;
-        else if(tgt.id == "G")
-            g = i;
-        else if(tgt.id == "B")
-            b = i;
-        else
-            return;
-            
-        SetSelectedColor(r,g,b);
+            swst.backgroundColor = "#" + MakeRgb(r,g,b);
     }
-    
-    </script>
+    else
+        swst.backgroundColor = "white";
+}
+
+function MakeRgb(r,g,b)
+{
+    return ToHexStr(r) + ToHexStr(g) + ToHexStr(b);
+}
+
+function Normalize(clr)
+{
+    if(clr < 0)
+        return 0;
+    else if(clr > 255)
+        return 255;
+    else
+        return clr;
+}
+
+function ToStr(clr)
+{
+    if(hex)
+        return ToHexStr(clr);
+    return clr.toString(10);
+}
+
+function ToHexStr(clr)
+{
+    var cs = clr.toString(16);
+    if(cs.length == 1)
+        cs = "0" + cs;
+    return cs.toUpperCase();
+}
+
+function EnableSpinControls(enable)
+{
+    document.getElementById("redspin").src = (enable? imgspin.src: imgspindis.src);
+    document.getElementById("greenspin").src = (enable? imgspin.src: imgspindis.src);
+    document.getElementById("bluespin").src = (enable? imgspin.src: imgspindis.src);
+}
+
+function IncrRed()
+{
+    if(transparent)
+        return;
+    r = IncrClr(r);
+    SetSelectedColor(r,g,b);
+}
+
+function DecrRed()
+{
+    if(transparent)
+        return;
+    r = DecrClr(r);
+    SetSelectedColor(r,g,b);
+}
+
+function IncrClr(c)
+{
+    if( ++ c >= 255)
+        c = 255;
+    return c;
+}
+
+function DecrClr(c)
+{
+    if(--c <= 0)
+        c = 0;
+    return c;
+}
+
+function IncrGreen()
+{
+    if(transparent)
+        return;
+    g = IncrClr(g);
+    SetSelectedColor(r,g,b);
+}
+
+function DecrGreen()
+{
+    if(transparent)
+        return;
+    g = DecrClr(g);
+    SetSelectedColor(r,g,b);
+}
+
+function IncrBlue()
+{
+    if(transparent)
+        return;
+    b = IncrClr(b);
+    SetSelectedColor(r,g,b);
+}
+
+function DecrBlue()
+{
+    if(transparent)
+        return;
+    b = DecrClr(b);
+    SetSelectedColor(r,g,b);
+}
+
+function OnOk()
+{
+    try
+    {
+        opener.OnColorPicked(MakeRgb(r,g,b), transparent);
+    }
+    catch(e) {}
+    window.close();
+}
+
+function OnCancel()
+{
+    window.close();
+}
+
+function OnTransparencyChanged()
+{
+    transparent = document.getElementById("trans").checked;
+    EnableControls(transparent);
+    document.getElementById("selswatch").style.border = transparent? "0px": "1px black solid";
+    SetSelectedColor(r,g,b);
+}
+
+function OnFormatChanged()
+{
+    hex = document.getElementById("hex").checked;
+    SetSelectedColor(r,g,b);
+}
+
+function OnValidateColorField(e)
+{
+    if(msie)
+        tgt = event.srcElement;
+    else
+        tgt = e.target;
+
+    v = tgt.value;
+    i = parseInt(v, hex? 16: 10);
+    i = Normalize(i);
+
+    if(tgt.id == "R")
+        r = i;
+    else if(tgt.id == "G")
+        g = i;
+    else if(tgt.id == "B")
+        b = i;
+    else
+        return;
+
+    SetSelectedColor(r,g,b);
+}
+
+</script>
+
 </head>
 <body bgcolor="#FFFFFF" onload="InitDocument()">
   <table cellpadding="0" cellspacing="0" border="0">
     <tr><td colspan=18 class="SubTitle">__#COLORPICKERTITLE#__</td></tr>
     <tr height=10><td colspan=18 ></td></tr>
-    
+
     <tr height=16>
     <td class="clr" bgcolor="#330000" onclick="SelectColor('330000')">&nbsp;</td>
     <td class="clr" bgcolor="#333300" onclick="SelectColor('333300')">&nbsp;</td>
@@ -541,22 +537,21 @@
     <tr height=5><td colspan=18 > </td></tr>
     <tr class="RegText"><td colspan=18><input type="checkbox" id="hex" class="Ctrl" onclick="OnFormatChanged()">__#COLORPICKERHEXFORMAT#__</td></tr>
     <tr height=5><td colspan=18 > </td></tr>
-    <tr><td colspan=18><input class="Ctrl" type="button" value="__#BUTTONOK#__" style="width: 70px;" onclick="OnOk()"> <input class="Ctrl" type="button" value="__#BUTTONCANCEL#__" style="width: 70px;" onclick="OnCancel()"> 
+    <tr><td colspan=18><input class="Ctrl" type="button" value="__#BUTTONOK#__" style="width: 70px;" onclick="OnOk()"> <input class="Ctrl" type="button" value="__#BUTTONCANCEL#__" style="width: 70px;" onclick="OnCancel()">
     </td>
     </tr>
-</table>
-<map NAME="redspinmap">
-   <area shape="rect" coords="0,0,13,10"  onclick="IncrRed()">
-   <area shape="rect" coords="0,11,13,22"  onclick="DecrRed()">
-</map>
-<map NAME="greenspinmap">
-   <area shape="rect" coords="0,0,13,10"  onclick="IncrGreen()">
-   <area shape="rect" coords="0,11,13,22"  onclick="DecrGreen()">
-</map>
-<map NAME="bluespinmap">
-   <area shape="rect" coords="0,0,13,10"  onclick="IncrBlue()">
-   <area shape="rect" coords="0,11,13,22"  onclick="DecrBlue()">
-</map>
-
+  </table>
+  <map NAME="redspinmap">
+    <area shape="rect" coords="0,0,13,10"  onclick="IncrRed()">
+    <area shape="rect" coords="0,11,13,22"  onclick="DecrRed()">
+  </map>
+  <map NAME="greenspinmap">
+    <area shape="rect" coords="0,0,13,10"  onclick="IncrGreen()">
+    <area shape="rect" coords="0,11,13,22"  onclick="DecrGreen()">
+  </map>
+  <map NAME="bluespinmap">
+    <area shape="rect" coords="0,0,13,10"  onclick="IncrBlue()">
+    <area shape="rect" coords="0,11,13,22"  onclick="DecrBlue()">
+  </map>
 </body>
 </html>

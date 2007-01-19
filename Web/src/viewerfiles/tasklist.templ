@@ -1,7 +1,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
 <script language="javascript" src="../viewerfiles/browserdetect.js"></script>
 <script language=javascript>
+
 var scrollable = 0;
 var tc;
 var tcTimer = null;
@@ -15,7 +17,7 @@ function BuildList(maxWidth, maxHeight, ownerRef)
     var taskItems = ref.taskItems;
     var commands = ref.commands;
     var fullHeight = 2;
-    
+
     owner = ownerRef;
     for(var i=0; i < taskItems.length; i++)
     {
@@ -31,13 +33,11 @@ function BuildList(maxWidth, maxHeight, ownerRef)
     html += "<div class=\"TList\" id=\"TList\">\n" +
             "<div class=\"TInnerList\" id=\"TInnerList\">\n" +
             "<table class=\"TContent\" id=\"TContent\" width=100% cellspacing=0 cellpadding=0>\n";
-    
+
     for(var i=0; i < taskItems.length; i++)
     {
         if(taskItems[i].type == 2)
-        {
             html += "<tr height=3><td colspan=2 align=center valign=center><div style=\"width: 95%; height: 2px; border-bottom: #a0a0a0 1px solid;\"><span></span></div></td></tr>\n";
-        }
         else if(taskItems[i].type == 1)
         {
             var cmdIndex = taskItems[i].cmdIndex;
@@ -53,17 +53,17 @@ function BuildList(maxWidth, maxHeight, ownerRef)
             html += "<tr height=21 id=\"" + i + "\" state=\"" + (cmd.enabled? "true": "false") + "\" icon=\"" + icon + "\" icond=\"" + icond +  "\" name=\"" + cmdIndex + "\" onmousemove=\"OnEnterItem(this)\" onmouseout=\"OnLeaveItem(this)\" onclick=\"OnClickItem(this)\"" + (cmd.enabled? "": " style=\"color: #b4b4b4\"") + "><td width=24 align=center>" + imgTag + "</td><td><span id=\"T" + i + "\">" + taskItems[i].name + "</span></td></tr>\n";
         }
     }
-            
+
     html += "</table></div></div>";
     html += "</div>\n<div class=\"TScrollDnArea\" id=\"TScrollDnArea\" align=center style=\"height: 16px;\"><img id=\"ArrowDn\" src=\"../stdicons/mn_scrolldown.gif\" width=16 height=16></div>\n";
     //alert(html);
-    
+
     outerList = document.getElementById("TaskList");
     xHeight = scrollable? 32: 0;
     outerList.innerHTML = html;
     outerList.style.height = actualHeight + xHeight + (scrollable? msie? 2: 0: 0);
     scrollAmount = fullHeight - actualHeight;
-    
+
     su = document.getElementById("TScrollUpArea");
     if(scrollable) {
         su.style.position = "absolute";
@@ -73,7 +73,7 @@ function BuildList(maxWidth, maxHeight, ownerRef)
     }
     else
         su.style.display = "none";
-    
+
     list = document.getElementById("TList");
     list.style.position = "absolute";
     list.style.width = maxWidth;
@@ -86,25 +86,25 @@ function BuildList(maxWidth, maxHeight, ownerRef)
     innerlist.style.width = maxWidth;
     innerlist.style.left = 0;
     innerlist.style.top = 0;
-    
+
     sd = document.getElementById("TScrollDnArea");
     if(scrollable) {
         sd.style.position = "absolute";
         sd.style.top = actualHeight + 16;
         sd.style.left = 0;
         sd.style.width = maxWidth;
-    }        
+    }
     else
         sd.style.display = "none";
-        
+
     if(scrollable) {
         su.onmousemove = onStartScrollingUp
         su.onmouseout = onStopScrolling
         sd.onmousemove = onStartScrollingDown
         sd.onmouseout = onStopScrolling
-    }            
+    }
     enableArrow(false, true);
-    
+
     tc = (new Date()).getTime();
     tcTimer = setInterval(CheckActivity, 3000);
 
@@ -115,23 +115,24 @@ function OnEnterItem(obj)
 {
     var bgcolor = "#dcdcdc";
     var color = "black";
-    
+
     var name = firefox? obj.attributes["name"].nodeValue: obj.name;
     try
     {
         owner.OnCommandSelected(name);
-    } catch(e){}
-        
+    }
+    catch(e) {}
+
     var enabled = (firefox? obj.attributes["state"].nodeValue: obj.state) != "false";
     if(!enabled)
     {
         bgcolor = "#f0f0f0";
         color = "#b4b4b4";
     }
-            
+
     obj.style.backgroundColor = bgcolor;
     obj.style.color = color;
-    
+
     clearInterval(tcTimer);
     tcTimer = setInterval(CheckActivity, 3000);
     tc = (new Date()).getTime();
@@ -158,31 +159,42 @@ function OnLeaveItem(obj)
 
     obj.style.backgroundColor = bgcolor;
     obj.style.color = color;
-    
+
     return false;
 }
-function onStartScrollingUp(e) {
-    if(!scrolling) {
+
+function onStartScrollingUp(e)
+{
+    if(!scrolling)
+    {
         scrollTimer = setInterval(scrollUp, 50);
         scrolling = true;
     }
     return false;
 }
-function onStopScrolling(e) {
-    if(scrolling) {
+
+function onStopScrolling(e)
+{
+    if(scrolling)
+    {
         clearInterval(scrollTimer);
         scrolling = false;
     }
     return false;
 }
-function onStartScrollingDown(e) {
-    if(!scrolling) {
+
+function onStartScrollingDown(e)
+{
+    if(!scrolling)
+    {
         scrollTimer = setInterval(scrollDown, 50);
         scrolling = true;
     }
     return false;
 }
-function scrollUp() {
+
+function scrollUp()
+{
     if(scrolled == 0)
         return;
     scrolled -= scrollInc;
@@ -190,14 +202,17 @@ function scrollUp() {
         scrolled = 0;
     document.getElementById("TInnerList").style.top = -scrolled +"px";
     enableArrow(true, false);
-    
-    if(scrolled == 0) {
+
+    if(scrolled == 0)
+    {
         clearInterval(scrollTimer);
         scrolling = false;
         enableArrow(false, true);
     }
 }
-function scrollDown() {
+
+function scrollDown()
+{
     if(scrolled >= scrollAmount)
         return;
     scrolled += scrollInc;
@@ -206,28 +221,36 @@ function scrollDown() {
     document.getElementById("TInnerList").style.top = -scrolled +"px";
     enableArrow(true, true);
 
-    if(scrolled == scrollAmount) {
+    if(scrolled == scrollAmount)
+    {
         clearInterval(scrollTimer);
         scrolling = false;
         enableArrow(false, false);
     }
 }
-function enableArrow(enabled, up) {
+
+function enableArrow(enabled, up)
+{
    if(up)
       document.getElementById("ArrowUp").src = enabled? "../stdicons/mn_scrollup.gif": "../stdicons/mn_scrollup_disabled.gif";
    else
       document.getElementById("ArrowDn").src = enabled? "../stdicons/mn_scrolldown.gif": "../stdicons/mn_scrolldown_disabled.gif";
 }
-function OnClickItem(obj) {
+
+function OnClickItem(obj)
+{
     var name = firefox? obj.attributes["name"].nodeValue: obj.name;
     try
     {
         owner.ExecuteCommand(name);
         parent.OnListIdle();
-    } catch(e) {}
+    }
+    catch(e) {}
     return false;
 }
-function CheckActivity() {
+
+function CheckActivity()
+{
     var now = (new Date()).getTime();
     if(now - tc >= 5000)
     {
@@ -235,9 +258,10 @@ function CheckActivity() {
         parent.OnListIdle();
     }
 }
-    
-  </script>
-    <style>
+
+</script>
+
+<style>
     div.TaskList
     {
         border-bottom-width: 2px;
@@ -257,7 +281,7 @@ function CheckActivity() {
         position: absolute;
         left: 0px;
         top: 0px;
-        height: 16px; 
+        height: 16px;
         background: #f0f0f0;
         width: 100%;
         cursor: hand;
@@ -267,7 +291,7 @@ function CheckActivity() {
         position: absolute;
         left: 0px;
         top: 0px;
-        height: 16px; 
+        height: 16px;
         background: #f0f0f0;
         width: 100%;
         cursor: hand;
@@ -280,9 +304,9 @@ function CheckActivity() {
         color: black;
         background-color: #f0f0f0;
     }
-    </style>
+</style>
 </head>
 <body bgcolor=#f0f0f0 marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 bottommargin=0 rightmargin=0>
-<div class="TaskList" id="TaskList" style="width: 100%" >
-</div>
+    <div class="TaskList" id="TaskList" style="width: 100%" >
+    </div>
 </body>

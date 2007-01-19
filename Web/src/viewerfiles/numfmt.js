@@ -6,16 +6,16 @@ var decpoint = ".";  // use period as decimal point
 var percent = "%";
 var currency = "$";  // use dollar sign for currency
 
-function formatNumber(number, format, print) 
+function formatNumber(number, format, print)
 {
-    if (number - 0 != number) 
+    if (number - 0 != number)
         return null;  // if number is NaN return null
     var useSeparator = format.indexOf(separator) != -1;  // use separators in number
     var usePercent = format.indexOf(percent) != -1;  // convert output to percentage
     var useCurrency = format.indexOf(currency) != -1;  // use currency format
     var isNegative = (number < 0);
     number = Math.abs (number);
-    if (usePercent) 
+    if (usePercent)
     number *= 100;
     format = strip(format, separator + percent + currency);  // remove key characters
     number = "" + number;  // convert number input to string
@@ -44,9 +44,9 @@ function formatNumber(number, format, print)
             nrightEnd = nrightEnd.substring(1);
             nleftEnd = (nleftEnd - 0) + 1;
         }
-    } 
+    }
     else {
-        for (var i=nrightEnd.length; srightEnd.length > nrightEnd.length; i++) 
+        for (var i=nrightEnd.length; srightEnd.length > nrightEnd.length; i++)
         {
             if (srightEnd.charAt(i) == "0") nrightEnd += "0";  // append zero to RHS of number
             else break;
@@ -78,11 +78,9 @@ function separate(input, separator) {  // format input using 'separator' to mark
     input = "" + input;
     var output = "";  // initialise output string
     for (var i=0; i < input.length; i++) {
-        if (i != 0 && (input.length - i) % 3 == 0) 
+        if (i != 0 && (input.length - i) % 3 == 0)
             output += separator;
         output += input.charAt(i);
     }
     return output;
 }
-
-

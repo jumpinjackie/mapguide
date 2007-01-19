@@ -16,6 +16,7 @@ table.PopupTableContent
     font-weight: normal;
     color: black;
 }
+
 /*
     Task pane styles
 */
@@ -24,6 +25,7 @@ p.TaskPane
     font-family: arial, helvetica, sans-serif;
     font-size: 10pt;
 }
+
 /*
    Toolbar styles
 */
@@ -108,4 +110,3 @@ span.StatusLogo
     font-family: arial, helvetica, sans-serif;
     font-size: 7pt;
 }
-
