@@ -42,11 +42,11 @@ void MgResource::Open(MgResourceService* resourceService, MgResourceIdentifier* 
     SAFE_ADDREF((MgResourceIdentifier*)m_resId);
 
     Ptr<MgByteReader> breader = resourceService->GetResourceData(m_resId, m_resourceDataTag);
-   
+
     //get the byte reader content into a memory stream
     MgByteSink sink(breader);
     Ptr<MgByte> bytes = sink.ToBuffer();
-    Ptr<MgMemoryStreamHelper> streamHelper = 
+    Ptr<MgMemoryStreamHelper> streamHelper =
         new MgMemoryStreamHelper((INT8*) bytes->Bytes(), bytes->GetLength(), false);
     Ptr<MgStream> stream = new MgStream(streamHelper);
 
@@ -81,7 +81,7 @@ void MgResource::SerializeToRepository(MgResourceService* resourceService, bool 
 {
     //let the object serialize itself in a memory stream
     Ptr<MgMemoryStreamHelper> streamHelper = new MgMemoryStreamHelper();
-    
+
     Ptr<MgStream> stream = new MgStream(streamHelper);
 
     Serialize(stream);
@@ -92,7 +92,7 @@ void MgResource::SerializeToRepository(MgResourceService* resourceService, bool 
 
     if(create)
     {
-        //create a fake content for this resource, needed for ading the resource
+        //create fake content for this resource, needed for adding the resource
         const char* resTypeName = GetResourceTypeName();
         string xmlContent = string("<?xml version=\"1.0\" encoding=\"UTF-8\"?><") + resTypeName + "></" + resTypeName + ">";
         Ptr<MgByteSource> bsource1 = new MgByteSource((BYTE_ARRAY_IN)xmlContent.c_str(), (INT32)xmlContent.length());
@@ -100,8 +100,8 @@ void MgResource::SerializeToRepository(MgResourceService* resourceService, bool 
 
         resourceService->SetResource(m_resId, content, NULL);
     }
-    resourceService->SetResourceData(m_resId, m_resourceDataTag, L"Stream", resourceData);
 
+    resourceService->SetResourceData(m_resId, m_resourceDataTag, L"Stream", resourceData);
 }
 
 // Destruct a MgResource object

@@ -419,7 +419,7 @@ INTERNAL_API:
     /// \param stream
     /// Stream.
     ///
-    virtual void Deserialize(MgStream* stream);  
+    virtual void Deserialize(MgStream* stream);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -430,7 +430,6 @@ INTERNAL_API:
     ///
     void SetDelayedLoadResourceService(MgResourceService* service);
 
-  
 protected:
 
     //////////////////////////////////////////////////////////////////
@@ -470,15 +469,14 @@ CLASS_ID:
 
 private:
 
-    // Version for serialization 
+    // Version for serialization
     static const int m_serializeVersion = (3<<16) + 0;
 
     static STRING m_layerGroupTag;
     Ptr<MgMemoryStreamHelper> m_layerGroupHelper;
     Ptr<MgResourceService> m_resourceService;
     bool m_inSave;
-
-
+    bool m_unpackedLayersGroups;
 };
 /// \}
 

@@ -34,9 +34,11 @@ STRING MgMap::m_layerGroupTag = L"LayerGroupData";
 //
 MgMap::MgMap()
     : MgMapBase(),
-    m_inSave(false)
+    m_inSave(false),
+    m_unpackedLayersGroups(false)
 {
 }
+
 
 //////////////////////////////////////////////////////////////
 // Initializes a new Map object.
@@ -314,8 +316,12 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
 
     m_trackChangesDisabled = false;
 
+    // there's nothing to unpack anymore in this case
+    m_unpackedLayersGroups = true;
+
     MG_CATCH_AND_THROW(L"MgMap.Create")
 }
+
 
 //////////////////////////////////////////////////////////////
 // Call down to base class implementation.  Ptr<> seems to be
@@ -356,11 +362,13 @@ void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Session:" + sessionId + L"//" + mapName + L"." + MgResourceType::Map);
     MgResource::Open(resourceService, resId);
 
-    //Note:  Layer and Groups are loaded on demand by UnpackLayerAndGroups
+    //Note: Layers and Groups are loaded on demand by UnpackLayersAndGroups
 
     m_trackChangesDisabled = false;
 }
 
+
+//////////////////////////////////////////////////////////////
 // Saves the resource using the specified resource service and resource identifier.
 // This method assumes a valid resource identifier has already been established
 // for this resource via either Open or Save
@@ -396,6 +404,8 @@ void MgMap::Save(MgResourceService* resourceService)
     m_inSave = false;
 }
 
+
+//////////////////////////////////////////////////////////////
 // Saves the resource using the specified resource service and resource identifier.
 //
 void MgMap::Save(MgResourceService* resourceService, MgResourceIdentifier* resourceId)
@@ -445,6 +455,7 @@ void MgMap::Dispose()
     delete this;
 }
 
+
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Unpacks layers and groups from memory stream - lazy initialization
@@ -470,17 +481,15 @@ void MgMap::Dispose()
 ///
 void MgMap::UnpackLayersAndGroups()
 {
-    // Temporary byte array for on-demand loading
+    // check if we already unpacked things
+    if (m_unpackedLayersGroups)
+        return;
+
+    // Temporary byte array for on-demand loading.
     Ptr<MgByte> bytes;
 
     if (NULL == (MgMemoryStreamHelper*) m_layerGroupHelper)
     {
-        if (m_layers->GetCount() || m_groups->GetCount())
-        {
-            // Already unpacked, just return.
-            return;
-        }
-
         // Need to query from Resource Service
         if (NULL != (MgResourceService*) m_resourceService)
         {
@@ -565,7 +574,10 @@ void MgMap::UnpackLayersAndGroups()
     bytes = NULL;
 
     m_trackChangesDisabled = false;
+
+    m_unpackedLayersGroups = true;
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// \brief
@@ -573,9 +585,9 @@ void MgMap::UnpackLayersAndGroups()
 ///
 MgMemoryStreamHelper* MgMap::PackLayersAndGroups()
 {
-    if (0 == m_layers->GetCount() && 0 == m_groups->GetCount())
+    if (!m_unpackedLayersGroups)
     {
-        // Nothing to pack, or data has not changed.  Return NULL;
+        // Nothing to pack if we haven't unpacked the data.  Return NULL.
         return NULL;
     }
 
