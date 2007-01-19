@@ -67,11 +67,15 @@ void MgHttpGetMapImage::Execute(MgHttpResponse& hResponse)
 
     Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(CreateService(MgServiceType::ResourceService));
 
+    bool openedMap = false;
+
     // Create MgMap and selection
     Ptr<MgMap> map = new MgMap();
     Ptr<MgSelection> selection;
     if (!m_mapName.empty() && !sessionId.empty())
     {
+        openedMap = true;
+
         map->Open(resourceService, m_mapName);
 
         // Get the selection
@@ -92,6 +96,12 @@ void MgHttpGetMapImage::Execute(MgHttpResponse& hResponse)
     // Call the HTML controller to render the map image
     MgHtmlController controller(m_siteConn);
     Ptr<MgByteReader> reader = controller.GetMapImage(map, selection, m_mapFormat, commands);
+
+    // If we opened the map from the repository then save it back to ensure
+    // any track changes are removed from the persisted version, since these
+    // are not applicable for AJAX.
+    if (openedMap)
+        map->Save(resourceService);
 
     // Set the result
     hResult->SetResultObject(reader, reader->GetMimeType());
