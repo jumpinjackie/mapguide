@@ -52,27 +52,26 @@ function initMenu()
 
 function enableArrow(menuObj, enabled, up)
 {
-   if(up)
-      menuObj.scrollUpArrow.src = enabled? menuObj.iconScrollUp: menuObj.iconScrollUpDisabled;
-   else
-      menuObj.scrollDownArrow.src = enabled? menuObj.iconScrollDown: menuObj.iconScrollDownDisabled;
+    if(up)
+        menuObj.scrollUpArrow.src = enabled? menuObj.iconScrollUp: menuObj.iconScrollUpDisabled;
+    else
+        menuObj.scrollDownArrow.src = enabled? menuObj.iconScrollDown: menuObj.iconScrollDownDisabled;
 }
 
 function onEnterOption(e)
 {
     var bgcolor = "#dcdcdc";
     var color = "black";
-    
+
     var menuObj = this.menuObj;
     if(menuObj != null)
     {
         var name = firefox? this.attributes["name"].nodeValue: this.name;
-        
         if(name.indexOf("Sub:") == 0)
         {
             var subMenu = menuObj.subMenus[name.substr(4)];
-
             if(menuObj.currChildMenu)
+            {
                 if(subMenu.menuName == menuObj.currChildMenu.menuName)
                 {
                     this.style.backgroundColor = bgcolor;
@@ -84,6 +83,7 @@ function onEnterOption(e)
                     hidePopup(menuObj.currChildMenu);
                     menuObj.currChildMenu = null;
                 }
+            }
             menuObj.mouseY = (msie? event.clientY: e.clientY);
             menuObj.currChildMenu = subMenu;
             showPopup(subMenu, true, -1, -1);
@@ -95,24 +95,24 @@ function onEnterOption(e)
                 hidePopup(menuObj.currChildMenu);
                 menuObj.currChildMenu = null;
             }
-                
+
             if(menuObj.owner)
             {
                 try
                 {
                     menuObj.owner.OnCommandSelected(name);
-                } catch(e){}
+                }
+                catch(e) {}
             }
-                
+
             var enabled = firefox? this.attributes["state"].nodeValue: this.state;
             if(!enabled || enabled == "false")
                 return true;
-            
         }
     }
+
     this.style.backgroundColor = bgcolor;
     this.style.color = color;
-
     return true;
 }
 
@@ -130,7 +130,8 @@ function onLeaveOption(e)
             try
             {
                 menuObj.owner.OnCommandSelected(-1);
-            } catch(e) {}
+            }
+            catch(e) {}
         }
         name = firefox? this.attributes["name"].nodeValue: this.name;
         if(name.indexOf("Sub:") != 0)
@@ -143,7 +144,6 @@ function onLeaveOption(e)
 
     this.style.backgroundColor = bgcolor;
     this.style.color = color;
-
     return true;
 }
 
@@ -162,7 +162,7 @@ function scrollUp(menuObj)
         scrollingMenu.scrolled = 0;
     scrollingMenu.innerListDiv.style.top = -scrollingMenu.scrolled +"px";
     enableArrow(scrollingMenu, true, false);
-    
+
     if(scrollingMenu.scrolled == 0)
     {
         clearInterval(scrollingMenu.scrollTimer);
@@ -178,7 +178,7 @@ function scrollDown(menuObj)
         alert("No Menu object !!!");
         return;
     }
-        
+
     if(scrollingMenu.scrolled >= scrollingMenu.scrollAmount)
         return;
     scrollingMenu.scrolled += scrollingMenu.scrollInc;
@@ -199,13 +199,12 @@ function onStartScrollingUp(e)
 {
     var ev = (msie? event: e);
     var tgt = (msie? ev.srcElement: e.target);
-    
+
     var menuObj = tgt.menuObj;
     if(menuObj == null)
         return false;
-        
+
     scrollingMenu = menuObj;
-    
     if(!menuObj.scrolling)
     {
         menuObj.scrollTimer = setInterval(scrollUp, menuObj.scrollDelay);
@@ -218,13 +217,12 @@ function onStopScrolling(e)
 {
     var ev = (msie? event: e);
     var tgt = (msie? ev.srcElement: e.target);
-    
+
     var menuObj = tgt.menuObj;
     if(menuObj == null)
         return false;
 
     scrollingMenu = null;
-
     if(menuObj.scrolling)
     {
         clearInterval(menuObj.scrollTimer);
@@ -237,13 +235,12 @@ function onStartScrollingDown(e)
 {
     var ev = (msie? event: e);
     var tgt = (msie? ev.srcElement: e.target);
-    
+
     var menuObj = tgt.menuObj;
     if(menuObj == null)
         return false;
-    
+
     scrollingMenu = menuObj;
-    
     if(!menuObj.scrolling)
     {
         menuObj.scrollTimer = setInterval(scrollDown, menuObj.scrollDelay);
@@ -260,7 +257,8 @@ function executeOption(menuObj, option)
         if(menu.parentMenu == null)
             break;
         menu = menu.parentMenu;
-    } while(true);
+    }
+    while(true);
 
     hidePopup(menu);
     if(menu.owner)
@@ -268,7 +266,8 @@ function executeOption(menuObj, option)
         try
         {
             menu.owner.ExecuteCommand(option);
-        } catch(e){}
+        }
+        catch(e) {}
     }
 }
 
@@ -276,7 +275,7 @@ function PopupMouseDown(e)
 {
     var ev = (msie? (e == null? event: e): e);
     var tgt = getOptionElement(msie? ev.srcElement: e.target);
-    
+
     var menuObj = tgt == null? null: tgt.menuObj;
     if(menuObj != null)
     {
@@ -289,15 +288,12 @@ function PopupMouseDown(e)
         return false;
 }
 
-
 function getOptionElement(elt)
 {
     if(elt == null)
         return null;
-        
     while(elt && elt.nodeName != "TR")
         elt = elt.parentNode;
-        
     return elt;
 }
 
@@ -319,8 +315,8 @@ function getMaxOptionLen(menuObj)
 
 function startBuildMenuContent(menuObj)
 {
-   resetContent(menuObj);
-   menuObj.content = "<div class=\"PopupScrollUpArea\" id=\"" + menuObj.menuName + "ScrollUpArea\" align=center style=\"height: 12px;\"><img id=\"" + menuObj.menuName + "ArrowUp\" src=\"" + menuObj.iconScrollUp + "\" width=16 height=16></div>" +
+    resetContent(menuObj);
+    menuObj.content = "<div class=\"PopupScrollUpArea\" id=\"" + menuObj.menuName + "ScrollUpArea\" align=center style=\"height: 12px;\"><img id=\"" + menuObj.menuName + "ArrowUp\" src=\"" + menuObj.iconScrollUp + "\" width=16 height=16></div>" +
         "<div class=\"PopupList\" id=\"" + menuObj.menuName + "List\" style=\"background-color: " + menuObj.bkColor + "\">\n" +
         "<div class=\"PopupInnerList\" id=\"" + menuObj.menuName + "InnerList\" style=\"background-color: " + menuObj.bkColor + "\">\n" +
         "<table class=\"PopupTableContent\" id=\"Tbl" + menuObj.menuName + "\" width=100% cellspacing=0 cellpadding=0 style=\"background-color: " + menuObj.bkColor + "\">\n";
@@ -346,7 +342,7 @@ function addMenuOption(menuObj, text, param, type, icon, iconDisabled, enabled)
             imgTag = "<img width=16 height=16 id=\"PMI" + param + "\" src=\"" + icon + "\" style=\"position: relative; top: 2px; left: 0px;\">";
         var optNum = menuObj.optionCount++ + 1;
 
-        if(type == 1)        
+        if(type == 1)
             menuObj.content += "<tr height=21 id=\"" + (menuObj.menuName + optNum) + "\" state=\"" + (enabled? "true": "false") + "\" icon=\"" + icon + "\" icond=\"" + iconDisabled +  "\" name=\"" + param + "\"><td width=24 align=center><div style=\"width: 100%; height: 21px;\">" + imgTag + "</td><td><span id=\"" + (menuObj.menuName + "T" + optNum) + "\">" + text + "</span></td><td width=8></div></td></tr>\n";
         else
             menuObj.content += "<tr height=21 id=\"" + (menuObj.menuName + optNum) + "\" name=\"" + param + "\"><td width=24 align=center><div style=\"width: 100%; height: 21px;\">" + imgTag + "</td><td><span id=\"" + (menuObj.menuName + "T" + optNum) + "\">" + text + "</span></td><td width=8><img src=\"" + iconCtxMenu + "\"></div></td></tr>\n";
@@ -371,16 +367,16 @@ function showPopup(menuObj, optimizeWidth, x, y)
     menuObj.scrollDownArea = document.getElementById(menuObj.menuName + "ScrollDownArea");
     menuObj.scrollUpArrow = document.getElementById(menuObj.menuName + "ArrowUp");
     menuObj.scrollDownArrow = document.getElementById(menuObj.menuName + "ArrowDown");
-    
+
     menuObj.scrollUpArea.menuObj = menuObj;
     menuObj.scrollDownArea.menuObj = menuObj;
-    
+
     for(var i=1; ; i++)
     {
         var obj = document.getElementById(menuObj.menuName + i);
         if(obj == null)
             break;
-            
+
         var name = firefox? obj.attributes["name"].nodeValue: obj.name;
         if(name.indexOf("Sub:") != 0)
         {
@@ -391,7 +387,8 @@ function showPopup(menuObj, optimizeWidth, x, y)
                 try
                 {
                     enabled = menuObj.owner.OnEnableCommand(name);
-                } catch(e) {}
+                }
+                catch(e) {}
             }
             if(state != enabled)
             {
@@ -405,20 +402,20 @@ function showPopup(menuObj, optimizeWidth, x, y)
                     iconElt.src = enabled? (firefox? obj.attributes["icon"].nodeValue: obj.icon): (firefox? obj.attributes["icond"].nodeValue: obj.icond);
             }
          }
-            
+
         obj.onmouseover = onEnterOption;
         obj.onmouseout = onLeaveOption;
         obj.menuObj = menuObj;
     }
-    
+
     menuObj.scrolled = 0;
     menuObj.scrolling = false;
-    
+
     menuObj.scrollUpArea.onmousemove = onStartScrollingUp
     menuObj.scrollUpArea.onmouseout = onStopScrolling
     menuObj.scrollDownArea.onmousemove = onStartScrollingDown
     menuObj.scrollDownArea.onmouseout = onStopScrolling
-    
+
     var w, h;
     if(msie)
     {
@@ -430,7 +427,7 @@ function showPopup(menuObj, optimizeWidth, x, y)
         w = window.innerWidth - 2;
         h = window.innerHeight - 2;
     }
-    
+
     //calculate menu width and x position
     var mw = menuObj.minSize;
     if(optimizeWidth)
@@ -439,7 +436,7 @@ function showPopup(menuObj, optimizeWidth, x, y)
         if(lenMax > mw)
             mw = lenMax;
     }
-    
+
     menuObj.width = mw;
     var xPos;
 
@@ -517,7 +514,7 @@ function showPopup(menuObj, optimizeWidth, x, y)
     menuObj.menuDiv.style.left = xPos + "px";
     menuObj.menuDiv.style.visibility = "visible";
     menuObj.menuDiv.style.top = yPos + "px";
-    
+
     if(menuObj.withIFrame)
     {
         var iframe = document.getElementById("IFr" + menuObj.menuName);
@@ -528,41 +525,42 @@ function showPopup(menuObj, optimizeWidth, x, y)
         iframe.style.zIndex = menuObj.nesting * 2 + 100;
         iframe.style.visibility = "visible";
     }
-    
+
     menuObj.menuDiv.style.zIndex = menuObj.nesting * 2 + 101;
-    
+
    if(menuObj.nesting == 0 && menuObj.owner)
    {
         try
         {
             menuObj.owner.OnMenuShown(true);
-        } catch(e){}
+        }
+        catch(e) {}
    }
-    
 }
 
 function hidePopup(menuObj)
 {
-   if(menuObj == null)
-       return;
+    if(menuObj == null)
+        return;
 
-   if(menuObj.currChildMenu)
-   {
+    if(menuObj.currChildMenu)
+    {
         hidePopup(menuObj.currChildMenu);
         menuObj.currChildMenu = null;
-   }
-   if(menuObj.menuDiv != null)
-      menuObj.menuDiv.style.visibility = "hidden";
-   if(menuObj.withIFrame)
+    }
+    if(menuObj.menuDiv != null)
+        menuObj.menuDiv.style.visibility = "hidden";
+    if(menuObj.withIFrame)
         document.getElementById("IFr" + menuObj.menuName).style.visibility = "hidden";
-   clearInterval(menuObj.scrollTimer);
-   if(menuObj.nesting == 0 && menuObj.owner)
-   {
+    clearInterval(menuObj.scrollTimer);
+    if(menuObj.nesting == 0 && menuObj.owner)
+    {
         try
         {
             menuObj.owner.OnMenuShown(false);
-        } catch(e){}
-   }
+        }
+        catch(e) {}
+    }
 }
 
 function isPopupOpen(menuObj)

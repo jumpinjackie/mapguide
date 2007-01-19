@@ -1,51 +1,75 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
 <script language=javascript>
-    var ctrlLoaded = false;
-    var treeReady = false;
-    var intStateCompl = false;
-    var thisFrame = this;
-    var mapFrame = %s;
-    
+
+var ctrlLoaded = false;
+var treeReady = false;
+var intStateCompl = false;
+var thisFrame = this;
+var mapFrame = %s;
+
 // public functions -----------------------------------------------
 //
-function Refresh() {
+function Refresh()
+{
     thisFrame.legendScriptFrame.location.replace("%s?MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName()) + "&SESSION=" + GetMapFrame().GetSessionId() + "&SUMMARY=");
 }
-function InternalStateComplete() {
+
+function InternalStateComplete()
+{
     return thisFrame.intStateCompl;
 }
-function SetScale(scale) {
+
+function SetScale(scale)
+{
     thisFrame.legendUiFrame.SetScale(scale);
 }
-function GetLayer(layerId) {
+
+function GetLayer(layerId)
+{
     return thisFrame.legendUiFrame.GetLayer(layerId);
 }
-function GetLayers(onlyVisible, onlySelectable) {
+
+function GetLayers(onlyVisible, onlySelectable)
+{
     return thisFrame.legendUiFrame.GetLayers(onlyVisible, onlySelectable);
 }
-function GetBaseGroups(onlyVisible) {
+
+function GetBaseGroups(onlyVisible)
+{
     return thisFrame.legendUiFrame.GetBaseGroups(onlyVisible);
 }
+
 // private functions -----------------------------------------------
 //
-function IsUiReady() {
+function IsUiReady()
+{
     return thisFrame.ctrlLoaded;
 }
-function OnControlLoaded() {
+
+function OnControlLoaded()
+{
     thisFrame.ctrlLoaded = true;
 }
-function OnInternalStateComplete() {
+
+function OnInternalStateComplete()
+{
     thisFrame.intStateCompl = true;
 }
-function GetMapFrame() {
+
+function GetMapFrame()
+{
     return mapFrame;
 }
-function OnForwardMouseDown(e) {
+
+function OnForwardMouseDown(e)
+{
     thisFrame.legendUiFrame.OnForwardMouseDown(e);
 }
 
 </script>
+
 <frameset rows="0,*" frameborder=0 border=0>
     <frame name="legendScriptFrame" src="%s?MAPNAME=%s&LC=0&SESSION=%s" noresize>
     <frame name="legendUiFrame" src="%s?LOCALE=%s" noresize>

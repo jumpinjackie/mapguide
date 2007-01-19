@@ -1,8 +1,8 @@
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
-    <style type="text/css">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
+<style type="text/css">
     div.PopupMenu
     {
         position: absolute;
@@ -165,24 +165,28 @@
         font-size: __#@fontsize#__;
         font-weight: normal;
     }
-    </style>
-    <script language="javascript" src="../viewerfiles/browserdetect.js"></script>
-    <script language="javascript" src="../viewerfiles/contextmenu.js"></script>
-    <script type="text/javascript" src="../viewerfiles/wz_jsgraphics.js"></script>
-    <script type="text/javascript" src="../viewerfiles/hashtable.js"></script>
-    <script type="text/javascript" src="../viewerfiles/sarissa.js"></script>
-    <script type="text/javascript" src="../viewerfiles/digitize.js"></script>
-    <script language=javascript>
+</style>
+
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language="javascript" src="../viewerfiles/contextmenu.js"></script>
+<script type="text/javascript" src="../viewerfiles/wz_jsgraphics.js"></script>
+<script type="text/javascript" src="../viewerfiles/hashtable.js"></script>
+<script type="text/javascript" src="../viewerfiles/sarissa.js"></script>
+<script type="text/javascript" src="../viewerfiles/digitize.js"></script>
+<script language=javascript>
+
 function SelLayer(className)
 {
     this.className = className;
     this.featIds = new Hashtable();
 }
+
 function Selection()
 {
     this.layers = new Hashtable();
     this.count = 0;
 }
+
 function Envelope()
 {
     this.lowerLeft = new Point(0,0);
@@ -201,11 +205,13 @@ function PolygonSelection()
     this.xs = new Array();
     this.ys = new Array();
 }
+
 function MapRequest(reqObj, mapId)
 {
     this.reqObj = reqObj;
     this.mapId = mapId;
 }
+
 function HlRequest(id, x, y, req, exec)
 {
     this.id = id;
@@ -213,11 +219,13 @@ function HlRequest(id, x, y, req, exec)
     this.y = y;
     this.req = req;
     this.exec = exec;
-    this.OnHl = function() {
+    this.OnHl = function()
+    {
         if(req.readyState == 4)
             ProcessHyperLinkdata(id, x, y, exec, req.responseXML.documentElement);
     }
 }
+
 function HlData()
 {
     this.reqId = 0;
@@ -226,12 +234,16 @@ function HlData()
     this.url = "";
     this.ttip = "";
 }
-function Property(name, value) {
+
+function Property(name, value)
+{
     this.name = name;
     this.value = value;
 }
 </script>
-<script language=javascript>
+
+<script language="javascript">
+
 var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5;
 var RECT=1, CIRCLE=2, POLY=3, SLIDER=4, SCALE=6;
 var TILECX = 300, TILECY = 300;
@@ -313,26 +325,39 @@ var locale = '%s';
 
 // public functions -----------------------------------------------
 //
-function ZoomToView(x,y,scale,refresh) {
+function ZoomToView(x,y,scale,refresh)
+{
     GotoView(x, y, scale, true, true);
 }
-function Refresh() {
+
+function Refresh()
+{
     GetLegendCtrl().Refresh();
     GotoView(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, curScale, false, false);
 }
-function GetMapWidth() {
+
+function GetMapWidth()
+{
     return extX2 - extX1;
 }
-function GetMapHeight() {
+
+function GetMapHeight()
+{
     return extY1 - extY2;
 }
-function GetSessionId() {
+
+function GetSessionId()
+{
     return sessionId;
 }
-function GetMapName() {
+
+function GetMapName()
+{
     return mapName;
 }
-function ScreenToMapUnits(x, y) {
+
+function ScreenToMapUnits(x, y)
+{
     if(x > mapDevW - 1) x = mapDevW - 1;
     else if(x < 0) x = 0;
 
@@ -343,93 +368,133 @@ function ScreenToMapUnits(x, y) {
     y = extY1 - (extY1 - extY2) * (y / mapDevH);
     return new Point(x, y);
 }
-function MapUnitsToLatLon(x, y) {
+
+function MapUnitsToLatLon(x, y)
+{
     return new Point(x, y);
 }
-function GetSelectedCount() {
+
+function GetSelectedCount()
+{
     return selection.count;
 }
-function GetSelectionXML() {
+
+function GetSelectionXML()
+{
     return selectionToXml();
 }
-function SetSelectionXML(xmlSet) {
+
+function SetSelectionXML(xmlSet)
+{
     xmlOut = SetSelection(xmlSet, true);
     xmlDoc = (new DOMParser()).parseFromString(xmlSet, "text/xml");
     ProcessFeatureInfo(xmlDoc.documentElement, false, 1);
     ProcessFeatureInfo(xmlOut, false, 2);
 }
-function IsEnglishUnits() {
+
+function IsEnglishUnits()
+{
     return us;
 }
-function IsLatLongDisplayUnits() {
+
+function IsLatLongDisplayUnits()
+{
     return false;
 }
-function SetEnglishUnits(isEnglish) {
+
+function SetEnglishUnits(isEnglish)
+{
     if(isEnglish != us)
     {
         us = isEnglish;
         SaveState();
     }
 }
-function SetLatLonDisplayUnits(isLatLon) {
+
+function SetLatLonDisplayUnits(isLatLon)
+{
 }
-function GetMapUnitsType() {
+
+function GetMapUnitsType()
+{
     return unitsType;
 }
-function GetMetersPerUnits() {
+
+function GetMetersPerUnits()
+{
     return metersPerUnit;
 }
-function GetCenter() {
+
+function GetCenter()
+{
     return new Point(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2);
 }
-function GetScale() {
+
+function GetScale()
+{
     return curScale;
 }
-function DigitizePoint(handler) {
+
+function DigitizePoint(handler)
+{
     if(handler == null)
         return;
     StartDigitizing(new PointDigitizer(OnShapeDigitized, ScreenToMapUnits), handler);
 }
-function DigitizeLine(handler) {
+
+function DigitizeLine(handler)
+{
     if(handler == null)
         return;
     StartDigitizing(new LineDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH), handler);
 }
-function DigitizeCircle(handler) {
+
+function DigitizeCircle(handler)
+{
     if(handler == null)
         return;
     StartDigitizing(new CircleDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH), handler);
 }
-function DigitizeRectangle(handler) {
+
+function DigitizeRectangle(handler)
+{
     if(handler == null)
         return;
     StartDigitizing(new RectangleDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH), handler);
 }
-function DigitizeLineString(handler) {
+
+function DigitizeLineString(handler)
+{
     if(handler == null)
         return;
     StartDigitizing(new LineStringDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH, ShowSelectionTip, selTtipText, false), handler);
 }
-function DigitizePolygon(handler) {
+
+function DigitizePolygon(handler)
+{
     if(handler == null)
         return;
     StartDigitizing(new LineStringDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH, ShowSelectionTip, selTtipText, true), handler);
 }
-function IsDigitizing() {
+
+function IsDigitizing()
+{
     return digitizing;
 }
 
 // private functions -----------------------------------------------
 //
-function InitDocument() {
+function InitDocument()
+{
     if(!msie)
         document.getElementById("InfoDiv").style.display = "block";
 
-    if((orgExtX1 - orgExtX2) == 0 || (orgExtY1 - orgExtY2) == 0) {
-        extX1 = orgExtX1 = -.1; extY1 = orgExtY1 = .1, 
+    if((orgExtX1 - orgExtX2) == 0 || (orgExtY1 - orgExtY2) == 0)
+    {
+        extX1 = orgExtX1 = -.1; extY1 = orgExtY1 = .1,
         extX2 = orgExtX2 = .1; extY2 = orgExtY2 = -.1;
-    }        
-        
+    }
+
     mapDataRequest = null;
     pancxu = orgExtX1 + (orgExtX2 - orgExtX1) / 2;
     pancyu = orgExtY2 + (orgExtY1 - orgExtY2) / 2;
@@ -443,22 +508,29 @@ function InitDocument() {
 
     document.getElementById("LegendResizer").onmousedown = StartResizingLegend;
     window.onresize = OnSizeChanged;
-    
+
     document.getElementById("map").style.backgroundColor = bgColor;
     mapCell = document.getElementById("map");
 
     hlData = new HlData();
     moveTimer = 0;
-    
+
     cancelTgt = document.getElementById("KeyTarget");
-    
+
     initTimer = setInterval(delayedInit, 200);
 }
-function delayedInit() {
-    try {
+
+function delayedInit()
+{
+    try
+    {
         if(!GetLegendCtrl().InternalStateComplete())
             return;
-    } catch(e) { return; }
+    }
+    catch(e)
+    {
+        return;
+    }
 
     clearInterval(initTimer);
 
@@ -475,7 +547,8 @@ function delayedInit() {
 
     shape = new jsGraphics("shapeFeedback");
 
-    if(!hasTiles) {
+    if(!hasTiles)
+    {
         if(scales.length == 0)
         {
             finscale = false;
@@ -493,7 +566,8 @@ function delayedInit() {
             scales.reverse();
         }
     }
-    else {
+    else
+    {
         if(scales.length == 1)
             showSlider = false;
     }
@@ -510,27 +584,33 @@ function delayedInit() {
     mapInit = true;
 
     parent.OnMapLoaded();
-    if(!parent.IsInitialView()) {
+    if(!parent.IsInitialView())
+    {
         scale = CalculateScale1(Math.abs(orgExtX2 - orgExtX1), Math.abs(orgExtY2 - orgExtY1), mapDevW, mapDevH);
         GotoView(orgExtX1 + (orgExtX2 - orgExtX1) / 2, orgExtY2 + (orgExtY1 - orgExtY2) / 2, scale, true, true);
     }
-    
 }
-function BuildGroupInfo() {
+
+function BuildGroupInfo()
+{
     if(!hasTiles)
         return;
     visGroups = GetLegendCtrl().GetBaseGroups(true);
     for(var i=0; i < visGroups.length; i++)
         visBaseGroups.setItem(visGroups[i], i);
 }
-function GotoView(x,y,scale,tohistory,moveovimg) {
+
+function GotoView(x,y,scale,tohistory,moveovimg)
+{
     scale = finscale? GetNearestFiniteScale(scale): NormalizeScale(scale);
     var zoom;
-    if(zoom = (scale != curScale)) {
+    if(zoom = (scale != curScale))
+    {
         HideMapImage();
         requestTiles = true;
     }
-    else {
+    else
+    {
         prevtilex = tilex, prevtiley = tiley;
 
         udiffx = x - pancxu; udiffy = y - pancyu;
@@ -538,7 +618,8 @@ function GotoView(x,y,scale,tohistory,moveovimg) {
         panX2 = panX1 + (extX2 - extX1); panY2 = panY1 - (extY1 - extY2);
         pancxu = x; pancyu = y;
 
-        if(moveovimg) {
+        if(moveovimg)
+        {
             diffx = parseInt(udiffx * metersPerUnit / curScale / metersPerPixel);
             diffy = parseInt(udiffy * metersPerUnit / curScale / metersPerPixel);
             MoveOverlayImage(-diffx, diffy);
@@ -551,7 +632,9 @@ function GotoView(x,y,scale,tohistory,moveovimg) {
     if(!zoom)
         UpdateTilesAfterPan(prevtilex, prevtiley, panX1, panY1, panX2, panY2);
 }
-function ExecuteMapAction(action) {
+
+function ExecuteMapAction(action)
+{
     if(!mapInit)
         return;
     CancelDigitization();
@@ -618,31 +701,31 @@ function ExecuteMapAction(action) {
             break;
     }
 }
-function OnClick(e) {
+
+function OnClick(e)
+{
     if(msie)
         return true;
     button = e.which;
     if(button==3)
     {
-    
         x = e.clientX;
         y = e.clientY;
         if(IsInformationMenu(e))
-        {
             InformationContextMenu(x,y);
-        }
         else
         {
-            if(parent.IsContextMenu()) {
+            if(parent.IsContextMenu())
                 ContextMenu(x, y);
-            }
         }
         e.stopPropagation();
         return false;
     }
     return true;
 }
-function OnMouseDown(e) {
+
+function OnMouseDown(e)
+{
     if(!PopupMouseDown(e))
     {
         hidePopup(tbMenu);
@@ -652,16 +735,14 @@ function OnMouseDown(e) {
     }
     else
         return false;
-        
+
     if(!mapInit)
         return false;
-        
+
     if(msie)
     {
         if(e.button != 1)
-        {
             return true;
-        }
     }
     else
     {
@@ -678,22 +759,29 @@ function OnMouseDown(e) {
     var x = e.clientX - mapPosX;
     var y = e.clientY;
 
-    if(x < 0) {
-        if(safari && x > -5) {
+    if(x < 0)
+    {
+        if(safari && x > -5)
+        {
             moveType = RESIZING;
             return false;
         }
         return false;
     }
-    
-    if(digitizing) {
+
+    if(digitizing)
+    {
         digitizer.MouseDown(e, x, y);
         return false;
     }
 
     var processed = parent.ClickMap(x,y);
 
-    if(msie) e.cancelBubble = true; else e.stopPropagation();
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
+
     if(!processed)
     {
         HideHyperlinkTip();
@@ -701,12 +789,14 @@ function OnMouseDown(e) {
         {
             if(hlData.url != "")
                 ExecuteHyperlink(hlData.url);
-            else {
+            else
+            {
                 hlData.curx = x; hlData.cury = y;
                 RequestHyperLinkData(++ hlData.reqId, hlData.curx, hlData.cury, true);
             }
         }
-        else {
+        else
+        {
             switch(tool)
             {
                 case 1:
@@ -720,7 +810,7 @@ function OnMouseDown(e) {
                     StartToolFeedback(x, y, RECT);
                     break;
                 case 4:
-                    StartPaning(e);
+                    StartPanning(e);
                     break;
                 case 5:
                     StartToolFeedback(x, y, CIRCLE);
@@ -739,9 +829,7 @@ function OnMouseDown(e) {
                         }
                     }
                     else
-                    {
                         EndPolygonSelection(x, y);
-                    }
 
                     break;
             }
@@ -749,21 +837,24 @@ function OnMouseDown(e) {
     }
     return false;
 }
-function EndPolygonSelection(x, y) {
+
+function EndPolygonSelection(x, y)
+{
     EndToolFeedback(x, y);
     ExecutePolygonTool();
 }
-function OnContextMenu(e) {
+
+function OnContextMenu(e)
+{
     x = e.clientX;
     y = e.clientY;
 
     if(IsInformationMenu(event))
-    {
         InformationContextMenu(x,y);
-    }
     else
     {
-        if(safari && tool == 6) {
+        if(safari && tool == 6)
+        {
             EndPolygonSelection(x - mapPosX, y);
             return false;
         }
@@ -773,12 +864,16 @@ function OnContextMenu(e) {
     e.cancelBubble = true;
     return false;
 }
-function ContextMenu(x, y) {
+
+function ContextMenu(x, y)
+{
     hidePopup(tbMenu);
     hidePopup(infoMenu);
     showPopup(ctxMenu, true, x, y);
 }
-function InformationContextMenu(x, y) {
+
+function InformationContextMenu(x, y)
+{
     hidePopup(tbMenu);
     hidePopup(ctxMenu);
     infoMenu = new MenuData("InfoMenu", 20, 21, 50, 100, "", "", "", "", this, false, "white");
@@ -788,7 +883,9 @@ function InformationContextMenu(x, y) {
     endBuildMenuContent(infoMenu);
     showPopup(infoMenu, false, x, y);
 }
-function ExecuteCommand(option) {
+
+function ExecuteCommand(option)
+{
     lop = isLegend || isProperties;
     if(option == "0")
         isLegend = !isLegend;
@@ -814,7 +911,9 @@ function ExecuteCommand(option) {
     }
     LayoutControls();
 }
-function IsInformationMenu(e) {
+
+function IsInformationMenu(e)
+{
     var tgt = msie? e.srcElement: e.target;
 
     while(tgt && tgt.tagName != "BODY")
@@ -825,7 +924,9 @@ function IsInformationMenu(e) {
     }
     return false;
 }
-function InitToolbarFlyouts(items) {
+
+function InitToolbarFlyouts(items)
+{
     var divs = "";
     for(var i = 0; i < items.length; i++)
     {
@@ -838,7 +939,9 @@ function InitToolbarFlyouts(items) {
     }
     return divs;
 }
-function BuildContextMenuObjects(menus, parentMenu, items, divName, nesting) {
+
+function BuildContextMenuObjects(menus, parentMenu, items, divName, nesting)
+{
     var menuObj = new MenuData(divName,20, 21, 50, 150, "../stdicons/icon_popupscrollup.gif", "../stdicons/icon_popupscrollup_disabled.gif", "../stdicons/icon_popupscrolldown.gif", "../stdicons/icon_popupscrolldown_disabled.gif", parent, false, "white");
     startBuildMenuContent(menuObj);
     var subIndex = 0;
@@ -864,7 +967,9 @@ function BuildContextMenuObjects(menus, parentMenu, items, divName, nesting) {
     menus[menus.length] = menuObj;
     return menuObj;
 }
-function InitContextMenu(items) {
+
+function InitContextMenu(items)
+{
     var menus = new Array();
     ctxMenu = BuildContextMenuObjects(menus, null, items, 'CtxMenu', 0);
 
@@ -875,10 +980,11 @@ function InitContextMenu(items) {
         divs += "<iframe id=\"IFr" + menu.menuName + "\" style=\"position:absolute;top:0px;left:0px;width:0px;height:0px;background-color:white;\" frameborder=\"0\"></iframe>\n";
         divs += "<div class=\"PopupMenu\" id=\"" + menu.menuName + "\"></div>\n";
     }
-
     return divs;
 }
-function OpenFlyout(xpos, tbItemIndex) {
+
+function OpenFlyout(xpos, tbItemIndex)
+{
     var tbItem = parent.toolbarItems[tbItemIndex];
     tbMenu = new MenuData(tbItem.htmlElt, 20, 21, 50, 150,
                         "../stdicons/icon_popupscrollup.gif", "../stdicons/icon_popupscrollup_disabled.gif", "../stdicons/icon_popupscrolldown.gif", "../stdicons/icon_popupscrolldown_disabled.gif",
@@ -901,31 +1007,45 @@ function OpenFlyout(xpos, tbItemIndex) {
     endBuildMenuContent(tbMenu);
     showPopup(tbMenu, false, xpos, 0);
 }
-function OnForwardMouseDown(e) {
+
+function OnForwardMouseDown(e)
+{
     hidePopup(tbMenu);
     hidePopup(infoMenu);
     hidePopup(ctxMenu);
     GetLegendCtrl().OnForwardMouseDown(e);
 }
-function Print(layouts, title) {
+
+function Print(layouts, title)
+{
 }
-function PrepareSelectionSet() {
+
+function PrepareSelectionSet()
+{
 }
-function StartResizing(e) {
+
+function StartResizing(e)
+{
     moveType = RESIZING;
     if(msie)
         document.getElementById("mapSpace").setCapture();
-    if(msie) e.cancelBubble = true; else e.stopPropagation();
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
     return false;
 }
-function OnMouseMove(e) {
+
+function OnMouseMove(e)
+{
     var x = e.clientX - mapPosX;
     var y = e.clientY;
     lastposx = x; lastposy = y;
 
     try { parent.OnCursorPosChanged(x, y); } catch(e) {}
-    
-    if(digitizing) {
+
+    if(digitizing)
+    {
         digitizer.MouseMove(e, x, y);
         return false;
     }
@@ -944,20 +1064,22 @@ function OnMouseMove(e) {
     {
         if(mapInit)
         {
-            if(moveTimer > 0) {
+            if(moveTimer > 0)
+            {
                 clearInterval(moveTimer);
                 moveTimer = 0;
             }
             HideHyperlinkTip();
             hlData.ttip = "";
             hlData.url = "";
-            if(!IsInSliderSpace(x, y, true)) {
+            if(!IsInSliderSpace(x, y, true))
+            {
                 if(!parent.InMeasure())
                 {
-                    if(safari) {
+                    if(safari)
                         document.getElementById("tbMap").style.cursor = (x < 0 && x > -6? "w-resize" : "arrow");
-                    }
-                    if(x >= 0) {
+                    if(x >= 0)
+                    {
                         hlData.curx = x;
                         hlData.cury = y;
                         moveTimer = setInterval(OnMoveTimer, 400);
@@ -968,17 +1090,25 @@ function OnMouseMove(e) {
     }
     return false;
 }
-function OnMoveTimer() {
+
+function OnMoveTimer()
+{
     clearInterval(moveTimer);
     moveTimer = 0;
     RequestHyperLinkData(++ hlData.reqId, hlData.curx, hlData.cury, false);
 }
-function OnMouseUp(e) {
+
+function OnMouseUp(e)
+{
     var x = e.clientX - mapPosX;
     var y = e.clientY;
-    if(msie) e.cancelBubble = true; else e.stopPropagation();
-    
-    if(digitizing) {
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
+
+    if(digitizing)
+    {
         digitizer.MouseUp(e, x, y);
         return false;
     }
@@ -996,7 +1126,7 @@ function OnMouseUp(e) {
     else if(moveType == RESIZINGLEGEND)
         EndResizingLegend(e);
     else if(moveType == PANNING)
-        EndPaning(e);
+        EndPanning(e);
     else if(moveType == DRAGGING)
     {
         if(dragElt != POLY)
@@ -1011,7 +1141,9 @@ function OnMouseUp(e) {
     else if(moveType == DRAGGINGCTRL)
         ReleaseMapControls(e);
 }
-function ResizeTo(x) {
+
+function ResizeTo(x)
+{
     if(x < 0)
         x = 0;
     if((isLegend || isProperties) && x < minInfoWidth)
@@ -1042,7 +1174,9 @@ function ResizeTo(x) {
 
     ResizeMapSpace();
 }
-function ShowChildren(elt, state) {
+
+function ShowChildren(elt, state)
+{
     nodes = elt.childNodes;
     if(nodes)
         for(var i=0; i < nodes.length; i++)
@@ -1053,7 +1187,9 @@ function ShowChildren(elt, state) {
         else
             elt.style.visibility = state;
 }
-function MoveMapControl(eltId, offsx, x, y) {
+
+function MoveMapControl(eltId, offsx, x, y)
+{
     if(!showSlider)
         return;
     var es = document.getElementById(eltId).style;
@@ -1061,7 +1197,9 @@ function MoveMapControl(eltId, offsx, x, y) {
     es.top = y;
     es.visibility = "visible";
 }
-function DragMapControls(e, page) {
+
+function DragMapControls(e, page)
+{
     switch(dragElt)
     {
         case SLIDER:
@@ -1072,7 +1210,9 @@ function DragMapControls(e, page) {
             break;
     }
 }
-function ReleaseMapControls(e) {
+
+function ReleaseMapControls(e)
+{
     moveType = NONE;
     switch(dragElt)
     {
@@ -1085,7 +1225,9 @@ function ReleaseMapControls(e) {
     }
     dragElt = NONE;
 }
-function DragSlider(y) {
+
+function DragSlider(y)
+{
     sliderPos = CalcSliderPos(y);
     document.getElementById("slider").style.top = sliderPos;
     scale = scales[ScaleIndexFromSliderPos(sliderPos)];
@@ -1111,7 +1253,9 @@ function DragSlider(y) {
     ShowScaleTip(sliderx + mapPosX, sliderPos, scale);
     return false;
 }
-function DragSliderScale(e, page) {
+
+function DragSliderScale(e, page)
+{
     if(page)
         d = mapPosX;
     else
@@ -1128,7 +1272,9 @@ function DragSliderScale(e, page) {
     MoveMapControl("sliderscale", mapPosX, sscalex + offsX, sscaley + offsY);
     MoveMapControl("slider", mapPosX, sliderx + offsX, slidery + offsY);
 }
-function ReleaseSlider(y) {
+
+function ReleaseSlider(y)
+{
     HideScaleTip();
     slidery = CalcSliderPos(y);
     document.getElementById("slider").style.top = slidery;
@@ -1136,12 +1282,16 @@ function ReleaseSlider(y) {
     HideMapImage();
     GotoView(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, scale, true, true);
 }
-function ScaleIndexFromSliderPos(pos) {
+
+function ScaleIndexFromSliderPos(pos)
+{
     sp = pos - sscaley - slidertop;
     index = parseInt(sp / slidercourse * (scales.length - 1));
     return index;
 }
-function ReleaseSliderScale(e) {
+
+function ReleaseSliderScale(e)
+{
     x = e.clientX;
     if(x < mapPosX + inctrlX)
         x = mapPosX + inctrlX;
@@ -1157,7 +1307,9 @@ function ReleaseSliderScale(e) {
     MoveMapControl("sliderscale", mapPosX, sscalex, sscaley);
     MoveMapControl("slider", mapPosX, sliderx, slidery);
 }
-function CalcSliderPos(y) {
+
+function CalcSliderPos(y)
+{
     offs = y - anchorY;
     newPos = slidery + offs;
     if(newPos < sscaley + slidertop)
@@ -1166,28 +1318,28 @@ function CalcSliderPos(y) {
         newPos = sscaley + slidertop + slidercourse;
     return newPos;
 }
-function IsInSliderSpace(x, y, utilsp) {
+
+function IsInSliderSpace(x, y, utilsp)
+{
     if(utilsp)
         return ((x >= sscalex + 6) && (x <= sscalex + 51 - 6) &&
                 (y >= sscaley + 5) && (y <= sscaley + 204 - 8));
-    else 
+    else
         return (x >= sscalex) && (x <= sscalex + 51) && (y >= sscaley) && (y <= sscaley + 204);
 }
-function LayoutControls() {
+
+function LayoutControls()
+{
     var legendCaption = document.getElementById("LayerCaption");
     var y = 0;
     if(isLegend)
     {
         if(infoWidth >= minInfoWidth)
-        {
             legendCaption.style.display = "block";
-        }
         y += 25;
     }
     else
-    {
         legendCaption.style.display = "none";
-    }
 
     var legendCtrlDiv = document.getElementById("LegendCtrlDiv");
     var legendCtrl = document.getElementById("LegendCtrl");
@@ -1244,17 +1396,23 @@ function LayoutControls() {
         propCtrlDiv.style.visibility = "hidden";
     }
 }
-function ToggleLegend() {
+
+function ToggleLegend()
+{
     legendExpanded = !legendExpanded;
     document.getElementById("legendIcon").src = legendExpanded? "../stdicons/nav_band_contract.gif": "../stdicons/nav_band_expand.gif";
     LayoutControls();
 }
-function ToggleProperties() {
+
+function ToggleProperties()
+{
     propExpanded = !propExpanded;
     document.getElementById("propIcon").src = propExpanded? "../stdicons/nav_band_contract.gif": "../stdicons/nav_band_expand.gif";
     LayoutControls();
 }
-function OnSizeChanged(e) {
+
+function OnSizeChanged(e)
+{
     ResizeMapSpace();
     LayoutControls();
 
@@ -1263,11 +1421,12 @@ function OnSizeChanged(e) {
     resizeTimer = setInterval(RequestMapAfterResizing, resizeTimeout);
 }
 
-function ResizeMapSpace() {
+function ResizeMapSpace()
+{
     vw = document.body.clientWidth;
     mapDevW = vw - mapPosX - 1;
     mapDevH = safari? document.body.offsetHeight: mapCell.offsetHeight;
-    
+
     if(mapDevW < 0) mapDevW = 0;
     if(mapDevH < 0) mapDevH = 0;
 
@@ -1291,17 +1450,19 @@ function ResizeMapSpace() {
         imgs[i].width = mapDevW;
         imgs[i].height = mapDevH;
     }
-    
+
     slidoffs = slidery - sscaley;
     sscalex = mapDevW - 51, sscaley = 1;
     sliderx = sscalex + 10, slidery = sscaley + slidoffs;
-    
+
     MoveMapControl("sliderscale", mapPosX, sscalex, sscaley);
     MoveMapControl("slider", mapPosX, sliderx, slidery);
 
     LayoutControls();
 }
-function RequestMapAfterResizing() {
+
+function RequestMapAfterResizing()
+{
     clearInterval(resizeTimer);
     resizeTimer = 0;
 
@@ -1309,32 +1470,41 @@ function RequestMapAfterResizing() {
     GotoView(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, curScale, false, true);
     requestTiles = true;
 }
-function GetWebAgent() {
+
+function GetWebAgent()
+{
     return webAgent;
 }
-function GetLegendCtrl() {
+
+function GetLegendCtrl()
+{
     return legendCtrl;
 }
-function GetPropertyCtrl() {
+
+function GetPropertyCtrl()
+{
     return propertyCtrl;
 }
-function CalculateScale() {
+
+function CalculateScale()
+{
     var mcsW = extX2 - extX1;
     var mcsH = extY1 - extY2;
-
     return CalculateScale1(mcsW, mcsH, mapDevW, mapDevH);
 }
-function CalculateScale1(mcsW, mcsH, devW, devH) {
-    var mapScale;
 
+function CalculateScale1(mcsW, mcsH, devW, devH)
+{
+    var mapScale;
     if (devH * mcsW > devW * mcsH)
         mapScale = mcsW * metersPerUnit / (devW * metersPerPixel); // width-limited
     else
         mapScale = mcsH * metersPerUnit / (devH * metersPerPixel); // height-limited
-
     return mapScale;
 }
-function OnMapRequested(reqResp, scale, centerX, centerY) {
+
+function OnMapRequested(reqResp, scale, centerX, centerY)
+{
     requestObj = reqResp.reqObj;
     reqId = reqResp.mapId;
     if(requestObj == null)
@@ -1375,7 +1545,9 @@ function OnMapRequested(reqResp, scale, centerX, centerY) {
     else
         RequestFailed("No response");
 }
-function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers, hideLayers) {
+
+function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers, hideLayers)
+{
     var reqParams = "OPERATION=GETVISIBLEMAPEXTENT&VERSION=1.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeURIComponent(mapName) + "&SEQ=" + Math.random();
     reqParams += "&SETDISPLAYDPI=" + DPI + "&SETDISPLAYWIDTH=" + mapDevW + "&SETDISPLAYHEIGHT=" + mapDevH;
     reqParams += "&SETVIEWSCALE=" + scale + "&SETVIEWCENTERX=" + centerX + "&SETVIEWCENTERY=" + centerY;
@@ -1395,9 +1567,7 @@ function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers,
     mr.onreadystatechange = function()
     {
         if(mr.readyState == 4)
-        {
             OnMapRequested(req, scale, centerX, centerY, mapId);
-        }
     }
 
     try
@@ -1409,40 +1579,52 @@ function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers,
         return;
     }
 }
-function RequestMapImage(reqId) {
+
+function RequestMapImage(reqId)
+{
     url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=1.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random()
     document.getElementById("overlay").innerHTML =
             '<img class="mapImage" name="' + reqId + '" id="mapImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnMapOverlayImageLoaded(event)">';
 }
-function encodeComponent(str) {
-    op = /\(/g; cp = /\)/g; 
+
+function encodeComponent(str)
+{
+    op = /\(/g; cp = /\)/g;
     return encodeURIComponent(str).replace(op, "%%28").replace(cp, "%%29");
 }
-function OnMapOverlayImageLoaded(e) {
+
+function OnMapOverlayImageLoaded(e)
+{
     ovimgloaded = true;
-    if(msie) e.cancelBubble = true; else e.stopPropagation();
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
     overlayimg = document.getElementById("mapImage");
     if(safari)
         altimg = document.getElementById(curimg == "mapImage1"? "mapImage2": "mapImage1");
     else
         img = document.getElementById(curimg);
-    
+
     imgdiv = document.getElementById("img1");
 
-    if(parseInt(overlayimg.name) != mapId || moveType == PANNING) {
+    if(parseInt(overlayimg.name) != mapId || moveType == PANNING)
         return;
-    }
+
     lastMapRcv = mapId;
     overlayimg.onload = null;
     ovoffsx = 0; ovoffsy = 0;
     if(msie)
         imgdiv.innerHTML = "<div id=\"img1div\" style=\"visibility: visible; position: absolute; top: 0px; left: 0px; width: " + mapDevW + "px; height: " + mapDevH + "px; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + encodeURI(overlayimg.src) + "', sizingMethod='scale')\"></div>";
-    else {
-        if(safari) {
+    else
+    {
+        if(safari)
+        {
             altimg.src = overlayimg.src;
             altimg.onload = OnAlternateImageLoaded;
         }
-        else {
+        else
+        {
             img.src = overlayimg.src;
             img.style.position = "absolute";
             img.style.visibility = "visible";
@@ -1457,7 +1639,9 @@ function OnMapOverlayImageLoaded(e) {
         curimg = (curimg == "mapImage1"? "mapImage2": "mapImage1");
     return false;
 }
-function OnAlternateImageLoaded() {
+
+function OnAlternateImageLoaded()
+{
     altimg = document.getElementById(curimg == "mapImage1"? "mapImage2": "mapImage1");
     img = document.getElementById(curimg);
 
@@ -1472,18 +1656,25 @@ function OnAlternateImageLoaded() {
     altimg.style.top = 0;
     return false;
 }
-function RequestFailed(text) {
+
+function RequestFailed(text)
+{
     //placeholder for debugging output
 }
-function DraggingShape(e) {
+
+function DraggingShape(e)
+{
     var x = e.pageX;
     var y = e.pageY;
 
     ToolFeedback(PageToMap(x), y);
     return false;
 }
-function ZoomIn(x, y) {
-    if(sci == 0) {
+
+function ZoomIn(x, y)
+{
+    if(sci == 0)
+    {
         if(finscale)
             return;
         scale /= 1.5;
@@ -1494,8 +1685,11 @@ function ZoomIn(x, y) {
     var pt = ScreenToMapUnits(x, y);
     GotoView(pt.X, pt.Y, scale, true, false);
 }
-function ZoomOut(x, y) {
-    if(sci == scales.length - 1) {
+
+function ZoomOut(x, y)
+{
+    if(sci == scales.length - 1)
+    {
         if(finscale)
             return false;
         scale *= 1.5;
@@ -1505,37 +1699,59 @@ function ZoomOut(x, y) {
     var pt = ScreenToMapUnits(x, y);
     GotoView(pt.X, pt.Y, scale, true, false);
 }
-function PanUp() {
+
+function PanUp()
+{
     Pan(extX1 + (extX2 - extX1) / 2, extY1 - (extY1 - extY2) / 3, true);
 }
-function PanLeft() {
+
+function PanLeft()
+{
     Pan(extX1 + (extX2 - extX1) / 3, extY2 + (extY1 - extY2) / 2, true);
 }
-function PanDown() {
+
+function PanDown()
+{
     Pan(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 3, true);
 }
-function PanRight() {
+
+function PanRight()
+{
     Pan(extX2 - (extX2 - extX1) / 3, extY2 + (extY1 - extY2) / 2, true);
 }
-function ZoomCloser(e) {
-    if(msie) e.cancelBubble = true; else e.stopPropagation();
+
+function ZoomCloser(e)
+{
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
     if(sci == 0)
         return false;
     ZoomToScale(scales[sci - 1]);
     return false;
 }
-function ZoomFurther(e) {
-    if(msie) e.cancelBubble = true; else e.stopPropagation();
+
+function ZoomFurther(e)
+{
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
     if(sci == scales.length - 1)
         return false;
     ZoomToScale(scales[sci + 1]);
     return false;
 }
-function ZoomToScale(scale) {
+
+function ZoomToScale(scale)
+{
     HideMapImage();
     GotoView(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, scale, true, true);
 }
-function StartToolFeedback(x, y, type) {
+
+function StartToolFeedback(x, y, type)
+{
     moveType = DRAGGING;
     if(msie)
         document.getElementById("mapSpace").setCapture();
@@ -1565,7 +1781,9 @@ function StartToolFeedback(x, y, type) {
         rd.clip = "rect(0px " + (mapDevW) + "px " + mapDevH + "px " + "0px)";
     }
 }
-function ToolFeedback(x, y) {
+
+function ToolFeedback(x, y)
+{
     if(x < 0)
         x  = 0;
     if(dragElt != POLY)
@@ -1581,7 +1799,9 @@ function ToolFeedback(x, y) {
     }
     ShowToolFeedback(true);
 }
-function EndToolFeedback(x, y) {
+
+function EndToolFeedback(x, y)
+{
     moveType = NONE;
     if(msie)
         document.getElementById("mapSpace").releaseCapture();
@@ -1602,7 +1822,9 @@ function EndToolFeedback(x, y) {
     }
     ShowToolFeedback(false);
 }
-function StartPaning(e) {
+
+function StartPanning(e)
+{
     img = document.getElementById(msie? "img1div": curimg)
     if(!ovimgloaded || img == null)
         return;
@@ -1620,7 +1842,9 @@ function StartPaning(e) {
     if(msie)
         document.getElementById("mapSpace").setCapture();
 }
-function MoveOverlayImage(x, y) {
+
+function MoveOverlayImage(x, y)
+{
     img = document.getElementById(msie? "img1div": curimg)
     if(img != null)
     {
@@ -1628,7 +1852,9 @@ function MoveOverlayImage(x, y) {
         img.style.top = y + ovoffsy + "px";
     }
 }
-function PanFeedback(e) {
+
+function PanFeedback(e)
+{
     offx = e.clientX - mapPosX - anchorX;
     offy = e.clientY - anchorY;
 
@@ -1854,7 +2080,9 @@ function PanFeedback(e) {
         }
     }
 }
-function EndPaning(e) {
+
+function EndPanning(e)
+{
     moveType = NONE;
     if(msie)
         document.getElementById("mapSpace").releaseCapture();
@@ -1866,7 +2094,9 @@ function EndPaning(e) {
 
     Pan(pancxu - (ptCur.X - ptAnchor.X), pancyu - (ptCur.Y - ptAnchor.Y), false);
 }
-function UpdateTilesAfterPan(prevtilex, prevtiley, nx1, ny1, nx2, ny2) {
+
+function UpdateTilesAfterPan(prevtilex, prevtiley, nx1, ny1, nx2, ny2)
+{
     if(!hasTiles)
         return;
     CalcTileMetrics(nx1, ny1, nx2, ny2);
@@ -1885,7 +2115,8 @@ function UpdateTilesAfterPan(prevtilex, prevtiley, nx1, ny1, nx2, ny2) {
     }
     if(addedColOrRow)
     {
-        for(var k=0; k < baseGroups.length; k++) {
+        for(var k=0; k < baseGroups.length; k++)
+        {
             var tbody = document.getElementById("gridbody" + k);
             for(var i = 0; i < GRIDCY; i++)
             {
@@ -1898,28 +2129,35 @@ function UpdateTilesAfterPan(prevtilex, prevtiley, nx1, ny1, nx2, ny2) {
         RequestVisibleTiles();
     }
 
-    for(var k=0; k < baseGroups.length; k++) {
+    for(var k=0; k < baseGroups.length; k++)
+    {
         gs = document.getElementById("tilegrid" + k).style;
         gs.position = "absolute";
         gs.left = gridOffsx;
         gs.top = gridOffsy;
     }
 }
-function AddColumns(count, left) {
-    for(var k=0; k < baseGroups.length; k++) {
+
+function AddColumns(count, left)
+{
+    for(var k=0; k < baseGroups.length; k++)
+    {
         var tbody = document.getElementById("gridbody" + k);
-        for(var i = 0; i < tbody.rows.length; i++) {
+        for(var i = 0; i < tbody.rows.length; i++)
+        {
             row = tbody.rows[i];
             if(left)
             {
-                for(var j=0; j < count; j++) {
+                for(var j=0; j < count; j++)
+                {
                     row.removeChild(row.childNodes[row.childNodes.length - 1]);
                     row.insertBefore(CreateEmptyCell(), row.childNodes[0]);
                 }
             }
             else
             {
-                for(var j=0; j < count; j++) {
+                for(var j=0; j < count; j++)
+                {
                     row.removeChild(row.childNodes[0]);
                     row.appendChild(CreateEmptyCell());
                 }
@@ -1927,12 +2165,16 @@ function AddColumns(count, left) {
         }
     }
 }
-function AddRows(count, ttop) {
-    for(var k=0; k < baseGroups.length; k++) {
+
+function AddRows(count, ttop)
+{
+    for(var k=0; k < baseGroups.length; k++)
+    {
         var tbody = document.getElementById("gridbody" + k);
         if(ttop)
         {
-            for(var j=0; j < count; j++) {
+            for(var j=0; j < count; j++)
+            {
                 rows = tbody.rows;
                 tbody.removeChild(rows[rows.length - 1]);
                 tbody.insertBefore(CreateEmptyRow(), tbody.rows[0]);
@@ -1940,7 +2182,8 @@ function AddRows(count, ttop) {
         }
         else
         {
-            for(var j=0; j < count; j++) {
+            for(var j=0; j < count; j++)
+            {
                 rows = tbody.rows;
                 tbody.removeChild(rows[0]);
                 tbody.appendChild(CreateEmptyRow());
@@ -1948,14 +2191,18 @@ function AddRows(count, ttop) {
         }
     }
 }
-function CreateEmptyRow() {
+
+function CreateEmptyRow()
+{
     row = document.createElement("TR");
     row.style.height = TILECY + "px";
     for(var i=0; i < GRIDCX; i++)
         row.appendChild(CreateEmptyCell());
     return row;
 }
-function CreateEmptyCell() {
+
+function CreateEmptyCell()
+{
     cell = document.createElement("TD");
     cell.width = TILECX;
     cell.bgcolor = /*bgColor*/ "black";
@@ -1966,7 +2213,9 @@ function CreateEmptyCell() {
     cell.appendChild(div);
     return cell;
 }
-function ShowToolFeedback(show) {
+
+function ShowToolFeedback(show)
+{
     switch(dragElt)
     {
     case RECT: ShowRectangle(show); break;
@@ -1974,7 +2223,9 @@ function ShowToolFeedback(show) {
     case POLY: ShowPolygon(show); break;
     }
 }
-function ShowRectangle(show) {
+
+function ShowRectangle(show)
+{
     var rcFrame = document.getElementById("rcFrame");
     if(show)
     {
@@ -1983,19 +2234,24 @@ function ShowRectangle(show) {
 
         if(rcx1 <= rcx2)
         {
-            x1 = rcx1; x2 = rcx2;
+            x1 = rcx1;
+            x2 = rcx2;
         }
         else
         {
-            x1 = rcx2; x2 = rcx1;
+            x1 = rcx2;
+            x2 = rcx1;
         }
+
         if(rcy1 <= rcy2)
         {
-            y1 = rcy1; y2 = rcy2;
+            y1 = rcy1;
+            y2 = rcy2;
         }
         else
         {
-            y1 = rcy2; y2 = rcy1;
+            y1 = rcy2;
+            y2 = rcy1;
         }
 
         rcFrame.style.position = "absolute";
@@ -2008,7 +2264,9 @@ function ShowRectangle(show) {
     else
         rcFrame.style.visibility = "hidden";
 }
-function ShowCircle(show) {
+
+function ShowCircle(show)
+{
     var rcFrame = document.getElementById("shapeFeedback");
     if(show)
     {
@@ -2035,7 +2293,9 @@ function ShowCircle(show) {
         rcFrame.style.visibility = "hidden";
     }
 }
-function ShowPolygon(show) {
+
+function ShowPolygon(show)
+{
     var rcFrame = document.getElementById("shapeFeedback");
     if(show)
     {
@@ -2059,28 +2319,37 @@ function ShowPolygon(show) {
         rcFrame.style.visibility = "hidden";
     }
 }
-function PageToMap(x) {
+
+function PageToMap(x)
+{
     return x - mapPosX;
 }
-function ExecuteRectangleTool() {
+
+function ExecuteRectangleTool()
+{
     var x1, x2;
     var y1, y2;
 
     if(rcx1 <= rcx2)
     {
-        x1 = rcx1; x2 = rcx2;
+        x1 = rcx1;
+        x2 = rcx2;
     }
     else
     {
-        x1 = rcx2; x2 = rcx1;
+        x1 = rcx2;
+        x2 = rcx1;
     }
+
     if(rcy1 <= rcy2)
     {
-        y1 = rcy1; y2 = rcy2;
+        y1 = rcy1;
+        y2 = rcy2;
     }
     else
     {
-        y1 = rcy2; y2 = rcy1;
+        y1 = rcy2;
+        y2 = rcy1;
     }
 
     if(tool == 3)
@@ -2116,7 +2385,9 @@ function ExecuteRectangleTool() {
         }
     }
 }
-function ExecuteCircleTool() {
+
+function ExecuteCircleTool()
+{
     if(tool != 5)
         return;
 
@@ -2127,7 +2398,9 @@ function ExecuteCircleTool() {
 
     RequestCircleSelection(center.X, center.Y, r, appending);
 }
-function ExecutePolygonTool() {
+
+function ExecutePolygonTool()
+{
     cnum = polySel.xs.length;
     xs = new Array(cnum); ys = new Array(cnum);
     for(i = 0; i < cnum; i++) {
@@ -2139,31 +2412,46 @@ function ExecutePolygonTool() {
     polySel.xs = new Array();
     polySel.ys = new Array();
 }
-function Pan(centerX, centerY, moveimg) {
+
+function Pan(centerX, centerY, moveimg)
+{
     GotoView(centerX, centerY, curScale, true, moveimg);
 }
-function InitialMapView() {
+
+function InitialMapView()
+{
     var scale = CalculateScale1(orgExtX2 - orgExtX1, orgExtY1 - orgExtY2, mapDevW, mapDevH);
     GotoView(orgExtX1 + (orgExtX2 - orgExtX1) / 2, orgExtY2 + (orgExtY1 - orgExtY2) / 2, scale, true, true);
 }
-function CreateRequestHandler() {
+
+function CreateRequestHandler()
+{
     if(msie)
         return new ActiveXObject("Microsoft.XMLHTTP");
     else
         return new XMLHttpRequest();
 }
-function RequestPointSelection(x1, y1, x2, y2, append) {
+
+function RequestPointSelection(x1, y1, x2, y2, append)
+{
     QueryFeatureInfo(MakeWktPolygon(x1,y1,x2,y2), append, 1, 7);
 }
-function RequestRectSelection(x1, y1, x2, y2, append) {
+
+function RequestRectSelection(x1, y1, x2, y2, append)
+{
     QueryFeatureInfo(MakeWktPolygon(x1,y1,x2,y2), append, -1, 7);
 }
-function RequestCircleSelection(x, y, r, append) {
+
+function RequestCircleSelection(x, y, r, append)
+{
     QueryFeatureInfo("CURVEPOLYGON ((" + (x - r) + " " + y + " (CIRCULARARCSEGMENT (" + x + " " + (y - r) + ", " + (x + r) + " " + y + "), CIRCULARARCSEGMENT (" + x + " " + (y + r) + ", " + (x - r) + " " + y + "))))", append, 0, 7);
 }
-function RequestPolygonSelection(xs, ys, append) {
+
+function RequestPolygonSelection(xs, ys, append)
+{
     var wkt = "POLYGON((";
-    for(var i=0; i < xs.length; i++) {
+    for(var i=0; i < xs.length; i++)
+    {
         if(i > 0)
             wkt += ", ";
         wkt += xs[i] + " " + ys[i] + " ";
@@ -2171,10 +2459,14 @@ function RequestPolygonSelection(xs, ys, append) {
     wkt += "))";
     QueryFeatureInfo(wkt, append, 0, 7);
 }
-function MakeWktPolygon(x1,y1,x2,y2) {
+
+function MakeWktPolygon(x1,y1,x2,y2)
+{
     return "POLYGON((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "))";
 }
-function QueryFeatureInfo(geom, append, maxfeatures, which) {
+
+function QueryFeatureInfo(geom, append, maxfeatures, which)
+{
     var url = webAgent;
     var req = url + "?OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=1&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random();
     req += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS";
@@ -2189,7 +2481,9 @@ function QueryFeatureInfo(geom, append, maxfeatures, which) {
     else
         RequestFailed("No response");
 }
-function CompareProperties(p1, p2) {
+
+function CompareProperties(p1, p2)
+{
     var n1 = p1.name;
     var n2 = p2.name;
     if(n1 < n2)
@@ -2198,7 +2492,9 @@ function CompareProperties(p1, p2) {
         return 1;
     return 0;
 }
-function ProcessFeatureInfo(xmlIn, append, which) {
+
+function ProcessFeatureInfo(xmlIn, append, which)
+{
     if(which & 1)
     {
         var selectionChanged = false;
@@ -2260,9 +2556,11 @@ function ProcessFeatureInfo(xmlIn, append, which) {
         if(selectionChanged || prevCount != selection.count)
         {
             xmlSelection = null;
-            if(appending) {
+            if(appending)
+            {
                 fi = SetSelection(selectionToXml(), selection.count == 1);
-                if(selection.count == 1) {
+                if(selection.count == 1)
+                {
                     ProcessFeatureInfo(fi, false, 2);
                     which &= ~2;
                 }
@@ -2274,9 +2572,10 @@ function ProcessFeatureInfo(xmlIn, append, which) {
     if(which & 2)
     {
         properties = new Array();
-        if(selection.count == 1) {
+        if(selection.count == 1)
+        {
             try
-            {                
+            {
                 var props = xmlIn.getElementsByTagName("Property");
                 if(props != null)
                 {
@@ -2288,8 +2587,7 @@ function ProcessFeatureInfo(xmlIn, append, which) {
                     }
                 }
             }
-            catch(e) {
-            }
+            catch(e) {}
         }
         properties.sort(CompareProperties);
         GetPropertyCtrl().SetProperties(selection.count, properties);
@@ -2302,7 +2600,10 @@ function ProcessFeatureInfo(xmlIn, append, which) {
             if(hlinkElt != null)
                 hlData.url = hlinkElt.childNodes[0].nodeValue;
         }
-        catch(e) { hlData.url = ""; }
+        catch(e)
+        {
+            hlData.url = "";
+        }
         try
         {
             var ttipElt = xmlIn.getElementsByTagName("Tooltip")[0];
@@ -2312,7 +2613,9 @@ function ProcessFeatureInfo(xmlIn, append, which) {
         catch(e) {}
     }
 }
-function selectionToXml() {
+
+function selectionToXml()
+{
     if(xmlSelection == null)
     {
         xmlSelection = "";
@@ -2333,7 +2636,9 @@ function selectionToXml() {
     }
     return xmlSelection;
 }
-function ClearSelection() {
+
+function ClearSelection()
+{
     if(selection.length == 0)
         return;
 
@@ -2345,7 +2650,9 @@ function ClearSelection() {
 
     parent.OnSelectionChanged();
 }
-function SetSelection(selText, requery) {
+
+function SetSelection(selText, requery)
+{
     var reqParams = "SESSION=" + sessionId + "&MAPNAME=" + encodeURIComponent(mapName) + "&SEQ=" + Math.random() + "&SELECTION=" + encodeURIComponent(selText) + "&QUERYINFO=" + (requery? "1": "0");
     reqHandler = CreateRequestHandler();
     reqHandler.open("POST", setSelScript, false);
@@ -2354,7 +2661,9 @@ function SetSelection(selText, requery) {
     if(requery)
         return reqHandler.responseXML;
 }
-function ZoomSelection() {
+
+function ZoomSelection()
+{
     if(selection.count == 0)
         return;
 
@@ -2375,14 +2684,14 @@ function ZoomSelection() {
             var mcsH = env.upperRight.Y - env.lowerLeft.Y;
             var centerX = env.lowerLeft.X + mcsW / 2;
             var centerY = env.lowerLeft.Y + mcsH / 2;
-
             var scale = CalculateScale1(mcsW*2, mcsH*2, mapDevW, mapDevH);
-
             GotoView(centerX, centerY, scale, true, true);
         }
     }
 }
-function ParseEnvelope(xmlRoot) {
+
+function ParseEnvelope(xmlRoot)
+{
     try
     {
         if(xmlRoot.tagName != "Envelope")
@@ -2397,42 +2706,54 @@ function ParseEnvelope(xmlRoot) {
         env.upperRight.Y = parseFloat(ys[1].childNodes[0].nodeValue);
         return env;
     }
-    catch(e)
-    {
-    }
+    catch(e) {}
     return null;
 }
-function AddView(view) {
+
+function AddView(view)
+{
     if(curView < views.length - 1)
         views.splice(curView + 1, views.length - curView - 1);
     views.push(view);
     curView ++;
 }
-function PreviousView() {
+
+function PreviousView()
+{
     if(curView <= 0)
         return;
     var view = views[-- curView];
     GotoView(view.cx, view.cy, view.scale, false, true);
 }
-function NextView() {
+
+function NextView()
+{
     if(curView >= views.length - 1)
         return;
     var view = views[++ curView];
     GotoView(view.cx, view.cy, view.scale, false, true);
 }
-function ShowGroupLayers(groupsShown, groupsHidden, layersShown, layersHidden) {
+
+function ShowGroupLayers(groupsShown, groupsHidden, layersShown, layersHidden)
+{
     ResetVisLayers();
     RequestMap(curScale, extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, groupsShown, groupsHidden, layersShown, layersHidden);
 }
-function About() {
+
+function About()
+{
     var winAbout = window.open("%s?SESSION=" + sessionId + "&LOCALE=" + locale, "about", "width=700,height=440");
     if(winAbout != null)
         winAbout.focus();
 }
-function GetDPI() {
+
+function GetDPI()
+{
     return DPI;
 }
-function StartResizingLegend(e) {
+
+function StartResizingLegend(e)
+{
     if(moveType == RESIZINGLEGEND)
     {
         moveType = NONE;
@@ -2442,31 +2763,46 @@ function StartResizingLegend(e) {
     initLegendHeight = legendHeight;
     moveType = RESIZINGLEGEND;
     if(!msie)
-        if (e.stopPropagation) e.stopPropagation();
-    else {
+        if (e.stopPropagation)
+            e.stopPropagation();
+    else
+    {
         e.cancelBubble = true;
         document.getElementById("LegendResizer").setCapture();
     }
     return false;
 }
 
-function EndResizingLegend(e) {
+function EndResizingLegend(e)
+{
     moveType = NONE;
     if(msie)
         document.getElementById("LegendResizer").releaseCapture();
 }
-function ScaleSliding(e) {
-    if(mapInit) {
+
+function ScaleSliding(e)
+{
+    if(mapInit)
+    {
         moveType = DRAGGINGCTRL;
         dragElt = SLIDER;
         anchorY = e.screenY;
     }
-    if(msie) e.cancelBubble = true; else e.stopPropagation();
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
     return false;
 }
-function OnPan(e, dir) {
-    if(msie) e.cancelBubble = true; else e.stopPropagation();
-    switch(dir) {
+
+function OnPan(e, dir)
+{
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
+    switch(dir)
+    {
         case 0: PanUp(); break;
         case 1: PanRight(); break;
         case 2: PanDown(); break;
@@ -2474,10 +2810,15 @@ function OnPan(e, dir) {
     }
     return false;
 }
-function ClickSliderScale(e) {
+
+function ClickSliderScale(e)
+{
     x = (msie?event.clientX: e.clientX) - mapPosX;
     y = (msie?event.clientY: e.clientY);
-    if(msie) e.cancelBubble = true; else e.stopPropagation();
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
 
     moveType = DRAGGINGCTRL;
     dragElt = SCALE;
@@ -2485,23 +2826,31 @@ function ClickSliderScale(e) {
     anchorY = y;
     return false;
 }
-function ResizeLegendTo(newY) {
+
+function ResizeLegendTo(newY)
+{
     legendHeight = initLegendHeight + (newY - rlAnchor);
     if(legendHeight < 1)
         legendHeight = 1;
     LayoutControls();
 }
-function ForwardMouseUp(e) {
+
+function ForwardMouseUp(e)
+{
     if(moveType == RESIZINGLEGEND)
         EndResizingLegend(e);
 }
-function SaveState() {
+
+function SaveState()
+{
     var exp = new Date();
     var in2Years = exp.getTime() + 2 * 31536000000;
     exp.setTime(in2Years);
     document.cookie = "asav=US:" + (us? "1": "0") + "; expires=" + exp.toGMTString();
 }
-function RestoreState() {
+
+function RestoreState()
+{
     var allData = document.cookie.split(";");
     for(var i=0; i < allData.length; i++)
     {
@@ -2523,10 +2872,14 @@ function RestoreState() {
         }
     }
 }
-function GetLayers(onlyVisible, onlySelectable) {
+
+function GetLayers(onlyVisible, onlySelectable)
+{
     return GetLegendCtrl().GetLayers(onlyVisible, onlySelectable);
 }
-function GetSelectedLayers() {
+
+function GetSelectedLayers()
+{
     var layers = new Array();
     if(selection.count > 0)
     {
@@ -2539,7 +2892,9 @@ function GetSelectedLayers() {
     }
     return layers;
 }
-function GetVisSelLayers() {
+
+function GetVisSelLayers()
+{
     if(visSelLayers != null)
         return visSelLayers;
     visSelLayers = "";
@@ -2552,7 +2907,9 @@ function GetVisSelLayers() {
     }
     return visSelLayers;
 }
-function GetVisLayers() {
+
+function GetVisLayers()
+{
     if(visLayers != null)
         return visLayers;
     visLayers = "";
@@ -2565,11 +2922,15 @@ function GetVisLayers() {
     }
     return visLayers;
 }
-function ResetVisLayers() {
+
+function ResetVisLayers()
+{
     visSelLayers = null;
     visLayers = null;
 }
-function SetScaleSliderPos() {
+
+function SetScaleSliderPos()
+{
     if(scales.length == 1)
         return;
     sci = GetFiniteScaleIndex(curScale);
@@ -2577,8 +2938,11 @@ function SetScaleSliderPos() {
     slidery = sscaley + slidertop + newPos;
     document.getElementById("slider").style.top = slidery;
 }
-function GetFiniteScaleIndex(scale) {
-    if(scales.length > 1) {
+
+function GetFiniteScaleIndex(scale)
+{
+    if(scales.length > 1)
+    {
         i = 0;
         if(scale > scales[scales.length - 1])
             i = scales.length - 1
@@ -2593,20 +2957,26 @@ function GetFiniteScaleIndex(scale) {
         return 0;
     return i;
 }
-function GetNearestFiniteScale(scale) {
+
+function GetNearestFiniteScale(scale)
+{
     return scales[GetFiniteScaleIndex(scale)];
 }
-function NormalizeScale(scale) {
+
+function NormalizeScale(scale)
+{
     if(scale < minScale)
         return minScale;
     if(scale > maxScale)
         return maxScale;
     return scale;
 }
-function CalcTileMetrics(nx1, ny1, nx2, ny2) {
+
+function CalcTileMetrics(nx1, ny1, nx2, ny2)
+{
     tcxU = curScale * TILECX * metersPerPixel / metersPerUnit;
     tcyU = curScale * TILECY * metersPerPixel / metersPerUnit;
-    
+
     udistx = Math.abs(orgExtX1 - nx1); udisty = Math.abs(orgExtY1 - ny1);
     if(nx1 < orgExtX1)
     {
@@ -2618,8 +2988,7 @@ function CalcTileMetrics(nx1, ny1, nx2, ny2) {
         leftmost = tilex = parseInt(udistx / tcxU);
         uoffsx = udistx - (tcxU * tilex);
     }
-    
-    
+
     if(ny1 > orgExtY1)
     {
         topmost = tiley = -parseInt(udisty / tcyU) - 1;
@@ -2640,7 +3009,9 @@ function CalcTileMetrics(nx1, ny1, nx2, ny2) {
     iToDevx = fVisTilex - tilex; iToDevy = fVisTiley - tiley;
     ltilex = rightmost = leftmost + visTileCols; ltiley = bottommost = topmost + visTileRows;
 }
-function BuildTilePlanes(nx1, ny1, nx2, ny2) {
+
+function BuildTilePlanes(nx1, ny1, nx2, ny2)
+{
     if(!hasTiles)
         return;
 
@@ -2665,22 +3036,29 @@ function BuildTilePlanes(nx1, ny1, nx2, ny2) {
     tilesDiv.innerHTML = tileCode;
     RequestVisibleTiles();
 }
-function RequestVisibleTiles() {
+
+function RequestVisibleTiles()
+{
     for(var i=fVisTilex; i <= lVisTilex; i++)
         for(var j=fVisTiley; j <= lVisTiley; j++)
             RequestTile(i, j, i - iToDevx, j - iToDevy)
 }
-function RequestTileAt(col, row) {
+
+function RequestTileAt(col, row)
+{
     RequestTile(col, row, col - iToDevx, row - iToDevy);
 }
-function RequestTile(col, row, tilex, tiley) {
+
+function RequestTile(col, row, tilex, tiley)
+{
     for(var k=0; k < baseGroups.length; k++)
     {
         if(visBaseGroups.getItem(baseGroups[k]) == null)
             continue;
         cellSpec = k + ":" + col + ":" + row;
         cell = document.getElementById(cellSpec);
-        if(cell == null) {
+        if(cell == null)
+        {
             if((cell = FindCell(k, cellSpec)) == null)
                 return 0;
         }
@@ -2694,40 +3072,51 @@ function RequestTile(col, row, tilex, tiley) {
     }
     return 1;
 }
-function FindCell(plane, cellSpec) {
+
+function FindCell(plane, cellSpec)
+{
     var tbody = document.getElementById("gridbody" + plane);
-    for(var i = 0; i < GRIDCY; i++) {
+    for(var i = 0; i < GRIDCY; i++)
+    {
         row = tbody.rows[i];
         cols = row.childNodes;
-        for(var j = 0; j < GRIDCX; j++) {
-            if(cols[j].id == cellSpec) {
+        for(var j = 0; j < GRIDCX; j++)
+        {
+            if(cols[j].id == cellSpec)
                 return cols[j];
-            }
         }
     }
     return null;
 }
-function OnTileLoaded(imageId) {
+
+function OnTileLoaded(imageId)
+{
     img = document.getElementById(imageId);
     if(img)
     {
         if(msie)
             img.parentNode.innerHTML = "<div style=\"position: relative; width: " + TILECX + "px; height: " + TILECY + "px; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + img.src + "', sizingMethod='scale')\"></div>";
         else
-          img.style.visibility = "visible";
+            img.style.visibility = "visible";
     }
 }
-function HideMapImage() {
+
+function HideMapImage()
+{
     if(!HasVisibleBaseGroups())
         return;
     document.getElementById("img1").style.display = "none";
 }
-function HasVisibleBaseGroups() {
+
+function HasVisibleBaseGroups()
+{
     if(!hasTiles)
         return false
     return visBaseGroups.length > 0;
 }
-function ShowScaleTip(x, y, scale) {
+
+function ShowScaleTip(x, y, scale)
+{
     tip = document.getElementById("scaleTip").style;
     tip.visibility = "visible";
     tipText = document.getElementById("scaleTipText");
@@ -2735,10 +3124,14 @@ function ShowScaleTip(x, y, scale) {
     w = tipText.offsetWidth;
     tip.top = y; tip.left = x - w - 3;
 }
-function HideScaleTip(x, y, scale) {
+
+function HideScaleTip(x, y, scale)
+{
     document.getElementById("scaleTip").style.visibility = "hidden";
 }
-function ShowBaseGroup(name, id, show) {
+
+function ShowBaseGroup(name, id, show)
+{
     ShowGroupLayers(show? id: "", show? "": id, "", "");
     if(!show)
     {
@@ -2790,7 +3183,8 @@ function ProcessHyperLinkdata(id, x, y, exec, xml)
     if(Math.abs(x - hlData.curx) > 1 || Math.abs(y - hlData.cury) > 1)
         return;
     ProcessFeatureInfo(xml, false, 4);
-    if(hlData.url != "" || hlData.ttip != "") {
+    if(hlData.url != "" || hlData.ttip != "")
+    {
         if(!exec)
             DisplayHyperlinkTip(x + mapPosX, y);
         else
@@ -2800,7 +3194,8 @@ function ProcessHyperLinkdata(id, x, y, exec, xml)
 
 function DisplayHyperlinkTip(x,y)
 {
-    if(hlData.ttip != "") {
+    if(hlData.ttip != "")
+    {
         ttinfo = "&nbsp;" + hlData.ttip + "&nbsp;";
         ttinfo = ttinfo.replace(/\\n/g, "<br>&nbsp;");
         if(hlData.url != "")
@@ -2833,23 +3228,29 @@ function HideHyperlinkTip()
     tip = document.getElementById("hlTip");
     if(tip != null) tip.style.visibility = "hidden";
 }
-function ExecuteHyperlink(url) {
+
+function ExecuteHyperlink(url)
+{
     targetFrame = "";
     if(hlTgt == 1) targetFrame = "taskPaneFrame";
     else if(hlTgt == 3) targetFrame = hlTgtName;
     winRef = null;
     if(targetFrame != "")
         winRef = parent.GetFrame(targetFrame);
-    if(winRef != null) {
+    if(winRef != null)
+    {
         winRef.location.href = url;
         return winRef;
     }
     else
         window.open(url, targetFrame, "toolbar=no,width=500,height=800,resizable,scrollbars");
 }
-function OnSliderImageLoaded(imgName) {
+
+function OnSliderImageLoaded(imgName)
+{
     img = document.getElementById(imgName);
-    if(!showSlider) {
+    if(!showSlider)
+    {
         img.parentNode.style.visibility = "hidden";
         return;
     }
@@ -2859,18 +3260,19 @@ function OnSliderImageLoaded(imgName) {
     var imgID = (img.id) ? "id='" + img.id + "' " : ""
     var imgClass = (img.className) ? "class='" + img.className + "' " : ""
     var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' "
-    var imgStyle = "display:inline-block;" + img.style.cssText 
+    var imgStyle = "display:inline-block;" + img.style.cssText
     if (img.align == "left") imgStyle = "float:left;" + imgStyle
     if (img.align == "right") imgStyle = "float:right;" + imgStyle
     if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle
-    if (img.useMap) {
+    if (img.useMap)
         strAddMap = "<img style=\"position:absolute; left: 0px; top: 0px; height:" + img.height + "px; width:" + img.width + ";\" " + "src=\"" + strGif + "\" usemap=\"" + img.useMap  + "\" border=\"" + img.border + "\">";
-    }
-    var strNewHTML = "<span " + imgID + imgClass + imgTitle + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";" + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'" + img.src + "\', sizingMethod='crop');\"></span>" 
+    var strNewHTML = "<span " + imgID + imgClass + imgTitle + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";" + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'" + img.src + "\', sizingMethod='crop');\"></span>"
     if (img.useMap) strNewHTML += strAddMap
     img.outerHTML = strNewHTML
 }
-function ExitMap(e) {
+
+function ExitMap(e)
+{
     if(moveType != PANNING)
         return true;
     var x = e.clientX - mapPosX;
@@ -2878,13 +3280,16 @@ function ExitMap(e) {
     if(IsInSliderSpace(x, y, false))
         return true;
     if(x > 0 && y > 0 && x < mapDevW && y <mapDevH)
-        return true;        
-    EndPaning(e);
+        return true;
+    EndPanning(e);
     return true;
 }
-function ShowSelectionTip(x, y, text, show) {
+
+function ShowSelectionTip(x, y, text, show)
+{
     tip = document.getElementById("scaleTip").style;
-    if(show) {
+    if(show)
+    {
         tip.visibility = "visible";
         tipText = document.getElementById("scaleTipText");
         tipText.innerHTML = "&nbsp;" + text + "&nbsp;";
@@ -2893,11 +3298,16 @@ function ShowSelectionTip(x, y, text, show) {
      else
         tip.visibility = "hidden";
 }
-function OnLayersChanged(){
+
+function OnLayersChanged()
+{
     ResetVisLayers();
 }
-function StartDigitizing(digitizerTool, handler) {
-    if(parent.InMeasure()) {
+
+function StartDigitizing(digitizerTool, handler)
+{
+    if(parent.InMeasure())
+    {
         parent.SetStatusMsg("__#MEASALREADYRUNNING#__");
         return;
     }
@@ -2906,35 +3316,46 @@ function StartDigitizing(digitizerTool, handler) {
     digitizing = true;
     document.getElementById("KeyTarget").focus();
 }
-function CancelDigitization() {
-    if(digitizing) {
+
+function CancelDigitization()
+{
+    if(digitizing)
+    {
         digitizer.Cancel();
         digitizing = false;
         digihandler = null;
     }
 }
-function OnShapeDigitized(shape) {
-    if(digitizing) {
+
+function OnShapeDigitized(shape)
+{
+    if(digitizing)
+    {
         digitizing = false;
-        if(digihandler != null) {
+        if(digihandler != null)
+        {
             digihandler(shape);
             digihandler = null;
         }
     }
 }
-function KeyPressed(e) {
-    if(e.keyCode == 27) {
+
+function KeyPressed(e)
+{
+    if(e.keyCode == 27)
+    {
         CancelDigitization();
         return false;
     }
     return true;
 }
-    </script>
 
-  </head>
-  <body id="body" onload="InitDocument()" leftmargin=0 topmargin=0 rightmargin=0 bottommargin=0 marginwidth=0 marginheight=0 bgcolor=#d0d0d0
-                    onmousedown="return OnMouseDown(event)" onmousemove="return OnMouseMove(event)" onmouseup="OnMouseUp(event)"
-                    oncontextmenu = "return OnContextMenu(event)" onclick="return OnClick(event)">
+</script>
+
+</head>
+<body id="body" onload="InitDocument()" leftmargin=0 topmargin=0 rightmargin=0 bottommargin=0 marginwidth=0 marginheight=0 bgcolor=#d0d0d0
+        onmousedown="return OnMouseDown(event)" onmousemove="return OnMouseMove(event)" onmouseup="OnMouseUp(event)"
+        oncontextmenu = "return OnContextMenu(event)" onclick="return OnClick(event)">
     <table id="tbMap" width="100%%" height="100%%" cellpadding="0" cellspacing="0" id="tb">
       <tr>
        <td id="InfoBand" align="left" valign="top" width="1" bgcolor="white">
@@ -3009,5 +3430,5 @@ function KeyPressed(e) {
     </div>
     <div class="PopupMenu" id="InfoMenu"></div>
     <input id="KeyTarget" type="text" onKeyDown="return KeyPressed(event);" style="position: absolute; left: 0px; right: 0px; width: 0px; height: 0px" >
-  </body>
+</body>
 </html>

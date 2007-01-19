@@ -1,189 +1,241 @@
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>%s</title>
-    <script language="javascript" src="../viewerfiles/numfmt.js"></script>
-    <script language="javascript" src="../viewerfiles/browserdetect.js"></script>
-    <script language="javascript" src="../viewerfiles/contextmenu.js"></script>
-    <script language=javascript>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>%s</title>
 
-        var locale = '%s';
-        var hasToolbar = %s;
-        var hasStatusbar = %s;
-        var hasTaskpane = %s;
-        var hasTaskbar = %s;
-        var homePage = '%s';
-        var thisFrame = this;
-        var defHome = %s;
-        var webLayout = '%s';
-        var mapDefinition = '%s';
-        var taskWidth = %s;
-        var pointBegin= null;
-        var measureWinRef = null;
-        var inMeasure = false;
-        var segId = 1;
-        var center = %s;
-        var scale = %s;
-        var title = "%s";
-        var forwardMouse = false;
-        var menuOpen = false;
-        var curScale = 0;
-        var dwf = %s;
-        var mapUnitsType = "";
-        var newWindowIndex = 1;
+<script language="javascript" src="../viewerfiles/numfmt.js"></script>
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language="javascript" src="../viewerfiles/contextmenu.js"></script>
+<script language=javascript>
 
-        var commands = new Array();
-        var toolbarItems = new Array();
-        var taskItems = new Array();
-        var ctxMenuItems = new Array();
+var locale = '%s';
+var hasToolbar = %s;
+var hasStatusbar = %s;
+var hasTaskpane = %s;
+var hasTaskbar = %s;
+var homePage = '%s';
+var thisFrame = this;
+var defHome = %s;
+var webLayout = '%s';
+var mapDefinition = '%s';
+var taskWidth = %s;
+var pointBegin= null;
+var measureWinRef = null;
+var inMeasure = false;
+var segId = 1;
+var center = %s;
+var scale = %s;
+var title = "%s";
+var forwardMouse = false;
+var menuOpen = false;
+var curScale = 0;
+var dwf = %s;
+var mapUnitsType = "";
+var newWindowIndex = 1;
 
-        function BasicCommand(name, action, icon, iconDisabled, tooltip, description) {
-        this.name = name;
-        this.action = action;
-        this.icon = icon;
-        this.iconDisabled = iconDisabled;
-        this.tooltip = tooltip;
-        this.description = description;
-        this.enabled = true;
-        }
-        function UiTargetCommand(name, action, icon, iconDisabled, tooltip, description, targetType, target) {
-        this.targetType = targetType;
-        this.target = target;
-        this.BasicCommandInfo = BasicCommand;
-        this.BasicCommandInfo(name, action, icon, iconDisabled, tooltip, description);
-        }
-        function SearchCommand(name, label, action, icon, iconDisabled, tooltip, description, layer, prompt, resultColumns, filter, matchLimit, targetType, target) {
-        this.layer = layer;
-        this.prompt = prompt;
-        this.resultColumns = resultColumns;
-        this.filter = filter;
-        this.matchLimit = matchLimit;
-        this.label = label;
-        this.UiTargetCommandInfo = UiTargetCommand;
-        this.UiTargetCommandInfo(name, action, icon, iconDisabled, tooltip, description, targetType, target);
-        }
-        function InvokeUrlCommand(name, action, icon, iconDisabled, tooltip, description, url, params, disableIfSelEmpty, layerConstraints, targetType, target) {
-        this.url = url;
-        this.params = params;
-        this.disableIfSelEmpty = disableIfSelEmpty;
-        this.layerConstraints = layerConstraints;
-        this.UiTargetCommandInfo = UiTargetCommand;
-        this.UiTargetCommandInfo(name, action, icon, iconDisabled, tooltip, description, targetType, target);
-        }
-        function HelpCommand(name, action, icon, iconDisabled, tooltip, description, url, targetType, target) {
-        this.url = url;
-        this.UiTargetCommandInfo = UiTargetCommand;
-        this.UiTargetCommandInfo(name, action, icon, iconDisabled, tooltip, description, targetType, target);
-        }
-        function PrintCommand(name, action, icon, iconDisabled, tooltip, description, layouts) {
-        this.layouts = layouts;
-        this.BasicCommandInfo = BasicCommand;
-        this.BasicCommandInfo(name, action, icon, iconDisabled, tooltip, description);
-        }
-        function InvokeScriptCommand(name, action, icon, iconDisabled, tooltip, description, index) {
-        this.codeIndex = index;
-        this.BasicCommandInfo = BasicCommand;
-        this.BasicCommandInfo(name, action, icon, iconDisabled, tooltip, description);
-        }
-        function NavParam(key, value) {
-        this.key = key;
-        this.value = value;
-        }
-        function ResultColumn(displayName, propertyName) {
-        this.displayName = displayName;
-        this.propertyName = propertyName;
-        }
-        function UiItem(name) {
-        this.name = name;
-        this.type = 2;
-        }
-        function CommandItem(name, cmdIndex) {
-        this.cmdIndex = cmdIndex;
-        this.UiItemInfo = UiItem;
-        this.UiItemInfo(name);
-        this.type = 1;
-        }
-        function FlyoutItem(name, subItems, htmlEltName, iconUrl) {
-        this.subItems = subItems;
-        this.UiItemInfo = UiItem;
-        this.htmlElt = htmlEltName;
-        this.iconUrl = iconUrl;
-        this.UiItemInfo(name);
-        this.type = 3;
-        }
-        function Point(x,y) {
-        this.x = x;
-        this.y = y;
-        }
-        //Commands
-        %s
+var commands = new Array();
+var toolbarItems = new Array();
+var taskItems = new Array();
+var ctxMenuItems = new Array();
 
-        //Toolbar items
-        %s
-
-        //Task items
-        %s
-
-        //Contextual menu
-        %s
-
-        //User code
-        %s
-
-        var taskItemTexts = new Array(%s);
-        var selectionAwareCmds = new Array();
-        %s
-
-        // public functions -----------------------------------------------
-        //
-        function ZoomToView(x,y,scale,refresh) {
-        mapFrame.ZoomToView(x,y,scale,refresh);
-        }
-        function Refresh() {
-        mapFrame.Refresh();
-        }
-        function SetStatusMsg(msg) {
-        if(msg == null)
-        msg = "";
-        window.status = msg;
-        }
-        function ExecuteMapAction(action) {
-        if(action == 14)
-        if(RestoreView())
-        return;
-        if(action < 2 || action >
-            8)
-            if(inMeasure)
-            EndMeasure();
-            mapFrame.ExecuteMapAction(action);
-            if(hasToolbar == 1)
-            tbFrame.OnCommandExecuted(action);
-            }
-            function GetMapFrame() {
-            return mapFrame;
-            }
-            function GetScriptFrame() {
-            return scriptFrame;
-            }
-            function GetTaskFrame() {
-            return taskFrame;
-            }
-            function GetFormFrame() {
-            return formFrame;
-            }
-            function GotoHomePage() {
-                GetTaskFrame().GetTaskPane().location.href = GettingStartedURL();
+function BasicCommand(name, action, icon, iconDisabled, tooltip, description)
+{
+    this.name = name;
+    this.action = action;
+    this.icon = icon;
+    this.iconDisabled = iconDisabled;
+    this.tooltip = tooltip;
+    this.description = description;
+    this.enabled = true;
 }
-function GettingStartedURL () {
+
+function UiTargetCommand(name, action, icon, iconDisabled, tooltip, description, targetType, target)
+{
+    this.targetType = targetType;
+    this.target = target;
+    this.BasicCommandInfo = BasicCommand;
+    this.BasicCommandInfo(name, action, icon, iconDisabled, tooltip, description);
+}
+
+function SearchCommand(name, label, action, icon, iconDisabled, tooltip, description, layer, prompt, resultColumns, filter, matchLimit, targetType, target)
+{
+    this.layer = layer;
+    this.prompt = prompt;
+    this.resultColumns = resultColumns;
+    this.filter = filter;
+    this.matchLimit = matchLimit;
+    this.label = label;
+    this.UiTargetCommandInfo = UiTargetCommand;
+    this.UiTargetCommandInfo(name, action, icon, iconDisabled, tooltip, description, targetType, target);
+}
+
+function InvokeUrlCommand(name, action, icon, iconDisabled, tooltip, description, url, params, disableIfSelEmpty, layerConstraints, targetType, target)
+{
+    this.url = url;
+    this.params = params;
+    this.disableIfSelEmpty = disableIfSelEmpty;
+    this.layerConstraints = layerConstraints;
+    this.UiTargetCommandInfo = UiTargetCommand;
+    this.UiTargetCommandInfo(name, action, icon, iconDisabled, tooltip, description, targetType, target);
+}
+
+function HelpCommand(name, action, icon, iconDisabled, tooltip, description, url, targetType, target)
+{
+    this.url = url;
+    this.UiTargetCommandInfo = UiTargetCommand;
+    this.UiTargetCommandInfo(name, action, icon, iconDisabled, tooltip, description, targetType, target);
+}
+
+function PrintCommand(name, action, icon, iconDisabled, tooltip, description, layouts)
+{
+    this.layouts = layouts;
+    this.BasicCommandInfo = BasicCommand;
+    this.BasicCommandInfo(name, action, icon, iconDisabled, tooltip, description);
+}
+
+function InvokeScriptCommand(name, action, icon, iconDisabled, tooltip, description, index)
+{
+    this.codeIndex = index;
+    this.BasicCommandInfo = BasicCommand;
+    this.BasicCommandInfo(name, action, icon, iconDisabled, tooltip, description);
+}
+
+function NavParam(key, value)
+{
+    this.key = key;
+    this.value = value;
+}
+
+function ResultColumn(displayName, propertyName)
+{
+    this.displayName = displayName;
+    this.propertyName = propertyName;
+}
+
+function UiItem(name)
+{
+    this.name = name;
+    this.type = 2;
+}
+
+function CommandItem(name, cmdIndex)
+{
+    this.cmdIndex = cmdIndex;
+    this.UiItemInfo = UiItem;
+    this.UiItemInfo(name);
+    this.type = 1;
+}
+
+function FlyoutItem(name, subItems, htmlEltName, iconUrl)
+{
+    this.subItems = subItems;
+    this.UiItemInfo = UiItem;
+    this.htmlElt = htmlEltName;
+    this.iconUrl = iconUrl;
+    this.UiItemInfo(name);
+    this.type = 3;
+}
+
+function Point(x,y)
+{
+    this.x = x;
+    this.y = y;
+}
+
+//Commands
+%s
+
+//Toolbar items
+%s
+
+//Task items
+%s
+
+//Contextual menu
+%s
+
+//User code
+%s
+
+var taskItemTexts = new Array(%s);
+var selectionAwareCmds = new Array();
+%s
+
+// public functions -----------------------------------------------
+//
+
+function ZoomToView(x,y,scale,refresh)
+{
+    mapFrame.ZoomToView(x,y,scale,refresh);
+}
+
+function Refresh()
+{
+    mapFrame.Refresh();
+}
+
+function SetStatusMsg(msg)
+{
+    if(msg == null)
+        msg = "";
+    window.status = msg;
+}
+
+function ExecuteMapAction(action)
+{
+    if(action == 14)
+        if(RestoreView())
+            return;
+
+    if(action < 2 || action > 8)
+        if(inMeasure)
+            EndMeasure();
+
+    mapFrame.ExecuteMapAction(action);
+    if(hasToolbar == 1)
+        tbFrame.OnCommandExecuted(action);
+}
+
+function GetMapFrame()
+{
+    return mapFrame;
+}
+
+function GetScriptFrame()
+{
+    return scriptFrame;
+}
+
+function GetTaskFrame()
+{
+    return taskFrame;
+}
+
+function GetFormFrame()
+{
+    return formFrame;
+}
+
+function GotoHomePage()
+{
+    GetTaskFrame().GetTaskPane().location.href = GettingStartedURL();
+}
+
+function GettingStartedURL ()
+{
     if(defHome)
         return homePage + "?WEBLAYOUT=" + encodeURIComponent(webLayout) + "&LOCALE=" + locale + "&DWF=" + dwf;
     else
         return homePage + "?SESSION=" + mapFrame.GetSessionId() + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(mapFrame.GetMapName());
 }
-function SetSelectionXML(xmlSet) {
+
+function SetSelectionXML(xmlSet)
+{
     mapFrame.SetSelectionXML(xmlSet);
 }
-function ExecuteCommand(index) {
+
+function ExecuteCommand(index)
+{
     if(index < 0 || index >= commands.length)
         return;
     var cmd = commands[index];
@@ -215,7 +267,9 @@ function ExecuteCommand(index) {
     else if(cmd.action == 33)
         ExecuteHelpCommand(index);
 }
-function ForwardMouseDown(doc, e) {
+
+function ForwardMouseDown(doc, e)
+{
     forwardMouse = true;
     var frs = window.frames;
     for(var i=0; i < frs.length; i++)
@@ -230,20 +284,31 @@ function ForwardMouseDown(doc, e) {
     }
     forwardMouse = false;
 }
-function GetCommands() {
+
+function GetCommands()
+{
     return commands;
 }
-function GetToolbarItems() {    
+
+function GetToolbarItems()
+{
     return toolbarItems;
 }
-function GetTaskListItems() {
+
+function GetTaskListItems()
+{
     return taskItems;
 }
-function GetContextMenuItems() {
+
+function GetContextMenuItems()
+{
     return ctxMenuItems;
 }
-function FormatMessage(fmt, params) {
-    if(params != null) {
+
+function FormatMessage(fmt, params)
+{
+    if(params != null)
+    {
         for(var i = 0; i < params.length; i++)
         {
             tag = "{" + i + "}";
@@ -251,97 +316,111 @@ function FormatMessage(fmt, params) {
             if(pos1 == -1)
                 break;
             if(pos1 > 0)
-            begin = fmt.substr(0, pos1);
+                begin = fmt.substr(0, pos1);
             else
-            begin = "";
+                begin = "";
             end = fmt.substr(pos1 + tag.length);
             fmt = begin + params[i] + end;
-            }
-            }
-            return fmt;
-            }
-            
-            // private functions -----------------------------------------------
-            //
-            function RestoreView() {
-            if(center == null)
-            return false;
+        }
+    }
+    return fmt;
+}
 
-            ZoomToView(center.x, center.y, scale, 1);
-            return true;
-            }
-            function OnCommandSelected(cmdIndex) {
-            if(cmdIndex != -1)
-            {
-            var cmd = commands[cmdIndex];
-            if(cmd)
-            SetStatusMsg(cmd.description);
-            }
-            else
-            SetStatusMsg("");
-            }
-            function OnEnableCommand(cmdIndex) {
-            return commands[cmdIndex].enabled;
-            }
-            function OnMenuShown(shown) {
-            menuOpen = shown;
-            }
-            function OnScaleChanged(scale) {
-            curScale = scale;
-            DisplayMapSize();
-            if(hasStatusbar == 1)
-            {
-                sbFrame.SetMapScaleMsg("1: " + FormatScale(scale));
-            }
-            }
-            function FormatScale(scale) {
-                if(scale >= 100000)
-                    return parseInt(scale);
-                else if(scale >= 1)
-                    return scale.toFixed(2);
-                else if(scale > 0.001)
-                    return scale.toFixed(3);
-                else
-                    return 0.001;
-            }
-            function OnMapLoaded() {
-            ExecuteMapAction(15);
-            RestoreView();
-            OnSelectionChanged();
-            DisplayMapSize();
-            }
-            function OnCursorPosChanged(x, y) {
-            if(menuOpen || hasStatusbar == 0)
-            return true;
-            try
-            {
-            var latlon = mapFrame.IsLatLongDisplayUnits();
-            var pt = mapFrame.ScreenToMapUnits(x, y);
-            if(latlon)
+// private functions -----------------------------------------------
+//
+function RestoreView()
+{
+    if(center == null)
+        return false;
+
+    ZoomToView(center.x, center.y, scale, 1);
+    return true;
+}
+
+function OnCommandSelected(cmdIndex)
+{
+    if(cmdIndex != -1)
+    {
+        var cmd = commands[cmdIndex];
+        if(cmd)
+        SetStatusMsg(cmd.description);
+    }
+    else
+        SetStatusMsg("");
+}
+
+function OnEnableCommand(cmdIndex)
+{
+    return commands[cmdIndex].enabled;
+}
+
+function OnMenuShown(shown)
+{
+    menuOpen = shown;
+}
+
+function OnScaleChanged(scale)
+{
+    curScale = scale;
+    DisplayMapSize();
+    if(hasStatusbar == 1)
+        sbFrame.SetMapScaleMsg("1: " + FormatScale(scale));
+}
+
+function FormatScale(scale)
+{
+    if(scale >= 100000)
+        return parseInt(scale);
+    else if(scale >= 1)
+        return scale.toFixed(2);
+    else if(scale > 0.001)
+        return scale.toFixed(3);
+    else
+        return 0.001;
+}
+
+function OnMapLoaded()
+{
+    ExecuteMapAction(15);
+    RestoreView();
+    OnSelectionChanged();
+    DisplayMapSize();
+}
+
+function OnCursorPosChanged(x, y)
+{
+    if(menuOpen || hasStatusbar == 0)
+        return true;
+    try
+    {
+        var latlon = mapFrame.IsLatLongDisplayUnits();
+        var pt = mapFrame.ScreenToMapUnits(x, y);
+        if(latlon)
             pt = mapFrame.MapUnitsToLatLon(pt.X, pt.Y);
+        x = pt.X.toFixed(6);
+        y = pt.Y.toFixed(6);
 
-            x = pt.X.toFixed(6);
-            y = pt.Y.toFixed(6);
+        var text;
+        if(latlon)
+            text = FormatMessage("__#LATLONCURPOS#__", new Array(x, y) );
+        else
+            text = FormatMessage("__#MAPUNITSCURPOS#__", new Array(x, y) ) + " (" + GetMapUnitsType() + ")";
 
-            var text;
-            if(latlon)
-                text = FormatMessage("__#LATLONCURPOS#__", new Array(x, y) );
-            else
-                text = FormatMessage("__#MAPUNITSCURPOS#__", new Array(x, y) ) + " (" + GetMapUnitsType() + ")";
+        sbFrame.SetCursorPositionMsg(text);
+    }
+    catch(e) {}
 
-            sbFrame.SetCursorPositionMsg(text);
-            }
-            catch(e){}
+    return true;
+}
 
-            return true;
-            }
-            function InitTaskMenu() {
-            var taskMenu = new MenuData("Task", 20, 21, 50, 200,
-            "../stdicons/icon_popupscrollup.gif", "../stdicons/icon_popupscrollup_disabled.gif", "../stdicons/icon_popupscrolldown.gif", "../stdicons/icon_popupscrolldown_disabled.gif",
-            thisFrame, true, "#f0f0f0");
-            startBuildMenuContent(taskMenu);
+function InitTaskMenu()
+{
+    var taskMenu = new MenuData("Task", 20, 21, 50, 200,
+    "../stdicons/icon_popupscrollup.gif", "../stdicons/icon_popupscrollup_disabled.gif", "../stdicons/icon_popupscrolldown.gif", "../stdicons/icon_popupscrolldown_disabled.gif",
+    thisFrame, true, "#f0f0f0");
+    startBuildMenuContent(taskMenu);
 
-            for(var i = 0; i < taskItems.length; i++)
+    for(var i = 0; i < taskItems.length; i++)
     {
         var task = taskItems[i];
         if(task.type == 2)
@@ -350,37 +429,50 @@ function FormatMessage(fmt, params) {
         {
             var cmd = commands[task.cmdIndex];
             addMenuOption(taskMenu, task.name, task.cmdIndex, 1, cmd.icon, cmd.iconDisabled, cmd.enabled);
-        }    
-    }        
+        }
+    }
     endBuildMenuContent(taskMenu);
     return taskMenu;
 }
-function EndMeasure() {
+
+function EndMeasure()
+{
     inMeasure = false;
     try
     {
         measureWinRef.MeasureEnded();
-    } catch(e){}
+    }
+    catch(e) {}
 }
-function ResumeMeasure() {
+
+function ResumeMeasure()
+{
     inMeasure = true;
     try
     {
         measureWinRef.MeasureResumed();
-    } catch(e){}
+    }
+    catch(e) {}
 }
 
-function InMeasure() {
+function InMeasure()
+{
     return inMeasure;
 }
-function StopMeasure() {
+
+function StopMeasure()
+{
     inMeasure = false;
 }
-function ClearMeasure() {
+
+function ClearMeasure()
+{
     pointBegin = null;
     segId = 1;
 }
-function ClickMap(x, y) {
+
+function ClickMap(x, y)
+{
     if(!inMeasure)
         return false;
     var newPoint = mapFrame.ScreenToMapUnits(x, y);
@@ -392,11 +484,14 @@ function ClickMap(x, y) {
         {
             measureWinRef.AddMeasure(segId ++, pointBegin, newPoint);
             pointBegin = newPoint;
-        } catch(e){}
+        }
+        catch(e) {}
     }
     return true;
 }
-function OnSelectionChanged() {
+
+function OnSelectionChanged()
+{
     var selCount = mapFrame.GetSelectedCount();
     if(hasStatusbar == 1)
         sbFrame.SetFeatureSelectedMsg(FormatMessage((selCount > 1? "__#FEATURESSELECTED#__": "__#FEATURESELECTED#__"), new Array(selCount, "unused")));
@@ -408,7 +503,7 @@ function OnSelectionChanged() {
         if(cmd.action == 26)
         {
             if(selCount > 0)
-            {   
+            {
                 var layers = cmd.layerConstraints;
                 if(layers.length > 0)
                 {
@@ -443,22 +538,22 @@ function OnSelectionChanged() {
                     continue;
                 }
             }
-                
+
             if(EnableCommand(cmd, true))
                 stateChanged = true;
-            
         }
     }
     if(stateChanged && hasToolbar == 1)
         tbFrame.OnCmdStateChanged();
-        
 }
 
-function IsContextMenu() {
+function IsContextMenu()
+{
     return ctxMenuItems.length > 0;
 }
 
-function DisplayMapSize() {
+function DisplayMapSize()
+{
     if(hasStatusbar == 0)
         return;
     var mi = "__#MI#__", km = "__#KM#__", ft = "__#FT#__", i = "__#IN#__", mt = "__#MT#__",  cm = "__#CM#__";
@@ -469,54 +564,69 @@ function DisplayMapSize() {
     if(usEnglish) {
         w *= 3.28083988128;
         h *= 3.28083988128;
-        if(w >= 5279.7552 && h >= 5279.7552) {
+        if(w >= 5279.7552 && h >= 5279.7552)
+        {
             u = mi;
             w /= 5279.7552; h /= 5279.7552;
         }
-        else if(w < 1 && h < 1) {
+        else if(w < 1 && h < 1)
+        {
             u = i;
             w *= 12; h *= 12;
         }
-        else {
+        else
+        {
             u = ft;
         }
     }
     else {
-        if(w >= 1000 && h >= 1000) {
+        if(w >= 1000 && h >= 1000)
+        {
             u = km;
             w /= 1000; h /= 1000;
         }
-        else if (w < 1 && h < 1) {
+        else if (w < 1 && h < 1)
+        {
             u = cm;
             w *= 100; h *= 100;
         }
-        else {
+        else
+        {
             u = mt;
         }
     }
-    
+
     var text = w.toFixed(2) + " x " + h.toFixed(2) + " (" + u + ")";
     sbFrame.SetMapSizeMsg(text);
 }
 
-function SetOptions(engUnit, latLonUnit) {
+function SetOptions(engUnit, latLonUnit)
+{
     mapFrame.SetEnglishUnits(engUnit);
     mapFrame.SetLatLonDisplayUnits(latLonUnit);
     DisplayMapSize();
 }
-function IsInitialView() {
+
+function IsInitialView()
+{
     return center != null;
 }
-function ExecutePrintCommand(index) {
+
+function ExecutePrintCommand(index)
+{
     mapFrame.Print(commands[index].layouts, title);
 }
-function ExecutePrintablePageCommand(index) {
+
+function ExecutePrintablePageCommand(index)
+{
     if(inMeasure)
         EndMeasure();
     var center = mapFrame.GetCenter();
     OpenUrl("%s?SCALE=" + curScale + "&DPI=" + mapFrame.GetDPI() + "&CENTERX=" + center.X + "&CENTERY=" + center.Y, index);
 }
-function ExecuteMeasureCommand(index) {
+
+function ExecuteMeasureCommand(index)
+{
     if(mapFrame.IsDigitizing()) {
         SetStatusMsg("__#DIGALREADYRUNNING#__");
         return;
@@ -525,15 +635,15 @@ function ExecuteMeasureCommand(index) {
     pointBegin = null;
     measureWinRef = OpenUrl("%s?PARTIAL=0&TOTAL=0", index);
 }
-function ExecuteInvokeCommand(index) {
+
+function ExecuteInvokeCommand(index)
+{
     var cmd = commands[index];
     if(cmd.url.replace(" \t\n", "") == "")
-    {
         return;
-    }
     if(inMeasure)
         EndMeasure();
-        
+
     params = null;
     if(cmd.params != null)
     {
@@ -551,38 +661,50 @@ function ExecuteInvokeCommand(index) {
     }
     OpenUrlFromForm(cmd.url, params, index);
 }
-function ExecuteSearchCommand(index) {
+
+function ExecuteSearchCommand(index)
+{
     if(inMeasure)
         EndMeasure();
     var cmd = commands[index];
     OpenUrl("%s?LAYER=" + encodeURIComponent(cmd.layer) + "&FILTER=" + encodeURIComponent(cmd.filter) + "&MR=" + cmd.matchLimit, index);
 }
-function ExecuteBufferCommand(index) {
+
+function ExecuteBufferCommand(index)
+{
     if(inMeasure)
         EndMeasure();
     var cmd = commands[index];
     OpenUrl("%s?US=" + (mapFrame.IsEnglishUnits()? "1" : "0"), index);
 }
-function ExecuteSelectWithinCommand(index) {
+
+function ExecuteSelectWithinCommand(index)
+{
     if(inMeasure)
         EndMeasure();
     var cmd = commands[index];
     OpenUrl("%s?DWF=" + dwf, index);
 }
-function ExecuteHelpCommand(index) {
+
+function ExecuteHelpCommand(index)
+{
     if(inMeasure)
         EndMeasure();
     var cmd = commands[index];
     var url = cmd.url == ""? GettingStartedURL(): cmd.url + "?";
     OpenUrl(url, index);
 }
-function ExecuteScriptCommand(index) {
+
+function ExecuteScriptCommand(index)
+{
     if(inMeasure)
         EndMeasure();
     var funcIndex = commands[index].codeIndex;
     %s
 }
-function OpenUrl(url, index) {
+
+function OpenUrl(url, index)
+{
     url = MakeUrl(url, index);
     var cmd = commands[index];
     if(cmd.targetType == 1)
@@ -604,7 +726,9 @@ function OpenUrl(url, index) {
             return window.open(url, cmd.targetFrame + index, "toolbar=no,status=no,width=500,height=500,resizable,scrollbars");
     }
 }
-function OpenUrlFromForm(url, params, index) {
+
+function OpenUrlFromForm(url, params, index)
+{
     AddStdParams(params, index);
     var cmd = commands[index];
     targetName = "";
@@ -624,26 +748,30 @@ function OpenUrlFromForm(url, params, index) {
         {
             targetName = cmd.targetFrame + index;
             window.open("", targetName, "toolbar=no,status=no,width=500,height=500,resizable,scrollbars");
-            }
+        }
     }
     GetFormFrame().Submit(url, params, targetName);
 }
-function AddStdParams(params, index) {
+
+function AddStdParams(params, index)
+{
     var cmd = commands[index];
     var popup = (cmd.targetType == 2) || (cmd.targetType == 3 && GetFrame(cmd.target) == null);
-    params.push("WIDTH"); 
+    params.push("WIDTH");
     if(popup)
         params.push("400");
     else
         params.push(taskWidth);
-    params.push("LOCALE");  params.push(locale);  
-    params.push("SESSION");  params.push(mapFrame.GetSessionId());  
-    params.push("MAPNAME");  params.push(encodeURIComponent(mapFrame.GetMapName()));  
-    params.push("TGT");  params.push(cmd.targetType);  
-    params.push("POPUP");  params.push(popup?1:0);  
-    params.push("CMDINDEX");  params.push(index);  
+    params.push("LOCALE");  params.push(locale);
+    params.push("SESSION");  params.push(mapFrame.GetSessionId());
+    params.push("MAPNAME");  params.push(encodeURIComponent(mapFrame.GetMapName()));
+    params.push("TGT");  params.push(cmd.targetType);
+    params.push("POPUP");  params.push(popup?1:0);
+    params.push("CMDINDEX");  params.push(index);
 }
-function GetFrame(name) {
+
+function GetFrame(name)
+{
     var frs = window.frames;
     for(var i=0; i < frs.length; i++)
     {
@@ -652,7 +780,9 @@ function GetFrame(name) {
     }
     return null;
 }
-function MakeUrl(url, index) {
+
+function MakeUrl(url, index)
+{
     if(url.lastIndexOf("?") != url.length - 1)
         url += "&";
     var cmd = commands[index];
@@ -664,26 +794,33 @@ function MakeUrl(url, index) {
     url += "&LOCALE=" + locale + "&SESSION=" + mapFrame.GetSessionId() + "&MAPNAME=" + encodeURIComponent(mapFrame.GetMapName()) + "&TGT=" + cmd.targetType + "&POPUP=" + (popup?1:0) + "&CMDINDEX=" + index;
     return url;
 }
-function ConfigureViewer(index) {
+
+function ConfigureViewer(index)
+{
     if(inMeasure)
         EndMeasure();
     OpenUrl("%s?DWF=" + dwf, index);
-} 
-function EnableCommand(cmd, enable) {
+}
+
+function EnableCommand(cmd, enable)
+{
     if(cmd.enabled == enable)
         return false;
     cmd.enabled = enable;
     return true;
 }
-function GetMapUnitsType() {
+
+function GetMapUnitsType()
+{
     if(mapUnitsType == "")
         mapUnitsType = mapFrame.GetMapUnitsType();
     return mapUnitsType;
 }
-   
-    </script>
-    %s
-  </head>
-  <body>
-  </body>
+
+</script>
+
+%s
+</head>
+<body>
+</body>
 </html>

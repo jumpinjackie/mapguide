@@ -1,9 +1,9 @@
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>__#SEARCHDLGTITLE#__</title>
-    <link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
-    <style type="text/css">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>__#SEARCHDLGTITLE#__</title>
+<link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
+<style type="text/css">
     td.Title
     {
         font-family: __#@font#__;
@@ -50,68 +50,71 @@
         font-size: __#@fontsize#__;
         cursor: hand;
     }
-    </style>
-    <script language=javascript>
-        var colCount = %s;
-        var curRow = -1;
-        var target = %s;
-        var popup = %s;
-        
-        function InitDocument()
-        {
-            document.onmousedown = OnMouseDown;
-        }
+</style>
 
-        function OnMouseDown(e)
-        {
-            GetParent().ForwardMouseDown(document, e);
-        }
+<script language=javascript>
 
-        function SelectRow(index)
-        {
-            if(index == curRow)
-                return;
-            if(curRow != -1)
-                highlightRow(curRow, 0);
-            if((curRow = index) != -1)
-                highlightRow(curRow, 1);
-        }
-        
-        function CellClicked(sel)
-        {
-            GetParent().SetSelectionXML(sel);
-            GetParent().ExecuteMapAction(10);
-        }
-        
-        function highlightRow(index, mode)
-        {
-            for(var i=0; i < colCount; i++)
-            {
-                var cell = document.getElementById(index + ":" + i);
-                if(mode == 1)
-                {
-                    cell.style.backgroundColor = "#0066cc";
-                    cell.style.color = "white";
-                }
-                else
-                {
-                    cell.style.backgroundColor = index%%2? "#fffff2": "white";
-                    cell.style.color = "black";
-                }
-            }
-        }
+var colCount = %s;
+var curRow = -1;
+var target = %s;
+var popup = %s;
 
-        function GetParent()
-        {
-            if(popup)
-                return opener;
-            else
-                return parent.parent;
-        }
+function InitDocument()
+{
+    document.onmousedown = OnMouseDown;
+}
 
-    </script>
-  </head>
-    <body class="Search" onload="InitDocument()"  marginwidth=5 marginheight=5 leftmargin=5 topmargin=5 bottommargin=5 rightmargin=5 scroll=yes onmouseout="SelectRow(-1)">
+function OnMouseDown(e)
+{
+    GetParent().ForwardMouseDown(document, e);
+}
+
+function SelectRow(index)
+{
+    if(index == curRow)
+        return;
+    if(curRow != -1)
+        highlightRow(curRow, 0);
+    if((curRow = index) != -1)
+        highlightRow(curRow, 1);
+}
+
+function CellClicked(sel)
+{
+    GetParent().SetSelectionXML(sel);
+    GetParent().ExecuteMapAction(10);
+}
+
+function highlightRow(index, mode)
+{
+    for(var i=0; i < colCount; i++)
+    {
+        var cell = document.getElementById(index + ":" + i);
+        if(mode == 1)
+        {
+            cell.style.backgroundColor = "#0066cc";
+            cell.style.color = "white";
+        }
+        else
+        {
+            cell.style.backgroundColor = index%%2? "#fffff2": "white";
+            cell.style.color = "black";
+        }
+    }
+}
+
+function GetParent()
+{
+    if(popup)
+        return opener;
+    else
+        return parent.parent;
+}
+
+</script>
+
+</head>
+<body class="Search" onload="InitDocument()"  marginwidth=5 marginheight=5 leftmargin=5 topmargin=5 bottommargin=5 rightmargin=5 scroll=yes onmouseout="SelectRow(-1)">
     <div class="PopupMenu" id="Task"></div>
     <div class="PopupMetricsDiv" id="MetricsDiv"><span class="PopupMetrics" id="Metrics"></span></div>
     <iframe id="IFrTask" style="position:absolute;top:0px;left:0px;width:0px;height:0px;background-color:white;" frameborder="0"></iframe>
@@ -127,3 +130,5 @@
         </tr>
     </table>
     <table cellspacing=0 cellpadding=0 width="100%%">
+</body>
+</html>

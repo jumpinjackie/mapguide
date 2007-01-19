@@ -1,11 +1,10 @@
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
-    <style type="text/css">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
+<style type="text/css">
     td.Info
     {
-    
         font-family: __#@font#__;
         font-size: 10pt;
         font-weight: bold;
@@ -39,19 +38,22 @@
         font-family: __#@font#__
         font-size: __#@fontsize#__;
     }
-    .GridCell 
+    .GridCell
     {
         height: 14px;
     }
-    </style>
-    <script language="javascript" src="../viewerfiles/browserdetect.js"></script>
-    <script language=javascript>
+</style>
+
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language=javascript>
+
 var resizing = false;
 var mapFrame = %s;
 
 // public functions -----------------------------------------------
 //
-function SetProperties(count, properties) {
+function SetProperties(count, properties)
+{
     var code;
     propCount = count;
     if(count != 1)
@@ -66,47 +68,58 @@ function SetProperties(count, properties) {
     else
     {
         code = '<table id="Grid" cellspacing=0 cellpadding=0 border=0><tr class="Header"><td id="Name" class="Name" width=65><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">&nbsp;__#PROPERTIESNAME#__</span></td><td class="CellSplitter" width=1 onmousedown="StartResizing()"></td><td class="Value"><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">&nbsp;__#PROPERTIESVALUE#__</span></td></tr>';
-
         for(var i=0; i < properties.length; i++)
-        {
             code += '<tr class="GridCell"><td><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">&nbsp;' + properties[i].name + '</span></td><td></td><td><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">' + properties[i].value + '</span></td></tr>';
-        }
-        
         code += '</table>';
     }
-    
+
     var content = document.getElementById("Content");
     content.innerHTML = code; //SAFARI
     OnResizeGrid();
 }
+
 // private functions -----------------------------------------------
 //
-function InitDocument() {
+function InitDocument()
+{
     document.onmousedown = OnMouseDown;
     document.onmousemove = OnMouseMove;
     document.onmouseup = OnMouseUp;
 }
-function OnMouseDown(e) {
+
+function OnMouseDown(e)
+{
     GetMainFrame().ForwardMouseDown(document, e);
 }
-function OnMouseMove(e) {
-    try { GetMapFrame().OnMouseMove(e); } catch(e) {}
+
+function OnMouseMove(e)
+{
+    try
+    {
+        GetMapFrame().OnMouseMove(e);
+    }
+    catch(e) {}
     if(resizing)
     {
         ResizeTo(msie?event.clientX: e.pageX);
         return false;
     }
 }
-function OnMouseUp(e) {
+
+function OnMouseUp(e)
+{
     if(resizing)
     {
         resizing = false;
         ResizeTo(msie?event.clientX: e.pageX);
     }
 }
-function OnResizeGrid(e) {
-    grid = document.getElementById("Grid"); 
-    if(grid) {
+
+function OnResizeGrid(e)
+{
+    grid = document.getElementById("Grid");
+    if(grid)
+    {
         width = msie? document.body.clientWidth: window.innerWidth - 2;
         if(propCount != 1)
             height = msie? document.body.clientHeight: window.innerHeight - 2;
@@ -117,13 +130,19 @@ function OnResizeGrid(e) {
     }
     return true;
 }
-function GetMapFrame() {
-    return mapFrame; 
+
+function GetMapFrame()
+{
+    return mapFrame;
 }
-function GetMainFrame() {
+
+function GetMainFrame()
+{
     return GetMapFrame().parent;
 }
-function StartResizing() {
+
+function StartResizing()
+{
     if(resizing)
     {
         resizing = false;
@@ -131,7 +150,9 @@ function StartResizing() {
     }
     resizing = true;
 }
-function ResizeTo(width) {
+
+function ResizeTo(width)
+{
     var ww = msie? document.body.clientWidth: window.innerWidth - 2;
     if(width > ww - 20)
         width = ww -20;
@@ -139,11 +160,11 @@ function ResizeTo(width) {
         width = 20;
     document.getElementById("Name").style.width = width;
 }
-    
-    </script>
-  </head>
-  <body onload="InitDocument()" marginwidth=0 marginheight=0 leftmargin=0 rightmargin=0 topmargin=0 bottommargin=0 onresize="OnResizeGrid()">
-    <div class="Content" id="Content">
-    </div>
-  </body>
+
+</script>
+
+</head>
+<body onload="InitDocument()" marginwidth=0 marginheight=0 leftmargin=0 rightmargin=0 topmargin=0 bottommargin=0 onresize="OnResizeGrid()">
+    <div class="Content" id="Content"></div>
+</body>
 </html>
