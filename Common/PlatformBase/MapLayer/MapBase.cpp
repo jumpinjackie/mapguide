@@ -670,8 +670,6 @@ void MgMapBase::TrackChange(CREFSTRING objectId, bool layer, MgObjectChange::Cha
 
     MG_TRY()
 
-    UnpackLayersAndGroups();
-
     //check if there is already a changelist for this object. If not, created it
     Ptr<MgChangeList> changeList = (MgChangeList*)m_changeLists->FindItem(objectId);
     if(changeList == NULL)
