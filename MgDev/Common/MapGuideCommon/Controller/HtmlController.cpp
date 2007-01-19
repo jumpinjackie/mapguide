@@ -37,6 +37,14 @@ MgByteReader* MgHtmlController::GetDynamicMapOverlayImage(CREFSTRING mapName, CR
     Ptr<MgMap> map = new MgMap();
     map->Open(resourceService, mapName);
 
+    // Make sure we clear any track changes - these are not applicable for AJAX.
+    Ptr<MgNamedCollection> changeLists = map->GetChangeLists();
+    if (changeLists->GetCount() > 0)
+    {
+        map->ClearChanges();
+        map->Save(resourceService);
+    }
+
     // Get the selection
     Ptr<MgSelection> selection = new MgSelection(map);
     selection->Open(resourceService, mapName);
@@ -56,6 +64,10 @@ MgByteReader* MgHtmlController::GetMapImage(MgMap* map, MgSelection* selection,
 {
     // Apply map view commands
     ApplyMapViewCommands(map, mapViewCommands);
+
+    // Make sure we clear any track changes - these are not applicable for AJAX.
+    if (NULL != map)
+        map->ClearChanges();
 
     // Get Proxy Rendering Service instance
     Ptr<MgRenderingService> service = (MgRenderingService*)(GetService(MgServiceType::RenderingService));
@@ -79,6 +91,9 @@ MgByteReader* MgHtmlController::GetVisibleMapExtent(CREFSTRING mapName,
 
     // Apply map view commands
     ApplyMapViewCommands(map, mapViewCommands);
+
+    // Make sure we clear any track changes - these are not applicable for AJAX.
+    map->ClearChanges();
 
     // Save the MgMap state
     map->Save(resourceService);
@@ -128,6 +143,14 @@ MgByteReader* MgHtmlController::GetMapLegendImage(CREFSTRING mapName,
     Ptr<MgMap> map = new MgMap();
     map->Open(resourceService, mapName);
 
+    // Make sure we clear any track changes - these are not applicable for AJAX.
+    Ptr<MgNamedCollection> changeLists = map->GetChangeLists();
+    if (changeLists->GetCount() > 0)
+    {
+        map->ClearChanges();
+        map->Save(resourceService);
+    }
+
     // Create Proxy Rendering Service instance
     Ptr<MgRenderingService> service = (MgRenderingService*)(GetService(MgServiceType::RenderingService));
 
@@ -152,6 +175,14 @@ MgByteReader* MgHtmlController::QueryMapFeatures(
     // Create MgMap
     Ptr<MgMap> map = new MgMap();
     map->Open(resourceService, mapName);
+
+    // Make sure we clear any track changes - these are not applicable for AJAX.
+    Ptr<MgNamedCollection> changeLists = map->GetChangeLists();
+    if (changeLists->GetCount() > 0)
+    {
+        map->ClearChanges();
+        map->Save(resourceService);
+    }
 
     // Create Proxy Rendering Service instance
     Ptr<MgRenderingService> service = (MgRenderingService*)(GetService(MgServiceType::RenderingService));
