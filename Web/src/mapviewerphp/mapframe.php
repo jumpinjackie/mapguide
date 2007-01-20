@@ -121,6 +121,7 @@ else
         printf ($templ,
                     GetRootVirtualFolder() . "/mapagent/mapagent.fcgi",
                     $mapName,
+                    $mapDefinition,
                     $infoWidth,
                     $showLegend?"true":"false",
                     $showProperties?"true":"false",

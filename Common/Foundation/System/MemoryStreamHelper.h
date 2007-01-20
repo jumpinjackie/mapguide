@@ -155,6 +155,12 @@ class MG_FOUNDATION_API MgMemoryStreamHelper : public MgStreamHelper
     ///
     void Clear();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Resets reading to start of buffer
+    ///
+    void Rewind();
+
     protected:
 
     void Dispose();

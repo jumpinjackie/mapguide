@@ -47,9 +47,10 @@ class MgSystemRepositoryManager : public MgRepositoryManager
         virtual MgByteReader* GetResourceContent(
             MgResourceIdentifier* resource, CREFSTRING preProcessTags);
 
+        virtual MgResourceHeaderManager* GetResourceHeaderManager();
+
     protected:
 
-        virtual MgResourceHeaderManager* GetResourceHeaderManager();
 
 /// Data Members
 

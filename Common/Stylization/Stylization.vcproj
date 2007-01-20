@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\DWFTK7.1\develop\global\src\dwfemap;..\..\Oem\FDO\inc;..\..\Oem\gd\gd;..\MdfModel;..\..\Oem\gd\freetype\include"
+				AdditionalIncludeDirectories="..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\DWFTK7.1\develop\global\src\dwfemap;..\..\Oem\FDO\inc;..\..\Oem\gd\gd;..\MdfModel;..\..\Oem\gd\freetype\include;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;DWFCORE_STATIC;DWFTK_STATIC;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FdoCommon.lib Fdo.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib MgMdfModeld.lib gd.lib freetype2110_D.lib"
+				AdditionalDependencies="FdoCommon.lib Fdo.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib MgMdfModeld.lib gd.lib freetype2110_D.lib user32.lib gdi32.lib shell32.lib libpngd.lib"
 				OutputFile="$(OutDir)/MgStylizationd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;..\..\Oem\FDO\lib;..\..\Oem\gd\build\win32\gd\Debug;..\..\Common\lib\debug;..\..\Oem\gd\freetype\objs"
+				AdditionalLibraryDirectories="..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;..\..\Oem\FDO\lib;..\..\Oem\gd\build\win32\gd\Debug;..\..\Common\lib\debug;..\..\Oem\gd\freetype\objs;..\..\Oem\gd\lpng\projects\visualc8\Win32_LIB_ASM_Debug"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
 				GenerateDebugInformation="true"
@@ -129,7 +129,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\DWFTK7.1\develop\global\src\dwfemap;..\..\Oem\FDO\inc;..\..\Oem\gd\gd;..\MdfModel;..\..\Oem\gd\freetype\include"
+				AdditionalIncludeDirectories="..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\DWFTK7.1\develop\global\src\dwfemap;..\..\Oem\FDO\inc;..\..\Oem\gd\gd;..\MdfModel;..\..\Oem\gd\freetype\include;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;DWFCORE_STATIC;DWFTK_STATIC;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -148,10 +148,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FdoCommon.lib Fdo.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib MgMdfModel.lib gd.lib freetype2110.lib"
+				AdditionalDependencies="FdoCommon.lib Fdo.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib MgMdfModel.lib gd.lib freetype2110.lib shell32.lib user32.lib libpng.lib"
 				OutputFile="$(OutDir)/MgStylization.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0;..\..\Oem\FDO\lib;..\..\Oem\gd\build\win32\gd\Release;..\..\Common\lib\Release;..\..\Oem\gd\freetype\objs"
+				AdditionalLibraryDirectories="..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0;..\..\Oem\FDO\lib;..\..\Oem\gd\build\win32\gd\Release;..\..\Common\lib\Release;..\..\Oem\gd\freetype\objs;..\..\Oem\gd\lpng\projects\visualc8\Win32_LIB_ASM_Release"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
 				GenerateDebugInformation="true"
@@ -358,6 +358,32 @@
 		<Filter
 			Name="GDRenderer"
 			>
+			<File
+				RelativePath=".\complex_polygon_gd.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\complex_polygon_gd.h"
+				>
+			</File>
 			<File
 				RelativePath=".\FontManager.cpp"
 				>

@@ -108,15 +108,15 @@ public:
 
     virtual bool FindResource(MgResourceIdentifier* resource);
 
+    virtual MgResourceContentManager* GetResourceContentManager() = 0;
+    virtual MgResourceHeaderManager* GetResourceHeaderManager() = 0;
+
 protected:
 
     void CreateTransaction();
     void ValidateTransaction();
     virtual void CommitTransaction();
     void AbortTransaction();
-
-    virtual MgResourceContentManager* GetResourceContentManager() = 0;
-    virtual MgResourceHeaderManager* GetResourceHeaderManager() = 0;
 
     virtual void UpdateDateModifiedResourceSet(CREFSTRING resource) {};
     virtual void UpdateChangedResourceSet(MgResourceIdentifier& resource) {};

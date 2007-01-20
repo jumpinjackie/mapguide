@@ -46,7 +46,7 @@ void MgOpGetTile::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (4 == m_packet.m_NumArguments)
+    if (4 == m_packet.m_NumArguments && m_packet.m_OperationVersion == 1 )
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         map->SetDelayedLoadResourceService(m_resourceService);
@@ -76,6 +76,44 @@ void MgOpGetTile::Execute()
 
         Ptr<MgByteReader> byteReader =
             m_service->GetTile(map, baseMapLayerGroupName, tileCol, tileRow);
+
+        
+        EndExecution(byteReader);
+    }
+    else if (5 == m_packet.m_NumArguments && m_packet.m_OperationVersion == 2 )
+    {
+        Ptr<MgResourceIdentifier> mapDefinition = (MgResourceIdentifier*)m_stream->GetObject();
+
+        STRING baseMapLayerGroupName;
+        m_stream->GetString(baseMapLayerGroupName);
+
+        INT32 tileCol = 0;
+        m_stream->GetInt32(tileCol);
+
+        INT32 tileRow = 0;
+        m_stream->GetInt32(tileRow);
+
+        INT32 scale = 0;
+        m_stream->GetInt32(scale);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileCol");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileRow");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(scale);
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        Ptr<MgByteReader> byteReader =
+            m_service->GetTile(mapDefinition, baseMapLayerGroupName, tileCol, tileRow, scale);
 
         
         EndExecution(byteReader);

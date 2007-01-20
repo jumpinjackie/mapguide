@@ -499,7 +499,7 @@ MgConnectionProperties* MgSiteConnection::GetConnectionPropertiesFromSiteServer(
         assert(NULL != userInformation.p);
         Ptr<MgSite> site = new MgSite();
 
-        site->Open(userInformation);
+        site->Open(userInformation, true);
 
         STRING target = site->RequestServer(serviceType);
 

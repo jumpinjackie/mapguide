@@ -2054,6 +2054,46 @@ MgPermissionCache* MgServerResourceService::CreatePermissionCache()
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// Checks whether or not the current user has the specified permission on the
+/// specified resource.
+/// </summary>
+///----------------------------------------------------------------------------
+
+bool MgServerResourceService::HasPermission(MgResourceIdentifier* resource, 
+    CREFSTRING permission)
+{
+    bool retVal = false;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::HasPermission()");
+
+    if (NULL == resource)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerResourceService.HasPermission",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    auto_ptr<MgApplicationRepositoryManager> repositoryMan(
+        CreateApplicationRepositoryManager(resource));
+    MgResourceContentManager* resourceContentMan = 
+        repositoryMan->GetResourceContentManager();
+    ACE_ASSERT(NULL != resourceContentMan);
+
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
+    retVal = resourceContentMan->CheckPermission(*resource, permission);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.HasPermission")
+
+    return retVal;
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Performs checkpoints for all the repositories.
 /// </summary>
 ///----------------------------------------------------------------------------

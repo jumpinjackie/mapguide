@@ -126,7 +126,7 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
         m_userInfo->SetClientIp(clientIp);
     }
 
-    // And create the site connection, pushing user information into thread local storage
+    // And create the site connection
     m_siteConn = new MgSiteConnection();
     m_siteConn->Open(m_userInfo);
 

@@ -36,17 +36,56 @@ MgHttpGetTileImage::MgHttpGetTileImage(MgHttpRequest *hRequest)
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
 
-    // Get the map name
-    m_mapName = params->GetParameterValue(MgHttpResourceStrings::reqRenderingMapName);
+    STRING version = params->GetParameterValue(MgHttpResourceStrings::reqVersion);
 
-    // Get the baseMapLayerGroup name
-    m_baseMapLayerGroupName = params->GetParameterValue(MgHttpResourceStrings::reqRenderingBaseMapLayerGroupName);
+    size_t pos1;
 
-    // Get the tile column index and convert to integer
-    m_tileCol = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingTileColumn));
+    pos1 = version.find(L".");
+    if (pos1 != string::npos)
+    {
+        m_version = version.substr(0, pos1);
+    }
+    else
+    {
+        m_version = version;
+    }
 
-    // Get the tile row index and convert to integer
-    m_tileRow = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingTileRow));
+    if (m_version == L"1")
+    {
+        // Get the map name
+        m_mapName = params->GetParameterValue(MgHttpResourceStrings::reqRenderingMapName);
+
+        // Get the baseMapLayerGroup name
+        m_baseMapLayerGroupName = params->GetParameterValue(MgHttpResourceStrings::reqRenderingBaseMapLayerGroupName);
+
+        // Get the tile column index and convert to integer
+        m_tileCol = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingTileColumn));
+
+        // Get the tile row index and convert to integer
+        m_tileRow = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingTileRow));
+    }
+    else if (m_version == L"2")
+    {
+        // Get the map name
+        m_mapName = params->GetParameterValue(MgHttpResourceStrings::reqTileMapDefinition);
+
+        // Get the baseMapLayerGroup name
+        m_baseMapLayerGroupName = params->GetParameterValue(MgHttpResourceStrings::reqRenderingBaseMapLayerGroupName);
+
+        // Get the tile column index and convert to integer
+        m_tileCol = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingTileColumn));
+
+        // Get the tile row index and convert to integer
+        m_tileRow = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingTileRow));
+
+        // Get the scale and convert to double
+        m_scale = MgUtil::StringToDouble(params->GetParameterValue(MgHttpResourceStrings::reqRenderingScaleIndex));
+    }
+    else
+    {
+        throw new MgInvalidOperationVersionException(
+            L"MgHttpGetTileImage.MgHttpGetTileImage", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 }
 
 /// <summary>
@@ -75,21 +114,52 @@ void MgHttpGetTileImage::Execute(MgHttpResponse& hResponse)
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
-    // Get Proxy Resource Service instance
-    Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
+    if (m_version == L"1")
+    {
+        // Get Proxy Resource Service instance
+        Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
 
-    // Create MgMap
-    Ptr<MgMap> map = new MgMap();
-    map->Open(resourceService, m_mapName);
+        // Create MgMap
+        Ptr<MgMap> map = new MgMap();
+        map->Open(resourceService, m_mapName);
 
-    // Get Proxy Tile Service instance
-    Ptr<MgTileService> service = (MgTileService*)(CreateService(MgServiceType::TileService));
+        // Get Proxy Tile Service instance
+        Ptr<MgTileService> service = (MgTileService*)(CreateService(MgServiceType::TileService));
 
-    // Call the C++ API
-    Ptr<MgByteReader> tileImage = service->GetTile(map, m_baseMapLayerGroupName, m_tileCol, m_tileRow);
+        // Call the C++ API
+        Ptr<MgByteReader> tileImage = service->GetTile(map, m_baseMapLayerGroupName, m_tileCol, m_tileRow);
 
-    // Set the result
-    hResult->SetResultObject(tileImage, tileImage->GetMimeType());
+        // Set the result
+        hResult->SetResultObject(tileImage, tileImage->GetMimeType());
+    }
+    else
+    {
+        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_mapName);
+
+        // Get Proxy Tile Service instance
+        Ptr<MgTileService> service = (MgTileService*)(CreateService(MgServiceType::TileService));
+
+        // Call the C++ API
+        Ptr<MgByteReader> tileImage = service->GetTile(resId, m_baseMapLayerGroupName, m_tileCol, m_tileRow, m_scale);
+
+        // Set the result
+        hResult->SetResultObject(tileImage, tileImage->GetMimeType());
+    }
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetTileImage.Execute")
 }
+
+/// <summary>
+/// This method is responsible for checking if
+/// a valid version was given
+/// </summary>
+/// <returns>Returns nothing</returns>
+void MgHttpGetTileImage::ValidateOperationVersion()
+{
+    MG_HTTP_HANDLER_TRY()
+
+    // Operation version validation has been moved to constructor
+   
+    MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpGetTileImage.ValidateOperationVersion");
+}
+

@@ -20,7 +20,7 @@
 
 ACE_Recursive_Thread_Mutex MgPermissionManager::sm_mutex;
 Ptr<MgPermissionCache> MgPermissionManager::sm_permissionCache = new MgPermissionCache;
-INT32 MgPermissionManager::sm_permissionInfoCacheSize = 1000;
+INT32 MgPermissionManager::sm_permissionInfoCacheSize = 0;
 time_t MgPermissionManager::sm_cutoffTime = 0;
 
 ///----------------------------------------------------------------------------
@@ -36,14 +36,17 @@ MgPermissionManager::MgPermissionManager(const MgSecurityManager& securityMan) :
 
     m_permissionCache = sm_permissionCache;
 
-    MgConfiguration* configuration = MgConfiguration::GetInstance();
-    assert(NULL != configuration);
+    if (sm_permissionInfoCacheSize <= 0)
+    {
+        MgConfiguration* configuration = MgConfiguration::GetInstance();
+        assert(NULL != configuration);
 
-    configuration->GetIntValue(
-        MgConfigProperties::ResourceServicePropertiesSection,
-        MgConfigProperties::ResourceServicePropertyResourcePermissionCacheSize,
-        sm_permissionInfoCacheSize,
-        MgConfigProperties::DefaultResourceServicePropertyResourcePermissionCacheSize);
+        configuration->GetIntValue(
+            MgConfigProperties::ResourceServicePropertiesSection,
+            MgConfigProperties::ResourceServicePropertyResourcePermissionCacheSize,
+            sm_permissionInfoCacheSize,
+            MgConfigProperties::DefaultResourceServicePropertyResourcePermissionCacheSize);
+    }
 }
 
 ///----------------------------------------------------------------------------

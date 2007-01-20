@@ -35,6 +35,12 @@ public:
                                   INT32 tileColumn,
                                   INT32 tileRow);
 
+    virtual MgByteReader* GetTile(MgResourceIdentifier* mapDefinition,
+                                  CREFSTRING baseMapLayerGroupName,
+                                  INT32 tileColumn,
+                                  INT32 tileRow,
+                                  INT32 scaleIndex);
+
     virtual void SetTile(MgByteReader* img,
                          MgMap* map,
                          INT32 scaleIndex,
@@ -50,8 +56,17 @@ public:
 
 private:
 
+    void ClearMapCache(CREFSTRING mapName);
+
     // member data
     Ptr<MgTileCache> m_tileCache;
+
+    typedef std::map<STRING, MgMemoryStreamHelper*> MapCache;
+    static MapCache sm_mapCache;
+    static ACE_Recursive_Thread_Mutex sm_mutex;
+    static INT32 sm_mapCacheSize;
+    static bool sm_renderOnly;
+
 };
 
 #endif

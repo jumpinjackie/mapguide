@@ -1721,6 +1721,20 @@ CLASS_ID:
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns if permission has been granted for a resource
+    /// permission named data for the specified resource.
+    ///
+    /// \param resource
+    /// Resource identifier describing the resource.
+    /// \param permission
+    /// Requested permission for the resource.  See MgResourcePermission.
+    ///
+    /// \return
+    /// True if user has requested permission.
+    virtual bool HasPermission(MgResourceIdentifier* resource, CREFSTRING permission);
+
+    //////////////////////////////////////////////////////////////////
     /// Enumerations
     enum OperationId
     {

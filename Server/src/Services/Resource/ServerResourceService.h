@@ -156,6 +156,8 @@ public:
     // Resource Permission related methods
 
     MgPermissionCache* CreatePermissionCache();
+    virtual bool HasPermission(MgResourceIdentifier* resource, 
+        CREFSTRING permission);
 
     // Other internal methods
 

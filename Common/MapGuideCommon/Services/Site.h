@@ -808,7 +808,28 @@ INTERNAL_API:
     ///
     MgStringCollection* Authenticate(MgUserInformation* userInformation,
         MgSiteInfo* siteInfo,
-        MgStringCollection* requiredRoles, bool returnAssignedRoles);
+        MgStringCollection* requiredRoles,
+        bool returnAssignedRoles,
+        bool skipAuthenticate = false);
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Opens a connection to the Site Server.
+    ///
+    /// \param userInformation
+    /// User information to authenticate against
+    ///
+    /// \param skipAuthenticate
+    /// Skip authentication.  Used for internal performance speedups.
+    ///
+    /// \return
+    /// Nothing
+    ///
+    /// \exception MgNullArgumentException
+    /// \exception MgAuthenticationFailedException
+    /// \exception MgConnectionFailedException
+    ///
+    void Open(MgUserInformation* userInformation, bool skipAuthenticate);
 
  protected:
 

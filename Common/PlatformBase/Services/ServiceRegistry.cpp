@@ -65,7 +65,7 @@ void MgServiceRegistry::Dispose()
 
 MgService* MgServiceRegistry::CreateService(INT16 serviceType, ServerConnectionType connType)
 {
-    ServiceRegistry registry = m_serviceCreators[connType];
+    ServiceRegistry& registry = m_serviceCreators[connType];
     const ServiceCreatorFunc& func = registry[serviceType];
     if (NULL == func)
     {
@@ -176,4 +176,5 @@ bool InitializeStaticPlatformData()
 
     return true;
 }
+
 

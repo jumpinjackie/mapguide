@@ -65,6 +65,7 @@ IMgOperationHandler* MgTileOperationFactory::GetOperation(
         switch (operationVersion)
         {
         case 1:
+        case 2:
             handler.reset(new MgOpGetTile());
             break;
         default:

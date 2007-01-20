@@ -47,11 +47,11 @@ class MgSessionRepositoryManager : public MgApplicationRepositoryManager
 
         virtual MgByteReader* EnumerateRepositories();
         virtual void DeleteRepository(MgResourceIdentifier* resource);
+         virtual MgResourceHeaderManager* GetResourceHeaderManager();
 
     protected:
 
         virtual MgResourceContentManager* GetResourceContentManager();
-        virtual MgResourceHeaderManager* GetResourceHeaderManager();
 
 /// Data Members
 

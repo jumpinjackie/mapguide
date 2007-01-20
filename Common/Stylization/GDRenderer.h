@@ -39,6 +39,8 @@ class WT_Logical_Point;
 
 struct RS_Font;
 
+class complex_polygon_gd;
+
 class GDRenderer : public Renderer
 {
     friend class LabelRenderer;
@@ -269,6 +271,9 @@ private:
 
     //remember id of last symbol
     RS_MarkerDef m_lastSymbol;
+
+    //polygon rasterizer
+    complex_polygon_gd* m_polyrasterizer;
 };
 
 #endif

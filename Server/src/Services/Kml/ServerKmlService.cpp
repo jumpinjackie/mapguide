@@ -467,7 +467,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             extents->GetLowerLeftCoordinate()->GetY(),
             extents->GetUpperRightCoordinate()->GetX(),
             extents->GetUpperRightCoordinate()->GetY());
-        Ptr<MgFeatureReader> featureReader = MgStylizationUtil::ExecuteFeatureQuery(m_svcFeature, rsExtent, vl, NULL, destCs, layerCs);
+        Ptr<MgFeatureReader> featureReader = MgStylizationUtil::ExecuteFeatureQuery(m_svcFeature, rsExtent, vl, NULL, destCs, layerCs, NULL);
         if (featureReader.p)
         {
             //wrap in an RS_FeatureReader
@@ -889,5 +889,7 @@ STRING MgServerKmlService::GetSessionId()
     }
     return sessionId;
 }
+
+
 
 

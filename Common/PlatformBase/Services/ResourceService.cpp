@@ -192,6 +192,11 @@ bool MgResourceService::ResourceExists(
     throw new MgNotImplementedException(L"MgResourceService.ResourceExists", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
+bool MgResourceService::HasPermission(MgResourceIdentifier* resource, CREFSTRING permission)
+{
+    throw new MgNotImplementedException(L"MgResourceService.HasPermission", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
 
 //////////////////////////////////////////////////////////////////
 /// \brief

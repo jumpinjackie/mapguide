@@ -137,7 +137,8 @@ MgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFea
                                                         MdfModel::VectorLayerDefinition* vl,
                                                         const wchar_t* overrideFilter,
                                                         MgCoordinateSystem* mapCs,
-                                                        MgCoordinateSystem* layerCs)
+                                                        MgCoordinateSystem* layerCs,
+                                                        TransformCache* cache)
 {
 #ifdef _DEBUG
     long dwStart = GetTickCount();
@@ -156,20 +157,58 @@ MgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFea
 
     if (mapCs && layerCs)
     {
-        trans = new MgCoordinateSystemTransform(mapCs, layerCs);
+        if (NULL != cache)
+        {
+            trans = cache->GetMgTransform();
+        }
+
+        if (!trans)
+        {
+            trans = new MgCoordinateSystemTransform(mapCs, layerCs);
+            if (NULL != cache)
+            {
+                cache->SetMgTransform(trans);
+            }
+        }
     }
 
-    //bounds in mapping space
+
+
+    //start with bounds in mapping space
     Ptr<MgCoordinate> ll = new MgCoordinateXY(extent.minx, extent.miny);
     Ptr<MgCoordinate> ur = new MgCoordinateXY(extent.maxx, extent.maxy);
 
-    //if we have a valid transform, get the request extent in layer's space
-    if (trans)
-    {
-        Ptr<MgEnvelope> mapExt= new MgEnvelope(ll, ur);
+    Ptr<MgEnvelope> layerExt;
 
-        //get corresponding bounds in layer space
-        Ptr<MgEnvelope> layerExt = trans->Transform(mapExt);
+    //do we have a cached extent?
+    if (NULL != cache)
+    {
+        layerExt = cache->GetEnvelope();
+    }
+
+    if (!layerExt)
+    {
+        //no cached extent
+        //if we have a valid transform, get the request extent in layer's space
+        if (trans)
+        {
+            Ptr<MgEnvelope> mapExt = new MgEnvelope(ll, ur);
+
+            //get corresponding bounds in layer space
+            layerExt = trans->Transform(mapExt);
+
+            ll = layerExt->GetLowerLeftCoordinate();
+            ur = layerExt->GetUpperRightCoordinate();
+
+            if (NULL != cache)
+            {
+                cache->SetEnvelope(layerExt);
+            }
+        }
+    }
+    else
+    {
+        //did have a cached extent, just use it.
         ll = layerExt->GetLowerLeftCoordinate();
         ur = layerExt->GetUpperRightCoordinate();
     }
@@ -410,8 +449,13 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
     printf("\nStylizeLayers() **MAPSTART** Layers: %d\n", layers->GetCount());
     #endif
 
+    // Cache coordinate system transforms for the life of the
+    // stylization operation.
+    TransformCacheMap transformCache;
+
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
+        TransformCache* cached = NULL;
         MgCSTrans* xformer = NULL;
         MdfModel::LayerDefinition* ldf = NULL;
 
@@ -577,12 +621,29 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         }
 
                         // Create coordinate system transformer
-                        srcCs = (srcwkt.empty()) ? NULL : csFactory->Create(srcwkt);
-
-                        if (srcCs.p)
+                        if (!srcwkt.empty())
                         {
-                            xformer = new MgCSTrans(srcCs, dstCs);
+                            
+                            TransformCacheMap::const_iterator iter = transformCache.find(srcwkt);
+                            if (transformCache.end() != iter) cached = (*iter).second;
+                            if (NULL != cached)
+                            {
+                                srcCs = cached->GetCoordSys();
+                                xformer = cached->GetTransform();
+                            }
+                            else 
+                            {
+                                srcCs = csFactory->Create(srcwkt);
+                                if (srcCs.p)
+                                {
+                                    xformer = new MgCSTrans(srcCs, dstCs);
+                                    cached = new TransformCache(xformer, srcCs);
+                                    transformCache[srcwkt] = cached;
+                                }
+                            }
+                            
                         }
+
                     }
                     else
                     {
@@ -664,7 +725,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         //we are not drawing the actual geometry
                         if (maxStrokes == 0)
                         {
-                            Ptr<MgFeatureReader> rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, srcCs);
+                            Ptr<MgFeatureReader> rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, srcCs, cached);
                             if (rdr.p)
                             {
                                 //wrap the MgFeatureReader in our RSMgFeatureReader wrapper
@@ -700,7 +761,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                     syms->Adopt(syms2->GetAt(min(i, syms2->GetCount()-1)));
                                 }
 
-                                Ptr<MgFeatureReader> rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, srcCs);
+                                Ptr<MgFeatureReader> rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, srcCs, cached);
                                 if (rdr.p)
                                 {
                                     //wrap in an RS_FeatureReader
@@ -746,7 +807,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     }
                     else
                     {
-                        Ptr<MgFeatureReader> rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, srcCs);
+                        Ptr<MgFeatureReader> rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, srcCs, cached);
                         if (rdr.p)
                         {
                             //wrap the MgFeatureReader in our RSMgFeatureReader wrapper
@@ -861,11 +922,26 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         }
 
                         // Create coordinate system transformer
-                        srcCs = (srcwkt.empty()) ? NULL : csFactory->Create(srcwkt);
-
-                        if (srcCs.p)
+                        if (!srcwkt.empty())
                         {
-                            xformer = new MgCSTrans(srcCs, dstCs);
+                            TransformCacheMap::const_iterator iter = transformCache.find(srcwkt);
+                            if (transformCache.end() != iter) cached = (*iter).second;
+                            if (NULL != cached)
+                            {
+                                srcCs = cached->GetCoordSys();
+                                xformer = cached->GetTransform();
+                            }
+                            else 
+                            {
+                                srcCs = csFactory->Create(srcwkt);
+                                if (srcCs.p)
+                                {
+                                    xformer = new MgCSTrans(srcCs, dstCs);
+                                    cached = new TransformCache(xformer, srcCs);
+                                    transformCache[srcwkt] = cached;
+                                }
+                            }
+                            
                         }
                     }
                     else
@@ -966,9 +1042,23 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                         if (!cs.empty() && cs != dstCs->ToString())
                         {
-                            //construct cs transformer if needed
-                            Ptr<MgCoordinateSystem> srcCs = csFactory->Create(cs);
-                            xformer = new MgCSTrans(srcCs, dstCs);
+                            // Create coordinate system transformer
+                            TransformCacheMap::const_iterator iter = transformCache.find(cs);
+                            if (transformCache.end() != iter) cached = (*iter).second;
+                            if (NULL != cached)
+                            {
+                                xformer = cached->GetTransform();
+                            }
+                            else 
+                            {
+                                Ptr<MgCoordinateSystem> srcCs = csFactory->Create(cs);
+                                if (srcCs.p)
+                                {
+                                    xformer = new MgCSTrans(srcCs, dstCs);
+                                    cached = new TransformCache(xformer, srcCs);
+                                    transformCache[cs] = cached;
+                                }
+                            }
                         }
                     }
 
@@ -1021,22 +1111,25 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 #endif
         }
 
-        if (xformer)
-        {
-            delete xformer;
-            xformer = NULL;
-        }
-
         if (ldf)
         {
             delete ldf;
             ldf = NULL;
         }
+
     }
 
     #ifdef _DEBUG
     printf("StylizeLayers() **MAPDONE** Layers: %d  Total Time = %6.4f (s)\n\n", layers->GetCount(), (GetTickCount()-dwStart)/1000.0);
     #endif
+
+    TransformCacheMap::iterator iter = transformCache.begin();
+    while (transformCache.end() != iter)
+    {
+        delete (*iter).second;
+        (*iter).second = NULL;
+        ++iter;
+    }
 }
 
 
@@ -1625,4 +1718,47 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
 
     return NULL;
+}
+
+
+MgStylizationUtil::TransformCache::TransformCache(MgCSTrans* transform, MgCoordinateSystem* coordinateSystem)
+: m_xform(transform)
+{
+    m_coordSys = SAFE_ADDREF((MgCoordinateSystem*)coordinateSystem);
+}
+
+MgStylizationUtil::TransformCache::~TransformCache()
+{
+    delete m_xform;
+    m_xform = NULL;
+}
+
+MgCSTrans* MgStylizationUtil::TransformCache::GetTransform()
+{
+    return m_xform;
+}
+
+MgCoordinateSystem* MgStylizationUtil::TransformCache::GetCoordSys()
+{
+    return SAFE_ADDREF((MgCoordinateSystem*) m_coordSys);
+}
+
+void MgStylizationUtil::TransformCache::SetMgTransform(MgCoordinateSystemTransform* mgTransform)
+{
+    m_transform = SAFE_ADDREF((MgCoordinateSystemTransform*) mgTransform);
+}
+
+MgCoordinateSystemTransform* MgStylizationUtil::TransformCache::GetMgTransform()
+{
+    return SAFE_ADDREF((MgCoordinateSystemTransform*) m_transform);
+}
+
+void MgStylizationUtil::TransformCache::SetEnvelope(MgEnvelope* envelope)
+{
+    m_envelope = SAFE_ADDREF((MgEnvelope*) envelope);
+}
+
+MgEnvelope* MgStylizationUtil::TransformCache::GetEnvelope()
+{
+    return SAFE_ADDREF((MgEnvelope*) m_envelope);
 }

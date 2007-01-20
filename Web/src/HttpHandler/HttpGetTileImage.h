@@ -51,11 +51,21 @@ public:
     /// </returns>
     MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcViewer; }
 
+protected:
+    /// <summary>
+    /// This method is responsible for checking if
+    /// a valid version was given
+    /// </summary>
+    /// <returns>Returns nothing</returns>
+    virtual void ValidateOperationVersion();
+
 private:
     STRING  m_mapName;
     STRING  m_baseMapLayerGroupName;
     INT32   m_tileCol;
     INT32   m_tileRow;
+    STRING  m_version;
+    double  m_scale;
 };
 
 #endif  // _FS_GET_TILE_IMAGE_H
