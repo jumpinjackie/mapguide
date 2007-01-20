@@ -396,6 +396,13 @@ EXTERNAL_API:
     static const STRING TileServicePropertyTileCachePath;               /// value("TileCachePath")
     static const STRING DefaultTileServicePropertyTileCachePath;        /// value("Repositories/TileCache/")
 
+    /// Sets the limit on the number of cached MgMap objects used for tile generation
+    static const STRING TileServicePropertyTiledMapCacheSize;           /// value("TiledMapCacheSize")
+    static const INT32 DefaultTileServicePropertyTiledMapCacheSize;     /// value(10)
+    static const STRING TileServicePropertyRenderOnly;                  /// value("RenderOnly")
+    static const bool DefaultTileServicePropertyRenderOnly;             /// value(true)
+
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// The remaining properties are log properties.  For each type of log, there is a "Parameters" property.

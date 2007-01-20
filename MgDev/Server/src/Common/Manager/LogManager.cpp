@@ -100,7 +100,8 @@ MgLogManager::MgLogManager(void) :
     m_bTraceLogEnabled(false),      // Disabled by default
     m_bTraceLogHeader(false),
     m_TraceLogFileName(MgLogManager::DefaultTraceLogFileName),
-    m_pLogThread(NULL)
+    m_pLogThread(NULL),
+    m_writeCount(0)
 {
 }
 
@@ -2060,7 +2061,10 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
 
                 MG_LOGMANAGER_TRY()
 
-                if (false == CheckArchiveFrequency(logType, filename))
+                // This is an expensive check, only do it occasionally
+                m_writeCount++;
+                if (0 == (m_writeCount%10) &&
+                    false == CheckArchiveFrequency(logType, filename))
                 {
                     ArchiveLog(logType);
                 }

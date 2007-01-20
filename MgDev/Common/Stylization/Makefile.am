@@ -53,7 +53,8 @@ libMgStylization_la_SOURCES = \
   LabelRendererLocal.cpp \
   SimpleOverpost.cpp \
   RS_ByteData.cpp \
-  FontManager.cpp
+  FontManager.cpp \
+  complex_polygon_gd.cpp
 
 
 noinst_HEADERS = \
@@ -120,7 +121,8 @@ noinst_HEADERS = \
   RS_Font.h \
   FontManager.h \
   SymbolVisitor.h \
-  SLDSymbols.h
+  SLDSymbols.h \
+  complex_polygon_gd.h
 
 AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_BUILD_EXPAT
 

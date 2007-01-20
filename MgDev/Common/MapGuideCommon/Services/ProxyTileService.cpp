@@ -105,6 +105,37 @@ MgByteReader* MgProxyTileService::GetTile(
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+/////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the specified base map tile for the given map.  If a cached tile
+/// image exists it will return it, otherwise the tile is rendered and added
+/// to the cache.
+MgByteReader* MgProxyTileService::GetTile(
+    MgResourceIdentifier* mapDefinition,
+    CREFSTRING baseMapLayerGroupName,
+    INT32 tileColumn,
+    INT32 tileRow,
+    INT32 scaleIndex)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knObject,                            // Return type expected
+                        MgTileServiceOpId::GetTile,                     // Command Code
+                        5,                                              // No of arguments
+                        Tile_Service,                                   // Service Id
+                        2,                                              // Operation version
+                        MgCommand::knObject, mapDefinition,             // Argument#1
+                        MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
+                        MgCommand::knInt32, tileColumn,                 // Argument#3
+                        MgCommand::knInt32, tileRow,                    // Argument#4
+                        MgCommand::knInt32, scaleIndex,                 // Argument#4
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
 
 /////////////////////////////////////////////////////////////////
 /// <summary>

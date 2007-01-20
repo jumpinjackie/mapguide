@@ -227,6 +227,7 @@ const STRING MgHttpResourceStrings::reqRenderingBaseMapLayerGroupName = L"BASEMA
 const STRING MgHttpResourceStrings::reqRenderingTileColumn = L"TILECOL";
 const STRING MgHttpResourceStrings::reqRenderingTileRow = L"TILEROW";
 const STRING MgHttpResourceStrings::reqRenderingPersist = L"PERSIST";
+const STRING MgHttpResourceStrings::reqRenderingScaleIndex = L"SCALEINDEX";
 
 // Rendering Service Operation Requests
 const STRING MgHttpResourceStrings::opGetDynamicMapOverlayImage = L"GETDYNAMICMAPOVERLAYIMAGE";

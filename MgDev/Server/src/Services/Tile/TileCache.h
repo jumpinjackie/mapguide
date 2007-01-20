@@ -27,6 +27,7 @@ public:
     MgTileCache();
 
     MgByteReader* Get(MgMap* map, int scaleIndex, CREFSTRING group, int i, int j);
+    MgByteReader* Get(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int i, int j);
     void Set(MgByteReader* img, MgMap* map, int scaleIndex, CREFSTRING group, int i, int j);
     void Clear(MgMap* map);
     void Clear(MgResourceIdentifier* resId);
@@ -41,10 +42,14 @@ private:
     STRING GetBasePath(MgMap* map);
     STRING GetBasePath(MgResourceIdentifier* resId);
     STRING GetFullPath(MgMap* map, int scaleIndex, CREFSTRING group);
+    STRING GetFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group);
     STRING CreateFullPath(MgMap* map, int scaleIndex, CREFSTRING group);
 
+    // TODO: Investigate this mutex.  It may fail if
+    // we have more than one tile service and could reduce
+    // multi-threaded performance.  File locks would be better.
     ACE_RW_Thread_Mutex m_mutexRW;
-    STRING m_path;
+    static STRING m_path;
 };
 
 #endif

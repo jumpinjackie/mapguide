@@ -85,9 +85,22 @@ void MgSite::Open(MgUserInformation* userInformation)
 {
     MG_SITE_TRY()
 
-    // Authenticate the user.
+    Open(userInformation, false);
 
-    Authenticate(userInformation, NULL, NULL, false);
+    MG_SITE_CATCH_AND_THROW(L"MgSite.Open")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Opens a connection to a Site Server.
+/// </summary>
+
+void MgSite::Open(MgUserInformation* userInformation, bool skipAuthenticate)
+{
+    MG_SITE_TRY()
+
+    // Authenticate the user.
+    Authenticate(userInformation, NULL, NULL, false, skipAuthenticate);
 
     MG_SITE_CATCH_AND_THROW(L"MgSite.Open")
 }
@@ -103,7 +116,7 @@ void MgSite::Open(MgUserInformation* userInformation, MgSiteInfo* siteInfo)
 
     // Authenticate the user.
 
-    Authenticate(userInformation, siteInfo, NULL, false);
+    Authenticate(userInformation, siteInfo, NULL, false, false);
 
     MG_SITE_CATCH_AND_THROW(L"MgSite.Open")
 }
@@ -1214,9 +1227,11 @@ STRING MgSite::RequestServer(INT32 serviceType)
 }
 
 MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
-    MgSiteInfo* siteInfo, MgStringCollection* requiredRoles, bool returnAssignedRoles)
+    MgSiteInfo* siteInfo, MgStringCollection* requiredRoles,
+    bool returnAssignedRoles, bool skipAuthenticate)
 {
     MgCommand cmd;
+    Ptr<MgStringCollection> retval = NULL;
 
     MG_SITE_TRY()
 
@@ -1236,24 +1251,28 @@ MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
     {
         m_connProp = siteManager->GetConnectionProperties(userInformation, 
             MgSiteInfo::Site, true);
+    }  
+
+    if (!skipAuthenticate)
+    {
+        cmd.ExecuteCommand(m_connProp,                          // Connection
+                            MgCommand::knObject,                // Return type
+                            MgSiteOpId::Authenticate,           // Command code
+                            3,                                  // Number of arguments
+                            Site_Admin,                         // Service ID
+                            1,                                  // Operation version
+                            MgCommand::knObject, userInformation, // Argument #1
+                            MgCommand::knObject, requiredRoles, // Argument #2
+                            MgCommand::knInt8, (int)returnAssignedRoles, // Argument #3
+                            MgCommand::knNone);
+
+        SetWarning(cmd.GetWarningObject());
+        retval = (MgStringCollection*) cmd.GetReturnValue().val.m_obj;
     }
-
-    cmd.ExecuteCommand(m_connProp,                          // Connection
-                        MgCommand::knObject,                // Return type
-                        MgSiteOpId::Authenticate,           // Command code
-                        3,                                  // Number of arguments
-                        Site_Admin,                         // Service ID
-                        1,                                  // Operation version
-                        MgCommand::knObject, userInformation, // Argument #1
-                        MgCommand::knObject, requiredRoles, // Argument #2
-                        MgCommand::knInt8, (int)returnAssignedRoles, // Argument #3
-                        MgCommand::knNone);
-
-    SetWarning(cmd.GetWarningObject());
 
     MG_SITE_CATCH_AND_THROW(L"MgSite.Authenticate")
 
-    return (MgStringCollection*)cmd.GetReturnValue().val.m_obj;
+    return retval.Detach();
 }
 
 void MgSite::SetWarning(MgWarnings* warning)

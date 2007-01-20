@@ -308,6 +308,10 @@ const INT32  MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval 
 const STRING MgConfigProperties::TileServicePropertiesSection                               = L"TileServiceProperties";
 const STRING MgConfigProperties::TileServicePropertyTileCachePath                           = L"TileCachePath";
 const STRING MgConfigProperties::DefaultTileServicePropertyTileCachePath                    = L"Repositories/TileCache/";
+const STRING MgConfigProperties::TileServicePropertyTiledMapCacheSize                       = L"TiledMapCacheSize";
+const INT32  MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize                = 10;
+const STRING MgConfigProperties::TileServicePropertyRenderOnly                              = L"RenderOnly";
+const bool   MgConfigProperties::DefaultTileServicePropertyRenderOnly                       = false;
 
 // ******************************************************************
 // Access Log Properties
@@ -537,6 +541,8 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviSiteServiceProperties[] =
 const MgConfigValidationInfo MgConfigProperties::sm_cviTileServiceProperties[] =
 {
     { MgConfigProperties::TileServicePropertyTileCachePath                          , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::TileServicePropertyTiledMapCacheSize                      , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
+    { MgConfigProperties::TileServicePropertyRenderOnly                             , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

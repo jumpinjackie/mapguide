@@ -379,3 +379,12 @@ void MgMemoryStreamHelper::Clear()
 {
     m_curPtrWrite = m_curPtrRead = m_buffer;
 }
+
+//////////////////////////////////////////////////////////////////
+///<summary>
+/// Rewind to start of buffer
+///</summary>
+void MgMemoryStreamHelper::Rewind()
+{
+    m_curPtrRead = m_buffer;
+}

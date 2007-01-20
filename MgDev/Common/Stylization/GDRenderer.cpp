@@ -60,6 +60,7 @@
 #include "RSDWFInputStream.h"
 #include "LabelRenderer.h"
 #include "LabelRendererLocal.h"
+#include "complex_polygon_gd.h"
 
 #include "SymbolTrans.h"
 
@@ -159,6 +160,8 @@ m_pPool(NULL)
         m_labeler = new LabelRenderer(this);
     else
         m_labeler = new LabelRendererLocal(this, tileExtentOffset);
+
+    m_polyrasterizer = new complex_polygon_gd();
 }
 
 
@@ -173,6 +176,8 @@ GDRenderer::~GDRenderer()
         delete [] m_wtPointBuffer;
 
     delete m_labeler;
+
+    delete m_polyrasterizer;
 }
 
 
@@ -430,18 +435,9 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb,
             gdImageSetTile((gdImagePtr)m_imout, fillpat);
         }
 
-        //just a polygon, no need for a contourset
-        if (workbuffer->cntr_count() == 1)
-        {
-            gdImageFilledPolygon((gdImagePtr)m_imout, (gdPoint*)m_wtPointBuffer, workbuffer->point_count(), (fillpat)? gdTiled : gdc);
-        }
-        else //otherwise make a contour set
-        {
-            rs_gdImageMultiPolygon((gdImagePtr)m_imout,
-                workbuffer->cntrs(), workbuffer->cntr_count(),
-                (gdPoint*)m_wtPointBuffer, workbuffer->point_count(),
-                (fillpat) ? gdTiled : gdc);
-        }
+        //call the new rasterizer
+        m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, workbuffer->point_count(), workbuffer->cntrs(), workbuffer->cntr_count(), 
+            (fillpat) ? gdTiled : gdc, (gdImagePtr)m_imout);
 
         if (fillpat)
         {

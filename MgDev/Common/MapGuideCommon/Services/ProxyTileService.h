@@ -56,6 +56,38 @@ EXTERNAL_API:
         INT32 tileColumn,
         INT32 tileRow);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the specified base map tile for the given map.  If a cached tile
+    /// image exists it will return it, otherwise the tile is rendered and added
+    /// to the cache.
+    ///
+    /// \param mapDefinition
+    /// Input
+    /// Resource identifier for the map definition
+    /// \param baseMapLayerGroupName
+    /// Input
+    /// Specifies the name of the baseMapLayerGroup for which to render the tile.
+    /// \param tileColumn
+    /// Input
+    /// Specifies the column index of the tile to return.
+    /// \param tileRow
+    /// Input
+    /// Specifies the row index of the tile to return.
+    /// \param scaleIndex
+    /// Input
+    /// Scale index to render
+    ///
+    /// \return
+    /// A byte reader containing the rendered tile image.
+    ///
+    virtual MgByteReader* GetTile(
+        MgResourceIdentifier* mapDefinition,
+        CREFSTRING baseMapLayerGroupName,
+        INT32 tileColumn,
+        INT32 tileRow,
+        INT32 scaleIndex);
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Clears the entire tile cache for the given map.  Tiles for all base

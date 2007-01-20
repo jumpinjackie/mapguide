@@ -79,6 +79,11 @@ public:
     bool FindResource(const string& mbResourcePathname);
     bool FindResource(CREFSTRING wcResourcePathname);
 
+    // Resource Permission related methods
+
+    virtual bool CheckPermission(MgResourceIdentifier& resource,
+        CREFSTRING permission, bool strict = true) = 0;
+
 protected:
 
     virtual void ValidateDocument(MgResourceIdentifier& resource,
@@ -107,10 +112,6 @@ protected:
     void DeleteDocument(XmlDocument& xmlDoc,
         XmlUpdateContext& updateContext);
 
-    // Resource Permission related methods
-
-    virtual bool CheckPermission(MgResourceIdentifier& resource,
-        CREFSTRING permission, bool strict = true) = 0;
     virtual bool CheckParentPermission(MgResourceIdentifier& resource,
         CREFSTRING permission, bool strict = true) = 0;
 

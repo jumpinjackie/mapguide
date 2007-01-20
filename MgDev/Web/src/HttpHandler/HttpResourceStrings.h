@@ -165,6 +165,7 @@ public:
     static const STRING reqRenderingTileColumn;
     static const STRING reqRenderingTileRow;
     static const STRING reqRenderingPersist;
+    static const STRING reqRenderingScaleIndex;
 
     // PREDEFINED TILE REQUEST PARAMETERS
     static const STRING reqTileMapDefinition;

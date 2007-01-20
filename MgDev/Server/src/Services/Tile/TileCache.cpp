@@ -20,23 +20,30 @@
 
 #define PATH_LEN 512
 
+STRING MgTileCache::m_path = L"";
+
 // default constructor
 MgTileCache::MgTileCache()
 {
-    // initialize the tile cache path
-    MgConfiguration* pConf = MgConfiguration::GetInstance();
+    //TODO: It is possible to get a double write on m_path here.  We need
+    //to investigate general mutex use in this class.
+    if (m_path.empty())
+    {
+        // initialize the tile cache path
+        MgConfiguration* pConf = MgConfiguration::GetInstance();
 
-    pConf->GetStringValue(MgConfigProperties::TileServicePropertiesSection,
-                          MgConfigProperties::TileServicePropertyTileCachePath,
-                          m_path,
-                          MgConfigProperties::DefaultTileServicePropertyTileCachePath);
+        pConf->GetStringValue(MgConfigProperties::TileServicePropertiesSection,
+                              MgConfigProperties::TileServicePropertyTileCachePath,
+                              m_path,
+                              MgConfigProperties::DefaultTileServicePropertyTileCachePath);
 
-    // generate directory location for tile cache
-    MgFileUtil::AppendSlashToEndOfPath(m_path);
+        // generate directory location for tile cache
+        MgFileUtil::AppendSlashToEndOfPath(m_path);
 
-    // create directory if it is not already there
-    if (!MgFileUtil::PathnameExists(m_path))
-        MgFileUtil::CreateDirectory(m_path, false);
+        // create directory if it is not already there
+        if (!MgFileUtil::PathnameExists(m_path))
+            MgFileUtil::CreateDirectory(m_path, false);
+    }
 }
 
 
@@ -64,6 +71,34 @@ MgByteReader* MgTileCache::Get(MgMap* map, int scaleIndex, CREFSTRING group, int
             bs->SetMimeType(MgMimeType::Png);
             ret = bs->GetReader();
         }
+    }
+
+    return SAFE_ADDREF(ret.p);
+}
+
+MgByteReader* MgTileCache::Get(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int i, int j)
+{
+    // acquire a read lock - this blocks if a writer holds the lock
+    ACE_Read_Guard<ACE_RW_Thread_Mutex> ace_mon(m_mutexRW);
+
+    Ptr<MgByteReader> ret;
+
+    if (mapDef != NULL)
+    {
+        STRING tilePath = MgTileCache::GetFullPath(mapDef, scaleIndex, group);
+
+        // generate full path to tile file using <row,column> format
+        // TODO: handle case where path is > PATH_LEN
+        wchar_t tmp[PATH_LEN] = { 0 };
+        swprintf(tmp, PATH_LEN, L"%ls/%d_%d.png", tilePath.c_str(), j, i);
+
+        MG_TRY()
+
+        Ptr<MgByteSource> bs = new MgByteSource(tmp, false);
+        bs->SetMimeType(MgMimeType::Png);
+        ret = bs->GetReader();
+
+        MG_CATCH_AND_RELEASE()
     }
 
     return SAFE_ADDREF(ret.p);
@@ -185,6 +220,17 @@ STRING MgTileCache::GetBasePath(MgResourceIdentifier* resId)
 STRING MgTileCache::GetFullPath(MgMap* map, int scaleIndex, CREFSTRING group)
 {
     STRING basePath = MgTileCache::GetBasePath(map);
+
+    wchar_t tmp[PATH_LEN] = { 0 };
+    swprintf(tmp, PATH_LEN, L"%ls/%d/%ls", basePath.c_str(), scaleIndex, group.c_str());
+
+    return STRING(tmp);
+}
+
+// gets the full path to use with the tile cache for the given map / scale index / group
+STRING MgTileCache::GetFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group)
+{
+    STRING basePath = MgTileCache::GetBasePath(mapDef);
 
     wchar_t tmp[PATH_LEN] = { 0 };
     swprintf(tmp, PATH_LEN, L"%ls/%d/%ls", basePath.c_str(), scaleIndex, group.c_str());

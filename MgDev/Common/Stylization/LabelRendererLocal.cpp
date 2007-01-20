@@ -220,17 +220,42 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
             double yoffset = (1.0 - ((int)(1.0/yinc))*yinc) * 0.5;
             double xoffset = (1.0 - ((int)(1.0/xinc))*xinc) * 0.5;
 
+            //parametric clip coordinates used to determine a subset of the
+            //polygon's bounding box which we will attempt to cover with
+            //periodic labels
+            double invheight = 1.0 / b.height();
+            double tilestarty = (rejectBounds.miny - b.miny) * invheight;
+            tilestarty = rs_max(0.0, tilestarty);
+            double tileendy = (rejectBounds.maxy - b.miny) * invheight;
+            tileendy = rs_min(1.0, tileendy);
+
+            double invwidth = 1.0 / b.width();
+            double tilestartx = (rejectBounds.minx - b.minx) * invwidth;
+            tilestartx = rs_max(0.0, tilestartx);
+            double tileendx = (rejectBounds.maxx - b.minx) * invwidth;
+            tileendx = rs_min(1.0, tileendx);
+
+
             double ypos = yoffset;
+
+            //move ypos up until we reach a relevant position that is likely to 
+            //draw a label that intersects the tile
+            if (tilestarty != 0.0)
+                ypos += ceil((tilestarty - ypos) / yinc) * yinc;
+
             bool offset = false;
 
-            //TODO: we should be smarter about the start and end parametric positions
-            //instead of looping from  around 0 to  around 1. If we are far zoomed in
-            //on a polygon, those loops can take quite some time to execute
-            while (ypos <= 1.0)
+            //loop to add labels 
+            while (ypos <= tileendy)
             {
                 double xpos = xoffset + ((offset) ? 0.5 * xinc : 0.0);
 
-                while (xpos <= 1.0)
+                //move to the right until we reach a relevant position that is likely to 
+                //draw a label that intersects the tile
+                if (tilestartx != 0.0)
+                    xpos += ceil((tilestartx - xpos) / xinc) * xinc;
+
+                while (xpos <= tileendx)
                 {
                     //compute mapping space position for label, based on
                     double posx = b.minx + xpos * b.width();
@@ -238,9 +263,7 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
 
                     //rejection of labels that are far outside the current tile
                     //and also make sure the point we genrated is inside the polygon
-                    if (posx <= rejectBounds.maxx && posx >= rejectBounds.minx
-                        && posy <= rejectBounds.maxy && posy >= rejectBounds.miny
-                        && Centroid::PointInPolygon(path->points(), 2 * path->point_count(),
+                    if (Centroid::PointInPolygon(path->points(), 2 * path->point_count(),
                                 path->cntrs(), path->cntr_count(), posx, posy ))
                     {
                         RS_LabelInfo* info = &labels[0]; //assumes one label info passed in

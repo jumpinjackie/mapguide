@@ -149,6 +149,7 @@ String hlTgtName;
         String vpath = GetSurroundVirtualPath(request);
         String vals[] = { GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi",
                     mapName,
+                    mapDefinition,
                     String.valueOf(infoWidth),
                     showLegend != 0 ? "true": "false",
                     showProperties != 0 ? "true": "false",

@@ -343,9 +343,19 @@ void MgUserInformation::Serialize(MgStream* stream)
 
     if (!m_username.empty() || !m_password.empty())
     {
+        //TODO:  Add a general configuration parameter for user info encryption
+        if (1)
+        {
         MgCryptographyManager cryptoManager;
 
         credentials = cryptoManager.EncryptCredentials(m_username, m_password);
+        }
+        else
+        {
+            credentials = m_username;
+            credentials.append(L"\t");
+            credentials.append(m_password);
+        }
     }
 
     Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
@@ -385,6 +395,9 @@ void MgUserInformation::Deserialize(MgStream* stream)
     }
     else
     {
+        //TODO:  Add a general configuration parameter for user info encryption
+        if (1)
+        {
         MG_CRYPTOGRAPHY_TRY()
 
         MgCryptographyUtil cryptoUtil;
@@ -397,5 +410,12 @@ void MgUserInformation::Deserialize(MgStream* stream)
         MgUtil::MultiByteToWideChar(password, m_password);
 
         MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgUserInformation.Deserialize")
+        }
+        else
+        {
+            STRING::size_type sep = credentials.find(L"\t");
+            m_username = credentials.substr(0, sep);
+            m_password = credentials.substr(sep+1);
+        }
     }
 }

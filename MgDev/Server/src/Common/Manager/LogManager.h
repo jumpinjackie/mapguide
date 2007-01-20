@@ -476,6 +476,7 @@ private:
     ACE_Recursive_Thread_Mutex m_mutex;
     ACE_Thread_Manager m_threadManager;
     MgLogThread* m_pLogThread;
+    INT64 m_writeCount;
 
 };
 
