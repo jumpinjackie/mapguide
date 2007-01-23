@@ -46,7 +46,7 @@ MgServerSelectFeatures::~MgServerSelectFeatures()
     FDO_SAFE_RELEASE(m_customFunction);
 }
 
-// Executes the describe schema command and serializes the schema to XML
+// Executes the select features command and serializes the reader
 MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
                                                  CREFSTRING className,
                                                  MgFeatureQueryOptions* options,
@@ -60,8 +60,16 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
     // Validate parameters
     ValidateParam(resource,className);
 
+    // Retrieve the feature source XML document
+    string featureSourceXmlContent;
+    RetrieveFeatureSource(resource, featureSourceXmlContent);
+
+    // Parse the feature source XML document so that it will be ready to be walked for needed property information
+    m_xmlUtil.ParseString(featureSourceXmlContent.c_str());
+
     // Check if a feature join is to be performed by inspecting the resource for join properties
-    if (!isSelectAggregate && FindFeatureJoinProperties(resource, className))
+    bool bFeatureJoinProperties = FindFeatureJoinProperties(resource, className);
+    if (!isSelectAggregate && bFeatureJoinProperties)
     {
         // Get the FdoFilter from the options
         // Create Command
@@ -116,7 +124,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         ApplyQueryOptions(isSelectAggregate);
 
         // Check if the specified className is an extension (join) in the feature source
-        if (FindFeatureJoinProperties(resource, className))
+        if (bFeatureJoinProperties)
         {
             // Perform feature join to obtain the joined properties
             Ptr<MgServerGwsFeatureReader> gwsFeatureReader = JoinFeatures(resource, className, NULL);
@@ -360,6 +368,17 @@ void MgServerSelectFeatures::ApplyFilter()
         INT32 len = bytes->GetLength();
 
         FdoPtr<FdoByteArray> byteArray = FdoByteArray::Create(gisBytes, (FdoInt32)len);
+
+        #ifdef _DEBUG
+        // Get the spatial filter geometry text
+        FdoFgfGeometryFactory* geometryFactory = FdoFgfGeometryFactory::GetInstance();
+        if(geometryFactory)
+        {
+            FdoPtr<FdoIGeometry> geometry = geometryFactory->CreateGeometryFromFgf(byteArray);
+            STRING geomText = geometry->GetText();
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("SPATIAL FILTER: %W\n"), geomText.c_str()));
+        }
+        #endif
 
         FdoPtr<FdoGeometryValue> geomValue = FdoGeometryValue::Create(byteArray);
         if (geomValue != NULL)
@@ -758,17 +777,8 @@ bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* res
 {
     bool bJoinPropertiesExists = false;
 
-    //// Parse the resource identifier to get the join parameters
-    // Retrieve XML from repository
-    string featureSourceXmlContent;
-    RetrieveFeatureSource(resourceId, featureSourceXmlContent);
-
-    // Needed to parse XML and get properties
-    MgXmlUtil xmlUtil;
-    xmlUtil.ParseString(featureSourceXmlContent.c_str());
-
-    DOMElement* rootNode = xmlUtil.GetRootNode();
-    DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
+    DOMElement* rootNode = m_xmlUtil.GetRootNode();
+    DOMNodeList* extensionNodeList = m_xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
 
     if (NULL != extensionNodeList)
     {
@@ -779,7 +789,7 @@ bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* res
             DOMNode* extensionNode = extensionNodeList->item(i);
             CHECKNULL(extensionNode, L"MgServerSelectFeatures.FindFeatureJoinProperties");
 
-            DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
+            DOMNodeList* nameNodeList = m_xmlUtil.GetNodeList(extensionNode, "Name");
             int nNameNodes = (int)nameNodeList->getLength();
 
             // get the extension name node
@@ -787,7 +797,7 @@ bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* res
 
             // get the extension name value
             STRING name;
-            xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, name);
+            m_xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, name);
 
             STRING parsedSchemaName = L"";
             STRING parsedExtensionName = L"";
@@ -816,17 +826,8 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
     FdoPtr<IGWSQueryDefinition> qd;
     FdoPtr<MgGwsConnectionPool> pool = MgGwsConnectionPool::Create();
 
-    //// Parse the resource identifier to get the join parameters
-    // Retrieve XML from repository
-    string featureSourceXmlContent;
-    RetrieveFeatureSource(featureSourceIdentifier, featureSourceXmlContent);
-
-    // Needed to parse XML and get properties
-    MgXmlUtil xmlUtil;
-    xmlUtil.ParseString(featureSourceXmlContent.c_str());
-
-    DOMElement* rootNode = xmlUtil.GetRootNode();
-    DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
+    DOMElement* rootNode = m_xmlUtil.GetRootNode();
+    DOMNodeList* extensionNodeList = m_xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
     CHECKNULL(extensionNodeList, L"MgServerSelectFeatures.JoinFeatures");
 
     int extensionNodes = (int)extensionNodeList->getLength();
@@ -836,7 +837,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
         DOMNode* extensionNode = extensionNodeList->item(i);
         CHECKNULL(extensionNode, L"MgServerSelectFeatures.JoinFeatures");
 
-        DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
+        DOMNodeList* nameNodeList = m_xmlUtil.GetNodeList(extensionNode, "Name");
         int nNameNodes = (int)nameNodeList->getLength();
 
         // get the extension name node
@@ -844,7 +845,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
         // get the extension name value
         STRING name;
-        xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, name);
+        m_xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, name);
 
         STRING parsedSchemaName = L"";
         STRING parsedExtensionName = L"";
@@ -873,7 +874,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
             // Retrieve the primary feature class
             wstring szFeatureClass;
-            xmlUtil.GetElementValue(extensionNode, "FeatureClass", szFeatureClass);
+            m_xmlUtil.GetElementValue(extensionNode, "FeatureClass", szFeatureClass);
 
             // Parse the qualified classname
             STRING primaryFsSchema = L"";
@@ -894,7 +895,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             IGWSJoinQueryDefinition* jqd = NULL;
 
             // Determine the number of secondary sources (AttributeRelate nodes)
-            DOMNodeList* attributeRelateNodeList = xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
+            DOMNodeList* attributeRelateNodeList = m_xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
             int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
 
             // For each join to a secondary source need to do the following
@@ -906,16 +907,16 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
                 // Get the secondary resource id
                 wstring szSecondaryResourceId;
-                xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", szSecondaryResourceId);
+                m_xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", szSecondaryResourceId);
 
                 // Get the name for the join relationship
                 wstring szAttributeRelateName;
-                xmlUtil.GetElementValue(attributeRelateNode, "Name", szAttributeRelateName);
+                m_xmlUtil.GetElementValue(attributeRelateNode, "Name", szAttributeRelateName);
                 STRING secondaryConnectionName = szAttributeRelateName;
 
                 // Get the RelateType (join type).  Default is Left Outer join.
                 wstring szRelateType;
-                xmlUtil.GetElementValue(attributeRelateNode, "RelateType", szRelateType, false);
+                m_xmlUtil.GetElementValue(attributeRelateNode, "RelateType", szRelateType, false);
                 if (szRelateType.empty())
                 {
                     szRelateType = L"LeftOuter";     // NOXLATE
@@ -924,7 +925,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 // Get the ForceOneToOne field, which specifies if multiple matching secondary features 
                 // are retrieved via a 1-to-1 or 1-to-many relationship.  Default is 1-to-1 relationship.
                 wstring szForceOneToOne;
-                xmlUtil.GetElementValue(attributeRelateNode, "ForceOneToOne", szForceOneToOne, false);
+                m_xmlUtil.GetElementValue(attributeRelateNode, "ForceOneToOne", szForceOneToOne, false);
                 if (szForceOneToOne.empty())
                 {
                     szForceOneToOne = L"true";     // NOXLATE
@@ -938,7 +939,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 // Get the AttributeNameDelimiter field, which specifies the delimiter between the JoinName (attribute relate name)
                 // and the property name for an extended property.  Default delimiter is "" (blank).
                 wstring szAttributeNameDelimiter;
-                xmlUtil.GetElementValue(attributeRelateNode, "AttributeNameDelimiter", szAttributeNameDelimiter, false);
+                m_xmlUtil.GetElementValue(attributeRelateNode, "AttributeNameDelimiter", szAttributeNameDelimiter, false);
                 STRING attributeNameDelimiter = szAttributeNameDelimiter;
                 attributeNameDelimiters->Add(attributeNameDelimiter);
 
@@ -962,7 +963,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
                 // Get the secondary feature className (qualified className)
                 wstring szSecondaryClassName;
-                xmlUtil.GetElementValue(attributeRelateNode, "AttributeClass", szSecondaryClassName);
+                m_xmlUtil.GetElementValue(attributeRelateNode, "AttributeClass", szSecondaryClassName);
 
                 // Parse the qualifed classname
                 STRING secondaryFsSchema = L"";
@@ -984,7 +985,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 FdoPtr<FdoStringCollection> rattrs = FdoStringCollection::Create();
 
                 // Determine the number of ReleateProperties (attributes)
-                DOMNodeList* relatePropertyNodeList = xmlUtil.GetNodeList(attributeRelateNode, "RelateProperty");
+                DOMNodeList* relatePropertyNodeList = m_xmlUtil.GetNodeList(attributeRelateNode, "RelateProperty");
                 int nRelatePropertyNodes = relatePropertyNodeList->getLength();
 
                 // For each RelateProperty need to do the following
@@ -994,14 +995,14 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
                     // Get the FeatureClassProperty (primary attribute)
                     wstring szPrimaryAttribute;
-                    xmlUtil.GetElementValue(relatePropertyNode, "FeatureClassProperty", szPrimaryAttribute);
+                    m_xmlUtil.GetElementValue(relatePropertyNode, "FeatureClassProperty", szPrimaryAttribute);
 
                     // Add to the primary attribute String collection
                     lattrs->Add(szPrimaryAttribute.c_str());
 
                     // Get the AttributeClassProperty (secondary attribute)
                     wstring szSecondaryAttribute;
-                    xmlUtil.GetElementValue(relatePropertyNode, "AttributeClassProperty", szSecondaryAttribute);
+                    m_xmlUtil.GetElementValue(relatePropertyNode, "AttributeClassProperty", szSecondaryAttribute);
 
                     // Add to the secondary attribute String collection
                     rattrs->Add(szSecondaryAttribute.c_str());
@@ -1052,21 +1053,14 @@ void MgServerSelectFeatures::RetrieveFeatureSource(MgResourceIdentifier* resourc
 {
     CHECKNULL(resource, L"MgServerSelectFeatures.RetrieveFeatureSource");
 
-    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-    assert(NULL != serviceMan);
+    resourceContent = "";
 
-    // Get the service from service manager
-    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
-        serviceMan->RequestService(MgServiceType::ResourceService));
-    assert(resourceService != NULL);
-
-    // Get the feature source contents
-    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resource, MgResourcePreProcessingType::Substitution);
-
-    Ptr<MgByteSink> byteSink = new MgByteSink((MgByteReader*)byteReader);
-    byteSink->ToStringUtf8(resourceContent);
-
-    ValidateFeatureSource(resourceContent);
+    // Get the feature source XML content document from the FDO connection manager.
+    MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    if(pFdoConnectionManager)
+    {
+         pFdoConnectionManager->RetrieveFeatureSource(resource, resourceContent);
+    }
 }
 
 
@@ -1078,55 +1072,12 @@ void MgServerSelectFeatures::ParseQualifiedClassName(CREFSTRING qualifiedClassNa
     className = qualifiedClassName.substr(nIndex+1);
 }
 
-void MgServerSelectFeatures::ValidateFeatureSource(string& featureSourceXmlContent)
-{
-    bool isValidFeatureSource = true;
-
-    // TODO: Should we add XML validation here to ensure the integrity of feature source
-    if (featureSourceXmlContent.empty())
-    {
-        isValidFeatureSource = false;
-    }
-    else
-    {
-        int index = (int)featureSourceXmlContent.find("<FeatureSource");
-        if (index == -1)
-        {
-            isValidFeatureSource = false;
-        }
-    }
-
-    // if invalid FeatureSource, throw exception saying invalid provider specified
-    if (!isValidFeatureSource)
-    {
-        STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgInvalidFdoProvider");
-
-        Ptr<MgStringCollection> strCol = (MgStringCollection*)NULL;
-        if (!message.empty())
-        {
-            strCol = new MgStringCollection();
-            strCol->Add(message);
-        }
-
-        throw new MgInvalidFeatureSourceException(L"MgServerSelectFeatures.ValidateFeatureSource",
-            __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
-    }
-}
-
 MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgResourceIdentifier* primResId, CREFSTRING extensionName, CREFSTRING relationName)
 {
     Ptr<MgResourceIdentifier> secResId;
 
-    // look in the xml to find the resource for the specified relation
-    string featureSourceXmlContent;
-    RetrieveFeatureSource(primResId, featureSourceXmlContent);
-
-    // Needed to parse XML and get properties
-    MgXmlUtil xmlUtil;
-    xmlUtil.ParseString(featureSourceXmlContent.c_str());
-
-    DOMElement* rootNode = xmlUtil.GetRootNode();
-    DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
+    DOMElement* rootNode = m_xmlUtil.GetRootNode();
+    DOMNodeList* extensionNodeList = m_xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
 
     if (NULL != extensionNodeList)
     {
@@ -1137,7 +1088,7 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
             DOMNode* extensionNode = extensionNodeList->item(i);
             CHECKNULL(extensionNode, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
 
-            DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
+            DOMNodeList* nameNodeList = m_xmlUtil.GetNodeList(extensionNode, "Name");
             int nNameNodes = (int)nameNodeList->getLength();
 
             // get the extension name node
@@ -1145,7 +1096,7 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
 
             // get the extension name value
             STRING name;
-            xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, name);
+            m_xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, name);
 
             STRING parsedSchemaName = L"";
             STRING parsedExtensionName = L"";
@@ -1158,7 +1109,7 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
             else
             {
                 // Determine the number of secondary sources (AttributeRelate nodes)
-                DOMNodeList* attributeRelateNodeList = xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
+                DOMNodeList* attributeRelateNodeList = m_xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
                 int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
 
                 // Find the the specified relation name
@@ -1168,7 +1119,7 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
 
                     // Get the name for the join relationship
                     wstring szAttributeRelateName;
-                    xmlUtil.GetElementValue(attributeRelateNode, "Name", szAttributeRelateName);
+                    m_xmlUtil.GetElementValue(attributeRelateNode, "Name", szAttributeRelateName);
 
                     if ( szAttributeRelateName != relationName )
                     {
@@ -1178,7 +1129,7 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
                     {
                         // Get the secondary resource id
                         wstring szSecondaryResourceId;
-                        xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", szSecondaryResourceId);
+                        m_xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", szSecondaryResourceId);
                         secResId = new MgResourceIdentifier(szSecondaryResourceId);
                         break;
                     }

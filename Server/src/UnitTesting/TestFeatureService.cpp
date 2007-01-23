@@ -24,6 +24,17 @@
 #include "ServerFeatureService.h"
 #include "Fdo.h"
 
+#ifndef _WIN32
+// Linux version of GetTickCount()
+#include <sys/times.h>
+
+long GetTickCount()
+{
+    tms tm;
+    return times(&tm);
+}
+#endif
+
 const STRING TEST_LOCALE = L"en";
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestFeatureService, "TestFeatureService");
@@ -290,7 +301,7 @@ void TestFeatureService::TestCase_TestConnectionSDFProvider()
         Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(MgUser::Administrator, L"");
         MgUserInformation::SetCurrentUserInfo(adminUserInfo);
 
-        const STRING provider = L"OSGeo.SDF.3.2";
+        const STRING provider = L"OSGeo.SDF";
 #ifdef _WIN32
         const STRING connectionString = L"File=..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
 #else
@@ -332,7 +343,7 @@ void TestFeatureService::TestCase_TestFdoConnectionManager()
             throw new MgNullReferenceException(L"TestFeatureService.TestCase_TestFdoConnectionManager", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        const STRING provider = L"OSGeo.SDF.3.2";
+        const STRING provider = L"OSGeo.SDF";
 #ifdef _WIN32
         const STRING connectionString = L"File=..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
 #else
@@ -401,7 +412,7 @@ void TestFeatureService::TestCase_GetConnectionPropertyValues()
         CPPUNIT_ASSERT_THROW_MG(pService->GetConnectionPropertyValues(provider, property, connectionString),
             MgInvalidArgumentException*);
 
-        provider = L"OSGeo.SDF.3.2";
+        provider = L"OSGeo.SDF";
         property = L"ReadOnly";
         Ptr<MgStringCollection> properties = pService->GetConnectionPropertyValues(provider, property, connectionString);
         CPPUNIT_ASSERT(properties->GetCount() > 0);
@@ -445,7 +456,7 @@ void TestFeatureService::TestCase_GetCapabilities()
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetCapabilities", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        STRING provider = L"OSGeo.SDF.3.2";
+        STRING provider = L"OSGeo.SDF";
 
         MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
         if(fdoConnectionManager == 0)
@@ -1656,6 +1667,68 @@ void TestFeatureService::TestCase_CreateFeatureSource()
 
         // Delete the resource
         pResourceService->DeleteResource(resource);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case benchmarks selecting features.
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_BenchmarkSelectFeatures()
+{
+    try
+    {
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_BenchmarkSelectFeatures - START\n")));
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_BenchmarkSelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_BenchmarkSelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
+        STRING className = L"Parcels";
+        resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+        Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+
+        const int iterations = 1000;
+        long lStart = GetTickCount();
+        for(int i=0;i<iterations;i++)
+        {
+            int nFeatures = 0;
+            Ptr<MgFeatureReader> reader = pService->SelectFeatures(resource, className, options);
+            while(reader->ReadNext())
+            {
+                nFeatures++;
+            }
+
+            reader->Close();
+            CPPUNIT_ASSERT(nFeatures == 17565);
+        }
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (Average of %d runs): = %6.4f (s)\n"), iterations, ((GetTickCount()-lStart)/1000.0)/(double)iterations ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("TestCase_BenchmarkSelectFeatures - END\n")));
     }
     catch(MgException* e)
     {
