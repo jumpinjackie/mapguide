@@ -1370,6 +1370,12 @@ void TestResourceService::TestCase_DeleteResource()
             throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_DeleteResource", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
+        Ptr<MgFeatureService> pFeatureService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pFeatureService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_DeleteResource", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
         Ptr<MgUserInformation> userInfo;
 
         //Sets the user information for the current thread to be administrator
@@ -1401,11 +1407,68 @@ void TestResourceService::TestCase_DeleteResource()
             MgUserInformation::SetCurrentUserInfo(userInfo);
             CPPUNIT_ASSERT_THROW_MG(pService->DeleteResource(&resourceIdentifier), MgUnauthorizedAccessException*);
         }
+
+        // Try to delete resource after FDO exception
+        MgUserInformation::SetCurrentUserInfo(NULL);
+        userInfo = new MgUserInformation(adminName, adminPass);
+        if (userInfo != NULL)
+        {
+            Ptr<MgResourceIdentifier> resource;
+            resource = new MgResourceIdentifier(L"Library://UnitTests/Data/TEST.FeatureSource");
+
+            #ifdef WIN32
+            STRING rcName = L"..\\UnitTestFiles\\TEST.FeatureSource";
+            STRING dfName = L"..\\UnitTestFiles\\TEST.sdf";
+            #else
+            STRING rcName = L"../UnitTestFiles/TEST.FeatureSource";
+            STRING dfName = L"../UnitTestFiles/TEST.sdf";
+            #endif
+
+            userInfo->SetLocale(userLocale);
+            MgUserInformation::SetCurrentUserInfo(userInfo);
+
+            Ptr<MgByteSource> contentSource;
+            contentSource = new MgByteSource(rcName);
+            Ptr<MgByteReader> contentReader = contentSource->GetReader();
+            pService->SetResource(resource, contentReader, NULL);
+
+            Ptr<MgByteSource> dataSource;
+            dataSource = new MgByteSource(dfName);
+
+            Ptr<MgByteReader> dataReader;
+            dataReader = dataSource->GetReader();
+            pService->SetResourceData(resource, L"TEST.sdf", L"File", dataReader);
+            dataReader = NULL; // Holds on to the file, so must release resources!
+
+            // Force an FDO exception
+            Ptr<MgFeatureAggregateOptions> options = new MgFeatureAggregateOptions();
+            STRING className = L"TEST";
+            options->AddFeatureProperty(L"Data");
+
+            Ptr<MgDataReader> reader = pFeatureService->SelectAggregate(resource, className, options);
+            bool bResult = reader->ReadNext();
+            CPPUNIT_ASSERT(bResult);
+
+            reader->Close();
+            reader = NULL; // Holds on to the file, so must release resources!
+
+            // Attempt to delete the resource
+            pService->DeleteResource(resource);
+        }
     }
     catch(MgException* e)
     {
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
+    }
+    catch(...)
+    {
+        throw;
     }
 }
