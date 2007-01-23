@@ -54,6 +54,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_JoinFeatures);
     CPPUNIT_TEST(TestCase_JoinFeaturesChainedInner1ToMany);
     CPPUNIT_TEST(TestCase_CreateFeatureSource);
+    CPPUNIT_TEST(TestCase_BenchmarkSelectFeatures);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -93,6 +94,7 @@ public:
     void TestCase_JoinFeatures();
     void TestCase_JoinFeaturesChainedInner1ToMany();
     void TestCase_CreateFeatureSource();
+    void TestCase_BenchmarkSelectFeatures();
 };
 
 #endif // _TESTFEATURESERVICE_H

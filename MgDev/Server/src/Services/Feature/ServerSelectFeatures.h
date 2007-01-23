@@ -39,6 +39,7 @@ public:
                              MgFeatureQueryOptions* options,
                              bool isSelectAggregate);
 
+private:
     void  ApplyQueryOptions(bool isSelectAggregate);
     void  ApplyClassProperties();
     void  ApplyComputedProperties();
@@ -49,8 +50,6 @@ public:
     //bool HasCustomProperty() { return m_customPropertyFound; }
     //FdoFunction* GetCustomFunction() { return FDO_SAFE_ADDREF(m_customFunction); }
     //STRING GetCustomPropertyName() { return m_customPropertyName; }
-
-private:
 
     bool IsFdoSupportedFunction(FdoIConnection* connection, FdoFunction* fdoFunc);
     bool ContainsUdf(FdoExpression* expression);
@@ -71,6 +70,7 @@ private:
     Ptr<MgFeatureQueryOptions> m_options;
     STRING                  filterText;
     Ptr<MgFeatureServiceCommand>    m_command;
+    MgXmlUtil m_xmlUtil;
 
     // Only one custom property is supported. No nesting of custom properties allowed.
     STRING                  m_customPropertyName;
@@ -82,7 +82,6 @@ private:
     MgServerGwsFeatureReader* JoinFeatures(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName, FdoFilter* filter);
     void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
     void ParseQualifiedClassName(CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className);
-    void ValidateFeatureSource(string& featureSourceXmlContent);
     MgResourceIdentifier* GetSecondaryResourceIdentifier(MgResourceIdentifier* primResId, CREFSTRING extensionName, CREFSTRING relationName);
 };
 

@@ -37,7 +37,7 @@ class MgXmlUtil;
 #define MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(methodName)   MG_FEATURE_SERVICE_CATCH_AND_THROW(methodName)
 
 typedef struct {
-    STRING data;    // XML content or connection string
+    string data;    // Feature source XML content
     STRING ltName;  // current long transaction name for this connection
     FdoIConnection* pFdoConnection;
     ACE_Time_Value lastUsed;
@@ -73,6 +73,8 @@ public:
     MgSpatialContextInfoMap* GetSpatialContextInfo(MgResourceIdentifier* resourceIdentifier);
     STRING UpdateProviderName(CREFSTRING providerName);
 
+    void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
+
     void RemoveExpiredConnections();
     bool RemoveCachedFdoConnection(CREFSTRING key);
 
@@ -86,11 +88,10 @@ private:
 
     FdoIConnection* FindFdoConnection(MgResourceIdentifier* resourceIdentifier);
     FdoIConnection* FindFdoConnection(CREFSTRING providerName, CREFSTRING connectionString);
-    FdoIConnection* SearchFdoConnectionCache(CREFSTRING key, CREFSTRING data, CREFSTRING ltName);
-    void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, CREFSTRING data, CREFSTRING ltName);
+    FdoIConnection* SearchFdoConnectionCache(CREFSTRING key, string& data, CREFSTRING ltName);
+    void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, string& data, CREFSTRING ltName);
     bool FdoConnectionCacheFull(void);
 
-    void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
     void GetConnectionPropertiesFromXml(MgXmlUtil* pXmlUtil, STRING& providerName, STRING& configDocumentName, STRING& longTransactionName);
     void GetSpatialContextInfoFromXml(MgXmlUtil* pXmlUtil, MgSpatialContextInfoMap* spatialContextInfoMap);
 

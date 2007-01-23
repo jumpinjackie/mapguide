@@ -190,7 +190,7 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
                 {
                     // Add this entry to the cache
                     CacheFdoConnection(pFdoConnection, resourceIdentifier->ToString(),
-                                       MgUtil::MultiByteToWideChar(featureSourceXmlContent),
+                                       featureSourceXmlContent,
                                        longTransactionName);
                 }
             }
@@ -257,7 +257,7 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING providerName, CREFSTRING
                     {
                         // Add this entry to the cache
                         STRING key = providerNameNoVersion + L" - " + connectionString;
-                        STRING data = L"";
+                        string data = "";
                         STRING ltName = L"";
                         CacheFdoConnection(pFdoConnection, key, data, ltName);
                     }
@@ -314,7 +314,27 @@ void MgFdoConnectionManager::RemoveExpiredConnections()
                 delete pFdoConnectionCacheEntry;
                 pFdoConnectionCacheEntry = NULL;
 
+                STRING cacheKey = iter->first;
+
+                // Remove any feature service cache entries for this resource
+                MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+                assert(NULL != serviceManager);
+
+                try
+                {
+                    Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(cacheKey);
+                    serviceManager->RemoveFeatureServiceCacheEntry(resource);
+                }
+                catch(MgInvalidRepositoryTypeException* e)
+                {
+                    // If this exception is thrown then the key was not a resource identifier string 
+                    // and so there will be no entries in the feature service cache to remove.
+                    SAFE_RELEASE(e);
+                }
+
                 m_FdoConnectionCache.erase(iter++);
+
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgFdoConnectionManager.RemoveExpiredConnections() - Found expired cached FDO connection.\n")));
             }
             else
             {
@@ -350,7 +370,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* 
     MgLongTransactionManager::GetLongTransactionName(resourceIdentifier, ltName);
 
     pFdoConnection = SearchFdoConnectionCache(resourceIdentifier->ToString(),
-                                              MgUtil::MultiByteToWideChar(featureSourceXmlContent),
+                                              featureSourceXmlContent,
                                               ltName);
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FindFdoConnection")
@@ -365,9 +385,12 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING providerNam
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
+    STRING providerNameNoVersion = UpdateProviderName(providerName);
+    STRING key = providerNameNoVersion + L" - " + connectionString;
+    string data = "";
     STRING ltName = L"";
 
-    pFdoConnection = SearchFdoConnectionCache(providerName, connectionString, ltName);
+    pFdoConnection = SearchFdoConnectionCache(key, data, ltName);
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FindFdoConnection")
 
@@ -375,7 +398,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING providerNam
 }
 
 
-FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING key, CREFSTRING data, CREFSTRING ltName)
+FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING key, string& data, CREFSTRING ltName)
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
@@ -421,6 +444,10 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING key,
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.SearchFdoConnectionCache")
 
+    #ifdef _DEBUG
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("SearchFdoConnectionCache:\nConnection: %@\nKey = %W\nData = %W\n\n"), (void*)pFdoConnection, key.c_str(), data.empty() ? L"(empty)" : L"(data)"));
+    #endif
+
     return pFdoConnection;
 }
 
@@ -465,7 +492,6 @@ void MgFdoConnectionManager::GetConnectionPropertiesFromXml(MgXmlUtil* pXmlUtil,
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.GetConnectionPropertiesFromXml")
 }
-
 
 void MgFdoConnectionManager::GetSpatialContextInfoFromXml(MgXmlUtil* pXmlUtil, MgSpatialContextInfoMap* spatialContextInfoMap)
 {
@@ -640,21 +666,75 @@ void MgFdoConnectionManager::RetrieveFeatureSource(MgResourceIdentifier* resourc
 {
     CHECKNULL(resource, L"MgFdoConnectionManager.RetrieveFeatureSource");
 
-    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-    assert(NULL != serviceMan);
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
-    // Get the service from service manager
-    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
-        serviceMan->RequestService(MgServiceType::ResourceService));
-    assert(resourceService != NULL);
+    MG_FDOCONNECTION_MANAGER_TRY()
 
-    // Get the feature source contents
-    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resource, MgResourcePreProcessingType::Substitution);
+    FdoConnectionCacheEntry* pFdoConnectionCacheEntry = NULL;
+    resourceContent = "";
 
-    Ptr<MgByteSink> byteSink = new MgByteSink((MgByteReader*)byteReader);
-    byteSink->ToStringUtf8(resourceContent);
+    // Check to see if we have a valid resource
+    bool bValidResource = false;
+    try
+    {
+        resource->Validate();
+        bValidResource = true;
+    }
+    catch(MgException* e)
+    {
+        SAFE_RELEASE(e);
+    }
 
-    ValidateFeatureSource(resourceContent);
+    if(bValidResource)
+    {
+        STRING key = resource->ToString();
+
+        FdoConnectionCache::iterator iter = m_FdoConnectionCache.begin();
+
+        while(m_FdoConnectionCache.end() != iter)
+        {
+            STRING cacheKey = iter->first;
+            if(ACE_OS::strcasecmp(cacheKey.c_str(), key.c_str()) == 0)
+            {
+                // We have a key match
+                pFdoConnectionCacheEntry = iter->second;
+                if(pFdoConnectionCacheEntry)
+                {
+                    resourceContent = pFdoConnectionCacheEntry->data;
+                    break;
+                }
+            }
+
+            iter++;
+        }
+    }
+
+    if(resourceContent.empty())
+    {
+        MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+        assert(NULL != serviceMan);
+
+        // Get the service from service manager
+        Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+            serviceMan->RequestService(MgServiceType::ResourceService));
+        assert(resourceService != NULL);
+
+        // Get the feature source contents
+        Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resource, MgResourcePreProcessingType::Substitution);
+
+        Ptr<MgByteSink> byteSink = new MgByteSink((MgByteReader*)byteReader);
+        byteSink->ToStringUtf8(resourceContent);
+
+        ValidateFeatureSource(resourceContent);
+
+        if(pFdoConnectionCacheEntry)
+        {
+            // Update the cache entry with the resource document now that we have it
+            pFdoConnectionCacheEntry->data = resourceContent;
+        }
+    }
+
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.RetrieveFeatureSource")
 }
 
 
@@ -821,14 +901,11 @@ void MgFdoConnectionManager::Open(FdoIConnection* pFdoConnection)
     }
 }
 
-
 MgSpatialContextInfoMap* MgFdoConnectionManager::GetSpatialContextInfo(MgResourceIdentifier* resourceIdentifier)
 {
     MgSpatialContextInfoMap* spatialContextInfoMap = NULL;
 
     MG_FDOCONNECTION_MANAGER_TRY()
-
-    ACE_TRACE ("MgFdoConnectionManager::GetSpatialContextInfo");
 
     // Retrieve XML from repository
     string featureSourceXmlContent;
@@ -915,6 +992,22 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
                         delete pFdoConnectionCacheEntry;
                         pFdoConnectionCacheEntry = NULL;
 
+                        // Remove any feature service cache entries for this resource
+                        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+                        assert(NULL != serviceManager);
+
+                        try
+                        {
+                            Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(key);
+                            serviceManager->RemoveFeatureServiceCacheEntry(resource);
+                        }
+                        catch(MgInvalidRepositoryTypeException* e)
+                        {
+                            // If this exception is thrown then the key was not a resource identifier string 
+                            // and so there will be no entries in the feature service cache to remove.
+                            SAFE_RELEASE(e);
+                        }
+
                         m_FdoConnectionCache.erase(iter++);
 
                         connectionsRemoved++;
@@ -954,8 +1047,7 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
     return (connections == connectionsRemoved);
 }
 
-
-void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, CREFSTRING data, CREFSTRING ltName)
+void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, string& data, CREFSTRING ltName)
 {
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -970,6 +1062,10 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
         pFdoConnectionCacheEntry->ltName = ltName;
         pFdoConnectionCacheEntry->pFdoConnection = pFdoConnection;
         pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
+
+        #ifdef _DEBUG
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("CacheFdoConnection:\nConnection: %@\nKey = %W\nData = %W\n\n"), (void*)pFdoConnection, key.c_str(), data.empty() ? L"(empty)" : L"(data)"));
+        #endif
 
         m_FdoConnectionCache.insert(FdoConnectionCache_Pair(key, pFdoConnectionCacheEntry));
 

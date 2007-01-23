@@ -476,3 +476,22 @@ void MgServiceManager::NotifyFeatureServiceCache()
 
     MG_CATCH(L"MgServiceManager.NotifyFeatureServiceCache")
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Remove the resource from the feature service cache.
+///
+void MgServiceManager::RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource)
+{
+    MG_TRY()
+
+    Ptr<MgServerFeatureService> featureService = dynamic_cast<MgServerFeatureService*>(
+        RequestLocalService(MgServiceType::FeatureService));
+
+    if (featureService != NULL)
+    {
+        featureService->RemoveFeatureServiceCacheEntry(resource);
+    }
+
+    MG_CATCH(L"MgServiceManager.NotifyFeatureServiceCache")
+}

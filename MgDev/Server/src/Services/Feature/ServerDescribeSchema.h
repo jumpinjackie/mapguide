@@ -60,7 +60,6 @@ private:
     STRING GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol);
 
     void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
-    void ValidateFeatureSource(string& featureSourceXmlContent);
 };
 
 #endif

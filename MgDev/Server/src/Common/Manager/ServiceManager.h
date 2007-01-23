@@ -58,6 +58,7 @@ public:
     void DispatchResourceChangeNotifications();
 
     void NotifyFeatureServiceCache();
+    void RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource);
 
 private:
 

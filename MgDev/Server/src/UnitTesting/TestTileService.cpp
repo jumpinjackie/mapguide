@@ -280,7 +280,6 @@ ACE_THR_FUNC_RETURN GetTileWorker(void* param)
     {
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {

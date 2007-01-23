@@ -1630,54 +1630,12 @@ void MgServerDescribeSchema::RetrieveFeatureSource(MgResourceIdentifier* resourc
 {
     CHECKNULL(resource, L"MgServerDescribeSchema.RetrieveFeatureSource");
 
-    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-    assert(NULL != serviceMan);
+    resourceContent = "";
 
-    // Get the service from service manager
-    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
-        serviceMan->RequestService(MgServiceType::ResourceService));
-    assert(resourceService != NULL);
-
-    // Get the feature source contents
-    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resource, MgResourcePreProcessingType::Substitution);
-
-    Ptr<MgByteSink> byteSink = new MgByteSink((MgByteReader*)byteReader);
-    byteSink->ToStringUtf8(resourceContent);
-
-    ValidateFeatureSource(resourceContent);
-}
-
-void MgServerDescribeSchema::ValidateFeatureSource(string& featureSourceXmlContent)
-{
-    bool isValidFeatureSource = true;
-
-    // TODO: Should we add XML validation here to ensure the integrity of feature source
-    if (featureSourceXmlContent.empty())
+    // Get the feature source XML content document from the FDO connection manager.
+    MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    if(pFdoConnectionManager)
     {
-        isValidFeatureSource = false;
-    }
-    else
-    {
-        int index = (int)featureSourceXmlContent.find("<FeatureSource");
-        if (index == -1)
-        {
-            isValidFeatureSource = false;
-        }
-    }
-
-    // if invalid FeatureSource, throw exception saying invalid provider specified
-    if (!isValidFeatureSource)
-    {
-        STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgInvalidFdoProvider");
-
-        Ptr<MgStringCollection> strCol = (MgStringCollection*)NULL;
-        if (!message.empty())
-        {
-            strCol = new MgStringCollection();
-            strCol->Add(message);
-        }
-
-        throw new MgInvalidFeatureSourceException(L"MgServerDescribeSchema.ValidateFeatureSource",
-            __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
+         pFdoConnectionManager->RetrieveFeatureSource(resource, resourceContent);
     }
 }
