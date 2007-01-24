@@ -65,7 +65,7 @@ private:
     INT32   m_tileCol;
     INT32   m_tileRow;
     STRING  m_version;
-    double  m_scale;
+    INT32   m_scaleIndex;
 };
 
 #endif  // _FS_GET_TILE_IMAGE_H

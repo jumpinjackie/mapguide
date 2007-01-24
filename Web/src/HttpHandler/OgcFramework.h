@@ -138,10 +138,10 @@ extern CPSZ kpszAttributeService           ;// = _("service");
 extern CPSZ kpszAttributeRequest           ;// = _("request");
 extern CPSZ kpszAttributeVersion           ;// = _("version");
 
-extern CPSZ kpszAttrValueWms               ;// = _("WMS");
+//extern CPSZ kpszAttrValueWms               ;// = _("WMS");
 
 extern CPSZ kpszElementDefinitions         ;// = _("Definitions");
-extern CPSZ kpszAttributeFor               ;// = _("for");
+//extern CPSZ kpszAttributeFor               ;// = _("for");
 extern CPSZ kpszElementDefine              ;// = _("Define");
 extern CPSZ kpszAttributeItem              ;// = _("item");
 
@@ -164,6 +164,6 @@ extern CPSZ kpszDictionaryEnumDictValue    ;// = _("EnumDictionary.Value");
 extern CPSZ kpszEmpty                      ;// = _("");
 extern CPSZ kpszDefaultExceptionTemplate   ;// = _("Server Exception:\nType: &Exception.Type;\nMessage: &Exception.Message;\n");
 //
-extern CPSZ kpszFilenameGlobalConfig       ;// = _("OgcWmsService.config");
+//extern CPSZ kpszFilenameGlobalConfig       ;// = _("OgcWmsService.config");
 
 #endif//_OgcFramework_h

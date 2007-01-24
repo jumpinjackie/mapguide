@@ -119,7 +119,7 @@ MgByteReader* MgServerTileService::GetTile(
                 cachedMap = new MgMemoryStreamHelper();
                 Ptr<MgStream> stream = new MgStream(cachedMap);
                 map->Serialize(stream);
-                if (sm_mapCache.size() > sm_mapCacheSize)
+                if ((INT32)sm_mapCache.size() > sm_mapCacheSize)
                 {
                     ClearMapCache(L"");
                 }
