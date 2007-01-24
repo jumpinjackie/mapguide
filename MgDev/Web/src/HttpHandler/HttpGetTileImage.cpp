@@ -78,8 +78,8 @@ MgHttpGetTileImage::MgHttpGetTileImage(MgHttpRequest *hRequest)
         // Get the tile row index and convert to integer
         m_tileRow = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingTileRow));
 
-        // Get the scale and convert to double
-        m_scale = MgUtil::StringToDouble(params->GetParameterValue(MgHttpResourceStrings::reqRenderingScaleIndex));
+        // Get the scale index and convert to integer
+        m_scaleIndex = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingScaleIndex));
     }
     else
     {
@@ -140,7 +140,7 @@ void MgHttpGetTileImage::Execute(MgHttpResponse& hResponse)
         Ptr<MgTileService> service = (MgTileService*)(CreateService(MgServiceType::TileService));
 
         // Call the C++ API
-        Ptr<MgByteReader> tileImage = service->GetTile(resId, m_baseMapLayerGroupName, m_tileCol, m_tileRow, m_scale);
+        Ptr<MgByteReader> tileImage = service->GetTile(resId, m_baseMapLayerGroupName, m_tileCol, m_tileRow, m_scaleIndex);
 
         // Set the result
         hResult->SetResultObject(tileImage, tileImage->GetMimeType());
