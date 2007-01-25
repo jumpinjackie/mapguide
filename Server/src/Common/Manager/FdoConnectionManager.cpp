@@ -367,7 +367,24 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* 
 
     // Get the active long transaction name for the current request
     STRING ltName = L"";
-    MgLongTransactionManager::GetLongTransactionName(resourceIdentifier, ltName);
+
+    if(!MgLongTransactionManager::GetLongTransactionName(resourceIdentifier, ltName))
+    {
+        // No long transaction name cached for the current session or no current session
+        // In this case we want to use the requested long transaction of the feature source
+
+        // Need to parse feature source XML and get long transaction
+        MgXmlUtil xmlUtil;
+        xmlUtil.ParseString(featureSourceXmlContent.c_str());
+
+        DOMElement* root = xmlUtil.GetRootNode();
+        CHECKNULL(root, L"MgFdoConnectionManager.FindFdoConnection()");
+
+        wstring szLongTransactionName;
+        xmlUtil.GetElementValue(root, "LongTransaction", szLongTransactionName, false);
+
+        ltName = szLongTransactionName;
+    }
 
     pFdoConnection = SearchFdoConnectionCache(resourceIdentifier->ToString(),
                                               featureSourceXmlContent,
@@ -445,7 +462,7 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING key,
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.SearchFdoConnectionCache")
 
     #ifdef _DEBUG
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("SearchFdoConnectionCache:\nConnection: %@\nKey = %W\nData = %W\n\n"), (void*)pFdoConnection, key.c_str(), data.empty() ? L"(empty)" : L"(data)"));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("SearchFdoConnectionCache:\nConnection: %@\nKey = %W\nData = %W\nVersion(LT) = %W\n\n"), (void*)pFdoConnection, key.c_str(), data.empty() ? L"(empty)" : L"(data)", ltName.empty() ? L"(empty)" : ltName.c_str()));
     #endif
 
     return pFdoConnection;
@@ -1064,7 +1081,7 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
         pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
 
         #ifdef _DEBUG
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("CacheFdoConnection:\nConnection: %@\nKey = %W\nData = %W\n\n"), (void*)pFdoConnection, key.c_str(), data.empty() ? L"(empty)" : L"(data)"));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("CacheFdoConnection:\nConnection: %@\nKey = %W\nData = %W\nVersion(LT) = %W\n\n"), (void*)pFdoConnection, key.c_str(), data.empty() ? L"(empty)" : L"(data)", ltName.empty() ? L"(empty)" : ltName.c_str()));
         #endif
 
         m_FdoConnectionCache.insert(FdoConnectionCache_Pair(key, pFdoConnectionCacheEntry));
