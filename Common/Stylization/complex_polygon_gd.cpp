@@ -102,7 +102,7 @@ void complex_polygon_gd::FillPolygon(Point * VertexList, int nVerts, int* Contou
 
     /* Get enough memory to store the entire edge table */
     /* TIS -- reuse a buffer owned by the class */
-    if (m_nBufEdgeState < nVerts)
+    if (m_nBufEdgeState < (size_t)nVerts)
     {
         delete [] m_bufEdgeState;
         m_nBufEdgeState = nVerts;
