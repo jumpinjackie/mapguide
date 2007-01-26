@@ -220,9 +220,17 @@ function RectangleDigitizer(handler, cnvfunc, cancelTgt, fbShape, fbDiv, fbColor
         this.ClearFeedback();
         this.rect.Point2 = cnvfunc(x, y);
         if(this.xstart > x)
-            x = this.rect.Point1.X; this.rect.Point1.X = this.rect.Point2.X; this.rect.Point2.X = X;
+        {
+            x = this.rect.Point1.X;
+            this.rect.Point1.X = this.rect.Point2.X;
+            this.rect.Point2.X = x;
+        }
         if(this.ystart > y)
-            y = this.rect.Point1.Y; this.rect.Point1.Y = this.rect.Point2.Y; this.rect.Point2.Y = Y;
+        {
+            y = this.rect.Point1.Y;
+            this.rect.Point1.Y = this.rect.Point2.Y;
+            this.rect.Point2.Y = y;
+        }
         this.handler(this.rect);
     }
     this.Feedback = function(x, y)
