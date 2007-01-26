@@ -119,7 +119,7 @@ MgByteReader* MgServerTileService::GetTile(
                 cachedMap = new MgMemoryStreamHelper();
                 Ptr<MgStream> stream = new MgStream(cachedMap);
                 map->Serialize(stream);
-                if ((INT32)sm_mapCache.size() > sm_mapCacheSize)
+                if ((INT32)sm_mapCache.size() >= sm_mapCacheSize)
                 {
                     ClearMapCache(L"");
                 }
@@ -308,6 +308,17 @@ void MgServerTileService::ClearMapCache(CREFSTRING mapDefinition)
             (*iter).second = NULL;
         }
         sm_mapCache.clear();
+
+        STRING message;
+        MgResources* resources = NULL;
+        MG_TRY()
+        resources = MgResources::GetInstance();
+        if (NULL != resources)
+        {
+            message = resources->GetMessage(MgResources::ErrorDescription, L"MgMapCacheCleared", NULL);
+            MG_LOG_ERROR_ENTRY(message.c_str());
+        }
+        MG_CATCH_AND_RELEASE()
     }
     else
     {
