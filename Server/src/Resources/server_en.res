@@ -225,6 +225,7 @@ MgInvalidWebTargetViewerType                          = The web target viewer ty
 MgInvalidWebWidgetType                                = The web widget type is invalid because it is not recognized.
 MgInvalidXmlDateTime                                  = The Xml date time is invalid because not all of the fields were found.
 MgInvalidYear                                         = The year is invalid because it must be between 1 and 9999.
+MgMapCacheCleared                                     = The Tile Service map cache has been cleared.  Please increase TiledMapCacheSize in serverconfig.ini.
 MgMapLayerGroupNameNotFound                           = The map layer group name was not found.
 MgMissingClassDef                                     = No class definition specified.
 MgMissingSchema                                       = No schema specified.
