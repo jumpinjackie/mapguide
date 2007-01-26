@@ -20,7 +20,7 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include <stdafx.h>
+#include "stdafx.h"
 
 #include "GwsQueryEngineImp.h"
 #include "GwsBinaryFeatureReader.h"
