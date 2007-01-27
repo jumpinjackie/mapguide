@@ -150,6 +150,27 @@ EXTERNAL_API:
     ///
     void SetConfigurationProperties(CREFSTRING propertySection, MgPropertyCollection* properties);
 
+    ///////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Removes the configuration properties for the specified property section.
+    /// If the properties are not specified, then the entire section will be removed.
+    ///
+    /// \param propertySection
+    /// The property section to remove.
+    /// \param properties
+    /// The collection of configuration properties associated with the specified property section that you want to remove.
+    ///
+    /// \return
+    /// Nothing
+    ///
+    /// \exception MgConnectionNotOpenException
+    /// \exception MgInvalidPropertySectionException
+    /// \exception MgPropertySectionNotAvailableException
+    /// \exception MgPropertySectionReadOnlyException
+    /// \exception MgInvalidPropertyException
+    ///
+    void RemoveConfigurationProperties(CREFSTRING propertySection, MgPropertyCollection* properties);
+
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Clears the specified log.

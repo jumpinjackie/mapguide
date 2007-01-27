@@ -36,18 +36,20 @@ private:
     MgUnmanagedDataManager(const MgUnmanagedDataManager&);
     MgUnmanagedDataManager& operator=(const MgUnmanagedDataManager&);
 
-    void GetFiles(MgStringCollection* files, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, CREFSTRING dataTypeFilter, INT32 depth);
+
+    bool ParsePath(CREFSTRING path, REFSTRING mappingName, REFSTRING subfolder);
+    void ParseFilter(CREFSTRING filter, MgStringCollection* filters);
+    bool FilterFile(CREFSTRING file, const MgStringCollection* filters);
+
+    void GetFilesAndFolders(string& list, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, const MgStringCollection* filters, bool storeFolders, bool storeFiles, bool recursive);
+
+    // TODO: delete
     void GetDirectories(MgStringCollection* dirs, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, INT32 depth);
 
-    bool IsValidDataTypeFilter(CREFSTRING dataTypeFilter);
-    bool IsValidFileType(CREFSTRING file, CREFSTRING dataTypeFilter);
+    void AddFolder(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT32 numFolders, INT32 numFiles, MgDateTime createdDate, MgDateTime modifiedDate);
+    void AddFile(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT64 fileSize, MgDateTime createdDate, MgDateTime modifiedDate);
 
-    bool IsSdfFile(CREFSTRING file);
-    bool IsShpFile(CREFSTRING file);
-    bool IsDwfFile(CREFSTRING file);
-    bool IsRasterFile(CREFSTRING file);
-    bool IsOdbcFile(CREFSTRING file);
-    bool IsAnyValidFile(CREFSTRING file);
+    void GetNumberOfFilesAndSubfolders(CREFSTRING dirpath, INT32& numFolders, INT32& numFiles);
 
     STRING FormatMappingName(CREFSTRING name);
     STRING FormatSubdir(CREFSTRING subdir);
@@ -59,8 +61,7 @@ public:
     static MgUnmanagedDataManager* GetInstance();
     virtual void Dispose();
 
-    MgStringCollection* EnumerateUnmanagedData(CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth);
-    MgStringCollection* EnumerateUnmanagedDataMappings();
+    MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter);
 
 /// Data Members
 
@@ -68,25 +69,10 @@ private:
 
     static Ptr<MgUnmanagedDataManager> sm_unmanagedDataManager;
 
-    static const STRING Sdf;
-    static const STRING Shp;
-    static const STRING Dwf;
-    static const STRING Raster;
-    static const STRING Odbc;
-    static const STRING Folder;
-    static const STRING Jpg;
-    static const STRING Jpeg;
-    static const STRING Jpe;
-    static const STRING Png;
-    static const STRING Bmp;
-    static const STRING Cal;
-    static const STRING Tga;
-    static const STRING Tif;
-    static const STRING Tiff;
-    static const STRING Sid;
-    static const STRING Ecw;
-    static const STRING Bil;
-    static const STRING Mdb;
+    static const STRING Folders;
+    static const STRING Files;
+    static const STRING Both;
+
     static const STRING OpenSquareBracket;
     static const STRING ClosedSquareBracket;
 };

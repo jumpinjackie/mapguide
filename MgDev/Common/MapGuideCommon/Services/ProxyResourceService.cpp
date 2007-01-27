@@ -1059,48 +1059,26 @@ MgUserInformation* MgProxyResourceService::GetUserInfo()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Enumerates the unmanaged data files
-/// Resources of all types can be enumerated all at once, or only
-/// resources of a given type.
+/// Enumerates the unmanaged data
 ///
-MgStringCollection* MgProxyResourceService::EnumerateUnmanagedData(
-    CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth)
+MgByteReader* MgProxyResourceService::EnumerateUnmanagedData(
+    CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter)
 {
     MgCommand cmd;
 
     cmd.ExecuteCommand(m_connProp,
                         MgCommand::knObject,
                         MgResourceService::opIdEnumerateUnmanagedData,
-                        3,
+                        4,
                         Resource_Service,
                         1,
-                        MgCommand::knString, &mappingName,
-                        MgCommand::knString, &dataTypeFilter,
-                        MgCommand::knInt32, depth,
+                        MgCommand::knString, &path,
+                        MgCommand::knInt8, (int)recursive,
+                        MgCommand::knString, &select,
+                        MgCommand::knString, &filter,
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
 
-    return (MgStringCollection*)cmd.GetReturnValue().val.m_obj;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Enumerates the unmanaged data mappings
-///
-MgStringCollection* MgProxyResourceService::EnumerateUnmanagedDataMappings()
-{
-    MgCommand cmd;
-
-    cmd.ExecuteCommand(m_connProp,
-                        MgCommand::knObject,
-                        MgResourceService::opIdEnumerateUnmanagedDataMappings,
-                        0,
-                        Resource_Service,
-                        1,
-                        MgCommand::knNone);
-
-    SetWarning(cmd.GetWarningObject());
-
-    return (MgStringCollection*)cmd.GetReturnValue().val.m_obj;
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }

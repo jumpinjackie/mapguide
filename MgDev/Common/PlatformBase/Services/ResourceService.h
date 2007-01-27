@@ -1679,19 +1679,9 @@ INTERNAL_API:
     /// Enumerate unmanaged data
     ///
     /// \return
-    /// MgStringCollection list of unmanaged data paths
+    /// MgByteReader of unmanaged data
     ///
-    virtual MgStringCollection* EnumerateUnmanagedData(
-        CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth);
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Enumerate unmanaged data mappings
-    ///
-    /// \return
-    /// MgStringCollection list of unmanaged data mappings
-    ///
-    virtual MgStringCollection* EnumerateUnmanagedDataMappings();
+    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter);
 
 protected:
 
@@ -1763,7 +1753,6 @@ INTERNAL_API:
         opIdGetResourceModifiedDate         = 0x1111EF18,
         opIdEnumerateParentMapDefinitions   = 0x1111EF19,
         opIdEnumerateUnmanagedData          = 0x1111EF1A,
-        opIdEnumerateUnmanagedDataMappings  = 0x1111EF1B,
     };
 };
 

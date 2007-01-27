@@ -57,6 +57,7 @@ public:
 
     MgPropertyCollection* GetConfigurationProperties(CREFSTRING propertySection);
     void SetConfigurationProperties(CREFSTRING propertySection, MgPropertyCollection* properties);
+    void RemoveConfigurationProperties(CREFSTRING propertySection, MgPropertyCollection* properties);
 
     MgPropertyCollection* GetInformationProperties();
 

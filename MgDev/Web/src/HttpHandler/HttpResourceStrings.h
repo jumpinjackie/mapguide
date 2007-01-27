@@ -102,8 +102,10 @@ public:
     static const STRING reqPackage;
     static const STRING reqOwner;
     static const STRING reqIncludeDescendants;
-    static const STRING reqMappingName;
-    static const STRING reqDataTypeFilter;
+    static const STRING reqPath;
+    static const STRING reqRecursive;
+    static const STRING reqSelect;
+    static const STRING reqFilter;
 
     // PREDEFINED FEATURE REQUEST PARAMETERS
     static const STRING reqFeatProperty;
@@ -241,7 +243,6 @@ public:
     static const STRING opGetResourceData;
 
     static const STRING opEnumerateUnmanagedData;
-    static const STRING opEnumerateUnmanagedDataMappings;
 
     // Feature services
     static const STRING opGetFeatureProviders;

@@ -40,6 +40,7 @@
 #include "OpRegisterServicesOnServers.cpp"
 #include "OpRenameLog.cpp"
 #include "OpSetConfigurationProperties.cpp"
+#include "OpRemoveConfigurationProperties.cpp"
 #include "OpSetDocument.cpp"
 #include "OpSetLogDelimiter.cpp"
 #include "OpSetMaximumLogSize.cpp"

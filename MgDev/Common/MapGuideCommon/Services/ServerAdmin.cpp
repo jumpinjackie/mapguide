@@ -205,6 +205,43 @@ void MgServerAdmin::SetConfigurationProperties(CREFSTRING propertySection, MgPro
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>
+/// Removes the configuration properties for the specified property section.
+/// If the properties are not specified, then the entire section will be removed.
+/// </summary>
+/// <param name="propertySection">
+/// The property section to set.
+/// </param>
+/// <param name="properties">
+/// The collection of configuration properties associated with the specified property section that you want to remove.
+/// </param>
+/// <returns>
+/// Nothing
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgConnectionNotOpenException
+/// MgInvalidPropertySectionException
+/// MgPropertySectionNotAvailableException
+/// MgPropertySectionReadOnlyException
+/// MgInvalidPropertyException
+void MgServerAdmin::RemoveConfigurationProperties(CREFSTRING propertySection, MgPropertyCollection* properties)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                            // Connection
+                        MgCommand::knVoid,                      // Return type expected
+                        MgServerAdminServiceOpId::RemoveConfigurationProperties, // Command Code
+                        2,                                      // No of arguments
+                        ServerAdmin_Service,                    // Service Id
+                        1,                                      // Operation version
+                        MgCommand::knString, &propertySection,  // Argument#1
+                        MgCommand::knObject, properties,        // Argument#2
+                        MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
 /// Clears the specified log.
 /// </summary>
 /// <param name="log">

@@ -15,32 +15,31 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "ResourceServiceDefs.h"
-#include "OpEnumerateUnmanagedDataMappings.h"
-#include "ServerResourceService.h"
+#include "MapGuideCommon.h"
+#include "ServerAdminService.h"
+#include "OpRemoveConfigurationProperties.h"
 #include "LogManager.h"
 
-///----------------------------------------------------------------------------
+
+///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Constructs the object.
 /// </summary>
-///----------------------------------------------------------------------------
 
-MgOpEnumerateUnmanagedDataMappings::MgOpEnumerateUnmanagedDataMappings()
+MgOpRemoveConfigurationProperties::MgOpRemoveConfigurationProperties()
 {
 }
 
-///----------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Destructs the object.
 /// </summary>
-///----------------------------------------------------------------------------
 
-MgOpEnumerateUnmanagedDataMappings::~MgOpEnumerateUnmanagedDataMappings()
+MgOpRemoveConfigurationProperties::~MgOpRemoveConfigurationProperties()
 {
 }
 
-///----------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -48,37 +47,46 @@ MgOpEnumerateUnmanagedDataMappings::~MgOpEnumerateUnmanagedDataMappings()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-///----------------------------------------------------------------------------
-
-void MgOpEnumerateUnmanagedDataMappings::Execute()
+void MgOpRemoveConfigurationProperties::Execute()
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateUnmanagedDataMappings::Execute()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRemoveConfigurationProperties::Execute()\n")));
     
 
 
 
 
 
-    MG_LOG_OPERATION_MESSAGE(L"EnumerateUnmanagedDataMappings");
+    MG_LOG_OPERATION_MESSAGE(L"RemoveConfigurationProperties");
 
-    MG_RESOURCE_SERVICE_TRY()
+    MG_TRY()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (0 == m_packet.m_NumArguments)
+    if (2 == m_packet.m_NumArguments)
     {
+        STRING propertySection;
+        m_stream->GetString(propertySection);
+
+        Ptr<MgPropertyCollection> pPropertyCollection;
+        pPropertyCollection = (MgPropertyCollection*)m_stream->GetObject();
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(propertySection.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPropertyCollection");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+        // Validate operation
         Validate();
 
-        Ptr<MgStringCollection> mappings = m_service->EnumerateUnmanagedDataMappings();
+        m_service->RemoveConfigurationProperties(propertySection, pPropertyCollection);
 
-        EndExecution(mappings);
+        
+        EndExecution();
     }
     else
     {
@@ -88,14 +96,14 @@ void MgOpEnumerateUnmanagedDataMappings::Execute()
 
     if (!m_argsRead)
     {
-        throw new MgOperationProcessingException(L"MgOpEnumerateUnmanagedDataMappings.Execute",
+        throw new MgOperationProcessingException(L"MgOpRemoveConfigurationProperties.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_RESOURCE_SERVICE_CATCH(L"MgOpEnumerateUnmanagedDataMappings.Execute")
+    MG_CATCH(L"MgOpRemoveConfigurationProperties.Execute")
 
     if (mgException != NULL)
     {
@@ -105,8 +113,8 @@ void MgOpEnumerateUnmanagedDataMappings::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
 
-    // Add access log entry for operation
-    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+    // Add admin log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
 
-    MG_RESOURCE_SERVICE_THROW()
+    MG_THROW()
 }

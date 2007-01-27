@@ -24,25 +24,9 @@
 // Process-wide MgUnmanagedDataManager
 Ptr<MgUnmanagedDataManager> MgUnmanagedDataManager::sm_unmanagedDataManager = (MgUnmanagedDataManager*)NULL;
 
-const STRING MgUnmanagedDataManager::Sdf                  = L".SDF";
-const STRING MgUnmanagedDataManager::Shp                  = L".SHP";
-const STRING MgUnmanagedDataManager::Dwf                  = L".DWF";
-const STRING MgUnmanagedDataManager::Raster               = L".RASTER";
-const STRING MgUnmanagedDataManager::Odbc                 = L"ODBC";
-const STRING MgUnmanagedDataManager::Folder               = L"FOLDER";
-const STRING MgUnmanagedDataManager::Jpg                  = L".JPG";
-const STRING MgUnmanagedDataManager::Jpeg                 = L".JPEG";
-const STRING MgUnmanagedDataManager::Jpe                  = L".JPE";
-const STRING MgUnmanagedDataManager::Png                  = L".PNG";
-const STRING MgUnmanagedDataManager::Bmp                  = L".BMP";
-const STRING MgUnmanagedDataManager::Cal                  = L".CAL";
-const STRING MgUnmanagedDataManager::Tga                  = L".TGA";
-const STRING MgUnmanagedDataManager::Tif                  = L".TIF";
-const STRING MgUnmanagedDataManager::Tiff                 = L".TIFF";
-const STRING MgUnmanagedDataManager::Sid                  = L".SID";
-const STRING MgUnmanagedDataManager::Ecw                  = L".ECW";
-const STRING MgUnmanagedDataManager::Bil                  = L".BIL";
-const STRING MgUnmanagedDataManager::Mdb                  = L".MDB";
+const STRING MgUnmanagedDataManager::Folders              = L"FOLDERS";
+const STRING MgUnmanagedDataManager::Files                = L"FILES";
+const STRING MgUnmanagedDataManager::Both                 = L"BOTH";
 const STRING MgUnmanagedDataManager::OpenSquareBracket    = L"[";
 const STRING MgUnmanagedDataManager::ClosedSquareBracket  = L"]";
 
@@ -75,20 +59,114 @@ void MgUnmanagedDataManager::Dispose(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Recursive method that returns all files for a given mapping name
+/// Parses the path into mappingName and subfolder
+/// The path must be in the form of:
+///     "[mappingName]subfolder1/subfolder2"
 ///
-void MgUnmanagedDataManager::GetFiles(MgStringCollection* files, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, CREFSTRING dataTypeFilter, INT32 depth)
+bool MgUnmanagedDataManager::ParsePath(CREFSTRING path, REFSTRING mappingName, REFSTRING subfolder)
+{
+    bool result = false;
+
+    if (path.empty())
+    {
+        result = true;
+    }
+    else
+    {
+        // the first character must be open square bracket '['
+        if (path.at(0) == L'[')
+        {
+            // find the first closed square bracket ']'
+            size_t pos = path.find_first_of(L']');
+            size_t pathlen = path.length();
+
+            if (pos > 1 && pos < pathlen)
+            {
+                // extract the mapping name
+                mappingName = path.substr(1, pos - 1);
+
+                if (pos + 1 < pathlen)
+                {
+                    subfolder = path.substr(pos + 1, pathlen - pos + 1);
+                }
+
+                result = true;
+            }
+        }
+    }
+    return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Parses the filter into an MgStringCollection
+///
+void MgUnmanagedDataManager::ParseFilter(CREFSTRING filter, MgStringCollection* filters)
+{
+    if (!filter.empty())
+    {
+        wchar_t* token = const_cast<wchar_t*>(filter.c_str());
+        const wchar_t* delimit = L"; \t\r\n\v\f";
+        wchar_t* state = NULL;
+
+        for (token = _wcstok(token, delimit, &state);
+             token != NULL;
+             token = _wcstok(NULL, delimit, &state))
+        {
+            filters->Add(token);
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns true is file ends in one of the extensions in filters
+///
+bool MgUnmanagedDataManager::FilterFile(CREFSTRING file, const MgStringCollection* filters)
+{
+    bool result = false;
+
+    INT32 numFilters = filters->GetCount();
+    if (numFilters == 0)
+    {
+        // no filters, return all files 
+        result = true;
+    }
+    else
+    {
+        for (int i = 0; i < numFilters; i++)
+        {
+            if (MgFileUtil::EndsWithExtension(file, filters->GetItem(i)))
+            {
+                result = true;
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Recursive method that returns all files and/or folders for a given mapping 
+/// name
+///
+void MgUnmanagedDataManager::GetFilesAndFolders(string& list, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, const MgStringCollection* filters, bool storeFolders, bool storeFiles, bool recursive)
 {
     STRING fulldir = rootdir;
-    MgFileUtil::AppendSlashToEndOfPath(fulldir);
+    if (!MgFileUtil::EndsWithSlash(fulldir))
+        MgFileUtil::AppendSlashToEndOfPath(fulldir);
+
     if (!subdir.empty())
     {
         fulldir += subdir;
-        MgFileUtil::AppendSlashToEndOfPath(fulldir);
+        if (!MgFileUtil::EndsWithSlash(fulldir))
+            MgFileUtil::AppendSlashToEndOfPath(fulldir);
     }
 
     // Open the directory
-    ACE_DIR* directory = directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(fulldir.c_str()));
+    ACE_DIR* directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(fulldir.c_str()));
 
     if (directory != NULL)
     {
@@ -99,23 +177,34 @@ void MgUnmanagedDataManager::GetFiles(MgStringCollection* files, CREFSTRING mapp
         {
             STRING entryName = MG_TCHAR_TO_WCHAR(direntry->d_name);
             STRING fullDataPathname = fulldir + entryName;
+            MgDateTime createdDate = MgFileUtil::GetFileCreationTime(fullDataPathname);
+            MgDateTime modifiedDate = MgFileUtil::GetFileModificationTime(fullDataPathname);
 
             if (MgFileUtil::IsFile(fullDataPathname)
-                && IsValidFileType(entryName, dataTypeFilter))
+                && storeFiles
+                && FilterFile(entryName, filters))
             {
-                // Add to list of files
-                files->Add(FormatMappingName(mappingName) + FormatSubdir(subdir) + entryName);
+                INT64 fileSize = MgFileUtil::GetFileSize(fullDataPathname);
+  
+                AddFile(list, mappingName, subdir, entryName, fileSize, createdDate, modifiedDate);
             }
             else if (MgFileUtil::IsDirectory(fullDataPathname) 
                 && entryName.compare(L"..") != 0 // skip ..
-                && entryName.compare(L".") != 0 // skip .
-                && (depth == -1 || depth > 0))
+                && entryName.compare(L".") != 0) // skip .
             {
-                if (depth > 0)
-                    depth--;
+                if (storeFolders)
+                {
+                    // Add folders
+                    INT32 numFolders = 0;
+                    INT32 numFiles = 0;
+                    GetNumberOfFilesAndSubfolders(fullDataPathname, numFolders, numFiles);
 
-                // recursive call to get files in subdirecories
-                GetFiles(files, mappingName, rootdir, FormatSubdir(subdir) + entryName, dataTypeFilter, depth);
+                    AddFolder(list, mappingName, subdir, entryName, numFolders, numFiles, createdDate, modifiedDate);
+                }
+
+                // recursive call to get files in subfolders
+                if (recursive)
+                    GetFilesAndFolders(list, mappingName, rootdir, FormatSubdir(subdir) + entryName, filters, storeFolders, storeFiles, recursive);
             }
         }
 
@@ -123,6 +212,111 @@ void MgUnmanagedDataManager::GetFiles(MgStringCollection* files, CREFSTRING mapp
     }
 }
  
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Appends folder details to xml string
+///
+void MgUnmanagedDataManager::AddFolder(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT32 numFolders, INT32 numFiles, MgDateTime createdDate, MgDateTime modifiedDate)
+{
+    list += "\t<UnmanagedDataFolder>\n";
+
+    STRING id = FormatMappingName(mappingName) + FormatSubdir(subdir) + entryName;
+    // append a slash to the folder if is NOT just the [alias]
+    if (!entryName.empty() && !MgFileUtil::EndsWithSlash(id))
+        MgFileUtil::AppendSlashToEndOfPath(id);
+    string unmanagedDataId = MgUtil::WideCharToMultiByte(id);
+    list += "\t\t<UnmanagedDataId>";
+    list += unmanagedDataId;
+    list += "</UnmanagedDataId>\n";
+
+    list += "\t\t<CreatedDate>";
+    list += createdDate.ToXmlStringUtf8();
+    list += "</CreatedDate>\n";
+
+    list += "\t\t<ModifiedDate>";
+    list += modifiedDate.ToXmlStringUtf8();
+    list += "</ModifiedDate>\n";
+
+    STRING numFoldersStr;
+    MgUtil::Int32ToString(numFolders, numFoldersStr);
+    list += "\t\t<NumberOfFolders>";
+    list += MgUtil::WideCharToMultiByte(numFoldersStr);
+    list += "</NumberOfFolders>\n";
+
+    string numFilesStr;
+    MgUtil::Int32ToString(numFiles, numFilesStr);
+    list += "\t\t<NumberOfFiles>";
+    list += numFilesStr;
+    list += "</NumberOfFiles>\n";
+
+    list += "\t</UnmanagedDataFolder>\n";
+}
+ 
+void MgUnmanagedDataManager::AddFile(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT64 fileSize, MgDateTime createdDate, MgDateTime modifiedDate)
+{
+    list += "\t<UnmanagedDataFile>\n";
+
+    STRING id = FormatMappingName(mappingName) + FormatSubdir(subdir) + entryName;
+    string unmanagedDataId = MgUtil::WideCharToMultiByte(id);
+    list += "\t\t<UnmanagedDataId>";
+    list += unmanagedDataId;
+    list += "</UnmanagedDataId>\n";
+
+    list += "\t\t<CreatedDate>";
+    list += createdDate.ToXmlStringUtf8();
+    list += "</CreatedDate>\n";
+
+    list += "\t\t<ModifiedDate>";
+    list += modifiedDate.ToXmlStringUtf8();
+    list += "</ModifiedDate>\n";
+
+    string fileSizeStr;
+    MgUtil::Int64ToString(fileSize, fileSizeStr);
+    list += "\t\t<Size>";
+    list += fileSizeStr;
+    list += "</Size>\n";
+
+    list += "\t</UnmanagedDataFile>\n";
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Retrieves number of folders and files in the specified folder path
+/// pre-condition: assumes dirpath is a valid folder
+///
+void MgUnmanagedDataManager::GetNumberOfFilesAndSubfolders(CREFSTRING dirpath, INT32& numFolders, INT32& numFiles)
+{
+    ACE_DIR* directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(dirpath.c_str()));
+    if (directory != NULL)
+    {
+        dirent* direntry = NULL;
+
+        // Go through the directory entries
+        while ((direntry = ACE_OS::readdir(directory)) != NULL)
+        {
+            STRING entryName = MG_TCHAR_TO_WCHAR(direntry->d_name);
+
+            STRING fullDataPathname = dirpath;
+            if (!MgFileUtil::EndsWithSlash(fullDataPathname))
+                MgFileUtil::AppendSlashToEndOfPath(fullDataPathname);
+
+            fullDataPathname += entryName;
+
+            if (MgFileUtil::IsFile(fullDataPathname))
+            {
+                ++numFiles;
+            }
+            else if (MgFileUtil::IsDirectory(fullDataPathname) 
+                && entryName.compare(L"..") != 0 // skip ..
+                && entryName.compare(L".") != 0) // skip .
+            {
+                ++numFolders;
+            }
+        }
+        ACE_OS::closedir(directory);
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Recursive method that returns all subdirectories for a given mapping name
@@ -170,116 +364,6 @@ void MgUnmanagedDataManager::GetDirectories(MgStringCollection* dirs, CREFSTRING
 
         ACE_OS::closedir(directory);
     }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Is valid data type filter
-///
-bool MgUnmanagedDataManager::IsValidDataTypeFilter(CREFSTRING dataTypeFilter)
-{
-    // TODO: other file types?
-    return (dataTypeFilter.empty()
-        || ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Sdf.c_str()) == 0
-        || ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Shp.c_str()) == 0
-        || ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Dwf.c_str()) == 0
-        || ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Raster.c_str()) == 0
-        || ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Odbc.c_str()) == 0
-        || ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Folder.c_str()) == 0);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// checks that a given file is of a specified type
-///
-bool MgUnmanagedDataManager::IsValidFileType(CREFSTRING file, CREFSTRING dataTypeFilter)
-{
-    bool result = false;
-
-    if (ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Sdf.c_str()) == 0)
-        result = IsSdfFile(file);
-    else if (ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Shp.c_str()) == 0)
-        result = IsShpFile(file);
-    else if (ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Dwf.c_str()) == 0)
-        result = IsDwfFile(file);
-    else if (ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Raster.c_str()) == 0)
-        result = IsRasterFile(file);
-    else if (ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Odbc.c_str()) == 0)
-        result = IsOdbcFile(file);
-    else if (dataTypeFilter.empty())
-        result = IsAnyValidFile(file);
-
-    return result;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Is valid sdf data file
-///
-bool MgUnmanagedDataManager::IsSdfFile(CREFSTRING file)
-{
-    return MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Sdf);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Is valid shp data file
-///
-bool MgUnmanagedDataManager::IsShpFile(CREFSTRING file)
-{
-    return MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Shp);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Is valid dwf data file
-///
-bool MgUnmanagedDataManager::IsDwfFile(CREFSTRING file)
-{
-    return MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Dwf);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Is valid raster data file
-///
-bool MgUnmanagedDataManager::IsRasterFile(CREFSTRING file)
-{
-    return MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Jpg)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Jpeg)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Jpe)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Png)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Bmp)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Cal)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Tga)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Tif)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Tiff)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Sid)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Ecw)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Bil);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Is valid odbc data file
-///
-bool MgUnmanagedDataManager::IsOdbcFile(CREFSTRING file)
-{
-    // TODO: other file types?
-    return MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Mdb);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Is valid unmanaged data file
-///
-bool MgUnmanagedDataManager::IsAnyValidFile(CREFSTRING file)
-{
-    return MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Sdf)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Shp)
-        || MgFileUtil::EndsWithExtension(file, MgUnmanagedDataManager::Dwf)
-        || IsRasterFile(file)
-        || IsOdbcFile(file);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -336,11 +420,11 @@ MgUnmanagedDataManager* MgUnmanagedDataManager::GetInstance()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Returns string collection containing unmanaged data 
+/// Returns unmanaged data 
 ///
-MgStringCollection* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth)
+MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter)
 {
-    Ptr<MgStringCollection> dataPaths = new MgStringCollection();
+    Ptr<MgByteReader> byteReader;
 
     MG_TRY()
 
@@ -348,20 +432,61 @@ MgStringCollection* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING ma
 
     MgConfiguration* config = MgConfiguration::GetInstance();
     Ptr<MgPropertyCollection> properties = config->GetProperties(MgConfigProperties::UnmanagedDataMappingsSection);
-
+   
     if (properties != NULL)
     {
-        if (!IsValidDataTypeFilter(dataTypeFilter))
+        // this XML follows the ResourceList-1.0.0.xsd schema
+        string list = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        list += "<ResourceList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ResourceList-1.0.0.xsd\">\n";
+
+        // check arguments...
+
+        // pull out the mapping name from the path
+        // path must be in the form of:
+        //      ""
+        //      "[alias1]"
+        //      "[alias1]subfolder1"
+        //      "[alias1]subfolder1/"
+        //      "[alias1]subfolder1/subfolder2/"
+
+        STRING mappingName = L"", subfolder = L"";
+        if (!ParsePath(path, mappingName, subfolder))
         {
             MgStringCollection arguments;
             arguments.Add(L"1");
-            arguments.Add(dataTypeFilter);
+            arguments.Add(path);
 
             throw new MgInvalidArgumentException(L"MgUnmanagedDataManager::EnumerateUnmanagedData",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
-        // are we looking in a specific mapping?
+        // select must be: 
+        //      "FOLDERS"
+        //      "FILES"
+        //      "BOTH"
+
+        bool storeFolders = ACE_OS::strcasecmp(select.c_str(), MgUnmanagedDataManager::Folders.c_str()) == 0 
+            || ACE_OS::strcasecmp(select.c_str(), MgUnmanagedDataManager::Both.c_str()) == 0;
+        
+        bool storeFiles = ACE_OS::strcasecmp(select.c_str(), MgUnmanagedDataManager::Files.c_str()) == 0 
+            || ACE_OS::strcasecmp(select.c_str(), MgUnmanagedDataManager::Both.c_str()) == 0;
+
+        ACE_ASSERT(storeFolders || storeFiles);
+
+
+        // filter is ignored if select = "FOLDERS"
+        // filter can be:
+        //      ""
+        //      ".sdf"
+        //      ".sdf;.pdf;.shp"
+        //      "sdf"
+        //      "sdf;dwf;png"
+
+        MgStringCollection filters;
+        if (storeFiles)
+            ParseFilter(filter, &filters);
+
+        // are we looking in a specific path?
         if (!mappingName.empty())
         {
             STRING mappingDir = L"";
@@ -386,26 +511,20 @@ MgStringCollection* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING ma
             {
                 MgStringCollection arguments;
                 arguments.Add(L"1");
-                arguments.Add(mappingName);
+                arguments.Add(path);
 
                 throw new MgInvalidArgumentException(L"MgUnmanagedDataManager::EnumerateUnmanagedData",
                     __LINE__, __WFILE__, &arguments, L"", NULL);
             }
             else
             {
-                // get the files from that directory (recursive) --> use another method
-                dataPaths = new MgStringCollection();
-
-                if (ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Folder.c_str()) == 0)
-                    GetDirectories(dataPaths, mappingName, mappingDir, L"", depth);
-                else
-                    GetFiles(dataPaths, mappingName, mappingDir, L"", dataTypeFilter, depth);
+                // get the files and/or folders from that folder and subfolder (recursive)
+                GetFilesAndFolders(list, mappingName, mappingDir, subfolder, &filters, storeFolders, storeFiles, recursive);
             }
         }
         else
         {
-            // getting files from all available mappings
-
+            // getting files starting from virtual root (all mappings)
             // iterate thru mappings
             for (int i = 0; i < properties->GetCount(); i++)
             {
@@ -414,41 +533,38 @@ MgStringCollection* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING ma
                 STRING mapName = stringProp->GetName();
                 STRING mapDir = stringProp->GetValue();
 
-                if (ACE_OS::strcasecmp(dataTypeFilter.c_str(), MgUnmanagedDataManager::Folder.c_str()) == 0)
-                    GetDirectories(dataPaths, mapName, mapDir, L"", depth);
-                else
-                    GetFiles(dataPaths, mapName, mapDir, L"", dataTypeFilter, depth);
+                if (MgFileUtil::IsDirectory(mapDir))
+                {
+                    if (storeFolders)
+                    {
+                        MgDateTime createdDate = MgFileUtil::GetFileCreationTime(mapDir);
+                        MgDateTime modifiedDate = MgFileUtil::GetFileModificationTime(mapDir);
+
+                        INT32 numFolders = 0;
+                        INT32 numFiles = 0;
+
+                        GetNumberOfFilesAndSubfolders(mapDir, numFolders, numFiles);
+
+                        // add top-level mappings
+                        AddFolder(list, mapName, L"", L"", numFolders, numFiles, createdDate, modifiedDate);
+                    }
+
+                    if (recursive)
+                        GetFilesAndFolders(list, mapName, mapDir, L"", &filters, storeFolders, storeFiles, recursive);
+                }
             }
         }
+
+        list += "</ResourceList>";
+
+        Ptr<MgByteSource> byteSource = new MgByteSource(
+        (unsigned char*)list.c_str(), (INT32)list.length());
+
+        byteSource->SetMimeType(MgMimeType::Xml);
+        byteReader = byteSource->GetReader();
     }
+    
     MG_CATCH_AND_THROW(L"MgUnmanagedDataManager.EnumerateUnmanagedData")
 
-    return dataPaths.Detach();
+    return byteReader.Detach();
 }
-
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Returns string collection containing unmanaged data mappings
-///
-MgStringCollection* MgUnmanagedDataManager::EnumerateUnmanagedDataMappings()
-{
-    Ptr<MgStringCollection> mappings = new MgStringCollection();
-
-    MgConfiguration* config = MgConfiguration::GetInstance();
-        
-    Ptr<MgPropertyCollection> properties = config->GetProperties(MgConfigProperties::UnmanagedDataMappingsSection);
-    if (properties != NULL)
-    {
-        for (int i = 0; i < properties->GetCount(); i++)
-        {
-            Ptr<MgStringProperty> stringProp = (MgStringProperty*)properties->GetItem(i);
-            STRING name = stringProp->GetName();
-            mappings->Add(name);
-        }
-    }
-
-    return mappings.Detach();
-}
-
-

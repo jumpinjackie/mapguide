@@ -42,6 +42,7 @@ include_SOURCES = \
   OpRegisterServicesOnServers.cpp \
   OpRenameLog.cpp \
   OpSetConfigurationProperties.cpp \
+  OpRemoveConfigurationProperties.cpp \
   OpSetDocument.cpp \
   OpTakeOffline.cpp \
   OpUnregisterServicesOnServers.cpp \

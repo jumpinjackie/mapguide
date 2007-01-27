@@ -85,12 +85,6 @@ public:
     MgByteReader* GetResourceData(MgResourceIdentifier* resource,
         CREFSTRING dataName, CREFSTRING preProcessTags);
 
-	// Unmanaged Data APIs
-
-//    virtual MgStringCollection* EnumerateUnmanagedData(CREFSTRING mappingName, 
-//		CREFSTRING dataTypeFilter, UINT32 depth);
-//    virtual MgStringCollection* EnumerateUnmanagedDataMappings();
-
     // Helper Methods
 
     void DeleteResourceData(CREFSTRING resourceTags, MgResourceIdentifier* resource);

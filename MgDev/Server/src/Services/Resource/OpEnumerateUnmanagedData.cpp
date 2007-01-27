@@ -67,30 +67,33 @@ void MgOpEnumerateUnmanagedData::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (3 == m_packet.m_NumArguments)
+    if (4 == m_packet.m_NumArguments)
     {
-        STRING mappingName, dataTypeFilter;
-        INT32 depth;
-        m_stream->GetString(mappingName);
-        m_stream->GetString(dataTypeFilter);
-        m_stream->GetInt32(depth);
+        STRING path, select, filter;
+        bool recursive;
+        m_stream->GetString(path);
+        m_stream->GetBoolean(recursive);
+        m_stream->GetString(select);
+        m_stream->GetString(filter);
 
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(mappingName.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(path.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(dataTypeFilter.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(recursive);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_INT32(depth);
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(select.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(filter.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
-        Ptr<MgStringCollection> dataPaths =
-            m_service->EnumerateUnmanagedData(mappingName, dataTypeFilter, depth);
+        Ptr<MgByteReader> byteReader =
+            m_service->EnumerateUnmanagedData(path, recursive, select, filter);
         
-        EndExecution(dataPaths);
+        EndExecution(byteReader);
     }
     else
     {

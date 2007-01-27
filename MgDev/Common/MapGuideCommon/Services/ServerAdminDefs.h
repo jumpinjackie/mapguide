@@ -208,6 +208,7 @@ INTERNAL_API:
     static const int SetDocument                    = 0x1111EA19;
     static const int NotifyResourcesChanged         = 0x1111EA1A;
     static const int MakePackage                    = 0x1111EA1B;
+    static const int RemoveConfigurationProperties  = 0x1111EA1C;
 };
 
 #define DECLARE_DYNCREATE_SERVERADMIN() \

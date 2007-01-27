@@ -1808,48 +1808,21 @@ MgStringCollection* MgServerResourceService::EnumerateRoles(CREFSTRING user,
 ///
 ///----------------------------------------------------------------------------
 
-MgStringCollection* MgServerResourceService::EnumerateUnmanagedData(
-	CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth)
+MgByteReader* MgServerResourceService::EnumerateUnmanagedData(
+	CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter)
 {
-    Ptr<MgStringCollection> dataPaths;
+    Ptr<MgByteReader> byteReader;
 
     MG_RESOURCE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateUnmanagedData()");
 
-    dataPaths = MgUnmanagedDataManager::GetInstance()->EnumerateUnmanagedData(mappingName, dataTypeFilter, depth);
+    byteReader = MgUnmanagedDataManager::GetInstance()->EnumerateUnmanagedData(path, recursive, select, filter);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateUnmanagedData")
 
-    return dataPaths.Detach();
+    return byteReader.Detach();
 }
-
-///----------------------------------------------------------------------------
-/// <summary>
-/// Gets a list of unmanaged data mappings
-/// </summary>
-///
-/// <returns>
-/// Result containing the list of data mappings.
-/// </returns>
-///
-///----------------------------------------------------------------------------
-
-MgStringCollection* MgServerResourceService::EnumerateUnmanagedDataMappings()
-{
-    Ptr<MgStringCollection> mappings;
-
-    MG_RESOURCE_SERVICE_TRY()
-
-    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateUnmanagedDataMappings()");
-
-    mappings = MgUnmanagedDataManager::GetInstance()->EnumerateUnmanagedDataMappings();
-
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateUnmanagedDataMappings")
-
-    return mappings.Detach();
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>

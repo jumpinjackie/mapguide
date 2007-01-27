@@ -334,6 +334,57 @@ void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>
+/// Removes the configuration properties for the specified property section.
+/// If the properties are not specified, then the entire section will be removed.
+/// </summary>
+void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection, 
+    MgPropertyCollection* properties)
+{
+    MG_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerManager::SetConfigurationProperties()");
+
+    if (NULL == properties)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerManager::SetConfigurationProperties", 
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
+
+    if (NULL == pConfiguration)
+    {
+        throw new MgNullReferenceException(
+            L"MgServerManager::SetConfigurationProperties", 
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Set the properties
+    pConfiguration->RemoveProperties(propertySection, properties);
+
+    // Enable/disable specified services for this local server if applicable.
+    if (MgConfigProperties::HostPropertiesSection == propertySection)
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        assert(NULL != serviceManager);
+
+        serviceManager->EnableServices(properties);
+    }
+
+    // Certain properties can be updated without requiring a server restart
+    LoadConfigurationProperties();
+
+    MgLogManager* logManager = MgLogManager::GetInstance();
+    assert(NULL != logManager);
+    logManager->LoadConfigurationProperties();
+
+    MG_CATCH_AND_THROW(L"MgServerManager.SetConfigurationProperties")
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the information properties for the server.
 /// </summary>
 MgPropertyCollection* MgServerManager::GetInformationProperties()

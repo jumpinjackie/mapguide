@@ -146,8 +146,7 @@ public:
 
 	// Unmanaged Data APIs
 
-    virtual MgStringCollection* EnumerateUnmanagedData(CREFSTRING mappingName, CREFSTRING dataTypeFilter, INT32 depth);
-    virtual MgStringCollection* EnumerateUnmanagedDataMappings();
+    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter);
 
     // Site Security related methods
 

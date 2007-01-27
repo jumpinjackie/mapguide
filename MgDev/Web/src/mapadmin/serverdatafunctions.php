@@ -143,6 +143,11 @@
         // Parse XML in $buffer
         parseUnicodeData( $buffer, $targetTable, 'User', 'userRecParser' );
 
+        // test
+        echo '$targetTable==> ';
+        echo print_r($targetTable);
+
+
         SortTable( $targetTable, $userSortColumn, $userSortDirection );
     }
 
@@ -858,6 +863,64 @@
         return $versionProp->GetValue();
     }
 
+    function GetUnmanagedDataMappings( $serverAdmin )
+    {
+        $mappings = array();
+        $props = $serverAdmin->GetConfigurationProperties( MgConfigProperties::UnmanagedDataMappingsSection );
+
+        for ( $i = 0; $i < $props->GetCount(); $i++)
+        {
+            $prop = $props->GetItem($i);
+            $mappings[$prop->GetName()] = $prop->GetValue();
+        }
+
+        return $mappings;
+    }
+
+    // if $mappingName already exists, then that mapping is updated
+    // if $mappingName does NOT exist, it is added
+    function SetUnmanagedDataMapping( $serverAdmin, $mappingName, $location )
+    {
+        $props = new MgPropertyCollection();
+        $prop = new MgStringProperty( $mappingName, $location );
+
+        $props->Add( $prop );
+
+        $serverAdmin->SetConfigurationProperties( MgConfigProperties::UnmanagedDataMappingsSection, $props );
+    }
+
+    function DeleteUnmanagedDataMapping( $serverAdmin, $mappingName )
+    {
+        $success = false;
+
+        $props = new MgPropertyCollection();
+        $prop = new MgStringProperty( $mappingName, "" ); // value doesn't matter
+        $props->Add( $prop );
+
+        $serverAdmin->RemoveConfigurationProperties( MgConfigProperties::UnmanagedDataMappingsSection, $props );
+        $success = true;
+
+        return $success;
+    }
+
+    function LoadMappingTable( &$targetTable, $table, $firstIndex, $lastIndex )
+    {
+        $targetTable = array();
+
+        $iMapping = -1;
+        foreach ( $table as $key => $val )
+        {
+            $iMapping++;
+            if ( $iMapping < $firstIndex )
+                continue;
+            if ( $iMapping > $lastIndex )
+                break;
+
+            $targetTable[ $key ] = $val;
+        }
+    }
+
+
     ////// Properties //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     class GeneralPropsRecord
@@ -1454,12 +1517,12 @@
     $logDelimiters[ SPACE_DELIMITER ] = " ";
     $logDelimiters[ NO_DELIMITER ] = "";
 
-	define( 'ARCHIVE_NONE',			"None" );
+    define( 'ARCHIVE_NONE',         "None" );
     define( 'ARCHIVE_DAILY',        "Day" );
     define( 'ARCHIVE_MONTHLY',        "Month" );
     define( 'ARCHIVE_YEARLY',        "Year" );
-    $archiveFrequencies[ ARCHIVE_NONE	 ] = "";
-	$archiveFrequencies[ ARCHIVE_DAILY   ] = "%d";
+    $archiveFrequencies[ ARCHIVE_NONE    ] = "";
+    $archiveFrequencies[ ARCHIVE_DAILY   ] = "%d";
     $archiveFrequencies[ ARCHIVE_MONTHLY ] = "%m";
     $archiveFrequencies[ ARCHIVE_YEARLY  ] = "%y";
 
@@ -1767,19 +1830,19 @@
 
         function PackageTableRecord( $serverAdmin, $packageName )
         {
-			global $errCannotGetPackageStatus;
-			
-			$this->status = "";
-			
-			try
-			{
-	            $statusInfo = $serverAdmin->GetPackageStatus( $packageName );
-				$this->status = ( $statusInfo != NULL ) ? $statusInfo->GetStatusMessage() : "";
-			}
-			catch ( MgException $e )
-			{
-				$this->status = sprintf( $errCannotGetPackageStatus, $e->GetMessage() );
-			}
+            global $errCannotGetPackageStatus;
+
+            $this->status = "";
+
+            try
+            {
+                $statusInfo = $serverAdmin->GetPackageStatus( $packageName );
+                $this->status = ( $statusInfo != NULL ) ? $statusInfo->GetStatusMessage() : "";
+            }
+            catch ( MgException $e )
+            {
+                $this->status = sprintf( $errCannotGetPackageStatus, $e->GetMessage() );
+            }
         }
     }
 

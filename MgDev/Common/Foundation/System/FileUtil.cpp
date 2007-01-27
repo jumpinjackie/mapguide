@@ -135,7 +135,7 @@ bool MgFileUtil::EndsWithSlash(CREFSTRING str)
 /// path to file name, e.g. "c:\temp\readme.txt"
 /// </param>
 /// <param name="extension">
-/// file extension, e.g. ".txt"
+/// file extension, e.g. ".txt" or "txt"
 /// </param>
 ///----------------------------------------------------------------------------
 bool MgFileUtil::EndsWithExtension(CREFSTRING pathname, CREFSTRING extension)
@@ -147,8 +147,13 @@ bool MgFileUtil::EndsWithExtension(CREFSTRING pathname, CREFSTRING extension)
     }
 
     bool result = false;
+
+    size_t offset = 0;
+    if (!BeginsWithDot(extension))
+        offset = 1;
+
     size_t len = extension.length();
-    size_t pos = pathname.find_last_of(L'.');
+    size_t pos = pathname.find_last_of(L'.') + offset;
 
     if (STRING::npos != pos && (pathname.length() == pos + len))
     {
