@@ -46,7 +46,6 @@
 #include "OpGetResourceData.h"
 // Unmanaged Data APIs
 #include "OpEnumerateUnmanagedData.h"
-#include "OpEnumerateUnmanagedDataMappings.h"
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -396,19 +395,6 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
                 L"MgResourceOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         break;
-
-    case MgResourceService::opIdEnumerateUnmanagedDataMappings:
-        switch (operationVersion)
-        {
-        case 1:
-            handler.reset(new MgOpEnumerateUnmanagedDataMappings());
-            break;
-        default:
-            throw new MgInvalidOperationVersionException(
-                L"MgResourceOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        break;
-
 
     default:
         throw new MgInvalidOperationException(

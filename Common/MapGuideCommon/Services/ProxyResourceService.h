@@ -667,10 +667,15 @@ EXTERNAL_API:
     virtual MgByteReader* EnumerateReferences(MgResourceIdentifier* resource);
 
 
-    virtual MgStringCollection* EnumerateUnmanagedData(CREFSTRING mappingName,
-        CREFSTRING dataTypeFilter, INT32 depth);
-
-    virtual MgStringCollection* EnumerateUnmanagedDataMappings();
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enumerates unmanaged data
+    ///
+    /// \return
+    /// MgByteReader object representing unmanaged data
+    /// 
+    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive,
+        CREFSTRING select, CREFSTRING filter);
 
 protected:
 

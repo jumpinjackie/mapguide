@@ -36,15 +36,18 @@ MgHttpEnumerateUnmanagedData::MgHttpEnumerateUnmanagedData(MgHttpRequest *hReque
 
     Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
 
-    // Get mapping name
-    m_mappingName = hrParam->GetParameterValue(MgHttpResourceStrings::reqMappingName);
+    // Get path
+    m_path = hrParam->GetParameterValue(MgHttpResourceStrings::reqPath);
 
-    // Get data type filter
-    m_dataTypeFilter = hrParam->GetParameterValue(MgHttpResourceStrings::reqDataTypeFilter);
+    // Get the recursive flag
+    STRING recursive = hrParam->GetParameterValue(MgHttpResourceStrings::reqRecursive);
+    m_recursive = SZ_EQI(recursive.c_str(), L"TRUE");
 
-	// Get depth and convert to integer
-    string depth_str = MgUtil::WideCharToMultiByte(hrParam->GetParameterValue(MgHttpResourceStrings::reqDepth));
-    m_depth = atoi(depth_str.c_str());
+    // Get select
+    m_select = hrParam->GetParameterValue(MgHttpResourceStrings::reqSelect);
+
+    // Get filter
+    m_filter = hrParam->GetParameterValue(MgHttpResourceStrings::reqFilter);
 }
 
 /// <summary>
@@ -69,8 +72,8 @@ void MgHttpEnumerateUnmanagedData::Execute(MgHttpResponse& hResponse)
     Ptr<MgResourceService> mgprService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
 
     // call the C++ API
-    Ptr<MgStringCollection> dataPaths = mgprService->EnumerateUnmanagedData(m_mappingName, m_dataTypeFilter, m_depth);
-    hResult->SetResultObject(dataPaths, MgMimeType::Xml);
+    Ptr<MgByteReader> byteReaderResult = mgprService->EnumerateUnmanagedData(m_path, m_recursive, m_select, m_filter);
+    hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpEnumerateUnmanagedData.Execute")
 }

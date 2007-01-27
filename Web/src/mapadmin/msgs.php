@@ -29,6 +29,9 @@
     $errUserNameMissing = "User's name is not specified.";
     $errNoGroupSelectionForDelete = "Group must be selected in order to delete.";
     $errGroupNameMissing = "Group's name is not specified.";
+    $errMappingNameMissing = "Mapping name is not specified.";
+    $errMappingNameExists = "Mapping name already exists.";
+    $errLocationMissing = "Location is not specified.";
     $errInvalidInput = "Input values are invalid.";
     $errInvalidServerName = "Server name must be specified.";
     $errInvalidServerAddress = "Server IP address must be specified.";
@@ -67,9 +70,9 @@
     $errServerAddressMissing = "Server address is not specified.";
     $errServerIsDown = "%s is down.";
     $errCannotOpenFolder = 'Cannot access "%s".  Please ensure that the path exists and you have access permission.';
-	$errNoPackageSpecified = "No package specified.";
-	$errNoResourceSpecified = "No resource folder specified.";
-	$errCannotCreatePackage = "Cannot create package %s from folder %s:  ";
+    $errNoPackageSpecified = "No package specified.";
+    $errNoResourceSpecified = "No resource folder specified.";
+    $errCannotCreatePackage = "Cannot create package %s from folder %s:  ";
     $errNoPackagesFound = "No packages found.";
     $errNoPackageLog = "No package log specified.";
     $errNoPackageSelectionForDelete = "Package must be selected in order to delete.";
@@ -83,7 +86,7 @@
     $errInvalidTileCachePath = "Tile service tile cache path must be specified.";
     $errInvalidSessionTimeOut = "Site service session timeout is invalid.";
     $errInvalidSessionTimerInt = "Site service session timer interval is invalid.";
-	$errCannotGetPackageStatus = "Cannot get package status: %s";
+    $errCannotGetPackageStatus = "Cannot get package status: %s";
 
     // Confirmation Messages:
     $confSuccessfulDeletion = "%s has been successfully deleted.";

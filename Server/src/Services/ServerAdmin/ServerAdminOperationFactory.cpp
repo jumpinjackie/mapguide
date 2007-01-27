@@ -43,6 +43,7 @@
 #include "OpRegisterServicesOnServers.h"
 #include "OpRenameLog.h"
 #include "OpSetConfigurationProperties.h"
+#include "OpRemoveConfigurationProperties.h"
 #include "OpSetDocument.h"
 #include "OpSetLogDelimiter.h"
 #include "OpSetMaximumLogSize.h"
@@ -107,6 +108,17 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         {
         case 1:
             handler.reset(new MgOpSetConfigurationProperties());
+            break;
+        default:
+            break;
+        }
+        break;
+
+    case MgServerAdminServiceOpId::RemoveConfigurationProperties:
+        switch (operationVersion)
+        {
+        case 1:
+            handler.reset(new MgOpRemoveConfigurationProperties());
             break;
         default:
             break;

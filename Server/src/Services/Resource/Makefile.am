@@ -57,7 +57,6 @@ include_SOURCES = \
   OpEnumerateResourceReferences.cpp \
   OpEnumerateResources.cpp \
   OpEnumerateUnmanagedData.cpp \
-  OpEnumerateUnmanagedDataMappings.cpp \
   OperationInfo.cpp \
   OperationParameter.cpp \
   OpGetRepositoryContent.cpp \
@@ -135,7 +134,6 @@ noinst_HEADERS = $(include_SOURCES) \
   OpEnumerateResourceReferences.h \
   OpEnumerateResources.h \
   OpEnumerateUnmanagedData.h \
-  OpEnumerateUnmanagedDataMappings.h \
   OperationInfo.h \
   OperationParameter.h \
   OpGetRepositoryContent.h \

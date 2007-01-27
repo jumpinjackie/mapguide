@@ -68,6 +68,9 @@
     define( 'CONFIGURE_SERVICES_TITLE',         "Configure Services" );
     define( 'LOG_MANAGEMENT_TITLE',             "Manage Logs" );
     define( 'SELECT_SITE_SERVER_TITLE',         "Select Site Server" );
+    define( 'UNMANAGEDDATA_MANAGEMENT_TITLE',   "Configure Unmanaged Data" );
+    define( 'ADD_UNMANAGEDDATA_TITLE',          "Add Mapping" );
+    define( 'EDIT_UNMANAGEDDATA_TITLE',         "Edit Mapping" );
 
     define( 'ADD_GROUP_TITLE',                  "Add Group" );
     define( 'EDIT_GROUP_TITLE',                 "Edit Group" );
@@ -83,6 +86,14 @@
     define( 'CONFIGURE_WMS_TITLE',              "Configure WMS" );
 
     define( 'CONFIGURE_WFS_TITLE',              "Configure WFS" );
+
+
+    define( 'UNMANAGEDDATA_MANAGEMENT_MENU_ITEM',                    "Configure Unmanaged Data" );
+    define( 'ADD_UNMANAGEDDATA_MENU_ITEM',                           "Add Mapping" );
+    define( 'EDIT_UNMANAGEDDATA_MENU_ITEM',                          "Edit Mapping" );
+    $unmanagedDataMenuGroup[ UNMANAGEDDATA_MANAGEMENT_MENU_ITEM ] =  'unmanageddatamanagement.php';
+    $unmanagedDataMenuGroup[ ADD_UNMANAGEDDATA_MENU_ITEM ] =         'addunmanageddata.php';
+    $unmanagedDataMenuGroup[ EDIT_UNMANAGEDDATA_MENU_ITEM ] =        'editunmanageddata.php';
 
     define( 'HELP_TITLE',                       "Help" );
 
@@ -343,7 +354,7 @@
         $class = "navLinkHeading";
         foreach( $menuGroup as $menuItem => $href )
         {
-            if ( $currMenuItem != $menuItem && ($menuItem == EDIT_GROUP_MENU_ITEM || $menuItem == EDIT_USER_MENU_ITEM) )
+            if ( $currMenuItem != $menuItem && ($menuItem == EDIT_GROUP_MENU_ITEM || $menuItem == EDIT_USER_MENU_ITEM || $menuItem == EDIT_UNMANAGEDDATA_MENU_ITEM ) )
                 continue;
             echo '      <tr>',"\n";
             if ( $currMenuItem == $menuItem )
@@ -366,6 +377,7 @@
         global $packagesMenuGroup;
         global $wmsMenuGroup;
         global $wfsMenuGroup;
+        global $unmanagedDataMenuGroup;
 
         echo '<td class="lhSash">',"\n";
         echo '  <table cellspacing="0" cellpadding="0" border="0">',"\n";
@@ -384,7 +396,8 @@
         echo "<tr><td><hr></td></tr>\n";
         DisplayMenuGroup( $currMenuItem, CONFIGURE_WFS_MENU_ITEM, $wfsMenuGroup );
         echo "<tr><td><hr></td></tr>\n";
-
+        DisplayMenuGroup( $currMenuItem, UNMANAGEDDATA_MANAGEMENT_MENU_ITEM, $unmanagedDataMenuGroup );
+        echo "<tr><td><hr></td></tr>\n";
         echo '  </table>',"\n";
         echo '</td>',"\n";
     }
@@ -455,11 +468,11 @@
             echo '<br>',"\n";
         }
     }
-    
+
     function DisplaySiteServerSelector( $selectedSiteServerID )
     {
         global $site;
-        
+
         echo '<select class="serverSelector" name="',$selectedSiteServerID.NO_PERSISTENCE_FLAG,'" size="1" >', "\n";
         for($i = 0; $i < $site->GetSiteServerCount(); $i++)
         {
@@ -474,7 +487,7 @@
         }
         echo '</select>', "\n";
     }
-    
+
     function GetSiteServerSelection( $selectedSiteServerID )
     {
         global $site;
@@ -1290,6 +1303,7 @@
         if ( array_key_exists( FEATURE_SERVICE_DATA_CACHE_SIZE_ID, $post ) )
             $props->dataCacheSize = $post[ FEATURE_SERVICE_DATA_CACHE_SIZE_ID ];
     }
+
 
     function DisplayFeatureServicePropVals( $enabled, $props )
     {

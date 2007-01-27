@@ -52,7 +52,6 @@ INTERNAL_API:
     static const STRING GetResourceData;
 
     static const STRING EnumerateUnmanagedData;
-    static const STRING EnumerateUnmanagedDataMappings;
 };
 
 class MgOperationInfo

@@ -15,17 +15,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGOPENUMERATEUNMANAGEDDATAMAPPINGS_H
-#define MGOPENUMERATEUNMANAGEDDATAMAPPINGS_H
+#ifndef MGOPREMOVECONFIGURATIONPROPERTIES_H
+#define MGOPREMOVECONFIGURATIONPROPERTIES_H
 
-#include "ResourceOperation.h"
+#include "ServerAdminOperation.h"
 
-class MgOpEnumerateUnmanagedDataMappings : public MgResourceOperation
+class MgOpRemoveConfigurationProperties : public MgServerAdminOperation
 {
 public:
 
-    MgOpEnumerateUnmanagedDataMappings();
-    virtual ~MgOpEnumerateUnmanagedDataMappings();
+    MgOpRemoveConfigurationProperties();
+    virtual ~MgOpRemoveConfigurationProperties();
 
     virtual void Execute();
 };

@@ -44,9 +44,10 @@ public:
     void Execute(MgHttpResponse& hResponse);
 
 private:
-    STRING m_mappingName;
-    STRING m_dataTypeFilter;
-    INT32 m_depth;
+    STRING m_path;
+    bool m_recursive;
+    STRING m_select;
+    STRING m_filter;
 };
 
 #endif

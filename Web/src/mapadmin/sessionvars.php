@@ -30,6 +30,7 @@
     $selectedService = "";
     $selectedLog = ACCESS_LOG;
     $selectedPackage = "";
+    $selectedMapping = "";
     $packageLoadErrorMsg = "";
     $packageMakeErrorMsg = "";
     $packageLoadConfirmationMsg = "";
@@ -59,6 +60,7 @@
         global $selectedService;
         global $selectedLog;
         global $selectedPackage;
+        global $selectedMapping;
         global $packageLoadErrorMsg;
         global $packageMakeErrorMsg;
         global $packageLoadConfirmationMsg;
@@ -84,6 +86,7 @@
         $selectedService = "";
         $selectedLog = ACCESS_LOG;
         $selectedPackage = "";
+        $selectedMapping = "";
         $packageLoadErrorMsg = "";
         $packageMakeErrorMsg = "";
         $packageLoadConfirmationMsg = "";
@@ -123,6 +126,7 @@
         global $selectedService;
         global $selectedLog;
         global $selectedPackage;
+        global $selectedMapping;
         global $packageLoadErrorMsg;
         global $packageMakeErrorMsg;
         global $packageLoadConfirmationMsg;
@@ -153,6 +157,7 @@
             $selectedService = $_SESSION[ 'selectedService' ];
             $selectedLog = $_SESSION[ 'selectedLog' ];
             $selectedPackage = $_SESSION[ 'selectedPackage' ];
+            $selectedMapping = $_SESSION[ 'selectedMapping' ];
             $packageLoadErrorMsg = $_SESSION[ 'packageLoadErrorMsg' ];
             $packageMakeErrorMsg = $_SESSION[ 'packageMakeErrorMsg' ];
             $packageLoadConfirmationMsg = $_SESSION[ 'packageLoadConfirmationMsg' ];
@@ -200,6 +205,7 @@
         global $selectedService;
         global $selectedLog;
         global $selectedPackage;
+        global $selectedMapping;
         global $packageLoadErrorMsg;
         global $packageMakeErrorMsg;
         global $packageLoadConfirmationMsg;
@@ -225,6 +231,7 @@
         $_SESSION[ 'selectedService' ] = $selectedService;
         $_SESSION[ 'selectedLog' ] = $selectedLog;
         $_SESSION[ 'selectedPackage' ] = $selectedPackage;
+        $_SESSION[ 'selectedMapping' ] = $selectedMapping;
         $_SESSION[ 'packageLoadErrorMsg' ] = $packageLoadErrorMsg;
         $_SESSION[ 'packageMakeErrorMsg' ] = $packageMakeErrorMsg;
         $_SESSION[ 'packageLoadConfirmationMsg' ] = $packageLoadConfirmationMsg;

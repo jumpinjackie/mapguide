@@ -504,6 +504,28 @@ void MgServerAdminService::SetConfigurationProperties(CREFSTRING propertySection
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Removes the configuration properties for the specified property section.
+/// If the properties are not specified, then the entire section will be removed.
+/// </summary>
+void MgServerAdminService::RemoveConfigurationProperties(CREFSTRING propertySection, MgPropertyCollection* properties)
+{
+    MG_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerAdminService::SetConfigurationProperties()");
+
+    MgServerManager* pMan = MgServerManager::GetInstance();
+    if (NULL == pMan)
+    {
+        throw new MgNullReferenceException(L"MgServerAdminService::SetConfigurationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    pMan->RemoveConfigurationProperties(propertySection, properties);
+
+    MG_CATCH_AND_THROW(L"MgServerAdminService.SetConfigurationProperties");
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the information properties for the server.
 /// </summary>
 MgPropertyCollection* MgServerAdminService::GetInformationProperties()

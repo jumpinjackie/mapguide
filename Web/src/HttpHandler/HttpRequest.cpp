@@ -38,7 +38,6 @@
 #include "HttpEnumerateUsers.h"
 #include "HttpEnumerateGroups.h"
 #include "HttpEnumerateUnmanagedData.h"
-#include "HttpEnumerateUnmanagedDataMappings.h"
 
 // Http Drawing Service operations
 #include "HttpGetDrawing.h"
@@ -386,7 +385,6 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opCsGetBaseLibrary] = MgHttpCsGetBaseLibrary::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opCsIsValid] = MgHttpCsIsValid::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateUnmanagedData] = MgHttpEnumerateUnmanagedData::CreateObject;
-    httpClassCreators[MgHttpResourceStrings::opEnumerateUnmanagedDataMappings] = MgHttpEnumerateUnmanagedDataMappings::CreateObject;
 
     httpPostHandlerCreators.push_back(MgHttpWfsGetCapabilities::ProcessPostRequest);
     httpPostHandlerCreators.push_back(MgHttpWfsDescribeFeatureType::ProcessPostRequest);
