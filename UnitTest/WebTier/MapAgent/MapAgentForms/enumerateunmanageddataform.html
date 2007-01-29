@@ -12,12 +12,23 @@
 <input type="text" name="VERSION" value="1.0.0" size="10">
 <p> Locale:
 <input type="text" name="LOCALE" value="en" size="10">
+
 <p> Path:
 <input type="text" name="PATH" value="" size="30">
+
 <p> Recursive:
-<input type="text" name="RECURSIVE" value="FALSE" size="30">
+<select name="RECURSIVE">
+<option value="FALSE">FALSE</option>
+<option value="TRUE">TRUE</option>
+</select>
+
 <p> Select:
-<input type="text" name="SELECT" value="FOLDERS" size="30">
+<select name="SELECT">
+<option value="FOLDERS">FOLDERS</option>
+<option value="FILES">FILES</option>
+<option value="BOTH">BOTH</option>
+</select>
+
 <p> Filter:
 <input type="text" name="FILTER" value="" size="30">
 <p>
