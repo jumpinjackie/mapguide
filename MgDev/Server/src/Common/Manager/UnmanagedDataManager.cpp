@@ -63,7 +63,7 @@ void MgUnmanagedDataManager::Dispose(void)
 /// The path must be in the form of:
 ///     "[mappingName]subfolder1/subfolder2"
 ///
-bool MgUnmanagedDataManager::ParsePath(CREFSTRING path, REFSTRING mappingName, REFSTRING subfolder)
+bool MgUnmanagedDataManager::ParsePath(CREFSTRING path, REFSTRING mappingName, REFSTRING subpath)
 {
     bool result = false;
 
@@ -87,7 +87,7 @@ bool MgUnmanagedDataManager::ParsePath(CREFSTRING path, REFSTRING mappingName, R
 
                 if (pos + 1 < pathlen)
                 {
-                    subfolder = path.substr(pos + 1, pathlen - pos + 1);
+                    subpath = path.substr(pos + 1, pathlen - pos + 1);
                 }
 
                 result = true;
@@ -106,7 +106,7 @@ void MgUnmanagedDataManager::ParseFilter(CREFSTRING filter, MgStringCollection* 
     if (!filter.empty())
     {
         wchar_t* token = const_cast<wchar_t*>(filter.c_str());
-        const wchar_t* delimit = L"; \t\r\n\v\f";
+        const wchar_t* delimit = L";, \t\r\n\v\f";
         wchar_t* state = NULL;
 
         for (token = _wcstok(token, delimit, &state);
@@ -319,55 +319,6 @@ void MgUnmanagedDataManager::GetNumberOfFilesAndSubfolders(CREFSTRING dirpath, I
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Recursive method that returns all subdirectories for a given mapping name
-///
-void MgUnmanagedDataManager::GetDirectories(MgStringCollection* dirs, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, INT32 depth)
-{
-    STRING fulldir = rootdir;
-    MgFileUtil::AppendSlashToEndOfPath(fulldir);
-    if (!subdir.empty())
-    {
-        fulldir += subdir;
-        MgFileUtil::AppendSlashToEndOfPath(fulldir);
-    }
-
-    // Open the directory
-    ACE_DIR* directory = directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(fulldir.c_str()));
-
-    if (directory != NULL)
-    {
-        dirent* direntry = NULL;
-
-        // Go through the directory entries
-        while ((direntry = ACE_OS::readdir(directory)) != NULL)
-        {
-            STRING entryName = MG_TCHAR_TO_WCHAR(direntry->d_name);
-            STRING fullDataPathname = fulldir + entryName;
-
-            if (MgFileUtil::IsDirectory(fullDataPathname) 
-                && entryName.compare(L"..") != 0 // skip ..
-                && entryName.compare(L".") != 0) // skip .
-            {
-                // Add to list of directories
-                dirs->Add(FormatMappingName(mappingName) + FormatSubdir(subdir) + entryName);
-
-                if (depth == -1 || depth > 0)
-                {
-                    if (depth > 0)
-                        depth--;
-
-                    // recursive call to get directories in subdirecories
-                    GetDirectories(dirs, mappingName, rootdir, FormatSubdir(subdir) + entryName, depth);
-                }
-            }
-        }
-
-        ACE_OS::closedir(directory);
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
 /// Surrounds name with square brackets
 ///
 STRING MgUnmanagedDataManager::FormatMappingName(CREFSTRING name)
@@ -420,6 +371,50 @@ MgUnmanagedDataManager* MgUnmanagedDataManager::GetInstance()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
+/// Converts mapped drive in path to its mapped value
+///
+void MgUnmanagedDataManager::ConvertUnmanagedDataMappingName(REFSTRING path)
+{
+    STRING mappingName, subpath;
+
+    if (MgUnmanagedDataManager::ParsePath(path, mappingName, subpath) 
+        && !mappingName.empty())
+    {
+        MgConfiguration* config = MgConfiguration::GetInstance();
+        Ptr<MgPropertyCollection> properties = config->GetProperties(MgConfigProperties::UnmanagedDataMappingsSection);
+       
+        if (properties != NULL)
+        {
+            STRING mappingDir;
+
+            // check to make sure it's a valid mapping name
+            // cycle thru mappings until we have a match
+            for (int i = 0; i < properties->GetCount(); i++)
+            {
+                Ptr<MgStringProperty> stringProp = (MgStringProperty*)properties->GetItem(i);
+                if (mappingName.compare(stringProp->GetName()) == 0)
+                {
+                    // we have a match!
+                    mappingDir = stringProp->GetValue();
+                    break;
+                }
+            }
+
+            if (!mappingDir.empty())
+            {
+                // replace the mappingName with the actual directory
+                if (!MgFileUtil::EndsWithSlash(mappingDir))
+                    MgFileUtil::AppendSlashToEndOfPath(mappingDir);
+
+                path = mappingDir + subpath;
+            }
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Returns unmanaged data 
 ///
 MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter)
@@ -450,7 +445,7 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
         //      "[alias1]subfolder1/subfolder2/"
 
         STRING mappingName = L"", subfolder = L"";
-        if (!ParsePath(path, mappingName, subfolder))
+        if (!MgUnmanagedDataManager::ParsePath(path, mappingName, subfolder))
         {
             MgStringCollection arguments;
             arguments.Add(L"1");
@@ -492,18 +487,15 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
             STRING mappingDir = L"";
 
             // check to make sure it's a valid mapping name
-            if (properties != NULL)
+            // cycle thru mappings until we have a match
+            for (int i = 0; i < properties->GetCount(); i++)
             {
-                // cycle thru mappings until we have a match
-                for (int i = 0; i < properties->GetCount(); i++)
+                Ptr<MgStringProperty> stringProp = (MgStringProperty*)properties->GetItem(i);
+                if (mappingName.compare(stringProp->GetName()) == 0)
                 {
-                    Ptr<MgStringProperty> stringProp = (MgStringProperty*)properties->GetItem(i);
-                    if (mappingName.compare(stringProp->GetName()) == 0)
-                    {
-                        // we have a match!
-                        mappingDir = stringProp->GetValue();
-                        break;
-                    }
+                    // we have a match!
+                    mappingDir = stringProp->GetValue();
+                    break;
                 }
             }
 
