@@ -36,15 +36,11 @@ private:
     MgUnmanagedDataManager(const MgUnmanagedDataManager&);
     MgUnmanagedDataManager& operator=(const MgUnmanagedDataManager&);
 
-
-    bool ParsePath(CREFSTRING path, REFSTRING mappingName, REFSTRING subfolder);
+    static bool ParsePath(CREFSTRING path, REFSTRING mappingName, REFSTRING subpath);
     void ParseFilter(CREFSTRING filter, MgStringCollection* filters);
     bool FilterFile(CREFSTRING file, const MgStringCollection* filters);
 
     void GetFilesAndFolders(string& list, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, const MgStringCollection* filters, bool storeFolders, bool storeFiles, bool recursive);
-
-    // TODO: delete
-    void GetDirectories(MgStringCollection* dirs, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, INT32 depth);
 
     void AddFolder(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT32 numFolders, INT32 numFiles, MgDateTime createdDate, MgDateTime modifiedDate);
     void AddFile(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT64 fileSize, MgDateTime createdDate, MgDateTime modifiedDate);
@@ -59,6 +55,7 @@ private:
 public:
 
     static MgUnmanagedDataManager* GetInstance();
+    static void ConvertUnmanagedDataMappingName(REFSTRING path);
     virtual void Dispose();
 
     MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter);

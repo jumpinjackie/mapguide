@@ -21,6 +21,7 @@
 #include "ServiceManager.h"
 #include "LogManager.h"
 #include "LongTransactionManager.h"
+#include "UnmanagedDataManager.h"
 
 ACE_Recursive_Thread_Mutex MgFdoConnectionManager::sm_mutex;
 
@@ -538,6 +539,11 @@ void MgFdoConnectionManager::SetConnectionProperties(FdoIConnection *pFdoConnect
             // Property value can be null ( optional properties may not have values )
             if (!value.empty())
             {
+                // if it's a "File" property, check for unmanaged data alias
+                // and replace the alias with the mapped value
+                if (name.compare(L"File") == 0)
+                    MgUnmanagedDataManager::ConvertUnmanagedDataMappingName(value);
+
                 FdoString* propertyValue = value.c_str();
                 if (propertyValue != NULL)
                 {
