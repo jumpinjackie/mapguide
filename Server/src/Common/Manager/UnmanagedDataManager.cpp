@@ -432,7 +432,7 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
     {
         // this XML follows the ResourceList-1.0.0.xsd schema
         string list = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-        list += "<ResourceList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ResourceList-1.0.0.xsd\">\n";
+        list += "<UnmanagedDataList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"UnmanagedDataList-1.0.0.xsd\">\n";
 
         // check arguments...
 
@@ -547,7 +547,7 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
             }
         }
 
-        list += "</ResourceList>";
+        list += "</UnmanagedDataList>";
 
         Ptr<MgByteSource> byteSource = new MgByteSource(
         (unsigned char*)list.c_str(), (INT32)list.length());
