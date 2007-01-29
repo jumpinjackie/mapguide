@@ -15,6 +15,8 @@ INCLUDES = \
   -I../../../../Common/Geometry \
   -I../../../../Common/PlatformBase \
   -I../../../../Common/MapGuideCommon \
+  -I../../../../Common/MdfModel \
+  -I../../../../Common/MdfParser \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \

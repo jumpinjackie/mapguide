@@ -27,7 +27,7 @@
 
 
 //////////////////////////////////////////////////////////////////
-MgServerDescribeSchema::MgServerDescribeSchema()
+MgServerDescribeSchema::MgServerDescribeSchema() : m_featureSource(NULL)
 {
 }
 
@@ -35,6 +35,11 @@ MgServerDescribeSchema::MgServerDescribeSchema()
 //////////////////////////////////////////////////////////////////
 MgServerDescribeSchema::~MgServerDescribeSchema()
 {
+    if (m_featureSource != NULL)
+    {
+        delete m_featureSource;
+        m_featureSource = NULL;
+    }
 }
 
 
@@ -71,53 +76,39 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgReso
     string featureSourceXmlContent;
     RetrieveFeatureSource(resource, featureSourceXmlContent);
 
-    // Need to parse XML and get properties
-    MgXmlUtil xmlUtil;
-    xmlUtil.ParseString(featureSourceXmlContent.c_str());
+    CHECKNULL(m_featureSource, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
-    DOMElement* rootNode = xmlUtil.GetRootNode();
-    DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
-    CHECKNULL(extensionNodeList, L"MgServerDescribeSchema.ExecuteDescribeSchema()");
+    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
-    int extensionNodes = (int)extensionNodeList->getLength();
-
-    for (int i = 0; i < extensionNodes; i++)
+    for (int i = 0; i < extensions->GetCount(); i++)
     {
-        DOMNode* extensionNode = extensionNodeList->item(i);
-        CHECKNULL(extensionNode, L"MgServerDescribeSchema.ExecuteDescribeSchema");
+        MdfModel::Extension* extension = extensions->GetAt(i);
+        CHECKNULL(extension, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
-        DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
-        int nNameNodes = (int)nameNodeList->getLength();
+        // Get the extension name
+        STRING extensionName = (STRING)extension->GetName();
 
-        // get the extension name node
-        DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
+        // Determine the number of secondary sources (AttributeRelates)
+        MdfModel::AttributeRelateCollection* attributeRelates = extension->GetAttributeRelates();
+        CHECKNULL(attributeRelates, L"MgServerDescribeSchema.ExecuteDescribeSchema");
+        int nAttributeRelates = attributeRelates->GetCount();
 
-        // get the extension name value
-        STRING extensionName;
-        xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, extensionName);
-
-        // Determine the number of secondary sources (AttributeRelate nodes)
-        DOMNodeList* attributeRelateNodeList = xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
-        int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
-
-        for (int arNodesIndex = 0; arNodesIndex < nAttributeRelateNodes; arNodesIndex++)
+        for (int arIndex = 0; arIndex < nAttributeRelates; arIndex++)
         {
-            // get the atribute relate node
-            DOMNode* attributeRelateNode = attributeRelateNodeList->item(arNodesIndex);
+            MdfModel::AttributeRelate* attributeRelate = attributeRelates->GetAt(arIndex);
+            CHECKNULL(attributeRelate, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
             // get the resource id of the secondary feature source
-            STRING secondaryResourceId;
-            xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", secondaryResourceId);
+            STRING secondaryResourceId = (STRING)attributeRelate->GetResourceId();
 
-            // Get the name for the join relationship (attribute relate name)
-            STRING attributeRelateName;
-            xmlUtil.GetElementValue(attributeRelateNode, "Name", attributeRelateName);
+            // get the name for the join relationship (attribute relate name)
+            STRING attributeRelateName = (STRING)attributeRelate->GetName();
 
             // Get the secondary feature class (AttributeClass)
-            STRING attributeClass;
-            xmlUtil.GetElementValue(attributeRelateNode, "AttributeClass", attributeClass);
+            STRING attributeClass = (STRING)attributeRelate->GetAttributeClass();
 
-            // Parse the schema name form the classname;
+            // Parse the schema name from the classname;
             STRING::size_type nDelimiter = attributeClass.find(L":");
             STRING secSchemaName;
             STRING secClassName;
@@ -163,10 +154,9 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgReso
                         continue;
                     }
 
-
                     // Prefix the schema name with the extension and attribute relate names
                     STRING modifiedSchemaName;
-                    modifiedSchemaName =  L"[" + extensionName + L"]";
+                    modifiedSchemaName = L"[" + extensionName + L"]";
                     modifiedSchemaName += L"[" + attributeRelateName + L"]";
                     modifiedSchemaName += fdoSchemaName;
                     FdoString* msn = modifiedSchemaName.c_str();
@@ -178,11 +168,11 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgReso
                         ffsc->Add(ffs);
                     }
                 }
-            }
+            }  
 
-        }  // End of for-loop that iterates thru the secondary sources
+        }  // End of the for-loop that iterates thru the secondary sources
 
-    }  // End of for loop that iteratates thru the extensions in the feature source
+    }  // End of for loop that iterates thru the extensions in the feature source
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.ExecuteDescribeSchema")
 
@@ -274,44 +264,30 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
             string featureSourceXmlContent;
             RetrieveFeatureSource(resource, featureSourceXmlContent);
 
-            // Parse the XML and get properties
-            MgXmlUtil xmlUtil;
-            xmlUtil.ParseString(featureSourceXmlContent.c_str());
+            CHECKNULL(m_featureSource, L"MgServerDescribeSchema.DescribeSchema");
 
-            // Determine how may extension nodes
-            DOMElement* rootNode = xmlUtil.GetRootNode();
-            DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
-            CHECKNULL(extensionNodeList, L"MgServerDescribeSchema.DescribeSchema()");
-            int nExtensionNodes = (int)extensionNodeList->getLength();
+            MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+            CHECKNULL(extensions, L"MgServerDescribeSchema.DescribeSchema");
 
-            // For each extension node
-            for (int nExtNodeIndex = 0; nExtNodeIndex < nExtensionNodes; nExtNodeIndex++)
+            for (int i = 0; i < extensions->GetCount(); i++)
             {
                 Ptr<MgClassDefinition> extClassDefinition;
 
-                DOMNode* extensionNode = extensionNodeList->item(nExtNodeIndex);
-                CHECKNULL(extensionNode, L"MgServerDescribeSchema.DescribeSchema");
-
-                DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
-                int nNameNodes = (int)nameNodeList->getLength();
-
-                // get the extension name node
-                DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
-
-                // get the extension name value
-                STRING extensionName;
-                xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, extensionName);
+                MdfModel::Extension* extension = extensions->GetAt(i);
+                CHECKNULL(extension, L"MgServerDescribeSchema.DescribeSchema");
+    
+                // Get the extension name
+                STRING extensionName = (STRING)extension->GetName();
 
                 // get FeatureClass element - this tells us which class is extended (SchemaName:ClassName)
-                STRING featureClass;
-                xmlUtil.GetElementValue(extensionNode, "FeatureClass", featureClass);
+                STRING featureClass = (STRING)extension->GetFeatureClass();
 
-                // Parse the schemaname from the classname
+                // Parse the schemaName from the className
                 STRING::size_type nDelimiter = featureClass.find(L":");
                 STRING primSchemaName;
                 STRING primClassName;
 
-                if(STRING::npos == nDelimiter)
+                if (STRING::npos == nDelimiter)
                 {
                     primSchemaName = L"";
                     primClassName = featureClass;
@@ -340,7 +316,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                         continue;
                     }
 
-                    // get the class collection for for this schema
+                    // get the class collection for this schema
                     FdoPtr<FdoClassCollection> fcc = ffs->GetClasses();
                     FdoInt32 classCnt = fcc->GetCount();
 
@@ -367,28 +343,29 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
                 //
                 // Finished adding primary class properties to the extension class definition
-                // Now add the secondary class properties.
+                // Now add the secondary class properties
                 //
 
-                // Determine the number of secondary sources (AttributeRelate nodes)
-                DOMNodeList* attributeRelateNodeList = xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
-                int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
+                // Determine the number of secondary sources (AttributeRelates)
+                MdfModel::AttributeRelateCollection* attributeRelates = extension->GetAttributeRelates();
+                CHECKNULL(attributeRelates, L"MgDescribeSchema.DescribeSchema");
+                int nAttributeRelateCount = attributeRelates->GetCount();
 
-                for (int arNodesIndex = 0; arNodesIndex < nAttributeRelateNodes; arNodesIndex++)
+                for (int arIndex = 0; arIndex < nAttributeRelateCount; arIndex++)
                 {
-                    // get the attribute relate node
-                    DOMNode* attributeRelateNode = attributeRelateNodeList->item(arNodesIndex);
+                    // get the attribute relate
+                    MdfModel::AttributeRelate* attributeRelate = attributeRelates->GetAt(arIndex);
+                    CHECKNULL(attributeRelate, L"MgDescribeSchema.DescribeSchema");
 
                     // Get the name of the secondary feature class (AttributeClass)
-                    STRING attributeClass;
-                    xmlUtil.GetElementValue(attributeRelateNode, "AttributeClass", attributeClass);
+                    STRING attributeClass = (STRING)attributeRelate->GetAttributeClass();
 
                     // Parse the schema name from the class name;
                     STRING::size_type nDelimiter = attributeClass.find(L":");
                     STRING secSchemaName;
                     STRING secClassName;
 
-                    if(STRING::npos == nDelimiter)
+                    if (STRING::npos == nDelimiter)
                     {
                         secSchemaName = L"";
                         secClassName = attributeClass;
@@ -400,16 +377,13 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                     }
 
                     // Get the relation name
-                    STRING relationName;
-                    xmlUtil.GetElementValue(attributeRelateNode, "Name", relationName);
+                    STRING relationName = (STRING)attributeRelate->GetName();
 
-                    // Get the attribute name delimiter ( if none specified, default will be "" (blank) )
-                    STRING attributeNameDelimiter;
-                    xmlUtil.GetElementValue(attributeRelateNode, "AttributeNameDelimiter", attributeNameDelimiter, false);
+                    // Get the attributeName delimiter ( if none specified, default will be "" (blank) )
+                    STRING attributeNameDelimiter = (STRING)attributeRelate->GetAttributeNameDelimiter();
 
-                    // get the resource id of the secondary feature source
-                    STRING secondaryResourceId;
-                    xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", secondaryResourceId);
+                    // Get the resource id of the secondary feature source
+                    STRING secondaryResourceId = (STRING)attributeRelate->GetResourceId();
 
                     // Establish connection to provider for secondary feature source
                     Ptr<MgResourceIdentifier> secondaryFeatureSource = new MgResourceIdentifier(secondaryResourceId);
@@ -425,12 +399,12 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                         }
                         else
                         {
-                            throw new MgConnectionFailedException(L"MgServerDescribeSchema::DescribeSchema()", __LINE__, __WFILE__, NULL, L"", NULL);
+                            throw new MgConnectionFailedException(L"MgServerDescribeSchema.DescribeSchema", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
 
                         // Get the schema collection for the secondary resource
                         FdoPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
-                        FdoPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
+                        FdoPtr<FdoIDescribeSchema> fdoCommand2  = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
                         CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.DescribeSchema");
                         ffsc2 = fdoCommand2->Execute();
 
@@ -498,9 +472,9 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
                             break;
 
-                        } // end loop thru secondary schemas
+                        }  // end loop thru secondary schemas
 
-                    } // end if (NULL != secfeatureSource)
+                    }  // end if (NULL != secFeatureSource)
 
                 }  // end loop thru all attribute relates (joins)
 
@@ -509,7 +483,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                     extClassDefinition->SetName(extensionName);
                 }
 
-                // Add the extension class definition to theMgClassDefinitionCollection
+                // Add the extension class definition to the MgClassDefinitionCollection
                 classCol->Add(extClassDefinition);
 
             }  // Repeat for all extensions
@@ -1547,42 +1521,23 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
                 string featureSourceXmlContent;
                 RetrieveFeatureSource(resource, featureSourceXmlContent);
 
-                // Need to parse XML and get properties
-                MgXmlUtil xmlUtil;
-                xmlUtil.ParseString(featureSourceXmlContent.c_str());
+                CHECKNULL(m_featureSource, L"MgServerDescribeSchema.GetIdentityProperties");
 
-                DOMElement* rootNode = xmlUtil.GetRootNode();
-                DOMNodeList* extensionNodeList = xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
-                CHECKNULL(extensionNodeList, L"MgServerDescribeSchema.GetIdentityProperties");
-
-                int extensionNodes = (int)extensionNodeList->getLength();
+                MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+                CHECKNULL(extensions, L"MgServerDescribeSchema.GetIdentityProperties");
                 STRING extensionFeatureClass;
 
-                for (int i = 0; i < extensionNodes; i++)
+                for (int i = 0; i < extensions->GetCount(); i++)
                 {
-                    DOMNode* extensionNode = extensionNodeList->item(i);
-                    CHECKNULL(extensionNode, L"MgServerDescribeSchema.GetIdentityProperties");
+                    MdfModel::Extension* extension = extensions->GetAt(i);
+                    CHECKNULL(extension, L"MgServerDescribeSchema.GetIdentityProperties");
 
-                    DOMNodeList* nameNodeList = xmlUtil.GetNodeList(extensionNode, "Name");
-                    int nNameNodes = (int)nameNodeList->getLength();
-
-                    // get the extension name node
-                    DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
-
-                    // get the extension name value
-                    STRING extensionName;
-                    xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, extensionName);
+                    // Get the extension name
+                    STRING extensionName = (STRING)extension->GetName();
 
                     if (className == extensionName)
                     {
-                        DOMNodeList* featureClassNodeList = xmlUtil.GetNodeList(extensionNode, "FeatureClass");
-                        int nFeatureClassNodes = (int)featureClassNodeList->getLength();
-
-                        // get the extension feature class node
-                        DOMNode* extensionFeatureClassNode = featureClassNodeList->item(nFeatureClassNodes - 1);
-
-                        // get the extension feature class value
-                        xmlUtil.GetTextFromElement((DOMElement*)extensionFeatureClassNode, extensionFeatureClass);
+                        extensionFeatureClass = (STRING)extension->GetFeatureClass();
 
                         // Loop thru the class collection
                         for (int classIndex = 0; classIndex < classCnt; classIndex++)
@@ -1614,10 +1569,10 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
                             }  // end if (qualifiedName == extensionFeatureClass)
                         }  // end loop thru class collection
                     }  // end if (className == extensionName)
-                }  // end loop thru extension nodes
+                }  // end loop thru extensions
+
             }  // end find identity properties for extension class
         }
-
         featureServiceCache->AddIdentityProperties(resource, schemaName, className, idProps);
     }
 
@@ -1638,4 +1593,26 @@ void MgServerDescribeSchema::RetrieveFeatureSource(MgResourceIdentifier* resourc
     {
          pFdoConnectionManager->RetrieveFeatureSource(resource, resourceContent);
     }
+
+    if (m_featureSource == NULL)
+    {
+        m_featureSource = GetFeatureSource(resource);
+    }
+}
+
+MdfModel::FeatureSource* MgServerDescribeSchema::GetFeatureSource(MgResourceIdentifier* resource)
+{
+    CHECKNULL(resource, L"MgServerDescribeSchema.GetFeatureSource");
+
+    MdfModel::FeatureSource* fs = NULL;
+
+    // Get the feature source XML content document from the FDO connection manager.
+    MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    if(pFdoConnectionManager)
+    {
+         fs = pFdoConnectionManager->GetFeatureSource(resource);
+    }
+
+    assert (fs != NULL);
+    return fs;
 }

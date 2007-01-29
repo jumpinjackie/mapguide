@@ -70,7 +70,8 @@ private:
     Ptr<MgFeatureQueryOptions> m_options;
     STRING                  filterText;
     Ptr<MgFeatureServiceCommand>    m_command;
-    MgXmlUtil m_xmlUtil;
+
+    MdfModel::FeatureSource* m_featureSource;
 
     // Only one custom property is supported. No nesting of custom properties allowed.
     STRING                  m_customPropertyName;
@@ -83,6 +84,8 @@ private:
     void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
     void ParseQualifiedClassName(CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className);
     MgResourceIdentifier* GetSecondaryResourceIdentifier(MgResourceIdentifier* primResId, CREFSTRING extensionName, CREFSTRING relationName);
+
+    MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resource);
 };
 
 #endif

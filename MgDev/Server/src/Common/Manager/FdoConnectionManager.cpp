@@ -153,15 +153,13 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
         string featureSourceXmlContent;
         RetrieveFeatureSource(resourceIdentifier, featureSourceXmlContent);
 
-        // Needed to parse XML and get properties
-        MgXmlUtil xmlUtil;
-        xmlUtil.ParseString(featureSourceXmlContent.c_str());
+        // Parse XML and get properties
 
-        // Get the connection properties
-        STRING providerName;
-        STRING configDocumentName;
-        STRING longTransactionName;
-        GetConnectionPropertiesFromXml(&xmlUtil, providerName, configDocumentName, longTransactionName);
+        auto_ptr<MdfModel::FeatureSource> featureSource(GetFeatureSource(resourceIdentifier));
+
+        STRING providerName = (STRING)featureSource->GetProvider();
+        STRING configDocumentName = (STRING)featureSource->GetConfigurationDocument();
+        STRING longTransactionName = (STRING)featureSource->GetLongTransaction();
 
         providerName = UpdateProviderName(providerName);
 
@@ -172,7 +170,7 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
         pFdoConnection = m_connManager->CreateConnection(providerName.c_str());
 
         // Retrieve the properties and open the connection
-        SetConnectionProperties(pFdoConnection, &xmlUtil);
+        SetConnectionProperties(pFdoConnection, featureSource.get());
 
         SetConfiguration(providerName, pFdoConnection, resourceIdentifier, configDocumentName);
 
@@ -373,17 +371,13 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* 
         // No long transaction name cached for the current session or no current session
         // In this case we want to use the requested long transaction of the feature source
 
-        // Need to parse feature source XML and get long transaction
-        MgXmlUtil xmlUtil;
-        xmlUtil.ParseString(featureSourceXmlContent.c_str());
+        // Parse feature source XML and get long transaction
 
-        DOMElement* root = xmlUtil.GetRootNode();
-        CHECKNULL(root, L"MgFdoConnectionManager.FindFdoConnection()");
+        auto_ptr<MdfModel::FeatureSource> featureSource(GetFeatureSource(resourceIdentifier));
 
-        wstring szLongTransactionName;
-        xmlUtil.GetElementValue(root, "LongTransaction", szLongTransactionName, false);
+        STRING longTransactionName = (STRING)featureSource->GetLongTransaction();
 
-        ltName = szLongTransactionName;
+        ltName = longTransactionName;
     }
 
     pFdoConnection = SearchFdoConnectionCache(resourceIdentifier->ToString(),
@@ -468,148 +462,90 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING key,
     return pFdoConnection;
 }
 
-
-void MgFdoConnectionManager::GetConnectionPropertiesFromXml(MgXmlUtil* pXmlUtil, STRING& providerName, STRING& configDocumentName, STRING& longTransactionName)
+void MgFdoConnectionManager::GetSpatialContextInfoFromXml(MdfModel::FeatureSource* pFeatureSource, MgSpatialContextInfoMap* spatialContextInfoMap)
 {
-    CHECKNULL(pXmlUtil, L"MgFdoConnectionManager.GetConnectionPropertiesFromXml()");
+    CHECKNULL(pFeatureSource, L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
-    DOMElement* root = pXmlUtil->GetRootNode();
-    CHECKNULL(root, L"MgFdoConnectionManager.GetConnectionPropertiesFromXml()");
+    MdfModel::SupplementalSpatialContextInfoCollection* spatialContexts = pFeatureSource->GetSupplementalSpatialContextInfo();
+    CHECKNULL(spatialContexts, L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");
 
-    wstring szProviderName;
-    pXmlUtil->GetElementValue(root, "Provider", szProviderName);
-
-    wstring szConfigDocumentName;
-    pXmlUtil->GetElementValue(root, "ConfigurationDocument", szConfigDocumentName, false);
-
-    wstring szLongTransactionName;
-    pXmlUtil->GetElementValue(root, "LongTransaction", szLongTransactionName, false);
-
-    if (szProviderName.length() <= 0)
+    for (int i = 0; i < spatialContexts->GetCount(); i++)
     {
-        STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgInvalidFdoProvider");
-
-        Ptr<MgStringCollection> strCol = (MgStringCollection*)NULL;
-        if (!message.empty())
-        {
-            strCol = new MgStringCollection();
-            strCol->Add(message);
-        }
-
-        throw new MgInvalidFeatureSourceException(L"MgFdoConnectionManager.GetConnectionPropertiesFromXml",
-            __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
-    }
-
-    // Get the provider name
-    providerName = szProviderName;
-    configDocumentName = szConfigDocumentName;
-    longTransactionName = szLongTransactionName;
-
-    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.GetConnectionPropertiesFromXml")
-}
-
-void MgFdoConnectionManager::GetSpatialContextInfoFromXml(MgXmlUtil* pXmlUtil, MgSpatialContextInfoMap* spatialContextInfoMap)
-{
-    CHECKNULL(pXmlUtil, L"MgFdoConnectionManager.GetSpatialContextInfoFromXml()");
-
-    MG_FDOCONNECTION_MANAGER_TRY()
-
-    DOMNodeList* nodeList = pXmlUtil->GetNodeList("SupplementalSpatialContextInfo" /* NOXLATE */ );
-    CHECKNULL(nodeList, L"MgFdoConnectionManager.GetSpatialContextInfoFromXml()");
-
-    int nodes = (int)nodeList->getLength();
-
-    for (int i = 0; i < nodes; i++)
-    {
-        DOMNode* node = nodeList->item(i);
-        CHECKNULL(node, L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");
+        MdfModel::SupplementalSpatialContextInfo* spatialContext = spatialContexts->GetAt(i);
+        CHECKNULL(spatialContext, L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");
 
         // Name element
-        wstring name;
-        pXmlUtil->GetElementValue((DOMElement*)node, "Name", name, false);
-
+        STRING name = (STRING)spatialContext->GetName();
         FdoString* propertyName = name.c_str();
         CHECKNULL(propertyName, L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");
 
         // CoordinateSystem element
-        wstring coordinateSystem;
-        pXmlUtil->GetElementValue((DOMElement*)node, "CoordinateSystem", coordinateSystem, false);
-
+        STRING coordinateSystem = (STRING)spatialContext->GetCoordinateSystem();
         FdoString* propertyCoordinateSystem = coordinateSystem.c_str();
         CHECKNULL(propertyCoordinateSystem, L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");
 
         spatialContextInfoMap->insert( MgSpatialContextInfoPair(name, coordinateSystem) );
     }
 
-    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.GetSpatialContextInfoFromXml")
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");    
 }
 
-
-void MgFdoConnectionManager::SetConnectionProperties(FdoIConnection* pFdoConnection, MgXmlUtil* pXmlUtil)
+void MgFdoConnectionManager::SetConnectionProperties(FdoIConnection *pFdoConnection, MdfModel::FeatureSource *pFeatureSource)
 {
-    CHECKNULL(pXmlUtil, L"MgFdoConnectionManager.SetConnectionProperties()");
-    CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SetConnectionProperties()");
+        CHECKNULL(pFeatureSource, L"MgFdoConnectionManager.SetConnectionProperties");
+        CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.SetConnectionProperties");
 
-    // Get FdoIConnectionInfo
-    FdoPtr<FdoIConnectionInfo> fdoConnInfo = pFdoConnection->GetConnectionInfo();
-    CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgFdoConnectionManager.SetConnectionProperties()");
+        // Get FdoIConnectionInfo
+        FdoPtr<FdoIConnectionInfo> fdoConnInfo = pFdoConnection->GetConnectionInfo();
+        CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgFdoConnectionManager.SetConnectionProperties");
 
-    // Get FdoIConnectionPropertyDictionary
-    FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropertyDict = fdoConnInfo->GetConnectionProperties();
-    CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropertyDict, L"MgFdoConnectionManager.SetConnectionProperties");
+        // GetFdoIConnectionPropertyDictionary
+        FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropertyDict = fdoConnInfo->GetConnectionProperties();
+        CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropertyDict, L"MgFdoConnectionManager.SetConnectionProperties");
 
-    // Get all nodes of properties
-    DOMNodeList* nodeList = pXmlUtil->GetNodeList("Parameter" /* NOXLATE */ );
-    CHECKNULL(nodeList, L"MgFdoConnectionManager.SetConnectionProperties");
+        // Get all all connection properties
+        MdfModel::NameStringPairCollection* parameters = pFeatureSource->GetParameters();
+        CHECKNULL(parameters, L"MgFdoConnectionManager.SetConnectionProperties");
 
-    int nodes = (int)nodeList->getLength();
-
-    for (int i=0; i < nodes; i++)
-    {
-        DOMNode* node = nodeList->item(i);
-        CHECKNULL(node, L"MgFdoConnectionManager.SetConnectionProperties");
-
-        // Name element
-        wstring name;
-        pXmlUtil->GetElementValue((DOMElement*)node, "Name", name);
-
-        // Value element
-        wstring value;
-        pXmlUtil->GetElementValue((DOMElement*)node, "Value", value, false);
-
-        // If name is null, means invalid xml
-        if (name.empty())
+        for (int i = 0; i < parameters->GetCount(); i++)
         {
-            STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgInvalidPropertyName");
+            // Get the Name and Value elements
+            MdfModel::NameStringPair* pair = parameters->GetAt(i);
+            STRING name = (STRING)pair->GetName();
+            STRING value = (STRING)pair->GetValue();
 
-            Ptr<MgStringCollection> strCol = (MgStringCollection*)NULL;
-            if (!message.empty())
+            // If name is null, means invalid xml
+            if (name.empty())
             {
-                strCol = new MgStringCollection();
-                strCol->Add(message);
+                STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgInvalidPropertyName");
+
+                Ptr<MgStringCollection> strCol;
+                if (!message.empty())
+                {
+                    strCol = new MgStringCollection();
+                    strCol->Add(message);
+                }
+
+                throw new MgInvalidFeatureSourceException(L"MgFdoConnectionManager.SetConnectionProperties",
+                    __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
             }
 
-            throw new MgInvalidFeatureSourceException(L"MgFdoConnectionManager.SetConnectionProperties",
-                __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
-        }
+            FdoString* propertyName = name.c_str();
+            CHECKNULL(propertyName, L"MgFdoConnectionManager.SetConnectionProperties");
 
-        FdoString* propertyName = name.c_str();
-        CHECKNULL(propertyName, L"MgFdoConnectionManager.SetConnectionProperties");
-
-        // Property value can be null ( optional properties may not have values )
-        if (!value.empty())
-        {
-            FdoString* propertyValue = value.c_str();
-            if (propertyValue != NULL)
+            // Property value can be null ( optional properties may not have values )
+            if (!value.empty())
             {
-                fdoConnPropertyDict->SetProperty(propertyName,  propertyValue);
+                FdoString* propertyValue = value.c_str();
+                if (propertyValue != NULL)
+                {
+                    fdoConnPropertyDict->SetProperty(propertyName, propertyValue);
+                }
             }
         }
-    }
 }
-
 
 void MgFdoConnectionManager::ActivateSpatialContext(FdoIConnection* pFdoConnection, STRING& spatialContextName)
 {
@@ -928,14 +864,14 @@ MgSpatialContextInfoMap* MgFdoConnectionManager::GetSpatialContextInfo(MgResourc
     string featureSourceXmlContent;
     RetrieveFeatureSource(resourceIdentifier, featureSourceXmlContent);
 
-    // Needed to parse XML and get properties
-    MgXmlUtil xmlUtil;
-    xmlUtil.ParseString(featureSourceXmlContent.c_str());
+    // Parse XML and get properties
+
+    auto_ptr<MdfModel::FeatureSource> featureSource(GetFeatureSource(resourceIdentifier));
 
     // Get the supplementary spatial context information which defines the coordinate system
     // for spatial contexts that are missing this information
     spatialContextInfoMap = new MgSpatialContextInfoMap();
-    GetSpatialContextInfoFromXml(&xmlUtil, spatialContextInfoMap);
+    GetSpatialContextInfoFromXml(featureSource.get(), spatialContextInfoMap);
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.GetSpatialContextInfo")
 
@@ -1284,3 +1220,23 @@ bool MgFdoConnectionManager::IsExcludedProvider(CREFSTRING providerName)
 
     return bResult;
 }
+
+MdfModel::FeatureSource* MgFdoConnectionManager::GetFeatureSource(MgResourceIdentifier* resId)
+{
+    // Retrieve XML from repository
+    string featureSourceXmlContent;
+    RetrieveFeatureSource(resId, featureSourceXmlContent);
+
+    MdfParser::FSDSAX2Parser parser;
+    parser.ParseString(featureSourceXmlContent.c_str(), featureSourceXmlContent.length()*sizeof(char));
+
+    assert(parser.GetSucceeded());
+
+    // detach the feature source from the parser - it's
+    // now the caller's responsibility to delete it
+    MdfModel::FeatureSource* fs = parser.DetachFeatureSource();
+
+    assert(fs != NULL);
+    return fs;
+}
+

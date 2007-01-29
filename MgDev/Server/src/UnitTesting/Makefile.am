@@ -7,10 +7,13 @@ prefix=@prefix@/server
 INCLUDES = \
   -I../../../Oem/ACE/ACE_wrappers \
   -I../../../Oem/CppUnit-1.9.14/include \
+  -I../../../Oem/dbxml-2.2.13/xerces-c-src/src \
   -I../../../Common/Foundation \
   -I../../../Common/Geometry \
   -I../../../Common/PlatformBase \
   -I../../../Common/MapGuideCommon \
+  -I../../../Common/MdfModel \
+  -I../../../Common/MdfParser \
   -I../Common \
   -I../Common/Manager \
   -I../Services/Feature \
