@@ -39,11 +39,18 @@ MgServerSelectFeatures::MgServerSelectFeatures()
     m_customPropertyFound = false;
     m_customFunction = NULL;
     m_customPropertyName = L"";
+    m_featureSource = NULL;
 }
 
 MgServerSelectFeatures::~MgServerSelectFeatures()
 {
     FDO_SAFE_RELEASE(m_customFunction);
+
+    if (m_featureSource != NULL)
+    {
+        delete m_featureSource;
+        m_featureSource = NULL;
+    }
 }
 
 // Executes the select features command and serializes the reader
@@ -63,9 +70,6 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
     // Retrieve the feature source XML document
     string featureSourceXmlContent;
     RetrieveFeatureSource(resource, featureSourceXmlContent);
-
-    // Parse the feature source XML document so that it will be ready to be walked for needed property information
-    m_xmlUtil.ParseString(featureSourceXmlContent.c_str());
 
     // Check if a feature join is to be performed by inspecting the resource for join properties
     bool bFeatureJoinProperties = FindFeatureJoinProperties(resource, className);
@@ -775,42 +779,29 @@ MgReader* MgServerSelectFeatures::GetCustomReader(MgReader* reader)
 // Look for extension (feature join) properties in the feature source document
 bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* resourceId, CREFSTRING extensionName)
 {
+    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.FindFeatureJoinProperties");    
     bool bJoinPropertiesExists = false;
 
-    DOMElement* rootNode = m_xmlUtil.GetRootNode();
-    DOMNodeList* extensionNodeList = m_xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
+    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerSelectFeatures.FindFeatureJoinProperties");
 
-    if (NULL != extensionNodeList)
+    for (int i = 0; i < extensions->GetCount(); i++)
     {
-        int extensionNodes = (int)extensionNodeList->getLength();
+        MdfModel::Extension* extension = extensions->GetAt(i);
+        CHECKNULL(extension, L"MgServerSelectFeatures.FindFeatureJoinProperties");        
+        STRING name = (STRING)extension->GetName();
 
-        for (int i = 0; i < extensionNodes; i++)
+        STRING parsedSchemaName = L"";
+        STRING parsedExtensionName = L"";
+        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+
+        if (parsedExtensionName != name)
         {
-            DOMNode* extensionNode = extensionNodeList->item(i);
-            CHECKNULL(extensionNode, L"MgServerSelectFeatures.FindFeatureJoinProperties");
-
-            DOMNodeList* nameNodeList = m_xmlUtil.GetNodeList(extensionNode, "Name");
-            int nNameNodes = (int)nameNodeList->getLength();
-
-            // get the extension name node
-            DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
-
-            // get the extension name value
-            STRING name;
-            m_xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, name);
-
-            STRING parsedSchemaName = L"";
-            STRING parsedExtensionName = L"";
-            ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
-
-            if (parsedExtensionName != name)
-            {
-                continue;
-            }
-            else
-            {
-                bJoinPropertiesExists = true;
-            }
+            continue;
+        }
+        else
+        {
+            bJoinPropertiesExists = true;
         }
     }
 
@@ -826,26 +817,16 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
     FdoPtr<IGWSQueryDefinition> qd;
     FdoPtr<MgGwsConnectionPool> pool = MgGwsConnectionPool::Create();
 
-    DOMElement* rootNode = m_xmlUtil.GetRootNode();
-    DOMNodeList* extensionNodeList = m_xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
-    CHECKNULL(extensionNodeList, L"MgServerSelectFeatures.JoinFeatures");
+    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.JoinFeatures");
 
-    int extensionNodes = (int)extensionNodeList->getLength();
+    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerSelectFeatures.JoinFeatures");
 
-    for (int i = 0; i < extensionNodes; i++)
+    for (int i = 0; i < extensions->GetCount(); i++)
     {
-        DOMNode* extensionNode = extensionNodeList->item(i);
-        CHECKNULL(extensionNode, L"MgServerSelectFeatures.JoinFeatures");
-
-        DOMNodeList* nameNodeList = m_xmlUtil.GetNodeList(extensionNode, "Name");
-        int nNameNodes = (int)nameNodeList->getLength();
-
-        // get the extension name node
-        DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
-
-        // get the extension name value
-        STRING name;
-        m_xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, name);
+        MdfModel::Extension* extension = extensions->GetAt(i);
+        CHECKNULL(extension, L"MgServerSelectFeatures.JoinFeatures");
+        STRING name = (STRING)extension->GetName();
 
         STRING parsedSchemaName = L"";
         STRING parsedExtensionName = L"";
@@ -873,78 +854,64 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             }
 
             // Retrieve the primary feature class
-            wstring szFeatureClass;
-            m_xmlUtil.GetElementValue(extensionNode, "FeatureClass", szFeatureClass);
+            STRING featureClass = (STRING)extension->GetFeatureClass();
 
-            // Parse the qualified classname
+            // Parse the qualifed classname
             STRING primaryFsSchema = L"";
             STRING primaryFsClassName = L"";
-            ParseQualifiedClassName(szFeatureClass, primaryFsSchema, primaryFsClassName);
+            ParseQualifiedClassName(featureClass, primaryFsSchema, primaryFsClassName);
 
             // Create primary query definition
             FdoPtr<FdoStringCollection> lsellist;
             FdoPtr<FdoFilter> lfilter = FDO_SAFE_ADDREF(filter);
 
             FdoPtr<IGWSQueryDefinition> lqd = IGWSFeatureQueryDefinition::Create(
-                   lsellist,
-                   GWSQualifiedName(primaryConnectionName.c_str(), primaryFsSchema.c_str(), primaryFsClassName.c_str()),
-                   lfilter);
+                lsellist,
+                GWSQualifiedName(primaryConnectionName.c_str(), primaryFsSchema.c_str(), primaryFsClassName.c_str()),
+                lfilter);
             CHECKNULL(lqd, L"MgServerSelectFeatures.JoinFeatures");
             qd = lqd;
 
             IGWSJoinQueryDefinition* jqd = NULL;
 
-            // Determine the number of secondary sources (AttributeRelate nodes)
-            DOMNodeList* attributeRelateNodeList = m_xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
-            int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
+            MdfModel::AttributeRelateCollection* attributeRelates = extension->GetAttributeRelates();
+            CHECKNULL(attributeRelates, L"MgServerSelectFeatures.JoinFeatures");
 
-            // For each join to a secondary source need to do the following
             bool bForceOneToOne = true;
             Ptr<MgStringCollection> attributeNameDelimiters = new MgStringCollection();
-            for (int attributeRelateIndex = 0; attributeRelateIndex < nAttributeRelateNodes; attributeRelateIndex++)
+
+            // For each join (attributeRelate) to a secondary source need to do the following
+            for (int attributeRelateIndex = 0; attributeRelateIndex < attributeRelates->GetCount(); attributeRelateIndex++)
             {
-                DOMNode* attributeRelateNode = attributeRelateNodeList->item(attributeRelateIndex);
+                MdfModel::AttributeRelate* attributeRelate = attributeRelates->GetAt(attributeRelateIndex);
+                CHECKNULL(attributeRelate, L"MgServerSelectFeatures.JoinFeatures");
 
                 // Get the secondary resource id
-                wstring szSecondaryResourceId;
-                m_xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", szSecondaryResourceId);
+                STRING secondaryResourceId = (STRING)attributeRelate->GetResourceId();
 
                 // Get the name for the join relationship
-                wstring szAttributeRelateName;
-                m_xmlUtil.GetElementValue(attributeRelateNode, "Name", szAttributeRelateName);
-                STRING secondaryConnectionName = szAttributeRelateName;
-
+                STRING attributeRelateName = (STRING)attributeRelate->GetName();
+                STRING secondaryConnectionName = attributeRelateName;
+    
                 // Get the RelateType (join type).  Default is Left Outer join.
-                wstring szRelateType;
-                m_xmlUtil.GetElementValue(attributeRelateNode, "RelateType", szRelateType, false);
-                if (szRelateType.empty())
-                {
-                    szRelateType = L"LeftOuter";     // NOXLATE
-                }
+                MdfModel::AttributeRelate::RelateType relateType = attributeRelate->GetRelateType();
 
-                // Get the ForceOneToOne field, which specifies if multiple matching secondary features 
+                // Get the ForceOneToOne field, which specifies if multiple matching secondary features
                 // are retrieved via a 1-to-1 or 1-to-many relationship.  Default is 1-to-1 relationship.
-                wstring szForceOneToOne;
-                m_xmlUtil.GetElementValue(attributeRelateNode, "ForceOneToOne", szForceOneToOne, false);
-                if (szForceOneToOne.empty())
-                {
-                    szForceOneToOne = L"true";     // NOXLATE
-                }
-                // If there is at least one relation is defined as a one-to-many, then the one-to-many result will apply to all join results.
-                if (!MgUtil::StringToBoolean(szForceOneToOne))
+                bool forceOneToOne = attributeRelate->GetForceOneToOne();
+                // If there is at least one relation is defined as one-to-many, then the one-to-many result will apply to all join results. 
+                if (!forceOneToOne)
                 {
                     bForceOneToOne = false;
                 }
 
                 // Get the AttributeNameDelimiter field, which specifies the delimiter between the JoinName (attribute relate name)
                 // and the property name for an extended property.  Default delimiter is "" (blank).
-                wstring szAttributeNameDelimiter;
-                m_xmlUtil.GetElementValue(attributeRelateNode, "AttributeNameDelimiter", szAttributeNameDelimiter, false);
-                STRING attributeNameDelimiter = szAttributeNameDelimiter;
+                STRING attributeNameDelimiter = (STRING)attributeRelate->GetAttributeNameDelimiter();
                 attributeNameDelimiters->Add(attributeNameDelimiter);
 
                 // Establish connection to provider for secondary feature source
-                Ptr<MgResourceIdentifier> secondaryFeatureSource = new MgResourceIdentifier(szSecondaryResourceId);
+                Ptr<MgResourceIdentifier> secondaryFeatureSource = new MgResourceIdentifier(secondaryResourceId);
 
                 if (NULL != secondaryFeatureSource)
                 {
@@ -961,70 +928,69 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                     }
                 }
 
-                // Get the secondary feature className (qualified className)
-                wstring szSecondaryClassName;
-                m_xmlUtil.GetElementValue(attributeRelateNode, "AttributeClass", szSecondaryClassName);
+                // Get the secondary featureClassName (qualified className)
+                STRING secondaryClassName = (STRING)attributeRelate->GetAttributeClass();
 
-                // Parse the qualifed classname
+                // Parse the qualified classname
                 STRING secondaryFsSchema = L"";
                 STRING secondaryFsClassName = L"";
-                ParseQualifiedClassName(szSecondaryClassName, secondaryFsSchema, secondaryFsClassName);
+                ParseQualifiedClassName(secondaryClassName, secondaryFsSchema, secondaryFsClassName);
 
                 // Create secondary query definition
                 FdoPtr<FdoStringCollection> rsellist;
                 FdoPtr<FdoFilter> rfilter;
 
-                FdoPtr<IGWSQueryDefinition> rqd = IGWSFeatureQueryDefinition::Create(
-                       rsellist,
-                       GWSQualifiedName(secondaryConnectionName.c_str(), secondaryFsSchema.c_str(), secondaryFsClassName.c_str()),
-                       rfilter);
+                FdoPtr<IGWSQueryDefinition> rqd  = IGWSFeatureQueryDefinition::Create(
+                    rsellist,
+                    GWSQualifiedName(secondaryConnectionName.c_str(), secondaryFsSchema.c_str(), secondaryFsClassName.c_str()),
+                    rfilter);
                 CHECKNULL(rqd, L"MgServerSelectFeatures.JoinFeatures");
 
                 // Get Join Attributes
                 FdoPtr<FdoStringCollection> lattrs = FdoStringCollection::Create();
                 FdoPtr<FdoStringCollection> rattrs = FdoStringCollection::Create();
 
-                // Determine the number of ReleateProperties (attributes)
-                DOMNodeList* relatePropertyNodeList = m_xmlUtil.GetNodeList(attributeRelateNode, "RelateProperty");
-                int nRelatePropertyNodes = relatePropertyNodeList->getLength();
+                // Determine the number of RelateProperties (attributes)
+                MdfModel::RelatePropertyCollection* relateProperties = attributeRelate->GetRelateProperties();
+                CHECKNULL(relateProperties, L"MgServerSelectFeatures.JoinFeatures");
+                int nRelatePropertyCount = relateProperties->GetCount();
 
                 // For each RelateProperty need to do the following
-                for (int relatePropertyNodeIndex = 0; relatePropertyNodeIndex < nRelatePropertyNodes; relatePropertyNodeIndex++)
-                {
-                    DOMNode* relatePropertyNode = relatePropertyNodeList->item(relatePropertyNodeIndex);
+                for (int relatePropertyIndex = 0; relatePropertyIndex < nRelatePropertyCount; relatePropertyIndex++)
+                { 
+                    MdfModel::RelateProperty* relateProperty = relateProperties->GetAt(relatePropertyIndex);
+                    CHECKNULL(relateProperty, L"MgServerSelectFeatures.JoinFeatures");
 
                     // Get the FeatureClassProperty (primary attribute)
-                    wstring szPrimaryAttribute;
-                    m_xmlUtil.GetElementValue(relatePropertyNode, "FeatureClassProperty", szPrimaryAttribute);
+                    STRING primaryAttribute = (STRING)relateProperty->GetFeatureClassProperty();
 
                     // Add to the primary attribute String collection
-                    lattrs->Add(szPrimaryAttribute.c_str());
+                    lattrs->Add(primaryAttribute.c_str());
 
                     // Get the AttributeClassProperty (secondary attribute)
-                    wstring szSecondaryAttribute;
-                    m_xmlUtil.GetElementValue(relatePropertyNode, "AttributeClassProperty", szSecondaryAttribute);
+                    STRING secondaryAttribute = (STRING)relateProperty->GetAttributeClassProperty();
 
                     // Add to the secondary attribute String collection
-                    rattrs->Add(szSecondaryAttribute.c_str());
+                    rattrs->Add(secondaryAttribute.c_str());
                 }
 
                 // Create the QueryDefinition
                 if (NULL != rqd)
                 {
-                    FdoString* joinName = szAttributeRelateName.c_str();
+                    FdoString* joinName = attributeRelateName.c_str();
                     FdoString* joinDelimiter = L".";
-                    if (0 == szRelateType.compare(L"Inner"))     // NOXLATE
+                    if (MdfModel::AttributeRelate::Inner == relateType)
                     {
                         jqd = IGWSEqualJoinQueryDefinition::Create(joinName, joinDelimiter, bForceOneToOne, lqd, rqd, lattrs, rattrs);
                     }
-                    else   //if (0 == szRelateType.compare(L"LeftOuter"))
+                    else  // if (RelateType::LeftOuter == relateType)
                     {
                         jqd = IGWSLeftJoinQueryDefinition::Create(joinName, joinDelimiter, bForceOneToOne, lqd, rqd, lattrs, rattrs);
                     }
                     lqd = jqd;
                 }
 
-            } // Repeat for each secondary source
+            }  // Repeat for each secondary source
             qd = lqd;
 
             FdoPtr<IGWSQuery> query = IGWSQuery::Create(pool, qd, NULL);
@@ -1041,6 +1007,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             gwsFeatureReader = new MgServerGwsFeatureReader(iter, bForceOneToOne, attributeNameDelimiters);
             gwsFeatureReader->PrepareGwsGetFeatures(parsedExtensionName, fsNames);
             gwsFeatureReader->SetGwsIteratorCopy(iterCopy);
+
         }
     }
 
@@ -1061,6 +1028,12 @@ void MgServerSelectFeatures::RetrieveFeatureSource(MgResourceIdentifier* resourc
     {
          pFdoConnectionManager->RetrieveFeatureSource(resource, resourceContent);
     }
+
+    if (m_featureSource == NULL)
+    {
+        m_featureSource = GetFeatureSource(resource);
+    }
+
 }
 
 
@@ -1074,63 +1047,55 @@ void MgServerSelectFeatures::ParseQualifiedClassName(CREFSTRING qualifiedClassNa
 
 MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgResourceIdentifier* primResId, CREFSTRING extensionName, CREFSTRING relationName)
 {
+    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
+
     Ptr<MgResourceIdentifier> secResId;
 
-    DOMElement* rootNode = m_xmlUtil.GetRootNode();
-    DOMNodeList* extensionNodeList = m_xmlUtil.GetNodeList(rootNode, "Extension" /* NOXLATE */ );
+    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
 
-    if (NULL != extensionNodeList)
+    for (int i = 0; i < extensions->GetCount(); i++)
     {
-        int extensionNodes = (int)extensionNodeList->getLength();
+        MdfModel::Extension* extension = extensions->GetAt(i);
+        CHECKNULL(extension, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
 
-        for (int i = 0; i < extensionNodes; i++)
+        // Get the extension name
+        STRING name = (STRING)extension->GetName();
+
+        STRING parsedSchemaName = L"";
+        STRING parsedExtensionName = L"";
+        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+
+        if (parsedExtensionName != name)
         {
-            DOMNode* extensionNode = extensionNodeList->item(i);
-            CHECKNULL(extensionNode, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
+            continue;
+        }
+        else
+        {
+            // Determine the number of secondary sources (AttributeRelates)
+            MdfModel::AttributeRelateCollection* attributeRelates = extension->GetAttributeRelates();
+            CHECKNULL(attributeRelates, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
+            int nAttributeRelateCount = attributeRelates->GetCount();
 
-            DOMNodeList* nameNodeList = m_xmlUtil.GetNodeList(extensionNode, "Name");
-            int nNameNodes = (int)nameNodeList->getLength();
-
-            // get the extension name node
-            DOMNode* extensionNameNode = nameNodeList->item(nNameNodes - 1);
-
-            // get the extension name value
-            STRING name;
-            m_xmlUtil.GetTextFromElement((DOMElement*)extensionNameNode, name);
-
-            STRING parsedSchemaName = L"";
-            STRING parsedExtensionName = L"";
-            ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
-
-            if (parsedExtensionName != name)
+            // Find the specified relation name
             {
-                continue;
-            }
-            else
-            {
-                // Determine the number of secondary sources (AttributeRelate nodes)
-                DOMNodeList* attributeRelateNodeList = m_xmlUtil.GetNodeList(extensionNode, "AttributeRelate");
-                int nAttributeRelateNodes = (int)attributeRelateNodeList->getLength();
-
-                // Find the the specified relation name
-                for (int attributeRelateIndex = 0; attributeRelateIndex < nAttributeRelateNodes; attributeRelateIndex++)
+                for (int attributeRelateIndex = 0; attributeRelateIndex < nAttributeRelateCount; attributeRelateIndex++)
                 {
-                    DOMNode* attributeRelateNode = attributeRelateNodeList->item(attributeRelateIndex);
+                    MdfModel::AttributeRelate* attributeRelate = attributeRelates->GetAt(attributeRelateIndex);
+                    CHECKNULL(attributeRelate, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
 
                     // Get the name for the join relationship
-                    wstring szAttributeRelateName;
-                    m_xmlUtil.GetElementValue(attributeRelateNode, "Name", szAttributeRelateName);
+                    STRING attributeRelateName = (STRING)attributeRelate->GetName();
 
-                    if ( szAttributeRelateName != relationName )
+                    if (attributeRelateName != relationName)
                     {
                         continue;
                     }
                     else
                     {
                         // Get the secondary resource id
-                        wstring szSecondaryResourceId;
-                        m_xmlUtil.GetElementValue(attributeRelateNode, "ResourceId", szSecondaryResourceId);
-                        secResId = new MgResourceIdentifier(szSecondaryResourceId);
+                        STRING secondaryResourceId = (STRING)attributeRelate->GetResourceId();
+                        secResId = new MgResourceIdentifier(secondaryResourceId);
                         break;
                     }
                 }
@@ -1141,3 +1106,19 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
     return secResId.Detach();
 }
 
+MdfModel::FeatureSource* MgServerSelectFeatures::GetFeatureSource(MgResourceIdentifier* resource)
+{
+    CHECKNULL(resource, L"MgServerSelectFeatures.GetFeatureSource");
+
+    MdfModel::FeatureSource* fs = NULL;
+
+    // Get the feature source XML content document from the FDO connection manager.
+    MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    if(pFdoConnectionManager)
+    {
+         fs = pFdoConnectionManager->GetFeatureSource(resource);
+    }
+
+    assert (fs != NULL);
+    return fs;
+}

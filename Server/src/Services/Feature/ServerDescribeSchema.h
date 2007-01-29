@@ -22,6 +22,7 @@
 #include "System/XmlDefs.h"
 #include "System/XmlUtil.h"
 #include "Fdo.h"
+#include "FSDSAX2Parser.h"
 
 class MgServerDescribeSchema
 {
@@ -60,6 +61,10 @@ private:
     STRING GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol);
 
     void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
+    MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resource);
+
+    MdfModel::FeatureSource* m_featureSource;
+
 };
 
 #endif

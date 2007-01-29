@@ -14,6 +14,8 @@ INCLUDES = \
   -I../../../../Common/Geometry \
   -I../../../../Common/MapGuideCommon \
   -I../../../../Common/PlatformBase \
+  -I../../../../Common/MdfModel \
+  -I../../../../Common/MdfParser \
   -I../../Services/Drawing \
   -I../../Services/Feature \
   -I../../Services/Kml \

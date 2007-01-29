@@ -28,6 +28,7 @@
 #include "MapGuideCommon.h"
 #include "Fdo.h"
 #include "ServerFeatureServiceExceptionDef.h"
+#include "FSDSAX2Parser.h"
 
 class MgXmlUtil;
 
@@ -75,6 +76,8 @@ public:
 
     void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
 
+    MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resId);
+
     void RemoveExpiredConnections();
     bool RemoveCachedFdoConnection(CREFSTRING key);
 
@@ -92,11 +95,11 @@ private:
     void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, string& data, CREFSTRING ltName);
     bool FdoConnectionCacheFull(void);
 
-    void GetConnectionPropertiesFromXml(MgXmlUtil* pXmlUtil, STRING& providerName, STRING& configDocumentName, STRING& longTransactionName);
-    void GetSpatialContextInfoFromXml(MgXmlUtil* pXmlUtil, MgSpatialContextInfoMap* spatialContextInfoMap);
+    void GetSpatialContextInfoFromXml(MdfModel::FeatureSource* pFeatureSource, MgSpatialContextInfoMap* spatialContextInfoMap);
 
     void SetConfiguration(CREFSTRING providerName, FdoIConnection* pFdoConnection, MgResourceIdentifier* resourceIdentifier, STRING& configDataName);
     void SetConnectionProperties(FdoIConnection* pFdoConnection, MgXmlUtil* pXmlUtil);
+    void SetConnectionProperties(FdoIConnection* pFdoConnection, MdfModel::FeatureSource* pFeatureSource);
 
     void ActivateSpatialContext(FdoIConnection* pFdoConnection, STRING& spatialContextName);
     void ActivateLongTransaction(FdoIConnection* pFdoConnection, STRING& longTransactionName);

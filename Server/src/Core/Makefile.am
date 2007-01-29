@@ -28,6 +28,7 @@ INCLUDES = \
   -I../../../Common/MapGuideCommon \
   -I../../../Oem/gd/freetype/include \
   -I../../../Common/MdfModel \
+  -I../../../Common/MdfParser \
   -I../../../Common/Stylization
 
 bin_PROGRAMS = mgserver

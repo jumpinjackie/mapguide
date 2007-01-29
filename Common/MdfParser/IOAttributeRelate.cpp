@@ -191,11 +191,11 @@ AttributeRelate::RelateType IOAttributeRelate::ReadType(const wchar_t *strType)
     if (::wcscmp(strType, L"LeftOuter") == 0)           // NOXLATE
         type = AttributeRelate::LeftOuter;
     else if (::wcscmp(strType, L"RightOuter") == 0)     // NOXLATE 
-        AttributeRelate::RightOuter;
+        type = AttributeRelate::RightOuter;
     else if (::wcscmp(strType, L"Inner") == 0)          // NOXLATE
-        AttributeRelate::Inner;
+        type = AttributeRelate::Inner;
     else if (::wcscmp(strType, L"Association") == 0)    // NOXLATE
-        AttributeRelate::Association;
+        type = AttributeRelate::Association;
 
 	return type;
 }
