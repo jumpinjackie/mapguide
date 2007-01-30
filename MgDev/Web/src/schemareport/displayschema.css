@@ -1,0 +1,59 @@
+body {
+	color: #000000;
+	font-family: 'Microsoft Sans Serif' , Tahoma, Arial, Verdana, Sans-Serif;
+	background-color: #f2f2f2;
+	font-size: 8pt;
+}
+table {
+	margin: 5px 5px 5px 20px;
+	color: black;
+}
+table.data {
+	margin: 0px 0px 0px 0px;
+	color: black;
+}
+td {
+	color: #000000;
+	padding: 3px;
+	border: 1px solid #000000;
+}
+td.data {
+	color: #000000;
+	padding: 0px;
+	border: 0px solid #000000;
+}
+td.heading {
+	/*color: #f2f2f2;*/
+	background: #e2e2e2;
+}
+hr {
+	color: #CCCCCC;
+	height: 1px;
+	margin: 5px 0px 5px 0px;
+}
+h1 {
+	margin: 10px 0px 20px 0px;
+	font-family: 'Microsoft Sans Serif' , Tahoma, Arial, Verdana, Sans-Serif;
+	font-size: 10pt;
+	font-weight: bold;
+}
+h2 {
+	margin: 15px 0px 15px 5px;
+	font-family: 'Microsoft Sans Serif' , Tahoma, Arial, Verdana, Sans-Serif;
+	font-size: 9pt;
+	font-weight: bold;
+}
+h3 {
+	margin: 10px 0px 10px 20px;
+	font-family: 'Microsoft Sans Serif' , Tahoma, Arial, Verdana, Sans-Serif;
+	font-size: 8pt;
+	font-weight: bold;
+}
+span {
+	text-align: right;
+	margin: 0px 15px 0px 0px;
+}
+a:link {color: #66CCFF}
+a:visited {color: #66CCFF}
+a:hover {color: #66AAFF}
+a:active {color: #990099}
