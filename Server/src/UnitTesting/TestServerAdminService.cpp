@@ -222,6 +222,56 @@ void TestServerAdminService::TestCase_SetConfigurationProperties()
     }
 }
 
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case tries to remove the server configuration properties
+///----------------------------------------------------------------------------
+void TestServerAdminService::TestCase_RemoveConfigurationProperties()
+{
+    try
+    {
+        MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+        if(serviceMan == 0)
+        {
+            throw new MgNullReferenceException(L"TestServerAdminService::TestCase_RemoveConfigurationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgServerAdminService> pService = dynamic_cast<MgServerAdminService*>(serviceMan->RequestService(MgServiceType::ServerAdminService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_RemoveConfigurationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgPropertyCollection> pPropertyCollection1 = pService->GetConfigurationProperties(L"GeneralProperties");
+        Ptr<MgStringProperty> pProperty1 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultLocale");
+        STRING valueOriginal = pProperty1->GetValue();
+
+        Ptr<MgPropertyCollection> pPropertyCollectionRemove = new MgPropertyCollection();
+        Ptr<MgStringProperty> pPropertyRemove = new MgStringProperty(L"DefaultLocale", L"");
+        pPropertyCollectionRemove->Add(pPropertyRemove);
+
+        pService->RemoveConfigurationProperties(L"GeneralProperties", pPropertyCollectionRemove);
+
+        Ptr<MgPropertyCollection> pPropertyCollection2 = pService->GetConfigurationProperties(L"GeneralProperties");
+        Ptr<MgStringProperty> pProperty2 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultLocale");
+
+        CPPUNIT_ASSERT(pProperty2 == NULL);
+
+        // Restore original value
+        pService->SetConfigurationProperties(L"GeneralProperties", pPropertyCollection1);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
 
 ///----------------------------------------------------------------------------
 /// Test Case Description:
