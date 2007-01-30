@@ -1472,3 +1472,42 @@ void TestResourceService::TestCase_DeleteResource()
         throw;
     }
 }
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case enumerates the unmanaged data
+///----------------------------------------------------------------------------
+void TestResourceService::TestCase_EnumerateUnmanagedData()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateUnmanagedData", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateUnmanagedData", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        // Try to enumerate mappings
+        Ptr<MgByteReader> byteReader0 = pService->EnumerateUnmanagedData(L"", false, L"FOLDERS", L"");
+        STRING mimeType0 = byteReader0->GetMimeType();
+        CPPUNIT_ASSERT(wcscmp(mimeType0.c_str(), MgMimeType::Xml.c_str()) == 0);
+
+        // Enumerate all unmanaged data files
+        Ptr<MgByteReader> byteReader1 = pService->EnumerateUnmanagedData(L"", true, L"FILES", L"");
+        STRING mimeType1 = byteReader1->GetMimeType();
+        CPPUNIT_ASSERT(wcscmp(mimeType1.c_str(), MgMimeType::Xml.c_str()) == 0);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}

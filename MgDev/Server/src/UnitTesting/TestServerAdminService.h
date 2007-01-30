@@ -30,6 +30,7 @@ class TestServerAdminService : public CppUnit::TestFixture
     //CPPUNIT_TEST(TestCase_IsOnline);
     CPPUNIT_TEST(TestCase_GetConfigurationProperties);
     CPPUNIT_TEST(TestCase_SetConfigurationProperties);
+    CPPUNIT_TEST(TestCase_RemoveConfigurationProperties);
     CPPUNIT_TEST(TestCase_GetInformationProperties);
 
     CPPUNIT_TEST(TestCase_ClearLog);
@@ -65,6 +66,7 @@ public:
     //void TestCase_IsOnline();
     void TestCase_GetConfigurationProperties();
     void TestCase_SetConfigurationProperties();
+    void TestCase_RemoveConfigurationProperties();
     void TestCase_GetInformationProperties();
 
     void TestCase_ClearLog();
