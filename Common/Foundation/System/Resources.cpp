@@ -23,8 +23,7 @@ Ptr<MgResources> MgResources::m_resources = (MgResources*)NULL;
 const STRING MgResources::DefaultLocale              = L"en";           // Do not translate (ISO 639-1)
 const STRING MgResources::ResourceFilenameExtension  = L".res";         // Do not translate
 const STRING MgResources::ResourceFilenameUnderscore = L"_";            // Do not translate
-const STRING MgResources::ResourceComponentServer    = L"server";       // Do not translate
-const STRING MgResources::ResourceComponentWeb       = L"web";          // Do not translate
+const STRING MgResources::ResourceComponent          = L"mapguide";     // Do not translate
 
 // The following resouce messages are not in the resource file because there may be the case where the resource file failed to load.
 const STRING MgResources::FailedToLoadResourcesFile     = L"Failed to load the resource file \"%1\" for locale \"%2\".";
@@ -159,7 +158,7 @@ MgResources::MgResources()
     m_path = L"../Resources/";
 
     // default component
-    m_component = MgResources::ResourceComponentWeb;
+    m_component = MgResources::ResourceComponent;
 }
 
 
