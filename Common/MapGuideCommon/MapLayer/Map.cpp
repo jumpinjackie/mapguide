@@ -330,6 +330,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
 void MgMap::Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName)
 {
     MgMapBase::Create(mapSRS, mapExtent, mapName);
+    m_unpackedLayersGroups = true;
 }
 
 
