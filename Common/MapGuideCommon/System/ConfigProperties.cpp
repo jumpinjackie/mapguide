@@ -232,7 +232,7 @@ const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize     
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled            = L"DataConnectionPoolEnabled";
 const bool   MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled     = false;
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders  = L"DataConnectionPoolExcludedProviders";
-const STRING MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders = L"OSGeo.SDF,OSGeo.SHP";
+const STRING MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders = L""; // This means all providers are cached
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize               = L"DataConnectionPoolSize";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize        = 100;
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimeout                = L"DataConnectionTimeout";
