@@ -1,6 +1,6 @@
 # *****************************************************************************
-# Web Resource File
-# Copyright (C) 2004-2006  Autodesk, Inc.
+# MapGuide Resource File
+# Copyright (C) 2004-2007  Autodesk, Inc.
 #
 # WARNING: DO NOT MODIFY THIS FILE
 #
@@ -260,6 +260,22 @@ MgValueCannotBeZero                                   = The value cannot be zero
 # F E A T U R E  S E R V I C E
 # *****************************************************************************
 [FeatureService]
+MgBatchInsertNotSupported                             = Provider does not support batch insert. Only one Feature instance is allowed.
+MgCommandNotSupported                                 = Command is not supported by Provider.
+MgCustomFunctionNotSupported                          = Aggregate function specified not supported or invalid data type
+MgGroupingNotSupported                                = Grouping is not supported by provider
+MgInsertError                                         = Error occurred while insert operation, no ID to retrieve
+MgInvalidComputedProperty                             = Invalid Computed property specified, Make sure valid no of arguments are specified
+MgInvalidConnectionString                             = Invalid Connection String.
+MgInvalidFdoProvider                                  = Invalid Feature Provider specified.
+MgInvalidPropertyName                                 = Invalid Property Name found.
+MgMissingConfiguration                                = No configuration specified.
+MgMissingPropertyAlias                                = Alias for computed property is missing
+MgMissingRasterProperty                               = No Raster Property available in the class.
+MgNoFeaturesForInsert                                 = No Features for Insert supplied
+MgOnlyOnePropertyAllowed                              = Only one aggregate function of this kind is supported
+MgOrderingOptionNotSupported                          = Ordering Option is not supported by provider
+MgPropertyNotEnumerable                               = Property specified is not enumerable.
 
 # *****************************************************************************
 # K M L  S E R V I C E
@@ -288,6 +304,9 @@ MgPackageStatusMessageMakePackageInProgress           = Making package %1 ...
 MgPackageStatusMessageMakePackageSucceeded            = MAKE SUCCEEDED: %1 successfully made package on %2
 MgPackageStatusMessageNotStarted                      = Not started
 MgPackageStatusMessageUnknown                         = Unknown
+MgRepositoryBusy                                      = Please try your operation later as the repository was busy.
+MgSchemaFileNotFound                                  = The specified schema file is not found: %1
+MgSchemaFileNotSpecified                              = No schema file is specified in the XML document.
 
 # *****************************************************************************
 # S E R V E R A D M I N  S E R V I C E
@@ -298,6 +317,20 @@ MgPackageStatusMessageUnknown                         = Unknown
 # S I T E  S E R V I C E
 # *****************************************************************************
 [SiteService]
+MgGroupDescriptionEveryone                            = Built-in group to include all users
+MgRoleDescriptionAdministrator                        = Administrator role
+MgRoleDescriptionAuthor                               = Author role
+MgRoleDescriptionViewer                               = Viewer role
+MgUserDescriptionAdministrator                        = Built-in account for administering the site
+MgUserDescriptionAnonymous                            = Built-in account for guests with Viewer role
+MgUserDescriptionAuthor                               = Built-in account for users with Author role
+MgUserDescriptionWfsUser                              = Built-in account for WFS users with Viewer role
+MgUserDescriptionWmsUser                              = Built-in account for WMS users with Viewer role
+MgUserFullNameAdministrator                           = Site Administrator
+MgUserFullNameAnonymous                               = Anonymous User
+MgUserFullNameAuthor                                  = Map Author
+MgUserFullNameWfsUser                                 = WFS User
+MgUserFullNameWmsUser                                 = WMS User
 
 # *****************************************************************************
 # T I L E  S E R V I C E

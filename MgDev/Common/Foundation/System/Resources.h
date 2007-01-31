@@ -91,8 +91,8 @@ INTERNAL_API:
     /// \brief
     /// Gets the resource filename for the component and locale specified.
     /// The resource filenames use the following format:
-    ///   <component>_<ISO 639-2 name>.res
-    /// Ex: server_eng.res
+    ///   <component>_<ISO 639-1 name>.res
+    /// Ex: mapguide_en.res
     ///
     /// \param locale
     /// The locale.
@@ -166,8 +166,7 @@ INTERNAL_API:
         MgStringCollection* arguments);
 
     /// Resource Components
-    static const STRING ResourceComponentServer;
-    static const STRING ResourceComponentWeb;
+    static const STRING ResourceComponent;
 
     /// Default locale
     static const STRING DefaultLocale;

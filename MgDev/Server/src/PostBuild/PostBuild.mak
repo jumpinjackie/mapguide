@@ -111,9 +111,9 @@ CopySchemaDebug : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\debug\Schema\nul mkdir ..\..\bin\debug\Schema
     xcopy /r /y /d ..\..\..\Common\Schema\*.xsd ..\..\bin\debug\Schema
 
-CopyResourcesDebug : ..\..\src\Resources\server_en.res
+CopyResourcesDebug : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
     if NOT EXIST ..\..\bin\debug\Resources\nul mkdir ..\..\bin\debug\Resources
-    xcopy /r /d /y "..\..\src\Resources\server_en.res" ..\..\bin\debug\Resources\
+    xcopy /r /d /y "..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res" ..\..\bin\debug\Resources\
 
 CopyOgcFilesDebug : ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
     if NOT EXIST    ..\..\bin\debug\wms\nul  mkdir ..\..\bin\debug\wms
@@ -332,9 +332,9 @@ CopySchemaRelease : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\release\Schema\nul mkdir ..\..\bin\release\Schema
     xcopy /r /y /d ..\..\..\Common\Schema\*.xsd ..\..\bin\release\Schema
 
-CopyResourcesRelease : ..\..\src\Resources\server_en.res
+CopyResourcesRelease : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
     if NOT EXIST ..\..\bin\release\Resources\nul mkdir ..\..\bin\release\Resources
-    xcopy /r /d /y "..\..\src\Resources\server_en.res" ..\..\bin\release\Resources\
+    xcopy /r /d /y "..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res" ..\..\bin\release\Resources\
 
 CopyOgcFilesRelease: ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
     if NOT EXIST ..\..\bin\release\wms\nul  mkdir ..\..\bin\release\wms

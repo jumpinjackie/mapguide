@@ -122,7 +122,6 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
         // If additional locales are needed they will be loaded/cached on demand.
         ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init() - Loading resources.\n")));
         MgResources* pResources = MgResources::GetInstance();
-        pResources->SetComponent(MgResources::ResourceComponentServer);
         pResources->Initialize(resourcesPath);
 
         // Try loading the specified locale resource. If it fails default to loading "en". 

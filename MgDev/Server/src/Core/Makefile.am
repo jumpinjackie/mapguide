@@ -272,7 +272,7 @@ Logs :
 
 Resources :
 	@mkdir Resources
-	@cp -f ../Resources/server_en.res Resources/server_en.res
+	@cp -f ../../../Common/MapGuideCommon/Resources/mapguide_en.res Resources/mapguide_en.res
 
 Schema :
 	@mkdir Schema
@@ -314,7 +314,7 @@ install-data-local:
 	test -d $(proj4naddir) || $(mkinstalldirs) $(proj4naddir)
 	test -d $(fdodir) || $(mkinstalldirs) $(fdodir)
 	test -d $(daemondir) || $(mkinstalldirs) $(daemondir)
-	@cp -fp ../Resources/*.res $(resourcesdir)
+	@cp -fp ../../../Common/MapGuideCommon/Resources/*.res $(resourcesdir)
 	@cp -fp ../Wms/* $(wmsdir)
 	@cp -fp ../Wfs/* $(wfsdir)
 	test -d $(schemadir) || $(mkinstalldirs) $(schemadir)
