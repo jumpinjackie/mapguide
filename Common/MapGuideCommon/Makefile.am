@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = MapGuideCommon.vcproj
+EXTRA_DIST = Resources MapGuideCommon.vcproj
 
 lib_LTLIBRARIES = libMgMapGuideCommon.la
 

@@ -29,7 +29,7 @@ install-data-local:
 	test -d $(webinfdir) || $(mkinstalldirs) $(webinfdir)
 	@cp -rfp mapadmin/* $(mapadmindir)
 	@cp -fp PhpApi/constants.php $(mapadmindir)
-	@cp -fp mapagent/Resources/*.res $(resourcesdir)
+	@cp -fp ../../Common/MapGuideCommon/Resources/mapguide_en.res $(resourcesdir)
 	@cp -rfp mapviewerphp/* $(mapviewerphpdir)
 	@cp -fp PhpApi/constants.php $(mapviewerphpdir)
 	@find mapviewerjava -maxdepth 1 -type f -exec cp -fp {} $(mapviewerjavadir) \;
