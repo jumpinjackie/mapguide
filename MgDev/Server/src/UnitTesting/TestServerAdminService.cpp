@@ -243,23 +243,30 @@ void TestServerAdminService::TestCase_RemoveConfigurationProperties()
             throw new MgServiceNotAvailableException(L"TestServerAdminService::TestCase_RemoveConfigurationProperties", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        Ptr<MgPropertyCollection> pPropertyCollection1 = pService->GetConfigurationProperties(L"GeneralProperties");
-        Ptr<MgStringProperty> pProperty1 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultLocale");
-        STRING valueOriginal = pProperty1->GetValue();
+        // add a property to unmanaged data mappings
+        Ptr<MgPropertyCollection> pPropertyCollection1 = pService->GetConfigurationProperties(L"UnmanagedDataMappings");
+        Ptr<MgStringProperty> pProperty1 = new MgStringProperty(L"TestCase_RemoveConfigurationProperties", L"c:\\temp");
+        pPropertyCollection1->Add(pProperty1);
 
+        pService->SetConfigurationProperties(L"UnmanagedDataMappings", pPropertyCollection1);
+
+        // retrieve newly added property
+        Ptr<MgPropertyCollection> pPropertyCollection2 = pService->GetConfigurationProperties(L"UnmanagedDataMappings");
+        Ptr<MgStringProperty> pProperty2 = (MgStringProperty*)pPropertyCollection2->GetItem(L"TestCase_RemoveConfigurationProperties");
+
+        CPPUNIT_ASSERT(pProperty2->GetValue().compare(L"c:\\temp") == 0);
+
+        // remove newly added property
         Ptr<MgPropertyCollection> pPropertyCollectionRemove = new MgPropertyCollection();
-        Ptr<MgStringProperty> pPropertyRemove = new MgStringProperty(L"DefaultLocale", L"");
+        Ptr<MgStringProperty> pPropertyRemove = new MgStringProperty(L"TestCase_RemoveConfigurationProperties", L"");
         pPropertyCollectionRemove->Add(pPropertyRemove);
 
-        pService->RemoveConfigurationProperties(L"GeneralProperties", pPropertyCollectionRemove);
+        pService->RemoveConfigurationProperties(L"UnmanagedDataMappings", pPropertyCollectionRemove);
 
-        Ptr<MgPropertyCollection> pPropertyCollection2 = pService->GetConfigurationProperties(L"GeneralProperties");
-        Ptr<MgStringProperty> pProperty2 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultLocale");
+        // check for the removed property
+        Ptr<MgPropertyCollection> pPropertyCollection3 = pService->GetConfigurationProperties(L"UnmanagedDataMappings");
 
-        CPPUNIT_ASSERT(pProperty2 == NULL);
-
-        // Restore original value
-        pService->SetConfigurationProperties(L"GeneralProperties", pPropertyCollection1);
+        CPPUNIT_ASSERT(!pPropertyCollection3->Contains(L"TestCase_RemoveConfigurationProperties"));
     }
     catch(MgException* e)
     {
