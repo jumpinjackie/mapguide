@@ -15,9 +15,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \defgroup MgResource MgResource
-/// \ingroup Other_Resource_Service_classes
-/// \{
 
 #ifndef _MG_RESOURCE_H_
 #define _MG_RESOURCE_H_
@@ -28,10 +25,8 @@ class MgResourceService;
 /// \brief
 /// The abstract base class for all resource types.
 ///
-/// \todo
-/// [[Need examples. This is used in the Maps and
-/// Layers API.]]
-
+/// \ingroup Resource_Service_classes
+/// 
 class MG_PLATFORMBASE_API MgResource : public MgNamedSerializable
 {
 PUBLISHED_API:
@@ -140,6 +135,6 @@ protected:
 private:
     static STRING               m_resourceDataTag;
 };
-/// \}
+
 
 #endif

@@ -15,9 +15,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \defgroup MgResourceIdentifier MgResourceIdentifier
-/// \ingroup Other_Resource_Service_classes
-/// \{
 
 #ifndef MG_RESOURCE_IDENTIFIER_H
 #define MG_RESOURCE_IDENTIFIER_H
@@ -47,7 +44,8 @@ template class MG_PLATFORMBASE_API Ptr<MgResourceIdentifier>;
 /// If the resource is a folder (for example, <c>Library://Maps/North
 /// America/</c>), you must include the trailing slash.
 ///
-
+/// \ingroup Resource_Service_classes
+/// 
 class MG_PLATFORMBASE_API MgResourceIdentifier : public MgSerializable
 {
     DECLARE_CREATE_OBJECT();
@@ -827,6 +825,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_ResourceService_ResourceIdentifier;
 };
-/// \}
+
 
 #endif

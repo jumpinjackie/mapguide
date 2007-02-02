@@ -33,9 +33,6 @@ INTERNAL_API:
 };
 /// \endcond INTERNAL
 
-/// \defgroup MgRepositoryType MgRepositoryType
-/// \ingroup Other_Resource_Service_classes
-/// \{
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -44,6 +41,9 @@ INTERNAL_API:
 /// MgResourceIdentifier::SetRepositoryType
 /// \see
 /// MgResourceIdentifier::GetRepositoryType
+///
+/// \ingroup Resource_Service_classes
+/// 
 class MG_PLATFORMBASE_API MgRepositoryType
 {
 PUBLISHED_API:
@@ -72,6 +72,9 @@ INTERNAL_API:
 /// MgResourceIdentifier::GetResourceType
 /// \see
 /// MgResourceIdentifier::SetResourceType
+///
+/// \ingroup Resource_Service_classes
+/// 
 class MG_PLATFORMBASE_API MgResourceType
 {
 PUBLISHED_API:
@@ -223,6 +226,8 @@ INTERNAL_API:
 /// \todo
 /// [[Add examples for all these. ]]
 ///
+/// \ingroup Resource_Service_classes
+/// 
 class MG_PLATFORMBASE_API MgResourceTag
 {
 PUBLISHED_API:
@@ -272,6 +277,8 @@ PUBLISHED_API:
 /// \brief
 /// Defines reserved names for resource data.
 ///
+/// \ingroup Resource_Service_classes
+/// 
 class MG_PLATFORMBASE_API MgResourceDataName
 {
 PUBLISHED_API:
@@ -293,6 +300,8 @@ PUBLISHED_API:
 /// \remarks
 /// For more information, see the <i>MapGuide Developer's Guide</i>.
 ///
+/// \ingroup Resource_Service_classes
+/// 
 class MG_PLATFORMBASE_API MgResourceDataType
 {
 PUBLISHED_API:
@@ -346,6 +355,8 @@ PUBLISHED_API:
 /// Types of pre-processing to apply to resource content before
 /// it is returned from \link MgResourceService::GetResourceContent GetResourceContent \endlink.
 ///
+/// \ingroup Resource_Service_classes
+///
 class MG_PLATFORMBASE_API MgResourcePreProcessingType
 {
 PUBLISHED_API:
@@ -359,6 +370,8 @@ PUBLISHED_API:
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Types of resource permissions.
+///
+/// \ingroup Resource_Service_classes
 ///
 class MG_PLATFORMBASE_API MgResourcePermission
 {
@@ -376,7 +389,6 @@ PUBLISHED_API:
     /// Read/Write permission.
     static const STRING ReadWrite;      ///\if INTERNAL value("r,w") \endif
 };
-/// \}
 
 
 /// \cond INTERNAL
