@@ -5,3 +5,7 @@ CopyResources : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
 debug : CopyResources
 
 release : CopyResources
+
+cleandebug :
+
+cleanrelease :
