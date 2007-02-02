@@ -23,6 +23,7 @@
 
 class MgRepository;
 
+
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Enables you to manipulate repositories and resources.
@@ -34,6 +35,9 @@ class MgRepository;
 ///      <li>get, set, rename, list, and delete resource data</li>
 ///      <li>set permission for repositories and resources</li>
 ///   </ul>
+/// 
+/// \ingroup Resource_Service_classes
+/// 
 class MG_PLATFORMBASE_API MgResourceService : public MgService
 {
 INTERNAL_API:
@@ -200,8 +204,6 @@ PUBLISHED_API:
     ///        <td>Must be null.</td>
     ///    </tr>
     /// </table>
-    ///
-    /// \ingroup WorkingWithRepositories
     ///
     virtual void UpdateRepository(MgResourceIdentifier* resource, MgByteReader* content, MgByteReader* header) = 0;
 
@@ -521,8 +523,6 @@ PUBLISHED_API:
     /// \see
     /// GetResourceHeader
     ///
-    /// \ingroup WorkingWithResources
-    ///
     virtual void SetResource(MgResourceIdentifier* resource, MgByteReader* content, MgByteReader* header) = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -564,8 +564,6 @@ PUBLISHED_API:
     ///
     /// \see
     /// GetMetadata
-    ///
-    /// \ingroup WorkingWithResources
     ///
     virtual void SetResourceMetadata(MgResourceIdentifier* resource, MgByteReader* content);
 
@@ -624,8 +622,6 @@ PUBLISHED_API:
     /// \note
     /// The API generates an exception if you try to delete a
     /// non-existent resource.
-    ///
-    /// \ingroup WorkingWithResources
     ///
     virtual void DeleteResource(MgResourceIdentifier* resource) = 0;
 
@@ -709,8 +705,6 @@ PUBLISHED_API:
     /// in the source folder are overwritten. The rest should are
     /// left intact.
     ///
-    /// \ingroup WorkingWithResources
-    ///
     virtual void MoveResource(MgResourceIdentifier* sourceResource,
         MgResourceIdentifier* destResource, bool overwrite) = 0;
 
@@ -785,8 +779,6 @@ PUBLISHED_API:
     /// in the source folder are overwritten. The rest should are
     /// left intact.
     ///
-    /// \ingroup WorkingWithResources
-    ///
     virtual void CopyResource(MgResourceIdentifier* sourceResource,
         MgResourceIdentifier* destResource, bool overwrite) = 0;
 
@@ -832,8 +824,6 @@ PUBLISHED_API:
     /// \see
     /// SetResource
     ///
-    /// \ingroup WorkingWithResources
-    ///
     MgByteReader* GetResourceContent(MgResourceIdentifier* resource);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -865,8 +855,6 @@ PUBLISHED_API:
     ///
     /// \see
     /// SetResourceMetadata
-    ///
-    /// \ingroup WorkingWithResources
     ///
     virtual MgByteReader* GetResourceMetadata(MgResourceIdentifier* resource);
 
@@ -910,8 +898,6 @@ PUBLISHED_API:
     ///
     /// \see
     /// SetResource
-    ///
-    /// \ingroup WorkingWithResources
     ///
     virtual MgByteReader* GetResourceHeader(MgResourceIdentifier* resource) = 0;
 
@@ -972,8 +958,6 @@ PUBLISHED_API:
     ///   </ul>
     ///
     ///
-    /// \ingroup WorkingWithResources
-    ///
     virtual void ChangeResourceOwner(MgResourceIdentifier* resource,
         CREFSTRING owner, bool includeDescendants) = 0;
 
@@ -1029,8 +1013,6 @@ PUBLISHED_API:
     /// \note
     /// You must be logged in as the Administrator or the current \link owner owner \endlink
     /// to use this method.
-    ///
-    /// \ingroup WorkingWithResources
     ///
     virtual void InheritPermissionsFrom(MgResourceIdentifier* resource) = 0;
 
@@ -1142,8 +1124,6 @@ PUBLISHED_API:
     /// \see
     /// DeleteResourceData
     ///
-    /// \ingroup WorkingWithResourceData
-    ///
     virtual void SetResourceData(MgResourceIdentifier* resource,
         CREFSTRING dataName, CREFSTRING dataType, MgByteReader* data) = 0;
 
@@ -1191,9 +1171,6 @@ PUBLISHED_API:
     /// GetResourceData
     /// \see
     /// RenameResourceData
-    ///
-    ///
-    /// \ingroup WorkingWithResourceData
     ///
     virtual void DeleteResourceData(MgResourceIdentifier* resource, CREFSTRING dataName) = 0;
 
@@ -1253,8 +1230,6 @@ PUBLISHED_API:
     /// DeleteResourceData
     ///
     ///
-    /// \ingroup WorkingWithResourceData
-    ///
     virtual void RenameResourceData(MgResourceIdentifier* resource,
         CREFSTRING oldDataName, CREFSTRING newDataName, bool overwrite) = 0;
 
@@ -1306,8 +1281,6 @@ PUBLISHED_API:
     /// RenameResourceData
     /// \see
     /// DeleteResourceData
-    ///
-    /// \ingroup WorkingWithResourceData
     ///
     MgByteReader* GetResourceData(MgResourceIdentifier* resource,
         CREFSTRING dataName);
@@ -1367,8 +1340,6 @@ PUBLISHED_API:
     /// \see
     /// DeleteResourceData
     ///
-    /// \ingroup WorkingWithResourceData
-    ///
     virtual MgByteReader* EnumerateResourceData(MgResourceIdentifier* resource) = 0;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1410,8 +1381,6 @@ PUBLISHED_API:
     /// \exception MgInvalidRepositoryNameException
     /// \exception MgInvalidRepositoryTypeException
     ///
-    /// \ingroup WorkingWithRepositories
-    ///
     virtual MgByteReader* GetRepositoryContent(MgResourceIdentifier* resource) = 0;
 
     /////////////////////////////////////////////////////////////////////////////
@@ -1452,8 +1421,6 @@ PUBLISHED_API:
     /// \exception MgRepositoryNotFoundException
     /// \exception MgInvalidRepositoryNameException
     /// \exception MgInvalidRepositoryTypeException
-    ///
-    /// \ingroup WorkingWithRepositories
     ///
     virtual MgByteReader* GetRepositoryHeader(MgResourceIdentifier* resource) = 0;
 
@@ -1506,8 +1473,6 @@ PUBLISHED_API:
     /// \exception MgInvalidResourceNameException
     /// \exception MgInvalidResourceTypeException
     ///
-    /// \ingroup WorkingWithResources
-    ///
     virtual MgByteReader* EnumerateReferences(MgResourceIdentifier* resource) = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1532,10 +1497,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns true if the resource exists, false otherwise.
-    ///
-    ///
-    ///
-    /// \ingroup WorkingWithResources
     ///
     virtual bool ResourceExists(MgResourceIdentifier* resource);
 
@@ -1755,5 +1716,6 @@ INTERNAL_API:
         opIdEnumerateUnmanagedData          = 0x1111EF1A,
     };
 };
+
 
 #endif
