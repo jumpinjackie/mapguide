@@ -18,142 +18,150 @@
 #include "MapGuideCommon.h"
 #include "TileCache.h"
 
-#define PATH_LEN 512
-
-STRING MgTileCache::m_path = L"";
+STRING MgTileCache::sm_lockFolderName = L"Lock";    // name of file folder for locks
+STRING MgTileCache::sm_path = L"";
 
 // default constructor
 MgTileCache::MgTileCache()
 {
-    //TODO: It is possible to get a double write on m_path here.  We need
+    //TODO: It is possible to get a double write on sm_path here.  We need
     //to investigate general mutex use in this class.
-    if (m_path.empty())
+    if (sm_path.empty())
     {
         // initialize the tile cache path
         MgConfiguration* pConf = MgConfiguration::GetInstance();
 
-        pConf->GetStringValue(MgConfigProperties::TileServicePropertiesSection,
-                              MgConfigProperties::TileServicePropertyTileCachePath,
-                              m_path,
-                              MgConfigProperties::DefaultTileServicePropertyTileCachePath);
+        pConf->GetStringValue(
+            MgConfigProperties::TileServicePropertiesSection,
+            MgConfigProperties::TileServicePropertyLockFolderName,
+            sm_lockFolderName,
+            MgConfigProperties::DefaultTileServicePropertyLockFolderName);
+
+        pConf->GetStringValue(
+            MgConfigProperties::TileServicePropertiesSection,
+            MgConfigProperties::TileServicePropertyTileCachePath,
+            sm_path,
+            MgConfigProperties::DefaultTileServicePropertyTileCachePath);
 
         // generate directory location for tile cache
-        MgFileUtil::AppendSlashToEndOfPath(m_path);
+        MgFileUtil::AppendSlashToEndOfPath(sm_path);
 
         // create directory if it is not already there
-        if (!MgFileUtil::PathnameExists(m_path))
-            MgFileUtil::CreateDirectory(m_path, false);
+        if (!MgFileUtil::PathnameExists(sm_path))
+            MgFileUtil::CreateDirectory(sm_path, false);
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Generate tile and lock pathnames.
+///
+void MgTileCache::GeneratePathnames(MgResourceIdentifier* mapDef, int scaleIndex,
+    CREFSTRING group, int tileColumn, int tileRow,
+    STRING& tilePathname, STRING& lockPathname, bool createFullPath)
+{
+    wchar_t fileName[MAXPATHLEN] = { 0 };
+    ::swprintf(fileName, MAXPATHLEN, L"/%d_%d.", tileRow, tileColumn);
 
-// returns any cached tile for the given map / scale index / group / i / j
-MgByteReader* MgTileCache::Get(MgMap* map, int scaleIndex, CREFSTRING group, int i, int j)
+    lockPathname = GetBasePath(mapDef);
+    tilePathname;
+
+    if (createFullPath)
+    {
+        tilePathname = CreateFullPath(lockPathname, scaleIndex, group);
+    }
+    else
+    {
+        tilePathname = GetFullPath(lockPathname, scaleIndex, group);
+    }
+
+    // Generate the tile pathname using format "%ls/%d_%d.png":
+    //     <tilePathname> = <fullPath>/<row>_<column>.png
+    tilePathname += fileName;
+    tilePathname += L"png";
+
+    // Generate the lock pathname using format "%ls/%d_%d.lck":
+    //     <lockPathname> = <basePath>/<row>_<column>.lck
+    lockPathname += L"/";
+    lockPathname += sm_lockFolderName;
+    lockPathname += fileName;
+    lockPathname += L"lck";
+}
+
+void MgTileCache::GeneratePathnames(MgMap* map, int scaleIndex,
+    CREFSTRING group, int tileColumn, int tileRow,
+    STRING& tilePathname, STRING& lockPathname, bool createFullPath)
+{
+    assert(NULL != map);
+    Ptr<MgResourceIdentifier> mapDef = map->GetMapDefinition();
+
+    GeneratePathnames(mapDef, scaleIndex, group, tileColumn, tileRow,
+        tilePathname, lockPathname, createFullPath);
+}
+
+// returns any cached tile for the given pathname
+MgByteReader* MgTileCache::Get(CREFSTRING tilePathname)
 {
     // acquire a read lock - this blocks if a writer holds the lock
-    ACE_Read_Guard<ACE_RW_Thread_Mutex> ace_mon(m_mutexRW);
+    ACE_Read_Guard<ACE_RW_Thread_Mutex> ace_mon(m_rwMutex);
 
     Ptr<MgByteReader> ret;
 
-    if (map != NULL)
+    MG_TRY()
+
+    if (MgFileUtil::PathnameExists(tilePathname))
     {
-        STRING tilePath = MgTileCache::GetFullPath(map, scaleIndex, group);
+        Ptr<MgByteSource> byteSource = new MgByteSource(tilePathname, false);
 
-        // generate full path to tile file using <row,column> format
-        // TODO: handle case where path is > PATH_LEN
-        wchar_t tmp[PATH_LEN] = { 0 };
-        swprintf(tmp, PATH_LEN, L"%ls/%d_%d.png", tilePath.c_str(), j, i);
-
-        // check if the tile exists
-        if (MgFileUtil::PathnameExists(tmp))
-        {
-            Ptr<MgByteSource> bs = new MgByteSource(tmp, false);
-            bs->SetMimeType(MgMimeType::Png);
-            ret = bs->GetReader();
-        }
+        byteSource->SetMimeType(MgMimeType::Png);
+        ret = byteSource->GetReader();
     }
 
-    return SAFE_ADDREF(ret.p);
+    MG_CATCH_AND_RELEASE()
+
+    return ret.Detach();
 }
 
-MgByteReader* MgTileCache::Get(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int i, int j)
-{
-    // acquire a read lock - this blocks if a writer holds the lock
-    ACE_Read_Guard<ACE_RW_Thread_Mutex> ace_mon(m_mutexRW);
-
-    Ptr<MgByteReader> ret;
-
-    if (mapDef != NULL)
-    {
-        STRING tilePath = MgTileCache::GetFullPath(mapDef, scaleIndex, group);
-
-        // generate full path to tile file using <row,column> format
-        // TODO: handle case where path is > PATH_LEN
-        wchar_t tmp[PATH_LEN] = { 0 };
-        swprintf(tmp, PATH_LEN, L"%ls/%d_%d.png", tilePath.c_str(), j, i);
-
-        MG_TRY()
-
-        Ptr<MgByteSource> bs = new MgByteSource(tmp, false);
-        bs->SetMimeType(MgMimeType::Png);
-        ret = bs->GetReader();
-
-        MG_CATCH_AND_RELEASE()
-    }
-
-    return SAFE_ADDREF(ret.p);
-}
-
-
-// caches a tile for the given map / scale index / group / i / j
-void MgTileCache::Set(MgByteReader* img, MgMap* map, int scaleIndex, CREFSTRING group, int i, int j)
+// caches a tile for the given pathname
+void MgTileCache::Set(MgByteReader* img, CREFSTRING tilePathname)
 {
     // acquire a write lock - this blocks if any readers or a writer hold the lock
-    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_mutexRW);
+    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_rwMutex);
 
-    if (map != NULL && img != NULL)
+    if (img != NULL)
     {
-        // ensure the necessary directories are created
-        STRING tilePath = MgTileCache::CreateFullPath(map, scaleIndex, group);
+        Ptr<MgByteSink> byteSink = new MgByteSink(img);
 
-        // generate full path to tile file using <row,column> format
-        // TODO: handle case where path is > PATH_LEN
-        wchar_t tmp[PATH_LEN] = { 0 };
-        swprintf(tmp, PATH_LEN, L"%ls/%d_%d.png", tilePath.c_str(), j, i);
-
-        // save the file
-        (MgByteSink(img)).ToFile(tmp);
+        byteSink->ToFile(tilePathname);
     }
 }
-
 
 // clears the tile cache for the given map
 void MgTileCache::Clear(MgMap* map)
 {
     // acquire a write lock - this blocks if any readers or a writer hold the lock
-    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_mutexRW);
+    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_rwMutex);
 
     if (map != NULL)
     {
-        STRING basePath = MgTileCache::GetBasePath(map);
+        STRING basePath = GetBasePath(map);
 
         // delete main map directory
         if (!basePath.empty())
             MgFileUtil::DeleteDirectory(basePath, true, false);
     }
 }
-
 
 // clears the tile cache for the given map
-void MgTileCache::Clear(MgResourceIdentifier* resId)
+void MgTileCache::Clear(MgResourceIdentifier* mapDef)
 {
     // acquire a write lock - this blocks if any readers or a writer hold the lock
-    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_mutexRW);
+    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_rwMutex);
 
     // the resource must be a map definition
-    if (resId != NULL && resId->GetResourceType() == MgResourceType::MapDefinition)
+    if (mapDef != NULL && mapDef->GetResourceType() == MgResourceType::MapDefinition)
     {
-        STRING basePath = MgTileCache::GetBasePath(resId);
+        STRING basePath = GetBasePath(mapDef);
 
         // delete main map directory
         if (!basePath.empty())
@@ -161,41 +169,35 @@ void MgTileCache::Clear(MgResourceIdentifier* resId)
     }
 }
 
-
-// gets the base path to use with the tile cache for the given map
-STRING MgTileCache::GetBasePath(MgMap* map)
-{
-    Ptr<MgResourceIdentifier> resId = map->GetMapDefinition();
-    return GetBasePath(resId);
-}
-
-
 // gets the base path to use with the tile cache for the given map definition resource
-STRING MgTileCache::GetBasePath(MgResourceIdentifier* resId)
+STRING MgTileCache::GetBasePath(MgResourceIdentifier* mapDef)
 {
+    assert(mapDef != NULL);
+    assert(mapDef->GetResourceType() == MgResourceType::MapDefinition);
     STRING mapPath;
 
-    // safety check
-    assert(resId != NULL);
-    if (resId == NULL)
-        return mapPath;
-
-    // we should only be dealing with map definitions
-    assert(resId->GetResourceType() == MgResourceType::MapDefinition);
-
-    if (resId->GetRepositoryType() == MgRepositoryType::Library)
+    if (mapDef->GetRepositoryType() == MgRepositoryType::Library)
     {
         // for maps in the library repository the path+name is unique
-        mapPath  = resId->GetPath();
+        mapPath  = mapDef->GetPath();
         mapPath += L"_";
-        mapPath += resId->GetName();
+        mapPath += mapDef->GetName();
     }
-    else if (resId->GetRepositoryType() == MgRepositoryType::Session)
+    else if (mapDef->GetRepositoryType() == MgRepositoryType::Session)
     {
-        // for maps in the session repository we use the session name + map name
-        mapPath  = resId->GetRepositoryName();
+        // for maps in the session repository we use the session + path + map name
+        mapPath  = mapDef->GetRepositoryName();
         mapPath += L"_";
-        mapPath += resId->GetName();
+
+        STRING resourcePath  = mapDef->GetPath();
+
+        if (!resourcePath.empty())
+        {
+            mapPath += resourcePath;
+            mapPath += L"_";
+        }
+
+        mapPath += mapDef->GetName();
     }
     else
     {
@@ -208,56 +210,90 @@ STRING MgTileCache::GetBasePath(MgResourceIdentifier* resId)
     mapPath = MgUtil::ReplaceString(mapPath, L"/", L"_");
     mapPath = MgUtil::ReplaceString(mapPath, L":", L"_");
 
-    // build the base path
-    wchar_t tmp[PATH_LEN] = { 0 };
-    swprintf(tmp, PATH_LEN, L"%ls%ls", m_path.c_str(), mapPath.c_str());
+    // Build the base path using format "%ls%ls":
+    //     <basePath> = <tileCachePath><mapPath>
+    STRING basePath = sm_path;
+    basePath += mapPath;
 
-    return STRING(tmp);
+    return basePath;
 }
 
+// gets the base path to use with the tile cache for the given map
+STRING MgTileCache::GetBasePath(MgMap* map)
+{
+    assert(NULL != map);
+    Ptr<MgResourceIdentifier> mapDef = map->GetMapDefinition();
+    return GetBasePath(mapDef);
+}
+
+// gets the full path to use with the tile cache for the given base path / scale index / group
+STRING MgTileCache::GetFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group)
+{
+    // Build full path using format "%ls/%d/%ls":
+    //     <fullPath> = <basePath>/<scaleIndex>/<group>
+    assert(!basePath.empty());
+    STRING fullPath = basePath;
+    STRING buffer;
+    MgUtil::Int32ToString(scaleIndex, buffer);
+
+    fullPath += L"/";
+    fullPath += buffer;
+    fullPath += L"/";
+    fullPath += group;
+
+    return fullPath;
+}
+
+// gets the full path to use with the tile cache for the given map definition / scale index / group
+STRING MgTileCache::GetFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group)
+{
+    return GetFullPath(GetBasePath(mapDef), scaleIndex, group);
+}
 
 // gets the full path to use with the tile cache for the given map / scale index / group
 STRING MgTileCache::GetFullPath(MgMap* map, int scaleIndex, CREFSTRING group)
 {
-    STRING basePath = MgTileCache::GetBasePath(map);
-
-    wchar_t tmp[PATH_LEN] = { 0 };
-    swprintf(tmp, PATH_LEN, L"%ls/%d/%ls", basePath.c_str(), scaleIndex, group.c_str());
-
-    return STRING(tmp);
+    assert(NULL != map);
+    Ptr<MgResourceIdentifier> mapDef = map->GetMapDefinition();
+    return GetFullPath(mapDef, scaleIndex, group);
 }
 
-// gets the full path to use with the tile cache for the given map / scale index / group
-STRING MgTileCache::GetFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group)
+STRING MgTileCache::CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group)
 {
-    STRING basePath = MgTileCache::GetBasePath(mapDef);
+    assert(!basePath.empty());
+    STRING fullPath = basePath;
 
-    wchar_t tmp[PATH_LEN] = { 0 };
-    swprintf(tmp, PATH_LEN, L"%ls/%d/%ls", basePath.c_str(), scaleIndex, group.c_str());
+    // Create base directory if it does not exist.
+    MgFileUtil::CreateDirectory(fullPath, false);
+    fullPath += L"/";
 
-    return STRING(tmp);
+    // Create lock directory if it does not exist.
+    STRING lockPath = fullPath;
+
+    lockPath += sm_lockFolderName;
+    MgFileUtil::CreateDirectory(lockPath, false);
+
+    // Create scale directory if it does not exist.
+    STRING buffer;
+    MgUtil::Int32ToString(scaleIndex, buffer);
+
+    fullPath += buffer;
+    MgFileUtil::CreateDirectory(fullPath, false);
+
+    // Create group directory if it does not exist.
+    fullPath += L"/";
+    fullPath += group;
+    MgFileUtil::CreateDirectory(fullPath, false);
+
+    return fullPath;
 }
 
+STRING MgTileCache::CreateFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group)
+{
+    return CreateFullPath(GetBasePath(mapDef), scaleIndex, group); 
+}
 
 STRING MgTileCache::CreateFullPath(MgMap* map, int scaleIndex, CREFSTRING group)
 {
-    wchar_t tmp[PATH_LEN] = { 0 };
-
-    if (map != NULL)
-    {
-        STRING basePath = MgTileCache::GetBasePath(map);
-
-        // check main map directory
-        MgFileUtil::CreateDirectory(basePath, false);
-
-        // check scale directory
-        swprintf(tmp, PATH_LEN, L"%ls/%d", basePath.c_str(), scaleIndex);
-        MgFileUtil::CreateDirectory(tmp, false);
-
-        // check group directory
-        swprintf(tmp, PATH_LEN, L"%ls/%d/%ls", basePath.c_str(), scaleIndex, group.c_str());
-        MgFileUtil::CreateDirectory(tmp, false);
-    }
-
-    return STRING(tmp);
+    return CreateFullPath(GetBasePath(map), scaleIndex, group); 
 }

@@ -308,10 +308,16 @@ const INT32  MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval 
 const STRING MgConfigProperties::TileServicePropertiesSection                               = L"TileServiceProperties";
 const STRING MgConfigProperties::TileServicePropertyTileCachePath                           = L"TileCachePath";
 const STRING MgConfigProperties::DefaultTileServicePropertyTileCachePath                    = L"Repositories/TileCache/";
-const STRING MgConfigProperties::TileServicePropertyTiledMapCacheSize                       = L"TiledMapCacheSize";
-const INT32  MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize                = 10;
+const STRING MgConfigProperties::TileServicePropertyCreationCutoffTime                      = L"CreationCutoffTime";
+const INT32  MgConfigProperties::DefaultTileServicePropertyCreationCutoffTime               = 120;
+const STRING MgConfigProperties::TileServicePropertyLockFolderName                          = L"LockFolderName";
+const STRING MgConfigProperties::DefaultTileServicePropertyLockFolderName                   = L"Lock";
+const STRING MgConfigProperties::TileServicePropertyPollingInterval                         = L"PollingInterval";
+const INT32  MgConfigProperties::DefaultTileServicePropertyPollingInterval                  = 1;
 const STRING MgConfigProperties::TileServicePropertyRenderOnly                              = L"RenderOnly";
 const bool   MgConfigProperties::DefaultTileServicePropertyRenderOnly                       = false;
+const STRING MgConfigProperties::TileServicePropertyTiledMapCacheSize                       = L"TiledMapCacheSize";
+const INT32  MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize                = 10;
 
 // ******************************************************************
 // Access Log Properties
@@ -541,8 +547,11 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviSiteServiceProperties[] =
 const MgConfigValidationInfo MgConfigProperties::sm_cviTileServiceProperties[] =
 {
     { MgConfigProperties::TileServicePropertyTileCachePath                          , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::TileServicePropertyTiledMapCacheSize                      , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
+    { MgConfigProperties::TileServicePropertyCreationCutoffTime                     , MgPropertyType::Int32     , 1                                     , 600                                   , L""                                       },
+    { MgConfigProperties::TileServicePropertyLockFolderName                         , MgPropertyType::String    , MG_CONFIG_MIN_FOLDER_NAME_LENGTH      , MG_CONFIG_MAX_FOLDER_NAME_LENGTH      , MG_CONFIG_FOLDER_NAME_RESERVED_CHARACTERS },
+    { MgConfigProperties::TileServicePropertyPollingInterval                        , MgPropertyType::Int32     , 1                                     , 60                                    , L""                                       },
     { MgConfigProperties::TileServicePropertyRenderOnly                             , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::TileServicePropertyTiledMapCacheSize                      , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

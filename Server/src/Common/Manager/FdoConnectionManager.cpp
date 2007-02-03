@@ -1234,7 +1234,8 @@ MdfModel::FeatureSource* MgFdoConnectionManager::GetFeatureSource(MgResourceIden
     RetrieveFeatureSource(resId, featureSourceXmlContent);
 
     MdfParser::FSDSAX2Parser parser;
-    parser.ParseString(featureSourceXmlContent.c_str(), featureSourceXmlContent.length()*sizeof(char));
+    parser.ParseString(featureSourceXmlContent.c_str(),
+        (unsigned int)(featureSourceXmlContent.length()*sizeof(char)));
 
     assert(parser.GetSucceeded());
 

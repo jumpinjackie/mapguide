@@ -219,13 +219,15 @@ bool MgFileUtil::GetFileStatus(CREFSTRING pathname, struct _stat& statInfo,
 
     RemoveSlashFromEndOfPath(path); // This must be done.
 
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
+    { // Begin guarding.
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
 #ifdef _WIN32
-    success = ::_wstat(path.c_str(), &statInfo) == 0;
+        success = ::_wstat(path.c_str(), &statInfo) == 0;
 #else
-    success = ::stat(MgUtil::WideCharToMultiByte(path).c_str(), &statInfo) == 0;
+        success = ::stat(MgUtil::WideCharToMultiByte(path).c_str(), &statInfo) == 0;
 #endif
+    } // End guarding.
 
     if (!success && strict)
     {
@@ -297,6 +299,8 @@ void MgFileUtil::CreateDirectory(CREFSTRING path, bool strict)
 {
     MG_TRY()
 
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
     if (PathnameExists(path))
     {
         if (strict)
@@ -311,7 +315,6 @@ void MgFileUtil::CreateDirectory(CREFSTRING path, bool strict)
         return;
     }
 
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
     int errCode = ACE_OS::mkdir(MG_WCHAR_TO_TCHAR(path));
 
     if (0 != errCode)
@@ -400,6 +403,8 @@ bool MgFileUtil::CleanDirectory(CREFSTRING path, bool recursive, bool strict)
 
     MG_TRY()
 
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
+
     if (!PathnameExists(path))
     {
         if (strict)
@@ -414,7 +419,6 @@ bool MgFileUtil::CleanDirectory(CREFSTRING path, bool recursive, bool strict)
         return false;
     }
 
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
     numEntries = ACE_OS::scandir(MG_WCHAR_TO_TCHAR(path), &dirEntries,
         MgDirEntrySelector, MgDirEntryComparator);
 
@@ -487,10 +491,10 @@ bool MgFileUtil::CleanDirectory(CREFSTRING path, bool recursive, bool strict)
 
 STRING MgFileUtil::ChangeDirectory(CREFSTRING path)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, L""));
-
     STRING currDir;
     ACE_TCHAR buffer[MAXPATHLEN];
+
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, L""));
 
     if (ACE_OS::getcwd(buffer, MAXPATHLEN) == NULL)
     {
@@ -550,6 +554,8 @@ void MgFileUtil::DeleteFile(CREFSTRING pathname, bool strict)
 {
     MG_TRY()
 
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
     if (!PathnameExists(pathname))
     {
         if (strict)
@@ -564,7 +570,6 @@ void MgFileUtil::DeleteFile(CREFSTRING pathname, bool strict)
         return;
     }
 
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
     int errCode = ACE_OS::unlink(MG_WCHAR_TO_TCHAR(pathname));
 
     if (0 != errCode)
@@ -711,6 +716,8 @@ void MgFileUtil::RenameFile(CREFSTRING oldPathname, CREFSTRING newPathname,
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
     if (overwrite)
     {
         DeleteFile(newPathname);
@@ -723,8 +730,6 @@ void MgFileUtil::RenameFile(CREFSTRING oldPathname, CREFSTRING newPathname,
         throw new MgDuplicateFileException(L"MgFileUtil.RenameFile",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
-
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
 #ifdef WIN32
     int errCode = ::_wrename(oldPathname.c_str(), newPathname.c_str());
@@ -992,9 +997,9 @@ bool MgFileUtil::LockFile(CREFSTRING pathname)
 {
     bool bResult = true;
 
+#ifndef WIN32
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
-#ifndef WIN32
     FILE* file = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(pathname), ACE_TEXT("r+"));
     if (file)
     {

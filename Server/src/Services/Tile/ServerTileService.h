@@ -56,17 +56,24 @@ public:
 
 private:
 
+    bool DetectTileLockFile(CREFSTRING lockPathname);
+
+    MgByteReader* GetTile(CREFSTRING tilePathname, MgMap* map, INT32 scaleIndex,
+        CREFSTRING baseMapLayerGroupName, INT32 tileColumn, INT32 tileRow);
+
     void ClearMapCache(CREFSTRING mapName);
 
     // member data
     Ptr<MgTileCache> m_tileCache;
 
     typedef std::map<STRING, MgMemoryStreamHelper*> MapCache;
-    static MapCache sm_mapCache;
-    static ACE_Recursive_Thread_Mutex sm_mutex;
-    static INT32 sm_mapCacheSize;
-    static bool sm_renderOnly;
 
+    static ACE_Recursive_Thread_Mutex sm_mutex;
+    static MapCache sm_mapCache;
+    static INT32 sm_creationCutoffTime;
+    static INT32 sm_pollingInterval;
+    static bool sm_renderOnly;
+    static INT32 sm_mapCacheSize;
 };
 
 #endif
