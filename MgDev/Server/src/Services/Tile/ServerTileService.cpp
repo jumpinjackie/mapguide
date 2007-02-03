@@ -22,25 +22,43 @@ IMPLEMENT_CREATE_SERVICE(MgServerTileService)
 
 ACE_Recursive_Thread_Mutex MgServerTileService::sm_mutex;
 MgServerTileService::MapCache MgServerTileService::sm_mapCache;
-INT32 MgServerTileService::sm_mapCacheSize = -1;
+INT32 MgServerTileService::sm_creationCutoffTime = 120;     // in seconds
+INT32 MgServerTileService::sm_pollingInterval = 1;          // in seconds
 bool MgServerTileService::sm_renderOnly = false;
+INT32 MgServerTileService::sm_mapCacheSize = -1;
 
 MgServerTileService::MgServerTileService() : MgTileService()
 {
+    //TODO: It is possible to get a double write on sm_mapCacheSize here.  We need
+    //to investigate general mutex use in this class.
     if (sm_mapCacheSize < 0)
     {
         // initialize the tile cache size
         MgConfiguration* pConf = MgConfiguration::GetInstance();
 
-        pConf->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyTiledMapCacheSize,
-            sm_mapCacheSize,
-            MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize);
+        pConf->GetIntValue(
+            MgConfigProperties::TileServicePropertiesSection,
+            MgConfigProperties::TileServicePropertyCreationCutoffTime,
+            sm_creationCutoffTime,
+            MgConfigProperties::DefaultTileServicePropertyCreationCutoffTime);
 
-        pConf->GetBoolValue(MgConfigProperties::TileServicePropertiesSection,
+        pConf->GetIntValue(
+            MgConfigProperties::TileServicePropertiesSection,
+            MgConfigProperties::TileServicePropertyPollingInterval,
+            sm_pollingInterval,
+            MgConfigProperties::DefaultTileServicePropertyPollingInterval);
+
+        pConf->GetBoolValue(
+            MgConfigProperties::TileServicePropertiesSection,
             MgConfigProperties::TileServicePropertyRenderOnly,
             sm_renderOnly,
             MgConfigProperties::DefaultTileServicePropertyRenderOnly);
+
+        pConf->GetIntValue(
+            MgConfigProperties::TileServicePropertiesSection,
+            MgConfigProperties::TileServicePropertyTiledMapCacheSize,
+            sm_mapCacheSize,
+            MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize);
     }
 
     m_tileCache = new MgTileCache();
@@ -51,6 +69,36 @@ MgServerTileService::~MgServerTileService()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Detect if the tile file has been locked by another thread or process.
+///
+bool MgServerTileService::DetectTileLockFile(CREFSTRING lockPathname)
+{
+    bool found = false;
+    struct _stat lockFileInfo;
+
+    // Check the lock file to see if another thread/process is writing the tile file.
+    while (MgFileUtil::GetFileStatus(lockPathname, lockFileInfo))
+    {
+        time_t currTime;
+        ACE_OS::time(&currTime);
+        INT32 diffTime = (INT32)(currTime - lockFileInfo.st_mtime);
+
+        if (diffTime < sm_creationCutoffTime)
+        {
+            ACE_OS::sleep(sm_pollingInterval);
+        }
+        else
+        {
+            found = true;
+            break;
+        }
+    }
+
+    return found;
+}
+
 MgByteReader* MgServerTileService::GetTile(
     MgResourceIdentifier* mapDefinition,
     CREFSTRING baseMapLayerGroupName,
@@ -59,13 +107,28 @@ MgByteReader* MgServerTileService::GetTile(
     INT32 scaleIndex)
 {
     Ptr<MgByteReader> ret;
+    FILE* lockFile = NULL;
+    STRING tilePathname, lockPathname;
 
     MG_TRY()
 
     if (NULL == mapDefinition || baseMapLayerGroupName.empty())
     {
-        throw new MgNullArgumentException(
-            L"MgServerTileService.GetTile", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgServerTileService.GetTile",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if (scaleIndex < 0)
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(scaleIndex, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(L"5");
+        arguments.Add(buffer);
+
+        throw new MgInvalidArgumentException(L"MgServerTileService.GetTile",
+            __LINE__, __WFILE__, &arguments, L"MgInvalidScaleIndex", NULL);
     }
 
     MgServiceManager* serviceMan = MgServiceManager::GetInstance();
@@ -74,11 +137,9 @@ MgByteReader* MgServerTileService::GetTile(
     // Get the service from service manager
     Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
         serviceMan->RequestService(MgServiceType::ResourceService));
-    assert(resourceService != NULL);
+    assert(NULL != resourceService);
 
-    bool bAllowed = resourceService->HasPermission(mapDefinition, MgResourcePermission::ReadOnly);
-
-    if (!bAllowed)
+    if (!resourceService->HasPermission(mapDefinition, MgResourcePermission::ReadOnly))
     {
         MG_LOG_AUTHENTICATION_ENTRY(MgResources::PermissionDenied.c_str());
 
@@ -89,24 +150,72 @@ MgByteReader* MgServerTileService::GetTile(
             L"MgServerTileService.GetTile",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
-    
-    ret = m_tileCache->Get(mapDefinition, scaleIndex, baseMapLayerGroupName, tileColumn, tileRow);
 
-    if (!ret)
+    // Generate tile and lock pathnames.
+    m_tileCache->GeneratePathnames(mapDefinition, scaleIndex, baseMapLayerGroupName,
+        tileColumn, tileRow, tilePathname, lockPathname, false);
+
+    // If there is a dangling lock file, then attempt to remove it.
+    if (DetectTileLockFile(lockPathname))
     {
+        // TODO: Handle the exception by displaying a tile with an error message?
+        MgFileUtil::DeleteFile(lockPathname, true);
+    }
 
+    // try getting the tile from the cache
+    ret = m_tileCache->Get(tilePathname);
+
+    // if the reader is NULL then the tile wasn't in the cache and we
+    // need to generate it
+    while (NULL == ret)
+    {
         // Attempt use a cached & serialized MgMap object
         Ptr<MgMemoryStreamHelper> cachedMap;
-
         STRING mapString = mapDefinition->ToString();
-
         Ptr<MgMap> map;
 
         // Protect the serialized MgMap cache with a mutex.  Stream reading is not
         // thread safe so we need to deserialize the map within the mutex to ensure
         // that a Rewind() is not called in the middle of a Deserialize()
         {
+            // Attemp to lock the tile file.
             ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+
+            // Bail out if the tile file has been locked for so long.
+            if (DetectTileLockFile(lockPathname))
+            {
+                MgStringCollection arguments;
+                arguments.Add(lockPathname);
+
+                throw new MgFileIoException(L"MgServerTileService.GetTile",
+                    __LINE__, __WFILE__, &arguments, L"MgUnableToLockTileFile", NULL);
+            }
+
+            // try getting the tile from the cache
+            ret = m_tileCache->Get(tilePathname);
+
+            if (NULL != ret)
+            {
+                break;
+            }
+
+            // Create the lock file and close it right away.
+            m_tileCache->CreateFullPath(mapDefinition, scaleIndex, baseMapLayerGroupName);
+            lockFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(lockPathname), ACE_TEXT("wb"));
+
+            if (NULL == lockFile)
+            {
+                MgStringCollection arguments;
+                arguments.Add(lockPathname);
+
+                throw new MgFileIoException(L"MgServerTileService.GetTile",
+                    __LINE__, __WFILE__, &arguments, L"MgUnableToOpenTileFile", NULL);
+            }
+            else
+            {
+                ACE_OS::fclose(lockFile);
+            }
+
             MapCache::const_iterator iter = sm_mapCache.find(mapString);
             if (sm_mapCache.end() != iter)
             {
@@ -138,10 +247,20 @@ MgByteReader* MgServerTileService::GetTile(
 
         double scale = map->GetFiniteDisplayScaleAt(scaleIndex);
         map->SetViewScale(scale);
-        ret = GetTile(map, baseMapLayerGroupName, tileColumn, tileRow);
+
+        // Render the tile and cache it.
+        ret = GetTile(tilePathname, map, scaleIndex, baseMapLayerGroupName, tileColumn, tileRow);
+        break;
     }
 
-    MG_CATCH_AND_THROW(L"MgServerTileService.GetTile")
+    MG_CATCH(L"MgServerTileService.GetTile")
+
+    if (NULL != lockFile)
+    {
+        MgFileUtil::DeleteFile(lockPathname, false);
+    }
+
+    MG_THROW()
 
     return ret.Detach();
 }
@@ -153,11 +272,16 @@ MgByteReader* MgServerTileService::GetTile(MgMap* map,
                                            INT32 tileRow)
 {
     Ptr<MgByteReader> ret;
+    FILE* lockFile = NULL;
+    STRING tilePathname, lockPathname;
 
     MG_TRY()
 
     if (NULL == map || baseMapLayerGroupName.empty())
-        throw new MgNullArgumentException(L"MgServerTileService.GetTile", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgNullArgumentException(L"MgServerTileService.GetTile",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     // find the finite display scale closest to the requested map scale
     double scale = map->GetViewScale();
@@ -165,43 +289,118 @@ MgByteReader* MgServerTileService::GetTile(MgMap* map,
 
     // if we don't find a nearest scale then something is wrong with the map
     if (scaleIndex < 0)
-        throw new MgInvalidMapDefinitionException(L"MgServerTileService.GetTile", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgInvalidMapDefinitionException(L"MgServerTileService.GetTile",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Detect the lock file to see if another thread is creating the tile file.
+    m_tileCache->GeneratePathnames(map, scaleIndex, baseMapLayerGroupName,
+        tileColumn, tileRow, tilePathname, lockPathname, false);
+
+    // If there is a dangling lock file, then attempt to remove it.
+    if (DetectTileLockFile(lockPathname))
+    {
+        // TODO: Handle the exception by displaying a tile with an error message?
+        MgFileUtil::DeleteFile(lockPathname, true);
+    }
 
     // try getting the tile from the cache
-    ret = m_tileCache->Get(map, scaleIndex, baseMapLayerGroupName, tileColumn, tileRow);
+    ret = m_tileCache->Get(tilePathname);
 
     // if the reader is NULL then the tile wasn't in the cache and we
     // need to generate it
-    if (ret == NULL)
+    while (NULL == ret)
     {
-        // get a rendering service instance
-        MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-        assert(NULL != serviceMan);
-        Ptr<MgRenderingService> svcRendering = dynamic_cast<MgRenderingService*>(
-            serviceMan->RequestService(MgServiceType::RenderingService));
-
-        if (svcRendering != NULL)
         {
-            // generate the tile
-            ret = svcRendering->RenderTile(map, baseMapLayerGroupName, tileColumn, tileRow);
+            // Attemp to lock the tile file.
+            ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
-            // cache the tile
-            if (!sm_renderOnly)
+            // Bail out if the tile file has been locked for so long.
+            if (DetectTileLockFile(lockPathname))
             {
-                SetTile(ret, map, scaleIndex, baseMapLayerGroupName, tileColumn, tileRow);
+                MgStringCollection arguments;
+                arguments.Add(lockPathname);
 
-                // rewind the reader since setting the tile advances it to the end
-                if (ret)
-                    ret->Rewind();
+                throw new MgFileIoException(L"MgServerTileService.GetTile",
+                    __LINE__, __WFILE__, &arguments, L"MgUnableToLockTileFile", NULL);
+            }
+
+            // try getting the tile from the cache
+            ret = m_tileCache->Get(tilePathname);
+
+            if (NULL != ret)
+            {
+                break;
+            }
+
+            // Create the lock file and close it right away.
+            m_tileCache->CreateFullPath(map, scaleIndex, baseMapLayerGroupName);
+            lockFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(lockPathname), ACE_TEXT("wb"));
+
+            if (NULL == lockFile)
+            {
+                MgStringCollection arguments;
+                arguments.Add(lockPathname);
+
+                throw new MgFileIoException(L"MgServerTileService.GetTile",
+                    __LINE__, __WFILE__, &arguments, L"MgUnableToOpenTileFile", NULL);
+            }
+            else
+            {
+                ACE_OS::fclose(lockFile);
+            }
+        }
+
+        // Render the tile and cache it.
+        ret = GetTile(tilePathname, map, scaleIndex, baseMapLayerGroupName, tileColumn, tileRow);
+        break;
+    }
+
+    MG_CATCH(L"MgServerTileService.GetTile")
+
+    if (NULL != lockFile)
+    {
+        MgFileUtil::DeleteFile(lockPathname, false);
+    }
+
+    MG_THROW()
+
+    return ret.Detach();
+}
+
+MgByteReader* MgServerTileService::GetTile(CREFSTRING tilePathname, MgMap* map, INT32 scaleIndex,
+    CREFSTRING baseMapLayerGroupName, INT32 tileColumn, INT32 tileRow)
+{
+    Ptr<MgByteReader> img;
+
+    // get a rendering service instance
+    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+    assert(NULL != serviceMan);
+    Ptr<MgRenderingService> svcRendering = dynamic_cast<MgRenderingService*>(
+        serviceMan->RequestService(MgServiceType::RenderingService));
+    assert(NULL != svcRendering);
+
+    if (svcRendering != NULL)
+    {
+        // generate the tile
+        img = svcRendering->RenderTile(map, baseMapLayerGroupName, tileColumn, tileRow);
+
+        // cache the tile
+        if (!sm_renderOnly)
+        {
+            m_tileCache->Set(img, tilePathname);
+
+            // rewind the reader since setting the tile advances it to the end
+            if (img)
+            {
+                img->Rewind();
             }
         }
     }
 
-    MG_CATCH_AND_THROW(L"MgServerTileService.GetTile")
-
-    return SAFE_ADDREF(ret.p);
+    return img.Detach();
 }
-
 
 void MgServerTileService::SetTile(MgByteReader* img,
                                   MgMap* map,
@@ -210,10 +409,16 @@ void MgServerTileService::SetTile(MgByteReader* img,
                                   INT32 tileColumn,
                                   INT32 tileRow)
 {
+    FILE* lockFile = NULL;
+    STRING tilePathname, lockPathname;
+
     MG_TRY()
 
     if (NULL == img || NULL == map || baseMapLayerGroupName.empty())
-        throw new MgNullArgumentException(L"MgServerTileService.SetTile", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgNullArgumentException(L"MgServerTileService.SetTile",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     if (scaleIndex < 0)
     {
@@ -228,10 +433,48 @@ void MgServerTileService::SetTile(MgByteReader* img,
             __LINE__, __WFILE__, &arguments, L"MgInvalidScaleIndex", NULL);
     }
 
-    // cache the tile
-    m_tileCache->Set(img, map, scaleIndex, baseMapLayerGroupName, tileColumn, tileRow);
+    // Generate tile and lock pathnames.
+    m_tileCache->GeneratePathnames(map, scaleIndex, baseMapLayerGroupName,
+        tileColumn, tileRow, tilePathname, lockPathname, true);
 
-    MG_CATCH_AND_THROW(L"MgServerTileService.SetTile")
+    {
+        // Attemp to lock the tile file.
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
+        if (DetectTileLockFile(lockPathname))
+        {
+            // Attemp to remove a dangling lock file.
+            MgFileUtil::DeleteFile(lockPathname, true);
+        }
+
+        // Create the lock file and close it right away.
+        lockFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(lockPathname), ACE_TEXT("wb"));
+
+        if (NULL == lockFile)
+        {
+            MgStringCollection arguments;
+            arguments.Add(lockPathname);
+
+            throw new MgFileIoException(L"MgServerTileService.SetTile",
+                __LINE__, __WFILE__, &arguments, L"MgUnableToOpenTileFile", NULL);
+        }
+        else
+        {
+            ACE_OS::fclose(lockFile);
+        }
+    }
+
+    // cache the tile
+    m_tileCache->Set(img, tilePathname);
+
+    MG_CATCH(L"MgServerTileService.SetTile")
+
+    if (NULL != lockFile)
+    {
+        MgFileUtil::DeleteFile(lockPathname, false);
+    }
+
+    MG_THROW()
 }
 
 

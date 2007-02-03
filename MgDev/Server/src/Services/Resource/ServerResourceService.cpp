@@ -2035,7 +2035,7 @@ MgPermissionCache* MgServerResourceService::CreatePermissionCache()
 bool MgServerResourceService::HasPermission(MgResourceIdentifier* resource, 
     CREFSTRING permission)
 {
-    bool retVal = false;
+    bool permitted = false;
 
     MG_RESOURCE_SERVICE_TRY()
 
@@ -2056,13 +2056,20 @@ bool MgServerResourceService::HasPermission(MgResourceIdentifier* resource,
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
-    retVal = resourceContentMan->CheckPermission(*resource, permission);
+    permitted = resourceContentMan->CheckPermission(*resource, permission);
 
     MG_RESOURCE_SERVICE_END_OPERATION(sm_maxOpRetries)
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.HasPermission")
+    MG_RESOURCE_SERVICE_CATCH(L"MgServerResourceService.HasPermission")
 
-    return retVal;
+    if (mgException != NULL
+        && !mgException->IsOfClass(MapGuide_Exception_MgPermissionDeniedException)
+        && !mgException->IsOfClass(MapGuide_Exception_MgUnauthorizedAccessException))
+    {
+        MG_RESOURCE_SERVICE_THROW()
+    }
+
+    return permitted;
 }
 
 ///----------------------------------------------------------------------------

@@ -140,7 +140,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTile")
 
-    return SAFE_ADDREF(ret.p);
+    return ret.Detach();
 }
 
 
@@ -208,7 +208,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderTile")
 
-    return SAFE_ADDREF(ret.p);
+    return ret.Detach();
 }
 
 
@@ -272,7 +272,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderDynamicOverlay")
 
-    return SAFE_ADDREF(ret.p);
+    return ret.Detach();
 }
 
 
@@ -301,7 +301,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
-    return SAFE_ADDREF(ret.p);
+    return ret.Detach();
 }
 
 
@@ -394,7 +394,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
-    return SAFE_ADDREF(ret.p);
+    return ret.Detach();
 }
 
 
@@ -448,7 +448,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
-    return SAFE_ADDREF(ret.p);
+    return ret.Detach();
 }
 
 
@@ -488,7 +488,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.QueryFeatures")
 
-    return SAFE_ADDREF(ret.p);
+    return ret.Detach();
 }
 
 
@@ -516,7 +516,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgM
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.QueryFeatures")
 
-    return SAFE_ADDREF(ret.p);
+    return ret.Detach();
 }
 
 
@@ -638,7 +638,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     dr->ProcessPolyline(&lb, ls);
     //-------------------------------------------------------
 */
-    MgByteReader* ret = NULL;
+    Ptr<MgByteReader> ret;
 
     // get a byte representation of the image
     RS_ByteData* data = dr->Save(format, saveWidth, saveHeight);
@@ -663,7 +663,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
         data->Dispose();
     }
 
-    return ret;
+    return ret.Detach();
 }
 
 
@@ -743,7 +743,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMapLegend")
 
-    return SAFE_ADDREF(ret.p);
+    return ret.Detach();
 }
 
 

@@ -26,11 +26,21 @@ class MG_SERVER_TILE_API MgTileCache : public MgDisposable
 public:
     MgTileCache();
 
-    MgByteReader* Get(MgMap* map, int scaleIndex, CREFSTRING group, int i, int j);
-    MgByteReader* Get(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int i, int j);
-    void Set(MgByteReader* img, MgMap* map, int scaleIndex, CREFSTRING group, int i, int j);
+    void GeneratePathnames(MgResourceIdentifier* mapDef, int scaleIndex,
+        CREFSTRING group, int tileColumn, int tileRow,
+        STRING& tilePathname, STRING& lockPathname, bool createFullPath);
+    void GeneratePathnames(MgMap* map, int scaleIndex,
+        CREFSTRING group, int tileColumn, int tileRow,
+        STRING& tilePathname, STRING& lockPathname, bool createFullPath);
+
+    STRING CreateFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group);
+    STRING CreateFullPath(MgMap* map, int scaleIndex, CREFSTRING group);
+
+    MgByteReader* Get(CREFSTRING tilePathname);
+    void Set(MgByteReader* img, CREFSTRING tilePathname);
+
     void Clear(MgMap* map);
-    void Clear(MgResourceIdentifier* resId);
+    void Clear(MgResourceIdentifier* mapDef);
 
 protected:
     virtual void Dispose()
@@ -39,17 +49,22 @@ protected:
     }
 
 private:
-    STRING GetBasePath(MgMap* map);
-    STRING GetBasePath(MgResourceIdentifier* resId);
-    STRING GetFullPath(MgMap* map, int scaleIndex, CREFSTRING group);
-    STRING GetFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group);
-    STRING CreateFullPath(MgMap* map, int scaleIndex, CREFSTRING group);
+    // Unimplemented Constructors/Methods
+    MgTileCache(const MgTileCache&);
+    MgTileCache& operator=(const MgTileCache&);
 
-    // TODO: Investigate this mutex.  It may fail if
-    // we have more than one tile service and could reduce
-    // multi-threaded performance.  File locks would be better.
-    ACE_RW_Thread_Mutex m_mutexRW;
-    static STRING m_path;
+    STRING GetBasePath(MgResourceIdentifier* mapDef);
+    STRING GetBasePath(MgMap* map);
+
+    STRING GetFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group);
+    STRING GetFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group);
+    STRING GetFullPath(MgMap* map, int scaleIndex, CREFSTRING group);
+
+    STRING CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group);
+
+    ACE_RW_Thread_Mutex m_rwMutex;
+    static STRING sm_path;
+    static STRING sm_lockFolderName;
 };
 
 #endif
