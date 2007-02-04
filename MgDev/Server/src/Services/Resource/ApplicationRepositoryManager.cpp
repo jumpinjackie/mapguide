@@ -360,6 +360,12 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceContent(
         dataBindingInfo.SetLoginUsername(m_currUserInfo->GetUserName());
         dataBindingInfo.SetLoginPassword(m_currUserInfo->GetPassword());
 
+        if (resource->IsResourceTypeOf(MgResourceType::FeatureSource))
+        {
+            // turn on substitute unmanaged data mappings
+            dataBindingInfo.SetSubstituteUnmanagedDataMappings(true);
+        }
+
         byteReader = resourceContentMan->GetResource(resource,
             &dataBindingInfo);
     }

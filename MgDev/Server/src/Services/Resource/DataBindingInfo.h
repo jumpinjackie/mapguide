@@ -38,11 +38,13 @@ class MgDataBindingInfo
         CREFSTRING GetResourceDataFilePath() const;
         CREFSTRING GetLoginUsername() const;
         CREFSTRING GetLoginPassword() const;
+        bool GetSubstituteUnmanagedDataMappings() const;
 
         void SetPreProcessTags(CREFSTRING preProcessTags);
         void SetResourceDataFilePath(CREFSTRING resourceDataFilePath);
         void SetLoginUsername(CREFSTRING loginUsername);
         void SetLoginPassword(CREFSTRING loginPassword);
+        void SetSubstituteUnmanagedDataMappings(bool value);
 
 /// Data Members
 
@@ -52,6 +54,7 @@ class MgDataBindingInfo
         STRING m_resourceDataFilePath;
         STRING m_loginUsername;
         STRING m_loginPassword;
+        bool m_substituteUnmanagedDataMappings;
 };
 
 /// Inline Methods
@@ -74,6 +77,11 @@ inline CREFSTRING MgDataBindingInfo::GetLoginUsername() const
 inline CREFSTRING MgDataBindingInfo::GetLoginPassword() const
 {
     return m_loginPassword;
+}
+
+inline bool MgDataBindingInfo::GetSubstituteUnmanagedDataMappings() const
+{
+    return m_substituteUnmanagedDataMappings;
 }
 
 #endif

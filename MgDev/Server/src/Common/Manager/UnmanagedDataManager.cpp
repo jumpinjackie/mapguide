@@ -24,6 +24,8 @@
 // Process-wide MgUnmanagedDataManager
 Ptr<MgUnmanagedDataManager> MgUnmanagedDataManager::sm_unmanagedDataManager = (MgUnmanagedDataManager*)NULL;
 
+//Ptr<MgPropertyCollection> MgUnmanagedDataManager::m_unmanagedDataMappings = (MgPropertyCollection*)NULL;
+
 const STRING MgUnmanagedDataManager::Folders              = L"FOLDERS";
 const STRING MgUnmanagedDataManager::Files                = L"FILES";
 const STRING MgUnmanagedDataManager::Both                 = L"BOTH";
@@ -37,6 +39,7 @@ const STRING MgUnmanagedDataManager::ClosedSquareBracket  = L"]";
 ///
 MgUnmanagedDataManager::MgUnmanagedDataManager(void)
 {
+    Initialize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -56,6 +59,17 @@ void MgUnmanagedDataManager::Dispose(void)
 {
     delete this;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Initialize the mappings
+///
+void MgUnmanagedDataManager::Initialize(void)
+{
+    MgConfiguration* config = MgConfiguration::GetInstance();
+    m_unmanagedDataMappings = config->GetProperties(MgConfigProperties::UnmanagedDataMappingsSection);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -369,49 +383,15 @@ MgUnmanagedDataManager* MgUnmanagedDataManager::GetInstance()
     return MgUnmanagedDataManager::sm_unmanagedDataManager;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Converts mapped drive in path to its mapped value
+/// Returns unmanaged data mappings
 ///
-void MgUnmanagedDataManager::ConvertUnmanagedDataMappingName(REFSTRING path)
+MgPropertyCollection* MgUnmanagedDataManager::GetUnmanagedDataMappings()
 {
-    STRING mappingName, subpath;
-
-    if (MgUnmanagedDataManager::ParsePath(path, mappingName, subpath) 
-        && !mappingName.empty())
-    {
-        MgConfiguration* config = MgConfiguration::GetInstance();
-        Ptr<MgPropertyCollection> properties = config->GetProperties(MgConfigProperties::UnmanagedDataMappingsSection);
-       
-        if (properties != NULL)
-        {
-            STRING mappingDir;
-
-            // check to make sure it's a valid mapping name
-            // cycle thru mappings until we have a match
-            for (int i = 0; i < properties->GetCount(); i++)
-            {
-                Ptr<MgStringProperty> stringProp = (MgStringProperty*)properties->GetItem(i);
-                if (mappingName.compare(stringProp->GetName()) == 0)
-                {
-                    // we have a match!
-                    mappingDir = stringProp->GetValue();
-                    break;
-                }
-            }
-
-            if (!mappingDir.empty())
-            {
-                // replace the mappingName with the actual directory
-                if (!MgFileUtil::EndsWithSlash(mappingDir))
-                    MgFileUtil::AppendSlashToEndOfPath(mappingDir);
-
-                path = mappingDir + subpath;
-            }
-        }
-    }
+    return m_unmanagedDataMappings;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -425,10 +405,7 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
 
     ACE_TRACE("MgUnmanagedDataManager::EnumerateUnmanagedData");
 
-    MgConfiguration* config = MgConfiguration::GetInstance();
-    Ptr<MgPropertyCollection> properties = config->GetProperties(MgConfigProperties::UnmanagedDataMappingsSection);
-   
-    if (properties != NULL)
+    if (m_unmanagedDataMappings != NULL)
     {
         // this XML follows the ResourceList-1.0.0.xsd schema
         string list = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -468,7 +445,6 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
 
         ACE_ASSERT(storeFolders || storeFiles);
 
-
         // filter is ignored if select = "FOLDERS"
         // filter can be:
         //      ""
@@ -484,22 +460,16 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
         // are we looking in a specific path?
         if (!mappingName.empty())
         {
-            STRING mappingDir = L"";
-
-            // check to make sure it's a valid mapping name
-            // cycle thru mappings until we have a match
-            for (int i = 0; i < properties->GetCount(); i++)
+            Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(m_unmanagedDataMappings->FindItem(mappingName));
+            if (stringProp != NULL)
             {
-                Ptr<MgStringProperty> stringProp = (MgStringProperty*)properties->GetItem(i);
-                if (mappingName.compare(stringProp->GetName()) == 0)
-                {
-                    // we have a match!
-                    mappingDir = stringProp->GetValue();
-                    break;
-                }
-            }
+                // we have a match!
+                STRING mappingDir = stringProp->GetValue();
 
-            if (mappingDir.empty())
+                // get the files and/or folders from that folder and subfolder (recursive)
+                GetFilesAndFolders(list, mappingName, mappingDir, subfolder, &filters, storeFolders, storeFiles, recursive);
+            }
+            else
             {
                 MgStringCollection arguments;
                 arguments.Add(L"1");
@@ -508,19 +478,14 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
                 throw new MgInvalidArgumentException(L"MgUnmanagedDataManager::EnumerateUnmanagedData",
                     __LINE__, __WFILE__, &arguments, L"", NULL);
             }
-            else
-            {
-                // get the files and/or folders from that folder and subfolder (recursive)
-                GetFilesAndFolders(list, mappingName, mappingDir, subfolder, &filters, storeFolders, storeFiles, recursive);
-            }
         }
         else
         {
             // getting files starting from virtual root (all mappings)
             // iterate thru mappings
-            for (int i = 0; i < properties->GetCount(); i++)
+            for (int i = 0; i < m_unmanagedDataMappings->GetCount(); i++)
             {
-                Ptr<MgStringProperty> stringProp = (MgStringProperty*)properties->GetItem(i);
+                Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(m_unmanagedDataMappings->GetItem(i));
 
                 STRING mapName = stringProp->GetName();
                 STRING mapDir = stringProp->GetValue();
