@@ -58,6 +58,7 @@ protected:
 
     int SubstituteTag(const string& name, const string& value, string& doc);
     int SubstituteTag(CREFSTRING name, CREFSTRING value, string& doc);
+    int SubstituteMappingTag(const string& beginMapping, const string& endMapping, string& doc);
     void AddTag(CREFSTRING name, const MgTagInfo& tagInfo);
 
 private:

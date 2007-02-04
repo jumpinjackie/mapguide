@@ -85,6 +85,7 @@ MgDataBindingInfo& MgDataBindingInfo::operator=(
         m_resourceDataFilePath = dataBindingInfo.m_resourceDataFilePath;
         m_loginUsername = dataBindingInfo.m_loginUsername;
         m_loginPassword = dataBindingInfo.m_loginPassword;
+        m_substituteUnmanagedDataMappings = dataBindingInfo.m_substituteUnmanagedDataMappings;
     }
 
     return *this;
@@ -132,4 +133,15 @@ void MgDataBindingInfo::SetLoginUsername(CREFSTRING loginUsername)
 void MgDataBindingInfo::SetLoginPassword(CREFSTRING loginPassword)
 {
     m_loginPassword = loginPassword;
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Enable unmanaged data mapping substitution
+/// </summary>
+///----------------------------------------------------------------------------
+
+void MgDataBindingInfo::SetSubstituteUnmanagedDataMappings(bool value)
+{
+    m_substituteUnmanagedDataMappings = value;
 }

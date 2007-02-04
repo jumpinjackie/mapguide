@@ -55,7 +55,10 @@ private:
 public:
 
     static MgUnmanagedDataManager* GetInstance();
-    static void ConvertUnmanagedDataMappingName(REFSTRING path);
+    MgPropertyCollection* GetUnmanagedDataMappings();
+//    static void ConvertUnmanagedDataMappingName(REFSTRING path); // TODO: remove
+    void Initialize();
+
     virtual void Dispose();
 
     MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter);
@@ -65,6 +68,7 @@ public:
 private:
 
     static Ptr<MgUnmanagedDataManager> sm_unmanagedDataManager;
+    Ptr<MgPropertyCollection> m_unmanagedDataMappings;
 
     static const STRING Folders;
     static const STRING Files;

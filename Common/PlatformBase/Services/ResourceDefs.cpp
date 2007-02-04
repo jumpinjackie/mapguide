@@ -63,6 +63,8 @@ const STRING MgResourceTag::LoginPassword           = L"%MG_LOGIN_PASSWORD%";
 const STRING MgResourceTag::Username                = L"%MG_USERNAME%";
 const STRING MgResourceTag::Password                = L"%MG_PASSWORD%";
 const STRING MgResourceTag::DataFilePath            = L"%MG_DATA_FILE_PATH%";
+const STRING MgResourceTag::MappingBegin            = L"%MG_[";
+const STRING MgResourceTag::MappingEnd              = L"]%";
 
 
 ///////////////////////////////////////////////////////////////////////////////
