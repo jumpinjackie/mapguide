@@ -46,8 +46,8 @@ public:
     static MgGwsConnectionPool* Create();
 
     // IGWSDisposable methods
-    virtual void AddRef();
-    virtual void Release();
+    virtual FdoInt32 AddRef();
+    virtual FdoInt32 Release();
     virtual void Dispose();
 
     // IGWSObject methods

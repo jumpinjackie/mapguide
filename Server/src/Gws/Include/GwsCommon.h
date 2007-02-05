@@ -669,13 +669,13 @@ public:
     /// Increases the reference count on the object.
     /// </summary>
     /// <returns>Returns nothing.</returns>
-    virtual void AddRef() = 0;
+    virtual FdoInt32 AddRef() = 0;
     /// <summary>
     /// Decreases the reference count on the object and disposes of it
     /// when the count is 0.
     /// </summary>
     /// <returns>Returns nothing.</returns>
-    virtual void Release() = 0;
+    virtual FdoInt32 Release() = 0;
 
 protected:
     /// <summary>

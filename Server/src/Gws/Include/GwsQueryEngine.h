@@ -701,8 +701,8 @@ public:
     /// <summary>
     /// disposable interface methods. To avoid ambiquity
     /// </summary>
-    virtual void                AddRef() = 0;
-    virtual void                Release() = 0;
+    virtual FdoInt32                AddRef() = 0;
+    virtual FdoInt32                Release() = 0;
 
     // declarations below are to avoids ambiquity (methods are defined both
     // in IGWSFeature and FdoIFeatureReader)
