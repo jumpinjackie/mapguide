@@ -53,16 +53,17 @@ MgGwsConnectionPool::~MgGwsConnectionPool ()
     }
 }
 
-void MgGwsConnectionPool::AddRef ()
+FdoInt32 MgGwsConnectionPool::AddRef ()
 {
-    m_iRefCount ++;
+    return m_iRefCount ++;
 }
-void MgGwsConnectionPool::Release ()
+FdoInt32 MgGwsConnectionPool::Release ()
 {
     m_iRefCount --;
     assert (m_iRefCount >= 0);
     if (m_iRefCount == 0)
         Dispose ();
+    return m_iRefCount;
 }
 void MgGwsConnectionPool::Dispose ()
 {

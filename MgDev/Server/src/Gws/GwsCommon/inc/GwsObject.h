@@ -74,18 +74,18 @@ public:
     typedef GWSObjectLock< Interface, ThreadModel >  ThisLock;
 
 
-    virtual void AddRef()
+    virtual FdoInt32 AddRef()
     {
-        InternalAddRef();
-        return;
+        unsigned long l = InternalAddRef();
+        return l;
     }
 
-    virtual void Release()
+    virtual FdoInt32 Release()
     {
         unsigned long l = InternalRelease();
         if (l == 0)
             Dispose();
-        return;
+        return l;
     }
 
     virtual IGWSObject* GetOwner()
@@ -153,22 +153,22 @@ protected:
             m_pOwner = pOwner;
     }
 
-    void OwnerAddRef()
+    FdoInt32 OwnerAddRef()
     {
         //ThisLock lock(this);
         if (m_pOwner != NULL)
             return m_pOwner->AddRef();
         else
-            return;
+            return 0;
     }
 
-    void OwnerRelease()
+    FdoInt32 OwnerRelease()
     {
         //ThisLock lock(this);
         if (m_pOwner != NULL)
             return m_pOwner->Release();
         else
-            return;
+            return 0;
     }
     //Note: this implementation AddRef's and Release's the owner
     unsigned long InternalAddRef()
