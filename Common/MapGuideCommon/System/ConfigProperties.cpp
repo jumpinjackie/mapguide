@@ -223,9 +223,9 @@ const STRING MgConfigProperties::DrawingServicePropertiesSection                
 const STRING MgConfigProperties::FeatureServicePropertiesSection                            = L"FeatureServiceProperties";
 const STRING MgConfigProperties::FeatureServicePropertyCacheSize                            = L"CacheSize";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyCacheSize                     = 100;
-const STRING MgConfigProperties::FeatureServicePropertyCacheTimeLimit                       = L"CacheSizeTimeLimit";
+const STRING MgConfigProperties::FeatureServicePropertyCacheTimeLimit                       = L"CacheTimeLimit";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit                = 86400;
-const STRING MgConfigProperties::FeatureServicePropertyCacheTimerInterval                   = L"CacheSizeTimerInterval";
+const STRING MgConfigProperties::FeatureServicePropertyCacheTimerInterval                   = L"CacheTimerInterval";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyCacheTimerInterval            = 3600;
 const STRING MgConfigProperties::FeatureServicePropertyDataCacheSize                        = L"DataCacheSize";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize                 = 100;
