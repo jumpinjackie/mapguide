@@ -56,7 +56,8 @@ public:
 
     static MgUnmanagedDataManager* GetInstance();
     MgPropertyCollection* GetUnmanagedDataMappings();
-//    static void ConvertUnmanagedDataMappingName(REFSTRING path); // TODO: remove
+    static int SubstituteMappingTag(REFSTRING data);
+    static int SubstituteMappingTag(string& data);
     void Initialize();
 
     virtual void Dispose();
@@ -76,6 +77,9 @@ private:
 
     static const STRING OpenSquareBracket;
     static const STRING ClosedSquareBracket;
+
+    static const string MappingBegin;
+    static const string MappingEnd;
 };
 
 #endif

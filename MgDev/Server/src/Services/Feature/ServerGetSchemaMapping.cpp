@@ -17,6 +17,7 @@
 
 #include "ServerFeatureServiceDefs.h"
 #include "ServerGetSchemaMapping.h"
+#include "UnmanagedDataManager.h"
 
 MgServerGetSchemaMapping::MgServerGetSchemaMapping() :
     m_bytes(NULL)
@@ -39,7 +40,10 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     // Connect to the provider
     FdoPtr<FdoIConnection> fdoConnection;
 
-    MgServerFeatureConnection msfc(providerName, partialConnString);
+    STRING data = partialConnString;
+    MgUnmanagedDataManager::SubstituteMappingTag(data);
+
+    MgServerFeatureConnection msfc(providerName, data);
     if (( msfc.IsConnectionOpen() ) || ( msfc.IsConnectionPending() ))
     {
         fdoConnection = msfc.GetConnection();

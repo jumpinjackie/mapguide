@@ -323,10 +323,7 @@ int MgTagManager::SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
 
     if (dataBindingInfo.GetSubstituteUnmanagedDataMappings())
     {
-        count += SubstituteMappingTag(
-            MgUtil::WideCharToMultiByte(MgResourceTag::MappingBegin), 
-            MgUtil::WideCharToMultiByte(MgResourceTag::MappingEnd), 
-            doc);
+        count += MgUnmanagedDataManager::SubstituteMappingTag(doc);
     }
 
     CheckTagStrings(doc);
@@ -367,53 +364,6 @@ int MgTagManager::SubstituteTag(CREFSTRING name, CREFSTRING value, string& doc)
 
     return SubstituteTag(tagName, tagValue, doc);
 }
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Substitutes the mapping tag.
-///
-int MgTagManager::SubstituteMappingTag(const string& beginTag, const string& endTag, string& doc)
-{
-    int count = 0;
-    size_t startPos, endPos;
-    size_t len1 = beginTag.length();
-    size_t len2 = endTag.length();
-
-    while (string::npos != (startPos = doc.find(beginTag)))
-    {
-        // beginTag found, now look for endTag
-        while (string::npos != (endPos = doc.find(endTag)))
-        {
-            // extract out the mapping name
-            string mappingName = doc.substr(startPos + len1, endPos - startPos - len1);
-            size_t nameLen = mappingName.length();
-
-            // find the mapping name in the map, and then replace it
-            MgPropertyCollection* mappings = MgUnmanagedDataManager::GetInstance()->GetUnmanagedDataMappings();
-            if (mappings != NULL)
-            {
-                Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(mappings->FindItem(MgUtil::MultiByteToWideChar(mappingName)));
-                if (stringProp != NULL)
-                {
-                    STRING mappingDir = stringProp->GetValue();
-
-                    // replace the mappingName with the actual directory
-                    if (!MgFileUtil::EndsWithSlash(mappingDir))
-                        MgFileUtil::AppendSlashToEndOfPath(mappingDir);
-
-                    size_t dirLen = mappingDir.length();
-
-                    doc.replace(startPos, len1 + nameLen + len2, MgUtil::WideCharToMultiByte(mappingDir), 0, dirLen);
-                    ++count;
-                    break;
-                }
-            }
-        }
-    }
-
-    return count;
-}
-
 
 ///----------------------------------------------------------------------------
 /// <summary>
