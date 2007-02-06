@@ -270,20 +270,6 @@ PUBLISHED_API:
     /// given resource. The trailing "/" is included.
     ///
     static const STRING DataFilePath;   ///\if INTERNAL value("%MG_DATA_FILE_PATH%") \endif
-
-
-    ////////////////////////////////////////////////////////////////
-    /// \brief
-    /// This tag signifies beginning of unmanaged data mapping name.
-    ///
-    static const STRING MappingBegin;   ///\if INTERNAL value("%MG_[") \endif
-
-
-    ////////////////////////////////////////////////////////////////
-    /// \brief
-    /// This tag signifies end of unmanaged data mapping name.
-    ///
-    static const STRING MappingEnd;     ///\if INTERNAL value("]%") \endif
 };
 
 

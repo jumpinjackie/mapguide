@@ -24,13 +24,14 @@
 // Process-wide MgUnmanagedDataManager
 Ptr<MgUnmanagedDataManager> MgUnmanagedDataManager::sm_unmanagedDataManager = (MgUnmanagedDataManager*)NULL;
 
-//Ptr<MgPropertyCollection> MgUnmanagedDataManager::m_unmanagedDataMappings = (MgPropertyCollection*)NULL;
-
 const STRING MgUnmanagedDataManager::Folders              = L"FOLDERS";
 const STRING MgUnmanagedDataManager::Files                = L"FILES";
 const STRING MgUnmanagedDataManager::Both                 = L"BOTH";
 const STRING MgUnmanagedDataManager::OpenSquareBracket    = L"[";
 const STRING MgUnmanagedDataManager::ClosedSquareBracket  = L"]";
+
+const string MgUnmanagedDataManager::MappingBegin         = "%MG_[";
+const string MgUnmanagedDataManager::MappingEnd           = "]%";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -391,6 +392,65 @@ MgUnmanagedDataManager* MgUnmanagedDataManager::GetInstance()
 MgPropertyCollection* MgUnmanagedDataManager::GetUnmanagedDataMappings()
 {
     return m_unmanagedDataMappings;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Substitutes unmanaged data mappings
+///
+int MgUnmanagedDataManager::SubstituteMappingTag(REFSTRING doc)
+{
+    string temp = MgUtil::WideCharToMultiByte(doc);
+    int result = SubstituteMappingTag(temp);
+
+    doc = MgUtil::MultiByteToWideChar(temp);
+    return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Substitutes unmanaged data mappings
+///
+int MgUnmanagedDataManager::SubstituteMappingTag(string& doc)
+{
+    int count = 0;
+    size_t startPos, endPos;
+    size_t len1 = MgUnmanagedDataManager::MappingBegin.length();
+    size_t len2 = MgUnmanagedDataManager::MappingEnd.length();
+
+    while (string::npos != (startPos = doc.find(MgUnmanagedDataManager::MappingBegin)))
+    {
+        // beginTag found, now look for endTag
+        while (string::npos != (endPos = doc.find(MgUnmanagedDataManager::MappingEnd)))
+        {
+            // extract out the mapping name
+            string mappingName = doc.substr(startPos + len1, endPos - startPos - len1);
+            size_t nameLen = mappingName.length();
+
+            // find the mapping name in the map, and then replace it
+            MgPropertyCollection* mappings = MgUnmanagedDataManager::GetInstance()->GetUnmanagedDataMappings();
+            if (mappings != NULL)
+            {
+                Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(mappings->FindItem(MgUtil::MultiByteToWideChar(mappingName)));
+                if (stringProp != NULL)
+                {
+                    STRING mappingDir = stringProp->GetValue();
+
+                    // replace the mappingName with the actual directory
+                    if (!MgFileUtil::EndsWithSlash(mappingDir))
+                        MgFileUtil::AppendSlashToEndOfPath(mappingDir);
+
+                    size_t dirLen = mappingDir.length();
+
+                    doc.replace(startPos, len1 + nameLen + len2, MgUtil::WideCharToMultiByte(mappingDir), 0, dirLen);
+                    ++count;
+                    break;
+                }
+            }
+        }
+    }
+
+    return count;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
