@@ -234,7 +234,7 @@ categories.txt : ../../../Common/CoordinateSystem/categories.txt
 serverconfig_linux.ini :
 	@sed -e 's#^FdoPath.*=.*#FdoPath                            = $(map_fdo_lib)#' \
              -e 's#^LogsPath.*=.*#LogsPath                           = Logs#' \
-             -e 's#^ResourcesPath.*=.*#ResourcesPath                      = ../Resources#' \
+             -e 's#^ResourcesPath.*=.*#ResourcesPath                      = Resources#' \
              -e 's#^TempPath.*=.*#TempPath                           = Temp#' \
              -e 's#^WmsDocumentPath.*=.*#WmsDocumentPath                    = Wms#' \
              -e 's#^WfsDocumentPath.*=.*#WfsDocumentPath                    = Wfs#' \
