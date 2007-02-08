@@ -485,6 +485,14 @@ function OnForwardMouseDown(e)
     hidePopup(tbMenu);
     hidePopup(ctxMenu);
 }
+  
+function OnDblClick(x, y)
+{
+    // Implement your own double-click handler here
+    // Return true if the event has been handled
+    
+    return false;
+}
 
 function Print(layouts, title)
 {
@@ -549,6 +557,13 @@ var HyperlinkTarget="%s";
     parent.ForwardMouseDown(document, null);
     if(parent.ClickMap(x, y))
         handled.State = true;
+</script>
+
+<script language="javascript" for="DWFViewer" event="OnLButtonDblClick(x, y, handled)">
+    if(OnDblClick(x, y))
+    {
+        handled.State = true;
+    }
 </script>
 
 <script language="javascript" for="DWFViewer" event="OnKeyDown(key, handled)">
