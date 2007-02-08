@@ -411,4 +411,10 @@ void MgOgcWfsServer::SetGetFeatureRequestParams(WfsGetFeatureParams* pGetFeature
     m_pGetFeatureParams = SAFE_ADDREF(pGetFeatureParams);
 }
 
+void MgOgcWfsServer::SetFeatureDefinitions(MgWfsFeatureDefinitions* pFeatureDefs)
+{
+    m_pFeatures = pFeatureDefs;
+}
+
+
 

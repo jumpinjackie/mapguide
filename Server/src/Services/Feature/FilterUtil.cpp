@@ -44,11 +44,12 @@ int MgOgcFilterUtil::xmlcmp(const wchar_t* s1, const wchar_t* s2)
 #endif
 }
 
-STRING MgOgcFilterUtil::Ogc2FdoFilter(CREFSTRING ogcFilter, MgCoordinateSystemTransform* xform)
+STRING MgOgcFilterUtil::Ogc2FdoFilter(CREFSTRING ogcFilter, MgCoordinateSystemTransform* xform, CREFSTRING geomProp)
 {
     //we will use the transform to transform geometry
     //from map coordinate system to layer/FDO data source coordinate system
     m_xform = SAFE_ADDREF(xform);
+    m_geomProp = geomProp;
 
     //convert to utf-8
     string utffilter = MgUtil::WideCharToMultiByte(ogcFilter);
@@ -464,6 +465,19 @@ STRING MgOgcFilterUtil::process_bbox(DOMElement* root)
 
     //this assumes the gml:Box tag is parsed as a WKT polygon for use
     //in FDO spatial conditions which expect that
+
+    if(left.empty() && !right.empty())
+    {
+        // If we have an empty property name, use the geometry property
+        left = m_geomProp;
+    }
+    else if(!left.empty() && right.empty())
+    {
+        // If we have no property name element at all, use the geometry
+        // property and shift the envelope part to the right
+        right = left;
+        left = m_geomProp;
+    }
 
     return L"(" + left + L" ENVELOPEINTERSECTS " + right + L")";
 }

@@ -31,6 +31,7 @@ public:
     void GenerateTypeNameException(CREFSTRING sTypeName);
     void SetFeatures(MgWfsFeatures* pFeatures);
     void SetGetFeatureRequestParams(WfsGetFeatureParams* pGetFeatureParams);
+    void SetFeatureDefinitions(MgWfsFeatureDefinitions* pFeatureDefs);
 
 protected:
     virtual void RespondToRequest();

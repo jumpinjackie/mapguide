@@ -22,7 +22,7 @@
    <?Endif?>
    <wfs:DefaultSRS>&Feature.DefaultSRS;</wfs:DefaultSRS>
    <?Ifdef item="Feature.OtherSRS"?>
-    <?EnumDelim list="&Feature.OtherSRS;" using="OtherSRS.xml"?>
+    <?EnumDelim list="&Feature.OtherSRS;" using="&OtherSRS.xml"?>
    <?Endif?>
    <wfs:OutputFormats>
     <?Enum list="&Formats.GetFeature;" using="&Format.xml"?>
