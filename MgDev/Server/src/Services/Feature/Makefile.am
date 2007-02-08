@@ -62,6 +62,7 @@ include_SOURCES = \
   OpCloseFeatureReader.cpp \
   OpGetFeatures.cpp \
   ServerFeatureReader.cpp \
+  ServerFdoFeatureReader.cpp \
   ServerFeatureReaderIdentifierPool.cpp \
   OpGetLongTransactions.cpp \
   ServerGetConnectionPropertyValues.cpp \
@@ -147,6 +148,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpCloseFeatureReader.h \
   OpGetFeatures.h \
   ServerFeatureReader.h \
+  ServerFdoFeatureReader.h \
   ServerFeatureReaderIdentifierPool.h \
   OpGetLongTransactions.h \
   ServerGetConnectionPropertyValues.h \

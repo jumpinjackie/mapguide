@@ -129,11 +129,6 @@ void MgHttpWfsGetFeature::AcquireValidationData(MgOgcServer* ogcServer)
 // Acquire data required to generate the response
 void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
 {
-    Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
-    Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
-    //
-    MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService);
-
     MgOgcWfsServer* wfsServer = (MgOgcWfsServer*)ogcServer;
     if(wfsServer != NULL)
     {
@@ -145,8 +140,11 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
             Ptr<MgStringCollection> featureTypeList = m_getFeatureParams->GetFeatureTypes();
             if(featureTypeList != NULL && featureTypeList->GetCount() > 0)
             {
-                // Create an instance of the feature service
+                // Create required services
                 Ptr<MgFeatureService> featureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
+                Ptr<MgResourceService> resourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
+                
+                MgWfsFeatureDefinitions oFeatureTypes(resourceService,featureService,featureTypeList);
 
                 int numFeaturesRetrieved = 0;
                 int maxFeatures = m_getFeatureParams->GetMaxFeatures();

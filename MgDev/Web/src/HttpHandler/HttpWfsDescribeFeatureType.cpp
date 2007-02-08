@@ -57,11 +57,6 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
 
     MG_HTTP_HANDLER_TRY()
 
-    Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
-    Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
-    //
-    MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService);
-
     // We have to wrap the request parameters, since the outside
     // world is case-sensitive (with respect to names,) but
     // we need our parameters NOT to be so.
@@ -74,19 +69,34 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     MgUserInformation::SetCurrentUserInfo(m_userInfo);
 
     // Instance a server-lette
-    MgOgcWfsServer Wfs(Parms,Out,oFeatureTypes);
+    MgOgcWfsServer Wfs(Parms,Out);
+
+    // Determine required feature types
+    CPSZ pszFeatureTypes = Wfs.RequestParameter(MgHttpResourceStrings::reqWfsTypeName.c_str());
+    STRING sFeatureTypes = pszFeatureTypes? pszFeatureTypes : _("");
+    Ptr<MgStringCollection> featureTypeList;
+    if(sFeatureTypes.empty())
+    {
+        featureTypeList = NULL;
+    }
+    else
+    {
+        featureTypeList = MgStringCollection::ParseCollection(sFeatureTypes, L",");
+    }
+
+    Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
+    Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
+    
+    // Retrieve feature definitions
+    MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService,featureTypeList);
+    Wfs.SetFeatureDefinitions(&oFeatureTypes);
 
     // This is a comma-sep a list.  If empty, == all.
     // If it's just one feature (no comma sep found) let's do
     // a single response, else let's recursively enumerate the features.
-    CPSZ pszFeatureTypes = Wfs.RequestParameter(MgHttpResourceStrings::reqWfsTypeName.c_str());
-    STRING sFeatureTypes = pszFeatureTypes? pszFeatureTypes : _("");
     if(sFeatureTypes.length() > 0 && sFeatureTypes.find(_(",")) == STRING::npos) {
         // TODO: assumes that this is GML type.
         //STRING sOutputFormat = origReqParams->GetParameterValue(_("OUTPUTFORMAT"));
-
-        // Create Proxy Feature Service instance
-        Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
         STRING::size_type iPos = sFeatureTypes.find(_(":"));
         if(iPos != STRING::npos) {

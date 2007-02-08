@@ -1,4 +1,4 @@
-﻿<?xml version='1.0'?>
+<?xml version='1.0'?>
 <Template service="WFS" version="1.0.0">
 
 <Definitions>
@@ -35,7 +35,11 @@
       <?Ifdef item="Feature.Keywords"?>
       <Keyword>&Feature.Keywords;</Keyword>
       <?Endif?>
+      <?Ifdef item="Feature.PrimarySRS"?>
+      <SRS>&Feature.PrimarySRS;</SRS>
+      <?Else?>
       <?Enum list="&Feature.Bounds;" item="Bounds" using="&SRS.xml;"?>
+      <?Endif?>
       <?Enum list="&Feature.Bounds;" item="Bounds" using="&LatLonBoundingBox.xml;"?>
     </FeatureType>
   </Define>
@@ -46,9 +50,9 @@
   </Define>
 
   <!-- Sniff out the EPSG:4326 item and use it for LatLon bounds -->
-  <Define item="LatLonBoundingBox.xml"><?If l="&Enum.item.SRS" op="eq" r="EPSG:4326"?>
+  <Define item="LatLonBoundingBox.xml">
     <LatLongBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
-    <?Endif?></Define>
+  </Define>
   <Define item="BoundingBox.xml">
     <BoundingBox SRS="&Enum.item.SRS;" minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
   </Define>

@@ -1624,6 +1624,30 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ServerFdoFeatureReader.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ServerFdoFeatureReader.h"
+			>
+		</File>
+		<File
 			RelativePath=".\ServerFeatureConnection.cpp"
 			>
 			<FileConfiguration

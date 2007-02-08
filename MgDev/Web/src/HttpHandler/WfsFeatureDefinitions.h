@@ -25,6 +25,7 @@ class MgWfsFeatureDefinitions: public IOgcResourceEnumerator
 {
 public:
     MgWfsFeatureDefinitions(MgResourceService* pResourceService,MgFeatureService* pFeatureService);
+    MgWfsFeatureDefinitions(MgResourceService* pResourceService,MgFeatureService* pFeatureService,MgStringCollection* pFeatureTypes);
     ~MgWfsFeatureDefinitions();
 
     bool Next();
@@ -56,7 +57,7 @@ public:
 private:
     bool   SkipElement(MgXmlParser& Input,CPSZ pszElementName);
     bool   GetElementContents(MgXmlParser& Input,CPSZ pszElementName,STRING& sValue);
-    bool   GetMetadataDefinitions(MgXmlParser& Input,CStream& oStream);
+    bool   GetMetadataDefinitions(MgXmlParser& Input,CStream& oStream,bool& isPublished);
 
     void   AddDefinition(CStream& oStream,CPSZ pszPropertyName,CPSZ pszPropertyValue);
 
@@ -68,6 +69,7 @@ private:
     MgXmlParser*       m_pXmlInput;
     MgResourceService* m_pResourceService;
     MgFeatureService*  m_pFeatureService;
+    MgStringCollection* m_pFeatureTypes;
 
     STRING m_sSourcesAndClasses;
     STRING m_sSubsetOfTypes;

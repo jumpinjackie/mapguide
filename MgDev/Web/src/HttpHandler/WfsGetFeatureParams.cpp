@@ -237,15 +237,15 @@ void WfsGetFeatureParams::BuildFilterStrings(CREFSTRING filters, CREFSTRING feat
             {
                 // TODO: Look into using StringStream and XmlElementEmitter for simplified generation
                 // of these elements.
-                STRING filterString = L"<ogc:Filter><ogc:BBOX><gml:Envelope><gml:lowerCorner>";
+                STRING filterString = L"<ogc:Filter><ogc:BBOX><ogc:PropertyName></ogc:PropertyName><gml:Box><gml:coordinates>";
                 filterString.append(MgUtil::Trim(bboxCoords->GetItem(0)));
-                filterString.append(L" ");
+                filterString.append(L",");
                 filterString.append(MgUtil::Trim(bboxCoords->GetItem(1)));
-                filterString.append(L"</gml:lowerCorner><gml:upperCorner>");
-                filterString.append(MgUtil::Trim(bboxCoords->GetItem(2)));
                 filterString.append(L" ");
+                filterString.append(MgUtil::Trim(bboxCoords->GetItem(2)));
+                filterString.append(L",");
                 filterString.append(MgUtil::Trim(bboxCoords->GetItem(3)));
-                filterString.append(L"</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>");
+                filterString.append(L"</gml:coordinates></gml:Box></ogc:BBOX></ogc:Filter>");
                 m_filterStrings->Add(filterString);
             }
         }

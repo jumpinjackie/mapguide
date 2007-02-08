@@ -45,6 +45,7 @@
 #include "OpCloseFeatureReader.cpp"
 #include "OpGetFeatures.cpp"
 #include "ServerFeatureReader.cpp"
+#include "ServerFdoFeatureReader.cpp"
 #include "ServerFeatureReaderIdentifierPool.cpp"
 #include "OpGetLongTransactions.cpp"
 #include "ServerGetConnectionPropertyValues.cpp"

@@ -38,6 +38,7 @@
 #include "ServerUpdateFeatures.h"
 #include "ServerCreateFeatureSource.h"
 #include "ServerFeatureReader.h"
+#include "ServerFdoFeatureReader.h"
 #include "ServerEnumerateDataStores.h"
 #include "ServerGetSchemaMapping.h"
 #include "FilterUtil.h"
@@ -49,6 +50,7 @@
 #include <Fdo/Xml/FeatureFlags.h>
 
 IMPLEMENT_CREATE_SERVICE(MgServerFeatureService)
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -1276,7 +1278,8 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     if (!wfsFilter.empty())
     {
         MgOgcFilterUtil u;
-        options->SetFilter(u.Ogc2FdoFilter(wfsFilter, trans));
+        STRING fdoFilterString = u.Ogc2FdoFilter(wfsFilter, trans, geomPropName);
+        options->SetFilter(fdoFilterString);
     }
 
     // TODO: can FeatureName be an extension name rather than a FeatureClass?
@@ -1284,6 +1287,10 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
 
     //get underlying FDO feature reader
     FdoPtr<FdoIFeatureReader> fdoRdr = ((MgServerFeatureReader*)(rdr.p))->GetInternalReader();
+
+    //wrap the reader to enforce maxfeatures
+    MgServerFdoFeatureReader maxFeatureReader(fdoRdr);
+    maxFeatureReader.SetMaxFeatures(maxFeatures);
 
     //generate a file name to serialize wfs data
     STRING fileName = MgFileUtil::GenerateTempFileName(false, L"wfs", L"xml");
@@ -1311,7 +1318,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     FdoPtr<FdoXmlFeaturePropertyWriter> propWriter = FdoXmlFeaturePropertyWriter::Create(xmlWriter);
     FdoPtr<FdoXmlFeatureWriter> featWriter = FdoXmlFeatureWriter::Create(propWriter, flags);
 
-    FdoXmlFeatureSerializer::XmlSerialize(fdoRdr, featWriter, flags);
+    FdoXmlFeatureSerializer::XmlSerialize(&maxFeatureReader, featWriter, flags);
 
     flags = NULL;
     featWriter = NULL;
