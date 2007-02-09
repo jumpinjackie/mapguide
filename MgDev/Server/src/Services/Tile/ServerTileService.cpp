@@ -200,7 +200,7 @@ MgByteReader* MgServerTileService::GetTile(
             }
 
             // Create the lock file and close it right away.
-            m_tileCache->CreateFullPath(mapDefinition, scaleIndex, baseMapLayerGroupName);
+            m_tileCache->CreateFullPath(mapDefinition, scaleIndex, baseMapLayerGroupName, tileColumn, tileRow);
             lockFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(lockPathname), ACE_TEXT("wb"));
 
             if (NULL == lockFile)
@@ -335,7 +335,7 @@ MgByteReader* MgServerTileService::GetTile(MgMap* map,
             }
 
             // Create the lock file and close it right away.
-            m_tileCache->CreateFullPath(map, scaleIndex, baseMapLayerGroupName);
+            m_tileCache->CreateFullPath(map, scaleIndex, baseMapLayerGroupName, tileColumn, tileRow);
             lockFile = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(lockPathname), ACE_TEXT("wb"));
 
             if (NULL == lockFile)
