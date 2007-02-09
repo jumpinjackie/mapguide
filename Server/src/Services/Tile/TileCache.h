@@ -33,8 +33,8 @@ public:
         CREFSTRING group, int tileColumn, int tileRow,
         STRING& tilePathname, STRING& lockPathname, bool createFullPath);
 
-    STRING CreateFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group);
-    STRING CreateFullPath(MgMap* map, int scaleIndex, CREFSTRING group);
+    STRING CreateFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
+    STRING CreateFullPath(MgMap* map, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
 
     MgByteReader* Get(CREFSTRING tilePathname);
     void Set(MgByteReader* img, CREFSTRING tilePathname);
@@ -56,15 +56,24 @@ private:
     STRING GetBasePath(MgResourceIdentifier* mapDef);
     STRING GetBasePath(MgMap* map);
 
-    STRING GetFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group);
-    STRING GetFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group);
-    STRING GetFullPath(MgMap* map, int scaleIndex, CREFSTRING group);
+    STRING GetFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
+    STRING GetFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
+    STRING GetFullPath(MgMap* map, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
 
-    STRING CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group);
-
+    STRING CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
+    
+    STRING GetScaleIndexFolder(int scaleIndex);
+    STRING GetRowFolder(int tileRow);
+    STRING GetColumnFolder(int tileColumn);
+    STRING GetFolder(STRING prefix, int tileIndex, int tilesPerFolder);
+    
+    STRING GetTileName(int tileRow, int tileColumn);
+    STRING GetTileIndexString(int tileIndex, int tilesPerFolder);
+    
     ACE_RW_Thread_Mutex m_rwMutex;
     static STRING sm_path;
-    static STRING sm_lockFolderName;
+    static INT32 sm_tileColumnsPerFolder;
+    static INT32 sm_tileRowsPerFolder;
 };
 
 #endif
