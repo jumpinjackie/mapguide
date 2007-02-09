@@ -32,7 +32,11 @@ HMODULE CGwsResourceModule::shMod;
 // Something is seriously wrong if the string is over this size.
 static int MAX_BUF_SIZE = 8192;
 
-CGwsResourceModule module(L"GWSResource");
+#ifdef _DEBUG
+CGwsResourceModule module(L"MgGwsResourced");
+#else
+CGwsResourceModule module(L"MgGwsResource");
+#endif
 
 CGwsResourceModule::CGwsResourceModule(const wchar_t* fileName)
 {
