@@ -74,6 +74,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpMakePackage.h \
   OpNotifyResourcesChanged.h \
   OpRegisterServicesOnServers.h \
+  OpRemoveConfigurationProperties.h \
   OpRenameLog.h \
   OpSetConfigurationProperties.h \
   OpSetDocument.h \

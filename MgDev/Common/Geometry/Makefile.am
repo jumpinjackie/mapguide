@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = Geometry.vcproj
+EXTRA_DIST = Geometry.vcproj Geometry.rc Parse/script Parse/script_linux Parse/yyAwkt.y
 
 lib_LTLIBRARIES = libMgGeometry.la
 
@@ -146,6 +146,7 @@ noinst_HEADERS = $(include_SOURCES) \
   GeometryCollection.h \
   GeometryCommon.h \
   GeometryComponent.h \
+  GeometryComponentCollection.h \
   GeometryComponentType.h \
   GeometryExceptionDef.h \
   GeometryFactory.h \

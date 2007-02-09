@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = PlatformBase.vcproj
+EXTRA_DIST = PlatformBase.vcproj PlatformBase.rc
 
 lib_LTLIBRARIES = libMgPlatformBase.la
 
@@ -98,6 +98,7 @@ include_SOURCES = \
   Services/Warnings.cpp  
 
 noinst_HEADERS = $(include_SOURCES) \
+  PlatformBase.h \
   Data/BlobProperty.h \
   Data/BooleanProperty.h \
   Data/ByteProperty.h \
@@ -114,13 +115,27 @@ noinst_HEADERS = $(include_SOURCES) \
   Data/SingleProperty.h \
   Data/StringPropertyCollection.h \
   Exception/ArrayTypeMismatchException.h \
+  Exception/DuplicateResourceDataException.h \
+  Exception/DuplicateResourceException.h \
+  Exception/EmptyFeatureSetException.h \
+  Exception/FdoException.h \
+  Exception/FeatureServiceException.h \
   Exception/InvalidMapDefinitionException.h \
   Exception/InvalidRepositoryNameException.h \
   Exception/InvalidRepositoryTypeException.h \
+  Exception/InvalidResourceDataNameException.h \
+  Exception/InvalidResourceDataTypeException.h \
   Exception/InvalidResourceNameException.h \
   Exception/InvalidResourcePathException.h \
+  Exception/InvalidResourcePreProcessingTypeException.h \
   Exception/InvalidResourceTypeException.h \
+  Exception/LayerNotFoundException.h \
+  Exception/ResourceBusyException.h \
+  Exception/ResourceDataNotFoundException.h \
+  Exception/ResourceNotFoundException.h \
+  Exception/ServiceNotAvailableException.h \
   Exception/ServiceNotSupportedException.h \
+  Exception/UserNotFoundException.h \
   MapLayer/ChangeList.h \
   MapLayer/LayerBase.h \
   MapLayer/LayerCollection.h \
@@ -161,6 +176,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/GeometryProperty.h \
   Services/GwsFeatureReader.h \
   Services/InsertFeatures.h \
+  Services/LockFeatures.h \
   Services/LongTransactionData.h \
   Services/LongTransactionReader.h \
   Services/ObjectPropertyDefinition.h \
@@ -183,6 +199,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/SpatialContextExtentType.h \
   Services/SpatialContextReader.h \
   Services/SqlDataReader.h \
+  Services/UnlockFeatures.h \
   Services/UpdateFeatures.h \
   Services/Warnings.h
 

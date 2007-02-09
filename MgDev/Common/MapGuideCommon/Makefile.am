@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = Resources MapGuideCommon.vcproj
+EXTRA_DIST = Resources MapGuideCommon.vcproj MapGuideCommon.rc
 
 lib_LTLIBRARIES = libMgMapGuideCommon.la
 
@@ -122,6 +122,7 @@ include_SOURCES = \
   Util/IpUtil.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
+  MapGuideCommon.h \
   Controller/Controller.h \
   Controller/DwfController.h \
   Controller/HtmlController.h \
