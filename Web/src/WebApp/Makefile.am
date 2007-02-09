@@ -38,6 +38,7 @@ include_SOURCES = WebBufferCommand.cpp \
 noinst_HEADERS = $(include_SOURCES) \
                 WebActions.h \
                 WebApp.h \
+                WebAppClassId.h \
                 WebAppExport.h \
                 WebBufferCommand.h \
                 WebCommand.h \

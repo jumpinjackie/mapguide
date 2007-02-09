@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = WebApp HttpHandler FastCgiAgent PhpApi JavaApi
 DIST_SUBDIRS = WebApp HttpHandler FastCgiAgent PhpApi JavaApi
-EXTRA_DIST = MapGuideApi DotNetApi DotNetUnmanagedApi mapviewernet mapviewerjava mapviewerphp mapadmin mapagent stdicons viewerfiles WebSupport WebTier.sln webconfig.ini WEB-INF localized
+EXTRA_DIST = MapGuideApi DotNetApi DotNetUnmanagedApi mapviewernet mapviewerjava mapviewerphp mapadmin mapagent stdicons viewerfiles WebSupport WebTier.sln webconfig.ini WEB-INF localized schemareport webstudio PostBuild
 
 prefix=@prefix@/webserverextensions/www
 

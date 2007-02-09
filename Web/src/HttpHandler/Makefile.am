@@ -196,6 +196,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpGetVisibleMapExtent.h \
   HttpHandler.h \
   HttpHandlerApiDllExport.h \
+  HttpHandlerClassId.h \
   HttpHeader.h \
   HttpInheritPermissionsFrom.h \
   HttpKmlGetMap.h \
