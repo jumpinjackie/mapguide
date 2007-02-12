@@ -488,8 +488,10 @@ function OnForwardMouseDown(e)
   
 function OnDblClick(x, y)
 {
-    // Implement your own double-click handler here
-    // Return true if the event has been handled
+    // Override this method in an external script to implement
+    // your own double-click handler.
+    // e.g. mapFrame.OnDblClick = MyOnDblClick
+    // where MyOnDblClick() is a function in your script
     
     return false;
 }
