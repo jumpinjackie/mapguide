@@ -758,6 +758,6 @@ public:
     static const MgConfigValidationInfo sm_cviAgentProperties[];
     static const MgConfigValidationInfo sm_cviOgcProperties[];
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #endif
