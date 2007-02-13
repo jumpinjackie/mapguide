@@ -71,4 +71,6 @@ CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_GwsFeatureReader;
 
 };
+/// \endcond
+
 #endif

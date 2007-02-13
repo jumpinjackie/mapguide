@@ -114,7 +114,7 @@ protected:
     INT64       m_size;
     bool        m_temporary;
 };
-/// \endcond INTERNAL
+/// \endcond
 
 
 /// Inline Methods
@@ -123,6 +123,6 @@ inline bool ByteSourceFileImpl::IsTemporary() const
 {
     return m_temporary;
 }
-/// \endcond INTERNAL
+/// \endcond
 
 #endif // MG_BYTE_SOURCE_FILE_IMPL_H_

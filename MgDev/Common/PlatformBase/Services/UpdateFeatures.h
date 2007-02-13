@@ -18,7 +18,7 @@
 #ifndef _MGUPDATEFEATURES_H
 #define _MGUPDATEFEATURES_H
 
-/// \defgroup MgUpdateFeatures
+/// \defgroup MgUpdateFeatures MgUpdateFeatures
 /// \ingroup Feature_Service_classes
 /// \{
 

@@ -20,7 +20,7 @@
 
 class MgSpatialContextData;
 
-/// \defgroup MgSpatialContextReader
+/// \defgroup MgSpatialContextReader MgSpatialContextReader
 /// \ingroup Feature_Service_classes
 /// \{
 

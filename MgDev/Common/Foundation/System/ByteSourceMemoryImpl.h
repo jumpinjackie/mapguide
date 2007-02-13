@@ -116,6 +116,6 @@ protected:
     Ptr<MgByte> m_data;
     INT32   m_pos;
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #endif // MG_BYTE_SOURCE_MEMORY_IMPL_H_

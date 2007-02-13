@@ -18,7 +18,7 @@
 #ifndef _MGINSERTFEATURES_H
 #define _MGINSERTFEATURES_H
 
-/// \defgroup MgInsertFeatures
+/// \defgroup MgInsertFeatures MgInsertFeatures
 /// \ingroup Feature_Service_classes
 /// \{
 

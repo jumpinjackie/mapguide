@@ -32,6 +32,6 @@ INTERNAL_API:
     static const int GetLayerKml               = 0x1111E702;
     static const int GetFeaturesKml            = 0x1111E703;
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #endif

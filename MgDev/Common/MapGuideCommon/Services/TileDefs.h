@@ -31,7 +31,7 @@ INTERNAL_API:
     static const int SetTile    = 0x1111E802;
     static const int ClearCache = 0x1111E803;
 };
-/// \endcond INTERNAL
+/// \endcond
 
 
 /// \cond INTERNAL
@@ -48,6 +48,6 @@ INTERNAL_API:
     static const INT32 tileDPI;         // assumed DPI for all tiles
     static const STRING tileFormat;     // image format for all tiles
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #endif

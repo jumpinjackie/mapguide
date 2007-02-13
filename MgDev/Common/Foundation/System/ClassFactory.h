@@ -20,14 +20,14 @@
 
 #include <map>
 
-/// \cond INTERNAL
+
 /// Typedef for class creation functions
 typedef MgObject* (*ClassCreatorFunc)();
-/// \endcond INTERNAL
 
+
+/// \cond INTERNAL
 
 /// INTERNAL_CLASS
-/// \cond INTERNAL
 /// \brief
 /// Class registration for Foundation derived applications
 class MG_FOUNDATION_API MgClassFactory : public MgDisposable
@@ -82,5 +82,6 @@ private:
     std::map<int, ClassCreatorFunc> m_classCreators;
 
 };
+/// \endcond
 
 #endif

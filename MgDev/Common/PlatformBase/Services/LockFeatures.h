@@ -21,7 +21,7 @@
 class MgLockFeatures;
 template class MG_PLATFORMBASE_API Ptr<MgLockFeatures>;
 
-/// \defgroup MgLockFeatures
+/// \defgroup MgLockFeatures MgLockFeatures
 /// \ingroup Feature_Service_classes
 /// \{
 

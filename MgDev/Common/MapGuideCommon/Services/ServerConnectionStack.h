@@ -86,6 +86,6 @@ private:
     ConnectionQueue* m_queue;
     ConnectionList* m_inUse;
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #endif

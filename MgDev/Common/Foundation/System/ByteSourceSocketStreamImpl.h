@@ -100,6 +100,6 @@ protected:
     INT32     m_blockRead;
 };
 
-/// \endcond INTERNAL
+/// \endcond
 
 #endif // MG_BYTE_SOURCE_SOCKET_STREAM_IMPL_H_

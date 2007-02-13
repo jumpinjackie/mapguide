@@ -67,6 +67,6 @@ public:
     // Common Configuration Validation Information Maps
     static const MgConfigValidationInfo sm_cviGeneralProperties[];
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #endif

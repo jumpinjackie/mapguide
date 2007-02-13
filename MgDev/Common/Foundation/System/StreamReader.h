@@ -250,5 +250,7 @@ protected:
     Ptr<MgStreamHelper> m_sHelper;
     MgServerConnectionBase* m_conn; // raw pointer to avoid circular dependency
 };
+/// \endcond
+
 #endif // _MGSTREAMREADER_H_
-/// \endcond INTERNAL
+

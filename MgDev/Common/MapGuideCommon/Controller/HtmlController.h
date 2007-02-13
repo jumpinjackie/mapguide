@@ -239,6 +239,6 @@ CLASS_ID:
 
 };
 
-/// \endcond INTERNAL
+/// \endcond
 
 #endif

@@ -84,6 +84,6 @@ public:
     ///
     virtual void Rewind() = 0;
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #endif // MG_BYTE_SOURCE_IMPL_H_

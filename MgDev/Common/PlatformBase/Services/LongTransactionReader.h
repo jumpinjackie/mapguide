@@ -20,7 +20,7 @@
 
 class MgLongTransactionData;
 
-/// \defgroup MgLongTransactionReader
+/// \defgroup MgLongTransactionReader MgLongTransactionReader
 /// \ingroup Feature_Service_classes
 /// \{
 

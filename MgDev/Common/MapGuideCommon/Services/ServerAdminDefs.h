@@ -215,6 +215,6 @@ INTERNAL_API:
 public: \
     static MgObject* CreateObject();
 
-/// \endcond INTERNAL
+/// \endcond
 
 #endif // MG_SERVER_ADMIN_DEFS_H
