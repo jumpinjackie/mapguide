@@ -25,6 +25,7 @@
 #endif
 
 /// \cond INTERNAL
+
 //////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Enumeration for the server connection type.
@@ -37,7 +38,7 @@ enum ServerConnectionType
     sctRemoteServerToServer,            /// Proxy implementation used
     sctServerToHttp                     /// Http requests are made
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #define DECLARE_CREATE_SERVICE() \
 public: \
@@ -47,14 +48,13 @@ public: \
     MgService* class_name::CreateService() \
         { return new class_name(); }
 
-/// \cond INTERNAL
 /// Typedef for class creation functions
 typedef MgService* (*ServiceCreatorFunc)();
-/// \endcond INTERNAL
 
+
+/// \cond INTERNAL
 
 /// INTERNAL_CLASS
-/// \cond INTERNAL
 /// \brief
 /// Service registration for PlatformBase derived applications
 class MG_PLATFORMBASE_API MgServiceRegistry : public MgDisposable
@@ -110,7 +110,6 @@ private:
     map<ServerConnectionType, ServiceRegistry> m_serviceCreators;
 
 };
-
 /// \endcond
 
 #endif

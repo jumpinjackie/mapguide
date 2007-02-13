@@ -44,5 +44,6 @@ class MG_FOUNDATION_API MgServerConnectionBase : public MgGuardDisposable
     ///
     virtual ~MgServerConnectionBase();
 };
+/// \endcond
 
 #endif

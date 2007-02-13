@@ -200,7 +200,8 @@ private:
 
     MgServerConnectionImp* m_serverConnImp;
 };
+/// \endcond
 
 #endif
 
-/// \endcond INTERNAL
+

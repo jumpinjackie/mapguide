@@ -297,6 +297,8 @@ private:
     void GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil);
 };
 
+/// \endcond
+
 #endif // MG_PRINT_LAYOUT_H
 
-/// \endcond INTERNAL
+

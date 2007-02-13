@@ -96,6 +96,6 @@ public:
 protected:
     MgStream* m_stream;
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #endif

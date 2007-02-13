@@ -16,7 +16,6 @@
 //
 
 /// \cond INTERNAL
-/// \ingroup Geometry_Module
 
 //------------------------------------------------------------------------------
 //
@@ -342,6 +341,6 @@ template <class ObjType> int BufferSort<ObjType>::GetNProgressSubIntervals(
 
 } // end: GetNProgressSubIntervals()
 
-/// \endcond INTERNAL
+/// \endcond
 
 #endif

@@ -18,7 +18,7 @@
 #ifndef MGBASESERVICEDEFS_H
 #define MGBASESERVICEDEFS_H
 
-/// \defgroup MgServiceType
+/// \defgroup MgServiceType MgServiceType
 /// \ingroup Common_Module
 /// \{
 

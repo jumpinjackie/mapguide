@@ -278,11 +278,6 @@ PUBLISHED_API:
     /// \return
     /// Returns the name of the map as a string.
     ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
-    ///
     virtual STRING GetName();  /// __get
 
     //////////////////////////////////////////////////////////////////
@@ -302,11 +297,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns the session id of the map as a string.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     STRING GetSessionId();  /// __get
 
@@ -328,11 +318,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns the unique identifier of this map as a string.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual STRING GetObjectId();  
 
@@ -356,11 +341,6 @@ PUBLISHED_API:
     /// Returns an MgResourceIdentifier that specifies the location
     /// of the map definition.
     ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
-    ///
     virtual MgResourceIdentifier* GetMapDefinition();  /// __get
 
     //////////////////////////////////////////////////////////////////
@@ -381,11 +361,6 @@ PUBLISHED_API:
     /// \return
     /// Returns the spatial reference system in the OpenGIS \link WKT WKT \endlink
     /// (Well Known Text) format as a string.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual STRING GetMapSRS();  /// __get
 
@@ -408,11 +383,6 @@ PUBLISHED_API:
     /// Returns an MgEnvelope that defines the overall extent of the
     /// map.
     ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
-    ///
     virtual MgEnvelope* GetMapExtent();  /// __get
 
     //////////////////////////////////////////////////////////////////
@@ -432,11 +402,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns an MgLayerCollection that contains the map layers.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual MgLayerCollection* GetLayers();  
 
@@ -458,11 +423,6 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgLayerGroupCollection that contains the map
     /// layer groups.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual MgLayerGroupCollection* GetLayerGroups();  
 
@@ -596,11 +556,6 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgPoint that specifies the center of the map.
     ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
-    ///
     virtual MgPoint* GetViewCenter();  /// __get
 
     //////////////////////////////////////////////////////////////////
@@ -620,11 +575,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns a double that specifies the scale of the map.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual double GetViewScale();  /// __get
 
@@ -647,11 +597,6 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgEnvelope that defines the current data extent.
     ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
-    ///
     virtual MgEnvelope* GetDataExtent();   /// __get
 
     //////////////////////////////////////////////////////////////////
@@ -671,11 +616,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns the number of dots per inch of the map display.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual INT32 GetDisplayDpi();  /// __get
 
@@ -700,11 +640,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns the width of the map display in pixels.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual INT32 GetDisplayWidth();  /// __get
 
@@ -731,11 +666,6 @@ PUBLISHED_API:
     /// \return
     /// Returns the height of the map display in pixels.
     ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
-    ///
     virtual INT32 GetDisplayHeight();  /// __get
 
     //////////////////////////////////////////////////////////////////
@@ -755,11 +685,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns the number of finite display scales in the map.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual INT32 GetFiniteDisplayScaleCount();  /// __get
 
@@ -783,11 +708,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns the finite display scale.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgOutOfRangeException if the index is invalid.
     ///

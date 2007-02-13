@@ -16,7 +16,6 @@
 //
 
 /// \cond INTERNAL
-/// \ingroup Geometry_Module
 
 //-----------------------------------------------------------------------------
 //
@@ -303,4 +302,4 @@ typedef OpsArray<int> OpsIntArray;
 
 #endif
 
-/// \endcond INTERNAL
+/// \endcond

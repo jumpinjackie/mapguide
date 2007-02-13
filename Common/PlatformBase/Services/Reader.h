@@ -20,7 +20,7 @@
 
 class MgRaster;
 
-/// \defgroup MgReader
+/// \defgroup MgReader MgReader
 /// \ingroup Feature_Service_classes
 /// \{
 

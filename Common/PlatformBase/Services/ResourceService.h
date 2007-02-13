@@ -505,7 +505,7 @@ PUBLISHED_API:
     /// location <c>Library://World/Layers/Cities.Layer</c>.
     /// Similarly, you would add Countries.Layer to <c>Library://World/Layers/Countries.Layer</c>.
     /// \n
-    /// 5) Set any necessary \link WorkingWithResourceData resource data \endlink.
+    /// 5) Set any necessary resource data.
     /// See SetResourceData.
     /// \htmlinclude ExampleBottom.html
     ///

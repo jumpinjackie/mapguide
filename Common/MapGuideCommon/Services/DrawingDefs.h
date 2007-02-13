@@ -37,6 +37,6 @@ INTERNAL_API:
     static const int EnumerateSectionResources  = 0x1111EC08;
     static const int GetCoordinateSpace         = 0x1111EC09;
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #endif

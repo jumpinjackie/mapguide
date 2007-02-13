@@ -74,7 +74,7 @@ INTERNAL_API:
 private:
     ACE_SOCK_Stream* mServer;
 };
+/// \endcond
 
 #endif
 
-/// \endcond INTERNAL

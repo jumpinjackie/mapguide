@@ -83,7 +83,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
+    /// See \link MgMapBase MgMapBase class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
     virtual STRING GetName();  /// __get
@@ -108,7 +108,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
+    /// See \link MgMapBase MgMapBase class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
     /// \todo
@@ -158,7 +158,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
+    /// See \link MgMapBase MgMapBase class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
     virtual MgLayerGroup* GetGroup();  /// __get, __set
@@ -213,7 +213,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
+    /// See \link MgMapBase MgMapBase class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
     virtual bool GetVisible();  /// __get, __set
@@ -274,7 +274,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
+    /// See \link MgMapBase MgMapBase class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
     virtual bool IsVisible();
@@ -301,7 +301,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
+    /// See \link MgMapBase MgMapBase class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
     virtual bool GetDisplayInLegend();  /// __get, __set
@@ -353,7 +353,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
+    /// See \link MgMapBase MgMapBase class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
     virtual bool GetExpandInLegend();  /// __get
@@ -378,7 +378,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMap MgMap Class \endlink.
+    /// See \link MgMapBase MgMapBase class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
     virtual STRING GetLegendLabel();  /// __get, __set

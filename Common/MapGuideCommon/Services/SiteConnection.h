@@ -108,7 +108,7 @@ PUBLISHED_API:
     /// Open should authenticate with MgSiteConnection::Authenticate which in turn uses the appropriate
     /// helper class.  A connection to the Site Server, if necessary, should be created
     /// and maintained.
-    /// \endcond INTERNAL
+    /// \endcond
     ///
     void Open(MgUserInformation* userInformation);
 
@@ -144,7 +144,7 @@ PUBLISHED_API:
     /// \cond INTERNAL
     /// INTERNAL:
     /// GetService relies on the implementation of the bound MgSiteHelper class
-    /// \endcond INTERNAL
+    /// \endcond
     ///
     MgService* CreateService(INT32 serviceType);
 
@@ -186,7 +186,7 @@ EXTERNAL_API:
     /// \cond INTERNAL
     /// INTERNAL:
     /// Since the URL is specified, this method binds to an MgHttpProxySiteHelper.
-    /// \endcond INTERNAL
+    /// \endcond
     ///
     MgSiteConnection(CREFSTRING url);
 
@@ -240,7 +240,7 @@ INTERNAL_API:
     /// \cond INTERNAL
     /// Open must be called before this method will work.  If we are the Site Server
     /// then no connection will be returned.
-    /// \endcond INTERNAL
+    /// \endcond
     ///
     MgServerConnection* GetSiteConnection();
 

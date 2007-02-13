@@ -123,7 +123,7 @@ PUBLISHED_API:
     /// MgByteReader(string content, string mimeType);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param content (string/String/string)
+    /// \param contents (string/String/string)
     /// String contents for byte reader.
     ///
     /// \param mimeType (string/String/string)
@@ -149,7 +149,7 @@ PUBLISHED_API:
     /// MgByteReader(string content, string mimeType);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param content (Byte[]/byte[]/string)
+    /// \param contents (Byte[]/byte[]/string)
     /// Binary contents for byte reader.
     ///
     /// \param length (int/int/int)

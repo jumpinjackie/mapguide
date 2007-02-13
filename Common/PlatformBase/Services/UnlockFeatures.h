@@ -19,7 +19,7 @@
 #define _MGUNLOCKFEATURES_H
 
 
-/// \defgroup MgUnlockFeatures
+/// \defgroup MgUnlockFeatures MgUnlockFeatures
 /// \ingroup Feature_Service_classes
 /// \{
 

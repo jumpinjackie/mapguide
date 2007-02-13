@@ -31,7 +31,7 @@ INTERNAL_API:
     static const STRING Path;        /// Reserved characters in paths = "%*:|\?<’&”>=".
     static const STRING WhiteSpace;  /// White space characters = " t r n v f".
 };
-/// \endcond INTERNAL
+/// \endcond
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -404,7 +404,7 @@ INTERNAL_API:
     static const STRING Groups;         /// Groups folder name
     static const STRING Roles;          /// Roles folder name
 };
-/// \endcond INTERNAL
+/// \endcond
 
 
 /// \cond INTERNAL
@@ -420,7 +420,7 @@ INTERNAL_API:
     static const INT32 Security = 0x00000002;
     static const INT32 Metadata = 0x00000004;
 };
-/// \endcond INTERNAL
+/// \endcond
 
 #define DECLARE_DYNCREATE_RESOURCE() \
 public: \
