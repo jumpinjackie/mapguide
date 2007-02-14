@@ -349,7 +349,7 @@ PUBLISHED_API:
     static const STRING String;         ///\if INTERNAL value("String") \endif
 };
 
-
+/// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Types of pre-processing to apply to resource content before
@@ -365,6 +365,7 @@ PUBLISHED_API:
     ///
     static const STRING Substitution;   ///\if INTERNAL value("Substitution") \endif
 };
+/// \endcond
 
 
 ///////////////////////////////////////////////////////////////////////////////

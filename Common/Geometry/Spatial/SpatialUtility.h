@@ -18,9 +18,7 @@
 #ifndef MgSpatialUtility_H
 #define MgSpatialUtility_H
 
-/// \defgroup GisSpatialUtility GisSpatialUtility
-/// \ingroup Geometry_Module_classes
-/// \{
+/// \cond INTERNAL
 
 /// \brief
 /// Spatial utility class.
@@ -126,6 +124,6 @@ protected:
         MgCoordinateCollection * distinctPositions,
         MgCoordinateCollection * positionsToAppend);
 };
-/// \}
+/// \endcond
 
 #endif

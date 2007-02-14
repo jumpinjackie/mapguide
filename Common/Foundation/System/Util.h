@@ -32,24 +32,30 @@
 
 // STL-related structs
 
+/// \cond INTERNAL
 struct MgWcsICmpAscending
 {
     bool operator()(const wstring& s1, const wstring& s2) const
     {
         return (_wcsicmp(s1.c_str(), s2.c_str()) < 0);
     }
+/// \endcond
 };
 
+/// \cond INTERNAL
 struct MgWcsICmpDescending
 {
     bool operator()(const wstring& s1, const wstring& s2) const
     {
         return (_wcsicmp(s1.c_str(), s2.c_str()) > 0);
     }
+/// \endcond
 };
 
 class MgConfiguration;
 
+/// \cond INTERNAL
+//////////////////
 /// \brief
 /// A utility class containing methods needed for other part of
 /// code
@@ -514,7 +520,9 @@ private:
 
     typedef void*    (*MgStandardObjectCreateFunc)(int);
     static bool uuidInitialized;
+/// \endcond
 };
+
 
 // Defines a macro for NULL check which would throw exception if value is null
 #define CHECKNULL(pointer, methodname)      \
