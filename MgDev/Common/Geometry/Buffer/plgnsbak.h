@@ -32,6 +32,7 @@
 
 #include "plgnbufr.h"
 
+/// \cond INTERNAL
 class PolygonSetback : public PolygonBuffer {
 public:
     /// constructors (explicit destructor not required)
@@ -60,5 +61,6 @@ protected:
         const int nPolyVerts[], int nPolyObjects, ProgressCallback &callback,
         OrientedPolyPolygon &bufferZone);
 };
-    
+/// \endcond
+
 #endif

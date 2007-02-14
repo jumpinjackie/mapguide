@@ -18,9 +18,7 @@
 #ifndef _MG_BYTE
 #define _MG_BYTE
 
-/// \defgroup MgByte MgByte
-/// \ingroup Common_Module
-/// \{
+/// \cond INTERNAL
 
 /// \brief
 /// A utility class to store bytes
@@ -178,7 +176,7 @@ private:
     INT32 m_allocLen;
     AllocatorType m_allocType;
 };
-/// \}
+/// \endcond
 
 #endif
 

@@ -33,6 +33,7 @@
 
 class MG_FOUNDATION_API ACE_Recursive_Thread_Mutex;
 
+/// \cond INTERNAL
 class MG_FOUNDATION_API MgFileUtil
 {
     DECLARE_CLASSNAME(MgFileUtil)
@@ -110,6 +111,7 @@ class MG_FOUNDATION_API MgFileUtil
 
     static const STRING sm_reservedCharacters;
 };
+/// \endcond
 
 /// Inline Methods
 

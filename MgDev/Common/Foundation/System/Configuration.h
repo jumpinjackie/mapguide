@@ -35,6 +35,7 @@
 #define MG_CONFIGURATION_CATCH_AND_THROW(methodName)                          \
     MG_CATCH_AND_THROW(methodName)                                            \
 
+/// \cond INTERNAL
 //////////////////////////////////////////////////////////////////
 /// Validation information on configuration properties.
 ///
@@ -49,6 +50,7 @@ struct MgConfigValidationInfo
     STRING GetMinimumValue() const;
     STRING GetMaximumValue() const;
 };
+/// \endcond
 
 /// \cond INTERNAL
 class MG_FOUNDATION_API MgConfiguration : public MgGuardDisposable

@@ -27,6 +27,8 @@
 #define SAFE_ADDREF(x)  ((x != NULL) ? ((x)->AddRef(), (x)) : NULL)
 
 class MgException;
+
+/// \cond INTERNAL
 //This class ensures T implements AddRef() and Release() and also ensures
 //you can't call it through the Ptr
 template <class T>
@@ -36,6 +38,7 @@ class _NoAddRefReleaseOnPtr : public T
         virtual INT32 AddRef()  = 0;
         virtual INT32 Release() = 0;
 };
+/// \endcond
 
 template <class T>
 #ifdef _WIN32
@@ -52,6 +55,7 @@ inline T* PtrAssign(T** pp, T* lp)
     return lp;
 }
 
+/// \cond INTERNAL
 //Ptr smart pointer
 template <class T>
 class Ptr
@@ -217,6 +221,7 @@ public:
 
     T* p;
 };
+/// \endcond
 
 #endif
 
