@@ -7,17 +7,5 @@
 [EPSG]
 epsg
 
-[ESRI]
-esri
-
-[Great Lakes Grids]
-GL27
-
-[North American Datum 1927]
-nad27
-
-[North American Datum 1983]
-nad83
-
 [World/Continental]
 world
