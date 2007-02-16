@@ -69,10 +69,11 @@ private:
     typedef std::map<STRING, MgMemoryStreamHelper*> MapCache;
 
     static ACE_Recursive_Thread_Mutex sm_mutex;
+    static bool sm_initialized;
     static MapCache sm_mapCache;
+    static bool sm_renderOnly;
     static INT32 sm_creationCutoffTime;
     static INT32 sm_pollingInterval;
-    static bool sm_renderOnly;
     static INT32 sm_mapCacheSize;
 };
 

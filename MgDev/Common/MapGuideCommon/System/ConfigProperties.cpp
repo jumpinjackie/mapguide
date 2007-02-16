@@ -306,20 +306,20 @@ const INT32  MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval 
 // Tile Service Properties
 // ******************************************************************
 const STRING MgConfigProperties::TileServicePropertiesSection                               = L"TileServiceProperties";
+const STRING MgConfigProperties::TileServicePropertyRenderOnly                              = L"RenderOnly";
+const bool   MgConfigProperties::DefaultTileServicePropertyRenderOnly                       = false;
 const STRING MgConfigProperties::TileServicePropertyTileCachePath                           = L"TileCachePath";
 const STRING MgConfigProperties::DefaultTileServicePropertyTileCachePath                    = L"Repositories/TileCache/";
+const STRING MgConfigProperties::TileServicePropertyTileColumnsPerFolder                    = L"TileColumnsPerFolder";
+const INT32 MgConfigProperties::DefaultTileServicePropertyTileColumnsPerFolder              = 30;
+const STRING MgConfigProperties::TileServicePropertyTileRowsPerFolder                       = L"TileRowsPerFolder";
+const INT32 MgConfigProperties::DefaultTileServicePropertyTileRowsPerFolder                 = 30;
 const STRING MgConfigProperties::TileServicePropertyCreationCutoffTime                      = L"CreationCutoffTime";
 const INT32  MgConfigProperties::DefaultTileServicePropertyCreationCutoffTime               = 120;
 const STRING MgConfigProperties::TileServicePropertyPollingInterval                         = L"PollingInterval";
 const INT32  MgConfigProperties::DefaultTileServicePropertyPollingInterval                  = 1;
-const STRING MgConfigProperties::TileServicePropertyRenderOnly                              = L"RenderOnly";
-const bool   MgConfigProperties::DefaultTileServicePropertyRenderOnly                       = false;
 const STRING MgConfigProperties::TileServicePropertyTiledMapCacheSize                       = L"TiledMapCacheSize";
 const INT32  MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize                = 10;
-const STRING MgConfigProperties::TileServicePropertyTileRowsPerFolder                       = L"TileRowsPerFolder";
-const INT32 MgConfigProperties::DefaultTileServicePropertyTileRowsPerFolder                 = 30;
-const STRING MgConfigProperties::TileServicePropertyTileColumnsPerFolder                    = L"TileColumnsPerFolder";
-const INT32 MgConfigProperties::DefaultTileServicePropertyTileColumnsPerFolder              = 30;
 
 // ******************************************************************
 // Access Log Properties
@@ -548,12 +548,12 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviSiteServiceProperties[] =
 
 const MgConfigValidationInfo MgConfigProperties::sm_cviTileServiceProperties[] =
 {
-    { MgConfigProperties::TileServicePropertyTileCachePath                          , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::TileServicePropertyCreationCutoffTime                     , MgPropertyType::Int32     , 1                                     , 600                                   , L""                                       },
-    { MgConfigProperties::TileServicePropertyTileRowsPerFolder                      , MgPropertyType::Int32     , 1                                     , 1000                                  , L""                                       },
-    { MgConfigProperties::TileServicePropertyTileColumnsPerFolder                   , MgPropertyType::Int32     , 1                                     , 1000                                  , L""                                       },
-    { MgConfigProperties::TileServicePropertyPollingInterval                        , MgPropertyType::Int32     , 1                                     , 60                                    , L""                                       },
     { MgConfigProperties::TileServicePropertyRenderOnly                             , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::TileServicePropertyTileCachePath                          , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::TileServicePropertyTileColumnsPerFolder                   , MgPropertyType::Int32     , 1                                     , 1000                                  , L""                                       },
+    { MgConfigProperties::TileServicePropertyTileRowsPerFolder                      , MgPropertyType::Int32     , 1                                     , 1000                                  , L""                                       },
+    { MgConfigProperties::TileServicePropertyCreationCutoffTime                     , MgPropertyType::Int32     , 1                                     , 600                                   , L""                                       },
+    { MgConfigProperties::TileServicePropertyPollingInterval                        , MgPropertyType::Int32     , 1                                     , 60                                    , L""                                       },
     { MgConfigProperties::TileServicePropertyTiledMapCacheSize                      , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
