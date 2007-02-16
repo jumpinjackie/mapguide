@@ -213,6 +213,7 @@ CCoordinateSystem* CCoordinateSystem::Clone()
     {
         coordSys->m_latLonSrs = m_latLonSrs->Clone();
 
+        // No datum shift is done. You must use the CoordinateSystemTransform class for that.
         coordSys->m_transformForward = CCoordinateSystemTransformation::CreateCoordinateTransformation(coordSys->m_ogrSrs, coordSys->m_latLonSrs, false);
         if(NULL == coordSys->m_transformForward)
         {
@@ -220,6 +221,7 @@ CCoordinateSystem* CCoordinateSystem::Clone()
             throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.Clone", __LINE__, __WFILE__, L"Could not create coordinate system forward transformation with specified coordinate systems.");
         }
 
+        // No datum shift is done. You must use the CoordinateSystemTransform class for that.
         coordSys->m_transformInverse = CCoordinateSystemTransformation::CreateCoordinateTransformation(coordSys->m_latLonSrs, coordSys->m_ogrSrs, false);
         if(NULL == coordSys->m_transformInverse)
         {
@@ -402,12 +404,14 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
 
                             if(OGRERR_NONE == error)
                             {
+                                // No datum shift is done. You must use the CoordinateSystemTransform class for that.
                                 m_transformForward = CCoordinateSystemTransformation::CreateCoordinateTransformation(m_ogrSrs, m_latLonSrs, false);
                                 if(NULL == m_transformForward)
                                 {
                                     throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, L"Could not create coordinate system forward transformation with specified coordinate systems.");
                                 }
 
+                                // No datum shift is done. You must use the CoordinateSystemTransform class for that.
                                 m_transformInverse = CCoordinateSystemTransformation::CreateCoordinateTransformation(m_latLonSrs, m_ogrSrs, false);
                                 if(NULL == m_transformInverse)
                                 {
