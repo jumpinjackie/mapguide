@@ -1,5 +1,5 @@
 //
-//  (C) Copyright 2005 by Autodesk, Inc.  All rights reserved.
+//  Copyright (C) 2005-2007 by Autodesk, Inc.  All rights reserved.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
