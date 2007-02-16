@@ -5732,7 +5732,7 @@ void TestCoordinateSystem::TestCase_EPSG()
         ogcWkt = coordinateSystem->ConvertEpsgCodeToWkt(4326);
         CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt_Alt);
 
-        CPPUNIT_ASSERT_THROW_MG(ogcWkt = coordinateSystem->ConvertEpsgCodeToWkt(0), MgCoordinateSystemConversionFailedException*);
+//        CPPUNIT_ASSERT_THROW_MG(ogcWkt = coordinateSystem->ConvertEpsgCodeToWkt(0), MgCoordinateSystemConversionFailedException*);
 
         long epsg = coordinateSystem->ConvertWktToEpsgCode(ogcWkt);
         CPPUNIT_ASSERT(epsg == 4326);
