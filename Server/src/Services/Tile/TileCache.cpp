@@ -29,35 +29,43 @@ INT32 MgTileCache::sm_tileRowsPerFolder = 30;
 // default constructor
 MgTileCache::MgTileCache()
 {
-    //TODO: It is possible to get a double write on sm_path here.  We need
-    //to investigate general mutex use in this class.
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Initialize the tile cache configuration.
+///
+void MgTileCache::Initialize()
+{
     if (sm_path.empty())
     {
         // initialize the tile cache path
-        MgConfiguration* pConf = MgConfiguration::GetInstance();
+        MgConfiguration* configuration = MgConfiguration::GetInstance();
 
-        pConf->GetStringValue(
+        configuration->GetStringValue(
             MgConfigProperties::TileServicePropertiesSection,
             MgConfigProperties::TileServicePropertyTileCachePath,
             sm_path,
             MgConfigProperties::DefaultTileServicePropertyTileCachePath);
-
-        pConf->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyTileRowsPerFolder,
-            sm_tileRowsPerFolder,
-            MgConfigProperties::DefaultTileServicePropertyTileRowsPerFolder);
-
-        pConf->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyTileColumnsPerFolder,
-            sm_tileColumnsPerFolder,
-            MgConfigProperties::DefaultTileServicePropertyTileColumnsPerFolder);
 
         // generate directory location for tile cache
         MgFileUtil::AppendSlashToEndOfPath(sm_path);
 
         // create directory if it is not already there
         if (!MgFileUtil::PathnameExists(sm_path))
+        {
             MgFileUtil::CreateDirectory(sm_path, false);
+        }
+
+        configuration->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
+            MgConfigProperties::TileServicePropertyTileColumnsPerFolder,
+            sm_tileColumnsPerFolder,
+            MgConfigProperties::DefaultTileServicePropertyTileColumnsPerFolder);
+
+        configuration->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
+            MgConfigProperties::TileServicePropertyTileRowsPerFolder,
+            sm_tileRowsPerFolder,
+            MgConfigProperties::DefaultTileServicePropertyTileRowsPerFolder);
     }
 }
 
@@ -104,9 +112,6 @@ void MgTileCache::GeneratePathnames(MgMap* map, int scaleIndex,
 // returns any cached tile for the given pathname
 MgByteReader* MgTileCache::Get(CREFSTRING tilePathname)
 {
-    // acquire a read lock - this blocks if a writer holds the lock
-    ACE_Read_Guard<ACE_RW_Thread_Mutex> ace_mon(m_rwMutex);
-
     Ptr<MgByteReader> ret;
 
     MG_TRY()
@@ -127,9 +132,6 @@ MgByteReader* MgTileCache::Get(CREFSTRING tilePathname)
 // caches a tile for the given pathname
 void MgTileCache::Set(MgByteReader* img, CREFSTRING tilePathname)
 {
-    // acquire a write lock - this blocks if any readers or a writer hold the lock
-    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_rwMutex);
-
     if (img != NULL)
     {
         Ptr<MgByteSink> byteSink = new MgByteSink(img);
@@ -141,9 +143,6 @@ void MgTileCache::Set(MgByteReader* img, CREFSTRING tilePathname)
 // clears the tile cache for the given map
 void MgTileCache::Clear(MgMap* map)
 {
-    // acquire a write lock - this blocks if any readers or a writer hold the lock
-    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_rwMutex);
-
     if (map != NULL)
     {
         STRING basePath = GetBasePath(map);
@@ -157,9 +156,6 @@ void MgTileCache::Clear(MgMap* map)
 // clears the tile cache for the given map
 void MgTileCache::Clear(MgResourceIdentifier* mapDef)
 {
-    // acquire a write lock - this blocks if any readers or a writer hold the lock
-    ACE_Write_Guard<ACE_RW_Thread_Mutex> ace_mon(m_rwMutex);
-
     // the resource must be a map definition
     if (mapDef != NULL && mapDef->GetResourceType() == MgResourceType::MapDefinition)
     {

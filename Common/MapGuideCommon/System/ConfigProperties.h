@@ -392,22 +392,22 @@ EXTERNAL_API:
     /// Tile Service properties
     static const STRING TileServicePropertiesSection;                   /// value("TileServiceProperties")
 
+    /// Specifies whether the tile is only rendered
+    static const STRING TileServicePropertyRenderOnly;                  /// value("RenderOnly")
+    static const bool DefaultTileServicePropertyRenderOnly;             /// value(false)
+
     /// Sets the root of the image tile cache
     static const STRING TileServicePropertyTileCachePath;               /// value("TileCachePath")
     static const STRING DefaultTileServicePropertyTileCachePath;        /// value("Repositories/TileCache/")
 
-    /// Specifies whether the tile is only rendered
-    static const STRING TileServicePropertyRenderOnly;                  /// value("RenderOnly")
-    static const bool DefaultTileServicePropertyRenderOnly;             /// value(true)
+    // Sets the number of columns of tiles per folder
+    static const STRING TileServicePropertyTileColumnsPerFolder;       /// value("TileColumnsPerFolder")
+    static const INT32 DefaultTileServicePropertyTileColumnsPerFolder; /// value(30)
 
     // Sets the number of rows of tiles per folder
     static const STRING TileServicePropertyTileRowsPerFolder;          /// value("TileRowsPerFolder")
     static const INT32 DefaultTileServicePropertyTileRowsPerFolder;    /// value(30)
     
-    // Sets the number of columns of tiles per folder
-    static const STRING TileServicePropertyTileColumnsPerFolder;       /// value("TileColumnsPerFolder")
-    static const INT32 DefaultTileServicePropertyTileColumnsPerFolder; /// value(30)
-
 INTERNAL_API:
 
     /// Sets the maximum amount of time (in seconds) to create a tile

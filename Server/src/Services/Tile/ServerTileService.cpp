@@ -21,44 +21,51 @@
 IMPLEMENT_CREATE_SERVICE(MgServerTileService)
 
 ACE_Recursive_Thread_Mutex MgServerTileService::sm_mutex;
+bool MgServerTileService::sm_initialized = false;
 MgServerTileService::MapCache MgServerTileService::sm_mapCache;
+bool MgServerTileService::sm_renderOnly = false;
 INT32 MgServerTileService::sm_creationCutoffTime = 120;     // in seconds
 INT32 MgServerTileService::sm_pollingInterval = 1;          // in seconds
-bool MgServerTileService::sm_renderOnly = false;
-INT32 MgServerTileService::sm_mapCacheSize = -1;
+INT32 MgServerTileService::sm_mapCacheSize = 10;
 
 MgServerTileService::MgServerTileService() : MgTileService()
 {
-    //TODO: It is possible to get a double write on sm_mapCacheSize here.  We need
-    //to investigate general mutex use in this class.
-    if (sm_mapCacheSize < 0)
+    if (!sm_initialized)
     {
-        // initialize the tile cache size
-        MgConfiguration* pConf = MgConfiguration::GetInstance();
+        // Perform Double-Checked Locking Optimization.
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
-        pConf->GetIntValue(
-            MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyCreationCutoffTime,
-            sm_creationCutoffTime,
-            MgConfigProperties::DefaultTileServicePropertyCreationCutoffTime);
+        if (!sm_initialized)
+        {
+            MgConfiguration* configuration = MgConfiguration::GetInstance();
 
-        pConf->GetIntValue(
-            MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyPollingInterval,
-            sm_pollingInterval,
-            MgConfigProperties::DefaultTileServicePropertyPollingInterval);
+            configuration->GetBoolValue(
+                MgConfigProperties::TileServicePropertiesSection,
+                MgConfigProperties::TileServicePropertyRenderOnly,
+                sm_renderOnly,
+                MgConfigProperties::DefaultTileServicePropertyRenderOnly);
 
-        pConf->GetBoolValue(
-            MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyRenderOnly,
-            sm_renderOnly,
-            MgConfigProperties::DefaultTileServicePropertyRenderOnly);
+            configuration->GetIntValue(
+                MgConfigProperties::TileServicePropertiesSection,
+                MgConfigProperties::TileServicePropertyCreationCutoffTime,
+                sm_creationCutoffTime,
+                MgConfigProperties::DefaultTileServicePropertyCreationCutoffTime);
 
-        pConf->GetIntValue(
-            MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyTiledMapCacheSize,
-            sm_mapCacheSize,
-            MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize);
+            configuration->GetIntValue(
+                MgConfigProperties::TileServicePropertiesSection,
+                MgConfigProperties::TileServicePropertyPollingInterval,
+                sm_pollingInterval,
+                MgConfigProperties::DefaultTileServicePropertyPollingInterval);
+
+            configuration->GetIntValue(
+                MgConfigProperties::TileServicePropertiesSection,
+                MgConfigProperties::TileServicePropertyTiledMapCacheSize,
+                sm_mapCacheSize,
+                MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize);
+
+            MgTileCache::Initialize();
+            sm_initialized = true;
+        }
     }
 
     m_tileCache = new MgTileCache();

@@ -26,6 +26,8 @@ class MG_SERVER_TILE_API MgTileCache : public MgDisposable
 public:
     MgTileCache();
 
+    static void Initialize();
+
     void GeneratePathnames(MgResourceIdentifier* mapDef, int scaleIndex,
         CREFSTRING group, int tileColumn, int tileRow,
         STRING& tilePathname, STRING& lockPathname, bool createFullPath);
@@ -70,7 +72,6 @@ private:
     STRING GetTileName(int tileRow, int tileColumn);
     STRING GetTileIndexString(int tileIndex, int tilesPerFolder);
     
-    ACE_RW_Thread_Mutex m_rwMutex;
     static STRING sm_path;
     static INT32 sm_tileColumnsPerFolder;
     static INT32 sm_tileRowsPerFolder;
