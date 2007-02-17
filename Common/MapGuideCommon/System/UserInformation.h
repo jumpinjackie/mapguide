@@ -184,7 +184,7 @@ PUBLISHED_API:
     ///////////////////////////////
     /// \brief
     /// Sets the desired locale for the user.
-    /// Locale codes are 3 letters language codes defined by ISO 639-2. Please refer
+    /// Locale codes are 2 letters language codes defined by ISO 639-1. Please refer
     /// to  http://www.loc.gov/standards/iso639-2/
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -210,7 +210,7 @@ PUBLISHED_API:
     ///////////////////////////////
     /// \brief
     /// Retrieves the locale for the user.
-    /// Locale codes are 3 letters language codes defined by ISO 639-2. Please refer
+    /// Locale codes are 2 letters language codes defined by ISO 639-1. Please refer
     /// to  http://www.loc.gov/standards/iso639-2/
     ///
     /// Locale will only be available if SetLocale has been called on the user information

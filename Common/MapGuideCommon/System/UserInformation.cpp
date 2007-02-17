@@ -163,7 +163,7 @@ void MgUserInformation::SetMgSessionId(CREFSTRING sessionId)
 ///////////////////////////////
 ///<summary>
 ///Sets the desired locale for the user.
-///Locale codes are 3 letters language codes defined by ISO 639-2. Please refer
+///Locale codes are 2 letters language codes defined by ISO 639-1. Please refer
 ///to  http://www.loc.gov/standards/iso639-2/
 ///</summary>
 void MgUserInformation::SetLocale(CREFSTRING locale)
