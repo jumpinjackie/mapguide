@@ -123,7 +123,7 @@ void IOAreaSymbolization2D::Write(MdfStream &fd, AreaSymbolization2D * areaSymbo
         IOStroke::Write(fd, areaSymbolization->GetEdge(), "Stroke"); // NOXLATE
 
     // Write any previously found unknown XML
-    if (!areaSymbolization->GetUnknownXml().empty())
+    if (areaSymbolization != NULL && !areaSymbolization->GetUnknownXml().empty())
     {
         fd << toCString(areaSymbolization->GetUnknownXml()); 
     }
