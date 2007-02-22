@@ -130,9 +130,17 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
 
     bool bClip = m_renderer->RequiresClipping();
 
+    #ifdef _DEBUG
+    int nFeatures = 0;
+    #endif
+
     //main loop over feature data
     while (features->ReadNext())
     {
+        #ifdef _DEBUG
+        nFeatures++;
+        #endif
+
         LineBuffer* lb = NULL;
 
         //get the geometry just once
@@ -187,6 +195,10 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
 
         if (cancel && cancel(userData)) break;
     }
+
+    #ifdef _DEBUG
+    printf("  DefaultStylizer::StylizeFeatures() Layer: %S  Features: %d\n", layer->GetFeatureName().c_str(), nFeatures);
+    #endif
 
     //need the cast due to multiple inheritance resulting in two Disposables
     //in the vtable of FilterExecutor
