@@ -27,7 +27,7 @@
 #include "SiteResourceContentManager.h"
 #include "UnmanagedDataManager.h"
 
-const int MgServerResourceService::sm_maxOpRetries = 3;
+const int MgServerResourceService::sm_maxOpRetries = 10;
 
 MgSiteRepository*    MgServerResourceService::sm_siteRepository    = NULL;
 MgSessionRepository* MgServerResourceService::sm_sessionRepository = NULL;
@@ -40,6 +40,7 @@ IMPLEMENT_CREATE_SERVICE(MgServerResourceService)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Server Resource Service retry macros.
+/// This pauses briefly (about 10 ms) before trying the operation again.
 ///
 #define MG_RESOURCE_SERVICE_BEGIN_OPERATION(transacted)                       \
     int numRetries = 0;                                                       \
@@ -78,6 +79,9 @@ IMPLEMENT_CREATE_SERVICE(MgServerResourceService)
         {                                                                     \
             throw;                                                            \
         }                                                                     \
+                                                                              \
+        ACE_Time_Value timeValue(0, 10000);                                   \
+        ACE_OS::sleep(timeValue);                                             \
     }                                                                         \
                                                                               \
     repositoryMan->Terminate();                                               \
@@ -1809,7 +1813,7 @@ MgStringCollection* MgServerResourceService::EnumerateRoles(CREFSTRING user,
 ///----------------------------------------------------------------------------
 
 MgByteReader* MgServerResourceService::EnumerateUnmanagedData(
-	CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter)
+    CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter)
 {
     Ptr<MgByteReader> byteReader;
 
