@@ -17,14 +17,14 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// CalculatedProperty Class Implementation. 
+// CalculatedProperty Class Implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
 #include "CalculatedProperty.h"
 
 using namespace MDFMODEL_NAMESPACE;
-        
+
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the CalculatedProperty
 // class.
@@ -33,8 +33,8 @@ using namespace MDFMODEL_NAMESPACE;
 CalculatedProperty::CalculatedProperty()
 {
     //Default Values
-	this->m_strName = L"";
-	this->m_strExpression = L"";
+    this->m_strName = L"";
+    this->m_strExpression = L"";
 }
 
 CalculatedProperty::CalculatedProperty(const MdfString &name, const MdfString &expression)
@@ -76,7 +76,7 @@ void CalculatedProperty::SetName(const MdfString& name)
 //-------------------------------------------------------------------------
 const MdfString& CalculatedProperty::GetExpression()const
 {
-	return this->m_strExpression;
+    return this->m_strExpression;
 }
 
 //-------------------------------------------------------------------------
@@ -84,7 +84,7 @@ const MdfString& CalculatedProperty::GetExpression()const
 //-------------------------------------------------------------------------
 void CalculatedProperty::SetExpression(const MdfString& expression)
 {
-	this->m_strExpression = expression;
+    this->m_strExpression = expression;
 }
 
 //End of file.

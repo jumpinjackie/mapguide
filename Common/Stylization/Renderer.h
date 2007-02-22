@@ -76,7 +76,7 @@ public:
     ///</summary>
     virtual void StartFeature (RS_FeatureReader* feature,
                                const RS_String*  tooltip = NULL,
-                               const RS_String*  url = NULL, 
+                               const RS_String*  url = NULL,
                                const RS_String* theme = NULL) = 0;
 
     ///<summary>
@@ -118,7 +118,7 @@ public:
     virtual void ProcessMarker(LineBuffer*       lb,
                                RS_MarkerDef&     mdef,
                                bool              allowOverpost,
-							   RS_Bounds*        bounds = NULL
+                               RS_Bounds*        bounds = NULL
                                ) = 0;
 
     //TODO: DEPRECATED! Use PrcessLabelGroup() instead

@@ -518,7 +518,7 @@ void DWFRenderer::EndLayer()
 //----------------------------------------------------------------------------
 void DWFRenderer::StartFeature(RS_FeatureReader* feature,
                                const RS_String* tooltip,
-                               const RS_String* url, 
+                               const RS_String* url,
                                const RS_String* /*theme*/)
 {
     //attributes and selection support
@@ -732,7 +732,7 @@ void DWFRenderer::ProcessRaster(unsigned char*    data,
 void DWFRenderer::ProcessMarker(LineBuffer* srclb,
                                 RS_MarkerDef& mdef,
                                 bool allowOverpost,
-								RS_Bounds* bounds)
+                                RS_Bounds* bounds)
 {
     for (int i=0; i<srclb->point_count(); i++)
     {
@@ -783,14 +783,14 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     //sized symbols -- the difference happens when we play the macro
     //Device space macros are played with negative size
 
-    //construct a scaling bounding box that will take care of 
+    //construct a scaling bounding box that will take care of
     //the desired aspect ratio -- not that overall scaling to the
-    //correct size will be done using the macro attributes, but we 
-    //need to take aspect into account ourselves, since macro 
+    //correct size will be done using the macro attributes, but we
+    //need to take aspect into account ourselves, since macro
     //only has a single overall scale factor
     double lastAspect = (m_lastSymbol.width() == 0.0) ? DBL_MAX : m_lastSymbol.height() / m_lastSymbol.width();
     double aspect = (mdef.width() == 0.0) ? DBL_MAX : mdef.height() / mdef.width();
-    
+
     RS_Bounds dst;
 
     if (aspect <= 1.0)
@@ -946,7 +946,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                         symbol.serialize(*file);
                     }
 
-                //end macro definition 
+                //end macro definition
                 EndMacro(file);
             }
 
@@ -1059,14 +1059,14 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         file->write("))");
     }
 
-	//set actual (unrotated) bounds with new insertion point if a pointer was passed in
-	if (bounds)
-	{
-		bounds->minx = -refX * mdef.width();
-		bounds->maxx = (1.0 - refX) * mdef.width();
-		bounds->miny = -refY * mdef.height();
-		bounds->maxy = (1.0 - refY) * mdef.height();
-	}
+    //set actual (unrotated) bounds with new insertion point if a pointer was passed in
+    if (bounds)
+    {
+        bounds->minx = -refX * mdef.width();
+        bounds->maxx = (1.0 - refX) * mdef.width();
+        bounds->miny = -refY * mdef.height();
+        bounds->maxy = (1.0 - refY) * mdef.height();
+    }
 
     if (m_obsMesh)
         m_obsMesh->ProcessPoint(x, y);

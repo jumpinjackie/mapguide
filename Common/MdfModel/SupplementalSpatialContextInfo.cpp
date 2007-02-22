@@ -27,7 +27,7 @@
 using namespace MDFMODEL_NAMESPACE;
 
 //-------------------------------------------------------------------------
-// PURPOSE: Construct and initialize an instance of the SupplementalSpatialContextInfo 
+// PURPOSE: Construct and initialize an instance of the SupplementalSpatialContextInfo
 //          class.
 // PARAMETERS:
 //     Input:
@@ -41,7 +41,7 @@ SupplementalSpatialContextInfo::SupplementalSpatialContextInfo(const MdfString& 
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Construct and initialize an instance of the SupplementalSpatialContextInfo 
+// PURPOSE: Construct and initialize an instance of the SupplementalSpatialContextInfo
 //          class.
 // PARAMETERS:
 //     Input:
@@ -51,7 +51,7 @@ SupplementalSpatialContextInfo::SupplementalSpatialContextInfo()
 {
     //Default Settings
     this->m_strName = L"";
-	this->m_strCoordinateSystem = L"";
+    this->m_strCoordinateSystem = L"";
 }
 
 //-------------------------------------------------------------------------

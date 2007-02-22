@@ -147,7 +147,7 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets a message that is retrieved from the specified resource ID and is 
+    /// Gets a message that is retrieved from the specified resource ID and is
     /// formatted with the specified arguments.
     ///
     /// \param section
@@ -155,14 +155,14 @@ INTERNAL_API:
     /// \param resourceId
     /// Resource identifier in the section.
     /// \param arguments
-    /// Pointer to an MgStringCollection that contains the text to be placed 
-    /// into the formatted message. If arguments is NULL then that is treated 
+    /// Pointer to an MgStringCollection that contains the text to be placed
+    /// into the formatted message. If arguments is NULL then that is treated
     /// as having 0 arguments provided. A maximum of 9 arguments is allowed.
     ///
     /// \return
     /// The formatted message string.
     ///
-    STRING GetMessage(CREFSTRING section, CREFSTRING resourceId, 
+    STRING GetMessage(CREFSTRING section, CREFSTRING resourceId,
         MgStringCollection* arguments);
 
     /// Resource Components
@@ -191,7 +191,7 @@ INTERNAL_API:
     static const STRING ServerStopped;
     static const STRING ServerCmdDaemon;
     static const STRING ServerCmdDaemonInfo;
-    static const STRING ServerCmdDaemonDescription;		
+    static const STRING ServerCmdDaemonDescription;
     static const STRING ServerCmdHelp;
     static const STRING ServerCmdHelpInfo1;
     static const STRING ServerCmdHelpInfo2;

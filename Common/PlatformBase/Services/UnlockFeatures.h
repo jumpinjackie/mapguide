@@ -18,7 +18,6 @@
 #ifndef _MGUNLOCKFEATURES_H
 #define _MGUNLOCKFEATURES_H
 
-
 /// \defgroup MgUnlockFeatures MgUnlockFeatures
 /// \ingroup Feature_Service_classes
 /// \{
@@ -26,29 +25,26 @@
 class MgUnlockFeatures;
 template class MG_PLATFORMBASE_API Ptr<MgUnlockFeatures>;
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Creates a lock feature command. You must add this
+/// Creates an unlock feature command. You must add this
 /// command to an MgFeatureCommandCollection object and pass the
 /// latter in a call to MgFeatureService::UpdateFeatures.
 ///
 /// \remarks
 ///
-///
-///
-
 class MG_PLATFORMBASE_API MgUnlockFeatures : public MgFeatureCommand
 {
     DECLARE_CREATE_OBJECT();
     DECLARE_CLASSNAME(MgUnlockFeatures);
-    
+
 PUBLISHED_API:
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////	
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Constructs a unlock feature comand
+    /// Constructs an unlock feature comand
     MgUnlockFeatures(CREFSTRING className, CREFSTRING filterText);
-    
-    //////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the type of the command, that is,
     /// MgFeatureCommandType::UnlockFeatures.
@@ -68,8 +64,8 @@ PUBLISHED_API:
     /// Returns MgFeatureCommandType::UnlockFeatures.
     ///
     virtual INT32 GetCommandType() const;   /// __get
-    
-    ////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the name of the feature class.
     ///
@@ -88,8 +84,8 @@ PUBLISHED_API:
     /// Returns the name of the feature class.
     ///
     STRING GetFeatureClassName() const;  /// __get
-    
-    ////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the filter text.
     ///
@@ -108,10 +104,10 @@ PUBLISHED_API:
     /// Returns the filter text.
     ///
     STRING GetFilterText() const;   /// __get
-    
+
 INTERNAL_API:
 
-    //////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Serialize data to TCP/IP stream
     ///
@@ -119,10 +115,9 @@ INTERNAL_API:
     /// Stream
     ///
     ///
-
     void Serialize(MgStream* stream);
 
-    //////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Deserialize data from TCP/IP stream
     ///
@@ -145,4 +140,4 @@ private:
 };
 /// \}
 
-#endif//_MGUNLOCKFEATURES_H
+#endif

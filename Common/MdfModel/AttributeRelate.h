@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef ATTRIBUTERELATE_H_  
+#ifndef ATTRIBUTERELATE_H_
 #define ATTRIBUTERELATE_H_
 
 #include "MdfModel.h"
@@ -24,27 +24,26 @@
 
 BEGIN_NAMESPACE_MDFMODEL
 
-//-------------------------------------------------------------------------
-// DESCRIPTION:
-// AttributeRelate class defines the attribute class in the target feature
-// source
-//-------------------------------------------------------------------------
-class MDFMODEL_API AttributeRelate : public MdfRootObject
+    //-------------------------------------------------------------------------
+    // DESCRIPTION:
+    // AttributeRelate class defines the attribute class in the target feature
+    // source
+    //-------------------------------------------------------------------------
+    class MDFMODEL_API AttributeRelate : public MdfRootObject
     {
     public:
-
-		// Defines the type of a join
-		enum RelateType
-    	{
-			LeftOuter
-			,RightOuter		// is not supported yet
-			,Inner
-			,Association	// is not supported yet
-    	};
+        // Defines the type of a join
+        enum RelateType
+        {
+            LeftOuter,
+            RightOuter,     // is not supported yet
+            Inner,
+            Association     // is not supported yet
+        };
 
          // Construction, destruction, initialization
         AttributeRelate();
-		AttributeRelate(const MdfString& joinName);
+        AttributeRelate(const MdfString& joinName);
 
         virtual ~AttributeRelate();
 
@@ -52,7 +51,7 @@ class MDFMODEL_API AttributeRelate : public MdfRootObject
         // Property : RelateProperty
         RelatePropertyCollection* GetRelateProperties();
 
-		// Property : Name
+        // Property : Name
         const MdfString& GetName()const;
         void SetName(const MdfString& joinName);
 
@@ -68,13 +67,13 @@ class MDFMODEL_API AttributeRelate : public MdfRootObject
         const MdfString& GetAttributeNameDelimiter() const;
         void SetAttributeNameDelimiter(const MdfString& delimiterStr);
 
-		// Attribute : RelateType
-		RelateType			GetRelateType() const;
-		void 				SetRelateType (RelateType type);	
+        // Attribute : RelateType
+        RelateType          GetRelateType() const;
+        void                SetRelateType (RelateType type);
 
-		// Attribute: ForceOneToOne
-		bool 				GetForceOneToOne() const;
-		void 				SetForceOneToOne(bool bVal);	
+        // Attribute: ForceOneToOne
+        bool                GetForceOneToOne() const;
+        void                SetForceOneToOne(bool bVal);
 
     private:
         // Hidden copy constructor and assignment operator.
@@ -84,8 +83,8 @@ class MDFMODEL_API AttributeRelate : public MdfRootObject
         // RelatePropertyCollection
         RelatePropertyCollection m_collRelateProperties;
 
-		// Name 
-		MdfString m_strName;
+        // Name
+        MdfString m_strName;
 
         // ResourceId
         MdfString m_strResourceId;
@@ -95,19 +94,15 @@ class MDFMODEL_API AttributeRelate : public MdfRootObject
 
         MdfString m_strAttributeNameDelimiter;
 
-		// Join type attribute
-		RelateType	m_eRelateType;
+        // Join type attribute
+        RelateType m_eRelateType;
 
-		// Force 1 : 1 attribute
-		bool		m_bForceOneToOne;
-
+        // Force 1 : 1 attribute
+        bool m_bForceOneToOne;
     };
 
     typedef MdfOwnerCollection<AttributeRelate> AttributeRelateCollection;
-    EXPIMP_TEMPLATE template
-        class MDFMODEL_API MdfOwnerCollection<AttributeRelate>;
+    EXPIMP_TEMPLATE template class MDFMODEL_API MdfOwnerCollection<AttributeRelate>;
 
 END_NAMESPACE_MDFMODEL
-
 #endif // ATTRIBUTERELATE_H_
-// End of file.

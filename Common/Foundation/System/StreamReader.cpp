@@ -416,7 +416,7 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
             {
                 throw new MgFileNotFoundException(L"MgStreamReader.GetStream",
                     __LINE__, __WFILE__, &arguments, L"", NULL);
-			}
+            }
             else
             {
                 throw new MgFileIoException(L"MgStreamReader.GetStream",
@@ -428,7 +428,6 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
     {
         bytes = new MgByte(NULL, (INT32)bsap.m_Length);
     }
-
 
     UINT32 allocLen = 0;
     UINT32 len = 0;

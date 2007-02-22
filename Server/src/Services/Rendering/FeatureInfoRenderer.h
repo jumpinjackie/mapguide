@@ -32,7 +32,6 @@ class RSMgFeatureReader;
 //bedisplayed in the html viewer)
 class MG_SERVER_RENDERING_API FeatureInfoRenderer : public Renderer
 {
-
 public:
     FeatureInfoRenderer(MgSelection* selection,
                         int maxFeatures,
@@ -56,7 +55,6 @@ public:
 
     virtual void EndLayer();
 
-
     virtual void ProcessPolygon(LineBuffer* lb,
                                 RS_FillStyle& fill)
     {}
@@ -75,9 +73,8 @@ public:
     virtual void ProcessMarker(LineBuffer*   lb,
                                RS_MarkerDef& mdef,
                                bool          allowOverpost,
-							   RS_Bounds*    bounds = NULL)
+                               RS_Bounds*    bounds = NULL)
     {}
-
 
     virtual void ProcessLabel(double x, double y,
                               const RS_String& text, RS_TextDef& tdef)
@@ -198,7 +195,6 @@ protected:
     double m_mapScale;
 
 private:
-    
     //specific to FeatureInfoRenderer
     RS_String m_url;
     RS_String m_tooltip;

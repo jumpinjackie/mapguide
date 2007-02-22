@@ -19,7 +19,6 @@
 #include "IOAttributeRelate.h"
 #include "IORelateProperty.h"
 
-
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
@@ -87,9 +86,9 @@ void IOAttributeRelate::ElementChars(const wchar_t *ch)
         (this->m_pAttributeRelate)->SetName(ch);
     else if (m_currElemName == L"AttributeNameDelimiter") // NOXLATE
         (this->m_pAttributeRelate)->SetAttributeNameDelimiter(ch);
-	else if (m_currElemName == L"RelateType") // NOXLATE
+    else if (m_currElemName == L"RelateType") // NOXLATE
         (this->m_pAttributeRelate)->SetRelateType(ReadType(ch));
-	else if (m_currElemName == L"ForceOneToOne") // NOXLATE
+    else if (m_currElemName == L"ForceOneToOne") // NOXLATE
         (this->m_pAttributeRelate)->SetForceOneToOne(wstrToBool(ch));
 }
 
@@ -117,7 +116,7 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
     fd << tab() << "<AttributeClass>"; // NOXLATE
     fd << EncodeString(pAttributeRelate->GetAttributeClass());
     fd << "</AttributeClass>" << std::endl; // NOXLATE
-    
+
     // Property: ResourceId
     fd << tab() << "<ResourceId>";  // NOXLATE
     fd << EncodeString(pAttributeRelate->GetResourceId());
@@ -135,12 +134,12 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
 
     // Property: RelateType
     fd << tab() << "<RelateType>"; // NOXLATE
-	this->WriteType(fd, pAttributeRelate);
+    this->WriteType(fd, pAttributeRelate);
     fd << "</RelateType>" << std::endl; // NOXLATE
 
     // Property: ForceOneToOne
     fd << tab() << "<ForceOneToOne>"; // NOXLATE
-	fd << (BoolToStr(pAttributeRelate->GetForceOneToOne())) ? ("true") : ("false"); // NOXLATE
+    fd << (BoolToStr(pAttributeRelate->GetForceOneToOne())) ? ("true") : ("false"); // NOXLATE
     fd << "</ForceOneToOne>" << std::endl; // NOXLATE
 
     // Property: RelateProperties
@@ -153,7 +152,7 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
     // Write any previously found unknown XML
     if (!pAttributeRelate->GetUnknownXml().empty())
     {
-        fd << toCString(pAttributeRelate->GetUnknownXml()); 
+        fd << toCString(pAttributeRelate->GetUnknownXml());
     }
 
     dectab();
@@ -162,40 +161,40 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
 
 void IOAttributeRelate::WriteType(MdfStream &fd, AttributeRelate *pAttributeRelate)
 {
-	switch (pAttributeRelate->GetRelateType())
-	{
-		case AttributeRelate::LeftOuter:
-		fd << "LeftOuter";	//NOXLATE
-		break;
+    switch (pAttributeRelate->GetRelateType())
+    {
+        case AttributeRelate::LeftOuter:
+        fd << "LeftOuter";  //NOXLATE
+        break;
 
-		case AttributeRelate::RightOuter:
-		fd << "RightOuter";	//NOXLATE
-		break;
+        case AttributeRelate::RightOuter:
+        fd << "RightOuter"; //NOXLATE
+        break;
 
-		case AttributeRelate::Inner:
-		fd << "Inner";		//NOXLATE
-		break;
+        case AttributeRelate::Inner:
+        fd << "Inner";      //NOXLATE
+        break;
 
-		case AttributeRelate::Association:
-		fd << "Association";	//NOXLATE
-		break;
+        case AttributeRelate::Association:
+        fd << "Association";    //NOXLATE
+        break;
 
-		default:;
-	}
+        default:;
+    }
 }
 
 AttributeRelate::RelateType IOAttributeRelate::ReadType(const wchar_t *strType)
 {
-	AttributeRelate::RelateType type = AttributeRelate::LeftOuter;
+    AttributeRelate::RelateType type = AttributeRelate::LeftOuter;
 
     if (::wcscmp(strType, L"LeftOuter") == 0)           // NOXLATE
         type = AttributeRelate::LeftOuter;
-    else if (::wcscmp(strType, L"RightOuter") == 0)     // NOXLATE 
+    else if (::wcscmp(strType, L"RightOuter") == 0)     // NOXLATE
         type = AttributeRelate::RightOuter;
     else if (::wcscmp(strType, L"Inner") == 0)          // NOXLATE
         type = AttributeRelate::Inner;
     else if (::wcscmp(strType, L"Association") == 0)    // NOXLATE
         type = AttributeRelate::Association;
 
-	return type;
+    return type;
 }
