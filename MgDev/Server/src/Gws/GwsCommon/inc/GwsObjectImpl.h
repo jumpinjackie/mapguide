@@ -18,7 +18,7 @@
 #ifndef GWSOBJECTIMPL_H
 #define GWSOBJECTIMPL_H
 
-#include "GwsCommon.h"	// for class GWSStatus
+#include "GwsCommon.h"  // for class GWSStatus
 
 // forward definitions
 class FdoXmlWriter;

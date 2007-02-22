@@ -66,8 +66,8 @@ public:
         MgResourceIdentifier* resource);
     virtual void ApplyResourcePackage(MgByteReader* packageStream);
     virtual void LoadResourcePackage(CREFSTRING packagePathname, bool logActivities);
-    virtual void MakeResourcePackage(MgResourceIdentifier* resource, 
-        CREFSTRING packagePathname, CREFSTRING packageDescription, 
+    virtual void MakeResourcePackage(MgResourceIdentifier* resource,
+        CREFSTRING packagePathname, CREFSTRING packageDescription,
         bool logActivities);
 
     // Resource Management APIs
@@ -144,7 +144,7 @@ public:
 
     MgStringCollection* EnumerateRoles(CREFSTRING user, CREFSTRING group);
 
-	// Unmanaged Data APIs
+    // Unmanaged Data APIs
 
     virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter);
 
@@ -155,7 +155,7 @@ public:
     // Resource Permission related methods
 
     MgPermissionCache* CreatePermissionCache();
-    virtual bool HasPermission(MgResourceIdentifier* resource, 
+    virtual bool HasPermission(MgResourceIdentifier* resource,
         CREFSTRING permission);
 
     // Other internal methods

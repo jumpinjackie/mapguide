@@ -17,7 +17,7 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// RelateProperty Class Implementation. 
+// RelateProperty Class Implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
@@ -26,7 +26,7 @@
 using namespace MDFMODEL_NAMESPACE;
 
 static MdfString stChainDelimiterSymbol = L".";
-        
+
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the RelateProperty
 // class.
@@ -35,9 +35,9 @@ static MdfString stChainDelimiterSymbol = L".";
 RelateProperty::RelateProperty()
 {
     //Default Values
-	this->m_strAttributeClassProperty = L"";
+    this->m_strAttributeClassProperty = L"";
     this->m_strFeatureClassProperty = L"";
-	this->m_strPrefixedFeatureClassProperty = L"";
+    this->m_strPrefixedFeatureClassProperty = L"";
     this->m_strPrimaryAttributeRelate = L"";
 }
 
@@ -70,9 +70,9 @@ const MdfString& RelateProperty::GetFeatureClassProperty(bool bStripPrimaryAttri
 // PURPOSE: Accessor method to the FeatureClassProperty property.
 // PARAMETERS:
 //      Input:
-//          primaryAttributeRelateName - name of the primary join (in the 
+//          primaryAttributeRelateName - name of the primary join (in the
 //             case of a chain) or empty string
-//          propertyName - FeatureClassProperty 
+//          propertyName - FeatureClassProperty
 //-------------------------------------------------------------------------
 void RelateProperty::SetFeatureClassProperty(
     const MdfString& propertyName,
@@ -107,7 +107,7 @@ const MdfString& RelateProperty::GetPrimaryAttributeRelateName() const
 //-------------------------------------------------------------------------
 const MdfString& RelateProperty::GetAttributeClassProperty()const
 {
-	return this->m_strAttributeClassProperty;
+    return this->m_strAttributeClassProperty;
 }
 
 //-------------------------------------------------------------------------
@@ -115,7 +115,7 @@ const MdfString& RelateProperty::GetAttributeClassProperty()const
 //-------------------------------------------------------------------------
 void RelateProperty::SetAttributeClassProperty(const MdfString& attributeClass)
 {
-	this->m_strAttributeClassProperty = attributeClass;
+    this->m_strAttributeClassProperty = attributeClass;
 }
 
 void RelateProperty::ParseDelimitedClassName (

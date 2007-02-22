@@ -109,10 +109,10 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     RS_Units mdefU = RS_Units_Device;
     double mdefRot = 0.0;
 
-	//the actual position used for the marker by the Renderer
-	//may be returned in this structure to help place
-	//labels better
-	RS_Bounds bounds = RS_Bounds(1.,1.,0.,0.); // init invalid
+    //the actual position used for the marker by the Renderer
+    //may be returned in this structure to help place
+    //labels better
+    RS_Bounds bounds = RS_Bounds(1.,1.,0.,0.); // init invalid
 
     if (psym && psym->GetSymbol())
     {
@@ -182,10 +182,10 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                 //been evaluated
 
                 double op_pts[16];
-                
+
                 // calculate a 2 pixel offset to allow for label ghosting
-                double offset = 2.0 * (0.0254 / renderer->GetDpi()); //2 pixels in meters 
-                
+                double offset = 2.0 * (0.0254 / renderer->GetDpi()); //2 pixels in meters
+
                 //in case of mapping space we need to scale by map scale
                 if (mdefU != RS_Units_Device)
                     offset *= renderer->GetMapScale();
@@ -195,12 +195,12 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
                 double w = 0.5 * mdefW;
                 double h = 0.5 * mdefH;
-                double ch = 0;		// vertical center point
-                double cw = 0;		// horizontal center point
+                double ch = 0;      // vertical center point
+                double cw = 0;      // horizontal center point
 
                 w += offset;
                 h += offset;
-                
+
                 bool useBounds = bounds.IsValid();
                 if (useBounds)
                 {
@@ -235,9 +235,9 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                         hsn = h * sn;   nhsn = -hsn;
                         hcs = h * cs;   nhcs = -hcs;
                     }
-                   
-                    cwsn = cw * sn;		chsn = ch * sn; 
-                    cwcs = cw * cs;		chcs = ch * cs;
+
+                    cwsn = cw * sn;     chsn = ch * sn;
+                    cwcs = cw * cs;     chcs = ch * cs;
 
                     // find the octant that the marker is rotated into, and shift the points accordingly.
                     // this way, the overpost points are still within 22.5 degrees of an axis-aligned box.
@@ -259,17 +259,17 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                 {
                     if (!useBounds)
                     {
-                        bounds.maxx = w;	bounds.minx = -w;
-                        bounds.maxy = h;	bounds.miny = -h;
+                        bounds.maxx = w;    bounds.minx = -w;
+                        bounds.maxy = h;    bounds.miny = -h;
                     }
-                    op_pts[0] = bounds.maxx;	op_pts[1] = ch;
-                    op_pts[2] = bounds.maxx;	op_pts[3] = bounds.maxy;
-                    op_pts[4] = cw;				op_pts[5] = bounds.maxy;
-                    op_pts[6] = bounds.minx;	op_pts[7] = bounds.maxy;
-                    op_pts[8] = bounds.minx;	op_pts[9] = ch;
-                    op_pts[10] = bounds.minx;	op_pts[11] = bounds.miny;
-                    op_pts[12] = cw;			op_pts[13] = bounds.miny;
-                    op_pts[14] = bounds.maxx;	op_pts[15] = bounds.miny;
+                    op_pts[ 0] = bounds.maxx;   op_pts[ 1] = ch;
+                    op_pts[ 2] = bounds.maxx;   op_pts[ 3] = bounds.maxy;
+                    op_pts[ 4] = cw;            op_pts[ 5] = bounds.maxy;
+                    op_pts[ 6] = bounds.minx;   op_pts[ 7] = bounds.maxy;
+                    op_pts[ 8] = bounds.minx;   op_pts[ 9] = ch;
+                    op_pts[10] = bounds.minx;   op_pts[11] = bounds.miny;
+                    op_pts[12] = cw;            op_pts[13] = bounds.miny;
+                    op_pts[14] = bounds.maxx;   op_pts[15] = bounds.miny;
                 }
 
                 RS_LabelInfo candidates[8];

@@ -17,14 +17,14 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// AttributeRelate Class Implementation. 
+// AttributeRelate Class Implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
 #include "AttributeRelate.h"
 
 using namespace MDFMODEL_NAMESPACE;
-        
+
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the AttributeRelate
 // class.
@@ -33,23 +33,23 @@ using namespace MDFMODEL_NAMESPACE;
 AttributeRelate::AttributeRelate()
 {
     //Default Values
-	this->m_strName = L"";
-	this->m_strResourceId = L"";
-	this->m_strAttributeClass = L"";
-    this->m_strAttributeNameDelimiter = L""; 
-	this->m_eRelateType = LeftOuter;
-	this->m_bForceOneToOne = true;
+    this->m_strName = L"";
+    this->m_strResourceId = L"";
+    this->m_strAttributeClass = L"";
+    this->m_strAttributeNameDelimiter = L"";
+    this->m_eRelateType = LeftOuter;
+    this->m_bForceOneToOne = true;
 }
 
 AttributeRelate::AttributeRelate(const MdfString& joinName)
 {
     //Default Values
-	this->m_strName = joinName;
-	this->m_strResourceId = L"";
-	this->m_strAttributeClass = L"";
-    this->m_strAttributeNameDelimiter = L""; 
-	this->m_eRelateType = LeftOuter;
-	this->m_bForceOneToOne = true;
+    this->m_strName = joinName;
+    this->m_strResourceId = L"";
+    this->m_strAttributeClass = L"";
+    this->m_strAttributeNameDelimiter = L"";
+    this->m_eRelateType = LeftOuter;
+    this->m_bForceOneToOne = true;
 }
 
 //-------------------------------------------------------------------------
@@ -74,19 +74,19 @@ RelatePropertyCollection* AttributeRelate::GetRelateProperties()
 //-------------------------------------------------------------------------
 const MdfString& AttributeRelate::GetName()const
 {
-	return this->m_strName;
+    return this->m_strName;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method to the Name property.
 // PARAMETERS:
 //      Input:
-//          name - new join name 
+//          name - new join name
 //-------------------------------------------------------------------------
 
 void AttributeRelate::SetName(const MdfString& joinName)
 {
-	this->m_strName = joinName;
+    this->m_strName = joinName;
 }
 
 //-------------------------------------------------------------------------
@@ -115,7 +115,7 @@ void AttributeRelate::SetResourceId(const MdfString& resourceId)
 //-------------------------------------------------------------------------
 const MdfString& AttributeRelate::GetAttributeClass()const
 {
-	return this->m_strAttributeClass;
+    return this->m_strAttributeClass;
 }
 
 //-------------------------------------------------------------------------
@@ -123,12 +123,12 @@ const MdfString& AttributeRelate::GetAttributeClass()const
 //-------------------------------------------------------------------------
 void AttributeRelate::SetAttributeClass(const MdfString& attributeClass)
 {
-	this->m_strAttributeClass = attributeClass;
+    this->m_strAttributeClass = attributeClass;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the AttributeNameDelimiter property.
-// RETURNS: A string representing the AttributeNameDelimiter. The 
+// RETURNS: A string representing the AttributeNameDelimiter. The
 // default delimiter is hard coded to "|"
 //-------------------------------------------------------------------------
 const MdfString& AttributeRelate::GetAttributeNameDelimiter() const
@@ -150,7 +150,7 @@ void AttributeRelate::SetAttributeNameDelimiter(const MdfString& delimiterStr)
 //-------------------------------------------------------------------------
 AttributeRelate::RelateType AttributeRelate::GetRelateType() const
 {
-	return this->m_eRelateType;
+    return this->m_eRelateType;
 }
 
 //-------------------------------------------------------------------------
@@ -161,7 +161,7 @@ AttributeRelate::RelateType AttributeRelate::GetRelateType() const
 //-------------------------------------------------------------------------
 void AttributeRelate::SetRelateType (AttributeRelate::RelateType type)
 {
-	m_eRelateType = type;
+    m_eRelateType = type;
 }
 
 //-------------------------------------------------------------------------
@@ -170,7 +170,7 @@ void AttributeRelate::SetRelateType (AttributeRelate::RelateType type)
 //-------------------------------------------------------------------------
 bool AttributeRelate::GetForceOneToOne() const
 {
-	return m_bForceOneToOne;
+    return m_bForceOneToOne;
 }
 
 //-------------------------------------------------------------------------
@@ -181,7 +181,7 @@ bool AttributeRelate::GetForceOneToOne() const
 //-------------------------------------------------------------------------
 void AttributeRelate::SetForceOneToOne(bool bVal)
 {
-	m_bForceOneToOne = bVal;
+    m_bForceOneToOne = bVal;
 }
 
 //End of file.

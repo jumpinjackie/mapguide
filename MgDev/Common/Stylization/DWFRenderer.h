@@ -63,7 +63,6 @@ typedef std::vector<DWFToolkit::DWFObjectDefinitionResource*> objdefres_list;
 ///</summary>
 class DWFRenderer : public Renderer
 {
-
 public:
     STYLIZATION_API DWFRenderer();
     STYLIZATION_API virtual ~DWFRenderer();
@@ -82,10 +81,9 @@ public:
 
     STYLIZATION_API virtual void EndLayer       ();
 
-
     STYLIZATION_API virtual void StartFeature (RS_FeatureReader* feature,
                                                const RS_String*  tooltip = NULL,
-                                               const RS_String*  url = NULL, 
+                                               const RS_String*  url = NULL,
                                                const RS_String* theme = NULL);
 
     STYLIZATION_API virtual void ProcessPolygon (LineBuffer* lb,
@@ -104,7 +102,7 @@ public:
     STYLIZATION_API virtual void ProcessMarker(LineBuffer*       lb,
                                                RS_MarkerDef&     mdef,
                                                bool              allowOverpost,
-											   RS_Bounds*        bounds = NULL);
+                                               RS_Bounds*        bounds = NULL);
 
     STYLIZATION_API virtual void ProcessLabel(double x, double y,
                                               const RS_String& text, RS_TextDef& tdef);
@@ -149,7 +147,6 @@ public:
     STYLIZATION_API void EndLayout();
 
 protected:
-
     //list of layer w2d streams
     WT_File* m_w2dFile;
     DWFCore::DWFBufferOutputStream* m_w2dStream;
@@ -191,14 +188,12 @@ protected:
     void Init(RS_Bounds& extents);
 
 protected:
-
     //transformation from mapping to W2D space
     double _TX(double x);
     double _TY(double y);
     void _TransformPointsNoClamp(double* inpts, int numpts);
 
 private:
-
     //macro/overpost opcode output -- done manually by writing to file
     void BeginMacro(WT_File* file, int id, int scale);
     void EndMacro(WT_File* file);

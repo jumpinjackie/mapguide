@@ -17,14 +17,14 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// Extension Class Implementation. 
+// Extension Class Implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
 #include "Extension.h"
 
 using namespace MDFMODEL_NAMESPACE;
-        
+
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the Extension
 // class.
@@ -33,8 +33,8 @@ using namespace MDFMODEL_NAMESPACE;
 Extension::Extension()
 {
     //Default Values
-	this->m_strName = L"";
-	this->m_strFeatureClass = L"";
+    this->m_strName = L"";
+    this->m_strFeatureClass = L"";
 }
 
 //-------------------------------------------------------------------------
@@ -91,7 +91,7 @@ void Extension::SetName(const MdfString& name)
 //-------------------------------------------------------------------------
 const MdfString& Extension::GetFeatureClass()const
 {
-	return this->m_strFeatureClass;
+    return this->m_strFeatureClass;
 }
 
 //-------------------------------------------------------------------------
@@ -99,7 +99,7 @@ const MdfString& Extension::GetFeatureClass()const
 //-------------------------------------------------------------------------
 void Extension::SetFeatureClass(const MdfString& featureClass)
 {
-	this->m_strFeatureClass = featureClass;
+    this->m_strFeatureClass = featureClass;
 }
 
 //End of file.
