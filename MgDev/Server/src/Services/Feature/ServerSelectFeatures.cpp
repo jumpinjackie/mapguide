@@ -16,6 +16,7 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
+#include "MapGuideCommon.h"
 #include "Services/FeatureService.h"
 #include "ServerSelectFeatures.h"
 #include "ServerFeatureConnection.h"
@@ -30,6 +31,10 @@
 
 #include "ServerGwsFeatureReader.h"
 #include "GwsConnectionPool.h"
+#include "GwsCommonImp.h"
+#include "GwsMutableFeature.h"
+#include "GwsFdoCommand.h"
+#include "GwsQuery.h"
 
 
 MgServerSelectFeatures::MgServerSelectFeatures()
@@ -40,6 +45,19 @@ MgServerSelectFeatures::MgServerSelectFeatures()
     m_customFunction = NULL;
     m_customPropertyName = L"";
     m_featureSource = NULL;
+
+    // Set a default join query batch size
+    m_nJoinQueryBatchSize = MgConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize;
+
+    // Get the join batch size
+    MgConfiguration* config = MgConfiguration::GetInstance();
+    if(config)
+    {
+        config->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection,
+                            MgConfigProperties::FeatureServicePropertyJoinQueryBatchSize,
+                            m_nJoinQueryBatchSize,
+                            MgConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize);
+    }
 }
 
 MgServerSelectFeatures::~MgServerSelectFeatures()
@@ -380,7 +398,7 @@ void MgServerSelectFeatures::ApplyFilter()
         {
             FdoPtr<FdoIGeometry> geometry = geometryFactory->CreateGeometryFromFgf(byteArray);
             STRING geomText = geometry->GetText();
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("SPATIAL FILTER: %W\n"), geomText.c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("SPATIAL FILTER:\n%W\n\n"), geomText.c_str()));
         }
         #endif
 
@@ -996,6 +1014,9 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             FdoPtr<IGWSQuery> query = IGWSQuery::Create(pool, qd, NULL);
             FdoPtr<IGWSFeatureIterator> iter;
             FdoPtr<IGWSFeatureIterator> iterCopy;
+
+            // Set batch size as it may be needed
+            CGwsBatchSortedBlockJoinQueryResults::sm_nBatchSize = m_nJoinQueryBatchSize;
 
             // Prepare and Execute Query
             query->Prepare();

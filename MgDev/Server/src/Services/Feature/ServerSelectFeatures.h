@@ -86,6 +86,9 @@ private:
     MgResourceIdentifier* GetSecondaryResourceIdentifier(MgResourceIdentifier* primResId, CREFSTRING extensionName, CREFSTRING relationName);
 
     MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resource);
+
+    // This setting limits the batch size used by the join query algorithm
+    INT32 m_nJoinQueryBatchSize;
 };
 
 #endif

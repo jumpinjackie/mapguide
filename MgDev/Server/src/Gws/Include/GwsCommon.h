@@ -223,6 +223,7 @@ typedef enum EGwsStatus {
     ,eGwsNoLayers
     ,eGwsFeatureSourceIsReadOnly
     ,eGwsFeatureClassHasNoIdentity
+    ,eGwsFdoInvalidDataType
 
 } EGwsStatus;
 

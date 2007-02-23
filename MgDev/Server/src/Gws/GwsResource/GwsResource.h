@@ -211,6 +211,7 @@
 #define IDS_STRING_eGwsFeatureClassHasNoIdentity 1192
 #define IDS_PROGRESS_LAYEREXTENTS       1193
 #define IDS_PROGRESS_LAYER              1194
+#define IDS_STRING_eGwsFdoInvalidDataType 1195
 
 // Next default values for new objects
 // 

@@ -76,12 +76,16 @@ CGwsFeatureIterator * CGwsPreparedQuery::CreateFeatureIterator (EGwsFeatureItera
         return new CGwsNestedLoopsJoinQueryResults ();
     case eGwsNestedLoopSortedBlockIterator:
         return new CGwsNestedLoopSortedBlockJoinQueryResults ();
+    case eGwsBatchSortedBlockIterator:
+        return new CGwsBatchSortedBlockJoinQueryResults ();
     case eGwsRightSortMergeJoinIterator:
         return new CGwsRightSortedJoinQueryResults ();
     case eGwsRightNestedLoopsIterator:
         return new CGwsRightNestedLoopJoinQueryResults ();
     case eGwsRightNestedLoopSortedBlockIterator:
         return new CGwsRightNestedLoopSortedBlockJoinQueryResults ();
+    case eGwsRightBatchSortedBlockIterator:
+        return new CGwsRightBatchSortedBlockJoinQueryResults ();
     }
     return NULL;
 
@@ -357,8 +361,12 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
     try {
         FdoPtr<FdoFilter> filter = ((FdoISelect *)m_pCommand.p)->GetFilter ();
         PrepareFilter (filter, m_bIsAxisAlignedRectangleFilter);
-        // do I need to set filter after converting it?
-
+        #ifdef _DEBUG
+        if(filter)
+        {
+            printf("Filter:%S\n\n", filter->ToString());
+        }
+        #endif
         //Code for executing an extended query - if it's requested (bScrollable)
         //AND if it's supported (m_bSdfExtendedQuerySupported)
         bool bGotScrollableIterator = false;

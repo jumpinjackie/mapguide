@@ -517,4 +517,9 @@ void CGwsRightJoinQueryResults::ToString (
     return CGwsFeatureIterator::ToString (propertyName, buff, len);
 }
 
+FdoStringCollection* CGwsRightJoinQueryResults::GetJoinColumns()
+{
+    m_joincols.p->AddRef();
+    return m_joincols;
+}
 

@@ -401,14 +401,18 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
             if (rSupportsOrdering) {
                 // sort-merge
                 joinmethod = eGwsSortMerge;
-
             } else {
                 // nested loop join and sorted block
                 joinmethod = eGwsNestedLoopSortedBlock;
             }
         } else {
-            // nested loop join
-            joinmethod = eGwsNestedLoops;
+            if (rSupportsOrdering) {
+                joinmethod = eGwsBatchSortedBlock;
+            }
+            else {
+                // nested loop join
+                joinmethod = eGwsNestedLoops;
+            }
         }
 
         prepQuery = CreatePreparedJoinQuery (pFQuery->Type (),

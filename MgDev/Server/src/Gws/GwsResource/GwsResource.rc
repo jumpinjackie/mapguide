@@ -435,6 +435,7 @@ BEGIN
     IDS_STRING_eGwsFeatureClassHasNoIdentity 
                             "Instance cannot be updated because the feature class doesn't have identity properties."
     IDS_PROGRESS_LAYEREXTENTS "Calculating layer extents..."
+    IDS_STRING_eGwsFdoInvalidDataType "Invalid data type."
 END
 
 #endif    // English (U.S.) resources
