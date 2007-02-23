@@ -147,7 +147,7 @@ const STRING MgConfigProperties::GeneralPropertyWfsDocumentPath                 
 const STRING MgConfigProperties::DefaultGeneralPropertyWfsDocumentPath                      = L"Wfs/";
 const STRING MgConfigProperties::GeneralPropertyWmsDocumentPath                             = L"WmsDocumentPath";
 const STRING MgConfigProperties::DefaultGeneralPropertyWmsDocumentPath                      = L"Wms/";
-const STRING MgConfigProperties::GeneralPropertyWorkerThreadPoolSize                        = L"WorkerThreadPoolSize";
+const STRING MgConfigProperties::GeneralPropertyWorkerThreadPoolSize                        = L"WorkerThreadPoolSize"; // for internal use only
 const INT32  MgConfigProperties::DefaultGeneralPropertyWorkerThreadPoolSize                 = 10;
 
 // ******************************************************************
@@ -289,14 +289,18 @@ const STRING MgConfigProperties::ResourceServicePropertyResourcePermissionCacheS
 const INT32  MgConfigProperties::DefaultResourceServicePropertyResourcePermissionCacheSize      = 1000;
 const STRING MgConfigProperties::ResourceServicePropertyResourceSchemaFilePath                  = L"ResourceSchemaFilePath";
 const STRING MgConfigProperties::DefaultResourceServicePropertyResourceSchemaFilePath           = L"Schema/";
-const STRING MgConfigProperties::ResourceServicePropertyResourceValidationEnabled               = L"ResourceValidationEnabled"; // for internal use only
-const bool   MgConfigProperties::DefaultResourceServicePropertyResourceValidationEnabled        = true;
 const STRING MgConfigProperties::ResourceServicePropertySessionRepositoryPath                   = L"SessionRepositoryPath";
 const STRING MgConfigProperties::DefaultResourceServicePropertySessionRepositoryPath            = L"Repositories/Session/";
 const STRING MgConfigProperties::ResourceServicePropertySessionResourceDataFilePath             = L"SessionResourceDataFilePath";
 const STRING MgConfigProperties::DefaultResourceServicePropertySessionResourceDataFilePath      = L"Repositories/Session/DataFiles/";
 const STRING MgConfigProperties::ResourceServicePropertySiteRepositoryPath                      = L"SiteRepositoryPath";
 const STRING MgConfigProperties::DefaultResourceServicePropertySiteRepositoryPath               = L"Repositories/Site/";
+const STRING MgConfigProperties::ResourceServicePropertyResourceValidationEnabled               = L"ResourceValidationEnabled"; // for internal use only
+const bool   MgConfigProperties::DefaultResourceServicePropertyResourceValidationEnabled        = true;
+const STRING MgConfigProperties::ResourceServicePropertyRetryAttempts                           = L"RetryAttempts";             // for internal use only
+const INT32  MgConfigProperties::DefaultResourceServicePropertyRetryAttempts                    = 10;
+const STRING MgConfigProperties::ResourceServicePropertyRetryInterval                           = L"RetryInterval";             // for internal use only
+const INT32  MgConfigProperties::DefaultResourceServicePropertyRetryInterval                    = 10;
 
 // ******************************************************************
 // Site Service Properties
@@ -319,11 +323,11 @@ const STRING MgConfigProperties::TileServicePropertyTileColumnsPerFolder        
 const INT32 MgConfigProperties::DefaultTileServicePropertyTileColumnsPerFolder              = 30;
 const STRING MgConfigProperties::TileServicePropertyTileRowsPerFolder                       = L"TileRowsPerFolder";
 const INT32 MgConfigProperties::DefaultTileServicePropertyTileRowsPerFolder                 = 30;
-const STRING MgConfigProperties::TileServicePropertyCreationCutoffTime                      = L"CreationCutoffTime";
+const STRING MgConfigProperties::TileServicePropertyCreationCutoffTime                      = L"CreationCutoffTime";// for internal use only
 const INT32  MgConfigProperties::DefaultTileServicePropertyCreationCutoffTime               = 120;
-const STRING MgConfigProperties::TileServicePropertyPollingInterval                         = L"PollingInterval";
+const STRING MgConfigProperties::TileServicePropertyPollingInterval                         = L"PollingInterval";   // for internal use only
 const INT32  MgConfigProperties::DefaultTileServicePropertyPollingInterval                  = 1;
-const STRING MgConfigProperties::TileServicePropertyTiledMapCacheSize                       = L"TiledMapCacheSize";
+const STRING MgConfigProperties::TileServicePropertyTiledMapCacheSize                       = L"TiledMapCacheSize"; // for internal use only
 const INT32  MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize                = 10;
 
 // ******************************************************************
@@ -538,10 +542,12 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviResourceServiceProperties
     { MgConfigProperties::ResourceServicePropertyResourceDataFileTrashFolderName    , MgPropertyType::String    , MG_CONFIG_MIN_FOLDER_NAME_LENGTH      , MG_CONFIG_MAX_FOLDER_NAME_LENGTH      , MG_CONFIG_FOLDER_NAME_RESERVED_CHARACTERS },
     { MgConfigProperties::ResourceServicePropertyResourcePermissionCacheSize        , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
     { MgConfigProperties::ResourceServicePropertyResourceSchemaFilePath             , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::ResourceServicePropertyResourceValidationEnabled          , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::ResourceServicePropertySessionRepositoryPath              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::ResourceServicePropertySessionResourceDataFilePath        , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::ResourceServicePropertySiteRepositoryPath                 , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgConfigProperties::ResourceServicePropertyResourceValidationEnabled          , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::ResourceServicePropertyRetryAttempts                      , MgPropertyType::Int32     , 0                                     , 1000                                  , L""                                       },
+    { MgConfigProperties::ResourceServicePropertyRetryInterval                      , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
