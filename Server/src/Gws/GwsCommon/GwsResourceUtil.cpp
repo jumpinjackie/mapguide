@@ -270,6 +270,7 @@ void CGwsResourceModule::GwsStatusMessage (EGwsStatus fes, std::wstring &str)
     GET_STR (eGwsNoLayers, str);
     GET_STR (eGwsFeatureSourceIsReadOnly, str);
     GET_STR (eGwsFeatureClassHasNoIdentity, str);
+    GET_STR (eGwsFdoInvalidDataType, str);
     default:
         str = L"GWS message resource id is not defined.";
         break;

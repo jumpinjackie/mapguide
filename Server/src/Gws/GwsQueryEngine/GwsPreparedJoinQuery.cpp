@@ -116,6 +116,8 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
              reader = dynamic_cast<CGwsJoinQueryResults *> (CreateFeatureIterator (eGwsNestedLoopsIterator));
         } else if (m_joinmethod == eGwsNestedLoopSortedBlock) {
             reader = dynamic_cast<CGwsJoinQueryResults *> (CreateFeatureIterator (eGwsNestedLoopSortedBlockIterator));
+        } else if (m_joinmethod == eGwsBatchSortedBlock) {
+            reader = dynamic_cast<CGwsJoinQueryResults *> (CreateFeatureIterator (eGwsBatchSortedBlockIterator));
         }
 
         if (reader != NULL) {

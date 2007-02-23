@@ -291,6 +291,10 @@ EXTERNAL_API:
     static const STRING FeatureServicePropertyDataConnectionTimerInterval;      /// value("DataConnectionTimerInterval")
     static const INT32 DefaultFeatureServicePropertyDataConnectionTimerInterval;/// value(60)
 
+    /// Sets the batch size used by the join query algorithm
+    static const STRING FeatureServicePropertyJoinQueryBatchSize;                    /// value("JoinQueryBatchSize")
+    static const INT32 DefaultFeatureServicePropertyJoinQueryBatchSize;              /// value(100)
+
     /// MAPPING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
 
     /// Mapping Service properties

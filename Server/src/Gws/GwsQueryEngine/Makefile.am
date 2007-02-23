@@ -5,6 +5,7 @@ EXTRA_DIST = GwsQueryEngine.def GwsQueryEngine.rc GwsQueryEngine.vcproj
 lib_LTLIBRARIES = libMgGwsQueryEngine.la
 
 libMgGwsQueryEngine_la_SOURCES = \
+  GwsBatchSortedBlockJoinQueryResults.cpp \
   GwsBinaryFeature.cpp \
   GwsBinaryFeatureReader.cpp \
   GwsBinaryFeatureWriter.cpp \
@@ -38,6 +39,7 @@ libMgGwsQueryEngine_la_SOURCES = \
   GwsQueryFactories.cpp \
   GwsQueryUtils.cpp \
   GwsQueryXml.cpp \
+  GwsRightBatchSortedBlockJoinQueryResults.cpp \
   GwsRightJoinQueryResults.cpp \
   GwsRightNestedLoopJoinQueryResults.cpp \
   GwsRightNestedLoopSortedBlockJoinQueryResults.cpp \

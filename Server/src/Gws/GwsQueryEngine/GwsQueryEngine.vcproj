@@ -243,6 +243,10 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\GwsBatchSortedBlockJoinQueryResults.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\GwsBinaryFeature.cpp"
 			>
 		</File>
@@ -384,6 +388,10 @@
 		</File>
 		<File
 			RelativePath=".\GwsQueryXml.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GwsRightBatchSortedBlockJoinQueryResults.cpp"
 			>
 		</File>
 		<File

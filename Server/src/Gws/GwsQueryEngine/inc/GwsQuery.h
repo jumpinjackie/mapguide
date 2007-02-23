@@ -57,6 +57,12 @@ typedef enum __GwsCacheFeatureStatus {
 } EGwsCacheFeatureStatus;
 
 
+typedef enum _EGwsCursorPosition {
+    eBeforeFirstRow,
+    eOnJoinRow,
+    eAfterJoinRow,
+    eAfterLastRow
+} EGwsCursorPosition;
 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -71,6 +77,7 @@ typedef enum _EJoinResultsType
     kGwsSortMergeResults = 1,
     kGwsNestedLoopSortBlockResults,
     kGwsNestedLoopResults,
+    kGwsBatchSortBlockResults,
     kGwsHashResults
 } EJoinResultsType;
 
@@ -79,6 +86,7 @@ typedef enum _EGwsJoinMethod {
     eGwsSortMerge = 1,
     eGwsNestedLoops,
     eGwsNestedLoopSortedBlock,
+    eGwsBatchSortedBlock,
     eGwsHash
 } EGwsJoinMethod;
 
@@ -88,9 +96,11 @@ typedef enum _EGwsIteratorType
     eGwsSortMergeJoinIterator,
     eGwsNestedLoopsIterator,
     eGwsNestedLoopSortedBlockIterator,
+    eGwsBatchSortedBlockIterator,
     eGwsRightSortMergeJoinIterator,
     eGwsRightNestedLoopsIterator,
-    eGwsRightNestedLoopSortedBlockIterator
+    eGwsRightNestedLoopSortedBlockIterator,
+    eGwsRightBatchSortedBlockIterator
 
 } EGwsFeatureIteratorType;
 
@@ -914,7 +924,7 @@ public:
     GWS_QUERYENGINE_API
     virtual EJoinResultsType    Type () const = 0;
 
-    FdoDataValueCollection *    GetJoinValues ();
+    virtual FdoDataValueCollection *    GetJoinValues ();
 
     GWS_QUERYENGINE_API
     bool                        CacheReadNext ();
@@ -937,8 +947,8 @@ protected:
     bool                                    m_bLeftJoinValuesSet;
     bool                                    m_started;
     bool                                    m_forceOneToOne;
-private:
     bool    SetupRightSide(bool leftResult);
+private:
 };
 
 
@@ -1030,6 +1040,9 @@ public:
 
     GWS_QUERYENGINE_API
     virtual void                ToString    (FdoString* propertyName, wchar_t * buff, int len);
+
+    GWS_QUERYENGINE_API
+    virtual FdoStringCollection* GetJoinColumns();
 
 protected:
     IGWSFeature *               GetPooledFeature ();
@@ -1138,6 +1151,123 @@ public:
     }
 };
 
+typedef struct {
+    FdoPtr<FdoByteArray> geometry;
+    FdoPtr<FdoDataValue> dataValue;
+} PropertyCacheEntry;
+
+typedef std::vector< CGwsPropertyDesc* > PropertyDescriptionCollection;
+typedef std::vector< PropertyCacheEntry* > PropertyCollection;
+
+typedef struct {
+    PropertyCollection propertyCollection;
+    FdoPtr<FdoDataValue> primaryKey;
+} PrimaryCacheEntry;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// class CGwsBatchSortedBlock
+// Left join results iterator. (Batch sorted block)
+//
+///////////////////////////////////////////////////////////////////////////////
+class CGwsBatchSortedBlockJoinQueryResults : public CGwsJoinQueryResults
+{
+friend class CGwsPreparedFeatureQuery;
+friend class CGwsPreparedLeftJoinQuery;
+friend class CGwsPreparedEqualJoinQuery;
+friend class CGwsPreparedJoinQuery;
+public:
+    GWS_QUERYENGINE_API     CGwsBatchSortedBlockJoinQueryResults  ();
+    GWS_QUERYENGINE_API
+    virtual                 ~CGwsBatchSortedBlockJoinQueryResults () throw();
+
+    GWS_QUERYENGINE_API
+    virtual EGwsStatus      InitializeReader (
+                                IGWSQuery                       * query,
+                                CGwsPreparedJoinQuery           * prepquery,
+                                bool                            bScrollable = false);
+    GWS_QUERYENGINE_API
+    virtual EJoinResultsType Type () const
+    {
+        return kGwsBatchSortBlockResults;
+    }
+
+    GWS_QUERYENGINE_API
+    virtual bool                ReadNext ();
+
+    GWS_QUERYENGINE_API
+    virtual IGWSFeatureIterator *  GetJoinedFeatures (int i);
+
+    // get right hand side joined features
+    IGWSFeatureIterator *       GetJoinedFeatures ();
+
+    virtual FdoDataValueCollection *    GetJoinValues ();
+
+    // Getters by the prperty name - this will come from the cache
+    GWS_QUERYENGINE_API
+    virtual bool            IsNull      (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoString   *   GetString   (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual bool            GetBoolean  (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoByte         GetByte     (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoDateTime     GetDateTime (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual double          GetDouble   (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoInt16        GetInt16    (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        GetInt32    (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoInt64        GetInt64    (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual float           GetSingle   (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoLOBValue*    GetLOB      (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName );
+    GWS_QUERYENGINE_API
+    virtual FdoIRaster*     GetRaster   (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual const FdoByte * GetGeometry (FdoString* propertyName, FdoInt32 * count) ;
+    GWS_QUERYENGINE_API
+    virtual FdoByteArray*   GetGeometry (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoDataValue *  GetDataValue (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoDataValueCollection *
+        GetDataValues (FdoStringCollection* propertyNames);
+
+    // returns unconverted geometry. Coordinate system transaformations are not applied
+    GWS_QUERYENGINE_API
+    virtual FdoByteArray*   GetOriginalGeometry (FdoString* propertyName);
+
+    // get data property value
+    GWS_QUERYENGINE_API
+    virtual FdoDataValue *  GetPropertyValue (const CGwsPropertyDesc &);
+
+    GWS_QUERYENGINE_API
+    static int sm_nBatchSize;
+
+protected:
+    bool    SetupBatchRightSide(bool leftResult);
+    void    ClearIteratorCache();
+    void QuickSort(std::vector<PrimaryCacheEntry*>& cache, FdoInt32 left, FdoInt32 right);
+    bool QuickSortCompare(PrimaryCacheEntry* compareA, PrimaryCacheEntry* compareB);
+
+    IGWSFeatureIterator* m_primaryFeatureIterator;
+
+    FdoPtr<FdoStringCollection> m_propertyNames;
+    PropertyDescriptionCollection m_propertyDescriptionCollection;
+
+    // Primary iterator cache
+    std::vector<PrimaryCacheEntry*> m_pPrimaryCache;
+    std::vector<PrimaryCacheEntry*>::iterator m_pPrimaryCacheIterator;
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -1169,14 +1299,6 @@ public:
     virtual void                Close ();
     GWS_QUERYENGINE_API
     virtual EGwsStatus          SetRelatedValues (const GWSFeatureId & vals);
-
-protected:
-    typedef enum _EGwsCursorPosition {
-        eBeforeFirstRow,
-        eOnJoinRow,
-        eAfterJoinRow,
-        eAfterLastRow
-    } EGwsCursorPosition;
 
 protected:
     EGwsCursorPosition      m_pos;
@@ -1254,6 +1376,43 @@ public:
     GWS_QUERYENGINE_API
     virtual EGwsStatus          SetRelatedValues (const GWSFeatureId & vals);
 protected:
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// class CGwsRightBatchSortedBlockJoinQueryResults
+//
+// join batch sorted block right side
+//
+///////////////////////////////////////////////////////////////////////////////
+class CGwsRightBatchSortedBlockJoinQueryResults
+                    : public CGwsRightNestedLoopJoinQueryResults
+{
+friend class CGwsPreparedFeatureQuery;
+friend class CGwsPreparedLeftJoinQuery;
+friend class CGwsPreparedEqualJoinQuery;
+friend class CGwsPreparedJoinQuery;
+public:
+    GWS_QUERYENGINE_API         CGwsRightBatchSortedBlockJoinQueryResults ();
+    GWS_QUERYENGINE_API
+    virtual                     ~CGwsRightBatchSortedBlockJoinQueryResults () throw();
+
+
+    GWS_QUERYENGINE_API
+    virtual EGwsStatus          InitializeReader (
+                                    IGWSQuery                  * query,
+                                    CGwsPreparedQuery          * prepquery,
+                                    FdoStringCollection        * joincols,
+                                    bool                        bScrollable);
+
+    GWS_QUERYENGINE_API
+    virtual bool                ReadNext();
+    GWS_QUERYENGINE_API
+    virtual void                Close ();
+    GWS_QUERYENGINE_API
+    virtual EGwsStatus          SetRelatedValues (const GWSFeatureId & vals);
+protected:
+    EGwsCursorPosition      m_pos;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

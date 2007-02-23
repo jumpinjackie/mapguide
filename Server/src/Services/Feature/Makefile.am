@@ -10,6 +10,7 @@ INCLUDES = \
   -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
   -I../../Gws/Include \
   -I../../Gws/GwsCommon/inc \
+  -I../../Gws/GwsQueryEngine/inc \
   -I../../../../Common/Security \
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry \

@@ -55,6 +55,9 @@
 #define MG_CONFIG_MIN_TIMER_INTERVAL                    1
 #define MG_CONFIG_MAX_TIMER_INTERVAL                    MG_CONFIG_MAX_INT32
 
+#define MG_CONFIG_MIN_JOIN_QUERY_BATCH_SIZE             1
+#define MG_CONFIG_MAX_JOIN_QUERY_BATCH_SIZE             1024
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Length ranges of string properties
 ///
@@ -239,6 +242,8 @@ const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimeout    
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout         = 600;
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval          = L"DataConnectionTimerInterval";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval   = 60;
+const STRING MgConfigProperties::FeatureServicePropertyJoinQueryBatchSize                   = L"JoinQueryBatchSize";
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize            = 100;
 
 // ******************************************************************
 // Mapping Service Properties
@@ -507,6 +512,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviFeatureServiceProperties[
     { MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize              , MgPropertyType::Int32     , MG_CONFIG_MIN_CONNECTION_POOL_SIZE    , MG_CONFIG_MAX_CONNECTION_POOL_SIZE    , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionTimeout               , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval         , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyJoinQueryBatchSize                  , MgPropertyType::Int32     , MG_CONFIG_MIN_JOIN_QUERY_BATCH_SIZE   , MG_CONFIG_MAX_JOIN_QUERY_BATCH_SIZE   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
