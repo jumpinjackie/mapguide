@@ -945,7 +945,7 @@ FdoIStreamReader* CGwsBatchSortedBlockJoinQueryResults::GetLOBStreamReader(const
 
 bool CGwsBatchSortedBlockJoinQueryResults::IsNull(FdoString* propertyName)
 {
-    bool result = false;
+    bool result = true;
 
     // Read from the cache
     PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
@@ -965,6 +965,14 @@ bool CGwsBatchSortedBlockJoinQueryResults::IsNull(FdoString* propertyName)
                         if(value)
                         {
                             result = value->IsNull();
+                        }
+                    }
+                    else if(propDesc->m_ptype == FdoPropertyType_GeometricProperty)
+                    {
+                        FdoByteArray* value = (FdoByteArray*)(propertyCacheEntry->geometry.p);
+                        if(value)
+                        {
+                            result = false;
                         }
                     }
                     else
