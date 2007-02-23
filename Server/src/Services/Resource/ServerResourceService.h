@@ -178,7 +178,8 @@ protected:
 
 private:
 
-    static const int sm_maxOpRetries;
+    static INT32 sm_retryAttempts;
+    static ACE_Time_Value sm_retryInterval;
 
     static MgSiteRepository*    sm_siteRepository;
     static MgSessionRepository* sm_sessionRepository;

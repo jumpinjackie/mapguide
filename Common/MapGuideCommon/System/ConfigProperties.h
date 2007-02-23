@@ -364,6 +364,14 @@ INTERNAL_API:
     static const STRING ResourceServicePropertyResourceValidationEnabled;       /// value("ResourceValidationEnabled")
     static const bool DefaultResourceServicePropertyResourceValidationEnabled;  /// value(true)
 
+    /// Sets the number of retry attempts per operation
+    static const STRING ResourceServicePropertyRetryAttempts;                   /// value("RetryAttempts")
+    static const INT32 DefaultResourceServicePropertyRetryAttempts;             /// value(10)
+
+    /// Sets the time duration (in milliseconds) between retry attempts
+    static const STRING ResourceServicePropertyRetryInterval;                   /// value("RetryInterval")
+    static const INT32 DefaultResourceServicePropertyRetryInterval;             /// value(10)
+
 EXTERNAL_API:
 
     /// Sets the root of the session repository
