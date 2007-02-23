@@ -36,6 +36,9 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader(
     m_attributeNameDelimiters = SAFE_ADDREF(attributeNameDelimiters);
     m_gwsGetFeatures = new MgServerGwsGetFeatures(gwsFeatureIterator, this);
 
+    // Get the Extended Feature Description
+    m_gwsFeatureIterator->DescribeFeature(&m_primaryExtendedFeatureDescription);
+
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.MgServerGwsFeatureReader")
 }
 
@@ -94,20 +97,15 @@ bool MgServerGwsFeatureReader::ReadNext()
         {
             // retrieve the secondary feature source iterators, advance the iterators and store into a collection
 
-            FdoPtr<IGWSExtendedFeatureDescription> desc;
-            m_gwsFeatureIterator->DescribeFeature(&desc);
-
-            int myCount = desc->GetCount();
-
             //  Check if a delimiter has been defined for each Attribute Relate, 
             //  i.e. the number of delimiters collected should equal the number of joined secondary features 
-            if (m_attributeNameDelimiters->GetCount() != (INT32)desc->GetCount())
+            if (m_attributeNameDelimiters->GetCount() != (INT32)m_primaryExtendedFeatureDescription->GetCount())
             {
                 // Should never get here
                 throw new MgInvalidArgumentException(L"MgServerGwsFeatureReader.ReadNext", __LINE__, __WFILE__, NULL, L"MgInvalidCollectionSize", NULL);
             }
 
-            for (int i = 0; i < desc->GetCount(); i++)
+            for (int i = 0; i < m_primaryExtendedFeatureDescription->GetCount(); i++)
             {
                 // Retrieve the AttributeNameDelimiter from the collection for the properties from this secondary feature source
                 STRING attributeNameDelimiter = m_attributeNameDelimiters->GetItem(i);
@@ -136,11 +134,6 @@ bool MgServerGwsFeatureReader::ReadNext()
     {
             // advance the secondary iterator
             IGWSFeatureIterator* secondaryFeatureIter = NULL;
-
-            FdoPtr<IGWSExtendedFeatureDescription> desc;
-            m_gwsFeatureIterator->DescribeFeature(&desc);
-
-            int myCount = desc->GetCount();
 
             // Advance the last iterator inserted into the collection until no more features.  
             // Then remove from the collection.  
@@ -179,20 +172,16 @@ bool MgServerGwsFeatureReader::ReadNext()
                 {
                     // retrieve the secondary feature source iterators, advance the iterators and store into a collection
                     m_secondaryGwsFeatureIteratorMap.clear();
-                    FdoPtr<IGWSExtendedFeatureDescription> desc;
-                    m_gwsFeatureIterator->DescribeFeature(&desc);
-
-                    int myCount = desc->GetCount();
 
                     //  Check if each a delimiter has been defined for each Attribute Relate, 
                     //  i.e. the number of delimiters collected should equal the number of joined secondary features 
-                    if (m_attributeNameDelimiters->GetCount() != (INT32)desc->GetCount())
+                    if (m_attributeNameDelimiters->GetCount() != (INT32)m_primaryExtendedFeatureDescription->GetCount())
                     {
                         // Should never get here
                         throw new MgInvalidArgumentException(L"MgServerGwsFeatureReader.ReadNext", __LINE__, __WFILE__, NULL, L"MgInvalidCollectionSize", NULL);
                     }
 
-                    for (int i = 0; i < desc->GetCount(); i++)
+                    for (int i = 0; i < m_primaryExtendedFeatureDescription->GetCount(); i++)
                     {
                         // Retrieve the AttributeNameDelimiter from the collection for the properties from this secondary feature source
                         STRING attributeNameDelimiter = m_attributeNameDelimiters->GetItem(i);
@@ -898,19 +887,15 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
 
     // Check if the input propName is prefixed with the relationName
     // by comparing with primary feature source property names
-    FdoPtr<IGWSExtendedFeatureDescription> primaryDesc;
-    m_gwsFeatureIterator->DescribeFeature(&primaryDesc);
-    FdoPtr<FdoStringCollection> primaryPropNames = primaryDesc->PropertyNames();
+    FdoPtr<FdoStringCollection> primaryPropNames = m_primaryExtendedFeatureDescription->PropertyNames();
 
     int primaryIndex = primaryPropNames->IndexOf(inputPropName.c_str());
     if( -1 != primaryIndex)
     {
         // No prefix, but the property name does exist in the primary feature source
         relationName.clear();
-        FdoPtr<IGWSExtendedFeatureDescription> primaryDesc;
-        m_gwsFeatureIterator->DescribeFeature(&primaryDesc);
 
-        GWSQualifiedName primQualifiedClassName = primaryDesc->ClassName();
+        GWSQualifiedName primQualifiedClassName = m_primaryExtendedFeatureDescription->ClassName();
 
         FdoString* fclassName = primQualifiedClassName.Name();
         className = (wchar_t*)fclassName;

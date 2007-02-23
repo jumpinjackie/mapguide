@@ -312,6 +312,7 @@ private:
     Ptr<MgServerGwsGetFeatures> m_gwsGetFeatures;
     GwsFeatureIteratorMap m_secondaryGwsFeatureIteratorMap;
     FdoPtr<IGWSFeatureIterator> m_gwsFeatureIteratorCopy;
+    FdoPtr<IGWSExtendedFeatureDescription> m_primaryExtendedFeatureDescription;
 
     bool m_bAdvancePrimaryIterator;
     bool m_bForceOneToOne;
