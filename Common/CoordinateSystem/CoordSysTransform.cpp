@@ -41,6 +41,8 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(const CCoordinateSystem* 
     m_coordSysTarget(NULL),
     m_transformHint(TH_IDENTITY)
 {
+    bool bPossibleDatumConversion = false;
+
     if(NULL == source)
     {
         throw new CNullArgumentException(L"CCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, L"[1] - CCoordinateSystem pointer.");
@@ -66,6 +68,8 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(const CCoordinateSystem* 
     if ((m_coordSysSource->GetType() == CCoordinateSystemType::Arbitrary) &&
         (m_coordSysTarget->GetType() == CCoordinateSystemType::Arbitrary))
     {
+        bPossibleDatumConversion = false;
+
         // Make sure the unit scale values are set so that we can't get a
         // divide by zero error.
         if ((m_coordSysSource->GetUnitScale() != 0.0) &&
@@ -81,32 +85,37 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(const CCoordinateSystem* 
     else if ((m_coordSysSource->GetType() == CCoordinateSystemType::Arbitrary) ||
             (m_coordSysTarget->GetType() == CCoordinateSystemType::Arbitrary))
     {
+        bPossibleDatumConversion = false;
         m_transformHint = TH_IDENTITY;
     }
     else if ((m_coordSysSource->GetType() == CCoordinateSystemType::Geographic) &&
             (m_coordSysTarget->GetType() == CCoordinateSystemType::Geographic))
     {
+        bPossibleDatumConversion = true;
         m_transformHint = TH_IDENTITY;
     }
     else if (m_coordSysSource->GetInternalCoordinateSystem()->IsSame(m_coordSysTarget->GetInternalCoordinateSystem()))
     {
+        bPossibleDatumConversion = false;
         m_transformHint = TH_IDENTITY;
     }
     else if(m_coordSysSource->GetType() == CCoordinateSystemType::Geographic)
     {
+        bPossibleDatumConversion = true;
         m_transformHint = TH_GEOGRAPHIC_TO_PROJECTED;
     }
     else if(m_coordSysTarget->GetType() == CCoordinateSystemType::Geographic)
     {
+        bPossibleDatumConversion = true;
         m_transformHint = TH_PROJECTED_TO_GEOGRAPHIC;
     }
     else
     {
+        bPossibleDatumConversion = true;
         m_transformHint = TH_PROJECTED_TO_PROJECTED;
     }
 
-    // If the source and destination coordinate systems match then there is no datum shift
-    if((m_transformHint != TH_IDENTITY) && (m_transformHint != TH_LOCAL))
+    if(bPossibleDatumConversion)
     {
         // Setup the transformation with datum shift
         m_transformForward = CCoordinateSystemTransformation::CreateCoordinateTransformation(m_coordSysSource->GetInternalCoordinateSystem(), m_coordSysTarget->GetInternalCoordinateSystem(), true);
@@ -560,6 +569,17 @@ void CCoordinateSystemTransform::InternalTransform(double* x, double* y, double*
         switch(m_transformHint)
         {
         case TH_IDENTITY: // No conversion required
+            {
+                if(m_transformForward)
+                {
+                    //pass on to proj for the transform
+                    if (TRUE != m_transformForward->TransformEx(numPts, x, y, z, NULL))
+                    {
+                        //if proj failed to convert, generate an exception
+                        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"PROJ4 failed to transform the data.");
+                    }
+                }
+            }
             break;
 
         case TH_LOCAL: // Scaling only
