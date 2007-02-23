@@ -198,5 +198,6 @@ const wchar_t* IDS_STRING_eGwsRefreshFailedToReloadEditSetFeature       = L"Feat
 const wchar_t* IDS_STRING_eGwsRefreshCacheFeatureIsUpTodate             = L"Feature is up-to-date.";
 const wchar_t* IDS_STRING_eGwsRefreshDeletedFeatureInCache              = L"Feature has been deleted from the cache during refresh.";
 const wchar_t* IDS_STRING_eGwsRefreshReloadedFeatureInCache             = L"Feature has been refreshed in the cache.";
-const wchar_t* IDS_STRING_eGwsRefreshFeatureNotFound                     = L"Feature was not found either in the feature source or in the cache.";
+const wchar_t* IDS_STRING_eGwsRefreshFeatureNotFound                    = L"Feature was not found either in the feature source or in the cache.";
+const wchar_t* IDS_STRING_eGwsFdoInvalidDataType                        = L"Invalid data type.";
 

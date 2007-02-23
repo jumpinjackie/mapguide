@@ -201,3 +201,4 @@ static const wchar_t* IDS_STRING_eGwsRefreshCacheFeatureIsUpTodate;
 static const wchar_t* IDS_STRING_eGwsRefreshDeletedFeatureInCache;
 static const wchar_t* IDS_STRING_eGwsRefreshReloadedFeatureInCache;
 static const wchar_t* IDS_STRING_eGwsRefreshFeatureNotFound;
+static const wchar_t* IDS_STRING_eGwsFdoInvalidDataType;
