@@ -68,10 +68,6 @@ class MgBatchPropertyCollection;
 /// relational database and do transaction-based operations.
 ///
 /// \remarks
-/// Construct an MgFeatureService object by calling \link MgSiteConnection::CreateService MgSiteConnection::CreateService Method (INT32) \endlink.
-/// A connection to the site repository must be open. See the
-/// example code.
-/// \n
 /// The following use cases are supported:
 /// <ul>
 ///   <li>Connection to a datastore. See
@@ -94,9 +90,9 @@ class MgBatchPropertyCollection;
 ///   <li>Description of the schema used to store feature data. See
 ///     MgFeatureService::DescribeSchema,
 ///     MgFeatureService::DescribeSchemaAsXml,
-///     MgFeatureService::GetSchemas, MgFeatureService::SchemaToXm,
+///     MgFeatureService::GetSchemas, MgFeatureService::SchemaToXml,
 ///     MgFeatureService::GetClasses and
-///     MgFeatureService::GetClassDefinitionl. See also \link Feature_Schema_Module Feature Schema \endlink.
+///     MgFeatureService::GetClassDefinition. See also \link Feature_Schema_Module Feature Schema \endlink.
 ///   </li>
 ///   <li>Creation of an SDF feature source to cache feature data
 ///     from other datastores. See
