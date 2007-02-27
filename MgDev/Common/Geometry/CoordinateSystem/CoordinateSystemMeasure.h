@@ -33,7 +33,7 @@ using namespace CSLibrary;
 /// Provides operations for measuring the distance between 2
 /// coordinates and the azimuth of 2 coordinates as well as
 /// calculating a coordinate position given an initial
-/// coordinate, an \link azimuth azimuth \endlink, and a distance.
+/// coordinate, an azimuth, and a distance.
 ///
 /// \remarks
 /// If the coordinate system supports it, the ellipsoid
@@ -217,7 +217,7 @@ PUBLISHED_API:
     /// that specifies the second coordinate.
     ///
     /// \return
-    /// Returns the \link azimuth azimuth \endlink (Angle with respect to
+    /// Returns the azimuth (Angle with respect to
     /// North) of the vector formed by coord1 and coord2.
     ///
     /// <!-- Example (PHP) -->
@@ -272,7 +272,7 @@ PUBLISHED_API:
     /// second coordinate.
     ///
     /// \return
-    /// Returns the \link azimuth azimuth \endlink (Angle with respect to the
+    /// Returns the azimuth (Angle with respect to the
     /// North) of the vector formed by (lon1, lat1) and (lon2, lat2).
     ///
     /// <!-- Example (PHP) -->
@@ -295,7 +295,7 @@ PUBLISHED_API:
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Computes a coordinate given a distance along a vector that is
-    /// defined by a starting coordinate and an \link azimuth azimuth \endlink
+    /// defined by a starting coordinate and an azimuth
     /// (Angle with respect to the North).
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -358,7 +358,7 @@ PUBLISHED_API:
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Computes a coordinate a given distance along a vector that is
-    /// defined by a starting coordinate and an \link azimuth azimuth \endlink
+    /// defined by a starting coordinate and an azimuth
     /// (Angle with respect to the North).
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
