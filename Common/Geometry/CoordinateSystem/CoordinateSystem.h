@@ -524,7 +524,7 @@ PUBLISHED_API:
     /// second coordinate.
     ///
     /// \return
-    /// Returns the \link azimuth azimuth \endlink (Angle with respect to the
+    /// Returns the azimuth (Angle with respect to the
     /// North) of the vector formed by coord1 and coord2.
     ///
     /// <!-- Example (PHP) -->
@@ -578,7 +578,7 @@ PUBLISHED_API:
     /// coordinate.
     ///
     /// \return
-    /// Returns the \link azimuth azimuth \endlink (Angle with respect to the
+    /// Returns the azimuth (Angle with respect to the
     /// North) of the vector formed by (x1, y1) and (x2, y2).
     ///
     /// <!-- Example (PHP) -->
@@ -602,7 +602,7 @@ PUBLISHED_API:
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Computes a coordinate a given distance along a vector that is
-    /// defined by a starting coordinate and an \link azimuth azimuth \endlink
+    /// defined by a starting coordinate and an azimuth
     /// (Angle with respect to North).
     ///
     /// \remarks
@@ -664,7 +664,7 @@ PUBLISHED_API:
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Computes a coordinate a given distance along a vector that is
-    /// defined by a starting (x, y) coordinate and an \link azimuth azimuth \endlink
+    /// defined by a starting (x, y) coordinate and an azimuth
     /// (Angle with respect to North).
     ///
     /// \remarks

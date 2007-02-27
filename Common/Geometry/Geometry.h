@@ -182,7 +182,7 @@ PUBLISHED_API:
     /////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Given 2 geometries a and b, a.Equals(b) is true if the 2
-    /// geometries are \link spatially_equals spatially equal \endlink.
+    /// geometries are spatially equal
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
