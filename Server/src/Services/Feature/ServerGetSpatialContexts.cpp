@@ -94,32 +94,14 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
             Ptr<MgSpatialContextData> spatialData = GetSpatialContextData(spatialReader);
             CHECKNULL((MgSpatialContextData*)spatialData, L"MgServerGetSpatialContexts.GetSpatialContexts");
 
-            // TODO: Remove this workaround for the SHP FDO provider when the defect 
-            // for the "Default" active spatial contexts being blank is fixed.
-            // START WORKAROUND CODE
-            bool bAddSpatialContext = true;
+            // Add spatial data to the spatialcontext reader
+            mgSpatialContextReader->AddSpatialData(spatialData);
 
-            STRING name = spatialData->GetName();
-            STRING coordSys = spatialData->GetCoordinateSystem();
-            STRING coordSyswkt = spatialData->GetCoordinateSystemWkt();
-            if((name == L"Default") && (coordSys.empty()) && (coordSyswkt.empty()))
+            // If only active spatial context is required skip all others
+            if (bActiveOnly)
             {
-                // The "Default" coordinate system WKT is empty so we want to skip this one
-                bAddSpatialContext = false;
-            }
-            // END WORKAROUND CODE
-
-            if(bAddSpatialContext)
-            {
-                // Add spatial data to the spatialcontext reader
-                mgSpatialContextReader->AddSpatialData(spatialData);
-
-                // If only active spatial context is required skip all others
-                if (bActiveOnly)
-                {
-                    if (spatialReader->IsActive())
-                        break;
-                }
+                if (spatialReader->IsActive())
+                    break;
             }
         }
 
@@ -140,36 +122,67 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     CHECKNULL((FdoString*)name, L"MgServerGetSpatialContexts.GetSpatialContexts");
     spatialData->SetName(STRING(name));
 
-    // Co-ordinate system
     FdoString* csName = spatialReader->GetCoordinateSystem();
+    STRING coordSysName = STRING(csName);
+    bool spatialContextDefined = !coordSysName.empty();
+    bool coordSysOverridden = false;
+
+    // look for coordinate system override
+    if (m_spatialContextInfoMap.get() != NULL)
+    {
+        // Perform substitution of missing coordinate system with
+        // the spatial context mapping defined in feature source document
+        std::map<STRING, STRING>::const_iterator iter;
+        iter = m_spatialContextInfoMap->find(name);
+        if (iter != m_spatialContextInfoMap->end())
+        {
+            csName = (iter->second).c_str();
+            coordSysOverridden = true;
+        }
+    }
+
     if (csName != NULL)
     {
-        if (wcslen(csName) <= 0)
-        {
-            if (m_spatialContextInfoMap.get() != NULL)
-            {
-                // Perform substitution of missing coordinate system with
-                // the spatial context mapping defined in feature source document
-                std::map<STRING, STRING>::const_iterator iter;
-                iter = m_spatialContextInfoMap->find(name);
-                if (iter != m_spatialContextInfoMap->end())
-                {
-                    csName = (iter->second).c_str();
-                }
-            }
-        }
         spatialData->SetCoordinateSystem(STRING(csName));
     }
 
     // WKT for co-ordinate system
-    FdoString* csWkt = spatialReader->GetCoordinateSystemWkt();
-    if (csWkt != NULL)
+    FdoString* csWkt = NULL;
+    STRING srsWkt = L"";
+
+    // Desc for spatial context
+    STRING desc = L"";
+
+    // Extent type
+    FdoSpatialContextExtentType extentType = FdoSpatialContextExtentType_Dynamic; // or should it be initialized to static?
+
+    // Extent (Geometry data)
+    FdoPtr<FdoByteArray> byteArray = NULL;
+
+    // XY Tolerance
+    double xyTol = 0;
+
+    // Z Tolerance
+    double zTol = 0;
+
+    // Whether it is active or not
+    bool isActive = spatialReader->IsActive();
+
+    if (coordSysOverridden)
     {
-        // This is a work around for MG298: WKT not set for WMS and 
-        // WFS spatial contexts.
-        STRING srsWkt = csWkt;
+        srsWkt = csName;
+        desc = L"This coordinate system has been overridden.";
+    }
+    else if (spatialContextDefined && !coordSysOverridden)
+    {
+        csWkt = spatialReader->GetCoordinateSystemWkt();
+        srsWkt = csWkt;
+
         if (srsWkt.empty())
         {
+            // This is a work around for MG298: WKT not set for WMS and 
+            // WFS spatial contexts.
+
             try
             {
                 Ptr<MgCoordinateSystem> csPtr = new MgCoordinateSystem();
@@ -183,28 +196,21 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
             {
                 // Just use the empty WKT. 
             }
+        }
 
-            spatialData->SetCoordinateSystemWkt(srsWkt);
-        }
-        else
-        {
-            spatialData->SetCoordinateSystemWkt(STRING(csWkt));
-        }
+        FdoString* fdoDesc = spatialReader->GetDescription();
+        desc = STRING(fdoDesc);
+
+        // retrieve other values from spatialReader
+        extentType = spatialReader->GetExtentType();
+        byteArray = spatialReader->GetExtent();
+        xyTol = spatialReader->GetXYTolerance();
+        zTol = spatialReader->GetZTolerance();
     }
 
-    // Desc for spatial context
-    FdoString* desc = spatialReader->GetDescription();
-    if (desc != NULL)
-    {
-        spatialData->SetDescription(STRING(desc));
-    }
-
-    // Extent type
-    FdoSpatialContextExtentType extentType = spatialReader->GetExtentType();
+    spatialData->SetCoordinateSystemWkt(srsWkt);
+    spatialData->SetDescription(desc);
     spatialData->SetExtentType((INT32)extentType);
-
-    // Extent (Geometry data)
-    FdoPtr<FdoByteArray> byteArray = spatialReader->GetExtent();
 
     if (byteArray.p != NULL)
     {
@@ -215,15 +221,12 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     }
 
     // XY Tolerance
-    double xyTol = spatialReader->GetXYTolerance();
     spatialData->SetXYTolerance(xyTol);
 
     // Z Tolerance
-    double zTol = spatialReader->GetZTolerance();
-    spatialData->SetXYTolerance(zTol);
+    spatialData->SetZTolerance(zTol);
 
     // Whether it is active or not
-    bool isActive = spatialReader->IsActive();
     spatialData->SetActiveStatus(isActive);
 
     return spatialData.Detach();
