@@ -97,7 +97,7 @@ catch ( Exception $e )
 <body>
     <table cellspacing="0" cellpadding="0" border="0" class="main">
         <tr>
-            <?php DisplaySiteHeader( true, true, false, false, $formName, NULL ); ?>
+            <?php DisplaySiteHeader( false, true, false, false, $formName, NULL ); ?>
         </tr>
         <tr>
             <!-- Contents Area ------------------------------------------------------------------------------------------------->

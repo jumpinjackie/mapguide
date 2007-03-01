@@ -75,7 +75,7 @@ catch ( Exception $e )
 <body>
     <table cellspacing="0" cellpadding="0" border="0" class="main">
         <tr>
-            <?php DisplaySiteHeader( true, true, true, true, $formName, NULL ); ?>
+            <?php DisplaySiteHeader( false, true, true, true, $formName, NULL ); ?>
         </tr>
         <tr>
             <?php DisplayLefthandSash( $menuItem ); ?>

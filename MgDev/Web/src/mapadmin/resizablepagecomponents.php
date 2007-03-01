@@ -328,10 +328,10 @@
 
     function DisplayBanner()
     {
+        $bannerTitle = APP_TITLE;
         echo '      <table border="0" cellspacing="0" cellpadding="0" class="'.BANNER_CLASS.'">',"\n";
         echo '          <tr>',"\n";
-        echo '              <td class="'.BANNER_CLASS.'">&nbsp;</td>',"\n";
-        echo '              <td><img src="images/housingdev_highres.jpg" alt=""></td>',"\n";
+        echo '              <td class="'.BANNER_CLASS.'">'.$bannerTitle.'</td>',"\n";
         echo '          </tr>',"\n";
         echo '      </table>',"\n";
     }
