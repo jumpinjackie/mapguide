@@ -150,7 +150,7 @@
 
     <table cellspacing="0" cellpadding="0" border="0" class="main">
         <tr>
-            <?php DisplaySiteHeader( true, true, false, false, $formName, $homePage ); ?>
+            <?php DisplaySiteHeader( false, true, false, false, $formName, $homePage ); ?>
         </tr>
         <tr>
             <td class="lhSash"></td>

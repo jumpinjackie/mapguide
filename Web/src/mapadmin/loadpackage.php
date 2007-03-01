@@ -90,7 +90,7 @@ if ( !empty( $packageLoadErrorMsg ) )
 <body onLoad="document.body.style.cursor='wait'; window.setTimeout('document.<?php echo $formName ?>.submit();', 1);" >
     <table cellspacing="0" cellpadding="0" border="0" class="main">
         <tr>
-            <?php DisplaySiteHeader( true, true, false, false, $formName, NULL ); ?>
+            <?php DisplaySiteHeader( false, true, false, false, $formName, NULL ); ?>
         </tr>
         <tr>
             <!-- Contents Area ------------------------------------------------------------------------------------------------->
