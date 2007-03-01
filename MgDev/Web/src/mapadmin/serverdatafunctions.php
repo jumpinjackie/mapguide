@@ -143,11 +143,6 @@
         // Parse XML in $buffer
         parseUnicodeData( $buffer, $targetTable, 'User', 'userRecParser' );
 
-        // test
-        echo '$targetTable==> ';
-        echo print_r($targetTable);
-
-
         SortTable( $targetTable, $userSortColumn, $userSortDirection );
     }
 
