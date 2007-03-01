@@ -328,8 +328,7 @@ bool MgIpUtil::HostNameToAddress(CREFSTRING name, REFSTRING address,
             {
                 const char* hostAddress = inetAddr.get_host_addr();
 
-                if (NULL != hostAddress
-                    && 0 != ::strcmp(hostAddress, "127.0.0.1"))
+                if (NULL != hostAddress)
                 {
                     MgUtil::MultiByteToWideChar(hostAddress, address);
                 }

@@ -146,7 +146,7 @@ void MgUserInformation::SetMgSessionId(CREFSTRING sessionId)
 
     if (sepChar > 0 && sepChar < (int)sessionId.length())
     {
-        m_locale = sessionId.substr(sepChar+1);
+        m_locale = sessionId.substr(sepChar+1,2);
         m_sessionId = sessionId;
     }
     else
