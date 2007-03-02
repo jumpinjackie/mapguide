@@ -279,6 +279,18 @@ PUBLISHED_API:
     /// given resource. The trailing "/" is included.
     ///
     static const STRING DataFilePath;   ///\if INTERNAL value("%MG_DATA_FILE_PATH%") \endif
+
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Denotes beginning of data path alias.
+    ///
+    static const STRING DataPathAliasBegin;   ///\if INTERNAL value("%MG_DATA_PATH_ALIAS[") \endif
+
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Denotes end of data path alias.
+    ///
+    static const STRING DataPathAliasEnd;     ///\if INTERNAL value("]%") \endif
 };
 
 
@@ -431,6 +443,30 @@ INTERNAL_API:
     static const INT32 Metadata = 0x00000004;
 };
 /// \endcond
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Types of unmanaged data that can be returned
+///
+/// \ingroup Resource_Service_classes
+///
+class MG_PLATFORMBASE_API MgResourceUnmanagedDataType
+{
+PUBLISHED_API:
+    /// \if INTERNAL   
+    /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
+    /// \endif
+
+    /// Return folders only
+    static const STRING Folders;     ///\if INTERNAL value("Folders") \endif
+
+    /// Return files only
+    static const STRING Files;       ///\if INTERNAL value("Files") \endif
+
+    /// Return both files and folders
+    static const STRING Both;        ///\if INTERNAL value("Both") \endif
+};
+
 
 #define DECLARE_DYNCREATE_RESOURCE() \
 public: \

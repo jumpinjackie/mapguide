@@ -204,7 +204,7 @@ bool MgResourceService::HasPermission(MgResourceIdentifier* resource, CREFSTRING
 /// Resources of all types can be enumerated all at once, or only
 /// resources of a given type.
 ///
-MgByteReader* MgResourceService::EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter)
+MgByteReader* MgResourceService::EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter)
 {
     throw new MgNotImplementedException(L"MgResourceService.EnumerateUnmanagedData", __LINE__, __WFILE__, NULL, L"", NULL);
 }

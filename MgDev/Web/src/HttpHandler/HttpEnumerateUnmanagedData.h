@@ -46,7 +46,7 @@ public:
 private:
     STRING m_path;
     bool m_recursive;
-    STRING m_select;
+    STRING m_type;
     STRING m_filter;
 };
 

@@ -24,15 +24,10 @@
 // Process-wide MgUnmanagedDataManager
 Ptr<MgUnmanagedDataManager> MgUnmanagedDataManager::sm_unmanagedDataManager = (MgUnmanagedDataManager*)NULL;
 
-const STRING MgUnmanagedDataManager::Folders              = L"FOLDERS";
-const STRING MgUnmanagedDataManager::Files                = L"FILES";
-const STRING MgUnmanagedDataManager::Both                 = L"BOTH";
-const STRING MgUnmanagedDataManager::OpenSquareBracket    = L"[";
-const STRING MgUnmanagedDataManager::ClosedSquareBracket  = L"]";
-
-const string MgUnmanagedDataManager::MappingBegin         = "%MG_[";
-const string MgUnmanagedDataManager::MappingEnd           = "]%";
-
+const STRING MgUnmanagedDataManager::SquareBracketBegin      = L"[";
+const wchar_t MgUnmanagedDataManager::SquareBracketCharBegin = L'[';
+const STRING MgUnmanagedDataManager::SquareBracketEnd        = L"]";
+const wchar_t MgUnmanagedDataManager::SquareBracketCharEnd   = L']';
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -89,10 +84,10 @@ bool MgUnmanagedDataManager::ParsePath(CREFSTRING path, REFSTRING mappingName, R
     else
     {
         // the first character must be open square bracket '['
-        if (path.at(0) == L'[')
+        if (path.at(0) == SquareBracketCharBegin)
         {
             // find the first closed square bracket ']'
-            size_t pos = path.find_first_of(L']');
+            size_t pos = path.find_first_of(SquareBracketCharEnd);
             size_t pathlen = path.length();
 
             if (pos > 1 && pos < pathlen)
@@ -239,7 +234,7 @@ void MgUnmanagedDataManager::AddFolder(string& list, CREFSTRING mappingName, CRE
     // append a slash to the folder if is NOT just the [alias]
     if (!entryName.empty() && !MgFileUtil::EndsWithSlash(id))
         MgFileUtil::AppendSlashToEndOfPath(id);
-    string unmanagedDataId = MgUtil::WideCharToMultiByte(id);
+    string unmanagedDataId = MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(id));
     list += "\t\t<UnmanagedDataId>";
     list += unmanagedDataId;
     list += "</UnmanagedDataId>\n";
@@ -272,7 +267,7 @@ void MgUnmanagedDataManager::AddFile(string& list, CREFSTRING mappingName, CREFS
     list += "\t<UnmanagedDataFile>\n";
 
     STRING id = FormatMappingName(mappingName) + FormatSubdir(subdir) + entryName;
-    string unmanagedDataId = MgUtil::WideCharToMultiByte(id);
+    string unmanagedDataId = MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(id));
     list += "\t\t<UnmanagedDataId>";
     list += unmanagedDataId;
     list += "</UnmanagedDataId>\n";
@@ -338,7 +333,7 @@ void MgUnmanagedDataManager::GetNumberOfFilesAndSubfolders(CREFSTRING dirpath, I
 ///
 STRING MgUnmanagedDataManager::FormatMappingName(CREFSTRING name)
 {
-    return MgUnmanagedDataManager::OpenSquareBracket + name + MgUnmanagedDataManager::ClosedSquareBracket;
+    return MgUnmanagedDataManager::SquareBracketBegin + name + MgUnmanagedDataManager::SquareBracketEnd;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -398,10 +393,10 @@ MgPropertyCollection* MgUnmanagedDataManager::GetUnmanagedDataMappings()
 /// \brief
 /// Substitutes unmanaged data mappings
 ///
-int MgUnmanagedDataManager::SubstituteMappingTag(REFSTRING doc)
+int MgUnmanagedDataManager::SubstituteDataPathAliases(REFSTRING doc)
 {
     string temp = MgUtil::WideCharToMultiByte(doc);
-    int result = SubstituteMappingTag(temp);
+    int result = SubstituteDataPathAliases(temp);
 
     doc = MgUtil::MultiByteToWideChar(temp);
     return result;
@@ -409,19 +404,22 @@ int MgUnmanagedDataManager::SubstituteMappingTag(REFSTRING doc)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Substitutes unmanaged data mappings
+/// Substitutes unmanaged data aliases
 ///
-int MgUnmanagedDataManager::SubstituteMappingTag(string& doc)
+int MgUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
 {
     int count = 0;
-    size_t startPos, endPos;
-    size_t len1 = MgUnmanagedDataManager::MappingBegin.length();
-    size_t len2 = MgUnmanagedDataManager::MappingEnd.length();
+    size_t startPos = 0, endPos = 0, currStartPos = 0;
+    string dataPathAliasBegin = MgUtil::WideCharToMultiByte(MgResourceTag::DataPathAliasBegin);
+    string dataPathAliasEnd = MgUtil::WideCharToMultiByte(MgResourceTag::DataPathAliasEnd);
+    size_t len1 = dataPathAliasBegin.length();
+    size_t len2 = dataPathAliasEnd.length();
 
-    while (string::npos != (startPos = doc.find(MgUnmanagedDataManager::MappingBegin)))
+    while (string::npos != (startPos = doc.find(dataPathAliasBegin, currStartPos)))
     {
+        bool aliasSubstituted = false;
         // beginTag found, now look for endTag
-        while (string::npos != (endPos = doc.find(MgUnmanagedDataManager::MappingEnd)))
+        while (string::npos != (endPos = doc.find(dataPathAliasEnd, startPos + len1)))
         {
             // extract out the mapping name
             string mappingName = doc.substr(startPos + len1, endPos - startPos - len1);
@@ -443,11 +441,16 @@ int MgUnmanagedDataManager::SubstituteMappingTag(string& doc)
                     size_t dirLen = mappingDir.length();
 
                     doc.replace(startPos, len1 + nameLen + len2, MgUtil::WideCharToMultiByte(mappingDir), 0, dirLen);
+                    currStartPos = startPos + dirLen;
+                    aliasSubstituted = true;
                     ++count;
-                    break;
                 }
             }
+            break;
         }
+
+        if (!aliasSubstituted)
+            currStartPos = endPos + len2;
     }
 
     return count;
@@ -457,7 +460,7 @@ int MgUnmanagedDataManager::SubstituteMappingTag(string& doc)
 /// \brief
 /// Returns unmanaged data 
 ///
-MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter)
+MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -492,20 +495,20 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
-        // select must be: 
+        // type must be: 
         //      "FOLDERS"
         //      "FILES"
         //      "BOTH"
 
-        bool storeFolders = ACE_OS::strcasecmp(select.c_str(), MgUnmanagedDataManager::Folders.c_str()) == 0 
-            || ACE_OS::strcasecmp(select.c_str(), MgUnmanagedDataManager::Both.c_str()) == 0;
+        bool storeFolders = ACE_OS::strcasecmp(type.c_str(), MgResourceUnmanagedDataType::Folders.c_str()) == 0 
+            || ACE_OS::strcasecmp(type.c_str(), MgResourceUnmanagedDataType::Both.c_str()) == 0;
         
-        bool storeFiles = ACE_OS::strcasecmp(select.c_str(), MgUnmanagedDataManager::Files.c_str()) == 0 
-            || ACE_OS::strcasecmp(select.c_str(), MgUnmanagedDataManager::Both.c_str()) == 0;
+        bool storeFiles = ACE_OS::strcasecmp(type.c_str(), MgResourceUnmanagedDataType::Files.c_str()) == 0 
+            || ACE_OS::strcasecmp(type.c_str(), MgResourceUnmanagedDataType::Both.c_str()) == 0;
 
         ACE_ASSERT(storeFolders || storeFiles);
 
-        // filter is ignored if select = "FOLDERS"
+        // filter is ignored if type = "FOLDERS"
         // filter can be:
         //      ""
         //      ".sdf"

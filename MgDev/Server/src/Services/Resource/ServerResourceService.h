@@ -146,7 +146,7 @@ public:
 
     // Unmanaged Data APIs
 
-    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter);
+    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter);
 
     // Site Security related methods
 

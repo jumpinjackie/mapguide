@@ -41,10 +41,27 @@ MgHttpEnumerateUnmanagedData::MgHttpEnumerateUnmanagedData(MgHttpRequest *hReque
 
     // Get the recursive flag
     STRING recursive = hrParam->GetParameterValue(MgHttpResourceStrings::reqRecursive);
-    m_recursive = SZ_EQI(recursive.c_str(), L"TRUE");
 
-    // Get select
-    m_select = hrParam->GetParameterValue(MgHttpResourceStrings::reqSelect);
+    MG_HTTP_HANDLER_TRY()
+
+    if (recursive == L"1")
+        m_recursive = true;
+    else if (recursive == L"0" || recursive == L"")
+        m_recursive = false;
+    else
+    {
+        MgStringCollection arguments;
+        arguments.Add(MgHttpResourceStrings::reqRecursive);
+        arguments.Add(recursive);
+
+        throw new MgInvalidArgumentException(L"MgHttpEnumerateUnmanagedData.MgHttpEnumerateUnmanagedData",
+            __LINE__, __WFILE__, &arguments, L"MgInvalidValueOutsideRange", NULL);
+    }
+    
+    MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpEnumerateUnmanagedData.MgHttpEnumerateUnmanagedData")
+
+    // Get type
+    m_type = hrParam->GetParameterValue(MgHttpResourceStrings::reqType);
 
     // Get filter
     m_filter = hrParam->GetParameterValue(MgHttpResourceStrings::reqFilter);
@@ -72,7 +89,7 @@ void MgHttpEnumerateUnmanagedData::Execute(MgHttpResponse& hResponse)
     Ptr<MgResourceService> mgprService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
 
     // call the C++ API
-    Ptr<MgByteReader> byteReaderResult = mgprService->EnumerateUnmanagedData(m_path, m_recursive, m_select, m_filter);
+    Ptr<MgByteReader> byteReaderResult = mgprService->EnumerateUnmanagedData(m_path, m_recursive, m_type, m_filter);
     hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpEnumerateUnmanagedData.Execute")

@@ -104,7 +104,6 @@ public:
     static const STRING reqIncludeDescendants;
     static const STRING reqPath;
     static const STRING reqRecursive;
-    static const STRING reqSelect;
     static const STRING reqFilter;
 
     // PREDEFINED FEATURE REQUEST PARAMETERS

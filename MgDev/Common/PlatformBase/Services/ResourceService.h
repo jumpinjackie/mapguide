@@ -1500,6 +1500,37 @@ PUBLISHED_API:
     ///
     virtual bool ResourceExists(MgResourceIdentifier* resource);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enumerate unmanaged data
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgByteReader EnumerateUnmanagedData(string path, bool recursive, string type, string filter);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgByteReader EnumerateUnmanagedData(String path, boolean recursive, String type, String filter);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgByteReader EnumerateUnmanagedData(string path, bool recursive, string type, string filter);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param path (String/string)
+    /// Unmanaged data path
+    /// \param recursive (boolean/bool)
+    /// Flag to determine whether to recurse subfolders or not
+    /// \param type (String/string)
+    /// Folders, Files, or Both
+    /// \param filter (String/string)
+    /// file filter to be used on returned files
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing the unmanaged data
+    /// in XML format using the \link UnmanagedDataList_schema UnmanagedDataList_schema \endlink
+    ///
+    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter);
+
+
 INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -1634,15 +1665,6 @@ INTERNAL_API:
     ///
     virtual MgSerializableCollection* EnumerateParentMapDefinitions(
         MgSerializableCollection* resources) = 0;
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Enumerate unmanaged data
-    ///
-    /// \return
-    /// MgByteReader of unmanaged data
-    ///
-    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter);
 
 protected:
 
