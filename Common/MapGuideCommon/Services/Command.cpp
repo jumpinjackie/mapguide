@@ -142,7 +142,11 @@ void MgCommand::GetResponse(MgServerConnection* connection, DataTypes retType)
     // Get the stream header i.e. stream_start, stream_data etc.
     ptrStream->GetStreamHeader(msh);
 
-    if (MgStreamParser::mshStreamStart != msh.m_streamStart || MgStreamParser::StreamVersion != msh.m_streamVersion)
+    if (MgStreamParser::mshStreamStart != msh.m_streamStart)
+    {
+        throw new MgInvalidStreamHeaderException(L"MgCommand.GetResponse", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    else if (MgStreamParser::StreamVersion != msh.m_streamVersion)
     {
         throw new MgStreamIoException(L"MgCommand.GetResponse", __LINE__, __WFILE__, NULL, L"MgInvalidTCPProtocol", NULL);
     }
