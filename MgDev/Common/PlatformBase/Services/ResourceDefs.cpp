@@ -47,6 +47,7 @@ const STRING MgResourceType::Folder                 = L"Folder";
 const STRING MgResourceType::LoadProcedure          = L"LoadProcedure";
 const STRING MgResourceType::PrintLayout            = L"PrintLayout";
 const STRING MgResourceType::Selection              = L"Selection";
+const STRING MgResourceType::SymbolDefinition       = L"SymbolDefinition";
 const STRING MgResourceType::SymbolLibrary          = L"SymbolLibrary";
 const STRING MgResourceType::WebLayout              = L"WebLayout";
 
