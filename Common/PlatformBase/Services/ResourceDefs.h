@@ -184,6 +184,15 @@ PUBLISHED_API:
 
     ////////////////////////////////////////////////////////////////
     /// \brief
+    /// This resource is a symbol definition.
+    ///
+    /// \remarks
+    /// It represents the stylization for a specific symbol.
+    ///
+    static const STRING SymbolDefinition;    ///\if INTERNAL value("SymbolDefinition") \endif
+
+    ////////////////////////////////////////////////////////////////
+    /// \brief
     /// This resource is a library of symbols.
     ///
     /// \remarks
