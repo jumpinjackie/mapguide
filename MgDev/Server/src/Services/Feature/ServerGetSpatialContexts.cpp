@@ -171,7 +171,7 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     if (coordSysOverridden)
     {
         srsWkt = csName;
-        desc = L"This coordinate system has been overridden."; // NOXLATE
+        desc = MgServerFeatureUtil::GetMessage(L"MgCoordinateSystemOverridden");
     }
     else if (spatialContextDefined && !coordSysOverridden)
     {
