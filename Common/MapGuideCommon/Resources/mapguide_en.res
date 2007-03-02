@@ -266,6 +266,7 @@ MgValueCannotBeZero                                   = The value cannot be zero
 [FeatureService]
 MgBatchInsertNotSupported                             = Provider does not support batch insert. Only one Feature instance is allowed.
 MgCommandNotSupported                                 = Command is not supported by Provider.
+MgCoordinateSystemOverridden                          = This coordinate system has been overridden.
 MgCustomFunctionNotSupported                          = Aggregate function specified not supported or invalid data type
 MgGroupingNotSupported                                = Grouping is not supported by provider
 MgInsertError                                         = Error occurred while insert operation, no ID to retrieve
@@ -280,7 +281,6 @@ MgNoFeaturesForInsert                                 = No Features for Insert s
 MgOnlyOnePropertyAllowed                              = Only one aggregate function of this kind is supported
 MgOrderingOptionNotSupported                          = Ordering Option is not supported by provider
 MgPropertyNotEnumerable                               = Property specified is not enumerable.
-MgCoordinateSystemOverridden                          = This coordinate system has been overridden.
 
 # *****************************************************************************
 # K M L  S E R V I C E
