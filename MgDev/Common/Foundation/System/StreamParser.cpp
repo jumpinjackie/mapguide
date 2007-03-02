@@ -78,7 +78,11 @@ bool MgStreamParser::ParseStreamHeader( MgStreamData* pStreamData )
             }
         }
 
-        if (ret == false || MgStreamParser::StreamVersion != pStreamData->GetVersion())
+        if (ret == false)
+        {
+            throw new MgInvalidStreamHeaderException(L"MgStreamParser.ParseStreamHeader", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        else if (MgStreamParser::StreamVersion != pStreamData->GetVersion())
         {
             throw new MgStreamIoException(L"MgStreamParser.ParseStreamHeader", __LINE__, __WFILE__, NULL, L"MgInvalidTCPProtocol", NULL);
         }
