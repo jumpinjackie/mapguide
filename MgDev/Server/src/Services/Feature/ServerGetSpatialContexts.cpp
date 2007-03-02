@@ -153,8 +153,8 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     // Desc for spatial context
     STRING desc = L"";
 
-    // Extent type
-    FdoSpatialContextExtentType extentType = FdoSpatialContextExtentType_Dynamic; // or should it be initialized to static?
+    // Extent type (initialized to dynamic)
+    FdoSpatialContextExtentType extentType = FdoSpatialContextExtentType_Dynamic;
 
     // Extent (Geometry data)
     FdoPtr<FdoByteArray> byteArray = NULL;
@@ -171,7 +171,7 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     if (coordSysOverridden)
     {
         srsWkt = csName;
-        desc = L"This coordinate system has been overridden.";
+        desc = L"This coordinate system has been overridden."; // NOXLATE
     }
     else if (spatialContextDefined && !coordSysOverridden)
     {
