@@ -280,6 +280,7 @@ MgNoFeaturesForInsert                                 = No Features for Insert s
 MgOnlyOnePropertyAllowed                              = Only one aggregate function of this kind is supported
 MgOrderingOptionNotSupported                          = Ordering Option is not supported by provider
 MgPropertyNotEnumerable                               = Property specified is not enumerable.
+MgCoordinateSystemOverridden                          = This coordinate system has been overridden.
 
 # *****************************************************************************
 # K M L  S E R V I C E
