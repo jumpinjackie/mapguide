@@ -56,13 +56,13 @@ public:
 
     static MgUnmanagedDataManager* GetInstance();
     MgPropertyCollection* GetUnmanagedDataMappings();
-    static int SubstituteMappingTag(REFSTRING data);
-    static int SubstituteMappingTag(string& data);
+    static int SubstituteDataPathAliases(REFSTRING data);
+    static int SubstituteDataPathAliases(string& data);
     void Initialize();
 
     virtual void Dispose();
 
-    MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter);
+    MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter);
 
 /// Data Members
 
@@ -71,15 +71,10 @@ private:
     static Ptr<MgUnmanagedDataManager> sm_unmanagedDataManager;
     Ptr<MgPropertyCollection> m_unmanagedDataMappings;
 
-    static const STRING Folders;
-    static const STRING Files;
-    static const STRING Both;
-
-    static const STRING OpenSquareBracket;
-    static const STRING ClosedSquareBracket;
-
-    static const string MappingBegin;
-    static const string MappingEnd;
+    static const STRING SquareBracketBegin;
+    static const wchar_t SquareBracketCharBegin;
+    static const STRING SquareBracketEnd;
+    static const wchar_t SquareBracketCharEnd;
 };
 
 #endif

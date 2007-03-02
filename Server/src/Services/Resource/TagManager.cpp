@@ -323,7 +323,7 @@ int MgTagManager::SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
 
     if (dataBindingInfo.GetSubstituteUnmanagedDataMappings())
     {
-        count += MgUnmanagedDataManager::SubstituteMappingTag(doc);
+        count += MgUnmanagedDataManager::SubstituteDataPathAliases(doc);
     }
 
     CheckTagStrings(doc);

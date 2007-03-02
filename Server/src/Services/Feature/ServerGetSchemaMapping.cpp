@@ -41,7 +41,7 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     FdoPtr<FdoIConnection> fdoConnection;
 
     STRING data = partialConnString;
-    MgUnmanagedDataManager::SubstituteMappingTag(data);
+    MgUnmanagedDataManager::SubstituteDataPathAliases(data);
 
     MgServerFeatureConnection msfc(providerName, data);
     if (( msfc.IsConnectionOpen() ) || ( msfc.IsConnectionPending() ))

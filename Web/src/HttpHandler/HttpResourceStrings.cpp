@@ -100,7 +100,6 @@ const STRING MgHttpResourceStrings::reqOwner = L"OWNER";
 const STRING MgHttpResourceStrings::reqIncludeDescendants = L"INCLUDEDESCENDANTS";
 const STRING MgHttpResourceStrings::reqPath = L"PATH";
 const STRING MgHttpResourceStrings::reqRecursive = L"RECURSIVE";
-const STRING MgHttpResourceStrings::reqSelect = L"SELECT";
 const STRING MgHttpResourceStrings::reqFilter = L"FILTER";
 
 // Resource Service Operation Requests

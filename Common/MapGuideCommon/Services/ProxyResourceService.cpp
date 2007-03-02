@@ -1062,7 +1062,7 @@ MgUserInformation* MgProxyResourceService::GetUserInfo()
 /// Enumerates the unmanaged data
 ///
 MgByteReader* MgProxyResourceService::EnumerateUnmanagedData(
-    CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter)
+    CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter)
 {
     MgCommand cmd;
 
@@ -1074,7 +1074,7 @@ MgByteReader* MgProxyResourceService::EnumerateUnmanagedData(
                         1,
                         MgCommand::knString, &path,
                         MgCommand::knInt8, (int)recursive,
-                        MgCommand::knString, &select,
+                        MgCommand::knString, &type,
                         MgCommand::knString, &filter,
                         MgCommand::knNone);
 

@@ -64,6 +64,8 @@ const STRING MgResourceTag::LoginPassword           = L"%MG_LOGIN_PASSWORD%";
 const STRING MgResourceTag::Username                = L"%MG_USERNAME%";
 const STRING MgResourceTag::Password                = L"%MG_PASSWORD%";
 const STRING MgResourceTag::DataFilePath            = L"%MG_DATA_FILE_PATH%";
+const STRING MgResourceTag::DataPathAliasBegin      = L"%MG_DATA_PATH_ALIAS[";
+const STRING MgResourceTag::DataPathAliasEnd        = L"]%";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -101,3 +103,10 @@ const STRING MgResourcePermission::ReadWrite        = L"r,w";
 const STRING MgResourceFolder::Users                = L"Users";
 const STRING MgResourceFolder::Groups               = L"Groups";
 const STRING MgResourceFolder::Roles                = L"Roles";
+
+///////////////////////////////////////////////////////////////////////////////
+/// Types of unmanaged data that can be returned
+///
+const STRING MgResourceUnmanagedDataType::Folders         = L"Folders";
+const STRING MgResourceUnmanagedDataType::Files           = L"Files";
+const STRING MgResourceUnmanagedDataType::Both            = L"Both";

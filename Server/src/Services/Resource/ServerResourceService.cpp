@@ -1833,7 +1833,7 @@ MgStringCollection* MgServerResourceService::EnumerateRoles(CREFSTRING user,
 ///----------------------------------------------------------------------------
 
 MgByteReader* MgServerResourceService::EnumerateUnmanagedData(
-    CREFSTRING path, bool recursive, CREFSTRING select, CREFSTRING filter)
+    CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -1841,7 +1841,7 @@ MgByteReader* MgServerResourceService::EnumerateUnmanagedData(
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateUnmanagedData()");
 
-    byteReader = MgUnmanagedDataManager::GetInstance()->EnumerateUnmanagedData(path, recursive, select, filter);
+    byteReader = MgUnmanagedDataManager::GetInstance()->EnumerateUnmanagedData(path, recursive, type, filter);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateUnmanagedData")
 
