@@ -442,11 +442,12 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                       MgCoordinateSystem* dstCs,
                                       bool expandExtents,
                                       bool checkRefreshFlag,
-                                      double scale)
+                                      double scale,
+                                      bool selection)
 {
     #ifdef _DEBUG
     long dwStart = GetTickCount();
-    printf("\nStylizeLayers() **MAPSTART** Layers: %d\n", layers->GetCount());
+    printf("\nStylizeLayers() **MAPSTART** Layers:%d  Scale:%f\n", layers->GetCount(), scale);
     #endif
 
     // Cache coordinate system transforms for the life of the
@@ -462,11 +463,11 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
         #ifdef _DEBUG
-        printf("  StylizeLayers() **LAYERSTART** Layer: %d - %S\n", i, (mapLayer->GetName()).c_str());
+        printf("  StylizeLayers() **LAYERSTART** Name:%S  VAS:%S\n", (mapLayer->GetName()).c_str(), mapLayer->IsVisibleAtScale(scale) ? L"True" : L"False");
         #endif
 
         //don't send data if layer is not currently visible
-        if (!mapLayer->IsVisibleAtScale(scale))
+        if ((!selection) && (!mapLayer->IsVisible()))
             continue;
 
         //don't send data if the refresh flag is not set
@@ -520,11 +521,31 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                 long dwLayerStart = GetTickCount();
                 #endif
 
+                // Modify the layer scale range to also support infinite
+                // Need to apply default style as one will not be defined
+                if(selection)
+                {
+                    MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+                    if(scaleRanges)
+                    {
+                        MdfModel::VectorScaleRange* scaleRange = scaleRanges->GetAt(0);
+                        if(scaleRange)
+                        {
+                            scaleRange->SetMinScale(0.0);
+                            scaleRange->SetMaxScale(MdfModel::VectorScaleRange::MAX_MAP_SCALE);
+                        }
+                    }
+                }
+
                 // make sure we have a valid scale range
                 MdfModel::VectorScaleRange* scaleRange = Stylizer::FindScaleRange(*vl->GetScaleRanges(), scale);
 
                 if (scaleRange)
                 {
+                    #ifdef _DEBUG
+                    printf("  StylizeLayers() **Stylizing** Name:%S\n", (mapLayer->GetName()).c_str());
+                    #endif
+
                     // get feature source id
                     STRING sfeatResId = vl->GetResourceID();
                     Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(sfeatResId);
@@ -820,10 +841,15 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         }
                     }
                 }
-
+                else
+                {
+                    #ifdef _DEBUG
+                    printf("  StylizeLayers() **NOT Stylizing - NO SCALE RANGE** Name:%S\n", (mapLayer->GetName()).c_str());
+                    #endif
+                }
 
                 #ifdef _DEBUG
-                printf("  StylizeLayers() **LAYEREND** Vector layer time = %6.4f (s)\n\n", (GetTickCount()-dwLayerStart)/1000.0);
+                printf("  StylizeLayers() **LAYEREND** -Vector- Name:%S  Time:%6.4f (s)\n\n", (mapLayer->GetName()).c_str(), (GetTickCount()-dwLayerStart)/1000.0);
                 #endif
             }
             else if (gl)
@@ -1012,7 +1038,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                 }
 
                 #ifdef _DEBUG
-                printf("  StylizeLayers() **LAYEREND** Grid layer time = %6.4f (s)\n\n", (GetTickCount()-dwLayerStart)/1000.0);
+                printf("  StylizeLayers() **LAYEREND** -Grid- Name:%S  Time:%6.4f (s)\n\n", (mapLayer->GetName()).c_str(), (GetTickCount()-dwLayerStart)/1000.0);
                 #endif
             }
             else if (dl) //drawing layer
@@ -1071,7 +1097,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                 }
 
                 #ifdef _DEBUG
-                printf("  StylizeLayers() **LAYEREND** Drawing layer time = %6.4f (s)\n\n", (GetTickCount()-dwLayerStart)/1000.0);
+                printf("  StylizeLayers() **LAYEREND** -Drawing- Name:%S  Time = %6.4f (s)\n\n", (mapLayer->GetName()).c_str(), (GetTickCount()-dwLayerStart)/1000.0);
                 #endif
             }
 
@@ -1120,7 +1146,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
     }
 
     #ifdef _DEBUG
-    printf("StylizeLayers() **MAPDONE** Layers: %d  Total Time = %6.4f (s)\n\n", layers->GetCount(), (GetTickCount()-dwStart)/1000.0);
+    printf("StylizeLayers() **MAPDONE** Layers:%d  Total Time:%6.4f (s)\n\n", layers->GetCount(), (GetTickCount()-dwStart)/1000.0);
     #endif
 
     TransformCacheMap::iterator iter = transformCache.begin();

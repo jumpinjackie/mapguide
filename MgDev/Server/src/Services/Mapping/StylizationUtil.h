@@ -74,7 +74,8 @@ public:
                               MgCoordinateSystem* dstCs,
                               bool expandExtents,
                               bool checkRefreshFlag,
-                              double scale);
+                              double scale,
+                              bool selection = false);
 
     static MgFeatureReader * ExecuteFeatureQuery(MgFeatureService* svcFeature,
                                                  RS_Bounds& extent,

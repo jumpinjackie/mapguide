@@ -201,7 +201,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     baseGroup->SetVisible(true);
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, NULL, roLayers, &dr, width, height, format, scale, extent, true);
+    ret = RenderMapInternal(map, NULL, roLayers, &dr, width, height, format, scale, extent, true, true);
 
     // restore the base group's visibility
     baseGroup->SetVisible(groupVisible);
@@ -215,6 +215,15 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
                                                              MgSelection* selection,
                                                              CREFSTRING format)
+{
+    // Call updated RenderDynamicOverlay API
+    return RenderDynamicOverlay(map, selection, format, true);
+}
+
+MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
+                                                             MgSelection* selection,
+                                                             CREFSTRING format,
+                                                             bool bKeepSelection)
 {
     Ptr<MgByteReader> ret;
 
@@ -268,7 +277,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     }
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, roLayers, &dr, width, height, format, scale, extent, false);
+    ret = RenderMapInternal(map, selection, roLayers, &dr, width, height, format, scale, extent, false, bKeepSelection);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderDynamicOverlay")
 
@@ -279,6 +288,15 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
 MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   MgSelection* selection,
                                                   CREFSTRING format)
+{
+    // Call updated RenderMap API
+    return RenderMap(map, selection, format, true);
+}
+
+MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
+                                                  MgSelection* selection,
+                                                  CREFSTRING format,
+                                                  bool bKeepSelection)
 {
     Ptr<MgByteReader> ret;
 
@@ -297,7 +315,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     Ptr<MgColor> bgColor = new MgColor(col.red(), col.green(), col.blue(), col.alpha());
 
     // punt to more specific RenderMap API
-    ret = RenderMap(map, selection, center, scale, map->GetDisplayWidth(), map->GetDisplayHeight(), bgColor, format);
+    ret = RenderMap(map, selection, center, scale, map->GetDisplayWidth(), map->GetDisplayHeight(), bgColor, format, bKeepSelection);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -312,6 +330,19 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   INT32 height,
                                                   MgColor* backgroundColor,
                                                   CREFSTRING format)
+{
+    // Call updated RenderMap API
+    return RenderMap(map, selection, extents, width, height, backgroundColor, format, true);
+}
+
+MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
+                                                  MgSelection* selection,
+                                                  MgEnvelope* extents,
+                                                  INT32 width,
+                                                  INT32 height,
+                                                  MgColor* backgroundColor,
+                                                  CREFSTRING format,
+                                                  bool bKeepSelection)
 {
     Ptr<MgByteReader> ret;
 
@@ -390,7 +421,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     GDRenderer dr(drawWidth, drawHeight, bgcolor, false);
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, &dr, width, height, format, scale, b, false);
+    ret = RenderMapInternal(map, selection, NULL, &dr, width, height, format, scale, b, false, bKeepSelection);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -406,6 +437,20 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   INT32 height,
                                                   MgColor* backgroundColor,
                                                   CREFSTRING format)
+{
+    // Call updated RenderMap API
+    return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, true);
+}
+
+MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
+                                                  MgSelection* selection,
+                                                  MgCoordinate* center,
+                                                  double scale,
+                                                  INT32 width,
+                                                  INT32 height,
+                                                  MgColor* backgroundColor,
+                                                  CREFSTRING format,
+                                                  bool bKeepSelection)
 {
     Ptr<MgByteReader> ret;
 
@@ -444,7 +489,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     GDRenderer dr(width, height, bgcolor, false);
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, &dr, width, height, format, scale, b, false);
+    ret = RenderMapInternal(map, selection, NULL, &dr, width, height, format, scale, b, false, bKeepSelection);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -459,6 +504,18 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
                                                               INT32       selectionVariant, // Within, Touching, Topmost
                                                               INT32       maxFeatures)
 {
+    // Call updated QueryFeatures API
+    return QueryFeatures(map, layerNames, geometry, selectionVariant, maxFeatures, false);
+}
+
+
+MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
+                                                              MgStringCollection* layerNames,
+                                                              MgGeometry* geometry,
+                                                              INT32       selectionVariant, // Within, Touching, Topmost
+                                                              INT32       maxFeatures,
+                                                              bool bIgnoreScaleRange)
+{
     Ptr<MgFeatureInformation> ret;
 
     MG_TRY()
@@ -472,7 +529,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
     Ptr<MgSelection> sel = new MgSelection(map);
     FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale());
 
-    RenderForSelection(map, layerNames, geometry, selectionVariant, maxFeatures, &fir);
+    RenderForSelection(map, layerNames, geometry, selectionVariant, maxFeatures, &fir, bIgnoreScaleRange);
 
     //fill out the output object with the info we collected
     //in the FeatureInfoRenderer for the first feature we hit
@@ -486,6 +543,11 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
 
     ret->SetSelection(sel);
 
+    #ifdef _DEBUG
+    Ptr<MgReadOnlyLayerCollection> selLayers = sel->GetLayers();
+    ACE_DEBUG((LM_ERROR, ACE_TEXT("MgServerRenderingService::QueryFeatures() Selection Size:%d\n"), selLayers.p ? selLayers->GetCount() : 0));
+    #endif
+
     MG_CATCH_AND_THROW(L"MgServerRenderingService.QueryFeatures")
 
     return ret.Detach();
@@ -498,6 +560,18 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgM
                                     INT32 selectionVariant, // Within, Touching, Topmost
                                     INT32 maxFeatures)
 {
+    // Call updated QueryFeatureProperties API
+    return QueryFeatureProperties(map, layerNames, geometry, selectionVariant, maxFeatures, false);
+}
+
+
+MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgMap* map,
+                                    MgStringCollection* layerNames,
+                                    MgGeometry* geometry,
+                                    INT32 selectionVariant, // Within, Touching, Topmost
+                                    INT32 maxFeatures,
+                                    bool bIgnoreScaleRange)
+{
     Ptr<MgBatchPropertyCollection> ret;
 
     MG_TRY()
@@ -509,7 +583,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgM
     Ptr<MgSelection> sel = NULL;//TODO: do we need this for this API? new MgSelection(map);
     FeaturePropRenderer fpr(sel, maxFeatures, map->GetViewScale());
 
-    RenderForSelection(map, layerNames, geometry, selectionVariant, maxFeatures, &fpr);
+    RenderForSelection(map, layerNames, geometry, selectionVariant, maxFeatures, &fpr, bIgnoreScaleRange);
 
     ret = fpr.GetProperties();
     //ret->SetSelection(sel);
@@ -530,7 +604,8 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           CREFSTRING format,
                                                           double scale,
                                                           RS_Bounds& b,
-                                                          bool expandExtents)
+                                                          bool expandExtents,
+                                                          bool bKeepSelection)
 {
     // convert the map coordinate system from srs wkt to a mentor cs structure
     STRING srs = map->GetMapSRS();
@@ -591,6 +666,11 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
         if (selection)
         {
             Ptr<MgReadOnlyLayerCollection> selLayers = selection->GetLayers();
+
+            #ifdef _DEBUG
+            printf("MgServerRenderingService::RenderMapInternal() - Layers:%d  Selection Layers:%d\n", tempLayers.p ? tempLayers->GetCount() : 0, selLayers.p ? selLayers->GetCount() : 0);
+            #endif
+
             if (selLayers.p && selLayers->GetCount() > 0)
             {
                 // tell the renderer to override draw styles with the ones
@@ -612,7 +692,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                 }
 
                 MgStylizationUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                                                 modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale);
+                                                 modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale, bKeepSelection);
             }
         }
 
@@ -756,8 +836,10 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                          MgGeometry* geometry,
                          INT32 selectionVariant,
                          INT32 maxFeatures,
-                         FeatureInfoRenderer* selRenderer)
+                         FeatureInfoRenderer* selRenderer,
+                         bool bIgnoreScaleRange)
 {
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): ** START **\n")));
     if (NULL == map || NULL == geometry)
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -804,14 +886,24 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         //find the layer we need to select features from
         Ptr<MgLayerBase> layer = layers->GetItem(p);
 
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable() ? L"True" : L"False", layer->IsVisibleAtScale(map->GetViewScale()) ? L"True" : L"False"));
+    
         //do we want to select on this layer -- if caller
         //gave us a layer name collection, check if the layer
         //is in there
         if (layerNames && layerNames->GetCount() > 0 && layerNames->IndexOf(layer->GetName()) == -1)
             continue;
 
-        if (!layer->GetSelectable() || !layer->IsVisibleAtScale(map->GetViewScale()))
-            continue;
+        if(bIgnoreScaleRange)
+        {
+            if (!layer->GetSelectable())
+                continue;
+        }
+        else
+        {
+            if (!layer->GetSelectable() || !layer->IsVisibleAtScale(map->GetViewScale()))
+                continue;
+        }
 
         //have we processed enough features already?
         if (maxFeatures <= 0)
@@ -822,9 +914,26 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, layerResId));
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
 
-        //we can only do geometric query selectionb for vector layers
+        //we can only do geometric query selection for vector layers
         if (vl)
         {
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): Layer: %W  Vector Layer\n"), layer->GetName().c_str()));
+
+            if(bIgnoreScaleRange)
+            {
+                // Modify the layer scale range only for layers that are passed in
+                MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+                if(scaleRanges)
+                {
+                    MdfModel::VectorScaleRange* scaleRange = scaleRanges->GetAt(0);
+                    if(scaleRange)
+                    {
+                        scaleRange->SetMinScale(0.0);
+                        scaleRange->SetMaxScale(MdfModel::VectorScaleRange::MAX_MAP_SCALE);
+                    }
+                }
+            }
+
             Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(layer->GetFeatureSourceId());
 
             //get the coordinate system of the layer --> we need this
@@ -1009,6 +1118,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     }
 
     selRenderer->EndMap();
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): ** END **\n")));
 }
 
 void MgServerRenderingService::SetConnectionProperties(MgConnectionProperties*)

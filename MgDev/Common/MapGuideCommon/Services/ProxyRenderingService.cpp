@@ -131,16 +131,50 @@ MgByteReader* MgProxyRenderingService::RenderDynamicOverlay(
     MgSelection* selection,
     CREFSTRING format)
 {
+    // Call the updated RenderDynamicOverlay API
+    return RenderDynamicOverlay(map, selection, format, true);
+}
+
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Renders all dynamic layers in the specified MgMap to a dynamic overlay image
+/// with a transparent background. The center, scale, size, and layers to be
+/// rendered are defined by the specified map instance.  The format parameter
+/// must be set to an image format that supports transparency.
+/// </summary>
+/// <param name="map">Input
+/// map object containing current state of map.
+/// </param>
+/// <param name="selection">Input
+/// map feature selection. Specifies the selected features on the map
+/// </param>
+/// <param name="format">Input
+/// image format. Defines the format of the resulting image
+/// </param>
+/// <param name="bKeepSelection">Input
+/// true if you want to keep the selection
+/// </param>
+/// <returns>
+/// A byte reader containing the rendered image
+/// </returns>
+MgByteReader* MgProxyRenderingService::RenderDynamicOverlay(
+    MgMap* map,
+    MgSelection* selection,
+    CREFSTRING format,
+    bool bKeepSelection)
+{
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                      // Connection
                         MgCommand::knObject,                            // Return type expected
                         MgRenderingServiceOpId::RenderDynamicOverlay,   // Command Code
-                        3,                                              // No of arguments
+                        4,                                              // No of arguments
                         Rendering_Service,                              // Service Id
                         1,                                              // Operation version
                         MgCommand::knObject, map,                       // Argument#1
                         MgCommand::knObject, selection,                 // Argument#2
                         MgCommand::knString, &format,                   // Argument#3
+                        MgCommand::knInt32, bKeepSelection,             // Argument#4
                         MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
@@ -170,16 +204,47 @@ MgByteReader* MgProxyRenderingService::RenderMap(
     MgSelection* selection,
     CREFSTRING format)
 {
+    // Call the updated RenderMap API
+    return RenderMap(map, selection, format, true);
+}
+
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Renders the specified MgMap to the requested image format.
+/// </summary>
+/// <param name="map">Input
+/// map object containing current state of map.
+/// </param>
+/// <param name="selection">Input
+/// map feature selection. Specifies the selected features on the map
+/// </param>
+/// <param name="format">Input
+/// image format. Defines the format of the resulting image
+/// </param>
+/// <param name="bKeepSelection">Input
+/// true if you want to keep the selection
+/// </param>
+/// <returns>
+/// A byte reader containing the rendered image
+/// </returns>
+MgByteReader* MgProxyRenderingService::RenderMap(
+    MgMap* map,
+    MgSelection* selection,
+    CREFSTRING format,
+    bool bKeepSelection)
+{
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                          // Connection
                         MgCommand::knObject,                // Return type expected
                         MgRenderingServiceOpId::RenderMap1, // Command Code
-                        3,                                  // No of arguments
+                        4,                                  // No of arguments
                         Rendering_Service,                  // Service Id
                         1,                                  // Operation version
                         MgCommand::knObject, map,           // Argument#1
                         MgCommand::knObject, selection,     // Argument#2
                         MgCommand::knString, &format,       // Argument#3
+                        MgCommand::knInt32, bKeepSelection, // Argument#4
                         MgCommand::knNone);                 // End of arguments
 
     SetWarning(cmd.GetWarningObject());
@@ -225,11 +290,57 @@ MgByteReader* MgProxyRenderingService::RenderMap(
     MgColor* backgroundColor,
     CREFSTRING format)
 {
+    // Call the updated RenderMap API
+    return RenderMap(map, selection, extents, width, height, backgroundColor, format, true);
+}
+
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Renders the specified MgMap to the requested image format.
+/// </summary>
+/// <param name="map">Input
+/// map object containing current state of map.
+/// </param>
+/// <param name="selection">Input
+/// map feature selection. Specifies the selected features on the map
+/// </param>
+/// <param name="extents">Input
+/// map extents. Specifies the extents for the map
+/// </param>
+/// <param name="width">Input
+/// image width. Specifies the image width in pixels
+/// </param>
+/// <param name="height">Input
+/// image height. Specifies the image height in pixels
+/// </param>
+/// <param name="backgroundColor">Input
+/// background color. Specifies the map background color
+/// </param>
+/// <param name="format">Input
+/// image format. Defines the format of the resulting image
+/// </param>
+/// <param name="bKeepSelection">Input
+/// true if you want to keep the selection
+/// </param>
+/// <returns>
+/// A byte reader containing the rendered image
+/// </returns>
+MgByteReader* MgProxyRenderingService::RenderMap(
+    MgMap* map,
+    MgSelection* selection,
+    MgEnvelope* extents,
+    INT32 width,
+    INT32 height,
+    MgColor* backgroundColor,
+    CREFSTRING format,
+    bool bKeepSelection)
+{
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                              // Connection
                         MgCommand::knObject,                    // Return type expected
                         MgRenderingServiceOpId::RenderMap2,     // Command Code
-                        7,                                      // No of arguments
+                        8,                                      // No of arguments
                         Rendering_Service,                      // Service Id
                         1,                                      // Operation version
                         MgCommand::knObject, map,               // Argument#1
@@ -239,13 +350,13 @@ MgByteReader* MgProxyRenderingService::RenderMap(
                         MgCommand::knInt32, height,             // Argument#5
                         MgCommand::knObject, backgroundColor,   // Argument#6
                         MgCommand::knString, &format,           // Argument#7
+                        MgCommand::knInt32, bKeepSelection,     // Argument#8
                         MgCommand::knNone);                     // End of arguments
 
     SetWarning(cmd.GetWarningObject());
 
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
-
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -288,11 +399,60 @@ MgByteReader* MgProxyRenderingService::RenderMap(
     MgColor* backgroundColor,
     CREFSTRING format)
 {
+    // Call the updated RenderMap API
+    return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, true);
+}
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Renders the specified MgMap to the requested image format.
+/// </summary>
+/// <param name="map">Input
+/// map object containing current state of map.
+/// </param>
+/// <param name="selection">Input
+/// map feature selection. Specifies the selected features on the map
+/// </param>
+/// <param name="center">Input
+/// map center point. Specifies the center point for the map
+/// </param>
+/// <param name="scale">Input
+/// map scale. Specifies the scale for the map
+/// </param>
+/// <param name="width">Input
+/// image width. Specifies the image width in pixels
+/// </param>
+/// <param name="height">Input
+/// image height. Specifies the image height in pixels
+/// </param>
+/// <param name="backgroundColor">Input
+/// background color. Specifies the map background color
+/// </param>
+/// <param name="format">Input
+/// image format. Defines the format of the resulting image
+/// </param>
+/// <param name="bKeepSelection">Input
+/// true if you want to keep the selection
+/// </param>
+/// <returns>
+/// A byte reader containing the rendered image
+/// </returns>
+MgByteReader* MgProxyRenderingService::RenderMap(
+    MgMap* map,
+    MgSelection* selection,
+    MgCoordinate* center,
+    double scale,
+    INT32 width,
+    INT32 height,
+    MgColor* backgroundColor,
+    CREFSTRING format,
+    bool bKeepSelection)
+{
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                              // Connection
                         MgCommand::knObject,                    // Return type expected
                         MgRenderingServiceOpId::RenderMap3,     // Command Code
-                        8,                                      // No of arguments
+                        9,                                      // No of arguments
                         Rendering_Service,                      // Service Id
                         1,                                      // Operation version
                         MgCommand::knObject, map,               // Argument#1
@@ -303,13 +463,13 @@ MgByteReader* MgProxyRenderingService::RenderMap(
                         MgCommand::knInt32, height,             // Argument#6
                         MgCommand::knObject, backgroundColor,   // Argument#7
                         MgCommand::knString, &format,           // Argument#8
+                        MgCommand::knInt32, bKeepSelection,     // Argument#9
                         MgCommand::knNone);                     // End of arguments
 
     SetWarning(cmd.GetWarningObject());
 
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
-
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -394,11 +554,53 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
     INT32 selectionVariant, // Within, Touching, Topmost
     INT32 maxFeatures)
 {
+    // Call the updated QueryFeatures API
+    return QueryFeatures(map, layerNames, geometry, selectionVariant, maxFeatures, false);
+}
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// The QueryFeatures operation identifies those features that
+/// meet the specified spatial selection criteria. This operation
+/// is used to implement server-side selection. In addition to
+/// a selection set, this operation returns attribute information
+/// in case only one feature is selected
+/// </summary>
+/// <param name="map">Input
+/// map object containing current state of map.
+/// </param>
+/// <param name="layerName">Input
+/// Active layer name for which to query features
+/// </param>
+/// <param name="geometry">Input
+/// geometry object specifying the selection area
+/// </param>
+/// <param name="selectionVariant">Input
+/// selection criterion - 0=Within, 1=Touching, 2=Topmost
+/// </param>
+/// <param name="maxFeatures">Input
+/// the maximum number of features to return
+/// </param>
+/// <param name="bIgnoreScaleRange">Input
+/// true if you want to ignore scale ranges when querying features
+/// </param>
+/// <returns>
+/// An MgSelection instance identifying the features that meet the
+/// selection criteria. Returns null if no features are identified.
+/// </returns>
+MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
+    MgMap* map,
+    MgStringCollection* layerNames,
+    MgGeometry* geometry,
+    INT32 selectionVariant, // Within, Touching, Topmost
+    INT32 maxFeatures,
+    bool bIgnoreScaleRange)
+{
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                              // Connection
                         MgCommand::knObject,                    // Return type expected
                         MgRenderingServiceOpId::QueryFeatures,  // Command Code
-                        5,                                      // No of arguments
+                        6,                                      // No of arguments
                         Rendering_Service,                      // Service Id
                         1,                                      // Operation version
                         MgCommand::knObject, map,               // Argument#1
@@ -406,6 +608,7 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
                         MgCommand::knObject, geometry,          // Argument#3
                         MgCommand::knInt32, selectionVariant,   // Argument#4
                         MgCommand::knInt32, maxFeatures,        // Argument#5
+                        MgCommand::knInt32, bIgnoreScaleRange,  // Argument#6
                         MgCommand::knNone);                     // End of arguments
 
     SetWarning(cmd.GetWarningObject());
@@ -447,11 +650,54 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
     INT32 selectionVariant, 
     INT32 maxFeatures)
 {
+    // Call the updated QueryFeatureProperties API
+    return QueryFeatureProperties(map, layerNames, geometry, selectionVariant, maxFeatures, false);
+}
+
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// The QueryFeatureProeprties operation identifies those features that
+/// meet the specified spatial selection criteria. This operation
+/// is used to implement WMS feature info and returns property values
+/// for all features which match the spatial query
+/// </summary>
+/// <param name="map">Input
+/// map object containing current state of map.
+/// </param>
+/// <param name="layerName">Input
+/// Active layer name for which to query features
+/// </param>
+/// <param name="geometry">Input
+/// geometry object specifying the selection area
+/// </param>
+/// <param name="selectionVariant">Input
+/// selection criterion - 0=Within, 1=Touching, 2=Topmost
+/// </param>
+/// <param name="maxFeatures">Input
+/// the maximum number of features to return
+/// </param>
+/// <param name="bIgnoreScaleRange">Input
+/// true if you want to ignore scale ranges when querying feature 
+/// properties
+/// </param>
+/// <returns>
+/// An MgSelection instance identifying the features that meet the
+/// selection criteria. Returns null if no features are identified.
+/// </returns>
+MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
+    MgMap* map,
+    MgStringCollection* layerNames,
+    MgGeometry* geometry,
+    INT32 selectionVariant, 
+    INT32 maxFeatures,
+    bool bIgnoreScaleRange)
+{
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                              // Connection
                         MgCommand::knObject,                    // Return type expected
                         MgRenderingServiceOpId::QueryFeatureProperties,  // Command Code
-                        5,                                      // No of arguments
+                        6,                                      // No of arguments
                         Rendering_Service,                      // Service Id
                         1,                                      // Operation version
                         MgCommand::knObject, map,               // Argument#1
@@ -459,6 +705,7 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
                         MgCommand::knObject, geometry,          // Argument#3
                         MgCommand::knInt32, selectionVariant,   // Argument#4
                         MgCommand::knInt32, maxFeatures,        // Argument#5
+                        MgCommand::knInt32, bIgnoreScaleRange,  // Argument#6
                         MgCommand::knNone);                     // End of arguments
 
     SetWarning(cmd.GetWarningObject());

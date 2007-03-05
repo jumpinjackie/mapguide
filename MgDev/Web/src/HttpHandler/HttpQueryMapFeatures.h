@@ -58,6 +58,7 @@ private:
     STRING  m_selectionVariant;
     INT32   m_maxFeatures;
     bool    m_persist;
+    bool    m_bIgnoreScale;
 };
 
 #endif  // _FS_DESCRIBE_MAP_FEATURES_H

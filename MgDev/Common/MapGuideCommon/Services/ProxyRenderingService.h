@@ -83,6 +83,35 @@ EXTERNAL_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// Renders all dynamic layers in the specified MgMap to a dynamic overlay image
+    /// with a transparent background. The center, scale, size, and layers to be
+    /// rendered are defined by the specified map instance.  The format parameter
+    /// must be set to an image format that supports transparency.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
+    virtual MgByteReader* RenderDynamicOverlay(
+        MgMap* map,
+        MgSelection* selection,
+        CREFSTRING format,
+        bool bKeepSelection);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
     /// Renders the specified MgMap to the requested image format.
     ///
     /// \param map
@@ -102,6 +131,32 @@ EXTERNAL_API:
         MgMap* map,
         MgSelection* selection,
         CREFSTRING format);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the specified MgMap to the requested image format.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
+    virtual MgByteReader* RenderMap(
+        MgMap* map,
+        MgSelection* selection,
+        CREFSTRING format,
+        bool bKeepSelection);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -151,6 +206,48 @@ EXTERNAL_API:
     /// \param selection
     /// Input
     /// map feature selection. Specifies the selected features on the map
+    /// \param extents
+    /// Input
+    /// map extents. Specifies the extents for the map
+    /// \param width
+    /// Input
+    /// image width. Specifies the image width in pixels
+    /// \param height
+    /// Input
+    /// image height. Specifies the image height in pixels
+    /// \param backgroundColor
+    /// Input
+    /// background color. Specifies the map background color
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
+    virtual MgByteReader* RenderMap(
+        MgMap* map,
+        MgSelection* selection,
+        MgEnvelope* extents,
+        INT32 width,
+        INT32 height,
+        MgColor* backgroundColor,
+        CREFSTRING format,
+        bool bKeepSelection);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the specified MgMap to the requested image format.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
     /// \param center
     /// Input
     /// map center point. Specifies the center point for the map
@@ -182,6 +279,52 @@ EXTERNAL_API:
         INT32 height,
         MgColor* backgroundColor,
         CREFSTRING format);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the specified MgMap to the requested image format.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param center
+    /// Input
+    /// map center point. Specifies the center point for the map
+    /// \param scale
+    /// Input
+    /// map scale. Specifies the scale for the map
+    /// \param width
+    /// Input
+    /// image width. Specifies the image width in pixels
+    /// \param height
+    /// Input
+    /// image height. Specifies the image height in pixels
+    /// \param backgroundColor
+    /// Input
+    /// background color. Specifies the map background color
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
+    virtual MgByteReader* RenderMap(
+        MgMap* map,
+        MgSelection* selection,
+        MgCoordinate* center,
+        double scale,
+        INT32 width,
+        INT32 height,
+        MgColor* backgroundColor,
+        CREFSTRING format,
+        bool bKeepSelection);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -251,6 +394,45 @@ EXTERNAL_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// The QueryFeatures operation identifies those features that
+    /// meet the specified spatial selection criteria. This operation
+    /// is used to implement server-side selection. In addition to
+    /// a selection set, this operation returns attribute information
+    /// in case only one feature is selected
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param layerName
+    /// Input
+    /// Active layer name for which to query features
+    /// \param geometry
+    /// Input
+    /// geometry object specifying the selection area
+    /// \param selectionVariant
+    /// Input
+    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// \param maxFeatures
+    /// Input
+    /// the maximum number of features to return
+    /// \param bIgnoreScaleRange
+    /// Input
+    /// true if you want to ignore scale ranges when querying features
+    ///
+    /// \return
+    /// An MgSelection instance identifying the features that meet the
+    /// selection criteria. Returns null if no features are identified.
+    ///
+    virtual MgFeatureInformation* QueryFeatures(
+        MgMap* map,
+        MgStringCollection* layerNames,
+        MgGeometry* geometry,
+        INT32 selectionVariant, 
+        INT32 maxFeatures,
+        bool bIgnoreScaleRange);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
     /// The QueryFeatureProeprties operation identifies those features that
     /// meet the specified spatial selection criteria. This operation
     /// is used to implement WMS feature info and returns property values
@@ -283,6 +465,44 @@ EXTERNAL_API:
         INT32 selectionVariant, 
         INT32 maxFeatures);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// The QueryFeatureProeprties operation identifies those features that
+    /// meet the specified spatial selection criteria. This operation
+    /// is used to implement WMS feature info and returns property values
+    /// for all features which match the spatial query
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param layerName
+    /// Input
+    /// Active layer name for which to query features
+    /// \param geometry
+    /// Input
+    /// geometry object specifying the selection area
+    /// \param selectionVariant
+    /// Input
+    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// \param maxFeatures
+    /// Input
+    /// the maximum number of features to return
+    /// \param bIgnoreScaleRange
+    /// Input
+    /// true if you want to ignore scale ranges when querying feature 
+    /// properties
+    ///
+    /// \return
+    /// An MgSelection instance identifying the features that meet the
+    /// selection criteria. Returns null if no features are identified.
+    ///
+    virtual MgBatchPropertyCollection* QueryFeatureProperties(
+        MgMap* map,
+        MgStringCollection* layerNames,
+        MgGeometry* geometry,
+        INT32 selectionVariant, 
+        INT32 maxFeatures,
+        bool bIgnoreScaleRange);
 
 INTERNAL_API:
 

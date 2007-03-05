@@ -33,11 +33,6 @@ void MgOpRenderMap::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderMap::Execute()\n")));
     
-
-
-
-
-
     MG_LOG_OPERATION_MESSAGE(L"RenderMap");
 
     MG_TRY()
@@ -46,7 +41,7 @@ void MgOpRenderMap::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (3 == m_packet.m_NumArguments)
+    if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         map->SetDelayedLoadResourceService(m_resourceService);
@@ -58,6 +53,9 @@ void MgOpRenderMap::Execute()
         STRING format;
         m_stream->GetString(format);
 
+        INT32 bKeepSelection = 0;
+        m_stream->GetInt32(bKeepSelection);
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -66,17 +64,18 @@ void MgOpRenderMap::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgByteReader> byteReader =
-            m_service->RenderMap(map, selection, format);
+            m_service->RenderMap(map, selection, format, bKeepSelection);
 
-        
         EndExecution(byteReader);
     }
-    else if (7 == m_packet.m_NumArguments)
+    else if (8 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         map->SetDelayedLoadResourceService(m_resourceService);
@@ -98,6 +97,9 @@ void MgOpRenderMap::Execute()
         STRING format;
         m_stream->GetString(format);
 
+        INT32 bKeepSelection = 0;
+        m_stream->GetInt32(bKeepSelection);
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -107,24 +109,25 @@ void MgOpRenderMap::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgEnvelope");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"width");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(width);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"height");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(height);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgColor");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgByteReader> byteReader =
-            m_service->RenderMap(map, selection, extents, width, height, color, format);
+            m_service->RenderMap(map, selection, extents, width, height, color, format, bKeepSelection);
 
-        
         EndExecution(byteReader);
     }
-    else if (8 == m_packet.m_NumArguments)
+    else if (9 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         map->SetDelayedLoadResourceService(m_resourceService);
@@ -149,6 +152,9 @@ void MgOpRenderMap::Execute()
         STRING format;
         m_stream->GetString(format);
 
+        INT32 bKeepSelection = 0;
+        m_stream->GetInt32(bKeepSelection);
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -158,23 +164,24 @@ void MgOpRenderMap::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgCoordinate");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"scale");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(scale);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"width");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(width);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"height");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(height);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgColor");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgByteReader> byteReader =
-            m_service->RenderMap(map, selection, center, scale, width, height, color, format);
+            m_service->RenderMap(map, selection, center, scale, width, height, color, format, bKeepSelection);
 
-        
         EndExecution(byteReader);
     }
     else
@@ -196,8 +203,6 @@ void MgOpRenderMap::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
