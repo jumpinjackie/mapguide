@@ -33,11 +33,6 @@ void MgOpRenderDynamicOverlay::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderDynamicOverlay::Execute()\n")));
     
-
-
-
-
-
     MG_LOG_OPERATION_MESSAGE(L"RenderDynamicOverlay");
 
     MG_TRY()
@@ -46,7 +41,7 @@ void MgOpRenderDynamicOverlay::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (3 == m_packet.m_NumArguments)
+    if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         map->SetDelayedLoadResourceService(m_resourceService);
@@ -58,6 +53,9 @@ void MgOpRenderDynamicOverlay::Execute()
         STRING format;
         m_stream->GetString(format);
 
+        INT32 bKeepSelection = 0;
+        m_stream->GetInt32(bKeepSelection);
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -66,14 +64,15 @@ void MgOpRenderDynamicOverlay::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgByteReader> byteReader =
-            m_service->RenderDynamicOverlay(map, selection, format);
+            m_service->RenderDynamicOverlay(map, selection, format, bKeepSelection);
 
-        
         EndExecution(byteReader);
     }
     else
@@ -95,8 +94,6 @@ void MgOpRenderDynamicOverlay::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

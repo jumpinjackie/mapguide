@@ -45,13 +45,41 @@ public:
                                                MgSelection* selection,
                                                CREFSTRING format);
 
+    virtual MgByteReader* RenderDynamicOverlay(MgMap* map,
+                                               MgSelection* selection,
+                                               CREFSTRING format,
+                                               bool bKeepSelection);
+
     virtual MgByteReader* RenderMap(MgMap* map,
                                     MgSelection* selection,
                                     CREFSTRING format);
 
     virtual MgByteReader* RenderMap(MgMap* map,
                                     MgSelection* selection,
+                                    CREFSTRING format,
+                                    bool bKeepSelection);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
                                     MgEnvelope* extents,
+                                    INT32 width,
+                                    INT32 height,
+                                    MgColor* backgroundColor,
+                                    CREFSTRING format);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    MgEnvelope* extents,
+                                    INT32 width,
+                                    INT32 height,
+                                    MgColor* backgroundColor,
+                                    CREFSTRING format,
+                                    bool bKeepSelection);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    MgCoordinate* center,
+                                    double scale,
                                     INT32 width,
                                     INT32 height,
                                     MgColor* backgroundColor,
@@ -64,7 +92,8 @@ public:
                                     INT32 width,
                                     INT32 height,
                                     MgColor* backgroundColor,
-                                    CREFSTRING format);
+                                    CREFSTRING format,
+                                    bool bKeepSelection);
 
     virtual MgByteReader* RenderMapLegend(MgMap* map,
                                           INT32 width,
@@ -78,11 +107,25 @@ public:
                                         INT32 selectionVariant, // Within, Touching, Topmost
                                         INT32 maxFeatures);
 
+    virtual MgFeatureInformation* QueryFeatures( MgMap* map,
+                                        MgStringCollection* layerNames,
+                                        MgGeometry* geometry,
+                                        INT32 selectionVariant, // Within, Touching, Topmost
+                                        INT32 maxFeatures,
+                                        bool bIgnoreScaleRange);
+
     virtual MgBatchPropertyCollection* QueryFeatureProperties( MgMap* map,
                                         MgStringCollection* layerNames,
                                         MgGeometry* geometry,
                                         INT32 selectionVariant, // Within, Touching, Topmost
                                         INT32 maxFeatures);
+
+    virtual MgBatchPropertyCollection* QueryFeatureProperties( MgMap* map,
+                                        MgStringCollection* layerNames,
+                                        MgGeometry* geometry,
+                                        INT32 selectionVariant, // Within, Touching, Topmost
+                                        INT32 maxFeatures,
+                                        bool bIgnoreScaleRange);
 
 private:
 
@@ -109,14 +152,16 @@ private:
                                     CREFSTRING format,
                                     double scale,
                                     RS_Bounds& b,
-                                    bool expandExtents);
+                                    bool expandExtents,
+                                    bool bKeepSelection);
 
     void RenderForSelection(MgMap* map,
                          MgStringCollection* layerNames,
                          MgGeometry* geometry,
                          INT32 selectionVariant, 
                          INT32 maxFeatures,
-                         FeatureInfoRenderer* selRenderer);
+                         FeatureInfoRenderer* selRenderer,
+                         bool bIgnoreScaleRange);
 
     // member data
     Ptr<MgFeatureService> m_svcFeature;

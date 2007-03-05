@@ -44,6 +44,14 @@ MgHttpGetMapImage::MgHttpGetMapImage(MgHttpRequest *hRequest)
 
     // Get the requested image format
     m_mapFormat = params->GetParameterValue(MgHttpResourceStrings::reqRenderingFormat);
+
+    // Get the keep selection flag
+    m_bKeepSelection = true; // default
+    STRING keepSelection = params->GetParameterValue(MgHttpResourceStrings::reqRenderingKeepSelection);
+    if(!keepSelection.empty())
+    {
+        m_bKeepSelection = (keepSelection.c_str() == L"1");
+    }
 }
 
 /// <summary>
@@ -95,7 +103,7 @@ void MgHttpGetMapImage::Execute(MgHttpResponse& hResponse)
 
     // Call the HTML controller to render the map image
     MgHtmlController controller(m_siteConn);
-    Ptr<MgByteReader> reader = controller.GetMapImage(map, selection, m_mapFormat, commands);
+    Ptr<MgByteReader> reader = controller.GetMapImage(map, selection, m_mapFormat, commands, m_bKeepSelection);
 
     // If we opened the map from the repository then save it back to ensure
     // any track changes are removed from the persisted version, since these

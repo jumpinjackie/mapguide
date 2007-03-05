@@ -41,6 +41,14 @@ MgHttpGetDynamicMapOverlayImage::MgHttpGetDynamicMapOverlayImage(MgHttpRequest *
 
     // Get the requested image format
     m_mapFormat = params->GetParameterValue(MgHttpResourceStrings::reqRenderingFormat);
+
+    // Get the keep selection flag
+    m_bKeepSelection = true; // default
+    STRING keepSelection = params->GetParameterValue(MgHttpResourceStrings::reqRenderingKeepSelection);
+    if(!keepSelection.empty())
+    {
+        m_bKeepSelection = (keepSelection.c_str() == L"1");
+    }
 }
 
 /// <summary>
@@ -61,7 +69,7 @@ void MgHttpGetDynamicMapOverlayImage::Execute(MgHttpResponse& hResponse)
 
     // Call the HTML controller to render the map image
     MgHtmlController controller(m_siteConn);
-    Ptr<MgByteReader> map = controller.GetDynamicMapOverlayImage(m_mapName, m_mapFormat);
+    Ptr<MgByteReader> map = controller.GetDynamicMapOverlayImage(m_mapName, m_mapFormat, m_bKeepSelection);
 
     // Set the result
     hResult->SetResultObject(map, map->GetMimeType());

@@ -54,13 +54,17 @@ INTERNAL_API:
     /// Name of the map
     /// \param format
     /// Image format, from MgImageFormats
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
     ///
     /// \return
     /// A byte reader containing the map image
     ///
     MgByteReader* GetDynamicMapOverlayImage(
         CREFSTRING mapName,
-        CREFSTRING format);
+        CREFSTRING format,
+        bool bKeepSelection);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -74,6 +78,9 @@ INTERNAL_API:
     /// Image format, from MgImageFormats
     /// \param mapViewCommands
     /// Commands to be applied to the map before generation
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
     ///
     /// \return
     /// A byte reader containing the map image
@@ -82,7 +89,8 @@ INTERNAL_API:
         MgMap* map,
         MgSelection* selection,
         CREFSTRING format,
-        MgPropertyCollection* mapViewCommands);
+        MgPropertyCollection* mapViewCommands,
+        bool bKeepSelection);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -126,7 +134,8 @@ INTERNAL_API:
         MgGeometry* selectionGeometry,
         INT32 selectionVariant,
         INT32 maxFeatures,
-        bool persist);
+        bool persist,
+        bool bIgnoreScaleRange);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

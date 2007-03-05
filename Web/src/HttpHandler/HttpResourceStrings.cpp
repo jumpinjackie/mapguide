@@ -228,6 +228,8 @@ const STRING MgHttpResourceStrings::reqRenderingTileColumn = L"TILECOL";
 const STRING MgHttpResourceStrings::reqRenderingTileRow = L"TILEROW";
 const STRING MgHttpResourceStrings::reqRenderingPersist = L"PERSIST";
 const STRING MgHttpResourceStrings::reqRenderingScaleIndex = L"SCALEINDEX";
+const STRING MgHttpResourceStrings::reqRenderingIgnoreScale = L"IGNORESCALE";
+const STRING MgHttpResourceStrings::reqRenderingKeepSelection = L"KEEPSELECTION";
 
 // Rendering Service Operation Requests
 const STRING MgHttpResourceStrings::opGetDynamicMapOverlayImage = L"GETDYNAMICMAPOVERLAYIMAGE";

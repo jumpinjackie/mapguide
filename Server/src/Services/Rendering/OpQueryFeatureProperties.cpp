@@ -32,11 +32,6 @@ MgOpQueryFeatureProperties::~MgOpQueryFeatureProperties()
 void MgOpQueryFeatureProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpQueryFeatureProperties::Execute()\n")));
-    
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"QueryFeatures");
 
@@ -46,7 +41,7 @@ void MgOpQueryFeatureProperties::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (5 == m_packet.m_NumArguments)
+    if (6 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         map->SetDelayedLoadResourceService(m_resourceService);
@@ -60,6 +55,9 @@ void MgOpQueryFeatureProperties::Execute()
         INT32 maxFeatures = 0;
         m_stream->GetInt32(maxFeatures);
 
+        INT32 bIgnoreScale = 0;
+        m_stream->GetInt32(bIgnoreScale);
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -69,17 +67,18 @@ void MgOpQueryFeatureProperties::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgGeometry");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"selectionVariant");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(selectionVariant);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"maxFeatures");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bIgnoreScale);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgBatchPropertyCollection> info =
-            m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant, maxFeatures);
+            m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant, maxFeatures, bIgnoreScale);
 
-        
         EndExecution(info);
     }
     else
@@ -101,8 +100,6 @@ void MgOpQueryFeatureProperties::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

@@ -54,6 +54,7 @@ public:
 private:
     STRING  m_mapName;
     STRING  m_mapFormat;
+    bool    m_bKeepSelection;
 };
 
 #endif  // _FS_GET_DYNAMIC_MAP_OVERLAY_IMAGE_H
