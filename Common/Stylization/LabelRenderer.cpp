@@ -21,6 +21,10 @@
 #include "GDRenderer.h"
 #include "GDUtils.h"
 #include "RS_Font.h"
+#include "SE_Include.h"
+#include "SE_Bounds.h"
+#include "SE_Renderer.h"
+#include "RS_FontEngine.h"
 
 #define M_PI 3.14159265358979323846
 #define ROUND(x) (int)((x) + 0.5)
@@ -31,8 +35,9 @@ extern int ConvertColor(gdImagePtr i, RS_Color& c);
 
 
 //////////////////////////////////////////////////////////////////////////////
-LabelRenderer::LabelRenderer(GDRenderer* renderer) 
-: LabelRendererBase(renderer),
+//TODO: this needs to be cleaned up -- all three arguments are the same object
+LabelRenderer::LabelRenderer(Renderer* renderer, SE_Renderer* serenderer)
+: LabelRendererBase(renderer, serenderer),
   m_bOverpostGroupOpen(false)
 {
 }
@@ -98,7 +103,7 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
         // coming in on some tiles.
         RS_String stitch_key = text;
 
-        if (m_renderer->UseLocalOverposting())
+        if (false /*m_renderer->UseLocalOverposting()*/)  //LabelRenderer is not used in tiled mode so this is not needed
         {
             // TODO: stitch in subregions of tile
 //          const RS_Bounds& tileBounds = m_renderer->GetBounds();
@@ -135,10 +140,7 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
             lblpath = new RS_F_Point[lblpathpts];
 
             for (int b=0; b<lblpathpts; b++)
-            {
-                lblpath[b].x = m_renderer->_TXD(lines[2*b]);
-                lblpath[b].y = m_renderer->_TYD(lines[2*b+1]);
-            }
+                m_serenderer->WorldToScreenPoint(lines[2*b], lines[2*b+1], lblpath[b].x, lblpath[b].y);
 
             _ASSERT(nlabels == 1);
             RS_LabelInfo* info = &labels[0];    // TODO: assumes one label
@@ -168,19 +170,57 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
     }
     else
     {
+        RS_FontEngine* fe = m_serenderer->GetFontEngine();
+
         // case of a simple label
         for (int i=0; i<nlabels; i++)
         {
             RS_LabelInfo* info = &labels[i];
 
             // label is in device space
-            double offx = m_renderer->_MeterToMapSize(info->dunits(), info->dx());
-            double offy = m_renderer->_MeterToMapSize(info->dunits(), info->dy());
+            double offx = fe->MeterToMapSize(info->dunits(), info->dx());
+            double offy = fe->MeterToMapSize(info->dunits(), info->dy());
 
             LR_LabelInfo lrinfo(info->x() + offx, info->y() + offy, text, info->tdef());
 
             m_labelGroups.back().m_labels.push_back(lrinfo);
         }
+    }
+
+    EndOverpostGroup();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+//SE symbol-labels
+void LabelRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
+                                      int              nlabels,
+                                      RS_OverpostType  type,
+                                      bool             exclude,
+                                      SE_Geometry*      path)
+{
+    BeginOverpostGroup(type, true, exclude);
+
+    //Add a new style SE label to the overpost groups.
+    //here we are processing the simlpe case (like labels at a given points,
+    //rather than labels along a line). The hard case is //TODO
+    m_labelGroups.back().m_algo = laSESymbol;
+    RS_FontEngine* fe = m_serenderer->GetFontEngine();
+
+    for (int i=0; i<nlabels; i++)
+    {
+        SE_LabelInfo* info = &labels[i];
+
+        // label is in device space
+        double offx = fe->MeterToMapSize(info->dunits, info->dx);
+        double offy = fe->MeterToMapSize(info->dunits, info->dy);
+
+        LR_LabelInfo lrinfo(info->x + offx, info->y + offy, info->symbol);
+
+        //TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
+        lrinfo.m_tdef.rotation() = info->anglerad;
+
+        m_labelGroups.back().m_labels.push_back(lrinfo);
     }
 
     EndOverpostGroup();
@@ -297,6 +337,9 @@ void LabelRenderer::BlastLabels()
 bool LabelRenderer::ProcessLabelInternal(LR_LabelInfo& info,
                                          bool render, bool exclude, bool check)
 {
+    if (info.m_sestyle)
+        return DrawSELabel(info, render, exclude, check);
+
     //if it is path label, call our path text routine
     if (info.m_pts)
         return DrawPathLabel(info, render, exclude, check);
@@ -309,119 +352,66 @@ bool LabelRenderer::ProcessLabelInternal(LR_LabelInfo& info,
 //////////////////////////////////////////////////////////////////////////////
 void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
 {
-    //use axis aligned bounds for overposting
-    //TODO: can be improved to use the given polygon as is
-    //instead of taking its bounds
-    RS_Bounds axis_bounds;
-    ComputeBounds(pts, npts, axis_bounds);
+    RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));
 
-    //convert to mapping space for overpost tracking
-    //this is needed so that we can do overposting
-    //across map tiles generated at different times
-    DeviceToMappingBounds(axis_bounds);
+    //convert back to mapping space since the overpost manager uses mapping space
+    //bounding boxes
+    for (int i=0; i<npts; i++)
+        m_serenderer->ScreenToWorldPoint(pts[i].x, pts[i].y, tmp[i].x, tmp[i].y);
 
-    m_overpost.AddRegion(axis_bounds);
+    m_overpost.AddRegion(tmp, npts);
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRenderer::OverlapsStuff(RS_F_Point* pts, int npts)
 {
-    //use axis aligned bounds for overposting
-    //TODO: can be improved to use the given polygon as is
-    //instead of taking its bounds
-    RS_Bounds axis_bounds;
-    ComputeBounds(pts, npts, axis_bounds);
+    RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));
 
-    //convert to mapping space for overpost tracking
-    //this is needed so that we can do overposting
-    //across map tiles generated at different times
-    DeviceToMappingBounds(axis_bounds);
+    //convert back to mapping space since the overpost manager uses mapping space
+    //bounding boxes
+    for (int i=0; i<npts; i++)
+        m_serenderer->ScreenToWorldPoint(pts[i].x, pts[i].y, tmp[i].x, tmp[i].y);
 
-    return m_overpost.Overlaps(axis_bounds);
+    return m_overpost.Overlaps(tmp, npts);
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclude, bool check)
 {
-    // font matching
-    const RS_Font* font = m_renderer->FindFont(info.m_tdef.font());
-    if (!font)
-        return false;
+    RS_TextMetrics tm;
+    RS_FontEngine* fe = m_serenderer->GetFontEngine();
 
-    //determine pixel space font height
-    double hgt = m_renderer->_MeterToMapSize(info.m_tdef.font().units(), info.m_tdef.font().height());
-    hgt *= m_renderer->GetMapToScreenScale() * 0.75;
-
-    // The computed height can have roundoff in it, and the rendering code is
-    // very sensitive to it.  Remove this roundoff by rounding the height to
-    // the nearest 1/65536ths of a point.
-    hgt = floor(hgt * 65536.0 + 0.5) / 65536.0;
+    //measure the text (this function will take into account newlines)
+    fe->GetTextMetrics(info.m_text, info.m_tdef, tm, false);
 
     //radian CCW rotation
     double rotation = info.m_tdef.rotation() * M_PI / 180.0;
     double cos_a = cos(rotation);
     double sin_a = sin(rotation);
 
-    // font height gives the distance from one baseline to the next
-    // increase this by a factor of 1.05 (what GD uses)
-    double font_height = font->m_height * hgt / font->m_units_per_EM;
-    double line_height = 1.05 * font_height;
-
     // transform insertion point into pixel space
-    RS_F_Point ins_point(m_renderer->_TXD(info.m_x), m_renderer->_TYD(info.m_y));
-
-    //-------------------------------------------------------
-    // break up the string up into individual lines
-    //-------------------------------------------------------
-
-    // make a temporary copy
-    size_t len = wcslen(info.m_text.c_str());
-    wchar_t* cpy = (wchar_t*)alloca((len + 1) * sizeof(wchar_t));
-    wcscpy(cpy, info.m_text.c_str());
-
-    // break it up
-    std::vector<wchar_t*> line_breaks;
-    size_t num_lines = SplitLabel(cpy, line_breaks);
+    RS_F_Point ins_point;
+    m_serenderer->WorldToScreenPoint(info.m_x, info.m_y, ins_point.x, ins_point.y);
 
     //-------------------------------------------------------
     // text extent and alignment computation
     //-------------------------------------------------------
 
     RS_F_Point fpts[4];
+
     RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
     RS_Bounds unrotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
 
-    double* hAlignOffsets = (double*)alloca(num_lines * sizeof(double));
-    double* vAlignOffsets = (double*)alloca(num_lines * sizeof(double));
-    double* textWidths    = (double*)alloca(num_lines * sizeof(double));
-
-    // base vertical offset is the same for each line of text
-    double vAlignBaseOffset = GetVerticalAlignmentOffset(info.m_tdef, font, hgt, line_height, num_lines);
-
-    for (size_t k=0; k<num_lines; ++k)
+    for (size_t k=0; k<tm.line_pos.size(); ++k)
     {
-        wchar_t* txt = line_breaks[k];
-
-        // get the unrotated extent of this sub-string
-        m_renderer->MeasureString(txt, hgt, font, 0.0, fpts, NULL);
-
-        // horizontal offset depends on the sub-string width, while
-        // vertical offset depends on the line of text
-        hAlignOffsets[k] = GetHorizontalAlignmentOffset(info.m_tdef, fpts);
-        vAlignOffsets[k] = vAlignBaseOffset + k*line_height;
-
-        // remember the width
-        textWidths[k] = fpts[1].x - fpts[0].x;
+        //convert the unrotated measured bounds for the current line to a local point array
+        memcpy(fpts, tm.line_pos[k].ext, sizeof(fpts));
 
         // process the extent points
         for (int j=0; j<4; ++j)
         {
-            // translate to account for the alignment
-            fpts[j].x += hAlignOffsets[k];
-            fpts[j].y += vAlignOffsets[k];
-
             // update the overall unrotated bounds
             unrotatedBounds.add_point(fpts[j]);
 
@@ -464,79 +454,76 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
     //-------------------------------------------------------
 
     if (render)
+        fe->DrawBlockText(tm, info.m_tdef, ins_point.x, ins_point.y);
+
+    return true;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, bool check)
+{
+    //draws an SE symbol-label
+    //This needs to be improved to handle text along a path
+
+    //get native symbol bounds (in pixels -- the render style is already scaled to pixels)
+    SE_Bounds* b;
+    b = info.m_sestyle->bounds;
+
+    //now we will trnaslate and orient the bounds with the given angle and position of the symbol
+    RS_F_Point fpts[4];
+
+    fpts[0].x = b->min[0];
+    fpts[0].y = b->min[1];
+    fpts[1].x = b->max[0];
+    fpts[1].y = b->min[1];
+    fpts[2].x = b->max[0];
+    fpts[2].y = b->max[1];
+    fpts[3].x = b->min[0];
+    fpts[3].y = b->max[1];
+
+    //apply position and rotation to the native bounds of the symbol
+    double angle = m_serenderer->GetFontEngine()->_Yup() ? info.m_tdef.rotation() : -info.m_tdef.rotation();
+    SE_Matrix m;
+    m.setIdentity();
+    m.rotate(angle); //it is already in radians in there
+    m.translate(info.m_x, info.m_y);
+
+    for (int i=0; i<4; i++)
+        m.transform(fpts[i].x, fpts[i].y);
+
+    //check for overposting
+    if (check)
     {
-        // draw the opaque background first, if requested
-        if (info.m_tdef.textbg() == RS_TextBackground_Opaque)
-        {
-            // get the overall unrotated bounds
-            unrotatedBounds.get_points(fpts);
+        if (OverlapsStuff(fpts, 4))
+            return false;
+    }
 
-            // rotate and translate it
-            for (int j=0; j<4; ++j)
-            {
-                double tmpX = fpts[j].x;
-                double tmpY = fpts[j].y;
-                fpts[j].x = ins_point.x + tmpX * cos_a + tmpY * sin_a;
-                fpts[j].y = ins_point.y - tmpX * sin_a + tmpY * cos_a;
-            }
+    //add bounds to exclusion regions if needed
+    if (exclude)
+    {
+        AddExclusionRegion(fpts, 4);
+    }
 
-            // draw a filled rectangle
-            RS_D_Point dpts[4];
-            for (int j=0; j<4; j++)
-            {
-                dpts[j].x = ROUND(fpts[j].x);
-                dpts[j].y = ROUND(fpts[j].y);
-            }
+    //-------------------------------------------------------
+    // draw the label
+    //-------------------------------------------------------
 
-            gdImageFilledPolygon((gdImagePtr)m_renderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.bgcolor()));
-        }
+    if (render)
+    {      
+        m_serenderer->DrawSymbol(info.m_sestyle->symbol, m, angle);
 
-        for (size_t k=0; k<num_lines; ++k)
-        {
-            RS_String txt = line_breaks.at(k);
-
-            // add the rotated original offset for this line to the insertion point
-            // to get the actual draw point
-            double insX = ins_point.x + hAlignOffsets[k] * cos_a + vAlignOffsets[k] * sin_a;
-            double insY = ins_point.y - hAlignOffsets[k] * sin_a + vAlignOffsets[k] * cos_a;
-
-            int posx = (int)floor(insX + 0.5);
-            int posy = (int)floor(insY + 0.5);
-
-            // render the ghosted text, if requested
-            if (info.m_tdef.textbg() == RS_TextBackground_Ghosted)
-            {
-                m_renderer->DrawString(txt, posx-1, posy, hgt, font, info.m_tdef.bgcolor(), rotation);
-                m_renderer->DrawString(txt, posx+1, posy, hgt, font, info.m_tdef.bgcolor(), rotation);
-                m_renderer->DrawString(txt, posx, posy-1, hgt, font, info.m_tdef.bgcolor(), rotation);
-                m_renderer->DrawString(txt, posx, posy+1, hgt, font, info.m_tdef.bgcolor(), rotation);
-            }
-
-            // render the primary text
-            m_renderer->DrawString(txt, posx, posy, hgt, font, info.m_tdef.color(), rotation);
-
-            // render the underline, if requested
-            if (info.m_tdef.font().style() & RS_FontStyle_Underline)
-            {
-                // estimate underline line width as % of font height
-                double line_width = (double)font->m_underline_thickness * hgt / (double)font->m_units_per_EM;
-                double line_pos = - (double)font->m_underline_position * hgt / (double)font->m_units_per_EM;
-
-                // the line's start point is the insertion point, but shifted vertically by line_pos
-                double x0 = insX + line_pos * sin_a;
-                double y0 = insY + line_pos * cos_a;
-
-                // the end point is a horizontal shift by the text width
-                double x1 = x0 + textWidths[k] * cos_a;
-                double y1 = y0 - textWidths[k] * sin_a;
-
-                // draw the thick line
-                gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), ROUND(line_width));
-                gdImageSetAntiAliased((gdImagePtr)m_renderer->GetImage(), ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.color()));
-                gdImageLine((gdImagePtr)m_renderer->GetImage(), ROUND(x0), ROUND(y0), ROUND(x1), ROUND(y1), gdAntiAliased);
-                gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), 0);
-            }
-        }
+#ifdef DEBUG_LABELS
+        //debug -- draw the bounds also
+        LineBuffer lb(5);
+        lb.MoveTo(fpts[0].x, fpts[0].y);
+        lb.LineTo(fpts[1].x, fpts[1].y);
+        lb.LineTo(fpts[2].x, fpts[2].y);
+        lb.LineTo(fpts[3].x, fpts[3].y);
+        lb.Close();
+        m_serenderer->DrawScreenPolyline(&lb, 0xff000000, 0.0);
+        //end debug
+#endif
     }
 
     return true;
@@ -546,33 +533,12 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude, bool check)
 {
-    // font matching
-    const RS_Font* font = m_renderer->FindFont(info.m_tdef.font());
-    if (!font)
+    RS_FontEngine* fe = m_serenderer->GetFontEngine();
+    RS_TextMetrics tm;
+
+    //match the font and measure the sizes of the characters
+    if (!fe->GetTextMetrics(info.m_text, info.m_tdef, tm, true))
         return false;
-
-    //determine pixel space font height
-    double hgt = m_renderer->_MeterToMapSize(info.m_tdef.font().units(), info.m_tdef.font().height());
-    hgt *= m_renderer->GetMapToScreenScale() * 0.75;
-
-    // The computed height can have roundoff in it, and the rendering code is
-    // very sensitive to it.  Remove this roundoff by rounding the height to
-    // the nearest 1/65536ths of a point.
-    hgt = floor(hgt * 65536.0 + 0.5) / 65536.0;
-
-    //-------------------------------------------------------
-    // text extent and alignment computation
-    //-------------------------------------------------------
-
-    //get overall extent and char spacing
-    RS_F_Point fpts[4];
-    float* spacing = (float*)alloca(info.m_text.length() * 2 * sizeof(float));
-    m_renderer->MeasureString(info.m_text, hgt, font, 0.0, fpts, spacing);
-
-    //the width and height of this particular string
-    //TODO: we can be more precise if we get height on per character basis
-    double texthgt = fabs(fpts[2].y - fpts[0].y);
-    double textwid = fabs(fpts[1].x - fpts[0].x);
 
     //find length of each segment in the screen space path
     //we will use it to position characters along the curve
@@ -591,9 +557,10 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
 
     //how many times should we repeat the label along the polyline?
     //TODO: fine tune this formula
-    int numreps = (int)(seglens[info.m_numpts-1] / (200.0 + textwid));
+    int numreps = (int)(seglens[info.m_numpts-1] / (200.0 + tm.text_width));
     if (!numreps) numreps = 1;
 
+    int numchars = info.m_text.length();
     int labels_drawn = 0; //counter for how many of the repeated label were accepted
 
     for (int i=0; i<numreps; i++)
@@ -604,62 +571,12 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
         double param_position = ((double)i + 0.5) / (double)numreps;
 
         //compute position and angle along the path for each character
-        size_t numchars = info.m_text.length();
-        CharPos* pos = (CharPos*)alloca(sizeof(CharPos) * numchars);
-        double font_scale = ComputeCharacterPositions(info, seglens, param_position, spacing, textwid, pos);
-
-        //update font height to value that curve fitting suggested
-        if (font_scale != 1.0)
-        {
-            //don't bother measuring the string with the new height,
-            //scaling should work almost as good
-            hgt     *= font_scale;
-            texthgt *= font_scale;
-            textwid *= font_scale;
-        }
-
-        //take into account text vertical alignment
-        //horizontal alignment is ignored in this case
-        for (size_t i=0; i<numchars; i++)
-        {
-            //TODO:
-            double font_cap_height = hgt;
-            double font_ascent     = hgt;
-            double font_descent    = 0;
-
-            // get the height vector
-            double dyh = 0.0;
-
-            RS_VAlignment vAlign = info.m_tdef.valign();
-            switch (vAlign)
-            {
-                case RS_VAlignment_Descent: dyh = -font_descent;        break;
-                case RS_VAlignment_Base:                                break;
-                case RS_VAlignment_Half:    dyh =  font_cap_height/2.0; break;
-                case RS_VAlignment_Cap:     dyh =  font_cap_height;     break;
-                case RS_VAlignment_Ascent:  dyh =  font_ascent;         break;
-                default:                                                break;
-            }
-
-            // add in the rotated vertical alignment contribution
-            double angle = pos[i].anglerad;
-
-            //take into account that y axis goes down in our coordinate system
-            dyh = -dyh;
-
-            double cs = cos(angle);
-            double sn = sin(angle);
-            double hAlignOffset = -sn*dyh;
-            double vAlignOffset =  cs*dyh;
-
-            //adjust insertion point
-            pos[i].x += hAlignOffset;
-            pos[i].y -= vAlignOffset;
-        }
+        bool success = fe->LayoutPathText(tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0);
 
         //once we have position and angle for each character
         //compute oriented bounding box for each character
         RS_F_Point* oriented_bounds = (RS_F_Point*)alloca(4 * numchars * sizeof(RS_F_Point));
+        float* spacing = (float*)&tm.char_advances.front(); //bold assumption
 
         double total_advance = 0.0;
         for (size_t i=0; i<numchars; i++)
@@ -668,21 +585,21 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
             //it takes kerning into account, but should be good enough
             //we could measure each character separately but that seems like
             //too many calls to FreeType
-            double advance = (i == numchars-1)? textwid - total_advance : spacing[i] * font_scale;
+            double advance = (i == numchars-1)? tm.text_width - total_advance : spacing[i];
             total_advance += advance;
 
             //compute rotated bounds of character
             RS_F_Point* b = &oriented_bounds[i * 4];
-            RotatedBounds(pos[i].x, pos[i].y, advance, texthgt, pos[i].anglerad, b);
+            RotatedBounds(tm.char_pos[i].x, tm.char_pos[i].y, advance, tm.text_height, tm.char_pos[i].anglerad, b);
 
     #ifdef DEBUG_LABELS
-            RS_D_Point dpts[4];
-            for (int j=0; j<4; j++)
-            {
-                dpts[j].x = (int)b[j].x;
-                dpts[j].y = (int)b[j].y;
-            }
-            gdImagePolygon((gdImagePtr)m_renderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.color()));
+            LineBuffer lb(5);
+            lb.MoveTo(b[0].x, b[0].y);
+            lb.LineTo(b[1].x, b[1].y);
+            lb.LineTo(b[2].x, b[2].y);
+            lb.LineTo(b[3].x, b[3].y);
+            lb.Close();
+            m_serenderer->DrawScreenPolyline(&lb, info.m_tdef.color().argb(), 0.0);
     #endif
         }
 
@@ -716,84 +633,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
 
         if (render)
         {
-            //draw the characters, each in its computed position
-            RS_String c;
-            for (size_t i=0; i<numchars; ++i)
-            {
-                c = info.m_text[i];
-
-                //compute screen position and round
-                int posx = ROUND(pos[i].x);
-                int posy = ROUND(pos[i].y);
-
-                if (info.m_tdef.textbg() == RS_TextBackground_Ghosted)
-                {
-                    m_renderer->DrawString(c, posx-1, posy, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
-                    m_renderer->DrawString(c, posx+1, posy, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
-                    m_renderer->DrawString(c, posx, posy-1, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
-                    m_renderer->DrawString(c, posx, posy+1, hgt, font, info.m_tdef.bgcolor(), pos[i].anglerad);
-                }
-
-                m_renderer->DrawString(c, posx, posy, hgt, font, info.m_tdef.color(), pos[i].anglerad);
-            }
-
-            //render underline
-            if (info.m_tdef.font().style() & RS_FontStyle_Underline)
-            {
-                //estimate underline line width as % of font height
-                double line_width = (double)font->m_underline_thickness * hgt / (double)font->m_units_per_EM;
-                //underline position w.r.t. baseline. Invert y while at it
-                double line_pos = - (double)font->m_underline_position * hgt / (double)font->m_units_per_EM;
-
-                //zero it out again, we will need the accumulator for
-                //underline purposes
-                total_advance = 0.0;
-
-                //used to keep track of last position of the underline, which is 
-                //drawn piecewise for each character
-                int last_x = ROUND(pos[0].x + sin(pos[0].anglerad) * line_pos);
-                int last_y = ROUND(pos[0].y + cos(pos[0].anglerad) * line_pos);
-                int sx, sy, ex, ey;
-
-                //draw the characters, each in its computed position
-                for (size_t i=0; i<numchars; i++)
-                {
-                    //width of character - not really exact width since
-                    //it takes kerning into account, but should be good enough
-                    //we could measure each character separately but that seems like
-                    //too many calls to FreeType
-                    double advance = (i == numchars-1)? textwid - total_advance : spacing[i] * font_scale;
-                    total_advance += advance;
-
-                    sx = last_x;
-                    sy = last_y;
-
-                    if (i == numchars - 1)
-                    {
-                        //estimate bottom right corner of last character
-                        double eex = pos[i].x + cos(pos[i].anglerad) * advance;
-                        double eey = pos[i].y - sin(pos[i].anglerad) * advance;
-
-                        //now take into account underline offset
-                        ex = ROUND(eex + sin(pos[i].anglerad) * line_pos);
-                        ey = ROUND(eey + cos(pos[i].anglerad) * line_pos);
-                    }
-                    else
-                    {
-                        //move position by underline offset
-                        ex = ROUND(pos[i+1].x + sin(pos[i+1].anglerad) * line_pos);
-                        ey = ROUND(pos[i+1].y + cos(pos[i+1].anglerad) * line_pos);
-                    }
-
-                    gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), (int)(line_width+0.5));
-                    gdImageSetAntiAliased((gdImagePtr)m_renderer->GetImage(), ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.color()));
-                    gdImageLine((gdImagePtr)m_renderer->GetImage(), sx, sy, ex, ey, gdAntiAliased);
-                    gdImageSetThickness((gdImagePtr)m_renderer->GetImage(), 0);
-
-                    last_x = ex;
-                    last_y = ey;
-                }
-            }
+            fe->DrawPathText(tm, info.m_tdef);
         }
 
         labels_drawn ++; //increment count of how many labels we accepted
@@ -803,183 +643,6 @@ cont_loop:
     }
 
     return (labels_drawn != 0);
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-//computes position and rotation of each character along the
-//feature to be labeled -- it may return a scale factor to be
-//applied to the font size to make the label fit better in the
-//allotted space
-double LabelRenderer::ComputeCharacterPositions(LR_LabelInfo& info, double* seglens, double position, float* kerned_spacing, double measured_width, CharPos* ret)
-{
-    //determine in which direction we should follow the polyline
-    //so that the label points up more likely than down
-    //find the length of polyline that requires inverting versus
-    //length that does not and see which one is bigger
-    //TODO: this loop should really be performed on the piece of the
-    //polyline where we will be labeling since otherwise features like
-    //circles can throw it off and so a label may still end up upside down
-    double inverted_len = 0.0;
-
-    for (int m=0; m<info.m_numpts - 1; m++)
-    {
-        RS_F_Point p0 = info.m_pts[m];
-        RS_F_Point p1 = info.m_pts[m+1];
-
-        double angle = -atan2(p1.y - p0.y, p1.x - p0.x);
-
-        if (angle > M_PI/2.0 || angle < -M_PI/2.0)
-            inverted_len += seglens[m+1] - seglens[m];
-        else
-            inverted_len -= seglens[m+1] - seglens[m];
-    }
-
-    bool reverse = (inverted_len > 0.0);
-
-    double pathlen = seglens[info.m_numpts - 1];
-
-    //compute font height that better fits the geometry
-    //but limit scaling to be in the range [0.5 - 1.0]
-    double font_scale = rs_min(1.0, rs_max(0.5, pathlen / (1.1 * measured_width)));
-
-    //distance of current character along current segment
-    //initialize to start position, based on given parametric position
-    //along the polyline
-    double dist_along_segment = position * pathlen - 0.5 * measured_width * font_scale;
-
-    //j indicates index of segment we are on with current character
-    int j;
-
-    //segment for current character
-    RS_F_Point start;
-    RS_F_Point end;
-
-    if (reverse)
-    {
-        //case where we want to walk along the polyline
-        //in reverse
-
-        //compute starting segment
-        for (j=info.m_numpts-2; j>=0; j--)
-            if (dist_along_segment < pathlen - seglens[j])
-                break;
-
-        if (j < 0) j=0;
-
-        start = info.m_pts[j+1];
-        end = info.m_pts[j];
-        dist_along_segment -= pathlen - seglens[j+1];
-    }
-    else
-    {
-        //case where we follow the polyline forwards
-
-        //compute starting segment
-        for (j=0; j<info.m_numpts-1; j++)
-            if (dist_along_segment < seglens[j+1])
-                break;
-
-        if (j >= info.m_numpts-1)
-            j=info.m_numpts-2;
-
-        start = info.m_pts[j];
-        end = info.m_pts[j+1];
-        dist_along_segment -= seglens[j];
-    }
-
-    //length of current segment
-    double seg_len = seglens[j+1] - seglens[j];
-
-    //position of current character relative to the left end of the string
-    double char_pos = 0;
-
-    int numchars = (int)info.m_text.length();
-
-    //The premise here is that we will compute three positions along the path
-    //for each character - one for the left corner, one for the right
-    //and one for the centerpoint
-    //We will compute a tangent vector based on the left and right points
-    //and then position the character relative to the point computed for its
-    //center with the normal comuted from the left and right points
-    //Note that the end position of one character equals the start position
-    //of the next, so in fact we need to compute 2 * n + 1 points
-    RS_F_Point* positions = (RS_F_Point*)alloca(sizeof(RS_F_Point) * (numchars * 2 + 1));
-
-    for (int i=0; i <= numchars * 2; i++)
-    {
-        //check if we need to move to next segment
-        while (dist_along_segment > seg_len)
-        {
-            if (reverse)
-            {
-                //case where we go in reverse direction of the path
-                if (j > 0)
-                {
-                    j--;
-                    dist_along_segment -= seg_len;
-                    seg_len = seglens[j+1] - seglens[j];
-                    start = info.m_pts[j+1];
-                    end = info.m_pts[j];
-                }
-                else
-                    break;
-            }
-            else
-            {
-                //case where we go forward along the path
-                if (j < info.m_numpts - 2)
-                {
-                    j++;
-                    dist_along_segment -= seg_len;
-                    seg_len = seglens[j+1] - seglens[j];
-                    start = info.m_pts[j];
-                    end = info.m_pts[j+1];
-                }
-                else
-                    break;
-            }
-        }
-
-        //compute position along current segment using weighted
-        //normalized end-start vector
-        double weight = dist_along_segment / seg_len;
-        double dx = end.x - start.x;
-        double dy = end.y - start.y;
-
-        positions[i].x = start.x + dx * weight;
-        positions[i].y = start.y + dy * weight;
-
-        //kerned width of current character
-        int index = i / 2; //which character are we working with -- 3 iterations for each one
-        double char_width = (index >= numchars - 1) ? measured_width - char_pos : kerned_spacing[index];
-
-        //advance cursor by half the width of the current character
-        dist_along_segment += char_width * 0.5 * font_scale;
-        char_pos += char_width * 0.5;
-    }
-
-    char_pos = 0.0;
-
-    //now compute character placement and angles based on the positioning points
-    for (int i=0; i<numchars; i++)
-    {
-        //find angle based on left and right of character
-        ret[i].anglerad = -atan2(positions[2*i+2].y - positions[2*i].y,positions[2*i+2].x - positions[2*i].x);
-
-        //kerned width of current character
-        double char_width = (i == numchars - 1) ? measured_width - char_pos : kerned_spacing[i];
-        double char_width_2 = 0.5 * char_width * font_scale;
-
-        //and now find a lower left insertion point
-        //based on the midpoint anchor and the angle
-        ret[i].x = positions[2*i+1].x - cos(ret[i].anglerad) * char_width_2;
-        ret[i].y = positions[2*i+1].y + sin(ret[i].anglerad) * char_width_2; //y down means + sin
-
-        char_pos += char_width;
-    }
-
-    return font_scale;
 }
 
 

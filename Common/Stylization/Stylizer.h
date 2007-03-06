@@ -26,6 +26,7 @@
 class Renderer;
 class GeometryAdapter;
 class CSysTransformer;
+class SE_SymbolManager;
 
 ///<summary>
 ///Stylization interrupt callback -- return true to cancel stylization
@@ -40,11 +41,10 @@ typedef bool (*CancelStylization)(void* userData);
 class Stylizer
 {
 public:
-
     ///<summary>
     ///Sets the Renderer object for this Stylizer
     ///</summary>
-    virtual void Initialize(Renderer* renderer) = 0;
+    virtual void Initialize(Renderer* renderer, SE_SymbolManager* sman = NULL) = 0;
 
     ///<summary>
     /// Stylizes a feature (FDO based) layer.
@@ -65,7 +65,6 @@ public:
                                      CancelStylization                    cancel,
                                      void*                                userData
                                      ) = 0;
-
 
     ///<summary>
     /// Stylizes a drawing (DWF based) layer.
@@ -91,14 +90,11 @@ public:
     virtual void SetStylizeFeature(  FdoClassDefinition* classDef,
                                      GeometryAdapter* sg) = 0;
 
-
-
     STYLIZATION_API static MdfModel::VectorScaleRange* FindScaleRange(MdfModel::VectorScaleRangeCollection& src,
                                          double mapScale);
 
     STYLIZATION_API static MdfModel::GridScaleRange* FindScaleRange(MdfModel::GridScaleRangeCollection& src,
                                          double mapScale);
-
 };
 
 #endif

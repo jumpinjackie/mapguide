@@ -99,7 +99,9 @@ public:
     inline int            cntr_count()  { return m_cur_cntr + 1; }
     inline const RS_Bounds& bounds()    { return m_bounds; }
 
-private:
+protected:
+    //empty constructor for use by inheriting classes
+    LineBuffer();
 
     unsigned char* m_types;
     double* m_pts;
@@ -158,7 +160,6 @@ public:
     STYLIZATION_API void FreeLineBuffer(LineBuffer*);
 
 private:
-
     DataValueStack<LineBuffer> m_pool;
 };
 

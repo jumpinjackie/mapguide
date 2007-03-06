@@ -42,6 +42,7 @@ include_SOURCES = \
   RSMgFeatureReader.cpp \
   RSMgRaster.cpp \
   RSMgSymbolManager.cpp \
+  SEMgSymbolManager.cpp \
   LegendPlotUtil.cpp \
   StylizationUtil.cpp
 
@@ -66,6 +67,7 @@ noinst_HEADERS = $(include_SOURCES) \
   RSMgRaster.h \
   RSMgInputStream.h \
   RSMgSymbolManager.h \
+  SEMgSymbolManager.h \
   LegendPlotUtil.h \
   StylizationUtil.h
 

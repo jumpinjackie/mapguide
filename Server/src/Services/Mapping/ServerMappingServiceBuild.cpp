@@ -36,3 +36,4 @@
 #include "LegendPlotUtil.cpp"
 #include "StylizationUtil.cpp"
 #include "ServerMappingService.cpp"
+#include "SEMgSymbolManager.cpp"

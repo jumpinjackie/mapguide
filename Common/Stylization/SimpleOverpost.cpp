@@ -25,8 +25,11 @@ SimpleOverpost::~SimpleOverpost()
 }
 
 
-bool SimpleOverpost::Overlaps(RS_Bounds& b)
+bool SimpleOverpost::Overlaps(RS_F_Point* pts, int npts)
 {
+    RS_Bounds b;
+    ComputeBounds(pts, npts, b);
+
     //look if the bounds overlaps current overpost regions
     for (size_t i=0; i<m_excludes.size(); i++)
     {
@@ -39,8 +42,11 @@ bool SimpleOverpost::Overlaps(RS_Bounds& b)
 }
 
 
-void SimpleOverpost::AddRegion(RS_Bounds& b)
+void SimpleOverpost::AddRegion(RS_F_Point* pts, int npts)
 {
+    RS_Bounds b;
+    ComputeBounds(pts, npts, b);
+
     m_excludes.push_back(b);
 }
 
@@ -54,4 +60,19 @@ void SimpleOverpost::AddRegions(SimpleOverpost& mgr)
 void SimpleOverpost::Clear()
 {
     m_excludes.clear();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+//computes axis aligned bounds of a point set
+void SimpleOverpost::ComputeBounds(RS_F_Point* RESTRICT pts, int npts, RS_Bounds& b)
+{
+    if (!npts)
+        return;
+
+    b.minx = b.maxx = pts[0].x;
+    b.miny = b.maxy = pts[0].y;
+
+    for (int i=1; i<npts; i++)
+        b.add_point(pts[i]);
 }

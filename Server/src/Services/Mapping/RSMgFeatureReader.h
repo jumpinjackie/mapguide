@@ -36,10 +36,8 @@ class RS_InputStream;
 //RS_FeatureReader implementation based on an MgFeatureReader
 class MG_SERVER_MAPPING_API RSMgFeatureReader : public RS_FeatureReader
 {
-
 public:
-
-    RSMgFeatureReader(MgFeatureReader* reader, const STRING& geomPropName);
+    RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* svcFeature, MgResourceIdentifier* featResId, MgFeatureQueryOptions* options, const STRING& geomPropName);
     virtual ~RSMgFeatureReader();
 
     //--------------------------------------------
@@ -49,6 +47,8 @@ public:
     virtual bool            ReadNext    ();
 
     virtual void            Close       ();
+
+    virtual void            Reset       ();
 
     virtual int             GetPropertyType(const wchar_t* propertyName);
 
@@ -93,7 +93,6 @@ public:
     virtual const wchar_t*const*  GetPropNames(int& count);
 
 private:
-
     MgFeatureReader* m_reader;
     MgClassDefinition* m_class;
 
@@ -107,6 +106,11 @@ private:
     STRING m_geomPropName;
     STRING m_rasterPropName;
     STRING m_cachePropValue;
+
+    //needed for resetting of the reader
+    MgFeatureService* m_svcFeature;
+    MgResourceIdentifier* m_resId;
+    MgFeatureQueryOptions* m_options;
 };
 
 #endif

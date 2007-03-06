@@ -24,12 +24,9 @@
 #include "RSMgSymbolManager.h"
 #include "RSMgFeatureReader.h"
 #include "FeatureInfoRenderer.h"
-
+#include "SEMgSymbolManager.h"
 #include "StylizationUtil.h"
-
-
 #include "LegendPlotUtil.h"
-
 
 
 // the maximum number of allowed pixels for rendered images
@@ -636,8 +633,10 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     RSMgSymbolManager mgr(m_svcResource);
     dr->SetSymbolManager(&mgr);
 
+    SEMgSymbolManager semgr(m_svcResource);
+
     DefaultStylizer ds;
-    ds.Initialize(dr);
+    ds.Initialize(dr, &semgr);
 
     RS_Color bgcolor(0, 0, 0, 255); //not used -- GDRenderer is already initialized to the correct bgcolor
 
@@ -1056,7 +1055,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
                 // TODO: can FeatureName be an extension name rather than a FeatureClass?
                 Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
-                RSMgFeatureReader rsrdr(rdr, vl->GetGeometry());
+                RSMgFeatureReader rsrdr(rdr, m_svcFeature, featResId, options, vl->GetGeometry());
 
                 DefaultStylizer ds;
                 ds.Initialize(selRenderer);

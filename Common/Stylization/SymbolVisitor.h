@@ -33,7 +33,10 @@ public:
         stFont       = 3,
         stW2D        = 4,
         stBlock      = 5,
-        stText       = 6 //will not get that as a point symbol -- it's for labels only
+        stText       = 6, //will not get that as a point symbol -- it's for labels only
+        stLine       = 7,
+        stFill       = 8,
+        stPoint      = 9
     };
 
     SymbolVisitor()
@@ -86,7 +89,6 @@ public:
     }
 
 private:
-
     eSymbolType m_type;
 };
 

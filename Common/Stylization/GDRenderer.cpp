@@ -157,9 +157,9 @@ m_pPool(NULL)
         gdImageColorTransparent(img, bgc);
 
     if (!m_bLocalOverposting)
-        m_labeler = new LabelRenderer(this);
+        m_labeler = new LabelRenderer(this, this);
     else
-        m_labeler = new LabelRendererLocal(this, tileExtentOffset);
+        m_labeler = new LabelRendererLocal(this, this, tileExtentOffset);
 
     m_polyrasterizer = new complex_polygon_gd();
 }
@@ -185,6 +185,7 @@ void GDRenderer::Save(const RS_String& filename, const RS_String& format)
 {
     Save(filename, format, m_width, m_height);
 }
+
 
 void GDRenderer::Save(const RS_String& filename, const RS_String& format, int width, int height)
 {
@@ -337,20 +338,10 @@ void GDRenderer::StartMap(RS_MapUIInfo* mapInfo,
     if (arDisplay > arMap)
     {
         m_scale = (double)m_height / m_extents.height();
-
-    //    //compute margin required on the left and right
-    //    double pxwidth = arMap * (double)m_height;
-    //    double margin = 0.5 * (m_width - pxwidth);
-    //    proxy()->m_device.set_configure ("Window Origin", HT_Option_Value((int)margin, (int)0));
     }
     else
     {
         m_scale = (double)(m_width) / m_extents.width();
-
-    //    //compute margin required on top and bottom
-    //    double pxheight = arMap / (double)m_width;
-    //    double margin = 0.5 * (m_height - pxheight);
-    //    proxy()->m_device.set_configure ("Window Origin", HT_Option_Value((int)0, (int)margin));
     }
 
     m_offsetX = m_extents.minx;
@@ -368,6 +359,9 @@ void GDRenderer::StartMap(RS_MapUIInfo* mapInfo,
 
     // remember the map info
     m_mapInfo = mapInfo;
+
+    // do it here, since we will need the renderer's map scales, which are computed above
+    InitFontEngine(this, this);
 }
 
 
@@ -400,7 +394,7 @@ void GDRenderer::EndLayer()
 
 void GDRenderer::StartFeature(RS_FeatureReader* /*feature*/,
                               const RS_String* /*tooltip*/,
-                              const RS_String* /*url*/, 
+                              const RS_String* /*url*/,
                               const RS_String* /*theme*/ )
 {
 }
@@ -436,7 +430,7 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb,
         }
 
         //call the new rasterizer
-        m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, workbuffer->point_count(), workbuffer->cntrs(), workbuffer->cntr_count(), 
+        m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, workbuffer->point_count(), workbuffer->cntrs(), workbuffer->cntr_count(),
             (fillpat) ? gdTiled : gdc, (gdImagePtr)m_imout);
 
         if (fillpat)
@@ -519,60 +513,19 @@ void GDRenderer::ProcessRaster(unsigned char* data,
                                int width, int height,
                                RS_Bounds extents)
 {
-    int minx = _TX(extents.minx);
-    int maxx = _TX(extents.maxx);
+    double cx = (extents.minx + extents.maxx) * 0.5;
+    double cy = (extents.miny + extents.maxy) * 0.5;
+    WorldToScreenPoint(cx, cy, cx, cy);
 
-    //note reversal of min and max when going from mapping to screen space
-    int miny = _TY(extents.maxy);
-    int maxy = _TY(extents.miny);
-
-    if (format == RS_ImageFormat_RGBA)
-    {
-        gdImagePtr src = gdImageCreateTrueColor(width, height);
-
-        //TODO: figure out a way to do this without copying the whole thing
-        //in such a lame loop
-        //at least here we don't call gdImageSetPixel for every pixel
-        for (int j=0; j<height; j++)
-        {
-            for (int i=0; i<width; i++)
-            {
-                int srccol = ((int*)data)[i + j * width];
-                //compute GD alpha and reverse b and r
-                int col = gdImageColorAllocateAlpha(src,  srccol        & 0xFF,
-                                                         (srccol >> 8)  & 0XFF,
-                                                         (srccol >> 16) & 0xFF,
-                                                         127 - ((srccol >> 24) & 0xFF)/ 2);
-
-                src->tpixels[j][i] = col;
-            }
-        }
-
-        gdImageCopyResampled((gdImagePtr)m_imout, src,
-                             minx, miny, 0, 0,
-                             maxx-minx, maxy-miny, //TODO: do we need +1?
-                             gdImageSX(src), gdImageSY(src));
-
-        gdImageDestroy(src);
-    }
-    else if (format == RS_ImageFormat_PNG)
-    {
-        gdImagePtr src = gdImageCreateFromPngPtr(length, data);
-
-        gdImageCopyResampled((gdImagePtr)m_imout, src,
-                             minx, miny, 0, 0,
-                             maxx-minx, maxy-miny,
-                             gdImageSX(src), gdImageSY(src));
-
-        gdImageDestroy(src);
-    }
+    //pass to the screen space render function
+    DrawScreenRaster(data, length, format, width, height, 
+        cx, cy, extents.width() * m_scale, extents.height() * m_scale, 0.0);
 }
 
 
 void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
 {
     RS_MarkerDef use_mdef = mdef;
-
 
     //use the selection style to draw
     if (m_bSelectionMode)
@@ -588,7 +541,7 @@ void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allow
     {
         //if marker is processed from here it should be added to the
         //feature W2D, not the labeling W2D -- need the API to reflect that.
-		ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], use_mdef, allowOverpost, (i==0) ? bounds : NULL);
+        ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], use_mdef, allowOverpost, (i==0) ? bounds : NULL);
     }
 }
 
@@ -788,14 +741,14 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     int superh = imsymh;
 
                     //if it is too small, make it bigger
-                    //so that we get an antialiased effect -- only 
+                    //so that we get an antialiased effect -- only
                     //do this for SLD symbols since DWF symbols are too
                     //varied and not all of them look good with smoothing applied
                     if (!symbol && superw < SYMBOL_BITMAP_SIZE/2 && superh < SYMBOL_BITMAP_SIZE/2)
                         superw = superh = SYMBOL_BITMAP_SIZE;
 
                     gdImagePtr tmp = gdImageCreateTrueColor(superw, superh);
-                    
+
                     //transform to coordinates of temporary image where we
                     //draw symbol before transfering to the map
                     EnsureBufferSize(npts);
@@ -823,7 +776,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                         RS_Color red(255, 0, 0, 255);
                         gdImagePtr brush1 = rs_gdImageThickLineBrush(rs_min(superw, superh) / 17, red);
                         gdImageSetBrush((gdImagePtr)tmp, brush1);
-                        
+
                         gdImageOpenPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdBrushed);
 
                         gdImageSetBrush(tmp, NULL);
@@ -845,7 +798,6 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                         gdImageSetBrush(tmp, NULL);
                         gdImageDestroy(brush1);
-
                     }
 
                     // initialize the real cached symbol image to a transparent background
@@ -854,11 +806,10 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
 
                     //resample the supersampled temporary image into the cached image
-                    gdImageCopyResampled((gdImagePtr)m_imsym, tmp, 0, 0, 0, 0, 
+                    gdImageCopyResampled((gdImagePtr)m_imsym, tmp, 0, 0, 0, 0,
                         imsymw, imsymh, superw, superh);
 
                     gdImageDestroy(tmp);
-
                 }
                 else
                 {
@@ -923,7 +874,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                     //we will use unrotated symbol bounding box
                     //since rotation will be done by the image copy
-                    //also we will use a slight boundary offset 
+                    //also we will use a slight boundary offset
                     //hardcoded to 1 pixel so that geometry exactly on the edge
                     //draws just inside the image
                     RS_Bounds dst1(1, 1, (double)(imsymw-1), (double)(imsymh-1));
@@ -955,7 +906,6 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 m_bIsSymbolW2D = false;
                 m_imw2d = NULL;
             }
-
         }
 
         if (m_imsym)
@@ -987,8 +937,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 trans.TransformPoint(b[i].x, b[i].y);
 
                 //world to screen space
-                b[i].x = _TXD(b[i].x);
-                b[i].y = _TYD(b[i].y);
+                WorldToScreenPoint(b[i].x, b[i].y, b[i].x, b[i].y);
             }
 
             //copy symbol image into destination image
@@ -1019,9 +968,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 //straight copy without resampling since we are
                 //guaranteed for the source image size to equal the
                 //symbol pixel size
-                gdImageCopy(tmp, (gdImagePtr)m_imsym,
-                                     1, 1, 0, 0,
-                                     imsymw, imsymh);
+                gdImageCopy(tmp, (gdImagePtr)m_imsym, 1, 1, 0, 0, imsymw, imsymh);
 
                 //for rotated gd copy, we need the midpoint of
                 //the destination bounds
@@ -1080,15 +1027,16 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
         m_labeler->AddExclusionRegion(pts, 4);
     }
 
-	//set actual (unrotated) bounds with new insertion point if a pointer was passed in
-	if (bounds)
-	{
-		bounds->minx = -refX * mdef.width();
-		bounds->maxx = (1.0 - refX) * mdef.width();
-		bounds->miny = -refY * mdef.height();
-		bounds->maxy = (1.0 - refY) * mdef.height();
-	}
+    //set actual (unrotated) bounds with new insertion point if a pointer was passed in
+    if (bounds)
+    {
+        bounds->minx = -refX * mdef.width();
+        bounds->maxx = (1.0 - refX) * mdef.width();
+        bounds->miny = -refY * mdef.height();
+        bounds->maxy = (1.0 - refY) * mdef.height();
+    }
 }
+
 
 void GDRenderer::ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef)
 {
@@ -1245,30 +1193,6 @@ inline int GDRenderer::_TX(double x)
 inline int GDRenderer::_TY(double y)
 {
     return m_height-1 - (int)floor((y - m_offsetY) * m_scale);
-}
-
-//transforms an x coordinate from mapping to screen space
-double GDRenderer::_TXD(double x)
-{
-    return (x - m_offsetX) * m_scale;
-}
-
-//transforms a y coordinate from mapping to screen space
-double GDRenderer::_TYD(double y)
-{
-    return m_height - 1 - (y - m_offsetY) * m_scale;
-}
-
-//transforms an x coordinate from screen to mapping space
-double GDRenderer::_ITXD(double x)
-{
-    return x * m_invScale + m_offsetX;
-}
-
-//transforms a y coordinate from screen to mapping space
-double GDRenderer::_ITYD(double y)
-{
-    return m_offsetY - (y + 1.0 - m_height) * m_invScale;
 }
 
 
@@ -1578,17 +1502,31 @@ void GDRenderer::SetRenderSelectionMode(bool mode)
 // Text drawing
 //////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+// RS_FontEngine implementation
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+
 //////////////////////////////////////////////////////////////////////////////
-void GDRenderer::DrawString( const RS_String& s,
-                                int              x,
-                                int              y,
-                                double           height,
-                                const RS_Font*   font,
-                                const RS_Color&  color,
-                                double           angle)
+void GDRenderer::DrawString(const RS_String& s,
+                            int              x,
+                            int              y,
+                            double           height,
+                            const RS_Font*   font,
+                            const RS_Color&  color,
+                            double           angle)
 {
     if (font == NULL)
         return;
+
+    //gd likes height in points rather than pixels
+    height *= 72.0 / m_dpi;
+
+    // The computed height can have roundoff in it, and the rendering code is
+    // very sensitive to it.  Remove this roundoff by rounding the height to
+    // the nearest 1/65536ths of a point.
+    height = floor(height * 65536.0 + 0.5) / 65536.0;
 
     size_t len = s.length();
     size_t lenbytes = len*4+1;
@@ -1617,12 +1555,20 @@ void GDRenderer::DrawString( const RS_String& s,
 
 //////////////////////////////////////////////////////////////////////////////
 void GDRenderer::MeasureString(const RS_String&  s,
-                                  double            height,
-                                  const RS_Font*    font,
-                                  double            angle,
-                                  RS_F_Point*       res, //assumes 4 points in this array
-                                  float*            offsets) //assumes length equals 2 * length of string
+                               double            height,
+                               const RS_Font*    font,
+                               double            angle,
+                               RS_F_Point*       res, //assumes 4 points in this array
+                               float*            offsets) //assumes length equals 2 * length of string
 {
+    //gd likes height in points rather than pixels
+    height *= 72.0 / m_dpi;
+
+    // The computed height can have roundoff in it, and the rendering code is
+    // very sensitive to it.  Remove this roundoff by rounding the height to
+    // the nearest 1/65536ths of a point.
+    height = floor(height * 65536.0 + 0.5) / 65536.0;
+
     size_t len = s.length();
     size_t lenbytes = len*4+1;
     char* sutf8 = (char*)alloca(lenbytes);
@@ -1666,21 +1612,10 @@ void GDRenderer::MeasureString(const RS_String&  s,
 }
 
 
-//////////////////////////////////////////////////////////////////////////////
-const RS_Font* GDRenderer::FindFont(RS_FontDef& def)
-{
-    return FontManager::Instance()->FindFont(def.name().c_str(),
-                          (def.style() & RS_FontStyle_Bold) != 0,
-                          (def.style() & RS_FontStyle_Italic) != 0);
-}
-
-
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
-////
 ////
 ////             DWF Rewrite and related code
-////
 ////
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
@@ -2174,9 +2109,288 @@ void GDRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 ////
-////
 ////      END of DWF Rewrite and related code
 ////
-////
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+// SE_Renderer implementation
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+
+
+void GDRenderer::_TransferPoints(double* src, int numpts)
+{
+    EnsureBufferSize(numpts);
+    int* pts = (int*)m_wtPointBuffer;
+    for (int i=0; i<numpts; i++)
+    {
+        *pts++ = (int)(*src);
+        src++;
+        *pts++ = (int)(*src);
+        src++;
+    }
+}
+
+
+//copied from WritePolylines, except it doesn't do to screen trasnform -- we should refactor.
+void GDRenderer::DrawScreenPolyline(SE_Geometry& geom, unsigned int color, double weightpx)
+{
+    RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
+
+    int gdc = ConvertColor((gdImagePtr)m_imout, c);
+    gdImageSetAntiAliased((gdImagePtr)m_imout, gdc);
+
+    //line width is always device space and units are meters.
+    //so convert to equivalent pixel width
+    int line_weight = (int)weightpx;
+
+    gdImagePtr brush1 = NULL;
+
+    if (line_weight > 1)
+    {
+        brush1 = rs_gdImageThickLineBrush(line_weight, c);
+    }
+
+    //draw the lines
+    int index = 0;
+
+    for (int i=0; i<geom.n_cntrs; i++)
+    {
+        int cntr_size = geom.contours[i];
+
+        //convert to integer coords
+        _TransferPoints(geom.points + index, cntr_size);
+
+        if (cntr_size > 1)
+        {
+            //draw antialiased only if thickness is single pixel
+            if (line_weight <= 1)
+                gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)m_wtPointBuffer, cntr_size, gdAntiAliased/*gdc*/);
+            else
+            {
+                gdImageSetBrush((gdImagePtr)m_imout, brush1);
+                gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)m_wtPointBuffer, cntr_size, brush1 ? gdBrushed : gdc);
+            }
+        }
+
+        index += 2*cntr_size;
+    }
+
+    //unset the stroke
+    gdImageSetBrush((gdImagePtr)m_imout, NULL);
+
+    if (brush1)
+        gdImageDestroy(brush1);
+}
+
+
+void GDRenderer::DrawScreenPolygon(SE_Geometry& geom, unsigned int color)
+{
+    RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
+
+    if (geom.n_pts == 0)
+        return;
+
+    if (c.alpha() != 0)
+    {
+        int gdc = ConvertColor((gdImagePtr)m_imout, c);
+
+        gdImagePtr fillpat = NULL;
+
+        //TODO: do the device space calls need fill pattern support?
+        /*
+        if (wcscmp(use_fill->pattern().c_str(), L"Solid") != 0)
+        {
+            fillpat = GDFillPatterns::CreatePatternBitmap(use_fill->pattern().c_str(), gdc, gdcbg);
+            gdImageSetTile((gdImagePtr)m_imout, fillpat);
+        }
+        */
+
+        _TransferPoints(geom.points, geom.n_pts);
+
+        //call the new rasterizer
+        m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, geom.n_pts, geom.contours, geom.n_cntrs,
+            (fillpat) ? gdTiled : gdc, (gdImagePtr)m_imout);
+
+        /*
+        if (fillpat)
+        {
+            gdImageSetTile((gdImagePtr)m_imout, NULL);
+            gdImageDestroy(fillpat);
+        }
+        */
+    }
+}
+
+
+void GDRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
+{
+    xform.x0 = m_scale;
+    xform.x1 = 0.0;
+    xform.x2 = - m_offsetX * m_scale;
+    xform.y0 = 0.0;
+    xform.y1 = - m_scale;
+    xform.y2 = m_height - 1 + m_offsetY * m_scale;
+}
+
+
+void GDRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
+{
+    //TODO: assumes no rotation of the viewport
+    ox = (inx - m_offsetX) * m_scale;
+    oy = m_height - 1 - (iny - m_offsetY) * m_scale;
+}
+
+
+void GDRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
+{
+    //TODO: assumes no rotation of the viewport
+    ox = inx * m_invScale + m_offsetX;
+    oy = m_offsetY - (iny + 1.0 - m_height) * m_invScale;
+}
+
+
+double GDRenderer::GetPixelsPerMillimeterScreen()
+{
+    return m_dpi / 25.4;
+}
+
+
+double GDRenderer::GetPixelsPerMillimeterWorld()
+{
+    //TODO: check if this is right, could try
+    return m_dpi / 25.4 * m_mapScale;
+}
+
+RS_FontEngine* GDRenderer::GetFontEngine()
+{
+    return this;
+}
+
+//labeling -- this is the entry API for adding SE labels
+//to the label mananger
+void GDRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
+                                   int              nlabels,
+                                   RS_OverpostType  type,
+                                   bool             exclude,
+                                   SE_Geometry*      path)
+{
+    //pass labels to the label renderer here
+
+    //check if we are rendering a selection -- bail if so
+    if (m_bSelectionMode)
+        return;
+
+    //forward it to the label renderer
+    m_labeler->ProcessLabelGroup(labels, nlabels, type, exclude, path);
+}
+
+
+void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
+        double x, double y, double w, double h, double angledeg)
+{
+    if (format == RS_ImageFormat_RGBA)
+    {
+        gdImagePtr src = gdImageCreateTrueColor(native_width, native_height);
+
+        //TODO: figure out a way to do this without copying the whole thing
+        //in such a lame loop
+        //at least here we don't call gdImageSetPixel for every pixel
+        for (int j=0; j<native_height; j++)
+        {
+            for (int i=0; i<native_width; i++)
+            {
+                int srccol = ((int*)data)[i + j * native_width];
+                //compute GD alpha and reverse b and r
+                int col = gdImageColorAllocateAlpha(src,  srccol        & 0xFF,
+                                                         (srccol >> 8)  & 0XFF,
+                                                         (srccol >> 16) & 0xFF,
+                                                         127 - ((srccol >> 24) & 0xFF)/ 2);
+
+                src->tpixels[j][i] = col;
+            }
+        }
+
+        if (angledeg == 0)
+        {
+            double w2 = w * 0.5;
+            double h2 = h * 0.5;
+
+            int minx = ROUND(x - w2);
+            int maxx = ROUND(x + w2);
+            int miny = ROUND(y - h2);
+            int maxy = ROUND(y + h2);
+
+            gdImageCopyResampled((gdImagePtr)m_imout, src,
+                                 minx, miny, 0, 0,
+                                 maxx-minx, maxy-miny, //TODO: do we need +1?
+                                 gdImageSX(src), gdImageSY(src));
+        }
+        else
+        {
+            //TODO: must scale from native width/height to requested width/height
+
+            gdImageCopyRotated((gdImagePtr)m_imout, src,
+                                   x, y, 0, 0, native_width, native_height, (int)angledeg);
+        }
+
+        gdImageDestroy(src);
+    }
+    else if (format == RS_ImageFormat_PNG)
+    {
+        //note width and height arguments are ignored for PNG, since they are encoded
+        //in the png data array
+
+        gdImagePtr src = gdImageCreateFromPngPtr(length, data);
+
+        if (angledeg == 0)
+        {
+            double w2 = w * 0.5;
+            double h2 = h * 0.5;
+
+            int minx = ROUND(x - w2);
+            int maxx = ROUND(x + w2);
+            int miny = ROUND(y - h2);
+            int maxy = ROUND(y + h2);
+
+            gdImageCopyResampled((gdImagePtr)m_imout, src,
+                                 minx, miny, 0, 0,
+                                 maxx-minx, maxy-miny,
+                                 gdImageSX(src), gdImageSY(src));
+        }
+        else
+        {
+            //TODO: must scale from native width/height to requested width/height
+
+            gdImageCopyRotated((gdImagePtr)m_imout, src,
+                                   x, y, 0, 0, gdImageSX(src), gdImageSY(src), (int)angledeg);
+        }
+
+        gdImageDestroy(src);
+    }
+    else
+        throw "Well implement this already!";
+}
+
+
+void GDRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position)
+{
+    if (path)  //path text
+    {
+        RS_TextMetrics tm;
+        GetTextMetrics(txt, tdef, tm, true);
+        //TODO: need computed seglens rather than NULL to make things faster
+        LayoutPathText(tm, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0);
+        DrawPathText(tm, tdef);
+    }
+    else //block text
+    {
+        RS_TextMetrics tm;
+        GetTextMetrics(txt, tdef, tm, false);
+        DrawBlockText(tm, tdef, insx, insy);
+    }
+}

@@ -21,6 +21,7 @@
 #include "LabelRendererBase.h"
 #include "SimpleOverpost.h"
 
+struct SE_RenderStyle;
 
 //////////////////////////////////////////////////////////////////////////////
 //used to accumulate labels
@@ -33,7 +34,17 @@ struct LR_LabelInfo
           m_text(text),
           m_tdef(tdef),
           m_pts(NULL),
-          m_numpts(0)
+          m_numpts(0),
+          m_sestyle(NULL)
+    {
+    }
+
+    LR_LabelInfo(double x, double y, SE_RenderStyle* style)
+        : m_x(x),
+          m_y(y),
+          m_pts(NULL),
+          m_numpts(0),
+          m_sestyle(style)
     {
     }
 
@@ -45,6 +56,9 @@ struct LR_LabelInfo
     // if set, defines the path which the label will follow
     RS_F_Point* m_pts;
     int m_numpts;
+
+    //new SE labels keep the symbol here rather than in the m_tdef/m_text combo
+    SE_RenderStyle* m_sestyle;
 };
 
 
@@ -70,9 +84,8 @@ struct LR_OverpostGroup
 //////////////////////////////////////////////////////////////////////////////
 class LabelRenderer : public LabelRendererBase
 {
-
 public:
-    LabelRenderer(GDRenderer* renderer);
+    LabelRenderer(Renderer* renderer, SE_Renderer* serenderer); //TODO: clean this up -- they point to the same class
     virtual ~LabelRenderer();
 
     virtual void StartLabels();
@@ -87,6 +100,13 @@ public:
                                    bool             exclude,
                                    LineBuffer*      path);
 
+    //SE symbol-labels
+    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
+                                   int              nlabels,
+                                   RS_OverpostType  type,
+                                   bool             exclude,
+                                   SE_Geometry*      path);
+
     virtual void BlastLabels();
 
     virtual void AddExclusionRegion(RS_F_Point* pts, int npts);
@@ -99,8 +119,7 @@ private:
 
     bool DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclude, bool check);
     bool DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude, bool check);
-
-    double ComputeCharacterPositions(LR_LabelInfo& info, double* seglens, double position, float* kerned_spacing, double measured_width, CharPos* ret);
+    bool DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, bool check);
 
     bool OverlapsStuff(RS_F_Point* pts, int npts);
 

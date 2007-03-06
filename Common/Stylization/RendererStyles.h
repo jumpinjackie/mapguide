@@ -41,7 +41,17 @@ enum RS_VAlignment
     RS_VAlignment_Base,
     RS_VAlignment_Half,
     RS_VAlignment_Cap,
-    RS_VAlignment_Ascent,
+    RS_VAlignment_Ascent
+};
+
+
+//////////////////////////////////////////////////////////////////////////////
+enum RS_Justify
+{
+    RS_Justify_Left,
+    RS_Justify_Center,
+    RS_Justify_Right,
+    RS_Justify_Justify
 };
 
 
@@ -141,6 +151,16 @@ public:
                ((m_blue   & 0xFF) << 16) |
                ((m_green  & 0xFF) <<  8) |
                 (m_red    & 0xFF);
+    }
+
+    static RS_Color FromARGB(unsigned int argb)
+    {
+        RS_Color ret;
+        ret.m_alpha =  (argb >> 24) & 0xFF;
+        ret.m_red   =  (argb >> 16) & 0xFF;
+        ret.m_green =  (argb >> 8)  & 0xFF;
+        ret.m_blue  =   argb        & 0xFF;
+        return ret;
     }
 
 private:
@@ -261,8 +281,10 @@ public:
     RS_TextDef() :
         m_halign(RS_HAlignment_Center),
         m_valign(RS_VAlignment_Half),
+        m_justify(RS_Justify_Left),
         m_textbg(RS_TextBackground_None),
-        m_rotation(0.0)
+        m_rotation(0.0),
+        m_linespace(1.0)
     {
     }
 
@@ -270,27 +292,33 @@ public:
                RS_VAlignment valign) :
         m_halign(halign),
         m_valign(valign),
+        m_justify(RS_Justify_Left),
         m_textbg(RS_TextBackground_None),
-        m_rotation(0.0)
+        m_rotation(0.0),
+        m_linespace(1.0)
     {
     }
 
     inline RS_HAlignment &         halign()    { return m_halign; }
     inline RS_VAlignment &         valign()    { return m_valign; }
+    inline RS_Justify &            justify()   { return m_justify; }
     inline RS_TextBackground &     textbg()    { return m_textbg; }
     inline RS_Color &              color()     { return m_color; }
     inline RS_Color &              bgcolor()   { return m_bgcolor; }
     inline RS_FontDef &            font()      { return m_font; }
     inline double &                rotation()  { return m_rotation; }
+    inline double &                linespace() { return m_linespace; }
 
 private:
     RS_HAlignment m_halign;
     RS_VAlignment m_valign;
+    RS_Justify m_justify;
     RS_TextBackground m_textbg;
     RS_Color m_color;
     RS_Color m_bgcolor;
     RS_FontDef m_font;
     double m_rotation;
+    double m_linespace;
 };
 
 
@@ -622,21 +650,16 @@ struct RS_F_Point
 
 
 //////////////////////////////////////////////////////////////////////////////
-struct CharPos
-{
-    double x;
-    double y;
-    double anglerad;
-};
-
-
-//////////////////////////////////////////////////////////////////////////////
 enum LabelAlgo
 {
     laSimple,
     laCurve,
     laSkeleton,
-    laPeriodicPolygon
+    laPeriodicPolygon,
+    laSESymbol
 };
+
+//////////////////////////////////////////////////////////////////////////////
+
 
 #endif

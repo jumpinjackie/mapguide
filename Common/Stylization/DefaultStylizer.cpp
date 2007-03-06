@@ -25,7 +25,9 @@
 #include "FilterExecutor.h"
 #include "Renderer.h"
 #include "LineBuffer.h"
+#include "StylizationEngine.h"
 #include "FeatureTypeStyleVisitor.h"
+#include "SE_Renderer.h"
 
 const RS_String s_Empty(L"");
 
@@ -34,6 +36,7 @@ DefaultStylizer::DefaultStylizer()
     m_lbPool = new LineBufferPool;
     m_pRasterAdapter = NULL;
     m_renderer = NULL;
+    m_styleEngine = NULL;
 }
 
 DefaultStylizer::~DefaultStylizer()
@@ -44,6 +47,7 @@ DefaultStylizer::~DefaultStylizer()
     ClearAdapters();
 
     delete m_lbPool;
+    delete m_styleEngine;
 }
 
 
@@ -52,9 +56,13 @@ DefaultStylizer::~DefaultStylizer()
 //
 // Input: A pointer to a Renderer implementation instance
 //-----------------------------------------------------------------------------
-void DefaultStylizer::Initialize(Renderer* renderer)
+void DefaultStylizer::Initialize(Renderer* renderer, SE_SymbolManager* sman)
 {
     m_renderer = renderer;
+
+    if (m_styleEngine)
+        delete m_styleEngine;
+    m_styleEngine = new StylizationEngine(sman);
 }
 
 
@@ -106,7 +114,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     const RS_String& layerId = (layerInfo != NULL)? layerInfo->guid() : s_Empty;
     const RS_String& featCls = (featInfo != NULL)? featInfo->name() : s_Empty;
     exec->SetMapLayerInfo(session, mapName, layerId, featCls);
-    
+
     // find the FeatureTypeStyle
     MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
 
@@ -118,6 +126,17 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     if (lr_tooltip->empty()) lr_tooltip = NULL;
     if (lr_url->empty()) lr_url = NULL;
 
+    //TODO: //HACK: temporary code to detect whether we are using a new style
+    //composite symbolizations
+    bool use_style_engine = false;
+    SE_Renderer* se_renderer = NULL;
+
+    if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(ftsc->GetAt(0)) == FeatureTypeStyleVisitor::ftsComposite)
+    {
+        use_style_engine = true;
+        se_renderer = dynamic_cast<SE_Renderer*>(m_renderer);
+    }
+
     //TODO:
     //*****************************************
     //* THIS CALL IS REALLY REALLY REALLY SLOW!!!
@@ -125,8 +144,6 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     //It needs to be done per feature if there is inheritance of feature classes
     //but is so horribly slow that in all other cases it needs to be optimized away
     //FdoPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
-
-    FeatureTypeStyleVisitor visitor;
 
     bool bClip = m_renderer->RequiresClipping();
 
@@ -179,15 +196,24 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
         {
             MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
 
-            //TODO: future enhancement:
-            //If we have a stylizer that works on a specific feature class
-            //we should invoke it here, instead of invoking the
-            //generic stylizer for the particular type of geomtry
-            GeometryAdapter* adapter = FindGeomAdapter(lb->geom_type());
+            if (use_style_engine)
+            {
+                //we are hoping that the renderer is nice enough to be an SE_Renderer
+                if (se_renderer)
+                    m_styleEngine->Stylize(se_renderer, features, exec, lb, (CompositeTypeStyle*)fts);
+            }
+            else
+            {
+                //TODO: future enhancement:
+                //If we have a stylizer that works on a specific feature class
+                //we should invoke it here, instead of invoking the
+                //generic stylizer for the particular type of geomtry
+                GeometryAdapter* adapter = FindGeomAdapter(lb->geom_type());
 
-            //if we know how to stylize this type of geometry, then go ahead
-            if (adapter)
-                adapter->Stylize(m_renderer, features, exec, lb, fts, lr_tooltip, lr_url);
+                //if we know how to stylize this type of geometry, then go ahead
+                if (adapter)
+                    adapter->Stylize(m_renderer, features, exec, lb, fts, lr_tooltip, lr_url);
+            }
         }
 
         if (lb)
@@ -207,6 +233,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     //need to get rid of these since they cache per layer theming information
     //which may conflict with the next layer
     ClearAdapters();
+    m_styleEngine->ClearCache();
 }
 
 
