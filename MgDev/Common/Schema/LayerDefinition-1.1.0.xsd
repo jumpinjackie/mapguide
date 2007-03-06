@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:include schemaLocation="SymbolDefinition-1.0.0.xsd"/>
   <xs:element name="LayerDefinition">
     <xs:annotation>
       <xs:documentation>The specification of the data source and stylization for a layer.</xs:documentation>
@@ -187,6 +188,11 @@
         <xs:element name="PointTypeStyle" type="PointTypeStyleType">
           <xs:annotation>
             <xs:documentation>Style specification of a point geometry type.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="CompositeTypeStyle" type="CompositeTypeStyleType">
+          <xs:annotation>
+            <xs:documentation>A composite style definition.</xs:documentation>
           </xs:annotation>
         </xs:element>
       </xs:choice>
@@ -761,6 +767,151 @@
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="CompositeTypeStyleType">
+    <xs:annotation>
+      <xs:documentation>A style specification consisting of composite rules.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="CompositeRule" type="CompositeRuleType" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>One or more CompositeRules defining the CompositeTypeStyle.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CompositeRuleType">
+    <xs:annotation>
+      <xs:documentation>A style rule containing a composite symbolization.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="LegendLabel" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The label for the Rule to be displayed on the legend.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Filter" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>A filter for the Rule. This is a boolean FDO expression.  Any features that pass this filter are styled using this rule's stylization.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="CompositeSymbolization" type="CompositeSymbolizationType">
+        <xs:annotation>
+          <xs:documentation>The symbolization for the Rule.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CompositeSymbolizationType">
+    <xs:annotation>
+      <xs:documentation>Stylization attributes of a point, line, or area feature.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="SymbolCollection">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="SymbolInstance" type="SymbolInstanceType" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="ParameterOverrides">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Override" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="SymbolName" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>The name of the symbol definition containing the parameter being overridden.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="ParameterIdentifier" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>The identifier of the parameter being overridden.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="ParameterValue" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>The override value for the parameter.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SymbolInstanceType">
+    <xs:annotation>
+      <xs:documentation>An instance of a symbol.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="SymbolDefinition" type="SymbolDefinitionType">
+          <xs:annotation>
+            <xs:documentation>An inlined SymbolDefinition, either simple or compound.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SymbolReference" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>A library reference to an existing SymbolDefinition, either simple or compound.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
+      <xs:element name="ScaleX" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The additional amount to scale the symbol horizontally in symbol space.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ScaleY" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The additional amount to scale the symbol vertically in symbol space.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="InsertionOffsetX" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Specifies the additional amount to offset the symbol horizontally, in mm in device units, after rotation and scaling have been applied.  Applies only to point symbols.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="InsertionOffsetY" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Specifies the additional amount to offset the symbol vertically, in mm in device units, after rotation and scaling have been applied.  Applies only to point symbols.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="SizeContext" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Specifies whether the symbol sizes are with respect to the map or the user's display device.  This must evaluate to either MappingUnits or DeviceUnits.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="Device"/>
+            <xs:enumeration value="Mapping"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="DrawLast" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Boolean value which specifies whether the symbol is drawn as part of a final rendering pass (e.g. for labeling).  Defaults to false.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="CheckExclusionRegion" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Boolean value which specifies whether to render this symbol only if its graphical extent does not overlap the exclusion region.  Defaults to false.  If the positioning algorithm generates multiple candidate symbol positions and this setting is true, then only the first non-overlapping candidate is rendered.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AddToExclusionRegion" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Boolean value which specifies whether the graphical extent for this symbol instance is added to the exclusion region (if it is rendered).  Symbols which check the exclusion region will not draw on top of this symbol.  Defaults to false.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="PositioningAlgorithm" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Specifies the algorithm used to generate candidate positions for the symbol.  This must evaluate to one of: Default or EightSurrounding.  Default means generate one position using the feature geometry (used for normal rendering).  EightSurrounding means generate eight positions surrounding the feature geometry (used when labeling point features).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
   </xs:complexType>
   <xs:annotation>
     <xs:documentation>******************** Grid layer ********************</xs:documentation>
