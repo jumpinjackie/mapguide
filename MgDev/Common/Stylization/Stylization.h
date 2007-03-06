@@ -51,6 +51,7 @@
 #include "LineTypeStyle.h"
 #include "AreaTypeStyle.h"
 #include "PointTypeStyle.h"
+#include "CompositeTypeStyle.h"
 
 #include "AreaRule.h"
 #include "LineRule.h"
@@ -67,7 +68,19 @@
 #include "MarkSymbol.h"
 #include "FontSymbol.h"
 #include "ImageSymbol.h"
+#include "SimpleSymbolDefinition.h"
+#include "CompoundSymbolDefinition.h"
 #include "ISymbolVisitor.h"
+#include "IUsageVisitor.h"
+#include "ISymbolDefinitionVisitor.h"
+#include "IGraphicElementVisitor.h"
+#include "CompositeSymbolization.h"
+#include "PointUsage.h"
+#include "LineUsage.h"
+#include "AreaUsage.h"
+#include "Path.h"
+#include "Text.h"
+#include "Image.h"
 
 //FDO headers
 #include "Fdo.h"

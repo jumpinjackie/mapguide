@@ -59,6 +59,12 @@ LineBuffer::LineBuffer(int size)
     m_xformbuf_len = 0;
 }
 
+
+LineBuffer::LineBuffer()
+{
+}
+
+
 LineBuffer::~LineBuffer()
 {
     delete[] m_types;
@@ -69,6 +75,7 @@ LineBuffer::~LineBuffer()
         delete [] m_xformbuf;
 }
 
+
 void LineBuffer::Reset()
 {
     m_bounds = RS_Bounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
@@ -78,10 +85,12 @@ void LineBuffer::Reset()
     m_cur_cntr = -1;//will increment with first MoveTo segment
 }
 
+
 void LineBuffer::SetGeometryType(int geomType)
 {
     m_geom_type = geomType;
 }
+
 
 void LineBuffer::MoveTo(double x, double y)
 {
@@ -102,6 +111,7 @@ void LineBuffer::MoveTo(double x, double y)
 
     AddToBounds(x, y);
 }
+
 
 void LineBuffer::LineTo(double x, double y)
 {
@@ -132,6 +142,7 @@ void LineBuffer::Close()
 
     LineTo(m_last_x, m_last_y);
 }
+
 
 inline void LineBuffer::AddToBounds(double x, double y)
 {
@@ -164,6 +175,7 @@ void LineBuffer::Resize()
     m_types_len *= 2;
 }
 
+
 void LineBuffer::ResizeContours()
 {
     int* tempCntrs = new int[m_cntrs_len * 2];
@@ -172,7 +184,6 @@ void LineBuffer::ResizeContours()
     m_cntrs = tempCntrs;
     m_cntrs_len *= 2;
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -184,6 +195,8 @@ void LineBuffer::ResizeContours()
 ////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+
 void LineBuffer::CircularArcTo(double x1, double y1, double x2, double y2)
 {
     _ASSERT(point_count() > 0);
@@ -259,6 +272,7 @@ void LineBuffer::CircularArcTo(double x1, double y1, double x2, double y2)
     ArcTo(cx, cy, r, r, startAngle, endAngle);
 }
 
+
 //computes cubic spline parameter to be used
 //when approximating an elliptical arc
 double LineBuffer::CubicApproxParameter(double halfAngle)
@@ -270,6 +284,7 @@ double LineBuffer::CubicApproxParameter(double halfAngle)
     //otherwise use sin/cos
     return (4.0/3.0) * (1.0 - cos(halfAngle)) / sin(halfAngle);
 }
+
 
 void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad, double endRad)
 {
@@ -317,6 +332,7 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
         TesselateCubicTo(c1x, c1y, c2x, c2y, c3x, c3y);
     }
 }
+
 
 void LineBuffer::TesselateCubicTo(double px2, double py2, double px3, double py3, double px4, double py4)
 {
@@ -399,6 +415,7 @@ void LineBuffer::TesselateCubicTo(double px2, double py2, double px3, double py3
     LineTo(px4, py4);
 }
 
+
 void LineBuffer::TesselateQuadTo(double px2, double py2, double px3, double py3)
 {
     //get the start point
@@ -472,6 +489,7 @@ void LineBuffer::TesselateQuadTo(double px2, double py2, double px3, double py3)
     LineTo(px3, py3);
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ////
@@ -481,6 +499,7 @@ void LineBuffer::TesselateQuadTo(double px2, double py2, double px3, double py3)
 ////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
 
 //simple helper macro that reads x and y and skip z and m and does coord sys transform
 #define READ_POINT(x, y)            \
@@ -769,6 +788,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
     }
 }
 
+
 #define WRITE_INT(os, val) { \
                              \
     int val2 = val;          \
@@ -995,9 +1015,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
 }
 
 
-
-
-//WARNING: caller responsible for deleting resulting line buffer
+//WARNING: caller is responsible for deleting resulting line buffer
 //if return is equal to this pointer, no clipping was needed (geometry was
 //fully inside given box), so no need to free it
 //if return pointer is NULL, geometry was fully outside the clip box
@@ -1051,6 +1069,7 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
         return NULL;
     }
 }
+
 
 LineBuffer* LineBuffer::ClipPoints(RS_Bounds& b, LineBuffer* dst)
 {
@@ -1394,8 +1413,7 @@ void LineBuffer::AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, Lin
         lb->m_pts[lb->m_cur_pts-2] = x;
         lb->m_pts[lb->m_cur_pts-1] = y;
     }
-
-} // end: AppendLBClipVertex()
+}
 
 
 LineBuffer* LineBuffer::ClipPolyline(RS_Bounds& b, LineBuffer* dest)
@@ -1482,6 +1500,7 @@ int LineBuffer::ClipCode(RS_Bounds& b, double x, double y)
     else
         return clipCode;
 } // end: OpsClipCode()
+
 
 //------------------------------------------------------------------------------
 //
@@ -1765,6 +1784,7 @@ void LineBuffer::MultiPolylineCentroid(double* cx, double* cy, double* slope)
     return Centroid::PolylineCentroid(maxcntr, maxnumpts, cx, cy, slope);
 }
 
+
 void LineBuffer::PolylineCentroid(double* cx, double* cy, double* slope)
 {
     int numpts = 0;
@@ -1814,6 +1834,7 @@ void LineBuffer::MultiPointCentroid(double* cx, double* cy)
         *cy = ySum / len;
     }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

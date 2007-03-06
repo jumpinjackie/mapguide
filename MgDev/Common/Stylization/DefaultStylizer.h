@@ -19,6 +19,7 @@
 
 class LineBufferPool;
 class RasterAdapter;
+class StylizationEngine;
 
 //-----------------------------------------------------------------------------
 // Stylizer used for all types of layers which do not have special
@@ -30,8 +31,7 @@ public:
     STYLIZATION_API DefaultStylizer();
     STYLIZATION_API virtual ~DefaultStylizer();
 
-    STYLIZATION_API virtual void Initialize(Renderer* renderer);
-
+    STYLIZATION_API virtual void Initialize(Renderer* renderer, SE_SymbolManager* sman = NULL);
 
     STYLIZATION_API virtual void StylizeFeatures( const MdfModel::VectorLayerDefinition* layer,
                                                       RS_FeatureReader* features,
@@ -48,7 +48,6 @@ public:
                                      void*                                userData
                                      );
 
-
     STYLIZATION_API virtual void StylizeDrawingLayer(   const MdfModel::DrawingLayerDefinition* layer,
                                                         RS_LayerUIInfo*         legendInfo,
                                                         RS_InputStream*         dwfin,
@@ -63,7 +62,6 @@ public:
                                                      GeometryAdapter* sg);
 
 private:
-
     GeometryAdapter* FindGeomAdapter(int geomType);
     void ClearAdapters();
 
@@ -72,6 +70,9 @@ private:
 
     //raster stylizer
     RasterAdapter* m_pRasterAdapter;
+
+    //composite stylizer
+    StylizationEngine* m_styleEngine;
 
     //TODO feature class stylizers
 

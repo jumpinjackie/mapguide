@@ -128,7 +128,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
+				OmitFramePointers="false"
 				AdditionalIncludeDirectories="..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\DWFTK7.1\develop\global\src\dwfemap;..\..\Oem\FDO\inc;..\..\Oem\gd\gd;..\MdfModel;..\..\Oem\gd\freetype\include;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;DWFCORE_STATIC;DWFTK_STATIC;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				ExceptionHandling="2"
@@ -382,14 +382,6 @@
 			</File>
 			<File
 				RelativePath=".\complex_polygon_gd.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FontManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FontManager.h"
 				>
 			</File>
 			<File
@@ -658,6 +650,102 @@
 			</File>
 			<File
 				RelativePath=".\KmlRenderer.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="StyleEngine"
+			>
+			<File
+				RelativePath=".\SE_Bounds.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Bounds.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_ConvexHull.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_ExpressionBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_ExpressionBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Include.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_LineBuffer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_LineBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Matrix.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_PositioningAlgorithms.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_PositioningAlgorithms.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Renderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Renderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_StyleVisitor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_StyleVisitor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_SymbolManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StylizationEngine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StylizationEngine.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="FontEngine"
+			>
+			<File
+				RelativePath=".\FontManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FontManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RS_FontEngine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RS_FontEngine.h"
 				>
 			</File>
 		</Filter>

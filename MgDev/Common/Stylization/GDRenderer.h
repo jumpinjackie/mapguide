@@ -33,6 +33,9 @@
 #include "LabelRendererBase.h"
 #include "RS_ByteData.h"
 
+#include "SE_Renderer.h"
+#include "RS_FontEngine.h"
+
 class WT_File;
 class WT_Viewport;
 class WT_Logical_Point;
@@ -40,8 +43,9 @@ class WT_Logical_Point;
 struct RS_Font;
 
 class complex_polygon_gd;
+class FontEngine;
 
-class GDRenderer : public Renderer
+class GDRenderer : public Renderer, public SE_Renderer, public RS_FontEngine
 {
     friend class LabelRenderer;
     friend class LabelRendererBase;
@@ -75,7 +79,7 @@ public:
 
     STYLIZATION_API virtual void StartFeature(RS_FeatureReader* feature,
                                               const RS_String*  tooltip = NULL,
-                                              const RS_String*  url = NULL, 
+                                              const RS_String*  url = NULL,
                                               const RS_String* theme = NULL);
 
     STYLIZATION_API virtual void ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill);
@@ -138,8 +142,33 @@ public:
 
     STYLIZATION_API void SetRenderSelectionMode(bool mode);
 
+    ////////////////////////////////////////////////
+    // SE_Renderer
+    //
+    virtual void DrawScreenPolyline(SE_Geometry& geom, unsigned int color, double weight); // px
+    virtual void DrawScreenPolygon(SE_Geometry& geom, unsigned int fill);
+    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
+        double x, double y, double w, double h, double angledeg);
+    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position);
 
-    void DrawString(const RS_String& s,
+    virtual void GetWorldToScreenTransform(SE_Matrix& xform);
+    virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
+    virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
+
+    virtual double GetPixelsPerMillimeterScreen();
+    virtual double GetPixelsPerMillimeterWorld();
+
+    virtual RS_FontEngine* GetFontEngine();
+
+    //labeling -- this is the entry API for adding SE labels
+    //to the label mananger
+    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
+                                   int              nlabels,
+                                   RS_OverpostType  type,
+                                   bool             exclude,
+                                   SE_Geometry*      path = NULL);
+
+    virtual void DrawString(const RS_String& s,
                     int              x,
                     int              y,
                     double           height,
@@ -147,18 +176,14 @@ public:
                     const RS_Color&  color,
                     double           angle);
 
-    void MeasureString(const RS_String& s,
+    virtual void MeasureString(const RS_String& s,
                        double           height,
                        const RS_Font*   font,
                        double           angle,
                        RS_F_Point*      res,
                        float*           offsets);
 
-    const RS_Font* FindFont(RS_FontDef& def);
-
-
 private:
-
     double _MeterToMapSize(RS_Units unit, double number);
     double _PixelToMapSize(Renderer* renderer, int pixels);
 
@@ -171,12 +196,9 @@ private:
     //transformation from mapping to W2D space
     inline int _TX(double x);
     inline int _TY(double y);
-    double _TXD(double x);
-    double _TYD(double y);
-    double _ITXD(double x);
-    double _ITYD(double y);
 
     void _TransformPointsNoClamp(double* inpts, int numpts);
+    void _TransferPoints(double* inpts, int numpts);
 
     RS_Color m_bgcolor;
     RS_Bounds m_extents;
@@ -210,6 +232,8 @@ private:
 
     LabelRendererBase* m_labeler;
 
+    FontEngine* m_fe;
+
     /////////////////////////////////////////////////////////
     //
     // Functions and structures used during insertion of W2Ds
@@ -220,7 +244,6 @@ private:
     // all of the W2D rewriting context
 
 public:
-
     /*Do not export from DLL*/ void* GetImage() { return m_imout; } //target map image
     /*Do not export from DLL*/ void* GetW2DTargetImage() { return m_imw2d; } //target image for W2D rewriter
     /*Do not export from DLL*/ bool IsViewportSet() { return m_bHaveViewport; }

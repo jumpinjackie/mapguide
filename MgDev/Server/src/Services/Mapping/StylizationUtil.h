@@ -33,6 +33,7 @@ class MgStringCollection;
 class MgMap;
 class MgCoordinateSystem;
 class MgCSTrans;
+class RSMgFeatureReader;
 
 //Common stylization utility code -- used by both the mapping and rendering services
 class MG_SERVER_MAPPING_API MgStylizationUtil
@@ -77,7 +78,7 @@ public:
                               double scale,
                               bool selection = false);
 
-    static MgFeatureReader * ExecuteFeatureQuery(MgFeatureService* svcFeature,
+    static RSMgFeatureReader * ExecuteFeatureQuery(MgFeatureService* svcFeature,
                                                  RS_Bounds& extent,
                                                  MdfModel::VectorLayerDefinition* vl,
                                                  const wchar_t* overrideFilter,
@@ -85,7 +86,7 @@ public:
                                                  MgCoordinateSystem* layerCs,
                                                  TransformCache* cache);
 
-    static MgFeatureReader * ExecuteRasterQuery(MgFeatureService* svcFeature,
+    static RSMgFeatureReader * ExecuteRasterQuery(MgFeatureService* svcFeature,
                                                 RS_Bounds& extent,
                                                 MdfModel::GridLayerDefinition* gl,
                                                 const wchar_t* overrideFilter,
@@ -94,6 +95,12 @@ public:
                                                 int width,
                                                 int height);
 
+    static MgStylizationUtil::TransformCache* MgStylizationUtil::GetLayerToMapTransform(TransformCacheMap& cache,
+                                                         CREFSTRING featureName,
+                                                         MgResourceIdentifier* resId,
+                                                         MgCoordinateSystem* dstCs,
+                                                         MgCoordinateSystemFactory* csFactory,
+                                                         MgFeatureService* svcFeature);
 
     static MdfModel::MapDefinition* GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId);
     static MdfModel::LayerDefinition* GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId);

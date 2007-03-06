@@ -15,11 +15,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef LABELRENDERER2_H
-#define LABELRENDERER2_H
+#ifndef LABELRENDERERLOCAL_H
+#define LABELRENDERERLOCAL_H
 
 #include "LabelRendererBase.h"
 #include "SimpleOverpost.h"
+#include "RS_FontEngine.h"
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -35,9 +36,7 @@ struct LR_LabelInfoLocal
           m_pts(NULL),
           m_numpts(0),
           m_numelems(0),
-          m_oriented_bounds(NULL),
-          m_charpos(NULL),
-          m_spacing(NULL)
+          m_oriented_bounds(NULL)
     {
     }
 
@@ -50,10 +49,6 @@ struct LR_LabelInfoLocal
     RS_F_Point* m_pts;
     int m_numpts;
 
-    const RS_Font* m_font;
-    double m_hgt;
-    double m_textwid;
-    double m_texthgt;
     RS_F_Point m_ins_point;
 
     // number of elements this label consists of
@@ -66,11 +61,9 @@ struct LR_LabelInfoLocal
     // - there's one bounds per element
     RS_F_Point* m_oriented_bounds;
 
-    // stores data for individual characters of a path label
-    CharPos* m_charpos;
-
-    // stores horizontal advance per character (including kerning)
-    double* m_spacing;
+    // stores matched font, measured text size, kerned char spacings
+    // layout character positions
+    RS_TextMetrics m_tm;
 };
 
 
@@ -97,9 +90,8 @@ struct LR_OverpostGroupLocal
 //////////////////////////////////////////////////////////////////////////////
 class LabelRendererLocal : public LabelRendererBase
 {
-
 public:
-    LabelRendererLocal(GDRenderer* renderer, double tileExtentOffset);
+    LabelRendererLocal(Renderer* renderer, SE_Renderer* serenderer, double tileExtentOffset);
     virtual ~LabelRendererLocal();
 
     virtual void StartLabels();
@@ -114,6 +106,13 @@ public:
                                    bool             exclude,
                                    LineBuffer*      path);
 
+    //SE symbol-labels
+    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
+                                   int              nlabels,
+                                   RS_OverpostType  type,
+                                   bool             exclude,
+                                   SE_Geometry*      path);
+
     virtual void BlastLabels();
 
     virtual void AddExclusionRegion(RS_F_Point* pts, int npts);
@@ -124,10 +123,6 @@ private:
 
     bool ComputeSimpleLabelBounds(LR_LabelInfoLocal& info);
     bool ComputePathLabelBounds(LR_LabelInfoLocal& info, std::vector<LR_LabelInfoLocal>& repeated_infos);
-    double ComputeCharacterPositions(LR_LabelInfoLocal& info, double* seglens, double position, float* kerned_spacing, double measured_width, CharPos* ret);
-
-    void DrawSimpleLabel(LR_LabelInfoLocal& info);
-    void DrawPathLabel(LR_LabelInfoLocal& info);
 
     void ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::vector<LR_OverpostGroupLocal*>& groups);
     bool ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfoLocal& info, bool render, bool exclude, bool check);

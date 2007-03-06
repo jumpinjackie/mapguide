@@ -34,11 +34,16 @@
                        }
 
 
-RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, const STRING& geomPropName)
+RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* svcFeature, MgResourceIdentifier* featResId, MgFeatureQueryOptions* options, const STRING& geomPropName)
 {
     assert(NULL != reader);
     m_reader = reader;
     SAFE_ADDREF(m_reader);
+
+    //stuff needed for resetting the reader
+    m_svcFeature = SAFE_ADDREF(svcFeature);
+    m_resId = SAFE_ADDREF(featResId);
+    m_options = SAFE_ADDREF(options);
 
     //use geometry property given by user
     m_geomPropName = geomPropName;
@@ -138,6 +143,9 @@ RSMgFeatureReader::~RSMgFeatureReader()
 
     SAFE_RELEASE(m_reader);
     SAFE_RELEASE(m_class);
+    SAFE_RELEASE(m_svcFeature);
+    SAFE_RELEASE(m_resId);
+    SAFE_RELEASE(m_options);
 
     delete [] m_vProps;
     delete [] m_propNames;
@@ -155,6 +163,18 @@ void RSMgFeatureReader::Close()
 {
     RSFR_TRY()
     return m_reader->Close();
+    RSFR_CATCH()
+}
+
+void RSMgFeatureReader::Reset()
+{
+    RSFR_TRY()
+
+    m_reader->Close();
+    SAFE_RELEASE(m_reader);
+
+    m_reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetClassName(), m_options);
+
     RSFR_CATCH()
 }
 

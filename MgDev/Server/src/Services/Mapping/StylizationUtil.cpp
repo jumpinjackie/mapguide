@@ -132,7 +132,7 @@ void MgStylizationUtil::ParseColor(CREFSTRING colorstr, RS_Color& rscol)
 
 
 
-MgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
+RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
                                                         RS_Bounds& extent,
                                                         MdfModel::VectorLayerDefinition* vl,
                                                         const wchar_t* overrideFilter,
@@ -286,7 +286,8 @@ MgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFea
 
             //finally try without a filter
             // TODO: could it be an extension name and not a FeatureClassName?
-            rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), NULL);
+            options = NULL;
+            rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
         }
     }
 
@@ -294,11 +295,11 @@ MgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFea
     printf("  ExecuteFeatureQuery() total time = %6.4f (s)\n", (GetTickCount()-dwStart)/1000.0);
 #endif
 
-    return SAFE_ADDREF(rdr.p);
+    return new RSMgFeatureReader(rdr.p, svcFeature, featResId.p, options, vl->GetGeometry());
 }
 
 
-MgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcFeature,
+RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcFeature,
                                                         RS_Bounds& extent,
                                                         MdfModel::GridLayerDefinition* gl,
                                                         const wchar_t* overrideFilter,
@@ -423,10 +424,119 @@ MgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcFea
 
         //finally try without a filter
         // TODO: could it be an extension name and not a FeatureClassName?
-        rdr = svcFeature->SelectFeatures(featResId, gl->GetFeatureName(), NULL);
+        options = NULL;
+        rdr = svcFeature->SelectFeatures(featResId, gl->GetFeatureName(), options);
     }
 
-    return SAFE_ADDREF(rdr.p);
+    return new RSMgFeatureReader(rdr.p, svcFeature, featResId.p, options, L"clipped_raster");
+}
+
+MgStylizationUtil::TransformCache* MgStylizationUtil::GetLayerToMapTransform(TransformCacheMap& cache,
+                                                         CREFSTRING featureName,
+                                                         MgResourceIdentifier* resId,
+                                                         MgCoordinateSystem* dstCs,
+                                                         MgCoordinateSystemFactory* csFactory,
+                                                         MgFeatureService* svcFeature)
+{
+    TransformCache* item = NULL;
+
+    // Now get the coordinate system of the layer data.
+    // Feature Service caches these so we only take the performance hit on
+    // the 1st one that is not cached.
+
+    // Parse the feature name for the schema and class
+    STRING::size_type nDelimiter = featureName.find(L":");
+    STRING schemaName;
+    STRING className;
+
+    if(STRING::npos == nDelimiter)
+    {
+        schemaName = L"";
+        className = featureName;
+    }
+    else
+    {
+        schemaName = featureName.substr(0, nDelimiter);
+        className = featureName.substr(nDelimiter + 1);
+    }
+
+    STRING spatialContextAssociation = L"";
+
+    // Get the class definition so that we can find the spatial context association
+    Ptr<MgClassDefinition> classDef = svcFeature->GetClassDefinition(resId, schemaName, className);
+    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
+
+    // Find the spatial context for the geometric property. Use the first one if there are many defined.
+    for(int index=0;index<propDefCol->GetCount();index++)
+    {
+        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
+        if (propDef->GetPropertyType () == MgFeaturePropertyType::GeometricProperty)
+        {
+            // We found the geometric property
+            MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(propDef.p);
+            spatialContextAssociation = geomProp->GetSpatialContextAssociation();
+            break;
+        }
+    }
+
+    // We want all of the spatial contexts
+    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(resId, false);
+
+    // This is the strategy we use for picking the spatial context
+    // Find the 1st spatial context that satisfies one of the following: (Processed in order)
+    // 1) Matches the association spatial context name
+    // 2) The 1st spatial context returned
+    // 3) FAIL - none of the above could be satisfied
+
+    Ptr<MgCoordinateSystem> srcCs = (MgCoordinateSystem*)NULL;
+
+    if (dstCs)
+    {
+        STRING srcwkt = L"";
+        STRING csrName = L"";
+        bool bHaveFirstSpatialContext = false;
+
+        while(csrdr->ReadNext())
+        {
+            csrName = csrdr->GetName();
+            if((!spatialContextAssociation.empty()) && (csrName == spatialContextAssociation))
+            {
+                // Match found for the association)
+                srcwkt = csrdr->GetCoordinateSystemWkt();
+                break;
+            }
+            else if(!bHaveFirstSpatialContext)
+            {
+                // This is the 1st spatial context returned
+                // This will be overwritten if we find the association
+                srcwkt = csrdr->GetCoordinateSystemWkt();
+                bHaveFirstSpatialContext = true;
+            }
+        }
+
+        // Create coordinate system transformer
+        if (!srcwkt.empty())
+        {
+            TransformCacheMap::const_iterator iter = cache.find(srcwkt);
+            if (cache.end() != iter) item = (*iter).second;
+            if (NULL == item)
+            {
+                Ptr<MgCoordinateSystem> srcCs = csFactory->Create(srcwkt);
+                if (srcCs.p)
+                {
+                    item = new TransformCache(new MgCSTrans(srcCs, dstCs), srcCs);
+                    cache[srcwkt] = item;
+                }
+            }
+        }
+    }
+    else
+    {
+        // No coordinate system!!!
+        // We fail here and do not use a default
+    }
+
+    return item;
 }
 
 
@@ -456,8 +566,6 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
-        TransformCache* cached = NULL;
-        MgCSTrans* xformer = NULL;
         MdfModel::LayerDefinition* ldf = NULL;
 
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
@@ -564,113 +672,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         extent.maxy += mcsOffset;
                     }
 
-                    //now get the coordinate system of the layer data
-                    // Feature Service caches these so we only take the performance hit on
-                    // the 1st one that is not cached.
-
-                    // Need to determine the name of the spatial context for this layer
-                    MdfModel::MdfString featureName = vl->GetFeatureName();
-
-                    // Parse the feature name for the schema and class
-                    STRING::size_type nDelimiter = featureName.find(L":");
-                    STRING schemaName;
-                    STRING className;
-
-                    if(STRING::npos == nDelimiter)
-                    {
-                        schemaName = L"";
-                        className = featureName;
-                    }
-                    else
-                    {
-                        schemaName = featureName.substr(0, nDelimiter);
-                        className = featureName.substr(nDelimiter + 1);
-                    }
-
-                    STRING spatialContextAssociation = L"";
-
-                    // Get the class definition so that we can find the spatial context association
-                    Ptr<MgClassDefinition> classDef = svcFeature->GetClassDefinition(featResId, schemaName, className);
-                    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
-
-                    // Find the spatial context for the geometric property. Use the first one if there are many defined.
-                    for(int index=0;index<propDefCol->GetCount();index++)
-                    {
-                        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
-                        if (propDef->GetPropertyType () == MgFeaturePropertyType::GeometricProperty)
-                        {
-                            // We found the geometric property
-                            MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(propDef.p);
-                            spatialContextAssociation = geomProp->GetSpatialContextAssociation();
-                            break;
-                        }
-                    }
-
-                    // We want all of the spatial contexts
-                    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(featResId, false);
-
-                    // This is the strategy we use for picking the spatial context
-                    // Find the 1st spatial context that satisfies one of the following: (Processed in order)
-                    // 1) Matches the association spatial context name
-                    // 2) The 1st spatial context returned
-                    // 3) FAIL - none of the above could be satisfied
-
-                    Ptr<MgCoordinateSystem> srcCs = (MgCoordinateSystem*)NULL;
-
-                    if (dstCs)
-                    {
-                        STRING srcwkt = L"";
-                        STRING csrName = L"";
-                        bool bHaveFirstSpatialContext = false;
-
-                        while(csrdr->ReadNext())
-                        {
-                            csrName = csrdr->GetName();
-                            if((!spatialContextAssociation.empty()) && (csrName == spatialContextAssociation))
-                            {
-                                // Match found for the association)
-                                srcwkt = csrdr->GetCoordinateSystemWkt();
-                                break;
-                            }
-                            else if(!bHaveFirstSpatialContext)
-                            {
-                                // This is the 1st spatial context returned
-                                // This will be overwritten if we find the association
-                                srcwkt = csrdr->GetCoordinateSystemWkt();
-                                bHaveFirstSpatialContext = true;
-                            }
-                        }
-
-                        // Create coordinate system transformer
-                        if (!srcwkt.empty())
-                        {
-                            
-                            TransformCacheMap::const_iterator iter = transformCache.find(srcwkt);
-                            if (transformCache.end() != iter) cached = (*iter).second;
-                            if (NULL != cached)
-                            {
-                                srcCs = cached->GetCoordSys();
-                                xformer = cached->GetTransform();
-                            }
-                            else 
-                            {
-                                srcCs = csFactory->Create(srcwkt);
-                                if (srcCs.p)
-                                {
-                                    xformer = new MgCSTrans(srcCs, dstCs);
-                                    cached = new TransformCache(xformer, srcCs);
-                                    transformCache[srcwkt] = cached;
-                                }
-                            }
-                            
-                        }
-
-                    }
-                    else
-                    {
-                        // No coordinate system!!!
-                        // We fail here and do not use a default
-                    }
+                    //get a transform from layer coord sys to map coord sys
+                    TransformCache* item = GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
 
                     //extract hyperlink and tooltip info
                     if (!vl->GetToolTip().empty()) legendInfo.hastooltips() = true;
@@ -746,14 +749,12 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         //we are not drawing the actual geometry
                         if (maxStrokes == 0)
                         {
-                            Ptr<MgFeatureReader> rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, srcCs, cached);
-                            if (rdr.p)
+                            RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, item ? item->GetCoordSys() : NULL, item);
+                            if (rdr)
                             {
-                                //wrap the MgFeatureReader in our RSMgFeatureReader wrapper
-                                RSMgFeatureReader rsrdr(rdr, vl->GetGeometry());
-
-                                ds->StylizeFeatures(vl, &rsrdr, xformer, NULL, NULL);
+                                ds->StylizeFeatures(vl, rdr, item->GetTransform(), NULL, NULL);
                             }
+                            delete rdr;
                         }
                         else
                         {
@@ -782,14 +783,12 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                     syms->Adopt(syms2->GetAt(min(i, syms2->GetCount()-1)));
                                 }
 
-                                Ptr<MgFeatureReader> rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, srcCs, cached);
-                                if (rdr.p)
+                                RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, item ? item->GetCoordSys() : NULL, item);
+                                if (rdr)
                                 {
-                                    //wrap in an RS_FeatureReader
-                                    RSMgFeatureReader rsrdr(rdr, vl->GetGeometry());
-
-                                    ds->StylizeFeatures(vl, &rsrdr, xformer, NULL, NULL);
+                                    ds->StylizeFeatures(vl, rdr, item->GetTransform(), NULL, NULL);
                                 }
+                                delete rdr;
 
                                 //transfer line styles back to layer definition
                                 for (int m=0; m<rules->GetCount(); m++)
@@ -828,17 +827,15 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     }
                     else
                     {
-                        Ptr<MgFeatureReader> rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, srcCs, cached);
-                        if (rdr.p)
+                        RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, item ? item->GetCoordSys() : NULL, item);
+                        if (rdr)
                         {
-                            //wrap the MgFeatureReader in our RSMgFeatureReader wrapper
-                            RSMgFeatureReader rsrdr(rdr, vl->GetGeometry());
-
                             //stylize into output format
                             dr->StartLayer(&legendInfo, &fcinfo);
-                            ds->StylizeFeatures(vl, &rsrdr, xformer, NULL, NULL);
+                            ds->StylizeFeatures(vl, rdr, item ? item->GetTransform() : NULL, NULL, NULL);
                             dr->EndLayer();
                         }
+                        delete rdr;
                     }
                 }
                 else
@@ -877,104 +874,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     // Need to determine the name of the spatial context for this layer
                     MdfModel::MdfString featureName = gl->GetFeatureName();
 
-                    // Parse the feature name for the schema and class
-                    STRING::size_type nDelimiter = featureName.find(L":");
-                    STRING schemaName;
-                    STRING className;
-
-                    if(STRING::npos == nDelimiter)
-                    {
-                        schemaName = L"";
-                        className = featureName;
-                    }
-                    else
-                    {
-                        schemaName = featureName.substr(0, nDelimiter);
-                        className = featureName.substr(nDelimiter + 1);
-                    }
-
-                    STRING spatialContextAssociation = L"";
-
-                    // Get the class definition so that we can find the spatial context association
-                    Ptr<MgClassDefinition> classDef = svcFeature->GetClassDefinition(featResId, schemaName, className);
-                    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
-
-                    // Find the spatial context for the geometric property. Use the first one if there are many defined.
-                    for(int index=0;index<propDefCol->GetCount();index++)
-                    {
-                        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
-                        if (propDef->GetPropertyType () == MgFeaturePropertyType::GeometricProperty)
-                        {
-                            // We found the geometric property
-                            MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(propDef.p);
-                            spatialContextAssociation = geomProp->GetSpatialContextAssociation();
-                            break;
-                        }
-                    }
-
-                    // We want all of the spatial contexts
-                    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(featResId, false);
-
-                    // This is the strategy we use for picking the spatial context
-                    // Find the 1st spatial context that satisfies one of the following: (Processed in order)
-                    // 1) Matches the association spatial context name
-                    // 2) The 1st spatial context returned
-                    // 3) FAIL - none of the above could be satisfied
-
-                    Ptr<MgCoordinateSystem> srcCs = (MgCoordinateSystem*)NULL;
-
-                    if (dstCs)
-                    {
-                        STRING srcwkt = L"";
-                        STRING csrName = L"";
-                        bool bHaveFirstSpatialContext = false;
-
-                        while(csrdr->ReadNext())
-                        {
-                            csrName = csrdr->GetName();
-                            if((!spatialContextAssociation.empty()) && (csrName == spatialContextAssociation))
-                            {
-                                // Match found for the association)
-                                srcwkt = csrdr->GetCoordinateSystemWkt();
-                                break;
-                            }
-                            else if(!bHaveFirstSpatialContext)
-                            {
-                                // This is the 1st spatial context returned
-                                // This will be overwritten if we find the association
-                                srcwkt = csrdr->GetCoordinateSystemWkt();
-                                bHaveFirstSpatialContext = true;
-                            }
-                        }
-
-                        // Create coordinate system transformer
-                        if (!srcwkt.empty())
-                        {
-                            TransformCacheMap::const_iterator iter = transformCache.find(srcwkt);
-                            if (transformCache.end() != iter) cached = (*iter).second;
-                            if (NULL != cached)
-                            {
-                                srcCs = cached->GetCoordSys();
-                                xformer = cached->GetTransform();
-                            }
-                            else 
-                            {
-                                srcCs = csFactory->Create(srcwkt);
-                                if (srcCs.p)
-                                {
-                                    xformer = new MgCSTrans(srcCs, dstCs);
-                                    cached = new TransformCache(xformer, srcCs);
-                                    transformCache[srcwkt] = cached;
-                                }
-                            }
-                            
-                        }
-                    }
-                    else
-                    {
-                        // No coordinate system!!!
-                        // We fail here and do not use a default
-                    }
+                    //get a transform from layer coord sys to map coord sys
+                    TransformCache* item = GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
 
                     //grid layer does not yet have hyperlink or tooltip
                     //extract hyperlink and tooltip info
@@ -1018,23 +919,15 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     }
 
                     //perform the raster query
-                    Ptr<MgFeatureReader> rdr = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, srcCs, width, height);
-                    if (rdr.p)
+                    RSMgFeatureReader* rdr = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, item ? item->GetCoordSys() : NULL, width, height);
+                    if (rdr)
                     {
-                        //wrap the MgFeatureReader in our RSMgFeatureReader wrapper
-                        //TODO: For raster layers we need to check for the "Image" property name
-                        //and replace that by clipped_raster which is the computed geometry
-                        //property we are using instead of the actual raster property
-                        //Post-preview we should write code to get the feature schema
-                        //and examine that for raster properties.
-                        //const MdfModel::MdfString& flgeom = gl->GetGeometry();
-                        RSMgFeatureReader rsrdr(rdr, L"clipped_raster");
-
                         //stylize into a dwf
                         dr->StartLayer(&legendInfo, &fcinfo);
-                        ds->StylizeGridLayer(gl, &rsrdr, xformer, NULL, NULL);
+                        ds->StylizeGridLayer(gl, rdr, item->GetTransform(), NULL, NULL);
                         dr->EndLayer();
                     }
+                    delete rdr;
                 }
 
                 #ifdef _DEBUG
@@ -1060,6 +953,9 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     size_t i0 = st.find(L"<CoordinateSpace>");
                     size_t i1 = st.find(L"</CoordinateSpace>");
 
+                    TransformCache* cached = NULL;
+                    MgCSTrans* xformer = NULL;
+
                     if (   i0 != STRING::npos
                         && i1 != STRING::npos)
                     {
@@ -1075,7 +971,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                             {
                                 xformer = cached->GetTransform();
                             }
-                            else 
+                            else
                             {
                                 Ptr<MgCoordinateSystem> srcCs = csFactory->Create(cs);
                                 if (srcCs.p)
@@ -1142,7 +1038,6 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
             delete ldf;
             ldf = NULL;
         }
-
     }
 
     #ifdef _DEBUG
@@ -1662,9 +1557,25 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                                         }
 
                                         //override colors
-                                        ParseColor(marksym->GetFill()->GetForegroundColor(), mdef.style().color());
-                                        ParseColor(marksym->GetEdge()->GetColor(), mdef.style().outline().color());
-                                        ParseColor(marksym->GetFill()->GetBackgroundColor(), mdef.style().background());
+                                        if (marksym->GetFill())
+                                        {
+                                            ParseColor(marksym->GetFill()->GetForegroundColor(), mdef.style().color());
+                                            ParseColor(marksym->GetFill()->GetBackgroundColor(), mdef.style().background());
+                                        }
+                                        else
+                                        {
+                                            mdef.style().color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
+                                            mdef.style().background() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
+                                        }
+
+                                        if (marksym->GetEdge())
+                                        {
+                                            ParseColor(marksym->GetEdge()->GetColor(), mdef.style().outline().color());
+                                        }
+                                        else
+                                        {
+                                            mdef.style().outline().color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
+                                        }
                                     }
                                     break;
                                 case SymbolVisitor::stFont:
@@ -1692,8 +1603,8 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                                         ParseColor(fontSym->GetForegroundColor(), mdef.style().color());
                                     }
                                 //TODO: other types of symbols
-                                default: break;
-
+                                default:
+                                    break;
                                 }
                             }
                         }

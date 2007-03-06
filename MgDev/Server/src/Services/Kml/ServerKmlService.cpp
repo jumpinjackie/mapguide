@@ -467,11 +467,9 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             extents->GetLowerLeftCoordinate()->GetY(),
             extents->GetUpperRightCoordinate()->GetX(),
             extents->GetUpperRightCoordinate()->GetY());
-        Ptr<MgFeatureReader> featureReader = MgStylizationUtil::ExecuteFeatureQuery(m_svcFeature, rsExtent, vl, NULL, destCs, layerCs, NULL);
-        if (featureReader.p)
+        RSMgFeatureReader* rdr = MgStylizationUtil::ExecuteFeatureQuery(m_svcFeature, rsExtent, vl, NULL, destCs, layerCs, NULL);
+        if (rdr)
         {
-            //wrap in an RS_FeatureReader
-            RSMgFeatureReader rsrdr(featureReader, vl->GetGeometry());
             RS_FeatureClassInfo fcInfo(vl->GetFeatureName());
             MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
             for (int j=0; j<pmappings->GetCount(); j++)
@@ -480,9 +478,10 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
                 fcInfo.add_mapping(m->GetName(), m->GetValue());
             }
             renderer.StartLayer(&layerInfo, &fcInfo);
-            stylizer.StylizeFeatures(vl, &rsrdr, csTrans, NULL, NULL);
+            stylizer.StylizeFeatures(vl, rdr, csTrans, NULL, NULL);
             renderer.EndLayer();
         }
+        delete rdr;
     }
 /*    else if(gl != NULL)
     {

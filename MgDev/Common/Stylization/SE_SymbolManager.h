@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,28 +15,19 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SIMPLEOVERPOST_H
-#define SIMPLEOVERPOST_H
+#ifndef SE_SYMBOLMANAGER_H
+#define SE_SYMBOLMANAGER_H
 
-#include "Bounds.h"
+namespace MdfModel
+{
+    class SymbolDefinition;
+};
 
-//Interface definition for label overpost region maintenance object
-//It holds on to lists of overposts regions and can also check if
-//a given region overlaps existing overpost/exclusion regions
-class SimpleOverpost
+class SE_SymbolManager
 {
 public:
-    ~SimpleOverpost();
-
-    bool Overlaps(RS_F_Point* pts, int npts);
-    void AddRegion(RS_F_Point* pts, int npts);
-    void AddRegions(SimpleOverpost& mgr);
-    void Clear();
-
-private:
-    void ComputeBounds(RS_F_Point* RESTRICT pts, int npts, RS_Bounds& b);
-
-    std::vector<RS_Bounds> m_excludes;
+    virtual MdfModel::SymbolDefinition* GetSymbolDefinition(const wchar_t* resource) = 0;
+    virtual unsigned char* GetImageData(const wchar_t* resource, int& length) = 0;
 };
 
 #endif
