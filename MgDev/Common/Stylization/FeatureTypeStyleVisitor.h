@@ -31,7 +31,8 @@ public:
         ftsLine       = 1,
         ftsArea       = 2,
         ftsPoint      = 3,
-        ftsGridColor  = 4
+        ftsGridColor  = 4,
+        ftsComposite  = 5
     };
 
     FeatureTypeStyleVisitor()
@@ -53,6 +54,11 @@ public:
     virtual void VisitAreaTypeStyle(MdfModel::AreaTypeStyle& /*fsAreaTypeStyle*/)
     {
         m_type = ftsArea;
+    }
+
+    virtual void VisitCompositeTypeStyle(MdfModel::CompositeTypeStyle& /*fsCompositeTypeStyle*/)
+    {
+        m_type = ftsComposite;
     }
 
     virtual void VisitGridColorStyle(MdfModel::GridColorStyle& /*fsGridColorStyle*/)
@@ -79,9 +85,7 @@ public:
     }
 
 private:
-
     eFeatureTypeStyle m_type;
-
 };
 
 #endif
