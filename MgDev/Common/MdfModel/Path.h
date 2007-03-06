@@ -1,0 +1,100 @@
+//
+//  Copyright (C) 2007 by Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+#ifndef PATH_H_
+#define PATH_H_
+
+#include "MdfModel.h"
+#include "GraphicElement.h"
+
+BEGIN_NAMESPACE_MDFMODEL
+
+    //-------------------------------------------------------------------------
+    // DESCRIPTION: Building block of the geometry of a SymbolDefinition
+    //-------------------------------------------------------------------------
+    class MDFMODEL_API Path : public GraphicElement
+    {
+    public:
+        enum LineCap
+        {
+            CapNone,
+            CapRound,
+            CapTriangle,
+            CapSquare
+        };
+
+        enum LineJoin
+        {
+            JoinNone,
+            JoinBevel,
+            JoinRound,
+            JoinMiter
+        };
+
+        // Construction, destruction, initialization
+        Path();
+        virtual ~Path();
+
+        const MdfString& GetGeometry() const;
+        void SetGeometry(const MdfString& geometry);
+
+        const MdfString& GetFillColor() const;
+        void SetFillColor(const MdfString& fillColor);
+
+        const MdfString& GetLineColor() const;
+        void SetLineColor(const MdfString& lineColor);
+
+        const MdfString& GetLineWeight() const;
+        void SetLineWeight(const MdfString& lineWeight);
+
+        // TODO: WCW - should this be a boolean property?
+        const MdfString& GetLineWeightScalable() const;
+        void SetLineWeightScalable(const MdfString& lineWeightScalable);
+
+        // TODO: WCW - should this be a string property?
+        LineCap GetLineCap() const;
+        void SetLineCap(LineCap lineCap);
+
+        // TODO: WCW - should this be a string property?
+        LineJoin GetLineJoin() const;
+        void SetLineJoin(LineJoin lineJoin);
+
+        const MdfString& GetLineMiterLimit() const;
+        void SetLineMiterLimit(const MdfString& lineMiterLimit);
+
+        virtual void AcceptVisitor(IGraphicElementVisitor& igeVisitor);
+
+    private:
+        // Hidden copy constructor and assignment operator.
+        Path(const Path&);
+        Path& operator=(const Path&);
+
+        // Data members
+        MdfString m_sGeometry;
+
+        MdfString m_sFillColor;
+        MdfString m_sLineColor;
+        MdfString m_sLineWeight;
+        MdfString m_sLineWeightScalable;
+
+        LineCap m_eLineCap;
+        LineJoin m_eLineJoin;
+        MdfString m_sLineMiterLimit;
+    };
+
+END_NAMESPACE_MDFMODEL
+#endif // PATH_H_

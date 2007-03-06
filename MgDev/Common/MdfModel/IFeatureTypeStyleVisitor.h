@@ -25,12 +25,13 @@ BEGIN_NAMESPACE_MDFMODEL
     class LineTypeStyle;
     class PointTypeStyle;
     class AreaTypeStyle;
+    class CompositeTypeStyle;
     class GridColorStyle;
     class GridSurfaceStyle;
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // The IFeatureTypeStyleVisitor is an interface that is used for determining the
+    // The IFeatureTypeStyleVisitor is an interface that is used for determining
     // the concrete class type of a pointer or reference to the abstract
     // FeatureTypeStyle class.
     //-------------------------------------------------------------------------
@@ -41,9 +42,10 @@ BEGIN_NAMESPACE_MDFMODEL
         virtual void VisitLineTypeStyle(LineTypeStyle& fsLineTypeStyle) = 0;
         virtual void VisitPointTypeStyle(PointTypeStyle& fsPointTypeStyle) = 0;
         virtual void VisitAreaTypeStyle(AreaTypeStyle& fsAreaTypeStyle) = 0;
+        virtual void VisitCompositeTypeStyle(CompositeTypeStyle& fsCompositeTypeStyle) = 0;
         virtual void VisitGridColorStyle(GridColorStyle &fsGridStyle) = 0;
         virtual void VisitGridSurfaceStyle(GridSurfaceStyle &fsGridStyle) = 0;
     };
 
 END_NAMESPACE_MDFMODEL
-#endif //IFEATURETYPESTYLEVISITOR_H_
+#endif // IFEATURETYPESTYLEVISITOR_H_

@@ -21,13 +21,13 @@
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
 #include "Label.h"
-#include "MdfRootObject.h"
 
 namespace MdfParser
 {
     class IOAreaRule;
     class IOLineRule;
     class IOPointRule;
+    class IOCompositeRule;
 }
 
 BEGIN_NAMESPACE_MDFMODEL
@@ -40,11 +40,12 @@ BEGIN_NAMESPACE_MDFMODEL
     // Filtering criteria takes the form of a tree that uses logical operators
     // to combine attribute-based and geometry-based filters.
     //-------------------------------------------------------------------------
-class MDFMODEL_API Rule : public MdfRootObject
+    class MDFMODEL_API Rule : public MdfRootObject
     {
         friend class MdfParser::IOAreaRule;
         friend class MdfParser::IOLineRule;
         friend class MdfParser::IOPointRule;
+        friend class MdfParser::IOCompositeRule;
 
     public:
         // Destruction
@@ -52,11 +53,11 @@ class MDFMODEL_API Rule : public MdfRootObject
 
         // Operations
         // Property : LegendLabel
-        const MdfString& GetLegendLabel()const;
+        const MdfString& GetLegendLabel() const;
         void SetLegendLabel(const MdfString& pstrLegendLabel);
 
         // Property : Filter
-        const MdfString& GetFilter()const;
+        const MdfString& GetFilter() const;
         void SetFilter(const MdfString& strFilter);
 
         // Property : Label
@@ -82,11 +83,10 @@ class MDFMODEL_API Rule : public MdfRootObject
 
         // Label for multivariate theming.
         Label* m_plblLabel;
-
     };
 
     typedef MdfOwnerCollection<Rule> RuleCollection;
     EXPIMP_TEMPLATE template class MDFMODEL_API MdfOwnerCollection<Rule>;
 
 END_NAMESPACE_MDFMODEL
-#endif //RULE_H_
+#endif // RULE_H_

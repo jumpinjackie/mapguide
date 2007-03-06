@@ -8,6 +8,7 @@ libMgMdfModel_la_SOURCES = \
   AreaRule.cpp \
   AreaSymbolization2D.cpp \
   AreaTypeStyle.cpp \
+  AreaUsage.cpp \
   AttributeRelate.cpp \
   BaseMapLayer.cpp \
   BaseMapLayerGroup.cpp \
@@ -15,6 +16,10 @@ libMgMdfModel_la_SOURCES = \
   Box2D.cpp \
   CalculatedProperty.cpp \
   ChannelBand.cpp \
+  CompositeRule.cpp \
+  CompositeSymbolization.cpp \
+  CompositeTypeStyle.cpp \
+  CompoundSymbolDefinition.cpp \
   ConvertUTF.c \
   DisplayScale.cpp \
   DrawingLayerDefinition.cpp \
@@ -23,6 +28,7 @@ libMgMdfModel_la_SOURCES = \
   FeatureTypeStyle.cpp \
   Fill.cpp \
   FontSymbol.cpp \
+  GraphicElement.cpp \
   GridColor.cpp \
   GridColorRule.cpp \
   GridColorStyle.cpp \
@@ -30,6 +36,7 @@ libMgMdfModel_la_SOURCES = \
   GridScaleRange.cpp \
   GridSurfaceStyle.cpp \
   HillShade.cpp \
+  Image.cpp \
   ImageSymbol.cpp \
   Label.cpp \
   LayerDefinition.cpp \
@@ -37,6 +44,7 @@ libMgMdfModel_la_SOURCES = \
   LineRule.cpp \
   LineSymbolization2D.cpp \
   LineTypeStyle.cpp \
+  LineUsage.cpp \
   MapDefinition.cpp \
   MapLayer.cpp \
   MapLayerGroup.cpp \
@@ -45,15 +53,26 @@ libMgMdfModel_la_SOURCES = \
   MdfModel.cpp \
   MdfRootObject.cpp \
   NameStringPair.cpp \
+  Override.cpp \
+  Parameter.cpp \
+  Path.cpp \
   PointRule.cpp \
   PointSymbolization2D.cpp \
   PointTypeStyle.cpp \
+  PointUsage.cpp \
   RelateProperty.cpp \
+  ResizeBox.cpp \
   Rule.cpp \
+  SimpleSymbol.cpp \
+  SimpleSymbolDefinition.cpp \
   Stroke.cpp \
   SupplementalSpatialContextInfo.cpp \
   Symbol.cpp \
+  SymbolDefinition.cpp \
+  SymbolInstance.cpp \
   Symbolization.cpp \
+  Text.cpp \
+  TextFrame.cpp \
   TextSymbol.cpp \
   UnicodeString.cpp \
   Vector.cpp \
@@ -65,6 +84,7 @@ noinst_HEADERS = \
   AreaRule.h \
   AreaSymbolization2D.h \
   AreaTypeStyle.h \
+  AreaUsage.h \
   AttributeRelate.h \
   Base64.h \
   BaseMapLayer.h \
@@ -73,6 +93,10 @@ noinst_HEADERS = \
   Box2D.h \
   CalculatedProperty.h \
   ChannelBand.h \
+  CompositeRule.h \
+  CompositeSymbolization.h \
+  CompositeTypeStyle.h \
+  CompoundSymbolDefinition.h \
   ConvertUTF.h \
   DisplayScale.h \
   DrawingLayerDefinition.h \
@@ -81,6 +105,7 @@ noinst_HEADERS = \
   FeatureTypeStyle.h \
   Fill.h \
   FontSymbol.h \
+  GraphicElement.h \
   GridColor.h \
   GridColorRule.h \
   GridColorStyle.h \
@@ -89,8 +114,12 @@ noinst_HEADERS = \
   GridSurfaceStyle.h \
   HillShade.h \
   IFeatureTypeStyleVisitor.h \
+  IGraphicElementVisitor.h \
+  ISymbolDefinitionVisitor.h \
   ISymbolVisitor.h \
   ISymbolizationVisitor.h \
+  IUsageVisitor.h \
+  Image.h \
   ImageSymbol.h \
   Label.h \
   LayerDefinition.h \
@@ -98,6 +127,7 @@ noinst_HEADERS = \
   LineRule.h \
   LineSymbolization2D.h \
   LineTypeStyle.h \
+  LineUsage.h \
   MapDefinition.h \
   MapLayer.h \
   MapLayerGroup.h \
@@ -107,18 +137,30 @@ noinst_HEADERS = \
   MdfOwnerCollection.h \
   MdfRootObject.h \
   NameStringPair.h \
+  Override.h \
+  Parameter.h \
+  Path.h \
   PointRule.h \
   PointSymbolization2D.h \
   PointTypeStyle.h \
+  PointUsage.h \
   RelateProperty.h \
+  ResizeBox.h \
   Rule.h \
+  SimpleSymbol.h \
+  SimpleSymbolDefinition.h \
   SizeContexts.h \
   Stroke.h \
   SupplementalSpatialContextInfo.h \
   Symbol.h \
+  SymbolDefinition.h \
+  SymbolInstance.h \
   Symbolization.h \
+  Text.h \
+  TextFrame.h \
   TextSymbol.h \
   UnicodeString.h \
+  Usage.h \
   Vector.h \
   VectorLayerDefinition.h \
   VectorScaleRange.h \

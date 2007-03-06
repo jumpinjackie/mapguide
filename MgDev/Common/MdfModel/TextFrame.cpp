@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,75 +17,96 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// The NameStringPair class implementation.
-// This class represents a pair of strings.  The first is the
-// name and the second is the associated text.
+// The TextFrame class implementation.
 //-------------------------------------------------------------------------
 
-#include "stdafx.h"
-#include "NameStringPair.h"
+#include "TextFrame.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
 //-------------------------------------------------------------------------
-// PURPOSE: Initialize an instance of the NameStringPair class.
+// PURPOSE: Initialize an instance of the TextFrame class.
 //-------------------------------------------------------------------------
-NameStringPair::NameStringPair()
+TextFrame::TextFrame()
 {
-    //Default Settings
-    this->m_strName = L"";
-    this->m_strValue = L"";
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Initialize an instance of the NameStringPair class.
+// PURPOSE: Destructor. Delete all objects that have been created on the
+//          heap or have been adopted.
+//-------------------------------------------------------------------------
+TextFrame::~TextFrame()
+{
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
 // PARAMETERS:
-//     Input:
-//          strName - the name
-//          strText - the associated text
 //-------------------------------------------------------------------------
-NameStringPair::NameStringPair(const MdfString& strName, const MdfString& strValue)
+const MdfString& TextFrame::GetLineColor() const
 {
-    this->m_strName = strName;
-    this->m_strValue = strValue;
+    return this->m_sLineColor;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Name property in this NameStringPair.
-// RETURNS: The name of the name-value pair.
-//-------------------------------------------------------------------------
-const MdfString& NameStringPair::GetName() const
-{
-    return this->m_strName;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Name property in this NameStringPair.
+// PURPOSE:
 // PARAMETERS:
-//      Input:
-//         strName - The name.
 //-------------------------------------------------------------------------
-void NameStringPair::SetName(const MdfString& strName)
+void TextFrame::SetLineColor(const MdfString& color)
 {
-    this->m_strName = strName;
+    this->m_sLineColor = color;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Value property in this NameStringPair.
-// RETURNS: The value of the name-value pair.
-//-------------------------------------------------------------------------
-const MdfString& NameStringPair::GetValue() const
-{
-    return this->m_strValue;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Value property in this NameStringPair.
+// PURPOSE:
 // PARAMETERS:
-//      Input:
-//         strValue - The value associate with the name.
 //-------------------------------------------------------------------------
-void NameStringPair::SetValue(const MdfString& strValue)
+const MdfString& TextFrame::GetFillColor() const
 {
-    this->m_strValue = strValue;
+    return this->m_sFillColor;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void TextFrame::SetFillColor(const MdfString& color)
+{
+    this->m_sFillColor = color;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& TextFrame::GetOffsetX() const
+{
+    return this->m_sOffsetX;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void TextFrame::SetOffsetX(const MdfString& offset)
+{
+    this->m_sOffsetX = offset;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& TextFrame::GetOffsetY() const
+{
+    return this->m_sOffsetY;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void TextFrame::SetOffsetY(const MdfString& offset)
+{
+    this->m_sOffsetY = offset;
 }

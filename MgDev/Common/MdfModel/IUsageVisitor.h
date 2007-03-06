@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,33 +15,31 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef ISYMBOLIZATIONVISITOR_H_
-#define ISYMBOLIZATIONVISITOR_H_
+#ifndef IUSAGEVISITOR_H_
+#define IUSAGEVISITOR_H_
 
 #include "MdfModel.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
-    class LineSymbolization2D;
-    class AreaSymbolization2D;
-    class PointSymbolization2D;
-    class CompositeSymbolization;
+    class PointUsage;
+    class LineUsage;
+    class AreaUsage;
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // The ISymbolizationVisitor is an interface that is used for determining
+    // The IUsageVisitor is an interface that is used for determining
     // the concrete class type of a pointer or reference to the abstract
-    // Symbolization class.
+    // Usage class.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API ISymbolizationVisitor
+    class MDFMODEL_API IUsageVisitor
     {
     public:
         // Operations
-        virtual void VisitLineSymbolization2D(LineSymbolization2D& syLine) = 0;
-        virtual void VisitAreaSymbolization2D(AreaSymbolization2D& syArea) = 0;
-        virtual void VisitPointSymbolization2D(PointSymbolization2D& syPoint) = 0;
-        virtual void VisitCompositeSymbolization(CompositeSymbolization& syComp) = 0;
+        virtual void VisitPointUsage(PointUsage& pointUsage) = 0;
+        virtual void VisitLineUsage(LineUsage& lineUsage) = 0;
+        virtual void VisitAreaUsage(AreaUsage& areaUsage) = 0;
     };
 
 END_NAMESPACE_MDFMODEL
-#endif // ISYMBOLIZATIONVISITOR_H_
+#endif // IUSAGEVISITOR_H_

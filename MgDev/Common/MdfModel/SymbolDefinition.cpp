@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,75 +17,61 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// The NameStringPair class implementation.
-// This class represents a pair of strings.  The first is the
-// name and the second is the associated text.
+// The SymbolDefinition class implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "NameStringPair.h"
+#include "SymbolDefinition.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
 //-------------------------------------------------------------------------
-// PURPOSE: Initialize an instance of the NameStringPair class.
+// PURPOSE: Initialize an instance of the SymbolDefinition class.
 //-------------------------------------------------------------------------
-NameStringPair::NameStringPair()
+SymbolDefinition::SymbolDefinition()
 {
-    //Default Settings
-    this->m_strName = L"";
-    this->m_strValue = L"";
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Initialize an instance of the NameStringPair class.
+// PURPOSE: Destructor. Delete all objects that have been created on the
+//          heap or have been adopted.
+//-------------------------------------------------------------------------
+SymbolDefinition::~SymbolDefinition()
+{
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
 // PARAMETERS:
-//     Input:
-//          strName - the name
-//          strText - the associated text
 //-------------------------------------------------------------------------
-NameStringPair::NameStringPair(const MdfString& strName, const MdfString& strValue)
+void SymbolDefinition::SetName(const MdfString& name)
 {
-    this->m_strName = strName;
-    this->m_strValue = strValue;
+    this->m_sName = name;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Name property in this NameStringPair.
-// RETURNS: The name of the name-value pair.
-//-------------------------------------------------------------------------
-const MdfString& NameStringPair::GetName() const
-{
-    return this->m_strName;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Name property in this NameStringPair.
+// PURPOSE:
 // PARAMETERS:
-//      Input:
-//         strName - The name.
 //-------------------------------------------------------------------------
-void NameStringPair::SetName(const MdfString& strName)
+const MdfString& SymbolDefinition::GetName() const
 {
-    this->m_strName = strName;
+    return this->m_sName;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Value property in this NameStringPair.
-// RETURNS: The value of the name-value pair.
-//-------------------------------------------------------------------------
-const MdfString& NameStringPair::GetValue() const
-{
-    return this->m_strValue;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Value property in this NameStringPair.
+// PURPOSE:
 // PARAMETERS:
-//      Input:
-//         strValue - The value associate with the name.
 //-------------------------------------------------------------------------
-void NameStringPair::SetValue(const MdfString& strValue)
+void SymbolDefinition::SetDescription(const MdfString& description)
 {
-    this->m_strValue = strValue;
+    this->m_sDescription = description;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& SymbolDefinition::GetDescription() const
+{
+    return this->m_sDescription;
 }
