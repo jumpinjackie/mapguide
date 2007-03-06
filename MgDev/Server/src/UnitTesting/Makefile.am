@@ -22,6 +22,7 @@ INCLUDES = \
   -I../Services/Resource \
   -I../Services/ServerAdmin \
   -I../Services/Site \
+  -I../Services/Kml \
   -I../Services/Tile \
   -I$(map_fdo_include)
 
@@ -42,6 +43,7 @@ libMgUnitTesting_la_SOURCES = \
   TestSiteService.cpp \
   TestTileService.cpp \
   TestSiteManager.cpp \
+  TestKmlService.cpp \
   UnitTesting.cpp
 
 noinst_HEADERS = \
@@ -60,6 +62,7 @@ noinst_HEADERS = \
   TestSiteService.h \
   TestTileService.h \
   TestSiteManager.h \
+  TestKmlService.h \
   UnitTesting.h
 
 libMgUnitTesting_la_LIBADD = -lcppunit

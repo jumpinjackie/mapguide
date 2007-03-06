@@ -210,6 +210,9 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\Redding_Parcels.shx \
         ..\..\bin\UnitTestFiles\1.1.1.mgd \
         ..\..\bin\UnitTestFiles\ogcwkts.txt \
+        ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt\
+        ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt\
+        ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt\
         ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
         CopyFdoComponentsDebug \
         CopyFdoProvidersDebug \
@@ -431,6 +434,9 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\Redding_Parcels.shx \
           ..\..\bin\UnitTestFiles\1.1.1.mgd \
           ..\..\bin\UnitTestFiles\ogcwkts.txt \
+          ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt\
+          ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt\
+          ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt\
           ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
           CopyFdoComponentsRelease \
           CopyFdoProvidersRelease \
@@ -516,6 +522,9 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shx            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shx
     if EXIST ..\..\bin\UnitTestFiles\1.1.1.mgd                      del /F ..\..\bin\UnitTestFiles\1.1.1.mgd
     if EXIST ..\..\bin\UnitTestFiles\ogcwkts.txt                    del /F ..\..\bin\UnitTestFiles\ogcwkts.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt         del /F ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
     del /f   ..\..\bin\debug\*.ilk
 
@@ -596,6 +605,9 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shx            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shx
     if EXIST ..\..\bin\UnitTestFiles\1.1.1.mgd                      del /F ..\..\bin\UnitTestFiles\1.1.1.mgd
     if EXIST ..\..\bin\UnitTestFiles\ogcwkts.txt                    del /F ..\..\bin\UnitTestFiles\ogcwkts.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt         del /F ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
 
 
@@ -640,7 +652,9 @@ cleanrelease:
 "..\..\..\UnitTest\TestData\TileService\UT_VotingDistricts.sdf" :
 "..\..\..\UnitTest\TestData\ServerAdmin\1.1.1.mgd" :
 "..\..\..\UnitTest\TestData\CoordinateSystems\ogcwkts.txt" :
-
+"..\..\..\UnitTest\TestData\KmlService\UT_GetMapKmlResult.txt" :
+"..\..\..\UnitTest\TestData\KmlService\UT_GetLayerKmlResult.txt" :
+"..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" :
 
 ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml : "..\..\..\UnitTest\TestData\ResourceService\LibraryRepositoryContent.xml"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
@@ -809,3 +823,17 @@ cleanrelease:
 ..\..\bin\UnitTestFiles\ogcwkts.txt : "..\..\..\UnitTest\TestData\CoordinateSystems\ogcwkts.txt"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\CoordinateSystems\ogcwkts.txt" xcopy /r /d /y "..\..\..\UnitTest\TestData\CoordinateSystems\ogcwkts.txt" ..\..\bin\UnitTestFiles\
+    
+..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt : "..\..\..\UnitTest\TestData\KmlService\UT_GetMapKmlResult.txt"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\KmlService\UT_GetMapKmlResult.txt" xcopy /r /d /y "..\..\..\UnitTest\TestData\KmlService\UT_GetMapKmlResult.txt" ..\..\bin\UnitTestFiles\
+    
+..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt : "..\..\..\UnitTest\TestData\KmlService\UT_GetLayerKmlResult.txt"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\KmlService\UT_GetLayerKmlResult.txt" xcopy /r /d /y "..\..\..\UnitTest\TestData\KmlService\UT_GetLayerKmlResult.txt" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt : "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" xcopy /r /d /y "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" ..\..\bin\UnitTestFiles\
+
+
