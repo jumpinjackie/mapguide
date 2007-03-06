@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,75 +17,70 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// The NameStringPair class implementation.
-// This class represents a pair of strings.  The first is the
-// name and the second is the associated text.
+// The Override class implementation.
 //-------------------------------------------------------------------------
 
-#include "stdafx.h"
-#include "NameStringPair.h"
+#include "Override.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
 //-------------------------------------------------------------------------
-// PURPOSE: Initialize an instance of the NameStringPair class.
+// PURPOSE: Initialize an instance of the Override class.
 //-------------------------------------------------------------------------
-NameStringPair::NameStringPair()
+Override::Override()
 {
-    //Default Settings
-    this->m_strName = L"";
-    this->m_strValue = L"";
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Initialize an instance of the NameStringPair class.
+// PURPOSE:
 // PARAMETERS:
-//     Input:
-//          strName - the name
-//          strText - the associated text
 //-------------------------------------------------------------------------
-NameStringPair::NameStringPair(const MdfString& strName, const MdfString& strValue)
+const MdfString& Override::GetSymbolName() const
 {
-    this->m_strName = strName;
-    this->m_strValue = strValue;
+    return this->m_sSymbolName;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Name property in this NameStringPair.
-// RETURNS: The name of the name-value pair.
-//-------------------------------------------------------------------------
-const MdfString& NameStringPair::GetName() const
-{
-    return this->m_strName;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Name property in this NameStringPair.
+// PURPOSE:
 // PARAMETERS:
-//      Input:
-//         strName - The name.
 //-------------------------------------------------------------------------
-void NameStringPair::SetName(const MdfString& strName)
+void Override::SetSymbolName(const MdfString& symbolName)
 {
-    this->m_strName = strName;
+    this->m_sSymbolName = symbolName;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Value property in this NameStringPair.
-// RETURNS: The value of the name-value pair.
-//-------------------------------------------------------------------------
-const MdfString& NameStringPair::GetValue() const
-{
-    return this->m_strValue;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Value property in this NameStringPair.
+// PURPOSE:
 // PARAMETERS:
-//      Input:
-//         strValue - The value associate with the name.
 //-------------------------------------------------------------------------
-void NameStringPair::SetValue(const MdfString& strValue)
+const MdfString& Override::GetParameterIdentifier() const
 {
-    this->m_strValue = strValue;
+    return this->m_sParameterIdentifier;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Override::SetParameterIdentifier(const MdfString& parameterIdentifier)
+{
+    this->m_sParameterIdentifier = parameterIdentifier;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& Override::GetParameterValue() const
+{
+    return this->m_sParameterValue;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Override::SetParameterValue(const MdfString& parameterValue)
+{
+    this->m_sParameterValue = parameterValue;
 }

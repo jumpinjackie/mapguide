@@ -32,10 +32,11 @@ BEGIN_NAMESPACE_MDFMODEL
 class MDFMODEL_API NameStringPair : public MdfRootObject
     {
     public:
-        //Constructors,
-        //default copy constructor, destructor and assignment operator.
-        NameStringPair(const MdfString& strName , const MdfString& strValue);
+        // Construction, initialization
         NameStringPair();
+        NameStringPair(const MdfString& strName , const MdfString& strValue);
+
+        //default copy constructor, destructor and assignment operator.
 
         // Operations
         // Property : Name

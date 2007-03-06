@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,33 +15,42 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef ISYMBOLIZATIONVISITOR_H_
-#define ISYMBOLIZATIONVISITOR_H_
+#ifndef USAGE_H_
+#define USAGE_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
+#include "IUsageVisitor.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
-    class LineSymbolization2D;
-    class AreaSymbolization2D;
-    class PointSymbolization2D;
-    class CompositeSymbolization;
-
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // The ISymbolizationVisitor is an interface that is used for determining
-    // the concrete class type of a pointer or reference to the abstract
-    // Symbolization class.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API ISymbolizationVisitor
+    class MDFMODEL_API Usage : public MdfRootObject
     {
     public:
-        // Operations
-        virtual void VisitLineSymbolization2D(LineSymbolization2D& syLine) = 0;
-        virtual void VisitAreaSymbolization2D(AreaSymbolization2D& syArea) = 0;
-        virtual void VisitPointSymbolization2D(PointSymbolization2D& syPoint) = 0;
-        virtual void VisitCompositeSymbolization(CompositeSymbolization& syComp) = 0;
+        enum AngleControl
+        {
+            FromAngle,
+            FromGeometry
+        };
+
+        // Destruction
+        virtual ~Usage()
+        {
+        }
+
+        // Visitor Pattern method defined in Usage.
+        virtual void AcceptVisitor(IUsageVisitor& iuVisitor) = 0;
+
+    protected:
+        // Construction, initialization
+        // Default constructor is protected to make this class abstract.
+        Usage()
+        {
+        }
     };
 
 END_NAMESPACE_MDFMODEL
-#endif // ISYMBOLIZATIONVISITOR_H_
+#endif // USAGE_H_
