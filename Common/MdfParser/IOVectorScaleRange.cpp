@@ -20,6 +20,7 @@
 #include "IOAreaTypeStyle.h"
 #include "IOLineTypeStyle.h"
 #include "IOPointTypeStyle.h"
+#include "IOCompositeTypeStyle.h"
 #include "IFeatureTypeStyleVisitor.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -31,8 +32,9 @@ ELEM_MAP_ENTRY(1, VectorScaleRange);
 ELEM_MAP_ENTRY(2, AreaTypeStyle);
 ELEM_MAP_ENTRY(3, LineTypeStyle);
 ELEM_MAP_ENTRY(4, PointTypeStyle);
-ELEM_MAP_ENTRY(5, MinScale);
-ELEM_MAP_ENTRY(6, MaxScale);
+ELEM_MAP_ENTRY(5, CompositeTypeStyle);
+ELEM_MAP_ENTRY(6, MinScale);
+ELEM_MAP_ENTRY(7, MaxScale);
 
 IOVectorScaleRange::IOVectorScaleRange()
 {
@@ -86,6 +88,14 @@ void IOVectorScaleRange::StartElement(const wchar_t *name, HandlerStack *handler
         }
         break;
 
+    case eCompositeTypeStyle:
+        {
+            IOCompositeTypeStyle *IO = new IOCompositeTypeStyle(this->_scaleRange);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
     case eUnknown:
         ParseUnknownXml(name, handlerStack);
         break;
@@ -111,10 +121,10 @@ void IOVectorScaleRange::EndElement(const wchar_t *name, HandlerStack *handlerSt
             this->_scaleRange->SetUnknownXml(UnknownXml());
 
         this->layer->GetScaleRanges()->Adopt(this->_scaleRange);
-        handlerStack->pop();
         this->layer = NULL;
         this->_scaleRange = NULL;
         m_startElemName = L"";
+        handlerStack->pop();
         delete this;
     }
 }
@@ -161,12 +171,16 @@ void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange)
             IO->Write(fd, dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)));
             delete IO;
         }
+        else if (dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)) != 0)
+        {
+            IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)));
+        }
     }
 
     // Write any previously found unknown XML
     if (!scaleRange->GetUnknownXml().empty())
     {
-        fd << toCString(scaleRange->GetUnknownXml()); 
+        fd << toCString(scaleRange->GetUnknownXml());
     }
 
     dectab();

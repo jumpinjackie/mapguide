@@ -102,7 +102,7 @@ void IOGridLayerDefinition::EndElement(const wchar_t *name, HandlerStack *handle
 
 void IOGridLayerDefinition::Write(MdfStream &fd, GridLayerDefinition *gridLayer)
 {
-    fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-1.0.0.xsd\" version=\"1.0.0\">" << std::endl; // NOXLATE
+    fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-1.1.0.xsd\" version=\"1.1.0\">" << std::endl; // NOXLATE
     inctab();
 
     fd << tab() << "<GridLayerDefinition>" << std::endl; // NOXLATE

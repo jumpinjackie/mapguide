@@ -22,6 +22,8 @@
 #include "VectorLayerDefinition.h"
 #include "DrawingLayerDefinition.h"
 #include "GridLayerDefinition.h"
+#include "SimpleSymbolDefinition.h"
+#include "CompoundSymbolDefinition.h"
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/TransService.hpp>
 #include <xercesc/sax2/SAX2XMLReader.hpp>
@@ -52,6 +54,8 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
         VectorLayerDefinition* m_vLayer;
         DrawingLayerDefinition* m_dLayer;
         GridLayerDefinition* m_gLayer;
+        SimpleSymbolDefinition* m_sSymbol;
+        CompoundSymbolDefinition* m_cSymbol;
 
         // Succeeded is true if the parse has succeeded. As of now,
         // there are very loose constraints on this boolean.
@@ -100,9 +104,11 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
                          VectorLayerDefinition *vLayer,
                          DrawingLayerDefinition *dLayer,
                          GridLayerDefinition *gLayer);
+        void WriteToFile(std::string name, SymbolDefinition* pSymbol);
 
-        std::string SerializeToXML(LayerDefinition *pLayer);
         std::string SerializeToXML(MapDefinition *pMap);
+        std::string SerializeToXML(LayerDefinition *pLayer);
+        std::string SerializeToXML(SymbolDefinition *pSymbol);
 
         // there are two modes for retrieving objects created by parsing:
 
@@ -114,6 +120,9 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
         DrawingLayerDefinition* DetachDrawingLayerDefinition();
         GridLayerDefinition* DetachGridLayerDefinition();
         LayerDefinition* DetachLayerDefinition();
+        SimpleSymbolDefinition* DetachSimpleSymbolDefinition();
+        CompoundSymbolDefinition* DetachCompoundSymbolDefinition();
+        SymbolDefinition* DetachSymbolDefinition();
 
         // DEPRECATED - these methods should not be used and should be removed.
         // they return the last parsed object of a given type, but ownership of
@@ -124,10 +133,11 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
         DrawingLayerDefinition *GetDrawingLayerDefinition() { return this->m_dLayer; }
         GridLayerDefinition *GetGridLayerDefinition() { return this->m_gLayer; }
 
-        // creates a clone of the given map/layer definition.
+        // creates a clone of the given map/layer/symbol definition.
         // the definition is serialized and parsed into a new object, which is returned.
-        static LayerDefinition* CreateClone(LayerDefinition *pSourceLD);
         static MapDefinition* CreateClone(MapDefinition *pSourceMD);
+        static LayerDefinition* CreateClone(LayerDefinition *pSourceLD);
+        static SymbolDefinition* CreateClone(SymbolDefinition *pSourceSD);
 
         bool GetSucceeded();
 
@@ -144,7 +154,7 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
                          const XMLCh* const localname,
                          const XMLCh* const qname);
 
-        // Occurs when the characters in between XML tags is encountered.
+        // Occurs when characters in between XML tags are encountered.
         void characters(const XMLCh* const chars, const unsigned int length);
 
         // get error info

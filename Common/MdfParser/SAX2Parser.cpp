@@ -18,10 +18,13 @@
 #include "stdafx.h"
 #include "SAX2Parser.h"
 #include <assert.h>
-#include "IODrawingLayerDefinition.h"
-#include "IOVectorLayerDefinition.h"
-#include "IOGridLayerDefinition.h"
 #include "IOMapDefinition.h"
+#include "IOVectorLayerDefinition.h"
+#include "IODrawingLayerDefinition.h"
+#include "IOGridLayerDefinition.h"
+#include "IOSymbolDefinition.h"
+#include "IOSimpleSymbolDefinition.h"
+#include "IOCompoundSymbolDefinition.h"
 #include "UnicodeString.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -70,6 +73,10 @@ SAX2Parser::~SAX2Parser()
         delete m_dLayer;
     if (m_gLayer != NULL)
         delete m_gLayer;
+    if (m_sSymbol != NULL)
+        delete m_sSymbol;
+    if (m_cSymbol != NULL)
+        delete m_cSymbol;
 }
 
 
@@ -79,6 +86,8 @@ void SAX2Parser::Flush()
     m_vLayer = NULL;
     m_dLayer = NULL;
     m_gLayer = NULL;
+    m_sSymbol = NULL;
+    m_cSymbol = NULL;
     m_succeeded = false;
 }
 
@@ -120,7 +129,7 @@ MapDefinition* SAX2Parser::DetachMapDefinition()
 }
 
 
-// Returns a reference to the parser's feature layer definition
+// Returns a reference to the parser's vector layer definition
 // After this call the parser no longer owns the object.
 VectorLayerDefinition* SAX2Parser::DetachVectorLayerDefinition()
 {
@@ -150,29 +159,54 @@ GridLayerDefinition* SAX2Parser::DetachGridLayerDefinition()
 }
 
 
-// Returns a reference to the parser's grid layer definition
+// Returns a reference to the parser's layer definition
 // After this call the parser no longer owns the object.
 LayerDefinition* SAX2Parser::DetachLayerDefinition()
 {
-    LayerDefinition* ldef = NULL;
-
     if (m_vLayer)
-    {
-        ldef = m_vLayer;
-        m_vLayer = NULL;
-    }
-    else if (m_gLayer)
-    {
-        ldef = m_gLayer;
-        m_gLayer = NULL;
-    }
-    else if (m_dLayer)
-    {
-        ldef = m_dLayer;
-        m_dLayer = NULL;
-    }
+        return DetachVectorLayerDefinition();
 
-    return ldef;
+    if (m_dLayer)
+        return DetachDrawingLayerDefinition();
+
+    if (m_gLayer)
+        return DetachGridLayerDefinition();
+
+    return NULL;
+}
+
+
+// Returns a reference to the parser's simple symbol definition
+// After this call the parser no longer owns the object.
+SimpleSymbolDefinition* SAX2Parser::DetachSimpleSymbolDefinition()
+{
+    SimpleSymbolDefinition* ret = m_sSymbol;
+    m_sSymbol= NULL;
+    return ret;
+}
+
+
+// Returns a reference to the parser's compound symbol definition
+// After this call the parser no longer owns the object.
+CompoundSymbolDefinition* SAX2Parser::DetachCompoundSymbolDefinition()
+{
+    CompoundSymbolDefinition* ret = m_cSymbol;
+    m_cSymbol= NULL;
+    return ret;
+}
+
+
+// Returns a reference to the parser's symbol definition
+// After this call the parser no longer owns the object.
+SymbolDefinition* SAX2Parser::DetachSymbolDefinition()
+{
+    if (m_sSymbol)
+        return DetachSimpleSymbolDefinition();
+
+    if (m_cSymbol)
+        return DetachCompoundSymbolDefinition();
+
+    return NULL;
 }
 
 
@@ -252,11 +286,38 @@ void SAX2Parser::WriteToFile(std::string name,
     if(fd.is_open())
     {
         zerotab();
-        fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl << std::endl; // NOXLATE
-        inctab();
+        fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
         WriteDefinition(fd, map, vLayer, dLayer, gLayer);
     }
     fd.close();
+}
+
+
+void SAX2Parser::WriteToFile(std::string name, SymbolDefinition* pSymbol)
+{
+    std::ofstream fd;
+    fd.open(name.c_str());
+    if(fd.is_open())
+    {
+        zerotab();
+        fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
+        IOSymbolDefinition::Write(fd, pSymbol, true);
+    }
+    fd.close();
+}
+
+
+std::string SAX2Parser::SerializeToXML(MapDefinition *pMap)
+{
+    MdfStringStream fd;
+
+    if (NULL != pMap)
+    {
+        std::auto_ptr<IOMapDefinition> spIO(new IOMapDefinition());
+        spIO->Write(fd, pMap);
+    }
+
+    return fd.str();
 }
 
 
@@ -287,18 +348,22 @@ std::string SAX2Parser::SerializeToXML(LayerDefinition *pLayer)
     return fd.str();
 }
 
-std::string SAX2Parser::SerializeToXML(MapDefinition *pMap)
+
+std::string SAX2Parser::SerializeToXML(SymbolDefinition *pSymbol)
 {
     MdfStringStream fd;
 
-    if (NULL != pMap)
-    {
-        std::auto_ptr<IOMapDefinition> spIO(new IOMapDefinition());
-        spIO->Write(fd, pMap);
-    }
+    SimpleSymbolDefinition* pSimpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(pSymbol);
+    CompoundSymbolDefinition* pCompoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(pSymbol);
+
+    if (NULL != pSimpleSymbol)
+        IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol);
+    else if (NULL != pCompoundSymbol)
+        IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol);
 
     return fd.str();
 }
+
 
 void SAX2Parser::WriteDefinition(MdfStream &fd,
                                  MapDefinition* map,
@@ -352,7 +417,7 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
         if (str == L"MapDefinition") // NOXLATE
         {
             assert(m_Map == NULL);  // otherwise we leak
-            m_Map = new MapDefinition(L"", L""); // NOXLATE
+            m_Map = new MapDefinition(L"", L"");
             IOMapDefinition* IO = new IOMapDefinition(m_Map);
             m_HandlerStack->push(IO);
             IO->StartElement(str.c_str(), m_HandlerStack);
@@ -360,10 +425,10 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
         else if (str == L"VectorLayerDefinition") // NOXLATE
         {
             assert(m_vLayer == NULL);   // otherwise we leak
-            m_vLayer = new VectorLayerDefinition(L"", L""); // NOXLATE
+            m_vLayer = new VectorLayerDefinition(L"", L"");
             IOVectorLayerDefinition* IO = new IOVectorLayerDefinition(m_vLayer);
             m_HandlerStack->push(IO);
-            IO->StartElement(str.c_str(), m_HandlerStack); // NOXLATE
+            IO->StartElement(str.c_str(), m_HandlerStack);
         }
         else if (str == L"DrawingLayerDefinition") // NOXLATE
         {
@@ -375,8 +440,25 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
         }
         else if (str == L"GridLayerDefinition") // NOXLATE
         {
+            assert(m_gLayer == NULL);   // otherwise we leak
             m_gLayer = new GridLayerDefinition(L"");
-            IOGridLayerDefinition * IO = new IOGridLayerDefinition(m_gLayer);
+            IOGridLayerDefinition* IO = new IOGridLayerDefinition(m_gLayer);
+            m_HandlerStack->push(IO);
+            IO->StartElement(str.c_str(), m_HandlerStack);
+        }
+        else if (str == L"SimpleSymbolDefinition") // NOXLATE
+        {
+            assert(m_sSymbol == NULL);  // otherwise we leak
+            m_sSymbol = new SimpleSymbolDefinition();
+            IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(m_sSymbol);
+            m_HandlerStack->push(IO);
+            IO->StartElement(str.c_str(), m_HandlerStack);
+        }
+        else if (str == L"CompoundSymbolDefinition") // NOXLATE
+        {
+            assert(m_cSymbol == NULL);  // otherwise we leak
+            m_cSymbol = new CompoundSymbolDefinition();
+            IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(m_cSymbol);
             m_HandlerStack->push(IO);
             IO->StartElement(str.c_str(), m_HandlerStack);
         }
@@ -423,6 +505,7 @@ const MdfString& SAX2Parser::GetErrorMessage()
     return this->m_strParserError;
 }
 
+
 LayerDefinition* SAX2Parser::GetLayerDefinition() const
 {
     if (NULL != m_vLayer)
@@ -435,19 +518,6 @@ LayerDefinition* SAX2Parser::GetLayerDefinition() const
     return NULL;
 }
 
-LayerDefinition* SAX2Parser::CreateClone(LayerDefinition *pSourceLD)
-{
-    _ASSERT(NULL != pSourceLD);
-    if (NULL == pSourceLD)
-        return NULL;
-
-    SAX2Parser parser;
-
-    std::string xmlOfLD = parser.SerializeToXML(pSourceLD);
-    parser.ParseString(xmlOfLD.c_str(), xmlOfLD.size());
-
-    return parser.DetachLayerDefinition();
-}
 
 MapDefinition* SAX2Parser::CreateClone(MapDefinition *pSourceMD)
 {
@@ -456,9 +526,36 @@ MapDefinition* SAX2Parser::CreateClone(MapDefinition *pSourceMD)
         return NULL;
 
     SAX2Parser parser;
-
     std::string xmlOfMD = parser.SerializeToXML(pSourceMD);
     parser.ParseString(xmlOfMD.c_str(), xmlOfMD.size());
 
     return parser.DetachMapDefinition();
+}
+
+
+LayerDefinition* SAX2Parser::CreateClone(LayerDefinition *pSourceLD)
+{
+    _ASSERT(NULL != pSourceLD);
+    if (NULL == pSourceLD)
+        return NULL;
+
+    SAX2Parser parser;
+    std::string xmlOfLD = parser.SerializeToXML(pSourceLD);
+    parser.ParseString(xmlOfLD.c_str(), xmlOfLD.size());
+
+    return parser.DetachLayerDefinition();
+}
+
+
+SymbolDefinition* SAX2Parser::CreateClone(SymbolDefinition *pSourceSD)
+{
+    _ASSERT(NULL != pSourceSD);
+    if (NULL == pSourceSD)
+        return NULL;
+
+    SAX2Parser parser;
+    std::string xmlOfSD = parser.SerializeToXML(pSourceSD);
+    parser.ParseString(xmlOfSD.c_str(), xmlOfSD.size());
+
+    return parser.DetachSymbolDefinition();
 }

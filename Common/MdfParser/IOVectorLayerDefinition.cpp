@@ -147,7 +147,7 @@ void IOVectorLayerDefinition::EndElement(const wchar_t *name, HandlerStack *hand
 
 void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featureLayer)
 {
-    fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-1.0.0.xsd\" version=\"1.0.0\">" << std::endl; // NOXLATE
+    fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-1.1.0.xsd\" version=\"1.1.0\">" << std::endl; // NOXLATE
     inctab();
 
     fd << tab() << startStr(sVectorLayerDefinition) << std::endl;
