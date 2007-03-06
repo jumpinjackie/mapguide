@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,38 +15,32 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _IONAMESTRINGPAIR_H
-#define _IONAMESTRINGPAIR_H
+#ifndef _IOGRAPHICELEMENTCOLLECTION_H
+#define _IOGRAPHICELEMENTCOLLECTION_H
 
 #include "SAX2ElementHandler.h"
-#include "NameStringPair.h"
-#include "VectorLayerDefinition.h"
-#include "FeatureSource.h"
+#include "GraphicElement.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 
 BEGIN_NAMESPACE_MDFPARSER
 
-class IONameStringPair : public SAX2ElementHandler
+class IOGraphicElementCollection : public SAX2ElementHandler
 {
-    private:
-        NameStringPair * _nameStringPair;
-        VectorLayerDefinition * layer;
-        FeatureSource *featureSource;
-        NameStringPairCollection * overrides;
-
     public:
-        IONameStringPair();
-        IONameStringPair(VectorLayerDefinition * layer);
-        IONameStringPair(FeatureSource * featureSource);
-        ~IONameStringPair();
-        void Write(MdfStream &fd, NameStringPair *strStrPair);
+        IOGraphicElementCollection(GraphicElementCollection* elementCollection);
+        ~IOGraphicElementCollection();
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);
         virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+
+        static void Write(MdfStream &fd, GraphicElementCollection* elementCollection);
+
+    private:
+        GraphicElementCollection* _elementCollection;
 };
 
 END_NAMESPACE_MDFPARSER
-#endif // _IONAMESTRINGPAIR_H
+#endif // _IOGRAPHICELEMENTCOLLECTION_H

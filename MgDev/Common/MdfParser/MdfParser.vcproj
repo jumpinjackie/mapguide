@@ -216,6 +216,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOAreaUsage.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOAreaUsage.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOAttributeRelate.cpp"
 			>
 		</File>
@@ -272,6 +280,38 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOCompositeRule.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOCompositeRule.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOCompositeSymbolization.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOCompositeSymbolization.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOCompositeTypeStyle.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOCompositeTypeStyle.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOCompoundSymbolDefinition.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOCompoundSymbolDefinition.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IODrawingLayerDefinition.cpp"
 			>
 		</File>
@@ -317,6 +357,22 @@
 		</File>
 		<File
 			RelativePath=".\IOFontSymbol.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOGraphicElement.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOGraphicElement.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOGraphicElementCollection.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOGraphicElementCollection.h"
 			>
 		</File>
 		<File
@@ -380,6 +436,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOImage.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOImage.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOImageSymbol.cpp"
 			>
 		</File>
@@ -417,6 +481,14 @@
 		</File>
 		<File
 			RelativePath=".\IOLineTypeStyle.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOLineUsage.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOLineUsage.h"
 			>
 		</File>
 		<File
@@ -476,6 +548,46 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOOverride.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOOverride.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOOverrideCollection.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOOverrideCollection.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOParameter.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOParameter.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOParameterCollection.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOParameterCollection.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOPath.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOPath.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOPointRule.cpp"
 			>
 		</File>
@@ -500,6 +612,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOPointUsage.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOPointUsage.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IORelateProperty.cpp"
 			>
 		</File>
@@ -508,11 +628,35 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOResizeBox.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOResizeBox.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOResourceRef.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\IOResourceRef.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSimpleSymbol.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSimpleSymbol.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSimpleSymbolDefinition.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSimpleSymbolDefinition.h"
 			>
 		</File>
 		<File
@@ -540,6 +684,46 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOSymbolDefinition.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSymbolDefinition.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSymbolInstance.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSymbolInstance.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSymbolInstanceCollection.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOSymbolInstanceCollection.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOText.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOText.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOTextFrame.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOTextFrame.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOUnknown.cpp"
 			>
 		</File>
@@ -553,6 +737,14 @@
 		</File>
 		<File
 			RelativePath=".\IOUtil.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOValueList.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOValueList.h"
 			>
 		</File>
 		<File

@@ -13,6 +13,7 @@ libMgMdfParser_la_SOURCES = \
   IOAreaRule.cpp \
   IOAreaSymbolization2D.cpp \
   IOAreaTypeStyle.cpp \
+  IOAreaUsage.cpp \
   IOAttributeRelate.cpp \
   IOBaseMapDefinition.cpp \
   IOBaseMapLayer.cpp \
@@ -20,12 +21,18 @@ libMgMdfParser_la_SOURCES = \
   IOBlockSymbol.cpp \
   IOCalculatedProperty.cpp \
   IOChannelBand.cpp \
+  IOCompositeRule.cpp \
+  IOCompositeSymbolization.cpp \
+  IOCompositeTypeStyle.cpp \
+  IOCompoundSymbolDefinition.cpp \
   IODrawingLayerDefinition.cpp \
   IOExtension.cpp \
   IOExtra.cpp \
   IOFeatureSource.cpp \
   IOFill.cpp \
   IOFontSymbol.cpp \
+  IOGraphicElement.cpp \
+  IOGraphicElementCollection.cpp \
   IOGridColor.cpp \
   IOGridColorBands.cpp \
   IOGridColorRule.cpp \
@@ -34,11 +41,13 @@ libMgMdfParser_la_SOURCES = \
   IOGridScaleRange.cpp \
   IOGridSurfaceStyle.cpp \
   IOHillShade.cpp \
+  IOImage.cpp \
   IOImageSymbol.cpp \
   IOLabel.cpp \
   IOLineRule.cpp \
   IOLineSymbolization2D.cpp \
   IOLineTypeStyle.cpp \
+  IOLineUsage.cpp \
   IOMapDefinition.cpp \
   IOMapLayer.cpp \
   IOMapLayerCommon.cpp \
@@ -46,16 +55,31 @@ libMgMdfParser_la_SOURCES = \
   IOMapLayerGroupCommon.cpp \
   IOMarkSymbol.cpp \
   IONameStringPair.cpp \
+  IOOverride.cpp \
+  IOOverrideCollection.cpp \
+  IOParameter.cpp \
+  IOParameterCollection.cpp \
+  IOPath.cpp \
   IOPointRule.cpp \
   IOPointSymbolization2D.cpp \
   IOPointTypeStyle.cpp \
+  IOPointUsage.cpp \
   IORelateProperty.cpp \
+  IOResizeBox.cpp \
   IOResourceRef.cpp \
+  IOSimpleSymbol.cpp \
+  IOSimpleSymbolDefinition.cpp \
   IOStroke.cpp \
   IOSupplementalSpatialContextInfo.cpp \
   IOSymbol.cpp \
+  IOSymbolDefinition.cpp \
+  IOSymbolInstance.cpp \
+  IOSymbolInstanceCollection.cpp \
+  IOText.cpp \
+  IOTextFrame.cpp \
   IOUnknown.cpp \
   IOUtil.cpp \
+  IOValueList.cpp \
   IOVectorLayerDefinition.cpp \
   IOVectorScaleRange.cpp \
   IOW2DSymbol.cpp \
@@ -68,6 +92,7 @@ noinst_HEADERS = \
   IOAreaRule.h \
   IOAreaSymbolization2D.h \
   IOAreaTypeStyle.h \
+  IOAreaUsage.h \
   IOAttributeRelate.h \
   IOBaseMapDefinition.h \
   IOBaseMapLayer.h \
@@ -75,12 +100,18 @@ noinst_HEADERS = \
   IOBlockSymbol.h \
   IOCalculatedProperty.h \
   IOChannelBand.h \
+  IOCompositeRule.h \
+  IOCompositeSymbolization.h \
+  IOCompositeTypeStyle.h \
+  IOCompoundSymbolDefinition.h \
   IODrawingLayerDefinition.h \
   IOExtension.h \
   IOExtra.h \
   IOFeatureSource.h \
   IOFill.h \
   IOFontSymbol.h \
+  IOGraphicElement.h \
+  IOGraphicElementCollection.h \
   IOGridColor.h \
   IOGridColorRule.h \
   IOGridColorStyle.h \
@@ -88,11 +119,13 @@ noinst_HEADERS = \
   IOGridScaleRange.h \
   IOGridSurfaceStyle.h \
   IOHillShade.h \
+  IOImage.h \
   IOImageSymbol.h \
   IOLabel.h \
   IOLineRule.h \
   IOLineSymbolization2D.h \
   IOLineTypeStyle.h \
+  IOLineUsage.h \
   IOMapDefinition.h \
   IOMapLayer.h \
   IOMapLayerCommon.h \
@@ -100,16 +133,31 @@ noinst_HEADERS = \
   IOMapLayerGroupCommon.h \
   IOMarkSymbol.h \
   IONameStringPair.h \
+  IOOverride.h \
+  IOOverrideCollection.h \
+  IOParameter.h \
+  IOParameterCollection.h \
+  IOPath.h \
   IOPointRule.h \
   IOPointSymbolization2D.h \
   IOPointTypeStyle.h \
+  IOPointUsage.h \
   IORelateProperty.h \
+  IOResizeBox.h \
   IOResourceRef.h \
+  IOSimpleSymbol.h \
+  IOSimpleSymbolDefinition.h \
   IOStroke.h \
   IOSupplementalSpatialContextInfo.h \
   IOSymbol.h \
+  IOSymbolDefinition.h \
+  IOSymbolInstance.h \
+  IOSymbolInstanceCollection.h \
+  IOText.h \
+  IOTextFrame.h \
   IOUnknown.h \
   IOUtil.h \
+  IOValueList.h \
   IOVectorLayerDefinition.h \
   IOVectorScaleRange.h \
   IOW2DSymbol.h \
