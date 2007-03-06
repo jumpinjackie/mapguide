@@ -213,6 +213,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\TestKmlService.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TestKmlService.h"
+			>
+		</File>
+		<File
 			RelativePath=".\TestLogManager.cpp"
 			>
 		</File>

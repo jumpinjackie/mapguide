@@ -56,6 +56,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
         }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestListTests)) == 0)
         {
@@ -146,6 +147,11 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Site Manager tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
         }
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("KmlService")) == 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Kml Service tests. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
+        }
         else
         {
             // Test suite not found
@@ -170,6 +176,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
+        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
     }
 
     if(bRunTests)
