@@ -131,13 +131,13 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
                 while (drawpos < len)
                 {                    
                     if (style->drawLast)
-                        AddLabel(&geom, style, xform, symrot);
+                        AddLabel(&geom, style, symxf, symrot);
                     else
                     {
-                        DrawSymbol(style->symbol, xform, symrot);
+                        DrawSymbol(style->symbol, symxf, symrot);
 
                         if (style->addToExclusionRegions)
-                            AddExclusionRegion(style, xform, symrot);
+                            AddExclusionRegion(style, symxf, symrot);
                     }
 
                     xform.translate(dx_incr, dy_incr);
