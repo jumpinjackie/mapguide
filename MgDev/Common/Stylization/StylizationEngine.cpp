@@ -170,7 +170,7 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
 
             if (!sym->positioningAlgorithm.empty() && sym->positioningAlgorithm != L"Default")
             {
-                LayoutCustomLabel(xformGeom, tmpxform, style, rstyle, mm2px);
+                LayoutCustomLabel(sym->positioningAlgorithm, xformGeom, tmpxform, style, rstyle, mm2px);
             }
             else
             {
@@ -529,14 +529,13 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
 }
 
 
-void StylizationEngine::LayoutCustomLabel(SE_LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px)
+void StylizationEngine::LayoutCustomLabel(const std::wstring& positioningAlgo, SE_LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px)
 {
     //here we decide which one to call based on the name of the positioning algorithm
-    //if (style->positioningAlgorithm == 8Candidates)
-    //{
+    if (positioningAlgo == L"EightSurrounding")
+    {
         SE_PositioningAlgorithms::EightBall(m_renderer, geometry, xform, style, rstyle, mm2px);
-        
-    //}
+    }
     //else if (style->positioningAlgorithm == MultipleHighwayShields)
     //{
 

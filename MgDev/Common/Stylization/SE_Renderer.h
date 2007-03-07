@@ -56,11 +56,21 @@ public:
                                    bool             exclude,
                                    SE_Geometry*     path = NULL) = 0;
 
+    virtual void AddExclusionRegion(RS_F_Point* fpts, int npts) = 0;
+
+    //sigh
+    const RS_F_Point* GetLastExclusionRegion() { return m_lastExclusionRegion; }
+
 private:
     void AddLabel(SE_Geometry* geom, SE_RenderStyle* style, SE_Matrix& xform, double angle);
+    
+    void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angle);
 
+    RS_F_Point m_lastExclusionRegion[4];
+    
 protected:
     SE_LineBufferPool* m_lbp;
+    
 };
 
 #endif // SE_RENDERER_H

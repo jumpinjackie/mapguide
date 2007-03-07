@@ -19,6 +19,7 @@
 #include "SE_Renderer.h"
 #include "SE_LineBuffer.h"
 #include "RS_FontEngine.h"
+#include "SE_Bounds.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
@@ -43,10 +44,17 @@ void SE_Renderer::ProcessPoint(SE_LineBuffer* geometry, SE_RenderPointStyle* sty
         xform.translate(geometry->xf_points()[2*i], geometry->xf_points()[2*i+1]);
         double pt[2] = {geometry->xf_points()[2*i], geometry->xf_points()[2*i+1]};
         geom.points = pt;
+
+        double angle = 0;//TODO: angle needs to be added to the RenderPointStyle
         if (style->drawLast)
-            AddLabel(&geom, style, xform, 0);
+            AddLabel(&geom, style, xform, angle); 
         else
-            DrawSymbol(style->symbol, xform, 0);
+        {
+            DrawSymbol(style->symbol, xform, angle);
+
+            if (style->addToExclusionRegions)
+                AddExclusionRegion(style, xform, angle);
+        }
     }
 }
 
@@ -123,9 +131,14 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
                 while (drawpos < len)
                 {                    
                     if (style->drawLast)
-                        AddLabel(&geom, style, symxf, symrot);
+                        AddLabel(&geom, style, xform, symrot);
                     else
-                        DrawSymbol(style->symbol, symxf, symrot);
+                    {
+                        DrawSymbol(style->symbol, xform, symrot);
+
+                        if (style->addToExclusionRegions)
+                            AddExclusionRegion(style, xform, symrot);
+                    }
 
                     xform.translate(dx_incr, dy_incr);
                     symxf.translate(dx_incr, dy_incr);
@@ -202,5 +215,29 @@ void SE_Renderer::AddLabel(SE_Geometry* geom, SE_RenderStyle* style, SE_Matrix& 
     
     RS_OverpostType type = RS_OverpostType_AllFit;
 
-    ProcessLabelGroup(&info, 1, type, true /*style->addToExclusionRegions*/, geom);
+    ProcessLabelGroup(&info, 1, type, style->addToExclusionRegions, geom);
+}
+
+void SE_Renderer::AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angle)
+{
+    SE_Matrix xform2;
+    xform2.setIdentity();
+    xform2.rotate(angle);
+    xform2.translate(xform.x2, xform.y2);
+
+    RS_F_Point* fpts = m_lastExclusionRegion;
+
+    fpts[0].x = rstyle->bounds->min[0];
+    fpts[0].y = rstyle->bounds->min[1];
+    fpts[1].x = rstyle->bounds->max[0];
+    fpts[1].y = rstyle->bounds->min[1];
+    fpts[2].x = rstyle->bounds->max[0];
+    fpts[2].y = rstyle->bounds->max[1];
+    fpts[3].x = rstyle->bounds->min[0];
+    fpts[3].y = rstyle->bounds->max[1];
+
+    for (int i=0; i<4; i++)
+        xform2.transform(fpts[i].x, fpts[i].y);
+
+    AddExclusionRegion(fpts, 4);
 }

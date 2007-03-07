@@ -1064,6 +1064,11 @@ void GDRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
     m_labeler->ProcessLabelGroup(labels, nlabels, text, type, exclude, path);
 }
 
+void GDRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
+{
+    m_labeler->AddExclusionRegion(fpts, npts);
+}
+
 
 void GDRenderer::SetSymbolManager(RS_SymbolManager* manager)
 {

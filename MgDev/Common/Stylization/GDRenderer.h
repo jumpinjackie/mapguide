@@ -183,6 +183,8 @@ public:
                        RS_F_Point*      res,
                        float*           offsets);
 
+    virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
+
 private:
     double _MeterToMapSize(RS_Units unit, double number);
     double _PixelToMapSize(Renderer* renderer, int pixels);

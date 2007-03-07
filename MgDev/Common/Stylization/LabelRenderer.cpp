@@ -300,11 +300,8 @@ void LabelRenderer::BlastLabels()
                                             group.m_type != RS_OverpostType_All);
 
             // only in the case of a simple label do we check the overpost type
-            if (group.m_algo == laSimple)
-            {
-                if (res && (group.m_type == RS_OverpostType_FirstFit))
-                    break;
-            }
+            if (res && (group.m_type == RS_OverpostType_FirstFit))
+                break;
         }
     }
 
