@@ -564,8 +564,8 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
         }
 
         // delete the files
-        MgFileUtil::DeleteFileW(L"../UnitTestFiles/MdfTestSimpleSymbolCopy1.sd", true);
-        MgFileUtil::DeleteFileW(L"../UnitTestFiles/MdfTestSimpleSymbolCopy2.sd", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestSimpleSymbolCopy1.sd", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestSimpleSymbolCopy2.sd", true);
 
         // ------------------------------------------------------
         // process symbol #2 - a compound symbol definition
@@ -610,8 +610,8 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
         }
 
         // delete the files
-        MgFileUtil::DeleteFileW(L"../UnitTestFiles/MdfTestCompoundSymbolCopy1.sd", true);
-        MgFileUtil::DeleteFileW(L"../UnitTestFiles/MdfTestCompoundSymbolCopy2.sd", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompoundSymbolCopy1.sd", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompoundSymbolCopy2.sd", true);
 
         // ------------------------------------------------------
         // process layer definition with composite type style
@@ -656,8 +656,8 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
         }
 
         // delete the files
-        MgFileUtil::DeleteFileW(L"../UnitTestFiles/MdfTestCompTypeStyleCopy1.ldf", true);
-        MgFileUtil::DeleteFileW(L"../UnitTestFiles/MdfTestCompTypeStyleCopy2.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompTypeStyleCopy1.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompTypeStyleCopy2.ldf", true);
     }
     catch (MgException* e)
     {
@@ -698,7 +698,7 @@ void TestRenderingService::TestCase_SymbologyPoints()
         // call the API
         Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
 
-        rdr->ToFile(L"C:\\SymbologyPoints.png");
+        rdr->ToFile(L"../UnitTestFiles/SymbologyPoints.png");
     }
     catch (MgException* e)
     {
@@ -739,7 +739,7 @@ void TestRenderingService::TestCase_SymbologyPointsParam()
         // call the API
         Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
 
-        rdr->ToFile(L"C:\\SymbologyPointsParam.png");
+        rdr->ToFile(L"../UnitTestFiles/SymbologyPointsParam.png");
     }
     catch (MgException* e)
     {
@@ -780,7 +780,7 @@ void TestRenderingService::TestCase_SymbologyLines()
         // call the API
         Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
 
-        rdr->ToFile(L"C:\\SymbologyLines.png");
+        rdr->ToFile(L"../UnitTestFiles/SymbologyLines.png");
     }
     catch (MgException* e)
     {
@@ -820,7 +820,7 @@ void TestRenderingService::TestCase_SymbologyLinesCrossTick()
         // call the API
         Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
 
-        rdr->ToFile(L"C:\\SymbologyLinesCrossTick.png");
+        rdr->ToFile(L"../UnitTestFiles/SymbologyLinesCrossTick.png");
     }
     catch (MgException* e)
     {
