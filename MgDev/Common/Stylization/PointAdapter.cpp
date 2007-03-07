@@ -50,7 +50,8 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                            LineBuffer*                 lb,
                            MdfModel::FeatureTypeStyle* style,
                            const MdfModel::MdfString*  tooltip,
-                           const MdfModel::MdfString*  url)
+                           const MdfModel::MdfString*  url,
+                           RS_ElevationSettings*       elevSettings) 
 {
     m_exec = exec;
 
@@ -95,6 +96,12 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     if (url && !url->empty())
         EvalString(*url, eurl);
 
+    // Elevation Settings
+    RS_ElevationType elevType = RS_ElevationType_RelativeToGround;
+    double zOffset = 0;
+    double zExtrusion = 0;
+    GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
+
     //send the geometry to the rendering pipeline
 
     //process point symbol, if any.
@@ -116,7 +123,8 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
     if (psym && psym->GetSymbol())
     {
-        renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, theme.empty() ? NULL : &theme);
+        renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, 
+            theme.empty() ? NULL : &theme, zOffset, zExtrusion, elevType);
 
         //quick check if style is already cached
         RS_MarkerDef* cachedStyle = m_hPointSymCache[psym];

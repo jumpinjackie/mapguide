@@ -23,6 +23,7 @@ libMgMdfModel_la_SOURCES = \
   ConvertUTF.c \
   DisplayScale.cpp \
   DrawingLayerDefinition.cpp \
+  ElevationSettings.cpp \
   Extension.cpp \
   FeatureSource.cpp \
   FeatureTypeStyle.cpp \
@@ -100,6 +101,7 @@ noinst_HEADERS = \
   ConvertUTF.h \
   DisplayScale.h \
   DrawingLayerDefinition.h \
+  ElevationSettings.h \
   Extension.h \
   FeatureSource.h \
   FeatureTypeStyle.h \

@@ -50,7 +50,8 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
                              LineBuffer*                 lb,
                              MdfModel::FeatureTypeStyle* style,
                              const MdfModel::MdfString*  tooltip,
-                             const MdfModel::MdfString*  url)
+                             const MdfModel::MdfString*  url,
+                             RS_ElevationSettings*       elevSettings)
 {
     m_exec = exec;
 
@@ -88,13 +89,19 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
     RS_String tip; //TODO: this should be quick since we are not assigning
     RS_String eurl;
     const RS_String &theme = rule->GetLegendLabel();
-
+    
+    // Elevation Settings
+    RS_ElevationType elevType = RS_ElevationType_RelativeToGround;
+    double zOffset = 0;
+    double zExtrusion = 0;
+    GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
+    
     if (tooltip && !tooltip->empty())
         EvalString(*tooltip, tip);
     if (url && !url->empty())
         EvalString(*url, eurl);
 
-    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, theme.empty() ? NULL : &theme);
+    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, theme.empty() ? NULL : &theme, zOffset, zExtrusion, elevType);
 
     //quick check if style is already cached
     RS_FillStyle* cachedStyle = m_hAreaSymCache[asym];

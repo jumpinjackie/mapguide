@@ -107,6 +107,7 @@ private:
         KmlContent& kmlContent);
 
     void AppendFeatures(MgLayer* layer, 
+        MdfModel::LayerDefinition* layerDef,
         MgEnvelope* extents, 
         double scale, 
         double dpi,
@@ -125,7 +126,7 @@ private:
     MgCoordinateSystem* GetCoordinateSystem(MgResourceIdentifier* featureSourceResId);
 
     STRING ReadElement(STRING input, STRING elementName, size_t& offset);
-    MgEnvelope* GetLayerExtent(MgLayer* layer, MgCoordinateSystem* destCs);
+    MgEnvelope* GetLayerExtent(MdfModel::LayerDefinition* layerDef, MgCoordinateSystem* destCs);
     double GetScale(MgEnvelope* llExtents, int width, int height, double dpi);
     STRING GetSessionId();
     

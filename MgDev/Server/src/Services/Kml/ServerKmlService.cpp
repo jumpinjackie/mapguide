@@ -157,7 +157,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
     kmlContent.StartDocument();
     kmlContent.WriteString("<visibility>1</visibility>");
     Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
-    Ptr<MgEnvelope> destExtent = GetLayerExtent(layer, destCs);
+    Ptr<MgEnvelope> destExtent = GetLayerExtent(ldf.get(), destCs);
     if(destExtent != NULL)
     {
         double widthMeters = destCs->ConvertCoordinateSystemUnitsToMeters(destExtent->GetWidth());
@@ -273,7 +273,7 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
         KmlContent kmlContent;
         kmlContent.StartDocument();
         kmlContent.WriteString("<visibility>1</visibility>");
-        AppendFeatures(layer, extents, scale, dpi, drawOrder, kmlContent);
+        AppendFeatures(layer, ldf.get(), extents, scale, dpi, drawOrder, kmlContent);
         kmlContent.EndDocument();
         Ptr<MgByteSource> byteSource = GetByteSource(kmlContent, format);
         if(byteSource != NULL)
@@ -411,21 +411,13 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
 }
 
 void MgServerKmlService::AppendFeatures(MgLayer* layer,
+                                        MdfModel::LayerDefinition* layerDef,
                                         MgEnvelope* extents,
                                         double scale,
                                         double dpi,
                                         INT32 drawOrder,
                                         KmlContent& kmlContent)
 {
-
-    if(m_svcResource == NULL)
-    {
-        InitializeResourceService();
-    }
-
-    //get layer definition
-    Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
-    auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
     MgCSTrans* csTrans = NULL;
     RS_UIGraphic uig(NULL, 0, layer->GetLegendLabel());
     RS_LayerUIInfo layerInfo( layer->GetName(),
@@ -445,14 +437,14 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
         extents->GetLowerLeftCoordinate()->GetY(),
         extents->GetUpperRightCoordinate()->GetX(),
         extents->GetUpperRightCoordinate()->GetY());
-    KmlRenderer renderer(&kmlContent, bounds, scale, dpi, drawOrder);
-    DefaultStylizer stylizer;
-    stylizer.Initialize(&renderer);
-    MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
-//    MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
-//    MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());    
+
+    //    MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+    MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDef);
     if(vl != NULL)
     {
+        KmlRenderer renderer(&kmlContent, bounds, scale, dpi, drawOrder);
+        DefaultStylizer stylizer;
+        stylizer.Initialize(&renderer);
         if(m_svcFeature == NULL)
         {
             InitializeFeatureService();
@@ -483,36 +475,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
         }
         delete rdr;
     }
-/*    else if(gl != NULL)
-    {
-        int widthPix = 600;
-        int heightPix = 300;
-        
-        if(m_svcFeature == NULL)
-        {
-            InitializeFeatureService();
-        }
 
-        Ptr<MgCoordinateSystem> layerCs = GetCoordinateSystem(new MgResourceIdentifier(gl->GetResourceID()));
-        if(layerCs != NULL)
-        {
-            csTrans = new MgCSTrans(layerCs, destCs);
-        }
-        RS_Bounds rsExtent(extents->GetLowerLeftCoordinate()->GetX(),
-            extents->GetLowerLeftCoordinate()->GetY(),
-            extents->GetUpperRightCoordinate()->GetX(),
-            extents->GetUpperRightCoordinate()->GetY());
-        Ptr<MgFeatureReader> featureReader = MgStylizationUtil::ExecuteRasterQuery(m_svcFeature, rsExtent, gl, NULL, destCs, layerCs, widthPix, heightPix);
-        if (featureReader.p)
-        {
-            //wrap in an RS_FeatureReader
-            RSMgFeatureReader rsrdr(featureReader, gl->GetGeometry());
-            RS_FeatureClassInfo fcInfo(gl->GetFeatureName());
-            renderer.StartLayer(&layerInfo, &fcInfo);
-            stylizer.StylizeGridLayer(gl, &rsrdr, csTrans, NULL, NULL);
-            renderer.EndLayer();
-        }
-    }*/
     /*else if(dl != NULL)
     {
         if(m_svcDrawing == NULL)
@@ -566,21 +529,15 @@ double MgServerKmlService::GetScale(MgEnvelope* llExtents, int width, int height
     return min(xScale, yScale);
 }
 
-MgEnvelope* MgServerKmlService::GetLayerExtent(MgLayer* layer, MgCoordinateSystem* destCs)
+MgEnvelope* MgServerKmlService::GetLayerExtent(MdfModel::LayerDefinition* layerDef, MgCoordinateSystem* destCs)
 {
     Ptr<MgEnvelope> envelope;
 
-    if(layer != NULL)
+    if(layerDef != NULL)
     {
-        if(m_svcResource == NULL)
-        {
-            InitializeResourceService();
-        }
-        Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
-        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
-        MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
-        MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDef);
+        MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(layerDef);
+        MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(layerDef);
         Ptr<MgCoordinateSystemTransform> csTrans;
         if(vl != NULL || gl != NULL)
         {
@@ -618,6 +575,11 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MgLayer* layer, MgCoordinateSyste
         }
         else if(dl != NULL)
         {
+            if(m_svcResource == NULL)
+            {
+                InitializeResourceService();
+            }
+
             Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(dl->GetResourceID());
 
             //get the resource content to see if there is a coordinate system
@@ -888,6 +850,8 @@ STRING MgServerKmlService::GetSessionId()
     }
     return sessionId;
 }
+
+
 
 
 

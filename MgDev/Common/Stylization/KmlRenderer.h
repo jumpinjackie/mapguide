@@ -41,7 +41,9 @@ const double METERS_PER_INCH = 0.0254;
 class KmlRenderer : public Renderer
 {
 public:
-    STYLIZATION_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, double scale, double dpi, int drawOrder);
+
+    STYLIZATION_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, 
+        double scale, double dpi, int drawOrder);
     STYLIZATION_API ~KmlRenderer();
 
     ///////////////////////////////////
@@ -64,7 +66,11 @@ public:
     STYLIZATION_API virtual void StartFeature(RS_FeatureReader* feature,
                                               const RS_String*  tooltip = NULL,
                                               const RS_String*  url = NULL, 
-                                              const RS_String* theme = NULL);
+                                              const RS_String* theme = NULL,
+                                              double zOffset = 0,
+                                              double zExtrusion = 0,
+                                              RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround);
+
 
     STYLIZATION_API virtual void ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill);
 
@@ -126,6 +132,7 @@ private:
     void WriteStyle(RS_LineStroke& lsym);
     void WriteLinearRing(double* points, int offset, int numPoints);
     void WriteCoordinates(double* points, int offset, int numPoints);
+    void WriteElevationSettings();
     void ClearThemes();
     void ClearStyles();
 
@@ -143,6 +150,9 @@ private:
     KmlPolyStyleIdMap m_polyStyleMap;
     double m_pixelSize;
     int m_drawOrder;
+    double m_elevation;
+    bool m_extrude;
+    RS_ElevationType m_elevType;
 };
 
 #endif

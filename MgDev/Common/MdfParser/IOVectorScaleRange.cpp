@@ -22,6 +22,7 @@
 #include "IOPointTypeStyle.h"
 #include "IOCompositeTypeStyle.h"
 #include "IFeatureTypeStyleVisitor.h"
+#include "IOElevationSettings.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -35,6 +36,8 @@ ELEM_MAP_ENTRY(4, PointTypeStyle);
 ELEM_MAP_ENTRY(5, CompositeTypeStyle);
 ELEM_MAP_ENTRY(6, MinScale);
 ELEM_MAP_ENTRY(7, MaxScale);
+ELEM_MAP_ENTRY(8, ElevationSettings);
+
 
 IOVectorScaleRange::IOVectorScaleRange()
 {
@@ -83,6 +86,14 @@ void IOVectorScaleRange::StartElement(const wchar_t *name, HandlerStack *handler
     case ePointTypeStyle:
         {
             IOPointTypeStyle *IO = new IOPointTypeStyle(this->_scaleRange);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eElevationSettings:
+        {
+            IOElevationSettings *IO = new IOElevationSettings(this->_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -175,6 +186,14 @@ void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange)
         {
             IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)));
         }
+    }
+
+    ElevationSettings* elevationSettings = scaleRange->GetElevationSettings();
+    if(elevationSettings != NULL)
+    {
+        IOElevationSettings * IO = new IOElevationSettings();
+        IO->Write(fd, elevationSettings);
+        delete IO;
     }
 
     // Write any previously found unknown XML

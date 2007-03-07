@@ -25,6 +25,7 @@
 #include "FilterExecutor.h"
 #include "Renderer.h"
 #include "LineBuffer.h"
+#include "ElevationSettings.h"
 #include "StylizationEngine.h"
 #include "FeatureTypeStyleVisitor.h"
 #include "SE_Renderer.h"
@@ -212,7 +213,36 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
 
                 //if we know how to stylize this type of geometry, then go ahead
                 if (adapter)
-                    adapter->Stylize(m_renderer, features, exec, lb, fts, lr_tooltip, lr_url);
+                {
+                    RS_ElevationSettings* elevSettings = NULL; 
+                    MdfModel::ElevationSettings* modelElevSettings = range->GetElevationSettings();
+                    if(modelElevSettings != NULL)
+                    {
+                        RS_ElevationType elevType;
+                        switch(modelElevSettings->GetElevationType())
+                        {
+                        case MdfModel::ElevationSettings::Absolute:
+                            {
+                                elevType = RS_ElevationType_Absolute;
+                                break;
+                            }
+                        case MdfModel::ElevationSettings::RelativeToGround:
+                        default:
+                            {
+                                elevType = RS_ElevationType_RelativeToGround;
+                                break;
+                            }
+                        }
+                        elevSettings = new RS_ElevationSettings(modelElevSettings->GetZOffsetExpression(),
+                            modelElevSettings->GetZExtrusionExpression(),
+                            MdfModel::LengthConverter::UnitToMeters(modelElevSettings->GetUnit(), 1.0),
+                            elevType);
+                    }
+                    adapter->Stylize(m_renderer, features, exec, lb, fts, lr_tooltip, lr_url, elevSettings);
+                    
+                    delete elevSettings;
+                    elevSettings = NULL;
+                }
             }
         }
 

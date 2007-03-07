@@ -100,6 +100,12 @@ enum RS_OverpostType
     RS_OverpostType_FirstFit
 };
 
+enum RS_ElevationType
+{
+    RS_ElevationType_RelativeToGround,
+    RS_ElevationType_Absolute
+};
+
 
 //////////////////////////////////////////////////////////////////////////////
 class RS_Color
@@ -416,6 +422,40 @@ private:
     RS_String      m_label;
 };
 
+//////////////////////////////////////////////////////////////////////////////
+class RS_ElevationSettings
+{
+public:
+    RS_ElevationSettings() :
+        m_zOffsetExpression(L""),
+        m_zExtrusionExpression(L""),
+        m_elevType(RS_ElevationType_RelativeToGround),
+        m_metersPerUnit(1.0)
+    {
+    }
+
+    RS_ElevationSettings(const RS_String& zOffsetExpression,
+        const RS_String& zExtrusionExpression, 
+        double metersPerUnit,
+        RS_ElevationType elevType) :
+        m_zOffsetExpression(zOffsetExpression),
+        m_zExtrusionExpression(zExtrusionExpression),
+        m_metersPerUnit(metersPerUnit),
+        m_elevType(elevType)
+    {
+    }
+
+    inline RS_String&       zOffsetExpression()  { return m_zOffsetExpression; }
+    inline RS_String&       zExtrusionExpression()  { return m_zExtrusionExpression; }
+    inline RS_ElevationType elevType()  { return m_elevType; }
+    inline double           metersPerUnit() {return m_metersPerUnit; }
+
+private:
+    RS_ElevationType m_elevType;
+    RS_String      m_zOffsetExpression;
+    RS_String      m_zExtrusionExpression;
+    double         m_metersPerUnit;
+};
 
 //////////////////////////////////////////////////////////////////////////////
 class RS_LayerUIInfo

@@ -50,7 +50,8 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
                               LineBuffer*                 lb,
                               MdfModel::FeatureTypeStyle* style,
                               const MdfModel::MdfString*  tooltip,
-                              const MdfModel::MdfString*  url)
+                              const MdfModel::MdfString*  url,
+                              RS_ElevationSettings*       elevSettings)
 {
     m_exec = exec;
 
@@ -93,7 +94,14 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     if (url && !url->empty())
         EvalString(*url, eurl);
 
-    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, theme.empty() ? NULL : &theme);
+    // Elevation Settings
+    RS_ElevationType elevType = RS_ElevationType_RelativeToGround;
+    double zOffset = 0;
+    double zExtrusion = 0;
+    GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
+
+    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, 
+        theme.empty() ? NULL : &theme, zOffset, zExtrusion, elevType);
 
     for (int i=0; i<lsymc->GetCount(); i++)
     {
