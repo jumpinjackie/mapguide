@@ -25,14 +25,11 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestRenderingService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
-// TODO - fix these for Linux
-#ifdef WIN32
     CPPUNIT_TEST(TestCase_SymbologyMdfModel);
     CPPUNIT_TEST(TestCase_SymbologyPoints);
     CPPUNIT_TEST(TestCase_SymbologyPointsParam);
     CPPUNIT_TEST(TestCase_SymbologyLines);
     CPPUNIT_TEST(TestCase_SymbologyLinesCrossTick);
-#endif
 
     CPPUNIT_TEST(TestCase_RenderDynamicOverlay);
     CPPUNIT_TEST(TestCase_RenderMap);
