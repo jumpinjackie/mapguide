@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007 Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -165,7 +165,7 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs
                however, appear to be using round joins at the moment. */
             m_ch_ptbuf.insert(std::pair<double,double>(x + vx, y + vy));
             m_ch_ptbuf.insert(std::pair<double,double>(x - vx, y - vy));
-            m_ch_ptbuf.insert(std::pair<double,double>(lx + vx, ly + vy));        
+            m_ch_ptbuf.insert(std::pair<double,double>(lx + vx, ly + vy));
             m_ch_ptbuf.insert(std::pair<double,double>(lx - vx, ly - vy));
 
             while(cur < last)
@@ -310,7 +310,7 @@ void SE_LineBuffer::ResizeBuffer(void** buffer, int unitsize, int mininc, int cu
     int max_newpts = (int)(max_pts*GROWTH_FACTOR) + 1;
     if (max_newpts - max_pts < mininc)
         max_newpts += mininc;
-     
+
     void* newbuf = new char[unitsize*max_newpts];
     memcpy(newbuf, *buffer, cur_pts*unitsize);
     delete[] *buffer;
@@ -371,11 +371,11 @@ void SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tole
                 /* TODO: change the # of segments based on the tolerance?...up to 4 for now */
                 int nsegs = (int)(4.0*(eAng - sAng)/(2*M_PI)) + 1; // eAng - sAng is (0, 2pi), so this is {1,2,3,4}.
                 double span = (eAng - sAng)/(double)nsegs;
-                
+
                 double sec = 1.0/cos(span/2.0);
                 double alpha = sin(span)*(sqrt(1.0 + 3.0/sec/sec) - 1)/3.0;
                 double rcos = cos(rot), rsin = sin(rot);
-                
+
                 double ex, ey, sx, sy;
                 double scos, ssin, ecos, esin;
                 double sa, ea;
@@ -614,7 +614,7 @@ void SE_LineBuffer::SetToTransform(LineBuffer* lb, const SE_Matrix& xform)
 
     m_xf_ncntrs = lb->cntr_count();
     memcpy(m_xf_cntrs, lb->cntrs(), sizeof(int)*m_xf_ncntrs);
-    
+
     m_xf_npts = lb->point_count();
     double *srcpts = lb->points();
 
