@@ -57,8 +57,20 @@ struct SE_Color
     {
         if (expression)
         {
-            expression->Process(processor);
-            *((unsigned int*)this) = (unsigned int)processor->GetInt64Result();
+            // we need to try-catch the expression evaluation
+            try
+            {
+                expression->Process(processor);
+                *((unsigned int*)this) = (unsigned int)processor->GetInt64Result();
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+                processor->Reset();
+
+                // set a default
+                *((unsigned int*)this) = 0;
+            }
         }
         
         return *((unsigned int*)this);
@@ -82,8 +94,20 @@ struct SE_Double
     {
         if (expression)
         {
-            expression->Process(processor);
-            value = processor->GetDoubleResult();
+            // we need to try-catch the expression evaluation
+            try
+            {
+                expression->Process(processor);
+                value = processor->GetDoubleResult();
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+                processor->Reset();
+
+                // set a default
+                value = 0.0;
+            }
         }
 
         return value;
@@ -105,8 +129,20 @@ struct SE_Integer
     {
         if (expression)
         {
-            expression->Process(processor);
-            value = (int)processor->GetInt64Result();
+            // we need to try-catch the expression evaluation
+            try
+            {
+                expression->Process(processor);
+                value = (int)processor->GetInt64Result();
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+                processor->Reset();
+
+                // set a default
+                value = 0;
+            }
         }
 
         return value;
@@ -128,8 +164,20 @@ struct SE_Boolean
     {
         if (expression)
         {
-            expression->Process(processor);
-            value = (bool)processor->GetBooleanResult();
+            // we need to try-catch the expression evaluation
+            try
+            {
+                expression->Process(processor);
+                value = (bool)processor->GetBooleanResult();
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+                processor->Reset();
+
+                // set a default
+                value = false;
+            }
         }
 
         return value;
@@ -158,9 +206,32 @@ struct SE_String
         if (expression)
         {
             if (value)
+            {
                 delete[] value;
-            expression->Process(processor);
-            value = processor->GetStringResult();
+                value = NULL;
+            }
+
+            wchar_t* newValue = NULL;
+
+            // we need to try-catch the expression evaluation
+            try
+            {
+                expression->Process(processor);
+                newValue = processor->GetStringResult();
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+                processor->Reset();
+
+                // just return the stored expression
+                FdoString* exprValue = expression->ToString();
+                size_t len = wcslen(exprValue) + 1;
+                newValue = new wchar_t[len];
+                wcscpy(newValue, exprValue);
+            }
+
+            value = newValue;
         }
 
         return value;
