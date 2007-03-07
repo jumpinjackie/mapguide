@@ -803,6 +803,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ElevationSettings.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ElevationSettings.h"
+			>
+		</File>
+		<File
 			RelativePath=".\LayerDefinition.cpp"
 			>
 		</File>

@@ -30,7 +30,8 @@ public:
                          RS_Raster*                  raster,
                          MdfModel::GridColorStyle*   style,
                          const MdfModel::MdfString*  tooltip = NULL,
-                         const MdfModel::MdfString*  url = NULL
+                         const MdfModel::MdfString*  url = NULL,
+                         RS_ElevationSettings*       elevSettings = NULL
                          );
 
     void DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, int h);

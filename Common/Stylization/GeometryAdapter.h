@@ -52,7 +52,8 @@ public:
                          LineBuffer*                    /*lb*/,
                          MdfModel::FeatureTypeStyle*    /*style*/,
                          const MdfModel::MdfString*     /*tooltip = NULL*/,
-                         const MdfModel::MdfString*     /*url = NULL*/
+                         const MdfModel::MdfString*     /*url = NULL*/,
+                         RS_ElevationSettings*          /*elevSettings = NULL*/
                          )
     {
     };
@@ -107,6 +108,8 @@ protected:
     bool EvalDouble(const MdfModel::MdfString& expr, double& res);
     bool EvalBoolean(const MdfModel::MdfString& expr, bool& res);
     bool EvalString(const MdfModel::MdfString& exprstr, RS_String& res);
+    bool GetElevationParams(RS_ElevationSettings* elevationSettings, 
+        double& zOffset, double& zExtrusion, RS_ElevationType& elevType);
 
     RS_FilterExecutor* m_exec;
     LineBufferPool* m_lbPool;

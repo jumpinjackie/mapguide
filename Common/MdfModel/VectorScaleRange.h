@@ -21,6 +21,7 @@
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
 #include "FeatureTypeStyle.h"
+#include "ElevationSettings.h"
 #include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
@@ -57,6 +58,10 @@ class MDFMODEL_API VectorScaleRange : public MdfRootObject
         // Property : FeatureTypeStyles
         FeatureTypeStyleCollection* GetFeatureTypeStyles();
 
+        // Property : ElevationSettings
+        ElevationSettings* GetElevationSettings();
+        void AdoptElevationSettings(ElevationSettings* elevationSettings);
+
     private:
         // Hidden copy constructor and assignment operator.
         VectorScaleRange(const VectorScaleRange&);
@@ -71,6 +76,9 @@ class MDFMODEL_API VectorScaleRange : public MdfRootObject
 
         // The collection of FeatureTypeStyle objects.
         FeatureTypeStyleCollection m_collFeatureTypeStyles;
+
+        // Extended data
+        ElevationSettings* m_elevationSettings;
     };
 
     typedef MdfOwnerCollection<VectorScaleRange> VectorScaleRangeCollection;

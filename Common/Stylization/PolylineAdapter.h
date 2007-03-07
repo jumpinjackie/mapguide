@@ -33,7 +33,8 @@ public:
                          LineBuffer*                    lb,
                          MdfModel::FeatureTypeStyle*    style,
                          const MdfModel::MdfString*     tooltip = NULL,
-                         const MdfModel::MdfString*     url = NULL
+                         const MdfModel::MdfString*     url = NULL,
+                         RS_ElevationSettings*          elevSettings = NULL
                          );
 
 private:

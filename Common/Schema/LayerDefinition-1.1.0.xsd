@@ -196,9 +196,28 @@
           </xs:annotation>
         </xs:element>
       </xs:choice>
+      <xs:element name="ElevationSettings" type="ElevationSettingsType" minOccurs="0" />
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="ElevationSettingsType">
+    <xs:sequence>
+        <xs:element name="ZOffset" type="xs:string" minOccurs="0" />
+        <xs:element name="ZExtrusion" type="xs:string" minOccurs="0" />
+        <xs:element name="ZOffsetType" type="ElevationTypeType" minOccurs="0" />
+        <xs:element name="Unit" type="LengthUnitType" minOccurs="0"/>
+        <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="ElevationTypeType">
+    <xs:annotation>
+        <xs:documentation>The possible interpretations of a z offset value.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+        <xs:enumeration value="RelativeToGround"/>
+        <xs:enumeration value="Absolute"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="PointTypeStyleType">
     <xs:annotation>
       <xs:documentation>Style specification of a point geometry type. </xs:documentation>

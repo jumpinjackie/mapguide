@@ -29,7 +29,8 @@
 const double ELEV_FACTOR = 0.1;
 
 //default constructor
-KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, double scale, double dpi, int drawOrder) :
+KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, 
+        double scale, double dpi, int drawOrder) :
     m_mainContent(kmlContent),
     m_kmlContent(kmlContent),
     m_styleContent(NULL),
@@ -39,7 +40,10 @@ KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, double scal
     m_scale(scale),
     m_styleId(0),
     m_extents(extents),
-    m_drawOrder(drawOrder)
+    m_drawOrder(drawOrder),
+    m_elevation(0),
+    m_extrude(false),
+    m_elevType(RS_ElevationType_RelativeToGround)
 {
     m_kmlContent = m_mainContent;
     m_pixelSize = METERS_PER_INCH / dpi;
@@ -112,7 +116,10 @@ void KmlRenderer::EndLayer()
 void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
                               const RS_String* tooltip,
                               const RS_String* url, 
-                              const RS_String* theme)
+                              const RS_String* theme,
+                              double zOffset,
+                              double zExtrusion,
+                              RS_ElevationType zOffsetType)
 {
     if(m_featureCount > 0)
     {
@@ -163,8 +170,41 @@ void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
         m_kmlContent->WriteString("</description>");
     }
     m_featureCount++;
+
+    // Elevation / Extrusion settings
+    m_elevation = zExtrusion + zOffset;
+    m_extrude = (zExtrusion > 0);
+    m_elevType = zOffsetType;
 }
 
+void KmlRenderer::WriteElevationSettings()
+{
+    if(m_elevation == 0)
+    {
+        m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
+        m_kmlContent->WriteString("<tesselate>1</tesselate>");
+    }
+    else
+    {
+        if(m_extrude)
+        {
+            m_kmlContent->WriteString("<extrude>1</extrude>");
+        }
+        switch(m_elevType)
+        {
+        case RS_ElevationType_RelativeToGround:
+            {
+                m_kmlContent->WriteString("<altitudeMode>relativeToGround</altitudeMode>");
+                break;
+            }
+        case RS_ElevationType_Absolute:
+            {
+                m_kmlContent->WriteString("<altitudeMode>absolute</altitudeMode>");
+                break;
+            }
+        }
+    }
+}
 
 void KmlRenderer::ProcessPolygon(LineBuffer* lb,
                                 RS_FillStyle& fill)
@@ -177,7 +217,7 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb,
         if(lb->cntr_count() == 1)
         {
             m_kmlContent->WriteString("<Polygon>");
-            m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
+            WriteElevationSettings();
             m_kmlContent->WriteString("<outerBoundaryIs>");
             WriteLinearRing(lb->points(), 0, lb->point_count());
             m_kmlContent->WriteString("</outerBoundaryIs>");
@@ -186,7 +226,7 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb,
         else
         {
             m_kmlContent->WriteString("<MultiGeometry>");
-            m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
+            WriteElevationSettings();
             PolygonUtils::SORTEDRINGS rings;
             PolygonUtils::DetermineInteriorAndExteriorPolygons(lb, rings);
             for (PolygonUtils::SORTEDRINGS::iterator sIter = rings.begin(); sIter != rings.end(); sIter++)
@@ -201,6 +241,7 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb,
                 {
                     // write the outer ring
                     m_kmlContent->WriteString("<Polygon>");
+                    WriteElevationSettings();
                     m_kmlContent->WriteString("<outerBoundaryIs>");
                     WriteLinearRing(pRingData->m_ringPoints, pRingData->m_ringPointOffset, pRingData->m_ringPointCount);
                     m_kmlContent->WriteString("</outerBoundaryIs>");
@@ -238,11 +279,10 @@ void KmlRenderer::WriteCoordinates(double* points, int offset, int numPoints)
     char buffer[256];
     m_kmlContent->WriteString("<coordinates>");
     int pointOffset;
-    double elevation = ELEV_FACTOR * m_drawOrder;
     for(int i = 0; i < numPoints; i ++)
     {
         pointOffset = offset + (i * 2);
-        sprintf(buffer, "%f, %f, %f%s", points[pointOffset], points[pointOffset + 1], elevation, (i < numPoints - 1) ? "," : "");
+        sprintf(buffer, "%f, %f, %f%s", points[pointOffset], points[pointOffset + 1], m_elevation, (i < numPoints - 1) ? "," : "");
         m_kmlContent->WriteString(buffer);
     }
     m_kmlContent->WriteString("</coordinates>");
@@ -255,7 +295,7 @@ void KmlRenderer::ProcessPolyline(LineBuffer* srclb,
     WriteStyle(lsym);
 
     m_kmlContent->WriteString("<MultiGeometry>");
-    m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
+    WriteElevationSettings();
     int offset = 0;
     int numCntrs = srclb->cntr_count();
     for(int i = 0; i < numCntrs; i++)
@@ -298,9 +338,9 @@ void KmlRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     m_kmlContent->WriteString(mdef.name(), false);
     m_kmlContent->WriteString("]]></name>");
     m_kmlContent->WriteString("<Point>");
-    m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
+    WriteElevationSettings();
     m_kmlContent->WriteString("<coordinates>");
-    sprintf(buffer, "%f, %f, %f", x, y, ELEV_FACTOR * m_drawOrder);
+    sprintf(buffer, "%f, %f, %f", x, y, m_elevation);
     m_kmlContent->WriteString(buffer);
     m_kmlContent->WriteString("</coordinates>");
     m_kmlContent->WriteString("</Point>");
@@ -534,6 +574,7 @@ void KmlRenderer::WriteStyle(RS_LineStroke& lsym)
     sprintf(buffer, "<styleUrl>#%d</styleUrl>", thisStyleId);
     m_kmlContent->WriteString(buffer);
 }
+
 
 
 

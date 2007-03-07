@@ -101,7 +101,10 @@ public:
     virtual void StartFeature(RS_FeatureReader* feature,
                               const RS_String*  tooltip = NULL,
                               const RS_String*  url = NULL,
-                              const RS_String* theme = NULL);
+                              const RS_String* theme = NULL,
+                              double zOffset = 0,
+                              double zExtrusion = 0,
+                              RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround);
 
     virtual RS_MapUIInfo* GetMapInfo();
 

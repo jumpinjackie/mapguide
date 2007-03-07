@@ -38,7 +38,8 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                             RS_Raster*                  raster,
                             MdfModel::GridColorStyle*   style,
                             const MdfModel::MdfString*  /*tooltip*/,
-                            const MdfModel::MdfString*  /*url*/
+                            const MdfModel::MdfString*  /*url*/,
+                            RS_ElevationSettings*       /*elevSettings*/
                             )
 {
     m_exec = exec;

@@ -26,6 +26,7 @@ libMgMdfParser_la_SOURCES = \
   IOCompositeTypeStyle.cpp \
   IOCompoundSymbolDefinition.cpp \
   IODrawingLayerDefinition.cpp \
+  IOElevationSettings.cpp \
   IOExtension.cpp \
   IOExtra.cpp \
   IOFeatureSource.cpp \
@@ -105,6 +106,7 @@ noinst_HEADERS = \
   IOCompositeTypeStyle.h \
   IOCompoundSymbolDefinition.h \
   IODrawingLayerDefinition.h \
+  IOElevationSettings.h \
   IOExtension.h \
   IOExtra.h \
   IOFeatureSource.h \

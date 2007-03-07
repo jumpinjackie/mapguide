@@ -763,3 +763,31 @@ FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* p
 
     return expr;
 }
+
+bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings, 
+    double& zOffset, double& zExtrusion, RS_ElevationType& elevType)
+{
+    // Elevation Settings
+    elevType = RS_ElevationType_RelativeToGround;
+    zOffset = 0;
+    zExtrusion = 0;
+    if(elevSettings != NULL)
+    {
+        RS_String zExtrusionExpression = elevSettings->zExtrusionExpression();;
+        RS_String zOffsetExpression = elevSettings->zOffsetExpression();
+        elevType = elevSettings->elevType();
+        double metersPerUnit = elevSettings->metersPerUnit();
+        if (!zOffsetExpression.empty())
+        {
+            EvalDouble(zOffsetExpression, zOffset);
+            zOffset *= metersPerUnit;
+        }
+        if(!zExtrusionExpression.empty())
+        {
+            EvalDouble(zExtrusionExpression, zExtrusion);
+            zExtrusion *= metersPerUnit;
+        }
+    }
+    return true;
+}
+

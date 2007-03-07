@@ -395,7 +395,10 @@ void GDRenderer::EndLayer()
 void GDRenderer::StartFeature(RS_FeatureReader* /*feature*/,
                               const RS_String* /*tooltip*/,
                               const RS_String* /*url*/,
-                              const RS_String* /*theme*/ )
+                              const RS_String* /*theme*/,
+                              double /*zOffset*/,
+                              double /*zExtrusion*/,
+                              RS_ElevationType /*zOffsetType*/)
 {
 }
 

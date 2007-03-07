@@ -519,7 +519,11 @@ void DWFRenderer::EndLayer()
 void DWFRenderer::StartFeature(RS_FeatureReader* feature,
                                const RS_String* tooltip,
                                const RS_String* url,
-                               const RS_String* /*theme*/)
+                               const RS_String* /*theme*/,
+                               double /*zOffset*/,
+                               double /*zExtrusion*/,
+                               RS_ElevationType /*zOffsetType*/)
+
 {
     //attributes and selection support
     StoreAttributes(feature, tooltip, url);

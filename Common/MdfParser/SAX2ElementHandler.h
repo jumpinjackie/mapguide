@@ -96,7 +96,8 @@ class MDFPARSER_API SAX2ElementHandler {
 
 #define ELEM_MAP_ENTRY(ID, NAME)                                                \
     static const std::string s##NAME = _CreateMapEntry(L###NAME, #NAME);        \
-    static const int e##NAME = ID
+    static const int e##NAME = ID;                                              \
+    static const std::wstring sw##NAME = L###NAME
 
 END_NAMESPACE_MDFPARSER
 #endif // _SAX2ELEMENTHANDLER_H

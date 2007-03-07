@@ -320,6 +320,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOElevationSettings.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOElevationSettings.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOExtension.cpp"
 			>
 		</File>

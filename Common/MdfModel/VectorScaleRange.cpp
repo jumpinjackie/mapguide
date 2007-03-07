@@ -43,6 +43,7 @@ VectorScaleRange::VectorScaleRange()
     //Default Settings
     this->m_dMinScale = 0.0;
     this->m_dMaxScale = MAX_MAP_SCALE;
+    this->m_elevationSettings = NULL;
 }
 
 //-------------------------------------------------------------------------
@@ -112,4 +113,31 @@ void VectorScaleRange::SetMaxScale( const double& dMaxScale)
 FeatureTypeStyleCollection* VectorScaleRange::GetFeatureTypeStyles()
 {
     return &this->m_collFeatureTypeStyles;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Retrieves the elevation settings for this scale range
+// RETURNS: A pointer to the ElevationSettings object
+//-------------------------------------------------------------------------
+ElevationSettings* VectorScaleRange::GetElevationSettings()
+{
+    return this->m_elevationSettings;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Method to adopt an ElevationSettings object
+// PARAMETERS:
+//      Input:
+//         elevationSettings - A pointer to the ElevationSettings object
+//-------------------------------------------------------------------------
+void VectorScaleRange::AdoptElevationSettings(ElevationSettings* elevationSettings)
+{
+    if (this->m_elevationSettings != elevationSettings)
+    {
+        if (this->m_elevationSettings != NULL)
+        {
+            delete this->m_elevationSettings;
+        }
+        this->m_elevationSettings = elevationSettings;
+    }
 }

@@ -37,7 +37,13 @@ FeaturePropRenderer::~FeaturePropRenderer()
 }
 
 
-void FeaturePropRenderer::StartFeature (RS_FeatureReader* feature, const RS_String* tooltip, const RS_String* url, const RS_String* theme)
+void FeaturePropRenderer::StartFeature (RS_FeatureReader* feature, 
+                              const RS_String* tooltip, 
+                              const RS_String* url, 
+                              const RS_String* theme,
+                              double /*zOffset*/,
+                              double /*zExtrusion*/,
+                              RS_ElevationType /*zOffsetType*/)
 {
     /*
     //add feature ID to the selection set
