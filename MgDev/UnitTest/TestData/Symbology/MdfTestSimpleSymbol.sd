@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SymbolDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="SymbolDefinition-1.0.0.xsd">
+  <SimpleSymbolDefinition>
+    <Name>MdfTestSimpleSymbol</Name>
+    <Description>A dummy symbol used to test the MdfModel/MdfParser code.</Description>
+    <Graphics>
+      <Path>
+        <ResizeControl>AddToResizeBox</ResizeControl>
+        <Geometry>M 0,0 L 5,0 L 5,5 L 0,5 L 0,0</Geometry>
+        <FillColor>ffff0000</FillColor>
+        <LineColor>%OUTLINE%</LineColor>
+        <LineWeight>2*(%THICKNESS% + 1)</LineWeight>
+        <LineWeightScalable>true</LineWeightScalable>
+        <LineCap>None</LineCap>
+        <LineJoin>None</LineJoin>
+        <LineMiterLimit>5.0</LineMiterLimit>
+      </Path>
+      <Image>
+        <ResizeControl>AddToResizeBox</ResizeControl>
+        <Content>R0lGODlhcgGSALMAAAQCAEMmCZtuMFQxDS8b</Content>
+        <SizeX>100.0</SizeX>
+        <SizeY>100.0</SizeY>
+        <PositionX>0.0</PositionX>
+        <PositionY>0.0</PositionY>
+        <Angle>0.0</Angle>
+      </Image>
+      <Image>
+        <ResizeControl>AddToResizeBox</ResizeControl>
+        <Reference>Library://Image.jpg</Reference>
+        <SizeX>100.0</SizeX>
+        <SizeY>100.0</SizeY>
+        <PositionX>0.0</PositionX>
+        <PositionY>0.0</PositionY>
+        <Angle>0.0</Angle>
+      </Image>
+      <Text>
+        <ResizeControl>AddToResizeBox</ResizeControl>
+        <String>Some text</String>
+        <FontName>Arial</FontName>
+        <Bold>false</Bold>
+        <Italic>false</Italic>
+        <Underlined>false</Underlined>
+        <Height>10.0</Height>
+        <PositionX>0.0</PositionX>
+        <PositionY>0.0</PositionY>
+        <Angle>0.0</Angle>
+        <HorizontalAlignment>Center</HorizontalAlignment>
+        <VerticalAlignment>Baseline</VerticalAlignment>
+        <Justification>Center</Justification>
+        <LineSpacing>15.0</LineSpacing>
+        <TextColor>%TEXTCOLOR%</TextColor>
+        <GhostColor>ffffffff</GhostColor>
+        <Frame>
+          <LineColor>ff000000</LineColor>
+          <FillColor>ffff0000</FillColor>
+          <OffsetX>5.0</OffsetX>
+          <OffsetY>5.0</OffsetY>
+        </Frame>
+      </Text>
+    </Graphics>
+    <ResizeBox>
+      <PositionX>0.0</PositionX>
+      <PositionY>0.0</PositionY>
+      <SizeX>50.0</SizeX>
+      <SizeY>10.0</SizeY>
+      <GrowControl>GrowInX</GrowControl>
+    </ResizeBox>
+    <PointUsage>
+      <AngleControl>FromGeometry</AngleControl>
+      <Angle>0.0</Angle>
+      <OriginOffsetX>0.0</OriginOffsetX>
+      <OriginOffsetY>0.0</OriginOffsetY>
+    </PointUsage>
+    <LineUsage>
+      <AngleControl>FromGeometry</AngleControl>
+      <UnitsControl>Parametric</UnitsControl>
+      <VertexControl>NoOverlap</VertexControl>
+      <Angle>0.0</Angle>
+      <StartOffset>0.0</StartOffset>
+      <EndOffset>0.0</EndOffset>
+      <Repeat>10.0</Repeat>
+      <VertexAngleLimit>5.0</VertexAngleLimit>
+      <DefaultPath>
+        <ResizeControl>AddToResizeBox</ResizeControl>
+        <Geometry>M 0,0 L 5,0 L 5,5 L 0,5 L 0,0</Geometry>
+        <FillColor>ffff0000</FillColor>
+        <LineColor>ff00ff00</LineColor>
+        <LineWeight>1.0</LineWeight>
+        <LineWeightScalable>true</LineWeightScalable>
+        <LineCap>None</LineCap>
+        <LineJoin>None</LineJoin>
+        <LineMiterLimit>5.0</LineMiterLimit>
+      </DefaultPath>
+    </LineUsage>
+    <AreaUsage>
+      <OriginControl>Centroid</OriginControl>
+      <AngleControl>FromGeometry</AngleControl>
+      <ClippingControl>Overlap</ClippingControl>
+      <OriginX>0.0</OriginX>
+      <OriginY>0.0</OriginY>
+      <Angle>0.0</Angle>
+      <RepeatX>10.0</RepeatX>
+      <RepeatY>5.0</RepeatY>
+      <BufferWidth>0.0</BufferWidth>
+    </AreaUsage>
+    <ParameterDefinition>
+      <Parameter>
+        <Identifier>OUTLINE</Identifier>
+        <DefaultValue>FFFF0000</DefaultValue>
+        <DisplayName>Outline Color</DisplayName>
+        <Description>The color of the outline of the box.</Description>
+        <ValueList>
+          <Value>FFFF0000</Value>
+          <Value>FFFFFFFF</Value>
+        </ValueList>
+      </Parameter>
+      <Parameter>
+        <Identifier>THICKNESS</Identifier>
+        <DefaultValue>-0.5</DefaultValue>
+        <DisplayName>Line Thickness</DisplayName>
+        <Description>The thickness of the line in mm... minus 2 and halved.</Description>
+        <ValueList>
+          <Value>-1.0</Value>
+          <Value>-0.5</Value>
+          <Value>0.0</Value>
+          <Value>0.5</Value>
+          <Value>1.0</Value>
+        </ValueList>
+      </Parameter>
+      <Parameter>
+        <Identifier>TEXTCOLOR</Identifier>
+        <DefaultValue>FFFFFF00</DefaultValue>
+        <DisplayName>Text Color</DisplayName>
+        <Description>The color of the text.</Description>
+        <ValueList>
+          <Value>FFFF0000</Value>
+          <Value>FFFFFF00</Value>
+          <Value>FF00FF00</Value>
+        </ValueList>
+      </Parameter>
+    </ParameterDefinition>
+  </SimpleSymbolDefinition>
+</SymbolDefinition>

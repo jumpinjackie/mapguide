@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SymbolDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="SymbolDefinition-1.0.0.xsd">
+  <SimpleSymbolDefinition>
+    <Name>X_on_Box</Name>
+    <Graphics>
+      <Path>
+        <Geometry>M 0,0 L 5,0 L 5,5 L 0,5 L 0,0</Geometry>
+        <FillColor>%FILL%</FillColor>
+        <LineColor>%OUTLINE%</LineColor>
+        <LineWeight>2*(%THICKNESS% + 1)</LineWeight>
+      </Path>
+      <Path>
+        <Geometry>M -2,-2 L 7,7 M 7,-2 L -2,7</Geometry>
+        <FillColor>00000000</FillColor>
+        <LineColor>%COLOR%</LineColor>
+        <LineWeight>1</LineWeight>
+      </Path>
+    </Graphics>
+    <PointUsage/>
+    <ParameterDefinition>
+      <Parameter>
+        <Identifier>COLOR</Identifier>
+        <DefaultValue>FFFFFF00</DefaultValue>
+        <DisplayName>X Color</DisplayName>
+        <Description>The color of the X thingie that is across the box</Description>
+        <ValueList>
+          <Value>FFFF0000</Value>
+          <Value>FFFFFF00</Value>
+          <Value>FF00FF00</Value>
+        </ValueList>
+      </Parameter>
+      <Parameter>
+        <Identifier>OUTLINE</Identifier>
+        <DefaultValue>FFFF0000</DefaultValue>
+        <DisplayName>Outline Color</DisplayName>
+        <Description>The color of the outline of the box</Description>
+        <ValueList>
+          <Value>FFFF0000</Value>
+          <Value>FFFFFFFF</Value>
+        </ValueList>
+      </Parameter>
+      <Parameter>
+        <Identifier>THICKNESS</Identifier>
+        <DefaultValue>-.5</DefaultValue>
+        <DisplayName>Line Thickness</DisplayName>
+        <Description>The thickness of the line in mm...minus 2 and halved</Description>
+        <ValueList>
+          <Value>-1</Value>
+          <Value>-.5</Value>
+          <Value>0</Value>
+          <Value>.5</Value>
+          <Value>1</Value>
+        </ValueList>
+      </Parameter>
+    </ParameterDefinition>
+  </SimpleSymbolDefinition>
+</SymbolDefinition>
