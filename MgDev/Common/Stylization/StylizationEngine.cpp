@@ -83,7 +83,7 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
             {
                 try
                 {
-                    FdoFilter::Parse(filterstr.c_str());
+                    rulecache[i].filter = FdoFilter::Parse(filterstr.c_str());
                 }
                 catch (FdoException* e)
                 {
