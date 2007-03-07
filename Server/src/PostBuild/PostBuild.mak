@@ -2,26 +2,26 @@
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgFoundationd.dll ..\..\bin\debug\
 
 ..\..\bin\debug\MgFoundationd.pdb : ..\..\..\Common\bin\debug\MgFoundationd.pdb
-    xcopy /r /d /y ..\..\..\Common\bin\debug\MgFoundationd.pdb ..\..\bin\debug\   
-    
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgFoundationd.pdb ..\..\bin\debug\
+
 ..\..\bin\debug\MgPlatformBased.dll : ..\..\..\Common\bin\debug\MgPlatformBased.dll
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgPlatformBased.dll ..\..\bin\debug\
 
 ..\..\bin\debug\MgPlatformBased.pdb : ..\..\..\Common\bin\debug\MgPlatformBased.pdb
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgPlatformBased.pdb ..\..\bin\debug\
-    
+
 ..\..\bin\debug\MgGeometryd.dll : ..\..\..\Common\bin\debug\MgGeometryd.dll
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgGeometryd.dll ..\..\bin\debug\
 
 ..\..\bin\debug\MgGeometryd.pdb : ..\..\..\Common\bin\debug\MgGeometryd.pdb
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgGeometryd.pdb ..\..\bin\debug\
-    
+
 ..\..\bin\debug\MgMapGuideCommond.dll : ..\..\..\Common\bin\debug\MgMapGuideCommond.dll
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgMapGuideCommond.dll ..\..\bin\debug\
 
 ..\..\bin\debug\MgMapGuideCommond.pdb : ..\..\..\Common\bin\debug\MgMapGuideCommond.pdb
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgMapGuideCommond.pdb ..\..\bin\debug\
-    
+
 ..\..\bin\debug\MgCoordinateSystemd.dll : ..\..\..\Common\bin\debug\MgCoordinateSystemd.dll
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgCoordinateSystemd.dll ..\..\bin\debug\
 
@@ -210,10 +210,33 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\Redding_Parcels.shx \
         ..\..\bin\UnitTestFiles\1.1.1.mgd \
         ..\..\bin\UnitTestFiles\ogcwkts.txt \
-        ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt\
-        ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt\
-        ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt\
+        ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt \
+        ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
+        ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
         ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+        ..\..\bin\UnitTestFiles\linesymbol.sd \
+        ..\..\bin\UnitTestFiles\symbol.sd \
+        ..\..\bin\UnitTestFiles\symbolp.sd \
+        ..\..\bin\UnitTestFiles\MTYP1500a.sd \
+        ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf \
+        ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
+        ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf \
         CopyFdoComponentsDebug \
         CopyFdoProvidersDebug \
         CopySchemaDebug \
@@ -227,19 +250,19 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 
 ..\..\bin\release\MgFoundation.pdb : ..\..\..\Common\bin\release\MgFoundation.pdb
     xcopy /r /d /y ..\..\..\Common\bin\release\MgFoundation.pdb ..\..\bin\release\
-       
+
 ..\..\bin\release\MgPlatformBase.dll : ..\..\..\Common\bin\release\MgPlatformBase.dll
     xcopy /r /d /y ..\..\..\Common\bin\release\MgPlatformBase.dll ..\..\bin\release\
 
 ..\..\bin\release\MgPlatformBase.pdb : ..\..\..\Common\bin\release\MgPlatformBase.pdb
     xcopy /r /d /y ..\..\..\Common\bin\release\MgPlatformBase.pdb ..\..\bin\release\
-    
+
 ..\..\bin\release\MgGeometry.dll : ..\..\..\Common\bin\release\MgGeometry.dll
     xcopy /r /d /y ..\..\..\Common\bin\release\MgGeometry.dll ..\..\bin\release\
 
 ..\..\bin\release\MgGeometry.pdb : ..\..\..\Common\bin\release\MgGeometry.pdb
     xcopy /r /d /y ..\..\..\Common\bin\release\MgGeometry.pdb ..\..\bin\release\
-    
+
 ..\..\bin\release\MgMapGuideCommon.dll : ..\..\..\Common\bin\release\MgMapGuideCommon.dll
     xcopy /r /d /y ..\..\..\Common\bin\release\MgMapGuideCommon.dll ..\..\bin\release\
 
@@ -434,15 +457,38 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\Redding_Parcels.shx \
           ..\..\bin\UnitTestFiles\1.1.1.mgd \
           ..\..\bin\UnitTestFiles\ogcwkts.txt \
-          ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt\
-          ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt\
-          ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt\
+          ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt \
+          ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
+          ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
           ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+          ..\..\bin\UnitTestFiles\linesymbol.sd \
+          ..\..\bin\UnitTestFiles\symbol.sd \
+          ..\..\bin\UnitTestFiles\symbolp.sd \
+          ..\..\bin\UnitTestFiles\MTYP1500a.sd \
+          ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf \
+          ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
+          ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf \
           CopyFdoComponentsRelease \
           CopyFdoProvidersRelease \
           CopySchemaRelease \
           CopyResourcesRelease \
-          CreatePathsRelease\
+          CreatePathsRelease \
           CopyOgcFilesRelease
 
 
@@ -512,7 +558,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource
-    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf  del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
@@ -526,18 +572,41 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\linesymbol.sd                  del /F ..\..\bin\UnitTestFiles\linesymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbol.sd                      del /F ..\..\bin\UnitTestFiles\symbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbolp.sd                     del /F ..\..\bin\UnitTestFiles\symbolp.sd
+    if EXIST ..\..\bin\UnitTestFiles\MTYP1500a.sd                   del /F ..\..\bin\UnitTestFiles\MTYP1500a.sd
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf       del /F ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs          del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf
     del /f   ..\..\bin\debug\*.ilk
 
 
 cleanrelease:
-    if EXIST ..\..\bin\release\MgFoundation.dll                del /F ..\..\bin\release\MgFoundation.dll
-    if EXIST ..\..\bin\release\MgFoundation.pdb                del /F ..\..\bin\release\MgFoundation.pdb
-    if EXIST ..\..\bin\release\MgGeometry.dll                  del /F ..\..\bin\release\MgGeometry.dll
-    if EXIST ..\..\bin\release\MgGeometry.pdb                  del /F ..\..\bin\release\MgGeometry.pdb
-    if EXIST ..\..\bin\release\MgPlatformBase.dll              del /F ..\..\bin\release\MgPlatformBase.dll
-    if EXIST ..\..\bin\release\MgPlatformBase.pdb              del /F ..\..\bin\release\MgPlatformBase.pdb
-    if EXIST ..\..\bin\release\MgMapGuideCommon.dll            del /F ..\..\bin\release\MgMapGuideCommon.dll
-    if EXIST ..\..\bin\release\MgMapGuideCommon.pdb            del /F ..\..\bin\release\MgMapGuideCommon.pdb
+    if EXIST ..\..\bin\release\MgFoundation.dll              del /F ..\..\bin\release\MgFoundation.dll
+    if EXIST ..\..\bin\release\MgFoundation.pdb              del /F ..\..\bin\release\MgFoundation.pdb
+    if EXIST ..\..\bin\release\MgGeometry.dll                del /F ..\..\bin\release\MgGeometry.dll
+    if EXIST ..\..\bin\release\MgGeometry.pdb                del /F ..\..\bin\release\MgGeometry.pdb
+    if EXIST ..\..\bin\release\MgPlatformBase.dll            del /F ..\..\bin\release\MgPlatformBase.dll
+    if EXIST ..\..\bin\release\MgPlatformBase.pdb            del /F ..\..\bin\release\MgPlatformBase.pdb
+    if EXIST ..\..\bin\release\MgMapGuideCommon.dll          del /F ..\..\bin\release\MgMapGuideCommon.dll
+    if EXIST ..\..\bin\release\MgMapGuideCommon.pdb          del /F ..\..\bin\release\MgMapGuideCommon.pdb
     if EXIST ..\..\bin\release\MgCoordinateSystem.dll        del /F ..\..\bin\release\MgCoordinateSystem.dll
     if EXIST ..\..\bin\release\MgCoordinateSystem.pdb        del /F ..\..\bin\release\MgCoordinateSystem.pdb
     if EXIST ..\..\bin\release\MgMdfModel.dll                del /F ..\..\bin\release\MgMdfModel.dll
@@ -595,7 +664,7 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource
-    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf  del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
@@ -609,6 +678,29 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\linesymbol.sd                  del /F ..\..\bin\UnitTestFiles\linesymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbol.sd                      del /F ..\..\bin\UnitTestFiles\symbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbolp.sd                     del /F ..\..\bin\UnitTestFiles\symbolp.sd
+    if EXIST ..\..\bin\UnitTestFiles\MTYP1500a.sd                   del /F ..\..\bin\UnitTestFiles\MTYP1500a.sd
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf       del /F ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs          del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf
 
 
 "..\..\..\UnitTest\TestData\ResourceService\LibraryRepositoryContent.xml" :
@@ -655,6 +747,29 @@ cleanrelease:
 "..\..\..\UnitTest\TestData\KmlService\UT_GetMapKmlResult.txt" :
 "..\..\..\UnitTest\TestData\KmlService\UT_GetLayerKmlResult.txt" :
 "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" :
+"..\..\..\UnitTest\TestData\Symbology\linesymbol.sd" :
+"..\..\..\UnitTest\TestData\Symbology\symbol.sd" :
+"..\..\..\UnitTest\TestData\Symbology\symbolp.sd" :
+"..\..\..\UnitTest\TestData\Symbology\MTYP1500a.sd" :
+"..\..\..\UnitTest\TestData\Symbology\MdfTestCompTypeStyle.ldf" :
+"..\..\..\UnitTest\TestData\Symbology\MdfTestCompoundSymbol.sd" :
+"..\..\..\UnitTest\TestData\Symbology\MdfTestSimpleSymbol.sd" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.fs" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.ldf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.mdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.sdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLinesCrossTick.ldf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLinesCrossTick.mdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.fs" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.ldf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.mdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.sdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPointsParam.ldf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPointsParam.mdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.fs" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.ldf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.mdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf" :
 
 ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml : "..\..\..\UnitTest\TestData\ResourceService\LibraryRepositoryContent.xml"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
@@ -823,11 +938,11 @@ cleanrelease:
 ..\..\bin\UnitTestFiles\ogcwkts.txt : "..\..\..\UnitTest\TestData\CoordinateSystems\ogcwkts.txt"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\CoordinateSystems\ogcwkts.txt" xcopy /r /d /y "..\..\..\UnitTest\TestData\CoordinateSystems\ogcwkts.txt" ..\..\bin\UnitTestFiles\
-    
+
 ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt : "..\..\..\UnitTest\TestData\KmlService\UT_GetMapKmlResult.txt"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\KmlService\UT_GetMapKmlResult.txt" xcopy /r /d /y "..\..\..\UnitTest\TestData\KmlService\UT_GetMapKmlResult.txt" ..\..\bin\UnitTestFiles\
-    
+
 ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt : "..\..\..\UnitTest\TestData\KmlService\UT_GetLayerKmlResult.txt"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\KmlService\UT_GetLayerKmlResult.txt" xcopy /r /d /y "..\..\..\UnitTest\TestData\KmlService\UT_GetLayerKmlResult.txt" ..\..\bin\UnitTestFiles\
@@ -836,4 +951,94 @@ cleanrelease:
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" xcopy /r /d /y "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" ..\..\bin\UnitTestFiles\
 
+..\..\bin\UnitTestFiles\linesymbol.sd : "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd" ..\..\bin\UnitTestFiles\
 
+..\..\bin\UnitTestFiles\symbol.sd : "..\..\..\UnitTest\TestData\Symbology\symbol.sd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\symbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\symbol.sd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\symbolp.sd : "..\..\..\UnitTest\TestData\Symbology\symbolp.sd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\symbolp.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\symbolp.sd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\MTYP1500a.sd : "..\..\..\UnitTest\TestData\Symbology\MTYP1500a.sd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\MTYP1500a.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\MTYP1500a.sd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf : "..\..\..\UnitTest\TestData\Symbology\MdfTestCompTypeStyle.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\MdfTestCompTypeStyle.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\MdfTestCompTypeStyle.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd : "..\..\..\UnitTest\TestData\Symbology\MdfTestCompoundSymbol.sd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\MdfTestCompoundSymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\MdfTestCompoundSymbol.sd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd : "..\..\..\UnitTest\TestData\Symbology\MdfTestSimpleSymbol.sd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\MdfTestSimpleSymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\MdfTestSimpleSymbol.sd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyLines.fs : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.fs"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.fs" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.fs" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.sdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.sdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.sdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLinesCrossTick.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLinesCrossTick.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLinesCrossTick.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLinesCrossTick.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLinesCrossTick.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLinesCrossTick.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.fs"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.fs" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.fs" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.sdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.sdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPoints.sdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPointsParam.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPointsParam.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPointsParam.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPointsParam.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPointsParam.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPointsParam.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.fs"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.fs" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.fs" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf" ..\..\bin\UnitTestFiles\

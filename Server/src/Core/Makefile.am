@@ -201,6 +201,29 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.fs ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/linesymbol.sd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/symbol.sd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/symbolp.sd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/MTYP1500a.sd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/MdfTestCompTypeStyle.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/MdfTestCompoundSymbol.sd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/MdfTestSimpleSymbol.sd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyLines.fs ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyLines.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyLines.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyLines.sdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyLinesCrossTick.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyLinesCrossTick.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyPoints.fs ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyPoints.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyPoints.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyPoints.sdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyPointsParam.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyPointsParam.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyRoads.fs ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyRoads.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyRoads.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyRoads.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_BaseMap.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_Parcels.fs ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_Parcels.ldf ../UnitTestFiles
