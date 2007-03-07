@@ -49,6 +49,24 @@ LineUsage::~LineUsage()
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
+const MdfString& LineUsage::GetAngleControl() const
+{
+    return this->m_sAngleControl;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void LineUsage::SetAngleControl(const MdfString& angleControl)
+{
+    this->m_sAngleControl = angleControl;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
 const MdfString& LineUsage::GetUnitsControl() const
 {
     return this->m_sUnitsControl;
@@ -203,13 +221,4 @@ Path* LineUsage::OrphanDefaultPath()
     Path* pRet = this->m_pDefaultPath;
     this->m_pDefaultPath = NULL;
     return pRet;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void LineUsage::AcceptVisitor(IUsageVisitor& iuVisitor)
-{
-    iuVisitor.VisitLineUsage(*this);
 }

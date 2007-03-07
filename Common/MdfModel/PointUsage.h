@@ -19,19 +19,22 @@
 #define POINTUSAGE_H_
 
 #include "MdfModel.h"
-#include "Usage.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
     //-------------------------------------------------------------------------
-    class MDFMODEL_API PointUsage : public Usage
+    class MDFMODEL_API PointUsage : public MdfRootObject
     {
     public:
         // Construction, destruction, initialization
         PointUsage();
         virtual ~PointUsage();
+
+        const MdfString& GetAngleControl() const;
+        void SetAngleControl(const MdfString& angleControl);
 
         const MdfString& GetAngle() const;
         void SetAngle(const MdfString& angle);
@@ -42,14 +45,13 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetOriginOffsetY() const;
         void SetOriginOffsetY(const MdfString& originOffsetY);
 
-        virtual void AcceptVisitor(IUsageVisitor& iuVisitor);
-
      private:
         // Hidden copy constructor and assignment operator.
         PointUsage(const PointUsage&);
         PointUsage& operator=(const PointUsage&);
 
         // Data members
+        MdfString m_sAngleControl;
         MdfString m_sAngle;
         MdfString m_sOriginOffsetX;
         MdfString m_sOriginOffsetY;

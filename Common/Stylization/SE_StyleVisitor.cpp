@@ -52,44 +52,44 @@ SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_LineBufferPool*
     m_primitive = NULL;
 }
 
-void SE_StyleVisitor::VisitPointUsage(PointUsage& pntRpt)
+void SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 {
     SE_PointStyle* style = new SE_PointStyle();
     m_style = style;
-    ParseDoubleExpression(pntRpt.GetAngle(), style->angle);
-    ParseDoubleExpression(pntRpt.GetOriginOffsetX(), style->offset[0]);
-    ParseDoubleExpression(pntRpt.GetOriginOffsetY(), style->offset[1]);
-    ParseStringExpression(pntRpt.GetAngleControl(), style->orientation);
+    ParseDoubleExpression(pointUsage.GetAngle(), style->angle);
+    ParseDoubleExpression(pointUsage.GetOriginOffsetX(), style->offset[0]);
+    ParseDoubleExpression(pointUsage.GetOriginOffsetY(), style->offset[1]);
+    ParseStringExpression(pointUsage.GetAngleControl(), style->orientation);
 }
 
-void SE_StyleVisitor::VisitLineUsage(LineUsage& lnRpt)
+void SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
 {
     SE_LineStyle* style = new SE_LineStyle();
     m_style = style;
-    ParseDoubleExpression(lnRpt.GetStartOffset(), style->startOffset);
-    ParseDoubleExpression(lnRpt.GetEndOffset(), style->endOffset);
-    ParseDoubleExpression(lnRpt.GetRepeat(), style->repeat);
-    ParseDoubleExpression(lnRpt.GetAngle(), style->angle);
-    ParseDoubleExpression(lnRpt.GetVertexAngleLimit(), style->angleLimit);
-    ParseStringExpression(lnRpt.GetUnitsControl(), style->units);
-    ParseStringExpression(lnRpt.GetAngleControl(), style->orientation);
-    ParseStringExpression(lnRpt.GetVertexControl(), style->overlap);
-    //ParseStringExpression(lnRpt.GetLineJoin(), style->join);
+    ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset);
+    ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset);
+    ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat);
+    ParseDoubleExpression(lineUsage.GetAngle(), style->angle);
+    ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->angleLimit);
+    ParseStringExpression(lineUsage.GetUnitsControl(), style->units);
+    ParseStringExpression(lineUsage.GetAngleControl(), style->orientation);
+    ParseStringExpression(lineUsage.GetVertexControl(), style->overlap);
+    //ParseStringExpression(lineUsage.GetLineJoin(), style->join);
 }
 
-void SE_StyleVisitor::VisitAreaUsage(AreaUsage& areaRpt)
+void SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
 {
     SE_AreaStyle* style = new SE_AreaStyle();
     m_style = style;
-    ParseDoubleExpression(areaRpt.GetAngle(), style->angle);
-    ParseDoubleExpression(areaRpt.GetOriginX(), style->origin[0]);
-    ParseDoubleExpression(areaRpt.GetOriginY(), style->origin[1]);
-    ParseDoubleExpression(areaRpt.GetRepeatX(), style->repeat[0]);
-    ParseDoubleExpression(areaRpt.GetRepeatY(), style->repeat[1]);
-    ParseDoubleExpression(areaRpt.GetBufferWidth(), style->bufferWidth);
-    ParseStringExpression(areaRpt.GetAngleControl(), style->orientation);
-    ParseStringExpression(areaRpt.GetClippingControl(), style->clipping);
-    ParseStringExpression(areaRpt.GetOriginControl(), style->origincontrol);
+    ParseDoubleExpression(areaUsage.GetAngle(), style->angle);
+    ParseDoubleExpression(areaUsage.GetOriginX(), style->origin[0]);
+    ParseDoubleExpression(areaUsage.GetOriginY(), style->origin[1]);
+    ParseDoubleExpression(areaUsage.GetRepeatX(), style->repeat[0]);
+    ParseDoubleExpression(areaUsage.GetRepeatY(), style->repeat[1]);
+    ParseDoubleExpression(areaUsage.GetBufferWidth(), style->bufferWidth);
+    ParseStringExpression(areaUsage.GetAngleControl(), style->orientation);
+    ParseStringExpression(areaUsage.GetClippingControl(), style->clipping);
+    ParseStringExpression(areaUsage.GetOriginControl(), style->origincontrol);
 }
 
 bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
@@ -493,16 +493,19 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
 
     // TODO - We need a hint that says what feature geometry type we're
     //        working with, so that we can get the relevant usage.  For
-    //        just keep the first non-NULL usage we find.
-    Usage* usage = simpleSymbol.GetPointUsage();
-    if (usage == NULL)
-        usage = simpleSymbol.GetLineUsage();
-    if (usage == NULL)
-        usage = simpleSymbol.GetAreaUsage();
-    if (usage == NULL)
-        return;
+    //        now just keep the first non-NULL usage we find.
+    PointUsage* pointUsage = simpleSymbol.GetPointUsage();
+    LineUsage* lineUsage = simpleSymbol.GetLineUsage();
+    AreaUsage* areaUsage = simpleSymbol.GetAreaUsage();
 
-    usage->AcceptVisitor(*this);
+    if (pointUsage != NULL)
+        this->ProcessPointUsage(*pointUsage);
+    else if (lineUsage != NULL)
+        this->ProcessLineUsage(*lineUsage);
+    else if (areaUsage != NULL)
+        this->ProcessAreaUsage(*areaUsage);
+    else
+        return;
 
     GraphicElementCollection* graphics = simpleSymbol.GetGraphics();
 

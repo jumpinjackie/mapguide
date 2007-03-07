@@ -45,6 +45,24 @@ PointUsage::~PointUsage()
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
+const MdfString& PointUsage::GetAngleControl() const
+{
+    return this->m_sAngleControl;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void PointUsage::SetAngleControl(const MdfString& angleControl)
+{
+    this->m_sAngleControl = angleControl;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
 const MdfString& PointUsage::GetAngle() const
 {
     return this->m_sAngle;
@@ -93,13 +111,4 @@ const MdfString& PointUsage::GetOriginOffsetY() const
 void PointUsage::SetOriginOffsetY(const MdfString& originOffsetY)
 {
     this->m_sOriginOffsetY = originOffsetY;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void PointUsage::AcceptVisitor(IUsageVisitor& iuVisitor)
-{
-    iuVisitor.VisitPointUsage(*this);
 }

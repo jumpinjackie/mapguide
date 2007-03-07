@@ -63,6 +63,24 @@ void AreaUsage::SetOriginControl(const MdfString& originControl)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
+const MdfString& AreaUsage::GetAngleControl() const
+{
+    return this->m_sAngleControl;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void AreaUsage::SetAngleControl(const MdfString& angleControl)
+{
+    this->m_sAngleControl = angleControl;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
 const MdfString& AreaUsage::GetClippingControl() const
 {
     return this->m_sClippingControl;
@@ -183,13 +201,4 @@ const MdfString& AreaUsage::GetBufferWidth() const
 void AreaUsage::SetBufferWidth(const MdfString& bufferWidth)
 {
     this->m_sBufferWidth = bufferWidth;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void AreaUsage::AcceptVisitor(IUsageVisitor& iuVisitor)
-{
-    iuVisitor.VisitAreaUsage(*this);
 }

@@ -19,7 +19,6 @@
 #define SE_STYLEVISITOR_H
 
 #include "SE_ExpressionBase.h"
-#include "IUsageVisitor.h"
 #include "IGraphicElementVisitor.h"
 #include "ISymbolDefinitionVisitor.h"
 
@@ -40,15 +39,10 @@ namespace MDFMODEL_NAMESPACE
     class CompoundSymbolDefinition;
 }
 
-class SE_StyleVisitor : public MdfModel::IUsageVisitor, public MdfModel::IGraphicElementVisitor, public MdfModel::ISymbolDefinitionVisitor, private SE_ExpressionBase
+class SE_StyleVisitor : public MdfModel::IGraphicElementVisitor, public MdfModel::ISymbolDefinitionVisitor, private SE_ExpressionBase
 {
 public:
     SE_StyleVisitor(SE_SymbolManager* resources, SE_LineBufferPool* lbp);
-
-    /* IUsageVisitor */
-    virtual void VisitPointUsage(MdfModel::PointUsage& pntRpt);
-    virtual void VisitLineUsage(MdfModel::LineUsage& lnRpt);
-    virtual void VisitAreaUsage(MdfModel::AreaUsage& areaRpt);
 
     /* IGraphicElementVisitor */
     virtual void VisitPath(MdfModel::Path& path);
@@ -58,6 +52,10 @@ public:
     /* ISymbolDefinitionVisitor */
     virtual void VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefinition& simpleSymbol);
     virtual void VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefinition& compoundSymbol);
+
+    void ProcessPointUsage(MdfModel::PointUsage& pointUsage);
+    void ProcessLineUsage(MdfModel::LineUsage& lineUsage);
+    void ProcessAreaUsage(MdfModel::AreaUsage& areaUsage);
 
     void Convert(std::vector<SE_Symbolization*>& styles, MdfModel::CompositeSymbolization* symbolization);
 private:

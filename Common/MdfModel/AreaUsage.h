@@ -19,14 +19,14 @@
 #define AREAUSAGE_H_
 
 #include "MdfModel.h"
-#include "Usage.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
     //-------------------------------------------------------------------------
-    class MDFMODEL_API AreaUsage : public Usage
+    class MDFMODEL_API AreaUsage : public MdfRootObject
     {
     public:
         // Construction, destruction, initialization
@@ -35,6 +35,9 @@ BEGIN_NAMESPACE_MDFMODEL
 
         const MdfString& GetOriginControl() const;
         void SetOriginControl(const MdfString& originControl);
+
+        const MdfString& GetAngleControl() const;
+        void SetAngleControl(const MdfString& angleControl);
 
         const MdfString& GetClippingControl() const;
         void SetClippingControl(const MdfString& clippingControl);
@@ -57,8 +60,6 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetBufferWidth() const;
         void SetBufferWidth(const MdfString& bufferWidth);
 
-        virtual void AcceptVisitor(IUsageVisitor& iuVisitor);
-
     private:
         // Hidden copy constructor and assignment operator.
         AreaUsage(const AreaUsage&);
@@ -66,6 +67,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Data members
         MdfString m_sOriginControl;
+        MdfString m_sAngleControl;
         MdfString m_sClippingControl;
         MdfString m_sOriginX;
         MdfString m_sOriginY;
