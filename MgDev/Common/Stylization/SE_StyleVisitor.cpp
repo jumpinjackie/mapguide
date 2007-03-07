@@ -41,7 +41,6 @@ struct ArcData
 {
     double cx, cy;
     double startAng, endAng;
-    double rotation;
 };
 
 bool ParseArc(ArcDefinition& def, ArcData& data);
@@ -60,7 +59,7 @@ void SE_StyleVisitor::VisitPointUsage(PointUsage& pntRpt)
     ParseDoubleExpression(pntRpt.GetAngle(), style->angle);
     ParseDoubleExpression(pntRpt.GetOriginOffsetX(), style->offset[0]);
     ParseDoubleExpression(pntRpt.GetOriginOffsetY(), style->offset[1]);
-    style->orientation = pntRpt.GetAngleControl();
+    ParseStringExpression(pntRpt.GetAngleControl(), style->orientation);
 }
 
 void SE_StyleVisitor::VisitLineUsage(LineUsage& lnRpt)
@@ -72,6 +71,10 @@ void SE_StyleVisitor::VisitLineUsage(LineUsage& lnRpt)
     ParseDoubleExpression(lnRpt.GetRepeat(), style->repeat);
     ParseDoubleExpression(lnRpt.GetAngle(), style->angle);
     ParseDoubleExpression(lnRpt.GetVertexAngleLimit(), style->angleLimit);
+    ParseStringExpression(lnRpt.GetUnitsControl(), style->units);
+    ParseStringExpression(lnRpt.GetAngleControl(), style->orientation);
+    ParseStringExpression(lnRpt.GetVertexControl(), style->overlap);
+    //ParseStringExpression(lnRpt.GetLineJoin(), style->join);
 }
 
 void SE_StyleVisitor::VisitAreaUsage(AreaUsage& areaRpt)
@@ -84,6 +87,9 @@ void SE_StyleVisitor::VisitAreaUsage(AreaUsage& areaRpt)
     ParseDoubleExpression(areaRpt.GetRepeatX(), style->repeat[0]);
     ParseDoubleExpression(areaRpt.GetRepeatY(), style->repeat[1]);
     ParseDoubleExpression(areaRpt.GetBufferWidth(), style->bufferWidth);
+    ParseStringExpression(areaRpt.GetAngleControl(), style->orientation);
+    ParseStringExpression(areaRpt.GetClippingControl(), style->clipping);
+    ParseStringExpression(areaRpt.GetOriginControl(), style->origincontrol);
 }
 
 bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
@@ -219,7 +225,7 @@ TagSwitch:
             if (!ParseArc(arcdef, arcdata))
                 return false;
 
-            lb->EllipticalArcTo(arcdata.cx, arcdata.cy, arcdef.rx, arcdef.ry, arcdata.startAng, arcdata.endAng, arcdata.rotation);
+            lb->EllipticalArcTo(arcdata.cx, arcdata.cy, arcdef.rx, arcdef.ry, arcdata.startAng, arcdata.endAng, arcdef.rotation);
             break;
         case L'z': // Line segment to start point of figure
         case L'Z':

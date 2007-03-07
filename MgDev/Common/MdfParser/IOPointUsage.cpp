@@ -40,7 +40,7 @@ void IOPointUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
 void IOPointUsage::ElementChars(const wchar_t *ch)
 {
-         IF_ENUM_2(m_currElemName, this->_pointUsage, Usage, AngleControl, ch, FromAngle, FromGeometry)
+         IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, AngleControl, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, Angle, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, OriginOffsetX, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, OriginOffsetY, ch)
@@ -64,7 +64,7 @@ void IOPointUsage::Write(MdfStream &fd, PointUsage* pointUsage)
     fd << tab() << "<PointUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_ENUM_2(fd, pointUsage, Usage, AngleControl, FromAngle, FromGeometry, 1)    // FromAngle is default
+    EMIT_STRING_PROPERTY(fd, pointUsage, AngleControl, true)
     EMIT_STRING_PROPERTY(fd, pointUsage, Angle, true)
     EMIT_STRING_PROPERTY(fd, pointUsage, OriginOffsetX, true)
     EMIT_STRING_PROPERTY(fd, pointUsage, OriginOffsetY, true)

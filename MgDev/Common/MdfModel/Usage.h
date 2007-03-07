@@ -30,16 +30,11 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API Usage : public MdfRootObject
     {
     public:
-        enum AngleControl
-        {
-            FromAngle,
-            FromGeometry
-        };
-
         // Destruction
-        virtual ~Usage()
-        {
-        }
+        virtual ~Usage();
+
+        const MdfString& GetAngleControl() const;
+        void SetAngleControl(const MdfString& sControl);
 
         // Visitor Pattern method defined in Usage.
         virtual void AcceptVisitor(IUsageVisitor& iuVisitor) = 0;
@@ -47,9 +42,9 @@ BEGIN_NAMESPACE_MDFMODEL
     protected:
         // Construction, initialization
         // Default constructor is protected to make this class abstract.
-        Usage()
-        {
-        }
+        Usage();
+
+        MdfString m_sAngleControl;
     };
 
 END_NAMESPACE_MDFMODEL

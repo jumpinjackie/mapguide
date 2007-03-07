@@ -49,9 +49,9 @@ void IOLineUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
 void IOLineUsage::ElementChars(const wchar_t *ch)
 {
-         IF_ENUM_2(m_currElemName, this->_lineUsage, Usage, AngleControl, ch, FromAngle, FromGeometry)
-    else IF_ENUM_2(m_currElemName, this->_lineUsage, LineUsage, UnitsControl, ch, Absolute, Parametric)
-    else IF_ENUM_4(m_currElemName, this->_lineUsage, LineUsage, VertexControl, ch, NoOverlap, OverlapDirect, OverlapNoWrap, OverlapWrap)
+         IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, AngleControl, ch)
+    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, UnitsControl, ch)
+    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexControl, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, Angle, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, StartOffset, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, EndOffset, ch)
@@ -77,9 +77,9 @@ void IOLineUsage::Write(MdfStream &fd, LineUsage* lineUsage)
     fd << tab() << "<LineUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_ENUM_2(fd, lineUsage, Usage, AngleControl, FromAngle, FromGeometry, 1)  // FromAngle is default
-    EMIT_ENUM_2(fd, lineUsage, LineUsage, UnitsControl, Absolute, Parametric, 1) // Absolute is default
-    EMIT_ENUM_4(fd, lineUsage, LineUsage, VertexControl, NoOverlap, OverlapDirect, OverlapNoWrap, OverlapWrap, 4) // OverlapWrap is default
+    EMIT_STRING_PROPERTY(fd, lineUsage, AngleControl, true)
+    EMIT_STRING_PROPERTY(fd, lineUsage, UnitsControl, true)
+    EMIT_STRING_PROPERTY(fd, lineUsage, VertexControl, true)
     EMIT_STRING_PROPERTY(fd, lineUsage, Angle, true)
     EMIT_STRING_PROPERTY(fd, lineUsage, StartOffset, true)
     EMIT_STRING_PROPERTY(fd, lineUsage, EndOffset, true)

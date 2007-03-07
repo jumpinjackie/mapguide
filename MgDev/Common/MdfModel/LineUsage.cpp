@@ -32,9 +32,6 @@ LineUsage::LineUsage()
 {
     // NOTE: if you change any defaults then you must also update
     //       IOLineUsage::Write to use the correct default values.
-    this->m_eAngleControl = FromAngle;
-    this->m_eUnitsControl = Absolute;
-    this->m_eVertexControl = OverlapWrap;
     this->m_pDefaultPath = NULL;
 }
 
@@ -52,54 +49,36 @@ LineUsage::~LineUsage()
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-Usage::AngleControl LineUsage::GetAngleControl() const
+const MdfString& LineUsage::GetUnitsControl() const
 {
-    return this->m_eAngleControl;
+    return this->m_sUnitsControl;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void LineUsage::SetAngleControl(AngleControl angleControl)
+void LineUsage::SetUnitsControl(const MdfString& unitsControl)
 {
-    this->m_eAngleControl = angleControl;
+    this->m_sUnitsControl = unitsControl;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-LineUsage::UnitsControl LineUsage::GetUnitsControl() const
+const MdfString& LineUsage::GetVertexControl() const
 {
-    return this->m_eUnitsControl;
+    return this->m_sVertexControl;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void LineUsage::SetUnitsControl(UnitsControl unitsControl)
+void LineUsage::SetVertexControl(const MdfString& vertexControl)
 {
-    this->m_eUnitsControl = unitsControl;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-LineUsage::VertexControl LineUsage::GetVertexControl() const
-{
-    return this->m_eVertexControl;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void LineUsage::SetVertexControl(VertexControl vertexControl)
-{
-    this->m_eVertexControl = vertexControl;
+    this->m_sVertexControl = vertexControl;
 }
 
 //-------------------------------------------------------------------------

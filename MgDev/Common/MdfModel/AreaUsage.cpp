@@ -31,9 +31,6 @@ AreaUsage::AreaUsage()
 {
     // NOTE: if you change any defaults then you must also update
     //       IOAreaUsage::Write to use the correct default values.
-    this->m_eOriginControl = Global;
-    this->m_eAngleControl = FromAngle;
-    this->m_eClippingControl = Clip;
 }
 
 //-------------------------------------------------------------------------
@@ -48,54 +45,36 @@ AreaUsage::~AreaUsage()
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-AreaUsage::OriginControl AreaUsage::GetOriginControl() const
+const MdfString& AreaUsage::GetOriginControl() const
 {
-    return this->m_eOriginControl;
+    return this->m_sOriginControl;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void AreaUsage::SetOriginControl(const OriginControl originControl)
+void AreaUsage::SetOriginControl(const MdfString& originControl)
 {
-    this->m_eOriginControl = originControl;
+    this->m_sOriginControl = originControl;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-Usage::AngleControl AreaUsage::GetAngleControl() const
+const MdfString& AreaUsage::GetClippingControl() const
 {
-    return this->m_eAngleControl;
+    return this->m_sClippingControl;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void AreaUsage::SetAngleControl(AngleControl angleControl)
+void AreaUsage::SetClippingControl(const MdfString& clippingControl)
 {
-    this->m_eAngleControl = angleControl;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-AreaUsage::ClippingControl AreaUsage::GetClippingControl() const
-{
-    return this->m_eClippingControl;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void AreaUsage::SetClippingControl(const ClippingControl clippingControl)
-{
-    this->m_eClippingControl = clippingControl;
+    this->m_sClippingControl = clippingControl;
 }
 
 //-------------------------------------------------------------------------

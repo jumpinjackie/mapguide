@@ -60,7 +60,7 @@ struct SE_Color
             expression->Process(processor);
             *((unsigned int*)this) = (unsigned int)processor->GetInt64Result();
         }
-
+        
         return *((unsigned int*)this);
     }
 
@@ -145,12 +145,20 @@ struct SE_String
 
     SE_INLINE SE_String() : expression(NULL), value(NULL) { }
     SE_INLINE SE_String(const wchar_t* s) : value(s), expression(NULL) { }
-    ~SE_String() { if (expression) expression->Release(); }
+    ~SE_String() 
+    {
+        if (value)
+            delete[] value;
+        if (expression) 
+            expression->Release(); 
+    }
 
     SE_INLINE const wchar_t* evaluate(RS_FilterExecutor* processor)
     {
         if (expression)
         {
+            if (value)
+                delete[] value;
             expression->Process(processor);
             value = processor->GetStringResult();
         }
@@ -187,7 +195,7 @@ struct SE_Polygon : public SE_Polyline
 {
     SE_Color fill;
 
-    SE_INLINE SE_Polygon() { type = SE_PolygonPrimitive; weight = 0.0; }
+    SE_INLINE SE_Polygon() { type = SE_PolygonPrimitive; weight = 0.0; } 
 };
 
 /* Font/properties caching is left to the implementor of SE_Renderer */
@@ -222,6 +230,7 @@ struct SE_Raster : public SE_Primitive
 
     SE_INLINE SE_Raster() { type = SE_RasterPrimitive; }
 };
+
 
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //
@@ -307,7 +316,7 @@ struct SE_PointStyle : public SE_Style
 {
     SE_INLINE SE_PointStyle() : SE_Style(SE_PointStyleType) { }
 
-    Usage::AngleControl orientation;
+    SE_String orientation;
     SE_Double angle;
     SE_Double offset[2];
 };
@@ -316,10 +325,10 @@ struct SE_LineStyle : public SE_Style
 {
     SE_INLINE SE_LineStyle() : SE_Style(SE_LineStyleType) { }
 
-    Usage::AngleControl orientation;
-    LineUsage::UnitsControl units;
-    LineUsage::VertexControl overlap;
-    Path::LineJoin join;
+    SE_String orientation;
+    SE_String units;
+    SE_String overlap;
+    SE_String join;
 
     SE_Double startOffset;
     SE_Double endOffset;
@@ -332,9 +341,9 @@ struct SE_AreaStyle : public SE_Style
 {
     SE_INLINE SE_AreaStyle() : SE_Style(SE_AreaStyleType) { }
 
-    Usage::AngleControl orientation;
-    AreaUsage::OriginControl origincontrol;
-    AreaUsage::ClippingControl clipping;
+    SE_String orientation;
+    SE_String origincontrol;
+    SE_String clipping;
 
     SE_Double origin[2];
     SE_Double repeat[2];
@@ -350,7 +359,7 @@ struct SE_AreaStyle : public SE_Style
 
 struct SE_RenderStyle
 {
-    SE_INLINE SE_RenderStyle(SE_StyleType stype)
+    SE_INLINE SE_RenderStyle(SE_StyleType stype) 
         : type(stype),
           drawLast(false),
           checkExclusionRegions(false),
@@ -384,10 +393,10 @@ struct SE_RenderLineStyle : public SE_RenderStyle
 {
     SE_INLINE SE_RenderLineStyle() : SE_RenderStyle(SE_LineStyleType) { }
 
-    Usage::AngleControl orientation;
-    LineUsage::UnitsControl units;
-    LineUsage::VertexControl overlap;
-    Path::LineJoin join;
+    const wchar_t* orientation;
+    const wchar_t* units;
+    const wchar_t* overlap;
+    const wchar_t* join;
 
     double startOffset;
     double endOffset;
@@ -400,9 +409,9 @@ struct SE_RenderAreaStyle : public SE_RenderStyle
 {
     SE_INLINE SE_RenderAreaStyle() : SE_RenderStyle(SE_AreaStyleType) { }
 
-    AreaUsage::OriginControl origincontrol;
-    AreaUsage::AngleControl orientation;
-    AreaUsage::ClippingControl clipping;
+    const wchar_t* origincontrol;
+    const wchar_t* orientation;
+    const wchar_t* clipping;
 
     unsigned int background;
     double origin[2];
@@ -421,8 +430,8 @@ public:
     double dx;
     double dy;
     double anglerad;
-    RS_Units dunits;
-
+    RS_Units dunits;    
+    
     SE_INLINE SE_LabelInfo() :
         x(0.0),
         y(0.0),
@@ -463,7 +472,7 @@ struct SE_Rule
 {
     std::vector<SE_Symbolization*> symbolization;
     FdoFilter* filter;
-
+    
     ~SE_Rule()
     {
         if (filter) filter->Release();
@@ -474,5 +483,6 @@ struct SE_Rule
         symbolization.clear();
     }
 };
+
 
 #endif // SE_INCLUDE_H

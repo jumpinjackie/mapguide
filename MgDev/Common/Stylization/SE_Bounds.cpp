@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007 by Autodesk, Inc.
+//  Copyright (C) 2007 Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -19,6 +19,14 @@
 #include "SE_LineBuffer.h"
 #include "SE_ConvexHull.h"
 #include <float.h>
+
+SE_Bounds::SE_Bounds()
+{
+}
+
+SE_Bounds::~SE_Bounds()
+{
+}
 
 void SE_Bounds::Add(double x, double y)
 {
@@ -43,7 +51,7 @@ void SE_Bounds::Transform(SE_Matrix& xform)
 {
     double *last = hull + 2*size;
     double *cur = hull;
-
+    
     while (cur < last)
         xform.transform(*cur++, *cur++);
 }
@@ -93,25 +101,36 @@ SE_Bounds* SE_Bounds::Clone()
 void SE_Bounds::Contained(double minx, double miny, double maxx, double maxy, double &growx, double &growy)
 {
     double sx, sy;
-
-    if (min[0] < minx)
+    double cx = (minx + maxx)/2.0;
+    double cy = (miny + maxy)/2.0;
+    minx -= cx;
+    maxx -= cx;
+    miny -= cy;
+    maxy -= cy;
+    double xfminx, xfminy, xfmaxx, xfmaxy;
+    xfminx = min[0] - cx;
+    xfminy = min[1] - cy;
+    xfmaxx = max[0] - cx;
+    xfmaxy = max[1] - cy;
+    
+    if (xfminx < minx) // minx always negative
     {
-        sx = (minx - min[0])/(maxx - minx);
+        sx = xfminx/minx - 1.0;
         growx = (growx > sx) ? growx : sx;
     }
-    if (max[0] > maxx)
+    if (xfmaxx > maxx) // maxx always positive
     {
-        sx = (max[0] - maxx)/(maxx - minx);
+        sx = xfmaxx/maxx - 1.0;
         growx = (growx > sx) ? growx : sx;
     }
-    if (min[1] < miny)
+    if (xfminy < miny)
     {
-        sy = (miny - min[1])/(maxy - miny);
+        sy = xfminy/miny - 1.0;
         growy = (growy > sy) ? growy : sy;
     }
-    if (max[1] < maxy)
+    if (xfmaxy > maxy)
     {
-        sy = (max[1] - maxy)/(maxy - miny);
+        sy = xfmaxy/maxy - 1.0;
         growy = (growy > sy) ? growy : sy;
     }
 }
@@ -127,7 +146,7 @@ SE_Bounds* SE_Bounds::Union(SE_Bounds* bounds)
         vec = new double[2*usize];
     else
         vec = (double*)alloca(sizeof(double)*2*usize);
-
+        
     double* start[4] = {hull, hull + 2*size - 2, bounds->hull, bounds->hull + 2*bounds->size - 2};
     double* end[4] = {hull + 2*pivot, hull + 2*pivot - 2, bounds->hull + 2*bounds->pivot, bounds->hull + 2*bounds->pivot - 2};
 
@@ -169,7 +188,7 @@ SE_Bounds* SE_Bounds::Union(SE_Bounds* bounds)
     double* last = vec + pnts - 2;
     double* first = vec;
 
-    SE_Bounds* ubounds = AndrewHull<SimplePoint*, SimplePointUtil>((SimplePoint*)first, (SimplePoint*)last, pnts/2, pool);
+    SE_Bounds* ubounds = AndrewHull<SimplePoint*, SimplePointUtil>((SimplePoint*)first, (SimplePoint*)last, pnts/2, pool);    
 
     if (usize > 4096)
         delete[] vec;
