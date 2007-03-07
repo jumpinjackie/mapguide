@@ -4,7 +4,10 @@
 #include "SE_PositioningAlgorithms.h"
 #include "SE_Renderer.h"
 #include "SE_Bounds.h"
-
+#include "RS_FontEngine.h"
+#include <algorithm>
+#include <functional>
+#include "SE_ConvexHull.h"
 
 SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 {
@@ -16,6 +19,58 @@ SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
     ret->symbol[0] = txt;
 
     return ret;
+}
+
+//recomputes the bounds of an SE_RenderPointStyle that contains a text
+//whose alignment we have messed with
+void UpdateStyleBounds(SE_RenderPointStyle* st, double cx, double cy, SE_Renderer* renderer)
+{
+    SE_RenderText* txt = ((SE_RenderText*)st->symbol[0]);
+    
+    RS_TextMetrics tm;
+    SE_Matrix txf;
+    renderer->GetFontEngine()->GetTextMetrics(txt->text, txt->tdef, tm, false);
+    RS_F_Point fpts[4];
+
+    //radian CCW rotation
+    double rotation = txt->tdef.rotation() * M_PI / 180.0;
+    double cos_a = cos(rotation);
+    double sin_a = sin(rotation);
+
+    RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
+    RS_Bounds unrotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
+
+    for (size_t k=0; k<tm.line_pos.size(); ++k)
+    {
+        //convert the unrotated measured bounds for the current line to a local point array
+        memcpy(fpts, tm.line_pos[k].ext, sizeof(fpts));
+
+        // process the extent points
+        for (int j=0; j<4; ++j)
+        {
+            // update the overall unrotated bounds
+            unrotatedBounds.add_point(fpts[j]);
+
+            // rotate and translate to the insertion point
+            double tmpX = fpts[j].x;
+            double tmpY = fpts[j].y;
+            fpts[j].x = tmpX * cos_a + tmpY * sin_a;
+            fpts[j].y = tmpX * sin_a + tmpY * cos_a;
+
+            // update the overall rotated bounds
+            rotatedBounds.add_point(fpts[j]);
+        }
+    }
+
+    txt->bounds->min[0] = rotatedBounds.minx;
+    txt->bounds->min[1] = rotatedBounds.miny;
+    txt->bounds->max[0] = rotatedBounds.maxx;
+    txt->bounds->max[1] = rotatedBounds.maxy;
+
+    st->bounds->min[0] = rotatedBounds.minx;
+    st->bounds->min[1] = rotatedBounds.miny;
+    st->bounds->max[0] = rotatedBounds.maxx;
+    st->bounds->max[1] = rotatedBounds.maxy;
 }
 
 void SE_PositioningAlgorithms::EightBall(SE_Renderer*    renderer, 
@@ -60,17 +115,40 @@ void SE_PositioningAlgorithms::EightBall(SE_Renderer*    renderer,
         }
     }
 
-    //also need to get the bounds of the last drawn point symbol, so that we know how much to offset the label
-    //TODO:
-    RS_Bounds symbol_bounds(1,1,0,0); //init to invalid
-    double symbol_width = 0.001 * 32.0 / renderer->GetPixelsPerMillimeterScreen(); //symbol width in meters
-    double symbol_height = 0.001 * 32.0 / renderer->GetPixelsPerMillimeterScreen(); //symbol height in meters
-    double symbol_rot_deg = 0.0;
+    //get the bounds of the last drawn point symbol, so that we know how much to offset the label
+    //This call assumes the symbol draw right before the label and the symbol added its bounds
+    //as an exclusion region
+
+    const RS_F_Point* cfpts = renderer->GetLastExclusionRegion();
+    RS_F_Point fpts[4];
+    memcpy(fpts, cfpts, 4 * sizeof(RS_F_Point));
+
+    double dx = fpts[1].x - fpts[0].x;
+    double dy = fpts[1].y - fpts[0].y;
+    double box_angle_rad = atan2(dy, dx);
+
+    SE_Matrix ixform;
+    ixform.setIdentity();
+    ixform.translate(-cx, -cy); //factor out point position
+    ixform.rotate(-box_angle_rad); //factor out rotation
+    //double pixelToMeter = 0.001 / renderer->GetPixelsPerMillimeterScreen();
+    //ixform.scale(pixelToMeter,  pixelToMeter); //convert from pixels to meters for labeling
+
+    //factor out geometry position
+    for (int i=0; i<4; i++)
+        ixform.transform(fpts[i].x, fpts[i].y);
+
+    //unrotated bounds
+    RS_Bounds symbol_bounds(fpts[0].x, fpts[0].y, fpts[2].x, fpts[2].y);
+
+    double symbol_width = fpts[1].x - fpts[0].x; //symbol width in meters
+    double symbol_height = fpts[2].y - fpts[1].y; //symbol height in meters
+    double symbol_rot_deg = box_angle_rad * (180.0 / M_PI);
 
     double op_pts[16];
     
     // calculate a 2 pixel offset to allow for label ghosting
-    double offset = 0.001 * 2.0 / renderer->GetPixelsPerMillimeterScreen(); //2 pixels (in meters)
+    double offset = 2.0 ; 
     
     //compute how far label needs to be offset from
     //center point of symbol
@@ -160,35 +238,43 @@ void SE_PositioningAlgorithms::EightBall(SE_Renderer*    renderer,
     SE_RenderPointStyle* st0 = DeepClonePointStyle(rstyle2);
     ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
     ((SE_RenderText*)st0->symbol[0])->tdef.valign() = RS_VAlignment_Half;
-    candidates[0] = SE_LabelInfo(cx, cy, op_pts[0], op_pts[1], RS_Units_Device, 0.0, st0);
+    UpdateStyleBounds(st0, cx + op_pts[0], cy + op_pts[1], renderer);
+    candidates[0] = SE_LabelInfo(cx + op_pts[0], cy + op_pts[1], 0, 0, RS_Units_Device, 0.0, st0);
 
     SE_RenderPointStyle* st1 = DeepClonePointStyle(st0);
     ((SE_RenderText*)st1->symbol[0])->tdef.valign() = RS_VAlignment_Descent;
-    candidates[1] = SE_LabelInfo(cx, cy, op_pts[2], op_pts[3], RS_Units_Device, 0.0, st1);
+    UpdateStyleBounds(st1, cx + op_pts[2], cy + op_pts[3], renderer);
+    candidates[1] = SE_LabelInfo(cx + op_pts[2], cy + op_pts[3], 0, 0, RS_Units_Device, 0.0, st1);
 
     SE_RenderPointStyle* st2 = DeepClonePointStyle(st1);
     ((SE_RenderText*)st2->symbol[0])->tdef.halign() = RS_HAlignment_Center;
-    candidates[2] = SE_LabelInfo(cx, cy, op_pts[4], op_pts[5], RS_Units_Device, 0.0, st2);
+    UpdateStyleBounds(st2, cx + op_pts[4], cy + op_pts[5], renderer);
+    candidates[2] = SE_LabelInfo(cx + op_pts[4], cy + op_pts[5], 0, 0, RS_Units_Device, 0.0, st2);
 
     SE_RenderPointStyle* st3 = DeepClonePointStyle(st2);
     ((SE_RenderText*)st3->symbol[0])->tdef.halign() = RS_HAlignment_Right;
-    candidates[3] = SE_LabelInfo(cx, cy, op_pts[6], op_pts[7], RS_Units_Device, 0.0, st3);
+    UpdateStyleBounds(st3, cx + op_pts[6], cy + op_pts[7], renderer);
+    candidates[3] = SE_LabelInfo(cx + op_pts[6], cy + op_pts[7], 0, 0, RS_Units_Device, 0.0, st3);
 
     SE_RenderPointStyle* st4 = DeepClonePointStyle(st3);
     ((SE_RenderText*)st4->symbol[0])->tdef.valign() = RS_VAlignment_Half;
-    candidates[4] = SE_LabelInfo(cx, cy, op_pts[8], op_pts[9], RS_Units_Device, 0.0, st4);
+    UpdateStyleBounds(st4, cx + op_pts[8], cy + op_pts[9], renderer);
+    candidates[4] = SE_LabelInfo(cx + op_pts[8], cy + op_pts[9], 0, 0, RS_Units_Device, 0.0, st4);
 
     SE_RenderPointStyle* st5 = DeepClonePointStyle(st4);
     ((SE_RenderText*)st5->symbol[0])->tdef.valign() = RS_VAlignment_Ascent;
-    candidates[5] = SE_LabelInfo(cx, cy, op_pts[10], op_pts[11], RS_Units_Device, 0.0, st5);
+    UpdateStyleBounds(st5, cx + op_pts[10], cy + op_pts[11], renderer);
+    candidates[5] = SE_LabelInfo(cx + op_pts[10], cy + op_pts[11], 0, 0, RS_Units_Device, 0.0, st5);
 
     SE_RenderPointStyle* st6 = DeepClonePointStyle(st5);
     ((SE_RenderText*)st6->symbol[0])->tdef.halign() = RS_HAlignment_Center;
-    candidates[6] = SE_LabelInfo(cx, cy, op_pts[12], op_pts[13], RS_Units_Device, 0.0, st6);
+    UpdateStyleBounds(st6, cx + op_pts[12], cy + op_pts[13], renderer);
+    candidates[6] = SE_LabelInfo(cx + op_pts[12], cy + op_pts[13], 0, 0, RS_Units_Device, 0.0, st6);
 
     SE_RenderPointStyle* st7 = DeepClonePointStyle(st6);
     ((SE_RenderText*)st7->symbol[0])->tdef.halign() = RS_HAlignment_Left;
-    candidates[7] = SE_LabelInfo(cx, cy, op_pts[14], op_pts[15], RS_Units_Device, 0.0, st7);
+    UpdateStyleBounds(st7, cx + op_pts[14], cy + op_pts[15], renderer);
+    candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15], 0, 0, RS_Units_Device, 0.0, st7);
 
     renderer->ProcessLabelGroup(candidates, 8, RS_OverpostType_FirstFit, true, NULL);
 }
