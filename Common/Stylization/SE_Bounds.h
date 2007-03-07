@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007 Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -21,9 +21,10 @@
 #include "Stylization.h"
 #include "SE_Matrix.h"
 
+class SE_LineBufferPool;
+
 struct SE_Bounds
 {
-friend class SE_LineBuffer;
 friend class SE_LineBufferPool;
 private:
     SE_Bounds();
