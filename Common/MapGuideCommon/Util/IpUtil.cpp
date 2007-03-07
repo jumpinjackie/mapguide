@@ -89,8 +89,8 @@ bool MgIpUtil::IsLocalHost(CREFSTRING address, bool strict)
 {
     bool isLocalHost = false;
 
-    if (0 == _wcsicmp(address.c_str(), L"localhost") ||
-        0 == ::wcscmp(address.c_str(), L"127.0.0.1"))
+    if (0 == ::wcscmp(address.c_str(), L"127.0.0.1")
+     || 0 == _wcsnicmp(address.c_str(), L"localhost", ::wcslen(L"localhost")))
     {
         isLocalHost = true;
     }
@@ -117,7 +117,8 @@ bool MgIpUtil::IsLocalHost(CREFSTRING address, bool strict)
             HostAddressToName(address, name1, strict);
             HostAddressToName(L"localhost", name2, strict);
 
-            isLocalHost = (0 == _wcsicmp(name1.c_str(), name2.c_str()));
+            isLocalHost = (0 == _wcsnicmp(name1.c_str(), name2.c_str(),
+                ACE_MIN(name1.length(), name2.length())));
         }
     }
 
@@ -143,7 +144,8 @@ STRING MgIpUtil::GetLocalHostName()
 
 #ifdef WIN32
 
-    // Note that on Linux, ACE_OS::gethostbyname always returns "localhost".
+    // On Windows, use ACE_OS::gethostbyname because ACE_OS::hostname may
+    // return the correct host name but not in a fully qualified form.
 
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, STRING(L"")));
     // This is not thread safe - requires guard.
@@ -156,8 +158,8 @@ STRING MgIpUtil::GetLocalHostName()
 
 #else
 
-    // Note that on Windows, ACE_OS::hostname returns the correct host name
-    // but not in a fully qualified form.
+    // On Linux, use ACE_OS::hostname because ACE_OS::gethostbyname may
+    // just return "localhost".
 
     char buf[MAXHOSTNAMELEN + 1];
 
@@ -172,8 +174,8 @@ STRING MgIpUtil::GetLocalHostName()
 
     if (localHostName.empty())
     {
-        throw new MgDomainException(
-            L"MgIpUtil.GetLocalHostName", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgDomainException(L"MgIpUtil.GetLocalHostName",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     return localHostName;
@@ -194,11 +196,11 @@ STRING MgIpUtil::GetLocalHostName()
 
 STRING MgIpUtil::GetLocalHostAddress()
 {
-    STRING address;
+    STRING localHostAddress;
 
-    HostNameToAddress(L"localhost", address, true);
+    HostNameToAddress(L"localhost", localHostAddress);
 
-    return address;
+    return localHostAddress;
 }
 
 ///----------------------------------------------------------------------------
@@ -223,8 +225,8 @@ void MgIpUtil::ValidateAddress(CREFSTRING address, bool strict)
 {
     if (address.empty())
     {
-        throw new MgNullArgumentException(
-            L"MgIpUtil.ValidateAddress", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgIpUtil.ValidateAddress",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     if (STRING::npos != address.rfind(L':'))
@@ -237,7 +239,8 @@ void MgIpUtil::ValidateAddress(CREFSTRING address, bool strict)
         whyArguments.Add(L":");
 
         throw new MgInvalidArgumentException(L"MgIpUtil.ValidateAddress",
-            __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
+            __LINE__, __WFILE__, &arguments,
+            L"MgStringContainsReservedCharacters", &whyArguments);
     }
 
     if (strict)
@@ -250,8 +253,7 @@ void MgIpUtil::ValidateAddress(CREFSTRING address, bool strict)
             MgStringCollection arguments;
             arguments.Add(address);
 
-            throw new MgInvalidIpAddressException(
-                L"MgIpUtil.ValidateAddress",
+            throw new MgInvalidIpAddressException(L"MgIpUtil.ValidateAddress",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
     }
@@ -300,10 +302,8 @@ bool MgIpUtil::HostNameToAddress(CREFSTRING name, REFSTRING address,
 
     // Note that the following code still works even if the input parameter is
     // an IP address instead of a host name.
-    // There is some ACE bug where on Linux the local host can NOT be converted
-    // to its real IP address. Here is the workaround on Linux: If the input is
-    // "127.0.0.1", "localhost" or "localhost.localdomain", the output will be
-    // a fully qualified domain name.
+    // It converts "127.0.0.1", "localhost" or "localhost.localdomain" to
+    // the actual IP address if DNS entries are set up correctly.
 
     ACE_INET_Addr inetAddr;
 
@@ -345,8 +345,7 @@ bool MgIpUtil::HostNameToAddress(CREFSTRING name, REFSTRING address,
             MgStringCollection arguments;
             arguments.Add(name);
 
-            throw new MgInvalidIpAddressException(
-                L"MgIpUtil.HostNameToAddress",
+            throw new MgInvalidIpAddressException(L"MgIpUtil.HostNameToAddress",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         else
@@ -388,10 +387,21 @@ bool MgIpUtil::HostNameToAddress(CREFSTRING name, REFSTRING address,
 bool MgIpUtil::HostAddressToName(CREFSTRING address, REFSTRING name,
     bool strict)
 {
+    // No conversion is needed if the input parameter already contains a host name.
+
+    if (!IsIpAddress(address, false) && !IsLocalHost(address, false))
+    {
+        name = address;
+
+        ValidateAddress(name, strict);
+
+        return true;
+    }
+
     // Note that the following code still works even if the input parameter is
     // a host name instead of an IP address.
-    // It also converts "127.0.0.1", "localhost" or "localhost.localdomain" to
-    // the real IP address if necessary.
+    // It converts "127.0.0.1", "localhost" or "localhost.localdomain" to
+    // the actual host name if DNS entries are set up correctly.
 
     ACE_INET_Addr inetAddr;
 
@@ -423,8 +433,7 @@ bool MgIpUtil::HostAddressToName(CREFSTRING address, REFSTRING name,
             MgStringCollection arguments;
             arguments.Add(address);
 
-            throw new MgInvalidIpAddressException(
-                L"MgIpUtil.HostAddressToName",
+            throw new MgInvalidIpAddressException(L"MgIpUtil.HostAddressToName",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         else

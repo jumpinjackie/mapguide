@@ -153,53 +153,56 @@ void MgServerManager::Initialize(CREFSTRING locale)
     pConfiguration->GetIntValue(MgConfigProperties::ClientConnectionPropertiesSection, MgConfigProperties::ClientConnectionPropertyThreadPoolSize, m_nClientThreads, MgConfigProperties::DefaultClientConnectionPropertyThreadPoolSize);
 
     // Site Connection
-    STRING siteServerAddress;
-
-    pConfiguration->GetStringValue(
-        MgConfigProperties::SiteConnectionPropertiesSection,
-        MgConfigProperties::SiteConnectionPropertyIpAddress,
-        siteServerAddress,
-        MgConfigProperties::DefaultSiteConnectionPropertyIpAddress);
     pConfiguration->GetIntValue(MgConfigProperties::SiteConnectionPropertiesSection, MgConfigProperties::SiteConnectionPropertyPort, m_nSitePort, MgConfigProperties::DefaultSiteConnectionPropertyPort);
     pConfiguration->GetIntValue(MgConfigProperties::SiteConnectionPropertiesSection, MgConfigProperties::SiteConnectionPropertyThreadPoolSize, m_nSiteThreads, MgConfigProperties::DefaultSiteConnectionPropertyThreadPoolSize);
 
-    MgIpUtil::HostNameToAddress(siteServerAddress, m_siteServerAddress);
-
     // Validate IP configurations for this server.
-    STRING localServerAddress, hostAddress;
+    STRING localServerAddress, siteServerAddress;
 
     pConfiguration->GetStringValue(
         MgConfigProperties::GeneralPropertiesSection, 
         MgConfigProperties::GeneralPropertyMachineIp, 
         localServerAddress, 
         MgConfigProperties::DefaultGeneralPropertyMachineIp);
-
-    if (m_isSiteServer && MgIpUtil::IsLocalHost(localServerAddress, false))
-    {
-        localServerAddress = siteServerAddress;
-    }
+    pConfiguration->GetStringValue(
+        MgConfigProperties::SiteConnectionPropertiesSection,
+        MgConfigProperties::SiteConnectionPropertyIpAddress,
+        siteServerAddress,
+        MgConfigProperties::DefaultSiteConnectionPropertyIpAddress);
 
     MgIpUtil::HostNameToAddress(localServerAddress, m_localServerAddress);
+    MgIpUtil::HostNameToAddress(siteServerAddress, m_siteServerAddress);
 
-    if (MgIpUtil::HostNameToAddress(L"localhost", hostAddress, false)
-        && (MgIpUtil::IsIpAddress(hostAddress, false) == MgIpUtil::IsIpAddress(m_localServerAddress, false))
-        && (0 != MgIpUtil::CompareAddresses(hostAddress, m_localServerAddress)))
+    STRING localHostAddress = MgIpUtil::GetLocalHostAddress();
+
+    if (!MgIpUtil::IsLocalHost(localHostAddress, false)
+     && !MgIpUtil::IsLocalHost(m_localServerAddress, false)
+     && (0 != _wcsicmp(localHostAddress.c_str(), m_localServerAddress.c_str())))
     {
         MgStringCollection arguments;
         arguments.Add(localServerAddress);
 
         throw new MgInvalidIpAddressException(
             L"MgServerManager.Initialize", __LINE__, __WFILE__, &arguments,
-            L"MgInvalidIpConfigurationForLocalMachine", NULL);
+            L"MgMachineIpMustBeLocalHost", NULL);
     }
-    
+
     if (m_isSiteServer)
     {
-        if (0 != MgIpUtil::CompareAddresses(m_siteServerAddress, m_localServerAddress))
+        if (MgIpUtil::IsLocalHost(m_localServerAddress, false))
+        {
+            m_localServerAddress = m_siteServerAddress;
+        }
+        else if (MgIpUtil::IsLocalHost(m_siteServerAddress, false))
+        {
+            m_siteServerAddress = m_localServerAddress;
+        }
+
+        if (0 != _wcsicmp(m_siteServerAddress.c_str(), m_localServerAddress.c_str()))
         {
             MgStringCollection arguments;
-            arguments.Add(localServerAddress);
             arguments.Add(siteServerAddress);
+            arguments.Add(localServerAddress);
 
             throw new MgLogicException(
                 L"MgServerManager.Initialize", __LINE__, __WFILE__, NULL,
@@ -208,11 +211,21 @@ void MgServerManager::Initialize(CREFSTRING locale)
     }
     else
     {
-        if (0 == MgIpUtil::CompareAddresses(m_siteServerAddress, m_localServerAddress))
+        if (MgIpUtil::IsLocalHost(siteServerAddress))
         {
             MgStringCollection arguments;
-            arguments.Add(localServerAddress);
             arguments.Add(siteServerAddress);
+
+            throw new MgInvalidIpAddressException(
+                L"MgServerManager.Initialize", __LINE__, __WFILE__, &arguments,
+                L"MgSiteServerIpMustNotBeLocalHost", NULL);
+        }
+
+        if (0 == _wcsicmp(m_siteServerAddress.c_str(), m_localServerAddress.c_str()))
+        {
+            MgStringCollection arguments;
+            arguments.Add(siteServerAddress);
+            arguments.Add(localServerAddress);
 
             throw new MgLogicException(
                 L"MgServerManager.Initialize", __LINE__, __WFILE__, NULL,
