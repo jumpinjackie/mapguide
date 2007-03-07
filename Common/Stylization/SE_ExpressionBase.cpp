@@ -196,7 +196,33 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
         val.value = L"";
     }
     else
-        val.expression = FdoExpression::Parse(m_buffer.c_str());
+    {
+        const wchar_t* str = m_buffer.c_str();
+        while (isspace(*str)) 
+            str++;
+        if (*str++ != '\'')
+        {
+            val.expression = FdoExpression::Parse(m_buffer.c_str());
+            return;
+        }
+
+        const wchar_t* begin = str;
+
+        while(*str != NULL && *str != '\'')
+            str++;
+
+        if (*str == NULL)
+        {
+            val.expression = FdoExpression::Parse(m_buffer.c_str());
+            return;
+        }
+
+        size_t len = str - begin;
+        wchar_t* copy = new wchar_t[len + 1];
+        memcpy(copy, begin, sizeof(wchar_t)*len);
+        copy[len] = L'\0';
+        val.value = copy;
+    }
 }
 
 void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr, SE_Color& val)

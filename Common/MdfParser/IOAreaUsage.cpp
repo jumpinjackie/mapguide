@@ -40,9 +40,9 @@ void IOAreaUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
 void IOAreaUsage::ElementChars(const wchar_t *ch)
 {
-         IF_ENUM_2(m_currElemName, this->_areaUsage, AreaUsage, OriginControl, ch, Global, Centroid)
-    else IF_ENUM_2(m_currElemName, this->_areaUsage, Usage, AngleControl, ch, FromAngle, FromGeometry)
-    else IF_ENUM_2(m_currElemName, this->_areaUsage, AreaUsage, ClippingControl, ch, Clip, Overlap)
+         IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginControl, ch)
+    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, AngleControl, ch)
+    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, ClippingControl, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginX, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginY, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, Angle, ch)
@@ -69,9 +69,9 @@ void IOAreaUsage::Write(MdfStream &fd, AreaUsage *usage)
     fd << tab() << "<AreaUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_ENUM_2(fd, usage, AreaUsage, OriginControl, Global, Centroid, 1)   // Global is default
-    EMIT_ENUM_2(fd, usage, Usage, AngleControl, FromAngle, FromGeometry, 1) // FromAngle is default
-    EMIT_ENUM_2(fd, usage, AreaUsage, ClippingControl, Clip, Overlap, 1)    // Clip is default
+    EMIT_STRING_PROPERTY(fd, usage, OriginControl, true);
+    EMIT_STRING_PROPERTY(fd, usage, AngleControl, true);
+    EMIT_STRING_PROPERTY(fd, usage, ClippingControl, true);
     EMIT_STRING_PROPERTY(fd, usage, OriginX, true)
     EMIT_STRING_PROPERTY(fd, usage, OriginY, true)
     EMIT_STRING_PROPERTY(fd, usage, Angle, true)

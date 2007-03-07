@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007 by Autodesk, Inc.
+//  Copyright (C) 2007 Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -27,7 +27,7 @@
 
 #define ENSURE_POINT_BUFFER(points) \
     if ((m_npts + (points)) > m_max_pts) \
-        ResizeBuffer((void**)&m_pts, 2*sizeof(double), (points), m_npts, m_max_pts);
+        ResizeBuffer((void**)&m_pts, sizeof(double), (points), m_npts, m_max_pts);
 
 #define ENSURE_XF_POINT_BUFFER(points) \
     if ((m_xf_npts + (points)) > m_max_xf_pts) \
@@ -165,7 +165,7 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs
                however, appear to be using round joins at the moment. */
             m_ch_ptbuf.insert(std::pair<double,double>(x + vx, y + vy));
             m_ch_ptbuf.insert(std::pair<double,double>(x - vx, y - vy));
-            m_ch_ptbuf.insert(std::pair<double,double>(lx + vx, ly + vy));
+            m_ch_ptbuf.insert(std::pair<double,double>(lx + vx, ly + vy));        
             m_ch_ptbuf.insert(std::pair<double,double>(lx - vx, ly - vy));
 
             while(cur < last)
@@ -211,7 +211,7 @@ SE_LineBuffer::SE_LineBuffer(int size) :
     m_max_inst_pts(size),
     m_max_xf_cntrs(size),
     m_max_inst_cntrs(size),
-    m_max_pts(size),
+    m_max_pts(2*size),
     m_max_segs(size),
     m_xf_tol(-1.0),
     m_xf_weight(-1.0),
@@ -239,28 +239,33 @@ SE_LineBuffer::~SE_LineBuffer()
 
 void SE_LineBuffer::MoveTo(double x, double y)
 {
-    ENSURE_POINT_BUFFER(1);
+    ENSURE_POINT_BUFFER(2);
     ENSURE_SEG_BUFFER(1);
 
-    double* cur_pt = m_pts + 2*m_npts++;
+    double* cur_pt = m_pts + m_npts;
     *cur_pt++ = x;
     *cur_pt = y;
 
-    m_start[0] = x;
-    m_start[1] = y;
+    m_start[0] = m_last[0] = x;
+    m_start[1] = m_last[1] = y;
 
+    m_npts += 2;
     m_segs[m_nsegs++] = SegType_MoveTo;
 }
 
 void SE_LineBuffer::LineTo(double x, double y)
 {
-    ENSURE_POINT_BUFFER(1);
+    ENSURE_POINT_BUFFER(2);
     ENSURE_SEG_BUFFER(1);
 
-    double* cur_pt = m_pts + 2*m_npts++;
+    double* cur_pt = m_pts + m_npts;
     *cur_pt++ = x;
     *cur_pt = y;
 
+    m_last[0] = x;
+    m_last[1] = y;
+
+    m_npts += 2;
     m_segs[m_nsegs++] = SegType_LineTo;
 }
 
@@ -269,7 +274,47 @@ void SE_LineBuffer::EllipticalArcTo(double cx, double cy, double rx, double ry, 
     ENSURE_POINT_BUFFER(7);
     ENSURE_SEG_BUFFER(1);
 
-    double* cur_pt = m_pts + 2*m_npts;
+    double* cur_pt = m_pts + m_npts;
+    double sx, sy, ex, ey, dsx, dsy, dex, dey;
+
+    sx = cx + rx*cos(sAng);
+    sy = cy + ry*sin(sAng);
+    ex = cx + rx*cos(eAng);
+    ey = cy + ry*sin(eAng);
+
+    if (rotation != 0)
+    {
+        double rs = sin(rotation);
+        double rc = cos(rotation);
+        double tx, ty;
+        tx = sx; ty = sy;
+        sx = rc*sx + rs*sy;
+        sy = rc*sy - rs*sx;
+        tx = ex; ty = ey;
+        ex = rc*ex + rs*ey;
+        ey = rc*ey - rs*ex;
+    }
+
+    dsx = m_last[0] - sx;
+    dsy = m_last[1] - sy;
+    dex = m_last[0] - ex;
+    dey = m_last[1] - ey;
+
+    /* End angle is actually the current line position */
+    if (dsx*dsx + dsy*dsy > dex*dex + dey*dey)
+    {
+        double t = sAng;
+        sAng = eAng;
+        eAng = t;
+        m_last[0] = sx;
+        m_last[1] = sy;
+    }
+    else
+    {
+        m_last[0] = ex;
+        m_last[1] = ey;
+    }
+
     *cur_pt++ = cx;
     *cur_pt++ = cy;
     *cur_pt++ = rx;
@@ -310,7 +355,7 @@ void SE_LineBuffer::ResizeBuffer(void** buffer, int unitsize, int mininc, int cu
     int max_newpts = (int)(max_pts*GROWTH_FACTOR) + 1;
     if (max_newpts - max_pts < mininc)
         max_newpts += mininc;
-
+     
     void* newbuf = new char[unitsize*max_newpts];
     memcpy(newbuf, *buffer, cur_pts*unitsize);
     delete[] *buffer;
@@ -368,14 +413,15 @@ void SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tole
                 double eAng = m_pts[src_idx++];
                 double rot = m_pts[src_idx++];
 
-                /* TODO: change the # of segments based on the tolerance?...up to 4 for now */
-                int nsegs = (int)(4.0*(eAng - sAng)/(2*M_PI)) + 1; // eAng - sAng is (0, 2pi), so this is {1,2,3,4}.
+                /* TODO: change the # of segments based on the tolerance?...up to 6 for now */
+                int nsegs = (int)(4.0*fabs(eAng - sAng)/(2*M_PI)) + 1; // eAng - sAng is (0, 2pi), so this is {1,2,3,4}.
                 double span = (eAng - sAng)/(double)nsegs;
-
-                double sec = 1.0/cos(span/2.0);
-                double alpha = sin(span)*(sqrt(1.0 + 3.0/sec/sec) - 1)/3.0;
+                double aspan = fabs(span);
+                
+                double sec = 1.0/cos(aspan/2.0);
+                double alpha = sin(aspan)*(sqrt(1.0 + 3.0/sec/sec) - 1)/3.0;
                 double rcos = cos(rot), rsin = sin(rot);
-
+                
                 double ex, ey, sx, sy;
                 double scos, ssin, ecos, esin;
                 double sa, ea;
@@ -385,6 +431,8 @@ void SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tole
                 ex = rx*ecos;
                 ey = ry*esin;
                 ea = sAng;
+
+                double cw = sAng > eAng ? -1.0 : 1.0;
 
                 for (int i = 0; i < nsegs; i++)
                 {
@@ -401,10 +449,12 @@ void SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tole
                     ex = rx*ecos;
                     ey = ry*esin;
 
-                    double c1x = sx - alpha*rx*ssin;
-                    double c1y = sy + alpha*ry*scos;
-                    double c2x = ex + alpha*rx*esin;
-                    double c2y = ey - alpha*ry*ecos;
+                    double c1x, c1y, c2x, c2y;
+
+                    c1x = sx - cw*alpha*rx*ssin;
+                    c1y = sy + cw*alpha*ry*scos;
+                    c2x = ex + cw*alpha*rx*esin;
+                    c2y = ey - cw*alpha*ry*ecos;
 
                     /* Here, we fine the maximum 2nd derivative over the interval in question, and
                        calculate the number of segments, assuming a deviation of the segment length *
@@ -413,7 +463,7 @@ void SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tole
                     SineCosineMax(sa, ssin, scos, ea, esin, ecos, my, mx);
                     mx *= rx;
                     my *= ry;
-                    int steps = (int)((span/tolerance)*sqrt(mx*mx + my*my)) + 1;
+                    int steps = (int)((aspan/tolerance)*sqrt(mx*mx + my*my)) + 1;
                     ENSURE_XF_POINT_BUFFER(steps + 1);
                     m_xf_cntrs[m_xf_ncntrs-1] += steps + 1;
                     m_xf_npts += steps + 1;
@@ -433,15 +483,13 @@ void SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tole
                         tx = mx, ty = my;
                     }
 
-                    ex += cx;
-                    ey += cy;
                     c1x += cx;
                     c1y += cy;
                     c2x += cx;
                     c2y += cy;
 
-                    TessellateCubicTo(m_xf_pts + dst_idx, c1x, c1y, c2x, c2y, ex, ey, steps);
-                    dst_idx += steps + 1;
+                    TessellateCubicTo(m_xf_pts + dst_idx, c1x, c1y, c2x, c2y, ex + cx, ey + cy, steps);
+                    dst_idx += 2*steps + 2;
                 }
 
                 break;
@@ -504,6 +552,10 @@ void SE_LineBuffer::TessellateCubicTo(double* pts, double px2, double py2, doubl
     double px1 = pts[-2];
     double py1 = pts[-1];
 
+    m_xf.transform(px2, py2);
+    m_xf.transform(px3, py3);
+    m_xf.transform(px4, py4);
+
     double dt = 1.0/(double)steps;
 
     double dt3 = dt * dt * dt;
@@ -537,8 +589,8 @@ void SE_LineBuffer::TessellateCubicTo(double* pts, double px2, double py2, doubl
         ddfy += dddfy;
         ddfx += dddfx;
 
-        m_xf.transform(fx, fy, pts[0], pts[1]);
-        pts += 2;
+        *pts++ = fx;
+        *pts++ = fy;
     }
 
     *pts++ = px4;
@@ -614,7 +666,7 @@ void SE_LineBuffer::SetToTransform(LineBuffer* lb, const SE_Matrix& xform)
 
     m_xf_ncntrs = lb->cntr_count();
     memcpy(m_xf_cntrs, lb->cntrs(), sizeof(int)*m_xf_ncntrs);
-
+    
     m_xf_npts = lb->point_count();
     double *srcpts = lb->points();
 

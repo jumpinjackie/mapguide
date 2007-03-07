@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007 by Autodesk, Inc.
+//  Copyright (C) 2007 Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -27,6 +27,7 @@ friend class SE_LineBuffer;
 friend class SE_LineBufferPool;
 private:
     SE_Bounds();
+    ~SE_Bounds();
     int capacity;
     SE_LineBufferPool* pool;
 

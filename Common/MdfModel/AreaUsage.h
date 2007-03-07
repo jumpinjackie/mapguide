@@ -29,32 +29,15 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API AreaUsage : public Usage
     {
     public:
-        enum OriginControl
-        {
-            Global,
-            Local,
-            Centroid
-        };
-
-        enum ClippingControl
-        {
-            Clip,
-            Inside,
-            Overlap
-        };
-
         // Construction, destruction, initialization
         AreaUsage();
         virtual ~AreaUsage();
 
-        OriginControl GetOriginControl() const;
-        void SetOriginControl(OriginControl originControl);
+        const MdfString& GetOriginControl() const;
+        void SetOriginControl(const MdfString& originControl);
 
-        AngleControl GetAngleControl() const;
-        void SetAngleControl(AngleControl angleControl);
-
-        ClippingControl GetClippingControl() const;
-        void SetClippingControl(ClippingControl clippingControl);
+        const MdfString& GetClippingControl() const;
+        void SetClippingControl(const MdfString& clippingControl);
 
         const MdfString& GetOriginX() const;
         void SetOriginX(const MdfString& originX);
@@ -82,10 +65,8 @@ BEGIN_NAMESPACE_MDFMODEL
         AreaUsage& operator=(const AreaUsage&);
 
         // Data members
-        OriginControl m_eOriginControl;
-        AngleControl m_eAngleControl;
-        ClippingControl m_eClippingControl;
-
+        MdfString m_sOriginControl;
+        MdfString m_sClippingControl;
         MdfString m_sOriginX;
         MdfString m_sOriginY;
         MdfString m_sAngle;

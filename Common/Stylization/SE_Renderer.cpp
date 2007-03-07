@@ -53,6 +53,7 @@ void SE_Renderer::ProcessPoint(SE_LineBuffer* geometry, SE_RenderPointStyle* sty
 void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style)
 {
     SE_Matrix xform;
+    SE_Matrix symxf;
     SE_Geometry geom;
     geom.points = geometry->xf_points();
     geom.n_pts = geometry->xf_point_cnt();
@@ -60,7 +61,7 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
     geom.n_cntrs = geometry->xf_cntr_cnt();
     geom.geom_type = geometry->xf_geom_type();
 
-    bool yUp = GetFontEngine()->_Yup();
+    double yUp = GetFontEngine()->_Yup() ? 1.0 : -1.0;
     
     int ptindex = 0;
 
@@ -83,6 +84,7 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
         while (cur_seg < ptcount - 1)
         {
             xform.setIdentity();
+            symxf.setIdentity();
 
             //current line segment
             double* seg = pts + cur_seg * 2;
@@ -106,8 +108,13 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
                 dx_incr = cos(slope);
                 dy_incr = sin(slope);
 
-                xform.rotate(yUp ? slope : -slope); // negative for y-inversion
-                xform.translate(seg[0] + dx_incr * drawpos, seg[1] + dy_incr * drawpos);
+                double symrot = wcscmp(L"FromAngle", style->orientation) == 0 ? style->angle : slope*yUp;
+                xform.rotate(slope*yUp); // negative for y-inversion
+                symxf.rotate(symrot);
+                double tx = seg[0] + dx_incr * drawpos;
+                double ty = seg[1] + dy_incr * drawpos;
+                xform.translate(tx, ty);
+                symxf.translate(tx, ty);
                 dx_incr *= increment;
                 dy_incr *= increment;
 
@@ -116,11 +123,12 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
                 while (drawpos < len)
                 {                    
                     if (style->drawLast)
-                        AddLabel(&geom, style, xform, style->orientation == LineUsage::FromGeometry ? slope : style->angle);
+                        AddLabel(&geom, style, symxf, symrot);
                     else
-                        DrawSymbol(style->symbol, xform, style->orientation == LineUsage::FromGeometry ? slope : style->angle);
+                        DrawSymbol(style->symbol, symxf, symrot);
 
                     xform.translate(dx_incr, dy_incr);
+                    symxf.translate(dx_incr, dy_incr);
                     drawpos += increment; 
                 }
             }

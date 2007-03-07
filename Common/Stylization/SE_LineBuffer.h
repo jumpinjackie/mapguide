@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007 by Autodesk, Inc.
+//  Copyright (C) 2007 Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -33,6 +33,23 @@ public:
 
 struct SE_Geometry
 {
+    SE_INLINE SE_Geometry() :
+        points(NULL),
+        n_pts(0),
+        contours(NULL),
+        n_cntrs(0),
+        geom_type(0)
+    { 
+    }
+    SE_INLINE SE_Geometry(LineBuffer* srclb)
+    {
+        points = srclb->points();
+        n_pts = srclb->point_count();
+        contours = srclb->cntrs();
+        n_cntrs = srclb->cntr_count();
+        geom_type = srclb->geom_type();
+    }
+
     double* points;
     int n_pts;
     int* contours;
@@ -41,7 +58,6 @@ struct SE_Geometry
 };
 
 struct SE_Bounds;
-class SE_LineBufferPool;
 
 class SE_LineBuffer
 {
@@ -55,8 +71,8 @@ public:
         SegType_MoveTo,
         SegType_LineTo,
         SegType_EllipticalArc
-    };
-
+    };    
+    
     STYLIZATION_API void SetToTransform(LineBuffer* lb, const SE_Matrix& xform);
 
     STYLIZATION_API void MoveTo(double x, double y);
@@ -81,7 +97,7 @@ private:
     void ResizeBuffer(void** buffer, int unitsize, int mininc, int cur_pts, int& max_pts);
     void TessellateCubicTo(double* pts, double px2, double py2, double px3, double py3, double px4, double py4, int steps);
     SE_Bounds* ComputeConvexHull(double* pnts, int* cntrs, int ncntrs, double weight);
-
+    
     SE_LineBufferPool* m_pool;
     LineBuffer* m_src_lb;
 
@@ -100,8 +116,9 @@ private:
     SE_Bounds* m_inst_bounds;
     double m_xf_tol;
     double m_xf_weight;
-
+    
     double m_start[2];
+    double m_last[2];
 
     int m_npts;
     int m_xf_npts;

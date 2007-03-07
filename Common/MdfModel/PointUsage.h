@@ -33,9 +33,6 @@ BEGIN_NAMESPACE_MDFMODEL
         PointUsage();
         virtual ~PointUsage();
 
-        AngleControl GetAngleControl() const;
-        void SetAngleControl(AngleControl angleControl);
-
         const MdfString& GetAngle() const;
         void SetAngle(const MdfString& angle);
 
@@ -53,7 +50,6 @@ BEGIN_NAMESPACE_MDFMODEL
         PointUsage& operator=(const PointUsage&);
 
         // Data members
-        AngleControl m_eAngleControl;
         MdfString m_sAngle;
         MdfString m_sOriginOffsetX;
         MdfString m_sOriginOffsetY;

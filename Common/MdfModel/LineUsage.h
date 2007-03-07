@@ -30,32 +30,16 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API LineUsage : public Usage
     {
     public:
-        enum UnitsControl
-        {
-            Absolute,
-            Parametric
-        };
-
-        enum VertexControl
-        {
-            NoOverlap,
-            OverlapDirect,
-            OverlapNoWrap,
-            OverlapWrap
-        };
 
         // Construction, destruction, initialization
         LineUsage();
         virtual ~LineUsage();
 
-        AngleControl GetAngleControl() const;
-        void SetAngleControl(AngleControl angleControl);
+        const MdfString& GetUnitsControl() const;
+        void SetUnitsControl(const MdfString& unitsControl);
 
-        UnitsControl GetUnitsControl() const;
-        void SetUnitsControl(UnitsControl unitsControl);
-
-        VertexControl GetVertexControl() const;
-        void SetVertexControl(VertexControl vertexControl);
+        const MdfString& GetVertexControl() const;
+        void SetVertexControl(const MdfString& vertexControl);
 
         const MdfString& GetAngle() const;
         void SetAngle(const MdfString& angle);
@@ -84,10 +68,8 @@ BEGIN_NAMESPACE_MDFMODEL
         LineUsage& operator=(const LineUsage&);
 
         // Data members
-        AngleControl m_eAngleControl;
-        UnitsControl m_eUnitsControl;
-        VertexControl m_eVertexControl;
-
+        MdfString m_sUnitsControl;
+        MdfString m_sVertexControl;
         MdfString m_sAngle;
         MdfString m_sStartOffset;
         MdfString m_sEndOffset;

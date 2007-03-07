@@ -31,7 +31,6 @@ PointUsage::PointUsage()
 {
     // NOTE: if you change any defaults then you must also update
     //       IOPointUsage::Write to use the correct default values.
-    this->m_eAngleControl = FromAngle;
 }
 
 //-------------------------------------------------------------------------
@@ -40,24 +39,6 @@ PointUsage::PointUsage()
 //-------------------------------------------------------------------------
 PointUsage::~PointUsage()
 {
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-Usage::AngleControl PointUsage::GetAngleControl() const
-{
-    return this->m_eAngleControl;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void PointUsage::SetAngleControl(AngleControl angleControl)
-{
-    this->m_eAngleControl = angleControl;
 }
 
 //-------------------------------------------------------------------------

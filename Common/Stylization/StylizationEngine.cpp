@@ -224,7 +224,8 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
         break;
     }
 
-    if (style->orientation == PointUsage::FromGeometry)
+    const wchar_t* orientation = style->orientation.evaluate(m_exec);
+    if (wcscmp(L"FromGeometry", orientation) == 0)
     {
         if (type == LineBuffer::ctLine || type == LineBuffer::ctArea)
         {
@@ -262,10 +263,9 @@ SE_RenderLineStyle* StylizationEngine::EvaluateLineStyle(SE_Matrix& xform, SE_Li
     render->repeat = style->repeat.evaluate(m_exec)*xform.x0;
     render->startOffset = style->startOffset.evaluate(m_exec)*xform.x0;
 
-    render->units = style->units;
-    render->orientation = style->orientation;
-    render->overlap = style->overlap;
-    render->join = style->join;
+    render->units = style->units.evaluate(m_exec);
+    render->orientation = style->orientation.evaluate(m_exec);
+    render->overlap = style->overlap.evaluate(m_exec);
 
     return render;
 }
@@ -274,9 +274,9 @@ SE_RenderAreaStyle* StylizationEngine::EvaluateAreaStyle(SE_Matrix& xform, SE_Ar
 {
     SE_RenderAreaStyle* render = new SE_RenderAreaStyle();
 
-    render->orientation = style->orientation;
-    render->clipping = style->clipping;
-    render->origincontrol = style->origincontrol;
+    render->orientation = style->orientation.evaluate(m_exec);
+    render->clipping = style->clipping.evaluate(m_exec);
+    render->origincontrol = style->origincontrol.evaluate(m_exec);
 
     return render;
 }
@@ -452,17 +452,16 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
             if (renderStyle->bounds)
             {
                 SE_Bounds* bounds = renderStyle->bounds;
-                renderStyle->bounds = renderStyle->bounds->Union(rsym->bounds);
-                
-                if (style->useBox && sym->resize == GraphicElement::AddToResizeBox)
-                    bounds->Contained(minx, miny, maxx, maxy, growx, growy);
-
+                renderStyle->bounds = bounds->Union(rsym->bounds);
                 bounds->Free();
             }
             else
                 renderStyle->bounds = rsym->bounds->Clone();
             rsym->resize = sym->resize == GraphicElement::AdjustToResizeBox;
             renderStyle->symbol.push_back(rsym);
+
+            if (style->useBox && sym->resize == GraphicElement::AddToResizeBox)
+                rsym->bounds->Contained(minx, miny, maxx, maxy, growx, growy);
         }
     }
 
