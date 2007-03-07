@@ -198,9 +198,9 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
     else
     {
         const wchar_t* str = m_buffer.c_str();
-        while (isspace(*str)) 
+        while (iswspace(*str)) 
             str++;
-        if (*str++ != '\'')
+        if (*str++ != L'\'')
         {
             val.expression = FdoExpression::Parse(m_buffer.c_str());
             return;
@@ -208,10 +208,10 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
 
         const wchar_t* begin = str;
 
-        while(*str != NULL && *str != '\'')
+        while(*str != L'\0' && *str != L'\'')
             str++;
 
-        if (*str == NULL)
+        if (*str == L'\0')
         {
             val.expression = FdoExpression::Parse(m_buffer.c_str());
             return;
