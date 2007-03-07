@@ -60,7 +60,7 @@ struct SE_Color
             expression->Process(processor);
             *((unsigned int*)this) = (unsigned int)processor->GetInt64Result();
         }
-        
+
         return *((unsigned int*)this);
     }
 
@@ -187,7 +187,7 @@ struct SE_Polygon : public SE_Polyline
 {
     SE_Color fill;
 
-    SE_INLINE SE_Polygon() { type = SE_PolygonPrimitive; weight = 0.0; } 
+    SE_INLINE SE_Polygon() { type = SE_PolygonPrimitive; weight = 0.0; }
 };
 
 /* Font/properties caching is left to the implementor of SE_Renderer */
@@ -222,7 +222,6 @@ struct SE_Raster : public SE_Primitive
 
     SE_INLINE SE_Raster() { type = SE_RasterPrimitive; }
 };
-
 
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //
@@ -351,7 +350,7 @@ struct SE_AreaStyle : public SE_Style
 
 struct SE_RenderStyle
 {
-    SE_INLINE SE_RenderStyle(SE_StyleType stype) 
+    SE_INLINE SE_RenderStyle(SE_StyleType stype)
         : type(stype),
           drawLast(false),
           checkExclusionRegions(false),
@@ -422,8 +421,8 @@ public:
     double dx;
     double dy;
     double anglerad;
-    RS_Units dunits;    
-    
+    RS_Units dunits;
+
     SE_INLINE SE_LabelInfo() :
         x(0.0),
         y(0.0),
@@ -464,7 +463,7 @@ struct SE_Rule
 {
     std::vector<SE_Symbolization*> symbolization;
     FdoFilter* filter;
-    
+
     ~SE_Rule()
     {
         if (filter) filter->Release();
@@ -475,6 +474,5 @@ struct SE_Rule
         symbolization.clear();
     }
 };
-
 
 #endif // SE_INCLUDE_H

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007 Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -44,10 +44,10 @@ struct SimplePOINT
 template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoints, int npoints, SE_LineBufferPool* pool)
 {
     POINT pnt;
-    ITER minxminy, minxmaxy, maxxminy, maxxmaxy;    
+    ITER minxminy, minxmaxy, maxxminy, maxxmaxy;
 
     ITER iter = spoints;
-    
+
     minxminy = iter++;
     while ((iter != epoints) && (pnt.x(iter) == pnt.x(minxminy)))
         iter++;
@@ -89,7 +89,7 @@ template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoin
         if (PointLeft(pnt.x(minxminy), pnt.y(minxminy), pnt.x(maxxminy), pnt.y(maxxminy), pnt.x(iter), pnt.y(iter)) && iter != maxxminy)
         /* this point is trivially above the lower bounding line, and cannot be in the lower hull */
             continue;
-        
+
         while ((stack - buffer) > 2) /* we have to have at least 2 points before this is defined */
         {
             if (PointLeft(*(stack - 4), *(stack - 3), *(stack - 2), *(stack - 1), pnt.x(iter), pnt.y(iter)))
@@ -116,7 +116,7 @@ template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoin
         if (PointLeft(pnt.x(maxxmaxy), pnt.y(maxxmaxy), pnt.x(minxmaxy), pnt.y(minxmaxy), pnt.x(iter), pnt.y(iter)) && iter != minxmaxy)
         /* this point is trivially below the upper bounding line, and cannot be in the upper hull */
             continue;
-        
+
         while ((stack - ubuf) > 2) /* we have to have at least 2 points before this is defined */
         {
             if (PointLeft(*(stack - 4), *(stack - 3), *(stack - 2), *(stack - 1), pnt.x(iter), pnt.y(iter)))

@@ -53,12 +53,11 @@ public:
                  CompositeTypeStyle* style);
 
     void ClearCache();
-private:
 
+private:
     SE_RenderPointStyle* EvaluatePointStyle(SE_LineBuffer* geometry, SE_Matrix& xform, SE_PointStyle* style, double mm2px);
     SE_RenderAreaStyle* EvaluateAreaStyle(SE_Matrix& xform, SE_AreaStyle* style);
     SE_RenderLineStyle* EvaluateLineStyle(SE_Matrix& xform, SE_LineStyle* style);
-
 
     void LayoutCustomLabel(SE_LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px);
     void EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_RenderStyle* renderStyle, double mm2px);
