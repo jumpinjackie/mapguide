@@ -18,10 +18,16 @@
 #ifndef SE_CONVEXHULL_H
 #define SE_CONVEXHULL_H
 
-#include "SE_LineBuffer.h"
+// can't forward declare a struct used in a template class
+//struct SE_Bounds;
+//class SE_LineBufferPool;
+#include "SE_Bounds.h"
 
 #define PointLeft(pt0x, pt0y, pt1x, pt1y, pt2x, pt2y) \
     (((pt1x - pt0x)*(pt2y - pt0y) - (pt2x - pt0x)*(pt1y - pt0y)) > 0)
+
+//---------------------------------------------
+//---------------------------------------------
 
 struct SimplePOINT
 {
@@ -40,6 +46,9 @@ struct SimplePOINT
         return x(a) == x(b) && y(a) == y(b);
     }
 };
+
+//---------------------------------------------
+//---------------------------------------------
 
 template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoints, int npoints, SE_LineBufferPool* pool)
 {

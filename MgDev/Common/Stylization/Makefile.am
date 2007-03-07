@@ -14,6 +14,14 @@ INCLUDES = \
 lib_LTLIBRARIES = libMgStylization.la
 
 libMgStylization_la_SOURCES = \
+  RS_FontEngine.cpp \
+  SE_Bounds.cpp \
+  SE_ExpressionBase.cpp \
+  SE_LineBuffer.cpp \
+  SE_PositioningAlgorithms.cpp \
+  SE_Renderer.cpp \
+  SE_StyleVisitor.cpp \
+  StylizationEngine.cpp \
   LineBuffer.cpp \
   LineStyleDef.cpp \
   DefaultStylizer.cpp \
@@ -54,17 +62,21 @@ libMgStylization_la_SOURCES = \
   SimpleOverpost.cpp \
   RS_ByteData.cpp \
   FontManager.cpp \
-  complex_polygon_gd.cpp \
-  RS_FontEngine.cpp \
-  SE_Bounds.cpp \
-  SE_ExpressionBase.cpp \
-  SE_LineBuffer.cpp \
-  SE_PositioningAlgorithms.cpp \
-  SE_Renderer.cpp \
-  SE_StyleVisitor.cpp \
-  StylizationEngine.cpp
+  complex_polygon_gd.cpp
 
 noinst_HEADERS = \
+  RS_FontEngine.h \
+  SE_Bounds.h \
+  SE_ConvexHull.h \
+  SE_ExpressionBase.h \
+  SE_Include.h \
+  SE_LineBuffer.h \
+  SE_Matrix.h \
+  SE_PositioningAlgorithms.h \
+  SE_Renderer.h \
+  SE_StyleVisitor.h \
+  SE_SymbolManager.h \
+  StylizationEngine.h \
   Bounds.h \
   LineBuffer.h \
   LineStyle.h \
@@ -129,19 +141,7 @@ noinst_HEADERS = \
   FontManager.h \
   SymbolVisitor.h \
   SLDSymbols.h \
-  complex_polygon_gd.h \
-  RS_FontEngine.h \
-  SE_Bounds.h \
-  SE_ConvexHull.h \
-  SE_ExpressionBase.h \
-  SE_Include.h \
-  SE_LineBuffer.h \
-  SE_Matrix.h \
-  SE_PositioningAlgorithms.h \
-  SE_Renderer.h \
-  SE_StyleVisitor.h \
-  SE_SymbolManager.h \
-  StylizationEngine.h
+  complex_polygon_gd.h
 
 AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_BUILD_EXPAT
 

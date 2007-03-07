@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007 Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -51,7 +51,7 @@ void SE_Bounds::Transform(SE_Matrix& xform)
 {
     double *last = hull + 2*size;
     double *cur = hull;
-    
+
     while (cur < last)
         xform.transform(*cur++, *cur++);
 }
@@ -112,7 +112,7 @@ void SE_Bounds::Contained(double minx, double miny, double maxx, double maxy, do
     xfminy = min[1] - cy;
     xfmaxx = max[0] - cx;
     xfmaxy = max[1] - cy;
-    
+
     if (xfminx < minx) // minx always negative
     {
         sx = xfminx/minx - 1.0;
@@ -146,7 +146,7 @@ SE_Bounds* SE_Bounds::Union(SE_Bounds* bounds)
         vec = new double[2*usize];
     else
         vec = (double*)alloca(sizeof(double)*2*usize);
-        
+
     double* start[4] = {hull, hull + 2*size - 2, bounds->hull, bounds->hull + 2*bounds->size - 2};
     double* end[4] = {hull + 2*pivot, hull + 2*pivot - 2, bounds->hull + 2*bounds->pivot, bounds->hull + 2*bounds->pivot - 2};
 
@@ -188,7 +188,7 @@ SE_Bounds* SE_Bounds::Union(SE_Bounds* bounds)
     double* last = vec + pnts - 2;
     double* first = vec;
 
-    SE_Bounds* ubounds = AndrewHull<SimplePoint*, SimplePointUtil>((SimplePoint*)first, (SimplePoint*)last, pnts/2, pool);    
+    SE_Bounds* ubounds = AndrewHull<SimplePoint*, SimplePointUtil>((SimplePoint*)first, (SimplePoint*)last, pnts/2, pool);
 
     if (usize > 4096)
         delete[] vec;

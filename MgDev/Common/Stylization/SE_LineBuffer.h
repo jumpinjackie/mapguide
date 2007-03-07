@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007 Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -22,6 +22,9 @@
 #include "SE_Matrix.h"
 #include <set>
 
+struct SE_Bounds;
+class SE_LineBufferPool;
+
 struct PointLess : std::binary_function<std::pair<double, double>&, std::pair<double, double>&, bool>
 {
 public:
@@ -31,6 +34,9 @@ public:
     }
 };
 
+//---------------------------------------------
+//---------------------------------------------
+
 struct SE_Geometry
 {
     SE_INLINE SE_Geometry() :
@@ -39,8 +45,9 @@ struct SE_Geometry
         contours(NULL),
         n_cntrs(0),
         geom_type(0)
-    { 
+    {
     }
+
     SE_INLINE SE_Geometry(LineBuffer* srclb)
     {
         points = srclb->points();
@@ -57,22 +64,24 @@ struct SE_Geometry
     int geom_type;
 };
 
-struct SE_Bounds;
+//---------------------------------------------
+//---------------------------------------------
 
 class SE_LineBuffer
 {
 friend class SE_LineBufferPool;
 private:
-        SE_LineBuffer(int size);
-        ~SE_LineBuffer();
+    SE_LineBuffer(int size);
+    ~SE_LineBuffer();
+
 public:
     enum SE_LB_SegType
     {
         SegType_MoveTo,
         SegType_LineTo,
         SegType_EllipticalArc
-    };    
-    
+    };
+
     STYLIZATION_API void SetToTransform(LineBuffer* lb, const SE_Matrix& xform);
 
     STYLIZATION_API void MoveTo(double x, double y);
@@ -97,7 +106,7 @@ private:
     void ResizeBuffer(void** buffer, int unitsize, int mininc, int cur_pts, int& max_pts);
     void TessellateCubicTo(double* pts, double px2, double py2, double px3, double py3, double px4, double py4, int steps);
     SE_Bounds* ComputeConvexHull(double* pnts, int* cntrs, int ncntrs, double weight);
-    
+
     SE_LineBufferPool* m_pool;
     LineBuffer* m_src_lb;
 
@@ -116,7 +125,7 @@ private:
     SE_Bounds* m_inst_bounds;
     double m_xf_tol;
     double m_xf_weight;
-    
+
     double m_start[2];
     double m_last[2];
 
@@ -134,6 +143,10 @@ private:
     int m_max_inst_pts;
     int m_max_segs;
 };
+
+//---------------------------------------------
+// Object pool for line buffers
+//---------------------------------------------
 
 class SE_LineBufferPool
 {
