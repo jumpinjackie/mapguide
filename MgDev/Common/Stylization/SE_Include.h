@@ -334,7 +334,7 @@ struct SE_RenderPolygon : public SE_RenderPolyline
 
 struct SE_RenderText : public SE_RenderPrimitive
 {
-    const wchar_t* text;
+    std::wstring text;
     double position[2];
 
     RS_TextDef tdef;
