@@ -71,7 +71,6 @@
 #include "SimpleSymbolDefinition.h"
 #include "CompoundSymbolDefinition.h"
 #include "ISymbolVisitor.h"
-#include "IUsageVisitor.h"
 #include "ISymbolDefinitionVisitor.h"
 #include "IGraphicElementVisitor.h"
 #include "CompositeSymbolization.h"

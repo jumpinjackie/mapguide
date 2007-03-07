@@ -118,7 +118,6 @@ noinst_HEADERS = \
   ISymbolDefinitionVisitor.h \
   ISymbolVisitor.h \
   ISymbolizationVisitor.h \
-  IUsageVisitor.h \
   Image.h \
   ImageSymbol.h \
   Label.h \
@@ -160,7 +159,6 @@ noinst_HEADERS = \
   TextFrame.h \
   TextSymbol.h \
   UnicodeString.h \
-  Usage.h \
   Vector.h \
   VectorLayerDefinition.h \
   VectorScaleRange.h \

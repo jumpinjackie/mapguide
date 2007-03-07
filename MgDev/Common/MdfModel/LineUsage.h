@@ -19,7 +19,7 @@
 #define LINEUSAGE_H_
 
 #include "MdfModel.h"
-#include "Usage.h"
+#include "MdfRootObject.h"
 #include "Path.h"
 
 BEGIN_NAMESPACE_MDFMODEL
@@ -27,13 +27,15 @@ BEGIN_NAMESPACE_MDFMODEL
     //-------------------------------------------------------------------------
     // DESCRIPTION:
     //-------------------------------------------------------------------------
-    class MDFMODEL_API LineUsage : public Usage
+    class MDFMODEL_API LineUsage : public MdfRootObject
     {
     public:
-
         // Construction, destruction, initialization
         LineUsage();
         virtual ~LineUsage();
+
+        const MdfString& GetAngleControl() const;
+        void SetAngleControl(const MdfString& angleControl);
 
         const MdfString& GetUnitsControl() const;
         void SetUnitsControl(const MdfString& unitsControl);
@@ -60,14 +62,13 @@ BEGIN_NAMESPACE_MDFMODEL
         void AdoptDefaultPath(Path* defaultPath);
         Path* OrphanDefaultPath();
 
-        virtual void AcceptVisitor(IUsageVisitor& iuVisitor);
-
     private:
         // Hidden copy constructor and assignment operator.
         LineUsage(const LineUsage&);
         LineUsage& operator=(const LineUsage&);
 
         // Data members
+        MdfString m_sAngleControl;
         MdfString m_sUnitsControl;
         MdfString m_sVertexControl;
         MdfString m_sAngle;
