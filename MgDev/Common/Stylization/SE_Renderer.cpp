@@ -60,7 +60,6 @@ void SE_Renderer::ProcessPoint(SE_LineBuffer* geometry, SE_RenderPointStyle* sty
 
 void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style)
 {
-    SE_Matrix xform;
     SE_Matrix symxf;
     SE_Geometry geom;
     geom.points = geometry->xf_points();
@@ -69,8 +68,6 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
     geom.n_cntrs = geometry->xf_cntr_cnt();
     geom.geom_type = geometry->xf_geom_type();
 
-    double yUp = GetFontEngine()->_Yup() ? 1.0 : -1.0;
-    
     int ptindex = 0;
 
     //convert increment to pixels
@@ -91,7 +88,6 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
 
         while (cur_seg < ptcount - 1)
         {
-            xform.setIdentity();
             symxf.setIdentity();
 
             //current line segment
@@ -116,12 +112,10 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
                 dx_incr = cos(slope);
                 dy_incr = sin(slope);
 
-                double symrot = wcscmp(L"FromAngle", style->orientation) == 0 ? style->angle : slope*yUp;
-                xform.rotate(slope*yUp); // negative for y-inversion
+                double symrot = wcscmp(L"FromAngle", style->orientation) == 0 ? style->angle : slope;
                 symxf.rotate(symrot);
                 double tx = seg[0] + dx_incr * drawpos;
                 double ty = seg[1] + dy_incr * drawpos;
-                xform.translate(tx, ty);
                 symxf.translate(tx, ty);
                 dx_incr *= increment;
                 dy_incr *= increment;
@@ -140,7 +134,6 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
                             AddExclusionRegion(style, symxf, symrot);
                     }
 
-                    xform.translate(dx_incr, dy_incr);
                     symxf.translate(dx_incr, dy_incr);
                     drawpos += increment; 
                 }
