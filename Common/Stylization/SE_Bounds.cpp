@@ -20,6 +20,18 @@
 #include "SE_ConvexHull.h"
 #include <float.h>
 
+inline void AddToBounds(double x, double y, double* min, double* max)
+{
+    if (min[0] > x)
+        min[0] = x;
+    if (max[0] < x)
+        max[0] = x;
+    if (min[1] > y)
+        min[1] = y;
+    if (max[1] < y)
+        max[1] = y;
+}
+
 SE_Bounds::SE_Bounds()
 {
 }
@@ -35,25 +47,45 @@ void SE_Bounds::Add(double x, double y)
     hull[2*size] = x;
     hull[2*size+1] = y;
 
-    if (min[0] > x)
-        min[0] = x;
-    if (max[0] < x)
-        max[0] = x;
-    if (min[1] > y)
-        min[1] = y;
-    if (max[1] < y)
-        max[1] = y;
-
+    AddToBounds(x,y, min, max);
+    
     size++;
 }
 
-void SE_Bounds::Transform(SE_Matrix& xform)
+void SE_Bounds::Transform(const SE_Matrix& xform)
 {
     double *last = hull + 2*size;
     double *cur = hull;
+    min[0] = min[1] = DBL_MAX;
+    max[0] = max[1] = -DBL_MAX;
 
     while (cur < last)
-        xform.transform(*cur++, *cur++);
+    {
+        xform.transform(cur[0], cur[1]);
+        AddToBounds(cur[0], cur[1], min, max);
+        cur += 2;
+    }
+}
+
+/* NOTE: This method is intentionally unchecked, the caller must ensure that the
+ *       destination SE_Bounds is large enough, that the source is valid, etc. */
+void SE_Bounds::Transform(const SE_Matrix& xform, SE_Bounds* src)
+{
+    double *last = src->hull + 2*src->size;
+    double *cur = src->hull;
+    double *dst = hull;
+    min[0] = min[1] = DBL_MAX;
+    max[0] = max[1] = -DBL_MAX;
+    size = src->size;
+    pivot = src->pivot;
+
+    while (cur < last)
+    {
+        xform.transform(cur[0], cur[1], dst[0], dst[1]);
+        AddToBounds(dst[0], dst[1], min, max);
+        cur += 2;
+        dst += 2;
+    }
 }
 
 struct SimplePoint

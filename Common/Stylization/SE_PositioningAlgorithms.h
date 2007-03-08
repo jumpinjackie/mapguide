@@ -11,7 +11,7 @@ class SE_PositioningAlgorithms
 public:
 
     static void EightBall(SE_Renderer*    renderer, 
-                          SE_LineBuffer*  geometry, 
+                          LineBuffer*     geometry, 
                           SE_Matrix&      xform, 
                           SE_Style*       style, 
                           SE_RenderStyle* rstyle, 
@@ -20,12 +20,12 @@ public:
     
 
     static void MultipleHighwaysShields(SE_Renderer*    renderer, 
-                          SE_LineBuffer*  geometry, 
-                          SE_Matrix&      xform, 
-                          SE_Style*       style, 
-                          SE_RenderStyle* rstyle, 
-                          double          mm2px
-                          );
+                                        LineBuffer*     geometry, 
+                                        SE_Matrix&      xform, 
+                                        SE_Style*       style, 
+                                        SE_RenderStyle* rstyle, 
+                                        double          mm2px
+                                        );
 
 private:
 

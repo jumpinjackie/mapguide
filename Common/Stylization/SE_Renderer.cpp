@@ -28,56 +28,43 @@ void SE_Renderer::SetLineBufferPool(SE_LineBufferPool* pool)
     m_lbp = pool;
 }
 
-void SE_Renderer::ProcessPoint(SE_LineBuffer* geometry, SE_RenderPointStyle* style)
+void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
 {
     SE_Matrix xform;
 
-    SE_Geometry geom;
-    geom.n_pts = 1;
-    geom.n_cntrs = 0;
-    geom.geom_type = geometry->xf_geom_type();
-
     /* Render the points */
-    for (int i = 0; i < geometry->xf_point_cnt(); i++)
+    for (int i = 0; i < geometry->point_count(); i++)
     {
         xform.setIdentity();
-        xform.translate(geometry->xf_points()[2*i], geometry->xf_points()[2*i+1]);
-        double pt[2] = {geometry->xf_points()[2*i], geometry->xf_points()[2*i+1]};
-        geom.points = pt;
-
+        xform.translate(geometry->points()[2*i], geometry->points()[2*i+1]);
         double angle = 0;//TODO: angle needs to be added to the RenderPointStyle
         if (style->drawLast)
-            AddLabel(&geom, style, xform, angle); 
+            AddLabel(geometry, style, xform, 0);
         else
         {
             DrawSymbol(style->symbol, xform, angle);
 
+            double angle = 0;
             if (style->addToExclusionRegions)
                 AddExclusionRegion(style, xform, angle);
         }
     }
 }
 
-void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style)
+void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
     SE_Matrix symxf;
-    SE_Geometry geom;
-    geom.points = geometry->xf_points();
-    geom.n_pts = geometry->xf_point_cnt();
-    geom.contours = geometry->xf_cntrs();
-    geom.n_cntrs = geometry->xf_cntr_cnt();
-    geom.geom_type = geometry->xf_geom_type();
-
+    
     int ptindex = 0;
 
     //convert increment to pixels
     double increment = style->repeat; //TODO: is this already scaled by the mm to pixel scale?
 
-    for (int j=0; j<geom.n_cntrs; j++)
+    for (int j=0; j<geometry->cntr_count(); j++)
     {
         //current polyline
-        int ptcount = geom.contours[j];
-        double* pts = geom.points + 2*ptindex;
+        int ptcount = geometry->cntrs()[j];
+        double* pts = geometry->points() + 2*ptindex;
 
         //pixel position along the current segment
         //of the polyline
@@ -125,7 +112,7 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
                 while (drawpos < len)
                 {                    
                     if (style->drawLast)
-                        AddLabel(&geom, style, symxf, symrot);
+                        AddLabel(geometry, style, symxf, symrot);
                     else
                     {
                         DrawSymbol(style->symbol, symxf, symrot);
@@ -147,7 +134,7 @@ void SE_Renderer::ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style
     }
 }
 
-void SE_Renderer::ProcessArea(SE_LineBuffer* /*geometry*/, SE_RenderAreaStyle* /*style*/)
+void SE_Renderer::ProcessArea(LineBuffer* /*geometry*/, SE_RenderAreaStyle* /*style*/)
 {
 }
 
@@ -161,8 +148,7 @@ void SE_Renderer::DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& posxform,
         {
             SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
 
-            SE_Geometry geometry;
-            pl->geometry->InstanceTransform(posxform, geometry, NULL);
+            LineBuffer* geometry = pl->geometry->TransformInstance(posxform);
 
             if (primitive->type == SE_PolygonPrimitive)
                 DrawScreenPolygon( geometry, ((SE_RenderPolygon*)primitive)->fill );
@@ -202,7 +188,7 @@ void SE_Renderer::DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& posxform,
 }
 
 
-void SE_Renderer::AddLabel(SE_Geometry* geom, SE_RenderStyle* style, SE_Matrix& xform, double angle)
+void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angle)
 {
     SE_LabelInfo info(xform.x2, xform.y2, 0.0, 0.0, RS_Units_Device, angle, style);
     

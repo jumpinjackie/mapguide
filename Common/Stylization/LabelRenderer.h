@@ -105,7 +105,7 @@ public:
                                    int              nlabels,
                                    RS_OverpostType  type,
                                    bool             exclude,
-                                   SE_Geometry*      path);
+                                   LineBuffer*      path);
 
     virtual void BlastLabels();
 

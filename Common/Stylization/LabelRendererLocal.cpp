@@ -308,7 +308,7 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
                                            int              nlabels,
                                            RS_OverpostType  type,
                                            bool             exclude,
-                                           SE_Geometry*      path)
+                                           LineBuffer*      path)
 {
 }
 

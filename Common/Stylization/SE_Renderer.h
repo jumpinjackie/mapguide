@@ -27,14 +27,14 @@ class SE_Renderer
 public:
     void SetLineBufferPool(SE_LineBufferPool* pool);
     /* SE_RenderSymbol, under associated xform, is in screen space, and geometry is in screen space */
-    virtual void ProcessPoint(SE_LineBuffer* geometry, SE_RenderPointStyle* style);
-    virtual void ProcessLine(SE_LineBuffer* geometry, SE_RenderLineStyle* style);
-    virtual void ProcessArea(SE_LineBuffer* geometry, SE_RenderAreaStyle* style);
+    virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style);
+    virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
+    virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style);
 
     virtual void DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& xform, double anglerad);
 
-    virtual void DrawScreenPolyline(SE_Geometry& polyline, unsigned int color, double weight) = 0; // px
-    virtual void DrawScreenPolygon(SE_Geometry& polygon, unsigned int fill) = 0;
+    virtual void DrawScreenPolyline(LineBuffer* polyline, unsigned int color, double weight) = 0; // px
+    virtual void DrawScreenPolygon(LineBuffer* polygon, unsigned int fill) = 0;
     virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
         double x, double y, double w, double h, double angledeg) = 0;
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position) = 0;
@@ -54,7 +54,7 @@ public:
                                    int              nlabels,
                                    RS_OverpostType  type,
                                    bool             exclude,
-                                   SE_Geometry*     path = NULL) = 0;
+                                   LineBuffer*     path = NULL) = 0;
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts) = 0;
 
@@ -62,7 +62,7 @@ public:
     const RS_F_Point* GetLastExclusionRegion() { return m_lastExclusionRegion; }
 
 private:
-    void AddLabel(SE_Geometry* geom, SE_RenderStyle* style, SE_Matrix& xform, double angle);
+    void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angle);
     
     void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angle);
 

@@ -74,12 +74,12 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, double cx, double cy, SE_Rendere
 }
 
 void SE_PositioningAlgorithms::EightBall(SE_Renderer*    renderer, 
-                          SE_LineBuffer*  geometry, 
-                          SE_Matrix&      xform, 
-                          SE_Style*       style, 
-                          SE_RenderStyle* rstyle, 
-                          double          mm2px
-                          )
+                                         LineBuffer*     geometry, 
+                                         SE_Matrix&      xform, 
+                                         SE_Style*       style, 
+                                         SE_RenderStyle* rstyle, 
+                                         double          mm2px
+                                         )
 {
     //this placement algorithm implements the MapGuide dynamic point labeling algorithm 
     //which means 8 candidate labels generated for each symbol
@@ -281,7 +281,7 @@ void SE_PositioningAlgorithms::EightBall(SE_Renderer*    renderer,
     
 
 void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer, 
-                          SE_LineBuffer*  geometry, 
+                          LineBuffer*     geometry, 
                           SE_Matrix&      xform, 
                           SE_Style*       style, 
                           SE_RenderStyle* rstyle, 

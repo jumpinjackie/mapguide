@@ -519,20 +519,14 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         }
 
         // draw a filled rectangle
-        SE_Geometry geom;
-        double points[10] = {fpts[0].x, fpts[0].y, 
-                             fpts[1].x, fpts[1].y, 
-                             fpts[2].x, fpts[2].y,
-                             fpts[3].x, fpts[3].y,
-                             fpts[0].x, fpts[0].y};
-        int contours[1] = {5};
-        geom.points = points;
-        geom.n_pts = 5;
-        geom.contours = contours;
-        geom.n_cntrs = 1;
-        geom.geom_type = (int)FdoGeometryType_Polygon;
+        LineBuffer lb(5);
+        lb.MoveTo(fpts[0].x, fpts[0].y);
+        lb.LineTo(fpts[1].x, fpts[1].y);
+        lb.LineTo(fpts[2].x, fpts[2].y);
+        lb.LineTo(fpts[3].x, fpts[3].y);
+        lb.Close();
 
-        m_serenderer->DrawScreenPolygon(geom, tdef.bgcolor().argb());
+        m_serenderer->DrawScreenPolygon(&lb, tdef.bgcolor().argb());
     }
 
     for (size_t k=0; k<tm.line_pos.size(); ++k)
@@ -584,16 +578,11 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             double y1 = y0 - textwidth * sin_a;
 
             // draw the thick line
-            SE_Geometry geom;
-            double points[4] = {x0, y0, x1, y1};
-            int contours[1] = {2};
-            geom.points = points;
-            geom.n_pts = 2;
-            geom.contours = contours;
-            geom.n_cntrs = 1;
-            geom.geom_type = (int)FdoGeometryType_LineString;
+            LineBuffer lb(2);
+            lb.MoveTo(x0, y0);
+            lb.LineTo(x1, y1);
 
-            m_serenderer->DrawScreenPolyline(geom, tdef.color().argb(), line_width);
+            m_serenderer->DrawScreenPolyline(&lb, tdef.color().argb(), line_width);
         }
     }
 }
@@ -676,16 +665,11 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
                 ey = tm.char_pos[i+1].y + cos(tm.char_pos[i+1].anglerad) * line_pos;
             }
 
-            SE_Geometry geom;
-            double points[4] = {sx, sy, ex, ey};
-            int contours[1] = {2};
-            geom.points = points;
-            geom.n_pts = 2;
-            geom.contours = contours;
-            geom.n_cntrs = 1;
-            geom.geom_type = (int)FdoGeometryType_LineString;
+            LineBuffer lb(2);
+            lb.MoveTo(sx, sy);
+            lb.LineTo(ex, ey);
 
-            m_serenderer->DrawScreenPolyline(geom, tdef.color().argb(), line_width);
+            m_serenderer->DrawScreenPolyline(&lb, tdef.color().argb(), line_width);
 
             last_x = ex;
             last_y = ey;
