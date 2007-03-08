@@ -149,8 +149,8 @@ public:
     ////////////////////////////////////////////////
     // SE_Renderer
     //
-    virtual void DrawScreenPolyline(SE_Geometry& geom, unsigned int color, double weight); // px
-    virtual void DrawScreenPolygon(SE_Geometry& geom, unsigned int fill);
+    virtual void DrawScreenPolyline(LineBuffer* geom, unsigned int color, double weight); // px
+    virtual void DrawScreenPolygon(LineBuffer* geom, unsigned int fill);
     virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
         double x, double y, double w, double h, double angledeg);
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position);
@@ -170,7 +170,7 @@ public:
                                    int              nlabels,
                                    RS_OverpostType  type,
                                    bool             exclude,
-                                   SE_Geometry*      path = NULL);
+                                   LineBuffer*      path = NULL);
 
     virtual void DrawString(const RS_String& s,
                     int              x,

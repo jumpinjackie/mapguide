@@ -120,8 +120,9 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
     /* TODO: Obey the indices--Get rid of the indices alltogther--single pass! */
     
     SE_LineBuffer* xformGeom = m_pool->NewLineBuffer(geometry->point_count());
-
-    xformGeom->SetToTransform(geometry, m_w2s);
+    xformGeom->compute_bounds() = false;
+        
+    xformGeom->Transform(geometry, m_w2s);
 
     for (std::vector<SE_Symbolization*>::const_iterator iter = symbolization->begin(); iter != symbolization->end(); iter++)
     {
@@ -170,20 +171,20 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
 
             if (!sym->positioningAlgorithm.empty() && sym->positioningAlgorithm != L"Default")
             {
-                LayoutCustomLabel(sym->positioningAlgorithm, xformGeom, tmpxform, style, rstyle, mm2px);
+                LayoutCustomLabel(sym->positioningAlgorithm, xformGeom->xf_buffer(), tmpxform, style, rstyle, mm2px);
             }
             else
             {
                 switch(style->type)
                 {
                 case SE_PointStyleType:
-                    m_renderer->ProcessPoint(xformGeom, (SE_RenderPointStyle*)rstyle);
+                    m_renderer->ProcessPoint(xformGeom->xf_buffer(), (SE_RenderPointStyle*)rstyle);
                     break;
                 case SE_LineStyleType:
-                    m_renderer->ProcessLine(xformGeom, (SE_RenderLineStyle*)rstyle);
+                    m_renderer->ProcessLine(xformGeom->xf_buffer(), (SE_RenderLineStyle*)rstyle);
                     break;
                 case SE_AreaStyleType:
-                    m_renderer->ProcessArea(xformGeom, (SE_RenderAreaStyle*)rstyle);
+                    m_renderer->ProcessArea(xformGeom->xf_buffer(), (SE_RenderAreaStyle*)rstyle);
                     break;
                 }
             }
@@ -205,7 +206,7 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
 
     LineBuffer::GeomOperationType type;
 
-    switch(geometry->xf_geom_type())
+    switch(geometry->xf_buffer()->geom_type())
     {
     case FdoGeometryType_LineString:
     case FdoGeometryType_MultiLineString:
@@ -230,7 +231,7 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
         if (type == LineBuffer::ctLine || type == LineBuffer::ctArea)
         {
             double x0, x1, y0, y1;
-            geometry->xf_longest_edge(x0, y0, x1, y1);
+            geometry->LongestEdge(geometry->xf_buffer(), x0, y0, x1, y1);
             rotation = atan2(y1 - y0, x1 - x0); //TODO: this is probably affected by which way y goes in the renderer (yUp or yDown)
             if (rotation < 0)
                 rotation += 2*M_PI;
@@ -319,9 +320,15 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
                 rp->weight = p->weight.evaluate(m_exec)*mm2px;
                 rp->geometry = p->geometry;
-                rp->geometry->Transform(xform, rp->weight);
-                rp->bounds = p->geometry->xf_bounds();
                 rp->color = p->color.evaluate(m_exec);
+                /* Defer transformation */
+                if (sym->resize != GraphicElement::AdjustToResizeBox)
+                {
+                    rp->geometry->Transform(xform, rp->weight);
+                    rp->bounds = p->geometry->xf_bounds();
+                }
+                else
+                    rp->bounds = NULL;
             }
             break;
         case SE_TextPrimitive:
@@ -449,15 +456,20 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
 
         if (rsym)
         {
-            if (renderStyle->bounds)
-            {
-                SE_Bounds* bounds = renderStyle->bounds;
-                renderStyle->bounds = bounds->Union(rsym->bounds);
-                bounds->Free();
-            }
-            else
-                renderStyle->bounds = rsym->bounds->Clone();
             rsym->resize = sym->resize == GraphicElement::AdjustToResizeBox;
+
+            if (!rsym->resize)
+            {
+                if (renderStyle->bounds)
+                {
+                    SE_Bounds* bounds = renderStyle->bounds;
+                    renderStyle->bounds = bounds->Union(rsym->bounds);
+                    bounds->Free();
+                }
+                else
+                    renderStyle->bounds = rsym->bounds->Clone();
+            }
+
             renderStyle->symbol.push_back(rsym);
 
             if (style->useBox && sym->resize == GraphicElement::AddToResizeBox)
@@ -482,54 +494,62 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 growy = growx;
         }
 
-        if (growx != 0 || growy != 0)
-        {
-            SE_Matrix totalxf(xform);
-            SE_Matrix growxf;
-            growxf.translate(-dx, -dy);
-            growxf.scale(1.0 + growx, 1.0 + growy);
-            growxf.translate(dx, dy);
-            totalxf.premultiply(growxf);
+        SE_Matrix totalxf(xform);
+        SE_Matrix growxf;
+        growxf.translate(-dx, -dy);
+        growxf.scale(1.0 + growx, 1.0 + growy);
+        growxf.translate(dx, dy);
+        totalxf.premultiply(growxf);
 
-            for (SE_RenderSymbol::iterator rs = renderStyle->symbol.begin(); rs != renderStyle->symbol.end(); rs++)
+        for (SE_RenderSymbol::iterator rs = renderStyle->symbol.begin(); rs != renderStyle->symbol.end(); rs++)
+        {
+            SE_RenderPrimitive* rsym = *rs;
+            if (rsym->resize)
             {
-                SE_RenderPrimitive* rsym = *rs;
-                if (rsym->resize)
+                switch(rsym->type)
                 {
-                    switch(rsym->type)
+                case SE_PolygonPrimitive:
+                case SE_PolylinePrimitive:
                     {
-                    case SE_PolygonPrimitive:
-                    case SE_PolylinePrimitive:
-                        {
-                            SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
-                            rp->geometry->Transform(totalxf, rp->weight);
-                            rp->bounds = rp->geometry->xf_bounds();
-                            break;
-                        }
-                    case SE_TextPrimitive:
-                        {
-                            SE_RenderText* rt = (SE_RenderText*)rsym;
-                            growxf.transform(rt->position[0], rt->position[1]);
-                            rt->tdef.font().height() *= growxf.y1;
-                            break;
-                        }
-                    case SE_RasterPrimitive:
-                        {
-                            SE_RenderRaster* rr = (SE_RenderRaster*)rsym;
-                            growxf.transform(rr->position[0], rr->position[1]);
-                            rr->extent[0] *= growxf.x0;
-                            rr->extent[1] *= growxf.y1;
-                            break;
-                        }
+                        SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
+                        rp->geometry->Transform(totalxf, rp->weight);
+                        rp->bounds = rp->geometry->xf_bounds();
+                        break;
+                    }
+                case SE_TextPrimitive:
+                    {
+                        SE_RenderText* rt = (SE_RenderText*)rsym;
+                        growxf.transform(rt->position[0], rt->position[1]);
+                        rt->tdef.font().height() *= growxf.y1;
+                        rt->bounds->Transform(growxf);
+                        break;
+                    }
+                case SE_RasterPrimitive:
+                    {
+                        SE_RenderRaster* rr = (SE_RenderRaster*)rsym;
+                        growxf.transform(rr->position[0], rr->position[1]);
+                        rr->extent[0] *= growxf.x0;
+                        rr->extent[1] *= growxf.y1;
+                        rr->bounds->Transform(growxf);
+                        break;
                     }
                 }
+                
+                if (renderStyle->bounds)
+                {
+                    SE_Bounds* bounds = renderStyle->bounds;
+                    renderStyle->bounds = bounds->Union(rsym->bounds);
+                    bounds->Free();
+                }
+                else
+                    renderStyle->bounds = rsym->bounds->Clone();
             }
         }
     }
 }
 
 
-void StylizationEngine::LayoutCustomLabel(const std::wstring& positioningAlgo, SE_LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px)
+void StylizationEngine::LayoutCustomLabel(const std::wstring& positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px)
 {
     //here we decide which one to call based on the name of the positioning algorithm
     if (positioningAlgo == L"EightSurrounding")

@@ -59,7 +59,7 @@ private:
     SE_RenderAreaStyle* EvaluateAreaStyle(SE_Matrix& xform, SE_AreaStyle* style);
     SE_RenderLineStyle* EvaluateLineStyle(SE_Matrix& xform, SE_LineStyle* style);
 
-    void LayoutCustomLabel(const std::wstring& positioningAlgo, SE_LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px);
+    void LayoutCustomLabel(const std::wstring& positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px);
     void EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_RenderStyle* renderStyle, double mm2px);
     SE_Renderer* m_renderer;
     RS_FilterExecutor* m_exec;

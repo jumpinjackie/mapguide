@@ -29,25 +29,145 @@
     if ((m_npts + (points)) > m_max_pts) \
         ResizeBuffer((void**)&m_pts, sizeof(double), (points), m_npts, m_max_pts);
 
-#define ENSURE_XF_POINT_BUFFER(points) \
-    if ((m_xf_npts + (points)) > m_max_xf_pts) \
-        ResizeBuffer((void**)&m_xf_pts, 2*sizeof(double), (points), m_xf_npts, m_max_xf_pts);
-
-#define ENSURE_INST_POINT_BUFFER(points) \
-    if ((m_inst_npts + (points)) > m_max_inst_pts) \
-        ResizeBuffer((void**)&m_inst_pts, 2*sizeof(double), (points), m_inst_npts, m_max_inst_pts);
-
-#define ENSURE_XF_CNTR_BUFFER(points) \
-    if ((m_xf_ncntrs + (points)) > m_max_xf_cntrs) \
-        ResizeBuffer((void**)&m_xf_cntrs, sizeof(int), (points), m_xf_ncntrs, m_max_xf_cntrs);
-
-#define ENSURE_INST_CNTR_BUFFER(points) \
-    if ((m_inst_ncntrs + (points)) > m_max_inst_cntrs) \
-        ResizeBuffer((void**)&m_inst_cntrs, sizeof(int), (points), m_inst_ncntrs, m_max_inst_cntrs);
-
 #define ENSURE_SEG_BUFFER(points) \
     if ((m_nsegs + (points)) > m_max_segs) \
         ResizeBuffer((void**)&m_segs, sizeof(SE_LB_SegType), (points), m_nsegs, m_max_segs);
+
+class SE_LineStorage : public LineBuffer
+{
+public:
+    SE_INLINE SE_LineStorage(int size);
+    SE_INLINE void EnsurePoints(int n);
+    SE_INLINE void EnsureContours(int n);
+    SE_INLINE void _MoveTo(double x, double y);
+    SE_INLINE void _LineTo(double x, double y);
+    SE_INLINE void SetBounds(double minx, double miny, double maxx, double maxy);
+    SE_INLINE void SetBounds(SE_Bounds* bounds);
+    void SetToTransform(const SE_Matrix& xform, LineBuffer* src);
+};
+
+SE_LineStorage::SE_LineStorage(int size) : 
+    LineBuffer(size) 
+{ 
+}
+
+void SE_LineStorage::_MoveTo(double x, double y)
+{
+    m_types[m_cur_types++] = (unsigned char)stMoveTo;
+    m_pts[m_cur_pts++] = x;
+    m_pts[m_cur_pts++] = y;
+
+    m_last_x = x;
+    m_last_y = y;
+
+    m_cntrs[++m_cur_cntr] = 1; //increment to next contour and count the point
+}
+
+
+void SE_LineStorage::_LineTo(double x, double y)
+{
+    m_types[m_cur_types++] = (unsigned char)stLineTo;
+    m_pts[m_cur_pts++] = x;
+    m_pts[m_cur_pts++] = y;
+
+    m_cntrs[m_cur_cntr]++;
+}
+
+void SE_LineStorage::EnsurePoints(int n)
+{
+    if (m_cur_pts + 2*n >= m_pts_len)
+    {
+        int len = 2*m_pts_len;
+        if (len - m_pts_len < 2*n)
+            len += 2*n;
+
+        double* tempPts = new double[len];
+        memcpy(tempPts, m_pts, sizeof(double)*m_pts_len);
+        delete[] m_pts;
+        m_pts = tempPts;
+        m_pts_len = len;
+
+        len /= 2;
+        unsigned char* tempTypes = new unsigned char[len];
+        memcpy(tempTypes, m_types, sizeof(unsigned char) * m_types_len);
+        delete[] m_types;
+        m_types = tempTypes;
+        m_types_len = len;
+    }
+}
+
+void SE_LineStorage::EnsureContours(int n)
+{
+    if (m_cur_cntr + 2 + n > m_cntrs_len)
+    {
+        int len = 2*m_cntrs_len;
+        if (len - m_pts_len < n)
+            len += n;
+
+        int* tempCntrs = new int[len];
+        memcpy(tempCntrs, m_cntrs, sizeof(int)*m_cntrs_len);
+        delete[] m_cntrs;
+        m_cntrs = tempCntrs;
+        m_cntrs_len = len;
+    }
+}
+
+void SE_LineStorage::SetBounds(double minx, double miny, double maxx, double maxy)
+{
+    m_bounds.minx = minx;
+    m_bounds.miny = miny;
+    m_bounds.maxx = maxx;
+    m_bounds.maxy = maxy;
+}
+
+void SE_LineStorage::SetBounds(SE_Bounds* bounds)
+{
+    m_bounds.minx = bounds->min[0];
+    m_bounds.miny = bounds->min[1];
+    m_bounds.maxx = bounds->max[0];
+    m_bounds.maxy = bounds->max[1];
+}
+
+void SE_LineStorage::SetToTransform(const SE_Matrix& xform, LineBuffer* lb)
+{
+    EnsurePoints(lb->point_count());
+    EnsureContours(lb->cntr_count());
+
+    int n_cntrs = lb->cntr_count();
+    int* contours = lb->cntrs();
+    double* src = lb->points();
+    double* dst = m_pts;
+
+    for (int i = 0; i < n_cntrs; i++)
+    {
+        double sx, sy, *tx, *ty;
+        double* last = src + 2*contours[i];
+        sx = *src++;
+        sy = *src++;
+        xform.transform(sx, sy, m_last_x, m_last_y);
+        *dst++ = m_last_x;
+        *dst++ = m_last_y;
+
+        while (src < last)
+        {
+            sx = *src++;
+            sy = *src++;
+            tx = dst++;
+            ty = dst++;
+            xform.transform(sx, sy, *tx, *ty);
+        }
+    }
+
+    memcpy(m_types, lb->types(), lb->point_count());
+    memcpy(m_cntrs, lb->cntrs(), sizeof(int)*lb->cntr_count());
+
+    m_cur_types = lb->point_count();
+    m_cur_pts = m_cur_types*2;
+    m_cur_cntr = lb->cntr_count() - 1;
+
+    m_geom_type = lb->geom_type();
+    xform.transform(m_last_x, m_last_y);
+}
 
 inline void SineCosineMax(double sAng, double sSine, double sCosine, double eAng, double eSine, double eCosine, double &maxSine, double &maxCosine)
 {
@@ -142,6 +262,8 @@ struct PointUtil
 
 SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs, double weight)
 {
+    if (ncntrs == 0)
+        return NULL;
     // Monotone Chain Convex Hull Algorithm (Andrew, 1979)
     m_ch_ptbuf.clear();
 
@@ -196,6 +318,8 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs
     std::set<std::pair<double,double>, PointLess>::iterator end = m_ch_ptbuf.end();
     std::set<std::pair<double,double>, PointLess>::iterator iter = m_ch_ptbuf.begin();
 
+    if (m_ch_ptbuf.size() < 2)
+        return NULL;
     return AndrewHull<std::set<std::pair<double,double>, PointLess>::iterator, PointUtil>
         (iter, --end, (int)m_ch_ptbuf.size(), m_pool);
 }
@@ -203,38 +327,27 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs
 SE_LineBuffer::SE_LineBuffer(int size) :
     m_npts(0),
     m_nsegs(0),
-    m_xf_ncntrs(0),
-    m_inst_ncntrs(0),
-    m_xf_npts(0),
-    m_inst_npts(0),
-    m_max_xf_pts(size),
-    m_max_inst_pts(size),
-    m_max_xf_cntrs(size),
-    m_max_inst_cntrs(size),
     m_max_pts(2*size),
     m_max_segs(size),
     m_xf_tol(-1.0),
     m_xf_weight(-1.0),
     m_src_lb(NULL),
     m_xf_bounds(NULL),
-    m_inst_bounds(NULL)
+    m_inst_bounds(NULL),
+    m_compute_bounds(true)
 {
     m_pts = new double[size*2];
-    m_xf_pts = new double[size*2];
-    m_inst_pts = new double[size*2];
-    m_xf_cntrs = new int[size];
-    m_inst_cntrs = new int[size];
     m_segs = new SE_LB_SegType[size];
+    m_xf_buf = new SE_LineStorage(size);
+    m_inst_buf = new SE_LineStorage(size);
 }
 
 SE_LineBuffer::~SE_LineBuffer()
 {
     delete[] m_pts;
-    delete[] m_xf_pts;
-    delete[] m_inst_pts;
-    delete[] m_xf_cntrs;
-    delete[] m_inst_cntrs;
     delete[] m_segs;
+    delete m_xf_buf;
+    delete m_inst_buf;
 }
 
 void SE_LineBuffer::MoveTo(double x, double y)
@@ -334,25 +447,28 @@ void SE_LineBuffer::Close()
 
 void SE_LineBuffer::Reset()
 {
-    m_npts = m_xf_npts = m_xf_ncntrs = m_nsegs = m_inst_npts = m_inst_ncntrs = 0;
+    m_compute_bounds = true;
+    m_npts = m_nsegs = 0;
     if (m_xf_bounds)
     {
-        m_pool->FreeBounds(m_xf_bounds);
+        m_xf_bounds->Free();
         m_xf_bounds = NULL;
     }
     if (m_inst_bounds)
     {
-        m_pool->FreeBounds(m_inst_bounds);
+        m_inst_bounds->Free();
         m_inst_bounds = NULL;
     }
     m_src_lb = NULL;
     m_xf_tol = m_xf_weight = -1.0;
     m_xf.setIdentity();
+    m_xf_buf->Reset();
+    m_inst_buf->Reset();
 }
 
 void SE_LineBuffer::ResizeBuffer(void** buffer, int unitsize, int mininc, int cur_pts, int& max_pts)
 {
-    int max_newpts = (int)(max_pts*GROWTH_FACTOR) + 1;
+    int max_newpts = (int)(GROWTH_FACTOR*max_pts) + 1;
     if (max_newpts - max_pts < mininc)
         max_newpts += mininc;
      
@@ -363,45 +479,44 @@ void SE_LineBuffer::ResizeBuffer(void** buffer, int unitsize, int mininc, int cu
     max_pts = max_newpts;
 }
 
-void SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tolerance)
+LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tolerance)
 {
     if (m_xf == xform && m_xf_tol == tolerance && m_xf_weight == weight)
-        return;
+        return m_xf_buf;
 
     if (m_xf_bounds)
     {
-        m_pool->FreeBounds(m_xf_bounds);
+        m_xf_bounds->Free();
         m_xf_bounds = NULL;
     }
 
     if (m_src_lb)
-    {
-        SetToTransform(m_src_lb, xform);
-        return;
-    }
+        return Transform(m_src_lb, xform, weight);
 
     m_xf = xform;
     m_xf_tol = tolerance;
     m_xf_weight = weight;
+    m_xf_buf->Reset();
 
     SE_LB_SegType* endseg = m_segs + m_nsegs;
     SE_LB_SegType* curseg = m_segs;
     int src_idx = 0;
-    int dst_idx = 0;
+    double x, y;
     while(curseg != endseg)
     {
         switch(*curseg++)
         {
         case SegType_MoveTo:
-            ENSURE_XF_CNTR_BUFFER(1);
-            m_xf_cntrs[m_xf_ncntrs++] = 0;
-        case SegType_LineTo:
-            ENSURE_XF_POINT_BUFFER(1);
-            xform.transform(m_pts[src_idx], m_pts[src_idx+1], m_xf_pts[dst_idx], m_xf_pts[dst_idx+1]);
+            m_xf_buf->EnsureContours(1);
+            xform.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
+            m_xf_buf->_MoveTo(x,y);
             src_idx += 2;
-            dst_idx += 2;
-            m_xf_cntrs[m_xf_ncntrs-1]++;
-            m_xf_npts++;
+            break;
+        case SegType_LineTo:
+            m_xf_buf->EnsurePoints(1);
+            xform.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
+            m_xf_buf->_LineTo(x,y);
+            src_idx += 2;
             break;
         case SegType_EllipticalArc:
             {
@@ -464,9 +579,7 @@ void SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tole
                     mx *= rx;
                     my *= ry;
                     int steps = (int)((aspan/tolerance)*sqrt(mx*mx + my*my)) + 1;
-                    ENSURE_XF_POINT_BUFFER(steps + 1);
-                    m_xf_cntrs[m_xf_ncntrs-1] += steps + 1;
-                    m_xf_npts += steps + 1;
+                    m_xf_buf->EnsurePoints(steps + 1);
 
                     if (rot != 0.0)
                     {
@@ -488,54 +601,62 @@ void SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tole
                     c2x += cx;
                     c2y += cy;
 
-                    TessellateCubicTo(m_xf_pts + dst_idx, c1x, c1y, c2x, c2y, ex + cx, ey + cy, steps);
-                    dst_idx += 2*steps + 2;
+                    TessellateCubicTo(m_xf_buf, c1x, c1y, c2x, c2y, ex + cx, ey + cy, steps);
                 }
 
                 break;
             }
         }
     }
+
+    if (m_compute_bounds)
+        m_xf_bounds = ComputeConvexHull(m_xf_buf->points(), m_xf_buf->cntrs(), m_xf_buf->cntr_count(), m_xf_weight);
+    if (m_xf_bounds)
+        m_xf_buf->SetBounds(m_xf_bounds);
+
+    return m_xf_buf;
 }
 
-void SE_LineBuffer::InstanceTransform(const SE_Matrix& xform, SE_Geometry& geom, SE_Bounds** bounds)
+LineBuffer* SE_LineBuffer::Transform(LineBuffer* lb, const SE_Matrix& xform, double weight)
 {
-    m_inst_npts = 0;
-    m_inst_ncntrs = 0;
-    ENSURE_INST_POINT_BUFFER(m_xf_npts);
-    //ENSURE_INST_CNTR_BUFFER(m_inst_ncntrs); For this transform, the same number of points
-    double* src = m_xf_pts;
-    double* dst = m_inst_pts;
-    double* last = m_xf_pts + m_xf_npts*2;
-    while (src < last)
+    m_src_lb = lb;
+    m_xf = xform;
+    m_xf_tol = 0.0;
+    m_xf_weight = weight;
+    
+    if (m_xf_bounds)
     {
-        double sx = *src++;
-        double sy = *src++;
-        double* ix = dst++;
-        double* iy = dst++;
-        xform.transform(sx, sy, *ix, *iy);
+        m_xf_bounds->Free();
+        m_xf_bounds = NULL;
     }
-    m_inst_npts = m_xf_npts;
-    geom.points = m_inst_pts;
-    geom.n_pts = m_inst_npts;
-    geom.contours = m_xf_cntrs;
-    geom.n_cntrs = m_xf_ncntrs;
 
-    geom.geom_type = xf_geom_type();
+    m_xf_buf->SetToTransform(xform, lb);
+    if (m_compute_bounds)
+        m_xf_bounds = ComputeConvexHull(m_xf_buf->points(), m_xf_buf->cntrs(), m_xf_buf->cntr_count(), m_xf_weight);
+    if (m_xf_bounds)
+        m_xf_buf->SetBounds(m_xf_bounds);
 
-    if (bounds)
+    return m_xf_buf;
+}
+
+LineBuffer* SE_LineBuffer::TransformInstance(const SE_Matrix& xform)
+{
+    m_inst_buf->SetToTransform(xform, m_xf_buf);
+
+    if (m_inst_bounds)
     {
-        SE_Bounds* srcbounds = xf_bounds();
-        SE_Bounds* dstbounds = *bounds;
-        dstbounds = m_pool->NewBounds(srcbounds->size);
-        for(int i = 0; i < srcbounds->size; i++)
-            xform.transform(srcbounds->hull[2*i], srcbounds->hull[2*i+1], dstbounds->hull[2*i], dstbounds->hull[2*i+1]);
-        dstbounds->size = srcbounds->size;
-        dstbounds->max[0] = srcbounds->max[0];
-        dstbounds->max[1] = srcbounds->max[1];
-        dstbounds->min[0] = srcbounds->min[0];
-        dstbounds->min[1] = srcbounds->min[1];
+        m_inst_bounds->Free();
+        m_inst_bounds = NULL;
     }
+
+    if (m_xf_bounds && m_compute_bounds)
+    {
+        m_inst_bounds = m_pool->NewBounds(m_xf_bounds->size);
+        m_inst_bounds->Transform(xform, m_xf_bounds);
+        m_inst_buf->SetBounds(m_inst_bounds);
+    }
+
+    return m_inst_buf;
 }
 
 bool SE_LineBuffer::Empty()
@@ -546,9 +667,15 @@ bool SE_LineBuffer::Empty()
         return m_npts == 0;
 }
 
-void SE_LineBuffer::TessellateCubicTo(double* pts, double px2, double py2, double px3, double py3, double px4, double py4, int steps)
+void SE_LineBuffer::Free()
+{
+    m_pool->FreeLineBuffer(this);
+}
+
+void SE_LineBuffer::TessellateCubicTo(SE_LineStorage* lb, double px2, double py2, double px3, double py3, double px4, double py4, int steps)
 {
     //get the start point
+    double* pts = lb->points() + 2*lb->point_count();
     double px1 = pts[-2];
     double py1 = pts[-1];
 
@@ -589,27 +716,17 @@ void SE_LineBuffer::TessellateCubicTo(double* pts, double px2, double py2, doubl
         ddfy += dddfy;
         ddfx += dddfx;
 
-        *pts++ = fx;
-        *pts++ = fy;
+        lb->_LineTo(fx, fy);
     }
 
-    *pts++ = px4;
-    *pts++ = py4;
+    lb->_LineTo(px4, py4);
 }
 
-SE_Bounds* SE_LineBuffer::xf_bounds()
+void SE_LineBuffer::LongestEdge(LineBuffer* lb, double& x0, double& y0, double& x1, double& y1)
 {
-    if (m_xf_bounds == NULL)
-        m_xf_bounds = ComputeConvexHull(m_xf_pts, m_xf_cntrs, m_xf_ncntrs, m_xf_weight);
-
-    return m_xf_bounds;
-}
-
-void SE_LineBuffer::xf_longest_edge(double& x0, double& y0, double& x1, double& y1)
-{
-    int* cntr_end = m_xf_cntrs + m_xf_ncntrs;
-    int* contours = m_xf_cntrs;
-    double* points = m_xf_pts;
+    int* contours = lb->cntrs();
+    int* cntr_end = contours + lb->cntr_count();
+    double* points = lb->points();
 
     while(contours < cntr_end)
     {
@@ -633,45 +750,6 @@ void SE_LineBuffer::xf_longest_edge(double& x0, double& y0, double& x1, double& 
             lasty = y;
         }
     }
-}
-
-int SE_LineBuffer::xf_geom_type()
-{
-    if (m_src_lb)
-        return m_src_lb->geom_type();
-    return -1;
-}
-
-void SE_LineBuffer::Centroid(LineBuffer::GeomOperationType type, double* x, double * y, double * slope)
-{
-    if (m_src_lb)
-    {
-        double dx = 1.0;
-        m_src_lb->Centroid(type, x, y, slope);
-        m_xf.transform(*x, *y);
-        m_xf.transformVector(*slope, dx);
-        *slope /= dx;
-    }
-}
-
-void SE_LineBuffer::SetToTransform(LineBuffer* lb, const SE_Matrix& xform)
-{
-    m_src_lb = lb;
-    m_xf = xform;
-    m_xf_tol = 0.0;
-    m_xf_weight = 0.0;
-
-    ENSURE_XF_POINT_BUFFER(lb->point_count());
-    ENSURE_XF_CNTR_BUFFER(lb->cntr_count());
-
-    m_xf_ncntrs = lb->cntr_count();
-    memcpy(m_xf_cntrs, lb->cntrs(), sizeof(int)*m_xf_ncntrs);
-    
-    m_xf_npts = lb->point_count();
-    double *srcpts = lb->points();
-
-    for (int i = 0; i < 2*m_xf_npts; i += 2)
-        xform.transform(srcpts[i], srcpts[i+1], m_xf_pts[i], m_xf_pts[i+1]);
 }
 
 SE_LineBufferPool::~SE_LineBufferPool()

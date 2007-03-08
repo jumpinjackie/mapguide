@@ -2145,7 +2145,7 @@ void GDRenderer::_TransferPoints(double* src, int numpts)
 
 
 //copied from WritePolylines, except it doesn't do to screen trasnform -- we should refactor.
-void GDRenderer::DrawScreenPolyline(SE_Geometry& geom, unsigned int color, double weightpx)
+void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, unsigned int color, double weightpx)
 {
     RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
 
@@ -2166,12 +2166,12 @@ void GDRenderer::DrawScreenPolyline(SE_Geometry& geom, unsigned int color, doubl
     //draw the lines
     int index = 0;
 
-    for (int i=0; i<geom.n_cntrs; i++)
+    for (int i=0; i<srclb->cntr_count(); i++)
     {
-        int cntr_size = geom.contours[i];
+        int cntr_size = srclb->cntrs()[i];
 
         //convert to integer coords
-        _TransferPoints(geom.points + index, cntr_size);
+        _TransferPoints(srclb->points() + index, cntr_size);
 
         if (cntr_size > 1)
         {
@@ -2196,11 +2196,11 @@ void GDRenderer::DrawScreenPolyline(SE_Geometry& geom, unsigned int color, doubl
 }
 
 
-void GDRenderer::DrawScreenPolygon(SE_Geometry& geom, unsigned int color)
+void GDRenderer::DrawScreenPolygon(LineBuffer* polygon, unsigned int color)
 {
     RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
 
-    if (geom.n_pts == 0)
+    if (polygon->point_count() == 0)
         return;
 
     if (c.alpha() != 0)
@@ -2218,10 +2218,10 @@ void GDRenderer::DrawScreenPolygon(SE_Geometry& geom, unsigned int color)
         }
         */
 
-        _TransferPoints(geom.points, geom.n_pts);
+        _TransferPoints(polygon->points(), polygon->point_count());
 
         //call the new rasterizer
-        m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, geom.n_pts, geom.contours, geom.n_cntrs,
+        m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, polygon->point_count(), polygon->cntrs(), polygon->cntr_count(),
             (fillpat) ? gdTiled : gdc, (gdImagePtr)m_imout);
 
         /*
@@ -2285,7 +2285,7 @@ void GDRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
                                    int              nlabels,
                                    RS_OverpostType  type,
                                    bool             exclude,
-                                   SE_Geometry*      path)
+                                   LineBuffer*      path)
 {
     //pass labels to the label renderer here
 

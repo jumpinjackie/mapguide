@@ -41,7 +41,8 @@ public:
     double max[2];
 
     STYLIZATION_API void Add(double x, double y);
-    STYLIZATION_API void Transform(SE_Matrix& xform);
+    STYLIZATION_API void Transform(const SE_Matrix& xform);
+    STYLIZATION_API void Transform(const SE_Matrix& xform, SE_Bounds* src);
     STYLIZATION_API void Contained(double minx, double miny, double maxx, double maxy, double &growx, double &growy);
     STYLIZATION_API void Free();
     STYLIZATION_API SE_Bounds* Clone();
