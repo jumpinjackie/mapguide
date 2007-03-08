@@ -1231,7 +1231,7 @@ MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
     bool returnAssignedRoles, bool skipAuthenticate)
 {
     MgCommand cmd;
-    Ptr<MgStringCollection> retval = NULL;
+    Ptr<MgStringCollection> retval;
 
     MG_SITE_TRY()
 
