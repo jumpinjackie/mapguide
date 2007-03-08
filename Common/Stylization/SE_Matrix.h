@@ -32,9 +32,9 @@ struct SE_Matrix
                         double y0, double y1, double y2);
     
     SE_INLINE void setIdentity();
-    /* Scale, then rotate, then translate */
-    SE_INLINE void setTransform(double scaleX, double scaleY, double transX, double transY);
     /* Scale, then translate */
+    SE_INLINE void setTransform(double scaleX, double scaleY, double transX, double transY);
+    /* Scale, then rotate, then translate */
     SE_INLINE void setTransform(double scaleX, double scaleY, double transX, double transY, double rot);
     SE_INLINE void scaleX(double x);
     SE_INLINE void scaleY(double y);
@@ -99,10 +99,10 @@ void SE_Matrix::setTransform(double scaleX, double scaleY, double transX, double
     double cosine = cos(rot);
 
     x0 = scaleX*cosine;
-    x1 = scaleY*sine;
+    x1 = -scaleY*sine;
     x2 = transX;
 
-    y0 = -scaleX*sine;
+    y0 = scaleX*sine;
     y1 = scaleY*cosine;
     y2 = transY;
 }
@@ -154,14 +154,14 @@ void SE_Matrix::rotate(double angle)
     double cosine = cos(angle);
     double sine = sin(angle);
 
-    a00 = x0*cosine + y0*sine;
-    a10 = y0*cosine - x0*sine;
+    a00 = x0*cosine - y0*sine;
+    a10 = y0*cosine + x0*sine;
 
-    a01 = x1*cosine + y1*sine;
-    a11 = y1*cosine - x1*sine;
+    a01 = x1*cosine - y1*sine;
+    a11 = y1*cosine + x1*sine;
 
-    a02 = x2*cosine + y2*sine;
-    a12 = y2*cosine - x2*sine;
+    a02 = x2*cosine - y2*sine;
+    a12 = y2*cosine + x2*sine;
 
     x0 = a00; x1 = a01; x2 = a02;
     y0 = a10; y1 = a11; y2 = a12;
