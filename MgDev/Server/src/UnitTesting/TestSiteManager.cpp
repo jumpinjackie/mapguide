@@ -312,4 +312,3 @@ void TestSiteManager::TestCase_GetSiteCount()
         throw;
     }
 }
-

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2006  Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -34,7 +34,6 @@ class TestKmlService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE_END();
 
 public:
-
     TestKmlService();
     ~TestKmlService();
 
@@ -49,7 +48,6 @@ public:
     void TestCase_GetFeaturesKml();
 
 private:
-
     void PublishTheResources();
     STRING RemoveSessionIds(CREFSTRING content);
     void SaveToFile(CREFSTRING content, CREFSTRING filename);
