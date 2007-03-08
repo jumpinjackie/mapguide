@@ -79,8 +79,7 @@ void MgOpXmlToSchema::Execute()
         Validate();
 
         // Execute the operation
-        Ptr<MgFeatureSchemaCollection> schemaCol= m_service->XmlToSchema(xml);
-
+        Ptr<MgFeatureSchemaCollection> schemaCol = m_service->XmlToSchema(xml);
         
         // Write the response
         EndExecution(schemaCol);

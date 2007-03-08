@@ -125,7 +125,7 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::SetRelatedValues (
         WSTR filter = propname;
         filter += L" IN (";
 
-        FdoPtr<FdoFilter> pFilter = NULL;
+        FdoPtr<FdoFilter> pFilter;
 
         for (int idx = 0; idx < vals.GetCount (); idx ++)
         {
