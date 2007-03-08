@@ -430,6 +430,11 @@
           <xs:documentation>Unit of measurement that the thickness is specified in</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="SizeContext" type="SizeContextType">
+        <xs:annotation>
+          <xs:documentation>Whether the sizes are with respect to the earth or the user's display device.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>

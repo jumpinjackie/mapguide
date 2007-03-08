@@ -55,6 +55,10 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetColor()const;
         void SetColor(const MdfString& strColor);
 
+        // Property : SizeContext
+        SizeContext GetSizeContext() const;
+        void SetSizeContext(SizeContext sizeContext);
+
     private:
         // Data members
 

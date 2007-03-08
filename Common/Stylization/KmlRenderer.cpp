@@ -30,20 +30,21 @@ const double ELEV_FACTOR = 0.1;
 
 //default constructor
 KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, 
-        double scale, double dpi, int drawOrder) :
+        double scale, double dpi, double metersPerUnit, int drawOrder) :
     m_mainContent(kmlContent),
     m_kmlContent(kmlContent),
     m_styleContent(NULL),
     m_featureCount(0),
     m_layerInfo(NULL),
     m_featureClassInfo(NULL),
-    m_scale(scale),
+    m_mapScale(scale),
     m_styleId(0),
     m_extents(extents),
     m_drawOrder(drawOrder),
     m_elevation(0),
     m_extrude(false),
-    m_elevType(RS_ElevationType_RelativeToGround)
+    m_elevType(RS_ElevationType_RelativeToGround),
+    m_metersPerUnit(metersPerUnit)
 {
     m_kmlContent = m_mainContent;
     m_pixelSize = METERS_PER_INCH / dpi;
@@ -400,7 +401,7 @@ RS_FeatureClassInfo* KmlRenderer::GetFeatureClassInfo()
 
 double KmlRenderer::GetMapScale()
 {
-    return m_scale;
+    return m_mapScale;
 }
 
 
@@ -418,7 +419,7 @@ double KmlRenderer::GetDpi()
 
 double KmlRenderer::GetMetersPerUnit()
 {
-    return 0;
+    return m_metersPerUnit;
 }
 
 
@@ -479,7 +480,7 @@ void KmlRenderer::WriteStyle(RS_FillStyle& fill)
     char buffer[256];
 
     int thisStyleId;
-    KmlPolyStyle key(fill.outline().color().abgr(), fill.outline().width() / m_pixelSize, fill.color().abgr());
+    KmlPolyStyle key(fill.outline().color().abgr(), _MeterToPixels(fill.outline().units(), fill.outline().width()), fill.color().abgr());
     KmlPolyStyleIdMap::iterator iter = m_polyStyleMap.find(key);
     if(iter != m_polyStyleMap.end())
     {
@@ -540,7 +541,7 @@ void KmlRenderer::WriteStyle(RS_LineStroke& lsym)
 
     char buffer[256];
     int thisStyleId = 0;
-    KmlLineStyle key(lsym.color().abgr(), lsym.width() / m_pixelSize );
+    KmlLineStyle key(lsym.color().abgr(), _MeterToPixels(lsym.units(), lsym.width()));
     KmlLineStyleIdMap::iterator iter = m_lineStyleMap.find(key);
     if(iter != m_lineStyleMap.end())
     {
@@ -573,6 +574,22 @@ void KmlRenderer::WriteStyle(RS_LineStroke& lsym)
     //write a style reference into the main document
     sprintf(buffer, "<styleUrl>#%d</styleUrl>", thisStyleId);
     m_kmlContent->WriteString(buffer);
+}
+
+double KmlRenderer::_MeterToPixels(RS_Units unit, double number)
+{
+    double scale_factor;
+
+    if (unit == RS_Units_Device) // in meters, fixed size
+    {
+        scale_factor = 1.0 / m_pixelSize;
+    }
+    else
+    {
+        scale_factor = 1.0 / m_mapScale / m_pixelSize;
+    }
+
+    return number * scale_factor;
 }
 
 

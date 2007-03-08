@@ -30,6 +30,7 @@ ELEM_MAP_ENTRY(2, LineStyle);
 ELEM_MAP_ENTRY(3, Thickness);
 ELEM_MAP_ENTRY(4, Color);
 ELEM_MAP_ENTRY(5, Unit);
+ELEM_MAP_ENTRY(6, SizeContext);
 
 IOStroke::IOStroke(std::wstring elementName)
 {
@@ -72,16 +73,27 @@ void IOStroke::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
 void IOStroke::ElementChars(const wchar_t *ch)
 {
-    if (m_currElemName == L"LineStyle") // NOXLATE
+    if (m_currElemName == swLineStyle) 
         (this->_stroke)->SetLineStyle(ch);
-    else if (m_currElemName == L"Thickness") // NOXLATE
+    else if (m_currElemName == swThickness) 
         (this->_stroke)->SetThickness(ch);
-    else if (m_currElemName == L"Color") // NOXLATE
+    else if (m_currElemName == swColor) 
         (this->_stroke)->SetColor(ch);
-    else if (m_currElemName == L"Unit") // NOXLATE
+    else if (m_currElemName == swUnit) 
     {
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
         this->_stroke->SetUnit(unit);
+    }
+    else if (this->m_currElemName == swSizeContext) // NOXLATE
+    {
+        if (::wcscmp(ch, L"MappingUnits") == 0) // NOXLATE
+        {
+            this->_stroke->SetSizeContext(MdfModel::MappingUnits);
+        }
+        else // "DeviceUnits" & default
+        {
+            this->_stroke->SetSizeContext(MdfModel::DeviceUnits);
+        }
     }
 }
 
@@ -125,7 +137,19 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name)
     fd << EncodeString(*str);
     fd << "</Unit>" << std::endl; // NOXLATE
 
-        // Write any previously found unknown XML
+    //Property: SizeContext
+    fd << tab() << "<SizeContext>"; // NOXLATE
+    if(stroke->GetSizeContext() == MdfModel::MappingUnits)
+    {
+        fd << "MappingUnits"; // NOXLATE
+    }
+    else
+    {
+        fd << "DeviceUnits"; // NOXLATE
+    }
+    fd << "</SizeContext>" << std::endl; // NOXLATE
+        
+    // Write any previously found unknown XML
     if (!stroke->GetUnknownXml().empty())
     {
         fd << toCString(stroke->GetUnknownXml()); 

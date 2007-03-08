@@ -1148,9 +1148,8 @@ void GDRenderer::WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool a
 
     double thickness = stroke.width();
 
-    //line width is always device space and units are meters.
-    //so convert to equivalent pixel width
-    int line_weight = (int)(fabs(thickness) / m_metersPerUnit * m_mapScale * m_scale);
+    //convert thickness to equivalent mapping space width
+    int line_weight = (int)(_MeterToMapSize(stroke.units(), fabs(thickness)) * m_scale);
 
     gdImagePtr brush1 = NULL;
 
@@ -1500,7 +1499,7 @@ void GDRenderer::SetRenderSelectionMode(bool mode)
         RS_Color selLineColor = RS_Color(0, 0, 255, 200);
         RS_Color selFillColor = RS_Color(0, 0, 255, 160);
         RS_Color selBgColor(0, 0, 0, 0);
-        RS_LineStroke selStroke = RS_LineStroke(selLineColor, 0.001, L"Solid");
+        RS_LineStroke selStroke = RS_LineStroke(selLineColor, 0.001, L"Solid", RS_Units_Device);
         m_selFill = RS_FillStyle(selStroke, selFillColor, selBgColor, L"Solid");
     }
 }

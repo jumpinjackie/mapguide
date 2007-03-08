@@ -43,7 +43,7 @@ class KmlRenderer : public Renderer
 public:
 
     STYLIZATION_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, 
-        double scale, double dpi, int drawOrder);
+        double scale, double dpi, double metersPerUnit, int drawOrder);
     STYLIZATION_API ~KmlRenderer();
 
     ///////////////////////////////////
@@ -135,6 +135,7 @@ private:
     void WriteElevationSettings();
     void ClearThemes();
     void ClearStyles();
+    double _MeterToPixels(RS_Units unit, double number);
 
     RS_Bounds& m_extents;
     KmlContent* m_kmlContent;
@@ -143,7 +144,7 @@ private:
     int m_featureCount;
     RS_LayerUIInfo* m_layerInfo;
     RS_FeatureClassInfo* m_featureClassInfo;
-    double m_scale;
+    double m_mapScale;
     ThemeMap m_themeMap;
     int m_styleId;
     KmlLineStyleIdMap m_lineStyleMap;
@@ -152,6 +153,7 @@ private:
     int m_drawOrder;
     double m_elevation;
     bool m_extrude;
+    double m_metersPerUnit;
     RS_ElevationType m_elevType;
 };
 
