@@ -143,7 +143,6 @@ void TestRenderingService::TestStart()
         Ptr<MgByteReader> datardr = datasrc->GetReader();
         m_svcResource->SetResourceData(slres1, L"symbols.dwf", L"File", datardr);
 
-
         //
         // publish symbology stuff
         //
@@ -378,21 +377,16 @@ void TestRenderingService::TestCase_RenderDynamicOverlay()
         Ptr<MgSiteConnection> conn = new MgSiteConnection();
 
         // make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map = new MgMap();
-        map->Create(m_svcResource, mdfres, L"UnitTestSheboygan");
+        Ptr<MgMap> map = CreateTestMap();
 
-        map->SetViewScale(73745078.0);
+        // call the API using scales of 75000 and 12000
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderDynamicOverlay(map, NULL, L"PNG");
+        rdr1->ToFile(L"../UnitTestFiles/RenderDynamicOverlay75k.png");
 
-        Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(0.0, 0.0);
-        Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
-        map->SetViewCenter(ptNewCenter);
-        map->SetDisplayDpi(96);
-        map->SetDisplayWidth(1024);
-        map->SetDisplayHeight(1024);
-
-        // call the API
-        Ptr<MgByteReader> rdr = m_svcRendering->RenderDynamicOverlay(map, NULL, L"PNG");
+        map->SetViewScale(12000.0);
+        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderDynamicOverlay(map, NULL, L"PNG");
+        rdr2->ToFile(L"../UnitTestFiles/RenderDynamicOverlay12k.png");
     }
     catch (MgException* e)
     {
@@ -415,31 +409,50 @@ void TestRenderingService::TestCase_RenderMap()
         Ptr<MgSiteConnection> conn = new MgSiteConnection();
 
         // make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map = new MgMap();
-        map->Create(m_svcResource, mdfres, L"UnitTestSheboygan");
+        Ptr<MgMap> map = CreateTestMap();
 
-        INT32 pixels = 512;
+        // call the API using scales of 75000 and 12000
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMap(map, NULL, L"PNG");
+        rdr1->ToFile(L"../UnitTestFiles/RenderMap75k.png");
 
-        Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(0.0, 0.0);
-        Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
-        map->SetViewCenter(ptNewCenter);
-        map->SetDisplayDpi(96);
-        map->SetDisplayWidth(pixels*2);
-        map->SetDisplayHeight(pixels);
+        map->SetViewScale(12000.0);
+        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, L"PNG");
+        rdr2->ToFile(L"../UnitTestFiles/RenderMap12k.png");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
 
-        double mapHeight = 180.0;
-        double scale = mapHeight * 111000.0 * 100.0 / 2.54 * 96.0 / (double)pixels;
 
-        map->SetViewScale(scale);
+void TestRenderingService::TestCase_RenderLegend()
+{
+    try
+    {
+        // get root
+        Ptr<MgSiteConnection> conn = new MgSiteConnection();
 
-        // call the API
-        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
+        // make a runtime map
+        Ptr<MgMap> map = CreateTestMap();
 
-        Ptr<MgColor> bgc = new MgColor(255,255,255,255);
+        // call the API using scales of 75000 and 12000
+        Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);
 
-        //also test the map legend API
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
+        rdr1->ToFile(L"../UnitTestFiles/RenderLegend75k.png");
+
+        map->SetViewScale(12000.0);
         Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
+        rdr2->ToFile(L"../UnitTestFiles/RenderLegend12k.png");
     }
     catch (MgException* e)
     {
@@ -462,45 +475,25 @@ void TestRenderingService::TestCase_QueryFeatures()
         Ptr<MgSiteConnection> conn = new MgSiteConnection();
 
         // make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map = new MgMap();
-        map->Create(m_svcResource, mdfres, L"UnitTestSheboygan");
+        Ptr<MgMap> map = CreateTestMap();
 
-        Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(0.0, 0.0);
-        Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
-        map->SetViewCenter(ptNewCenter);
-        map->SetDisplayDpi(96);
-        map->SetDisplayWidth(1024);
-        map->SetDisplayHeight(1024);
+        // call the API using a scale of 75000
+        map->SetViewScale(75000.0);
 
-        map->SetViewScale(73745078.0);
+        Ptr<MgStringCollection> layerNames1 = new MgStringCollection();
+        layerNames1->Add(L"Rail");
+        layerNames1->Add(L"HydrographicPolygons");
+        Ptr<MgPolygon> poly1 = CreateSelectionPolygon(map, 0.3, 0.3);
+        Ptr<MgFeatureInformation> fi1 = m_svcRendering->QueryFeatures(map, layerNames1, poly1, MgFeatureSpatialOperations::Within, -1);
 
-        // selection bounds in mapping space
-        Ptr<MgCoordinate> ll = new MgCoordinateXY( 0.0,  0.0);
-        Ptr<MgCoordinate> ur = new MgCoordinateXY(40.0, 60.0);
+        // call the API using a scale of 12000
+        map->SetViewScale(12000.0);
 
-        Ptr<MgCoordinateXY> c1 = new MgCoordinateXY(ll->GetX(), ll->GetY());
-        Ptr<MgCoordinateXY> c2 = new MgCoordinateXY(ur->GetX(), ll->GetY());
-        Ptr<MgCoordinateXY> c3 = new MgCoordinateXY(ur->GetX(), ur->GetY());
-        Ptr<MgCoordinateXY> c4 = new MgCoordinateXY(ll->GetX(), ur->GetY());
-        Ptr<MgCoordinateXY> c5 = new MgCoordinateXY(ll->GetX(), ll->GetY());
-
-        Ptr<MgCoordinateCollection> cc = new MgCoordinateCollection();
-        cc->Add(c1);
-        cc->Add(c2);
-        cc->Add(c3);
-        cc->Add(c4);
-        cc->Add(c5);
-
-        Ptr<MgLinearRing> outer = new MgLinearRing(cc);
-        Ptr<MgPolygon> poly = new MgPolygon(outer, NULL);
-
-        Ptr<MgStringCollection> layerNames = new MgStringCollection();
-        layerNames->Add(L"World Countries");
-        layerNames->Add(L"World Cities");
-
-        // call the API
-        Ptr<MgFeatureInformation> fi = m_svcRendering->QueryFeatures(map, layerNames, poly, MgFeatureSpatialOperations::Within, -1);
+        Ptr<MgStringCollection> layerNames2 = new MgStringCollection();
+        layerNames2->Add(L"Rail");
+        layerNames2->Add(L"Parcels");
+        Ptr<MgPolygon> poly2 = CreateSelectionPolygon(map, 0.05, 0.05);
+        Ptr<MgFeatureInformation> fi2 = m_svcRendering->QueryFeatures(map, layerNames2, poly2, MgFeatureSpatialOperations::Within, -1);
     }
     catch (MgException* e)
     {
@@ -512,6 +505,51 @@ void TestRenderingService::TestCase_QueryFeatures()
     {
         throw;
     }
+}
+
+
+MgMap* TestRenderingService::CreateTestMap()
+{
+    Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+    MgMap* map = new MgMap();
+    map->Create(m_svcResource, mdfres, L"UnitTestSheboygan");
+
+    Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.733253, 43.746199);
+    Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+    map->SetViewCenter(ptNewCenter);
+    map->SetViewScale(75000.0);
+    map->SetDisplayDpi(96);
+    map->SetDisplayWidth(1024);
+    map->SetDisplayHeight(1024);
+
+    return map;
+}
+
+
+// creates a selection bounds in mapping space
+MgPolygon* TestRenderingService::CreateSelectionPolygon(MgMap* map, double width, double height)
+{
+    Ptr<MgPoint> centerPt = map->GetViewCenter();
+    Ptr<MgCoordinate> center = centerPt->GetCoordinate();
+    double xMin = center->GetX() - 0.5*width;
+    double yMin = center->GetY() - 0.5*height;
+    double xMax = center->GetX() + 0.5*width;
+    double yMax = center->GetY() + 0.5*height;
+    Ptr<MgCoordinateXY> c1 = new MgCoordinateXY(xMin, yMin);
+    Ptr<MgCoordinateXY> c2 = new MgCoordinateXY(xMax, yMin);
+    Ptr<MgCoordinateXY> c3 = new MgCoordinateXY(xMax, yMax);
+    Ptr<MgCoordinateXY> c4 = new MgCoordinateXY(xMin, yMax);
+    Ptr<MgCoordinateXY> c5 = new MgCoordinateXY(xMin, yMin);
+
+    Ptr<MgCoordinateCollection> cc = new MgCoordinateCollection();
+    cc->Add(c1);
+    cc->Add(c2);
+    cc->Add(c3);
+    cc->Add(c4);
+    cc->Add(c5);
+
+    Ptr<MgLinearRing> outer = new MgLinearRing(cc);
+    return new MgPolygon(outer, NULL);
 }
 
 
@@ -686,7 +724,7 @@ void TestRenderingService::TestCase_SymbologyPoints()
         Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
         map->SetViewCenter(ptNewCenter);
         map->SetDisplayDpi(96);
-        map->SetDisplayWidth(pixels*2);
+        map->SetDisplayWidth(2*pixels);
         map->SetDisplayHeight(pixels);
 
         // the map is a little silly -- it's in degrees but thinks it's in meters --
@@ -697,7 +735,6 @@ void TestRenderingService::TestCase_SymbologyPoints()
 
         // call the API
         Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-
         rdr->ToFile(L"../UnitTestFiles/SymbologyPoints.png");
     }
     catch (MgException* e)
@@ -727,7 +764,7 @@ void TestRenderingService::TestCase_SymbologyPointsParam()
         Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
         map->SetViewCenter(ptNewCenter);
         map->SetDisplayDpi(96);
-        map->SetDisplayWidth(pixels*2);
+        map->SetDisplayWidth(2*pixels);
         map->SetDisplayHeight(pixels);
 
         // the map is a little silly -- it's in degrees but thinks it's in meters --
@@ -738,7 +775,6 @@ void TestRenderingService::TestCase_SymbologyPointsParam()
 
         // call the API
         Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-
         rdr->ToFile(L"../UnitTestFiles/SymbologyPointsParam.png");
     }
     catch (MgException* e)
@@ -773,13 +809,12 @@ void TestRenderingService::TestCase_SymbologyLines()
 
         // the map is a little silly -- it's in degrees but thinks it's in meters --
         // hence the 111000 is commented out
-        double mapHeight = 8;
-        double scale = mapHeight /*111000.0 **/ * 100.0 / 2.54 * 96.0 / (double)pixels;
+        double mapHeight = 8.0;
+        double scale = mapHeight * /*111000.0 **/ 100.0 / 2.54 * 96.0 / (double)pixels;
         map->SetViewScale(scale);
 
         // call the API
         Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-
         rdr->ToFile(L"../UnitTestFiles/SymbologyLines.png");
     }
     catch (MgException* e)
@@ -812,14 +847,13 @@ void TestRenderingService::TestCase_SymbologyLinesCrossTick()
         map->SetDisplayWidth(2*pixels);
         map->SetDisplayHeight(pixels);
 
-        double mapHeight = 8;
+        double mapHeight = 8.0;
         double scale = mapHeight /** 111000.0*/ * 100.0 / 2.54 * 96.0 / (double)pixels;
 
         map->SetViewScale(scale);
 
         // call the API
         Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-
         rdr->ToFile(L"../UnitTestFiles/SymbologyLinesCrossTick.png");
     }
     catch (MgException* e)

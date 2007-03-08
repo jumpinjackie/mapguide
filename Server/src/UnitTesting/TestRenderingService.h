@@ -33,6 +33,7 @@ class TestRenderingService : public CppUnit::TestFixture
 
     CPPUNIT_TEST(TestCase_RenderDynamicOverlay);
     CPPUNIT_TEST(TestCase_RenderMap);
+    CPPUNIT_TEST(TestCase_RenderLegend);
     CPPUNIT_TEST(TestCase_QueryFeatures);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
@@ -49,6 +50,7 @@ public:
 
     void TestCase_RenderDynamicOverlay();
     void TestCase_RenderMap();
+    void TestCase_RenderLegend();
     void TestCase_QueryFeatures();
 
     void TestCase_SymbologyMdfModel();
@@ -56,6 +58,10 @@ public:
     void TestCase_SymbologyPointsParam();
     void TestCase_SymbologyLines();
     void TestCase_SymbologyLinesCrossTick();
+
+private:
+    MgMap* CreateTestMap();
+    MgPolygon* CreateSelectionPolygon(MgMap* map, double width, double height);
 
 private:
     Ptr<MgResourceService> m_svcResource;
