@@ -78,6 +78,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_OS::printf("  ServiceManager\n");
             ACE_OS::printf("  SiteService\n");
             ACE_OS::printf("  SiteManager\n");
+            ACE_OS::printf("  KmlService\n");
             ACE_OS::printf("\n");
 
             bRunTests = false;
