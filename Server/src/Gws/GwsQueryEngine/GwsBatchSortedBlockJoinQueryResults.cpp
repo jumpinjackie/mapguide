@@ -333,11 +333,11 @@ FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
         // Set the 1st cache entry to read
         m_pPrimaryCacheIterator = m_pPrimaryCache.begin();
 
-        FdoPtr<FdoDataValueCollection> dvcol = NULL;
+        FdoPtr<FdoDataValueCollection> dvcol;
 
         for ( size_t i=0;i<m_pPrimaryCache.size();i++ )
         {
-            FdoPtr<FdoDataValue> val = NULL;
+            FdoPtr<FdoDataValue> val;
 
             PrimaryCacheEntry* cacheEntry = m_pPrimaryCache.at(i);
             if(cacheEntry)

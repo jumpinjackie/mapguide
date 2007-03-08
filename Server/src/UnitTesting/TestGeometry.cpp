@@ -1175,7 +1175,7 @@ void TestGeometry::TestCase_Intersection()
         outerCoords->Add(coord4);
         outerCoords->Add(coord5);
         Ptr<MgLinearRing> outerRing = factory.CreateLinearRing(outerCoords);
-        Ptr<MgLinearRingCollection> innerRings = NULL;
+        Ptr<MgLinearRingCollection> innerRings;
         polygon = factory.CreatePolygon(outerRing, innerRings);
         geom = point->Intersection(polygon);
         CPPUNIT_ASSERT(geom == NULL);

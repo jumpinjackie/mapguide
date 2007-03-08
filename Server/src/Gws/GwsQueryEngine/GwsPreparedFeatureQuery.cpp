@@ -370,7 +370,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
         //Code for executing an extended query - if it's requested (bScrollable)
         //AND if it's supported (m_bSdfExtendedQuerySupported)
         bool bGotScrollableIterator = false;
-        FdoPtr<FdoIFeatureReader> reader = NULL;
+        FdoPtr<FdoIFeatureReader> reader;
         if(bScrollable && m_bExtendedQuerySupported)
         {
             if(mExSelProv == eSDF)

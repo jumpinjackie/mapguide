@@ -73,7 +73,7 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
     try {
         Close ();
 
-        FdoPtr<FdoFilter> pFilter = NULL;
+        FdoPtr<FdoFilter> pFilter;
 
         for (int idx = 0; idx < m_joincols->GetCount (); idx ++) {
             FdoString          * propname = m_joincols->GetString (idx);

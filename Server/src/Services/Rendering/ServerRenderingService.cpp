@@ -577,7 +577,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgM
     if (maxFeatures == -1)
         maxFeatures = INT_MAX;
 
-    Ptr<MgSelection> sel = NULL;//TODO: do we need this for this API? new MgSelection(map);
+    Ptr<MgSelection> sel;   //TODO: do we need this for this API? new MgSelection(map);
     FeaturePropRenderer fpr(sel, maxFeatures, map->GetViewScale());
 
     RenderForSelection(map, layerNames, geometry, selectionVariant, maxFeatures, &fpr, bIgnoreScaleRange);

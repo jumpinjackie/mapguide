@@ -157,7 +157,7 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     FdoSpatialContextExtentType extentType = FdoSpatialContextExtentType_Dynamic;
 
     // Extent (Geometry data)
-    FdoPtr<FdoByteArray> byteArray = NULL;
+    FdoPtr<FdoByteArray> byteArray;
 
     // XY Tolerance
     double xyTol = 0;

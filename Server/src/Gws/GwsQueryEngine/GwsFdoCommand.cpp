@@ -599,7 +599,7 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
 
     EGwsStatus stat             = eGwsOk;
 
-    FdoPtr<FdoFilter> pFilter = NULL;
+    FdoPtr<FdoFilter> pFilter;
     FdoInt32          idx;
 
     for (idx = 0; idx < identity->GetCount(); idx ++) {

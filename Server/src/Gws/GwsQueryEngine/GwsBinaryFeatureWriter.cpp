@@ -211,13 +211,13 @@ bool GwsBinaryFeatureWriter::WriteAssociationProperty(FdoAssociationPropertyDefi
         // name: "AssocProp.Id". If that property value is found and set, then that means an association
         // exists between the new object(we are about to insert) and the object identified by the value
         // of the property value(AssocProp.Id)
-        FdoPtr<FdoClassDefinition>cls = apd->GetAssociatedClass();
+        FdoPtr<FdoClassDefinition> cls = apd->GetAssociatedClass();
         idents = cls->GetIdentityProperties();
     }
 
     for(int i=0; i<idents->GetCount(); i++ )
     {
-        FdoPtr<FdoDataPropertyDefinition>prop = idents->GetItem( i );
+        FdoPtr<FdoDataPropertyDefinition> prop = idents->GetItem( i );
         std::wstring wstr = apd->GetName();
         wstr += L".";
         wstr += prop->GetName();
@@ -260,18 +260,18 @@ void GwsBinaryFeatureWriter::WriteAssociationProperty(FdoAssociationPropertyDefi
         // name: "AssocProp.Id". If that property value is found and set, then that means an association
         // exists between the new object(we are about to insert) and the object identified by the value
         // of the property value(AssocProp.Id)
-        FdoPtr<FdoClassDefinition>cls = apd->GetAssociatedClass();
+        FdoPtr<FdoClassDefinition> cls = apd->GetAssociatedClass();
         idents = cls->GetIdentityProperties();
     }
     if( reader->IsNull( apd->GetName() ) )
         return;
 
-    FdoPtr<FdoIFeatureReader>loc_reader = reader->GetFeatureObject( apd->GetName() );
+    FdoPtr<FdoIFeatureReader> loc_reader = reader->GetFeatureObject( apd->GetName() );
     if( ! loc_reader->ReadNext() )
         return;
     for(int i=0; i<idents->GetCount(); i++ )
     {
-        FdoPtr<FdoDataPropertyDefinition>prop = idents->GetItem( i );
+        FdoPtr<FdoDataPropertyDefinition> prop = idents->GetItem( i );
         if( ! loc_reader->IsNull( prop->GetName() ) )
             WriteProperty( prop, loc_reader);
     }

@@ -628,8 +628,7 @@ void MgFeatureServiceCache::RemoveExpiredEntries(MgDisposableCollection* collect
         INT32 size = collection->GetCount();
         for(nIndex=0;nIndex<size;nIndex++)
         {
-            Ptr<MgFeatureServiceCacheEntry > cacheEntry;
-            cacheEntry = (MgFeatureServiceCacheEntry *)(collection->GetItem(nIndex));
+            Ptr<MgFeatureServiceCacheEntry> cacheEntry = (MgFeatureServiceCacheEntry*)(collection->GetItem(nIndex));
             if(cacheEntry)
             {
                 ACE_Time_Value diffTime = now - cacheEntry->m_timeStamp;
@@ -660,8 +659,7 @@ void MgFeatureServiceCache::RemoveEntry(MgResourceIdentifier* resource, MgDispos
         INT32 size = collection->GetCount();
         for(nIndex=0;nIndex<size;nIndex++)
         {
-            Ptr<MgFeatureServiceCacheEntry > cacheEntry;
-            cacheEntry = (MgFeatureServiceCacheEntry *)(collection->GetItem(nIndex));
+            Ptr<MgFeatureServiceCacheEntry> cacheEntry = (MgFeatureServiceCacheEntry*)(collection->GetItem(nIndex));
             if(cacheEntry)
             {
                 if(cacheEntry->m_resource == resource->ToString())

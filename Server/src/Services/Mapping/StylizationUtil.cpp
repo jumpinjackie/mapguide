@@ -331,7 +331,7 @@ RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcF
     //if we have a valid transform, get the request extent in layer's space
     if (trans)
     {
-        Ptr<MgEnvelope> mapExt= new MgEnvelope(ll, ur);
+        Ptr<MgEnvelope> mapExt = new MgEnvelope(ll, ur);
 
         //get corresponding bounds in layer space
         Ptr<MgEnvelope> layerExt = trans->Transform(mapExt);
