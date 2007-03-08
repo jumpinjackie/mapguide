@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2006  Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -81,12 +81,12 @@ void TestKmlService::TestStart()
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
         userInfo->SetLocale(TEST_LOCALE);
         MgUserInformation::SetCurrentUserInfo(userInfo);
-        
+
         //create a session
         STRING session = m_svcSite->CreateSession();
         CPPUNIT_ASSERT(!session.empty());
         userInfo->SetMgSessionId(session);
-        
+
         //publish the map definition
         Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
         Ptr<MgByteSource> mdfsrc = new MgByteSource(L"../UnitTestFiles/UT_Sheboygan.mdf", false);
@@ -229,7 +229,7 @@ void TestKmlService::TestCase_GetMapKml()
 
         STRING mimeType = reader->GetMimeType();
         CPPUNIT_ASSERT(mimeType.compare(MgMimeType::Kml) == 0);
-        
+
         //compare results against referenced content
         CPPUNIT_ASSERT(CompareContent(reader, L"../UnitTestFiles/UT_GetMapKMLResult.txt"));
     }
@@ -244,6 +244,7 @@ void TestKmlService::TestCase_GetMapKml()
         throw;
     }
 }
+
 
 void TestKmlService::TestCase_GetMapKmz()
 {
@@ -276,6 +277,7 @@ void TestKmlService::TestCase_GetMapKmz()
         throw;
     }
 }
+
 
 void TestKmlService::TestCase_GetLayerKml()
 {
@@ -315,6 +317,7 @@ void TestKmlService::TestCase_GetLayerKml()
     }
 }
 
+
 void TestKmlService::TestCase_GetFeaturesKml()
 {
     try
@@ -352,10 +355,11 @@ void TestKmlService::TestCase_GetFeaturesKml()
     }
 }
 
+
 STRING TestKmlService::RemoveSessionIds(CREFSTRING content)
 {
     STRING newContent = content;
-    
+
     STRING sessionId;
     MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
     if (userInfo != NULL)
@@ -365,7 +369,7 @@ STRING TestKmlService::RemoveSessionIds(CREFSTRING content)
 
     if(!sessionId.empty())
     {
-        STRING dummyId = L"SessionIDRemoved"; 
+        STRING dummyId = L"SessionIDRemoved";
         STRING::size_type sessionIdLocation;
         do
         {
@@ -380,10 +384,11 @@ STRING TestKmlService::RemoveSessionIds(CREFSTRING content)
     return newContent;
 }
 
+
 void TestKmlService::SaveToFile(CREFSTRING content, CREFSTRING filename)
 {
     FILE* file = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("wt"));
-    if (file != NULL) 
+    if (file != NULL)
     {
         int len = content.length();
         fwprintf (file, content.c_str());
@@ -391,11 +396,12 @@ void TestKmlService::SaveToFile(CREFSTRING content, CREFSTRING filename)
     }
 }
 
+
 STRING TestKmlService::LoadFromFile(CREFSTRING filename)
 {
     STRING content;
     FILE* file = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("rt"));
-    if (file != NULL) 
+    if (file != NULL)
     {
         wchar_t buffer[1024];
         while(fgetws(buffer, 1024, file) != NULL)
@@ -406,6 +412,7 @@ STRING TestKmlService::LoadFromFile(CREFSTRING filename)
     }
     return content;
 }
+
 
 bool TestKmlService::CompareContent(MgByteReader* reader, CREFSTRING referenceFile)
 {
@@ -433,6 +440,3 @@ bool TestKmlService::CompareContent(MgByteReader* reader, CREFSTRING referenceFi
 
     return match;
 }
-
-
-
