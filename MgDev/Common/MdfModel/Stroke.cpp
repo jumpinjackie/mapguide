@@ -34,6 +34,7 @@ Stroke::Stroke()
     this->SetLineStyle(L"Solid"); // NOXLATE
     this->SetThickness(L"0.0"); // NOXLATE
     this->SetColor(L"ff000000"); // NOXLATE
+    this->SetSizeContext(MdfModel::DeviceUnits);
 }
 
 //-------------------------------------------------------------------------
@@ -145,4 +146,22 @@ const MdfString& Stroke::GetColor()const
 void Stroke::SetColor(const MdfString& strColor)
 {
     this->m_strColor = strColor;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+SizeContext Stroke::GetSizeContext() const
+{
+    return this->m_eSizeContext;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Stroke::SetSizeContext(SizeContext sizeContext)
+{
+    this->m_eSizeContext = sizeContext;
 }

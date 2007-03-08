@@ -432,6 +432,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
                                        -layer->GetDisplayOrder(),
                                        uig);
     Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
+    double metersPerUnit = (destCs.p != NULL) ? destCs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
     
     RS_Bounds bounds(extents->GetLowerLeftCoordinate()->GetX(),
         extents->GetLowerLeftCoordinate()->GetY(),
@@ -442,7 +443,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
     MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDef);
     if(vl != NULL)
     {
-        KmlRenderer renderer(&kmlContent, bounds, scale, dpi, drawOrder);
+        KmlRenderer renderer(&kmlContent, bounds, scale, dpi, metersPerUnit, drawOrder);
         DefaultStylizer stylizer;
         stylizer.Initialize(&renderer);
         if(m_svcFeature == NULL)

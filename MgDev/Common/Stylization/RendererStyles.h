@@ -184,27 +184,32 @@ public:
     RS_LineStroke() :
         m_color(),
         m_width(0.0),
-        m_style(L"Solid")
+        m_style(L"Solid"),
+        m_units(RS_Units_Device)
     {
     }
 
     RS_LineStroke(RS_Color&        lineColor,
                   double           lineWidth,
-                  const RS_String& lineStyle)
+                  const RS_String& lineStyle,
+                  RS_Units         units)
     {
         m_color = lineColor;
         m_width = lineWidth;
         m_style = lineStyle;
+        m_units = units;
     }
 
     inline RS_Color &      color() { return m_color; }
     inline double &        width() { return m_width; }
     inline RS_String &     style() { return m_style; }
+    inline RS_Units &      units() { return m_units; }
 
 private:
     RS_Color m_color;
     double m_width;
     RS_String m_style;
+    RS_Units m_units;
 };
 
 

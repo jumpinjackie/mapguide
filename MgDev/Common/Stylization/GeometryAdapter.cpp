@@ -310,6 +310,7 @@ bool GeometryAdapter::ConvertStroke(MdfModel::Stroke* stroke, RS_LineStroke& rss
         bool const1 = ConvertLineThickness(stroke->GetThickness(), val);
         rsstroke.width()= MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), val);
         rsstroke.style() = stroke->GetLineStyle();
+        rsstroke.units() = (stroke->GetSizeContext() == MdfModel::MappingUnits) ? RS_Units_Model : RS_Units_Device;
         bool const2 = EvalColor(stroke->GetColor(), rsstroke.color());
 
         return const1 && const2; //if all members are constant, the stroke is constant
