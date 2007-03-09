@@ -165,7 +165,6 @@ void TestFeatureService::TestStart()
             Ptr<MgByteSource> dataSource7 = new MgByteSource(dataFileName1);
             Ptr<MgByteReader> dataReader7 = dataSource7->GetReader();
             pService->SetResourceData(&resourceIdentifier5, L"Sheboygan_Parcels.sdf", L"File", dataReader7);
-
         }
     }
     catch(MgException* e)
@@ -201,14 +200,20 @@ void TestFeatureService::TestEnd()
         MgUserInformation::SetCurrentUserInfo(userInfo);
 
         // delete the feature sources definition
-        Ptr<MgResourceIdentifier> mapres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
-        pService->DeleteResource(mapres1);
+        Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+        pService->DeleteResource(fsres1);
 
-        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://UnitTests/Data/Redding_Parcels.FeatureSource");
-        pService->DeleteResource(mapres2);
+        Ptr<MgResourceIdentifier> fsres2 = new MgResourceIdentifier(L"Library://UnitTests/Data/Redding_Parcels.FeatureSource");
+        pService->DeleteResource(fsres2);
 
-        Ptr<MgResourceIdentifier> mapres3 = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_BuildingOutlines.FeatureSource");
-        pService->DeleteResource(mapres3);
+        Ptr<MgResourceIdentifier> fsres3 = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_BuildingOutlines.FeatureSource");
+        pService->DeleteResource(fsres3);
+
+        Ptr<MgResourceIdentifier> fsres4 = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_VotingDistricts.FeatureSource");
+        pService->DeleteResource(fsres4);
+
+        Ptr<MgResourceIdentifier> fsres5 = new MgResourceIdentifier(L"Library://UnitTests/Data/TestChainedInner1ToManyJoin.FeatureSource");
+        pService->DeleteResource(fsres5);
 
         #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -408,9 +413,7 @@ void TestFeatureService::TestCase_GetConnectionPropertyValues()
         STRING provider = L"";
         STRING property = L"";
         STRING connectionString = L"";
-
-        CPPUNIT_ASSERT_THROW_MG(pService->GetConnectionPropertyValues(provider, property, connectionString),
-            MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetConnectionPropertyValues(provider, property, connectionString), MgInvalidArgumentException*);
 
         provider = L"OSGeo.SDF";
         property = L"ReadOnly";
@@ -465,15 +468,13 @@ void TestFeatureService::TestCase_GetCapabilities()
         }
         STRING providerNoVersion = fdoConnectionManager->UpdateProviderName(provider);
 
-
         Ptr<MgByteReader> reader = pService->GetCapabilities(providerNoVersion);
         STRING mimetype = reader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimetype.c_str(), MgMimeType::Xml.c_str()) == 0);
 
         provider = L"";
 
-        CPPUNIT_ASSERT_THROW_MG(pService->GetCapabilities(provider),
-            MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetCapabilities(provider), MgInvalidArgumentException*);
     }
     catch(MgException* e)
     {
@@ -515,11 +516,9 @@ void TestFeatureService::TestCase_TestConnectionResourceIdentifier()
         }
 
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
-
         CPPUNIT_ASSERT_THROW_MG(pService->TestConnection(resource), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
-
         CPPUNIT_ASSERT_THROW_MG(pService->TestConnection(resource), MgResourceNotFoundException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
@@ -570,11 +569,9 @@ void TestFeatureService::TestCase_GetSchemas()
         MgUserInformation::SetCurrentUserInfo(adminUserInfo);
 
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
-
         CPPUNIT_ASSERT_THROW_MG(pService->GetSchemas(resource), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
-
         CPPUNIT_ASSERT_THROW_MG(pService->GetSchemas(resource), MgResourceNotFoundException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
@@ -626,7 +623,6 @@ void TestFeatureService::TestCase_GetClasses()
 
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
         STRING schemaName = L"";
-
         CPPUNIT_ASSERT_THROW_MG(pService->GetClasses(resource, schemaName), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
@@ -679,9 +675,7 @@ void TestFeatureService::TestCase_GetClassDefinition()
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
         STRING schemaName = L"";
         STRING className = L"";
-
-        CPPUNIT_ASSERT_THROW_MG(pService->GetClassDefinition(resource, schemaName, className),
-            MgClassNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetClassDefinition(resource, schemaName, className), MgClassNotFoundException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
         schemaName = L"SHP_Schema";
@@ -735,12 +729,10 @@ void TestFeatureService::TestCase_DescribeSchema()
 
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
         STRING schemaName = L"";
-
         CPPUNIT_ASSERT_THROW_MG(pService->DescribeSchema(resource, schemaName), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
         schemaName = L"";
-
         CPPUNIT_ASSERT_THROW_MG(pService->DescribeSchema(resource, schemaName), MgResourceNotFoundException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
@@ -790,7 +782,6 @@ void TestFeatureService::TestCase_SelectFeatures()
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
         STRING className = L"";
         Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
-
         CPPUNIT_ASSERT_THROW_MG(pService->SelectFeatures(resource, className, options), MgInvalidArgumentException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
@@ -841,14 +832,11 @@ void TestFeatureService::TestCase_SelectAggregate()
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
         STRING className = L"";
         Ptr<MgFeatureAggregateOptions> options = new MgFeatureAggregateOptions();
-
-        CPPUNIT_ASSERT_THROW_MG(pService->SelectAggregate(resource, className, options),
-            MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->SelectAggregate(resource, className, options), MgInvalidArgumentException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
         className = L"Parcels";
         options->SetFilter(L"Autogenerated_SDF_ID = 1");
-
         Ptr<MgDataReader> reader = pService->SelectAggregate(resource, className, options);
         bool bResult = reader->ReadNext();
         CPPUNIT_ASSERT(bResult);
@@ -895,7 +883,6 @@ void TestFeatureService::TestCase_ExecuteSqlQuery()
 
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
         const STRING sqlQuery = L"";
-
         CPPUNIT_ASSERT_THROW_MG(pService->ExecuteSqlQuery(resource, sqlQuery), MgInvalidArgumentException*);
 
         //TODO test with correct input
@@ -942,7 +929,6 @@ void TestFeatureService::TestCase_ExecuteSqlNonQuery()
 
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
         const STRING sqlNonQuery = L"";
-
         CPPUNIT_ASSERT_THROW_MG(pService->ExecuteSqlNonQuery(resource, sqlNonQuery), MgInvalidArgumentException*);
 
         //TODO test with correct input
@@ -992,12 +978,9 @@ void TestFeatureService::TestCase_GetSpatialContexts()
 
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
         bool activeOnly = false;
-
-        CPPUNIT_ASSERT_THROW_MG(pService->GetSpatialContexts(resource, activeOnly),
-            MgInvalidRepositoryTypeException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetSpatialContexts(resource, activeOnly), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
-
         CPPUNIT_ASSERT_THROW_MG(pService->GetSpatialContexts(resource, activeOnly), MgResourceNotFoundException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
@@ -1050,12 +1033,9 @@ void TestFeatureService::TestCase_GetLongTransactions()
 
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
         bool activeOnly = false;
-
-        CPPUNIT_ASSERT_THROW_MG(pService->GetLongTransactions(resource, activeOnly),
-            MgInvalidRepositoryTypeException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetLongTransactions(resource, activeOnly), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
-
         CPPUNIT_ASSERT_THROW_MG(pService->GetLongTransactions(resource, activeOnly), MgResourceNotFoundException*);
 
         //TODO test with correct input
@@ -1171,7 +1151,6 @@ void TestFeatureService::TestCase_GetFeatures()
         }
 
         INT32 readerId = 0;
-
         CPPUNIT_ASSERT_THROW_MG(pService->GetFeatures(readerId), MgInvalidArgumentException*);
 
         //TODO test with correct input
@@ -1216,9 +1195,7 @@ void TestFeatureService::TestCase_CloseFeatureReader()
         }
 
         INT32 readerId = 0;
-
         bool closed = pService->CloseFeatureReader(readerId);
-
         CPPUNIT_ASSERT(!closed);
 
         // TODO test with correct input
@@ -1263,7 +1240,6 @@ void TestFeatureService::TestCase_GetSqlRows()
         }
 
         INT32 sqlReader = 0;
-
         CPPUNIT_ASSERT_THROW_MG(pService->GetSqlRows(sqlReader), MgInvalidArgumentException*);
 
         //TODO test with correct input
@@ -1308,9 +1284,7 @@ void TestFeatureService::TestCase_CloseSqlReader()
         }
 
         INT32 sqlReader = 0;
-
         bool closed = pService->CloseSqlReader(sqlReader);
-
         CPPUNIT_ASSERT(!closed);
 
         // TODO test with correct input
@@ -1357,7 +1331,6 @@ void TestFeatureService::TestCase_GetRaster()
         INT32 featureReader = 0;
         INT32 xSize = 0;
         INT32 ySize = 0;
-
         CPPUNIT_ASSERT( NULL == (pService->GetRaster(featureReader, xSize, ySize, L"")) );
 
         //TODO test with correct input
@@ -1402,7 +1375,6 @@ void TestFeatureService::TestCase_GetDataRows()
         }
 
         INT32 dataReader = 0;
-
         CPPUNIT_ASSERT_THROW_MG(pService->GetDataRows(dataReader), MgInvalidArgumentException*);
 
         //TODO test with correct input
@@ -1447,9 +1419,7 @@ void TestFeatureService::TestCase_CloseDataReader()
         }
 
         INT32 dataReader = 0;
-
         bool closed = pService->CloseDataReader(dataReader);
-
         CPPUNIT_ASSERT(!closed);
 
         // TODO test with correct input
@@ -1512,7 +1482,6 @@ void TestFeatureService::TestCase_JoinFeatures()
         CPPUNIT_ASSERT(s1 == L"NIEMUTH, ROGER L.");
         CPPUNIT_ASSERT(s2 == L"Wells Fargo");
         CPPUNIT_ASSERT(s3 == L"10573");
-
     }
     catch(MgException* e)
     {
@@ -1576,7 +1545,6 @@ void TestFeatureService::TestCase_JoinFeaturesChainedInner1ToMany()
         CPPUNIT_ASSERT(s3 == L"30320");
         CPPUNIT_ASSERT(s4 == L"Voting District Seven");
         CPPUNIT_ASSERT(s5 == L"7");
-
     }
     catch(MgException* e)
     {
