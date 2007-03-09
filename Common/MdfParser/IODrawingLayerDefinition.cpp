@@ -96,9 +96,17 @@ void IODrawingLayerDefinition::EndElement(const wchar_t *name, HandlerStack *han
     }
 }
 
-void IODrawingLayerDefinition::Write(MdfStream &fd, DrawingLayerDefinition *drawingLayer)
+void IODrawingLayerDefinition::Write(MdfStream &fd, DrawingLayerDefinition *drawingLayer, Version *version)
 {
-    fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-1.1.0.xsd\" version=\"1.1.0\">" << std::endl; // NOXLATE
+    if (version)
+    {
+        MdfString strVersion = version->ToString();
+        fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    }
+    else
+    {
+        fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-1.1.0.xsd\" version=\"1.1.0\">" << std::endl; // NOXLATE
+    }
     inctab();
 
     fd << tab() << "<DrawingLayerDefinition>" << std::endl; // NOXLATE

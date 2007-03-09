@@ -34,6 +34,7 @@
 #include <xercesc/framework/MemBufInputSource.hpp>
 #include "IOUtil.h"
 #include "SAX2ElementHandler.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -108,6 +109,7 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
 
         std::string SerializeToXML(MapDefinition *pMap);
         std::string SerializeToXML(LayerDefinition *pLayer);
+        std::string SerializeToXML(LayerDefinition *pLayer, MdfModel::Version *version);
         std::string SerializeToXML(SymbolDefinition *pSymbol);
 
         // there are two modes for retrieving objects created by parsing:

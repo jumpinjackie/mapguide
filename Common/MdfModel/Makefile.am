@@ -79,6 +79,7 @@ libMgMdfModel_la_SOURCES = \
   Vector.cpp \
   VectorLayerDefinition.cpp \
   VectorScaleRange.cpp \
+  Version.cpp \
   W2DSymbol.cpp
 
 noinst_HEADERS = \
@@ -164,6 +165,7 @@ noinst_HEADERS = \
   Vector.h \
   VectorLayerDefinition.h \
   VectorScaleRange.h \
+  Version.h \
   W2DSymbol.h \
   stdafx.h
 

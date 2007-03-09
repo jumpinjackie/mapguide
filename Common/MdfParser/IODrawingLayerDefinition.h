@@ -20,6 +20,7 @@
 
 #include "SAX2ElementHandler.h"
 #include "DrawingLayerDefinition.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -35,7 +36,7 @@ class IODrawingLayerDefinition : public SAX2ElementHandler
         IODrawingLayerDefinition();
         IODrawingLayerDefinition(DrawingLayerDefinition * layer);
         ~IODrawingLayerDefinition();
-        void Write(MdfStream &fd, DrawingLayerDefinition *drawingLayer);
+        void Write(MdfStream &fd, DrawingLayerDefinition *drawingLayer, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

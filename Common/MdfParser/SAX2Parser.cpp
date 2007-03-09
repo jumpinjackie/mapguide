@@ -320,8 +320,12 @@ std::string SAX2Parser::SerializeToXML(MapDefinition *pMap)
     return fd.str();
 }
 
-
 std::string SAX2Parser::SerializeToXML(LayerDefinition *pLayer)
+{
+    return SerializeToXML(pLayer, NULL);
+}
+
+std::string SAX2Parser::SerializeToXML(LayerDefinition *pLayer, Version *version)
 {
     MdfStringStream fd;
 
@@ -332,17 +336,17 @@ std::string SAX2Parser::SerializeToXML(LayerDefinition *pLayer)
     if (NULL != pVectorLayer)
     {
         std::auto_ptr<IOVectorLayerDefinition> spIO(new IOVectorLayerDefinition());
-        spIO->Write(fd, pVectorLayer);
+        spIO->Write(fd, pVectorLayer, version);
     }
     else if (NULL != pDrawingLayer)
     {
         std::auto_ptr<IODrawingLayerDefinition> spIO(new IODrawingLayerDefinition());
-        spIO->Write(fd, pDrawingLayer);
+        spIO->Write(fd, pDrawingLayer, version);
     }
     else if (NULL != pGridLayer)
     {
         std::auto_ptr<IOGridLayerDefinition> spIO(new IOGridLayerDefinition());
-        spIO->Write(fd, pGridLayer);
+        spIO->Write(fd, pGridLayer, version);
     }
 
     return fd.str();

@@ -20,6 +20,7 @@
 
 #include "GridLayerDefinition.h"
 #include "SAX2ElementHandler.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -35,7 +36,7 @@ class MDFPARSER_API IOGridLayerDefinition : public SAX2ElementHandler
         IOGridLayerDefinition();
         IOGridLayerDefinition(GridLayerDefinition * layer);
         ~IOGridLayerDefinition();
-        void Write(MdfStream &fd,  GridLayerDefinition *gridLayer);
+        void Write(MdfStream &fd,  GridLayerDefinition *gridLayer, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);
