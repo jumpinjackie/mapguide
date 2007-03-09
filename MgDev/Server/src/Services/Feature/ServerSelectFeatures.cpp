@@ -683,8 +683,9 @@ void MgServerSelectFeatures::ApplyAggregateOptions(bool isSelectAggregate)
 
     // Set all properties for grouping
     ApplyFdoGroupingProperties(strCol);
+
     // Set Grouping Filter
-    FdoPtr<FdoFilter> filter = (FdoFilter*)NULL;
+    FdoPtr<FdoFilter> filter;
     if (!groupFilter.empty())
     {
         filter = FdoFilter::Parse((FdoString*)groupFilter.c_str());

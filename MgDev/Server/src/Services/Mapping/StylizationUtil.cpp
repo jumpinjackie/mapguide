@@ -153,7 +153,7 @@ RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcF
     MdfModel::NameStringPairCollection* mappings = vl->GetPropertyMappings();
 
     //we want to transform from mapping space to layer space
-    Ptr<MgCoordinateSystemTransform> trans = (MgCoordinateSystemTransform*)NULL;
+    Ptr<MgCoordinateSystemTransform> trans;
 
     if (mapCs && layerCs)
     {
@@ -171,8 +171,6 @@ RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcF
             }
         }
     }
-
-
 
     //start with bounds in mapping space
     Ptr<MgCoordinate> ll = new MgCoordinateXY(extent.minx, extent.miny);
@@ -259,7 +257,7 @@ RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcF
             options->SetFilter(vl->GetFilter());
     }
 
-    Ptr<MgFeatureReader> rdr = (MgFeatureReader*)NULL;
+    Ptr<MgFeatureReader> rdr;
 
     //poor man's substitute for checking capabilities
     //try catch until we succeed...
@@ -317,7 +315,7 @@ RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcF
     //MdfModel::NameStringPairCollection* mappings = gl->GetPropertyMappings();
 
     //we want to transform from mapping space to layer space
-    Ptr<MgCoordinateSystemTransform> trans = (MgCoordinateSystemTransform*)NULL;
+    Ptr<MgCoordinateSystemTransform> trans;
 
     if (mapCs && layerCs)
     {
@@ -411,7 +409,7 @@ RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcF
     else if (!gl->GetFilter().empty())
         options->SetFilter(gl->GetFilter());
 
-    Ptr<MgFeatureReader> rdr = (MgFeatureReader*)NULL;
+    Ptr<MgFeatureReader> rdr;
 
     try
     {
@@ -488,7 +486,7 @@ MgStylizationUtil::TransformCache* MgStylizationUtil::GetLayerToMapTransform(Tra
     // 2) The 1st spatial context returned
     // 3) FAIL - none of the above could be satisfied
 
-    Ptr<MgCoordinateSystem> srcCs = (MgCoordinateSystem*)NULL;
+    Ptr<MgCoordinateSystem> srcCs;
 
     if (dstCs)
     {

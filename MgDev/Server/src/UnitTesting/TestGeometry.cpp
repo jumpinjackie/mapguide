@@ -356,7 +356,7 @@ MgMultiGeometry* TestGeometry::CreateMultiGeometry()
     MgGeometryFactory factory;
 
     Ptr<MgGeometryCollection> geometries = new MgGeometryCollection();
-    Ptr<MgGeometry> geometry = (MgGeometry*)NULL;
+    Ptr<MgGeometry> geometry;
 
     // CurvePolygon
     geometry = (MgGeometry*)CreateCurvePolygon(0);

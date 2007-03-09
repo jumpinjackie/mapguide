@@ -1190,7 +1190,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     // 2) The 1st spatial context returned
     // 3) FAIL - none of the above could be satisfied
 
-    Ptr<MgCoordinateSystem> layerCs = (MgCoordinateSystem*)NULL;
+    Ptr<MgCoordinateSystem> layerCs;
 
     if (mapCs)
     {

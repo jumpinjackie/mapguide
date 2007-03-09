@@ -331,7 +331,7 @@ MgProperty* MgServerDataProcessor::GetMgProperty(CREFSTRING propName, INT16 type
             case MgPropertyType::Blob: // BLOB
             {
                 bool isNull = true;
-                Ptr<MgByteReader> val = (MgByteReader*)NULL;
+                Ptr<MgByteReader> val;
                 if (!m_dataReader->IsNull(propName.c_str()))
                 {
                     isNull = false;
@@ -344,7 +344,7 @@ MgProperty* MgServerDataProcessor::GetMgProperty(CREFSTRING propName, INT16 type
             case MgPropertyType::Clob: // CLOB
             {
                 bool isNull = true;
-                Ptr<MgByteReader> val = (MgByteReader*)NULL;
+                Ptr<MgByteReader> val;
                 if (!m_dataReader->IsNull(propName.c_str()))
                 {
                     isNull = false;
@@ -356,7 +356,7 @@ MgProperty* MgServerDataProcessor::GetMgProperty(CREFSTRING propName, INT16 type
             }
             case MgPropertyType::Geometry: // Geometry object
             {
-                Ptr<MgByteReader> val = (MgByteReader*)NULL;
+                Ptr<MgByteReader> val;
                 bool isNull = true;
                 if (!m_dataReader->IsNull(propName.c_str()))
                 {
@@ -369,7 +369,7 @@ MgProperty* MgServerDataProcessor::GetMgProperty(CREFSTRING propName, INT16 type
             }
             case MgPropertyType::Raster: // Raster object
             {
-                Ptr<MgRaster> val = (MgRaster*)NULL;
+                Ptr<MgRaster> val;
                 bool isNull = true;
 
                 if (!m_dataReader->IsNull(propName.c_str()))

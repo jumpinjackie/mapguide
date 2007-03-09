@@ -732,7 +732,7 @@ void MgFdoConnectionManager::SetConfiguration(CREFSTRING providerName, FdoIConne
     {
         STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgMissingConfiguration");
 
-        Ptr<MgStringCollection> strCol = (MgStringCollection*)NULL;
+        Ptr<MgStringCollection> strCol;
         if (!message.empty())
         {
             strCol = new MgStringCollection();
@@ -807,7 +807,7 @@ void MgFdoConnectionManager::ValidateFeatureSource(string& featureSourceXmlConte
     {
         STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgInvalidFdoProvider");
 
-        Ptr<MgStringCollection> strCol = (MgStringCollection*)NULL;
+        Ptr<MgStringCollection> strCol;
         if (!message.empty())
         {
             strCol = new MgStringCollection();

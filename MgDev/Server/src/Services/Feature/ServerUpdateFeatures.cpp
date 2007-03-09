@@ -82,7 +82,7 @@ MgPropertyCollection* MgServerUpdateFeatures::Execute(MgResourceIdentifier* reso
 
     for (INT32 i = 0; i < cnt; i++)
     {
-        Ptr<MgProperty> result = (MgProperty*)NULL;
+        Ptr<MgProperty> result;
         Ptr<MgFeatureCommand> command = commands->GetItem(i);
         Ptr<MgFeatureManipulationCommand> fmServerCommand = MgFeatureManipulationCommand::CreateCommand(command, m_SrvrFeatConn, i);
 

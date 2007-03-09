@@ -160,7 +160,7 @@ MgGeometryCollection* MgFeatureGeometricFunctions::ExecuteOperation()
 {
     INT32 funcCode = -1;
 
-    Ptr<MgGeometryCollection> result = (MgGeometryCollection*)NULL;
+    Ptr<MgGeometryCollection> result;
 
     // Get the arguments from the FdoFunction
     STRING propertyName;
@@ -212,7 +212,7 @@ MgGeometryCollection* MgFeatureGeometricFunctions::ExecuteOperation()
         }
     }
 
-    return SAFE_ADDREF((MgGeometryCollection*)result);
+    return result.Detach();
 }
 
 // Check whether property type is a supported type
@@ -239,7 +239,7 @@ void MgFeatureGeometricFunctions::CheckSupportedPropertyType()
 // Get the value of property
 MgGeometry* MgFeatureGeometricFunctions::GetValue()
 {
-    Ptr<MgGeometry> geom = (MgGeometry*)NULL;
+    Ptr<MgGeometry> geom;
 
     if (!m_reader->IsNull(m_propertyName))
     {
@@ -264,7 +264,7 @@ MgGeometry* MgFeatureGeometricFunctions::GetValue()
         }
     }
 
-    return SAFE_ADDREF((MgGeometry*)geom);
+    return geom.Detach();
 }
 
 
@@ -273,7 +273,7 @@ MgGeometry* MgFeatureGeometricFunctions::GetValue()
 // Create the reader for string properties
 MgReader* MgFeatureGeometricFunctions::GetReader(MgGeometryCollection* geomCol)
 {
-    Ptr<MgDataReader> dataReader = (MgDataReader*)NULL;
+    Ptr<MgDataReader> dataReader;
 
     switch(m_type)
     {
@@ -289,5 +289,5 @@ MgReader* MgFeatureGeometricFunctions::GetReader(MgGeometryCollection* geomCol)
                 L"MgFeatureGeometricFunctions.GetReader", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
-    return SAFE_ADDREF((MgDataReader*)dataReader);
+    return dataReader.Detach();
 }
