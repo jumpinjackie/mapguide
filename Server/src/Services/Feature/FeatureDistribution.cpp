@@ -42,7 +42,7 @@ MgFeatureDistribution* MgFeatureDistribution::CreateDistributionFunction(MgReade
 {
     STRING propName;
 
-    Ptr<MgFeatureDistribution> featDist = (MgFeatureDistribution*)NULL;
+    Ptr<MgFeatureDistribution> featDist;
 
     INT32 propType = MgServerFeatureUtil::GetPropertyDefinition(reader, propName);
 
@@ -75,5 +75,5 @@ MgFeatureDistribution* MgFeatureDistribution::CreateDistributionFunction(MgReade
                 L"MgFeatureDistribution.CreateDistributionFunction", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
-    return SAFE_ADDREF((MgFeatureDistribution*)featDist);
+    return featDist.Detach();
 }

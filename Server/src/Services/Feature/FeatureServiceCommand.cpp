@@ -24,7 +24,7 @@
 
 MgFeatureServiceCommand* MgFeatureServiceCommand::CreateCommand(MgResourceIdentifier* resource, FdoCommandType commandType)
 {
-    Ptr<MgFeatureServiceCommand> command = (MgFeatureServiceCommand*)NULL;
+    Ptr<MgFeatureServiceCommand> command;
     switch(commandType)
     {
         case FdoCommandType_Select:
@@ -38,7 +38,7 @@ MgFeatureServiceCommand* MgFeatureServiceCommand::CreateCommand(MgResourceIdenti
             break;
         }
     }
-    return SAFE_ADDREF((MgFeatureServiceCommand*)command);
+    return command.Detach();
 }
 
 bool MgFeatureServiceCommand::IsFdoSupportedFunction(FdoIConnection* connection, FdoFunction* fdoFunc)

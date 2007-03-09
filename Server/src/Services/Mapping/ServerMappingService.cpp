@@ -310,7 +310,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
             (*iter)->Release();
     }
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -529,11 +529,10 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
                             //see also similar code in GenerateMap above
 
                             //find the corresponding MgLayer first
-                            Ptr<MgLayerBase> layerToAdd = (MgLayer*)NULL;
+                            Ptr<MgLayerBase> layerToAdd;
                             for (int i=0; i<layers->GetCount(); i++)
                             {
                                 Ptr<MgLayerBase> temp = layers->GetItem(i);
-
                                 if (temp->GetObjectId() == changelist->GetObjectId())
                                 {
                                     layerToAdd = temp;
@@ -647,7 +646,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     if (xformToLL)
         delete xformToLL;
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -700,7 +699,7 @@ MgByteReader* MgServerMappingService::GeneratePlot(
 
     MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.GeneratePlot")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -757,7 +756,7 @@ MgByteReader* MgServerMappingService::GeneratePlot(
 
     MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.GeneratePlot")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -830,7 +829,7 @@ MgByteReader* MgServerMappingService::GeneratePlot(
 
     MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.GeneratePlot")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -1229,7 +1228,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
     MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.GenerateMultiPlot")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -1376,7 +1375,7 @@ MgByteReader* MgServerMappingService::GenerateLegendPlot(
 
     MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.GenerateLegendPlot")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 
@@ -1510,7 +1509,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
                                             INT32      geomType,
                                             INT32      themeCategory)
 {
-    Ptr<MgByteReader> byteReader = (MgByteReader*)NULL;
+    Ptr<MgByteReader> byteReader;
 
     MG_SERVER_MAPPING_SERVICE_TRY()
 
@@ -1628,7 +1627,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
 
     MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.GenerateLegendImage")
 
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteReader.Detach();
 }
 
 

@@ -68,10 +68,7 @@ void MgFeatureStringFunctions::Initialize(MgReader* reader, FdoFunction* customF
 
 MgFeatureStringFunctions::~MgFeatureStringFunctions()
 {
-    if (m_customFunction != NULL)
-    {
-        m_customFunction->Release();
-    }
+    SAFE_RELEASE(m_customFunction);
 }
 
 // Execute the function
@@ -189,7 +186,7 @@ void MgFeatureStringFunctions::ExecuteOperation(std::map<STRING, char>& values, 
 // Create the reader for string properties
 MgReader* MgFeatureStringFunctions::GetReader(std::vector<STRING>& distValues)
 {
-    Ptr<MgDataReader> dataReader = (MgDataReader*)NULL;
+    Ptr<MgDataReader> dataReader;
 
     switch(m_type)
     {
@@ -205,5 +202,5 @@ MgReader* MgFeatureStringFunctions::GetReader(std::vector<STRING>& distValues)
                 L"MgFeatureStringFunctions.GetReader", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
-    return SAFE_ADDREF((MgDataReader*)dataReader);
+    return dataReader.Detach();
 }

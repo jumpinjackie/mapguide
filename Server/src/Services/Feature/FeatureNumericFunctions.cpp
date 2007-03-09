@@ -336,7 +336,7 @@ void MgFeatureNumericFunctions::CalculateDistribution(VECTOR& values, VECTOR& di
 
 MgReader* MgFeatureNumericFunctions::GetReader(VECTOR& distValues)
 {
-    Ptr<MgDataReader> dataReader = (MgDataReader*)NULL;
+    Ptr<MgDataReader> dataReader;
 
     switch(m_type)
     {
@@ -388,7 +388,7 @@ MgReader* MgFeatureNumericFunctions::GetReader(VECTOR& distValues)
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
-    return SAFE_ADDREF((MgDataReader*)dataReader);
+    return dataReader.Detach();
 }
 
 //MgDataReader* MgFeatureNumericFunctions::GetStringReader(std::vector<STRING>& distValues)
@@ -397,7 +397,7 @@ MgReader* MgFeatureNumericFunctions::GetReader(VECTOR& distValues)
 //    Ptr<MgDataReader> dataReader = drCreator->Execute(distValues);
 //    delete drCreator;
 //
-//    return SAFE_ADDREF((MgDataReader*)dataReader);
+//    return dataReader.Detach();
 //}
 
 // Calculate Standard Deviation for the values
@@ -405,7 +405,6 @@ void MgFeatureNumericFunctions::GetStandardDeviationCategories( VECTOR &values, 
                                                                 double dataMin, double dataMax,
                                                                 VECTOR &distValues)
 {
-
     // Expected categories should be more than zero
     if (numCats <= 0)
     {

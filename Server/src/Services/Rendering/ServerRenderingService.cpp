@@ -887,22 +887,19 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
         ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable() ? L"True" : L"False", layer->IsVisibleAtScale(map->GetViewScale()) ? L"True" : L"False"));
     
+        //do this first - this check is fast
+        if (!layer->GetSelectable())
+            continue;
+
         //do we want to select on this layer -- if caller
         //gave us a layer name collection, check if the layer
         //is in there
         if (layerNames && layerNames->GetCount() > 0 && layerNames->IndexOf(layer->GetName()) == -1)
             continue;
 
-        if(bIgnoreScaleRange)
-        {
-            if (!layer->GetSelectable())
-                continue;
-        }
-        else
-        {
-            if (!layer->GetSelectable() || !layer->IsVisibleAtScale(map->GetViewScale()))
-                continue;
-        }
+        //check the visibility at scale if we're not ignoring scale ranges
+        if (!bIgnoreScaleRange && !layer->IsVisibleAtScale(map->GetViewScale()))
+            continue;
 
         //have we processed enough features already?
         if (maxFeatures <= 0)
@@ -986,7 +983,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             // 2) The 1st spatial context returned
             // 3) FAIL - none of the above could be satisfied
 
-            Ptr<MgCoordinateSystem> layerCs = (MgCoordinateSystem*)NULL;
+            Ptr<MgCoordinateSystem> layerCs;
 
             if (mapCs)
             {
@@ -1022,7 +1019,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             }
 
             //we want to transform query geometry from mapping space to layer space
-            Ptr<MgCoordinateSystemTransform> trans = (MgCoordinateSystemTransform*)NULL;
+            Ptr<MgCoordinateSystemTransform> trans;
 
             if (mapCs && layerCs)
             {

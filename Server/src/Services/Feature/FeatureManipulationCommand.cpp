@@ -33,7 +33,7 @@ MgFeatureManipulationCommand* MgFeatureManipulationCommand::CreateCommand(MgFeat
     INT32 cmdType = webCmd->GetCommandType();
     bool supports = false;
 
-    Ptr<MgFeatureManipulationCommand> command = (MgFeatureManipulationCommand*)NULL;
+    Ptr<MgFeatureManipulationCommand> command;
 
     switch(cmdType)
     {
@@ -75,5 +75,5 @@ MgFeatureManipulationCommand* MgFeatureManipulationCommand::CreateCommand(MgFeat
         throw new MgFeatureServiceException(L"MgFeatureManipulationCommand.CreateCommand", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    return SAFE_ADDREF((MgFeatureManipulationCommand*)command);
+    return command.Detach();
 }
