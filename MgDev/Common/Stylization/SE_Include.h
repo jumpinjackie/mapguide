@@ -148,7 +148,7 @@ struct SE_Integer
         return value;
     }
 
-    SE_INLINE void SE_Integer::operator=(int i)  { value = i; }
+    SE_INLINE void operator=(int i)  { value = i; }
 };
 
 struct SE_Boolean
