@@ -1086,7 +1086,7 @@ MgBatchPropertyCollection* MgCoordinateSystem::EnumerateCoordinateSystems(CREFST
                     if(coordSysInfo)
                     {
                         // Add the coodinate system properties to the collection
-                        Ptr<MgProperty> pProperty = (MgProperty*)NULL;
+                        Ptr<MgProperty> pProperty;
                         Ptr<MgPropertyCollection> coordSysProperties = new MgPropertyCollection();
 
                         // Coordinate system properties

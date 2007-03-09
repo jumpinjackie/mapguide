@@ -636,7 +636,7 @@ MgEnvelope* MgSelectionBase::GetExtents(MgFeatureService* featureService)
 {
     CHECKNULL((MgFeatureService*)featureService, L"MgSelection.GetExtents");
 
-    Ptr<MgEnvelope> env = (MgEnvelope*)NULL;
+    Ptr<MgEnvelope> env;
     Ptr<MgReadOnlyLayerCollection> roLayerCol = this->GetLayers();
 
     if (roLayerCol != NULL)
@@ -658,11 +658,11 @@ MgEnvelope* MgSelectionBase::GetExtents(MgFeatureService* featureService)
             }
             else
             {
-                env = SAFE_ADDREF((MgEnvelope*)clsEnv);
+                env = clsEnv.Detach();
             }
         }
     }
-    return SAFE_ADDREF((MgEnvelope*)env);
+    return env.Detach();
 }
 
 
@@ -682,8 +682,8 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
     Ptr<MgResourceIdentifier> featureResId = new MgResourceIdentifier(resId);
     Ptr<MgDataReader> geomDataReader = featureService->SelectAggregate(featureResId, clsName, geomQryOptions);
 
-    Ptr<MgGeometry> geomFilter = (MgGeometry*)NULL;
-    Ptr<MgEnvelope> env = (MgEnvelope*)NULL;
+    Ptr<MgGeometry> geomFilter;
+    Ptr<MgEnvelope> env;
     while (geomDataReader->ReadNext())
     {
         Ptr<MgByteReader> byteReader = geomDataReader->GetGeometry(L"EXTENT_PROP");
@@ -693,7 +693,7 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
         Ptr<MgEnvelope> geomExtn = geom->Envelope();
         if (env == NULL)
         {
-            env = SAFE_ADDREF((MgEnvelope*)geomExtn);
+            env = geomExtn.Detach();
         }
         else
         {
@@ -705,7 +705,7 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
     }
     geomDataReader->Close();
 
-    return SAFE_ADDREF((MgEnvelope*)env);
+    return env.Detach();
 }
 
 

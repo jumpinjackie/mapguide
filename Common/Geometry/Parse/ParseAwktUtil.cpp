@@ -22,7 +22,7 @@
 MgCoordinate* MgParseAwktUtil::CreateCoordinate(INT32 dimension, double* doubles, INT32& index)
 {
     MgGeometryFactory factory;
-    Ptr<MgCoordinate> coord = (MgCoordinate*)NULL;
+    Ptr<MgCoordinate> coord;
 
     switch(dimension)
     {
@@ -52,7 +52,7 @@ MgCoordinate* MgParseAwktUtil::CreateCoordinate(INT32 dimension, double* doubles
         }
     }
 
-    return SAFE_ADDREF((MgCoordinate*)coord);
+    return coord.Detach();
 }
 
 MgCoordinateCollection* MgParseAwktUtil::CreateCoordinateCollection(INT32 dimensionType, INT32 numOfCoordinates, double* ordinates, INT32& index)
@@ -73,7 +73,7 @@ MgCoordinateCollection* MgParseAwktUtil::CreateCoordinateCollection(INT32 dimens
         coordCol->Add(coord);
     }
 
-    return SAFE_ADDREF((MgCoordinateCollection*)coordCol);
+    return coordCol.Detach();
 }
 
 MgPoint* MgParseAwktUtil::CreatePoint(INT32 dimension, double* doubles, INT32& index)
