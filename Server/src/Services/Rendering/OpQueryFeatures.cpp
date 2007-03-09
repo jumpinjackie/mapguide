@@ -55,8 +55,9 @@ void MgOpQueryFeatures::Execute()
         INT32 maxFeatures = 0;
         m_stream->GetInt32(maxFeatures);
 
-        INT32 bIgnoreScale = 0;
-        m_stream->GetInt32(bIgnoreScale);
+        INT32 iIgnoreScale = 0;
+        m_stream->GetInt32(iIgnoreScale);
+        bool bIgnoreScale = (iIgnoreScale != 0);
 
         BeginExecution();
 

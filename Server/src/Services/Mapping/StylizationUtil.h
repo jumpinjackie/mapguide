@@ -95,7 +95,7 @@ public:
                                                 int width,
                                                 int height);
 
-    static MgStylizationUtil::TransformCache* MgStylizationUtil::GetLayerToMapTransform(TransformCacheMap& cache,
+    static MgStylizationUtil::TransformCache* GetLayerToMapTransform(TransformCacheMap& cache,
                                                          CREFSTRING featureName,
                                                          MgResourceIdentifier* resId,
                                                          MgCoordinateSystem* dstCs,
