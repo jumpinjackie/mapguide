@@ -89,15 +89,15 @@ MgGeometry* MgParseAwkt::ParseAwkt(wchar_t* pwzAwkt)
             __LINE__, __WFILE__, &arguments, L"MgInvalidAgfText", NULL);
     }
 
-    return SAFE_ADDREF((MgGeometry*)m_geometry);
+    return SAFE_ADDREF(m_geometry.p);
 }
 
 // count how many of the same type, starting at iContext and counting it
 // but don't move iContext forward (call by value)
 INT32 MgParseAwkt::CountSame(INT32 iContext, _types type)
 {
-    INT32   iResult = 0;
-    INT32   countContext = m_types->GetCount();
+    INT32 iResult = 0;
+    INT32 countContext = m_types->GetCount();
     while (iContext < countContext && (*m_types)[iContext] == type)
     {
         iResult++;
@@ -108,22 +108,19 @@ INT32 MgParseAwkt::CountSame(INT32 iContext, _types type)
 
 MgPoint* MgParseAwkt::DoPoint(INT32& iContext, double* doubles)
 {
-    Ptr<MgPoint> geom = (MgPoint*)NULL;
-
     _dims dim = (_dims) (*m_dims)[iContext];
 
     INT32 index = 0;
-    geom = MgParseAwktUtil::CreatePoint(DimToDimensionality(dim), &doubles[(*m_starts)[iContext]], index);
+    Ptr<MgPoint> geom = MgParseAwktUtil::CreatePoint(DimToDimensionality(dim), &doubles[(*m_starts)[iContext]], index);
     iContext++;
 
-    return SAFE_ADDREF((MgPoint*)geom);
+    return geom.Detach();
 }
 
 MgLineString* MgParseAwkt::DoLineString(INT32& iContext, double* doubles, _types type)
 {
     // line strings can have multiple context entries and corresponding n-values per point
     MgGeometryFactory factory;
-    Ptr<MgLineString> geom = (MgLineString*)NULL;
 
     _dims dim = (_dims) (*m_dims)[iContext];
 
@@ -131,20 +128,17 @@ MgLineString* MgParseAwkt::DoLineString(INT32& iContext, double* doubles, _types
     INT32 countValues = countSame*DimToCount(dim);
 
     INT32 index = 0;
-    geom = MgParseAwktUtil::CreateLineString(DimToDimensionality(dim), countSame, &doubles[(*m_starts)[iContext]], index);
-
+    Ptr<MgLineString> geom = MgParseAwktUtil::CreateLineString(DimToDimensionality(dim),
+        countSame, &doubles[(*m_starts)[iContext]], index);
     iContext += countSame;
 
-    return SAFE_ADDREF((MgLineString*)geom);
+    return geom.Detach();
 }
 
 MgPolygon* MgParseAwkt::DoPolygon(INT32& iContext, double* doubles, _types type)
 {
     // polygons have 1 exterior ring and 0 or more interior rings
     MgGeometryFactory factory;
-    Ptr<MgPolygon>  geom = (MgPolygon*)NULL;
-    Ptr<MgLinearRing> extRing = (MgLinearRing*)NULL;
-    Ptr<MgLinearRingCollection> intRings = (MgLinearRingCollection*)NULL;
 
     _dims dim = (_dims) (*m_dims)[iContext];
 
@@ -153,13 +147,13 @@ MgPolygon* MgParseAwkt::DoPolygon(INT32& iContext, double* doubles, _types type)
     INT32 countValues = countSame*DimToCount(dim);
     INT32 index = 0;
 
-    extRing = MgParseAwktUtil::CreateLinearRing(DimToDimensionality(dim),
+    Ptr<MgLinearRing> extRing = MgParseAwktUtil::CreateLinearRing(DimToDimensionality(dim),
         countSame, &doubles[(*m_starts)[iContext]], index);
 
     iContext += countSame;
 
     // interior ring
-    intRings = new MgLinearRingCollection();
+    Ptr<MgLinearRingCollection> intRings = new MgLinearRingCollection();
     while (iContext < m_types->GetCount() && (*m_types)[iContext] == -type)
     {
         (*m_types)[iContext] = type;
@@ -171,29 +165,24 @@ MgPolygon* MgParseAwkt::DoPolygon(INT32& iContext, double* doubles, _types type)
             countSame, &doubles[(*m_starts)[iContext]], index);
 
         if (intRing != NULL)
-        {
             intRings->Add(intRing);
-        }
 
         iContext += countSame;
     }
 
-    geom = factory.CreatePolygon(extRing, intRings);
+    Ptr<MgPolygon> geom = factory.CreatePolygon(extRing, intRings);
 
-    return SAFE_ADDREF((MgPolygon*)geom);
+    return geom.Detach();
 }
 
 MgMultiPoint* MgParseAwkt::DoMultiPoint(INT32& iContext, double* doubles)
 {
     MgGeometryFactory factory;
-
-    Ptr<MgMultiPoint> geom = (MgMultiPoint*)NULL;
-    Ptr<MgPointCollection> pnts = (MgPointCollection*)NULL;
+    Ptr<MgPointCollection> pnts = new MgPointCollection();
 
     _dims dim = (_dims) (*m_dims)[iContext];
 
     // there can be n-context entries for each point
-    pnts = new MgPointCollection();
     INT32 countContext = CountSame(iContext, kMultiPoint);
 
     for (int i=0; i < countContext; i++)
@@ -204,32 +193,25 @@ MgMultiPoint* MgParseAwkt::DoMultiPoint(INT32& iContext, double* doubles)
         INT32 index = 0;
         Ptr<MgPoint> pnt = MgParseAwktUtil::CreatePoint(DimToDimensionality(dim), &doubles[(*m_starts)[iContext]], index);
         if (pnt != NULL)
-        {
             pnts->Add(pnt);
-        }
         iContext++;
     }
 
-    geom = factory.CreateMultiPoint(pnts);
+    Ptr<MgMultiPoint> geom = factory.CreateMultiPoint(pnts);
 
-    return SAFE_ADDREF((MgMultiPoint*)geom);
+    return geom.Detach();
 }
 
 MgMultiLineString* MgParseAwkt::DoMultiLineString(INT32& iContext, double* doubles)
 {
     MgGeometryFactory factory;
-
-    Ptr<MgMultiLineString>  geom = (MgMultiLineString*)NULL;
     Ptr<MgLineStringCollection> lineStrings = new MgLineStringCollection();
 
     _dims dim = (_dims) (*m_dims)[iContext];
 
     Ptr<MgLineString> lineString = (MgLineString*)DoLineString(iContext, doubles, kMultiLineString);
-
     if (lineString != NULL)
-    {
         lineStrings->Add(lineString);
-    }
 
     while (iContext < m_types->GetCount() && (*m_types)[iContext] == -kMultiLineString)
     {
@@ -241,25 +223,21 @@ MgMultiLineString* MgParseAwkt::DoMultiLineString(INT32& iContext, double* doubl
         }
     }
 
-    geom = factory.CreateMultiLineString(lineStrings);
+    Ptr<MgMultiLineString> geom = factory.CreateMultiLineString(lineStrings);
 
-    return SAFE_ADDREF((MgMultiLineString*)geom);
+    return geom.Detach();
 }
 
 MgMultiPolygon* MgParseAwkt::DoMultiPolygon(INT32& iContext, double* doubles)
 {
     MgGeometryFactory factory;
-
-    Ptr<MgMultiPolygon> geom = (MgMultiPolygon*)NULL;
     Ptr<MgPolygonCollection> polygons = new MgPolygonCollection();
 
     _dims dim = (_dims) (*m_dims)[iContext];
 
     Ptr<MgPolygon> polygon = DoPolygon(iContext, doubles, kMultiPolygon);
     if (polygon != NULL)
-    {
         polygons->Add(polygon);
-    }
 
     while (iContext < m_types->GetCount() && (*m_types)[iContext] == kRing)
     {
@@ -267,20 +245,17 @@ MgMultiPolygon* MgParseAwkt::DoMultiPolygon(INT32& iContext, double* doubles)
         iContext++;
         Ptr<MgPolygon> polygon1 = DoPolygon(iContext, doubles, kMultiPolygon);
         if (polygon1 != NULL)
-        {
             polygons->Add(polygon1);
-        }
     }
 
-    geom = factory.CreateMultiPolygon(polygons);
+    Ptr<MgMultiPolygon> geom = factory.CreateMultiPolygon(polygons);
 
-    return SAFE_ADDREF((MgMultiPolygon*)geom);
+    return geom.Detach();
 }
 
 MgCurveSegmentCollection* MgParseAwkt::DoCurveSegmentCollection(INT32& iContext, double* doubles)
 {
     MgGeometryFactory factory;
-
     Ptr<MgCurveSegmentCollection> segs = new MgCurveSegmentCollection();
 
     _dims dim = (_dims) (*m_dims)[iContext];
@@ -319,8 +294,8 @@ MgCurveSegmentCollection* MgParseAwkt::DoCurveSegmentCollection(INT32& iContext,
         }
         else if (typeSegment == kLineStringSegment)
         {
-            INT32   countSame = CountSame(iContext, kLineStringSegment);
-            INT32   countValues = countSame*DimToCount(dim);
+            INT32 countSame = CountSame(iContext, kLineStringSegment);
+            INT32 countValues = countSame*DimToCount(dim);
 
             //Ptr<MgLinearSegment> linearSeg = m_gf->CreateLineStringSegment(DimToDimensionality(dim),
                 // countValues+DimToCount(dim), &doubles[(*m_starts)[iContext-1]]);
@@ -336,37 +311,29 @@ MgCurveSegmentCollection* MgParseAwkt::DoCurveSegmentCollection(INT32& iContext,
             break;
     }
 
-    return SAFE_ADDREF((MgCurveSegmentCollection*)segs);
+    return segs.Detach();
 }
 
 MgCurveString* MgParseAwkt::DoCurveString(INT32& iContext, double* doubles)
 {
     MgGeometryFactory factory;
 
-    Ptr<MgCurveSegmentCollection> segs = (MgCurveSegmentCollection*)NULL;
-    Ptr<MgCurveString> geom = (MgCurveString*)NULL;
+    Ptr<MgCurveSegmentCollection> segs = DoCurveSegmentCollection(iContext, doubles);
+    Ptr<MgCurveString> geom = factory.CreateCurveString(segs);
 
-    segs = DoCurveSegmentCollection(iContext, doubles);
-    geom = factory.CreateCurveString(segs);
-
-    return SAFE_ADDREF((MgCurveString*)geom);
+    return geom.Detach();
 }
 
 MgCurvePolygon* MgParseAwkt::DoCurvePolygon(INT32& iContext, double* doubles)
 {
     MgGeometryFactory factory;
-
-    Ptr<MgCurvePolygon> geom = (MgCurvePolygon*)NULL;
-    Ptr<MgCurveSegmentCollection> extSegs = (MgCurveSegmentCollection*)NULL;
-
-    Ptr<MgCurveRing> extRing = (MgCurveRing*)NULL;
     Ptr<MgCurveRingCollection> intRings = new MgCurveRingCollection();
 
     _dims dim = (_dims) (*m_dims)[iContext];
 
     // exterior ring
-    extSegs = DoCurveSegmentCollection(iContext, doubles);
-    extRing = factory.CreateCurveRing(extSegs);
+    Ptr<MgCurveSegmentCollection> extSegs = DoCurveSegmentCollection(iContext, doubles);
+    Ptr<MgCurveRing> extRing = factory.CreateCurveRing(extSegs);
 
     // interior rings
     _types typeSegment;
@@ -384,30 +351,26 @@ MgCurvePolygon* MgParseAwkt::DoCurvePolygon(INT32& iContext, double* doubles)
         {
             Ptr<MgCurveRing> intRing = factory.CreateCurveRing(intSegs);
             if (intRing != NULL)
-            {
                 intRings->Add(intRing);
-            }
         }
     }
 
-    geom = factory.CreateCurvePolygon(extRing, intRings);
+    Ptr<MgCurvePolygon> geom = factory.CreateCurvePolygon(extRing, intRings);
 
-    return SAFE_ADDREF((MgCurvePolygon*)geom);
+    return geom.Detach();
 }
 
 MgMultiCurveString* MgParseAwkt::DoMultiCurveString(INT32& iContext, double* doubles)
 {
     MgGeometryFactory factory;
 
-    Ptr<MgMultiCurveString> geom = (MgMultiCurveString*)NULL;
     Ptr<MgCurveStringCollection> curveStrings = new MgCurveStringCollection();
 
     _dims dim = (_dims) (*m_dims)[iContext];
+
     Ptr<MgCurveString> curveString = (MgCurveString*)DoCurveString(iContext, doubles);
     if (curveString != NULL)
-    {
         curveStrings->Add(curveString);
-    }
 
     _types typeSegment;
     while (iContext < m_types->GetCount())
@@ -419,30 +382,25 @@ MgMultiCurveString* MgParseAwkt::DoMultiCurveString(INT32& iContext, double* dou
         (*m_types)[iContext] = -typeSegment;
         Ptr<MgCurveString> curveString1 = DoCurveString(iContext, doubles);
         if (curveString1 != NULL)
-        {
             curveStrings->Add(curveString1);
-        }
     }
 
-    geom = factory.CreateMultiCurveString(curveStrings);
+    Ptr<MgMultiCurveString> geom = factory.CreateMultiCurveString(curveStrings);
 
-    return SAFE_ADDREF((MgMultiCurveString*)geom);
+    return geom.Detach();
 }
 
 
 MgMultiCurvePolygon* MgParseAwkt::DoMultiCurvePolygon(INT32& iContext, double* doubles)
 {
     MgGeometryFactory factory;
-
-    Ptr<MgMultiCurvePolygon> geom = (MgMultiCurvePolygon*)NULL;
     Ptr<MgCurvePolygonCollection> polygons = new MgCurvePolygonCollection();
 
     _dims dim = (_dims) (*m_dims)[iContext];
+
     Ptr<MgCurvePolygon> polygon = DoCurvePolygon(iContext, doubles);
     if (polygon != NULL)
-    {
         polygons->Add(polygon);
-    }
 
     _types typeSegment;
     while (iContext < m_types->GetCount())
@@ -455,30 +413,27 @@ MgMultiCurvePolygon* MgParseAwkt::DoMultiCurvePolygon(INT32& iContext, double* d
         iContext++;
         Ptr<MgCurvePolygon> polygon1 = DoCurvePolygon(iContext, doubles);
         if (polygon1 != NULL)
-        {
             polygons->Add(polygon1);
-        }
     }
-    geom = factory.CreateMultiCurvePolygon(polygons);
 
-    return SAFE_ADDREF((MgMultiCurvePolygon*)geom);
+    Ptr<MgMultiCurvePolygon> geom = factory.CreateMultiCurvePolygon(polygons);
+
+    return geom.Detach();
 }
 
 MgGeometry* MgParseAwkt::DoGeometryCollection(INT32 iContextStart, bool bCollect)
 {
     _types type = kNone;
 
-    Ptr<MgGeometry> geom = (MgGeometry*)NULL;
-    Ptr<MgGeometryCollection> geomCollection = (MgGeometryCollection*)NULL;
+    Ptr<MgGeometry> geom;
+    Ptr<MgGeometryCollection> geomCollection;
 
     // take the value and try to constuct the geometry
     double* doubles = m_values->GetData();
     INT32 countContext = m_types->GetCount();
 
     if (bCollect)
-    {
         geomCollection = new MgGeometryCollection();
-    }
 
     INT32 iCurrent = iContextStart;
 
@@ -537,7 +492,6 @@ MgGeometry* MgParseAwkt::DoGeometryCollection(INT32 iContextStart, bool bCollect
             return NULL;
         }
 
-
         if (geom == NULL)
         {
             // some error occured constructing geometry so give up
@@ -555,12 +509,10 @@ MgGeometry* MgParseAwkt::DoGeometryCollection(INT32 iContextStart, bool bCollect
     {
         MgGeometryFactory factory;
         Ptr<MgMultiGeometry> multiGeom = factory.CreateMultiGeometry(geomCollection);
-        return SAFE_ADDREF((MgMultiGeometry*)multiGeom);
+        return multiGeom.Detach();
     }
-    else
-    {
-        return SAFE_ADDREF((MgGeometry*)geom);
-    }
+
+    return geom.Detach();
 }
 
 void MgParseAwkt::Done()
@@ -586,9 +538,9 @@ void MgParseAwkt::Done()
         throw new MgInvalidArgumentException(L"MgParseAwkt.ParseAwkt", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    _types      type = (_types) (*m_types)[0];
-    bool        bMultiGeometry = type == kMultiGeometry;
-    INT32   iContextStart = 0;
+    _types type = (_types) (*m_types)[0];
+    bool bMultiGeometry = type == kMultiGeometry;
+    INT32 iContextStart = 0;
     if (bMultiGeometry)
         iContextStart++;
 

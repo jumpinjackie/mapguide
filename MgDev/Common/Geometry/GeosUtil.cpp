@@ -45,11 +45,10 @@ static CInitGeos s_InitGeos;
 bool MgGeosUtil::Contains(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool contains = false;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -83,10 +82,10 @@ bool MgGeosUtil::Contains(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Intersects(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool intersects = false;
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -120,10 +119,10 @@ bool MgGeosUtil::Intersects(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Crosses(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool crosses = false;
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -157,10 +156,10 @@ bool MgGeosUtil::Crosses(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Disjoint(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool disjoint = false;
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -194,11 +193,10 @@ bool MgGeosUtil::Disjoint(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Equals(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool equals = false;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -232,10 +230,10 @@ bool MgGeosUtil::Equals(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Overlaps(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool overlaps = false;
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -269,11 +267,10 @@ bool MgGeosUtil::Overlaps(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Touches(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool touches = false;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -307,11 +304,10 @@ bool MgGeosUtil::Touches(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::Within(MgGeometry* geom1, MgGeometry* geom2)
 {
     bool within = false;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -344,12 +340,11 @@ bool MgGeosUtil::Within(MgGeometry* geom1, MgGeometry* geom2)
 
 MgGeometry* MgGeosUtil::Boundary(MgGeometry* geom1)
 {
-    Ptr<MgGeometry> bndGeom = (MgGeometry*)NULL;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g3 = (Geometry*)NULL;
+    Ptr<MgGeometry> bndGeom;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -386,12 +381,11 @@ MgGeometry* MgGeosUtil::Boundary(MgGeometry* geom1)
 
 MgGeometry* MgGeosUtil::ConvexHull(MgGeometry* geom1)
 {
-    Ptr<MgGeometry> convexHull = (MgGeometry*)NULL;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g3 = (Geometry*)NULL;
+    Ptr<MgGeometry> convexHull;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -428,12 +422,12 @@ MgGeometry* MgGeosUtil::ConvexHull(MgGeometry* geom1)
 
 MgGeometry* MgGeosUtil::Difference(MgGeometry* geom1, MgGeometry* geom2)
 {
-    Ptr<MgGeometry> difference = (MgGeometry*)NULL;
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
-    Geometry* g3 = (Geometry*)NULL;
+    Ptr<MgGeometry> difference;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
+    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -477,10 +471,10 @@ MgGeometry* MgGeosUtil::Difference(MgGeometry* geom1, MgGeometry* geom2)
 double MgGeosUtil::Distance(MgGeometry* geom1, MgGeometry* geom2)
 {
     double distance = 0.0;
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -513,12 +507,12 @@ double MgGeosUtil::Distance(MgGeometry* geom1, MgGeometry* geom2)
 
 MgGeometry* MgGeosUtil::Intersection(MgGeometry* geom1, MgGeometry* geom2)
 {
-    Ptr<MgGeometry> intersection = (MgGeometry*)NULL;
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
-    Geometry* g3 = (Geometry*)NULL;
+    Ptr<MgGeometry> intersection;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
+    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -560,13 +554,12 @@ MgGeometry* MgGeosUtil::Intersection(MgGeometry* geom1, MgGeometry* geom2)
 
 MgGeometry* MgGeosUtil::SymetricDifference(MgGeometry* geom1, MgGeometry* geom2)
 {
-    Ptr<MgGeometry> symetricDifference = (MgGeometry*)NULL;
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
-    Geometry* g3 = (Geometry*)NULL;
+    Ptr<MgGeometry> symetricDifference;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
+    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -608,13 +601,12 @@ MgGeometry* MgGeosUtil::SymetricDifference(MgGeometry* geom1, MgGeometry* geom2)
 
 MgGeometry* MgGeosUtil::Union(MgGeometry* geom1, MgGeometry* geom2)
 {
-    Ptr<MgGeometry> unionGeom = (MgGeometry*)NULL;
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-
-    Geometry* g1 = (Geometry*)NULL;
-    Geometry* g2 = (Geometry*)NULL;
-    Geometry* g3 = (Geometry*)NULL;
+    Ptr<MgGeometry> unionGeom;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Geometry* g2 = NULL;
+    Geometry* g3 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -657,10 +649,9 @@ MgGeometry* MgGeosUtil::Union(MgGeometry* geom1, MgGeometry* geom2)
 bool MgGeosUtil::IsValid(MgGeometricEntity* geom1)
 {
     bool isValid = false;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -687,10 +678,9 @@ bool MgGeosUtil::IsValid(MgGeometricEntity* geom1)
 bool MgGeosUtil::IsSimple(MgGeometricEntity* geom1)
 {
     bool isSimple = false;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -717,10 +707,9 @@ bool MgGeosUtil::IsSimple(MgGeometricEntity* geom1)
 bool MgGeosUtil::IsEmpty(MgGeometricEntity* geom1)
 {
     bool isEmpty = false;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -747,10 +736,9 @@ bool MgGeosUtil::IsEmpty(MgGeometricEntity* geom1)
 bool MgGeosUtil::IsClosed(MgGeometricEntity* geom1)
 {
     bool isClosed = false;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -777,10 +765,9 @@ bool MgGeosUtil::IsClosed(MgGeometricEntity* geom1)
 double MgGeosUtil::Area(MgGeometricEntity* geom1)
 {
     double area = 0.0;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -807,10 +794,9 @@ double MgGeosUtil::Area(MgGeometricEntity* geom1)
 double MgGeosUtil::Length(MgGeometricEntity* geom1)
 {
     double length = 0.0;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -836,12 +822,11 @@ double MgGeosUtil::Length(MgGeometricEntity* geom1)
 
 MgPoint* MgGeosUtil::Centroid(MgGeometricEntity* geom1)
 {
-    Ptr<MgPoint> point = (MgPoint*)NULL;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Point* g2 = (Point*)NULL;
+    Ptr<MgPoint> point;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Point* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -875,12 +860,11 @@ MgPoint* MgGeosUtil::Centroid(MgGeometricEntity* geom1)
 
 MgPoint*  MgGeosUtil::GetPointInRegion(MgGeometry* geom1)
 {
-    Ptr<MgPoint> point = (MgPoint*)NULL;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Point* g2 = (Point*)NULL;
+    Ptr<MgPoint> point;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Point* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 
@@ -914,12 +898,11 @@ MgPoint*  MgGeosUtil::GetPointInRegion(MgGeometry* geom1)
 
 MgPoint*  MgGeosUtil::GetPointInRing(MgGeometryComponent* geom1)
 {
-    Ptr<MgPoint> point = (MgPoint*)NULL;
-
-    PrecisionModel* pm = (PrecisionModel*)NULL;
-    GeometryFactory* gf =(GeometryFactory*)NULL;
-    Geometry* g1 = (Geometry*)NULL;
-    Point* g2 = (Point*)NULL;
+    Ptr<MgPoint> point;
+    PrecisionModel* pm = NULL;
+    GeometryFactory* gf = NULL;
+    Geometry* g1 = NULL;
+    Point* g2 = NULL;
 
     MG_GEOMETRY_TRY()
 

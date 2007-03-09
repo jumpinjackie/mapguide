@@ -116,7 +116,7 @@ void MgGeometryUtil::WriteLinearRing(MgStream* stream, MgLinearRing* ring)
 //
 MgCurveSegment* MgGeometryUtil::ReadCurveSegment(MgStream* stream, MgCoordinate* startCoord, INT32 dimension)
 {
-    Ptr<MgCurveSegment> curveSeg = (MgCurveSegment*)NULL;
+    Ptr<MgCurveSegment> curveSeg;
 
     INT32 type;
     ((MgStreamReader*)stream)->GetInt32(type);

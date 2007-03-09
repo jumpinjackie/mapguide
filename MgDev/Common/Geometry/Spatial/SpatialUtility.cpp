@@ -324,9 +324,7 @@ double MgSpatialUtility::DistanceBetweenPositionsXYZ(
     bool zIsNan = ( MgMathUtility::IsNan(z1) || MgMathUtility::IsNan(z2) );
     double dz = ( zIsNan ? 0.0 : z2 - z1 );
 
-    double distance = sqrt (dx*dx + dy*dy + dz*dz);
-
-    return distance;
+    return sqrt(dx*dx + dy*dy + dz*dz);
 }
 
 
@@ -483,7 +481,7 @@ MgGeometryComponent* MgSpatialUtility::TesselateGeometryComponent(MgGeometryComp
 {
     CHECKNULL(curve, L"MgSpatialUtility.TesselateCurve")
 
-    Ptr<MgGeometryComponent> retGeomComp = (MgGeometryComponent*)NULL;
+    Ptr<MgGeometryComponent> retGeomComp;
     Ptr<MgEnvelope> env = curve->Envelope();
     double maxdim = max(env->GetWidth(), env->GetHeight());
 
@@ -514,5 +512,5 @@ MgGeometryComponent* MgSpatialUtility::TesselateGeometryComponent(MgGeometryComp
         }
     }
 
-    return SAFE_ADDREF((MgGeometryComponent*)retGeomComp);
+    return retGeomComp.Detach();
 }
