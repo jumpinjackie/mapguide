@@ -139,6 +139,7 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// Add a single selection to the set where the identity property is a 16-bit integer.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -155,6 +156,7 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// Add a single selection to the set where the identity property is a 32-bit integer.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -171,6 +173,7 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// Add a single selection to the set where the identity property is a 64-bit integer.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -187,6 +190,7 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// Add a single selection to the set where the identity property is a string.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -342,8 +346,6 @@ PUBLISHED_API:
     /// is the name that was specified when \link MgMapBase::Create Create \endlink
     /// was called to create the map object.
     ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual void Open(MgResourceService resourceService, string mapName);
@@ -357,8 +359,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns nothing.
-    ///
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual void Open(MgResourceService* resourceService, CREFSTRING mapName);
 
@@ -374,8 +374,6 @@ PUBLISHED_API:
     /// is the name that was specified when \link MgMapBase::Create Create \endlink
     /// was called to create the map object.
     ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual void Save(MgResourceService resourceService, string mapName);
@@ -389,8 +387,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns nothing.
-    ///
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual void Save(MgResourceService* resourceService, CREFSTRING mapName);
 
