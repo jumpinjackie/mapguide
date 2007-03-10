@@ -19,6 +19,7 @@
 #define FeatureInfoRenderer_H
 
 #include "Renderer.h"
+#include "SE_Renderer.h"
 
 class MgFeatureReader;
 class MgPropertyCollection;
@@ -29,8 +30,8 @@ class RSMgFeatureReader;
 //A simple Renderer implementation for use by the QueryFeatures
 //RenderingService API. Accumulates feature IDs and also attributes
 //for one feature (case where a tooltip or attribute info needs to
-//bedisplayed in the html viewer)
-class MG_SERVER_RENDERING_API FeatureInfoRenderer : public Renderer
+//be displayed in the AJAX viewer)
+class MG_SERVER_RENDERING_API FeatureInfoRenderer : public Renderer, public SE_Renderer
 {
 public:
     FeatureInfoRenderer(MgSelection* selection,
@@ -148,6 +149,69 @@ public:
     {
         return false;
     }
+
+    ///////////////////////////////////
+    // SE_Renderer implementation
+
+    virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
+    {}
+
+    virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
+    {}
+
+    virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style)
+    {}
+
+    virtual void DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& xform, double anglerad)
+    {}
+
+    virtual void DrawScreenPolyline(LineBuffer* polyline, unsigned int color, double weight)
+    {}
+
+    virtual void DrawScreenPolygon(LineBuffer* polygon, unsigned int fill)
+    {}
+
+    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
+        double x, double y, double w, double h, double angledeg)
+    {}
+
+    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position)
+    {}
+
+    virtual void GetWorldToScreenTransform(SE_Matrix& xform)
+    {}
+
+    virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
+    {}
+
+    virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
+    {}
+
+    virtual double GetPixelsPerMillimeterScreen()
+    {
+        return 0.0;
+    }
+
+    virtual double GetPixelsPerMillimeterWorld()
+    {
+        return 0.0;
+    }
+
+    virtual RS_FontEngine* GetFontEngine()
+    {
+        return NULL;
+    }
+
+    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
+                                   int              nlabels,
+                                   RS_OverpostType  type,
+                                   bool             exclude,
+                                   LineBuffer*     path = NULL)
+    {}
+
+    virtual void AddExclusionRegion(RS_F_Point* fpts, int npts)
+    {}
+
 
     ///////////////////////////////////////////////////////////////////////
     // FeatureInfoRenderer functions
