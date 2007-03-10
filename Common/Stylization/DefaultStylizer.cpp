@@ -119,23 +119,29 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     // find the FeatureTypeStyle
     MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
 
-    //extract hyperlink and tooltip info
-    //this is invariant, so do outside of feature iterator loop
-    const MdfModel::MdfString* lr_tooltip = &fl->GetToolTip();
-    const MdfModel::MdfString* lr_url = &fl->GetUrl();
-
-    if (lr_tooltip->empty()) lr_tooltip = NULL;
-    if (lr_url->empty()) lr_url = NULL;
-
     //TODO: //HACK: temporary code to detect whether we are using a new style
     //composite symbolizations
     bool use_style_engine = false;
     SE_Renderer* se_renderer = NULL;
-
     if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(ftsc->GetAt(0)) == FeatureTypeStyleVisitor::ftsComposite)
     {
         use_style_engine = true;
         se_renderer = dynamic_cast<SE_Renderer*>(m_renderer);
+    }
+
+    //extract hyperlink and tooltip info
+    //this is invariant, so do outside of feature iterator loop
+    const MdfModel::MdfString& mdfTip = fl->GetToolTip();
+    const MdfModel::MdfString& mdfUrl = fl->GetUrl();
+    const MdfModel::MdfString* lrTip = mdfTip.empty()? NULL : &mdfTip;
+    const MdfModel::MdfString* lrUrl = mdfUrl.empty()? NULL : &mdfUrl;
+
+    SE_String seTip;
+    SE_String seUrl;
+    if (use_style_engine)
+    {
+        m_styleEngine->ParseStringExpression(mdfTip, seTip);
+        m_styleEngine->ParseStringExpression(mdfUrl, seUrl);
     }
 
     //TODO:
@@ -201,7 +207,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
             {
                 //we are hoping that the renderer is nice enough to be an SE_Renderer
                 if (se_renderer)
-                    m_styleEngine->Stylize(se_renderer, features, exec, lb, (CompositeTypeStyle*)fts);
+                    m_styleEngine->Stylize(se_renderer, features, exec, lb, (CompositeTypeStyle*)fts, &seTip, &seUrl, NULL);
             }
             else
             {
@@ -238,7 +244,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
                             MdfModel::LengthConverter::UnitToMeters(modelElevSettings->GetUnit(), 1.0),
                             elevType);
                     }
-                    adapter->Stylize(m_renderer, features, exec, lb, fts, lr_tooltip, lr_url, elevSettings);
+                    adapter->Stylize(m_renderer, features, exec, lb, fts, lrTip, lrUrl, elevSettings);
                     
                     delete elevSettings;
                     elevSettings = NULL;

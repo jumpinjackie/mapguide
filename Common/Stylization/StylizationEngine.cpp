@@ -26,6 +26,8 @@
 #include "SE_PositioningAlgorithms.h"
 #include "RS_FontEngine.h"
 
+#include "Renderer.h"
+
 #include <algorithm>
 #include <functional>
 
@@ -33,7 +35,10 @@ using namespace MDFMODEL_NAMESPACE;
 
 
 StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
-    m_resources(resources)
+    m_resources(resources),
+    m_renderer(NULL),
+    m_exec(NULL),
+    m_reader(NULL)
 {
     m_pool = new SE_LineBufferPool;
     m_visitor = new SE_StyleVisitor(resources, m_pool);
@@ -50,19 +55,24 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
                                  RS_FeatureReader* feature,
                                  RS_FilterExecutor* executor,
                                  LineBuffer* geometry,
-                                 CompositeTypeStyle* style )
+                                 CompositeTypeStyle* style,
+                                 SE_String* seTip,
+                                 SE_String* seUrl,
+                                 RS_ElevationSettings* /*elevSettings*/)
 {
-    if (m_renderer == NULL || m_reader == NULL || m_exec == NULL)
+    if (renderer == NULL || feature == NULL || executor == NULL)
         return;
 
     m_renderer = renderer;
     m_reader = feature;
     m_exec = executor;
 
-    m_renderer->GetWorldToScreenTransform(m_w2s);
-    m_mm2pxs = m_renderer->GetPixelsPerMillimeterScreen();
-    m_mm2pxw = m_renderer->GetPixelsPerMillimeterWorld();
+    SE_Matrix w2s;
+    m_renderer->GetWorldToScreenTransform(w2s);
     m_renderer->SetLineBufferPool(m_pool);
+
+    double mm2pxs = m_renderer->GetPixelsPerMillimeterScreen();
+    double mm2pxw = m_renderer->GetPixelsPerMillimeterWorld();
 
     SE_Rule*& rules = m_rules[style];
     RuleCollection* rulecoll = style->GetRules();
@@ -78,7 +88,6 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
             CompositeRule* r = (CompositeRule*)rulecoll->GetAt(i);
             const MdfString& filterstr = r->GetFilter();
             rulecache[i].filter = NULL;
-            
             if (!filterstr.empty())
             {
                 try
@@ -91,15 +100,17 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
                 }
             }
 
+            rulecache[i].legendLabel= r->GetLegendLabel();
+
             m_visitor->Convert(rulecache[i].symbolization, r->GetSymbolization());
         }
     }
 
-    std::vector<SE_Symbolization*>* symbolization = NULL;
+    SE_Rule* rule = NULL;
 
     for (int i = 0; i < nRules; i++)
     {
-        bool match = rules[i].filter == NULL;
+        bool match = (rules[i].filter == NULL);
         
         if (!match)
         {
@@ -109,26 +120,42 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
 
         if (match)
         {
-            symbolization = &rules[i].symbolization;
+            rule = &rules[i];
             break;
         }
     }
 
-    if (symbolization == NULL)
+    if (rule == NULL)
         return;
 
-    /* TODO: Obey the indices--Get rid of the indices alltogther--single pass! */
+    std::vector<SE_Symbolization*>* symbolization = &rule->symbolization;
+
+    // TODO: eliminate the need to do dynamic casts on these renderers.  We should
+    //       probably ultimately have just one renderer interface class...
+    Renderer* baseRenderer = dynamic_cast<Renderer*>(m_renderer);
+    if (baseRenderer != NULL)
+    {
+        const wchar_t* strTip = seTip->evaluate(m_exec);
+        const wchar_t* strUrl = seUrl->evaluate(m_exec);
+        RS_String rs_tip = strTip? strTip : L"";
+        RS_String rs_url = strUrl? strUrl : L"";
+        RS_String& rs_thm = rule->legendLabel;
+
+        baseRenderer->StartFeature(feature, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
+    }
+
+    /* TODO: Obey the indices--Get rid of the indices altogther--single pass! */
     
     SE_LineBuffer* xformGeom = m_pool->NewLineBuffer(geometry->point_count());
     xformGeom->compute_bounds() = false;
         
-    xformGeom->Transform(geometry, m_w2s);
+    xformGeom->Transform(geometry, w2s);
 
     for (std::vector<SE_Symbolization*>::const_iterator iter = symbolization->begin(); iter != symbolization->end(); iter++)
     {
         SE_Symbolization* sym = *iter;
 
-        double mm2px = (sym->context == MappingUnits ? m_mm2pxw : m_mm2pxs);
+        double mm2px = (sym->context == MappingUnits ? mm2pxw : mm2pxs);
         SE_Matrix xform;
         xform.setTransform( sym->scale[0].evaluate(m_exec), 
                             sym->scale[1].evaluate(m_exec),
@@ -576,4 +603,10 @@ void StylizationEngine::ClearCache()
     }
 
     m_rules.clear();
+}
+
+//parses a string expression
+void StylizationEngine::ParseStringExpression(const MdfString& mdf_string, SE_String& se_string)
+{
+    m_visitor->ParseStringExpression(mdf_string, se_string);
 }

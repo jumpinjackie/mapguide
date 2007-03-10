@@ -27,11 +27,11 @@ class SE_Renderer
 public:
     void SetLineBufferPool(SE_LineBufferPool* pool);
     /* SE_RenderSymbol, under associated xform, is in screen space, and geometry is in screen space */
-    virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style);
-    virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
-    virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style);
+    STYLIZATION_API virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style);
+    STYLIZATION_API virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
+    STYLIZATION_API virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style);
 
-    virtual void DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& xform, double anglerad);
+    STYLIZATION_API virtual void DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& xform, double anglerad);
 
     virtual void DrawScreenPolyline(LineBuffer* polyline, unsigned int color, double weight) = 0; // px
     virtual void DrawScreenPolygon(LineBuffer* polygon, unsigned int fill) = 0;

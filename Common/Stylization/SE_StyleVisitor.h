@@ -39,7 +39,7 @@ namespace MDFMODEL_NAMESPACE
     class CompoundSymbolDefinition;
 }
 
-class SE_StyleVisitor : public MdfModel::IGraphicElementVisitor, public MdfModel::ISymbolDefinitionVisitor, private SE_ExpressionBase
+class SE_StyleVisitor : public MdfModel::IGraphicElementVisitor, public MdfModel::ISymbolDefinitionVisitor, public SE_ExpressionBase
 {
 public:
     SE_StyleVisitor(SE_SymbolManager* resources, SE_LineBufferPool* lbp);
@@ -53,9 +53,9 @@ public:
     virtual void VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefinition& simpleSymbol);
     virtual void VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefinition& compoundSymbol);
 
-    void ProcessPointUsage(MdfModel::PointUsage& pointUsage);
-    void ProcessLineUsage(MdfModel::LineUsage& lineUsage);
-    void ProcessAreaUsage(MdfModel::AreaUsage& areaUsage);
+    SE_PointStyle* ProcessPointUsage(MdfModel::PointUsage& pointUsage);
+    SE_LineStyle* ProcessLineUsage(MdfModel::LineUsage& lineUsage);
+    SE_AreaStyle* ProcessAreaUsage(MdfModel::AreaUsage& areaUsage);
 
     void Convert(std::vector<SE_Symbolization*>& styles, MdfModel::CompositeSymbolization* symbolization);
 private:
