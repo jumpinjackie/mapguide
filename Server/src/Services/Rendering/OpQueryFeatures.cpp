@@ -97,7 +97,7 @@ void MgOpQueryFeatures::Execute()
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_CATCH(L"MgOpGeneratePlot.Execute")
+    MG_CATCH(L"MgOpQueryFeatures.Execute")
 
     if (mgException != NULL)
     {
