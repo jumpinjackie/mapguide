@@ -29,6 +29,7 @@ class SE_LineBufferPool;
 class SE_Renderer;
 class SE_StyleVisitor;
 class LineBuffer;
+class RS_ElevationSettings;
 
 namespace MDFMODEL_NAMESPACE
 {
@@ -44,15 +45,20 @@ public:
     /* TODO: don't leak basically everything */
     ~StylizationEngine();
     /* TODO: add stylize layer to this class, and reset functionality to RS_FeatureReader API & implementations
-     * Stylizize one CompoundSymbol feature and label per run; investigate caching possiblities to avoid
+     * Stylize one CompoundSymbol feature and label per run; investigate caching possiblities to avoid
      * filter execution on subsequent passes */
     void Stylize(SE_Renderer* renderer,
                  RS_FeatureReader* feature,
                  RS_FilterExecutor* executor,
                  LineBuffer* geometry,
-                 CompositeTypeStyle* style);
+                 CompositeTypeStyle* style,
+                 SE_String* seTip,
+                 SE_String* seUrl,
+                 RS_ElevationSettings* elevSettings);
 
     void ClearCache();
+
+    void ParseStringExpression(const MdfString& mdf_string, SE_String& se_string);
 
 private:
     SE_RenderPointStyle* EvaluatePointStyle(SE_LineBuffer* geometry, SE_Matrix& xform, SE_PointStyle* style, double mm2px);
@@ -61,12 +67,11 @@ private:
 
     void LayoutCustomLabel(const std::wstring& positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px);
     void EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_RenderStyle* renderStyle, double mm2px);
+
+private:
     SE_Renderer* m_renderer;
     RS_FilterExecutor* m_exec;
     RS_FeatureReader* m_reader;
-    SE_Matrix m_w2s;
-    double m_mm2pxs;
-    double m_mm2pxw;
     SE_SymbolManager* m_resources;
     SE_LineBufferPool* m_pool;
     SE_StyleVisitor* m_visitor;

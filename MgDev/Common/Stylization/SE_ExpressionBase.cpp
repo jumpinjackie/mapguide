@@ -193,7 +193,7 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
     if (exprstr.empty())
     {
         val.expression = NULL;
-        val.value = L"";
+        val = L"";
     }
     else
     {

@@ -50,22 +50,23 @@ SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_LineBufferPool*
     m_resources = resources;
     m_lbp = lbp;
     m_primitive = NULL;
+    m_symbolization = NULL;
+    m_style = NULL;
 }
 
-void SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
+SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 {
     SE_PointStyle* style = new SE_PointStyle();
-    m_style = style;
     ParseDoubleExpression(pointUsage.GetAngle(), style->angle);
     ParseDoubleExpression(pointUsage.GetOriginOffsetX(), style->offset[0]);
     ParseDoubleExpression(pointUsage.GetOriginOffsetY(), style->offset[1]);
     ParseStringExpression(pointUsage.GetAngleControl(), style->orientation);
+    return style;
 }
 
-void SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
+SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
 {
     SE_LineStyle* style = new SE_LineStyle();
-    m_style = style;
     ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset);
     ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset);
     ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat);
@@ -75,12 +76,12 @@ void SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
     ParseStringExpression(lineUsage.GetAngleControl(), style->orientation);
     ParseStringExpression(lineUsage.GetVertexControl(), style->overlap);
     //ParseStringExpression(lineUsage.GetLineJoin(), style->join);
+    return style;
 }
 
-void SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
+SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
 {
     SE_AreaStyle* style = new SE_AreaStyle();
-    m_style = style;
     ParseDoubleExpression(areaUsage.GetAngle(), style->angle);
     ParseDoubleExpression(areaUsage.GetOriginX(), style->origin[0]);
     ParseDoubleExpression(areaUsage.GetOriginY(), style->origin[1]);
@@ -90,6 +91,7 @@ void SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
     ParseStringExpression(areaUsage.GetAngleControl(), style->orientation);
     ParseStringExpression(areaUsage.GetClippingControl(), style->clipping);
     ParseStringExpression(areaUsage.GetOriginControl(), style->origincontrol);
+    return style;
 }
 
 bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
@@ -118,7 +120,7 @@ bool SE_StyleVisitor::ParseGeometry(const MdfString& geometry, SE_LineBuffer& bu
     double sx, sy, rx, ry, rot, large, cw;
 
     SE_LineBuffer* lb = &buffer;
-    
+
     wchar_t tag, ptag = 0;
 
     for (;data < end; )
@@ -128,7 +130,7 @@ bool SE_StyleVisitor::ParseGeometry(const MdfString& geometry, SE_LineBuffer& bu
             data++;
             continue;
         }
-        
+
         tag = *data++;
 
 TagSwitch:
@@ -194,7 +196,7 @@ TagSwitch:
                 return false;
             if (!ParseDoublePair(data, x, y))
                 return false;
-            
+
             sx = lx;
             sy = ly;
 
@@ -208,7 +210,7 @@ TagSwitch:
                 lx = x;
                 ly = y;
             }
-    
+
             if (rx == 0 || ry == 0)
             {
                 lb->LineTo(lx, ly);
@@ -241,7 +243,7 @@ TagSwitch:
         }
         ptag = tag;
     }
-    
+
     return true;
 }
 
@@ -298,7 +300,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     {
         //x0 equal to x1 -- vertical chord
         cx0 = x0;
-        cx1 = x1;        
+        cx1 = x1;
     }
     else
     {
@@ -326,8 +328,8 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
         eAng += 2*M_PI;
 
     /* TODO: scale radii until properly specified instead of failing */
-    if (!_finite(cx0) || _isnan(cx0) || 
-        !_finite(cx1) || _isnan(cx1) || 
+    if (!_finite(cx0) || _isnan(cx0) ||
+        !_finite(cx1) || _isnan(cx1) ||
         !_finite(cy0) || _isnan(cy0) ||
         !_finite(cy1) || _isnan(cy1))
         return false;
@@ -393,7 +395,7 @@ void SE_StyleVisitor::VisitPath(Path& path)
          * so we will change it to black. */
         if (line->color.argb() == 0)
             line->color.a = 255;
-        line->cacheable = !(line->weight.expression || 
+        line->cacheable = !(line->weight.expression ||
                             line->color.expression);
     }
     else
@@ -405,8 +407,8 @@ void SE_StyleVisitor::VisitPath(Path& path)
         ParseDoubleExpression(path.GetLineWeight(), polygon->weight);
         polygon->fill = color;
         ParseColorExpression(path.GetLineColor(), polygon->color);
-        polygon->cacheable = !(polygon->weight.expression || 
-                            polygon->color.expression || 
+        polygon->cacheable = !(polygon->weight.expression ||
+                            polygon->color.expression ||
                             polygon->fill.expression);
     }
 }
@@ -415,7 +417,7 @@ void SE_StyleVisitor::VisitImage(Image& image)
 {
     SE_Raster* primitive = new SE_Raster();
     m_primitive = primitive;
-    
+
     if (image.GetContent().size())
     {
         /* Handle this; Base64 as MdfString is not a particularly inspired plan */
@@ -423,13 +425,13 @@ void SE_StyleVisitor::VisitImage(Image& image)
     }
     else
     {
-        //TODO: Disallow expressions for now since 
+        //TODO: Disallow expressions for now since
         //ParseStringExpression(image.GetReference(), primitive->pngPath);
         primitive->pngPath.value = image.GetReference().c_str();
         primitive->pngPath.expression = NULL;
 
         if (primitive->pngPath.expression == NULL) // constant path
-            primitive->pngPtr = m_resources->GetImageData(image.GetReference().c_str(), primitive->pngSize);
+            primitive->pngPtr = m_resources? m_resources->GetImageData(image.GetReference().c_str(), primitive->pngSize) : NULL;
         else
             primitive->pngPtr = NULL;
     }
@@ -487,8 +489,6 @@ void SE_StyleVisitor::VisitText(Text& text)
 
 void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefinition& simpleSymbol)
 {
-    m_style = NULL;
-
     SetDefaultValues(&simpleSymbol);
 
     // TODO - We need a hint that says what feature geometry type we're
@@ -498,13 +498,16 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
     LineUsage* lineUsage = simpleSymbol.GetLineUsage();
     AreaUsage* areaUsage = simpleSymbol.GetAreaUsage();
 
+    m_style = NULL;
     if (pointUsage != NULL)
-        this->ProcessPointUsage(*pointUsage);
+        m_style = this->ProcessPointUsage(*pointUsage);
     else if (lineUsage != NULL)
-        this->ProcessLineUsage(*lineUsage);
+        m_style = this->ProcessLineUsage(*lineUsage);
     else if (areaUsage != NULL)
-        this->ProcessAreaUsage(*areaUsage);
-    else
+        m_style = this->ProcessAreaUsage(*areaUsage);
+
+    // must have a style in order to render something
+    if (m_style == NULL)
         return;
 
     GraphicElementCollection* graphics = simpleSymbol.GetGraphics();
@@ -514,7 +517,7 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
     {
         GraphicElement* elem = graphics->GetAt(i);
         elem->AcceptVisitor(*this);
-        
+
         if (m_primitive)
         {
             m_primitive->resize = elem->GetResizeControl();
@@ -546,15 +549,17 @@ void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefi
     {
         SimpleSymbol* sym = symbols->GetAt(i);
         SimpleSymbolDefinition* def = sym->GetSymbolDefinition();
-        const MdfString& ref = sym->GetSymbolReference();
-
         if (def == NULL)
         {
-            def = dynamic_cast<SimpleSymbolDefinition*>(m_resources->GetSymbolDefinition(ref.c_str()));        
+            if (m_resources == NULL)
+                return;
+
+            const MdfString& ref = sym->GetSymbolReference();
+            def = dynamic_cast<SimpleSymbolDefinition*>(m_resources->GetSymbolDefinition(ref.c_str()));
             if (def == NULL)
                 return;
         }
-        
+
         VisitSimpleSymbolDefinition(*def);
 
         if (m_style)
@@ -575,21 +580,21 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
     for (int i = 0; i < nSymbols; i++)
     {
         SymbolInstance* instance = symbols->GetAt(i);
-        SymbolDefinition* sd = m_resources->GetSymbolDefinition(instance->GetSymbolReference().c_str());
+        SymbolDefinition* sd = m_resources? m_resources->GetSymbolDefinition(instance->GetSymbolReference().c_str()) : NULL;
         if (sd == NULL)
             continue;
 
         m_symbolization = new SE_Symbolization;
 
         m_symbolization->context = instance->GetSizeContext();
-        
+
         ParseBooleanExpression(instance->GetDrawLast(), m_symbolization->drawLast);
         ParseBooleanExpression(instance->GetAddToExclusionRegion(), m_symbolization->addToExclusionRegions);
         ParseBooleanExpression(instance->GetCheckExclusionRegion(), m_symbolization->checkExclusionRegions);
 
         if (!instance->GetPositioningAlgorithm().empty())
             m_symbolization->positioningAlgorithm = instance->GetPositioningAlgorithm();
-        
+
         ParseDoubleExpression(instance->GetScaleX(), m_symbolization->scale[0]);
         ParseDoubleExpression(instance->GetScaleY(), m_symbolization->scale[1]);
         ParseDoubleExpression(instance->GetInsertionOffsetX(), m_symbolization->absOffset[0]);

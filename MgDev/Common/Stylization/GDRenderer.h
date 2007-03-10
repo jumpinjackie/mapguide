@@ -172,6 +172,12 @@ public:
                                    bool             exclude,
                                    LineBuffer*      path = NULL);
 
+    virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
+
+    ////////////////////////////////////////////////
+    // RS_FontEngine
+    //
+
     virtual void DrawString(const RS_String& s,
                     int              x,
                     int              y,
@@ -186,8 +192,6 @@ public:
                        double           angle,
                        RS_F_Point*      res,
                        float*           offsets);
-
-    virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
 private:
     double _MeterToMapSize(RS_Units unit, double number);

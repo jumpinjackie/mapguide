@@ -191,8 +191,20 @@ struct SE_String
     const wchar_t* value;
     FdoExpression* expression;
 
-    SE_INLINE SE_String() : expression(NULL), value(NULL) { }
-    SE_INLINE SE_String(const wchar_t* s) : value(s), expression(NULL) { }
+    SE_INLINE SE_String() : expression(NULL), value(NULL)
+    {}
+    SE_INLINE SE_String(const wchar_t* s) : expression(NULL)
+    {
+        if (s)
+        {
+            size_t len = wcslen(s) + 1;
+            wchar_t* copy = new wchar_t[len];
+            value = wcscpy(copy, s);
+        }
+        else
+            value = NULL;
+    }
+
     ~SE_String() 
     {
         if (value)
@@ -237,7 +249,20 @@ struct SE_String
         return value;
     }
 
-    SE_INLINE void operator=(const wchar_t* s) { value = s; }
+    SE_INLINE void operator=(const wchar_t* s)
+    {
+        if (value)
+            delete[] value;
+
+        if (s)
+        {
+            size_t len = wcslen(s) + 1;
+            wchar_t* copy = new wchar_t[len];
+            value = wcscpy(copy, s);
+        }
+        else
+            value = NULL;
+    }
 };
 
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -542,6 +567,7 @@ struct SE_Symbolization
 struct SE_Rule
 {
     std::vector<SE_Symbolization*> symbolization;
+    RS_String legendLabel;  // no expressions on this guy
     FdoFilter* filter;
     
     ~SE_Rule()
