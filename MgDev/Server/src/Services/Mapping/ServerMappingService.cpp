@@ -422,8 +422,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
 
-    DefaultStylizer ds;
-    ds.Initialize(&dr);
+    DefaultStylizer ds(NULL);
 
     RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor);
 
@@ -955,8 +954,6 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
             b.maxy = ur2->GetY();
         }
 
-        DefaultStylizer ds;
-
         // Create a simple print layout containing only the map
         Ptr<MgPrintLayout> printLayout = new MgPrintLayout();
         if (printLayout == NULL)
@@ -992,7 +989,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         RSMgSymbolManager mgr(m_svcResource);
         dr.SetSymbolManager(&mgr);
 
-        ds.Initialize(&dr);
+        DefaultStylizer ds(NULL);
 
         //get the map coordinate system
         MdfModel::MdfString srs = map->GetMapSRS();
@@ -1298,14 +1295,10 @@ MgByteReader* MgServerMappingService::GenerateLegendPlot(
     // get a temporary file to write out EPlot DWF to
     STRING dwfName = MgFileUtil::GenerateTempFileName(false, L"legendplot");
 
-    DefaultStylizer ds;
-
     EPlotRenderer dr(dwfName, plotSpec->GetPaperWidth(), plotSpec->GetPaperHeight(), plotSpec->GetPageSizeUnits());
 
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
-
-    ds.Initialize(&dr);
 
     //get the map coordinate system
     MdfModel::MdfString srs = map->GetMapSRS();

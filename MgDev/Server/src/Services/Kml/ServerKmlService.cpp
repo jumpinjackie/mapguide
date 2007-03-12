@@ -443,9 +443,6 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
     MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDef);
     if(vl != NULL)
     {
-        KmlRenderer renderer(&kmlContent, bounds, scale, dpi, metersPerUnit, drawOrder);
-        DefaultStylizer stylizer;
-        stylizer.Initialize(&renderer);
         if(m_svcFeature == NULL)
         {
             InitializeFeatureService();
@@ -470,11 +467,14 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
                 MdfModel::NameStringPair* m = pmappings->GetAt(j);
                 fcInfo.add_mapping(m->GetName(), m->GetValue());
             }
+
+            KmlRenderer renderer(&kmlContent, bounds, scale, dpi, metersPerUnit, drawOrder);
+            DefaultStylizer stylizer(NULL);
             renderer.StartLayer(&layerInfo, &fcInfo);
-            stylizer.StylizeFeatures(vl, rdr, csTrans, NULL, NULL);
+            stylizer.StylizeVectorLayer(vl, &renderer, rdr, csTrans, NULL, NULL);
             renderer.EndLayer();
+            delete rdr;
         }
-        delete rdr;
     }
 
     /*else if(dl != NULL)
@@ -508,14 +508,12 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
 
             RSMgInputStream is(reader);
 
-            stylizer.StylizeDrawingLayer( dl, &layerInfo, &is, dl->GetLayerFilter(), csTrans);
+            stylizer.StylizeDrawingLayer(dl, &renderer, &layerInfo, &is, dl->GetLayerFilter(), csTrans);
         }
     }*/
+
     if(csTrans != NULL)
-    {
         delete csTrans;
-        csTrans = NULL;
-    }
 }
 
 double MgServerKmlService::GetScale(MgEnvelope* llExtents, int width, int height, double dpi)
