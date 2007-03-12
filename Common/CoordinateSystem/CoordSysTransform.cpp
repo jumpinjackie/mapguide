@@ -684,18 +684,18 @@ CEnvelope* CCoordinateSystemTransform::XYExtentToLL(OGRCoordinateTransformation*
 
     for (int i = 0; i < 100; i++)
     {
-        xInterp += xInc;
         *dstx++ = xInterp;
         *dsty++ = ptNWY;
+        xInterp += xInc;
     }
 
     xInterp = ptSEX;
 
     for (int i = 0; i < 100; i++)
     {
-        xInterp += xInc;
         *dstx++ = xInterp;
         *dsty++ = ptSEY;
+        xInterp += xInc;
     }
 
     // left and right borders
@@ -705,18 +705,18 @@ CEnvelope* CCoordinateSystemTransform::XYExtentToLL(OGRCoordinateTransformation*
 
     for (int i = 0; i < 100; i++)
     {
-        yInterp += yInc;
         *dstx++ = ptNWX;
         *dsty++ = yInterp;
+        yInterp += yInc;
     }
 
     yInterp = ptSEY;
 
     for (int i = 0; i < 100; i++)
     {
-        yInterp += yInc;
         *dstx++ = ptSEX;
         *dsty++ = yInterp;
+        yInterp += yInc;
     }
 
     transform->Transform(400, tess_x, tess_y);
@@ -878,20 +878,6 @@ CEnvelope* CCoordinateSystemTransform::LLExtentToXY(OGRCoordinateTransformation*
     return pEnvelope;
 }
 
-void CCoordinateSystemTransform::XYToLL(OGRCoordinateTransformation* transform, double dX, double dY, double& dLon, double& dLat)
-{
-    if(NULL == transform)
-    {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.XYToLL", __LINE__, __WFILE__, L"[1] - OGRCoordinateTransformation pointer.");
-    }
-
-    double xy[3] = { dX, dY, 0.0 };
-
-    transform->Transform(1, &xy[0], &xy[1], &xy[2]);
-
-    dLon = xy[0];
-    dLat = xy[1];
-}
 
 void CCoordinateSystemTransform::LLToXY(OGRCoordinateTransformation* transform, double dLon, double dLat, double& dX, double& dY)
 {

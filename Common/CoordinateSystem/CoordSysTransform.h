@@ -230,7 +230,6 @@ private:
     CEnvelope* XYExtentToLL(OGRCoordinateTransformation* transform, CEnvelope* envelope);
     CEnvelope* LLExtentToXY(OGRCoordinateTransformation* transform, CEnvelope* envelope);
 
-    void XYToLL(OGRCoordinateTransformation* transform, double dX, double dY, double& dLon, double& dLat);
     void LLToXY(OGRCoordinateTransformation* transform, double dLon, double dLat, double& dX, double& dY);
 
     CCoordinateSystem* m_coordSysSource;
