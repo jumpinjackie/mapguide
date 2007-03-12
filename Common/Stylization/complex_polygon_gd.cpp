@@ -349,8 +349,7 @@ void complex_polygon_gd::ScanOutAET(int YToScan, int Color, gdImagePtr target) {
     while (CurrentEdge != NULL) {
         LeftX = CurrentEdge->X;
         CurrentEdge = CurrentEdge->NextEdge;
-        if (LeftX < CurrentEdge->X)
-            DrawHorizontalLineSeg(YToScan, LeftX, CurrentEdge->X-1, Color, target);
+        DrawHorizontalLineSeg(YToScan, LeftX, CurrentEdge->X-1, Color, target);
         CurrentEdge = CurrentEdge->NextEdge;
     }
 }

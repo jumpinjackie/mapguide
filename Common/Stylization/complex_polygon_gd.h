@@ -21,7 +21,10 @@ private:
     //for all the rest of the code to work with it
     inline void DrawHorizontalLineSeg(int Y, int StartX, int EndX, int Color, gdImagePtr target)
     {
-        gdImageLine(target, StartX, Y, EndX, Y, Color);
+        if (StartX <= EndX)
+            gdImageLine(target, StartX, Y, EndX, Y, Color);
+        //else //this condition fixes a case when EndX is to the left of StartX and we draw one pixel more than we should
+        //    gdImageLine(target, StartX, Y, StartX, Y, Color);
     }
 
     void BuildGET(Point *, int* Contours, int nContours, EdgeState *, int MaxY);

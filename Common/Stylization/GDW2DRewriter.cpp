@@ -174,8 +174,6 @@ WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
             color = override;
     }
 
-    int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
-
     //transform point and draw the contour set
     int numcntrs = contourSet.contours();
     WT_Integer32* cntrcounts = contourSet.counts();
@@ -186,10 +184,25 @@ WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
 
     if (dst_cntr)
     {
-        rs_gdImageMultiPolygon((gdImagePtr)rewriter->GetW2DTargetImage(),
-                    (int*)cntrcounts, numcntrs,
-                    (gdPointPtr)(dst_cntr), totalPts,
-                    gdc);
+        //we will call the new screen space polygon API.
+        //Unfortunately we need to convert the raw contour data into a LineBuffer.
+        //This code path is rarely called, so performance should not be a problem.
+        LineBuffer lb(totalPts);
+
+        for (int j=0; j<numcntrs; j++)
+        {
+            for (int i=0; i<cntrcounts[j]; i++)
+            {
+                if (i)
+                    lb.LineTo(dst_cntr->x, dst_cntr->y);
+                else
+                    lb.MoveTo(dst_cntr->x, dst_cntr->y);
+
+                dst_cntr++;
+            }
+        }
+
+        rewriter->DrawScreenPolygon(&lb, color.argb());
     }
 
     return WT_Result::Success;
