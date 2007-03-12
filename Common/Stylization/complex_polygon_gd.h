@@ -23,8 +23,6 @@ private:
     {
         if (StartX <= EndX)
             gdImageLine(target, StartX, Y, EndX, Y, Color);
-        //else //this condition fixes a case when EndX is to the left of StartX and we draw one pixel more than we should
-        //    gdImageLine(target, StartX, Y, StartX, Y, Color);
     }
 
     void BuildGET(Point *, int* Contours, int nContours, EdgeState *, int MaxY);
