@@ -25,6 +25,9 @@ class RS_FontEngine;
 class SE_Renderer
 {
 public:
+    STYLIZATION_API SE_Renderer();
+    STYLIZATION_API ~SE_Renderer();
+
     void SetLineBufferPool(SE_LineBufferPool* pool);
     /* SE_RenderSymbol, under associated xform, is in screen space, and geometry is in screen space */
     STYLIZATION_API virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style);
@@ -35,7 +38,7 @@ public:
 
     virtual void DrawScreenPolyline(LineBuffer* polyline, unsigned int color, double weight) = 0; // px
     virtual void DrawScreenPolygon(LineBuffer* polygon, unsigned int fill) = 0;
-    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
+    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
         double x, double y, double w, double h, double angledeg) = 0;
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position) = 0;
 
@@ -61,16 +64,25 @@ public:
     //sigh
     const RS_F_Point* GetLastExclusionRegion() { return m_lastExclusionRegion; }
 
+protected:
+    void SetRenderSelectionMode(bool mode);
+
 private:
     void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angle);
-    
+
     void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angle);
 
     RS_F_Point m_lastExclusionRegion[4];
-    
+
 protected:
     SE_LineBufferPool* m_lbp;
-    
+    bool m_bSelectionMode;
+
+    double m_selWeight;
+    unsigned int m_selColor;
+    unsigned int m_selFill;
+    RS_Color m_textForeColor;
+    RS_Color m_textBackColor;
 };
 
 #endif // SE_RENDERER_H

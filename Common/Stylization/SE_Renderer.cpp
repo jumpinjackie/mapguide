@@ -23,9 +23,38 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+SE_Renderer::SE_Renderer()
+: m_bSelectionMode(false)
+, m_selWeight(0.0)
+, m_selColor(0)
+, m_selFill(0)
+, m_textForeColor(0)
+, m_textBackColor(0)
+{
+}
+
+SE_Renderer::~SE_Renderer()
+{
+}
+
 void SE_Renderer::SetLineBufferPool(SE_LineBufferPool* pool)
 {
     m_lbp = pool;
+}
+
+void SE_Renderer::SetRenderSelectionMode(bool mode)
+{
+    m_bSelectionMode = mode;
+
+    if (mode)
+    {
+        // set the default selection style - 1mm line weight, partially transparent blue
+        m_selWeight = 3.0;  // should be 1 to give 1mm, but the renderer is way off
+        m_selColor = RS_Color(0, 0, 255, 200).argb();
+        m_selFill = RS_Color(0, 0, 255, 160).argb();
+        m_textForeColor = RS_Color(0, 0, 255, 200);
+        m_textBackColor = RS_Color(0, 0, 255, 255);
+    }
 }
 
 void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
@@ -150,10 +179,20 @@ void SE_Renderer::DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& posxform,
 
             LineBuffer* geometry = pl->geometry->TransformInstance(posxform);
 
-            if (primitive->type == SE_PolygonPrimitive)
-                DrawScreenPolygon( geometry, ((SE_RenderPolygon*)primitive)->fill );
+            if (m_bSelectionMode)
+            {
+                if (primitive->type == SE_PolygonPrimitive)
+                    DrawScreenPolygon( geometry, m_selFill);
+
+                DrawScreenPolyline( geometry, m_selColor, m_selWeight );
+            }
+            else
+            {
+                if (primitive->type == SE_PolygonPrimitive)
+                    DrawScreenPolygon( geometry, ((SE_RenderPolygon*)primitive)->fill );
 
                 DrawScreenPolyline( geometry, pl->color, pl->weight );
+            }
         }
         else if (primitive->type == SE_TextPrimitive)
         {
@@ -164,11 +203,20 @@ void SE_Renderer::DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& posxform,
             double x, y;
             posxform.transform(tp->position[0], tp->position[1], x, y);
 
-            if (anglerad != 0)
+            if (m_bSelectionMode)
             {
-                RS_TextDef tdef2 = tp->tdef;
-                tdef2.rotation() = anglerad * (180 / M_PI);
-                DrawScreenText(tp->text, tdef2, x, y, NULL, 0, 0.0);
+                RS_TextDef tdef = tp->tdef;
+                tdef.color() = m_textForeColor;
+                tdef.bgcolor() = m_textBackColor;
+                if (anglerad != 0)
+                    tdef.rotation() = anglerad * (180 / M_PI);
+                DrawScreenText(tp->text, tdef, x, y, NULL, 0, 0.0);
+            }
+            else if (anglerad != 0.0)
+            {
+                RS_TextDef tdef = tp->tdef;
+                tdef.rotation() = anglerad * (180.0 / M_PI);
+                DrawScreenText(tp->text, tdef, x, y, NULL, 0, 0.0);
             }
             else
             {
