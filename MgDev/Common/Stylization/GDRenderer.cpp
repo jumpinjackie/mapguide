@@ -128,7 +128,6 @@ m_layerInfo(NULL),
 m_fcInfo(NULL),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
-m_bSelectionMode(false),
 m_bIsSymbolW2D(false),
 m_bHaveViewport(false),
 m_imsym(NULL),
@@ -367,6 +366,9 @@ void GDRenderer::StartMap(RS_MapUIInfo* mapInfo,
 
 void GDRenderer::EndMap()
 {
+    // turn off selection mode so the labels draw normal
+    SetRenderSelectionMode(false);
+
     //finally draw all the labels
     m_labeler->BlastLabels();
 
@@ -1491,7 +1493,7 @@ double GDRenderer::_PixelToMapSize(Renderer* renderer, int pixels)
 
 void GDRenderer::SetRenderSelectionMode(bool mode)
 {
-    m_bSelectionMode = mode;
+    SE_Renderer::SetRenderSelectionMode(mode);
 
     //initialize the selection styles if needed
     if (mode)

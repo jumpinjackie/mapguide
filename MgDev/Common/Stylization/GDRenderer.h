@@ -237,7 +237,6 @@ private:
     void* m_imsym;
     int m_lineColor;
 
-    bool m_bSelectionMode;
     RS_FillStyle m_selFill;
 
     LabelRendererBase* m_labeler;
