@@ -26,7 +26,7 @@ namespace MdfModel
 class SE_SymbolManager
 {
 public:
-    virtual MdfModel::SymbolDefinition* GetSymbolDefinition(const wchar_t* resource) = 0;
+    virtual SymbolDefinition* GetSymbolDefinition(const wchar_t* resource) = 0;
     virtual unsigned char* GetImageData(const wchar_t* resource, int& length) = 0;
 };
 
