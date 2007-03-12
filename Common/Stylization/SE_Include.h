@@ -24,6 +24,7 @@
 #include "FilterExecutor.h"
 #include "SE_Matrix.h"
 #include "SE_LineBuffer.h"
+#include "SE_Bounds.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
@@ -467,6 +468,8 @@ struct SE_RenderStyle
     {
         for (SE_RenderSymbol::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
             delete *iter;
+
+        if (bounds) bounds->Free();
     }
 
     SE_StyleType type;
