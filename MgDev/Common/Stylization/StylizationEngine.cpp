@@ -298,7 +298,7 @@ SE_RenderLineStyle* StylizationEngine::EvaluateLineStyle(SE_Matrix& xform, SE_Li
     return render;
 }
 
-SE_RenderAreaStyle* StylizationEngine::EvaluateAreaStyle(SE_Matrix& xform, SE_AreaStyle* style)
+SE_RenderAreaStyle* StylizationEngine::EvaluateAreaStyle(SE_Matrix& /*xform*/, SE_AreaStyle* style)
 {
     SE_RenderAreaStyle* render = new SE_RenderAreaStyle();
 

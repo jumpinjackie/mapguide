@@ -32,12 +32,11 @@
 
 const RS_String s_Empty(L"");
 
-DefaultStylizer::DefaultStylizer()
+DefaultStylizer::DefaultStylizer(SE_SymbolManager* sman)
 {
-    m_lbPool = new LineBufferPool;
     m_pRasterAdapter = NULL;
-    m_renderer = NULL;
-    m_styleEngine = NULL;
+    m_styleEngine = new StylizationEngine(sman);
+    m_lbPool = new LineBufferPool;
 }
 
 DefaultStylizer::~DefaultStylizer()
@@ -47,35 +46,20 @@ DefaultStylizer::~DefaultStylizer()
     //of stylization
     ClearAdapters();
 
-    delete m_lbPool;
     delete m_styleEngine;
-}
-
-
-//-----------------------------------------------------------------------------
-// Initializes the Stylizer with a given graphics renderer
-//
-// Input: A pointer to a Renderer implementation instance
-//-----------------------------------------------------------------------------
-void DefaultStylizer::Initialize(Renderer* renderer, SE_SymbolManager* sman)
-{
-    m_renderer = renderer;
-
-    if (m_styleEngine)
-        delete m_styleEngine;
-    m_styleEngine = new StylizationEngine(sman);
+    delete m_lbPool;
 }
 
 
 ///<summary>
 /// Stylizes given features with a specified layer and map scale.
 ///<summary>
-void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  layer,
-                                                RS_FeatureReader*     features,
-                                                CSysTransformer*      xformer, //can be NULL
-                                                CancelStylization     cancel,
-                                                void*                 userData
-                                                )
+void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* layer,
+                                               Renderer*                        renderer,
+                                               RS_FeatureReader*                features,
+                                               CSysTransformer*                 xformer, //can be NULL
+                                               CancelStylization                cancel,
+                                               void*                            userData)
 {
     //gets rid of const in pointer -- some functions we call aren't const
     MdfModel::VectorLayerDefinition* fl = (MdfModel::VectorLayerDefinition*)layer;
@@ -86,7 +70,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     // the first one that contains the given scale will be used
     MdfModel::VectorScaleRangeCollection* ranges = fl->GetScaleRanges();
 
-    MdfModel::VectorScaleRange* range = Stylizer::FindScaleRange(*ranges, m_renderer->GetMapScale());
+    MdfModel::VectorScaleRange* range = Stylizer::FindScaleRange(*ranges, renderer->GetMapScale());
 
     // no range -- do not stylize
     if (NULL == range) return;
@@ -106,9 +90,9 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     RS_FilterExecutor* exec = RS_FilterExecutor::Create(features);
 
     // configure the filter with the current map/layer info
-    RS_MapUIInfo* mapInfo = m_renderer->GetMapInfo();
-    RS_LayerUIInfo* layerInfo = m_renderer->GetLayerInfo();
-    RS_FeatureClassInfo* featInfo = m_renderer->GetFeatureClassInfo();
+    RS_MapUIInfo* mapInfo = renderer->GetMapInfo();
+    RS_LayerUIInfo* layerInfo = renderer->GetLayerInfo();
+    RS_FeatureClassInfo* featInfo = renderer->GetFeatureClassInfo();
 
     const RS_String& session = (mapInfo != NULL)? mapInfo->session() : s_Empty;
     const RS_String& mapName = (mapInfo != NULL)? mapInfo->name() : s_Empty;
@@ -126,7 +110,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(ftsc->GetAt(0)) == FeatureTypeStyleVisitor::ftsComposite)
     {
         use_style_engine = true;
-        se_renderer = dynamic_cast<SE_Renderer*>(m_renderer);
+        se_renderer = dynamic_cast<SE_Renderer*>(renderer);
     }
 
     //extract hyperlink and tooltip info
@@ -152,7 +136,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     //but is so horribly slow that in all other cases it needs to be optimized away
     //FdoPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
 
-    bool bClip = m_renderer->RequiresClipping();
+    bool bClip = renderer->RequiresClipping();
 
     #ifdef _DEBUG
     int nFeatures = 0;
@@ -176,7 +160,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
         {
             //clip geometry to given map request extents
             //TODO: is this the right place to do so?
-            LineBuffer* lbc = lb->Clip(m_renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
+            LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
 
             //did geom require clipping?
             //free original line buffer
@@ -244,7 +228,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
                             MdfModel::LengthConverter::UnitToMeters(modelElevSettings->GetUnit(), 1.0),
                             elevType);
                     }
-                    adapter->Stylize(m_renderer, features, exec, lb, fts, lrTip, lrUrl, elevSettings);
+                    adapter->Stylize(renderer, features, exec, lb, fts, lrTip, lrUrl, elevSettings);
                     
                     delete elevSettings;
                     elevSettings = NULL;
@@ -259,7 +243,7 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
     }
 
     #ifdef _DEBUG
-    printf("  DefaultStylizer::StylizeFeatures() Layer: %S  Features: %d\n", layer->GetFeatureName().c_str(), nFeatures);
+    printf("  DefaultStylizer::StylizeVectorLayer() Layer: %S  Features: %d\n", layer->GetFeatureName().c_str(), nFeatures);
     #endif
 
     //need the cast due to multiple inheritance resulting in two Disposables
@@ -273,12 +257,12 @@ void DefaultStylizer::StylizeFeatures(const MdfModel::VectorLayerDefinition*  la
 }
 
 
-void DefaultStylizer::StylizeGridLayer(   const MdfModel::GridLayerDefinition* layer,
-                         RS_FeatureReader*                    features,
-                         CSysTransformer*                     /*xformer*/,
-                         CancelStylization                    cancel,
-                         void*                                userData
-                         )
+void DefaultStylizer::StylizeGridLayer(const MdfModel::GridLayerDefinition* layer,
+                                             Renderer*                      renderer,
+                                             RS_FeatureReader*              features,
+                                             CSysTransformer*               /*xformer*/,
+                                             CancelStylization              cancel,
+                                             void*                          userData)
 {
     //gets rid of const in pointer -- some functions we call aren't const
     MdfModel::GridLayerDefinition* gl = (MdfModel::GridLayerDefinition*)layer;
@@ -289,7 +273,7 @@ void DefaultStylizer::StylizeGridLayer(   const MdfModel::GridLayerDefinition* l
     // the first one that contains the given scale will be used
     MdfModel::GridScaleRangeCollection* ranges = gl->GetScaleRanges();
 
-    MdfModel::GridScaleRange* range = Stylizer::FindScaleRange(*ranges, m_renderer->GetMapScale());
+    MdfModel::GridScaleRange* range = Stylizer::FindScaleRange(*ranges, renderer->GetMapScale());
 
     // no range -- do not stylize
     if (NULL == range) return;
@@ -330,7 +314,7 @@ void DefaultStylizer::StylizeGridLayer(   const MdfModel::GridLayerDefinition* l
         exec->Reset();
 
         if (m_pRasterAdapter)
-            m_pRasterAdapter->Stylize(m_renderer, features, exec, raster, gcs, NULL, NULL);
+            m_pRasterAdapter->Stylize(renderer, features, exec, raster, gcs, NULL, NULL);
 
         if (raster)
             delete raster; //need to free returned raster
@@ -348,44 +332,43 @@ void DefaultStylizer::StylizeGridLayer(   const MdfModel::GridLayerDefinition* l
 }
 
 
-
-void DefaultStylizer::StylizeDrawingLayer(  const MdfModel::DrawingLayerDefinition* layer,
-                                            RS_LayerUIInfo*         legendInfo,
-                                            RS_InputStream*         dwfin,
-                                            const RS_String&        layerFilter,
-                                            CSysTransformer*        xformer
-                                          )
+void DefaultStylizer::StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
+                                                Renderer*                         renderer,
+                                                RS_LayerUIInfo*                   legendInfo,
+                                                RS_InputStream*                   dwfin,
+                                                const RS_String&                  layerFilter,
+                                                CSysTransformer*                  xformer)
 {
-    double mapScale = m_renderer->GetMapScale();
+    double mapScale = renderer->GetMapScale();
 
     //check if we are in scale range
     if (mapScale >= layer->GetMinScale() && mapScale < layer->GetMaxScale())
     {
-        m_renderer->StartLayer(legendInfo, NULL);
+        renderer->StartLayer(legendInfo, NULL);
 
         //TODO: dwf password
-        m_renderer->AddDWFContent(dwfin, xformer, L"", L"", layerFilter);
+        renderer->AddDWFContent(dwfin, xformer, L"", L"", layerFilter);
 
-        m_renderer->EndLayer();
+        renderer->EndLayer();
     }
 }
 
 
 //WARNING: given pointer to the new stylizer will be destroyed
 //by the stylizer (in its destructor)
-void DefaultStylizer::SetGeometryAdapter( FdoGeometryType type, GeometryAdapter* sg)
+void DefaultStylizer::SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer)
 {
     GeometryAdapter* old = (GeometryAdapter*)m_hGeomStylizers[type];
 
     if (old) delete old;
 
-    m_hGeomStylizers[type] = sg;
+    m_hGeomStylizers[type] = stylizer;
 }
 
-void DefaultStylizer::SetStylizeFeature( FdoClassDefinition* /*classDef*/, GeometryAdapter* /*sg*/)
+
+void DefaultStylizer::SetStylizeFeature(FdoClassDefinition* /*classDef*/, GeometryAdapter* /*stylizer*/)
 {
-    //TODO
-    //not impl.
+    //TODO: implemented
 }
 
 
@@ -436,6 +419,7 @@ GeometryAdapter* DefaultStylizer::FindGeomAdapter(int geomType)
 
     return m_hGeomStylizers[geomType];
 }
+
 
 void DefaultStylizer::ClearAdapters()
 {

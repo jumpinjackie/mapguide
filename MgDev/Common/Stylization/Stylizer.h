@@ -42,53 +42,47 @@ class Stylizer
 {
 public:
     ///<summary>
-    ///Sets the Renderer object for this Stylizer
+    /// Stylizes a feature/vector (FDO-based) layer.
     ///</summary>
-    virtual void Initialize(Renderer* renderer, SE_SymbolManager* sman = NULL) = 0;
-
-    ///<summary>
-    /// Stylizes a feature (FDO based) layer.
-    ///</summary>
-    virtual void StylizeFeatures( const MdfModel::VectorLayerDefinition*  layer,
-                                      RS_FeatureReader*                   features,
-                                      CSysTransformer*                    xformer,
-                                      CancelStylization                   cancel,
-                                      void*                               userData
-                                      ) = 0;
+    virtual void StylizeVectorLayer(const MdfModel::VectorLayerDefinition* layer,
+                                          Renderer*                        renderer,
+                                          RS_FeatureReader*                features,
+                                          CSysTransformer*                 xformer,
+                                          CancelStylization                cancel,
+                                          void*                            userData
+                                          ) = 0;
 
     ///<summary>
     /// Stylizes a grid/raster layer.
     ///</summary>
-    virtual void StylizeGridLayer(   const MdfModel::GridLayerDefinition* layer,
-                                     RS_FeatureReader*                    features,
-                                     CSysTransformer*                     xformer,
-                                     CancelStylization                    cancel,
-                                     void*                                userData
-                                     ) = 0;
-
-    ///<summary>
-    /// Stylizes a drawing (DWF based) layer.
-    ///</summary>
-    virtual void StylizeDrawingLayer(   const MdfModel::DrawingLayerDefinition* layer,
-                                        RS_LayerUIInfo*                         legendInfo,
-                                        RS_InputStream*                         dwfin,
-                                        const RS_String&                        layerFilter,
-                                        CSysTransformer*                        xformer
+    virtual void StylizeGridLayer(const MdfModel::GridLayerDefinition* layer,
+                                        Renderer*                      renderer,
+                                        RS_FeatureReader*              features,
+                                        CSysTransformer*               xformer,
+                                        CancelStylization              cancel,
+                                        void*                          userData
                                         ) = 0;
 
     ///<summary>
-    ///allows user to set a custom stylization object for certain
-    ///geometry types
+    /// Stylizes a drawing (DWF-based) layer.
     ///</summary>
-    virtual void SetGeometryAdapter( FdoGeometryType type,
-                                     GeometryAdapter* sg) = 0;
+    virtual void StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
+                                           Renderer*                         renderer,
+                                           RS_LayerUIInfo*                   legendInfo,
+                                           RS_InputStream*                   dwfin,
+                                           const RS_String&                  layerFilter,
+                                           CSysTransformer*                  xformer
+                                           ) = 0;
 
     ///<summary>
-    ///allows user to set a custom stylization object for a
-    ///given feature class
+    /// Allows a user to set a custom stylization object for certain geometry types.
     ///</summary>
-    virtual void SetStylizeFeature(  FdoClassDefinition* classDef,
-                                     GeometryAdapter* sg) = 0;
+    virtual void SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer) = 0;
+
+    ///<summary>
+    /// Allows a user to set a custom stylization object for a given feature class.
+    ///</summary>
+    virtual void SetStylizeFeature(FdoClassDefinition* classDef, GeometryAdapter* stylizer) = 0;
 
     STYLIZATION_API static MdfModel::VectorScaleRange* FindScaleRange(MdfModel::VectorScaleRangeCollection& src,
                                          double mapScale);
