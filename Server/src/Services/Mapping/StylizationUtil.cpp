@@ -750,7 +750,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                             RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, item ? item->GetCoordSys() : NULL, item);
                             if (rdr)
                             {
-                                ds->StylizeFeatures(vl, rdr, item->GetTransform(), NULL, NULL);
+                                ds->StylizeVectorLayer(vl, dr, rdr, item->GetTransform(), NULL, NULL);
                             }
                             delete rdr;
                         }
@@ -784,7 +784,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                 RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, item ? item->GetCoordSys() : NULL, item);
                                 if (rdr)
                                 {
-                                    ds->StylizeFeatures(vl, rdr, item->GetTransform(), NULL, NULL);
+                                    ds->StylizeVectorLayer(vl, dr, rdr, item->GetTransform(), NULL, NULL);
                                 }
                                 delete rdr;
 
@@ -830,7 +830,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         {
                             //stylize into output format
                             dr->StartLayer(&legendInfo, &fcinfo);
-                            ds->StylizeFeatures(vl, rdr, item ? item->GetTransform() : NULL, NULL, NULL);
+                            ds->StylizeVectorLayer(vl, dr, rdr, item ? item->GetTransform() : NULL, NULL, NULL);
                             dr->EndLayer();
                         }
                         delete rdr;
@@ -922,7 +922,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     {
                         //stylize into a dwf
                         dr->StartLayer(&legendInfo, &fcinfo);
-                        ds->StylizeGridLayer(gl, rdr, item->GetTransform(), NULL, NULL);
+                        ds->StylizeGridLayer(gl, dr, rdr, item->GetTransform(), NULL, NULL);
                         dr->EndLayer();
                     }
                     delete rdr;
@@ -987,7 +987,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     RSMgInputStream is(reader);
 
-                    ds->StylizeDrawingLayer( dl, &legendInfo, &is, dl->GetLayerFilter(), xformer);
+                    ds->StylizeDrawingLayer(dl, dr, &legendInfo, &is, dl->GetLayerFilter(), xformer);
                 }
 
                 #ifdef _DEBUG

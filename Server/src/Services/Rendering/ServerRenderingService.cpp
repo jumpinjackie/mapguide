@@ -634,9 +634,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     dr->SetSymbolManager(&mgr);
 
     SEMgSymbolManager semgr(m_svcResource);
-
-    DefaultStylizer ds;
-    ds.Initialize(dr, &semgr);
+    DefaultStylizer ds(&semgr);
 
     RS_Color bgcolor(0, 0, 0, 255); //not used -- GDRenderer is already initialized to the correct bgcolor
 
@@ -1054,9 +1052,6 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
                 RSMgFeatureReader rsrdr(rdr, m_svcFeature, featResId, options, vl->GetGeometry());
 
-                DefaultStylizer ds;
-                ds.Initialize(selRenderer);
-
                 //run a stylization loop with the FeatureInfoRenderer.
                 //This will build up the selection set and also
                 //evaluate the tooltip, hyperlink and feature properties
@@ -1093,8 +1088,9 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                     fcinfo.add_mapping(m->GetName(), m->GetValue());
                 }
 
+                DefaultStylizer ds(NULL);
                 selRenderer->StartLayer(&info, &fcinfo);
-                ds.StylizeFeatures(vl, &rsrdr, NULL, StylizeThatMany, selRenderer);
+                ds.StylizeVectorLayer(vl, selRenderer, &rsrdr, NULL, StylizeThatMany, selRenderer);
                 selRenderer->EndLayer();
 
                 //update maxFeatures to number of features that
