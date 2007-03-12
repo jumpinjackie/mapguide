@@ -10,7 +10,7 @@ class SE_PositioningAlgorithms
 
 public:
 
-    static void EightBall(SE_Renderer*    renderer, 
+    static void EightSurrounding(SE_Renderer*    renderer, 
                           LineBuffer*     geometry, 
                           SE_Matrix&      xform, 
                           SE_Style*       style, 

@@ -581,7 +581,7 @@ void StylizationEngine::LayoutCustomLabel(const std::wstring& positioningAlgo, L
     //here we decide which one to call based on the name of the positioning algorithm
     if (positioningAlgo == L"EightSurrounding")
     {
-        SE_PositioningAlgorithms::EightBall(m_renderer, geometry, xform, style, rstyle, mm2px);
+        SE_PositioningAlgorithms::EightSurrounding(m_renderer, geometry, xform, style, rstyle, mm2px);
     }
     //else if (style->positioningAlgorithm == MultipleHighwayShields)
     //{

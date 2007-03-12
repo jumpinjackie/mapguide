@@ -349,6 +349,17 @@ bool LabelRenderer::ProcessLabelInternal(LR_LabelInfo& info,
 //////////////////////////////////////////////////////////////////////////////
 void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
 {
+
+#ifdef DEBUG_LABELS
+    LineBuffer lb(5);
+    lb.MoveTo(pts[0].x, pts[0].y);
+    lb.LineTo(pts[1].x, pts[1].y);
+    lb.LineTo(pts[2].x, pts[2].y);
+    lb.LineTo(pts[3].x, pts[3].y);
+    lb.Close();
+    m_serenderer->DrawScreenPolyline(&lb, 0xffff0000, 3.0);
+#endif
+
     RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));
 
     //convert back to mapping space since the overpost manager uses mapping space
@@ -427,13 +438,13 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
 
 #ifdef DEBUG_LABELS
     // this debugging code draws a box around the label (using its bounds)
-    RS_D_Point dpts[4];
-    for (int j=0; j<4; ++j)
-    {
-        dpts[j].x = (int)fpts[j].x;
-        dpts[j].y = (int)fpts[j].y;
-    }
-    gdImagePolygon((gdImagePtr)m_renderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.color()));
+        LineBuffer lb(5);
+        lb.MoveTo(fpts[0].x, fpts[0].y);
+        lb.LineTo(fpts[1].x, fpts[1].y);
+        lb.LineTo(fpts[2].x, fpts[2].y);
+        lb.LineTo(fpts[3].x, fpts[3].y);
+        lb.Close();
+        m_serenderer->DrawScreenPolyline(&lb, info.m_tdef.color().argb(), 0.0);
 #endif
 
     //-------------------------------------------------------
@@ -493,7 +504,14 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
     if (check)
     {
         if (OverlapsStuff(fpts, 4))
+        {
+            //here are done with the style and we free it.
+            //it was cloned when it was passed to the LabelRenderer.
+            //delete info.m_sestyle;
+            //info.m_sestyle = NULL;
+
             return false;
+        }
     }
 
     //add bounds to exclusion regions if needed
@@ -511,7 +529,6 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
         m_serenderer->DrawSymbol(info.m_sestyle->symbol, m, angle);
 
 #ifdef DEBUG_LABELS
-        //debug -- draw the bounds also
         LineBuffer lb(5);
         lb.MoveTo(fpts[0].x, fpts[0].y);
         lb.LineTo(fpts[1].x, fpts[1].y);
@@ -519,9 +536,13 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
         lb.LineTo(fpts[3].x, fpts[3].y);
         lb.Close();
         m_serenderer->DrawScreenPolyline(&lb, 0xff000000, 0.0);
-        //end debug
 #endif
     }
+
+    //here are done with the style and we free it.
+    //it was cloned when it was passed to the LabelRenderer.
+    //delete info.m_sestyle;
+    //info.m_sestyle = NULL;
 
     return true;
 }

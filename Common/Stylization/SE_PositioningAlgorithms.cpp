@@ -23,7 +23,7 @@ SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 
 //recomputes the bounds of an SE_RenderPointStyle that contains a text
 //whose alignment we have messed with
-void UpdateStyleBounds(SE_RenderPointStyle* st, double cx, double cy, SE_Renderer* renderer)
+void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* renderer)
 {
     SE_RenderText* txt = ((SE_RenderText*)st->symbol[0]);
     
@@ -73,7 +73,7 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, double cx, double cy, SE_Rendere
     st->bounds->max[1] = rotatedBounds.maxy;
 }
 
-void SE_PositioningAlgorithms::EightBall(SE_Renderer*    renderer, 
+void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer, 
                                          LineBuffer*     geometry, 
                                          SE_Matrix&      xform, 
                                          SE_Style*       style, 
@@ -160,7 +160,7 @@ void SE_PositioningAlgorithms::EightBall(SE_Renderer*    renderer,
 
     w += offset;
     h += offset;
-    
+
     bool useBounds = symbol_bounds.IsValid();
     if (useBounds)
     {
@@ -234,47 +234,48 @@ void SE_PositioningAlgorithms::EightBall(SE_Renderer*    renderer,
 
     //OK, who says I can't write bad code? Behold:
     SE_LabelInfo candidates[8];
+    double yScale = renderer->GetFontEngine()->_Yup() ? 1.0 : -1.0; //which way does y go in the renderer?
 
     SE_RenderPointStyle* st0 = DeepClonePointStyle(rstyle2);
     ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
     ((SE_RenderText*)st0->symbol[0])->tdef.valign() = RS_VAlignment_Half;
-    UpdateStyleBounds(st0, cx + op_pts[0], cy + op_pts[1], renderer);
-    candidates[0] = SE_LabelInfo(cx + op_pts[0], cy + op_pts[1], 0, 0, RS_Units_Device, 0.0, st0);
+    UpdateStyleBounds(st0, renderer);
+    candidates[0] = SE_LabelInfo(cx + op_pts[0], cy + op_pts[1]*yScale , 0, 0, RS_Units_Device, 0.0, st0);
 
     SE_RenderPointStyle* st1 = DeepClonePointStyle(st0);
     ((SE_RenderText*)st1->symbol[0])->tdef.valign() = RS_VAlignment_Descent;
-    UpdateStyleBounds(st1, cx + op_pts[2], cy + op_pts[3], renderer);
-    candidates[1] = SE_LabelInfo(cx + op_pts[2], cy + op_pts[3], 0, 0, RS_Units_Device, 0.0, st1);
+    UpdateStyleBounds(st1, renderer);
+    candidates[1] = SE_LabelInfo(cx + op_pts[2], cy + op_pts[3]*yScale, 0, 0, RS_Units_Device, 0.0, st1);
 
     SE_RenderPointStyle* st2 = DeepClonePointStyle(st1);
     ((SE_RenderText*)st2->symbol[0])->tdef.halign() = RS_HAlignment_Center;
-    UpdateStyleBounds(st2, cx + op_pts[4], cy + op_pts[5], renderer);
-    candidates[2] = SE_LabelInfo(cx + op_pts[4], cy + op_pts[5], 0, 0, RS_Units_Device, 0.0, st2);
+    UpdateStyleBounds(st2, renderer);
+    candidates[2] = SE_LabelInfo(cx + op_pts[4], cy + op_pts[5]*yScale, 0, 0, RS_Units_Device, 0.0, st2);
 
     SE_RenderPointStyle* st3 = DeepClonePointStyle(st2);
     ((SE_RenderText*)st3->symbol[0])->tdef.halign() = RS_HAlignment_Right;
-    UpdateStyleBounds(st3, cx + op_pts[6], cy + op_pts[7], renderer);
-    candidates[3] = SE_LabelInfo(cx + op_pts[6], cy + op_pts[7], 0, 0, RS_Units_Device, 0.0, st3);
+    UpdateStyleBounds(st3, renderer);
+    candidates[3] = SE_LabelInfo(cx + op_pts[6], cy + op_pts[7]*yScale, 0, 0, RS_Units_Device, 0.0, st3);
 
     SE_RenderPointStyle* st4 = DeepClonePointStyle(st3);
     ((SE_RenderText*)st4->symbol[0])->tdef.valign() = RS_VAlignment_Half;
-    UpdateStyleBounds(st4, cx + op_pts[8], cy + op_pts[9], renderer);
-    candidates[4] = SE_LabelInfo(cx + op_pts[8], cy + op_pts[9], 0, 0, RS_Units_Device, 0.0, st4);
+    UpdateStyleBounds(st4, renderer);
+    candidates[4] = SE_LabelInfo(cx + op_pts[8], cy + op_pts[9]*yScale, 0, 0, RS_Units_Device, 0.0, st4);
 
     SE_RenderPointStyle* st5 = DeepClonePointStyle(st4);
     ((SE_RenderText*)st5->symbol[0])->tdef.valign() = RS_VAlignment_Ascent;
-    UpdateStyleBounds(st5, cx + op_pts[10], cy + op_pts[11], renderer);
-    candidates[5] = SE_LabelInfo(cx + op_pts[10], cy + op_pts[11], 0, 0, RS_Units_Device, 0.0, st5);
+    UpdateStyleBounds(st5, renderer);
+    candidates[5] = SE_LabelInfo(cx + op_pts[10], cy + op_pts[11]*yScale, 0, 0, RS_Units_Device, 0.0, st5);
 
     SE_RenderPointStyle* st6 = DeepClonePointStyle(st5);
     ((SE_RenderText*)st6->symbol[0])->tdef.halign() = RS_HAlignment_Center;
-    UpdateStyleBounds(st6, cx + op_pts[12], cy + op_pts[13], renderer);
-    candidates[6] = SE_LabelInfo(cx + op_pts[12], cy + op_pts[13], 0, 0, RS_Units_Device, 0.0, st6);
+    UpdateStyleBounds(st6, renderer);
+    candidates[6] = SE_LabelInfo(cx + op_pts[12], cy + op_pts[13]*yScale, 0, 0, RS_Units_Device, 0.0, st6);
 
     SE_RenderPointStyle* st7 = DeepClonePointStyle(st6);
     ((SE_RenderText*)st7->symbol[0])->tdef.halign() = RS_HAlignment_Left;
-    UpdateStyleBounds(st7, cx + op_pts[14], cy + op_pts[15], renderer);
-    candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15], 0, 0, RS_Units_Device, 0.0, st7);
+    UpdateStyleBounds(st7, renderer);
+    candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15]*yScale, 0, 0, RS_Units_Device, 0.0, st7);
 
     renderer->ProcessLabelGroup(candidates, 8, RS_OverpostType_FirstFit, true, NULL);
 }
