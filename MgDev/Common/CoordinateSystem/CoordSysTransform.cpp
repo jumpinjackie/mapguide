@@ -669,72 +669,68 @@ CEnvelope* CCoordinateSystemTransform::XYExtentToLL(OGRCoordinateTransformation*
     double xMin = HUGE_VAL;
     double yMin = HUGE_VAL;
 
-    int i;
-    double lat, lon;
+    //temporary arrays for transformation
+    double tess_x[400];
+    double tess_y[400];
 
-    // compute the max and min longitude along the top and bottom borders
+    //temporary counters
+    double* dstx = tess_x;
+    double* dsty = tess_y;
+
+    //top and bottom edges
 
     double xInc = (ptNWX - ptSEX) / 100.0;
-    double tempX;
-    double tempY = ptNWY;
+    double xInterp = ptSEX;   
 
-    for (i = 0; i <= 100; i++)
+    for (int i = 0; i < 100; i++)
     {
-        tempX = ptSEX + i * xInc;
-
-        XYToLL(transform, tempX, tempY, lon, lat);
-
-        xMax = max(lon, xMax);
-        xMin = min(lon, xMin);
-        yMax = max(lat, yMax);
-        yMin = min(lat, yMin);
+        xInterp += xInc;
+        *dstx++ = xInterp;
+        *dsty++ = ptNWY;
     }
 
-    xInc = (ptNWX - ptSEX) / 100.0;
-    tempY = ptSEY;
+    xInterp = ptSEX;
 
-    for (i = 0; i <= 100; i++)
+    for (int i = 0; i < 100; i++)
     {
-        tempX = ptSEX + i * xInc;
-
-        XYToLL(transform, tempX, tempY, lon, lat);
-
-        xMax = max(lon, xMax);
-        xMin = min(lon, xMin);
-        yMax = max(lat, yMax);
-        yMin = min(lat, yMin);
+        xInterp += xInc;
+        *dstx++ = xInterp;
+        *dsty++ = ptSEY;
     }
 
-    // compute the max and min longitude along the left and right borders
+    // left and right borders
 
     double yInc = (ptNWY - ptSEY) / 100.0;
-    tempX = ptNWX;
+    double yInterp = ptSEY;
 
-    for (i = 0; i <= 100; i++)
+    for (int i = 0; i < 100; i++)
     {
-        tempY = ptSEY + i * yInc;
-
-        XYToLL(transform, tempX, tempY, lon, lat);
-
-        xMax = max(lon, xMax);
-        xMin = min(lon, xMin);
-        yMax = max(lat, yMax);
-        yMin = min(lat, yMin);
+        yInterp += yInc;
+        *dstx++ = ptNWX;
+        *dsty++ = yInterp;
     }
 
-    yInc = (ptNWY - ptSEY) / 100.0;
-    tempX = ptSEX;
+    yInterp = ptSEY;
 
-    for (i = 0; i <= 100; i++)
+    for (int i = 0; i < 100; i++)
     {
-        tempY = ptSEY + i * yInc;
+        yInterp += yInc;
+        *dstx++ = ptSEX;
+        *dsty++ = yInterp;
+    }
 
-        XYToLL(transform, tempX, tempY, lon, lat);
+    transform->Transform(400, tess_x, tess_y);
 
-        xMax = max(lon, xMax);
-        xMin = min(lon, xMin);
-        yMax = max(lat, yMax);
-        yMin = min(lat, yMin);
+    dstx = tess_x;
+    dsty = tess_y;
+    for (int i=0; i<400; i++)
+    {
+        xMax = max(*dstx, xMax);
+        xMin = min(*dstx, xMin);
+        yMax = max(*dsty, yMax);
+        yMin = min(*dsty, yMin);
+        dstx++;
+        dsty++;
     }
 
     if(dimension == CCoordinateSystemDimension::XYZ)
