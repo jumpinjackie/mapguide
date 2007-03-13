@@ -33,7 +33,7 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* renderer)
     RS_F_Point fpts[4];
 
     //radian CCW rotation
-    double rotation = txt->tdef.rotation() * M_PI / 180.0;
+    double rotation = txt->tdef.rotation() * M_PI180;
     double cos_a = cos(rotation);
     double sin_a = sin(rotation);
 
@@ -143,7 +143,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
 
     double symbol_width = fpts[1].x - fpts[0].x; //symbol width in meters
     double symbol_height = fpts[2].y - fpts[1].y; //symbol height in meters
-    double symbol_rot_deg = box_angle_rad * (180.0 / M_PI);
+    double symbol_rot_deg = box_angle_rad / M_PI180;
 
     double op_pts[16];
     
@@ -175,7 +175,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     //due to the rotation
     if (symbol_rot_deg != 0.0)
     {
-        double rotRad = symbol_rot_deg * (M_PI/180.); //symbol_rot assumed to be in radians
+        double rotRad = symbol_rot_deg * M_PI180; //symbol_rot assumed to be in radians
         double cs = cos(rotRad);
         double sn = sin(rotRad);
 

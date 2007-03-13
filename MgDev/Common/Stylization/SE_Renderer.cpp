@@ -209,13 +209,13 @@ void SE_Renderer::DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& posxform,
                 tdef.color() = m_textForeColor;
                 tdef.bgcolor() = m_textBackColor;
                 if (anglerad != 0)
-                    tdef.rotation() = anglerad * (180 / M_PI);
+                    tdef.rotation() = anglerad / M_PI180;
                 DrawScreenText(tp->text, tdef, x, y, NULL, 0, 0.0);
             }
             else if (anglerad != 0.0)
             {
                 RS_TextDef tdef = tp->tdef;
-                tdef.rotation() = anglerad * (180.0 / M_PI);
+                tdef.rotation() = anglerad / M_PI180;
                 DrawScreenText(tp->text, tdef, x, y, NULL, 0, 0.0);
             }
             else
@@ -230,7 +230,7 @@ void SE_Renderer::DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& posxform,
             double x, y;
             posxform.transform(rp->position[0], rp->position[1], x, y);
 
-            DrawScreenRaster(rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], anglerad * (180 / M_PI));
+            DrawScreenRaster(rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], anglerad / M_PI180);
         }
      }
 }

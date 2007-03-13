@@ -371,7 +371,7 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
                             0, 0, //srcX, srcY
                             resized ? resized->sx : src->sx,
                             resized ? resized->sx : src->sy, //srcW, srcH
-                            (int)(-angle * 180.0 / M_PI)
+                            (int)(-angle / M_PI180)
                             );
 
             if (resized)
@@ -711,7 +711,7 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
                         0, 0, //srcX, srcY
                         resized ? resized->sx : src->sx,
                         resized ? resized->sx : src->sy, //srcW, srcH
-                        (int)(-angle * 180.0 / M_PI)
+                        (int)(-angle / M_PI180)
                         );
 
         if (resized)
@@ -824,7 +824,7 @@ WT_Result gdr_process_text (WT_Text & text, WT_File & file)
 
         //rescale font height
         double hgt = 0.75 * rewriter->ScaleW2DNumber(file, font.height().height());
-        double rot = (double)font.rotation().rotation() * 2 * M_PI / 65536.;
+        double rot = (double)font.rotation().rotation() * 2.0 * M_PI / 65536.0;
 
         //match the font
         int style = RS_FontStyle_Regular;

@@ -603,7 +603,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
     double refY = mdef.insy();
 
     //rotation angle
-    double angle = mdef.rotation() * M_PI / 180.0;
+    double angle = mdef.rotation() * M_PI180;
 
     if (!symbol && is_font_symbol)
     {

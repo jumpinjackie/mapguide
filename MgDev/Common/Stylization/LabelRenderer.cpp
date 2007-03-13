@@ -26,7 +26,6 @@
 #include "SE_Renderer.h"
 #include "RS_FontEngine.h"
 
-#define M_PI 3.14159265358979323846
 #define ROUND(x) (int)((x) + 0.5)
 
 //#define DEBUG_LABELS
@@ -394,7 +393,7 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
     fe->GetTextMetrics(info.m_text, info.m_tdef, tm, false);
 
     //radian CCW rotation
-    double rotation = info.m_tdef.rotation() * M_PI / 180.0;
+    double rotation = info.m_tdef.rotation() * M_PI180;
     double cos_a = cos(rotation);
     double sin_a = sin(rotation);
 

@@ -46,22 +46,22 @@ static const double SLD_SQUARE[] = {
 
 
 //////////////////////////////////////////////
-static const double sq34 = 0.5 - 0.25 * sqrt(3.);
+static const double sq34 = 0.5 - 0.25 * sqrt(3.0);
 
 //equilateral triangle
 static const double SLD_TRIANGLE[] = {
-                            0.,  sq34,
-                            1.,  sq34,
-                            0.5, 1. - sq34,
-                            0.,  sq34
+                            0.0,       sq34,
+                            1.0,       sq34,
+                            0.5, 1.0 - sq34,
+                            0.0,       sq34
 };
 
 
 //////////////////////////////////////////////
-static const double cos36 = cos(36. * M_PI / 180.);
-static const double cos18 = cos(18. * M_PI / 180.);
-static const double sin36 = sin(36. * M_PI / 180.);
-static const double plen  = 1. - 0.5 / cos36; //length of the side of star point edge
+static const double cos36 = cos(36.0 * M_PI / 180.0);
+static const double cos18 = cos(18.0 * M_PI / 180.0);
+static const double sin36 = sin(36.0 * M_PI / 180.0);
+static const double plen  = 1.0 - 0.5 / cos36; //length of the side of star point edge
 
 //star (pentagonal)
 // CCW list order
@@ -73,66 +73,68 @@ static const double plen  = 1. - 0.5 / cos36; //length of the side of star point
 //                    0     2
 
 static const double SLD_STAR[] = {
-        1. - cos36,                 0.5 - 0.5 * cos18,
-        1. - cos36 + plen * cos36,  0.5 - 0.5 * cos18 + plen * sin36,
+        1.0 - cos36,                0.5 - 0.5 * cos18,
+        1.0 - cos36 + plen * cos36, 0.5 - 0.5 * cos18 + plen * sin36,
         cos36,                      0.5 - 0.5 * cos18,
-        1. - plen * cos36,          sin36 - plen * sin36,
-        1.,                         sin36,
-        1. - plen,                  sin36,
+        1.0 - plen * cos36,         sin36 - plen * sin36,
+        1.0,                        sin36,
+        1.0 - plen,                 sin36,
         0.5,                        0.5 + 0.5 * cos18,
         plen,                       sin36,
-        0.,                         sin36,
+        0.0,                        sin36,
         plen * cos36,               sin36 - plen * sin36,
-        1. - cos36,                 0.5 - 0.5 * cos18
+        1.0 - cos36,                0.5 - 0.5 * cos18
 };
+
 
 //////////////////////////////////////////////
 
 //constant to derive a thickness for the plus
 static const double phi = 1.6180339887498948482045868343656; //Golden ratio
-static const double t = 0.5 / (2. * (phi + 1.));
+static const double t = 0.5 / (2.0 * (phi + 1.0));
 
 //cross (looks like plus sign)
 static const double SLD_CROSS[] = {
-        0.5 - t, 0.,
-        0.5 + t, 0.,
+        0.5 - t, 0.0,
+        0.5 + t, 0.0,
         0.5 + t, 0.5 - t,
-        1.,      0.5 - t,
-        1.,      0.5 + t,
+        1.0,     0.5 - t,
+        1.0,     0.5 + t,
         0.5 + t, 0.5 + t,
-        0.5 + t, 1.,
-        0.5 - t, 1.,
+        0.5 + t, 1.0,
+        0.5 - t, 1.0,
         0.5 - t, 0.5 + t,
-        0.,      0.5 + t,
-        0.,      0.5 - t,
+        0.0,     0.5 + t,
+        0.0,     0.5 - t,
         0.5 - t, 0.5 - t,
-        0.5 - t, 0.
+        0.5 - t, 0.0
 };
 
 
 //////////////////////////////////////////////
 
-static const double t2 = 2. * t / sqrt(2.);
+static const double t2 = 2.0 * t / sqrt(2.0);
 
 static const double SLD_X[] = {
-        t2,       0.,
+        t2,       0.0,
         0.5,      0.5 - t2,
-        1. - t2,  0.,
-        1.,       t2,
+        1.0 - t2, 0.0,
+        1.0,      t2,
         0.5 + t2, 0.5,
-        1.,       1. - t2,
-        1. - t2,  1.,
+        1.0,      1.0 - t2,
+        1.0 - t2, 1.0,
         0.5,      0.5 + t2,
-        t2,       1.,
-        0.,       1. - t2,
+        t2,       1.0,
+        0.0,      1.0 - t2,
         0.5 - t2, 0.5,
-        0.,       t2,
-        t2,       0.
+        0.0,      t2,
+        t2,       0.0
 };
+
 
 //////////////////////////////////////////////
 
-static const double incr = M_PI / 10.;
+static const double incr = M_PI / 10.0;
 #define circpt(x) 0.5 + 0.5 * cos(x * incr), 0.5 + 0.5 * sin(x * incr)
 
 //circle, approximated by 20-gon
@@ -148,17 +150,17 @@ static const double SLD_CIRCLE[] = {
 
 //////////////////////////////////////////////
 
-//simle x symbol for use in error conditions
+//simple x symbol for use in error conditions
 
 static const double SLD_ERROR[] = {
-    0., 0.,
-    1., 0.,
-    1., 1.,
-    0., 0.,
-    0., 1.,
-    1., 1.,
-    1., 0.,
-    0., 1.
+    0.0, 0.0,
+    1.0, 0.0,
+    1.0, 1.0,
+    0.0, 0.0,
+    0.0, 1.0,
+    1.0, 1.0,
+    1.0, 0.0,
+    0.0, 1.0
 };
 
 #endif

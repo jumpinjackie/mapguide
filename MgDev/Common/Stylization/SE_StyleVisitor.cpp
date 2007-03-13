@@ -21,8 +21,6 @@
 #include "SE_SymbolManager.h"
 #include "SE_LineBuffer.h"
 
-#define _USE_MATH_DEFINES
-#include <math.h>
 #include <wctype.h>
 
 using namespace MDFMODEL_NAMESPACE;
@@ -211,7 +209,7 @@ TagSwitch:
                 ly = y;
             }
 
-            if (rx == 0 || ry == 0)
+            if (rx == 0.0 || ry == 0.0)
             {
                 lb->LineTo(lx, ly);
                 break;
@@ -256,7 +254,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
 
     if (def.rotation != 0.0)
     {
-        rotrad = def.rotation*M_PI/180.0;
+        rotrad = def.rotation * M_PI180;
         /* Derotate the points, so we can handle only the axis-oriented case */
         double sine = sin(-rotrad);
         double cosine = cos(-rotrad);
@@ -285,7 +283,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
                                         (x1 - cx)^2/a^2 + (y1 - cy)^2/b^2 = 1}
        verified with Mathematica. */
 
-    double a = 2*(ry2*dx2 + rx2*dy2);
+    double a = 2.0*(ry2*dx2 + rx2*dy2);
     double ay = rx2*a;
     double ax = ry2*dx*a;
     double sq = sqrt(rxy2*dx2*(-ry4*dx2*dx2 + 2*rxy2*dx2*(2*ry2 - dy2) - rx2*rx2*dy2*(-4*ry2 + dy2)));
@@ -296,7 +294,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
 
     double cx0, cx1, cy0, cy1;
 
-    if (ax == 0)
+    if (ax == 0.0)
     {
         //x0 equal to x1 -- vertical chord
         cx0 = x0;
@@ -308,7 +306,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
         cx1 = (mbx - sqx)/ax;
     }
 
-    if (ay == 0)
+    if (ay == 0.0)
     {
         //this means that y0 and y1 were equal so chord is horizontal
         cy0 = y0;
@@ -321,11 +319,11 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     }
 
     double sAng = atan2(y0-cy0, x0-cx0);
-    if (sAng < 0)
-        sAng += 2*M_PI;
+    if (sAng < 0.0)
+        sAng += 2.0*M_PI;
     double eAng = atan2(y1-cy0, x1-cx0);
-    if (eAng < 0)
-        eAng += 2*M_PI;
+    if (eAng < 0.0)
+        eAng += 2.0*M_PI;
 
     /* TODO: scale radii until properly specified instead of failing */
     if (!_finite(cx0) || _isnan(cx0) ||
@@ -341,11 +339,11 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     {
         cx = cx1, cy = cy1;
         sAng = atan2(y0-cy0, x0-cx1);
-        if (sAng < 0)
-            sAng += 2*M_PI;
+        if (sAng < 0.0)
+            sAng += 2.0*M_PI;
         eAng = atan2(y1-cy1, x1-cx1);
-        if (eAng < 0)
-            eAng += 2*M_PI;
+        if (eAng < 0.0)
+            eAng += 2.0*M_PI;
     }
 
     if (def.clockwise)
@@ -356,9 +354,9 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     }
 
     if (eAng < sAng)
-        eAng += 2*M_PI;
+        eAng += 2.0*M_PI;
 
-    if (def.rotation != 0)
+    if (def.rotation != 0.0)
     {
         /* Rerotate the center */
         double tcx = cx, tcy = cy;
