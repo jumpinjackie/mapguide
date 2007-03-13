@@ -284,6 +284,7 @@ struct SE_Polyline : public SE_Primitive
     SE_LineBuffer* geometry;
     SE_Double weight;
     SE_Color color;
+    SE_Boolean weightScalable;
 
     SE_INLINE SE_Polyline() : weight(0.0) { type = SE_PolylinePrimitive; }
 };

@@ -147,7 +147,7 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
     
     SE_LineBuffer* xformGeom = m_pool->NewLineBuffer(geometry->point_count());
     xformGeom->compute_bounds() = false;
-        
+
     xformGeom->Transform(geometry, w2s);
 
     for (std::vector<SE_Symbolization*>::const_iterator iter = symbolization->begin(); iter != symbolization->end(); iter++)
@@ -166,7 +166,7 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
         {
             SE_Style* style = *siter;
 
-            SE_Matrix tmpxform = xform; //TODO: this is lame, but necessary since the xform can be modified
+            SE_Matrix tmpxform(xform); //TODO: this is lame, but necessary since the xform can be modified
                                         //when we evalute the style, in the case of point style set on a
                                         //non-point geometry
 
@@ -348,7 +348,10 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 if (!rsym) rsym = new SE_RenderPolyline();
                 SE_Polyline* p = (SE_Polyline*) sym;
                 SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
-                rp->weight = p->weight.evaluate(m_exec)*mm2px;
+                double wx = p->weightScalable.evaluate(m_exec) ? 
+                    m_renderer->GetPixelsPerMillimeterWorld() : 
+                    m_renderer->GetPixelsPerMillimeterScreen();
+                rp->weight = p->weight.evaluate(m_exec)*wx;
                 rp->geometry = p->geometry;
                 rp->color = p->color.evaluate(m_exec);
                 /* Defer transformation */

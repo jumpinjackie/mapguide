@@ -389,12 +389,15 @@ void SE_StyleVisitor::VisitPath(Path& path)
         ParseGeometry(geometry, *line->geometry);
         ParseDoubleExpression(path.GetLineWeight(), line->weight);
         ParseColorExpression(path.GetLineColor(), line->color);
+        ParseBooleanExpression(path.GetLineWeightScalable(), line->weightScalable);
+
         /* If the color is transparent, there is no point in drawing this path,
          * so we will change it to black. */
         if (line->color.argb() == 0)
             line->color.a = 255;
         line->cacheable = !(line->weight.expression ||
-                            line->color.expression);
+                            line->color.expression ||
+                            line->weightScalable.expression);
     }
     else
     {
@@ -405,9 +408,11 @@ void SE_StyleVisitor::VisitPath(Path& path)
         ParseDoubleExpression(path.GetLineWeight(), polygon->weight);
         polygon->fill = color;
         ParseColorExpression(path.GetLineColor(), polygon->color);
-        polygon->cacheable = !(polygon->weight.expression ||
-                            polygon->color.expression ||
-                            polygon->fill.expression);
+        ParseBooleanExpression(path.GetLineWeightScalable(), polygon->weightScalable);
+        polygon->cacheable = !(polygon->weight.expression || 
+                            polygon->color.expression || 
+                            polygon->fill.expression ||
+                            polygon->weightScalable.expression);
     }
 }
 
