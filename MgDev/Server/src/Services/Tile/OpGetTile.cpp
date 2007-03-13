@@ -32,11 +32,6 @@ MgOpGetTile::~MgOpGetTile()
 void MgOpGetTile::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetTile::Execute()\n")));
-    
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetTile");
 
@@ -46,7 +41,7 @@ void MgOpGetTile::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (4 == m_packet.m_NumArguments && m_packet.m_OperationVersion == 1 )
+    if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         map->SetDelayedLoadResourceService(m_resourceService);
@@ -77,10 +72,9 @@ void MgOpGetTile::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GetTile(map, baseMapLayerGroupName, tileCol, tileRow);
 
-        
         EndExecution(byteReader);
     }
-    else if (5 == m_packet.m_NumArguments && m_packet.m_OperationVersion == 2 )
+    else if (5 == m_packet.m_NumArguments)
     {
         Ptr<MgResourceIdentifier> mapDefinition = (MgResourceIdentifier*)m_stream->GetObject();
 
@@ -115,7 +109,6 @@ void MgOpGetTile::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GetTile(mapDefinition, baseMapLayerGroupName, tileCol, tileRow, scale);
 
-        
         EndExecution(byteReader);
     }
     else
@@ -137,8 +130,6 @@ void MgOpGetTile::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
