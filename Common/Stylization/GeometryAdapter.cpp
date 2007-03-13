@@ -22,9 +22,6 @@
 #include "SymbolVisitor.h"
 #include "SLDSymbols.h"
 
-#define _USE_MATH_DEFINES //for M_PI
-#include <math.h>
-
 
 GeometryAdapter::GeometryAdapter(LineBufferPool* lbp)
 {
@@ -653,7 +650,7 @@ void GeometryAdapter::AddLabel(double x, double y,
     ConvertTextDef(text, def);
 
     if (useSlope)
-        def.rotation() = atan(slope) * 180.0 / M_PI;
+        def.rotation() = atan(slope) / M_PI180;
 
     std::wstring txt;
     /*bool const1 =*/ EvalString(text->GetText(), txt);

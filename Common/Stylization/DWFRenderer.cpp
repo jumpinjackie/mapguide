@@ -769,7 +769,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     }
 
     //default symbol
-    double angle = mdef.rotation() * M_PI / 180.0;
+    double angle = mdef.rotation() * M_PI180;
 
     //default bounds of symbol data in W2D
     //for symbols created by MapGuide Studio
@@ -1428,7 +1428,7 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
     WT_Integer32 line_hgt_y = (WT_Integer32)line_hgt;
     if (tdef.rotation() != 0.0)
     {
-        double angle = tdef.rotation() * M_PI / 180.0;
+        double angle = tdef.rotation() * M_PI180;
         line_hgt_x = (WT_Integer32)(-line_hgt * sin(angle));
         line_hgt_y = (WT_Integer32)( line_hgt * cos(angle));
     }

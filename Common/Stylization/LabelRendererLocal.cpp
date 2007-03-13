@@ -23,7 +23,6 @@
 #include "Centroid.h"
 #include "RS_Font.h"
 
-#define M_PI 3.14159265358979323846
 #define ROUND(x) (int)((x) + 0.5)
 //#define DEBUG_LABELS
 
@@ -753,7 +752,7 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
         return false;
 
     //radian CCW rotation
-    double rotation = info.m_tdef.rotation() * M_PI / 180.0;
+    double rotation = info.m_tdef.rotation() * M_PI180;
     double cos_a = cos(rotation);
     double sin_a = sin(rotation);
 

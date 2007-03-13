@@ -223,7 +223,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                 //due to the rotation
                 if (mdefRot != 0.0)
                 {
-                    double rotRad = mdefRot * M_PI / 180.0;
+                    double rotRad = mdefRot * M_PI180;
                     double cs = cos(rotRad);
                     double sn = sin(rotRad);
 

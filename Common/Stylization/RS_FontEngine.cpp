@@ -486,7 +486,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy)
 {
     //radian CCW rotation
-    double rotation = tdef.rotation() * M_PI / 180.0;
+    double rotation = tdef.rotation() * M_PI180;
 
     double cos_a = cos(rotation);
     double sin_a = sin(rotation);

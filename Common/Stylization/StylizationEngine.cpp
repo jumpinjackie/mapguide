@@ -107,7 +107,6 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
     }
 
     SE_Rule* rule = NULL;
-
     for (int i = 0; i < nRules; i++)
     {
         bool match = (rules[i].filter == NULL);
@@ -229,7 +228,6 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
     SE_RenderPointStyle* render = new SE_RenderPointStyle();
 
     LineBuffer::GeomOperationType type;
-
     switch(geometry->xf_buffer()->geom_type())
     {
     case FdoGeometryType_LineString:
@@ -249,7 +247,7 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
         break;
     }
 
-    double rotation = 0.0;
+    double angle = 0.0;
     const wchar_t* angleControl = style->angleControl.evaluate(m_exec);
     if (wcscmp(L"FromGeometry", angleControl) == 0)
     {
@@ -257,22 +255,18 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
         {
             double x0, x1, y0, y1;
             geometry->LongestEdge(geometry->xf_buffer(), x0, y0, x1, y1);
-            rotation = atan2(y1 - y0, x1 - x0); //TODO: this is probably affected by which way y goes in the renderer (yUp or yDown)
-            if (rotation < 0.0)
-                rotation += 2.0*M_PI;
+            angle = atan2(y1 - y0, x1 - x0);
         }
-        else
-            rotation = 0.0;
     }
     else
-        rotation = style->angle.evaluate(m_exec)*M_PI/180.0;
+        angle = style->angle.evaluate(m_exec) * M_PI180;
 
     double originOffsetX = style->originOffset[0].evaluate(m_exec)*mm2px;
     double originOffsetY = style->originOffset[1].evaluate(m_exec)*mm2px;
 
     SE_Matrix sxform;
     sxform.translate(originOffsetX, originOffsetY);
-    sxform.rotate(rotation);
+    sxform.rotate(m_renderer->GetFontEngine()->_Yup()? angle : -angle);
     sxform.premultiply(xform);
     xform = sxform;
 
@@ -283,12 +277,12 @@ SE_RenderLineStyle* StylizationEngine::EvaluateLineStyle(SE_Matrix& xform, SE_Li
 {
     SE_RenderLineStyle* render = new SE_RenderLineStyle();
 
-    double angle = style->angle.evaluate(m_exec)*(M_PI/180.0);
+    double angle = style->angle.evaluate(m_exec) * M_PI180;
     render->angle = m_renderer->GetFontEngine()->_Yup()? angle : -angle;
     render->startOffset = style->startOffset.evaluate(m_exec)*xform.x0; // x0 is x scale * mm2px
     render->endOffset = style->endOffset.evaluate(m_exec)*xform.x0;
     render->repeat = style->repeat.evaluate(m_exec)*xform.x0;
-    render->vertexAngleLimit = style->vertexAngleLimit.evaluate(m_exec)*(M_PI/180.0);
+    render->vertexAngleLimit = style->vertexAngleLimit.evaluate(m_exec) * M_PI180;
 
     render->angleControl = style->angleControl.evaluate(m_exec);
     render->unitsControl = style->unitsControl.evaluate(m_exec);
@@ -302,7 +296,7 @@ SE_RenderAreaStyle* StylizationEngine::EvaluateAreaStyle(SE_Matrix& /*xform*/, S
 {
     SE_RenderAreaStyle* render = new SE_RenderAreaStyle();
 
-    double angle = style->angle.evaluate(m_exec)*(M_PI/180.0);
+    double angle = style->angle.evaluate(m_exec) * M_PI180;
     render->angle = m_renderer->GetFontEngine()->_Yup()? angle : -angle;
     render->origin[0] = style->origin[0].evaluate(m_exec);
     render->origin[1] = style->origin[1].evaluate(m_exec);
@@ -348,6 +342,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
         case SE_PolygonPrimitive:
             rsym = new SE_RenderPolygon();
             ((SE_RenderPolygon*)rsym)->fill = ((SE_Polygon*)sym)->fill.evaluate(m_exec);
+
         case SE_PolylinePrimitive:
             {
                 if (!rsym) rsym = new SE_RenderPolyline();
@@ -366,6 +361,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                     rp->bounds = NULL;
             }
             break;
+
         case SE_TextPrimitive:
             {
                 rsym = new SE_RenderText();
@@ -373,23 +369,21 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 SE_RenderText* rt = (SE_RenderText*)rsym;
                 rt->text = t->textExpr.evaluate(m_exec);
                 rt->position[0] = t->position[0].evaluate(m_exec)*mm2px;
-                rt->position[1] = t->position[1].evaluate(m_exec)*mm2px;//TODO: take into account y-up or y-down!
+                rt->position[1] = t->position[1].evaluate(m_exec)*mm2px;
                 xform.transform(rt->position[0], rt->position[1]);
 
-                rt->tdef.font().name() = t->fontExpr.evaluate(m_exec);
-                rt->tdef.font().height() = t->size.evaluate(m_exec)*0.001*xform.y1/mm2px; //convert mm to meters which is what RS_TextDef expects
-                rt->tdef.linespace() = t->lineSpacing.evaluate(m_exec);
-                rt->tdef.rotation() = t->angle.evaluate(m_exec);
-                if (!m_renderer->GetFontEngine()->_Yup())
-                    rt->tdef.rotation() = -rt->tdef.rotation();
+                double angle = t->angle.evaluate(m_exec);
+                rt->tdef.rotation() = m_renderer->GetFontEngine()->_Yup()? angle : -angle;
 
                 int style = RS_FontStyle_Regular;
-
                 if (t->underlined.evaluate(m_exec)) style |= (int)RS_FontStyle_Underline;
                 if (t->italic.evaluate(m_exec)) style |= (int)RS_FontStyle_Italic;
                 if (t->bold.evaluate(m_exec)) style |= (int)RS_FontStyle_Bold;
 
                 rt->tdef.font().style() = (RS_FontStyle_Mask)style;
+                rt->tdef.font().name() = t->fontExpr.evaluate(m_exec);
+                rt->tdef.font().height() = t->size.evaluate(m_exec)*0.001*xform.y1/mm2px; //convert mm to meters which is what RS_TextDef expects
+                rt->tdef.linespace() = t->lineSpacing.evaluate(m_exec);
 
                 rt->tdef.color() = RS_Color::FromARGB(t->textColor.evaluate(m_exec));
                 rt->tdef.bgcolor() = RS_Color::FromARGB(t->ghostColor.evaluate(m_exec));
@@ -423,7 +417,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 RS_TextMetrics tm;
                 SE_Matrix txf;
                 m_renderer->GetFontEngine()->GetTextMetrics(rt->text, rt->tdef, tm, false);
-                txf.rotate(rt->tdef.rotation()*M_PI/180.0);
+                txf.rotate(rt->tdef.rotation() * M_PI180);
                 txf.translate(rt->position[0], rt->position[1]);
 
                 double* buffer = (double*)alloca(tm.line_pos.size()*sizeof(double)*8);
@@ -445,6 +439,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                     (int)tm.line_pos.size()*4, m_pool);
             }
             break;
+
         case SE_RasterPrimitive:
             {
                 rsym = new SE_RenderRaster();
@@ -466,29 +461,31 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 xform.transform(rr->position[0], rr->position[1]);
                 rr->extent[0] = r->extent[0].evaluate(m_exec)*xform.x0;
                 rr->extent[1] = r->extent[1].evaluate(m_exec)*xform.y1;
-                rr->angle = r->angle.evaluate(m_exec)*(M_PI/180.0);
+                rr->angle = r->angle.evaluate(m_exec) * M_PI180;
 
                 rr->bounds = m_pool->NewBounds(5);
                 SE_Matrix rxf;
                 rxf.rotate(rr->angle);
                 rxf.translate(rr->position[0], rr->position[1]);
 
-                double w = rr->extent[0]/2.0;
-                double h = rr->extent[1]/2.0;
+                double w = 0.5 * rr->extent[0];
+                double h = 0.5 * rr->extent[1];
                 double sx, sy, x, y;
 
                 rxf.transform(w, h, sx, sy); // upper right
                 rr->bounds->Add(sx, sy);
-                rxf.transform(w, -h, x, y); // lower right
+                rxf.transform(w, -h, x, y);  // lower right
                 rr->bounds->Add(x, y);
                 rxf.transform(-w, -h, x, y); // lower left
                 rr->bounds->Add(x, y);
-                rxf.transform(-w, h, x, y); // upper left
+                rxf.transform(-w, h, x, y);  // upper left
                 rr->bounds->Add(x, y);
-                rr->bounds->Add(sx, sy); // upper right
+                rr->bounds->Add(sx, sy);     // upper right
             }
             break;
-        default: break;
+
+        default:
+            break;
         }
 
         if (rsym)
@@ -521,9 +518,11 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
         case ResizeBox::GrowInX:
             growy = 0.0;
             break;
+
         case ResizeBox::GrowInY:
             growx = 0.0;
             break;
+
         case ResizeBox::GrowInXYMaintainAspect:
             if (growy > growx)
                 growx = growy;
@@ -595,15 +594,12 @@ void StylizationEngine::LayoutCustomLabel(const std::wstring& positioningAlgo, L
     }
     //else if (style->positioningAlgorithm == MultipleHighwayShields)
     //{
-
     //}
-     
 }
 
 //clears cached filters/styles/etc
 void StylizationEngine::ClearCache()
 {
-    
     std::map<CompositeTypeStyle*, SE_Rule*>::iterator iter = m_rules.begin();
 
     for (; iter != m_rules.end(); iter++)
