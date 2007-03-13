@@ -166,7 +166,7 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
         {
             SE_Style* style = *siter;
 
-            SE_Matrix tmpxform(xform); //TODO: this is lame, but necessary since the xform can be modified
+            SE_Matrix tmpxform(xform);  //TODO: this is lame, but necessary since the xform can be modified
                                         //when we evalute the style, in the case of point style set on a
                                         //non-point geometry
 
@@ -266,7 +266,7 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
 
     SE_Matrix sxform;
     sxform.translate(originOffsetX, originOffsetY);
-    sxform.rotate(m_renderer->GetFontEngine()->_Yup()? angle : -angle);
+    sxform.rotate(angle);
     sxform.premultiply(xform);
     xform = sxform;
 
@@ -277,17 +277,16 @@ SE_RenderLineStyle* StylizationEngine::EvaluateLineStyle(SE_Matrix& xform, SE_Li
 {
     SE_RenderLineStyle* render = new SE_RenderLineStyle();
 
-    double angle = style->angle.evaluate(m_exec) * M_PI180;
-    render->angle = m_renderer->GetFontEngine()->_Yup()? angle : -angle;
-    render->startOffset = style->startOffset.evaluate(m_exec)*xform.x0; // x0 is x scale * mm2px
-    render->endOffset = style->endOffset.evaluate(m_exec)*xform.x0;
-    render->repeat = style->repeat.evaluate(m_exec)*xform.x0;
-    render->vertexAngleLimit = style->vertexAngleLimit.evaluate(m_exec) * M_PI180;
-
     render->angleControl = style->angleControl.evaluate(m_exec);
     render->unitsControl = style->unitsControl.evaluate(m_exec);
     render->vertexControl = style->vertexControl.evaluate(m_exec);
 //  render->join = style->join.evaluate(m_exec);
+
+    render->angle = style->angle.evaluate(m_exec) * M_PI180;
+    render->startOffset = style->startOffset.evaluate(m_exec)*xform.x0; // x0 is x scale * mm2px
+    render->endOffset = style->endOffset.evaluate(m_exec)*xform.x0;
+    render->repeat = style->repeat.evaluate(m_exec)*xform.x0;
+    render->vertexAngleLimit = style->vertexAngleLimit.evaluate(m_exec) * M_PI180;
 
     return render;
 }
@@ -296,17 +295,16 @@ SE_RenderAreaStyle* StylizationEngine::EvaluateAreaStyle(SE_Matrix& /*xform*/, S
 {
     SE_RenderAreaStyle* render = new SE_RenderAreaStyle();
 
-    double angle = style->angle.evaluate(m_exec) * M_PI180;
-    render->angle = m_renderer->GetFontEngine()->_Yup()? angle : -angle;
+    render->angleControl = style->angleControl.evaluate(m_exec);
+    render->originControl = style->originControl.evaluate(m_exec);
+    render->clippingControl = style->clippingControl.evaluate(m_exec);
+
+    render->angle = style->angle.evaluate(m_exec) * M_PI180;
     render->origin[0] = style->origin[0].evaluate(m_exec);
     render->origin[1] = style->origin[1].evaluate(m_exec);
     render->repeat[0] = style->repeat[0].evaluate(m_exec);
     render->repeat[1] = style->repeat[1].evaluate(m_exec);
     render->bufferWidth = style->bufferWidth.evaluate(m_exec);
-
-    render->angleControl = style->angleControl.evaluate(m_exec);
-    render->originControl = style->originControl.evaluate(m_exec);
-    render->clippingControl = style->clippingControl.evaluate(m_exec);
 
     return render;
 }
@@ -375,8 +373,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 rt->position[1] = t->position[1].evaluate(m_exec)*mm2px;
                 xform.transform(rt->position[0], rt->position[1]);
 
-                double angle = t->angle.evaluate(m_exec);
-                rt->tdef.rotation() = m_renderer->GetFontEngine()->_Yup()? angle : -angle;
+                rt->tdef.rotation() = t->angle.evaluate(m_exec);;
 
                 int style = RS_FontStyle_Regular;
                 if (t->underlined.evaluate(m_exec)) style |= (int)RS_FontStyle_Underline;
