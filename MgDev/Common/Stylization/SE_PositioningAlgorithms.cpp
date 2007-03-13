@@ -3,6 +3,7 @@
 #include "SE_Include.h"
 #include "SE_PositioningAlgorithms.h"
 #include "SE_Renderer.h"
+#include "Renderer.h"
 #include "SE_Bounds.h"
 #include "RS_FontEngine.h"
 #include <algorithm>
@@ -90,6 +91,9 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
 
     //get actual feature point
     geometry->Centroid(LineBuffer::ctPoint, &cx, &cy, &dummy);
+
+    //transform the point to screen space
+    renderer->WorldToScreenPoint(cx, cy, cx, cy);
 
     //assume there is a single text label in the render symbol
     //and extract it from in there
@@ -279,6 +283,31 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
 
     renderer->ProcessLabelGroup(candidates, 8, RS_OverpostType_FirstFit, true, NULL);
 }
+
+
+void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer, 
+                      LineBuffer*     geometry, 
+                      SE_Matrix&      xform, 
+                      SE_Style*       style, 
+                      SE_RenderStyle* rstyle, 
+                      double          mm2px
+                      )
+{
+    //This placement algorithm implements MapGuide path labels -- periodic text label along
+    //a linestring or multi line string feature, with stitching of adjacent features that have the
+    //same label
+
+
+    //assume that a single text was used in the SymbolDefinition that requests this positioning algorithm
+    SE_RenderText* rt = (SE_RenderText*)rstyle->symbol[0];
+
+    RS_LabelInfo info(0.0, 0.0, 0.0, 0.0, RS_Units_Device, rt->tdef, true);
+
+    //TODO: get rid of this dynamic_cast once we fix the class hierarchy
+    Renderer* renderer = dynamic_cast<Renderer*>(se_renderer);
+    renderer->ProcessLabelGroup(&info, 1, rt->text, RS_OverpostType_AllFit, true, geometry); 
+}
+
     
 
 void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer, 
