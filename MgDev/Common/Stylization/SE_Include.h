@@ -413,38 +413,38 @@ struct SE_PointStyle : public SE_Style
 {
     SE_INLINE SE_PointStyle() : SE_Style(SE_PointStyleType) { }
 
-    SE_String orientation;
+    SE_String angleControl;
     SE_Double angle;
-    SE_Double offset[2];
+    SE_Double originOffset[2];
 };
 
 struct SE_LineStyle : public SE_Style
 {
     SE_INLINE SE_LineStyle() : SE_Style(SE_LineStyleType) { }
 
-    SE_String orientation;
-    SE_String units;
-    SE_String overlap;
-    SE_String join;
+    SE_String angleControl;
+    SE_String unitsControl;
+    SE_String vertexControl;
+//  SE_String join;
 
+    SE_Double angle;
     SE_Double startOffset;
     SE_Double endOffset;
     SE_Double repeat;
-    SE_Double angleLimit;
-    SE_Double angle;
+    SE_Double vertexAngleLimit;
 };
 
 struct SE_AreaStyle : public SE_Style
 {
     SE_INLINE SE_AreaStyle() : SE_Style(SE_AreaStyleType) { }
 
-    SE_String orientation;
-    SE_String origincontrol;
-    SE_String clipping;
+    SE_String angleControl;
+    SE_String originControl;
+    SE_String clippingControl;
 
+    SE_Double angle;
     SE_Double origin[2];
     SE_Double repeat[2];
-    SE_Double angle;
     SE_Double bufferWidth;
 };
 
@@ -492,31 +492,30 @@ struct SE_RenderLineStyle : public SE_RenderStyle
 {
     SE_INLINE SE_RenderLineStyle() : SE_RenderStyle(SE_LineStyleType) { }
 
-    const wchar_t* orientation;
-    const wchar_t* units;
-    const wchar_t* overlap;
-    const wchar_t* join;
+    const wchar_t* angleControl;
+    const wchar_t* unitsControl;
+    const wchar_t* vertexControl;
+//  const wchar_t* join;
 
+    double angle;
     double startOffset;
     double endOffset;
     double repeat;
-    double angleLimit;
-    double angle;
+    double vertexAngleLimit;
 };
 
 struct SE_RenderAreaStyle : public SE_RenderStyle
 {
     SE_INLINE SE_RenderAreaStyle() : SE_RenderStyle(SE_AreaStyleType) { }
 
-    const wchar_t* origincontrol;
-    const wchar_t* orientation;
-    const wchar_t* clipping;
+    const wchar_t* angleControl;
+    const wchar_t* originControl;
+    const wchar_t* clippingControl;
 
-    unsigned int background;
+    double angle;
     double origin[2];
     double repeat[2];
-    double angle;
-    double radius;
+    double bufferWidth;
 };
 
 

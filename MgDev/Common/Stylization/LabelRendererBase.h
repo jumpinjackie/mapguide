@@ -33,7 +33,7 @@ class SE_Renderer;
 class LabelRendererBase
 {
 public:
-    LabelRendererBase(Renderer* renderer, SE_Renderer* serenderer);
+    LabelRendererBase(Renderer* renderer);
 
     virtual ~LabelRendererBase() {};
 

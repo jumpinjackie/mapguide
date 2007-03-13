@@ -31,10 +31,10 @@ extern int ConvertColor(gdImagePtr i, RS_Color& c);
 
 
 //////////////////////////////////////////////////////////////////////////////
-LabelRendererLocal::LabelRendererLocal(Renderer* renderer, SE_Renderer* serenderer, double tileExtentOffset)
-: LabelRendererBase(renderer, serenderer),
-  m_bOverpostGroupOpen(false),
-  m_tileExtentOffset(tileExtentOffset)
+LabelRendererLocal::LabelRendererLocal(Renderer* renderer, double tileExtentOffset)
+: LabelRendererBase(renderer)
+, m_bOverpostGroupOpen(false)
+, m_tileExtentOffset(tileExtentOffset)
 {
 }
 

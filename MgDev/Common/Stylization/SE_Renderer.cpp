@@ -128,7 +128,7 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 dx_incr = cos(slope);
                 dy_incr = sin(slope);
 
-                double symrot = wcscmp(L"FromAngle", style->orientation) == 0 ? style->angle : slope;
+                double symrot = wcscmp(L"FromAngle", style->angleControl) == 0 ? style->angle : slope;
                 symxf.rotate(symrot);
                 double tx = seg[0] + dx_incr * drawpos;
                 double ty = seg[1] + dy_incr * drawpos;
