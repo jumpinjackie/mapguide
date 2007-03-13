@@ -92,7 +92,7 @@ MgByteReader* MgProxyResourceService::EnumerateRepositories(CREFSTRING repositor
                         MgResourceService::opIdEnumerateRepositories,
                         1,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knString, &repositoryType,
                         MgCommand::knNone);
 
@@ -136,7 +136,7 @@ void MgProxyResourceService::CreateRepository(MgResourceIdentifier* resource, Mg
                         MgResourceService::opIdCreateRepository,
                         3,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knObject, content,
                         MgCommand::knObject, header,
@@ -174,7 +174,7 @@ void MgProxyResourceService::DeleteRepository(MgResourceIdentifier* resource)
                         MgResourceService::opIdDeleteRepository,
                         1,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knNone);
 }
@@ -219,7 +219,7 @@ void MgProxyResourceService::UpdateRepository(MgResourceIdentifier* resource, Mg
                         MgResourceService::opIdUpdateRepository,
                         3,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knObject, content,
                         MgCommand::knObject, header,
@@ -245,7 +245,7 @@ MgByteReader* MgProxyResourceService::EnumerateResources(
                         MgResourceService::opIdEnumerateResources,
                         6,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knInt32, depth,
                         MgCommand::knString, &type,
@@ -296,7 +296,7 @@ void MgProxyResourceService::SetResource(MgResourceIdentifier* resource, MgByteR
                         MgResourceService::opIdSetResource,
                         3,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knObject, content,
                         MgCommand::knObject, header,
@@ -320,7 +320,7 @@ void MgProxyResourceService::ApplyResourcePackage(MgByteReader* resourcePackage)
         MgResourceService::opIdApplyResourcePackage,        // Command Code
         1,                                                  // Number of arguments
         Resource_Service,                                   // Service ID
-        1,                                                  // Operation version
+        BUILD_VERSION(1,0,0),                               // Operation version
         MgCommand::knObject, resourcePackage,               // Argument #1
         MgCommand::knNone);
 
@@ -345,7 +345,7 @@ void MgProxyResourceService::DeleteResource(MgResourceIdentifier* resource)
                         MgResourceService::opIdDeleteResource,
                         1,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knNone);
 
@@ -393,7 +393,7 @@ void MgProxyResourceService::MoveResource(MgResourceIdentifier* sourceResource,
                         MgResourceService::opIdMoveResource,
                         3,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, sourceResource,
                         MgCommand::knObject, destResource,
                         MgCommand::knInt8, (int)overwrite,
@@ -439,7 +439,7 @@ void MgProxyResourceService::CopyResource(MgResourceIdentifier* sourceResource,
                         MgResourceService::opIdCopyResource,
                         3,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, sourceResource,
                         MgCommand::knObject, destResource,
                         MgCommand::knInt8, (int)overwrite,
@@ -482,7 +482,7 @@ MgByteReader* MgProxyResourceService::GetResourceContent(
                         MgResourceService::opIdGetResourceContent,
                         2,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knString, &preProcessTags,
                         MgCommand::knNone);
@@ -560,7 +560,7 @@ void MgProxyResourceService::ChangeResourceOwner(MgResourceIdentifier* resource,
                         MgResourceService::opIdChangeResourceOwner,
                         3,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knString, &owner,
                         MgCommand::knInt8, (int)includeDescendants,
@@ -602,7 +602,7 @@ void MgProxyResourceService::InheritPermissionsFrom(
                         MgResourceService::opIdInheritPermissionsFrom,
                         1,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knNone);
 
@@ -632,7 +632,7 @@ MgByteReader* MgProxyResourceService::GetResourceHeader(MgResourceIdentifier* re
                         MgResourceService::opIdGetResourceHeader,
                         1,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knNone);
 
@@ -678,7 +678,7 @@ void MgProxyResourceService::SetResourceData(MgResourceIdentifier* resource,
                        MgResourceService::opIdSetResourceData,
                        4,
                        Resource_Service,
-                       1,
+                       BUILD_VERSION(1,0,0),
                        MgCommand::knObject, resource,
                        MgCommand::knString, &dataName,
                        MgCommand::knString, &dataType,
@@ -712,7 +712,7 @@ void MgProxyResourceService::DeleteResourceData(MgResourceIdentifier* resource, 
                         MgResourceService::opIdDeleteResourceData,
                         2,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knString, &dataName,
                         MgCommand::knNone);
@@ -757,7 +757,7 @@ void MgProxyResourceService::RenameResourceData(MgResourceIdentifier* resource,
                        MgResourceService::opIdRenameResourceData,
                        4,
                        Resource_Service,
-                       1,
+                       BUILD_VERSION(1,0,0),
                        MgCommand::knObject, resource,
                        MgCommand::knString, &oldDataName,
                        MgCommand::knString, &newDataName,
@@ -807,7 +807,7 @@ MgByteReader* MgProxyResourceService::GetResourceData(
                         MgResourceService::opIdGetResourceData,
                         3,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knString, &dataName,
                         MgCommand::knString, &preProcessTags,
@@ -870,7 +870,7 @@ MgByteReader* MgProxyResourceService::EnumerateResourceData(MgResourceIdentifier
                         MgResourceService::opIdEnumerateResourceData,
                         1,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knNone);
 
@@ -902,7 +902,7 @@ MgByteReader* MgProxyResourceService::GetRepositoryContent(MgResourceIdentifier*
                         MgResourceService::opIdGetRepositoryContent,
                         1,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knNone);
 
@@ -934,7 +934,7 @@ MgByteReader* MgProxyResourceService::GetRepositoryHeader(MgResourceIdentifier* 
                         MgResourceService::opIdGetRepositoryHeader,
                         1,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knNone);
 
@@ -962,7 +962,7 @@ MgByteReader* MgProxyResourceService::EnumerateReferences(
                        MgResourceService::opIdEnumerateReferences,
                        1,
                        Resource_Service,
-                       1,
+                       BUILD_VERSION(1,0,0),
                        MgCommand::knObject, resource,
                        MgCommand::knNone);
 
@@ -992,7 +992,7 @@ MgDateTime* MgProxyResourceService::GetResourceModifiedDate(
                         MgResourceService::opIdGetResourceModifiedDate,
                         1,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knNone);
 
@@ -1021,7 +1021,7 @@ MgSerializableCollection* MgProxyResourceService::EnumerateParentMapDefinitions(
         MgResourceService::opIdEnumerateParentMapDefinitions, // Command code
         1,                                                  // Number of arguments
         Resource_Service,                                   // Service ID
-        1,                                                  // Operation version
+        BUILD_VERSION(1,0,0),                               // Operation version
         MgCommand::knObject, resources,                     // Argument #1
         MgCommand::knNone);
 
@@ -1071,7 +1071,7 @@ MgByteReader* MgProxyResourceService::EnumerateUnmanagedData(
                         MgResourceService::opIdEnumerateUnmanagedData,
                         4,
                         Resource_Service,
-                        1,
+                        BUILD_VERSION(1,0,0),
                         MgCommand::knString, &path,
                         MgCommand::knInt8, (int)recursive,
                         MgCommand::knString, &type,
