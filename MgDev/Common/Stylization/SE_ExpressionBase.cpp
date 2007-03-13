@@ -168,12 +168,12 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
         return;
     }
     
-    if (wcsicmp(cstr, L"true") == 0)
+    if (_wcsicmp(cstr, L"true") == 0)
     {
         val = true;
         return;
     }
-    else if (wcsicmp(cstr, L"false") == 0)
+    else if (_wcsicmp(cstr, L"false") == 0)
     {
         val = false;
         return;
