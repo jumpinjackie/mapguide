@@ -63,9 +63,9 @@ IMgOperationHandler* MgKmlOperationFactory::GetOperation(
     switch (operationId)
     {
     case MgKmlServiceOpId::GetMapKml:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetMapKml());
             break;
         default:
@@ -75,9 +75,9 @@ IMgOperationHandler* MgKmlOperationFactory::GetOperation(
         break;
 
     case MgKmlServiceOpId::GetLayerKml:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetLayerKml());
             break;
         default:
@@ -87,9 +87,9 @@ IMgOperationHandler* MgKmlOperationFactory::GetOperation(
         break;
 
     case MgKmlServiceOpId::GetFeaturesKml:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetFeaturesKml());
             break;
         default:

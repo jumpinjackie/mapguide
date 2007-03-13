@@ -62,10 +62,10 @@ IMgOperationHandler* MgTileOperationFactory::GetOperation(
     switch (operationId)
     {
     case MgTileServiceOpId::GetTile:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
-        case 2:
+        case VERSION_SUPPORTED(1,0):
+        case VERSION_SUPPORTED(1,2):
             handler.reset(new MgOpGetTile());
             break;
         default:
@@ -75,9 +75,9 @@ IMgOperationHandler* MgTileOperationFactory::GetOperation(
         break;
 
     case MgTileServiceOpId::SetTile:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSetTile());
             break;
         default:
@@ -87,9 +87,9 @@ IMgOperationHandler* MgTileOperationFactory::GetOperation(
         break;
 
     case MgTileServiceOpId::ClearCache:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpClearCache());
             break;
         default:

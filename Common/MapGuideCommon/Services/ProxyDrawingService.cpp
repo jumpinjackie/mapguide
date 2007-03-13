@@ -83,7 +83,7 @@ MgByteReader* MgProxyDrawingService::GetDrawing(MgResourceIdentifier* resource)
                        MgDrawingServiceOpId::GetDrawing,            // Command Code
                        1,                                           // No of arguments
                        Drawing_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knNone);
 
@@ -119,7 +119,7 @@ MgByteReader* MgProxyDrawingService::DescribeDrawing(MgResourceIdentifier* resou
                        MgDrawingServiceOpId::DescribeDrawing,       // Command Code
                        1,                                           // No of arguments
                        Drawing_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knNone);
 
@@ -162,7 +162,7 @@ MgByteReader* MgProxyDrawingService::GetSection(MgResourceIdentifier* resource, 
                        MgDrawingServiceOpId::GetSection,            // Command Code
                        2,                                           // No of arguments
                        Drawing_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &sectionName,           // Argument#2
                        MgCommand::knNone);
@@ -215,7 +215,7 @@ MgByteReader* MgProxyDrawingService::GetSectionResource(MgResourceIdentifier* re
                        MgDrawingServiceOpId::GetSectionResource,    // Command Code
                        2,                                           // No of arguments
                        Drawing_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &resourceName,          // Argument#2
                        MgCommand::knNone);
@@ -261,7 +261,7 @@ MgStringCollection* MgProxyDrawingService::EnumerateLayers(MgResourceIdentifier*
                        MgDrawingServiceOpId::EnumerateLayers,       // Command Code
                        2,                                           // No of arguments
                        Drawing_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &sectionName,           // Argument#2
                        MgCommand::knNone);
@@ -307,7 +307,7 @@ MgByteReader* MgProxyDrawingService::GetLayer( MgResourceIdentifier* resource, C
                        MgDrawingServiceOpId::GetLayer,              // Command Code
                        3,                                           // No of arguments
                        Drawing_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &sectionName,           // Argument#2
                        MgCommand::knString, &layerName,             // Argument#2
@@ -346,7 +346,7 @@ MgByteReader* MgProxyDrawingService::EnumerateSections(MgResourceIdentifier* res
                        MgDrawingServiceOpId::EnumerateSections,     // Command Code
                        1,                                           // No of arguments
                        Drawing_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knNone);
 
@@ -389,7 +389,7 @@ MgByteReader* MgProxyDrawingService::EnumerateSectionResources(MgResourceIdentif
                        MgDrawingServiceOpId::EnumerateSectionResources, // Command Code
                        2,                                           // No of arguments
                        Drawing_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &sectionName,           // Argument#2
                        MgCommand::knNone);
@@ -424,7 +424,7 @@ STRING MgProxyDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource)
                        MgDrawingServiceOpId::GetCoordinateSpace,    // Command Code
                        1,                                           // No of arguments
                        Drawing_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knNone);
 

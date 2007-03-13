@@ -94,7 +94,7 @@ MgByteReader* MgProxyRenderingService::RenderTile(
                         MgRenderingServiceOpId::RenderTile,             // Command Code
                         4,                                              // No of arguments
                         Rendering_Service,                              // Service Id
-                        1,                                              // Operation version
+                        BUILD_VERSION(1,0,0),                           // Operation version
                         MgCommand::knObject, map,                       // Argument#1
                         MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
                         MgCommand::knInt32, tileColumn,                 // Argument#3
@@ -170,7 +170,7 @@ MgByteReader* MgProxyRenderingService::RenderDynamicOverlay(
                         MgRenderingServiceOpId::RenderDynamicOverlay,   // Command Code
                         4,                                              // No of arguments
                         Rendering_Service,                              // Service Id
-                        1,                                              // Operation version
+                        BUILD_VERSION(1,0,0),                           // Operation version
                         MgCommand::knObject, map,                       // Argument#1
                         MgCommand::knObject, selection,                 // Argument#2
                         MgCommand::knString, &format,                   // Argument#3
@@ -240,7 +240,7 @@ MgByteReader* MgProxyRenderingService::RenderMap(
                         MgRenderingServiceOpId::RenderMap1, // Command Code
                         4,                                  // No of arguments
                         Rendering_Service,                  // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knObject, map,           // Argument#1
                         MgCommand::knObject, selection,     // Argument#2
                         MgCommand::knString, &format,       // Argument#3
@@ -342,7 +342,7 @@ MgByteReader* MgProxyRenderingService::RenderMap(
                         MgRenderingServiceOpId::RenderMap2,     // Command Code
                         8,                                      // No of arguments
                         Rendering_Service,                      // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, map,               // Argument#1
                         MgCommand::knObject, selection,         // Argument#2
                         MgCommand::knObject, extents,           // Argument#3
@@ -454,7 +454,7 @@ MgByteReader* MgProxyRenderingService::RenderMap(
                         MgRenderingServiceOpId::RenderMap3,     // Command Code
                         9,                                      // No of arguments
                         Rendering_Service,                      // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, map,               // Argument#1
                         MgCommand::knObject, selection,         // Argument#2
                         MgCommand::knObject, center,            // Argument#3
@@ -506,7 +506,7 @@ MgByteReader* MgProxyRenderingService::RenderMapLegend(
                         MgRenderingServiceOpId::RenderMapLegend,// Command Code
                         5,                                      // No of arguments
                         Rendering_Service,                      // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, map,               // Argument#1
                         MgCommand::knInt32, width,              // Argument#2
                         MgCommand::knInt32, height,             // Argument#3
@@ -602,7 +602,7 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
                         MgRenderingServiceOpId::QueryFeatures,  // Command Code
                         6,                                      // No of arguments
                         Rendering_Service,                      // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, map,               // Argument#1
                         MgCommand::knObject, layerNames,        // Argument#2
                         MgCommand::knObject, geometry,          // Argument#3
@@ -699,7 +699,7 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
                         MgRenderingServiceOpId::QueryFeatureProperties,  // Command Code
                         6,                                      // No of arguments
                         Rendering_Service,                      // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, map,               // Argument#1
                         MgCommand::knObject, layerNames,        // Argument#2
                         MgCommand::knObject, geometry,          // Argument#3

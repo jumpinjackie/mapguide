@@ -83,7 +83,7 @@ MgByteReader* MgProxyFeatureService::GetFeatureProviders()
                        MgFeatureServiceOpId::GetFeatureProviders_Id,// Command Code
                        0,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -180,7 +180,7 @@ MgStringCollection* MgProxyFeatureService::GetConnectionPropertyValues(CREFSTRIN
                        MgFeatureServiceOpId::GetConnectionPropertyValues_Id,    // Command Code
                        3,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
                        MgCommand::knString, &propertyName,          // Argument#1
                        MgCommand::knString, &partialConnString,     // Argument#2
@@ -210,7 +210,7 @@ bool MgProxyFeatureService::TestConnection(CREFSTRING providerName, CREFSTRING c
                        MgFeatureServiceOpId::TestConnection_Id,     // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
                        MgCommand::knString, &connectionString,      // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -239,7 +239,7 @@ bool MgProxyFeatureService::TestConnection(MgResourceIdentifier* resource)
                        MgFeatureServiceOpId::TestConnectionWithResource_Id, // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -282,7 +282,7 @@ MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName)
                        MgFeatureServiceOpId::GetCapabilities_Id,    // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -318,7 +318,7 @@ MgFeatureSchemaCollection* MgProxyFeatureService::DescribeSchema(MgResourceIdent
                        MgFeatureServiceOpId::DescribeSchema_Id,     // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &schemaName,            // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -360,7 +360,7 @@ STRING MgProxyFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource
                        MgFeatureServiceOpId::DescribeSchemaAsXml_Id,// Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &schemaName,            // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -396,7 +396,7 @@ STRING MgProxyFeatureService::SchemaToXml(MgFeatureSchemaCollection* schema)
                        MgFeatureServiceOpId::SchemaToXml_Id,        // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, schema,                 // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -433,7 +433,7 @@ MgFeatureSchemaCollection* MgProxyFeatureService::XmlToSchema(CREFSTRING xml)
                        MgFeatureServiceOpId::XmlToSchema_Id,        // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knString, &xml,                   // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -486,7 +486,7 @@ MgFeatureReader*  MgProxyFeatureService::SelectFeatures(MgResourceIdentifier* re
                        MgFeatureServiceOpId::SelectFeatures_Id,     // Command Code
                        3,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &className,             // Argument#2
                        MgCommand::knObject, options,                // Argument#3
@@ -602,7 +602,7 @@ MgDataReader* MgProxyFeatureService::SelectAggregate(MgResourceIdentifier* resou
                        MgFeatureServiceOpId::SelectAggregate_Id,    // Command Code
                        3,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &className,             // Argument#2
                        MgCommand::knObject, options,                // Argument#3
@@ -649,7 +649,7 @@ MgPropertyCollection* MgProxyFeatureService::UpdateFeatures(MgResourceIdentifier
                        MgFeatureServiceOpId::UpdateFeatures_Id,     // Command Code
                        3,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knObject, commands,               // Argument#2
                        MgCommand::knInt8, (INT8)useTransaction,     // Argument#3
@@ -754,7 +754,7 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
                        MgFeatureServiceOpId::ExecuteSqlQuery_Id,    // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &sqlStatement,          // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -797,7 +797,7 @@ INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
                        MgFeatureServiceOpId::ExecuteSqlNonQuery_Id, // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &sqlNonSelectStatement, // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -854,7 +854,7 @@ MgSpatialContextReader* MgProxyFeatureService::GetSpatialContexts(MgResourceIden
                        MgFeatureServiceOpId::GetSpatialContexts_Id, // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knInt8, (INT8)bActiveOnly,        // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -906,7 +906,7 @@ MgLongTransactionReader* MgProxyFeatureService::GetLongTransactions(MgResourceId
                        MgFeatureServiceOpId::GetLongTransactions_Id,// Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knInt8, (INT8)bActiveOnly,        // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -948,7 +948,7 @@ bool MgProxyFeatureService::SetLongTransaction( MgResourceIdentifier* featureSou
                        MgFeatureServiceOpId::SetLongTransaction_Id, // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, featureSourceId,        // Argument#1
                        MgCommand::knString, &longTransactionName,   // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -970,7 +970,7 @@ MgByteReader* MgProxyFeatureService::DescribeWfsFeatureType(MgResourceIdentifier
                        MgFeatureServiceOpId::DescribeWfsFeatureType_Id, // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, featureSourceId,        // Argument#1
                        MgCommand::knObject, featureClasses,         // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -996,7 +996,7 @@ MgByteReader* MgProxyFeatureService::GetWfsFeature(MgResourceIdentifier* feature
                        MgFeatureServiceOpId::GetWfsFeature_Id,      // Command Code
                        6,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, featureSourceId,        // Argument#1
                        MgCommand::knString, &featureClass,          // Argument#2
                        MgCommand::knObject, requiredProperties,     // Argument#3
@@ -1020,7 +1020,7 @@ MgBatchPropertyCollection* MgProxyFeatureService::GetFeatures(INT32 featureReade
                        MgFeatureServiceOpId::GetFeatures_Id,        // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knInt32, featureReaderId,         // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -1039,7 +1039,7 @@ bool MgProxyFeatureService::CloseFeatureReader(INT32 featureReaderId)
                        MgFeatureServiceOpId::CloseFeatureReader_Id, // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knInt32, featureReaderId,         // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -1058,7 +1058,7 @@ MgBatchPropertyCollection* MgProxyFeatureService::GetSqlRows(INT32 sqlReaderId)
                        MgFeatureServiceOpId::GetSqlRows_Id,         // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knInt32, sqlReaderId,             // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -1077,7 +1077,7 @@ bool MgProxyFeatureService::CloseSqlReader(INT32 sqlReaderId)
                        MgFeatureServiceOpId::CloseSqlReader_Id,     // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knInt32, sqlReaderId,             // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -1096,7 +1096,7 @@ MgStringCollection* MgProxyFeatureService::GetSchemas(MgResourceIdentifier* reso
                        MgFeatureServiceOpId::GetSchemas_Id,         // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -1115,7 +1115,7 @@ MgStringCollection* MgProxyFeatureService::GetClasses(MgResourceIdentifier* reso
                        MgFeatureServiceOpId::GetClasses_Id,         // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &schemaName,            // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -1137,7 +1137,7 @@ MgClassDefinition* MgProxyFeatureService::GetClassDefinition(MgResourceIdentifie
                        MgFeatureServiceOpId::GetClassDefinition_Id, // Command Code
                        3,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &schemaName,            // Argument#2
                        MgCommand::knString, &className,             // Argument#3
@@ -1158,7 +1158,7 @@ MgByteReader* MgProxyFeatureService::GetRaster(INT32 featureReaderId, INT32 xSiz
                        MgFeatureServiceOpId::GetRaster_Id,          // Command Code
                        4,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knInt32, featureReaderId,         // Argument#1
                        MgCommand::knInt32, xSize,                   // Argument#2
                        MgCommand::knInt32, ySize,                   // Argument#3
@@ -1180,7 +1180,7 @@ MgBatchPropertyCollection* MgProxyFeatureService::GetDataRows(INT32 dataReaderId
                        MgFeatureServiceOpId::GetDataRows_Id,        // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knInt32, dataReaderId,            // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -1199,7 +1199,7 @@ bool MgProxyFeatureService::CloseDataReader(INT32 dataReaderId)
                        MgFeatureServiceOpId::CloseDataReader_Id,    // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knInt32, dataReaderId,            // Argument#1
                        MgCommand::knNone);                          // End of argument
 
@@ -1218,7 +1218,7 @@ void MgProxyFeatureService::CreateFeatureSource(MgResourceIdentifier* resource, 
                        MgFeatureServiceOpId::CreateFeatureSource_Id,// Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knObject, sourceParams,           // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -1240,7 +1240,7 @@ MgPropertyDefinitionCollection* MgProxyFeatureService::GetIdentityProperties(MgR
                        MgFeatureServiceOpId::GetIdentityProperties_Id,  // Command Code
                        3,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &schemaName,            // Argument#2
                        MgCommand::knString, &className,             // Argument#3
@@ -1263,8 +1263,8 @@ bool MgProxyFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReaderId)
                         MgFeatureServiceOpId::CloseGwsFeatureReader_Id,       // Command Code
                         1,                                                    // No of arguments
                         Feature_Service,                                      // Service Id
-                        1,                                                    // Operation version
-                        MgCommand::knInt32, (INT32)gwsFeatureReaderId,               // Argument#1
+                        BUILD_VERSION(1,0,0),                                 // Operation version
+                        MgCommand::knInt32, (INT32)gwsFeatureReaderId,        // Argument#1
                         MgCommand::knNone);                                   // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -1281,7 +1281,7 @@ MgByteReader* MgProxyFeatureService::EnumerateDataStores(CREFSTRING providerName
                        MgFeatureServiceOpId::EnumerateDataStores_Id,    // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
                        MgCommand::knString, &partialConnString,     // Argument#2
                        MgCommand::knNone);                          // End of argument
@@ -1300,7 +1300,7 @@ MgByteReader* MgProxyFeatureService::GetSchemaMapping(CREFSTRING providerName,
                        MgFeatureServiceOpId::GetSchemaMapping_Id,   // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       1,                                           // Operation version
+                       BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
                        MgCommand::knString, &partialConnString,     // Argument#2
                        MgCommand::knNone);                          // End of argument

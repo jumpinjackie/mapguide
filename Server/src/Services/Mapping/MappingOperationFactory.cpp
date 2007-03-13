@@ -76,9 +76,9 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
     switch (operationId)
     {
     case MgMappingService::opIdGenerateMap:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGenerateMap());
             break;
         default:
@@ -88,9 +88,9 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         break;
 
     case MgMappingService::opIdGenerateMapUpdate:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGenerateMapUpdate());
             break;
         default:
@@ -100,9 +100,9 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         break;
 
     case MgMappingService::opIdGeneratePlot:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGeneratePlot());
             break;
         default:
@@ -112,9 +112,9 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         break;
 
     case MgMappingService::opIdGeneratePlot2:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGeneratePlot());
             break;
         default:
@@ -124,9 +124,9 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         break;
 
     case MgMappingService::opIdGeneratePlot3:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGeneratePlot());
             break;
         default:
@@ -136,9 +136,9 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         break;
 
     case MgMappingService::opIdGenerateMultiPlot:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGenerateMultiPlot());
             break;
         default:
@@ -148,9 +148,9 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         break;
 
     case MgMappingService::opIdGenerateLegendPlot:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGenerateLegendPlot());
             break;
         default:
@@ -160,9 +160,9 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         break;
 
     case MgMappingService::opIdGenerateLegendImage:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGenerateLegendImage());
             break;
         default:
@@ -172,9 +172,9 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         break;
 
     case MgMappingService::opIdQueryFeatures:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpMQueryFeatures());
             break;
         default:
@@ -184,9 +184,9 @@ IMgOperationHandler* MgMappingOperationFactory::GetOperation(
         break;
 
     case MgMappingService::opIdQueryFeaturesWms:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpQueryFeaturesWms());
             break;
         default:

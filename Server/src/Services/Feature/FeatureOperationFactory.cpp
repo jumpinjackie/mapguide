@@ -97,9 +97,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
     switch (operationId)
     {
     case MgFeatureServiceOpId::GetFeatureProviders_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetFeatureProviders());
             break;
         default:
@@ -109,9 +109,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetConnectionPropertyValues_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetConnectionPropertyValues());
             break;
         default:
@@ -121,9 +121,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::TestConnection_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpTestConnection());
             break;
         default:
@@ -133,9 +133,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::TestConnectionWithResource_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpTestFeatureSourceConnection());
             break;
         default:
@@ -145,9 +145,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetCapabilities_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetCapabilities());
             break;
         default:
@@ -157,9 +157,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::DescribeSchema_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpDescribeSchema());
             break;
         default:
@@ -169,9 +169,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::DescribeSchemaAsXml_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpDescribeSchemaAsXml());
             break;
         default:
@@ -181,9 +181,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetSchemas_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetSchemas());
             break;
         default:
@@ -193,9 +193,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetClasses_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetClasses());
             break;
         default:
@@ -205,9 +205,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetClassDefinition_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetClassDefinition());
             break;
         default:
@@ -217,9 +217,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::SelectFeatures_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSelectFeatures());
             break;
         default:
@@ -229,9 +229,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::SelectAggregate_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSelectFeaturesSpatial());
             break;
         default:
@@ -241,9 +241,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::ExecuteSqlQuery_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpExecuteSqlQuery());
             break;
         default:
@@ -253,9 +253,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::ExecuteSqlNonQuery_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpExecuteSqlNonQuery());
             break;
         default:
@@ -265,9 +265,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetSpatialContexts_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetSpatialContexts());
             break;
         default:
@@ -277,9 +277,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::UpdateFeatures_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpUpdateFeatures());
             break;
         default:
@@ -289,9 +289,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetFeatures_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetFeatures());
             break;
         default:
@@ -301,9 +301,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::CloseFeatureReader_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpCloseFeatureReader());
             break;
         default:
@@ -313,9 +313,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetSqlRows_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetSqlRows());
             break;
         default:
@@ -325,9 +325,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::CloseSqlReader_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpCloseSqlReader());
             break;
         default:
@@ -337,9 +337,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetDataRows_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetDataRows());
             break;
         default:
@@ -349,9 +349,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::CloseDataReader_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpCloseDataReader());
             break;
         default:
@@ -361,9 +361,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetLongTransactions_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetLongTransactions());
             break;
         default:
@@ -373,9 +373,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::SetLongTransaction_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSetLongTransaction());
             break;
         default:
@@ -385,9 +385,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetRaster_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetRaster());
             break;
         default:
@@ -397,9 +397,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::SchemaToXml_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSchemaToXml());
             break;
         default:
@@ -409,9 +409,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::XmlToSchema_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpXmlToSchema());
             break;
         default:
@@ -421,9 +421,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::CreateFeatureSource_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpCreateFeatureSource());
             break;
         default:
@@ -433,9 +433,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetIdentityProperties_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetIdentityProperties());
             break;
         default:
@@ -445,9 +445,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::DescribeWfsFeatureType_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpDescribeWfsFeatureType());
             break;
         default:
@@ -457,9 +457,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetWfsFeature_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetWfsFeature());
             break;
         default:
@@ -469,9 +469,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::CloseGwsFeatureReader_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpCloseGwsFeatureReader());
             break;
         default:
@@ -482,9 +482,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::EnumerateDataStores_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumerateDataStores());
             break;
         default:
@@ -495,9 +495,9 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         break;
 
     case MgFeatureServiceOpId::GetSchemaMapping_Id:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetSchemaMapping());
             break;
         default:

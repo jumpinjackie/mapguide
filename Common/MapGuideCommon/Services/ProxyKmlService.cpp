@@ -73,7 +73,7 @@ MgByteReader* MgProxyKmlService::GetMapKml(
                         MgKmlServiceOpId::GetMapKml,                    // Command Code
                         4,                                              // No of arguments
                         Kml_Service,                                    // Service Id
-                        1,                                              // Operation version
+                        BUILD_VERSION(1,0,0),                           // Operation version
                         MgCommand::knObject, map,                       // Argument#1
                         MgCommand::knDouble, dpi,                       // Argument#2
                         MgCommand::knString, &agentUri,                 // Argument#3
@@ -102,7 +102,7 @@ MgByteReader* MgProxyKmlService::GetLayerKml(
                         MgKmlServiceOpId::GetLayerKml,                  // Command Code
                         8,                                              // No of arguments
                         Kml_Service,                                    // Service Id
-                        1,                                              // Operation version
+                        BUILD_VERSION(1,0,0),                           // Operation version
                         MgCommand::knObject, layer,                     // Argument#1
                         MgCommand::knObject, extents,                   // Argument#2
                         MgCommand::knInt32, width,                      // Argument#3
@@ -134,7 +134,7 @@ MgByteReader* MgProxyKmlService::GetFeaturesKml(
                         MgKmlServiceOpId::GetFeaturesKml,               // Command Code
                         7,                                              // No of arguments
                         Kml_Service,                                    // Service Id
-                        1,                                              // Operation version
+                        BUILD_VERSION(1,0,0),                           // Operation version
                         MgCommand::knObject, layer,                     // Argument#1
                         MgCommand::knObject, extents,                   // Argument#2
                         MgCommand::knInt32, width,                      // Argument#3

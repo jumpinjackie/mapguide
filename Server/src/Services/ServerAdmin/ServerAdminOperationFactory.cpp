@@ -93,9 +93,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
     switch (operationId)
     {
     case MgServerAdminServiceOpId::GetConfigurationProperties:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetConfigurationProperties());
             break;
         default:
@@ -104,9 +104,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::SetConfigurationProperties:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSetConfigurationProperties());
             break;
         default:
@@ -115,9 +115,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::RemoveConfigurationProperties:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRemoveConfigurationProperties());
             break;
         default:
@@ -126,9 +126,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::BringOnline:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpBringOnline());
             break;
         default:
@@ -137,9 +137,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::TakeOffline:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpTakeOffline());
             break;
         default:
@@ -148,9 +148,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::IsOnline:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpIsOnline());
             break;
         default:
@@ -159,9 +159,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::GetLog:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetLog());
             break;
         default:
@@ -170,9 +170,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::GetLogFile:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetLogFile());
             break;
         default:
@@ -181,9 +181,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::ClearLog:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpClearLog());
             break;
         default:
@@ -192,9 +192,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::DeleteLog:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpDeleteLog());
             break;
         default:
@@ -203,9 +203,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::RenameLog:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRenameLog());
             break;
         default:
@@ -214,9 +214,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::EnumerateLogs:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumerateLogs());
             break;
         default:
@@ -225,9 +225,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::DeletePackage:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpDeletePackage());
             break;
         default:
@@ -236,9 +236,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::EnumeratePackages:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumeratePackages());
             break;
         default:
@@ -247,9 +247,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::GetPackageLog:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetPackageLog());
             break;
         default:
@@ -258,9 +258,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::GetPackageStatus:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetPackageStatus());
             break;
         default:
@@ -269,9 +269,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::LoadPackage:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpLoadPackage());
             break;
         default:
@@ -280,9 +280,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::MakePackage:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpMakePackage());
             break;
         default:
@@ -291,9 +291,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::GetInformationProperties:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetInformationProperties());
             break;
         default:
@@ -302,9 +302,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::RegisterServicesOnServers :
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRegisterServicesOnServers());
             break;
         default:
@@ -313,9 +313,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::UnregisterServicesOnServers :
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpUnregisterServicesOnServers());
             break;
         default:
@@ -324,9 +324,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::NotifyResourcesChanged :
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpNotifyResourcesChanged());
             break;
         default:
@@ -335,9 +335,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::SetMaximumLogSize :
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSetMaximumLogSize());
             break;
         default:
@@ -346,9 +346,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::SetLogsDelimiter :
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSetLogDelimiter());
             break;
         default:
@@ -357,9 +357,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::EnableMaximumLogSize :
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnableMaximumLogSize());
             break;
         default:
@@ -368,9 +368,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::IsMaximumLogSizeEnabled :
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpIsMaximumLogSizeEnabled());
             break;
         default:
@@ -379,9 +379,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::GetDocument:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetDocument());
             break;
         default:
@@ -390,9 +390,9 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         break;
 
     case MgServerAdminServiceOpId::SetDocument:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSetDocument());
             break;
         default:

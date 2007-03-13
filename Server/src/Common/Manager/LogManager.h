@@ -122,7 +122,16 @@ class MgLogThread;
 
 #define MG_LOG_OPERATION_MESSAGE_INIT(Version, Arguments) \
     operationMessage += L"."; \
-    ACE_OS::itoa(Version, bufferConversion, 10); \
+    INT32 tempVersion = (Version & 0x00ff0000) >> 16; \
+    ACE_OS::itoa(tempVersion, bufferConversion, 10); \
+    operationMessage += bufferConversion; \
+    operationMessage += L"."; \
+    tempVersion = (Version & 0x0000ff00) >> 8; \
+    ACE_OS::itoa(tempVersion, bufferConversion, 10); \
+    operationMessage += bufferConversion; \
+    operationMessage += L"."; \
+    tempVersion = (Version & 0x000000ff); \
+    ACE_OS::itoa(tempVersion, bufferConversion, 10); \
     operationMessage += bufferConversion; \
     operationMessage += L":"; \
     ACE_OS::itoa(Arguments, bufferConversion, 10); \
