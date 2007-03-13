@@ -89,6 +89,8 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
     //convert increment to pixels
     double increment = style->repeat; //TODO: is this already scaled by the mm to pixel scale?
 
+    bool fromAngle = (wcscmp(L"FromAngle", style->angleControl) == 0);
+
     for (int j=0; j<geometry->cntr_count(); j++)
     {
         //current polyline
@@ -121,17 +123,15 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 //compute linear deltas for x and y directions
                 // -- we will use these to quickly move along the line
                 //without having to do too much math
-                double dx_incr, dy_incr;
-                double slope;
+                double slope = atan2(dy, dx);
+                double dx_incr = cos(slope);
+                double dy_incr = sin(slope);
 
-                slope = atan2(dy, dx);
-                dx_incr = cos(slope);
-                dy_incr = sin(slope);
-
-                double symrot = wcscmp(L"FromAngle", style->angleControl) == 0 ? style->angle : slope;
-                symxf.rotate(symrot);
+                double symrot = fromAngle? style->angle : slope;
                 double tx = seg[0] + dx_incr * drawpos;
                 double ty = seg[1] + dy_incr * drawpos;
+
+                symxf.rotate(symrot);
                 symxf.translate(tx, ty);
                 dx_incr *= increment;
                 dy_incr *= increment;
@@ -232,7 +232,7 @@ void SE_Renderer::DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& posxform,
 
             DrawScreenRaster(rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], anglerad / M_PI180);
         }
-     }
+    }
 }
 
 

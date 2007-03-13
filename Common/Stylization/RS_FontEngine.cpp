@@ -87,7 +87,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         float* spacing = (float*)alloca(len * 2 * sizeof(float));
         MeasureString(s, hgt, font, 0.0, fpts, spacing);
         ret.char_advances.reserve(len);
-        for (int i=0; i<len; i++)
+        for (size_t i=0; i<len; i++)
             ret.char_advances.push_back(spacing[i]);
         ret.text_width = fabs(fpts[1].x - fpts[0].x);
         ret.text_height = fabs(fpts[2].y - fpts[0].y);
@@ -116,7 +116,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         if (num_lines > 1)
         {
             ret.line_breaks.reserve(num_lines);
-            for (int i=0; i<num_lines; i++)
+            for (size_t i=0; i<num_lines; i++)
                 ret.line_breaks.push_back(line_breaks[i]);
         }
 
@@ -450,7 +450,6 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 
         //and now find a lower left insertion point
         //based on the midpoint anchor and the angle
-        CharPos pos;
         tm.char_pos[i].x = positions[2*i+1].x - cos(anglerad) * char_width_2;
         tm.char_pos[i].y = positions[2*i+1].y + sin(anglerad) * char_width_2; //y down means + sin
         tm.char_pos[i].anglerad = anglerad;
@@ -469,7 +468,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 
     //apply vertical alignment to character position
     //horizontal alignment is ignored in this case
-    for (size_t i=0; i<numchars; i++)
+    for (int i=0; i<numchars; i++)
     {
         // add in the rotated vertical alignment contribution
         double angle = tm.char_pos[i].anglerad;
@@ -485,19 +484,18 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 //////////////////////////////////////////////////////////////////////////////
 void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy)
 {
-    //radian CCW rotation
+    // positive rotation in the RS_TextDef is assumed to always be a radian CCW rotation...
     double rotation = tdef.rotation() * M_PI180;
 
     double cos_a = cos(rotation);
     double sin_a = sin(rotation);
-
     if (m_bYup)
         sin_a = -sin_a;
 
     // get the overall unrotated bounds
     RS_Bounds b(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
 
-    for (int i=0; i<tm.line_pos.size(); i++)
+    for (size_t i=0; i<tm.line_pos.size(); i++)
     {
         b.add_point(tm.line_pos[i].ext[0]);
         b.add_point(tm.line_pos[i].ext[2]);
@@ -595,7 +593,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 //array, which were previously computed by LayoutPathText
 void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
 {
-    int numchars = tm.text.length();
+    size_t numchars = tm.text.length();
 
     //draw the characters, each in its computed position
     RS_String c;
