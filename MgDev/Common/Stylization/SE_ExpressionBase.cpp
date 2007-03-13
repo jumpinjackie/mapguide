@@ -60,9 +60,14 @@ void SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& exprstr, co
 {
     MdfString::size_type startIdx, endIdx, count;
     MdfString::iterator beginIter;
-    const wchar_t *name, *value;
+    const wchar_t *name, *value, *trim;
 
-    m_buffer.assign(exprstr);
+    /* Trim whitespace from the beginning */
+    trim = exprstr.c_str();
+    while (iswspace(*trim))
+        trim++;
+
+    m_buffer.assign(trim);
     startIdx = endIdx = 0;
 
     for(;;)
@@ -75,23 +80,10 @@ void SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& exprstr, co
         if (endIdx == MdfString::npos)
             break;
 
+        /* We have found matched % characters--it must be a parameter */
         count = endIdx - startIdx - 1;
         m_param.assign(m_buffer, startIdx + 1, count);
         name = m_param.c_str();
-
-        /* If there is a space in the parameter name, this is not a parameter.  This way,
-         * if we add a modulus operator or something, parsing will not be completely screwed up,
-         * although we should probably check for a few more illegal characters as well (checking
-         * for legal characters doesn't seem viable in the face of localization) */
-        bool notParam = false;
-        for (size_t i = 0; i < count; i++)
-            if (iswspace(name[i]))
-                notParam = true;
-        if (notParam)
-        {
-            startIdx = endIdx;
-            continue;
-        }
 
         ParameterMap::const_iterator paramIter = m_parameters.find(ParamId(m_symbol, name));
 
@@ -110,6 +102,13 @@ void SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& exprstr, co
         m_buffer.replace(beginIter + startIdx, beginIter + endIdx + 1, value);
         startIdx += wcslen(value);
     }
+
+    /* Trim whitespace from the end */
+    size_t len = m_buffer.size();
+    trim = m_buffer.c_str() + len - 1;
+    while (iswspace(*trim--))
+        len--;
+    m_buffer.resize(len);
 }
 
 void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr, SE_Double& val)
@@ -122,7 +121,7 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
 
     if (len == 0)
     {
-        val.value = 0;
+        val = 0;
         return;
     }
 
@@ -144,11 +143,11 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
 
     if (len == 0)
     {
-        val.value = 0;
+        val = 0;
         return;
     }
 
-    int ret = swscanf(cstr, L"%d%n", &val.value, &chars);
+    int ret = swscanf(cstr, L"%d%n", &val, &chars);
 
     if (ret == 1 && chars == len)
         return;
@@ -165,18 +164,18 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
 
     if (len == 0)
     {
-        val.value = false;
+        val = false;
         return;
     }
     
-    if (_wcsnicmp(cstr, L"true", 5) == 0)
+    if (wcsicmp(cstr, L"true") == 0)
     {
-        val.value = true;
+        val = true;
         return;
     }
-    else if (_wcsnicmp(cstr, L"false", 6) == 0)
+    else if (wcsicmp(cstr, L"false") == 0)
     {
-        val.value = false;
+        val = false;
         return;
     }
 
@@ -187,9 +186,6 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
 {
     ReplaceParameters(exprstr, L"");
 
-    //TODO: we need to add Parse functions that know what the string they are parsing represents.
-    //for example ParseHorizontalAlignment. This way we can determine if the value is a constant
-    //or an expression that needs to be evaluated all the time.
     if (exprstr.empty())
     {
         val.expression = NULL;
@@ -197,31 +193,37 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
     }
     else
     {
-        const wchar_t* str = m_buffer.c_str();
-        while (iswspace(*str)) 
-            str++;
+        const wchar_t* start = m_buffer.c_str();
+        const wchar_t* str = start;
+
+        /* Literal expression must start with a single quote (after trimming) */
         if (*str++ != L'\'')
         {
-            val.expression = FdoExpression::Parse(m_buffer.c_str());
+            val.expression = FdoExpression::Parse(start);
             return;
         }
-
-        const wchar_t* begin = str;
 
         while(*str != L'\0' && *str != L'\'')
             str++;
 
-        if (*str == L'\0')
+        if (*str++ == L'\0')
         {
-            val.expression = FdoExpression::Parse(m_buffer.c_str());
+            val.expression = FdoExpression::Parse(start);
             return;
         }
 
-        size_t len = str - begin;
+        /* Last character of the literal expression should be a single quote as well */
+        if (*str != L'\0')
+        {
+            val.expression = FdoExpression::Parse(start);
+            return;
+        }
+
+        size_t len = m_buffer.size() - 2;
         wchar_t* copy = new wchar_t[len + 1];
-        memcpy(copy, begin, sizeof(wchar_t)*len);
+        memcpy(copy, start + 1, sizeof(wchar_t)*len);
         copy[len] = L'\0';
-        val.value = copy;
+        val = copy;
     }
 }
 

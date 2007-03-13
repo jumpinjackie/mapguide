@@ -167,6 +167,11 @@ void SE_Bounds::Contained(double minx, double miny, double maxx, double maxy, do
     }
 }
 
+bool SE_Bounds::Contained(double minx, double miny, double maxx, double maxy)
+{
+    return (minx < min[0]) && (miny < min[1]) && (maxx > max[0]) && (maxy > max[1]);
+}
+
 SE_Bounds* SE_Bounds::Union(SE_Bounds* bounds)
 {
     /* Andrew Convex Hull again, but this time in linear time (the points of the
@@ -206,6 +211,18 @@ SE_Bounds* SE_Bounds::Union(SE_Bounds* bounds)
                 ly = *(start[i]+1);
                 index = i;
             }
+
+        _ASSERT(index != -1);
+        if (index == -1)
+        {
+            /* For some reason, one of the bounds we are combining is has invalid points,
+               which can only be caused by an error somewhere else in the code.
+               Rather than loop infinitely, we will return NULL */
+            if (usize > 4096)
+                delete[] vec;
+            return NULL;
+        }
+
         if (index & 1) // U array
             start[index] -= 2;
         else // L array
