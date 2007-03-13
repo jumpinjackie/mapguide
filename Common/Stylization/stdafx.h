@@ -15,12 +15,18 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-//OS specific includes
+// OS specific includes
 #ifdef _WIN32
 
-#define WIN32_LEAN_AND_MEAN        // Exclude rarely-used stuff from Windows headers
+// Exclude rarely-used stuff from Windows headers.
+#define WIN32_LEAN_AND_MEAN
+
 // Windows Header Files:
 #include <windows.h>
+
+// for memory leak detection
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
 #include <crtdbg.h>
 
 #else
@@ -39,10 +45,9 @@ typedef unsigned long DWORD;
 #include <math.h>
 #include <limits>
 
-//Stylization DLL export headers
+// Stylization DLL export headers
 #include "Stylization.h"
 
 
 #define rs_max(a,b)            (((a) > (b)) ? (a) : (b))
 #define rs_min(a,b)            (((a) < (b)) ? (a) : (b))
-

@@ -24,7 +24,10 @@
 
 using namespace XERCES_CPP_NAMESPACE;
 
+// for memory leak detection
 #ifdef WIN32
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
 #include <crtdbg.h>
 #endif
 
