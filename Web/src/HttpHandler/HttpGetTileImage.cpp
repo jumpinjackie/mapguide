@@ -36,21 +36,9 @@ MgHttpGetTileImage::MgHttpGetTileImage(MgHttpRequest *hRequest)
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
 
-    STRING version = params->GetParameterValue(MgHttpResourceStrings::reqVersion);
+    m_version = params->GetParameterValue(MgHttpResourceStrings::reqVersion);
 
-    size_t pos1;
-
-    pos1 = version.find(L".");
-    if (pos1 != string::npos)
-    {
-        m_version = version.substr(0, pos1);
-    }
-    else
-    {
-        m_version = version;
-    }
-
-    if (m_version == L"1")
+    if (m_version == L"1.0.0")
     {
         // Get the map name
         m_mapName = params->GetParameterValue(MgHttpResourceStrings::reqRenderingMapName);
@@ -64,7 +52,7 @@ MgHttpGetTileImage::MgHttpGetTileImage(MgHttpRequest *hRequest)
         // Get the tile row index and convert to integer
         m_tileRow = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingTileRow));
     }
-    else if (m_version == L"2")
+    else if (m_version == L"1.2.0")
     {
         // Get the map name
         m_mapName = params->GetParameterValue(MgHttpResourceStrings::reqTileMapDefinition);
@@ -114,7 +102,7 @@ void MgHttpGetTileImage::Execute(MgHttpResponse& hResponse)
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
-    if (m_version == L"1")
+    if (m_version == L"1.0.0")
     {
         // Get Proxy Resource Service instance
         Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
@@ -132,7 +120,7 @@ void MgHttpGetTileImage::Execute(MgHttpResponse& hResponse)
         // Set the result
         hResult->SetResultObject(tileImage, tileImage->GetMimeType());
     }
-    else
+    else if (m_version == L"1.2.0")
     {
         Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_mapName);
 
