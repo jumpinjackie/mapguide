@@ -502,7 +502,8 @@ INTERNAL_API:
     static void DoubleToString(double val, STRING& str);
 
     static bool ValuesEqual(double value1, double value2,
-        double tolerance = MgUtil::DefaultCompareTolerance);
+        double tolerance = MgUtil::DefaultCompareTolerance,
+        bool output = true);
 
     static void TrimEndingZeros(string& str);
     static void TrimEndingZeros(STRING& str);

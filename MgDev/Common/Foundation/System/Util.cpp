@@ -942,7 +942,7 @@ void MgUtil::DoubleToString(double val, STRING& str)
     str = &buf[0];
 }
 
-bool MgUtil::ValuesEqual(double value1, double value2, double tolerance)
+bool MgUtil::ValuesEqual(double value1, double value2, double tolerance, bool output)
 {
     bool valuesEqual = true;
     double difference = value1 - value2;
@@ -956,7 +956,10 @@ bool MgUtil::ValuesEqual(double value1, double value2, double tolerance)
         if (::fabs(error) > ::fabs(tolerance))
         {
             // If the values don't match and don't fall within the tolerance, then output them.
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("\nMgUtil.ValuesEqual() failed!\nOriginal: \"%.17g\"\nCalculated: \"%.17g\"\n"), value1, value2));
+            if(output)
+            {
+                ACE_DEBUG((LM_INFO, ACE_TEXT("\nMgUtil.ValuesEqual() failed!\nOriginal: \"%.17g\"\nCalculated: \"%.17g\"\n"), value1, value2));
+            }
             valuesEqual = false;
         }
     }
