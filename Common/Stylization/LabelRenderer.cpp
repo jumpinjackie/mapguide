@@ -35,10 +35,9 @@ extern int ConvertColor(gdImagePtr i, RS_Color& c);
 
 
 //////////////////////////////////////////////////////////////////////////////
-//TODO: this needs to be cleaned up -- all three arguments are the same object
-LabelRenderer::LabelRenderer(Renderer* renderer, SE_Renderer* serenderer)
-: LabelRendererBase(renderer, serenderer),
-  m_bOverpostGroupOpen(false)
+LabelRenderer::LabelRenderer(Renderer* renderer)
+: LabelRendererBase(renderer)
+, m_bOverpostGroupOpen(false)
 {
 }
 
@@ -578,7 +577,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
     int numreps = (int)(seglens[info.m_numpts-1] / (200.0 + tm.text_width));
     if (!numreps) numreps = 1;
 
-    int numchars = info.m_text.length();
+    int numchars = (int)info.m_text.length();
     int labels_drawn = 0; //counter for how many of the repeated label were accepted
 
     for (int i=0; i<numreps; i++)
@@ -597,7 +596,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
         float* spacing = (float*)&tm.char_advances.front(); //bold assumption
 
         double total_advance = 0.0;
-        for (size_t i=0; i<numchars; i++)
+        for (int i=0; i<numchars; i++)
         {
             //width of character - not really exact width since
             //it takes kerning into account, but should be good enough
@@ -628,7 +627,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
         //we need to check each character
         if (check)
         {
-            for (size_t i=0; i<numchars; i++)
+            for (int i=0; i<numchars; i++)
             {
                 if (OverlapsStuff(&oriented_bounds[i*4], 4))
                     goto cont_loop; //skip past label draw, but keep looping through outer loop
@@ -639,7 +638,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
         //once again, do this per character to get tighter bounds around the label
         if (exclude)
         {
-            for (size_t i=0; i<numchars; i++)
+            for (int i=0; i<numchars; i++)
             {
                 AddExclusionRegion(&oriented_bounds[i*4], 4);
             }

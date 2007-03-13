@@ -91,7 +91,7 @@ struct LR_OverpostGroupLocal
 class LabelRendererLocal : public LabelRendererBase
 {
 public:
-    LabelRendererLocal(Renderer* renderer, SE_Renderer* serenderer, double tileExtentOffset);
+    LabelRendererLocal(Renderer* renderer, double tileExtentOffset);
     virtual ~LabelRendererLocal();
 
     virtual void StartLabels();

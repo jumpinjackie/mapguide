@@ -156,9 +156,9 @@ m_pPool(NULL)
         gdImageColorTransparent(img, bgc);
 
     if (!m_bLocalOverposting)
-        m_labeler = new LabelRenderer(this, this);
+        m_labeler = new LabelRenderer(this);
     else
-        m_labeler = new LabelRendererLocal(this, this, tileExtentOffset);
+        m_labeler = new LabelRendererLocal(this, tileExtentOffset);
 
     m_polyrasterizer = new complex_polygon_gd();
 }

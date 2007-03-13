@@ -85,7 +85,7 @@ struct LR_OverpostGroup
 class LabelRenderer : public LabelRendererBase
 {
 public:
-    LabelRenderer(Renderer* renderer, SE_Renderer* serenderer); //TODO: clean this up -- they point to the same class
+    LabelRenderer(Renderer* renderer);
     virtual ~LabelRenderer();
 
     virtual void StartLabels();

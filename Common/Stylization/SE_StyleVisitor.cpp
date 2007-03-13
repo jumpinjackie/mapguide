@@ -58,39 +58,39 @@ SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 {
     SE_PointStyle* style = new SE_PointStyle();
     ParseDoubleExpression(pointUsage.GetAngle(), style->angle);
-    ParseDoubleExpression(pointUsage.GetOriginOffsetX(), style->offset[0]);
-    ParseDoubleExpression(pointUsage.GetOriginOffsetY(), style->offset[1]);
-    ParseStringExpression(pointUsage.GetAngleControl(), style->orientation);
+    ParseDoubleExpression(pointUsage.GetOriginOffsetX(), style->originOffset[0]);
+    ParseDoubleExpression(pointUsage.GetOriginOffsetY(), style->originOffset[1]);
+    ParseStringExpression(pointUsage.GetAngleControl(), style->angleControl);
     return style;
 }
 
 SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
 {
     SE_LineStyle* style = new SE_LineStyle();
+    ParseStringExpression(lineUsage.GetAngleControl(), style->angleControl);
+    ParseStringExpression(lineUsage.GetUnitsControl(), style->unitsControl);
+    ParseStringExpression(lineUsage.GetVertexControl(), style->vertexControl);
+//  ParseStringExpression(lineUsage.GetLineJoin(), style->join);
+    ParseDoubleExpression(lineUsage.GetAngle(), style->angle);
     ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset);
     ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset);
     ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat);
-    ParseDoubleExpression(lineUsage.GetAngle(), style->angle);
-    ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->angleLimit);
-    ParseStringExpression(lineUsage.GetUnitsControl(), style->units);
-    ParseStringExpression(lineUsage.GetAngleControl(), style->orientation);
-    ParseStringExpression(lineUsage.GetVertexControl(), style->overlap);
-    //ParseStringExpression(lineUsage.GetLineJoin(), style->join);
+    ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->vertexAngleLimit);
     return style;
 }
 
 SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
 {
     SE_AreaStyle* style = new SE_AreaStyle();
+    ParseStringExpression(areaUsage.GetAngleControl(), style->angleControl);
+    ParseStringExpression(areaUsage.GetOriginControl(), style->originControl);
+    ParseStringExpression(areaUsage.GetClippingControl(), style->clippingControl);
     ParseDoubleExpression(areaUsage.GetAngle(), style->angle);
     ParseDoubleExpression(areaUsage.GetOriginX(), style->origin[0]);
     ParseDoubleExpression(areaUsage.GetOriginY(), style->origin[1]);
     ParseDoubleExpression(areaUsage.GetRepeatX(), style->repeat[0]);
     ParseDoubleExpression(areaUsage.GetRepeatY(), style->repeat[1]);
     ParseDoubleExpression(areaUsage.GetBufferWidth(), style->bufferWidth);
-    ParseStringExpression(areaUsage.GetAngleControl(), style->orientation);
-    ParseStringExpression(areaUsage.GetClippingControl(), style->clipping);
-    ParseStringExpression(areaUsage.GetOriginControl(), style->origincontrol);
     return style;
 }
 

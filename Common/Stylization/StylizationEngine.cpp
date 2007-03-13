@@ -228,9 +228,6 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
 {
     SE_RenderPointStyle* render = new SE_RenderPointStyle();
 
-    double offsetX = 0, offsetY = 0;
-    double rotation = 0;
-
     LineBuffer::GeomOperationType type;
 
     switch(geometry->xf_buffer()->geom_type())
@@ -252,16 +249,17 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
         break;
     }
 
-    const wchar_t* orientation = style->orientation.evaluate(m_exec);
-    if (wcscmp(L"FromGeometry", orientation) == 0)
+    double rotation = 0.0;
+    const wchar_t* angleControl = style->angleControl.evaluate(m_exec);
+    if (wcscmp(L"FromGeometry", angleControl) == 0)
     {
         if (type == LineBuffer::ctLine || type == LineBuffer::ctArea)
         {
             double x0, x1, y0, y1;
             geometry->LongestEdge(geometry->xf_buffer(), x0, y0, x1, y1);
             rotation = atan2(y1 - y0, x1 - x0); //TODO: this is probably affected by which way y goes in the renderer (yUp or yDown)
-            if (rotation < 0)
-                rotation += 2*M_PI;
+            if (rotation < 0.0)
+                rotation += 2.0*M_PI;
         }
         else
             rotation = 0.0;
@@ -269,11 +267,11 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
     else
         rotation = style->angle.evaluate(m_exec)*M_PI/180.0;
 
-    SE_Matrix sxform;
+    double originOffsetX = style->originOffset[0].evaluate(m_exec)*mm2px;
+    double originOffsetY = style->originOffset[1].evaluate(m_exec)*mm2px;
 
-    offsetX = style->offset[0].evaluate(m_exec)*mm2px;
-    offsetY = style->offset[1].evaluate(m_exec)*mm2px;
-    sxform.translate(offsetX, offsetY);
+    SE_Matrix sxform;
+    sxform.translate(originOffsetX, originOffsetY);
     sxform.rotate(rotation);
     sxform.premultiply(xform);
     xform = sxform;
@@ -285,15 +283,17 @@ SE_RenderLineStyle* StylizationEngine::EvaluateLineStyle(SE_Matrix& xform, SE_Li
 {
     SE_RenderLineStyle* render = new SE_RenderLineStyle();
 
-    render->angle = style->angle.evaluate(m_exec)*(M_PI/180.0);
-    render->angleLimit = style->angleLimit.evaluate(m_exec)*(M_PI/180.0);
-    render->endOffset = style->endOffset.evaluate(m_exec)*xform.x0; // x0 is x scale * mm2px
+    double angle = style->angle.evaluate(m_exec)*(M_PI/180.0);
+    render->angle = m_renderer->GetFontEngine()->_Yup()? angle : -angle;
+    render->startOffset = style->startOffset.evaluate(m_exec)*xform.x0; // x0 is x scale * mm2px
+    render->endOffset = style->endOffset.evaluate(m_exec)*xform.x0;
     render->repeat = style->repeat.evaluate(m_exec)*xform.x0;
-    render->startOffset = style->startOffset.evaluate(m_exec)*xform.x0;
+    render->vertexAngleLimit = style->vertexAngleLimit.evaluate(m_exec)*(M_PI/180.0);
 
-    render->units = style->units.evaluate(m_exec);
-    render->orientation = style->orientation.evaluate(m_exec);
-    render->overlap = style->overlap.evaluate(m_exec);
+    render->angleControl = style->angleControl.evaluate(m_exec);
+    render->unitsControl = style->unitsControl.evaluate(m_exec);
+    render->vertexControl = style->vertexControl.evaluate(m_exec);
+//  render->join = style->join.evaluate(m_exec);
 
     return render;
 }
@@ -302,9 +302,17 @@ SE_RenderAreaStyle* StylizationEngine::EvaluateAreaStyle(SE_Matrix& /*xform*/, S
 {
     SE_RenderAreaStyle* render = new SE_RenderAreaStyle();
 
-    render->orientation = style->orientation.evaluate(m_exec);
-    render->clipping = style->clipping.evaluate(m_exec);
-    render->origincontrol = style->origincontrol.evaluate(m_exec);
+    double angle = style->angle.evaluate(m_exec)*(M_PI/180.0);
+    render->angle = m_renderer->GetFontEngine()->_Yup()? angle : -angle;
+    render->origin[0] = style->origin[0].evaluate(m_exec);
+    render->origin[1] = style->origin[1].evaluate(m_exec);
+    render->repeat[0] = style->repeat[0].evaluate(m_exec);
+    render->repeat[1] = style->repeat[1].evaluate(m_exec);
+    render->bufferWidth = style->bufferWidth.evaluate(m_exec);
+
+    render->angleControl = style->angleControl.evaluate(m_exec);
+    render->originControl = style->originControl.evaluate(m_exec);
+    render->clippingControl = style->clippingControl.evaluate(m_exec);
 
     return render;
 }
@@ -368,10 +376,12 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 rt->position[1] = t->position[1].evaluate(m_exec)*mm2px;//TODO: take into account y-up or y-down!
                 xform.transform(rt->position[0], rt->position[1]);
 
-                rt->tdef.font().name() =  t->fontExpr.evaluate(m_exec);
+                rt->tdef.font().name() = t->fontExpr.evaluate(m_exec);
                 rt->tdef.font().height() = t->size.evaluate(m_exec)*0.001*xform.y1/mm2px; //convert mm to meters which is what RS_TextDef expects
                 rt->tdef.linespace() = t->lineSpacing.evaluate(m_exec);
                 rt->tdef.rotation() = t->angle.evaluate(m_exec);
+                if (!m_renderer->GetFontEngine()->_Yup())
+                    rt->tdef.rotation() = -rt->tdef.rotation();
 
                 int style = RS_FontStyle_Regular;
 
