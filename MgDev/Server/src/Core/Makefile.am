@@ -76,8 +76,7 @@ noinst_HEADERS = $(include_SOURCES) \
   SessionTimeoutEventHandler.h \
   SignalHandler.h \
   TimedEvent.h \
-  TimedEventHandler.h \
-  ../Common/ServerCommon.h
+  TimedEventHandler.h
 
 mgserver_LDADD = \
   -lACE \
