@@ -62,9 +62,9 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
     switch (operationId)
     {
     case MgRenderingServiceOpId::RenderTile:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRenderTile());
             break;
         default:
@@ -74,9 +74,9 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         break;
 
     case MgRenderingServiceOpId::RenderDynamicOverlay:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRenderDynamicOverlay());
             break;
         default:
@@ -86,9 +86,9 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         break;
 
     case MgRenderingServiceOpId::RenderMap1:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRenderMap());
             break;
         default:
@@ -98,9 +98,9 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         break;
 
     case MgRenderingServiceOpId::RenderMap2:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRenderMap());
             break;
         default:
@@ -110,9 +110,9 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         break;
 
     case MgRenderingServiceOpId::RenderMap3:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRenderMap());
             break;
         default:
@@ -122,9 +122,9 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         break;
 
     case MgRenderingServiceOpId::QueryFeatures:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpQueryFeatures());
             break;
         default:
@@ -133,9 +133,9 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         }
         break;
     case MgRenderingServiceOpId::QueryFeatureProperties:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpQueryFeatureProperties());
             break;
         default:
@@ -144,9 +144,9 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         }
         break;
     case MgRenderingServiceOpId::RenderMapLegend:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRenderMapLegend());
             break;
         default:

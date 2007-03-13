@@ -105,9 +105,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
     switch (operationId)
     {
     case MgSiteOpId::Authenticate:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpAuthenticate() );
             break;
         default:
@@ -117,9 +117,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::EnumerateUsers:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpEnumerateUsers() );
             break;
         default:
@@ -129,9 +129,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::AddUser:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpAddUser() );
             break;
         default:
@@ -141,9 +141,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::UpdateUser:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpUpdateUser() );
             break;
         default:
@@ -153,9 +153,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::DeleteUsers:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpDeleteUsers() );
             break;
         default:
@@ -165,9 +165,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::GrantRoleMembershipsToUsers:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpGrantRoleMembershipsToUsers() );
             break;
         default:
@@ -177,9 +177,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::RevokeRoleMembershipsFromUsers:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpRevokeRoleMembershipsFromUsers() );
             break;
         default:
@@ -189,9 +189,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::GrantGroupMembershipsToUsers:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpGrantGroupMembershipsToUsers() );
             break;
         default:
@@ -201,9 +201,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::RevokeGroupMembershipsFromUsers:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpRevokeGroupMembershipsFromUsers() );
             break;
         default:
@@ -213,9 +213,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::EnumerateGroups:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpEnumerateGroups() );
             break;
         default:
@@ -225,9 +225,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::AddGroup:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpAddGroup() );
             break;
         default:
@@ -237,9 +237,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::UpdateGroup:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpUpdateGroup() );
             break;
         default:
@@ -249,9 +249,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::DeleteGroups:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpDeleteGroups() );
             break;
         default:
@@ -261,9 +261,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::GrantRoleMembershipsToGroups:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpGrantRoleMembershipsToGroups() );
             break;
         default:
@@ -273,9 +273,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::RevokeRoleMembershipsFromGroups:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpRevokeRoleMembershipsFromGroups() );
             break;
         default:
@@ -285,9 +285,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::EnumerateRoles:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpEnumerateRoles() );
             break;
         default:
@@ -297,9 +297,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::EnumerateServers:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpEnumerateServers() );
             break;
         default:
@@ -309,9 +309,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::AddServer:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpAddServer() );
             break;
         default:
@@ -321,9 +321,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::RemoveServer:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpRemoveServer() );
             break;
         default:
@@ -333,9 +333,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::UpdateServer:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpUpdateServer() );
             break;
         default:
@@ -345,9 +345,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::RequestServer:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpRequestServer() );
             break;
         default:
@@ -357,9 +357,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::CreateSession:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpCreateSession() );
             break;
         default:
@@ -369,9 +369,9 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         break;
 
     case MgSiteOpId::DestroySession:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpDestroySession() );
             break;
         default:

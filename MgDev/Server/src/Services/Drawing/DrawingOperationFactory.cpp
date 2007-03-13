@@ -71,9 +71,9 @@ IMgOperationHandler* MgDrawingOperationFactory::GetOperation(
     switch (operationId)
     {
         case MgDrawingServiceOpId::GetDrawing:
-            switch (operationVersion)
+            switch (VERSION_NO_PHASE(operationVersion))
             {
-            case 1:
+            case VERSION_SUPPORTED(1,0):
                 handler.reset(new MgOpGetDrawing());
                 break;
             default:
@@ -83,9 +83,9 @@ IMgOperationHandler* MgDrawingOperationFactory::GetOperation(
             break;
 
         case MgDrawingServiceOpId::DescribeDrawing:
-            switch (operationVersion)
+            switch (VERSION_NO_PHASE(operationVersion))
             {
-            case 1:
+            case VERSION_SUPPORTED(1,0):
                 handler.reset(new MgOpDescribeDrawing());
                 break;
             default:
@@ -95,9 +95,9 @@ IMgOperationHandler* MgDrawingOperationFactory::GetOperation(
             break;
 
         case MgDrawingServiceOpId::GetSection:
-            switch (operationVersion)
+            switch (VERSION_NO_PHASE(operationVersion))
             {
-            case 1:
+            case VERSION_SUPPORTED(1,0):
                 handler.reset(new MgOpGetSection());
                 break;
             default:
@@ -107,9 +107,9 @@ IMgOperationHandler* MgDrawingOperationFactory::GetOperation(
             break;
 
         case MgDrawingServiceOpId::GetSectionResource:
-            switch (operationVersion)
+            switch (VERSION_NO_PHASE(operationVersion))
             {
-            case 1:
+            case VERSION_SUPPORTED(1,0):
                 handler.reset(new MgOpGetSectionResource());
                 break;
             default:
@@ -119,9 +119,9 @@ IMgOperationHandler* MgDrawingOperationFactory::GetOperation(
             break;
 
         case MgDrawingServiceOpId::EnumerateLayers:
-            switch (operationVersion)
+            switch (VERSION_NO_PHASE(operationVersion))
             {
-            case 1:
+            case VERSION_SUPPORTED(1,0):
                 handler.reset(new MgOpEnumerateLayers());
                 break;
             default:
@@ -131,9 +131,9 @@ IMgOperationHandler* MgDrawingOperationFactory::GetOperation(
             break;
 
         case MgDrawingServiceOpId::GetLayer:
-            switch (operationVersion)
+            switch (VERSION_NO_PHASE(operationVersion))
             {
-            case 1:
+            case VERSION_SUPPORTED(1,0):
                 handler.reset(new MgOpGetLayer());
                 break;
             default:
@@ -143,9 +143,9 @@ IMgOperationHandler* MgDrawingOperationFactory::GetOperation(
             break;
 
         case MgDrawingServiceOpId::EnumerateSections:
-            switch (operationVersion)
+            switch (VERSION_NO_PHASE(operationVersion))
             {
-            case 1:
+            case VERSION_SUPPORTED(1,0):
                 handler.reset(new MgOpEnumerateSections());
                 break;
             default:
@@ -155,9 +155,9 @@ IMgOperationHandler* MgDrawingOperationFactory::GetOperation(
             break;
 
         case MgDrawingServiceOpId::EnumerateSectionResources:
-            switch (operationVersion)
+            switch (VERSION_NO_PHASE(operationVersion))
             {
-            case 1:
+            case VERSION_SUPPORTED(1,0):
                 handler.reset(new MgOpEnumerateSectionResources());
                 break;
             default:
@@ -167,9 +167,9 @@ IMgOperationHandler* MgDrawingOperationFactory::GetOperation(
             break;
 
         case MgDrawingServiceOpId::GetCoordinateSpace:
-            switch (operationVersion)
+            switch (VERSION_NO_PHASE(operationVersion))
             {
-            case 1:
+            case VERSION_SUPPORTED(1,0):
                 handler.reset(new MgOpGetCoordinateSpace());
                 break;
             default:

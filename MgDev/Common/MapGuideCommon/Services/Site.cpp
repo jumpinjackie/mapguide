@@ -207,7 +207,7 @@ STRING MgSite::CreateSession()
                         MgSiteOpId::CreateSession,          // Command Code
                         0,                                  // No of arguments
                         Site_Admin,                         // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knNone );
 
     SetWarning( cmd.GetWarningObject() );
@@ -245,7 +245,7 @@ void MgSite::DestroySession(CREFSTRING session)
                         MgSiteOpId::DestroySession,         // Command Code
                         1,                                  // No of arguments
                         Site_Admin,                         // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knString, &session,      // Argument#1
                         MgCommand::knNone );
 
@@ -320,7 +320,7 @@ MgByteReader* MgSite::EnumerateUsers( CREFSTRING group,
                         MgSiteOpId::EnumerateUsers,         // Command Code
                         3,                                  // No of arguments
                         Site_Admin,                         // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knString, &group,        // Argument#1
                         MgCommand::knString, &role,         // Argument#2
                         MgCommand::knInt8, includeGroups,   // Argument#3
@@ -407,7 +407,7 @@ void MgSite::AddUser( CREFSTRING userID, CREFSTRING userName,
                         MgSiteOpId::AddUser,                // Command Code
                         4,                                  // No of arguments
                         Site_Admin,                         // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knString, &userID,       // Argument#1
                         MgCommand::knString, &userName,     // Argument#2
                         MgCommand::knString, &encryptedPassword, // Argument#3
@@ -470,7 +470,7 @@ void MgSite::UpdateUser( CREFSTRING userID, CREFSTRING newUserID,
                         MgSiteOpId::UpdateUser,                 // Command Code
                         5,                                      // No of arguments
                         Site_Admin,                             // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &userID,           // Argument#1
                         MgCommand::knString, &newUserID,        // Argument#2
                         MgCommand::knString, &newUserName,      // Argument#3
@@ -511,7 +511,7 @@ void MgSite::DeleteUsers(MgStringCollection* users)
                         MgSiteOpId::DeleteUsers,                // Command Code
                         1,                                      // No of arguments
                         Site_Admin,                             // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, users,             // Argument#1
                         MgCommand::knNone );
 
@@ -552,7 +552,7 @@ void MgSite::GrantRoleMembershipsToUsers(MgStringCollection* roles, MgStringColl
                         MgSiteOpId::GrantRoleMembershipsToUsers,// Command Code
                         2,                                      // No of arguments
                         Site_Admin,                             // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, roles,             // Argument#1
                         MgCommand::knObject, users,             // Argument#2
                         MgCommand::knNone );
@@ -595,7 +595,7 @@ void MgSite::RevokeRoleMembershipsFromUsers(MgStringCollection* roles, MgStringC
                         MgSiteOpId::RevokeRoleMembershipsFromUsers,// Command Code
                         2,                                         // No of arguments
                         Site_Admin,                                // Service Id
-                        1,                                         // Operation version
+                        BUILD_VERSION(1,0,0),                      // Operation version
                         MgCommand::knObject, roles,                // Argument#1
                         MgCommand::knObject, users,                // Argument#2
                         MgCommand::knNone );
@@ -638,7 +638,7 @@ void MgSite::GrantGroupMembershipsToUsers(MgStringCollection* groups, MgStringCo
                         MgSiteOpId::GrantGroupMembershipsToUsers,// Command Code
                         2,                                       // No of arguments
                         Site_Admin,                              // Service Id
-                        1,                                       // Operation version
+                        BUILD_VERSION(1,0,0),                    // Operation version
                         MgCommand::knObject,  groups,            // Argument#1
                         MgCommand::knObject,  users,             // Argument#2
                         MgCommand::knNone );
@@ -681,9 +681,9 @@ void MgSite::RevokeGroupMembershipsFromUsers(MgStringCollection* groups, MgStrin
                         MgSiteOpId::RevokeGroupMembershipsFromUsers,// Command Code
                         2,                                          // No of arguments
                         Site_Admin,                                 // Service Id
-                        1,                                          // Operation version
-                        MgCommand::knObject, groups,               // Argument#1
-                        MgCommand::knObject, users,                // Argument#2
+                        BUILD_VERSION(1,0,0),                       // Operation version
+                        MgCommand::knObject, groups,                // Argument#1
+                        MgCommand::knObject, users,                 // Argument#2
                         MgCommand::knNone );
 
     SetWarning( cmd.GetWarningObject() );
@@ -726,7 +726,7 @@ MgByteReader* MgSite::EnumerateGroups( CREFSTRING user, CREFSTRING role )
                         MgSiteOpId::EnumerateGroups,        // Command Code
                         2,                                  // No of arguments
                         Site_Admin,                         // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knString, &user,         // Argument#1
                         MgCommand::knString, &role,         // Argument#2
                         MgCommand::knNone );
@@ -790,7 +790,7 @@ void MgSite::AddGroup( CREFSTRING group, CREFSTRING description )
                         MgSiteOpId::AddGroup,               // Command Code
                         2,                                  // No of arguments
                         Site_Admin,                         // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knString, &group,        // Argument#1
                         MgCommand::knString, &description,  // Argument#2
                         MgCommand::knNone );
@@ -837,7 +837,7 @@ void MgSite::UpdateGroup( CREFSTRING group, CREFSTRING newGroup,
                         MgSiteOpId::UpdateGroup,                // Command Code
                         3,                                      // No of arguments
                         Site_Admin,                             // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &group,            // Argument#1
                         MgCommand::knString, &newGroup,         // Argument#2
                         MgCommand::knString, &newDescription,   // Argument#3
@@ -877,7 +877,7 @@ void MgSite::DeleteGroups( MgStringCollection* groups )
                         MgSiteOpId::DeleteGroups,               // Command Code
                         1,                                      // No of arguments
                         Site_Admin,                             // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, groups,            // Argument#1
                         MgCommand::knNone );
 
@@ -919,7 +919,7 @@ void MgSite::GrantRoleMembershipsToGroups(MgStringCollection* roles, MgStringCol
                         MgSiteOpId::GrantRoleMembershipsToGroups,// Command Code
                         2,                                      // No of arguments
                         Site_Admin,                             // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, roles,             // Argument#1
                         MgCommand::knObject, groups,            // Argument#2
                         MgCommand::knNone );
@@ -962,7 +962,7 @@ void MgSite::RevokeRoleMembershipsFromGroups(MgStringCollection* roles, MgString
                         MgSiteOpId::RevokeRoleMembershipsFromGroups,// Command Code
                         2,                                          // No of arguments
                         Site_Admin,                                 // Service Id
-                        1,                                          // Operation version
+                        BUILD_VERSION(1,0,0),                       // Operation version
                         MgCommand::knObject, roles,                 // Argument#1
                         MgCommand::knObject, groups,                // Argument#2
                         MgCommand::knNone );
@@ -1006,7 +1006,7 @@ MgStringCollection* MgSite::EnumerateRoles( CREFSTRING user, CREFSTRING group )
                         MgSiteOpId::EnumerateRoles,         // Command Code
                         2,                                  // No of arguments
                         Site_Admin,                         // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knString, &user,         // Argument#1
                         MgCommand::knString, &group,        // Argument#2
                         MgCommand::knNone);
@@ -1039,7 +1039,7 @@ MgByteReader* MgSite::EnumerateServers()
                         MgSiteOpId::EnumerateServers,       // Command Code
                         0,                                  // No of arguments
                         Site_Admin,                         // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -1084,7 +1084,7 @@ void MgSite::AddServer(CREFSTRING name, CREFSTRING description, CREFSTRING addre
                         MgSiteOpId::AddServer,              // Command Code
                         3,                                  // No of arguments
                         Site_Admin,                         // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knString, &name,         // Argument#1
                         MgCommand::knString, &description,  // Argument#2
                         MgCommand::knString, &address,      // Argument#3
@@ -1133,7 +1133,7 @@ void MgSite::UpdateServer(CREFSTRING oldName, CREFSTRING newName, CREFSTRING new
                         MgSiteOpId::UpdateServer,              // Command Code
                         4,                                     // No of arguments
                         Site_Admin,                            // Service Id
-                        1,                                     // Operation version
+                        BUILD_VERSION(1,0,0),                  // Operation version
                         MgCommand::knString, &oldName,         // Argument#1
                         MgCommand::knString, &newName,         // Argument#1
                         MgCommand::knString, &newDescription,  // Argument#2
@@ -1172,7 +1172,7 @@ void MgSite::RemoveServer(CREFSTRING name)
                         MgSiteOpId::RemoveServer,         // Command Code
                         1,                                  // No of arguments
                         Site_Admin,                         // Service Id
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knString, &name,         // Argument#1
                         MgCommand::knNone);
 
@@ -1212,7 +1212,7 @@ STRING MgSite::RequestServer(INT32 serviceType)
                         MgSiteOpId::RequestServer,          // Command code
                         1,                                  // Number of arguments
                         Site_Admin,                         // Service ID
-                        1,                                  // Operation version
+                        BUILD_VERSION(1,0,0),               // Operation version
                         MgCommand::knInt16, serviceType,    // Argument #1
                         MgCommand::knNone );
 
@@ -1257,7 +1257,7 @@ MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
                             MgSiteOpId::Authenticate,           // Command code
                             3,                                  // Number of arguments
                             Site_Admin,                         // Service ID
-                            1,                                  // Operation version
+                            BUILD_VERSION(1,0,0),               // Operation version
                             MgCommand::knObject, userInformation, // Argument #1
                             MgCommand::knObject, requiredRoles, // Argument #2
                             MgCommand::knInt8, (int)returnAssignedRoles, // Argument #3

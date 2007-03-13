@@ -97,9 +97,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
     switch (operationId)
     {
     case MgResourceService::opIdEnumerateRepositories:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumerateRepositories());
             break;
         default:
@@ -109,9 +109,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdCreateRepository:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpCreateRepository());
             break;
         default:
@@ -121,9 +121,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdDeleteRepository:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpDeleteRepository());
             break;
         default:
@@ -133,9 +133,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdUpdateRepository:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpUpdateRepository());
             break;
         default:
@@ -145,9 +145,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdGetRepositoryContent:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetRepositoryContent());
             break;
         default:
@@ -157,9 +157,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdGetRepositoryHeader:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetRepositoryHeader());
             break;
         default:
@@ -169,9 +169,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdApplyResourcePackage:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpApplyResourcePackage());
             break;
         default:
@@ -181,9 +181,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdEnumerateResources:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumerateResources());
             break;
         default:
@@ -193,9 +193,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdSetResource:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSetResource());
             break;
         default:
@@ -205,9 +205,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdDeleteResource:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpDeleteResource());
             break;
         default:
@@ -217,9 +217,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdMoveResource:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpMoveResource());
             break;
         default:
@@ -229,9 +229,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdCopyResource:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpCopyResource());
             break;
         default:
@@ -241,9 +241,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdGetResourceContent:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetResourceContent());
             break;
         default:
@@ -253,9 +253,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdGetResourceHeader:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetResourceHeader());
             break;
         default:
@@ -265,9 +265,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdGetResourceModifiedDate:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetResourceModifiedDate());
             break;
         default:
@@ -277,9 +277,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdEnumerateReferences:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumerateResourceReferences());
             break;
         default:
@@ -289,9 +289,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdEnumerateParentMapDefinitions:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumerateParentMapDefinitions());
             break;
         default:
@@ -301,9 +301,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdChangeResourceOwner:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpChangeResourceOwner());
             break;
         default:
@@ -313,9 +313,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdInheritPermissionsFrom:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpInheritPermissionsFrom());
             break;
         default:
@@ -325,9 +325,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdEnumerateResourceData:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumerateResourceData());
             break;
         default:
@@ -337,9 +337,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdSetResourceData:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpSetResourceData());
             break;
         default:
@@ -349,9 +349,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdDeleteResourceData:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpDeleteResourceData());
             break;
         default:
@@ -361,9 +361,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdRenameResourceData:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRenameResourceData());
             break;
         default:
@@ -373,9 +373,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdGetResourceData:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetResourceData());
             break;
         default:
@@ -385,9 +385,9 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         break;
 
     case MgResourceService::opIdEnumerateUnmanagedData:
-        switch (operationVersion)
+        switch (VERSION_NO_PHASE(operationVersion))
         {
-        case 1:
+        case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumerateUnmanagedData());
             break;
         default:

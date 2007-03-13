@@ -93,7 +93,7 @@ MgByteReader* MgProxyTileService::GetTile(
                         MgTileServiceOpId::GetTile,                     // Command Code
                         4,                                              // No of arguments
                         Tile_Service,                                   // Service Id
-                        1,                                              // Operation version
+                        BUILD_VERSION(1,0,0),                           // Operation version
                         MgCommand::knObject, map,                       // Argument#1
                         MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
                         MgCommand::knInt32, tileColumn,                 // Argument#3
@@ -123,7 +123,7 @@ MgByteReader* MgProxyTileService::GetTile(
                         MgTileServiceOpId::GetTile,                     // Command Code
                         5,                                              // No of arguments
                         Tile_Service,                                   // Service Id
-                        2,                                              // Operation version
+                        BUILD_VERSION(1,2,0),                           // Operation version
                         MgCommand::knObject, mapDefinition,             // Argument#1
                         MgCommand::knString, &baseMapLayerGroupName,    // Argument#2
                         MgCommand::knInt32, tileColumn,                 // Argument#3
@@ -174,7 +174,7 @@ void MgProxyTileService::SetTile(
                         MgTileServiceOpId::SetTile,                     // Command Code
                         6,                                              // No of arguments
                         Tile_Service,                                   // Service Id
-                        1,                                              // Operation version
+                        BUILD_VERSION(1,0,0),                           // Operation version
                         MgCommand::knObject, img,                       // Argument#1
                         MgCommand::knObject, map,                       // Argument#2
                         MgCommand::knInt32, scaleIndex,                 // Argument#3
@@ -203,7 +203,7 @@ void MgProxyTileService::ClearCache(MgMap* map)
                         MgTileServiceOpId::ClearCache,                  // Command Code
                         1,                                              // No of arguments
                         Tile_Service,                                   // Service Id
-                        1,                                              // Operation version
+                        BUILD_VERSION(1,0,0),                           // Operation version
                         MgCommand::knObject, map,                       // Argument#1
                         MgCommand::knNone);                             // End of arguments
 

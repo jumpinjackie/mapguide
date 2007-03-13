@@ -158,7 +158,7 @@ MgPropertyCollection* MgServerAdmin::GetConfigurationProperties(CREFSTRING prope
                         MgServerAdminServiceOpId::GetConfigurationProperties, // Command Code
                         1,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &propertySection,  // Argument#1
                         MgCommand::knNone);
 
@@ -195,7 +195,7 @@ void MgServerAdmin::SetConfigurationProperties(CREFSTRING propertySection, MgPro
                         MgServerAdminServiceOpId::SetConfigurationProperties, // Command Code
                         2,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &propertySection,  // Argument#1
                         MgCommand::knObject, properties,        // Argument#2
                         MgCommand::knNone);
@@ -232,7 +232,7 @@ void MgServerAdmin::RemoveConfigurationProperties(CREFSTRING propertySection, Mg
                         MgServerAdminServiceOpId::RemoveConfigurationProperties, // Command Code
                         2,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &propertySection,  // Argument#1
                         MgCommand::knObject, properties,        // Argument#2
                         MgCommand::knNone);
@@ -264,7 +264,7 @@ bool MgServerAdmin::ClearLog(CREFSTRING log)
                         MgServerAdminServiceOpId::ClearLog,     // Command Code
                         1,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &log,              // Argument#1
                         MgCommand::knNone);
 
@@ -296,7 +296,7 @@ void MgServerAdmin::DeleteLog(CREFSTRING fileName)
                         MgServerAdminServiceOpId::DeleteLog,    // Command Code
                         1,                                      // No. of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &fileName,         // Argument #1
                         MgCommand::knNone);
 }
@@ -329,7 +329,7 @@ void MgServerAdmin::RenameLog(CREFSTRING oldFileName, CREFSTRING newFileName)
                         MgServerAdminServiceOpId::RenameLog,    // Command Code
                         2,                                      // No. of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &oldFileName,      // Argument #1
                         MgCommand::knString, &newFileName,      // Argument #2
                         MgCommand::knNone);
@@ -353,7 +353,7 @@ MgPropertyCollection* MgServerAdmin::EnumerateLogs()
                         MgServerAdminServiceOpId::EnumerateLogs,// Command Code
                         0,                                      // No. of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -386,7 +386,7 @@ MgByteReader* MgServerAdmin::GetLog(CREFSTRING log)
                         MgServerAdminServiceOpId::GetLog,       // Command Code
                         1,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &log,              // Argument#1
                         MgCommand::knNone);
 
@@ -424,7 +424,7 @@ MgByteReader* MgServerAdmin::GetLog(CREFSTRING log, INT32 numEntries)
                         MgServerAdminServiceOpId::GetLog,       // Command Code
                         2,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &log,              // Argument#1
                         MgCommand::knInt32, numEntries,         // Argument#2
                         MgCommand::knNone);
@@ -469,7 +469,7 @@ MgByteReader* MgServerAdmin::GetLog(CREFSTRING log, MgDateTime* fromDate, MgDate
                         MgServerAdminServiceOpId::GetLog,       // Command Code
                         3,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &log,              // Argument#1
                         MgCommand::knObject, fromDate,          // Argument#2
                         MgCommand::knObject, toDate,            // Argument#3
@@ -504,7 +504,7 @@ MgByteReader* MgServerAdmin::GetLogFile(CREFSTRING logFile)
                         MgServerAdminServiceOpId::GetLogFile,   // Command Code
                         1,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &logFile,          // Argument#1
                         MgCommand::knNone);
 
@@ -531,7 +531,7 @@ void MgServerAdmin::BringOnline()
                         MgServerAdminServiceOpId::BringOnline,  // Command Code
                         0,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -557,7 +557,7 @@ void MgServerAdmin::TakeOffline()
                         MgServerAdminServiceOpId::TakeOffline,  // Command Code
                         0,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -581,7 +581,7 @@ bool MgServerAdmin::IsOnline()
                         MgServerAdminServiceOpId::IsOnline,     // Command Code
                         0,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -612,7 +612,7 @@ MgPropertyCollection* MgServerAdmin::GetInformationProperties()
                         MgServerAdminServiceOpId::GetInformationProperties, // Command Code
                         0,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -646,7 +646,7 @@ void MgServerAdmin::DeletePackage(CREFSTRING packageName)
                         MgServerAdminServiceOpId::DeletePackage,// Command Code
                         1,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &packageName,      // Argument #1
                         MgCommand::knNone);
 
@@ -674,7 +674,7 @@ MgStringCollection* MgServerAdmin::EnumeratePackages()
                         MgServerAdminServiceOpId::EnumeratePackages, // Command Code
                         0,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -709,7 +709,7 @@ MgByteReader* MgServerAdmin::GetPackageLog(CREFSTRING packageName)
                         MgServerAdminServiceOpId::GetPackageLog,    // Command Code
                         1,                                          // No of arguments
                         ServerAdmin_Service,                        // Service Id
-                        1,                                          // Operation version
+                        BUILD_VERSION(1,0,0),                       // Operation version
                         MgCommand::knString, &packageName,          // Argument #1
                         MgCommand::knNone);
 
@@ -740,7 +740,7 @@ MgPackageStatusInformation* MgServerAdmin::GetPackageStatus(CREFSTRING packageNa
         MgServerAdminServiceOpId::GetPackageStatus,         // Command Code
         1,                                                  // Number of arguments
         ServerAdmin_Service,                                // Service ID
-        1,                                                  // Operation version
+        BUILD_VERSION(1,0,0),                               // Operation version
         MgCommand::knString, &packageName,                  // Argument #1
         MgCommand::knNone);
 
@@ -764,7 +764,7 @@ void MgServerAdmin::LoadPackage(CREFSTRING packageName)
         MgServerAdminServiceOpId::LoadPackage,              // Command Code
         1,                                                  // Number of arguments
         ServerAdmin_Service,                                // Service ID
-        1,                                                  // Operation version
+        BUILD_VERSION(1,0,0),                               // Operation version
         MgCommand::knString, &packageName,                  // Argument #1
         MgCommand::knNone);
 
@@ -788,7 +788,7 @@ void MgServerAdmin::MakePackage(MgResourceIdentifier* resource,
         MgServerAdminServiceOpId::MakePackage,              // Command Code
         3,                                                  // Number of arguments
         ServerAdmin_Service,                                // Service ID
-        1,                                                  // Operation version
+        BUILD_VERSION(1,0,0),                               // Operation version
         MgCommand::knObject, resource,                      // Argument #1
         MgCommand::knString, &packageName,                  // Argument #2
         MgCommand::knString, &packageDescription,           // Argument #3
@@ -824,13 +824,13 @@ MgSerializableCollection* MgServerAdmin::RegisterServicesOnServers(
 
     MG_TRY()
 
-    cmd.ExecuteCommand(m_connProp,                       // Connection
-                        MgCommand::knObject,                // Return type
-                        MgServerAdminServiceOpId::RegisterServicesOnServers, // Command code
-                        1,                                  // Number of arguments
-                        ServerAdmin_Service,                // Service ID
-                        1,                                  // Operation version
-                        MgCommand::knObject, serverInfoList, // Argument #1
+    cmd.ExecuteCommand(m_connProp,                                          // Connection
+                        MgCommand::knObject,                                // Return type
+                        MgServerAdminServiceOpId::RegisterServicesOnServers,// Command code
+                        1,                                                  // Number of arguments
+                        ServerAdmin_Service,                                // Service ID
+                        BUILD_VERSION(1,0,0),                               // Operation version
+                        MgCommand::knObject, serverInfoList,                // Argument #1
                         MgCommand::knNone );
 
     SetWarning(cmd.GetWarningObject());
@@ -866,13 +866,13 @@ void MgServerAdmin::UnregisterServicesOnServers(
 
     MgCommand cmd;
 
-    cmd.ExecuteCommand(m_connProp,                       // Connection
-                        MgCommand::knVoid,                  // Return type
-                        MgServerAdminServiceOpId::UnregisterServicesOnServers, // Command code
-                        1,                                  // Number of arguments
-                        ServerAdmin_Service,                // Service ID
-                        1,                                  // Operation version
-                        MgCommand::knObject, serverInfoList, // Argument #1
+    cmd.ExecuteCommand(m_connProp,                                              // Connection
+                        MgCommand::knVoid,                                      // Return type
+                        MgServerAdminServiceOpId::UnregisterServicesOnServers,  // Command code
+                        1,                                                      // Number of arguments
+                        ServerAdmin_Service,                                    // Service ID
+                        BUILD_VERSION(1,0,0),                                   // Operation version
+                        MgCommand::knObject, serverInfoList,                    // Argument #1
                         MgCommand::knNone );
 
     SetWarning(cmd.GetWarningObject());
@@ -897,7 +897,7 @@ void MgServerAdmin::NotifyResourcesChanged(MgSerializableCollection* resources)
         MgServerAdminServiceOpId::NotifyResourcesChanged,   // Command code
         1,                                                  // Number of arguments
         ServerAdmin_Service,                                // Service ID
-        1,                                                  // Operation version
+        BUILD_VERSION(1,0,0),                               // Operation version
         MgCommand::knObject, resources,                     // Argument #1
         MgCommand::knNone);
 
@@ -926,7 +926,7 @@ void MgServerAdmin::SetMaximumLogSize(INT32 size)
                         MgServerAdminServiceOpId::SetMaximumLogSize,       // Command Code
                         1,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knInt32, size,              // Argument#1
                         MgCommand::knNone);
 
@@ -952,7 +952,7 @@ void MgServerAdmin::SetLogDelimiter(CREFSTRING delimiter)
                         MgServerAdminServiceOpId::SetLogsDelimiter, // Command Code
                         1,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knString, &delimiter,      // Argument #1
                         MgCommand::knNone);
 
@@ -983,7 +983,7 @@ void MgServerAdmin::EnableMaximumLogSize(bool useMaxSize)
                         MgServerAdminServiceOpId::EnableMaximumLogSize, // Command Code
                         1,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knInt8, (INT8)useMaxSize,      // Argument #1
                         MgCommand::knNone);
 
@@ -1010,7 +1010,7 @@ bool MgServerAdmin::IsMaximumLogSizeEnabled()
                         MgServerAdminServiceOpId::IsMaximumLogSizeEnabled,     // Command Code
                         0,                                      // No of arguments
                         ServerAdmin_Service,                    // Service Id
-                        1,                                      // Operation version
+                        BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -1042,7 +1042,7 @@ MgByteReader* MgServerAdmin::GetDocument(CREFSTRING identifier)
                        MgServerAdminServiceOpId::GetDocument, // Command Code
                        1,                                     // No of arguments
                        ServerAdmin_Service,                   // Service Id
-                       1,                                     // Operation version
+                       BUILD_VERSION(1,0,0),                  // Operation version
                        MgCommand::knString, &identifier,      // Argument#1
                        MgCommand::knNone);
 
@@ -1078,7 +1078,7 @@ void MgServerAdmin::SetDocument(CREFSTRING identifier, MgByteReader* data)
                        MgServerAdminServiceOpId::SetDocument,  // Command Code
                        2,                                      // No of arguments
                        ServerAdmin_Service,                    // Service Id
-                       1,                                      // Operation version
+                       BUILD_VERSION(1,0,0),                   // Operation version
                        MgCommand::knString, &identifier,       // Argument#1
                        MgCommand::knObject, data,              // Argument#2
                        MgCommand::knNone);

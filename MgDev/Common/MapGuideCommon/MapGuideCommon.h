@@ -31,6 +31,21 @@
 #define MG_MAPGUIDE_API
 #endif
 
+// This define extracts the operation version
+// 0x00XXYYZZ where XX = Major, YY = Minor nad ZZ = Phase
+#define EXTRACT_VERSION(Version, Major, Minor, Phase) \
+    Major = (Version & 0x00ff0000) >> 16; \
+    Minor = (Version & 0x0000ff00) >> 8; \
+    Phase = (Version & 0x000000ff);
+
+// This define builds the operation version
+// 0x00XXYYZZ where XX = Major, YY = Minor nad ZZ = Phase
+#define BUILD_VERSION(Major, Minor, Phase) ((Major << 16) + (Minor << 8) + Phase)
+
+#define VERSION_NO_PHASE(Version) (Version & 0x00ffff00)
+
+#define VERSION_SUPPORTED(Major, Minor) (Major << 16) + (Minor << 8)
+
 #include "System/MapGuideCommonClassId.h"
 #include "System/ConfigProperties.h"
 #include "System/UserInformation.h"
