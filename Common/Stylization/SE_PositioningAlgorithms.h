@@ -17,7 +17,14 @@ public:
                           SE_RenderStyle* rstyle, 
                           double          mm2px
                           );
-    
+
+    static void PathLabels(SE_Renderer*    renderer, 
+                          LineBuffer*     geometry, 
+                          SE_Matrix&      xform, 
+                          SE_Style*       style, 
+                          SE_RenderStyle* rstyle, 
+                          double          mm2px
+                          );
 
     static void MultipleHighwaysShields(SE_Renderer*    renderer, 
                                         LineBuffer*     geometry, 

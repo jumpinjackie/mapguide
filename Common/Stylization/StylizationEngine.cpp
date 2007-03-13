@@ -197,7 +197,7 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
 
             if (!sym->positioningAlgorithm.empty() && sym->positioningAlgorithm != L"Default")
             {
-                LayoutCustomLabel(sym->positioningAlgorithm, xformGeom->xf_buffer(), tmpxform, style, rstyle, mm2px);
+                LayoutCustomLabel(sym->positioningAlgorithm, geometry, tmpxform, style, rstyle, mm2px);
             }
             else
             {
@@ -595,9 +595,10 @@ void StylizationEngine::LayoutCustomLabel(const std::wstring& positioningAlgo, L
     {
         SE_PositioningAlgorithms::EightSurrounding(m_renderer, geometry, xform, style, rstyle, mm2px);
     }
-    //else if (style->positioningAlgorithm == MultipleHighwayShields)
-    //{
-    //}
+    else if (positioningAlgo == L"PathLabels")
+    {
+        SE_PositioningAlgorithms::PathLabels(m_renderer, geometry, xform, style, rstyle, mm2px);
+    }
 }
 
 //clears cached filters/styles/etc

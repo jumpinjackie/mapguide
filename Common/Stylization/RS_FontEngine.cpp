@@ -458,8 +458,14 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         char_pos += char_width;
     }
 
+    
     //get vertical alignment delta
-    double voffset = GetVerticalAlignmentOffset(valign, tm.font, tm.font_height, tm.font_height * 1.05, 1);
+    //return value will be positive if y goes down and negative if y goes up 
+    //i.e. it's the offset we need to apply to y in the coordinate system of the 
+    //renderer
+    double voffset = GetVerticalAlignmentOffset(valign, tm.font, 
+        tm.text_height, //for path labeling, using actualy string height rather than font height works better...
+        tm.font_height * 1.05, 1);
 
     //apply vertical alignment to character position
     //horizontal alignment is ignored in this case
@@ -468,16 +474,10 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         // add in the rotated vertical alignment contribution
         double angle = tm.char_pos[i].anglerad;
 
-        double cs = cos(angle);
-        double sn = sin(angle);
-        double hAlignOffset = -sn*voffset;
-        double vAlignOffset =  cs*voffset;
-
-        //adjust insertion point
-        tm.char_pos[i].x += hAlignOffset;
-        tm.char_pos[i].y -= vAlignOffset;
+        tm.char_pos[i].x += voffset * sin(angle);
+        tm.char_pos[i].y += voffset * cos(angle);
     }
-
+    
     return true;
 }
 
@@ -705,7 +705,7 @@ double RS_FontEngine::GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_
     double em_square_size = font->m_units_per_EM;
     double font_ascent    = font->m_ascender * actual_height / em_square_size;
     double font_descent   = font->m_descender * actual_height / em_square_size;
-    double font_capline   = font_ascent;
+    double font_capline   = actual_height;
 
     switch (vAlign)
     {
