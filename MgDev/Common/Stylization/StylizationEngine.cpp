@@ -469,7 +469,6 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
 
                 double w = 0.5 * rr->extent[0];
                 double h = 0.5 * rr->extent[1];
-                double sx, sy, x, y;
 
                 RS_F_Point pts[4];
                 rxf.transform( w,  h, pts[0].x, pts[0].y);
