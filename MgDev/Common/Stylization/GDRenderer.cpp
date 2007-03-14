@@ -127,7 +127,6 @@ m_mapInfo(NULL),
 m_layerInfo(NULL),
 m_fcInfo(NULL),
 m_bRequiresClipping(requiresClipping),
-m_bLocalOverposting(localOverposting),
 m_bIsSymbolW2D(false),
 m_bHaveViewport(false),
 m_imsym(NULL),
@@ -155,7 +154,7 @@ m_pPool(NULL)
     if (bgColor.alpha() != 255)
         gdImageColorTransparent(img, bgc);
 
-    if (!m_bLocalOverposting)
+    if (!localOverposting)
         m_labeler = new LabelRenderer(this);
     else
         m_labeler = new LabelRendererLocal(this, tileExtentOffset);
@@ -1132,12 +1131,6 @@ double GDRenderer::GetMapToScreenScale()
 bool GDRenderer::RequiresClipping()
 {
     return m_bRequiresClipping;
-}
-
-
-bool GDRenderer::UseLocalOverposting()
-{
-    return m_bLocalOverposting;
 }
 
 

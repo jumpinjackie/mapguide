@@ -1954,11 +1954,6 @@ bool DWFRenderer::RequiresClipping()
     return true;
 }
 
-bool DWFRenderer::UseLocalOverposting()
-{
-    return false; // not applicable
-}
-
 void DWFRenderer::EnsureBufferSize(int len)
 {
     if (!m_wtPointBuffer)

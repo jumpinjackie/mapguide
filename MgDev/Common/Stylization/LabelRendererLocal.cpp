@@ -87,7 +87,7 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
         // indicate that the current group will be labeled along the path
         m_labelGroups.back().m_algo = laCurve;
 
-        // If we are in tiled mode, we cannot stitch features which span
+        // Since we're in tiled mode, we cannot stitch features which span
         // more than one tile because labels will not be continuous across
         // tiles -- i.e. computed label positions will be different since
         // some features will not come in with the spatial query for some
@@ -97,23 +97,20 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
         // coming in on some tiles.
         RS_String stitch_key = text;
 
-        if (true /*m_renderer->UseLocalOverposting()*/) //Local label renderer is only used for tiled mode
+        // TODO: stitch in subregions of tile
+//      const RS_Bounds& tileBounds = m_renderer->GetBounds();
+//      const RS_Bounds& featBounds = path->bounds();
+//      if (featBounds.minx < tileBounds.minx ||
+//          featBounds.maxx > tileBounds.maxx ||
+//          featBounds.miny < tileBounds.miny ||
+//          featBounds.maxy > tileBounds.maxy)
         {
-            // TODO: stitch in subregions of tile
-//          const RS_Bounds& tileBounds = m_renderer->GetBounds();
-//          const RS_Bounds& featBounds = path->bounds();
-//          if (featBounds.minx < tileBounds.minx ||
-//              featBounds.maxx > tileBounds.maxx ||
-//              featBounds.miny < tileBounds.miny ||
-//              featBounds.maxy > tileBounds.maxy)
-            {
-                // If we don't want to stitch separate line features, mangle
-                // the stitch table key to make it unique across features, but
-                // keep it the same when we stitch the parts of a linestring.
-                wchar_t tmp[32];
-                swprintf(tmp, 32, L"%d", m_labelGroups.size());
-                stitch_key += tmp;
-            }
+            // If we don't want to stitch separate line features, mangle
+            // the stitch table key to make it unique across features, but
+            // keep it the same when we stitch the parts of a linestring.
+            wchar_t tmp[32];
+            swprintf(tmp, 32, L"%d", m_labelGroups.size());
+            stitch_key += tmp;
         }
 
         // If it's a multi-linestring, we will add each separate linestring
@@ -309,6 +306,7 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
                                            bool             exclude,
                                            LineBuffer*      path)
 {
+    //TODO
 }
 
 
@@ -747,8 +745,10 @@ void LabelRendererLocal::BlastLabels()
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
 {
+    RS_FontEngine* fe = m_serenderer->GetFontEngine();
+
     //match the font and measure the sizes of the characters
-    if (!m_serenderer->GetFontEngine()->GetTextMetrics(info.m_text, info.m_tdef, info.m_tm, false))
+    if (!fe->GetTextMetrics(info.m_text, info.m_tdef, info.m_tm, false))
         return false;
 
     //radian CCW rotation
@@ -886,7 +886,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
         double param_position = ((double)i + 0.5) / (double)numreps;
 
         //compute position and angle along the path for each character
-        bool ret = fe->LayoutPathText(copy_info.m_tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0);
+        fe->LayoutPathText(copy_info.m_tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0);
 
         //once we have position and angle for each character
         //compute oriented bounding box for each character
