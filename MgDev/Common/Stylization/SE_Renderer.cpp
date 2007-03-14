@@ -82,6 +82,37 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
 
 void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
+    //determine if the style is a simple straight solid line
+    SE_RenderSymbol& rs = style->symbol;
+
+    //check if it is a single symbol that is not a label participant
+    if (rs.size() == 1 
+        && rs[0]->type == SE_PolylinePrimitive 
+        && !style->drawLast 
+        && !style->addToExclusionRegions)
+    {
+        SE_RenderPolyline* rp = (SE_RenderPolyline*)rs[0];
+        LineBuffer* lb = rp->geometry->xf_buffer();
+
+        //check if it is a horizontal line
+        if (lb->point_count() == 2
+            && lb->points()[1] == 0.0 
+            && lb->points()[3] == 0.0)
+        {
+            //now make sure it is not a dashed line by comparing the 
+            //single segment to the symbol repeat
+            double len = lb->points()[2] - lb->points()[0];
+            
+            if (fabs(len - style->repeat) < 0.001) //repeat must be within 1/100 of a pixel for us to assume solid line
+            {
+                //ok, it's only a solid line, just draw it and bail out of the
+                //layout function
+                DrawScreenPolyline(geometry, rp->color, rp->weight);
+                return;
+            }
+        }
+    }
+    
     SE_Matrix symxf;
     
     int ptindex = 0;
