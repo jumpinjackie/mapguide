@@ -250,7 +250,7 @@ friend class ace_dewarn_gplusplus
             } \
         } \
      while (0)
-#if (defined(__IBMCPP__) && (__IBMCPP__ >= 400)) || (__GNUC__ >= 4)
+#if (defined(__IBMCPP__) && (__IBMCPP__ >= 400)) || (__GNUC__ >= 3)
 #   define ACE_DES_FREE_TEMPLATE(POINTER,DEALLOCATOR,T_CLASS,T_PARAMETER) \
      do { \
           if (POINTER) \
@@ -285,7 +285,7 @@ friend class ace_dewarn_gplusplus
             } \
         } \
      while (0)
-#if (defined(__IBMCPP__) && (__IBMCPP__ >= 400)) || (__GNUC__ >= 4)
+#if (defined(__IBMCPP__) && (__IBMCPP__ >= 400)) || (__GNUC__ >= 3)
 #   define ACE_DES_FREE_TEMPLATE2(POINTER,DEALLOCATOR,T_CLASS,T_PARAM1,T_PARAM2) \
      do { \
           if (POINTER) \
