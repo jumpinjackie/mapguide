@@ -784,7 +784,6 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             *pts++ = *xv++;
             *pts++ = *yv++;
         }
-
     }
 }
 
@@ -1029,7 +1028,7 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
         return this;
 
     //check if line buffer is completely outside box
-    if (m_bounds.minx > b.maxx
+    if (   m_bounds.minx > b.maxx
         || m_bounds.miny > b.maxy
         || m_bounds.maxx < b.minx
         || m_bounds.maxy < b.miny)
@@ -1833,6 +1832,26 @@ void LineBuffer::MultiPointCentroid(double* cx, double* cy)
         *cx = xSum / len;
         *cy = ySum / len;
     }
+}
+
+
+void LineBuffer::ComputeBounds(RS_Bounds& bounds)
+{
+    // update the bounds, if they're not already set
+    if (!m_bounds.IsValid())
+    {
+        for (int i=0; i<m_cur_pts;)
+        {
+            double x = m_pts[i++];
+            double y = m_pts[i++];
+            m_bounds.minx = rs_min(m_bounds.minx, x);
+            m_bounds.maxx = rs_max(m_bounds.maxx, x);
+            m_bounds.miny = rs_min(m_bounds.miny, y);
+            m_bounds.maxy = rs_max(m_bounds.maxy, y);
+        }
+    }
+
+    bounds = m_bounds;
 }
 
 

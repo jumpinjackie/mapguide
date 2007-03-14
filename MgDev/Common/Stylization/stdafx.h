@@ -49,7 +49,3 @@ typedef unsigned long DWORD;
 
 // Stylization DLL export headers
 #include "Stylization.h"
-
-
-#define rs_max(a,b)            (((a) > (b)) ? (a) : (b))
-#define rs_min(a,b)            (((a) < (b)) ? (a) : (b))

@@ -20,6 +20,7 @@
 
 #include "LabelRendererBase.h"
 #include "SimpleOverpost.h"
+#include "RS_FontEngine.h"
 
 struct SE_RenderStyle;
 

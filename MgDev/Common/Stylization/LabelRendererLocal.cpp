@@ -292,7 +292,12 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
     }
 
     // remember the feature bounds for the label group
-    m_labelGroups.back().m_feature_bounds = path->bounds();
+    RS_Bounds bounds;
+    path->ComputeBounds(bounds);
+
+    // this is the non-SE case, and so the line buffer bounds are
+    // already in mapping space
+    m_labelGroups.back().m_feature_bounds = bounds;
 
     EndOverpostGroup();
 }
@@ -306,7 +311,47 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
                                            bool             exclude,
                                            LineBuffer*      path)
 {
-    //TODO
+    BeginOverpostGroup(type, true, exclude);
+
+    //Add a new style SE label to the overpost groups.
+    //Here we are processing the simple case (like labels at given points
+    //rather than labels along a line). The hard case is //TODO
+    m_labelGroups.back().m_algo = laSESymbol;
+    RS_FontEngine* fe = m_serenderer->GetFontEngine();
+
+    for (int i=0; i<nlabels; i++)
+    {
+        SE_LabelInfo* info = &labels[i];
+
+        // label is in device space
+        double offx = fe->MeterToMapSize(info->dunits, info->dx);
+        double offy = fe->MeterToMapSize(info->dunits, info->dy);
+
+        LR_LabelInfoLocal lrinfo(info->x + offx, info->y + offy, info->symbol);
+
+        //TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
+        lrinfo.m_tdef.rotation() = info->anglerad;
+
+        m_labelGroups.back().m_labels.push_back(lrinfo);
+    }
+
+    // remember the feature bounds for the label group
+    RS_Bounds bounds;
+    path->ComputeBounds(bounds);
+
+    // this is the SE case, and so the line buffer bounds are
+    // in screen space - convert them back to mapping space
+    double x0, y0, x1, y1;
+    m_serenderer->ScreenToWorldPoint(bounds.minx, bounds.miny, x0, y0);
+    m_serenderer->ScreenToWorldPoint(bounds.maxx, bounds.maxy, x1, y1);
+    bounds.minx = rs_min(x0, x1);
+    bounds.maxx = rs_max(x0, x1);
+    bounds.miny = rs_min(y0, y1);
+    bounds.maxy = rs_max(y0, y1);
+
+    m_labelGroups.back().m_feature_bounds = bounds;
+
+    EndOverpostGroup();
 }
 
 
@@ -390,10 +435,13 @@ void LabelRendererLocal::BlastLabels()
             }
             else
             {
-                success = ComputeSimpleLabelBounds(info);
+                if (info.m_sestyle)
+                    success = ComputeSELabelBounds(info);
+                else
+                    success = ComputeSimpleLabelBounds(info);
 
-                //simple label --> simply add one instance of it
-                //to the repeated infos collection. When we add repeated
+                //simple label or SE Label --> simply add one instance of
+                //it to the repeated infos collection. When we add repeated
                 //labels for polygons, this code will change.
                 LR_LabelInfoLocal copy = info;
                 copy.m_pts = NULL;
@@ -410,7 +458,7 @@ void LabelRendererLocal::BlastLabels()
             }
         }
 
-        //now replace the group's label infos, by the new repeated
+        //now replace the group's label infos by the new repeated
         //infos collection -- also free the polyline data stored
         //in the m_pts members of the original infos, since we will
         //no longer need the geometry data
@@ -796,40 +844,45 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
     static int featIdS = -1;
     featIdS++;
 
-    RS_Color clrR(255,   0,   0, 255);
-    RS_Color clrG(  0, 255,   0, 255);
-    RS_Color clrB(  0,   0, 255, 255);
-    RS_Color clrO(255, 128,   0, 255);
+    static RS_Color clrR(255,   0,   0, 255);
+    static RS_Color clrG(  0, 255,   0, 255);
+    static RS_Color clrB(  0,   0, 255, 255);
+    static RS_Color clrO(255, 128,   0, 255);
+
+    GDRenderer* gdRenderer = dynamic_cast<GDRenderer*>(m_renderer);
+    if (gdRenderer)
+    {
 /*
-    // this debugging code draws the feature geometry using a thick
-    // brush, with the color alternating between blue and orange
-    gdImagePtr brush = rs_gdImageThickLineBrush(2, ((featIdS % 2)==0)? clrB : clrO);
-    gdImageSetBrush((gdImagePtr)m_renderer->GetImage(), brush);
+        // this debugging code draws the feature geometry using a thick
+        // brush, with the color alternating between blue and orange
+        gdImagePtr brush = rs_gdImageThickLineBrush(2, ((featIdS % 2)==0)? clrB : clrO);
+        gdImageSetBrush((gdImagePtr)gdRenderer->GetImage(), brush);
 
-    printf("numPts=%d\n", info.m_numpts);
-    for (int j=1; j<info.m_numpts; ++j)
-    {
-        RS_D_Point dpts[2];
-        dpts[0].x = (int)info.m_pts[j-1].x;
-        dpts[0].y = (int)info.m_pts[j-1].y;
-        dpts[1].x = (int)info.m_pts[j  ].x;
-        dpts[1].y = (int)info.m_pts[j  ].y;
-        gdImagePolygon((gdImagePtr)m_renderer->GetImage(), (gdPointPtr)dpts, 2, gdBrushed);
-    }
+        printf("numPts=%d\n", info.m_numpts);
+        for (int j=1; j<info.m_numpts; ++j)
+        {
+            RS_D_Point dpts[2];
+            dpts[0].x = (int)info.m_pts[j-1].x;
+            dpts[0].y = (int)info.m_pts[j-1].y;
+            dpts[1].x = (int)info.m_pts[j  ].x;
+            dpts[1].y = (int)info.m_pts[j  ].y;
+            gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 2, gdBrushed);
+        }
 
-    gdImageSetBrush((gdImagePtr)m_renderer->GetImage(), NULL);
-    gdImageDestroy(brush);
+        gdImageSetBrush((gdImagePtr)gdRenderer->GetImage(), NULL);
+        gdImageDestroy(brush);
 */
-    // this debugging code draws a box around the label (using its bounds),
-    // with the color cycling between red, green, and blue
-    RS_D_Point dpts[4];
-    for (int j=0; j<4; ++j)
-    {
-        dpts[j].x = (int)info.m_oriented_bounds[j].x;
-        dpts[j].y = (int)info.m_oriented_bounds[j].y;
+        // this debugging code draws a box around the label (using its bounds),
+        // with the color cycling between red, green, and blue
+        RS_D_Point dpts[4];
+        for (int j=0; j<4; ++j)
+        {
+            dpts[j].x = (int)info.m_oriented_bounds[j].x;
+            dpts[j].y = (int)info.m_oriented_bounds[j].y;
+        }
+        gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB));
+//      gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), info.m_tdef.color()));
     }
-    gdImagePolygon((gdImagePtr)m_renderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)m_renderer->GetImage(), ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB));
-//  gdImagePolygon((gdImagePtr)m_renderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.color()));
 #endif
 
     return true;
@@ -904,32 +957,145 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
             RS_F_Point* b = &copy_info.m_oriented_bounds[i * 4];
             RotatedBounds(copy_info.m_tm.char_pos[i].x, copy_info.m_tm.char_pos[i].y, advance, copy_info.m_tm.text_height, copy_info.m_tm.char_pos[i].anglerad, b);
 
-    #ifdef DEBUG_LABELS
+#ifdef DEBUG_LABELS
             static int featIdP = -1;
             if (i == 0) featIdP++;
 
-            RS_Color clrR(255,   0,   0, 255);
-            RS_Color clrG(  0, 255,   0, 255);
-            RS_Color clrB(  0,   0, 255, 255);
-            RS_Color clrO(255, 128,   0, 255);
+            static RS_Color clrR(255,   0,   0, 255);
+            static RS_Color clrG(  0, 255,   0, 255);
+            static RS_Color clrB(  0,   0, 255, 255);
 
-            // this debugging code draws a box around the label's characters
-            // with the color cycling between red, green, and blue
-            RS_D_Point dpts[4];
-            for (int j=0; j<4; j++)
+            GDRenderer* gdRenderer = dynamic_cast<GDRenderer*>(m_renderer);
+            if (gdRenderer)
             {
-                dpts[j].x = (int)b[j].x;
-                dpts[j].y = (int)b[j].y;
+                // this debugging code draws a box around the label's characters
+                // with the color cycling between red, green, and blue
+                RS_D_Point dpts[4];
+                for (int j=0; j<4; j++)
+                {
+                    dpts[j].x = (int)b[j].x;
+                    dpts[j].y = (int)b[j].y;
+                }
+                gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), ((featIdP % 3)==0)? clrR : ((featIdP % 3)==1)? clrG : clrB));
+//              gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), info.m_tdef.color()));
             }
-            gdImagePolygon((gdImagePtr)m_renderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)m_renderer->GetImage(), ((featIdP % 3)==0)? clrR : ((featIdP % 3)==1)? clrG : clrB));
-    //      gdImagePolygon((gdImagePtr)m_renderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)m_renderer->GetImage(), info.m_tdef.color()));
-    #endif
+#endif
         }
 
         //add current periodic label to the return list
         repeated_infos.push_back(copy_info);
     }
 
+    return true;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
+{
+    //get native symbol bounds (in pixels -- the render style is already scaled to pixels)
+    SE_Bounds* b = info.m_sestyle->bounds;
+    if (!b)
+        return false;
+
+    //now we will translate and orient the bounds with the given angle and position of the symbol
+    RS_F_Point fpts[4];
+    fpts[0].x = b->min[0];
+    fpts[0].y = b->min[1];
+    fpts[1].x = b->max[0];
+    fpts[1].y = b->min[1];
+    fpts[2].x = b->max[0];
+    fpts[2].y = b->max[1];
+    fpts[3].x = b->min[0];
+    fpts[3].y = b->max[1];
+
+    //apply position and rotation to the native bounds of the symbol
+    double angle = m_serenderer->GetFontEngine()->_Yup() ? info.m_tdef.rotation() : -info.m_tdef.rotation();
+    SE_Matrix m;
+    m.setIdentity();
+    m.rotate(angle); //it is already in radians in there
+    m.translate(info.m_x, info.m_y);
+
+    for (int i=0; i<4; i++)
+        m.transform(fpts[i].x, fpts[i].y);
+
+    // compute the overall rotated bounds
+    RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
+    for (int i=0; i<4; i++)
+        rotatedBounds.add_point(fpts[i]);
+
+    //allocate the data we need
+    info.m_numelems = 1;
+    info.m_oriented_bounds = new RS_F_Point[4];
+
+    //store the oriented bounds with the label
+    rotatedBounds.get_points(info.m_oriented_bounds);
+
+#ifdef DEBUG_LABELS
+    static int featIdS = -1;
+    featIdS++;
+
+    static RS_Color clrR(255,   0,   0, 255);
+    static RS_Color clrG(  0, 255,   0, 255);
+    static RS_Color clrB(  0,   0, 255, 255);
+    static RS_Color clrO(255, 128,   0, 255);
+
+    GDRenderer* gdRenderer = dynamic_cast<GDRenderer*>(m_renderer);
+    if (gdRenderer)
+    {
+/*
+        // this debugging code draws the feature geometry using a thick
+        // brush, with the color alternating between blue and orange
+        gdImagePtr brush = rs_gdImageThickLineBrush(2, ((featIdS % 2)==0)? clrB : clrO);
+        gdImageSetBrush((gdImagePtr)gdRenderer->GetImage(), brush);
+
+        printf("numPts=%d\n", info.m_numpts);
+        for (int j=1; j<info.m_numpts; ++j)
+        {
+            RS_D_Point dpts[2];
+            dpts[0].x = (int)info.m_pts[j-1].x;
+            dpts[0].y = (int)info.m_pts[j-1].y;
+            dpts[1].x = (int)info.m_pts[j  ].x;
+            dpts[1].y = (int)info.m_pts[j  ].y;
+            gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 2, gdBrushed);
+        }
+
+        gdImageSetBrush((gdImagePtr)gdRenderer->GetImage(), NULL);
+        gdImageDestroy(brush);
+*/
+        // this debugging code draws a box around the label (using its bounds),
+        // with the color cycling between red, green, and blue
+        RS_D_Point dpts[4];
+        for (int j=0; j<4; ++j)
+        {
+            dpts[j].x = (int)info.m_oriented_bounds[j].x;
+            dpts[j].y = (int)info.m_oriented_bounds[j].y;
+        }
+        gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB));
+//      gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), info.m_tdef.color()));
+    }
+#endif
+/*
+#ifdef DEBUG_LABELS
+    static int featIdS = -1;
+    featIdS++;
+
+    static unsigned int clrR = 0xffff0000;
+    static unsigned int clrG = 0xff00ff00;
+    static unsigned int clrB = 0xff0000ff;
+
+    // this debugging code draws a box around the label (using its bounds),
+    // with the color cycling between red, green, and blue
+    LineBuffer lb(5);
+    lb.MoveTo(info.m_oriented_bounds[0].x, info.m_oriented_bounds[0].y);
+    lb.LineTo(info.m_oriented_bounds[1].x, info.m_oriented_bounds[1].y);
+    lb.LineTo(info.m_oriented_bounds[2].x, info.m_oriented_bounds[2].y);
+    lb.LineTo(info.m_oriented_bounds[3].x, info.m_oriented_bounds[3].y);
+    lb.Close();
+    unsigned int color = ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB;
+    m_serenderer->DrawScreenPolyline(&lb, color, 0.0);
+#endif
+*/
     return true;
 }
 
@@ -998,7 +1164,18 @@ bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfo
     if (render)
     {
         // call the appropriate routine
-        if (info.m_tm.char_pos.size() > 0) //detect whether it's path text or not
+        if (info.m_sestyle)
+        {
+            //apply position and rotation to the native bounds of the symbol
+            double angle = m_serenderer->GetFontEngine()->_Yup() ? info.m_tdef.rotation() : -info.m_tdef.rotation();
+            SE_Matrix m;
+            m.setIdentity();
+            m.rotate(angle); //it is already in radians in there
+            m.translate(info.m_x, info.m_y);
+
+            m_serenderer->DrawSymbol(info.m_sestyle->symbol, m, angle);
+        }
+        else if (info.m_tm.char_pos.size() > 0)
             m_serenderer->GetFontEngine()->DrawPathText(info.m_tm, info.m_tdef);
         else
             m_serenderer->GetFontEngine()->DrawBlockText(info.m_tm, info.m_tdef, info.m_ins_point.x, info.m_ins_point.y);

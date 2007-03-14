@@ -22,9 +22,7 @@
 
 class RSBufferOutputStream : public RS_OutputStream
 {
-
 public:
-
     RSBufferOutputStream(int size)
     {
         if (size == 0)
@@ -72,13 +70,12 @@ public:
     }
 
 protected:
-
     void ensure_capacity(size_t sz)
     {
         if (m_pos + sz <= m_len)
             return;
 
-        m_len = rs_max(m_len*2, sz + m_pos);
+        m_len = (m_len*2 > sz + m_pos)? m_len*2 : sz + m_pos;
         unsigned char* ndata = new unsigned char[m_len];
         memcpy(ndata, m_data, m_pos);
 
@@ -89,14 +86,12 @@ protected:
     //
     // Default constructor
     //
-    RSBufferOutputStream() {;}
+    RSBufferOutputStream() {}
 
 private:
-
     unsigned char* m_data;
     size_t m_pos;
     size_t m_len;
-
 };
 
 #endif

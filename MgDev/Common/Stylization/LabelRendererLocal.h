@@ -22,6 +22,7 @@
 #include "SimpleOverpost.h"
 #include "RS_FontEngine.h"
 
+struct SE_RenderStyle;
 
 //////////////////////////////////////////////////////////////////////////////
 //used to accumulate labels
@@ -36,7 +37,19 @@ struct LR_LabelInfoLocal
           m_pts(NULL),
           m_numpts(0),
           m_numelems(0),
-          m_oriented_bounds(NULL)
+          m_oriented_bounds(NULL),
+          m_sestyle(NULL)
+    {
+    }
+
+    LR_LabelInfoLocal(double x, double y, SE_RenderStyle* style)
+        : m_x(x),
+          m_y(y),
+          m_pts(NULL),
+          m_numpts(0),
+          m_numelems(0),
+          m_oriented_bounds(NULL),
+          m_sestyle(style)
     {
     }
 
@@ -64,6 +77,9 @@ struct LR_LabelInfoLocal
     // stores matched font, measured text size, kerned char spacings
     // layout character positions
     RS_TextMetrics m_tm;
+
+    // new SE labels keep the symbol here rather than in the m_tdef/m_text combo
+    SE_RenderStyle* m_sestyle;
 };
 
 
@@ -123,6 +139,7 @@ private:
 
     bool ComputeSimpleLabelBounds(LR_LabelInfoLocal& info);
     bool ComputePathLabelBounds(LR_LabelInfoLocal& info, std::vector<LR_LabelInfoLocal>& repeated_infos);
+    bool ComputeSELabelBounds(LR_LabelInfoLocal& info);
 
     void ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::vector<LR_OverpostGroupLocal*>& groups);
     bool ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfoLocal& info, bool render, bool exclude, bool check);

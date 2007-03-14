@@ -61,7 +61,6 @@ public:
     };
 
 public:
-
     STYLIZATION_API LineBuffer(int size);
     STYLIZATION_API virtual ~LineBuffer();
 
@@ -89,6 +88,9 @@ public:
     //clears the buffer for reuse
     STYLIZATION_API void Reset();
     STYLIZATION_API void SetGeometryType(int geomType);
+
+    // computes the bounds of the line buffer's geometry
+    void ComputeBounds(RS_Bounds& bounds);
 
     //the inline stuff
     inline unsigned char* types()       { return m_types; }
