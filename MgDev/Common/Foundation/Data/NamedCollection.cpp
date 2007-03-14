@@ -587,7 +587,7 @@ MgNamedSerializable* MgNamedCollection::GetMap(CREFSTRING name) const
 //////////////////////////////////////////////////////////////////
 STRING MgNamedCollection::Lower(STRING str) const
 {
-    transform(str.begin(), str.end(), str.begin(), tolower);
+    transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
 }
 

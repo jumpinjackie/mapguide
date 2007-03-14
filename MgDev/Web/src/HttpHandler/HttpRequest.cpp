@@ -220,7 +220,7 @@ MgHttpResponse* MgHttpRequest::Execute()
     }
     if(sParamValue.length() > 0)
     {
-        transform(sParamValue.begin(), sParamValue.end(), sParamValue.begin(), toupper);
+        transform(sParamValue.begin(), sParamValue.end(), sParamValue.begin(), ::toupper);
 
         // Get handler to requested function
         Ptr<MgHttpRequestResponseHandler> rrHandler = CreateRequestResponseHandler(sParamValue, result);

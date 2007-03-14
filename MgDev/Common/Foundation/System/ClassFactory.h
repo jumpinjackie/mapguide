@@ -73,11 +73,6 @@ private:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// Internal singleton variable
-    static Ptr<MgClassFactory> m_classFactory;
-
-    /////////////////////////////////////////////////////////////////
-    /// \brief
     /// Declaration of class Registry
     std::map<int, ClassCreatorFunc> m_classCreators;
 
