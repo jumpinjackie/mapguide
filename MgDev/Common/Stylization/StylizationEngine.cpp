@@ -456,8 +456,8 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                     rr->pngSize = r->pngSize;
                 }
 
-                rr->position[0] = r->position[0].evaluate(m_exec)*mm2px;
-                rr->position[1] = r->position[1].evaluate(m_exec)*mm2px;
+                rr->position[0] = r->position[0].evaluate(m_exec);
+                rr->position[1] = r->position[1].evaluate(m_exec);
                 xform.transform(rr->position[0], rr->position[1]);
                 rr->extent[0] = r->extent[0].evaluate(m_exec)*xform.x0;
                 rr->extent[1] = r->extent[1].evaluate(m_exec)*xform.y1;
