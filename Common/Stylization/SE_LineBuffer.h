@@ -67,6 +67,7 @@ public:
     STYLIZATION_API SE_INLINE bool& compute_bounds() { return m_compute_bounds; }
     STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return (LineBuffer*)m_xf_buf; }
     STYLIZATION_API SE_INLINE LineBuffer* inst_buffer() { return (LineBuffer*)m_inst_buf; }
+    STYLIZATION_API SE_INLINE LineBuffer* src_buffer() { return m_src_lb; }
     STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds() { return m_xf_bounds; }
     STYLIZATION_API SE_INLINE SE_Bounds* inst_bounds() { return m_inst_bounds; }
 
@@ -90,7 +91,7 @@ private:
 
     double m_start[2];
     double m_last[2];
-     
+
     bool m_compute_bounds;
 
     SE_Matrix m_xf;
@@ -98,7 +99,6 @@ private:
     double m_xf_weight;
     SE_Bounds* m_xf_bounds;
     SE_LineStorage* m_xf_buf;
-
 
     SE_Bounds* m_inst_bounds;
     SE_LineStorage* m_inst_buf;

@@ -24,7 +24,6 @@
 #include "SE_Include.h"
 #include "SE_Bounds.h"
 #include "SE_Renderer.h"
-#include "RS_FontEngine.h"
 
 #define ROUND(x) (int)((x) + 0.5)
 
@@ -321,7 +320,6 @@ bool LabelRenderer::ProcessLabelInternal(LR_LabelInfo& info,
 //////////////////////////////////////////////////////////////////////////////
 void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
 {
-
 #ifdef DEBUG_LABELS
     LineBuffer lb(5);
     lb.MoveTo(pts[0].x, pts[0].y);
@@ -410,13 +408,13 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
 
 #ifdef DEBUG_LABELS
     // this debugging code draws a box around the label (using its bounds)
-        LineBuffer lb(5);
-        lb.MoveTo(fpts[0].x, fpts[0].y);
-        lb.LineTo(fpts[1].x, fpts[1].y);
-        lb.LineTo(fpts[2].x, fpts[2].y);
-        lb.LineTo(fpts[3].x, fpts[3].y);
-        lb.Close();
-        m_serenderer->DrawScreenPolyline(&lb, info.m_tdef.color().argb(), 0.0);
+    LineBuffer lb(5);
+    lb.MoveTo(fpts[0].x, fpts[0].y);
+    lb.LineTo(fpts[1].x, fpts[1].y);
+    lb.LineTo(fpts[2].x, fpts[2].y);
+    lb.LineTo(fpts[3].x, fpts[3].y);
+    lb.Close();
+    m_serenderer->DrawScreenPolyline(&lb, info.m_tdef.color().argb(), 0.0);
 #endif
 
     //-------------------------------------------------------
@@ -447,12 +445,12 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
     //This needs to be improved to handle text along a path
 
     //get native symbol bounds (in pixels -- the render style is already scaled to pixels)
-    SE_Bounds* b;
-    b = info.m_sestyle->bounds;
+    SE_Bounds* b = info.m_sestyle->bounds;
+    if (!b)
+        return false;
 
-    //now we will trnaslate and orient the bounds with the given angle and position of the symbol
+    //now we will translate and orient the bounds with the given angle and position of the symbol
     RS_F_Point fpts[4];
-
     fpts[0].x = b->min[0];
     fpts[0].y = b->min[1];
     fpts[1].x = b->max[0];
@@ -582,7 +580,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
             RS_F_Point* b = &oriented_bounds[i * 4];
             RotatedBounds(tm.char_pos[i].x, tm.char_pos[i].y, advance, tm.text_height, tm.char_pos[i].anglerad, b);
 
-    #ifdef DEBUG_LABELS
+#ifdef DEBUG_LABELS
             LineBuffer lb(5);
             lb.MoveTo(b[0].x, b[0].y);
             lb.LineTo(b[1].x, b[1].y);
@@ -590,7 +588,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
             lb.LineTo(b[3].x, b[3].y);
             lb.Close();
             m_serenderer->DrawScreenPolyline(&lb, info.m_tdef.color().argb(), 0.0);
-    #endif
+#endif
         }
 
         //-------------------------------------------------------

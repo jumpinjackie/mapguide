@@ -43,9 +43,9 @@ public:
     void SetToTransform(const SE_Matrix& xform, LineBuffer* src);
 };
 
-SE_LineStorage::SE_LineStorage(int size) : 
-    LineBuffer(size) 
-{ 
+SE_LineStorage::SE_LineStorage(int size) :
+    LineBuffer(size)
+{
 }
 
 void SE_LineStorage::_MoveTo(double x, double y)
@@ -284,7 +284,7 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs
                however, appear to be using round joins at the moment. */
             m_ch_ptbuf.insert(std::pair<double,double>(x + vx, y + vy));
             m_ch_ptbuf.insert(std::pair<double,double>(x - vx, y - vy));
-            m_ch_ptbuf.insert(std::pair<double,double>(lx + vx, ly + vy));        
+            m_ch_ptbuf.insert(std::pair<double,double>(lx + vx, ly + vy));
             m_ch_ptbuf.insert(std::pair<double,double>(lx - vx, ly - vy));
 
             while(cur < last)
@@ -468,7 +468,7 @@ void SE_LineBuffer::ResizeBuffer(void** buffer, int unitsize, int mininc, int cu
     int max_newpts = (int)(GROWTH_FACTOR*max_pts) + 1;
     if (max_newpts - max_pts < mininc)
         max_newpts += mininc;
-     
+
     void* newbuf = new char[unitsize*max_newpts];
     memcpy(newbuf, *buffer, cur_pts*unitsize);
     delete[] *buffer;
@@ -529,11 +529,11 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
                 int nsegs = (int)(4.0*fabs(eAng - sAng)/(2*M_PI)) + 1; // eAng - sAng is (0, 2pi), so this is {1,2,3,4}.
                 double span = (eAng - sAng)/(double)nsegs;
                 double aspan = fabs(span);
-                
+
                 double sec = 1.0/cos(aspan/2.0);
                 double alpha = sin(aspan)*(sqrt(1.0 + 3.0/sec/sec) - 1)/3.0;
                 double rcos = cos(rot), rsin = sin(rot);
-                
+
                 double ex, ey, sx, sy;
                 double scos, ssin, ecos, esin;
                 double sa, ea;
@@ -620,7 +620,7 @@ LineBuffer* SE_LineBuffer::Transform(LineBuffer* lb, const SE_Matrix& xform, dou
     m_xf = xform;
     m_xf_tol = 0.0;
     m_xf_weight = weight;
-    
+
     if (m_xf_bounds)
     {
         m_xf_bounds->Free();

@@ -74,7 +74,7 @@ gdImagePtr rs_gdImageThickLineBrush(int line_weight, RS_Color& color)
     //so the alpha is computed as 255 / line_weight * 2
     RS_Color falpha = color;
     falpha.alpha() = falpha.alpha() / line_weight * 2 + 1;
-    falpha.alpha() = rs_min(255, falpha.alpha());
+    falpha.alpha() = (falpha.alpha() < 255)? falpha.alpha() : 255;
 
     //outer transparent circle -- for antialiased effect
     rs_gdImageCircleForBrush(brush1, sx/2, sy/2, line_weight / 2,  falpha);
