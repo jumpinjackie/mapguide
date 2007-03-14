@@ -369,8 +369,8 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 SE_Text* t = (SE_Text*)sym;
                 SE_RenderText* rt = (SE_RenderText*)rsym;
                 rt->text = t->textExpr.evaluate(m_exec);
-                rt->position[0] = t->position[0].evaluate(m_exec)*mm2px;
-                rt->position[1] = t->position[1].evaluate(m_exec)*mm2px;
+                rt->position[0] = t->position[0].evaluate(m_exec);
+                rt->position[1] = t->position[1].evaluate(m_exec);
                 xform.transform(rt->position[0], rt->position[1]);
 
                 rt->tdef.rotation() = t->angle.evaluate(m_exec);;
