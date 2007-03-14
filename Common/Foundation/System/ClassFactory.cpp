@@ -17,26 +17,24 @@
 
 #include "Foundation.h"
 
-// Process-wide MgClassFactory
-Ptr<MgClassFactory> MgClassFactory::m_classFactory = (MgClassFactory*)NULL;
-
 MgClassFactory::MgClassFactory()
 {
 }
 
 MgClassFactory* MgClassFactory::GetInstance()
 {
+    static Ptr<MgClassFactory> classFactory;
     MG_TRY()
 
     ACE_TRACE ("MgClassFactory::GetInstance");
 
-    if (MgClassFactory::m_classFactory == NULL)
+    if (classFactory == NULL)
     {
         // Perform Double-Checked Locking Optimization.
         ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance (), 0));
-        if (MgClassFactory::m_classFactory == NULL)
+        if (classFactory == NULL)
         {
-            MgClassFactory::m_classFactory = new MgClassFactory();
+            classFactory = new MgClassFactory();
         }
     }
 
@@ -44,7 +42,7 @@ MgClassFactory* MgClassFactory::GetInstance()
 
     // To avoid overhead and maintain thread safety,
     // do not assign this returned static singleton to a Ptr object.
-    return MgClassFactory::m_classFactory;
+    return classFactory;
 }
 
 
