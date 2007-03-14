@@ -463,7 +463,6 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 rr->extent[1] = r->extent[1].evaluate(m_exec)*xform.y1;
                 rr->angle = r->angle.evaluate(m_exec) * M_PI180;
 
-                rr->bounds = m_pool->NewBounds(5);
                 SE_Matrix rxf;
                 rxf.rotate(rr->angle);
                 rxf.translate(rr->position[0], rr->position[1]);
@@ -472,15 +471,17 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 double h = 0.5 * rr->extent[1];
                 double sx, sy, x, y;
 
-                rxf.transform(w, h, sx, sy); // upper right
-                rr->bounds->Add(sx, sy);
-                rxf.transform(w, -h, x, y);  // lower right
-                rr->bounds->Add(x, y);
-                rxf.transform(-w, -h, x, y); // lower left
-                rr->bounds->Add(x, y);
-                rxf.transform(-w, h, x, y);  // upper left
-                rr->bounds->Add(x, y);
-                rr->bounds->Add(sx, sy);     // upper right
+                RS_F_Point pts[4];
+                rxf.transform( w,  h, pts[0].x, pts[0].y);
+                rxf.transform( w, -h, pts[1].x, pts[1].y);
+                rxf.transform(-w, -h, pts[2].x, pts[2].y);
+                rxf.transform(-w,  h, pts[3].x, pts[3].y);
+                
+                std::sort((std::pair<double,double>*)pts, (std::pair<double,double>*)(pts + 3), PointLess( ));
+                rr->bounds = AndrewHull<std::pair<double,double>*,SimplePOINT>
+                    ((std::pair<double,double>*)pts, 
+                    ((std::pair<double,double>*)(pts+3)) - 1, 
+                    4, m_pool);
             }
             break;
 
