@@ -111,7 +111,7 @@ public:
                                               const RS_String& text, RS_TextDef& tdef);
 
     STYLIZATION_API virtual void ProcessLabelGroup( RS_LabelInfo*       labels,
-                                                    int                 nalabels,
+                                                    int                 nlabels,
                                                     const RS_String&    text,
                                                     RS_OverpostType     type,
                                                     bool                exclude,
@@ -142,8 +142,6 @@ public:
     STYLIZATION_API virtual double GetMapToW2DScale();
 
     STYLIZATION_API virtual bool RequiresClipping();
-
-    STYLIZATION_API virtual bool UseLocalOverposting();
 
     STYLIZATION_API void StartLayout(RS_Bounds& extents);
 

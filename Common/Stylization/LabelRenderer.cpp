@@ -77,6 +77,8 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 {
     BeginOverpostGroup(type, true, exclude);
 
+    RS_FontEngine* fe = m_serenderer->GetFontEngine();
+
     // get the geometry type
     _ASSERT(path != NULL);
     int geomType = (path != NULL)? path->geom_type() : FdoGeometryType_None;
@@ -91,34 +93,8 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
         // indicate that the current group will be labeled along the path
         m_labelGroups.back().m_algo = laCurve;
 
-        // If we are in tiled mode, we cannot stitch features which span
-        // more than one tile because labels will not be continuous across
-        // tiles -- i.e. computed label positions will be different since
-        // some features will not come in with the spatial query for some
-        // far away tiles, even though they should for labeling purposes.
-        // This does not affect stitching of multi-linestring features which
-        // we can always stitch without worrying about parts of them not
-        // coming in on some tiles.
+        // use the label string as the stitch key
         RS_String stitch_key = text;
-
-        if (false /*m_renderer->UseLocalOverposting()*/)  //LabelRenderer is not used in tiled mode so this is not needed
-        {
-            // TODO: stitch in subregions of tile
-//          const RS_Bounds& tileBounds = m_renderer->GetBounds();
-//          const RS_Bounds& featBounds = path->bounds();
-//          if (featBounds.minx < tileBounds.minx ||
-//              featBounds.maxx > tileBounds.maxx ||
-//              featBounds.miny < tileBounds.miny ||
-//              featBounds.maxy > tileBounds.maxy)
-            {
-                // If we don't want to stitch separate line features, mangle
-                // the stitch table key to make it unique across features, but
-                // keep it the same when we stitch the parts of a linestring.
-                wchar_t tmp[32];
-                swprintf(tmp, 32, L"%d", m_labelGroups.size());
-                stitch_key += tmp;
-            }
-        }
 
         // If it's a multi-linestring, we will add each separate linestring
         // piece for labeling.  Some of these will get stitched together
@@ -168,8 +144,6 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
     }
     else
     {
-        RS_FontEngine* fe = m_serenderer->GetFontEngine();
-
         // case of a simple label
         for (int i=0; i<nlabels; i++)
         {
@@ -195,12 +169,12 @@ void LabelRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
                                       int              nlabels,
                                       RS_OverpostType  type,
                                       bool             exclude,
-                                      LineBuffer*      path)
+                                      LineBuffer*      /*path*/)
 {
     BeginOverpostGroup(type, true, exclude);
 
     //Add a new style SE label to the overpost groups.
-    //here we are processing the simlpe case (like labels at a given points,
+    //Here we are processing the simple case (like labels at given points
     //rather than labels along a line). The hard case is //TODO
     m_labelGroups.back().m_algo = laSESymbol;
     RS_FontEngine* fe = m_serenderer->GetFontEngine();
@@ -523,7 +497,7 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
     //-------------------------------------------------------
 
     if (render)
-    {      
+    {
         m_serenderer->DrawSymbol(info.m_sestyle->symbol, m, angle);
 
 #ifdef DEBUG_LABELS
@@ -587,7 +561,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
         double param_position = ((double)i + 0.5) / (double)numreps;
 
         //compute position and angle along the path for each character
-        bool success = fe->LayoutPathText(tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0);
+        fe->LayoutPathText(tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0);
 
         //once we have position and angle for each character
         //compute oriented bounding box for each character

@@ -119,8 +119,6 @@ public:
 
     STYLIZATION_API virtual bool RequiresClipping();
 
-    STYLIZATION_API virtual bool UseLocalOverposting();
-
 private:
 
     // Unimplemented Constructors/Methods

@@ -144,12 +144,6 @@ public:
         return false;
     }
 
-    // not applicable
-    virtual bool UseLocalOverposting()
-    {
-        return false;
-    }
-
     ///////////////////////////////////
     // SE_Renderer implementation
 

@@ -138,8 +138,8 @@ unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resource, int& len
             INT64 len = sdReader->GetLength();
             if (len > 0 && len < 16*1024*1024) // draw the line at 16 MB
             {
-                ret = new unsigned char[len];
                 length = (int)len;
+                ret = new unsigned char[length];
                 sdReader->Read(ret, length);
                 m_mImageCache[uniqueName] = ret;
             }

@@ -133,8 +133,6 @@ public:
 
     STYLIZATION_API virtual bool RequiresClipping();
 
-    STYLIZATION_API virtual bool UseLocalOverposting();
-
     /////////////////////////////////////////////
     // GDRenderer specific
     //
@@ -223,7 +221,6 @@ private:
     int m_height;
     double m_drawingScale;
     bool m_bRequiresClipping;
-    bool m_bLocalOverposting;
 
     RS_SymbolManager* m_symbolManager;
 
