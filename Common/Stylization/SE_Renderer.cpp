@@ -103,7 +103,8 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
             //single segment to the symbol repeat
             double len = lb->points()[2] - lb->points()[0];
             
-            if (fabs(len - style->repeat) < 0.001) //repeat must be within 1/100 of a pixel for us to assume solid line
+            if (fabs(len - style->repeat) < 0.001) //repeat must be within 1/1000 of a pixel for us to assume solid line
+                                                   //this is only to avoid FP precision issues, in reality they would be exactly equal
             {
                 //ok, it's only a solid line, just draw it and bail out of the
                 //layout function
