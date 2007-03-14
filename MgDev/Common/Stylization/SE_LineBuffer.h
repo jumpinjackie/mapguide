@@ -73,6 +73,8 @@ public:
 
     STYLIZATION_API static void LongestEdge(LineBuffer* lb, double& x0, double& y0, double& x1, double& y1);
 
+    STYLIZATION_API SE_LineBuffer* Clone();
+
 private:
     void Reset();
     void ResizeBuffer(void** buffer, int unitsize, int mininc, int cur_pts, int& max_pts);

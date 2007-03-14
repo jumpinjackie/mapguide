@@ -40,7 +40,12 @@ public:
     SE_INLINE void _LineTo(double x, double y);
     SE_INLINE void SetBounds(double minx, double miny, double maxx, double maxy);
     SE_INLINE void SetBounds(SE_Bounds* bounds);
+
     void SetToTransform(const SE_Matrix& xform, LineBuffer* src);
+    void SetToCopy(SE_LineStorage* src);
+private:
+    SE_INLINE double& _LastX() { return m_last_x; }
+    SE_INLINE double& _LastY() { return m_last_y; }
 };
 
 SE_LineStorage::SE_LineStorage(int size) :
@@ -164,6 +169,28 @@ void SE_LineStorage::SetToTransform(const SE_Matrix& xform, LineBuffer* lb)
 
     m_geom_type = lb->geom_type();
     xform.transform(m_last_x, m_last_y);
+}
+
+void SE_LineStorage::SetToCopy(SE_LineStorage* src)
+{
+    m_cur_pts = m_cur_types = 0;
+    m_cur_cntr = -1;
+    m_last_x = src->_LastX();
+    m_last_y = src->_LastY();
+    m_bounds = src->bounds();
+    m_geom_type = src->geom_type();
+    int grow_types = src->point_count() - m_types_len;
+    if (grow_types > 0)
+        EnsurePoints(m_types_len + grow_types);
+    int grow_cntrs = src->cntr_count() - m_cntrs_len;
+    if (grow_cntrs > 0)
+        EnsureContours(m_cntrs_len + grow_cntrs);
+    memcpy(m_pts, src->points(), sizeof(double)*2*src->point_count());
+    memcpy(m_types, src->types(), src->point_count());
+    memcpy(m_cntrs, src->cntrs(), sizeof(int)*src->cntr_count());
+    m_cur_pts = src->point_count()*2;
+    m_cur_types = src->point_count();
+    m_cur_cntr = src->cntr_count() - 1;
 }
 
 inline void SineCosineMax(double sAng, double sSine, double sCosine, double eAng, double eSine, double eCosine, double &maxSine, double &maxCosine)
@@ -749,6 +776,37 @@ void SE_LineBuffer::LongestEdge(LineBuffer* lb, double& x0, double& y0, double& 
     }
 }
 
+SE_LineBuffer* SE_LineBuffer::Clone()
+{
+    SE_LineBuffer* clone = m_pool->NewLineBuffer(m_npts);
+    clone->m_src_lb = m_src_lb;
+    clone->m_start[0] = m_start[0];
+    clone->m_start[1] = m_start[1];
+    clone->m_last[0] = m_last[0];
+    clone->m_last[1] = m_last[1];
+    clone->m_compute_bounds = m_compute_bounds;
+    clone->m_xf = m_xf;
+    clone->m_xf_tol = m_xf_tol;
+    clone->m_xf_weight = m_xf_weight;
+    if (m_xf_bounds)
+        clone->m_xf_bounds = m_xf_bounds->Clone();
+    if (m_inst_bounds)
+        clone->m_inst_bounds = m_inst_bounds->Clone();
+    clone->m_xf_buf->SetToCopy(m_xf_buf);
+    clone->m_inst_buf->SetToCopy(m_inst_buf);
+    int grow_segs = m_nsegs - clone->m_max_segs;
+    if (grow_segs > 0)
+        ResizeBuffer((void**)&clone->m_segs, sizeof(double), grow_segs, clone->m_nsegs, clone->m_max_segs);
+    int grow_pts = m_npts - clone->m_max_pts;
+    if (grow_pts > 0)
+        ResizeBuffer((void**)&clone->m_pts, sizeof(double), grow_pts, clone->m_npts, clone->m_max_pts);
+    memcpy(clone->m_pts, m_pts, sizeof(double)*m_npts);
+    memcpy(clone->m_segs, m_segs, sizeof(SE_LB_SegType)*m_nsegs);
+    clone->m_nsegs = m_nsegs;
+    clone->m_npts = m_npts;
+    return clone;
+}
+
 SE_LineBufferPool::~SE_LineBufferPool()
 {
     while (!m_lb_pool.empty())
@@ -762,7 +820,6 @@ SE_LineBuffer* SE_LineBufferPool::NewLineBuffer(int requestSize)
     if (!m_lb_pool.empty())
     {
         SE_LineBuffer* lb = m_lb_pool.pop();
-        lb->Reset();
         return lb;
     }
     else
@@ -775,6 +832,7 @@ SE_LineBuffer* SE_LineBufferPool::NewLineBuffer(int requestSize)
 
 void SE_LineBufferPool::FreeLineBuffer(SE_LineBuffer* lb)
 {
+    lb->Reset();
     m_lb_pool.push(lb);
 }
 

@@ -89,30 +89,6 @@ void SE_Bounds::Transform(const SE_Matrix& xform, SE_Bounds* src)
     }
 }
 
-struct SimplePoint
-{
-    double x;
-    double y;
-};
-
-struct SimplePointUtil
-{
-    SE_INLINE double x(SimplePoint* point)
-    {
-        return point->x;
-    }
-
-    SE_INLINE double y(SimplePoint* point)
-    {
-        return point->y;
-    }
-
-    SE_INLINE bool equal(SimplePoint* a, SimplePoint* b)
-    {
-        return a->x == b->x && a->y == b->y;
-    }
-};
-
 void SE_Bounds::Free()
 {
     pool->FreeBounds(this);
@@ -238,7 +214,7 @@ SE_Bounds* SE_Bounds::Union(SE_Bounds* bounds)
     double* last = vec + pnts - 2;
     double* first = vec;
 
-    SE_Bounds* ubounds = AndrewHull<SimplePoint*, SimplePointUtil>((SimplePoint*)first, (SimplePoint*)last, pnts/2, pool);
+    SE_Bounds* ubounds = AndrewHull<SimpleITER, SimplePOINT>((SimpleITER)first, (SimpleITER)last, pnts/2, pool);
 
     if (usize > 4096)
         delete[] vec;

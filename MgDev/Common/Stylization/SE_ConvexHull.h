@@ -29,6 +29,8 @@
 //---------------------------------------------
 //---------------------------------------------
 
+typedef struct { double x, y; }* SimpleITER;
+
 struct SimplePOINT
 {
     SE_INLINE double x(void* point)
@@ -50,6 +52,8 @@ struct SimplePOINT
 //---------------------------------------------
 //---------------------------------------------
 
+// Monotone Chain Convex Hull Algorithm (Andrew, 1979)
+// Input is a lexographically sorted (by x, then y) list of points.
 template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoints, int npoints, SE_LineBufferPool* pool)
 {
     POINT pnt;
