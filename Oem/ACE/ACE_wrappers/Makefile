@@ -15,31 +15,10 @@ INFO    = README \
           THANKS \
           VERSION
 
-DIRS    = ace \
-	  ACEXML \
-          netsvcs \
-          tests \
-          apps \
-          examples \
-          performance-tests \
-          websvcs \
-	  Kokyu
+DIRS    = ace 
 
 CLONE   = Makefile \
-          ace \
-          apps \
-          bin \
-          lib \
-          etc \
-          examples \
-          include \
-          netsvcs \
-          performance-tests \
-          TAO \
-          tests \
-          websvcs \
-	  ACEXML \
-	  Kokyu
+          ace
 
 #----------------------------------------------------------------------------
 #       Include macros and targets
