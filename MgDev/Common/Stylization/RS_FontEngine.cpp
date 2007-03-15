@@ -252,7 +252,7 @@ size_t RS_FontEngine::SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_bre
 //if it chooses to scale the font to make it better fit the given path
 bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
                         const RS_F_Point* pts, int npts, double* seglens,
-                        double param_position, RS_VAlignment valign, int layout_option)
+                        double param_position, RS_VAlignment valign, int /*layout_option*/)
 {
     int numchars = (int)tm.text.length();
     tm.char_pos.reserve(numchars);
@@ -462,9 +462,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     //return value will be positive if y goes down and negative if y goes up 
     //i.e. it's the offset we need to apply to y in the coordinate system of the 
     //renderer
-    double voffset = GetVerticalAlignmentOffset(valign, tm.font, 
-        tm.text_height, //for path labeling, using actualy string height rather than font height works better...
-        tm.font_height * 1.05, 1);
+    double voffset = GetVerticalAlignmentOffset(valign, tm.font, tm.font_height, tm.font_height * 1.05, 1);
 
     //apply vertical alignment to character position
     //horizontal alignment is ignored in this case
@@ -703,7 +701,19 @@ double RS_FontEngine::GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_
     double em_square_size = font->m_units_per_EM;
     double font_ascent    = font->m_ascender * actual_height / em_square_size;
     double font_descent   = font->m_descender * actual_height / em_square_size;
-    double font_capline   = actual_height;
+
+    if (font->m_capheight == 0)
+    {
+        //happy hack to get the capline since FreeType doesn't know it
+
+        RS_F_Point fpts[4];
+        MeasureString(L"A", em_square_size, font, 0.0, fpts, NULL);
+        
+        //set it on the font, so that we don't have to measure it all the time 
+        ((RS_Font*)font)->m_capheight = (short)fabs(fpts[2].y - fpts[1].y);
+    }
+
+    double font_capline = font->m_capheight * actual_height / em_square_size;
 
     switch (vAlign)
     {
