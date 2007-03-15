@@ -235,7 +235,9 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
             {
                 //ok, it's only a solid line, just draw it and bail out of the
                 //layout function
-                DrawScreenPolyline(geometry, rp->color, rp->weight);
+                SE_Matrix m;
+                GetWorldToScreenTransform(m);
+                DrawScreenPolyline(geometry, &m, rp->color, rp->weight);
                 return;
             }
         }
@@ -341,21 +343,21 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
         {
             SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
 
-            LineBuffer* geometry = pl->geometry->TransformInstance(posxform);
+            LineBuffer* geometry = pl->geometry->xf_buffer();
 
             if (m_bSelectionMode)
             {
                 if (primitive->type == SE_PolygonPrimitive)
-                    DrawScreenPolygon( geometry, m_selFill);
+                    DrawScreenPolygon( geometry, &posxform, m_selFill);
 
-                DrawScreenPolyline( geometry, m_selColor, m_selWeight );
+                DrawScreenPolyline( geometry, &posxform, m_selColor, m_selWeight );
             }
             else
             {
                 if (primitive->type == SE_PolygonPrimitive)
-                    DrawScreenPolygon( geometry, ((SE_RenderPolygon*)primitive)->fill );
+                    DrawScreenPolygon( geometry, &posxform, ((SE_RenderPolygon*)primitive)->fill );
 
-                DrawScreenPolyline( geometry, pl->color, pl->weight );
+                DrawScreenPolyline( geometry, &posxform, pl->color, pl->weight );
             }
         }
         else if (primitive->type == SE_TextPrimitive)

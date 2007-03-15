@@ -36,8 +36,8 @@ public:
 
     STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double anglerad);
 
-    virtual void DrawScreenPolyline(LineBuffer* polyline, unsigned int color, double weight) = 0; // px
-    virtual void DrawScreenPolygon(LineBuffer* polygon, unsigned int fill) = 0;
+    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight) = 0; // px
+    virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill) = 0;
     virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
         double x, double y, double w, double h, double angledeg) = 0;
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position) = 0;

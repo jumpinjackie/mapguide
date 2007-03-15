@@ -524,7 +524,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         lb.LineTo(fpts[3].x, fpts[3].y);
         lb.Close();
 
-        m_serenderer->DrawScreenPolygon(&lb, tdef.bgcolor().argb());
+        m_serenderer->DrawScreenPolygon(&lb, NULL, tdef.bgcolor().argb());
     }
 
     for (size_t k=0; k<tm.line_pos.size(); ++k)
@@ -580,7 +580,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             lb.MoveTo(x0, y0);
             lb.LineTo(x1, y1);
 
-            m_serenderer->DrawScreenPolyline(&lb, tdef.color().argb(), line_width);
+            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.color().argb(), line_width);
         }
     }
 }
@@ -667,7 +667,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
             lb.MoveTo(sx, sy);
             lb.LineTo(ex, ey);
 
-            m_serenderer->DrawScreenPolyline(&lb, tdef.color().argb(), line_width);
+            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.color().argb(), line_width);
 
             last_x = ex;
             last_y = ey;

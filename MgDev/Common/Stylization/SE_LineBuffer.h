@@ -61,13 +61,10 @@ public:
     STYLIZATION_API void Free();
 
     STYLIZATION_API LineBuffer* Transform(const SE_Matrix& xform, double weight = 0.0, double tolerance = .25);
-    STYLIZATION_API LineBuffer* TransformInstance(const SE_Matrix& xform);
-
+    
     STYLIZATION_API SE_INLINE bool& compute_bounds() { return m_compute_bounds; }
     STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return (LineBuffer*)m_xf_buf; }
-    STYLIZATION_API SE_INLINE LineBuffer* inst_buffer() { return (LineBuffer*)m_inst_buf; }
     STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds() { return m_xf_bounds; }
-    STYLIZATION_API SE_INLINE SE_Bounds* inst_bounds() { return m_inst_bounds; }
 
     STYLIZATION_API SE_LineBuffer* Clone();
 
@@ -96,9 +93,6 @@ private:
     double m_xf_weight;
     SE_Bounds* m_xf_bounds;
     SE_LineStorage* m_xf_buf;
-
-    SE_Bounds* m_inst_bounds;
-    SE_LineStorage* m_inst_buf;
 
     /* TODO: write a stack based allocator for this, or replace it */
     std::set<std::pair<double, double>, PointLess> m_ch_ptbuf;

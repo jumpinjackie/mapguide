@@ -357,13 +357,11 @@ SE_LineBuffer::SE_LineBuffer(int size) :
     m_xf_tol(-1.0),
     m_xf_weight(-1.0),
     m_xf_bounds(NULL),
-    m_inst_bounds(NULL),
     m_compute_bounds(true)
 {
     m_pts = new double[size*2];
     m_segs = new SE_LB_SegType[size];
     m_xf_buf = new SE_LineStorage(size);
-    m_inst_buf = new SE_LineStorage(size);
 }
 
 SE_LineBuffer::~SE_LineBuffer()
@@ -371,7 +369,6 @@ SE_LineBuffer::~SE_LineBuffer()
     delete[] m_pts;
     delete[] m_segs;
     delete m_xf_buf;
-    delete m_inst_buf;
 }
 
 void SE_LineBuffer::MoveTo(double x, double y)
@@ -478,15 +475,9 @@ void SE_LineBuffer::Reset()
         m_xf_bounds->Free();
         m_xf_bounds = NULL;
     }
-    if (m_inst_bounds)
-    {
-        m_inst_bounds->Free();
-        m_inst_bounds = NULL;
-    }
     m_xf_tol = m_xf_weight = -1.0;
     m_xf.setIdentity();
     m_xf_buf->Reset();
-    m_inst_buf->Reset();
 }
 
 void SE_LineBuffer::ResizeBuffer(void** buffer, int unitsize, int mininc, int cur_pts, int& max_pts)
@@ -637,26 +628,6 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
     return m_xf_buf;
 }
 
-LineBuffer* SE_LineBuffer::TransformInstance(const SE_Matrix& xform)
-{
-    m_inst_buf->SetToTransform(xform, m_xf_buf);
-
-    if (m_inst_bounds)
-    {
-        m_inst_bounds->Free();
-        m_inst_bounds = NULL;
-    }
-
-    if (m_xf_bounds && m_compute_bounds)
-    {
-        m_inst_bounds = m_pool->NewBounds(m_xf_bounds->size);
-        m_inst_bounds->Transform(xform, m_xf_bounds);
-        m_inst_buf->SetBounds(m_inst_bounds);
-    }
-
-    return m_inst_buf;
-}
-
 bool SE_LineBuffer::Empty()
 {
     return m_npts == 0;
@@ -730,10 +701,7 @@ SE_LineBuffer* SE_LineBuffer::Clone()
     clone->m_xf_weight = m_xf_weight;
     if (m_xf_bounds)
         clone->m_xf_bounds = m_xf_bounds->Clone();
-    if (m_inst_bounds)
-        clone->m_inst_bounds = m_inst_bounds->Clone();
     clone->m_xf_buf->SetToCopy(m_xf_buf);
-    clone->m_inst_buf->SetToCopy(m_inst_buf);
     int grow_segs = m_nsegs - clone->m_max_segs;
     if (grow_segs > 0)
         ResizeBuffer((void**)&clone->m_segs, sizeof(double), grow_segs, clone->m_nsegs, clone->m_max_segs);
