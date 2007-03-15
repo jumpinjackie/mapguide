@@ -60,7 +60,7 @@ public:
     void Convert(std::vector<SE_Symbolization*>& styles, MdfModel::CompositeSymbolization* symbolization);
 private:
     SE_Style* ParseSymbol(MdfModel::CompoundSymbolDefinition* symbol);
-    void ParseSymbol(SimpleSymbolDefinition* symbol, SE_Matrix& xform, SE_Symbol* primitives, SE_RenderSymbol* renderPrimitives);
+    void ParseSymbol(SimpleSymbolDefinition* symbol, SE_Matrix& xform, SE_PrimitiveList* primitives, SE_RenderPrimitiveList* renderPrimitives);
     bool ParseDouble(const wchar_t*& str, double& val);
     bool ParseDoublePair(const wchar_t*& str, double& x, double& y);
     bool ParseGeometry(const MdfModel::MdfString& geometry, SE_LineBuffer& buffer);

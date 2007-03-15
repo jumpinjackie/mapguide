@@ -287,6 +287,7 @@ struct SE_Polyline : public SE_Primitive
     SE_Boolean weightScalable;
 
     SE_INLINE SE_Polyline() : weight(0.0) { type = SE_PolylinePrimitive; }
+    ~SE_Polyline() { geometry->Free(); }
 };
 
 struct SE_Polygon : public SE_Polyline
@@ -294,6 +295,7 @@ struct SE_Polygon : public SE_Polyline
     SE_Color fill;
 
     SE_INLINE SE_Polygon() { type = SE_PolygonPrimitive; weight = 0.0; } 
+    ~SE_Polygon() { geometry->Free(); }
 };
 
 /* Font/properties caching is left to the implementor of SE_Renderer */
@@ -320,7 +322,7 @@ struct SE_Text : public SE_Primitive
 struct SE_Raster : public SE_Primitive
 {
     SE_String pngPath;
-    unsigned char* pngPtr;
+    const unsigned char* pngPtr;
     int pngSize;
     SE_Double position[2];
     SE_Double extent[2];
@@ -350,6 +352,7 @@ struct SE_RenderPolyline : public SE_RenderPrimitive
     unsigned int color;
 
     SE_INLINE SE_RenderPolyline() { type = SE_PolylinePrimitive; }
+    ~SE_RenderPolyline() { if (geometry) geometry->Free(); }
 };
 
 struct SE_RenderPolygon : public SE_RenderPolyline
@@ -357,6 +360,7 @@ struct SE_RenderPolygon : public SE_RenderPolyline
     unsigned int fill;
 
     SE_INLINE SE_RenderPolygon() { type = SE_PolygonPrimitive; }
+    ~SE_RenderPolygon() {  }
 };
 
 struct SE_RenderText : public SE_RenderPrimitive
@@ -372,7 +376,7 @@ struct SE_RenderText : public SE_RenderPrimitive
 /* Caching, if any, is left to the implementor of SE_Renderer */
 struct SE_RenderRaster : public SE_RenderPrimitive
 {
-    unsigned char* pngPtr;
+    const unsigned char* pngPtr;
     int pngSize;
     double position[2];
     double extent[2];
@@ -381,8 +385,8 @@ struct SE_RenderRaster : public SE_RenderPrimitive
     SE_INLINE SE_RenderRaster() : pngPtr(0), pngSize(0) { type = SE_RasterPrimitive; }
 };
 
-typedef std::vector<SE_Primitive*> SE_Symbol;
-typedef std::vector<SE_RenderPrimitive*> SE_RenderSymbol;
+typedef std::vector<SE_Primitive*> SE_PrimitiveList;
+typedef std::vector<SE_RenderPrimitive*> SE_RenderPrimitiveList;
 
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //
@@ -393,7 +397,7 @@ typedef std::vector<SE_RenderPrimitive*> SE_RenderSymbol;
 struct SE_Style
 {
     SE_StyleType type;
-    SE_Symbol symbol;
+    SE_PrimitiveList symbol;
     SE_Integer renderPass;
 
     bool useBox;
@@ -405,7 +409,7 @@ struct SE_Style
 
     ~SE_Style()
     {
-        for (SE_Symbol::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
+        for (SE_PrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
             delete *iter;
     }
 };
@@ -467,14 +471,25 @@ struct SE_RenderStyle
 
     ~SE_RenderStyle()
     {
-        for (SE_RenderSymbol::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
-            delete *iter;
+        for (SE_RenderPrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
+        {
+            //necessary since destructor of SE_RenderPrimitive is not virtual
+            //we may want to figure out a better scheme to manage render primitives
+            switch ((*iter)->type)
+            {
+            case SE_PolylinePrimitive: delete (SE_RenderPolyline*)(*iter);break;
+            case SE_PolygonPrimitive: delete (SE_RenderPolygon*)(*iter);break;
+            case SE_RasterPrimitive: delete (SE_RenderRaster*)(*iter);break;
+            case SE_TextPrimitive: delete (SE_RenderText*)(*iter);break;
+            default: throw; //means there is a bug
+            }
+        }
 
         if (bounds) bounds->Free();
     }
 
     SE_StyleType type;
-    SE_RenderSymbol symbol;
+    SE_RenderPrimitiveList symbol;
     SE_Bounds* bounds;
 
     int renderPass;
@@ -561,6 +576,8 @@ struct SE_Symbolization
     ~SE_Symbolization()
     {
         for (std::vector<SE_Style*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
+            //TODO: SE_Styles have no virtual destructor but they don't seem to need
+            //to free stuff specific to the derived classes
             delete *iter;
 
         styles.clear();

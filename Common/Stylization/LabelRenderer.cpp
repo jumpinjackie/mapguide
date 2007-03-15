@@ -511,8 +511,8 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
 
     //here are done with the style and we free it.
     //it was cloned when it was passed to the LabelRenderer.
-    //delete info.m_sestyle;
-    //info.m_sestyle = NULL;
+    delete info.m_sestyle;
+    info.m_sestyle = NULL;
 
     return true;
 }

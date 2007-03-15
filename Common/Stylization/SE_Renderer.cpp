@@ -23,6 +23,127 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+//cloning of RenderSymbols. Unfortunate but nexessary for delay-drawing labels
+static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
+{
+    SE_RenderStyle* ret = NULL;
+
+    //first determine what kind of style it is and copy all the 
+    //style specific properties
+    switch (symbol->type)
+    {
+    case SE_PointStyleType:
+        {
+        SE_RenderPointStyle* dps = new SE_RenderPointStyle();
+        ret = dps;
+        }
+        break;
+    case SE_LineStyleType:
+        {
+            SE_RenderLineStyle* dls = new SE_RenderLineStyle();
+            SE_RenderLineStyle* sls = (SE_RenderLineStyle*)symbol;
+            ret = dls;
+            dls->angle = sls->angle;
+            dls->angleControl = sls->angleControl;
+            dls->endOffset = sls->endOffset;
+            dls->repeat = sls->repeat;
+            dls->startOffset = sls->startOffset;
+            dls->unitsControl = sls->unitsControl;
+            dls->vertexAngleLimit = sls->vertexAngleLimit;
+            dls->vertexControl = sls->vertexControl;
+        }
+        break;
+    case SE_AreaStyleType:
+        {
+            SE_RenderAreaStyle* das = new SE_RenderAreaStyle();
+            SE_RenderAreaStyle* sas = (SE_RenderAreaStyle*)symbol;
+            ret = das;
+            das->angle = sas->angle;
+            das->angleControl = sas->angleControl;
+            das->bufferWidth = sas->bufferWidth;
+            das->clippingControl = sas->clippingControl;
+            das->origin[0] = sas->origin[0];
+            das->origin[1] = sas->origin[1];
+            das->originControl = sas->originControl;
+            das->repeat[0] = sas->repeat[0];
+            das->repeat[1] = sas->repeat[1];
+        }
+    default:
+        break;
+    }
+
+    //copy all the common properties
+    ret->addToExclusionRegions = symbol->addToExclusionRegions;
+    ret->bounds = symbol->bounds->Clone();
+    ret->checkExclusionRegions = symbol->checkExclusionRegions;
+    ret->drawLast = symbol->drawLast;
+    ret->renderPass = symbol->renderPass;
+
+    //copy the graphics for the symbol
+    for (size_t i=0; i<symbol->symbol.size(); i++)
+    {
+        SE_RenderPrimitive* rp = symbol->symbol[i];
+        SE_RenderPrimitive* rpc = NULL;
+
+        switch (rp->type)
+        {
+        case SE_PolygonPrimitive:
+            rpc = new SE_RenderPolygon();
+            ((SE_RenderPolygon*)rpc)->fill = ((SE_RenderPolygon*)rp)->fill;
+        case SE_PolylinePrimitive:
+            {
+                if (!rpc) rpc = new SE_RenderPolyline();
+                SE_RenderPolyline* drp = (SE_RenderPolyline*)rpc;
+                SE_RenderPolyline* srp = (SE_RenderPolyline*)rp;
+                drp->bounds = srp->bounds->Clone();
+                drp->color = srp->color;
+                drp->resize = srp->resize;
+                drp->weight = srp->weight;
+                drp->geometry = srp->geometry->Clone();
+            }
+            break;
+        case SE_TextPrimitive:
+            {
+                rpc = new SE_RenderText();
+                SE_RenderText* st = (SE_RenderText*)rp;
+                SE_RenderText* dt = (SE_RenderText*)rpc;
+
+                dt->bounds = st->bounds->Clone();
+                dt->position[0] = st->position[0];
+                dt->position[1] = st->position[1];
+                dt->resize = st->resize;
+                dt->tdef = st->tdef;
+                dt->text = st->text;
+            }
+            break;
+        case SE_RasterPrimitive:
+            {
+                rpc = new SE_RenderRaster();
+                SE_RenderRaster* sr = (SE_RenderRaster*)rp;
+                SE_RenderRaster* dr = (SE_RenderRaster*)rpc;
+
+                dr->angle = sr->angle;
+                dr->bounds = sr->bounds->Clone();
+                dr->extent[0] = sr->extent[0];
+                dr->extent[1] = sr->extent[1];
+                dr->pngSize = sr->pngSize;
+                dr->pngPtr = sr->pngPtr; //this pointer is managed/cached by the SE_SymbolManager
+                dr->position[0] = sr->position[0];
+                dr->position[1] = sr->position[1];
+                dr->resize = sr->resize;
+            }
+        }
+
+        if (rpc)
+        {
+            ret->symbol.push_back(rpc);
+        }
+    }
+
+    return ret;
+}
+
+
 SE_Renderer::SE_Renderer()
 : m_bSelectionMode(false)
 , m_selWeight(0.0)
@@ -83,7 +204,7 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
 void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
     //determine if the style is a simple straight solid line
-    SE_RenderSymbol& rs = style->symbol;
+    SE_RenderPrimitiveList& rs = style->symbol;
 
     //check if it is a single symbol that is not a label participant
     if (rs.size() == 1 
@@ -199,7 +320,7 @@ void SE_Renderer::ProcessArea(LineBuffer* /*geometry*/, SE_RenderAreaStyle* /*st
 {
 }
 
-void SE_Renderer::DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& posxform, double anglerad)
+void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& posxform, double anglerad)
 {
     for (unsigned i = 0; i < symbol.size(); i++)
     {
@@ -262,7 +383,7 @@ void SE_Renderer::DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& posxform,
             double x, y;
             posxform.transform(rp->position[0], rp->position[1], x, y);
 
-            DrawScreenRaster(rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], anglerad / M_PI180);
+            DrawScreenRaster((unsigned char*)rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], anglerad / M_PI180);
         }
     }
 }
@@ -270,7 +391,12 @@ void SE_Renderer::DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& posxform,
 
 void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angle)
 {
-    SE_LabelInfo info(xform.x2, xform.y2, 0.0, 0.0, RS_Units_Device, angle, style);
+    //clone the SE_RenderStyle so that the label renderer can keep track of it until 
+    //the end of rendering when it draws all the labels
+    //TODO: cloning is bad.
+    SE_RenderStyle* copied_style = CloneRenderStyle(style);
+
+    SE_LabelInfo info(xform.x2, xform.y2, 0.0, 0.0, RS_Units_Device, angle, copied_style);
     
     RS_OverpostType type = RS_OverpostType_AllFit;
 
