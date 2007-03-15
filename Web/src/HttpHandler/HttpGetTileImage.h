@@ -64,7 +64,6 @@ private:
     STRING  m_baseMapLayerGroupName;
     INT32   m_tileCol;
     INT32   m_tileRow;
-    STRING  m_version;
     INT32   m_scaleIndex;
 };
 
