@@ -24,7 +24,7 @@
 ///<param name="filename">Name of the file</param>
 ///
 ByteSourceFileImpl::ByteSourceFileImpl(CREFSTRING filename, bool temporary) :
-    m_file(NULL),
+    m_file(ACE_INVALID_HANDLE),
     m_size(0),
     m_temporary(temporary)
 {
