@@ -314,8 +314,8 @@ wmsdir = ${prefix}/Wms
 wfsdir = ${prefix}/Wfs
 proj4datadir = ${prefix}/bin/data
 proj4naddir = ${prefix}/bin/nad
-daemondir = /var/lock/mgserver
 fdodir = $(map_fdo_lib)
+daemondir = /var/lock/mgserver
 
 install-data-local:
 	test -d $(logfiledir) || $(mkinstalldirs) $(logfiledir)

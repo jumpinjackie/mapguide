@@ -100,7 +100,7 @@
 ..\..\bin\debug\serverconfig.ini : ..\..\src\Core\serverconfig.ini
     xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\debug\
 
-CopyFdoComponentsDebug : ..\..\..\Oem\FDO\bin\*.*
+CopyFdoComponentsDebug : ..\..\..\Oem\FDO\*.*
     if NOT EXIST ..\..\bin\debug\FDO\nul mkdir ..\..\bin\debug\FDO
     xcopy /r /d /y /s ..\..\..\Oem\FDO\bin ..\..\bin\debug\FDO\
 
@@ -116,10 +116,10 @@ CopyResourcesDebug : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
     xcopy /r /d /y "..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res" ..\..\bin\debug\Resources\
 
 CopyOgcFilesDebug : ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
-    if NOT EXIST    ..\..\bin\debug\wms\nul  mkdir ..\..\bin\debug\wms
-    xcopy /r /d /y "..\..\src\wms\*.awd"           ..\..\bin\debug\wms
-    if NOT EXIST    ..\..\bin\debug\wfs\nul  mkdir ..\..\bin\debug\wfs
-    xcopy /r /d /y "..\..\src\wfs\*.awd"           ..\..\bin\debug\wfs
+    if NOT EXIST ..\..\bin\debug\wms\nul mkdir ..\..\bin\debug\wms
+    xcopy /r /d /y "..\..\src\wms\*.awd"       ..\..\bin\debug\wms
+    if NOT EXIST ..\..\bin\debug\wfs\nul mkdir ..\..\bin\debug\wfs
+    xcopy /r /d /y "..\..\src\wfs\*.awd"       ..\..\bin\debug\wfs
 
 CreatePathsDebug :
     if NOT EXIST ..\..\bin\debug\Logs\nul mkdir ..\..\bin\debug\Logs
@@ -363,10 +363,10 @@ CopyResourcesRelease : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
     xcopy /r /d /y "..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res" ..\..\bin\release\Resources\
 
 CopyOgcFilesRelease: ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
-    if NOT EXIST ..\..\bin\release\wms\nul  mkdir ..\..\bin\release\wms
-    xcopy /r /d /y "..\..\src\wms\*.awd"          ..\..\bin\release\wms
-    if NOT EXIST ..\..\bin\release\wfs\nul  mkdir ..\..\bin\release\wfs
-    xcopy /r /d /y "..\..\src\wfs\*.awd"          ..\..\bin\release\wfs
+    if NOT EXIST ..\..\bin\release\wms\nul mkdir ..\..\bin\release\wms
+    xcopy /r /d /y "..\..\src\wms\*.awd"         ..\..\bin\release\wms
+    if NOT EXIST ..\..\bin\release\wfs\nul mkdir ..\..\bin\release\wfs
+    xcopy /r /d /y "..\..\src\wfs\*.awd"         ..\..\bin\release\wfs
 
 CreatePathsRelease :
     if NOT EXIST ..\..\bin\release\Logs\nul mkdir ..\..\bin\release\Logs
