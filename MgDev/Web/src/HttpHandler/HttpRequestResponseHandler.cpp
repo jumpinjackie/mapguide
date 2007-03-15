@@ -140,9 +140,7 @@ void MgHttpRequestResponseHandler::ValidateCommonParameters()
 {
     MG_HTTP_HANDLER_TRY()
 
-    Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
-
-    if (hrParam->GetParameterValue(MgHttpResourceStrings::reqVersion) == L"")
+    if (m_version == L"")
     {
         MgStringCollection arguments;
         arguments.Add(L"0");
@@ -166,29 +164,13 @@ void MgHttpRequestResponseHandler::ValidateOperationVersion()
 {
     MG_HTTP_HANDLER_TRY()
 
-    Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
-    STRING version = hrParam->GetParameterValue(MgHttpResourceStrings::reqVersion);
-
-    STRING majorVer = L"";
-    size_t pos1;
-
-    pos1 = version.find(L".");
-    if (pos1 != string::npos)
-    {
-        majorVer = version.substr(0, pos1);
-    }
-    else
-    {
-        majorVer = version;
-    }
-
-    if (majorVer != L"1")
+    if (m_version != L"1.0.0")
     {
         throw new MgInvalidOperationVersionException(
-        L"MgHttpRequestResponsehandler.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
+        L"MgHttpRequestResponseHandler.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpRequestResponseHander.ValidateOperationVersion");
+    MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpRequestResponseHandler.ValidateOperationVersion");
 }
 
 /// <summary>

@@ -65,7 +65,7 @@ public:
     /// <returns>
     /// nothing
     /// </returns>
-    void ValidateCommonParameters();
+    virtual void ValidateCommonParameters();
 
     /// <summary>
     /// Executes the specific request.

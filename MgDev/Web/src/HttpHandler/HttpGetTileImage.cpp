@@ -36,8 +36,6 @@ MgHttpGetTileImage::MgHttpGetTileImage(MgHttpRequest *hRequest)
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
 
-    m_version = params->GetParameterValue(MgHttpResourceStrings::reqVersion);
-
     if (m_version == L"1.0.0")
     {
         // Get the map name
@@ -68,11 +66,6 @@ MgHttpGetTileImage::MgHttpGetTileImage(MgHttpRequest *hRequest)
 
         // Get the scale index and convert to integer
         m_scaleIndex = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingScaleIndex));
-    }
-    else
-    {
-        throw new MgInvalidOperationVersionException(
-            L"MgHttpGetTileImage.MgHttpGetTileImage", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 }
 
@@ -146,8 +139,13 @@ void MgHttpGetTileImage::ValidateOperationVersion()
 {
     MG_HTTP_HANDLER_TRY()
 
-    // Operation version validation has been moved to constructor
-   
+    // There are multiple supported versions
+    if ((m_version != L"1.0.0") &&
+        (m_version != L"1.2.0"))
+    {
+        throw new MgInvalidOperationVersionException(
+        L"MgHttpGetTileImage.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpGetTileImage.ValidateOperationVersion");
 }
-
