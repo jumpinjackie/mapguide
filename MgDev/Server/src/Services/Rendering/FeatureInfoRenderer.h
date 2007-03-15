@@ -156,7 +156,7 @@ public:
     virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style)
     {}
 
-    virtual void DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& xform, double anglerad)
+    virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double anglerad)
     {}
 
     virtual void DrawScreenPolyline(LineBuffer* polyline, unsigned int color, double weight)
