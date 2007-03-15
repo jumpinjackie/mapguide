@@ -71,8 +71,6 @@ public:
     STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds() { return m_xf_bounds; }
     STYLIZATION_API SE_INLINE SE_Bounds* inst_bounds() { return m_inst_bounds; }
 
-    STYLIZATION_API static void LongestEdge(LineBuffer* lb, double& x0, double& y0, double& x1, double& y1);
-
     STYLIZATION_API SE_LineBuffer* Clone();
 
 private:

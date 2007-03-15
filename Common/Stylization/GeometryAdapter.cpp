@@ -638,7 +638,7 @@ bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tde
 
 
 void GeometryAdapter::AddLabel(double x, double y,
-                               double slope, bool useSlope,
+                               double slope_rad, bool useSlope,
                                MdfModel::Label* label,
                                RS_OverpostType type, bool exclude,
                                Renderer* renderer,
@@ -650,7 +650,7 @@ void GeometryAdapter::AddLabel(double x, double y,
     ConvertTextDef(text, def);
 
     if (useSlope)
-        def.rotation() = atan(slope) / M_PI180;
+        def.rotation() = slope_rad / M_PI180;
 
     std::wstring txt;
     /*bool const1 =*/ EvalString(text->GetText(), txt);

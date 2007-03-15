@@ -61,7 +61,7 @@ public:
     void ParseStringExpression(const MdfString& mdf_string, SE_String& se_string);
 
 private:
-    SE_RenderPointStyle* EvaluatePointStyle(SE_LineBuffer* geometry, SE_Matrix& xform, SE_PointStyle* style, double mm2px);
+    SE_RenderPointStyle* EvaluatePointStyle(LineBuffer* geometry, SE_Matrix& xform, SE_PointStyle* style, double mm2px);
     SE_RenderAreaStyle* EvaluateAreaStyle(SE_Matrix& xform, SE_AreaStyle* style);
     SE_RenderLineStyle* EvaluateLineStyle(SE_Matrix& xform, SE_LineStyle* style);
 

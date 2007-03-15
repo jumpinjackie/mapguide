@@ -145,11 +145,6 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
 
     /* TODO: Obey the indices--Get rid of the indices altogther--single pass! */
     
-    SE_LineBuffer* xformGeom = m_pool->NewLineBuffer(geometry->point_count());
-    xformGeom->compute_bounds() = false;
-
-    xformGeom->Transform(geometry, w2s);
-
     for (std::vector<SE_Symbolization*>::const_iterator iter = symbolization->begin(); iter != symbolization->end(); iter++)
     {
         SE_Symbolization* sym = *iter;
@@ -176,7 +171,7 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
             {
                 case SE_PointStyleType:
                     //this call may modify xform to apply the necessary rotation 
-                    rstyle = EvaluatePointStyle(xformGeom, tmpxform, (SE_PointStyle*)style, mm2px);
+                    rstyle = EvaluatePointStyle(geometry, tmpxform, (SE_PointStyle*)style, mm2px);
                     break;
                 case SE_LineStyleType:
                     rstyle = EvaluateLineStyle(tmpxform, (SE_LineStyle*)style);
@@ -204,13 +199,13 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
                 switch(style->type)
                 {
                 case SE_PointStyleType:
-                    m_renderer->ProcessPoint(xformGeom->xf_buffer(), (SE_RenderPointStyle*)rstyle);
+                    m_renderer->ProcessPoint(geometry, (SE_RenderPointStyle*)rstyle);
                     break;
                 case SE_LineStyleType:
-                    m_renderer->ProcessLine(xformGeom->xf_buffer(), (SE_RenderLineStyle*)rstyle);
+                    m_renderer->ProcessLine(geometry, (SE_RenderLineStyle*)rstyle);
                     break;
                 case SE_AreaStyleType:
-                    m_renderer->ProcessArea(xformGeom->xf_buffer(), (SE_RenderAreaStyle*)rstyle);
+                    m_renderer->ProcessArea(geometry, (SE_RenderAreaStyle*)rstyle);
                     break;
                 }
             }
@@ -220,15 +215,14 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
             delete rstyle;
         }
     }
-    m_pool->FreeLineBuffer(xformGeom);
 }
 
-SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geometry, SE_Matrix& xform, SE_PointStyle* style, double mm2px)
+SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(LineBuffer* geometry, SE_Matrix& xform, SE_PointStyle* style, double mm2px)
 {
     SE_RenderPointStyle* render = new SE_RenderPointStyle();
 
     LineBuffer::GeomOperationType type;
-    switch(geometry->xf_buffer()->geom_type())
+    switch(geometry->geom_type())
     {
     case FdoGeometryType_LineString:
     case FdoGeometryType_MultiLineString:
@@ -253,9 +247,15 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(SE_LineBuffer* geomet
     {
         if (type == LineBuffer::ctLine || type == LineBuffer::ctArea)
         {
-            double x0, x1, y0, y1;
-            geometry->LongestEdge(geometry->xf_buffer(), x0, y0, x1, y1);
-            angle = atan2(y1 - y0, x1 - x0);
+            double x0, y0;
+            double slope_rad = 0.0;
+            geometry->Centroid(LineBuffer::ctLine, &x0, &y0, &slope_rad);
+
+            angle = slope_rad; 
+
+            //TODO: do we really need to invert this in case of y-down?
+            if (xform.y1 < 0)
+                angle = -angle;
         }
     }
     else
