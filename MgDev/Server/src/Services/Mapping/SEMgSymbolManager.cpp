@@ -108,7 +108,7 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
     return ret;
 }
 
-unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resource, int& length)
+const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resource, int& length)
 {
     STRING uniqueName = STRING(resource);
     unsigned char* ret = m_mImageCache[uniqueName];
