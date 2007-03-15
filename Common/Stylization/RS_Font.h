@@ -42,7 +42,8 @@ struct RS_Font
             m_fullname(L""),
             m_familyname(L""),
             m_index(0),
-            m_filename(L"")
+            m_filename(L""),
+            m_capheight(0)
         {
         }
 
@@ -57,6 +58,7 @@ struct RS_Font
         short          m_ascender;
         short          m_descender;
         short          m_height;
+        short          m_capheight;
 
         short          m_max_advance_width;
         short          m_max_advance_height;
