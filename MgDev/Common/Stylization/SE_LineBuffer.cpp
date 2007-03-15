@@ -636,29 +636,7 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
 
     return m_xf_buf;
 }
-/*
-LineBuffer* SE_LineBuffer::Transform(LineBuffer* lb, const SE_Matrix& xform, double weight)
-{
-    m_src_lb = lb;
-    m_xf = xform;
-    m_xf_tol = 0.0;
-    m_xf_weight = weight;
 
-    if (m_xf_bounds)
-    {
-        m_xf_bounds->Free();
-        m_xf_bounds = NULL;
-    }
-
-    m_xf_buf->SetToTransform(xform, lb);
-    if (m_compute_bounds)
-        m_xf_bounds = ComputeConvexHull(m_xf_buf->points(), m_xf_buf->cntrs(), m_xf_buf->cntr_count(), m_xf_weight);
-    if (m_xf_bounds)
-        m_xf_buf->SetBounds(m_xf_bounds);
-
-    return m_xf_buf;
-}
-*/
 LineBuffer* SE_LineBuffer::TransformInstance(const SE_Matrix& xform)
 {
     m_inst_buf->SetToTransform(xform, m_xf_buf);
