@@ -29,7 +29,7 @@
 //---------------------------------------------
 //---------------------------------------------
 
-typedef struct { double x, y; }* SimpleITER;
+typedef std::pair<double, double>* SimpleITER;
 
 struct SimplePOINT
 {
