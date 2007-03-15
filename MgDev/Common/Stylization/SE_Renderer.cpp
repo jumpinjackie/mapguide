@@ -185,8 +185,14 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
     /* Render the points */
     for (int i = 0; i < geometry->point_count(); i++)
     {
+        double x = geometry->points()[2*i];
+        double y= geometry->points()[2*i+1];
+
+        //transform to screen space -- geometry is in [the original] mapping space
+        WorldToScreenPoint(x, y, x, y);
+        
         xform.setIdentity();
-        xform.translate(geometry->points()[2*i], geometry->points()[2*i+1]);
+        xform.translate(x, y);
         double angle = 0;//TODO: angle needs to be added to the RenderPointStyle
         if (style->drawLast)
             AddLabel(geometry, style, xform, 0);
@@ -263,10 +269,15 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 
             //current line segment
             double* seg = pts + cur_seg * 2;
+            double seg_screen[4];
+
+            //transform segment from mapping to screen space
+            WorldToScreenPoint(seg[0], seg[1], seg_screen[0], seg_screen[1]);
+            WorldToScreenPoint(seg[2], seg[3], seg_screen[2], seg_screen[3]);
             
             //get length
-            double dx = seg[2] - seg[0];
-            double dy = seg[3] - seg[1];
+            double dx = seg_screen[2] - seg_screen[0];
+            double dy = seg_screen[3] - seg_screen[1];
             double len = sqrt(dx*dx + dy*dy);
 
             //check if completely skipping current segment since it is smaller than
@@ -281,8 +292,8 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 double dy_incr = sin(slope);
 
                 double symrot = fromAngle? style->angle : slope;
-                double tx = seg[0] + dx_incr * drawpos;
-                double ty = seg[1] + dy_incr * drawpos;
+                double tx = seg_screen[0] + dx_incr * drawpos;
+                double ty = seg_screen[1] + dy_incr * drawpos;
 
                 symxf.rotate(symrot);
                 symxf.translate(tx, ty);

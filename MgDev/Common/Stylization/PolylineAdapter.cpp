@@ -129,14 +129,14 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     {
         double cx = 0.0;
         double cy = 0.0;
-        double slope = 0.0;
+        double slope_rad = 0.0;
 
         //multi should work for simple polylines too
-        lb->Centroid(LineBuffer::ctLine, &cx, &cy, &slope);
+        lb->Centroid(LineBuffer::ctLine, &cx, &cy, &slope_rad);
 
         if (!_isnan(cx) && !_isnan(cy))
         {
-            AddLabel(cx, cy, slope, true, label, RS_OverpostType_FirstFit, true, renderer, lb);
+            AddLabel(cx, cy, slope_rad, true, label, RS_OverpostType_FirstFit, true, renderer, lb);
         }
     }
 }

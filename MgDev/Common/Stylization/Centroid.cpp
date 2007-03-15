@@ -67,11 +67,8 @@ void Centroid::PolylineCentroid(double* pts, int numpts, double* cx, double* cy,
     *cx = x0 + fact*dx;
     *cy = y0 + fact*dy;
 
-    // compute the slope
-    if (dx == 0.0)
-        *slope = (dy < 0.0)? -std::numeric_limits<double>::infinity() : std::numeric_limits<double>::infinity();
-    else
-        *slope = dy / dx;
+    // compute the slope (as a rotation)
+    *slope = atan2(dy, dx);
 }
 
 

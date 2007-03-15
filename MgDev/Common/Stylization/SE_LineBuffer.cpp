@@ -747,36 +747,6 @@ void SE_LineBuffer::TessellateCubicTo(SE_LineStorage* lb, double px2, double py2
     lb->_LineTo(px4, py4);
 }
 
-void SE_LineBuffer::LongestEdge(LineBuffer* lb, double& x0, double& y0, double& x1, double& y1)
-{
-    int* contours = lb->cntrs();
-    int* cntr_end = contours + lb->cntr_count();
-    double* points = lb->points();
-
-    while(contours < cntr_end)
-    {
-        double* pnt_end = points + 2*(*contours++);
-        double maxlensq = -1.0, lastx, lasty;
-        lastx = x0 = x1 = *points++;
-        lasty = y0 = y1 = *points++;
-
-        while (points < pnt_end)
-        {
-            double x = *points++;
-            double y = *points++;
-            double lensq = (x - lastx)*(x - lastx) + (y - lasty)*(y - lasty);
-            if (lensq > maxlensq)
-            {
-                maxlensq = lensq;
-                x0 = lastx; y0 = lasty;
-                x1 = x; y1 = y;
-            }
-            lastx = x;
-            lasty = y;
-        }
-    }
-}
-
 SE_LineBuffer* SE_LineBuffer::Clone()
 {
     SE_LineBuffer* clone = m_pool->NewLineBuffer(m_npts);
