@@ -40,7 +40,7 @@ public:
     virtual ~SEMgSymbolManager();
 
     virtual SymbolDefinition* GetSymbolDefinition(const wchar_t* resource);
-    virtual unsigned char* GetImageData(const wchar_t* resource, int& length);
+    virtual const unsigned char* GetImageData(const wchar_t* resource, int& length);
 
 private:
     MgResourceService* m_svcResource;
