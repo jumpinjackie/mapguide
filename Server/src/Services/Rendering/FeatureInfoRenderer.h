@@ -159,10 +159,10 @@ public:
     virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double anglerad)
     {}
 
-    virtual void DrawScreenPolyline(LineBuffer* polyline, unsigned int color, double weight)
+    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight)
     {}
 
-    virtual void DrawScreenPolygon(LineBuffer* polygon, unsigned int fill)
+    virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill)
     {}
 
     virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
