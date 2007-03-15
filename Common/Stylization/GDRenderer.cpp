@@ -2124,22 +2124,39 @@ void GDRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 /////////////////////////////////////////////////////////////
 
 
-void GDRenderer::_TransferPoints(double* src, int numpts)
+void GDRenderer::_TransferPoints(double* src, int numpts, const SE_Matrix* xform)
 {
     EnsureBufferSize(numpts);
     int* pts = (int*)m_wtPointBuffer;
-    for (int i=0; i<numpts; i++)
+
+    if (!xform)
     {
-        *pts++ = (int)(*src);
-        src++;
-        *pts++ = (int)(*src);
-        src++;
+        for (int i=0; i<numpts; i++)
+        {
+            *pts++ = (int)(*src);
+            src++;
+            *pts++ = (int)(*src);
+            src++;
+        }
+    }
+    else
+    {
+        for (int i=0; i<numpts; i++)
+        {
+            double x, y;
+            xform->transform(src[0], src[1], x, y);
+            pts[0] = (int)x;
+            pts[1] = (int)y;
+
+            src += 2;
+            pts += 2;
+        }
     }
 }
 
 
 //copied from WritePolylines, except it doesn't do to screen trasnform -- we should refactor.
-void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, unsigned int color, double weightpx)
+void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, unsigned int color, double weightpx)
 {
     RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
 
@@ -2165,7 +2182,7 @@ void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, unsigned int color, doubl
         int cntr_size = srclb->cntrs()[i];
 
         //convert to integer coords
-        _TransferPoints(srclb->points() + index, cntr_size);
+        _TransferPoints(srclb->points() + index, cntr_size, xform);
 
         if (cntr_size > 1)
         {
@@ -2190,7 +2207,7 @@ void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, unsigned int color, doubl
 }
 
 
-void GDRenderer::DrawScreenPolygon(LineBuffer* polygon, unsigned int color)
+void GDRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int color)
 {
     RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
 
@@ -2212,7 +2229,7 @@ void GDRenderer::DrawScreenPolygon(LineBuffer* polygon, unsigned int color)
         }
         */
 
-        _TransferPoints(polygon->points(), polygon->point_count());
+        _TransferPoints(polygon->points(), polygon->point_count(), xform);
 
         //call the new rasterizer
         m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, polygon->point_count(), polygon->cntrs(), polygon->cntr_count(),

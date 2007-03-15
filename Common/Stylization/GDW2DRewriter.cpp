@@ -202,7 +202,7 @@ WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
             }
         }
 
-        rewriter->DrawScreenPolygon(&lb, color.argb());
+        rewriter->DrawScreenPolygon(&lb, NULL, color.argb());
     }
 
     return WT_Result::Success;
