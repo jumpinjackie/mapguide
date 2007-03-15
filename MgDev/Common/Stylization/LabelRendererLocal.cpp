@@ -336,20 +336,7 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
     }
 
     // remember the feature bounds for the label group
-    RS_Bounds bounds;
-    path->ComputeBounds(bounds);
-
-    // this is the SE case, and so the line buffer bounds are
-    // in screen space - convert them back to mapping space
-    double x0, y0, x1, y1;
-    m_serenderer->ScreenToWorldPoint(bounds.minx, bounds.miny, x0, y0);
-    m_serenderer->ScreenToWorldPoint(bounds.maxx, bounds.maxy, x1, y1);
-    bounds.minx = rs_min(x0, x1);
-    bounds.maxx = rs_max(x0, x1);
-    bounds.miny = rs_min(y0, y1);
-    bounds.maxy = rs_max(y0, y1);
-
-    m_labelGroups.back().m_feature_bounds = bounds;
+    m_labelGroups.back().m_feature_bounds = path->bounds();
 
     EndOverpostGroup();
 }
