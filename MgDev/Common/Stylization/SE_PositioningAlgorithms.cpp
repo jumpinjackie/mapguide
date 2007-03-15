@@ -12,10 +12,10 @@
 
 SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 {
-    SE_RenderPointStyle* ret = new SE_RenderPointStyle(); //LEAK
+    SE_RenderPointStyle* ret = new SE_RenderPointStyle(); 
     *ret = *st;
-    ret->bounds = st->bounds->Clone(); //LEAK
-    SE_RenderText* txt = new SE_RenderText(); //LEAK
+    ret->bounds = st->bounds->Clone(); 
+    SE_RenderText* txt = new SE_RenderText(); 
     *txt = *((SE_RenderText*)st->symbol[0]);
     ret->symbol[0] = txt;
 
@@ -97,7 +97,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
 
     //assume there is a single text label in the render symbol
     //and extract it from in there
-    SE_RenderPointStyle* rstyle2 = new SE_RenderPointStyle(); //LEAK
+    SE_RenderPointStyle* rstyle2 = new SE_RenderPointStyle();
     rstyle2->addToExclusionRegions = rstyle->addToExclusionRegions;
     rstyle2->checkExclusionRegions = rstyle->checkExclusionRegions;
     rstyle2->drawLast = rstyle->drawLast;
@@ -105,7 +105,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     rstyle2->bounds = rstyle->bounds->Clone();
     SE_RenderText* txt = NULL;
     
-    for (SE_RenderSymbol::iterator iter = rstyle->symbol.begin(); iter != rstyle->symbol.end(); iter++)
+    for (SE_RenderPrimitiveList::iterator iter = rstyle->symbol.begin(); iter != rstyle->symbol.end(); iter++)
     {
         if ((*iter)->type == SE_TextPrimitive)
         {

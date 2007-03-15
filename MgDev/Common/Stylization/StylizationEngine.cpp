@@ -215,9 +215,9 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
                 }
             }
 
-            //TODO: LEAK: the RenderStyles used for labeling are leaked because of this -- we need to free them somehow
-            if (!sym->drawLast.evaluate(m_exec))
-                delete rstyle;
+            //Free the render style. If the style was needed for drawing as a label,
+            //the renderer would have cloned it and created its own pointer
+            delete rstyle;
         }
     }
     m_pool->FreeLineBuffer(xformGeom);
@@ -330,7 +330,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
         growy = 0.0;
     }
 
-    for (SE_Symbol::const_iterator src = style->symbol.begin(); src != style->symbol.end(); src++)
+    for (SE_PrimitiveList::const_iterator src = style->symbol.begin(); src != style->symbol.end(); src++)
     {
         SE_Primitive* sym = *src;
         SE_RenderPrimitive* rsym = NULL;
@@ -350,13 +350,13 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                     m_renderer->GetPixelsPerMillimeterWorld() : 
                     m_renderer->GetPixelsPerMillimeterScreen();
                 rp->weight = p->weight.evaluate(m_exec)*wx;
-                rp->geometry = p->geometry;
+                rp->geometry = p->geometry->Clone();
                 rp->color = p->color.evaluate(m_exec);
                 /* Defer transformation */
                 if (sym->resize != GraphicElement::AdjustToResizeBox)
                 {
                     rp->geometry->Transform(xform, rp->weight);
-                    rp->bounds = p->geometry->xf_bounds();
+                    rp->bounds = rp->geometry->xf_bounds()->Clone();
                 }
                 else
                     rp->bounds = NULL;
@@ -537,7 +537,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
         growxf.translate(dx, dy);
         totalxf.premultiply(growxf);
 
-        for (SE_RenderSymbol::iterator rs = renderStyle->symbol.begin(); rs != renderStyle->symbol.end(); rs++)
+        for (SE_RenderPrimitiveList::iterator rs = renderStyle->symbol.begin(); rs != renderStyle->symbol.end(); rs++)
         {
             SE_RenderPrimitive* rsym = *rs;
             if (rsym->resize)
@@ -549,7 +549,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                     {
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
                         rp->geometry->Transform(totalxf, rp->weight);
-                        rp->bounds = rp->geometry->xf_bounds();
+                        rp->bounds = rp->geometry->xf_bounds()->Clone();
                         break;
                     }
                 case SE_TextPrimitive:

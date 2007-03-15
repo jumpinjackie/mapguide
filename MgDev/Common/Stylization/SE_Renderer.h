@@ -34,7 +34,7 @@ public:
     STYLIZATION_API virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
     STYLIZATION_API virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style);
 
-    STYLIZATION_API virtual void DrawSymbol(SE_RenderSymbol& symbol, const SE_Matrix& xform, double anglerad);
+    STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double anglerad);
 
     virtual void DrawScreenPolyline(LineBuffer* polyline, unsigned int color, double weight) = 0; // px
     virtual void DrawScreenPolygon(LineBuffer* polygon, unsigned int fill) = 0;
@@ -74,6 +74,7 @@ private:
 
     RS_F_Point m_lastExclusionRegion[4];
 
+    
 protected:
     SE_LineBufferPool* m_lbp;
     bool m_bSelectionMode;
