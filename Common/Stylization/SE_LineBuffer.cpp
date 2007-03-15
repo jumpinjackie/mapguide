@@ -356,7 +356,6 @@ SE_LineBuffer::SE_LineBuffer(int size) :
     m_max_segs(size),
     m_xf_tol(-1.0),
     m_xf_weight(-1.0),
-    m_src_lb(NULL),
     m_xf_bounds(NULL),
     m_inst_bounds(NULL),
     m_compute_bounds(true)
@@ -484,7 +483,6 @@ void SE_LineBuffer::Reset()
         m_inst_bounds->Free();
         m_inst_bounds = NULL;
     }
-    m_src_lb = NULL;
     m_xf_tol = m_xf_weight = -1.0;
     m_xf.setIdentity();
     m_xf_buf->Reset();
@@ -514,9 +512,6 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
         m_xf_bounds->Free();
         m_xf_bounds = NULL;
     }
-
-    if (m_src_lb)
-        return Transform(m_src_lb, xform, weight);
 
     m_xf = xform;
     m_xf_tol = tolerance;
@@ -641,7 +636,7 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
 
     return m_xf_buf;
 }
-
+/*
 LineBuffer* SE_LineBuffer::Transform(LineBuffer* lb, const SE_Matrix& xform, double weight)
 {
     m_src_lb = lb;
@@ -663,7 +658,7 @@ LineBuffer* SE_LineBuffer::Transform(LineBuffer* lb, const SE_Matrix& xform, dou
 
     return m_xf_buf;
 }
-
+*/
 LineBuffer* SE_LineBuffer::TransformInstance(const SE_Matrix& xform)
 {
     m_inst_buf->SetToTransform(xform, m_xf_buf);
@@ -686,10 +681,7 @@ LineBuffer* SE_LineBuffer::TransformInstance(const SE_Matrix& xform)
 
 bool SE_LineBuffer::Empty()
 {
-    if (m_src_lb)
-        return m_src_lb->point_count() == 0;
-    else
-        return m_npts == 0;
+    return m_npts == 0;
 }
 
 void SE_LineBuffer::Free()
@@ -750,7 +742,6 @@ void SE_LineBuffer::TessellateCubicTo(SE_LineStorage* lb, double px2, double py2
 SE_LineBuffer* SE_LineBuffer::Clone()
 {
     SE_LineBuffer* clone = m_pool->NewLineBuffer(m_npts);
-    clone->m_src_lb = m_src_lb;
     clone->m_start[0] = m_start[0];
     clone->m_start[1] = m_start[1];
     clone->m_last[0] = m_last[0];
