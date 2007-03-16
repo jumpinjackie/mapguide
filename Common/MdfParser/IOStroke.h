@@ -20,6 +20,7 @@
 
 #include "SAX2ElementHandler.h"
 #include "Stroke.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -36,7 +37,7 @@ class IOStroke : public SAX2ElementHandler
         IOStroke(std::wstring elementName);
         IOStroke(Stroke * stroke, std::wstring elementName);
         ~IOStroke();
-        static void Write(MdfStream &fd, Stroke *stroke, std::string name);
+        static void Write(MdfStream &fd, Stroke *stroke, std::string name, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

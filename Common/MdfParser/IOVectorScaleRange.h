@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "VectorScaleRange.h"
 #include "VectorLayerDefinition.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -37,7 +38,7 @@ class IOVectorScaleRange : public SAX2ElementHandler
         IOVectorScaleRange();
         IOVectorScaleRange(VectorLayerDefinition * layer);
         ~IOVectorScaleRange();
-        void Write(MdfStream &fd, VectorScaleRange *scaleRange);
+        void Write(MdfStream &fd, VectorScaleRange *scaleRange, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

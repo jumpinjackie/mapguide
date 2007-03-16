@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "LineTypeStyle.h"
 #include "VectorScaleRange.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -37,7 +38,7 @@ class IOLineTypeStyle : public SAX2ElementHandler
         IOLineTypeStyle();
         IOLineTypeStyle(VectorScaleRange * scaleRange);
         ~IOLineTypeStyle();
-        void Write(MdfStream &fd, LineTypeStyle *lineTypeStyle);
+        void Write(MdfStream &fd, LineTypeStyle *lineTypeStyle, Version *version);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

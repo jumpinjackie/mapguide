@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "AreaSymbolization2D.h"
 #include "AreaRule.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -36,7 +37,7 @@ class IOAreaSymbolization2D : public SAX2ElementHandler
         IOAreaSymbolization2D();
         IOAreaSymbolization2D(AreaRule * areaRule);
         ~IOAreaSymbolization2D();
-        void Write(MdfStream &fd, AreaSymbolization2D * areaSymbolization);
+        void Write(MdfStream &fd, AreaSymbolization2D * areaSymbolization, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

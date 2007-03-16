@@ -109,7 +109,7 @@ void IOAreaSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handle
     }
 }
 
-void IOAreaSymbolization2D::Write(MdfStream &fd, AreaSymbolization2D * areaSymbolization)
+void IOAreaSymbolization2D::Write(MdfStream &fd, AreaSymbolization2D * areaSymbolization, Version* version)
 {
     fd << tab() << "<AreaSymbolization2D>" << std::endl; // NOXLATE
     inctab();
@@ -120,7 +120,7 @@ void IOAreaSymbolization2D::Write(MdfStream &fd, AreaSymbolization2D * areaSymbo
 
     //Property: Edge
     if (areaSymbolization != NULL && areaSymbolization->GetEdge() != NULL)
-        IOStroke::Write(fd, areaSymbolization->GetEdge(), "Stroke"); // NOXLATE
+        IOStroke::Write(fd, areaSymbolization->GetEdge(), "Stroke", version); // NOXLATE
 
     // Write any previously found unknown XML
     if (areaSymbolization != NULL && !areaSymbolization->GetUnknownXml().empty())

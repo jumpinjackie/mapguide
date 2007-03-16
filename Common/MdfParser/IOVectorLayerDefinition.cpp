@@ -232,7 +232,7 @@ void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featur
     for (int x = 0; x < featureLayer->GetScaleRanges()->GetCount(); x++)
     {
         IOVectorScaleRange * IO = new IOVectorScaleRange();
-        IO->Write(fd, featureLayer->GetScaleRanges()->GetAt(x));
+        IO->Write(fd, featureLayer->GetScaleRanges()->GetAt(x), version);
         delete IO;
     }
 

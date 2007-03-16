@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "PointRule.h"
 #include "PointTypeStyle.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -37,7 +38,7 @@ class IOPointRule : public SAX2ElementHandler
         IOPointRule();
         IOPointRule(PointTypeStyle * pointTypeStyle);
         ~IOPointRule();
-        void Write(MdfStream &fd, PointRule * pointRule);
+        void Write(MdfStream &fd, PointRule * pointRule, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

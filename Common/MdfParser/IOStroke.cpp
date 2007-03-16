@@ -111,7 +111,7 @@ void IOStroke::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name)
+void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *version)
 {
     fd << tab() << "<" << name << ">" << std::endl; // NOXLATE
     inctab();
@@ -138,16 +138,30 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name)
     fd << "</Unit>" << std::endl; // NOXLATE
 
     //Property: SizeContext
-    fd << tab() << "<SizeContext>"; // NOXLATE
-    if(stroke->GetSizeContext() == MdfModel::MappingUnits)
+    // Only write SizeContext if the version is not less than 1.1
+    bool bWriteSizeContext = true;
+    if (version != NULL)
     {
-        fd << "MappingUnits"; // NOXLATE
+        int nMajor = version->GetMajor();
+        int nMinor = version->GetMinor();
+        double scalerMajorMinorVersion = ( (double)version->GetMajor() ) * 1.0 + ( (double)version->GetMinor() ) * 0.1;
+
+        bWriteSizeContext = (scalerMajorMinorVersion >= 1.1);
     }
-    else
+
+    if (bWriteSizeContext)
     {
-        fd << "DeviceUnits"; // NOXLATE
+        fd << tab() << "<SizeContext>"; // NOXLATE
+        if(stroke->GetSizeContext() == MdfModel::MappingUnits)
+        {
+            fd << "MappingUnits"; // NOXLATE
+        }
+        else
+        {
+            fd << "DeviceUnits"; // NOXLATE
+        }
+        fd << "</SizeContext>" << std::endl; // NOXLATE
     }
-    fd << "</SizeContext>" << std::endl; // NOXLATE
         
     // Write any previously found unknown XML
     if (!stroke->GetUnknownXml().empty())

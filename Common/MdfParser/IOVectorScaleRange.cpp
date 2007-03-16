@@ -140,7 +140,7 @@ void IOVectorScaleRange::EndElement(const wchar_t *name, HandlerStack *handlerSt
     }
 }
 
-void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange)
+void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange, Version* version)
 {
     fd << tab() << "<VectorScaleRange>" << std::endl; // NOXLATE
     inctab();
@@ -167,19 +167,19 @@ void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange)
         if (dynamic_cast<AreaTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)) != 0)
         {
             IOAreaTypeStyle * IO = new IOAreaTypeStyle();
-            IO->Write(fd, dynamic_cast<AreaTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)));
+            IO->Write(fd, dynamic_cast<AreaTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)), version);
             delete IO;
         }
         else if (dynamic_cast<LineTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)) != 0)
         {
             IOLineTypeStyle * IO = new IOLineTypeStyle();
-            IO->Write(fd, dynamic_cast<LineTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)));
+            IO->Write(fd, dynamic_cast<LineTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)), version);
             delete IO;
         }
         else if (dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)) != 0)
         {
             IOPointTypeStyle * IO = new IOPointTypeStyle();
-            IO->Write(fd, dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)));
+            IO->Write(fd, dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)), version);
             delete IO;
         }
         else if (dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)) != 0)

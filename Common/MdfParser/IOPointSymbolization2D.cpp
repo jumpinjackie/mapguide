@@ -125,7 +125,7 @@ void IOPointSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handl
     }
 }
 
-void IOPointSymbolization2D::Write(MdfStream &fd, PointSymbolization2D *PointSymbolization2D)
+void IOPointSymbolization2D::Write(MdfStream &fd, PointSymbolization2D *PointSymbolization2D, Version *version)
 {
     fd << tab() << "<PointSymbolization2D>" << std::endl; // NOXLATE
     inctab();
@@ -137,7 +137,7 @@ void IOPointSymbolization2D::Write(MdfStream &fd, PointSymbolization2D *PointSym
     W2DSymbol* w2DSymbol = dynamic_cast<W2DSymbol*>(PointSymbolization2D->GetSymbol());
     BlockSymbol* blockSymbol = dynamic_cast<BlockSymbol*>(PointSymbolization2D->GetSymbol());
     if (markSymbol)
-        IOMarkSymbol::Write(fd, markSymbol);
+        IOMarkSymbol::Write(fd, markSymbol, version);
     else if (imageSymbol)
         IOImageSymbol::Write(fd, imageSymbol);
     else if (fontSymbol)

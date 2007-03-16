@@ -98,7 +98,7 @@ void IOPointTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IOPointTypeStyle::Write(MdfStream &fd, PointTypeStyle *pointTypeStyle)
+void IOPointTypeStyle::Write(MdfStream &fd, PointTypeStyle *pointTypeStyle, Version *version)
 {
     fd << tab() << "<PointTypeStyle>" << std::endl; // NOXLATE
     inctab();
@@ -117,7 +117,7 @@ void IOPointTypeStyle::Write(MdfStream &fd, PointTypeStyle *pointTypeStyle)
     for (int x = 0; x < pointTypeStyle->GetRules()->GetCount(); x++)
     {
         IOPointRule *IO = new IOPointRule();
-        IO->Write(fd, static_cast<PointRule*>(pointTypeStyle->GetRules()->GetAt(x)));
+        IO->Write(fd, static_cast<PointRule*>(pointTypeStyle->GetRules()->GetAt(x)), version);
         delete IO;
     }
 
