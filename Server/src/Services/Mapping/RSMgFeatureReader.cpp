@@ -27,9 +27,9 @@
 //MgExceptions so it can't properly release them
 #define RSFR_TRY() try {
 #define RSFR_CATCH()   }                                \
-                       catch (MgException* awe)         \
+                       catch (MgException* ex)          \
                        {                                \
-                           awe->Release();              \
+                           ex->Release();               \
                            throw FdoException::Create();\
                        }
 
@@ -37,8 +37,7 @@
 RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* svcFeature, MgResourceIdentifier* featResId, MgFeatureQueryOptions* options, const STRING& geomPropName)
 {
     assert(NULL != reader);
-    m_reader = reader;
-    SAFE_ADDREF(m_reader);
+    m_reader = SAFE_ADDREF(reader);
 
     //stuff needed for resetting the reader
     m_svcFeature = SAFE_ADDREF(svcFeature);
@@ -58,9 +57,7 @@ RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* 
     Ptr<MgPropertyDefinitionCollection> pdc = m_class->GetPropertiesIncludingBase();
 
     //
-    //
     // Set up the cache of propery data types and indices
-    //
     //
 
     m_numProps = pdc->GetCount();
@@ -134,8 +131,8 @@ RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* 
     //otherwise we will use the geometry proeprty
     if (m_rasterPropName == geomPropName)
         m_geomPropName = L"";
-
 }
+
 
 RSMgFeatureReader::~RSMgFeatureReader()
 {
@@ -152,12 +149,14 @@ RSMgFeatureReader::~RSMgFeatureReader()
     delete [] m_idpropNames;
 }
 
+
 bool RSMgFeatureReader::ReadNext()
 {
     RSFR_TRY()
     return m_reader->ReadNext();
     RSFR_CATCH()
 }
+
 
 void RSMgFeatureReader::Close()
 {
@@ -166,6 +165,7 @@ void RSMgFeatureReader::Close()
     RSFR_CATCH()
 }
 
+
 void RSMgFeatureReader::Reset()
 {
     RSFR_TRY()
@@ -173,10 +173,11 @@ void RSMgFeatureReader::Reset()
     m_reader->Close();
     SAFE_RELEASE(m_reader);
 
-    m_reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetClassName(), m_options);
+    m_reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetName(), m_options);
 
     RSFR_CATCH()
 }
+
 
 bool RSMgFeatureReader::IsNull(const wchar_t* propertyName)
 {
@@ -185,6 +186,7 @@ bool RSMgFeatureReader::IsNull(const wchar_t* propertyName)
     RSFR_CATCH()
 }
 
+
 bool RSMgFeatureReader::GetBoolean(const wchar_t* propertyName)
 {
     RSFR_TRY()
@@ -192,12 +194,14 @@ bool RSMgFeatureReader::GetBoolean(const wchar_t* propertyName)
     RSFR_CATCH()
 }
 
+
 unsigned char RSMgFeatureReader::GetByte(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetByte(propertyName);
     RSFR_CATCH()
 }
+
 
 FdoDateTime RSMgFeatureReader::GetDateTime(const wchar_t* propertyName)
 {
@@ -218,12 +222,14 @@ FdoDateTime RSMgFeatureReader::GetDateTime(const wchar_t* propertyName)
     RSFR_CATCH()
 }
 
+
 float RSMgFeatureReader::GetSingle(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetSingle(propertyName);
     RSFR_CATCH()
 }
+
 
 double RSMgFeatureReader::GetDouble(const wchar_t* propertyName)
 {
@@ -232,12 +238,14 @@ double RSMgFeatureReader::GetDouble(const wchar_t* propertyName)
     RSFR_CATCH()
 }
 
+
 short RSMgFeatureReader::GetInt16(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetInt16(propertyName);
     RSFR_CATCH()
 }
+
 
 int RSMgFeatureReader::GetInt32(const wchar_t* propertyName)
 {
@@ -246,12 +254,14 @@ int RSMgFeatureReader::GetInt32(const wchar_t* propertyName)
     RSFR_CATCH()
 }
 
+
 long long RSMgFeatureReader::GetInt64(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetInt64(propertyName);
     RSFR_CATCH()
 }
+
 
 const wchar_t* RSMgFeatureReader::GetString(const wchar_t* propertyName)
 {
@@ -260,6 +270,7 @@ const wchar_t* RSMgFeatureReader::GetString(const wchar_t* propertyName)
     return m_reader->GetString(propertyName, len);
     RSFR_CATCH()
 }
+
 
 LineBuffer* RSMgFeatureReader::GetGeometry(const wchar_t*   propertyName,
                                            LineBuffer*      lb,
@@ -282,6 +293,7 @@ LineBuffer* RSMgFeatureReader::GetGeometry(const wchar_t*   propertyName,
     RSFR_CATCH()
 }
 
+
 RS_Raster* RSMgFeatureReader::GetRaster(const wchar_t* propertyName)
 {
     RSFR_TRY()
@@ -290,6 +302,7 @@ RS_Raster* RSMgFeatureReader::GetRaster(const wchar_t* propertyName)
     RSFR_CATCH()
 }
 
+
 RS_InputStream* RSMgFeatureReader::GetBLOB(const wchar_t* propertyName)
 {
     RSFR_TRY()
@@ -297,6 +310,7 @@ RS_InputStream* RSMgFeatureReader::GetBLOB(const wchar_t* propertyName)
     return new RSMgInputStream(rdr);
     RSFR_CATCH()
 }
+
 
 RS_InputStream* RSMgFeatureReader::GetCLOB(const wchar_t* propertyName)
 {
@@ -362,6 +376,7 @@ int RSMgFeatureReader::GetPropertyType(const wchar_t* propertyName)
     //should not happen
     return 0;
 }
+
 
 const wchar_t* RSMgFeatureReader::GetAsString(const wchar_t* propertyName)
 {
@@ -462,6 +477,7 @@ const wchar_t* RSMgFeatureReader::GetAsString(const wchar_t* propertyName)
     return m_cachePropValue.c_str();
 }
 
+
 const wchar_t* RSMgFeatureReader::GetGeomPropName()
 {
     if (m_geomPropName.empty())
@@ -469,6 +485,7 @@ const wchar_t* RSMgFeatureReader::GetGeomPropName()
     else
         return m_geomPropName.c_str();
 }
+
 
 const wchar_t* RSMgFeatureReader::GetRasterPropName()
 {
@@ -481,11 +498,13 @@ const wchar_t* RSMgFeatureReader::GetRasterPropName()
     //return m_rasterPropName;
 }
 
+
 const wchar_t*const* RSMgFeatureReader::GetIdentPropNames(int& count)
 {
     count = m_numIdProps;
     return m_idpropNames;
 }
+
 
 const wchar_t*const* RSMgFeatureReader::GetPropNames(int& count)
 {
