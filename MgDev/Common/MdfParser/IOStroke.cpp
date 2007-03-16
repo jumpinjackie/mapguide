@@ -137,20 +137,9 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *v
     fd << EncodeString(*str);
     fd << "</Unit>" << std::endl; // NOXLATE
 
-    //Property: SizeContext
-    // Only write SizeContext if the version is not less than 1.1
-    bool bWriteSizeContext = true;
-    if (version != NULL)
+    if (!version || ((*version) >= Version(1, 1, 0))) // don't write to pre-1.1.0 schema
     {
-        int nMajor = version->GetMajor();
-        int nMinor = version->GetMinor();
-        double scalerMajorMinorVersion = ( (double)version->GetMajor() ) * 1.0 + ( (double)version->GetMinor() ) * 0.1;
-
-        bWriteSizeContext = (scalerMajorMinorVersion >= 1.1);
-    }
-
-    if (bWriteSizeContext)
-    {
+        //Property: SizeContext
         fd << tab() << "<SizeContext>"; // NOXLATE
         if(stroke->GetSizeContext() == MdfModel::MappingUnits)
         {

@@ -22,7 +22,6 @@
 #include "PointSymbolization2D.h"
 #include "PointRule.h"
 #include "IOSymbol.h"
-#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;

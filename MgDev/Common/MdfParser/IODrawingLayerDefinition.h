@@ -20,7 +20,6 @@
 
 #include "SAX2ElementHandler.h"
 #include "DrawingLayerDefinition.h"
-#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;

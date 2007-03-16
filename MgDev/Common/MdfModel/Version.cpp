@@ -146,3 +146,35 @@ MdfString Version::ToString()
     return strVersion;
 }
 
+bool Version::operator==(const Version & version) const
+{
+    return m_nMajorNumber == version.m_nMajorNumber && 
+        m_nMinorNumber == version.m_nMinorNumber &&
+        m_nRevisionNumber == version.m_nRevisionNumber;
+}
+
+bool Version::operator>(const Version & version) const
+{
+    if (m_nMajorNumber == version.m_nMajorNumber)
+    {
+        if (m_nMinorNumber == version.m_nMinorNumber)
+            return m_nRevisionNumber > version.m_nRevisionNumber;
+        else
+            return m_nMinorNumber > version.m_nMinorNumber;
+    }
+    else
+        return m_nMajorNumber > version.m_nMajorNumber;
+}
+
+bool Version::operator>=(const Version & version) const
+{
+    if (m_nMajorNumber == version.m_nMajorNumber)
+    {
+        if (m_nMinorNumber == version.m_nMinorNumber)
+            return m_nRevisionNumber >= version.m_nRevisionNumber;
+        else
+            return m_nMinorNumber > version.m_nMinorNumber;
+    }
+    else
+        return m_nMajorNumber > version.m_nMajorNumber;
+}
