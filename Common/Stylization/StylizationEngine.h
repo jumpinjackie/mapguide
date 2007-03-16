@@ -73,7 +73,9 @@ public:
                  CompositeTypeStyle* style,
                  SE_String* seTip,
                  SE_String* seUrl,
-                 RS_ElevationSettings* elevSettings);
+                 RS_ElevationSettings* elevSettings,
+                 int renderingPass,
+                 int& nextRenderingPass);
 
     void ClearCache();
 
