@@ -80,6 +80,7 @@
 #include "Path.h"
 #include "Text.h"
 #include "Image.h"
+#include "GraphicElement.h"
 
 //FDO headers
 #include "Fdo.h"
