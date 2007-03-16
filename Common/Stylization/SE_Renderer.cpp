@@ -32,13 +32,13 @@ static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
     //style specific properties
     switch (symbol->type)
     {
-    case SE_PointStyleType:
+    case SE_RenderPointStyleType:
         {
         SE_RenderPointStyle* dps = new SE_RenderPointStyle();
         ret = dps;
         }
         break;
-    case SE_LineStyleType:
+    case SE_RenderLineStyleType:
         {
             SE_RenderLineStyle* dls = new SE_RenderLineStyle();
             SE_RenderLineStyle* sls = (SE_RenderLineStyle*)symbol;
@@ -53,7 +53,7 @@ static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
             dls->vertexControl = sls->vertexControl;
         }
         break;
-    case SE_AreaStyleType:
+    case SE_RenderAreaStyleType:
         {
             SE_RenderAreaStyle* das = new SE_RenderAreaStyle();
             SE_RenderAreaStyle* sas = (SE_RenderAreaStyle*)symbol;
@@ -87,10 +87,10 @@ static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
 
         switch (rp->type)
         {
-        case SE_PolygonPrimitive:
+        case SE_RenderPolygonPrimitive:
             rpc = new SE_RenderPolygon();
             ((SE_RenderPolygon*)rpc)->fill = ((SE_RenderPolygon*)rp)->fill;
-        case SE_PolylinePrimitive:
+        case SE_RenderPolylinePrimitive:
             {
                 if (!rpc) rpc = new SE_RenderPolyline();
                 SE_RenderPolyline* drp = (SE_RenderPolyline*)rpc;
@@ -102,7 +102,7 @@ static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
                 drp->geometry = srp->geometry->Clone();
             }
             break;
-        case SE_TextPrimitive:
+        case SE_RenderTextPrimitive:
             {
                 rpc = new SE_RenderText();
                 SE_RenderText* st = (SE_RenderText*)rp;
@@ -116,7 +116,7 @@ static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
                 dt->text = st->text;
             }
             break;
-        case SE_RasterPrimitive:
+        case SE_RenderRasterPrimitive:
             {
                 rpc = new SE_RenderRaster();
                 SE_RenderRaster* sr = (SE_RenderRaster*)rp;
@@ -214,7 +214,7 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 
     //check if it is a single symbol that is not a label participant
     if (rs.size() == 1 
-        && rs[0]->type == SE_PolylinePrimitive 
+        && rs[0]->type == SE_RenderPolylinePrimitive 
         && !style->drawLast 
         && !style->addToExclusionRegions)
     {
@@ -339,7 +339,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
     {
         SE_RenderPrimitive* primitive = symbol[i];
 
-        if (primitive->type == SE_PolygonPrimitive || primitive->type == SE_PolylinePrimitive)
+        if (primitive->type == SE_RenderPolygonPrimitive || primitive->type == SE_RenderPolylinePrimitive)
         {
             SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
 
@@ -347,20 +347,20 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
 
             if (m_bSelectionMode)
             {
-                if (primitive->type == SE_PolygonPrimitive)
+                if (primitive->type == SE_RenderPolygonPrimitive)
                     DrawScreenPolygon( geometry, &posxform, m_selFill);
 
                 DrawScreenPolyline( geometry, &posxform, m_selColor, m_selWeight );
             }
             else
             {
-                if (primitive->type == SE_PolygonPrimitive)
+                if (primitive->type == SE_RenderPolygonPrimitive)
                     DrawScreenPolygon( geometry, &posxform, ((SE_RenderPolygon*)primitive)->fill );
 
                 DrawScreenPolyline( geometry, &posxform, pl->color, pl->weight );
             }
         }
-        else if (primitive->type == SE_TextPrimitive)
+        else if (primitive->type == SE_RenderTextPrimitive)
         {
             SE_RenderText* tp = (SE_RenderText*)primitive;
 
@@ -389,7 +389,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
                 DrawScreenText(tp->text, tp->tdef, x, y, NULL, 0, 0.0);
             }
         }
-        else if (primitive->type == SE_RasterPrimitive)
+        else if (primitive->type == SE_RenderRasterPrimitive)
         {
             SE_RenderRaster* rp = (SE_RenderRaster*)primitive;
 

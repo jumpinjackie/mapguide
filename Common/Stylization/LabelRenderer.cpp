@@ -21,7 +21,7 @@
 #include "GDRenderer.h"
 #include "GDUtils.h"
 #include "RS_Font.h"
-#include "SE_Include.h"
+#include "SE_RenderProxies.h"
 #include "SE_Bounds.h"
 #include "SE_Renderer.h"
 

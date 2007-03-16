@@ -28,6 +28,7 @@
 #include "FeatureTypeStyleVisitor.h"
 #include "LineBuffer.h"
 #include "Renderer.h"
+#include "SE_SymbolDefProxies.h"
 
 #include <algorithm>
 #include <functional>

@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "SE_Include.h"
+#include "SE_RenderProxies.h"
 #include "SE_PositioningAlgorithms.h"
 #include "SE_Renderer.h"
 #include "Renderer.h"
@@ -107,7 +107,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     
     for (SE_RenderPrimitiveList::iterator iter = rstyle->symbol.begin(); iter != rstyle->symbol.end(); iter++)
     {
-        if ((*iter)->type == SE_TextPrimitive)
+        if ((*iter)->type == SE_RenderTextPrimitive)
         {
             SE_RenderText* rt = (SE_RenderText*)(*iter);
 

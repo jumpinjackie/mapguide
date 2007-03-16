@@ -677,10 +677,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SE_Include.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SE_LineBuffer.cpp"
 				>
 			</File>
@@ -709,11 +705,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_RenderProxies.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_StyleVisitor.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\SE_StyleVisitor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_SymbolDefProxies.h"
 				>
 			</File>
 			<File

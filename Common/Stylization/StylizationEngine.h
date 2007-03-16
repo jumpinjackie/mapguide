@@ -20,7 +20,6 @@
 
 #include "Stylizer.h"
 #include "SE_Matrix.h"
-#include "SE_Include.h"
 
 class SE_SymbolManager;
 class RS_FeatureReader;
@@ -37,6 +36,17 @@ namespace MDFMODEL_NAMESPACE
 {
     class CompositeTypeStyle;
 }
+
+struct SE_Style;
+struct SE_PointStyle;
+struct SE_LineStyle;
+struct SE_AreaStyle;
+struct SE_Rule;
+struct SE_String;
+struct SE_RenderPointStyle;
+struct SE_RenderLineStyle;
+struct SE_RenderAreaStyle;
+struct SE_RenderStyle;
 
 using namespace MDFMODEL_NAMESPACE;
 

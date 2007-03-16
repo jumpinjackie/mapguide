@@ -582,7 +582,7 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
                     c2x = ex + cw*alpha*rx*esin;
                     c2y = ey - cw*alpha*ry*ecos;
 
-                    /* Here, we fine the maximum 2nd derivative over the interval in question, and
+                    /* Here, we find the maximum 2nd derivative over the interval in question, and
                        calculate the number of segments, assuming a deviation of the segment length *
                        the second derivative must be within the tolerance */
                     double mx, my;
