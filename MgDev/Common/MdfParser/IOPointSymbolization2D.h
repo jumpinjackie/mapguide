@@ -22,6 +22,7 @@
 #include "PointSymbolization2D.h"
 #include "PointRule.h"
 #include "IOSymbol.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -39,7 +40,7 @@ class IOPointSymbolization2D : public SAX2ElementHandler
         IOPointSymbolization2D();
         IOPointSymbolization2D(PointRule * pointRule);
         ~IOPointSymbolization2D();
-        void Write(MdfStream &fd, PointSymbolization2D * PointSymbolization2D);
+        void Write(MdfStream &fd, PointSymbolization2D * PointSymbolization2D, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

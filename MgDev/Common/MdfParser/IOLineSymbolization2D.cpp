@@ -29,6 +29,7 @@ ELEM_MAP_ENTRY(2, LineStyle);
 ELEM_MAP_ENTRY(3, Thickness);
 ELEM_MAP_ENTRY(4, Color);
 ELEM_MAP_ENTRY(5, Unit);
+ELEM_MAP_ENTRY(6, SizeContext);
 
 IOLineSymbolization2D::IOLineSymbolization2D()
 {
@@ -80,6 +81,13 @@ void IOLineSymbolization2D::ElementChars(const wchar_t *ch)
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
         this->_lineSymbolization->GetStroke()->SetUnit(unit);
     }
+    else if (m_currElemName == L"SizeContext") // NOXLATE
+    {
+        if (::wcscmp(ch, L"MappingUnits") == 0) // NOXLATE
+            this->_lineSymbolization->GetStroke()->SetSizeContext(MdfModel::MappingUnits);
+        else if (::wcscmp(ch, L"DeviceUnits") == 0) // NOXLATE
+            this->_lineSymbolization->GetStroke()->SetSizeContext(MdfModel::DeviceUnits);
+    }
 }
 
 void IOLineSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handlerStack)
@@ -98,7 +106,7 @@ void IOLineSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handle
     }
 }
 
-void IOLineSymbolization2D::Write(MdfStream &fd, LineSymbolization2D *lineSymbolization)
+void IOLineSymbolization2D::Write(MdfStream &fd, LineSymbolization2D *lineSymbolization, Version *version)
 {
     //Property: Stroke
     if (lineSymbolization->GetStroke())
@@ -126,6 +134,32 @@ void IOLineSymbolization2D::Write(MdfStream &fd, LineSymbolization2D *lineSymbol
         std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(lineSymbolization->GetStroke()->GetUnit()));
         fd << EncodeString(*str);
         fd << endStr(sUnit) << std::endl; 
+
+        //Property: SizeContext
+        // Only write SizeContext if the version is not less than 1.1
+        bool bWriteSizeContext = true;
+        if (version != NULL)
+        {
+            int nMajor = version->GetMajor();
+            int nMinor = version->GetMinor();
+            double scalerMajorMinorVersion = ( (double)version->GetMajor() ) * 1.0 + ( (double)version->GetMinor() ) * 0.1;
+
+            bWriteSizeContext = (scalerMajorMinorVersion >= 1.1);
+        }
+
+        if (bWriteSizeContext)
+        {
+            fd << tab() << "<SizeContext>"; // NOXLATE
+            if(lineSymbolization->GetStroke()->GetSizeContext() == MdfModel::MappingUnits)
+            {
+                fd << "MappingUnits"; // NOXLATE
+            }
+            else
+            {
+                fd << "DeviceUnits"; // NOXLATE
+            }
+            fd << "</SizeContext>" << std::endl; // NOXLATE
+        }
 
         // Write any previously found unknown XML
         if (!lineSymbolization->GetUnknownXml().empty())

@@ -108,7 +108,7 @@ void IOLineRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOLineRule::Write(MdfStream &fd, LineRule *lineRule)
+void IOLineRule::Write(MdfStream &fd, LineRule *lineRule, Version *version)
 {
     fd << tab() << "<LineRule>" << std::endl; // NOXLATE
     inctab();
@@ -137,7 +137,7 @@ void IOLineRule::Write(MdfStream &fd, LineRule *lineRule)
     for (int x = 0; x < lineRule->GetSymbolizations()->GetCount(); x++)
     {
         IOLineSymbolization2D *IO = new IOLineSymbolization2D();
-        IO->Write(fd, lineRule->GetSymbolizations()->GetAt(x));
+        IO->Write(fd, lineRule->GetSymbolizations()->GetAt(x), version);
         delete IO;
     }
 

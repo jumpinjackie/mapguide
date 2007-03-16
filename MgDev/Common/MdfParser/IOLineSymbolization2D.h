@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "LineSymbolization2D.h"
 #include "LineRule.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -37,7 +38,7 @@ class IOLineSymbolization2D : public SAX2ElementHandler
         IOLineSymbolization2D();
         IOLineSymbolization2D(LineRule * lineRule);
         ~IOLineSymbolization2D();
-        void Write(MdfStream &fd, LineSymbolization2D *lineSymbolization);
+        void Write(MdfStream &fd, LineSymbolization2D *lineSymbolization, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

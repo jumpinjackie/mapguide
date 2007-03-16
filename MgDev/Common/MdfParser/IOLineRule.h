@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "LineRule.h"
 #include "LineTypeStyle.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -36,7 +37,7 @@ class IOLineRule : public SAX2ElementHandler
         IOLineRule();
         IOLineRule(LineTypeStyle * lineTypeStyle);
         ~IOLineRule();
-        void Write(MdfStream &fd, LineRule *lineRule);
+        void Write(MdfStream &fd, LineRule *lineRule, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

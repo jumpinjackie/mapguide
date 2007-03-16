@@ -40,7 +40,7 @@ class IOMarkSymbol : public IOSymbol
         virtual void ElementChars(const wchar_t *ch);
         virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
 
-        static void Write(MdfStream &fd, MarkSymbol *markSymbol);
+        static void Write(MdfStream &fd, MarkSymbol *markSymbol, Version *version = NULL);
 };
 
 END_NAMESPACE_MDFPARSER

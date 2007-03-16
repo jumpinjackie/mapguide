@@ -108,7 +108,7 @@ void IOPointRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOPointRule::Write(MdfStream &fd, PointRule *pointRule)
+void IOPointRule::Write(MdfStream &fd, PointRule *pointRule, Version *version)
 {
     fd << tab() << "<PointRule>" << std::endl; // NOXLATE
     inctab();
@@ -138,7 +138,7 @@ void IOPointRule::Write(MdfStream &fd, PointRule *pointRule)
     if (symbolization2d != NULL)
     {
         IOPointSymbolization2D *IO = new IOPointSymbolization2D();
-        IO->Write(fd, symbolization2d);
+        IO->Write(fd, symbolization2d, version);
         delete IO;
     }
 

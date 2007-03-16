@@ -93,7 +93,7 @@ void IOAreaTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOAreaTypeStyle::Write(MdfStream &fd, AreaTypeStyle * areaTypeStyle)
+void IOAreaTypeStyle::Write(MdfStream &fd, AreaTypeStyle * areaTypeStyle, Version *version)
 {
     fd << tab() << "<AreaTypeStyle>" << std::endl; // NOXLATE
     inctab();
@@ -102,7 +102,7 @@ void IOAreaTypeStyle::Write(MdfStream &fd, AreaTypeStyle * areaTypeStyle)
     for (int x = 0; x < areaTypeStyle->GetRules()->GetCount(); x++)
     {
         IOAreaRule *IO = new IOAreaRule();
-        IO->Write(fd, static_cast<AreaRule*>(areaTypeStyle->GetRules()->GetAt(x)));
+        IO->Write(fd, static_cast<AreaRule*>(areaTypeStyle->GetRules()->GetAt(x)), version);
         delete IO;
     }
 

@@ -130,7 +130,7 @@ void IOMarkSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOMarkSymbol::Write(MdfStream &fd, MarkSymbol *symbol)
+void IOMarkSymbol::Write(MdfStream &fd, MarkSymbol *symbol, Version *version)
 {
     fd << tab() << "<Mark>" << std::endl; // NOXLATE
     inctab();
@@ -159,7 +159,7 @@ void IOMarkSymbol::Write(MdfStream &fd, MarkSymbol *symbol)
 
     //Property: Edge
     if (symbol->GetEdge() != NULL)
-        IOStroke::Write(fd, symbol->GetEdge(), "Edge"); // NOXLATE
+        IOStroke::Write(fd, symbol->GetEdge(), "Edge", version); // NOXLATE
 
     // Write any previously found unknown XML
     if (!symbol->GetUnknownXml().empty())

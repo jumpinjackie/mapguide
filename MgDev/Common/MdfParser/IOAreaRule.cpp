@@ -108,7 +108,7 @@ void IOAreaRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOAreaRule::Write(MdfStream &fd, AreaRule *areaRule)
+void IOAreaRule::Write(MdfStream &fd, AreaRule *areaRule, Version *version)
 {
     fd << tab() << "<AreaRule>" << std::endl;  // NOXLATE
     inctab();
@@ -137,7 +137,7 @@ void IOAreaRule::Write(MdfStream &fd, AreaRule *areaRule)
     //Property: Symbolization
     AreaSymbolization2D *symbolization = areaRule->GetSymbolization();
     IOAreaSymbolization2D *IO = new IOAreaSymbolization2D();
-    IO->Write(fd, symbolization);
+    IO->Write(fd, symbolization, version);
     delete IO;
 
         // Write any previously found unknown XML

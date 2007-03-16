@@ -93,7 +93,7 @@ void IOLineTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOLineTypeStyle::Write(MdfStream &fd, LineTypeStyle *lineTypeStyle)
+void IOLineTypeStyle::Write(MdfStream &fd, LineTypeStyle *lineTypeStyle, Version *version)
 {
     fd << tab() << "<LineTypeStyle>" << std::endl; // NOXLATE
     inctab();
@@ -102,7 +102,7 @@ void IOLineTypeStyle::Write(MdfStream &fd, LineTypeStyle *lineTypeStyle)
     for (int x = 0; x < lineTypeStyle->GetRules()->GetCount(); x++)
     {
         IOLineRule *IO = new IOLineRule();
-        IO->Write(fd, static_cast<LineRule*>(lineTypeStyle->GetRules()->GetAt(x)));
+        IO->Write(fd, static_cast<LineRule*>(lineTypeStyle->GetRules()->GetAt(x)), version);
         delete IO;
     }
 
