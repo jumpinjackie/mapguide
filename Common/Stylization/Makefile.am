@@ -69,7 +69,8 @@ noinst_HEADERS = \
   SE_Bounds.h \
   SE_ConvexHull.h \
   SE_ExpressionBase.h \
-  SE_Include.h \
+  SE_SymbolDefProxies.h \
+  SE_RenderProxies.h \
   SE_LineBuffer.h \
   SE_Matrix.h \
   SE_PositioningAlgorithms.h \
