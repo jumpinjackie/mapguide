@@ -46,6 +46,7 @@
 
 // MdfModel includes
 #include "MdfModel.h"
+#include "Version.h"
 
 // MdfParser includes
 #include "MdfParser.h"
