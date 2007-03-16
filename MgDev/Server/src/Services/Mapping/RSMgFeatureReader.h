@@ -44,53 +44,31 @@ public:
     // RS_FeatureReader implementation
     //--------------------------------------------
 
-    virtual bool            ReadNext    ();
+    virtual bool ReadNext();
+    virtual void Close   ();
+    virtual void Reset   ();
 
-    virtual void            Close       ();
-
-    virtual void            Reset       ();
-
+    virtual bool            IsNull         (const wchar_t* propertyName);
+    virtual bool            GetBoolean     (const wchar_t* propertyName);
+    virtual unsigned char   GetByte        (const wchar_t* propertyName);
+    virtual FdoDateTime     GetDateTime    (const wchar_t* propertyName);
+    virtual float           GetSingle      (const wchar_t* propertyName);
+    virtual double          GetDouble      (const wchar_t* propertyName);
+    virtual short           GetInt16       (const wchar_t* propertyName);
+    virtual int             GetInt32       (const wchar_t* propertyName);
+    virtual long long       GetInt64       (const wchar_t* propertyName);
+    virtual const wchar_t*  GetString      (const wchar_t* propertyName);
+    virtual LineBuffer*     GetGeometry    (const wchar_t* propertyName, LineBuffer* lb, CSysTransformer* xformer);
+    virtual RS_Raster*      GetRaster      (const wchar_t* propertyName);
+    virtual const wchar_t*  GetAsString    (const wchar_t* propertyName);
+    virtual RS_InputStream* GetBLOB        (const wchar_t* propertyName);
+    virtual RS_InputStream* GetCLOB        (const wchar_t* propertyName);
     virtual int             GetPropertyType(const wchar_t* propertyName);
 
-    virtual bool            IsNull      (const wchar_t* propertyName);
-
-    virtual bool            GetBoolean  (const wchar_t* propertyName);
-
-    virtual unsigned char   GetByte     (const wchar_t* propertyName);
-
-    virtual FdoDateTime     GetDateTime (const wchar_t* propertyName);
-
-    virtual float           GetSingle   (const wchar_t* propertyName);
-
-    virtual double          GetDouble   (const wchar_t* propertyName);
-
-    virtual short           GetInt16    (const wchar_t* propertyName);
-
-    virtual int             GetInt32    (const wchar_t* propertyName);
-
-    virtual long long       GetInt64    (const wchar_t* propertyName);
-
-    virtual const wchar_t*  GetString   (const wchar_t* propertyName);
-
-    virtual LineBuffer*     GetGeometry (const wchar_t*   propertyName,
-                                         LineBuffer*      lb,
-                                         CSysTransformer* xformer);
-
-    virtual RS_Raster*      GetRaster   (const wchar_t* propertyName);
-
-    virtual RS_InputStream* GetBLOB     (const wchar_t* propertyName);
-
-    virtual RS_InputStream* GetCLOB     (const wchar_t* propertyName);
-
-    virtual const wchar_t*  GetAsString (const wchar_t* propertyName);
-
-    virtual const wchar_t*  GetGeomPropName();
-
-    virtual const wchar_t*  GetRasterPropName();
-
-    virtual const wchar_t*const*  GetIdentPropNames(int& count);
-
-    virtual const wchar_t*const*  GetPropNames(int& count);
+    virtual const wchar_t*        GetGeomPropName  ();
+    virtual const wchar_t*        GetRasterPropName();
+    virtual const wchar_t* const* GetIdentPropNames(int& count);
+    virtual const wchar_t* const* GetPropNames     (int& count);
 
 private:
     MgFeatureReader* m_reader;
