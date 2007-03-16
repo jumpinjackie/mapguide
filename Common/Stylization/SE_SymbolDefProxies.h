@@ -30,23 +30,6 @@ using namespace MDFMODEL_NAMESPACE;
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
-enum SE_PrimitiveType
-{
-    SE_PolylinePrimitive,
-    SE_PolygonPrimitive,
-    SE_TextPrimitive,
-    SE_RasterPrimitive
-};
-
-
-enum SE_StyleType
-{
-    SE_PointStyleType,
-    SE_LineStyleType,
-    SE_AreaStyleType
-};
-
 class RS_FilterExecutor;
 class RS_FontEngine;
 class SE_SymbolManager;
@@ -71,7 +54,6 @@ struct SE_RenderPrimitive;
 
 struct SE_Primitive
 {
-    SE_PrimitiveType type;
     GraphicElement::ResizeControl resize;
     bool cacheable;
 
@@ -89,7 +71,7 @@ struct SE_Polyline : public SE_Primitive
     SE_Color color;
     SE_Boolean weightScalable;
 
-    SE_INLINE SE_Polyline() : weight(0.0) { type = SE_PolylinePrimitive; }
+    SE_INLINE SE_Polyline() : weight(0.0) { }
     ~SE_Polyline() { geometry->Free(); }
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
@@ -99,8 +81,6 @@ struct SE_Polygon : public SE_Polyline
 {
     SE_Color fill;
 
-    SE_INLINE SE_Polygon() { type = SE_PolygonPrimitive; weight = 0.0; }
-    virtual ~SE_Polygon() { }
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
 
@@ -123,7 +103,6 @@ struct SE_Text : public SE_Primitive
     SE_Color textColor;
     SE_Color ghostColor;
 
-    SE_INLINE SE_Text() { type = SE_TextPrimitive;  }
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
 
@@ -137,7 +116,7 @@ struct SE_Raster : public SE_Primitive
     SE_Double extent[2];
     SE_Double angle;
 
-    SE_INLINE SE_Raster() { type = SE_RasterPrimitive; }
+    SE_INLINE SE_Raster() {  }
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
 
@@ -153,7 +132,6 @@ struct SE_RenderStyle;
 struct SE_Style
 {
     SE_RenderStyle* rstyle; // cached evaluated RenderStyle
-    SE_StyleType type;
     SE_PrimitiveList symbol;
     SE_Integer renderPass;
 
@@ -162,7 +140,7 @@ struct SE_Style
     SE_Double resizeSize[2];
     ResizeBox::GrowControl resize;
 
-    SE_INLINE SE_Style(SE_StyleType stype) : type(stype), rstyle(NULL) { }
+    SE_INLINE SE_Style() : rstyle(NULL) { }
 
     virtual ~SE_Style();
 
@@ -177,7 +155,7 @@ struct SE_PointStyle : public SE_Style
     SE_Double angle;
     SE_Double originOffset[2];
 
-    SE_INLINE SE_PointStyle() : SE_Style(SE_PointStyleType) { }
+    SE_INLINE SE_PointStyle() { }
     virtual void apply(LineBuffer* geometry, SE_Renderer* renderer);
     virtual void evaluate(SE_EvalContext*);
 };
@@ -196,7 +174,7 @@ struct SE_LineStyle : public SE_Style
     SE_Double repeat;
     SE_Double vertexAngleLimit;
 
-    SE_INLINE SE_LineStyle() : SE_Style(SE_LineStyleType) { }
+    SE_INLINE SE_LineStyle() { }
     virtual void apply(LineBuffer* geometry, SE_Renderer* renderer);
     virtual void evaluate(SE_EvalContext*);
 };
@@ -213,7 +191,7 @@ struct SE_AreaStyle : public SE_Style
     SE_Double repeat[2];
     SE_Double bufferWidth;
 
-    SE_INLINE SE_AreaStyle() : SE_Style(SE_AreaStyleType) { }
+    SE_INLINE SE_AreaStyle() { }
     virtual void apply(LineBuffer* geometry, SE_Renderer* renderer);
     virtual void evaluate(SE_EvalContext*);
 };
