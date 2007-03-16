@@ -70,23 +70,25 @@ void IOLineSymbolization2D::StartElement(const wchar_t *name, HandlerStack *hand
 
 void IOLineSymbolization2D::ElementChars(const wchar_t *ch)
 {
-    if (m_currElemName == L"LineStyle") // NOXLATE
-        this->_lineSymbolization->GetStroke()->SetLineStyle(ch);
-    else if (m_currElemName == L"Thickness") // NOXLATE
-        this->_lineSymbolization->GetStroke()->SetThickness(ch);
-    else if (m_currElemName == L"Color") // NOXLATE
-        this->_lineSymbolization->GetStroke()->SetColor(ch);
-    else if (m_currElemName == L"Unit") // NOXLATE
+    Stroke* stroke = this->_lineSymbolization->GetStroke();
+
+    if (m_currElemName == swLineStyle)
+        stroke->SetLineStyle(ch);
+    else if (m_currElemName == swThickness)
+        stroke->SetThickness(ch);
+    else if (m_currElemName == swColor)
+        stroke->SetColor(ch);
+    else if (m_currElemName == swUnit)
     {
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
-        this->_lineSymbolization->GetStroke()->SetUnit(unit);
+        stroke->SetUnit(unit);
     }
-    else if (m_currElemName == L"SizeContext") // NOXLATE
+    else if (m_currElemName == swSizeContext)
     {
         if (::wcscmp(ch, L"MappingUnits") == 0) // NOXLATE
-            this->_lineSymbolization->GetStroke()->SetSizeContext(MdfModel::MappingUnits);
-        else if (::wcscmp(ch, L"DeviceUnits") == 0) // NOXLATE
-            this->_lineSymbolization->GetStroke()->SetSizeContext(MdfModel::DeviceUnits);
+            stroke->SetSizeContext(MdfModel::MappingUnits);
+        else // "DeviceUnits" & default
+            stroke->SetSizeContext(MdfModel::DeviceUnits);
     }
 }
 
@@ -95,7 +97,7 @@ void IOLineSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handle
     if (m_startElemName == name)
     {
         if (!UnknownXml().empty())
-            this->_lineSymbolization->SetUnknownXml(UnknownXml());
+            this->_lineSymbolization->GetStroke()->SetUnknownXml(UnknownXml());
 
         this->lineRule->GetSymbolizations()->Adopt(this->_lineSymbolization);
         handlerStack->pop();
@@ -108,66 +110,6 @@ void IOLineSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handle
 
 void IOLineSymbolization2D::Write(MdfStream &fd, LineSymbolization2D *lineSymbolization, Version *version)
 {
-    //Property: Stroke
-    if (lineSymbolization->GetStroke())
-    {
-        fd << tab() << startStr(sLineSymbolization2D) << std::endl;
-        inctab();
-
-        //Property: LineStyle
-        fd << tab() << startStr(sLineStyle);
-        fd << EncodeString(lineSymbolization->GetStroke()->GetLineStyle());
-        fd << endStr(sLineStyle) << std::endl; 
-
-        //Property: Thickness
-        fd << tab() << startStr(sThickness);
-        fd << EncodeString(lineSymbolization->GetStroke()->GetThickness());
-        fd << endStr(sThickness) << std::endl; 
-
-        //Property: ForegroundColor
-        fd << tab() << startStr(sColor);
-        fd << EncodeString(lineSymbolization->GetStroke()->GetColor());
-        fd << endStr(sColor) << std::endl; 
-
-        //Property: Unit
-        fd << tab() << startStr(sUnit);
-        std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(lineSymbolization->GetStroke()->GetUnit()));
-        fd << EncodeString(*str);
-        fd << endStr(sUnit) << std::endl; 
-
-        //Property: SizeContext
-        // Only write SizeContext if the version is not less than 1.1
-        bool bWriteSizeContext = true;
-        if (version != NULL)
-        {
-            int nMajor = version->GetMajor();
-            int nMinor = version->GetMinor();
-            double scalerMajorMinorVersion = ( (double)version->GetMajor() ) * 1.0 + ( (double)version->GetMinor() ) * 0.1;
-
-            bWriteSizeContext = (scalerMajorMinorVersion >= 1.1);
-        }
-
-        if (bWriteSizeContext)
-        {
-            fd << tab() << "<SizeContext>"; // NOXLATE
-            if(lineSymbolization->GetStroke()->GetSizeContext() == MdfModel::MappingUnits)
-            {
-                fd << "MappingUnits"; // NOXLATE
-            }
-            else
-            {
-                fd << "DeviceUnits"; // NOXLATE
-            }
-            fd << "</SizeContext>" << std::endl; // NOXLATE
-        }
-
-        // Write any previously found unknown XML
-        if (!lineSymbolization->GetUnknownXml().empty())
-        {
-            fd << toCString(lineSymbolization->GetUnknownXml()); 
-        }
-
-        dectab();
-        fd << tab() << endStr(sLineSymbolization2D) << std::endl; 
-    }
+    // a LineSymbolization2D is just a Stroke
+    IOStroke::Write(fd, lineSymbolization->GetStroke(), sLineSymbolization2D, version);
 }
