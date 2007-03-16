@@ -85,8 +85,8 @@ private:
     void LayoutCustomLabel(const std::wstring& positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px);
 
 private:
-    SE_Renderer* m_serenderer;
     Renderer* m_renderer;
+    SE_Renderer* m_serenderer;
     SE_SymbolManager* m_resources;
     SE_LineBufferPool* m_pool;
     SE_StyleVisitor* m_visitor;
