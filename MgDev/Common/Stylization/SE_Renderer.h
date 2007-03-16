@@ -18,7 +18,7 @@
 #ifndef SE_RENDERER_H
 #define SE_RENDERER_H
 
-#include "SE_Include.h"
+#include "SE_RenderProxies.h"
 
 class RS_FontEngine;
 

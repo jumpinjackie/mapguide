@@ -19,17 +19,11 @@
 #define SE_STYLEVISITOR_H
 
 #include "SE_ExpressionBase.h"
-#include "IGraphicElementVisitor.h"
-#include "ISymbolDefinitionVisitor.h"
+#include "SE_SymbolDefProxies.h"
 
 class SE_SymbolManager;
 class SE_LineBuffer;
 class SE_LineBufferPool;
-struct SE_Style;
-struct SE_RenderStyle;
-struct SE_Primitive;
-struct SE_RenderPrimitive;
-struct SE_Symbolization;
 struct SE_Matrix;
 
 namespace MDFMODEL_NAMESPACE
@@ -60,7 +54,6 @@ public:
     void Convert(std::vector<SE_Symbolization*>& styles, MdfModel::CompositeSymbolization* symbolization);
 private:
     SE_Style* ParseSymbol(MdfModel::CompoundSymbolDefinition* symbol);
-    void ParseSymbol(SimpleSymbolDefinition* symbol, SE_Matrix& xform, SE_PrimitiveList* primitives, SE_RenderPrimitiveList* renderPrimitives);
     bool ParseDouble(const wchar_t*& str, double& val);
     bool ParseDoublePair(const wchar_t*& str, double& x, double& y);
     bool ParseGeometry(const MdfModel::MdfString& geometry, SE_LineBuffer& buffer);

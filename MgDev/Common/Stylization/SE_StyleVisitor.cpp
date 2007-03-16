@@ -20,6 +20,7 @@
 #include "SE_StyleVisitor.h"
 #include "SE_SymbolManager.h"
 #include "SE_LineBuffer.h"
+#include "SE_SymbolDefProxies.h"
 
 #include <wctype.h>
 

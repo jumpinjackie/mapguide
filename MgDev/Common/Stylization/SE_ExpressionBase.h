@@ -20,15 +20,224 @@
 
 #include <map>
 #include <string>
+#include "FilterExecutor.h"
 
-#include "SimpleSymbolDefinition.h"
-#include "CompositeSymbolization.h"
+struct SE_Color
+{
+    unsigned char b, g, r, a; // argb, but little endian
+    FdoExpression* expression;
 
-struct SE_Double;
-struct SE_Integer;
-struct SE_Boolean;
-struct SE_String;
-struct SE_Color;
+    SE_INLINE SE_Color() : expression(NULL) { *((unsigned int*)this) = 0; }
+    ~SE_Color() { if (expression) expression->Release(); }
+
+    // Retrieve argb color
+    SE_INLINE unsigned int evaluate(RS_FilterExecutor* processor)
+    {
+        if (expression)
+        {
+            try
+            {
+                expression->Process(processor);
+                *((unsigned int*)this) = (unsigned int)processor->GetInt64Result();
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+                processor->Reset();
+
+                // set a default
+                *((unsigned int*)this) = 0xff000000;
+            }
+        }
+        
+        return *((unsigned int*)this);
+    }
+
+    SE_INLINE void operator=(unsigned int val) { *((unsigned int*)this) = val; }
+    SE_INLINE bool empty() { return (*(unsigned int*)this) == 0 && expression == NULL; }
+    SE_INLINE unsigned int& argb() { return (*(unsigned int*)this); }
+};
+
+struct SE_Double
+{
+    double value;
+    FdoExpression* expression;
+
+    SE_INLINE SE_Double() : expression(NULL),value(0.0)  {  }
+    SE_INLINE SE_Double(double d) : value(d), expression(NULL) { }
+    ~SE_Double() { if (expression) expression->Release(); }
+
+    SE_INLINE double evaluate(RS_FilterExecutor* processor)
+    {
+        if (expression)
+        {
+            try
+            {
+                expression->Process(processor);
+                value = processor->GetDoubleResult();
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+                processor->Reset();
+
+                // set a default
+                value = 0.0;
+            }
+        }
+
+        return value;
+    }
+
+    SE_INLINE void operator=(double d)  { value = d; }
+};
+
+struct SE_Integer
+{
+    int value;
+    FdoExpression* expression;
+
+    SE_INLINE SE_Integer() : expression(NULL), value(0) { }
+    SE_INLINE SE_Integer(int i) : value(i), expression(NULL) { }
+    ~SE_Integer() { if (expression) expression->Release(); }
+
+    SE_INLINE int evaluate(RS_FilterExecutor* processor)
+    {
+        if (expression)
+        {
+            try
+            {
+                expression->Process(processor);
+                value = (int)processor->GetInt64Result();
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+                processor->Reset();
+
+                // set a default
+                value = 0;
+            }
+        }
+
+        return value;
+    }
+
+    SE_INLINE void operator=(int i)  { value = i; }
+};
+
+struct SE_Boolean
+{
+    bool value;
+    FdoExpression* expression;
+
+    SE_INLINE SE_Boolean() : expression(NULL), value(false) { }
+    SE_INLINE SE_Boolean(bool b) : value(b), expression(NULL) { }
+    ~SE_Boolean() { if (expression) expression->Release(); }
+
+    SE_INLINE bool evaluate(RS_FilterExecutor* processor)
+    {
+        if (expression)
+        {
+            try
+            {
+                expression->Process(processor);
+                value = (bool)processor->GetBooleanResult();
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+                processor->Reset();
+
+                // set a default
+                value = false;
+            }
+        }
+
+        return value;
+    }
+
+    SE_INLINE void operator=(bool b) { value = b; }
+};
+
+struct SE_String
+{
+    const wchar_t* value;
+    FdoExpression* expression;
+
+    SE_INLINE SE_String() : expression(NULL), value(NULL)
+    {}
+    SE_INLINE SE_String(const wchar_t* s) : expression(NULL)
+    {
+        if (s)
+        {
+            size_t len = wcslen(s) + 1;
+            wchar_t* copy = new wchar_t[len];
+            value = wcscpy(copy, s);
+        }
+        else
+            value = NULL;
+    }
+
+    ~SE_String() 
+    {
+        if (value)
+            delete[] value;
+        if (expression) 
+            expression->Release(); 
+    }
+
+    SE_INLINE const wchar_t* evaluate(RS_FilterExecutor* processor)
+    {
+        if (expression)
+        {
+            if (value)
+            {
+                delete[] value;
+                value = NULL;
+            }
+
+            wchar_t* newValue = NULL;
+
+            try
+            {
+                expression->Process(processor);
+                newValue = processor->GetStringResult();
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+                processor->Reset();
+
+                // just return the stored expression
+                FdoString* exprValue = expression->ToString();
+                size_t len = wcslen(exprValue) + 1;
+                newValue = new wchar_t[len];
+                wcscpy(newValue, exprValue);
+            }
+
+            value = newValue;
+        }
+
+        return value;
+    }
+
+    SE_INLINE void operator=(const wchar_t* s)
+    {
+        if (value)
+            delete[] value;
+
+        if (s)
+        {
+            size_t len = wcslen(s) + 1;
+            wchar_t* copy = new wchar_t[len];
+            value = wcscpy(copy, s);
+        }
+        else
+            value = NULL;
+    }
+};
+
 
 typedef std::pair<const wchar_t*, const wchar_t*> ParamId;
 
@@ -37,9 +246,9 @@ struct ParamCmpLess : std::binary_function<ParamId&, ParamId&, bool>
 public:
     bool operator( ) (const ParamId& a, const ParamId& b) const
     {
-        int symcmp = _wcsicmp(a.first, b.first);
+        int symcmp = wcscmp(a.first, b.first);
         if (symcmp == 0)
-            return _wcsicmp(a.second, b.second) < 0;
+            return wcscmp(a.second, b.second) < 0;
         
         return symcmp < 0;
     }
@@ -50,7 +259,7 @@ struct StrCmpLess : std::binary_function<const wchar_t*, const wchar_t*, bool>
 public:
     bool operator( ) (const wchar_t* a, const wchar_t* b) const
     {
-        return _wcsicmp(a, b) < 0;
+        return wcscmp(a, b) < 0;
     }
 };
 

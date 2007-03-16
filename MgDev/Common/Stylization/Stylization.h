@@ -98,4 +98,6 @@ static const void* avoid_warning2 = (void*)FDO_ROOTLONGTRANSACTION;
 #define RESTRICT __restrict__
 #endif
 
+#define SE_INLINE inline
+
 #endif
