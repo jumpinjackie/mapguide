@@ -50,6 +50,7 @@ enum SE_StyleType
 class RS_FilterExecutor;
 class RS_FontEngine;
 class SE_SymbolManager;
+class SE_Renderer;
 
 class SE_EvalContext
 {
@@ -151,6 +152,7 @@ struct SE_RenderStyle;
 
 struct SE_Style
 {
+    SE_RenderStyle* rstyle; // cached evaluated RenderStyle
     SE_StyleType type;
     SE_PrimitiveList symbol;
     SE_Integer renderPass;
@@ -160,16 +162,12 @@ struct SE_Style
     SE_Double resizeSize[2];
     ResizeBox::GrowControl resize;
 
-    SE_INLINE SE_Style(SE_StyleType stype) : type(stype) { }
+    SE_INLINE SE_Style(SE_StyleType stype) : type(stype), rstyle(NULL) { }
 
-    virtual ~SE_Style()
-    {
-        for (SE_PrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
-            delete *iter;
-    }
+    virtual ~SE_Style();
 
-    virtual SE_RenderStyle* evaluate(SE_EvalContext*) = 0;
-    void evaluate_common(SE_EvalContext* , SE_RenderStyle* );
+    virtual void apply(LineBuffer* geometry, SE_Renderer* renderer) = 0;
+    virtual void evaluate(SE_EvalContext*) = 0;
 };
 
 
@@ -180,7 +178,8 @@ struct SE_PointStyle : public SE_Style
     SE_Double originOffset[2];
 
     SE_INLINE SE_PointStyle() : SE_Style(SE_PointStyleType) { }
-    virtual SE_RenderStyle* evaluate(SE_EvalContext*);
+    virtual void apply(LineBuffer* geometry, SE_Renderer* renderer);
+    virtual void evaluate(SE_EvalContext*);
 };
 
 
@@ -198,7 +197,8 @@ struct SE_LineStyle : public SE_Style
     SE_Double vertexAngleLimit;
 
     SE_INLINE SE_LineStyle() : SE_Style(SE_LineStyleType) { }
-    virtual SE_RenderStyle* evaluate(SE_EvalContext*);
+    virtual void apply(LineBuffer* geometry, SE_Renderer* renderer);
+    virtual void evaluate(SE_EvalContext*);
 };
 
 
@@ -214,7 +214,8 @@ struct SE_AreaStyle : public SE_Style
     SE_Double bufferWidth;
 
     SE_INLINE SE_AreaStyle() : SE_Style(SE_AreaStyleType) { }
-    virtual SE_RenderStyle* evaluate(SE_EvalContext*);
+    virtual void apply(LineBuffer* geometry, SE_Renderer* renderer);
+    virtual void evaluate(SE_EvalContext*);
 };
 
 

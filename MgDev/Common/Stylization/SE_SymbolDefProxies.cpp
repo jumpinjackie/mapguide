@@ -26,6 +26,15 @@
 #include <algorithm>
 #include <functional>
 
+SE_Style::~SE_Style()
+{
+    for (SE_PrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
+        delete *iter;
+
+    delete rstyle;
+}
+
+
 SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt) 
 { 
     SE_RenderPolyline* ret = new SE_RenderPolyline();
@@ -193,10 +202,10 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     return ret;
 }
 
-void SE_Style::evaluate_common(SE_EvalContext* cxt, SE_RenderStyle* ret)
+void SE_Style::evaluate(SE_EvalContext* cxt)
 {
     //evaluate values that are common to all styles           
-    ret->renderPass = renderPass.evaluate(cxt->exec);
+    rstyle->renderPass = renderPass.evaluate(cxt->exec);
 
     //
     //evaluation of all primitives and also resize box stuff
@@ -239,17 +248,17 @@ void SE_Style::evaluate_common(SE_EvalContext* cxt, SE_RenderStyle* ret)
         {
             if (!rsym->resize)
             {
-                if (ret->bounds)
+                if (rstyle->bounds)
                 {
-                    SE_Bounds* bounds = ret->bounds;
-                    ret->bounds = bounds->Union(rsym->bounds);
+                    SE_Bounds* bounds = rstyle->bounds;
+                    rstyle->bounds = bounds->Union(rsym->bounds);
                     bounds->Free();
                 }
                 else
-                    ret->bounds = rsym->bounds->Clone();
+                    rstyle->bounds = rsym->bounds->Clone();
             }
 
-            ret->symbol.push_back(rsym);
+            rstyle->symbol.push_back(rsym);
 
             if (useBox && sym->resize == GraphicElement::AddToResizeBox)
                 rsym->bounds->Contained(minx, miny, maxx, maxy, growx, growy);
@@ -282,22 +291,22 @@ void SE_Style::evaluate_common(SE_EvalContext* cxt, SE_RenderStyle* ret)
         growxf.translate(dx, dy);
         totalxf.premultiply(growxf);
 
-        for (SE_RenderPrimitiveList::iterator rs = ret->symbol.begin(); rs != ret->symbol.end(); rs++)
+        for (SE_RenderPrimitiveList::iterator rs = rstyle->symbol.begin(); rs != rstyle->symbol.end(); rs++)
         {
             SE_RenderPrimitive* rsym = *rs;
             if (rsym->resize)
             {
                 switch(rsym->type)
                 {
-                case SE_PolygonPrimitive:
-                case SE_PolylinePrimitive:
+                case SE_RenderPolygonPrimitive:
+                case SE_RenderPolylinePrimitive:
                     {
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
                         rp->geometry->Transform(totalxf, rp->weight);
                         rp->bounds = rp->geometry->xf_bounds()->Clone();
                         break;
                     }
-                case SE_TextPrimitive:
+                case SE_RenderTextPrimitive:
                     {
                         SE_RenderText* rt = (SE_RenderText*)rsym;
                         growxf.transform(rt->position[0], rt->position[1]);
@@ -305,7 +314,7 @@ void SE_Style::evaluate_common(SE_EvalContext* cxt, SE_RenderStyle* ret)
                         rt->bounds->Transform(growxf);
                         break;
                     }
-                case SE_RasterPrimitive:
+                case SE_RenderRasterPrimitive:
                     {
                         SE_RenderRaster* rr = (SE_RenderRaster*)rsym;
                         growxf.transform(rr->position[0], rr->position[1]);
@@ -316,21 +325,21 @@ void SE_Style::evaluate_common(SE_EvalContext* cxt, SE_RenderStyle* ret)
                     }
                 }
                 
-                if (ret->bounds)
+                if (rstyle->bounds)
                 {
-                    SE_Bounds* bounds = ret->bounds;
-                    ret->bounds = bounds->Union(rsym->bounds);
+                    SE_Bounds* bounds = rstyle->bounds;
+                    rstyle->bounds = bounds->Union(rsym->bounds);
                     bounds->Free();
                 }
                 else
-                    ret->bounds = rsym->bounds->Clone();
+                    rstyle->bounds = rsym->bounds->Clone();
             }
         }
     }
 }
 
 
-SE_RenderStyle* SE_PointStyle::evaluate(SE_EvalContext* cxt) 
+void SE_PointStyle::evaluate(SE_EvalContext* cxt) 
 { 
     SE_RenderPointStyle* render = new SE_RenderPointStyle();
 
@@ -383,13 +392,16 @@ SE_RenderStyle* SE_PointStyle::evaluate(SE_EvalContext* cxt)
     sxform.premultiply(*cxt->xform);
     *cxt->xform = sxform; //BAD here we modify the passed in transform -- figure out a way to avoid this
 
-    //evaluate all the primitives too
-    evaluate_common(cxt, render);
+    //set the cached renderStyle member variable
+    //TODO: cache constant render styles
+    delete rstyle;
+    rstyle = render;
 
-    return render;
+    //evaluate all the primitives too
+    SE_Style::evaluate(cxt);
 }
 
-SE_RenderStyle* SE_LineStyle::evaluate(SE_EvalContext* cxt) 
+void SE_LineStyle::evaluate(SE_EvalContext* cxt) 
 { 
     SE_RenderLineStyle* render = new SE_RenderLineStyle();
 
@@ -404,13 +416,16 @@ SE_RenderStyle* SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->repeat = repeat.evaluate(cxt->exec)*cxt->mm2px;
     render->vertexAngleLimit = vertexAngleLimit.evaluate(cxt->exec) * M_PI180;
 
-    //evaluate all the primitives too
-    evaluate_common(cxt, render);
+    //set the cached renderStyle member variable
+    //TODO: cache constant render styles
+    delete rstyle;
+    rstyle = render;
 
-    return render;
+    //evaluate all the primitives too
+    SE_Style::evaluate(cxt);
 }
 
-SE_RenderStyle* SE_AreaStyle::evaluate(SE_EvalContext* cxt) 
+void SE_AreaStyle::evaluate(SE_EvalContext* cxt) 
 { 
     SE_RenderAreaStyle* render = new SE_RenderAreaStyle();
 
@@ -425,10 +440,26 @@ SE_RenderStyle* SE_AreaStyle::evaluate(SE_EvalContext* cxt)
     render->repeat[1] = repeat[1].evaluate(cxt->exec);
     render->bufferWidth = bufferWidth.evaluate(cxt->exec);
 
-    //evaluate all the primitives too
-    evaluate_common(cxt, render);
+    //set the cached renderStyle member variable
+    //TODO: cache constant render styles
+    delete rstyle;
+    rstyle = render;
 
-    return render;
+    //evaluate all the primitives too
+    SE_Style::evaluate(cxt);
 }
 
+void SE_PointStyle::apply(LineBuffer* geometry, SE_Renderer* renderer)
+{
+    renderer->ProcessPoint(geometry, (SE_RenderPointStyle*)rstyle);
+}
 
+void SE_LineStyle::apply(LineBuffer* geometry, SE_Renderer* renderer)
+{
+    renderer->ProcessLine(geometry, (SE_RenderLineStyle*)rstyle);
+}
+
+void SE_AreaStyle::apply(LineBuffer* geometry, SE_Renderer* renderer)
+{
+    renderer->ProcessArea(geometry, (SE_RenderAreaStyle*)rstyle);
+}
