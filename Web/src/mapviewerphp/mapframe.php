@@ -70,6 +70,12 @@ else
         $userInfo->SetMgSessionId($sessionId);
         $site = new MgSiteConnection();
         $site->Open($userInfo);
+
+        $tileSrvc = $site->CreateService(MgServiceType::TileService);
+
+        $tileSizeX = $tileSrvc->GetDefaultTileSizeX();
+        $tileSizeY = $tileSrvc->GetDefaultTileSizeY();
+
         $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
 
         $map = new MgMap();
@@ -119,6 +125,8 @@ else
         $templ = Localize(file_get_contents("../viewerfiles/ajaxmappane.templ"), $locale, GetClientOS());
         $vpath = GetSurroundVirtualPath();
         printf ($templ,
+                    $tileSizeX,
+                    $tileSizeY,
                     GetRootVirtualFolder() . "/mapagent/mapagent.fcgi",
                     $mapName,
                     $mapDefinition,

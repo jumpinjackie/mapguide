@@ -102,6 +102,24 @@ PUBLISHED_API:
     ///
     virtual void ClearCache(MgMap* map) = 0;
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the default width of a tile.
+    ///
+    /// \return
+    /// Default width of a tile in pixels.
+    ///
+    virtual INT32 GetDefaultTileSizeX() = 0;
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the default height of a tile.
+    ///
+    /// \return
+    /// Default height of a tile in pixels.
+    ///
+    virtual INT32 GetDefaultTileSizeY() = 0;
+
 INTERNAL_API:
 
     /////////////////////////////////////////////////////////////////

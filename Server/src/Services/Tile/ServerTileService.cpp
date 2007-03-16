@@ -581,3 +581,13 @@ void MgServerTileService::ClearMapCache(CREFSTRING mapDefinition)
         }
     }
 }
+
+INT32 MgServerTileService::GetDefaultTileSizeX()
+{
+    return MgTileParameters::tileWidth;
+}
+
+INT32 MgServerTileService::GetDefaultTileSizeY()
+{
+    return MgTileParameters::tileHeight;
+}
