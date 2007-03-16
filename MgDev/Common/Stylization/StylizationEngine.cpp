@@ -38,6 +38,7 @@ using namespace MDFMODEL_NAMESPACE;
 
 StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
     m_resources(resources),
+    m_renderer(NULL),
     m_serenderer(NULL)
 {
     m_pool = new SE_LineBufferPool;
@@ -83,6 +84,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
         return;
 
     m_serenderer->SetLineBufferPool(m_pool);
+    bool bClip = m_renderer->RequiresClipping();
 
     // get tooltip and url for the layer
     SE_String seTip;
@@ -90,9 +92,20 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     m_visitor->ParseStringExpression(layer->GetToolTip(), seTip);
     m_visitor->ParseStringExpression(layer->GetUrl(), seUrl);
 
+    // extract all the composite styles once
     MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
+    std::vector<CompositeTypeStyle*> compTypeStyles;
+    for (int i=0; i<ftsc->GetCount(); i++)
+    {
+        MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
+        if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsComposite)
+            compTypeStyles.push_back((CompositeTypeStyle*)fts);
+    }
 
-    bool bClip = renderer->RequiresClipping();
+    size_t numTypeStyles = compTypeStyles.size();
+    _ASSERT(numTypeStyles > 0);
+    if (numTypeStyles == 0)
+        return;
 
     // we always start with rendering pass 0
     int renderingPass = 0;
@@ -145,15 +158,9 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             //expressions and this call flushes that
             executor->Reset();
 
-            // we need to stylize once for each FeatureTypeStyle that matches
-            // the geometry type (Note: this may have to change to match
-            // feature classes)
-            for (int i=0; i<ftsc->GetCount(); i++)
-            {
-                MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
-                if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsComposite)
-                    Stylize(reader, executor, lb, (CompositeTypeStyle*)fts, &seTip, &seUrl, NULL, renderingPass, nextRenderingPass);
-            }
+            // stylize once for each composite type style
+            for (size_t i=0; i<numTypeStyles; i++)
+                Stylize(reader, executor, lb, compTypeStyles[i], &seTip, &seUrl, NULL, renderingPass, nextRenderingPass);
 
             if (lb)
                 m_lbPool->FreeLineBuffer(lb); // free geometry when done stylizing
