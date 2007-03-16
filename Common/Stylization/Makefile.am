@@ -21,6 +21,7 @@ libMgStylization_la_SOURCES = \
   SE_PositioningAlgorithms.cpp \
   SE_Renderer.cpp \
   SE_StyleVisitor.cpp \
+  SE_SymbolDefProxies.cpp \
   StylizationEngine.cpp \
   LineBuffer.cpp \
   LineStyleDef.cpp \
