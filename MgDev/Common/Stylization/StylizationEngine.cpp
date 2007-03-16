@@ -92,62 +92,75 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
 
     bool bClip = renderer->RequiresClipping();
 
+    // we always start with rendering pass 0
+    int renderingPass = 0;
+    int nextRenderingPass = -1;
+
     #ifdef _DEBUG
     int nFeatures = 0;
     #endif
 
     //main loop over feature data
-    while (reader->ReadNext())
+    while (renderingPass >= 0)
     {
-        #ifdef _DEBUG
-        nFeatures++;
-        #endif
+        // for all but the first pass we need to reset the reader
+        if (renderingPass > 0)
+            reader->Reset();
 
-        LineBuffer* lb = NULL;
-
-        //get the geometry just once
-        //all types of geometry
-        lb = m_lbPool->NewLineBuffer(8);
-        reader->GetGeometry(gpName, lb, xformer);
-
-        if (lb && bClip)
+        while (reader->ReadNext())
         {
-            //clip geometry to given map request extents
-            //TODO: is this the right place to do so?
-            LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
+            #ifdef _DEBUG
+            if (renderingPass == 0)
+                nFeatures++;
+            #endif
 
-            //did geom require clipping?
-            //free original line buffer
-            //note original geometry is still accessible to the
-            //user from the RS_FeatureReader::GetGeometry
-            if (lbc != lb)
+            //get the geometry just once
+            //all types of geometry
+            LineBuffer* lb = m_lbPool->NewLineBuffer(8);
+            reader->GetGeometry(gpName, lb, xformer);
+
+            if (lb && bClip)
             {
-                m_lbPool->FreeLineBuffer(lb);
-                lb = lbc;
+                //clip geometry to given map request extents
+                //TODO: is this the right place to do so?
+                LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
+
+                //did geom require clipping?
+                //free original line buffer
+                //note original geometry is still accessible to the
+                //user from the RS_FeatureReader::GetGeometry
+                if (lbc != lb)
+                {
+                    m_lbPool->FreeLineBuffer(lb);
+                    lb = lbc;
+                }
             }
+
+            if (!lb) continue;
+
+            //need to clear out the filter execution engine cache
+            //some feature attributes may be cached while executing theming
+            //expressions and this call flushes that
+            executor->Reset();
+
+            // we need to stylize once for each FeatureTypeStyle that matches
+            // the geometry type (Note: this may have to change to match
+            // feature classes)
+            for (int i=0; i<ftsc->GetCount(); i++)
+            {
+                MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
+                if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsComposite)
+                    Stylize(reader, executor, lb, (CompositeTypeStyle*)fts, &seTip, &seUrl, NULL, renderingPass, nextRenderingPass);
+            }
+
+            if (lb)
+                m_lbPool->FreeLineBuffer(lb); // free geometry when done stylizing
+
+            if (cancel && cancel(userData)) break;
         }
 
-        if (!lb) continue;
-
-        //need to clear out the filter execution engine cache
-        //some feature attributes may be cached while executing theming
-        //expressions and this call flushes that
-        executor->Reset();
-
-        // we need to stylize once for each FeatureTypeStyle that matches
-        // the geometry type (Note: this may have to change to match
-        // feature classes)
-        for (int i=0; i<ftsc->GetCount(); i++)
-        {
-            MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
-            if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsComposite)
-                Stylize(reader, executor, lb, (CompositeTypeStyle*)fts, &seTip, &seUrl, NULL);
-        }
-
-        if (lb)
-            m_lbPool->FreeLineBuffer(lb); // free geometry when done stylizing
-
-        if (cancel && cancel(userData)) break;
+        renderingPass = nextRenderingPass;
+        nextRenderingPass = -1;
     }
 
     #ifdef _DEBUG
@@ -162,7 +175,9 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                                 CompositeTypeStyle* style,
                                 SE_String* seTip,
                                 SE_String* seUrl,
-                                RS_ElevationSettings* /*elevSettings*/)
+                                RS_ElevationSettings* /*elevSettings*/,
+                                int renderingPass,
+                                int& nextRenderingPass)
 {
     double mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
     double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
@@ -222,18 +237,22 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
     std::vector<SE_Symbolization*>* symbolization = &rule->symbolization;
 
-    // TODO: eliminate the need to do dynamic casts on these renderers.  We should
-    //       probably ultimately have just one renderer interface class...
-    Renderer* renderer = dynamic_cast<Renderer*>(m_serenderer);
-    if (renderer)
+    // only call StartFeature for the initial rendering pass
+    if (renderingPass == 0)
     {
-        const wchar_t* strTip = seTip->evaluate(executor);
-        const wchar_t* strUrl = seUrl->evaluate(executor);
-        RS_String rs_tip = strTip? strTip : L"";
-        RS_String rs_url = strUrl? strUrl : L"";
-        RS_String& rs_thm = rule->legendLabel;
+        // TODO: eliminate the need to do dynamic casts on these renderers.  We should
+        //       probably ultimately have just one renderer interface class...
+        Renderer* renderer = dynamic_cast<Renderer*>(m_serenderer);
+        if (renderer)
+        {
+            const wchar_t* strTip = seTip->evaluate(executor);
+            const wchar_t* strUrl = seUrl->evaluate(executor);
+            RS_String rs_tip = strTip? strTip : L"";
+            RS_String rs_url = strUrl? strUrl : L"";
+            RS_String& rs_thm = rule->legendLabel;
 
-        renderer->StartFeature(reader, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
+            renderer->StartFeature(reader, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
+        }
     }
 
     /* TODO: Obey the indices--Get rid of the indices altogther--single pass! */
@@ -246,13 +265,36 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         SE_Matrix xform;
         xform.setTransform( sym->scale[0].evaluate(executor), 
                             sym->scale[1].evaluate(executor),
-                            sym->absOffset[0].evaluate(executor)*mm2px, 
-                            sym->absOffset[1].evaluate(executor)*mm2px );
+                            sym->absOffset[0].evaluate(executor), 
+                            sym->absOffset[1].evaluate(executor) );
         xform.scale(mm2px, mm2px);
         
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
         {
             SE_Style* style = *siter;
+
+            // process the rendering pass - negative rendering passes are rendered with pass 0
+            int styleRenderPass = style->renderPass.evaluate(executor);
+            if (styleRenderPass < 0)
+                styleRenderPass = 0;
+
+            // If the rendering pass for the style doesn't match the current pass
+            // then don't render using it.
+            // TODO - how does DrawLast affect the logic?
+            if (styleRenderPass != renderingPass)
+            {
+                // if the style's rendering pass is greater than the current pass,
+                // then update nextRenderingPass to account for it
+                if (styleRenderPass > renderingPass)
+                {
+                    // update nextRenderingPass if it hasn't yet been set, or if
+                    // the style's pass is less than the current next pass
+                    if (nextRenderingPass == -1 || styleRenderPass < nextRenderingPass)
+                        nextRenderingPass = styleRenderPass;
+                }
+
+                continue;
+            }
 
             SE_Matrix tmpxform(xform);  //TODO: this is lame, but necessary since the xform can be modified
                                         //when we evalute the style, in the case of point style set on a
@@ -275,7 +317,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             }
             
             //evaluate values that are common to all styles           
-            rstyle->renderPass = style->renderPass.evaluate(executor);
+            rstyle->renderPass = styleRenderPass;
             rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(executor);
             rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(executor);
             rstyle->drawLast = sym->drawLast.evaluate(executor);
