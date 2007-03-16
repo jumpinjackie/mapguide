@@ -27,6 +27,7 @@ class RS_FilterExecutor;
 class SE_LineBuffer;
 class SE_LineBufferPool;
 class SE_Renderer;
+class Renderer;
 class SE_StyleVisitor;
 class LineBuffer;
 class LineBufferPool;
@@ -85,6 +86,7 @@ private:
 
 private:
     SE_Renderer* m_serenderer;
+    Renderer* m_renderer;
     SE_SymbolManager* m_resources;
     SE_LineBufferPool* m_pool;
     SE_StyleVisitor* m_visitor;

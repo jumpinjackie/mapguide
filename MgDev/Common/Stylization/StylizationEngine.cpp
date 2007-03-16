@@ -68,6 +68,8 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     if (reader == NULL || executor == NULL)
         return;
 
+    m_renderer = renderer;
+
     // make sure we have an SE renderer
     // TODO: eliminate the need to do dynamic casts on these renderers.  We should
     //       probably ultimately have just one renderer interface class...
@@ -240,19 +242,13 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     // only call StartFeature for the initial rendering pass
     if (renderingPass == 0)
     {
-        // TODO: eliminate the need to do dynamic casts on these renderers.  We should
-        //       probably ultimately have just one renderer interface class...
-        Renderer* renderer = dynamic_cast<Renderer*>(m_serenderer);
-        if (renderer)
-        {
-            const wchar_t* strTip = seTip->evaluate(executor);
-            const wchar_t* strUrl = seUrl->evaluate(executor);
-            RS_String rs_tip = strTip? strTip : L"";
-            RS_String rs_url = strUrl? strUrl : L"";
-            RS_String& rs_thm = rule->legendLabel;
+        const wchar_t* strTip = seTip->evaluate(executor);
+        const wchar_t* strUrl = seUrl->evaluate(executor);
+        RS_String rs_tip = strTip? strTip : L"";
+        RS_String rs_url = strUrl? strUrl : L"";
+        RS_String& rs_thm = rule->legendLabel;
 
-            renderer->StartFeature(reader, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
-        }
+        m_renderer->StartFeature(reader, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
     }
 
     /* TODO: Obey the indices--Get rid of the indices altogther--single pass! */
@@ -328,6 +324,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             }
             else
             {
+                //apply the style to the geometry using the renderer
                 style->apply(geometry, m_serenderer);
             }
         }
