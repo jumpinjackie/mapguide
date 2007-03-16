@@ -66,6 +66,32 @@ void MgTileCache::Initialize()
             MgConfigProperties::TileServicePropertyTileRowsPerFolder,
             sm_tileRowsPerFolder,
             MgConfigProperties::DefaultTileServicePropertyTileRowsPerFolder);
+
+        configuration->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
+            MgConfigProperties::TileServicePropertyTileSizeX,
+            MgTileParameters::tileWidth,
+            MgConfigProperties::DefaultTileServicePropertyTileSizeX);
+
+        configuration->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
+            MgConfigProperties::TileServicePropertyTileSizeY,
+            MgTileParameters::tileHeight,
+            MgConfigProperties::DefaultTileServicePropertyTileSizeY);
+
+        STRING format;
+        configuration->GetStringValue(MgConfigProperties::TileServicePropertiesSection,
+            MgConfigProperties::TileServicePropertyImageFormat,
+            format,
+            MgConfigProperties::DefaultTileServicePropertyImageFormat);
+
+        // Only allow PNG and JPG as tile formats
+        if (format == MgImageFormats::Png || format == MgImageFormats::Jpeg)
+        {
+            MgTileParameters::tileFormat = format;
+        }
+        else
+        {
+            MgTileParameters::tileFormat = MgImageFormats::Png;
+        }
     }
 }
 
@@ -90,11 +116,19 @@ void MgTileCache::GeneratePathnames(MgResourceIdentifier* mapDef, int scaleIndex
     }
 
     // Generate the tile and lock pathnames
-    //     <tilePathname> = <fullPath>/<row>_<column>.png
+    //     <tilePathname> = <fullPath>/<row>_<column>.png/jpg
     //     <lockPathname> = <fullPath>/<row>_<column>.lck
     tilePathname += fileName;
     lockPathname = tilePathname;
-    tilePathname += L"png";
+    if (MgTileParameters::tileFormat == MgImageFormats::Jpeg) 
+    {
+        tilePathname += L"jpg";
+    }
+    else
+    {
+        tilePathname += L"png";
+    }
+
     lockPathname += L"lck";
 }
 
@@ -120,7 +154,15 @@ MgByteReader* MgTileCache::Get(CREFSTRING tilePathname)
     {
         Ptr<MgByteSource> byteSource = new MgByteSource(tilePathname, false);
 
-        byteSource->SetMimeType(MgMimeType::Png);
+        if (MgTileParameters::tileFormat == MgImageFormats::Jpeg)
+        {
+            byteSource->SetMimeType(MgMimeType::Jpeg);
+        }
+        else
+        {
+            byteSource->SetMimeType(MgMimeType::Png);
+        }
+
         ret = byteSource->GetReader();
     }
 

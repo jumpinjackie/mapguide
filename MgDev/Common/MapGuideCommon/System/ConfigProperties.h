@@ -419,6 +419,14 @@ EXTERNAL_API:
     // Sets the number of rows of tiles per folder
     static const STRING TileServicePropertyTileRowsPerFolder;          /// value("TileRowsPerFolder")
     static const INT32 DefaultTileServicePropertyTileRowsPerFolder;    /// value(30)
+
+    // Sets the image size and format (PNG/JPG) of the tiles
+    static const STRING TileServicePropertyTileSizeX;                   /// value("DefaultTileSizeX");
+    static const INT32 DefaultTileServicePropertyTileSizeX;             /// value(300);
+    static const STRING TileServicePropertyTileSizeY;                   /// value("DefaultTileSizeY");
+    static const INT32 DefaultTileServicePropertyTileSizeY;             /// value(300);
+    static const STRING TileServicePropertyImageFormat;                 /// value("ImageFormat")
+    static const STRING DefaultTileServicePropertyImageFormat;          /// value("PNG")
     
 INTERNAL_API:
 

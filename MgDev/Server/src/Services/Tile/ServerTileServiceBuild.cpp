@@ -21,6 +21,8 @@
 #include "OpClearCache.cpp"
 #include "OpGetTile.cpp"
 #include "OpSetTile.cpp"
+#include "OpGetDefaultTileSizeX.cpp"
+#include "OpGetDefaultTileSizeY.cpp"
 #include "TileCache.cpp"
 #include "TileOperation.cpp"
 #include "TileOperationFactory.cpp"

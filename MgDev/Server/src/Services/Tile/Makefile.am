@@ -23,6 +23,8 @@ libMgServerTileService_la_SOURCES = \
 include_SOURCES = \
   OpClearCache.cpp \
   OpGetTile.cpp \
+  OpGetDefaultTileSizeX.cpp \
+  OpGetDefaultTileSizeY.cpp \
   OpSetTile.cpp \
   ServerTileService.cpp \
   TileCache.cpp \
@@ -33,6 +35,8 @@ include_SOURCES = \
 noinst_HEADERS = $(include_SOURCES) \
   OpClearCache.h \
   OpGetTile.h \
+  OpGetDefaultTileSizeX.h \
+  OpGetDefaultTileSizeY.h \
   OpSetTile.h \
   ServerTileDllExport.h \
   ServerTileService.h \

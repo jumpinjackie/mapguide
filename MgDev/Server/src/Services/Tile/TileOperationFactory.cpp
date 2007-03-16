@@ -98,6 +98,30 @@ IMgOperationHandler* MgTileOperationFactory::GetOperation(
         }
         break;
 
+    case MgTileServiceOpId::GetDefaultTileSizeX:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,2):
+            handler.reset(new MgOpGetDefaultTileSizeX());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgTileOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgTileServiceOpId::GetDefaultTileSizeY:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,2):
+            handler.reset(new MgOpGetDefaultTileSizeY());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgTileOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
     default:
         throw new MgInvalidOperationException(
             L"MgTileOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);

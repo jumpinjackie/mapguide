@@ -50,6 +50,10 @@ public:
 
     virtual void ClearCache(MgMap* map);
 
+    virtual INT32 GetDefaultTileSizeX();
+
+    virtual INT32 GetDefaultTileSizeY();
+
     virtual void NotifyResourcesChanged(MgSerializableCollection* resources);
 
     void SetConnectionProperties(MgConnectionProperties* connProp);

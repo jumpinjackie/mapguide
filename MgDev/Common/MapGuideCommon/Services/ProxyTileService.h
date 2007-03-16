@@ -99,6 +99,24 @@ EXTERNAL_API:
     ///
     virtual void ClearCache(MgMap* map);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the default width of a tile.
+    ///
+    /// \return
+    /// Default width of a tile in pixels.
+    ///
+    virtual INT32 GetDefaultTileSizeX();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the default height of a tile.
+    ///
+    /// \return
+    /// Default height of a tile in pixels.
+    ///
+    virtual INT32 GetDefaultTileSizeY();
+
 INTERNAL_API:
 
     /////////////////////////////////////////////////////////////////

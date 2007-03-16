@@ -212,6 +212,44 @@ void MgProxyTileService::ClearCache(MgMap* map)
 
 //////////////////////////////////////////////////////////////////
 /// \brief
+/// Returns the default width of a tile.
+INT32 MgProxyTileService::GetDefaultTileSizeX()
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knInt32,                             // Return type expected
+                        MgTileServiceOpId::GetDefaultTileSizeX,         // Command Code
+                        0,                                              // No of arguments
+                        Tile_Service,                                   // Service Id
+                        BUILD_VERSION(1,2,0),                           // Operation version
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return cmd.GetReturnValue().val.m_i32;
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the default height of a tile.
+INT32 MgProxyTileService::GetDefaultTileSizeY()
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knInt32,                             // Return type expected
+                        MgTileServiceOpId::GetDefaultTileSizeY,         // Command Code
+                        0,                                              // No of arguments
+                        Tile_Service,                                   // Service Id
+                        BUILD_VERSION(1,2,0),                           // Operation version
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return cmd.GetReturnValue().val.m_i32;
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
 /// Sets the connection properties for the Proxy Service.  This
 /// information tells the proxy object where to connect.
 ///

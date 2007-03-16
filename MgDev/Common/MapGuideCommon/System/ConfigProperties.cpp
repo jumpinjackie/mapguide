@@ -329,6 +329,12 @@ const STRING MgConfigProperties::TileServicePropertyPollingInterval             
 const INT32  MgConfigProperties::DefaultTileServicePropertyPollingInterval                  = 1;
 const STRING MgConfigProperties::TileServicePropertyTiledMapCacheSize                       = L"TiledMapCacheSize"; // for internal use only
 const INT32  MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize                = 10;
+const STRING MgConfigProperties::TileServicePropertyTileSizeX                               = L"DefaultTileSizeX";
+const INT32 MgConfigProperties::DefaultTileServicePropertyTileSizeX                         = 300;
+const STRING MgConfigProperties::TileServicePropertyTileSizeY                               = L"DefaultTileSizeY";
+const INT32 MgConfigProperties::DefaultTileServicePropertyTileSizeY                         = 300;
+const STRING MgConfigProperties::TileServicePropertyImageFormat                             = L"ImageFormat";
+const STRING MgConfigProperties::DefaultTileServicePropertyImageFormat                      = L"PNG";
 
 // ******************************************************************
 // Access Log Properties
@@ -567,6 +573,9 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviTileServiceProperties[] =
     { MgConfigProperties::TileServicePropertyCreationCutoffTime                     , MgPropertyType::Int32     , 1                                     , 600                                   , L""                                       },
     { MgConfigProperties::TileServicePropertyPollingInterval                        , MgPropertyType::Int32     , 1                                     , 60                                    , L""                                       },
     { MgConfigProperties::TileServicePropertyTiledMapCacheSize                      , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
+    { MgConfigProperties::TileServicePropertyTileSizeX                              , MgPropertyType::Int32     , 50                                    , 10000                                 , L""                                       },
+    { MgConfigProperties::TileServicePropertyTileSizeY                              , MgPropertyType::Int32     , 50                                    , 10000                                 , L""                                       },
+    { MgConfigProperties::TileServicePropertyImageFormat                            , MgPropertyType::String    , 2                                     , 4                                     , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

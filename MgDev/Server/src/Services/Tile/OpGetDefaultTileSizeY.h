@@ -15,17 +15,21 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "MapGuideCommon.h"
-#include "TileDefs.h"
+#ifndef MG_OP_GET_DEFAULT_TILE_SIZE_Y_H
+#define MG_OP_GET_DEFAULT_TILE_SIZE_Y_H
 
-///////////////////////////////////////////////////////////////////////////////
-/// Tile parameters.
-///
-/// NOTE: Changes to tileDPI must be accounted for in the HTML/AJAX viewer.
-///       tileWidth and tileHeight are requested by the viewer during initialization.
-///       The AJAX viewer supports both JPG and PNG tiles.
-///
-INT32  MgTileParameters::tileWidth  = 300;                    // width for all tiles
-INT32  MgTileParameters::tileHeight = 300;                    // height for all tiles
-const INT32  MgTileParameters::tileDPI    =  96;              // assumed DPI for all tiles
-STRING MgTileParameters::tileFormat = MgImageFormats::Png;    // image format for all tiles
+#include "TileOperation.h"
+
+class MgOpGetDefaultTileSizeY : public MgTileOperation
+{
+    public:
+        MgOpGetDefaultTileSizeY();
+        virtual ~MgOpGetDefaultTileSizeY();
+
+    public:
+        virtual void Execute();
+
+    private:
+};
+
+#endif

@@ -246,7 +246,7 @@ function Property(name, value)
 
 var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5;
 var RECT=1, CIRCLE=2, POLY=3, SLIDER=4, SCALE=6;
-var TILECX = 300, TILECY = 300;
+var TILECX = %s, TILECY = %s;
 var GRIDCX = 15; GRIDCY = 15, DPI = 96;
 var moveType = NONE, dragElt = 0, digitizer;
 var intId;
@@ -3075,7 +3075,7 @@ function RequestTile(col, row, tilex, tiley)
             return 0;
         cell.loaded = "1";
         url = webAgent + "?OPERATION=GETTILEIMAGE&VERSION=1.2.0&SESSION=" + sessionId + "&MAPDEFINITION=" + encodeComponent(mapDefinitionName) + "&BASEMAPLAYERGROUPNAME=" + encodeComponent(baseGroups[k]) + "&TILECOL=" + tilex + "&TILEROW=" + tiley + "&SCALEINDEX=" + sci;
-        tag = '<img id="' + (imgId) + '" width=' + TILECX + ' height=' + TILECY + ' border=0 vspace=0 hspace=0 src="' + url + '" style="visibility: hidden; width: 300px; height: 300px;" onload="OnTileLoaded(\'' + imgId + '\')">';
+        tag = '<img id="' + (imgId) + '" width=' + TILECX + ' height=' + TILECY + ' border=0 vspace=0 hspace=0 src="' + url + '" style="visibility: hidden; width: ' + TILECX + 'px; height: ' + TILECY + 'px;" onload="OnTileLoaded(\'' + imgId + '\')">';
         imgId ++;
         cell.innerHTML = tag;
     }
