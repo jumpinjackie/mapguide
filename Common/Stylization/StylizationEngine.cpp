@@ -315,36 +315,21 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
             //evaluate the style (all expressions inside it) and convert to a constant screen space
             //render style
-            SE_RenderStyle* rstyle = style->evaluate(&cxt);
+            style->evaluate(&cxt);
 
-            //why are these in the symbolization?
-            rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(executor);
-            rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(executor);
-            rstyle->drawLast = sym->drawLast.evaluate(executor);
+            //why are these in the symbolization? fix this!
+            style->rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(executor);
+            style->rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(executor);
+            style->rstyle->drawLast = sym->drawLast.evaluate(executor);
 
             if (!sym->positioningAlgorithm.empty() && sym->positioningAlgorithm != L"Default")
             {
-                LayoutCustomLabel(sym->positioningAlgorithm, geometry, tmpxform, style, rstyle, mm2px);
+                LayoutCustomLabel(sym->positioningAlgorithm, geometry, tmpxform, style, style->rstyle, mm2px);
             }
             else
             {
-                switch(style->type)
-                {
-                case SE_PointStyleType:
-                    m_serenderer->ProcessPoint(geometry, (SE_RenderPointStyle*)rstyle);
-                    break;
-                case SE_LineStyleType:
-                    m_serenderer->ProcessLine(geometry, (SE_RenderLineStyle*)rstyle);
-                    break;
-                case SE_AreaStyleType:
-                    m_serenderer->ProcessArea(geometry, (SE_RenderAreaStyle*)rstyle);
-                    break;
-                }
+                style->apply(geometry, m_serenderer);
             }
-
-            //Free the render style. If the style was needed for drawing as a label,
-            //the renderer would have cloned it and created its own pointer
-            delete rstyle;
         }
     }
 }
