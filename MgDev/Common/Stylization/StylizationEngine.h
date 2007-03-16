@@ -18,6 +18,7 @@
 #ifndef STYLIZATION_ENGINE_H
 #define STYLIZATION_ENGINE_H
 
+#include "Stylizer.h"
 #include "SE_Matrix.h"
 #include "SE_Include.h"
 
@@ -29,6 +30,7 @@ class SE_LineBufferPool;
 class SE_Renderer;
 class SE_StyleVisitor;
 class LineBuffer;
+class LineBufferPool;
 class RS_ElevationSettings;
 
 namespace MDFMODEL_NAMESPACE
@@ -42,13 +44,20 @@ class StylizationEngine
 {
 public:
     StylizationEngine(SE_SymbolManager* resources);
-    /* TODO: don't leak basically everything */
     ~StylizationEngine();
-    /* TODO: add stylize layer to this class, and reset functionality to RS_FeatureReader API & implementations
-     * Stylize one CompoundSymbol feature and label per run; investigate caching possiblities to avoid
-     * filter execution on subsequent passes */
-    void Stylize(SE_Renderer* renderer,
-                 RS_FeatureReader* feature,
+
+    // Stylizes the supplied layer using all composite type styles in the given scale.
+    void StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
+                            MdfModel::VectorScaleRange*      range,
+                            Renderer*                        renderer,
+                            RS_FeatureReader*                reader,
+                            RS_FilterExecutor*               executor,
+                            CSysTransformer*                 xformer,
+                            CancelStylization                cancel,
+                            void*                            userData);
+
+    // Stylizes the current feature on the reader using the supplied composite type style.
+    void Stylize(RS_FeatureReader* reader,
                  RS_FilterExecutor* executor,
                  LineBuffer* geometry,
                  CompositeTypeStyle* style,
@@ -58,24 +67,21 @@ public:
 
     void ClearCache();
 
-    void ParseStringExpression(const MdfString& mdf_string, SE_String& se_string);
-
 private:
-    SE_RenderPointStyle* EvaluatePointStyle(LineBuffer* geometry, SE_Matrix& xform, SE_PointStyle* style, double mm2px);
-    SE_RenderAreaStyle* EvaluateAreaStyle(SE_Matrix& xform, SE_AreaStyle* style);
-    SE_RenderLineStyle* EvaluateLineStyle(SE_Matrix& xform, SE_LineStyle* style);
+    SE_RenderPointStyle* EvaluatePointStyle(RS_FilterExecutor* executor, LineBuffer* geometry, SE_Matrix& xform, SE_PointStyle* style, double mm2px);
+    SE_RenderLineStyle* EvaluateLineStyle(RS_FilterExecutor* executor, SE_Matrix& xform, SE_LineStyle* style);
+    SE_RenderAreaStyle* EvaluateAreaStyle(RS_FilterExecutor* executor, SE_Matrix& xform, SE_AreaStyle* style);
 
     void LayoutCustomLabel(const std::wstring& positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px);
-    void EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_RenderStyle* renderStyle, double mm2px);
+    void EvaluateSymbols(RS_FilterExecutor* executor, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* renderStyle, double mm2px);
 
 private:
-    SE_Renderer* m_renderer;
-    RS_FilterExecutor* m_exec;
-    RS_FeatureReader* m_reader;
+    SE_Renderer* m_serenderer;
     SE_SymbolManager* m_resources;
     SE_LineBufferPool* m_pool;
     SE_StyleVisitor* m_visitor;
     std::map<CompositeTypeStyle*, SE_Rule*> m_rules;
+    LineBufferPool* m_lbPool;
 };
 
 #endif // STYLIZATION_ENGINE_H
