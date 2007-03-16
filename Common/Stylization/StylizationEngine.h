@@ -80,12 +80,8 @@ public:
     void ClearCache();
 
 private:
-    SE_RenderPointStyle* EvaluatePointStyle(RS_FilterExecutor* executor, LineBuffer* geometry, SE_Matrix& xform, SE_PointStyle* style, double mm2px);
-    SE_RenderLineStyle* EvaluateLineStyle(RS_FilterExecutor* executor, SE_Matrix& xform, SE_LineStyle* style);
-    SE_RenderAreaStyle* EvaluateAreaStyle(RS_FilterExecutor* executor, SE_Matrix& xform, SE_AreaStyle* style);
 
     void LayoutCustomLabel(const std::wstring& positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px);
-    void EvaluateSymbols(RS_FilterExecutor* executor, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* renderStyle, double mm2px);
 
 private:
     SE_Renderer* m_serenderer;
