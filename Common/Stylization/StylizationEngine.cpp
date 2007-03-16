@@ -705,10 +705,7 @@ void StylizationEngine::ClearCache()
     std::map<CompositeTypeStyle*, SE_Rule*>::iterator iter = m_rules.begin();
 
     for (; iter != m_rules.end(); iter++)
-    {
-        //TODO: deleting the SE_Rule causes a heap corruption that needs to be tracked down
-        //delete iter->second;
-    }
+        delete [] iter->second;
 
     m_rules.clear();
 }
