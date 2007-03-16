@@ -84,16 +84,12 @@ void IOStroke::ElementChars(const wchar_t *ch)
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
         this->_stroke->SetUnit(unit);
     }
-    else if (this->m_currElemName == swSizeContext) // NOXLATE
+    else if (m_currElemName == swSizeContext)
     {
         if (::wcscmp(ch, L"MappingUnits") == 0) // NOXLATE
-        {
             this->_stroke->SetSizeContext(MdfModel::MappingUnits);
-        }
         else // "DeviceUnits" & default
-        {
             this->_stroke->SetSizeContext(MdfModel::DeviceUnits);
-        }
     }
 }
 
@@ -117,30 +113,31 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *v
     inctab();
 
     //Property: LineStyle
-    fd << tab() << "<LineStyle>"; // NOXLATE
+    fd << tab() << startStr(sLineStyle);
     fd << EncodeString(stroke->GetLineStyle());
-    fd << "</LineStyle>" << std::endl; // NOXLATE
+    fd << endStr(sLineStyle) << std::endl; 
 
     //Property: Thickness
-    fd << tab() << "<Thickness>"; // NOXLATE
+    fd << tab() << startStr(sThickness);
     fd << EncodeString(stroke->GetThickness());
-    fd << "</Thickness>" << std::endl; // NOXLATE
+    fd << endStr(sThickness) << std::endl; 
 
     //Property: ForegroundColor
-    fd << tab() << "<Color>"; // NOXLATE
+    fd << tab() << startStr(sColor);
     fd << EncodeString(stroke->GetColor());
-    fd << "</Color>" << std::endl; // NOXLATE
+    fd << endStr(sColor) << std::endl; 
 
     //Property: Unit
-    fd << tab() << "<Unit>"; // NOXLATE
+    fd << tab() << startStr(sUnit);
     std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(stroke->GetUnit()));
     fd << EncodeString(*str);
-    fd << "</Unit>" << std::endl; // NOXLATE
+    fd << endStr(sUnit) << std::endl; 
 
-    if (!version || ((*version) >= Version(1, 1, 0))) // don't write to pre-1.1.0 schema
+    //Property: SizeContext
+    // Only write SizeContext if the version is 1.1 or greater
+    if (!version || ((*version) >= Version(1, 1, 0)))
     {
-        //Property: SizeContext
-        fd << tab() << "<SizeContext>"; // NOXLATE
+        fd << tab() << startStr(sSizeContext);
         if(stroke->GetSizeContext() == MdfModel::MappingUnits)
         {
             fd << "MappingUnits"; // NOXLATE
@@ -149,7 +146,7 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *v
         {
             fd << "DeviceUnits"; // NOXLATE
         }
-        fd << "</SizeContext>" << std::endl; // NOXLATE
+        fd << endStr(sSizeContext) << std::endl; 
     }
         
     // Write any previously found unknown XML
