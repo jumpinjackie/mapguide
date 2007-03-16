@@ -25,7 +25,8 @@
 #include "SE_SymbolManager.h"
 #include "SE_PositioningAlgorithms.h"
 #include "RS_FontEngine.h"
-
+#include "FeatureTypeStyleVisitor.h"
+#include "LineBuffer.h"
 #include "Renderer.h"
 
 #include <algorithm>
@@ -36,11 +37,10 @@ using namespace MDFMODEL_NAMESPACE;
 
 StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
     m_resources(resources),
-    m_renderer(NULL),
-    m_exec(NULL),
-    m_reader(NULL)
+    m_serenderer(NULL)
 {
     m_pool = new SE_LineBufferPool;
+    m_lbPool = new LineBufferPool;
     m_visitor = new SE_StyleVisitor(resources, m_pool);
 }
 
@@ -48,31 +48,123 @@ StylizationEngine::~StylizationEngine()
 {
     ClearCache();
     delete m_pool;
+    delete m_lbPool;
     delete m_visitor;
 }
 
-void StylizationEngine::Stylize( SE_Renderer* renderer,
-                                 RS_FeatureReader* feature,
-                                 RS_FilterExecutor* executor,
-                                 LineBuffer* geometry,
-                                 CompositeTypeStyle* style,
-                                 SE_String* seTip,
-                                 SE_String* seUrl,
-                                 RS_ElevationSettings* /*elevSettings*/)
+
+/* TODO: Stylize one CompoundSymbol feature and label per run; investigate caching
+ *       possiblities to avoid filter execution on subsequent passes */
+void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
+                                           MdfModel::VectorScaleRange*      range,
+                                           Renderer*                        renderer,
+                                           RS_FeatureReader*                reader,
+                                           RS_FilterExecutor*               executor,
+                                           CSysTransformer*                 xformer,
+                                           CancelStylization                cancel,
+                                           void*                            userData)
 {
-    if (renderer == NULL || feature == NULL || executor == NULL)
+    if (reader == NULL || executor == NULL)
         return;
 
-    m_renderer = renderer;
-    m_reader = feature;
-    m_exec = executor;
+    // make sure we have an SE renderer
+    // TODO: eliminate the need to do dynamic casts on these renderers.  We should
+    //       probably ultimately have just one renderer interface class...
+    m_serenderer = dynamic_cast<SE_Renderer*>(renderer);
+    if (m_serenderer == NULL)
+        return;
 
-    SE_Matrix w2s;
-    m_renderer->GetWorldToScreenTransform(w2s);
-    m_renderer->SetLineBufferPool(m_pool);
+    // get the geometry column name
+    const wchar_t* gpName = reader->GetGeomPropName();
+    if (NULL == gpName)
+        return;
 
-    double mm2pxs = m_renderer->GetPixelsPerMillimeterScreen();
-    double mm2pxw = m_renderer->GetPixelsPerMillimeterWorld();
+    m_serenderer->SetLineBufferPool(m_pool);
+
+    // get tooltip and url for the layer
+    SE_String seTip;
+    SE_String seUrl;
+    m_visitor->ParseStringExpression(layer->GetToolTip(), seTip);
+    m_visitor->ParseStringExpression(layer->GetUrl(), seUrl);
+
+    MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
+
+    bool bClip = renderer->RequiresClipping();
+
+    #ifdef _DEBUG
+    int nFeatures = 0;
+    #endif
+
+    //main loop over feature data
+    while (reader->ReadNext())
+    {
+        #ifdef _DEBUG
+        nFeatures++;
+        #endif
+
+        LineBuffer* lb = NULL;
+
+        //get the geometry just once
+        //all types of geometry
+        lb = m_lbPool->NewLineBuffer(8);
+        reader->GetGeometry(gpName, lb, xformer);
+
+        if (lb && bClip)
+        {
+            //clip geometry to given map request extents
+            //TODO: is this the right place to do so?
+            LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
+
+            //did geom require clipping?
+            //free original line buffer
+            //note original geometry is still accessible to the
+            //user from the RS_FeatureReader::GetGeometry
+            if (lbc != lb)
+            {
+                m_lbPool->FreeLineBuffer(lb);
+                lb = lbc;
+            }
+        }
+
+        if (!lb) continue;
+
+        //need to clear out the filter execution engine cache
+        //some feature attributes may be cached while executing theming
+        //expressions and this call flushes that
+        executor->Reset();
+
+        // we need to stylize once for each FeatureTypeStyle that matches
+        // the geometry type (Note: this may have to change to match
+        // feature classes)
+        for (int i=0; i<ftsc->GetCount(); i++)
+        {
+            MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
+            if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsComposite)
+                Stylize(reader, executor, lb, (CompositeTypeStyle*)fts, &seTip, &seUrl, NULL);
+        }
+
+        if (lb)
+            m_lbPool->FreeLineBuffer(lb); // free geometry when done stylizing
+
+        if (cancel && cancel(userData)) break;
+    }
+
+    #ifdef _DEBUG
+    printf("  StylizationEngine::StylizeVectorLayer() Layer: %S  Features: %d\n", layer->GetFeatureName().c_str(), nFeatures);
+    #endif
+}
+
+
+void StylizationEngine::Stylize(RS_FeatureReader* reader,
+                                RS_FilterExecutor* executor,
+                                LineBuffer* geometry,
+                                CompositeTypeStyle* style,
+                                SE_String* seTip,
+                                SE_String* seUrl,
+                                RS_ElevationSettings* /*elevSettings*/)
+{
+    double mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
+    double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
 
     SE_Rule*& rules = m_rules[style];
     RuleCollection* rulecoll = style->GetRules();
@@ -131,16 +223,16 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
 
     // TODO: eliminate the need to do dynamic casts on these renderers.  We should
     //       probably ultimately have just one renderer interface class...
-    Renderer* baseRenderer = dynamic_cast<Renderer*>(m_renderer);
-    if (baseRenderer != NULL)
+    Renderer* renderer = dynamic_cast<Renderer*>(m_serenderer);
+    if (renderer)
     {
-        const wchar_t* strTip = seTip->evaluate(m_exec);
-        const wchar_t* strUrl = seUrl->evaluate(m_exec);
+        const wchar_t* strTip = seTip->evaluate(executor);
+        const wchar_t* strUrl = seUrl->evaluate(executor);
         RS_String rs_tip = strTip? strTip : L"";
         RS_String rs_url = strUrl? strUrl : L"";
         RS_String& rs_thm = rule->legendLabel;
 
-        baseRenderer->StartFeature(feature, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
+        renderer->StartFeature(reader, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
     }
 
     /* TODO: Obey the indices--Get rid of the indices altogther--single pass! */
@@ -149,12 +241,12 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
     {
         SE_Symbolization* sym = *iter;
 
-        double mm2px = (sym->context == MappingUnits ? mm2pxw : mm2pxs);
+        double mm2px = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
         SE_Matrix xform;
-        xform.setTransform( sym->scale[0].evaluate(m_exec), 
-                            sym->scale[1].evaluate(m_exec),
-                            sym->absOffset[0].evaluate(m_exec)*mm2px, 
-                            sym->absOffset[1].evaluate(m_exec)*mm2px );
+        xform.setTransform( sym->scale[0].evaluate(executor), 
+                            sym->scale[1].evaluate(executor),
+                            sym->absOffset[0].evaluate(executor)*mm2px, 
+                            sym->absOffset[1].evaluate(executor)*mm2px );
         xform.scale(mm2px, mm2px);
         
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
@@ -171,24 +263,24 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
             {
                 case SE_PointStyleType:
                     //this call may modify xform to apply the necessary rotation 
-                    rstyle = EvaluatePointStyle(geometry, tmpxform, (SE_PointStyle*)style, mm2px);
+                    rstyle = EvaluatePointStyle(executor, geometry, tmpxform, (SE_PointStyle*)style, mm2px);
                     break;
                 case SE_LineStyleType:
-                    rstyle = EvaluateLineStyle(tmpxform, (SE_LineStyle*)style);
+                    rstyle = EvaluateLineStyle(executor, tmpxform, (SE_LineStyle*)style);
                     break;
                 case SE_AreaStyleType:
-                    rstyle = EvaluateAreaStyle(tmpxform, (SE_AreaStyle*)style);
+                    rstyle = EvaluateAreaStyle(executor, tmpxform, (SE_AreaStyle*)style);
                     break;
             }
             
             //evaluate values that are common to all styles           
-            rstyle->renderPass = style->renderPass.evaluate(m_exec);
-            rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(m_exec);
-            rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(m_exec);
-            rstyle->drawLast = sym->drawLast.evaluate(m_exec);
+            rstyle->renderPass = style->renderPass.evaluate(executor);
+            rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(executor);
+            rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(executor);
+            rstyle->drawLast = sym->drawLast.evaluate(executor);
 
             //evaluate the graphic elements
-            EvaluateSymbols(tmpxform, style, rstyle, mm2px); 
+            EvaluateSymbols(executor, tmpxform, style, rstyle, mm2px); 
 
             if (!sym->positioningAlgorithm.empty() && sym->positioningAlgorithm != L"Default")
             {
@@ -199,13 +291,13 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
                 switch(style->type)
                 {
                 case SE_PointStyleType:
-                    m_renderer->ProcessPoint(geometry, (SE_RenderPointStyle*)rstyle);
+                    m_serenderer->ProcessPoint(geometry, (SE_RenderPointStyle*)rstyle);
                     break;
                 case SE_LineStyleType:
-                    m_renderer->ProcessLine(geometry, (SE_RenderLineStyle*)rstyle);
+                    m_serenderer->ProcessLine(geometry, (SE_RenderLineStyle*)rstyle);
                     break;
                 case SE_AreaStyleType:
-                    m_renderer->ProcessArea(geometry, (SE_RenderAreaStyle*)rstyle);
+                    m_serenderer->ProcessArea(geometry, (SE_RenderAreaStyle*)rstyle);
                     break;
                 }
             }
@@ -217,7 +309,12 @@ void StylizationEngine::Stylize( SE_Renderer* renderer,
     }
 }
 
-SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(LineBuffer* geometry, SE_Matrix& xform, SE_PointStyle* style, double mm2px)
+
+SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(RS_FilterExecutor* executor,
+                                                           LineBuffer* geometry,
+                                                           SE_Matrix& xform,
+                                                           SE_PointStyle* style,
+                                                           double mm2px)
 {
     SE_RenderPointStyle* render = new SE_RenderPointStyle();
 
@@ -242,7 +339,7 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(LineBuffer* geometry,
     }
 
     double angle = 0.0;
-    const wchar_t* angleControl = style->angleControl.evaluate(m_exec);
+    const wchar_t* angleControl = style->angleControl.evaluate(executor);
     if (wcscmp(L"FromGeometry", angleControl) == 0)
     {
         if (type == LineBuffer::ctLine || type == LineBuffer::ctArea)
@@ -259,10 +356,10 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(LineBuffer* geometry,
         }
     }
     else
-        angle = style->angle.evaluate(m_exec) * M_PI180;
+        angle = style->angle.evaluate(executor) * M_PI180;
 
-    double originOffsetX = style->originOffset[0].evaluate(m_exec)*mm2px;
-    double originOffsetY = style->originOffset[1].evaluate(m_exec)*mm2px;
+    double originOffsetX = style->originOffset[0].evaluate(executor)*mm2px;
+    double originOffsetY = style->originOffset[1].evaluate(executor)*mm2px;
 
     SE_Matrix sxform;
     sxform.translate(originOffsetX, originOffsetY);
@@ -273,54 +370,56 @@ SE_RenderPointStyle* StylizationEngine::EvaluatePointStyle(LineBuffer* geometry,
     return render;
 }
 
-SE_RenderLineStyle* StylizationEngine::EvaluateLineStyle(SE_Matrix& xform, SE_LineStyle* style)
+
+SE_RenderLineStyle* StylizationEngine::EvaluateLineStyle(RS_FilterExecutor* executor, SE_Matrix& xform, SE_LineStyle* style)
 {
     SE_RenderLineStyle* render = new SE_RenderLineStyle();
 
-    render->angleControl = style->angleControl.evaluate(m_exec);
-    render->unitsControl = style->unitsControl.evaluate(m_exec);
-    render->vertexControl = style->vertexControl.evaluate(m_exec);
+    render->angleControl = style->angleControl.evaluate(executor);
+    render->unitsControl = style->unitsControl.evaluate(executor);
+    render->vertexControl = style->vertexControl.evaluate(executor);
 //  render->join = style->join.evaluate(m_exec);
 
-    render->angle = style->angle.evaluate(m_exec) * M_PI180;
-    render->startOffset = style->startOffset.evaluate(m_exec)*xform.x0; // x0 is x scale * mm2px
-    render->endOffset = style->endOffset.evaluate(m_exec)*xform.x0;
-    render->repeat = style->repeat.evaluate(m_exec)*xform.x0;
-    render->vertexAngleLimit = style->vertexAngleLimit.evaluate(m_exec) * M_PI180;
+    render->angle = style->angle.evaluate(executor) * M_PI180;
+    render->startOffset = style->startOffset.evaluate(executor)*xform.x0; // x0 is x scale * mm2px
+    render->endOffset = style->endOffset.evaluate(executor)*xform.x0;
+    render->repeat = style->repeat.evaluate(executor)*xform.x0;
+    render->vertexAngleLimit = style->vertexAngleLimit.evaluate(executor) * M_PI180;
 
     return render;
 }
 
-SE_RenderAreaStyle* StylizationEngine::EvaluateAreaStyle(SE_Matrix& /*xform*/, SE_AreaStyle* style)
+
+SE_RenderAreaStyle* StylizationEngine::EvaluateAreaStyle(RS_FilterExecutor* executor, SE_Matrix& /*xform*/, SE_AreaStyle* style)
 {
     SE_RenderAreaStyle* render = new SE_RenderAreaStyle();
 
-    render->angleControl = style->angleControl.evaluate(m_exec);
-    render->originControl = style->originControl.evaluate(m_exec);
-    render->clippingControl = style->clippingControl.evaluate(m_exec);
+    render->angleControl = style->angleControl.evaluate(executor);
+    render->originControl = style->originControl.evaluate(executor);
+    render->clippingControl = style->clippingControl.evaluate(executor);
 
-    render->angle = style->angle.evaluate(m_exec) * M_PI180;
-    render->origin[0] = style->origin[0].evaluate(m_exec);
-    render->origin[1] = style->origin[1].evaluate(m_exec);
-    render->repeat[0] = style->repeat[0].evaluate(m_exec);
-    render->repeat[1] = style->repeat[1].evaluate(m_exec);
-    render->bufferWidth = style->bufferWidth.evaluate(m_exec);
+    render->angle = style->angle.evaluate(executor) * M_PI180;
+    render->origin[0] = style->origin[0].evaluate(executor);
+    render->origin[1] = style->origin[1].evaluate(executor);
+    render->repeat[0] = style->repeat[0].evaluate(executor);
+    render->repeat[1] = style->repeat[1].evaluate(executor);
+    render->bufferWidth = style->bufferWidth.evaluate(executor);
 
     return render;
 }
 
 
-void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_RenderStyle* renderStyle, double mm2px)
+void StylizationEngine::EvaluateSymbols(RS_FilterExecutor* executor, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* renderStyle, double mm2px)
 {
     double dx, dy, sx, sy;
     double minx, maxx, miny, maxy;
     double growx, growy;
     if (style->useBox)
     {
-        dx = style->resizePosition[0].evaluate(m_exec);
-        dy = style->resizePosition[1].evaluate(m_exec);
-        sx = style->resizeSize[0].evaluate(m_exec)/2.0;
-        sy = style->resizeSize[1].evaluate(m_exec)/2.0;
+        dx = style->resizePosition[0].evaluate(executor);
+        dy = style->resizePosition[1].evaluate(executor);
+        sx = style->resizeSize[0].evaluate(executor)/2.0;
+        sy = style->resizeSize[1].evaluate(executor)/2.0;
 
         xform.transform(dx - sx, dy - sy, minx, miny);
         xform.transform(dx + sx, dy + sy, maxx, maxy);
@@ -329,6 +428,9 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
         growx = 0.0;
         growy = 0.0;
     }
+
+    double mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
+    double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
 
     for (SE_PrimitiveList::const_iterator src = style->symbol.begin(); src != style->symbol.end(); src++)
     {
@@ -339,19 +441,17 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
         {
         case SE_PolygonPrimitive:
             rsym = new SE_RenderPolygon();
-            ((SE_RenderPolygon*)rsym)->fill = ((SE_Polygon*)sym)->fill.evaluate(m_exec);
+            ((SE_RenderPolygon*)rsym)->fill = ((SE_Polygon*)sym)->fill.evaluate(executor);
 
         case SE_PolylinePrimitive:
             {
                 if (!rsym) rsym = new SE_RenderPolyline();
-                SE_Polyline* p = (SE_Polyline*) sym;
+                SE_Polyline* p = (SE_Polyline*)sym;
                 SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
-                double wx = p->weightScalable.evaluate(m_exec) ? 
-                    m_renderer->GetPixelsPerMillimeterWorld() : 
-                    m_renderer->GetPixelsPerMillimeterScreen();
-                rp->weight = p->weight.evaluate(m_exec)*wx;
+                double wx = p->weightScalable.evaluate(executor)? mm2pxw : mm2pxs;
+                rp->weight = p->weight.evaluate(executor) * wx;
                 rp->geometry = p->geometry->Clone();
-                rp->color = p->color.evaluate(m_exec);
+                rp->color = p->color.evaluate(executor);
                 /* Defer transformation */
                 if (sym->resize != GraphicElement::AdjustToResizeBox)
                 {
@@ -368,27 +468,27 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                 rsym = new SE_RenderText();
                 SE_Text* t = (SE_Text*)sym;
                 SE_RenderText* rt = (SE_RenderText*)rsym;
-                rt->text = t->textExpr.evaluate(m_exec);
-                rt->position[0] = t->position[0].evaluate(m_exec);
-                rt->position[1] = t->position[1].evaluate(m_exec);
+                rt->text = t->textExpr.evaluate(executor);
+                rt->position[0] = t->position[0].evaluate(executor);
+                rt->position[1] = t->position[1].evaluate(executor);
                 xform.transform(rt->position[0], rt->position[1]);
 
-                rt->tdef.rotation() = t->angle.evaluate(m_exec);;
+                rt->tdef.rotation() = t->angle.evaluate(executor);;
 
                 int style = RS_FontStyle_Regular;
-                if (t->underlined.evaluate(m_exec)) style |= (int)RS_FontStyle_Underline;
-                if (t->italic.evaluate(m_exec)) style |= (int)RS_FontStyle_Italic;
-                if (t->bold.evaluate(m_exec)) style |= (int)RS_FontStyle_Bold;
+                if (t->underlined.evaluate(executor)) style |= (int)RS_FontStyle_Underline;
+                if (t->italic.evaluate(executor)) style |= (int)RS_FontStyle_Italic;
+                if (t->bold.evaluate(executor)) style |= (int)RS_FontStyle_Bold;
 
                 rt->tdef.font().style() = (RS_FontStyle_Mask)style;
-                rt->tdef.font().name() = t->fontExpr.evaluate(m_exec);
-                rt->tdef.font().height() = t->size.evaluate(m_exec)*0.001*xform.y1/mm2px; //convert mm to meters which is what RS_TextDef expects
-                rt->tdef.linespace() = t->lineSpacing.evaluate(m_exec);
+                rt->tdef.font().name() = t->fontExpr.evaluate(executor);
+                rt->tdef.font().height() = t->size.evaluate(executor)*0.001*xform.y1/mm2px; //convert mm to meters which is what RS_TextDef expects
+                rt->tdef.linespace() = t->lineSpacing.evaluate(executor);
 
-                rt->tdef.color() = RS_Color::FromARGB(t->textColor.evaluate(m_exec));
-                rt->tdef.bgcolor() = RS_Color::FromARGB(t->ghostColor.evaluate(m_exec));
+                rt->tdef.color() = RS_Color::FromARGB(t->textColor.evaluate(executor));
+                rt->tdef.bgcolor() = RS_Color::FromARGB(t->ghostColor.evaluate(executor));
 
-                const wchar_t* hAlign = t->hAlignment.evaluate(m_exec);
+                const wchar_t* hAlign = t->hAlignment.evaluate(executor);
                 if (hAlign)
                 {
                     if (wcscmp(hAlign, L"Left") == 0)           
@@ -399,7 +499,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                         rt->tdef.halign() = RS_HAlignment_Right;
                 }
 
-                const wchar_t* vAlign = t->vAlignment.evaluate(m_exec);
+                const wchar_t* vAlign = t->vAlignment.evaluate(executor);
                 if (vAlign)
                 {
                     if (wcscmp(vAlign, L"Bottom") == 0)         
@@ -416,7 +516,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
 
                 RS_TextMetrics tm;
                 SE_Matrix txf;
-                m_renderer->GetFontEngine()->GetTextMetrics(rt->text, rt->tdef, tm, false);
+                m_serenderer->GetFontEngine()->GetTextMetrics(rt->text, rt->tdef, tm, false);
                 txf.rotate(rt->tdef.rotation() * M_PI180);
                 txf.translate(rt->position[0], rt->position[1]);
 
@@ -448,7 +548,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
 
                 if (!r->pngPtr)
                 {
-                    rr->pngPtr = m_resources->GetImageData(r->pngPath.evaluate(m_exec), rr->pngSize);
+                    rr->pngPtr = m_resources->GetImageData(r->pngPath.evaluate(executor), rr->pngSize);
                 }
                 else
                 {
@@ -456,12 +556,12 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
                     rr->pngSize = r->pngSize;
                 }
 
-                rr->position[0] = r->position[0].evaluate(m_exec);
-                rr->position[1] = r->position[1].evaluate(m_exec);
+                rr->position[0] = r->position[0].evaluate(executor);
+                rr->position[1] = r->position[1].evaluate(executor);
                 xform.transform(rr->position[0], rr->position[1]);
-                rr->extent[0] = r->extent[0].evaluate(m_exec)*xform.x0;
-                rr->extent[1] = r->extent[1].evaluate(m_exec)*xform.y1;
-                rr->angle = r->angle.evaluate(m_exec) * M_PI180;
+                rr->extent[0] = r->extent[0].evaluate(executor)*xform.x0;
+                rr->extent[1] = r->extent[1].evaluate(executor)*xform.y1;
+                rr->angle = r->angle.evaluate(executor) * M_PI180;
 
                 SE_Matrix rxf;
                 rxf.rotate(rr->angle);
@@ -490,7 +590,7 @@ void StylizationEngine::EvaluateSymbols(SE_Matrix& xform, SE_Style* style, SE_Re
 
         if (rsym)
         {
-            rsym->resize = sym->resize == GraphicElement::AdjustToResizeBox;
+            rsym->resize = (sym->resize == GraphicElement::AdjustToResizeBox);
 
             if (!rsym->resize)
             {
@@ -590,13 +690,14 @@ void StylizationEngine::LayoutCustomLabel(const std::wstring& positioningAlgo, L
     //here we decide which one to call based on the name of the positioning algorithm
     if (positioningAlgo == L"EightSurrounding")
     {
-        SE_PositioningAlgorithms::EightSurrounding(m_renderer, geometry, xform, style, rstyle, mm2px);
+        SE_PositioningAlgorithms::EightSurrounding(m_serenderer, geometry, xform, style, rstyle, mm2px);
     }
     else if (positioningAlgo == L"PathLabels")
     {
-        SE_PositioningAlgorithms::PathLabels(m_renderer, geometry, xform, style, rstyle, mm2px);
+        SE_PositioningAlgorithms::PathLabels(m_serenderer, geometry, xform, style, rstyle, mm2px);
     }
 }
+
 
 //clears cached filters/styles/etc
 void StylizationEngine::ClearCache()
@@ -610,10 +711,4 @@ void StylizationEngine::ClearCache()
     }
 
     m_rules.clear();
-}
-
-//parses a string expression
-void StylizationEngine::ParseStringExpression(const MdfString& mdf_string, SE_String& se_string)
-{
-    m_visitor->ParseStringExpression(mdf_string, se_string);
 }

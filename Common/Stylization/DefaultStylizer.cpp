@@ -26,9 +26,8 @@
 #include "Renderer.h"
 #include "LineBuffer.h"
 #include "ElevationSettings.h"
-#include "StylizationEngine.h"
 #include "FeatureTypeStyleVisitor.h"
-#include "SE_Renderer.h"
+#include "StylizationEngine.h"
 
 const RS_String s_Empty(L"");
 
@@ -75,19 +74,18 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
     // no range -- do not stylize
     if (NULL == range) return;
 
-    // we have a valid scale range... we can now go over the features and
-    // apply the feature styles in that range
+    // get the geometry column name
+    const wchar_t* gpName = features->GetGeomPropName();
+    if (NULL == gpName)
+        return;
+
+    // we have a valid scale range and geometry... we can now go over the
+    // features and apply the feature styles in that range
+    MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
 
     //Sidenote: as of now (8/10/04) it is not clear whether FeatureTypeStyle
-    //is matched to features via geometry type or via name of the
-    //feature class. For now, we match by geometry.
-
-    const wchar_t* gpName = features->GetGeomPropName();
-
-    //no geometry -- do not stylize
-    if (NULL == gpName) return;
-
-    RS_FilterExecutor* exec = RS_FilterExecutor::Create(features);
+    //is matched to features via geometry type or via name of the feature
+    //class.  For now, we match by geometry.
 
     // configure the filter with the current map/layer info
     RS_MapUIInfo* mapInfo = renderer->GetMapInfo();
@@ -98,103 +96,97 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
     const RS_String& mapName = (mapInfo != NULL)? mapInfo->name() : s_Empty;
     const RS_String& layerId = (layerInfo != NULL)? layerInfo->guid() : s_Empty;
     const RS_String& featCls = (featInfo != NULL)? featInfo->name() : s_Empty;
+
+    RS_FilterExecutor* exec = RS_FilterExecutor::Create(features);
     exec->SetMapLayerInfo(session, mapName, layerId, featCls);
 
-    // find the FeatureTypeStyle
-    MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
-
-    //TODO: //HACK: temporary code to detect whether we are using a new style
-    //composite symbolizations
-    bool use_style_engine = false;
-    SE_Renderer* se_renderer = NULL;
-    if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(ftsc->GetAt(0)) == FeatureTypeStyleVisitor::ftsComposite)
+    // check if we have any composite type styles - if we find at least
+    // one then we'll use it and ignore any other non-composite type styles
+    // TODO: confirm this is the behavior we want
+    bool foundComposite = false;
+    for (int i=0; i<ftsc->GetCount(); i++)
     {
-        use_style_engine = true;
-        se_renderer = dynamic_cast<SE_Renderer*>(renderer);
+        MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
+        if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsComposite)
+        {
+            foundComposite = true;
+            break;
+        }
     }
 
-    //extract hyperlink and tooltip info
-    //this is invariant, so do outside of feature iterator loop
-    const MdfModel::MdfString& mdfTip = fl->GetToolTip();
-    const MdfModel::MdfString& mdfUrl = fl->GetUrl();
-    const MdfModel::MdfString* lrTip = mdfTip.empty()? NULL : &mdfTip;
-    const MdfModel::MdfString* lrUrl = mdfUrl.empty()? NULL : &mdfUrl;
-
-    SE_String seTip;
-    SE_String seUrl;
-    if (use_style_engine)
+    // composite type styles are handled by the new style engine
+    if (foundComposite)
     {
-        m_styleEngine->ParseStringExpression(mdfTip, seTip);
-        m_styleEngine->ParseStringExpression(mdfUrl, seUrl);
+        this->m_styleEngine->StylizeVectorLayer(fl, range, renderer, features, exec, xformer, cancel, userData);
     }
-
-    //TODO:
-    //*****************************************
-    //* THIS CALL IS REALLY REALLY REALLY SLOW!!!
-    //*****************************************
-    //It needs to be done per feature if there is inheritance of feature classes
-    //but is so horribly slow that in all other cases it needs to be optimized away
-    //FdoPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
-
-    bool bClip = renderer->RequiresClipping();
-
-    #ifdef _DEBUG
-    int nFeatures = 0;
-    #endif
-
-    //main loop over feature data
-    while (features->ReadNext())
+    else
     {
+        //extract hyperlink and tooltip info
+        //this is invariant, so do outside of feature iterator loop
+        const MdfModel::MdfString& mdfTip = fl->GetToolTip();
+        const MdfModel::MdfString& mdfUrl = fl->GetUrl();
+        const MdfModel::MdfString* lrTip = mdfTip.empty()? NULL : &mdfTip;
+        const MdfModel::MdfString* lrUrl = mdfUrl.empty()? NULL : &mdfUrl;
+
+        //TODO:
+        //*****************************************
+        //* THIS CALL IS REALLY REALLY REALLY SLOW!!!
+        //*****************************************
+        //It needs to be done per feature if there is inheritance of feature classes
+        //but is so horribly slow that in all other cases it needs to be optimized away
+        //FdoPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
+
+        bool bClip = renderer->RequiresClipping();
+
         #ifdef _DEBUG
-        nFeatures++;
+        int nFeatures = 0;
         #endif
 
-        LineBuffer* lb = NULL;
-
-        //get the geometry just once
-        //all types of geometry
-        lb = m_lbPool->NewLineBuffer(8);
-        features->GetGeometry(gpName, lb, xformer);
-
-        if (lb && bClip)
+        //main loop over feature data
+        while (features->ReadNext())
         {
-            //clip geometry to given map request extents
-            //TODO: is this the right place to do so?
-            LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
+            #ifdef _DEBUG
+            nFeatures++;
+            #endif
 
-            //did geom require clipping?
-            //free original line buffer
-            //note original geometry is still accessible to the
-            //user from the RS_FeatureReader::GetGeometry
-            if (lbc != lb)
+            LineBuffer* lb = NULL;
+
+            //get the geometry just once
+            //all types of geometry
+            lb = m_lbPool->NewLineBuffer(8);
+            features->GetGeometry(gpName, lb, xformer);
+
+            if (lb && bClip)
             {
-                m_lbPool->FreeLineBuffer(lb);
-                lb = lbc;
+                //clip geometry to given map request extents
+                //TODO: is this the right place to do so?
+                LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
+
+                //did geom require clipping?
+                //free original line buffer
+                //note original geometry is still accessible to the
+                //user from the RS_FeatureReader::GetGeometry
+                if (lbc != lb)
+                {
+                    m_lbPool->FreeLineBuffer(lb);
+                    lb = lbc;
+                }
             }
-        }
 
-        if (!lb) continue;
+            if (!lb) continue;
 
-        //need to clear out the filter execution engine cache
-        //some feature attributes may be cached while executing theming
-        //expressions and this call flushes that
-        exec->Reset();
+            //need to clear out the filter execution engine cache
+            //some feature attributes may be cached while executing theming
+            //expressions and this call flushes that
+            exec->Reset();
 
-        // we need to stylize once for each FeatureTypeStyle that matches
-        // the geometry type (Note: this may have to change to match
-        // feature classes)
-        for (int i=0; i<ftsc->GetCount(); i++)
-        {
-            MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
-
-            if (use_style_engine)
+            // we need to stylize once for each FeatureTypeStyle that matches
+            // the geometry type (Note: this may have to change to match
+            // feature classes)
+            for (int i=0; i<ftsc->GetCount(); i++)
             {
-                //we are hoping that the renderer is nice enough to be an SE_Renderer
-                if (se_renderer)
-                    m_styleEngine->Stylize(se_renderer, features, exec, lb, (CompositeTypeStyle*)fts, &seTip, &seUrl, NULL);
-            }
-            else
-            {
+                MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
+
                 //TODO: future enhancement:
                 //If we have a stylizer that works on a specific feature class
                 //we should invoke it here, instead of invoking the
@@ -234,17 +226,17 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
                     elevSettings = NULL;
                 }
             }
+
+            if (lb)
+                m_lbPool->FreeLineBuffer(lb); // free geometry when done stylizing
+
+            if (cancel && cancel(userData)) break;
         }
 
-        if (lb)
-            m_lbPool->FreeLineBuffer(lb); // free geometry when done stylizing
-
-        if (cancel && cancel(userData)) break;
+        #ifdef _DEBUG
+        printf("  DefaultStylizer::StylizeVectorLayer() Layer: %S  Features: %d\n", layer->GetFeatureName().c_str(), nFeatures);
+        #endif
     }
-
-    #ifdef _DEBUG
-    printf("  DefaultStylizer::StylizeVectorLayer() Layer: %S  Features: %d\n", layer->GetFeatureName().c_str(), nFeatures);
-    #endif
 
     //need the cast due to multiple inheritance resulting in two Disposables
     //in the vtable of FilterExecutor
