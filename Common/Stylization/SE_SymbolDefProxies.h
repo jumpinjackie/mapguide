@@ -15,17 +15,19 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
 #ifndef SE_SYMBOLDEFPROXIES_H
 #define SE_SYMBOLDEFPROXIES_H
 
 #include "SE_LineBuffer.h"
+
 
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //
 //        SE_Primitives
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 enum SE_PrimitiveType
 {
     SE_PolylinePrimitive,
@@ -33,6 +35,7 @@ enum SE_PrimitiveType
     SE_TextPrimitive,
     SE_RasterPrimitive
 };
+
 
 enum SE_StyleType
 {
@@ -63,15 +66,17 @@ struct SE_Polyline : public SE_Primitive
     ~SE_Polyline() { geometry->Free(); }
 };
 
+
 struct SE_Polygon : public SE_Polyline
 {
     SE_Color fill;
 
-    SE_INLINE SE_Polygon() { type = SE_PolygonPrimitive; weight = 0.0; } 
+    SE_INLINE SE_Polygon() { type = SE_PolygonPrimitive; weight = 0.0; }
     ~SE_Polygon() { geometry->Free(); }
 };
 
-/* Font/properties caching is left to the implementor of SE_Renderer */
+
+// Font/properties caching is left to the implementor of SE_Renderer
 struct SE_Text : public SE_Primitive
 {
     SE_String textExpr;
@@ -92,6 +97,7 @@ struct SE_Text : public SE_Primitive
     SE_INLINE SE_Text() { type = SE_TextPrimitive;  }
 };
 
+
 struct SE_Raster : public SE_Primitive
 {
     SE_String pngPath;
@@ -110,6 +116,7 @@ struct SE_Raster : public SE_Primitive
 //        SE_Styles
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 struct SE_Style
 {
@@ -131,6 +138,7 @@ struct SE_Style
     }
 };
 
+
 struct SE_PointStyle : public SE_Style
 {
     SE_INLINE SE_PointStyle() : SE_Style(SE_PointStyleType) { }
@@ -139,6 +147,7 @@ struct SE_PointStyle : public SE_Style
     SE_Double angle;
     SE_Double originOffset[2];
 };
+
 
 struct SE_LineStyle : public SE_Style
 {
@@ -155,6 +164,7 @@ struct SE_LineStyle : public SE_Style
     SE_Double repeat;
     SE_Double vertexAngleLimit;
 };
+
 
 struct SE_AreaStyle : public SE_Style
 {
@@ -194,12 +204,13 @@ struct SE_Symbolization
     }
 };
 
+
 struct SE_Rule
 {
     std::vector<SE_Symbolization*> symbolization;
     RS_String legendLabel;  // no expressions on this guy
     FdoFilter* filter;
-    
+
     ~SE_Rule()
     {
         if (filter) filter->Release();
@@ -210,6 +221,5 @@ struct SE_Rule
         symbolization.clear();
     }
 };
-
 
 #endif

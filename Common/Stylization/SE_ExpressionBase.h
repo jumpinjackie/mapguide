@@ -22,6 +22,8 @@
 #include <string>
 #include "FilterExecutor.h"
 
+
+//////////////////////////////////////////////////////////////////////////////
 struct SE_Color
 {
     unsigned char b, g, r, a; // argb, but little endian
@@ -49,7 +51,7 @@ struct SE_Color
                 *((unsigned int*)this) = 0xff000000;
             }
         }
-        
+
         return *((unsigned int*)this);
     }
 
@@ -58,12 +60,14 @@ struct SE_Color
     SE_INLINE unsigned int& argb() { return (*(unsigned int*)this); }
 };
 
+
+//////////////////////////////////////////////////////////////////////////////
 struct SE_Double
 {
     double value;
     FdoExpression* expression;
 
-    SE_INLINE SE_Double() : expression(NULL),value(0.0)  {  }
+    SE_INLINE SE_Double() : value(0.0), expression(NULL) { }
     SE_INLINE SE_Double(double d) : value(d), expression(NULL) { }
     ~SE_Double() { if (expression) expression->Release(); }
 
@@ -89,15 +93,17 @@ struct SE_Double
         return value;
     }
 
-    SE_INLINE void operator=(double d)  { value = d; }
+    SE_INLINE void operator=(double d) { value = d; }
 };
 
+
+//////////////////////////////////////////////////////////////////////////////
 struct SE_Integer
 {
     int value;
     FdoExpression* expression;
 
-    SE_INLINE SE_Integer() : expression(NULL), value(0) { }
+    SE_INLINE SE_Integer() : value(0), expression(NULL) { }
     SE_INLINE SE_Integer(int i) : value(i), expression(NULL) { }
     ~SE_Integer() { if (expression) expression->Release(); }
 
@@ -123,15 +129,17 @@ struct SE_Integer
         return value;
     }
 
-    SE_INLINE void operator=(int i)  { value = i; }
+    SE_INLINE void operator=(int i) { value = i; }
 };
 
+
+//////////////////////////////////////////////////////////////////////////////
 struct SE_Boolean
 {
     bool value;
     FdoExpression* expression;
 
-    SE_INLINE SE_Boolean() : expression(NULL), value(false) { }
+    SE_INLINE SE_Boolean() : value(false), expression(NULL) { }
     SE_INLINE SE_Boolean(bool b) : value(b), expression(NULL) { }
     ~SE_Boolean() { if (expression) expression->Release(); }
 
@@ -160,13 +168,14 @@ struct SE_Boolean
     SE_INLINE void operator=(bool b) { value = b; }
 };
 
+
+//////////////////////////////////////////////////////////////////////////////
 struct SE_String
 {
     const wchar_t* value;
     FdoExpression* expression;
 
-    SE_INLINE SE_String() : expression(NULL), value(NULL)
-    {}
+    SE_INLINE SE_String() : value(NULL), expression(NULL) { }
     SE_INLINE SE_String(const wchar_t* s) : expression(NULL)
     {
         if (s)
@@ -179,12 +188,12 @@ struct SE_String
             value = NULL;
     }
 
-    ~SE_String() 
+    ~SE_String()
     {
         if (value)
             delete[] value;
-        if (expression) 
-            expression->Release(); 
+        if (expression)
+            expression->Release();
     }
 
     SE_INLINE const wchar_t* evaluate(RS_FilterExecutor* processor)
@@ -197,12 +206,10 @@ struct SE_String
                 value = NULL;
             }
 
-            wchar_t* newValue = NULL;
-
             try
             {
                 expression->Process(processor);
-                newValue = processor->GetStringResult();
+                value = processor->GetStringResult();
             }
             catch (FdoException* e)
             {
@@ -212,11 +219,9 @@ struct SE_String
                 // just return the stored expression
                 FdoString* exprValue = expression->ToString();
                 size_t len = wcslen(exprValue) + 1;
-                newValue = new wchar_t[len];
-                wcscpy(newValue, exprValue);
+                wchar_t* copy = new wchar_t[len];
+                value = wcscpy(copy, exprValue);
             }
-
-            value = newValue;
         }
 
         return value;
@@ -239,32 +244,36 @@ struct SE_String
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 typedef std::pair<const wchar_t*, const wchar_t*> ParamId;
 
 struct ParamCmpLess : std::binary_function<ParamId&, ParamId&, bool>
 {
 public:
-    bool operator( ) (const ParamId& a, const ParamId& b) const
+    bool operator() (const ParamId& a, const ParamId& b) const
     {
         int symcmp = wcscmp(a.first, b.first);
         if (symcmp == 0)
             return wcscmp(a.second, b.second) < 0;
-        
+
         return symcmp < 0;
     }
 };
 
+
 struct StrCmpLess : std::binary_function<const wchar_t*, const wchar_t*, bool>
 {
 public:
-    bool operator( ) (const wchar_t* a, const wchar_t* b) const
+    bool operator() (const wchar_t* a, const wchar_t* b) const
     {
         return wcscmp(a, b) < 0;
     }
 };
 
+
+//////////////////////////////////////////////////////////////////////////////
 typedef std::map<ParamId, const wchar_t*, ParamCmpLess> ParameterMap;
-typedef std::map<const wchar_t*, const wchar_t*, StrCmpLess> DefaultMap; 
+typedef std::map<const wchar_t*, const wchar_t*, StrCmpLess> DefaultMap;
 
 class SE_ExpressionBase
 {
@@ -274,13 +283,13 @@ public:
     void ParseBooleanExpression(const MdfModel::MdfString& exprstr, SE_Boolean& val);
     void ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val);
     void ParseColorExpression(const MdfModel::MdfString& exprstr, SE_Color& val);
-    
+
     void SetParameterValues(MdfModel::OverrideCollection* overrides);
     void SetDefaultValues(MdfModel::SimpleSymbolDefinition* definition);
 
 private:
     void ReplaceParameters(const MdfModel::MdfString& exprstr, const wchar_t* fallback);
-    
+
     ParameterMap m_parameters;
     DefaultMap m_defaults;
     const wchar_t* m_symbol;

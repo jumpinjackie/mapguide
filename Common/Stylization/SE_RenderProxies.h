@@ -15,12 +15,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
 #ifndef SE_RENDERPROXIES_H
 #define SE_RENDERPROXIES_H
 
 #include "SE_Bounds.h"
 #include "SE_LineBuffer.h"
+
 
 enum SE_RenderPrimitiveType
 {
@@ -29,6 +29,7 @@ enum SE_RenderPrimitiveType
     SE_RenderTextPrimitive,
     SE_RenderRasterPrimitive
 };
+
 
 enum SE_RenderStyleType
 {
@@ -44,6 +45,7 @@ enum SE_RenderStyleType
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+
 struct SE_RenderPrimitive
 {
     SE_RenderPrimitiveType type;
@@ -51,45 +53,49 @@ struct SE_RenderPrimitive
     SE_Bounds* bounds;
 };
 
+
 struct SE_RenderPolyline : public SE_RenderPrimitive
 {
+    SE_INLINE SE_RenderPolyline() { type = SE_RenderPolylinePrimitive; }
+    ~SE_RenderPolyline() { if (geometry) geometry->Free(); }
+
     SE_LineBuffer* geometry;
     double weight;
     unsigned int color;
-
-    SE_INLINE SE_RenderPolyline() { type = SE_RenderPolylinePrimitive; }
-    ~SE_RenderPolyline() { if (geometry) geometry->Free(); }
 };
+
 
 struct SE_RenderPolygon : public SE_RenderPolyline
 {
-    unsigned int fill;
-
     SE_INLINE SE_RenderPolygon() { type = SE_RenderPolygonPrimitive; }
-    ~SE_RenderPolygon() {  }
+    ~SE_RenderPolygon() { }
+
+    unsigned int fill;
 };
+
 
 struct SE_RenderText : public SE_RenderPrimitive
 {
+    SE_INLINE SE_RenderText() { type = SE_RenderTextPrimitive; }
+
     std::wstring text;
     double position[2];
-
     RS_TextDef tdef;
-
-    SE_INLINE SE_RenderText() { type = SE_RenderTextPrimitive; }
 };
 
-/* Caching, if any, is left to the implementor of SE_Renderer */
+
+// Caching, if any, is left to the implementor of SE_Renderer
 struct SE_RenderRaster : public SE_RenderPrimitive
 {
+    SE_INLINE SE_RenderRaster() : pngPtr(0), pngSize(0) { type = SE_RenderRasterPrimitive; }
+
     const unsigned char* pngPtr;
     int pngSize;
     double position[2];
     double extent[2];
     double angle;
-
-    SE_INLINE SE_RenderRaster() : pngPtr(0), pngSize(0) { type = SE_RenderRasterPrimitive; }
 };
+
 
 typedef std::vector<SE_RenderPrimitive*> SE_RenderPrimitiveList;
 
@@ -100,9 +106,10 @@ typedef std::vector<SE_RenderPrimitive*> SE_RenderPrimitiveList;
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+
 struct SE_RenderStyle
 {
-    SE_INLINE SE_RenderStyle(SE_RenderStyleType stype) 
+    SE_INLINE SE_RenderStyle(SE_RenderStyleType stype)
         : type(stype),
           drawLast(false),
           checkExclusionRegions(false),
@@ -140,10 +147,12 @@ struct SE_RenderStyle
     bool addToExclusionRegions;
 };
 
+
 struct SE_RenderPointStyle : public SE_RenderStyle
 {
     SE_INLINE SE_RenderPointStyle() : SE_RenderStyle(SE_RenderPointStyleType) { }
 };
+
 
 struct SE_RenderLineStyle : public SE_RenderStyle
 {
@@ -160,6 +169,7 @@ struct SE_RenderLineStyle : public SE_RenderStyle
     double repeat;
     double vertexAngleLimit;
 };
+
 
 struct SE_RenderAreaStyle : public SE_RenderStyle
 {
@@ -179,26 +189,21 @@ struct SE_RenderAreaStyle : public SE_RenderStyle
 class SE_LabelInfo
 {
 public:
+    SE_INLINE SE_LabelInfo()
+        : x(0.0), y(0.0), dx(0.0), dy(0.0), dunits(RS_Units_Device), anglerad(0.0), symbol(NULL)
+    { }
+
+    SE_INLINE SE_LabelInfo (double _x, double _y, double _dx, double _dy, RS_Units _dunits, double _anglerad, SE_RenderStyle* _symbol)
+        : x(_x), y(_y), dx(_dx), dy(_dy), dunits(_dunits), anglerad(_anglerad), symbol(_symbol)
+    { }
+
     SE_RenderStyle* symbol;
     double x;
     double y;
     double dx;
     double dy;
     double anglerad;
-    RS_Units dunits;    
-    
-    SE_INLINE SE_LabelInfo() :
-        x(0.0),
-        y(0.0),
-        dx(0.0),
-        dy(0.0),
-        anglerad(0.0),
-        symbol(NULL)
-    { }
-
-    SE_INLINE SE_LabelInfo (double _x, double _y, double _dx, double _dy, RS_Units _dunits, double _anglerad, SE_RenderStyle* _symbol)
-                 : x(_x), y(_y), dx(_dx), dy(_dy), dunits(_dunits), anglerad(_anglerad), symbol(_symbol)
-    { }
+    RS_Units dunits;
 };
 
 #endif

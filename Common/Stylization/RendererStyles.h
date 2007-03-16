@@ -100,10 +100,23 @@ enum RS_OverpostType
     RS_OverpostType_FirstFit
 };
 
+
+//////////////////////////////////////////////////////////////////////////////
 enum RS_ElevationType
 {
     RS_ElevationType_RelativeToGround,
     RS_ElevationType_Absolute
+};
+
+
+//////////////////////////////////////////////////////////////////////////////
+enum LabelAlgo
+{
+    laSimple,
+    laCurve,
+    laSkeleton,
+    laPeriodicPolygon,
+    laSESymbol
 };
 
 
@@ -138,12 +151,12 @@ public:
         m_alpha =  rgba        & 0xFF;
     }
 
-    inline int &   red()   { return m_red; }
-    inline int &   green() { return m_green; }
-    inline int &   blue()  { return m_blue; }
-    inline int &   alpha() { return m_alpha; }
+    inline int& red()   { return m_red; }
+    inline int& green() { return m_green; }
+    inline int& blue()  { return m_blue; }
+    inline int& alpha() { return m_alpha; }
 
-    inline int     argb() const
+    inline int argb() const
     {
         return ((m_alpha & 0xFF) << 24) |
                ((m_red   & 0xFF) << 16) |
@@ -151,7 +164,7 @@ public:
                 (m_blue  & 0xFF);
     }
 
-    inline int     abgr() const
+    inline int abgr() const
     {
         return ((m_alpha  & 0xFF) << 24) |
                ((m_blue   & 0xFF) << 16) |
@@ -162,10 +175,10 @@ public:
     static RS_Color FromARGB(unsigned int argb)
     {
         RS_Color ret;
-        ret.m_alpha =  (argb >> 24) & 0xFF;
-        ret.m_red   =  (argb >> 16) & 0xFF;
-        ret.m_green =  (argb >> 8)  & 0xFF;
-        ret.m_blue  =   argb        & 0xFF;
+        ret.m_alpha = (argb >> 24) & 0xFF;
+        ret.m_red   = (argb >> 16) & 0xFF;
+        ret.m_green = (argb >> 8)  & 0xFF;
+        ret.m_blue  =  argb        & 0xFF;
         return ret;
     }
 
@@ -200,10 +213,10 @@ public:
         m_units = units;
     }
 
-    inline RS_Color &      color() { return m_color; }
-    inline double &        width() { return m_width; }
-    inline RS_String &     style() { return m_style; }
-    inline RS_Units &      units() { return m_units; }
+    inline RS_Color&  color() { return m_color; }
+    inline double&    width() { return m_width; }
+    inline RS_String& style() { return m_style; }
+    inline RS_Units&  units() { return m_units; }
 
 private:
     RS_Color m_color;
@@ -236,10 +249,10 @@ public:
     {
     }
 
-    inline RS_LineStroke & outline()       { return m_outline; }
-    inline RS_Color &      color()         { return m_color; }
-    inline RS_Color &      background()    { return m_background; }
-    inline RS_String&      pattern()       { return m_pattern; }
+    inline RS_LineStroke& outline()    { return m_outline; }
+    inline RS_Color&      color()      { return m_color; }
+    inline RS_Color&      background() { return m_background; }
+    inline RS_String&     pattern()    { return m_pattern; }
 
 private:
     RS_LineStroke m_outline;
@@ -272,10 +285,10 @@ public:
     {
     }
 
-    inline double &            height()    { return m_height; }
-    inline RS_String &         name()      { return m_name; }
-    inline RS_FontStyle_Mask & style()     { return m_style; }
-    inline RS_Units &          units()     { return m_units; }
+    inline double&            height() { return m_height; }
+    inline RS_String&         name()   { return m_name; }
+    inline RS_FontStyle_Mask& style()  { return m_style; }
+    inline RS_Units&          units()  { return m_units; }
 
 private:
     double m_height;
@@ -310,15 +323,15 @@ public:
     {
     }
 
-    inline RS_HAlignment &         halign()    { return m_halign; }
-    inline RS_VAlignment &         valign()    { return m_valign; }
-    inline RS_Justify &            justify()   { return m_justify; }
-    inline RS_TextBackground &     textbg()    { return m_textbg; }
-    inline RS_Color &              color()     { return m_color; }
-    inline RS_Color &              bgcolor()   { return m_bgcolor; }
-    inline RS_FontDef &            font()      { return m_font; }
-    inline double &                rotation()  { return m_rotation; }
-    inline double &                linespace() { return m_linespace; }
+    inline RS_HAlignment&     halign()    { return m_halign; }
+    inline RS_VAlignment&     valign()    { return m_valign; }
+    inline RS_Justify&        justify()   { return m_justify; }
+    inline RS_TextBackground& textbg()    { return m_textbg; }
+    inline RS_Color&          color()     { return m_color; }
+    inline RS_Color&          bgcolor()   { return m_bgcolor; }
+    inline RS_FontDef&        font()      { return m_font; }
+    inline double&            rotation()  { return m_rotation; }
+    inline double&            linespace() { return m_linespace; }
 
 private:
     RS_HAlignment m_halign;
@@ -374,14 +387,14 @@ public:
     {
     }
 
-    inline double &           width()     { return m_width; }
-    inline double &           height()    { return m_height; }
-    inline double &           insx()      { return m_insx; }
-    inline double &           insy()      { return m_insy; }
-    inline double &           rotation()  { return m_rotation; }
-    inline RS_String &        name()      { return m_name; }
-    inline RS_String &        library()   { return m_library; }
-    inline RS_Units &         units()     { return m_units; }
+    inline double&            width()     { return m_width; }
+    inline double&            height()    { return m_height; }
+    inline double&            insx()      { return m_insx; }
+    inline double&            insy()      { return m_insy; }
+    inline double&            rotation()  { return m_rotation; }
+    inline RS_String&         name()      { return m_name; }
+    inline RS_String&         library()   { return m_library; }
+    inline RS_Units&          units()     { return m_units; }
     inline RS_FillStyle&      style()     { return m_style; }
     inline RS_FontStyle_Mask& fontstyle() { return m_fontstyle; }
 
@@ -417,15 +430,16 @@ public:
     {
     }
 
-    inline unsigned char* & data()   { return m_data; }
-    inline int&             length() { return m_length; }
-    inline RS_String&       label()  { return m_label; }
+    inline unsigned char*& data()   { return m_data; }
+    inline int&            length() { return m_length; }
+    inline RS_String&      label()  { return m_label; }
 
 private:
     unsigned char* m_data;
     int            m_length;
     RS_String      m_label;
 };
+
 
 //////////////////////////////////////////////////////////////////////////////
 class RS_ElevationSettings
@@ -450,17 +464,18 @@ public:
     {
     }
 
-    inline RS_String&       zOffsetExpression()  { return m_zOffsetExpression; }
-    inline RS_String&       zExtrusionExpression()  { return m_zExtrusionExpression; }
-    inline RS_ElevationType elevType()  { return m_elevType; }
-    inline double           metersPerUnit() {return m_metersPerUnit; }
+    inline RS_String&        zOffsetExpression()    { return m_zOffsetExpression; }
+    inline RS_String&        zExtrusionExpression() { return m_zExtrusionExpression; }
+    inline RS_ElevationType& elevType()             { return m_elevType; }
+    inline double&           metersPerUnit()        { return m_metersPerUnit; }
 
 private:
+    RS_String m_zOffsetExpression;
+    RS_String m_zExtrusionExpression;
     RS_ElevationType m_elevType;
-    RS_String      m_zOffsetExpression;
-    RS_String      m_zExtrusionExpression;
-    double         m_metersPerUnit;
+    double m_metersPerUnit;
 };
+
 
 //////////////////////////////////////////////////////////////////////////////
 class RS_LayerUIInfo
@@ -512,19 +527,19 @@ public:
     {
     }
 
-    inline RS_String& name()       { return m_name; }
-    inline RS_String& guid()       { return m_guid; }
-    inline bool&      selectable() { return m_selectable; }
-    inline bool&      visible()    { return m_visible; }
-    inline bool&      editable()   { return m_editable; }
-    inline bool&      show()       { return m_showInLegend; }
-    inline bool&      expand()     { return m_expandInLegend; }
-    inline RS_String& groupname()  { return m_groupname; }
-    inline RS_String& groupguid()  { return m_groupguid; }
-    inline double&    zorder()     { return m_zorder; }
-    inline RS_UIGraphic& graphic() { return m_uiGraphic; }
-    inline bool&      hastooltips(){ return m_hastooltips; }
-    inline bool&      hashyperlinks(){ return m_hashyperlinks; }
+    inline RS_String&    name()          { return m_name; }
+    inline RS_String&    guid()          { return m_guid; }
+    inline bool&         selectable()    { return m_selectable; }
+    inline bool&         visible()       { return m_visible; }
+    inline bool&         editable()      { return m_editable; }
+    inline bool&         show()          { return m_showInLegend; }
+    inline bool&         expand()        { return m_expandInLegend; }
+    inline RS_String&    groupname()     { return m_groupname; }
+    inline RS_String&    groupguid()     { return m_groupguid; }
+    inline double&       zorder()        { return m_zorder; }
+    inline RS_UIGraphic& graphic()       { return m_uiGraphic; }
+    inline bool&         hastooltips()   { return m_hastooltips; }
+    inline bool&         hashyperlinks() { return m_hashyperlinks; }
 
 private:
     RS_String m_name;
@@ -572,12 +587,12 @@ public:
     {
     }
 
-    inline RS_String& session()    { return m_session; }
-    inline RS_String& name()       { return m_name; }
-    inline RS_String& guid()       { return m_guid; }
-    inline RS_String& coordsys()   { return m_coordsys; }
-    inline RS_String& units()      { return m_units; }
-    inline RS_Color&  bgcolor()    { return m_bgcolor; }
+    inline RS_String& session()  { return m_session; }
+    inline RS_String& name()     { return m_name; }
+    inline RS_String& guid()     { return m_guid; }
+    inline RS_String& coordsys() { return m_coordsys; }
+    inline RS_String& units()    { return m_units; }
+    inline RS_Color&  bgcolor()  { return m_bgcolor; }
 
 private:
     RS_String m_session;
@@ -614,7 +629,7 @@ public:
         m_propMappings.push_back(dispname);
     }
 
-    inline RS_String& name() { return m_name; }
+    inline RS_String&              name()     { return m_name; }
     inline std::vector<RS_String>& mappings() { return m_propMappings; }
 
 private:
@@ -651,12 +666,12 @@ public:
     {
     }
 
-    inline RS_TextDef& tdef()  { return m_tdef; }
-    inline double&     x()     { return m_x; }
-    inline double&     y()     { return m_y; }
-    inline double&     dx()    { return m_dx; }
-    inline double&     dy()    { return m_dy; }
-    inline RS_Units&   dunits(){ return m_dunits; }
+    inline RS_TextDef& tdef()     { return m_tdef; }
+    inline double&     x()        { return m_x; }
+    inline double&     y()        { return m_y; }
+    inline double&     dx()       { return m_dx; }
+    inline double&     dy()       { return m_dy; }
+    inline RS_Units&   dunits()   { return m_dunits; }
     inline bool&       advanced() { return m_advanced; }
 
 private:
@@ -692,19 +707,5 @@ struct RS_F_Point
     RS_F_Point() : x(0.0), y(0.0) {}
     RS_F_Point(double d0, double d1) : x(d0), y(d1) {}
 };
-
-
-//////////////////////////////////////////////////////////////////////////////
-enum LabelAlgo
-{
-    laSimple,
-    laCurve,
-    laSkeleton,
-    laPeriodicPolygon,
-    laSESymbol
-};
-
-//////////////////////////////////////////////////////////////////////////////
-
 
 #endif
