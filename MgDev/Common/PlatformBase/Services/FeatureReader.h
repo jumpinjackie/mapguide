@@ -37,7 +37,7 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
 /// \brief
 /// Provides a forward-only, read-only iterator for reading
 /// features selected from the FDO Provider by the
-/// MgFeatureService::SelecteFeatures() method call.
+/// MgFeatureService::SelectFeatures() method call.
 ///
 /// \remarks
 /// You must call ReadNext() before you can access the data. Call
