@@ -1,5 +1,5 @@
 <%--
-  -Copyright (C) 2004-2006  Autodesk, Inc.
+  -Copyright (C) 2004-2007 by Autodesk, Inc.
   -This library is free software; you can redistribute it and/or
   -modify it under the terms of version 2.1 of the GNU Lesser
   -General Public License as published by the Free Software Foundation.
@@ -259,7 +259,6 @@ HashMap BuildLayerMap(MgMap map) throws MgException
 <%!
 void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boolean fulldata, String container, MgResourceService resSrvc, HashMap layerMap) throws MgException
 {
-
     // 2 passes: pass 1 adds layers to the tree, pass 2 adds groups
     //
     int treeIndex = 0;
@@ -295,7 +294,6 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                                                            rtLayerGroup.GetObjectId(),
                                                            StrEscape(rtLayerGroup.GetName()),
                                                            rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMap? "true": "false"});
-
                     }
                     else
                     {
