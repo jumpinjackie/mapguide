@@ -16,6 +16,8 @@ lib_LTLIBRARIES = libMgStylization.la
 libMgStylization_la_SOURCES = \
   RS_FontEngine.cpp \
   SE_Bounds.cpp \
+  SE_IdentityJoin.cpp \
+  SE_MiterJoin.cpp \
   SE_ExpressionBase.cpp \
   SE_LineBuffer.cpp \
   SE_PositioningAlgorithms.cpp \
@@ -69,6 +71,9 @@ noinst_HEADERS = \
   RS_FontEngine.h \
   SE_Bounds.h \
   SE_ConvexHull.h \
+  SE_PiecewiseTransform.h \
+  SE_IdentityJoin.h \
+  SE_MiterJoin.h \
   SE_ExpressionBase.h \
   SE_SymbolDefProxies.h \
   SE_RenderProxies.h \
