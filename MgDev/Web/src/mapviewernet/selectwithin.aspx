@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2004-2006  Autodesk, Inc.
+Copyright (C) 2004-2007 by Autodesk, Inc.
 This library is free software; you can redistribute it and/or
 modify it under the terms of version 2.1 of the GNU Lesser
 General Public License as published by the Free Software Foundation.
@@ -15,7 +15,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
 <%@ Page language="c#" validateRequest="false" %>
-
 <%@ Import Namespace="System" %>
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Collections" %>
