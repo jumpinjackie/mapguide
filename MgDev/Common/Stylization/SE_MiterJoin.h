@@ -25,7 +25,6 @@
 class SE_MiterJoin : public SE_PiecewiseTransform
 {
 public:
-
     SE_MiterJoin(double limit,                  /* The miter limit of the join. */
                  RS_Bounds& bounds,             /* The bounds of the unoriented symbol in pixel units. */
                  double vertexOffset,           /* The distance along the line (in pixels) from the 

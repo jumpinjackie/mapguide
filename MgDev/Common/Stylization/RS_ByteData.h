@@ -20,7 +20,7 @@
 
 class RS_ByteData
 {
-    public :
+    public:
         STYLIZATION_API RS_ByteData();
         STYLIZATION_API RS_ByteData(unsigned char* bytes, unsigned int numBytes);
         STYLIZATION_API ~RS_ByteData();
@@ -29,7 +29,7 @@ class RS_ByteData
         STYLIZATION_API unsigned char* GetBytes();
         STYLIZATION_API unsigned int GetNumBytes();
 
-    private :
+    private:
         unsigned char* m_bytes;
         unsigned int m_numBytes;
 };

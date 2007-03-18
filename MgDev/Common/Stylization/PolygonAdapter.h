@@ -23,7 +23,6 @@ class LineBufferPool;
 class PolygonAdapter : public GeometryAdapter
 {
 public:
-
     PolygonAdapter(LineBufferPool*);
     virtual ~PolygonAdapter();
 
@@ -38,9 +37,7 @@ public:
                          );
 
 private:
-
-    void ObtainStyle(   MdfModel::AreaSymbolization2D*    asym,
-                        RS_FillStyle&                   fillStyle);
+    void ObtainStyle(MdfModel::AreaSymbolization2D* asym, RS_FillStyle& fillStyle);
 
     std::map<void*, RS_FillStyle*> m_hAreaSymCache;
 };

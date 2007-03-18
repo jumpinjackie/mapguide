@@ -38,26 +38,20 @@ class KeyEncode;
 //beware: multiple non-virtual inheritance from GisIDisposable!!!
 class RS_FilterExecutor : public FdoIFilterProcessor, public FdoIExpressionProcessor
 {
-
 public:
-
     RS_FilterExecutor(RS_FeatureReader* featureReader);
     virtual ~RS_FilterExecutor();
 
 protected:
-
     void Dispose();
 
 public:
-
     static RS_FilterExecutor* Create(RS_FeatureReader* featureReader);
 
     void SetMapLayerInfo(const RS_String& session,
                          const RS_String& mapName,
                          const RS_String& layerID,
                          const RS_String& featClass);
-
-public:
 
     //--------------------------------------------------------------------
     // FdoIFilterProcessor
@@ -95,8 +89,6 @@ public:
     virtual void ProcessGeometryValue(FdoGeometryValue& expr);
     virtual void ProcessComputedIdentifier(FdoComputedIdentifier &);
 
-public:
-
     //-----------------------------------------------------------------
     // RS_FilterExecutor
     //-----------------------------------------------------------------
@@ -109,7 +101,6 @@ public:
     wchar_t* GetStringResult();
 
 private:
-
     void ExecuteARGB(FdoFunction& function);
     void ExecuteSession(FdoFunction& function);
     void ExecuteMapName(FdoFunction& function);

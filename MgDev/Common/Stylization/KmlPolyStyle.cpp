@@ -26,6 +26,7 @@ KmlPolyStyle::KmlPolyStyle(int lineColor, double lineWidth, int fillColor):
 {
 }
 
+
 bool KmlPolyStyle::operator<(const KmlPolyStyle& other) const
 {
     return (other.m_lineColor < m_lineColor || 

@@ -22,7 +22,6 @@
 class RSDWFInputStream : public RS_InputStream
 {
 public:
-
     RSDWFInputStream(DWFInputStream* in)
     {
         m_in = in;
@@ -37,17 +36,16 @@ public:
         return m_in->available();
     }
 
-    virtual size_t read( void* pBuffer, size_t nBytesToRead )
+    virtual size_t read(void* pBuffer, size_t nBytesToRead)
     {
         return m_in->read(pBuffer, nBytesToRead);
     }
 
-    virtual off_t seek( int eOrigin, off_t  nOffset )
+    virtual off_t seek(int eOrigin, off_t  nOffset)
     {
         return m_in->seek(eOrigin, nOffset);
     }
 
 private:
-
     DWFInputStream* m_in;
 };

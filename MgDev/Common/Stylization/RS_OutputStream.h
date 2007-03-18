@@ -20,13 +20,11 @@
 
 class RS_OutputStream
 {
-
 public:
-
     //
     // Destructor
     //
-    virtual ~RS_OutputStream() {;}
+    virtual ~RS_OutputStream() {}
 
     //
     // Flushes any remaining bytes from the stream
@@ -37,26 +35,21 @@ public:
     // Writes at most nBytesToWrite to the stream into the buffer
     // Returns the number of actual bytes read
     //
-    virtual size_t write( const void*   pBuffer,
-                          size_t        nBytesToWrite
-                          )= 0;
+    virtual size_t write(const void* pBuffer, size_t nBytesToWrite) = 0;
 
 protected:
-
     //
     // Default constructor
     //
-    RS_OutputStream() {;}
+    RS_OutputStream() {}
 
 private:
-
     //
     // Unimplemented methods
     //
 
     RS_OutputStream( const RS_OutputStream& );
     RS_OutputStream& operator=( const RS_OutputStream& );
-
 };
 
 #endif

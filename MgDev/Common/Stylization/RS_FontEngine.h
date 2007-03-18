@@ -116,7 +116,7 @@ public:
     double MeterToMapSize(RS_Units unit, double number);
     double MetersToPixels(RS_Units unit, double number);
 
-    bool   _Yup()
+    bool _Yup()
     {
         return m_bYup;
     }

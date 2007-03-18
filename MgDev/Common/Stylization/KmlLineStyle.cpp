@@ -25,6 +25,7 @@ KmlLineStyle::KmlLineStyle(int color, double width):
 {
 }
 
+
 bool KmlLineStyle::operator<(const KmlLineStyle& other) const
 {
     return (other.m_color < m_color || (other.m_color == m_color && other.m_width < m_width));

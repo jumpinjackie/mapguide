@@ -25,11 +25,10 @@
 class RS_InputStream
 {
 public:
-
     //
     // Destructor
     //
-    virtual ~RS_InputStream() {;}
+    virtual ~RS_InputStream() {}
 
     //
     // Returns the number of bytes available to read from stream
@@ -40,27 +39,21 @@ public:
     // Reads at most nBytesToRead from the stream into the buffer
     // Returns the number of actual bytes read
     //
-    virtual size_t read(void*   pBuffer,
-                        size_t  nBytesToRead
-                       ) = 0;
+    virtual size_t read(void* pBuffer, size_t nBytesToRead) = 0;
 
     //
     // Repositions the stream pointer
     // Returns the previous offset before the seek
     //
-    virtual off_t seek( int    eOrigin,
-                        off_t  nOffset
-                      ) = 0;
+    virtual off_t seek(int eOrigin, off_t nOffset) = 0;
 
 protected:
-
     //
     // Default constructor
     //
-    RS_InputStream() {;}
+    RS_InputStream() {}
 
 private:
-
     //
     // Unimplemented methods
     //

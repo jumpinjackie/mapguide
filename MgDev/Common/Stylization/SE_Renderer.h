@@ -73,7 +73,6 @@ private:
     void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angle);
 
     RS_F_Point m_lastExclusionRegion[4];
-
     
 protected:
     SE_LineBufferPool* m_lbp;

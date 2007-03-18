@@ -52,7 +52,6 @@ public:
     DataValueType GetType();
 
 private:
-
     long long m_value;
     wchar_t* m_strValue;
 };

@@ -49,8 +49,7 @@ public:
                                           RS_FeatureReader*                features,
                                           CSysTransformer*                 xformer,
                                           CancelStylization                cancel,
-                                          void*                            userData
-                                          ) = 0;
+                                          void*                            userData) = 0;
 
     ///<summary>
     /// Stylizes a grid/raster layer.
@@ -60,8 +59,7 @@ public:
                                         RS_FeatureReader*              features,
                                         CSysTransformer*               xformer,
                                         CancelStylization              cancel,
-                                        void*                          userData
-                                        ) = 0;
+                                        void*                          userData) = 0;
 
     ///<summary>
     /// Stylizes a drawing (DWF-based) layer.
@@ -71,8 +69,7 @@ public:
                                            RS_LayerUIInfo*                   legendInfo,
                                            RS_InputStream*                   dwfin,
                                            const RS_String&                  layerFilter,
-                                           CSysTransformer*                  xformer
-                                           ) = 0;
+                                           CSysTransformer*                  xformer) = 0;
 
     ///<summary>
     /// Allows a user to set a custom stylization object for certain geometry types.

@@ -22,7 +22,6 @@
 class DWFRSInputStream : public DWFInputStream
 {
 public:
-
     DWFRSInputStream(RS_InputStream* in)
     {
         m_in = in;
@@ -48,6 +47,5 @@ public:
     }
 
 private:
-
     RS_InputStream* m_in;
 };

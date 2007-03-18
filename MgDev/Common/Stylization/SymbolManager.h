@@ -26,10 +26,8 @@
 class RS_SymbolManager
 {
 public:
-
     virtual const RS_InputStream* GetSymbolData(const wchar_t* libraryName,
-                                                const wchar_t* symbolName
-                                               ) = 0;
+                                                const wchar_t* symbolName) = 0;
 
 };
 

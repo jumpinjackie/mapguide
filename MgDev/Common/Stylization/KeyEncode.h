@@ -27,14 +27,12 @@ class RS_InputStream;
 class KeyEncode
 {
 public:
-
     STYLIZATION_API KeyEncode();
     STYLIZATION_API virtual ~KeyEncode();
 
     STYLIZATION_API virtual const unsigned char* EncodeKey(RS_FeatureReader* reader);
 
 private:
-
     void WriteDouble(double d);
     void WriteSingle(float f);
     void WriteInt32(int i);

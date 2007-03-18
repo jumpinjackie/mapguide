@@ -19,10 +19,6 @@
 #include <list>
 
 //dwf declare
-namespace DWFToolkit { namespace DWFEMapExtension
-{
-}}
-
 namespace DWFCore
 {
     class DWFUUID;
@@ -39,9 +35,9 @@ namespace DWFToolkit
     }
 }
 
-using namespace DWFToolkit::DWFEMapExtension;
-using namespace DWFToolkit;
 using namespace DWFCore;
+using namespace DWFToolkit;
+using namespace DWFToolkit::DWFEMapExtension;
 
 typedef std::map<std::wstring, RS_LayerUIInfo> layerinfo_map;
 typedef std::vector<RS_LayerUIInfo> layerinfo_list;
@@ -52,29 +48,24 @@ typedef std::vector<RS_LayerUIInfo> layerinfo_list;
 class EMapUpdateRenderer : public DWFRenderer
 {
 public:
-
-    STYLIZATION_API EMapUpdateRenderer( const RS_String&  filename,
-                                        unsigned int   sequenceId
-                                      );
+    STYLIZATION_API EMapUpdateRenderer(const RS_String&  filename,
+                                       unsigned int   sequenceId);
 
     STYLIZATION_API virtual ~EMapUpdateRenderer();
 
-    STYLIZATION_API virtual void StartMap(   RS_MapUIInfo*    mapInfo,
-                                             RS_Bounds&       extents,
-                                             double           mapScale,
-                                             double           dpi,
-                                             double           metersPerUnit,
-                                             CSysTransformer* xformToLL
-                                            );
+    STYLIZATION_API virtual void StartMap(RS_MapUIInfo*    mapInfo,
+                                          RS_Bounds&       extents,
+                                          double           mapScale,
+                                          double           dpi,
+                                          double           metersPerUnit,
+                                          CSysTransformer* xformToLL);
 
     STYLIZATION_API virtual void EndMap();
 
-    STYLIZATION_API virtual void StartLayer     (RS_LayerUIInfo*      legendInfo,
-                                                 RS_FeatureClassInfo* classInfo
+    STYLIZATION_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+                                            RS_FeatureClassInfo* classInfo);
 
-                                                 );
-
-    STYLIZATION_API virtual void EndLayer       ();
+    STYLIZATION_API virtual void EndLayer();
 
     STYLIZATION_API void AddLayerGroupInfo(RS_LayerUIInfo& legendInfo);
     STYLIZATION_API void AddLayerInfo(RS_LayerUIInfo& legendInfo);
