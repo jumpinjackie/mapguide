@@ -422,10 +422,10 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                             {
                                 STRING message = L"Could not parse the OGC WKT.";
 
-                                const char* error = CPLGetLastErrorMsg();
-                                if(error)
+                                const char* errMsg = CPLGetLastErrorMsg();
+                                if(errMsg)
                                 {
-                                    wchar_t* strError = Convert_Ascii_To_Wide(error);
+                                    wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
                                     message += L" ";
                                     message += strError;
 
@@ -488,10 +488,10 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                     {
                         STRING message = L"Could not convert OGC WKT to PROJ4.";
 
-                        const char* error = CPLGetLastErrorMsg();
-                        if(error)
+                        const char* errMsg = CPLGetLastErrorMsg();
+                        if(errMsg)
                         {
-                            wchar_t* strError = Convert_Ascii_To_Wide(error);
+                            wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
                             message += L" ";
                             message += strError;
 
@@ -593,10 +593,10 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
             {
                 STRING message = L"Could not parse the OGC WKT.";
 
-                const char* error = CPLGetLastErrorMsg();
-                if(error)
+                const char* errMsg = CPLGetLastErrorMsg();
+                if(errMsg)
                 {
-                    wchar_t* strError = Convert_Ascii_To_Wide(error);
+                    wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
                     message += L" ";
                     message += strError;
 
@@ -1517,10 +1517,10 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
     {
         STRING message = L"Could not determine code because of internal OGR error.";
 
-        const char* error = CPLGetLastErrorMsg();
-        if(error)
+        const char* errMsg = CPLGetLastErrorMsg();
+        if(errMsg)
         {
-            wchar_t* strError = Convert_Ascii_To_Wide(error);
+            wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
             message += L" ";
             message += strError;
 
@@ -1589,7 +1589,7 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
             {
                 STRING unitsValueString;
 
-                char buffer[255];
+                char buffer[255] = { 0 };
                 sprintf(buffer, "%.10g", unitsValue);
 
                 wBuffer = Convert_Ascii_To_Wide(buffer);
@@ -1719,10 +1719,10 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
     {
         STRING message = L"Unsupported coordinate system code.";
 
-        const char* error = CPLGetLastErrorMsg();
-        if(error)
+        const char* errMsg = CPLGetLastErrorMsg();
+        if(errMsg)
         {
-            wchar_t* strError = Convert_Ascii_To_Wide(error);
+            wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
             message += L" ";
             message += strError;
 
@@ -2118,9 +2118,9 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
 
     if(OGRERR_NONE != error)
     {
-        const char* error = CPLGetLastErrorMsg();
+        const char* errMsg = CPLGetLastErrorMsg();
 
-        char buffer[255];
+        char buffer[255] = { 0 };
         #ifdef WIN32
         itoa(code, buffer, 10);
         #else
@@ -2136,9 +2136,9 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
         delete [] strCode;
         strCode = NULL;
 
-        if(error)
+        if(errMsg)
         {
-            wchar_t* strError = Convert_Ascii_To_Wide(error);
+            wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
             message += L" ";
             message += strError;
 
@@ -2218,9 +2218,9 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
 
     if(OGRERR_NONE != error)
     {
-        const char* error = CPLGetLastErrorMsg();
+        const char* errMsg = CPLGetLastErrorMsg();
 
-        char buffer[255];
+        char buffer[255] = { 0 };
         #ifdef WIN32
         itoa(code, buffer, 10);
         #else
@@ -2233,9 +2233,9 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
         delete [] strCode;
         strCode = NULL;
 
-        if(error)
+        if(errMsg)
         {
-            wchar_t* strError = Convert_Ascii_To_Wide(error);
+            wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
             message += L" ";
             message += strError;
 
