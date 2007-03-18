@@ -394,7 +394,6 @@ void TestKmlService::SaveToFile(CREFSTRING content, CREFSTRING filename)
     FILE* file = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("wt"));
     if (file != NULL)
     {
-        int len = content.length();
         fwprintf (file, content.c_str());
         fclose (file);
     }
