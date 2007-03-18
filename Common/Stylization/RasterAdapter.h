@@ -20,7 +20,6 @@
 class RasterAdapter : public GeometryAdapter
 {
 public:
-
     RasterAdapter(LineBufferPool*);
     virtual ~RasterAdapter();
 
@@ -35,14 +34,10 @@ public:
                          );
 
     void DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, int h);
-
     void DecodeRGB(RS_InputStream* is, unsigned char* dst, int w, int h);
-
     void DecodeMapped(RS_InputStream* is, RS_InputStream* pal, unsigned char* dst, int w, int h);
-
     void DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const RS_Color& bg, unsigned char* dst, int w, int h);
 
 protected:
-
     RS_FilterExecutor* m_exec;
 };

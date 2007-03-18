@@ -23,7 +23,6 @@ class LineBufferPool;
 class PointAdapter : public GeometryAdapter
 {
 public:
-
     PointAdapter(LineBufferPool*);
     virtual ~PointAdapter();
 
@@ -37,11 +36,8 @@ public:
                          RS_ElevationSettings*          elevSettings = NULL
                          );
 
-    void ObtainStyle(   MdfModel::PointSymbolization2D*    psym,
-                        RS_MarkerDef&                    mdef);
+private:
+    void ObtainStyle(MdfModel::PointSymbolization2D* psym, RS_MarkerDef& mdef);
 
     std::map<void*, RS_MarkerDef*> m_hPointSymCache;
-
-private:
-
 };

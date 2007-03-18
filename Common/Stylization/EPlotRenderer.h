@@ -41,7 +41,6 @@ using namespace DWFCore;
 class EPlotRenderer : public DWFRenderer
 {
 public:
-
     STYLIZATION_API EPlotRenderer(const RS_String&  filename,
                                   double            pageWidth,
                                   double            pageHeight,

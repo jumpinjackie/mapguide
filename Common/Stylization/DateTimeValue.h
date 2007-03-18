@@ -19,7 +19,6 @@
 
 class DateTimeValue : public DataValue
 {
-
 //let only the DataValuePool create and destroy DataValues
 friend class DataValuePool;
 private:
@@ -52,8 +51,6 @@ public:
     DataValueType GetType();
 
 private:
-
     FdoDateTime m_value;
     wchar_t* m_strValue;
-
 };

@@ -23,7 +23,6 @@
 class RSDWFOutputStream : public RS_OutputStream
 {
 public:
-
     RSDWFOutputStream(DWFOutputStream* out)
     {
         m_out = out;
@@ -38,14 +37,11 @@ public:
         m_out->flush();
     }
 
-    virtual size_t write( const void*   pBuffer,
-                          size_t        nBytesToWrite
-                          )
+    virtual size_t write(const void* pBuffer, size_t nBytesToWrite)
     {
         return m_out->write(pBuffer, nBytesToWrite);
     }
 
 private:
-
     DWFOutputStream* m_out;
 };

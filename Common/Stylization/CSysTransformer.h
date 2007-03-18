@@ -25,7 +25,6 @@
 class CSysTransformer
 {
 public:
-
     //x and y coordinates of point to be transformed.
     //Result will be stored in inputs which will be overwirtten
     virtual void TransformPoint(double& x, double& y) = 0;

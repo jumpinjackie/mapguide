@@ -37,6 +37,7 @@ public:
     virtual double GetXChop(bool &chopEnd);
 
     virtual void Transform(double& x, double &y, SE_TransformInfo* info);
+
 private:
     double m_chop;
     bool m_end;

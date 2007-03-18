@@ -25,9 +25,7 @@ using namespace std;
 
 struct RS_Font
 {
-    public :
-
-    public :
+    public:
         RS_Font(void) :
             m_bold(false),
             m_italic(false),
@@ -48,7 +46,6 @@ struct RS_Font
         }
 
     public:
-
         //font style
         bool m_bold;
         bool m_italic;

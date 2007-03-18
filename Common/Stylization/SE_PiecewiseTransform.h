@@ -34,6 +34,7 @@ struct SE_TransformInfo
     double d2Ydxdy;
 };
 
+
 class SE_PiecewiseTransform
 {
 public:

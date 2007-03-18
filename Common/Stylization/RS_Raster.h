@@ -25,7 +25,6 @@
 class RS_Raster
 {
 public:
-
     RS_Raster() {};
     virtual ~RS_Raster() {};
 
@@ -39,11 +38,7 @@ public:
 
     virtual RS_InputStream* GetPalette()        = 0;
 
-    virtual RS_InputStream* GetStream(RS_ImageFormat format,
-                                          int width,
-                                          int height
-                                          ) = 0;
-
+    virtual RS_InputStream* GetStream(RS_ImageFormat format, int width, int height) = 0;
 };
 
 #endif

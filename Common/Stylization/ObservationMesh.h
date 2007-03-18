@@ -25,6 +25,7 @@ class CSysTransformer;
 struct RS_Bounds;
 class RS_OutputStream;
 
+
 struct ObsPoint
 {
     double x;
@@ -32,6 +33,7 @@ struct ObsPoint
     double ox;
     double oy;
 };
+
 
 struct ObsFace
 {
@@ -61,6 +63,7 @@ struct ObsFace
         return false;
     }
 };
+
 
 struct HullEdge
 {
@@ -92,7 +95,6 @@ struct HullEdge
 class ObservationMesh
 {
 public:
-
     STYLIZATION_API ObservationMesh(RS_Bounds& mapExtent, CSysTransformer* xformer);
     STYLIZATION_API virtual ~ObservationMesh();
 
@@ -101,7 +103,6 @@ public:
     STYLIZATION_API void WriteXml(RS_OutputStream* os);
 
 private:
-
     bool PointInTriangle(double px, double py, ObsFace& f);
 
     void ComputeCircle(ObsFace& f);

@@ -52,6 +52,7 @@ public:
     SE_AreaStyle* ProcessAreaUsage(MdfModel::AreaUsage& areaUsage);
 
     void Convert(std::vector<SE_Symbolization*>& styles, MdfModel::CompositeSymbolization* symbolization);
+
 private:
     SE_Style* ParseSymbol(MdfModel::CompoundSymbolDefinition* symbol);
     bool ParseDouble(const wchar_t*& str, double& val);

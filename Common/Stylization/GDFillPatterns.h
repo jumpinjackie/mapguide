@@ -20,6 +20,5 @@
 class GDFillPatterns
 {
 public:
-
     static gdImagePtr CreatePatternBitmap(const wchar_t* name, int fgColor, int bgColor);
 };

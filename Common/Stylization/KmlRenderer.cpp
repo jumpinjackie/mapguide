@@ -57,6 +57,7 @@ KmlRenderer::~KmlRenderer()
     ClearStyles();
 }
 
+
 void KmlRenderer::StartMap(RS_MapUIInfo* /*mapInfo*/,
                           RS_Bounds&    /*extents*/,
                           double        /*mapScale*/,
@@ -178,6 +179,7 @@ void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
     m_elevType = zOffsetType;
 }
 
+
 void KmlRenderer::WriteElevationSettings()
 {
     if(m_elevation == 0)
@@ -207,8 +209,8 @@ void KmlRenderer::WriteElevationSettings()
     }
 }
 
-void KmlRenderer::ProcessPolygon(LineBuffer* lb,
-                                RS_FillStyle& fill)
+
+void KmlRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 {
     //write style
     WriteStyle(fill);
@@ -268,12 +270,14 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb,
     }
 }
 
+
 void KmlRenderer::WriteLinearRing(double* points, int offset, int numPoints)
 {
     m_kmlContent->WriteString("<LinearRing>");
     WriteCoordinates(points, offset, numPoints);
     m_kmlContent->WriteString("</LinearRing>");
 }
+
 
 void KmlRenderer::WriteCoordinates(double* points, int offset, int numPoints)
 {
@@ -289,8 +293,8 @@ void KmlRenderer::WriteCoordinates(double* points, int offset, int numPoints)
     m_kmlContent->WriteString("</coordinates>");
 }
 
-void KmlRenderer::ProcessPolyline(LineBuffer* srclb,
-                                 RS_LineStroke& lsym)
+
+void KmlRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 {
     //write style
     WriteStyle(lsym);
@@ -332,6 +336,7 @@ void KmlRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
     }
 }
 
+
 void KmlRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool /*allowOverpost*/)
 {
     char buffer[256];
@@ -347,9 +352,11 @@ void KmlRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     m_kmlContent->WriteString("</Point>");
 }
 
+
 void KmlRenderer::ProcessLabel(double /*x*/, double /*y*/, const RS_String& /*text*/, RS_TextDef& /*tdef*/)
 {
 }
+
 
 void KmlRenderer::ProcessLabelGroup(RS_LabelInfo*    /*labels*/,
                                    int              /*nlabels*/,
@@ -447,6 +454,7 @@ void KmlRenderer::AddDWFContent(RS_InputStream*   /*in*/,
 {
 }
 
+
 void KmlRenderer::ClearThemes()
 {
     for(ThemeMap::iterator iter = m_themeMap.begin(); iter != m_themeMap.end(); iter++)
@@ -456,6 +464,7 @@ void KmlRenderer::ClearThemes()
     m_themeMap.clear();
 }
 
+
 void KmlRenderer::ClearStyles()
 {
     if(m_styleContent != NULL)
@@ -464,6 +473,7 @@ void KmlRenderer::ClearStyles()
         m_styleContent = NULL;
     }
 }
+
 
 void KmlRenderer::WriteStyle(RS_FillStyle& fill)
 {
@@ -527,6 +537,7 @@ void KmlRenderer::WriteStyle(RS_FillStyle& fill)
     m_kmlContent->WriteString(buffer);
 }
 
+
 void KmlRenderer::WriteStyle(RS_LineStroke& lsym)
 {
     if(m_styleContent == NULL)
@@ -571,6 +582,7 @@ void KmlRenderer::WriteStyle(RS_LineStroke& lsym)
     m_kmlContent->WriteString(buffer);
 }
 
+
 double KmlRenderer::_MeterToPixels(RS_Units unit, double number)
 {
     double scale_factor;
@@ -586,8 +598,3 @@ double KmlRenderer::_MeterToPixels(RS_Units unit, double number)
 
     return number * scale_factor;
 }
-
-
-
-
-

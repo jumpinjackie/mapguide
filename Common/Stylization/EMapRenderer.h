@@ -19,12 +19,6 @@
 #include <list>
 
 //dwf declare
-namespace DWFToolkit { namespace DWFEMapExtension
-{
-    class DWFEMapLayer;
-    class DWFEMapLayerGroup;
-}}
-
 namespace DWFCore
 {
     class DWFUUID;
@@ -33,11 +27,17 @@ namespace DWFCore
 namespace DWFToolkit
 {
     class DWFImageResource;
+
+    namespace DWFEMapExtension
+    {
+        class DWFEMapLayer;
+        class DWFEMapLayerGroup;
+    }
 }
 
-using namespace DWFToolkit::DWFEMapExtension;
-using namespace DWFToolkit;
 using namespace DWFCore;
+using namespace DWFToolkit;
+using namespace DWFToolkit::DWFEMapExtension;
 
 typedef std::map<std::wstring, RS_LayerUIInfo> layerinfo_map;
 
@@ -46,12 +46,9 @@ typedef std::map<std::wstring, RS_LayerUIInfo> layerinfo_map;
 ///</summary>
 class EMapRenderer : public DWFRenderer
 {
-
 public:
-
     STYLIZATION_API EMapRenderer(const RS_String& filename,
-                                 const RS_String& agentUri
-                                );
+                                 const RS_String& agentUri);
 
     STYLIZATION_API virtual ~EMapRenderer();
 
@@ -59,20 +56,18 @@ public:
     ///////////////////////////////////////////////////////////////////
     // DWFRenderer overloads
     //
-    STYLIZATION_API virtual void StartLayer     (RS_LayerUIInfo*      legendInfo,
-                                                 RS_FeatureClassInfo* classInfo
-                                                 );
+    STYLIZATION_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+                                            RS_FeatureClassInfo* classInfo);
 
-    STYLIZATION_API virtual void EndLayer       ();
+    STYLIZATION_API virtual void EndLayer();
 
 
-    STYLIZATION_API virtual void StartMap(   RS_MapUIInfo*    mapInfo,
-                                             RS_Bounds&       extents,
-                                             double           mapScale,
-                                             double           dpi,
-                                             double           metersPerUnit,
-                                             CSysTransformer* xformToLL = NULL
-                                            );
+    STYLIZATION_API virtual void StartMap(RS_MapUIInfo*    mapInfo,
+                                          RS_Bounds&       extents,
+                                          double           mapScale,
+                                          double           dpi,
+                                          double           metersPerUnit,
+                                          CSysTransformer* xformToLL = NULL);
 
     STYLIZATION_API virtual void EndMap();
 
@@ -81,14 +76,12 @@ public:
     //
 
     //adds a scale range to current layer
-    STYLIZATION_API virtual void AddScaleRange (double min,
-                                                double max,
-                                                std::list<RS_UIGraphic>* uiGraphics
-                                                );
+    STYLIZATION_API virtual void AddScaleRange(double min,
+                                               double max,
+                                               std::list<RS_UIGraphic>* uiGraphics);
 
     //defines a layer group
-    STYLIZATION_API virtual void AddLayerGroup( RS_LayerUIInfo& legendInfo
-                                               );
+    STYLIZATION_API virtual void AddLayerGroup(RS_LayerUIInfo& legendInfo);
 
     //adds a thumbnail graphic
     //STYLIZATION_API virtual void AddUIGraphic();

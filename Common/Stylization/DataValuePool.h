@@ -118,7 +118,6 @@ public:
     void RelinquishDataValue(DataValue* dv);
 
 private:
-
     void RelinquishBooleanValue(BooleanValue* dv);
     void RelinquishStringValue(StringValue* dv);
     void RelinquishDoubleValue(DoubleValue* dv);

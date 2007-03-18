@@ -15,13 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-class LineBuffer;
-
 class Centroid
 {
-
 public:
-
     static bool PointInPolygon(double* pointData, int numPointData, int* contourSizes, int numContourSizes, double x, double y );
     static double PolylineLength(double* pts, int numpts);
     static double PolygonArea(double* pts, int numpts);

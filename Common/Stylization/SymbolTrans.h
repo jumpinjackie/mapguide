@@ -28,9 +28,7 @@
 ///</summary>
 class SymbolTrans : public CSysTransformer
 {
-
-public :
-
+public:
     STYLIZATION_API SymbolTrans();
 
     STYLIZATION_API SymbolTrans(RS_Bounds& src, RS_Bounds& dst, double refX, double refY, double angle);
@@ -55,7 +53,6 @@ public :
     STYLIZATION_API void SetDstBounds(const RS_Bounds& dst);
 
 private:
-
     RS_Bounds m_src;
     RS_Bounds m_dst;
     double m_refX;

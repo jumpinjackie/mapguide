@@ -19,7 +19,6 @@
 
 class StringValue : public DataValue
 {
-
 //let only the DataValuePool create and destroy DataValues
 friend class DataValuePool;
 private:
@@ -52,7 +51,6 @@ public:
     DataValueType GetType();
 
 private:
-
     wchar_t* m_value;
     bool m_bDisposeValue;
 };

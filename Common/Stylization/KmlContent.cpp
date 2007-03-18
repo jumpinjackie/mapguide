@@ -20,8 +20,6 @@
 #include "KmlContent.h"
 #include "UnicodeString.h"
 
-//using this in contructor
-#pragma warning(disable:4355)
 
 //default constructor
 KmlContent::KmlContent()
@@ -33,6 +31,7 @@ KmlContent::~KmlContent()
 {
 }
 
+
 void KmlContent::StartDocument()
 {
     WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -41,11 +40,13 @@ void KmlContent::StartDocument()
     WriteString("<Document>");
 }
 
+
 void KmlContent::EndDocument()
 {
     WriteString("</Document>");
     WriteString("</kml>");
 }
+
 
 void KmlContent::WriteString(const char* szString, int length, bool lineBreak)
 {
@@ -56,15 +57,18 @@ void KmlContent::WriteString(const char* szString, int length, bool lineBreak)
     }
 }
 
+
 void KmlContent::WriteString(const char* szString, bool lineBreak /*= true*/)
 {
     WriteString(szString, (std::streamsize)strlen(szString), lineBreak);
 }
 
+
 void KmlContent::WriteString(const std::string& mbString, bool lineBreak /*= true*/)
 {
     WriteString(mbString.c_str(), (std::streamsize)mbString.length(), lineBreak);
 }
+
 
 void KmlContent::WriteString(const wchar_t* wszString, bool lineBreak /*= true*/)
 {
@@ -73,6 +77,7 @@ void KmlContent::WriteString(const wchar_t* wszString, bool lineBreak /*= true*/
     WriteString(mbString, lineBreak);
 }
 
+
 void KmlContent::WriteString(const std::wstring& wString, bool lineBreak /*= true*/)
 {
     std::string mbString;
@@ -80,8 +85,8 @@ void KmlContent::WriteString(const std::wstring& wString, bool lineBreak /*= tru
     WriteString(mbString, lineBreak);
 }
 
+
 std::string KmlContent::GetString()
 {
     return m_content.str();
 }
-

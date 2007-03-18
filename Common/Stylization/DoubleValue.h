@@ -43,7 +43,6 @@ public:
     bool IsLessThan(DataValue&v2);
     bool IsLessThanOrEqualTo(DataValue&v2);
 
-
     double GetAsDouble();
     long long GetAsInt64();
     wchar_t* GetAsString();
@@ -53,8 +52,6 @@ public:
     DataValueType GetType();
 
 private:
-
     double m_value;
     wchar_t* m_strValue;
-
 };

@@ -23,7 +23,6 @@ class LineBufferPool;
 class PolylineAdapter : public GeometryAdapter
 {
 public:
-
     PolylineAdapter(LineBufferPool*);
     virtual ~PolylineAdapter();
 
@@ -38,9 +37,7 @@ public:
                          );
 
 private:
-
-    void ObtainStyle(   MdfModel::LineSymbolization2D*    lsym,
-                        RS_LineStroke&                  lineStyle);
+    void ObtainStyle(MdfModel::LineSymbolization2D* lsym, RS_LineStroke& lineStyle);
 
     std::map<void*, RS_LineStroke*> m_hLineSymCache;
 };

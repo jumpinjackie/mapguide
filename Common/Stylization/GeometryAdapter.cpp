@@ -788,4 +788,3 @@ bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings,
     }
     return true;
 }
-

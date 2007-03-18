@@ -1,3 +1,19 @@
+//
+//  Copyright (C) 2007 by Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
 
 #include "stdafx.h"
 #include "SE_RenderProxies.h"
@@ -21,6 +37,7 @@ SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 
     return ret;
 }
+
 
 //recomputes the bounds of an SE_RenderPointStyle that contains a text
 //whose alignment we have messed with
@@ -73,6 +90,7 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* renderer)
     st->bounds->max[0] = rotatedBounds.maxx;
     st->bounds->max[1] = rotatedBounds.maxy;
 }
+
 
 void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer, 
                                          LineBuffer*     geometry, 
@@ -297,7 +315,6 @@ void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer,
     //a linestring or multi line string feature, with stitching of adjacent features that have the
     //same label
 
-
     //assume that a single text was used in the SymbolDefinition that requests this positioning algorithm
     SE_RenderText* rt = (SE_RenderText*)rstyle->symbol[0];
 
@@ -309,7 +326,6 @@ void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer,
 }
 
     
-
 void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer, 
                           LineBuffer*     geometry, 
                           SE_Matrix&      xform, 
@@ -318,10 +334,4 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
                           double          mm2px
                           )
 {
-
-
-
-
 }
-
-

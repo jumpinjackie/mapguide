@@ -21,7 +21,6 @@
 template <class T> class DataValueStack
 {
 public:
-
     DataValueStack()
     {
         m_count = 0;
@@ -72,7 +71,6 @@ public:
     }
 
 private:
-
     void make_bigger()
     {
         if (m_data)
@@ -90,7 +88,6 @@ private:
             m_data = new T*[m_len];
         }
     }
-
 
     T** m_data;
     size_t m_len;

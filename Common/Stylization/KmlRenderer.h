@@ -41,7 +41,6 @@ const double METERS_PER_INCH = 0.0254;
 class KmlRenderer : public Renderer
 {
 public:
-
     STYLIZATION_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, 
         double scale, double dpi, double metersPerUnit, int drawOrder);
     STYLIZATION_API ~KmlRenderer();
@@ -120,7 +119,6 @@ public:
     STYLIZATION_API virtual bool RequiresClipping();
 
 private:
-
     // Unimplemented Constructors/Methods
     KmlRenderer(const KmlRenderer&);
     KmlRenderer& operator=(const KmlRenderer&);

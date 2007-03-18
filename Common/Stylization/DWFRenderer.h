@@ -41,16 +41,16 @@ class ObservationMesh;
 
 namespace DWFCore
 {
-class DWFBufferOutputStream;
-class DWFBufferInputStream;
+    class DWFBufferOutputStream;
+    class DWFBufferInputStream;
 }
 
 namespace DWFToolkit
 {
-class DWFDefinedObject;
-class DWFDefinedObjectInstance;
-class DWFObjectDefinitionResource;
-class DWFSection;
+    class DWFDefinedObject;
+    class DWFDefinedObjectInstance;
+    class DWFObjectDefinitionResource;
+    class DWFSection;
 };
 
 //holds W2D streams, and object data streams

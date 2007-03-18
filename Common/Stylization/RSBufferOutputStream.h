@@ -52,8 +52,7 @@ public:
     // Writes at most nBytesToWrite to the stream into the buffer
     // Returns the number of actual bytes written
     //
-    virtual size_t write( const void*   pBuffer,
-                          size_t        nBytesToWrite)
+    virtual size_t write(const void* pBuffer, size_t nBytesToWrite)
     {
         ensure_capacity(nBytesToWrite);
         memcpy(m_data + m_pos, pBuffer, nBytesToWrite);
