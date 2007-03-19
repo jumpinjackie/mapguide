@@ -84,7 +84,7 @@ String hlTgtName;
         MgSiteConnection site = new MgSiteConnection();
         site.Open(userInfo);
 
-        MgTileService tileSrvc = (MgTileService)site.CreateService(MgServiceType::TileService);
+        MgTileService tileSrvc = (MgTileService)site.CreateService(MgServiceType.TileService);
         int tileSizeX = tileSrvc.GetDefaultTileSizeX();
         int tileSizeY = tileSrvc.GetDefaultTileSizeY();
 
@@ -152,9 +152,10 @@ String hlTgtName;
         //
         String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/ajaxmappane.templ"), locale, GetClientOS(request));
         String vpath = GetSurroundVirtualPath(request);
-        String vals[] = { GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi",
+        String vals[] = { 
                     String.valueOf(tileSizeX),
                     String.valueOf(tileSizeY),
+                    GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi",
                     mapName,
                     mapDefinition,
                     String.valueOf(infoWidth),
