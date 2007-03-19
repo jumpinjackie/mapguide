@@ -59,12 +59,12 @@ void TestServerManager::TestCase_ValidServerManager()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case checks the default locale.
+/// This test case checks the default message locale.
 ///----------------------------------------------------------------------------
-void TestServerManager::TestCase_GetDefaultLocale()
+void TestServerManager::TestCase_GetDefaultMessageLocale()
 {
     MgServerManager* pMgServerManager = MgServerManager::GetInstance();
-    CREFSTRING locale = pMgServerManager->GetDefaultLocale();
+    CREFSTRING locale = pMgServerManager->GetDefaultMessageLocale();
 
     CPPUNIT_ASSERT(wcscmp(locale.c_str(), TEST_LOCALE.c_str()) == 0);
 }

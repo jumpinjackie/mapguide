@@ -763,9 +763,9 @@ STRING MgUtil::GetResourceMessage(CREFSTRING section, CREFSTRING messageId)
 
     configuration->GetStringValue(
         MgFoundationConfigProperties::GeneralPropertiesSection,
-        MgFoundationConfigProperties::GeneralPropertyDefaultLocale,
+        MgFoundationConfigProperties::GeneralPropertyDefaultMessageLocale,
         locale,
-        MgFoundationConfigProperties::DefaultGeneralPropertyDefaultLocale);
+        MgFoundationConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
     str = resources->GetStringResource(locale, section, messageId);
 
     // If no message is found, we do not fail.

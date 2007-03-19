@@ -46,7 +46,7 @@ void MgInitializeWebTierInternal(CREFSTRING configFile)
         config->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyResourcesPath, resourcesPath, MgConfigProperties::DefaultGeneralPropertyResourcesPath);
 
         STRING locale;
-        config->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDefaultLocale, locale, MgConfigProperties::DefaultGeneralPropertyDefaultLocale);
+        config->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDefaultMessageLocale, locale, MgConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
 
         resources->Initialize(resourcesPath);
         resources->LoadResources(locale);

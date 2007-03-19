@@ -53,7 +53,7 @@ public:
     void Initialize(CREFSTRING locale);
     void LoadConfigurationProperties();
 
-    CREFSTRING GetDefaultLocale();
+    CREFSTRING GetDefaultMessageLocale();
 
     MgPropertyCollection* GetConfigurationProperties(CREFSTRING propertySection);
     void SetConfigurationProperties(CREFSTRING propertySection, MgPropertyCollection* properties);
@@ -155,7 +155,7 @@ private:
     ServerStatus m_ssServerStatus;
     bool m_isSiteServer;
     STRING m_localServerAddress;
-    STRING m_defaultLocale;
+    STRING m_defaultMessageLocale;
     STRING m_displayName;
 
     // Admin Properties

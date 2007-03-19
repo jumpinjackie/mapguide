@@ -97,8 +97,8 @@ int MgLogThread::svc(void)
                         {
                             MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-                            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-                            MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+                            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultMessageLocale()).c_str()));
+                            MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultMessageLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str());
 
                             SAFE_RELEASE(e);
                         }
@@ -117,8 +117,8 @@ int MgLogThread::svc(void)
                             MgServerManager* pServerManager = MgServerManager::GetInstance();
 
                             mgException = new MgFdoException(L"MgLogThread.svc", __LINE__, __WFILE__, NULL, messageId, &arguments);
-                            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-                            MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+                            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultMessageLocale()).c_str()));
+                            MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultMessageLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str());
 
                             FDO_SAFE_RELEASE(e);
                         }
@@ -127,16 +127,16 @@ int MgLogThread::svc(void)
                             MgServerManager* pServerManager = MgServerManager::GetInstance();
 
                             mgException = MgSystemException::Create(e, L"MgLogThread.svc", __LINE__, __WFILE__);
-                            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-                            MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+                            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultMessageLocale()).c_str()));
+                            MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultMessageLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str());
                         }
                         catch(...)
                         {
                             MgServerManager* pServerManager = MgServerManager::GetInstance();
 
                             mgException = new MgUnclassifiedException(L"MgLogThread.svc", __LINE__, __WFILE__, NULL, L"", NULL);
-                            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-                            MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+                            ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultMessageLocale()).c_str()));
+                            MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultMessageLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str());
                         }
                     }
                 }
@@ -151,8 +151,8 @@ int MgLogThread::svc(void)
     {
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(pServerManager->GetDefaultMessageLocale()).c_str()));
+        MG_LOG_EXCEPTION_ENTRY(e->GetMessage(pServerManager->GetDefaultMessageLocale()).c_str(), e->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str());
 
         SAFE_RELEASE(e);
 
@@ -163,8 +163,8 @@ int MgLogThread::svc(void)
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
         mgException = MgSystemException::Create(e, L"MgLogThread.svc", __LINE__, __WFILE__);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultMessageLocale()).c_str()));
+        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultMessageLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str());
 
         nResult = -1;
     }
@@ -173,8 +173,8 @@ int MgLogThread::svc(void)
         MgServerManager* pServerManager = MgServerManager::GetInstance();
 
         mgException = new MgUnclassifiedException(L"MgLogThread.svc", __LINE__, __WFILE__, NULL, L"", NULL);
-        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultLocale()).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultLocale()).c_str());
+        ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), mgException->GetDetails(pServerManager->GetDefaultMessageLocale()).c_str()));
+        MG_LOG_EXCEPTION_ENTRY(mgException->GetMessage(pServerManager->GetDefaultMessageLocale()).c_str(), mgException->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str());
 
         nResult = -1;
     }

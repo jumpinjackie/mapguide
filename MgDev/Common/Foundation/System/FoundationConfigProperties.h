@@ -42,9 +42,13 @@ EXTERNAL_API:
     /// General application properties
     static const STRING GeneralPropertiesSection;                       /// value("GeneralProperties")
 
-    /// Application's default locale
-    static const STRING GeneralPropertyDefaultLocale;                   /// value("DefaultLocale")
-    static const STRING DefaultGeneralPropertyDefaultLocale;            /// value("en")
+    /// Application's locale
+    static const STRING GeneralPropertyLocale;                          /// value("Locale")
+    static const STRING DefaultGeneralPropertyLocale;                   /// value("")
+
+    /// Application's default message locale
+    static const STRING GeneralPropertyDefaultMessageLocale;            /// value("DefaultMessageLocale")
+    static const STRING DefaultGeneralPropertyDefaultMessageLocale;     /// value("en")
 
     /// Root folder for application's localization resources
     static const STRING GeneralPropertyResourcesPath;                   /// value("ResourcesPath")

@@ -26,7 +26,7 @@ class TestServerManager : public CppUnit::TestFixture
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
     CPPUNIT_TEST(TestCase_ValidServerManager);
-    CPPUNIT_TEST(TestCase_GetDefaultLocale);
+    CPPUNIT_TEST(TestCase_GetDefaultMessageLocale);
     CPPUNIT_TEST(TestCase_GetAdminPort);
     CPPUNIT_TEST(TestCase_GetClientPort);
     CPPUNIT_TEST(TestCase_GetSitePort);
@@ -45,7 +45,7 @@ public:
     void TestEnd();
 
     void TestCase_ValidServerManager();
-    void TestCase_GetDefaultLocale();
+    void TestCase_GetDefaultMessageLocale();
     void TestCase_GetAdminPort();
     void TestCase_GetClientPort();
     void TestCase_GetSitePort();

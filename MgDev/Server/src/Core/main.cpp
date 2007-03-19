@@ -66,9 +66,6 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
     #endif
 #endif
 
-    // Set the locale to the C locale
-    ::setlocale(LC_ALL, "C");
-
     ACE::init();
 
     // we need initialize Xerces before BDB
@@ -359,7 +356,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
     {
         MgServerManager* serverManager = MgServerManager::GetInstance();
         STRING locale = (NULL == serverManager) ?
-            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+            MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
         STRING details = mgException->GetDetails(locale);
 
         ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));

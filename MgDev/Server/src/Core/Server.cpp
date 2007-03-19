@@ -349,7 +349,7 @@ int MgServer::svc(void)
         catch (MgException* e)
         {
             ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to run all the unit tests.\n")));
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("%W\n"), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("%W\n"), e->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str()));
             SAFE_RELEASE(e);
 
             nResult = -1;
@@ -452,7 +452,7 @@ int MgServer::svc(void)
         catch (MgException* e)
         {
             ACE_DEBUG((LM_ERROR, ACE_TEXT("Unable to run all the FDO unit tests.\n")));
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("%W\n"), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("%W\n"), e->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str()));
             SAFE_RELEASE(e);
 
             nResult = -1;
@@ -635,10 +635,10 @@ int MgServer::svc(void)
         catch (MgException* e)
         {
             STRING message;
-            message = e->GetDetails(pServerManager->GetDefaultLocale());
+            message = e->GetDetails(pServerManager->GetDefaultMessageLocale());
 
             ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetStackTrace(pServerManager->GetDefaultLocale()).c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str()));
 
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, message.c_str());
             MG_LOG_ERROR_ENTRY(message.c_str());
@@ -710,9 +710,32 @@ int MgServer::open(void *args)
         STRING resourcesPath;
         pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyResourcesPath, resourcesPath, MgConfigProperties::DefaultGeneralPropertyResourcesPath);
 
-        // Get the default locale.
-        STRING defaultLocale;
-        pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDefaultLocale, defaultLocale, MgConfigProperties::DefaultGeneralPropertyDefaultLocale);
+        // Get the default message locale.
+        STRING defaultMessageLocale;
+        pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDefaultMessageLocale, defaultMessageLocale, MgConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
+
+        // Get the server locale.
+        STRING locale;
+        pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyLocale, locale, MgConfigProperties::DefaultGeneralPropertyLocale);
+
+        char* serverLocale = NULL;
+
+        // If the server configuration property is defined use it
+        if(!locale.empty())
+        {
+            string localeTemp = MgUtil::WideCharToMultiByte(locale);
+            serverLocale = ::setlocale(LC_ALL, localeTemp.c_str());
+        }
+        else
+        {
+            // Set the locale to the system default
+            serverLocale = ::setlocale(LC_ALL, "");
+        }
+
+        STRING strLocale = MgUtil::MultiByteToWideChar(string(serverLocale));
+
+        // Always use the "C" locale when dealing with numbers
+        ::setlocale(LC_NUMERIC, "C");
 
         // Initialize the Log Manager
         ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing Log Manager.\n")));
@@ -730,7 +753,7 @@ int MgServer::open(void *args)
         // If that fails then we will not start the server because we need our resources.
         try
         {
-            pResources->LoadResources(defaultLocale);
+            pResources->LoadResources(defaultMessageLocale);
         }
         catch(MgException* e)
         {
@@ -738,24 +761,24 @@ int MgServer::open(void *args)
 
             // Log error message about failing to load the specified locale resources
             MgStringCollection arguments;
-            arguments.Add(pResources->GetResourceFilename(defaultLocale));
-            arguments.Add(defaultLocale);
+            arguments.Add(pResources->GetResourceFilename(defaultMessageLocale));
+            arguments.Add(defaultMessageLocale);
 
             STRING message = pResources->FormatMessage(MgResources::FailedToLoadResourcesFile, &arguments);
             ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
             MG_LOG_ERROR_ENTRY(message.c_str());
 
             // Check to see if we were attempting to load the "en" locale resources.
-            if(MgResources::DefaultLocale == defaultLocale)
+            if(MgResources::DefaultMessageLocale == defaultMessageLocale)
             {
-                // The server needs to fail to start because the specified default locale was
+                // The server needs to fail to start because the specified default message locale was
                 // the same as "en"
                 nResult = -1;
             }
             else
             {
                 // Try loading the "en" locale resources instead
-                defaultLocale = MgResources::DefaultLocale;
+                defaultMessageLocale = MgResources::DefaultMessageLocale;
 
                 try
                 {
@@ -764,7 +787,7 @@ int MgServer::open(void *args)
                     ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
                     MG_LOG_ERROR_ENTRY(message.c_str());
 
-                    pResources->LoadResources(defaultLocale);
+                    pResources->LoadResources(defaultMessageLocale);
                 }
                 catch(MgException* e)
                 {
@@ -773,8 +796,8 @@ int MgServer::open(void *args)
 
                     // We also failed to load the default "en" resource 
                     MgStringCollection arguments;
-                    arguments.Add(pResources->GetResourceFilename(defaultLocale));
-                    arguments.Add(defaultLocale);
+                    arguments.Add(pResources->GetResourceFilename(defaultMessageLocale));
+                    arguments.Add(defaultMessageLocale);
 
                     STRING message = pResources->FormatMessage(MgResources::FailedToLoadResourcesFile, &arguments);
                     ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
@@ -806,7 +829,7 @@ int MgServer::open(void *args)
             // Initialize the Server Manager
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing Server Manager.\n")));
             MgServerManager* pServerManager = MgServerManager::GetInstance();
-            pServerManager->Initialize(defaultLocale);
+            pServerManager->Initialize(defaultMessageLocale);
 
             // We cannot add trace statements until the log manager is initialized.
             MG_LOG_TRACE_ENTRY(L"MgServer::open() - Start");
@@ -954,7 +977,7 @@ int MgServer::open(void *args)
 
 #ifdef _DEBUG
             MgEventTimer& connectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::ConnectionTimeout);
-            STRING strResourceFilename = pResources->GetResourceFilename(pServerManager->GetDefaultLocale());
+            STRING strResourceFilename = pResources->GetResourceFilename(pServerManager->GetDefaultMessageLocale());
 
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Server Information:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Commandline Options:\n")));
@@ -962,10 +985,11 @@ int MgServer::open(void *args)
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Test Mode                     : %s\n"), m_bTestMode == true ? ACE_TEXT("true") : ACE_TEXT("false")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Test FDO                      : %s\n"), m_bTestFdo == true ? ACE_TEXT("true") : ACE_TEXT("false")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  General Properties:\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Locale                        : %s\n"), MG_WCHAR_TO_TCHAR(strLocale)));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Machine IP                    : %s\n"), MG_WCHAR_TO_TCHAR(loadBalanceManager->GetLocalServerAddress())));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Fdo path                      : %s\n"), MG_WCHAR_TO_TCHAR(fdoPath)));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Logs path                     : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetLogsPath())));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Locale (Default)              : %s\n"), MG_WCHAR_TO_TCHAR(pServerManager->GetDefaultLocale())));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Default Message Locale        : %s\n"), MG_WCHAR_TO_TCHAR(pServerManager->GetDefaultMessageLocale())));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Locale Resources File Loaded  : %s\n"), MG_WCHAR_TO_TCHAR(strResourceFilename)));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Client Service Properties:\n")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Connection Timeout            : %d\n"), connectionTimer.GetEventTimeout()));
@@ -1037,7 +1061,7 @@ int MgServer::open(void *args)
 
         MgServerManager* serverManager = MgServerManager::GetInstance();
         STRING locale = (NULL == serverManager) ?
-            MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+            MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
         STRING message = mgException->GetMessage(locale);
         STRING details = mgException->GetDetails(locale);
         STRING stackTrace = mgException->GetStackTrace(locale);

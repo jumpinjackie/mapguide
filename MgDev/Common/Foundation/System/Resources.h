@@ -169,7 +169,7 @@ INTERNAL_API:
     static const STRING ResourceComponent;
 
     /// Default locale
-    static const STRING DefaultLocale;
+    static const STRING DefaultMessageLocale;
 
     static const STRING ServerServiceName;
     static const STRING ServerServiceDisplayName;

@@ -45,8 +45,10 @@
 // General Properties
 // ******************************************************************
 const STRING MgFoundationConfigProperties::GeneralPropertiesSection                                   = L"GeneralProperties";
-const STRING MgFoundationConfigProperties::GeneralPropertyDefaultLocale                               = L"DefaultLocale";
-const STRING MgFoundationConfigProperties::DefaultGeneralPropertyDefaultLocale                        = L"en";      // ISO 639-1 name
+const STRING MgFoundationConfigProperties::GeneralPropertyLocale                                      = L"Locale";
+const STRING MgFoundationConfigProperties::DefaultGeneralPropertyLocale                               = L"";
+const STRING MgFoundationConfigProperties::GeneralPropertyDefaultMessageLocale                        = L"DefaultMessageLocale";
+const STRING MgFoundationConfigProperties::DefaultGeneralPropertyDefaultMessageLocale                 = L"en";      // ISO 639-1 name
 const STRING MgFoundationConfigProperties::GeneralPropertyResourcesPath                               = L"ResourcesPath";
 const STRING MgFoundationConfigProperties::DefaultGeneralPropertyResourcesPath                        = L"Resources/";
 const STRING MgFoundationConfigProperties::GeneralPropertyTempPath                                    = L"TempPath";
@@ -59,7 +61,8 @@ const INT32  MgFoundationConfigProperties::DefaultGeneralPropertyTcpIpMtu       
 ///
 const MgConfigValidationInfo MgFoundationConfigProperties::sm_cviGeneralProperties[] =
 {
-    { MgFoundationConfigProperties::GeneralPropertyDefaultLocale    , MgPropertyType::String    , MG_CONFIG_MIN_LOCALE_LENGTH           , MG_CONFIG_MAX_LOCALE_LENGTH           , L""                                       },
+    { MgFoundationConfigProperties::GeneralPropertyLocale           , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
+    { MgFoundationConfigProperties::GeneralPropertyDefaultMessageLocale, MgPropertyType::String , MG_CONFIG_MIN_LOCALE_LENGTH           , MG_CONFIG_MAX_LOCALE_LENGTH           , L""                                       },
     { MgFoundationConfigProperties::GeneralPropertyResourcesPath    , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgFoundationConfigProperties::GeneralPropertyTempPath         , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgFoundationConfigProperties::GeneralPropertyTcpIpMtu         , MgPropertyType::Int32     , 1                                     , 65535                                 , L""                                       },
