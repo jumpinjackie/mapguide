@@ -62,7 +62,7 @@ public:
 
     ///////////////////////////////////
     // Renderer implementation
-
+    //
     STYLIZATION_API virtual void StartMap(RS_MapUIInfo* mapInfo,
                                           RS_Bounds&    extents,
                                           double        mapScale,
@@ -85,27 +85,27 @@ public:
                                               double zExtrusion = 0,
                                               RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround);
 
-
     STYLIZATION_API virtual void ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill);
 
     STYLIZATION_API virtual void ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym);
 
     STYLIZATION_API virtual void ProcessRaster(unsigned char* data,
-                                               int length,
+                                               int            length,
                                                RS_ImageFormat format,
-                                               int width, int height,
-                                               RS_Bounds extents);
+                                               int            width,
+                                               int            height,
+                                               RS_Bounds      extents);
 
     STYLIZATION_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
     STYLIZATION_API virtual void ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef);
 
-    STYLIZATION_API virtual void ProcessLabelGroup( RS_LabelInfo*    labels,
-                                                    int              nlabels,
-                                                    const RS_String& text,
-                                                    RS_OverpostType  type,
-                                                    bool             exclude,
-                                                    LineBuffer*      path);
+    STYLIZATION_API virtual void ProcessLabelGroup(RS_LabelInfo*    labels,
+                                                   int              nlabels,
+                                                   const RS_String& text,
+                                                   RS_OverpostType  type,
+                                                   bool             exclude,
+                                                   LineBuffer*      path);
 
     STYLIZATION_API virtual void AddDWFContent(RS_InputStream*  in,
                                                CSysTransformer* xformer,
@@ -123,19 +123,19 @@ public:
 
     STYLIZATION_API virtual double GetMapScale();
 
+    STYLIZATION_API virtual double GetMetersPerUnit();
+
     STYLIZATION_API virtual RS_Bounds& GetBounds();
 
     STYLIZATION_API virtual double GetDpi();
-
-    STYLIZATION_API virtual double GetMetersPerUnit();
-
-    STYLIZATION_API virtual double GetMapToScreenScale();
 
     STYLIZATION_API virtual bool RequiresClipping();
 
     /////////////////////////////////////////////
     // GDRenderer specific
     //
+    STYLIZATION_API double GetMapToScreenScale();
+
     STYLIZATION_API void Save(const RS_String& filename, const RS_String& format);
     STYLIZATION_API void Save(const RS_String& filename, const RS_String& format, int width, int height);
     STYLIZATION_API RS_ByteData* Save(const RS_String& format, int width, int height);
@@ -149,7 +149,7 @@ public:
     //
     virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight); // px
     virtual void DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill);
-    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
+    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
         double x, double y, double w, double h, double angledeg);
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position);
 
@@ -162,8 +162,6 @@ public:
 
     virtual RS_FontEngine* GetFontEngine();
 
-    //labeling -- this is the entry API for adding SE labels
-    //to the label mananger
     virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
                                    int              nlabels,
                                    RS_OverpostType  type,

@@ -108,13 +108,11 @@ public:
 
     STYLIZATION_API virtual double GetMapScale();
 
+    STYLIZATION_API virtual double GetMetersPerUnit();
+
     STYLIZATION_API virtual RS_Bounds& GetBounds();
 
     STYLIZATION_API virtual double GetDpi();
-
-    STYLIZATION_API virtual double GetMetersPerUnit();
-
-    STYLIZATION_API virtual double GetMapToScreenScale();
 
     STYLIZATION_API virtual bool RequiresClipping();
 

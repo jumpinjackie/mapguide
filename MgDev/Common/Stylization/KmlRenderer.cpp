@@ -430,12 +430,6 @@ double KmlRenderer::GetMetersPerUnit()
 }
 
 
-double KmlRenderer::GetMapToScreenScale()
-{
-    return 0;
-}
-
-
 bool KmlRenderer::RequiresClipping()
 {
     return false;
