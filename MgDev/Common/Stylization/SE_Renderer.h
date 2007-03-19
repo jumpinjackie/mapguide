@@ -57,7 +57,7 @@ public:
                                    int              nlabels,
                                    RS_OverpostType  type,
                                    bool             exclude,
-                                   LineBuffer*     path = NULL) = 0;
+                                   LineBuffer*      path = NULL) = 0;
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts) = 0;
 
