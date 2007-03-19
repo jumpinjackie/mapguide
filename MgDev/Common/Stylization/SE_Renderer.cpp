@@ -285,22 +285,14 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 
             //check if completely skipping current segment since it is smaller than
             //the increment
-            if (drawpos < len)
+            if (drawpos < len && len > 0.0)
             {
                 //compute linear deltas for x and y directions
                 // -- we will use these to quickly move along the line
                 //without having to do too much math
-                double dx_incr, dy_incr;
-                if (len > 0.0)
-                {
-                    dx_incr = dx / len;
-                    dy_incr = dy / len;
-                }
-                else
-                {
-                    dx_incr = 1.0;
-                    dy_incr = 0.0;
-                }
+                double invlen = 1.0 / len;
+                double dx_incr = dx * invlen;
+                double dy_incr = dy * invlen;
 
                 double symrot = fromAngle? style->angle : atan2(dy, dx);
                 double tx = seg_screen[0] + dx_incr * drawpos;
