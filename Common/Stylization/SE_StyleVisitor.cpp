@@ -552,6 +552,8 @@ void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefi
     for (int i = 0; i < len; i++)
     {
         SimpleSymbol* sym = symbols->GetAt(i);
+
+        // get the symbol definition, either inlined or by reference
         SimpleSymbolDefinition* def = sym->GetSymbolDefinition();
         if (def == NULL)
         {
@@ -584,11 +586,21 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
     for (int i = 0; i < nSymbols; i++)
     {
         SymbolInstance* instance = symbols->GetAt(i);
-        SymbolDefinition* sd = m_resources? m_resources->GetSymbolDefinition(instance->GetSymbolReference().c_str()) : NULL;
-        if (sd == NULL)
-            continue;
 
-        m_symbolization = new SE_Symbolization;
+        // get the symbol definition, either inlined or by reference
+        SymbolDefinition* def = instance->GetSymbolDefinition();
+        if (def == NULL)
+        {
+            if (m_resources == NULL)
+                continue;
+
+            const MdfString& ref = instance->GetSymbolReference();
+            def = m_resources->GetSymbolDefinition(ref.c_str());
+            if (def == NULL)
+                continue;
+        }
+
+        m_symbolization = new SE_Symbolization();
 
         m_symbolization->context = instance->GetSizeContext();
 
@@ -604,7 +616,7 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
         ParseDoubleExpression(instance->GetInsertionOffsetX(), m_symbolization->absOffset[0]);
         ParseDoubleExpression(instance->GetInsertionOffsetY(), m_symbolization->absOffset[1]);
 
-        sd->AcceptVisitor(*this);
+        def->AcceptVisitor(*this);
 
         result.push_back(m_symbolization);
     }

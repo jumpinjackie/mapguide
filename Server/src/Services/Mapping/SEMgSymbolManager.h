@@ -23,13 +23,6 @@
 
 class MgResourceService;
 
-namespace MdfModel
-{
-    class SymbolDefinition;
-};
-
-using namespace MdfModel;
-
 // MappingService specific implementation of the RS_SymbolManager interface.
 // It retrieves DWF symbol data from the resource service and caches it
 // for reuse by stylization.
