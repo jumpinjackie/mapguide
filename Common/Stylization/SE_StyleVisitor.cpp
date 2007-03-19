@@ -60,6 +60,13 @@ SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
     ParseDoubleExpression(pointUsage.GetOriginOffsetX(), style->originOffset[0]);
     ParseDoubleExpression(pointUsage.GetOriginOffsetY(), style->originOffset[1]);
     ParseStringExpression(pointUsage.GetAngleControl(), style->angleControl);
+
+    //set flag if all properties are constant
+    style->cacheable = ! (style->angle.expression 
+                        || style->angleControl.expression
+                        || style->originOffset[0].expression 
+                        || style->originOffset[1].expression);
+
     return style;
 }
 
@@ -75,6 +82,18 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
     ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset);
     ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat);
     ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->vertexAngleLimit);
+
+    //set flag if all properties are constant
+    style->cacheable = ! (  style->angle.expression
+        || style->angleControl.expression
+        || style->unitsControl.expression
+        || style->vertexControl.expression
+        || style->angle.expression
+        || style->startOffset.expression
+        || style->endOffset.expression
+        || style->repeat.expression
+        || style->vertexAngleLimit.expression);
+
     return style;
 }
 
@@ -90,6 +109,19 @@ SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
     ParseDoubleExpression(areaUsage.GetRepeatX(), style->repeat[0]);
     ParseDoubleExpression(areaUsage.GetRepeatY(), style->repeat[1]);
     ParseDoubleExpression(areaUsage.GetBufferWidth(), style->bufferWidth);
+
+    //set flag if all properties are constant
+    style->cacheable = !(  style->angle.expression
+                        || style->angleControl.expression
+                        || style->originControl.expression
+                        || style->clippingControl.expression
+                        || style->angle.expression
+                        || style->origin[0].expression
+                        || style->origin[1].expression
+                        || style->repeat[0].expression
+                        || style->repeat[1].expression
+                        || style->bufferWidth.expression);
+
     return style;
 }
 
@@ -394,8 +426,8 @@ void SE_StyleVisitor::VisitPath(Path& path)
 
         /* If the color is transparent, there is no point in drawing this path,
          * so we will change it to black. */
-        if (line->color.argb() == 0)
-            line->color.a = 255;
+        if (line->color.value.argb == 0)
+            line->color.value.comps.a = 255;
         line->cacheable = !(line->weight.expression ||
                             line->color.expression ||
                             line->weightScalable.expression);
@@ -431,7 +463,7 @@ void SE_StyleVisitor::VisitImage(Image& image)
     {
         //TODO: Disallow expressions for now since
         //ParseStringExpression(image.GetReference(), primitive->pngPath);
-        primitive->pngPath.value = image.GetReference().c_str();
+        primitive->pngPath = image.GetReference().c_str();
         primitive->pngPath.expression = NULL;
 
         if (primitive->pngPath.expression == NULL) // constant path
@@ -526,6 +558,9 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
         {
             m_primitive->resize = elem->GetResizeControl();
             m_style->symbol.push_back(m_primitive);
+
+            //also update the style's cacheable flag to take into account the primitive's flag
+            m_style->cacheable = m_style->cacheable && m_primitive->cacheable;
         }
 
         m_primitive = NULL;
@@ -540,6 +575,12 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
         ParseDoubleExpression(box->GetPositionX(), m_style->resizePosition[0]);
         ParseDoubleExpression(box->GetPositionY(), m_style->resizePosition[1]);
         m_style->resize = box->GetGrowControl();
+
+        m_style->cacheable = m_style->cacheable &&
+                             ! (  m_style->resizeSize[0].expression
+                               || m_style->resizeSize[1].expression
+                               || m_style->resizePosition[0].expression
+                               || m_style->resizePosition[1].expression);
     }
 
     m_symbolization->styles.push_back(m_style);

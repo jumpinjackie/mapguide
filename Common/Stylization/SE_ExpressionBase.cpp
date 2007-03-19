@@ -237,11 +237,11 @@ void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr,
 
     if (len == 0)
     {
-        val = 0;
+        val.value.argb = 0;
         return;
     }
 
-    int ret = swscanf(cstr, L"%X%n", &val.argb(), &chars);
+    int ret = swscanf(cstr, L"%X%n", &val.value.argb, &chars);
 
     if (ret == 1 && chars == len)
     {

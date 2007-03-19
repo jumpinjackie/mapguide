@@ -26,10 +26,18 @@
 //////////////////////////////////////////////////////////////////////////////
 struct SE_Color
 {
-    unsigned char b, g, r, a; // argb, but little endian
+    union
+    {
+        struct
+        {
+            unsigned char b, g, r, a; // argb, but little endian
+        } comps;
+        unsigned int argb;
+    } value; //g++ doesn't like nameless structs, otherwise things would be far cleaner
+
     FdoExpression* expression;
 
-    SE_INLINE SE_Color() : expression(NULL) { *((unsigned int*)this) = 0; }
+    SE_INLINE SE_Color() : expression(NULL) { value.argb = 0; }
     ~SE_Color() { if (expression) expression->Release(); }
 
     // Retrieve argb color
@@ -40,7 +48,7 @@ struct SE_Color
             try
             {
                 expression->Process(processor);
-                *((unsigned int*)this) = (unsigned int)processor->GetInt64Result();
+                value.argb = (unsigned int)processor->GetInt64Result();
             }
             catch (FdoException* e)
             {
@@ -48,16 +56,15 @@ struct SE_Color
                 processor->Reset();
 
                 // set a default
-                *((unsigned int*)this) = 0xff000000;
+                value.argb = 0xff000000;
             }
         }
 
-        return *((unsigned int*)this);
+        return value.argb;
     }
 
-    SE_INLINE void operator=(unsigned int val) { *((unsigned int*)this) = val; }
-    SE_INLINE bool empty() { return (*(unsigned int*)this) == 0 && expression == NULL; }
-    SE_INLINE unsigned int& argb() { return (*(unsigned int*)this); }
+    SE_INLINE bool empty() { return value.argb == 0 && expression == NULL; }
+    SE_INLINE void operator=(unsigned int argb) { value.argb = argb; }
 };
 
 
@@ -172,7 +179,7 @@ struct SE_Boolean
 //////////////////////////////////////////////////////////////////////////////
 struct SE_String
 {
-    const wchar_t* value;
+    wchar_t* value;
     FdoExpression* expression;
 
     SE_INLINE SE_String() : value(NULL), expression(NULL) { }
@@ -190,8 +197,7 @@ struct SE_String
 
     ~SE_String()
     {
-        if (value)
-            delete[] value;
+        delete[] value;
         if (expression)
             expression->Release();
     }
@@ -200,11 +206,8 @@ struct SE_String
     {
         if (expression)
         {
-            if (value)
-            {
-                delete[] value;
-                value = NULL;
-            }
+            delete[] value;
+            value = NULL;
 
             try
             {
@@ -229,8 +232,7 @@ struct SE_String
 
     SE_INLINE void operator=(const wchar_t* s)
     {
-        if (value)
-            delete[] value;
+        delete[] value;
 
         if (s)
         {
