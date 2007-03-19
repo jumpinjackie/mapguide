@@ -115,8 +115,10 @@ const STRING MgConfigProperties::GeneralPropertyConnectionTimeout               
 const INT32  MgConfigProperties::DefaultGeneralPropertyConnectionTimeout                    = 120;
 const STRING MgConfigProperties::GeneralPropertyConnectionTimerInterval                     = L"ConnectionTimerInterval";
 const INT32  MgConfigProperties::DefaultGeneralPropertyConnectionTimerInterval              = 60;
-const STRING MgConfigProperties::GeneralPropertyDefaultLocale                               = L"DefaultLocale";
-const STRING MgConfigProperties::DefaultGeneralPropertyDefaultLocale                        = L"en";      // ISO 639-1 name
+const STRING MgConfigProperties::GeneralPropertyLocale                                      = L"Locale";
+const STRING MgConfigProperties::DefaultGeneralPropertyLocale                               = L"";
+const STRING MgConfigProperties::GeneralPropertyDefaultMessageLocale                        = L"DefaultMessageLocale";
+const STRING MgConfigProperties::DefaultGeneralPropertyDefaultMessageLocale                 = L"en";      // ISO 639-1 name
 const STRING MgConfigProperties::GeneralPropertyDisplayName                                 = L"DisplayName";
 const STRING MgConfigProperties::DefaultGeneralPropertyDisplayName                          = L"";
 const STRING MgConfigProperties::GeneralPropertyFdoPath                                     = L"FdoPath";
@@ -440,7 +442,8 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviGeneralProperties[] =
 {
     { MgConfigProperties::GeneralPropertyConnectionTimeout                          , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
     { MgConfigProperties::GeneralPropertyConnectionTimerInterval                    , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
-    { MgConfigProperties::GeneralPropertyDefaultLocale                              , MgPropertyType::String    , MG_CONFIG_MIN_LOCALE_LENGTH           , MG_CONFIG_MAX_LOCALE_LENGTH           , L""                                       },
+    { MgConfigProperties::GeneralPropertyLocale                                     , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
+    { MgConfigProperties::GeneralPropertyDefaultMessageLocale                       , MgPropertyType::String    , MG_CONFIG_MIN_LOCALE_LENGTH           , MG_CONFIG_MAX_LOCALE_LENGTH           , L""                                       },
     { MgConfigProperties::GeneralPropertyDisplayName                                , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
     { MgConfigProperties::GeneralPropertyFdoPath                                    , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::GeneralPropertyLicenseServerPath                          , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },

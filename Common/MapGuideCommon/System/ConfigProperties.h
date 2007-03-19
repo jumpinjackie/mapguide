@@ -54,9 +54,13 @@ EXTERNAL_API:
     static const STRING GeneralPropertyConnectionTimerInterval;         /// value("ConnectionTimerInterval")
     static const INT32 DefaultGeneralPropertyConnectionTimerInterval;   /// value(60)
 
-    /// Server's default locale
-    static const STRING GeneralPropertyDefaultLocale;                   /// value("DefaultLocale")
-    static const STRING DefaultGeneralPropertyDefaultLocale;            /// value("en")
+    /// Server's locale
+    static const STRING GeneralPropertyLocale;                          /// value("Locale")
+    static const STRING DefaultGeneralPropertyLocale;                   /// value("")
+
+    /// Server's default message locale
+    static const STRING GeneralPropertyDefaultMessageLocale;            /// value("DefaultMessageLocale")
+    static const STRING DefaultGeneralPropertyDefaultMessageLocale;     /// value("en")
 
     /// Server's display name
     static const STRING GeneralPropertyDisplayName;                     /// value("DisplayName")

@@ -213,7 +213,7 @@ bool MgServiceOperation::HandleException(MgException* except)
     if (m_argsRead && NULL != except && m_stream != NULL)
     {
         // Log the exception using Server locale or User locale if it exists
-        STRING locale = MgResources::DefaultLocale;
+        STRING locale = MgResources::DefaultMessageLocale;
         MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
         if (NULL != currUserInfo)
         {
@@ -224,7 +224,7 @@ bool MgServiceOperation::HandleException(MgException* except)
             MgServerManager* serverManager = MgServerManager::GetInstance();
             if (NULL != serverManager)
             {
-                locale = serverManager->GetDefaultLocale();
+                locale = serverManager->GetDefaultMessageLocale();
             }
         }
 

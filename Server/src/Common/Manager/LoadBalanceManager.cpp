@@ -662,7 +662,7 @@ bool MgLoadBalanceManager::RegisterServices(MgServerInformation* newServerInfo,
         catch (MgException* e)
         {
             // Server is down or request gets timed out? Log the message.
-            STRING locale = m_serverManager->GetDefaultLocale();
+            STRING locale = m_serverManager->GetDefaultMessageLocale();
 
             ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
@@ -752,7 +752,7 @@ void MgLoadBalanceManager::UnregisterServices(MgServerInformation* removedServer
         catch (MgException* e)
         {
             // Server is down or request gets timed out? Log the message.
-            STRING locale = m_serverManager->GetDefaultLocale();
+            STRING locale = m_serverManager->GetDefaultMessageLocale();
 
             ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
@@ -955,7 +955,7 @@ void MgLoadBalanceManager::DispatchResourceChangeNotifications(
             catch (MgException* e)
             {
                 // Server is down or request gets timed out? Log the message.
-                STRING locale = m_serverManager->GetDefaultLocale();
+                STRING locale = m_serverManager->GetDefaultMessageLocale();
 
                 ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
@@ -1560,7 +1560,7 @@ void MgLoadBalanceManager::UnregisterServicesOnServers(
             catch (MgException* e)
             {
                 // Server is down or request gets timed out? Log the message.
-                STRING locale = m_serverManager->GetDefaultLocale();
+                STRING locale = m_serverManager->GetDefaultMessageLocale();
 
                 ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
@@ -1630,7 +1630,7 @@ bool MgLoadBalanceManager::RegisterServices()
                 catch (MgException* e)
                 {
                     // Server is down or request gets timed out? Log the message.
-                    STRING locale = m_serverManager->GetDefaultLocale();
+                    STRING locale = m_serverManager->GetDefaultMessageLocale();
 
                     ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
                     MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
@@ -1732,7 +1732,7 @@ void MgLoadBalanceManager::UnregisterServices()
             catch (MgException* e)
             {
                 // Server is down or request gets timed out? Log the message.
-                STRING locale = m_serverManager->GetDefaultLocale();
+                STRING locale = m_serverManager->GetDefaultMessageLocale();
 
                 ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
@@ -1759,7 +1759,7 @@ void MgLoadBalanceManager::UnregisterServices()
         catch (MgException* e)
         {
             // Server is down or request gets timed out? Log the message.
-            STRING locale = m_serverManager->GetDefaultLocale();
+            STRING locale = m_serverManager->GetDefaultMessageLocale();
 
             ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
@@ -1826,7 +1826,7 @@ void MgLoadBalanceManager::EnableServices(INT32 serviceFlags)
             catch (MgException* e)
             {
                 // Server is down or request gets timed out? Log the message.
-                STRING locale = m_serverManager->GetDefaultLocale();
+                STRING locale = m_serverManager->GetDefaultMessageLocale();
 
                 ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
@@ -1854,7 +1854,7 @@ void MgLoadBalanceManager::EnableServices(INT32 serviceFlags)
         catch (MgException* e)
         {
             // Server is down or request gets timed out? Log the message.
-            STRING locale = m_serverManager->GetDefaultLocale();
+            STRING locale = m_serverManager->GetDefaultMessageLocale();
 
             ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());

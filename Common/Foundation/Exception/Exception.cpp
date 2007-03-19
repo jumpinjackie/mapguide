@@ -102,16 +102,16 @@ STRING MgException::GetLocale() throw()
         {
             configuration->GetStringValue(
                 MgFoundationConfigProperties::GeneralPropertiesSection,
-                MgFoundationConfigProperties::GeneralPropertyDefaultLocale,
+                MgFoundationConfigProperties::GeneralPropertyDefaultMessageLocale,
                 locale,
-                MgFoundationConfigProperties::DefaultGeneralPropertyDefaultLocale);
+                MgFoundationConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
         }
 
         MG_CATCH_AND_RELEASE()
 
         if (locale.empty())
         {
-            locale = MgResources::DefaultLocale;
+            locale = MgResources::DefaultMessageLocale;
         }
     }
 
@@ -267,12 +267,12 @@ STRING MgException::FormatMessage(CREFSTRING locale, CREFSTRING section,
 
     MG_CATCH_AND_RELEASE()
 
-    if (message.empty() && NULL != resources && locale != MgResources::DefaultLocale)
+    if (message.empty() && NULL != resources && locale != MgResources::DefaultMessageLocale)
     {
         MG_TRY()
 
         // try using the default locale as a backup
-        STRING resourceStr = resources->GetStringResource(MgResources::DefaultLocale, section,
+        STRING resourceStr = resources->GetStringResource(MgResources::DefaultMessageLocale, section,
             resourceId);
 
         message = resources->FormatMessage(resourceStr, arguments);

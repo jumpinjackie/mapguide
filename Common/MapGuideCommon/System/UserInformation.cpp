@@ -211,7 +211,7 @@ STRING MgUserInformation::CreateMgSessionId()
     MgUtil::GenerateUuid(uuid);
 
     // TODO: Pull default locale from MgConfiguration within a try/catch
-    STRING locale = m_locale.empty() ? MgResources::DefaultLocale : m_locale;
+    STRING locale = m_locale.empty() ? MgResources::DefaultMessageLocale : m_locale;
 
     uuid.append(L"_");
     uuid.append(locale);

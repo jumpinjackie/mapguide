@@ -143,10 +143,10 @@ void MgTimedEventHandler::LogException(MgException& e)
     
     if (NULL != serverManager)
     {
-        CREFSTRING defaultLocale = serverManager->GetDefaultLocale();
+        CREFSTRING locale = serverManager->GetDefaultMessageLocale();
 
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e.GetDetails(defaultLocale).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(e.GetMessage(defaultLocale).c_str(), e.GetStackTrace(defaultLocale).c_str());
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e.GetDetails(locale).c_str()));
+        MG_LOG_EXCEPTION_ENTRY(e.GetMessage(locale).c_str(), e.GetStackTrace(locale).c_str());
     }
     
     MG_CATCH_AND_RELEASE()

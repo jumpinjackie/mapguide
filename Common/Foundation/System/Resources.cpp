@@ -20,7 +20,7 @@
 // Process-wide MgResources
 Ptr<MgResources> MgResources::m_resources = (MgResources*)NULL;
 
-const STRING MgResources::DefaultLocale              = L"en";           // Do not translate (ISO 639-1)
+const STRING MgResources::DefaultMessageLocale       = L"en";           // Do not translate (ISO 639-1)
 const STRING MgResources::ResourceFilenameExtension  = L".res";         // Do not translate
 const STRING MgResources::ResourceFilenameUnderscore = L"_";            // Do not translate
 const STRING MgResources::ResourceComponent          = L"mapguide";     // Do not translate
@@ -547,7 +547,7 @@ STRING MgResources::GetMessage(CREFSTRING section, CREFSTRING resourceId,
 
     MG_RESOURCES_TRY()
 
-    STRING locale = DefaultLocale;
+    STRING locale = DefaultMessageLocale;
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     ACE_ASSERT(NULL != configuration);
 
@@ -555,9 +555,9 @@ STRING MgResources::GetMessage(CREFSTRING section, CREFSTRING resourceId,
     {
         configuration->GetStringValue(
             MgFoundationConfigProperties::GeneralPropertiesSection, 
-            MgFoundationConfigProperties::GeneralPropertyDefaultLocale, 
+            MgFoundationConfigProperties::GeneralPropertyDefaultMessageLocale, 
             locale, 
-            MgFoundationConfigProperties::DefaultGeneralPropertyDefaultLocale);
+            MgFoundationConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
     }
 
     STRING resourceStr = GetStringResource(locale, section, resourceId);

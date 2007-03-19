@@ -44,7 +44,7 @@ MgServerManager::MgServerManager(void) :
     m_pWorkerThreads(NULL)
 {
     m_localServerAddress = MgConfigProperties::DefaultGeneralPropertyMachineIp;
-    m_defaultLocale = MgConfigProperties::DefaultGeneralPropertyDefaultLocale;
+    m_defaultMessageLocale = MgConfigProperties::DefaultGeneralPropertyDefaultMessageLocale;
     m_displayName = MgConfigProperties::DefaultGeneralPropertyDisplayName;
 
     // Admin
@@ -127,8 +127,8 @@ void MgServerManager::Initialize(CREFSTRING locale)
 
     MG_LOG_TRACE_ENTRY(L"MgServerManager::Initialize()");
 
-    // Set the locale
-    m_defaultLocale = locale;
+    // Set the message locale
+    m_defaultMessageLocale = locale;
 
     m_pClientHandles = new ACE_Unbounded_Set<ACE_HANDLE>;
 
@@ -264,9 +264,9 @@ void MgServerManager::LoadConfigurationProperties()
     MG_CATCH_AND_THROW(L"MgServerManager.LoadConfigurationProperties")
 }
 
-CREFSTRING MgServerManager::GetDefaultLocale()
+CREFSTRING MgServerManager::GetDefaultMessageLocale()
 {
-    return m_defaultLocale;
+    return m_defaultMessageLocale;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

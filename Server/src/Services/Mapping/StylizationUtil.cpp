@@ -1001,7 +1001,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
             // TODO: Eventually this should be used to indicate visually to the client what
             //       layer failed in addition to logging the error.
             MgServerManager* serverManager = MgServerManager::GetInstance();
-            STRING locale = (NULL == serverManager) ?  MgResources::DefaultLocale : serverManager->GetDefaultLocale();
+            STRING locale = (NULL == serverManager) ?  MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
 
             // Get the layer that failed
             MgStringCollection arguments;
