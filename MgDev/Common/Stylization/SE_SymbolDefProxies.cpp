@@ -341,7 +341,19 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
 
 void SE_PointStyle::evaluate(SE_EvalContext* cxt) 
 { 
-    SE_RenderPointStyle* render = new SE_RenderPointStyle();
+    SE_RenderPointStyle* render;
+
+    if (cacheable && rstyle)
+    {
+        //style is constant and has been evluated once -- we can skip out of evaluation
+        return;
+    }
+    else
+    {
+        render = new SE_RenderPointStyle();
+        delete rstyle;
+        rstyle = render;
+    }
 
     LineBuffer::GeomOperationType type;
     switch(cxt->geometry->geom_type())
@@ -392,18 +404,25 @@ void SE_PointStyle::evaluate(SE_EvalContext* cxt)
     sxform.premultiply(*cxt->xform);
     *cxt->xform = sxform; //BAD here we modify the passed in transform -- figure out a way to avoid this
 
-    //set the cached renderStyle member variable
-    //TODO: cache constant render styles
-    delete rstyle;
-    rstyle = render;
-
     //evaluate all the primitives too
     SE_Style::evaluate(cxt);
 }
 
 void SE_LineStyle::evaluate(SE_EvalContext* cxt) 
 { 
-    SE_RenderLineStyle* render = new SE_RenderLineStyle();
+    SE_RenderLineStyle* render;
+
+    if (cacheable && rstyle)
+    {
+        //style is constant and has been evluated once -- we can skip out of evaluation
+        return;
+    }
+    else
+    {
+        render = new SE_RenderLineStyle();
+        delete rstyle;
+        rstyle = render;
+    }
 
     render->angleControl = angleControl.evaluate(cxt->exec);
     render->unitsControl = unitsControl.evaluate(cxt->exec);
@@ -416,18 +435,24 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->repeat = repeat.evaluate(cxt->exec)*cxt->mm2px;
     render->vertexAngleLimit = vertexAngleLimit.evaluate(cxt->exec) * M_PI180;
 
-    //set the cached renderStyle member variable
-    //TODO: cache constant render styles
-    delete rstyle;
-    rstyle = render;
-
     //evaluate all the primitives too
     SE_Style::evaluate(cxt);
 }
 
 void SE_AreaStyle::evaluate(SE_EvalContext* cxt) 
 { 
-    SE_RenderAreaStyle* render = new SE_RenderAreaStyle();
+    SE_RenderAreaStyle* render;
+    if (cacheable && rstyle)
+    {
+        //style is constant and has been evluated once -- we can skip out of evaluation
+        return;
+    }
+    else
+    {
+        render = new SE_RenderAreaStyle();
+        delete rstyle;
+        rstyle = render;
+    }
 
     render->angleControl = angleControl.evaluate(cxt->exec);
     render->originControl = originControl.evaluate(cxt->exec);
@@ -439,11 +464,6 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
     render->repeat[0] = repeat[0].evaluate(cxt->exec);
     render->repeat[1] = repeat[1].evaluate(cxt->exec);
     render->bufferWidth = bufferWidth.evaluate(cxt->exec);
-
-    //set the cached renderStyle member variable
-    //TODO: cache constant render styles
-    delete rstyle;
-    rstyle = render;
 
     //evaluate all the primitives too
     SE_Style::evaluate(cxt);

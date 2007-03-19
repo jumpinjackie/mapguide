@@ -132,6 +132,7 @@ struct SE_RenderStyle;
 struct SE_Style
 {
     SE_RenderStyle* rstyle; // cached evaluated RenderStyle
+    bool cacheable;
     SE_PrimitiveList symbol;
     SE_Integer renderPass;
 
@@ -140,7 +141,7 @@ struct SE_Style
     SE_Double resizeSize[2];
     ResizeBox::GrowControl resize;
 
-    SE_INLINE SE_Style() : rstyle(NULL) { }
+    SE_INLINE SE_Style() : rstyle(NULL), cacheable(false) { }
 
     virtual ~SE_Style();
 
@@ -212,8 +213,6 @@ struct SE_Symbolization
     ~SE_Symbolization()
     {
         for (std::vector<SE_Style*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
-            //TODO: SE_Styles have no virtual destructor but they don't seem to need
-            //to free stuff specific to the derived classes
             delete *iter;
 
         styles.clear();
@@ -224,8 +223,10 @@ struct SE_Symbolization
 struct SE_Rule
 {
     std::vector<SE_Symbolization*> symbolization;
-    RS_String legendLabel;  // no expressions on this guy
+    RS_String legendLabel;  // no expressions on this guy?
     FdoFilter* filter;
+
+    SE_Rule() : filter(NULL)  {  }
 
     ~SE_Rule()
     {
