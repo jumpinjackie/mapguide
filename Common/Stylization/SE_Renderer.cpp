@@ -248,8 +248,9 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
     
     int ptindex = 0;
 
-    //convert increment to pixels
-    double increment = style->repeat; //TODO: is this already scaled by the mm to pixel scale?
+    //get the increment (the render style already stores this in screen units)
+    //TODO - handle case where increment is 0
+    double increment = style->repeat;
 
     bool fromAngle = (wcscmp(L"FromAngle", style->angleControl) == 0);
 
@@ -259,10 +260,8 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
         int ptcount = geometry->cntrs()[j];
         double* pts = geometry->points() + 2*ptindex;
 
-        //pixel position along the current segment
-        //of the polyline
-        double drawpos = style->startOffset; //position of symbol along current segment of the polyline 
-                                             //TODO: is this already scaled by the mm to pixel scale?
+        //pixel position along the current segment of the polyline
+        double drawpos = style->startOffset;
 
         int cur_seg = 0;
 
