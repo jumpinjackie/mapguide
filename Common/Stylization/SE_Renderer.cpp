@@ -145,7 +145,8 @@ static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
 
 
 SE_Renderer::SE_Renderer()
-: m_bSelectionMode(false)
+: m_lbp(NULL)
+, m_bSelectionMode(false)
 , m_selWeight(0.0)
 , m_selColor(0)
 , m_selFill(0)
@@ -289,11 +290,19 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 //compute linear deltas for x and y directions
                 // -- we will use these to quickly move along the line
                 //without having to do too much math
-                double slope = atan2(dy, dx);
-                double dx_incr = cos(slope);
-                double dy_incr = sin(slope);
+                double dx_incr, dy_incr;
+                if (len > 0.0)
+                {
+                    dx_incr = dx / len;
+                    dy_incr = dy / len;
+                }
+                else
+                {
+                    dx_incr = 1.0;
+                    dy_incr = 0.0;
+                }
 
-                double symrot = fromAngle? style->angle : slope;
+                double symrot = fromAngle? style->angle : atan2(dy, dx);
                 double tx = seg_screen[0] + dx_incr * drawpos;
                 double ty = seg_screen[1] + dy_incr * drawpos;
 
