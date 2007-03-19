@@ -2281,8 +2281,7 @@ double GDRenderer::GetPixelsPerMillimeterScreen()
 
 double GDRenderer::GetPixelsPerMillimeterWorld()
 {
-    //TODO: check if this is right, could try
-    return m_dpi / 25.4 * m_mapScale;
+    return m_dpi / 25.4 / m_mapScale;
 }
 
 RS_FontEngine* GDRenderer::GetFontEngine()
