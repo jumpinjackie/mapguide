@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<SymbolDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="SymbolDefinition-1.0.0.xsd">
-  <SimpleSymbolDefinition>
-    <Name>Symbol</Name>
-    <Graphics>
-      <Path>
-        <Geometry>M 0,0 L 5,0 L 5,5 L 0,5 L 0,0</Geometry>
-        <FillColor>ff0000ff</FillColor>
-        <LineColor>ffff0000</LineColor>
-        <LineWeight>0</LineWeight>
-      </Path>
-      <Path>
-        <Geometry>M -2,-2 L 7,7 M 7,-2 L -2,7</Geometry>
-        <FillColor>00000000</FillColor>
-        <LineColor>ffffff00</LineColor>
-        <LineWeight>1</LineWeight>
-      </Path>
-    </Graphics>
-    <PointUsage/>
-    <ParameterDefinition/>
-  </SimpleSymbolDefinition>
-</SymbolDefinition>
+<SimpleSymbolDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="SymbolDefinition-1.0.0.xsd">
+  <Name>Symbol</Name>
+  <Graphics>
+    <Path>
+      <Geometry>M 0,0 L 5,0 L 5,5 L 0,5 L 0,0</Geometry>
+      <FillColor>ff0000ff</FillColor>
+      <LineColor>ffff0000</LineColor>
+      <LineWeight>0</LineWeight>
+    </Path>
+    <Path>
+      <Geometry>M -2,-2 L 7,7 M 7,-2 L -2,7</Geometry>
+      <FillColor>00000000</FillColor>
+      <LineColor>ffffff00</LineColor>
+      <LineWeight>1</LineWeight>
+    </Path>
+  </Graphics>
+  <PointUsage/>
+  <ParameterDefinition/>
+</SimpleSymbolDefinition>

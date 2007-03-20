@@ -692,14 +692,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\IOSymbolDefinition.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\IOSymbolDefinition.h"
-			>
-		</File>
-		<File
 			RelativePath=".\IOSymbolInstance.cpp"
 			>
 		</File>

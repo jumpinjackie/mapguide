@@ -60,11 +60,14 @@ void IOCompoundSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *h
     }
 }
 
-void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* symbolDefinition)
+void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* symbolDefinition, bool writeAsRootElement)
 {
     SimpleSymbolCollection* symbolCollection = symbolDefinition->GetSymbols();
 
-    fd << tab() << "<CompoundSymbolDefinition>" << std::endl; // NOXLATE
+    if (writeAsRootElement)
+        fd << tab() << "<CompoundSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
+    else
+        fd << tab() << "<CompoundSymbolDefinition>" << std::endl; // NOXLATE
     inctab();
 
     EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false)
