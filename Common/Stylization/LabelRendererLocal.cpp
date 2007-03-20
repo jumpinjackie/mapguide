@@ -981,21 +981,10 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
 bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
 {
     //get native symbol bounds (in pixels -- the render style is already scaled to pixels)
-    SE_Bounds* b = info.m_sestyle->bounds;
-    if (!b)
-        return false;
+    RS_F_Point fpts[4];
+    memcpy(fpts, info.m_sestyle->bounds, sizeof (fpts));
 
     //now we will translate and orient the bounds with the given angle and position of the symbol
-    RS_F_Point fpts[4];
-    fpts[0].x = b->min[0];
-    fpts[0].y = b->min[1];
-    fpts[1].x = b->max[0];
-    fpts[1].y = b->min[1];
-    fpts[2].x = b->max[0];
-    fpts[2].y = b->max[1];
-    fpts[3].x = b->min[0];
-    fpts[3].y = b->max[1];
-
     //apply position and rotation to the native bounds of the symbol
     double angle = m_serenderer->GetFontEngine()->_Yup() ? info.m_tdef.rotation() : -info.m_tdef.rotation();
     SE_Matrix m;

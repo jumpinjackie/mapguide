@@ -50,7 +50,7 @@ struct SE_RenderPrimitive
 {
     SE_RenderPrimitiveType type;
     bool resize;
-    SE_Bounds* bounds;
+    RS_F_Point bounds[4];
 };
 
 
@@ -113,9 +113,8 @@ struct SE_RenderStyle
         : type(stype),
           drawLast(false),
           checkExclusionRegions(false),
-          addToExclusionRegions(false),
-          bounds(NULL)
-    { }
+          addToExclusionRegions(false)
+    { memset (&bounds, 0, sizeof(bounds));}
 
     ~SE_RenderStyle()
     {
@@ -132,13 +131,11 @@ struct SE_RenderStyle
             default: throw; //means there is a bug
             }
         }
-
-        if (bounds) bounds->Free();
     }
 
     SE_RenderStyleType type;
     SE_RenderPrimitiveList symbol;
-    SE_Bounds* bounds;
+    RS_F_Point bounds[4];
 
     int renderPass;
 
