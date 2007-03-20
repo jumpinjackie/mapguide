@@ -81,7 +81,6 @@ private:
     // Methods for Feature Join
     bool FindFeatureJoinProperties(MgResourceIdentifier* resourceId, CREFSTRING extensionName);
     MgServerGwsFeatureReader* JoinFeatures(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName, FdoFilter* filter);
-    void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
     void ParseQualifiedClassName(CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className);
     MgResourceIdentifier* GetSecondaryResourceIdentifier(MgResourceIdentifier* primResId, CREFSTRING extensionName, CREFSTRING relationName);
 

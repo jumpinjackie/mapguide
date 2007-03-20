@@ -1588,6 +1588,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Exception\UnsupportedProviderThreadModelException.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Exception\UnsupportedProviderThreadModelException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception\UriFormatException.cpp"
 				>
 				<FileConfiguration

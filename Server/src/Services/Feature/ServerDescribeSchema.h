@@ -60,7 +60,6 @@ private:
     FdoFeatureSchemaCollection* ExecuteDescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName);
     STRING GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol);
 
-    void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
     MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resource);
 
     MdfModel::FeatureSource* m_featureSource;

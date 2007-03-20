@@ -63,6 +63,7 @@ include_SOURCES = \
   Exception/SessionNotFoundException.cpp \
   Exception/StylizeLayerFailedException.cpp \
   Exception/UnauthorizedAccessException.cpp \
+  Exception/UnsupportedProviderThreadModelException.cpp \
   Exception/UriFormatException.cpp \
   MapLayer/Layer.cpp \
   MapLayer/Map.cpp \
@@ -178,6 +179,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/SessionNotFoundException.h \
   Exception/StylizeLayerFailedException.h \
   Exception/UnauthorizedAccessException.h \
+  Exception/UnsupportedProviderThreadModelException.h \
   Exception/UriFormatException.h \
   MapLayer/Layer.h \
   MapLayer/Map.h \

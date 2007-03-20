@@ -63,12 +63,6 @@ MgServerSelectFeatures::MgServerSelectFeatures()
 MgServerSelectFeatures::~MgServerSelectFeatures()
 {
     FDO_SAFE_RELEASE(m_customFunction);
-
-    if (m_featureSource != NULL)
-    {
-        delete m_featureSource;
-        m_featureSource = NULL;
-    }
 }
 
 // Executes the select features command and serializes the reader
@@ -85,9 +79,11 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
     // Validate parameters
     ValidateParam(resource,className);
 
-    // Retrieve the feature source XML document
-    string featureSourceXmlContent;
-    RetrieveFeatureSource(resource, featureSourceXmlContent);
+    // Retrieve the feature source
+    if (m_featureSource == NULL)
+    {
+        m_featureSource = GetFeatureSource(resource);
+    }
 
     // Check if a feature join is to be performed by inspecting the resource for join properties
     bool bFeatureJoinProperties = FindFeatureJoinProperties(resource, className);
@@ -1037,27 +1033,6 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
     return gwsFeatureReader.Detach();
 }
-
-void MgServerSelectFeatures::RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent)
-{
-    CHECKNULL(resource, L"MgServerSelectFeatures.RetrieveFeatureSource");
-
-    resourceContent = "";
-
-    // Get the feature source XML content document from the FDO connection manager.
-    MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    if(pFdoConnectionManager)
-    {
-         pFdoConnectionManager->RetrieveFeatureSource(resource, resourceContent);
-    }
-
-    if (m_featureSource == NULL)
-    {
-        m_featureSource = GetFeatureSource(resource);
-    }
-
-}
-
 
 void MgServerSelectFeatures::ParseQualifiedClassName(CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className)
 {

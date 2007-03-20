@@ -35,11 +35,6 @@ MgServerDescribeSchema::MgServerDescribeSchema() : m_featureSource(NULL)
 //////////////////////////////////////////////////////////////////
 MgServerDescribeSchema::~MgServerDescribeSchema()
 {
-    if (m_featureSource != NULL)
-    {
-        delete m_featureSource;
-        m_featureSource = NULL;
-    }
 }
 
 
@@ -72,9 +67,10 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgReso
     CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
     // Finished with primary feature source, so now cycle through any secondary sources
-    // Retrieve XML from repository
-    string featureSourceXmlContent;
-    RetrieveFeatureSource(resource, featureSourceXmlContent);
+    if (m_featureSource == NULL)
+    {
+        m_featureSource = GetFeatureSource(resource);
+    }
 
     CHECKNULL(m_featureSource, L"MgServerDescribeSchema.ExecuteDescribeSchema");
 
@@ -260,9 +256,10 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
             // A new MgClassDefinition needs to be created for each extension and added to the classCollection
             //
 
-            // Retrieve XML from repository
-            string featureSourceXmlContent;
-            RetrieveFeatureSource(resource, featureSourceXmlContent);
+            if (m_featureSource == NULL)
+            {
+                m_featureSource = GetFeatureSource(resource);
+            }
 
             CHECKNULL(m_featureSource, L"MgServerDescribeSchema.DescribeSchema");
 
@@ -1517,9 +1514,10 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
             if (!bHaveIdProps && classCnt > 0)
             {
                 // Get the className for the primary source that is being extended
-                // Retrieve XML from repository
-                string featureSourceXmlContent;
-                RetrieveFeatureSource(resource, featureSourceXmlContent);
+                if (m_featureSource == NULL)
+                {
+                    m_featureSource = GetFeatureSource(resource);
+                }
 
                 CHECKNULL(m_featureSource, L"MgServerDescribeSchema.GetIdentityProperties");
 
@@ -1579,25 +1577,6 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetIdentityProperties")
 
     return idProps.Detach();
-}
-
-void MgServerDescribeSchema::RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent)
-{
-    CHECKNULL(resource, L"MgServerDescribeSchema.RetrieveFeatureSource");
-
-    resourceContent = "";
-
-    // Get the feature source XML content document from the FDO connection manager.
-    MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    if(pFdoConnectionManager)
-    {
-         pFdoConnectionManager->RetrieveFeatureSource(resource, resourceContent);
-    }
-
-    if (m_featureSource == NULL)
-    {
-        m_featureSource = GetFeatureSource(resource);
-    }
 }
 
 MdfModel::FeatureSource* MgServerDescribeSchema::GetFeatureSource(MgResourceIdentifier* resource)

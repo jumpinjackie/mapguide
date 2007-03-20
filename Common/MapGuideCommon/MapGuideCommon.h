@@ -109,6 +109,7 @@
 #include "Exception/SessionNotFoundException.h"
 #include "Exception/StylizeLayerFailedException.h"
 #include "Exception/UnauthorizedAccessException.h"
+#include "Exception/UnsupportedProviderThreadModelException.h"
 #include "Exception/UriFormatException.h"
 
 #include "Net/IOperationHandler.h"
