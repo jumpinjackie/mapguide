@@ -16,7 +16,6 @@
 //
 
 #include "ServerMappingServiceDefs.h"
-
 #include "ServerMappingService.h"
 
 #include "Stylization.h"
@@ -34,6 +33,7 @@
 #include "FeatureTypeStyleVisitor.h"
 
 #include "RSMgSymbolManager.h"
+#include "SEMgSymbolManager.h"
 
 #include "LegendPlotUtil.h"
 
@@ -422,7 +422,8 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
 
-    DefaultStylizer ds(NULL);
+    SEMgSymbolManager semgr(m_svcResource);
+    DefaultStylizer ds(&semgr);
 
     RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor);
 

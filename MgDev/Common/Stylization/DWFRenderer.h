@@ -28,6 +28,8 @@
 #include "LineBuffer.h"
 #include "KeyEncode.h"
 
+#include "SE_Renderer.h"
+
 //forward declare
 class WT_File;
 class WT_Viewport;
@@ -61,61 +63,58 @@ typedef std::vector<DWFToolkit::DWFObjectDefinitionResource*> objdefres_list;
 ///<summary>
 /// Implementation of Renderer for DWF-W2D output
 ///</summary>
-class DWFRenderer : public Renderer
+class DWFRenderer : public Renderer, public SE_Renderer
 {
 public:
     STYLIZATION_API DWFRenderer();
     STYLIZATION_API virtual ~DWFRenderer();
 
-    STYLIZATION_API virtual void StartMap      (RS_MapUIInfo* mapInfo,
-                                                RS_Bounds&    extents,
-                                                double        mapScale,
-                                                double        dpi,
-                                                double        metersPerUnit,
-                                                CSysTransformer* xformToLL);
+    ///////////////////////////////////
+    // Renderer implementation
+    //
+    STYLIZATION_API virtual void StartMap(RS_MapUIInfo* mapInfo,
+                                          RS_Bounds&    extents,
+                                          double        mapScale,
+                                          double        dpi,
+                                          double        metersPerUnit,
+                                          CSysTransformer* xformToLL);
 
-    STYLIZATION_API virtual void EndMap         ();
+    STYLIZATION_API virtual void EndMap();
 
-    STYLIZATION_API virtual void StartLayer     (RS_LayerUIInfo*      legendInfo,
-                                                 RS_FeatureClassInfo* classInfo);
+    STYLIZATION_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+                                            RS_FeatureClassInfo* classInfo);
 
-    STYLIZATION_API virtual void EndLayer       ();
+    STYLIZATION_API virtual void EndLayer();
 
-    STYLIZATION_API virtual void StartFeature (RS_FeatureReader* feature,
-                                               const RS_String*  tooltip = NULL,
-                                               const RS_String*  url = NULL,
-                                               const RS_String* theme = NULL,
-                                               double zOffset = 0,
-                                               double zExtrusion = 0,
-                                               RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround);
+    STYLIZATION_API virtual void StartFeature(RS_FeatureReader* feature,
+                                              const RS_String*  tooltip = NULL,
+                                              const RS_String*  url = NULL,
+                                              const RS_String* theme = NULL,
+                                              double zOffset = 0,
+                                              double zExtrusion = 0,
+                                              RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround);
 
-    STYLIZATION_API virtual void ProcessPolygon (LineBuffer* lb,
-                                                 RS_FillStyle& fill);
+    STYLIZATION_API virtual void ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill);
 
-    STYLIZATION_API virtual void ProcessPolyline(LineBuffer* lb,
-                                                 RS_LineStroke& lsym);
+    STYLIZATION_API virtual void ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym);
 
-    STYLIZATION_API virtual void ProcessRaster  (unsigned char*    data,
-                                                 int               length,
-                                                 RS_ImageFormat    format,
-                                                 int               width,
-                                                 int               height,
-                                                 RS_Bounds         extents);
+    STYLIZATION_API virtual void ProcessRaster(unsigned char* data,
+                                               int            length,
+                                               RS_ImageFormat format,
+                                               int            width,
+                                               int            height,
+                                               RS_Bounds      extents);
 
-    STYLIZATION_API virtual void ProcessMarker(LineBuffer*       lb,
-                                               RS_MarkerDef&     mdef,
-                                               bool              allowOverpost,
-                                               RS_Bounds*        bounds = NULL);
+    STYLIZATION_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
-    STYLIZATION_API virtual void ProcessLabel(double x, double y,
-                                              const RS_String& text, RS_TextDef& tdef);
+    STYLIZATION_API virtual void ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef);
 
-    STYLIZATION_API virtual void ProcessLabelGroup( RS_LabelInfo*       labels,
-                                                    int                 nlabels,
-                                                    const RS_String&    text,
-                                                    RS_OverpostType     type,
-                                                    bool                exclude,
-                                                    LineBuffer*         path);
+    STYLIZATION_API virtual void ProcessLabelGroup(RS_LabelInfo*    labels,
+                                                   int              nlabels,
+                                                   const RS_String& text,
+                                                   RS_OverpostType  type,
+                                                   bool             exclude,
+                                                   LineBuffer*      path);
 
     STYLIZATION_API virtual void AddDWFContent(RS_InputStream*  in,
                                                CSysTransformer* xformer,
@@ -133,19 +132,48 @@ public:
 
     STYLIZATION_API virtual double GetMapScale();
 
+    STYLIZATION_API virtual double GetMetersPerUnit();
+
     STYLIZATION_API virtual RS_Bounds& GetBounds();
 
     STYLIZATION_API virtual double GetDpi();
 
-    STYLIZATION_API virtual double GetMetersPerUnit();
-
-    STYLIZATION_API virtual double GetMapToW2DScale();
-
     STYLIZATION_API virtual bool RequiresClipping();
+
+    /////////////////////////////////////////////
+    // DWFRenderer specific
+    //
+    STYLIZATION_API double GetMapToW2DScale();
 
     STYLIZATION_API void StartLayout(RS_Bounds& extents);
 
     STYLIZATION_API void EndLayout();
+
+    ////////////////////////////////////////////////
+    // SE_Renderer
+    //
+    virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight); // px
+    virtual void DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill);
+    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
+                                  double x, double y, double w, double h, double angledeg);
+    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position);
+
+    virtual void GetWorldToScreenTransform(SE_Matrix& xform);
+    virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
+    virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
+
+    virtual double GetPixelsPerMillimeterScreen();
+    virtual double GetPixelsPerMillimeterWorld();
+
+    virtual RS_FontEngine* GetFontEngine();
+
+    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
+                                   int              nlabels,
+                                   RS_OverpostType  type,
+                                   bool             exclude,
+                                   LineBuffer*      path = NULL);
+
+    virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
 protected:
     //list of layer w2d streams
