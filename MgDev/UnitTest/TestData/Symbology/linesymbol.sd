@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<SymbolDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="SymbolDefinition-1.0.0.xsd">
-  <SimpleSymbolDefinition>
-    <Name>LineSymbol</Name>
-    <Graphics>
-      <Path>
-        <Geometry>M -1,0 L 1,0 L 0,1.5 L -1,0</Geometry>
-        <FillColor>ffff0000</FillColor>
-        <LineColor>00000000</LineColor>
-        <LineWeight>0</LineWeight>
-      </Path>
-      <Path>
-        <Geometry>M -2,0 L 2,0</Geometry>
-        <FillColor>00000000</FillColor>
-        <LineColor>ffff0000</LineColor>
-        <LineWeight>0</LineWeight>
-      </Path>
-    </Graphics>
-    <LineUsage>
-      <Repeat>4</Repeat>
-    </LineUsage>
-    <ParameterDefinition/>
-  </SimpleSymbolDefinition>
-</SymbolDefinition>
+<SimpleSymbolDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="SymbolDefinition-1.0.0.xsd">
+  <Name>LineSymbol</Name>
+  <Graphics>
+    <Path>
+      <Geometry>M -1,0 L 1,0 L 0,1.5 L -1,0</Geometry>
+      <FillColor>ffff0000</FillColor>
+      <LineColor>00000000</LineColor>
+      <LineWeight>0</LineWeight>
+    </Path>
+    <Path>
+      <Geometry>M -2,0 L 2,0</Geometry>
+      <FillColor>00000000</FillColor>
+      <LineColor>ffff0000</LineColor>
+      <LineWeight>0</LineWeight>
+    </Path>
+  </Graphics>
+  <LineUsage>
+    <Repeat>4</Repeat>
+  </LineUsage>
+  <ParameterDefinition/>
+</SimpleSymbolDefinition>

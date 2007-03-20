@@ -35,7 +35,7 @@ class IOSimpleSymbolDefinition : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t *ch);
         virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
 
-        static void Write(MdfStream &fd, SimpleSymbolDefinition* symbolDefinition);
+        static void Write(MdfStream &fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement);
 
     private:
         SimpleSymbolDefinition* _symbolDefinition;

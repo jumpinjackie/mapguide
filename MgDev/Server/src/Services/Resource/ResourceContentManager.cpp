@@ -566,16 +566,36 @@ void MgResourceContentManager::ValidateDocument(MgResourceIdentifier& resource,
 
     bool valid = false;
 
-    // TODO: Enforce versioning in future release.
-    if (STRING::npos != schemaName.find(rootName))
+    // The symbol definition schema contains two root elements whose
+    // names don't exactly match the schema name and resource type.
+    // We therefore require special handling for symbol definition
+    // resources.
+    STRING resourceType = resource.GetResourceType();
+    if (resourceType == MgResourceType::SymbolDefinition)
     {
-        if (resource.IsRoot())
+        // verify the schema name matches the resource type
+        if (STRING::npos != schemaName.find(resourceType))
         {
-            valid = (L"RepositoryContent" == rootName);
+            // verify the rootname is one of the symbol definition elements
+            if (STRING::npos != rootName.find(resourceType))
+            {
+                valid = true;
+            }
         }
-        else if (!resource.IsFolder())
+    }
+    else
+    {
+        // TODO: Enforce versioning in future release.
+        if (STRING::npos != schemaName.find(rootName))
         {
-            valid = (resource.GetResourceType() == rootName);
+            if (resource.IsRoot())
+            {
+                valid = (L"RepositoryContent" == rootName);
+            }
+            else if (!resource.IsFolder())
+            {
+                valid = (resourceType == rootName);
+            }
         }
     }
 

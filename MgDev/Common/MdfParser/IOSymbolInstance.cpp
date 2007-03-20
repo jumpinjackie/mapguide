@@ -17,7 +17,8 @@
 
 #include "stdafx.h"
 #include "IOSymbolInstance.h"
-#include "IOSymbolDefinition.h"
+#include "IOSimpleSymbolDefinition.h"
+#include "IOCompoundSymbolDefinition.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -36,9 +37,19 @@ void IOSymbolInstance::StartElement(const wchar_t *name, HandlerStack *handlerSt
         m_startElemName = name;
         this->_symbolInstance = new SymbolInstance();
     }
-    else if (m_currElemName == L"SymbolDefinition") // NOXLATE
+    else if (m_currElemName == L"SimpleSymbolDefinition") // NOXLATE
     {
-        IOSymbolDefinition* IO = new IOSymbolDefinition(this->_symbolInstance);
+        SimpleSymbolDefinition* simpleSymbol = new SimpleSymbolDefinition();
+        this->_symbolInstance->AdoptSymbolDefinition(simpleSymbol);
+        IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(simpleSymbol);
+        handlerStack->push(IO);
+        IO->StartElement(name, handlerStack);
+    }
+    else if (m_currElemName == L"CompoundSymbolDefinition") // NOXLATE
+    {
+        CompoundSymbolDefinition* compoundSymbol = new CompoundSymbolDefinition();
+        this->_symbolInstance->AdoptSymbolDefinition(compoundSymbol);
+        IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(compoundSymbol);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
@@ -77,8 +88,17 @@ void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance)
     inctab();
 
     // we must write either a symbol definition or reference, but not both
-    if (symbolInstance->GetSymbolDefinition())
-        IOSymbolDefinition::Write(fd, symbolInstance->GetSymbolDefinition(), false);
+    SymbolDefinition* pSymbol = symbolInstance->GetSymbolDefinition();
+    if (pSymbol)
+    {
+        SimpleSymbolDefinition* pSimpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(pSymbol);
+        CompoundSymbolDefinition* pCompoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(pSymbol);
+
+        if (pSimpleSymbol)
+            IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol, false);
+        else if (pCompoundSymbol)
+            IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol, false);
+    }
     else
     {
         EMIT_STRING_PROPERTY(fd, symbolInstance, SymbolReference, false)

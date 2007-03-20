@@ -73,7 +73,6 @@ libMgMdfParser_la_SOURCES = \
   IOStroke.cpp \
   IOSupplementalSpatialContextInfo.cpp \
   IOSymbol.cpp \
-  IOSymbolDefinition.cpp \
   IOSymbolInstance.cpp \
   IOSymbolInstanceCollection.cpp \
   IOText.cpp \
@@ -152,7 +151,6 @@ noinst_HEADERS = \
   IOStroke.h \
   IOSupplementalSpatialContextInfo.h \
   IOSymbol.h \
-  IOSymbolDefinition.h \
   IOSymbolInstance.h \
   IOSymbolInstanceCollection.h \
   IOText.h \

@@ -95,9 +95,12 @@ void IOSimpleSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *han
     }
 }
 
-void IOSimpleSymbolDefinition::Write(MdfStream &fd, SimpleSymbolDefinition* symbolDefinition)
+void IOSimpleSymbolDefinition::Write(MdfStream &fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement)
 {
-    fd << tab() << "<SimpleSymbolDefinition>" << std::endl; // NOXLATE
+    if (writeAsRootElement)
+        fd << tab() << "<SimpleSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
+    else
+        fd << tab() << "<SimpleSymbolDefinition>" << std::endl; // NOXLATE
     inctab();
 
     EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false)

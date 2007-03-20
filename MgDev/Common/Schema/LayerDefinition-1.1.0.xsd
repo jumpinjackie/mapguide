@@ -876,14 +876,19 @@
     </xs:annotation>
     <xs:sequence>
       <xs:choice>
-        <xs:element name="SymbolDefinition" type="SymbolDefinitionType">
-          <xs:annotation>
-            <xs:documentation>An inlined SymbolDefinition, either simple or compound.</xs:documentation>
-          </xs:annotation>
-        </xs:element>
         <xs:element name="SymbolReference" type="xs:string">
           <xs:annotation>
             <xs:documentation>A library reference to an existing SymbolDefinition, either simple or compound.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SimpleSymbolDefinition" type="SimpleSymbolDefinitionType">
+          <xs:annotation>
+            <xs:documentation>An inlined SimpleSymbolDefinition.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="CompoundSymbolDefinition" type="CompoundSymbolDefinitionType">
+          <xs:annotation>
+            <xs:documentation>An inlined CompoundSymbolDefinition.</xs:documentation>
           </xs:annotation>
         </xs:element>
       </xs:choice>

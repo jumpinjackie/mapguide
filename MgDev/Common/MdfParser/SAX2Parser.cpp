@@ -22,7 +22,6 @@
 #include "IOVectorLayerDefinition.h"
 #include "IODrawingLayerDefinition.h"
 #include "IOGridLayerDefinition.h"
-#include "IOSymbolDefinition.h"
 #include "IOSimpleSymbolDefinition.h"
 #include "IOCompoundSymbolDefinition.h"
 #include "UnicodeString.h"
@@ -301,7 +300,14 @@ void SAX2Parser::WriteToFile(std::string name, SymbolDefinition* pSymbol)
     {
         zerotab();
         fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
-        IOSymbolDefinition::Write(fd, pSymbol, true);
+
+        SimpleSymbolDefinition* pSimpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(pSymbol);
+        CompoundSymbolDefinition* pCompoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(pSymbol);
+
+        if (NULL != pSimpleSymbol)
+            IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol, true);
+        else if (NULL != pCompoundSymbol)
+            IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol, true);
     }
     fd.close();
 }
@@ -361,9 +367,9 @@ std::string SAX2Parser::SerializeToXML(SymbolDefinition *pSymbol)
     CompoundSymbolDefinition* pCompoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(pSymbol);
 
     if (NULL != pSimpleSymbol)
-        IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol);
+        IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol, true);
     else if (NULL != pCompoundSymbol)
-        IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol);
+        IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol, true);
 
     return fd.str();
 }
