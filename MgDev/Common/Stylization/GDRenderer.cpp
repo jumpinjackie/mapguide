@@ -249,7 +249,7 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
     else
         im = (gdImagePtr)m_imout;
 
-    // Make output image interlaced (progressive, in the case of JPEG)
+    // Make output image non-interlaced --- it's a little faster to compress that way.
     gdImageInterlace(im, 0);
 
     // Make sure the alpha values get saved
