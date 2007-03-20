@@ -20,6 +20,7 @@
 #include "Services/KmlDefs.h"
 #include "Stylization.h"
 #include "StylizationUtil.h"
+#include "SEMgSymbolManager.h"
 #include "KmlRenderer.h"
 #include "RSMgFeatureReader.h"
 #include "RSMgInputStream.h"
@@ -306,7 +307,7 @@ void MgServerKmlService::AppendLayer(MgLayer* layer,
     kmlContent.WriteString("<Link>");
     kmlContent.WriteString("<href>");
     kmlContent.WriteString(agentUri, false);
-    kmlContent.WriteString("?OPERATION=GetLayerKml&amp;VERSION=1&amp;LAYERDEFINITION=", false);
+    kmlContent.WriteString("?OPERATION=GetLayerKml&amp;VERSION=1.0.0&amp;LAYERDEFINITION=", false);
     kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
     sprintf(buffer,"&amp;DRAWORDER=%d", drawOrder);
     kmlContent.WriteString(buffer, false);
@@ -345,7 +346,7 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
     kmlContent.WriteString("<Link>");
     kmlContent.WriteString("<href>");
     kmlContent.WriteString(agentUri, false);
-    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;LAYERDEFINITION=", false);
+    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1.0.0&amp;LAYERDEFINITION=", false);
     kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
     sprintf(buffer,"&amp;DPI=%f", dpi);
     kmlContent.WriteString(buffer, false);
@@ -394,7 +395,7 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
     kmlContent.WriteString("<Icon>");
     kmlContent.WriteString("<href>");
     kmlContent.WriteString(agentUri, false);
-    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1&amp;LAYERDEFINITION=", false);
+    kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1.0.0&amp;LAYERDEFINITION=", false);
     kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
     sprintf(buffer,"&amp;DPI=%f", dpi);
     kmlContent.WriteString(buffer, false);
@@ -469,7 +470,8 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             }
 
             KmlRenderer renderer(&kmlContent, bounds, scale, dpi, metersPerUnit, drawOrder);
-            DefaultStylizer stylizer(NULL);
+            SEMgSymbolManager sman(m_svcResource);
+            DefaultStylizer stylizer(&sman);
             renderer.StartLayer(&layerInfo, &fcInfo);
             stylizer.StylizeVectorLayer(vl, &renderer, rdr, csTrans, NULL, NULL);
             renderer.EndLayer();
