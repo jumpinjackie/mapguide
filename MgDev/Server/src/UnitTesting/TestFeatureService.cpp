@@ -368,7 +368,7 @@ void TestFeatureService::TestCase_TestFdoConnectionManager()
         pManager->Close(pFdoConnection2);
 
         // Force removal from the FDO connection cache
-        STRING key = provider + L" - " + connectionString;
+        STRING key = connectionString;
         pManager->RemoveCachedFdoConnection(key);
     }
     catch(MgException* e)

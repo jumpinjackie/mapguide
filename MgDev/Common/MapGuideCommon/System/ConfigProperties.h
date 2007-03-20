@@ -285,7 +285,11 @@ EXTERNAL_API:
 
     /// Sets the number of pooled data connections
     static const STRING FeatureServicePropertyDataConnectionPoolSize;           /// value("DataConnectionPoolSize")
-    static const INT32 DefaultFeatureServicePropertyDataConnectionPoolSize;     /// value(100)
+    static const INT32 DefaultFeatureServicePropertyDataConnectionPoolSize;     /// value(20)
+
+    /// Sets the number of pooled data connections for a specific provider
+    static const STRING FeatureServicePropertyDataConnectionPoolSizeCustom;         /// value("DataConnectionPoolSizeCustom")
+    static const STRING DefaultFeatureServicePropertyDataConnectionPoolSizeCustom;  /// value("")
 
     /// Sets the maximum amount of time (in seconds) for data connection idle activity before the data connection is closed
     static const STRING FeatureServicePropertyDataConnectionTimeout;            /// value("DataConnectionTimeout")

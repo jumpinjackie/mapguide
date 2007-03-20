@@ -70,6 +70,7 @@
 #include  "Exception/SessionNotFoundException.cpp"
 #include  "Exception/StylizeLayerFailedException.cpp"
 #include  "Exception/UnauthorizedAccessException.cpp"
+#include  "Exception/UnsupportedProviderThreadModelException.cpp"
 #include  "Exception/UriFormatException.cpp"
 #include  "MapLayer/Layer.cpp"
 #include  "MapLayer/Map.cpp"

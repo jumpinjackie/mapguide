@@ -144,6 +144,7 @@ MgTemporaryFileNotAvailableException                  = Temporary file is not av
 MgUnauthorizedAccessException                         = Unauthorized access.
 MgUnclassifiedException                               = An unclassified exception occurred.
 MgUnderflowException                                  = Underflow exception.
+MgUnsupportedProviderThreadModelException             = The FDO provider thread model is not supported.
 MgUriFormatException                                  = Uri format exception.
 MgUserNotFoundException                               = The specified user was not found: %1
 MgXmlException                                        = An XML exception occurred.

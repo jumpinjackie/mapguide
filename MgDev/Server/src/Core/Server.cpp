@@ -852,10 +852,12 @@ int MgServer::open(void *args)
             bool bDataConnectionPoolEnabled = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled;
             INT32 nDataConnectionPoolSize = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize;
             STRING dataConnectionPoolExcludedProviders = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders;
+            STRING dataConnectionPoolSizeCustom = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSizeCustom;
 
             pConfiguration->GetBoolValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled, bDataConnectionPoolEnabled, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled);
             pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize, nDataConnectionPoolSize, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize);
             pConfiguration->GetStringValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders, dataConnectionPoolExcludedProviders, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders);
+            pConfiguration->GetStringValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom, dataConnectionPoolSizeCustom, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSizeCustom);
 
             // Add additional font mappings to the FontManager
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Adding Font Manager Mappings.\n")));
@@ -940,7 +942,7 @@ int MgServer::open(void *args)
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing FDO Connection Manager.\n")));
             MgEventTimer& dataConnectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::DataConnectionTimeout);
             MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-            pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout(), dataConnectionPoolExcludedProviders);
+            pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout(), dataConnectionPoolExcludedProviders, dataConnectionPoolSizeCustom);
 
             // Initialize the Feature Service Cache
             INT32 cacheLimit;
@@ -999,6 +1001,7 @@ int MgServer::open(void *args)
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Enabled           : %s\n"), bDataConnectionPoolEnabled == true ? ACE_TEXT("true") : ACE_TEXT("false")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Excluded Providers: %s\n"), MG_WCHAR_TO_TCHAR(dataConnectionPoolExcludedProviders)));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Size              : %d\n"), nDataConnectionPoolSize));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Pool Size Custom       : %s\n"), MG_WCHAR_TO_TCHAR(dataConnectionPoolSizeCustom)));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timeout                : %d\n"), dataConnectionTimer.GetEventTimeout()));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Data Connection Timer Interval         : %d\n"), dataConnectionTimer.GetInterval()));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  Mapping Service Properties:\n")));

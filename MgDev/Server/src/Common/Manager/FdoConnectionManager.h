@@ -38,17 +38,37 @@ class MgXmlUtil;
 #define MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(methodName)   MG_FEATURE_SERVICE_CATCH_AND_THROW(methodName)
 
 typedef struct {
-    string data;    // Feature source XML content
-    STRING ltName;  // current long transaction name for this connection
+    STRING ltName;                              // Current long transaction name for this connection
     FdoIConnection* pFdoConnection;
     ACE_Time_Value lastUsed;
 
 } FdoConnectionCacheEntry;
 
+// Feature Source Cache
+typedef std::map<STRING, MdfModel::FeatureSource*> FeatureSourceCache;
+typedef std::pair<STRING, MdfModel::FeatureSource*> FeatureSourceCacheEntry_Pair;
+
+// FDO Connection Cache
 typedef std::multimap<STRING, FdoConnectionCacheEntry*> FdoConnectionCache;
-typedef std::pair<STRING, FdoConnectionCacheEntry*> FdoConnectionCache_Pair;
+typedef std::pair<STRING, FdoConnectionCacheEntry*> FdoConnectionCacheEntry_Pair;
+
+// FDO Connection Cache Collection
+typedef std::map<STRING, FdoConnectionCache*> FdoConnectionCacheCollection;
+typedef std::pair<STRING, FdoConnectionCache*> FdoConnectionCache_Pair;
+
+// Spatial Context
 typedef std::map<STRING, STRING> MgSpatialContextInfoMap;
 typedef std::pair<STRING, STRING> MgSpatialContextInfoPair;
+
+
+typedef struct {
+    INT32 cacheSize;
+    FdoThreadCapability threadModel;
+} ProviderInfo;
+
+// Provider Information Collection
+typedef std::map<STRING, ProviderInfo*> ProviderInfoCollection;
+typedef std::pair<STRING, ProviderInfo*> ProviderInfoCacheEntry_Pair;
 
 class MG_SERVER_MANAGER_API MgFdoConnectionManager : public MgGuardDisposable
 {
@@ -63,16 +83,16 @@ public:
     static MgFdoConnectionManager* GetInstance(void);
 
     // This initializes the FDO connection manager
-    void Initialize(bool bFdoConnectionPoolEnabled, INT32 nFdoConnectionPoolSize, INT32 nFdoConnectionTimeout, STRING excludedProviders);
+    void Initialize(bool bFdoConnectionPoolEnabled, INT32 nFdoConnectionPoolSize, INT32 nFdoConnectionTimeout, STRING excludedProviders, STRING fdoConnectionPoolSizeCustom);
     static void Terminate();
     void ClearCache();
 
     FdoIConnection* Open(MgResourceIdentifier* resourceIdentifier);
-    FdoIConnection* Open(CREFSTRING providerName, CREFSTRING connectionString);
+    FdoIConnection* Open(CREFSTRING provider, CREFSTRING connectionString);
     void Close(FdoIConnection* pFdoConnection);
 
     MgSpatialContextInfoMap* GetSpatialContextInfo(MgResourceIdentifier* resourceIdentifier);
-    STRING UpdateProviderName(CREFSTRING providerName);
+    STRING UpdateProviderName(CREFSTRING provider);
 
     void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
 
@@ -90,14 +110,14 @@ private:
     MgFdoConnectionManager(void);
 
     FdoIConnection* FindFdoConnection(MgResourceIdentifier* resourceIdentifier);
-    FdoIConnection* FindFdoConnection(CREFSTRING providerName, CREFSTRING connectionString);
-    FdoIConnection* SearchFdoConnectionCache(CREFSTRING key, string& data, CREFSTRING ltName);
-    void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING key, string& data, CREFSTRING ltName);
-    bool FdoConnectionCacheFull(void);
+    FdoIConnection* FindFdoConnection(CREFSTRING provider, CREFSTRING connectionString);
+    FdoIConnection* SearchFdoConnectionCache(CREFSTRING provider, CREFSTRING key, CREFSTRING ltName);
+    void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING provider, CREFSTRING key, CREFSTRING ltName);
+    bool FdoConnectionCacheFull(CREFSTRING provider);
 
     void GetSpatialContextInfoFromXml(MdfModel::FeatureSource* pFeatureSource, MgSpatialContextInfoMap* spatialContextInfoMap);
 
-    void SetConfiguration(CREFSTRING providerName, FdoIConnection* pFdoConnection, MgResourceIdentifier* resourceIdentifier, STRING& configDataName);
+    void SetConfiguration(CREFSTRING provider, FdoIConnection* pFdoConnection, MgResourceIdentifier* resourceIdentifier, STRING& configDataName);
     void SetConnectionProperties(FdoIConnection* pFdoConnection, MgXmlUtil* pXmlUtil);
     void SetConnectionProperties(FdoIConnection* pFdoConnection, MdfModel::FeatureSource* pFeatureSource);
 
@@ -109,13 +129,16 @@ private:
     void ValidateFeatureSource(string& featureSourceXmlContent);
     void Open(FdoIConnection* pFdoConnection);
 
-    bool IsExcludedProvider(CREFSTRING providerName);
+    bool IsExcludedProvider(CREFSTRING provider);
+    ProviderInfo* GetProviderInformation(CREFSTRING provider);
 
     static Ptr<MgFdoConnectionManager> sm_fdoConnectionManager;
     static ACE_Recursive_Thread_Mutex  sm_mutex;
     IConnectionManager*                m_connManager;
 
-    FdoConnectionCache m_FdoConnectionCache;
+    FdoConnectionCacheCollection m_FdoConnectionCacheCollection;
+    FeatureSourceCache m_FeatureSourceCache;
+    ProviderInfoCollection m_ProviderInfoCollection;
 
     bool m_bFdoConnectionPoolEnabled;
     INT32 m_nFdoConnectionPoolSize;
