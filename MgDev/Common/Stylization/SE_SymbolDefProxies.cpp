@@ -35,8 +35,8 @@ SE_Style::~SE_Style()
 }
 
 
-SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt) 
-{ 
+SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
+{
     SE_RenderPolyline* ret = new SE_RenderPolyline();
     ret->resize = (resize == GraphicElement::AdjustToResizeBox);
 
@@ -56,8 +56,8 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     return ret;
 }
 
-SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt) 
-{ 
+SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
+{
     SE_RenderPolygon* ret = new SE_RenderPolygon();
     ret->resize = (resize == GraphicElement::AdjustToResizeBox);
 
@@ -79,15 +79,18 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     return ret;
 }
 
-SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt) 
-{ 
+SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
+{
+    if (cxt->fonte == NULL)
+        return NULL;
+
     SE_RenderText* ret = new SE_RenderText();
     ret->resize = (resize == GraphicElement::AdjustToResizeBox);
 
     ret->text = textExpr.evaluate(cxt->exec);
     ret->position[0] = position[0].evaluate(cxt->exec);
     ret->position[1] = position[1].evaluate(cxt->exec);
-    
+
     cxt->xform->transform(ret->position[0], ret->position[1]);
 
     ret->tdef.rotation() = angle.evaluate(cxt->exec);
@@ -108,26 +111,26 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     const wchar_t* hAlign = hAlignment.evaluate(cxt->exec);
     if (hAlign)
     {
-        if (wcscmp(hAlign, L"Left") == 0)           
+        if (wcscmp(hAlign, L"Left") == 0)
             ret->tdef.halign() = RS_HAlignment_Left;
-        else if (wcscmp(hAlign, L"Center") == 0)    
+        else if (wcscmp(hAlign, L"Center") == 0)
             ret->tdef.halign() = RS_HAlignment_Center;
-        else if (wcscmp(hAlign, L"Right") == 0)     
+        else if (wcscmp(hAlign, L"Right") == 0)
             ret->tdef.halign() = RS_HAlignment_Right;
     }
 
     const wchar_t* vAlign = vAlignment.evaluate(cxt->exec);
     if (vAlign)
     {
-        if (wcscmp(vAlign, L"Bottom") == 0)         
+        if (wcscmp(vAlign, L"Bottom") == 0)
             ret->tdef.valign() = RS_VAlignment_Descent;
-        else if (wcscmp(vAlign, L"Baseline") == 0)  
+        else if (wcscmp(vAlign, L"Baseline") == 0)
             ret->tdef.valign() = RS_VAlignment_Base;
-        else if (wcscmp(vAlign, L"Halfline") == 0)  
+        else if (wcscmp(vAlign, L"Halfline") == 0)
             ret->tdef.valign() = RS_VAlignment_Half;
-        else if (wcscmp(vAlign, L"Capline") == 0)   
+        else if (wcscmp(vAlign, L"Capline") == 0)
             ret->tdef.valign() = RS_VAlignment_Cap;
-        else if (wcscmp(vAlign, L"Top") == 0)       
+        else if (wcscmp(vAlign, L"Top") == 0)
             ret->tdef.valign() = RS_VAlignment_Ascent;
     }
 
@@ -151,15 +154,15 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 
     std::sort((std::pair<double,double>*)buffer, (std::pair<double,double>*)(ptr - 2), PointLess( ));
     ret->bounds = AndrewHull<std::pair<double,double>*,SimplePOINT>
-        ((std::pair<double,double>*)buffer, 
-        ((std::pair<double,double>*)ptr) - 1, 
+        ((std::pair<double,double>*)buffer,
+        ((std::pair<double,double>*)ptr) - 1,
         (int)tm.line_pos.size()*4, cxt->pool);
 
     return ret;
 }
 
-SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt) 
-{ 
+SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
+{
     SE_RenderRaster* ret = new SE_RenderRaster();
     ret->resize = (resize == GraphicElement::AdjustToResizeBox);
 
@@ -192,11 +195,11 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     rxf.transform( w, -h, pts[1].x, pts[1].y);
     rxf.transform(-w, -h, pts[2].x, pts[2].y);
     rxf.transform(-w,  h, pts[3].x, pts[3].y);
-    
+
     std::sort((std::pair<double,double>*)pts, (std::pair<double,double>*)(pts + 3), PointLess( ));
     ret->bounds = AndrewHull<std::pair<double,double>*,SimplePOINT>
-        ((std::pair<double,double>*)pts, 
-        ((std::pair<double,double>*)(pts+3)) - 1, 
+        ((std::pair<double,double>*)pts,
+        ((std::pair<double,double>*)(pts+3)) - 1,
         4, cxt->pool);
 
     return ret;
@@ -204,7 +207,7 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 
 void SE_Style::evaluate(SE_EvalContext* cxt)
 {
-    //evaluate values that are common to all styles           
+    //evaluate values that are common to all styles
     rstyle->renderPass = renderPass.evaluate(cxt->exec);
 
     //
@@ -215,7 +218,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
     double minx, maxx, miny, maxy;
     double growx, growy;
     SE_Matrix growxform;
-        
+
     if (useBox)
     {
         dx = resizePosition[0].evaluate(cxt->exec);
@@ -324,7 +327,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         break;
                     }
                 }
-                
+
                 if (rstyle->bounds)
                 {
                     SE_Bounds* bounds = rstyle->bounds;
@@ -339,8 +342,8 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
 }
 
 
-void SE_PointStyle::evaluate(SE_EvalContext* cxt) 
-{ 
+void SE_PointStyle::evaluate(SE_EvalContext* cxt)
+{
     SE_RenderPointStyle* render;
 
     if (cacheable && rstyle)
@@ -385,7 +388,7 @@ void SE_PointStyle::evaluate(SE_EvalContext* cxt)
             double slope_rad = 0.0;
             cxt->geometry->Centroid(LineBuffer::ctLine, &x0, &y0, &slope_rad);
 
-            angle = slope_rad; 
+            angle = slope_rad;
 
             //TODO: do we really need to invert this in case of y-down?
             if (cxt->xform->y1 < 0)
@@ -408,8 +411,8 @@ void SE_PointStyle::evaluate(SE_EvalContext* cxt)
     SE_Style::evaluate(cxt);
 }
 
-void SE_LineStyle::evaluate(SE_EvalContext* cxt) 
-{ 
+void SE_LineStyle::evaluate(SE_EvalContext* cxt)
+{
     SE_RenderLineStyle* render;
 
     if (cacheable && rstyle)
@@ -439,8 +442,8 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     SE_Style::evaluate(cxt);
 }
 
-void SE_AreaStyle::evaluate(SE_EvalContext* cxt) 
-{ 
+void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
+{
     SE_RenderAreaStyle* render;
     if (cacheable && rstyle)
     {
