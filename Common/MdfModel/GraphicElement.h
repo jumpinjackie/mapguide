@@ -32,27 +32,13 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API GraphicElement : public MdfRootObject
     {
     public:
-        // The ResizeControl enum specifies how this graphic element interacts
-        // with the resize box.  AddToResizeBox means the element's graphical
-        // extent is added to the resize box, but the element is not resized
-        // or repositioned if the resize box grows.  AdjustToResizeBox means
-        // the element is resized and repositioned relative to the resize box,
-        // but its extent is not added to the box.  ResizeNone, the default,
-        // means the element does not interact with the resize box.
-        enum ResizeControl
-        {
-            ResizeNone,
-            AddToResizeBox,
-            AdjustToResizeBox
-        };
-
         // Destruction
         virtual ~GraphicElement();
 
         // Operations
         // Property : ResizeControl
-        ResizeControl GetResizeControl() const;
-        void SetResizeControl(ResizeControl resizeControl);
+        const MdfString& GetResizeControl() const;
+        void SetResizeControl(const MdfString& resizeControl);
 
         // Visitor Pattern method defined in GraphicElement.
         virtual void AcceptVisitor(IGraphicElementVisitor& igeVisitor) = 0;
@@ -64,7 +50,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
     private:
         // Data members
-        ResizeControl m_eResizeControl;
+        MdfString m_sResizeControl;
     };
 
     typedef MdfOwnerCollection<GraphicElement> GraphicElementCollection;

@@ -29,7 +29,7 @@
                 <SymbolReference>Library://Symbology/Symbols/PointSymbolParam.SymbolDefinition</SymbolReference>
                 <ScaleX>1.0</ScaleX>
                 <ScaleY>1.0</ScaleY>
-                <SizeContext>Mapping</SizeContext>
+                <SizeContext>MappingUnits</SizeContext>
                 <DrawLast>False</DrawLast>
                 <CheckExclusionRegion>False</CheckExclusionRegion>
                 <AddToExclusionRegion>False</AddToExclusionRegion>
@@ -45,18 +45,18 @@
                         <Description>A dummy symbol used to test the MdfModel/MdfParser code.</Description>
                         <Graphics>
                           <Path>
-                            <ResizeControl>AddToResizeBox</ResizeControl>
+                            <ResizeControl>'AddToResizeBox'</ResizeControl>
                             <Geometry>M 0,0 L 5,0 L 5,5 L 0,5 L 0,0</Geometry>
                             <FillColor>ffff0000</FillColor>
                             <LineColor>%OUTLINE%</LineColor>
                             <LineWeight>2*(%THICKNESS% + 1)</LineWeight>
                             <LineWeightScalable>true</LineWeightScalable>
-                            <LineCap>None</LineCap>
-                            <LineJoin>None</LineJoin>
+                            <LineCap>'None'</LineCap>
+                            <LineJoin>'None'</LineJoin>
                             <LineMiterLimit>5.0</LineMiterLimit>
                           </Path>
                           <Image>
-                            <ResizeControl>AddToResizeBox</ResizeControl>
+                            <ResizeControl>'AddToResizeBox'</ResizeControl>
                             <Content>R0lGODlhcgGSALMAAAQCAEMmCZtuMFQxDS8b</Content>
                             <SizeX>100.0</SizeX>
                             <SizeY>100.0</SizeY>
@@ -65,7 +65,7 @@
                             <Angle>0.0</Angle>
                           </Image>
                           <Image>
-                            <ResizeControl>AddToResizeBox</ResizeControl>
+                            <ResizeControl>'AddToResizeBox'</ResizeControl>
                             <Reference>Library://Image.jpg</Reference>
                             <SizeX>100.0</SizeX>
                             <SizeY>100.0</SizeY>
@@ -74,7 +74,7 @@
                             <Angle>0.0</Angle>
                           </Image>
                           <Text>
-                            <ResizeControl>AddToResizeBox</ResizeControl>
+                            <ResizeControl>'AddToResizeBox'</ResizeControl>
                             <String>Some text</String>
                             <FontName>Arial</FontName>
                             <Bold>false</Bold>
@@ -103,42 +103,43 @@
                           <PositionY>0.0</PositionY>
                           <SizeX>50.0</SizeX>
                           <SizeY>10.0</SizeY>
-                          <GrowControl>GrowInX</GrowControl>
+                          <GrowControl>'GrowInXYMaintainAspect'</GrowControl>
                         </ResizeBox>
                         <PointUsage>
-                          <AngleControl>FromGeometry</AngleControl>
+                          <AngleControl>'FromGeometry'</AngleControl>
                           <Angle>0.0</Angle>
                           <OriginOffsetX>0.0</OriginOffsetX>
                           <OriginOffsetY>0.0</OriginOffsetY>
                         </PointUsage>
                         <LineUsage>
-                          <AngleControl>FromGeometry</AngleControl>
-                          <UnitsControl>Parametric</UnitsControl>
-                          <VertexControl>NoOverlap</VertexControl>
+                          <AngleControl>'FromGeometry'</AngleControl>
+                          <UnitsControl>'Absolute'</UnitsControl>
+                          <VertexControl>'NoOverlap'</VertexControl>
                           <Angle>0.0</Angle>
                           <StartOffset>0.0</StartOffset>
                           <EndOffset>0.0</EndOffset>
                           <Repeat>10.0</Repeat>
                           <VertexAngleLimit>5.0</VertexAngleLimit>
+                          <VertexJoin>'None'</VertexJoin>
                           <DefaultPath>
-                            <ResizeControl>AddToResizeBox</ResizeControl>
+                            <ResizeControl>'AddToResizeBox'</ResizeControl>
                             <Geometry>M 0,0 L 5,0 L 5,5 L 0,5 L 0,0</Geometry>
                             <FillColor>ffff0000</FillColor>
                             <LineColor>ff00ff00</LineColor>
                             <LineWeight>1.0</LineWeight>
                             <LineWeightScalable>true</LineWeightScalable>
-                            <LineCap>None</LineCap>
-                            <LineJoin>None</LineJoin>
+                            <LineCap>'None'</LineCap>
+                            <LineJoin>'None'</LineJoin>
                             <LineMiterLimit>5.0</LineMiterLimit>
                           </DefaultPath>
                         </LineUsage>
                         <AreaUsage>
-                          <OriginControl>Centroid</OriginControl>
-                          <AngleControl>FromGeometry</AngleControl>
-                          <ClippingControl>Overlap</ClippingControl>
+                          <AngleControl>'FromGeometry'</AngleControl>
+                          <OriginControl>'Global'</OriginControl>
+                          <ClippingControl>'Clip'</ClippingControl>
+                          <Angle>0.0</Angle>
                           <OriginX>0.0</OriginX>
                           <OriginY>0.0</OriginY>
-                          <Angle>0.0</Angle>
                           <RepeatX>10.0</RepeatX>
                           <RepeatY>5.0</RepeatY>
                           <BufferWidth>0.0</BufferWidth>
@@ -149,48 +150,48 @@
                             <DefaultValue>FFFF0000</DefaultValue>
                             <DisplayName>Outline Color</DisplayName>
                             <Description>The color of the outline of the box.</Description>
-                            <ValueList>
+                            <AllowedValues>
                               <Value>FFFF0000</Value>
                               <Value>FFFFFFFF</Value>
-                            </ValueList>
+                            </AllowedValues>
                           </Parameter>
                           <Parameter>
                             <Identifier>THICKNESS</Identifier>
                             <DefaultValue>-0.5</DefaultValue>
                             <DisplayName>Line Thickness</DisplayName>
                             <Description>The thickness of the line in mm... minus 2 and halved.</Description>
-                            <ValueList>
+                            <AllowedValues>
                               <Value>-1.0</Value>
                               <Value>-0.5</Value>
                               <Value>0.0</Value>
                               <Value>0.5</Value>
                               <Value>1.0</Value>
-                            </ValueList>
+                            </AllowedValues>
                           </Parameter>
                           <Parameter>
                             <Identifier>TEXTCOLOR</Identifier>
                             <DefaultValue>FFFFFF00</DefaultValue>
                             <DisplayName>Text Color</DisplayName>
                             <Description>The color of the text.</Description>
-                            <ValueList>
+                            <AllowedValues>
                               <Value>FFFF0000</Value>
                               <Value>FFFFFF00</Value>
                               <Value>FF00FF00</Value>
-                            </ValueList>
+                            </AllowedValues>
                           </Parameter>
                         </ParameterDefinition>
                       </SimpleSymbolDefinition>
                       <RenderingPass>10</RenderingPass>
                     </SimpleSymbol>
                     <SimpleSymbol>
-                      <SimpleSymbolReference>Library://Symbology/Symbols/MdfTestSimpleSymbol.SymbolDefinition</SimpleSymbolReference>
+                      <SymbolReference>Library://Symbology/Symbols/MdfTestSimpleSymbol.SymbolDefinition</SymbolReference>
                       <RenderingPass>20</RenderingPass>
                     </SimpleSymbol>
                   </CompoundSymbolDefinition>
                 </SymbolDefinition>
                 <ScaleX>2.0</ScaleX>
                 <ScaleY>2.0</ScaleY>
-                <SizeContext>Mapping</SizeContext>
+                <SizeContext>MappingUnits</SizeContext>
                 <DrawLast>False</DrawLast>
                 <CheckExclusionRegion>False</CheckExclusionRegion>
                 <AddToExclusionRegion>False</AddToExclusionRegion>

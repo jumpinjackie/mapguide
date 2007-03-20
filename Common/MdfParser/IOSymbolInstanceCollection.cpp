@@ -60,14 +60,10 @@ void IOSymbolInstanceCollection::EndElement(const wchar_t *name, HandlerStack *h
 
 void IOSymbolInstanceCollection::Write(MdfStream &fd, SymbolInstanceCollection* instanceCollection)
 {
-    // the schema currently requires at least one instance
-    // TODO: WCW - we should relax this to allow zero instances
-    int numInstances = instanceCollection->GetCount();
-    assert(numInstances > 0);
-
     fd << tab() << "<SymbolCollection>" << std::endl; // NOXLATE
     inctab();
 
+    int numInstances = instanceCollection->GetCount();
     for (int i=0; i<numInstances; ++i)
     {
         SymbolInstance* instance = instanceCollection->GetAt(i);

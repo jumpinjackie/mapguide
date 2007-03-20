@@ -29,8 +29,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 AreaUsage::AreaUsage()
 {
-    // NOTE: if you change any defaults then you must also update
-    //       IOAreaUsage::Write to use the correct default values.
 }
 
 //-------------------------------------------------------------------------
@@ -39,24 +37,6 @@ AreaUsage::AreaUsage()
 //-------------------------------------------------------------------------
 AreaUsage::~AreaUsage()
 {
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-const MdfString& AreaUsage::GetOriginControl() const
-{
-    return this->m_sOriginControl;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void AreaUsage::SetOriginControl(const MdfString& originControl)
-{
-    this->m_sOriginControl = originControl;
 }
 
 //-------------------------------------------------------------------------
@@ -81,6 +61,24 @@ void AreaUsage::SetAngleControl(const MdfString& angleControl)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
+const MdfString& AreaUsage::GetOriginControl() const
+{
+    return this->m_sOriginControl;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void AreaUsage::SetOriginControl(const MdfString& originControl)
+{
+    this->m_sOriginControl = originControl;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
 const MdfString& AreaUsage::GetClippingControl() const
 {
     return this->m_sClippingControl;
@@ -93,6 +91,24 @@ const MdfString& AreaUsage::GetClippingControl() const
 void AreaUsage::SetClippingControl(const MdfString& clippingControl)
 {
     this->m_sClippingControl = clippingControl;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& AreaUsage::GetAngle() const
+{
+    return this->m_sAngle;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void AreaUsage::SetAngle(const MdfString& angle)
+{
+    this->m_sAngle = angle;
 }
 
 //-------------------------------------------------------------------------
@@ -129,24 +145,6 @@ const MdfString& AreaUsage::GetOriginY() const
 void AreaUsage::SetOriginY(const MdfString& originY)
 {
     this->m_sOriginY = originY;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-const MdfString& AreaUsage::GetAngle() const
-{
-    return this->m_sAngle;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void AreaUsage::SetAngle(const MdfString& angle)
-{
-    this->m_sAngle = angle;
 }
 
 //-------------------------------------------------------------------------

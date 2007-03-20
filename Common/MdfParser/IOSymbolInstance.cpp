@@ -51,15 +51,7 @@ void IOSymbolInstance::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, ScaleY, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, InsertionOffsetX, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, InsertionOffsetY, ch)
-// can't use IF_ENUM_2 since the allowed values don't exactly match the enums
-//  else IF_ENUM_2(m_currElemName, this->_symbolInstance, MdfModel, SizeContext, ch, DeviceUnits, MappingUnits)
-    else if (m_currElemName == L"SizeContext") // NOXLATE
-    {
-        if      (::wcscmp(ch, L"Device") == 0) // NOXLATE
-            this->_symbolInstance->SetSizeContext(MdfModel::DeviceUnits);
-        else if (::wcscmp(ch, L"Mapping") == 0) // NOXLATE
-            this->_symbolInstance->SetSizeContext(MdfModel::MappingUnits);
-    }
+    else IF_ENUM_2(m_currElemName, this->_symbolInstance, MdfModel, SizeContext, ch, DeviceUnits, MappingUnits)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, DrawLast, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, CheckExclusionRegion, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, AddToExclusionRegion, ch)
@@ -96,22 +88,7 @@ void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance)
     EMIT_STRING_PROPERTY(fd, symbolInstance, ScaleY, true)
     EMIT_STRING_PROPERTY(fd, symbolInstance, InsertionOffsetX, true)
     EMIT_STRING_PROPERTY(fd, symbolInstance, InsertionOffsetY, true)
-// can't use EMIT_ENUM_2 since the allowed values don't exactly match the enums
-//  EMIT_ENUM_2(fd, symbolInstance, MdfModel, SizeContext, DeviceUnits, MappingUnits, 1) // DeviceUnits is default
-    if (symbolInstance->GetSizeContext() != MdfModel::DeviceUnits)
-    {
-        fd << tab() << "<SizeContext>"; // NOXLATE
-        switch (symbolInstance->GetSizeContext())
-        {
-        case MdfModel::DeviceUnits:
-            fd << "Device"; // NOXLATE
-            break;
-        case MdfModel::MappingUnits:
-            fd << "Mapping"; // NOXLATE
-            break;
-        }
-        fd << "</SizeContext>" << std::endl; // NOXLATE
-    }
+    EMIT_ENUM_2(fd, symbolInstance, MdfModel, SizeContext, DeviceUnits, MappingUnits, 1) // DeviceUnits is default
     EMIT_STRING_PROPERTY(fd, symbolInstance, DrawLast, true)
     EMIT_STRING_PROPERTY(fd, symbolInstance, CheckExclusionRegion, true)
     EMIT_STRING_PROPERTY(fd, symbolInstance, AddToExclusionRegion, true)

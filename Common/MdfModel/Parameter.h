@@ -49,7 +49,7 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetDescription() const;
         void SetDescription(const MdfString& description);
 
-        ValueList* GetValueList();
+        ValueList* GetAllowedValues();
 
     private:
         // Hidden copy constructor and assignment operator.
@@ -61,7 +61,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sDefaultValue;
         MdfString m_sDisplayName;
         MdfString m_sDescription;
-        ValueList m_collValueList;
+        ValueList m_collAllowedValues;
     };
 
     typedef MdfOwnerCollection<Parameter> ParameterCollection;

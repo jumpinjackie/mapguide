@@ -33,23 +33,23 @@ BEGIN_NAMESPACE_MDFMODEL
         AreaUsage();
         virtual ~AreaUsage();
 
-        const MdfString& GetOriginControl() const;
-        void SetOriginControl(const MdfString& originControl);
-
         const MdfString& GetAngleControl() const;
         void SetAngleControl(const MdfString& angleControl);
 
+        const MdfString& GetOriginControl() const;
+        void SetOriginControl(const MdfString& originControl);
+
         const MdfString& GetClippingControl() const;
         void SetClippingControl(const MdfString& clippingControl);
+
+        const MdfString& GetAngle() const;
+        void SetAngle(const MdfString& angle);
 
         const MdfString& GetOriginX() const;
         void SetOriginX(const MdfString& originX);
 
         const MdfString& GetOriginY() const;
         void SetOriginY(const MdfString& originY);
-
-        const MdfString& GetAngle() const;
-        void SetAngle(const MdfString& angle);
 
         const MdfString& GetRepeatX() const;
         void SetRepeatX(const MdfString& repeatX);
@@ -66,12 +66,12 @@ BEGIN_NAMESPACE_MDFMODEL
         AreaUsage& operator=(const AreaUsage&);
 
         // Data members
-        MdfString m_sOriginControl;
         MdfString m_sAngleControl;
+        MdfString m_sOriginControl;
         MdfString m_sClippingControl;
+        MdfString m_sAngle;
         MdfString m_sOriginX;
         MdfString m_sOriginY;
-        MdfString m_sAngle;
         MdfString m_sRepeatX;
         MdfString m_sRepeatY;
         MdfString m_sBufferWidth;

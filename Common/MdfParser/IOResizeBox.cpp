@@ -48,7 +48,7 @@ void IOResizeBox::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, PositionY, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, SizeX, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, SizeY, ch)
-    else IF_ENUM_4(m_currElemName, this->_resizeBox, ResizeBox, GrowControl, ch, GrowInX, GrowInY, GrowInXY, GrowInXYMaintainAspect);
+    else IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, GrowControl, ch)
 }
 
 void IOResizeBox::EndElement(const wchar_t *name, HandlerStack *handlerStack)
@@ -73,7 +73,7 @@ void IOResizeBox::Write(MdfStream &fd, ResizeBox* resizeBox)
     EMIT_STRING_PROPERTY(fd, resizeBox, PositionY, false)
     EMIT_STRING_PROPERTY(fd, resizeBox, SizeX, false)
     EMIT_STRING_PROPERTY(fd, resizeBox, SizeY, false)
-    EMIT_ENUM_4(fd, resizeBox, ResizeBox, GrowControl, GrowInX, GrowInY, GrowInXY, GrowInXYMaintainAspect, 0)
+    EMIT_STRING_PROPERTY(fd, resizeBox, GrowControl, false)
 
     dectab();
     fd << tab() << "</ResizeBox>" << std::endl; // NOXLATE

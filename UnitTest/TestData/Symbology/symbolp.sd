@@ -23,34 +23,34 @@
         <DefaultValue>FFFFFF00</DefaultValue>
         <DisplayName>X Color</DisplayName>
         <Description>The color of the X thingie that is across the box</Description>
-        <ValueList>
+        <AllowedValues>
           <Value>FFFF0000</Value>
           <Value>FFFFFF00</Value>
           <Value>FF00FF00</Value>
-        </ValueList>
+        </AllowedValues>
       </Parameter>
       <Parameter>
         <Identifier>OUTLINE</Identifier>
         <DefaultValue>FFFF0000</DefaultValue>
         <DisplayName>Outline Color</DisplayName>
         <Description>The color of the outline of the box</Description>
-        <ValueList>
+        <AllowedValues>
           <Value>FFFF0000</Value>
           <Value>FFFFFFFF</Value>
-        </ValueList>
+        </AllowedValues>
       </Parameter>
       <Parameter>
         <Identifier>THICKNESS</Identifier>
         <DefaultValue>-.5</DefaultValue>
         <DisplayName>Line Thickness</DisplayName>
         <Description>The thickness of the line in mm...minus 2 and halved</Description>
-        <ValueList>
+        <AllowedValues>
           <Value>-1</Value>
           <Value>-.5</Value>
           <Value>0</Value>
           <Value>.5</Value>
           <Value>1</Value>
-        </ValueList>
+        </AllowedValues>
       </Parameter>
     </ParameterDefinition>
   </SimpleSymbolDefinition>

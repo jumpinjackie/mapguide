@@ -29,14 +29,6 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API ResizeBox : public MdfRootObject
     {
     public:
-        enum GrowControl
-        {
-            GrowInX,
-            GrowInY,
-            GrowInXY,
-            GrowInXYMaintainAspect
-        };
-
         // Construction, destruction, initialization
         ResizeBox();
         virtual ~ResizeBox();
@@ -53,8 +45,8 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetSizeY() const;
         void SetSizeY(const MdfString& sizeY);
 
-        GrowControl GetGrowControl() const;
-        void SetGrowControl(GrowControl growControl);
+        const MdfString& GetGrowControl() const;
+        void SetGrowControl(const MdfString& growControl);
 
     private:
         // Hidden copy constructor and assignment operator.
@@ -66,7 +58,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sPositionY;
         MdfString m_sSizeX;
         MdfString m_sSizeY;
-        GrowControl m_eGrowControl;
+        MdfString m_sGrowControl;
     };
 
 END_NAMESPACE_MDFMODEL

@@ -115,7 +115,7 @@ void Parameter::SetDescription(const MdfString& description)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-ValueList* Parameter::GetValueList()
+ValueList* Parameter::GetAllowedValues()
 {
-    return &this->m_collValueList;
+    return &this->m_collAllowedValues;
 }

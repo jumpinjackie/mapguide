@@ -49,10 +49,7 @@ void IOSimpleSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStac
 
 void IOSimpleSymbol::ElementChars(const wchar_t *ch)
 {
-// can't use IF_STRING_PROPERTY since the property name doesn't exactly match the element name
-//       IF_STRING_PROPERTY(m_currElemName, this->_simpleSymbol, SymbolReference, ch)
-    if (m_currElemName == L"SimpleSymbolReference") // NOXLATE
-        this->_simpleSymbol->SetSymbolReference(ch);
+         IF_STRING_PROPERTY(m_currElemName, this->_simpleSymbol, SymbolReference, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_simpleSymbol, RenderingPass, ch)
 }
 
@@ -79,11 +76,7 @@ void IOSimpleSymbol::Write(MdfStream &fd, SimpleSymbol* simpleSymbol)
         IOSimpleSymbolDefinition::Write(fd, simpleSymbol->GetSymbolDefinition());
     else
     {
-// can't use EMIT_STRING_PROPERTY since the property name doesn't exactly match the element name
-//      EMIT_STRING_PROPERTY(fd, simpleSymbol, SymbolReference, false)
-        fd << tab() << "<SimpleSymbolReference>"; // NOXLATE
-        fd << EncodeString(simpleSymbol->GetSymbolReference());
-        fd << "</SimpleSymbolReference>" << std::endl; // NOXLATE
+        EMIT_STRING_PROPERTY(fd, simpleSymbol, SymbolReference, false)
     }
 
     EMIT_STRING_PROPERTY(fd, simpleSymbol, RenderingPass, true)

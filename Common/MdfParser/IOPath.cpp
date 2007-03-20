@@ -47,33 +47,9 @@ void IOPath::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, path, LineColor, ch)
     else IF_STRING_PROPERTY(m_currElemName, path, LineWeight, ch)
     else IF_STRING_PROPERTY(m_currElemName, path, LineWeightScalable, ch)
+    else IF_STRING_PROPERTY(m_currElemName, path, LineCap, ch)
+    else IF_STRING_PROPERTY(m_currElemName, path, LineJoin, ch)
     else IF_STRING_PROPERTY(m_currElemName, path, LineMiterLimit, ch)
-// can't use IF_ENUM_4 since the allowed values don't exactly match the enums
-//  else IF_ENUM_4(m_currElemName, path, Path, LineCap, ch, CapNone, CapRound, CapTriangle, CapSquare)
-//  else IF_ENUM_4(m_currElemName, path, Path, LineJoin, ch, JoinNone, JoinBevel, JoinRound, JoinMiter)
-    else if (m_currElemName == L"LineCap") // NOXLATE
-    {
-        if      (::wcscmp(ch, L"None") == 0) // NOXLATE
-            path->SetLineCap(Path::CapNone);
-        else if (::wcscmp(ch, L"Round") == 0) // NOXLATE
-            path->SetLineCap(Path::CapRound);
-        else if (::wcscmp(ch, L"Triangle") == 0) // NOXLATE
-            path->SetLineCap(Path::CapTriangle);
-        else if (::wcscmp(ch, L"Square") == 0) // NOXLATE
-            path->SetLineCap(Path::CapSquare);
-    }
-    else if (m_currElemName == L"LineJoin")
-    {
-        // can't use IF_ENUM_4 since the allowed values don't exactly match the enums
-        if      (::wcscmp(ch, L"None") == 0) // NOXLATE
-            path->SetLineJoin(Path::JoinNone);
-        else if (::wcscmp(ch, L"Bevel") == 0) // NOXLATE
-            path->SetLineJoin(Path::JoinBevel);
-        else if (::wcscmp(ch, L"Round") == 0) // NOXLATE
-            path->SetLineJoin(Path::JoinRound);
-        else if (::wcscmp(ch, L"Miter") == 0) // NOXLATE
-            path->SetLineJoin(Path::JoinMiter);
-    }
     else IOGraphicElement::ElementChars(ch);
 }
 
@@ -94,49 +70,8 @@ void IOPath::Write(MdfStream &fd, Path* path, std::string name)
     EMIT_STRING_PROPERTY(fd, path, LineColor, true)
     EMIT_STRING_PROPERTY(fd, path, LineWeight, true)
     EMIT_STRING_PROPERTY(fd, path, LineWeightScalable, true)
-// can't use EMIT_ENUM_4 since the allowed values don't exactly match the enums
-//  EMIT_ENUM_4(fd, path, Path, LineCap, CapNone, CapRound, CapTriangle, CapSquare, 2) // CapRound is default
-//  EMIT_ENUM_4(fd, path, Path, LineJoin, JoinNone, JoinBevel, JoinRound, JoinMiter, 3) // JoinRound is default
-    if (path->GetLineCap() != Path::CapRound)
-    {
-        fd << tab() << "<LineCap>"; // NOXLATE
-        switch (path->GetLineCap())
-        {
-        case Path::CapNone:
-            fd << "None"; // NOXLATE
-            break;
-        case Path::CapRound:
-            fd << "Round"; // NOXLATE
-            break;
-        case Path::CapTriangle:
-            fd << "Triangle"; // NOXLATE
-            break;
-        case Path::CapSquare:
-            fd << "Square"; // NOXLATE
-            break;
-        }
-        fd << "</LineCap>" << std::endl; // NOXLATE
-    }
-    if (path->GetLineJoin() != Path::JoinRound)
-    {
-        fd << tab() << "<LineJoin>"; // NOXLATE
-        switch (path->GetLineJoin())
-        {
-        case Path::JoinNone:
-            fd << "None"; // NOXLATE
-            break;
-        case Path::JoinBevel:
-            fd << "Bevel"; // NOXLATE
-            break;
-        case Path::JoinRound:
-            fd << "Round"; // NOXLATE
-            break;
-        case Path::JoinMiter:
-            fd << "Miter"; // NOXLATE
-            break;
-        }
-        fd << "</LineJoin>" << std::endl; // NOXLATE
-    }
+    EMIT_STRING_PROPERTY(fd, path, LineCap, true)
+    EMIT_STRING_PROPERTY(fd, path, LineJoin, true)
     EMIT_STRING_PROPERTY(fd, path, LineMiterLimit, true)
 
     dectab();

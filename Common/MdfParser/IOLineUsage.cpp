@@ -57,6 +57,7 @@ void IOLineUsage::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, EndOffset, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, Repeat, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexAngleLimit, ch)
+    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexJoin, ch)
 }
 
 void IOLineUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
@@ -85,6 +86,7 @@ void IOLineUsage::Write(MdfStream &fd, LineUsage* lineUsage)
     EMIT_STRING_PROPERTY(fd, lineUsage, EndOffset, true)
     EMIT_STRING_PROPERTY(fd, lineUsage, Repeat, true)
     EMIT_STRING_PROPERTY(fd, lineUsage, VertexAngleLimit, true)
+    EMIT_STRING_PROPERTY(fd, lineUsage, VertexJoin, true)
 
     if (lineUsage->GetDefaultPath() != NULL)
         IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath");

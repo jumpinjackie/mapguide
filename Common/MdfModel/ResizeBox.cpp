@@ -29,9 +29,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 ResizeBox::ResizeBox()
 {
-    // NOTE: if you change any defaults then you must also update
-    //       IOResizeBox::Write to use the correct default values.
-    this->m_eGrowControl = GrowInXYMaintainAspect;
 }
 
 //-------------------------------------------------------------------------
@@ -118,16 +115,16 @@ void ResizeBox::SetSizeY(const MdfString& sizeY)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-ResizeBox::GrowControl ResizeBox::GetGrowControl() const
+const MdfString& ResizeBox::GetGrowControl() const
 {
-    return this->m_eGrowControl;
+    return this->m_sGrowControl;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void ResizeBox::SetGrowControl(GrowControl growControl)
+void ResizeBox::SetGrowControl(const MdfString& growControl)
 {
-    this->m_eGrowControl = growControl;
+    this->m_sGrowControl = growControl;
 }

@@ -31,11 +31,13 @@ class IOValueList : public SAX2ElementHandler
     public:
         IOValueList(ValueList* valueList);
 
+        void StartValueListElement(const wchar_t *name, HandlerStack *handlerStack);
+
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);
         virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
 
-        static void Write(MdfStream &fd, ValueList* valueList);
+        static void Write(MdfStream &fd, ValueList* valueList, std::string name);
 
     private:
         ValueList* _valueList;

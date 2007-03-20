@@ -33,7 +33,7 @@ IOGraphicElement::~IOGraphicElement()
 
 void IOGraphicElement::ElementChars(const wchar_t *ch)
 {
-    IF_ENUM_3(m_currElemName, this->_element, GraphicElement, ResizeControl, ch, ResizeNone, AddToResizeBox, AdjustToResizeBox)
+    IF_STRING_PROPERTY(m_currElemName, this->_element, ResizeControl, ch)
 }
 
 void IOGraphicElement::EndElement(const wchar_t *name, HandlerStack *handlerStack)
@@ -49,5 +49,5 @@ void IOGraphicElement::EndElement(const wchar_t *name, HandlerStack *handlerStac
 
 void IOGraphicElement::Write(MdfStream &fd, GraphicElement* element)
 {
-    EMIT_ENUM_3(fd, element, GraphicElement, ResizeControl, ResizeNone, AddToResizeBox, AdjustToResizeBox, 1)   // ResizeNone is default
+    EMIT_STRING_PROPERTY(fd, element, ResizeControl, true)
 }

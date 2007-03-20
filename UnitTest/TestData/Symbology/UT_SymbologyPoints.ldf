@@ -29,7 +29,7 @@
                 <SymbolReference>Library://Symbology/Symbols/PointSymbol.SymbolDefinition</SymbolReference>
                 <ScaleX>1</ScaleX>
                 <ScaleY>1</ScaleY>
-                <SizeContext>Device</SizeContext>
+                <SizeContext>DeviceUnits</SizeContext>
                 <DrawLast>False</DrawLast>
                 <CheckExclusionRegion>False</CheckExclusionRegion>
                 <AddToExclusionRegion>False</AddToExclusionRegion>

@@ -43,7 +43,7 @@
               <xs:documentation>The collection of graphic elements defining this symbol.</xs:documentation>
             </xs:annotation>
             <xs:complexType>
-              <xs:choice maxOccurs="unbounded">
+              <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element name="Path" type="PathType"/>
                 <xs:element name="Image" type="ImageType"/>
                 <xs:element name="Text" type="TextType"/>
@@ -52,7 +52,7 @@
           </xs:element>
           <xs:element name="ResizeBox" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The optional box used to resize and reposition select graphic elements.  The graphical extent of all elements with ResizeControl set to AddToResizeBox will be added to this box, potentially causing it to grow in size.  Any change in size causes all elements with ResizeControl set to AdjustWithResizeBox to be proportionally resized and repositioned.</xs:documentation>
+              <xs:documentation>The optional box used to resize and reposition select graphic elements.  The graphical extent of all elements with ResizeControl set to AddToResizeBox will be added to this box, potentially causing it to grow in size.  Any change in size causes all elements with ResizeControl set to AdjustToResizeBox to be proportionally resized and repositioned.</xs:documentation>
             </xs:annotation>
             <xs:complexType>
               <xs:sequence>
@@ -76,18 +76,10 @@
                     <xs:documentation>The initial height of the resize box, in mm.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
-                <xs:element name="GrowControl">
+                <xs:element name="GrowControl" type="xs:string">
                   <xs:annotation>
-                    <xs:documentation>Specifies how the resize box grows in size.</xs:documentation>
+                    <xs:documentation>Specifies how the resize box grows in size.  This must evaluate to one of: GrowInX, GrowInY, GrowInXY, or GrowInXYMaintainAspect (default).</xs:documentation>
                   </xs:annotation>
-                  <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                      <xs:enumeration value="GrowInX"/>
-                      <xs:enumeration value="GrowInY"/>
-                      <xs:enumeration value="GrowInXY"/>
-                      <xs:enumeration value="GrowInXYMaintainAspect"/>
-                    </xs:restriction>
-                  </xs:simpleType>
                 </xs:element>
               </xs:sequence>
             </xs:complexType>
@@ -98,20 +90,14 @@
             </xs:annotation>
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="AngleControl" minOccurs="0">
+                <xs:element name="AngleControl" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies how the symbol angle is defined.</xs:documentation>
+                    <xs:documentation>Specifies how the symbol angle is defined.  This must evaluate to one of: FromAngle or FromGeometry (default).</xs:documentation>
                   </xs:annotation>
-                  <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                      <xs:enumeration value="FromAngle"/>
-                      <xs:enumeration value="FromGeometry"/>
-                    </xs:restriction>
-                  </xs:simpleType>
                 </xs:element>
                 <xs:element name="Angle" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the symbol angle, in degrees.  Only applies if AngleControl is set to FromAngle.</xs:documentation>
+                    <xs:documentation>Specifies the symbol angle, in degrees.  Only applies if AngleControl evaluates to FromAngle.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="OriginOffsetX" type="xs:string" minOccurs="0">
@@ -133,54 +119,34 @@
             </xs:annotation>
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="AngleControl" minOccurs="0">
+                <xs:element name="AngleControl" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies how the symbol angle is defined.</xs:documentation>
+                    <xs:documentation>Specifies how the symbol angle is defined.  This must evaluate to one of: FromAngle or FromGeometry (default).</xs:documentation>
                   </xs:annotation>
-                  <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                      <xs:enumeration value="FromAngle"/>
-                      <xs:enumeration value="FromGeometry"/>
-                    </xs:restriction>
-                  </xs:simpleType>
                 </xs:element>
-                <xs:element name="UnitsControl" minOccurs="0">
+                <xs:element name="UnitsControl" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies whether the distribution parameters are interpreted as absolute values (in mm) or parametric values.</xs:documentation>
+                    <xs:documentation>Specifies whether the distribution parameters are interpreted as absolute values (in mm) or parametric values.  This must evaluate to one of: Absolute (default) or Parametric.</xs:documentation>
                   </xs:annotation>
-                  <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                      <xs:enumeration value="Absolute"/>
-                      <xs:enumeration value="Parametric"/>
-                    </xs:restriction>
-                  </xs:simpleType>
                 </xs:element>
-                <xs:element name="VertexControl" minOccurs="0">
+                <xs:element name="VertexControl" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the symbol behavior at vertices.</xs:documentation>
+                    <xs:documentation>Specifies the symbol behavior at vertices.  This must evaluate to one of: NoOverlap (default), OverlapDirect, OverlapNoWrap, or OverlapWrap.</xs:documentation>
                   </xs:annotation>
-                  <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                      <xs:enumeration value="NoOverlap"/>
-                      <xs:enumeration value="OverlapDirect"/>
-                      <xs:enumeration value="OverlapNoWrap"/>
-                      <xs:enumeration value="OverlapWrap"/>
-                    </xs:restriction>
-                  </xs:simpleType>
                 </xs:element>
                 <xs:element name="Angle" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the symbol angle, in degrees.  Only applies if AngleControl is set to FromAngle.</xs:documentation>
+                    <xs:documentation>Specifies the symbol angle, in degrees.  Only applies if AngleControl evaluates to FromAngle.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="StartOffset" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies where the symbol distribution begins, relative to the start of the curve.</xs:documentation>
+                    <xs:documentation>Specifies where the symbol distribution begins, relative to the start of the feature.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="EndOffset" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies where the symbol distribution ends, relative to the end of the curve.</xs:documentation>
+                    <xs:documentation>Specifies where the symbol distribution ends, relative to the end of the feature.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="Repeat" type="xs:string" minOccurs="0">
@@ -188,9 +154,14 @@
                     <xs:documentation>Specifies the separation between repeating symbols.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
-                <xs:element name="VertexAngleLimit" minOccurs="0">
+                <xs:element name="VertexAngleLimit" type="xs:string" minOccurs="0">
                   <xs:annotation>
                     <xs:documentation>Specifies the limiting angle, in degrees, by a which the feature geometry can change before some of the VertexControl options take effect.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="VertexJoin" type="xs:string" minOccurs="0">
+                  <xs:annotation>
+                    <xs:documentation>Specifies the wrapping behavior at vertices for all graphic elements.  Only applies if VertexControl evaluates to OverlapWrap.  This must evaluate to one of: None, Bevel, Round (default), or Miter.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="DefaultPath" type="PathType" minOccurs="0">
@@ -207,54 +178,34 @@
             </xs:annotation>
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="OriginControl" minOccurs="0">
+                <xs:element name="AngleControl" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies how the symbol grid origin is defined.</xs:documentation>
-                  </xs:annotation>
-                  <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                      <xs:enumeration value="Global"/>
-                      <xs:enumeration value="Local"/>
-                      <xs:enumeration value="Centroid"/>
-                    </xs:restriction>
-                  </xs:simpleType>
-                </xs:element>
-                <xs:element name="AngleControl" minOccurs="0">
-                  <xs:annotation>
-                    <xs:documentation>Specifies how the angle for the repeating symbol is defined.</xs:documentation>
-                  </xs:annotation>
-                  <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                      <xs:enumeration value="FromAngle"/>
-                      <xs:enumeration value="FromGeometry"/>
-                    </xs:restriction>
-                  </xs:simpleType>
-                </xs:element>
-                <xs:element name="ClippingControl" minOccurs="0">
-                  <xs:annotation>
-                    <xs:documentation>Specifies the clipping behavior of the symbol at polygon boundaries.</xs:documentation>
-                  </xs:annotation>
-                  <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                      <xs:enumeration value="Clip"/>
-                      <xs:enumeration value="Inside"/>
-                      <xs:enumeration value="Overlap"/>
-                    </xs:restriction>
-                  </xs:simpleType>
-                </xs:element>
-                <xs:element name="OriginX" type="xs:string" minOccurs="0">
-                  <xs:annotation>
-                    <xs:documentation>The x-coordinate of the symbol grid origin, in mm.  Only applies if OriginControl is set to Global or Local.</xs:documentation>
+                    <xs:documentation>Specifies how the symbol angle is defined.  This must evaluate to one of: FromAngle or FromGeometry (default).</xs:documentation>
                   </xs:annotation>
                 </xs:element>
-                <xs:element name="OriginY" type="xs:string" minOccurs="0">
+                <xs:element name="OriginControl" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The y-coordinate of the symbol grid origin, in mm.  Only applies if OriginControl is set to Global or Local.</xs:documentation>
+                    <xs:documentation>Specifies how the symbol grid origin is defined.  This must evaluate to one of: Global (default), Local, or Centroid.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="ClippingControl" type="xs:string" minOccurs="0">
+                  <xs:annotation>
+                    <xs:documentation>Specifies the clipping behavior of the symbol at polygon boundaries.  This must evaluate to one of: Clip (default), Inside, or Overlap.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="Angle" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the angle of each repeating symbol, in degrees.  Only applies if AngleControl is set to FromAngle.</xs:documentation>
+                    <xs:documentation>Specifies the angle of each repeating symbol, in degrees.  Only applies if AngleControl evaluates to FromAngle.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="OriginX" type="xs:string" minOccurs="0">
+                  <xs:annotation>
+                    <xs:documentation>The x-coordinate of the symbol grid origin, in mm.  Only applies if OriginControl evaluates to Global or Local.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="OriginY" type="xs:string" minOccurs="0">
+                  <xs:annotation>
+                    <xs:documentation>The y-coordinate of the symbol grid origin, in mm.  Only applies if OriginControl evaluates to Global or Local.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="RepeatX" type="xs:string" minOccurs="0">
@@ -307,7 +258,7 @@
                           <xs:documentation>A long description of the parameter.  This might include a description of useful values for this parameter.</xs:documentation>
                         </xs:annotation>
                       </xs:element>
-                      <xs:element name="ValueList" minOccurs="0">
+                      <xs:element name="AllowedValues" minOccurs="0">
                         <xs:annotation>
                           <xs:documentation>A list of allowed values for this parameter.</xs:documentation>
                         </xs:annotation>
@@ -315,7 +266,7 @@
                           <xs:sequence maxOccurs="unbounded">
                             <xs:element name="Value" type="xs:string">
                               <xs:annotation>
-                                <xs:documentation>A value in the value list.</xs:documentation>
+                                <xs:documentation>A value in the list.</xs:documentation>
                               </xs:annotation>
                             </xs:element>
                           </xs:sequence>
@@ -338,7 +289,7 @@
     <xs:complexContent>
       <xs:extension base="SymbolDefinitionBaseType">
         <xs:sequence>
-          <xs:element name="SimpleSymbol" maxOccurs="unbounded">
+          <xs:element name="SimpleSymbol" minOccurs="0" maxOccurs="unbounded">
             <xs:complexType>
               <xs:sequence>
                 <xs:choice>
@@ -347,7 +298,7 @@
                       <xs:documentation>An inlined SimpleSymbolDefinition.</xs:documentation>
                     </xs:annotation>
                   </xs:element>
-                  <xs:element name="SimpleSymbolReference" type="xs:string">
+                  <xs:element name="SymbolReference" type="xs:string">
                     <xs:annotation>
                       <xs:documentation>A library reference to an existing SimpleSymbolDefinition.</xs:documentation>
                     </xs:annotation>
@@ -355,7 +306,7 @@
                 </xs:choice>
                 <xs:element name="RenderingPass" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The rendering pass in which  this symbol definition draws.  Symbol definitions that do not specifiy this will be drawn in a separate final rendering pass.</xs:documentation>
+                    <xs:documentation>The rendering pass in which  this symbol definition draws.  Symbol definitions that do not specifiy this will be drawn using rendering pass 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
               </xs:sequence>
@@ -370,17 +321,10 @@
       <xs:documentation>Base type used with all graphic elements.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="ResizeControl" minOccurs="0">
+      <xs:element name="ResizeControl" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies how this graphic element interacts with the resize box.  AddToResizeBox means the element's graphical extent is added to the resize box, but the element is not resized or repositioned if the resize box grows.  AdjustToResizeBox means the element is resized and repositioned relative to the resize box, but its extent is not added to the box.  ResizeNone, the default, means the element does not interact with the resize box.</xs:documentation>
+          <xs:documentation>Specifies how this graphic element interacts with the resize box.  This must evaluate to one of: ResizeNone (default), AddToResizeBox, or AdjustToResizeBox.  AddToResizeBox means the element's graphical extent is added to the resize box, but the element is not resized or repositioned if the resize box grows.  AdjustToResizeBox means the element is resized and repositioned relative to the resize box, but its extent is not added to the box.  ResizeNone means the element does not interact with the resize box.</xs:documentation>
         </xs:annotation>
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:enumeration value="ResizeNone"/>
-            <xs:enumeration value="AddToResizeBox"/>
-            <xs:enumeration value="AdjustToResizeBox"/>
-          </xs:restriction>
-        </xs:simpleType>
       </xs:element>
     </xs:sequence>
   </xs:complexType>
@@ -413,34 +357,18 @@
           </xs:element>
           <xs:element name="LineWeightScalable" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>Boolean value which specifies whether the line weight scales with the symbol.  This behavior is independent of the symbol's size context.  The default value is true.</xs:documentation>
+              <xs:documentation>Boolean value which specifies whether the line weight scales with the symbol.  This behavior is independent of the symbol's size context.  This must evaluate to True (default) or False.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="LineCap" minOccurs="0">
+          <xs:element name="LineCap" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The cap type to use at the ends of each segment in the path outline.</xs:documentation>
+              <xs:documentation>The cap type to use at the ends of each segment in the path outline.  This must evaluate to one of: None, Round (default), Triangle, or Square.</xs:documentation>
             </xs:annotation>
-            <xs:simpleType>
-              <xs:restriction base="xs:string">
-                <xs:enumeration value="None"/>
-                <xs:enumeration value="Round"/>
-                <xs:enumeration value="Triangle"/>
-                <xs:enumeration value="Square"/>
-              </xs:restriction>
-            </xs:simpleType>
           </xs:element>
-          <xs:element name="LineJoin" minOccurs="0">
+          <xs:element name="LineJoin" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The join type to use at each vertex in the path outline.</xs:documentation>
+              <xs:documentation>The join type to use at each vertex in the path outline.  This must evaluate to one of: None, Bevel, Round (default), or Miter.</xs:documentation>
             </xs:annotation>
-            <xs:simpleType>
-              <xs:restriction base="xs:string">
-                <xs:enumeration value="None"/>
-                <xs:enumeration value="Bevel"/>
-                <xs:enumeration value="Round"/>
-                <xs:enumeration value="Miter"/>
-              </xs:restriction>
-            </xs:simpleType>
           </xs:element>
           <xs:element name="LineMiterLimit" type="xs:string" minOccurs="0">
             <xs:annotation>
@@ -518,17 +446,17 @@
           </xs:element>
           <xs:element name="Bold" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>Specifies if the text should be drawn using a bold font.</xs:documentation>
+              <xs:documentation>Specifies if the text should be drawn using a bold font.  This must evaluate to True or False (default).</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="Italic" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>Specifies if the text should be drawn using an italic font.</xs:documentation>
+              <xs:documentation>Specifies if the text should be drawn using an italic font.  This must evaluate to True or False (default).</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="Underlined" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>Specifies if the text should be underlined.</xs:documentation>
+              <xs:documentation>Specifies if the text should be underlined.  This must evaluate to True or False (default).</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="Height" type="xs:string" minOccurs="0">
@@ -553,17 +481,17 @@
           </xs:element>
           <xs:element name="HorizontalAlignment" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The horizontal alignment of the text box relative to its position.  This must evaluate to one of: Left, Center, or Right.</xs:documentation>
+              <xs:documentation>The horizontal alignment of the text box relative to its position.  This must evaluate to one of: Left, Center (default), or Right.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="VerticalAlignment" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The vertical alignment of the text box relative to its position.  This must evaluate to one of: Bottom, Baseline, Halfline, Capline, or Top.</xs:documentation>
+              <xs:documentation>The vertical alignment of the text box relative to its position.  This must evaluate to one of: Bottom, Baseline (default), Halfline, Capline, or Top.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="Justification" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The horizontal justification of individual lines of text in a multi-line text string.  This must evaluate to one of: Left, Center, Right, or Justified.</xs:documentation>
+              <xs:documentation>The horizontal justification of individual lines of text in a multi-line text string.  This must evaluate to one of: Left, Center (default), Right, or Justified.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="LineSpacing" type="xs:string" minOccurs="0">

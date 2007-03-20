@@ -62,11 +62,7 @@ void IOCompoundSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *h
 
 void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* symbolDefinition)
 {
-    // the schema currently requires at least one symbol
-    // TODO: WCW - we should relax this to allow zero symbols
     SimpleSymbolCollection* symbolCollection = symbolDefinition->GetSymbols();
-    int numElements = symbolCollection->GetCount();
-    assert(numElements > 0);
 
     fd << tab() << "<CompoundSymbolDefinition>" << std::endl; // NOXLATE
     inctab();
@@ -74,6 +70,7 @@ void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* 
     EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false)
     EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true)
 
+    int numElements = symbolCollection->GetCount();
     for (int i=0; i<numElements; ++i)
         IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i));
 
