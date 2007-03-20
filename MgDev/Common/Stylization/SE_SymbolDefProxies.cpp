@@ -38,7 +38,8 @@ SE_Style::~SE_Style()
 SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 {
     SE_RenderPolyline* ret = new SE_RenderPolyline();
-    ret->resize = (resize == GraphicElement::AdjustToResizeBox);
+    const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
+    ret->resize = (sResizeCtrl && wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
 
     double wx =     weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
     ret->weight =   weight.evaluate(cxt->exec) * wx;
@@ -59,7 +60,8 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
 {
     SE_RenderPolygon* ret = new SE_RenderPolygon();
-    ret->resize = (resize == GraphicElement::AdjustToResizeBox);
+    const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
+    ret->resize = (sResizeCtrl && wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
 
     ret->fill = fill.evaluate(cxt->exec);
 
@@ -85,7 +87,8 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         return NULL;
 
     SE_RenderText* ret = new SE_RenderText();
-    ret->resize = (resize == GraphicElement::AdjustToResizeBox);
+    const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
+    ret->resize = (sResizeCtrl && wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
 
     ret->text = textExpr.evaluate(cxt->exec);
     ret->position[0] = position[0].evaluate(cxt->exec);
@@ -164,7 +167,8 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 {
     SE_RenderRaster* ret = new SE_RenderRaster();
-    ret->resize = (resize == GraphicElement::AdjustToResizeBox);
+    const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
+    ret->resize = (sResizeCtrl && wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
 
     if (!pngPtr)
     {
@@ -263,28 +267,40 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
 
             rstyle->symbol.push_back(rsym);
 
-            if (useBox && sym->resize == GraphicElement::AddToResizeBox)
-                rsym->bounds->Contained(minx, miny, maxx, maxy, growx, growy);
+            if (useBox)
+            {
+                const wchar_t* sResizeCtrl = sym->resizeControl.evaluate(cxt->exec);
+                if (sResizeCtrl && wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
+                    rsym->bounds->Contained(minx, miny, maxx, maxy, growx, growy);
+            }
         }
     }
 
     if (useBox)
     {
-        switch(resize)
+        const wchar_t* sGrowCtrl = growControl.evaluate(cxt->exec);
+        // TODO - if the string is empty we need to use the default
+        if (sGrowCtrl)
         {
-        case ResizeBox::GrowInX:
-            growy = 0.0;
-            break;
-
-        case ResizeBox::GrowInY:
-            growx = 0.0;
-            break;
-
-        case ResizeBox::GrowInXYMaintainAspect:
-            if (growy > growx)
-                growx = growy;
-            else if (growx > growy)
-                growy = growx;
+            if (wcscmp(sGrowCtrl, L"GrowInX") == 0)
+            {
+                growy = 0.0;
+            }
+            else if (wcscmp(sGrowCtrl, L"GrowInY") == 0)
+            {
+                growx = 0.0;
+            }
+            else if (wcscmp(sGrowCtrl, L"GrowInXY") == 0)
+            {
+                // TODO
+            }
+            else if (wcscmp(sGrowCtrl, L"GrowInXYMaintainAspect") == 0)
+            {
+                if (growy > growx)
+                    growx = growy;
+                else if (growx > growy)
+                    growy = growx;
+            }
         }
 
         SE_Matrix totalxf(*cxt->xform);
@@ -430,13 +446,13 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->angleControl = angleControl.evaluate(cxt->exec);
     render->unitsControl = unitsControl.evaluate(cxt->exec);
     render->vertexControl = vertexControl.evaluate(cxt->exec);
-//  render->join = style->join.evaluate(m_exec);
 
     render->angle = angle.evaluate(cxt->exec) * M_PI180;
     render->startOffset = startOffset.evaluate(cxt->exec)*cxt->mm2px;
     render->endOffset = endOffset.evaluate(cxt->exec)*cxt->mm2px;
     render->repeat = repeat.evaluate(cxt->exec)*cxt->mm2px;
     render->vertexAngleLimit = vertexAngleLimit.evaluate(cxt->exec) * M_PI180;
+    render->vertexJoin = vertexJoin.evaluate(cxt->exec);
 
     //evaluate all the primitives too
     SE_Style::evaluate(cxt);

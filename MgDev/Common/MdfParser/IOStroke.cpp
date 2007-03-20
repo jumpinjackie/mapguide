@@ -109,7 +109,7 @@ void IOStroke::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 
 void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *version)
 {
-    fd << tab() << "<" << name << ">" << std::endl; // NOXLATE
+    fd << tab() << "<" << name << ">" << std::endl;
     inctab();
 
     //Property: LineStyle
@@ -156,5 +156,5 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *v
     }
 
     dectab();
-    fd << tab() << "</" << name << ">" << std::endl; // NOXLATE
+    fd << tab() << "</" << name << ">" << std::endl;
 }

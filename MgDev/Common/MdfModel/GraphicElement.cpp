@@ -29,9 +29,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 GraphicElement::GraphicElement()
 {
-    // NOTE: if you change any defaults then you must also update
-    //       IOGraphicElement::Write to use the correct default values.
-    this->m_eResizeControl = ResizeNone;
 }
 
 //-------------------------------------------------------------------------
@@ -43,21 +40,35 @@ GraphicElement::~GraphicElement()
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the ResizeControl property.
+// PURPOSE: Accessor method for the ResizeControl property.  The ResizeControl
+//          property specifies how this graphic element interacts with the
+//          resize box.  AddToResizeBox means the element's graphical extent
+//          is added to the resize box, but the element is not resized or
+//          repositioned if the resize box grows.  AdjustToResizeBox means
+//          the element is resized and repositioned relative to the resize
+//          box, but its extent is not added to the box.  ResizeNone, the
+//          default, means the element does not interact with the resize box.
 // RETURNS: The resize control for this graphic element.
 //-------------------------------------------------------------------------
-GraphicElement::ResizeControl GraphicElement::GetResizeControl() const
+const MdfString& GraphicElement::GetResizeControl() const
 {
-    return this->m_eResizeControl;
+    return this->m_sResizeControl;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the ResizeControl property.
+// PURPOSE: Accessor method for the ResizeControl property.  The ResizeControl
+//          property specifies how this graphic element interacts with the
+//          resize box.  AddToResizeBox means the element's graphical extent
+//          is added to the resize box, but the element is not resized or
+//          repositioned if the resize box grows.  AdjustToResizeBox means
+//          the element is resized and repositioned relative to the resize
+//          box, but its extent is not added to the box.  ResizeNone, the
+//          default, means the element does not interact with the resize box.
 // PARAMETERS:
 //      Input:
-//          eResizeControl - The resize control for this graphic element.
+//          resizeControl - The resize control for this graphic element.
 //-------------------------------------------------------------------------
-void GraphicElement::SetResizeControl(GraphicElement::ResizeControl eResizeControl)
+void GraphicElement::SetResizeControl(const MdfString& resizeControl)
 {
-    this->m_eResizeControl = eResizeControl;
+    this->m_sResizeControl = resizeControl;
 }

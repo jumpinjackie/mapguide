@@ -86,14 +86,10 @@ void IOGraphicElementCollection::EndElement(const wchar_t *name, HandlerStack *h
 
 void IOGraphicElementCollection::Write(MdfStream &fd, GraphicElementCollection* elementCollection)
 {
-    // the schema currently requires at least one element
-    // TODO: WCW - we should relax this to allow zero elements
-    int numElements = elementCollection->GetCount();
-    assert(numElements > 0);
-
     fd << tab() << "<Graphics>" << std::endl; // NOXLATE
     inctab();
 
+    int numElements = elementCollection->GetCount();
     for (int i=0; i<numElements; ++i)
     {
         GraphicElement* elem = elementCollection->GetAt(i);

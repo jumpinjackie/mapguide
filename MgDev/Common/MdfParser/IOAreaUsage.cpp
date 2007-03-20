@@ -40,12 +40,12 @@ void IOAreaUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
 void IOAreaUsage::ElementChars(const wchar_t *ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginControl, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, AngleControl, ch)
+         IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, AngleControl, ch)
+    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginControl, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, ClippingControl, ch)
+    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, Angle, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginX, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginY, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, Angle, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, RepeatX, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, RepeatY, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, BufferWidth, ch)
@@ -69,12 +69,12 @@ void IOAreaUsage::Write(MdfStream &fd, AreaUsage *usage)
     fd << tab() << "<AreaUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, usage, OriginControl, true);
     EMIT_STRING_PROPERTY(fd, usage, AngleControl, true);
+    EMIT_STRING_PROPERTY(fd, usage, OriginControl, true);
     EMIT_STRING_PROPERTY(fd, usage, ClippingControl, true);
+    EMIT_STRING_PROPERTY(fd, usage, Angle, true)
     EMIT_STRING_PROPERTY(fd, usage, OriginX, true)
     EMIT_STRING_PROPERTY(fd, usage, OriginY, true)
-    EMIT_STRING_PROPERTY(fd, usage, Angle, true)
     EMIT_STRING_PROPERTY(fd, usage, RepeatX, true)
     EMIT_STRING_PROPERTY(fd, usage, RepeatY, true)
     EMIT_STRING_PROPERTY(fd, usage, BufferWidth, true)

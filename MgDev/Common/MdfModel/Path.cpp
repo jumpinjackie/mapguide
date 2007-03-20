@@ -30,10 +30,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 Path::Path()
 {
-    // NOTE: if you change any defaults then you must also update
-    //       IOPath::Write to use the correct default values.
-    this->m_eLineCap = CapRound;
-    this->m_eLineJoin = JoinRound;
 }
 
 //-------------------------------------------------------------------------
@@ -138,36 +134,36 @@ void Path::SetLineWeightScalable(const MdfString& lineWeightScalable)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-Path::LineCap Path::GetLineCap() const
+const MdfString& Path::GetLineCap() const
 {
-    return m_eLineCap;
+    return m_sLineCap;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void Path::SetLineCap(LineCap lineCap)
+void Path::SetLineCap(const MdfString& lineCap)
 {
-    m_eLineCap = lineCap;
+    m_sLineCap = lineCap;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-Path::LineJoin Path::GetLineJoin() const
+const MdfString& Path::GetLineJoin() const
 {
-    return m_eLineJoin;
+    return m_sLineJoin;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void Path::SetLineJoin(LineJoin lineJoin)
+void Path::SetLineJoin(const MdfString& lineJoin)
 {
-    m_eLineJoin = lineJoin;
+    m_sLineJoin = lineJoin;
 }
 
 //-------------------------------------------------------------------------

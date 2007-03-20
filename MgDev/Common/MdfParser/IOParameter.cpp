@@ -41,11 +41,11 @@ void IOParameter::StartElement(const wchar_t *name, HandlerStack *handlerStack)
         m_startElemName = name;
         this->_parameter = new Parameter();
     }
-    else if (m_currElemName == L"ValueList") // NOXLATE
+    else if (m_currElemName == L"AllowedValues") // NOXLATE
     {
-        IOValueList* IO = new IOValueList(this->_parameter->GetValueList());
+        IOValueList* IO = new IOValueList(this->_parameter->GetAllowedValues());
         handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
+        IO->StartValueListElement(name, handlerStack);
     }
 }
 
@@ -80,7 +80,7 @@ void IOParameter::Write(MdfStream &fd, Parameter* parameter)
     EMIT_STRING_PROPERTY(fd, parameter, DisplayName, true)
     EMIT_STRING_PROPERTY(fd, parameter, Description, true)
 
-    IOValueList::Write(fd, parameter->GetValueList());
+    IOValueList::Write(fd, parameter->GetAllowedValues(), "AllowedValues");
 
     dectab();
     fd << tab() << "</Parameter>" << std::endl; // NOXLATE

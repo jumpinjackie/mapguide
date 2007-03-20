@@ -29,22 +29,6 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API Path : public GraphicElement
     {
     public:
-        enum LineCap
-        {
-            CapNone,
-            CapRound,
-            CapTriangle,
-            CapSquare
-        };
-
-        enum LineJoin
-        {
-            JoinNone,
-            JoinBevel,
-            JoinRound,
-            JoinMiter
-        };
-
         // Construction, destruction, initialization
         Path();
         virtual ~Path();
@@ -61,17 +45,14 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetLineWeight() const;
         void SetLineWeight(const MdfString& lineWeight);
 
-        // TODO: WCW - should this be a boolean property?
         const MdfString& GetLineWeightScalable() const;
         void SetLineWeightScalable(const MdfString& lineWeightScalable);
 
-        // TODO: WCW - should this be a string property?
-        LineCap GetLineCap() const;
-        void SetLineCap(LineCap lineCap);
+        const MdfString& GetLineCap() const;
+        void SetLineCap(const MdfString& lineCap);
 
-        // TODO: WCW - should this be a string property?
-        LineJoin GetLineJoin() const;
-        void SetLineJoin(LineJoin lineJoin);
+        const MdfString& GetLineJoin() const;
+        void SetLineJoin(const MdfString& lineJoin);
 
         const MdfString& GetLineMiterLimit() const;
         void SetLineMiterLimit(const MdfString& lineMiterLimit);
@@ -85,14 +66,12 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Data members
         MdfString m_sGeometry;
-
         MdfString m_sFillColor;
         MdfString m_sLineColor;
         MdfString m_sLineWeight;
         MdfString m_sLineWeightScalable;
-
-        LineCap m_eLineCap;
-        LineJoin m_eLineJoin;
+        MdfString m_sLineCap;
+        MdfString m_sLineJoin;
         MdfString m_sLineMiterLimit;
     };
 

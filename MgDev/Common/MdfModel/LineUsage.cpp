@@ -30,8 +30,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 LineUsage::LineUsage()
 {
-    // NOTE: if you change any defaults then you must also update
-    //       IOLineUsage::Write to use the correct default values.
     this->m_pDefaultPath = NULL;
 }
 
@@ -187,6 +185,24 @@ const MdfString& LineUsage::GetVertexAngleLimit() const
 void LineUsage::SetVertexAngleLimit(const MdfString& vertexAngleLimit)
 {
     this->m_sVertexAngleLimit = vertexAngleLimit;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& LineUsage::GetVertexJoin() const
+{
+    return this->m_sVertexJoin;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void LineUsage::SetVertexJoin(const MdfString& vertexJoin)
+{
+    this->m_sVertexJoin = vertexJoin;
 }
 
 //-------------------------------------------------------------------------

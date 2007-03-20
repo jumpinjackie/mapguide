@@ -196,26 +196,26 @@
           </xs:annotation>
         </xs:element>
       </xs:choice>
-      <xs:element name="ElevationSettings" type="ElevationSettingsType" minOccurs="0" />
+      <xs:element name="ElevationSettings" type="ElevationSettingsType" minOccurs="0"/>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="ElevationSettingsType">
     <xs:sequence>
-        <xs:element name="ZOffset" type="xs:string" minOccurs="0" />
-        <xs:element name="ZExtrusion" type="xs:string" minOccurs="0" />
-        <xs:element name="ZOffsetType" type="ElevationTypeType" minOccurs="0" />
-        <xs:element name="Unit" type="LengthUnitType" minOccurs="0"/>
-        <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
+      <xs:element name="ZOffset" type="xs:string" minOccurs="0"/>
+      <xs:element name="ZExtrusion" type="xs:string" minOccurs="0"/>
+      <xs:element name="ZOffsetType" type="ElevationTypeType" minOccurs="0"/>
+      <xs:element name="Unit" type="LengthUnitType" minOccurs="0"/>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:simpleType name="ElevationTypeType">
     <xs:annotation>
-        <xs:documentation>The possible interpretations of a z offset value.</xs:documentation>
+      <xs:documentation>The possible interpretations of a z offset value.</xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-        <xs:enumeration value="RelativeToGround"/>
-        <xs:enumeration value="Absolute"/>
+      <xs:enumeration value="RelativeToGround"/>
+      <xs:enumeration value="Absolute"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="PointTypeStyleType">
@@ -832,9 +832,12 @@
     </xs:annotation>
     <xs:sequence>
       <xs:element name="SymbolCollection">
+        <xs:annotation>
+          <xs:documentation>The collection of symbols used for stylization.</xs:documentation>
+        </xs:annotation>
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="SymbolInstance" type="SymbolInstanceType" maxOccurs="unbounded"/>
+            <xs:element name="SymbolInstance" type="SymbolInstanceType" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -904,30 +907,24 @@
           <xs:documentation>Specifies the additional amount to offset the symbol vertically, in mm in device units, after rotation and scaling have been applied.  Applies only to point symbols.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="SizeContext" minOccurs="0">
+      <xs:element name="SizeContext" type="SizeContextType" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies whether the symbol sizes are with respect to the map or the user's display device.  This must evaluate to either MappingUnits or DeviceUnits.</xs:documentation>
+          <xs:documentation>Specifies whether the symbol sizes are with respect to the map or the user's display device.  Defaults to device units.</xs:documentation>
         </xs:annotation>
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:enumeration value="Device"/>
-            <xs:enumeration value="Mapping"/>
-          </xs:restriction>
-        </xs:simpleType>
       </xs:element>
-      <xs:element name="DrawLast" minOccurs="0">
+      <xs:element name="DrawLast" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Boolean value which specifies whether the symbol is drawn as part of a final rendering pass (e.g. for labeling).  Defaults to false.</xs:documentation>
+          <xs:documentation>Boolean value which specifies whether the symbol is drawn as part of a final rendering pass (e.g. for labeling).  This must evaluate to True or False (default).</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="CheckExclusionRegion" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Boolean value which specifies whether to render this symbol only if its graphical extent does not overlap the exclusion region.  Defaults to false.  If the positioning algorithm generates multiple candidate symbol positions and this setting is true, then only the first non-overlapping candidate is rendered.</xs:documentation>
+          <xs:documentation>Boolean value which specifies whether to render this symbol only if its graphical extent does not overlap the exclusion region.  If the positioning algorithm generates multiple candidate symbol positions and this setting is True, then only the first non-overlapping candidate is rendered.  This must evaluate to True or False (default).</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="AddToExclusionRegion" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Boolean value which specifies whether the graphical extent for this symbol instance is added to the exclusion region (if it is rendered).  Symbols which check the exclusion region will not draw on top of this symbol.  Defaults to false.</xs:documentation>
+          <xs:documentation>Boolean value which specifies whether the graphical extent for this symbol instance is added to the exclusion region (if it is rendered).  Symbols which check the exclusion region will not draw on top of this symbol.  This must evaluate to True or False (default).</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="PositioningAlgorithm" type="xs:string" minOccurs="0">

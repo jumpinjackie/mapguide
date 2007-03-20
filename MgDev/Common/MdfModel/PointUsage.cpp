@@ -29,8 +29,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 PointUsage::PointUsage()
 {
-    // NOTE: if you change any defaults then you must also update
-    //       IOPointUsage::Write to use the correct default values.
 }
 
 //-------------------------------------------------------------------------

@@ -58,15 +58,12 @@ BEGIN_NAMESPACE_MDFMODEL
         SizeContext GetSizeContext() const;
         void SetSizeContext(SizeContext sizeContext);
 
-        // TODO: WCW - should this be a boolean property?
         const MdfString& GetDrawLast() const;
         void SetDrawLast(const MdfString& drawLast);
 
-        // TODO: WCW - should this be a boolean property?
         const MdfString& GetCheckExclusionRegion() const;
         void SetCheckExclusionRegion(const MdfString& checkExclusionRegion);
 
-        // TODO: WCW - should this be a boolean property?
         const MdfString& GetAddToExclusionRegion() const;
         void SetAddToExclusionRegion(const MdfString& addToExclusionRegion);
 

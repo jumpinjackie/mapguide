@@ -161,13 +161,13 @@ struct SE_RenderLineStyle : public SE_RenderStyle
     const wchar_t* angleControl;
     const wchar_t* unitsControl;
     const wchar_t* vertexControl;
-//  const wchar_t* join;
 
     double angle;
     double startOffset;
     double endOffset;
     double repeat;
     double vertexAngleLimit;
+    const wchar_t* vertexJoin;
 };
 
 

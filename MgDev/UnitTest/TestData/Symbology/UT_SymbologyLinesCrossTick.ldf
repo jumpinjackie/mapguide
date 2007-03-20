@@ -17,7 +17,7 @@
                 <SymbolReference>Library://Symbology/Symbols/MTYP1500a.SymbolDefinition</SymbolReference>
                 <ScaleX>0.5</ScaleX>
                 <ScaleY>0.5</ScaleY>
-                <SizeContext>Device</SizeContext>
+                <SizeContext>DeviceUnits</SizeContext>
               </SymbolInstance>
             </SymbolCollection>
             <ParameterOverrides/>

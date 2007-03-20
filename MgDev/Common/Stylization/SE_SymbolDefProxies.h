@@ -54,7 +54,7 @@ struct SE_RenderPrimitive;
 
 struct SE_Primitive
 {
-    GraphicElement::ResizeControl resize;
+    SE_String resizeControl;
     bool cacheable;
 
     virtual ~SE_Primitive() { }
@@ -139,7 +139,7 @@ struct SE_Style
     bool useBox;
     SE_Double resizePosition[2];
     SE_Double resizeSize[2];
-    ResizeBox::GrowControl resize;
+    SE_String growControl;
 
     SE_INLINE SE_Style() : rstyle(NULL), cacheable(false) { }
 
@@ -167,13 +167,13 @@ struct SE_LineStyle : public SE_Style
     SE_String angleControl;
     SE_String unitsControl;
     SE_String vertexControl;
-//  SE_String join;
 
     SE_Double angle;
     SE_Double startOffset;
     SE_Double endOffset;
     SE_Double repeat;
     SE_Double vertexAngleLimit;
+    SE_String vertexJoin;
 
     SE_INLINE SE_LineStyle() { }
     virtual void apply(LineBuffer* geometry, SE_Renderer* renderer);

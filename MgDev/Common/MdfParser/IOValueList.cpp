@@ -27,14 +27,16 @@ IOValueList::IOValueList(ValueList* valueList)
     this->_valueList = valueList;
 }
 
+void IOValueList::StartValueListElement(const wchar_t *name, HandlerStack *handlerStack)
+{
+    // the element is a value list with the supplied name
+    m_currElemName = name;
+    m_startElemName = name;
+}
+
 void IOValueList::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
-
-    if (m_currElemName == L"ValueList") // NOXLATE
-    {
-        m_startElemName = name;
-    }
 }
 
 void IOValueList::ElementChars(const wchar_t *ch)
@@ -55,14 +57,14 @@ void IOValueList::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOValueList::Write(MdfStream &fd, ValueList* valueList)
+void IOValueList::Write(MdfStream &fd, ValueList* valueList, std::string name)
 {
     // don't output the list if it's empty - the schema requires this
     int numElements = valueList->GetCount();
     if (numElements == 0)
         return;
 
-    fd << tab() << "<ValueList>" << std::endl; // NOXLATE
+    fd << tab() << "<" << name << ">" << std::endl;
     inctab();
 
     for (int i=0; i<numElements; ++i)
@@ -72,5 +74,5 @@ void IOValueList::Write(MdfStream &fd, ValueList* valueList)
     }
 
     dectab();
-    fd << tab() << "</ValueList>" << std::endl; // NOXLATE
+    fd << tab() << "</" << name << ">" << std::endl;
 }

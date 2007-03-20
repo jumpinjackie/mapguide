@@ -2125,9 +2125,9 @@ void DWFRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, doubl
 // returns number of W2D units per millimeter screen
 double DWFRenderer::GetPixelsPerMillimeterScreen()
 {
-    //  [ W2D ]     [ W2D ]     [ World ]     meter-world     mm-world
-    // --------- = --------- * ----------- * ------------- * ---------
-    // mm-screen   [ World ]   meter-world   1000 mm-world   mm-screen
+    //  [ W2D ]     [ World ]     meter-world     mm-world      [ W2D ]
+    // --------- * ----------- * ------------- * ---------  =  ---------
+    // [ World ]   meter-world   1000 mm-world   mm-screen     mm-screen
     return m_scale / m_metersPerUnit / 1000.0 * m_mapScale;
 }
 
@@ -2135,9 +2135,9 @@ double DWFRenderer::GetPixelsPerMillimeterScreen()
 // returns number of W2D units per millimeter world
 double DWFRenderer::GetPixelsPerMillimeterWorld()
 {
-    //  [ W2D ]    [ W2D ]     [ World ]     meter-world
-    // -------- = --------- * ----------- * -------------
-    // mm-world   [ World ]   meter-world   1000 mm-world
+    //  [ W2D ]     [ World ]     meter-world       [ W2D ]
+    // --------- * ----------- * -------------  =  --------
+    // [ World ]   meter-world   1000 mm-world     mm-world
     return m_scale / m_metersPerUnit / 1000.0;
 }
 

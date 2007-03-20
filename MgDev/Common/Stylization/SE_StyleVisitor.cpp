@@ -76,12 +76,12 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
     ParseStringExpression(lineUsage.GetAngleControl(), style->angleControl);
     ParseStringExpression(lineUsage.GetUnitsControl(), style->unitsControl);
     ParseStringExpression(lineUsage.GetVertexControl(), style->vertexControl);
-//  ParseStringExpression(lineUsage.GetLineJoin(), style->join);
     ParseDoubleExpression(lineUsage.GetAngle(), style->angle);
     ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset);
     ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset);
     ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat);
     ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->vertexAngleLimit);
+    ParseStringExpression(lineUsage.GetVertexJoin(), style->vertexJoin);
 
     //set flag if all properties are constant
     style->cacheable = ! (  style->angle.expression
@@ -556,7 +556,7 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
 
         if (m_primitive)
         {
-            m_primitive->resize = elem->GetResizeControl();
+            ParseStringExpression(elem->GetResizeControl(), m_primitive->resizeControl);
             m_style->symbol.push_back(m_primitive);
 
             //also update the style's cacheable flag to take into account the primitive's flag
@@ -574,7 +574,7 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
         ParseDoubleExpression(box->GetSizeY(), m_style->resizeSize[1]);
         ParseDoubleExpression(box->GetPositionX(), m_style->resizePosition[0]);
         ParseDoubleExpression(box->GetPositionY(), m_style->resizePosition[1]);
-        m_style->resize = box->GetGrowControl();
+        ParseStringExpression(box->GetGrowControl(), m_style->growControl);
 
         m_style->cacheable = m_style->cacheable &&
                              ! (  m_style->resizeSize[0].expression
