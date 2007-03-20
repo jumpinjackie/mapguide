@@ -30,6 +30,7 @@
 #include <map>
 
 #include "Renderer.h"
+#include "SE_Renderer.h"
 #include "KmlContent.h"
     
 typedef std::map<RS_String, KmlContent*> ThemeMap;
@@ -38,7 +39,7 @@ typedef std::map<KmlPolyStyle,int> KmlPolyStyleIdMap;
 
 const double METERS_PER_INCH = 0.0254; 
 
-class KmlRenderer : public Renderer
+class KmlRenderer : public Renderer, public SE_Renderer
 {
 public:
     STYLIZATION_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, 
@@ -115,6 +116,37 @@ public:
     STYLIZATION_API virtual double GetDpi();
 
     STYLIZATION_API virtual bool RequiresClipping();
+
+
+    ////////////////////////////////////////////////
+    // SE_Renderer
+    //
+    virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight); // px
+    virtual void DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill);
+    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
+                                  double x, double y, double w, double h, double angledeg);
+    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position);
+
+    virtual void GetWorldToScreenTransform(SE_Matrix& xform);
+    virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
+    virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
+
+    virtual double GetPixelsPerMillimeterScreen();
+    virtual double GetPixelsPerMillimeterWorld();
+
+    virtual RS_FontEngine* GetFontEngine();
+
+    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
+                                   int              nlabels,
+                                   RS_OverpostType  type,
+                                   bool             exclude,
+                                   LineBuffer*      path = NULL);
+
+    virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
+
+    virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style);
+    virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
+    virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style);
 
 private:
     // Unimplemented Constructors/Methods
