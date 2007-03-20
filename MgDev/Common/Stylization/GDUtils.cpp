@@ -42,7 +42,7 @@ void rs_gdImageCircleForBrush(gdImagePtr im, int x, int y, int rad, RS_Color& co
         if (solidwid)
             gdImageLine(im, x-solidwid, k, x+solidwid-1, k, gdc);
 
-        float aalpha = hlen - floor(hlen);
+        float aalpha = hlen - solidwid;
         RS_Color ac = color;
         ac.alpha() = (int)(ac.alpha() * aalpha);
         int gdc2 = ConvertColor(im, ac);
