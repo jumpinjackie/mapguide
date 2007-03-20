@@ -619,6 +619,7 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
     if (symbolization == NULL)
         return;
 
+    //TODO: remove this when param overrides are moved to the SymbolInstance
     SetParameterValues(symbolization->GetParameterOverrides());
 
     SymbolInstanceCollection* symbols = symbolization->GetSymbolCollection();
@@ -627,6 +628,9 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
     for (int i = 0; i < nSymbols; i++)
     {
         SymbolInstance* instance = symbols->GetAt(i);
+
+        //TODO: add this when param overrides are moved to the SymbolInstance
+        //SetParameterValues(instance->GetParameterOverrodes());
 
         // get the symbol definition, either inlined or by reference
         SymbolDefinition* def = instance->GetSymbolDefinition();
