@@ -67,9 +67,10 @@ typedef DWFWCharKeySkipList<unsigned int> NodeTable;
 
 
 //-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
 //------------------------------Utilities--------------------------------------
 //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
 
 WT_Color Util_ConvertColor(RS_Color & color)
 {
@@ -191,10 +192,12 @@ WT_Result my_seek(WT_File & /*file*/, int /*distance*/, int & /*amount_seeked*/)
     return WT_Result::Unknown_File_Read_Error;
 }
 
+
 //-----------------------------------------------------------------------------
 //--------------------------DWFRenderer----------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+
 
 DWFRenderer::DWFRenderer()
 : m_w2dFile(NULL),
@@ -249,6 +252,7 @@ DWFRenderer::~DWFRenderer()
         delete m_attributes;
 }
 
+
 //-----------------------------------------------------------------------------
 //
 // Initializes map generation with required map properties.
@@ -259,8 +263,7 @@ void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
                             double        mapScale,
                             double        dpi,
                             double        metersPerUnit,
-                            CSysTransformer* xformToLL
-                             )
+                            CSysTransformer* xformToLL)
 {
     if (dpi == 0.0)
         m_dpi = 96.0; // default -- 96 is usually true for Windows
@@ -301,6 +304,7 @@ void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
     // remember the map info
     m_mapInfo = mapInfo;
 }
+
 
 //-----------------------------------------------------------------------------
 //
@@ -349,6 +353,7 @@ void DWFRenderer::EndMap()
     m_mapInfo = NULL;
 }
 
+
 //-----------------------------------------------------------------------------
 //
 // Indicates beginning of a map layer. This function creates a W2D for feature
@@ -357,10 +362,7 @@ void DWFRenderer::EndMap()
 // are labels.
 //
 //-----------------------------------------------------------------------------
-
-void DWFRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
-                             RS_FeatureClassInfo* classInfo
-                             )
+void DWFRenderer::StartLayer(RS_LayerUIInfo* legendInfo, RS_FeatureClassInfo* classInfo)
 {
     if (classInfo && legendInfo &&
        (legendInfo->selectable() || legendInfo->hastooltips() || legendInfo->hashyperlinks()))
@@ -455,6 +457,7 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
     m_layerInfo = legendInfo;
 }
 
+
 //-----------------------------------------------------------------------------
 //
 // Cleans up W2D files after processing for a layer is done. Should be
@@ -512,6 +515,7 @@ void DWFRenderer::EndLayer()
     m_layerInfo = NULL;
 }
 
+
 //----------------------------------------------------------------------------
 // All subsequent drawables will be considered as part of a single feature
 // identifier by the given feature reader, until the next call to StartFeature()
@@ -523,7 +527,6 @@ void DWFRenderer::StartFeature(RS_FeatureReader* feature,
                                double /*zOffset*/,
                                double /*zExtrusion*/,
                                RS_ElevationType /*zOffsetType*/)
-
 {
     //attributes and selection support
     StoreAttributes(feature, tooltip, url);
@@ -536,8 +539,7 @@ void DWFRenderer::StartFeature(RS_FeatureReader* feature,
 // holes etc.
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::ProcessPolygon (  LineBuffer*         srclb,
-                                    RS_FillStyle&       fill)
+void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
 {
     LineBuffer* workbuffer = srclb->Optimize(m_drawingScale, &m_lbPool);
 
@@ -620,8 +622,7 @@ void DWFRenderer::ProcessPolygon (  LineBuffer*         srclb,
 // Polyline features. Transformation to W2D space is done here.
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::ProcessPolyline(LineBuffer*           srclb,
-                                  RS_LineStroke&        lsym)
+void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 {
     if (srclb->point_count() == 0)
         return;
@@ -663,17 +664,18 @@ void DWFRenderer::ProcessPolyline(LineBuffer*           srclb,
     m_lbPool.FreeLineBuffer(workbuffer);
 }
 
+
 //-----------------------------------------------------------------------------
 //
 // Raster serialization.
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::ProcessRaster(unsigned char*    data,
-                                int               length,
-                                RS_ImageFormat    format,
-                                int               width,
-                                int               height,
-                                RS_Bounds         extents)
+void DWFRenderer::ProcessRaster(unsigned char* data,
+                                int            length,
+                                RS_ImageFormat format,
+                                int            width,
+                                int            height,
+                                RS_Bounds      extents)
 {
     if (format != RS_ImageFormat_RGBA && format != RS_ImageFormat_PNG)
     {
@@ -733,10 +735,7 @@ void DWFRenderer::ProcessRaster(unsigned char*    data,
 // Marker Symbols
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::ProcessMarker(LineBuffer* srclb,
-                                RS_MarkerDef& mdef,
-                                bool allowOverpost,
-                                RS_Bounds* bounds)
+void DWFRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
 {
     for (int i=0; i<srclb->point_count(); i++)
     {
@@ -763,9 +762,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         // symbol library resource. This is hardcoded right now.
         // If it ever changes, we will need to update it
         //
-
-        symbol = (RS_InputStream*)m_symbolManager->GetSymbolData(mdef.library().c_str(),
-                                                L"symbols.dwf"); //NOXLATE
+        symbol = (RS_InputStream*)m_symbolManager->GetSymbolData(mdef.library().c_str(), L"symbols.dwf"); //NOXLATE
     }
 
     //default symbol
@@ -796,7 +793,6 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     double aspect = (mdef.width() == 0.0) ? DBL_MAX : mdef.height() / mdef.width();
 
     RS_Bounds dst;
-
     if (aspect <= 1.0)
         dst = RS_Bounds(0, 0, SYMBOL_MAX, aspect * SYMBOL_MAX);
     else
@@ -1076,27 +1072,25 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         m_obsMesh->ProcessPoint(x, y);
 }
 
+
 //-----------------------------------------------------------------------------
 //
 // Text labels
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::ProcessLabel(double           x,
-                               double           y,
-                               const RS_String& text,
-                               RS_TextDef&      tdef)
+void DWFRenderer::ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef)
 {
     RS_LabelInfo info(x, y, 0.0, 0.0, tdef.font().units(), tdef, false);
     ProcessLabelGroup(&info, 1, text, RS_OverpostType_All, false, NULL);
 }
 
 
-void DWFRenderer::ProcessLabelGroup( RS_LabelInfo*       labels,
-                                     int                 nlabels,
-                                     const RS_String&    text,
-                                     RS_OverpostType     type,
-                                     bool                exclude,
-                                     LineBuffer*         /*path*/)
+void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
+                                    int              nlabels,
+                                    const RS_String& text,
+                                    RS_OverpostType  type,
+                                    bool             exclude,
+                                    LineBuffer*      /*path*/)
 {
     if (nlabels == 0)
         return;
@@ -1548,6 +1542,7 @@ void DWFRenderer::_TransformPointsNoClamp(double* inpts, int numpts)
     }
 }
 
+
 //-----------------------------------------------------------------------------
 //
 // Writes multi-polyline geometry to W2D. Input is a LineBuffer
@@ -1593,6 +1588,7 @@ void DWFRenderer::WriteStroke(RS_LineStroke & stroke)
 
     m_w2dFile->desired_rendition().line_weight() = WT_Line_Weight(line_weight);
 }
+
 
 //-----------------------------------------------------------------------------
 //
@@ -1645,6 +1641,7 @@ void DWFRenderer::WriteFill(RS_FillStyle& fill)
         }
     }
 }
+
 
 //-----------------------------------------------------------------------------
 //
@@ -1719,6 +1716,7 @@ void DWFRenderer::WriteTextDef(WT_File* file, RS_TextDef& tdef)
     }
 }
 
+
 //-----------------------------------------------------------------------------
 //scale an input number in meters to a mapping
 //space number given a device or mapping space unit.
@@ -1748,6 +1746,7 @@ double DWFRenderer::_PixelToMapSize(Renderer* renderer, int pixels)
 
     return (double)pixels * (0.0254 / renderer->GetDpi()) * renderer->GetMapScale() / renderer->GetMetersPerUnit();
 }
+
 
 //-----------------------------------------------------------------------------
 //scale an input number in meters to a mapping
@@ -1808,14 +1807,14 @@ void DWFRenderer::OpenW2D(WT_File* file)
     file->desired_rendition().drawing_info().units().serialize(*file);
 }
 
+
 //-----------------------------------------------------------------------------
 //
 // Helper function to start a new W2D object node and write out the attributes
 // of the current feature into a DWF object definition instance
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::StoreAttributes(RS_FeatureReader* feature, const RS_String* tooltip,
-                                  const RS_String* url)
+void DWFRenderer::StoreAttributes(RS_FeatureReader* feature, const RS_String* tooltip, const RS_String* url)
 {
     if (m_featureClass && m_featureClassInfo)
     {
@@ -1906,6 +1905,12 @@ void DWFRenderer::StoreAttributes(RS_FeatureReader* feature, const RS_String* to
 }
 
 
+void DWFRenderer::SetSymbolManager(RS_SymbolManager* manager)
+{
+    m_symbolManager = manager;
+}
+
+
 RS_MapUIInfo* DWFRenderer::GetMapInfo()
 {
     return m_mapInfo;
@@ -1929,6 +1934,11 @@ double DWFRenderer::GetMapScale()
     return m_mapScale;
 }
 
+double DWFRenderer::GetMetersPerUnit()
+{
+    return m_metersPerUnit;
+}
+
 RS_Bounds& DWFRenderer::GetBounds()
 {
     return m_extents;
@@ -1939,9 +1949,9 @@ double DWFRenderer::GetDpi()
     return m_dpi;
 }
 
-double DWFRenderer::GetMetersPerUnit()
+bool DWFRenderer::RequiresClipping()
 {
-    return m_metersPerUnit;
+    return true;
 }
 
 double DWFRenderer::GetMapToW2DScale()
@@ -1949,10 +1959,6 @@ double DWFRenderer::GetMapToW2DScale()
     return m_scale;
 }
 
-bool DWFRenderer::RequiresClipping()
-{
-    return true;
-}
 
 void DWFRenderer::EnsureBufferSize(int len)
 {
@@ -1969,11 +1975,6 @@ void DWFRenderer::EnsureBufferSize(int len)
     }
 }
 
-
-void DWFRenderer::SetSymbolManager(RS_SymbolManager* manager)
-{
-    m_symbolManager = manager;
-}
 
 void DWFRenderer::StartLayout(RS_Bounds& extents)
 {
@@ -2010,6 +2011,7 @@ void DWFRenderer::StartLayout(RS_Bounds& extents)
     m_imgID = 0;
 }
 
+
 void DWFRenderer::EndLayout()
 {
     m_extents = m_mapExtents;
@@ -2039,6 +2041,7 @@ void DWFRenderer::EndLayout()
     }
 }
 
+
 void DWFRenderer::Init(RS_Bounds& extents)
 {
     m_mapExtents = m_extents;
@@ -2058,6 +2061,109 @@ void DWFRenderer::Init(RS_Bounds& extents)
     m_offsetX = 0;
     m_offsetY = 0;
 }
+
+
+//-----------------------------------------------------------------------------
+//
+//             SE Renderer
+//
+//-----------------------------------------------------------------------------
+
+void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight)
+{
+    // TODO
+}
+
+
+void DWFRenderer::DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill)
+{
+    // TODO
+}
+
+
+void DWFRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
+                                  double x, double y, double w, double h, double angledeg)
+{
+    // TODO
+}
+
+
+void DWFRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position)
+{
+    // TODO
+}
+
+
+void DWFRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
+{
+    // "screen space" in DWF is W2D space
+    xform.x0 = m_scale;
+    xform.x1 = 0.0;
+    xform.x2 = - m_offsetX * m_scale;
+    xform.y0 = 0.0;
+    xform.y1 = m_scale;
+    xform.y2 = - m_offsetY * m_scale;
+}
+
+
+void DWFRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
+{
+    // "screen space" in DWF is W2D space
+    ox = (inx - m_offsetX) * m_scale;
+    oy = (iny - m_offsetY) * m_scale;
+}
+
+
+void DWFRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
+{
+    // "screen space" in DWF is W2D space
+    ox = inx / m_scale + m_offsetX;
+    oy = iny / m_scale + m_offsetY;
+}
+
+
+// returns number of W2D units per millimeter screen
+double DWFRenderer::GetPixelsPerMillimeterScreen()
+{
+    //  [ W2D ]     [ W2D ]     [ World ]     meter-world     mm-world
+    // --------- = --------- * ----------- * ------------- * ---------
+    // mm-screen   [ World ]   meter-world   1000 mm-world   mm-screen
+    return m_scale / m_metersPerUnit / 1000.0 * m_mapScale;
+}
+
+
+// returns number of W2D units per millimeter world
+double DWFRenderer::GetPixelsPerMillimeterWorld()
+{
+    //  [ W2D ]    [ W2D ]     [ World ]     meter-world
+    // -------- = --------- * ----------- * -------------
+    // mm-world   [ World ]   meter-world   1000 mm-world
+    return m_scale / m_metersPerUnit / 1000.0;
+}
+
+
+RS_FontEngine* DWFRenderer::GetFontEngine()
+{
+    // TODO
+    return NULL;
+}
+
+
+void DWFRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
+                                    int              nlabels,
+                                    RS_OverpostType  type,
+                                    bool             exclude,
+                                    LineBuffer*      path)
+{
+    // TODO
+}
+
+
+void DWFRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
+{
+    // TODO
+}
+
 
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
