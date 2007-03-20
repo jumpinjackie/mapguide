@@ -30,7 +30,7 @@ SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 {
     SE_RenderPointStyle* ret = new SE_RenderPointStyle(); 
     *ret = *st;
-    ret->bounds = st->bounds->Clone(); 
+    memcpy(ret->bounds, st->bounds, sizeof(ret->bounds));
     SE_RenderText* txt = new SE_RenderText(); 
     *txt = *((SE_RenderText*)st->symbol[0]);
     ret->symbol[0] = txt;
@@ -80,15 +80,16 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* renderer)
         }
     }
 
-    txt->bounds->min[0] = rotatedBounds.minx;
-    txt->bounds->min[1] = rotatedBounds.miny;
-    txt->bounds->max[0] = rotatedBounds.maxx;
-    txt->bounds->max[1] = rotatedBounds.maxy;
+    txt->bounds[0].x = rotatedBounds.minx;
+    txt->bounds[0].y = rotatedBounds.miny;
+    txt->bounds[1].x = rotatedBounds.maxx;
+    txt->bounds[1].y = rotatedBounds.miny;
+    txt->bounds[2].x = rotatedBounds.maxx;
+    txt->bounds[2].y = rotatedBounds.maxy;
+    txt->bounds[3].x = rotatedBounds.minx;
+    txt->bounds[3].y = rotatedBounds.maxy;
 
-    st->bounds->min[0] = rotatedBounds.minx;
-    st->bounds->min[1] = rotatedBounds.miny;
-    st->bounds->max[0] = rotatedBounds.maxx;
-    st->bounds->max[1] = rotatedBounds.maxy;
+    memcpy(st->bounds, txt->bounds, sizeof(st->bounds));
 }
 
 
@@ -120,7 +121,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     rstyle2->checkExclusionRegions = rstyle->checkExclusionRegions;
     rstyle2->drawLast = rstyle->drawLast;
     rstyle2->renderPass = rstyle->renderPass;
-    rstyle2->bounds = rstyle->bounds->Clone();
+    memcpy(rstyle2->bounds, rstyle->bounds, sizeof(rstyle2->bounds));
     SE_RenderText* txt = NULL;
     
     for (SE_RenderPrimitiveList::iterator iter = rstyle->symbol.begin(); iter != rstyle->symbol.end(); iter++)

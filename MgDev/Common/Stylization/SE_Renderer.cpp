@@ -23,7 +23,7 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
-//cloning of RenderSymbols. Unfortunate but nexessary for delay-drawing labels
+//cloning of RenderSymbols. Unfortunate but necessary for delay-drawing labels
 static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
 {
     SE_RenderStyle* ret = NULL;
@@ -74,7 +74,7 @@ static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
 
     //copy all the common properties
     ret->addToExclusionRegions = symbol->addToExclusionRegions;
-    ret->bounds = symbol->bounds->Clone();
+    memcpy(ret->bounds, symbol->bounds, sizeof (ret->bounds));
     ret->checkExclusionRegions = symbol->checkExclusionRegions;
     ret->drawLast = symbol->drawLast;
     ret->renderPass = symbol->renderPass;
@@ -95,7 +95,7 @@ static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
                 if (!rpc) rpc = new SE_RenderPolyline();
                 SE_RenderPolyline* drp = (SE_RenderPolyline*)rpc;
                 SE_RenderPolyline* srp = (SE_RenderPolyline*)rp;
-                drp->bounds = srp->bounds->Clone();
+                memcpy(drp->bounds, srp->bounds, sizeof (drp->bounds));
                 drp->color = srp->color;
                 drp->resize = srp->resize;
                 drp->weight = srp->weight;
@@ -108,7 +108,7 @@ static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
                 SE_RenderText* st = (SE_RenderText*)rp;
                 SE_RenderText* dt = (SE_RenderText*)rpc;
 
-                dt->bounds = st->bounds->Clone();
+                memcpy(dt->bounds, st->bounds, sizeof (dt->bounds));
                 dt->position[0] = st->position[0];
                 dt->position[1] = st->position[1];
                 dt->resize = st->resize;
@@ -123,7 +123,7 @@ static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
                 SE_RenderRaster* dr = (SE_RenderRaster*)rpc;
 
                 dr->angle = sr->angle;
-                dr->bounds = sr->bounds->Clone();
+                memcpy(dr->bounds, sr->bounds, sizeof (dr->bounds));
                 dr->extent[0] = sr->extent[0];
                 dr->extent[1] = sr->extent[1];
                 dr->pngSize = sr->pngSize;
@@ -424,15 +424,7 @@ void SE_Renderer::AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, d
     xform2.translate(xform.x2, xform.y2);
 
     RS_F_Point* fpts = m_lastExclusionRegion;
-
-    fpts[0].x = rstyle->bounds->min[0];
-    fpts[0].y = rstyle->bounds->min[1];
-    fpts[1].x = rstyle->bounds->max[0];
-    fpts[1].y = rstyle->bounds->min[1];
-    fpts[2].x = rstyle->bounds->max[0];
-    fpts[2].y = rstyle->bounds->max[1];
-    fpts[3].x = rstyle->bounds->min[0];
-    fpts[3].y = rstyle->bounds->max[1];
+    memcpy(fpts, rstyle->bounds, 4 * sizeof(RS_F_Point));
 
     for (int i=0; i<4; i++)
         xform2.transform(fpts[i].x, fpts[i].y);

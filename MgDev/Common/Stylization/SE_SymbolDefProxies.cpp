@@ -26,6 +26,63 @@
 #include <algorithm>
 #include <functional>
 
+
+//assumes axis aligned
+static void SetUndefinedBounds(RS_F_Point* pts)
+{
+    pts[0].x = pts[3].x = DBL_MAX;
+    pts[1].x = pts[2].x = -DBL_MAX;
+    pts[0].y = pts[1].y = DBL_MAX;
+    pts[2].y = pts[3].y = -DBL_MAX;
+}
+
+//assumes axis aligned bounds stored in src and dst
+static void BoundsUnion(RS_F_Point* dst, RS_F_Point* src)
+{
+    dst[0].x = dst[3].x = rs_min(dst[0].x, src[0].x);
+    dst[1].x = dst[2].x = rs_max(dst[1].x, src[1].x);
+    dst[0].y = dst[1].y = rs_min(dst[0].y, src[0].y);
+    dst[2].y = dst[3].y = rs_max(dst[2].y, src[2].y);
+}
+
+static void ComputeGrowAmount(RS_F_Point* bounds, double minx, double miny, double maxx, double maxy, double &growx, double &growy)
+{
+    double sx, sy;
+    double cx = (minx + maxx)/2.0;
+    double cy = (miny + maxy)/2.0;
+    minx -= cx;
+    maxx -= cx;
+    miny -= cy;
+    maxy -= cy;
+    double xfminx, xfminy, xfmaxx, xfmaxy;
+    xfminx = bounds[0].x - cx;
+    xfminy = bounds[0].y - cy;
+    xfmaxx = bounds[2].x - cx;
+    xfmaxy = bounds[2].y - cy;
+
+    if (xfminx < minx) // minx always negative
+    {
+        sx = xfminx/minx - 1.0;
+        growx = (growx > sx) ? growx : sx;
+    }
+    if (xfmaxx > maxx) // maxx always positive
+    {
+        sx = xfmaxx/maxx - 1.0;
+        growx = (growx > sx) ? growx : sx;
+    }
+    if (xfminy < miny)
+    {
+        sy = xfminy/miny - 1.0;
+        growy = (growy > sy) ? growy : sy;
+    }
+    if (xfmaxy > maxy)
+    {
+        sy = xfmaxy/maxy - 1.0;
+        growy = (growy > sy) ? growy : sy;
+    }
+}
+
+
 SE_Style::~SE_Style()
 {
     for (SE_PrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
@@ -49,10 +106,22 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     if (!cxt->useBox)
     {
         ret->geometry->Transform(*cxt->xform, ret->weight);
-        ret->bounds = ret->geometry->xf_bounds()->Clone();
+        
+        SE_Bounds* seb = ret->geometry->xf_bounds();
+
+        //TODO: here we would implement rotating calipers algorithm to get
+        //a tighter oriented box, but for now we just get the axis aligned bounds of the path
+        ret->bounds[0].x = seb->min[0];
+        ret->bounds[0].y = seb->min[1];
+        ret->bounds[1].x = seb->max[0];
+        ret->bounds[1].y = seb->min[1];
+        ret->bounds[2].x = seb->max[0];
+        ret->bounds[2].y = seb->max[1];
+        ret->bounds[3].x = seb->min[0];
+        ret->bounds[3].y = seb->max[1];
     }
     else
-        ret->bounds = NULL;
+        SetUndefinedBounds(ret->bounds);
 
     return ret;
 }
@@ -73,10 +142,22 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     if (!cxt->useBox)
     {
         ret->geometry->Transform(*cxt->xform, ret->weight);
-        ret->bounds = ret->geometry->xf_bounds()->Clone();
+
+        SE_Bounds* seb = ret->geometry->xf_bounds();
+
+        //TODO: here we would implement rotating calipers algorithm to get
+        //a tighter oriented box, but for now we just get the axis aligned bounds of the path
+        ret->bounds[0].x = seb->min[0];
+        ret->bounds[0].y = seb->min[1];
+        ret->bounds[1].x = seb->max[0];
+        ret->bounds[1].y = seb->min[1];
+        ret->bounds[2].x = seb->max[0];
+        ret->bounds[2].y = seb->max[1];
+        ret->bounds[3].x = seb->min[0];
+        ret->bounds[3].y = seb->max[1];
     }
     else
-        ret->bounds = NULL;
+        SetUndefinedBounds(ret->bounds);
 
     return ret;
 }
@@ -143,23 +224,27 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     txf.rotate(ret->tdef.rotation() * M_PI180);
     txf.translate(ret->position[0], ret->position[1]);
 
-    double* buffer = (double*)alloca(tm.line_pos.size()*sizeof(double)*8);
-    double* ptr = buffer;
-    for(size_t k = 0; k < tm.line_pos.size(); k++)
+    //compute axis aligned boudns of the text primitive
+    RS_F_Point fpts[4];
+    RS_Bounds xformBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
+
+    for (size_t k=0; k<tm.line_pos.size(); ++k)
     {
-        const RS_F_Point* pts = tm.line_pos[k].ext;
-        txf.transform(pts[0].x, pts[0].y, ptr[0], ptr[1]);
-        txf.transform(pts[1].x, pts[1].y, ptr[2], ptr[3]);
-        txf.transform(pts[2].x, pts[2].y, ptr[4], ptr[5]);
-        txf.transform(pts[3].x, pts[3].y, ptr[6], ptr[7]);
-        ptr += 8;
+        //convert the unrotated measured bounds for the current line to a local point array
+        memcpy(fpts, tm.line_pos[k].ext, sizeof(fpts));
+
+        // process the extent points
+        for (int j=0; j<4; ++j)
+        {
+            txf.transform(fpts[j].x, fpts[j].y);
+
+            // update the overall rotated bounds
+            xformBounds.add_point(fpts[j]);
+        }
     }
 
-    std::sort((std::pair<double,double>*)buffer, (std::pair<double,double>*)(ptr - 2), PointLess( ));
-    ret->bounds = AndrewHull<std::pair<double,double>*,SimplePOINT>
-        ((std::pair<double,double>*)buffer,
-        ((std::pair<double,double>*)ptr) - 1,
-        (int)tm.line_pos.size()*4, cxt->pool);
+    //set the bounds into the returned primitive
+    xformBounds.get_points(ret->bounds);
 
     return ret;
 }
@@ -200,11 +285,7 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     rxf.transform(-w, -h, pts[2].x, pts[2].y);
     rxf.transform(-w,  h, pts[3].x, pts[3].y);
 
-    std::sort((std::pair<double,double>*)pts, (std::pair<double,double>*)(pts + 3), PointLess( ));
-    ret->bounds = AndrewHull<std::pair<double,double>*,SimplePOINT>
-        ((std::pair<double,double>*)pts,
-        ((std::pair<double,double>*)(pts+3)) - 1,
-        4, cxt->pool);
+    memcpy(ret->bounds, pts, sizeof(ret->bounds));
 
     return ret;
 }
@@ -255,14 +336,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
         {
             if (!rsym->resize)
             {
-                if (rstyle->bounds)
-                {
-                    SE_Bounds* bounds = rstyle->bounds;
-                    rstyle->bounds = bounds->Union(rsym->bounds);
-                    bounds->Free();
-                }
-                else
-                    rstyle->bounds = rsym->bounds->Clone();
+                BoundsUnion(rstyle->bounds, rsym->bounds);
             }
 
             rstyle->symbol.push_back(rsym);
@@ -270,8 +344,9 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
             if (useBox)
             {
                 const wchar_t* sResizeCtrl = sym->resizeControl.evaluate(cxt->exec);
-                if (sResizeCtrl && wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
-                    rsym->bounds->Contained(minx, miny, maxx, maxy, growx, growy);
+
+                if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
+                    ComputeGrowAmount(rstyle->bounds, minx, miny, maxx, maxy, growx, growy);
             }
         }
     }
@@ -322,7 +397,15 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                     {
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
                         rp->geometry->Transform(totalxf, rp->weight);
-                        rp->bounds = rp->geometry->xf_bounds()->Clone();
+                        SE_Bounds* seb = rp->geometry->xf_bounds();
+                        rp->bounds[0].x = seb->min[0];
+                        rp->bounds[0].y = seb->min[1];
+                        rp->bounds[1].x = seb->max[0];
+                        rp->bounds[1].y = seb->min[1];
+                        rp->bounds[2].x = seb->max[0];
+                        rp->bounds[2].y = seb->max[1];
+                        rp->bounds[3].x = seb->min[0];
+                        rp->bounds[3].y = seb->max[1];
                         break;
                     }
                 case SE_RenderTextPrimitive:
@@ -330,7 +413,8 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         SE_RenderText* rt = (SE_RenderText*)rsym;
                         growxf.transform(rt->position[0], rt->position[1]);
                         rt->tdef.font().height() *= growxf.y1;
-                        rt->bounds->Transform(growxf);
+                        for (int j=0; j<4; j++) 
+                            growxf.transform(rt->bounds[j].x, rt->bounds[j].y);
                         break;
                     }
                 case SE_RenderRasterPrimitive:
@@ -339,19 +423,13 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         growxf.transform(rr->position[0], rr->position[1]);
                         rr->extent[0] *= growxf.x0;
                         rr->extent[1] *= growxf.y1;
-                        rr->bounds->Transform(growxf);
+                        for (int j=0; j<4; j++) 
+                            growxf.transform(rr->bounds[j].x, rr->bounds[j].y);
                         break;
                     }
                 }
 
-                if (rstyle->bounds)
-                {
-                    SE_Bounds* bounds = rstyle->bounds;
-                    rstyle->bounds = bounds->Union(rsym->bounds);
-                    bounds->Free();
-                }
-                else
-                    rstyle->bounds = rsym->bounds->Clone();
+                BoundsUnion(rstyle->bounds, rsym->bounds);
             }
         }
     }
