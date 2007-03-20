@@ -946,7 +946,7 @@
             $this->displayName = "";
             $this->displayNamePropStr = MgConfigProperties::GeneralPropertyDisplayName;
             $this->defaultLocale = "";
-            $this->defaultLocalePropStr = MgConfigProperties::GeneralPropertyDefaultLocale;
+            $this->defaultLocalePropStr = MgConfigProperties::GeneralPropertyDefaultMessageLocale;
             $this->localizationResourcesPath = "";
             $this->localizationResourcesPathPropStr = MgConfigProperties::GeneralPropertyResourcesPath;
             $this->tcpIpMtu = "";
