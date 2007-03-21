@@ -119,11 +119,14 @@ static void CPLFinderInit()
 void CPLFinderClean()
 
 {
-    while( papszFinderLocations != NULL )
-        CPLPopFinderLocation();
-    while( CPLPopFileFinder() != NULL ) {}
+    if( bFinderInitialized )
+    {
+        while( papszFinderLocations != NULL )
+            CPLPopFinderLocation();
+        while( CPLPopFileFinder() != NULL ) {}
 
-    bFinderInitialized = FALSE;
+        bFinderInitialized = FALSE;
+    }
 }
 
 /************************************************************************/

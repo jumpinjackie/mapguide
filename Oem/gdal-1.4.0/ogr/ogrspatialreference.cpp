@@ -4026,8 +4026,11 @@ int OGRSpatialReference::GetUTMZone( int * pbNorth ) const
 {
     const char  *pszProjection = GetAttrValue( "PROJECTION" );
 
-    if( pszProjection == NULL
-        || !EQUAL(pszProjection,SRS_PT_TRANSVERSE_MERCATOR) )
+    if( pszProjection == NULL )
+        return 0;
+ 
+    if( !EQUAL(pszProjection,SRS_PT_TRANSVERSE_MERCATOR) &&
+        !EQUAL(pszProjection,SRS_PT_TM) )
         return 0;
 
     if( GetNormProjParm( SRS_PP_LATITUDE_OF_ORIGIN, 0.0 ) != 0.0 )

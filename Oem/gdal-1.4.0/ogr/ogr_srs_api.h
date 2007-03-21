@@ -260,15 +260,27 @@ typedef enum {
 /*      Some "standard" strings.                                        */
 /* ==================================================================== */
 
+// The EQUAL() macro does a simple case insensitive string compare with these strings, 
+// but it should also ignore white space, "-", "_" and "," characters so that more matches are found.
+// The following should all be considered equal:
+//          Transverse_Mercator
+//          Transverse-Mercator
+//          Transverse Mercator
+//          TransverseMercator
+
+/* Abbreviation for Albers_Conic_Equal_Area */
+#define SRS_PT_AE               "AE"
 #define SRS_PT_ALBERS_CONIC_EQUAL_AREA                                  \
                                 "Albers_Conic_Equal_Area"
 #define SRS_PT_AZIMUTHAL_EQUIDISTANT "Azimuthal_Equidistant"
 #define SRS_PT_CASSINI_SOLDNER  "Cassini_Soldner"
+#define SRS_PT_CASSINI_SOLDNER1 "Cassini-Soldner"
 #define SRS_PT_CYLINDRICAL_EQUAL_AREA "Cylindrical_Equal_Area"
 #define SRS_PT_BONNE            "Bonne"
 #define SRS_PT_ECKERT_IV        "Eckert_IV"
 #define SRS_PT_ECKERT_VI        "Eckert_VI"
 #define SRS_PT_EQUIDISTANT_CONIC "Equidistant_Conic"
+#define SRS_PT_EQUIDISTANT_CYLINDRICAL "Equidistant_Cylindrical"
 #define SRS_PT_EQUIRECTANGULAR  "Equirectangular"
 #define SRS_PT_GALL_STEREOGRAPHIC "Gall_Stereographic"
 #define SRS_PT_GEOSTATIONARY_SATELLITE "Geostationary_Satellite"
@@ -280,20 +292,39 @@ typedef enum {
                             "Hotine_Oblique_Mercator_Two_Point_Natural_Origin"
 #define SRS_PT_LABORDE_OBLIQUE_MERCATOR                                 \
                                 "Laborde_Oblique_Mercator"
+/* Abbreviation for Lambert Conformal Conic */
+#define SRS_PT_LCC              "LCC"
+#define SRS_PT_LM               "LM"
+#define SRS_PT_LAMBERT_CONFORMAL_CONIC                                  \
+                                "Lambert Conformal Conic" 
 #define SRS_PT_LAMBERT_CONFORMAL_CONIC_1SP                              \
                                 "Lambert_Conformal_Conic_1SP"
 #define SRS_PT_LAMBERT_CONFORMAL_CONIC_2SP                              \
                                 "Lambert_Conformal_Conic_2SP"
 #define SRS_PT_LAMBERT_CONFORMAL_CONIC_2SP_BELGIUM                      \
-                                "Lambert_Conformal_Conic_2SP_Belgium)"
-#define SRS_PT_LAMBERT_AZIMUTHAL_EQUAL_AREA                     \
+                                "Lambert_Conformal_Conic_2SP_Belgium"
+#define SRS_PT_LAMBERT_CONFORMAL_CONIC_ALT                              \
+                                "Lambert_Conformal_Conic"
+#define SRS_PT_LAMBERT_CONIC_CONFORMAL                                  \
+                                "Lambert Conic Conformal" 
+#define SRS_PT_LAMBERT_CONIC_CONFORMAL_1SP                              \
+                                "Lambert_Conic_Conformal_1SP"
+#define SRS_PT_LAMBERT_CONIC_CONFORMAL_2SP_BELGIUM                      \
+                                "Lambert_Conic_Conformal_2SP_Belgium"
+#define SRS_PT_LAMBERT_CONIC_CONFORMAL_WEST_ORIENTATED                  \
+                                "Lambert_Conic_Conformal_West_Orientated"
+#define SRS_PT_LAMBERT_AZIMUTHAL_EQUAL_AREA                             \
                                 "Lambert_Azimuthal_Equal_Area"
 #define SRS_PT_MERCATOR_1SP     "Mercator_1SP"
 #define SRS_PT_MERCATOR_2SP     "Mercator_2SP"
+/* Abbreviation for Miller_Cylindrical */
+#define SRS_PT_MILLER           "Miller"
 #define SRS_PT_MILLER_CYLINDRICAL "Miller_Cylindrical"
 #define SRS_PT_MOLLWEIDE        "Mollweide"
 #define SRS_PT_NEW_ZEALAND_MAP_GRID                                     \
                                 "New_Zealand_Map_Grid"
+#define SRS_PT_OBLIQUE_MERCATOR                                         \
+                                "Oblique_Mercator"
 #define SRS_PT_OBLIQUE_STEREOGRAPHIC                                    \
                                 "Oblique_Stereographic"
 #define SRS_PT_ORTHOGRAPHIC     "Orthographic"
@@ -303,8 +334,12 @@ typedef enum {
 #define SRS_PT_ROBINSON         "Robinson"
 #define SRS_PT_SINUSOIDAL       "Sinusoidal"
 #define SRS_PT_STEREOGRAPHIC    "Stereographic"
+/* Abbreviation for Swiss_Oblique_Cylindrical */
+#define SRS_PT_SWISS            "Swiss"
 #define SRS_PT_SWISS_OBLIQUE_CYLINDRICAL                                \
                                 "Swiss_Oblique_Cylindrical"
+/* Abbreviations for Transverse_Mercator */
+#define SRS_PT_TM               "TM"
 #define SRS_PT_TRANSVERSE_MERCATOR                                      \
                                 "Transverse_Mercator"
 #define SRS_PT_TRANSVERSE_MERCATOR_SOUTH_ORIENTED                       \
@@ -326,6 +361,10 @@ typedef enum {
                                 "Tunisia_Mining_Grid"
 #define SRS_PT_TWO_POINT_EQUIDISTANT                                    \
                                 "Two_Point_Equidistant"
+
+/* Mentor abbreviation for Transverse Mercator */
+#define SRS_PT_UTM              "UTM"
+
 #define SRS_PT_VANDERGRINTEN    "VanDerGrinten"
 #define SRS_PT_KROVAK           "Krovak"
 

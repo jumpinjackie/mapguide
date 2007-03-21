@@ -25,6 +25,7 @@ OBJ	=	cpl_conv.obj \
 LIB	=	cpl.lib
 
 GDAL_ROOT = ..
+PDB_NAME = cpl.pdb
 
 !INCLUDE ..\nmake.opt
 
