@@ -155,8 +155,8 @@ void TestServerAdminService::TestCase_GetConfigurationProperties()
         Ptr<MgPropertyCollection> pPropertyCollection2 = pService->GetConfigurationProperties(L"GeneralProperties");
         CPPUNIT_ASSERT(pPropertyCollection1->GetCount() == pPropertyCollection2->GetCount());
 
-        Ptr<MgStringProperty> pProperty1 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultLocale");
-        Ptr<MgStringProperty> pProperty2 = (MgStringProperty*)pPropertyCollection2->GetItem(L"DefaultLocale");
+        Ptr<MgStringProperty> pProperty1 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultMessageLocale");
+        Ptr<MgStringProperty> pProperty2 = (MgStringProperty*)pPropertyCollection2->GetItem(L"DefaultMessageLocale");
 
         CPPUNIT_ASSERT(pProperty1->GetValue() == pProperty2->GetValue());
     }
@@ -195,14 +195,14 @@ void TestServerAdminService::TestCase_SetConfigurationProperties()
         }
 
         Ptr<MgPropertyCollection> pPropertyCollection1 = pService->GetConfigurationProperties(L"GeneralProperties");
-        Ptr<MgStringProperty> pProperty1 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultLocale");
+        Ptr<MgStringProperty> pProperty1 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultMessageLocale");
         STRING valueOriginal = pProperty1->GetValue();
 
         pProperty1->SetValue(L"fr");
         pService->SetConfigurationProperties(L"GeneralProperties", pPropertyCollection1);
 
         Ptr<MgPropertyCollection> pPropertyCollection2 = pService->GetConfigurationProperties(L"GeneralProperties");
-        Ptr<MgStringProperty> pProperty2 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultLocale");
+        Ptr<MgStringProperty> pProperty2 = (MgStringProperty*)pPropertyCollection1->GetItem(L"DefaultMessageLocale");
 
         CPPUNIT_ASSERT(pProperty1->GetValue() == pProperty2->GetValue());
 
