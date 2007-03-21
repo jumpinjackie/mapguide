@@ -39,7 +39,8 @@ using namespace MDFMODEL_NAMESPACE;
 StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
     m_resources(resources),
     m_renderer(NULL),
-    m_serenderer(NULL)
+    m_serenderer(NULL),
+    m_reader(NULL)
 {
     m_pool = new SE_LineBufferPool;
     m_lbPool = new LineBufferPool;
@@ -70,6 +71,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
         return;
 
     m_renderer = renderer;
+    m_reader = reader;
 
     // make sure we have an SE renderer
     // TODO: eliminate the need to do dynamic casts on these renderers.  We should
@@ -188,6 +190,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                                 int renderingPass,
                                 int& nextRenderingPass)
 {
+    m_reader = reader;
+
     double mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
     double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
 
@@ -199,7 +203,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     {
         SE_Rule* rulecache = new SE_Rule[nRules];
         rules = rulecache;
-        
+
         for (int i = 0; i < nRules; i++)
         {
             CompositeRule* r = (CompositeRule*)rulecoll->GetAt(i);
@@ -227,7 +231,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     for (int i = 0; i < nRules; i++)
     {
         bool match = (rules[i].filter == NULL);
-        
+
         if (!match)
         {
             rules[i].filter->Process(executor);
@@ -259,16 +263,16 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     }
 
     /* TODO: Obey the indices--Get rid of the indices altogther--single pass! */
-    
+
     for (std::vector<SE_Symbolization*>::const_iterator iter = symbolization->begin(); iter != symbolization->end(); iter++)
     {
         SE_Symbolization* sym = *iter;
 
         double mm2px = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
         SE_Matrix xform;
-        xform.setTransform( sym->scale[0].evaluate(executor), 
+        xform.setTransform( sym->scale[0].evaluate(executor),
                             sym->scale[1].evaluate(executor),
-                            sym->absOffset[0].evaluate(executor), 
+                            sym->absOffset[0].evaluate(executor),
                             sym->absOffset[1].evaluate(executor) );
         xform.scale(mm2px, mm2px);
 
@@ -348,6 +352,12 @@ void StylizationEngine::LayoutCustomLabel(const std::wstring& positioningAlgo, L
     else if (positioningAlgo == L"PathLabels")
     {
         SE_PositioningAlgorithms::PathLabels(m_serenderer, geometry, xform, style, rstyle, mm2px);
+    }
+    else if (positioningAlgo == L"MultipleHighwayShields")
+    {
+
+        SE_PositioningAlgorithms::MultipleHighwaysShields(m_serenderer, geometry, xform, style, rstyle, mm2px,
+                                                          m_reader, m_resources);
     }
 }
 

@@ -64,6 +64,9 @@ public:
     //sigh
     const RS_F_Point* GetLastExclusionRegion() { return m_lastExclusionRegion; }
 
+    SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol);
+
+
 protected:
     void SetRenderSelectionMode(bool mode);
 
@@ -73,7 +76,7 @@ private:
     void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angle);
 
     RS_F_Point m_lastExclusionRegion[4];
-    
+
 protected:
     SE_LineBufferPool* m_lbp;
     bool m_bSelectionMode;
