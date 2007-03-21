@@ -132,31 +132,34 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled, INT32 nF
     Ptr<MgStringCollection> fdoConnectionPoolSizeCustomCol = MgStringCollection::ParseCollection(fdoConnectionPoolSizeCustom, L",");
 
     // Update the provider cache size collection
-    for(INT32 i=0;i<fdoConnectionPoolSizeCustomCol->GetCount();i++)
+    if (fdoConnectionPoolSizeCustomCol)
     {
-        STRING customPoolSize = fdoConnectionPoolSizeCustomCol->GetItem(i);
-
-        STRING provider = customPoolSize;
-        INT32 nCustomPoolSize = nFdoConnectionPoolSize;
-
-        // Parse the format: provider:size
-        // Example: OSGeo.SDF:10
-
-        size_t position = customPoolSize.find(L":", 0); // NOXLATE
-        if(position != string::npos)
+        for(INT32 i=0;i<fdoConnectionPoolSizeCustomCol->GetCount();i++)
         {
-            provider = customPoolSize.substr(0, position);
-            STRING value = customPoolSize.substr(position+1, customPoolSize.size());
-            nCustomPoolSize = MgUtil::StringToInt32(value);
-        }
+            STRING customPoolSize = fdoConnectionPoolSizeCustomCol->GetItem(i);
 
-        ProviderInfo* providerInfo = new ProviderInfo();
-        if(providerInfo)
-        {
-            providerInfo->cacheSize = nCustomPoolSize;
-            providerInfo->threadModel = (FdoThreadCapability)-1; // Not set yet
+            STRING provider = customPoolSize;
+            INT32 nCustomPoolSize = nFdoConnectionPoolSize;
 
-            m_ProviderInfoCollection.insert(ProviderInfoCacheEntry_Pair(provider, providerInfo));
+            // Parse the format: provider:size
+            // Example: OSGeo.SDF:10
+
+            size_t position = customPoolSize.find(L":", 0); // NOXLATE
+            if(position != string::npos)
+            {
+                provider = customPoolSize.substr(0, position);
+                STRING value = customPoolSize.substr(position+1, customPoolSize.size());
+                nCustomPoolSize = MgUtil::StringToInt32(value);
+            }
+
+            ProviderInfo* providerInfo = new ProviderInfo();
+            if(providerInfo)
+            {
+                providerInfo->cacheSize = nCustomPoolSize;
+                providerInfo->threadModel = (FdoThreadCapability)-1; // Not set yet
+
+                m_ProviderInfoCollection.insert(ProviderInfoCacheEntry_Pair(provider, providerInfo));
+            }
         }
     }
 
