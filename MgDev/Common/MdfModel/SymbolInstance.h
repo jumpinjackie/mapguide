@@ -23,6 +23,7 @@
 #include "MdfOwnerCollection.h"
 #include "SymbolDefinition.h"
 #include "SizeContexts.h"
+#include "Override.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -36,12 +37,14 @@ BEGIN_NAMESPACE_MDFMODEL
         SymbolInstance();
         virtual ~SymbolInstance();
 
+        const MdfString& GetSymbolReference() const;
+        void SetSymbolReference(const MdfString& symbolReference);
+
         SymbolDefinition* GetSymbolDefinition();
         void AdoptSymbolDefinition(SymbolDefinition* symbolDefinition);
         SymbolDefinition* OrphanSymbolDefinition();
 
-        const MdfString& GetSymbolReference() const;
-        void SetSymbolReference(const MdfString& symbolReference);
+        OverrideCollection* GetParameterOverrides();
 
         const MdfString& GetScaleX() const;
         void SetScaleX(const MdfString& scaleX);
@@ -76,8 +79,9 @@ BEGIN_NAMESPACE_MDFMODEL
         SymbolInstance& operator=(const SymbolInstance&);
 
         // Data members
-        SymbolDefinition* m_pSymbolDefinition;
         MdfString m_sSymbolReference;
+        SymbolDefinition* m_pSymbolDefinition;
+        OverrideCollection m_collOverrides;
 
         MdfString m_sScaleX;
         MdfString m_sScaleY;

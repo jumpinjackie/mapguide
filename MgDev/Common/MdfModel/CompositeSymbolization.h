@@ -21,7 +21,6 @@
 #include "MdfModel.h"
 #include "Symbolization.h"
 #include "SymbolInstance.h"
-#include "Override.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -37,8 +36,6 @@ BEGIN_NAMESPACE_MDFMODEL
 
         SymbolInstanceCollection* GetSymbolCollection();
 
-        OverrideCollection* GetParameterOverrides();
-
         // Visitor Pattern method defined in Symbolization.
         virtual void AcceptVisitor(ISymbolizationVisitor& isyVisitor);
 
@@ -49,7 +46,6 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Data members
         SymbolInstanceCollection m_collSymbols;
-        OverrideCollection m_collOverrides;
     };
 
 END_NAMESPACE_MDFMODEL

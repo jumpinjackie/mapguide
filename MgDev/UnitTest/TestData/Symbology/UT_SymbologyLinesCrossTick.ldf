@@ -12,15 +12,13 @@
         <CompositeRule>
           <LegendLabel/>
           <CompositeSymbolization>
-            <SymbolCollection>
-              <SymbolInstance>
-                <SymbolReference>Library://Symbology/Symbols/MTYP1500a.SymbolDefinition</SymbolReference>
-                <ScaleX>0.5</ScaleX>
-                <ScaleY>0.5</ScaleY>
-                <SizeContext>DeviceUnits</SizeContext>
-              </SymbolInstance>
-            </SymbolCollection>
-            <ParameterOverrides/>
+            <SymbolInstance>
+              <SymbolReference>Library://Symbology/Symbols/MTYP1500a.SymbolDefinition</SymbolReference>
+              <ParameterOverrides/>
+              <ScaleX>0.5</ScaleX>
+              <ScaleY>0.5</ScaleY>
+              <SizeContext>DeviceUnits</SizeContext>
+            </SymbolInstance>
           </CompositeSymbolization>
         </CompositeRule>
       </CompositeTypeStyle>

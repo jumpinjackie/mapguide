@@ -49,6 +49,32 @@ SymbolInstance::~SymbolInstance()
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
+const MdfString& SymbolInstance::GetSymbolReference() const
+{
+    return this->m_sSymbolReference;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void SymbolInstance::SetSymbolReference(const MdfString& symbolReference)
+{
+    this->m_sSymbolReference = symbolReference;
+
+    // Definition and Reference are mutually exclusive.  Setting one
+    // clears the other.
+    if (this->m_pSymbolDefinition != NULL)
+    {
+        delete this->m_pSymbolDefinition;
+        this->m_pSymbolDefinition = NULL;
+    }
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
 SymbolDefinition* SymbolInstance::GetSymbolDefinition()
 {
     return this->m_pSymbolDefinition;
@@ -87,26 +113,9 @@ SymbolDefinition* SymbolInstance::OrphanSymbolDefinition()
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-const MdfString& SymbolInstance::GetSymbolReference() const
+OverrideCollection* SymbolInstance::GetParameterOverrides()
 {
-    return this->m_sSymbolReference;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void SymbolInstance::SetSymbolReference(const MdfString& symbolReference)
-{
-    this->m_sSymbolReference = symbolReference;
-
-    // Definition and Reference are mutually exclusive.  Setting one
-    // clears the other.
-    if (this->m_pSymbolDefinition != NULL)
-    {
-        delete this->m_pSymbolDefinition;
-        this->m_pSymbolDefinition = NULL;
-    }
+    return &this->m_collOverrides;
 }
 
 //-------------------------------------------------------------------------

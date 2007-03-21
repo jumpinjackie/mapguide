@@ -24,18 +24,16 @@
         <CompositeRule>
           <LegendLabel/>
           <CompositeSymbolization>
-            <SymbolCollection>
-              <SymbolInstance>
-                <SymbolReference>Library://Symbology/Symbols/PointSymbol.SymbolDefinition</SymbolReference>
-                <ScaleX>1</ScaleX>
-                <ScaleY>1</ScaleY>
-                <SizeContext>DeviceUnits</SizeContext>
-                <DrawLast>False</DrawLast>
-                <CheckExclusionRegion>False</CheckExclusionRegion>
-                <AddToExclusionRegion>False</AddToExclusionRegion>
-              </SymbolInstance>
-            </SymbolCollection>
-            <ParameterOverrides/>
+            <SymbolInstance>
+              <SymbolReference>Library://Symbology/Symbols/PointSymbol.SymbolDefinition</SymbolReference>
+              <ParameterOverrides/>
+              <ScaleX>1</ScaleX>
+              <ScaleY>1</ScaleY>
+              <SizeContext>DeviceUnits</SizeContext>
+              <DrawLast>False</DrawLast>
+              <CheckExclusionRegion>False</CheckExclusionRegion>
+              <AddToExclusionRegion>False</AddToExclusionRegion>
+            </SymbolInstance>
           </CompositeSymbolization>
         </CompositeRule>
       </CompositeTypeStyle>

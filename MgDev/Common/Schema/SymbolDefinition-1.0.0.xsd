@@ -227,8 +227,8 @@
               <xs:documentation>The list of parameters used in this symbol.  If a parameter is not listed here this is considered a bug in the symbol definition.</xs:documentation>
             </xs:annotation>
             <xs:complexType>
-              <xs:sequence minOccurs="0" maxOccurs="unbounded">
-                <xs:element name="Parameter">
+              <xs:sequence>
+                <xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
                   <xs:annotation>
                     <xs:documentation>The metadata for a parameter.</xs:documentation>
                   </xs:annotation>
@@ -259,8 +259,8 @@
                           <xs:documentation>A list of allowed values for this parameter.</xs:documentation>
                         </xs:annotation>
                         <xs:complexType>
-                          <xs:sequence maxOccurs="unbounded">
-                            <xs:element name="Value" type="xs:string">
+                          <xs:sequence>
+                            <xs:element name="Value" type="xs:string" maxOccurs="unbounded">
                               <xs:annotation>
                                 <xs:documentation>A value in the list.</xs:documentation>
                               </xs:annotation>

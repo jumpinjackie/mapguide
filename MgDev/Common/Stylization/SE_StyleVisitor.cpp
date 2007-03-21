@@ -62,9 +62,9 @@ SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
     ParseStringExpression(pointUsage.GetAngleControl(), style->angleControl);
 
     //set flag if all properties are constant
-    style->cacheable = ! (style->angle.expression 
+    style->cacheable = ! (style->angle.expression
                         || style->angleControl.expression
-                        || style->originOffset[0].expression 
+                        || style->originOffset[0].expression
                         || style->originOffset[1].expression);
 
     return style;
@@ -442,8 +442,8 @@ void SE_StyleVisitor::VisitPath(Path& path)
         polygon->fill = color;
         ParseColorExpression(path.GetLineColor(), polygon->color);
         ParseBooleanExpression(path.GetLineWeightScalable(), polygon->weightScalable);
-        polygon->cacheable = !(polygon->weight.expression || 
-                            polygon->color.expression || 
+        polygon->cacheable = !(polygon->weight.expression ||
+                            polygon->color.expression ||
                             polygon->fill.expression ||
                             polygon->weightScalable.expression);
     }
@@ -619,9 +619,6 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
     if (symbolization == NULL)
         return;
 
-    //TODO: remove this when param overrides are moved to the SymbolInstance
-    SetParameterValues(symbolization->GetParameterOverrides());
-
     SymbolInstanceCollection* symbols = symbolization->GetSymbolCollection();
     int nSymbols = symbols->GetCount();
 
@@ -629,8 +626,7 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
     {
         SymbolInstance* instance = symbols->GetAt(i);
 
-        //TODO: add this when param overrides are moved to the SymbolInstance
-        //SetParameterValues(instance->GetParameterOverrodes());
+        SetParameterValues(instance->GetParameterOverrides());
 
         // get the symbol definition, either inlined or by reference
         SymbolDefinition* def = instance->GetSymbolDefinition();
