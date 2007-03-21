@@ -5,11 +5,11 @@
 # be adjusted.  It is also possible to leave this, and define the
 # PROJ_LIB environment variable to point to the NAD directory.
 #
-PROJ_LIB_DIR=C:/PROJ/NAD
+PROJ_LIB_DIR=../NAD
 
 # Uncomment the first for an optimized build, or the second for debug.
-OPTFLAGS=	/nologo /Ox /MD
-#OPTFLAGS=	/nologo /Zi /MD /Fdproj.pdb
+OPTFLAGS=	/nologo /Ox /MD /Zi /Fdprojvc.pdb
+#OPTFLAGS=	/nologo /Od /MDd /Zi /Fdprojvc.pdb
 
 # Uncomment the first for linking exes against DLL or second for static
 EXE_PROJ =	proj_i.lib
@@ -88,7 +88,8 @@ $(PROJ_DLL):	proj_i.lib
 
 proj_i.lib:	$(LIBOBJ)
 	link /debug /dll /def:proj.def /out:$(PROJ_DLL) /implib:proj_i.lib \
-			$(LIBOBJ)
+			/manifest /manifestfile:proj.dll.manifest $(LIBOBJ)
+	mt -manifest proj.dll.manifest -outputresource:$(PROJ_DLL);2
 
 proj.exe:	$(PROJEXE_OBJ) $(EXE_PROJ)
 	cl $(PROJEXE_OBJ) $(EXE_PROJ)
