@@ -3,9 +3,9 @@ AUTOMAKE_OPTIONS = foreign
 EXTRA_DIST = categories.txt CoordinateSystem.rc CoordinateSystem.vcproj
 
 INCLUDES = \
-  -I../../Oem/gdal-1.3.0/ogr \
-  -I../../Oem/gdal-1.3.0/port \
-  -I../../Oem/proj-4.4.9/src
+  -I../../Oem/gdal-1.4.0/ogr \
+  -I../../Oem/gdal-1.4.0/port \
+  -I../../Oem/proj-4.5.0/src
 
 lib_LTLIBRARIES = libMgCoordinateSystem.la
 
@@ -72,5 +72,5 @@ noinst_HEADERS = $(include_SOURCES) \
 libMgCoordinateSystem_la_LIBADD = -lgdal -lproj
 
 libMgCoordinateSystem_la_LDFLAGS = -version-info 7:0:0 \
-                -L../../Oem/gdal-1.3.0 \
-                -L../../Oem/proj-4.4.9/src
+                -L../../Oem/gdal-1.4.0 \
+                -L../../Oem/proj-4.5.0/src

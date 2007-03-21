@@ -88,11 +88,11 @@
 ..\..\bin\debug\xerces-c_2_7D.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.pdb
     xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.pdb ..\..\bin\debug\
 
-..\..\bin\debug\proj.dll : ..\..\..\Oem\proj-4.4.9\src\proj.dll
-    xcopy /r /d /y ..\..\..\Oem\proj-4.4.9\src\proj.dll ..\..\bin\debug\
+..\..\bin\debug\proj.dll : ..\..\..\Oem\proj-4.5.0\src\proj.dll
+    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\proj.dll ..\..\bin\debug\
 
-..\..\bin\debug\proj.pdb : ..\..\..\Oem\proj-4.4.9\src\proj.pdb
-    xcopy /r /d /y ..\..\..\Oem\proj-4.4.9\src\proj.pdb ..\..\bin\debug\
+..\..\bin\debug\proj.pdb : ..\..\..\Oem\proj-4.5.0\src\proj.pdb
+    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\proj.pdb ..\..\bin\debug\
 
 ..\..\bin\debug\categories.txt : ..\..\..\Common\CoordinateSystem\categories.txt
     xcopy /r /d /y ..\..\..\Common\CoordinateSystem\categories.txt ..\..\bin\debug\
@@ -335,11 +335,11 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\release\xerces-c_2_7.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\xerces-c_2_7.pdb
     xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\xerces-c_2_7.pdb ..\..\bin\release\
 
-..\..\bin\release\proj.dll : ..\..\..\Oem\proj-4.4.9\src\proj.dll
-    xcopy /r /d /y ..\..\..\Oem\proj-4.4.9\src\proj.dll ..\..\bin\release\
+..\..\bin\release\proj.dll : ..\..\..\Oem\proj-4.5.0\src\proj.dll
+    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\proj.dll ..\..\bin\release\
 
-..\..\bin\release\proj.pdb : ..\..\..\Oem\proj-4.4.9\src\proj.pdb
-    xcopy /r /d /y ..\..\..\Oem\proj-4.4.9\src\proj.pdb ..\..\bin\release\
+..\..\bin\release\proj.pdb : ..\..\..\Oem\proj-4.5.0\src\proj.pdb
+    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\proj.pdb ..\..\bin\release\
 
 ..\..\bin\release\categories.txt : ..\..\..\Common\CoordinateSystem\categories.txt
     xcopy /r /d /y ..\..\..\Common\CoordinateSystem\categories.txt ..\..\bin\release\
