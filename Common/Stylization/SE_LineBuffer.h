@@ -35,6 +35,7 @@ public:
     }
 };
 
+typedef std::vector<std::pair<double, double> > PointList;
 //---------------------------------------------
 //---------------------------------------------
 
@@ -72,7 +73,7 @@ private:
     void Reset();
     void ResizeBuffer(void** buffer, int unitsize, int mininc, int cur_pts, int& max_pts);
     void TessellateCubicTo(SE_LineStorage* pts, double px2, double py2, double px3, double py3, double px4, double py4, int steps);
-    SE_Bounds* ComputeConvexHull(double* pnts, int* cntrs, int ncntrs, double weight);
+    SE_Bounds* ComputeConvexHull(double* pnts, int npts, int* cntrs, int ncntrs, double weight);
 
     SE_LineBufferPool* m_pool;
 
@@ -95,7 +96,7 @@ private:
     SE_LineStorage* m_xf_buf;
 
     /* TODO: write a stack based allocator for this, or replace it */
-    std::set<std::pair<double, double>, PointLess> m_ch_ptbuf;
+    PointList m_ch_ptbuf;
 };
 
 //---------------------------------------------

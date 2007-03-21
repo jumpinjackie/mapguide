@@ -97,8 +97,10 @@ template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoin
     *stack++ = pnt.y(minxmaxy);
     iter = minxmaxy;
 
-    while (iter++ != maxxminy)
+    while (iter != maxxminy)
     {
+        iter++;
+
         if (PointLeft(pnt.x(minxminy), pnt.y(minxminy), pnt.x(maxxminy), pnt.y(maxxminy), pnt.x(iter), pnt.y(iter)) && iter != maxxminy)
         /* this point is trivially above the lower bounding line, and cannot be in the lower hull */
             continue;
@@ -124,8 +126,10 @@ template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoin
     }
     iter = maxxminy;
 
-    while (iter-- != minxmaxy)
+    while (iter != minxmaxy)
     {
+        iter --;
+
         if (PointLeft(pnt.x(maxxmaxy), pnt.y(maxxmaxy), pnt.x(minxmaxy), pnt.y(minxmaxy), pnt.x(iter), pnt.y(iter)) && iter != minxmaxy)
         /* this point is trivially below the upper bounding line, and cannot be in the upper hull */
             continue;

@@ -20,6 +20,7 @@
 #include "SE_LineBuffer.h"
 #include "SE_ConvexHull.h"
 #include "SE_Bounds.h"
+#include <algorithm>
 
 #define GROWTH_FACTOR 1.5
 
@@ -268,29 +269,32 @@ inline void LineExt(double dx, double dy, double hweight, double &vx, double &vy
 
 struct PointUtil
 {
-    SE_INLINE double x(std::set<std::pair<double,double>, PointLess>::iterator iter)
+    SE_INLINE double x(PointList::iterator iter)
     {
         return (*iter).first;
     }
 
-    SE_INLINE double y(std::set<std::pair<double,double>, PointLess>::iterator iter)
+    SE_INLINE double y(PointList::iterator iter)
     {
         return (*iter).second;
     }
 
-    SE_INLINE bool equal(std::set<std::pair<double,double>, PointLess>::iterator a,
-                         std::set<std::pair<double,double>, PointLess>::iterator b)
+    SE_INLINE bool equal(PointList::iterator a, PointList::iterator b)
     {
         return ((*a).first == (*b).first) && ((*a).second == (*b).second);
     }
 };
 
-SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs, double weight)
+SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int npts, int* cntrs, int ncntrs, double weight)
 {
     if (ncntrs == 0)
         return NULL;
     // Monotone Chain Convex Hull Algorithm (Andrew, 1979)
     m_ch_ptbuf.clear();
+    if (weight == 0)
+        m_ch_ptbuf.reserve(npts);    
+    else
+        m_ch_ptbuf.reserve(npts*4);
 
     double hweight = weight/2.0;
     double* cur = pnts;
@@ -310,20 +314,20 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs
             /* For each segment, add the bounding box of the rectangle formed by applying line weight */
             /* TODO: this result will be correct if the line is drawn with bevel joins...Map and MG,
                however, appear to be using round joins at the moment. */
-            m_ch_ptbuf.insert(std::pair<double,double>(x + vx, y + vy));
-            m_ch_ptbuf.insert(std::pair<double,double>(x - vx, y - vy));
-            m_ch_ptbuf.insert(std::pair<double,double>(lx + vx, ly + vy));
-            m_ch_ptbuf.insert(std::pair<double,double>(lx - vx, ly - vy));
+            m_ch_ptbuf.push_back(std::pair<double,double>(x + vx, y + vy));
+            m_ch_ptbuf.push_back(std::pair<double,double>(x - vx, y - vy));
+            m_ch_ptbuf.push_back(std::pair<double,double>(lx + vx, ly + vy));
+            m_ch_ptbuf.push_back(std::pair<double,double>(lx - vx, ly - vy));
 
             while(cur < last)
             {
                 x = *cur++;
                 y = *cur++;
                 LineExt(x-lx, y-ly, hweight, vx, vy);
-                m_ch_ptbuf.insert(std::pair<double,double>(x + vx, y + vy));
-                m_ch_ptbuf.insert(std::pair<double,double>(x - vx, y - vy));
-                m_ch_ptbuf.insert(std::pair<double,double>(lx + vx, ly + vy));
-                m_ch_ptbuf.insert(std::pair<double,double>(lx - vx, ly - vy));
+                m_ch_ptbuf.push_back(std::pair<double,double>(x + vx, y + vy));
+                m_ch_ptbuf.push_back(std::pair<double,double>(x - vx, y - vy));
+                m_ch_ptbuf.push_back(std::pair<double,double>(lx + vx, ly + vy));
+                m_ch_ptbuf.push_back(std::pair<double,double>(lx - vx, ly - vy));
                 lx = x;
                 ly = y;
             }
@@ -335,18 +339,19 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs
             {
                 x = *cur++;
                 y = *cur++;
-                m_ch_ptbuf.insert(std::pair<double,double>(x, y));
+                m_ch_ptbuf.push_back(std::pair<double,double>(x, y));
             }
         }
     }
 
-    std::set<std::pair<double,double>, PointLess>::iterator end = m_ch_ptbuf.end();
-    std::set<std::pair<double,double>, PointLess>::iterator iter = m_ch_ptbuf.begin();
+    std::sort(m_ch_ptbuf.begin(), m_ch_ptbuf.end(), PointLess());
+
+    PointList::iterator end = m_ch_ptbuf.end();
+    PointList::iterator iter = m_ch_ptbuf.begin();
 
     if (m_ch_ptbuf.size() < 2)
         return NULL;
-    return AndrewHull<std::set<std::pair<double,double>, PointLess>::iterator, PointUtil>
-        (iter, --end, (int)m_ch_ptbuf.size(), m_pool);
+    return AndrewHull<PointList::iterator, PointUtil>(iter, --end, (int)m_ch_ptbuf.size(), m_pool);
 }
 
 SE_LineBuffer::SE_LineBuffer(int size) :
@@ -621,7 +626,7 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
     }
 
     if (m_compute_bounds)
-        m_xf_bounds = ComputeConvexHull(m_xf_buf->points(), m_xf_buf->cntrs(), m_xf_buf->cntr_count(), m_xf_weight);
+        m_xf_bounds = ComputeConvexHull(m_xf_buf->points(), m_xf_buf->point_count(), m_xf_buf->cntrs(), m_xf_buf->cntr_count(), m_xf_weight);
     if (m_xf_bounds)
         m_xf_buf->SetBounds(m_xf_bounds);
 
