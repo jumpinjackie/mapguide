@@ -210,6 +210,30 @@ clean_geos ()
 	check_clean
 	popd
 }
+#**********************************************************
+# Build PHP 5.2.1
+# Notes: Configure PHP source tree for building PHP extension
+#**********************************************************
+init_php ()
+{
+	LIB_NAME="PHP 5.2.1"
+}
+
+build_php ()
+{
+	pushd php
+	sh ./configure 
+	check_build
+	popd
+}
+
+clean_php ()
+{
+	pushd php
+	make distclean
+	check_clean
+	popd
+}
 
 #**********************************************************
 # Build SWIGEx 1.0
@@ -350,7 +374,7 @@ clean_imake ()
 # Script loop 
 #**********************************************************
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos swigex bdxml cppunit libfcgi imake;
+for lib in ace dwfcore dwftk dwfemap geos php swigex bdxml cppunit libfcgi imake;
 do
 	echo "$lib: Initialization..........................."
 	init_"$lib"
