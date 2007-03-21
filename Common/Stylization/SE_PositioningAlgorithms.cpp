@@ -16,9 +16,11 @@
 //
 
 #include "stdafx.h"
+//#include "SE_Include.h"
 #include "SE_RenderProxies.h"
 #include "SE_PositioningAlgorithms.h"
 #include "SE_Renderer.h"
+#include "SE_SymbolManager.h"
 #include "Renderer.h"
 #include "SE_Bounds.h"
 #include "RS_FontEngine.h"
@@ -28,10 +30,10 @@
 
 SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 {
-    SE_RenderPointStyle* ret = new SE_RenderPointStyle(); 
+    SE_RenderPointStyle* ret = new SE_RenderPointStyle();
     *ret = *st;
     memcpy(ret->bounds, st->bounds, sizeof(ret->bounds));
-    SE_RenderText* txt = new SE_RenderText(); 
+    SE_RenderText* txt = new SE_RenderText();
     *txt = *((SE_RenderText*)st->symbol[0]);
     ret->symbol[0] = txt;
 
@@ -44,7 +46,7 @@ SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* renderer)
 {
     SE_RenderText* txt = ((SE_RenderText*)st->symbol[0]);
-    
+
     RS_TextMetrics tm;
     SE_Matrix txf;
     renderer->GetFontEngine()->GetTextMetrics(txt->text, txt->tdef, tm, false);
@@ -93,17 +95,17 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* renderer)
 }
 
 
-void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer, 
-                                         LineBuffer*     geometry, 
-                                         SE_Matrix&      xform, 
-                                         SE_Style*       style, 
-                                         SE_RenderStyle* rstyle, 
+void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
+                                         LineBuffer*     geometry,
+                                         SE_Matrix&      xform,
+                                         SE_Style*       style,
+                                         SE_RenderStyle* rstyle,
                                          double          mm2px
                                          )
 {
-    //this placement algorithm implements the MapGuide dynamic point labeling algorithm 
+    //this placement algorithm implements the MapGuide dynamic point labeling algorithm
     //which means 8 candidate labels generated for each symbol
-    
+
     double cx = 0.0;
     double cy = 0.0;
     double dummy;
@@ -123,7 +125,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     rstyle2->renderPass = rstyle->renderPass;
     memcpy(rstyle2->bounds, rstyle->bounds, sizeof(rstyle2->bounds));
     SE_RenderText* txt = NULL;
-    
+
     for (SE_RenderPrimitiveList::iterator iter = rstyle->symbol.begin(); iter != rstyle->symbol.end(); iter++)
     {
         if ((*iter)->type == SE_RenderTextPrimitive)
@@ -169,17 +171,17 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     double symbol_rot_deg = box_angle_rad / M_PI180;
 
     double op_pts[16];
-    
+
     // calculate a 2 pixel offset to allow for label ghosting
-    double offset = 2.0 ; 
-    
+    double offset = 2.0 ;
+
     //compute how far label needs to be offset from
     //center point of symbol
 
     double w = 0.5 * symbol_width;
     double h = 0.5 * symbol_height;
-    double ch = 0;		// vertical center point
-    double cw = 0;		// horizontal center point
+    double ch = 0;      // vertical center point
+    double cw = 0;      // horizontal center point
 
     w += offset;
     h += offset;
@@ -218,9 +220,9 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
             hsn = h * sn;   nhsn = -hsn;
             hcs = h * cs;   nhcs = -hcs;
         }
-       
-        cwsn = cw * sn;		chsn = ch * sn; 
-        cwcs = cw * cs;		chcs = ch * cs;
+
+        cwsn = cw * sn;     chsn = ch * sn;
+        cwcs = cw * cs;     chcs = ch * cs;
 
         // find the octant that the marker is rotated into, and shift the points accordingly.
         // this way, the overpost points are still within 22.5 degrees of an axis-aligned box.
@@ -242,16 +244,16 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     {
         if (!useBounds)
         {
-            symbol_bounds.maxx = w;	symbol_bounds.minx = -w;
-            symbol_bounds.maxy = h;	symbol_bounds.miny = -h;
+            symbol_bounds.maxx = w; symbol_bounds.minx = -w;
+            symbol_bounds.maxy = h; symbol_bounds.miny = -h;
         }
-        op_pts[0] = symbol_bounds.maxx;	op_pts[1] = ch;
-        op_pts[2] = symbol_bounds.maxx;	op_pts[3] = symbol_bounds.maxy;
-        op_pts[4] = cw;				    op_pts[5] = symbol_bounds.maxy;
-        op_pts[6] = symbol_bounds.minx;	op_pts[7] = symbol_bounds.maxy;
-        op_pts[8] = symbol_bounds.minx;	op_pts[9] = ch;
+        op_pts[0] = symbol_bounds.maxx; op_pts[1] = ch;
+        op_pts[2] = symbol_bounds.maxx; op_pts[3] = symbol_bounds.maxy;
+        op_pts[4] = cw;                 op_pts[5] = symbol_bounds.maxy;
+        op_pts[6] = symbol_bounds.minx; op_pts[7] = symbol_bounds.maxy;
+        op_pts[8] = symbol_bounds.minx; op_pts[9] = ch;
         op_pts[10] = symbol_bounds.minx;op_pts[11] = symbol_bounds.miny;
-        op_pts[12] = cw;			    op_pts[13] = symbol_bounds.miny;
+        op_pts[12] = cw;                op_pts[13] = symbol_bounds.miny;
         op_pts[14] = symbol_bounds.maxx;op_pts[15] = symbol_bounds.miny;
     }
 
@@ -304,11 +306,11 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
 }
 
 
-void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer, 
-                      LineBuffer*     geometry, 
-                      SE_Matrix&      xform, 
-                      SE_Style*       style, 
-                      SE_RenderStyle* rstyle, 
+void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer,
+                      LineBuffer*     geometry,
+                      SE_Matrix&      xform,
+                      SE_Style*       style,
+                      SE_RenderStyle* rstyle,
                       double          mm2px
                       )
 {
@@ -323,16 +325,283 @@ void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer,
 
     //TODO: get rid of this dynamic_cast once we fix the class hierarchy
     Renderer* renderer = dynamic_cast<Renderer*>(se_renderer);
-    renderer->ProcessLabelGroup(&info, 1, rt->text, RS_OverpostType_AllFit, true, geometry); 
+    renderer->ProcessLabelGroup(&info, 1, rt->text, RS_OverpostType_AllFit, true, geometry);
 }
 
-    
-void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer, 
-                          LineBuffer*     geometry, 
-                          SE_Matrix&      xform, 
-                          SE_Style*       style, 
-                          SE_RenderStyle* rstyle, 
-                          double          mm2px
+
+void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
+                          LineBuffer*     geometry,
+                          SE_Matrix&      xform,
+                          SE_Style*       seStyle,
+                          SE_RenderStyle* rstyle,
+                          double          mm2px,
+                          RS_FeatureReader* featureReader,
+                          SE_SymbolManager* symbolManager
                           )
 {
+
+    // highway info format:  countryCode|type1|num1|type2|num2|type3|num3|...
+    // example:              US|2|101|3|1
+    StringOfTokens highwayInfo = StringOfTokens(featureReader->GetString(L"Url"), L"|");
+
+    int shieldCount = (highwayInfo.getTokenCount() - 1) / 2;
+
+    if (shieldCount < 1)
+        return;
+
+    SE_RenderPrimitiveList * symbolVectors = new SE_RenderPrimitiveList[shieldCount];
+
+    std::wstring countryCode = highwayInfo.getFirstToken();
+
+    int shieldIndex;
+    for (shieldIndex = 0; shieldIndex < shieldCount; shieldIndex++)
+    {
+        std::wstring shieldType = highwayInfo.getNextToken();
+        std::wstring highwayNum = highwayInfo.getNextToken();
+
+        // first the shield graphic
+
+        SE_RenderRaster* rr = new SE_RenderRaster();
+
+        std::wstring imgPathName = HIGWAY_SHIELD_SYMBOLS_LOCATION + HIGWAY_SHIELD_SYMBOLS_PREFIX +
+                                   countryCode + L"_" + shieldType + L".png";
+        rr->pngPtr = symbolManager->GetImageData(L"", imgPathName.c_str(), rr->pngSize);
+
+        rr->position[0] = 0;
+        rr->position[1] = 0;
+        rr->extent[0] = 20;
+        rr->extent[1] = 20;
+        rr->angle = 0;
+
+        if (highwayNum.length() == 1)
+            rr->extent[0] = ((shieldType == L"3") ? 25 : 20);
+        else if (highwayNum.length() == 2)
+            rr->extent[0] = 25;
+        else
+            rr->extent[0] = 30;
+
+        double w = 0.5 * rr->extent[0];
+        double h = 0.5 * rr->extent[1];
+
+        rr->bounds[0].x = -w;
+        rr->bounds[0].y = -h;
+        rr->bounds[1].x =  w;
+        rr->bounds[1].y = -h;
+        rr->bounds[2].x =  w;
+        rr->bounds[2].y =  h;
+        rr->bounds[3].x = -w;
+        rr->bounds[3].y =  h;
+
+        // the shield graphic is ready
+        symbolVectors[shieldIndex].push_back(rr);
+
+
+        // now symbol for the highway number
+
+        SE_RenderText* rt = new SE_RenderText();
+
+        rt->text = highwayNum;
+        rt->position[0] = 0;
+        rt->position[1] = 0;
+        rt->tdef.font().name() = L"Arial";
+        rt->tdef.font().height() = 10*0.001 / mm2px; // convert mm to meters
+        rt->tdef.rotation() = 0;
+
+        rt->tdef.halign() = RS_HAlignment_Center;
+        rt->tdef.valign() = RS_VAlignment_Half;
+
+        if (shieldType == L"1")
+        {
+            rt->tdef.color() = RS_Color(255, 255, 255, 255);
+        }
+        else
+        {
+            rt->tdef.color() = RS_Color(0, 0, 0, 255);
+        }
+
+        rt->tdef.textbg() = RS_TextBackground_None;
+        rt->tdef.font().style() = RS_FontStyle_Bold;
+
+        // the number graphic is ready
+        symbolVectors[shieldIndex].push_back(rt);
+    }
+
+
+    SE_RenderLineStyle* style = (SE_RenderLineStyle* ) rstyle;
+    SE_Matrix symxf;
+    int ptindex = 0;
+    double increment = style->repeat;
+ // double incrementS = 10 * mm2px;          // the 'increment' used between multiple shields
+    double incrementS = style->endOffset;    // use endOffset as the increment between multiple shields
+
+    shieldIndex = 0;
+
+    for (int j=0; j<geometry->cntr_count(); j++)
+    {
+        // current polyline
+        int ptcount = geometry->cntrs()[j];
+        double* pts = geometry->points() + 2*ptindex;
+
+        // init position along the current segment to the start offset
+        double drawpos = style->startOffset;
+
+        int cur_seg = 0;
+
+        while (cur_seg < ptcount - 1)
+        {
+            symxf.setIdentity();
+
+            // current line segment
+            double* seg = pts + cur_seg * 2;
+
+            // transform the point to screen space
+            double  cx1, cy1, cx2, cy2;
+            renderer->WorldToScreenPoint(seg[0], seg[1], cx1, cy1);
+            renderer->WorldToScreenPoint(seg[2], seg[3], cx2, cy2);
+
+            // calc length
+            double dx = cx2 - cx1;
+            double dy = cy2 - cy1;
+            double len = sqrt(dx*dx + dy*dy);
+
+            // check if completely skipping current segment since it is smaller than the increment
+            if (drawpos < len)
+            {
+                double slope = atan2(dy, dx);
+                double dx_fact = cos(slope);
+                double dy_fact = sin(slope);
+
+                double tx = cx1 + dx_fact * drawpos;
+                double ty = cy1 + dy_fact * drawpos;
+                symxf.translate(tx, ty);
+
+                double dx_incr = dx_fact * increment;      // x/y incr between groups of shields
+                double dy_incr = dy_fact * increment;
+
+                double dx_incS = dx_fact * incrementS;     // x/y incr between shields in a group
+                double dy_incS = dy_fact * incrementS;
+
+                // follow the segment and place the shield symbols alternated via shieldIndex
+                while (drawpos < len)
+                {
+                    if (style->drawLast)
+                    {
+
+                        style->symbol = symbolVectors[shieldIndex];
+                        memcpy(style->bounds, symbolVectors[shieldIndex].front()->bounds, sizeof(style->bounds));
+                        SE_RenderStyle* clonedStyle = renderer->CloneRenderStyle(style);
+
+                        SE_LabelInfo info(symxf.x2, symxf.y2, 0.0, 0.0, RS_Units_Device, 0, clonedStyle);
+
+                        renderer->ProcessLabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegions, geometry);
+
+                    }
+                    else
+                    {
+                        renderer->DrawSymbol(symbolVectors[shieldIndex], symxf, 0);
+
+                        // TODO: if this is ever needed ...
+                     // if (style->addToExclusionRegions)
+                     //     renderer->AddExclusionRegion(style, symxf, 0);
+                    }
+
+                    // move on to the next shield, if beyond the last one go back to the first
+                    shieldIndex++;
+                    if (shieldIndex < shieldCount)
+                    {
+                        symxf.translate(dx_incS, dy_incS);
+                        drawpos += incrementS;
+                    }
+                    else
+                    {
+                        // finished with one group
+                        // go back to the first symbol and advance using the full increment
+
+                        shieldIndex = 0;
+                        symxf.translate(dx_incr, dy_incr);
+                        drawpos += increment;
+                    }
+                }
+            }
+
+            drawpos -= len;
+            cur_seg++;
+        }
+
+        ptindex += ptcount;
+    }
+
+    delete [] symbolVectors;
+
 }
+
+
+int StringOfTokens::getTokenCount()
+{
+    if (m_tokenstring.empty())
+    {
+        return 0;
+    }
+
+    std::wstring::size_type curPos = 0;
+    std::wstring::size_type delimPos;
+    int count = 1;
+
+    delimPos = m_tokenstring.find(m_delimiter, curPos);
+
+    while (std::wstring::npos != delimPos)
+    {
+        curPos = delimPos + 1;
+        count++;
+
+        delimPos = m_tokenstring.find(m_delimiter, curPos);
+    }
+
+    return count;
+}
+
+std::wstring StringOfTokens::getFirstToken()
+{
+    if (m_tokenstring.empty())
+    {
+        return L"";
+    }
+
+    m_currentPos = 0;
+
+    std::wstring::size_type delimPos1 = m_tokenstring.find(m_delimiter);
+
+    if (std::wstring::npos == delimPos1)
+    {
+        m_currentPos = m_tokenstring.length();
+        return m_tokenstring;
+    }
+    else
+    {
+        m_currentPos = delimPos1+1;
+        return m_tokenstring.substr(0, delimPos1);
+    }
+}
+
+std::wstring StringOfTokens::getNextToken()
+{
+    if (m_tokenstring.empty() || m_currentPos >= m_tokenstring.length())
+    {
+        return L"";
+    }
+
+    std::wstring::size_type curPos = m_currentPos;
+    std::wstring::size_type delimPos = m_tokenstring.find(m_delimiter, m_currentPos);
+
+    if (std::wstring::npos == delimPos)
+    {
+        m_currentPos = m_tokenstring.length();
+        return m_tokenstring.substr(curPos);
+    }
+    else
+    {
+        m_currentPos = delimPos+1;
+        return m_tokenstring.substr(curPos, delimPos - curPos);
+    }
+}
+

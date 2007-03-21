@@ -24,11 +24,11 @@
 using namespace MDFMODEL_NAMESPACE;
 
 //cloning of RenderSymbols. Unfortunate but necessary for delay-drawing labels
-static SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol)
+SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
 {
     SE_RenderStyle* ret = NULL;
 
-    //first determine what kind of style it is and copy all the 
+    //first determine what kind of style it is and copy all the
     //style specific properties
     switch (symbol->type)
     {
@@ -191,7 +191,7 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
 
         //transform to screen space -- geometry is in [the original] mapping space
         WorldToScreenPoint(x, y, x, y);
-        
+
         xform.setIdentity();
         xform.translate(x, y);
         double angle = 0;//TODO: angle needs to be added to the RenderPointStyle
@@ -214,9 +214,9 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
     SE_RenderPrimitiveList& rs = style->symbol;
 
     //check if it is a single symbol that is not a label participant
-    if (rs.size() == 1 
-        && rs[0]->type == SE_RenderPolylinePrimitive 
-        && !style->drawLast 
+    if (rs.size() == 1
+        && rs[0]->type == SE_RenderPolylinePrimitive
+        && !style->drawLast
         && !style->addToExclusionRegions)
     {
         SE_RenderPolyline* rp = (SE_RenderPolyline*)rs[0];
@@ -224,13 +224,13 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 
         //check if it is a horizontal line
         if (lb->point_count() == 2
-            && lb->points()[1] == 0.0 
+            && lb->points()[1] == 0.0
             && lb->points()[3] == 0.0)
         {
-            //now make sure it is not a dashed line by comparing the 
+            //now make sure it is not a dashed line by comparing the
             //single segment to the symbol repeat
             double len = lb->points()[2] - lb->points()[0];
-            
+
             if (fabs(len - style->repeat) < 0.001) //repeat must be within 1/1000 of a pixel for us to assume solid line
                                                    //this is only to avoid FP precision issues, in reality they would be exactly equal
             {
@@ -243,9 +243,9 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
             }
         }
     }
-    
+
     SE_Matrix symxf;
-    
+
     int ptindex = 0;
 
     //get the increment (the render style already stores this in screen units)
@@ -276,7 +276,7 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
             //transform segment from mapping to screen space
             WorldToScreenPoint(seg[0], seg[1], seg_screen[0], seg_screen[1]);
             WorldToScreenPoint(seg[2], seg[3], seg_screen[2], seg_screen[3]);
-            
+
             //get length
             double dx = seg_screen[2] - seg_screen[0];
             double dy = seg_screen[3] - seg_screen[1];
@@ -305,7 +305,7 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 //loop-draw the symbol along the current segment,
                 //moving along by increment pixels
                 while (drawpos < len)
-                {                    
+                {
                     if (style->drawLast)
                         AddLabel(geometry, style, symxf, symrot);
                     else
@@ -317,10 +317,10 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                     }
 
                     symxf.translate(dx_incr, dy_incr);
-                    drawpos += increment; 
+                    drawpos += increment;
                 }
             }
-            
+
             drawpos -= len;
             cur_seg++;
         }
@@ -404,13 +404,13 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
 
 void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angle)
 {
-    //clone the SE_RenderStyle so that the label renderer can keep track of it until 
+    //clone the SE_RenderStyle so that the label renderer can keep track of it until
     //the end of rendering when it draws all the labels
     //TODO: cloning is bad.
     SE_RenderStyle* copied_style = CloneRenderStyle(style);
 
     SE_LabelInfo info(xform.x2, xform.y2, 0.0, 0.0, RS_Units_Device, angle, copied_style);
-    
+
     RS_OverpostType type = RS_OverpostType_AllFit;
 
     ProcessLabelGroup(&info, 1, type, style->addToExclusionRegions, geom);
