@@ -351,24 +351,38 @@ void TestFeatureService::TestCase_TestFdoConnectionManager()
         const STRING provider = L"OSGeo.SDF";
 #ifdef _WIN32
         const STRING connectionString = L"File=..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
+        const STRING connectionStringAlt = L"File=..\\UnitTestFiles\\Sheboygan_BuildingOutlines.sdf";
 #else
         const STRING connectionString = L"File=../UnitTestFiles/Sheboygan_Parcels.sdf";
+        const STRING connectionStringAlt = L"File=../UnitTestFiles/Sheboygan_BuildingOutlines.sdf";
 #endif
 
         FdoIConnection* pFdoConnection1 = pManager->Open(provider, connectionString);
         CPPUNIT_ASSERT(pFdoConnection1);
 
+        FdoIConnection* pFdoConnectionAlt = pManager->Open(provider, connectionStringAlt);
+        CPPUNIT_ASSERT(pFdoConnectionAlt);
+
         FdoIConnection* pFdoConnection2 = pManager->Open(provider, connectionString);
         CPPUNIT_ASSERT(pFdoConnection2);
 
+        FdoIConnection* pFdoConnection3 = pManager->Open(provider, connectionString);
+        CPPUNIT_ASSERT(pFdoConnection3);
+
         // These connections should be different
         CPPUNIT_ASSERT(pFdoConnection1 != pFdoConnection2);
+        CPPUNIT_ASSERT(pFdoConnection1 != pFdoConnection3);
 
         pManager->Close(pFdoConnection1);
         pManager->Close(pFdoConnection2);
+        pManager->Close(pFdoConnection3);
+        pManager->Close(pFdoConnectionAlt);
 
         // Force removal from the FDO connection cache
         STRING key = connectionString;
+        pManager->RemoveCachedFdoConnection(key);
+
+        key = connectionStringAlt;
         pManager->RemoveCachedFdoConnection(key);
     }
     catch(MgException* e)

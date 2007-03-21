@@ -524,57 +524,40 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
     MG_FDOCONNECTION_MANAGER_TRY()
 
     // Loop all of the FDO connection caches
-    FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.begin();
-    while(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
+    FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.find(provider);
+    if(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
     {
-        STRING providerCached = iterFdoConnectionCacheCollection->first;
-        if(ACE_OS::strcasecmp(providerCached.c_str(), provider.c_str()) == 0)
+        FdoConnectionCache* fdoConnectionCache = iterFdoConnectionCacheCollection->second;
+        if(fdoConnectionCache)
         {
-            FdoConnectionCache* fdoConnectionCache = iterFdoConnectionCacheCollection->second;
-            if(fdoConnectionCache)
+            FdoConnectionCache::iterator iter = fdoConnectionCache->find(key);
+            while(fdoConnectionCache->end() != iter)
             {
-                FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
-
-                while(fdoConnectionCache->end() != iter)
+                // We have a key match
+                FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                if(pFdoConnectionCacheEntry)
                 {
-                    STRING cacheKey = iter->first;
-                    if(ACE_OS::strcasecmp(cacheKey.c_str(), key.c_str()) == 0)
+                    if(pFdoConnectionCacheEntry->ltName == ltName)
                     {
-                        // We have a key match
-                        FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
-                        if(pFdoConnectionCacheEntry)
+                        // We have a long transaction name match
+                        if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() == 1)
                         {
-                            if(pFdoConnectionCacheEntry->ltName == ltName)
+                            // It is not in use so claim it
+                            pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
+                            if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
                             {
-                                // We have a long transaction name match
-                                if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() == 1)
-                                {
-                                    // It is not in use so claim it
-                                    pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
-                                    if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
-                                    {
-                                        pFdoConnectionCacheEntry->pFdoConnection->Open();
-                                    }
-                                    pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
-                                    break;
-                                }
+                                pFdoConnectionCacheEntry->pFdoConnection->Open();
                             }
+                            pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
+                            break;
                         }
                     }
-
-                    iter++;
                 }
+
+                // Next match
+                iter++;
             }
         }
-
-        if(pFdoConnection)
-        {
-            // We found a connection
-            break;
-        }
-
-        // Next FDO connection cache
-        iterFdoConnectionCacheCollection++;
     }
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.SearchFdoConnectionCache")
@@ -1003,72 +986,63 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
         FdoConnectionCache* fdoConnectionCache = iterFdoConnectionCacheCollection->second;
         if(fdoConnectionCache)
         {
-            FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
+            FdoConnectionCache::iterator iter = fdoConnectionCache->find(key);
 
             // We need to search the entire cache because FDO only supports a thread per connection. 
             // Therefore, there could be more then 1 cached connection to the same FDO provider.
             while(fdoConnectionCache->end() != iter)
             {
-                STRING cacheKey = iter->first;
-                if(ACE_OS::strcasecmp(cacheKey.c_str(), key.c_str()) == 0)
+                connections++;
+
+                // We have a key match
+                FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                if(pFdoConnectionCacheEntry)
                 {
-                    connections++;
-
-                    // We have a key match
-                    FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
-                    if(pFdoConnectionCacheEntry)
+                    if(pFdoConnectionCacheEntry->pFdoConnection)
                     {
-                        if(pFdoConnectionCacheEntry->pFdoConnection)
+                        INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
+
+                        // We have a match, is it in use?
+                        if(1 == refCount)
                         {
-                            INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
+                            // Close the connection
+                            pFdoConnectionCacheEntry->pFdoConnection->Close();
 
-                            // We have a match, is it in use?
-                            if(1 == refCount)
+                            // Release any resource
+                            FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+
+                            delete pFdoConnectionCacheEntry;
+                            pFdoConnectionCacheEntry = NULL;
+
+                            // Remove any feature service cache entries for this resource
+                            MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+                            assert(NULL != serviceManager);
+
+                            try
                             {
-                                // Close the connection
-                                pFdoConnectionCacheEntry->pFdoConnection->Close();
-
-                                // Release any resource
-                                FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
-
-                                delete pFdoConnectionCacheEntry;
-                                pFdoConnectionCacheEntry = NULL;
-
-                                // Remove any feature service cache entries for this resource
-                                MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-                                assert(NULL != serviceManager);
-
-                                try
-                                {
-                                    Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(key);
-                                    serviceManager->RemoveFeatureServiceCacheEntry(resource);
-                                }
-                                catch(MgInvalidRepositoryTypeException* e)
-                                {
-                                    // If this exception is thrown then the key was not a resource identifier string 
-                                    // and so there will be no entries in the feature service cache to remove.
-                                    SAFE_RELEASE(e);
-                                }
-
-                                fdoConnectionCache->erase(iter++);
-
-                                connectionsRemoved++;
-
-                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveCachedFdoConnection() - Releasing cached FDO connection.\n")));
+                                Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(key);
+                                serviceManager->RemoveFeatureServiceCacheEntry(resource);
                             }
-                            else
+                            catch(MgInvalidRepositoryTypeException* e)
                             {
-                                // The resource is still in use and so it cannot be removed
-                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveCachedFdoConnection() - FDO connection in use!\n")));
-
-                                // Next cached FDO connection
-                                iter++;
+                                // If this exception is thrown then the key was not a resource identifier string 
+                                // and so there will be no entries in the feature service cache to remove.
+                                SAFE_RELEASE(e);
                             }
+
+                            fdoConnectionCache->erase(iter++);
+
+                            connectionsRemoved++;
+
+                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveCachedFdoConnection() - Releasing cached FDO connection.\n")));
                         }
                         else
                         {
-                            // NULL pointer
-                            break;
+                            // The resource is still in use and so it cannot be removed
+                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveCachedFdoConnection() - FDO connection in use!\n")));
+
+                            // Next cached FDO connection
+                            iter++;
                         }
                     }
                     else
@@ -1079,8 +1053,8 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
                 }
                 else
                 {
-                    // Next cached FDO connection
-                    iter++;
+                    // NULL pointer
+                    break;
                 }
             }
         }
@@ -1117,23 +1091,15 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
 
         // Get the appropriate provider cache
         // Loop all of the FDO connection caches
-        FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.begin();
-        while(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
+        FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.find(provider);
+        if(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
         {
-            STRING providerCached = iterFdoConnectionCacheCollection->first;
-            if(ACE_OS::strcasecmp(providerCached.c_str(), provider.c_str()) == 0)
+            FdoConnectionCache* fdoConnectionCache = iterFdoConnectionCacheCollection->second;
+            if(fdoConnectionCache)
             {
-                FdoConnectionCache* fdoConnectionCache = iterFdoConnectionCacheCollection->second;
-                if(fdoConnectionCache)
-                {
-                    fdoConnectionCache->insert(FdoConnectionCacheEntry_Pair(key, pFdoConnectionCacheEntry));
-                    bConnectionCached = true;
-                    break;
-                }
+                fdoConnectionCache->insert(FdoConnectionCacheEntry_Pair(key, pFdoConnectionCacheEntry));
+                bConnectionCached = true;
             }
-
-            // Next FDO connection cache
-            iterFdoConnectionCacheCollection++;
         }
 
         // Check to see if the entry was cached. An entry will not be cached above if
@@ -1170,38 +1136,22 @@ bool MgFdoConnectionManager::FdoConnectionCacheFull(CREFSTRING provider)
     INT32 fdoConnectionCacheSize = m_nFdoConnectionPoolSize; // Set to default
 
     // Loop all of the FDO connection caches
-    FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.begin();
-    while(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
+    FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.find(provider);
+    if(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
     {
-        STRING providerCached = iterFdoConnectionCacheCollection->first;
-        if(ACE_OS::strcasecmp(providerCached.c_str(), provider.c_str()) == 0)
-        {
-            // Found the cache we are interested in
-            fdoConnectionCache = iterFdoConnectionCacheCollection->second;
-            break;
-        }
-
-        // Next cache entry
-        iterFdoConnectionCacheCollection++;
+        // Found the cache we are interested in
+        fdoConnectionCache = iterFdoConnectionCacheCollection->second;
     }
 
     // Loop all of the FDO connection caches size
-    ProviderInfoCollection::iterator iterProviderInfo = m_ProviderInfoCollection.begin();
-    while(m_ProviderInfoCollection.end() != iterProviderInfo)
+    ProviderInfoCollection::iterator iterProviderInfo = m_ProviderInfoCollection.find(provider);
+    if(m_ProviderInfoCollection.end() != iterProviderInfo)
     {
-        STRING providerCached = iterProviderInfo->first;
-        if(ACE_OS::strcasecmp(providerCached.c_str(), provider.c_str()) == 0)
+        ProviderInfo* providerInfo = iterProviderInfo->second;
+        if(providerInfo)
         {
-            ProviderInfo* providerInfo = iterProviderInfo->second;
-            if(providerInfo)
-            {
-                fdoConnectionCacheSize = providerInfo->cacheSize;
-            }
-            break;
+            fdoConnectionCacheSize = providerInfo->cacheSize;
         }
-
-        // Next cache entry
-        iterProviderInfo++;
     }
 
     if(fdoConnectionCache)
@@ -1452,18 +1402,10 @@ MdfModel::FeatureSource* MgFdoConnectionManager::GetFeatureSource(MgResourceIden
 
     STRING resourceId = resId->ToString();
 
-    FeatureSourceCache::iterator iter = m_FeatureSourceCache.begin();
-    while(m_FeatureSourceCache.end() != iter)
+    FeatureSourceCache::iterator iter = m_FeatureSourceCache.find(resourceId);
+    if(m_FeatureSourceCache.end() != iter)
     {
-        STRING resIdCached = iter->first;
-        if(ACE_OS::strcasecmp(resIdCached.c_str(), resourceId.c_str()) == 0)
-        {
-            featureSource = iter->second;
-            break;
-        }
-
-        // Next feature source
-        iter++;
+        featureSource = iter->second;
     }
 
     if(NULL == featureSource)
@@ -1494,19 +1436,10 @@ ProviderInfo* MgFdoConnectionManager::GetProviderInformation(CREFSTRING provider
 {
     ProviderInfo* providerInfo = NULL;
 
-    ProviderInfoCollection::iterator iter = m_ProviderInfoCollection.begin();
-    while(m_ProviderInfoCollection.end() != iter)
+    ProviderInfoCollection::iterator iter = m_ProviderInfoCollection.find(provider);
+    if(iter != m_ProviderInfoCollection.end())
     {
-        STRING providerCached = iter->first;
-        if(ACE_OS::strcasecmp(providerCached.c_str(), provider.c_str()) == 0)
-        {
-            // Found it
-            providerInfo = iter->second;
-            break;
-        }
-
-        // Next cache entry
-        iter++;
+        providerInfo = iter->second;
     }
 
     if(NULL == providerInfo)
