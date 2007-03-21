@@ -252,8 +252,12 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
     // Make output image non-interlaced --- it's a little faster to compress that way.
     gdImageInterlace(im, 0);
 
-    // Make sure the alpha values get saved
-    gdImageSaveAlpha(im, 1);
+    // Make sure the alpha values get saved -- but only if required
+    // it is faster not to save them and makes a smaller PNG
+    if (m_bgcolor.alpha() == 255)
+        gdImageSaveAlpha(im, 1);
+    else 
+        gdImageSaveAlpha(im, 0);
 
     //get an in-memory image stream
     int size = 0;
