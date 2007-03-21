@@ -121,46 +121,46 @@ AC_ARG_WITH([proj],
 
 if test $map_using_proj4 = "yes"; then
  if test $map_proj_prefix = "DEFAULT"; then
-  AC_MSG_NOTICE([Building proj-4.4.9  from /MgDev/Oem Directory])
-  map_opt_oem_subdirs="proj-4.4.9 $map_opt_oem_subdirs"
-  map_opt_oem_distsubdirs="proj-4.4.9 $map_opt_oem_distsubdirs"
-  AC_CONFIG_SUBDIRS(Oem/proj-4.4.9)
+  AC_MSG_NOTICE([Building proj-4.5.0  from /MgDev/Oem Directory])
+  map_opt_oem_subdirs="proj-4.5.0 $map_opt_oem_subdirs"
+  map_opt_oem_distsubdirs="proj-4.5.0 $map_opt_oem_distsubdirs"
+  AC_CONFIG_SUBDIRS(Oem/proj-4.5.0)
   map_proj_prefix=""
  else
-  AC_MSG_NOTICE([Using proj-4.4.9 install dir prefix $map_proj_prefix])
-  AC_MSG_NOTICE([proj-4.4.9 include dir - $map_proj_prefix/include]) 
-  AC_MSG_NOTICE([proj-4.4.9 include dir - $map_proj_prefix/include]) 
+  AC_MSG_NOTICE([Using proj-4.5.0 install dir prefix $map_proj_prefix])
+  AC_MSG_NOTICE([proj-4.5.0 include dir - $map_proj_prefix/include]) 
+  AC_MSG_NOTICE([proj-4.5.0 include dir - $map_proj_prefix/include]) 
  fi
 else
   map_proj_prefix=""
-  AC_MSG_NOTICE([disabling proj-4.4.9 build: is not used with custom CoordinateSystem])  
+  AC_MSG_NOTICE([disabling proj-4.5.0 build: is not used with custom CoordinateSystem])  
 fi   
 
 AC_SUBST(map_proj_prefix)
 
 dnl *******************************************************
-dnl GDAL-1.3.0 Configuration
+dnl gdal-1.4.0 Configuration
 dnl *******************************************************
 AC_ARG_WITH([gdal],
 		     MAP_HELP_STRING([--with-gdal],
-              	            [ignores Oem/gdal-1.3.0   specify install dir prefix [[default=no]]]),
+              	            [ignores Oem/gdal-1.4.0   specify install dir prefix [[default=no]]]),
 		[map_gdal_prefix=$withval],
 		[map_gdal_prefix="DEFAULT"])
 if test $map_using_proj4 = "yes"; then
  if test $map_gdal_prefix = "DEFAULT"; then
-  AC_MSG_NOTICE([Building gdal-1.3.0  from /MgDev/Oem Directory])
-  AC_CONFIG_SUBDIRS(Oem/gdal-1.3.0)
-  map_opt_oem_subdirs="gdal-1.3.0 $map_opt_oem_subdirs"
-  map_opt_oem_distsubdirs="gdal-1.3.0 $map_opt_oem_distsubdirs"
+  AC_MSG_NOTICE([Building gdal-1.4.0  from /MgDev/Oem Directory])
+  AC_CONFIG_SUBDIRS(Oem/gdal-1.4.0)
+  map_opt_oem_subdirs="gdal-1.4.0 $map_opt_oem_subdirs"
+  map_opt_oem_distsubdirs="gdal-1.4.0 $map_opt_oem_distsubdirs"
   map_gdal_prefix=""
  else
-  AC_MSG_NOTICE([Using gdal-1.3.0 install dir prefix $map_gdal_prefix])
-  AC_MSG_NOTICE([gdal-1.3.0 include dir $map_gdal_prefix/include]) 
-  AC_MSG_NOTICE([gdal-1.3.0 lib dir $map_gdal_prefix/include]) 
+  AC_MSG_NOTICE([Using gdal-1.4.0 install dir prefix $map_gdal_prefix])
+  AC_MSG_NOTICE([gdal-1.4.0 include dir $map_gdal_prefix/include]) 
+  AC_MSG_NOTICE([gdal-1.4.0 lib dir $map_gdal_prefix/include]) 
  fi
 else
  map_gdal_prefix=""
- AC_MSG_NOTICE([disabling gdal-1.3.0 build: is not used with custom CoordinateSystem])  
+ AC_MSG_NOTICE([disabling gdal-1.4.0 build: is not used with custom CoordinateSystem])  
 fi
 
 AC_SUBST(map_gdal_prefix)
