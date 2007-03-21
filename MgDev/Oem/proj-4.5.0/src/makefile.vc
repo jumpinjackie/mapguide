@@ -8,8 +8,14 @@
 PROJ_LIB_DIR=../NAD
 
 # Uncomment the first for an optimized build, or the second for debug.
-OPTFLAGS=	/nologo /Ox /MD /Zi /Fdprojvc.pdb
+#OPTFLAGS=	/nologo /Ox /MD /Zi /Fdprojvc.pdb
 #OPTFLAGS=	/nologo /Od /MDd /Zi /Fdprojvc.pdb
+
+!if "$(DEBUG)"=="1"
+OPTFLAGS=	/nologo /Od /MDd /Zi /Fdprojvc.pdb
+!else
+OPTFLAGS=	/nologo /Ox /MD /Zi /Fdprojvc.pdb
+!endif
 
 # Uncomment the first for linking exes against DLL or second for static
 EXE_PROJ =	proj_i.lib
