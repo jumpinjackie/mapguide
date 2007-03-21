@@ -254,7 +254,7 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
 
     // Make sure the alpha values get saved -- but only if required
     // it is faster not to save them and makes a smaller PNG
-    if (m_bgcolor.alpha() == 255)
+    if (m_bgcolor.alpha() != 255)
         gdImageSaveAlpha(im, 1);
     else 
         gdImageSaveAlpha(im, 0);
