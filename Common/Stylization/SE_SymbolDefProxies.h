@@ -110,6 +110,7 @@ struct SE_Text : public SE_Primitive
 struct SE_Raster : public SE_Primitive
 {
     SE_String pngPath;
+    const wchar_t* resId;
     const unsigned char* pngPtr;
     int pngSize;
     SE_Double position[2];

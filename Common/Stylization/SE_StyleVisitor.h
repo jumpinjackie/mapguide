@@ -64,6 +64,7 @@ private:
     SE_Symbolization* m_symbolization;
     SE_Style* m_style;
     SE_Primitive* m_primitive;
+    std::vector<const wchar_t*> m_resIdStack;
 };
 
 #endif // SE_STYLEVISITOR_H

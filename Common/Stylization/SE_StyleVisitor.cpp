@@ -454,6 +454,10 @@ void SE_StyleVisitor::VisitImage(Image& image)
     SE_Raster* primitive = new SE_Raster();
     m_primitive = primitive;
 
+    //remember the parent symbol's res ID so that we can use it later for getting the raster data
+    //in case the image name is an expression
+    primitive->resId = m_resIdStack.back();
+
     if (image.GetContent().size())
     {
         /* Handle this; Base64 as MdfString is not a particularly inspired plan */
@@ -461,13 +465,10 @@ void SE_StyleVisitor::VisitImage(Image& image)
     }
     else
     {
-        //TODO: Disallow expressions for now since
-        //ParseStringExpression(image.GetReference(), primitive->pngPath);
-        primitive->pngPath = image.GetReference().c_str();
-        primitive->pngPath.expression = NULL;
+        ParseStringExpression(image.GetReference(), primitive->pngPath);
 
         if (primitive->pngPath.expression == NULL) // constant path
-            primitive->pngPtr = m_resources? m_resources->GetImageData(image.GetReference().c_str(), primitive->pngSize) : NULL;
+            primitive->pngPtr = m_resources? m_resources->GetImageData(primitive->resId, primitive->pngPath.value, primitive->pngSize) : NULL;
         else
             primitive->pngPtr = NULL;
     }
@@ -594,6 +595,8 @@ void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefi
     {
         SimpleSymbol* sym = symbols->GetAt(i);
 
+        bool isRef = false;
+
         // get the symbol definition, either inlined or by reference
         SimpleSymbolDefinition* def = sym->GetSymbolDefinition();
         if (def == NULL)
@@ -605,12 +608,20 @@ void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefi
             def = dynamic_cast<SimpleSymbolDefinition*>(m_resources->GetSymbolDefinition(ref.c_str()));
             if (def == NULL)
                 return;
+
+            //remember the current symbol resource id, in case it references an 
+            //attached png image resource
+            isRef = true;
+            m_resIdStack.push_back(ref.c_str());
         }
 
         VisitSimpleSymbolDefinition(*def);
 
         if (m_style)
             ParseIntegerExpression(sym->GetRenderingPass(), m_style->renderPass);
+
+        if (isRef)
+            m_resIdStack.pop_back();
     }
 }
 
@@ -618,6 +629,8 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
 {
     if (symbolization == NULL)
         return;
+
+    m_resIdStack.clear();
 
     SymbolInstanceCollection* symbols = symbolization->GetSymbolCollection();
     int nSymbols = symbols->GetCount();
@@ -627,6 +640,8 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
         SymbolInstance* instance = symbols->GetAt(i);
 
         SetParameterValues(instance->GetParameterOverrides());
+
+        bool isRef = false;
 
         // get the symbol definition, either inlined or by reference
         SymbolDefinition* def = instance->GetSymbolDefinition();
@@ -639,6 +654,11 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
             def = m_resources->GetSymbolDefinition(ref.c_str());
             if (def == NULL)
                 continue;
+
+            //remember the current symbol resource id, in case it references an 
+            //attached png image resource
+            isRef = true;
+            m_resIdStack.push_back(ref.c_str());
         }
 
         m_symbolization = new SE_Symbolization();
@@ -658,7 +678,10 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
         ParseDoubleExpression(instance->GetInsertionOffsetY(), m_symbolization->absOffset[1]);
 
         def->AcceptVisitor(*this);
-
+        
         result.push_back(m_symbolization);
+
+        if (isRef)
+            m_resIdStack.pop_back();
     }
 }

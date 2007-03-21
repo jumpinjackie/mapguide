@@ -257,7 +257,7 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 
     if (!pngPtr)
     {
-        ret->pngPtr = cxt->resources->GetImageData(pngPath.evaluate(cxt->exec), ret->pngSize);
+        ret->pngPtr = cxt->resources->GetImageData(resId, pngPath.evaluate(cxt->exec), ret->pngSize);
     }
     else
     {
