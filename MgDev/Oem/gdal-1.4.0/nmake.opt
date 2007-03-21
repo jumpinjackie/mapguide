@@ -20,8 +20,14 @@ PYDIR   =	"C:\Software\Python24"
 SWIG = D:\swig\swig-1.3.25\swig.exe
 
 # Uncomment the first for an optimized build or the second for a debug build.
-OPTFLAGS=	/nologo /Ox /MD /EHsc
+#OPTFLAGS=	/nologo /Ox /MD /EHsc
 #OPTFLAGS=	/nologo /Od /MDd /EHsc /Zi /Fd$(PDB_NAME)
+
+!if "$(DEBUG)"=="1"
+OPTFLAGS=	/nologo /Od /MDd /EHsc /Zi /Fd$(PDB_NAME)
+!else
+OPTFLAGS=	/nologo /Ox /MD /EHsc
+!endif
 
 # Uncomment the following if you are building for 64-bit windows
 # (x64). You'll need to have PATH, INCLUDE and LIB set up for 64-bit

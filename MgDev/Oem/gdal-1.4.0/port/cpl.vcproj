@@ -24,9 +24,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake /f makefile.vc"
-				ReBuildCommandLine="nmake /f makefile.vc clean default"
-				CleanCommandLine="nmake /f makefile.vc clean"
+				BuildCommandLine="nmake /f makefile.vc DEBUG=1"
+				ReBuildCommandLine="nmake /f makefile.vc clean default DEBUG=1"
+				CleanCommandLine="nmake /f makefile.vc clean DEBUG=1"
 				Output=""
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
