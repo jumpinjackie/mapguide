@@ -128,28 +128,28 @@ void IOElevationSettings::Write(MdfStream &fd, ElevationSettings *elevationSetti
     fd << EncodeString(elevationSettings->GetZExtrusionExpression());
     fd << "</ZExtrusion>" << std::endl; // NOXLATE
 
-    fd << tab() << "<Unit>"; // NOXLATE
-    std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(elevationSettings->GetUnit()));
-    fd << EncodeString(*str);
-    fd << "</Unit>" << std::endl; // NOXLATE
-
     fd << tab() << "<ZOffsetType>"; // NOXLATE
     ElevationSettings::ElevationType elevType = elevationSettings->GetElevationType();
     switch(elevType)
     {
     case ElevationSettings::Absolute:
         {
-            fd << ELEV_TYPE_ABSOLUTE; 
+            fd << EncodeString(ELEV_TYPE_ABSOLUTE); 
             break;
         }
     case ElevationSettings::RelativeToGround:
     default:
         {
-            fd << ELEV_TYPE_RELATIVE_TO_GROUND; 
+            fd << EncodeString(ELEV_TYPE_RELATIVE_TO_GROUND); 
             break;
         }
     }
     fd << "</ZOffsetType>" << std::endl; // NOXLATE
+
+    fd << tab() << "<Unit>"; // NOXLATE
+    std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(elevationSettings->GetUnit()));
+    fd << EncodeString(*str);
+    fd << "</Unit>" << std::endl; // NOXLATE
 
     // Write any previously found unknown XML
     if (!elevationSettings->GetUnknownXml().empty())
