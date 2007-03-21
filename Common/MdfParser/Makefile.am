@@ -74,7 +74,6 @@ libMgMdfParser_la_SOURCES = \
   IOSupplementalSpatialContextInfo.cpp \
   IOSymbol.cpp \
   IOSymbolInstance.cpp \
-  IOSymbolInstanceCollection.cpp \
   IOText.cpp \
   IOTextFrame.cpp \
   IOUnknown.cpp \
@@ -152,7 +151,6 @@ noinst_HEADERS = \
   IOSupplementalSpatialContextInfo.h \
   IOSymbol.h \
   IOSymbolInstance.h \
-  IOSymbolInstanceCollection.h \
   IOText.h \
   IOTextFrame.h \
   IOUnknown.h \

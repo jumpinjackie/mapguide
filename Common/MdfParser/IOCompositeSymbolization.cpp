@@ -17,8 +17,7 @@
 
 #include "stdafx.h"
 #include "IOCompositeSymbolization.h"
-#include "IOSymbolInstanceCollection.h"
-#include "IOOverrideCollection.h"
+#include "IOSymbolInstance.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -42,15 +41,9 @@ void IOCompositeSymbolization::StartElement(const wchar_t *name, HandlerStack *h
         m_startElemName = name;
         this->_compositeSymbolization = new CompositeSymbolization();
     }
-    else if (m_currElemName == L"SymbolCollection") // NOXLATE
+    else if (m_currElemName == L"SymbolInstance") // NOXLATE
     {
-        IOSymbolInstanceCollection* IO = new IOSymbolInstanceCollection(this->_compositeSymbolization->GetSymbolCollection());
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
-    }
-    else if (m_currElemName == L"ParameterOverrides") // NOXLATE
-    {
-        IOOverrideCollection* IO = new IOOverrideCollection(this->_compositeSymbolization->GetParameterOverrides());
+        IOSymbolInstance* IO = new IOSymbolInstance(this->_compositeSymbolization->GetSymbolCollection());
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
@@ -78,8 +71,13 @@ void IOCompositeSymbolization::Write(MdfStream &fd, CompositeSymbolization* comp
     fd << tab() << "<CompositeSymbolization>" << std::endl; // NOXLATE
     inctab();
 
-    IOSymbolInstanceCollection::Write(fd, compositeSymbolization->GetSymbolCollection());
-    IOOverrideCollection::Write(fd, compositeSymbolization->GetParameterOverrides());
+    SymbolInstanceCollection* instanceCollection = compositeSymbolization->GetSymbolCollection();
+    int numInstances = instanceCollection->GetCount();
+    for (int i=0; i<numInstances; ++i)
+    {
+        SymbolInstance* instance = instanceCollection->GetAt(i);
+        IOSymbolInstance::Write(fd, instance);
+    }
 
     dectab();
     fd << tab() << "</CompositeSymbolization>" << std::endl; // NOXLATE

@@ -831,17 +831,39 @@
       <xs:documentation>Stylization attributes of a point, line, or area feature.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="SymbolCollection">
+      <xs:element name="SymbolInstance" type="SymbolInstanceType" minOccurs="0" maxOccurs="unbounded">
         <xs:annotation>
-          <xs:documentation>The collection of symbols used for stylization.</xs:documentation>
+          <xs:documentation>The symbol instances used for stylization.</xs:documentation>
         </xs:annotation>
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="SymbolInstance" type="SymbolInstanceType" minOccurs="0" maxOccurs="unbounded"/>
-          </xs:sequence>
-        </xs:complexType>
       </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SymbolInstanceType">
+    <xs:annotation>
+      <xs:documentation>An instance of a symbol.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="SymbolReference" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>A library reference to an existing SymbolDefinition, either simple or compound.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="SimpleSymbolDefinition" type="SimpleSymbolDefinitionType">
+          <xs:annotation>
+            <xs:documentation>An inlined SimpleSymbolDefinition.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="CompoundSymbolDefinition" type="CompoundSymbolDefinitionType">
+          <xs:annotation>
+            <xs:documentation>An inlined CompoundSymbolDefinition.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
       <xs:element name="ParameterOverrides">
+        <xs:annotation>
+          <xs:documentation>Specifies all parameter overrides for this symbol instance.</xs:documentation>
+        </xs:annotation>
         <xs:complexType>
           <xs:sequence>
             <xs:element name="Override" minOccurs="0" maxOccurs="unbounded">
@@ -868,30 +890,6 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="SymbolInstanceType">
-    <xs:annotation>
-      <xs:documentation>An instance of a symbol.</xs:documentation>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:choice>
-        <xs:element name="SymbolReference" type="xs:string">
-          <xs:annotation>
-            <xs:documentation>A library reference to an existing SymbolDefinition, either simple or compound.</xs:documentation>
-          </xs:annotation>
-        </xs:element>
-        <xs:element name="SimpleSymbolDefinition" type="SimpleSymbolDefinitionType">
-          <xs:annotation>
-            <xs:documentation>An inlined SimpleSymbolDefinition.</xs:documentation>
-          </xs:annotation>
-        </xs:element>
-        <xs:element name="CompoundSymbolDefinition" type="CompoundSymbolDefinitionType">
-          <xs:annotation>
-            <xs:documentation>An inlined CompoundSymbolDefinition.</xs:documentation>
-          </xs:annotation>
-        </xs:element>
-      </xs:choice>
       <xs:element name="ScaleX" type="xs:string" minOccurs="0">
         <xs:annotation>
           <xs:documentation>The additional amount to scale the symbol horizontally in symbol space.</xs:documentation>

@@ -51,15 +51,6 @@ SymbolInstanceCollection* CompositeSymbolization::GetSymbolCollection()
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-OverrideCollection* CompositeSymbolization::GetParameterOverrides()
-{
-    return &this->m_collOverrides;
-}
-
-//-------------------------------------------------------------------------
 // PURPOSE: Implementation of the Visitor pattern. The pure, virtual method
 //          is defined in Symbol and is implemented by all of its concrete
 //          subclasses.

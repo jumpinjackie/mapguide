@@ -24,24 +24,22 @@
         <CompositeRule>
           <LegendLabel/>
           <CompositeSymbolization>
-            <SymbolCollection>
-              <SymbolInstance>
-                <SymbolReference>Library://Symbology/Symbols/PointSymbolParam.SymbolDefinition</SymbolReference>
-                <ScaleX>1</ScaleX>
-                <ScaleY>1</ScaleY>
-                <SizeContext>DeviceUnits</SizeContext>
-                <DrawLast>False</DrawLast>
-                <CheckExclusionRegion>False</CheckExclusionRegion>
-                <AddToExclusionRegion>False</AddToExclusionRegion>
-              </SymbolInstance>
-            </SymbolCollection>
-            <ParameterOverrides>
-              <Override>
-                <SymbolName>X_on_Box</SymbolName>
-                <ParameterIdentifier>COLOR</ParameterIdentifier>
-                <ParameterValue>FF00FF00</ParameterValue>
-              </Override>
-            </ParameterOverrides>
+            <SymbolInstance>
+              <SymbolReference>Library://Symbology/Symbols/PointSymbolParam.SymbolDefinition</SymbolReference>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>X_on_Box</SymbolName>
+                  <ParameterIdentifier>COLOR</ParameterIdentifier>
+                  <ParameterValue>FF00FF00</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <ScaleX>1</ScaleX>
+              <ScaleY>1</ScaleY>
+              <SizeContext>DeviceUnits</SizeContext>
+              <DrawLast>False</DrawLast>
+              <CheckExclusionRegion>False</CheckExclusionRegion>
+              <AddToExclusionRegion>False</AddToExclusionRegion>
+            </SymbolInstance>
           </CompositeSymbolization>
         </CompositeRule>
       </CompositeTypeStyle>

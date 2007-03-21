@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOSymbolInstance.h"
+#include "IOOverrideCollection.h"
 #include "IOSimpleSymbolDefinition.h"
 #include "IOCompoundSymbolDefinition.h"
 
@@ -50,6 +51,12 @@ void IOSymbolInstance::StartElement(const wchar_t *name, HandlerStack *handlerSt
         CompoundSymbolDefinition* compoundSymbol = new CompoundSymbolDefinition();
         this->_symbolInstance->AdoptSymbolDefinition(compoundSymbol);
         IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(compoundSymbol);
+        handlerStack->push(IO);
+        IO->StartElement(name, handlerStack);
+    }
+    else if (m_currElemName == L"ParameterOverrides") // NOXLATE
+    {
+        IOOverrideCollection* IO = new IOOverrideCollection(this->_symbolInstance->GetParameterOverrides());
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
@@ -103,6 +110,8 @@ void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance)
     {
         EMIT_STRING_PROPERTY(fd, symbolInstance, SymbolReference, false)
     }
+
+    IOOverrideCollection::Write(fd, symbolInstance->GetParameterOverrides());
 
     EMIT_STRING_PROPERTY(fd, symbolInstance, ScaleX, true)
     EMIT_STRING_PROPERTY(fd, symbolInstance, ScaleY, true)

@@ -700,14 +700,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\IOSymbolInstanceCollection.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\IOSymbolInstanceCollection.h"
-			>
-		</File>
-		<File
 			RelativePath=".\IOText.cpp"
 			>
 		</File>
