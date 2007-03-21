@@ -29,9 +29,6 @@ ELEM_MAP_ENTRY(3, ZExtrusion);
 ELEM_MAP_ENTRY(4, Unit);
 ELEM_MAP_ENTRY(5, ZOffsetType);
 
-const wchar_t * ELEV_TYPE_ABSOLUTE = L"Absolute"; //NOXLATE
-const wchar_t * ELEV_TYPE_RELATIVE_TO_GROUND = L"RelativeToGround"; //NOXLATE
-
 IOElevationSettings::IOElevationSettings()
 {
     this->_elevationSettings = NULL;
@@ -87,7 +84,7 @@ void IOElevationSettings::ElementChars(const wchar_t *ch)
     else if (m_currElemName == swZOffsetType) 
     {
         ElevationSettings::ElevationType elevType;
-        if(::wcscmp(ch, ELEV_TYPE_ABSOLUTE) == 0)
+        if(::wcscmp(ch, L"Absolute") == 0) //NOXLATE
         {
             elevType = ElevationSettings::Absolute;
         }
@@ -134,13 +131,13 @@ void IOElevationSettings::Write(MdfStream &fd, ElevationSettings *elevationSetti
     {
     case ElevationSettings::Absolute:
         {
-            fd << EncodeString(ELEV_TYPE_ABSOLUTE); 
+            fd << "Absolute"; //NOXLATE
             break;
         }
     case ElevationSettings::RelativeToGround:
     default:
         {
-            fd << EncodeString(ELEV_TYPE_RELATIVE_TO_GROUND); 
+            fd << "RelativeToGround"; //NOXLATE
             break;
         }
     }
