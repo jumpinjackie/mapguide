@@ -45,8 +45,10 @@
 #define PHP_DEBUG ZEND_DEBUG
 
 #ifdef PHP_WIN32
+#ifndef PHPPROXYAPI_EXPORTS
 #include "tsrm_win32.h"
 #include "win95nt.h"
+#endif
 #	ifdef PHP_EXPORTS
 #	define PHPAPI __declspec(dllexport)
 #	else
@@ -71,7 +73,9 @@
 #define PHP_OS      PHP_UNAME
 #endif
 
+#ifndef PHPPROXYAPI_EXPORTS
 #include "php_regex.h"
+#endif
 
 #if HAVE_ASSERT_H
 #if PHP_DEBUG
@@ -143,8 +147,10 @@ char *strtok_r(char *s, const char *delim, char **last);
 END_EXTERN_C()
 #endif
 
+#ifndef PHPPROXYAPI_EXPORTS
 #ifndef HAVE_SOCKLEN_T
 typedef unsigned int socklen_t;
+#endif
 #endif
 
 #define CREATE_MUTEX(a, b)
@@ -406,7 +412,9 @@ END_EXTERN_C()
 
 
 /* Virtual current working directory support */
+#ifndef PHPPROXYAPI_EXPORTS
 #include "tsrm_virtual_cwd.h"
+#endif
 
 #include "zend_constants.h"
 
