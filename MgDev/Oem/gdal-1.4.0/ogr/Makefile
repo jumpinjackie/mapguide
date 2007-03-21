@@ -6,6 +6,7 @@ EXTRAFLAGS =	-I$(MSDASDK)\inc \
 		$(PROJ_FLAGS) $(PROJ_INCLUDE) $(GEOS_CFLAGS)
 
 GDAL_ROOT = 	..
+PDB_NAME = ogr.pdb
 
 !INCLUDE ..\nmake.opt
 
