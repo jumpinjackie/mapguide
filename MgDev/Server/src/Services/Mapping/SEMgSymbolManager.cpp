@@ -41,11 +41,11 @@ SEMgSymbolManager::~SEMgSymbolManager()
             delete (SymbolDefinition*)(iter->second);
     }
 
-    for (std::map<STRING, unsigned char*>::iterator iter = m_mImageCache.begin();
+    for (std::map<STRING, ImageCacheT>::iterator iter = m_mImageCache.begin();
         iter != m_mImageCache.end(); iter++)
     {
-        if (iter->second != IMAGE_ERROR)
-            delete[] (unsigned char*)(iter->second);
+        if (iter->second.data != IMAGE_ERROR)
+            delete[] (unsigned char*)(iter->second.data);
     }
 }
 
@@ -108,16 +108,25 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
     return ret;
 }
 
-const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resource, int& length)
+const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resource, const wchar_t* name, int& length)
 {
-    STRING uniqueName = STRING(resource);
-    unsigned char* ret = m_mImageCache[uniqueName];
+    if (!resource)
+        resource = L"";
+
+    STRING uniqueName = STRING(resource) + STRING(name);
+    ImageCacheT item = m_mImageCache[uniqueName];
+    unsigned char* ret = NULL;
     length = 0;
 
-    if (ret == IMAGE_ERROR)
+    if (item.data == IMAGE_ERROR)
         return NULL;
 
-    if (!ret)
+    if (item.data)
+    {
+        ret = item.data;
+        length = item.size;
+    }
+    else
     {
         try
         {
@@ -125,23 +134,25 @@ const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resource, in
 
             if (wcsncmp(uniqueName.c_str(), L"Library://", 10) == 0)
             {
-                MgResourceIdentifier resId(uniqueName);
+                MgResourceIdentifier resId(resource);
 
-                //get and parse the mapdef
-                sdReader = m_svcResource->GetResourceContent(&resId, L"");
+                //get the image named "name" attached to resource "resId"
+                sdReader = m_svcResource->GetResourceData(&resId, name);
             }
             else
             {
-                sdReader = new MgByteReader(uniqueName, MgMimeType::Png, false);
+                sdReader = new MgByteReader(name, MgMimeType::Png, false);
             }
 
             INT64 len = sdReader->GetLength();
             if (len > 0 && len < 16*1024*1024) // draw the line at 16 MB
             {
-                length = (int)len;
-                ret = new unsigned char[length];
-                sdReader->Read(ret, length);
-                m_mImageCache[uniqueName] = ret;
+                ImageCacheT item;
+                length = item.size = (int)len;
+                item.data = new unsigned char[length];
+                sdReader->Read(item.data, length);
+                m_mImageCache[uniqueName] = item;
+                ret = item.data;
             }
         }
         catch (MgException* e)
@@ -150,8 +161,10 @@ const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resource, in
             //Set it to something else that's invalid (like 1) in the cache so that
             //we know there was an error and don't try to get it again.
             e->Release();
+            item.size = 0;
+            item.data = IMAGE_ERROR;
+            m_mImageCache[uniqueName] = item;
             ret = NULL;
-            m_mImageCache[uniqueName] = IMAGE_ERROR;
         }
     }
 

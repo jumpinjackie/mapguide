@@ -23,6 +23,12 @@
 
 class MgResourceService;
 
+struct ImageCacheT
+{
+    int size;
+    unsigned char* data;
+};
+
 // MappingService specific implementation of the RS_SymbolManager interface.
 // It retrieves DWF symbol data from the resource service and caches it
 // for reuse by stylization.
@@ -33,12 +39,12 @@ public:
     virtual ~SEMgSymbolManager();
 
     virtual SymbolDefinition* GetSymbolDefinition(const wchar_t* resource);
-    virtual const unsigned char* GetImageData(const wchar_t* resource, int& length);
+    virtual const unsigned char* GetImageData(const wchar_t* resource, const wchar_t* name, int& length);
 
 private:
     MgResourceService* m_svcResource;
     std::map<STRING, SymbolDefinition*> m_mSymbolCache;
-    std::map<STRING, unsigned char*> m_mImageCache;
+    std::map<STRING, ImageCacheT> m_mImageCache;
 };
 
 #endif
