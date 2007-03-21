@@ -133,12 +133,12 @@ void MgStylizationUtil::ParseColor(CREFSTRING colorstr, RS_Color& rscol)
 
 
 RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
-                                                        RS_Bounds& extent,
-                                                        MdfModel::VectorLayerDefinition* vl,
-                                                        const wchar_t* overrideFilter,
-                                                        MgCoordinateSystem* mapCs,
-                                                        MgCoordinateSystem* layerCs,
-                                                        TransformCache* cache)
+                                                          RS_Bounds& extent,
+                                                          MdfModel::VectorLayerDefinition* vl,
+                                                          const wchar_t* overrideFilter,
+                                                          MgCoordinateSystem* mapCs,
+                                                          MgCoordinateSystem* layerCs,
+                                                          TransformCache* cache)
 {
 #ifdef _DEBUG
     long dwStart = GetTickCount();
@@ -672,6 +672,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     //get a transform from layer coord sys to map coord sys
                     TransformCache* item = GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                    MgCoordinateSystem* layerCs = item? item->GetCoordSys() : NULL;
+                    MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
                     //extract hyperlink and tooltip info
                     if (!vl->GetToolTip().empty()) legendInfo.hastooltips() = true;
@@ -747,10 +749,10 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         //we are not drawing the actual geometry
                         if (maxStrokes == 0)
                         {
-                            RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, item ? item->GetCoordSys() : NULL, item);
+                            RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
                             if (rdr)
                             {
-                                ds->StylizeVectorLayer(vl, dr, rdr, item->GetTransform(), NULL, NULL);
+                                ds->StylizeVectorLayer(vl, dr, rdr, xformer, NULL, NULL);
                             }
                             delete rdr;
                         }
@@ -781,10 +783,10 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                     syms->Adopt(syms2->GetAt(min(i, syms2->GetCount()-1)));
                                 }
 
-                                RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, item ? item->GetCoordSys() : NULL, item);
+                                RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
                                 if (rdr)
                                 {
-                                    ds->StylizeVectorLayer(vl, dr, rdr, item->GetTransform(), NULL, NULL);
+                                    ds->StylizeVectorLayer(vl, dr, rdr, xformer, NULL, NULL);
                                 }
                                 delete rdr;
 
@@ -825,12 +827,12 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     }
                     else
                     {
-                        RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, item ? item->GetCoordSys() : NULL, item);
+                        RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
                         if (rdr)
                         {
                             //stylize into output format
                             dr->StartLayer(&legendInfo, &fcinfo);
-                            ds->StylizeVectorLayer(vl, dr, rdr, item ? item->GetTransform() : NULL, NULL, NULL);
+                            ds->StylizeVectorLayer(vl, dr, rdr, xformer, NULL, NULL);
                             dr->EndLayer();
                         }
                         delete rdr;
@@ -874,6 +876,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     //get a transform from layer coord sys to map coord sys
                     TransformCache* item = GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                    MgCoordinateSystem* layerCs = item? item->GetCoordSys() : NULL;
+                    MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
                     //grid layer does not yet have hyperlink or tooltip
                     //extract hyperlink and tooltip info
@@ -917,12 +921,12 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     }
 
                     //perform the raster query
-                    RSMgFeatureReader* rdr = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, item ? item->GetCoordSys() : NULL, width, height);
+                    RSMgFeatureReader* rdr = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, layerCs, width, height);
                     if (rdr)
                     {
                         //stylize into a dwf
                         dr->StartLayer(&legendInfo, &fcinfo);
-                        ds->StylizeGridLayer(gl, dr, rdr, item->GetTransform(), NULL, NULL);
+                        ds->StylizeGridLayer(gl, dr, rdr, xformer, NULL, NULL);
                         dr->EndLayer();
                     }
                     delete rdr;
