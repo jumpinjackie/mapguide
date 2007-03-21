@@ -495,7 +495,7 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
-check: check-recursive
+check: 
 all-am: Makefile
 installdirs: installdirs-recursive
 installdirs-am:
