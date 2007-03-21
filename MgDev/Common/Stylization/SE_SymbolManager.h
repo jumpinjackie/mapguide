@@ -29,7 +29,7 @@ class SE_SymbolManager
 {
 public:
     virtual SymbolDefinition* GetSymbolDefinition(const wchar_t* resource) = 0;
-    virtual const unsigned char* GetImageData(const wchar_t* resource, int& length) = 0;
+    virtual const unsigned char* GetImageData(const wchar_t* resource, const wchar_t* name, int& length) = 0;
 };
 
 #endif
