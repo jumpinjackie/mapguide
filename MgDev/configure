@@ -20336,7 +20336,7 @@ map_srcdir=`(cd $srcdir && pwd)`
           ac_config_files="$ac_config_files Makefile"
 
 # MAP_CONFIG_FILES_OEM
-                                                  ac_config_files="$ac_config_files Oem/Makefile Oem/DWFTK7.1/Makefile Oem/DWFTK7.1/develop/Makefile Oem/DWFTK7.1/develop/global/Makefile Oem/DWFTK7.1/develop/global/src/Makefile"
+          ac_config_files="$ac_config_files Oem/Makefile"
 
 
 # MAP_CONFIG_FILES_COMMON
@@ -20954,10 +20954,6 @@ do
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "Oem/Makefile" ) CONFIG_FILES="$CONFIG_FILES Oem/Makefile" ;;
-  "Oem/DWFTK7.1/Makefile" ) CONFIG_FILES="$CONFIG_FILES Oem/DWFTK7.1/Makefile" ;;
-  "Oem/DWFTK7.1/develop/Makefile" ) CONFIG_FILES="$CONFIG_FILES Oem/DWFTK7.1/develop/Makefile" ;;
-  "Oem/DWFTK7.1/develop/global/Makefile" ) CONFIG_FILES="$CONFIG_FILES Oem/DWFTK7.1/develop/global/Makefile" ;;
-  "Oem/DWFTK7.1/develop/global/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES Oem/DWFTK7.1/develop/global/src/Makefile" ;;
   "Common/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/Makefile" ;;
   "Common/MdfModel/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/MdfModel/Makefile" ;;
   "Common/MdfParser/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/MdfParser/Makefile" ;;
