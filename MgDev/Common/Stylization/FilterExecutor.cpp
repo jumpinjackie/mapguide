@@ -433,6 +433,24 @@ void RS_FilterExecutor::ProcessFunction(FdoFunction& expr)
 
         m_retvals.push(m_pPool->ObtainStringValue(res, true));
     }
+    else if (wcscmp(name, L"Length") == 0)//From now on, functions need to be case sensitive for FDO compatibility
+    {
+        FdoPtr<FdoExpressionCollection> args = expr.GetArguments();
+
+        if (args->GetCount() != 1)
+            throw FdoException::Create(L"Invalid number of arguments.");
+
+        FdoPtr<FdoExpression> arg = args->GetItem(0);
+        arg->Process(this);
+
+        DataValue* argVal = m_retvals.pop();
+
+        size_t len = wcslen(argVal->GetAsString());
+
+        m_pPool->RelinquishDataValue(argVal);
+
+        m_retvals.push(m_pPool->ObtainInt64Value(len));
+    }
     else if (_wcsnicmp(name, L"SESSION", 7) == 0)
     {
         ExecuteSession(expr);
