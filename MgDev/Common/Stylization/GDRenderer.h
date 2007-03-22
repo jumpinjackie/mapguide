@@ -43,7 +43,6 @@ class WT_Logical_Point;
 struct RS_Font;
 
 class complex_polygon_gd;
-class FontEngine;
 
 class GDRenderer : public Renderer, public SE_Renderer, public RS_FontEngine
 {
@@ -235,8 +234,6 @@ private:
     RS_FillStyle m_selFill;
 
     LabelRendererBase* m_labeler;
-
-    FontEngine* m_fe;
 
     /////////////////////////////////////////////////////////
     //
