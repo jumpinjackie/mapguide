@@ -258,11 +258,7 @@ AC_SUBST(map_srcdir)
 
 AC_CONFIG_FILES(Makefile)
 # MAP_CONFIG_FILES_OEM
-AC_CONFIG_FILES([Oem/Makefile \
-                 Oem/DWFTK7.1/Makefile \
-                 Oem/DWFTK7.1/develop/Makefile \
-                 Oem/DWFTK7.1/develop/global/Makefile \
-                 Oem/DWFTK7.1/develop/global/src/Makefile])
+AC_CONFIG_FILES([Oem/Makefile])
 			
 # MAP_CONFIG_FILES_COMMON
 AC_CONFIG_FILES([Common/Makefile \
