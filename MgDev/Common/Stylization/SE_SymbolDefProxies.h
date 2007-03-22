@@ -111,13 +111,15 @@ struct SE_Raster : public SE_Primitive
 {
     SE_String pngPath;
     const wchar_t* resId;
-    const unsigned char* pngPtr;
+    unsigned char* pngPtr;
+    bool ownPtr;
     int pngSize;
     SE_Double position[2];
     SE_Double extent[2];
     SE_Double angle;
 
-    SE_INLINE SE_Raster() {  }
+    SE_INLINE SE_Raster() : ownPtr(false) {  }
+    ~SE_Raster() { if (ownPtr) delete[] pngPtr; }
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
 
