@@ -68,15 +68,10 @@
             $featureSource = new MgResourceIdentifier($layer->GetFeatureSourceId());
             $features = $featureSrvc->SelectFeatures($featureSource, $featureClassName, $query);
             $featCount = 0;
-            $geometry = null;
-            while($features->ReadNext()) {
+            while($features->ReadNext()) 
+            {
                 if($featCount++ == 1)
                     break;
-                $classDef = $features->GetClassDefinition();
-                $geomPropName = $classDef->GetDefaultGeometryPropertyName();
-                $geomReader = $features->GetGeometry($geomPropName);
-                $agfRW = new MgAgfReaderWriter();
-                $geometry = $agfRW->Read($geomReader);
             }
             if($featCount != 1) {
                 echo "Error: There must be exactly one feature in the set."; ///NOXLATE dbg report only
@@ -85,7 +80,7 @@
             $renderingSrvc = $site->CreateService(MgServiceType::RenderingService);
             $layerNames = new MgStringCollection();
             $layerNames->Add($layer->GetName());
-            $featInfo = $renderingSrvc->QueryFeatures($map, $layerNames, $geometry, MgFeatureSpatialOperations::Intersects, 1);
+            $featInfo = $renderingSrvc->QueryFeatures($map, $layerNames, NULL, MgFeatureSpatialOperations::Intersects, $selText, 1, true);
             header('Content-Type: text/xml; charset: UTF-8');
             echo $featInfo->ToXml()->ToString();
         }
