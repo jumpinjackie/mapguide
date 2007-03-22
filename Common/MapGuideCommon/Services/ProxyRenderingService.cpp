@@ -174,7 +174,7 @@ MgByteReader* MgProxyRenderingService::RenderDynamicOverlay(
                         MgCommand::knObject, map,                       // Argument#1
                         MgCommand::knObject, selection,                 // Argument#2
                         MgCommand::knString, &format,                   // Argument#3
-                        MgCommand::knInt32, bKeepSelection,             // Argument#4
+                        MgCommand::knInt8, (INT8)bKeepSelection,        // Argument#4
                         MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
@@ -244,7 +244,7 @@ MgByteReader* MgProxyRenderingService::RenderMap(
                         MgCommand::knObject, map,           // Argument#1
                         MgCommand::knObject, selection,     // Argument#2
                         MgCommand::knString, &format,       // Argument#3
-                        MgCommand::knInt32, bKeepSelection, // Argument#4
+                        MgCommand::knInt8, (INT8)bKeepSelection, // Argument#4
                         MgCommand::knNone);                 // End of arguments
 
     SetWarning(cmd.GetWarningObject());
@@ -350,7 +350,7 @@ MgByteReader* MgProxyRenderingService::RenderMap(
                         MgCommand::knInt32, height,             // Argument#5
                         MgCommand::knObject, backgroundColor,   // Argument#6
                         MgCommand::knString, &format,           // Argument#7
-                        MgCommand::knInt32, bKeepSelection,     // Argument#8
+                        MgCommand::knInt8, (INT8)bKeepSelection,// Argument#8
                         MgCommand::knNone);                     // End of arguments
 
     SetWarning(cmd.GetWarningObject());
@@ -463,7 +463,7 @@ MgByteReader* MgProxyRenderingService::RenderMap(
                         MgCommand::knInt32, height,             // Argument#6
                         MgCommand::knObject, backgroundColor,   // Argument#7
                         MgCommand::knString, &format,           // Argument#8
-                        MgCommand::knInt32, bKeepSelection,     // Argument#9
+                        MgCommand::knInt8, (INT8)bKeepSelection,// Argument#9
                         MgCommand::knNone);                     // End of arguments
 
     SetWarning(cmd.GetWarningObject());
@@ -550,12 +550,12 @@ MgByteReader* MgProxyRenderingService::RenderMapLegend(
 MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
     MgMap* map,
     MgStringCollection* layerNames,
-    MgGeometry* geometry,
+    MgGeometry* filterGeometry,
     INT32 selectionVariant, // Within, Touching, Topmost
     INT32 maxFeatures)
 {
     // Call the updated QueryFeatures API
-    return QueryFeatures(map, layerNames, geometry, selectionVariant, maxFeatures, false);
+    return QueryFeatures(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, false);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -591,8 +591,9 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
 MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
     MgMap* map,
     MgStringCollection* layerNames,
-    MgGeometry* geometry,
+    MgGeometry* filterGeometry,
     INT32 selectionVariant, // Within, Touching, Topmost
+    CREFSTRING featureFilter,
     INT32 maxFeatures,
     bool bIgnoreScaleRange)
 {
@@ -600,15 +601,16 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
     cmd.ExecuteCommand(m_connProp,                              // Connection
                         MgCommand::knObject,                    // Return type expected
                         MgRenderingServiceOpId::QueryFeatures,  // Command Code
-                        6,                                      // No of arguments
+                        7,                                      // No of arguments
                         Rendering_Service,                      // Service Id
                         BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, map,               // Argument#1
                         MgCommand::knObject, layerNames,        // Argument#2
-                        MgCommand::knObject, geometry,          // Argument#3
-                        MgCommand::knInt32, selectionVariant,   // Argument#4
-                        MgCommand::knInt32, maxFeatures,        // Argument#5
-                        MgCommand::knInt32, bIgnoreScaleRange,  // Argument#6
+                        MgCommand::knObject, filterGeometry,    // Argument#3
+                        MgCommand::knInt32,  selectionVariant,  // Argument#4
+                        MgCommand::knString, &featureFilter,    // Argument#5
+                        MgCommand::knInt32,  maxFeatures,       // Argument#6
+                        MgCommand::knInt8, (INT8)bIgnoreScaleRange, // Argument#7
                         MgCommand::knNone);                     // End of arguments
 
     SetWarning(cmd.GetWarningObject());
@@ -630,7 +632,7 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
 /// <param name="layerName">Input
 /// Active layer name for which to query features
 /// </param>
-/// <param name="geometry">Input
+/// <param name="filterGeometry">Input
 /// geometry object specifying the selection area
 /// </param>
 /// <param name="selectionVariant">Input
@@ -646,12 +648,12 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
 MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
     MgMap* map,
     MgStringCollection* layerNames,
-    MgGeometry* geometry,
+    MgGeometry* filterGeometry,
     INT32 selectionVariant, 
     INT32 maxFeatures)
 {
     // Call the updated QueryFeatureProperties API
-    return QueryFeatureProperties(map, layerNames, geometry, selectionVariant, maxFeatures, false);
+    return QueryFeatureProperties(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, false);
 }
 
 
@@ -668,7 +670,7 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
 /// <param name="layerName">Input
 /// Active layer name for which to query features
 /// </param>
-/// <param name="geometry">Input
+/// <param name="filterGeometry">Input
 /// geometry object specifying the selection area
 /// </param>
 /// <param name="selectionVariant">Input
@@ -688,8 +690,9 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
 MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
     MgMap* map,
     MgStringCollection* layerNames,
-    MgGeometry* geometry,
-    INT32 selectionVariant, 
+    MgGeometry* filterGeometry,
+    INT32 selectionVariant,
+    CREFSTRING featureFilter,
     INT32 maxFeatures,
     bool bIgnoreScaleRange)
 {
@@ -697,15 +700,16 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
     cmd.ExecuteCommand(m_connProp,                              // Connection
                         MgCommand::knObject,                    // Return type expected
                         MgRenderingServiceOpId::QueryFeatureProperties,  // Command Code
-                        6,                                      // No of arguments
+                        7,                                      // No of arguments
                         Rendering_Service,                      // Service Id
                         BUILD_VERSION(1,0,0),                   // Operation version
                         MgCommand::knObject, map,               // Argument#1
                         MgCommand::knObject, layerNames,        // Argument#2
-                        MgCommand::knObject, geometry,          // Argument#3
+                        MgCommand::knObject, filterGeometry,    // Argument#3
                         MgCommand::knInt32, selectionVariant,   // Argument#4
-                        MgCommand::knInt32, maxFeatures,        // Argument#5
-                        MgCommand::knInt32, bIgnoreScaleRange,  // Argument#6
+                        MgCommand::knString, &featureFilter,    // Argument#5
+                        MgCommand::knInt32, maxFeatures,        // Argument#6
+                        MgCommand::knInt8, (INT8)bIgnoreScaleRange,  // Argument#7
                         MgCommand::knNone);                     // End of arguments
 
     SetWarning(cmd.GetWarningObject());

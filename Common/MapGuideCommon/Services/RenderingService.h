@@ -374,7 +374,7 @@ PUBLISHED_API:
     /// \param layerNames
     /// Input
     /// Active layer names for which to query features
-    /// \param geometry
+    /// \param filterGeometry
     /// Input
     /// geometry object specifying the selection area
     /// \param selectionVariant
@@ -391,7 +391,7 @@ PUBLISHED_API:
     virtual MgFeatureInformation* QueryFeatures(
         MgMap* map,
         MgStringCollection* layerNames,
-        MgGeometry* geometry,
+        MgGeometry* filterGeometry,
         INT32 selectionVariant, 
         INT32 maxFeatures) = 0;
 
@@ -409,12 +409,15 @@ PUBLISHED_API:
     /// \param layerNames
     /// Input
     /// Active layer names for which to query features
-    /// \param geometry
+    /// \param filterGeometry
     /// Input
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
     /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// \param featureFilter
+    /// Input
+    /// an XML selection string containing the required feature IDs
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return
@@ -429,8 +432,9 @@ PUBLISHED_API:
     virtual MgFeatureInformation* QueryFeatures(
         MgMap* map,
         MgStringCollection* layerNames,
-        MgGeometry* geometry,
-        INT32 selectionVariant, 
+        MgGeometry* filterGeometry,
+        INT32 selectionVariant,
+        CREFSTRING featureFilter, 
         INT32 maxFeatures,
         bool bIgnoreScaleRange) = 0;
 
@@ -447,7 +451,7 @@ PUBLISHED_API:
     /// \param layerName
     /// Input
     /// Active layer name for which to query features
-    /// \param geometry
+    /// \param filterGeometry
     /// Input
     /// geometry object specifying the selection area
     /// \param selectionVariant
@@ -464,7 +468,7 @@ PUBLISHED_API:
     virtual MgBatchPropertyCollection* QueryFeatureProperties(
         MgMap* map,
         MgStringCollection* layerNames,
-        MgGeometry* geometry,
+        MgGeometry* filterGeometry,
         INT32 selectionVariant, 
         INT32 maxFeatures) = 0;
 
@@ -481,7 +485,7 @@ PUBLISHED_API:
     /// \param layerName
     /// Input
     /// Active layer name for which to query features
-    /// \param geometry
+    /// \param filterGeometry
     /// Input
     /// geometry object specifying the selection area
     /// \param selectionVariant
@@ -502,8 +506,9 @@ PUBLISHED_API:
     virtual MgBatchPropertyCollection* QueryFeatureProperties(
         MgMap* map,
         MgStringCollection* layerNames,
-        MgGeometry* geometry,
-        INT32 selectionVariant, 
+        MgGeometry* filterGeometry,
+        INT32 selectionVariant,
+        CREFSTRING featureFilter,
         INT32 maxFeatures,
         bool bIgnoreScaleRange) = 0;
 

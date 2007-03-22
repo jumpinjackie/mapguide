@@ -111,19 +111,21 @@ public:
                                         MgStringCollection* layerNames,
                                         MgGeometry* geometry,
                                         INT32 selectionVariant, // Within, Touching, Topmost
+                                        CREFSTRING featureFilter,
                                         INT32 maxFeatures,
                                         bool bIgnoreScaleRange);
 
     virtual MgBatchPropertyCollection* QueryFeatureProperties( MgMap* map,
                                         MgStringCollection* layerNames,
-                                        MgGeometry* geometry,
+                                        MgGeometry* filterGeometry,
                                         INT32 selectionVariant, // Within, Touching, Topmost
                                         INT32 maxFeatures);
 
     virtual MgBatchPropertyCollection* QueryFeatureProperties( MgMap* map,
                                         MgStringCollection* layerNames,
-                                        MgGeometry* geometry,
+                                        MgGeometry* filterGeometry,
                                         INT32 selectionVariant, // Within, Touching, Topmost
+                                        CREFSTRING featureFilter,
                                         INT32 maxFeatures,
                                         bool bIgnoreScaleRange);
 
@@ -158,7 +160,8 @@ private:
     void RenderForSelection(MgMap* map,
                          MgStringCollection* layerNames,
                          MgGeometry* geometry,
-                         INT32 selectionVariant, 
+                         INT32 selectionVariant,
+                         CREFSTRING featureFilter, 
                          INT32 maxFeatures,
                          FeatureInfoRenderer* selRenderer,
                          bool bIgnoreScaleRange);

@@ -162,6 +162,7 @@ public:
     static const STRING reqRenderingSelection;
     static const STRING reqRenderingSelectionVariant;
     static const STRING reqRenderingGeometry;
+    static const STRING reqRenderingFeatureFilter;
     static const STRING reqRenderingBaseMapLayerGroupName;
     static const STRING reqRenderingTileColumn;
     static const STRING reqRenderingTileRow;

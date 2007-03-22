@@ -41,7 +41,7 @@ void MgOpQueryFeatureProperties::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (6 == m_packet.m_NumArguments)
+    if (7 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         map->SetDelayedLoadResourceService(m_resourceService);
@@ -52,12 +52,14 @@ void MgOpQueryFeatureProperties::Execute()
         INT32 selectionVariant = 0;
         m_stream->GetInt32(selectionVariant);
 
+        STRING featureFilter;
+        m_stream->GetString(featureFilter);
+
         INT32 maxFeatures = 0;
         m_stream->GetInt32(maxFeatures);
 
-        INT32 iIgnoreScale = 0;
-        m_stream->GetInt32(iIgnoreScale);
-        bool bIgnoreScale = (iIgnoreScale != 0);
+        bool bIgnoreScale = false;
+        m_stream->GetBoolean(bIgnoreScale);
 
         BeginExecution();
 
@@ -70,6 +72,8 @@ void MgOpQueryFeatureProperties::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(selectionVariant);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(featureFilter.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bIgnoreScale);
@@ -78,7 +82,8 @@ void MgOpQueryFeatureProperties::Execute()
         Validate();
 
         Ptr<MgBatchPropertyCollection> info =
-            m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant, maxFeatures, bIgnoreScale);
+            m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant, 
+            featureFilter, maxFeatures, bIgnoreScale);
 
         EndExecution(info);
     }

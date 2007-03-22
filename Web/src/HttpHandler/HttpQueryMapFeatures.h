@@ -56,6 +56,7 @@ private:
     STRING  m_layerNames;
     STRING  m_geometry;
     STRING  m_selectionVariant;
+    STRING  m_featureFilter;
     INT32   m_maxFeatures;
     bool    m_persist;
     bool    m_bIgnoreScale;
