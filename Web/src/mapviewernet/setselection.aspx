@@ -79,16 +79,10 @@ bool queryInfo = false;
             MgResourceIdentifier featureSource = new MgResourceIdentifier(layer.GetFeatureSourceId());
             MgFeatureReader features = featureSrvc.SelectFeatures(featureSource, featureClassName, query);
             int featCount = 0;
-            MgGeometry geometry = null;
             while (features.ReadNext())
             {
                 if (featCount++ == 1)
                     break;
-                MgClassDefinition classDef = features.GetClassDefinition();
-                String geomPropName = classDef.GetDefaultGeometryPropertyName();
-                MgByteReader geomReader = features.GetGeometry(geomPropName);
-                MgAgfReaderWriter agfRW = new MgAgfReaderWriter();
-                geometry = agfRW.Read(geomReader);
             }
             if (featCount != 1)
             {
@@ -98,7 +92,7 @@ bool queryInfo = false;
             MgRenderingService renderingSrvc = (MgRenderingService)site.CreateService(MgServiceType.RenderingService);
             MgStringCollection layerNames = new MgStringCollection();
             layerNames.Add(layer.GetName());
-            MgFeatureInformation featInfo = renderingSrvc.QueryFeatures(map, layerNames, geometry, MgFeatureSpatialOperations.Intersects, 1);
+            MgFeatureInformation featInfo = renderingSrvc.QueryFeatures(map, layerNames, null, MgFeatureSpatialOperations.Intersects, selText, 1, true);
             Response.Write(featInfo.ToXml().ToString());
         }
     }
