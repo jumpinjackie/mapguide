@@ -72,11 +72,18 @@ typedef DWFWCharKeySkipList<unsigned int> NodeTable;
 //-----------------------------------------------------------------------------
 
 
-WT_Color Util_ConvertColor(RS_Color & color)
+WT_Color Util_ConvertColor(RS_Color& color)
 {
-    WT_Color ret(color.red(), color.green(), color.blue(), color.alpha());
+    return WT_Color(color.red(), color.green(), color.blue(), color.alpha());
+}
 
-    return ret;
+
+WT_Color Util_ConvertColor(unsigned int argb)
+{
+    return WT_Color((argb >> 16) & 0xFF,
+                    (argb >> 8)  & 0xFF,
+                    (argb     )  & 0xFF,
+                    (argb >> 24) & 0xFF);
 }
 
 
@@ -200,8 +207,7 @@ WT_Result my_seek(WT_File & /*file*/, int /*distance*/, int & /*amount_seeked*/)
 
 
 DWFRenderer::DWFRenderer()
-: m_w2dFile(NULL),
-  m_mapInfo(NULL),
+: m_mapInfo(NULL),
   m_layerInfo(NULL),
   m_featureClass(NULL),
   m_attributes(NULL),
@@ -214,9 +220,11 @@ DWFRenderer::DWFRenderer()
   m_hatchFac(NULL),
   m_fillFac(NULL),
   m_obsMesh(NULL),
+  m_w2dFile(NULL),
   m_w2dStream(NULL),
   m_w2dLabels(NULL),
   m_labelStream(NULL),
+  m_w2dActive(NULL),
   m_pPage(NULL),
   m_input(NULL),
   m_xformer(NULL),
@@ -1134,7 +1142,7 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 
             //symbol is device space
             //we will need to place the label inside
-            //a consant size macro at an offset
+            //a constant size macro at an offset
             //corresponding to the constant size offset from the
             //symbol center point
 
@@ -1179,30 +1187,30 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
             //we need to sync the rendition manually
             //since we are about to play macros by writing
             //to the file directly
-            WT_Integer32    parts_to_sync =     WT_Rendition::Color_Bit           |
-                                            //  WT_Rendition::Color_Map_Bit       |
-                                            //  WT_Rendition::Fill_Bit            |
-                                            //  WT_Rendition::Fill_Pattern_Bit    |
-                                            //  WT_Rendition::Merge_Control_Bit   |
-                                            //  WT_Rendition::BlockRef_Bit        |
-                                                WT_Rendition::Visibility_Bit      |
-                                            //  WT_Rendition::Line_Weight_Bit     |
-                                                WT_Rendition::Pen_Pattern_Bit     |
-                                            //  WT_Rendition::Line_Pattern_Bit    |
-                                            //  WT_Rendition::Line_Caps_Bit       |
-                                            //  WT_Rendition::Line_Join_Bit       |
-                                            //  WT_Rendition::Marker_Size_Bit     |
-                                            //  WT_Rendition::Marker_Symbol_Bit   |
-                                            //  WT_Rendition::URL_Bit             |
-                                                WT_Rendition::Layer_Bit           |
-                                            //  WT_Rendition::Viewport_Bit        |
-                                                WT_Rendition::Font_Extension_Bit  |
-                                                WT_Rendition::Font_Bit            |
-                                            //  WT_Rendition::Object_Node_Bit     |
-                                                WT_Rendition::Text_Background_Bit |
-                                                WT_Rendition::Text_HAlign_Bit     |
-                                                WT_Rendition::Text_VAlign_Bit     |
-                                                WT_Rendition::Contrast_Color_Bit;
+            WT_Integer32 parts_to_sync = WT_Rendition::Color_Bit           |
+                                     //  WT_Rendition::Color_Map_Bit       |
+                                     //  WT_Rendition::Fill_Bit            |
+                                     //  WT_Rendition::Fill_Pattern_Bit    |
+                                     //  WT_Rendition::Merge_Control_Bit   |
+                                     //  WT_Rendition::BlockRef_Bit        |
+                                         WT_Rendition::Visibility_Bit      |
+                                     //  WT_Rendition::Line_Weight_Bit     |
+                                         WT_Rendition::Pen_Pattern_Bit     |
+                                     //  WT_Rendition::Line_Pattern_Bit    |
+                                     //  WT_Rendition::Line_Caps_Bit       |
+                                     //  WT_Rendition::Line_Join_Bit       |
+                                     //  WT_Rendition::Marker_Size_Bit     |
+                                     //  WT_Rendition::Marker_Symbol_Bit   |
+                                     //  WT_Rendition::URL_Bit             |
+                                         WT_Rendition::Layer_Bit           |
+                                     //  WT_Rendition::Viewport_Bit        |
+                                         WT_Rendition::Font_Extension_Bit  |
+                                         WT_Rendition::Font_Bit            |
+                                     //  WT_Rendition::Object_Node_Bit     |
+                                         WT_Rendition::Text_Background_Bit |
+                                         WT_Rendition::Text_HAlign_Bit     |
+                                         WT_Rendition::Text_VAlign_Bit     |
+                                         WT_Rendition::Contrast_Color_Bit;
 
             file->desired_rendition().sync(*file, parts_to_sync);
 
@@ -1543,6 +1551,33 @@ void DWFRenderer::_TransformPointsNoClamp(double* inpts, int numpts)
 }
 
 
+void DWFRenderer::_TransformPoints(double* src, int numpts, const SE_Matrix* xform)
+{
+    EnsureBufferSize(numpts);
+    WT_Integer32* wpts = (WT_Integer32*)m_wtPointBuffer;
+
+    if (!xform)
+    {
+        for (int i=0; i<numpts; i++)
+        {
+            *wpts++ = (WT_Integer32)(*src++);
+            *wpts++ = (WT_Integer32)(*src++);
+        }
+    }
+    else
+    {
+        for (int i=0; i<numpts; i++)
+        {
+            double x, y;
+            xform->transform(src[0], src[1], x, y);
+            *wpts++ = (WT_Integer32)x;
+            *wpts++ = (WT_Integer32)y;
+            src += 2;
+        }
+    }
+}
+
+
 //-----------------------------------------------------------------------------
 //
 // Writes multi-polyline geometry to W2D. Input is a LineBuffer
@@ -1559,10 +1594,10 @@ void DWFRenderer::WritePolylines(LineBuffer* srclb)
     for (int i=0; i<srclb->cntr_count(); i++)
     {
         int cntr_size = srclb->cntrs()[i];
-
         if (cntr_size > 0)
         {
             _TransformPointsNoClamp(srclb->points()+index, cntr_size);
+
             WT_Polyline polyline(cntr_size, m_wtPointBuffer, false);
             polyline.serialize(*m_w2dFile);
 
@@ -1743,7 +1778,6 @@ double DWFRenderer::_PixelToMapSize(Renderer* renderer, int pixels)
     //
     // Mapping Distance = Pixel Distance * (meters/pixel) * mapscale / (meters/map unit)
     //
-
     return (double)pixels * (0.0254 / renderer->GetDpi()) * renderer->GetMapScale() / renderer->GetMetersPerUnit();
 }
 
@@ -1761,7 +1795,7 @@ double DWFRenderer::_MeterToW2DMacroUnit(RS_Units unit, double number)
 
     if (unit == RS_Units_Device) // in meters, fixed size
     {
-        double w2dUnitsPerInch = 4096.0; //TODO: replace by 4096 when fixed
+        double w2dUnitsPerInch = 4096.0;
         scale_factor = 100.0 / 2.54 * w2dUnitsPerInch;
     }
     else
@@ -1842,7 +1876,6 @@ void DWFRenderer::StoreAttributes(RS_FeatureReader* feature, const RS_String* to
             //check if a piece of that feature has already been written
             //by looking up the id in the node table
             unsigned int* node = ((NodeTable*)m_hObjNodes)->find(sid);
-
             if (node)
                 m_w2dFile->desired_rendition().object_node() = WT_Object_Node(*m_w2dFile, *node);
             else
@@ -2069,28 +2102,113 @@ void DWFRenderer::Init(RS_Bounds& extents)
 //
 //-----------------------------------------------------------------------------
 
+
 void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight)
 {
-    // TODO
+    if (color == 0)
+        return;
+
+    // draw to the active file if it's set
+    WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
+
+    file->desired_rendition().fill() = false;
+    file->desired_rendition().color() = Util_ConvertColor(color);
+
+    // the supplied weight is already in W2D units
+    int line_weight = (int)weight;
+    file->desired_rendition().line_weight() = WT_Line_Weight(line_weight);
+
+    // for now always draw solid lines
+    file->desired_rendition().line_pattern() = WT_Line_Pattern(WT_Line_Pattern::Solid);
+
+    // save to dwf polylines
+    int index = 0;
+    for (int i=0; i<geom->cntr_count(); i++)
+    {
+        int cntr_size = geom->cntrs()[i];
+        if (cntr_size > 0)
+        {
+            _TransformPoints(geom->points() + index, cntr_size, xform);
+
+            WT_Polyline polyline(cntr_size, m_wtPointBuffer, false);
+            polyline.serialize(*file);
+
+            index += 2*cntr_size;
+        }
+    }
+
+    // zero out the dash pattern -- must do when done with it
+//  if (file->desired_rendition().dash_pattern() != WT_Dash_Pattern::kNull)
+//      file->desired_rendition().dash_pattern() = WT_Dash_Pattern::kNull;
 }
 
 
 void DWFRenderer::DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill)
 {
-    // TODO
+    if (fill == 0)
+        return;
+
+    // draw to the active file if it's set
+    WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
+
+    file->desired_rendition().fill() = true;
+    file->desired_rendition().color() = Util_ConvertColor(fill);
+//  file->desired_rendition().contrast_color() = Util_ConvertColor(fill.background()).rgba();
+
+    // for now always draw solid fills
+    file->desired_rendition().user_fill_pattern() = WT_User_Fill_Pattern(-1);
+    file->desired_rendition().user_hatch_pattern() = WT_User_Hatch_Pattern(-1);
+
+    // save to dwf polygons
+    _TransformPoints(geom->points(), geom->point_count(), xform);
+
+    if (geom->cntr_count() == 1)
+    {
+        // just a polygon, no need for a contourset
+        WT_Polygon fillpoly(geom->point_count(), m_wtPointBuffer, false);
+        fillpoly.serialize(*file);
+    }
+    else
+    {
+        // otherwise make a contour set
+        WT_Contour_Set cset(*file, geom->cntr_count(), (WT_Integer32*)geom->cntrs(),
+                            geom->point_count(), m_wtPointBuffer, true);
+
+        cset.serialize(*file);
+    }
+
+    // zero out the dash pattern -- must do when done with it
+//  if (file->desired_rendition().dash_pattern() != WT_Dash_Pattern::kNull)
+//      file->desired_rendition().dash_pattern() = WT_Dash_Pattern::kNull;
 }
 
 
-void DWFRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
-                                  double x, double y, double w, double h, double angledeg)
+void DWFRenderer::DrawScreenRaster(unsigned char* /*data*/,
+                                   int            /*length*/,
+                                   RS_ImageFormat /*format*/,
+                                   int            /*native_width*/,
+                                   int            /*native_height*/,
+                                   double         /*x*/,
+                                   double         /*y*/,
+                                   double         /*w*/,
+                                   double         /*h*/,
+                                   double         /*angledeg*/)
 {
     // TODO
 }
 
 
-void DWFRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position)
+void DWFRenderer::DrawScreenText(const RS_String& /*txt*/,
+                                 RS_TextDef&      /*tdef*/,
+                                 double           /*insx*/,
+                                 double           /*insy*/,
+                                 double*          /*path*/,
+                                 int              /*npts*/,
+                                 double           /*param_position*/)
 {
     // TODO
+
+//  WriteTextDef(file, info->tdef());
 }
 
 
@@ -2144,22 +2262,116 @@ double DWFRenderer::GetPixelsPerMillimeterWorld()
 
 RS_FontEngine* DWFRenderer::GetFontEngine()
 {
-    // TODO
     return NULL;
 }
 
 
-void DWFRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
-                                    int              nlabels,
-                                    RS_OverpostType  type,
-                                    bool             exclude,
-                                    LineBuffer*      path)
+void DWFRenderer::ProcessLabelGroup(SE_LabelInfo*   labels,
+                                    int             nlabels,
+                                    RS_OverpostType type,
+                                    bool            exclude,
+                                    LineBuffer*     /*path*/)
 {
-    // TODO
+    if (nlabels == 0)
+        return;
+
+    WT_File* file = m_w2dFile;
+
+    //check if it is a text layer or a feature label
+    //This is sufficient to check the overpost type
+    //to see if it matches that used only for a text layer,
+    //but nevertheless this is a hack and there should be a way to indicate
+    //a text feature (as opposed to a label)
+    if (type != RS_OverpostType_All)
+    {
+        //open the label W2D if it's not yet open
+        if (!m_bHaveLabels)
+        {
+            OpenW2D(m_w2dLabels);
+            m_bHaveLabels = true;
+        }
+
+        file = m_w2dLabels;
+    }
+
+    // define a macro for each candidate label
+    for (int i=0; i<nlabels; i++)
+    {
+        SE_LabelInfo* info = &labels[i];
+
+        // For the macro definition we only account for the symbol rotation.
+        // The translation is applied when we play the macro.
+        SE_Matrix m;
+        m.rotate(info->anglerad);
+
+        // For composite symbolization we will only use mapping-space macros,
+        // meaning the symbols will change size as you zoom dynamically.
+        // The symbols will always be redrawn at the correct size after any
+        // map update.
+        int scale = (int)_MeterToW2DMacroUnit(RS_Units_Model, 1.0);
+
+        // TODO: account for any symbol offset
+
+        BeginMacro(file, i+1, scale);
+
+            m_w2dActive = file;
+            DrawSymbol(info->symbol->symbol, m, info->anglerad);
+            m_w2dActive = NULL;
+
+        EndMacro(file);
+    }
+
+    // now play the label macros inside an overpost
+    BeginOverpostGroup(file, type, true, exclude);
+
+        for (int i=0; i<nlabels; i++)
+        {
+            SE_LabelInfo* info = &labels[i];
+
+            //we need to sync the rendition manually
+            //since we are about to play macros by writing
+            //to the file directly
+            WT_Integer32 parts_to_sync = WT_Rendition::Color_Bit           |
+                                     //  WT_Rendition::Color_Map_Bit       |
+                                     //  WT_Rendition::Fill_Bit            |
+                                     //  WT_Rendition::Fill_Pattern_Bit    |
+                                     //  WT_Rendition::Merge_Control_Bit   |
+                                     //  WT_Rendition::BlockRef_Bit        |
+                                         WT_Rendition::Visibility_Bit      |
+                                     //  WT_Rendition::Line_Weight_Bit     |
+                                         WT_Rendition::Pen_Pattern_Bit     |
+                                     //  WT_Rendition::Line_Pattern_Bit    |
+                                     //  WT_Rendition::Line_Caps_Bit       |
+                                     //  WT_Rendition::Line_Join_Bit       |
+                                     //  WT_Rendition::Marker_Size_Bit     |
+                                     //  WT_Rendition::Marker_Symbol_Bit   |
+                                     //  WT_Rendition::URL_Bit             |
+                                         WT_Rendition::Layer_Bit           |
+                                     //  WT_Rendition::Viewport_Bit        |
+                                         WT_Rendition::Font_Extension_Bit  |
+                                         WT_Rendition::Font_Bit            |
+                                     //  WT_Rendition::Object_Node_Bit     |
+                                         WT_Rendition::Text_Background_Bit |
+                                         WT_Rendition::Text_HAlign_Bit     |
+                                         WT_Rendition::Text_VAlign_Bit     |
+                                         WT_Rendition::Contrast_Color_Bit;
+
+            file->desired_rendition().sync(*file, parts_to_sync);
+
+            // PlayMacro expects a point in mapping units
+            double posx, posy;
+            this->ScreenToWorldPoint(info->x, info->y, posx, posy);
+
+            // TODO: account for any symbol offset
+
+            PlayMacro(file, i+1, 1.0, RS_Units_Model, posx, posy);
+        }
+
+    EndOverpostGroup(file);
 }
 
 
-void DWFRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
+void DWFRenderer::AddExclusionRegion(RS_F_Point* /*fpts*/, int /*npts*/)
 {
     // TODO
 }
@@ -2179,11 +2391,11 @@ void DWFRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 //into the current output W2D. The given coord sys
 //transformation is applied and geometry will be clipped
 //to the RS_Bounds context of the DWFRenderer
-void DWFRenderer::AddDWFContent(RS_InputStream*   in,
-                                CSysTransformer*  xformer,
-                                const RS_String&  section,
-                                const RS_String&  passwd,
-                                const RS_String&  w2dfilter)
+void DWFRenderer::AddDWFContent(RS_InputStream*  in,
+                                CSysTransformer* xformer,
+                                const RS_String& section,
+                                const RS_String& passwd,
+                                const RS_String& w2dfilter)
 {
     try
     {
@@ -2324,7 +2536,6 @@ void DWFRenderer::AddDWFContent(RS_InputStream*   in,
                 }
                 }
                 */
-
             }
 
             DWFCORE_FREE_OBJECT(iSection);
@@ -2335,6 +2546,7 @@ void DWFRenderer::AddDWFContent(RS_InputStream*   in,
     {
     }
 }
+
 
 void DWFRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter)
 {
@@ -2367,6 +2579,7 @@ void DWFRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, co
 
     m_input = NULL;
 }
+
 
 void DWFRenderer::SetActions(WT_File& file)
 {
@@ -2463,13 +2676,12 @@ void DWFRenderer::SetActions(WT_File& file)
 //    in a multipolygon or multipolyline, a pointer to a vector
 //    containing contour counts will also be returned.
 //    *** Both pointers are valid unit the next call to this function. ***
-const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(  WT_File&             file,
-                                                        WT_Logical_Point*    srcpts,
-                                                        int                  numpts,
-                                                        LineBuffer::GeomOperationType clipType,
-                                                        int&                 outNumpts,
-                                                        std::vector<int>**   outCntrs
-                                                      )
+const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
+                                                      WT_Logical_Point*  srcpts,
+                                                      int                numpts,
+                                                      LineBuffer::GeomOperationType clipType,
+                                                      int&               outNumpts,
+                                                      std::vector<int>** outCntrs)
 {
     //This transformer may have been modified if a Viewport
     //opcode was encountered in the source W2D. This is needed for
@@ -2660,8 +2872,7 @@ const WT_Logical_Point* DWFRenderer::TransformW2DPoints(WT_File& file, WT_Logica
 //scaling into account when carrying over things like line weight,
 //font height, etc. this helper funtion determines and applies
 //that scale
-WT_Integer32 DWFRenderer::ScaleW2DNumber(WT_File&     file,
-                                         WT_Integer32 number)
+WT_Integer32 DWFRenderer::ScaleW2DNumber(WT_File& file, WT_Integer32 number)
 {
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
