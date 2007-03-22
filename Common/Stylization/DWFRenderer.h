@@ -152,7 +152,7 @@ public:
     ////////////////////////////////////////////////
     // SE_Renderer
     //
-    virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight); // px
+    virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight);
     virtual void DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill);
     virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
                                   double x, double y, double w, double h, double angledeg);
@@ -167,12 +167,7 @@ public:
 
     virtual RS_FontEngine* GetFontEngine();
 
-    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
-                                   int              nlabels,
-                                   RS_OverpostType  type,
-                                   bool             exclude,
-                                   LineBuffer*      path = NULL);
-
+    virtual void ProcessLabelGroup(SE_LabelInfo* labels, int nlabels, RS_OverpostType type, bool exclude, LineBuffer* path = NULL);
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
 protected:
@@ -191,6 +186,9 @@ protected:
 
     // list of layout label w2d streams;
     stream_list m_lLayoutLabelStreams;
+
+    // the active w2d to draw into
+    WT_File* m_w2dActive;
 
     bool m_bHaveLabels;
 
@@ -221,6 +219,7 @@ protected:
     double _TX(double x);
     double _TY(double y);
     void _TransformPointsNoClamp(double* inpts, int numpts);
+    void _TransformPoints(double* inpts, int numpts, const SE_Matrix* xform);
 
 private:
     //macro/overpost opcode output -- done manually by writing to file
