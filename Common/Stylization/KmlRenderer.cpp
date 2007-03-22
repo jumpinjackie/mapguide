@@ -598,32 +598,51 @@ double KmlRenderer::_MeterToPixels(RS_Units unit, double number)
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-void KmlRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight)
+void KmlRenderer::DrawScreenPolyline(LineBuffer*      /*geom*/,
+                                     const SE_Matrix* /*xform*/,
+                                     unsigned int     /*color*/,
+                                     double           /*weight*/)
 {
 }
 
-void KmlRenderer::DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill)
+void KmlRenderer::DrawScreenPolygon(LineBuffer*      /*geom*/,
+                                    const SE_Matrix* /*xform*/,
+                                    unsigned int     /*fill*/)
 {
 }
 
-void KmlRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
-                              double x, double y, double w, double h, double angledeg)
+void KmlRenderer::DrawScreenRaster(unsigned char* /*data*/,
+                                   int            /*length*/,
+                                   RS_ImageFormat /*format*/,
+                                   int            /*native_width*/,
+                                   int            /*native_height*/,
+                                   double         /*x*/,
+                                   double         /*y*/,
+                                   double         /*w*/,
+                                   double         /*h*/,
+                                   double         /*angledeg*/)
 {
 }
 
-void KmlRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position)
+void KmlRenderer::DrawScreenText(const RS_String& /*txt*/,
+                                 RS_TextDef&      /*tdef*/,
+                                 double           /*insx*/,
+                                 double           /*insy*/,
+                                 double*          /*path*/,
+                                 int              /*npts*/,
+                                 double           /*param_position*/)
 {
 }
 
-void KmlRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
+void KmlRenderer::GetWorldToScreenTransform(SE_Matrix& /*xform*/)
 {
 }
 
-void KmlRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
+void KmlRenderer::WorldToScreenPoint(double& /*inx*/, double& /*iny*/, double& /*ox*/, double& /*oy*/)
 {
 }
 
-void KmlRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
+void KmlRenderer::ScreenToWorldPoint(double& /*inx*/, double& /*iny*/, double& /*ox*/, double& /*oy*/)
 {
 }
 
@@ -642,15 +661,15 @@ RS_FontEngine* KmlRenderer::GetFontEngine()
     return NULL;
 }
 
-void KmlRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
-                               int              nlabels,
-                               RS_OverpostType  type,
-                               bool             exclude,
-                               LineBuffer*      path)
+void KmlRenderer::ProcessLabelGroup(SE_LabelInfo*   /*labels*/,
+                                    int             /*nlabels*/,
+                                    RS_OverpostType /*type*/,
+                                    bool            /*exclude*/,
+                                    LineBuffer*     /*path*/)
 {
 }
 
-void KmlRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
+void KmlRenderer::AddExclusionRegion(RS_F_Point* /*fpts*/, int /*npts*/)
 {
 }
 
@@ -682,7 +701,7 @@ void KmlRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
     //try to get some line style information from the SE symbol
     if (style->symbol.size())
     {
-        for (int i=0; i<style->symbol.size(); i++)
+        for (size_t i=0; i<style->symbol.size(); i++)
         {
             SE_RenderPrimitive* rp = style->symbol[i];
 
@@ -709,7 +728,7 @@ void KmlRenderer::ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style)
     //try to get some fill style information from the SE symbol
     if (style->symbol.size())
     {
-        for (int i=0; i<style->symbol.size(); i++)
+        for (size_t i=0; i<style->symbol.size(); i++)
         {
             SE_RenderPrimitive* rp = style->symbol[i];
 
