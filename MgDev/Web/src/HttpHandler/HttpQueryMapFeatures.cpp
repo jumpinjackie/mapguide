@@ -60,6 +60,10 @@ MgHttpQueryMapFeatures::MgHttpQueryMapFeatures(MgHttpRequest *hRequest)
 
     // Get the ignore scale flag
     m_bIgnoreScale = params->GetParameterValue(MgHttpResourceStrings::reqRenderingIgnoreScale) == L"1";
+
+    // Get the feature filter
+    m_featureFilter = params->GetParameterValue(MgHttpResourceStrings::reqRenderingFeatureFilter);
+
 }
 
 /// <summary>
@@ -109,7 +113,7 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
     // Call the HTML controller to process the request
     MgHtmlController controller(m_siteConn);
     Ptr<MgByteReader> featureDescriptionInfo = controller.QueryMapFeatures(
-        m_mapName, layerNames, geometry, selectionVariant, m_maxFeatures, m_persist, m_bIgnoreScale);
+        m_mapName, layerNames, geometry, selectionVariant, m_maxFeatures, m_persist, m_bIgnoreScale, m_featureFilter);
 
     // Set the result
     hResult->SetResultObject(featureDescriptionInfo, featureDescriptionInfo->GetMimeType());

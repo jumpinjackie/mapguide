@@ -53,9 +53,8 @@ void MgOpRenderDynamicOverlay::Execute()
         STRING format;
         m_stream->GetString(format);
 
-        INT32 iKeepSelection = 0;
-        m_stream->GetInt32(iKeepSelection);
-        bool bKeepSelection = (iKeepSelection != 0);
+        bool bKeepSelection = false;
+        m_stream->GetBoolean(bKeepSelection);
 
         BeginExecution();
 

@@ -223,6 +223,7 @@ const STRING MgHttpResourceStrings::reqRenderingHeight = L"HEIGHT";
 const STRING MgHttpResourceStrings::reqRenderingSelection = L"SELECTION";
 const STRING MgHttpResourceStrings::reqRenderingSelectionVariant = L"SELECTIONVARIANT";
 const STRING MgHttpResourceStrings::reqRenderingGeometry = L"GEOMETRY";
+const STRING MgHttpResourceStrings::reqRenderingFeatureFilter = L"FEATUREFILTER";
 const STRING MgHttpResourceStrings::reqRenderingBaseMapLayerGroupName = L"BASEMAPLAYERGROUPNAME";
 const STRING MgHttpResourceStrings::reqRenderingTileColumn = L"TILECOL";
 const STRING MgHttpResourceStrings::reqRenderingTileRow = L"TILEROW";

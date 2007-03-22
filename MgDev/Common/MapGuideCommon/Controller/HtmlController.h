@@ -135,7 +135,8 @@ INTERNAL_API:
         INT32 selectionVariant,
         INT32 maxFeatures,
         bool persist,
-        bool bIgnoreScaleRange);
+        bool bIgnoreScaleRange,
+        CREFSTRING featureFilter);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

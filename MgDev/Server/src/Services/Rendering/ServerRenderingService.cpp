@@ -502,7 +502,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
                                                               INT32       maxFeatures)
 {
     // Call updated QueryFeatures API
-    return QueryFeatures(map, layerNames, geometry, selectionVariant, maxFeatures, false);
+    return QueryFeatures(map, layerNames, geometry, selectionVariant, L"", maxFeatures, false);
 }
 
 
@@ -510,6 +510,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
                                                               MgStringCollection* layerNames,
                                                               MgGeometry* geometry,
                                                               INT32       selectionVariant, // Within, Touching, Topmost
+                                                              CREFSTRING  featureFilter,
                                                               INT32       maxFeatures,
                                                               bool bIgnoreScaleRange)
 {
@@ -524,9 +525,10 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
     //create return structure and selection set to fill out
     ret = new MgFeatureInformation();
     Ptr<MgSelection> sel = new MgSelection(map);
+
     FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale());
 
-    RenderForSelection(map, layerNames, geometry, selectionVariant, maxFeatures, &fir, bIgnoreScaleRange);
+    RenderForSelection(map, layerNames, geometry, selectionVariant, featureFilter, maxFeatures, &fir, bIgnoreScaleRange);
 
     //fill out the output object with the info we collected
     //in the FeatureInfoRenderer for the first feature we hit
@@ -553,19 +555,20 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
 
 MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgMap* map,
                                     MgStringCollection* layerNames,
-                                    MgGeometry* geometry,
+                                    MgGeometry* filterGeometry,
                                     INT32 selectionVariant, // Within, Touching, Topmost
                                     INT32 maxFeatures)
 {
     // Call updated QueryFeatureProperties API
-    return QueryFeatureProperties(map, layerNames, geometry, selectionVariant, maxFeatures, false);
+    return QueryFeatureProperties(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, false);
 }
 
 
 MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgMap* map,
                                     MgStringCollection* layerNames,
-                                    MgGeometry* geometry,
+                                    MgGeometry* filterGeometry,
                                     INT32 selectionVariant, // Within, Touching, Topmost
+                                    CREFSTRING featureFilter,
                                     INT32 maxFeatures,
                                     bool bIgnoreScaleRange)
 {
@@ -580,7 +583,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgM
     Ptr<MgSelection> sel;   //TODO: do we need this for this API? new MgSelection(map);
     FeaturePropRenderer fpr(sel, maxFeatures, map->GetViewScale());
 
-    RenderForSelection(map, layerNames, geometry, selectionVariant, maxFeatures, &fpr, bIgnoreScaleRange);
+    RenderForSelection(map, layerNames, filterGeometry, selectionVariant, featureFilter, maxFeatures, &fpr, bIgnoreScaleRange);
 
     ret = fpr.GetProperties();
     //ret->SetSelection(sel);
@@ -832,12 +835,13 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                          MgStringCollection* layerNames,
                          MgGeometry* geometry,
                          INT32 selectionVariant,
+                         CREFSTRING featureFilter,
                          INT32 maxFeatures,
                          FeatureInfoRenderer* selRenderer,
                          bool bIgnoreScaleRange)
 {
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): ** START **\n")));
-    if (NULL == map || NULL == geometry)
+    if (NULL == map || (NULL == geometry && featureFilter.empty()))
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"", NULL);
 
     if (maxFeatures < 0)
@@ -859,13 +863,10 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     if (userInfo != NULL)
         sessionId = userInfo->GetMgSessionId();
 
-    //convert the map coordinate system from srs wkt to a mentor cs structure
-    STRING srs = map->GetMapSRS();
-    Ptr<MgCoordinateSystem> mapCs = (srs.empty()) ? NULL : m_pCSFactory->Create(srs);
-
     // begin map stylization
     RS_Bounds b(0, 0, 1, 1);    // not used
     RS_Color bgcolor(0, 0, 0, 255); // not used
+    STRING srs = map->GetMapSRS();
     RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, L"", bgcolor);
 
     selRenderer->StartMap(&mapInfo, b, map->GetViewScale(), map->GetDisplayDpi(), map->GetMetersPerUnit());
@@ -983,6 +984,8 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
             Ptr<MgCoordinateSystem> layerCs;
 
+            //convert the map coordinate system from srs wkt to a mentor cs structure
+            Ptr<MgCoordinateSystem> mapCs = (srs.empty()) ? NULL : m_pCSFactory->Create(srs);
             if (mapCs)
             {
                 STRING srcwkt = L"";
@@ -1024,29 +1027,46 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 trans = new MgCoordinateSystemTransform(mapCs, layerCs);
             }
 
-            //if we have a valid transform, get the request geom in layer's space
-            Ptr<MgGeometricEntity> queryGeom = SAFE_ADDREF(geometry);
-
-            if (trans)
-            {
-                //get selection geometry in layer space
-                queryGeom = geometry->Transform(trans);
-            }
-
-            //execute the spatial query
             Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
-            STRING geomPropName = layer->GetFeatureGeometryName();
+            if(geometry != NULL)
+            {
+                //if we have a valid transform, get the request geom in layer's space
+                Ptr<MgGeometricEntity> queryGeom = SAFE_ADDREF(geometry);
 
-            //set the spatial filter for the selection
-            options->SetSpatialFilter(geomPropName, (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
+                if (trans)
+                {
+                    //get selection geometry in layer space
+                    queryGeom = geometry->Transform(trans);
+                }
+                
+                //set the spatial filter for the selection
+                options->SetSpatialFilter(layer->GetFeatureGeometryName(), (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
+            }
 
             try
             {
-                if (!vl->GetFilter().empty())
+                if(!featureFilter.empty())
+                {
+                    //set the feature filter, if any
+                    MgSelection selectionFilter(map, featureFilter);
+                    Ptr<MgReadOnlyLayerCollection> layers = selectionFilter.GetLayers();
+                    if(layers != NULL)
+                    {
+                        for(int i = 0; i < layers->GetCount(); i++)
+                        {
+                            Ptr<MgLayerBase> layer = layers->GetItem(i);
+                            STRING className = layer->GetFeatureClassName();
+                            STRING filter = selectionFilter.GenerateFilter(layer, className);
+                            options->SetFilter(filter);
+                        }
+                    }
+                }
+                else if(!vl->GetFilter().empty())
                 {
                     //set layer feature filter if any
                     options->SetFilter(vl->GetFilter());
                 }
+
 
                 // TODO: can FeatureName be an extension name rather than a FeatureClass?
                 Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
