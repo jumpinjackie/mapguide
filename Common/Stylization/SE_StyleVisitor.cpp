@@ -460,15 +460,29 @@ void SE_StyleVisitor::VisitImage(Image& image)
 
     if (image.GetContent().size())
     {
-        /* Handle this; Base64 as MdfString is not a particularly inspired plan */
-        primitive->pngPtr = NULL;
+        const MdfModel::MdfString& src_u = image.GetContent();
+        
+        size_t srclen = src_u.size();
+        char* src_ascii = new char[srclen];
+
+        char* ptr = src_ascii;
+        for (int i=0; i<srclen; i++)
+            *ptr++ = (char)src_u[i];
+                
+        size_t dstlen = Base64::GetDecodedLength(image.GetContent().size());
+        primitive->pngPtr = new unsigned char[dstlen];
+        primitive->ownPtr = true;
+
+        Base64::Decode((unsigned char*)primitive->pngPtr, src_ascii, srclen);
+                
+        delete [] src_ascii;
     }
     else
     {
         ParseStringExpression(image.GetReference(), primitive->pngPath);
 
         if (primitive->pngPath.expression == NULL) // constant path
-            primitive->pngPtr = m_resources? m_resources->GetImageData(primitive->resId, primitive->pngPath.value, primitive->pngSize) : NULL;
+            primitive->pngPtr = (unsigned char*)(m_resources? m_resources->GetImageData(primitive->resId, primitive->pngPath.value, primitive->pngSize) : NULL);
         else
             primitive->pngPtr = NULL;
     }

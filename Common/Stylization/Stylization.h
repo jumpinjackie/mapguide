@@ -81,6 +81,7 @@
 #include "Text.h"
 #include "Image.h"
 #include "GraphicElement.h"
+#include "Base64.h"
 
 //FDO headers
 #include "Fdo.h"
