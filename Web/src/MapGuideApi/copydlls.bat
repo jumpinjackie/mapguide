@@ -56,7 +56,7 @@ echo Copying MgMdfParser Release DLL to %WEB_BIN_RELEASE%
 copy %COMMON_BIN_RELEASE%\MgMdfParser.dll %WEB_BIN_RELEASE%
 
 echo Copying PROJ4 DLL to %WEB_BIN_RELEASE%
-copy "..\..\..\Oem\proj-4.4.9\src\proj.dll" %WEB_BIN_RELEASE%
+copy "..\..\..\Oem\proj-4.5.0\src\proj.dll" %WEB_BIN_RELEASE%
 
 echo Copying Xerces Release DLL to %WEB_BIN_RELEASE%
 copy "..\..\..\Oem\dbxml-2.2.13\bin\xerces-c_2_7.dll" %WEB_BIN_RELEASE%
@@ -96,7 +96,7 @@ echo Copying MgMdfParser Debug DLL to %WEB_BIN_DEBUG%
 copy %COMMON_BIN_DEBUG%\MgMdfParserd.dll %WEB_BIN_DEBUG%
 
 echo Copying PROJ4 DLL to %WEB_BIN_DEBUG%
-copy "..\..\..\Oem\proj-4.4.9\src\proj.dll" %WEB_BIN_DEBUG%
+copy "..\..\..\Oem\proj-4.5.0\src\proj.dll" %WEB_BIN_DEBUG%
 
 echo Copying Xerces Debug DLL to %WEB_BIN_DEBUG%
 copy "..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.dll" %WEB_BIN_DEBUG%
