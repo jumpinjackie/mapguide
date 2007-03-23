@@ -164,7 +164,8 @@ void MgHttpRequestResponseHandler::ValidateOperationVersion()
 {
     MG_HTTP_HANDLER_TRY()
 
-    if (m_version != L"1.0.0")
+    STRING versionNoPhase = m_version.substr(0, 3);
+    if (versionNoPhase != L"1.0")
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpRequestResponseHandler.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

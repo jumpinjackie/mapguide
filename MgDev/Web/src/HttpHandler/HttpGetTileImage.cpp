@@ -140,8 +140,9 @@ void MgHttpGetTileImage::ValidateOperationVersion()
     MG_HTTP_HANDLER_TRY()
 
     // There are multiple supported versions
-    if ((m_version != L"1.0.0") &&
-        (m_version != L"1.2.0"))
+    STRING versionNoPhase = m_version.substr(0, 3);
+    if ((versionNoPhase != L"1.0") &&
+        (versionNoPhase != L"1.2"))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpGetTileImage.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
