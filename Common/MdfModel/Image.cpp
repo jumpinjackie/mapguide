@@ -123,6 +123,24 @@ void Image::SetSizeY(const MdfString& sizeY)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
+const MdfString& Image::GetSizeScalable() const
+{
+    return this->m_sSizeScalable;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Image::SetSizeScalable(const MdfString& sizeScalable)
+{
+    this->m_sSizeScalable = sizeScalable;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
 const MdfString& Image::GetPositionX() const
 {
     return this->m_sPositionX;

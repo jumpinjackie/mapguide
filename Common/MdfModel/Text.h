@@ -52,6 +52,9 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetHeight() const;
         void SetHeight(const MdfString& height);
 
+        const MdfString& GetHeightScalable() const;
+        void SetHeightScalable(const MdfString& heightScalable);
+
         const MdfString& GetPositionX() const;
         void SetPositionX(const MdfString& positionX);
 
@@ -99,6 +102,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sUnderlined;
 
         MdfString m_sHeight;
+        MdfString m_sHeightScalable;
         MdfString m_sPositionX;
         MdfString m_sPositionY;
         MdfString m_sAngle;

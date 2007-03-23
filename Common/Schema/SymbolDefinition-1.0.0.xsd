@@ -404,6 +404,11 @@
               <xs:documentation>The height of the image, in mm.</xs:documentation>
             </xs:annotation>
           </xs:element>
+          <xs:element name="SizeScalable" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>Boolean value which specifies whether the image sizes scale with the symbol.  This behavior is independent of the symbol's size context.  This must evaluate to True (default) or False.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
           <xs:element name="PositionX" type="xs:string" minOccurs="0">
             <xs:annotation>
               <xs:documentation>The x-coordinate of the image center in symbol space, in mm.</xs:documentation>
@@ -458,6 +463,11 @@
           <xs:element name="Height" type="xs:string" minOccurs="0">
             <xs:annotation>
               <xs:documentation>The height of the text, in mm.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="HeightScalable" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>Boolean value which specifies whether the font height scales with the symbol.  This behavior is independent of the symbol's size context.  This must evaluate to True (default) or False.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="PositionX" type="xs:string" minOccurs="0">

@@ -40,15 +40,15 @@
     </Parameter>
     <Parameter>
       <Identifier>THICKNESS</Identifier>
-      <DefaultValue>-.5</DefaultValue>
+      <DefaultValue>-0.5</DefaultValue>
       <DisplayName>Line Thickness</DisplayName>
       <Description>The thickness of the line in mm...minus 2 and halved</Description>
       <AllowedValues>
-        <Value>-1</Value>
-        <Value>-.5</Value>
-        <Value>0</Value>
-        <Value>.5</Value>
-        <Value>1</Value>
+        <Value>-1.0</Value>
+        <Value>-0.5</Value>
+        <Value>0.0</Value>
+        <Value>0.5</Value>
+        <Value>1.0</Value>
       </AllowedValues>
     </Parameter>
   </ParameterDefinition>
