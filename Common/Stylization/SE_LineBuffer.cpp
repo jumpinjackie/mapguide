@@ -32,169 +32,6 @@
     if ((m_nsegs + (points)) > m_max_segs) \
         ResizeBuffer((void**)&m_segs, sizeof(SE_LB_SegType), (points), m_nsegs, m_max_segs);
 
-class SE_LineStorage : public LineBuffer
-{
-public:
-    SE_INLINE SE_LineStorage(int size);
-    SE_INLINE void EnsurePoints(int n);
-    SE_INLINE void EnsureContours(int n);
-    SE_INLINE void _MoveTo(double x, double y);
-    SE_INLINE void _LineTo(double x, double y);
-    SE_INLINE void SetBounds(double minx, double miny, double maxx, double maxy);
-    SE_INLINE void SetBounds(SE_Bounds* bounds);
-
-    void SetToTransform(const SE_Matrix& xform, LineBuffer* src);
-    void SetToCopy(SE_LineStorage* src);
-private:
-    SE_INLINE double& _LastX() { return m_last_x; }
-    SE_INLINE double& _LastY() { return m_last_y; }
-};
-
-SE_LineStorage::SE_LineStorage(int size) :
-    LineBuffer(size)
-{
-}
-
-void SE_LineStorage::_MoveTo(double x, double y)
-{
-    m_types[m_cur_types++] = (unsigned char)stMoveTo;
-    m_pts[m_cur_pts++] = x;
-    m_pts[m_cur_pts++] = y;
-
-    m_last_x = x;
-    m_last_y = y;
-
-    m_cntrs[++m_cur_cntr] = 1; //increment to next contour and count the point
-}
-
-
-void SE_LineStorage::_LineTo(double x, double y)
-{
-    m_types[m_cur_types++] = (unsigned char)stLineTo;
-    m_pts[m_cur_pts++] = x;
-    m_pts[m_cur_pts++] = y;
-
-    m_cntrs[m_cur_cntr]++;
-}
-
-void SE_LineStorage::EnsurePoints(int n)
-{
-    if (m_cur_pts + 2*n >= m_pts_len)
-    {
-        int len = 2*m_pts_len;
-        if (len - m_pts_len < 2*n)
-            len += 2*n;
-
-        double* tempPts = new double[len];
-        memcpy(tempPts, m_pts, sizeof(double)*m_pts_len);
-        delete[] m_pts;
-        m_pts = tempPts;
-        m_pts_len = len;
-
-        len /= 2;
-        unsigned char* tempTypes = new unsigned char[len];
-        memcpy(tempTypes, m_types, sizeof(unsigned char) * m_types_len);
-        delete[] m_types;
-        m_types = tempTypes;
-        m_types_len = len;
-    }
-}
-
-void SE_LineStorage::EnsureContours(int n)
-{
-    if (m_cur_cntr + 2 + n > m_cntrs_len)
-    {
-        int len = 2*m_cntrs_len;
-        if (len - m_pts_len < n)
-            len += n;
-
-        int* tempCntrs = new int[len];
-        memcpy(tempCntrs, m_cntrs, sizeof(int)*m_cntrs_len);
-        delete[] m_cntrs;
-        m_cntrs = tempCntrs;
-        m_cntrs_len = len;
-    }
-}
-
-void SE_LineStorage::SetBounds(double minx, double miny, double maxx, double maxy)
-{
-    m_bounds.minx = minx;
-    m_bounds.miny = miny;
-    m_bounds.maxx = maxx;
-    m_bounds.maxy = maxy;
-}
-
-void SE_LineStorage::SetBounds(SE_Bounds* bounds)
-{
-    m_bounds.minx = bounds->min[0];
-    m_bounds.miny = bounds->min[1];
-    m_bounds.maxx = bounds->max[0];
-    m_bounds.maxy = bounds->max[1];
-}
-
-void SE_LineStorage::SetToTransform(const SE_Matrix& xform, LineBuffer* lb)
-{
-    EnsurePoints(lb->point_count());
-    EnsureContours(lb->cntr_count());
-
-    int n_cntrs = lb->cntr_count();
-    int* contours = lb->cntrs();
-    double* src = lb->points();
-    double* dst = m_pts;
-
-    for (int i = 0; i < n_cntrs; i++)
-    {
-        double sx, sy, *tx, *ty;
-        double* last = src + 2*contours[i];
-        sx = *src++;
-        sy = *src++;
-        xform.transform(sx, sy, m_last_x, m_last_y);
-        *dst++ = m_last_x;
-        *dst++ = m_last_y;
-
-        while (src < last)
-        {
-            sx = *src++;
-            sy = *src++;
-            tx = dst++;
-            ty = dst++;
-            xform.transform(sx, sy, *tx, *ty);
-        }
-    }
-
-    memcpy(m_types, lb->types(), lb->point_count());
-    memcpy(m_cntrs, lb->cntrs(), sizeof(int)*lb->cntr_count());
-
-    m_cur_types = lb->point_count();
-    m_cur_pts = m_cur_types*2;
-    m_cur_cntr = lb->cntr_count() - 1;
-
-    m_geom_type = lb->geom_type();
-    xform.transform(m_last_x, m_last_y);
-}
-
-void SE_LineStorage::SetToCopy(SE_LineStorage* src)
-{
-    m_cur_pts = m_cur_types = 0;
-    m_cur_cntr = -1;
-    m_last_x = src->_LastX();
-    m_last_y = src->_LastY();
-    m_bounds = src->bounds();
-    m_geom_type = src->geom_type();
-    int grow_types = src->point_count() - m_types_len;
-    if (grow_types > 0)
-        EnsurePoints(m_types_len + grow_types);
-    int grow_cntrs = src->cntr_count() - m_cntrs_len;
-    if (grow_cntrs > 0)
-        EnsureContours(m_cntrs_len + grow_cntrs);
-    memcpy(m_pts, src->points(), sizeof(double)*2*src->point_count());
-    memcpy(m_types, src->types(), src->point_count());
-    memcpy(m_cntrs, src->cntrs(), sizeof(int)*src->cntr_count());
-    m_cur_pts = src->point_count()*2;
-    m_cur_types = src->point_count();
-    m_cur_cntr = src->cntr_count() - 1;
-}
-
 inline void SineCosineMax(double sAng, double sSine, double sCosine, double eAng, double eSine, double eCosine, double &maxSine, double &maxCosine)
 {
     int quadrants = ((int)(sAng*2.0/M_PI) << 2) | (int)(eAng*2.0/M_PI);
@@ -525,13 +362,13 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
         case SegType_MoveTo:
             m_xf_buf->EnsureContours(1);
             xform.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
-            m_xf_buf->_MoveTo(x,y);
+            m_xf_buf->_MoveToNoChop(x,y);
             src_idx += 2;
             break;
         case SegType_LineTo:
             m_xf_buf->EnsurePoints(1);
             xform.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
-            m_xf_buf->_LineTo(x,y);
+            m_xf_buf->_LineToNoChop(x,y);
             src_idx += 2;
             break;
         case SegType_EllipticalArc:
@@ -687,10 +524,10 @@ void SE_LineBuffer::TessellateCubicTo(SE_LineStorage* lb, double px2, double py2
         ddfy += dddfy;
         ddfx += dddfx;
 
-        lb->_LineTo(fx, fy);
+        lb->_LineToNoChop(fx, fy);
     }
 
-    lb->_LineTo(px4, py4);
+    lb->_LineToNoChop(px4, py4);
 }
 
 SE_LineBuffer* SE_LineBuffer::Clone()
