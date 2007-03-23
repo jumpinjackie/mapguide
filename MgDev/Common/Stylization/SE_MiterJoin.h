@@ -25,57 +25,53 @@
 class SE_MiterJoin : public SE_PiecewiseTransform
 {
 public:
-    SE_MiterJoin(double limit,                  /* The miter limit of the join. */
-                 RS_Bounds& bounds,             /* The bounds of the unoriented symbol in pixel units. */
+    SE_MiterJoin(double limit,                  /* The miter limit of the join */
+                 RS_Bounds& bounds,             /* The bounds of the unoriented symbol in pixel units */
                  double vertexOffset,           /* The distance along the line (in pixels) from the 
                                                    beginning of the symbol to the vertex of the join 
                                                    (the value will be negative if the symbol starts before
-                                                   the join, and positive if it starts after the join). */
-                 double sAng,                   /* The angle of the first line segment. */
-                 double eAng,                   /* The angle of the second line segment. */
-                 double dx,                     /* The x offset of the origin of the symbol */
-                 double dy,                     /* The y offset of the origin of the symbol */
-                 double chopOffset = DBL_MAX);  /* The distance after the vertex at which to truncate the symbol */
+                                                   the join, and positive if it starts after the join) */
+                 const RS_F_Point& prev,        /* The point preceeding the vertex of the join in screen space */
+                 const RS_F_Point& vert,        /* The vertex of the join in screen space */
+                 const RS_F_Point& next,        /* The point following the vertex of the join in screen space */
+                 bool noTransform = true);      /* True if the symbol is already oriented appropriately along the leading segment */
 
     virtual RS_F_Point* GetDiscontinuities(int &length);
-    virtual RS_Bounds* GetIdentityRegions(int &length);
-    virtual RS_Bounds* GetNonlinearRegions(int &length);
     virtual RS_Bounds& GetTransformedBounds();
 
-    virtual double GetXChop(bool &chopEnd);
+    virtual void GetXChop(double& startx, double& endx);
 
-    /* Transform will apply the join transform, as well as the appropriate rotation */
-    virtual void Transform(double& x, double& y, SE_TransformInfo* info);
+    /* Transform will apply the join transform, as well as the appropriate orientation in screen space */
+    virtual RS_F_Point* Transform(const RS_F_Point& pt0, const RS_F_Point& pt1, int& length);
+    virtual void Transform(SE_LineStorage* src, SE_LineStorage* dst, bool closed);
 
 private:
-    double m_y_max;
-    double m_y_max_len;
-    double m_y_mid;
-    double m_y_mid_len;
-    double m_y_min;
-    double m_y_min_len;
+    void _Transform(RS_F_Point& pt);
+    void _Explode(const RS_F_Point& head, const RS_F_Point& tail, int& length);
 
-    double m_x_vert;
-    double m_miter_scale;
+    double m_height;      /* Height on each side from the center (ignoring bevel) in join space */
+    double m_bevel;       /* Height of the bevel in join space */
+    double m_width;       /* Distance from the center on each side that is transformed in join space*/
+    double m_bevel_width; /* Maximum transformed size of m_width */
+    double m_top_width;   /* Transformed size of m_width at m_height */
+
     double m_bevel_scale;
-    double m_sAng;
-    double m_eAng;
+    double m_miter_scale;
+
+    SE_Matrix m_w2j;      /* World space to join space transform */
+    SE_Matrix m_j2w;      /* Join space to world space transform */
+
+    RS_F_Point m_points[6];
     
     int m_n_discontinuities;
-    RS_F_Point* m_first_discontinuity;
-    RS_F_Point m_discontinuities[6];
+    RS_F_Point m_discontinuities[10];
 
-    int m_n_identity_regions;
-    RS_Bounds* m_first_identity_region;
-    RS_Bounds m_identity_region[2];
-    
     RS_Bounds m_bounds;
+    RS_Bounds m_j_bounds;
     RS_Bounds m_xf_bounds;
 
     SE_Matrix m_sRot;
     SE_Matrix m_eRot;
-
-    double m_chop;
 };
 
 #endif // SE_MITERJOIN_H

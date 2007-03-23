@@ -677,6 +677,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_IdentityJoin.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_IdentityJoin.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_LineBuffer.cpp"
 				>
 			</File>
@@ -685,7 +693,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_LineStorage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_LineStorage.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_Matrix.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_MiterJoin.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_MiterJoin.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_PiecewiseTransform.h"
 				>
 			</File>
 			<File
