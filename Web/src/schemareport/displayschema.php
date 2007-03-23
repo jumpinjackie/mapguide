@@ -26,9 +26,9 @@
 	    <title>Displays the schema</title>
 	    <link href="displayschema.css" rel="stylesheet" type="text/css">
 	</head>
-	
+
 	<body>
-	
+
 		<?php
 		    include '../mapadmin/Constants.php';
 
@@ -59,7 +59,7 @@
 
 				// Create new object for the XML file
 				$xml_object = new DomDocument();
-				if(!file_exists($xml))
+				if(!$xml)
 					exit('Cannot open $xml_file');
 				$xml_object->loadXML($xml);
 
