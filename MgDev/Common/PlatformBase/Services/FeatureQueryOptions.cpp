@@ -169,7 +169,7 @@ void MgFeatureQueryOptions::SetSpatialFilter(CREFSTRING geometryProperty,
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    m_geometryProperty =  geometryProperty;
+    m_geometryProperty = geometryProperty;
     m_operation = spatialOperation;
     m_geometry = SAFE_ADDREF(geometry);
 }
