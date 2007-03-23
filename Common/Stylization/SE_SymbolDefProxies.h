@@ -213,7 +213,7 @@ struct SE_Symbolization
     SE_Boolean drawLast;
     SE_Boolean checkExclusionRegions;
     SE_Boolean addToExclusionRegions;
-    std::wstring positioningAlgorithm;
+    SE_String positioningAlgorithm;
 
     ~SE_Symbolization()
     {

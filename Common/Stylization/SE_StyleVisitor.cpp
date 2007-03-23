@@ -689,12 +689,11 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
 
         m_symbolization->context = instance->GetSizeContext();
 
+        ParseStringExpression(instance->GetPositioningAlgorithm(), m_symbolization->positioningAlgorithm);
+
         ParseBooleanExpression(instance->GetDrawLast(), m_symbolization->drawLast);
         ParseBooleanExpression(instance->GetAddToExclusionRegion(), m_symbolization->addToExclusionRegions);
         ParseBooleanExpression(instance->GetCheckExclusionRegion(), m_symbolization->checkExclusionRegions);
-
-        if (!instance->GetPositioningAlgorithm().empty())
-            m_symbolization->positioningAlgorithm = instance->GetPositioningAlgorithm();
 
         ParseDoubleExpression(instance->GetScaleX(), m_symbolization->scale[0]);
         ParseDoubleExpression(instance->GetScaleY(), m_symbolization->scale[1]);

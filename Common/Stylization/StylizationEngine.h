@@ -81,8 +81,7 @@ public:
     void ClearCache();
 
 private:
-
-    void LayoutCustomLabel(const std::wstring& positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px);
+    void LayoutCustomLabel(const wchar_t* positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px);
 
 private:
     Renderer* m_renderer;
