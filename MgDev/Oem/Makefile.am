@@ -17,4 +17,10 @@ install-exec-am:
 	@cp -fpd dbxml-2.2.13/install/lib/libdb-4*.so ${prefix}/lib
 	@cp -fpd dbxml-2.2.13/install/lib/libdb_cxx*.so ${prefix}/lib
 	@cp -fpd dbxml-2.2.13/install/lib/libdbxml*.so ${prefix}/lib
+	@cp -fp  DWFTK7.1/develop/global/src/dwfcore/.libs/libdwfcore-* ${prefix}/lib
+	@cp -fpd DWFTK7.1/develop/global/src/dwfcore/.libs/libdwfcore ${prefix}/lib
+	@cp -fp  DWFTK7.1/develop/global/src/dwfemap/.libs/libdwfemap-* ${prefix}/lib
+	@cp -fpd DWFTK7.1/develop/global/src/dwfemap/.libs/libdwfemap ${prefix}/lib
+	@cp -fp  DWFTK7.1/develop/global/src/dwf/.libs/libdwftk-* ${prefix}/lib
+	@cp -fpd DWFTK7.1/develop/global/src/dwf/.libs/libdwftk ${prefix}/lib
 
