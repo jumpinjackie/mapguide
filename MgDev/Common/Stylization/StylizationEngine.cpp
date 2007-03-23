@@ -339,9 +339,10 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             style->rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(executor);
             style->rstyle->drawLast = sym->drawLast.evaluate(executor);
 
-            if (!sym->positioningAlgorithm.empty() && sym->positioningAlgorithm != L"Default")
+            const wchar_t* positioningAlgo = sym->positioningAlgorithm.evaluate(executor);
+            if (positioningAlgo && wcslen(positioningAlgo) > 0 && wcscmp(positioningAlgo, L"Default") != 0)
             {
-                LayoutCustomLabel(sym->positioningAlgorithm, geometry, tmpxform, style, style->rstyle, mm2px);
+                LayoutCustomLabel(positioningAlgo, geometry, tmpxform, style, style->rstyle, mm2px);
             }
             else
             {
@@ -352,20 +353,19 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     }
 }
 
-void StylizationEngine::LayoutCustomLabel(const std::wstring& positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px)
+void StylizationEngine::LayoutCustomLabel(const wchar_t* positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px)
 {
-    //here we decide which one to call based on the name of the positioning algorithm
-    if (positioningAlgo == L"EightSurrounding")
+    // call the appropriate positioning algorithm based on the name
+    if (wcscmp(positioningAlgo, L"EightSurrounding") == 0)
     {
         SE_PositioningAlgorithms::EightSurrounding(m_serenderer, geometry, xform, style, rstyle, mm2px);
     }
-    else if (positioningAlgo == L"PathLabels")
+    else if (wcscmp(positioningAlgo, L"PathLabels") == 0)
     {
         SE_PositioningAlgorithms::PathLabels(m_serenderer, geometry, xform, style, rstyle, mm2px);
     }
-    else if (positioningAlgo == L"MultipleHighwayShields")
+    else if (wcscmp(positioningAlgo, L"MultipleHighwayShields") == 0)
     {
-
         SE_PositioningAlgorithms::MultipleHighwaysShields(m_serenderer, geometry, xform, style, rstyle, mm2px,
                                                           m_reader, m_resources);
     }
