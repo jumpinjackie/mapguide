@@ -493,11 +493,16 @@ void SE_StyleVisitor::VisitImage(Image& image)
     ParseDoubleExpression(image.GetSizeY(), primitive->extent[1]);
     ParseDoubleExpression(image.GetAngle(), primitive->angle);
 
+    //TODO: SizeScaleable
+    //ParseBooleanExpression(image.GetExtentScaleable(), primitive->extentScaleable);
+
     primitive->cacheable = !(primitive->position[0].expression ||
                              primitive->position[1].expression ||
                              primitive->extent[0].expression ||
                              primitive->extent[1].expression ||
-                             primitive->angle.expression) && primitive->pngPtr;
+                             primitive->angle.expression ||
+                             primitive->extentScaleable.expression
+                             ) && primitive->pngPtr;
 }
 
 void SE_StyleVisitor::VisitText(Text& text)
@@ -520,6 +525,9 @@ void SE_StyleVisitor::VisitText(Text& text)
     ParseStringExpression(text.GetHorizontalAlignment(), primitive->hAlignment);
     ParseStringExpression(text.GetVerticalAlignment(), primitive->vAlignment);
     ParseStringExpression(text.GetJustification(), primitive->justification);
+    
+    //TODO: SizeScaleable
+    //ParseBooleanExpression(text.GetSizeScaleable(), primitive->sizeScaleable);
 
     primitive->cacheable = !(primitive->textExpr.expression ||
                              primitive->fontExpr.expression ||
@@ -535,7 +543,9 @@ void SE_StyleVisitor::VisitText(Text& text)
                              primitive->ghostColor.expression ||
                              primitive->hAlignment.expression ||
                              primitive->vAlignment.expression ||
-                             primitive->justification.expression);
+                             primitive->justification.expression ||
+                             primitive->sizeScaleable.expression
+                             );
 }
 
 void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefinition& simpleSymbol)
