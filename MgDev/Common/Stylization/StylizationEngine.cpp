@@ -195,6 +195,9 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     double mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
     double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
 
+    SE_Matrix w2s;
+    m_serenderer->GetWorldToScreenTransform(w2s);
+
     SE_Rule*& rules = m_rules[style];
     RuleCollection* rulecoll = style->GetRules();
     int nRules = rulecoll->GetCount();
@@ -274,7 +277,14 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                             sym->scale[1].evaluate(executor),
                             sym->absOffset[0].evaluate(executor),
                             sym->absOffset[1].evaluate(executor) );
-        xform.scale(mm2px, mm2px);
+        
+        //??? symbol geometry needs to be inverted if the y coordinate in the renderer points down
+        //This is so that in symbol definitions y points up consistently no matter what the underlying
+        //renderer is doing. Normally we could just apply the world to screen transform to everything,
+        //but in some cases we only apply it to the position of the symbol and then offset the symbol
+        //geometry from there -- so the symbol geometry needs to be pre-inverted.
+        //TODO: check if all rotations still work in the right direction
+        xform.scale(mm2px, w2s.y1 < 0 ? -mm2px : mm2px);  
 
         //initialize the style evaluation context
         SE_EvalContext cxt;
