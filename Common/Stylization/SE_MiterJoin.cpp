@@ -16,230 +16,472 @@
 //
 
 #include "SE_MiterJoin.h"
+#include "SE_LineBuffer.h"
 #include "stdafx.h"
 
-/* TODO: use vectors instead of sAng, eAng */
+
 SE_MiterJoin::SE_MiterJoin
                          ( double limit, 
                            RS_Bounds& bounds, 
                            double vertexOffset, 
-                           double sAng, 
-                           double eAng, 
-                           double dx, 
-                           double dy, 
-                           double chopOffset )
+                           const RS_F_Point& prev,
+                           const RS_F_Point& vert,
+                           const RS_F_Point& next,
+                           bool noTransform ) :
+    m_sRot(),
+    m_eRot(),
+    m_j_bounds(),
+    m_xf_bounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX)
 {
-    double V;    /* The location of the vertex in symbol coordinates */
-    double wn;   /* The height of the symbol below the line (inside the join) */
-    double wp;   /* The height of the symbol above the line (outside the join) */
-    double jn;   /* The length of the join above the line */
-    double jp;   /* The length of the join below the line */
-    double h;    /* The half-angle between the segments */
-    double t;    /* The tangent of the half-angle */
-    double c;    /* The cosine of the half-angle */
-    double s;    /* The sine of the half-angle */
-    double mmax; /* The length of the miter before the miter limit is applied */
-    double mlen; /* The miter length (the miter limit times the outside line thickness) */
-    double movr; /* The length of the portion of the miter that exceeds the miter length */
+    double V;           /* The location of the vertex in symbol coordinates */
+    double wp;          /* The height of the positive portion of the symbol (above the centerline) */
+    double wn;          /* The height of the negative portion of the symbol (below the centerline) */
+    double wb;          /* The height of the beveled portion of the symbol */
+    double w;           /* The height of the join above or below the line (symmetrical) */
+    double jo;          /* The x distance from the vertex to the end of the outside join */
+    double ji;          /* The x distance from the vertex to the end of the inside join */
+    double t;           /* The tangent of the half-angle */
+    double ca;          /* The cosine of the angle */
+    double ch;          /* The cosine of the half-angle */
+    double sa;          /* The sine of the angle */
+    double mmax;        /* The length of the miter before the miter limit is applied */
+    double mmin;        /* The minimum miter limit (at which a flat bevel is possible) */
+    double mlen;        /* The miter length (the miter limit times the outside line thickness) */
+    double movr;        /* The length of the portion of the miter that exceeds the miter length */
+    double imprev;      /* The inverse magnitude of the (vert - prev) vector */
+    double imnext;      /* The invserse magnitude of the (next - vert) vector */
+    RS_F_Point nprev;   /* The normalized (vert - prev) vector */
+    RS_F_Point nnext;   /* The normalized (next - vert) vector */
+    bool clockwise;     /* If true, then the positive portion of the symbol is on the inside of the join */
+    bool rtl;           /* If true, then the line moves negatively in x */
+    
+    V = bounds.minx - vertexOffset;
+    clockwise = PointLeft(prev.x, prev.y, vert.x, vert.y, next.x, next.y);
+    rtl = next.x < prev.x;
+   
+    nnext.x = next.x - vert.x;
+    nnext.y = next.y - vert.y;
+    imnext = 1.0/sqrt(nnext.x*nnext.x + nprev.y*nprev.y);
+    nnext.x *= imnext;
+    nnext.y *= imnext;
 
-    m_sAng = sAng;
-    m_eAng = eAng;
+    nprev.x = vert.x - prev.x;
+    nprev.y = vert.y - prev.y;
+    imprev = 1.0/sqrt(nprev.x*nprev.x + nprev.y*nprev.y);
+    nprev.x *= imprev;
+    nprev.y *= imprev;
+
+    m_j_bounds.minx = vertexOffset; /* bounds.minx - V */
+    m_j_bounds.maxx = bounds.maxx - V;
+
+    if (noTransform)
+    {
+        m_eRot.translate(-vert.x, -vert.y);
+        m_eRot.rotate(-nprev.y, nprev.x); /* Undo leading segment rotation */
+
+        m_w2j.translate(-vert.x, -vert.y);
+        m_w2j.rotate(-nprev.y, nprev.x); /* rotate by -angle */
+        if (clockwise)
+        {   /* Flip across the line so we don't have to worry about this stuff */
+            m_w2j.scaleY(-1.0);
+            m_j2w.scaleY(-1.0);
+            m_j_bounds.miny = -bounds.maxy;
+            m_j_bounds.maxy = -bounds.miny;
+        }
+        else
+        {
+            m_j_bounds.miny = bounds.miny;
+            m_j_bounds.maxy = bounds.maxy;
+        }
+        if (rtl)
+        {
+            m_w2j.scaleX(-1.0);
+            m_j2w.scaleX(-1.0);
+        }
+        m_j2w.rotate(nprev.y, nprev.x);
+        m_j2w.translate(vert.x, vert.y);
+    }
+    else
+    {
+        m_sRot.translateX(-V); /* translate by vert-(V,0), then by -vert */
+        m_sRot.rotate(nprev.y, nprev.x);
+        m_sRot.translate(vert.x, vert.y);
+        m_w2j.translateX(-V);
+        if (clockwise)
+        {
+            m_w2j.scaleY(-1.0);
+            m_j2w.scaleY(-1.0);
+        }
+        if (rtl)
+        {
+            m_w2j.scaleX(-1.0);
+            m_j2w.scaleX(-1.0);
+        }
+        m_w2j.translateX(V);
+        m_eRot.translateX(-V);
+    }
+
+    /* Rotation should occur about the vertex */
+    m_eRot.rotate(nnext.y, nnext.x);
+    m_eRot.translate(vert.x, vert.y);
+    
+    m_eRot.postmultiply(m_j2w);
+    m_sRot.postmultiply(m_j2w);
 
     wn = bounds.miny < 0.0 ? -bounds.miny : 0.0;
     wp = bounds.maxy > 0.0 ? bounds.maxy : 0.0;
-    
-    /* If t is negative, then jn will become the miter length and jp will become the inside length */
-    h = (eAng - sAng)/2.0;
-    s = sin(h);
-    c = cos(h);
-    t = s/c; /* The calculations will be stable even if the tangent is INF or 0 (assuming a reasonable miter limit) */
-    V = bounds.minx - vertexOffset;
-    
-    /* Rotation should occur about the vertex */
-    m_sRot.translateX(V);
-    m_sRot.rotate(sAng);
-    m_sRot.translate(dx - V, dy);
-    m_eRot.translateX(V);
-    m_eRot.rotate(eAng);
-    m_eRot.translate(dx - V, dy);
+    double hw = (wn > wp) ? wn : wp;
+    w = 2.0 * hw;
 
-    /* the tangent of the half angle is equal to the upper height over the upper join width */
-    jn = wn/t;
+    ca = -nprev.x*nnext.x - nprev.y*nnext.y; /* <-nprev, nnext> */
+    sa = fabs(-nprev.x*nnext.y + nprev.y*nnext.x); /* |-nprev X nnext| */
+    t = (1 - ca)/sa; /* From half angle identity: tan(x/2) = (1 - cos(x))/sin(x) */
 
-    /* the tangent of the half angle is equal to the lower height over the lower join width */
-    jp = wp/t;
- 
-    if (t < 0.0)
-    { /* The positive portion of the symbol is inside the join */
-        mmax = sqrt(wn*wn + jn*jn);
-        mlen = wn*limit;
-        if ((movr = mmax - mlen) > 0) /* the miter limit forces a bevel */
-        {
-            /* the cosine of the half angle is equal to the chopped length / the truncation of j */
-            jn -= movr/c;
-            jn = (jn < 0) ? 0.0 : jn;
-        }
-        m_y_max_len = jn;
-        m_y_max = wn;
-        m_y_min_len = jp;
-        m_y_min = wp;
-    }
-    else
-    { /* The negative portion of the symbol is inside the join */
-        mmax = sqrt(wp*wp + jp*jp);
-        mlen = wp*limit;
-        if ((movr = mmax - mlen) > 0)
-        {
-            jp -= movr/c;
-            jp = (jp < 0) ? 0.0 : jp;
-        }
-        m_y_max_len = jp;
-        m_y_max = wp;
-        m_y_min_len = jn;
-        m_y_min = wn;
-    }
-    
-    if (V + chopOffset < bounds.maxx)
-        m_chop = V + chopOffset;
-    else
-        m_chop = DBL_MAX;
+    /* the tangent of the half angle is equal to w/j */
+    jo = ji = hw/t;
+    mmax = sqrt(jo*jo + hw*hw);
 
-    /* The widest part of the transform is cosine of the half angle times the actual miter length.
-     * If there is no bevel, m_y_mid will be equal to m_y_max.
-     * Despite this mathemtical certainty, using an if ensures that m_y_mid == m_y_max in fp math */
+    /* Derivation of mmin:
+     * Let  A                                   be the area of the minimum bevel filled in between segments with no join
+     * Let  theta                               be the angle between the two segments
+     *
+     * A = w*w*sin(pi - theta)                  from the sine formula for the area of a triangle
+     * A = w*w*sin(theta)                       from identity sin(pi - theta) = sin(theta)
+     * 
+     * A/2 = w*mmin*sin(pi/2 - theta/2)         from applying the same formula to one half of the (isoceles) triangle
+     * A/2 = w*mmin*cos(theta/2)                from identity sin(pi/2 - theta) = cos(theta)
+     * A/2 = w*mmin*sqrt((1 + cos(theta))/2)    from cos(theta/2) = +/- sqrt((1 + cos(theta)/2), and theta/2 < pi/2, so positive
+     * w*w*sin(theta)/2 = w*wmin*sqrt((1 + cos(theta))/2)
+     * w*sa/2 = wmin*sqrt((1+ca)/2)
+     * wmin = hw*sa/sqrt((1+ca)/2)
+     */
+    ch = sqrt((1 + ca) / 2.0);
+    mmin = sa / ch;
+    mlen = hw * (limit < mmin ? mmin : limit);
+    movr = mmax - mlen;
+
     if (movr > 0)
     {
-        m_y_mid_len = (mmax < mlen ? mmax : mlen)*c;
-        m_y_mid = m_y_mid_len*t;
+        /* Todo: limit cannot go to zero */
+        double reduction = movr/mmax;
+        jo *= 1.0 - reduction;
+        wb = hw * reduction;
+        m_bevel_width = mlen * ch;
+        m_bevel_scale = (m_bevel_width - jo) / wb;
     }
     else
     {
-        m_y_mid_len = m_y_max_len;
-        m_y_mid = m_y_max;
+        wb = 0.0;
+        m_bevel_width = jo;
     }
-    m_x_vert = V;
-
+ 
+    m_height = hw;
+    m_width = ji;
+    m_top_width = jo;
+    m_bevel = hw - wb;
+    m_miter_scale = m_width * (m_bevel_width + m_width) / (m_bevel + m_height);
+    
     m_n_discontinuities = -1;
-    m_n_identity_regions = -1;
-    m_bounds = bounds;
-
-    /* Factor used in miter calculations (see comments in Transform) */
-    m_miter_scale = m_y_min_len*(m_y_mid_len + m_y_min_len)/(m_y_mid - m_y_min);
-    m_bevel_scale = (m_y_max - m_y_mid)*(m_y_mid_len - m_y_max_len);
-
 }
 
 RS_F_Point* SE_MiterJoin::GetDiscontinuities(int &length)
 {
     if (m_n_discontinuities == -1) /* Lazily initialize */
     {
-        m_first_discontinuity = NULL;
-        double minx = m_x_vert - m_y_min_len;
-        double maxx = m_x_vert + m_y_min_len;
-        if (m_bounds.minx < m_x_vert && m_y_mid != m_y_max)
+        m_n_discontinuities = 0;
+        int index = 0;
+
+        if (m_j_bounds.minx < -m_width)
         {
-            m_first_discontinuity = m_discontinuities;
             m_n_discontinuities++;
-            m_discontinuities[0].x = (minx > m_bounds.minx) ? minx : m_bounds.minx;
-            m_discontinuities[0].y = m_y_mid;
-            m_discontinuities[1].x = (m_bounds.maxx < m_x_vert) ? m_bounds.maxx : m_x_vert;
-            m_discontinuities[1].y = m_y_mid;
+            m_discontinuities[index].x = -m_width;
+            m_discontinuities[index].y = -m_height;
+            m_j2w.transform(m_discontinuities[index].x, m_discontinuities[index].y);
+            index++;
+            m_discontinuities[index].x = -m_width;
+            m_discontinuities[index].y = m_height;
+            m_j2w.transform(m_discontinuities[index].x, m_discontinuities[index].y);
         }
 
-        if (m_bounds.minx < m_x_vert && m_bounds.maxx > m_x_vert)
+        if (m_bevel > 0.0 && m_j_bounds.maxy > m_bevel)
         {
-            if (m_first_discontinuity == NULL)
-                m_first_discontinuity = m_discontinuities + 2;
             m_n_discontinuities++;
-            m_discontinuities[2].x = m_x_vert;
-            m_discontinuities[2].y = m_y_max;
-            m_discontinuities[3].x = m_x_vert;
-            m_discontinuities[3].y = m_y_min;
+            m_discontinuities[index].x = -m_width;
+            m_discontinuities[index].y = m_bevel;
+            m_j2w.transform(m_discontinuities[index].x, m_discontinuities[index].y);
+            index++;
+            m_discontinuities[index].x = 0.0;
+            m_discontinuities[index].y = m_bevel;
+            m_j2w.transform(m_discontinuities[index].x, m_discontinuities[index].y);
+            index++;
+
+            m_n_discontinuities++;
+            m_discontinuities[index].x = 0.0;
+            m_discontinuities[index].y = m_bevel;
+            m_j2w.transform(m_discontinuities[index].x, m_discontinuities[index].y);
+            index++;
+            m_discontinuities[index].x = m_width;
+            m_discontinuities[index].y = m_bevel;
+            m_j2w.transform(m_discontinuities[index].x, m_discontinuities[index].y);
+            index++;
         }
 
-        if (m_bounds.maxx > m_x_vert && m_y_mid != m_y_max)
+        if (m_j_bounds.minx < 0 && m_j_bounds.maxx > 0)
         {
-            if (m_first_discontinuity == NULL)
-                m_first_discontinuity = m_discontinuities + 4;
             m_n_discontinuities++;
-            m_discontinuities[4].x = (maxx < m_bounds.maxx) ? maxx : m_bounds.maxx;
-            m_discontinuities[4].y = m_y_mid;
-            m_discontinuities[5].x = (m_bounds.minx > m_x_vert) ? m_bounds.minx : m_x_vert;
-            m_discontinuities[5].y = m_y_mid;
+            m_discontinuities[index].x = 0;
+            m_discontinuities[index].y = -m_height;
+            m_j2w.transform(m_discontinuities[index].x, m_discontinuities[index].y);
+            index++;
+            m_discontinuities[index].x = 0;
+            m_discontinuities[index].y = m_height;
+            m_j2w.transform(m_discontinuities[index].x, m_discontinuities[index].y);
+        }
+
+        if (m_j_bounds.maxx > m_width)
+        {
+            m_n_discontinuities++;
+            m_discontinuities[index].x = m_width;
+            m_discontinuities[index].y = -m_height;
+            m_j2w.transform(m_discontinuities[index].x, m_discontinuities[index].y);
+            index++;
+            m_discontinuities[index].x = m_width;
+            m_discontinuities[index].y = m_height;
+            m_j2w.transform(m_discontinuities[index].x, m_discontinuities[index].y);
         }
     }
 
     length = m_n_discontinuities;
-    return m_first_discontinuity;
-}
-
-RS_Bounds* SE_MiterJoin::GetIdentityRegions(int &length)
-{
-    if (m_n_identity_regions == -1) /* Lazily initialize */
-    {
-        m_first_identity_region = NULL;
-        m_n_identity_regions = 0;
-
-        if (m_bounds.minx < m_x_vert - m_y_min_len)
-        {
-            m_first_identity_region = m_identity_region;
-            m_n_identity_regions++;
-            m_identity_region[0].minx = m_bounds.minx;
-            m_identity_region[0].maxx = m_x_vert - m_y_min_len;
-            m_identity_region[0].miny = m_bounds.miny;
-            m_identity_region[0].maxy = m_bounds.maxy;
-        }
-
-        if (m_bounds.maxx > m_x_vert + m_y_min_len && m_chop > m_x_vert + m_y_min_len)
-        {
-            if (m_first_identity_region == NULL)
-                m_first_identity_region = m_identity_region + 1;
-            m_n_identity_regions++;
-            m_identity_region[1].minx = m_x_vert + m_y_min_len;
-            m_identity_region[1].maxx = m_bounds.maxx > m_chop ? m_chop : m_bounds.maxx;
-            m_identity_region[1].miny = m_bounds.miny;
-            m_identity_region[1].maxy = m_bounds.maxy;
-        }
-    }
-
-    length = m_n_identity_regions;
-    return m_first_identity_region;
-}
-
-RS_Bounds* SE_MiterJoin::GetNonlinearRegions(int &length)
-{
-    length = 0;
-    return NULL;
+    return m_discontinuities;
 }
 
 RS_Bounds& SE_MiterJoin::GetTransformedBounds()
 {
-    /* TODO: initialize, lazily */
+    if (!m_xf_bounds.IsValid())
+    {
+        RS_F_Point xfpt;
+
+        xfpt.x = m_j_bounds.minx;
+        xfpt.y = m_j_bounds.miny;
+        _Transform(xfpt);
+        m_xf_bounds.add_point(xfpt);
+
+        xfpt.x = m_j_bounds.maxx;
+        xfpt.y = m_j_bounds.maxy;
+        _Transform(xfpt);
+        m_xf_bounds.add_point(xfpt);
+
+        xfpt.x = 0.0;
+        xfpt.y = m_j_bounds.maxy;
+        _Transform(xfpt);
+        m_xf_bounds.add_point(xfpt);
+
+        xfpt.x = 0.0;
+        xfpt.y = m_j_bounds.miny;
+        _Transform(xfpt);
+        m_xf_bounds.add_point(xfpt);
+
+        xfpt.x = m_j_bounds.minx;
+        xfpt.y = m_j_bounds.maxy;
+        _Transform(xfpt);
+        m_xf_bounds.add_point(xfpt);
+
+        xfpt.x = m_j_bounds.maxx;
+        xfpt.y = m_j_bounds.miny;
+        _Transform(xfpt);
+        m_xf_bounds.add_point(xfpt);
+    }
+
     return m_xf_bounds;
 }
 
-double SE_MiterJoin::GetXChop(bool &chopEnd)
+void SE_MiterJoin::GetXChop(double& startx, double& endx)
 {
-    chopEnd = true;
-    return m_chop;
+    startx = -DBL_MAX;
+    endx = DBL_MAX;
 }
 
-void SE_MiterJoin::Transform(double& x, double &y, SE_TransformInfo* info)
+RS_F_Point* SE_MiterJoin::Transform(const RS_F_Point& pt0, const RS_F_Point& pt1, int& length)
 {
-    /* By using these, max will always be > min */
-    bool start = x < m_x_vert;
-    double x_min = start ? m_x_vert - m_y_min_len : m_x_vert + m_y_min_len;
-    double dXdx, dXdy, d2Xdxdy;
+    RS_F_Point head, tail;
 
-    if (x >= m_x_vert - m_y_min_len && x <= m_x_vert + m_y_min_len)
+    m_w2j.transform(pt0.x, pt0.y, head.x, head.y);
+    m_w2j.transform(pt1.x, pt1.y, tail.x, tail.y);
+
+    if (head.x > tail.x) /* Swap 'em--the head comes first! */
     {
-        if (y > m_y_mid && y <= m_y_max)
+        m_points[0] = tail;
+        tail = head;
+        head = m_points[0];
+    }
+
+    _Explode(head, tail, length);
+
+    for (int i = 0; i < length; i++)
+        _Transform(m_points[i]);
+    return m_points;
+}
+
+void SE_MiterJoin::Transform(SE_LineStorage* src, SE_LineStorage* dst, bool /*closed*/)
+{
+    int n_cntrs = src->cntr_count();
+    int* contours = src->cntrs();
+    double* pts = src->points();
+    RS_F_Point head, tail;
+    int length;
+
+    for (int i = 0; i < n_cntrs; i++)
+    {
+        double x, y, lx, ly;
+        double* last = pts + 2*contours[i];
+        dst->EnsureContours(1);
+        lx = *pts++;
+        ly = *pts++;
+        m_w2j.transform(lx, ly);
+        bool first = true;
+        bool noswap;
+
+        while (pts < last)
+        {
+            x = *pts++;
+            y = *pts++;
+            m_w2j.transform(x, y);
+
+            head.x = x;
+            head.y = y;
+            tail.x = lx;
+            tail.y = ly;
+
+            if (noswap = head.x > tail.x) /* Swap 'em--the head comes first! */
+            {
+                m_points[0] = tail;
+                tail = head;
+                head = m_points[0];
+            }
+
+            _Explode(head, tail, length);
+            dst->EnsurePoints(length);
+            
+            int index, inc;
+            if (noswap)
+            {
+                index = 0;
+                inc = 1;
+            }
+            else
+            {
+                index = length - 1;
+                inc = -1;
+            }
+
+            if (first)
+            {
+                first = false;
+                _Transform(m_points[index]);
+                dst->_MoveToNoChop(m_points[index].x, m_points[index].y);
+            }
+
+            index += inc;
+
+            for (i = 1; i < length; i++)
+            {
+                RS_F_Point& pt = m_points[index];
+                index += inc;
+                _Transform(pt);
+                dst->_LineToNoChop(pt.x, pt.y);
+            }
+            lx = x;
+            ly = y;
+        }
+    }
+}
+
+void SE_MiterJoin::_Explode(const RS_F_Point& head, const RS_F_Point& tail, int& length)
+{
+    RS_F_Point bevel, zero;
+    bool addBevel = false, addZero = false;
+
+    length = 0;
+    double slope = (tail.y - head.y) / (tail.x - head.x);
+
+    m_points[length++] = head;
+
+    if (head.x < -m_width && tail.x > -m_width) /* Line crosses the beginning of the transform */
+    {
+        m_points[length].x = -m_width;
+        m_points[length++].y = head.y - slope * (m_width + head.x);
+    }
+
+    if ( (head.y < m_bevel && tail.y > m_bevel) || (head.y > m_bevel && tail.y < m_bevel) )
+    {
+        bevel.x = head.x + (m_bevel - head.y) / slope;
+        bevel.y = m_bevel;
+        addBevel = true;
+    }
+
+    if (head.x < 0.0 && tail.x > 0.0)
+    {
+        zero.y = head.y - slope * head.x;
+        zero.x = 0.0;
+        /* If, by some chance, the line crosses the bevel at x=0, don't add the point twice */
+        addZero = !addBevel || zero.x != bevel.x || zero.y != bevel.y;
+    }
+
+    if (addBevel && addZero)
+    {
+        if (bevel.x < zero.x)
+        {
+            m_points[length++] = bevel;
+            m_points[length++] = zero;
+        }
+        else
+        {
+            m_points[length++] = zero;
+            m_points[length++] = bevel;
+        }
+    }
+    else if (addBevel)
+        m_points[length++] = bevel;
+    else if (addZero)
+        m_points[length++] = zero;
+
+    if (head.x < m_width && tail.x > m_width) /* Line crosses the end of the transform */
+    {
+        m_points[length].x = m_width;
+        m_points[length++].y = head.y + slope * (m_width - head.x);
+    }
+
+    m_points[length++] = tail;
+}
+
+/* Argument: point in join space
+ * Returns:  point in input space
+ */
+void SE_MiterJoin::_Transform(RS_F_Point& pt)
+{
+    double x_min;
+    SE_Matrix* postxf;
+    
+    if (pt.x <= 0)
+    {
+        x_min = -m_width;
+        postxf = &m_sRot;
+    }
+    else
+    {
+        x_min = m_width;
+        postxf = &m_eRot;
+    }
+
+    if (fabs(pt.x) <= m_width)
+    {
+        if (pt.y > m_bevel && pt.y <= m_height)
         {
         /* The bevel transform can be described by the following function:
-         * X(x,y) = x_min + (x - x_min) * (y_max_len + (y_max - y) * (y_mid_len - y_max_len) / (y_max - y_mid)
+         * X(x,y) = x_min + (x - x_min) * (m_top_width + (m_height - y) * (m_bevel_width - m_top_width) / (m_height - m_bevel)
          *                                                          |------------- m_bevel_scale -------------|
          * where:
-         * dX/dx = y_max_len + (y_max - y) * scale
+         * dX/dx = m_top_width + (m_height - y) * scale
          * dX/dy = - (x - x_min) * scale
          * d2X/dx2 = 0
          * d2X/dy2 = 0
@@ -248,22 +490,19 @@ void SE_MiterJoin::Transform(double& x, double &y, SE_TransformInfo* info)
          * The transform is constant over Y, so
          * Y(x,y) = y
          */
-            double dy = m_y_max - y;
-            double dx = x - x_min;
+            double dy = m_height - pt.y;
+            double dx = pt.x - x_min;
 
-            x = x_min + dx * (m_y_max_len + dy * m_bevel_scale);
-            dXdx = m_y_max_len + dy * m_bevel_scale;
-            dXdy = dx * m_bevel_scale;
-            d2Xdxdy = -m_bevel_scale;
+            pt.x = x_min + dx * (m_top_width + dy * m_bevel_scale);
         }
-        else if (y <= m_y_mid && y >= m_y_min)
+        else if (pt.y <= m_bevel && pt.y >= -m_height)
         {
 
         /* The miter transform can be described by the following function:
-         * X(x,y) = x_min + (x - x_min) * (y - y_min) * y_min_len * (y_mid_len + y_min_len) / (y_mid - y_min)
+         * X(x,y) = x_min + (x - x_min) * (y + m_height) * m_width * (m_bevel_width + m_width) / (m_bevel + m_height)
          *                                             |------------------- m_miter_scale -------------------|
          * where:
-         * dX/dx = (y - y_min) * scale
+         * dX/dx = (y + m_height) * scale
          * dX/dy = (x - x_min) * scale
          * d2X/dx2 = 0
          * d2X/dy2 = 0
@@ -272,44 +511,12 @@ void SE_MiterJoin::Transform(double& x, double &y, SE_TransformInfo* info)
          * The transform is constant over Y, so
          * Y(x,y) = y
          */
-            double dx = x - x_min;
-            double dy = y - m_y_min;
+            double dx = pt.x - x_min;
+            double dy = pt.y + m_height;
 
-            x = x_min + dx * dy * m_miter_scale;
-            dXdx = dy * m_miter_scale;
-            dXdy = dx * m_miter_scale;
-            d2Xdxdy = m_miter_scale;
-        }
-        else
-        {
-            dXdx = 1.0;
-            dXdy = 0.0;
-            d2Xdxdy = 0.0;
+            pt.x = x_min + dx * dy * m_miter_scale;
         }
     }
-    else
-    {
-        dXdx = 1.0;
-        dXdy = 0.0;
-        d2Xdxdy = 0.0;
-    }
 
-    if (info)
-    {
-        info->dXdx = dXdx;
-        info->dXdy = dXdy;
-        info->dYdx = 0.0;
-        info->dYdy = 1.0;
-        info->d2Xdx2 = 0.0;
-        info->d2Ydx2 = 0.0;
-        info->d2Xdy2 = 0.0;
-        info->d2Ydy2 = 0.0;
-        info->d2Xdxdy = d2Xdxdy;
-        info->d2Ydxdy = 0.0;
-    }
-
-    if (start)
-        m_sRot.transform(x,y);
-    else
-        m_eRot.transform(x, y);
+    postxf->transform(pt.x, pt.y);
 }

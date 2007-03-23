@@ -20,6 +20,7 @@ libMgStylization_la_SOURCES = \
   SE_MiterJoin.cpp \
   SE_ExpressionBase.cpp \
   SE_LineBuffer.cpp \
+  SE_LineStorage.cpp \
   SE_PositioningAlgorithms.cpp \
   SE_Renderer.cpp \
   SE_StyleVisitor.cpp \
@@ -78,6 +79,7 @@ noinst_HEADERS = \
   SE_SymbolDefProxies.h \
   SE_RenderProxies.h \
   SE_LineBuffer.h \
+  SE_LineStorage.h \
   SE_Matrix.h \
   SE_PositioningAlgorithms.h \
   SE_Renderer.h \

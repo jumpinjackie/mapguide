@@ -19,30 +19,37 @@
 #define SE_IDENTITYJOIN_H
 
 #include "SE_PiecewiseTransform.h"
+#include "SE_Matrix.h"
 
 class SE_IdentityJoin : public SE_PiecewiseTransform
 {
 public:
     /* bounds:  The bounds of the symbol.
-     * chop:    The amount to remove in pixel units
-     * end:     The symbol is truncated backwards from maxx if true, or forwards from minx if not
+     * offset:  The distance along the line in pixels from pt0 to the beginning of the symbol
+     * pt0:     The start point of the line segment
+     * pt1:     The end point of the line segment
      */
-    SE_IdentityJoin(RS_Bounds& bounds, double chop, bool end);
+    SE_IdentityJoin(RS_Bounds& bounds, double offset, const RS_F_Point& pt0, const RS_F_Point& pt1);
 
     virtual RS_F_Point* GetDiscontinuities(int &length);
-    virtual RS_Bounds* GetIdentityRegions(int &length);
-    virtual RS_Bounds* GetNonlinearRegions(int &length);
     virtual RS_Bounds& GetTransformedBounds();
 
-    virtual double GetXChop(bool &chopEnd);
+    virtual void GetXChop(double& startx, double& endx);
 
-    virtual void Transform(double& x, double &y, SE_TransformInfo* info);
+    virtual RS_F_Point* Transform(const RS_F_Point& pt0, const RS_F_Point& pt1, int& length);
+    virtual void Transform(SE_LineStorage* src, SE_LineStorage* dst, bool closed);
+
 
 private:
-    double m_chop;
-    bool m_end;
-    RS_Bounds m_identity_region;
+    double m_chop_start;
+    double m_chop_end;
+
+    RS_F_Point m_points[2];
+
+    SE_Matrix m_xform;
+
     RS_Bounds m_xf_bounds;
+    RS_Bounds m_bounds;
 };
 
 #endif // SE_IDENTITYJOIN_H
