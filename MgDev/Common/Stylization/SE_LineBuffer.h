@@ -20,11 +20,11 @@
 
 #include "LineBuffer.h"
 #include "SE_Matrix.h"
+#include "SE_LineStorage.h"
 #include <set>
 
 struct SE_Bounds;
 class SE_LineBufferPool;
-class SE_LineStorage;
 
 struct PointLess : std::binary_function<std::pair<double, double>&, std::pair<double, double>&, bool>
 {
