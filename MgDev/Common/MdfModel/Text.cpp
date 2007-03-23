@@ -154,6 +154,24 @@ void Text::SetHeight(const MdfString& height)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
+const MdfString& Text::GetHeightScalable() const
+{
+    return this->m_sHeightScalable;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Text::SetHeightScalable(const MdfString& heightScalable)
+{
+    this->m_sHeightScalable = heightScalable;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
 const MdfString& Text::GetPositionX() const
 {
     return this->m_sPositionX;

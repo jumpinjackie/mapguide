@@ -13,7 +13,7 @@
           <FillColor>ffff0000</FillColor>
           <LineColor>%OUTLINE%</LineColor>
           <LineWeight>2*(%THICKNESS% + 1)</LineWeight>
-          <LineWeightScalable>true</LineWeightScalable>
+          <LineWeightScalable>True</LineWeightScalable>
           <LineCap>'None'</LineCap>
           <LineJoin>'None'</LineJoin>
           <LineMiterLimit>5.0</LineMiterLimit>
@@ -23,6 +23,7 @@
           <Content>R0lGODlhcgGSALMAAAQCAEMmCZtuMFQxDS8b</Content>
           <SizeX>100.0</SizeX>
           <SizeY>100.0</SizeY>
+          <SizeScalable>True</SizeScalable>
           <PositionX>0.0</PositionX>
           <PositionY>0.0</PositionY>
           <Angle>0.0</Angle>
@@ -32,24 +33,26 @@
           <Reference>Library://Image.jpg</Reference>
           <SizeX>100.0</SizeX>
           <SizeY>100.0</SizeY>
+          <SizeScalable>True</SizeScalable>
           <PositionX>0.0</PositionX>
           <PositionY>0.0</PositionY>
           <Angle>0.0</Angle>
         </Image>
         <Text>
           <ResizeControl>'AddToResizeBox'</ResizeControl>
-          <String>Some text</String>
-          <FontName>Arial</FontName>
-          <Bold>false</Bold>
-          <Italic>false</Italic>
-          <Underlined>false</Underlined>
+          <String>'Some text'</String>
+          <FontName>'Arial'</FontName>
+          <Bold>False</Bold>
+          <Italic>False</Italic>
+          <Underlined>False</Underlined>
           <Height>10.0</Height>
+          <HeightScalable>True</HeightScalable>
           <PositionX>0.0</PositionX>
           <PositionY>0.0</PositionY>
           <Angle>0.0</Angle>
-          <HorizontalAlignment>Center</HorizontalAlignment>
-          <VerticalAlignment>Baseline</VerticalAlignment>
-          <Justification>Center</Justification>
+          <HorizontalAlignment>'Center'</HorizontalAlignment>
+          <VerticalAlignment>'Baseline'</VerticalAlignment>
+          <Justification>'Center'</Justification>
           <LineSpacing>15.0</LineSpacing>
           <TextColor>%TEXTCOLOR%</TextColor>
           <GhostColor>ffffffff</GhostColor>
@@ -90,7 +93,7 @@
           <FillColor>ffff0000</FillColor>
           <LineColor>ff00ff00</LineColor>
           <LineWeight>1.0</LineWeight>
-          <LineWeightScalable>true</LineWeightScalable>
+          <LineWeightScalable>True</LineWeightScalable>
           <LineCap>'None'</LineCap>
           <LineJoin>'None'</LineJoin>
           <LineMiterLimit>5.0</LineMiterLimit>

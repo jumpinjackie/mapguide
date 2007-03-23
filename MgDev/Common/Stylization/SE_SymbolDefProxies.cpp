@@ -106,7 +106,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     if (!cxt->useBox)
     {
         ret->geometry->Transform(*cxt->xform, ret->weight);
-        
+
         SE_Bounds* seb = ret->geometry->xf_bounds();
 
         //TODO: here we would implement rotating calipers algorithm to get
@@ -186,12 +186,11 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 
     ret->tdef.font().style() = (RS_FontStyle_Mask)style;
     ret->tdef.font().name() = fontExpr.evaluate(cxt->exec);
-    
-    //TODO: SizeScaleable -- remove the true
-    if (true || sizeScaleable.evaluate(cxt->exec))
+
+    if (sizeScaleable.evaluate(cxt->exec))
         ret->tdef.font().height() = size.evaluate(cxt->exec)*0.001*fabs(cxt->xform->y1)/cxt->mm2px; //convert mm to meters which is what RS_TextDef expects
     else
-        ret->tdef.font().height() = size.evaluate(cxt->exec) * 0.001; //size is not scaleable -- only convert from mm to meters.
+        ret->tdef.font().height() = size.evaluate(cxt->exec)*0.001; //size is not scaleable -- only convert from mm to meters.
 
     ret->tdef.linespace() = lineSpacing.evaluate(cxt->exec);
 
@@ -275,8 +274,7 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     ret->position[1] = position[1].evaluate(cxt->exec);
     cxt->xform->transform(ret->position[0], ret->position[1]);
 
-    //TODO: SizeScaleable -- remove the true
-    if (true || extentScaleable.evaluate(cxt->exec))
+    if (extentScaleable.evaluate(cxt->exec))
     {
         ret->extent[0] = extent[0].evaluate(cxt->exec)*cxt->xform->x0;
         ret->extent[1] = extent[1].evaluate(cxt->exec)*cxt->xform->y1;
@@ -430,7 +428,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         SE_RenderText* rt = (SE_RenderText*)rsym;
                         growxf.transform(rt->position[0], rt->position[1]);
                         rt->tdef.font().height() *= growxf.y1;
-                        for (int j=0; j<4; j++) 
+                        for (int j=0; j<4; j++)
                             growxf.transform(rt->bounds[j].x, rt->bounds[j].y);
                         break;
                     }
@@ -440,7 +438,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         growxf.transform(rr->position[0], rr->position[1]);
                         rr->extent[0] *= growxf.x0;
                         rr->extent[1] *= growxf.y1;
-                        for (int j=0; j<4; j++) 
+                        for (int j=0; j<4; j++)
                             growxf.transform(rr->bounds[j].x, rr->bounds[j].y);
                         break;
                     }

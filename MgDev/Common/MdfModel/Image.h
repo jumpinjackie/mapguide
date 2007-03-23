@@ -46,6 +46,9 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetSizeY() const;
         void SetSizeY(const MdfString& sizeY);
 
+        const MdfString& GetSizeScalable() const;
+        void SetSizeScalable(const MdfString& sizeScalable);
+
         const MdfString& GetPositionX() const;
         void SetPositionX(const MdfString& positionX);
 
@@ -68,6 +71,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         MdfString m_sSizeX;
         MdfString m_sSizeY;
+        MdfString m_sSizeScalable;
 
         MdfString m_sPositionX;
         MdfString m_sPositionY;

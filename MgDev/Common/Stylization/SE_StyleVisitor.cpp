@@ -461,20 +461,20 @@ void SE_StyleVisitor::VisitImage(Image& image)
     if (image.GetContent().size())
     {
         const MdfModel::MdfString& src_u = image.GetContent();
-        
+
         size_t srclen = src_u.size();
         char* src_ascii = new char[srclen];
 
         char* ptr = src_ascii;
         for (size_t i=0; i<srclen; i++)
             *ptr++ = (char)src_u[i];
-                
+
         size_t dstlen = Base64::GetDecodedLength(image.GetContent().size());
         primitive->pngPtr = new unsigned char[dstlen];
         primitive->ownPtr = true;
 
         Base64::Decode((unsigned char*)primitive->pngPtr, src_ascii, srclen);
-                
+
         delete [] src_ascii;
     }
     else
@@ -492,9 +492,7 @@ void SE_StyleVisitor::VisitImage(Image& image)
     ParseDoubleExpression(image.GetSizeX(), primitive->extent[0]);
     ParseDoubleExpression(image.GetSizeY(), primitive->extent[1]);
     ParseDoubleExpression(image.GetAngle(), primitive->angle);
-
-    //TODO: SizeScaleable
-    //ParseBooleanExpression(image.GetExtentScaleable(), primitive->extentScaleable);
+    ParseBooleanExpression(image.GetSizeScalable(), primitive->extentScaleable);
 
     primitive->cacheable = !(primitive->position[0].expression ||
                              primitive->position[1].expression ||
@@ -517,6 +515,7 @@ void SE_StyleVisitor::VisitText(Text& text)
     ParseDoubleExpression(text.GetPositionX(), primitive->position[0]);
     ParseDoubleExpression(text.GetPositionY(), primitive->position[1]);
     ParseDoubleExpression(text.GetLineSpacing(), primitive->lineSpacing);
+    ParseBooleanExpression(text.GetHeightScalable(), primitive->sizeScaleable);
     ParseBooleanExpression(text.GetUnderlined(), primitive->underlined);
     ParseBooleanExpression(text.GetBold(), primitive->bold);
     ParseBooleanExpression(text.GetItalic(), primitive->italic);
@@ -525,9 +524,6 @@ void SE_StyleVisitor::VisitText(Text& text)
     ParseStringExpression(text.GetHorizontalAlignment(), primitive->hAlignment);
     ParseStringExpression(text.GetVerticalAlignment(), primitive->vAlignment);
     ParseStringExpression(text.GetJustification(), primitive->justification);
-    
-    //TODO: SizeScaleable
-    //ParseBooleanExpression(text.GetSizeScaleable(), primitive->sizeScaleable);
 
     primitive->cacheable = !(primitive->textExpr.expression ||
                              primitive->fontExpr.expression ||
@@ -633,7 +629,7 @@ void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefi
             if (def == NULL)
                 return;
 
-            //remember the current symbol resource id, in case it references an 
+            //remember the current symbol resource id, in case it references an
             //attached png image resource
             isRef = true;
             m_resIdStack.push_back(ref.c_str());
@@ -679,7 +675,7 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
             if (def == NULL)
                 continue;
 
-            //remember the current symbol resource id, in case it references an 
+            //remember the current symbol resource id, in case it references an
             //attached png image resource
             isRef = true;
             m_resIdStack.push_back(ref.c_str());
@@ -701,7 +697,7 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
         ParseDoubleExpression(instance->GetInsertionOffsetY(), m_symbolization->absOffset[1]);
 
         def->AcceptVisitor(*this);
-        
+
         result.push_back(m_symbolization);
 
         if (isRef)

@@ -13,7 +13,7 @@
         </Path>
       </Graphics>
       <LineUsage>
-        <VertexControl>OverlapWrap</VertexControl>
+        <VertexControl>'OverlapWrap'</VertexControl>
         <Repeat>24</Repeat>
       </LineUsage>
       <ParameterDefinition/>
@@ -28,7 +28,7 @@
         </Path>
       </Graphics>
       <LineUsage>
-        <VertexControl>OverlapWrap</VertexControl>
+        <VertexControl>'OverlapWrap'</VertexControl>
         <StartOffset>28</StartOffset>
         <Repeat>24</Repeat>
       </LineUsage>

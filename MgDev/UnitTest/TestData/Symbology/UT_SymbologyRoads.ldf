@@ -22,8 +22,6 @@
     </PropertyMapping>
     <Geometry>Data</Geometry>
     <VectorScaleRange>
-      <MinScale>0</MinScale>
-      <MaxScale>1000000000000</MaxScale>
       <CompositeTypeStyle>
         <CompositeRule>
           <LegendLabel/>
@@ -31,8 +29,8 @@
             <SymbolInstance>
               <SymbolReference>Library://Symbology/Symbols/LineSymbol.SymbolDefinition</SymbolReference>
               <ParameterOverrides/>
-              <ScaleX>1</ScaleX>
-              <ScaleY>1</ScaleY>
+              <ScaleX>1.0</ScaleX>
+              <ScaleY>1.0</ScaleY>
               <SizeContext>DeviceUnits</SizeContext>
               <DrawLast>False</DrawLast>
               <CheckExclusionRegion>False</CheckExclusionRegion>
