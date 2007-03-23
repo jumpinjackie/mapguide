@@ -91,7 +91,8 @@ struct SE_Text : public SE_Primitive
     SE_String textExpr;
     SE_String fontExpr;
     SE_Double position[2];
-    SE_Double size; // pt
+    SE_Double size;
+    SE_Boolean sizeScaleable;
     SE_Double angle;
     SE_Boolean underlined;
     SE_Boolean italic;
@@ -116,6 +117,7 @@ struct SE_Raster : public SE_Primitive
     int pngSize;
     SE_Double position[2];
     SE_Double extent[2];
+    SE_Boolean extentScaleable;
     SE_Double angle;
 
     SE_INLINE SE_Raster() : ownPtr(false) {  }

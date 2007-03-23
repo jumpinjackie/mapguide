@@ -186,7 +186,13 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 
     ret->tdef.font().style() = (RS_FontStyle_Mask)style;
     ret->tdef.font().name() = fontExpr.evaluate(cxt->exec);
-    ret->tdef.font().height() = size.evaluate(cxt->exec)*0.001*cxt->xform->y1/cxt->mm2px; //convert mm to meters which is what RS_TextDef expects
+    
+    //TODO: SizeScaleable -- remove the true
+    if (true || sizeScaleable.evaluate(cxt->exec))
+        ret->tdef.font().height() = size.evaluate(cxt->exec)*0.001*fabs(cxt->xform->y1)/cxt->mm2px; //convert mm to meters which is what RS_TextDef expects
+    else
+        ret->tdef.font().height() = size.evaluate(cxt->exec) * 0.001; //size is not scaleable -- only convert from mm to meters.
+
     ret->tdef.linespace() = lineSpacing.evaluate(cxt->exec);
 
     ret->tdef.color() = RS_Color::FromARGB(textColor.evaluate(cxt->exec));
@@ -268,8 +274,19 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     ret->position[0] = position[0].evaluate(cxt->exec);
     ret->position[1] = position[1].evaluate(cxt->exec);
     cxt->xform->transform(ret->position[0], ret->position[1]);
-    ret->extent[0] = extent[0].evaluate(cxt->exec)*cxt->xform->x0;
-    ret->extent[1] = extent[1].evaluate(cxt->exec)*cxt->xform->y1;
+
+    //TODO: SizeScaleable -- remove the true
+    if (true || extentScaleable.evaluate(cxt->exec))
+    {
+        ret->extent[0] = extent[0].evaluate(cxt->exec)*cxt->xform->x0;
+        ret->extent[1] = extent[1].evaluate(cxt->exec)*cxt->xform->y1;
+    }
+    else
+    {
+        ret->extent[0] = extent[0].evaluate(cxt->exec)*cxt->mm2pxw;
+        ret->extent[1] = extent[1].evaluate(cxt->exec)*cxt->mm2pxw;
+    }
+
     ret->angle = angle.evaluate(cxt->exec) * M_PI180;
 
     SE_Matrix rxf;
