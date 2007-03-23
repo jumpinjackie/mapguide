@@ -466,7 +466,7 @@ void SE_StyleVisitor::VisitImage(Image& image)
         char* src_ascii = new char[srclen];
 
         char* ptr = src_ascii;
-        for (int i=0; i<srclen; i++)
+        for (size_t i=0; i<srclen; i++)
             *ptr++ = (char)src_u[i];
                 
         size_t dstlen = Base64::GetDecodedLength(image.GetContent().size());
