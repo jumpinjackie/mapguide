@@ -39,6 +39,70 @@ MgMap::MgMap()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// Constructs an MgMap object that takes an MgSiteConnection instance.
+/// The object cannot be used until either the Create or Open method is called.
+///
+MgMap::MgMap(MgSiteConnection* siteConnection)
+    : MgMapBase(),
+    m_inSave(false),
+    m_unpackedLayersGroups(false)
+{
+    if (NULL == siteConnection)
+    {
+        throw new MgNullArgumentException(L"MgMap.MgMap",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    m_siteConnection = SAFE_ADDREF(siteConnection);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// Initialize the resource service on demand only.
+///
+void MgMap::InitializeResourceService(MgResourceService* resourceService)
+{
+    if (NULL != resourceService)
+    {
+        m_resourceService = SAFE_ADDREF(resourceService);
+    }
+    else if (NULL == m_resourceService.p)
+    {
+        if (NULL == m_siteConnection.p)
+        {
+            throw new MgNullReferenceException(L"MgMap.InitializeResourceService",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        m_resourceService = dynamic_cast<MgResourceService*>(
+            m_siteConnection->CreateService(MgServiceType::ResourceService));
+    }
+
+    ACE_ASSERT(NULL != m_resourceService.p);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns an instance of the specified service.
+///
+MgService* MgMap::GetService(INT32 serviceType)
+{
+    if (NULL == m_siteConnection.p)
+    {
+        throw new MgNullReferenceException(L"MgMap.GetSiteConnection",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if (MgServiceType::ResourceService == serviceType)
+    {
+        InitializeResourceService(NULL);
+        return SAFE_ADDREF((MgResourceService*)m_resourceService);
+    }
+    else
+    {
+        return m_siteConnection->CreateService(serviceType);
+    }
+}
 
 //////////////////////////////////////////////////////////////
 // Initializes a new Map object.
@@ -48,6 +112,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
 {
     MG_TRY()
 
+    InitializeResourceService(resourceService);
     m_trackChangesDisabled = true;
 
     m_mapDefinitionId = mapDefinition;
@@ -58,7 +123,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     MgUtil::GenerateUuid(m_objectId);
 
     //get the map definition from the resource repository
-    Ptr<MgByteReader> content = resourceService->GetResourceContent(mapDefinition);
+    Ptr<MgByteReader> content = m_resourceService->GetResourceContent(mapDefinition);
 
     Ptr<MgByteSink> sink = new MgByteSink(content);
     Ptr<MgByte> bytes = sink->ToBuffer();
@@ -194,7 +259,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
             MapLayer* layer = (MapLayer*)layers->GetAt(i);
             //create a runtime layer from this layer and add it to the layer collection
             Ptr<MgResourceIdentifier> layerDefId = new MgResourceIdentifier(layer->GetLayerResourceID());
-            Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, resourceService);
+            Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService);
             rtLayer->SetName(layer->GetName());
             rtLayer->SetVisible(layer->IsVisible());
             rtLayer->SetLayerType(MgLayerType::Dynamic);
@@ -263,7 +328,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
                     {
                         //create a runtime layer from this base layer and add it to the layer collection
                         Ptr<MgResourceIdentifier> layerDefId = new MgResourceIdentifier(baseLayer->GetLayerResourceID());
-                        Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, resourceService);
+                        Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService);
                         rtLayer->SetName(baseLayer->GetName());
                         rtLayer->SetVisible(true);
                         rtLayer->SetLayerType(MgLayerType::BaseMap);
@@ -322,6 +387,14 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     MG_CATCH_AND_THROW(L"MgMap.Create")
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// Initializes a new MgMap object given a map definition and a name for the map.
+/// This method is used for MapGuide Viewers or for offline map production.
+///
+void MgMap::Create(MgResourceIdentifier* mapDefinition, CREFSTRING mapName)
+{
+    Create(NULL, mapDefinition, mapName);
+}
 
 //////////////////////////////////////////////////////////////
 // Call down to base class implementation.  Ptr<> seems to be
@@ -339,11 +412,13 @@ void MgMap::Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName)
 //
 void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
 {
-    m_resourceService = SAFE_ADDREF(resourceService);
+    MG_TRY()
+
+    InitializeResourceService(resourceService);
     m_trackChangesDisabled = true;
 
     STRING sessionId;
-    Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
+    Ptr<MgUserInformation> userInfo = m_resourceService->GetUserInfo();
 
     if (userInfo.p != NULL)
     {
@@ -361,13 +436,22 @@ void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
     }
 
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Session:" + sessionId + L"//" + mapName + L"." + MgResourceType::Map);
-    MgResource::Open(resourceService, resId);
+    MgResource::Open(m_resourceService, resId);
 
     //Note: Layers and Groups are loaded on demand by UnpackLayersAndGroups
 
     m_trackChangesDisabled = false;
+
+    MG_CATCH_AND_THROW(L"MgMap.Open")
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// Loads the map object from a session repository.
+///
+void MgMap::Open(CREFSTRING mapName)
+{
+    Open(NULL, mapName);
+}
 
 //////////////////////////////////////////////////////////////
 // Saves the resource using the specified resource service and resource identifier.
@@ -376,14 +460,16 @@ void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
 //
 void MgMap::Save(MgResourceService* resourceService)
 {
+    MG_TRY()
+
+    InitializeResourceService(resourceService);
+
     if(m_resId == (MgResourceIdentifier*)NULL)
         throw new MgNullReferenceException(L"MgMap.Save", __LINE__, __WFILE__, NULL, L"", NULL);
 
     m_inSave = true;
 
-    MG_TRY()
-
-    SerializeToRepository(resourceService, false);
+    SerializeToRepository(m_resourceService, false);
 
     Ptr<MgMemoryStreamHelper> streamHelper = PackLayersAndGroups();
     if (NULL != (MgMemoryStreamHelper*) streamHelper)
@@ -392,7 +478,7 @@ void MgMap::Save(MgResourceService* resourceService)
         Ptr<MgByteSource> bsource = new MgByteSource((BYTE_ARRAY_IN)streamHelper->GetBuffer(), streamHelper->GetLength());
         Ptr<MgByteReader> resourceData = bsource->GetReader();
 
-        resourceService->SetResourceData(m_resId, m_layerGroupTag, L"Stream", resourceData);
+        m_resourceService->SetResourceData(m_resId, m_layerGroupTag, L"Stream", resourceData);
     }
 
     MG_CATCH(L"MgMap.Save")
@@ -411,15 +497,17 @@ void MgMap::Save(MgResourceService* resourceService)
 //
 void MgMap::Save(MgResourceService* resourceService, MgResourceIdentifier* resourceId)
 {
+    MG_TRY()
+
+    InitializeResourceService(resourceService);
+
     m_resId = SAFE_ADDREF(resourceId);
     if(m_resId == (MgResourceIdentifier*)NULL)
         throw new MgNullReferenceException(L"MgMap.Save", __LINE__, __WFILE__, NULL, L"", NULL);
 
     m_inSave = true;
 
-    MG_TRY()
-
-    SerializeToRepository(resourceService, true);
+    SerializeToRepository(m_resourceService, true);
 
     Ptr<MgMemoryStreamHelper> streamHelper = PackLayersAndGroups();
     if (NULL != (MgMemoryStreamHelper*) streamHelper)
@@ -428,7 +516,7 @@ void MgMap::Save(MgResourceService* resourceService, MgResourceIdentifier* resou
         Ptr<MgByteSource> bsource = new MgByteSource((BYTE_ARRAY_IN)streamHelper->GetBuffer(), streamHelper->GetLength());
         Ptr<MgByteReader> resourceData = bsource->GetReader();
 
-        resourceService->SetResourceData(m_resId, m_layerGroupTag, L"Stream", resourceData);
+        m_resourceService->SetResourceData(m_resId, m_layerGroupTag, L"Stream", resourceData);
     }
 
     MG_CATCH(L"MgMap.Save")
@@ -441,6 +529,13 @@ void MgMap::Save(MgResourceService* resourceService, MgResourceIdentifier* resou
     m_inSave = false;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// Saves the Map.
+///
+void MgMap::Save()
+{
+    Save(NULL);
+}
 
 //////////////////////////////////////////////////////////////
 // Destruct a MgMap object
@@ -492,7 +587,7 @@ void MgMap::UnpackLayersAndGroups()
     if (NULL == (MgMemoryStreamHelper*) m_layerGroupHelper)
     {
         // Need to query from Resource Service
-        if (NULL != (MgResourceService*) m_resourceService)
+        if (NULL != m_resourceService.p)
         {
             Ptr<MgByteReader> breader = m_resourceService->GetResourceData(m_resId, m_layerGroupTag);
 
@@ -828,7 +923,13 @@ void MgMap::Deserialize(MgStream* stream)
 /// \brief
 /// Sets internal resource service references.  Used for Lazy loading
 ///
-void MgMap::SetDelayedLoadResourceService(MgResourceService* service)
+void MgMap::SetDelayedLoadResourceService(MgResourceService* resourceService)
 {
-    m_resourceService = SAFE_ADDREF(service);
+    if (NULL == resourceService)
+    {
+        throw new MgNullArgumentException(L"MgMap.SetDelayedLoadResourceService",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    m_resourceService = SAFE_ADDREF(resourceService);
 }

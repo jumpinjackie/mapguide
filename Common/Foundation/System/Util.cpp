@@ -620,7 +620,7 @@ bool MgUtil::StringToBoolean(CREFSTRING str)
     STRING tmp = Trim(str, L" \t\r\n");
     std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
 
-    return tmp.compare(L"true") == 0 ? true : false;
+    return (tmp.compare(L"true") == 0 ? true : false);
 }
 
 INT32 MgUtil::StringToInt32(CREFSTRING str)
@@ -643,6 +643,14 @@ double MgUtil::StringToDouble(CREFSTRING str)
     STRING tmp = Trim(str, L" \t\r\n");
 
     return ::wcstod(tmp.c_str(), NULL);
+}
+
+bool MgUtil::StringToBoolean(const string& str)
+{
+    string tmp = Trim(str, " \t\r\n");
+    std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+
+    return (tmp.compare("true") == 0 ? true : false);
 }
 
 ///----------------------------------------------------------------------------

@@ -754,8 +754,7 @@ void MgFdoConnectionManager::RetrieveFeatureSource(MgResourceIdentifier* resourc
     // Get the feature source contents
     Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resource, MgResourcePreProcessingType::Substitution);
 
-    Ptr<MgByteSink> byteSink = new MgByteSink((MgByteReader*)byteReader);
-    byteSink->ToStringUtf8(resourceContent);
+    byteReader->ToStringUtf8(resourceContent);
 
     ValidateFeatureSource(resourceContent);
 

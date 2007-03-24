@@ -39,6 +39,7 @@
 */
 
 class MgMap;
+class MgSiteConnection;
 template class MG_MAPGUIDE_API Ptr<MgMap>;
 
 #ifdef WIN32
@@ -234,6 +235,8 @@ PUBLISHED_API:
     /// Constructs an empty un-initialized MgMap object.
     ///
     /// \remarks
+    /// This method has been depreciated. Use the following method:
+    /// MgMap(MgSiteConnection siteConnection)
     /// The instance of MgMap cannot be used until either the \link MgMapBase::Create Create \endlink
     /// or \link MgMapBase::Open Open \endlink
     /// method is called.
@@ -258,9 +261,52 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Constructs an MgMap object that takes an MgSiteConnection instance.
+    ///
+    /// \remarks
+    /// The instance of MgMap cannot be used until either the \link MgMapBase::Create Create \endlink
+    /// or \link MgMapBase::Open Open \endlink
+    /// method is called.
+    /// Session ID is required for this MgMap constructor.
+    /// MgMap cannot exist in the Library repository.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgMap(MgSiteConnection siteConnection);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgMap(MgSiteConnection siteConnection);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgMap(MgSiteConnection siteConnection);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param siteConnection (MgSiteConnection)
+    /// An MgSiteConnection instance the MgMap object can use to
+    /// allocate service instances.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// See \link MgMapBase::Create Create \endlink.
+    /// \htmlinclude ExampleBottom.html
+    /// \code
+    /// $siteConn = new MgSiteConnection();
+    /// $userInfo = new MgUserInformation();
+    /// $userInfo->SetMgSessionId('abc123-xxx-yyy');
+    /// $siteConn->Open($userInfo);
+    /// $map = new MgMap($siteConn);
+    ///
+    MgMap(MgSiteConnection* siteConnection);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Initializes a new MgMap object given a resource service, map
     /// definition, and a name for the map. This method is used for
     /// MapGuide Viewers or for offline map production.
+    ///
+    /// \remarks
+    /// This method has been depreciated. Use the following method:
+    /// void Create(MgResourceIdentifier mapDefinition, string mapName)
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -298,6 +344,45 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Initializes a new MgMap object given a map definition
+    /// and a name for the map. This method is used for
+    /// MapGuide Viewers or for offline map production.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void Create(MgResourceIdentifier mapDefinition, string mapName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void Create(MgResourceIdentifier mapDefinition, String mapName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void Create(MgResourceIdentifier mapDefinition, string mapName);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param mapDefinition (MgResourceIdentifier)
+    /// An MgResourceIdentifier that specifies the
+    /// location of the map definition in a resource
+    /// repository.
+    /// \param mapName (String/string)
+    /// A string that specifies the name of the map.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// \code
+    /// // Assuming the site connection has already been intialized
+    /// $resourceID = new  MgResourceIdentifier('Library://Calgary/Maps/Calgary.MapDefinition');
+    /// $map = new MgMap($site);
+    /// $map->Create($resourceID, 'Calgary');
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    ///
+    virtual void Create(MgResourceIdentifier* mapDefinition, CREFSTRING mapName);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Initializes a new Map object given a spatial reference system,
     /// spatial extent of the map, and a name for the map. This method
     /// is used for the WMS service implementation and creates a map
@@ -329,6 +414,8 @@ PUBLISHED_API:
     /// Loads the map object from a session repository.
     ///
     /// \remarks
+    /// This method has been depreciated. Use the following method:
+    /// void Open(string mapName)
     /// For more information, see \link Mapping_Service_Module Mapping Service \endlink.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -368,11 +455,54 @@ PUBLISHED_API:
     ///
     virtual void Open(MgResourceService* resourceService, CREFSTRING mapName);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Loads the map object from a session repository.
+    ///
+    /// \remarks
+    /// For more information, see \link Mapping_Service_Module Mapping Service \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void Open(string mapName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void Open(String mapName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void Open(string mapName);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param mapName (String/string)
+    /// A string that specifies the name of the map. This
+    /// is the name that was specified when \link MgMapBase::Create Create \endlink
+    /// was called to create the map object.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// \code
+    /// // Assuming the site connection has already been intialized
+    /// $map = new MgMap($site);
+    /// $map->Open('Calgary');
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    ///
+    /// \todo
+    ///   * [[Job for Philip: If I move that overview to the
+    ///     Developer's Guide, update the xref here.]]
+    ///
+    virtual void Open(CREFSTRING mapName);
+
     ///////////////////////////////////////////////////////////////
     /// \brief
     /// Saves the Map using the specified resource service.
     ///
     /// \remarks
+    /// This method has been depreciated. Use the following method:
+    /// void Open(string mapName)
     /// This method assumes a valid resource identifier has already
     /// been established via either Open or Save.
     ///
@@ -392,6 +522,15 @@ PUBLISHED_API:
     /// Resource identifier.
     ///
     void Save(MgResourceService* resourceService, MgResourceIdentifier* resourceId);
+
+    //////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Saves the Map.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    void Save();
 
 INTERNAL_API:
 
@@ -423,12 +562,18 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Returns an instance of the specified service.
+    ///
+    virtual MgService* GetService(INT32 serviceType);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Sets internal resource service references.  Used for Lazy loading
     ///
-    /// \param service
-    /// Resource Service
+    /// \param resourceService
+    /// Resource service.
     ///
-    void SetDelayedLoadResourceService(MgResourceService* service);
+    void SetDelayedLoadResourceService(MgResourceService* resourceService);
 
 protected:
 
@@ -464,15 +609,20 @@ protected:
     ///
     virtual void Dispose();
 
+private:
+
+    void InitializeResourceService(MgResourceService* resourceService);
+
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_MapLayer_Map;
 
 private:
 
     // Version for serialization
-    static const int m_serializeVersion = (3<<16) + 0;
-
+    static const int m_serializeVersion = (4<<16) + 0;
     static STRING m_layerGroupTag;
+
+    Ptr<MgSiteConnection> m_siteConnection;
     Ptr<MgMemoryStreamHelper> m_layerGroupHelper;
     Ptr<MgResourceService> m_resourceService;
     bool m_inSave;
