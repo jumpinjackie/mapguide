@@ -940,6 +940,12 @@ INTERNAL_API:
     ///
     virtual void ResetLayersRefresh();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns an instance of the specified service.
+    ///
+    virtual MgService* GetService(INT32 serviceType);
+
 protected:
 
     void TrackChange(CREFSTRING objectId, bool layer, MgObjectChange::ChangeType type, CREFSTRING param);

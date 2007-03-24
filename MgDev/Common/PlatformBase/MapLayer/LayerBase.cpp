@@ -489,6 +489,7 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
     m_scaleRanges.clear();
     m_featureSourceId = L"";
     m_featureName = L"";
+    m_schemaName = L"";
 
     MG_TRY()
 
@@ -683,4 +684,57 @@ MgLayerBase::IdPropertyList& MgLayerBase::GetIdPropertyList()
 STRING MgLayerBase::GetFeatureGeometryName()
 {
     return m_geometry;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets the class definition for the feature class of the layer.  If the
+/// feature class of the layer is extended with properties from other feature
+/// classes, then all those properties are also contained in the returned
+/// class definition.
+///
+MgClassDefinition* MgLayerBase::GetClassDefinition()
+{
+    throw new MgNotImplementedException(L"MgLayerBase.GetClassDefinition",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Selects features from a feature source according to the
+/// criteria set in the MgFeatureQueryOptions argument The
+/// criteria are applied to all of the features in the feature
+/// source. If you want to apply the criteria to a subset of the
+/// features, use the MgFeatureService::SelectAggregate Method.
+///
+MgFeatureReader* MgLayerBase::SelectFeatures(MgFeatureQueryOptions* options)
+{
+    throw new MgNotImplementedException(L"MgLayerBase.SelectFeatures",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Selects groups of features from a feature source and applies
+/// filters to each of the groups according to the criteria set
+/// in the MgFeatureAggregateOptions argument. If you want to
+/// apply the criteria to all features without grouping them, use
+/// the MgFeatureService::SelectFeatures Method.
+///
+MgDataReader* MgLayerBase::SelectAggregate(MgFeatureAggregateOptions* options)
+{
+    throw new MgNotImplementedException(L"MgLayerBase.SelectAggregate",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Executes the MgDeleteFeatures, MgInsertFeatures,
+/// MgUpdateFeatures, MgLockFeatures or MgUnlockFeatures commands
+/// contained in the given MgFeatureCommandCollection object.
+///
+MgPropertyCollection* MgLayerBase::UpdateFeatures(MgFeatureCommandCollection* commands)
+{
+    throw new MgNotImplementedException(L"MgLayerBase.UpdateFeatures",
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }

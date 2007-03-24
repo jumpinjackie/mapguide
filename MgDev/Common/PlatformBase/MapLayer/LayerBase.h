@@ -685,6 +685,159 @@ PUBLISHED_API:
     ///
     virtual STRING GetFeatureGeometryName();  /// _get
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the class definition for the feature class of the layer.  If the
+    /// feature class of the layer is extended with properties from other feature
+    /// classes, then all those properties are also contained in the returned
+    /// class definition. See \link Feature_Schema_Module Feature Schema \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgClassDefinition GetClassDefinition(string schemaName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgClassDefinition GetClassDefinition(String schemaName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgClassDefinition GetClassDefinition(string schemaName);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns an MgClassDefinition instance for the feature class of the layer.
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgFdoException
+    ///
+    virtual MgClassDefinition* GetClassDefinition();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Selects features from a feature source according to the
+    /// criteria set in the MgFeatureQueryOptions argument The
+    /// criteria are applied to all of the features in the feature
+    /// source. If you want to apply the criteria to a subset of the
+    /// features, use the \link MgFeatureService::SelectAggregate MgFeatureService::SelectAggregate Method \endlink.
+    /// See \link FiltersAndExpressions Filters and expressions \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader SelectFeatures(MgFeatureQueryOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader SelectFeatures(MgFeatureQueryOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader SelectFeatures(MgFeatureQueryOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param options (MgFeatureQueryOptions)
+    /// MgFeatureQueryOptions instance
+    /// containing all required filters for this
+    /// select operation.
+    ///
+    /// \return
+    /// Returns an MgFeatureReader containing the set of selected
+    /// features.
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgFdoException
+    ///
+    virtual MgFeatureReader* SelectFeatures(MgFeatureQueryOptions* options);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Selects groups of features from a feature source and applies
+    /// filters to each of the groups according to the criteria set
+    /// in the MgFeatureAggregateOptions argument. If you want to
+    /// apply the criteria to all features without grouping them, use
+    /// the \link MgFeatureService::SelectFeatures MgFeatureService::SelectFeatures Method \endlink.
+    /// See \link FiltersAndExpressions Filters and expressions \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgDataReader SelectAggregate(MgFeatureAggregateOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgDataReader SelectAggregate(MgFeatureAggregateOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgDataReader SelectAggregate(MgFeatureAggregateOptions options);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param options (MgFeatureAggregateOptions)
+    /// An MgFeatureAggregateOptions instance
+    /// containing all the criteria and filters
+    /// required for this select operation.
+    ///
+    /// \return
+    /// Returns an MgDataReader containing the group values.
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgFdoException
+    ///
+    virtual MgDataReader* SelectAggregate(MgFeatureAggregateOptions* options);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Executes the MgDeleteFeatures, MgInsertFeatures,
+    /// MgUpdateFeatures, MgLockFeatures or MgUnlockFeatures commands
+    /// contained in the given MgFeatureCommandCollection object.
+    ///
+    /// \remarks
+    /// The XML returned by MgFeatureService::GetCapabilities says
+    /// whether a provider supports SQL commands. See \link ProviderCapabilities Provider Capabilities \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgPropertyCollection UpdateFeatures(MgFeatureCommandCollection commands);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgPropertyCollection UpdateFeatures(MgFeatureCommandCollection commands);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgPropertyCollection UpdateFeatures(MgFeatureCommandCollection commands);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param commands (MgFeatureCommandCollection)
+    /// A collection of feature commands to be
+    /// executed.
+    ///
+    /// \return
+    /// Returns an MgPropertyCollection object. Each property in the
+    /// collection corresponds to a command in the
+    /// MgFeatureCommandCollection argument. The property name is the
+    /// index of the command in the feature command collection.
+    /// <ul>
+    ///   <li>If the command is of type MgDeleteFeatures, the property
+    ///     type is an MgPropertyType::Int32, and its value is the number
+    ///     of features deleted.</li>
+    ///   <li>If the command is of type MgInsertFeatures, the property
+    ///     type is an MgPropertyType::Feature, and its value is a
+    ///     MgFeatureReader object. The feature reader object contains
+    ///     the set of properties inserted into the datastore by the
+    ///     insert command.</li>
+    ///   <li>If the command is of type MgUpdateFeatures, the property
+    ///     type is MgPropertyType::Int32, and its value is the number of
+    ///     features updated.</li>
+    ///   <li>If the command is of type MgLockFeatures, the property
+    ///     type is MgPropertyType::Feature, and its value is the number
+    ///     of features locked.</li>
+    ///   <li>If the command is of type MgUnLockFeatures, the property
+    ///     type is MgPropertyType::Int32, and its value is the number of
+    ///     features unlocked.</li>
+    /// </ul>
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    virtual MgPropertyCollection* UpdateFeatures(MgFeatureCommandCollection* commands);
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
@@ -847,6 +1000,7 @@ protected:
     SCALERANGES           m_scaleRanges;
     STRING                m_featureSourceId;
     STRING                m_featureName;
+    STRING                m_schemaName;
     STRING                m_geometry;
     IdPropertyList        m_idProps;
 };

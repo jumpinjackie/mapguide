@@ -770,3 +770,13 @@ const char* MgMapBase::GetResourceTypeName()
 {
     return "Map";
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns an instance of the specified service.
+///
+MgService* MgMapBase::GetService(INT32 serviceType)
+{
+    throw new MgNotImplementedException(L"MgMapBase.GetService",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}

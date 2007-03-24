@@ -16,6 +16,7 @@
 //
 
 #include "MapGuideCommon.h"
+#include "FSDSAX2Parser.h"
 
 IMPLEMENT_CREATE_OBJECT(MgLayer)
 
@@ -26,8 +27,6 @@ MgLayer::MgLayer()
     : MgLayerBase()
 {
 }
-
-
 
 //////////////////////////////////////////////////////////////
 // Creates a MgLayerBase object given a reference to a LayerDefinition
@@ -46,7 +45,27 @@ MgLayer::~MgLayer()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Return the map object.
+///
+MgMapBase* MgLayer::GetMap()
+{
+    MgMapBase* baseMap = NULL;
 
+    if (NULL != m_layers)
+    {
+        baseMap = m_layers->GetMap();
+    }
+
+    if (NULL == baseMap)
+    {
+        throw new MgNullReferenceException(L"MgLayerBase.GetMap",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    return baseMap;
+}
 
 //////////////////////////////////////////////////////////////
 // Parse the layer definition XML and extracts scale ranges,
@@ -73,13 +92,12 @@ void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
 
             // If the class name is fully qualified (prefixed with a schema name),
             // then use it to determine the schema name.
-            STRING schemaName;
             STRING className;
             size_t pfxSep = m_featureName.find_first_of(L':');
             if (pfxSep != STRING::npos)
             {
                 // fully qualified
-                schemaName = m_featureName.substr(0, pfxSep);
+                m_schemaName = m_featureName.substr(0, pfxSep);
                 className = m_featureName.substr(pfxSep + 1, m_featureName.length() - pfxSep - 1);
             }
             else
@@ -89,12 +107,12 @@ void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
 
                 //TODO:  How do we deal with different schemas?  Just use first one for now...
                 Ptr<MgStringCollection> schemaNames = featureService->GetSchemas(resId);
-                schemaName = schemaNames->GetItem(0);
+                m_schemaName = schemaNames->GetItem(0);
             }
 
             // Get the identity properties
             Ptr<MgPropertyDefinitionCollection> idProps = featureService->GetIdentityProperties(resId,
-                                                                                                schemaName,
+                                                                                                m_schemaName,
                                                                                                 className);
             assert(idProps != NULL);
             for (int nIds=0; nIds<idProps->GetCount(); nIds++)
@@ -150,6 +168,7 @@ void MgLayer::Serialize(MgStream* stream)
     }
     helper->WriteString(m_featureSourceId);
     helper->WriteString(m_featureName);
+    helper->WriteString(m_schemaName);
     helper->WriteString(m_geometry);
 
     helper->WriteUINT32((UINT32)m_idProps.size());
@@ -197,6 +216,7 @@ void MgLayer::Deserialize(MgStream* stream)
 
     helper->GetString(m_featureSourceId);
     helper->GetString(m_featureName);
+    helper->GetString(m_schemaName);
     helper->GetString(m_geometry);
 
     UINT32 idCount = 0;
@@ -212,3 +232,122 @@ void MgLayer::Deserialize(MgStream* stream)
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets the class definition for the feature class of the layer.  If the
+/// feature class of the layer is extended with properties from other feature
+/// classes, then all those properties are also contained in the returned
+/// class definition.
+///
+MgClassDefinition* MgLayer::GetClassDefinition()
+{
+    Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
+        GetMap()->GetService(MgServiceType::FeatureService));
+    Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(m_featureSourceId);
+
+    return featureService->GetClassDefinition(resourceId, m_schemaName, m_featureName);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Selects features from a feature source according to the
+/// criteria set in the MgFeatureQueryOptions argument The
+/// criteria are applied to all of the features in the feature
+/// source. If you want to apply the criteria to a subset of the
+/// features, use the MgFeatureService::SelectAggregate Method.
+///
+MgFeatureReader* MgLayer::SelectFeatures(MgFeatureQueryOptions* options)
+{
+    Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
+        GetMap()->GetService(MgServiceType::FeatureService));
+    Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(m_featureSourceId);
+
+    return featureService->SelectFeatures(resourceId, m_featureName, options);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Selects groups of features from a feature source and applies
+/// filters to each of the groups according to the criteria set
+/// in the MgFeatureAggregateOptions argument. If you want to
+/// apply the criteria to all features without grouping them, use
+/// the MgFeatureService::SelectFeatures Method.
+///
+MgDataReader* MgLayer::SelectAggregate(MgFeatureAggregateOptions* options)
+{
+    Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
+        GetMap()->GetService(MgServiceType::FeatureService));
+    Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(m_featureSourceId);
+
+    return featureService->SelectAggregate(resourceId, m_featureName, options);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Executes the MgDeleteFeatures, MgInsertFeatures,
+/// MgUpdateFeatures, MgLockFeatures or MgUnlockFeatures commands
+/// contained in the given MgFeatureCommandCollection object.
+///
+MgPropertyCollection* MgLayer::UpdateFeatures(MgFeatureCommandCollection* commands)
+{
+    Ptr<MgPropertyCollection> propCol;
+
+    MG_TRY()
+
+    // Get the content of the feature source.
+    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+        GetMap()->GetService(MgServiceType::ResourceService));
+    Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(m_featureSourceId);
+
+    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resourceId);
+    string xmlContent;
+    byteReader->ToStringUtf8(xmlContent);
+
+    // Create the feature source object.
+    MdfParser::FSDSAX2Parser parser;
+    parser.ParseString(xmlContent.c_str(),
+        (unsigned int)(xmlContent.length() * sizeof(char)));
+    ACE_ASSERT(parser.GetSucceeded());
+
+    auto_ptr<MdfModel::FeatureSource> featureSource;
+    featureSource.reset(parser.DetachFeatureSource());
+
+    // Get the provider name.
+    STRING providerName = (STRING)featureSource->GetProvider();
+
+    // Determine if the provider supports transactions.
+    bool useTransaction = false;
+    Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
+        GetMap()->GetService(MgServiceType::FeatureService));
+
+    byteReader = featureService->GetCapabilities(providerName);
+    xmlContent.clear();
+    byteReader->ToStringUtf8(xmlContent);
+
+    const string openTag = "<SupportsTransactions>"; //NOXLATE
+    const string closeTag = "</SupportsTransactions>"; //NOXLATE
+    size_t startIndex = xmlContent.find(openTag);
+
+    if (string::npos != startIndex)
+    {
+        size_t endIndex = xmlContent.find(closeTag, startIndex);
+
+        if (string::npos == endIndex)
+        {
+            throw new MgXmlParserException(L"MgLayer.UpdateFeatures",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        else
+        {
+            string tagValue = xmlContent.substr(startIndex + openTag.length(), 
+                endIndex - startIndex - openTag.length());
+            useTransaction = MgUtil::StringToBoolean(tagValue);
+        }
+    }
+
+    propCol = featureService->UpdateFeatures(resourceId, commands, useTransaction);
+
+    MG_CATCH_AND_THROW(L"MgLayer.UpdateFeatures")
+
+    return propCol.Detach();
+}

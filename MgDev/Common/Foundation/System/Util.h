@@ -378,6 +378,15 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Converts a string to a boolean.
+    ///
+    /// \return
+    /// returns boolean value.
+    ///
+    static bool StringToBoolean(const string& str);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Generates an Universal Unique IDentifier.
     ///
     /// \param uuid
