@@ -349,6 +349,78 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
     if (shieldCount < 1)
         return;
 
+
+    SE_RenderLineStyle* rlStyle = (SE_RenderLineStyle* ) rstyle;
+    double startOffset = rlStyle->startOffset;
+    double increment = rlStyle->repeat;
+
+    // the endOffset is used in this context as the increment between multiple shields in one group
+ // double incrementS = 10 * mm2px;
+    double incrementS = rlStyle->endOffset;
+
+
+    // calc the overall length of this geometry
+
+    double totalLen = 0;
+    int pointIndex = 0;
+    for (int i = 0; i < geometry->cntr_count(); i++)
+    {
+        int ptcount = geometry->cntrs()[i];
+        double* pts = geometry->points() + 2*pointIndex;
+
+
+        for (int cur_seg = 0; cur_seg < ptcount - 1; cur_seg++)
+        {
+            double* seg = pts + cur_seg * 2;
+
+            // transform the point to screen space
+            double  cx1, cy1, cx2, cy2;
+            renderer->WorldToScreenPoint(seg[0], seg[1], cx1, cy1);
+            renderer->WorldToScreenPoint(seg[2], seg[3], cx2, cy2);
+
+            // calc length
+            double dx = cx2 - cx1;
+            double dy = cy2 - cy1;
+            totalLen += sqrt(dx*dx + dy*dy);
+        }
+
+        pointIndex += ptcount;
+    }
+
+
+    if (startOffset >= 0)
+    {
+        // calc optimal start offset (with rlStyle->startOffset taken as a minimum)
+        // to co-locate shield groups placed on two-line highways where the two
+        // parallel lines are processed from opposit ends.
+        // this avoids a problem with perceived irregular placement when overposting
+        // removes just some of the duplicate shields
+
+        double shieldGroupLen = (shieldCount - 1) * incrementS;
+
+        // length in excess of the required length to place one group with startOffset on each side
+        double availLen = totalLen - (shieldGroupLen + 2 * startOffset);
+
+        if (availLen < 0)
+        {
+            // there is no room to 'properly' place even one group, nothing to do but cry about it
+            return;
+        }
+
+        int numAdditionalGroups = (int) (availLen / (shieldGroupLen + increment));
+
+        double additionalOffset = (availLen - numAdditionalGroups * (shieldGroupLen + increment)) / 2;
+
+        startOffset += additionalOffset;
+    }
+    else
+    {
+        // negative startOffset value disables the optimization
+        // use absolute value as the offset
+        startOffset = startOffset * -1;
+    }
+
+
     SE_RenderPrimitiveList * symbolVectors = new SE_RenderPrimitiveList[shieldCount];
 
     std::wstring countryCode = highwayInfo.getFirstToken();
@@ -363,9 +435,24 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
 
         SE_RenderRaster* rr = new SE_RenderRaster();
 
-        std::wstring imgPathName = HIGWAY_SHIELD_SYMBOLS_LOCATION + HIGWAY_SHIELD_SYMBOLS_PREFIX +
-                                   countryCode + L"_" + shieldType + L".png";
-        rr->pngPtr = symbolManager->GetImageData(L"", imgPathName.c_str(), rr->pngSize);
+        std::wstring imgName = HIGWAY_SHIELD_SYMBOLS_PREFIX + countryCode + L"_" + shieldType + L".png";
+
+        rr->pngPtr = symbolManager->GetImageData(HIGWAY_SHIELD_SYMBOLS_RESOURCE.c_str(), imgName.c_str(), rr->pngSize);
+
+        if (rr->pngSize == 0)
+        {
+            // could not find the image or resource
+
+            // we could fall back and try to pick up the image from a disk file like this:
+         // std::wstring imgPathName = HIGWAY_SHIELD_SYMBOLS_LOCATION + imgName;
+         // rr->pngPtr = symbolManager->GetImageData(L"", imgPathName.c_str(), rr->pngSize);
+            // but let's not do that unles really necessary
+
+            // cannot just leave this shield empty, that causes exceptions later, so bail out
+            // TODO: find a better way to handle this condition
+            return;
+        }
+
 
         rr->position[0] = 0;
         rr->position[1] = 0;
@@ -427,14 +514,12 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
     }
 
 
-    SE_RenderLineStyle* style = (SE_RenderLineStyle* ) rstyle;
-    SE_Matrix symxf;
     int ptindex = 0;
-    double increment = style->repeat;
- // double incrementS = 10 * mm2px;          // the 'increment' used between multiple shields
-    double incrementS = style->endOffset;    // use endOffset as the increment between multiple shields
-
+    SE_Matrix symxf;
     shieldIndex = 0;
+
+    // init position along the whole geometry to the start offset
+    double drawpos = startOffset;
 
     for (int j=0; j<geometry->cntr_count(); j++)
     {
@@ -443,7 +528,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         double* pts = geometry->points() + 2*ptindex;
 
         // init position along the current segment to the start offset
-        double drawpos = style->startOffset;
+     // double drawpos = startOffset;
 
         int cur_seg = 0;
 
@@ -484,16 +569,16 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
                 // follow the segment and place the shield symbols alternated via shieldIndex
                 while (drawpos < len)
                 {
-                    if (style->drawLast)
+                    if (rlStyle->drawLast)
                     {
 
-                        style->symbol = symbolVectors[shieldIndex];
-                        memcpy(style->bounds, symbolVectors[shieldIndex].front()->bounds, sizeof(style->bounds));
-                        SE_RenderStyle* clonedStyle = renderer->CloneRenderStyle(style);
+                        rlStyle->symbol = symbolVectors[shieldIndex];
+                        memcpy(rlStyle->bounds, symbolVectors[shieldIndex].front()->bounds, sizeof(rlStyle->bounds));
+                        SE_RenderStyle* clonedStyle = renderer->CloneRenderStyle(rlStyle);
 
                         SE_LabelInfo info(symxf.x2, symxf.y2, 0.0, 0.0, RS_Units_Device, 0, clonedStyle);
 
-                        renderer->ProcessLabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegions, geometry);
+                        renderer->ProcessLabelGroup(&info, 1, RS_OverpostType_AllFit, rlStyle->addToExclusionRegions, geometry);
 
                     }
                     else
@@ -501,7 +586,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
                         renderer->DrawSymbol(symbolVectors[shieldIndex], symxf, 0);
 
                         // TODO: if this is ever needed ...
-                     // if (style->addToExclusionRegions)
+                     // if (rlStyle->addToExclusionRegions)
                      //     renderer->AddExclusionRegion(style, symxf, 0);
                     }
 
@@ -529,6 +614,30 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         }
 
         ptindex += ptcount;
+    }
+
+    // cleanup time
+
+    // the rlStyle->symbol has been assigned various values from the 'symbolVectors',
+    // 'un-assign' it, so that we can clean them up
+    rlStyle->symbol.clear();
+
+    for (shieldIndex = 0; shieldIndex < shieldCount; shieldIndex++)
+    {
+        for (SE_RenderPrimitiveList::iterator iter = symbolVectors[shieldIndex].begin();
+             iter != symbolVectors[shieldIndex].end();
+             iter++)
+        {
+            // necessary since destructor of SE_RenderPrimitive is not virtual
+            switch ((*iter)->type)
+            {
+                case SE_RenderPolylinePrimitive: delete (SE_RenderPolyline*)(*iter);break;
+                case SE_RenderPolygonPrimitive: delete (SE_RenderPolygon*)(*iter);break;
+                case SE_RenderRasterPrimitive: delete (SE_RenderRaster*)(*iter);break;
+                case SE_RenderTextPrimitive: delete (SE_RenderText*)(*iter);break;
+                default: throw; //means there is a bug
+            }
+        }
     }
 
     delete [] symbolVectors;
