@@ -35,6 +35,8 @@
               </ParameterOverrides>
               <ScaleX>1.0</ScaleX>
               <ScaleY>1.0</ScaleY>
+              <InsertionOffsetX>0.0</InsertionOffsetX>
+              <InsertionOffsetY>0.0</InsertionOffsetY>
               <SizeContext>MappingUnits</SizeContext>
               <DrawLast>False</DrawLast>
               <CheckExclusionRegion>False</CheckExclusionRegion>
@@ -200,6 +202,8 @@
               <ParameterOverrides/>
               <ScaleX>2.0</ScaleX>
               <ScaleY>2.0</ScaleY>
+              <InsertionOffsetX>0.0</InsertionOffsetX>
+              <InsertionOffsetY>0.0</InsertionOffsetY>
               <SizeContext>MappingUnits</SizeContext>
               <DrawLast>False</DrawLast>
               <CheckExclusionRegion>False</CheckExclusionRegion>
