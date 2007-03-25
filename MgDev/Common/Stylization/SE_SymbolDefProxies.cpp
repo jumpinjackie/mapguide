@@ -27,15 +27,6 @@
 #include <functional>
 
 
-//assumes axis aligned
-static void SetUndefinedBounds(RS_F_Point* pts)
-{
-    pts[0].x = pts[3].x = DBL_MAX;
-    pts[1].x = pts[2].x = -DBL_MAX;
-    pts[0].y = pts[1].y = DBL_MAX;
-    pts[2].y = pts[3].y = -DBL_MAX;
-}
-
 //assumes axis aligned bounds stored in src and dst
 static void BoundsUnion(RS_F_Point* dst, RS_F_Point* src)
 {
@@ -45,11 +36,12 @@ static void BoundsUnion(RS_F_Point* dst, RS_F_Point* src)
     dst[2].y = dst[3].y = rs_max(dst[2].y, src[2].y);
 }
 
+
 static void ComputeGrowAmount(RS_F_Point* bounds, double minx, double miny, double maxx, double maxy, double &growx, double &growy)
 {
     double sx, sy;
-    double cx = (minx + maxx)/2.0;
-    double cy = (miny + maxy)/2.0;
+    double cx = 0.5*(minx + maxx);
+    double cy = 0.5*(miny + maxy);
     minx -= cx;
     maxx -= cx;
     miny -= cy;
@@ -96,35 +88,31 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 {
     SE_RenderPolyline* ret = new SE_RenderPolyline();
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
-    ret->resize = (sResizeCtrl && wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
+    ret->resize = (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
 
-    double wx =     weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
-    ret->weight =   weight.evaluate(cxt->exec) * wx;
+    double wx     = weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
+    ret->weight   = weight.evaluate(cxt->exec) * wx;
     ret->geometry = geometry->Clone();
-    ret->color =    color.evaluate(cxt->exec);
+    ret->color    = color.evaluate(cxt->exec);
 
-    if (!cxt->useBox)
-    {
-        ret->geometry->Transform(*cxt->xform, ret->weight);
+    ret->geometry->Transform(*cxt->xform, ret->weight);
 
-        SE_Bounds* seb = ret->geometry->xf_bounds();
+    SE_Bounds* seb = ret->geometry->xf_bounds();
 
-        //TODO: here we would implement rotating calipers algorithm to get
-        //a tighter oriented box, but for now we just get the axis aligned bounds of the path
-        ret->bounds[0].x = seb->min[0];
-        ret->bounds[0].y = seb->min[1];
-        ret->bounds[1].x = seb->max[0];
-        ret->bounds[1].y = seb->min[1];
-        ret->bounds[2].x = seb->max[0];
-        ret->bounds[2].y = seb->max[1];
-        ret->bounds[3].x = seb->min[0];
-        ret->bounds[3].y = seb->max[1];
-    }
-    else
-        SetUndefinedBounds(ret->bounds);
+    //TODO: here we would implement a rotating calipers algorithm to get a tighter
+    //      oriented box, but for now just get the axis-aligned bounds of the path
+    ret->bounds[0].x = seb->min[0];
+    ret->bounds[0].y = seb->min[1];
+    ret->bounds[1].x = seb->max[0];
+    ret->bounds[1].y = seb->min[1];
+    ret->bounds[2].x = seb->max[0];
+    ret->bounds[2].y = seb->max[1];
+    ret->bounds[3].x = seb->min[0];
+    ret->bounds[3].y = seb->max[1];
 
     return ret;
 }
+
 
 SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
 {
@@ -132,35 +120,30 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
     ret->resize = (sResizeCtrl && wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
 
-    ret->fill = fill.evaluate(cxt->exec);
-
-    double wx =     weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
-    ret->weight =   weight.evaluate(cxt->exec) * wx;
+    double wx     = weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
+    ret->weight   = weight.evaluate(cxt->exec) * wx;
     ret->geometry = geometry->Clone();
-    ret->color =    color.evaluate(cxt->exec);
+    ret->color    = color.evaluate(cxt->exec);
+    ret->fill     = fill.evaluate(cxt->exec);
 
-    if (!cxt->useBox)
-    {
-        ret->geometry->Transform(*cxt->xform, ret->weight);
+    ret->geometry->Transform(*cxt->xform, ret->weight);
 
-        SE_Bounds* seb = ret->geometry->xf_bounds();
+    SE_Bounds* seb = ret->geometry->xf_bounds();
 
-        //TODO: here we would implement rotating calipers algorithm to get
-        //a tighter oriented box, but for now we just get the axis aligned bounds of the path
-        ret->bounds[0].x = seb->min[0];
-        ret->bounds[0].y = seb->min[1];
-        ret->bounds[1].x = seb->max[0];
-        ret->bounds[1].y = seb->min[1];
-        ret->bounds[2].x = seb->max[0];
-        ret->bounds[2].y = seb->max[1];
-        ret->bounds[3].x = seb->min[0];
-        ret->bounds[3].y = seb->max[1];
-    }
-    else
-        SetUndefinedBounds(ret->bounds);
+    //TODO: here we would implement a rotating calipers algorithm to get a tighter
+    //      oriented box, but for now just get the axis-aligned bounds of the path
+    ret->bounds[0].x = seb->min[0];
+    ret->bounds[0].y = seb->min[1];
+    ret->bounds[1].x = seb->max[0];
+    ret->bounds[1].y = seb->min[1];
+    ret->bounds[2].x = seb->max[0];
+    ret->bounds[2].y = seb->max[1];
+    ret->bounds[3].x = seb->min[0];
+    ret->bounds[3].y = seb->max[1];
 
     return ret;
 }
+
 
 SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 {
@@ -169,7 +152,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 
     SE_RenderText* ret = new SE_RenderText();
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
-    ret->resize = (sResizeCtrl && wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
+    ret->resize = (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
 
     ret->text = textExpr.evaluate(cxt->exec);
     ret->position[0] = position[0].evaluate(cxt->exec);
@@ -198,30 +181,24 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     ret->tdef.bgcolor() = RS_Color::FromARGB(ghostColor.evaluate(cxt->exec));
 
     const wchar_t* hAlign = hAlignment.evaluate(cxt->exec);
-    if (hAlign)
-    {
-        if (wcscmp(hAlign, L"Left") == 0)
-            ret->tdef.halign() = RS_HAlignment_Left;
-        else if (wcscmp(hAlign, L"Center") == 0)
-            ret->tdef.halign() = RS_HAlignment_Center;
-        else if (wcscmp(hAlign, L"Right") == 0)
-            ret->tdef.halign() = RS_HAlignment_Right;
-    }
+    if (wcscmp(hAlign, L"Left") == 0)
+        ret->tdef.halign() = RS_HAlignment_Left;
+    else if (wcscmp(hAlign, L"Right") == 0)
+        ret->tdef.halign() = RS_HAlignment_Right;
+    else // default is Center
+        ret->tdef.halign() = RS_HAlignment_Center;
 
     const wchar_t* vAlign = vAlignment.evaluate(cxt->exec);
-    if (vAlign)
-    {
-        if (wcscmp(vAlign, L"Bottom") == 0)
-            ret->tdef.valign() = RS_VAlignment_Descent;
-        else if (wcscmp(vAlign, L"Baseline") == 0)
-            ret->tdef.valign() = RS_VAlignment_Base;
-        else if (wcscmp(vAlign, L"Halfline") == 0)
-            ret->tdef.valign() = RS_VAlignment_Half;
-        else if (wcscmp(vAlign, L"Capline") == 0)
-            ret->tdef.valign() = RS_VAlignment_Cap;
-        else if (wcscmp(vAlign, L"Top") == 0)
-            ret->tdef.valign() = RS_VAlignment_Ascent;
-    }
+    if (wcscmp(vAlign, L"Bottom") == 0)
+        ret->tdef.valign() = RS_VAlignment_Descent;
+    else if (wcscmp(vAlign, L"Halfline") == 0)
+        ret->tdef.valign() = RS_VAlignment_Half;
+    else if (wcscmp(vAlign, L"Capline") == 0)
+        ret->tdef.valign() = RS_VAlignment_Cap;
+    else if (wcscmp(vAlign, L"Top") == 0)
+        ret->tdef.valign() = RS_VAlignment_Ascent;
+    else // default is Baseline
+        ret->tdef.valign() = RS_VAlignment_Base;
 
     RS_TextMetrics tm;
     SE_Matrix txf;
@@ -229,7 +206,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     txf.rotate(ret->tdef.rotation() * M_PI180);
     txf.translate(ret->position[0], ret->position[1]);
 
-    //compute axis aligned boudns of the text primitive
+    //compute axis aligned bounds of the text primitive
     RS_F_Point fpts[4];
     RS_Bounds xformBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
 
@@ -254,11 +231,12 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     return ret;
 }
 
+
 SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 {
     SE_RenderRaster* ret = new SE_RenderRaster();
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
-    ret->resize = (sResizeCtrl && wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
+    ret->resize = (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
 
     if (!pngPtr)
     {
@@ -291,8 +269,8 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     rxf.rotate(ret->angle);
     rxf.translate(ret->position[0], ret->position[1]);
 
-    double w = 0.5 * ret->extent[0];
-    double h = 0.5 * ret->extent[1];
+    double w = 0.5*ret->extent[0];
+    double h = 0.5*ret->extent[1];
 
     RS_F_Point pts[4];
     rxf.transform( w,  h, pts[0].x, pts[0].y);
@@ -304,6 +282,7 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 
     return ret;
 }
+
 
 void SE_Style::evaluate(SE_EvalContext* cxt)
 {
@@ -323,8 +302,8 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
     {
         dx = resizePosition[0].evaluate(cxt->exec);
         dy = resizePosition[1].evaluate(cxt->exec);
-        sx = resizeSize[0].evaluate(cxt->exec)/2.0;
-        sy = resizeSize[1].evaluate(cxt->exec)/2.0;
+        sx = 0.5*fabs(resizeSize[0].evaluate(cxt->exec));
+        sy = 0.5*fabs(resizeSize[1].evaluate(cxt->exec));
 
         cxt->xform->transform(dx - sx, dy - sy, minx, miny);
         cxt->xform->transform(dx + sx, dy + sy, maxx, maxy);
@@ -332,12 +311,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
 
         growx = 0.0;
         growy = 0.0;
-
-        //TODO: find a way to reorg the size box code to get rid of this flag
-        cxt->useBox = true;
     }
-    else
-        cxt->useBox = false;
 
     for (SE_PrimitiveList::const_iterator src = symbol.begin(); src != symbol.end(); src++)
     {
@@ -345,52 +319,49 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
 
         //evaluate the render primitive
         SE_RenderPrimitive* rsym = sym->evaluate(cxt);
+        if (!rsym)
+            continue;
+
+        rstyle->symbol.push_back(rsym);
 
         //add the primitive bounds to the overall render style bounds
-        if (rsym)
+        if (!rsym->resize || !useBox)
+            BoundsUnion(rstyle->bounds, rsym->bounds);
+
+        //add the primitive bounds to the resize box, if necessary
+        if (useBox)
         {
-            if (!rsym->resize)
+            const wchar_t* sResizeCtrl = sym->resizeControl.evaluate(cxt->exec);
+            if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
             {
-                BoundsUnion(rstyle->bounds, rsym->bounds);
-            }
-
-            rstyle->symbol.push_back(rsym);
-
-            if (useBox)
-            {
-                const wchar_t* sResizeCtrl = sym->resizeControl.evaluate(cxt->exec);
-
-                if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
-                    ComputeGrowAmount(rstyle->bounds, minx, miny, maxx, maxy, growx, growy);
+                // TODO - rework how resize box growth is done
+                ComputeGrowAmount(rstyle->bounds, minx, miny, maxx, maxy, growx, growy);
             }
         }
     }
 
+    // update all primitive which need to adjust to the resize box
     if (useBox)
     {
         const wchar_t* sGrowCtrl = growControl.evaluate(cxt->exec);
-        // TODO - if the string is empty we need to use the default
-        if (sGrowCtrl)
+        if (wcscmp(sGrowCtrl, L"GrowInX") == 0)
         {
-            if (wcscmp(sGrowCtrl, L"GrowInX") == 0)
-            {
-                growy = 0.0;
-            }
-            else if (wcscmp(sGrowCtrl, L"GrowInY") == 0)
-            {
-                growx = 0.0;
-            }
-            else if (wcscmp(sGrowCtrl, L"GrowInXY") == 0)
-            {
-                // TODO
-            }
-            else if (wcscmp(sGrowCtrl, L"GrowInXYMaintainAspect") == 0)
-            {
-                if (growy > growx)
-                    growx = growy;
-                else if (growx > growy)
-                    growy = growx;
-            }
+            growy = 0.0;
+        }
+        else if (wcscmp(sGrowCtrl, L"GrowInY") == 0)
+        {
+            growx = 0.0;
+        }
+//      else if (wcscmp(sGrowCtrl, L"GrowInXY") == 0)
+//      {
+//          // nothing to do
+//      }
+        else // default is GrowInXYMaintainAspect
+        {
+            if (growy > growx)
+                growx = growy;
+            else if (growx > growy)
+                growy = growx;
         }
 
         SE_Matrix totalxf(*cxt->xform);
@@ -427,7 +398,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                     {
                         SE_RenderText* rt = (SE_RenderText*)rsym;
                         growxf.transform(rt->position[0], rt->position[1]);
-                        rt->tdef.font().height() *= growxf.y1;
+                        rt->tdef.font().height() *= growxf.y1;  // TODO: should this only be done if HeightScalable is true?
                         for (int j=0; j<4; j++)
                             growxf.transform(rt->bounds[j].x, rt->bounds[j].y);
                         break;
@@ -436,7 +407,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                     {
                         SE_RenderRaster* rr = (SE_RenderRaster*)rsym;
                         growxf.transform(rr->position[0], rr->position[1]);
-                        rr->extent[0] *= growxf.x0;
+                        rr->extent[0] *= growxf.x0; // TODO: should this only be done if SizeScalable is true?
                         rr->extent[1] *= growxf.y1;
                         for (int j=0; j<4; j++)
                             growxf.transform(rr->bounds[j].x, rr->bounds[j].y);
@@ -488,8 +459,8 @@ void SE_PointStyle::evaluate(SE_EvalContext* cxt)
     }
 
     double angle = 0.0;
-    const wchar_t* angleControl = this->angleControl.evaluate(cxt->exec);
-    if (wcscmp(L"FromGeometry", angleControl) == 0)
+    const wchar_t* sAngleControl = angleControl.evaluate(cxt->exec);
+    if (wcscmp(L"FromGeometry", sAngleControl) == 0)
     {
         if (type == LineBuffer::ctLine || type == LineBuffer::ctArea)
         {
@@ -519,6 +490,7 @@ void SE_PointStyle::evaluate(SE_EvalContext* cxt)
     //evaluate all the primitives too
     SE_Style::evaluate(cxt);
 }
+
 
 void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 {
@@ -551,6 +523,7 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     SE_Style::evaluate(cxt);
 }
 
+
 void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 {
     SE_RenderAreaStyle* render;
@@ -581,15 +554,18 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
     SE_Style::evaluate(cxt);
 }
 
+
 void SE_PointStyle::apply(LineBuffer* geometry, SE_Renderer* renderer)
 {
     renderer->ProcessPoint(geometry, (SE_RenderPointStyle*)rstyle);
 }
 
+
 void SE_LineStyle::apply(LineBuffer* geometry, SE_Renderer* renderer)
 {
     renderer->ProcessLine(geometry, (SE_RenderLineStyle*)rstyle);
 }
+
 
 void SE_AreaStyle::apply(LineBuffer* geometry, SE_Renderer* renderer)
 {

@@ -452,7 +452,6 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
     //apply position and rotation to the native bounds of the symbol
     double angle = m_serenderer->GetFontEngine()->_Yup() ? info.m_tdef.rotation() : -info.m_tdef.rotation();
     SE_Matrix m;
-    m.setIdentity();
     m.rotate(angle); //it is already in radians in there
     m.translate(info.m_x, info.m_y);
 
@@ -494,7 +493,8 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
         lb.LineTo(fpts[2].x, fpts[2].y);
         lb.LineTo(fpts[3].x, fpts[3].y);
         lb.Close();
-        m_serenderer->DrawScreenPolyline(&lb, 0xff000000, 0.0);
+        SE_Matrix xform;
+        m_serenderer->DrawScreenPolyline(&lb, &xform, 0xff000000, 0.0);
 #endif
     }
 

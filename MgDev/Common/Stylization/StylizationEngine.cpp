@@ -256,10 +256,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     // only call StartFeature for the initial rendering pass
     if (renderingPass == 0)
     {
-        const wchar_t* strTip = seTip->evaluate(executor);
-        const wchar_t* strUrl = seUrl->evaluate(executor);
-        RS_String rs_tip = strTip? strTip : L"";
-        RS_String rs_url = strUrl? strUrl : L"";
+        RS_String rs_tip = seTip->evaluate(executor);
+        RS_String rs_url = seUrl->evaluate(executor);
         RS_String& rs_thm = rule->legendLabel;
 
         m_renderer->StartFeature(reader, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
@@ -340,7 +338,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             style->rstyle->drawLast = sym->drawLast.evaluate(executor);
 
             const wchar_t* positioningAlgo = sym->positioningAlgorithm.evaluate(executor);
-            if (positioningAlgo && wcslen(positioningAlgo) > 0 && wcscmp(positioningAlgo, L"Default") != 0)
+            if (wcslen(positioningAlgo) > 0 && wcscmp(positioningAlgo, L"Default") != 0)
             {
                 LayoutCustomLabel(positioningAlgo, geometry, tmpxform, style, style->rstyle, mm2px);
             }

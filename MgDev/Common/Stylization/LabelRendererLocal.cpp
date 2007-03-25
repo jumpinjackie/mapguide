@@ -988,7 +988,6 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
     //apply position and rotation to the native bounds of the symbol
     double angle = m_serenderer->GetFontEngine()->_Yup() ? info.m_tdef.rotation() : -info.m_tdef.rotation();
     SE_Matrix m;
-    m.setIdentity();
     m.rotate(angle); //it is already in radians in there
     m.translate(info.m_x, info.m_y);
 
@@ -1145,7 +1144,6 @@ bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfo
             //apply position and rotation to the native bounds of the symbol
             double angle = m_serenderer->GetFontEngine()->_Yup() ? info.m_tdef.rotation() : -info.m_tdef.rotation();
             SE_Matrix m;
-            m.setIdentity();
             m.rotate(angle); //it is already in radians in there
             m.translate(info.m_x, info.m_y);
 
