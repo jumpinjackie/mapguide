@@ -18,6 +18,7 @@
 #include "MapGuideCommon.h"
 #include "TestRenderingService.h"
 #include "ServiceManager.h"
+#include "ServerSiteService.h"
 #include "../Common/Manager/FdoConnectionManager.h"
 #include "SAX2Parser.h"
 
@@ -28,13 +29,33 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestRenderingService, "TestRenderingServic
 
 TestRenderingService::TestRenderingService()
 {
+    // Initialize service objects.
     MgServiceManager* serviceManager = MgServiceManager::GetInstance();
 
-    m_svcResource = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+    m_svcResource = dynamic_cast<MgResourceService*>(
+        serviceManager->RequestService(MgServiceType::ResourceService));
     assert(m_svcResource != NULL);
 
-    m_svcRendering = dynamic_cast<MgRenderingService*>(serviceManager->RequestService(MgServiceType::RenderingService));
+    m_svcRendering = dynamic_cast<MgRenderingService*>(
+        serviceManager->RequestService(MgServiceType::RenderingService));
     assert(m_svcRendering != NULL);
+
+    // Initialize a site connection.
+    Ptr<MgServerSiteService> svcSite = dynamic_cast<MgServerSiteService*>(
+        serviceManager->RequestService(MgServiceType::SiteService));
+    assert(svcSite != NULL);
+
+    Ptr<MgUserInformation> userInfo = new MgUserInformation(
+        L"Administrator", L"admin");
+    userInfo->SetLocale(TEST_LOCALE);
+    MgUserInformation::SetCurrentUserInfo(userInfo);
+
+    STRING session = svcSite->CreateSession();
+    assert(!session.empty());
+    userInfo->SetMgSessionId(session);
+
+    m_siteConnection = new MgSiteConnection();
+    m_siteConnection->Open(userInfo);
 }
 
 
@@ -66,11 +87,6 @@ void TestRenderingService::TestStart()
             pFdoConnectionManager->ShowCache();
         }
         #endif
-
-        // set user info
-        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
-        userInfo->SetLocale(TEST_LOCALE);
-        MgUserInformation::SetCurrentUserInfo(userInfo);
 
         // publish the map definition
         Ptr<MgResourceIdentifier> mapres1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
@@ -268,11 +284,6 @@ void TestRenderingService::TestEnd()
 {
     try
     {
-        // set user info
-        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
-        userInfo->SetLocale(TEST_LOCALE);
-        MgUserInformation::SetCurrentUserInfo(userInfo);
-
         // delete the map definition
         Ptr<MgResourceIdentifier> mapres1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
         m_svcResource->DeleteResource(mapres1);
@@ -373,9 +384,6 @@ void TestRenderingService::TestCase_RenderDynamicOverlay()
 {
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make a runtime map
         Ptr<MgMap> map = CreateTestMap();
 
@@ -405,9 +413,6 @@ void TestRenderingService::TestCase_RenderMap()
 {
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make a runtime map
         Ptr<MgMap> map = CreateTestMap();
 
@@ -437,9 +442,6 @@ void TestRenderingService::TestCase_RenderLegend()
 {
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make a runtime map
         Ptr<MgMap> map = CreateTestMap();
 
@@ -471,9 +473,6 @@ void TestRenderingService::TestCase_QueryFeatures()
 {
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make a runtime map
         Ptr<MgMap> map = CreateTestMap();
 
@@ -511,8 +510,8 @@ void TestRenderingService::TestCase_QueryFeatures()
 MgMap* TestRenderingService::CreateTestMap()
 {
     Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-    MgMap* map = new MgMap();
-    map->Create(m_svcResource, mdfres, L"UnitTestSheboygan");
+    MgMap* map = new MgMap(m_siteConnection);
+    map->Create(mdfres, L"UnitTestSheboygan");
 
     Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.733253, 43.746199);
     Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
@@ -710,13 +709,10 @@ void TestRenderingService::TestCase_SymbologyPoints()
 {
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make a runtime map
         Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Capitals.MapDefinition");
-        Ptr<MgMap> map = new MgMap();
-        map->Create(m_svcResource, mdfres, L"UnitTestSymbology");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mdfres, L"UnitTestSymbology");
 
         INT32 pixels = 512;
 
@@ -750,13 +746,10 @@ void TestRenderingService::TestCase_SymbologyPointsParam()
 {
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make a runtime map
         Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/CapitalsParam.MapDefinition");
-        Ptr<MgMap> map = new MgMap();
-        map->Create(m_svcResource, mdfres, L"UnitTestSymbology");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mdfres, L"UnitTestSymbology");
 
         INT32 pixels = 512;
 
@@ -790,13 +783,10 @@ void TestRenderingService::TestCase_SymbologyLines()
 {
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make a runtime map
         Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Lines.MapDefinition");
-        Ptr<MgMap> map = new MgMap();
-        map->Create(m_svcResource, mdfres, L"UnitTestSymbology");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mdfres, L"UnitTestSymbology");
 
         INT32 pixels = 512;
 
@@ -830,13 +820,10 @@ void TestRenderingService::TestCase_SymbologyLinesCrossTick()
 {
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make a runtime map
         Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinesCrossTick.MapDefinition");
-        Ptr<MgMap> map = new MgMap();
-        map->Create(m_svcResource, mdfres, L"UnitTestSymbology");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mdfres, L"UnitTestSymbology");
 
         INT32 pixels = 512;
 

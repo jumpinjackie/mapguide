@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _TESTMAPPINGSERVICE_H
+#ifndef TESTMAPPINGSERVICE_H_
 #define TESTMAPPINGSERVICE_H_
 
 #include <cppunit/extensions/HelperMacros.h>
@@ -63,8 +63,9 @@ private:
 
     void PublishTheResources();
 
+    Ptr<MgSiteConnection> m_siteConnection;
     Ptr<MgResourceService> m_svcResource;
-    Ptr<MgMappingService> m_svcNapping;
+    Ptr<MgMappingService> m_svcMapping;
 };
 
 #endif // TESTMAPPINGSERVICE_H_

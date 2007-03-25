@@ -16,13 +16,11 @@
 //
 
 #include "MapGuideCommon.h"
-#include "MapGuideCommon.h"
+#include "TestKmlService.h"
 #include "ServiceManager.h"
-#include "ServerMappingService.h"
 #include "ServerResourceService.h"
 #include "ServerSiteService.h"
 #include "../Common/Manager/FdoConnectionManager.h"
-#include "TestKmlService.h"
 
 const STRING TEST_LOCALE = L"en";
 
@@ -31,6 +29,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestKmlService, "TestKmlService");
 
 TestKmlService::TestKmlService()
 {
+    // Initialize service objects.
     MgServiceManager* serviceManager = MgServiceManager::GetInstance();
 
     m_svcResource = dynamic_cast<MgResourceService*>(
@@ -41,10 +40,22 @@ TestKmlService::TestKmlService()
         serviceManager->RequestService(MgServiceType::KmlService));
     assert(m_svcKml != NULL);
 
-    m_svcSite = dynamic_cast<MgServerSiteService*>(
+    // Initialize a site connection.
+    Ptr<MgServerSiteService> svcSite = dynamic_cast<MgServerSiteService*>(
         serviceManager->RequestService(MgServiceType::SiteService));
-    assert(m_svcSite != NULL);
+    assert(svcSite != NULL);
 
+    Ptr<MgUserInformation> userInfo = new MgUserInformation(
+        L"Administrator", L"admin");
+    userInfo->SetLocale(TEST_LOCALE);
+    MgUserInformation::SetCurrentUserInfo(userInfo);
+
+    STRING session = svcSite->CreateSession();
+    assert(!session.empty());
+    userInfo->SetMgSessionId(session);
+
+    m_siteConnection = new MgSiteConnection();
+    m_siteConnection->Open(userInfo);
 }
 
 
@@ -76,16 +87,6 @@ void TestKmlService::TestStart()
             pFdoConnectionManager->ShowCache();
         }
         #endif
-
-        //set user info
-        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
-        userInfo->SetLocale(TEST_LOCALE);
-        MgUserInformation::SetCurrentUserInfo(userInfo);
-
-        //create a session
-        STRING session = m_svcSite->CreateSession();
-        CPPUNIT_ASSERT(!session.empty());
-        userInfo->SetMgSessionId(session);
 
         //publish the map definition
         Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
@@ -155,11 +156,6 @@ void TestKmlService::TestEnd()
 {
     try
     {
-        //set user info
-        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
-        userInfo->SetLocale(TEST_LOCALE);
-        MgUserInformation::SetCurrentUserInfo(userInfo);
-
         //delete the map definition
         Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
         m_svcResource->DeleteResource(mapres);
@@ -211,13 +207,10 @@ void TestKmlService::TestCase_GetMapKml()
 {
     try
     {
-        //get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         //create map object
         Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map = new MgMap();
-        map->Create(m_svcResource, mdfres, L"UnitTestSheboygan");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mdfres, L"UnitTestSheboygan");
 
         //set other params
         double dpi = 96;
@@ -253,8 +246,8 @@ void TestKmlService::TestCase_GetMapKmz()
     {
         //create map object
         Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map = new MgMap();
-        map->Create(m_svcResource, mdfres, L"UnitTestSheboygan");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mdfres, L"UnitTestSheboygan");
 
         //set other params
         double dpi = 96;

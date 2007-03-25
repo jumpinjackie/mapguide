@@ -64,6 +64,8 @@ private:
     MgPolygon* CreateSelectionPolygon(MgMap* map, double width, double height);
 
 private:
+
+    Ptr<MgSiteConnection> m_siteConnection;
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgRenderingService> m_svcRendering;
 };

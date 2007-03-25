@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _TestKmlService_H
+#ifndef TestKmlService_H_
 #define TestKmlService_H_
 
 #include <cppunit/extensions/HelperMacros.h>
@@ -54,8 +54,8 @@ private:
     STRING LoadFromFile(CREFSTRING filename);
     bool CompareContent(MgByteReader* reader, CREFSTRING referenceFile);
 
+    Ptr<MgSiteConnection> m_siteConnection;
     Ptr<MgResourceService> m_svcResource;
-    Ptr<MgServerSiteService> m_svcSite;
     Ptr<MgKmlService> m_svcKml;
 };
 
