@@ -52,6 +52,7 @@ private:
     INT32 Rand(INT32 n);
 
 private:
+    Ptr<MgSiteConnection> m_siteConnection;
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgTileService> m_svcTile;
 };

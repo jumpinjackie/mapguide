@@ -19,6 +19,7 @@
 #include "TestTileService.h"
 #include "../UnitTesting/CppUnitExtensions.h"
 #include "ServiceManager.h"
+#include "ServerSiteService.h"
 #include "../Common/Manager/FdoConnectionManager.h"
 
 #define PATH_LEN 512
@@ -44,6 +45,23 @@ TestTileService::TestTileService()
 
     m_svcTile = dynamic_cast<MgTileService*>(serviceMan->RequestService(MgServiceType::TileService));
     assert(m_svcTile != NULL);
+
+    // Initialize a site connection.
+    Ptr<MgServerSiteService> svcSite = dynamic_cast<MgServerSiteService*>(
+        serviceMan->RequestService(MgServiceType::SiteService));
+    assert(svcSite != NULL);
+
+    Ptr<MgUserInformation> userInfo = new MgUserInformation(
+        L"Administrator", L"admin");
+    userInfo->SetLocale(TEST_LOCALE);
+    MgUserInformation::SetCurrentUserInfo(userInfo);
+
+    STRING session = svcSite->CreateSession();
+    assert(!session.empty());
+    userInfo->SetMgSessionId(session);
+
+    m_siteConnection = new MgSiteConnection();
+    m_siteConnection->Open(userInfo);
 }
 
 
@@ -75,11 +93,6 @@ void TestTileService::TestStart()
             pFdoConnectionManager->ShowCache();
         }
         #endif
-
-        // set user info
-        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
-        userInfo->SetLocale(TEST_LOCALE);
-        MgUserInformation::SetCurrentUserInfo(userInfo);
 
         // ------------------------------------------------------
         // base map source data
@@ -156,11 +169,6 @@ void TestTileService::TestEnd()
 {
     try
     {
-        // set user info
-        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
-        userInfo->SetLocale(TEST_LOCALE);
-        MgUserInformation::SetCurrentUserInfo(userInfo);
-
         // ------------------------------------------------------
         // base map source data
         // ------------------------------------------------------
@@ -248,9 +256,6 @@ ACE_THR_FUNC_RETURN GetTileWorker(void* param)
 
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // set user info
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
         userInfo->SetLocale(TEST_LOCALE);
@@ -313,9 +318,6 @@ void TestTileService::TestCase_GetTile()
         // need a thread manager
         ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
 
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make the runtime map
         Ptr<MgMap> map = CreateMap();
 
@@ -344,7 +346,7 @@ void TestTileService::TestCase_GetTile()
             // each thread works with its own instance of the map
             Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
             Ptr<MgStream> stream = new MgStream(helper);
-            Ptr<MgMap> newMap = new MgMap();
+            Ptr<MgMap> newMap = new MgMap(m_siteConnection);
             map->Serialize(stream);
             newMap->Deserialize(stream);
 
@@ -451,9 +453,6 @@ ACE_THR_FUNC_RETURN SetTileWorker(void* param)
 
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // set user info
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
         userInfo->SetLocale(TEST_LOCALE);
@@ -523,9 +522,6 @@ void TestTileService::TestCase_SetTile()
         // need a thread manager
         ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
 
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make the runtime map
         Ptr<MgMap> map = CreateMap();
 
@@ -554,7 +550,7 @@ void TestTileService::TestCase_SetTile()
             // each thread works with its own instance of the map
             Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
             Ptr<MgStream> stream = new MgStream(helper);
-            Ptr<MgMap> newMap = new MgMap();
+            Ptr<MgMap> newMap = new MgMap(m_siteConnection);
             map->Serialize(stream);
             newMap->Deserialize(stream);
 
@@ -717,9 +713,6 @@ void TestTileService::TestCase_GetSetTile()
         // need a thread manager
         ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
 
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // make the runtime map
         Ptr<MgMap> map = CreateMap();
 
@@ -748,7 +741,7 @@ void TestTileService::TestCase_GetSetTile()
             // each thread works with its own instance of the map
             Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
             Ptr<MgStream> stream = new MgStream(helper);
-            Ptr<MgMap> newMap = new MgMap();
+            Ptr<MgMap> newMap = new MgMap(m_siteConnection);
             map->Serialize(stream);
             newMap->Deserialize(stream);
 
@@ -842,9 +835,6 @@ void TestTileService::TestCase_ClearCache()
 {
     try
     {
-        // get root
-        Ptr<MgSiteConnection> conn = new MgSiteConnection();
-
         // call the API with a NULL argument
         CPPUNIT_ASSERT_THROW_MG(m_svcTile->ClearCache(NULL), MgNullArgumentException*);
 
@@ -884,8 +874,8 @@ MgMap* TestTileService::CreateMap(CREFSTRING mapName)
 
     // make a runtime map
     Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/BaseMap.MapDefinition");
-    MgMap* map = new MgMap();
-    map->Create(m_svcResource, mdfres, name);
+    MgMap* map = new MgMap(m_siteConnection);
+    map->Create(mdfres, name);
 
     // set the view
     Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.723636, 43.715015);
