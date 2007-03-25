@@ -171,7 +171,8 @@ void MgLayerBase::SetVisible(bool visible)
 {
     if (m_type == MgLayerType::BaseMap)
     {
-        throw new MgInvalidOperationException(L"MgLayer.SetVisible", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidOperationException(L"MgLayerBase.SetVisible",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     ForceVisible(visible);

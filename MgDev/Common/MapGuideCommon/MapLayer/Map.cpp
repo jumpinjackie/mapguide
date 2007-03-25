@@ -89,7 +89,7 @@ MgService* MgMap::GetService(INT32 serviceType)
 {
     if (NULL == m_siteConnection.p)
     {
-        throw new MgNullReferenceException(L"MgMap.GetSiteConnection",
+        throw new MgNullReferenceException(L"MgMap.GetService",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 

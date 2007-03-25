@@ -60,7 +60,7 @@ MgMapBase* MgLayer::GetMap()
 
     if (NULL == baseMap)
     {
-        throw new MgNullReferenceException(L"MgLayerBase.GetMap",
+        throw new MgNullReferenceException(L"MgLayer.GetMap",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -120,7 +120,8 @@ void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
                 Ptr<MgDataPropertyDefinition> prop = dynamic_cast<MgDataPropertyDefinition*>(idProps->GetItem(nIds));
                 if (0 == (MgDataPropertyDefinition*)prop)
                 {
-                    throw new MgInvalidCastException(L"MgLayer::GetLayerInfoFromDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+                    throw new MgInvalidCastException(L"MgLayer.GetLayerInfoFromDefinition",
+                        __LINE__, __WFILE__, NULL, L"", NULL);
                 }
                 MgLayer::IdProperty idProp;
                 idProp.type = prop->GetDataType();

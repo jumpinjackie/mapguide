@@ -277,8 +277,12 @@ INT32 MgMapBase::GetFiniteDisplayScaleCount()
 double MgMapBase::GetFiniteDisplayScaleAt(INT32 index)
 {
     INT32 scaleCount = (INT32)m_finiteDisplayScales.size();
+
     if (index >= scaleCount || index < 0)
-        throw new MgIndexOutOfRangeException(L"GetFiniteDisplayScaleAt", __LINE__, __WFILE__, NULL, L"", NULL);
+    {
+        throw new MgIndexOutOfRangeException(L"MgMapBase.GetFiniteDisplayScaleAt",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     return m_finiteDisplayScales.at(index);
 }
