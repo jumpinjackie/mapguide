@@ -148,7 +148,7 @@ void TestRenderingService::TestStart()
         //
 
         // the point feature source
-        Ptr<MgResourceIdentifier> fsres4 = new MgResourceIdentifier(L"Library://Symbology/Data/Capitals.FeatureSource");
+        Ptr<MgResourceIdentifier> fsres4 = new MgResourceIdentifier(L"Library://UnitTests/Data/Capitals.FeatureSource");
         Ptr<MgByteSource> fssrc4 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyPoints.fs", false);
         Ptr<MgByteReader> fsrdr4 = fssrc4->GetReader();
         m_svcResource->SetResource(fsres4, fsrdr4, NULL);
@@ -159,40 +159,40 @@ void TestRenderingService::TestStart()
         m_svcResource->SetResourceData(fsres4, L"UT_SymbologyPoints.sdf", L"File", dataReader4);
 
         // point symbols
-        Ptr<MgResourceIdentifier> sdres1 = new MgResourceIdentifier(L"Library://Symbology/Symbols/PointSymbol.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres1 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/PointSymbol.SymbolDefinition");
         Ptr<MgByteSource> sdsrc1 = new MgByteSource(L"../UnitTestFiles/symbol.sd", false);
         Ptr<MgByteReader> sdrdr1 = sdsrc1->GetReader();
         m_svcResource->SetResource(sdres1, sdrdr1, NULL);
 
-        Ptr<MgResourceIdentifier> sdres2 = new MgResourceIdentifier(L"Library://Symbology/Symbols/PointSymbolParam.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres2 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/PointSymbolParam.SymbolDefinition");
         Ptr<MgByteSource> sdsrc2 = new MgByteSource(L"../UnitTestFiles/symbolp.sd", false);
         Ptr<MgByteReader> sdrdr2 = sdsrc2->GetReader();
         m_svcResource->SetResource(sdres2, sdrdr2, NULL);
 
         // point ldf
-        Ptr<MgResourceIdentifier> ldfres4 = new MgResourceIdentifier(L"Library://Symbology/Layers/Capitals.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfres4 = new MgResourceIdentifier(L"Library://UnitTests/Layers/Capitals.LayerDefinition");
         Ptr<MgByteSource> ldfsrc4 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyPoints.ldf", false);
         Ptr<MgByteReader> ldfrdr4 = ldfsrc4->GetReader();
         m_svcResource->SetResource(ldfres4, ldfrdr4, NULL);
 
-        Ptr<MgResourceIdentifier> ldfres5 = new MgResourceIdentifier(L"Library://Symbology/Layers/CapitalsParam.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfres5 = new MgResourceIdentifier(L"Library://UnitTests/Layers/CapitalsParam.LayerDefinition");
         Ptr<MgByteSource> ldfsrc5 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyPointsParam.ldf", false);
         Ptr<MgByteReader> ldfrdr5 = ldfsrc5->GetReader();
         m_svcResource->SetResource(ldfres5, ldfrdr5, NULL);
 
         // point mdf
-        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://Symbology/Maps/Capitals.MapDefinition");
+        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Capitals.MapDefinition");
         Ptr<MgByteSource> mdfsrc2 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyPoints.mdf", false);
         Ptr<MgByteReader> mdfrdr2 = mdfsrc2->GetReader();
         m_svcResource->SetResource(mapres2, mdfrdr2, NULL);
 
-        Ptr<MgResourceIdentifier> mapres3 = new MgResourceIdentifier(L"Library://Symbology/Maps/CapitalsParam.MapDefinition");
+        Ptr<MgResourceIdentifier> mapres3 = new MgResourceIdentifier(L"Library://UnitTests/Maps/CapitalsParam.MapDefinition");
         Ptr<MgByteSource> mdfsrc3 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyPointsParam.mdf", false);
         Ptr<MgByteReader> mdfrdr3 = mdfsrc3->GetReader();
         m_svcResource->SetResource(mapres3, mdfrdr3, NULL);
 
         // the line feature source
-        Ptr<MgResourceIdentifier> fsres5 = new MgResourceIdentifier(L"Library://Symbology/Data/Lines.FeatureSource");
+        Ptr<MgResourceIdentifier> fsres5 = new MgResourceIdentifier(L"Library://UnitTests/Data/Lines.FeatureSource");
         Ptr<MgByteSource> fssrc5 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyLines.fs", false);
         Ptr<MgByteReader> fsrdr5 = fssrc5->GetReader();
         m_svcResource->SetResource(fsres5, fsrdr5, NULL);
@@ -203,50 +203,50 @@ void TestRenderingService::TestStart()
         m_svcResource->SetResourceData(fsres5, L"UT_SymbologyLines.sdf", L"File", dataReader5);
 
         // line symbols
-        Ptr<MgResourceIdentifier> sdres3 = new MgResourceIdentifier(L"Library://Symbology/Symbols/LineSymbol.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres3 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/LineSymbol.SymbolDefinition");
         Ptr<MgByteSource> sdsrc3 = new MgByteSource(L"../UnitTestFiles/linesymbol.sd", false);
         Ptr<MgByteReader> sdrdr3 = sdsrc3->GetReader();
         m_svcResource->SetResource(sdres3, sdrdr3, NULL);
 
-        Ptr<MgResourceIdentifier> sdres4 = new MgResourceIdentifier(L"Library://Symbology/Symbols/MTYP1500a.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres4 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MTYP1500a.SymbolDefinition");
         Ptr<MgByteSource> sdsrc4 = new MgByteSource(L"../UnitTestFiles/MTYP1500a.sd", false);
         Ptr<MgByteReader> sdrdr4 = sdsrc4->GetReader();
         m_svcResource->SetResource(sdres4, sdrdr4, NULL);
 
         // line ldf
-        Ptr<MgResourceIdentifier> ldfres6 = new MgResourceIdentifier(L"Library://Symbology/Layers/Lines.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfres6 = new MgResourceIdentifier(L"Library://UnitTests/Layers/Lines.LayerDefinition");
         Ptr<MgByteSource> ldfsrc6 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyLines.ldf", false);
         Ptr<MgByteReader> ldfrdr6 = ldfsrc6->GetReader();
         m_svcResource->SetResource(ldfres6, ldfrdr6, NULL);
 
-        Ptr<MgResourceIdentifier> ldfres7 = new MgResourceIdentifier(L"Library://Symbology/Layers/LinesCrossTick.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfres7 = new MgResourceIdentifier(L"Library://UnitTests/Layers/LinesCrossTick.LayerDefinition");
         Ptr<MgByteSource> ldfsrc7 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyLinesCrossTick.ldf", false);
         Ptr<MgByteReader> ldfrdr7 = ldfsrc7->GetReader();
         m_svcResource->SetResource(ldfres7, ldfrdr7, NULL);
 
         // line mdf
-        Ptr<MgResourceIdentifier> mapres4 = new MgResourceIdentifier(L"Library://Symbology/Maps/Lines.MapDefinition");
+        Ptr<MgResourceIdentifier> mapres4 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Lines.MapDefinition");
         Ptr<MgByteSource> mdfsrc4 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyLines.mdf", false);
         Ptr<MgByteReader> mdfrdr4 = mdfsrc4->GetReader();
         m_svcResource->SetResource(mapres4, mdfrdr4, NULL);
 
-        Ptr<MgResourceIdentifier> mapres5 = new MgResourceIdentifier(L"Library://Symbology/Maps/LinesCrossTick.MapDefinition");
+        Ptr<MgResourceIdentifier> mapres5 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinesCrossTick.MapDefinition");
         Ptr<MgByteSource> mdfsrc5 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyLinesCrossTick.mdf", false);
         Ptr<MgByteReader> mdfrdr5 = mdfsrc5->GetReader();
         m_svcResource->SetResource(mapres5, mdfrdr5, NULL);
 
         // symbols / layer definitions for testing MdfModel / MdfParser
-        Ptr<MgResourceIdentifier> sdres5 = new MgResourceIdentifier(L"Library://Symbology/Symbols/MdfTestSimpleSymbol.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres5 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition");
         Ptr<MgByteSource> sdsrc5 = new MgByteSource(L"../UnitTestFiles/MdfTestSimpleSymbol.sd", false);
         Ptr<MgByteReader> sdrdr5 = sdsrc5->GetReader();
         m_svcResource->SetResource(sdres5, sdrdr5, NULL);
 
-        Ptr<MgResourceIdentifier> sdres6 = new MgResourceIdentifier(L"Library://Symbology/Symbols/MdfTestCompoundSymbol.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres6 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestCompoundSymbol.SymbolDefinition");
         Ptr<MgByteSource> sdsrc6 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbol.sd", false);
         Ptr<MgByteReader> sdrdr6 = sdsrc6->GetReader();
         m_svcResource->SetResource(sdres6, sdrdr6, NULL);
 
-        Ptr<MgResourceIdentifier> ldfres8 = new MgResourceIdentifier(L"Library://Symbology/Layers/MdfTestCompTypeStyle.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfres8 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MdfTestCompTypeStyle.LayerDefinition");
         Ptr<MgByteSource> ldfsrc8 = new MgByteSource(L"../UnitTestFiles/MdfTestCompTypeStyle.ldf", false);
         Ptr<MgByteReader> ldfrdr8 = ldfsrc8->GetReader();
         m_svcResource->SetResource(ldfres8, ldfrdr8, NULL);
@@ -309,41 +309,41 @@ void TestRenderingService::TestEnd()
         m_svcResource->DeleteResource(slres1);
 
         // delete symbology stuff
-        Ptr<MgResourceIdentifier> fsres4 = new MgResourceIdentifier(L"Library://Symbology/Data/Capitals.FeatureSource");
+        Ptr<MgResourceIdentifier> fsres4 = new MgResourceIdentifier(L"Library://UnitTests/Data/Capitals.FeatureSource");
         m_svcResource->DeleteResource(fsres4);
-        Ptr<MgResourceIdentifier> sdres1 = new MgResourceIdentifier(L"Library://Symbology/Symbols/PointSymbol.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres1 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/PointSymbol.SymbolDefinition");
         m_svcResource->DeleteResource(sdres1);
-        Ptr<MgResourceIdentifier> sdres2 = new MgResourceIdentifier(L"Library://Symbology/Symbols/PointSymbolParam.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres2 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/PointSymbolParam.SymbolDefinition");
         m_svcResource->DeleteResource(sdres2);
-        Ptr<MgResourceIdentifier> ldfres4 = new MgResourceIdentifier(L"Library://Symbology/Layers/Capitals.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfres4 = new MgResourceIdentifier(L"Library://UnitTests/Layers/Capitals.LayerDefinition");
         m_svcResource->DeleteResource(ldfres4);
-        Ptr<MgResourceIdentifier> ldfres5 = new MgResourceIdentifier(L"Library://Symbology/Layers/CapitalsParam.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfres5 = new MgResourceIdentifier(L"Library://UnitTests/Layers/CapitalsParam.LayerDefinition");
         m_svcResource->DeleteResource(ldfres5);
-        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://Symbology/Maps/Capitals.MapDefinition");
+        Ptr<MgResourceIdentifier> mapres2 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Capitals.MapDefinition");
         m_svcResource->DeleteResource(mapres2);
-        Ptr<MgResourceIdentifier> mapres3 = new MgResourceIdentifier(L"Library://Symbology/Maps/CapitalsParam.MapDefinition");
+        Ptr<MgResourceIdentifier> mapres3 = new MgResourceIdentifier(L"Library://UnitTests/Maps/CapitalsParam.MapDefinition");
         m_svcResource->DeleteResource(mapres3);
 
-        Ptr<MgResourceIdentifier> fsres5 = new MgResourceIdentifier(L"Library://Symbology/Data/Lines.FeatureSource");
+        Ptr<MgResourceIdentifier> fsres5 = new MgResourceIdentifier(L"Library://UnitTests/Data/Lines.FeatureSource");
         m_svcResource->DeleteResource(fsres5);
-        Ptr<MgResourceIdentifier> sdres3 = new MgResourceIdentifier(L"Library://Symbology/Symbols/LineSymbol.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres3 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/LineSymbol.SymbolDefinition");
         m_svcResource->DeleteResource(sdres3);
-        Ptr<MgResourceIdentifier> sdres4 = new MgResourceIdentifier(L"Library://Symbology/Symbols/MTYP1500a.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres4 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MTYP1500a.SymbolDefinition");
         m_svcResource->DeleteResource(sdres4);
-        Ptr<MgResourceIdentifier> ldfres6 = new MgResourceIdentifier(L"Library://Symbology/Layers/Lines.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfres6 = new MgResourceIdentifier(L"Library://UnitTests/Layers/Lines.LayerDefinition");
         m_svcResource->DeleteResource(ldfres6);
-        Ptr<MgResourceIdentifier> ldfres7 = new MgResourceIdentifier(L"Library://Symbology/Layers/LinesCrossTick.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfres7 = new MgResourceIdentifier(L"Library://UnitTests/Layers/LinesCrossTick.LayerDefinition");
         m_svcResource->DeleteResource(ldfres7);
-        Ptr<MgResourceIdentifier> mapres4 = new MgResourceIdentifier(L"Library://Symbology/Maps/Lines.MapDefinition");
+        Ptr<MgResourceIdentifier> mapres4 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Lines.MapDefinition");
         m_svcResource->DeleteResource(mapres4);
-        Ptr<MgResourceIdentifier> mapres5 = new MgResourceIdentifier(L"Library://Symbology/Maps/LinesCrossTick.MapDefinition");
+        Ptr<MgResourceIdentifier> mapres5 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinesCrossTick.MapDefinition");
         m_svcResource->DeleteResource(mapres5);
 
-        Ptr<MgResourceIdentifier> sdres5 = new MgResourceIdentifier(L"Library://Symbology/Symbols/MdfTestSimpleSymbol.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres5 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition");
         m_svcResource->DeleteResource(sdres5);
-        Ptr<MgResourceIdentifier> sdres6 = new MgResourceIdentifier(L"Library://Symbology/Symbols/MdfTestCompoundSymbol.SymbolDefinition");
+        Ptr<MgResourceIdentifier> sdres6 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestCompoundSymbol.SymbolDefinition");
         m_svcResource->DeleteResource(sdres6);
-        Ptr<MgResourceIdentifier> ldfres8 = new MgResourceIdentifier(L"Library://Symbology/Layers/MdfTestCompTypeStyle.LayerDefinition");
+        Ptr<MgResourceIdentifier> ldfres8 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MdfTestCompTypeStyle.LayerDefinition");
         m_svcResource->DeleteResource(ldfres8);
 
         #ifdef _DEBUG
@@ -565,7 +565,7 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
 
         // create a scope so temp files are unlocked
         {
-            Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://Symbology/Symbols/MdfTestSimpleSymbol.SymbolDefinition");
+            Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition");
 
             // parse the symbol - this exercises MdfParser deserialization
             Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres);
@@ -611,7 +611,7 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
 
         // create a scope so temp files are unlocked
         {
-            Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://Symbology/Symbols/MdfTestCompoundSymbol.SymbolDefinition");
+            Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestCompoundSymbol.SymbolDefinition");
 
             // parse the symbol - this exercises MdfParser deserialization
             Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres);
@@ -657,7 +657,7 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
 
         // create a scope so temp files are unlocked
         {
-            Ptr<MgResourceIdentifier> ldfres = new MgResourceIdentifier(L"Library://Symbology/Layers/MdfTestCompTypeStyle.LayerDefinition");
+            Ptr<MgResourceIdentifier> ldfres = new MgResourceIdentifier(L"Library://UnitTests/Layers/MdfTestCompTypeStyle.LayerDefinition");
 
             // parse the LDF - this exercises MdfParser deserialization
             Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(ldfres);
@@ -714,7 +714,7 @@ void TestRenderingService::TestCase_SymbologyPoints()
         Ptr<MgSiteConnection> conn = new MgSiteConnection();
 
         // make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://Symbology/Maps/Capitals.MapDefinition");
+        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Capitals.MapDefinition");
         Ptr<MgMap> map = new MgMap();
         map->Create(m_svcResource, mdfres, L"UnitTestSymbology");
 
@@ -754,7 +754,7 @@ void TestRenderingService::TestCase_SymbologyPointsParam()
         Ptr<MgSiteConnection> conn = new MgSiteConnection();
 
         // make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://Symbology/Maps/CapitalsParam.MapDefinition");
+        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/CapitalsParam.MapDefinition");
         Ptr<MgMap> map = new MgMap();
         map->Create(m_svcResource, mdfres, L"UnitTestSymbology");
 
@@ -794,7 +794,7 @@ void TestRenderingService::TestCase_SymbologyLines()
         Ptr<MgSiteConnection> conn = new MgSiteConnection();
 
         // make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://Symbology/Maps/Lines.MapDefinition");
+        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Lines.MapDefinition");
         Ptr<MgMap> map = new MgMap();
         map->Create(m_svcResource, mdfres, L"UnitTestSymbology");
 
@@ -834,7 +834,7 @@ void TestRenderingService::TestCase_SymbologyLinesCrossTick()
         Ptr<MgSiteConnection> conn = new MgSiteConnection();
 
         // make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://Symbology/Maps/LinesCrossTick.MapDefinition");
+        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinesCrossTick.MapDefinition");
         Ptr<MgMap> map = new MgMap();
         map->Create(m_svcResource, mdfres, L"UnitTestSymbology");
 

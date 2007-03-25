@@ -11,7 +11,7 @@
   <BackgroundColor>FFFFFFFF</BackgroundColor>
   <MapLayer>
     <Name>Capitals</Name>
-    <ResourceId>Library://Symbology/Layers/CapitalsParam.LayerDefinition</ResourceId>
+    <ResourceId>Library://UnitTests/Layers/CapitalsParam.LayerDefinition</ResourceId>
     <Selectable>true</Selectable>
     <ShowInLegend>true</ShowInLegend>
     <LegendLabel>Capitals</LegendLabel>
