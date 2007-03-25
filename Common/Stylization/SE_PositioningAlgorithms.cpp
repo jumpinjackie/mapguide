@@ -153,7 +153,6 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     double box_angle_rad = atan2(dy, dx);
 
     SE_Matrix ixform;
-    ixform.setIdentity();
     ixform.translate(-cx, -cy); //factor out point position
     ixform.rotate(-box_angle_rad); //factor out rotation
     //double pixelToMeter = 0.001 / renderer->GetPixelsPerMillimeterScreen();

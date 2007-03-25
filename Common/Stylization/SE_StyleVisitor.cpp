@@ -588,7 +588,7 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
     }
 
     ResizeBox* box = simpleSymbol.GetResizeBox();
-    m_style->useBox = box != NULL;
+    m_style->useBox = (box != NULL);
     if (m_style->useBox)
     {
         ParseDoubleExpression(box->GetSizeX(), m_style->resizeSize[0]);

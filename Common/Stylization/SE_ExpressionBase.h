@@ -204,6 +204,7 @@ struct SE_String
 
     SE_INLINE const wchar_t* evaluate(RS_FilterExecutor* processor)
     {
+        static const wchar_t* sEmpty = L"";
         if (expression)
         {
             delete[] value;
@@ -227,7 +228,7 @@ struct SE_String
             }
         }
 
-        return value;
+        return value? value : sEmpty;
     }
 
     SE_INLINE void operator=(const wchar_t* s)

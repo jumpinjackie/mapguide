@@ -419,7 +419,6 @@ void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& x
 void SE_Renderer::AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angle)
 {
     SE_Matrix xform2;
-    xform2.setIdentity();
     xform2.rotate(angle);
     xform2.translate(xform.x2, xform.y2);
 

@@ -46,7 +46,6 @@ public:
     double mm2pxs;
     double mm2px;
     SE_LineBufferPool* pool;
-    bool useBox;
     LineBuffer* geometry; //only used for SE_PointStyles -- get rid of it if possible
 };
 

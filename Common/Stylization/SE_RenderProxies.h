@@ -114,7 +114,12 @@ struct SE_RenderStyle
           drawLast(false),
           checkExclusionRegions(false),
           addToExclusionRegions(false)
-    { memset (&bounds, 0, sizeof(bounds));}
+    {
+        bounds[0].x = bounds[3].x = +DBL_MAX;
+        bounds[1].x = bounds[2].x = -DBL_MAX;
+        bounds[0].y = bounds[1].y = +DBL_MAX;
+        bounds[2].y = bounds[3].y = -DBL_MAX;
+    }
 
     ~SE_RenderStyle()
     {
