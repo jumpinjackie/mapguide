@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="LayerDefinition-1.1.0.xsd" version="1.1.0">
   <VectorLayerDefinition>
-    <ResourceId>Library://Symbology/Data/Capitals.FeatureSource</ResourceId>
+    <ResourceId>Library://UnitTests/Data/Capitals.FeatureSource</ResourceId>
     <FeatureName>SDF_2_Schema:CN_Capitals</FeatureName>
     <FeatureNameType>FeatureClass</FeatureNameType>
     <PropertyMapping>
@@ -25,7 +25,7 @@
           <LegendLabel></LegendLabel>
           <CompositeSymbolization>
             <SymbolInstance>
-              <SymbolReference>Library://Symbology/Symbols/PointSymbolParam.SymbolDefinition</SymbolReference>
+              <SymbolReference>Library://UnitTests/Symbols/PointSymbolParam.SymbolDefinition</SymbolReference>
               <ParameterOverrides>
                 <Override>
                   <SymbolName>X_on_Box</SymbolName>
@@ -195,7 +195,7 @@
                   <RenderingPass>10</RenderingPass>
                 </SimpleSymbol>
                 <SimpleSymbol>
-                  <SymbolReference>Library://Symbology/Symbols/MdfTestSimpleSymbol.SymbolDefinition</SymbolReference>
+                  <SymbolReference>Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition</SymbolReference>
                   <RenderingPass>20</RenderingPass>
                 </SimpleSymbol>
               </CompoundSymbolDefinition>

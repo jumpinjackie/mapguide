@@ -150,7 +150,7 @@
     <RenderingPass>10</RenderingPass>
   </SimpleSymbol>
   <SimpleSymbol>
-    <SymbolReference>Library://Symbology/Symbols/MdfTestSimpleSymbol.SymbolDefinition</SymbolReference>
+    <SymbolReference>Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition</SymbolReference>
     <RenderingPass>20</RenderingPass>
   </SimpleSymbol>
 </CompoundSymbolDefinition>
