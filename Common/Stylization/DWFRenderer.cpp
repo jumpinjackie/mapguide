@@ -163,29 +163,28 @@ WT_String Util_ConvertString(const wchar_t* wstr)
 //-----------------------------------------------------------------------------
 
 
-WT_Result my_open (WT_File & file)
+WT_Result my_open(WT_File & file)
 {
     //this is freed in EndMap() (loops over all layer streams)
     DWFBufferOutputStream* bos = DWFCORE_ALLOC_OBJECT( DWFBufferOutputStream(100000));
-
     file.set_stream_user_data(bos);
     return WT_Result::Success;
 }
 
-WT_Result my_close (WT_File & file)
+WT_Result my_close(WT_File & file)
 {
     file.set_stream_user_data(WD_Null);
     return WT_Result::Success;
 }
 
-WT_Result my_read (WT_File & /*file*/, int /*desired_bytes*/, int & /*bytes_read*/, void * /*buffer*/)
+WT_Result my_read(WT_File & /*file*/, int /*desired_bytes*/, int & /*bytes_read*/, void * /*buffer*/)
 {
     //should never get called, overloaded for consistency
     _ASSERT(false);
     return WT_Result::Success;
 }
 
-WT_Result my_write (WT_File & file,int size,void const * buffer)
+WT_Result my_write(WT_File & file, int size, void const * buffer)
 {
     DWFBufferOutputStream* fp = (DWFBufferOutputStream*) file.stream_user_data();
     fp->write(buffer, size);
@@ -228,8 +227,10 @@ DWFRenderer::DWFRenderer()
   m_pPage(NULL),
   m_input(NULL),
   m_xformer(NULL),
+  m_bHaveViewport(false),
   m_bHaveLabels(false),
-  m_bHaveViewport(false)
+  m_drawableCount(0),
+  m_labelMacroCount(0)
 {
     m_lLayerStreams.reserve(8);
     m_lLabelStreams.reserve(8);
@@ -325,13 +326,13 @@ void DWFRenderer::EndMap()
     for (stream_list::iterator iter = m_lLayerStreams.begin();
         iter != m_lLayerStreams.end(); iter++)
     {
-        DWFCORE_FREE_OBJECT ( *iter);
+        DWFCORE_FREE_OBJECT( *iter);
     }
 
     for (stream_list::iterator iter = m_lLabelStreams.begin();
         iter != m_lLabelStreams.end(); iter++)
     {
-        DWFCORE_FREE_OBJECT ( *iter);
+        DWFCORE_FREE_OBJECT( *iter);
     }
 
     for (stream_list::iterator iter = m_lLayoutStreams.begin();
@@ -421,7 +422,7 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* legendInfo, RS_FeatureClassInfo* cl
     m_w2dFile->set_stream_close_action(my_close);
     m_w2dFile->set_stream_read_action (my_read);
     m_w2dFile->set_stream_seek_action (my_seek);
-    m_w2dFile->set_stream_write_action (my_write);
+    m_w2dFile->set_stream_write_action(my_write);
     m_w2dFile->set_stream_user_data(WD_Null);
 
     //overload WHIP I/O functions with our memory streaming ones
@@ -429,7 +430,7 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* legendInfo, RS_FeatureClassInfo* cl
     m_w2dLabels->set_stream_close_action(my_close);
     m_w2dLabels->set_stream_read_action (my_read);
     m_w2dLabels->set_stream_seek_action (my_seek);
-    m_w2dLabels->set_stream_write_action (my_write);
+    m_w2dLabels->set_stream_write_action(my_write);
     m_w2dLabels->set_stream_user_data(WD_Null);
 
     m_bHaveLabels = false;
@@ -460,6 +461,8 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* legendInfo, RS_FeatureClassInfo* cl
     }
 
     m_imgID = 0;
+    m_drawableCount = 0;
+    m_labelMacroCount = 0;
 
     // remember the layer info
     m_layerInfo = legendInfo;
@@ -483,25 +486,21 @@ void DWFRenderer::EndLayer()
     delete m_w2dFile;
     m_w2dFile = NULL;
 
-    if (m_w2dLabels)
+    if (m_bHaveLabels && m_labelMacroCount > 0)
     {
-        if (m_bHaveLabels)
-        {
-            //only need to keep track of label w2d if
-            //stream was opened -- which happens when there
-            //is at least one label
-            m_lLabelStreams.push_back((DWFBufferOutputStream*)m_w2dLabels->stream_user_data());
-        }
-        else
-            m_lLabelStreams.push_back(NULL);//add NULL for no labels
-
-        m_w2dLabels->close();
-        delete m_w2dLabels;
-        m_w2dLabels = NULL;
-        m_bHaveLabels = false;
+        //Only need to keep track of label w2d if the stream was opened,
+        //which happens when there is at least one label.  The check for
+        //macros ensures that the w2d is not empty, since the viewer
+        //doesn't like it otherwise (i.e. it crashes).
+        m_lLabelStreams.push_back((DWFBufferOutputStream*)m_w2dLabels->stream_user_data());
     }
     else
         m_lLabelStreams.push_back(NULL); //add NULL for no labels
+
+    m_w2dLabels->close();
+    delete m_w2dLabels;
+    m_w2dLabels = NULL;
+    m_bHaveLabels = false;
 
     if (m_featureClass)
     {
@@ -549,11 +548,11 @@ void DWFRenderer::StartFeature(RS_FeatureReader* feature,
 //-----------------------------------------------------------------------------
 void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
 {
-    LineBuffer* workbuffer = srclb->Optimize(m_drawingScale, &m_lbPool);
+    LineBuffer* geom = srclb->Optimize(m_drawingScale, &m_lbPool);
 
-    if (workbuffer->point_count() == 0)
+    if (geom->point_count() == 0)
     {
-        m_lbPool.FreeLineBuffer(workbuffer);
+        m_lbPool.FreeLineBuffer(geom);
         return;
     }
 
@@ -561,25 +560,21 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     {
         WriteFill(fill);
 
-        _TransformPointsNoClamp(workbuffer->points(), workbuffer->point_count());
+        _TransformPointsNoClamp(geom->points(), geom->point_count());
 
-        //just a polygon, no need for a contourset
-        if (workbuffer->cntr_count() == 1)
+        if (geom->cntr_count() == 1)
         {
-            //fill
-            WT_Polygon fillpoly(workbuffer->point_count(), m_wtPointBuffer, false);
-            m_w2dFile->desired_rendition().fill() = true;
-            m_w2dFile->desired_rendition().color() = Util_ConvertColor(fill.color());
-            fillpoly.serialize(*m_w2dFile);
+            // just a polygon, no need for a contourset
+            WT_Polygon polygon(geom->point_count(), m_wtPointBuffer, false);
+            polygon.serialize(*m_w2dFile);
+            ++m_drawableCount;
         }
-        else //otherwise make a contour set
+        else
         {
-            //write out the fill (as a contour set)
-            //TODO:::::: &cntrs.front() may not work and is not legal
-            WT_Contour_Set cset(*m_w2dFile, workbuffer->cntr_count(), (WT_Integer32*)workbuffer->cntrs(),
-                workbuffer->point_count(), m_wtPointBuffer, true);
-
+            // otherwise make a contour set
+            WT_Contour_Set cset(*m_w2dFile, geom->cntr_count(), (WT_Integer32*)geom->cntrs(), geom->point_count(), m_wtPointBuffer, true);
             cset.serialize(*m_w2dFile);
+            ++m_drawableCount;
         }
     }
 
@@ -589,7 +584,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     //write out the polygon outline as a bunch of WT_Polylines
     if (fill.outline().color().alpha() == 0)
     {
-        m_lbPool.FreeLineBuffer(workbuffer);
+        m_lbPool.FreeLineBuffer(geom);
         return;
     }
 
@@ -612,16 +607,16 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     else
         m_w2dFile->desired_rendition().line_pattern() = WT_Line_Pattern(WT_Line_Pattern::Solid);
 
-    WritePolylines(workbuffer);
+    WritePolylines(geom);
 
     //zero out the dash pattern -- must do when done with it
     if (m_w2dFile->desired_rendition().dash_pattern() != WT_Dash_Pattern::kNull)
         m_w2dFile->desired_rendition().dash_pattern() = WT_Dash_Pattern::kNull;
 
     if (m_obsMesh)
-        m_obsMesh->ProcessPoint(workbuffer->points()[0], workbuffer->points()[1]);
+        m_obsMesh->ProcessPoint(geom->points()[0], geom->points()[1]);
 
-    m_lbPool.FreeLineBuffer(workbuffer);
+    m_lbPool.FreeLineBuffer(geom);
 }
 
 
@@ -687,7 +682,7 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
 {
     if (format != RS_ImageFormat_RGBA && format != RS_ImageFormat_PNG)
     {
-        //TODO:
+        //TODO: support other formats...
         _ASSERT(false);
         return;
     }
@@ -719,6 +714,7 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
                     false);
 
         img.serialize(*m_w2dFile);
+        ++m_drawableCount;
     }
     else if (format == RS_ImageFormat_PNG)
     {
@@ -734,6 +730,7 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
                     false);
 
         img.serialize(*m_w2dFile);
+        ++m_drawableCount;
     }
 }
 
@@ -934,6 +931,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                         file->desired_rendition().color() = WT_Color(255,0,0);
                         WT_Polyline symbol(npts, pts, true);
                         symbol.serialize(*file);
+                        ++m_drawableCount;
                     }
                     else
                     {
@@ -944,6 +942,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                         WT_Polygon symbolFill(npts, pts, true);
                         symbolFill.serialize(*file);
+                        ++m_drawableCount;
 
                         if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
                             file->desired_rendition().color() = WT_Color(127,127,127);
@@ -952,10 +951,11 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                         WT_Polyline symbol(npts, pts, true);
                         symbol.serialize(*file);
+                        ++m_drawableCount;
                     }
 
                 //end macro definition
-                EndMacro(file);
+                EndMacro(file, 0);
             }
 
             PlayMacro(file, 0, rs_max(mdef.width(), mdef.height()), mdef.units(), x, y);
@@ -988,7 +988,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                 AddDWFContent(symbol, &trans, mdef.name(), RS_String(L""), RS_String(L""));
 
             //end macro definition and play the macro
-            EndMacro(file);
+            EndMacro(file, 0);
 
             m_bIsSymbolW2D = false;
         }
@@ -1052,14 +1052,16 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                 WT_Polyline excludearea(2, axisbox, true);
                 excludearea.serialize(*file);
+                ++m_drawableCount;
             }
             else
             {
                 WT_Polyline excludearea(4, pts, true);
                 excludearea.serialize(*file);
+                ++m_drawableCount;
             }
 
-        EndMacro(file);
+        EndMacro(file, 1);
 
         //write the exclusion area
         file->write("(Overpost All False True (");
@@ -1160,7 +1162,7 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 
                 ProcessMultilineText(file, text, info->tdef(), ioffx, ioffy);
 
-            EndMacro(file);
+            EndMacro(file, i+1);
         }
         else
         {
@@ -1171,7 +1173,7 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 
                 ProcessMultilineText(file, text, info->tdef(), 0, 0);
 
-            EndMacro(file);
+            EndMacro(file, i+1);
         }
     }
 
@@ -1294,17 +1296,26 @@ void DWFRenderer::BeginMacro(WT_File* file, int id, int scale)
     char temp[256];
     sprintf(temp, "(Macro %d %d (", id, scale);
     file->write(temp);
+
+    m_macroDrawableCounts[id] = m_drawableCount;
 }
 
-void DWFRenderer::EndMacro(WT_File* file)
+void DWFRenderer::EndMacro(WT_File* file, int id)
 {
     //close the Define Macro opcode
     file->write("))");
+
+    //update the number of drawables contained in this macro
+    m_macroDrawableCounts[id] = m_drawableCount - m_macroDrawableCounts[id];
 }
 
 
 void DWFRenderer::PlayMacro(WT_File* file, int id, double sizeMeters, RS_Units unit, double x, double y)
 {
+    // don't play empty macro definitions
+    if (m_macroDrawableCounts[id] == 0)
+        return;
+
     //play the macro at the given position with the given screen size
     int size = (int)_MeterToW2DMacroUnit(unit, sizeMeters);
 
@@ -1318,6 +1329,10 @@ void DWFRenderer::PlayMacro(WT_File* file, int id, double sizeMeters, RS_Units u
 
     sprintf(temp, " G %d S %d M 1 %d,%d", id, size, ix, iy);
     file->write(temp);
+
+    // keep track if this macro was played inside the label w2d
+    if (file == m_w2dLabels)
+        ++m_labelMacroCount;
 }
 
 
@@ -1419,6 +1434,7 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
         WT_Logical_Point pt(x, y);
         WT_Text wttext(pt, wtstr);
         wttext.serialize(*file);
+        ++m_drawableCount;
         return;
     }
 
@@ -1466,6 +1482,7 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
         WT_Logical_Point pt(xpos, ypos);
         WT_Text wttext(pt, wtstr);
         wttext.serialize(*file);
+        ++m_drawableCount;
     }
 }
 
@@ -1590,18 +1607,17 @@ void DWFRenderer::WritePolylines(LineBuffer* srclb)
 
     //save to dwf polylines
     int index = 0;
-
     for (int i=0; i<srclb->cntr_count(); i++)
     {
         int cntr_size = srclb->cntrs()[i];
         if (cntr_size > 0)
         {
             _TransformPointsNoClamp(srclb->points()+index, cntr_size);
+            index += 2*cntr_size;
 
             WT_Polyline polyline(cntr_size, m_wtPointBuffer, false);
             polyline.serialize(*m_w2dFile);
-
-            index += 2*cntr_size;
+            ++m_drawableCount;
         }
     }
 }
@@ -1680,7 +1696,7 @@ void DWFRenderer::WriteFill(RS_FillStyle& fill)
 
 //-----------------------------------------------------------------------------
 //
-// Serializes font and text alignement and rendering settings
+// Serializes font and text alignment and rendering settings
 //
 //-----------------------------------------------------------------------------
 void DWFRenderer::WriteTextDef(WT_File* file, RS_TextDef& tdef)
@@ -2017,7 +2033,6 @@ void DWFRenderer::StartLayout(RS_Bounds& extents)
     //scale used to convert to DWF logical coordinates in the range [0, 2^30-1]
     m_scale = (double)(INT_MAX/2) / rs_max(m_extents.width(), m_extents.height());
 
-    //m_layerName = itemName;
     m_w2dFile = new WT_File();
     m_w2dLabels = new WT_File();
 
@@ -2026,7 +2041,7 @@ void DWFRenderer::StartLayout(RS_Bounds& extents)
     m_w2dFile->set_stream_close_action(my_close);
     m_w2dFile->set_stream_read_action (my_read);
     m_w2dFile->set_stream_seek_action (my_seek);
-    m_w2dFile->set_stream_write_action (my_write);
+    m_w2dFile->set_stream_write_action(my_write);
     m_w2dFile->set_stream_user_data(WD_Null);
 
     //overload WHIP I/O functions with our memory streaming ones
@@ -2034,7 +2049,7 @@ void DWFRenderer::StartLayout(RS_Bounds& extents)
     m_w2dLabels->set_stream_close_action(my_close);
     m_w2dLabels->set_stream_read_action (my_read);
     m_w2dLabels->set_stream_seek_action (my_seek);
-    m_w2dLabels->set_stream_write_action (my_write);
+    m_w2dLabels->set_stream_write_action(my_write);
     m_w2dLabels->set_stream_user_data(WD_Null);
 
     m_bHaveLabels = false;
@@ -2042,6 +2057,8 @@ void DWFRenderer::StartLayout(RS_Bounds& extents)
     OpenW2D(m_w2dFile);
 
     m_imgID = 0;
+    m_drawableCount = 0;
+    m_labelMacroCount = 0;
 }
 
 
@@ -2057,21 +2074,21 @@ void DWFRenderer::EndLayout()
     delete m_w2dFile;
     m_w2dFile = NULL;
 
-    if (m_w2dLabels)
+    if (m_bHaveLabels && m_labelMacroCount > 0)
     {
-        if (m_bHaveLabels)
-        {
-            //only need to keep track of label w2d if
-            //stream was opened -- which happens when there
-            //is at least one label
-            m_lLayoutLabelStreams.push_back((DWFBufferOutputStream*)m_w2dLabels->stream_user_data());
-        }
-
-        m_w2dLabels->close();
-        delete m_w2dLabels;
-        m_w2dLabels = NULL;
-        m_bHaveLabels = false;
+        //Only need to keep track of label w2d if the stream was opened,
+        //which happens when there is at least one label.  The check for
+        //macros ensures that the w2d is not empty, since the viewer
+        //doesn't like it otherwise (i.e. it crashes).
+        m_lLayoutLabelStreams.push_back((DWFBufferOutputStream*)m_w2dLabels->stream_user_data());
     }
+    else
+        m_lLayoutLabelStreams.push_back(NULL); //add NULL for no labels
+
+    m_w2dLabels->close();
+    delete m_w2dLabels;
+    m_w2dLabels = NULL;
+    m_bHaveLabels = false;
 }
 
 
@@ -2129,11 +2146,11 @@ void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, u
         if (cntr_size > 0)
         {
             _TransformPoints(geom->points() + index, cntr_size, xform);
+            index += 2*cntr_size;
 
             WT_Polyline polyline(cntr_size, m_wtPointBuffer, false);
             polyline.serialize(*file);
-
-            index += 2*cntr_size;
+            ++m_drawableCount;
         }
     }
 
@@ -2165,16 +2182,16 @@ void DWFRenderer::DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, un
     if (geom->cntr_count() == 1)
     {
         // just a polygon, no need for a contourset
-        WT_Polygon fillpoly(geom->point_count(), m_wtPointBuffer, false);
-        fillpoly.serialize(*file);
+        WT_Polygon polygon(geom->point_count(), m_wtPointBuffer, false);
+        polygon.serialize(*file);
+        ++m_drawableCount;
     }
     else
     {
         // otherwise make a contour set
-        WT_Contour_Set cset(*file, geom->cntr_count(), (WT_Integer32*)geom->cntrs(),
-                            geom->point_count(), m_wtPointBuffer, true);
-
+        WT_Contour_Set cset(*file, geom->cntr_count(), (WT_Integer32*)geom->cntrs(), geom->point_count(), m_wtPointBuffer, true);
         cset.serialize(*file);
+        ++m_drawableCount;
     }
 
     // zero out the dash pattern -- must do when done with it
@@ -2183,18 +2200,64 @@ void DWFRenderer::DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, un
 }
 
 
-void DWFRenderer::DrawScreenRaster(unsigned char* /*data*/,
-                                   int            /*length*/,
-                                   RS_ImageFormat /*format*/,
-                                   int            /*native_width*/,
-                                   int            /*native_height*/,
-                                   double         /*x*/,
-                                   double         /*y*/,
-                                   double         /*w*/,
-                                   double         /*h*/,
-                                   double         /*angledeg*/)
+void DWFRenderer::DrawScreenRaster(unsigned char* data,
+                                   int            length,
+                                   RS_ImageFormat format,
+                                   int            native_width,
+                                   int            native_height,
+                                   double         x,
+                                   double         y,
+                                   double         w,
+                                   double         h,
+                                   double         angledeg)
 {
-    // TODO
+    if (format != RS_ImageFormat_RGBA && format != RS_ImageFormat_PNG)
+    {
+        //TODO: support other formats...
+        _ASSERT(false);
+        return;
+    }
+
+    // draw to the active file if it's set
+    WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
+
+    WT_Integer32 x0 = (WT_Integer32)(x - 0.5*w);
+    WT_Integer32 y0 = (WT_Integer32)(y - 0.5*h);
+    WT_Integer32 x1 = (WT_Integer32)(x + 0.5*w);
+    WT_Integer32 y1 = (WT_Integer32)(y + 0.5*h);
+
+    if (format == RS_ImageFormat_RGBA)
+    {
+        WT_Image img((WT_Unsigned_Integer16)native_height,
+                     (WT_Unsigned_Integer16)native_width,
+                     WT_Image::RGBA,
+                     m_imgID++,
+                     NULL,
+                     length,
+                     (WT_Byte*)data,
+                     WT_Logical_Point(x0, y0),
+                     WT_Logical_Point(x1, y1),
+                     false);
+
+        img.serialize(*file);
+        ++m_drawableCount;
+    }
+    else if (format == RS_ImageFormat_PNG)
+    {
+        WT_PNG_Group4_Image img((WT_Unsigned_Integer16)native_height,
+                     (WT_Unsigned_Integer16)native_width,
+                     WT_PNG_Group4_Image::PNG,
+                     m_imgID++,
+                     NULL,
+                     length,
+                     (WT_Byte*)data,
+                     WT_Logical_Point(x0, y0),
+                     WT_Logical_Point(x1, y1),
+                     false);
+
+        img.serialize(*file);
+        ++m_drawableCount;
+    }
 }
 
 
@@ -2207,6 +2270,9 @@ void DWFRenderer::DrawScreenText(const RS_String& /*txt*/,
                                  double           /*param_position*/)
 {
     // TODO
+
+    // draw to the active file if it's set
+//  WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
 
 //  WriteTextDef(file, info->tdef());
 }
@@ -2318,7 +2384,7 @@ void DWFRenderer::ProcessLabelGroup(SE_LabelInfo*   labels,
             DrawSymbol(info->symbol->symbol, m, info->anglerad);
             m_w2dActive = NULL;
 
-        EndMacro(file);
+        EndMacro(file, i+1);
     }
 
     // now play the label macros inside an overpost
