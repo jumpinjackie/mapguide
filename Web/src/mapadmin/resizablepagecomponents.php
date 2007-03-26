@@ -68,9 +68,9 @@
     define( 'CONFIGURE_SERVICES_TITLE',         "Configure Services" );
     define( 'LOG_MANAGEMENT_TITLE',             "Manage Logs" );
     define( 'SELECT_SITE_SERVER_TITLE',         "Select Site Server" );
-    define( 'UNMANAGEDDATA_MANAGEMENT_TITLE',   "Configure Unmanaged Data" );
-    define( 'ADD_UNMANAGEDDATA_TITLE',          "Add Mapping" );
-    define( 'EDIT_UNMANAGEDDATA_TITLE',         "Edit Mapping" );
+    define( 'UNMANAGEDDATA_MANAGEMENT_TITLE',   "Configure External Files" );
+    define( 'ADD_UNMANAGEDDATA_TITLE',          "Add Alias" );
+    define( 'EDIT_UNMANAGEDDATA_TITLE',         "Edit Alias" );
 
     define( 'ADD_GROUP_TITLE',                  "Add Group" );
     define( 'EDIT_GROUP_TITLE',                 "Edit Group" );
@@ -88,9 +88,9 @@
     define( 'CONFIGURE_WFS_TITLE',              "Configure WFS" );
 
 
-    define( 'UNMANAGEDDATA_MANAGEMENT_MENU_ITEM',                    "Configure Unmanaged Data" );
-    define( 'ADD_UNMANAGEDDATA_MENU_ITEM',                           "Add Mapping" );
-    define( 'EDIT_UNMANAGEDDATA_MENU_ITEM',                          "Edit Mapping" );
+    define( 'UNMANAGEDDATA_MANAGEMENT_MENU_ITEM',                    "Configure External Files" );
+    define( 'ADD_UNMANAGEDDATA_MENU_ITEM',                           "Add Alias" );
+    define( 'EDIT_UNMANAGEDDATA_MENU_ITEM',                          "Edit Alias" );
     $unmanagedDataMenuGroup[ UNMANAGEDDATA_MANAGEMENT_MENU_ITEM ] =  'unmanageddatamanagement.php';
     $unmanagedDataMenuGroup[ ADD_UNMANAGEDDATA_MENU_ITEM ] =         'addunmanageddata.php';
     $unmanagedDataMenuGroup[ EDIT_UNMANAGEDDATA_MENU_ITEM ] =        'editunmanageddata.php';

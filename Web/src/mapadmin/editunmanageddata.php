@@ -113,7 +113,7 @@ try
         $confirmationMsg = sprintf( $confSuccessfulAddition, $mappingName );
         $selectedMapping = $mappingName;
         SaveSessionVars();
-        header( 'Location:  unmanageddatamanagement.php?'.strip_tags(SID) );
+        header( 'Path to External File:  unmanageddatamanagement.php?'.strip_tags(SID) );
         exit();
     }
 }
@@ -156,15 +156,18 @@ catch ( Exception $e )
                 <!-- Input Area -->
                 <table border="0" cellspacing="0" class="inputForm">
                     <tr>
-                        <td class="editUserInputLabel">Mapping Name :</td>
+                        <td class="editUserInputLabel">Alias Name:</td>
                         <td class="inputFormValue"><input class="inputFormValue" name="<?php echo $mappingNameID?>" type="text" value="<?php echo $mappingName?>" size="60"></td>
                     </tr>
                     <tr>
-                        <td class="editUserInputLabel">Location :</td>
+                        <td class="editUserInputLabel">Path to External Folder:</td>
                         <td class="inputFormValue"><input class="inputFormValue" name="<?php echo $locationID?>" type="text" value="<?php echo $location?>" size="60"></td>
                     </tr>
                 </table>
-            <?php EndContentArea( true, $formName, $mappingNameID );?>
+            <?php
+            DisplaySaveCancelBar();
+            EndContentArea( true, $formName, $mappingNameID );
+            ?>
             <!-- End of Contents Area --------------------------------------------------------------------------------------------->
 
         </tr>

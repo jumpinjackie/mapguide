@@ -144,15 +144,18 @@ catch ( Exception $e )
                 <!-- Input Area -->
                 <table border="0" cellspacing="0" class="inputForm">
                     <tr>
-                        <td class="addUserInputLabel">Mapping Name :</td>
+                        <td class="addUserInputLabel">Alias Name:</td>
                         <td class="inputFormValue"><input class="inputFormValue" name="<?php echo $mappingNameID?>" type="text" value="<?php echo $mappingName?>"></td>
                     </tr>
                     <tr>
-                        <td class="addUserInputLabel">Location :</td>
+                        <td class="addUserInputLabel">Path to External Folder:</td>
                         <td class="inputFormValue"><input class="inputFormValue" name="<?php echo $locationID?>" type="text" value="<?php echo $location?>"></td>
                     </tr>
                 </table>
-            <?php EndContentArea( true, $formName, $mappingNameID ); ?>
+            <?php
+            DisplaySaveCancelBar();
+            EndContentArea( true, $formName, $mappingNameID );
+            ?>
             <!-- End of Contents Area --------------------------------------------------------------------------------------------->
 
         </tr>
