@@ -22,6 +22,7 @@
 #include "ServerMappingService.h"
 #include "ServerSiteService.h"
 #include "../Common/Manager/FdoConnectionManager.h"
+#include "CppUnitExtensions.h"
 
 const STRING TEST_LOCALE = L"en";
 
@@ -302,6 +303,33 @@ void TestMappingService::TestCase_GetMapUpdate()
     }
 }
 
+void TestMappingService::TestCase_SaveMap()
+{
+    try
+    {
+        // Create a runtime map, save it, then open it.
+        Ptr<MgResourceIdentifier> mapDefId = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+        STRING mapName = L"UnitTestSheboygan";
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+
+        map->Create(mapDefId, mapName);
+        map->Save();
+        map->Open(mapName);
+
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        assert(layers->GetCount() > 0);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
 
 void TestMappingService::TestCase_GetMultiPlot()
 {

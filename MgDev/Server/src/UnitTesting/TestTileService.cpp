@@ -94,6 +94,11 @@ void TestTileService::TestStart()
         }
         #endif
 
+        // set user info
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+
         // ------------------------------------------------------
         // base map source data
         // ------------------------------------------------------
@@ -169,6 +174,11 @@ void TestTileService::TestEnd()
 {
     try
     {
+        // set user info
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+
         // ------------------------------------------------------
         // base map source data
         // ------------------------------------------------------

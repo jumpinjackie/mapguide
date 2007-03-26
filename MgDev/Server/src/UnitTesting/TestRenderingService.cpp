@@ -88,6 +88,11 @@ void TestRenderingService::TestStart()
         }
         #endif
 
+        // set user info
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+
         // publish the map definition
         Ptr<MgResourceIdentifier> mapres1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
         Ptr<MgByteSource> mdfsrc1 = new MgByteSource(L"../UnitTestFiles/UT_Sheboygan.mdf", false);
@@ -284,6 +289,11 @@ void TestRenderingService::TestEnd()
 {
     try
     {
+        // set user info
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+
         // delete the map definition
         Ptr<MgResourceIdentifier> mapres1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
         m_svcResource->DeleteResource(mapres1);

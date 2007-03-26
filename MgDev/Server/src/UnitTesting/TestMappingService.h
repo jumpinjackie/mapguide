@@ -27,6 +27,7 @@ class TestMappingService : public CppUnit::TestFixture
 
     CPPUNIT_TEST(TestCase_GetMap);
     CPPUNIT_TEST(TestCase_GetMapUpdate);
+    CPPUNIT_TEST(TestCase_SaveMap);
     CPPUNIT_TEST(TestCase_GetMultiPlot);
     CPPUNIT_TEST(TestCase_GetPlotUsingCurrentCenterAndScale);
     CPPUNIT_TEST(TestCase_GetPlotUsingOverriddenCenterAndScale);
@@ -50,6 +51,7 @@ public:
 
     void TestCase_GetMap();
     void TestCase_GetMapUpdate();
+    void TestCase_SaveMap();
     void TestCase_GetPlot();
     void TestCase_GetMultiPlot();
     void TestCase_GetPlotUsingCurrentCenterAndScale();
