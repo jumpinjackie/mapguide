@@ -189,6 +189,15 @@ catch ( Exception $e )
                     DisplayConfirmationMsg( $confirmationMsg );
                     DisplayErrorMsg( $errorMsg );
                 ?>
+
+                <div class="textMsg">
+                    <br>
+                    Configure aliases to external folders containing spatial files such as Raster, SDF, and SHP.
+                    You can then connect directly to these external files, instead of loading them into the MapGuide Library.
+                    <br><br>
+                </div>
+
+
                     <input type="hidden" name="<?php echo TABLE_PAGE_ID?>" value="<?php echo $currPage?>">
                     <input type="hidden" name="<?php echo $sortColumnID?>" value="<?php echo $sortColumn?>">
                     <input type="hidden" name="<?php echo $sortDirectionID?>" value="<?php echo $sortDirection?>">
@@ -200,22 +209,22 @@ catch ( Exception $e )
                     // Toolbar
                     $buttons = array();
                     $button = new ToolbarButtonRecord();
-                        $button->label = "Add Mapping";
+                        $button->label = "Add Alias";
                         $button->icon = "images/new.gif";
                         $button->action = "SetElementValue('".NEXT_PAGE_ID."', 'addunmanageddata.php');";
                     $buttons[0] = $button;
                     $button = new ToolbarButtonRecord();
-                        $button->label = "Edit Mapping";
+                        $button->label = "Edit Alias";
                         $button->icon = "images/edit.gif";
                         $button->disabled = !empty( $selectedMapping ) ? false : true;
                         $button->action = "SetElementValue('".NEXT_PAGE_ID."', 'editunmanageddata.php');";
                     $buttons[1] = $button;
                     $button = new ToolbarButtonRecord();
-                        $button->label = "Delete Mapping";
+                        $button->label = "Delete Alias";
                         $button->icon = "images/delete.gif";
                         $button->submitForm = false;
                         $button->disabled = !empty( $selectedMapping ) ? false : true;
-                        $button->action = "ConditionalSubmitForm( '".$formName."', 'Are you sure you want to delete the selected mapping?', '".DELETE_SELECTION_ID."', true );";
+                        $button->action = "ConditionalSubmitForm( '".$formName."', 'Are you sure you want to delete the selected alias?', '".DELETE_SELECTION_ID."', true );";
                     $buttons[2] = $button;
                     DisplayToolbar( $buttons, $formName );
                 ?>
@@ -231,8 +240,8 @@ catch ( Exception $e )
                             $sortByLocationStr         = "SetElementValue( '".$sortColumnID."', '".ID_SORT_COLUMN."');";
                         ?>
                         <td class="dataHeader">&nbsp;</td>
-                        <td class="dataHeader"><a href="#" onClick="<?php echo $sortDirectionStr.$sortByMappingNameStr?>SubmitForm('<?php echo $formName?>');">Mapping Name<?php echo $mappingNameSortIconStr ?></a> </td>
-                        <td class="dataHeader"><a href="#" onClick="<?php echo $sortDirectionStr.$sortByLocationStr?>SubmitForm('<?php echo $formName?>');">Location<?php echo $locationSortIconStr ?></a> </td>
+                        <td class="dataHeader"><a href="#" onClick="<?php echo $sortDirectionStr.$sortByMappingNameStr?>SubmitForm('<?php echo $formName?>');">Alias Name<?php echo $mappingNameSortIconStr ?></a> </td>
+                        <td class="dataHeader"><a href="#" onClick="<?php echo $sortDirectionStr.$sortByLocationStr?>SubmitForm('<?php echo $formName?>');">Path to External Folder<?php echo $locationSortIconStr ?></a> </td>
                     </tr>
 
                     <?php

@@ -29,9 +29,9 @@
     $errUserNameMissing = "User's name is not specified.";
     $errNoGroupSelectionForDelete = "Group must be selected in order to delete.";
     $errGroupNameMissing = "Group's name is not specified.";
-    $errMappingNameMissing = "Mapping name is not specified.";
-    $errMappingNameExists = "Mapping name already exists.";
-    $errLocationMissing = "Location is not specified.";
+    $errMappingNameMissing = "Alias name is not specified.";
+    $errMappingNameExists = "Alias name already exists.";
+    $errLocationMissing = "Path to external folder is not specified.";
     $errInvalidInput = "Input values are invalid.";
     $errInvalidServerName = "Server name must be specified.";
     $errInvalidServerAddress = "Server IP address must be specified.";
