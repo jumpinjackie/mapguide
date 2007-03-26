@@ -115,8 +115,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     InitializeResourceService(resourceService);
     m_trackChangesDisabled = true;
 
-    m_mapDefinitionId = mapDefinition;
-    SAFE_ADDREF((MgResourceIdentifier*)m_mapDefinitionId);
+    m_mapDefinitionId = SAFE_ADDREF(mapDefinition);
     m_name = mapName;
 
     //Generate a unique id for this map
@@ -402,6 +401,7 @@ void MgMap::Create(MgResourceIdentifier* mapDefinition, CREFSTRING mapName)
 //
 void MgMap::Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName)
 {
+    m_name = mapName;
     MgMapBase::Create(mapSRS, mapExtent, mapName);
     m_unpackedLayersGroups = true;
 }
@@ -418,9 +418,18 @@ void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
     m_trackChangesDisabled = true;
 
     STRING sessionId;
-    Ptr<MgUserInformation> userInfo = m_resourceService->GetUserInfo();
+    Ptr<MgUserInformation> userInfo;
 
-    if (userInfo.p != NULL)
+    if (NULL == m_siteConnection.p)
+    {
+        userInfo = m_resourceService->GetUserInfo();
+    }
+    else
+    {
+        userInfo = m_siteConnection->GetUserInfo();
+    }
+
+    if (NULL != userInfo.p)
     {
         sessionId = userInfo->GetMgSessionId();
     }
@@ -436,6 +445,8 @@ void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
     }
 
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Session:" + sessionId + L"//" + mapName + L"." + MgResourceType::Map);
+
+    m_name = mapName;
     MgResource::Open(m_resourceService, resId);
 
     //Note: Layers and Groups are loaded on demand by UnpackLayersAndGroups
@@ -464,8 +475,11 @@ void MgMap::Save(MgResourceService* resourceService)
 
     InitializeResourceService(resourceService);
 
-    if(m_resId == (MgResourceIdentifier*)NULL)
-        throw new MgNullReferenceException(L"MgMap.Save", __LINE__, __WFILE__, NULL, L"", NULL);
+    if (NULL == m_resId.p)
+    {
+        throw new MgNullReferenceException(L"MgMap.Save",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     m_inSave = true;
 
@@ -502,8 +516,12 @@ void MgMap::Save(MgResourceService* resourceService, MgResourceIdentifier* resou
     InitializeResourceService(resourceService);
 
     m_resId = SAFE_ADDREF(resourceId);
-    if(m_resId == (MgResourceIdentifier*)NULL)
-        throw new MgNullReferenceException(L"MgMap.Save", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    if (NULL == m_resId.p)
+    {
+        throw new MgNullReferenceException(L"MgMap.Save",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     m_inSave = true;
 
@@ -534,7 +552,27 @@ void MgMap::Save(MgResourceService* resourceService, MgResourceIdentifier* resou
 ///
 void MgMap::Save()
 {
-    Save(NULL);
+    if (NULL == m_resId.p)
+    {
+        if (NULL == m_siteConnection.p || m_name.empty())
+        {
+            throw new MgNullReferenceException(L"MgMap.Save",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        else
+        {
+            Ptr<MgUserInformation> userInfo = m_siteConnection->GetUserInfo();
+            STRING sessionId = userInfo->GetMgSessionId();
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(
+                L"Session:" + sessionId + L"//" + m_name + L"." + MgResourceType::Map);
+
+            Save(NULL, resId);
+        }
+    }
+    else
+    {
+        Save(NULL);
+    }
 }
 
 //////////////////////////////////////////////////////////////
