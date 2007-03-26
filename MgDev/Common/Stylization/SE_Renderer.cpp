@@ -187,21 +187,21 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
     for (int i = 0; i < geometry->point_count(); i++)
     {
         double x = geometry->points()[2*i];
-        double y= geometry->points()[2*i+1];
+        double y = geometry->points()[2*i+1];
 
         //transform to screen space -- geometry is in [the original] mapping space
         WorldToScreenPoint(x, y, x, y);
 
         xform.setIdentity();
         xform.translate(x, y);
-        double angle = 0;//TODO: angle needs to be added to the RenderPointStyle
+        double angle = 0.0; //TODO: angle needs to be added to the RenderPointStyle
         if (style->drawLast)
-            AddLabel(geometry, style, xform, 0);
+            AddLabel(geometry, style, xform, 0.0);
         else
         {
             DrawSymbol(style->symbol, xform, angle);
 
-            double angle = 0;
+            double angle = 0.0;
             if (style->addToExclusionRegions)
                 AddExclusionRegion(style, xform, angle);
         }
