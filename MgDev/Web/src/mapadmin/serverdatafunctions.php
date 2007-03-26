@@ -922,8 +922,10 @@
     {
         var $displayName;
         var $displayNamePropStr;
-        var $defaultLocale;
-        var $defaultLocalePropStr;
+        var $locale;
+        var $localePropStr;
+        var $defaultMessageLocale;
+        var $defaultMessageLocalePropStr;
         var $localizationResourcesPath;
         var $localizationResourcesPathPropStr;
         var $tcpIpMtu;
@@ -945,8 +947,10 @@
         {
             $this->displayName = "";
             $this->displayNamePropStr = MgConfigProperties::GeneralPropertyDisplayName;
-            $this->defaultLocale = "";
-            $this->defaultLocalePropStr = MgConfigProperties::GeneralPropertyDefaultMessageLocale;
+            $this->locale = "";
+            $this->localePropStr = MgConfigProperties::GeneralPropertyLocale;
+            $this->defaultMessageLocale = "";
+            $this->defaultMessageLocalePropStr = MgConfigProperties::GeneralPropertyDefaultMessageLocale;
             $this->localizationResourcesPath = "";
             $this->localizationResourcesPathPropStr = MgConfigProperties::GeneralPropertyResourcesPath;
             $this->tcpIpMtu = "";
@@ -972,8 +976,11 @@
             $prop = $props->GetItem( $this->displayNamePropStr );
             $this->displayName = $prop->GetValue();
 
-            $prop = $props->GetItem( $this->defaultLocalePropStr );
-            $this->defaultLocale = $prop->GetValue();
+            $prop = $props->GetItem( $this->localePropStr );
+            $this->locale = $prop->GetValue();
+
+            $prop = $props->GetItem( $this->defaultMessageLocalePropStr );
+            $this->defaultMessageLocale = $prop->GetValue();
 
             $prop = $props->GetItem( $this->localizationResourcesPathPropStr );
             $this->localizationResourcesPath = $prop->GetValue();
@@ -1015,7 +1022,7 @@
             global $errInvalidConnectionTimerInt;
             global $errInvalidServiceRegistrationTimerInt;
 
-            if ( empty( $this->defaultLocale ) )
+            if ( empty( $this->defaultMessageLocale ) )
                 throw new Exception( $errInvalidServerDefaultLocale );
             if ( empty( $this->localizationResourcesPath ) )
                 throw new Exception( $errInvalidServerLocalizationResourcesPath );
@@ -1040,7 +1047,10 @@
             $prop = new MgStringProperty( $this->displayNamePropStr , $this->displayName );
             $props->Add( $prop );
 
-            $prop = new MgStringProperty( $this->defaultLocalePropStr , $this->defaultLocale );
+            $prop = new MgStringProperty( $this->localePropStr , $this->locale );
+            $props->Add( $prop );
+
+            $prop = new MgStringProperty( $this->defaultMessageLocalePropStr , $this->defaultMessageLocale );
             $props->Add( $prop );
 
             $prop = new MgStringProperty( $this->localizationResourcesPathPropStr, $this->localizationResourcesPath );
@@ -1160,6 +1170,8 @@
         var $dataConnTimerIntPropStr;
         var $dataConnPoolSize;
         var $dataConnPoolSizePropStr;
+        var $dataConnPoolSizeCustom;
+        var $dataConnPoolSizeCustomPropStr;
         var $dataCacheSize;
         var $dataCacheSizePropStr;
 
@@ -1170,6 +1182,9 @@
             $this->dataConnPoolSize = 0;
             $this->dataConnPoolSizePropStr = MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize;
             $this->dataConnPoolSizeID = "featureDataConnPoolSize";
+            $this->dataConnPoolSizeCustom = 0;
+            $this->dataConnPoolSizeCustomPropStr = MgConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom;
+            $this->dataConnPoolSizeCustomID = "featureDataConnPoolSizeCustom";
             $this->dataConnTimeOut = 0;
             $this->dataConnTimeOutPropStr = MgConfigProperties::FeatureServicePropertyDataConnectionTimeout;
             $this->dataConnTimeOutID = "featureDataConnTimeOut";
@@ -1188,6 +1203,9 @@
             $prop = $props->GetItem( $this->dataConnPoolSizePropStr );
             $this->dataConnPoolSize = $prop->GetValue();
 
+            $prop = $props->GetItem( $this->dataConnPoolSizeCustomPropStr );
+            $this->dataConnPoolSizeCustom = $prop->GetValue();
+
             $prop = $props->GetItem( $this->dataConnTimeOutPropStr );
             $this->dataConnTimeOut = $prop->GetValue();
 
@@ -1201,12 +1219,15 @@
         function ValidateProps()
         {
             global $errInvalidFeatureDataConnPoolSize;
+            global $errInvalidFeatureDataConnPoolSizeCustom;
             global $errInvalidFeatureDataConnTimeOut;
             global $errInvalidFeatureDataConnTimerInt;
             global $errInvalidFeatureDataCacheSize;
 
             if ( $this->dataConnPoolSize <= 0 )
                 throw new Exception( $errInvalidFeatureDataConnPoolSize );
+            if ( $this->dataConnPoolSizeCustom <= 0 )
+                throw new Exception( $errInvalidFeatureDataConnPoolSizeCustom );
             if ( $this->dataConnTimeOut <= 0 )
                 throw new Exception( $errInvalidFeatureDataConnTimeOut );
             if ( $this->dataConnTimerInt < 0 )
@@ -1220,6 +1241,9 @@
             $props = new MgPropertyCollection();
 
             $prop = new MgStringProperty( $this->dataConnPoolSizePropStr, $this->dataConnPoolSize );
+            $props->Add( $prop );
+
+            $prop = new MgStringProperty( $this->dataConnPoolSizeCustomPropStr, $this->dataConnPoolSizeCustom );
             $props->Add( $prop );
 
             $prop = new MgStringProperty( $this->dataConnTimeOutPropStr, $this->dataConnTimeOut );

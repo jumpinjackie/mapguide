@@ -533,7 +533,7 @@
         var $icon;
         var $action;
         var $disabled;
-		var $submitForm;
+        var $submitForm;
 
         function ToolbarButtonRecord()
         {
@@ -542,7 +542,7 @@
             $this->icon = "";
             $this->action = "";
             $this->disabled = false;
-			$this->submitForm = true;
+            $this->submitForm = true;
         }
     }
     function DisplayStandaloneToolbar( $buttons, $formName, $class )
@@ -1103,7 +1103,8 @@
     }
 
     define( 'DISPLAY_NAME_ID',                  "serverDisplayName" );
-    define( 'DEFAULT_LOCALE_ID',                "serverDefaultLocale" );
+    define( 'LOCALE_ID',                        "serverLocale" );
+    define( 'DEFAULT_MESSAGE_LOCALE_ID',        "serverDefaultMessageLocale" );
     define( 'LOCALIZATION_RESOURCES_PATH_ID',   "serverLocalizationResourcesPath" );
     define( 'TCP_IP_MTU_ID',                    "serverTcpIpMtu" );
     define( 'TEMP_PATH_ID',                     "serverTempPath" );
@@ -1120,8 +1121,10 @@
             $props->displayName = $post[ DISPLAY_NAME_ID ];
             CleanUpMagicQuotes( $props->displayName );
         }
-        if ( array_key_exists( DEFAULT_LOCALE_ID, $post ) )
-            $props->defaultLocale = $post[ DEFAULT_LOCALE_ID ];
+        if ( array_key_exists( LOCALE_ID, $post ) )
+            $props->locale = $post[ LOCALE_ID ];
+        if ( array_key_exists( DEFAULT_MESSAGE_LOCALE_ID, $post ) )
+            $props->defaultMessageLocale = $post[ DEFAULT_MESSAGE_LOCALE_ID ];
         if ( array_key_exists( LOCALIZATION_RESOURCES_PATH_ID, $post ) )
         {
             $props->localizationResourcesPath = $post[ LOCALIZATION_RESOURCES_PATH_ID ];
@@ -1169,8 +1172,12 @@
         echo '          <td  class="inputFormValue"><input class="inputFormValue" name="',DISPLAY_NAME_ID,'"',$enabledStr,' type="text" value="',$props->displayName,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Default locale:</td>',"\n";
-        echo '          <td class="inputFormValue"><input class="inputFormValue" name="',DEFAULT_LOCALE_ID,'"',$enabledStr,' type="text" value="',$props->defaultLocale,'"></td>',"\n";
+        echo '          <td class="propsInputLabel">Locale:</td>',"\n";
+        echo '          <td class="inputFormValue"><input class="inputFormValue" name="',LOCALE_ID,'"',$enabledStr,' type="text" value="',$props->locale,'"></td>',"\n";
+        echo '      </tr>',"\n";
+        echo '      <tr>',"\n";
+        echo '          <td class="propsInputLabel">Default message locale:</td>',"\n";
+        echo '          <td class="inputFormValue"><input class="inputFormValue" name="',DEFAULT_MESSAGE_LOCALE_ID,'"',$enabledStr,' type="text" value="',$props->defaultMessageLocale,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
         echo '          <td class="propsInputLabel">Localization resources path:</td>',"\n";
@@ -1185,7 +1192,7 @@
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',TEMP_PATH_ID,'"',$enabledStr,' type="text" value="',$props->tempPath,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Fdo file path:</td>',"\n";
+        echo '          <td class="propsInputLabel">FDO file path:</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',FDO_PATH_ID,'"',$enabledStr,' type="text" value="',$props->fdoPath,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
@@ -1193,11 +1200,11 @@
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',EMAIL_ID,'"',$enabledStr,' type="text" value="',$props->email,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Connection timeout (seconds):</td>',"\n";
+        echo '          <td class="propsInputLabel">Data connection timeout (seconds):</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',CONNECTION_TIMEOUT_ID,'"',$enabledStr,' type="text" value="',$props->connectionTimeOut,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Connection timer interval (seconds):</td>',"\n";
+        echo '          <td class="propsInputLabel">Data connection timer interval (seconds):</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',CONNECTION_TIMER_INT_ID,'"',$enabledStr,' type="text" value="',$props->connectionTimerInt,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
@@ -1248,11 +1255,11 @@
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',$connStr.PORT_ID,'"',$enabledStr,' type="text" value="',$props->port,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Queue size:</td>',"\n";
+        echo '          <td class="propsInputLabel">Maximum queued operations:</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',$connStr.QUEUE_SIZE_ID,'"',$enabledStr,' type="text" value="',$props->queueSize,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Thread pool size:</td>',"\n";
+        echo '          <td class="propsInputLabel">Maximum threads in pool:</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',$connStr.THREAD_POOL_SIZE_ID,'"',$enabledStr,' type="text" value="',$props->threadPoolSize,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '  </table>',"\n";
@@ -1284,6 +1291,7 @@
 
     define( 'FEATURE_SERVICE_ENABLED_ID',           "featureServiceEnabled" );
     define( 'FEATURE_SERVICE_CONN_POOL_SIZE_ID',    "featureDataConnPoolSize" );
+    define( 'FEATURE_SERVICE_CONN_POOL_SIZE_CUSTOM_ID', "featureDataConnPoolSizeCustom" );
     define( 'FEATURE_SERVICE_CONN_TIMEOUT_ID',      "featureDataConnTimeOut" );
     define( 'FEATURE_SERVICE_CONN_TIMER_INT_ID',    "featureConnectionTimerInteval" );
     define( 'FEATURE_SERVICE_DATA_CACHE_SIZE_ID',   "featureDataCacheSize" );
@@ -1296,6 +1304,8 @@
             $props->enabled = '0';
         if ( array_key_exists( FEATURE_SERVICE_CONN_POOL_SIZE_ID, $post ) )
             $props->dataConnPoolSize = $post[ FEATURE_SERVICE_CONN_POOL_SIZE_ID ];
+        if ( array_key_exists( FEATURE_SERVICE_CONN_POOL_SIZE_CUSTOM_ID, $post ) )
+            $props->dataConnPoolSize = $post[ FEATURE_SERVICE_CONN_POOL_SIZE_CUSTOM_ID ];
         if ( array_key_exists( FEATURE_SERVICE_CONN_TIMEOUT_ID, $post ) )
             $props->dataConnTimeOut = $post[ FEATURE_SERVICE_CONN_TIMEOUT_ID ];
         if ( array_key_exists( FEATURE_SERVICE_CONN_TIMER_INT_ID, $post ) )
@@ -1307,7 +1317,7 @@
 
     function DisplayFeatureServicePropVals( $enabled, $props )
     {
-        $sectionFields = array( FEATURE_SERVICE_CONN_POOL_SIZE_ID, FEATURE_SERVICE_CONN_TIMEOUT_ID, FEATURE_SERVICE_CONN_TIMER_INT_ID, FEATURE_SERVICE_DATA_CACHE_SIZE_ID );
+        $sectionFields = array( FEATURE_SERVICE_CONN_POOL_SIZE_ID, FEATURE_SERVICE_CONN_POOL_SIZE_CUSTOM_ID, FEATURE_SERVICE_CONN_TIMEOUT_ID, FEATURE_SERVICE_CONN_TIMER_INT_ID, FEATURE_SERVICE_DATA_CACHE_SIZE_ID );
         DisplayEnabledBar( "Feature Service", FEATURE_SERVICE_ENABLED_ID, $props->enabled, $enabled, $sectionFields );
 
         if ( $enabled && $props->enabled )
@@ -1317,19 +1327,23 @@
 
         echo '  <table  border="0" cellspacing="0" class="inputForm">',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Data connection pool size:</td>',"\n";
+        echo '          <td class="propsInputLabel">Maximum connections pooled per provider (default):</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',FEATURE_SERVICE_CONN_POOL_SIZE_ID,'"',$enabledStr,' type="text" value="',$props->dataConnPoolSize,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Data connection timeout:</td>',"\n";
+        echo '          <td class="propsInputLabel">Maximum connections pooled per provider (custom):</td>',"\n";
+        echo '          <td class="inputFormValue"><input class="inputFormValue" name="',FEATURE_SERVICE_CONN_POOL_SIZE_CUSTOM_ID,'"',$enabledStr,' type="text" value="',$props->dataConnPoolSizeCustom,'"></td>',"\n";
+        echo '      </tr>',"\n";
+        echo '      <tr>',"\n";
+        echo '          <td class="propsInputLabel">Data connection timeout (seconds):</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',FEATURE_SERVICE_CONN_TIMEOUT_ID,'"',$enabledStr,' type="text" value="',$props->dataConnTimeOut,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Data connection timer interval:</td>',"\n";
+        echo '          <td class="propsInputLabel">Data connection timer interval (seconds):</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',FEATURE_SERVICE_CONN_TIMER_INT_ID,'"',$enabledStr,' type="text" value="',$props->dataConnTimerInt,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Data cache size:</td>',"\n";
+        echo '          <td class="propsInputLabel">Maximum features cached:</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',FEATURE_SERVICE_DATA_CACHE_SIZE_ID,'"',$enabledStr,' type="text" value="',$props->dataCacheSize,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '  </table>',"\n";
