@@ -192,6 +192,11 @@ protected:
 
     bool m_bHaveLabels;
 
+    // used to track the number of drawables and macros
+    int m_drawableCount;
+    int m_labelMacroCount;
+    std::map<int, int> m_macroDrawableCounts;
+
     ObservationMesh* m_obsMesh;
 
     // map/layer info
@@ -224,7 +229,7 @@ protected:
 private:
     //macro/overpost opcode output -- done manually by writing to file
     void BeginMacro(WT_File* file, int id, int scale);
-    void EndMacro(WT_File* file);
+    void EndMacro(WT_File* file, int id);
     void PlayMacro(WT_File* file, int id, double sizeMeters, RS_Units unit, double x, double y);
     void BeginOverpostGroup(WT_File* file, RS_OverpostType type, bool render, bool exclude);
     void EndOverpostGroup(WT_File* file);
