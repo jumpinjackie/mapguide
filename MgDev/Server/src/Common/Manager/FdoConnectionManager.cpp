@@ -416,7 +416,7 @@ void MgFdoConnectionManager::RemoveExpiredConnections()
                         delete pFdoConnectionCacheEntry;
                         pFdoConnectionCacheEntry = NULL;
 
-                        STRING cacheKey = iter->first;
+                        STRING resourceId = iter->first;
 
                         // Remove any feature service cache entries for this resource
                         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
@@ -424,7 +424,7 @@ void MgFdoConnectionManager::RemoveExpiredConnections()
 
                         try
                         {
-                            Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(cacheKey);
+                            Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(resourceId);
                             serviceManager->RemoveFeatureServiceCacheEntry(resource);
                         }
                         catch(MgInvalidRepositoryTypeException* e)
@@ -432,6 +432,19 @@ void MgFdoConnectionManager::RemoveExpiredConnections()
                             // If this exception is thrown then the key was not a resource identifier string 
                             // and so there will be no entries in the feature service cache to remove.
                             SAFE_RELEASE(e);
+                        }
+
+                        // Remove Feature Source cache entry
+                        FeatureSourceCache::iterator iterFeatureSource = m_FeatureSourceCache.find(resourceId);
+                        if(m_FeatureSourceCache.end() != iterFeatureSource)
+                        {
+                            MdfModel::FeatureSource* featureSource = iterFeatureSource->second;
+                            if(featureSource)
+                            {
+                                delete featureSource;
+                            }
+
+                            m_FeatureSourceCache.erase(iterFeatureSource);
                         }
 
                         fdoConnectionCache->erase(iter++);
@@ -1027,6 +1040,19 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
                                 // If this exception is thrown then the key was not a resource identifier string 
                                 // and so there will be no entries in the feature service cache to remove.
                                 SAFE_RELEASE(e);
+                            }
+
+                            // Remove Feature Source cache entry
+                            FeatureSourceCache::iterator iterFeatureSource = m_FeatureSourceCache.find(key);
+                            if(m_FeatureSourceCache.end() != iterFeatureSource)
+                            {
+                                MdfModel::FeatureSource* featureSource = iterFeatureSource->second;
+                                if(featureSource)
+                                {
+                                    delete featureSource;
+                                }
+
+                                m_FeatureSourceCache.erase(iterFeatureSource);
                             }
 
                             fdoConnectionCache->erase(iter++);
