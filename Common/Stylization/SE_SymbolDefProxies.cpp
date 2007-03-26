@@ -254,13 +254,13 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 
     if (extentScaleable.evaluate(cxt->exec))
     {
-        ret->extent[0] = extent[0].evaluate(cxt->exec)*cxt->xform->x0;
-        ret->extent[1] = extent[1].evaluate(cxt->exec)*cxt->xform->y1;
+        ret->extent[0] = fabs(extent[0].evaluate(cxt->exec)*cxt->xform->x0);
+        ret->extent[1] = fabs(extent[1].evaluate(cxt->exec)*cxt->xform->y1);
     }
     else
     {
-        ret->extent[0] = extent[0].evaluate(cxt->exec)*cxt->mm2pxw;
-        ret->extent[1] = extent[1].evaluate(cxt->exec)*cxt->mm2pxw;
+        ret->extent[0] = fabs(extent[0].evaluate(cxt->exec)*cxt->mm2pxw);
+        ret->extent[1] = fabs(extent[1].evaluate(cxt->exec)*cxt->mm2pxw);
     }
 
     ret->angle = angle.evaluate(cxt->exec) * M_PI180;
