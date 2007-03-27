@@ -23,6 +23,7 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+
 //cloning of RenderSymbols. Unfortunate but necessary for delay-drawing labels
 SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
 {
@@ -34,8 +35,13 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
     {
     case SE_RenderPointStyleType:
         {
-        SE_RenderPointStyle* dps = new SE_RenderPointStyle();
-        ret = dps;
+            SE_RenderPointStyle* dps = new SE_RenderPointStyle();
+            SE_RenderPointStyle* sps = (SE_RenderPointStyle*)symbol;
+            ret = dps;
+            dps->angle = sps->angle;
+            dps->angleControl = sps->angleControl;
+            dps->offset[0] = sps->offset[0];
+            dps->offset[1] = sps->offset[1];
         }
         break;
     case SE_RenderLineStyleType:
@@ -155,14 +161,17 @@ SE_Renderer::SE_Renderer()
 {
 }
 
+
 SE_Renderer::~SE_Renderer()
 {
 }
+
 
 void SE_Renderer::SetLineBufferPool(SE_LineBufferPool* pool)
 {
     m_lbp = pool;
 }
+
 
 void SE_Renderer::SetRenderSelectionMode(bool mode)
 {
@@ -179,9 +188,37 @@ void SE_Renderer::SetRenderSelectionMode(bool mode)
     }
 }
 
+
 void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
 {
+    double anglerad;
+    if (wcscmp(L"FromAngle", style->angleControl) == 0)
+    {
+        anglerad = style->angle;
+    }
+    else
+    {
+        switch(geometry->geom_type())
+        {
+        case FdoGeometryType_LineString:
+        case FdoGeometryType_MultiLineString:
+        case FdoGeometryType_Polygon:
+        case FdoGeometryType_MultiPolygon:
+        {
+            double x0, y0;
+            geometry->Centroid(LineBuffer::ctLine, &x0, &y0, &anglerad);
+            break;
+        }
+        default:
+            anglerad = 0.0;
+            break;
+        }
+    }
+
     SE_Matrix xform;
+    SE_Matrix xformbase;
+    xformbase.translate(style->offset[0], style->offset[1]);
+    xformbase.rotate(anglerad);
 
     /* Render the points */
     for (int i = 0; i < geometry->point_count(); i++)
@@ -192,21 +229,21 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
         //transform to screen space -- geometry is in [the original] mapping space
         WorldToScreenPoint(x, y, x, y);
 
-        xform.setIdentity();
+        xform = xformbase;
         xform.translate(x, y);
-        double angle = 0.0; //TODO: angle needs to be added to the RenderPointStyle
+
         if (style->drawLast)
-            AddLabel(geometry, style, xform, 0.0);
+            AddLabel(geometry, style, xform, anglerad);
         else
         {
-            DrawSymbol(style->symbol, xform, angle);
+            DrawSymbol(style->symbol, xform, anglerad);
 
-            double angle = 0.0;
             if (style->addToExclusionRegions)
-                AddExclusionRegion(style, xform, angle);
+                AddExclusionRegion(style, xform, anglerad);
         }
     }
 }
+
 
 void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
@@ -293,11 +330,11 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 double dx_incr = dx * invlen;
                 double dy_incr = dy * invlen;
 
-                double symrot = fromAngle? style->angle : atan2(dy, dx);
+                double anglerad = fromAngle? style->angle : atan2(dy, dx);
                 double tx = seg_screen[0] + dx_incr * drawpos;
                 double ty = seg_screen[1] + dy_incr * drawpos;
 
-                symxf.rotate(symrot);
+                symxf.rotate(anglerad);
                 symxf.translate(tx, ty);
                 dx_incr *= increment;
                 dy_incr *= increment;
@@ -307,13 +344,13 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 while (drawpos < len)
                 {
                     if (style->drawLast)
-                        AddLabel(geometry, style, symxf, symrot);
+                        AddLabel(geometry, style, symxf, anglerad);
                     else
                     {
-                        DrawSymbol(style->symbol, symxf, symrot);
+                        DrawSymbol(style->symbol, symxf, anglerad);
 
                         if (style->addToExclusionRegions)
-                            AddExclusionRegion(style, symxf, symrot);
+                            AddExclusionRegion(style, symxf, anglerad);
                     }
 
                     symxf.translate(dx_incr, dy_incr);
@@ -329,9 +366,11 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
     }
 }
 
+
 void SE_Renderer::ProcessArea(LineBuffer* /*geometry*/, SE_RenderAreaStyle* /*style*/)
 {
 }
+
 
 void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& posxform, double anglerad)
 {
@@ -369,25 +408,16 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
             double x, y;
             posxform.transform(tp->position[0], tp->position[1], x, y);
 
+            RS_TextDef tdef = tp->tdef;
+            tdef.rotation() += anglerad / M_PI180;
+
             if (m_bSelectionMode)
             {
-                RS_TextDef tdef = tp->tdef;
                 tdef.color() = m_textForeColor;
                 tdef.bgcolor() = m_textBackColor;
-                if (anglerad != 0)
-                    tdef.rotation() = anglerad / M_PI180;
-                DrawScreenText(tp->text, tdef, x, y, NULL, 0, 0.0);
             }
-            else if (anglerad != 0.0)
-            {
-                RS_TextDef tdef = tp->tdef;
-                tdef.rotation() = anglerad / M_PI180;
-                DrawScreenText(tp->text, tdef, x, y, NULL, 0, 0.0);
-            }
-            else
-            {
-                DrawScreenText(tp->text, tp->tdef, x, y, NULL, 0, 0.0);
-            }
+
+            DrawScreenText(tp->text, tdef, x, y, NULL, 0, 0.0);
         }
         else if (primitive->type == SE_RenderRasterPrimitive)
         {
@@ -395,31 +425,31 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
 
             double x, y;
             posxform.transform(rp->position[0], rp->position[1], x, y);
+            double angleDeg = (rp->angle + anglerad) / M_PI180;
 
-            DrawScreenRaster((unsigned char*)rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], anglerad / M_PI180);
+            DrawScreenRaster((unsigned char*)rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], angleDeg);
         }
     }
 }
 
 
-void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angle)
+void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double anglerad)
 {
     //clone the SE_RenderStyle so that the label renderer can keep track of it until
     //the end of rendering when it draws all the labels
     //TODO: cloning is bad.
     SE_RenderStyle* copied_style = CloneRenderStyle(style);
 
-    SE_LabelInfo info(xform.x2, xform.y2, 0.0, 0.0, RS_Units_Device, angle, copied_style);
+    SE_LabelInfo info(xform.x2, xform.y2, 0.0, 0.0, RS_Units_Device, anglerad, copied_style);
 
-    RS_OverpostType type = RS_OverpostType_AllFit;
-
-    ProcessLabelGroup(&info, 1, type, style->addToExclusionRegions, geom);
+    ProcessLabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegions, geom);
 }
 
-void SE_Renderer::AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angle)
+
+void SE_Renderer::AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double anglerad)
 {
     SE_Matrix xform2;
-    xform2.rotate(angle);
+    xform2.rotate(anglerad);
     xform2.translate(xform.x2, xform.y2);
 
     RS_F_Point* fpts = m_lastExclusionRegion;

@@ -153,6 +153,11 @@ struct SE_RenderStyle
 struct SE_RenderPointStyle : public SE_RenderStyle
 {
     SE_INLINE SE_RenderPointStyle() : SE_RenderStyle(SE_RenderPointStyleType) { }
+
+    const wchar_t* angleControl;
+
+    double angle;
+    double offset[2];
 };
 
 

@@ -71,9 +71,9 @@ protected:
     void SetRenderSelectionMode(bool mode);
 
 private:
-    void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angle);
+    void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double anglerad);
 
-    void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angle);
+    void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double anglerad);
 
     RS_F_Point m_lastExclusionRegion[4];
 
