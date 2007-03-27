@@ -562,6 +562,243 @@ WT_Result simple_process_gouraudPolytriangle (WT_Gouraud_Polytriangle & gouraudP
     return WT_Result::Success;
 }
 
+
+void RotateRGBAImage(const WT_Unsigned_Integer16 rows,
+                     const WT_Unsigned_Integer16 columns,
+                     const WT_Image::WT_Image_Format format,
+                     const WT_Color_Map* color_map,
+                     const WT_Byte* data,
+                     const WT_Integer32 identifier,
+                     const WT_Logical_Point* dstpts,
+                     WT_File & file)
+{
+    // The difficult case when it is rotated -- make a new image which
+    // encompasses the rotated extent.  We also have to use RGBA format
+    // since we need the pieces which are in the bigger axis-aligned
+    // bitmap but not overlapped by the rotated image to be transparent.
+
+    //find new bounds for image -> basically axis-aligned bounds of
+    //the rotated initial image bounds
+    WT_Integer32 minx = rs_min(dstpts[0].m_x, rs_min(dstpts[1].m_x, rs_min(dstpts[2].m_x, dstpts[3].m_x)));
+    WT_Integer32 maxx = rs_max(dstpts[0].m_x, rs_max(dstpts[1].m_x, rs_max(dstpts[2].m_x, dstpts[3].m_x)));
+
+    WT_Integer32 miny = rs_min(dstpts[0].m_y, rs_min(dstpts[1].m_y, rs_min(dstpts[2].m_y, dstpts[3].m_y)));
+    WT_Integer32 maxy = rs_max(dstpts[0].m_y, rs_max(dstpts[1].m_y, rs_max(dstpts[2].m_y, dstpts[3].m_y)));
+
+    WT_Integer32 width  = maxx - minx /*??+ 1*/;
+    WT_Integer32 height = maxy - miny /*??+ 1*/;
+
+    //get basis vectors of transformed space
+    double e1x = dstpts[1].m_x - dstpts[0].m_x;
+    double e1y = dstpts[1].m_y - dstpts[0].m_y;
+    double e2x = dstpts[3].m_x - dstpts[0].m_x;
+    double e2y = dstpts[3].m_y - dstpts[0].m_y;
+
+    //find width and height if image were not rotated (but just scaled)
+    double nonrot_width  = sqrt(e1x*e1x + e1y*e1y);
+    double nonrot_height = sqrt(e2x*e2x + e2y*e2y);
+
+    //normalize basis vectors
+    e1x /= nonrot_width;
+    e1y /= nonrot_width;
+    e2x /= nonrot_height;
+    e2y /= nonrot_height;
+
+    //determine size of new image in pixels
+    double inv_old_cols = (double)columns / nonrot_width;
+    double inv_old_rows = (double)rows / nonrot_height;
+    int new_cols = (int)((double)width * inv_old_cols);
+    int new_rows = (int)((double)height * inv_old_rows);
+
+    //alloc mem for image
+    int len = new_cols * new_rows;
+    WT_RGBA32* pixels = new WT_RGBA32[new_cols * new_rows];
+
+    //initialize to transparent color
+    memset(pixels, 0, sizeof(WT_RGBA32)*len);
+
+    //loop invariants
+    double inv_new_cols = (double)width / new_cols;
+    double inv_new_rows = (double)height/ new_rows;
+    int old_rows = rows;
+    int old_cols = columns;
+
+    for (int j=0; j<new_rows; j++)
+    {
+        for (int i=0; i<new_cols; i++)
+        {
+            //compute W2D logical location of pixel
+            double dstx = i * (inv_new_cols) + minx;
+            double dsty = (new_rows - 1 -j) * (inv_new_rows) + miny;
+
+            //convert location to a location vector
+            //from origin of non-rotated image
+            double ddx = dstx - dstpts[0].m_x;
+            double ddy = dsty - dstpts[0].m_y;
+
+            //project vector onto rotated basis vectors
+            double dote1 = e1x * ddx + e1y * ddy;
+            double dote2 = e2x * ddx + e2y * ddy;
+
+            //convert projected values to pixel coordinates
+            //inside the source image
+            double pixelx = dote1 * inv_old_cols;
+            double pixely = old_rows - dote2 * inv_old_rows;
+
+            //if the pixel coordinates are inside the source
+            //image we will obtain an interpolated color
+            //for the destination image
+            if (pixelx >=-1 && pixelx <= old_cols &&
+                pixely >=-1 && pixely <= old_rows)
+            {
+                int xwhole = (int)floor(pixelx);
+                int ywhole = (int)floor(pixely);
+
+                //4 nearest pixels
+                WT_RGBA32 c00(0,0,0,0);
+                WT_RGBA32 c10(0,0,0,0);
+                WT_RGBA32 c11(0,0,0,0);
+                WT_RGBA32 c01(0,0,0,0);
+
+                //get values for the 4 nearest pixels, taking care
+                //not to go overboard (outside the image)
+                switch (format)
+                {
+                case WT_Image::RGBA:
+                    if (pixelx >= 0)
+                    {
+                        if (pixely >=0)
+                            c00 = ((WT_RGBA32*)data)[xwhole + ywhole * old_cols];
+
+                        if (pixely < old_rows - 1)
+                            c01 = ((WT_RGBA32*)data)[xwhole + (ywhole + 1) * old_cols];
+                    }
+
+                    if (pixelx < old_cols - 1)
+                    {
+                        if (pixely >=0)
+                            c10 = ((WT_RGBA32*)data)[xwhole + 1 + ywhole * old_cols];
+
+                        if (pixely < old_rows - 1)
+                            c11 = ((WT_RGBA32*)data)[xwhole + 1 + (ywhole + 1) * old_cols];
+                    }
+                    break;
+                case WT_Image::RGB:
+                    {
+                        const WT_Byte* ptr = NULL;
+
+                        if (pixelx >= 0)
+                        {
+                            if (pixely >= 0)
+                            {
+                                ptr = data + 3*(xwhole + ywhole * old_cols);
+                                c00.m_rgb.b = *ptr++;
+                                c00.m_rgb.g = *ptr++;
+                                c00.m_rgb.r = *ptr++;
+                                c00.m_rgb.a = 255;
+                            }
+
+                            if (pixely < old_rows - 1)
+                            {
+                                ptr = data + 3*(xwhole + (ywhole + 1) * old_cols);
+                                c01.m_rgb.b = *ptr++;
+                                c01.m_rgb.g = *ptr++;
+                                c01.m_rgb.r = *ptr++;
+                                c01.m_rgb.a = 255;
+                            }
+                        }
+
+                        if (pixelx < old_cols - 1)
+                        {
+                            ptr = data + 3*(xwhole + 1 + ywhole * old_cols);
+
+                            if (pixely >= 0)
+                            {
+                                c10.m_rgb.b = *ptr++;
+                                c10.m_rgb.g = *ptr++;
+                                c10.m_rgb.r = *ptr++;
+                                c10.m_rgb.a = 255;
+                            }
+
+                            if (pixely < old_rows - 1)
+                            {
+                                ptr = data + 3*(xwhole + 1 + (ywhole + 1) * old_cols);
+                                c11.m_rgb.b = *ptr++;
+                                c11.m_rgb.g = *ptr++;
+                                c11.m_rgb.r = *ptr++;
+                                c11.m_rgb.a = 255;
+                            }
+                        }
+                    }
+                    break;
+                }
+
+                //bilinear interpolation of nearest pixels
+                float ifx = (float)(pixelx - xwhole);
+                float ify = (float)(pixely - ywhole);
+                float fx = 1.0f - ifx;
+                float fy = 1.0f - ify;
+                float fxfy   = fx  * fy;
+                float ifxfy  = ifx * fy;
+                float ifxify = ifx * ify;
+                float fxify  = fx  * ify;
+
+                float c00a = fxfy * (float)c00.m_rgb.a / 255.0f;
+                float c10a = ifxfy * (float)c10.m_rgb.a / 255.0f;
+                float c11a = ifxify * (float)c11.m_rgb.a / 255.0f;
+                float c01a = fxify * (float)c01.m_rgb.a / 255.0f;
+
+                float a_normalize = (float)(1.0f / (c00a + c10a + c11a + c01a));
+
+                c00a *= a_normalize;
+                c10a *= a_normalize;
+                c11a *= a_normalize;
+                c01a *= a_normalize;
+
+                float red =  c00a * c00.m_rgb.r
+                           + c10a * c10.m_rgb.r
+                           + c11a * c11.m_rgb.r
+                           + c01a * c01.m_rgb.r;
+
+                float green =  c00a * c00.m_rgb.g
+                             + c10a * c10.m_rgb.g
+                             + c11a * c11.m_rgb.g
+                             + c01a * c01.m_rgb.g;
+
+                float blue =  c00a * c00.m_rgb.b
+                            + c10a * c10.m_rgb.b
+                            + c11a * c11.m_rgb.b
+                            + c01a * c01.m_rgb.b;
+
+                float alpha =  fxfy  * c00.m_rgb.a
+                             + ifxfy * c10.m_rgb.a
+                             + ifxify* c11.m_rgb.a
+                             + fxify * c01.m_rgb.a;
+
+                WT_RGBA32 bilerp_col((int)(red+0.5f) & 0xFF, (int)(green+0.5f) & 0xFF, (int)(blue+0.5) & 0xFF, (int)(alpha+0.5f) & 0xFF);
+                pixels[i + new_cols * j] = bilerp_col;
+            }
+        }
+    }
+
+    //make a new image out of the rotated data and send it to W2D
+    WT_Image image((WT_Unsigned_Integer16)new_rows,
+                   (WT_Unsigned_Integer16)new_cols,
+                   WT_Image::RGBA,
+                   identifier,
+                   color_map,
+                   len * sizeof(WT_RGBA32),
+                   (WT_Byte*)pixels,
+                   WT_Logical_Point(minx, miny),
+                   WT_Logical_Point(maxx, maxy),
+                   true);
+
+    image.serialize(file);
+
+    delete [] pixels;
+}
+
+
 int g_imageId = 1;//TODO:  may be this should be a variable in DWFRenderer
 
 WT_Result simple_process_image (WT_Image & image, WT_File & file)
@@ -594,8 +831,7 @@ WT_Result simple_process_image (WT_Image & image, WT_File & file)
         //check for rotation -- DWF does not support rotated images, so we need to
         //do it manually.
 
-        if (   dstpts[0].m_y == dstpts[1].m_y
-            && dstpts[1].m_x == dstpts[2].m_x)
+        if (dstpts[0].m_y == dstpts[1].m_y && dstpts[1].m_x == dstpts[2].m_x)
         {
             //case of no rotation -- direct copy of the image
             WT_Image image2(
@@ -612,240 +848,16 @@ WT_Result simple_process_image (WT_Image & image, WT_File & file)
 
             image2.serialize(*rewriter->_GetW2D());
         }
-        else if ( image.format() == WT_Image::RGB
-            || image.format() == WT_Image::RGBA)
+        else if (image.format() == WT_Image::RGB || image.format() == WT_Image::RGBA)
         {
-            //the difficult case when it is rotated -- make a new image
-            //which encompasses the rotated extent -- also since we need
-            //the pieces which are in the bigger axis aligned bitmap but not
-            //overlapped by the rotated image to be transparent, so we have to use RGBA
-            //format.
-
-            //find new bounds for image -> basically axis-aligned bounds of
-            //the rotated initial image bounds
-            WT_Integer32 minx = rs_min(dstpts[0].m_x, rs_min(dstpts[1].m_x, rs_min(dstpts[2].m_x, dstpts[3].m_x)));
-            WT_Integer32 maxx = rs_max(dstpts[0].m_x, rs_max(dstpts[1].m_x, rs_max(dstpts[2].m_x, dstpts[3].m_x)));
-
-            WT_Integer32 miny = rs_min(dstpts[0].m_y, rs_min(dstpts[1].m_y, rs_min(dstpts[2].m_y, dstpts[3].m_y)));
-            WT_Integer32 maxy = rs_max(dstpts[0].m_y, rs_max(dstpts[1].m_y, rs_max(dstpts[2].m_y, dstpts[3].m_y)));
-
-            WT_Integer32 width = maxx - minx /*??+ 1*/;
-            WT_Integer32 height = maxy - miny /*??+ 1*/;
-
-            //get basis vectors of transformed space
-            double e1x = dstpts[1].m_x - dstpts[0].m_x;
-            double e1y = dstpts[1].m_y - dstpts[0].m_y;
-            double e2x = dstpts[3].m_x - dstpts[0].m_x;
-            double e2y = dstpts[3].m_y - dstpts[0].m_y;
-
-            //find width and height if image were not rotated (but just scaled)
-            double nonrot_width = sqrt(e1x*e1x + e1y*e1y);
-            double nonrot_height = sqrt(e2x*e2x + e2y*e2y);
-
-            //normalize basis vectors
-            e1x /= nonrot_width;
-            e1y /= nonrot_width;
-            e2x /= nonrot_height;
-            e2y /= nonrot_height;
-
-            //determine size of new image in pixels
-            double inv_old_cols = (double)image.columns() / nonrot_width;
-            double inv_old_rows = (double)image.rows() / nonrot_height;
-            int new_cols = (int)((double)width * inv_old_cols);
-            int new_rows = (int)((double)height * inv_old_rows);
-
-            //alloc mem for image
-            int len = new_cols * new_rows;
-            WT_RGBA32* pixels = new WT_RGBA32[new_cols * new_rows];
-
-            //initialize to transparent color
-            memset(pixels, 0, sizeof(WT_RGBA32)*len);
-
-            //loop invariants
-            double inv_new_cols = (double)width / new_cols;
-            double inv_new_rows = (double)height/ new_rows;
-            int format = image.format();
-            const WT_Byte* data = image.data();
-            int old_rows = image.rows();
-            int old_cols = image.columns();
-
-            for (int j=0; j<new_rows; j++)
-            {
-                for (int i=0; i<new_cols; i++)
-                {
-                    //compute W2D logical location of pixel
-                    double dstx = i * (inv_new_cols) + minx;
-                    double dsty = (new_rows - 1 -j) * (inv_new_rows) + miny;
-
-                    //convert location to a location vector
-                    //from origin of non-rotated image
-                    double ddx = dstx - dstpts[0].m_x;
-                    double ddy = dsty - dstpts[0].m_y;
-
-                    //project vector onto rotated basis vectors
-                    double dote1 = e1x * ddx + e1y * ddy;
-                    double dote2 = e2x * ddx + e2y * ddy;
-
-                    //convert projected values to pixel coordinates
-                    //inside the source image
-                    double pixelx = dote1 * inv_old_cols;
-                    double pixely = old_rows - dote2 * inv_old_rows;
-
-                    //if the pixel coordinates are inside the source
-                    //image we will obtain an interpolated color
-                    //for the destination image
-                    if (pixelx >=-1 && pixelx <= old_cols
-                        && pixely >=-1 && pixely <= old_rows)
-                    {
-                        int xwhole = (int)floor(pixelx);
-                        int ywhole = (int)floor(pixely);
-
-                        //4 nearest pixels
-                        WT_RGBA32 c00(0,0,0,0);
-                        WT_RGBA32 c10(0,0,0,0);
-                        WT_RGBA32 c11(0,0,0,0);
-                        WT_RGBA32 c01(0,0,0,0);
-
-                        //get values for the 4 nearesr pixels, taking care
-                        //not to go overboard (outside the image)
-                        switch (format)
-                        {
-                        case WT_Image::RGBA:
-                            if (pixelx >= 0)
-                            {
-                                if (pixely >=0)
-                                    c00 = ((WT_RGBA32*)data)[xwhole + ywhole * old_cols];
-
-                                if (pixely < old_rows - 1)
-                                    c01 = ((WT_RGBA32*)data)[xwhole + (ywhole + 1) * old_cols];
-                            }
-
-                            if (pixelx < old_cols - 1)
-                            {
-                                if (pixely >=0)
-                                    c10 = ((WT_RGBA32*)data)[xwhole + 1 + ywhole * old_cols];
-
-                                if (pixely < old_rows - 1)
-                                    c11 = ((WT_RGBA32*)data)[xwhole + 1 + (ywhole + 1) * old_cols];
-                            }
-                            break;
-                        case WT_Image::RGB:
-                            {
-                                const WT_Byte* ptr = NULL;
-
-                                if (pixelx >= 0)
-                                {
-                                    if (pixely >= 0)
-                                    {
-                                        ptr = data + 3*(xwhole + ywhole * old_cols);
-                                        c00.m_rgb.b = *ptr++;
-                                        c00.m_rgb.g = *ptr++;
-                                        c00.m_rgb.r = *ptr++;
-                                        c00.m_rgb.a = 255;
-                                    }
-
-                                    if (pixely < old_rows - 1)
-                                    {
-                                        ptr = data + 3*(xwhole + (ywhole + 1) * old_cols);
-                                        c01.m_rgb.b = *ptr++;
-                                        c01.m_rgb.g = *ptr++;
-                                        c01.m_rgb.r = *ptr++;
-                                        c01.m_rgb.a = 255;
-                                    }
-                                }
-
-                                if (pixelx < old_cols - 1)
-                                {
-                                    ptr = data + 3*(xwhole + 1 + ywhole * old_cols);
-
-                                    if (pixely >= 0)
-                                    {
-                                        c10.m_rgb.b = *ptr++;
-                                        c10.m_rgb.g = *ptr++;
-                                        c10.m_rgb.r = *ptr++;
-                                        c10.m_rgb.a = 255;
-                                    }
-
-                                    if (pixely < old_rows - 1)
-                                    {
-                                        ptr = data + 3*(xwhole + 1 + (ywhole + 1) * old_cols);
-                                        c11.m_rgb.b = *ptr++;
-                                        c11.m_rgb.g = *ptr++;
-                                        c11.m_rgb.r = *ptr++;
-                                        c11.m_rgb.a = 255;
-                                    }
-                                }
-                            }
-                            break;
-                        }
-
-                        //bilinear interpolation of nearest pixels
-                        float ifx = (float)(pixelx - xwhole);
-                        float ify = (float)(pixely - ywhole);
-                        float fx = 1.0f - ifx;
-                        float fy = 1.0f - ify;
-                        float fxfy   = fx  * fy;
-                        float ifxfy  = ifx * fy;
-                        float ifxify = ifx * ify;
-                        float fxify  = fx  * ify;
-
-                        float c00a = fxfy * (float)c00.m_rgb.a / 255.0f;
-                        float c10a = ifxfy * (float)c10.m_rgb.a / 255.0f;
-                        float c11a = ifxify * (float)c11.m_rgb.a / 255.0f;
-                        float c01a = fxify * (float)c01.m_rgb.a / 255.0f;
-
-                        float a_normalize = (float)(1.0f / (c00a + c10a + c11a + c01a));
-
-                        c00a *= a_normalize;
-                        c10a *= a_normalize;
-                        c11a *= a_normalize;
-                        c01a *= a_normalize;
-
-                        float red =  c00a * c00.m_rgb.r
-                                   + c10a * c10.m_rgb.r
-                                   + c11a * c11.m_rgb.r
-                                   + c01a * c01.m_rgb.r;
-
-                        float green =  c00a * c00.m_rgb.g
-                                     + c10a * c10.m_rgb.g
-                                     + c11a * c11.m_rgb.g
-                                     + c01a * c01.m_rgb.g;
-
-                        float blue =  c00a * c00.m_rgb.b
-                                    + c10a * c10.m_rgb.b
-                                    + c11a * c11.m_rgb.b
-                                    + c01a * c01.m_rgb.b;
-
-                        float alpha =  fxfy  * c00.m_rgb.a
-                                     + ifxfy * c10.m_rgb.a
-                                     + ifxify* c11.m_rgb.a
-                                     + fxify * c01.m_rgb.a;
-
-                        WT_RGBA32 bilerp_col((int)(red+0.5f) & 0xFF, (int)(green+0.5f) & 0xFF, (int)(blue+0.5) & 0xFF, (int)(alpha+0.5f) & 0xFF);
-                        pixels[i + new_cols * j] = bilerp_col;
-                    }
-                }
-            }
-
-            WT_Logical_Point minpt(minx, miny);
-            WT_Logical_Point maxpt(maxx, maxy);
-
-            //make a new image out of the rotated data and send it to W2D
-            WT_Image image2(
-                (WT_Unsigned_Integer16)new_rows,
-                (WT_Unsigned_Integer16)new_cols,
-                WT_Image::RGBA,
-                g_imageId++,
-                image.color_map(),
-                len * sizeof(WT_RGBA32),
-                (WT_Byte*)pixels,
-                minpt, //min pt
-                maxpt, //max pt
-                true);
-
-            image2.serialize(*rewriter->_GetW2D());
-
-            delete [] pixels;
+            RotateRGBAImage(image.rows(),
+                            image.columns(),
+                            (WT_Image::WT_Image_Format)image.format(),
+                            image.color_map(),
+                            image.data(),
+                            g_imageId++,
+                            dstpts,
+                            *rewriter->_GetW2D());
         }
     }
 
@@ -1123,8 +1135,6 @@ WT_Result simple_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, W
     {
         //only transfer the raster if it is fully inside destination box
         //TODO: otherwise we need to clip the raster itself
-
-        WT_Logical_Box box2(dstpts[0], dstpts[1]);
 
         // Create a new WT_Drawable with the updated bounds
         WT_PNG_Group4_Image img2(pngGroup4Image.rows(),

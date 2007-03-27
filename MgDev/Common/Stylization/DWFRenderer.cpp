@@ -54,13 +54,23 @@
 
 #include "ObservationMesh.h"
 
+#include "W2DRewriter.h"
+#include "UnicodeString.h"
+#include "SLDSymbols.h"
+
+//GD headers
+#include "gd.h"
+
 using namespace DWFToolkit;
 using namespace DWFCore;
 using namespace std;
 
-#include "W2DRewriter.h"
-#include "UnicodeString.h"
-#include "SLDSymbols.h"
+
+#define ROUND(x) (int)((x) + 0.5)
+
+// maximum allowed size for images
+#define IMAGE_SIZE_MAX 2048.0*2048.0
+
 
 //table we use for keeping track of object nodes
 typedef DWFWCharKeySkipList<unsigned int> NodeTable;
@@ -708,7 +718,7 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
                     m_imgID++,
                     NULL,
                     length,
-                    (WT_Byte*)data,
+                    data,
                     WT_Logical_Point(x0, y0),
                     WT_Logical_Point(x1, y1),
                     false);
@@ -724,7 +734,7 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
                     m_imgID++,
                     NULL,
                     length,
-                    (WT_Byte*)data,
+                    data,
                     WT_Logical_Point(x0, y0),
                     WT_Logical_Point(x1, y1),
                     false);
@@ -2211,7 +2221,9 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
                                    double         h,
                                    double         angledeg)
 {
-    if (format != RS_ImageFormat_RGBA && format != RS_ImageFormat_PNG)
+    if (format != RS_ImageFormat_RGB  &&
+        format != RS_ImageFormat_RGBA &&
+        format != RS_ImageFormat_PNG)
     {
         //TODO: support other formats...
         _ASSERT(false);
@@ -2221,42 +2233,142 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
     // draw to the active file if it's set
     WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
 
-    WT_Integer32 x0 = (WT_Integer32)(x - 0.5*w);
-    WT_Integer32 y0 = (WT_Integer32)(y - 0.5*h);
-    WT_Integer32 x1 = (WT_Integer32)(x + 0.5*w);
-    WT_Integer32 y1 = (WT_Integer32)(y + 0.5*h);
+    // find the corners of the image
+    SE_Matrix xform;
+    xform.rotate(angledeg * M_PI180);
+    xform.translate(x, y);
 
-    if (format == RS_ImageFormat_RGBA)
+    double ptsx[4], ptsy[4];
+    xform.transform(-0.5*w, -0.5*h, ptsx[0], ptsy[0]);
+    xform.transform( 0.5*w, -0.5*h, ptsx[1], ptsy[1]);
+    xform.transform( 0.5*w,  0.5*h, ptsx[2], ptsy[2]);
+    xform.transform(-0.5*w,  0.5*h, ptsx[3], ptsy[3]);
+
+    WT_Logical_Point dstpts[4];
+    for (int i=0; i<4; i++)
     {
-        WT_Image img((WT_Unsigned_Integer16)native_height,
-                     (WT_Unsigned_Integer16)native_width,
-                     WT_Image::RGBA,
-                     m_imgID++,
-                     NULL,
-                     length,
-                     (WT_Byte*)data,
-                     WT_Logical_Point(x0, y0),
-                     WT_Logical_Point(x1, y1),
-                     false);
-
-        img.serialize(*file);
-        ++m_drawableCount;
+        dstpts[i].m_x = (WT_Integer32)ptsx[i];
+        dstpts[i].m_y = (WT_Integer32)ptsy[i];
     }
-    else if (format == RS_ImageFormat_PNG)
-    {
-        WT_PNG_Group4_Image img((WT_Unsigned_Integer16)native_height,
-                     (WT_Unsigned_Integer16)native_width,
-                     WT_PNG_Group4_Image::PNG,
-                     m_imgID++,
-                     NULL,
-                     length,
-                     (WT_Byte*)data,
-                     WT_Logical_Point(x0, y0),
-                     WT_Logical_Point(x1, y1),
-                     false);
 
-        img.serialize(*file);
-        ++m_drawableCount;
+    if (angledeg == 0.0)
+    {
+        // simple case of no rotation
+        if (format == RS_ImageFormat_RGB || format == RS_ImageFormat_RGBA)
+        {
+            WT_Image img((WT_Unsigned_Integer16)native_height,
+                         (WT_Unsigned_Integer16)native_width,
+                         (format == RS_ImageFormat_RGB)? WT_Image::RGB : WT_Image::RGBA,
+                         m_imgID++,
+                         NULL,
+                         length,
+                         data,
+                         dstpts[0],
+                         dstpts[2],
+                         false);
+
+            img.serialize(*file);
+            ++m_drawableCount;
+        }
+        else if (format == RS_ImageFormat_PNG)
+        {
+            WT_PNG_Group4_Image img((WT_Unsigned_Integer16)native_height,
+                         (WT_Unsigned_Integer16)native_width,
+                         WT_PNG_Group4_Image::PNG,
+                         m_imgID++,
+                         NULL,
+                         length,
+                         data,
+                         dstpts[0],
+                         dstpts[2],
+                         false);
+
+            img.serialize(*file);
+            ++m_drawableCount;
+        }
+    }
+    else
+    {
+        // rotated case
+        if (format == RS_ImageFormat_RGB || format == RS_ImageFormat_RGBA)
+        {
+            RotateRGBAImage((WT_Unsigned_Integer16)native_height,
+                            (WT_Unsigned_Integer16)native_width,
+                            (format == RS_ImageFormat_RGB)? WT_Image::RGB : WT_Image::RGBA,
+                            NULL,
+                            data,
+                            m_imgID++,
+                            dstpts,
+                            *file);
+            ++m_drawableCount;
+        }
+        else if (format == RS_ImageFormat_PNG)
+        {
+            // compute the scaled size
+            double screenPixelsPerW2D = m_dpi / 25.4 / GetPixelsPerMillimeterScreen();
+            double scaledW = w * screenPixelsPerW2D;
+            double scaledH = h * screenPixelsPerW2D;
+
+            // don't allow images beyond the maximum size
+            if (scaledW * scaledH > IMAGE_SIZE_MAX)
+                return;
+
+            // compute the rotated size
+            double minx = rs_min(ptsx[0], rs_min(ptsx[1], rs_min(ptsx[2], ptsx[3])));
+            double maxx = rs_max(ptsx[0], rs_max(ptsx[1], rs_max(ptsx[2], ptsx[3])));
+            double miny = rs_min(ptsy[0], rs_min(ptsy[1], rs_min(ptsy[2], ptsy[3])));
+            double maxy = rs_max(ptsy[0], rs_max(ptsy[1], rs_max(ptsy[2], ptsy[3])));
+            double rotatedW = (maxx - minx) * screenPixelsPerW2D;
+            double rotatedH = (maxy - miny) * screenPixelsPerW2D;
+
+            // don't allow images beyond the maximum size
+            if (rotatedW * rotatedH > IMAGE_SIZE_MAX)
+                return;
+
+            // load the source image
+            gdImagePtr src = gdImageCreateFromPngPtr(length, data);
+
+            // scale it if necessary
+            if ((int)scaledW != gdImageSX(src) || (int)scaledH != gdImageSY(src))
+            {
+                gdImagePtr dst = gdImageCreateTrueColor((int)scaledW, (int)scaledH);
+                gdImageAlphaBlending(dst, 0);
+                gdImageFilledRectangle(dst, 0, 0, gdImageSX(dst)-1, gdImageSY(dst)-1, 0x7f000000);
+                gdImageAlphaBlending(dst, 1);
+                gdImageCopyResampled(dst, src, 0, 0, 0, 0, gdImageSX(dst), gdImageSY(dst), gdImageSX(src), gdImageSY(src));
+                gdImageDestroy(src);
+                src = dst;
+            }
+
+            // rotate the image
+            gdImagePtr dst = gdImageCreateTrueColor((int)rotatedW, (int)rotatedH);
+            gdImageAlphaBlending(dst, 0);
+            gdImageFilledRectangle(dst, 0, 0, gdImageSX(dst)-1, gdImageSY(dst)-1, 0x7f000000);
+            gdImageAlphaBlending(dst, 1);
+            gdImageCopyRotated(dst, src, 0.5*rotatedW, 0.5*rotatedH, 0, 0, gdImageSX(src), gdImageSY(src), (int)ROUND(angledeg));
+            gdImageSaveAlpha(dst, 1);
+
+            // create the DWF image from the PNG data
+            int pngSize = 0;
+            unsigned char* pngData = (unsigned char*)gdImagePngPtr(dst, &pngSize);
+
+            WT_PNG_Group4_Image img((WT_Unsigned_Integer16)gdImageSY(dst),
+                                    (WT_Unsigned_Integer16)gdImageSX(dst),
+                                    WT_PNG_Group4_Image::PNG,
+                                    m_imgID++,
+                                    NULL,
+                                    pngSize,
+                                    pngData,
+                                    WT_Logical_Point((WT_Integer32)minx, (WT_Integer32)miny),
+                                    WT_Logical_Point((WT_Integer32)maxx, (WT_Integer32)maxy),
+                                    false);
+            img.serialize(*file);
+            ++m_drawableCount;
+
+            gdFree(pngData);
+            gdImageDestroy(dst);
+            gdImageDestroy(src);
+        }
     }
 }
 
