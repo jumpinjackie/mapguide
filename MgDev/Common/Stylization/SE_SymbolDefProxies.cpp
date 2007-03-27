@@ -197,8 +197,8 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         ret->tdef.valign() = RS_VAlignment_Cap;
     else if (wcscmp(vAlign, L"Top") == 0)
         ret->tdef.valign() = RS_VAlignment_Ascent;
-    else // default is Baseline
-        ret->tdef.valign() = RS_VAlignment_Base;
+    else // default is Halfline
+        ret->tdef.valign() = RS_VAlignment_Half;
 
     RS_TextMetrics tm;
     SE_Matrix txf;
