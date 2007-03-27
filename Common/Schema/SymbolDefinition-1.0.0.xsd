@@ -492,7 +492,7 @@
           </xs:element>
           <xs:element name="VerticalAlignment" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The vertical alignment of the text box relative to its position.  This must evaluate to one of: Bottom, Baseline (default), Halfline, Capline, or Top.</xs:documentation>
+              <xs:documentation>The vertical alignment of the text box relative to its position.  This must evaluate to one of: Bottom, Baseline, Halfline (default), Capline, or Top.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="Justification" type="xs:string" minOccurs="0">
