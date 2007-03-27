@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef POINTADAPTER_H
+#define POINTADAPTER_H
+
 #include "GeometryAdapter.h"
 
 class LineBuffer;
@@ -41,3 +44,5 @@ private:
 
     std::map<void*, RS_MarkerDef*> m_hPointSymCache;
 };
+
+#endif

@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef BOOLEANVALUE_H
+#define BOOLEANVALUE_H
+
 #include "DataValue.h"
 
 class BooleanValue : public DataValue
@@ -54,3 +57,5 @@ private:
     bool m_value;
     wchar_t* m_strValue;
 };
+
+#endif

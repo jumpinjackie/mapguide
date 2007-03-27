@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef DATAVALUEPOOL_H
+#define DATAVALUEPOOL_H
+
 #include "DataValueStack.h"
 
 //forward declare
@@ -130,3 +133,5 @@ private:
     DataValueStack<BooleanValue> m_boolPool;
     DataValueStack<DateTimeValue> m_datePool;
 };
+
+#endif

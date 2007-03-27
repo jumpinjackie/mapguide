@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef STRINGVALUE_H
+#define STRINGVALUE_H
+
 #include "DataValue.h"
 
 class StringValue : public DataValue
@@ -54,3 +57,5 @@ private:
     wchar_t* m_value;
     bool m_bDisposeValue;
 };
+
+#endif

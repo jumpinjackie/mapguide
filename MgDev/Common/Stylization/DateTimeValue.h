@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef DATETIMEVALUE_H
+#define DATETIMEVALUE_H
+
 #include "DataValue.h"
 
 class DateTimeValue : public DataValue
@@ -54,3 +57,5 @@ private:
     FdoDateTime m_value;
     wchar_t* m_strValue;
 };
+
+#endif

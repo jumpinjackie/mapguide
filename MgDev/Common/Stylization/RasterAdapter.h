@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef RASTERADAPTER_H
+#define RASTERADAPTER_H
+
 #include "GeometryAdapter.h"
 
 class RasterAdapter : public GeometryAdapter
@@ -41,3 +44,5 @@ public:
 protected:
     RS_FilterExecutor* m_exec;
 };
+
+#endif

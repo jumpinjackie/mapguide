@@ -62,9 +62,6 @@ public:
     virtual FdoDateTime GetAsDateTime() = 0;
 
     virtual DataValueType GetType() = 0;
-
-private:
-
 };
 
 #endif

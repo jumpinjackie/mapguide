@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef OBSERVATIONMESH_H
+#define OBSERVATIONMESH_H
+
 //disable conditional expression is constant warning
 #ifdef _WIN32
 #pragma warning(disable : 4127)
@@ -122,3 +125,5 @@ private:
 
     CSysTransformer* m_xformer;
 };
+
+#endif

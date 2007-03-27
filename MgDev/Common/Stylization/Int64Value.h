@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef INT64VALUE_H
+#define INT64VALUE_H
+
 #include "DataValue.h"
 
 class Int64Value : public DataValue
@@ -55,3 +58,5 @@ private:
     long long m_value;
     wchar_t* m_strValue;
 };
+
+#endif

@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef RSDWFOUTPUTSTREAM_H
+#define RSDWFOUTPUTSTREAM_H
+
 #include "Renderer.h"
 #include "RS_OutputStream.h"
 #include "dwfcore/OutputStream.h"
@@ -45,3 +48,5 @@ public:
 private:
     DWFOutputStream* m_out;
 };
+
+#endif

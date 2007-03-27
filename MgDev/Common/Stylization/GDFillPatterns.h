@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef GDFILLPATTERNS_H
+#define GDFILLPATTERNS_H
+
 #include "gd.h"
 
 class GDFillPatterns
@@ -22,3 +25,5 @@ class GDFillPatterns
 public:
     static gdImagePtr CreatePatternBitmap(const wchar_t* name, int fgColor, int bgColor);
 };
+
+#endif
