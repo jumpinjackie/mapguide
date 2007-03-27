@@ -185,6 +185,8 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         ret->tdef.halign() = RS_HAlignment_Left;
     else if (wcscmp(hAlign, L"Right") == 0)
         ret->tdef.halign() = RS_HAlignment_Right;
+    else if (wcscmp(hAlign, L"Center") == 0)
+        ret->tdef.halign() = RS_HAlignment_Center;
     else // default is Center
         ret->tdef.halign() = RS_HAlignment_Center;
 
@@ -197,6 +199,8 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         ret->tdef.valign() = RS_VAlignment_Cap;
     else if (wcscmp(vAlign, L"Top") == 0)
         ret->tdef.valign() = RS_VAlignment_Ascent;
+    else if (wcscmp(vAlign, L"Baseline") == 0)
+        ret->tdef.valign() = RS_VAlignment_Base;
     else // default is Halfline
         ret->tdef.valign() = RS_VAlignment_Half;
 
