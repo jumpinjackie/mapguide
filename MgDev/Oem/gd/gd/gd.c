@@ -1935,12 +1935,12 @@ BGD_DECLARE(void) gdImageFilledRectangle (gdImagePtr im, int x1, int y1, int x2,
     window as it makes the tests in the for loops fail */
     if (x1 < 0)
         x1 = 0;
-    if (x1 > gdImageSX (im))
-        x1 = gdImageSX (im);
+    if (x2 > gdImageSX (im))
+        x2 = gdImageSX (im);
     if (y1 < 0)
         y1 = 0;
-    if (y1 > gdImageSY (im))
-        y1 = gdImageSY (im);
+    if (y2 > gdImageSY (im))
+        y2 = gdImageSY (im);
 
     for (y = y1; (y <= y2); y++)
     {
