@@ -1042,19 +1042,6 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
                                 SAFE_RELEASE(e);
                             }
 
-                            // Remove Feature Source cache entry
-                            FeatureSourceCache::iterator iterFeatureSource = m_FeatureSourceCache.find(key);
-                            if(m_FeatureSourceCache.end() != iterFeatureSource)
-                            {
-                                MdfModel::FeatureSource* featureSource = iterFeatureSource->second;
-                                if(featureSource)
-                                {
-                                    delete featureSource;
-                                }
-
-                                m_FeatureSourceCache.erase(iterFeatureSource);
-                            }
-
                             fdoConnectionCache->erase(iter++);
 
                             connectionsRemoved++;
@@ -1086,6 +1073,19 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
 
         // Next FDO connection cache
         iterFdoConnectionCacheCollection++;
+    }
+
+    // Remove Feature Source cache entry
+    FeatureSourceCache::iterator iterFeatureSource = m_FeatureSourceCache.find(key);
+    if(m_FeatureSourceCache.end() != iterFeatureSource)
+    {
+        MdfModel::FeatureSource* featureSource = iterFeatureSource->second;
+        if(featureSource)
+        {
+            delete featureSource;
+        }
+
+        m_FeatureSourceCache.erase(iterFeatureSource);
     }
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.RemoveCachedFdoConnection")

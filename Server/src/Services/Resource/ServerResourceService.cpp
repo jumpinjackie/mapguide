@@ -2192,9 +2192,26 @@ void MgServerResourceService::UpdateChangedResources(const set<STRING>& resource
     {
         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
+        // Need to clear the FDO connection cache
+        MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        ACE_ASSERT(NULL != fdoConnectionManager);
+
         for (set<STRING>::const_iterator i = resources.begin(); 
             i != resources.end(); ++i)
         {
+            Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(*i);
+
+            STRING resourceType = resource->GetResourceType();
+            if(MgResourceType::FeatureSource == resourceType)
+            {
+                // Need to check the FDO connection manager to see if there is a cached
+                // connection to this data and remove it if possible.
+                if (NULL != fdoConnectionManager)
+                {
+                    fdoConnectionManager->RemoveCachedFdoConnection(*i);
+                }
+            }
+
             sm_changedResources.insert(*i);
         }
     }

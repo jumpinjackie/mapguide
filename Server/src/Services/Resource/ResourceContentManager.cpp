@@ -266,9 +266,6 @@ void MgResourceContentManager::MoveResource(
     const size_t sourcePathLength = sourcePathname.length();
     XmlValue xmlValue;
 
-    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    ACE_ASSERT(NULL != fdoConnectionManager);
-
     while (results.next(xmlValue))
     {
         XmlDocument currDoc = xmlValue.asDocument();
@@ -276,28 +273,6 @@ void MgResourceContentManager::MoveResource(
         MgResourceIdentifier currResource(MgUtil::MultiByteToWideChar(currPathname));
 
         CheckParentPermission(currResource, MgResourcePermission::ReadWrite);
-
-        STRING resourceType = currResource.GetResourceType();
-        if(MgResourceType::FeatureSource == resourceType)
-        {
-            // Need to check the FDO connection manager to see if there is a cached
-            // connection to this data and remove it if possible.
-            // If there is and it is not in use then we can remove it from the cache
-            // and allow the copy.
-            if (NULL != fdoConnectionManager)
-            {
-                if(!fdoConnectionManager->RemoveCachedFdoConnection(currResource.ToString()))
-                {
-                    // Could not remove the cached FDO connection because it is in use.
-                    MgStringCollection arguments;
-                    arguments.Add(currResource.ToString());
-
-                    throw new MgResourceBusyException(
-                        L"MgResourceContentManager.MoveResource",
-                        __LINE__, __WFILE__, &arguments, L"", NULL);
-                }
-            }
-        }
 
         if (sourceResourceIsFolder)
         {
@@ -436,9 +411,6 @@ void MgResourceContentManager::CopyResource(
     const size_t sourcePathLength = sourcePathname.length();
     XmlValue xmlValue;
 
-    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    ACE_ASSERT(NULL != fdoConnectionManager);
-
     while (results.next(xmlValue))
     {
         const XmlDocument& currDoc = xmlValue.asDocument();
@@ -446,28 +418,6 @@ void MgResourceContentManager::CopyResource(
         MgResourceIdentifier currResource(MgUtil::MultiByteToWideChar(currPathname));
 
         sourceResourceContentMan->CheckPermission(currResource, MgResourcePermission::ReadOnly);
-
-        STRING resourceType = currResource.GetResourceType();
-        if(MgResourceType::FeatureSource == resourceType)
-        {
-            // Need to check the FDO connection manager to see if there is a cached
-            // connection to this data and remove it if possible.
-            // If there is and it is not in use then we can remove it from the cache
-            // and allow the copy.
-            if (NULL != fdoConnectionManager)
-            {
-                if(!fdoConnectionManager->RemoveCachedFdoConnection(currResource.ToString()))
-                {
-                    // Could not remove the cached FDO connection because it is in use.
-                    MgStringCollection arguments;
-                    arguments.Add(currResource.ToString());
-
-                    throw new MgResourceBusyException(
-                        L"MgResourceContentManager.CopyResource",
-                        __LINE__, __WFILE__, &arguments, L"", NULL);
-                }
-            }
-        }
 
         if (sourceResourceIsFolder)
         {
