@@ -55,19 +55,17 @@ void rs_gdImageCircleForBrush(gdImagePtr im, int x, int y, int rad, RS_Color& co
 
 gdImagePtr rs_gdImageThickLineBrush(int line_weight, RS_Color& color)
 {
-    gdImagePtr brush1 = NULL;
-
     if (line_weight % 2 == 1)
         line_weight += 1;
 
     int sx = line_weight;
     int sy = line_weight;
 
-    brush1 = gdImageCreateTrueColor(sx, sy);
-    int transparent = gdImageColorAllocateAlpha(brush1, 0, 0, 0, 127);
+    gdImagePtr brush = gdImageCreateTrueColor(sx, sy);
+    int transparent = gdImageColorAllocateAlpha(brush, 0, 0, 0, 127);
 
-    gdImageAlphaBlending(brush1, 0);
-    gdImageFilledRectangle(brush1, 0, 0, sx, sy, transparent);
+    gdImageAlphaBlending(brush, 0);
+    gdImageFilledRectangle(brush, 0, 0, sx, sy, transparent);
 
     //compute fractional alpha value for antialiasing effect
     //each pixel should be hit by line_weight / 2 number of circles
@@ -77,12 +75,12 @@ gdImagePtr rs_gdImageThickLineBrush(int line_weight, RS_Color& color)
     falpha.alpha() = (falpha.alpha() < 255)? falpha.alpha() : 255;
 
     //outer transparent circle -- for antialiased effect
-    rs_gdImageCircleForBrush(brush1, sx/2, sy/2, line_weight / 2,  falpha);
+    rs_gdImageCircleForBrush(brush, sx/2, sy/2, line_weight / 2,  falpha);
 
-    gdImageAlphaBlending(brush1, 1);
+    gdImageAlphaBlending(brush, 1);
 
     //inner non-transparent circle
-    rs_gdImageCircleForBrush(brush1, sx/2, sy/2, (line_weight - 2) / 2, color);
+    rs_gdImageCircleForBrush(brush, sx/2, sy/2, (line_weight - 2) / 2, color);
 
-    return brush1;
+    return brush;
 }

@@ -147,7 +147,7 @@ m_pPool(NULL)
     // initialize the image to the supplied color (temporarily turn
     // off alpha blending so the fill has the supplied alpha)
     gdImageAlphaBlending(img, 0);
-    gdImageFilledRectangle(img, 0, 0, gdImageSX(img)-1, gdImageSY(img), bgc);
+    gdImageFilledRectangle(img, 0, 0, gdImageSX(img)-1, gdImageSY(img)-1, bgc);
     gdImageAlphaBlending(img, 1);
 
     // set any transparent color
@@ -237,13 +237,13 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
         // initialize the destination image to the bg color (temporarily turn
         // off alpha blending so the fill has the supplied alpha)
         gdImageAlphaBlending(im, 0);
-        gdImageFilledRectangle(im, 0, 0, gdImageSX(im)-1, gdImageSY(im), bgc);
+        gdImageFilledRectangle(im, 0, 0, gdImageSX(im)-1, gdImageSY(im)-1, bgc);
 
         // set any transparent color
         if (m_bgcolor.alpha() != 255)
             gdImageColorTransparent(im, bgc);
 
-        gdImageCopyResized(im, (gdImagePtr)m_imout, 0, 0, 0,0,width, height, m_width, m_height);
+        gdImageCopyResized(im, (gdImagePtr)m_imout, 0, 0, 0, 0, width, height, m_width, m_height);
         gdImageAlphaBlending(im, 1);
     }
     else
@@ -774,18 +774,18 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     }
 
                     // initialize the temporary supersampled symbol image to a transparent background
-                    gdImageAlphaBlending((gdImagePtr)tmp, 0);
-                    gdImageFilledRectangle((gdImagePtr)tmp, 0, 0, gdImageSX((gdImagePtr)tmp)-1, gdImageSY((gdImagePtr)tmp), 0x7f000000);
-                    gdImageAlphaBlending((gdImagePtr)tmp, 1);
+                    gdImageAlphaBlending(tmp, 0);
+                    gdImageFilledRectangle(tmp, 0, 0, gdImageSX(tmp)-1, gdImageSY(tmp)-1, 0x7f000000);
+                    gdImageAlphaBlending(tmp, 1);
 
                     if (!nm)
                     {
                         //unknown symbol or symbol library error
                         RS_Color red(255, 0, 0, 255);
                         gdImagePtr brush1 = rs_gdImageThickLineBrush(rs_min(superw, superh) / 17, red);
-                        gdImageSetBrush((gdImagePtr)tmp, brush1);
+                        gdImageSetBrush(tmp, brush1);
 
-                        gdImageOpenPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdBrushed);
+                        gdImageOpenPolygon(tmp, (gdPointPtr)pts, npts, gdBrushed);
 
                         gdImageSetBrush(tmp, NULL);
                         gdImageDestroy(brush1);
@@ -795,14 +795,14 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                         //draw fill
                         // TODO: When a filled polygon image is down-sampled, a gray false edge is created.
                         // This edge can only be seen when the real edge is not being drawn.
-                        gdImageFilledPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdcfill);
+                        gdImageFilledPolygon(tmp, (gdPointPtr)pts, npts, gdcfill);
                         //draw outline with a thickness set so that when scaled down to
                         //th destination image, the outline is still fully visible
 
                         gdImagePtr brush1 = rs_gdImageThickLineBrush(rs_min(superw, superh) / 17, outline);
-                        gdImageSetBrush((gdImagePtr)tmp, brush1);
+                        gdImageSetBrush(tmp, brush1);
 
-                        gdImageOpenPolygon((gdImagePtr)tmp, (gdPointPtr)pts, npts, gdBrushed);
+                        gdImageOpenPolygon(tmp, (gdPointPtr)pts, npts, gdBrushed);
 
                         gdImageSetBrush(tmp, NULL);
                         gdImageDestroy(brush1);
@@ -810,7 +810,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                     // initialize the real cached symbol image to a transparent background
                     gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
-                    gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym), 0x7f000000);
+                    gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym)-1, 0x7f000000);
                     gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
 
                     //resample the supersampled temporary image into the cached image
@@ -892,7 +892,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                     // initialize the temporary symbol image to a transparent background
                     gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
-                    gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym), 0x7f000000);
+                    gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym)-1, 0x7f000000);
                     gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
                 }
                 else
@@ -958,19 +958,18 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 //straight copy without resampling since we are
                 //guaranteed for the source image size to equal the
                 //symbol pixel size
-                gdImageCopy((gdImagePtr)m_imout, (gdImagePtr)m_imsym,
-                    ulx, uly, 0, 0, imsymw, imsymh);
+                gdImageCopy((gdImagePtr)m_imout, (gdImagePtr)m_imsym, ulx, uly, 0, 0, imsymw, imsymh);
             }
             else
             {
                 //for rotated copy, we need to scale down the image first
                 //allocating an extra image here should not be too much of
                 //an overhead since it is usually small
-                gdImagePtr tmp = gdImageCreateTrueColor(imsymw + 2, imsymh + 2);
+                gdImagePtr tmp = gdImageCreateTrueColor(imsymw+2, imsymh+2);
 
                 //make it transparent
                 gdImageAlphaBlending(tmp, 0);
-                gdImageFilledRectangle(tmp, 0, 0, imsymw + 1, imsymh + 2, 0x7f000000);
+                gdImageFilledRectangle(tmp, 0, 0, imsymw+1, imsymh+1, 0x7f000000);
                 gdImageAlphaBlending(tmp, 1);
 
                 //straight copy without resampling since we are
@@ -984,9 +983,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 int my = (int)floor(0.5 * (b[0].y + b[2].y));
 
                 //draw rotated symbol onto final destination image
-                gdImageCopyRotated((gdImagePtr)m_imout, (gdImagePtr)tmp,
-                    mx, my, 0, 0, imsymw + 2, imsymh + 2,
-                    (int)(mdef.rotation()));
+                gdImageCopyRotated((gdImagePtr)m_imout, tmp, mx, my, 0, 0, imsymw+2, imsymh+2, (int)ROUND(mdef.rotation()));
 
                 gdImageDestroy(tmp);
             }
@@ -2357,7 +2354,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageForma
             //TODO: must scale from native width/height to requested width/height
 
             gdImageCopyRotated((gdImagePtr)m_imout, src,
-                                   x, y, 0, 0, native_width, native_height, (int)angledeg);
+                               x, y, 0, 0, native_width, native_height, (int)ROUND(angledeg));
         }
 
         gdImageDestroy(src);
@@ -2389,7 +2386,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageForma
             //TODO: must scale from native width/height to requested width/height
 
             gdImageCopyRotated((gdImagePtr)m_imout, src,
-                                   x, y, 0, 0, gdImageSX(src), gdImageSY(src), (int)angledeg);
+                               x, y, 0, 0, gdImageSX(src), gdImageSY(src), (int)ROUND(angledeg));
         }
 
         gdImageDestroy(src);

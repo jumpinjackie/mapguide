@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef W2DREWRITER_H
+#define W2DREWRITER_H
+
 #include "whiptk/whip_toolkit.h"
 
 // Standard action routines.
@@ -22,6 +25,15 @@ WT_Result simple_open  (WT_File & file);
 WT_Result simple_close (WT_File & file);
 WT_Result simple_read  (WT_File & file, int desired_bytes, int &bytes_read, void * buffer);
 WT_Result simple_seek  (WT_File & file, int distance, int &amount_seeked);
+
+void RotateRGBAImage(const WT_Unsigned_Integer16 rows,
+                     const WT_Unsigned_Integer16 columns,
+                     const WT_Image::WT_Image_Format format,
+                     const WT_Color_Map* color_map,
+                     const WT_Byte* data,
+                     const WT_Integer32 identifier,
+                     const WT_Logical_Point* dstpts,
+                     WT_File & file);
 
 WT_Result simple_process_author (WT_Author & author, WT_File & file);
 WT_Result simple_process_creator (WT_Creator & creator, WT_File & file);
@@ -93,3 +105,5 @@ WT_Result simple_process_penPattern (WT_Pen_Pattern & penPattern, WT_File & file
 WT_Result simple_process_fillPattern (WT_Fill_Pattern & fillPattern, WT_File & file);
 WT_Result simple_process_DigitalSign (WT_SignData & digitalSing, WT_File & file);
 WT_Result simple_process_dwf_header (WT_DWF_Header & dwf_header, WT_File & file);
+
+#endif
