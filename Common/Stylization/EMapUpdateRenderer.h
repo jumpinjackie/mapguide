@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef EMAPUPDATERENDERER_H
+#define EMAPUPDATERENDERER_H
+
 #include "DWFRenderer.h"
 #include <list>
 
@@ -118,3 +121,5 @@ private:
     layerinfo_list  m_lLayerInfos;
     std::map<RS_String, DWFEMapLayer*> m_hAddedLayers;
 };
+
+#endif

@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef RSDWFINPUTSTREAM_H
+#define RSDWFINPUTSTREAM_H
+
 #include "Renderer.h"
 #include "dwfcore/InputStream.h"
 
@@ -49,3 +52,5 @@ public:
 private:
     DWFInputStream* m_in;
 };
+
+#endif

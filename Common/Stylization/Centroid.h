@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef CENTROID_H
+#define CENTROID_H
+
 class Centroid
 {
 public:
@@ -27,3 +30,5 @@ public:
     static void PolygonCentroidBVM(double* pts, int len, double* cx, double* cy);
     static void PolygonCentroidWMC(double* pts, int len, double* cx, double* cy);
 };
+
+#endif

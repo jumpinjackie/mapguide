@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef GDW2DREWRITER_H
+#define GDW2DREWRITER_H
+
 #include "whiptk/whip_toolkit.h"
 
 // Standard action routines.
@@ -93,3 +96,5 @@ WT_Result gdr_process_penPattern (WT_Pen_Pattern & penPattern, WT_File & file);
 WT_Result gdr_process_fillPattern (WT_Fill_Pattern & fillPattern, WT_File & file);
 //WT_Result gdr_process_DigitalSign (WT_SignData & digitalSing, WT_File & file);
 //WT_Result gdr_process_dwf_header (WT_DWF_Header & dwf_header, WT_File & file);
+
+#endif

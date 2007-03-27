@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef DEFAULTSTYLIZER_H
+#define DEFAULTSTYLIZER_H
+
 #include "Stylizer.h"
 
 class LineBufferPool;
@@ -73,3 +76,5 @@ private:
 
     LineBufferPool* m_lbPool;
 };
+
+#endif

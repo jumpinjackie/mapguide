@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef LINESTYLEDEF_H
+#define LINESTYLEDEF_H
+
 #include "dwf/whiptk/whip_toolkit.h"
 
 // enumeration defining the supported decorations
@@ -53,3 +56,5 @@ public:
     int m_nRuns;            // number of elements in m_pixelRuns array
     PixelRun* m_pixelRuns;  // definition of the line style as pixel runs
 };
+
+#endif

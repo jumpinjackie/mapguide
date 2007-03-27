@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef GDUTILS_H
+#define GDUTILS_H
+
 #include "gd.h"
 #include "RendererStyles.h"
 
@@ -26,3 +29,5 @@ void rs_gdImageMultiPolygon(gdImagePtr im, int* cntrs, int nCntrs, gdPointPtr p,
 void rs_gdImageCircleForBrush(gdImagePtr im, int x, int y, int rad, RS_Color& color);
 
 gdImagePtr rs_gdImageThickLineBrush(int line_weight, RS_Color& color);
+
+#endif

@@ -24,6 +24,9 @@
 //         fillFac.request_pattern( EMapFillPatternFactory::Shapefill51, fsfp );
 //         pwtf->desired_rendition().set_fill_pattern() = fsfp;
 
+#ifndef WHIP_FILL_LIBRARY_H
+#define WHIP_FILL_LIBRARY_H
+
 class EMapFillPatternFactory {
     public:
         enum Enum {
@@ -1028,3 +1031,5 @@ class EMapFillPatternFactory {
         return nonexistent;
     }
 };
+
+#endif

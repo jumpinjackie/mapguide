@@ -24,6 +24,9 @@
 //         hatchFac.request_pattern( EMapHatchPatternFactory::Net, fsfp );
 //         pwtf->desired_rendition().set_hatch_pattern() = fsfp;
 
+#ifndef WHIP_HATCH_LIBRARY_H
+#define WHIP_HATCH_LIBRARY_H
+
 class EMapHatchPatternFactory {
     public:
         enum Enum {
@@ -2293,3 +2296,5 @@ class EMapHatchPatternFactory {
         return nonexistent;
     }
 };
+
+#endif

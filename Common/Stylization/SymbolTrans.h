@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef SYMBOLTRANS_H
+#define SYMBOLTRANS_H
+
 #include "CSysTransformer.h"
 #include "Bounds.h"
 
@@ -65,3 +68,5 @@ private:
     double m_widthScale;
     double m_heightScale;
 };
+
+#endif
