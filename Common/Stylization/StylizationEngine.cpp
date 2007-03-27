@@ -275,14 +275,14 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                             sym->scale[1].evaluate(executor),
                             sym->absOffset[0].evaluate(executor),
                             sym->absOffset[1].evaluate(executor) );
-        
+
         //??? symbol geometry needs to be inverted if the y coordinate in the renderer points down
         //This is so that in symbol definitions y points up consistently no matter what the underlying
         //renderer is doing. Normally we could just apply the world to screen transform to everything,
         //but in some cases we only apply it to the position of the symbol and then offset the symbol
         //geometry from there -- so the symbol geometry needs to be pre-inverted.
         //TODO: check if all rotations still work in the right direction
-        xform.scale(mm2px, w2s.y1 < 0 ? -mm2px : mm2px);  
+        xform.scale(mm2px, w2s.y1 < 0 ? -mm2px : mm2px);
 
         //initialize the style evaluation context
         SE_EvalContext cxt;
@@ -292,6 +292,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         cxt.mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
         cxt.pool = m_pool;
         cxt.fonte = m_serenderer->GetFontEngine();
+        cxt.xform = &xform;
         cxt.geometry = geometry; //only used by point styles, I really want to get rid of this
 
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
@@ -321,13 +322,6 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                 continue;
             }
 
-            SE_Matrix tmpxform(xform);  //TODO: this is lame, but necessary since the xform can be modified
-                                        //when we evalute the style, in the case of point style set on a
-                                        //non-point geometry
-
-            cxt.xform = &tmpxform; //EXTREMELY IMPORTANT: evaluating of point styles will modify this
-                                   //transform without you knowing -- beware!
-
             //evaluate the style (all expressions inside it) and convert to a constant screen space
             //render style
             style->evaluate(&cxt);
@@ -340,7 +334,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             const wchar_t* positioningAlgo = sym->positioningAlgorithm.evaluate(executor);
             if (wcslen(positioningAlgo) > 0 && wcscmp(positioningAlgo, L"Default") != 0)
             {
-                LayoutCustomLabel(positioningAlgo, geometry, tmpxform, style, style->rstyle, mm2px);
+                LayoutCustomLabel(positioningAlgo, geometry, xform, style, style->rstyle, mm2px);
             }
             else
             {
@@ -350,6 +344,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         }
     }
 }
+
 
 void StylizationEngine::LayoutCustomLabel(const wchar_t* positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_Style* style, SE_RenderStyle* rstyle, double mm2px)
 {

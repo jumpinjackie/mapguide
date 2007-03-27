@@ -160,7 +160,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 
     cxt->xform->transform(ret->position[0], ret->position[1]);
 
-    ret->tdef.rotation() = angle.evaluate(cxt->exec);
+    ret->tdef.rotation() = angle.evaluate(cxt->exec);   // in degrees
 
     int style = RS_FontStyle_Regular;
     if (underlined.evaluate(cxt->exec)) style |= (int)RS_FontStyle_Underline;
@@ -424,68 +424,19 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
 
 void SE_PointStyle::evaluate(SE_EvalContext* cxt)
 {
-    SE_RenderPointStyle* render;
-
+    //can skip out of evaluation if style is constant and has been evaluated once
     if (cacheable && rstyle)
-    {
-        //style is constant and has been evluated once -- we can skip out of evaluation
         return;
-    }
-    else
-    {
-        render = new SE_RenderPointStyle();
-        delete rstyle;
-        rstyle = render;
-    }
 
-    LineBuffer::GeomOperationType type;
-    switch(cxt->geometry->geom_type())
-    {
-    case FdoGeometryType_LineString:
-    case FdoGeometryType_MultiLineString:
-        type = LineBuffer::ctLine;
-        break;
-    case FdoGeometryType_Polygon:
-    case FdoGeometryType_MultiPolygon:
-        type = LineBuffer::ctArea;
-        break;
-    case FdoGeometryType_Point:
-    case FdoGeometryType_MultiPoint:
-        type = LineBuffer::ctPoint;
-        break;
-    default:
-        type = LineBuffer::ctNone;
-        break;
-    }
+    SE_RenderPointStyle* render = new SE_RenderPointStyle();
+    delete rstyle;
+    rstyle = render;
 
-    double angle = 0.0;
-    const wchar_t* sAngleControl = angleControl.evaluate(cxt->exec);
-    if (wcscmp(L"FromGeometry", sAngleControl) == 0)
-    {
-        if (type == LineBuffer::ctLine || type == LineBuffer::ctArea)
-        {
-            double x0, y0;
-            double slope_rad = 0.0;
-            cxt->geometry->Centroid(LineBuffer::ctLine, &x0, &y0, &slope_rad);
+    render->angleControl = angleControl.evaluate(cxt->exec);
 
-            angle = slope_rad;
-
-            //TODO: do we really need to invert this in case of y-down?
-            if (cxt->xform->y1 < 0)
-                angle = -angle;
-        }
-    }
-    else
-        angle = this->angle.evaluate(cxt->exec) * M_PI180;
-
-    double originOffsetX = originOffset[0].evaluate(cxt->exec)*cxt->mm2px;
-    double originOffsetY = originOffset[1].evaluate(cxt->exec)*cxt->mm2px;
-
-    SE_Matrix sxform;
-    sxform.translate(originOffsetX, originOffsetY);
-    sxform.rotate(angle);
-    sxform.premultiply(*cxt->xform);
-    *cxt->xform = sxform; //BAD here we modify the passed in transform -- figure out a way to avoid this
+    render->angle = angle.evaluate(cxt->exec) * M_PI180;
+    render->offset[0] = originOffset[0].evaluate(cxt->exec)*cxt->mm2px;
+    render->offset[1] = originOffset[1].evaluate(cxt->exec)*cxt->mm2px;
 
     //evaluate all the primitives too
     SE_Style::evaluate(cxt);
@@ -494,19 +445,13 @@ void SE_PointStyle::evaluate(SE_EvalContext* cxt)
 
 void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 {
-    SE_RenderLineStyle* render;
-
+    //can skip out of evaluation if style is constant and has been evaluated once
     if (cacheable && rstyle)
-    {
-        //style is constant and has been evluated once -- we can skip out of evaluation
         return;
-    }
-    else
-    {
-        render = new SE_RenderLineStyle();
-        delete rstyle;
-        rstyle = render;
-    }
+
+    SE_RenderLineStyle* render = new SE_RenderLineStyle();
+    delete rstyle;
+    rstyle = render;
 
     render->angleControl = angleControl.evaluate(cxt->exec);
     render->unitsControl = unitsControl.evaluate(cxt->exec);
@@ -526,29 +471,24 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 
 void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 {
-    SE_RenderAreaStyle* render;
+    //can skip out of evaluation if style is constant and has been evaluated once
     if (cacheable && rstyle)
-    {
-        //style is constant and has been evluated once -- we can skip out of evaluation
         return;
-    }
-    else
-    {
-        render = new SE_RenderAreaStyle();
-        delete rstyle;
-        rstyle = render;
-    }
+
+    SE_RenderAreaStyle* render = new SE_RenderAreaStyle();
+    delete rstyle;
+    rstyle = render;
 
     render->angleControl = angleControl.evaluate(cxt->exec);
     render->originControl = originControl.evaluate(cxt->exec);
     render->clippingControl = clippingControl.evaluate(cxt->exec);
 
     render->angle = angle.evaluate(cxt->exec) * M_PI180;
-    render->origin[0] = origin[0].evaluate(cxt->exec);
-    render->origin[1] = origin[1].evaluate(cxt->exec);
-    render->repeat[0] = repeat[0].evaluate(cxt->exec);
-    render->repeat[1] = repeat[1].evaluate(cxt->exec);
-    render->bufferWidth = bufferWidth.evaluate(cxt->exec);
+    render->origin[0] = origin[0].evaluate(cxt->exec)*cxt->mm2px;
+    render->origin[1] = origin[1].evaluate(cxt->exec)*cxt->mm2px;
+    render->repeat[0] = repeat[0].evaluate(cxt->exec)*cxt->mm2px;
+    render->repeat[1] = repeat[1].evaluate(cxt->exec)*cxt->mm2px;
+    render->bufferWidth = bufferWidth.evaluate(cxt->exec)*cxt->mm2px;
 
     //evaluate all the primitives too
     SE_Style::evaluate(cxt);
