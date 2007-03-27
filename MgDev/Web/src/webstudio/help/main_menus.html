@@ -1,0 +1,81 @@
+<h1>Main Menu</h1>
+<img src='images/main_menu.png' width='255' height='22'>
+<p>The main menu of the application appears at the top of the application.  The main menu contains five sub menus: <a href="#file">file</a>, <a href='#edit'>edit</a>, <a href='#tools'>tools</a>, <a href='window'>window</a>, and <a href='#help'>help</a>.  Each is discussed below.</p>
+<h2><a name="#file"></a>File Menu</h2>
+<img src='images/main_filemenu.png' width='321' height='265'>
+<dl>
+    <dt>New</dt>
+    <dd>The New menu opens a sub-menu that allows you to create a new resource in the repository.
+        <dl>
+            <dt>Folder</dt>
+            <dd>Creates a new folder within the currently selected folder or parent folder of a currently selected resource.  The folder is given a unique name automatically.</dd>
+            <dt>Layer</dt>
+            <dd>Creates a new, empty layer definition within the currently selected folder or parent folder of a currently selected resource.  You will be prompted to provide a name for the resource and may change the location at the same time.  After a layer definition has been created, you must choose a feature source for the layer before it can be configured and styled.</dd>
+            <dt>Map</dt>
+            <dd>Creates a new map definition within the currently selected folder or parent folder of a currently selected resource.  You will be prompted to provide a name for the resource and may change the location at the same time.  After a layer definition has been created, you can edit it to add layers.</dd>
+            <dt>Feature Source</dt>
+            <dd>Creates a new feature source whose data is managed by the server.  The feature source is created within the currently selected folder or parent folder of a currently selected resource.  You will be prompted to provide a name for the resource and may change the location at the same time.  After a feature source has been created, you can edit upload data from your computer to the server.</dd>
+            <dt>Unmanaged Feature Source</dt>
+            <dd>Creates a new feature source whose data is not managed by the server.  The feature source is created within the currently selected folder or parent folder of a currently selected resource.  You will be prompted to provide a name for the resource and may change the location at the same time.  After a managed feature source has been created, you can specify a directory on the server in which the data resides  You cannot upload data from your computer to the server if you select an unmanaged feature source.</dd>
+        </dl>
+    </dd>
+    <dt>Open Resource</dt>
+    <dd>Opens the <a href="javascript:setHelpTopic('dialog_browseresource.html')">Resource Browser</a> dialog to select a resource to open.  Resources can also be opened by using the <a href="#treecontextmenu">context menu</a> within the site explorer or by double-clicking a resource in the site explorer.<dd>
+    <dt>Close</dt>
+    <dd>Closes the current open resource.  If the resource has been modified and not saved, you will be prompted to save it first.</dd>
+    <dt>Save</dt>
+    <dd>Saves the current open resource.  This is only enabled if the resource has been modified since it was last opened or saved.</dd>
+    <dt>Save As</dt>
+    <dd>Opens the <a href="javascript:setHelpTopic('dialog_browseresource.html')">Resource Browser</a> to save the current resource with a different name and/or location in the repository.  This makes a copy of the resource.  The original resource is not changed in the repository.</dd>
+    <dt>Save All</dt>
+    <dd>Saves all modified resources.  This is only enabled if at least one open resource has been modified since it was opened or last saved.</dd>
+    <dt>Rename</dt>
+    <dd>Allows changing the name of a resource in the repository.  This option is not available if the resource is currently open for editing.</dd>
+    <dt>Open Site</dt>
+    <dd>Launches the <a href="javascript:setHelpTopic('dialog_opensite.html')">Open Site</a> dialog to connect to a MapGuide Open Source site.  This is not available if you are currently connected to a site.  To connect to a different site, use 'Close Site' first.</dd>
+    <dt>Refresh Site</dt>
+    <dd>Refreshes the <a href="javascript:setHelpTopic('main_siteexplorer.html')">Site Explorer</a> tree to synchronize it with changes possibly made by other users.  Due to the asynchronous nature of Web Studio, it is sometimes possible that the Site Explorer does not reflect the actual state of the repository (for instance, after creating a new resource, or copying and pasting a resource).</dd>
+    <dt>Close Site</dt>
+    <dd>Disconnects from the current MapGuide Open Source site.</dd>
+    <dt>Recent Resources</dt>
+    <dd>Not implemented</dd>
+    <dt>Recent Sites</dt>
+    <dd>Not implemented</dd>
+</dl>
+<h2><a name="edit"></a>Edit Menu</h2>
+<img src="images/main_editmenu.png" width="88" height="123">
+<dl>
+    <dt>Cut</dt>
+    <dd>Cuts the currently selected resource in the Site Explorer.  The resource is not actually removed until it is subsequently pasted in a new location.</dd>
+    <dt>Copy</dt>
+    <dd>Copies the currently selected resource in the Site Explorer.  A copy of the resource can then be pasted into a new location in the repository.</dd>
+    <dt>Paste</dt>
+    <dd>Pastes a resource into the repository.  If the resource was cut, it is removed from its original location.  If it was copied, a copy of the resource is put into the repository.</dd>
+    <dt>Delete</dt>
+    <dd>Deletes the currently selected resource in the Site Explorer.  You will be prompted to confirm deleting the resource.  The confirmation dialog will list the resources (if any) that will be invalidated by deleting this resource.</dd>
+    <dt>Rename</dt>
+    <dd>Allows changing the name of a resource in the repository.  This option is not available if the resource is currently open for editing.</dd>
+</dl>
+<h2><a name="tools"></a>Tools Menu</h2>
+<img src="images/main_toolsmenu.png" width="133" height="83">
+<dl>
+    <dt>Site Administrator</dt>
+    <dd>Opens the MapGuide Open Source Site Administrator in a panel within Web Studio.  The Site Administrator is a separate application.  This link is provided for convenience.</dd>
+    <dt>MapAgent</dt>
+    <dd>Opens the MapGuide Open Source MapAgent interface in a panel within Web Studio.  The MapAgent is a separate application that allows a user to execute MapAgent operations directly against a MapGuide Open Source server.  This link is provided for convenience.</dd>
+    <dt>Options</dt>
+    <dd>Not implemented</dd>
+</dl>
+<h2><a name="window"></a>Window Menu</h2>
+<img src="images/main_windowmenu.png" width="146" height="103">
+<p>The window menu lists all open resources as menu items.  The currently selected resource is marked with a black dot.  There is an additional menu item, 'Close All Resources', which closes all open resources.</p>
+<h2><a name="help"></a>Help Menu</h2>
+<img src="images/main_helpmenu.png" width="229" height="83">
+<dl>
+    <dt>Getting Started ...</dt>
+    <dd>Opens the 'Getting Started' help page.  This page contains a quick overview of working with Web Studio.</dd>
+    <dt>MapGuide Open Source Web Studio Help</dt>
+    <dd>Opens the inline help system</dd>
+    <dt>About MapGuide Open Source Web Studio</dt>
+    <dd>Opens the About dialog for the application</dd>
+</dl>

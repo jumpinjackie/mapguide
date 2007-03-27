@@ -1,0 +1,5 @@
+There are two nodes with Intensity >= 250 and Intensity <= 300
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<Intensity>250</Intensity>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<Intensity>266</Intensity>

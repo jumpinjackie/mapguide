@@ -1,0 +1,11 @@
+# Coordinate System Categories Description File
+#
+# The following format is used to define the categories and the coordinate systems in the categories.
+# [CATEGORY]
+# Filename
+
+[EPSG]
+epsg
+
+[World/Continental]
+world

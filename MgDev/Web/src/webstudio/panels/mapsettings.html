@@ -1,0 +1,51 @@
+<!--
+revision  $Id: mapsettings.html,v 1.3 2006/06/13 20:14:04 fwarnock Exp $
+copyright &copy; 2006 DM Solutions Group Inc.
+released under LGPL License with MapGuide Open Source (see index.html)
+-->
+<fieldset>
+  <div class="fieldsetFix"></div>
+  <table class="formTable">
+    <tbody>
+      <tr>
+        <th class="formTh"><label for="description">Description:</label></th>
+        <td class="formTd" colspan="2"><input type="text" class="wideText" name="description" id="description" value="" /></td>
+        <td class="formTdButton">&nbsp;</td>
+      </tr>
+      <tr>
+        <th class="formTh"><label for="coordinatesystem">Coordinate system:</label></th>
+        <td class="formTd" colspan="2"><input type="text" disabled class="wideText" name="coordinatesystem" id="coordinatesystem" value="" /></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="choosecoordinatesystem" id="choosecoordinatesystem" value="..."></td>
+      </tr>
+      <tr>
+        <th class="formTh"><label for="backgroundcolor">Background color:</label></th>
+        <td class="formTdSmall"><input type="text" class="smallText" name="backgroundcolor" id="backgroundcolor" value=""/></td>
+        <td><div class="previewInput" id="backgroundcolor.swatch"></div></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="Button" value="..." disabled></td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
+
+<fieldset>
+  <legend>Initial View</legend>
+  <div class="fieldsetFix"></div>
+  <table class="formTable">
+    <tbody>
+      <tr>
+        <th class="formTh"><label>Lower left coordinates:</label></th>
+        <td class="formTd">
+          <label for="minx">X:</label><input type="text" class="smallText" name="minx" id="minx" value="" />
+          <label for="miny">Y:</label><input type="text" class="smallText" name="miny" id="miny" value="" />
+        </td>
+      </tr>
+      <tr>
+        <th class="formTh"><label>Upper right coordinates:</label></th>
+        <td class="formTd">
+          <label for="maxx">X:</label><input type="text" class="smallText" name="maxx" id="maxx" value="" />
+          <label for="maxy">Y:</label><input type="text" class="smallText" name="maxy" id="maxy" value="" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>

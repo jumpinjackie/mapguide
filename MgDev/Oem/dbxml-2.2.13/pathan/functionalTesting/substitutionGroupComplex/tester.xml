@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="Substitution Groups">
+  <policies>
+    <policy name="seq">
+      <addArg>-N</addArg>
+      <addArg>xs</addArg>
+      <addArg>http://www.w3.org/2001/XMLSchema</addArg>
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>/Catalogue/Books instance of element(*,BookContainer)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>/Catalogue/Books instance of element(*,PublicationContainer)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>/Catalogue/Other instance of element(*,PublicationContainer)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>/Catalogue/Other instance of element(*,BookContainer)</arg>
+    <output>false
+</output>
+  </base>
+  <base type="pass">
+    <arg>/Catalogue/Books/Book[1] instance of element(Book)</arg>
+    <output>true
+</output>
+  </base>
+</test>

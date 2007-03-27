@@ -1,0 +1,24 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="setajaxactiontarget.js">
+</script>
+</head>
+    <body>
+        <form name="input" action="" method="get" target=_blank>
+            <p>
+                Launch AJAX viewer:
+            <p>
+                Locale: <input type="text" name="LOCALE" value="en" size="10">
+            <p>
+                Web layout ID: <input type="text" name="WEBLAYOUT" value="Library://layouts/World.WebLayout" size="100">
+           <p>
+            <input type="radio" name="agent" value="PHP" checked="true" > PHP <br />
+            <input type="radio" name="agent" value="DotNet"> DotNet <br />
+            <input type="radio" name="agent" value="Java"> Java <br /><br />
+            </p>
+            <input type="submit" value="Submit" onclick="SetAjaxActionTarget()"> <input type="reset">
+        </form>
+        </P>
+    </body>
+</html>

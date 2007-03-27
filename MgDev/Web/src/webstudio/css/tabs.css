@@ -1,0 +1,89 @@
+/**
+ * @project         MapGuide Open Source Web Studio
+ * @revision        $Id: tabs.css,v 1.14 2006/06/09 16:25:50 fwarnock Exp $
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * released under LGPL License with MapGuide Open Source (see index.html)
+ */
+
+/* ========== */
+/* TAB STYLES */
+/* ========== */
+
+/* The tabbar is built out of a UL
+   For this to work visually, the margins and padding need to be flattened
+   out, and the list marker needs to be hidden
+*/
+
+.tabBox {
+  margin: 0px;
+  padding: 0px;
+  margin-top: 29px;
+  position: relative;
+  display: block;
+  border-bottom: 1px solid #fff;
+  border-right: 1px solid #fff;
+  border-top: 1px solid #999;
+  border-left: 1px solid #999;
+  /* width needs to be 100% in IE so things inside can have relative widths */
+  width: auto;
+  height: auto;
+}
+
+.tabContent {
+  display: none;
+  background-color: #d9d9d9;  
+  border-bottom: 1px solid #999;
+  border-right: 1px solid #999;
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  /* width needs to be 100% in IE so things inside can have relative widths */
+  width: auto;
+  height: auto;
+}
+
+.tabContentActive {
+  display: block;
+}
+
+ul.tabBar {
+  position: absolute;
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  list-style-type: none;
+  /* this makes the tabs appear above the tab box */
+  top: -25px;
+  left: 4px;
+}
+
+ul.tabBar li {
+  display: block;
+  float: left;
+  width: 94px;
+  height: 24px;
+}
+
+ul.tabBar a {
+  display: block;
+  background-image: url(../images/tab_bg.png);
+  background-repeat: no-repeat;
+  background-position: 0px 2px;
+  text-align: center; 
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  line-height:24px;
+  text-decoration: none;
+  color: #000;
+  border-bottom: 1px solid #999;
+  overflow:hidden;
+}
+
+ul.tabBar a:hover {
+  background-position: 0px 0px;
+  border-bottom: 2px solid #d9d9d9;
+}
+
+ul.tabBar a.tabActive {
+  background-position: 0px 0px;
+  border-bottom: 2px solid #d9d9d9;
+}

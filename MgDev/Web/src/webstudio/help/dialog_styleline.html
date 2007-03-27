@@ -1,0 +1,38 @@
+<h1>Style Line Dialog</h1>
+<p>The style line dialog is opened when you click on a style preview in the Layer Styles panel and the geometric type of the feature class is line.  The style line dialog allows you to build and manage composite line styles.</p>
+<h2>Composite Lines</h2>
+<p>Line styles are unique in that it is possible to define multiple lines as part of a single style.  This provides the capability to create advanced cartographic representations such as casement-style roads.  Composite lines are managed through the composite line toolbar in this dialog.  Using the toolbar, it is possible to add new lines, duplicate lines, delete lines and manage the order in which the server draws each style.</p>
+<p>To have a line layer with no style, simply remove all the lines.</p>
+<p>Lines are drawn in order from top to bottom.  This means you should place wider lines at the top and narrower lines lower down.</p>
+<p>To edit the style of a single line, click the line to select it and adjust its properties in the Line Style form below.</p>
+<h3>Line Style Toolbar</h3>
+<img src='images/stylelinetoolbar.png' width='172' height='36'>
+<dl>
+    <dt><img src='images/icon_add.png' width='20' height='20'>Add Line Style</dt>
+    <dd>Appends a new line to the style and selects it for editing.</dd>
+    <dt><img src='images/icon_duplicate.png' width='20' height='20'>Duplicate Line Style</dt>
+    <dd>Duplicates the current line style and selects it for editing.</dd>
+    <dt><img src='images/icon_delete.png' width='20' height='20'>Delete Line Style</dt>
+    <dd>Deletes the current line style.</dd>
+    <dt><img src='images/icon_move_up.png' width='20' height='20'>Move Line Style Up</dt>
+    <dd>Moves the current line style up in the rendering order.</dd>
+    <dt><img src='images/icon_move_down.png' width='20' height='20'>Move Line Style Down</dt>
+    <dd>Moves the current line style down in the rendering order.</dd>
+</dl>
+<h2>Line Style</h2>
+<p>To edit a line style, click on its preview to select it.  You can set the following properties of a line:</p>
+<dl>
+    <dt>Pattern</dt>
+    <dd>Select a border pattern by clicking the [...] button to the right of the line pattern.</dd>
+    <dt>Thickness</dt>
+    <dd>Enter a number for the width of the line.  Use 0 to have the thinest line available (typically 1 pixel wide).  The thickness of a line is also determined by the units selected.</dd>
+    <dt>Color</dt>
+    <dd>Enter an 8 digit hex code (AARRGGBB) for the line color.  The line color will be used wherever the pattern is white.</dd>
+</dl>
+<h2>Units</h2>
+<dl>
+    <dt>Units</dt>
+    <dd>This controls the units used when interpreting the thickness of a line.  Select from Points (72 points per inch), Millimeters, Inches or Centimeters.</dd>
+    <dt>Size Context</dt>
+    <dd>This indicates what the units are relative to.  The options are map space and device space.  By default device space is used.</dd>
+</dl>

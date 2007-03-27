@@ -1,0 +1,16 @@
+#############################################################################
+# COMMON MAKEFILE IMPLICIT RULES
+#############################################################################
+
+###### VPATH
+
+VPATH = $(srcdir)/objs
+
+###### Implicit Rules
+
+%.lo: %.cpp
+	@$(LIBTOOL) --mode=compile $(CXX) -c $(DEFINES) $(CXXFLAGS) $(INCPATH) -o $(srcdir)/objs/$@ $<
+%.lo: %.c
+	@$(LIBTOOL) --mode=compile $(CC) -c $(DEFINES) $(CFLAGS) $(INCPATH) -o $(srcdir)/objs/$@ $<
+$(srcdir)/objs/%.d: %.cpp
+	$(buildcppdep)		    

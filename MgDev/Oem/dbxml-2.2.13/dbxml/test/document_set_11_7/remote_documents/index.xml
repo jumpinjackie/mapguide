@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test id="11.7.5">
+  <category>xquery</category>
+  <description>Tests that access documents outside the database</description>
+  <program name='dbxml_test_driver' />
+
+  <!-- individual tests -->
+  <base>
+    <query>remote-Q1.xquery</query>
+  </base>
+</test>
+

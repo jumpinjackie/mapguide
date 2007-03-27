@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="spec_expressions">
+  <policies>
+    <policy name="3.10"/>
+    <policy name="3.10_context_set">
+      <addArg>tester.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>5 instance of xs:integer</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>5 instance of xs:decimal</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>something-or-other instance of element() </arg>
+    <output>false</output>
+    <output policy="3.10">An attempt was made to perform an axis step when the Context Item was not a node [err:XPTY0020]
+</output>
+  </base>
+  <base type="pass">
+    <arg>/test instance of element() </arg>
+    <output>true</output>
+    <output policy="3.10">An attempt to navigate when the Context Item was not a node was made [err:XPTY0020]
+</output>
+  </base>
+  <base comment="schema stuff..." type="fail">
+    <arg>$myaddress treat as element(*,USAddress)</arg>
+    <output/>
+  </base>
+</test>

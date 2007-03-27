@@ -1,0 +1,83 @@
+(pbr) 4/14/2005  DB/DB XML installer generation notes
+
+This file is based upon my notes to build a DB or DB XML installer.
+
+1. The installer builds under the /dist/winmsi directory of the tree (or /dbxml/dist/winmsi for DB XML).
+
+2. You need a zip archive of the DB or DB XML tree. For example, db-4.3.27.NC.zip or dbxml-2.1.5.zip. Copy this file under the /dist (/dbxml/dist) directory.
+
+3. Make sure python is installed at c:\Python24.
+
+4. I had to disable the debug python interface because it would not build. I did this by modifying the VC7 project file in Visual Studio using the configuration manager. Be careful, if it says you need to convert your project it means you opened up the vc6 project file by mistake. 
+
+5. Install the Wix binaries (f:\sleepycat\wix in my case)
+
+6. You build under cygwin. Make sure your paths are set. This is from my .bashrc, although I don't know if all this is necessary.  If the visual studio environment and basic PATH are set up to correctly build Java, Tcl, Perl and Python, nothing here is necessary, except that the test for java explicitly looks for jni.h in the INCLUDE variable.  Having the wix binaries in your PATH is, however, necessary.
+
+  # Set INCLUDE for java
+  export J2SDK_INCLUDE="c:\j2sdk1.4.2_07\include;c:\j2sdk1.4.2_07\include\win32"
+  export J2SDK_BIN="/cygdrive/c/j2sdk1.4.2_07/bin"
+
+  # TCL
+  export TCL_LIB="f:\sleepycat\tcl8.4.9\win\Release;f:\sleepycat\tcl8.4.9\win\Debug"
+  export TCL_INCLUDE="f:\sleepycat\tcl8.4.9\generic"
+
+  # WIX
+  export WIX_BIN="/cygdrive/f/sleepycat/wix"
+
+  export PATH="$PATH:$J2SDK_BIN:$WIX_BIN"
+  export LIB="$LIB;$TCL_LIB"
+  export INCLUDE="$INCLUDE;$J2SDK_INCLUDE;$TCL_INCLUDE"
+
+  # Python
+  export INCLUDE="$INCLUDE;/cygdrive/c/Python24/include"
+  export PATH="$PATH:/cygdrive/c/Python24"
+
+7.  Make sure that the Berkeley DB distribution included in BDB XML
+has a dist/winmsi subdirectory.
+
+8a. Build DB XML
+
+   cd /cygdrive/f/sleepycat/dbxml-2.x.x/dbxml/dist
+   ./s_winmsi 
+
+   The script, s_winmsi, will build everything and place the output .msi file in the dist directory. The file ./s_winmsi.log will contain error information.
+
+   If this is a DB build, you will have to allow the conversion of VC6 project files to VC7. You should allow the conversion and then save all and quit.
+
+8b. If you have build problems, you can build with,
+
+   ./s_winmsi -preserve
+
+   this will retain the working directory (/dist/winmsi/stage/*) for debugging. 
+8c. You only need to build the sources once and reuse them in generating new versions of the installer. This is helpful when you want to tweak which files are used by the installer. Building DB XML is very time consuming so this is the preferred option.
+
+   This command, ./s_winmsi -preserve, will prevent the build files from being deleted. You should copy the directory /dist/winmsi/stage to a backup directory. I use /dist/winmsi/saved. The reuse the build you can type,
+
+  ./s_winmsi -preserve -usebuild f:/sleepycat/dbxml-2.x.x/dbxml/dist/winmsi/saved/dbxml-2.x.x/
+
+By using both flags together I can keep a copy of the /stage directory as well as specify where the build files are stored.
+
+
+
+Notes:
+
+the LICENSE file in DB XML contains an url address in the form <http://...>. This caused an error in the msi generation step. If you see this error, edit the LICENSE file and change the url to something like (http://...).
+
+You can install and remove the MSI file from the command line via:
+
+  msiexec /i <name> to install a package
+  msiexec /x <name> to uninstall a package
+
+My cygwin installation included the following options:
+   My custom options:
+     - emacs binaries and related stuff
+     - xemacs 
+   Required for msi:
+     - m4
+     - gcc
+     - make
+     - unzip (archive/unzip)
+     - bc    (math/bc)
+     - perl  (interpreters)
+

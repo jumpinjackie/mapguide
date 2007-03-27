@@ -1,0 +1,43 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Navigation>
+        <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+          <OQPlan>P(node-element-presence-none,=,author)</OQPlan>
+        </QueryPlanFunction>
+        <Step axis="child" name="article" nodeType="element"/>
+        <Step axis="child" name="prolog" nodeType="element"/>
+        <Step axis="child" name="authors" nodeType="element"/>
+        <Step axis="child" name="author" nodeType="element">
+          <OQPlan>P(node-element-presence-none,=,author)</OQPlan>
+        </Step>
+      </Navigation>
+      <Where>
+        <Function name="{http://www.w3.org/2005/04/xpath-functions}:empty">
+          <Navigation>
+            <Variable name="a"/>
+            <Step axis="child" name="contact" nodeType="element"/>
+            <Step axis="child">
+              <ItemType testType="text"/>
+            </Step>
+          </Navigation>
+        </Function>
+      </Where>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="NoContact" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Navigation>
+          <Variable name="a"/>
+          <Step axis="child" name="name" nodeType="element">
+            <OQPlan>P(node-element-equality-string,prefix,name)</OQPlan>
+          </Step>
+        </Navigation>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

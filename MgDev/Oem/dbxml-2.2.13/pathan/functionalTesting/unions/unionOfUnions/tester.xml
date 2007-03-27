@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="Unions of unions">
+  <policies>
+    <policy name="seq">
+      <addArg>-N</addArg>
+      <addArg>xs</addArg>
+      <addArg>http://www.w3.org/2001/XMLSchema</addArg>
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../samples/evaluator/eval</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>/container/teleTubbyInclusion[1] </arg>
+    <output>&lt;teleTubbyInclusion&gt;42&lt;/teleTubbyInclusion&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/container/teleTubbyInclusion[1] instance of element(*,union.allDaGoods)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="fail">
+    <arg>data(/container/teleTubbyInclusion[1]) instance of Number</arg>
+    <output>true
+</output>
+  </base>
+  <base type="fail">
+    <arg>data(/container/teleTubbyInclusion[1]) instance of xs:decimal</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>/container/teleTubbyInclusion[2] instance of element(*,union.allDaGoods)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>/container/teleTubbyInclusion[2] </arg>
+    <output>&lt;teleTubbyInclusion&gt;2002-02-14&lt;/teleTubbyInclusion&gt;
+</output>
+  </base>
+  <base type="fail">
+    <arg>data(/container/teleTubbyInclusion[2]) instance of Date</arg>
+    <output>true
+</output>
+  </base>
+  <base type="fail">
+    <arg>data(/container/teleTubbyInclusion[2]) instance of xs:date</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>/container/teleTubbyInclusion[3] instance of element(*,union.allDaGoods)</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>/container/teleTubbyInclusion[3] </arg>
+    <output>&lt;teleTubbyInclusion&gt;Sally&lt;/teleTubbyInclusion&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>data(/container/teleTubbyInclusion[3]) instance of String</arg>
+    <output>true
+</output>
+  </base>
+  <base type="pass">
+    <arg>data(/container/teleTubbyInclusion[3]) instance of xs:string</arg>
+    <output>true
+</output>
+  </base>
+</test>

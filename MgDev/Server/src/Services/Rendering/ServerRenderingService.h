@@ -1,0 +1,176 @@
+//
+//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+#ifndef MGSERVERRENDERINGSERVICE_H
+#define MGSERVERRENDERINGSERVICE_H
+
+#include "ServerRenderingDllExport.h"
+
+class MgFeatureInformation;
+class FeatureInfoRenderer;
+class GDRenderer;
+
+class MG_SERVER_RENDERING_API MgServerRenderingService : public MgRenderingService
+{
+    DECLARE_CLASSNAME(MgServerRenderingService)
+
+public:
+    MgServerRenderingService();
+    ~MgServerRenderingService(void);
+
+    DECLARE_CREATE_SERVICE()
+
+    void SetConnectionProperties(MgConnectionProperties* connProp);
+
+    virtual MgByteReader* RenderTile(MgMap* map,
+                                     CREFSTRING baseMapLayerGroupName,
+                                     INT32 tileColumn,
+                                     INT32 tileRow);
+
+    virtual MgByteReader* RenderDynamicOverlay(MgMap* map,
+                                               MgSelection* selection,
+                                               CREFSTRING format);
+
+    virtual MgByteReader* RenderDynamicOverlay(MgMap* map,
+                                               MgSelection* selection,
+                                               CREFSTRING format,
+                                               bool bKeepSelection);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    CREFSTRING format);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    CREFSTRING format,
+                                    bool bKeepSelection);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    MgEnvelope* extents,
+                                    INT32 width,
+                                    INT32 height,
+                                    MgColor* backgroundColor,
+                                    CREFSTRING format);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    MgEnvelope* extents,
+                                    INT32 width,
+                                    INT32 height,
+                                    MgColor* backgroundColor,
+                                    CREFSTRING format,
+                                    bool bKeepSelection);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    MgCoordinate* center,
+                                    double scale,
+                                    INT32 width,
+                                    INT32 height,
+                                    MgColor* backgroundColor,
+                                    CREFSTRING format);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    MgCoordinate* center,
+                                    double scale,
+                                    INT32 width,
+                                    INT32 height,
+                                    MgColor* backgroundColor,
+                                    CREFSTRING format,
+                                    bool bKeepSelection);
+
+    virtual MgByteReader* RenderMapLegend(MgMap* map,
+                                          INT32 width,
+                                          INT32 height,
+                                          MgColor* backgroundColor,
+                                          CREFSTRING format);
+
+    virtual MgFeatureInformation* QueryFeatures( MgMap* map,
+                                        MgStringCollection* layerNames,
+                                        MgGeometry* geometry,
+                                        INT32 selectionVariant, // Within, Touching, Topmost
+                                        INT32 maxFeatures);
+
+    virtual MgFeatureInformation* QueryFeatures( MgMap* map,
+                                        MgStringCollection* layerNames,
+                                        MgGeometry* geometry,
+                                        INT32 selectionVariant, // Within, Touching, Topmost
+                                        CREFSTRING featureFilter,
+                                        INT32 maxFeatures,
+                                        bool bIgnoreScaleRange);
+
+    virtual MgBatchPropertyCollection* QueryFeatureProperties( MgMap* map,
+                                        MgStringCollection* layerNames,
+                                        MgGeometry* filterGeometry,
+                                        INT32 selectionVariant, // Within, Touching, Topmost
+                                        INT32 maxFeatures);
+
+    virtual MgBatchPropertyCollection* QueryFeatureProperties( MgMap* map,
+                                        MgStringCollection* layerNames,
+                                        MgGeometry* filterGeometry,
+                                        INT32 selectionVariant, // Within, Touching, Topmost
+                                        CREFSTRING featureFilter,
+                                        INT32 maxFeatures,
+                                        bool bIgnoreScaleRange);
+
+private:
+
+    // used for tile generation
+    MgByteReader* RenderTile(MgMap* map,
+                             MgLayerGroup* baseGroup,
+                             INT32 scaleIndex,
+                             INT32 width,
+                             INT32 height,
+                             double scale,
+                             double mcsMinX,
+                             double mcsMaxX,
+                             double mcsMinY,
+                             double mcsMaxY,
+                             CREFSTRING format);
+
+    // helper used by other methods
+    MgByteReader* RenderMapInternal(MgMap* map,
+                                    MgSelection* selection,
+                                    MgReadOnlyLayerCollection* roLayers,
+                                    GDRenderer* dr,
+                                    INT32 saveWidth,
+                                    INT32 saveHeight,
+                                    CREFSTRING format,
+                                    double scale,
+                                    RS_Bounds& b,
+                                    bool expandExtents,
+                                    bool bKeepSelection);
+
+    void RenderForSelection(MgMap* map,
+                         MgStringCollection* layerNames,
+                         MgGeometry* geometry,
+                         INT32 selectionVariant,
+                         CREFSTRING featureFilter, 
+                         INT32 maxFeatures,
+                         FeatureInfoRenderer* selRenderer,
+                         bool bIgnoreScaleRange);
+
+    // member data
+    Ptr<MgFeatureService> m_svcFeature;
+    Ptr<MgResourceService> m_svcResource;
+    Ptr<MgDrawingService> m_svcDrawing;
+    Ptr<MgCoordinateSystemFactory> m_pCSFactory;
+};
+
+#endif

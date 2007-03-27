@@ -1,0 +1,6 @@
+// -*- MPC -*-
+// aceversion.mpb,v 1.26 2004/01/15 00:46:07 bala Exp
+
+project {
+  version = 5.4
+}

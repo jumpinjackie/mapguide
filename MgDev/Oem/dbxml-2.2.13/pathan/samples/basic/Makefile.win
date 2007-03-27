@@ -1,0 +1,40 @@
+# Windows makefile for XPath tests
+
+
+
+# note: Pathan & Xerces must be compiled with /MDd for this to work (we don't want to include both
+
+# multi-threaded and single-threaded copies of the runtimes - loads of linker errors result
+
+
+
+# note: run vcvars32.bat to setup environment for Microsoft commandline compiler
+
+
+
+# note: add include and library path for your Pathan install location
+
+# eg. CFLAGS = [...] /I "../../../../win32_pathan/include"
+
+#     LIBRARIES = [...] ../../../../win32_pathan/lib/PathanD.lib
+
+
+
+CFLAGS = /nologo /MDd /W3 /GX /Ob1 /I "../common" /I "../../../Xerces/src" /I "../../src" /I "../../src/config/win32" /D "WIN32" /D "_DEBUG" /D "_CONSOLE"
+
+LIBRARIES = ../../../Xerces/lib/xerces-c_1D.lib
+
+
+
+OBJS = basicInterfaceTest.exe
+
+	
+
+all: $(OBJS)
+
+
+
+.cpp.exe:
+
+	cl $(CFLAGS) $*.cpp $(LIBRARIES) $(SLIB) ../common/DOMSerialise.cpp /Fe$*.exe
+

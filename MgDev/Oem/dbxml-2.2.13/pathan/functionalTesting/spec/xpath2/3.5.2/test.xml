@@ -1,0 +1,11 @@
+<testcase>
+  <book1><author>Kennedy</author></book1>
+  <book1><author>Fred</author></book1>
+  <book1>
+    <author>Kernighan</author>
+    <author>Kennedy</author>
+    <author>Ritchie</author>
+  </book1>
+  <book2><author>Nigel</author></book2>
+  <book2><author>Molesworth</author></book2>
+</testcase>

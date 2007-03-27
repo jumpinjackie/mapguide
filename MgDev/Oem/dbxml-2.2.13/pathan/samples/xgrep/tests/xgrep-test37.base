@@ -1,0 +1,3 @@
+para[last()] selects the last para child of the context node
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<para name="lastPara" type="warning"/>

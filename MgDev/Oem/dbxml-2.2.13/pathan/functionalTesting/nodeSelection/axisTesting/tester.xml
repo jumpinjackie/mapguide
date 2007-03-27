@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test purpose="node selection">
+  <policies>
+    <policy name="axes">
+      <addArg>test.xml</addArg>
+    </policy>
+    <default>
+      <program>../../../samples/xgrep/xgrep</program>
+    </default>
+  </policies>
+  <base type="pass">
+    <arg>/child::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;esben&gt;
+  &lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+  &lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+  &lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;/esben&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//kasia/child::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//sophie/child::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;whee_ky/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//irena/child::sophie/child::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;whee_ky/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/irena/sophie/*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;whee_ky/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//whee_ky/parent::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//whee_ky/parent::*/parent::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//esben/parent::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>/parent::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//whee_ky/..</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/..</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot; ?&gt;&lt;esben&gt;
+  &lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+  &lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+  &lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;/esben&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//fred/../george</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;george&gt;
+	&lt;/george&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>..</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot; ?&gt;&lt;esben&gt;
+  &lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+  &lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+  &lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;/esben&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//irena/descendant::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;sophie&gt;Here is some text&lt;/sophie&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;whee_ky/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//kasia/descendant::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>/esben/descendant::fred</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;fred&gt;
+	&lt;/fred&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//kasia/descendant-or-self::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;kasia/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//zvonimir/descendant-or-self::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;kasia/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//irena/following-sibling::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//tenio/following-sibling::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//sophie/following::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;whee_ky/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;hermione/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;fred&gt;
+	&lt;/fred&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;george&gt;
+	&lt;/george&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;kasia/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//kasia/following::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//sophie/attribute::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+{}surname=&quot;vos&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//sophie/attribute::surname</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+{}surname=&quot;vos&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//sophie/attribute::country</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//irena/attribute::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//sophie/@*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+{}surname=&quot;vos&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//sophie/@surname</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+{}surname=&quot;vos&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//sophie/attribute(surname)</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+{}surname=&quot;vos&quot;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//sophie/@country</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//irena/@*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>/namespace::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>/esben/tenio/namespace::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+[xml=&quot;http://www.w3.org/XML/1998/namespace&quot;]
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+[optic=&quot;urn:glasses:www.20-20.org&quot;]
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/tenio/zvonimir/namespace::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+[xml=&quot;http://www.w3.org/XML/1998/namespace&quot;]
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+[zelenika=&quot;urn:CARNET:www.carnet.hr&quot;]
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+[optic=&quot;urn:glasses:www.20-20.org&quot;]
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/tenio/zvonimir/namespace::zelenika</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+[zelenika=&quot;urn:CARNET:www.carnet.hr&quot;]
+</output>
+  </base>
+  <base type="pass">
+    <arg>//irena/self::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//irena/self::gordan</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//irena/self::irena/descendant::whee_ky</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;whee_ky/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//irena/.</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>ancestor::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>ancestor::node()</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot; ?&gt;&lt;esben&gt;
+  &lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+  &lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+  &lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;/esben&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//zvonimir/ancestor::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;esben&gt;
+  &lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+  &lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+  &lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;/esben&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//kasia/ancestor::tenio</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//kasia/ancestor::irena</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>ancestor-or-self::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;esben&gt;
+  &lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+  &lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+  &lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;/esben&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>ancestor-or-self::node()</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot; ?&gt;&lt;esben&gt;
+  &lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+  &lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+  &lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;/esben&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;esben&gt;
+  &lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+  &lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+  &lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;/esben&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//zvonimir/ancestor-or-self::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;esben&gt;
+  &lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+  &lt;fred&gt;
+    &lt;george&gt;
+      &lt;fred&gt;
+        &lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+	&lt;fred&gt;
+	&lt;/fred&gt;
+	&lt;george&gt;
+	&lt;/george&gt;
+      &lt;/fred&gt;
+    &lt;/george&gt;
+  &lt;/fred&gt;
+  &lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;/esben&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//kasia/ancestor-or-self::tenio</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;tenio xmlns:optic=&quot;urn:glasses:www.20-20.org&quot;&gt;
+    &lt;zvonimir xmlns:zelenika=&quot;urn:CARNET:www.carnet.hr&quot;&gt;
+      &lt;kasia/&gt;
+    &lt;/zvonimir&gt;
+  &lt;/tenio&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//kasia/ancestor-or-self::irena</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>preceding-sibling::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>preceding-sibling::node()</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>/esben/fred/george/fred/george/preceding-sibling::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;fred&gt;
+	&lt;/fred&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/fred/george/fred/george/preceding-sibling::ron</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;ron&gt;
+	  &lt;hermione/&gt;
+	&lt;/ron&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/tenio/preceding-sibling::ron</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>preceding::*</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>preceding::node()</arg>
+    <output/>
+  </base>
+  <base type="pass">
+    <arg>//hermione/preceding::*</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;sophie&gt;Here is some text&lt;/sophie&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;whee_ky/&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>//hermione/preceding::node() </arg>
+    <output>
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+  
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;irena&gt;
+     &lt;zvonimir/&gt;
+     &lt;sophie&gt;Here is some text&lt;/sophie&gt;
+     &lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+  &lt;/irena&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+     
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;zvonimir/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+     
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;sophie&gt;Here is some text&lt;/sophie&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+Here is some text
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+     
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;sophie surname=&quot;vos&quot;&gt;
+       &lt;whee_ky/&gt;
+     &lt;/sophie&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+       
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;whee_ky/&gt;
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+     
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+  
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+  
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+    
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+      
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+        
+&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+
+</output>
+  </base>
+  <base type="pass">
+    <arg>//george/preceding::fred</arg>
+    <output>&lt;?xgrep-match [test.xml]--------------------------------?&gt;
+&lt;fred&gt;
+	&lt;/fred&gt;
+</output>
+  </base>
+  <base type="pass">
+    <arg>/esben/preceding::*</arg>
+    <output/>
+  </base>
+</test>

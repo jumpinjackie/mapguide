@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema targetNamespace="foofoo" xmlns:foo="foofoo" elementFormDefault='qualified' xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+
+  <xs:element name='strElement' type="xs:string"/>
+  <xs:element name='numElement' type="xs:decimal"/>
+
+</xs:schema>

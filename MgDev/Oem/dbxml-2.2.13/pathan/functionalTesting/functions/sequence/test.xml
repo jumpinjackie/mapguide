@@ -1,0 +1,53 @@
+<testcase xmlns:hee="http://theborg.org" xml:lang="en" xsi:schemaLocation="http://www.theborg.org test.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <item-of>
+    <ginger>hello</ginger>
+    <gordon>hello</gordon>
+    <gordon>ola</gordon>
+    <gordon>h<!--comment-->ello</gordon>
+    <gordon>hello</gordon>
+  </item-of>
+  <sequence-equal>
+    <zvonimir>Some Text</zvonimir>
+    <zvonimir>Some <!--commented-->Text</zvonimir>
+    <zvonimir>Some Text<!--with comments--></zvonimir>
+    <zvonimir>Some Text<?with processing instructions?></zvonimir>
+    <zvonimir>Some Text<irena/></zvonimir>
+    <zvonimir>Some <!--commented-->Text<irena/></zvonimir>
+    <zvonimir>Some Text<!--with comments--><irena/></zvonimir>
+    <zvonimir><irena/>Some Text</zvonimir>
+    <zvonimir><irena/>Some <!--commented-->Text</zvonimir>
+    <zvonimir><irena/>Some Text<!--with comments--></zvonimir>
+    <zvonimir><irena/>Some Text<?with processing instructions?></zvonimir>
+    <yves country="germany"/>
+    <yves country="france"/>
+    <yves land="germany"/>
+    <yves country="germany"/>
+    <yves />
+  </sequence-equal>
+  <namespace-stuff  xml:lang="en-us" xmlns:ha="http://sluggy.com" xmlns:ho="http://sluggy.com">
+    <ha:fred xml:lang="ab" />
+    <ho:fred xml:lang="ab" />
+    <ha:george />
+    <hee:fred />
+    <ha:fred />
+  </namespace-stuff>
+  <children>
+    <fred>
+      <ron>
+        <hermione>74</hermione>
+      </ron>
+      <harry>string</harry>
+    </fred>
+    <fred>
+      <harry>8.12948427</harry>
+      <ron>
+        <hermione />
+      </ron>
+    </fred>
+    <fred>
+      <ron>
+      </ron>
+      <harry />
+    </fred>
+  </children>
+</testcase>

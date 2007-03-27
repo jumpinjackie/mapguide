@@ -1,0 +1,31 @@
+child::*[self::chapter or self::appendix] selects the chapter and appendix children of the context node
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<chapter/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<chapter/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<chapter/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<chapter/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<chapter>
+	  <section/>
+	  <section>
+	    Section2
+	  </section>
+	  <section/>
+	</chapter>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<chapter>
+	  <title name="t1">Title</title>
+	  <title name="t2">Introduction</title>
+	  <title name="t3"/>
+	</chapter>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<chapter>
+	  <title/>
+	</chapter>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<chapter/>
+<?xgrep-match [xgrep-test1.xml]--------------------------------?>
+<appendix/>

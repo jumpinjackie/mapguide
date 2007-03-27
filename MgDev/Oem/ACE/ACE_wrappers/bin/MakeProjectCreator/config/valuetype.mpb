@@ -1,0 +1,8 @@
+// -*- MPC -*-
+// valuetype.mpb,v 1.6 2003/12/30 15:18:22 dhinton Exp
+
+project : taolib {
+  idlflags += -Gv
+  after    += Valuetype
+  libs     += TAO_Valuetype
+}
