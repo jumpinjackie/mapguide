@@ -96,7 +96,7 @@ echo Copying MgMdfParser Debug DLL to %WEB_BIN_DEBUG%
 copy %COMMON_BIN_DEBUG%\MgMdfParserd.dll %WEB_BIN_DEBUG%
 
 echo Copying PROJ4 DLL to %WEB_BIN_DEBUG%
-copy "..\..\..\Oem\proj-4.5.0\src\proj.dll" %WEB_BIN_DEBUG%
+copy "..\..\..\Oem\proj-4.5.0\src\projd.dll" %WEB_BIN_DEBUG%
 
 echo Copying Xerces Debug DLL to %WEB_BIN_DEBUG%
 copy "..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.dll" %WEB_BIN_DEBUG%
@@ -117,7 +117,7 @@ echo Copying all dependent DLLs to %COPY_DIR%
 copy Mg*.dll %COPY_DIR%
 copy ACE*.dll %COPY_DIR%
 copy libfcgi*.dll %COPY_DIR%
-copy proj.dll %COPY_DIR%
+copy proj*.dll %COPY_DIR%
 
 goto end_copy
 
