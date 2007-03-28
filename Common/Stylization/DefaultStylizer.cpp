@@ -154,7 +154,19 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
             //get the geometry just once
             //all types of geometry
             lb = m_lbPool->NewLineBuffer(8);
-            features->GetGeometry(gpName, lb, xformer);
+
+            try
+            {
+                features->GetGeometry(gpName, lb, xformer);
+            }
+            catch (FdoException* e)
+            {
+                //geometry could be null in which case FDO throws an exception
+                //we move on to the next feature
+                e->Release();
+                m_lbPool->FreeLineBuffer(lb);
+                continue;
+            }
 
             if (lb && bClip)
             {
