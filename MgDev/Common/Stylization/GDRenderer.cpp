@@ -2237,7 +2237,7 @@ void GDRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
     xform.x2 = - m_offsetX * m_scale;
     xform.y0 = 0.0;
     xform.y1 = - m_scale;
-    xform.y2 = m_height - 1 + m_offsetY * m_scale;
+    xform.y2 = m_height /*- 1*/ + m_offsetY * m_scale;
 }
 
 
@@ -2245,7 +2245,7 @@ void GDRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double
 {
     //TODO: assumes no rotation of the viewport
     ox = (inx - m_offsetX) * m_scale;
-    oy = m_height - 1 - (iny - m_offsetY) * m_scale;
+    oy = m_height /*- 1*/ - (iny - m_offsetY) * m_scale;
 }
 
 
@@ -2253,7 +2253,7 @@ void GDRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double
 {
     //TODO: assumes no rotation of the viewport
     ox = inx * m_invScale + m_offsetX;
-    oy = m_offsetY - (iny + 1.0 - m_height) * m_invScale;
+    oy = m_offsetY - (iny /*+ 1.0*/ - m_height) * m_invScale;
 }
 
 
