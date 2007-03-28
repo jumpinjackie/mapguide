@@ -1182,7 +1182,7 @@ inline int GDRenderer::_TX(double x)
 //transforms a y coordinate from mapping to screen space
 inline int GDRenderer::_TY(double y)
 {
-    return m_height-1 - (int)floor((y - m_offsetY) * m_scale);
+    return m_height /*-1*/ - (int)floor((y - m_offsetY) * m_scale);
 }
 
 
@@ -1194,7 +1194,7 @@ void GDRenderer::_TransformPointsNoClamp(double* inpts, int numpts)
     EnsureBufferSize(numpts);
     int* wpts = (int*)m_wtPointBuffer;
 
-    int h1 = m_height - 1;
+    int h1 = m_height /*- 1*/;
     double x,y;
     int ix, iy;
 
@@ -1203,33 +1203,9 @@ void GDRenderer::_TransformPointsNoClamp(double* inpts, int numpts)
         x = (*inpts++ - m_offsetX) * m_scale;
         y = (*inpts++ - m_offsetY) * m_scale;
 
-        // We need to cast coordinates down to pixels
-        // using (int)floor(coord) in order to have consistency
-        // across positive and negative numbers. However, floor
-        // is a very slow operation on the Pentium, so here we
-        // try to minimize its use. A much faster alternative to this
-        // code would be to set the FPU control register to round-down mode
-        // using fldcw 0x67f and then use an fld followed by fistp instructions
-        // like this:
-        //          __asm
-        //          {
-        //              fld x;
-        //              fistp ix;
-        //              fld y;
-        //              fistp iy;
-        //          }
-        // It could be even faster if SSE2 instructions are used for the whole
-        // transform operation, but it's overkill in this case.
-
-        if (x >= 0.0)
-            ix = (int)(x);
-        else
-            ix = (int)floor(x);
-
-        if (y >= 0.0)
-            iy = (int)(y);
-        else
-            iy = (int)floor(y);
+        //TODO: slow
+        ix = ROUND(x);
+        iy = ROUND(y);
 
         *wpts++ = ix;
         *wpts++ = h1 - iy;
@@ -2237,7 +2213,7 @@ void GDRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
     xform.x2 = - m_offsetX * m_scale;
     xform.y0 = 0.0;
     xform.y1 = - m_scale;
-    xform.y2 = m_height - 1 + m_offsetY * m_scale;
+    xform.y2 = m_height /*- 1*/ + m_offsetY * m_scale;
 }
 
 
@@ -2245,7 +2221,7 @@ void GDRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double
 {
     //TODO: assumes no rotation of the viewport
     ox = (inx - m_offsetX) * m_scale;
-    oy = m_height - 1 - (iny - m_offsetY) * m_scale;
+    oy = m_height /*- 1*/ - (iny - m_offsetY) * m_scale;
 }
 
 
@@ -2253,7 +2229,7 @@ void GDRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double
 {
     //TODO: assumes no rotation of the viewport
     ox = inx * m_invScale + m_offsetX;
-    oy = m_offsetY - (iny + 1.0 - m_height) * m_invScale;
+    oy = m_offsetY - (iny /*+ 1.0*/ - m_height) * m_invScale;
 }
 
 
