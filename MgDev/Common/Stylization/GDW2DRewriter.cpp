@@ -21,7 +21,7 @@
 #include "gd.h"
 #include "GDUtils.h"
 
-#define ROUND(x) (int)((x) + 0.5)
+#define ROUND(x) (int)(floor(x+0.5))
 
 ////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------
@@ -322,7 +322,7 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
             int width = dstpts[1].x - dstpts[0].x;
             int height = dstpts[1].y - dstpts[2].y; //y is inverted
 
-            gdImageCopyResampled ((gdImagePtr)rewriter->GetW2DTargetImage(), src,
+            gdImageCopyResampled((gdImagePtr)rewriter->GetW2DTargetImage(), src,
                             left,top,  //dstX, dstY
                             0, 0, //srcX, srcY
                             width, height, //int dstW, int dstH,
@@ -365,13 +365,13 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
 
             double anglerad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
 
-            gdImageCopyRotated ((gdImagePtr)rewriter->GetW2DTargetImage(),
-                            resized? resized : src,
-                            midx, midy,  //dstX, dstY
-                            0, 0, //srcX, srcY
-                            resized? resized->sx : src->sx,
-                            resized? resized->sx : src->sy, //srcW, srcH
-                            (int)ROUND(-anglerad / M_PI180));
+            gdImageCopyRotated((gdImagePtr)rewriter->GetW2DTargetImage(),
+                                resized? resized : src,
+                                midx, midy, //dstX, dstY
+                                0, 0,       //srcX, srcY
+                                resized? resized->sx : src->sx,
+                                resized? resized->sx : src->sy, //srcW, srcH
+                                ROUND(-anglerad / M_PI180));
 
             if (resized)
                 gdImageDestroy(resized);
@@ -494,7 +494,7 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     int minor = ROUND(rewriter->ScaleW2DNumber(file, outlineEllipse.minor()));
 
     //simple bounds check before we draw
-    if (!(dstpts[0].x + major < 0
+    if ( !(dstpts[0].x + major < 0
         || dstpts[0].x - major > ((gdImagePtr)rewriter->GetW2DTargetImage())->sx
         || dstpts[0].y + minor < 0
         || dstpts[0].x - minor > ((gdImagePtr)rewriter->GetW2DTargetImage())->sy))
@@ -666,7 +666,7 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
         int width = dstpts[1].x - dstpts[0].x;
         int height = dstpts[1].y - dstpts[2].y; //y is inverted
 
-        gdImageCopyResampled ((gdImagePtr)rewriter->GetW2DTargetImage(), src,
+        gdImageCopyResampled((gdImagePtr)rewriter->GetW2DTargetImage(), src,
                         left,top,  //dstX, dstY
                         0, 0, //srcX, srcY
                         width, height, //int dstW, int dstH,
@@ -704,13 +704,13 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
 
         double anglerad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
 
-        gdImageCopyRotated ((gdImagePtr)rewriter->GetW2DTargetImage(),
+        gdImageCopyRotated((gdImagePtr)rewriter->GetW2DTargetImage(),
                         resized? resized : src,
                         midx, midy,  //dstX, dstY
                         0, 0, //srcX, srcY
                         resized? resized->sx : src->sx,
                         resized? resized->sx : src->sy, //srcW, srcH
-                        (int)ROUND(-anglerad / M_PI180));
+                        ROUND(-anglerad / M_PI180));
 
         if (resized)
             gdImageDestroy(resized);

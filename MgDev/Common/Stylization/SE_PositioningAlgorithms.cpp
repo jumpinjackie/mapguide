@@ -258,7 +258,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
 
     //OK, who says I can't write bad code? Behold:
     SE_LabelInfo candidates[8];
-    double yScale = renderer->GetFontEngine()->_Yup() ? 1.0 : -1.0; //which way does y go in the renderer?
+    double yScale = renderer->GetFontEngine()->_Yup()? 1.0 : -1.0; //which way does y go in the renderer?
 
     SE_RenderPointStyle* st0 = DeepClonePointStyle(rstyle2);
     ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
@@ -460,7 +460,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         rr->angle = 0;
 
         if (highwayNum.length() == 1)
-            rr->extent[0] = ((shieldType == L"3") ? 25 : 20);
+            rr->extent[0] = ((shieldType == L"3")? 25 : 20);
         else if (highwayNum.length() == 2)
             rr->extent[0] = 25;
         else

@@ -67,20 +67,7 @@
 using namespace DWFToolkit;
 using namespace DWFCore;
 
-#define ROUND(x) (int)((x) + 0.5)
-
-#define MAX(x,y) ((x) > (y) ? (x) : (y))
-#define MIN(x,y) ((x) < (y) ? (x) : (y))
-
-#define MAX4(x,y,z,w) \
-    ((MAX((x),(y))) > (MAX((z),(w))) ? (MAX((x),(y))) : (MAX((z),(w))))
-#define MIN4(x,y,z,w) \
-    ((MIN((x),(y))) < (MIN((z),(w))) ? (MIN((x),(y))) : (MIN((z),(w))))
-
-#define MAXX(x) MAX4(x[0],x[2],x[4],x[6])
-#define MINX(x) MIN4(x[0],x[2],x[4],x[6])
-#define MAXY(x) MAX4(x[1],x[3],x[5],x[7])
-#define MINY(x) MIN4(x[1],x[3],x[5],x[7])
+#define ROUND(x) (int)(floor(x+0.5))
 
 #define SYMBOL_BITMAP_SIZE 128
 #define SYMBOL_BITMAP_MAX 1024
@@ -439,7 +426,7 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb,
 
         //call the new rasterizer
         m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, workbuffer->point_count(), workbuffer->cntrs(), workbuffer->cntr_count(),
-            (fillpat) ? gdTiled : gdc, (gdImagePtr)m_imout);
+            fillpat? gdTiled : gdc, (gdImagePtr)m_imout);
 
         if (fillpat)
         {
@@ -549,7 +536,7 @@ void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allow
     {
         //if marker is processed from here it should be added to the
         //feature W2D, not the labeling W2D -- need the API to reflect that.
-        ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], use_mdef, allowOverpost, (i==0) ? bounds : NULL);
+        ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], use_mdef, allowOverpost, (i==0)? bounds : NULL);
     }
 }
 
@@ -606,7 +593,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
     double refY = mdef.insy();
 
     //rotation angle
-    double angle = mdef.rotation() * M_PI180;
+    double anglerad = mdef.rotation() * M_PI180;
 
     if (!symbol && is_font_symbol)
     {
@@ -824,8 +811,8 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     //otherwise symbol was too big and must be drawn as a regular polygon
 
                     //construct transformer
-                    RS_Bounds src(0.,0.,1.,1.);
-                    SymbolTrans trans(src, dst, refX, refY, angle);
+                    RS_Bounds src(0.0, 0.0, 1.0, 1.0);
+                    SymbolTrans trans(src, dst, refX, refY, anglerad);
 
                     //transform to coordinates of temporary image where we
                     //draw symbol before transfering to the map
@@ -874,7 +861,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 //default bounds of symbol data in W2D
                 //for symbols created by MapGuide Studio
                 RS_Bounds src(0,0,SYMBOL_MAX,SYMBOL_MAX);
-                SymbolTrans st = SymbolTrans(src, dst, refX, refY, angle);
+                SymbolTrans st = SymbolTrans(src, dst, refX, refY, anglerad);
 
                 if (m_imsym)
                 {
@@ -929,7 +916,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             //to rotated map space -- we need this in order to
             //take into account the insertion point
             RS_Bounds src(0,0,imsymw,imsymh);
-            SymbolTrans trans(src, dst, refX, refY, angle);
+            SymbolTrans trans(src, dst, refX, refY, anglerad);
 
             //initialize 4 corner points of symbol -- we will
             //destructively transform this array to destination map space
@@ -949,7 +936,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             }
 
             //copy symbol image into destination image
-            if (angle == 0.0)
+            if (anglerad == 0.0)
             {
                 //upper left point
                 int ulx = (int)floor(b[3].x);
@@ -983,7 +970,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 int my = (int)floor(0.5 * (b[0].y + b[2].y));
 
                 //draw rotated symbol onto final destination image
-                gdImageCopyRotated((gdImagePtr)m_imout, tmp, mx, my, 0, 0, imsymw+2, imsymh+2, (int)ROUND(mdef.rotation()));
+                gdImageCopyRotated((gdImagePtr)m_imout, tmp, mx, my, 0, 0, imsymw+2, imsymh+2, ROUND(mdef.rotation()));
 
                 gdImageDestroy(tmp);
             }
@@ -1012,7 +999,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
         //construct transformer -- same as the
         //one used for the actual symbol drawables
-        SymbolTrans boxtrans(src, dst, refX, refY, angle);
+        SymbolTrans boxtrans(src, dst, refX, refY, anglerad);
 
         RS_F_Point pts[4];
 
@@ -1035,9 +1022,9 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
     //set actual (unrotated) bounds with new insertion point if a pointer was passed in
     if (bounds)
     {
-        bounds->minx = -refX * mdef.width();
+        bounds->minx =       -refX  * mdef.width();
         bounds->maxx = (1.0 - refX) * mdef.width();
-        bounds->miny = -refY * mdef.height();
+        bounds->miny =       -refY  * mdef.height();
         bounds->maxy = (1.0 - refY) * mdef.height();
     }
 }
@@ -1518,7 +1505,7 @@ void GDRenderer::DrawString(const RS_String& s,
                             double           height,
                             const RS_Font*   font,
                             const RS_Color&  color,
-                            double           angle)
+                            double           anglerad)
 {
     if (font == NULL)
         return;
@@ -1531,27 +1518,25 @@ void GDRenderer::DrawString(const RS_String& s,
     // the nearest 1/65536ths of a point.
     height = floor(height * 65536.0 + 0.5) / 65536.0;
 
+    //convert input to UTF8, which is what GD uses
     size_t len = s.length();
     size_t lenbytes = len*4+1;
     char* sutf8 = (char*)alloca(lenbytes);
-
-    //convert input to UTF8, which is what GD uses
-    DWFCore::DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
+    DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
 
     //convert font path to utf8 also
     size_t lenf = font->m_filename.length();
     size_t lenbytesf = lenf * 4 + 1;
     char* futf8 = (char*)alloca(lenbytesf);
-
-    DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
+    DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
 
     //draw the string
     int gdc = ConvertColor((gdImagePtr)m_imout, (RS_Color&)color);
-    char* err = 0;
-    err = gdImageStringFT((gdImagePtr)m_imout, NULL, gdc, futf8, height, angle, x, y, sutf8);
+    char* err = NULL;
+    err = gdImageStringFT((gdImagePtr)m_imout, NULL, gdc, futf8, height, anglerad, x, y, sutf8);
 
 #ifdef _DEBUG
-    if (err) printf ("gd text error : %s\n", err);
+    if (err) printf("gd text error : %s\n", err);
 #endif
 }
 
@@ -1560,7 +1545,7 @@ void GDRenderer::DrawString(const RS_String& s,
 void GDRenderer::MeasureString(const RS_String&  s,
                                double            height,
                                const RS_Font*    font,
-                               double            angle,
+                               double            anglerad,
                                RS_F_Point*       res, //assumes 4 points in this array
                                float*            offsets) //assumes length equals 2 * length of string
 {
@@ -1572,26 +1557,24 @@ void GDRenderer::MeasureString(const RS_String&  s,
     // the nearest 1/65536ths of a point.
     height = floor(height * 65536.0 + 0.5) / 65536.0;
 
+    //convert input to UTF8, which is what GD uses
     size_t len = s.length();
     size_t lenbytes = len*4+1;
     char* sutf8 = (char*)alloca(lenbytes);
-
-    //convert input to UTF8, which is what GD uses
-    DWFCore::DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
+    DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
 
     //convert font path to utf8 also
     size_t lenf = font->m_filename.length();
     size_t lenbytesf = lenf * 4 + 1;
     char* futf8 = (char*)alloca(lenbytesf);
-
-    DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
+    DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
 
     int extent[8];
     gdFTStringExtra extra;
     memset(&extra, 0, sizeof(gdFTStringExtra));
     extra.flags |= gdFTEX_XSHOW;
-    char* err = 0;
-    err = gdImageStringFTEx ((gdImagePtr) NULL, (int*)&extent[0], 0, futf8, (float)height, angle, 0, 0, sutf8, (offsets) ? &extra : NULL);
+    char* err = NULL;
+    err = gdImageStringFTEx((gdImagePtr)NULL, (int*)&extent[0], 0, futf8, height, anglerad, 0, 0, sutf8, offsets? &extra : NULL);
 
     for (int i=0; i<4; i++)
     {
@@ -1606,7 +1589,7 @@ void GDRenderer::MeasureString(const RS_String&  s,
     if (extra.xshow && offsets)
     {
         //copy over character spacings into result array
-        //there are 2 number per character -- kerned and unkerned delta
+        //there are 2 numbers per character -- kerned and unkerned delta
         memcpy(offsets, extra.xshow, sizeof(float) * (len - 1));
 
         //and then release the gd allocated xshow pointer
@@ -1712,7 +1695,7 @@ void GDRenderer::AddDWFContent(RS_InputStream*   in,
                             DWFCORE_FREE_OBJECT(pStream);
                         }
 
-                        DWFCORE_FREE_OBJECT( piResources );
+                        DWFCORE_FREE_OBJECT(piResources);
                         piResources = NULL;
                     }
 
@@ -1737,7 +1720,7 @@ void GDRenderer::AddDWFContent(RS_InputStream*   in,
                             DWFCORE_FREE_OBJECT(pStream);
                         }
 
-                        DWFCORE_FREE_OBJECT( piResources );
+                        DWFCORE_FREE_OBJECT(piResources);
                         piResources = NULL;
                     }
                 }
@@ -2234,7 +2217,7 @@ void GDRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, 
 
         //call the new rasterizer
         m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, polygon->point_count(), polygon->cntrs(), polygon->cntr_count(),
-            (fillpat) ? gdTiled : gdc, (gdImagePtr)m_imout);
+            fillpat? gdTiled : gdc, (gdImagePtr)m_imout);
 
         /*
         if (fillpat)
@@ -2352,9 +2335,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageForma
         else
         {
             //TODO: must scale from native width/height to requested width/height
-
-            gdImageCopyRotated((gdImagePtr)m_imout, src,
-                               x, y, 0, 0, native_width, native_height, (int)ROUND(angledeg));
+            gdImageCopyRotated((gdImagePtr)m_imout, src, x, y, 0, 0, native_width, native_height, ROUND(angledeg));
         }
 
         gdImageDestroy(src);
@@ -2384,9 +2365,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageForma
         else
         {
             //TODO: must scale from native width/height to requested width/height
-
-            gdImageCopyRotated((gdImagePtr)m_imout, src,
-                               x, y, 0, 0, gdImageSX(src), gdImageSY(src), (int)ROUND(angledeg));
+            gdImageCopyRotated((gdImagePtr)m_imout, src, x, y, 0, 0, gdImageSX(src), gdImageSY(src), ROUND(angledeg));
         }
 
         gdImageDestroy(src);
