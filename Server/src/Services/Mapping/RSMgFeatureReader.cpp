@@ -281,6 +281,12 @@ LineBuffer* RSMgFeatureReader::GetGeometry(const wchar_t*   propertyName,
     INT32 sz;
     unsigned char* agf = (unsigned char*)m_reader->GetGeometry(propertyName, sz);
 
+    //The MgFeatureReader returns null instead of letting the null geometry exception through
+    //This is incorrect, but I am not sure if any other code that uses the API relies on that
+    //so let's check for null and throw the exception 
+    if (!agf)
+        throw FdoException::Create();
+
     //TODO: should we really automatically allocate a LineBuffer
     //if user did not give us one?
     if (!lb)
