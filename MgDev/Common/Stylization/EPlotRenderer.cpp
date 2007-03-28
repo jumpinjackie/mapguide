@@ -346,12 +346,15 @@ void EPlotRenderer::EndMap()
         for (stream_list::iterator iter = m_lLayoutLabelStreams.begin();
             iter != m_lLayoutLabelStreams.end(); iter++)
         {
-            AddW2DResource( *iter,
-                NULL,
-                (const double*)anTransform2,
-                (const double*)layoutClip,
-                DWFXML::kzRole_Graphics2dOverlay,
-                L"Layer name - Layout Labels");
+            if (NULL != *iter)
+            {
+                AddW2DResource( *iter,
+                    NULL,
+                    (const double*)anTransform2,
+                    (const double*)layoutClip,
+                    DWFXML::kzRole_Graphics2dOverlay,
+                    L"Layer name - Layout Labels");
+            }
         }
 
         //////////////////////////////////////////////////////////////////////
