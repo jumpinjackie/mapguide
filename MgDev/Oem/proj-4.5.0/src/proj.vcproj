@@ -23,7 +23,7 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake /f makefile.vc proj_i.lib DEBUG=1"
+				BuildCommandLine="nmake /f makefile.vc proj_id.lib DEBUG=1"
 				ReBuildCommandLine="nmake /f makefile.vc clean all DEBUG=1"
 				CleanCommandLine="nmake /f makefile.vc clean DEBUG=1"
 				Output=""

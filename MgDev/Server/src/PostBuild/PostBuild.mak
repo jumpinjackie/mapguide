@@ -88,11 +88,11 @@
 ..\..\bin\debug\xerces-c_2_7D.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.pdb
     xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.pdb ..\..\bin\debug\
 
-..\..\bin\debug\proj.dll : ..\..\..\Oem\proj-4.5.0\src\proj.dll
-    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\proj.dll ..\..\bin\debug\
+..\..\bin\debug\projd.dll : ..\..\..\Oem\proj-4.5.0\src\projd.dll
+    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\projd.dll ..\..\bin\debug\
 
-..\..\bin\debug\proj.pdb : ..\..\..\Oem\proj-4.5.0\src\proj.pdb
-    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\proj.pdb ..\..\bin\debug\
+..\..\bin\debug\projd.pdb : ..\..\..\Oem\proj-4.5.0\src\projd.pdb
+    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\projd.pdb ..\..\bin\debug\
 
 ..\..\bin\debug\categories.txt : ..\..\..\Common\CoordinateSystem\categories.txt
     xcopy /r /d /y ..\..\..\Common\CoordinateSystem\categories.txt ..\..\bin\debug\
@@ -165,8 +165,8 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\debug\PathanD_7.1.pdb \
         ..\..\bin\debug\xerces-c_2_7D.dll \
         ..\..\bin\debug\xerces-c_2_7D.pdb \
-        ..\..\bin\debug\proj.dll \
-        ..\..\bin\debug\proj.pdb \
+        ..\..\bin\debug\projd.dll \
+        ..\..\bin\debug\projd.pdb \
         ..\..\bin\debug\categories.txt \
         ..\..\bin\debug\serverconfig.ini \
         ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
@@ -523,8 +523,8 @@ cleandebug:
     if EXIST ..\..\bin\debug\PathanD_7.1.pdb                 del /F ..\..\bin\debug\PathanD_7.1.pdb
     if EXIST ..\..\bin\debug\xerces-c_2_7D.dll               del /F ..\..\bin\debug\xerces-c_2_7D.dll
     if EXIST ..\..\bin\debug\xerces-c_2_7D.pdb               del /F ..\..\bin\debug\xerces-c_2_7D.pdb
-    if EXIST ..\..\bin\debug\proj.dll                        del /F ..\..\bin\debug\proj.dll
-    if EXIST ..\..\bin\debug\proj.pdb                        del /F ..\..\bin\debug\proj.pdb
+    if EXIST ..\..\bin\debug\projd.dll                       del /F ..\..\bin\debug\projd.dll
+    if EXIST ..\..\bin\debug\projd.pdb                       del /F ..\..\bin\debug\projd.pdb
     if EXIST ..\..\bin\debug\categories.txt                  del /F ..\..\bin\debug\categories.txt
     if EXIST ..\..\bin\debug\serverconfig.ini                del /F ..\..\bin\debug\serverconfig.ini
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml

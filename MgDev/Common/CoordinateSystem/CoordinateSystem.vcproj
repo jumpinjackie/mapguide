@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ogr.lib cpl.lib proj_i.lib"
+				AdditionalDependencies="ogrd.lib cpld.lib proj_id.lib"
 				OutputFile="$(OutDir)/MgCoordinateSystemd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\Oem\gdal-1.4.0\ogr&quot;;&quot;..\..\Oem\gdal-1.4.0\port&quot;;&quot;..\..\Oem\proj-4.5.0\src&quot;"
