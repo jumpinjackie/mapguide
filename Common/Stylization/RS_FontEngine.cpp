@@ -23,11 +23,13 @@
 #include "SE_Renderer.h"
 #include "SE_Matrix.h"
 
-#define ROUND(x) (int)((x) + 0.5)
+#define ROUND(x) (int)(floor(x+0.5))
 
 //////////////////////////////////////////////////////////////////////////////
 RS_FontEngine::RS_FontEngine()
 {
+    m_renderer = NULL;
+    m_serenderer = NULL;
 }
 
 
@@ -71,7 +73,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
     if (!font)
         return false;
 
-    //determine pixel space font height
+    //determine font height in renderer screen space
     double hgt = MetersToPixels(tdef.font().units(), tdef.font().height());
 
     //-------------------------------------------------------
@@ -95,7 +97,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
     else
     {
         //-------------------------------------------------------
-        // break up the string up into individual lines
+        // break up the string into individual lines
         //-------------------------------------------------------
 
         // font height gives the distance from one baseline to the next
@@ -317,7 +319,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         tm.text_height *= font_scale;
 
         for (int i=0; i<numchars; i++)
-            tm.char_advances[i] *= font_scale;
+            tm.char_advances[i] *= (float)font_scale;
     }
 
     //distance of current character along current segment
@@ -427,7 +429,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 
         //kerned width of current character
         int index = i / 2; //which character are we working with -- 3 iterations for each one
-        double char_width = (index >= numchars - 1) ? tm.text_width - char_pos : tm.char_advances[index];
+        double char_width = (index >= numchars-1)? tm.text_width - char_pos : tm.char_advances[index];
 
         //advance cursor by half the width of the current character
         dist_along_segment += char_width * 0.5;
@@ -445,7 +447,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         double anglerad = -atan2(positions[2*i+2].y - positions[2*i].y,positions[2*i+2].x - positions[2*i].x);
 
         //kerned width of current character
-        double char_width = (i == numchars - 1) ? tm.text_width - char_pos : tm.char_advances[i];
+        double char_width = (i == numchars-1)? tm.text_width - char_pos : tm.char_advances[i];
         double char_width_2 = 0.5 * char_width;
 
         //and now find a lower left insertion point
@@ -482,11 +484,11 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 //////////////////////////////////////////////////////////////////////////////
 void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy)
 {
-    // positive rotation in the RS_TextDef is assumed to always be a radian CCW rotation...
-    double rotation = tdef.rotation() * M_PI180;
+    // positive rotation in the RS_TextDef is assumed to always be a degree CCW rotation...
+    double anglerad = tdef.rotation() * M_PI180;
 
-    double cos_a = cos(rotation);
-    double sin_a = sin(rotation);
+    double cos_a = cos(anglerad);
+    double sin_a = sin(anglerad);
     if (m_bYup)
         sin_a = -sin_a;
 
@@ -541,20 +543,20 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         double insX = insx + pos.hOffset * cos_a + pos.vOffset * sin_a;
         double insY = insy - pos.hOffset * sin_a + pos.vOffset * cos_a;
 
-        int posx = (int)floor(insX + 0.5);
-        int posy = (int)floor(insY + 0.5);
+        int posx = ROUND(insX);
+        int posy = ROUND(insY);
 
         // render the ghosted text, if requested
         if (tdef.textbg() == RS_TextBackground_Ghosted)
         {
-            DrawString(*txt, posx-1, posy, tm.font_height, tm.font, tdef.bgcolor(), rotation);
-            DrawString(*txt, posx+1, posy, tm.font_height, tm.font, tdef.bgcolor(), rotation);
-            DrawString(*txt, posx, posy-1, tm.font_height, tm.font, tdef.bgcolor(), rotation);
-            DrawString(*txt, posx, posy+1, tm.font_height, tm.font, tdef.bgcolor(), rotation);
+            DrawString(*txt, posx-1, posy, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
+            DrawString(*txt, posx+1, posy, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
+            DrawString(*txt, posx, posy-1, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
+            DrawString(*txt, posx, posy+1, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
         }
 
         // render the primary text
-        DrawString(*txt, posx, posy, tm.font_height, tm.font, tdef.color(), rotation);
+        DrawString(*txt, posx, posy, tm.font_height, tm.font, tdef.color(), anglerad);
 
         // render the underline, if requested
         if (tdef.font().style() & RS_FontStyle_Underline)
@@ -620,6 +622,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
     {
         //estimate underline line width as % of font height
         double line_width = (double)tm.font->m_underline_thickness * tm.font_height / (double)tm.font->m_units_per_EM;
+
         //underline position w.r.t. baseline. Invert y while at it
         double line_pos = - (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
 
@@ -775,13 +778,12 @@ double RS_FontEngine::GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_Po
 
 
 //-----------------------------------------------------------------------------
-//scale an input number in meters to a mapping
-//space number given a device or mapping space unit.
+// Scales an input length in meters in the specified units - device or
+// mapping - to a length in mapping space.
 //-----------------------------------------------------------------------------
 double RS_FontEngine::MeterToMapSize(RS_Units unit, double number)
 {
     double scale_factor;
-
     if (unit == RS_Units_Device) // in meters, fixed size
         scale_factor = m_renderer->GetMapScale() / m_renderer->GetMetersPerUnit();
     else
@@ -790,16 +792,16 @@ double RS_FontEngine::MeterToMapSize(RS_Units unit, double number)
     return number * scale_factor;
 }
 
+
 //-----------------------------------------------------------------------------
-//scale an input number in meters to pixel
-//space number given a device or mapping space unit.
+// Scales an input length in meters in the specified units - device or
+// mapping - to a length in renderer screen space.
 //-----------------------------------------------------------------------------
 double RS_FontEngine::MetersToPixels(RS_Units unit, double number)
 {
+    double m2px = 1000.0 * m_serenderer->GetPixelsPerMillimeterScreen();
+
     double scale_factor;
-
-    double m2px = m_renderer->GetDpi() * (100 / 2.54);
-
     if (unit == RS_Units_Device)
         scale_factor = m2px; //device units simply returns scale to convert meters to pixels
     else

@@ -23,7 +23,6 @@
 #include "Centroid.h"
 #include "RS_Font.h"
 
-#define ROUND(x) (int)((x) + 0.5)
 //#define DEBUG_LABELS
 
 extern int ConvertColor(gdImagePtr i, RS_Color& c);
@@ -242,7 +241,7 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
             //loop to add labels
             while (ypos <= tileendy)
             {
-                double xpos = xoffset + ((offset) ? 0.5 * xinc : 0.0);
+                double xpos = xoffset + (offset? 0.5 * xinc : 0.0);
 
                 //move to the right until we reach a relevant position that is likely to
                 //draw a label that intersects the tile
@@ -986,7 +985,7 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
 
     //now we will translate and orient the bounds with the given angle and position of the symbol
     //apply position and rotation to the native bounds of the symbol
-    double angle = m_serenderer->GetFontEngine()->_Yup() ? info.m_tdef.rotation() : -info.m_tdef.rotation();
+    double angle = m_serenderer->GetFontEngine()->_Yup()? info.m_tdef.rotation() : -info.m_tdef.rotation();
     SE_Matrix m;
     m.rotate(angle); //it is already in radians in there
     m.translate(info.m_x, info.m_y);
@@ -1142,7 +1141,7 @@ bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfo
         if (info.m_sestyle)
         {
             //apply position and rotation to the native bounds of the symbol
-            double angle = m_serenderer->GetFontEngine()->_Yup() ? info.m_tdef.rotation() : -info.m_tdef.rotation();
+            double angle = m_serenderer->GetFontEngine()->_Yup()? info.m_tdef.rotation() : -info.m_tdef.rotation();
             SE_Matrix m;
             m.rotate(angle); //it is already in radians in there
             m.translate(info.m_x, info.m_y);

@@ -57,6 +57,7 @@
 #include "W2DRewriter.h"
 #include "UnicodeString.h"
 #include "SLDSymbols.h"
+#include "RS_Font.h"
 
 //GD headers
 #include "gd.h"
@@ -65,12 +66,10 @@ using namespace DWFToolkit;
 using namespace DWFCore;
 using namespace std;
 
-
-#define ROUND(x) (int)((x) + 0.5)
+#define ROUND(x) (int)(floor(x+0.5))
 
 // maximum allowed size for images
 #define IMAGE_SIZE_MAX 2048.0*2048.0
-
 
 //table we use for keeping track of object nodes
 typedef DWFWCharKeySkipList<unsigned int> NodeTable;
@@ -161,9 +160,7 @@ WT_String Util_ConvertString(const wchar_t* wstr)
 
 #endif
 
-    WT_String ret((WT_Unsigned_Integer16 const *)utf16Bytes);
-
-    return ret;
+    return WT_String((WT_Unsigned_Integer16 const *)utf16Bytes);
 }
 
 
@@ -176,7 +173,7 @@ WT_String Util_ConvertString(const wchar_t* wstr)
 WT_Result my_open(WT_File & file)
 {
     //this is freed in EndMap() (loops over all layer streams)
-    DWFBufferOutputStream* bos = DWFCORE_ALLOC_OBJECT( DWFBufferOutputStream(100000));
+    DWFBufferOutputStream* bos = DWFCORE_ALLOC_OBJECT(DWFBufferOutputStream(100000));
     file.set_stream_user_data(bos);
     return WT_Result::Success;
 }
@@ -322,6 +319,9 @@ void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
 
     // remember the map info
     m_mapInfo = mapInfo;
+
+    // initialize the font engine, now that scales have been set
+    InitFontEngine(this, this);
 }
 
 
@@ -336,25 +336,25 @@ void DWFRenderer::EndMap()
     for (stream_list::iterator iter = m_lLayerStreams.begin();
         iter != m_lLayerStreams.end(); iter++)
     {
-        DWFCORE_FREE_OBJECT( *iter);
+        DWFCORE_FREE_OBJECT(*iter);
     }
 
     for (stream_list::iterator iter = m_lLabelStreams.begin();
         iter != m_lLabelStreams.end(); iter++)
     {
-        DWFCORE_FREE_OBJECT( *iter);
+        DWFCORE_FREE_OBJECT(*iter);
     }
 
     for (stream_list::iterator iter = m_lLayoutStreams.begin();
         iter != m_lLayoutStreams.end(); iter++)
     {
-        DWFCORE_FREE_OBJECT( *iter );
+        DWFCORE_FREE_OBJECT(*iter);
     }
 
     for (stream_list::iterator iter = m_lLayoutLabelStreams.begin();
         iter != m_lLayoutLabelStreams.end(); iter++)
     {
-        DWFCORE_FREE_OBJECT( *iter );
+        DWFCORE_FREE_OBJECT(*iter);
     }
 
     m_lLayerStreams.clear();
@@ -396,19 +396,15 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* legendInfo, RS_FeatureClassInfo* cl
             m_attributes = NULL;
         }
 
-        m_attributes = DWFCORE_ALLOC_OBJECT (
-            DWFToolkit::DWFObjectDefinitionResource(
-                    DWFXML::kzElement_PageObjectDefinition,
-                    DWFXML::kzRole_ObjectDefinition));
+        m_attributes = DWFCORE_ALLOC_OBJECT(DWFObjectDefinitionResource(
+                                        DWFXML::kzElement_PageObjectDefinition,
+                                        DWFXML::kzRole_ObjectDefinition));
 
-        m_featureClass  = DWFCORE_ALLOC_OBJECT (
-                DWFToolkit::DWFDefinedObject(classInfo->name().c_str()));
+        m_featureClass = DWFCORE_ALLOC_OBJECT(DWFDefinedObject(classInfo->name().c_str()));
 
         m_featureClassInfo = classInfo;
 
-        //DWFToolkit::DWFProperty* prop = DWFCORE_ALLOC_OBJECT (
-        //    DWFProperty(L"hello1", L"hello2", L"hello3"));
-
+        //DWFProperty* prop = DWFCORE_ALLOC_OBJECT(DWFProperty(L"hello1", L"hello2", L"hello3"));
         //m_featureClass->addProperty(prop, true);
 
         //add the object to the resource -- we will not have to deallocate it
@@ -781,7 +777,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     }
 
     //default symbol
-    double angle = mdef.rotation() * M_PI180;
+    double anglerad = mdef.rotation() * M_PI180;
 
     //default bounds of symbol data in W2D
     //for symbols created by MapGuide Studio
@@ -804,8 +800,8 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     //correct size will be done using the macro attributes, but we
     //need to take aspect into account ourselves, since macro
     //only has a single overall scale factor
-    double lastAspect = (m_lastSymbol.width() == 0.0) ? DBL_MAX : m_lastSymbol.height() / m_lastSymbol.width();
-    double aspect = (mdef.width() == 0.0) ? DBL_MAX : mdef.height() / mdef.width();
+    double lastAspect = (m_lastSymbol.width() == 0.0)? DBL_MAX : m_lastSymbol.height() / m_lastSymbol.width();
+    double aspect = (mdef.width() == 0.0)? DBL_MAX : mdef.height() / mdef.width();
 
     RS_Bounds dst;
     if (aspect <= 1.0)
@@ -816,7 +812,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     //construct transformer -- we will use one
     //even for the default symbol -- makes sure
     //it goes through the same transformation path
-    SymbolTrans trans(src, dst, refX, refY, angle);
+    SymbolTrans trans(src, dst, refX, refY, anglerad);
 
     if (!symbol)
     {
@@ -1024,7 +1020,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
         //construct transformer -- same as the
         //one used for the actual symbol drawables
-        SymbolTrans boxtrans(src, dst, refX, refY, angle);
+        SymbolTrans boxtrans(src, dst, refX, refY, anglerad);
 
         EnsureBufferSize(5);
         WT_Logical_Point* pts = m_wtPointBuffer;
@@ -1052,7 +1048,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         BeginMacro(file, 1, SYMBOL_MAX);
 
             //if there is no rotation, send just 2 points
-            if (angle == 0)
+            if (anglerad == 0.0)
             {
                 WT_Logical_Point axisbox[2];
                 axisbox[0].m_x = pts[0].m_x;
@@ -1165,8 +1161,8 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
             double offx = _MeterToW2DMacroUnit(info->dunits(), info->dx());
             double offy = _MeterToW2DMacroUnit(info->dunits(), info->dy());
 
-            WT_Integer32 ioffx = (offx < 0) ? (int)floor(offx) : (int)ceil(offx);
-            WT_Integer32 ioffy = (offy < 0) ? (int)floor(offy) : (int)ceil(offy);
+            WT_Integer32 ioffx = (offx < 0)? (int)floor(offx) : (int)ceil(offx);
+            WT_Integer32 ioffy = (offy < 0)? (int)floor(offy) : (int)ceil(offy);
 
             BeginMacro(file, i+1, scale);
 
@@ -1354,7 +1350,7 @@ void DWFRenderer::PlayMacro(WT_File* file, int id, double sizeMeters, RS_Units u
 //   \r\n  (char 10 + char 13)
 //   \n    (char 13)            // used by MG 6.5
 //   \r    (char 10)            // common in Linux
-size_t DWFRenderer::SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_breaks)
+size_t DWFRenderer::SplitLabel(wchar_t* label, vector<wchar_t*>& line_breaks)
 {
     _ASSERT(label != NULL);
     if (label == NULL)
@@ -1434,15 +1430,14 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
     wcscpy(cpy, txt.c_str());
 
     //break it up
-    std::vector<wchar_t*> line_breaks;
+    vector<wchar_t*> line_breaks;
     size_t num_lines = SplitLabel(cpy, line_breaks);
 
     //optimization
     if (num_lines <= 1)
     {
-        WT_String wtstr(Util_ConvertString(txt.c_str()));
         WT_Logical_Point pt(x, y);
-        WT_Text wttext(pt, wtstr);
+        WT_Text wttext(pt, Util_ConvertString(txt.c_str()));
         wttext.serialize(*file);
         ++m_drawableCount;
         return;
@@ -1456,9 +1451,9 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
     WT_Integer32 line_hgt_y = (WT_Integer32)line_hgt;
     if (tdef.rotation() != 0.0)
     {
-        double angle = tdef.rotation() * M_PI180;
-        line_hgt_x = (WT_Integer32)(-line_hgt * sin(angle));
-        line_hgt_y = (WT_Integer32)( line_hgt * cos(angle));
+        double anglerad = tdef.rotation() * M_PI180;
+        line_hgt_x = (WT_Integer32)(-line_hgt * sin(anglerad));
+        line_hgt_y = (WT_Integer32)( line_hgt * cos(anglerad));
     }
 
     //Depending on vertical alignment we may go up or down with the line
@@ -1488,9 +1483,8 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
     //now draw each text line
     for (size_t i=0; i<num_lines; i++, xpos -= line_hgt_x, ypos -= line_hgt_y)
     {
-        WT_String wtstr(Util_ConvertString(line_breaks[i]));
         WT_Logical_Point pt(xpos, ypos);
-        WT_Text wttext(pt, wtstr);
+        WT_Text wttext(pt, Util_ConvertString(line_breaks[i]));
         wttext.serialize(*file);
         ++m_drawableCount;
     }
@@ -1716,7 +1710,7 @@ void DWFRenderer::WriteTextDef(WT_File* file, RS_TextDef& tdef)
     //double hgt = _MeterToMapSize(tdef.font().units(), tdef.font().height());
     //hgt *= m_scale;
 
-    file->desired_rendition().font().font_name() = WT_String(Util_ConvertString(tdef.font().name().c_str()));
+    file->desired_rendition().font().font_name() = Util_ConvertString(tdef.font().name().c_str());
     file->desired_rendition().font().style().set_bold((tdef.font().style() & RS_FontStyle_Bold) != 0);
     file->desired_rendition().font().style().set_italic((tdef.font().style() & RS_FontStyle_Italic) != 0);
     file->desired_rendition().font().style().set_underlined((tdef.font().style() & RS_FontStyle_Underline) != 0);
@@ -1757,7 +1751,7 @@ void DWFRenderer::WriteTextDef(WT_File* file, RS_TextDef& tdef)
     //text background style
 
     //ghosting offset : 1 pixel
-    double metersPerPixel = 1.0 / m_dpi * 2.54 / 100.0;
+    double metersPerPixel = 0.0254 / m_dpi;
     int offset = (int)_MeterToW2DMacroUnit(tdef.font().units(), metersPerPixel);
 
     WT_Color bgcolor = Util_ConvertColor(tdef.bgcolor());
@@ -1850,7 +1844,7 @@ void DWFRenderer::OpenW2D(WT_File* file)
     //TODO: what to do?
     if (file->open() != WT_Result::Success)
     {
-        _DWFCORE_THROW( DWFIOException, L"Failed to open W2D file" );
+        _DWFCORE_THROW(DWFIOException, L"Failed to open W2D file");
     }
 
     //set transformations...
@@ -1924,7 +1918,7 @@ void DWFRenderer::StoreAttributes(RS_FeatureReader* feature, const RS_String* to
                 //do not use m_featureClass->instance() here
                 //we prefer creating the instance manually since m_featureClass will
                 //build up a huge list of all its instances internally
-                DWFDefinedObjectInstance* oi = DWFCORE_ALLOC_OBJECT( DWFDefinedObjectInstance(*m_featureClass, id));
+                DWFDefinedObjectInstance* oi = DWFCORE_ALLOC_OBJECT(DWFDefinedObjectInstance(*m_featureClass, id));
 
                 //there are two strings in the list, corresponding to each property
                 //the first is the actual name of the property and the second is
@@ -2345,7 +2339,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
             gdImageAlphaBlending(dst, 0);
             gdImageFilledRectangle(dst, 0, 0, gdImageSX(dst)-1, gdImageSY(dst)-1, 0x7f000000);
             gdImageAlphaBlending(dst, 1);
-            gdImageCopyRotated(dst, src, 0.5*rotatedW, 0.5*rotatedH, 0, 0, gdImageSX(src), gdImageSY(src), (int)ROUND(angledeg));
+            gdImageCopyRotated(dst, src, 0.5*rotatedW, 0.5*rotatedH, 0, 0, gdImageSX(src), gdImageSY(src), ROUND(angledeg));
             gdImageSaveAlpha(dst, 1);
 
             // create the DWF image from the PNG data
@@ -2373,20 +2367,28 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
 }
 
 
-void DWFRenderer::DrawScreenText(const RS_String& /*txt*/,
-                                 RS_TextDef&      /*tdef*/,
-                                 double           /*insx*/,
-                                 double           /*insy*/,
-                                 double*          /*path*/,
-                                 int              /*npts*/,
-                                 double           /*param_position*/)
+void DWFRenderer::DrawScreenText(const RS_String& txt,
+                                 RS_TextDef&      tdef,
+                                 double           insx,
+                                 double           insy,
+                                 double*          path,
+                                 int              npts,
+                                 double           param_position)
 {
-    // TODO
-
-    // draw to the active file if it's set
-//  WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
-
-//  WriteTextDef(file, info->tdef());
+    if (path)  //path text
+    {
+        RS_TextMetrics tm;
+        GetTextMetrics(txt, tdef, tm, true);
+        //TODO: need computed seglens rather than NULL to make things faster
+        LayoutPathText(tm, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0);
+        DrawPathText(tm, tdef);
+    }
+    else //block text
+    {
+        RS_TextMetrics tm;
+        GetTextMetrics(txt, tdef, tm, false);
+        DrawBlockText(tm, tdef, insx, insy);
+    }
 }
 
 
@@ -2440,7 +2442,7 @@ double DWFRenderer::GetPixelsPerMillimeterWorld()
 
 RS_FontEngine* DWFRenderer::GetFontEngine()
 {
-    return NULL;
+    return this;
 }
 
 
@@ -2555,6 +2557,103 @@ void DWFRenderer::AddExclusionRegion(RS_F_Point* /*fpts*/, int /*npts*/)
 }
 
 
+//-----------------------------------------------------------------------------
+//
+//             RS_FontEngine
+//
+//-----------------------------------------------------------------------------
+
+
+void DWFRenderer::MeasureString(const RS_String& s,
+                                double           height,
+                                const RS_Font*   font,
+                                double           anglerad,
+                                RS_F_Point*      res,       //assumes 4 points in this array
+                                float*           offsets)   //assumes length equals 2 * length of string
+{
+    //gd likes height in points rather than pixels
+    height *= 72.0 / m_dpi;
+
+    // The computed height can have roundoff in it, and the rendering code is
+    // very sensitive to it.  Remove this roundoff by rounding the height to
+    // the nearest 1/65536ths of a point.
+    height = floor(height * 65536.0 + 0.5) / 65536.0;
+
+    // If the supplied font height is too large GD can't measure it.  We'll
+    // use a reasonable font height for measuring, and then scale the result.
+    double measureHeight = rs_min(5000.0, height);
+    double measureScale = height / measureHeight;
+
+    //convert input to UTF8, which is what GD uses
+    size_t len = s.length();
+    size_t lenbytes = len*4+1;
+    char* sutf8 = (char*)alloca(lenbytes);
+    DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
+
+    //convert font path to utf8 also
+    size_t lenf = font->m_filename.length();
+    size_t lenbytesf = lenf * 4 + 1;
+    char* futf8 = (char*)alloca(lenbytesf);
+    DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
+
+    int extent[8];
+    gdFTStringExtra extra;
+    memset(&extra, 0, sizeof(gdFTStringExtra));
+    extra.flags |= gdFTEX_XSHOW;
+    char* err = NULL;
+    err = gdImageStringFTEx((gdImagePtr)NULL, (int*)&extent[0], 0, futf8, measureHeight, anglerad, 0, 0, sutf8, offsets? &extra : NULL);
+
+    for (int i=0; i<4; ++i)
+    {
+        res[i].x = measureScale*extent[2*i];
+        res[i].y = measureScale*extent[2*i+1];
+    }
+
+#ifdef _DEBUG
+    if (err) printf("gd text error : %s\n", err);
+#endif
+
+    if (extra.xshow && offsets)
+    {
+        //copy over character spacings into result array
+        //there are 2 numbers per character -- kerned and unkerned delta
+        for (size_t i=0; i<len; ++i)
+            offsets[i] = (float)(measureScale*extra.xshow[i]);
+
+        //and then release the gd allocated xshow pointer
+        gdFree(extra.xshow);
+    }
+}
+
+
+void DWFRenderer::DrawString(const RS_String& s,
+                             int              x,
+                             int              y,
+                             double           height,
+                             const RS_Font*   font,
+                             const RS_Color&  color,
+                             double           anglerad)
+{
+    // draw to the active file if it's set
+    WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
+
+    file->desired_rendition().font().font_name() = Util_ConvertString(font->m_familyname.c_str());
+    file->desired_rendition().font().style().set_bold(font->m_bold);
+    file->desired_rendition().font().style().set_italic(font->m_italic);
+    file->desired_rendition().font().style().set_underlined(false);
+    file->desired_rendition().font().height() = (WT_Integer32)height;
+    file->desired_rendition().font().rotation() = (WT_Unsigned_Integer16)(anglerad / (2.0*M_PI) * 65536);
+
+    file->desired_rendition().color() = Util_ConvertColor((RS_Color&)color);
+
+    WT_String wtstr(Util_ConvertString(s.c_str()));
+    WT_Logical_Point pt(x, y);
+    WT_Text wttext(pt, wtstr);
+    wttext.serialize(*file);
+    ++m_drawableCount;
+}
+
+
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 ////
@@ -2564,6 +2663,7 @@ void DWFRenderer::AddExclusionRegion(RS_F_Point* /*fpts*/, int /*npts*/)
 ////
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
+
 
 //Inserts the contents of a given DWF input stream
 //into the current output W2D. The given coord sys
@@ -2655,7 +2755,7 @@ void DWFRenderer::AddDWFContent(RS_InputStream*  in,
                             DWFCORE_FREE_OBJECT(pStream);
                         }
 
-                        DWFCORE_FREE_OBJECT( piResources );
+                        DWFCORE_FREE_OBJECT(piResources);
                         piResources = NULL;
                     }
 
@@ -2680,7 +2780,7 @@ void DWFRenderer::AddDWFContent(RS_InputStream*  in,
                             DWFCORE_FREE_OBJECT(pStream);
                         }
 
-                        DWFCORE_FREE_OBJECT( piResources );
+                        DWFCORE_FREE_OBJECT(piResources);
                         piResources = NULL;
                     }
                 }
@@ -2859,7 +2959,7 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
                                                       int                numpts,
                                                       LineBuffer::GeomOperationType clipType,
                                                       int&               outNumpts,
-                                                      std::vector<int>** outCntrs)
+                                                      vector<int>**      outCntrs)
 {
     //This transformer may have been modified if a Viewport
     //opcode was encountered in the source W2D. This is needed for

@@ -55,22 +55,22 @@ static void ComputeGrowAmount(RS_F_Point* bounds, double minx, double miny, doub
     if (xfminx < minx) // minx always negative
     {
         sx = xfminx/minx - 1.0;
-        growx = (growx > sx) ? growx : sx;
+        growx = (growx > sx)? growx : sx;
     }
     if (xfmaxx > maxx) // maxx always positive
     {
         sx = xfmaxx/maxx - 1.0;
-        growx = (growx > sx) ? growx : sx;
+        growx = (growx > sx)? growx : sx;
     }
     if (xfminy < miny)
     {
         sy = xfminy/miny - 1.0;
-        growy = (growy > sy) ? growy : sy;
+        growy = (growy > sy)? growy : sy;
     }
     if (xfmaxy > maxy)
     {
         sy = xfmaxy/maxy - 1.0;
-        growy = (growy > sy) ? growy : sy;
+        growy = (growy > sy)? growy : sy;
     }
 }
 
@@ -170,10 +170,11 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     ret->tdef.font().style() = (RS_FontStyle_Mask)style;
     ret->tdef.font().name() = fontExpr.evaluate(cxt->exec);
 
+    // RS_TextDef expects font height to be in meters - convert it from mm
     if (sizeScaleable.evaluate(cxt->exec))
-        ret->tdef.font().height() = size.evaluate(cxt->exec)*0.001*fabs(cxt->xform->y1)/cxt->mm2px; //convert mm to meters which is what RS_TextDef expects
+        ret->tdef.font().height() = size.evaluate(cxt->exec)*0.001*fabs(cxt->xform->y1)/cxt->mm2px;
     else
-        ret->tdef.font().height() = size.evaluate(cxt->exec)*0.001; //size is not scaleable -- only convert from mm to meters.
+        ret->tdef.font().height() = size.evaluate(cxt->exec)*0.001;
 
     ret->tdef.linespace() = lineSpacing.evaluate(cxt->exec);
 

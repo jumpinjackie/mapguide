@@ -25,8 +25,6 @@
 #include "SE_Bounds.h"
 #include "SE_Renderer.h"
 
-#define ROUND(x) (int)((x) + 0.5)
-
 //#define DEBUG_LABELS
 
 extern int ConvertColor(gdImagePtr i, RS_Color& c);
@@ -450,7 +448,7 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
 
     //now we will translate and orient the bounds with the given angle and position of the symbol
     //apply position and rotation to the native bounds of the symbol
-    double angle = m_serenderer->GetFontEngine()->_Yup() ? info.m_tdef.rotation() : -info.m_tdef.rotation();
+    double angle = m_serenderer->GetFontEngine()->_Yup()? info.m_tdef.rotation() : -info.m_tdef.rotation();
     SE_Matrix m;
     m.rotate(angle); //it is already in radians in there
     m.translate(info.m_x, info.m_y);

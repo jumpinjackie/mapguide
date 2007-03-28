@@ -119,7 +119,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     //the actual position used for the marker by the Renderer
     //may be returned in this structure to help place
     //labels better
-    RS_Bounds bounds = RS_Bounds(1.,1.,0.,0.); // init invalid
+    RS_Bounds bounds = RS_Bounds(1.0, 1.0, 0.0, 0.0); // init invalid
 
     if (psym && psym->GetSymbol())
     {

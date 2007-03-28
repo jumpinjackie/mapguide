@@ -130,7 +130,7 @@ SE_MiterJoin::SE_MiterJoin
 
     wn = bounds.miny < 0.0 ? -bounds.miny : 0.0;
     wp = bounds.maxy > 0.0 ? bounds.maxy : 0.0;
-    double hw = (wn > wp) ? wn : wp;
+    double hw = (wn > wp)? wn : wp;
     w = 2.0 * hw;
 
     ca = -nprev.x*nnext.x - nprev.y*nnext.y; /* <-nprev, nnext> */
