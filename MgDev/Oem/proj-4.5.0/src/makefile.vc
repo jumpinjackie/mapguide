@@ -7,19 +7,29 @@
 #
 PROJ_LIB_DIR=../NAD
 
-# Uncomment the first for an optimized build, or the second for debug.
-#OPTFLAGS=	/nologo /Ox /MD /Zi /Fdprojvc.pdb
-#OPTFLAGS=	/nologo /Od /MDd /Zi /Fdprojvc.pdb
+# Specify macro DEBUG=1 for a debug build, and DEBUG=0 for an optimized build.
 
 !if "$(DEBUG)"=="1"
-OPTFLAGS=	/nologo /Od /MDd /Zi /Fdprojvc.pdb
+DLL_NAME   = projd.dll
+EXP_NAME   = proj_id.exp
+ILIB_NAME  = proj_id.lib
+LIB_NAME   = projd.lib
+PDB_NAME   = projd.pdb
+VCPDB_NAME = projvcd.pdb
+OPTFLAGS   = /nologo /Od /MDd /Zi /Fd$(VCPDB_NAME)
 !else
-OPTFLAGS=	/nologo /Ox /MD /Zi /Fdprojvc.pdb
+DLL_NAME   = proj.dll
+EXP_NAME   = proj_i.exp
+ILIB_NAME  = proj_i.lib
+LIB_NAME   = proj.lib
+PDB_NAME   = proj.pdb
+VCPDB_NAME = projvc.pdb
+OPTFLAGS   = /nologo /Ox /MD /Zi /Fd$(VCPDB_NAME)
 !endif
 
 # Uncomment the first for linking exes against DLL or second for static
-EXE_PROJ =	proj_i.lib
-#EXE_PROJ =	proj.lib
+EXE_PROJ = $(ILIB_NAME)
+#EXE_PROJ =	$(LIB_NAME)
 
 # Set the version number for the DLL.  Normally we leave this blank since
 # we want software that is dynamically loading the DLL to have no problem
@@ -78,24 +88,24 @@ LIBOBJ	=	$(support) $(pseudo) $(azimuthal) $(conic) $(cylinder) $(misc)
 PROJEXE_OBJ	= proj.obj gen_cheb.obj p_series.obj emess.obj
 CS2CSEXE_OBJ	= cs2cs.obj gen_cheb.obj p_series.obj emess.obj
 GEODEXE_OBJ	= geod.obj geod_set.obj geod_for.obj geod_inv.obj emess.obj
-PROJ_DLL 	= proj$(VERSION).dll
+PROJ_DLL 	= $(DLL_NAME)
 CFLAGS	=	/nologo -I. -DPROJ_LIB=\"$(PROJ_LIB_DIR)\" \
 		-DHAVE_STRERROR=1 $(OPTFLAGS)
 
 default:	all
 
-all:            proj.lib proj.exe cs2cs.exe geod.exe
+all:            $(LIB_NAME) proj.exe cs2cs.exe geod.exe
 
-proj.lib:	$(LIBOBJ)
-	if exist proj.lib del proj.lib
-	lib /out:proj.lib $(LIBOBJ)
+$(LIB_NAME):	$(LIBOBJ)
+	if exist $(LIB_NAME) del $(LIB_NAME)
+	lib /out:$(LIB_NAME) $(LIBOBJ)
 
-$(PROJ_DLL):	proj_i.lib
+$(PROJ_DLL):	$(ILIB_NAME)
 
-proj_i.lib:	$(LIBOBJ)
-	link /debug /dll /def:proj.def /out:$(PROJ_DLL) /implib:proj_i.lib \
-			/manifest /manifestfile:proj.dll.manifest $(LIBOBJ)
-	mt -manifest proj.dll.manifest -outputresource:$(PROJ_DLL);2
+$(ILIB_NAME):	$(LIBOBJ)
+	link /debug /dll /def:proj.def /out:$(PROJ_DLL) /implib:$(ILIB_NAME) \
+			/manifest /manifestfile:$(DLL_NAME).manifest $(LIBOBJ)
+	mt -manifest $(DLL_NAME).manifest -outputresource:$(PROJ_DLL);2
 
 proj.exe:	$(PROJEXE_OBJ) $(EXE_PROJ)
 	cl $(PROJEXE_OBJ) $(EXE_PROJ)
@@ -129,5 +139,5 @@ nadshift:	nad2bin.exe
 	cd ..\src
 
 clean:
-	del *.obj *.lib *.dll
-	del *.pdb *.exp
+	del *.obj $(LIB_NAME) $(ILIB_NAME) $(DLL_NAME)
+	del $(VCPDB_NAME) $(PDB_NAME) $(EXP_NAME)
