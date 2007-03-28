@@ -1,3 +1,12 @@
+# Specify macro DEBUG=1 for a debug build, and DEBUG=0 for an optimized build.
+
+!if "$(DEBUG)"=="1"
+OGR_LIB_NAME = ogrd.lib
+PDB_NAME = ogrd.pdb
+!else
+OGR_LIB_NAME = ogr.lib
+PDB_NAME = ogr.pdb
+!endif
 
 LINKFLAGS =	/Zi /MTd
 EXTRAFLAGS =	-I$(MSDASDK)\inc \
@@ -6,7 +15,6 @@ EXTRAFLAGS =	-I$(MSDASDK)\inc \
 		$(PROJ_FLAGS) $(PROJ_INCLUDE) $(GEOS_CFLAGS)
 
 GDAL_ROOT = 	..
-PDB_NAME = ogr.pdb
 
 !INCLUDE ..\nmake.opt
 
@@ -16,7 +24,7 @@ EXTRAFLAGS = $(EXTRAFLAGS) -DOGR_ENABLED
 
 OLE_LIBS =	oledb.lib ole32.lib oleaut32.lib 
 
-ALL_LIBS =	$(OLE_LIBS) $(GDAL_ROOT)/port/cpl.lib $(EXTERNAL_LIBS) $(LIBS)
+ALL_LIBS =	$(OLE_LIBS) $(GDAL_ROOT)/port/$(CPL_LIB_NAME) $(EXTERNAL_LIBS) $(LIBS)
 
 OGR_FRMTS =	ogrsf_frmts\ogrsf_frmts.lib ogrsf_frmts\ogrsf_frmts_sup.lib
 OBJ_OGR	=	ogrgeometryfactory.obj ogrpoint.obj ogrcurve.obj ogr_api.obj \
@@ -42,7 +50,7 @@ LINKARGS =	$(OBJ_OGR) $(OGR_FRMTS) $(ALL_LIBS)
 DEPLIBS	=	$(OGR_FRMTS)
 !ENDIF
 
-default:        ogr.lib ogrinfo.exe test_ogrsf.exe ogr2ogr.exe ogrtindex.exe
+default:        $(OGR_LIB_NAME) ogrinfo.exe test_ogrsf.exe ogr2ogr.exe ogrtindex.exe
 
 ogrsf_frmts\ogrsf_frmts.lib:
 
@@ -66,13 +74,13 @@ geometryidl.h: geometryidl.idl spatialreferenceidl.h
 spatialreferenceidl.h: spatialreferenceidl.idl
 	midl spatialreferenceidl.idl
 
-ogr.lib:	$(OBJ_OGR)
-	lib /out:ogr.lib $(OBJ_OGR)
+$(OGR_LIB_NAME):	$(OBJ_OGR)
+	lib /out:$(OGR_LIB_NAME) $(OBJ_OGR)
 
 ogroledb.lib:	$(OBJ_OLEDB)
 	lib /out:ogroledb.lib $(OBJ_OLEDB)
 
-sfcdump.exe:	geometryidl.h sfcdump.obj ogr.lib ogroledb.lib
+sfcdump.exe:	geometryidl.h sfcdump.obj $(OGR_LIB_NAME) ogroledb.lib
 	cl $(LINKFLAGS) sfcdump.obj ogroledb.lib $(LINKARGS) \
 		/link $(LINKER_FLAGS)
     if exist $@.manifest mt -manifest $@.manifest -outputresource:$@;1
@@ -132,8 +140,8 @@ clean:
 	-del *.obj
 	-del *.exe
 	-del *.exe.manifest
-	-del *.lib
-	-del *.pdb
+	-del $(OGR_LIB_NAME)
+	-del $(PDB_NAME)
 	-del *.ilk
 
 allclean:	clean
