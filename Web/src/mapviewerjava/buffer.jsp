@@ -512,5 +512,4 @@ String GetMapSrs(MgMap map)
     //
     return "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
 }
-
 %>
