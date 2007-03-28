@@ -1576,7 +1576,7 @@ int LineBuffer::ClipLine(RS_Bounds& clipRect, double* line, double* RESTRICT ret
 
         // use the clip code for an endpoint outside the clip rectangle
 
-        int clipCode = ((clipCode1!=0) ? clipCode1 : clipCode2);
+        int clipCode = (clipCode1!=0)? clipCode1 : clipCode2;
 
         // clip the line against the first boundary it crosses
 

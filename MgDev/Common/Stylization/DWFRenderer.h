@@ -29,6 +29,7 @@
 #include "KeyEncode.h"
 
 #include "SE_Renderer.h"
+#include "RS_FontEngine.h"
 
 //forward declare
 class WT_File;
@@ -63,7 +64,7 @@ typedef std::vector<DWFToolkit::DWFObjectDefinitionResource*> objdefres_list;
 ///<summary>
 /// Implementation of Renderer for DWF-W2D output
 ///</summary>
-class DWFRenderer : public Renderer, public SE_Renderer
+class DWFRenderer : public Renderer, public SE_Renderer, public RS_FontEngine
 {
 public:
     STYLIZATION_API DWFRenderer();
@@ -169,6 +170,24 @@ public:
 
     virtual void ProcessLabelGroup(SE_LabelInfo* labels, int nlabels, RS_OverpostType type, bool exclude, LineBuffer* path = NULL);
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
+
+    ////////////////////////////////////////////////
+    // RS_FontEngine
+    //
+    virtual void DrawString(const RS_String& s,
+                            int              x,
+                            int              y,
+                            double           height,
+                            const RS_Font*   font,
+                            const RS_Color&  color,
+                            double           anglerad);
+
+    virtual void MeasureString(const RS_String& s,
+                               double           height,
+                               const RS_Font*   font,
+                               double           anglerad,
+                               RS_F_Point*      res,
+                               float*           offsets);
 
 protected:
     //list of layer w2d streams

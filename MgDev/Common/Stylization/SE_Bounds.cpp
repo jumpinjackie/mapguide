@@ -125,22 +125,22 @@ void SE_Bounds::Contained(double minx, double miny, double maxx, double maxy, do
     if (xfminx < minx) // minx always negative
     {
         sx = xfminx/minx - 1.0;
-        growx = (growx > sx) ? growx : sx;
+        growx = (growx > sx)? growx : sx;
     }
     if (xfmaxx > maxx) // maxx always positive
     {
         sx = xfmaxx/maxx - 1.0;
-        growx = (growx > sx) ? growx : sx;
+        growx = (growx > sx)? growx : sx;
     }
     if (xfminy < miny)
     {
         sy = xfminy/miny - 1.0;
-        growy = (growy > sy) ? growy : sy;
+        growy = (growy > sy)? growy : sy;
     }
     if (xfmaxy > maxy)
     {
         sy = xfmaxy/maxy - 1.0;
-        growy = (growy > sy) ? growy : sy;
+        growy = (growy > sy)? growy : sy;
     }
 }
 

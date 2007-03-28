@@ -37,11 +37,11 @@ static const wchar_t* SLD_CROSS_NAME =    L"p";
 //////////////////////////////////////////////
 //square
 static const double SLD_SQUARE[] = {
-                          0., 0.,
-                          1., 0.,
-                          1., 1.,
-                          0., 1.,
-                          0., 0.
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0,
+        0.0, 0.0
 };
 
 
@@ -50,10 +50,10 @@ static const double sq34 = 0.5 - 0.25 * sqrt(3.0);
 
 //equilateral triangle
 static const double SLD_TRIANGLE[] = {
-                            0.0,       sq34,
-                            1.0,       sq34,
-                            0.5, 1.0 - sq34,
-                            0.0,       sq34
+        0.0,       sq34,
+        1.0,       sq34,
+        0.5, 1.0 - sq34,
+        0.0,       sq34
 };
 
 
@@ -139,12 +139,12 @@ static const double incr = M_PI / 10.0;
 
 //circle, approximated by 20-gon
 static const double SLD_CIRCLE[] = {
-    circpt(0),    circpt(1),  circpt(2),    circpt(3),
-    circpt(4),    circpt(5),  circpt(6),    circpt(7),
-    circpt(8),    circpt(9),  circpt(10),   circpt(11),
-    circpt(12),   circpt(13), circpt(14),   circpt(15),
-    circpt(16),   circpt(17), circpt(18),   circpt(19),
-    circpt(20)
+        circpt( 0.0), circpt( 1.0), circpt( 2.0), circpt( 3.0),
+        circpt( 4.0), circpt( 5.0), circpt( 6.0), circpt( 7.0),
+        circpt( 8.0), circpt( 9.0), circpt(10.0), circpt(11.0),
+        circpt(12.0), circpt(13.0), circpt(14.0), circpt(15.0),
+        circpt(16.0), circpt(17.0), circpt(18.0), circpt(19.0),
+        circpt(20.0)
 };
 
 
@@ -153,14 +153,14 @@ static const double SLD_CIRCLE[] = {
 //simple x symbol for use in error conditions
 
 static const double SLD_ERROR[] = {
-    0.0, 0.0,
-    1.0, 0.0,
-    1.0, 1.0,
-    0.0, 0.0,
-    0.0, 1.0,
-    1.0, 1.0,
-    1.0, 0.0,
-    0.0, 1.0
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 0.0,
+        0.0, 1.0,
+        1.0, 1.0,
+        1.0, 0.0,
+        0.0, 1.0
 };
 
 #endif

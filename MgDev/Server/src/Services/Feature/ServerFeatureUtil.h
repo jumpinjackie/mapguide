@@ -34,7 +34,6 @@
 
 typedef vector <double> VECTOR;
 #define DoubleMaxValue  DBL_MAX
-#define ROUND(x) (floor(x+0.5))
 
 #define DoubleNegativeInfinity numeric_limits<double>::infinity()
 #define DoublePositiveInfinity numeric_limits<double>::infinity()
