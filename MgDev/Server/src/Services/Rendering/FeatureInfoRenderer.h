@@ -172,6 +172,11 @@ public:
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position)
     {}
 
+    virtual bool YPointsUp()
+    {
+        return true;
+    }
+
     virtual void GetWorldToScreenTransform(SE_Matrix& xform)
     {}
 

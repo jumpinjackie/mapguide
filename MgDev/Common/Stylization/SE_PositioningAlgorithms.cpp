@@ -16,17 +16,16 @@
 //
 
 #include "stdafx.h"
-//#include "SE_Include.h"
 #include "SE_RenderProxies.h"
 #include "SE_PositioningAlgorithms.h"
 #include "SE_Renderer.h"
 #include "SE_SymbolManager.h"
-#include "Renderer.h"
+#include "SE_ConvexHull.h"
 #include "SE_Bounds.h"
+#include "Renderer.h"
 #include "RS_FontEngine.h"
 #include <algorithm>
 #include <functional>
-#include "SE_ConvexHull.h"
 
 SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 {
@@ -43,13 +42,13 @@ SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 
 //recomputes the bounds of an SE_RenderPointStyle that contains a text
 //whose alignment we have messed with
-void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* renderer)
+void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* se_renderer)
 {
     SE_RenderText* txt = ((SE_RenderText*)st->symbol[0]);
 
     RS_TextMetrics tm;
     SE_Matrix txf;
-    renderer->GetFontEngine()->GetTextMetrics(txt->text, txt->tdef, tm, false);
+    se_renderer->GetFontEngine()->GetTextMetrics(txt->text, txt->tdef, tm, false);
     RS_F_Point fpts[4];
 
     //radian CCW rotation
@@ -95,13 +94,12 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* renderer)
 }
 
 
-void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
-                                         LineBuffer*     geometry,
-                                         SE_Matrix&      xform,
-                                         SE_Style*       style,
-                                         SE_RenderStyle* rstyle,
-                                         double          mm2px
-                                         )
+void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
+                                                LineBuffer*     geometry,
+                                                SE_Matrix&      /*xform*/,
+                                                SE_Style*       /*style*/,
+                                                SE_RenderStyle* rstyle,
+                                                double          /*mm2px*/)
 {
     //this placement algorithm implements the MapGuide dynamic point labeling algorithm
     //which means 8 candidate labels generated for each symbol
@@ -114,7 +112,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     geometry->Centroid(LineBuffer::ctPoint, &cx, &cy, &dummy);
 
     //transform the point to screen space
-    renderer->WorldToScreenPoint(cx, cy, cx, cy);
+    se_renderer->WorldToScreenPoint(cx, cy, cx, cy);
 
     //assume there is a single text label in the render symbol
     //and extract it from in there
@@ -144,7 +142,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     //This call assumes the symbol draw right before the label and the symbol added its bounds
     //as an exclusion region
 
-    const RS_F_Point* cfpts = renderer->GetLastExclusionRegion();
+    const RS_F_Point* cfpts = se_renderer->GetLastExclusionRegion();
     RS_F_Point fpts[4];
     memcpy(fpts, cfpts, 4 * sizeof(RS_F_Point));
 
@@ -155,7 +153,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     SE_Matrix ixform;
     ixform.translate(-cx, -cy); //factor out point position
     ixform.rotate(-box_angle_rad); //factor out rotation
-    //double pixelToMeter = 0.001 / renderer->GetPixelsPerMillimeterScreen();
+    //double pixelToMeter = 0.001 / se_renderer->GetPixelsPerMillimeterScreen();
     //ixform.scale(pixelToMeter,  pixelToMeter); //convert from pixels to meters for labeling
 
     //factor out geometry position
@@ -165,7 +163,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     //unrotated bounds
     RS_Bounds symbol_bounds(fpts[0].x, fpts[0].y, fpts[2].x, fpts[2].y);
 
-    double symbol_width = fpts[1].x - fpts[0].x; //symbol width in meters
+    double symbol_width  = fpts[1].x - fpts[0].x; //symbol width in meters
     double symbol_height = fpts[2].y - fpts[1].y; //symbol height in meters
     double symbol_rot_deg = box_angle_rad / M_PI180;
 
@@ -176,11 +174,10 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
 
     //compute how far label needs to be offset from
     //center point of symbol
-
     double w = 0.5 * symbol_width;
     double h = 0.5 * symbol_height;
-    double ch = 0;      // vertical center point
-    double cw = 0;      // horizontal center point
+    double ch = 0.0;    // vertical center point
+    double cw = 0.0;    // horizontal center point
 
     w += offset;
     h += offset;
@@ -190,8 +187,8 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
     {
         symbol_bounds.maxx += offset;    symbol_bounds.maxy += offset;
         symbol_bounds.minx -= offset;    symbol_bounds.miny -= offset;
-        ch = (symbol_bounds.maxy + symbol_bounds.miny)/2.;
-        cw = (symbol_bounds.maxx + symbol_bounds.minx)/2.;
+        ch = 0.5*(symbol_bounds.maxy + symbol_bounds.miny);
+        cw = 0.5*(symbol_bounds.maxx + symbol_bounds.minx);
     }
 
     //take into account rotation of the symbol
@@ -203,8 +200,8 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
         double cs = cos(rotRad);
         double sn = sin(rotRad);
 
-        double wcs, nwcs, wsn, nwsn, hsn, nhsn, hcs, nhcs, cwsn, cwcs, chsn, chcs;
         // check to see if the bounds have been set
+        double wcs, nwcs, wsn, nwsn, hsn, nhsn, hcs, nhcs, cwsn, cwcs, chsn, chcs;
         if (useBounds)
         {
             wcs = symbol_bounds.maxx * cs;   nwcs = symbol_bounds.minx * cs;
@@ -226,10 +223,10 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
         // find the octant that the marker is rotated into, and shift the points accordingly.
         // this way, the overpost points are still within 22.5 degrees of an axis-aligned box.
         // (position 0 will always be the closest to Center-Right)
-        double nangle = fmod(symbol_rot_deg, 360);
-        if (nangle < 0)
-            nangle += 360.;
-        int i = (((int)((nangle/45.) + .5)) << 1) & 0x0000000f; // i is 2 * the octant
+        double nangle = fmod(symbol_rot_deg, 360.0);
+        if (nangle < 0.0)
+            nangle += 360.0;
+        int i = (((int)((nangle/45.0) + 0.5)) << 1) & 0x0000000f; // i is 2 * the octant
         op_pts[i++] = wcs - chsn;  op_pts[i++] = wsn + chcs;   i &= 0x0000000f; // & 15 does (mod 16)
         op_pts[i++] = wcs - hsn;   op_pts[i++] = wsn + hcs;    i &= 0x0000000f;
         op_pts[i++] = cwcs - hsn;  op_pts[i++] = cwsn + hcs;   i &= 0x0000000f;
@@ -237,7 +234,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
         op_pts[i++] = nwcs - chsn; op_pts[i++] = nwsn + chcs;  i &= 0x0000000f;
         op_pts[i++] = nwcs - nhsn; op_pts[i++] = nwsn + nhcs;  i &= 0x0000000f;
         op_pts[i++] = cwcs -nhsn;  op_pts[i++] = cwsn + nhcs;  i &= 0x0000000f;
-        op_pts[i++] = wcs - nhsn;  op_pts[i]   = wsn + nhcs;
+        op_pts[i++] = wcs - nhsn;  op_pts[i  ] = wsn + nhcs;
     }
     else
     {
@@ -246,72 +243,71 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    renderer,
             symbol_bounds.maxx = w; symbol_bounds.minx = -w;
             symbol_bounds.maxy = h; symbol_bounds.miny = -h;
         }
-        op_pts[0] = symbol_bounds.maxx; op_pts[1] = ch;
-        op_pts[2] = symbol_bounds.maxx; op_pts[3] = symbol_bounds.maxy;
-        op_pts[4] = cw;                 op_pts[5] = symbol_bounds.maxy;
-        op_pts[6] = symbol_bounds.minx; op_pts[7] = symbol_bounds.maxy;
-        op_pts[8] = symbol_bounds.minx; op_pts[9] = ch;
-        op_pts[10] = symbol_bounds.minx;op_pts[11] = symbol_bounds.miny;
-        op_pts[12] = cw;                op_pts[13] = symbol_bounds.miny;
-        op_pts[14] = symbol_bounds.maxx;op_pts[15] = symbol_bounds.miny;
+        op_pts[0 ] = symbol_bounds.maxx; op_pts[1 ] = ch;
+        op_pts[2 ] = symbol_bounds.maxx; op_pts[3 ] = symbol_bounds.maxy;
+        op_pts[4 ] = cw;                 op_pts[5 ] = symbol_bounds.maxy;
+        op_pts[6 ] = symbol_bounds.minx; op_pts[7 ] = symbol_bounds.maxy;
+        op_pts[8 ] = symbol_bounds.minx; op_pts[9 ] = ch;
+        op_pts[10] = symbol_bounds.minx; op_pts[11] = symbol_bounds.miny;
+        op_pts[12] = cw;                 op_pts[13] = symbol_bounds.miny;
+        op_pts[14] = symbol_bounds.maxx; op_pts[15] = symbol_bounds.miny;
     }
 
     //OK, who says I can't write bad code? Behold:
     SE_LabelInfo candidates[8];
-    double yScale = renderer->GetFontEngine()->_Yup()? 1.0 : -1.0; //which way does y go in the renderer?
+    double yScale = se_renderer->YPointsUp()? 1.0 : -1.0; //which way does y go in the renderer?
 
     SE_RenderPointStyle* st0 = DeepClonePointStyle(rstyle2);
     ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
     ((SE_RenderText*)st0->symbol[0])->tdef.valign() = RS_VAlignment_Half;
-    UpdateStyleBounds(st0, renderer);
-    candidates[0] = SE_LabelInfo(cx + op_pts[0], cy + op_pts[1]*yScale , 0, 0, RS_Units_Device, 0.0, st0);
+    UpdateStyleBounds(st0, se_renderer);
+    candidates[0] = SE_LabelInfo(cx + op_pts[0], cy + op_pts[1]*yScale , 0.0, 0.0, RS_Units_Device, 0.0, st0);
 
     SE_RenderPointStyle* st1 = DeepClonePointStyle(st0);
     ((SE_RenderText*)st1->symbol[0])->tdef.valign() = RS_VAlignment_Descent;
-    UpdateStyleBounds(st1, renderer);
-    candidates[1] = SE_LabelInfo(cx + op_pts[2], cy + op_pts[3]*yScale, 0, 0, RS_Units_Device, 0.0, st1);
+    UpdateStyleBounds(st1, se_renderer);
+    candidates[1] = SE_LabelInfo(cx + op_pts[2], cy + op_pts[3]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st1);
 
     SE_RenderPointStyle* st2 = DeepClonePointStyle(st1);
     ((SE_RenderText*)st2->symbol[0])->tdef.halign() = RS_HAlignment_Center;
-    UpdateStyleBounds(st2, renderer);
-    candidates[2] = SE_LabelInfo(cx + op_pts[4], cy + op_pts[5]*yScale, 0, 0, RS_Units_Device, 0.0, st2);
+    UpdateStyleBounds(st2, se_renderer);
+    candidates[2] = SE_LabelInfo(cx + op_pts[4], cy + op_pts[5]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st2);
 
     SE_RenderPointStyle* st3 = DeepClonePointStyle(st2);
     ((SE_RenderText*)st3->symbol[0])->tdef.halign() = RS_HAlignment_Right;
-    UpdateStyleBounds(st3, renderer);
-    candidates[3] = SE_LabelInfo(cx + op_pts[6], cy + op_pts[7]*yScale, 0, 0, RS_Units_Device, 0.0, st3);
+    UpdateStyleBounds(st3, se_renderer);
+    candidates[3] = SE_LabelInfo(cx + op_pts[6], cy + op_pts[7]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st3);
 
     SE_RenderPointStyle* st4 = DeepClonePointStyle(st3);
     ((SE_RenderText*)st4->symbol[0])->tdef.valign() = RS_VAlignment_Half;
-    UpdateStyleBounds(st4, renderer);
-    candidates[4] = SE_LabelInfo(cx + op_pts[8], cy + op_pts[9]*yScale, 0, 0, RS_Units_Device, 0.0, st4);
+    UpdateStyleBounds(st4, se_renderer);
+    candidates[4] = SE_LabelInfo(cx + op_pts[8], cy + op_pts[9]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st4);
 
     SE_RenderPointStyle* st5 = DeepClonePointStyle(st4);
     ((SE_RenderText*)st5->symbol[0])->tdef.valign() = RS_VAlignment_Ascent;
-    UpdateStyleBounds(st5, renderer);
-    candidates[5] = SE_LabelInfo(cx + op_pts[10], cy + op_pts[11]*yScale, 0, 0, RS_Units_Device, 0.0, st5);
+    UpdateStyleBounds(st5, se_renderer);
+    candidates[5] = SE_LabelInfo(cx + op_pts[10], cy + op_pts[11]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st5);
 
     SE_RenderPointStyle* st6 = DeepClonePointStyle(st5);
     ((SE_RenderText*)st6->symbol[0])->tdef.halign() = RS_HAlignment_Center;
-    UpdateStyleBounds(st6, renderer);
-    candidates[6] = SE_LabelInfo(cx + op_pts[12], cy + op_pts[13]*yScale, 0, 0, RS_Units_Device, 0.0, st6);
+    UpdateStyleBounds(st6, se_renderer);
+    candidates[6] = SE_LabelInfo(cx + op_pts[12], cy + op_pts[13]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st6);
 
     SE_RenderPointStyle* st7 = DeepClonePointStyle(st6);
     ((SE_RenderText*)st7->symbol[0])->tdef.halign() = RS_HAlignment_Left;
-    UpdateStyleBounds(st7, renderer);
-    candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15]*yScale, 0, 0, RS_Units_Device, 0.0, st7);
+    UpdateStyleBounds(st7, se_renderer);
+    candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st7);
 
-    renderer->ProcessLabelGroup(candidates, 8, RS_OverpostType_FirstFit, true, NULL);
+    se_renderer->ProcessLabelGroup(candidates, 8, RS_OverpostType_FirstFit, true, NULL);
 }
 
 
 void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer,
-                      LineBuffer*     geometry,
-                      SE_Matrix&      xform,
-                      SE_Style*       style,
-                      SE_RenderStyle* rstyle,
-                      double          mm2px
-                      )
+                                          LineBuffer*     geometry,
+                                          SE_Matrix&      /*xform*/,
+                                          SE_Style*       /*style*/,
+                                          SE_RenderStyle* rstyle,
+                                          double          /*mm2px*/)
 {
     //This placement algorithm implements MapGuide path labels -- periodic text label along
     //a linestring or multi line string feature, with stitching of adjacent features that have the
@@ -329,44 +325,37 @@ void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer,
 
 
 void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
-                          LineBuffer*     geometry,
-                          SE_Matrix&      xform,
-                          SE_Style*       seStyle,
-                          SE_RenderStyle* rstyle,
-                          double          mm2px,
-                          RS_FeatureReader* featureReader,
-                          SE_SymbolManager* symbolManager
-                          )
+                                                       LineBuffer*     geometry,
+                                                       SE_Matrix&      /*xform*/,
+                                                       SE_Style*       /*seStyle*/,
+                                                       SE_RenderStyle* rstyle,
+                                                       double          mm2px,
+                                                       RS_FeatureReader* featureReader,
+                                                       SE_SymbolManager* symbolManager)
 {
-
     // highway info format:  countryCode|type1|num1|type2|num2|type3|num3|...
     // example:              US|2|101|3|1
     StringOfTokens highwayInfo = StringOfTokens(featureReader->GetString(L"Url"), L"|");
 
     int shieldCount = (highwayInfo.getTokenCount() - 1) / 2;
-
     if (shieldCount < 1)
         return;
 
-
-    SE_RenderLineStyle* rlStyle = (SE_RenderLineStyle* ) rstyle;
+    SE_RenderLineStyle* rlStyle = (SE_RenderLineStyle*)rstyle;
     double startOffset = rlStyle->startOffset;
     double increment = rlStyle->repeat;
 
     // the endOffset is used in this context as the increment between multiple shields in one group
- // double incrementS = 10 * mm2px;
+//  double incrementS = 10.0 * mm2px;
     double incrementS = rlStyle->endOffset;
 
-
     // calc the overall length of this geometry
-
-    double totalLen = 0;
+    double totalLen = 0.0;
     int pointIndex = 0;
     for (int i = 0; i < geometry->cntr_count(); i++)
     {
         int ptcount = geometry->cntrs()[i];
         double* pts = geometry->points() + 2*pointIndex;
-
 
         for (int cur_seg = 0; cur_seg < ptcount - 1; cur_seg++)
         {
@@ -386,8 +375,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         pointIndex += ptcount;
     }
 
-
-    if (startOffset >= 0)
+    if (startOffset >= 0.0)
     {
         // calc optimal start offset (with rlStyle->startOffset taken as a minimum)
         // to co-locate shield groups placed on two-line highways where the two
@@ -398,9 +386,9 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         double shieldGroupLen = (shieldCount - 1) * incrementS;
 
         // length in excess of the required length to place one group with startOffset on each side
-        double availLen = totalLen - (shieldGroupLen + 2 * startOffset);
+        double availLen = totalLen - (shieldGroupLen + 2.0 * startOffset);
 
-        if (availLen < 0)
+        if (availLen < 0.0)
         {
             // there is no room to 'properly' place even one group, nothing to do but cry about it
             return;
@@ -416,9 +404,8 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
     {
         // negative startOffset value disables the optimization
         // use absolute value as the offset
-        startOffset = startOffset * -1;
+        startOffset = -startOffset;
     }
-
 
     SE_RenderPrimitiveList * symbolVectors = new SE_RenderPrimitiveList[shieldCount];
 
@@ -452,19 +439,18 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
             return;
         }
 
-
-        rr->position[0] = 0;
-        rr->position[1] = 0;
-        rr->extent[0] = 20;
-        rr->extent[1] = 20;
-        rr->angle = 0;
+        rr->position[0] = 0.0;
+        rr->position[1] = 0.0;
+        rr->extent[0] = 20.0;
+        rr->extent[1] = 20.0;
+        rr->angle = 0.0;
 
         if (highwayNum.length() == 1)
-            rr->extent[0] = ((shieldType == L"3")? 25 : 20);
+            rr->extent[0] = ((shieldType == L"3")? 25.0 : 20.0);
         else if (highwayNum.length() == 2)
-            rr->extent[0] = 25;
+            rr->extent[0] = 25.0;
         else
-            rr->extent[0] = 30;
+            rr->extent[0] = 30.0;
 
         double w = 0.5 * rr->extent[0];
         double h = 0.5 * rr->extent[1];
@@ -481,17 +467,15 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         // the shield graphic is ready
         symbolVectors[shieldIndex].push_back(rr);
 
-
         // now symbol for the highway number
-
         SE_RenderText* rt = new SE_RenderText();
 
         rt->text = highwayNum;
-        rt->position[0] = 0;
-        rt->position[1] = 0;
+        rt->position[0] = 0.0;
+        rt->position[1] = 0.0;
         rt->tdef.font().name() = L"Arial";
-        rt->tdef.font().height() = 10*0.001 / mm2px; // convert mm to meters
-        rt->tdef.rotation() = 0;
+        rt->tdef.font().height() = 10.0*0.001 / mm2px; // convert mm to meters
+        rt->tdef.rotation() = 0.0;
 
         rt->tdef.halign() = RS_HAlignment_Center;
         rt->tdef.valign() = RS_VAlignment_Half;
@@ -512,7 +496,6 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         symbolVectors[shieldIndex].push_back(rt);
     }
 
-
     int ptindex = 0;
     SE_Matrix symxf;
     shieldIndex = 0;
@@ -527,10 +510,9 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         double* pts = geometry->points() + 2*ptindex;
 
         // init position along the current segment to the start offset
-     // double drawpos = startOffset;
+//      double drawpos = startOffset;
 
         int cur_seg = 0;
-
         while (cur_seg < ptcount - 1)
         {
             symxf.setIdentity();
@@ -551,9 +533,9 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
             // check if completely skipping current segment since it is smaller than the increment
             if (drawpos < len)
             {
-                double slope = atan2(dy, dx);
-                double dx_fact = cos(slope);
-                double dy_fact = sin(slope);
+                double invlen = 1.0 / len;
+                double dx_fact = dx * invlen;
+                double dy_fact = dy * invlen;
 
                 double tx = cx1 + dx_fact * drawpos;
                 double ty = cy1 + dy_fact * drawpos;
@@ -570,7 +552,6 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
                 {
                     if (rlStyle->drawLast)
                     {
-
                         rlStyle->symbol = symbolVectors[shieldIndex];
                         memcpy(rlStyle->bounds, symbolVectors[shieldIndex].front()->bounds, sizeof(rlStyle->bounds));
                         SE_RenderStyle* clonedStyle = renderer->CloneRenderStyle(rlStyle);
@@ -578,7 +559,6 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
                         SE_LabelInfo info(symxf.x2, symxf.y2, 0.0, 0.0, RS_Units_Device, 0, clonedStyle);
 
                         renderer->ProcessLabelGroup(&info, 1, RS_OverpostType_AllFit, rlStyle->addToExclusionRegions, geometry);
-
                     }
                     else
                     {
@@ -640,7 +620,6 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
     }
 
     delete [] symbolVectors;
-
 }
 
 
@@ -668,6 +647,7 @@ int StringOfTokens::getTokenCount()
     return count;
 }
 
+
 std::wstring StringOfTokens::getFirstToken()
 {
     if (m_tokenstring.empty())
@@ -691,6 +671,7 @@ std::wstring StringOfTokens::getFirstToken()
     }
 }
 
+
 std::wstring StringOfTokens::getNextToken()
 {
     if (m_tokenstring.empty() || m_currentPos >= m_tokenstring.length())
@@ -712,4 +693,3 @@ std::wstring StringOfTokens::getNextToken()
         return m_tokenstring.substr(curPos, delimPos - curPos);
     }
 }
-

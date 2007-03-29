@@ -47,11 +47,6 @@ void RS_FontEngine::InitFontEngine(Renderer* renderer, SE_Renderer* serenderer)
 
     //we need the renderer to be an SE_Renderer in order to draw screen space geometry (like underline)
     _ASSERT(m_serenderer);
-
-    SE_Matrix xform;
-    m_serenderer->GetWorldToScreenTransform(xform);
-
-    m_bYup = xform.y1 > 0;
 }
 
 
@@ -140,7 +135,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
             // horizontal offset depends on the sub-string width, while
             // vertical offset depends on the line of text
             ret.line_pos[k].hOffset = GetHorizontalAlignmentOffset(tdef.halign(), fpts);
-            if (m_bYup)
+            if (m_serenderer->YPointsUp())
                 ret.line_pos[k].vOffset = vAlignBaseOffset - k*line_height;
             else
                 ret.line_pos[k].vOffset = vAlignBaseOffset + k*line_height;
@@ -489,7 +484,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
     double cos_a = cos(anglerad);
     double sin_a = sin(anglerad);
-    if (m_bYup)
+    if (m_serenderer->YPointsUp())
         sin_a = -sin_a;
 
     // get the overall unrotated bounds
@@ -744,7 +739,7 @@ double RS_FontEngine::GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_
         break;
     }
 
-    if (m_bYup)
+    if (m_serenderer->YPointsUp())
         offsetY = -offsetY; //TODO: do we need to mult this by numLines?
 
     return offsetY;
@@ -777,26 +772,9 @@ double RS_FontEngine::GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_Po
 }
 
 
-//-----------------------------------------------------------------------------
-// Scales an input length in meters in the specified units - device or
-// mapping - to a length in mapping space.
-//-----------------------------------------------------------------------------
-double RS_FontEngine::MeterToMapSize(RS_Units unit, double number)
-{
-    double scale_factor;
-    if (unit == RS_Units_Device) // in meters, fixed size
-        scale_factor = m_renderer->GetMapScale() / m_renderer->GetMetersPerUnit();
-    else
-        scale_factor = 1.0 / m_renderer->GetMetersPerUnit();
-
-    return number * scale_factor;
-}
-
-
-//-----------------------------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////////
 // Scales an input length in meters in the specified units - device or
 // mapping - to a length in renderer screen space.
-//-----------------------------------------------------------------------------
 double RS_FontEngine::MetersToPixels(RS_Units unit, double number)
 {
     double m2px = 1000.0 * m_serenderer->GetPixelsPerMillimeterScreen();

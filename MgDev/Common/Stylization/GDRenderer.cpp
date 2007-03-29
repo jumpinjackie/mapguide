@@ -2206,6 +2206,12 @@ void GDRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, 
 }
 
 
+bool GDRenderer::YPointsUp()
+{
+    return false;
+}
+
+
 void GDRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
 {
     xform.x0 = m_scale;

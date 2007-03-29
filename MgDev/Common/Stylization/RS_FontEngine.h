@@ -109,22 +109,12 @@ public:
 
     double GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_Point* extent);
 
-    //----------------------------------------------------------------
-    //TODO: Those really belong as utility functions on the renderer itself
-    //      -- they are unrelated to fonts
-    //----------------------------------------------------------------
-    double MeterToMapSize(RS_Units unit, double number);
+private:
     double MetersToPixels(RS_Units unit, double number);
-
-    bool _Yup()
-    {
-        return m_bYup;
-    }
 
 public:
     Renderer* m_renderer;
     SE_Renderer* m_serenderer;
-    bool m_bYup;
 };
 
 #endif  // RS_FONTENGINE_H
