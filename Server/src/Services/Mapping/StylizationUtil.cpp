@@ -1262,6 +1262,17 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
 
                 break;
             }
+
+            case FeatureTypeStyleVisitor::ftsComposite:
+            {
+                // Composite symbolization has tons of properties that can affect
+                // how much offset is required, and putting all the checks here to
+                // compute the minimum required offset is a huge task.  The safest
+                // thing to do is to just use the maximum allowable offset.
+                bFoundExpression = true;
+                bDone = true;
+                break;
+            }
         }
     }
 
