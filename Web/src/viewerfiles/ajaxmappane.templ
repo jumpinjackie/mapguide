@@ -1049,8 +1049,13 @@ function OnMouseMove(e)
 {
     var x = e.clientX - mapPosX;
     var y = e.clientY;
+    
+    if(x == lastposx && y == lastposy)
+    {
+        return false;
+    }
     lastposx = x; lastposy = y;
-
+    
     try { parent.OnCursorPosChanged(x, y); } catch(e) {}
 
     if(digitizing)
