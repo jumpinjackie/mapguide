@@ -236,7 +236,7 @@ catch ( Exception $e )
 
                 <table border="0" cellspacing="0" class="inputForm">
                 	<tr>
-                        <td class="makePackageInputLabel">Folder name (e.g. //&lt;root_folder&gt;/&lt;folder1&gt;):</td>
+                        <td class="makePackageInputLabel">Folder name (e.g. Library://&lt;root_folder&gt;/&lt;folder1&gt;):</td>
                         <td class="inputFormValue"><input onChange="SuggestPackageName('<?php echo $escapedSuggestedPackageName?>', this.value, '<?php echo $packageNameID?>')" class="inputFormValue" name="<?php echo $folderNameID?>" type="text" value="<?php echo $folderName?>"></td>
                     </tr>
                     <tr>
