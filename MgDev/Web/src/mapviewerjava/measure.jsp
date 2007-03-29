@@ -296,7 +296,7 @@ String GetMapSrs(MgMap map) throws MgException
 
     //SRS is currently optional. Waiting for this to change, set the default SRS to ArbitrayXY meters
     //
-    return "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+    return "LOCALCS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
 }
 
 MgLayer FindLayer(MgLayerCollection layers, String layerDef) throws MgException

@@ -71,7 +71,7 @@ $classDef->GetProperties()->Add($prop);
 $schema = new MgFeatureSchema("BufferSchema", "Temporary buffer schema");
 $schema->GetClasses()->Add($classDef);
 
-$wkt = "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+$wkt = "LOCALCS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
 $params = new MgCreateSdfParams("ArbitraryXY", $wkt, $schema);
 
 echo "Created sdfparams\n";

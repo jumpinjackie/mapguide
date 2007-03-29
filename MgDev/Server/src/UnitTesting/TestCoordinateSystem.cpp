@@ -46,7 +46,7 @@ const STRING GeographicWkt_LL84_NoDatum = L"GEOGCS[\"LL\",DATUM[\"\",SPHEROID[\"
 const STRING Projected_UTM18_NAD83 = L"PROJCS[\"UTM Zone 18, Northern Hemisphere\",GEOGCS[\"GRS 1980(IUGG, 1980)\",DATUM[\"unknown\",SPHEROID[\"GRS80\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",-75],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1]]";
 
 const STRING EPSG_4326_Wkt     = L"GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AXIS[\"Lat\",NORTH],AXIS[\"Long\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]";
-const STRING EPSG_4326_Wkt_Alt = L"GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]";
+const STRING EPSG_4326_Wkt_Alt = L"GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]";
 
 const STRING TEST_LOCALE = L"en";
 
@@ -902,8 +902,11 @@ void TestCoordinateSystem::TestCase_Arbitrary_ConvertCode()
 
         MgCoordinateSystem coordinateSystem;
         STRING code = coordinateSystem.ConvertWktToCoordinateSystemCode(ogcWkt);
-        CPPUNIT_ASSERT(_wcsicmp(L"*XY-MI*", code.c_str()) == 0);
+        CPPUNIT_ASSERT(_wcsicmp(L"XY-MI", code.c_str()) == 0);
         STRING wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(code);
+        CPPUNIT_ASSERT(wkt.length() > 0);
+
+        wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(L"XY-MI");
         CPPUNIT_ASSERT(wkt.length() > 0);
 
         wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(L"*xy-mi*");
@@ -1075,7 +1078,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetCode()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         STRING value = pCoordinateSystem->GetCode();
-        CPPUNIT_ASSERT(_wcsicmp(L"*XY-MI*", value.c_str()) == 0);
+        CPPUNIT_ASSERT(_wcsicmp(L"XY-MI", value.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1123,7 +1126,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetProjection()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         STRING value = pCoordinateSystem->GetProjection();
-        CPPUNIT_ASSERT(_wcsicmp(L"*X-Y*", value.c_str()) == 0);
+        CPPUNIT_ASSERT(_wcsicmp(L"NERTH", value.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1147,7 +1150,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetProjectionDescription()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         STRING value = pCoordinateSystem->GetProjectionDescription();
-        CPPUNIT_ASSERT(_wcsicmp(L"Arbitrary X-Y Coordinate Projection", value.c_str()) == 0);
+        CPPUNIT_ASSERT(_wcsicmp(L"Non-georeferenced (aka non-earth) coordinate system", value.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1171,7 +1174,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetDatum()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         STRING value = pCoordinateSystem->GetDatum();
-        CPPUNIT_ASSERT(_wcsicmp(L"", value.c_str()) == 0);
+        CPPUNIT_ASSERT(_wcsicmp(L"Local Datum", value.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1195,7 +1198,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetDatumDescription()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         STRING value = pCoordinateSystem->GetDatumDescription();
-        CPPUNIT_ASSERT(_wcsicmp(L"No Datum Used", value.c_str()) == 0);
+        CPPUNIT_ASSERT(_wcsicmp(L"", value.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1243,7 +1246,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetEllipsoidDescription()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         STRING value = pCoordinateSystem->GetEllipsoidDescription();
-        CPPUNIT_ASSERT(_wcsicmp(L"No Ellipsoid Used", value.c_str()) == 0);
+        CPPUNIT_ASSERT(_wcsicmp(L"", value.c_str()) == 0);
     }
     catch(MgException* e)
     {

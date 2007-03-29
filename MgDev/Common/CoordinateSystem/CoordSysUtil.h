@@ -18,6 +18,8 @@
 #ifndef _CCOORDINATESYSTEMUTIL_H_
 #define _CCOORDINATESYSTEMUTIL_H_
 
+#include <algorithm>
+
 #ifdef WIN32
 #include "Windows.h"
 // To undefine GetMessage macro defined in windows
@@ -140,6 +142,13 @@ Convert_Ascii_To_Wide (const char *str)
     }
 # endif /* _WIN32 */
   return wstr;
+}
+
+inline STRING ToUpper( CREFSTRING source )
+{
+    STRING up = source;
+    std::transform(up.begin(), up.end(), up.begin(), ::toupper);
+    return up;
 }
 
 #endif //_CCOORDINATESYSTEMUTIL_H_
