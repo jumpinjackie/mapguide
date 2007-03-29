@@ -1640,7 +1640,7 @@ void TestFeatureService::TestCase_CreateFeatureSource()
         Ptr<MgClassDefinitionCollection> schemaClasses = schema->GetClasses();
         schemaClasses->Add(classDef);
 
-        STRING wkt = L"LOCAL_CS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+        STRING wkt = L"LOCAL_CS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
         Ptr<MgCreateSdfParams> params = new MgCreateSdfParams(L"ArbitraryXY", wkt, schema);
 
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(L"Library://UnitTests/Data/CreateFeatureSourceTest.FeatureSource");
