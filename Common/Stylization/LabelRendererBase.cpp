@@ -38,7 +38,7 @@ LabelRendererBase::LabelRendererBase(Renderer* renderer)
 //TODO: move these transformations to the renderer
 void LabelRendererBase::RotatedBounds(double x, double y, double width, double height, double angle_cw_rad, RS_F_Point* b)
 {
-    if (m_serenderer->GetFontEngine()->_Yup())
+    if (m_serenderer->YPointsUp())
     {
         //y goes up case
         double sina = sin(-angle_cw_rad);
@@ -80,4 +80,19 @@ bool LabelRendererBase::CloseEnough(RS_F_Point& p1, RS_F_Point& p2)
 {
     double delta = fabs(p2.y - p1.y) + fabs(p2.x - p1.x);
     return (delta <= 2.0); //2 pixels is close enough
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Scales an input length in meters in the specified units - device or
+// mapping - to a length in mapping space.
+double LabelRendererBase::MeterToMapSize(RS_Units unit, double number)
+{
+    double scale_factor;
+    if (unit == RS_Units_Device) // in meters, fixed size
+        scale_factor = m_renderer->GetMapScale() / m_renderer->GetMetersPerUnit();
+    else
+        scale_factor = 1.0 / m_renderer->GetMetersPerUnit();
+
+    return number * scale_factor;
 }

@@ -28,7 +28,6 @@ public:
     STYLIZATION_API SE_Renderer();
     STYLIZATION_API ~SE_Renderer();
 
-    void SetLineBufferPool(SE_LineBufferPool* pool);
     /* SE_RenderSymbol, under associated xform, is in screen space, and geometry is in screen space */
     STYLIZATION_API virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style);
     STYLIZATION_API virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
@@ -42,6 +41,7 @@ public:
         double x, double y, double w, double h, double angledeg) = 0;
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position) = 0;
 
+    virtual bool YPointsUp() = 0;
     virtual void GetWorldToScreenTransform(SE_Matrix& xform) = 0;
     virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy) = 0;
     virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy) = 0;
@@ -61,18 +61,16 @@ public:
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts) = 0;
 
-    //sigh
-    const RS_F_Point* GetLastExclusionRegion() { return m_lastExclusionRegion; }
-
+    //miscellaneous
+    void SetLineBufferPool(SE_LineBufferPool* pool);
+    const RS_F_Point* GetLastExclusionRegion();
     SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol);
-
 
 protected:
     void SetRenderSelectionMode(bool mode);
 
 private:
     void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double anglerad);
-
     void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double anglerad);
 
     RS_F_Point m_lastExclusionRegion[4];

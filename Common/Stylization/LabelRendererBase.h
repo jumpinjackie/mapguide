@@ -62,8 +62,8 @@ public:
 
 protected:
     void RotatedBounds(double x, double y, double width, double height, double angle_cw_rad, RS_F_Point* b);
-
     bool CloseEnough(RS_F_Point& p1, RS_F_Point& p2);
+    double MeterToMapSize(RS_Units unit, double number);
 
 protected:
     Renderer* m_renderer;

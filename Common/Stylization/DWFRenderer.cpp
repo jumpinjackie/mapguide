@@ -1772,14 +1772,11 @@ void DWFRenderer::WriteTextDef(WT_File* file, RS_TextDef& tdef)
 }
 
 
-//-----------------------------------------------------------------------------
-//scale an input number in meters to a mapping
-//space number given a device or mapping space unit.
-//-----------------------------------------------------------------------------
+// Scales an input length in meters in the specified units - device or
+// mapping - to a length in mapping space.
 double DWFRenderer::_MeterToMapSize(RS_Units unit, double number)
 {
     double scale_factor;
-
     if (unit == RS_Units_Device) // in meters, fixed size
         scale_factor = m_mapScale / m_metersPerUnit;
     else
@@ -1812,7 +1809,6 @@ double DWFRenderer::_PixelToMapSize(Renderer* renderer, int pixels)
 double DWFRenderer::_MeterToW2DMacroUnit(RS_Units unit, double number)
 {
     double scale_factor;
-
     if (unit == RS_Units_Device) // in meters, fixed size
     {
         double w2dUnitsPerInch = 4096.0;
@@ -2389,6 +2385,12 @@ void DWFRenderer::DrawScreenText(const RS_String& txt,
         GetTextMetrics(txt, tdef, tm, false);
         DrawBlockText(tm, tdef, insx, insy);
     }
+}
+
+
+bool DWFRenderer::YPointsUp()
+{
+    return true;
 }
 
 
