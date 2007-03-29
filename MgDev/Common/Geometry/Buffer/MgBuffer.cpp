@@ -910,37 +910,23 @@ int MgBuffer::CurveSegmentToOpsFloatPointArray(BufferParams* bufferParams, MgCur
     assert(( type == MgGeometryComponentType::ArcSegment )  ||
             ( type == MgGeometryComponentType::LinearSegment ) );
 
-    // Strip arc into two linear segments
+    // Tessellate arc
     if (type == MgGeometryComponentType::ArcSegment)
     {
         Ptr<MgArcSegment> arc = (MgArcSegment*)SAFE_ADDREF(segment);
-        Ptr<MgCoordinate> coord1 = arc->GetStartCoordinate();
+        Ptr<MgCoordinateIterator> arcCoords = arc->GetCoordinates();
+        Ptr<MgCoordinate> arcCoord;
         OpsFloatPoint floatPoint1;
-        CoordinateToOpsFloatPoint(bufferParams, coord1, floatPoint1);
-        CheckOpsFloatPointArray(vertices,currIndex);
-        vertices[currIndex++] = floatPoint1;
-        noOfCoords++;
-
-        Ptr<MgCoordinate> coord2 = arc->GetControlCoordinate();
-        OpsFloatPoint floatPoint2;
-        CoordinateToOpsFloatPoint(bufferParams, coord2, floatPoint2);
-        CheckOpsFloatPointArray(vertices,currIndex);
-        vertices[currIndex++] = floatPoint2;
-        noOfCoords++;
-
-        OpsFloatPoint floatPoint3;
-        CoordinateToOpsFloatPoint(bufferParams, coord2, floatPoint3);
-        CheckOpsFloatPointArray(vertices,currIndex);
-        vertices[currIndex++] = floatPoint3;
-        noOfCoords++;
-
-        Ptr<MgCoordinate> coord4 = arc->GetEndCoordinate();
-        OpsFloatPoint floatPoint4;
-        CoordinateToOpsFloatPoint(bufferParams, coord4, floatPoint4);
-        CheckOpsFloatPointArray(vertices,currIndex);
-        vertices[currIndex++] = floatPoint4;
-        noOfCoords++;
+        while ( arcCoords->MoveNext() )
+        {
+            arcCoord = arcCoords->GetCurrent();
+            CoordinateToOpsFloatPoint(bufferParams, arcCoord, floatPoint1);
+            CheckOpsFloatPointArray(vertices,currIndex);
+            vertices[currIndex++] = floatPoint1;
+            noOfCoords++;
+        }
     }
+
 
     if (type == MgGeometryComponentType::LinearSegment)
     {
