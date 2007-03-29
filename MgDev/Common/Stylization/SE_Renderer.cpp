@@ -314,7 +314,7 @@ void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& x
     //TODO: cloning is bad.
     SE_RenderStyle* copied_style = CloneRenderStyle(style);
 
-    SE_LabelInfo info(xform.x2, xform.y2, 0.0, 0.0, RS_Units_Device, anglerad, copied_style);
+    SE_LabelInfo info(xform.x2, xform.y2, RS_Units_Device, anglerad, copied_style);
 
     ProcessLabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegions, geom);
 }
