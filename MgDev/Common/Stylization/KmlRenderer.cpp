@@ -634,6 +634,11 @@ void KmlRenderer::DrawScreenText(const RS_String& /*txt*/,
 {
 }
 
+bool KmlRenderer::YPointsUp()
+{
+    return true;
+}
+
 void KmlRenderer::GetWorldToScreenTransform(SE_Matrix& /*xform*/)
 {
 }

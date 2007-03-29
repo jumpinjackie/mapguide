@@ -73,8 +73,6 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
 {
     BeginOverpostGroup(type, true, exclude);
 
-    RS_FontEngine* fe = m_serenderer->GetFontEngine();
-
     // get the geometry type
     _ASSERT(path != NULL);
     int geomType = (path != NULL)? path->geom_type() : FdoGeometryType_None;
@@ -176,8 +174,8 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
             RS_LabelInfo* info = &labels[i];
 
             // label is in device space
-            double offx = fe->MeterToMapSize(info->dunits(), info->dx());
-            double offy = fe->MeterToMapSize(info->dunits(), info->dy());
+            double offx = MeterToMapSize(info->dunits(), info->dx());
+            double offy = MeterToMapSize(info->dunits(), info->dy());
 
             LR_LabelInfoLocal lrinfo(info->x() + offx, info->y() + offy, text, info->tdef());
 
@@ -281,8 +279,8 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
             RS_LabelInfo* info = &labels[i];
 
             // label is in device space
-            double offx = fe->MeterToMapSize(info->dunits(), info->dx());
-            double offy = fe->MeterToMapSize(info->dunits(), info->dy());
+            double offx = MeterToMapSize(info->dunits(), info->dx());
+            double offy = MeterToMapSize(info->dunits(), info->dy());
 
             LR_LabelInfoLocal lrinfo(info->x() + offx, info->y() + offy, text, info->tdef());
 
@@ -316,15 +314,14 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
     //Here we are processing the simple case (like labels at given points
     //rather than labels along a line). The hard case is //TODO
     m_labelGroups.back().m_algo = laSESymbol;
-    RS_FontEngine* fe = m_serenderer->GetFontEngine();
 
     for (int i=0; i<nlabels; i++)
     {
         SE_LabelInfo* info = &labels[i];
 
         // label is in device space
-        double offx = fe->MeterToMapSize(info->dunits, info->dx);
-        double offy = fe->MeterToMapSize(info->dunits, info->dy);
+        double offx = MeterToMapSize(info->dunits, info->dx);
+        double offy = MeterToMapSize(info->dunits, info->dy);
 
         LR_LabelInfoLocal lrinfo(info->x + offx, info->y + offy, info->symbol);
 
@@ -985,7 +982,7 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
 
     //now we will translate and orient the bounds with the given angle and position of the symbol
     //apply position and rotation to the native bounds of the symbol
-    double angle = m_serenderer->GetFontEngine()->_Yup()? info.m_tdef.rotation() : -info.m_tdef.rotation();
+    double angle = m_serenderer->YPointsUp()? info.m_tdef.rotation() : -info.m_tdef.rotation();
     SE_Matrix m;
     m.rotate(angle); //it is already in radians in there
     m.translate(info.m_x, info.m_y);
@@ -1141,7 +1138,7 @@ bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfo
         if (info.m_sestyle)
         {
             //apply position and rotation to the native bounds of the symbol
-            double angle = m_serenderer->GetFontEngine()->_Yup()? info.m_tdef.rotation() : -info.m_tdef.rotation();
+            double angle = m_serenderer->YPointsUp()? info.m_tdef.rotation() : -info.m_tdef.rotation();
             SE_Matrix m;
             m.rotate(angle); //it is already in radians in there
             m.translate(info.m_x, info.m_y);
