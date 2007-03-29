@@ -155,7 +155,7 @@ WT_String Util_ConvertString(const wchar_t* wstr)
 
     _ASSERT( len < 65536); //sanity check since we alloc on the stack
 
-    unsigned short* utf16Bytes = (unsigned short*)alloca(len * sizeof (unsigned short));
+    unsigned short* utf16Bytes = (unsigned short*)alloca(len * sizeof(unsigned short));
     DwfRendererConvertUTF32toUTF16((const unsigned long*)wstr, utf16Bytes, len);
 
 #endif
@@ -584,9 +584,6 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
         }
     }
 
-    //TODO: once macro is implemented we will not need to write the
-    //polyline twice
-
     //write out the polygon outline as a bunch of WT_Polylines
     if (fill.outline().color().alpha() == 0)
     {
@@ -935,7 +932,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                         //symbol library error or unknown symbol
 
                         file->desired_rendition().color() = WT_Color(255,0,0);
-                        WT_Polyline symbol(npts, pts, true);
+                        WT_Polyline symbol(npts, pts, false);
                         symbol.serialize(*file);
                         ++m_drawableCount;
                     }
@@ -946,7 +943,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                         else
                             file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().color()));
 
-                        WT_Polygon symbolFill(npts, pts, true);
+                        WT_Polygon symbolFill(npts, pts, false);
                         symbolFill.serialize(*file);
                         ++m_drawableCount;
 
@@ -955,7 +952,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                         else
                             file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().outline().color()));
 
-                        WT_Polyline symbol(npts, pts, true);
+                        WT_Polyline symbol(npts, pts, false);
                         symbol.serialize(*file);
                         ++m_drawableCount;
                     }
@@ -1042,12 +1039,12 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         //macro inside an Overpost opcode
         //NOTE: cannot define a macro inside the overpost opcode!!
 
-        //USe macro slot 1, since we want to keep the symbol in macro 0
+        //Use macro slot 1, since we want to keep the symbol in macro 0
         //so that we can reuse it if the next point symbol macro we need
         //is the same symbol
         BeginMacro(file, 1, SYMBOL_MAX);
 
-            //if there is no rotation, send just 2 points
+            // if there's no rotation, send just 2 points
             if (anglerad == 0.0)
             {
                 WT_Logical_Point axisbox[2];
@@ -1056,13 +1053,13 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                 axisbox[1].m_x = pts[2].m_x;
                 axisbox[1].m_y = pts[2].m_y;
 
-                WT_Polyline excludearea(2, axisbox, true);
+                WT_Polyline excludearea(2, axisbox, false);
                 excludearea.serialize(*file);
                 ++m_drawableCount;
             }
             else
             {
-                WT_Polyline excludearea(4, pts, true);
+                WT_Polyline excludearea(4, pts, false);
                 excludearea.serialize(*file);
                 ++m_drawableCount;
             }
@@ -1070,9 +1067,9 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         EndMacro(file, 1);
 
         //write the exclusion area
-        file->write("(Overpost All False True (");
+        BeginOverpostGroup(file, RS_OverpostType_All, false, true);
             PlayMacro(file, 1, rs_max(mdef.width(), mdef.height()), mdef.units(), x, y);
-        file->write("))");
+        EndOverpostGroup(file);
     }
 
     //set actual (unrotated) bounds with new insertion point if a pointer was passed in
@@ -1130,9 +1127,9 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
         file = m_w2dLabels;
     }
 
-    //need some reasonable scale for the macro
-    //this scale will cancel out with the macro
-    //size at which we play the macro
+    // Choose a decent reference size for computing the macro scale.  A
+    // small percentage of the map width is reasonable.
+    double refSizeMeters = 0.01 * m_extents.width() * m_metersPerUnit;
 
     //define a macro for each candidate label
     for (int i=0; i<nlabels; i++)
@@ -1146,7 +1143,7 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
         //the offset is constant size when drawn
         if (info->dunits() == RS_Units_Device)
         {
-            int scale = (int)_MeterToW2DMacroUnit(RS_Units_Device, 1.0);
+            int scale = (int)_MeterToW2DMacroUnit(RS_Units_Device, refSizeMeters);
 
             //symbol is device space
             //we will need to place the label inside
@@ -1173,7 +1170,7 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
         else
         {
             //symbol was mapping space
-            int scale = (int)_MeterToW2DMacroUnit(info->tdef().font().units(), 1.0);
+            int scale = (int)_MeterToW2DMacroUnit(info->tdef().font().units(), refSizeMeters);
 
             BeginMacro(file, i+1, scale);
 
@@ -1235,7 +1232,7 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                 //respect to the symbol which is bad, but unavoidable
                 //with the current implementation of macro
 
-                PlayMacro(file, i+1, 1, RS_Units_Device, info->x(), info->y());
+                PlayMacro(file, i+1, refSizeMeters, RS_Units_Device, info->x(), info->y());
             }
             else
             {
@@ -1249,7 +1246,7 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                 posx += _MeterToMapSize(info->dunits(), info->dx());
                 posy += _MeterToMapSize(info->dunits(), info->dy());
 
-                PlayMacro(file, i+1, 1, info->tdef().font().units(), posx, posy);
+                PlayMacro(file, i+1, refSizeMeters, info->tdef().font().units(), posx, posy);
             }
         }
 
@@ -2476,6 +2473,15 @@ void DWFRenderer::ProcessLabelGroup(SE_LabelInfo*   labels,
         file = m_w2dLabels;
     }
 
+    // For composite symbolization we only use mapping-space macros, meaning
+    // the symbols will change size as you zoom dynamically.  The symbols
+    // will always be redrawn at the correct size after any map update.
+
+    // Choose a decent reference size for computing the macro scale.  A
+    // small percentage of the map width is reasonable.
+    double refSizeMeters = 0.01 * m_extents.width() * m_metersPerUnit;
+    int scale = (int)_MeterToW2DMacroUnit(RS_Units_Model, refSizeMeters);
+
     // define a macro for each candidate label
     for (int i=0; i<nlabels; i++)
     {
@@ -2485,14 +2491,6 @@ void DWFRenderer::ProcessLabelGroup(SE_LabelInfo*   labels,
         // The translation is applied when we play the macro.
         SE_Matrix m;
         m.rotate(info->anglerad);
-
-        // For composite symbolization we will only use mapping-space macros,
-        // meaning the symbols will change size as you zoom dynamically.
-        // The symbols will always be redrawn at the correct size after any
-        // map update.
-        int scale = (int)_MeterToW2DMacroUnit(RS_Units_Model, 1.0);
-
-        // TODO: account for any symbol offset
 
         BeginMacro(file, i+1, scale);
 
@@ -2542,20 +2540,109 @@ void DWFRenderer::ProcessLabelGroup(SE_LabelInfo*   labels,
 
             // PlayMacro expects a point in mapping units
             double posx, posy;
-            this->ScreenToWorldPoint(info->x, info->y, posx, posy);
+            ScreenToWorldPoint(info->x, info->y, posx, posy);
 
             // TODO: account for any symbol offset
 
-            PlayMacro(file, i+1, 1.0, RS_Units_Model, posx, posy);
+            PlayMacro(file, i+1, refSizeMeters, RS_Units_Model, posx, posy);
         }
 
     EndOverpostGroup(file);
 }
 
 
-void DWFRenderer::AddExclusionRegion(RS_F_Point* /*fpts*/, int /*npts*/)
+void DWFRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 {
-    // TODO
+    // draw to the active file if it's set
+    WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
+
+    // For composite symbolization we only use mapping-space macros, meaning
+    // the symbols will change size as you zoom dynamically.  The symbols
+    // will always be redrawn at the correct size after any map update.
+
+    // Choose a decent reference scale for the macro.  A small percentage
+    // of the map width is reasonable.
+    double refSizeMeters = 0.01 * m_extents.width() * m_metersPerUnit;
+    int scale = (int)_MeterToW2DMacroUnit(RS_Units_Model, refSizeMeters);
+
+    BeginMacro(file, 0, scale);
+
+        // if there's no rotation, send just 2 points
+        if (npts == 4 &&
+            fpts[0].y == fpts[1].y &&
+            fpts[1].x == fpts[2].x &&
+            fpts[2].y == fpts[3].y &&
+            fpts[3].x == fpts[0].x)
+        {
+            WT_Logical_Point axisbox[2];
+            axisbox[0].m_x = (WT_Integer32)fpts[0].x;
+            axisbox[0].m_y = (WT_Integer32)fpts[0].y;
+            axisbox[1].m_x = (WT_Integer32)fpts[2].x;
+            axisbox[1].m_y = (WT_Integer32)fpts[2].y;
+
+            WT_Polyline excludearea(2, axisbox, false);
+            excludearea.serialize(*file);
+            ++m_drawableCount;
+        }
+        else
+        {
+            WT_Logical_Point* dstpts = (WT_Logical_Point*)alloca(npts * sizeof(WT_Logical_Point));
+            for (int i=0; i<npts; i++)
+            {
+                dstpts[i].m_x = (WT_Integer32)fpts[i].x;
+                dstpts[i].m_y = (WT_Integer32)fpts[i].y;
+            }
+
+            WT_Polyline excludearea(npts, dstpts, false);
+            excludearea.serialize(*file);
+            ++m_drawableCount;
+        }
+
+    EndMacro(file, 0);
+
+    // write the exclusion area
+    BeginOverpostGroup(file, RS_OverpostType_All, false, true);
+
+        //we need to sync the rendition manually
+        //since we are about to play macros by writing
+        //to the file directly
+        WT_Integer32 parts_to_sync = WT_Rendition::Color_Bit           |
+                                 //  WT_Rendition::Color_Map_Bit       |
+                                 //  WT_Rendition::Fill_Bit            |
+                                 //  WT_Rendition::Fill_Pattern_Bit    |
+                                 //  WT_Rendition::Merge_Control_Bit   |
+                                 //  WT_Rendition::BlockRef_Bit        |
+                                     WT_Rendition::Visibility_Bit      |
+                                 //  WT_Rendition::Line_Weight_Bit     |
+                                     WT_Rendition::Pen_Pattern_Bit     |
+                                 //  WT_Rendition::Line_Pattern_Bit    |
+                                 //  WT_Rendition::Line_Caps_Bit       |
+                                 //  WT_Rendition::Line_Join_Bit       |
+                                 //  WT_Rendition::Marker_Size_Bit     |
+                                 //  WT_Rendition::Marker_Symbol_Bit   |
+                                 //  WT_Rendition::URL_Bit             |
+                                     WT_Rendition::Layer_Bit           |
+                                 //  WT_Rendition::Viewport_Bit        |
+                                     WT_Rendition::Font_Extension_Bit  |
+                                     WT_Rendition::Font_Bit            |
+                                 //  WT_Rendition::Object_Node_Bit     |
+                                     WT_Rendition::Text_Background_Bit |
+                                     WT_Rendition::Text_HAlign_Bit     |
+                                     WT_Rendition::Text_VAlign_Bit     |
+                                     WT_Rendition::Contrast_Color_Bit;
+
+        file->desired_rendition().sync(*file, parts_to_sync);
+
+        // PlayMacro expects a point in mapping units
+        double posx = 0.0;
+        double posy = 0.0;
+        ScreenToWorldPoint(posx, posy, posx, posy);
+
+        // TODO: account for any symbol offset
+
+        PlayMacro(file, 0, refSizeMeters, RS_Units_Model, posx, posy);
+
+    EndOverpostGroup(file);
 }
 
 
