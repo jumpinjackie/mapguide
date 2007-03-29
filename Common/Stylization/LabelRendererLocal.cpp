@@ -320,10 +320,7 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
         SE_LabelInfo* info = &labels[i];
 
         // label is in device space
-        double offx = MeterToMapSize(info->dunits, info->dx);
-        double offy = MeterToMapSize(info->dunits, info->dy);
-
-        LR_LabelInfoLocal lrinfo(info->x + offx, info->y + offy, info->symbol);
+        LR_LabelInfoLocal lrinfo(info->x, info->y, info->symbol);
 
         //TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
         lrinfo.m_tdef.rotation() = info->anglerad;

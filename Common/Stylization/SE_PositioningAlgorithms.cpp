@@ -99,7 +99,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
                                                 SE_Matrix&      /*xform*/,
                                                 SE_Style*       /*style*/,
                                                 SE_RenderStyle* rstyle,
-                                                double          /*mm2px*/)
+                                                double          mm2px)
 {
     //this placement algorithm implements the MapGuide dynamic point labeling algorithm
     //which means 8 candidate labels generated for each symbol
@@ -167,10 +167,9 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
     double symbol_height = fpts[2].y - fpts[1].y; //symbol height in meters
     double symbol_rot_deg = box_angle_rad / M_PI180;
 
-    double op_pts[16];
-
-    // calculate a 2 pixel offset to allow for label ghosting
-    double offset = 2.0 ;
+    //calculate a 1 mm offset to allow for label ghosting
+    double offsetmm = 1.0;              // offset in mm
+    double offset = offsetmm * mm2px;   // offset in renderer pixels
 
     //compute how far label needs to be offset from
     //center point of symbol
@@ -194,6 +193,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
     //take into account rotation of the symbol
     //find increased extents of the symbol bounds
     //due to the rotation
+    double op_pts[16];
     if (symbol_rot_deg != 0.0)
     {
         double rotRad = symbol_rot_deg * M_PI180; //symbol_rot assumed to be in radians
@@ -261,42 +261,42 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
     ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
     ((SE_RenderText*)st0->symbol[0])->tdef.valign() = RS_VAlignment_Half;
     UpdateStyleBounds(st0, se_renderer);
-    candidates[0] = SE_LabelInfo(cx + op_pts[0], cy + op_pts[1]*yScale , 0.0, 0.0, RS_Units_Device, 0.0, st0);
+    candidates[0] = SE_LabelInfo(cx + op_pts[0], cy + op_pts[1]*yScale, RS_Units_Device, 0.0, st0);
 
     SE_RenderPointStyle* st1 = DeepClonePointStyle(st0);
     ((SE_RenderText*)st1->symbol[0])->tdef.valign() = RS_VAlignment_Descent;
     UpdateStyleBounds(st1, se_renderer);
-    candidates[1] = SE_LabelInfo(cx + op_pts[2], cy + op_pts[3]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st1);
+    candidates[1] = SE_LabelInfo(cx + op_pts[2], cy + op_pts[3]*yScale, RS_Units_Device, 0.0, st1);
 
     SE_RenderPointStyle* st2 = DeepClonePointStyle(st1);
     ((SE_RenderText*)st2->symbol[0])->tdef.halign() = RS_HAlignment_Center;
     UpdateStyleBounds(st2, se_renderer);
-    candidates[2] = SE_LabelInfo(cx + op_pts[4], cy + op_pts[5]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st2);
+    candidates[2] = SE_LabelInfo(cx + op_pts[4], cy + op_pts[5]*yScale, RS_Units_Device, 0.0, st2);
 
     SE_RenderPointStyle* st3 = DeepClonePointStyle(st2);
     ((SE_RenderText*)st3->symbol[0])->tdef.halign() = RS_HAlignment_Right;
     UpdateStyleBounds(st3, se_renderer);
-    candidates[3] = SE_LabelInfo(cx + op_pts[6], cy + op_pts[7]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st3);
+    candidates[3] = SE_LabelInfo(cx + op_pts[6], cy + op_pts[7]*yScale, RS_Units_Device, 0.0, st3);
 
     SE_RenderPointStyle* st4 = DeepClonePointStyle(st3);
     ((SE_RenderText*)st4->symbol[0])->tdef.valign() = RS_VAlignment_Half;
     UpdateStyleBounds(st4, se_renderer);
-    candidates[4] = SE_LabelInfo(cx + op_pts[8], cy + op_pts[9]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st4);
+    candidates[4] = SE_LabelInfo(cx + op_pts[8], cy + op_pts[9]*yScale, RS_Units_Device, 0.0, st4);
 
     SE_RenderPointStyle* st5 = DeepClonePointStyle(st4);
     ((SE_RenderText*)st5->symbol[0])->tdef.valign() = RS_VAlignment_Ascent;
     UpdateStyleBounds(st5, se_renderer);
-    candidates[5] = SE_LabelInfo(cx + op_pts[10], cy + op_pts[11]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st5);
+    candidates[5] = SE_LabelInfo(cx + op_pts[10], cy + op_pts[11]*yScale, RS_Units_Device, 0.0, st5);
 
     SE_RenderPointStyle* st6 = DeepClonePointStyle(st5);
     ((SE_RenderText*)st6->symbol[0])->tdef.halign() = RS_HAlignment_Center;
     UpdateStyleBounds(st6, se_renderer);
-    candidates[6] = SE_LabelInfo(cx + op_pts[12], cy + op_pts[13]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st6);
+    candidates[6] = SE_LabelInfo(cx + op_pts[12], cy + op_pts[13]*yScale, RS_Units_Device, 0.0, st6);
 
     SE_RenderPointStyle* st7 = DeepClonePointStyle(st6);
     ((SE_RenderText*)st7->symbol[0])->tdef.halign() = RS_HAlignment_Left;
     UpdateStyleBounds(st7, se_renderer);
-    candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15]*yScale, 0.0, 0.0, RS_Units_Device, 0.0, st7);
+    candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15]*yScale, RS_Units_Device, 0.0, st7);
 
     se_renderer->ProcessLabelGroup(candidates, 8, RS_OverpostType_FirstFit, true, NULL);
 }
@@ -556,7 +556,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
                         memcpy(rlStyle->bounds, symbolVectors[shieldIndex].front()->bounds, sizeof(rlStyle->bounds));
                         SE_RenderStyle* clonedStyle = renderer->CloneRenderStyle(rlStyle);
 
-                        SE_LabelInfo info(symxf.x2, symxf.y2, 0.0, 0.0, RS_Units_Device, 0, clonedStyle);
+                        SE_LabelInfo info(symxf.x2, symxf.y2, RS_Units_Device, 0, clonedStyle);
 
                         renderer->ProcessLabelGroup(&info, 1, RS_OverpostType_AllFit, rlStyle->addToExclusionRegions, geometry);
                     }

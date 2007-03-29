@@ -197,18 +197,16 @@ class SE_LabelInfo
 {
 public:
     SE_INLINE SE_LabelInfo()
-        : x(0.0), y(0.0), dx(0.0), dy(0.0), dunits(RS_Units_Device), anglerad(0.0), symbol(NULL)
+        : x(0.0), y(0.0), dunits(RS_Units_Device), anglerad(0.0), symbol(NULL)
     { }
 
-    SE_INLINE SE_LabelInfo (double _x, double _y, double _dx, double _dy, RS_Units _dunits, double _anglerad, SE_RenderStyle* _symbol)
-        : x(_x), y(_y), dx(_dx), dy(_dy), dunits(_dunits), anglerad(_anglerad), symbol(_symbol)
+    SE_INLINE SE_LabelInfo(double _x, double _y, RS_Units _dunits, double _anglerad, SE_RenderStyle* _symbol)
+        : x(_x), y(_y), dunits(_dunits), anglerad(_anglerad), symbol(_symbol)
     { }
 
     SE_RenderStyle* symbol;
     double x;
     double y;
-    double dx;
-    double dy;
     double anglerad;
     RS_Units dunits;
 };
