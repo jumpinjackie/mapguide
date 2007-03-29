@@ -165,7 +165,7 @@ try
     $fsvc = $site->CreateService(MgServiceType::FeatureService);
     $rsvc = $site->CreateService(MgServiceType::ResourceService);
 
-    $wkt = "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+    $wkt = "LOCALCS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
     $featureName = 'Library://TrevorWekel/NewSdf.FeatureSource';
     $id = new MgResourceIdentifier($featureName);
 

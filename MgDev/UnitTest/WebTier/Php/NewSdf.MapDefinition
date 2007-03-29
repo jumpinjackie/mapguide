@@ -2,7 +2,7 @@
 
   <MapDefinition version="1.0.0">
     <Name>New Map</Name>
-    <CoordinateSystem>LOCALCS[&quot;*XY-MT*&quot;,LOCAL_DATUM[&quot;*X-Y*&quot;,10000],UNIT[&quot;Meter&quot;, 1],AXIS[&quot;X&quot;,EAST],AXIS[&quot;Y&quot;,NORTH]]</CoordinateSystem>
+    <CoordinateSystem>LOCALCS[&quot;Non-Earth (Meter)&quot;,LOCAL_DATUM[&quot;Local Datum&quot;,0],UNIT[&quot;Meter&quot;, 1],AXIS[&quot;X&quot;,EAST],AXIS[&quot;Y&quot;,NORTH]]</CoordinateSystem>
     <Extents>
       <MinX>0</MinX>
       <MaxX>0</MaxX>

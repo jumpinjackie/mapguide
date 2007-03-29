@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MapDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="MapDefinition-1.0.0.xsd">
   <Name>New Map</Name>
-  <CoordinateSystem>LOCAL_CS[&quot;*XY-MT*&quot;,LOCAL_DATUM[&quot;*X-Y*&quot;,10000],UNIT[&quot;Meter&quot;, 1],AXIS[&quot;X&quot;,EAST],AXIS[&quot;Y&quot;,NORTH]]</CoordinateSystem>
+  <CoordinateSystem>LOCAL_CS[&quot;Non-Earth (Meter)&quot;,LOCAL_DATUM[&quot;Local Datum&quot;,0],UNIT[&quot;Meter&quot;, 1],AXIS[&quot;X&quot;,EAST],AXIS[&quot;Y&quot;,NORTH]]</CoordinateSystem>
   <Extents>
     <MinX>0.2657799174176283</MinX>
     <MaxX>11.498420365345755</MaxX>
