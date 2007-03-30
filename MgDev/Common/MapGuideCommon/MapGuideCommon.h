@@ -46,6 +46,17 @@
 
 #define VERSION_SUPPORTED(Major, Minor) (Major << 16) + (Minor << 8)
 
+#ifndef _WIN32
+// Linux version of GetTickCount()
+#include <sys/times.h>
+
+long GetTickCount()
+{
+    tms tm;
+    return times(&tm);
+}
+#endif
+
 #include "System/MapGuideCommonClassId.h"
 #include "System/ConfigProperties.h"
 #include "System/UserInformation.h"
