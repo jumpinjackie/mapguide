@@ -1508,8 +1508,13 @@ void GDRenderer::DrawString(const RS_String& s,
 
     //draw the string
     int gdc = ConvertColor((gdImagePtr)m_imout, (RS_Color&)color);
+    gdFTStringExtra extra;
+    memset(&extra, 0, sizeof(gdFTStringExtra));
+    extra.flags |= gdFTEX_RESOLUTION;
+    extra.hdpi = (int)m_dpi;
+    extra.vdpi = (int)m_dpi;
     char* err = NULL;
-    err = gdImageStringFT((gdImagePtr)m_imout, NULL, gdc, futf8, height, anglerad, x, y, sutf8);
+    err = gdImageStringFTEx((gdImagePtr)m_imout, NULL, gdc, futf8, height, anglerad, x, y, sutf8, &extra);
 
 #ifdef _DEBUG
     if (err) printf("gd text error : %s\n", err);
@@ -1533,6 +1538,11 @@ void GDRenderer::MeasureString(const RS_String&  s,
     // the nearest 1/65536ths of a point.
     height = floor(height * 65536.0 + 0.5) / 65536.0;
 
+    // If the supplied font height is too large GD can't measure it.  We'll
+    // use a reasonable font height for measuring, and then scale the result.
+    double measureHeight = rs_min(5000.0, height);
+    double measureScale = height / measureHeight;
+
     //convert input to UTF8, which is what GD uses
     size_t len = s.length();
     size_t lenbytes = len*4+1;
@@ -1548,25 +1558,30 @@ void GDRenderer::MeasureString(const RS_String&  s,
     int extent[8];
     gdFTStringExtra extra;
     memset(&extra, 0, sizeof(gdFTStringExtra));
-    extra.flags |= gdFTEX_XSHOW;
+    if (offsets)
+        extra.flags |= gdFTEX_XSHOW;
+    extra.flags |= gdFTEX_RESOLUTION;
+    extra.hdpi = (int)m_dpi;
+    extra.vdpi = (int)m_dpi;
     char* err = NULL;
-    err = gdImageStringFTEx((gdImagePtr)NULL, (int*)&extent[0], 0, futf8, height, anglerad, 0, 0, sutf8, offsets? &extra : NULL);
-
-    for (int i=0; i<4; i++)
-    {
-        res[i].x = extent[2*i];
-        res[i].y = extent[2*i+1];
-    }
+    err = gdImageStringFTEx(NULL, (int*)&extent[0], 0, futf8, measureHeight, anglerad, 0, 0, sutf8, &extra);
 
 #ifdef _DEBUG
-    if (err) printf ("gd text error : %s\n", err);
+    if (err) printf("gd text error : %s\n", err);
 #endif
+
+    for (int i=0; i<4; ++i)
+    {
+        res[i].x = measureScale*extent[2*i];
+        res[i].y = measureScale*extent[2*i+1];
+    }
 
     if (extra.xshow && offsets)
     {
         //copy over character spacings into result array
         //there are 2 numbers per character -- kerned and unkerned delta
-        memcpy(offsets, extra.xshow, sizeof(float) * (len - 1));
+        for (size_t i=0; i<len; ++i)
+            offsets[i] = (float)(measureScale*extra.xshow[i]);
 
         //and then release the gd allocated xshow pointer
         gdFree(extra.xshow);

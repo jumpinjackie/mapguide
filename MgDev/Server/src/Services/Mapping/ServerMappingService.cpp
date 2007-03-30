@@ -880,6 +880,9 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
     EPlotRenderer dr(dwfName.c_str(), 0, 0, L"inches");  // NOXLATE
 
+    RSMgSymbolManager mgr(m_svcResource);
+    dr.SetSymbolManager(&mgr);
+
     // process the MapPlot collection
     for (int nMapPlotIndex = 0; nMapPlotIndex < mapPlots->GetCount(); nMapPlotIndex++)
     {
@@ -987,10 +990,8 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
         dr.EnableLayoutPlot();
 
-        RSMgSymbolManager mgr(m_svcResource);
-        dr.SetSymbolManager(&mgr);
-
-        DefaultStylizer ds(NULL);
+        SEMgSymbolManager semgr(m_svcResource);
+        DefaultStylizer ds(&semgr);
 
         //get the map coordinate system
         MdfModel::MdfString srs = map->GetMapSRS();
