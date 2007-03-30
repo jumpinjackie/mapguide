@@ -1200,11 +1200,11 @@
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',EMAIL_ID,'"',$enabledStr,' type="text" value="',$props->email,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Data connection timeout (seconds):</td>',"\n";
+        echo '          <td class="propsInputLabel">Connection timeout (seconds):</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',CONNECTION_TIMEOUT_ID,'"',$enabledStr,' type="text" value="',$props->connectionTimeOut,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Data connection timer interval (seconds):</td>',"\n";
+        echo '          <td class="propsInputLabel">Connection timer interval (seconds):</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',CONNECTION_TIMER_INT_ID,'"',$enabledStr,' type="text" value="',$props->connectionTimerInt,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '      <tr>',"\n";
