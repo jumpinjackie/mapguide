@@ -2688,19 +2688,23 @@ void DWFRenderer::MeasureString(const RS_String& s,
     int extent[8];
     gdFTStringExtra extra;
     memset(&extra, 0, sizeof(gdFTStringExtra));
-    extra.flags |= gdFTEX_XSHOW;
+    if (offsets)
+        extra.flags |= gdFTEX_XSHOW;
+    extra.flags |= gdFTEX_RESOLUTION;
+    extra.hdpi = (int)m_dpi;
+    extra.vdpi = (int)m_dpi;
     char* err = NULL;
-    err = gdImageStringFTEx((gdImagePtr)NULL, (int*)&extent[0], 0, futf8, measureHeight, anglerad, 0, 0, sutf8, offsets? &extra : NULL);
+    err = gdImageStringFTEx(NULL, (int*)&extent[0], 0, futf8, measureHeight, anglerad, 0, 0, sutf8, &extra);
+
+#ifdef _DEBUG
+    if (err) printf("gd text error : %s\n", err);
+#endif
 
     for (int i=0; i<4; ++i)
     {
         res[i].x = measureScale*extent[2*i];
         res[i].y = measureScale*extent[2*i+1];
     }
-
-#ifdef _DEBUG
-    if (err) printf("gd text error : %s\n", err);
-#endif
 
     if (extra.xshow && offsets)
     {
