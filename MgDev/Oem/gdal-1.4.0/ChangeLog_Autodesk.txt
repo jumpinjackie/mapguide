@@ -1,0 +1,83 @@
+===============================================================================
+            Summary of Autodesk changes made to GDAL 1.4.0
+===============================================================================
+
+Author: stevedang
+Date: 2007-03-28 00:54:28 -0400 (Wed, 28 Mar 2007)
+New Revision: 1393
+
+Modified:
+   trunk/MgDev/Oem/gdal-1.4.0/nmake.opt
+   trunk/MgDev/Oem/gdal-1.4.0/ogr/Makefile
+   trunk/MgDev/Oem/gdal-1.4.0/ogr/ogr.vcproj
+   trunk/MgDev/Oem/gdal-1.4.0/port/makefile.vc
+Log:
+- Fix PROJ project to allow release and debug libraries to co-exist
+  with different names.
+
+===============================================================================
+
+Author: stevedang
+Date: 2007-03-21 19:16:13 -0400 (Wed, 21 Mar 2007)
+New Revision: 1335
+
+Modified:
+   trunk/MgDev/Oem/gdal-1.4.0/nmake.opt
+   trunk/MgDev/Oem/gdal-1.4.0/ogr/ogr.vcproj
+   trunk/MgDev/Oem/gdal-1.4.0/port/cpl.vcproj
+Log:
+- Customize build option flags for GDAL 1.4.0.
+
+===============================================================================
+
+Author: stevedang
+Date: 2007-03-21 17:07:55 -0400 (Wed, 21 Mar 2007)
+New Revision: 1326
+
+Modified:
+   trunk/MgDev/Oem/gdal-1.4.0/GNUmakefile
+Log:
+- Disable "check" target (as "make check" failed).
+
+===============================================================================
+
+Author: stevedang
+Date: 2007-03-20 20:50:25 -0400 (Tue, 20 Mar 2007)
+New Revision: 1309
+
+Added:
+   trunk/MgDev/Oem/gdal-1.4.0/ogr/ogr.vcproj
+   trunk/MgDev/Oem/gdal-1.4.0/port/cpl.vcproj
+Modified:
+   trunk/MgDev/Oem/gdal-1.4.0/nmake.opt
+   trunk/MgDev/Oem/gdal-1.4.0/ogr/Makefile
+   trunk/MgDev/Oem/gdal-1.4.0/ogr/ogr_srs_api.h
+   trunk/MgDev/Oem/gdal-1.4.0/ogr/ogr_srs_proj4.cpp
+   trunk/MgDev/Oem/gdal-1.4.0/ogr/ogrspatialreference.cpp
+   trunk/MgDev/Oem/gdal-1.4.0/port/cpl_findfile.cpp
+   trunk/MgDev/Oem/gdal-1.4.0/port/makefile.vc
+Log:
+- Fix MapGuide crashing problem on debug Windows due to using mixed versions of
+  release and debug CRT libraries.
+- Incorporate changes made to GDAL 1.3.0 from previous release of MapGuide:
+
+From:   waltweltonlair
+trunk/MgDev/Oem/gdal-1.4.0/nmake.opt
+    - Allow custom name for PDB file.
+trunk/MgDev/Oem/gdal-1.4.0/ogr/Makefile
+trunk/MgDev/Oem/gdal-1.4.0/port/makefile.vc
+    - Set custom name for PDB file.
+trunk/MgDev/Oem/gdal-1.4.0/port/cpl_findfile.cpp
+    - Fix leaks in CPLFinderClean.
+
+From:   brucedechant
+trunk/MgDev/Oem/gdal-1.4.0/ogr/ogr_srs_api.h
+trunk/MgDev/Oem/gdal-1.4.0/ogr/ogr_srs_proj4.cpp
+trunk/MgDev/Oem/gdal-1.4.0/ogr/ogrspatialreference.cpp
+    - Add support for additional projections.
+
+From:   traianstanev
+trunk/MgDev/Oem/gdal-1.4.0/ogr/ogr_srs_api.h
+trunk/MgDev/Oem/gdal-1.4.0/ogr/ogr_srs_proj4.cpp
+    - Add "UTM" as abbreviation for Transverse Mercator.
+
