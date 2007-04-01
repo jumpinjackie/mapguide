@@ -25,7 +25,7 @@
           <LegendLabel></LegendLabel>
           <CompositeSymbolization>
             <SymbolInstance>
-              <SymbolReference>Library://UnitTests/Symbols/PointSymbolParam.SymbolDefinition</SymbolReference>
+              <ResourceId>Library://UnitTests/Symbols/PointSymbolParam.SymbolDefinition</ResourceId>
               <ParameterOverrides>
                 <Override>
                   <SymbolName>X_on_Box</SymbolName>
@@ -195,7 +195,7 @@
                   <RenderingPass>10</RenderingPass>
                 </SimpleSymbol>
                 <SimpleSymbol>
-                  <SymbolReference>Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition</SymbolReference>
+                  <ResourceId>Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition</ResourceId>
                   <RenderingPass>20</RenderingPass>
                 </SimpleSymbol>
               </CompoundSymbolDefinition>
