@@ -37,8 +37,8 @@ BEGIN_NAMESPACE_MDFMODEL
         SymbolInstance();
         virtual ~SymbolInstance();
 
-        const MdfString& GetSymbolReference() const;
-        void SetSymbolReference(const MdfString& symbolReference);
+        const MdfString& GetResourceId() const;
+        void SetResourceId(const MdfString& symbolReference);
 
         SymbolDefinition* GetSymbolDefinition();
         void AdoptSymbolDefinition(SymbolDefinition* symbolDefinition);
@@ -79,7 +79,7 @@ BEGIN_NAMESPACE_MDFMODEL
         SymbolInstance& operator=(const SymbolInstance&);
 
         // Data members
-        MdfString m_sSymbolReference;
+        MdfString m_sResourceId;
         SymbolDefinition* m_pSymbolDefinition;
         OverrideCollection m_collOverrides;
 

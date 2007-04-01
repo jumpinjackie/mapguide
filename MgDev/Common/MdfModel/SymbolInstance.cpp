@@ -46,21 +46,23 @@ SymbolInstance::~SymbolInstance()
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE:
+// PURPOSE: The symbol reference. We call it ResourceId because this allows
+// it to be indexed by Berkley DB.
 // PARAMETERS:
 //-------------------------------------------------------------------------
-const MdfString& SymbolInstance::GetSymbolReference() const
+const MdfString& SymbolInstance::GetResourceId() const
 {
-    return this->m_sSymbolReference;
+    return this->m_sResourceId;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE:
+// PURPOSE: Set the symbol reference. We call it ResourceId because this allows
+// it to be indexed by Berkley DB.
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void SymbolInstance::SetSymbolReference(const MdfString& symbolReference)
+void SymbolInstance::SetResourceId(const MdfString& symbolReference)
 {
-    this->m_sSymbolReference = symbolReference;
+    this->m_sResourceId = symbolReference;
 
     // Definition and Reference are mutually exclusive.  Setting one
     // clears the other.
@@ -94,7 +96,7 @@ void SymbolInstance::AdoptSymbolDefinition(SymbolDefinition* symbolDefinition)
 
         // Definition and Reference are mutually exclusive.  Setting one
         // clears the other.
-        this->m_sSymbolReference.clear();
+        this->m_sResourceId.clear();
     }
 }
 
