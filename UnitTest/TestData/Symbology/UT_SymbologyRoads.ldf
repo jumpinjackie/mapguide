@@ -27,7 +27,7 @@
           <LegendLabel/>
           <CompositeSymbolization>
             <SymbolInstance>
-              <SymbolReference>Library://UnitTests/Symbols/LineSymbol.SymbolDefinition</SymbolReference>
+              <ResourceId>Library://UnitTests/Symbols/LineSymbol.SymbolDefinition</ResourceId>
               <ParameterOverrides/>
               <ScaleX>1.0</ScaleX>
               <ScaleY>1.0</ScaleY>

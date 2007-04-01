@@ -23,7 +23,7 @@
           <LegendLabel/>
           <CompositeSymbolization>
             <SymbolInstance>
-              <SymbolReference>Library://UnitTests/Symbols/PointSymbol.SymbolDefinition</SymbolReference>
+              <ResourceId>Library://UnitTests/Symbols/PointSymbol.SymbolDefinition</ResourceId>
               <ParameterOverrides/>
               <ScaleX>1.0</ScaleX>
               <ScaleY>1.0</ScaleY>

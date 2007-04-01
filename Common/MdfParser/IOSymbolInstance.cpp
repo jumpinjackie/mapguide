@@ -64,7 +64,7 @@ void IOSymbolInstance::StartElement(const wchar_t *name, HandlerStack *handlerSt
 
 void IOSymbolInstance::ElementChars(const wchar_t *ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, SymbolReference, ch)
+         IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, ResourceId, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, ScaleX, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, ScaleY, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, InsertionOffsetX, ch)
@@ -108,7 +108,7 @@ void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance)
     }
     else
     {
-        EMIT_STRING_PROPERTY(fd, symbolInstance, SymbolReference, false)
+        EMIT_STRING_PROPERTY(fd, symbolInstance, ResourceId, false)
     }
 
     IOOverrideCollection::Write(fd, symbolInstance->GetParameterOverrides());

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Tom Fukushima (Autodesk Development Canada) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
   <xs:element name="SimpleSymbolDefinition" type="SimpleSymbolDefinitionType">
     <xs:annotation>
@@ -294,7 +295,7 @@
                       <xs:documentation>An inlined SimpleSymbolDefinition.</xs:documentation>
                     </xs:annotation>
                   </xs:element>
-                  <xs:element name="SymbolReference" type="xs:string">
+                  <xs:element name="ResourceId" type="xs:string">
                     <xs:annotation>
                       <xs:documentation>A library reference to an existing SimpleSymbolDefinition.</xs:documentation>
                     </xs:annotation>

@@ -11,7 +11,7 @@
           <LegendLabel/>
           <CompositeSymbolization>
             <SymbolInstance>
-              <SymbolReference>Library://UnitTests/Symbols/MTYP1500a.SymbolDefinition</SymbolReference>
+              <ResourceId>Library://UnitTests/Symbols/MTYP1500a.SymbolDefinition</ResourceId>
               <ParameterOverrides/>
               <ScaleX>0.5</ScaleX>
               <ScaleY>0.5</ScaleY>
