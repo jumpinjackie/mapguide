@@ -49,7 +49,7 @@ void IOSimpleSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStac
 
 void IOSimpleSymbol::ElementChars(const wchar_t *ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_simpleSymbol, SymbolReference, ch)
+         IF_STRING_PROPERTY(m_currElemName, this->_simpleSymbol, ResourceId, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_simpleSymbol, RenderingPass, ch)
 }
 
@@ -76,7 +76,7 @@ void IOSimpleSymbol::Write(MdfStream &fd, SimpleSymbol* simpleSymbol)
         IOSimpleSymbolDefinition::Write(fd, simpleSymbol->GetSymbolDefinition(), false);
     else
     {
-        EMIT_STRING_PROPERTY(fd, simpleSymbol, SymbolReference, false)
+        EMIT_STRING_PROPERTY(fd, simpleSymbol, ResourceId, false)
     }
 
     EMIT_STRING_PROPERTY(fd, simpleSymbol, RenderingPass, true)

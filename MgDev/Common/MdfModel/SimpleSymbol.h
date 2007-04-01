@@ -39,8 +39,8 @@ BEGIN_NAMESPACE_MDFMODEL
         void AdoptSymbolDefinition(SimpleSymbolDefinition* symbolDefinition);
         SimpleSymbolDefinition* OrphanSymbolDefinition();
 
-        const MdfString& GetSymbolReference() const;
-        void SetSymbolReference(const MdfString& symbolReference);
+        const MdfString& GetResourceId() const;
+        void SetResourceId(const MdfString& symbolReference);
 
         const MdfString& GetRenderingPass() const;
         void SetRenderingPass(const MdfString& renderingPass);
@@ -52,7 +52,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Data members
         SimpleSymbolDefinition* m_pSymbolDefinition;
-        MdfString m_sSymbolReference;
+        MdfString m_sResourceId;
         MdfString m_sRenderingPass;
     };
 

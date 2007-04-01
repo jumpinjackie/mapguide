@@ -23,7 +23,7 @@
           <LegendLabel/>
           <CompositeSymbolization>
             <SymbolInstance>
-              <SymbolReference>Library://UnitTests/Symbols/PointSymbolParam.SymbolDefinition</SymbolReference>
+              <ResourceId>Library://UnitTests/Symbols/PointSymbolParam.SymbolDefinition</ResourceId>
               <ParameterOverrides>
                 <Override>
                   <SymbolName>X_on_Box</SymbolName>

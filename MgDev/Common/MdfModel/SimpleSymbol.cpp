@@ -65,7 +65,7 @@ void SimpleSymbol::AdoptSymbolDefinition(SimpleSymbolDefinition* symbolDefinitio
 
         // Definition and Reference are mutually exclusive.  Setting one
         // clears the other.
-        this->m_sSymbolReference.clear();
+        this->m_sResourceId.clear();
     }
 }
 
@@ -81,21 +81,23 @@ SimpleSymbolDefinition* SimpleSymbol::OrphanSymbolDefinition()
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE:
+// PURPOSE: Symbol reference. We call it ResourceId because this allows
+// it to be indexed by Berkley DB.
 // PARAMETERS:
 //-------------------------------------------------------------------------
-const MdfString& SimpleSymbol::GetSymbolReference() const
+const MdfString& SimpleSymbol::GetResourceId() const
 {
-    return this->m_sSymbolReference;
+    return this->m_sResourceId;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE:
+// PURPOSE: Symbol Reference. We call it ResourceId because this allows
+// it to be indexed by Berkley DB.
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void SimpleSymbol::SetSymbolReference(const MdfString& symbolReference)
+void SimpleSymbol::SetResourceId(const MdfString& symbolReference)
 {
-    this->m_sSymbolReference = symbolReference;
+    this->m_sResourceId = symbolReference;
 
     // Definition and Reference are mutually exclusive.  Setting one
     // clears the other.

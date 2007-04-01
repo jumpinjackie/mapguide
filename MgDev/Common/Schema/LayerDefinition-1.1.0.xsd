@@ -844,7 +844,7 @@
     </xs:annotation>
     <xs:sequence>
       <xs:choice>
-        <xs:element name="SymbolReference" type="xs:string">
+        <xs:element name="ResourceId" type="xs:string">
           <xs:annotation>
             <xs:documentation>A library reference to an existing SymbolDefinition, either simple or compound.</xs:documentation>
           </xs:annotation>

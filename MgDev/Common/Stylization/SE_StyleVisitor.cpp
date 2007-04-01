@@ -624,7 +624,7 @@ void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefi
             if (m_resources == NULL)
                 return;
 
-            const MdfString& ref = sym->GetSymbolReference();
+            const MdfString& ref = sym->GetResourceId(); // Symbol reference
             def = dynamic_cast<SimpleSymbolDefinition*>(m_resources->GetSymbolDefinition(ref.c_str()));
             if (def == NULL)
                 return;
@@ -670,7 +670,7 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
             if (m_resources == NULL)
                 continue;
 
-            const MdfString& ref = instance->GetSymbolReference();
+            const MdfString& ref = instance->GetResourceId(); // Symbol reference
             def = m_resources->GetSymbolDefinition(ref.c_str());
             if (def == NULL)
                 continue;
