@@ -30,6 +30,13 @@
         font-family: __#@font#__;
         font-size: __#@fontsize#__;
     }
+    div.cssRefresh
+    {
+        position: absolute;
+        right:10px;
+        top:4px;
+    }
+
 </style>
 
 <script language=javascript>
@@ -234,8 +241,15 @@ function OpenFlyout(elt, tbItemIndex)
 </script>
 
 </head>
-<body class="Toolbar" onload="InitDocument()" leftmargin=10 topmargin=0 rightmargin=0 bottommargin=0 marginwidth=0>
-    <span id="ToolbarContent"><td></td></span>
-    <div class="TextMetricsDiv" id="TextMetricsDiv"><span class="TextMetrics" id="Metrics"></span></div>
+<body class="Toolbar" onload="InitDocument()" leftmargin="10" topmargin="0" rightmargin="0" bottommargin="0" marginwidth="0">
+    <div id="divRefresh" name="divRefresh" class="cssRefresh">
+        <img alt="loading" src="../stdicons/icon_loading.gif">
+    </div>
+    <span id="ToolbarContent">
+        <td></td>
+    </span>
+    <div class="TextMetricsDiv" id="TextMetricsDiv">
+        <span class="TextMetrics" id="Metrics"></span>
+    </div>
 </body>
 </html>
