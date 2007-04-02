@@ -1049,13 +1049,12 @@ function OnMouseMove(e)
 {
     var x = e.clientX - mapPosX;
     var y = e.clientY;
-    
     if(x == lastposx && y == lastposy)
     {
         return false;
     }
     lastposx = x; lastposy = y;
-    
+
     try { parent.OnCursorPosChanged(x, y); } catch(e) {}
 
     if(digitizing)
@@ -1531,6 +1530,13 @@ function OnMapRequested(reqResp, scale, centerX, centerY)
             RequestFailed("Invalid XML response");
         else
         {
+            var frmParent = parent.frames["tbFrame"];
+            var objDivRefresh = frmParent.document.getElementById("divRefresh");
+            if(objDivRefresh != null)
+            {
+                objDivRefresh.style.display='block';
+            }
+            
             panX1 = extX1 = resp.lowerLeft.X;
             panY1 = extY1 = resp.upperRight.Y;
             panX2 = extX2 = resp.upperRight.X;
@@ -1651,6 +1657,14 @@ function OnMapOverlayImageLoaded(e)
     imgdiv.style.display = "block";
     if(safari)
         curimg = (curimg == "mapImage1"? "mapImage2": "mapImage1");
+    
+    var frmParent = parent.frames["tbFrame"];
+    var objDivRefresh = frmParent.document.getElementById("divRefresh");
+    if(objDivRefresh != null)
+    {
+        objDivRefresh.style.display='none';
+    }
+    
     return false;
 }
 
