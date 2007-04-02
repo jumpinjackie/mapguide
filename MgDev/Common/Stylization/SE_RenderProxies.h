@@ -39,6 +39,14 @@ enum SE_RenderStyleType
 };
 
 
+enum SE_RenderResizeControlType
+{
+    SE_RenderResizeNone,
+    SE_RenderAddToResizeBox,
+    SE_RenderAdjustToResizeBox
+};
+
+
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //
 //        SE_RenderPrimitives
@@ -49,7 +57,7 @@ enum SE_RenderStyleType
 struct SE_RenderPrimitive
 {
     SE_RenderPrimitiveType type;
-    bool resize;
+    SE_RenderResizeControlType resizeType;
     RS_F_Point bounds[4];
 };
 

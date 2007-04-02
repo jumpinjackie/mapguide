@@ -37,44 +37,6 @@ static void BoundsUnion(RS_F_Point* dst, RS_F_Point* src)
 }
 
 
-static void ComputeGrowAmount(RS_F_Point* bounds, double minx, double miny, double maxx, double maxy, double &growx, double &growy)
-{
-    double sx, sy;
-    double cx = 0.5*(minx + maxx);
-    double cy = 0.5*(miny + maxy);
-    minx -= cx;
-    maxx -= cx;
-    miny -= cy;
-    maxy -= cy;
-    double xfminx, xfminy, xfmaxx, xfmaxy;
-    xfminx = bounds[0].x - cx;
-    xfminy = bounds[0].y - cy;
-    xfmaxx = bounds[2].x - cx;
-    xfmaxy = bounds[2].y - cy;
-
-    if (xfminx < minx) // minx always negative
-    {
-        sx = xfminx/minx - 1.0;
-        growx = (growx > sx)? growx : sx;
-    }
-    if (xfmaxx > maxx) // maxx always positive
-    {
-        sx = xfmaxx/maxx - 1.0;
-        growx = (growx > sx)? growx : sx;
-    }
-    if (xfminy < miny)
-    {
-        sy = xfminy/miny - 1.0;
-        growy = (growy > sy)? growy : sy;
-    }
-    if (xfmaxy > maxy)
-    {
-        sy = xfmaxy/maxy - 1.0;
-        growy = (growy > sy)? growy : sy;
-    }
-}
-
-
 SE_Style::~SE_Style()
 {
     for (SE_PrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
@@ -87,8 +49,14 @@ SE_Style::~SE_Style()
 SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 {
     SE_RenderPolyline* ret = new SE_RenderPolyline();
+
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
-    ret->resize = (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
+    if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
+        ret->resizeType = SE_RenderAddToResizeBox;
+    else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
+        ret->resizeType = SE_RenderAdjustToResizeBox;
+    else
+        ret->resizeType = SE_RenderResizeNone;
 
     double wx     = weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
     ret->weight   = weight.evaluate(cxt->exec) * wx;
@@ -117,8 +85,14 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
 {
     SE_RenderPolygon* ret = new SE_RenderPolygon();
+
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
-    ret->resize = (sResizeCtrl && wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
+    if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
+        ret->resizeType = SE_RenderAddToResizeBox;
+    else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
+        ret->resizeType = SE_RenderAdjustToResizeBox;
+    else
+        ret->resizeType = SE_RenderResizeNone;
 
     double wx     = weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
     ret->weight   = weight.evaluate(cxt->exec) * wx;
@@ -151,8 +125,14 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         return NULL;
 
     SE_RenderText* ret = new SE_RenderText();
+
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
-    ret->resize = (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
+    if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
+        ret->resizeType = SE_RenderAddToResizeBox;
+    else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
+        ret->resizeType = SE_RenderAdjustToResizeBox;
+    else
+        ret->resizeType = SE_RenderResizeNone;
 
     ret->text = textExpr.evaluate(cxt->exec);
     ret->position[0] = position[0].evaluate(cxt->exec);
@@ -186,22 +166,18 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         ret->tdef.halign() = RS_HAlignment_Left;
     else if (wcscmp(hAlign, L"Right") == 0)
         ret->tdef.halign() = RS_HAlignment_Right;
-    else if (wcscmp(hAlign, L"Center") == 0)
-        ret->tdef.halign() = RS_HAlignment_Center;
     else // default is Center
         ret->tdef.halign() = RS_HAlignment_Center;
 
     const wchar_t* vAlign = vAlignment.evaluate(cxt->exec);
     if (wcscmp(vAlign, L"Bottom") == 0)
         ret->tdef.valign() = RS_VAlignment_Descent;
-    else if (wcscmp(vAlign, L"Halfline") == 0)
-        ret->tdef.valign() = RS_VAlignment_Half;
+    else if (wcscmp(vAlign, L"Baseline") == 0)
+        ret->tdef.valign() = RS_VAlignment_Base;
     else if (wcscmp(vAlign, L"Capline") == 0)
         ret->tdef.valign() = RS_VAlignment_Cap;
     else if (wcscmp(vAlign, L"Top") == 0)
         ret->tdef.valign() = RS_VAlignment_Ascent;
-    else if (wcscmp(vAlign, L"Baseline") == 0)
-        ret->tdef.valign() = RS_VAlignment_Base;
     else // default is Halfline
         ret->tdef.valign() = RS_VAlignment_Half;
 
@@ -240,8 +216,14 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 {
     SE_RenderRaster* ret = new SE_RenderRaster();
+
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
-    ret->resize = (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0);
+    if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
+        ret->resizeType = SE_RenderAddToResizeBox;
+    else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
+        ret->resizeType = SE_RenderAdjustToResizeBox;
+    else
+        ret->resizeType = SE_RenderResizeNone;
 
     if (!pngPtr)
     {
@@ -298,24 +280,27 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
     //evaluation of all primitives and also resize box stuff
     //
 
-    double dx, dy, sx, sy;
-    double minx, maxx, miny, maxy;
-    double growx, growy;
-    SE_Matrix growxform;
+    double minx0 = 0.0, maxx0 = 0.0, miny0 = 0.0, maxy0 = 0.0;
+    double minx1 = 0.0, maxx1 = 0.0, miny1 = 0.0, maxy1 = 0.0;
 
     if (useBox)
     {
-        dx = resizePosition[0].evaluate(cxt->exec);
-        dy = resizePosition[1].evaluate(cxt->exec);
-        sx = 0.5*fabs(resizeSize[0].evaluate(cxt->exec));
-        sy = 0.5*fabs(resizeSize[1].evaluate(cxt->exec));
+        // get the initial resize box
+        double dx = resizePosition[0].evaluate(cxt->exec);
+        double dy = resizePosition[1].evaluate(cxt->exec);
+        double sx = 0.5*fabs(resizeSize[0].evaluate(cxt->exec));
+        double sy = 0.5*fabs(resizeSize[1].evaluate(cxt->exec));
 
-        cxt->xform->transform(dx - sx, dy - sy, minx, miny);
-        cxt->xform->transform(dx + sx, dy + sy, maxx, maxy);
-        cxt->xform->transform(dx, dy);
+        double ptAx, ptAy, ptBx, ptBy;
+        cxt->xform->transform(dx - sx, dy - sy, ptAx, ptAy);
+        cxt->xform->transform(dx + sx, dy + sy, ptBx, ptBy);
 
-        growx = 0.0;
-        growy = 0.0;
+        // the transform may invert points (e.g. in y), so therefore
+        // we need to compute min & max
+        minx0 = minx1 = rs_min(ptAx, ptBx);
+        maxx0 = maxx1 = rs_max(ptAx, ptBx);
+        miny0 = miny1 = rs_min(ptAy, ptBy);
+        maxy0 = maxy1 = rs_max(ptAy, ptBy);
     }
 
     for (SE_PrimitiveList::const_iterator src = symbol.begin(); src != symbol.end(); src++)
@@ -330,56 +315,70 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
         rstyle->symbol.push_back(rsym);
 
         //add the primitive bounds to the overall render style bounds
-        if (!rsym->resize || !useBox)
+        if (!useBox || rsym->resizeType != SE_RenderAdjustToResizeBox)
             BoundsUnion(rstyle->bounds, rsym->bounds);
 
         //add the primitive bounds to the resize box, if necessary
         if (useBox)
         {
-            const wchar_t* sResizeCtrl = sym->resizeControl.evaluate(cxt->exec);
-            if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
+            if (rsym->resizeType == SE_RenderAddToResizeBox)
             {
-                // TODO - rework how resize box growth is done
-                ComputeGrowAmount(rstyle->bounds, minx, miny, maxx, maxy, growx, growy);
+                // the symbol bounds min/max should be properly set (e.g. max > min)
+                minx1 = rs_min(minx1, rsym->bounds[0].x);
+                maxx1 = rs_max(maxx1, rsym->bounds[2].x);
+                miny1 = rs_min(miny1, rsym->bounds[0].y);
+                maxy1 = rs_max(maxy1, rsym->bounds[2].y);
             }
         }
     }
 
-    // update all primitive which need to adjust to the resize box
+    // update all primitives which need to adjust to the resize box
     if (useBox)
     {
+        double scalex = 1.0;
+        double scaley = 1.0;
+        double transx = 0.0;
+        double transy = 0.0;
         const wchar_t* sGrowCtrl = growControl.evaluate(cxt->exec);
         if (wcscmp(sGrowCtrl, L"GrowInX") == 0)
         {
-            growy = 0.0;
+            scalex = fabs(maxx1 - minx1) / fabs(maxx0 - minx0); // the ratio of their widths
+            transx = 0.5*(maxx1 + minx1 - maxx0 - minx0);       // the x-separation between their centers
         }
         else if (wcscmp(sGrowCtrl, L"GrowInY") == 0)
         {
-            growx = 0.0;
+            scaley = fabs(maxy1 - miny1) / fabs(maxy0 - miny0); // the ratio of their heights
+            transy = 0.5*(maxy1 + miny1 - maxy0 - miny0);       // the y-separation between their centers
         }
-//      else if (wcscmp(sGrowCtrl, L"GrowInXY") == 0)
-//      {
-//          // nothing to do
-//      }
+        else if (wcscmp(sGrowCtrl, L"GrowInXY") == 0)
+        {
+            scalex = fabs(maxx1 - minx1) / fabs(maxx0 - minx0); // the ratio of their widths
+            scaley = fabs(maxy1 - miny1) / fabs(maxy0 - miny0); // the ratio of their heights
+            transx = 0.5*(maxx1 + minx1 - maxx0 - minx0);       // the x-separation between their centers
+            transy = 0.5*(maxy1 + miny1 - maxy0 - miny0);       // the y-separation between their centers
+        }
         else // default is GrowInXYMaintainAspect
         {
-            if (growy > growx)
-                growx = growy;
-            else if (growx > growy)
-                growy = growx;
+            scalex = fabs(maxx1 - minx1) / fabs(maxx0 - minx0); // the ratio of their widths
+            scaley = fabs(maxy1 - miny1) / fabs(maxy0 - miny0); // the ratio of their heights
+            transx = 0.5*(maxx1 + minx1 - maxx0 - minx0);       // the x-separation between their centers
+            transy = 0.5*(maxy1 + miny1 - maxy0 - miny0);       // the y-separation between their centers
+            if (scalex > scaley)
+                scaley = scalex;
+            else
+                scalex = scaley;
         }
 
-        SE_Matrix totalxf(*cxt->xform);
         SE_Matrix growxf;
-        growxf.translate(-dx, -dy);
-        growxf.scale(1.0 + growx, 1.0 + growy);
-        growxf.translate(dx, dy);
-        totalxf.premultiply(growxf);
+        growxf.translate(transx, transy);
+        growxf.scale(scalex, scaley);
+        SE_Matrix totalxf(growxf);
+        totalxf.postmultiply(*cxt->xform);
 
         for (SE_RenderPrimitiveList::iterator rs = rstyle->symbol.begin(); rs != rstyle->symbol.end(); rs++)
         {
             SE_RenderPrimitive* rsym = *rs;
-            if (rsym->resize)
+            if (rsym->resizeType == SE_RenderAdjustToResizeBox)
             {
                 switch(rsym->type)
                 {
@@ -403,7 +402,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                     {
                         SE_RenderText* rt = (SE_RenderText*)rsym;
                         growxf.transform(rt->position[0], rt->position[1]);
-                        rt->tdef.font().height() *= growxf.y1;  // TODO: should this only be done if HeightScalable is true?
+                        rt->tdef.font().height() *= scaley; // TODO: should this only be done if HeightScalable is true?
                         for (int j=0; j<4; j++)
                             growxf.transform(rt->bounds[j].x, rt->bounds[j].y);
                         break;
@@ -412,8 +411,8 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                     {
                         SE_RenderRaster* rr = (SE_RenderRaster*)rsym;
                         growxf.transform(rr->position[0], rr->position[1]);
-                        rr->extent[0] *= growxf.x0; // TODO: should this only be done if SizeScalable is true?
-                        rr->extent[1] *= growxf.y1;
+                        rr->extent[0] *= scalex;    // TODO: should this only be done if SizeScalable is true?
+                        rr->extent[1] *= scaley;
                         for (int j=0; j<4; j++)
                             growxf.transform(rr->bounds[j].x, rr->bounds[j].y);
                         break;
