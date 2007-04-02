@@ -419,9 +419,10 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
                 if (!rpc) rpc = new SE_RenderPolyline();
                 SE_RenderPolyline* drp = (SE_RenderPolyline*)rpc;
                 SE_RenderPolyline* srp = (SE_RenderPolyline*)rp;
+
                 memcpy(drp->bounds, srp->bounds, sizeof (drp->bounds));
                 drp->color = srp->color;
-                drp->resize = srp->resize;
+                drp->resizeType = srp->resizeType;
                 drp->weight = srp->weight;
                 drp->geometry = srp->geometry->Clone();
             }
@@ -435,7 +436,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
                 memcpy(dt->bounds, st->bounds, sizeof (dt->bounds));
                 dt->position[0] = st->position[0];
                 dt->position[1] = st->position[1];
-                dt->resize = st->resize;
+                dt->resizeType = st->resizeType;
                 dt->tdef = st->tdef;
                 dt->text = st->text;
             }
@@ -454,7 +455,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
                 dr->pngPtr = sr->pngPtr; //this pointer is managed/cached by the SE_SymbolManager
                 dr->position[0] = sr->position[0];
                 dr->position[1] = sr->position[1];
-                dr->resize = sr->resize;
+                dr->resizeType = sr->resizeType;
             }
         }
 
