@@ -109,7 +109,8 @@ struct SE_Text : public SE_Primitive
 
 struct SE_Raster : public SE_Primitive
 {
-    SE_String pngPath;
+    SE_String pngResourceId;
+    SE_String pngResourceName;
     const wchar_t* resId;
     unsigned char* pngPtr;
     bool ownPtr;
@@ -119,7 +120,7 @@ struct SE_Raster : public SE_Primitive
     SE_Boolean extentScaleable;
     SE_Double angle;
 
-    SE_INLINE SE_Raster() : ownPtr(false) {  }
+    SE_INLINE SE_Raster() : ownPtr(false) { }
     ~SE_Raster() { if (ownPtr) delete[] pngPtr; }
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
@@ -230,7 +231,7 @@ struct SE_Rule
     RS_String legendLabel;  // no expressions on this guy?
     FdoFilter* filter;
 
-    SE_Rule() : filter(NULL)  {  }
+    SE_Rule() : filter(NULL) { }
 
     ~SE_Rule()
     {

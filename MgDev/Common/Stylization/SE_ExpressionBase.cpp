@@ -25,6 +25,7 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+
 void SE_ExpressionBase::SetParameterValues(OverrideCollection* overrides)
 {
     m_parameters.clear();
@@ -38,6 +39,7 @@ void SE_ExpressionBase::SetParameterValues(OverrideCollection* overrides)
         m_parameters[ParamId(symbol, name)] = value;
     }
 }
+
 
 void SE_ExpressionBase::SetDefaultValues(SimpleSymbolDefinition* definition)
 {
@@ -56,13 +58,14 @@ void SE_ExpressionBase::SetDefaultValues(SimpleSymbolDefinition* definition)
     }
 }
 
+
 void SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& exprstr, const wchar_t* fallback)
 {
     MdfString::size_type startIdx, endIdx, count;
     MdfString::iterator beginIter;
     const wchar_t *name, *value, *trim;
 
-    /* Trim whitespace from the beginning */
+    // trim whitespace from the beginning
     trim = exprstr.c_str();
     while (iswspace(*trim))
         trim++;
@@ -80,7 +83,7 @@ void SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& exprstr, co
         if (endIdx == MdfString::npos)
             break;
 
-        /* We have found matched % characters--it must be a parameter */
+        // we have found matched % characters--it must be a parameter
         count = endIdx - startIdx - 1;
         m_param.assign(m_buffer, startIdx + 1, count);
         name = m_param.c_str();
@@ -103,13 +106,14 @@ void SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& exprstr, co
         startIdx += wcslen(value);
     }
 
-    /* Trim whitespace from the end */
+    // trim whitespace from the end
     size_t len = m_buffer.size();
     trim = m_buffer.c_str() + len - 1;
     while (iswspace(*trim--))
         len--;
     m_buffer.resize(len);
 }
+
 
 void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr, SE_Double& val)
 {
@@ -133,6 +137,7 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
     val.expression = FdoExpression::Parse(cstr);
 }
 
+
 void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprstr, SE_Integer& val)
 {
     ReplaceParameters(exprstr, L"0");
@@ -155,6 +160,7 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
     val.expression = FdoExpression::Parse(cstr);
 }
 
+
 void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprstr, SE_Boolean& val)
 {
     ReplaceParameters(exprstr, L"false");
@@ -167,7 +173,7 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
         val = false;
         return;
     }
-    
+
     if (_wcsicmp(cstr, L"true") == 0)
     {
         val = true;
@@ -181,6 +187,7 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
 
     val.expression = FdoExpression::Parse(cstr);
 }
+
 
 void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val)
 {
@@ -196,26 +203,60 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
         const wchar_t* start = m_buffer.c_str();
         const wchar_t* str = start;
 
-        /* Literal expression must start with a single quote (after trimming) */
+        // literal expression must start with a single quote (after trimming)
         if (*str++ != L'\'')
         {
-            val.expression = FdoExpression::Parse(start);
+            try
+            {
+                val.expression = FdoExpression::Parse(start);
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+
+                // just use the string directly
+                val.expression = NULL;
+                val = start;
+            }
             return;
         }
 
         while(*str != L'\0' && *str != L'\'')
             str++;
 
+        // literal expression must have a matching closing single quote
         if (*str++ == L'\0')
         {
-            val.expression = FdoExpression::Parse(start);
+            try
+            {
+                val.expression = FdoExpression::Parse(start);
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+
+                // just use the string directly
+                val.expression = NULL;
+                val = start;
+            }
             return;
         }
 
-        /* Last character of the literal expression should be a single quote as well */
+        // last character of the literal expression should also be a single quote
         if (*str != L'\0')
         {
-            val.expression = FdoExpression::Parse(start);
+            try
+            {
+                val.expression = FdoExpression::Parse(start);
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+
+                // just use the string directly
+                val.expression = NULL;
+                val = start;
+            }
             return;
         }
 
@@ -226,6 +267,7 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
         val = copy;
     }
 }
+
 
 void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr, SE_Color& val)
 {
@@ -244,9 +286,7 @@ void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr,
     int ret = swscanf(cstr, L"%X%n", &val.value.argb, &chars);
 
     if (ret == 1 && chars == len)
-    {
         return;
-    }
-    
+
     val.expression = FdoExpression::Parse(cstr);
 }

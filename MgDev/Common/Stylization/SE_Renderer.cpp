@@ -297,11 +297,14 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
         {
             SE_RenderRaster* rp = (SE_RenderRaster*)primitive;
 
-            double x, y;
-            posxform.transform(rp->position[0], rp->position[1], x, y);
-            double angleDeg = (rp->angle + anglerad) / M_PI180;
+            if (rp->pngPtr != NULL)
+            {
+                double x, y;
+                posxform.transform(rp->position[0], rp->position[1], x, y);
+                double angleDeg = (rp->angle + anglerad) / M_PI180;
 
-            DrawScreenRaster((unsigned char*)rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], angleDeg);
+                DrawScreenRaster((unsigned char*)rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], angleDeg);
+            }
         }
     }
 }
