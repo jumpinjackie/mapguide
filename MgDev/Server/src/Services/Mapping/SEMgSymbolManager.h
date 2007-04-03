@@ -30,7 +30,7 @@ struct ImageCacheT
 };
 
 // MappingService specific implementation of the RS_SymbolManager interface.
-// It retrieves DWF symbol data from the resource service and caches it
+// It retrieves symbol definition data from the resource service and caches it
 // for reuse by stylization.
 class MG_SERVER_MAPPING_API SEMgSymbolManager : public SE_SymbolManager
 {
@@ -38,8 +38,8 @@ public:
     SEMgSymbolManager(MgResourceService* svc);
     virtual ~SEMgSymbolManager();
 
-    virtual SymbolDefinition* GetSymbolDefinition(const wchar_t* resource);
-    virtual const unsigned char* GetImageData(const wchar_t* resource, const wchar_t* name, int& length);
+    virtual SymbolDefinition* GetSymbolDefinition(const wchar_t* resourceId);
+    virtual const unsigned char* GetImageData(const wchar_t* resourceId, const wchar_t* resourceName, int& length);
 
 private:
     MgResourceService* m_svcResource;

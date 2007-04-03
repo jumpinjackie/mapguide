@@ -35,9 +35,9 @@ class MgRepository;
 ///      <li>get, set, rename, list, and delete resource data</li>
 ///      <li>set permission for repositories and resources</li>
 ///   </ul>
-/// 
+///
 /// \ingroup Resource_Service_classes
-/// 
+///
 class MG_PLATFORMBASE_API MgResourceService : public MgService
 {
 INTERNAL_API:
@@ -527,7 +527,7 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Sets the Metadata Stream for the given Resources.
+    /// Sets the Metadata content for an existing resource.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -566,7 +566,6 @@ PUBLISHED_API:
     /// GetMetadata
     ///
     virtual void SetResourceMetadata(MgResourceIdentifier* resource, MgByteReader* content);
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -842,7 +841,7 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param resource (MgResourceIdentifier)
-    /// The resource in the repository has metadata attached to. Note the resource has to exist else this method fails.
+    /// The resource in the repository which has metadata attached to it. Note the resource has to exist else this method fails.
     ///
     /// \return
     /// The metadata content in XML format. This can null in which case the resource has no metadata attached.
@@ -857,8 +856,6 @@ PUBLISHED_API:
     /// SetResourceMetadata
     ///
     virtual MgByteReader* GetResourceMetadata(MgResourceIdentifier* resource);
-
-
 
     //////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1530,9 +1527,7 @@ PUBLISHED_API:
     ///
     virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter);
 
-
 INTERNAL_API:
-
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Enumerates the resources in the specified repository.
@@ -1686,8 +1681,6 @@ protected:
     ///
     virtual void Dispose();
 
-private:
-
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_ResourceService_ResourceService;
 
@@ -1738,6 +1731,5 @@ INTERNAL_API:
         opIdEnumerateUnmanagedData          = 0x1111EF1A,
     };
 };
-
 
 #endif

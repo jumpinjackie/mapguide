@@ -81,7 +81,7 @@ SimpleSymbolDefinition* SimpleSymbol::OrphanSymbolDefinition()
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Symbol reference. We call it ResourceId because this allows
+// PURPOSE: Symbol reference.  We call it ResourceId because this allows
 // it to be indexed by Berkley DB.
 // PARAMETERS:
 //-------------------------------------------------------------------------
@@ -91,13 +91,13 @@ const MdfString& SimpleSymbol::GetResourceId() const
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Symbol Reference. We call it ResourceId because this allows
+// PURPOSE: Symbol Reference.  We call it ResourceId because this allows
 // it to be indexed by Berkley DB.
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void SimpleSymbol::SetResourceId(const MdfString& symbolReference)
+void SimpleSymbol::SetResourceId(const MdfString& resourceId)
 {
-    this->m_sResourceId = symbolReference;
+    this->m_sResourceId = resourceId;
 
     // Definition and Reference are mutually exclusive.  Setting one
     // clears the other.

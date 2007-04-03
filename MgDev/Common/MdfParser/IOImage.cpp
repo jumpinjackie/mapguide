@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOImage.h"
+#include "IOResourceRef.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -43,7 +44,8 @@ void IOImage::ElementChars(const wchar_t *ch)
     Image* image = static_cast<Image*>(this->_element);
 
          IF_STRING_PROPERTY(m_currElemName, image, Content, ch)
-    else IF_STRING_PROPERTY(m_currElemName, image, Reference, ch)
+    else IF_STRING_PROPERTY(m_currElemName, image, ResourceId, ch)
+    else IF_STRING_PROPERTY(m_currElemName, image, LibraryItemName, ch)
     else IF_STRING_PROPERTY(m_currElemName, image, SizeX, ch)
     else IF_STRING_PROPERTY(m_currElemName, image, SizeY, ch)
     else IF_STRING_PROPERTY(m_currElemName, image, SizeScalable, ch)
@@ -56,19 +58,24 @@ void IOImage::ElementChars(const wchar_t *ch)
 void IOImage::Write(MdfStream &fd, Image* image)
 {
     // We must emit either the content or a reference, but
-    // not both.  It's invalid for both strings to be empty,
+    // not both.  It's invalid for all strings to be empty,
     // but to ensure the XML is valid we still write an empty
     // reference.
-    assert((image->GetContent().size() > 0) ^ (image->GetReference().size() > 0));
-    bool contentOptional = (image->GetContent().size() == 0);
-
     fd << tab() << "<Image>" << std::endl; // NOXLATE
     inctab();
 
     IOGraphicElement::Write(fd, image);
 
-    EMIT_STRING_PROPERTY(fd, image, Content, contentOptional)
-    EMIT_STRING_PROPERTY(fd, image, Reference, !contentOptional)
+    if (image->GetContent().size() > 0)
+    {
+        EMIT_STRING_PROPERTY(fd, image, Content, false)
+    }
+    else
+    {
+        assert(image->GetLibraryItemName().size() > 0);
+        IOResourceRef::Write(fd, "Reference", image->GetResourceId(), image->GetLibraryItemName(), true); // NOXLATE
+    }
+
     EMIT_STRING_PROPERTY(fd, image, SizeX, false)
     EMIT_STRING_PROPERTY(fd, image, SizeY, false)
     EMIT_STRING_PROPERTY(fd, image, SizeScalable, true)

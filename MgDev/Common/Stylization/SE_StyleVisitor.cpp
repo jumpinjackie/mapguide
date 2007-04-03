@@ -479,10 +479,19 @@ void SE_StyleVisitor::VisitImage(Image& image)
     }
     else
     {
-        ParseStringExpression(image.GetReference(), primitive->pngPath);
+        ParseStringExpression(image.GetResourceId(), primitive->pngResourceId);
+        ParseStringExpression(image.GetLibraryItemName(), primitive->pngResourceName);
 
-        if (primitive->pngPath.expression == NULL) // constant path
-            primitive->pngPtr = (unsigned char*)(m_resources? m_resources->GetImageData(primitive->resId, primitive->pngPath.value, primitive->pngSize) : NULL);
+        if (primitive->pngResourceId.expression == NULL && primitive->pngResourceName.expression == NULL) // constant path
+        {
+            // if we have non-empty resource ID then use it, otherwise use
+            // the ID of any parent symbol definition
+            const wchar_t* resourceId = primitive->pngResourceId.value;
+            if (wcslen(resourceId) == 0)
+                resourceId = primitive->resId;
+
+            primitive->pngPtr = (unsigned char*)(m_resources? m_resources->GetImageData(resourceId, primitive->pngResourceName.value, primitive->pngSize) : NULL);
+        }
         else
             primitive->pngPtr = NULL;
     }

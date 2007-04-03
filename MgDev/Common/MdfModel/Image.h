@@ -33,12 +33,14 @@ BEGIN_NAMESPACE_MDFMODEL
         Image();
         virtual ~Image();
 
-        // TODO: base64 as unicode, it's just not right!  Do something else.
         const MdfString& GetContent() const;
         void SetContent(const MdfString& content);
 
-        const MdfString& GetReference() const;
-        void SetReference(const MdfString& reference);
+        const MdfString& GetResourceId() const;
+        void SetResourceId(const MdfString& resourceId);
+
+        const MdfString& GetLibraryItemName() const;
+        void SetLibraryItemName(const MdfString& libraryItemName);
 
         const MdfString& GetSizeX() const;
         void SetSizeX(const MdfString& sizeX);
@@ -67,7 +69,8 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Data members
         MdfString m_sContent;
-        MdfString m_sReference;
+        MdfString m_sResourceId;
+        MdfString m_sLibraryItemName;
 
         MdfString m_sSizeX;
         MdfString m_sSizeY;

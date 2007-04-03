@@ -30,7 +30,10 @@
         </Image>
         <Image>
           <ResizeControl>'AddToResizeBox'</ResizeControl>
-          <Reference>Library://Image.jpg</Reference>
+          <Reference>
+            <ResourceId>Library://ImageLibrary.SymbolDefinition</ResourceId>
+            <LibraryItemName>MyImage</LibraryItemName>
+          </Reference>
           <SizeX>100.0</SizeX>
           <SizeY>100.0</SizeY>
           <SizeScalable>True</SizeScalable>
