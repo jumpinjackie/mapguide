@@ -49,9 +49,12 @@ SEMgSymbolManager::~SEMgSymbolManager()
     }
 }
 
-SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource)
+SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resourceId)
 {
-    STRING uniqueName = STRING(resource);
+    if (!resourceId)
+        resourceId = L"";
+
+    STRING uniqueName = STRING(resourceId);
     SymbolDefinition* ret = m_mSymbolCache[uniqueName];
 
     //check if we errored on this symbol before and
@@ -108,12 +111,12 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
     return ret;
 }
 
-const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resource, const wchar_t* name, int& length)
+const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* resourceName, int& length)
 {
-    if (!resource)
-        resource = L"";
+    if (!resourceId)
+        resourceId = L"";
 
-    STRING uniqueName = STRING(resource) + STRING(name);
+    STRING uniqueName = STRING(resourceId) + STRING(resourceName);
     ImageCacheT item = m_mImageCache[uniqueName];
     unsigned char* ret = NULL;
     length = 0;
@@ -132,16 +135,16 @@ const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resource, co
         {
             Ptr<MgByteReader> sdReader;
 
-            if (wcsncmp(uniqueName.c_str(), L"Library://", 10) == 0)
+            if (wcsncmp(resourceId, L"Library://", 10) == 0)
             {
-                MgResourceIdentifier resId(resource);
+                MgResourceIdentifier resId(resourceId);
 
-                //get the image named "name" attached to resource "resId"
-                sdReader = m_svcResource->GetResourceData(&resId, name);
+                //get the image named "resourceName" attached to resource "resId"
+                sdReader = m_svcResource->GetResourceData(&resId, resourceName);
             }
             else
             {
-                sdReader = new MgByteReader(name, MgMimeType::Png, false);
+                sdReader = new MgByteReader(resourceName, MgMimeType::Png, false);
             }
 
             INT64 len = sdReader->GetLength();

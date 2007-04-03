@@ -40,7 +40,7 @@ BEGIN_NAMESPACE_MDFMODEL
         SimpleSymbolDefinition* OrphanSymbolDefinition();
 
         const MdfString& GetResourceId() const;
-        void SetResourceId(const MdfString& symbolReference);
+        void SetResourceId(const MdfString& resourceId);
 
         const MdfString& GetRenderingPass() const;
         void SetRenderingPass(const MdfString& renderingPass);

@@ -58,25 +58,50 @@ void Image::SetContent(const MdfString& content)
 
     // Content and Reference are mutually exclusive.  Setting one
     // clears the other.
-    this->m_sReference.clear();
+    this->m_sResourceId.clear();
+    this->m_sLibraryItemName.clear();
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Image reference.  We call it ResourceId because this allows
+// it to be indexed by Berkley DB.
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& Image::GetResourceId() const
+{
+    return this->m_sResourceId;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Image reference.  We call it ResourceId because this allows
+// it to be indexed by Berkley DB.
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Image::SetResourceId(const MdfString& resourceId)
+{
+    this->m_sResourceId = resourceId;
+
+    // Content and Reference are mutually exclusive.  Setting one
+    // clears the other.
+    this->m_sContent.clear();
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-const MdfString& Image::GetReference() const
+const MdfString& Image::GetLibraryItemName() const
 {
-    return this->m_sReference;
+    return this->m_sLibraryItemName;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void Image::SetReference(const MdfString& reference)
+void Image::SetLibraryItemName(const MdfString& libraryItemName)
 {
-    this->m_sReference = reference;
+    this->m_sLibraryItemName = libraryItemName;
 
     // Content and Reference are mutually exclusive.  Setting one
     // clears the other.

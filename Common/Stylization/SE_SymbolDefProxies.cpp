@@ -227,7 +227,12 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 
     if (!pngPtr)
     {
-        ret->pngPtr = cxt->resources->GetImageData(resId, pngPath.evaluate(cxt->exec), ret->pngSize);
+        // if we have non-empty resource ID then use it, otherwise use
+        // the ID of any parent symbol definition
+        const wchar_t* resourceId = pngResourceId.evaluate(cxt->exec);
+        if (wcslen(resourceId) == 0)
+            resourceId = resId;
+        ret->pngPtr = cxt->resources->GetImageData(resourceId, pngResourceName.evaluate(cxt->exec), ret->pngSize);
     }
     else
     {

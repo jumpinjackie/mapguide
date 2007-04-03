@@ -6,10 +6,7 @@
       <Name>UpperLowerDashing</Name>
       <Graphics>
         <Path>
-          <Geometry>
-          M 0,-2.5 h 8 m 2,0 h 8 m 2,0 h 2
-          M 0,2.5 h 8 m 2,0 h 8 m 2,0 h 2
-        </Geometry>
+          <Geometry>M 0,-2.5 h 8 m 2,0 h 8 m 2,0 h 2 M 0,2.5 h 8 m 2,0 h 8 m 2,0 h 2</Geometry>
         </Path>
       </Graphics>
       <LineUsage>
