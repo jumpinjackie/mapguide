@@ -62,7 +62,7 @@ public:
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts) = 0;
 
     //miscellaneous
-    void SetLineBufferPool(SE_LineBufferPool* pool);
+    void SetBufferPool(SE_BufferPool* pool);
     const RS_F_Point* GetLastExclusionRegion();
     SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol);
 
@@ -70,13 +70,19 @@ protected:
     void SetRenderSelectionMode(bool mode);
 
 private:
+    // TODO: remove/integrate when joins work with rasters, text
+    void ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* style);
+    void DrawSymbolJoin(SE_RenderPrimitiveList& symbol, SE_PiecewiseTransform** xforms, int nxforms);
+    void AddLabelJoin(LineBuffer* geom, SE_RenderStyle* style, SE_PiecewiseTransform** xforms, int nxforms);
+    void AddExclusionRegionJoin(SE_PiecewiseTransform** xforms, int nxforms);
+
     void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double anglerad);
     void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double anglerad);
 
     RS_F_Point m_lastExclusionRegion[4];
 
 protected:
-    SE_LineBufferPool* m_lbp;
+    SE_BufferPool* m_bp;
     bool m_bSelectionMode;
 
     double m_selWeight;

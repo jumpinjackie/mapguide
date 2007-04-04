@@ -18,9 +18,7 @@
 #ifndef SE_RENDERPROXIES_H
 #define SE_RENDERPROXIES_H
 
-#include "SE_Bounds.h"
 #include "SE_LineBuffer.h"
-
 
 enum SE_RenderPrimitiveType
 {
@@ -30,14 +28,12 @@ enum SE_RenderPrimitiveType
     SE_RenderRasterPrimitive
 };
 
-
 enum SE_RenderStyleType
 {
     SE_RenderPointStyleType,
     SE_RenderLineStyleType,
     SE_RenderAreaStyleType
 };
-
 
 enum SE_RenderResizeControlType
 {
@@ -52,7 +48,6 @@ enum SE_RenderResizeControlType
 //        SE_RenderPrimitives
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 
 struct SE_RenderPrimitive
 {
@@ -70,6 +65,9 @@ struct SE_RenderPolyline : public SE_RenderPrimitive
     SE_LineBuffer* geometry;
     double weight;
     unsigned int color;
+    SE_LineJoin join;
+    SE_LineCap cap;
+    double miterLimit;
 };
 
 
@@ -182,7 +180,7 @@ struct SE_RenderLineStyle : public SE_RenderStyle
     double endOffset;
     double repeat;
     double vertexAngleLimit;
-    const wchar_t* vertexJoin;
+    SE_LineJoin vertexJoin;
 };
 
 

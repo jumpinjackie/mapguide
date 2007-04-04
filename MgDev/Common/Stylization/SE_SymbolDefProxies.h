@@ -45,7 +45,7 @@ public:
     double mm2pxw;
     double mm2pxs;
     double mm2px;
-    SE_LineBufferPool* pool;
+    SE_BufferPool* pool;
     LineBuffer* geometry; //only used for SE_PointStyles -- get rid of it if possible
 };
 
@@ -69,6 +69,9 @@ struct SE_Polyline : public SE_Primitive
     SE_Double weight;
     SE_Color color;
     SE_Boolean weightScalable;
+    SE_String join;
+    SE_String cap;
+    SE_Double miterLimit;
 
     SE_INLINE SE_Polyline() : weight(0.0) { }
     ~SE_Polyline() { geometry->Free(); }

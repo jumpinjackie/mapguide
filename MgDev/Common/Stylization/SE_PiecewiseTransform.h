@@ -19,6 +19,7 @@
 #define SE_PIECEWISETRANSFORM_H
 
 #include "Bounds.h"
+#include "SE_Matrix.h"
 
 class SE_LineStorage;
 class SE_LineBufferStorage;
@@ -36,10 +37,15 @@ public:
     /* Applying the chop is left to the caller.  Chop the symbol before startx and after endx. */
     virtual void GetXChop(double& startx, double& endx) = 0;
 
-    /* This transform function is not aware of the chop value */
-    virtual RS_F_Point* Transform(const RS_F_Point& pt0, const RS_F_Point& pt1, int& length) = 0;
-    /* This transform function handles the chop as well */
-    virtual void Transform(SE_LineStorage* src, SE_LineStorage* dst, bool closed) = 0;
+    /* The nonnegative distance along the line, before and after the vertex, that the join affects */
+    virtual void GetXRadius(double& pre, double& post) = 0;
+
+    /* Line-Space transform (i.e. translation by x is along the line) applied to all arguments
+     * to Transform before join computation (multiple calls are cumulative)*/
+    virtual void ApplyPreTransform(SE_Matrix& prexf) = 0;
+
+    /* The transform function handles the chop as well */
+    virtual void Transform(SE_LineStorage* src, SE_LineStorage* dst, int contour, int ncntrs, bool closed) = 0;
 };
 
 #endif // SE_PIECEWISETRANSFORM_H

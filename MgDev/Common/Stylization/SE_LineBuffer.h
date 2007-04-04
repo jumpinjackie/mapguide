@@ -20,11 +20,28 @@
 
 #include "LineBuffer.h"
 #include "SE_Matrix.h"
-#include "SE_LineStorage.h"
+#include "SE_PiecewiseTransform.h"
 #include <set>
 
 struct SE_Bounds;
-class SE_LineBufferPool;
+class SE_LineStorage;
+class SE_BufferPool;
+
+enum SE_LineCap
+{
+    SE_LineCap_None,
+    SE_LineCap_Round,
+    SE_LineCap_Triangle,
+    SE_LineCap_Square
+};
+
+enum SE_LineJoin
+{
+    SE_LineJoin_None,
+    SE_LineJoin_Bevel,
+    SE_LineJoin_Round,
+    SE_LineJoin_Miter
+};
 
 struct PointLess : std::binary_function<std::pair<double, double>&, std::pair<double, double>&, bool>
 {
@@ -41,9 +58,9 @@ typedef std::vector<std::pair<double, double> > PointList;
 
 class SE_LineBuffer
 {
-friend class SE_LineBufferPool;
+friend class SE_BufferPool;
 private:
-    SE_LineBuffer(int size);
+    SE_LineBuffer(int size, SE_BufferPool* pool);
     ~SE_LineBuffer();
 
 public:
@@ -57,25 +74,37 @@ public:
     STYLIZATION_API void MoveTo(double x, double y);
     STYLIZATION_API void LineTo(double x, double y);
     STYLIZATION_API void EllipticalArcTo(double cx, double cy, double rx, double ry, double sAng, double eAng, double rotation);
+    STYLIZATION_API void SetGeometry(LineBuffer* srclb);
     STYLIZATION_API void Close();
     STYLIZATION_API bool Empty();
     STYLIZATION_API void Free();
+    STYLIZATION_API void Reset();
 
-    STYLIZATION_API LineBuffer* Transform(const SE_Matrix& xform, double weight = 0.0, double tolerance = .25);
+    /* Caller doesn't free */
+    STYLIZATION_API SE_LineStorage* Transform(const SE_Matrix& xform, 
+                                              double weight = 0.0, 
+                                              SE_LineCap cap = SE_LineCap_None, 
+                                              SE_LineJoin join = SE_LineJoin_Bevel,
+                                              double miterLimit = 0.0,
+                                              double tolerance = .25);
+
+    /* Caller frees */
+    STYLIZATION_API SE_LineStorage* TransformInstance(SE_PiecewiseTransform** ppxf, int xflen, bool closed = false);
     
     STYLIZATION_API SE_INLINE bool& compute_bounds() { return m_compute_bounds; }
     STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return (LineBuffer*)m_xf_buf; }
+    STYLIZATION_API SE_INLINE LineBuffer* xf_wt_buf() { return (LineBuffer*)m_xf_wt_buf; } // TODO: Debug only, remove
     STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds() { return m_xf_bounds; }
 
     STYLIZATION_API SE_LineBuffer* Clone();
 
 private:
-    void Reset();
-    void ResizeBuffer(void** buffer, int unitsize, int mininc, int cur_pts, int& max_pts);
     void TessellateCubicTo(SE_LineStorage* pts, double px2, double py2, double px3, double py3, double px4, double py4, int steps);
-    SE_Bounds* ComputeConvexHull(double* pnts, int npts, int* cntrs, int ncntrs, double weight);
+    SE_Bounds* ComputeConvexHull(double* pnts, int* cntrs, int ncntrs);
+    void PopulateXFBuffer();
+    void PopulateXFWeightBuffer();
 
-    SE_LineBufferPool* m_pool;
+    SE_BufferPool* m_pool;
 
     double* m_pts;
     SE_LB_SegType* m_segs;
@@ -86,35 +115,21 @@ private:
 
     double m_start[2];
     double m_last[2];
-
+     
     bool m_compute_bounds;
 
     SE_Matrix m_xf;
     double m_xf_tol;
     double m_xf_weight;
+    double m_xf_miter_limit;
+    SE_LineJoin m_xf_join;
+    SE_LineCap m_xf_cap;
     SE_Bounds* m_xf_bounds;
     SE_LineStorage* m_xf_buf;
+    SE_LineStorage* m_xf_wt_buf;
 
     /* TODO: write a stack based allocator for this, or replace it */
     PointList m_ch_ptbuf;
-};
-
-//---------------------------------------------
-// Object pool for line buffers
-//---------------------------------------------
-
-class SE_LineBufferPool
-{
-public:
-    STYLIZATION_API virtual ~SE_LineBufferPool();
-    STYLIZATION_API SE_LineBuffer* NewLineBuffer(int requestSize);
-    STYLIZATION_API SE_Bounds* NewBounds(int size);
-    STYLIZATION_API void FreeBounds(SE_Bounds* bounds);
-    STYLIZATION_API void FreeLineBuffer(SE_LineBuffer*);
-
-private:
-    DataValueStack<SE_LineBuffer> m_lb_pool;
-    DataValueStack<SE_Bounds> m_bnd_pool;
 };
 
 #endif // SE_LINEBUFFER_H

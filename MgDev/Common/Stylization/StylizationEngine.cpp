@@ -42,7 +42,7 @@ StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
     m_serenderer(NULL),
     m_reader(NULL)
 {
-    m_pool = new SE_LineBufferPool;
+    m_pool = new SE_BufferPool;
     m_lbPool = new LineBufferPool;
     m_visitor = new SE_StyleVisitor(resources, m_pool);
 }
@@ -85,7 +85,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     if (NULL == gpName)
         return;
 
-    m_serenderer->SetLineBufferPool(m_pool);
+    m_serenderer->SetBufferPool(m_pool);
     bool bClip = m_renderer->RequiresClipping();
 
     // get tooltip and url for the layer
@@ -134,8 +134,8 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             //get the geometry just once
             //all types of geometry
             LineBuffer* lb = m_lbPool->NewLineBuffer(8);
-            reader->GetGeometry(gpName, lb, xformer);
-
+            reader->GetGeometry(gpName, lb, xformer); 
+ 
             if (lb && bClip)
             {
                 //clip geometry to given map request extents

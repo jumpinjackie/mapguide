@@ -21,10 +21,13 @@
 #include "SE_PiecewiseTransform.h"
 #include "SE_Matrix.h"
 #include <float.h>
+#include <vector>
 
 class SE_MiterJoin : public SE_PiecewiseTransform
 {
 public:
+    SE_MiterJoin() { }
+
     SE_MiterJoin(double limit,                  /* The miter limit of the join */
                  RS_Bounds& bounds,             /* The bounds of the unoriented symbol in pixel units */
                  double vertexOffset,           /* The distance along the line (in pixels) from the 
@@ -40,10 +43,11 @@ public:
     virtual RS_Bounds& GetTransformedBounds();
 
     virtual void GetXChop(double& startx, double& endx);
+    virtual void GetXRadius(double& pre, double& post);
 
+    virtual void ApplyPreTransform(SE_Matrix& prexf);
     /* Transform will apply the join transform, as well as the appropriate orientation in screen space */
-    virtual RS_F_Point* Transform(const RS_F_Point& pt0, const RS_F_Point& pt1, int& length);
-    virtual void Transform(SE_LineStorage* src, SE_LineStorage* dst, bool closed);
+    virtual void Transform(SE_LineStorage* src, SE_LineStorage* dst, int contour, int ncntrs, bool closed);
 
 private:
     void _Transform(RS_F_Point& pt);
@@ -53,7 +57,6 @@ private:
     double m_bevel;       /* Height of the bevel in join space */
     double m_width;       /* Distance from the center on each side that is transformed in join space*/
     double m_bevel_width; /* Maximum transformed size of m_width */
-    double m_top_width;   /* Transformed size of m_width at m_height */
 
     double m_bevel_scale;
     double m_miter_scale;

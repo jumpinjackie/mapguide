@@ -124,7 +124,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="0"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
@@ -662,6 +662,14 @@
 			</File>
 			<File
 				RelativePath=".\SE_Bounds.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_BufferPool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_BufferPool.h"
 				>
 			</File>
 			<File
