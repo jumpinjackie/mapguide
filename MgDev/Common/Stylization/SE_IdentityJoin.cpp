@@ -19,7 +19,12 @@
 #include "SE_LineStorage.h"
 #include <float.h>
 
-SE_IdentityJoin::SE_IdentityJoin(RS_Bounds& bounds, double offset, const RS_F_Point& pt0, const RS_F_Point& pt1) :
+SE_IdentityJoin::SE_IdentityJoin(RS_Bounds& bounds,
+                                 double offset, 
+                                 const RS_F_Point& pt0, 
+                                 const RS_F_Point& pt1, 
+                                 double prechop,
+                                 double postchop) :
     m_xf_bounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX),
     m_xform()
 {
@@ -38,17 +43,8 @@ SE_IdentityJoin::SE_IdentityJoin(RS_Bounds& bounds, double offset, const RS_F_Po
     m_xform.translate(pt0.x + dp.x, pt0.y + dp.y);
 
     m_bounds = bounds;
-    double underreach = len - bounds.width() - offset;
-    if (offset < 0)
-    {
-        m_bounds.minx -= offset;
-        m_chop_start = m_bounds.minx;
-    }
-    if (underreach < 0)
-    {
-        m_bounds.maxx += underreach;
-        m_chop_end = m_bounds.maxx;
-    }
+    m_chop_start = bounds.minx + prechop - offset;
+    m_chop_end = bounds.minx + postchop - offset;
 }
 
 RS_F_Point* SE_IdentityJoin::GetDiscontinuities(int &length)
@@ -93,27 +89,32 @@ void SE_IdentityJoin::GetXChop(double& startx, double& endx)
     endx = m_chop_end;
 }
 
-RS_F_Point* SE_IdentityJoin::Transform(const RS_F_Point& pt0, const RS_F_Point& pt1, int& length)
+void SE_IdentityJoin::GetXRadius(double& pre, double& post)
 {
-    length = 2;
-    m_xform.transform(pt0.x, pt0.y, m_points[0].x, m_points[0].y);
-    m_xform.transform(pt1.x, pt1.y, m_points[1].x, m_points[1].y);
-    return m_points;
+    pre = post = 0.0;
 }
 
-void SE_IdentityJoin::Transform(SE_LineStorage* source, SE_LineStorage* dest, bool closed)
+void SE_IdentityJoin::ApplyPreTransform(SE_Matrix& prexf)
 {
+    m_xform.postmultiply(prexf);
+}
 
+void SE_IdentityJoin::Transform(SE_LineStorage* source, SE_LineStorage* dest, int contour, int ncntrs, bool closed)
+{
     const RS_Bounds& bounds = source->bounds();
-    if (bounds.minx < m_chop_start || bounds.maxx > m_chop_end)
-    {   /* Chopping may be required */
+
+    if (bounds.minx < m_chop_start || bounds.maxx > m_chop_end) 
+    { /* Chopping may be required */
+        double saved_chop_start, saved_chop_end;
+        bool saved_chop_closed;
+        dest->GetChopInfo(saved_chop_start, saved_chop_end, saved_chop_closed);
         dest->SetChopInfo(m_chop_start, m_chop_end, closed);
         
-        int n_cntrs = source->cntr_count();
         int* contours = source->cntrs();
         double* src = source->points();
+        int orig_point_cnt = dest->point_count();
 
-        for (int i = 0; i < n_cntrs; i++)
+        for (int i = contour; i < ncntrs; i++)
         {
             double x, y;
             double* last = src + 2*contours[i];
@@ -131,8 +132,41 @@ void SE_IdentityJoin::Transform(SE_LineStorage* source, SE_LineStorage* dest, bo
                 dest->_LineTo(x, y);
             }
         }
-        dest->Transform(m_xform);
+        dest->SetChopInfo(saved_chop_start, saved_chop_end, saved_chop_closed);
+
+        src = dest->points() + orig_point_cnt*2;
+        double* last = dest->points() + dest->point_count()*2;
+        
+        while (src < last)
+        {
+            m_xform.transform(src[0], src[1]);
+            src += 2;
+        }
     }
     else
-        dest->SetToTransform(m_xform, source);
+    {
+        int* contours = source->cntrs();
+        double* src = source->points();
+
+        for (int i = contour; i < ncntrs; i++)
+        {
+            double x, y;
+            double* last = src + 2*contours[i];
+            x = *src++;
+            y = *src++;
+            m_xform.transform(x, y);
+            dest->EnsureContours(1);
+            dest->EnsurePoints(1);
+            dest->_MoveTo(x, y);
+
+            while (src < last)
+            {
+                x = *src++;
+                y = *src++;
+                m_xform.transform(x, y);
+                dest->EnsurePoints(1);
+                dest->_LineTo(x, y);
+            }
+        }
+    }
 }

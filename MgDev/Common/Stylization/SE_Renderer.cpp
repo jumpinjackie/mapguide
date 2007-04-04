@@ -18,14 +18,19 @@
 #include "stdafx.h"
 #include "SE_Renderer.h"
 #include "SE_LineBuffer.h"
+#include "SE_LineStorage.h"
 #include "RS_FontEngine.h"
 #include "SE_Bounds.h"
+#include "SE_IdentityJoin.h"
+#include "SE_MiterJoin.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
+#define PXF_BUF_LEN 500
+#define PXF_SEG_DELTA 1e-2
 
 SE_Renderer::SE_Renderer()
-: m_lbp(NULL)
+: m_bp(NULL)
 , m_bSelectionMode(false)
 , m_selWeight(0.0)
 , m_selColor(0)
@@ -39,13 +44,6 @@ SE_Renderer::SE_Renderer()
 SE_Renderer::~SE_Renderer()
 {
 }
-
-
-void SE_Renderer::SetLineBufferPool(SE_LineBufferPool* pool)
-{
-    m_lbp = pool;
-}
-
 
 void SE_Renderer::SetRenderSelectionMode(bool mode)
 {
@@ -118,6 +116,410 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
     }
 }
 
+void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* style)
+{
+    RS_Bounds bounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
+    bounds.add_point(style->bounds[0]);
+    bounds.add_point(style->bounds[1]);
+    bounds.add_point(style->bounds[2]);
+    bounds.add_point(style->bounds[3]);
+    double width = bounds.width();
+
+    double increment = style->repeat;
+    /* Avoid infinite looping;
+     * Handily, if repeat is omitted from the XML, the symbol width will be used. */
+    if (increment <= 0)
+        increment = width;
+
+    double* pts = geometry->points();
+    RS_F_Point pprev, prev, cur, next, dv;
+
+    for (int j=0; j<geometry->cntr_count(); j++)
+    {
+        /* Current polyline */
+        double* end = pts + 2*geometry->cntrs()[j];
+
+        /* Without two points, you can't have much of a line */
+        if (end - pts < 4)
+            return;
+
+        /* TODO: test end offset (not implemented below either) */
+        //pixel position along the current segment of the polyline
+        //double drawpos = style->endOffset;
+        //double length = 0.0, seglen = 0.0;
+
+        //next.y = *(--end);
+        //next.x = *(--end);
+
+        //for(;;)
+        //{
+        //    cur.x = end[-2];
+        //    cur.y = end[-1];
+        //    dv.x = next.x - cur.x;
+        //    dv.y = next.y - cur.y;
+        //    seglen = sqrt(dv.x*dv.x + dv.y*dv.y);
+        //    length += seglen;
+        //    if (drawpos < length || pts > end)
+        //        break;
+        //    next.x = cur.x;
+        //    next.y = cur.y;
+        //    end -= 2;
+        //}
+
+        //if (pts < end)
+        //{
+        //    double frac = (length - drawpos)/seglen;
+        //    last.x = cur.x + dv.x*frac;
+        //    last.y = cur.y + dv.y*frac;
+        //}
+
+        WorldToScreenPoint(pts[0], pts[1], prev.x, prev.y);
+        pts += 2;
+        double drawpos = style->startOffset + bounds.minx;
+        double pprevlength = 0.0, prevlength = 0.0, length = 0.0, seglength = 0.0, nextseglength = 0.0;
+
+        for(;;)
+        {
+            WorldToScreenPoint(pts[0], pts[1], cur.x, cur.y);
+            dv.x = cur.x - prev.x;
+            dv.y = cur.y - prev.y;
+            seglength = sqrt(dv.x*dv.x + dv.y*dv.y);
+            length += seglength;
+            if (drawpos < length || pts > end)
+                break;
+            prev.x = cur.x;
+            prev.y = cur.y;
+            prevlength = length;
+            pts += 2;
+        }
+
+        double frac = 1.0 - (length - drawpos)/seglength;
+        prev.x = prev.x + dv.x*frac;
+        prev.y = prev.y + dv.y*frac;
+        prevlength = drawpos;
+
+        /* Handle single-segment lines */
+        if (end - pts == 2)
+        {
+            while (drawpos < length)
+            {
+                SE_IdentityJoin idj(bounds, drawpos - prevlength, prev, cur, -DBL_MAX, length - prevlength);
+                SE_PiecewiseTransform* ptx = &idj;
+                if (style->drawLast)
+                    AddLabelJoin(geometry, style, &ptx, 1);
+                else
+                {
+                    DrawSymbolJoin(style->symbol, &ptx, 1);
+                    if (style->addToExclusionRegions)
+                        AddExclusionRegionJoin(&ptx, 1);
+                }
+                drawpos += increment;
+            }
+            return;
+        }
+
+        /* TODO: start cap */
+
+        pts += 2;
+        WorldToScreenPoint(pts[0], pts[1], next.x, next.y);
+        dv.x = next.x - cur.x;
+        dv.y = next.y - cur.y;
+        nextseglength = sqrt(dv.x*dv.x + dv.y*dv.y);
+
+        SE_PiecewiseTransform** pxforms = (SE_PiecewiseTransform**)alloca(sizeof(SE_PiecewiseTransform*)*PXF_BUF_LEN);
+        SE_PiecewiseTransform* curpxf = NULL;
+        int npxforms = 0, pxfbuflen = PXF_BUF_LEN;
+        double cur_pre_rad, cur_post_rad, prev_pre_rad = 0.0, prev_post_rad = 0.0;
+
+        /* TODO: Refactor. Create control flow that makes sense. */
+        for(;;)
+        {
+            /* TODO: every time you allocate to the heap, god kills a kitten...needs object pooling... */
+            double miterLimit = 5.0; /* TODO: Forgotten in MDF model */
+            switch(style->vertexJoin)
+            {
+            case SE_LineJoin_Round: /* TODO */
+            case SE_LineJoin_None:
+            case SE_LineJoin_Bevel:
+                miterLimit = 0.0;
+            case SE_LineJoin_Miter:
+                {
+                    curpxf = new SE_MiterJoin(miterLimit, bounds, drawpos - length, prev, cur, next, npxforms > 0);
+                }
+                break;
+            //case SE_LineJoin_Round: /* TODO */
+            //case SE_LineJoin_None:
+            default:
+                {
+                    /* TODO: Unhose (Here, idj needs to not clip, but instead to piecewise transform)
+                     * basically, add another constructor with the same args as MiterJoin */
+                    curpxf = new SE_IdentityJoin(bounds, drawpos - prevlength, prev, cur);
+                }
+            }
+
+            double idlength = 0;
+            double startnpxforms = npxforms;
+            curpxf->GetXRadius(cur_pre_rad, cur_post_rad);
+
+            while (npxforms > 0 && drawpos + width < length - cur_pre_rad)
+            {
+                if (style->drawLast)
+                    AddLabelJoin(geometry, style, pxforms, npxforms);
+                else
+                {
+                    DrawSymbolJoin(style->symbol, pxforms, npxforms);
+                    if (style->addToExclusionRegions)
+                        AddExclusionRegionJoin(pxforms, npxforms);
+                }
+                idlength += increment;
+                drawpos += increment;
+
+                if (drawpos < prevlength + prev_post_rad)
+                {
+                    for (int i = 0; i < npxforms - 1; i++)
+                        delete pxforms[i];
+
+                    if (npxforms > 1)
+                    {   /* Stick in an I transform so the input coordinate systems match */
+                        pxforms[0] = new SE_IdentityJoin(bounds, drawpos - pprevlength, pprev, prev);                
+                        pxforms[1] = pxforms[npxforms-1];
+                        npxforms = 2;
+                    }
+                    else
+                    {
+                        SE_Matrix updatexf(1.0, 0.0, increment, 0.0, 1.0, 0.0); /* Translate by (increment, 0) */
+                        pxforms[0]->ApplyPreTransform(updatexf);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < npxforms; i++)
+                        delete pxforms[i];
+                    npxforms = 0;
+                }
+            }
+
+            if (npxforms == 0)
+            {
+                while (drawpos + width < length - cur_pre_rad)
+                {
+                    SE_IdentityJoin idj = SE_IdentityJoin(bounds, drawpos - prevlength, prev, cur);
+                    SE_PiecewiseTransform* pxform = &idj;
+                    /* TODO: This block gets copied and pasted like 8 times */
+                    if (style->drawLast)
+                        AddLabelJoin(geometry, style, &pxform, 1);
+                    else
+                    {
+                        DrawSymbolJoin(style->symbol, &pxform, 1);
+                        if (style->addToExclusionRegions)
+                            AddExclusionRegionJoin(&pxform, 1);
+                    }
+                    idlength += increment;
+                    drawpos += increment;
+                }
+            }
+
+            if (idlength > 0 && npxforms == 0)
+            {
+                if (startnpxforms > 0)
+                {/* curpxf is taking world coordinates, but is going to be the first xform */
+                    pxforms[npxforms++] = new SE_IdentityJoin(bounds, drawpos - prevlength, prev, cur);
+                }
+                else
+                {
+                    SE_Matrix updatexf(1.0, 0.0, idlength, 0.0, 1.0, 0.0); /* Translate by (idlength, 0) */
+                    curpxf->ApplyPreTransform(updatexf);
+                }
+            }
+
+            if (npxforms >= pxfbuflen)
+            {   /* TODO: pooling, etc. */
+                pxfbuflen *= 2;
+                SE_PiecewiseTransform** newbuf = new SE_PiecewiseTransform*[pxfbuflen];
+                memcpy(newbuf, pxforms, npxforms*sizeof(SE_PiecewiseTransform*));
+                if (npxforms != PXF_BUF_LEN)
+                    delete[] pxforms;
+                pxforms = newbuf;
+            }
+            pxforms[npxforms++] = curpxf;
+
+            pprev.x = prev.x;
+            pprev.y = prev.y;
+            prev.x = cur.x;
+            prev.y = cur.y;
+            cur.x = next.x;
+            cur.y = next.y;
+            prev_pre_rad = cur_pre_rad;
+            prev_post_rad = cur_post_rad;
+
+            seglength = nextseglength;
+            pprevlength = prevlength;
+            prevlength = length;
+            length += seglength;
+            
+            if (pts + 2 >= end)
+                break;
+
+            do
+            {
+                pts += 2;
+                WorldToScreenPoint(pts[0], pts[1], next.x, next.y);
+                /* TODO: Do this computation only once (nextlength?) */
+                dv.x = next.x - cur.x;
+                dv.y = next.y - cur.y;
+                nextseglength = sqrt(dv.x*dv.x + dv.y*dv.y);
+                /* TODO: do something more (simplify/smooth the line ahead of time?),
+                         and handle this case for the first few points. */
+            } while (nextseglength < PXF_SEG_DELTA && pts < end);
+            /* TODO: if the last points in a line are coincident, suboptimal results will occur */
+        }
+
+        if (npxforms > 0 && drawpos < length)
+        {
+            if (drawpos + width > length)
+            {   /* TODO: HACKHACK */
+                if (npxforms >= pxfbuflen)
+                {
+                    pxfbuflen *= 2;
+                    SE_PiecewiseTransform** newbuf = new SE_PiecewiseTransform*[pxfbuflen];
+                    memcpy(newbuf, pxforms, npxforms*sizeof(SE_PiecewiseTransform*));
+                    if (npxforms != PXF_BUF_LEN)
+                        delete[] pxforms;
+                    pxforms = newbuf;
+                }                
+                for (int i = npxforms; i > 0; i--)
+                    pxforms[i] = pxforms[i-1];
+                npxforms++;
+                RS_F_Point v0(0.0, 0.0), v1(1.0, 0.0);
+                pxforms[0] = new SE_IdentityJoin(bounds, bounds.minx, v0, v1, -DBL_MAX, bounds.minx + length - drawpos);
+            }
+
+            if (style->drawLast)
+                AddLabelJoin(geometry, style, pxforms, npxforms);
+            else
+            {
+                DrawSymbolJoin(style->symbol, pxforms, npxforms);
+                if (style->addToExclusionRegions)
+                    AddExclusionRegionJoin(pxforms, npxforms);
+            }
+            drawpos += increment;
+
+            while (drawpos < prevlength + prev_post_rad && drawpos < length)
+            {
+                /* TODO: handle chopping in this case */
+                for (int i = 0; i < npxforms - 1; i++)
+                    delete pxforms[i];
+                
+                if (npxforms > 1)
+                {
+                    pxforms[0] = new SE_IdentityJoin(bounds, drawpos - pprevlength, pprev, prev, -DBL_MAX, length - pprevlength);
+                    pxforms[1] = curpxf;
+                    npxforms = 2;
+                }
+                else
+                {
+                    SE_Matrix updatexf(1.0, 0.0, increment, 0.0, 1.0, 0.0);
+                    pxforms[1] = curpxf;
+                    pxforms[1]->ApplyPreTransform(updatexf);
+                    RS_F_Point v0(0.0, 0.0), v1(1.0, 0.0);
+                    pxforms[0] = new SE_IdentityJoin(bounds, bounds.minx, v0, v1, -DBL_MAX, bounds.minx + length - drawpos);
+                    npxforms = 2;
+                }
+                
+                if (style->drawLast)
+                    AddLabelJoin(geometry, style, pxforms, npxforms);
+                else
+                {
+                    DrawSymbolJoin(style->symbol, pxforms, npxforms);
+                    if (style->addToExclusionRegions)
+                        AddExclusionRegionJoin(pxforms, npxforms);
+                }
+                drawpos += increment;
+            }
+        }
+
+        for (int i = 0; i < npxforms; i++)
+            delete pxforms[i];
+
+        while (drawpos < length)
+        {
+            /* TODO: fix chopping and change next false to true */
+            SE_IdentityJoin idj = SE_IdentityJoin(bounds, drawpos - prevlength, prev, cur, -DBL_MAX, seglength);
+            SE_PiecewiseTransform* pxform = &idj;
+            if (style->drawLast)
+                AddLabelJoin(geometry, style, &pxform, 1);
+            else
+            {
+                DrawSymbolJoin(style->symbol, &pxform, 1);
+                if (style->addToExclusionRegions)
+                    AddExclusionRegionJoin(&pxform, 1);
+            }
+            drawpos += increment;
+        }
+
+        /* TODO: endcap */
+
+        if (pxfbuflen != PXF_BUF_LEN)
+            delete[] pxforms;
+    }
+}
+
+void SE_Renderer::DrawSymbolJoin(SE_RenderPrimitiveList& symbol, SE_PiecewiseTransform** xforms, int nxforms)
+{
+    SE_Matrix identity;
+
+    for (unsigned i = 0; i < symbol.size(); i++)
+    {
+        SE_RenderPrimitive* primitive = symbol[i];
+
+        if (primitive->type == SE_RenderPolygonPrimitive || primitive->type == SE_RenderPolylinePrimitive)
+        {
+            SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
+
+            if (m_bSelectionMode)
+            {
+                if (primitive->type == SE_RenderPolygonPrimitive)
+                {
+                    SE_LineStorage* inst = pl->geometry->TransformInstance(xforms, nxforms, true);
+                    DrawScreenPolygon((LineBuffer*)inst, &identity, m_selFill);
+                    inst->Free();
+                }
+                
+                SE_LineStorage* inst = pl->geometry->TransformInstance(xforms, nxforms, false);
+                DrawScreenPolyline((LineBuffer*)inst, &identity, m_selColor, m_selWeight );
+                inst->Free();
+            }
+            else
+            {
+                if (primitive->type == SE_RenderPolygonPrimitive)
+                {
+                    SE_LineStorage* inst = pl->geometry->TransformInstance(xforms, nxforms, true);
+                    DrawScreenPolygon((LineBuffer*)inst, &identity, ((SE_RenderPolygon*)primitive)->fill);
+                    inst->Free();
+                }
+                
+                SE_LineStorage* inst = pl->geometry->TransformInstance(xforms, nxforms, false);
+                DrawScreenPolyline((LineBuffer*)inst, &identity, pl->color, pl->weight);
+                inst->Free();
+            }
+        }
+    }
+}
+
+void SE_Renderer::AddLabelJoin(LineBuffer* geom, SE_RenderStyle* style, SE_PiecewiseTransform** xforms, int nxforms)
+{
+    /* TODO */
+}
+
+void SE_Renderer::AddExclusionRegionJoin(SE_PiecewiseTransform** xforms, int nxforms)
+{
+    /* TODO */
+}
+
+void SE_Renderer::SetBufferPool(SE_BufferPool* pool)
+{
+    m_bp = pool;
+}
 
 void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
@@ -155,6 +557,21 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
         }
     }
 
+    // TODO: remove/integrate when joins work with rasters, text
+    bool vectorOnly = true;
+    for (SE_RenderPrimitiveList::const_iterator iter = rs.begin(); iter != rs.end(); iter++)
+        if ((*iter)->type != SE_RenderPolylinePrimitive && (*iter)->type != SE_RenderPolygonPrimitive)
+        {
+            vectorOnly = false;
+            break;
+        }
+
+    if (vectorOnly && wcscmp(style->vertexControl, L"OverlapWrap") == 0)
+    {
+        ProcessLineJoin(geometry, style);
+        return;
+    }
+            
     SE_Matrix symxf;
 
     int ptindex = 0;

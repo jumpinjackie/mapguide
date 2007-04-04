@@ -20,6 +20,7 @@
 #include "SE_StyleVisitor.h"
 #include "SE_SymbolManager.h"
 #include "SE_LineBuffer.h"
+#include "SE_BufferPool.h"
 #include "SE_SymbolDefProxies.h"
 
 #include <wctype.h>
@@ -44,10 +45,10 @@ struct ArcData
 
 bool ParseArc(ArcDefinition& def, ArcData& data);
 
-SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_LineBufferPool* lbp)
+SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp)
 {
     m_resources = resources;
-    m_lbp = lbp;
+    m_bp = bp;
     m_primitive = NULL;
     m_symbolization = NULL;
     m_style = NULL;
@@ -418,11 +419,14 @@ void SE_StyleVisitor::VisitPath(Path& path)
     {
         SE_Polyline* line = new SE_Polyline();
         m_primitive = line;
-        line->geometry = m_lbp->NewLineBuffer(4);
+        line->geometry = m_bp->NewLineBuffer(4);
         ParseGeometry(geometry, *line->geometry);
         ParseDoubleExpression(path.GetLineWeight(), line->weight);
         ParseColorExpression(path.GetLineColor(), line->color);
         ParseBooleanExpression(path.GetLineWeightScalable(), line->weightScalable);
+        ParseStringExpression(path.GetLineCap(), line->cap);
+        ParseStringExpression(path.GetLineJoin(), line->join);
+        ParseDoubleExpression(path.GetLineMiterLimit(), line->miterLimit);
 
         /* If the color is transparent, there is no point in drawing this path,
          * so we will change it to black. */
@@ -430,22 +434,32 @@ void SE_StyleVisitor::VisitPath(Path& path)
             line->color.value.comps.a = 255;
         line->cacheable = !(line->weight.expression ||
                             line->color.expression ||
-                            line->weightScalable.expression);
+                            line->weightScalable.expression ||
+                            line->cap.expression ||
+                            line->join.expression ||
+                            line->miterLimit.expression);
     }
     else
     {
         SE_Polygon* polygon = new SE_Polygon();
         m_primitive = polygon;
-        polygon->geometry = m_lbp->NewLineBuffer(4);
+        polygon->geometry = m_bp->NewLineBuffer(4);
         ParseGeometry(geometry, *polygon->geometry);
         ParseDoubleExpression(path.GetLineWeight(), polygon->weight);
         polygon->fill = color;
         ParseColorExpression(path.GetLineColor(), polygon->color);
         ParseBooleanExpression(path.GetLineWeightScalable(), polygon->weightScalable);
+        ParseStringExpression(path.GetLineCap(), polygon->cap);
+        ParseStringExpression(path.GetLineJoin(), polygon->join);
+        ParseDoubleExpression(path.GetLineMiterLimit(), polygon->miterLimit);
+
         polygon->cacheable = !(polygon->weight.expression ||
                             polygon->color.expression ||
                             polygon->fill.expression ||
-                            polygon->weightScalable.expression);
+                            polygon->weightScalable.expression ||
+                            polygon->cap.expression ||
+                            polygon->join.expression ||
+                            polygon->miterLimit.expression);
     }
 }
 
@@ -469,11 +483,11 @@ void SE_StyleVisitor::VisitImage(Image& image)
         for (size_t i=0; i<srclen; i++)
             *ptr++ = (char)src_u[i];
 
-        size_t dstlen = Base64::GetDecodedLength(image.GetContent().size());
+        size_t dstlen = Base64::GetDecodedLength((unsigned long)image.GetContent().size());
         primitive->pngPtr = new unsigned char[dstlen];
         primitive->ownPtr = true;
 
-        Base64::Decode((unsigned char*)primitive->pngPtr, src_ascii, srclen);
+        Base64::Decode((unsigned char*)primitive->pngPtr, src_ascii, (unsigned long)srclen);
 
         delete [] src_ascii;
     }

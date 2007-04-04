@@ -21,16 +21,16 @@
 #include "Stylization.h"
 #include "SE_Matrix.h"
 
-class SE_LineBufferPool;
+class SE_BufferPool;
 
 struct SE_Bounds
 {
-friend class SE_LineBufferPool;
+friend class SE_BufferPool;
 private:
     SE_Bounds();
     ~SE_Bounds();
     int capacity;
-    SE_LineBufferPool* pool;
+    SE_BufferPool* pool;
 
 public:
     double* hull;

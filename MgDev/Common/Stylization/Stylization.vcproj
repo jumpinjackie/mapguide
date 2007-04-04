@@ -665,6 +665,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_BufferPool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_BufferPool.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_ConvexHull.h"
 				>
 			</File>

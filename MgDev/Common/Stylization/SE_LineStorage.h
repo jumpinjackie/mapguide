@@ -24,25 +24,32 @@
 
 class SE_LineStorage : public LineBuffer
 {
+friend class SE_BufferPool;
+
+private:
+    SE_LineStorage(int size, SE_BufferPool* pool);
+
 public:
-    SE_INLINE SE_LineStorage(int size);
     SE_INLINE void EnsurePoints(int n);
     SE_INLINE void EnsureContours(int n);
     SE_INLINE void SetBounds(double minx, double miny, double maxx, double maxy);
     SE_INLINE void SetBounds(SE_Bounds* bounds);
     SE_INLINE void SetChopInfo(double startx, double endx, bool closeChops);
+    SE_INLINE void GetChopInfo(double& startx, double& endx, bool& closeChops);
     SE_INLINE void Reset();
     
     SE_INLINE void _MoveToNoChop(double x, double y);
     SE_INLINE void _LineToNoChop(double x, double y);
     
-    void _MoveTo(double x, double y);
-    void _LineTo(double x, double y);
+    STYLIZATION_API void _MoveTo(double x, double y);
+    STYLIZATION_API void _LineTo(double x, double y);
     
     /* Both of these methods invalidate the bounds.  SetBounds must be called manually to restore them. */
-    void SetToTransform(const SE_Matrix& xform, LineBuffer* src);
-    void SetToCopy(SE_LineStorage* src);
-    void Transform(const SE_Matrix& xform);
+    STYLIZATION_API void SetToTransform(const SE_Matrix& xform, LineBuffer* src);
+    STYLIZATION_API void SetToCopy(SE_LineStorage* src);
+    STYLIZATION_API void Transform(const SE_Matrix& xform);
+    STYLIZATION_API void Append(SE_LineStorage* src);
+    STYLIZATION_API void Free();
 
 private:
     SE_INLINE double& _LastX() { return m_last_x; }
@@ -61,27 +68,21 @@ private:
     double m_cross_y;
     double m_chop_x;
     double m_chop_y;
+
+    SE_BufferPool* m_pool;
 };
 
 /* Inline Functions */
 
-SE_LineStorage::SE_LineStorage(int size) : 
-    LineBuffer(size),
-    m_do_chop(false),
-    m_chopped(false),
-    m_crossed(false)
-{ 
-}
-
 void SE_LineStorage::EnsurePoints(int n)
 {
-    if (m_cur_pts + 2*n >= m_pts_len)
+    if (m_cur_pts + 2*n > m_pts_len)
         _ResizePoints(n);
 }
 
 void SE_LineStorage::EnsureContours(int n)
 {
-    if (m_cur_cntr + 2 + n > m_cntrs_len)
+    if (m_cur_cntr + 1 + n > m_cntrs_len)
         _ResizeContours(n);
 }
 
@@ -103,10 +104,19 @@ void SE_LineStorage::SetBounds(SE_Bounds* bounds)
 
 void SE_LineStorage::SetChopInfo(double startx, double endx, bool closeChops)
 {
-    m_do_chop = true;
-    m_chop_start = startx;
-    m_chop_end = endx;
-    m_close_chops = closeChops;
+   m_chop_start = startx;
+   m_chop_end = endx;
+   m_close_chops = closeChops;
+   m_chopped = false;
+   m_crossed = false;
+   m_do_chop = startx < endx; /* No chopping if info is invalid */
+}
+
+void SE_LineStorage::GetChopInfo(double& startx, double& endx, bool& closeChops)
+{
+    startx = m_chop_start;
+    endx = m_chop_end;
+    closeChops = m_close_chops;
 }
 
 void SE_LineStorage::Reset()

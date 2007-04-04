@@ -25,7 +25,7 @@ class SE_SymbolManager;
 class RS_FeatureReader;
 class RS_FilterExecutor;
 class SE_LineBuffer;
-class SE_LineBufferPool;
+class SE_BufferPool;
 class SE_Renderer;
 class Renderer;
 class SE_StyleVisitor;
@@ -87,7 +87,7 @@ private:
     Renderer* m_renderer;
     SE_Renderer* m_serenderer;
     SE_SymbolManager* m_resources;
-    SE_LineBufferPool* m_pool;
+    SE_BufferPool* m_pool;
     SE_StyleVisitor* m_visitor;
     std::map<CompositeTypeStyle*, SE_Rule*> m_rules;
     LineBufferPool* m_lbPool;

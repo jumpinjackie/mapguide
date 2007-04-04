@@ -62,8 +62,30 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     ret->weight   = weight.evaluate(cxt->exec) * wx;
     ret->geometry = geometry->Clone();
     ret->color    = color.evaluate(cxt->exec);
+    
+    const wchar_t* sCap =   cap.evaluate(cxt->exec);
+    const wchar_t* sJoin =  join.evaluate(cxt->exec);
+    ret->miterLimit =       miterLimit.evaluate(cxt->exec);
+    
+    if (wcscmp(sCap, L"Square") == 0)
+        ret->cap = SE_LineCap_Square;
+    if (wcscmp(sCap, L"Round") == 0)
+        ret->cap = SE_LineCap_Round;
+    else if (wcscmp(sCap, L"Triangle") == 0)
+        ret->cap = SE_LineCap_Triangle;
+    else
+        ret->cap = SE_LineCap_None;
 
     ret->geometry->Transform(*cxt->xform, ret->weight);
+    if (wcscmp(sJoin, L"Bevel") == 0)
+        ret->join = SE_LineJoin_Bevel;
+    else if (wcscmp(sJoin, L"Round") == 0)
+        ret->join = SE_LineJoin_Round;
+    else if (wcscmp(sJoin, L"Miter") == 0)
+        ret->join = SE_LineJoin_Miter;
+    else
+        ret->join = SE_LineJoin_None;
+
 
     SE_Bounds* seb = ret->geometry->xf_bounds();
 
@@ -101,6 +123,27 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     ret->fill     = fill.evaluate(cxt->exec);
 
     ret->geometry->Transform(*cxt->xform, ret->weight);
+    const wchar_t* sCap =   cap.evaluate(cxt->exec);
+    const wchar_t* sJoin =  join.evaluate(cxt->exec);
+    ret->miterLimit =       miterLimit.evaluate(cxt->exec);
+    
+    if (wcscmp(sCap, L"Square") == 0)
+        ret->cap = SE_LineCap_Square;
+    if (wcscmp(sCap, L"Round") == 0)
+        ret->cap = SE_LineCap_Round;
+    else if (wcscmp(sCap, L"Triangle") == 0)
+        ret->cap = SE_LineCap_Triangle;
+    else
+        ret->cap = SE_LineCap_None;
+
+    if (wcscmp(sJoin, L"Bevel") == 0)
+        ret->join = SE_LineJoin_Bevel;
+    else if (wcscmp(sJoin, L"Round") == 0)
+        ret->join = SE_LineJoin_Round;
+    else if (wcscmp(sJoin, L"Miter") == 0)
+        ret->join = SE_LineJoin_Miter;
+    else
+        ret->join = SE_LineJoin_None;
 
     SE_Bounds* seb = ret->geometry->xf_bounds();
 
@@ -494,11 +537,20 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->vertexControl = vertexControl.evaluate(cxt->exec);
 
     render->angle = angle.evaluate(cxt->exec) * M_PI180;
-    render->startOffset = startOffset.evaluate(cxt->exec)*cxt->mm2px;
-    render->endOffset = endOffset.evaluate(cxt->exec)*cxt->mm2px;
-    render->repeat = repeat.evaluate(cxt->exec)*cxt->mm2px;
+    /* Scale by xform->x0 instead of mm2px, because it encompasses mm2px as well as scaleX */
+    render->startOffset = startOffset.evaluate(cxt->exec)*cxt->xform->x0;
+    render->endOffset = endOffset.evaluate(cxt->exec)*cxt->xform->x0;
+    render->repeat = repeat.evaluate(cxt->exec)*cxt->xform->x0;
     render->vertexAngleLimit = vertexAngleLimit.evaluate(cxt->exec) * M_PI180;
-    render->vertexJoin = vertexJoin.evaluate(cxt->exec);
+    const wchar_t* sJoin = vertexJoin.evaluate(cxt->exec);
+    if (wcscmp(sJoin, L"Bevel") == 0)
+        render->vertexJoin = SE_LineJoin_Bevel;
+    else if (wcscmp(sJoin, L"Round") == 0)
+        render->vertexJoin = SE_LineJoin_Round;
+    else if (wcscmp(sJoin, L"Miter") == 0)
+        render->vertexJoin = SE_LineJoin_Miter;
+    else
+        render->vertexJoin = SE_LineJoin_None;
 
     //evaluate all the primitives too
     SE_Style::evaluate(cxt);
