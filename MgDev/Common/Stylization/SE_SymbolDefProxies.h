@@ -102,6 +102,7 @@ struct SE_Text : public SE_Primitive
     SE_String justification;
     SE_Color textColor;
     SE_Color ghostColor;
+    bool bGhosted;
 
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };

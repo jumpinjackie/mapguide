@@ -533,6 +533,7 @@ void SE_StyleVisitor::VisitText(Text& text)
     ParseStringExpression(text.GetHorizontalAlignment(), primitive->hAlignment);
     ParseStringExpression(text.GetVerticalAlignment(), primitive->vAlignment);
     ParseStringExpression(text.GetJustification(), primitive->justification);
+    primitive->bGhosted = (text.GetGhostColor().length() > 0);
 
     primitive->cacheable = !(primitive->textExpr.expression ||
                              primitive->fontExpr.expression ||

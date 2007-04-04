@@ -454,10 +454,9 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         char_pos += char_width;
     }
 
-    
     //get vertical alignment delta
-    //return value will be positive if y goes down and negative if y goes up 
-    //i.e. it's the offset we need to apply to y in the coordinate system of the 
+    //return value will be positive if y goes down and negative if y goes up
+    //i.e. it's the offset we need to apply to y in the coordinate system of the
     //renderer
     double voffset = GetVerticalAlignmentOffset(valign, tm.font, tm.font_height, tm.font_height * 1.05, 1);
 
@@ -471,7 +470,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         tm.char_pos[i].x += voffset * sin(angle);
         tm.char_pos[i].y += voffset * cos(angle);
     }
-    
+
     return true;
 }
 
@@ -522,6 +521,11 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         m_serenderer->DrawScreenPolygon(&lb, NULL, tdef.bgcolor().argb());
     }
 
+    // calculate a 0.5 mm offset for ghosting
+    int offset = ROUND(MetersToPixels(tdef.font().units(), 0.0005));
+    if (offset == 0)
+        offset = 1;
+
     for (size_t k=0; k<tm.line_pos.size(); ++k)
     {
         const RS_String* txt;
@@ -544,10 +548,10 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         // render the ghosted text, if requested
         if (tdef.textbg() == RS_TextBackground_Ghosted)
         {
-            DrawString(*txt, posx-1, posy, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
-            DrawString(*txt, posx+1, posy, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
-            DrawString(*txt, posx, posy-1, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
-            DrawString(*txt, posx, posy+1, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
+            DrawString(*txt, posx-offset, posy, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
+            DrawString(*txt, posx+offset, posy, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
+            DrawString(*txt, posx, posy-offset, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
+            DrawString(*txt, posx, posy+offset, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
         }
 
         // render the primary text
@@ -563,7 +567,6 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             // the line's start point is the insertion point, but shifted vertically by line_pos
             double x0 = insX + line_pos * sin_a;
             double y0 = insY + line_pos * cos_a;
-
 
             // the end point is a horizontal shift by the text width
             double textwidth = pos.ext[1].x - pos.ext[0].x;
@@ -706,8 +709,8 @@ double RS_FontEngine::GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_
 
         RS_F_Point fpts[4];
         MeasureString(L"A", em_square_size, font, 0.0, fpts, NULL);
-        
-        //set it on the font, so that we don't have to measure it all the time 
+
+        //set it on the font, so that we don't have to measure it all the time
         ((RS_Font*)font)->m_capheight = (short)fabs(fpts[2].y - fpts[1].y);
     }
 
@@ -740,7 +743,7 @@ double RS_FontEngine::GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_
     }
 
     if (m_serenderer->YPointsUp())
-        offsetY = -offsetY; //TODO: do we need to mult this by numLines?
+        offsetY = -offsetY;
 
     return offsetY;
 }
