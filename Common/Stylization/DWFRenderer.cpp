@@ -2694,16 +2694,18 @@ void DWFRenderer::MeasureString(const RS_String& s,
     extra.hdpi = (int)m_dpi;
     extra.vdpi = (int)m_dpi;
     char* err = NULL;
-    err = gdImageStringFTEx(NULL, (int*)&extent[0], 0, futf8, measureHeight, anglerad, 0, 0, sutf8, &extra);
+    err = gdImageStringFTEx(NULL, extent, 0, futf8, measureHeight, anglerad, 0, 0, sutf8, &extra);
 
 #ifdef _DEBUG
     if (err) printf("gd text error : %s\n", err);
 #endif
 
+    // Scale the result.  Also need to flip the y-coordinates.  With GD y points
+    // down, and we need to return the bounds in the renderer's space.
     for (int i=0; i<4; ++i)
     {
-        res[i].x = measureScale*extent[2*i];
-        res[i].y = measureScale*extent[2*i+1];
+        res[i].x =  measureScale*extent[2*i];
+        res[i].y = -measureScale*extent[2*i+1];
     }
 
     if (extra.xshow && offsets)

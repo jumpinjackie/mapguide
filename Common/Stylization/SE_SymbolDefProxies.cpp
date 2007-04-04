@@ -160,6 +160,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 
     ret->tdef.color() = RS_Color::FromARGB(textColor.evaluate(cxt->exec));
     ret->tdef.bgcolor() = RS_Color::FromARGB(ghostColor.evaluate(cxt->exec));
+    ret->tdef.textbg() = bGhosted? RS_TextBackground_Ghosted : RS_TextBackground_None;
 
     const wchar_t* hAlign = hAlignment.evaluate(cxt->exec);
     if (wcscmp(hAlign, L"Left") == 0)
@@ -340,45 +341,71 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
     // update all primitives which need to adjust to the resize box
     if (useBox)
     {
+        double sx0 = maxx0 - minx0;
+        double sy0 = maxy0 - miny0;
         double scalex = 1.0;
         double scaley = 1.0;
-        double transx = 0.0;
-        double transy = 0.0;
+        double transx0 = 0.0;
+        double transy0 = 0.0;
+        double transx1 = 0.0;
+        double transy1 = 0.0;
         const wchar_t* sGrowCtrl = growControl.evaluate(cxt->exec);
         if (wcscmp(sGrowCtrl, L"GrowInX") == 0)
         {
-            scalex = fabs(maxx1 - minx1) / fabs(maxx0 - minx0); // the ratio of their widths
-            transx = 0.5*(maxx1 + minx1 - maxx0 - minx0);       // the x-separation between their centers
+            if (sx0 != 0.0)
+            {
+                scalex = (maxx1 - minx1) / sx0; // the ratio of their widths
+                transx0 = 0.5*(minx0 + maxx0);
+                transx1 = 0.5*(minx1 + maxx1);
+            }
         }
         else if (wcscmp(sGrowCtrl, L"GrowInY") == 0)
         {
-            scaley = fabs(maxy1 - miny1) / fabs(maxy0 - miny0); // the ratio of their heights
-            transy = 0.5*(maxy1 + miny1 - maxy0 - miny0);       // the y-separation between their centers
+            if (sy0 != 0.0)
+            {
+                scaley = (maxy1 - miny1) / sy0; // the ratio of their heights
+                transy0 = 0.5*(miny0 + maxy0);
+                transy1 = 0.5*(miny1 + maxy1);
+            }
         }
         else if (wcscmp(sGrowCtrl, L"GrowInXY") == 0)
         {
-            scalex = fabs(maxx1 - minx1) / fabs(maxx0 - minx0); // the ratio of their widths
-            scaley = fabs(maxy1 - miny1) / fabs(maxy0 - miny0); // the ratio of their heights
-            transx = 0.5*(maxx1 + minx1 - maxx0 - minx0);       // the x-separation between their centers
-            transy = 0.5*(maxy1 + miny1 - maxy0 - miny0);       // the y-separation between their centers
+            if (sx0 != 0.0 && sy0 != 0.0)
+            {
+                scalex = (maxx1 - minx1) / sx0; // the ratio of their widths
+                scaley = (maxy1 - miny1) / sy0; // the ratio of their heights
+                transx0 = 0.5*(minx0 + maxx0);
+                transy0 = 0.5*(miny0 + maxy0);
+                transx1 = 0.5*(minx1 + maxx1);
+                transy1 = 0.5*(miny1 + maxy1);
+            }
         }
         else // default is GrowInXYMaintainAspect
         {
-            scalex = fabs(maxx1 - minx1) / fabs(maxx0 - minx0); // the ratio of their widths
-            scaley = fabs(maxy1 - miny1) / fabs(maxy0 - miny0); // the ratio of their heights
-            transx = 0.5*(maxx1 + minx1 - maxx0 - minx0);       // the x-separation between their centers
-            transy = 0.5*(maxy1 + miny1 - maxy0 - miny0);       // the y-separation between their centers
-            if (scalex > scaley)
-                scaley = scalex;
-            else
-                scalex = scaley;
+            if (sx0 != 0.0 && sy0 != 0.0)
+            {
+                scalex = (maxx1 - minx1) / sx0; // the ratio of their widths
+                scaley = (maxy1 - miny1) / sy0; // the ratio of their heights
+                if (scalex > scaley)
+                    scaley = scalex;
+                else
+                    scalex = scaley;
+                transx0 = 0.5*(minx0 + maxx0);
+                transy0 = 0.5*(miny0 + maxy0);
+                transx1 = 0.5*(minx1 + maxx1);
+                transy1 = 0.5*(miny1 + maxy1);
+            }
         }
 
+        // build the grow transform
         SE_Matrix growxf;
-        growxf.translate(transx, transy);
-        growxf.scale(scalex, scaley);
-        SE_Matrix totalxf(growxf);
-        totalxf.postmultiply(*cxt->xform);
+        growxf.translate(-transx0, -transy0); // step 1 - translate the resize box to the origin
+        growxf.scale(scalex, scaley);         // step 2 - scale the new box so it's the same size as the grown box
+        growxf.translate(transx1, transy1);   // step 3 - translate the new box so it has the same center as the grown box
+
+        // build the full transform
+        SE_Matrix totalxf(*cxt->xform);
+        totalxf.premultiply(growxf);
 
         for (SE_RenderPrimitiveList::iterator rs = rstyle->symbol.begin(); rs != rstyle->symbol.end(); rs++)
         {

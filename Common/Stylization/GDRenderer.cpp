@@ -1564,7 +1564,7 @@ void GDRenderer::MeasureString(const RS_String&  s,
     extra.hdpi = (int)m_dpi;
     extra.vdpi = (int)m_dpi;
     char* err = NULL;
-    err = gdImageStringFTEx(NULL, (int*)&extent[0], 0, futf8, measureHeight, anglerad, 0, 0, sutf8, &extra);
+    err = gdImageStringFTEx(NULL, extent, 0, futf8, measureHeight, anglerad, 0, 0, sutf8, &extra);
 
 #ifdef _DEBUG
     if (err) printf("gd text error : %s\n", err);

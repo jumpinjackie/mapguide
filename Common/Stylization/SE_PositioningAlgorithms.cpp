@@ -167,9 +167,11 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
     double symbol_height = fpts[2].y - fpts[1].y; //symbol height in meters
     double symbol_rot_deg = box_angle_rad / M_PI180;
 
-    //calculate a 1 mm offset to allow for label ghosting
-    double offsetmm = 1.0;              // offset in mm
+    //calculate a 0.5 mm offset to allow for label ghosting
+    double offsetmm = 0.5;              // offset in mm
     double offset = offsetmm * mm2px;   // offset in renderer pixels
+    if (offset < 1.0)
+        offset = 1.0;
 
     //compute how far label needs to be offset from
     //center point of symbol
