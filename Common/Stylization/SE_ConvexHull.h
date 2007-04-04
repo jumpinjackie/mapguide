@@ -18,13 +18,7 @@
 #ifndef SE_CONVEXHULL_H
 #define SE_CONVEXHULL_H
 
-// can't forward declare a struct used in a template class
-//struct SE_Bounds;
-//class SE_LineBufferPool;
-#include "SE_Bounds.h"
-
-#define PointLeft(pt0x, pt0y, pt1x, pt1y, pt2x, pt2y) \
-    (((pt1x - pt0x)*(pt2y - pt0y) - (pt2x - pt0x)*(pt1y - pt0y)) > 0)
+#include "SE_BufferPool.h"
 
 //---------------------------------------------
 //---------------------------------------------
@@ -54,7 +48,8 @@ struct SimplePOINT
 
 // Monotone Chain Convex Hull Algorithm (Andrew, 1979)
 // Input is a lexographically sorted (by x, then y) list of points.
-template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoints, int npoints, SE_LineBufferPool* pool)
+// Given the sorted list, the running time is O(n)
+template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoints, int npoints, SE_BufferPool* pool)
 {
     POINT pnt;
     ITER minxminy, minxmaxy, maxxminy, maxxmaxy;

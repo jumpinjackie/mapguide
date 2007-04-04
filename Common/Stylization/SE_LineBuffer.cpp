@@ -18,19 +18,27 @@
 #include "stdafx.h"
 
 #include "SE_LineBuffer.h"
-#include "SE_ConvexHull.h"
+#include "SE_LineStorage.h"
 #include "SE_Bounds.h"
+
+#include "SE_BufferPool.h"
+
+#include "SE_ConvexHull.h"
+
+#include "SE_MiterJoin.h"
+#include "SE_IdentityJoin.h"
+
 #include <algorithm>
 
 #define GROWTH_FACTOR 1.5
 
 #define ENSURE_POINT_BUFFER(points) \
     if ((m_npts + (points)) > m_max_pts) \
-        ResizeBuffer((void**)&m_pts, sizeof(double), (points), m_npts, m_max_pts);
+        ResizeBuffer<double>(&m_pts, (points), m_npts, m_max_pts);
 
 #define ENSURE_SEG_BUFFER(points) \
     if ((m_nsegs + (points)) > m_max_segs) \
-        ResizeBuffer((void**)&m_segs, sizeof(SE_LB_SegType), (points), m_nsegs, m_max_segs);
+        ResizeBuffer<SE_LB_SegType>(&m_segs, (points), m_nsegs, m_max_segs);
 
 inline void SineCosineMax(double sAng, double sSine, double sCosine, double eAng, double eSine, double eCosine, double &maxSine, double &maxCosine)
 {
@@ -97,11 +105,17 @@ inline void TransformScale(SE_Matrix& xform, double &sx, double &sy)
     sy = sqrt(xform.y0*xform.y0 + xform.y1*xform.y1);
 }
 
-inline void LineExt(double dx, double dy, double hweight, double &vx, double &vy)
+template<class BUFTYPE> void ResizeBuffer(BUFTYPE** buffer, int mininc, int cur_pts, int& max_pts)
 {
-    double scale = hweight/sqrt(dx*dx + dy*dy);
-    vx = dy*scale;
-    vy = -dy*scale;
+    int max_newpts = (int)(GROWTH_FACTOR*max_pts) + 1;
+    if (max_newpts - max_pts < mininc)
+        max_newpts += mininc;
+     
+    BUFTYPE* newbuf = new BUFTYPE[max_newpts];
+    memcpy(newbuf, *buffer, cur_pts*sizeof(BUFTYPE));
+    delete[] *buffer;
+    *buffer = newbuf;
+    max_pts = max_newpts;
 }
 
 struct PointUtil
@@ -122,66 +136,35 @@ struct PointUtil
     }
 };
 
-SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int npts, int* cntrs, int ncntrs, double weight)
+SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs)
 {
     if (ncntrs == 0)
         return NULL;
-    // Monotone Chain Convex Hull Algorithm (Andrew, 1979)
-    m_ch_ptbuf.clear();
-    if (weight == 0)
-        m_ch_ptbuf.reserve(npts);    
-    else
-        m_ch_ptbuf.reserve(npts*4);
 
-    double hweight = weight/2.0;
+    // There are linear time algorithms, but only for simple (nonintersecting) paths, 
+    // which we cannot guarantee.
+    // TODO: In the unlikely event that this becomes a performance issue, figure out whether geometry 
+    // is simple (once) at parse-time, and use the faster algorithm in the cases where 
+    // it is (probably most cases).
+
     double* cur = pnts;
     double* last;
+    m_ch_ptbuf.clear();
     for (int i = 0; i < ncntrs; i++)
     {
         last = cur + cntrs[i]*2;
 
-        if (weight > 0)
+        double x, y;
+        while(cur < last)
         {
-            double x, y, lx, ly, vx, vy;
             x = *cur++;
             y = *cur++;
-            lx = *cur++;
-            ly = *cur++;
-            LineExt(lx-x, ly-y, hweight, vx, vy);
-            /* For each segment, add the bounding box of the rectangle formed by applying line weight */
-            /* TODO: this result will be correct if the line is drawn with bevel joins...Map and MG,
-               however, appear to be using round joins at the moment. */
-            m_ch_ptbuf.push_back(std::pair<double,double>(x + vx, y + vy));
-            m_ch_ptbuf.push_back(std::pair<double,double>(x - vx, y - vy));
-            m_ch_ptbuf.push_back(std::pair<double,double>(lx + vx, ly + vy));
-            m_ch_ptbuf.push_back(std::pair<double,double>(lx - vx, ly - vy));
-
-            while(cur < last)
-            {
-                x = *cur++;
-                y = *cur++;
-                LineExt(x-lx, y-ly, hweight, vx, vy);
-                m_ch_ptbuf.push_back(std::pair<double,double>(x + vx, y + vy));
-                m_ch_ptbuf.push_back(std::pair<double,double>(x - vx, y - vy));
-                m_ch_ptbuf.push_back(std::pair<double,double>(lx + vx, ly + vy));
-                m_ch_ptbuf.push_back(std::pair<double,double>(lx - vx, ly - vy));
-                lx = x;
-                ly = y;
-            }
-        }
-        else /* Weight might be zero...such as if the buffer holds pure geometry from a LineBuffer */
-        {
-            double x, y;
-            while(cur < last)
-            {
-                x = *cur++;
-                y = *cur++;
-                m_ch_ptbuf.push_back(std::pair<double,double>(x, y));
-            }
+            m_ch_ptbuf.push_back(std::pair<double,double>(x, y));
         }
     }
 
     std::sort(m_ch_ptbuf.begin(), m_ch_ptbuf.end(), PointLess());
+    std::unique(m_ch_ptbuf.begin(), m_ch_ptbuf.end());
 
     PointList::iterator end = m_ch_ptbuf.end();
     PointList::iterator iter = m_ch_ptbuf.begin();
@@ -191,7 +174,7 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int npts, int* cntrs, 
     return AndrewHull<PointList::iterator, PointUtil>(iter, --end, (int)m_ch_ptbuf.size(), m_pool);
 }
 
-SE_LineBuffer::SE_LineBuffer(int size) :
+SE_LineBuffer::SE_LineBuffer(int size, SE_BufferPool* pool) :
     m_npts(0),
     m_nsegs(0),
     m_max_pts(2*size),
@@ -199,18 +182,24 @@ SE_LineBuffer::SE_LineBuffer(int size) :
     m_xf_tol(-1.0),
     m_xf_weight(-1.0),
     m_xf_bounds(NULL),
-    m_compute_bounds(true)
+    m_compute_bounds(true),
+    m_xf_join(SE_LineJoin_None),
+    m_xf_cap(SE_LineCap_None),
+    m_xf_miter_limit(0.0),
+    m_pool(pool)
 {
     m_pts = new double[size*2];
     m_segs = new SE_LB_SegType[size];
-    m_xf_buf = new SE_LineStorage(size);
+    m_xf_buf = pool->NewLineStorage(size);
+    m_xf_wt_buf = pool->NewLineStorage(size);
 }
 
 SE_LineBuffer::~SE_LineBuffer()
 {
     delete[] m_pts;
     delete[] m_segs;
-    delete m_xf_buf;
+    m_xf_buf->Free();
+    m_xf_wt_buf->Free();
 }
 
 void SE_LineBuffer::MoveTo(double x, double y)
@@ -276,9 +265,10 @@ void SE_LineBuffer::EllipticalArcTo(double cx, double cy, double rx, double ry, 
     dex = m_last[0] - ex;
     dey = m_last[1] - ey;
 
-    /* End angle is actually the current line position */
     if (dsx*dsx + dsy*dsy > dex*dex + dey*dey)
     {
+        /* End angle is actually the current line position (i.e. In this case, the arc begins
+         * at the end angle, and is CW, not CCW). */
         double t = sAng;
         sAng = eAng;
         eAng = t;
@@ -303,6 +293,31 @@ void SE_LineBuffer::EllipticalArcTo(double cx, double cy, double rx, double ry, 
     m_segs[m_nsegs++] = SegType_EllipticalArc;
 }
 
+void SE_LineBuffer::SetGeometry(LineBuffer* srclb)
+{
+    if (m_npts != 0)
+        Reset();
+    int n_cntrs = srclb->cntr_count();
+    int* contours = srclb->cntrs();
+    double* src = srclb->points();
+
+    for (int i = 0; i < n_cntrs; i++)
+    {
+        double x, y;
+        double* last = src + 2*contours[i];
+        x = *src++;
+        y = *src++;
+        SE_LineBuffer::MoveTo(x, y);
+
+        while (src < last)
+        {
+            x = *src++;
+            y = *src++;
+            SE_LineBuffer::LineTo(x, y);
+        }
+    }
+}
+
 void SE_LineBuffer::Close()
 {
     LineTo(m_start[0], m_start[1]);
@@ -320,37 +335,14 @@ void SE_LineBuffer::Reset()
     m_xf_tol = m_xf_weight = -1.0;
     m_xf.setIdentity();
     m_xf_buf->Reset();
+    m_xf_wt_buf->Reset();
+    m_xf_join = SE_LineJoin_None;
+    m_xf_cap = SE_LineCap_None;
+    m_xf_miter_limit = 0.0;
 }
 
-void SE_LineBuffer::ResizeBuffer(void** buffer, int unitsize, int mininc, int cur_pts, int& max_pts)
+void SE_LineBuffer::PopulateXFBuffer()
 {
-    int max_newpts = (int)(GROWTH_FACTOR*max_pts) + 1;
-    if (max_newpts - max_pts < mininc)
-        max_newpts += mininc;
-
-    void* newbuf = new char[unitsize*max_newpts];
-    memcpy(newbuf, *buffer, cur_pts*unitsize);
-    delete[] *buffer;
-    *buffer = newbuf;
-    max_pts = max_newpts;
-}
-
-LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, double tolerance)
-{
-    if (m_xf == xform && m_xf_tol == tolerance && m_xf_weight == weight)
-        return m_xf_buf;
-
-    if (m_xf_bounds)
-    {
-        m_xf_bounds->Free();
-        m_xf_bounds = NULL;
-    }
-
-    m_xf = xform;
-    m_xf_tol = tolerance;
-    m_xf_weight = weight;
-    m_xf_buf->Reset();
-
     SE_LB_SegType* endseg = m_segs + m_nsegs;
     SE_LB_SegType* curseg = m_segs;
     int src_idx = 0;
@@ -361,14 +353,15 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
         {
         case SegType_MoveTo:
             m_xf_buf->EnsureContours(1);
-            xform.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
-            m_xf_buf->_MoveToNoChop(x,y);
+            m_xf_buf->EnsurePoints(1);
+            m_xf.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
+            m_xf_buf->_MoveTo(x,y);
             src_idx += 2;
             break;
         case SegType_LineTo:
             m_xf_buf->EnsurePoints(1);
-            xform.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
-            m_xf_buf->_LineToNoChop(x,y);
+            m_xf.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
+            m_xf_buf->_LineTo(x,y);
             src_idx += 2;
             break;
         case SegType_EllipticalArc:
@@ -385,11 +378,11 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
                 int nsegs = (int)(4.0*fabs(eAng - sAng)/(2*M_PI)) + 1; // eAng - sAng is (0, 2pi), so this is {1,2,3,4}.
                 double span = (eAng - sAng)/(double)nsegs;
                 double aspan = fabs(span);
-
+                
                 double sec = 1.0/cos(aspan/2.0);
                 double alpha = sin(aspan)*(sqrt(1.0 + 3.0/sec/sec) - 1)/3.0;
                 double rcos = cos(rot), rsin = sin(rot);
-
+                
                 double ex, ey, sx, sy;
                 double scos, ssin, ecos, esin;
                 double sa, ea;
@@ -429,9 +422,9 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
                        the second derivative must be within the tolerance */
                     double mx, my;
                     SineCosineMax(sa, ssin, scos, ea, esin, ecos, my, mx);
-                    mx *= rx;
-                    my *= ry;
-                    int steps = (int)((aspan/tolerance)*sqrt(mx*mx + my*my)) + 1;
+                    mx *= sqrt(m_xf.x0*m_xf.x0 + m_xf.y0*m_xf.y0)*rx;
+                    my *= sqrt(m_xf.x1*m_xf.x1 + m_xf.y1*m_xf.y1)*ry;
+                    int steps = (int)((aspan/m_xf_tol)*sqrt(mx*mx + my*my)) + 1;
                     m_xf_buf->EnsurePoints(steps + 1);
 
                     if (rot != 0.0)
@@ -461,13 +454,212 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double weight, doub
             }
         }
     }
+}
+
+void SE_LineBuffer::PopulateXFWeightBuffer()
+{
+    int n_cntrs = m_xf_buf->cntr_count();
+    int* contours = m_xf_buf->cntrs();
+    double* src = m_xf_buf->points();
+    double hweight = m_xf_weight/2.0;
+
+    SE_LineStorage* srcseg = m_pool->NewLineStorage(5);
+    SE_LineStorage* lastseg = m_pool->NewLineStorage(5);
+    SE_LineStorage* nextseg = m_pool->NewLineStorage(5);
+
+    RS_F_Point prev, vert, next;
+    RS_Bounds mbounds(0.0, -hweight, 0.0, hweight);
+    double *maxx[2]; /* The points in segbuf that change with seg width */
+    double dx, dy, len = 1.0;
+
+    SE_MiterJoin mj;
+    SE_IdentityJoin idj;
+
+    /* Save a rectangle contour covering x [0, len] y [-hweight, hweight] in srcseg */
+    srcseg->EnsureContours(1);
+    srcseg->EnsurePoints(5);
+    srcseg->_MoveTo(0, hweight);
+    maxx[0] = srcseg->points() + 2;
+    srcseg->_LineTo(len, hweight);
+    maxx[1] = maxx[0] + 2;
+    srcseg->_LineTo(len, -hweight);
+    srcseg->_LineTo(0, -hweight);
+    srcseg->_LineTo(0, hweight);
+
+    for (int i = 0; i < n_cntrs; i++)
+    {
+        double* last = src + 2*contours[i];
+        double* first = src;
+
+        prev.x = last[-4];
+        prev.y = last[-3];
+        vert.x = *src++;
+        vert.y = *src++;
+        next.x = *src++;
+        next.y = *src++;
+        dx = next.x - vert.x;
+        dy = next.y - vert.y;
+        len = sqrt(dx*dx + dy*dy);
+        mbounds.minx = 0.0;
+        mbounds.maxx = len;
+        *maxx[0] = *maxx[1] = len;
+        
+        bool closed = vert.x == last[-2] && vert.y == last[-1] && (contours[i] > 2);
+        if (closed)
+        { /* Closed */ /* TODO: stitching joins (requires repeat interval for argument) */
+            mj = SE_MiterJoin(m_xf_miter_limit, mbounds, 0.0, prev, vert, next, false);
+            mj.Transform(srcseg, lastseg, 0, 1, true);
+        }
+        else
+        { /* Open */
+            // Todo: startcap
+            idj = SE_IdentityJoin(mbounds, 0, vert, next, false);
+            idj.Transform(srcseg, lastseg, 0, 1, true);
+        }
+
+        while (src < last)
+        {
+            prev.x = vert.x;
+            prev.y = vert.y;
+            vert.x = next.x;
+            vert.y = next.y;
+            next.x = *src++;
+            next.y = *src++;
+            /* Update segment bounds */
+            dx = next.x - vert.x;
+            dy = next.y - vert.y;
+            len = sqrt(dx*dx + dy*dy);
+            *maxx[0] = *maxx[1] = len;
+
+            switch (m_xf_join)
+            {
+            case SE_LineJoin_Bevel:
+            case SE_LineJoin_Miter:
+                {
+                    idj = SE_IdentityJoin(mbounds, len, prev, vert, false);
+                    mj = SE_MiterJoin(m_xf_miter_limit, mbounds, -len, prev, vert, next, true);
+
+                    mj.Transform(lastseg, m_xf_wt_buf, 0, 1, true);
+                    lastseg->Reset();
+                    idj.Transform(srcseg, nextseg, 0, 1, true);
+                    mj.Transform(nextseg, lastseg, 0, 1, true);
+                    nextseg->Reset();
+                }
+                break;
+            case SE_LineJoin_None:
+            case SE_LineJoin_Round: // TODO: implement Round joins
+            default:
+                {
+                    idj = SE_IdentityJoin(mbounds, 0, vert, next, false);
+                    m_xf_wt_buf->Append(lastseg);
+                    lastseg->Reset();
+                    idj.Transform(srcseg, lastseg, 0, 1, true);
+                }
+                break;
+            }
+        }
+ 
+        if (closed)
+        {
+            prev.x = first[2];
+            prev.y = first[3];
+            mj = SE_MiterJoin(m_xf_miter_limit, mbounds, 0.0, vert, next, prev, true);
+            mj.Transform(lastseg, m_xf_wt_buf, 0, 1, true);            
+        }
+        else
+        {
+            // TODO: Endcap
+            m_xf_wt_buf->Append(lastseg);
+        }
+        
+        lastseg->Reset();
+        nextseg->Reset();
+        srcseg->Reset();
+    }
+    lastseg->Free();
+    nextseg->Free();
+    srcseg->Free();
+}
+
+SE_LineStorage* SE_LineBuffer::Transform(const SE_Matrix& xform, 
+                                         double weight, 
+                                         SE_LineCap cap, 
+                                         SE_LineJoin join, 
+                                         double miterLimit, 
+                                         double tolerance)
+{
+    /* TODO: Weight is 0.0 for the moment, pending better rendering for the exploded lines */
+    weight = 0.0;
+    if (join == SE_LineJoin_Bevel)
+    { /* ...There is no bevel... */
+        join = SE_LineJoin_Miter;
+        miterLimit = 0.0;
+    }
+    if (m_xf == xform && m_xf_tol == tolerance && 
+        m_xf_weight == weight && m_xf_join == join && 
+        m_xf_cap == cap && m_xf_miter_limit == miterLimit)
+        return m_xf_buf;
+
+    if (m_xf_bounds)
+    {
+        m_xf_bounds->Free();
+        m_xf_bounds = NULL;
+    }
+
+    m_xf = xform;
+    m_xf_tol = tolerance;
+    m_xf_weight = weight;
+    m_xf_cap = cap;
+    m_xf_join = join;
+    m_xf_miter_limit = miterLimit;
+    m_xf_buf->Reset();
+    m_xf_wt_buf->Reset();
+
+    PopulateXFBuffer();
+    if (m_xf_weight > 0.0)
+        PopulateXFWeightBuffer();
 
     if (m_compute_bounds)
-        m_xf_bounds = ComputeConvexHull(m_xf_buf->points(), m_xf_buf->point_count(), m_xf_buf->cntrs(), m_xf_buf->cntr_count(), m_xf_weight);
-    if (m_xf_bounds)
-        m_xf_buf->SetBounds(m_xf_bounds);
+    {
+        if (m_xf_weight > 0.0)
+        {
+            m_xf_bounds = ComputeConvexHull(m_xf_wt_buf->points(), m_xf_wt_buf->cntrs(), 
+                m_xf_wt_buf->cntr_count());
+            m_xf_buf->SetBounds(m_xf_bounds);
+            m_xf_wt_buf->SetBounds(m_xf_bounds);
+        }
+        else
+        {
+            m_xf_bounds = ComputeConvexHull(m_xf_buf->points(), m_xf_buf->cntrs(), 
+                m_xf_buf->cntr_count());
+            m_xf_buf->SetBounds(m_xf_bounds);
+        }
+    }
 
     return m_xf_buf;
+}
+
+SE_LineStorage* SE_LineBuffer::TransformInstance(SE_PiecewiseTransform** ppxf, int xflen, bool closed)
+{
+    if (xflen == 0)
+        return m_xf_wt_buf;
+
+    SE_LineStorage* source = m_xf_weight > 0.0 ? m_xf_wt_buf : m_xf_buf;
+    SE_LineStorage* instance = m_pool->NewLineStorage(source->point_count());
+ 
+    ppxf[0]->Transform(source, instance, 0, source->cntr_count(), closed);
+
+    for (int i = 1; i < xflen; i++)
+    {
+        source = instance;
+        instance = m_pool->NewLineStorage(source->point_count());
+        ppxf[i]->Transform(source, instance, 0, source->cntr_count(), closed);
+        source->Free();
+    }
+
+    /* Todo: bounds */
+
+    return instance;
 }
 
 bool SE_LineBuffer::Empty()
@@ -524,10 +716,10 @@ void SE_LineBuffer::TessellateCubicTo(SE_LineStorage* lb, double px2, double py2
         ddfy += dddfy;
         ddfx += dddfx;
 
-        lb->_LineToNoChop(fx, fy);
+        lb->_LineTo(fx, fy);
     }
 
-    lb->_LineToNoChop(px4, py4);
+    lb->_LineTo(px4, py4);
 }
 
 SE_LineBuffer* SE_LineBuffer::Clone()
@@ -544,74 +736,16 @@ SE_LineBuffer* SE_LineBuffer::Clone()
     if (m_xf_bounds)
         clone->m_xf_bounds = m_xf_bounds->Clone();
     clone->m_xf_buf->SetToCopy(m_xf_buf);
+    clone->m_xf_wt_buf->SetToCopy(m_xf_wt_buf);
     int grow_segs = m_nsegs - clone->m_max_segs;
     if (grow_segs > 0)
-        ResizeBuffer((void**)&clone->m_segs, sizeof(double), grow_segs, clone->m_nsegs, clone->m_max_segs);
+        ResizeBuffer<SE_LB_SegType>(&clone->m_segs, grow_segs, clone->m_nsegs, clone->m_max_segs);
     int grow_pts = m_npts - clone->m_max_pts;
     if (grow_pts > 0)
-        ResizeBuffer((void**)&clone->m_pts, sizeof(double), grow_pts, clone->m_npts, clone->m_max_pts);
+        ResizeBuffer<double>(&clone->m_pts, grow_pts, clone->m_npts, clone->m_max_pts);
     memcpy(clone->m_pts, m_pts, sizeof(double)*m_npts);
     memcpy(clone->m_segs, m_segs, sizeof(SE_LB_SegType)*m_nsegs);
     clone->m_nsegs = m_nsegs;
     clone->m_npts = m_npts;
     return clone;
-}
-
-SE_LineBufferPool::~SE_LineBufferPool()
-{
-    while (!m_lb_pool.empty())
-        delete m_lb_pool.pop();
-    while (!m_bnd_pool.empty())
-        free(m_bnd_pool.pop());
-}
-
-SE_LineBuffer* SE_LineBufferPool::NewLineBuffer(int requestSize)
-{
-    if (!m_lb_pool.empty())
-    {
-        SE_LineBuffer* lb = m_lb_pool.pop();
-        return lb;
-    }
-    else
-    {
-        SE_LineBuffer* buf = new SE_LineBuffer(requestSize);
-        buf->m_pool = this;
-        return buf;
-    }
-}
-
-void SE_LineBufferPool::FreeLineBuffer(SE_LineBuffer* lb)
-{
-    lb->Reset();
-    m_lb_pool.push(lb);
-}
-
-SE_Bounds* SE_LineBufferPool::NewBounds(int size)
-{
-    if (!m_bnd_pool.empty())
-    {
-        SE_Bounds* bounds = m_bnd_pool.pop();
-        if (bounds->capacity >= size)
-        {
-            bounds->size = 0;
-            bounds->min[0] = bounds->min[1] = DBL_MAX;
-            bounds->max[0] = bounds->max[1] = -DBL_MAX;
-            return bounds;
-        }
-        free(bounds);
-    }
-
-    SE_Bounds* bounds = (SE_Bounds*)malloc(sizeof(SE_Bounds) + 2*size*sizeof(double));
-    bounds->hull = (double*)((char*)(bounds) + sizeof(SE_Bounds));
-    bounds->capacity = size;
-    bounds->size = 0;
-    bounds->min[0] = bounds->min[1] = DBL_MAX;
-    bounds->max[0] = bounds->max[1] = -DBL_MAX;
-    bounds->pool = this;
-    return bounds;
-}
-
-void SE_LineBufferPool::FreeBounds(SE_Bounds* bounds)
-{
-    m_bnd_pool.push(bounds);
 }

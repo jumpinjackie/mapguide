@@ -23,7 +23,7 @@
 
 class SE_SymbolManager;
 class SE_LineBuffer;
-class SE_LineBufferPool;
+class SE_BufferPool;
 struct SE_Matrix;
 
 namespace MDFMODEL_NAMESPACE
@@ -36,7 +36,7 @@ namespace MDFMODEL_NAMESPACE
 class SE_StyleVisitor : public MdfModel::IGraphicElementVisitor, public MdfModel::ISymbolDefinitionVisitor, public SE_ExpressionBase
 {
 public:
-    SE_StyleVisitor(SE_SymbolManager* resources, SE_LineBufferPool* lbp);
+    SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp);
 
     /* IGraphicElementVisitor */
     virtual void VisitPath(MdfModel::Path& path);
@@ -60,7 +60,7 @@ private:
     bool ParseGeometry(const MdfModel::MdfString& geometry, SE_LineBuffer& buffer);
 
     SE_SymbolManager* m_resources;
-    SE_LineBufferPool* m_lbp;
+    SE_BufferPool* m_bp;
     SE_Symbolization* m_symbolization;
     SE_Style* m_style;
     SE_Primitive* m_primitive;
