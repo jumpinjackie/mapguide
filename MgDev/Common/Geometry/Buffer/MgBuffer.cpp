@@ -931,19 +931,17 @@ int MgBuffer::CurveSegmentToOpsFloatPointArray(BufferParams* bufferParams, MgCur
     if (type == MgGeometryComponentType::LinearSegment)
     {
         Ptr<MgLinearSegment> arc = (MgLinearSegment*)SAFE_ADDREF(segment);
-        Ptr<MgCoordinate> coord1 = arc->GetStartCoordinate();
+        Ptr<MgCoordinateIterator> arcCoords = arc->GetCoordinates();
+        Ptr<MgCoordinate> arcCoord;
         OpsFloatPoint floatPoint1;
-        CoordinateToOpsFloatPoint(bufferParams, coord1, floatPoint1);
-        CheckOpsFloatPointArray(vertices,currIndex);
-        vertices[currIndex++] = floatPoint1;
-        noOfCoords++;
-
-        Ptr<MgCoordinate> coord4 = arc->GetEndCoordinate();
-        OpsFloatPoint floatPoint4;
-        CoordinateToOpsFloatPoint(bufferParams, coord4, floatPoint4);
-        CheckOpsFloatPointArray(vertices,currIndex);
-        vertices[currIndex++] = floatPoint4;
-        noOfCoords++;
+        while ( arcCoords->MoveNext() )
+        {
+            arcCoord = arcCoords->GetCurrent();
+            CoordinateToOpsFloatPoint(bufferParams, arcCoord, floatPoint1);
+            CheckOpsFloatPointArray(vertices, currIndex);
+            vertices[currIndex++] = floatPoint1;
+            noOfCoords++;
+        }
     }
 
     return noOfCoords;
