@@ -43,6 +43,8 @@
 var intId;
 var fieldSizes = new Array(200, 120, 175);
 var fieldsW = 200+120+175;
+var origScaleValue;
+var origScaleFieldBackground;
 
 // public functions -----------------------------------------------
 //
@@ -118,6 +120,72 @@ function SetFieldText(msg, index)
     document.getElementById(index).value = msg;
 }
 
+function CalcKeyCode(aChar) 
+{
+    var character = aChar.substring(0,1);
+    var code = aChar.charCodeAt(0);
+    return code;
+}
+
+function KeyboardController(val) 
+{
+    var strPass = val.value;
+    var strLength = strPass.length;
+    var lchar = val.value.charAt((strLength) - 1);
+    var cCode = CalcKeyCode(lchar);
+
+    if ((cCode < 48 || cCode > 57 ) && cCode != 46)
+    {
+        var myNumber = val.value.substring(0, (strLength) - 1);
+        val.value = myNumber;
+    }
+    return false;
+}
+
+function SetZoomToScale(val) 
+{
+    if (val.value == "") 
+    {
+        val.value = origScaleValue;
+        return;
+    }
+    else
+    {
+        parent.GetMapFrame().ZoomToScale(parseFloat(val.value));
+        val.value="1: " + val.value;
+        document.getElementById("4").focus();
+    }
+}
+
+function OnScaleFieldKeyDown(event)
+{
+    if(event.keyCode==13) 
+    {
+        document.getElementById("4").focus();
+    }
+}
+
+function OnScaleFieldFocus()
+{
+    var scaleField = GetScaleField();
+    origScaleFieldBackground = scaleField.style.backgroundColor;
+    scaleField.style.backgroundColor = 'lightyellow';
+    origScaleValue = scaleField.value; 
+    scaleField.value='';
+}
+
+function OnBlurScaleField()
+{
+    var scaleField = GetScaleField();
+    scaleField.style.backgroundColor = origScaleFieldBackground; 
+    SetZoomToScale(scaleField);
+}
+
+function GetScaleField()
+{
+    return document.getElementById("3");
+}
+
 </script>
 
 </head>
@@ -126,7 +194,7 @@ function SetFieldText(msg, index)
       <tr><td valign=center>
         <input class="StatusField" id="1" type="text" readonly >
         <input class="StatusField" id="2" type="text" readonly >
-        <input class="StatusField" id="3" type="text" readonly >
+        <input class="StatusField" id="3" name="3" type="text" onKeyUp="KeyboardController(this)" onKeyDown="OnScaleFieldKeyDown(event)" onfocus="OnScaleFieldFocus()" onblur="OnBlurScaleField()" onclick="this.focus()">
         <input class="StatusField" id="4" type="text" readonly >
         <img src="../localized/__#POWEREDBYICON#__" width="137" height="18" class="StatusLogo" id="5">
       </td></tr>
