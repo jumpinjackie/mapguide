@@ -283,7 +283,7 @@ void TestKmlService::TestCase_GetMapKmz()
         catch(MgConnectionFailedException* e)
         {
             SAFE_RELEASE(e);
-            ACE_DEBUG((LM_INFO, ACE_TEXT("\TestCase_GetMapKmz skipped because unable to connect to test server.\n")));
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_GetMapKmz skipped because unable to connect to test server.\n")));
         }
     }
     catch(MgException* e)
@@ -327,7 +327,7 @@ void TestKmlService::TestCase_GetLayerKml()
         catch(MgConnectionFailedException* e)
         {
             SAFE_RELEASE(e);
-            ACE_DEBUG((LM_INFO, ACE_TEXT("\TestCase_GetLayerKml skipped because unable to connect to test server.\n")));
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_GetLayerKml skipped because unable to connect to test server.\n")));
         }
 
         //compare results against referenced content
