@@ -293,6 +293,12 @@ var us = true;
 var visSelLayers = null, visLayers = null;
 var sliderx=-100, slidery=44, sscalex=-100, sscaley=0;
 var initTimer;
+var wheelZoomTimer = 0;
+var wheelZoomCenter;
+var wheelZoomCursor;
+var wheelZoomDelta = null;
+var wheelZoomScale = 0;
+var mapLoading = false;
 var baseGroups = null;
 var visBaseGroups = new Hashtable();
 var gridOffsx, gridOffsy;
@@ -323,6 +329,7 @@ var digitizing = false;
 var cancelTgt;
 var locale = '%s';
 %s
+
 
 // public functions -----------------------------------------------
 //
@@ -359,11 +366,19 @@ function GetMapName()
 
 function ScreenToMapUnits(x, y)
 {
-    if(x > mapDevW - 1) x = mapDevW - 1;
-    else if(x < 0) x = 0;
+    return ScreenToMapUnits2(x, y, false);
+}
+    
+function ScreenToMapUnits2(x, y, bAllowOutsideWindow)
+{
+    if(!bAllowOutsideWindow)
+    {
+        if(x > mapDevW - 1) x = mapDevW - 1;
+        else if(x < 0) x = 0;
 
-    if(y > mapDevH - 1) y = mapDevH - 1;
-    else if(y < 0) y = 0;
+        if(y > mapDevH - 1) y = mapDevH - 1;
+        else if(y < 0) y = 0;
+    }
 
     x = extX1 + (extX2 - extX1) * (x / mapDevW);
     y = extY1 - (extY1 - extY2) * (y / mapDevH);
@@ -512,6 +527,12 @@ function InitDocument()
 
     document.getElementById("map").style.backgroundColor = bgColor;
     mapCell = document.getElementById("map");
+    
+    if (window.addEventListener)
+    {
+        window.addEventListener('DOMMouseScroll', OnMouseWheel, false); 
+    }
+    window.onmousewheel = document.onmousewheel = OnMouseWheel; 
 
     hlData = new HlData();
     moveTimer = 0;
@@ -1253,7 +1274,7 @@ function DragSlider(y)
         xi = parseInt(mapDevW/2 - w / 2);
         yi = parseInt(mapDevH/2 - h / 2);
         img = document.getElementById(msie? "img1div": curimg);
-        if(msie && img)
+        if(img)
         {
             imgs = img.style;
             imgs.position = "absolute";
@@ -1530,19 +1551,14 @@ function OnMapRequested(reqResp, scale, centerX, centerY)
             RequestFailed("Invalid XML response");
         else
         {
-            var frmParent = parent.frames["tbFrame"];
-            var objDivRefresh = frmParent.document.getElementById("divRefresh");
-            if(objDivRefresh != null)
-            {
-                objDivRefresh.style.display='block';
-            }
+            OnMapLoading();
             
             panX1 = extX1 = resp.lowerLeft.X;
             panY1 = extY1 = resp.upperRight.Y;
             panX2 = extX2 = resp.upperRight.X;
             panY2 = extY2 = resp.lowerLeft.Y;
             pancxu = cxu = extX1 + (extX2 - extX1) / 2; pancyu = cyu = extY2 + (extY1 - extY2) / 2;
-
+                        
             scaleChanged = false;
             if(scaleChanged = (curScale != scale))
             {
@@ -1564,6 +1580,29 @@ function OnMapRequested(reqResp, scale, centerX, centerY)
     }
     else
         RequestFailed("No response");
+}
+
+function OnMapLoading()
+{
+    mapLoading = true;
+    var frmParent = parent.frames["tbFrame"];
+    var objDivRefresh = frmParent.document.getElementById("divRefresh");
+    if(objDivRefresh != null)
+    {
+        objDivRefresh.style.display='block';
+    }
+}
+
+function OnMapLoaded()
+{
+    wheelZoomDelta = null;
+    var frmParent = parent.frames["tbFrame"];
+    var objDivRefresh = frmParent.document.getElementById("divRefresh");
+    if(objDivRefresh != null)
+    {
+        objDivRefresh.style.display='none';
+    }
+    mapLoading = false;
 }
 
 function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers, hideLayers)
@@ -1616,6 +1655,7 @@ function encodeComponent(str)
 function OnMapOverlayImageLoaded(e)
 {
     ovimgloaded = true;
+
     if(msie)
         e.cancelBubble = true;
     else
@@ -1628,9 +1668,9 @@ function OnMapOverlayImageLoaded(e)
 
     imgdiv = document.getElementById("img1");
 
-    if(parseInt(overlayimg.name) != mapId || moveType == PANNING)
+    if(parseInt(overlayimg.name) != mapId || moveType == PANNING || wheelZoomTimer != 0)
         return;
-
+                
     lastMapRcv = mapId;
     overlayimg.onload = null;
     ovoffsx = 0; ovoffsy = 0;
@@ -1658,13 +1698,8 @@ function OnMapOverlayImageLoaded(e)
     if(safari)
         curimg = (curimg == "mapImage1"? "mapImage2": "mapImage1");
     
-    var frmParent = parent.frames["tbFrame"];
-    var objDivRefresh = frmParent.document.getElementById("divRefresh");
-    if(objDivRefresh != null)
-    {
-        objDivRefresh.style.display='none';
-    }
-    
+    OnMapLoaded();
+
     return false;
 }
 
@@ -3374,6 +3409,107 @@ function KeyPressed(e)
         return false;
     }
     return true;
+}
+
+function HandleMouseWheelEvent(delta, event) 
+{
+    if(!mapInit || mapLoading)
+    {
+        return false;
+    }
+    
+    //Clear any existing map redraw events
+    if(wheelZoomTimer > 0)
+    {
+        clearInterval(wheelZoomTimer);
+        wheelZoomTimer = 0;
+    }
+    
+    if(wheelZoomDelta == null)
+    {
+        //Determine the cursor position
+        wheelZoomCursor = new Point(msie ? event.clientX - mapPosX : event.screenX - mapPosX,
+            msie ? event.clientY : event.screenY);
+        wheelZoomDelta = 0;
+    }
+            
+    //Determine the desired change in zoom
+    wheelZoomDelta += delta;
+    var currentScale = CalculateScale();
+    var zoomChange = Math.pow(1.5, wheelZoomDelta);
+    var newScale = zoomChange > 0 ? currentScale / zoomChange : maxScale;
+    newScale = finscale? GetNearestFiniteScale(newScale): NormalizeScale(newScale);
+    zoomChange = currentScale / newScale;
+        
+    //Determine the center of the new, zoomed map, in current screen device coords
+    var screenZoomCenterX = wheelZoomCursor.X - (wheelZoomCursor.X - mapDevW/2) / zoomChange;
+    var screenZoomCenterY = wheelZoomCursor.Y - (wheelZoomCursor.Y - mapDevH/2) / zoomChange;
+    
+    //Adjust the existing map image to the new scale and location
+    w = parseInt((extX2 - extX1) * metersPerUnit / (newScale * metersPerPixel));
+    if(w > 20000)
+    {
+        w = 20000;
+    }
+    h = parseInt(w * (mapDevH / mapDevW));
+    var xClickOffset = screenZoomCenterX - mapDevW/2;
+    var yClickOffset = screenZoomCenterY - mapDevH/2;
+    xi = parseInt(mapDevW/2 - w / 2 - xClickOffset * zoomChange);
+    yi = parseInt(mapDevH/2 - h / 2 - yClickOffset * zoomChange);
+    img = document.getElementById(msie ? "img1div": curimg);
+    if(img)
+    {
+        imgs = img.style;
+        imgs.position = "absolute";
+        imgs.left = xi;
+        imgs.top = yi;
+        imgs.width = w;
+        imgs.height = h;
+    }
+        
+    //Update scale displayed in status bar
+    if(scale != newScale)
+    {
+        parent.OnScaleChanged(newScale);
+    }
+    
+    //Reload the map at the new scale. 500ms delay to allow for more
+    //mouse wheel events.
+    wheelZoomCenter = ScreenToMapUnits2(screenZoomCenterX, screenZoomCenterY, true);
+    wheelZoomScale = newScale;
+    wheelZoomTimer = setInterval(WheelZoom, 500);
+}
+
+function WheelZoom()
+{
+    if(wheelZoomTimer > 0)
+    {
+        clearInterval(wheelZoomTimer);
+        wheelZoomTimer = 0;
+    }
+    GotoView(wheelZoomCenter.X, wheelZoomCenter.Y, wheelZoomScale, true, false);
+}
+
+function OnMouseWheel(event)
+{
+    var delta = 0;
+    if (!event) event = window.event;
+    if (event.wheelDelta) 
+    {
+        delta = event.wheelDelta / 120;
+        if (window.opera) 
+        {
+            delta = -delta;
+        }
+    } 
+    else if (event.detail) 
+    {
+        delta = -event.detail / 3;
+    }
+    if (delta)
+    {
+        HandleMouseWheelEvent(delta,event);
+    }
 }
 
 </script>
