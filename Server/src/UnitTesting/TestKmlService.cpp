@@ -227,11 +227,19 @@ void TestKmlService::TestCase_GetMapKml()
         STRING agentUri = L"http://myserver/mapguide/mapagent/mapagent.fcgi";
         STRING format = L"KML";
 
-        //call GetMapKml
-        Ptr<MgByteReader> reader = m_svcKml->GetMapKml(map, dpi, agentUri, format);
+        try
+        {
+            //call GetMapKml
+            Ptr<MgByteReader> reader = m_svcKml->GetMapKml(map, dpi, agentUri, format);
 
-        STRING mimeType = reader->GetMimeType();
-        CPPUNIT_ASSERT(mimeType.compare(MgMimeType::Kml) == 0);
+            STRING mimeType = reader->GetMimeType();
+            CPPUNIT_ASSERT(mimeType.compare(MgMimeType::Kml) == 0);
+        }
+        catch(MgConnectionFailedException* e)
+        {
+            SAFE_RELEASE(e);
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_GetMapKml skipped because unable to connect to test server.\n")));
+        }
 
         //compare results against referenced content
         //TODO: Find a way to make the comparison work on Windows AND Linux
@@ -264,11 +272,19 @@ void TestKmlService::TestCase_GetMapKmz()
         STRING agentUri = L"http://myserver/mapguide/mapagent/mapagent.fcgi";
         STRING format = L"KMZ";
 
-        //call GetMapKml
-        Ptr<MgByteReader> reader = m_svcKml->GetMapKml(map, dpi, agentUri, format);
+        try
+        {
+            //call GetMapKml
+            Ptr<MgByteReader> reader = m_svcKml->GetMapKml(map, dpi, agentUri, format);
 
-        STRING mimeType = reader->GetMimeType();
-        CPPUNIT_ASSERT(mimeType.compare(MgMimeType::Kmz) == 0);
+            STRING mimeType = reader->GetMimeType();
+            CPPUNIT_ASSERT(mimeType.compare(MgMimeType::Kmz) == 0);
+        }
+        catch(MgConnectionFailedException* e)
+        {
+            SAFE_RELEASE(e);
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\TestCase_GetMapKmz skipped because unable to connect to test server.\n")));
+        }
     }
     catch(MgException* e)
     {
@@ -300,11 +316,19 @@ void TestKmlService::TestCase_GetLayerKml()
         STRING agentUri = L"http://myserver/mapguide/mapagent/mapagent.fcgi";
         STRING format = L"KML";
 
-        //call GetLayerKml
-        Ptr<MgByteReader> reader = m_svcKml->GetLayerKml(layer, extents, width, height, dpi, drawOrder, agentUri, format);
+        try
+        {
+            //call GetLayerKml
+            Ptr<MgByteReader> reader = m_svcKml->GetLayerKml(layer, extents, width, height, dpi, drawOrder, agentUri, format);
 
-        STRING mimeType = reader->GetMimeType();
-        CPPUNIT_ASSERT(mimeType.compare(MgMimeType::Kml) == 0);
+            STRING mimeType = reader->GetMimeType();
+            CPPUNIT_ASSERT(mimeType.compare(MgMimeType::Kml) == 0);
+        }
+        catch(MgConnectionFailedException* e)
+        {
+            SAFE_RELEASE(e);
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\TestCase_GetLayerKml skipped because unable to connect to test server.\n")));
+        }
 
         //compare results against referenced content
         //TODO: Find a way to make the comparison work on Windows AND Linux
