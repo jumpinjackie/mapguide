@@ -353,7 +353,7 @@ BOOL FCGI_HandleResponse(sapi_request_info *req_info)
 {
 	FCGI_Header Header;
 	int rcvd = 0;
-	char work_buffer[8192];
+	char work_buffer[65536];
 	char header_buffer[2048] = {0};
 	int headersDone = 0;
 	unsigned int writelen = 0;
