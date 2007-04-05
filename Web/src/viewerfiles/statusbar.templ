@@ -152,7 +152,6 @@ function SetZoomToScale(val)
     else
     {
         parent.GetMapFrame().ZoomToScale(parseFloat(val.value));
-        val.value="1: " + val.value;
         document.getElementById("4").focus();
     }
 }
