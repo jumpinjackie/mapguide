@@ -82,6 +82,12 @@ function ZoomToView(x,y,scale,refresh)
         emapViewer.Refresh();
 }
 
+function ZoomToScale(scale)
+{
+    emapViewer.MapScale = scale;
+    emapViewer.Refresh();
+}
+
 function Refresh()
 {
     emapViewer.Refresh();
