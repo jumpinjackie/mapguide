@@ -530,7 +530,7 @@ function InitDocument()
     
     if (window.addEventListener)
     {
-        window.addEventListener('DOMMouseScroll', OnMouseWheel, false); 
+        window.addEventListener('DOMMouseScroll', OnMouseWheel, false);
     }
     window.onmousewheel = document.onmousewheel = OnMouseWheel; 
 
@@ -2706,6 +2706,8 @@ function ClearSelection()
     selection = new Selection();
     xmlSelection = null;
 
+    GetPropertyCtrl().SetProperties(0);
+    
     SetSelection("", false);
     RequestMapImage(++mapId);
 
@@ -3229,7 +3231,7 @@ function RequestHyperLinkData(id, x, y, exec)
     pt1 = ScreenToMapUnits(x1,y1);
     pt2 = ScreenToMapUnits(x2,y2);
     geom = MakeWktPolygon(pt1.X, pt1.Y, pt2.X, pt2.Y);
-    reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=0&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random() + "&LAYERNAMES=" + encodeURIComponent(GetVisLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS&MAXFEATURES=1";
+    reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=0&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random() + "&LAYERNAMES=" + encodeURIComponent(GetVisLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS&MAXFEATURES=1&LAYERATTRIBUTEFILTER=5";
     obj = new HlRequest(id, x, y, req, exec);
     req.onreadystatechange = obj.OnHl;
     try { req.send(reqParams); } catch(e) {}
@@ -3430,6 +3432,11 @@ function HandleMouseWheelEvent(delta, event)
         //Determine the cursor position
         wheelZoomCursor = new Point(msie ? event.clientX - mapPosX : event.screenX - mapPosX,
             msie ? event.clientY : event.screenY);
+        if(wheelZoomCursor.X < 0)
+        {
+            //Do not process wheel events in the property or legend area
+            return false;
+        }
         wheelZoomDelta = 0;
     }
             
