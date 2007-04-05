@@ -68,9 +68,10 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
         {
             Ptr<MgByteReader> sdReader;
 
+#ifdef _DEBUG
             if (wcsncmp(uniqueName.c_str(), L"Library://", 10) == 0)
             {
-                //get and parse the mapdef
+                //get and parse the symboldef
                 MgResourceIdentifier resId(uniqueName);
                 sdReader = m_svcResource->GetResourceContent(&resId, L"");
             }
@@ -78,6 +79,11 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
             {
                 sdReader = new MgByteReader(uniqueName, MgMimeType::Xml, false);
             }
+#else
+            //get and parse the symboldef
+            MgResourceIdentifier resId(uniqueName);
+            sdReader = m_svcResource->GetResourceContent(&resId, L"");
+#endif
 
             Ptr<MgByteSink> sink = new MgByteSink(sdReader);
             Ptr<MgByte> bytes = sink->ToBuffer();
@@ -135,6 +141,7 @@ const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId, 
         {
             Ptr<MgByteReader> sdReader;
 
+#ifdef _DEBUG
             if (wcsncmp(resourceId, L"Library://", 10) == 0)
             {
                 MgResourceIdentifier resId(resourceId);
@@ -146,6 +153,12 @@ const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId, 
             {
                 sdReader = new MgByteReader(resourceName, MgMimeType::Png, false);
             }
+#else
+            MgResourceIdentifier resId(resourceId);
+
+            //get the image named "resourceName" attached to resource "resId"
+            sdReader = m_svcResource->GetResourceData(&resId, resourceName);
+#endif
 
             INT64 len = sdReader->GetLength();
             if (len > 0 && len < 16*1024*1024) // draw the line at 16 MB
