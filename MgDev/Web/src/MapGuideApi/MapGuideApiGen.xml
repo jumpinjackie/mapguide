@@ -274,7 +274,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../Common/Geometry/CoordinateIterator.h"/>
     <Header path="../../../Common/Geometry/Measure.h"/>
     <Header path="../../../Common/Geometry/Transform.h"/>
-    <Header path="../../../Common/Geometry/GeometricEntity.h"/>/>
+    <Header path="../../../Common/Geometry/GeometricEntity.h"/>
     <Header path="../../../Common/Geometry/Geometry.h"/>
     <Header path="../../../Common/Geometry/GeometryComponent.h"/>
     <Header path="../../../Common/Geometry/GeometryCollection.h"/>
