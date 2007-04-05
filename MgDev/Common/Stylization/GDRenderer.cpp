@@ -769,7 +769,9 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     {
                         //unknown symbol or symbol library error
                         RS_Color red(255, 0, 0, 255);
-                        gdImagePtr brush1 = rs_gdImageThickLineBrush(rs_min(superw, superh) / 17, red);
+                        int line_weight = rs_min(superw, superh) / 17;
+                        // line_weight cannot be zero
+                        gdImagePtr brush1 = rs_gdImageThickLineBrush(line_weight > 1 ? line_weight : 2, red);
                         gdImageSetBrush(tmp, brush1);
 
                         gdImageOpenPolygon(tmp, (gdPointPtr)pts, npts, gdBrushed);
@@ -786,7 +788,9 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                         //draw outline with a thickness set so that when scaled down to
                         //th destination image, the outline is still fully visible
 
-                        gdImagePtr brush1 = rs_gdImageThickLineBrush(rs_min(superw, superh) / 17, outline);
+                        int line_weight = rs_min(superw, superh) / 17;
+                        // line_weight cannot be zero
+                        gdImagePtr brush1 = rs_gdImageThickLineBrush(line_weight > 1 ? line_weight : 2, outline);
                         gdImageSetBrush(tmp, brush1);
 
                         gdImageOpenPolygon(tmp, (gdPointPtr)pts, npts, gdBrushed);
