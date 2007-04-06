@@ -498,9 +498,23 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
     RS_F_Point fpts[4];
     b.get_points(fpts);
 
-    // draw the opaque background first, if requested
-    if (tdef.textbg() == RS_TextBackground_Opaque)
+    // draw the opaque / framed background first, if requested
+    bool bFramed = ((tdef.textbg() & RS_TextBackground_Framed) != 0);
+    bool bOpaque = ((tdef.textbg() & RS_TextBackground_Opaque) != 0);
+    if (bFramed || bOpaque)
     {
+        // factor in the frame offset
+        double offx = tdef.frameoffsetx();
+        double offy = tdef.frameoffsety();
+        fpts[0].x -= offx;
+        fpts[0].y -= offy;
+        fpts[1].x += offx;
+        fpts[1].y -= offy;
+        fpts[2].x += offx;
+        fpts[2].y += offy;
+        fpts[3].x -= offx;
+        fpts[3].y += offy;
+
         // rotate and translate it
         for (int j=0; j<4; ++j)
         {
@@ -518,11 +532,14 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         lb.LineTo(fpts[3].x, fpts[3].y);
         lb.Close();
 
-        m_serenderer->DrawScreenPolygon(&lb, NULL, tdef.bgcolor().argb());
+        if (bOpaque)
+            m_serenderer->DrawScreenPolygon(&lb, NULL, tdef.opaquecolor().argb());
+        if (bFramed)
+            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.framecolor().argb(), 0.0);
     }
 
-    // calculate a 0.5 mm offset for ghosting
-    int offset = ROUND(MetersToPixels(tdef.font().units(), 0.0005));
+    // calculate a 0.25 mm offset for ghosting
+    int offset = ROUND(MetersToPixels(tdef.font().units(), 0.00025));
     if (offset == 0)
         offset = 1;
 
@@ -546,16 +563,16 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         int posy = ROUND(insY);
 
         // render the ghosted text, if requested
-        if (tdef.textbg() == RS_TextBackground_Ghosted)
+        if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
         {
-            DrawString(*txt, posx-offset, posy, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
-            DrawString(*txt, posx+offset, posy, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
-            DrawString(*txt, posx, posy-offset, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
-            DrawString(*txt, posx, posy+offset, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
+            DrawString(*txt, posx-offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
+            DrawString(*txt, posx+offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
+            DrawString(*txt, posx, posy-offset, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
+            DrawString(*txt, posx, posy+offset, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
         }
 
         // render the primary text
-        DrawString(*txt, posx, posy, tm.font_height, tm.font, tdef.color(), anglerad);
+        DrawString(*txt, posx, posy, tm.font_height, tm.font, tdef.textcolor(), anglerad);
 
         // render the underline, if requested
         if (tdef.font().style() & RS_FontStyle_Underline)
@@ -578,7 +595,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             lb.MoveTo(x0, y0);
             lb.LineTo(x1, y1);
 
-            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.color().argb(), line_width);
+            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.textcolor().argb(), line_width);
         }
     }
 }
@@ -593,6 +610,11 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
 {
     size_t numchars = tm.text.length();
 
+    // calculate a 0.25 mm offset for ghosting
+    int offset = ROUND(MetersToPixels(tdef.font().units(), 0.00025));
+    if (offset == 0)
+        offset = 1;
+
     //draw the characters, each in its computed position
     RS_String c;
     for (size_t i=0; i<numchars; ++i)
@@ -604,15 +626,15 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         int posy = ROUND(tm.char_pos[i].y);
         double anglerad = tm.char_pos[i].anglerad;
 
-        if (tdef.textbg() == RS_TextBackground_Ghosted)
+        if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
         {
-            DrawString(c, posx-1, posy, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
-            DrawString(c, posx+1, posy, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
-            DrawString(c, posx, posy-1, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
-            DrawString(c, posx, posy+1, tm.font_height, tm.font, tdef.bgcolor(), anglerad);
+            DrawString(c, posx-offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
+            DrawString(c, posx+offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
+            DrawString(c, posx, posy-offset, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
+            DrawString(c, posx, posy+offset, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
         }
 
-        DrawString(c, posx, posy, tm.font_height, tm.font, tdef.color(), anglerad);
+        DrawString(c, posx, posy, tm.font_height, tm.font, tdef.textcolor(), anglerad);
     }
 
     //render underline
@@ -666,7 +688,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
             lb.MoveTo(sx, sy);
             lb.LineTo(ex, ey);
 
-            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.color().argb(), line_width);
+            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.textcolor().argb(), line_width);
 
             last_x = ex;
             last_y = ey;

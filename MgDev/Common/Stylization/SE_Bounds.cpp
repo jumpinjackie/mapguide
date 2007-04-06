@@ -21,6 +21,7 @@
 #include "SE_ConvexHull.h"
 #include <float.h>
 
+
 inline void AddToBounds(double x, double y, double* min, double* max)
 {
     if (min[0] > x)
@@ -33,13 +34,16 @@ inline void AddToBounds(double x, double y, double* min, double* max)
         max[1] = y;
 }
 
+
 SE_Bounds::SE_Bounds()
 {
 }
 
+
 SE_Bounds::~SE_Bounds()
 {
 }
+
 
 void SE_Bounds::Add(double x, double y)
 {
@@ -49,9 +53,10 @@ void SE_Bounds::Add(double x, double y)
     hull[2*size+1] = y;
 
     AddToBounds(x,y, min, max);
-    
+
     size++;
 }
+
 
 void SE_Bounds::Transform(const SE_Matrix& xform)
 {
@@ -67,6 +72,7 @@ void SE_Bounds::Transform(const SE_Matrix& xform)
         cur += 2;
     }
 }
+
 
 /* NOTE: This method is intentionally unchecked, the caller must ensure that the
  *       destination SE_Bounds is large enough, that the source is valid, etc. */
@@ -89,10 +95,12 @@ void SE_Bounds::Transform(const SE_Matrix& xform, SE_Bounds* src)
     }
 }
 
+
 void SE_Bounds::Free()
 {
     pool->FreeBounds(this);
 }
+
 
 SE_Bounds* SE_Bounds::Clone()
 {
@@ -106,6 +114,7 @@ SE_Bounds* SE_Bounds::Clone()
     memcpy(clone->hull, hull, size*2*sizeof(double));
     return clone;
 }
+
 
 void SE_Bounds::Contained(double minx, double miny, double maxx, double maxy, double &growx, double &growy)
 {
@@ -144,10 +153,12 @@ void SE_Bounds::Contained(double minx, double miny, double maxx, double maxy, do
     }
 }
 
+
 bool SE_Bounds::Contained(double minx, double miny, double maxx, double maxy)
 {
     return (minx < min[0]) && (miny < min[1]) && (maxx > max[0]) && (maxy > max[1]);
 }
+
 
 SE_Bounds* SE_Bounds::Union(SE_Bounds* bounds)
 {

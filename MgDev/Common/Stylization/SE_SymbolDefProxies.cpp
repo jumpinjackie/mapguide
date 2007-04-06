@@ -58,15 +58,13 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     else
         ret->resizeType = SE_RenderResizeNone;
 
-    double wx     = weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
-    ret->weight   = weight.evaluate(cxt->exec) * wx;
-    ret->geometry = geometry->Clone();
-    ret->color    = color.evaluate(cxt->exec);
-    
-    const wchar_t* sCap =   cap.evaluate(cxt->exec);
-    const wchar_t* sJoin =  join.evaluate(cxt->exec);
-    ret->miterLimit =       miterLimit.evaluate(cxt->exec);
-    
+    double wx       = weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
+    ret->weight     = weight.evaluate(cxt->exec) * wx;
+    ret->geometry   = geometry->Clone();
+    ret->color      = color.evaluate(cxt->exec);
+    ret->miterLimit = miterLimit.evaluate(cxt->exec);
+
+    const wchar_t* sCap  = cap.evaluate(cxt->exec);
     if (wcscmp(sCap, L"Square") == 0)
         ret->cap = SE_LineCap_Square;
     if (wcscmp(sCap, L"Round") == 0)
@@ -76,7 +74,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     else
         ret->cap = SE_LineCap_None;
 
-    ret->geometry->Transform(*cxt->xform, ret->weight);
+    const wchar_t* sJoin = join.evaluate(cxt->exec);
     if (wcscmp(sJoin, L"Bevel") == 0)
         ret->join = SE_LineJoin_Bevel;
     else if (wcscmp(sJoin, L"Round") == 0)
@@ -86,11 +84,11 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     else
         ret->join = SE_LineJoin_None;
 
-
-    SE_Bounds* seb = ret->geometry->xf_bounds();
+    ret->geometry->Transform(*cxt->xform, ret->weight);
 
     //TODO: here we would implement a rotating calipers algorithm to get a tighter
     //      oriented box, but for now just get the axis-aligned bounds of the path
+    SE_Bounds* seb = ret->geometry->xf_bounds();
     ret->bounds[0].x = seb->min[0];
     ret->bounds[0].y = seb->min[1];
     ret->bounds[1].x = seb->max[0];
@@ -116,17 +114,14 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     else
         ret->resizeType = SE_RenderResizeNone;
 
-    double wx     = weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
-    ret->weight   = weight.evaluate(cxt->exec) * wx;
-    ret->geometry = geometry->Clone();
-    ret->color    = color.evaluate(cxt->exec);
-    ret->fill     = fill.evaluate(cxt->exec);
+    double wx       = weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
+    ret->weight     = weight.evaluate(cxt->exec) * wx;
+    ret->geometry   = geometry->Clone();
+    ret->color      = color.evaluate(cxt->exec);
+    ret->fill       = fill.evaluate(cxt->exec);
+    ret->miterLimit = miterLimit.evaluate(cxt->exec);
 
-    ret->geometry->Transform(*cxt->xform, ret->weight);
-    const wchar_t* sCap =   cap.evaluate(cxt->exec);
-    const wchar_t* sJoin =  join.evaluate(cxt->exec);
-    ret->miterLimit =       miterLimit.evaluate(cxt->exec);
-    
+    const wchar_t* sCap  = cap.evaluate(cxt->exec);
     if (wcscmp(sCap, L"Square") == 0)
         ret->cap = SE_LineCap_Square;
     if (wcscmp(sCap, L"Round") == 0)
@@ -136,6 +131,7 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     else
         ret->cap = SE_LineCap_None;
 
+    const wchar_t* sJoin = join.evaluate(cxt->exec);
     if (wcscmp(sJoin, L"Bevel") == 0)
         ret->join = SE_LineJoin_Bevel;
     else if (wcscmp(sJoin, L"Round") == 0)
@@ -145,10 +141,11 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     else
         ret->join = SE_LineJoin_None;
 
-    SE_Bounds* seb = ret->geometry->xf_bounds();
+    ret->geometry->Transform(*cxt->xform, ret->weight);
 
     //TODO: here we would implement a rotating calipers algorithm to get a tighter
     //      oriented box, but for now just get the axis-aligned bounds of the path
+    SE_Bounds* seb = ret->geometry->xf_bounds();
     ret->bounds[0].x = seb->min[0];
     ret->bounds[0].y = seb->min[1];
     ret->bounds[1].x = seb->max[0];
@@ -177,7 +174,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     else
         ret->resizeType = SE_RenderResizeNone;
 
-    ret->text = textExpr.evaluate(cxt->exec);
+    ret->text = textString.evaluate(cxt->exec);
     ret->position[0] = position[0].evaluate(cxt->exec);
     ret->position[1] = position[1].evaluate(cxt->exec);
 
@@ -186,24 +183,39 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     ret->tdef.rotation() = angle.evaluate(cxt->exec);   // in degrees
 
     int style = RS_FontStyle_Regular;
-    if (underlined.evaluate(cxt->exec)) style |= (int)RS_FontStyle_Underline;
-    if (italic.evaluate(cxt->exec)) style |= (int)RS_FontStyle_Italic;
     if (bold.evaluate(cxt->exec)) style |= (int)RS_FontStyle_Bold;
+    if (italic.evaluate(cxt->exec)) style |= (int)RS_FontStyle_Italic;
+    if (underlined.evaluate(cxt->exec)) style |= (int)RS_FontStyle_Underline;
 
     ret->tdef.font().style() = (RS_FontStyle_Mask)style;
-    ret->tdef.font().name() = fontExpr.evaluate(cxt->exec);
+    ret->tdef.font().name() = fontName.evaluate(cxt->exec);
 
     // RS_TextDef expects font height to be in meters - convert it from mm
-    if (sizeScaleable.evaluate(cxt->exec))
-        ret->tdef.font().height() = size.evaluate(cxt->exec)*0.001*fabs(cxt->xform->y1)/cxt->mm2px;
+    if (heightScalable.evaluate(cxt->exec))
+        ret->tdef.font().height() = height.evaluate(cxt->exec)*0.001*fabs(cxt->xform->y1)/cxt->mm2px;
     else
-        ret->tdef.font().height() = size.evaluate(cxt->exec)*0.001;
+        ret->tdef.font().height() = height.evaluate(cxt->exec)*0.001;
 
     ret->tdef.linespace() = lineSpacing.evaluate(cxt->exec);
 
-    ret->tdef.color() = RS_Color::FromARGB(textColor.evaluate(cxt->exec));
-    ret->tdef.bgcolor() = RS_Color::FromARGB(ghostColor.evaluate(cxt->exec));
-    ret->tdef.textbg() = bGhosted? RS_TextBackground_Ghosted : RS_TextBackground_None;
+    ret->tdef.textcolor() = RS_Color::FromARGB(textColor.evaluate(cxt->exec));
+    if (!ghostColor.empty())
+    {
+        ret->tdef.ghostcolor() = RS_Color::FromARGB(ghostColor.evaluate(cxt->exec));
+        ret->tdef.textbg() |= RS_TextBackground_Ghosted;
+    }
+    if (!frameLineColor.empty())
+    {
+        ret->tdef.framecolor() = RS_Color::FromARGB(frameLineColor.evaluate(cxt->exec));
+        ret->tdef.textbg() |= RS_TextBackground_Framed;
+    }
+    if (!frameFillColor.empty())
+    {
+        ret->tdef.opaquecolor() = RS_Color::FromARGB(frameFillColor.evaluate(cxt->exec));
+        ret->tdef.textbg() |= RS_TextBackground_Opaque;
+    }
+    ret->tdef.frameoffsetx() = frameOffset[0].evaluate(cxt->exec)*cxt->xform->x0;
+    ret->tdef.frameoffsety() = frameOffset[1].evaluate(cxt->exec)*fabs(cxt->xform->y1);
 
     const wchar_t* hAlign = hAlignment.evaluate(cxt->exec);
     if (wcscmp(hAlign, L"Left") == 0)
@@ -240,13 +252,48 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         //convert the unrotated measured bounds for the current line to a local point array
         memcpy(fpts, tm.line_pos[k].ext, sizeof(fpts));
 
-        // process the extent points
+        //process the extent points
         for (int j=0; j<4; ++j)
         {
             txf.transform(fpts[j].x, fpts[j].y);
 
             // update the overall rotated bounds
             xformBounds.add_point(fpts[j]);
+        }
+    }
+
+    //compute axis aligned bounds of the text primitive, including the frame offsets
+    //we do it separately because the offsets could be negative
+    double offx = ret->tdef.frameoffsetx();
+    double offy = ret->tdef.frameoffsety();
+    if (cxt->xform->y1 < 0.0)
+        offy = -offy;
+
+    if (offx != 0.0 || offy != 0.0)
+    {
+        for (size_t k=0; k<tm.line_pos.size(); ++k)
+        {
+            //convert the unrotated measured bounds for the current line to a local point array
+            memcpy(fpts, tm.line_pos[k].ext, sizeof(fpts));
+
+            //factor in the frame offset
+            fpts[0].x -= offx;
+            fpts[0].y -= offy;
+            fpts[1].x += offx;
+            fpts[1].y -= offy;
+            fpts[2].x += offx;
+            fpts[2].y += offy;
+            fpts[3].x -= offx;
+            fpts[3].y += offy;
+
+            // process the extent points
+            for (int j=0; j<4; ++j)
+            {
+                txf.transform(fpts[j].x, fpts[j].y);
+
+                // update the overall rotated bounds
+                xformBounds.add_point(fpts[j]);
+            }
         }
     }
 
@@ -288,7 +335,7 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     ret->position[1] = position[1].evaluate(cxt->exec);
     cxt->xform->transform(ret->position[0], ret->position[1]);
 
-    if (extentScaleable.evaluate(cxt->exec))
+    if (extentScalable.evaluate(cxt->exec))
     {
         ret->extent[0] = fabs(extent[0].evaluate(cxt->exec)*cxt->xform->x0);
         ret->extent[1] = fabs(extent[1].evaluate(cxt->exec)*cxt->xform->y1);
@@ -478,6 +525,8 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         SE_RenderText* rt = (SE_RenderText*)rsym;
                         growxf.transform(rt->position[0], rt->position[1]);
                         rt->tdef.font().height() *= scaley; // TODO: should this only be done if HeightScalable is true?
+                        rt->tdef.frameoffsetx() *= scalex;  // TODO: should this only be done if HeightScalable is true?
+                        rt->tdef.frameoffsety() *= scaley;  // TODO: should this only be done if HeightScalable is true?
                         for (int j=0; j<4; j++)
                             growxf.transform(rt->bounds[j].x, rt->bounds[j].y);
                         break;

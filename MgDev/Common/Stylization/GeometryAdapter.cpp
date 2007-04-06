@@ -585,9 +585,9 @@ bool GeometryAdapter::ConvertMarkerDef(MdfModel::Symbol* marker, RS_MarkerDef& m
 
 bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tdef)
 {
-    bool const1 = EvalColor(text->GetBackgroundColor(), tdef.bgcolor());
-    bool const2 = EvalColor(text->GetForegroundColor(), tdef.color());
+    bool const1 = EvalColor(text->GetForegroundColor(), tdef.textcolor());
 
+    bool const2 = true;
     switch (text->GetBackgroundStyle())
     {
         case MdfModel::TextSymbol::Transparent :
@@ -595,9 +595,11 @@ bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tde
             break;
         case MdfModel::TextSymbol::Ghosted :
             tdef.textbg() = RS_TextBackground_Ghosted;
+            const2 = EvalColor(text->GetBackgroundColor(), tdef.ghostcolor());
             break;
         case MdfModel::TextSymbol::Opaque :
             tdef.textbg() = RS_TextBackground_Opaque;
+            const2 = EvalColor(text->GetBackgroundColor(), tdef.opaquecolor());
             break;
     }
 
@@ -626,8 +628,7 @@ bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tde
 
     bool const7 = EvalDouble(text->GetRotation(), tdef.rotation());
 
-    tdef.font().units() = (text->GetSizeContext() == MdfModel::MappingUnits)
-        ? RS_Units_Model : RS_Units_Device;
+    tdef.font().units() = (text->GetSizeContext() == MdfModel::MappingUnits)? RS_Units_Model : RS_Units_Device;
 
     bool const8 = ConvertTextHAlign(text->GetHorizontalAlignment(), tdef.halign());
 

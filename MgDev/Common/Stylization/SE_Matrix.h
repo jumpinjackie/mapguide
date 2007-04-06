@@ -22,7 +22,7 @@
 
 #define SE_INLINE inline
 
-/* For the points P0, P1, P2, true if P2 is left of (P0, P1), 
+/* For the points P0, P1, P2, true if P2 is left of (P0, P1),
  * as indicated by sign of the cross product (P0, P1) X (P0, P2) */
 #define PointLeft(pt0x, pt0y, pt1x, pt1y, pt2x, pt2y) \
     (((pt1x - pt0x)*(pt2y - pt0y) - (pt2x - pt0x)*(pt1y - pt0y)) > 0)
@@ -35,7 +35,7 @@ struct SE_Matrix
     SE_INLINE SE_Matrix(const SE_Matrix & matrix);
     SE_INLINE SE_Matrix(double x0, double x1, double x2,
                         double y0, double y1, double y2);
-    
+
     SE_INLINE void setIdentity();
     /* Scale, then translate */
     SE_INLINE void setTransform(double scaleX, double scaleY, double transX, double transY);
@@ -71,22 +71,26 @@ SE_Matrix::SE_Matrix() :
     y0(0.0), y1(1.0), y2(0.0)
 { }
 
+
 SE_Matrix::SE_Matrix( double a00, double a01, double a02,
                       double a10, double a11, double a12) :
     x0(a00), x1(a01), x2(a02),
     y0(a10), y1(a11), y2(a12)
 { }
 
+
 SE_Matrix::SE_Matrix(const SE_Matrix & matrix) :
     x0(matrix.x0), x1(matrix.x1), x2(matrix.x2),
     y0(matrix.y0), y1(matrix.y1), y2(matrix.y2)
 { }
+
 
 void SE_Matrix::setIdentity()
 {
     x0 = y1 = 1.0;
     x1 = x2 = y0 = y2 = 0.0;
 }
+
 
 void SE_Matrix::setTransform(double scaleX, double scaleY, double transX, double transY)
 {
@@ -98,6 +102,7 @@ void SE_Matrix::setTransform(double scaleX, double scaleY, double transX, double
     y1 = scaleY;
     y2 = transY;
 }
+
 
 void SE_Matrix::setTransform(double scaleX, double scaleY, double transX, double transY, double rot)
 {
@@ -113,6 +118,7 @@ void SE_Matrix::setTransform(double scaleX, double scaleY, double transX, double
     y2 = transY;
 }
 
+
 void SE_Matrix::scaleX(double x)
 {
     x0 *= x;
@@ -120,12 +126,14 @@ void SE_Matrix::scaleX(double x)
     x2 *= x;
 }
 
+
 void SE_Matrix::scaleY(double y)
 {
     y0 *= y;
     y1 *= y;
     y2 *= y;
 }
+
 
 void SE_Matrix::scale(double x, double y)
 {
@@ -137,21 +145,25 @@ void SE_Matrix::scale(double x, double y)
     y2 *= y;
 }
 
+
 void SE_Matrix::translateX(double x)
 {
     x2 += x;
 }
+
 
 void SE_Matrix::translateY(double y)
 {
     y2 += y;
 }
 
+
 void SE_Matrix::translate(double x, double y)
 {
     x2 += x;
     y2 += y;
 }
+
 
 void SE_Matrix::rotate(double angle)
 {
@@ -173,6 +185,7 @@ void SE_Matrix::rotate(double angle)
     y0 = a10; y1 = a11; y2 = a12;
 }
 
+
 void SE_Matrix::rotate(double angle_sine, double angle_cosine)
 {
     double a00, a01, a02, a10, a11, a12;
@@ -189,6 +202,7 @@ void SE_Matrix::rotate(double angle_sine, double angle_cosine)
     x0 = a00; x1 = a01; x2 = a02;
     y0 = a10; y1 = a11; y2 = a12;
 }
+
 
 void SE_Matrix::premultiply(const SE_Matrix & matrix)
 {
@@ -207,6 +221,7 @@ void SE_Matrix::premultiply(const SE_Matrix & matrix)
     y0 = a10; y1 = a11; y2 = a12;
 }
 
+
 void SE_Matrix::postmultiply(const SE_Matrix& matrix)
 {
     double a00, a01, a02, a10, a11, a12;
@@ -224,6 +239,7 @@ void SE_Matrix::postmultiply(const SE_Matrix& matrix)
     y0 = a10; y1 = a11; y2 = a12;
 }
 
+
 void SE_Matrix::transform(double &x, double &y) const
 {
     double vx = x, vy = y;
@@ -231,11 +247,13 @@ void SE_Matrix::transform(double &x, double &y) const
     y = vx*y0 + vy*y1 + y2;
 }
 
+
 void SE_Matrix::transform(double x, double y, double& tx, double& ty) const
 {
     tx = x*x0 + y*x1 + x2;
     ty = x*y0 + y*y1 + y2;
 }
+
 
 void SE_Matrix::transformVector(double& x, double& y) const
 {
@@ -244,27 +262,31 @@ void SE_Matrix::transformVector(double& x, double& y) const
     y = vx*y0 + vy*y1;
 }
 
+
 void SE_Matrix::transformVector(double x, double y, double& tx, double &ty) const
 {
     tx = x*x0 + y*x1;
     ty = x*y0 + y*y1;
 }
 
+
 void SE_Matrix::operator*=(const SE_Matrix & matrix)
 {
     premultiply(matrix);
 }
 
+
 bool SE_Matrix::operator==(const SE_Matrix& matrix)
 {
-    return (x0 == matrix.x0 && x1 == matrix.x1 && x2 == matrix.x2 && 
+    return (x0 == matrix.x0 && x1 == matrix.x1 && x2 == matrix.x2 &&
             y0 == matrix.y0 && y1 == matrix.y1 && y2 == matrix.y2);
 }
+
 
 void SE_Matrix::inverse(SE_Matrix& inv)
 {
     double idet = 1.0 / (x0 * y1 - y0 * x1);
-    
+
     inv.x0 = y1 * idet;
     inv.x1 = -x1 * idet;
     inv.y0 = -y0 * idet;

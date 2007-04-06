@@ -80,11 +80,13 @@ void SE_LineStorage::EnsurePoints(int n)
         _ResizePoints(n);
 }
 
+
 void SE_LineStorage::EnsureContours(int n)
 {
     if (m_cur_cntr + 1 + n > m_cntrs_len)
         _ResizeContours(n);
 }
+
 
 void SE_LineStorage::SetBounds(double minx, double miny, double maxx, double maxy)
 {
@@ -94,6 +96,7 @@ void SE_LineStorage::SetBounds(double minx, double miny, double maxx, double max
     m_bounds.maxy = maxy;
 }
 
+
 void SE_LineStorage::SetBounds(SE_Bounds* bounds)
 {
     m_bounds.minx = bounds->min[0];
@@ -101,6 +104,7 @@ void SE_LineStorage::SetBounds(SE_Bounds* bounds)
     m_bounds.maxx = bounds->max[0];
     m_bounds.maxy = bounds->max[1];
 }
+
 
 void SE_LineStorage::SetChopInfo(double startx, double endx, bool closeChops)
 {
@@ -112,12 +116,14 @@ void SE_LineStorage::SetChopInfo(double startx, double endx, bool closeChops)
    m_do_chop = startx < endx; /* No chopping if info is invalid */
 }
 
+
 void SE_LineStorage::GetChopInfo(double& startx, double& endx, bool& closeChops)
 {
     startx = m_chop_start;
     endx = m_chop_end;
     closeChops = m_close_chops;
 }
+
 
 void SE_LineStorage::Reset()
 {
@@ -126,6 +132,7 @@ void SE_LineStorage::Reset()
     m_crossed = false;
     LineBuffer::Reset();
 }
+
 
 void SE_LineStorage::_MoveToNoChop(double x, double y)
 {
@@ -138,6 +145,7 @@ void SE_LineStorage::_MoveToNoChop(double x, double y)
 
     m_cntrs[++m_cur_cntr] = 1;
 }
+
 
 void SE_LineStorage::_LineToNoChop(double x, double y)
 {

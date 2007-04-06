@@ -60,12 +60,10 @@ public:
                                         SE_SymbolManager* symbolManager);
 };
 
+
 class StringOfTokens
 {
-
 public:
-
-
     StringOfTokens(std::wstring tokenstring, std::wstring delimiter) :
         m_tokenstring(tokenstring),
         m_delimiter(delimiter)
@@ -73,18 +71,14 @@ public:
         m_currentPos = 0;
     }
 
-
     int getTokenCount();
     std::wstring getFirstToken();
     std::wstring getNextToken();
 
 private:
-
     std::wstring  m_delimiter;
     std::wstring  m_tokenstring;
     std::wstring::size_type m_currentPos;
-
-
 };
 
 #endif // SE_POSITIONINGALGORITHMS_H
