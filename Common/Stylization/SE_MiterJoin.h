@@ -30,8 +30,8 @@ public:
 
     SE_MiterJoin(double limit,                  /* The miter limit of the join */
                  RS_Bounds& bounds,             /* The bounds of the unoriented symbol in pixel units */
-                 double vertexOffset,           /* The distance along the line (in pixels) from the 
-                                                   beginning of the symbol to the vertex of the join 
+                 double vertexOffset,           /* The distance along the line (in pixels) from the
+                                                   beginning of the symbol to the vertex of the join
                                                    (the value will be negative if the symbol starts before
                                                    the join, and positive if it starts after the join) */
                  const RS_F_Point& prev,        /* The point preceeding the vertex of the join in screen space */
@@ -65,7 +65,7 @@ private:
     SE_Matrix m_j2w;      /* Join space to world space transform */
 
     RS_F_Point m_points[6];
-    
+
     int m_n_discontinuities;
     RS_F_Point m_discontinuities[10];
 

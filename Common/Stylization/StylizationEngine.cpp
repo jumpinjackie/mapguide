@@ -47,6 +47,7 @@ StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
     m_visitor = new SE_StyleVisitor(resources, m_pool);
 }
 
+
 StylizationEngine::~StylizationEngine()
 {
     ClearCache();
@@ -134,8 +135,8 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             //get the geometry just once
             //all types of geometry
             LineBuffer* lb = m_lbPool->NewLineBuffer(8);
-            reader->GetGeometry(gpName, lb, xformer); 
- 
+            reader->GetGeometry(gpName, lb, xformer);
+
             if (lb && bClip)
             {
                 //clip geometry to given map request extents

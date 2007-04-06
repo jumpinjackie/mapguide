@@ -18,6 +18,7 @@
 #include "SE_BufferPool.h"
 #include "stdafx.h"
 
+
 SE_BufferPool::~SE_BufferPool()
 {
     while (!m_lb_pool.empty())
@@ -27,6 +28,7 @@ SE_BufferPool::~SE_BufferPool()
     while(!m_ls_pool.empty())
         delete m_ls_pool.pop();
 }
+
 
 SE_LineBuffer* SE_BufferPool::NewLineBuffer(int requestSize)
 {
@@ -43,10 +45,12 @@ SE_LineBuffer* SE_BufferPool::NewLineBuffer(int requestSize)
     }
 }
 
+
 void SE_BufferPool::FreeLineBuffer(SE_LineBuffer* lb)
 {
     m_lb_pool.push(lb);
 }
+
 
 SE_Bounds* SE_BufferPool::NewBounds(int size)
 {
@@ -73,10 +77,12 @@ SE_Bounds* SE_BufferPool::NewBounds(int size)
     return bounds;
 }
 
+
 void SE_BufferPool::FreeBounds(SE_Bounds* bounds)
 {
     m_bnd_pool.push(bounds);
 }
+
 
 SE_LineStorage* SE_BufferPool::NewLineStorage(int requestSize)
 {
@@ -90,8 +96,9 @@ SE_LineStorage* SE_BufferPool::NewLineStorage(int requestSize)
     {
         SE_LineStorage* ls = new SE_LineStorage(requestSize, this);
         return ls;
-    }    
+    }
 }
+
 
 void SE_BufferPool::FreeLineStorage(SE_LineStorage* ls)
 {

@@ -833,7 +833,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             RS_FontDef fdef(mdef.library(), mdef.height(), mdef.fontstyle(), mdef.units());
 
             tdef.font() = fdef;
-            tdef.color() = mdef.style().color();
+            tdef.textcolor() = mdef.style().color();
             tdef.rotation() = mdef.rotation();
 
             //approximately carry over the insertion point -- it will map the unit square
@@ -1714,7 +1714,7 @@ void DWFRenderer::WriteTextDef(WT_File* file, RS_TextDef& tdef)
     file->desired_rendition().font().height() = (WT_Integer32)hgt;
     file->desired_rendition().font().rotation() = (WT_Unsigned_Integer16)(tdef.rotation() / 360.0 * 65536);
 
-    file->desired_rendition().color() = Util_ConvertColor(tdef.color());
+    file->desired_rendition().color() = Util_ConvertColor(tdef.textcolor());
 
     //text alignment
     switch (tdef.halign())
@@ -1746,25 +1746,23 @@ void DWFRenderer::WriteTextDef(WT_File* file, RS_TextDef& tdef)
     }
 
     //text background style
-
-    //ghosting offset : 1 pixel
-    double metersPerPixel = 0.0254 / m_dpi;
-    int offset = (int)_MeterToW2DMacroUnit(tdef.font().units(), metersPerPixel);
-
-    WT_Color bgcolor = Util_ConvertColor(tdef.bgcolor());
-
-    file->desired_rendition().contrast_color() = bgcolor.rgba();
-
-    switch (tdef.textbg())
+    if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
     {
-    case RS_TextBackground_None    : file->desired_rendition().text_background() = WT_Text_Background(WT_Text_Background::None, 0);
-        break;
-    case RS_TextBackground_Ghosted : file->desired_rendition().text_background() = WT_Text_Background(WT_Text_Background::Ghosted, offset);
-        break;
-    case RS_TextBackground_Opaque  : file->desired_rendition().text_background() = WT_Text_Background(WT_Text_Background::Solid, 0);
-        break;
-    default:
-        break;
+        //ghosting offset : 1 pixel
+        double metersPerPixel = 0.0254 / m_dpi;
+        int offset = (int)_MeterToW2DMacroUnit(tdef.font().units(), metersPerPixel);
+        file->desired_rendition().text_background() = WT_Text_Background(WT_Text_Background::Ghosted, offset);
+        file->desired_rendition().contrast_color() = Util_ConvertColor(tdef.ghostcolor()).rgba();
+    }
+    else if ((tdef.textbg() & RS_TextBackground_Opaque) != 0)
+    {
+        file->desired_rendition().text_background() = WT_Text_Background(WT_Text_Background::Solid, 0);
+        file->desired_rendition().contrast_color() = Util_ConvertColor(tdef.opaquecolor()).rgba();
+    }
+    else
+    {
+        file->desired_rendition().text_background() = WT_Text_Background(WT_Text_Background::None, 0);
+        file->desired_rendition().contrast_color() = WT_Contrast_Color(0, 0, 0, 255);
     }
 }
 

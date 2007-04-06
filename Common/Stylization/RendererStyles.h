@@ -86,9 +86,11 @@ enum RS_ImageFormat
 //////////////////////////////////////////////////////////////////////////////
 enum RS_TextBackground
 {
-    RS_TextBackground_None,
-    RS_TextBackground_Opaque,
-    RS_TextBackground_Ghosted
+    // used as a bit mask
+    RS_TextBackground_None    = 0,
+    RS_TextBackground_Ghosted = 1,  // the text is drawn ghosted
+    RS_TextBackground_Framed  = 2,  // the text BB is drawn using a frame
+    RS_TextBackground_Opaque  = 4   // the text BB is drawn using a filled rectangle
 };
 
 
@@ -308,7 +310,9 @@ public:
         m_justify(RS_Justify_Left),
         m_textbg(RS_TextBackground_None),
         m_rotation(0.0),
-        m_linespace(1.0)
+        m_linespace(1.0),
+        m_frameoffsetx(1.0),
+        m_frameoffsety(1.0)
     {
     }
 
@@ -319,30 +323,40 @@ public:
         m_justify(RS_Justify_Left),
         m_textbg(RS_TextBackground_None),
         m_rotation(0.0),
-        m_linespace(1.0)
+        m_linespace(1.0),
+        m_frameoffsetx(1.0),
+        m_frameoffsety(1.0)
     {
     }
 
-    inline RS_HAlignment&     halign()    { return m_halign; }
-    inline RS_VAlignment&     valign()    { return m_valign; }
-    inline RS_Justify&        justify()   { return m_justify; }
-    inline RS_TextBackground& textbg()    { return m_textbg; }
-    inline RS_Color&          color()     { return m_color; }
-    inline RS_Color&          bgcolor()   { return m_bgcolor; }
-    inline RS_FontDef&        font()      { return m_font; }
-    inline double&            rotation()  { return m_rotation; }
-    inline double&            linespace() { return m_linespace; }
+    inline RS_HAlignment& halign()       { return m_halign; }
+    inline RS_VAlignment& valign()       { return m_valign; }
+    inline RS_Justify&    justify()      { return m_justify; }
+    inline int&           textbg()       { return m_textbg; }
+    inline RS_Color&      textcolor()    { return m_textcolor; }
+    inline RS_Color&      ghostcolor()   { return m_ghostcolor; }
+    inline RS_Color&      framecolor()   { return m_framecolor; }
+    inline RS_Color&      opaquecolor()  { return m_opaquecolor; }
+    inline RS_FontDef&    font()         { return m_font; }
+    inline double&        rotation()     { return m_rotation; }
+    inline double&        linespace()    { return m_linespace; }
+    inline double&        frameoffsetx() { return m_frameoffsetx; }
+    inline double&        frameoffsety() { return m_frameoffsety; }
 
 private:
     RS_HAlignment m_halign;
     RS_VAlignment m_valign;
     RS_Justify m_justify;
-    RS_TextBackground m_textbg;
-    RS_Color m_color;
-    RS_Color m_bgcolor;
+    int m_textbg;
+    RS_Color m_textcolor;
+    RS_Color m_ghostcolor;
+    RS_Color m_framecolor;
+    RS_Color m_opaquecolor;
     RS_FontDef m_font;
     double m_rotation;
     double m_linespace;
+    double m_frameoffsetx;
+    double m_frameoffsety;
 };
 
 

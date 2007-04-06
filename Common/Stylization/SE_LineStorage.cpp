@@ -19,6 +19,7 @@
 #include "SE_BufferPool.h"
 #include "stdafx.h"
 
+
 SE_LineStorage::SE_LineStorage(int size, SE_BufferPool* pool) : 
     LineBuffer(size),
     m_do_chop(false),
@@ -51,6 +52,7 @@ void SE_LineStorage::_MoveTo(double x, double y)
 
     m_cntrs[++m_cur_cntr] = 1;
 }
+
 
 void SE_LineStorage::_LineTo(double x, double y)
 {
@@ -129,6 +131,7 @@ void SE_LineStorage::_LineTo(double x, double y)
     m_cntrs[m_cur_cntr]++;
 }
 
+
 void SE_LineStorage::SetToTransform(const SE_Matrix& xform, LineBuffer* lb)
 {
     EnsurePoints(lb->point_count());
@@ -170,6 +173,7 @@ void SE_LineStorage::SetToTransform(const SE_Matrix& xform, LineBuffer* lb)
     xform.transform(m_last_x, m_last_y);
 }
 
+
 void SE_LineStorage::SetToCopy(SE_LineStorage* src)
 {
     m_do_chop = src->m_do_chop;
@@ -200,6 +204,7 @@ void SE_LineStorage::SetToCopy(SE_LineStorage* src)
     m_cur_cntr = src->cntr_count() - 1;
 }
 
+
 void SE_LineStorage::Transform(const SE_Matrix& xform)
 {
     double* cur = m_pts;
@@ -213,6 +218,7 @@ void SE_LineStorage::Transform(const SE_Matrix& xform)
         xform.transform(*x, *y);
     }
 }
+
 
 void SE_LineStorage::_ResizePoints(int n)
 {
@@ -234,6 +240,7 @@ void SE_LineStorage::_ResizePoints(int n)
     m_types_len = len;
 }
 
+
 void SE_LineStorage::_ResizeContours(int n)
 {
     int len = 2*m_cntrs_len;
@@ -246,6 +253,7 @@ void SE_LineStorage::_ResizeContours(int n)
     m_cntrs = tempCntrs;
     m_cntrs_len = len;
 }
+
 
 void SE_LineStorage::Append(SE_LineStorage* srcls)
 {
@@ -274,6 +282,7 @@ void SE_LineStorage::Append(SE_LineStorage* srcls)
         src += pts;
     }
 }
+
 
 void SE_LineStorage::Free()
 {

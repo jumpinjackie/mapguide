@@ -81,16 +81,16 @@ public:
     STYLIZATION_API void Reset();
 
     /* Caller doesn't free */
-    STYLIZATION_API SE_LineStorage* Transform(const SE_Matrix& xform, 
-                                              double weight = 0.0, 
-                                              SE_LineCap cap = SE_LineCap_None, 
+    STYLIZATION_API SE_LineStorage* Transform(const SE_Matrix& xform,
+                                              double weight = 0.0,
+                                              SE_LineCap cap = SE_LineCap_None,
                                               SE_LineJoin join = SE_LineJoin_Bevel,
                                               double miterLimit = 0.0,
                                               double tolerance = .25);
 
     /* Caller frees */
     STYLIZATION_API SE_LineStorage* TransformInstance(SE_PiecewiseTransform** ppxf, int xflen, bool closed = false);
-    
+
     STYLIZATION_API SE_INLINE bool& compute_bounds() { return m_compute_bounds; }
     STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return (LineBuffer*)m_xf_buf; }
     STYLIZATION_API SE_INLINE LineBuffer* xf_wt_buf() { return (LineBuffer*)m_xf_wt_buf; } // TODO: Debug only, remove
@@ -115,7 +115,7 @@ private:
 
     double m_start[2];
     double m_last[2];
-     
+
     bool m_compute_bounds;
 
     SE_Matrix m_xf;
