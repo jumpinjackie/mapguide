@@ -90,22 +90,24 @@ struct SE_Polygon : public SE_Polyline
 // Font/properties caching is left to the implementor of SE_Renderer
 struct SE_Text : public SE_Primitive
 {
-    SE_String textExpr;
-    SE_String fontExpr;
+    SE_String textString;
+    SE_String fontName;
     SE_Double position[2];
-    SE_Double size;
-    SE_Boolean sizeScaleable;
+    SE_Double height;
+    SE_Boolean heightScalable;
     SE_Double angle;
-    SE_Boolean underlined;
-    SE_Boolean italic;
     SE_Boolean bold;
+    SE_Boolean italic;
+    SE_Boolean underlined;
     SE_Double lineSpacing;
     SE_String hAlignment;
     SE_String vAlignment;
     SE_String justification;
     SE_Color textColor;
     SE_Color ghostColor;
-    bool bGhosted;
+    SE_Color frameLineColor;
+    SE_Color frameFillColor;
+    SE_Double frameOffset[2];
 
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
@@ -121,7 +123,7 @@ struct SE_Raster : public SE_Primitive
     int pngSize;
     SE_Double position[2];
     SE_Double extent[2];
-    SE_Boolean extentScaleable;
+    SE_Boolean extentScalable;
     SE_Double angle;
 
     SE_INLINE SE_Raster() : ownPtr(false) { }
@@ -191,7 +193,7 @@ struct SE_LineStyle : public SE_Style
 
 
 struct SE_AreaStyle : public SE_Style
-{  
+{
     SE_String angleControl;
     SE_String originControl;
     SE_String clippingControl;

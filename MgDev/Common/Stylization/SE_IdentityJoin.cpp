@@ -20,9 +20,9 @@
 #include <float.h>
 
 SE_IdentityJoin::SE_IdentityJoin(RS_Bounds& bounds,
-                                 double offset, 
-                                 const RS_F_Point& pt0, 
-                                 const RS_F_Point& pt1, 
+                                 double offset,
+                                 const RS_F_Point& pt0,
+                                 const RS_F_Point& pt1,
                                  double prechop,
                                  double postchop) :
     m_xf_bounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX),
@@ -33,7 +33,7 @@ SE_IdentityJoin::SE_IdentityJoin(RS_Bounds& bounds,
     double invlen = 1.0/len;
     dp.x *= invlen;
     dp.y *= invlen;
-    
+
     /* Rotate around leading edge */
     m_xform.translateX(-bounds.minx);
     m_xform.rotate(dp.y, dp.x);
@@ -47,18 +47,20 @@ SE_IdentityJoin::SE_IdentityJoin(RS_Bounds& bounds,
     m_chop_end = bounds.minx + postchop - offset;
 }
 
+
 RS_F_Point* SE_IdentityJoin::GetDiscontinuities(int &length)
 {
     length = 0;
     return NULL;
 }
 
+
 RS_Bounds& SE_IdentityJoin::GetTransformedBounds()
 {
     if (!m_xf_bounds.IsValid() && m_bounds.IsValid())
     {
         RS_F_Point xfpt;
-        
+
         xfpt.x = m_bounds.minx;
         xfpt.y = m_bounds.miny;
         m_xform.transform(xfpt.x, xfpt.y);
@@ -83,33 +85,37 @@ RS_Bounds& SE_IdentityJoin::GetTransformedBounds()
     return m_xf_bounds;
 }
 
+
 void SE_IdentityJoin::GetXChop(double& startx, double& endx)
 {
     startx = m_chop_start;
     endx = m_chop_end;
 }
 
+
 void SE_IdentityJoin::GetXRadius(double& pre, double& post)
 {
     pre = post = 0.0;
 }
+
 
 void SE_IdentityJoin::ApplyPreTransform(SE_Matrix& prexf)
 {
     m_xform.postmultiply(prexf);
 }
 
+
 void SE_IdentityJoin::Transform(SE_LineStorage* source, SE_LineStorage* dest, int contour, int ncntrs, bool closed)
 {
     const RS_Bounds& bounds = source->bounds();
 
-    if (bounds.minx < m_chop_start || bounds.maxx > m_chop_end) 
+    if (bounds.minx < m_chop_start || bounds.maxx > m_chop_end)
     { /* Chopping may be required */
         double saved_chop_start, saved_chop_end;
         bool saved_chop_closed;
         dest->GetChopInfo(saved_chop_start, saved_chop_end, saved_chop_closed);
         dest->SetChopInfo(m_chop_start, m_chop_end, closed);
-        
+
         int* contours = source->cntrs();
         double* src = source->points();
         int orig_point_cnt = dest->point_count();
@@ -136,7 +142,7 @@ void SE_IdentityJoin::Transform(SE_LineStorage* source, SE_LineStorage* dest, in
 
         src = dest->points() + orig_point_cnt*2;
         double* last = dest->points() + dest->point_count()*2;
-        
+
         while (src < last)
         {
             m_xform.transform(src[0], src[1]);

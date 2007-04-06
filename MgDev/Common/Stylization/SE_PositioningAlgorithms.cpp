@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <functional>
 
+
 SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 {
     SE_RenderPointStyle* ret = new SE_RenderPointStyle();
@@ -167,8 +168,8 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
     double symbol_height = fpts[2].y - fpts[1].y; //symbol height in meters
     double symbol_rot_deg = box_angle_rad / M_PI180;
 
-    //calculate a 0.5 mm offset to allow for label ghosting
-    double offsetmm = 0.5;              // offset in mm
+    //calculate a 0.25 mm offset to allow for label ghosting
+    double offsetmm = 0.25;             // offset in mm
     double offset = offsetmm * mm2px;   // offset in renderer pixels
     if (offset < 1.0)
         offset = 1.0;
@@ -484,11 +485,11 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
 
         if (shieldType == L"1")
         {
-            rt->tdef.color() = RS_Color(255, 255, 255, 255);
+            rt->tdef.textcolor() = RS_Color(255, 255, 255, 255);
         }
         else
         {
-            rt->tdef.color() = RS_Color(0, 0, 0, 255);
+            rt->tdef.textcolor() = RS_Color(0, 0, 0, 255);
         }
 
         rt->tdef.textbg() = RS_TextBackground_None;

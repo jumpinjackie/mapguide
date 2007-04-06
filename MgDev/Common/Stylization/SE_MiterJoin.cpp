@@ -24,9 +24,9 @@
 #define POINT_DELTA 1.0
 
 SE_MiterJoin::SE_MiterJoin
-                         ( double limit, 
-                           RS_Bounds& bounds, 
-                           double vertexOffset, 
+                         ( double limit,
+                           RS_Bounds& bounds,
+                           double vertexOffset,
                            const RS_F_Point& prev,
                            const RS_F_Point& vert,
                            const RS_F_Point& next,
@@ -55,10 +55,10 @@ SE_MiterJoin::SE_MiterJoin
     RS_F_Point nprev;   /* The normalized (vert - prev) vector */
     RS_F_Point nnext;   /* The normalized (next - vert) vector */
     bool clockwise;     /* If true, then the positive portion of the symbol is on the inside of the join */
-    
+
     V = bounds.minx - vertexOffset;
     clockwise = PointLeft(prev.x, prev.y, vert.x, vert.y, next.x, next.y);
-   
+
     nnext.x = next.x - vert.x;
     nnext.y = next.y - vert.y;
     imnext = 1.0/sqrt(nnext.x*nnext.x + nnext.y*nnext.y);
@@ -122,7 +122,7 @@ SE_MiterJoin::SE_MiterJoin
     /* Rotation should occur about the vertex */
     m_eRot.rotate(nnext.y, nnext.x);
     m_eRot.translate(vert.x, vert.y);
-    
+
     m_eRot.postmultiply(m_j2w);
     m_sRot.postmultiply(m_j2w);
 
@@ -144,7 +144,7 @@ SE_MiterJoin::SE_MiterJoin
      *
      * A = hw*hw*sin(pi - theta)                from the sine formula for the area of a triangle
      * A = hw*hw*sin(theta)                     from identity sin(pi - theta) = sin(theta)
-     * 
+     *
      * A/2 = hw*mmin*sin(pi/2 - theta/2)        from applying the same formula to one half of the (isoceles) triangle
      * A/2 = hw*mmin*cos(theta/2)               from identity sin(pi/2 - theta) = cos(theta)
      * A/2 = hw*mmin*sqrt((1 + cos(theta))/2)   from cos(theta/2) = +/- sqrt((1 + cos(theta)/2), and theta/2 < pi/2, so positive
@@ -171,11 +171,12 @@ SE_MiterJoin::SE_MiterJoin
         m_bevel_width = jo;
         m_bevel = hw;
     }
- 
+
     m_miter_scale = (m_bevel_width + m_width) / ((m_bevel + m_height) * m_width);
-    
+
     m_n_discontinuities = -1;
 }
+
 
 RS_F_Point* SE_MiterJoin::GetDiscontinuities(int &length)
 {
@@ -248,6 +249,7 @@ RS_F_Point* SE_MiterJoin::GetDiscontinuities(int &length)
     return m_discontinuities;
 }
 
+
 RS_Bounds& SE_MiterJoin::GetTransformedBounds()
 {
     if (!m_xf_bounds.IsValid())
@@ -288,21 +290,25 @@ RS_Bounds& SE_MiterJoin::GetTransformedBounds()
     return m_xf_bounds;
 }
 
+
 void SE_MiterJoin::GetXChop(double& startx, double& endx)
 {
     startx = -DBL_MAX;
     endx = DBL_MAX;
 }
 
+
 void SE_MiterJoin::GetXRadius(double& pre, double& post)
 {
     pre = post = m_width;
 }
 
+
 void SE_MiterJoin::ApplyPreTransform(SE_Matrix& prexf)
 {
     m_w2j.premultiply(prexf);
 }
+
 
 void SE_MiterJoin::Transform(SE_LineStorage* src, SE_LineStorage* dst, int contour, int ncntrs, bool /* closed */)
 {
@@ -334,7 +340,7 @@ void SE_MiterJoin::Transform(SE_LineStorage* src, SE_LineStorage* dst, int conto
             double dy = y - ly;
             double len = sqrt(dx*dx + dy*dy);
             int segs = (int)(len / POINT_DELTA) + 1;
-            
+
             if (segs == 1)
             {
                 dst->EnsurePoints(1);
@@ -365,8 +371,9 @@ void SE_MiterJoin::Transform(SE_LineStorage* src, SE_LineStorage* dst, int conto
             lx = x;
             ly = y;
         }
-    }    
+    }
 }
+
 
 /* Argument: point in join space
  * Returns:  point in input space
@@ -375,7 +382,7 @@ void SE_MiterJoin::_Transform(RS_F_Point& pt)
 {
     double x_min;
     SE_Matrix* postxf;
-    
+
     if (pt.x <= 0)
     {
         x_min = -m_width;
@@ -400,7 +407,7 @@ void SE_MiterJoin::_Transform(RS_F_Point& pt)
          * d2X/dx2 = 0
          * d2X/dy2 = 0
          * d2X/dxdy = -scale
-         * 
+         *
          * The transform is constant over Y, so
          * Y(x,y) = y
          */
@@ -421,7 +428,7 @@ void SE_MiterJoin::_Transform(RS_F_Point& pt)
          * d2X/dx2 = 0
          * d2X/dy2 = 0
          * d2X/dxdy = scale
-         * 
+         *
          * The transform is constant over Y, so
          * Y(x,y) = y
          */

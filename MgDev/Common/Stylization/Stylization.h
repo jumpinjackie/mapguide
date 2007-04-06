@@ -83,6 +83,11 @@
 #include "GraphicElement.h"
 #include "Base64.h"
 
+#ifdef _WIN32
+// disable warning C4201: nonstandard extension used : nameless struct/union
+#pragma warning(disable : 4201)
+#endif
+
 //FDO headers
 #include "Fdo.h"
 

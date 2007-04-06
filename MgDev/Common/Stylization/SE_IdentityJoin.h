@@ -26,7 +26,7 @@ class SE_IdentityJoin : public SE_PiecewiseTransform
 {
 public:
     SE_IdentityJoin() { }
-    
+
     /* bounds:   The bounds of the symbol.
      * offset:   The distance along the line in pixels from pt0 to the beginning of the symbol
      * pt0:      The start point of the line segment
@@ -41,10 +41,9 @@ public:
 
     virtual void GetXChop(double& startx, double& endx);
     virtual void GetXRadius(double& pre, double& post);
-    
+
     virtual void ApplyPreTransform(SE_Matrix& prexf);
     virtual void Transform(SE_LineStorage* src, SE_LineStorage* dst, int contour, int ncntrs, bool closed);
-
 
 private:
     double m_chop_start;

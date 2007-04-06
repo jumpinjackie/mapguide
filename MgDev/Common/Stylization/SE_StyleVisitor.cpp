@@ -27,7 +27,9 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+
 #define SMALL_ANGLE(s,e) ((s) < M_PI ? ((e) >= (s)) && ((e) < M_PI + (s)) : ((e) >= (s)) || ((s) < (s) - M_PI))
+
 
 struct ArcDefinition
 {
@@ -45,6 +47,7 @@ struct ArcData
 
 bool ParseArc(ArcDefinition& def, ArcData& data);
 
+
 SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp)
 {
     m_resources = resources;
@@ -53,6 +56,7 @@ SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp)
     m_symbolization = NULL;
     m_style = NULL;
 }
+
 
 SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 {
@@ -70,6 +74,7 @@ SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 
     return style;
 }
+
 
 SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
 {
@@ -97,6 +102,7 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
 
     return style;
 }
+
 
 SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
 {
@@ -126,6 +132,7 @@ SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
     return style;
 }
 
+
 bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
 {
     size_t length;
@@ -134,6 +141,7 @@ bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
     return length > 0;
 }
 
+
 bool SE_StyleVisitor::ParseDoublePair(const wchar_t*& str, double& x, double& y)
 {
     size_t length;
@@ -141,6 +149,7 @@ bool SE_StyleVisitor::ParseDoublePair(const wchar_t*& str, double& x, double& y)
     str += length;
     return length > 0;
 }
+
 
 bool SE_StyleVisitor::ParseGeometry(const MdfString& geometry, SE_LineBuffer& buffer)
 {
@@ -279,6 +288,7 @@ TagSwitch:
     return true;
 }
 
+
 bool ParseArc(ArcDefinition& def, ArcData& data)
 {
     double x0 = def.x0, y0 = def.y0;
@@ -366,7 +376,6 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
         !_finite(cy1) || _isnan(cy1))
         return false;
 
-
     double cx = cx0, cy = cy0;
     bool small = SMALL_ANGLE(sAng, eAng);
     if ((small && !def.clockwise && def.largeArc) || (small && def.clockwise && !def.largeArc)) // reject
@@ -404,6 +413,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     data.endAng = eAng; data.startAng = sAng;
     return true;
 }
+
 
 void SE_StyleVisitor::VisitPath(Path& path)
 {
@@ -463,6 +473,7 @@ void SE_StyleVisitor::VisitPath(Path& path)
     }
 }
 
+
 void SE_StyleVisitor::VisitImage(Image& image)
 {
     SE_Raster* primitive = new SE_Raster();
@@ -515,58 +526,72 @@ void SE_StyleVisitor::VisitImage(Image& image)
     ParseDoubleExpression(image.GetSizeX(), primitive->extent[0]);
     ParseDoubleExpression(image.GetSizeY(), primitive->extent[1]);
     ParseDoubleExpression(image.GetAngle(), primitive->angle);
-    ParseBooleanExpression(image.GetSizeScalable(), primitive->extentScaleable);
+    ParseBooleanExpression(image.GetSizeScalable(), primitive->extentScalable);
 
     primitive->cacheable = !(primitive->position[0].expression ||
                              primitive->position[1].expression ||
                              primitive->extent[0].expression ||
                              primitive->extent[1].expression ||
                              primitive->angle.expression ||
-                             primitive->extentScaleable.expression
+                             primitive->extentScalable.expression
                              ) && primitive->pngPtr;
 }
+
 
 void SE_StyleVisitor::VisitText(Text& text)
 {
     SE_Text* primitive = new SE_Text();
     m_primitive = primitive;
 
-    ParseStringExpression(text.GetString(), primitive->textExpr);
-    ParseStringExpression(text.GetFontName(), primitive->fontExpr);
-    ParseDoubleExpression(text.GetHeight(), primitive->size);
+    ParseStringExpression(text.GetString(), primitive->textString);
+    ParseStringExpression(text.GetFontName(), primitive->fontName);
+    ParseDoubleExpression(text.GetHeight(), primitive->height);
     ParseDoubleExpression(text.GetAngle(), primitive->angle);
     ParseDoubleExpression(text.GetPositionX(), primitive->position[0]);
     ParseDoubleExpression(text.GetPositionY(), primitive->position[1]);
     ParseDoubleExpression(text.GetLineSpacing(), primitive->lineSpacing);
-    ParseBooleanExpression(text.GetHeightScalable(), primitive->sizeScaleable);
-    ParseBooleanExpression(text.GetUnderlined(), primitive->underlined);
+    ParseBooleanExpression(text.GetHeightScalable(), primitive->heightScalable);
     ParseBooleanExpression(text.GetBold(), primitive->bold);
     ParseBooleanExpression(text.GetItalic(), primitive->italic);
-    ParseColorExpression(text.GetTextColor(), primitive->textColor);
-    ParseColorExpression(text.GetGhostColor(), primitive->ghostColor);
+    ParseBooleanExpression(text.GetUnderlined(), primitive->underlined);
     ParseStringExpression(text.GetHorizontalAlignment(), primitive->hAlignment);
     ParseStringExpression(text.GetVerticalAlignment(), primitive->vAlignment);
     ParseStringExpression(text.GetJustification(), primitive->justification);
-    primitive->bGhosted = (text.GetGhostColor().length() > 0);
+    ParseColorExpression(text.GetTextColor(), primitive->textColor);
+    ParseColorExpression(text.GetGhostColor(), primitive->ghostColor);
 
-    primitive->cacheable = !(primitive->textExpr.expression ||
-                             primitive->fontExpr.expression ||
-                             primitive->size.expression ||
+    TextFrame* frame = text.GetFrame();
+    if (frame)
+    {
+        ParseColorExpression(frame->GetLineColor(), primitive->frameLineColor);
+        ParseColorExpression(frame->GetFillColor(), primitive->frameFillColor);
+        ParseDoubleExpression(frame->GetOffsetX(), primitive->frameOffset[0]);
+        ParseDoubleExpression(frame->GetOffsetY(), primitive->frameOffset[1]);
+    }
+
+    primitive->cacheable = !(primitive->textString.expression ||
+                             primitive->fontName.expression ||
+                             primitive->height.expression ||
                              primitive->angle.expression ||
                              primitive->position[0].expression ||
                              primitive->position[1].expression ||
                              primitive->lineSpacing.expression ||
-                             primitive->underlined.expression ||
+                             primitive->heightScalable.expression ||
                              primitive->bold.expression ||
                              primitive->italic.expression ||
-                             primitive->textColor.expression ||
-                             primitive->ghostColor.expression ||
+                             primitive->underlined.expression ||
                              primitive->hAlignment.expression ||
                              primitive->vAlignment.expression ||
                              primitive->justification.expression ||
-                             primitive->sizeScaleable.expression
+                             primitive->textColor.expression ||
+                             primitive->ghostColor.expression ||
+                             primitive->frameLineColor.expression ||
+                             primitive->frameFillColor.expression ||
+                             primitive->frameOffset[0].expression ||
+                             primitive->frameOffset[1].expression
                              );
 }
+
 
 void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefinition& simpleSymbol)
 {
@@ -631,6 +656,7 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
     m_symbolization->styles.push_back(m_style);
 }
 
+
 void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefinition& compoundSymbol)
 {
     SimpleSymbolCollection* symbols = compoundSymbol.GetSymbols();
@@ -668,6 +694,7 @@ void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefi
             m_resIdStack.pop_back();
     }
 }
+
 
 void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::CompositeSymbolization* symbolization)
 {

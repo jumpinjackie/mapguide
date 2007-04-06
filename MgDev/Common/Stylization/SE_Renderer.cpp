@@ -45,6 +45,7 @@ SE_Renderer::~SE_Renderer()
 {
 }
 
+
 void SE_Renderer::SetRenderSelectionMode(bool mode)
 {
     m_bSelectionMode = mode;
@@ -115,6 +116,7 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
         }
     }
 }
+
 
 void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
@@ -281,7 +283,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
 
                     if (npxforms > 1)
                     {   /* Stick in an I transform so the input coordinate systems match */
-                        pxforms[0] = new SE_IdentityJoin(bounds, drawpos - pprevlength, pprev, prev);                
+                        pxforms[0] = new SE_IdentityJoin(bounds, drawpos - pprevlength, pprev, prev);
                         pxforms[1] = pxforms[npxforms-1];
                         npxforms = 2;
                     }
@@ -356,7 +358,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
             pprevlength = prevlength;
             prevlength = length;
             length += seglength;
-            
+
             if (pts + 2 >= end)
                 break;
 
@@ -386,7 +388,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
                     if (npxforms != PXF_BUF_LEN)
                         delete[] pxforms;
                     pxforms = newbuf;
-                }                
+                }
                 for (int i = npxforms; i > 0; i--)
                     pxforms[i] = pxforms[i-1];
                 npxforms++;
@@ -409,7 +411,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
                 /* TODO: handle chopping in this case */
                 for (int i = 0; i < npxforms - 1; i++)
                     delete pxforms[i];
-                
+
                 if (npxforms > 1)
                 {
                     pxforms[0] = new SE_IdentityJoin(bounds, drawpos - pprevlength, pprev, prev, -DBL_MAX, length - pprevlength);
@@ -425,7 +427,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
                     pxforms[0] = new SE_IdentityJoin(bounds, bounds.minx, v0, v1, -DBL_MAX, bounds.minx + length - drawpos);
                     npxforms = 2;
                 }
-                
+
                 if (style->drawLast)
                     AddLabelJoin(geometry, style, pxforms, npxforms);
                 else
@@ -464,6 +466,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
     }
 }
 
+
 void SE_Renderer::DrawSymbolJoin(SE_RenderPrimitiveList& symbol, SE_PiecewiseTransform** xforms, int nxforms)
 {
     SE_Matrix identity;
@@ -484,7 +487,7 @@ void SE_Renderer::DrawSymbolJoin(SE_RenderPrimitiveList& symbol, SE_PiecewiseTra
                     DrawScreenPolygon((LineBuffer*)inst, &identity, m_selFill);
                     inst->Free();
                 }
-                
+
                 SE_LineStorage* inst = pl->geometry->TransformInstance(xforms, nxforms, false);
                 DrawScreenPolyline((LineBuffer*)inst, &identity, m_selColor, m_selWeight );
                 inst->Free();
@@ -497,7 +500,7 @@ void SE_Renderer::DrawSymbolJoin(SE_RenderPrimitiveList& symbol, SE_PiecewiseTra
                     DrawScreenPolygon((LineBuffer*)inst, &identity, ((SE_RenderPolygon*)primitive)->fill);
                     inst->Free();
                 }
-                
+
                 SE_LineStorage* inst = pl->geometry->TransformInstance(xforms, nxforms, false);
                 DrawScreenPolyline((LineBuffer*)inst, &identity, pl->color, pl->weight);
                 inst->Free();
@@ -506,20 +509,24 @@ void SE_Renderer::DrawSymbolJoin(SE_RenderPrimitiveList& symbol, SE_PiecewiseTra
     }
 }
 
+
 void SE_Renderer::AddLabelJoin(LineBuffer* geom, SE_RenderStyle* style, SE_PiecewiseTransform** xforms, int nxforms)
 {
     /* TODO */
 }
+
 
 void SE_Renderer::AddExclusionRegionJoin(SE_PiecewiseTransform** xforms, int nxforms)
 {
     /* TODO */
 }
 
+
 void SE_Renderer::SetBufferPool(SE_BufferPool* pool)
 {
     m_bp = pool;
 }
+
 
 void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
@@ -571,7 +578,7 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
         ProcessLineJoin(geometry, style);
         return;
     }
-            
+
     SE_Matrix symxf;
 
     int ptindex = 0;
@@ -704,8 +711,10 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
 
             if (m_bSelectionMode)
             {
-                tdef.color() = m_textForeColor;
-                tdef.bgcolor() = m_textBackColor;
+                tdef.textcolor() = m_textForeColor;
+                tdef.ghostcolor() = m_textBackColor;
+//              tdef.framecolor() = m_textBackColor;
+//              tdef.opaquecolor() = m_textBackColor;
             }
 
             DrawScreenText(tp->text, tdef, x, y, NULL, 0, 0.0);

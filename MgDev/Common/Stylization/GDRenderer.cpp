@@ -606,7 +606,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
         RS_FontDef fdef(mdef.library(), mdef.height(), mdef.fontstyle(), mdef.units());
 
         tdef.font() = fdef;
-        tdef.color() = mdef.style().color();
+        tdef.textcolor() = mdef.style().color();
         tdef.rotation() = mdef.rotation();
 
         //compute placement position for character centerpoint, taking into
