@@ -57,7 +57,7 @@ void MgHttpGetSiteInfo::Execute(MgHttpResponse& hResponse)
 
     // call the C++ APIs
     Ptr<MgPropertyCollection> properties = serverAdmin->GetInformationProperties();
-    STRING xml = GetXml(properties, serverAdmin->IsOnline());
+    STRING xml = GetXml(properties);
 
     Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xml);
     if(!value)
@@ -68,12 +68,14 @@ void MgHttpGetSiteInfo::Execute(MgHttpResponse& hResponse)
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetSiteInfo.Execute")
 }
 
-STRING MgHttpGetSiteInfo::GetXml(MgPropertyCollection* properties, bool isOnline)
+STRING MgHttpGetSiteInfo::GetXml(MgPropertyCollection* properties)
 {
-    STRING xml = L"";
-    std::string tmpStr = "";
-    INT64 longVal = 0;
-    INT32 intVal = 0;
+    STRING xml;
+    std::string tmpStr;
+    Ptr<MgStringProperty> strProp;
+    Ptr<MgInt64Property> int64Prop;
+    Ptr<MgInt32Property> int32Prop;
+    Ptr<MgBooleanProperty> boolProp;
 
     // this XML follows the SiteInformation-1.0.0.xsd schema
     xml += L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -81,45 +83,49 @@ STRING MgHttpGetSiteInfo::GetXml(MgPropertyCollection* properties, bool isOnline
     xml += L"\t<SiteServer>\n";
 
     xml += L"\t\t<DisplayName>";
-    xml += ((MgStringProperty*)properties->GetItem(L"DisplayName"))->GetValue();
+    strProp = (MgStringProperty*)properties->GetItem(L"DisplayName");
+    xml += strProp->GetValue();
     xml += L"</DisplayName>\n";
 
     xml += L"\t\t<Status>";
-    xml += isOnline? L"Online" : L"Offline";
+    boolProp = (MgBooleanProperty*)properties->GetItem(L"Status");
+    xml += boolProp->GetValue() ? L"Online" : L"Offline";
     xml += L"</Status>\n";
 
     xml += L"\t\t<Version>";
-    xml += ((MgStringProperty*)properties->GetItem(L"ServerVersion"))->GetValue();
+    strProp = (MgStringProperty*)properties->GetItem(L"ServerVersion");
+    xml += strProp->GetValue();
     xml += L"</Version>\n";
 
     xml += L"\t\t<OperatingSystem>\n";
 
     xml += L"\t\t\t<AvailablePhysicalMemory>";
-    longVal = ((MgInt64Property*)properties->GetItem(L"AvailablePhysicalMemory"))->GetValue();
-    MgUtil::Int64ToString(longVal, tmpStr);
+    int64Prop = (MgInt64Property*)properties->GetItem(L"AvailablePhysicalMemory");
+    MgUtil::Int64ToString(int64Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</AvailablePhysicalMemory>\n";
 
     xml += L"\t\t\t<TotalPhysicalMemory>";
-    longVal = ((MgInt64Property*)properties->GetItem(L"TotalPhysicalMemory"))->GetValue();
-    MgUtil::Int64ToString(longVal, tmpStr);
+    int64Prop = (MgInt64Property*)properties->GetItem(L"TotalPhysicalMemory");
+    MgUtil::Int64ToString(int64Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</TotalPhysicalMemory>\n";
 
     xml += L"\t\t\t<AvailableVirtualMemory>";
-    longVal = ((MgInt64Property*)properties->GetItem(L"AvailableVirtualMemory"))->GetValue();
-    MgUtil::Int64ToString(longVal, tmpStr);
+    int64Prop = (MgInt64Property*)properties->GetItem(L"AvailableVirtualMemory");
+    MgUtil::Int64ToString(int64Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</AvailableVirtualMemory>\n";
 
     xml += L"\t\t\t<TotalVirtualMemory>";
-    longVal = ((MgInt64Property*)properties->GetItem(L"TotalVirtualMemory"))->GetValue();
-    MgUtil::Int64ToString(longVal, tmpStr);
+    int64Prop = (MgInt64Property*)properties->GetItem(L"TotalVirtualMemory");
+    MgUtil::Int64ToString(int64Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</TotalVirtualMemory>\n";
 
     xml += L"\t\t\t<Version>";
-    xml += ((MgStringProperty*)properties->GetItem(L"OperatingSystemVersion"))->GetValue();
+    strProp = (MgStringProperty*)properties->GetItem(L"OperatingSystemVersion");
+    xml += strProp->GetValue();
     xml += L"</Version>\n";
 
     xml += L"\t\t</OperatingSystem>\n";
@@ -129,67 +135,66 @@ STRING MgHttpGetSiteInfo::GetXml(MgPropertyCollection* properties, bool isOnline
     xml += L"\t<Statistics>\n";
 
     xml += L"\t\t<AdminOperationsQueueCount>";
-    intVal = ((MgInt32Property*)properties->GetItem(L"AdminOperationsQueueCount"))->GetValue();
-    MgUtil::Int32ToString(intVal, tmpStr);
+    int32Prop = (MgInt32Property*)properties->GetItem(L"AdminOperationsQueueCount");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</AdminOperationsQueueCount>\n";
 
     xml += L"\t\t<ClientOperationsQueueCount>";
-    intVal = ((MgInt32Property*)properties->GetItem(L"ClientOperationsQueueCount"))->GetValue();
-    MgUtil::Int32ToString(intVal, tmpStr);
+    int32Prop = (MgInt32Property*)properties->GetItem(L"ClientOperationsQueueCount");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</ClientOperationsQueueCount>\n";
 
     xml += L"\t\t<SiteOperationsQueueCount>";
-    intVal = ((MgInt32Property*)properties->GetItem(L"SiteOperationsQueueCount"))->GetValue();
-    MgUtil::Int32ToString(intVal, tmpStr);
+    int32Prop = (MgInt32Property*)properties->GetItem(L"SiteOperationsQueueCount");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</SiteOperationsQueueCount>\n";
 
     xml += L"\t\t<AverageOperationTime>";
-    intVal = ((MgInt32Property*)properties->GetItem(L"AverageOperationTime"))->GetValue();
-    MgUtil::Int32ToString(intVal, tmpStr);
+    int32Prop = (MgInt32Property*)properties->GetItem(L"AverageOperationTime");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</AverageOperationTime>\n";
 
     xml += L"\t\t<CpuUtilization>";
-    intVal = ((MgInt32Property*)properties->GetItem(L"CpuUtilization"))->GetValue();
-    MgUtil::Int32ToString(intVal, tmpStr);
+    int32Prop = (MgInt32Property*)properties->GetItem(L"CpuUtilization");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</CpuUtilization>\n";
 
     xml += L"\t\t<TotalOperationTime>";
-    intVal = ((MgInt32Property*)properties->GetItem(L"TotalOperationTime"))->GetValue();
-    MgUtil::Int32ToString(intVal, tmpStr);
+    int32Prop = (MgInt32Property*)properties->GetItem(L"TotalOperationTime");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</TotalOperationTime>\n";
 
     xml += L"\t\t<TotalConnections>";
-    intVal = ((MgInt32Property*)properties->GetItem(L"TotalConnections"))->GetValue();
-    MgUtil::Int32ToString(intVal, tmpStr);
+    int32Prop = (MgInt32Property*)properties->GetItem(L"TotalConnections");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</TotalConnections>\n";
 
     xml += L"\t\t<TotalOperationsProcessed>";
-    intVal = ((MgInt32Property*)properties->GetItem(L"TotalProcessedOperations"))->GetValue();
-    MgUtil::Int32ToString(intVal, tmpStr);
+    int32Prop = (MgInt32Property*)properties->GetItem(L"TotalProcessedOperations");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</TotalOperationsProcessed>\n";
 
     xml += L"\t\t<TotalOperationsReceived>";
-    intVal = ((MgInt32Property*)properties->GetItem(L"TotalReceivedOperations"))->GetValue();
-    MgUtil::Int32ToString(intVal, tmpStr);
+    int32Prop = (MgInt32Property*)properties->GetItem(L"TotalReceivedOperations");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</TotalOperationsReceived>\n";
 
     xml += L"\t\t<Uptime>";
-    intVal = ((MgInt32Property*)properties->GetItem(L"Uptime"))->GetValue();
-    MgUtil::Int32ToString(intVal, tmpStr);
+    int32Prop = (MgInt32Property*)properties->GetItem(L"Uptime");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</Uptime>\n";
 
     xml += L"\t</Statistics>\n";
-
 
     xml += L"</SiteInformation>\n";
 

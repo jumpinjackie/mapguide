@@ -101,3 +101,11 @@ void MgOpGetInformationProperties::Execute()
 
     MG_THROW()
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// Gets the role(s) required to perform this operation.
+///
+MgStringCollection* MgOpGetInformationProperties::GetRoles() const
+{
+    return NULL; // for anonymous/everyone
+}
