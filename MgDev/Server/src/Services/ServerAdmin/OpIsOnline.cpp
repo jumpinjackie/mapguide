@@ -101,3 +101,11 @@ void MgOpIsOnline::Execute()
 
     MG_THROW()
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// Gets the role(s) required to perform this operation.
+///
+MgStringCollection* MgOpIsOnline::GetRoles() const
+{
+    return NULL; // for anonymous/everyone
+}

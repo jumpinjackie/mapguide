@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _S_GET_SITE_INFO_H
-#define _S_GET_SITE_INFO_H
+#ifndef HTTP_GET_SITE_INFO_H_
+#define HTTP_GET_SITE_INFO_H_
 
 class MgHttpGetSiteInfo : public MgHttpRequestResponseHandler
 {
@@ -44,8 +44,8 @@ public:
     void Execute(MgHttpResponse& hResponse);
 
 private:
-    STRING GetXml(MgPropertyCollection* properties, bool isOnline);
 
+    STRING GetXml(MgPropertyCollection* properties);
 };
 
 #endif

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGOPMAXIMUMLOGSIZEENABLED_H
-#define MGOPMAXIMUMLOGSIZEENABLED_H
+#ifndef MGOPMAXIMUMLOGSIZEENABLED_H_
+#define MGOPMAXIMUMLOGSIZEENABLED_H_
 
 #include "ServerAdminOperation.h"
 
@@ -28,6 +28,10 @@ public:
     virtual ~MgOpIsMaximumLogSizeEnabled();
 
     virtual void Execute();
+
+protected:
+
+    virtual MgStringCollection* GetRoles() const;
 };
 
 #endif
