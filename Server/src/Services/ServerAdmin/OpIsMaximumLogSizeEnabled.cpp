@@ -101,3 +101,11 @@ void MgOpIsMaximumLogSizeEnabled::Execute()
 
     MG_THROW()
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// Gets the role(s) required to perform this operation.
+///
+MgStringCollection* MgOpIsMaximumLogSizeEnabled::GetRoles() const
+{
+    return NULL; // for anonymous/everyone
+}

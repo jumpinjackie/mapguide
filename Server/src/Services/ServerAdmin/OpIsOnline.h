@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGOPISONLINE_H
-#define MGOPISONLINE_H
+#ifndef MGOPISONLINE_H_
+#define MGOPISONLINE_H_
 
 #include "ServerAdminOperation.h"
 
@@ -28,6 +28,10 @@ public:
     virtual ~MgOpIsOnline();
 
     virtual void Execute();
+
+protected:
+
+    virtual MgStringCollection* GetRoles() const;
 };
 
 #endif
