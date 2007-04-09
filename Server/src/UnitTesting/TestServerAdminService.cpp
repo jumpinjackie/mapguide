@@ -707,6 +707,12 @@ void TestServerAdminService::TestCase_MakePackage()
 
         CPPUNIT_ASSERT(packages->Contains(TestServerAdminService::PackageName2));
     }
+    catch(MgFileIoException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nMgFileIoException - Possible file permission error.\nError: %W\n"), message.c_str()));
+    }
     catch(MgException* e)
     {
         STRING message = e->GetMessage(TEST_LOCALE);
