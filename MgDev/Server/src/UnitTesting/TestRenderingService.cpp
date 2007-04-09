@@ -375,9 +375,16 @@ void TestRenderingService::TestEnd()
         }
         #endif
     }
+    catch(MgFileIoException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nMgFileIoException - Possible file permission error.\nError: %W\n"), message.c_str()));
+    }
     catch (MgException* e)
     {
         STRING message = e->GetDetails(TEST_LOCALE);
+        message += e->GetStackTrace(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
