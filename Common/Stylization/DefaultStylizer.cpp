@@ -149,11 +149,7 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
             nFeatures++;
             #endif
 
-            LineBuffer* lb = NULL;
-
-            //get the geometry just once
-            //all types of geometry
-            lb = m_lbPool->NewLineBuffer(8);
+            LineBuffer* lb = lb = m_lbPool->NewLineBuffer(8);
 
             try
             {
