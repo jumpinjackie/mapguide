@@ -132,10 +132,20 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 nFeatures++;
             #endif
 
-            //get the geometry just once
-            //all types of geometry
-            LineBuffer* lb = m_lbPool->NewLineBuffer(8);
-            reader->GetGeometry(gpName, lb, xformer);
+            LineBuffer* lb = lb = m_lbPool->NewLineBuffer(8);
+
+            try
+            {
+                reader->GetGeometry(gpName, lb, xformer);
+            }
+            catch (FdoException* e)
+            {
+                //geometry could be null in which case FDO throws an exception
+                //we move on to the next feature
+                e->Release();
+                m_lbPool->FreeLineBuffer(lb);
+                continue;
+            }
 
             if (lb && bClip)
             {
