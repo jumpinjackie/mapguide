@@ -132,7 +132,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 nFeatures++;
             #endif
 
-            LineBuffer* lb = lb = m_lbPool->NewLineBuffer(8);
+            LineBuffer* lb = m_lbPool->NewLineBuffer(8);
 
             try
             {
