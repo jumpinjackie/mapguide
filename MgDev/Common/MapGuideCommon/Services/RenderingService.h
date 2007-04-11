@@ -379,7 +379,8 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// selection criterion - integer value corresponding to one of 
+    /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return
@@ -414,7 +415,8 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// selection criterion - integer value corresponding to one of 
+    /// the MgFeatureSpatialOperations values
     /// \param featureFilter
     /// Input
     /// an XML selection string containing the required feature IDs
@@ -456,7 +458,8 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// selection criterion - integer value corresponding to one of 
+    /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return
@@ -490,7 +493,8 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// selection criterion - integer value corresponding to one of 
+    /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return

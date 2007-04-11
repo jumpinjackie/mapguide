@@ -538,7 +538,8 @@ MgByteReader* MgProxyRenderingService::RenderMapLegend(
 /// geometry object specifying the selection area
 /// </param>
 /// <param name="selectionVariant">Input
-/// selection criterion - 0=Within, 1=Touching, 2=Topmost
+/// selection criterion - integer value corresponding to one of 
+/// the MgFeatureSpatialOperations values
 /// </param>
 /// <param name="maxFeatures">Input
 /// the maximum number of features to return
@@ -576,7 +577,8 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
 /// geometry object specifying the selection area
 /// </param>
 /// <param name="selectionVariant">Input
-/// selection criterion - 0=Within, 1=Touching, 2=Topmost
+/// selection criterion - integer value corresponding to one of 
+/// the MgFeatureSpatialOperations values
 /// </param>
 /// <param name="maxFeatures">Input
 /// the maximum number of features to return
@@ -639,7 +641,8 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
 /// geometry object specifying the selection area
 /// </param>
 /// <param name="selectionVariant">Input
-/// selection criterion - 0=Within, 1=Touching, 2=Topmost
+/// selection criterion - integer value corresponding to one of 
+/// the MgFeatureSpatialOperations values
 /// </param>
 /// <param name="maxFeatures">Input
 /// the maximum number of features to return
@@ -677,7 +680,8 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
 /// geometry object specifying the selection area
 /// </param>
 /// <param name="selectionVariant">Input
-/// selection criterion - 0=Within, 1=Touching, 2=Topmost
+/// selection criterion - integer value corresponding to one of 
+/// the MgFeatureSpatialOperations values
 /// </param>
 /// <param name="maxFeatures">Input
 /// the maximum number of features to return
