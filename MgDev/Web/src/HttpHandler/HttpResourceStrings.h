@@ -168,7 +168,7 @@ public:
     static const STRING reqRenderingTileRow;
     static const STRING reqRenderingPersist;
     static const STRING reqRenderingScaleIndex;
-    static const STRING reqRenderingIgnoreScale;
+    static const STRING reqRenderingLayerAttributeFilter;
     static const STRING reqRenderingKeepSelection;
 
     // PREDEFINED TILE REQUEST PARAMETERS

@@ -58,8 +58,8 @@ void MgOpQueryFeatures::Execute()
         INT32 maxFeatures = 0;
         m_stream->GetInt32(maxFeatures);
 
-        bool bIgnoreScale = false;
-        m_stream->GetBoolean(bIgnoreScale);
+        INT32 layerAttributeFilter = 3;
+        m_stream->GetInt32(layerAttributeFilter);
 
         BeginExecution();
 
@@ -76,14 +76,14 @@ void MgOpQueryFeatures::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bIgnoreScale);
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(layerAttributeFilter);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgFeatureInformation> info =
             m_service->QueryFeatures(map, layerNames, geom, selectionVariant, 
-                featureFilter, maxFeatures, bIgnoreScale);
+                featureFilter, maxFeatures, layerAttributeFilter);
 
         EndExecution(info);
     }

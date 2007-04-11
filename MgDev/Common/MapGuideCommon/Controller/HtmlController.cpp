@@ -166,10 +166,10 @@ MgByteReader* MgHtmlController::QueryMapFeatures(
     MgStringCollection* layerNames,
     MgGeometry* selectionGeometry,
     INT32 selectionVariant,
+    CREFSTRING featureFilter,
     INT32 maxFeatures,
     bool persist,
-    bool bIgnoreScaleRange,
-    CREFSTRING featureFilter)
+    INT32 layerAttributeFilter)
 {
     // Create a Resource Service instance
     Ptr<MgResourceService> resourceService = (MgResourceService*)GetService(MgServiceType::ResourceService);
@@ -191,7 +191,7 @@ MgByteReader* MgHtmlController::QueryMapFeatures(
 
     // Call the C++ API
     Ptr<MgFeatureInformation> featureInfo = service->QueryFeatures(map, layerNames, selectionGeometry,
-        selectionVariant, featureFilter, maxFeatures, bIgnoreScaleRange);
+        selectionVariant, featureFilter, maxFeatures, layerAttributeFilter);
 
     if(persist)
     {

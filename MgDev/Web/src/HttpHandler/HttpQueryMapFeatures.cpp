@@ -55,15 +55,21 @@ MgHttpQueryMapFeatures::MgHttpQueryMapFeatures(MgHttpRequest *hRequest)
     // Get the selection variant
     m_selectionVariant = params->GetParameterValue(MgHttpResourceStrings::reqRenderingSelectionVariant);
 
-    // Flag indicated if the selection should be stored in the session repository
+    // Flag indicating if the selection should be stored in the session repository
     m_persist = params->GetParameterValue(MgHttpResourceStrings::reqRenderingPersist) == L"1";
 
-    // Get the ignore scale flag
-    m_bIgnoreScale = params->GetParameterValue(MgHttpResourceStrings::reqRenderingIgnoreScale) == L"1";
+    // Get the layer attribute filter bitmask
+    // 1=Visible
+    // 2=Selectable
+    // 4=HasTooltips
+    string layerAttributeFilter = MgUtil::WideCharToMultiByte(params->GetParameterValue(MgHttpResourceStrings::reqRenderingLayerAttributeFilter));
+    if(layerAttributeFilter.length() == 0)
+        m_layerAttributeFilter = 3; //visible and selectable
+    else
+        m_layerAttributeFilter = atoi(layerAttributeFilter.c_str());
 
     // Get the feature filter
     m_featureFilter = params->GetParameterValue(MgHttpResourceStrings::reqRenderingFeatureFilter);
-
 }
 
 /// <summary>
@@ -87,7 +93,7 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
 
     // Create the selection geometry
     MgWktReaderWriter wktReader;
-    Ptr<MgGeometry> geometry = wktReader.Read(m_geometry);
+    Ptr<MgGeometry> filterGeometry = wktReader.Read(m_geometry);
 
     // Create the selection variant
     INT32 selectionVariant = 0;
@@ -113,7 +119,7 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
     // Call the HTML controller to process the request
     MgHtmlController controller(m_siteConn);
     Ptr<MgByteReader> featureDescriptionInfo = controller.QueryMapFeatures(
-        m_mapName, layerNames, geometry, selectionVariant, m_maxFeatures, m_persist, m_bIgnoreScale, m_featureFilter);
+        m_mapName, layerNames, filterGeometry, selectionVariant, m_featureFilter, m_maxFeatures, m_persist, m_layerAttributeFilter);
 
     // Set the result
     hResult->SetResultObject(featureDescriptionInfo, featureDescriptionInfo->GetMimeType());

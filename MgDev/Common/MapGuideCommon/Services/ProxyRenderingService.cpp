@@ -555,7 +555,7 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
     INT32 maxFeatures)
 {
     // Call the updated QueryFeatures API
-    return QueryFeatures(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, false);
+    return QueryFeatures(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, 3 /*visible and selectable*/);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -581,8 +581,11 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
 /// <param name="maxFeatures">Input
 /// the maximum number of features to return
 /// </param>
-/// <param name="bIgnoreScaleRange">Input
-/// true if you want to ignore scale ranges when querying features
+/// <param name="layerAttributeFilter">Input
+/// bitmask values 1=Visible, 2=Selectable, 4=HasTooltips
+/// </param>
+/// <param name="bIgnoreSelectability">Input
+/// true if you want to ignore layer selectability when querying features
 /// </param>
 /// <returns>
 /// An MgSelection instance identifying the features that meet the
@@ -595,23 +598,23 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
     INT32 selectionVariant, // Within, Touching, Topmost
     CREFSTRING featureFilter,
     INT32 maxFeatures,
-    bool bIgnoreScaleRange)
+    INT32 layerAttributeFilter)
 {
     MgCommand cmd;
-    cmd.ExecuteCommand(m_connProp,                              // Connection
-                        MgCommand::knObject,                    // Return type expected
-                        MgRenderingServiceOpId::QueryFeatures,  // Command Code
-                        7,                                      // No of arguments
-                        Rendering_Service,                      // Service Id
-                        BUILD_VERSION(1,0,0),                   // Operation version
-                        MgCommand::knObject, map,               // Argument#1
-                        MgCommand::knObject, layerNames,        // Argument#2
-                        MgCommand::knObject, filterGeometry,    // Argument#3
-                        MgCommand::knInt32,  selectionVariant,  // Argument#4
-                        MgCommand::knString, &featureFilter,    // Argument#5
-                        MgCommand::knInt32,  maxFeatures,       // Argument#6
-                        MgCommand::knInt8, (INT8)bIgnoreScaleRange, // Argument#7
-                        MgCommand::knNone);                     // End of arguments
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knObject,                            // Return type expected
+                        MgRenderingServiceOpId::QueryFeatures,          // Command Code
+                        7,                                              // No of arguments
+                        Rendering_Service,                              // Service Id
+                        BUILD_VERSION(1,0,0),                           // Operation version
+                        MgCommand::knObject, map,                       // Argument#1
+                        MgCommand::knObject, layerNames,                // Argument#2
+                        MgCommand::knObject, filterGeometry,            // Argument#3
+                        MgCommand::knInt32,  selectionVariant,          // Argument#4
+                        MgCommand::knString, &featureFilter,            // Argument#5
+                        MgCommand::knInt32,  maxFeatures,               // Argument#6
+                        MgCommand::knInt32,  layerAttributeFilter,      // Argument#7
+                        MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
 
@@ -621,7 +624,7 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
-/// The QueryFeatureProeprties operation identifies those features that
+/// The QueryFeatureProperties operation identifies those features that
 /// meet the specified spatial selection criteria. This operation
 /// is used to implement WMS feature info and returns property values
 /// for all features which match the spatial query
@@ -653,7 +656,7 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
     INT32 maxFeatures)
 {
     // Call the updated QueryFeatureProperties API
-    return QueryFeatureProperties(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, false);
+    return QueryFeatureProperties(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, 3 /*visible and selectable*/);
 }
 
 
@@ -679,9 +682,8 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
 /// <param name="maxFeatures">Input
 /// the maximum number of features to return
 /// </param>
-/// <param name="bIgnoreScaleRange">Input
-/// true if you want to ignore scale ranges when querying feature 
-/// properties
+/// <param name="layerAttributeFilter">Input
+/// bitmask values 1=Visible, 2=Selectable, 4=HasTooltips
 /// </param>
 /// <returns>
 /// An MgSelection instance identifying the features that meet the
@@ -694,23 +696,23 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
     INT32 selectionVariant,
     CREFSTRING featureFilter,
     INT32 maxFeatures,
-    bool bIgnoreScaleRange)
+    INT32 layerAttributeFilter)
 {
     MgCommand cmd;
-    cmd.ExecuteCommand(m_connProp,                              // Connection
-                        MgCommand::knObject,                    // Return type expected
-                        MgRenderingServiceOpId::QueryFeatureProperties,  // Command Code
-                        7,                                      // No of arguments
-                        Rendering_Service,                      // Service Id
-                        BUILD_VERSION(1,0,0),                   // Operation version
-                        MgCommand::knObject, map,               // Argument#1
-                        MgCommand::knObject, layerNames,        // Argument#2
-                        MgCommand::knObject, filterGeometry,    // Argument#3
-                        MgCommand::knInt32, selectionVariant,   // Argument#4
-                        MgCommand::knString, &featureFilter,    // Argument#5
-                        MgCommand::knInt32, maxFeatures,        // Argument#6
-                        MgCommand::knInt8, (INT8)bIgnoreScaleRange,  // Argument#7
-                        MgCommand::knNone);                     // End of arguments
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knObject,                            // Return type expected
+                        MgRenderingServiceOpId::QueryFeatureProperties, // Command Code
+                        7,                                              // No of arguments
+                        Rendering_Service,                              // Service Id
+                        BUILD_VERSION(1,0,0),                           // Operation version
+                        MgCommand::knObject, map,                       // Argument#1
+                        MgCommand::knObject, layerNames,                // Argument#2
+                        MgCommand::knObject, filterGeometry,            // Argument#3
+                        MgCommand::knInt32,  selectionVariant,          // Argument#4
+                        MgCommand::knString, &featureFilter,            // Argument#5
+                        MgCommand::knInt32,  maxFeatures,               // Argument#6
+                        MgCommand::knInt32,  layerAttributeFilter,      // Argument#7
+                        MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
 

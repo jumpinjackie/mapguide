@@ -156,6 +156,7 @@ void MgLayer::Serialize(MgStream* stream)
     if (m_displayInLegend) flags += 4;
     if (m_expandInLegend) flags += 8;
     if (m_needRefresh) flags += 16;
+    if (m_hasTooltips) flags += 32;
     helper->WriteUINT8(flags);
     helper->WriteString(m_legendLabel);
     helper->WriteBytes((const unsigned char*)&m_displayOrder, sizeof(double));
@@ -202,6 +203,7 @@ void MgLayer::Deserialize(MgStream* stream)
     m_displayInLegend = (flags & 4) > 0;
     m_expandInLegend = (flags & 8) > 0;
     m_needRefresh = (flags & 16) > 0;
+    m_hasTooltips = (flags & 32) > 0;
 
     helper->GetString(m_legendLabel);
     helper->GetData((void*)&m_displayOrder, sizeof(double));

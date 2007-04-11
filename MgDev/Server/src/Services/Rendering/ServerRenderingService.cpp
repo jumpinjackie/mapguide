@@ -31,6 +31,9 @@
 
 // the maximum number of allowed pixels for rendered images
 static const INT32 MAX_PIXELS = 16384*16384;
+static const INT32 FILTER_VISIBLE = 1;
+static const INT32 FILTER_SELECTABLE = 2;
+static const INT32 FILTER_HASTOOLTIPS = 4;
 
 IMPLEMENT_CREATE_SERVICE(MgServerRenderingService)
 
@@ -502,7 +505,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
                                                               INT32       maxFeatures)
 {
     // Call updated QueryFeatures API
-    return QueryFeatures(map, layerNames, geometry, selectionVariant, L"", maxFeatures, false);
+    return QueryFeatures(map, layerNames, geometry, selectionVariant, L"", maxFeatures, 3 /*visible and selectable*/);
 }
 
 
@@ -512,7 +515,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
                                                               INT32       selectionVariant, // Within, Touching, Topmost
                                                               CREFSTRING  featureFilter,
                                                               INT32       maxFeatures,
-                                                              bool bIgnoreScaleRange)
+                                                              INT32       layerAttributeFilter)
 {
     Ptr<MgFeatureInformation> ret;
 
@@ -528,7 +531,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
 
     FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale());
 
-    RenderForSelection(map, layerNames, geometry, selectionVariant, featureFilter, maxFeatures, &fir, bIgnoreScaleRange);
+    RenderForSelection(map, layerNames, geometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter, &fir);
 
     //fill out the output object with the info we collected
     //in the FeatureInfoRenderer for the first feature we hit
@@ -560,7 +563,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgM
                                     INT32 maxFeatures)
 {
     // Call updated QueryFeatureProperties API
-    return QueryFeatureProperties(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, false);
+    return QueryFeatureProperties(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, 3 /*visible and selectable*/);
 }
 
 
@@ -570,7 +573,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgM
                                     INT32 selectionVariant, // Within, Touching, Topmost
                                     CREFSTRING featureFilter,
                                     INT32 maxFeatures,
-                                    bool bIgnoreScaleRange)
+                                    INT32 layerAttributeFilter)
 {
     Ptr<MgBatchPropertyCollection> ret;
 
@@ -583,7 +586,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgM
     Ptr<MgSelection> sel;   //TODO: do we need this for this API? new MgSelection(map);
     FeaturePropRenderer fpr(sel, maxFeatures, map->GetViewScale());
 
-    RenderForSelection(map, layerNames, filterGeometry, selectionVariant, featureFilter, maxFeatures, &fpr, bIgnoreScaleRange);
+    RenderForSelection(map, layerNames, filterGeometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter, &fpr);
 
     ret = fpr.GetProperties();
     //ret->SetSelection(sel);
@@ -837,8 +840,8 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                          INT32 selectionVariant,
                          CREFSTRING featureFilter,
                          INT32 maxFeatures,
-                         FeatureInfoRenderer* selRenderer,
-                         bool bIgnoreScaleRange)
+                         INT32 layerAttributeFilter,
+                         FeatureInfoRenderer* selRenderer)
 {
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): ** START **\n")));
     if (NULL == map || (NULL == geometry && featureFilter.empty()))
@@ -877,6 +880,10 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
     Ptr<MgLayerCollection> layers = map->GetLayers();
 
+    bool bOnlySelectableLayers = !((layerAttributeFilter & FILTER_SELECTABLE) == 0);
+    bool bOnlyVisibleLayers = !((layerAttributeFilter & FILTER_VISIBLE) == 0);
+    bool bOnlyTooltipLayers = !((layerAttributeFilter & FILTER_HASTOOLTIPS) == 0);
+
     //iterate over all map layers, but only do selection
     //if the layer is in the passed in collection
     for (int p=0; p<layers->GetCount(); p++)
@@ -887,7 +894,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable() ? L"True" : L"False", layer->IsVisibleAtScale(map->GetViewScale()) ? L"True" : L"False"));
     
         //do this first - this check is fast
-        if (!layer->GetSelectable())
+        if (bOnlySelectableLayers && !layer->GetSelectable())
             continue;
 
         //do we want to select on this layer -- if caller
@@ -897,8 +904,18 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             continue;
 
         //check the visibility at scale if we're not ignoring scale ranges
-        if (!bIgnoreScaleRange && !layer->IsVisibleAtScale(map->GetViewScale()))
+        if (bOnlyVisibleLayers && !layer->IsVisibleAtScale(map->GetViewScale()))
             continue;
+
+        //if we only want layers with tooltips, check that this layer has tooltips
+        if(bOnlyTooltipLayers)
+        {
+            //layer->GetLayerInfoFromDefinition(m_svcResource);
+            if(!layer->HasTooltips())
+            {
+                continue;
+            }
+        }            
 
         //have we processed enough features already?
         if (maxFeatures <= 0)
@@ -914,7 +931,8 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         {
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): Layer: %W  Vector Layer\n"), layer->GetName().c_str()));
 
-            if(bIgnoreScaleRange)
+            //check to see if we want even layers that aren't visible at the current scale
+            if(!bOnlyVisibleLayers)
             {
                 // Modify the layer scale range only for layers that are passed in
                 MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();

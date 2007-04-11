@@ -418,9 +418,9 @@ EXTERNAL_API:
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return
-    /// \param bIgnoreScaleRange
+    /// \param layerAttributeFilter
     /// Input
-    /// true if you want to ignore scale ranges when querying features
+    /// bitmask values - 1=Visible, 2=Selectable, 4=HasTooltips
     ///
     /// \return
     /// An MgSelection instance identifying the features that meet the
@@ -433,11 +433,11 @@ EXTERNAL_API:
         INT32 selectionVariant,
         CREFSTRING featureFilter, 
         INT32 maxFeatures,
-        bool bIgnoreScaleRange);
+        INT32 layerAttributeFilter);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// The QueryFeatureProeprties operation identifies those features that
+    /// The QueryFeatureProperties operation identifies those features that
     /// meet the specified spatial selection criteria. This operation
     /// is used to implement WMS feature info and returns property values
     /// for all features which match the spatial query
@@ -491,10 +491,9 @@ EXTERNAL_API:
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return
-    /// \param bIgnoreScaleRange
+    /// \param layerAttributeFilter
     /// Input
-    /// true if you want to ignore scale ranges when querying feature 
-    /// properties
+    /// bitmask values - 1=Visible, 2=Selectable, 4=HasTooltips
     ///
     /// \return
     /// An MgSelection instance identifying the features that meet the
@@ -507,7 +506,7 @@ EXTERNAL_API:
         INT32 selectionVariant,
         CREFSTRING featureFilter,
         INT32 maxFeatures,
-        bool bIgnoreScaleRange);
+        INT32 layerAttributeFilter);
 
 INTERNAL_API:
 

@@ -113,7 +113,7 @@ public:
                                         INT32 selectionVariant, // Within, Touching, Topmost
                                         CREFSTRING featureFilter,
                                         INT32 maxFeatures,
-                                        bool bIgnoreScaleRange);
+                                        INT32 layerAttributeFilter);
 
     virtual MgBatchPropertyCollection* QueryFeatureProperties( MgMap* map,
                                         MgStringCollection* layerNames,
@@ -127,7 +127,7 @@ public:
                                         INT32 selectionVariant, // Within, Touching, Topmost
                                         CREFSTRING featureFilter,
                                         INT32 maxFeatures,
-                                        bool bIgnoreScaleRange);
+                                        INT32 layerAttributeFilter);
 
 private:
 
@@ -163,8 +163,8 @@ private:
                          INT32 selectionVariant,
                          CREFSTRING featureFilter, 
                          INT32 maxFeatures,
-                         FeatureInfoRenderer* selRenderer,
-                         bool bIgnoreScaleRange);
+                         INT32 layerAttributeFilter,
+                         FeatureInfoRenderer* selRenderer);
 
     // member data
     Ptr<MgFeatureService> m_svcFeature;
