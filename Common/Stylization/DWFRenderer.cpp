@@ -2540,8 +2540,6 @@ void DWFRenderer::ProcessLabelGroup(SE_LabelInfo*   labels,
             double posx, posy;
             ScreenToWorldPoint(info->x, info->y, posx, posy);
 
-            // TODO: account for any symbol offset
-
             PlayMacro(file, i+1, refSizeMeters, RS_Units_Model, posx, posy);
         }
 
@@ -2635,8 +2633,6 @@ void DWFRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
         double posx = 0.0;
         double posy = 0.0;
         ScreenToWorldPoint(posx, posy, posx, posy);
-
-        // TODO: account for any symbol offset
 
         PlayMacro(file, 0, refSizeMeters, RS_Units_Model, posx, posy);
 
@@ -3304,7 +3300,7 @@ void DWFRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
             alternate_extent.maxy = rs_max(pts[0].m_y, pts[2].m_y);
 
             //TODO: we don't do that yet, since DWF layers can have
-            //multiple viewports, which mess up this logic -- no single
+            //multiple viewports, which messes up this logic -- no single
             //viewport contains the overall extent of the data
             /*
             //if it is a DWF layer, also correct for aspect ratio

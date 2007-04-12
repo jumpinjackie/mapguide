@@ -309,7 +309,7 @@ void FontManager::init_font_list () {
                     error = FT_New_Face (m_library, entryName.c_str(),
                         index, &face);
 
-                    //  TODO:  revisit using the font manger here
+                    //  TODO:  revisit using the font manager here
                     //error = m_FM->get_face (entryName.c_str(),
                     //    index, &face);
 
