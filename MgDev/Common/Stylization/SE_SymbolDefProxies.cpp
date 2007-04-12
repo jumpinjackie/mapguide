@@ -356,9 +356,9 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     double h = 0.5*ret->extent[1];
 
     RS_F_Point pts[4];
-    rxf.transform( w,  h, pts[0].x, pts[0].y);
+    rxf.transform(-w, -h, pts[0].x, pts[0].y);
     rxf.transform( w, -h, pts[1].x, pts[1].y);
-    rxf.transform(-w, -h, pts[2].x, pts[2].y);
+    rxf.transform( w,  h, pts[2].x, pts[2].y);
     rxf.transform(-w,  h, pts[3].x, pts[3].y);
 
     memcpy(ret->bounds, pts, sizeof(ret->bounds));

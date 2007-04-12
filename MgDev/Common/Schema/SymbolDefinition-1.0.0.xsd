@@ -128,7 +128,7 @@
                 </xs:element>
                 <xs:element name="VertexControl" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the symbol behavior at vertices.  This must evaluate to one of: NoOverlap (default), OverlapDirect, OverlapNoWrap, or OverlapWrap.</xs:documentation>
+                    <xs:documentation>Specifies the symbol behavior at vertices.  This must evaluate to one of: OverlapNone (default), OverlapDirect, OverlapNoWrap, or OverlapWrap.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="Angle" type="xs:string" minOccurs="0">
