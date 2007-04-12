@@ -44,12 +44,17 @@ int MgOgcFilterUtil::xmlcmp(const wchar_t* s1, const wchar_t* s2)
 #endif
 }
 
-STRING MgOgcFilterUtil::Ogc2FdoFilter(CREFSTRING ogcFilter, MgCoordinateSystemTransform* xform, CREFSTRING geomProp)
+STRING MgOgcFilterUtil::Ogc2FdoFilter(CREFSTRING ogcFilter, MgCoordinateSystemTransform* xform, CREFSTRING geomProp,
+                                      MgPropertyDefinitionCollection* propertyDefs)
 {
+    STRING fdoFilter = L"";
+
     //we will use the transform to transform geometry
     //from map coordinate system to layer/FDO data source coordinate system
     m_xform = SAFE_ADDREF(xform);
+    m_propertyDefs = SAFE_ADDREF(propertyDefs);
     m_geomProp = geomProp;
+    m_propName = L"";
 
     //convert to utf-8
     string utffilter = MgUtil::WideCharToMultiByte(ogcFilter);
@@ -69,12 +74,15 @@ STRING MgOgcFilterUtil::Ogc2FdoFilter(CREFSTRING ogcFilter, MgCoordinateSystemTr
     while (0 != child)
     {
         if(child->getNodeType() == DOMNode::ELEMENT_NODE)
-            return process_element((DOMElement*)child);
+        {
+            fdoFilter = process_element((DOMElement*)child);
+            break;
+        }
 
         child = child->getNextSibling();
     }
 
-    return L"";
+    return fdoFilter;
 }
 
 
@@ -148,7 +156,8 @@ STRING MgOgcFilterUtil::process_element(DOMElement* root)
     //identifiers and constants
     else if (xmlcmp(wnm, L"PropertyName") == 0)
     {
-        return process_identifier(root);
+        m_propName = process_identifier(root);
+        return m_propName;
     }
     else if (xmlcmp(wnm, L"Literal") == 0)
     {
@@ -429,31 +438,50 @@ STRING MgOgcFilterUtil::process_literal(DOMElement* root)
     //but it can be <LowerBound> or <UpperBound>
     STRING contents = extract_content(root);
 
-    //here we need a hint... is the property type string
-    //or is it a numeric type? We can verify this
-    //by passing in a set of property names and types as
-    //a hint to the converter, but for now we will do
-    //something simpler... just treat the contents as a string value
-    //and enclose them in single quotes -- this should
-    //in theory work ok with most FDO providers
+    //we need to determine the data type to decide whether or not the
+    //literal value needs to be enclosed in quotes. We attempt to do this
+    //by looking up the data type for the last property name encountered.
+    //TODO - Come up with a more robust way to determine the data type
+    //being compared to the literal value. The current approach only
+    //works if the property name precedes the literal value.
+    bool requiresQuotes = true;
+    if(!m_propName.empty() && m_propertyDefs.p != NULL)
+    {
+        Ptr<MgPropertyDefinition> propDef = m_propertyDefs->FindItem(m_propName);
+        if (propDef->GetPropertyType () == MgFeaturePropertyType::DataProperty)
+        {
+            // We found a matching data property
+            MgDataPropertyDefinition* dataProp = static_cast<MgDataPropertyDefinition*>(propDef.p);
+            if(dataProp != NULL && dataProp->GetDataType() != MgPropertyType::String)
+            {
+                requiresQuotes = false;
+            }
+        }
+    }
 
-    STRING quoted;
-    quoted.reserve(contents.length() + 3);
+    STRING literalValue;
+    literalValue.reserve(contents.length() + 3);
 
-    quoted += L"'";
+    if(requiresQuotes)
+    {
+        literalValue += L"'";
+    }
 
     //copy characters one by one, replacing special characters along the way
     for (size_t i=0; i<contents.length(); i++)
     {
         if (contents[i] == L'\'')
-            quoted += L"''";
+            literalValue += L"''";
         else
-            quoted += contents[i];
+            literalValue += contents[i];
     }
 
-    quoted += L"'";
+    if(requiresQuotes)
+    {
+        literalValue += L"'";
+    }
 
-    return quoted;
+    return literalValue;
 }
 
 STRING MgOgcFilterUtil::process_bbox(DOMElement* root)

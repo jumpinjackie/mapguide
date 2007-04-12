@@ -34,7 +34,7 @@ class MG_SERVER_FEATURE_API MgOgcFilterUtil
 {
 public:
 
-    STRING Ogc2FdoFilter(CREFSTRING ogcFilter, MgCoordinateSystemTransform* xform, CREFSTRING geomProp);
+    STRING Ogc2FdoFilter(CREFSTRING ogcFilter, MgCoordinateSystemTransform* xform, CREFSTRING geomProp, MgPropertyDefinitionCollection* propertyDefs);
 
 private:
 
@@ -75,7 +75,9 @@ private:
 
     //state variables
     Ptr<MgCoordinateSystemTransform> m_xform;
+    Ptr<MgPropertyDefinitionCollection> m_propertyDefs;
     STRING m_geomProp;
+    STRING m_propName;
 
 };
 

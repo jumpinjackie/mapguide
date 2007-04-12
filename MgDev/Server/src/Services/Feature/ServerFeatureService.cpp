@@ -1277,8 +1277,9 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     //and set it to the FDO feature query
     if (!wfsFilter.empty())
     {
+        Ptr<MgPropertyDefinitionCollection> properties = fc->GetProperties();
         MgOgcFilterUtil u;
-        STRING fdoFilterString = u.Ogc2FdoFilter(wfsFilter, trans, geomPropName);
+        STRING fdoFilterString = u.Ogc2FdoFilter(wfsFilter, trans, geomPropName, properties);
         options->SetFilter(fdoFilterString);
     }
 
