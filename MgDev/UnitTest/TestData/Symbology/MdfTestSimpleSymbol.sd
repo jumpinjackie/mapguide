@@ -79,7 +79,7 @@
   <LineUsage>
     <AngleControl>'FromGeometry'</AngleControl>
     <UnitsControl>'Absolute'</UnitsControl>
-    <VertexControl>'NoOverlap'</VertexControl>
+    <VertexControl>'OverlapNone'</VertexControl>
     <Angle>0.0</Angle>
     <StartOffset>0.0</StartOffset>
     <EndOffset>0.0</EndOffset>
