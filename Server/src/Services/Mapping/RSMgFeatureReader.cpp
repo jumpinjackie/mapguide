@@ -265,10 +265,23 @@ long long RSMgFeatureReader::GetInt64(const wchar_t* propertyName)
 
 const wchar_t* RSMgFeatureReader::GetString(const wchar_t* propertyName)
 {
-    RSFR_TRY()
-    INT32 len = 0; //not used, as string is null terminated
-    return m_reader->GetString(propertyName, len);
-    RSFR_CATCH()
+    try
+    {
+        INT32 len = 0; //not used, as string is null terminated
+        return m_reader->GetString(propertyName, len);
+    }
+    //Ignore FDO exceptions.  May simply be a null string value.
+    catch (MgException* ex)
+    {       
+        bool shouldThrow = (NULL == dynamic_cast<MgFdoException*>(ex)); 
+        ex->Release();
+        if (shouldThrow)
+        {
+            throw FdoException::Create();
+        }
+    }
+
+    return L"";
 }
 
 
