@@ -18,6 +18,7 @@ INCLUDES = \
   -I../../../../Common/MapGuideCommon \
   -I../../../../Common/MdfModel \
   -I../../../../Common/MdfParser \
+  -I../../../../Common/Stylization \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \
@@ -108,7 +109,9 @@ include_SOURCES = \
   OpGetSchemaMapping.cpp \
   ServerEnumerateDataStores.cpp \
   ServerGetSchemaMapping.cpp \
-  OpSetLongTransaction.cpp
+  OpSetLongTransaction.cpp \
+  MgCSTrans.cpp \
+  TransformCache.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   FeatureOperation.h \
@@ -208,7 +211,9 @@ noinst_HEADERS = $(include_SOURCES) \
   OpGetSchemaMapping.h \
   ServerEnumerateDataStores.h \
   ServerGetSchemaMapping.h \
-  OpSetLongTransaction.h
+  OpSetLongTransaction.h \
+  MgCSTrans.h \
+  TransformCache.h
 
 libMgServerFeatureService_la_LIBADD = -lMgGwsCommon -lMgGwsQueryEngine
 

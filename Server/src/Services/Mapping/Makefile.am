@@ -18,7 +18,8 @@ INCLUDES = \
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry \
   -I../../../../Common/PlatformBase \
-  -I../../../../Common/MapGuideCommon
+  -I../../../../Common/MapGuideCommon \
+  -I../Feature
 
 lib_LTLIBRARIES = libMgServerMappingService.la
 
@@ -29,7 +30,6 @@ include_SOURCES = \
   MappingOperation.cpp \
   MappingOperationFactory.cpp \
   MappingServiceHandler.cpp \
-  MgCSTrans.cpp \
   ServerMappingService.cpp \
   OpGeneratePlot.cpp \
   OpGenerateMap.cpp \
@@ -51,7 +51,6 @@ noinst_HEADERS = $(include_SOURCES) \
   MappingOperationFactory.h \
   MappingOperation.h \
   MappingServiceHandler.h \
-  MgCSTrans.h \
   ServerMappingDllExport.h \
   ServerMappingService.h \
   ServerMappingServiceDefs.h \

@@ -32,7 +32,6 @@
 #include "RSMgFeatureReader.cpp"
 #include "RSMgRaster.cpp"
 #include "RSMgSymbolManager.cpp"
-#include "MgCSTrans.cpp"
 #include "LegendPlotUtil.cpp"
 #include "StylizationUtil.cpp"
 #include "ServerMappingService.cpp"

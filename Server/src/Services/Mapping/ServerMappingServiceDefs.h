@@ -24,12 +24,10 @@
 #include "LogManager.h"
 #include "IServiceHandler.h"
 
-
 #include "CSysTransformer.h"
 
 #include "ServerMappingService.h"
 #include "MappingOperation.h"
-#include "MgCSTrans.h"
 
 #include <assert.h>
 

@@ -32,37 +32,13 @@ class MgReadOnlyLayerCollection;
 class MgStringCollection;
 class MgMap;
 class MgCoordinateSystem;
-class MgCSTrans;
 class RSMgFeatureReader;
+class TransformCache;
 
 //Common stylization utility code -- used by both the mapping and rendering services
 class MG_SERVER_MAPPING_API MgStylizationUtil
 {
 public:
-
-    // Class to cache coordinate systems and transforms during processing.  Many layers
-    // will use the same coordinate system so this is an effective way to reduce significant overhead.
-    class TransformCache
-    {
-    public:
-        TransformCache(MgCSTrans* transform, MgCoordinateSystem* coordinateSystem);
-        virtual ~TransformCache();
-        MgCSTrans* GetTransform();
-        MgCoordinateSystem* GetCoordSys();
-        void SetMgTransform(MgCoordinateSystemTransform* mgTransform);
-        MgCoordinateSystemTransform* GetMgTransform();
-        void SetEnvelope(MgEnvelope* extent);
-        MgEnvelope* GetEnvelope();
-
-    private:
-        MgCSTrans* m_xform;
-        Ptr<MgCoordinateSystem> m_coordSys;
-        Ptr<MgCoordinateSystemTransform> m_transform;
-        Ptr<MgEnvelope> m_envelope;
-    };
-
-    typedef std::map<STRING, TransformCache*> TransformCacheMap;
-
     static void StylizeLayers(MgResourceService* svcResource,
                               MgFeatureService* svcFeature,
                               MgDrawingService* svcDrawing,
@@ -94,13 +70,6 @@ public:
                                                 MgCoordinateSystem* layerCs,
                                                 int width,
                                                 int height);
-
-    static MgStylizationUtil::TransformCache* GetLayerToMapTransform(TransformCacheMap& cache,
-                                                         CREFSTRING featureName,
-                                                         MgResourceIdentifier* resId,
-                                                         MgCoordinateSystem* dstCs,
-                                                         MgCoordinateSystemFactory* csFactory,
-                                                         MgFeatureService* svcFeature);
 
     static MdfModel::MapDefinition* GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId);
     static MdfModel::LayerDefinition* GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId);

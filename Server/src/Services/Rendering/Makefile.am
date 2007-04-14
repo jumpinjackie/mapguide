@@ -16,6 +16,7 @@ INCLUDES = \
   -I$(map_fdo_include) \
   -I../../../../Common/MdfModel \
   -I../../../../Common/Stylization \
+  -I../Feature \
   -I../Mapping
 
 lib_LTLIBRARIES = libMgServerRenderingService.la
