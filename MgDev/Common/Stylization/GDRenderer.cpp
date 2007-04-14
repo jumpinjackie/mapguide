@@ -63,6 +63,8 @@
 #include "complex_polygon_gd.h"
 
 #include "SymbolTrans.h"
+#include "SE_BufferPool.h"
+#include "SE_StyleVisitor.h"
 
 using namespace DWFToolkit;
 using namespace DWFCore;
@@ -314,10 +316,30 @@ void GDRenderer::StartMap(RS_MapUIInfo* mapInfo,
                           double        metersPerUnit,
                           CSysTransformer* /*xformToLL*/)
 {
-    m_extents = extents;
     m_mapScale = mapScale;
     m_dpi = dpi;
     m_metersPerUnit = metersPerUnit;
+
+    //compute drawing scale
+    //drawing scale is map scale converted to [mapping units] / [pixels]
+    double metersPerPixel = 0.0254 / m_dpi;
+    m_drawingScale = m_mapScale * metersPerPixel / m_metersPerUnit;
+
+    SetExtents(extents);
+
+    m_labeler->StartLabels();
+
+    // remember the map info
+    m_mapInfo = mapInfo;
+
+    // do it here, since we will need the renderer's map scales, which are computed above
+    InitFontEngine(this, this);
+}
+
+
+void GDRenderer::SetExtents(RS_Bounds& extents)
+{
+    m_extents = extents;
 
     //find scale used to convert to pixel coordinates
     //need to take aspect ratios into account
@@ -333,24 +355,10 @@ void GDRenderer::StartMap(RS_MapUIInfo* mapInfo,
         m_scale = (double)(m_width) / m_extents.width();
     }
 
-    m_offsetX = m_extents.minx;
-    m_offsetY = m_extents.miny;
-
-    double metersPerPixel = 0.0254 / m_dpi;
-
-    //compute drawing scale
-    //drawing scale is map scale converted to [mapping units] / [pixels]
-    m_drawingScale = m_mapScale * metersPerPixel / m_metersPerUnit;
-
     m_invScale = 1.0 / m_scale;
 
-    m_labeler->StartLabels();
-
-    // remember the map info
-    m_mapInfo = mapInfo;
-
-    // do it here, since we will need the renderer's map scales, which are computed above
-    InitFontEngine(this, this);
+    m_offsetX = m_extents.minx;
+    m_offsetY = m_extents.miny;
 }
 
 
@@ -2392,4 +2400,115 @@ void GDRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double i
         GetTextMetrics(txt, tdef, tm, false);
         DrawBlockText(tm, tdef, insx, insy);
     }
+}
+
+
+// Draws a preview of the supplied symbolization.  The preview is sized to fill the
+// renderer image.  Calls to this method should be wrapped by the standard calls to
+// StartMap / StartLayer and EndMap / EndLayer.
+//
+// TODO: issues with the current implementation:
+// - Due to the fake context, symbols with expressions will not be able to
+//   evaluate those expressions.  In the case of text properties, the default
+//   string value ends up being the expression.  We need to implement support
+//   for default values for all properties, and return these values if the
+//   expression can't be evaluated.
+// - Even though the symbol is sized to fit into the image, line weights, image
+//   sizes, and text height are not adjusted if the symbol's size context is device
+//   units.  This causes symbols using these to look odd in the preview.
+// - The symbol is currently drawn as a point symbol.  We'll need to change that
+//   to draw the symbol on a sample geometry matching the usage type.  E.g. in the
+//   case where the symbol specifies a LineUsage, we'll draw the symbol along an
+//   imaginary line that crosses the preview image.  Once again though the problem
+//   will be how to draw a meaningful preview in such a small image.
+void GDRenderer::DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_SymbolManager* sman)
+{
+    double mm2pxs = GetPixelsPerMillimeterScreen();
+    double mm2pxw = GetPixelsPerMillimeterWorld();
+
+    SE_BufferPool pool;
+    SE_StyleVisitor visitor(sman, &pool);
+
+    std::vector<SE_Symbolization*> styles;
+    visitor.Convert(styles, csym);
+
+    RS_FilterExecutor* exec = RS_FilterExecutor::Create(NULL);
+
+    // first get the overall bounds for the symbolization
+    RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
+    for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
+    {
+        // one per symbol instance
+        SE_Symbolization* sym = *iter;
+
+        SE_Matrix xform;
+        xform.setTransform( sym->scale[0].evaluate(exec),
+                            sym->scale[1].evaluate(exec),
+                            sym->absOffset[0].evaluate(exec),
+                            sym->absOffset[1].evaluate(exec) );
+
+        // keep y pointing up while we compute the bounds
+        double mm2px = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
+        xform.scale(mm2px, mm2px);
+
+        // initialize the style evaluation context
+        SE_EvalContext cxt;
+        cxt.exec = exec;
+        cxt.mm2px = mm2px;
+        cxt.mm2pxs = mm2pxs;
+        cxt.mm2pxw = mm2pxw;
+        cxt.pool = &pool;
+        cxt.fonte = GetFontEngine();
+        cxt.xform = &xform;
+        cxt.resources = sman;
+
+        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
+        {
+            // have one style per simple symbol definition
+            SE_Style* style = *siter;
+            style->evaluate(&cxt);
+
+            // if the symbol def has graphic elements then we can add its bounds
+            if (style->rstyle->symbol.size() > 0)
+            {
+                for (int i=0; i<4; ++i)
+                    symBounds.add_point(style->rstyle->bounds[i]);
+            }
+        }
+    }
+
+    // make the bounds slightly larger so that roundoff will not cause
+    // missing pixels at the edges
+    double w = symBounds.width();
+    double h = symBounds.height();
+    symBounds.minx -= 0.00001*w;
+    symBounds.miny -= 0.00001*h;
+    symBounds.maxx += 0.00001*w;
+    symBounds.maxy += 0.00001*h;
+
+    // set the renderer extent to the symbol's
+    SetExtents(symBounds);
+
+    SE_Matrix drawXform;
+    GetWorldToScreenTransform(drawXform);
+
+    // now draw the symbolization
+    for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
+    {
+        // one per symbol instance
+        SE_Symbolization* sym = *iter;
+
+        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
+        {
+            // have one style per simple symbol definition
+            SE_Style* style = *siter;
+            DrawSymbol(style->rstyle->symbol, drawXform, 0.0);
+        }
+    }
+
+    // clean up
+    for (std::vector<SE_Symbolization*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
+        delete *iter;
+
+    styles.clear();
 }

@@ -310,8 +310,8 @@ function BuildLayerDefinitionData($resSrvc, $resId, $layerVarName, &$output)
             $type = 1;
     }
 
-    $typeStyles = array("PointTypeStyle", "LineTypeStyle", "AreaTypeStyle");
-    $ruleNames = array("PointRule", "LineRule", "AreaRule", );
+    $typeStyles = array("PointTypeStyle", "LineTypeStyle", "AreaTypeStyle", "CompositeTypeStyle");
+    $ruleNames = array("PointRule", "LineRule", "AreaRule", "CompositeRule");
 
     for($sc = 0; $sc < $scaleRanges->length; $sc++)
     {

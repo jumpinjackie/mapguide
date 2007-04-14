@@ -544,6 +544,8 @@ void RS_FilterExecutor::ProcessIdentifier(FdoIdentifier& expr)
     else
     {
         //otherwise we need to ask the feature reader for the value
+        if (m_reader == NULL)
+            throw FdoException::Create(L"No reader available!");
 
         FdoDataType dataType = (FdoDataType) m_reader->GetPropertyType(name);
 

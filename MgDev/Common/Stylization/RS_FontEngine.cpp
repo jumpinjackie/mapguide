@@ -488,7 +488,6 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
     // get the overall unrotated bounds
     RS_Bounds b(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-
     for (size_t i=0; i<tm.line_pos.size(); i++)
     {
         b.add_point(tm.line_pos[i].ext[0]);
