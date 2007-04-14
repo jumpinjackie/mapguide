@@ -92,7 +92,7 @@ bool queryInfo = false;
             MgRenderingService renderingSrvc = (MgRenderingService)site.CreateService(MgServiceType.RenderingService);
             MgStringCollection layerNames = new MgStringCollection();
             layerNames.Add(layer.GetName());
-            MgFeatureInformation featInfo = renderingSrvc.QueryFeatures(map, layerNames, null, MgFeatureSpatialOperations.Intersects, selText, 1, true);
+            MgFeatureInformation featInfo = renderingSrvc.QueryFeatures(map, layerNames, null, MgFeatureSpatialOperations.Intersects, selText, 1, 2);
             Response.Write(featInfo.ToXml().ToString());
         }
     }

@@ -18,6 +18,10 @@
 #ifndef _MG_LAYER_BASE_H_
 #define _MG_LAYER_BASE_H_
 
+BEGIN_NAMESPACE_MDFMODEL
+class LayerDefinition;
+END_NAMESPACE_MDFMODEL
+
 class MgLayerGroup;
 class MgLayerCollection;
 class MgLayerBase;
@@ -840,6 +844,8 @@ PUBLISHED_API:
 
 INTERNAL_API:
 
+    static MdfModel::LayerDefinition* GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId);
+
     //////////////////////////////////////////////////////////////////
     /// Internal mapping of identifiers for selection purposes
     /// feature source and feature class from it
@@ -941,6 +947,10 @@ INTERNAL_API:
     virtual bool IsVisibleAtScale(double scale);
 
     //////////////////////////////////////////////////////////////////
+    /// Determine if this layer has tooltips configured
+    virtual bool HasTooltips();
+
+    //////////////////////////////////////////////////////////////////
     /// Parse the layer definition XML and extracts scale ranges,
     /// feature source and feature class from it
     virtual void GetLayerInfoFromDefinition(MgResourceService* resourceService);
@@ -948,6 +958,8 @@ INTERNAL_API:
     //////////////////////////////////////////////////////////////////
     /// Returns id property list
     virtual IdPropertyList& GetIdPropertyList();
+
+
 
 protected:
     /// \brief
@@ -990,6 +1002,7 @@ protected:
     INT32                 m_type;
     Ptr<MgLayerGroup>     m_group;
     bool                  m_visible;
+    bool                  m_hasTooltips;
     bool                  m_selectable;
     bool                  m_displayInLegend;
     bool                  m_expandInLegend;
