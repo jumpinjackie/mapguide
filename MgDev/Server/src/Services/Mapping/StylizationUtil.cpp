@@ -1359,10 +1359,10 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
         RSMgSymbolManager sman(svcResource);
         er.SetSymbolManager(&sman);
 
-        int pixelW = imgWidth;
-        int pixelH = imgHeight;
+        double pixelW = imgWidth;
+        double pixelH = imgHeight;
 
-        RS_Bounds b(0,0,pixelW,pixelH);
+        RS_Bounds b(0.0, 0.0, pixelW, pixelH);
 
         RS_MapUIInfo info(L"", L"name", L"guid", L"", L"", RS_Color(255,255,255,0));
 
@@ -1371,7 +1371,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
         er.StartMap(&info,
                     b,
-                    scale,
+                    1.0,
                     pixelsPerInch,
                     metersPerPixel);
 
@@ -1461,13 +1461,13 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                                 fs.outline().color() = RS_Color(0,0,0,0);
                         }
 
-                        //generate a geometry to draw
+                        //generate a geometry to draw - make it slightly smaller than
+                        //the map extent to avoid having missing pixels at the edges
                         LineBuffer lb(5);
-
-                        lb.MoveTo(0,0);
-                        lb.LineTo(pixelW-1, 0);
-                        lb.LineTo(pixelW-1, pixelH-1);
-                        lb.LineTo(0, pixelH-1);
+                        lb.MoveTo(       0.000001,        0.000001);
+                        lb.LineTo(pixelW-0.000001,        0.000001);
+                        lb.LineTo(pixelW-0.000001, pixelH-0.000001);
+                        lb.LineTo(       0.000001, pixelH-0.000001);
                         lb.Close();
 
                         er.ProcessPolygon(&lb, fs);
@@ -1517,10 +1517,11 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                                 ls.width() = width;
                             }
 
+                            //generate a geometry to draw - make it slightly smaller than
+                            //the map extent to avoid having missing pixels at the edges
                             LineBuffer lb(2);
-
-                            lb.MoveTo(0, (double)pixelH * 0.5);
-                            lb.LineTo(pixelW, (double)pixelH * 0.5);
+                            lb.MoveTo(       0.000001, 0.5*pixelH);
+                            lb.LineTo(pixelW-0.000001, 0.5*pixelH);
 
                             er.ProcessPolyline(&lb, ls);
                         }
@@ -1555,7 +1556,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
                         //just pick a symbol size in meters that
                         //will mostly fit the whole image
-                        double sz = (double)(min(pixelW, pixelH) - 2) * metersPerPixel;
+                        double sz = (min(pixelW, pixelH) - 2.0) * metersPerPixel;
                         mdef.width() = sz;
                         mdef.height() = sz;
                         mdef.units() = RS_Units_Model;
@@ -1653,8 +1654,9 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                             }
                         }
 
+                        //generate a geometry to draw
                         LineBuffer lb(2);
-                        lb.MoveTo(pixelW * 0.5 , pixelH * 0.5);
+                        lb.MoveTo(0.5*pixelW, 0.5*pixelH);
 
                         er.ProcessMarker(&lb, mdef, true);
                     }
