@@ -78,15 +78,18 @@ bool MgStreamParser::ParseStreamHeader( MgStreamData* pStreamData )
             }
         }
 
-        if (ret == false)
+        if (false == ret)
         {
-            throw new MgInvalidStreamHeaderException(L"MgStreamParser.ParseStreamHeader", __LINE__, __WFILE__, NULL, L"", NULL);
+            // The stream may contain garbage when the connection is dropped for
+            // some reason. This exception may be ignored to reduce noise.
+            throw new MgInvalidStreamHeaderException(L"MgStreamParser.ParseStreamHeader",
+                __LINE__, __WFILE__, NULL, L"", NULL);
         }
         else if (MgStreamParser::StreamVersion != pStreamData->GetVersion())
         {
-            throw new MgStreamIoException(L"MgStreamParser.ParseStreamHeader", __LINE__, __WFILE__, NULL, L"MgInvalidTCPProtocol", NULL);
+            throw new MgStreamIoException(L"MgStreamParser.ParseStreamHeader",
+                __LINE__, __WFILE__, NULL, L"MgInvalidTCPProtocol", NULL);
         }
-
     }
 
     return ret;
