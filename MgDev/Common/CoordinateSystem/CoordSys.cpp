@@ -2266,5 +2266,3 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
 
     return code;
 }
-
-

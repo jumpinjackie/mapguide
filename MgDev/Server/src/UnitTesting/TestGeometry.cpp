@@ -850,7 +850,6 @@ void TestGeometry::TestCase_BufferArbitrary()
 
         Ptr<MgPoint> testPoint = CreatePoint();
         Ptr<MgGeometry> geom = testPoint->Buffer(5.0, measure);
-
         STRING found = geom->ToAwkt(false);
         CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
     }
@@ -876,13 +875,11 @@ void TestGeometry::TestCase_BufferGeographic()
 
         Ptr<MgPoint> testPoint = CreatePoint();
         Ptr<MgGeometry> geom = testPoint->Buffer(5.0, measure);
-
         STRING found = geom->ToAwkt(false);
         CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
 
         Ptr<MgLineString> testLine = CreateLineString();
         geom = testLine->Buffer(5.0, measure);
-
         found = geom->ToAwkt(false);
         CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
 
