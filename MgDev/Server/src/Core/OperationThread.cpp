@@ -275,17 +275,22 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
 
     MG_CATCH(L"MgOperationThread.ProcessMessage")
 
-    if (mgException != NULL)
+    if (NULL != mgException)
     {
-        MgServerManager* serverManager = MgServerManager::GetInstance();
-        STRING locale = (NULL == serverManager) ?
-            MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-        STRING message = mgException->GetMessage(locale);
-        STRING details = mgException->GetDetails(locale);
-        STRING stackTrace = mgException->GetStackTrace(locale);
+        // The stream may contain garbage when the connection is dropped for
+        // some reason. Suppress this exception to reduce noise in the log file.
+        if (!mgException->IsOfClass(Foundation_Exception_MgInvalidStreamHeaderException))
+        {
+            MgServerManager* serverManager = MgServerManager::GetInstance();
+            STRING locale = (NULL == serverManager) ?
+                MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
+            STRING message = mgException->GetMessage(locale);
+            STRING details = mgException->GetDetails(locale);
+            STRING stackTrace = mgException->GetStackTrace(locale);
 
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
-        MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+            MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
+        }
 
         stat = IMgServiceHandler::mpsError;
     }

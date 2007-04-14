@@ -140,9 +140,10 @@ MgStreamHelper::MgStreamStatus MgStreamWriter::WriteArgumentHeader(MgArgumentPac
     // Write argument type
     if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32( map.m_ArgumentType );
     // Write length if it is string
-    if (map.m_ArgumentType == (UINT32)MgPacketParser::matString)
+    if (MgStreamHelper::mssDone == stat
+        && MgPacketParser::matString == map.m_ArgumentType)
     {
-        if (MgStreamHelper::mssDone == stat) stat = m_sHelper->WriteUINT32((UINT32)map.m_Length);
+        stat = m_sHelper->WriteUINT32((UINT32)map.m_Length);
     }
 
     return stat;
