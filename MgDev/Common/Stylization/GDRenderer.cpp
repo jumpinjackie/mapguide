@@ -1194,33 +1194,22 @@ inline int GDRenderer::_TX(double x)
 //transforms a y coordinate from mapping to screen space
 inline int GDRenderer::_TY(double y)
 {
-    return m_height /*-1*/ - (int)floor((y - m_offsetY) * m_scale);
+//  return (int)floor(m_height - (y - m_offsetY) * m_scale);
+    return m_height + (int)floor((m_offsetY - y) * m_scale);  // avoids converting m_height to double
 }
 
 
-//transforms an array of input mapping space points
-//into W2D coordinates and places them in the DWF
-//point buffer m_wtPointBuffer
+//transforms an array of input mapping space points into pixel
+//coordinates and places them in the point buffer m_wtPointBuffer
 void GDRenderer::_TransformPointsNoClamp(double* inpts, int numpts)
 {
     EnsureBufferSize(numpts);
     int* wpts = (int*)m_wtPointBuffer;
 
-    int h1 = m_height /*- 1*/;
-    double x,y;
-    int ix, iy;
-
     for (int i=0; i<numpts; i++)
     {
-        x = (*inpts++ - m_offsetX) * m_scale;
-        y = (*inpts++ - m_offsetY) * m_scale;
-
-        //TODO: slow
-        ix = ROUND(x);
-        iy = ROUND(y);
-
-        *wpts++ = ix;
-        *wpts++ = h1 - iy;
+        *wpts++ = _TX(*inpts++);
+        *wpts++ = _TY(*inpts++);
     }
 }
 
@@ -2477,8 +2466,7 @@ void GDRenderer::DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_Sym
         }
     }
 
-    // make the bounds slightly larger so that roundoff will not cause
-    // missing pixels at the edges
+    // make the bounds slightly larger to avoid having missing pixels at the edges
     double w = symBounds.width();
     double h = symBounds.height();
     symBounds.minx -= 0.00001*w;
