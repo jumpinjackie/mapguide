@@ -95,3 +95,5 @@
 #include "ServerEnumerateDataStores.cpp"
 #include "ServerGetSchemaMapping.cpp"
 #include "OpSetLongTransaction.cpp"
+#include "MgCSTrans.cpp"
+#include "TransformCache.cpp"

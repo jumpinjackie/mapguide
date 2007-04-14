@@ -15,7 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "ServerMappingServiceDefs.h"
+#include "ServerFeatureServiceDefs.h"
+#include "MgCSTrans.h"
+
 
 MgCSTrans::MgCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs)
 {
@@ -26,20 +28,24 @@ MgCSTrans::MgCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs)
     m_dLinearScale = srcCs->ConvertCoordinateSystemUnitsToMeters(1.0) / dstCs->ConvertCoordinateSystemUnitsToMeters(1.0);
 }
 
+
 MgCSTrans::~MgCSTrans()
 {
     SAFE_RELEASE(m_trans);
 }
+
 
 void MgCSTrans::TransformPoint(double& x, double& y)
 {
     m_trans->Transform(&x, &y);
 }
 
+
 void MgCSTrans::TransformPoints(int numPts, double* x, double* y)
 {
     m_trans->Transform(x, y, numPts);
 }
+
 
 double MgCSTrans::GetLinearScale()
 {

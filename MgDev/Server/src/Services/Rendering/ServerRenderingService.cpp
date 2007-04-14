@@ -27,6 +27,7 @@
 #include "SEMgSymbolManager.h"
 #include "StylizationUtil.h"
 #include "LegendPlotUtil.h"
+#include "TransformCache.h"
 
 
 // the maximum number of allowed pixels for rendered images
@@ -860,6 +861,10 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanZero", NULL);
     }
 
+    // Cache coordinate system transforms for the life of the
+    // stylization operation.
+    TransformCacheMap transformCache;
+
     // get the session ID
     STRING sessionId;
     MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
@@ -949,101 +954,10 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
             Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(layer->GetFeatureSourceId());
 
-            //get the coordinate system of the layer --> we need this
-            //so that we can convert the input geometry from mapping space
-            //to layer's space
-
-            // Need to determine the name of the spatial context for this layer
-            MdfModel::MdfString featureName = vl->GetFeatureName();
-
-            // Parse the feature name for the schema and class
-            STRING::size_type nDelimiter = featureName.find(L":");
-            STRING schemaName;
-            STRING className;
-
-            if(STRING::npos == nDelimiter)
-            {
-                schemaName = L"";
-                className = featureName;
-            }
-            else
-            {
-                schemaName = featureName.substr(0, nDelimiter);
-                className = featureName.substr(nDelimiter + 1);
-            }
-
-            STRING spatialContextAssociation = L"";
-
-            // Get the class definition so that we can find the spatial context association
-            Ptr<MgClassDefinition> classDef = m_svcFeature->GetClassDefinition(featResId, schemaName, className);
-            Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
-
-            // Find the spatial context for the geometric property. Use the first one if there are many defined.
-            for(int index=0;index<propDefCol->GetCount();index++)
-            {
-                Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
-                if (propDef->GetPropertyType () == MgFeaturePropertyType::GeometricProperty)
-                {
-                    // We found the geometric property
-                    MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(propDef.p);
-                    spatialContextAssociation = geomProp->GetSpatialContextAssociation();
-                    break;
-                }
-            }
-
-            // We want all of the spatial contexts
-            Ptr<MgSpatialContextReader> csrdr = m_svcFeature->GetSpatialContexts(featResId, false);
-
-            // This is the strategy we use for picking the spatial context
-            // Find the 1st spatial context that satisfies one of the following: (Processed in order)
-            // 1) Matches the association spatial context name
-            // 2) The 1st spatial context returned
-            // 3) FAIL - none of the above could be satisfied
-
-            Ptr<MgCoordinateSystem> layerCs;
-
-            //convert the map coordinate system from srs wkt to a mentor cs structure
+            //get a transform from layer coord sys to map coord sys
             Ptr<MgCoordinateSystem> mapCs = (srs.empty()) ? NULL : m_pCSFactory->Create(srs);
-            if (mapCs)
-            {
-                STRING srcwkt = L"";
-                STRING csrName = L"";
-                bool bHaveFirstSpatialContext = false;
-
-                while(csrdr->ReadNext())
-                {
-                    csrName = csrdr->GetName();
-                    if((!spatialContextAssociation.empty()) && (csrName == spatialContextAssociation))
-                    {
-                        // Match found for the association)
-                        srcwkt = csrdr->GetCoordinateSystemWkt();
-                        break;
-                    }
-                    else if(!bHaveFirstSpatialContext)
-                    {
-                        // This is the 1st spatial context returned
-                        // This will be overwritten if we find the association
-                        srcwkt = csrdr->GetCoordinateSystemWkt();
-                        bHaveFirstSpatialContext = true;
-                    }
-                }
-
-                // Create coordinate system transformer
-                layerCs = (srcwkt.empty()) ? NULL : m_pCSFactory->Create(srcwkt);
-            }
-            else
-            {
-                // No coordinate system!!! 
-                // We fail here and do not use a default
-            }
-
-            //we want to transform query geometry from mapping space to layer space
-            Ptr<MgCoordinateSystemTransform> trans;
-
-            if (mapCs && layerCs)
-            {
-                trans = new MgCoordinateSystemTransform(mapCs, layerCs);
-            }
+            TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, mapCs, m_pCSFactory, m_svcFeature);
+            Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
 
             Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
             if(geometry != NULL)
