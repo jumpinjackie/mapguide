@@ -34,6 +34,7 @@
 #include "RS_ByteData.h"
 
 #include "SE_Renderer.h"
+#include "SE_SymbolManager.h"
 #include "RS_FontEngine.h"
 
 class WT_File;
@@ -143,6 +144,8 @@ public:
 
     STYLIZATION_API void SetRenderSelectionMode(bool mode);
 
+    STYLIZATION_API void DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_SymbolManager* sman);
+
     ////////////////////////////////////////////////
     // SE_Renderer
     //
@@ -205,6 +208,8 @@ private:
 
     void _TransformPointsNoClamp(double* inpts, int numpts);
     void _TransferPoints(double* inpts, int numpts, const SE_Matrix* xform);
+
+    void SetExtents(RS_Bounds& extents);
 
     RS_Color m_bgcolor;
     RS_Bounds m_extents;

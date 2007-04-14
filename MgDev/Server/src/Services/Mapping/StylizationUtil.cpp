@@ -25,6 +25,9 @@
 #include "Stylizer.h"
 #include "SymbolVisitor.h"
 #include "SLDSymbols.h"
+#include "SE_BufferPool.h"
+#include "SE_StyleVisitor.h"
+#include "SEMgSymbolManager.h"
 
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
@@ -128,8 +131,6 @@ void MgStylizationUtil::ParseColor(CREFSTRING colorstr, RS_Color& rscol)
     rscol.green() = (color >> 8) & 0xFF;
     rscol.blue() =  color & 0xFF;
 }
-
-
 
 
 RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
@@ -1339,7 +1340,8 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                                          MdfModel::FeatureTypeStyle* fts,
                                          INT32 imgWidth,
                                          INT32 imgHeight,
-                                         INT32 themeCategory)
+                                         INT32 themeCategory,
+                                         double scale)
 {
     MG_SERVER_MAPPING_SERVICE_TRY()
 
@@ -1369,7 +1371,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
         er.StartMap(&info,
                     b,
-                    1.0,
+                    scale,
                     pixelsPerInch,
                     metersPerPixel);
 
@@ -1379,6 +1381,35 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
         switch (type)
         {
+        case FeatureTypeStyleVisitor::ftsComposite:
+            {
+                MdfModel::CompositeTypeStyle* cts = (MdfModel::CompositeTypeStyle*)fts;
+                MdfModel::RuleCollection* crc = cts->GetRules();
+
+                if (crc)
+                {
+                    //case caller asked for one and only category
+                    //or category index is bad
+                    if ((themeCategory < 0 || themeCategory >= crc->GetCount()) && crc->GetCount() == 1)
+                        themeCategory = 0;
+
+                    if (themeCategory >= 0 && themeCategory <= crc->GetCount())
+                    {
+                        //get correct theme rule
+                        MdfModel::CompositeRule* rule = (MdfModel::CompositeRule*)crc->GetAt(themeCategory);
+                        MdfModel::CompositeSymbolization* csym = rule->GetSymbolization();
+
+                        SEMgSymbolManager sman(svcResource);
+                        er.DrawStylePreview(csym, &sman);
+                    }
+                    else
+                    {
+                        //Error
+                        //TODO: throw?
+                    }
+                }
+            }
+            break;
         case FeatureTypeStyleVisitor::ftsArea:
             {
                 MdfModel::AreaTypeStyle* ats = (MdfModel::AreaTypeStyle*)fts;

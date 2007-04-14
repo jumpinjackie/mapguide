@@ -60,7 +60,6 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
 // Constructors/Destructor
 
     public:
-
         MgServerMappingService();
         virtual ~MgServerMappingService();
 
@@ -69,7 +68,6 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
 // Methods
 
     public:
-
         virtual MgByteReader* GenerateMap(MgMap* map, CREFSTRING sessionId,
             CREFSTRING mapAgentUri, MgDwfVersion* dwfVersion);
         virtual MgByteReader* GenerateMapUpdate(MgMap* map, INT32 seqNo,
@@ -124,8 +122,7 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
 // Data Members
 
     private:
-
-        void MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>& uiGraphics, std::vector<MgByte*>& uiGraphicSources, MdfModel::VectorScaleRange* sr);
+        void MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>& uiGraphics, std::vector<MgByte*>& uiGraphicSources, MdfModel::VectorScaleRange* sr, double scale);
 
         void InitializeFeatureService();
         void InitializeResourceService();
