@@ -20,6 +20,10 @@
 #include "System/XmlUtil.h"
 #include "VectorScaleRange.h"
 #include "GridScaleRange.h"
+#include "SAX2Parser.h"
+#include "VectorLayerDefinition.h"
+#include "DrawingLayerDefinition.h"
+#include "GridLayerDefinition.h"
 
 IMPLEMENT_CREATE_OBJECT(MgLayerBase)
 
@@ -31,6 +35,7 @@ MgLayerBase::MgLayerBase()
       m_group((MgLayerGroup*)NULL),
       m_visible(true),
       m_selectable(false),
+      m_hasTooltips(false),
       m_displayInLegend(false),
       m_expandInLegend(false),
       m_needRefresh(false),
@@ -48,6 +53,7 @@ MgLayerBase::MgLayerBase(MgResourceIdentifier* layerDefinition, MgResourceServic
       m_group((MgLayerGroup*)NULL),
       m_visible(true),
       m_selectable(false),
+      m_hasTooltips(false),
       m_displayInLegend(false),
       m_expandInLegend(false),
       m_needRefresh(false),
@@ -480,6 +486,37 @@ bool MgLayerBase::IsVisibleAtScale(double scale)
     return false;
 }
 
+//////////////////////////////////////////////////////////////
+// Determine if this layer is visible at the specified scale
+//
+bool MgLayerBase::HasTooltips()
+{
+    return m_hasTooltips;
+}
+
+//static method to create the layer definition
+MdfModel::LayerDefinition* MgLayerBase::GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
+{
+    //get and parse the mapdef
+    Ptr<MgByteReader> ldfReader = svcResource->GetResourceContent(resId, L"");
+
+    Ptr<MgByteSink> sink = new MgByteSink(ldfReader);
+    Ptr<MgByte> bytes = sink->ToBuffer();
+
+    assert(bytes->GetLength() > 0);
+
+    MdfParser::SAX2Parser parser;
+    parser.ParseString((const char *)bytes->Bytes(), bytes->GetLength());
+
+    assert(parser.GetSucceeded());
+
+    // detach the feature layer definition from the parser - it's
+    // now the caller's responsibility to delete it
+    MdfModel::LayerDefinition* ldef = parser.DetachLayerDefinition();
+
+    assert(ldef != NULL);
+    return ldef;
+}
 
 //////////////////////////////////////////////////////////////
 // Parse the layer definition XML and extracts scale ranges,
@@ -494,182 +531,64 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
 
     MG_TRY()
 
-    //get the layer definition from the resource repository
-    Ptr<MgByteReader> layerContent = resourceService->GetResourceContent(m_definition);
-
-    //TODO: This code should be converted to use the MDF parser instead!!!
-    //It would simpler and faster and would not get out of date as easily.  
-
-    //parse the layer definition and extract all the scale ranges
-    MgXmlUtil xmlUtil;
-    xmlUtil.ParseString(MgUtil::GetTextFromReader(layerContent).c_str());
-
-    wstring strval;
-
-    DOMElement* root = xmlUtil.GetRootNode();
-    DOMNode* child = MgXmlUtil::GetFirstChild(root);
-    while(0 != child)
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resourceService, m_definition));
+    if(ldf.get() != NULL)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        m_featureSourceId = ldf->GetResourceID();
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+        MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+        MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
+    
+        // Vector Layer
+        if(vl != NULL)
         {
-            DOMElement* elt = (DOMElement*)child;
-            wstring strName = MgXmlUtil::GetTagName(elt);
-
-            if(strName == L"VectorLayerDefinition")     //NOXLATE
+            //does the layer have tooltips?
+            //we include layers with hyperlinks, since the presence of a hyperlink
+            //results in a tooltip
+            m_hasTooltips = (!vl->GetToolTip().empty()) || (!vl->GetUrl().empty());
+            
+            //store the scale ranges
+            MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+            for (int i=0; i < scaleRanges->GetCount(); i++)
             {
-                DOMNode* child = MgXmlUtil::GetFirstChild(elt);
-                while(0 != child)
-                {
-                    if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
-                    {
-                        elt = (DOMElement*)child;
-                        strName = MgXmlUtil::GetTagName(elt);
-
-                        if(strName == L"VectorScaleRange")  //NOXLATE
-                        {
-                            double minScale = 0.0;
-                            double maxScale = MdfModel::VectorScaleRange::MAX_MAP_SCALE;
-
-                            DOMNode* ichild = MgXmlUtil::GetFirstChild(elt);
-                            while(0 != ichild)
-                            {
-                                if(MgXmlUtil::GetNodeType(ichild) == DOMNode::ELEMENT_NODE)
-                                {
-                                    DOMElement* ielt = (DOMElement*)ichild;
-                                    strName = MgXmlUtil::GetTagName(ielt);
-
-                                    if(strName == L"MinScale")  //NOXLATE
-                                    {
-                                        MgXmlUtil::GetTextFromElement(ielt, strval);
-                                        minScale = MgUtil::StringToDouble(strval);
-                                    }
-                                    else if(strName == L"MaxScale")  //NOXLATE
-                                    {
-                                        MgXmlUtil::GetTextFromElement(ielt, strval);
-                                        maxScale = MgUtil::StringToDouble(strval);
-                                    }
-                                }
-                                ichild = MgXmlUtil::GetNextSibling(ichild);
-                            }
-
-                            m_scaleRanges.push_back(minScale);
-                            m_scaleRanges.push_back(maxScale);
-                        }
-                        else if(strName == L"ResourceId")  //NOXLATE
-                        {
-                            MgXmlUtil::GetTextFromElement(elt, m_featureSourceId);
-                            m_featureSourceId = MgUtil::Trim(m_featureSourceId);
-                        }
-                        else if(strName == L"FeatureName")  //NOXLATE
-                        {
-                            MgXmlUtil::GetTextFromElement(elt, m_featureName);
-                            m_featureName = MgUtil::Trim(m_featureName);
-                        }
-                        else if(strName == L"Geometry")  //NOXLATE
-                        {
-                            MgXmlUtil::GetTextFromElement(elt, m_geometry);
-                            m_geometry = MgUtil::Trim(m_geometry);
-                        }
-                    }
-                    child = MgXmlUtil::GetNextSibling(child);
-                }
-                break;
+                MdfModel::VectorScaleRange* scaleRange = scaleRanges->GetAt(i);
+                m_scaleRanges.push_back(scaleRange->GetMinScale());
+                m_scaleRanges.push_back(scaleRange->GetMaxScale());
             }
-            else if(strName == L"DrawingLayerDefinition")    //NOXLATE
-            {
-                double minScale = 0.0;
-                double maxScale = MdfModel::VectorScaleRange::MAX_MAP_SCALE;
-                DOMNode* ichild = MgXmlUtil::GetFirstChild(elt);
-                while(0 != ichild)
-                {
-                    if(MgXmlUtil::GetNodeType(ichild) == DOMNode::ELEMENT_NODE)
-                    {
-                        DOMElement* ielt = (DOMElement*)ichild;
-                        strName = MgXmlUtil::GetTagName(ielt);
 
-                        if(strName == L"MinScale")  //NOXLATE
-                        {
-                            MgXmlUtil::GetTextFromElement(ielt, strval);
-                            minScale = MgUtil::StringToDouble(strval);
-                        }
-                        else if(strName == L"MaxScale")  //NOXLATE
-                        {
-                            MgXmlUtil::GetTextFromElement(ielt, strval);
-                            maxScale = MgUtil::StringToDouble(strval);
-                        }
-                    }
-                    ichild = MgXmlUtil::GetNextSibling(ichild);
-                }
+            //get the feature name
+            m_featureName = vl->GetFeatureName();
 
-                m_scaleRanges.push_back(minScale);
-                m_scaleRanges.push_back(maxScale);
-
-                break;
-            }
-            else if(strName == L"GridLayerDefinition")    //NOXLATE
-            {
-                DOMNode* child = MgXmlUtil::GetFirstChild(elt);
-                while(0 != child)
-                {
-                    if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
-                    {
-                        elt = (DOMElement*)child;
-                        strName = MgXmlUtil::GetTagName(elt);
-
-                        if(strName == L"GridScaleRange")  //NOXLATE
-                        {
-                            double minScale = 0.0;
-                            double maxScale = MdfModel::GridScaleRange::MAX_MAP_SCALE;
-
-                            DOMNode* ichild = MgXmlUtil::GetFirstChild(elt);
-                            while(0 != ichild)
-                            {
-                                if(MgXmlUtil::GetNodeType(ichild) == DOMNode::ELEMENT_NODE)
-                                {
-                                    DOMElement* ielt = (DOMElement*)ichild;
-                                    strName = MgXmlUtil::GetTagName(ielt);
-
-                                    if(strName == L"MinScale")  //NOXLATE
-                                    {
-                                        MgXmlUtil::GetTextFromElement(ielt, strval);
-                                        minScale = MgUtil::StringToDouble(strval);
-                                    }
-                                    else if(strName == L"MaxScale")  //NOXLATE
-                                    {
-                                        MgXmlUtil::GetTextFromElement(ielt, strval);
-                                        maxScale = MgUtil::StringToDouble(strval);
-                                    }
-                                }
-                                ichild = MgXmlUtil::GetNextSibling(ichild);
-                            }
-
-                            m_scaleRanges.push_back(minScale);
-                            m_scaleRanges.push_back(maxScale);
-                        }
-                        else if(strName == L"ResourceId")  //NOXLATE
-                        {
-                            MgXmlUtil::GetTextFromElement(elt, m_featureSourceId);
-                            m_featureSourceId = MgUtil::Trim(m_featureSourceId);
-                        }
-                        else if(strName == L"FeatureName")  //NOXLATE
-                        {
-                            MgXmlUtil::GetTextFromElement(elt, m_featureName);
-                            m_featureName = MgUtil::Trim(m_featureName);
-                        }
-                        else if(strName == L"Geometry")  //NOXLATE
-                        {
-                            MgXmlUtil::GetTextFromElement(elt, m_geometry);
-                            m_geometry = MgUtil::Trim(m_geometry);
-                        }
-                    }
-                    child = MgXmlUtil::GetNextSibling(child);
-                }
-                break;
-            }
+            //get the geometry property
+            m_geometry = vl->GetGeometry();
         }
-        child = MgXmlUtil::GetNextSibling(child);
-    }
+        // Drawing Layer
+        else if(dl != NULL)
+        {
+            //drawing layers only have one scale range
+            m_scaleRanges.push_back(dl->GetMinScale());
+            m_scaleRanges.push_back(dl->GetMaxScale());
+        }
+        // Grid Layer
+        else if(gl != NULL)
+        {
+            //store the scale ranges
+            MdfModel::GridScaleRangeCollection* scaleRanges = gl->GetScaleRanges();
+            for (int i=0; i < scaleRanges->GetCount(); i++)
+            {
+                MdfModel::GridScaleRange* scaleRange = scaleRanges->GetAt(i);
+                m_scaleRanges.push_back(scaleRange->GetMinScale());
+                m_scaleRanges.push_back(scaleRange->GetMaxScale());
+            }
 
+            //get the feature name
+            m_featureName = gl->GetFeatureName();
+
+            //get the geometry property
+            m_geometry = gl->GetGeometry();        
+        }
+    }
+    
     MG_CATCH_AND_THROW(L"MgLayerBase.GetLayerInfoFromDefinition")
 }
 

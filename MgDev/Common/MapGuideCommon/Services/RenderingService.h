@@ -379,7 +379,8 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// selection criterion - integer value corresponding to one of 
+    /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return
@@ -414,16 +415,17 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// selection criterion - integer value corresponding to one of 
+    /// the MgFeatureSpatialOperations values
     /// \param featureFilter
     /// Input
     /// an XML selection string containing the required feature IDs
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return
-    /// \param bIgnoreScaleRange
+    /// \param layerAttributeFilter
     /// Input
-    /// true if you want to ignore scale ranges when querying features
+    /// bitmask values - 1=Visible, 2=Selectable, 4=HasTooltips
     ///
     /// \return
     /// An MgSelection instance identifying the features that meet the
@@ -436,7 +438,7 @@ PUBLISHED_API:
         INT32 selectionVariant,
         CREFSTRING featureFilter, 
         INT32 maxFeatures,
-        bool bIgnoreScaleRange) = 0;
+        INT32 layerAttributeFilter) = 0;
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -456,7 +458,8 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// selection criterion - integer value corresponding to one of 
+    /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return
@@ -490,14 +493,14 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - 0=Within, 1=Touching, 2=Topmost
+    /// selection criterion - integer value corresponding to one of 
+    /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return
-    /// \param bIgnoreScaleRange
+    /// \param layerAttributeFilter
     /// Input
-    /// true if you want to ignore scale ranges when querying feature 
-    /// properties
+    /// bitmask values - 1=Visible, 2=Selectable, 4=HasTooltips
     ///
     /// \return
     /// An MgSelection instance identifying the features that meet the
@@ -510,7 +513,7 @@ PUBLISHED_API:
         INT32 selectionVariant,
         CREFSTRING featureFilter,
         INT32 maxFeatures,
-        bool bIgnoreScaleRange) = 0;
+        INT32 layerAttributeFilter) = 0;
 
 INTERNAL_API:
 

@@ -133,10 +133,10 @@ INTERNAL_API:
         MgStringCollection* layerNames,
         MgGeometry* selectionGeometry,
         INT32 selectionVariant,
+        CREFSTRING featureFilter,
         INT32 maxFeatures,
         bool persist,
-        bool bIgnoreScaleRange,
-        CREFSTRING featureFilter);
+        INT32 layerAttributeFilter);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

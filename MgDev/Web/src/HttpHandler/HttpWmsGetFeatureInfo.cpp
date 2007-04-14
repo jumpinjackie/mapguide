@@ -196,7 +196,7 @@ void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
 
         // Call the C++ API
         Ptr<MgBatchPropertyCollection> propertyCollection = service->QueryFeatureProperties(map, queryLayers, selectionGeometry,
-            MgFeatureSpatialOperations::Intersects, m_featureCount);
+            MgFeatureSpatialOperations::Intersects, NULL, m_featureCount, 1 /*Any visible features*/);
         
         // Create the object to store the feature info
         Ptr<MgWmsFeatureInfo> wmsFeatureInfo = new MgWmsFeatureInfo(propertyCollection);
