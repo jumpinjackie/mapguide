@@ -21,7 +21,6 @@ class MgCoordinateSystemTransform;
 class MG_SERVER_MAPPING_API MgCSTrans : public CSysTransformer
 {
 public:
-
     MgCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs);
     virtual ~MgCSTrans();
 
@@ -30,8 +29,6 @@ public:
     virtual double GetLinearScale();
 
 private:
-
     MgCoordinateSystemTransform* m_trans;
     double m_dLinearScale;
-
 };
