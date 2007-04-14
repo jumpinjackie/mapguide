@@ -137,7 +137,7 @@ void GridSurfaceStyle::SetDefaultColor(const MdfString& strDefaultColor)
 //      Input:
 //          ifsvVisitor - The IFeatureTypeStyleVisitor interface which sports
 //                     methods that accept the final concrete type this
-//                     AreaTypeStyle represents as an argument.
+//                     GridSurfaceStyle represents as an argument.
 //-------------------------------------------------------------------------
 void GridSurfaceStyle::AcceptVisitor(IFeatureTypeStyleVisitor&
                                             ivtsvVisitor)

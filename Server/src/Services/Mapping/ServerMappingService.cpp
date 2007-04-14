@@ -250,7 +250,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
                 MdfModel::VectorScaleRange* sr = scr->GetAt(j);
                 std::list<RS_UIGraphic> uiGraphics;
 
-                MakeUIGraphicsForScaleRange(uiGraphics, uiGraphicSources, sr);
+                MakeUIGraphicsForScaleRange(uiGraphics, uiGraphicSources, sr, dMapScale);
 
                 dr.AddScaleRange(sr->GetMinScale(), sr->GetMaxScale(), &uiGraphics);
             }
@@ -558,7 +558,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
                                         MdfModel::VectorScaleRange* sr = scr->GetAt(j);
                                         std::list<RS_UIGraphic> uiGraphics;
 
-                                        MakeUIGraphicsForScaleRange(uiGraphics, uiGraphicSources, sr);
+                                        MakeUIGraphicsForScaleRange(uiGraphics, uiGraphicSources, sr, dMapScale);
 
                                         STRING oid = changelist->GetObjectId();
                                         dr.AddScaleRange(oid, sr->GetMinScale(), sr->GetMaxScale(), &uiGraphics);
@@ -1602,7 +1602,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
                 }
             }
 
-            byteReader = MgStylizationUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
+            byteReader = MgStylizationUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory, scale);
         }
     }
     else if (dl) // drawing layer
@@ -1626,7 +1626,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
 }
 
 
-void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>& uiGraphics, std::vector<MgByte*>& uiGraphicSources, MdfModel::VectorScaleRange* sr)
+void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>& uiGraphics, std::vector<MgByte*>& uiGraphicSources, MdfModel::VectorScaleRange* sr, double scale)
 {
     //make a list of the theming bitmaps
     //TODO: for now, if there are multiple feature type styles
@@ -1648,79 +1648,20 @@ void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>
 
         switch (st)
         {
-        case FeatureTypeStyleVisitor::ftsLine:
-            {
-                MdfModel::RuleCollection* rules = fts->GetRules();
-
-                for (int i=0; i<rules->GetCount(); i++)
-                {
-                    MdfModel::LineRule* rule = (MdfModel::LineRule*)rules->GetAt(i);
-
-                    RS_UIGraphic gr(NULL, 0, rule->GetLegendLabel());
-
-                    Ptr<MgByteReader> rdr = MgStylizationUtil::DrawFTS(m_svcResource, fts, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, i);
-
-                    if (rdr.p)
-                    {
-                        MgByteSink sink(rdr);
-                        MgByte* bytes = sink.ToBuffer();
-
-                        //remember the bytes so that we release them when done
-                        uiGraphicSources.push_back(bytes);
-
-                        int sz = bytes->GetLength();
-                        const unsigned char* bmp = bytes->Bytes();
-
-                        gr.data() = (unsigned char*)bmp;
-                        gr.length() = sz;
-                    }
-
-                    uiGraphics.push_back(gr);
-                }
-            }
-            break;
         case FeatureTypeStyleVisitor::ftsPoint:
-            {
-                MdfModel::RuleCollection* rules = fts->GetRules();
-
-                for (int i=0; i<rules->GetCount(); i++)
-                {
-                    MdfModel::PointRule* rule = (MdfModel::PointRule*)rules->GetAt(i);
-
-                    RS_UIGraphic gr(NULL, 0, rule->GetLegendLabel());
-
-                    Ptr<MgByteReader> rdr = MgStylizationUtil::DrawFTS(m_svcResource, fts, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, i);
-
-                    if (rdr.p)
-                    {
-                        MgByteSink sink(rdr);
-                        MgByte* bytes = sink.ToBuffer();
-
-                        //remember the bytes so that we release them when done
-                        uiGraphicSources.push_back(bytes);
-
-                        int sz = bytes->GetLength();
-                        const unsigned char* bmp = bytes->Bytes();
-
-                        gr.data() = (unsigned char*)bmp;
-                        gr.length() = sz;
-                    }
-
-                    uiGraphics.push_back(gr);
-                }
-            }
-            break;
+        case FeatureTypeStyleVisitor::ftsLine:
         case FeatureTypeStyleVisitor::ftsArea:
+        case FeatureTypeStyleVisitor::ftsComposite:
             {
                 MdfModel::RuleCollection* rules = fts->GetRules();
 
                 for (int i=0; i<rules->GetCount(); i++)
                 {
-                    MdfModel::AreaRule* rule = (MdfModel::AreaRule*)rules->GetAt(i);
+                    MdfModel::Rule* rule = rules->GetAt(i);
 
                     RS_UIGraphic gr(NULL, 0, rule->GetLegendLabel());
 
-                    Ptr<MgByteReader> rdr = MgStylizationUtil::DrawFTS(m_svcResource, fts, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, i);
+                    Ptr<MgByteReader> rdr = MgStylizationUtil::DrawFTS(m_svcResource, fts, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, i, scale);
 
                     if (rdr.p)
                     {

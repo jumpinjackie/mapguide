@@ -273,7 +273,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
             else
             {
                 //otherwise pick the icon from the only rule
-                Ptr<MgByteReader> layerIcon = MgStylizationUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, 0);
+                Ptr<MgByteReader> layerIcon = MgStylizationUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, 0, mapScale);
 
                 if (layerIcon.p)
                 {
@@ -307,7 +307,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
                         break;
 
                     //draw the icon for the current theming rule
-                    Ptr<MgByteReader> rdr = MgStylizationUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, i);
+                    Ptr<MgByteReader> rdr = MgStylizationUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, i, mapScale);
 
                     if (rdr != NULL)
                     {

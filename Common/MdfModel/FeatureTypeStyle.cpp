@@ -42,8 +42,8 @@ FeatureTypeStyle::~FeatureTypeStyle()
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor for the AreaRule collection in this AreaTypeStyle.
-// RETURNS: A pointer to the modifiable AreaRuleCollection.
+// PURPOSE: Accessor for the Rule collection in this FeatureTypeStyle.
+// RETURNS: A pointer to the modifiable RuleCollection.
 //-------------------------------------------------------------------------
 RuleCollection* FeatureTypeStyle::GetRules()
 {

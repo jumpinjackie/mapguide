@@ -396,8 +396,8 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
                 type = 1;
         }
 
-        String[] typeStyles = new String[]{"PointTypeStyle", "LineTypeStyle", "AreaTypeStyle"};
-        String[] ruleNames = new String[]{"PointRule", "LineRule", "AreaRule"};
+        String[] typeStyles = new String[]{"PointTypeStyle", "LineTypeStyle", "AreaTypeStyle", "CompositeTypeStyle"};
+        String[] ruleNames = new String[]{"PointRule", "LineRule", "AreaRule", "CompositeRule"};
 
         for(int sc = 0; sc < scaleRanges.Count; sc++)
         {

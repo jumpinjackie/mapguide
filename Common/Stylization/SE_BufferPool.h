@@ -30,6 +30,7 @@
 class SE_BufferPool
 {
 public:
+    STYLIZATION_API SE_BufferPool();
     STYLIZATION_API virtual ~SE_BufferPool();
     STYLIZATION_API SE_LineBuffer* NewLineBuffer(int requestSize);
     STYLIZATION_API SE_Bounds* NewBounds(int size);

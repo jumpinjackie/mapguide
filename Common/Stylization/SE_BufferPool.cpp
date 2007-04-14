@@ -19,6 +19,11 @@
 #include "stdafx.h"
 
 
+SE_BufferPool::SE_BufferPool()
+{
+}
+
+
 SE_BufferPool::~SE_BufferPool()
 {
     while (!m_lb_pool.empty())

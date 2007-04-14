@@ -299,12 +299,11 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         SE_EvalContext cxt;
         cxt.exec = executor;
         cxt.mm2px = mm2px;
-        cxt.mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
-        cxt.mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
+        cxt.mm2pxs = mm2pxs;
+        cxt.mm2pxw = mm2pxw;
         cxt.pool = m_pool;
         cxt.fonte = m_serenderer->GetFontEngine();
         cxt.xform = &xform;
-        cxt.geometry = geometry; //only used by point styles, I really want to get rid of this
         cxt.resources = m_resources;
 
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
