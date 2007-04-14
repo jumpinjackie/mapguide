@@ -28,6 +28,7 @@
 #include "SE_BufferPool.h"
 #include "SE_StyleVisitor.h"
 #include "SEMgSymbolManager.h"
+#include "TransformCache.h"
 
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
@@ -430,114 +431,6 @@ RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcF
     return new RSMgFeatureReader(rdr.p, svcFeature, featResId.p, options, L"clipped_raster");
 }
 
-MgStylizationUtil::TransformCache* MgStylizationUtil::GetLayerToMapTransform(TransformCacheMap& cache,
-                                                         CREFSTRING featureName,
-                                                         MgResourceIdentifier* resId,
-                                                         MgCoordinateSystem* dstCs,
-                                                         MgCoordinateSystemFactory* csFactory,
-                                                         MgFeatureService* svcFeature)
-{
-    TransformCache* item = NULL;
-
-    // Now get the coordinate system of the layer data.
-    // Feature Service caches these so we only take the performance hit on
-    // the 1st one that is not cached.
-
-    // Parse the feature name for the schema and class
-    STRING::size_type nDelimiter = featureName.find(L":");
-    STRING schemaName;
-    STRING className;
-
-    if(STRING::npos == nDelimiter)
-    {
-        schemaName = L"";
-        className = featureName;
-    }
-    else
-    {
-        schemaName = featureName.substr(0, nDelimiter);
-        className = featureName.substr(nDelimiter + 1);
-    }
-
-    STRING spatialContextAssociation = L"";
-
-    // Get the class definition so that we can find the spatial context association
-    Ptr<MgClassDefinition> classDef = svcFeature->GetClassDefinition(resId, schemaName, className);
-    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
-
-    // Find the spatial context for the geometric property. Use the first one if there are many defined.
-    for(int index=0;index<propDefCol->GetCount();index++)
-    {
-        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
-        if (propDef->GetPropertyType () == MgFeaturePropertyType::GeometricProperty)
-        {
-            // We found the geometric property
-            MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(propDef.p);
-            spatialContextAssociation = geomProp->GetSpatialContextAssociation();
-            break;
-        }
-    }
-
-    // We want all of the spatial contexts
-    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(resId, false);
-
-    // This is the strategy we use for picking the spatial context
-    // Find the 1st spatial context that satisfies one of the following: (Processed in order)
-    // 1) Matches the association spatial context name
-    // 2) The 1st spatial context returned
-    // 3) FAIL - none of the above could be satisfied
-
-    Ptr<MgCoordinateSystem> srcCs;
-
-    if (dstCs)
-    {
-        STRING srcwkt = L"";
-        STRING csrName = L"";
-        bool bHaveFirstSpatialContext = false;
-
-        while(csrdr->ReadNext())
-        {
-            csrName = csrdr->GetName();
-            if((!spatialContextAssociation.empty()) && (csrName == spatialContextAssociation))
-            {
-                // Match found for the association)
-                srcwkt = csrdr->GetCoordinateSystemWkt();
-                break;
-            }
-            else if(!bHaveFirstSpatialContext)
-            {
-                // This is the 1st spatial context returned
-                // This will be overwritten if we find the association
-                srcwkt = csrdr->GetCoordinateSystemWkt();
-                bHaveFirstSpatialContext = true;
-            }
-        }
-
-        // Create coordinate system transformer
-        if (!srcwkt.empty())
-        {
-            TransformCacheMap::const_iterator iter = cache.find(srcwkt);
-            if (cache.end() != iter) item = (*iter).second;
-            if (NULL == item)
-            {
-                Ptr<MgCoordinateSystem> srcCs = csFactory->Create(srcwkt);
-                if (srcCs.p)
-                {
-                    item = new TransformCache(new MgCSTrans(srcCs, dstCs), srcCs);
-                    cache[srcwkt] = item;
-                }
-            }
-        }
-    }
-    else
-    {
-        // No coordinate system!!!
-        // We fail here and do not use a default
-    }
-
-    return item;
-}
-
 
 void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                       MgFeatureService* svcFeature,
@@ -672,7 +565,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     }
 
                     //get a transform from layer coord sys to map coord sys
-                    TransformCache* item = GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                    TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
                     MgCoordinateSystem* layerCs = item? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
@@ -876,7 +769,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     MdfModel::MdfString featureName = gl->GetFeatureName();
 
                     //get a transform from layer coord sys to map coord sys
-                    TransformCache* item = GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                    TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
                     MgCoordinateSystem* layerCs = item? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
@@ -1699,49 +1592,5 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
     //for whatever reason
     MG_SERVER_MAPPING_SERVICE_CATCH(L"MgServerMappingService.DrawFTS")
 
-
     return NULL;
-}
-
-
-MgStylizationUtil::TransformCache::TransformCache(MgCSTrans* transform, MgCoordinateSystem* coordinateSystem)
-: m_xform(transform)
-{
-    m_coordSys = SAFE_ADDREF((MgCoordinateSystem*)coordinateSystem);
-}
-
-MgStylizationUtil::TransformCache::~TransformCache()
-{
-    delete m_xform;
-    m_xform = NULL;
-}
-
-MgCSTrans* MgStylizationUtil::TransformCache::GetTransform()
-{
-    return m_xform;
-}
-
-MgCoordinateSystem* MgStylizationUtil::TransformCache::GetCoordSys()
-{
-    return SAFE_ADDREF((MgCoordinateSystem*) m_coordSys);
-}
-
-void MgStylizationUtil::TransformCache::SetMgTransform(MgCoordinateSystemTransform* mgTransform)
-{
-    m_transform = SAFE_ADDREF((MgCoordinateSystemTransform*) mgTransform);
-}
-
-MgCoordinateSystemTransform* MgStylizationUtil::TransformCache::GetMgTransform()
-{
-    return SAFE_ADDREF((MgCoordinateSystemTransform*) m_transform);
-}
-
-void MgStylizationUtil::TransformCache::SetEnvelope(MgEnvelope* envelope)
-{
-    m_envelope = SAFE_ADDREF((MgEnvelope*) envelope);
-}
-
-MgEnvelope* MgStylizationUtil::TransformCache::GetEnvelope()
-{
-    return SAFE_ADDREF((MgEnvelope*) m_envelope);
 }

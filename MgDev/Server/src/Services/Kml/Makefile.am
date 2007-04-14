@@ -20,6 +20,7 @@ INCLUDES = \
   -I../../../../Common/MdfParser \
   -I../../../../Common/CoordinateSystem \
   -I../../../../Common/Stylization \
+  -I../Feature \
   -I../Mapping
 
 AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_USE_DWFCORE_ZLIB

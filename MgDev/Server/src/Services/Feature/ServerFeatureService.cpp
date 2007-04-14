@@ -43,6 +43,7 @@
 #include "ServerGetSchemaMapping.h"
 #include "FilterUtil.h"
 #include "LongTransactionManager.h"
+#include "TransformCache.h"
 
 #include <Fdo/Xml/FeatureSerializer.h>
 #include <Fdo/Xml/FeatureWriter.h>
@@ -1139,103 +1140,16 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                                                      CREFSTRING wfsFilter,
                                                      INT32 maxFeatures)
 {
+    TransformCacheMap transformCache;
     MgCoordinateSystemFactory fact;
     Ptr<MgCoordinateSystem> mapCs = (srs.empty()) ? NULL : fact.Create(srs);
 
-    //get the coordinate system of the data --> we need this
-    //so that we can convert the input geometry from mapping space
-    //to layer's space
-    // Need to determine the name of the spatial context for this layer
-    // Parse the feature name for the schema and class
-    STRING::size_type nDelimiter = featureName.find(L":");
-    STRING schemaName;
-    STRING className;
-
-    if(STRING::npos == nDelimiter)
-    {
-        schemaName = L"";
-        className = featureName;
-    }
-    else
-    {
-        schemaName = featureName.substr(0, nDelimiter);
-        className = featureName.substr(nDelimiter + 1);
-    }
-
-    STRING spatialContextAssociation = L"";
-
-    // Get the class definition so that we can find the spatial context association
-    Ptr<MgClassDefinition> classDef = GetClassDefinition(fs, schemaName, className);
-    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
-
-    // Find the spatial context for the geometric property. Use the first one if there are many defined.
-    for(int index=0;index<propDefCol->GetCount();index++)
-    {
-        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
-        if (propDef->GetPropertyType () == MgFeaturePropertyType::GeometricProperty)
-        {
-            // We found the geometric property
-            MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(propDef.p);
-            spatialContextAssociation = geomProp->GetSpatialContextAssociation();
-            break;
-        }
-    }
-
-    // We want all of the spatial contexts
-    Ptr<MgSpatialContextReader> csrdr = GetSpatialContexts(fs, false);
-
-    // This is the strategy we use for picking the spatial context
-    // Find the 1st spatial context that satisfies one of the following: (Processed in order)
-    // 1) Matches the association spatial context name
-    // 2) The 1st spatial context returned
-    // 3) FAIL - none of the above could be satisfied
-
-    Ptr<MgCoordinateSystem> layerCs;
-
-    if (mapCs)
-    {
-        STRING srcwkt = L"";
-        STRING csrName = L"";
-        bool bHaveFirstSpatialContext = false;
-
-        while(csrdr->ReadNext())
-        {
-            csrName = csrdr->GetName();
-            if((!spatialContextAssociation.empty()) && (csrName == spatialContextAssociation))
-            {
-                // Match found for the association)
-                srcwkt = csrdr->GetCoordinateSystemWkt();
-                break;
-            }
-            else if(!bHaveFirstSpatialContext)
-            {
-                // This is the 1st spatial context returned
-                // This will be overwritten if we find the association
-                srcwkt = csrdr->GetCoordinateSystemWkt();
-                bHaveFirstSpatialContext = true;
-            }
-        }
-
-        // Create coordinate system transformer
-        layerCs = (srcwkt.empty()) ? NULL : fact.Create(srcwkt);
-    }
-    else
-    {
-        // No coordinate system!!!
-        // We fail here and do not use a default
-    }
-
-    //we want to transform query geometry from mapping space to feature space
-    Ptr<MgCoordinateSystemTransform> trans;
-
-    if (mapCs && layerCs)
-    {
-        trans = new MgCoordinateSystemTransform(mapCs, layerCs);
-    }
+    //get a transform from feature space to mapping space
+    TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, featureName, fs, mapCs, &fact, this);
+    Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
 
     //now get the schema -- we need to the feature class to get
     Ptr<MgFeatureSchemaCollection> fsc = DescribeSchema(fs, L"");
-
     assert(fsc->GetCount() > 0);
 
     //TODO:
@@ -1277,8 +1191,9 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     //and set it to the FDO feature query
     if (!wfsFilter.empty())
     {
+        Ptr<MgPropertyDefinitionCollection> properties = fc->GetProperties();
         MgOgcFilterUtil u;
-        STRING fdoFilterString = u.Ogc2FdoFilter(wfsFilter, trans, geomPropName);
+        STRING fdoFilterString = u.Ogc2FdoFilter(wfsFilter, trans, geomPropName, properties);
         options->SetFilter(fdoFilterString);
     }
 

@@ -15,10 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-class MgCoordinateSystem;
-class MgCoordinateSystemTransform;
+#ifndef _MGCSTRANS_H_
+#define _MGCSTRANS_H_
 
-class MG_SERVER_MAPPING_API MgCSTrans : public CSysTransformer
+#include "ServerFeatureDllExport.h"
+#include "CSysTransformer.h"
+
+class MG_SERVER_FEATURE_API MgCSTrans : public CSysTransformer
 {
 public:
     MgCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs);
@@ -32,3 +35,5 @@ private:
     MgCoordinateSystemTransform* m_trans;
     double m_dLinearScale;
 };
+
+#endif

@@ -36,6 +36,7 @@
 #include "SEMgSymbolManager.h"
 
 #include "LegendPlotUtil.h"
+#include "MgCSTrans.h"
 
 #include "icons.h"
 
@@ -408,7 +409,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     MgStylizationUtil::ParseColor( map->GetBackgroundColor(), bgcolor);
 
     double dMapScale = map->GetViewScale();
-    double dpi =       map->GetDisplayDpi();
+    double dpi       = map->GetDisplayDpi();
 
     // get the session ID
     STRING sessionId;
