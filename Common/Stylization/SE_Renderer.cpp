@@ -67,7 +67,7 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
     double anglerad;
     if (wcscmp(L"FromAngle", style->angleControl) == 0)
     {
-        anglerad = style->angle;
+        anglerad = style->angleRad;
     }
     else
     {
@@ -628,7 +628,7 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 double dx_incr = dx * invlen;
                 double dy_incr = dy * invlen;
 
-                double anglerad = fromAngle? style->angle : atan2(dy, dx);
+                double anglerad = fromAngle? style->angleRad : atan2(dy, dx);
                 double tx = seg_screen[0] + dx_incr * drawpos;
                 double ty = seg_screen[1] + dy_incr * drawpos;
 
@@ -727,7 +727,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
             {
                 double x, y;
                 posxform.transform(rp->position[0], rp->position[1], x, y);
-                double angleDeg = (rp->angle + anglerad) / M_PI180;
+                double angleDeg = (rp->angleRad + anglerad) / M_PI180;
 
                 DrawScreenRaster((unsigned char*)rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], angleDeg);
             }
@@ -771,68 +771,75 @@ const RS_F_Point* SE_Renderer::GetLastExclusionRegion()
 }
 
 
-//cloning of RenderSymbols. Unfortunate but necessary for delay-drawing labels
+// cloning of render styles - unfortunate but necessary for delay-drawing labels
 SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
 {
     SE_RenderStyle* ret = NULL;
 
-    //first determine what kind of style it is and copy all the
-    //style specific properties
+    // first determine what kind of style it is and copy all the
+    // style specific properties
     switch (symbol->type)
     {
     case SE_RenderPointStyleType:
         {
-            SE_RenderPointStyle* dps = new SE_RenderPointStyle();
             SE_RenderPointStyle* sps = (SE_RenderPointStyle*)symbol;
+            SE_RenderPointStyle* dps = new SE_RenderPointStyle();
             ret = dps;
-            dps->angle = sps->angle;
+
             dps->angleControl = sps->angleControl;
-            dps->offset[0] = sps->offset[0];
-            dps->offset[1] = sps->offset[1];
+            dps->angleRad     = sps->angleRad;
+            dps->offset[0]    = sps->offset[0];
+            dps->offset[1]    = sps->offset[1];
         }
         break;
+
     case SE_RenderLineStyleType:
         {
-            SE_RenderLineStyle* dls = new SE_RenderLineStyle();
             SE_RenderLineStyle* sls = (SE_RenderLineStyle*)symbol;
+            SE_RenderLineStyle* dls = new SE_RenderLineStyle();
             ret = dls;
-            dls->angle = sls->angle;
-            dls->angleControl = sls->angleControl;
-            dls->endOffset = sls->endOffset;
-            dls->repeat = sls->repeat;
-            dls->startOffset = sls->startOffset;
-            dls->unitsControl = sls->unitsControl;
+
+            dls->angleControl     = sls->angleControl;
+            dls->unitsControl     = sls->unitsControl;
+            dls->vertexControl    = sls->vertexControl;
+            dls->angleRad         = sls->angleRad;
+            dls->startOffset      = sls->startOffset;
+            dls->endOffset        = sls->endOffset;
+            dls->repeat           = sls->repeat;
             dls->vertexAngleLimit = sls->vertexAngleLimit;
-            dls->vertexControl = sls->vertexControl;
+            dls->vertexJoin       = sls->vertexJoin;
         }
         break;
+
     case SE_RenderAreaStyleType:
         {
-            SE_RenderAreaStyle* das = new SE_RenderAreaStyle();
             SE_RenderAreaStyle* sas = (SE_RenderAreaStyle*)symbol;
+            SE_RenderAreaStyle* das = new SE_RenderAreaStyle();
             ret = das;
-            das->angle = sas->angle;
-            das->angleControl = sas->angleControl;
-            das->bufferWidth = sas->bufferWidth;
+
+            das->angleControl    = sas->angleControl;
+            das->originControl   = sas->originControl;
             das->clippingControl = sas->clippingControl;
-            das->origin[0] = sas->origin[0];
-            das->origin[1] = sas->origin[1];
-            das->originControl = sas->originControl;
-            das->repeat[0] = sas->repeat[0];
-            das->repeat[1] = sas->repeat[1];
+            das->angleRad        = sas->angleRad;
+            das->origin[0]       = sas->origin[0];
+            das->origin[1]       = sas->origin[1];
+            das->repeat[0]       = sas->repeat[0];
+            das->repeat[1]       = sas->repeat[1];
+            das->bufferWidth     = sas->bufferWidth;
         }
+
     default:
         break;
     }
 
-    //copy all the common properties
+    // copy all the common properties
+    memcpy(ret->bounds, symbol->bounds, sizeof(ret->bounds));
     ret->addToExclusionRegions = symbol->addToExclusionRegions;
-    memcpy(ret->bounds, symbol->bounds, sizeof (ret->bounds));
     ret->checkExclusionRegions = symbol->checkExclusionRegions;
-    ret->drawLast = symbol->drawLast;
-    ret->renderPass = symbol->renderPass;
+    ret->drawLast              = symbol->drawLast;
+    ret->renderPass            = symbol->renderPass;
 
-    //copy the graphics for the symbol
+    // copy the graphics for the symbol
     for (size_t i=0; i<symbol->symbol.size(); i++)
     {
         SE_RenderPrimitive* rp = symbol->symbol[i];
@@ -841,55 +848,66 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
         switch (rp->type)
         {
         case SE_RenderPolygonPrimitive:
-            rpc = new SE_RenderPolygon();
-            ((SE_RenderPolygon*)rpc)->fill = ((SE_RenderPolygon*)rp)->fill;
+            {
+                SE_RenderPolygon* sp = (SE_RenderPolygon*)rp;
+                SE_RenderPolygon* dp = new SE_RenderPolygon();
+                rpc = dp;
+
+                dp->fill = sp->fill;
+            }
+            // fall through
+
         case SE_RenderPolylinePrimitive:
             {
+                SE_RenderPolyline* sp = (SE_RenderPolyline*)rp;
                 if (!rpc) rpc = new SE_RenderPolyline();
-                SE_RenderPolyline* drp = (SE_RenderPolyline*)rpc;
-                SE_RenderPolyline* srp = (SE_RenderPolyline*)rp;
+                SE_RenderPolyline* dp = (SE_RenderPolyline*)rpc;
 
-                memcpy(drp->bounds, srp->bounds, sizeof (drp->bounds));
-                drp->color = srp->color;
-                drp->resizeType = srp->resizeType;
-                drp->weight = srp->weight;
-                drp->geometry = srp->geometry->Clone();
+                dp->geometry   = sp->geometry->Clone();
+                dp->weight     = sp->weight;
+                dp->color      = sp->color;
+                dp->join       = sp->join;
+                dp->cap        = sp->cap;
+                dp->miterLimit = sp->miterLimit;
             }
             break;
+
         case SE_RenderTextPrimitive:
             {
-                rpc = new SE_RenderText();
                 SE_RenderText* st = (SE_RenderText*)rp;
-                SE_RenderText* dt = (SE_RenderText*)rpc;
+                SE_RenderText* dt = new SE_RenderText();
+                rpc = dt;
 
-                memcpy(dt->bounds, st->bounds, sizeof (dt->bounds));
+                dt->text        = st->text;
                 dt->position[0] = st->position[0];
                 dt->position[1] = st->position[1];
-                dt->resizeType = st->resizeType;
-                dt->tdef = st->tdef;
-                dt->text = st->text;
+                dt->tdef        = st->tdef;
             }
             break;
+
         case SE_RenderRasterPrimitive:
             {
-                rpc = new SE_RenderRaster();
                 SE_RenderRaster* sr = (SE_RenderRaster*)rp;
-                SE_RenderRaster* dr = (SE_RenderRaster*)rpc;
+                SE_RenderRaster* dr = new SE_RenderRaster();
+                rpc = dr;
 
-                dr->angle = sr->angle;
-                memcpy(dr->bounds, sr->bounds, sizeof (dr->bounds));
-                dr->extent[0] = sr->extent[0];
-                dr->extent[1] = sr->extent[1];
-                dr->pngSize = sr->pngSize;
-                dr->pngPtr = sr->pngPtr; //this pointer is managed/cached by the SE_SymbolManager
+                dr->pngPtr      = sr->pngPtr; // this pointer is managed/cached by the SE_SymbolManager
+                dr->pngSize     = sr->pngSize;
                 dr->position[0] = sr->position[0];
                 dr->position[1] = sr->position[1];
-                dr->resizeType = sr->resizeType;
+                dr->extent[0]   = sr->extent[0];
+                dr->extent[1]   = sr->extent[1];
+                dr->angleRad    = sr->angleRad;
             }
         }
 
         if (rpc)
         {
+            // copy common properties
+            rpc->resizeControl = rp->resizeControl;
+            memcpy(rpc->bounds, rp->bounds, sizeof(rp->bounds));
+
+            // add to list
             ret->symbol.push_back(rpc);
         }
     }

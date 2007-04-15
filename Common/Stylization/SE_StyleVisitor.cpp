@@ -61,16 +61,16 @@ SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp)
 SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 {
     SE_PointStyle* style = new SE_PointStyle();
-    ParseDoubleExpression(pointUsage.GetAngle(), style->angle);
+    ParseDoubleExpression(pointUsage.GetAngle(), style->angleDeg);
     ParseDoubleExpression(pointUsage.GetOriginOffsetX(), style->originOffset[0]);
     ParseDoubleExpression(pointUsage.GetOriginOffsetY(), style->originOffset[1]);
     ParseStringExpression(pointUsage.GetAngleControl(), style->angleControl);
 
-    //set flag if all properties are constant
-    style->cacheable = ! (style->angle.expression
-                        || style->angleControl.expression
-                        || style->originOffset[0].expression
-                        || style->originOffset[1].expression);
+    // set flag if all properties are constant
+    style->cacheable = !(style->angleDeg.expression
+                      || style->angleControl.expression
+                      || style->originOffset[0].expression
+                      || style->originOffset[1].expression);
 
     return style;
 }
@@ -82,23 +82,23 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
     ParseStringExpression(lineUsage.GetAngleControl(), style->angleControl);
     ParseStringExpression(lineUsage.GetUnitsControl(), style->unitsControl);
     ParseStringExpression(lineUsage.GetVertexControl(), style->vertexControl);
-    ParseDoubleExpression(lineUsage.GetAngle(), style->angle);
+    ParseDoubleExpression(lineUsage.GetAngle(), style->angleDeg);
     ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset);
     ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset);
     ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat);
     ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->vertexAngleLimit);
     ParseStringExpression(lineUsage.GetVertexJoin(), style->vertexJoin);
 
-    //set flag if all properties are constant
-    style->cacheable = ! (  style->angle.expression
-        || style->angleControl.expression
-        || style->unitsControl.expression
-        || style->vertexControl.expression
-        || style->angle.expression
-        || style->startOffset.expression
-        || style->endOffset.expression
-        || style->repeat.expression
-        || style->vertexAngleLimit.expression);
+    // set flag if all properties are constant
+    style->cacheable = !(style->angleDeg.expression
+                      || style->angleControl.expression
+                      || style->unitsControl.expression
+                      || style->vertexControl.expression
+                      || style->startOffset.expression
+                      || style->endOffset.expression
+                      || style->repeat.expression
+                      || style->vertexAngleLimit.expression
+                      || style->vertexJoin.expression);
 
     return style;
 }
@@ -110,24 +110,23 @@ SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
     ParseStringExpression(areaUsage.GetAngleControl(), style->angleControl);
     ParseStringExpression(areaUsage.GetOriginControl(), style->originControl);
     ParseStringExpression(areaUsage.GetClippingControl(), style->clippingControl);
-    ParseDoubleExpression(areaUsage.GetAngle(), style->angle);
+    ParseDoubleExpression(areaUsage.GetAngle(), style->angleDeg);
     ParseDoubleExpression(areaUsage.GetOriginX(), style->origin[0]);
     ParseDoubleExpression(areaUsage.GetOriginY(), style->origin[1]);
     ParseDoubleExpression(areaUsage.GetRepeatX(), style->repeat[0]);
     ParseDoubleExpression(areaUsage.GetRepeatY(), style->repeat[1]);
     ParseDoubleExpression(areaUsage.GetBufferWidth(), style->bufferWidth);
 
-    //set flag if all properties are constant
-    style->cacheable = !(  style->angle.expression
-                        || style->angleControl.expression
-                        || style->originControl.expression
-                        || style->clippingControl.expression
-                        || style->angle.expression
-                        || style->origin[0].expression
-                        || style->origin[1].expression
-                        || style->repeat[0].expression
-                        || style->repeat[1].expression
-                        || style->bufferWidth.expression);
+    // set flag if all properties are constant
+    style->cacheable = !(style->angleDeg.expression
+                      || style->angleControl.expression
+                      || style->originControl.expression
+                      || style->clippingControl.expression
+                      || style->origin[0].expression
+                      || style->origin[1].expression
+                      || style->repeat[0].expression
+                      || style->repeat[1].expression
+                      || style->bufferWidth.expression);
 
     return style;
 }
@@ -330,7 +329,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     double a = 2.0*(ry2*dx2 + rx2*dy2);
     double ay = rx2*a;
     double ax = ry2*dx*a;
-    double sq = sqrt(rxy2*dx2*(-ry4*dx2*dx2 + 2*rxy2*dx2*(2*ry2 - dy2) - rx2*rx2*dy2*(-4*ry2 + dy2)));
+    double sq = sqrt(rxy2*dx2*(-ry4*dx2*dx2 + 2.0*rxy2*dx2*(2.0*ry2 - dy2) - rx2*rx2*dy2*(-4.0*ry2 + dy2)));
     double sqy = sq;
     double sqx = (y1-y0)*sq;
     double mby = rxy2*sy*dx2 + rx4*dy2*sy;
@@ -340,7 +339,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
 
     if (ax == 0.0)
     {
-        //x0 equal to x1 -- vertical chord
+        // x0 equal to x1 -- vertical chord
         cx0 = x0;
         cx1 = x1;
     }
@@ -352,7 +351,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
 
     if (ay == 0.0)
     {
-        //this means that y0 and y1 were equal so chord is horizontal
+        // this means that y0 and y1 were equal so chord is horizontal
         cy0 = y0;
         cy1 = y1;
     }
@@ -369,7 +368,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     if (eAng < 0.0)
         eAng += 2.0*M_PI;
 
-    /* TODO: scale radii until properly specified instead of failing */
+    // TODO: scale radii until properly specified instead of failing
     if (!_finite(cx0) || _isnan(cx0) ||
         !_finite(cx1) || _isnan(cx1) ||
         !_finite(cy0) || _isnan(cy0) ||
@@ -401,7 +400,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
 
     if (def.rotation != 0.0)
     {
-        /* Rerotate the center */
+        // rerotate the center
         double tcx = cx, tcy = cy;
         double sine = sin(rotrad);
         double cosine = cos(rotrad);
@@ -417,59 +416,60 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
 
 void SE_StyleVisitor::VisitPath(Path& path)
 {
-    SE_Color color;
+    SE_Color fillColor;
     const MdfString& geometry = path.GetGeometry();
 
-    ParseColorExpression(path.GetFillColor(), color);
+    ParseColorExpression(path.GetFillColor(), fillColor);
 
     if (m_primitive)
         delete m_primitive;
 
-    if (color.empty())
+    if (fillColor.empty())
     {
-        SE_Polyline* line = new SE_Polyline();
-        m_primitive = line;
-        line->geometry = m_bp->NewLineBuffer(4);
-        ParseGeometry(geometry, *line->geometry);
-        ParseDoubleExpression(path.GetLineWeight(), line->weight);
-        ParseColorExpression(path.GetLineColor(), line->color);
-        ParseBooleanExpression(path.GetLineWeightScalable(), line->weightScalable);
-        ParseStringExpression(path.GetLineCap(), line->cap);
-        ParseStringExpression(path.GetLineJoin(), line->join);
-        ParseDoubleExpression(path.GetLineMiterLimit(), line->miterLimit);
+        SE_Polyline* primitive = new SE_Polyline();
+        m_primitive = primitive;
+        primitive->geometry = m_bp->NewLineBuffer(4);
+        ParseGeometry(geometry, *primitive->geometry);
+        ParseDoubleExpression(path.GetLineWeight(), primitive->weight);
+        ParseColorExpression(path.GetLineColor(), primitive->color);
+        ParseBooleanExpression(path.GetLineWeightScalable(), primitive->weightScalable);
+        ParseStringExpression(path.GetLineCap(), primitive->cap);
+        ParseStringExpression(path.GetLineJoin(), primitive->join);
+        ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit);
 
-        /* If the color is transparent, there is no point in drawing this path,
-         * so we will change it to black. */
-        if (line->color.value.argb == 0)
-            line->color.value.comps.a = 255;
-        line->cacheable = !(line->weight.expression ||
-                            line->color.expression ||
-                            line->weightScalable.expression ||
-                            line->cap.expression ||
-                            line->join.expression ||
-                            line->miterLimit.expression);
+        // if the color is transparent there's no point in drawing this
+        // path, so change it to black
+        if (primitive->color.value.argb == 0)
+            primitive->color.value.comps.a = 255;
+
+        primitive->cacheable = !(primitive->weight.expression
+                              || primitive->color.expression
+                              || primitive->weightScalable.expression
+                              || primitive->cap.expression
+                              || primitive->join.expression
+                              || primitive->miterLimit.expression);
     }
     else
     {
-        SE_Polygon* polygon = new SE_Polygon();
-        m_primitive = polygon;
-        polygon->geometry = m_bp->NewLineBuffer(4);
-        ParseGeometry(geometry, *polygon->geometry);
-        ParseDoubleExpression(path.GetLineWeight(), polygon->weight);
-        polygon->fill = color;
-        ParseColorExpression(path.GetLineColor(), polygon->color);
-        ParseBooleanExpression(path.GetLineWeightScalable(), polygon->weightScalable);
-        ParseStringExpression(path.GetLineCap(), polygon->cap);
-        ParseStringExpression(path.GetLineJoin(), polygon->join);
-        ParseDoubleExpression(path.GetLineMiterLimit(), polygon->miterLimit);
+        SE_Polygon* primitive = new SE_Polygon();
+        m_primitive = primitive;
+        primitive->fill = fillColor;
+        primitive->geometry = m_bp->NewLineBuffer(4);
+        ParseGeometry(geometry, *primitive->geometry);
+        ParseDoubleExpression(path.GetLineWeight(), primitive->weight);
+        ParseColorExpression(path.GetLineColor(), primitive->color);
+        ParseBooleanExpression(path.GetLineWeightScalable(), primitive->weightScalable);
+        ParseStringExpression(path.GetLineCap(), primitive->cap);
+        ParseStringExpression(path.GetLineJoin(), primitive->join);
+        ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit);
 
-        polygon->cacheable = !(polygon->weight.expression ||
-                            polygon->color.expression ||
-                            polygon->fill.expression ||
-                            polygon->weightScalable.expression ||
-                            polygon->cap.expression ||
-                            polygon->join.expression ||
-                            polygon->miterLimit.expression);
+        primitive->cacheable = !(primitive->weight.expression
+                              || primitive->color.expression
+                              || primitive->fill.expression
+                              || primitive->weightScalable.expression
+                              || primitive->cap.expression
+                              || primitive->join.expression
+                              || primitive->miterLimit.expression);
     }
 }
 
@@ -479,8 +479,8 @@ void SE_StyleVisitor::VisitImage(Image& image)
     SE_Raster* primitive = new SE_Raster();
     m_primitive = primitive;
 
-    //remember the parent symbol's res ID so that we can use it later for getting the raster data
-    //in case the image name is an expression
+    // remember the parent symbol's res ID so that we can use it later for
+    // getting the raster data in case the image name is an expression
     primitive->resId = m_resIdStack.back();
 
     if (image.GetContent().size())
@@ -498,7 +498,7 @@ void SE_StyleVisitor::VisitImage(Image& image)
         primitive->pngPtr = new unsigned char[dstlen];
         primitive->ownPtr = true;
 
-        Base64::Decode((unsigned char*)primitive->pngPtr, src_ascii, (unsigned long)srclen);
+        Base64::Decode(primitive->pngPtr, src_ascii, (unsigned long)srclen);
 
         delete [] src_ascii;
     }
@@ -509,8 +509,8 @@ void SE_StyleVisitor::VisitImage(Image& image)
 
         if (primitive->pngResourceId.expression == NULL && primitive->pngResourceName.expression == NULL) // constant path
         {
-            // if we have non-empty resource ID then use it, otherwise use
-            // the ID of any parent symbol definition
+            // if we have non-empty resource ID then use it, otherwise
+            // use the ID of any parent symbol definition
             const wchar_t* resourceId = primitive->pngResourceId.value;
             if (wcslen(resourceId) == 0)
                 resourceId = primitive->resId;
@@ -525,16 +525,16 @@ void SE_StyleVisitor::VisitImage(Image& image)
     ParseDoubleExpression(image.GetPositionY(), primitive->position[1]);
     ParseDoubleExpression(image.GetSizeX(), primitive->extent[0]);
     ParseDoubleExpression(image.GetSizeY(), primitive->extent[1]);
-    ParseDoubleExpression(image.GetAngle(), primitive->angle);
+    ParseDoubleExpression(image.GetAngle(), primitive->angleDeg);
     ParseBooleanExpression(image.GetSizeScalable(), primitive->extentScalable);
 
-    primitive->cacheable = !(primitive->position[0].expression ||
-                             primitive->position[1].expression ||
-                             primitive->extent[0].expression ||
-                             primitive->extent[1].expression ||
-                             primitive->angle.expression ||
-                             primitive->extentScalable.expression
-                             ) && primitive->pngPtr;
+    primitive->cacheable = !(primitive->position[0].expression
+                          || primitive->position[1].expression
+                          || primitive->extent[0].expression
+                          || primitive->extent[1].expression
+                          || primitive->angleDeg.expression
+                          || primitive->extentScalable.expression)
+                          && primitive->pngPtr;
 }
 
 
@@ -546,7 +546,7 @@ void SE_StyleVisitor::VisitText(Text& text)
     ParseStringExpression(text.GetString(), primitive->textString);
     ParseStringExpression(text.GetFontName(), primitive->fontName);
     ParseDoubleExpression(text.GetHeight(), primitive->height);
-    ParseDoubleExpression(text.GetAngle(), primitive->angle);
+    ParseDoubleExpression(text.GetAngle(), primitive->angleDeg);
     ParseDoubleExpression(text.GetPositionX(), primitive->position[0]);
     ParseDoubleExpression(text.GetPositionY(), primitive->position[1]);
     ParseDoubleExpression(text.GetLineSpacing(), primitive->lineSpacing);
@@ -569,27 +569,26 @@ void SE_StyleVisitor::VisitText(Text& text)
         ParseDoubleExpression(frame->GetOffsetY(), primitive->frameOffset[1]);
     }
 
-    primitive->cacheable = !(primitive->textString.expression ||
-                             primitive->fontName.expression ||
-                             primitive->height.expression ||
-                             primitive->angle.expression ||
-                             primitive->position[0].expression ||
-                             primitive->position[1].expression ||
-                             primitive->lineSpacing.expression ||
-                             primitive->heightScalable.expression ||
-                             primitive->bold.expression ||
-                             primitive->italic.expression ||
-                             primitive->underlined.expression ||
-                             primitive->hAlignment.expression ||
-                             primitive->vAlignment.expression ||
-                             primitive->justification.expression ||
-                             primitive->textColor.expression ||
-                             primitive->ghostColor.expression ||
-                             primitive->frameLineColor.expression ||
-                             primitive->frameFillColor.expression ||
-                             primitive->frameOffset[0].expression ||
-                             primitive->frameOffset[1].expression
-                             );
+    primitive->cacheable = !(primitive->textString.expression
+                          || primitive->fontName.expression
+                          || primitive->height.expression
+                          || primitive->angleDeg.expression
+                          || primitive->position[0].expression
+                          || primitive->position[1].expression
+                          || primitive->lineSpacing.expression
+                          || primitive->heightScalable.expression
+                          || primitive->bold.expression
+                          || primitive->italic.expression
+                          || primitive->underlined.expression
+                          || primitive->hAlignment.expression
+                          || primitive->vAlignment.expression
+                          || primitive->justification.expression
+                          || primitive->textColor.expression
+                          || primitive->ghostColor.expression
+                          || primitive->frameLineColor.expression
+                          || primitive->frameFillColor.expression
+                          || primitive->frameOffset[0].expression
+                          || primitive->frameOffset[1].expression);
 }
 
 
@@ -629,8 +628,9 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
             ParseStringExpression(elem->GetResizeControl(), m_primitive->resizeControl);
             m_style->symbol.push_back(m_primitive);
 
-            //also update the style's cacheable flag to take into account the primitive's flag
-            m_style->cacheable = m_style->cacheable && m_primitive->cacheable;
+            // update the style's cacheable flag to take into account
+            // the primitive's flag
+            m_style->cacheable &= m_primitive->cacheable;
         }
 
         m_primitive = NULL;
@@ -646,11 +646,10 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
         ParseDoubleExpression(box->GetPositionY(), m_style->resizePosition[1]);
         ParseStringExpression(box->GetGrowControl(), m_style->growControl);
 
-        m_style->cacheable = m_style->cacheable &&
-                             ! (  m_style->resizeSize[0].expression
-                               || m_style->resizeSize[1].expression
-                               || m_style->resizePosition[0].expression
-                               || m_style->resizePosition[1].expression);
+        m_style->cacheable &= !(m_style->resizeSize[0].expression
+                             || m_style->resizeSize[1].expression
+                             || m_style->resizePosition[0].expression
+                             || m_style->resizePosition[1].expression);
     }
 
     m_symbolization->styles.push_back(m_style);
@@ -674,13 +673,13 @@ void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefi
             if (m_resources == NULL)
                 return;
 
-            const MdfString& ref = sym->GetResourceId(); // Symbol reference
+            const MdfString& ref = sym->GetResourceId(); // symbol reference
             def = dynamic_cast<SimpleSymbolDefinition*>(m_resources->GetSymbolDefinition(ref.c_str()));
             if (def == NULL)
                 return;
 
-            //remember the current symbol resource id, in case it references an
-            //attached png image resource
+            // remember the current symbol resource id in case it references
+            // an attached png image resource
             isRef = true;
             m_resIdStack.push_back(ref.c_str());
         }
@@ -721,13 +720,13 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
             if (m_resources == NULL)
                 continue;
 
-            const MdfString& ref = instance->GetResourceId(); // Symbol reference
+            const MdfString& ref = instance->GetResourceId(); // symbol reference
             def = m_resources->GetSymbolDefinition(ref.c_str());
             if (def == NULL)
                 continue;
 
-            //remember the current symbol resource id, in case it references an
-            //attached png image resource
+            // remember the current symbol resource id in case it references
+            // an attached png image resource
             isRef = true;
             m_resIdStack.push_back(ref.c_str());
         }
