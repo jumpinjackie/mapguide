@@ -20,6 +20,7 @@
 
 #include "SE_LineBuffer.h"
 
+
 enum SE_RenderPrimitiveType
 {
     SE_RenderPolylinePrimitive,
@@ -49,10 +50,11 @@ enum SE_RenderResizeControlType
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+
 struct SE_RenderPrimitive
 {
     SE_RenderPrimitiveType type;
-    SE_RenderResizeControlType resizeType;
+    SE_RenderResizeControlType resizeControl;
     RS_F_Point bounds[4];
 };
 
@@ -99,7 +101,7 @@ struct SE_RenderRaster : public SE_RenderPrimitive
     int pngSize;
     double position[2];
     double extent[2];
-    double angle;
+    double angleRad;
 };
 
 
@@ -162,7 +164,7 @@ struct SE_RenderPointStyle : public SE_RenderStyle
 
     const wchar_t* angleControl;
 
-    double angle;
+    double angleRad;
     double offset[2];
 };
 
@@ -175,7 +177,7 @@ struct SE_RenderLineStyle : public SE_RenderStyle
     const wchar_t* unitsControl;
     const wchar_t* vertexControl;
 
-    double angle;
+    double angleRad;
     double startOffset;
     double endOffset;
     double repeat;
@@ -192,7 +194,7 @@ struct SE_RenderAreaStyle : public SE_RenderStyle
     const wchar_t* originControl;
     const wchar_t* clippingControl;
 
-    double angle;
+    double angleRad;
     double origin[2];
     double repeat[2];
     double bufferWidth;

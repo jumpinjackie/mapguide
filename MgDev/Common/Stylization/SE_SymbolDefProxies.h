@@ -94,7 +94,7 @@ struct SE_Text : public SE_Primitive
     SE_Double position[2];
     SE_Double height;
     SE_Boolean heightScalable;
-    SE_Double angle;
+    SE_Double angleDeg;
     SE_Boolean bold;
     SE_Boolean italic;
     SE_Boolean underlined;
@@ -123,7 +123,7 @@ struct SE_Raster : public SE_Primitive
     SE_Double position[2];
     SE_Double extent[2];
     SE_Boolean extentScalable;
-    SE_Double angle;
+    SE_Double angleDeg;
 
     SE_INLINE SE_Raster() : ownPtr(false) { }
     ~SE_Raster() { if (ownPtr) delete[] pngPtr; }
@@ -163,7 +163,7 @@ struct SE_Style
 struct SE_PointStyle : public SE_Style
 {
     SE_String angleControl;
-    SE_Double angle;
+    SE_Double angleDeg;
     SE_Double originOffset[2];
 
     SE_INLINE SE_PointStyle() { }
@@ -178,7 +178,7 @@ struct SE_LineStyle : public SE_Style
     SE_String unitsControl;
     SE_String vertexControl;
 
-    SE_Double angle;
+    SE_Double angleDeg;
     SE_Double startOffset;
     SE_Double endOffset;
     SE_Double repeat;
@@ -197,7 +197,7 @@ struct SE_AreaStyle : public SE_Style
     SE_String originControl;
     SE_String clippingControl;
 
-    SE_Double angle;
+    SE_Double angleDeg;
     SE_Double origin[2];
     SE_Double repeat[2];
     SE_Double bufferWidth;
