@@ -78,7 +78,12 @@ void MgDataConnectionTimeoutEventHandler::HandleEvent(long eventId)
 
         if (NULL != fdoConnectionManager)
         {
+            Ptr<MgUserInformation> userInfo = new MgUserInformation(
+                MgUser::Administrator, L"");
+
+            MgUserInformation::SetCurrentUserInfo(userInfo);
             fdoConnectionManager->RemoveExpiredConnections();
+            MgUserInformation::SetCurrentUserInfo(NULL);
         }
     }
 
