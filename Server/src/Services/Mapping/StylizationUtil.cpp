@@ -300,13 +300,13 @@ RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcF
 
 
 RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcFeature,
-                                                        RS_Bounds& extent,
-                                                        MdfModel::GridLayerDefinition* gl,
-                                                        const wchar_t* overrideFilter,
-                                                        MgCoordinateSystem* mapCs,
-                                                        MgCoordinateSystem* layerCs,
-                                                        int devWidth,
-                                                        int devHeight)
+                                                          RS_Bounds& extent,
+                                                          MdfModel::GridLayerDefinition* gl,
+                                                          const wchar_t* overrideFilter,
+                                                          MgCoordinateSystem* mapCs,
+                                                          MgCoordinateSystem* layerCs,
+                                                          int devWidth,
+                                                          int devHeight)
 {
     //get feature source id
     STRING sfeatResId = gl->GetResourceID();
@@ -318,7 +318,6 @@ RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcF
 
     //we want to transform from mapping space to layer space
     Ptr<MgCoordinateSystemTransform> trans;
-
     if (mapCs && layerCs)
     {
         trans = new MgCoordinateSystemTransform(mapCs, layerCs);
@@ -369,6 +368,17 @@ RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcF
     //and also spatial filter
     if (!geom.empty())
     {
+        // We need to restrict the size of the returned raster to MgByte::MaxSize,
+        // otherwise we'll get an MgArgumentOutOfRangeException when processing
+        // the returned raster stream.  Assume worst case scenario of 32bpp...
+        if (4*devWidth*devHeight > MgByte::MaxSize)
+        {
+            double factor = sqrt((double)MgByte::MaxSize / (double)(4*devWidth*devHeight));
+            devWidth  = (int)(factor * devWidth);
+            devHeight = (int)(factor * devHeight);
+            assert(4*devWidth*devHeight <= MgByte::MaxSize);
+        }
+
         //Set up RESAMPLE command
         FdoPtr<FdoExpressionCollection> funcParams = FdoExpressionCollection::Create();
         FdoPtr<FdoIdentifier> rasterProp = FdoIdentifier::Create(geom.c_str());
