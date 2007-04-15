@@ -446,7 +446,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         rr->position[1] = 0.0;
         rr->extent[0] = 20.0;
         rr->extent[1] = 20.0;
-        rr->angle = 0.0;
+        rr->angleRad = 0.0;
 
         if (highwayNum.length() == 1)
             rr->extent[0] = ((shieldType == L"3")? 25.0 : 20.0);
