@@ -117,7 +117,7 @@ MgServerConnection* MgServerConnectionStack::Pop()
         {
             ACE_Time_Value diffTime = now - *(conn->LastUsed());
             double diff = diffTime.sec();
-            if (diff > 60.0)
+            if (diff > 60.0 || !conn->IsOpen())
             {
                 SAFE_RELEASE(conn);
                 conn = NULL;
