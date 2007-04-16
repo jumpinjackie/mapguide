@@ -133,6 +133,10 @@ MgCommand::ReturnValue& MgCommand::GetReturnValue()
 /// </summary>
 void MgCommand::GetResponse(MgServerConnection* connection, DataTypes retType)
 {
+    assert(NULL != connection);
+
+    MG_TRY()
+
     // Get the stream from the connection
     Ptr<MgStream> ptrStream = connection->GetStream();
 
@@ -144,17 +148,33 @@ void MgCommand::GetResponse(MgServerConnection* connection, DataTypes retType)
 
     if (MgStreamParser::mshStreamStart != msh.m_streamStart)
     {
-        throw new MgInvalidStreamHeaderException(L"MgCommand.GetResponse", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidStreamHeaderException(L"MgCommand.GetResponse",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else if (MgStreamParser::StreamVersion != msh.m_streamVersion)
     {
-        throw new MgStreamIoException(L"MgCommand.GetResponse", __LINE__, __WFILE__, NULL, L"MgInvalidTCPProtocol", NULL);
+        throw new MgStreamIoException(L"MgCommand.GetResponse",
+            __LINE__, __WFILE__, NULL, L"MgInvalidTCPProtocol", NULL);
     }
 
     // Get the operation response header
     ptrStream->GetOperationResponseHeader(morp);
     // Process the result based on eCode. In case of exception, it would throw the exception
     ProcessResult((MgPacketParser::MgECode)morp.m_ECode, retType, connection);
+
+    MG_CATCH(L"MgCommand.GetResponse")
+
+    if (NULL != mgException)
+    {
+        // Close the connection if the stream is corrupted or of newer version.
+        if (mgException->IsOfClass(Foundation_Exception_MgInvalidStreamHeaderException)
+         || mgException->IsOfClass(Foundation_Exception_MgStreamIoException))
+        {
+            connection->Close();
+        }
+
+        MG_THROW();
+    }
 }
 
 
