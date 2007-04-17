@@ -68,8 +68,6 @@ MgFeatureServiceCacheTimeLimitEventHandler::~MgFeatureServiceCacheTimeLimitEvent
 ///
 void MgFeatureServiceCacheTimeLimitEventHandler::HandleEvent(long eventId)
 {
-    // TODO: Remove this redundant event handler.
-/*
     MG_TRY()
 
     //ACE_DEBUG((LM_DEBUG, ACE_TEXT("Expired Feature Service cache entries handled by thread %t\n")));
@@ -86,5 +84,4 @@ void MgFeatureServiceCacheTimeLimitEventHandler::HandleEvent(long eventId)
     }
 
     MG_CATCH_AND_THROW(L"MgFeatureServiceCacheTimeLimitEventHandler.HandleEvent")
-*/
 }
