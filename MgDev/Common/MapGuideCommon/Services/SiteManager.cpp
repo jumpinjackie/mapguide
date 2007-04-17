@@ -28,7 +28,8 @@ ACE_Recursive_Thread_Mutex MgSiteManager::sm_siteManagerMutex;
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgSiteManager::MgSiteManager()
+MgSiteManager::MgSiteManager() :
+    m_index(0)
 {
     m_configuration = MgConfiguration::GetInstance();
     assert(NULL != m_configuration);
