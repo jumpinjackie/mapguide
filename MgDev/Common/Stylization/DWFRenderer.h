@@ -248,6 +248,9 @@ protected:
     void _TransformPointsNoClamp(double* inpts, int numpts);
     void _TransformPoints(double* inpts, int numpts, const SE_Matrix* xform);
 
+public:
+    void IncrementDrawableCount();
+
 private:
     //macro/overpost opcode output -- done manually by writing to file
     void BeginMacro(WT_File* file, int id, int scale);
@@ -307,9 +310,7 @@ private:
     EMapFillPatternFactory* m_fillFac;
 
     /////////////////////////////////////////////////////////
-    //
     // Functions and structures used during insertion of W2Ds
-    //
     /////////////////////////////////////////////////////////
 
     //TODO: these should be extracted to a friend class (or equivalent)

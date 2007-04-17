@@ -178,11 +178,13 @@ WT_Result my_open(WT_File & file)
     return WT_Result::Success;
 }
 
+
 WT_Result my_close(WT_File & file)
 {
     file.set_stream_user_data(WD_Null);
     return WT_Result::Success;
 }
+
 
 WT_Result my_read(WT_File & /*file*/, int /*desired_bytes*/, int & /*bytes_read*/, void * /*buffer*/)
 {
@@ -191,12 +193,14 @@ WT_Result my_read(WT_File & /*file*/, int /*desired_bytes*/, int & /*bytes_read*
     return WT_Result::Success;
 }
 
+
 WT_Result my_write(WT_File & file, int size, void const * buffer)
 {
     DWFBufferOutputStream* fp = (DWFBufferOutputStream*) file.stream_user_data();
     fp->write(buffer, size);
     return WT_Result::Success;
 }
+
 
 WT_Result my_seek(WT_File & /*file*/, int /*distance*/, int & /*amount_seeked*/)
 {
@@ -245,6 +249,7 @@ DWFRenderer::DWFRenderer()
 
     m_hObjNodes = new NodeTable();
 }
+
 
 DWFRenderer::~DWFRenderer()
 {
@@ -573,14 +578,14 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
             // just a polygon, no need for a contourset
             WT_Polygon polygon(geom->point_count(), m_wtPointBuffer, false);
             polygon.serialize(*m_w2dFile);
-            ++m_drawableCount;
+            IncrementDrawableCount();
         }
         else
         {
             // otherwise make a contour set
             WT_Contour_Set cset(*m_w2dFile, geom->cntr_count(), (WT_Integer32*)geom->cntrs(), geom->point_count(), m_wtPointBuffer, true);
             cset.serialize(*m_w2dFile);
-            ++m_drawableCount;
+            IncrementDrawableCount();
         }
     }
 
@@ -717,7 +722,7 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
                     false);
 
         img.serialize(*m_w2dFile);
-        ++m_drawableCount;
+        IncrementDrawableCount();
     }
     else if (format == RS_ImageFormat_PNG)
     {
@@ -733,7 +738,7 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
                     false);
 
         img.serialize(*m_w2dFile);
-        ++m_drawableCount;
+        IncrementDrawableCount();
     }
 }
 
@@ -934,7 +939,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                         file->desired_rendition().color() = WT_Color(255,0,0);
                         WT_Polyline symbol(npts, pts, false);
                         symbol.serialize(*file);
-                        ++m_drawableCount;
+                        IncrementDrawableCount();
                     }
                     else
                     {
@@ -945,7 +950,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                         WT_Polygon symbolFill(npts, pts, false);
                         symbolFill.serialize(*file);
-                        ++m_drawableCount;
+                        IncrementDrawableCount();
 
                         if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
                             file->desired_rendition().color() = WT_Color(127,127,127);
@@ -954,7 +959,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                         WT_Polyline symbol(npts, pts, false);
                         symbol.serialize(*file);
-                        ++m_drawableCount;
+                        IncrementDrawableCount();
                     }
 
                 //end macro definition
@@ -1055,13 +1060,13 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                 WT_Polyline excludearea(2, axisbox, false);
                 excludearea.serialize(*file);
-                ++m_drawableCount;
+                IncrementDrawableCount();
             }
             else
             {
                 WT_Polyline excludearea(4, pts, false);
                 excludearea.serialize(*file);
-                ++m_drawableCount;
+                IncrementDrawableCount();
             }
 
         EndMacro(file, 1);
@@ -1287,6 +1292,7 @@ void DWFRenderer::BeginOverpostGroup(WT_File* file, RS_OverpostType type, bool r
     file->write(op);
 }
 
+
 void DWFRenderer::EndOverpostGroup(WT_File* file)
 {
     //close the overpost group
@@ -1302,6 +1308,7 @@ void DWFRenderer::BeginMacro(WT_File* file, int id, int scale)
 
     m_macroDrawableCounts[id] = m_drawableCount;
 }
+
 
 void DWFRenderer::EndMacro(WT_File* file, int id)
 {
@@ -1336,6 +1343,12 @@ void DWFRenderer::PlayMacro(WT_File* file, int id, double sizeMeters, RS_Units u
     // keep track if this macro was played inside the label w2d
     if (file == m_w2dLabels)
         ++m_labelMacroCount;
+}
+
+
+void DWFRenderer::IncrementDrawableCount()
+{
+    ++m_drawableCount;
 }
 
 
@@ -1436,7 +1449,7 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
         WT_Logical_Point pt(x, y);
         WT_Text wttext(pt, Util_ConvertString(txt.c_str()));
         wttext.serialize(*file);
-        ++m_drawableCount;
+        IncrementDrawableCount();
         return;
     }
 
@@ -1483,7 +1496,7 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
         WT_Logical_Point pt(xpos, ypos);
         WT_Text wttext(pt, Util_ConvertString(line_breaks[i]));
         wttext.serialize(*file);
-        ++m_drawableCount;
+        IncrementDrawableCount();
     }
 }
 
@@ -1495,6 +1508,7 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
 // but makes the rest of the code a little cleaner.
 //
 //-----------------------------------------------------------------------------
+
 
 //transforms an x coordinate from mapping to DWF space
 double DWFRenderer::_TX(double x)
@@ -1511,6 +1525,7 @@ double DWFRenderer::_TX(double x)
     return (x - m_offsetX) * m_scale;
 }
 
+
 //transforms a y coordinate from mapping to DWF space
 double DWFRenderer::_TY(double y)
 {
@@ -1525,6 +1540,7 @@ double DWFRenderer::_TY(double y)
 
     return (y - m_offsetY) * m_scale;
 }
+
 
 //transforms an array of input mapping space points
 //into W2D coordinates and places them in the DWF
@@ -1618,7 +1634,7 @@ void DWFRenderer::WritePolylines(LineBuffer* srclb)
 
             WT_Polyline polyline(cntr_size, m_wtPointBuffer, false);
             polyline.serialize(*m_w2dFile);
-            ++m_drawableCount;
+            IncrementDrawableCount();
         }
     }
 }
@@ -1978,25 +1994,30 @@ double DWFRenderer::GetMapScale()
     return m_mapScale;
 }
 
+
 double DWFRenderer::GetMetersPerUnit()
 {
     return m_metersPerUnit;
 }
+
 
 RS_Bounds& DWFRenderer::GetBounds()
 {
     return m_extents;
 }
 
+
 double DWFRenderer::GetDpi()
 {
     return m_dpi;
 }
 
+
 bool DWFRenderer::RequiresClipping()
 {
     return true;
 }
+
 
 double DWFRenderer::GetMapToW2DScale()
 {
@@ -2145,7 +2166,7 @@ void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, u
 
             WT_Polyline polyline(cntr_size, m_wtPointBuffer, false);
             polyline.serialize(*file);
-            ++m_drawableCount;
+            IncrementDrawableCount();
         }
     }
 
@@ -2179,14 +2200,14 @@ void DWFRenderer::DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, un
         // just a polygon, no need for a contourset
         WT_Polygon polygon(geom->point_count(), m_wtPointBuffer, false);
         polygon.serialize(*file);
-        ++m_drawableCount;
+        IncrementDrawableCount();
     }
     else
     {
         // otherwise make a contour set
         WT_Contour_Set cset(*file, geom->cntr_count(), (WT_Integer32*)geom->cntrs(), geom->point_count(), m_wtPointBuffer, true);
         cset.serialize(*file);
-        ++m_drawableCount;
+        IncrementDrawableCount();
     }
 
     // zero out the dash pattern -- must do when done with it
@@ -2253,7 +2274,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
                          false);
 
             img.serialize(*file);
-            ++m_drawableCount;
+            IncrementDrawableCount();
         }
         else if (format == RS_ImageFormat_PNG)
         {
@@ -2269,7 +2290,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
                          false);
 
             img.serialize(*file);
-            ++m_drawableCount;
+            IncrementDrawableCount();
         }
     }
     else
@@ -2285,7 +2306,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
                             m_imgID++,
                             dstpts,
                             *file);
-            ++m_drawableCount;
+            IncrementDrawableCount();
         }
         else if (format == RS_ImageFormat_PNG)
         {
@@ -2348,7 +2369,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
                                     WT_Logical_Point((WT_Integer32)maxx, (WT_Integer32)maxy),
                                     false);
             img.serialize(*file);
-            ++m_drawableCount;
+            IncrementDrawableCount();
 
             gdFree(pngData);
             gdImageDestroy(dst);
@@ -2578,7 +2599,7 @@ void DWFRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 
             WT_Polyline excludearea(2, axisbox, false);
             excludearea.serialize(*file);
-            ++m_drawableCount;
+            IncrementDrawableCount();
         }
         else
         {
@@ -2591,7 +2612,7 @@ void DWFRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 
             WT_Polyline excludearea(npts, dstpts, false);
             excludearea.serialize(*file);
-            ++m_drawableCount;
+            IncrementDrawableCount();
         }
 
     EndMacro(file, 0);
@@ -2737,20 +2758,17 @@ void DWFRenderer::DrawString(const RS_String& s,
 
     WT_String wtstr(Util_ConvertString(s.c_str()));
     WT_Logical_Point pt(x, y);
+
     WT_Text wttext(pt, wtstr);
     wttext.serialize(*file);
-    ++m_drawableCount;
+    IncrementDrawableCount();
 }
 
 
 //////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
-////
 ////
 ////             DWF Rewrite and related code
 ////
-////
-//////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
 
@@ -3339,14 +3357,3 @@ void DWFRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
         }
     }
 }
-
-
-//////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
-////
-////
-////      END of DWF Rewrite and related code
-////
-////
-//////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
