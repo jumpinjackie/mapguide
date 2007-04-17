@@ -911,7 +911,6 @@ void MgLoadBalanceManager::NotifyResourcesChanged(CREFSTRING serverAddress,
     MG_TRY()
 
     assert(!serverAddress.empty());
-    assert(NULL != resources && resources->GetCount() > 0);
 
     if (NULL != resources && resources->GetCount() > 0)
     {
