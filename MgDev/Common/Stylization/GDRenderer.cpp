@@ -516,13 +516,12 @@ void GDRenderer::ProcessRaster(unsigned char* data,
                                int width, int height,
                                RS_Bounds extents)
 {
-    double cx = (extents.minx + extents.maxx) * 0.5;
-    double cy = (extents.miny + extents.maxy) * 0.5;
+    double cx = 0.5 * (extents.minx + extents.maxx);
+    double cy = 0.5 * (extents.miny + extents.maxy);
     WorldToScreenPoint(cx, cy, cx, cy);
 
     //pass to the screen space render function
-    DrawScreenRaster(data, length, format, width, height, 
-        cx, cy, extents.width() * m_scale, extents.height() * m_scale, 0.0);
+    DrawScreenRaster(data, length, format, width, height, cx, cy, extents.width() * m_scale, extents.height() * m_scale, 0.0);
 }
 
 
@@ -601,7 +600,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
     double refY = mdef.insy();
 
     //rotation angle
-    double anglerad = mdef.rotation() * M_PI180;
+    double angleRad = mdef.rotation() * M_PI180;
 
     if (!symbol && is_font_symbol)
     {
@@ -824,7 +823,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                     //construct transformer
                     RS_Bounds src(0.0, 0.0, 1.0, 1.0);
-                    SymbolTrans trans(src, dst, refX, refY, anglerad);
+                    SymbolTrans trans(src, dst, refX, refY, angleRad);
 
                     //transform to coordinates of temporary image where we
                     //draw symbol before transfering to the map
@@ -873,7 +872,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 //default bounds of symbol data in W2D
                 //for symbols created by MapGuide Studio
                 RS_Bounds src(0,0,SYMBOL_MAX,SYMBOL_MAX);
-                SymbolTrans st = SymbolTrans(src, dst, refX, refY, anglerad);
+                SymbolTrans st = SymbolTrans(src, dst, refX, refY, angleRad);
 
                 if (m_imsym)
                 {
@@ -928,7 +927,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             //to rotated map space -- we need this in order to
             //take into account the insertion point
             RS_Bounds src(0,0,imsymw,imsymh);
-            SymbolTrans trans(src, dst, refX, refY, anglerad);
+            SymbolTrans trans(src, dst, refX, refY, angleRad);
 
             //initialize 4 corner points of symbol -- we will
             //destructively transform this array to destination map space
@@ -948,7 +947,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             }
 
             //copy symbol image into destination image
-            if (anglerad == 0.0)
+            if (angleRad == 0.0)
             {
                 //upper left point
                 int ulx = (int)floor(b[3].x);
@@ -1011,7 +1010,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
         //construct transformer -- same as the
         //one used for the actual symbol drawables
-        SymbolTrans boxtrans(src, dst, refX, refY, anglerad);
+        SymbolTrans boxtrans(src, dst, refX, refY, angleRad);
 
         RS_F_Point pts[4];
 
@@ -1482,7 +1481,7 @@ void GDRenderer::DrawString(const RS_String& s,
                             double           height,
                             const RS_Font*   font,
                             const RS_Color&  color,
-                            double           anglerad)
+                            double           angleRad)
 {
     if (font == NULL)
         return;
@@ -1515,7 +1514,7 @@ void GDRenderer::DrawString(const RS_String& s,
     extra.hdpi = (int)m_dpi;
     extra.vdpi = (int)m_dpi;
     char* err = NULL;
-    err = gdImageStringFTEx((gdImagePtr)m_imout, NULL, gdc, futf8, height, anglerad, x, y, sutf8, &extra);
+    err = gdImageStringFTEx((gdImagePtr)m_imout, NULL, gdc, futf8, height, angleRad, x, y, sutf8, &extra);
 
 #ifdef _DEBUG
     if (err) printf("gd text error : %s\n", err);
@@ -1527,7 +1526,7 @@ void GDRenderer::DrawString(const RS_String& s,
 void GDRenderer::MeasureString(const RS_String&  s,
                                double            height,
                                const RS_Font*    font,
-                               double            anglerad,
+                               double            angleRad,
                                RS_F_Point*       res, //assumes 4 points in this array
                                float*            offsets) //assumes length equals 2 * length of string
 {
@@ -1565,7 +1564,7 @@ void GDRenderer::MeasureString(const RS_String&  s,
     extra.hdpi = (int)m_dpi;
     extra.vdpi = (int)m_dpi;
     char* err = NULL;
-    err = gdImageStringFTEx(NULL, extent, 0, futf8, measureHeight, anglerad, 0, 0, sutf8, &extra);
+    err = gdImageStringFTEx(NULL, extent, 0, futf8, measureHeight, angleRad, 0, 0, sutf8, &extra);
 
 #ifdef _DEBUG
     if (err) printf("gd text error : %s\n", err);
@@ -2290,8 +2289,9 @@ void GDRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
 }
 
 
-void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
-        double x, double y, double w, double h, double angledeg)
+void GDRenderer::DrawScreenRaster(unsigned char* data, int length,
+                                  RS_ImageFormat format, int native_width, int native_height,
+                                  double x, double y, double w, double h, double angleDeg)
 {
     if (format == RS_ImageFormat_RGBA)
     {
@@ -2315,7 +2315,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageForma
             }
         }
 
-        if (angledeg == 0)
+        if (angleDeg == 0.0)
         {
             double w2 = w * 0.5;
             double h2 = h * 0.5;
@@ -2333,7 +2333,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageForma
         else
         {
             //TODO: must scale from native width/height to requested width/height
-            gdImageCopyRotated((gdImagePtr)m_imout, src, x, y, 0, 0, native_width, native_height, ROUND(angledeg));
+            gdImageCopyRotated((gdImagePtr)m_imout, src, x, y, 0, 0, native_width, native_height, ROUND(angleDeg));
         }
 
         gdImageDestroy(src);
@@ -2345,7 +2345,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageForma
 
         gdImagePtr src = gdImageCreateFromPngPtr(length, data);
 
-        if (angledeg == 0)
+        if (angleDeg == 0.0)
         {
             double w2 = w * 0.5;
             double h2 = h * 0.5;
@@ -2363,7 +2363,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageForma
         else
         {
             //TODO: must scale from native width/height to requested width/height
-            gdImageCopyRotated((gdImagePtr)m_imout, src, x, y, 0, 0, gdImageSX(src), gdImageSY(src), ROUND(angledeg));
+            gdImageCopyRotated((gdImagePtr)m_imout, src, x, y, 0, 0, gdImageSX(src), gdImageSY(src), ROUND(angleDeg));
         }
 
         gdImageDestroy(src);
@@ -2373,7 +2373,8 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageForma
 }
 
 
-void GDRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position)
+void GDRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
+                                double* path, int npts, double param_position)
 {
     if (path)  //path text
     {

@@ -34,7 +34,7 @@ class SymbolTrans : public CSysTransformer
 public:
     STYLIZATION_API SymbolTrans();
 
-    STYLIZATION_API SymbolTrans(RS_Bounds& src, RS_Bounds& dst, double refX, double refY, double angle);
+    STYLIZATION_API SymbolTrans(RS_Bounds& src, RS_Bounds& dst, double refX, double refY, double angleRad);
 
     STYLIZATION_API virtual ~SymbolTrans();
 
@@ -43,13 +43,13 @@ public:
 
     STYLIZATION_API virtual double GetLinearScale();
 
-    STYLIZATION_API double GetAngle() { return m_angle; }
+    STYLIZATION_API double GetAngle() { return m_angleRad; }
     STYLIZATION_API double GetRefX() { return m_refX; }
     STYLIZATION_API double GetRefY() { return m_refY; }
     STYLIZATION_API RS_Bounds GetSrcBounds() { return m_src; }
     STYLIZATION_API RS_Bounds GetDstBounds() { return m_dst; }
 
-    STYLIZATION_API void SetAngle(double angle);
+    STYLIZATION_API void SetAngle(double angleRad);
     STYLIZATION_API void SetRefX(double refX);
     STYLIZATION_API void SetRefY(double refY);
     STYLIZATION_API void SetSrcBounds(const RS_Bounds& src);
@@ -60,7 +60,7 @@ private:
     RS_Bounds m_dst;
     double m_refX;
     double m_refY;
-    double m_angle;
+    double m_angleRad;
 
     //cached common subexpressions
     double m_angleCos;

@@ -18,31 +18,32 @@
 #include "stdafx.h"
 #include "SymbolTrans.h"
 
+
 SymbolTrans::SymbolTrans()
-: m_src(0,0,1,1),
-  m_dst(0,0,1,1),
+: m_src(0.0, 0.0, 1.0, 1.0),
+  m_dst(0.0, 0.0, 1.0, 1.0),
   m_refX(-0.5),
   m_refY(-0.5),
-  m_angle(0),
-  m_angleCos(1),
-  m_angleSin(0),
-  m_widthScale(1),
-  m_heightScale(1)
+  m_angleRad(0.0),
+  m_angleCos(1.0),
+  m_angleSin(0.0),
+  m_widthScale(1.0),
+  m_heightScale(1.0)
 {
 }
 
 
-SymbolTrans::SymbolTrans(RS_Bounds& src, RS_Bounds& dst, double refX, double refY, double angle)
+SymbolTrans::SymbolTrans(RS_Bounds& src, RS_Bounds& dst, double refX, double refY, double angleRad)
 : m_src(src),
   m_dst(dst),
   m_refX(refX),
   m_refY(refY),
-  m_angle(angle)
+  m_angleRad(angleRad)
 {
-    if (angle != 0)
+    if (angleRad != 0.0)
     {
-        m_angleCos = cos(angle);
-        m_angleSin = sin(angle);
+        m_angleCos = cos(angleRad);
+        m_angleSin = sin(angleRad);
     }
     else
     {
@@ -54,9 +55,11 @@ SymbolTrans::SymbolTrans(RS_Bounds& src, RS_Bounds& dst, double refX, double ref
     m_heightScale = m_dst.height() / m_src.height();
 }
 
+
 SymbolTrans::~SymbolTrans()
 {
 }
+
 
 void SymbolTrans::TransformPoint(double& x, double& y)
 {
@@ -76,11 +79,13 @@ void SymbolTrans::TransformPoint(double& x, double& y)
     y = ry + m_dst.miny;
 }
 
+
 void SymbolTrans::TransformPoints(int numPts, double* x, double* y)
 {
     for (int i=0; i<numPts; i++)
         TransformPoint(x[i], y[i]);
 }
+
 
 double SymbolTrans::GetLinearScale()
 {
@@ -88,14 +93,14 @@ double SymbolTrans::GetLinearScale()
 }
 
 
-void SymbolTrans::SetAngle(double angle)
+void SymbolTrans::SetAngle(double angleRad)
 {
-    m_angle = angle;
+    m_angleRad = angleRad;
 
-    if (angle != 0)
+    if (angleRad != 0.0)
     {
-        m_angleCos = cos(angle);
-        m_angleSin = sin(angle);
+        m_angleCos = cos(angleRad);
+        m_angleSin = sin(angleRad);
     }
     else
     {
@@ -104,28 +109,32 @@ void SymbolTrans::SetAngle(double angle)
     }
 }
 
+
 void SymbolTrans::SetRefX(double refX)
 {
     m_refX = refX;
 }
+
 
 void SymbolTrans::SetRefY(double refY)
 {
     m_refY = refY;
 }
 
+
 void SymbolTrans::SetSrcBounds(const RS_Bounds& src)
 {
     m_src = src;
 
-    m_widthScale = m_dst.width() / m_src.width();
+    m_widthScale  = m_dst.width()  / m_src.width();
     m_heightScale = m_dst.height() / m_src.height();
 }
+
 
 void SymbolTrans::SetDstBounds(const RS_Bounds& dst)
 {
     m_dst = dst;
 
-    m_widthScale = m_dst.width() / m_src.width();
+    m_widthScale  = m_dst.width()  / m_src.width();
     m_heightScale = m_dst.height() / m_src.height();
 }

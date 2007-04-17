@@ -774,7 +774,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     }
 
     //default symbol
-    double anglerad = mdef.rotation() * M_PI180;
+    double angleRad = mdef.rotation() * M_PI180;
 
     //default bounds of symbol data in W2D
     //for symbols created by MapGuide Studio
@@ -809,7 +809,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     //construct transformer -- we will use one
     //even for the default symbol -- makes sure
     //it goes through the same transformation path
-    SymbolTrans trans(src, dst, refX, refY, anglerad);
+    SymbolTrans trans(src, dst, refX, refY, angleRad);
 
     if (!symbol)
     {
@@ -1017,7 +1017,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
         //construct transformer -- same as the
         //one used for the actual symbol drawables
-        SymbolTrans boxtrans(src, dst, refX, refY, anglerad);
+        SymbolTrans boxtrans(src, dst, refX, refY, angleRad);
 
         EnsureBufferSize(5);
         WT_Logical_Point* pts = m_wtPointBuffer;
@@ -1045,7 +1045,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         BeginMacro(file, 1, SYMBOL_MAX);
 
             // if there's no rotation, send just 2 points
-            if (anglerad == 0.0)
+            if (angleRad == 0.0)
             {
                 WT_Logical_Point axisbox[2];
                 axisbox[0].m_x = pts[0].m_x;
@@ -1448,9 +1448,9 @@ void DWFRenderer::ProcessMultilineText(WT_File* file, const RS_String& txt, RS_T
     WT_Integer32 line_hgt_y = (WT_Integer32)line_hgt;
     if (tdef.rotation() != 0.0)
     {
-        double anglerad = tdef.rotation() * M_PI180;
-        line_hgt_x = (WT_Integer32)(-line_hgt * sin(anglerad));
-        line_hgt_y = (WT_Integer32)( line_hgt * cos(anglerad));
+        double angleRad = tdef.rotation() * M_PI180;
+        line_hgt_x = (WT_Integer32)(-line_hgt * sin(angleRad));
+        line_hgt_y = (WT_Integer32)( line_hgt * cos(angleRad));
     }
 
     //Depending on vertical alignment we may go up or down with the line
@@ -2204,7 +2204,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
                                    double         y,
                                    double         w,
                                    double         h,
-                                   double         angledeg)
+                                   double         angleDeg)
 {
     if (format != RS_ImageFormat_RGB  &&
         format != RS_ImageFormat_RGBA &&
@@ -2220,7 +2220,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
 
     // find the corners of the image
     SE_Matrix xform;
-    xform.rotate(angledeg * M_PI180);
+    xform.rotate(angleDeg * M_PI180);
     xform.translate(x, y);
 
     double ptsx[4], ptsy[4];
@@ -2236,7 +2236,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
         dstpts[i].m_y = (WT_Integer32)ptsy[i];
     }
 
-    if (angledeg == 0.0)
+    if (angleDeg == 0.0)
     {
         // simple case of no rotation
         if (format == RS_ImageFormat_RGB || format == RS_ImageFormat_RGBA)
@@ -2330,7 +2330,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
             gdImageAlphaBlending(dst, 0);
             gdImageFilledRectangle(dst, 0, 0, gdImageSX(dst)-1, gdImageSY(dst)-1, 0x7f000000);
             gdImageAlphaBlending(dst, 1);
-            gdImageCopyRotated(dst, src, 0.5*rotatedW, 0.5*rotatedH, 0, 0, gdImageSX(src), gdImageSY(src), ROUND(angledeg));
+            gdImageCopyRotated(dst, src, 0.5*rotatedW, 0.5*rotatedH, 0, 0, gdImageSX(src), gdImageSY(src), ROUND(angleDeg));
             gdImageSaveAlpha(dst, 1);
 
             // create the DWF image from the PNG data
@@ -2650,7 +2650,7 @@ void DWFRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 void DWFRenderer::MeasureString(const RS_String& s,
                                 double           height,
                                 const RS_Font*   font,
-                                double           anglerad,
+                                double           angleRad,
                                 RS_F_Point*      res,       //assumes 4 points in this array
                                 float*           offsets)   //assumes length equals 2 * length of string
 {
@@ -2688,7 +2688,7 @@ void DWFRenderer::MeasureString(const RS_String& s,
     extra.hdpi = (int)m_dpi;
     extra.vdpi = (int)m_dpi;
     char* err = NULL;
-    err = gdImageStringFTEx(NULL, extent, 0, futf8, measureHeight, anglerad, 0, 0, sutf8, &extra);
+    err = gdImageStringFTEx(NULL, extent, 0, futf8, measureHeight, angleRad, 0, 0, sutf8, &extra);
 
 #ifdef _DEBUG
     if (err) printf("gd text error : %s\n", err);
@@ -2721,7 +2721,7 @@ void DWFRenderer::DrawString(const RS_String& s,
                              double           height,
                              const RS_Font*   font,
                              const RS_Color&  color,
-                             double           anglerad)
+                             double           angleRad)
 {
     // draw to the active file if it's set
     WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
@@ -2731,7 +2731,7 @@ void DWFRenderer::DrawString(const RS_String& s,
     file->desired_rendition().font().style().set_italic(font->m_italic);
     file->desired_rendition().font().style().set_underlined(false);
     file->desired_rendition().font().height() = (WT_Integer32)height;
-    file->desired_rendition().font().rotation() = (WT_Unsigned_Integer16)(anglerad / (2.0*M_PI) * 65536);
+    file->desired_rendition().font().rotation() = (WT_Unsigned_Integer16)(angleRad / (2.0*M_PI) * 65536);
 
     file->desired_rendition().color() = Util_ConvertColor((RS_Color&)color);
 

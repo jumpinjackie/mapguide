@@ -620,7 +620,7 @@ void KmlRenderer::DrawScreenRaster(unsigned char* /*data*/,
                                    double         /*y*/,
                                    double         /*w*/,
                                    double         /*h*/,
-                                   double         /*angledeg*/)
+                                   double         /*angleDeg*/)
 {
 }
 

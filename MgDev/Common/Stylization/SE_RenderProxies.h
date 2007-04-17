@@ -101,7 +101,7 @@ struct SE_RenderRaster : public SE_RenderPrimitive
     int pngSize;
     double position[2];
     double extent[2];
-    double angleRad;
+    double angleRad; // radians CCW
 };
 
 
@@ -164,7 +164,7 @@ struct SE_RenderPointStyle : public SE_RenderStyle
 
     const wchar_t* angleControl;
 
-    double angleRad;
+    double angleRad; // radians CCW
     double offset[2];
 };
 
@@ -177,11 +177,11 @@ struct SE_RenderLineStyle : public SE_RenderStyle
     const wchar_t* unitsControl;
     const wchar_t* vertexControl;
 
-    double angleRad;
+    double angleRad; // radians CCW
     double startOffset;
     double endOffset;
     double repeat;
-    double vertexAngleLimit;
+    double vertexAngleLimit; // radians
     SE_LineJoin vertexJoin;
 };
 
@@ -194,7 +194,7 @@ struct SE_RenderAreaStyle : public SE_RenderStyle
     const wchar_t* originControl;
     const wchar_t* clippingControl;
 
-    double angleRad;
+    double angleRad; // radians CCW
     double origin[2];
     double repeat[2];
     double bufferWidth;
@@ -215,7 +215,7 @@ public:
     SE_RenderStyle* symbol;
     double x;
     double y;
-    double anglerad;
+    double anglerad; // radians CCW
     RS_Units dunits;
 };
 
