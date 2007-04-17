@@ -23,7 +23,7 @@
         height: 12px;
         background: white;
         width: 100%%;
-        cursor: hand;
+        cursor: pointer;
         visibility: hidden;
     }
     div.PopupScrollDownArea
@@ -34,7 +34,7 @@
         height: 12px;
         background: white;
         width: 100%%;
-        cursor: hand;
+        cursor: pointer;
         visibility: hidden;
     }
     table#tbMap
@@ -80,7 +80,7 @@
     }
     img.legendicon
     {
-        cursor: hand;
+        cursor: pointer;
         width: 20px;
         height: 20px;
     }
@@ -3326,7 +3326,7 @@ function OnSliderImageLoaded(imgName)
     var imgStyle = "display:inline-block;" + img.style.cssText
     if (img.align == "left") imgStyle = "float:left;" + imgStyle
     if (img.align == "right") imgStyle = "float:right;" + imgStyle
-    if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle
+    if (img.parentElement.href) imgStyle = "cursor:pointer;" + imgStyle
     if (img.useMap)
         strAddMap = "<img style=\"position:absolute; left: 0px; top: 0px; height:" + img.height + "px; width:" + img.width + ";\" " + "src=\"" + strGif + "\" usemap=\"" + img.useMap  + "\" border=\"" + img.border + "\">";
     var strNewHTML = "<span " + imgID + imgClass + imgTitle + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";" + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'" + img.src + "\', sizingMethod='crop');\"></span>"
