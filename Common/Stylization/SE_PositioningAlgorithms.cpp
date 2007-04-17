@@ -565,11 +565,11 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
                     }
                     else
                     {
-                        renderer->DrawSymbol(symbolVectors[shieldIndex], symxf, 0);
+                        renderer->DrawSymbol(symbolVectors[shieldIndex], symxf, 0.0);
 
                         // TODO: if this is ever needed ...
-                     // if (rlStyle->addToExclusionRegions)
-                     //     renderer->AddExclusionRegion(style, symxf, 0);
+//                      if (rlStyle->addToExclusionRegions)
+//                          renderer->AddExclusionRegion(style, symxf, 0.0);
                     }
 
                     // move on to the next shield, if beyond the last one go back to the first

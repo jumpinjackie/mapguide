@@ -47,8 +47,8 @@ struct SE_Matrix
     SE_INLINE void translateX(double x);
     SE_INLINE void translateY(double y);
     SE_INLINE void translate(double x, double y);
-    SE_INLINE void rotate(double angle);
-    SE_INLINE void rotate(double angle_sine, double angle_cosine);
+    SE_INLINE void rotate(double angleRad);
+    SE_INLINE void rotate(double angleSin, double angleCos);
 
     SE_INLINE void premultiply(const SE_Matrix& matrix);
     SE_INLINE void postmultiply(const SE_Matrix& matrix);
@@ -165,39 +165,39 @@ void SE_Matrix::translate(double x, double y)
 }
 
 
-void SE_Matrix::rotate(double angle)
+void SE_Matrix::rotate(double angleRad)
 {
     double a00, a01, a02, a10, a11, a12;
 
-    double cosine = cos(angle);
-    double sine = sin(angle);
+    double cs = cos(angleRad);
+    double sn = sin(angleRad);
 
-    a00 = x0*cosine - y0*sine;
-    a10 = y0*cosine + x0*sine;
+    a00 = x0*cs - y0*sn;
+    a10 = y0*cs + x0*sn;
 
-    a01 = x1*cosine - y1*sine;
-    a11 = y1*cosine + x1*sine;
+    a01 = x1*cs - y1*sn;
+    a11 = y1*cs + x1*sn;
 
-    a02 = x2*cosine - y2*sine;
-    a12 = y2*cosine + x2*sine;
+    a02 = x2*cs - y2*sn;
+    a12 = y2*cs + x2*sn;
 
     x0 = a00; x1 = a01; x2 = a02;
     y0 = a10; y1 = a11; y2 = a12;
 }
 
 
-void SE_Matrix::rotate(double angle_sine, double angle_cosine)
+void SE_Matrix::rotate(double angleSin, double angleCos)
 {
     double a00, a01, a02, a10, a11, a12;
 
-    a00 = x0*angle_cosine - y0*angle_sine;
-    a10 = y0*angle_cosine + x0*angle_sine;
+    a00 = x0*angleCos - y0*angleSin;
+    a10 = y0*angleCos + x0*angleSin;
 
-    a01 = x1*angle_cosine - y1*angle_sine;
-    a11 = y1*angle_cosine + x1*angle_sine;
+    a01 = x1*angleCos - y1*angleSin;
+    a11 = y1*angleCos + x1*angleSin;
 
-    a02 = x2*angle_cosine - y2*angle_sine;
-    a12 = y2*angle_cosine + x2*angle_sine;
+    a02 = x2*angleCos - y2*angleSin;
+    a12 = y2*angleCos + x2*angleSin;
 
     x0 = a00; x1 = a01; x2 = a02;
     y0 = a10; y1 = a11; y2 = a12;

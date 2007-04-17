@@ -156,7 +156,7 @@ public:
     virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style)
     {}
 
-    virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double anglerad)
+    virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double angleRad)
     {}
 
     virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight)
@@ -165,11 +165,13 @@ public:
     virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill)
     {}
 
-    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
-        double x, double y, double w, double h, double angledeg)
+    virtual void DrawScreenRaster(unsigned char* data, int length,
+                                  RS_ImageFormat format, int native_width, int native_height,
+                                  double x, double y, double w, double h, double angleDeg)
     {}
 
-    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position)
+    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
+                                double* path, int npts, double param_position)
     {}
 
     virtual bool YPointsUp()

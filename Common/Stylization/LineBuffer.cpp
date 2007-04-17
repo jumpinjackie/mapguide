@@ -305,9 +305,9 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
     int num_segs = (int)ceil(8.0 * extentA / PI2);
     double increment = extent / num_segs;
 
-    double angle = startRad;
-    double ellx = cos(angle);
-    double elly = sin(angle);
+    double angleRad = startRad;
+    double ellx = cos(angleRad);
+    double elly = sin(angleRad);
 
     double Ke = CubicApproxParameter(increment*0.5);
 
@@ -320,9 +320,9 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
         double c1x = cx + a*(ellx - Ke * elly);
         double c1y = cy + b*(elly + Ke * ellx);
 
-        angle += increment;
-        ellx = cos(angle);
-        elly = sin(angle);
+        angleRad += increment;
+        ellx = cos(angleRad);
+        elly = sin(angleRad);
 
         double c2x = cx + a * (ellx + Ke * elly);
         double c2y = cy + b * (elly - Ke * ellx);
@@ -1649,7 +1649,6 @@ void LineBuffer::Centroid(GeomOperationType type, double* x, double * y, double 
         break;
     default:
         break;
-
     }
 }
 

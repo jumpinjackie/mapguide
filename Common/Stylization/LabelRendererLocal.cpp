@@ -323,7 +323,7 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
         LR_LabelInfoLocal lrinfo(info->x, info->y, info->symbol);
 
         //TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
-        lrinfo.m_tdef.rotation() = info->anglerad;
+        lrinfo.m_tdef.rotation() = info->anglerad / M_PI180;
 
         m_labelGroups.back().m_labels.push_back(lrinfo);
     }
@@ -979,9 +979,9 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
 
     //now we will translate and orient the bounds with the given angle and position of the symbol
     //apply position and rotation to the native bounds of the symbol
-    double angle = m_serenderer->YPointsUp()? info.m_tdef.rotation() : -info.m_tdef.rotation();
+    double angleRad = info.m_tdef.rotation() * M_PI180;
     SE_Matrix m;
-    m.rotate(angle); //it is already in radians in there
+    m.rotate(m_serenderer->YPointsUp()? angleRad : -angleRad);
     m.translate(info.m_x, info.m_y);
 
     for (int i=0; i<4; i++)
@@ -1135,12 +1135,12 @@ bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfo
         if (info.m_sestyle)
         {
             //apply position and rotation to the native bounds of the symbol
-            double angle = m_serenderer->YPointsUp()? info.m_tdef.rotation() : -info.m_tdef.rotation();
+            double angleRad = info.m_tdef.rotation() * M_PI180;
             SE_Matrix m;
-            m.rotate(angle); //it is already in radians in there
+            m.rotate(m_serenderer->YPointsUp()? angleRad : -angleRad);
             m.translate(info.m_x, info.m_y);
 
-            m_serenderer->DrawSymbol(info.m_sestyle->symbol, m, angle);
+            m_serenderer->DrawSymbol(info.m_sestyle->symbol, m, angleRad);
         }
         else if (info.m_tm.char_pos.size() > 0)
             m_serenderer->GetFontEngine()->DrawPathText(info.m_tm, info.m_tdef);

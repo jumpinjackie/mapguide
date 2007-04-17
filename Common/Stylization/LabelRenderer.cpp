@@ -181,7 +181,7 @@ void LabelRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
         LR_LabelInfo lrinfo(info->x, info->y, info->symbol);
 
         //TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
-        lrinfo.m_tdef.rotation() = info->anglerad;
+        lrinfo.m_tdef.rotation() = info->anglerad / M_PI180;
 
         m_labelGroups.back().m_labels.push_back(lrinfo);
     }
@@ -357,9 +357,9 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
     fe->GetTextMetrics(info.m_text, info.m_tdef, tm, false);
 
     //radian CCW rotation
-    double rotation = info.m_tdef.rotation() * M_PI180;
-    double cos_a = cos(rotation);
-    double sin_a = sin(rotation);
+    double angleRad = info.m_tdef.rotation() * M_PI180;
+    double cos_a = cos(angleRad);
+    double sin_a = sin(angleRad);
 
     // transform insertion point into pixel space
     RS_F_Point ins_point;
@@ -442,9 +442,9 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
 
     //now we will translate and orient the bounds with the given angle and position of the symbol
     //apply position and rotation to the native bounds of the symbol
-    double angle = m_serenderer->YPointsUp()? info.m_tdef.rotation() : -info.m_tdef.rotation();
+    double angleRad = info.m_tdef.rotation() * M_PI180;
     SE_Matrix m;
-    m.rotate(angle); //it is already in radians in there
+    m.rotate(m_serenderer->YPointsUp()? angleRad : -angleRad);
     m.translate(info.m_x, info.m_y);
 
     for (int i=0; i<4; i++)
@@ -476,7 +476,7 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
 
     if (render)
     {
-        m_serenderer->DrawSymbol(info.m_sestyle->symbol, m, angle);
+        m_serenderer->DrawSymbol(info.m_sestyle->symbol, m, angleRad);
 
 #ifdef DEBUG_LABELS
         LineBuffer lb(5);
@@ -530,7 +530,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
     if (!numreps) numreps = 1;
 
     int numchars = (int)info.m_text.length();
-    int labels_drawn = 0; //counter for how many of the repeated label were accepted
+    int labels_drawn = 0; //counter for how many of the repeated labels were accepted
 
     for (int i=0; i<numreps; i++)
     {
@@ -605,13 +605,13 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
             fe->DrawPathText(tm, info.m_tdef);
         }
 
-        labels_drawn ++; //increment count of how many labels we accepted
+        labels_drawn++; //increment count of how many labels we accepted
 
 cont_loop:
         ;
     }
 
-    return (labels_drawn != 0);
+    return (labels_drawn > 0);
 }
 
 

@@ -301,6 +301,7 @@ private:
 
 
 //////////////////////////////////////////////////////////////////////////////
+// Stores text style information.  The rotation is in degrees CCW.
 class RS_TextDef
 {
 public:
@@ -361,6 +362,7 @@ private:
 
 
 //////////////////////////////////////////////////////////////////////////////
+// Stores marker style information.  The rotation is in degrees CCW.
 class RS_MarkerDef
 {
 public:
@@ -417,7 +419,7 @@ private:
     double m_height;
     double m_insx;
     double m_insy;
-    double m_rotation; //degrees
+    double m_rotation;
     RS_String m_library;
     RS_String m_name;
     RS_Units m_units;

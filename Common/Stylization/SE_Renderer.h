@@ -28,18 +28,25 @@ public:
     STYLIZATION_API SE_Renderer();
     STYLIZATION_API ~SE_Renderer();
 
-    /* SE_RenderSymbol, under associated xform, is in screen space, and geometry is in screen space */
+    // SE_RenderStyle, under associated xform, is in screen space, and geometry is in screen space
     STYLIZATION_API virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style);
     STYLIZATION_API virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
     STYLIZATION_API virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style);
 
-    STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double anglerad);
+    // Draws the specified symbol using the given transform.  The supplied angle is in radians
+    // CCW, and should correspond to the rotation encoded in the transform.  Note that since the
+    // transform converts to renderer space, its rotation component must take into account whether
+    // y points up.
+    STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double angleRad);
 
-    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight) = 0; // px
+    // Screen-space draw functions.  All angles are in degrees CCW.
+    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight) = 0;
     virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill) = 0;
-    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
-        double x, double y, double w, double h, double angledeg) = 0;
-    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position) = 0;
+    virtual void DrawScreenRaster(unsigned char* data, int length,
+                                  RS_ImageFormat format, int native_width, int native_height,
+                                  double x, double y, double w, double h, double angleDeg) = 0;
+    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
+                                double* path, int npts, double param_position) = 0;
 
     virtual bool YPointsUp() = 0;
     virtual void GetWorldToScreenTransform(SE_Matrix& xform) = 0;
@@ -51,8 +58,7 @@ public:
 
     virtual RS_FontEngine* GetFontEngine() = 0;
 
-    //labeling -- this is the entry API for adding SE labels
-    //to the label mananger
+    // Labeling -- this is the entry API for adding SE labels to the label mananger
     virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
                                    int              nlabels,
                                    RS_OverpostType  type,
@@ -76,8 +82,9 @@ private:
     void AddLabelJoin(LineBuffer* geom, SE_RenderStyle* style, SE_PiecewiseTransform** xforms, int nxforms);
     void AddExclusionRegionJoin(SE_PiecewiseTransform** xforms, int nxforms);
 
-    void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double anglerad);
-    void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double anglerad);
+    // angles are in radians CCW
+    void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad);
+    void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angleRad);
 
     RS_F_Point m_lastExclusionRegion[4];
 
