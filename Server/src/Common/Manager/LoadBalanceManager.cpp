@@ -913,14 +913,17 @@ void MgLoadBalanceManager::NotifyResourcesChanged(CREFSTRING serverAddress,
     assert(!serverAddress.empty());
     assert(NULL != resources && resources->GetCount() > 0);
 
-    STRING ipAddress;
-    MgIpUtil::HostNameToAddress(serverAddress, ipAddress);
-    Ptr<MgUserInformation> userInformation = MgSecurityManager::CreateSystemCredentials();
-    MgServerAdmin serverAdmin;
+    if (NULL != resources && resources->GetCount() > 0)
+    {
+        STRING ipAddress;
+        MgIpUtil::HostNameToAddress(serverAddress, ipAddress);
+        Ptr<MgUserInformation> userInformation = MgSecurityManager::CreateSystemCredentials();
+        MgServerAdmin serverAdmin;
 
-    serverAdmin.Open(ipAddress, userInformation);
-    serverAdmin.NotifyResourcesChanged(resources);
-    serverAdmin.Close();
+        serverAdmin.Open(ipAddress, userInformation);
+        serverAdmin.NotifyResourcesChanged(resources);
+        serverAdmin.Close();
+    }
 
     MG_CATCH_AND_THROW(L"MgLoadBalanceManager.NotifyResourcesChanged")
 }
@@ -931,42 +934,80 @@ void MgLoadBalanceManager::NotifyResourcesChanged(CREFSTRING serverAddress,
 /// tile service.
 ///
 void MgLoadBalanceManager::DispatchResourceChangeNotifications(
-    MgSerializableCollection* resources)
+    MgSerializableCollection* changedResources,
+    MgSerializableCollection* changedMapDefinitions)
 {
     MG_TRY()
 
-    if (resources != NULL && resources->GetCount() > 0)
+    Ptr<MgSerializableCollection> affectedResources;
+
+    if (NULL == changedMapDefinitions)
+    {
+        affectedResources = new MgSerializableCollection();
+    }
+    else
+    {
+        affectedResources = SAFE_ADDREF(changedMapDefinitions);
+    }
+
+    Ptr<MgStringCollection> addresses = GetServerAddresses(MgServiceType::TileService);
+    INT32 numServers = addresses->GetCount();
+
+    for (INT32 i = 0; i < numServers; ++i)
+    {
+        // If an error occurs, catch the exception but do not throw it
+        // so that the site server can continue dispatching
+        // resource change notifications to other support servers.
+
+        try
+        {
+            // For Site server, only changed map definitions will be notified.
+            // For Support servers, both changed map definitions and feature
+            // sources will be notified.
+            if (1 == i && NULL != changedResources)
+            {
+                INT32 numResources = changedResources->GetCount();
+
+                for (INT32 j = 0; j < numResources; ++j)
+                {
+                    Ptr<MgSerializable> serializableObj = changedResources->GetItem(j);
+                    MgResourceIdentifier* resource = dynamic_cast<MgResourceIdentifier*>(
+                        serializableObj.p);
+                    ACE_ASSERT(NULL != resource);
+
+                    if (NULL != resource && resource->IsResourceTypeOf(MgResourceType::FeatureSource))
+                    {
+                        affectedResources->Add(resource);
+                    }
+                }
+
+                if (affectedResources->GetCount() <= 0)
+                {
+                    break;
+                }
+            }
+
+            NotifyResourcesChanged(addresses->GetItem(i), affectedResources.p);
+        }
+        catch (MgException* e)
+        {
+            // Server is down or request gets timed out? Log the message.
+            STRING locale = m_serverManager->GetDefaultMessageLocale();
+
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+            MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
+            MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+
+            SAFE_RELEASE(e);
+        }
+        catch (...)
+        {
+        }
+    }
+
+    if (affectedResources->GetCount() > 0)
     {
         MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::DispatchResourceChangeNotifications()");
-
-        Ptr<MgStringCollection> addresses = GetServerAddresses(MgServiceType::TileService);
-        INT32 numServers = addresses->GetCount();
-
-        for (INT32 i = 0; i < numServers; ++i)
-        {
-            // If an error occurs, catch the exception but do not throw it
-            // so that the site server can continue dispatching
-            // resource change notifications to other support servers.
-
-            try
-            {
-                NotifyResourcesChanged(addresses->GetItem(i), resources);
-            }
-            catch (MgException* e)
-            {
-                // Server is down or request gets timed out? Log the message.
-                STRING locale = m_serverManager->GetDefaultMessageLocale();
-
-                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
-                MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-                MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
-
-                SAFE_RELEASE(e);
-            }
-            catch (...)
-            {
-            }
-        }
     }
 
     MG_CATCH_AND_THROW(L"MgLoadBalanceManager.DispatchResourceChangeNotifications")

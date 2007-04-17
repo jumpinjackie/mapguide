@@ -784,56 +784,35 @@ void MgApplicationRepositoryManager::SetResourceData(
 
     if (MgResourceDataType::File == dataType)
     {
-        // Need to check the FDO connection manager to see if there is a cached
-        // connection to this data and remove it if possible.
-        // If there is and it is not in use then we can remove it from the cache
-        // and allow the copy.
-        MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        ACE_ASSERT(NULL != fdoConnectionManager);
+        MgServerResourceService::RemoveCachedFdoConnection(resource);
 
-        if (NULL != fdoConnectionManager)
+        // Set the tag first to ensure the data name/type is unique within
+        // the resource.
+        tagMan.SetTag(dataName, dataType, dataValue, mimeType);
+
+        STRING pathname = m_dataFileMan->GetResourceDataFilePath();
+        MgTagInfo filePathTag;
+
+        if (tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag, false))
         {
-            if(fdoConnectionManager->RemoveCachedFdoConnection(resource->ToString()))
-            {
-                // Set the tag first to ensure the data name/type is unique within
-                // the resource.
-                tagMan.SetTag(dataName, dataType, dataValue, mimeType);
-
-                STRING pathname = m_dataFileMan->GetResourceDataFilePath();
-                MgTagInfo filePathTag;
-
-                if (tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag, false))
-                {
-                    pathname += filePathTag.GetAttribute(MgTagInfo::TokenValue);
-                }
-                else // Add the File Path tag.
-                {
-                    STRING dirName;
-                    MgUtil::GenerateUuid(dirName);
-
-                    pathname += dirName;
-                    MgFileUtil::CreateDirectory(pathname);
-
-                    tagMan.SetTag(MgResourceTag::DataFilePath,
-                        MgResourceDataType::String, dirName, MgMimeType::Text);
-                }
-
-                pathname += L"/";
-                pathname += dataName;
-
-                m_dataFileMan->SetResourceData(pathname, data);
-            }
-            else
-            {
-                // Could not remove the cached FDO connection because it is in use.
-                MgStringCollection arguments;
-                arguments.Add(resource->ToString());
-
-                throw new MgResourceBusyException(
-                    L"MgApplicationRepositoryManager.SetResourceData",
-                    __LINE__, __WFILE__, &arguments, L"", NULL);
-            }
+            pathname += filePathTag.GetAttribute(MgTagInfo::TokenValue);
         }
+        else // Add the File Path tag.
+        {
+            STRING dirName;
+            MgUtil::GenerateUuid(dirName);
+
+            pathname += dirName;
+            MgFileUtil::CreateDirectory(pathname);
+
+            tagMan.SetTag(MgResourceTag::DataFilePath,
+                MgResourceDataType::String, dirName, MgMimeType::Text);
+        }
+
+        pathname += L"/";
+        pathname += dataName;
+
+        m_dataFileMan->SetResourceData(pathname, data);
     }
     else if (MgResourceDataType::Stream == dataType)
     {
@@ -945,38 +924,17 @@ void MgApplicationRepositoryManager::DeleteResourceData(
 
     if (MgResourceDataType::File == dataType)
     {
-        // Need to check the FDO connection manager to see if there is a cached
-        // connection to this data and remove it if possible.
-        // If there is and it is not in use then we can remove it from the cache
-        // and allow the delete.
-        MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        ACE_ASSERT(NULL != fdoConnectionManager);
+        MgServerResourceService::RemoveCachedFdoConnection(resource);
 
-        if (NULL != fdoConnectionManager)
-        {
-            if(fdoConnectionManager->RemoveCachedFdoConnection(resource->ToString()))
-            {
-                MgTagInfo filePathTag;
-                tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag);
+        MgTagInfo filePathTag;
+        tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag);
 
-                STRING pathname = m_dataFileMan->GetResourceDataFilePath();
-                pathname += filePathTag.GetAttribute(MgTagInfo::TokenValue);
-                pathname += L"/";
-                pathname += dataName;
+        STRING pathname = m_dataFileMan->GetResourceDataFilePath();
+        pathname += filePathTag.GetAttribute(MgTagInfo::TokenValue);
+        pathname += L"/";
+        pathname += dataName;
 
-                m_dataFileMan->DeleteResourceData(pathname);
-            }
-            else
-            {
-                // Could not remove the cached FDO connection because it is in use.
-                MgStringCollection arguments;
-                arguments.Add(resource->ToString());
-
-                throw new MgResourceBusyException(
-                    L"MgApplicationRepositoryManager.DeleteResourceData",
-                    __LINE__, __WFILE__, &arguments, L"", NULL);
-            }
-        }
+        m_dataFileMan->DeleteResourceData(pathname);
     }
     else if (MgResourceDataType::Stream == dataType)
     {
@@ -1062,38 +1020,17 @@ void MgApplicationRepositoryManager::RenameResourceData(
 
     if (MgResourceDataType::File == dataType)
     {
-        // Need to check the FDO connection manager to see if there is a cached
-        // connection to this data and remove it if possible.
-        // If there is and it is not in use then we can remove it from the cache
-        // and allow the copy.
-        MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        ACE_ASSERT(NULL != fdoConnectionManager);
+        MgServerResourceService::RemoveCachedFdoConnection(resource);
 
-        if (NULL != fdoConnectionManager)
-        {
-            if(fdoConnectionManager->RemoveCachedFdoConnection(resource->ToString()))
-            {
-                MgTagInfo filePathTag;
-                tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag);
+        MgTagInfo filePathTag;
+        tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag);
 
-                STRING path = m_dataFileMan->GetResourceDataFilePath();
-                path += filePathTag.GetAttribute(MgTagInfo::TokenValue);
-                path += L"/";
+        STRING path = m_dataFileMan->GetResourceDataFilePath();
+        path += filePathTag.GetAttribute(MgTagInfo::TokenValue);
+        path += L"/";
 
-                tagMan.RenameTag(oldDataName, newDataName);
-                m_dataFileMan->RenameResourceData(path, oldDataName, newDataName, overwrite);
-            }
-            else
-            {
-                // Could not remove the cached FDO connection because it is in use.
-                MgStringCollection arguments;
-                arguments.Add(resource->ToString());
-
-                throw new MgResourceBusyException(
-                    L"MgApplicationRepositoryManager.RenameResourceData",
-                    __LINE__, __WFILE__, &arguments, L"", NULL);
-            }
-        }
+        tagMan.RenameTag(oldDataName, newDataName);
+        m_dataFileMan->RenameResourceData(path, oldDataName, newDataName, overwrite);
     }
     else if (MgResourceDataType::Stream == dataType)
     {
@@ -1306,33 +1243,13 @@ void MgApplicationRepositoryManager::DeleteResourceData(
 
         if (MgResourceDataType::File == dataType)
         {
-            // Need to check the FDO connection manager to see if there is a cached
-            // connection to this data and remove it if possible.
-            // If there is and it is not in use then we can remove it from the cache
-            // and allow the delete.
-            MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-            ACE_ASSERT(NULL != fdoConnectionManager);
+            MgServerResourceService::RemoveCachedFdoConnection(resource);
 
-            if (NULL != fdoConnectionManager)
-            {
-                if(fdoConnectionManager->RemoveCachedFdoConnection(resource->ToString()))
-                {
-                    assert(!filePath.empty());
-                    STRING pathname = filePath;
-                    pathname += dataName;
+            assert(!filePath.empty());
+            STRING pathname = filePath;
+            pathname += dataName;
 
-                    m_dataFileMan->DeleteResourceData(pathname);
-                }
-                else
-                {
-                    MgStringCollection arguments;
-                    arguments.Add(resource->ToString());
-
-                    throw new MgResourceBusyException(
-                        L"MgApplicationRepositoryManager.DeleteResourceData",
-                        __LINE__, __WFILE__, &arguments, L"", NULL);
-                }
-            }
+            m_dataFileMan->DeleteResourceData(pathname);
         }
         else if (MgResourceDataType::Stream == dataType)
         {

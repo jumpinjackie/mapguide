@@ -392,22 +392,54 @@ MgService* MgServiceManager::RequestService(INT32 serviceType)
 ///
 void MgServiceManager::NotifyResourcesChanged(MgSerializableCollection* resources)
 {
-    // Remove the Feature Service cache entries associated with the changed resources
-    Ptr<MgServerFeatureService> featureService = dynamic_cast<MgServerFeatureService*>(
-        RequestLocalService(MgServiceType::FeatureService));
-
-    if (featureService != NULL)
+    // Remove the Feature Service cache entries associated with the changed Feature Sources.
+    if (m_loadBalanceManager->m_localServerInfo->IsServiceEnabled(
+        MgServiceType::FeatureService))
     {
-        featureService->RemoveFeatureServiceCacheEntries(resources);
+        Ptr<MgService> service = RequestLocalService(MgServiceType::FeatureService);
+        MgServerFeatureService* featureService = dynamic_cast<MgServerFeatureService*>(service.p);
+        ACE_ASSERT(NULL != featureService);
+
+        if (NULL != featureService)
+        {
+            INT32 numResources = resources->GetCount();
+
+            for (INT32 i = 0; i < numResources; ++i)
+            {
+                Ptr<MgSerializable> serializableObj = resources->GetItem(i);
+                MgResourceIdentifier* resource = dynamic_cast<MgResourceIdentifier*>(
+                    serializableObj.p);
+                ACE_ASSERT(NULL != resource);
+
+                if (NULL != resource && resource->IsResourceTypeOf(MgResourceType::FeatureSource))
+                {
+                    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+                    ACE_ASSERT(NULL != fdoConnectionManager);
+
+                    if (!fdoConnectionManager->RemoveCachedFdoConnection(resource->ToString()))
+                    {
+                        // Could not remove the cached FDO connection because it is in use.
+                        MgStringCollection arguments;
+                        arguments.Add(resource->ToString());
+
+                        throw new MgResourceBusyException(
+                            L"MgServiceManager.NotifyResourcesChanged",
+                            __LINE__, __WFILE__, NULL, L"", NULL);
+                    }
+                }
+            }
+        }
     }
 
+    // Clear the tile cache associated with the changed Map Definitions.
     if (m_loadBalanceManager->m_localServerInfo->IsServiceEnabled(
         MgServiceType::TileService))
     {
-        Ptr<MgServerTileService> tileService = dynamic_cast<MgServerTileService*>(
-            RequestLocalService(MgServiceType::TileService));
+        Ptr<MgService> service = RequestLocalService(MgServiceType::TileService);
+        MgServerTileService* tileService = dynamic_cast<MgServerTileService*>(service.p);
+        ACE_ASSERT(NULL != tileService);
 
-        if (tileService != NULL)
+        if (NULL != tileService)
         {
             tileService->NotifyResourcesChanged(resources);
         }
@@ -438,10 +470,11 @@ void MgServiceManager::DispatchResourceChangeNotifications()
 
         if (changedResources != NULL)
         {
-            Ptr<MgSerializableCollection> changedMaps = 
+            Ptr<MgSerializableCollection> changedMapDefinitions = 
                 resourceService->EnumerateParentMapDefinitions(changedResources);
 
-            m_loadBalanceManager->DispatchResourceChangeNotifications(changedMaps);
+            m_loadBalanceManager->DispatchResourceChangeNotifications(
+                changedResources, changedMapDefinitions);
         }
     }
 
@@ -493,5 +526,5 @@ void MgServiceManager::RemoveFeatureServiceCacheEntry(MgResourceIdentifier* reso
         featureService->RemoveFeatureServiceCacheEntry(resource);
     }
 
-    MG_CATCH(L"MgServiceManager.NotifyFeatureServiceCache")
+    MG_CATCH(L"MgServiceManager.RemoveFeatureServiceCacheEntry")
 }
