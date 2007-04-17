@@ -181,7 +181,7 @@
                     </tr>
                     <tr>
                         <td class="loginInputLabel">Password:</td>
-                        <td class="loginInputFormValue"><input class="loginInputFormValue" name="<?php echo $adminPasswordID?>" type="password" class="TableCell" size="50" value="<?php echo $adminPassword ?>"></td>
+                        <td class="loginInputFormValue"><input class="loginInputFormValue" name="<?php echo $adminPasswordID?>" type="password" class="TableCell" size="50" value=""></td>
                     </tr>
                 </table>
 
