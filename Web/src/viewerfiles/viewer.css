@@ -42,10 +42,10 @@ span.btn
     border-width: 1px;
     border-style: solid;
     border-color: #f0f0f0;
-    width: 26;
-    height: 25;
+    width: 26px;
+    height: 25px;
     top: 3px;
-    cursor: hand;
+    cursor: pointer;
     font-family: arial, helvetica, sans-serif;
     font-size: 8pt;
 }
@@ -56,9 +56,9 @@ span.btnFlyout
     border-color: #f0f0f0;
     position: absolute;
     left: 1px;
-    height: 24;
+    height: 24px;
     top: 3px;
-    cursor: hand;
+    cursor: pointer;
     font-family: arial, helvetica, sans-serif;
     font-size: 8pt;
 }
