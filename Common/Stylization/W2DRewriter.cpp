@@ -27,18 +27,21 @@
 //------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////
 
-WT_Result simple_open (WT_File & /*file*/)
+
+WT_Result simple_open(WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
-WT_Result simple_close (WT_File & file)
+
+WT_Result simple_close(WT_File & file)
 {
     file.set_stream_user_data(WD_Null);
     return WT_Result::Success;
 }
 
-WT_Result simple_read (WT_File & file, int desired_bytes, int & bytes_read, void * buffer)
+
+WT_Result simple_read(WT_File & file, int desired_bytes, int & bytes_read, void * buffer)
 {
     bytes_read = (int)((DWFRenderer*)file.stream_user_data())->_GetInputStream()->read(buffer, desired_bytes);
 
@@ -47,6 +50,7 @@ WT_Result simple_read (WT_File & file, int desired_bytes, int & bytes_read, void
 
     return WT_Result::Success;
 }
+
 
 WT_Result simple_seek(WT_File & file, int distance, int & amount_seeked)
 {
@@ -65,56 +69,63 @@ WT_Result simple_seek(WT_File & file, int distance, int & amount_seeked)
 ////////////////////////////////////////////////////////////////////
 
 
-WT_Result simple_process_author (WT_Author & /*author*/, WT_File & /*file*/)
+WT_Result simple_process_author(WT_Author & /*author*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //author.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_creator (WT_Creator & /*creator*/, WT_File & /*file*/)
+
+WT_Result simple_process_creator(WT_Creator & /*creator*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //creator.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_created (WT_Creation_Time & /*created*/, WT_File & /*file*/)
+
+WT_Result simple_process_created(WT_Creation_Time & /*created*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //created.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_modified (WT_Modification_Time & /*modified*/, WT_File & /*file*/)
+
+WT_Result simple_process_modified(WT_Modification_Time & /*modified*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //modified.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_sourceFilename (WT_Source_Filename & /*sourceFilename*/, WT_File & /*file*/)
+
+WT_Result simple_process_sourceFilename(WT_Source_Filename & /*sourceFilename*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //sourceFilename.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_sourceCreationTime (WT_Source_Creation_Time & /*sourceCreated*/, WT_File & /*file*/)
+
+WT_Result simple_process_sourceCreationTime(WT_Source_Creation_Time & /*sourceCreated*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //sourceCreated.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_sourceModificationTime (WT_Source_Modification_Time & /*sourceModified*/, WT_File & /*file*/)
+
+WT_Result simple_process_sourceModificationTime(WT_Source_Modification_Time & /*sourceModified*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //sourceModified.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_units (WT_Units & units, WT_File & file)
+
+WT_Result simple_process_units(WT_Units & units, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //do not write the units -- the destination W2D has different units
@@ -129,14 +140,16 @@ WT_Result simple_process_units (WT_Units & units, WT_File & file)
     return WT_Result::Success;
 }
 
-WT_Result simple_process_embed (WT_Embed & /*embed*/, WT_File & /*file*/)
+
+WT_Result simple_process_embed(WT_Embed & /*embed*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //embed.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_namedView (WT_Named_View & namedView, WT_File & file)
+
+WT_Result simple_process_namedView(WT_Named_View & namedView, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -155,7 +168,8 @@ WT_Result simple_process_namedView (WT_Named_View & namedView, WT_File & file)
     return WT_Result::Success;
 }
 
-WT_Result simple_process_view (WT_View & view, WT_File & file)
+
+WT_Result simple_process_view(WT_View & view, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -174,7 +188,8 @@ WT_Result simple_process_view (WT_View & view, WT_File & file)
     return WT_Result::Success;
 }
 
-WT_Result simple_process_plotInfo (WT_Plot_Info & /*plotInfo*/, WT_File & /*file*/)
+
+WT_Result simple_process_plotInfo(WT_Plot_Info & /*plotInfo*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //plotInfo.serialize(*rewriter->_GetW2D());
@@ -182,21 +197,24 @@ WT_Result simple_process_plotInfo (WT_Plot_Info & /*plotInfo*/, WT_File & /*file
     return WT_Result::Success;
 }
 
-WT_Result simple_process_background (WT_Background & background, WT_File & file)
+
+WT_Result simple_process_background(WT_Background & background, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     background.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_color (WT_Color & color, WT_File & file)
+
+WT_Result simple_process_color(WT_Color & color, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     (*rewriter->_GetW2D()).desired_rendition().color() = color;
     return WT_Result::Success;
 }
 
-WT_Result simple_process_lineWeight (WT_Line_Weight & lineWeight, WT_File & file)
+
+WT_Result simple_process_lineWeight(WT_Line_Weight & lineWeight, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -206,16 +224,16 @@ WT_Result simple_process_lineWeight (WT_Line_Weight & lineWeight, WT_File & file
     return WT_Result::Success;
 }
 
-WT_Result simple_process_lineStyle (WT_Line_Style & lineStyle, WT_File & file)
+
+WT_Result simple_process_lineStyle(WT_Line_Style & lineStyle, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
-
     (*rewriter->_GetW2D()).desired_rendition().line_style() = lineStyle;
-
     return WT_Result::Success;
 }
 
-WT_Result simple_process_layer (WT_Layer & layer, WT_File & file)
+
+WT_Result simple_process_layer(WT_Layer & layer, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -278,7 +296,8 @@ WT_Result simple_process_layer (WT_Layer & layer, WT_File & file)
     return WT_Result::Success;
 }
 
-WT_Result simple_process_viewport (WT_Viewport & viewport, WT_File & file)
+
+WT_Result simple_process_viewport(WT_Viewport & viewport, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -302,35 +321,40 @@ WT_Result simple_process_viewport (WT_Viewport & viewport, WT_File & file)
     return WT_Result::Success;
 }
 
-WT_Result simple_process_visibility (WT_Visibility & visibility, WT_File & file)
+
+WT_Result simple_process_visibility(WT_Visibility & visibility, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     visibility.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_codePage (WT_Code_Page & codePage, WT_File & file)
+
+WT_Result simple_process_codePage(WT_Code_Page & codePage, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     (*rewriter->_GetW2D()).desired_rendition().code_page() = codePage;
     return WT_Result::Success;
 }
 
-WT_Result simple_process_colorMap (WT_Color_Map & colorMap, WT_File & file)
+
+WT_Result simple_process_colorMap(WT_Color_Map & colorMap, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     (*rewriter->_GetW2D()).desired_rendition().color_map() = colorMap;
     return WT_Result::Success;
 }
 
-WT_Result simple_process_comments (WT_Comments & comments, WT_File & file)
+
+WT_Result simple_process_comments(WT_Comments & comments, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     comments.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
+
+WT_Result simple_process_contourSet(WT_Contour_Set & contourSet, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -368,8 +392,7 @@ WT_Result simple_process_contourSet (WT_Contour_Set & contourSet, WT_File & file
         int numpts = 0;
         std::vector<int>* cntrs = NULL;
 
-        //transform and clip polygon -- clipping may result in more than one new
-        //contours
+        //transform and clip polygon -- clipping may result in more than one new contour
         const WT_Logical_Point* dst_cntr = rewriter->ProcessW2DPoints(
             file, cur_cntr, cntrcounts[i], LineBuffer::ctArea, numpts, &cntrs);
 
@@ -382,9 +405,7 @@ WT_Result simple_process_contourSet (WT_Contour_Set & contourSet, WT_File & file
                 newcounts.push_back((*cntrs)[k]);
 
                 for (int j=offset; j<(*cntrs)[k]+offset; j++)
-                {
                     newpts.push_back(dst_cntr[j]);
-                }
 
                 offset += (*cntrs)[k];
             }
@@ -397,8 +418,8 @@ WT_Result simple_process_contourSet (WT_Contour_Set & contourSet, WT_File & file
     {
         WT_Contour_Set cset2(file, (WT_Integer32)newcounts.size(), (WT_Integer32*)&newcounts.front(),
             (WT_Integer32)newpts.size(), (WT_Logical_Point*)&newpts.front(), true);
-
         cset2.serialize(*rewriter->_GetW2D());
+        rewriter->IncrementDrawableCount();
     }
 
     if (restoreColor)
@@ -407,37 +428,41 @@ WT_Result simple_process_contourSet (WT_Contour_Set & contourSet, WT_File & file
     return WT_Result::Success;
 }
 
-WT_Result simple_process_copyright (WT_Copyright & /*copyright*/, WT_File & /*file*/)
+
+WT_Result simple_process_copyright(WT_Copyright & /*copyright*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //copyright.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_dashPattern (WT_Dash_Pattern & dashPattern, WT_File & file)
+
+WT_Result simple_process_dashPattern(WT_Dash_Pattern & dashPattern, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     (*rewriter->_GetW2D()).desired_rendition().dash_pattern() = dashPattern;
     return WT_Result::Success;
 }
 
-WT_Result simple_process_description (WT_Description & /*description*/, WT_File & /*file*/)
+
+WT_Result simple_process_description(WT_Description & /*description*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //description.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_fill (WT_Fill & fill, WT_File & file)
+
+WT_Result simple_process_fill(WT_Fill & fill, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
-    //    fill.serialize(simple_output_file);
-    //    fill.serialize(simple_output_file);
+    //fill.serialize(simple_output_file);
     (*rewriter->_GetW2D()).desired_rendition().fill() = fill;
     return WT_Result::Success;
 }
 
-WT_Result simple_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File & file)
+
+WT_Result simple_process_filledEllipse(WT_Filled_Ellipse & filledEllipse, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -469,8 +494,8 @@ WT_Result simple_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_Fi
         WT_Integer32 minor = rewriter->ScaleW2DNumber(file, filledEllipse.minor());
 
         WT_Filled_Ellipse ell2(dstpts[0], major, minor, (WT_Unsigned_Integer16)filledEllipse.start(), (WT_Unsigned_Integer16)filledEllipse.end(), filledEllipse.tilt());
-
         ell2.serialize(*rewriter->_GetW2D());
+        rewriter->IncrementDrawableCount();
     }
 
     if (restoreColor)
@@ -479,7 +504,8 @@ WT_Result simple_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_Fi
     return WT_Result::Success;
 }
 
-WT_Result simple_process_font (WT_Font & font, WT_File & file)
+
+WT_Result simple_process_font(WT_Font & font, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -490,7 +516,8 @@ WT_Result simple_process_font (WT_Font & font, WT_File & file)
     return WT_Result::Success;
 }
 
-WT_Result simple_process_gouraudPolyline (WT_Gouraud_Polyline & gouraudPolyline, WT_File & file)
+
+WT_Result simple_process_gouraudPolyline(WT_Gouraud_Polyline & gouraudPolyline, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -505,15 +532,14 @@ WT_Result simple_process_gouraudPolyline (WT_Gouraud_Polyline & gouraudPolyline,
 
     //TODO: if the polyline is clipped, the colors will be wrong
     WT_Gouraud_Polyline poly2(numpts, dstpts, gouraudPolyline.colors(), true);
-
     poly2.serialize(*rewriter->_GetW2D());
-
+    rewriter->IncrementDrawableCount();
 
     return WT_Result::Success;
 }
 
 
-WT_Result simple_process_gouraudPolytriangle (WT_Gouraud_Polytriangle & gouraudPolytriangle, WT_File & file)
+WT_Result simple_process_gouraudPolytriangle(WT_Gouraud_Polytriangle & gouraudPolytriangle, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -541,6 +567,7 @@ WT_Result simple_process_gouraudPolytriangle (WT_Gouraud_Polytriangle & gouraudP
             {
                 WT_Gouraud_Polytriangle gpt2(count, dstpts + index, gouraudPolytriangle.colors() + index, false);
                 gpt2.serialize(*rewriter->_GetW2D());
+                rewriter->IncrementDrawableCount();
             }
 
             count = 0;
@@ -557,6 +584,7 @@ WT_Result simple_process_gouraudPolytriangle (WT_Gouraud_Polytriangle & gouraudP
     {
         WT_Gouraud_Polytriangle gpt2(count, dstpts + index, gouraudPolytriangle.colors() + index, false);
         gpt2.serialize(*rewriter->_GetW2D());
+        rewriter->IncrementDrawableCount();
     }
 
     return WT_Result::Success;
@@ -801,7 +829,7 @@ void RotateRGBAImage(const WT_Unsigned_Integer16 rows,
 
 int g_imageId = 1;//TODO:  may be this should be a variable in DWFRenderer
 
-WT_Result simple_process_image (WT_Image & image, WT_File & file)
+WT_Result simple_process_image(WT_Image & image, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -847,6 +875,7 @@ WT_Result simple_process_image (WT_Image & image, WT_File & file)
                 true);
 
             image2.serialize(*rewriter->_GetW2D());
+            rewriter->IncrementDrawableCount();
         }
         else if (image.format() == WT_Image::RGB || image.format() == WT_Image::RGBA)
         {
@@ -858,20 +887,23 @@ WT_Result simple_process_image (WT_Image & image, WT_File & file)
                             g_imageId++,
                             dstpts,
                             *rewriter->_GetW2D());
+            rewriter->IncrementDrawableCount();
         }
     }
 
     return WT_Result::Success;
 }
 
-WT_Result simple_process_keywords (WT_Keywords & /*keywords*/, WT_File & /*file*/)
+
+WT_Result simple_process_keywords(WT_Keywords & /*keywords*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //keywords.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_markerSize (WT_Marker_Size & markerSize, WT_File & file)
+
+WT_Result simple_process_markerSize(WT_Marker_Size & markerSize, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -882,7 +914,8 @@ WT_Result simple_process_markerSize (WT_Marker_Size & markerSize, WT_File & file
     return WT_Result::Success;
 }
 
-WT_Result simple_process_markerSymbol (WT_Marker_Symbol & markerSymbol, WT_File & file)
+
+WT_Result simple_process_markerSymbol(WT_Marker_Symbol & markerSymbol, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -893,21 +926,24 @@ WT_Result simple_process_markerSymbol (WT_Marker_Symbol & markerSymbol, WT_File 
     return WT_Result::Success;
 }
 
-WT_Result simple_process_mergeControl (WT_Merge_Control & mergeControl, WT_File & file)
+
+WT_Result simple_process_mergeControl(WT_Merge_Control & mergeControl, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     (*rewriter->_GetW2D()).desired_rendition().merge_control() = mergeControl;
     return WT_Result::Success;
 }
 
-WT_Result simple_process_namedViewList (WT_Named_View_List & /*namedViewList*/, WT_File & /*file*/)
+
+WT_Result simple_process_namedViewList(WT_Named_View_List & /*namedViewList*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //namedViewList.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_origin (WT_Origin & origin, WT_File & file)
+
+WT_Result simple_process_origin(WT_Origin & origin, WT_File & file)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -924,7 +960,8 @@ WT_Result simple_process_origin (WT_Origin & origin, WT_File & file)
     return WT_Result::Success;
 }
 
-WT_Result simple_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_File & file)
+
+WT_Result simple_process_outlineEllipse(WT_Outline_Ellipse & outlineEllipse, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -956,8 +993,8 @@ WT_Result simple_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT
         WT_Integer32 minor = rewriter->ScaleW2DNumber(file, outlineEllipse.minor());
 
         WT_Outline_Ellipse ell2(dstpts[0], major, minor, (WT_Unsigned_Integer16)outlineEllipse.start(), (WT_Unsigned_Integer16)outlineEllipse.end(), outlineEllipse.tilt());
-
         ell2.serialize(*rewriter->_GetW2D());
+        rewriter->IncrementDrawableCount();
     }
 
     if (restoreColor)
@@ -966,7 +1003,8 @@ WT_Result simple_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT
     return WT_Result::Success;
 }
 
-WT_Result simple_process_polygon (WT_Polygon & /*polygon*/, WT_File & /*file*/)
+
+WT_Result simple_process_polygon(WT_Polygon & /*polygon*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -987,13 +1025,15 @@ WT_Result simple_process_polygon (WT_Polygon & /*polygon*/, WT_File & /*file*/)
     {
         WT_Polygon poly2(outpts, dstpts, true);
         poly2.serialize(*rewriter->_GetW2D());
+        rewriter->IncrementDrawableCount();
     }
     */
 
     return WT_Result::Success;
 }
 
-WT_Result simple_process_polymarker (WT_Polymarker & polymarker, WT_File & file)
+
+WT_Result simple_process_polymarker(WT_Polymarker & polymarker, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -1010,12 +1050,14 @@ WT_Result simple_process_polymarker (WT_Polymarker & polymarker, WT_File & file)
     {
         WT_Polymarker poly2(outpts, dstpts, true);
         poly2.serialize(*rewriter->_GetW2D());
+        rewriter->IncrementDrawableCount();
     }
 
     return WT_Result::Success;
 }
 
-WT_Result simple_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & file)
+
+WT_Result simple_process_polytriangle(WT_Polytriangle & polytriangle, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -1056,6 +1098,7 @@ WT_Result simple_process_polytriangle (WT_Polytriangle & polytriangle, WT_File &
             {
                 WT_Polytriangle gpt2(count, dstpts + index, false);
                 gpt2.serialize(*rewriter->_GetW2D());
+                rewriter->IncrementDrawableCount();
             }
 
             count = 0;
@@ -1072,6 +1115,7 @@ WT_Result simple_process_polytriangle (WT_Polytriangle & polytriangle, WT_File &
     {
         WT_Polytriangle gpt2(count, dstpts + index, false);
         gpt2.serialize(*rewriter->_GetW2D());
+        rewriter->IncrementDrawableCount();
     }
 
     if (restoreColor)
@@ -1080,28 +1124,32 @@ WT_Result simple_process_polytriangle (WT_Polytriangle & polytriangle, WT_File &
     return WT_Result::Success;
 }
 
-WT_Result simple_process_projection (WT_Projection & projection, WT_File & file)
+
+WT_Result simple_process_projection(WT_Projection & projection, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     projection.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_subject (WT_Subject & /*subject*/, WT_File & /*file*/)
+
+WT_Result simple_process_subject(WT_Subject & /*subject*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //subject.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_title (WT_Title & /*title*/, WT_File & /*file*/)
+
+WT_Result simple_process_title(WT_Title & /*title*/, WT_File & /*file*/)
 {
     /*DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();*/
     //title.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_unknown (WT_Unknown & /*unknown*/, WT_File & /*file*/)
+
+WT_Result simple_process_unknown(WT_Unknown & /*unknown*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     // simply skiping the WT_Unknown object.
@@ -1109,14 +1157,16 @@ WT_Result simple_process_unknown (WT_Unknown & /*unknown*/, WT_File & /*file*/)
     return WT_Result::Success;
 }
 
-WT_Result simple_process_url (WT_URL & url, WT_File & file)
+
+WT_Result simple_process_url(WT_URL & url, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     (*rewriter->_GetW2D()).desired_rendition().url() = url;
     return WT_Result::Success;
 }
 
-WT_Result simple_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_File & file)
+
+WT_Result simple_process_pngGroup4Image(WT_PNG_Group4_Image & pngGroup4Image, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -1150,12 +1200,14 @@ WT_Result simple_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, W
 
         img2.update_bounds(&file);
         img2.serialize(*rewriter->_GetW2D());
+        rewriter->IncrementDrawableCount();
     }
 
     return WT_Result::Success;
 }
 
-WT_Result simple_process_polyline (WT_Polyline & polyline, WT_File & file)
+
+WT_Result simple_process_polyline(WT_Polyline & polyline, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -1181,17 +1233,17 @@ WT_Result simple_process_polyline (WT_Polyline & polyline, WT_File & file)
             && polyline.points()[0] == polyline.points()[polyline.count() - 1])
             isPossiblyPolygonOutline = true;
 
-        RS_Color override;
+        RS_Color overrideColor;
 
         if (isPolygon)
-            override = rewriter->GetOverrideColorMarker().style().color();
+            overrideColor = rewriter->GetOverrideColorMarker().style().color();
         else
-            override = rewriter->GetOverrideColorMarker().style().outline().color();
+            overrideColor = rewriter->GetOverrideColorMarker().style().outline().color();
 
-        if (override.argb() != RS_Color::EMPTY_COLOR_ARGB)
+        if (overrideColor.argb() != RS_Color::EMPTY_COLOR_ARGB)
         {
             rendColor = (*rewriter->_GetW2D()).desired_rendition().color();
-            WT_Color c(override.red(), override.green(), override.blue(), override.alpha());
+            WT_Color c(overrideColor.red(), overrideColor.green(), overrideColor.blue(), overrideColor.alpha());
             (*rewriter->_GetW2D()).desired_rendition().color() = c;
             restoreColor = true;
         }
@@ -1215,11 +1267,13 @@ WT_Result simple_process_polyline (WT_Polyline & polyline, WT_File & file)
             {
                 WT_Polygon poly2((*cntrs)[i], dstpts+offset, true);
                 poly2.serialize(*rewriter->_GetW2D());
+                rewriter->IncrementDrawableCount();
             }
             else
             {
                 WT_Polyline poly2((*cntrs)[i], dstpts+offset, true);
                 poly2.serialize(*rewriter->_GetW2D());
+                rewriter->IncrementDrawableCount();
             }
 
             offset += (*cntrs)[i];
@@ -1232,7 +1286,8 @@ WT_Result simple_process_polyline (WT_Polyline & polyline, WT_File & file)
     return WT_Result::Success;
 }
 
-WT_Result simple_process_text (WT_Text & text, WT_File & file)
+
+WT_Result simple_process_text(WT_Text & text, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
 
@@ -1250,8 +1305,8 @@ WT_Result simple_process_text (WT_Text & text, WT_File & file)
     if (rewriter->IsSymbolW2D() && rewriter->GetOverrideColorMarker().style().background().argb() != RS_Color::EMPTY_COLOR_ARGB)
     {
         rendColor = (*rewriter->_GetW2D()).desired_rendition().color();
-        RS_Color override = rewriter->GetOverrideColorMarker().style().background();
-        WT_Color c(override.red(), override.green(), override.blue(), override.alpha());
+        RS_Color overrideColor = rewriter->GetOverrideColorMarker().style().background();
+        WT_Color c(overrideColor.red(), overrideColor.green(), overrideColor.blue(), overrideColor.alpha());
         (*rewriter->_GetW2D()).desired_rendition().color() = c;
         restoreColor = true;
     }
@@ -1267,6 +1322,7 @@ WT_Result simple_process_text (WT_Text & text, WT_File & file)
             text.overscore().count(), text.overscore().positions(),
             text.underscore().count(), text.underscore().positions()) ;
         text2.serialize(*rewriter->_GetW2D());
+        rewriter->IncrementDrawableCount();
     }
 
     if (restoreColor)
@@ -1279,49 +1335,55 @@ WT_Result simple_process_text (WT_Text & text, WT_File & file)
 }
 
 
-WT_Result simple_process_inkedArea (WT_Inked_Area & inkedArea, WT_File & file)
+WT_Result simple_process_inkedArea(WT_Inked_Area & inkedArea, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     inkedArea.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_plotOptimized (WT_Plot_Optimized & plotOptimized, WT_File & file)
+
+WT_Result simple_process_plotOptimized(WT_Plot_Optimized & plotOptimized, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     plotOptimized.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_groupBegin (WT_Group_Begin & groupBegin, WT_File & file)
+
+WT_Result simple_process_groupBegin(WT_Group_Begin & groupBegin, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     groupBegin.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_groupEnd (WT_Group_End & groupEnd, WT_File & file)
+
+WT_Result simple_process_groupEnd(WT_Group_End & groupEnd, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     groupEnd.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_embeddedFont (WT_Embedded_Font & embeddedFont, WT_File & file)
+
+WT_Result simple_process_embeddedFont(WT_Embedded_Font & embeddedFont, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     embeddedFont.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_trustedFontList (WT_Trusted_Font_List & trustedFontList, WT_File & file)
+
+WT_Result simple_process_trustedFontList(WT_Trusted_Font_List & trustedFontList, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     trustedFontList.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_blockref (WT_BlockRef & blockref, WT_File & file)
+
+WT_Result simple_process_blockref(WT_BlockRef & blockref, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     (*rewriter->_GetW2D()).desired_rendition().blockref() = blockref;
@@ -1329,91 +1391,103 @@ WT_Result simple_process_blockref (WT_BlockRef & blockref, WT_File & file)
 }
 
 
-WT_Result simple_process_blockMeaning (WT_Block_Meaning & blockMeaning, WT_File & file)
+WT_Result simple_process_blockMeaning(WT_Block_Meaning & blockMeaning, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     blockMeaning.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_encryption (WT_Encryption & encryption, WT_File & file)
+
+WT_Result simple_process_encryption(WT_Encryption & encryption, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     encryption.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_orientation (WT_Orientation & orientation, WT_File & file)
+
+WT_Result simple_process_orientation(WT_Orientation & orientation, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     orientation.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_alignment (WT_Alignment & alignment, WT_File & file)
+
+WT_Result simple_process_alignment(WT_Alignment & alignment, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     alignment.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_password (WT_Password & password, WT_File & file)
+
+WT_Result simple_process_password(WT_Password & password, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     password.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_guid (WT_Guid & guid, WT_File & file)
+
+WT_Result simple_process_guid(WT_Guid & guid, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     guid.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_fileTime (WT_FileTime & fileTime, WT_File & file)
+
+WT_Result simple_process_fileTime(WT_FileTime & fileTime, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     fileTime.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_userData (WT_UserData & userData, WT_File & file)
+
+WT_Result simple_process_userData(WT_UserData & userData, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     userData.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_penPattern (WT_Pen_Pattern & penPattern, WT_File & file)
+
+WT_Result simple_process_penPattern(WT_Pen_Pattern & penPattern, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     (*rewriter->_GetW2D()).desired_rendition().pen_pattern() = penPattern;
     return WT_Result::Success;
 }
 
-WT_Result simple_process_linePattern (WT_Line_Pattern & linePattern, WT_File & file)
+
+WT_Result simple_process_linePattern(WT_Line_Pattern & linePattern, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     (*rewriter->_GetW2D()).desired_rendition().line_pattern() = linePattern;
     return WT_Result::Success;
 }
 
-WT_Result simple_process_fillPattern (WT_Fill_Pattern & fillPattern, WT_File & file)
+
+WT_Result simple_process_fillPattern(WT_Fill_Pattern & fillPattern, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     fillPattern.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_DigitalSign (WT_SignData & digitalSing, WT_File & file)
+
+WT_Result simple_process_DigitalSign(WT_SignData & digitalSing, WT_File & file)
 {
     DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     digitalSing.serialize(*rewriter->_GetW2D());
     return WT_Result::Success;
 }
 
-WT_Result simple_process_dwf_header (WT_DWF_Header & /*dwf_header*/, WT_File & /*file*/)
+
+WT_Result simple_process_dwf_header(WT_DWF_Header & /*dwf_header*/, WT_File & /*file*/)
 {
     //DWFRenderer* rewriter = (DWFRenderer*)file.stream_user_data();
     //simple_output_file.heuristics().set_target_version(file.rendition().drawing_info().decimal_revision());
