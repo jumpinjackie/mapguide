@@ -56,7 +56,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     else
         ret->resizeControl = SE_RenderResizeNone;
 
-    double wx       = weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
+    double wx       = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
     ret->weight     = weight.evaluate(cxt->exec) * wx;
     ret->geometry   = geometry->Clone();
     ret->color      = color.evaluate(cxt->exec);
@@ -112,7 +112,7 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     else // default is ResizeNone
         ret->resizeControl = SE_RenderResizeNone;
 
-    double wx       = weightScalable.evaluate(cxt->exec)? cxt->mm2pxw : cxt->mm2pxs;
+    double wx       = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
     ret->weight     = weight.evaluate(cxt->exec) * wx;
     ret->geometry   = geometry->Clone();
     ret->color      = color.evaluate(cxt->exec);
@@ -178,7 +178,10 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 
     cxt->xform->transform(ret->position[0], ret->position[1]);
 
-    ret->tdef.rotation() = angleDeg.evaluate(cxt->exec);   // in degrees
+    RS_TextDef& textDef = ret->tdef;
+    RS_FontDef& fontDef = textDef.font();
+
+    textDef.rotation() = angleDeg.evaluate(cxt->exec);   // in degrees
 
     int style = RS_FontStyle_Regular;
     if (bold.evaluate(cxt->exec))
@@ -188,60 +191,57 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     if (underlined.evaluate(cxt->exec))
         style |= RS_FontStyle_Underline;
 
-    ret->tdef.font().style() = (RS_FontStyle_Mask)style;
-    ret->tdef.font().name() = fontName.evaluate(cxt->exec);
+    fontDef.style() = (RS_FontStyle_Mask)style;
+    fontDef.name()  = fontName.evaluate(cxt->exec);
 
     // RS_TextDef expects font height to be in meters - convert it from mm
-    if (heightScalable.evaluate(cxt->exec))
-        ret->tdef.font().height() = height.evaluate(cxt->exec)*0.001 * fabs(cxt->xform->y1) / cxt->mm2px;
-    else
-        ret->tdef.font().height() = height.evaluate(cxt->exec)*0.001;
+    double wy           = heightScalable.evaluate(cxt->exec)? 0.001 * fabs(cxt->xform->y1) / cxt->mm2px : 0.001;
+    fontDef.height()    = height.evaluate(cxt->exec) * wy;
+    textDef.linespace() = lineSpacing.evaluate(cxt->exec);
+    textDef.textcolor() = RS_Color::FromARGB(textColor.evaluate(cxt->exec));
 
-    ret->tdef.linespace() = lineSpacing.evaluate(cxt->exec);
-
-    ret->tdef.textcolor() = RS_Color::FromARGB(textColor.evaluate(cxt->exec));
     if (!ghostColor.empty())
     {
-        ret->tdef.ghostcolor() = RS_Color::FromARGB(ghostColor.evaluate(cxt->exec));
-        ret->tdef.textbg() |= RS_TextBackground_Ghosted;
+        textDef.ghostcolor() = RS_Color::FromARGB(ghostColor.evaluate(cxt->exec));
+        textDef.textbg() |= RS_TextBackground_Ghosted;
     }
     if (!frameLineColor.empty())
     {
-        ret->tdef.framecolor() = RS_Color::FromARGB(frameLineColor.evaluate(cxt->exec));
-        ret->tdef.textbg() |= RS_TextBackground_Framed;
+        textDef.framecolor() = RS_Color::FromARGB(frameLineColor.evaluate(cxt->exec));
+        textDef.textbg() |= RS_TextBackground_Framed;
     }
     if (!frameFillColor.empty())
     {
-        ret->tdef.opaquecolor() = RS_Color::FromARGB(frameFillColor.evaluate(cxt->exec));
-        ret->tdef.textbg() |= RS_TextBackground_Opaque;
+        textDef.opaquecolor() = RS_Color::FromARGB(frameFillColor.evaluate(cxt->exec));
+        textDef.textbg() |= RS_TextBackground_Opaque;
     }
-    ret->tdef.frameoffsetx() = frameOffset[0].evaluate(cxt->exec) * cxt->xform->x0;
-    ret->tdef.frameoffsety() = frameOffset[1].evaluate(cxt->exec) * fabs(cxt->xform->y1);
+    textDef.frameoffsetx() = frameOffset[0].evaluate(cxt->exec) * fabs(cxt->xform->x0);
+    textDef.frameoffsety() = frameOffset[1].evaluate(cxt->exec) * fabs(cxt->xform->y1);
 
     const wchar_t* hAlign = hAlignment.evaluate(cxt->exec);
     if (wcscmp(hAlign, L"Left") == 0)
-        ret->tdef.halign() = RS_HAlignment_Left;
+        textDef.halign() = RS_HAlignment_Left;
     else if (wcscmp(hAlign, L"Right") == 0)
-        ret->tdef.halign() = RS_HAlignment_Right;
+        textDef.halign() = RS_HAlignment_Right;
     else // default is Center
-        ret->tdef.halign() = RS_HAlignment_Center;
+        textDef.halign() = RS_HAlignment_Center;
 
     const wchar_t* vAlign = vAlignment.evaluate(cxt->exec);
     if (wcscmp(vAlign, L"Bottom") == 0)
-        ret->tdef.valign() = RS_VAlignment_Descent;
+        textDef.valign() = RS_VAlignment_Descent;
     else if (wcscmp(vAlign, L"Baseline") == 0)
-        ret->tdef.valign() = RS_VAlignment_Base;
+        textDef.valign() = RS_VAlignment_Base;
     else if (wcscmp(vAlign, L"Capline") == 0)
-        ret->tdef.valign() = RS_VAlignment_Cap;
+        textDef.valign() = RS_VAlignment_Cap;
     else if (wcscmp(vAlign, L"Top") == 0)
-        ret->tdef.valign() = RS_VAlignment_Ascent;
+        textDef.valign() = RS_VAlignment_Ascent;
     else // default is Halfline
-        ret->tdef.valign() = RS_VAlignment_Half;
+        textDef.valign() = RS_VAlignment_Half;
 
     RS_TextMetrics tm;
     SE_Matrix txf;
-    cxt->fonte->GetTextMetrics(ret->text, ret->tdef, tm, false);
-    txf.rotate(ret->tdef.rotation() * M_PI180);
+    cxt->fonte->GetTextMetrics(ret->text, textDef, tm, false);
+    txf.rotate(textDef.rotation() * M_PI180);
     txf.translate(ret->position[0], ret->position[1]);
 
     // compute axis aligned bounds of the text primitive
@@ -265,8 +265,8 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 
     // compute axis aligned bounds of the text primitive, including the frame offsets
     // we do it separately because the offsets could be negative
-    double offx = ret->tdef.frameoffsetx();
-    double offy = ret->tdef.frameoffsety();
+    double offx = textDef.frameoffsetx();
+    double offy = textDef.frameoffsety();
     if (cxt->xform->y1 < 0.0)
         offy = -offy;
 
@@ -338,13 +338,13 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 
     if (extentScalable.evaluate(cxt->exec))
     {
-        ret->extent[0] = fabs(extent[0].evaluate(cxt->exec) * cxt->xform->x0);
-        ret->extent[1] = fabs(extent[1].evaluate(cxt->exec) * cxt->xform->y1);
+        ret->extent[0] = fabs(extent[0].evaluate(cxt->exec) * fabs(cxt->xform->x0));
+        ret->extent[1] = fabs(extent[1].evaluate(cxt->exec) * fabs(cxt->xform->y1));
     }
     else
     {
-        ret->extent[0] = fabs(extent[0].evaluate(cxt->exec) * cxt->mm2pxw);
-        ret->extent[1] = fabs(extent[1].evaluate(cxt->exec) * cxt->mm2pxw);
+        ret->extent[0] = fabs(extent[0].evaluate(cxt->exec) * cxt->mm2pxs);
+        ret->extent[1] = fabs(extent[1].evaluate(cxt->exec) * cxt->mm2pxs);
     }
 
     ret->angleRad = angleDeg.evaluate(cxt->exec) * M_PI180;
@@ -536,7 +536,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                     {
                         SE_RenderRaster* rr = (SE_RenderRaster*)rsym;
                         growxf.transform(rr->position[0], rr->position[1]);
-                        rr->extent[0] *= scalex;    // TODO: should this only be done if SizeScalable is true?
+                        rr->extent[0] *= scalex;    // TODO: should this only be done if ExtentScalable is true?
                         rr->extent[1] *= scaley;
                         for (int j=0; j<4; j++)
                             growxf.transform(rr->bounds[j].x, rr->bounds[j].y);
@@ -565,9 +565,10 @@ void SE_PointStyle::evaluate(SE_EvalContext* cxt)
 
     render->angleRad = angleDeg.evaluate(cxt->exec) * M_PI180;
 
-    // scale by xform->x0 instead of mm2px, because it encompasses mm2px as well as scaleX
-    render->offset[0] = originOffset[0].evaluate(cxt->exec) * cxt->mm2px;
-    render->offset[1] = originOffset[1].evaluate(cxt->exec) * cxt->mm2px;
+    // scale by xform->x0 and xform->y1 instead of mm2px, because these encompass
+    // mm2px as well as scaleX and scaleY
+    render->offset[0] = originOffset[0].evaluate(cxt->exec) * cxt->xform->x0;
+    render->offset[1] = originOffset[1].evaluate(cxt->exec) * cxt->xform->y1;
 
     // evaluate all the primitives too
     SE_Style::evaluate(cxt);
@@ -590,10 +591,11 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 
     render->angleRad = angleDeg.evaluate(cxt->exec) * M_PI180;
 
-    // scale by xform->x0 instead of mm2px, because it encompasses mm2px as well as scaleX
-    render->startOffset = startOffset.evaluate(cxt->exec) * cxt->xform->x0;
-    render->endOffset   = endOffset.evaluate(cxt->exec)   * cxt->xform->x0;
-    render->repeat      = repeat.evaluate(cxt->exec)      * cxt->xform->x0;
+    // scale by xform->x0 and xform->y1 instead of mm2px, because these encompass
+    // mm2px as well as scaleX and scaleY
+    render->startOffset = startOffset.evaluate(cxt->exec) * fabs(cxt->xform->x0);
+    render->endOffset   = endOffset.evaluate(cxt->exec)   * fabs(cxt->xform->x0);
+    render->repeat      = repeat.evaluate(cxt->exec)      * fabs(cxt->xform->x0);
 
     render->vertexAngleLimit = vertexAngleLimit.evaluate(cxt->exec) * M_PI180;
 
@@ -628,12 +630,13 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 
     render->angleRad = angleDeg.evaluate(cxt->exec) * M_PI180;
 
-    // scale by xform->x0 instead of mm2px, because it encompasses mm2px as well as scaleX
-    render->origin[0]   = origin[0].evaluate(cxt->exec)   * cxt->mm2px;
-    render->origin[1]   = origin[1].evaluate(cxt->exec)   * cxt->mm2px;
-    render->repeat[0]   = repeat[0].evaluate(cxt->exec)   * cxt->mm2px;
-    render->repeat[1]   = repeat[1].evaluate(cxt->exec)   * cxt->mm2px;
-    render->bufferWidth = bufferWidth.evaluate(cxt->exec) * cxt->mm2px;
+    // scale by xform->x0 and xform->y1 instead of mm2px, because these encompass
+    // mm2px as well as scaleX and scaleY
+    render->origin[0]   = origin[0].evaluate(cxt->exec)   * cxt->xform->x0;
+    render->origin[1]   = origin[1].evaluate(cxt->exec)   * cxt->xform->y1;
+    render->repeat[0]   = repeat[0].evaluate(cxt->exec)   * fabs(cxt->xform->x0);
+    render->repeat[1]   = repeat[1].evaluate(cxt->exec)   * fabs(cxt->xform->y1);
+    render->bufferWidth = bufferWidth.evaluate(cxt->exec) * fabs(cxt->xform->x0);
 
     // evaluate all the primitives too
     SE_Style::evaluate(cxt);

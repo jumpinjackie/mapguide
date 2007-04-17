@@ -123,9 +123,11 @@ public:
     //
     virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight); // px
     virtual void DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill);
-    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
-                                  double x, double y, double w, double h, double angledeg);
-    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, double* path, int npts, double param_position);
+    virtual void DrawScreenRaster(unsigned char* data, int length,
+                                  RS_ImageFormat format, int native_width, int native_height,
+                                  double x, double y, double w, double h, double angleDeg);
+    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
+                                double* path, int npts, double param_position);
 
     virtual bool YPointsUp();
     virtual void GetWorldToScreenTransform(SE_Matrix& xform);

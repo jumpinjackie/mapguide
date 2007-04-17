@@ -363,7 +363,7 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
             double midx = 0.5 * (dstpts[0].x + dstpts[2].x);
             double midy = 0.5 * (dstpts[0].y + dstpts[2].y);
 
-            double anglerad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
+            double angleRad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
 
             gdImageCopyRotated((gdImagePtr)rewriter->GetW2DTargetImage(),
                                 resized? resized : src,
@@ -371,7 +371,7 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
                                 0, 0,       //srcX, srcY
                                 resized? resized->sx : src->sx,
                                 resized? resized->sx : src->sy, //srcW, srcH
-                                ROUND(-anglerad / M_PI180));
+                                ROUND(-angleRad / M_PI180));
 
             if (resized)
                 gdImageDestroy(resized);
@@ -702,7 +702,7 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
         double midx = 0.5 * (dstpts[0].x + dstpts[2].x);
         double midy = 0.5 * (dstpts[0].y + dstpts[2].y);
 
-        double anglerad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
+        double angleRad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
 
         gdImageCopyRotated((gdImagePtr)rewriter->GetW2DTargetImage(),
                         resized? resized : src,
@@ -710,7 +710,7 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
                         0, 0, //srcX, srcY
                         resized? resized->sx : src->sx,
                         resized? resized->sx : src->sy, //srcW, srcH
-                        ROUND(-anglerad / M_PI180));
+                        ROUND(-angleRad / M_PI180));
 
         if (resized)
             gdImageDestroy(resized);
@@ -822,7 +822,7 @@ WT_Result gdr_process_text (WT_Text & text, WT_File & file)
 
         //rescale font height
         double hgt = 0.75 * rewriter->ScaleW2DNumber(file, font.height().height());
-        double rot = (double)font.rotation().rotation() * 2.0 * M_PI / 65536.0;
+        double angleRad = (double)font.rotation().rotation() * 2.0 * M_PI / 65536.0;
 
         //match the font
         int style = RS_FontStyle_Regular;
@@ -845,7 +845,7 @@ WT_Result gdr_process_text (WT_Text & text, WT_File & file)
         //draw the text
         wchar_t* uni_text = WT_String::to_wchar(text.string().length(), text.string().unicode());
 
-        rewriter->DrawString(uni_text, dstpts[0].x, dstpts[0].y, hgt, rsfont, color, rot);
+        rewriter->DrawString(uni_text, dstpts[0].x, dstpts[0].y, hgt, rsfont, color, angleRad);
 
         delete [] uni_text;
     }

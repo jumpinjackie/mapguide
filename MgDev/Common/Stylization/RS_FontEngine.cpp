@@ -287,9 +287,9 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         RS_F_Point p0 = pts[m];
         RS_F_Point p1 = pts[m+1];
 
-        double angle = -atan2(p1.y - p0.y, p1.x - p0.x);
+        double angleRad = -atan2(p1.y - p0.y, p1.x - p0.x);
 
-        if (angle > M_PI/2.0 || angle < -M_PI/2.0)
+        if (angleRad > 0.5*M_PI || angleRad < -0.5*M_PI)
             inverted_len += seglens[m+1] - seglens[m];
         else
             inverted_len -= seglens[m+1] - seglens[m];
@@ -310,7 +310,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         //don't bother measuring the string with the new height,
         //scaling should work almost as good
         tm.font_height *= font_scale;
-        tm.text_width *= font_scale;
+        tm.text_width  *= font_scale;
         tm.text_height *= font_scale;
 
         for (int i=0; i<numchars; i++)
@@ -439,7 +439,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     for (int i=0; i<numchars; i++)
     {
         //find angle based on left and right of character
-        double anglerad = -atan2(positions[2*i+2].y - positions[2*i].y,positions[2*i+2].x - positions[2*i].x);
+        double angleRad = -atan2(positions[2*i+2].y - positions[2*i].y,positions[2*i+2].x - positions[2*i].x);
 
         //kerned width of current character
         double char_width = (i == numchars-1)? tm.text_width - char_pos : tm.char_advances[i];
@@ -447,9 +447,9 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 
         //and now find a lower left insertion point
         //based on the midpoint anchor and the angle
-        tm.char_pos[i].x = positions[2*i+1].x - cos(anglerad) * char_width_2;
-        tm.char_pos[i].y = positions[2*i+1].y + sin(anglerad) * char_width_2; //y down means + sin
-        tm.char_pos[i].anglerad = anglerad;
+        tm.char_pos[i].x = positions[2*i+1].x - cos(angleRad) * char_width_2;
+        tm.char_pos[i].y = positions[2*i+1].y + sin(angleRad) * char_width_2; //y down means + sin
+        tm.char_pos[i].anglerad = angleRad;
 
         char_pos += char_width;
     }
@@ -465,10 +465,10 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     for (int i=0; i<numchars; i++)
     {
         // add in the rotated vertical alignment contribution
-        double angle = tm.char_pos[i].anglerad;
+        double angleRad = tm.char_pos[i].anglerad;
 
-        tm.char_pos[i].x += voffset * sin(angle);
-        tm.char_pos[i].y += voffset * cos(angle);
+        tm.char_pos[i].x += voffset * sin(angleRad);
+        tm.char_pos[i].y += voffset * cos(angleRad);
     }
 
     return true;
@@ -478,13 +478,11 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 //////////////////////////////////////////////////////////////////////////////
 void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy)
 {
-    // positive rotation in the RS_TextDef is assumed to always be a degree CCW rotation...
-    double anglerad = tdef.rotation() * M_PI180;
+    double angleRad = tdef.rotation() * M_PI180;
 
-    double cos_a = cos(anglerad);
-    double sin_a = sin(anglerad);
-    if (m_serenderer->YPointsUp())
-        sin_a = -sin_a;
+    // precompute these - these are in renderer space, hence the check for YPointsUp with the sine
+    double cos_a = cos(angleRad);
+    double sin_a = sin(m_serenderer->YPointsUp()? angleRad : -angleRad);
 
     // get the overall unrotated bounds
     RS_Bounds b(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
@@ -519,8 +517,8 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         {
             double tmpX = fpts[j].x;
             double tmpY = fpts[j].y;
-            fpts[j].x = insx + tmpX * cos_a + tmpY * sin_a;
-            fpts[j].y = insy - tmpX * sin_a + tmpY * cos_a;
+            fpts[j].x = insx + tmpX * cos_a - tmpY * sin_a;
+            fpts[j].y = insy + tmpX * sin_a + tmpY * cos_a;
         }
 
         // draw a filled rectangle
@@ -555,8 +553,8 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
         // add the rotated original offset for this line to the insertion point
         // to get the actual draw point
-        double insX = insx + pos.hOffset * cos_a + pos.vOffset * sin_a;
-        double insY = insy - pos.hOffset * sin_a + pos.vOffset * cos_a;
+        double insX = insx + pos.hOffset * cos_a - pos.vOffset * sin_a;
+        double insY = insy + pos.hOffset * sin_a + pos.vOffset * cos_a;
 
         int posx = ROUND(insX);
         int posy = ROUND(insY);
@@ -564,14 +562,14 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         // render the ghosted text, if requested
         if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
         {
-            DrawString(*txt, posx-offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
-            DrawString(*txt, posx+offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
-            DrawString(*txt, posx, posy-offset, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
-            DrawString(*txt, posx, posy+offset, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
+            DrawString(*txt, posx-offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(*txt, posx+offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(*txt, posx, posy-offset, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(*txt, posx, posy+offset, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
         }
 
         // render the primary text
-        DrawString(*txt, posx, posy, tm.font_height, tm.font, tdef.textcolor(), anglerad);
+        DrawString(*txt, posx, posy, tm.font_height, tm.font, tdef.textcolor(), angleRad);
 
         // render the underline, if requested
         if (tdef.font().style() & RS_FontStyle_Underline)
@@ -581,13 +579,13 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             double line_pos = - (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
 
             // the line's start point is the insertion point, but shifted vertically by line_pos
-            double x0 = insX + line_pos * sin_a;
+            double x0 = insX - line_pos * sin_a;
             double y0 = insY + line_pos * cos_a;
 
             // the end point is a horizontal shift by the text width
             double textwidth = pos.ext[1].x - pos.ext[0].x;
             double x1 = x0 + textwidth * cos_a;
-            double y1 = y0 - textwidth * sin_a;
+            double y1 = y0 + textwidth * sin_a;
 
             // draw the thick line
             LineBuffer lb(2);
@@ -623,17 +621,17 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         //compute screen position and round
         int posx = ROUND(tm.char_pos[i].x);
         int posy = ROUND(tm.char_pos[i].y);
-        double anglerad = tm.char_pos[i].anglerad;
+        double angleRad = tm.char_pos[i].anglerad;
 
         if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
         {
-            DrawString(c, posx-offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
-            DrawString(c, posx+offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
-            DrawString(c, posx, posy-offset, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
-            DrawString(c, posx, posy+offset, tm.font_height, tm.font, tdef.ghostcolor(), anglerad);
+            DrawString(c, posx-offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(c, posx+offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(c, posx, posy-offset, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(c, posx, posy+offset, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
         }
 
-        DrawString(c, posx, posy, tm.font_height, tm.font, tdef.textcolor(), anglerad);
+        DrawString(c, posx, posy, tm.font_height, tm.font, tdef.textcolor(), angleRad);
     }
 
     //render underline

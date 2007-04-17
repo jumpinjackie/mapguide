@@ -81,12 +81,12 @@ public:
                             double           height,
                             const RS_Font*   font,
                             const RS_Color&  color,
-                            double           anglerad) = 0;
+                            double           angleRad) = 0;
 
     virtual void MeasureString(const RS_String& s,
                                double           height,
                                const RS_Font*   font,
-                               double           anglerad,
+                               double           angleRad,
                                RS_F_Point*      res,
                                float*           offsets) = 0;
 
