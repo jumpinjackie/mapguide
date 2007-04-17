@@ -166,13 +166,16 @@ public:
     virtual void PerformRepositoryCheckpoints(UINT32 flags = 0);
 
     virtual MgSerializableCollection* GetChangedResources();
-    virtual void UpdateChangedResources(MgSerializableCollection* changedResources);
+    virtual void UpdateChangedResources(MgSerializableCollection* resources);
 
     void SetConnectionProperties(MgConnectionProperties* connProp);
 
+    static void RemoveCachedFdoConnection(MgResourceIdentifier* resource);
+    static void RemoveCachedFdoConnection(const set<STRING>& resources);
+
 protected:
 
-    void UpdateChangedResources(const set<STRING>& changedResources);
+    void UpdateChangedResources(const set<STRING>& resources);
 
 /// Data Members
 

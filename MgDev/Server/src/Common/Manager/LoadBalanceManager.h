@@ -113,7 +113,8 @@ private:
     void NotifyResourcesChanged(CREFSTRING serverAddress,
         MgSerializableCollection* resources);
     void DispatchResourceChangeNotifications(
-        MgSerializableCollection* resources);
+        MgSerializableCollection* changedResources,
+        MgSerializableCollection* changedMapDefinitions);
 
 /// Data Members
 
