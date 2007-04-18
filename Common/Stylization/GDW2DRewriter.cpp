@@ -312,9 +312,11 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
 
     if (src)
     {
+        double angleRad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
+        int iAngleDeg = ROUND(-angleRad / M_PI180);
+
         //case of no rotation
-        if (   dstpts[0].y == dstpts[1].y
-            && dstpts[1].x == dstpts[2].x)
+        if (iAngleDeg == 0)
         {
             //case of no rotation
             int left = rs_min(dstpts[0].x, dstpts[1].x);
@@ -342,11 +344,9 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
             int height = (int)sqrt((double)dx*dx + dy*dy);
 
             //see if we need to rescale the original image
-            gdImagePtr resized = NULL;
-
             if (width != src->sx || height != src->sy)
             {
-                resized = gdImageCreateTrueColor(width, height);
+                gdImagePtr resized = gdImageCreateTrueColor(width, height);
 
                 //make it transparent
                 gdImageAlphaBlending(resized, 0);
@@ -357,24 +357,20 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
                                      0, 0,               //dstX, dstY
                                      0, 0,               //srcX, srcY
                                      width, height,      //dstW, dstH,
-                                     src->sx, src->sy ); //srcW, srcH
+                                     src->sx, src->sy); //srcW, srcH
+                gdImageDestroy(src);
+                src = resized;
             }
 
             double midx = 0.5 * (dstpts[0].x + dstpts[2].x);
             double midy = 0.5 * (dstpts[0].y + dstpts[2].y);
 
-            double angleRad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
-
             gdImageCopyRotated((gdImagePtr)rewriter->GetW2DTargetImage(),
-                                resized? resized : src,
-                                midx, midy, //dstX, dstY
-                                0, 0,       //srcX, srcY
-                                resized? resized->sx : src->sx,
-                                resized? resized->sx : src->sy, //srcW, srcH
-                                ROUND(-angleRad / M_PI180));
-
-            if (resized)
-                gdImageDestroy(resized);
+                                src,
+                                midx, midy,         //dstX, dstY
+                                0, 0,               //srcX, srcY
+                                src->sx, src->sy,   //srcW, srcH
+                                iAngleDeg);
         }
 
         gdImageDestroy(src);
@@ -656,9 +652,11 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
 
     gdImagePtr src = gdImageCreateFromPngPtr(pngGroup4Image.data_size(), (void*)pngGroup4Image.data());
 
+    double angleRad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
+    int iAngleDeg = ROUND(-angleRad / M_PI180);
+
     //case of no rotation
-    if (   dstpts[0].y == dstpts[1].y
-        && dstpts[1].x == dstpts[2].x)
+    if (iAngleDeg == 0)
     {
         //case of no rotation
         int left = rs_min(dstpts[0].x, dstpts[1].x);
@@ -686,34 +684,28 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
         int height = (int)sqrt((double)dx*dx + dy*dy);
 
         //see if we need to rescale the original image
-        gdImagePtr resized = NULL;
 
         if (width != src->sx || height != src->sy)
         {
-            resized = gdImageCreateTrueColor(width, height);
-
+            gdImagePtr resized = gdImageCreateTrueColor(width, height);
             gdImageCopyResampled(resized, src,
-                        0, 0,  //dstX, dstY
-                        0, 0, //srcX, srcY
-                        width, height, //int dstW, int dstH,
-                        src->sx, src->sy );//srcW, srcH
+                                 0, 0,              //dstX, dstY
+                                 0, 0,              //srcX, srcY
+                                 width, height,     //dstW, dstH,
+                                 src->sx, src->sy); //srcW, srcH
+            gdImageDestroy(src);
+            src = resized;
         }
 
         double midx = 0.5 * (dstpts[0].x + dstpts[2].x);
         double midy = 0.5 * (dstpts[0].y + dstpts[2].y);
 
-        double angleRad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
-
         gdImageCopyRotated((gdImagePtr)rewriter->GetW2DTargetImage(),
-                        resized? resized : src,
-                        midx, midy,  //dstX, dstY
-                        0, 0, //srcX, srcY
-                        resized? resized->sx : src->sx,
-                        resized? resized->sx : src->sy, //srcW, srcH
-                        ROUND(-angleRad / M_PI180));
-
-        if (resized)
-            gdImageDestroy(resized);
+                           src,
+                           midx, midy,          //dstX, dstY
+                           0, 0,                //srcX, srcY
+                           src->sx, src->sy,    //srcW, srcH
+                           iAngleDeg);
     }
 
     gdImageDestroy(src);
