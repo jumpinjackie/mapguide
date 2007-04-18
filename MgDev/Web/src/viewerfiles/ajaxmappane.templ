@@ -1566,7 +1566,6 @@ function OnMapRequested(reqResp, scale, centerX, centerY)
                 ResetVisLayers();
                 SetScaleSliderPos();
                 parent.OnScaleChanged(curScale);
-                GetLegendCtrl().SetScale(scale);
                 BuildGroupInfo();
             }
             if(requestTiles)
@@ -1595,6 +1594,10 @@ function OnMapLoading()
 
 function OnMapLoaded()
 {
+    if(scaleChanged)
+    {
+        GetLegendCtrl().SetScale(curScale);
+    }
     wheelZoomDelta = null;
     var frmParent = parent.frames["tbFrame"];
     var objDivRefresh = frmParent.document.getElementById("divRefresh");

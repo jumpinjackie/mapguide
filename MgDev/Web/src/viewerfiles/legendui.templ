@@ -62,16 +62,18 @@ var scale = -1;
 var iconExpand = "../stdicons/lc_expand.gif";
 var iconCollapse = "../stdicons/lc_collapse.gif";
 var iconNoExpand = "../stdicons/lc_noexpand.gif";
-var iconGroup = "../stdicons/lc_group.gif";
-var iconBrokenLayer = "../stdicons/lc_broken.gif";
-var iconRasterLayer = "../stdicons/lc_raster.gif";
-var iconDrawingLayer = "../stdicons/lc_dwf.gif";
-var iconThemeLayer = "../stdicons/lc_theme.gif";
 var iconChecked = "../stdicons/lc_checked.gif";
 var iconUnchecked = "../stdicons/lc_unchecked.gif";
 var ctxMenu;
 var cmdState;
 var layerMap = null;
+var iconsToLoad = new Array();
+
+var iconBrokenLayer = '<img width="16" height ="16" src="../stdicons/lc_broken.gif" />';
+var iconRasterLayer = '<img width="16" height ="16" src="../stdicons/lc_raster.gif" />';
+var iconDrawingLayer = '<img width="16" height ="16" src="../stdicons/lc_dwf.gif" />';
+var iconThemeLayer = '<img width="16" height ="16" src="../stdicons/lc_theme.gif" />';
+var iconGroup = '<img width="16" height ="16" src="../stdicons/lc_group.gif" />';
 
 function GroupStats()
 {
@@ -112,7 +114,7 @@ function SetTree(groupLayers)
 
 function BuildTreeUi(tree)
 {
-    var code = ""
+    var code = "";
     for(var i=0; i < tree.length; i++)
         code += BuildLayersAndGroups(tree[i]);
     document.getElementById("Tree").innerHTML = code;
@@ -130,12 +132,16 @@ function BuildLayersAndGroups(node)
         item += '<td width=16 id="Chk_' + node.objectId + '">' + MakeCheckCode(node) + '</td>';
     }
     //icon
-    item += '<td width=23 id="Ic_' + node.objectId + '"><img width=16 height=16 src="';
+    item += '<td width=23 id="' + GetIconId(node) + '">';
     if(isGroup)
+    {
         item += iconGroup;
+    }
     else
+    {
         item += iconBrokenLayer;
-    item += '"></td>';
+    }
+    item += '</td>';
     //legend text
     item += '<td id="Lg_' + node.objectId +'">' + node.legend + '</td>';
     item += '</tr></table>';
@@ -151,19 +157,60 @@ function BuildLayersAndGroups(node)
     return item;
 }
 
-function RequestSymbolizationIcon(layer, scale)
+function RequestSymbolizationIconImg(layer, scale, iconId)
 {
-    return BuildIconRequest(layer.layerRes, scale, -1, -1);
+    return BuildDelayedLoadIconImg(layer.layerRes, scale, -1, -1, iconId);
 }
 
-function RequestThemeStyleIcon(layer, scale, themeIndex, geomtype)
+function RequestThemeStyleIconImg(layer, scale, themeIndex, geomtype, iconId)
 {
-    return BuildIconRequest(layer.layerRes, scale, themeIndex, geomtype);
+    return BuildDelayedLoadIconImg(layer.layerRes, scale, themeIndex, geomtype, iconId);
 }
 
 function BuildIconRequest(layerDef, scale, themeIndex, geomtype)
 {
-    return GetMapFrame().GetWebAgent() + "?OPERATION=GETLEGENDIMAGE&SESSION=" + GetMapFrame().GetSessionId() + "&VERSION=1.0.0&SCALE=" + scale + "&LAYERDEFINITION=" + encodeURIComponent(layerDef) + "&THEMECATEGORY=" + themeIndex + "&TYPE=" + geomtype;
+    var iconRequest = GetMapFrame().GetWebAgent() + "?OPERATION=GETLEGENDIMAGE&SESSION=" + GetMapFrame().GetSessionId() + "&VERSION=1.0.0&SCALE=" + scale + "&LAYERDEFINITION=" + encodeURIComponent(layerDef) + "&THEMECATEGORY=" + themeIndex + "&TYPE=" + geomtype;
+    return iconRequest;
+}
+            
+function BuildDelayedLoadIconImg(layerDef, scale, themeIndex, geomtype, iconId)
+{
+    var request = BuildIconRequest(layerDef, scale, themeIndex, geomtype);
+    iconsToLoad.push(new IconRequest(iconId, '<img width="16" height="16" onerror="OnLoadIconError()" onload="OnLoadIcon()" src="' + request + '" />'));
+    return '<img width="16" height="16" src="../stdicons/transparentpixel.gif">';
+}
+  
+function OnLoadIcon()
+{
+    LoadNextIcon();
+}
+
+function OnLoadIconError()
+{
+    LoadNextIcon();
+}
+
+function LoadNextIcon()
+{
+    if(iconsToLoad.length > 0)
+    {
+        var nextIcon = iconsToLoad.pop();
+        var imgObject = document.getElementById(nextIcon.id);
+        if(imgObject != null)
+        {
+            imgObject.innerHTML = nextIcon.request;
+        }
+        else
+        {
+            LoadNextIcon();
+        }
+    }
+}
+            
+function IconRequest(id, request)
+{
+    this.id = id;
+    this.request = request;
 }
 
 // Set the styles sub elements of a layer element
@@ -175,17 +222,18 @@ function SetLayerStyles(layer)
     var sc = layer.children[layer.curScale];
     var styles = sc.children;
     var hasThemes = styles.length > 1;
-    var layerIcon = "";
+    var layerIconImg = "";
     if(hasThemes)
     {
         for(var j=0; j < styles.length; j++)
         {
             var node = styles[j];
-            var icon = RequestThemeStyleIcon(layer, scale, node.catindex, node.geomtype);
+            var iconId = GetIconId(layer) + '_Scl_' + layer.curScale + '_Th_' + j;
+            var iconImg = RequestThemeStyleIconImg(layer, scale, node.catindex, node.geomtype, iconId);
 
             code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=16>';
             //icon
-            code += '<td width=23><img width=16 height=16 src="' + icon + '"></td>';
+            code += '<td width=23 id="' + iconId + '">' + iconImg + '</td>';
             //legend text
             code += '<td>' + node.legend + '</td>';
             code += '</tr></table>';
@@ -204,28 +252,35 @@ function SetLayerStyles(layer)
         if(styles.length <= 10)
             sc.showlongtheme = true;
         layerChildren.innerHTML = code;
-        layerIcon = iconThemeLayer;
+        layerIconImg = iconThemeLayer;
     }
     else
     {
         if(layer.lyrtype == 1)
-            layerIcon = iconRasterLayer;
+            layerIconImg = iconRasterLayer;
         else if(layer.lyrtype == 2)
-            layerIcon = iconDrawingLayer;
+            layerIconImg = iconDrawingLayer;
         else if(layer.curScale == -1)
-            layerIcon = iconBrokenLayer;
+            layerIconImg = iconBrokenLayer;
         else
-            layerIcon = RequestSymbolizationIcon(layer, scale);
+        {
+            layerIconImg = RequestSymbolizationIconImg(layer, scale, GetIconId(layer));
+        }
     }
-    SetLayerIcon(layer, layerIcon);
+    SetLayerIcon(layer, layerIconImg);
     SetLayerExpandBox(layer, hasThemes);
 }
 
-function SetLayerIcon(layer, icon)
+function SetLayerIcon(layer, layerIconImg)
 {
-    var icElt = document.getElementById('Ic_' + layer.objectId);
+    var icElt = document.getElementById(GetIconId(layer));
     if(icElt != null)
-        icElt.innerHTML = '<img width=16 height=16 src="' + icon + '">';
+        icElt.innerHTML = layerIconImg;
+}
+            
+function GetIconId(node)
+{
+    return 'Ic_' + node.objectId;
 }
 
 function SetLayerExpandBox(layer, show)
@@ -611,11 +666,17 @@ function GetGroupStats(group, grpStats)
 
 function SetScale(newScale)
 {
+    if(iconsToLoad != null && iconsToLoad.length > 0)
+    {
+        iconsToLoad.reverse();
+    }
     scale = newScale;
     if(tree == null)
         return;
     UpdateScaleRanges(tree);
     ShowHideNodes(tree);
+    iconsToLoad.reverse();
+    LoadNextIcon();
 }
 
 function HasLayerThemes(layer)
