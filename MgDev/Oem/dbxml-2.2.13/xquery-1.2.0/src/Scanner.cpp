@@ -13947,7 +13947,7 @@ yyFlexLexer::yyFlexLexer( std::istream* arg_yyin, std::ostream* arg_yyout )
 
 yyFlexLexer::~yyFlexLexer()
 	{
-	delete yy_state_buf;
+	delete [] yy_state_buf;
 	yy_delete_buffer( yy_current_buffer );
 	if(yy_start_stack)
 		yy_flex_free(yy_start_stack);
