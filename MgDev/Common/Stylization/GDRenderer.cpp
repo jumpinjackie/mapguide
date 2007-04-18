@@ -74,6 +74,9 @@ using namespace DWFCore;
 #define SYMBOL_BITMAP_SIZE 128
 #define SYMBOL_BITMAP_MAX 1024
 
+// maximum allowed size for images
+#define IMAGE_SIZE_MAX 2048.0*2048.0
+
 //using this in contructor
 #pragma warning(disable:4355)
 
@@ -947,7 +950,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             }
 
             //copy symbol image into destination image
-            if (angleRad == 0.0)
+            if (ROUND(mdef.rotation()) == 0)
             {
                 //upper left point
                 int ulx = (int)floor(b[3].x);
@@ -977,8 +980,8 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                 //for rotated gd copy, we need the midpoint of
                 //the destination bounds
-                int mx = (int)floor(0.5 * (b[0].x + b[2].x));
-                int my = (int)floor(0.5 * (b[0].y + b[2].y));
+                double mx = floor(0.5 * (b[0].x + b[2].x));
+                double my = floor(0.5 * (b[0].y + b[2].y));
 
                 //draw rotated symbol onto final destination image
                 gdImageCopyRotated((gdImagePtr)m_imout, tmp, mx, my, 0, 0, imsymw+2, imsymh+2, ROUND(mdef.rotation()));
@@ -2293,9 +2296,26 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length,
                                   RS_ImageFormat format, int native_width, int native_height,
                                   double x, double y, double w, double h, double angleDeg)
 {
+    // compute the scaled / rotated size
+    double rotatedW = w;
+    double rotatedH = h;
+    if (angleDeg != 0.0)
+    {
+        double csAbs = fabs(cos(angleDeg * M_PI180));
+        double snAbs = fabs(sin(angleDeg * M_PI180));
+        rotatedW = csAbs*w + snAbs*h;
+        rotatedH = snAbs*w + csAbs*h;
+    }
+
+    // don't allow images beyond the maximum size
+    if (rotatedW * rotatedH > IMAGE_SIZE_MAX)
+        return;
+
+    // get the source image
+    gdImagePtr src = NULL;
     if (format == RS_ImageFormat_RGBA)
     {
-        gdImagePtr src = gdImageCreateTrueColor(native_width, native_height);
+        src = gdImageCreateTrueColor(native_width, native_height);
 
         //TODO: figure out a way to do this without copying the whole thing
         //in such a lame loop
@@ -2314,62 +2334,49 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length,
                 src->tpixels[j][i] = col;
             }
         }
-
-        if (angleDeg == 0.0)
-        {
-            double w2 = w * 0.5;
-            double h2 = h * 0.5;
-
-            int minx = ROUND(x - w2);
-            int maxx = ROUND(x + w2);
-            int miny = ROUND(y - h2);
-            int maxy = ROUND(y + h2);
-
-            gdImageCopyResampled((gdImagePtr)m_imout, src,
-                                 minx, miny, 0, 0,
-                                 maxx-minx, maxy-miny, //TODO: do we need +1?
-                                 gdImageSX(src), gdImageSY(src));
-        }
-        else
-        {
-            //TODO: must scale from native width/height to requested width/height
-            gdImageCopyRotated((gdImagePtr)m_imout, src, x, y, 0, 0, native_width, native_height, ROUND(angleDeg));
-        }
-
-        gdImageDestroy(src);
     }
     else if (format == RS_ImageFormat_PNG)
     {
-        //note width and height arguments are ignored for PNG, since they are encoded
-        //in the png data array
-
-        gdImagePtr src = gdImageCreateFromPngPtr(length, data);
-
-        if (angleDeg == 0.0)
-        {
-            double w2 = w * 0.5;
-            double h2 = h * 0.5;
-
-            int minx = ROUND(x - w2);
-            int maxx = ROUND(x + w2);
-            int miny = ROUND(y - h2);
-            int maxy = ROUND(y + h2);
-
-            gdImageCopyResampled((gdImagePtr)m_imout, src,
-                                 minx, miny, 0, 0,
-                                 maxx-minx, maxy-miny,
-                                 gdImageSX(src), gdImageSY(src));
-        }
-        else
-        {
-            //TODO: must scale from native width/height to requested width/height
-            gdImageCopyRotated((gdImagePtr)m_imout, src, x, y, 0, 0, gdImageSX(src), gdImageSY(src), ROUND(angleDeg));
-        }
-
-        gdImageDestroy(src);
+        //NOTE: native_width and native_height arguments are ignored for PNG
+        //      since they're encoded in the png data array
+        src = gdImageCreateFromPngPtr(length, data);
     }
     else
         throw "Well implement this already!";
+
+    if (ROUND(angleDeg) == 0)
+    {
+        double w2 = w * 0.5;
+        double h2 = h * 0.5;
+
+        int minx = ROUND(x - w2);
+        int maxx = ROUND(x + w2);
+        int miny = ROUND(y - h2);
+        int maxy = ROUND(y + h2);
+
+        gdImageCopyResampled((gdImagePtr)m_imout, src,
+                             minx, miny, 0, 0,
+                             maxx-minx, maxy-miny, //TODO: do we need +1?
+                             gdImageSX(src), gdImageSY(src));
+    }
+    else
+    {
+        // scale it if necessary
+        if ((int)w != gdImageSX(src) || (int)h != gdImageSY(src))
+        {
+            gdImagePtr dst = gdImageCreateTrueColor((int)w, (int)h);
+            gdImageAlphaBlending(dst, 0);
+            gdImageFilledRectangle(dst, 0, 0, gdImageSX(dst)-1, gdImageSY(dst)-1, 0x7f000000);
+            gdImageAlphaBlending(dst, 1);
+            gdImageCopyResampled(dst, src, 0, 0, 0, 0, gdImageSX(dst), gdImageSY(dst), gdImageSX(src), gdImageSY(src));
+            gdImageDestroy(src);
+            src = dst;
+        }
+
+        gdImageCopyRotated((gdImagePtr)m_imout, src, x, y, 0, 0, gdImageSX(src), gdImageSY(src), ROUND(angleDeg));
+    }
+
+    gdImageDestroy(src);
 }
 
 

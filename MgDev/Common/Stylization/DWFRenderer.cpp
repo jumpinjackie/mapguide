@@ -2257,7 +2257,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
         dstpts[i].m_y = (WT_Integer32)ptsy[i];
     }
 
-    if (angleDeg == 0.0)
+    if (ROUND(angleDeg) == 0)
     {
         // simple case of no rotation
         if (format == RS_ImageFormat_RGB || format == RS_ImageFormat_RGBA)
