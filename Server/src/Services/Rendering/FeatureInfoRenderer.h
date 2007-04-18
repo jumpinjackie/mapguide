@@ -147,13 +147,13 @@ public:
     ///////////////////////////////////
     // SE_Renderer implementation
 
-    virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
+    virtual void ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
     {}
 
-    virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
+    virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     {}
 
-    virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style)
+    virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     {}
 
     virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double angleRad)

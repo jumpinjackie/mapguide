@@ -62,8 +62,11 @@ void SE_Renderer::SetRenderSelectionMode(bool mode)
 }
 
 
-void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
+void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
 {
+    // the feature geometry we're apply the style on...
+    LineBuffer* featGeom = ctx->geometry;
+
     double angleRad;
     if (wcscmp(L"FromAngle", style->angleControl) == 0)
     {
@@ -73,7 +76,7 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
     {
         // default is FromGeometry
         angleRad = 0.0;
-        switch(geometry->geom_type())
+        switch(featGeom->geom_type())
         {
             case FdoGeometryType_LineString:
             case FdoGeometryType_MultiLineString:
@@ -81,33 +84,35 @@ void SE_Renderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
             case FdoGeometryType_MultiPolygon:
             {
                 double x0, y0;
-                geometry->Centroid(LineBuffer::ctLine, &x0, &y0, &angleRad);
+                featGeom->Centroid(LineBuffer::ctLine, &x0, &y0, &angleRad);
                 break;
             }
         }
     }
 
+    SE_Matrix xform;
     bool yUp = YPointsUp();
 
-    SE_Matrix xform;
+    // see note in StylizationEngine::Stylize for an explanation of these transforms
     SE_Matrix xformbase;
     xformbase.translate(style->offset[0], style->offset[1]);
     xformbase.rotate(yUp? angleRad : -angleRad);
+    xformbase.premultiply(*ctx->xform);
 
     // render the points
-    for (int i = 0; i < geometry->point_count(); i++)
+    for (int i=0; i<featGeom->point_count(); ++i)
     {
-        double x = geometry->points()[2*i];
-        double y = geometry->points()[2*i+1];
+        double x = featGeom->points()[2*i];
+        double y = featGeom->points()[2*i+1];
 
-        // transform to screen space -- geometry is in [the original] mapping space
+        // transform to screen space -- feature geometry is in [the original] mapping space
         WorldToScreenPoint(x, y, x, y);
 
         xform = xformbase;
         xform.translate(x, y);
 
         if (style->drawLast)
-            AddLabel(geometry, style, xform, angleRad);
+            AddLabel(featGeom, style, xform, angleRad);
         else
         {
             DrawSymbol(style->symbol, xform, angleRad);
@@ -529,8 +534,11 @@ void SE_Renderer::SetBufferPool(SE_BufferPool* pool)
 }
 
 
-void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
+void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
+    // the feature geometry we're apply the style on...
+    LineBuffer* featGeom = ctx->geometry;
+
     //determine if the style is a simple straight solid line
     SE_RenderPrimitiveList& rs = style->symbol;
 
@@ -560,7 +568,7 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 //layout function
                 SE_Matrix m;
                 GetWorldToScreenTransform(m);
-                DrawScreenPolyline(geometry, &m, rp->color, rp->weight);
+                DrawScreenPolyline(featGeom, &m, rp->color, rp->weight);
                 return;
             }
         }
@@ -579,7 +587,7 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 
     if (vectorOnly && wcscmp(style->vertexControl, L"OverlapWrap") == 0)
     {
-        ProcessLineJoin(geometry, style);
+        ProcessLineJoin(featGeom, style);
         return;
     }
 
@@ -600,11 +608,11 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
     double angleCos = cos(angleRad);
     double angleSin = sin(yUp? angleRad : -angleRad);
 
-    for (int j=0; j<geometry->cntr_count(); j++)
+    for (int j=0; j<featGeom->cntr_count(); ++j)
     {
         //current polyline
-        int ptcount = geometry->cntrs()[j];
-        double* pts = geometry->points() + 2*ptindex;
+        int ptcount = featGeom->cntrs()[j];
+        double* pts = featGeom->points() + 2*ptindex;
 
         //pixel position along the current segment of the polyline
         double drawpos = style->startOffset;
@@ -663,7 +671,7 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 while (drawpos < len)
                 {
                     if (style->drawLast)
-                        AddLabel(geometry, style, symxf, angleRad);
+                        AddLabel(featGeom, style, symxf, angleRad);
                     else
                     {
                         DrawSymbol(style->symbol, symxf, angleRad);
@@ -686,7 +694,7 @@ void SE_Renderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 }
 
 
-void SE_Renderer::ProcessArea(LineBuffer* /*geometry*/, SE_RenderAreaStyle* /*style*/)
+void SE_Renderer::ProcessArea(SE_ApplyContext* /*ctx*/, SE_RenderAreaStyle* /*style*/)
 {
 }
 
