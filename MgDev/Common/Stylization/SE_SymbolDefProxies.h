@@ -34,6 +34,8 @@ class RS_FilterExecutor;
 class RS_FontEngine;
 class SE_SymbolManager;
 class SE_Renderer;
+struct SE_RenderPrimitive;
+
 
 class SE_EvalContext
 {
@@ -48,7 +50,15 @@ public:
     SE_BufferPool* pool;
 };
 
-struct SE_RenderPrimitive;
+
+class SE_ApplyContext
+{
+public:
+    LineBuffer* geometry;
+    SE_Renderer* renderer;
+    SE_Matrix* xform;
+};
+
 
 struct SE_Primitive
 {
@@ -152,11 +162,9 @@ struct SE_Style
     SE_String growControl;
 
     SE_INLINE SE_Style() : rstyle(NULL), cacheable(false) { }
-
     virtual ~SE_Style();
-
-    virtual void apply(LineBuffer* geometry, SE_Renderer* renderer) = 0;
     virtual void evaluate(SE_EvalContext*) = 0;
+    virtual void apply(SE_ApplyContext*) = 0;
 };
 
 
@@ -167,8 +175,8 @@ struct SE_PointStyle : public SE_Style
     SE_Double originOffset[2];
 
     SE_INLINE SE_PointStyle() { }
-    virtual void apply(LineBuffer* geometry, SE_Renderer* renderer);
     virtual void evaluate(SE_EvalContext*);
+    virtual void apply(SE_ApplyContext*);
 };
 
 
@@ -186,8 +194,8 @@ struct SE_LineStyle : public SE_Style
     SE_String vertexJoin;
 
     SE_INLINE SE_LineStyle() { }
-    virtual void apply(LineBuffer* geometry, SE_Renderer* renderer);
     virtual void evaluate(SE_EvalContext*);
+    virtual void apply(SE_ApplyContext*);
 };
 
 
@@ -203,8 +211,8 @@ struct SE_AreaStyle : public SE_Style
     SE_Double bufferWidth;
 
     SE_INLINE SE_AreaStyle() { }
-    virtual void apply(LineBuffer* geometry, SE_Renderer* renderer);
     virtual void evaluate(SE_EvalContext*);
+    virtual void apply(SE_ApplyContext*);
 };
 
 

@@ -274,36 +274,94 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         m_renderer->StartFeature(reader, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
     }
 
+    // Here's a description of how the transforms work for point and line symbols.
+    //
+    // For point symbols we have the following transform stack:
+    //
+    //   [T_fe] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
+    //
+    // where:
+    //   T_pu = point usage origin offset (a translation)
+    //   S_si = symbol instance scaling
+    //   R_pu = point usage rotation
+    //   T_si = symbol instance insertion offset
+    //   S_mm = scaling converting mm to pixels (also includes inverting y, if necessary)
+    //   T_fe = transation to the point feature
+    //
+    // This can be rewritten as:
+    //
+    //   [T_fe] [T_si*] [R_pu*] [T_pu*] [S_mm] [S_si] {Geom}
+    //
+    // where:
+    //   T_si* = symbol instance insertion offset, using offsets scaled by S_mm
+    //   R_pu* = point usage rotation, with angle accounting for y-up or y-down
+    //   T_pu* = point usage origin offset, using offsets scaled by S_mm and S_si
+    //
+    // We store [S_mm] [S_si] in xformScale below, and apply it to the symbol geometry
+    // during symbol evaluation.  The remaining transforms get applied in SE_Renderer::
+    // ProcessPoint.
+    //
+    // For line symbols it's simple since the symbol instance insertion offset doesn't
+    // apply, nor is there a line usage offset.  The stack looks like:
+    //
+    //   [T_fe] [S_mm] [R_lu] [S_si] {Geom}
+    //
+    // where:
+    //   S_si = symbol instance scaling
+    //   R_lu = line usage rotation
+    //   S_mm = scaling converting mm to pixels (also includes inverting y, if necessary)
+    //   T_fe = transation along the line feature
+    //
+    // This is rewritten as:
+    //
+    //   [T_fe] [R_lu*] [S_mm] [S_si] {Geom}
+    //
+    // where:
+    //   R_lu* = line usage rotation, with angle accounting for y-up or y-down
+    //
+    // As with point symbols we apply [S_mm] and S_si] to the symbol during evaluation,
+    // and the remaining transforms get applied in SE_Renderer::ProcessLine.
+
     /* TODO: Obey the indices--Get rid of the indices altogther--single pass! */
 
     for (std::vector<SE_Symbolization*>::const_iterator iter = symbolization->begin(); iter != symbolization->end(); iter++)
     {
         SE_Symbolization* sym = *iter;
 
-        double mm2px = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
-        SE_Matrix xform;
-        xform.setTransform( sym->scale[0].evaluate(executor),
-                            sym->scale[1].evaluate(executor),
-                            sym->absOffset[0].evaluate(executor),
-                            sym->absOffset[1].evaluate(executor) );
+        double mm2pxX = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
+        double mm2pxY = (w2s.y1 < 0.0)? -mm2pxX : mm2pxX;
+
+        SE_Matrix xformScale;
+        xformScale.scale(sym->scale[0].evaluate(executor),
+                         sym->scale[1].evaluate(executor));
 
         // The symbol geometry needs to be inverted if the y coordinate in the renderer points down.
         // This is so that in symbol definitions y points up consistently no matter what the underlying
         // renderer is doing.  Normally we could just apply the world to screen transform to everything,
         // but in some cases we only apply it to the position of the symbol and then offset the symbol
         // geometry from there - so the symbol geometry needs to be pre-inverted.
-        xform.scale(mm2px, w2s.y1 < 0 ? -mm2px : mm2px);
+        xformScale.scale(mm2pxX, mm2pxY);
 
         //initialize the style evaluation context
-        SE_EvalContext cxt;
-        cxt.exec = executor;
-        cxt.mm2px = mm2px;
-        cxt.mm2pxs = mm2pxs;
-        cxt.mm2pxw = mm2pxw;
-        cxt.pool = m_pool;
-        cxt.fonte = m_serenderer->GetFontEngine();
-        cxt.xform = &xform;
-        cxt.resources = m_resources;
+        SE_EvalContext evalCxt;
+        evalCxt.exec = executor;
+        evalCxt.mm2px = mm2pxX;
+        evalCxt.mm2pxs = mm2pxs;
+        evalCxt.mm2pxw = mm2pxw;
+        evalCxt.pool = m_pool;
+        evalCxt.fonte = m_serenderer->GetFontEngine();
+        evalCxt.xform = &xformScale;
+        evalCxt.resources = m_resources;
+
+        //initialize the style application context
+        SE_Matrix xformTrans;
+        xformTrans.translate(sym->absOffset[0].evaluate(executor) * mm2pxX,
+                             sym->absOffset[1].evaluate(executor) * mm2pxY);
+
+        SE_ApplyContext applyCtx;
+        applyCtx.geometry = geometry;
+        applyCtx.renderer = m_serenderer;
+        applyCtx.xform = &xformTrans;
 
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
         {
@@ -334,7 +392,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
             //evaluate the style (all expressions inside it) and convert to a constant screen space
             //render style
-            style->evaluate(&cxt);
+            style->evaluate(&evalCxt);
 
             //why are these in the symbolization? fix this!
             style->rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(executor);
@@ -344,12 +402,12 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             const wchar_t* positioningAlgo = sym->positioningAlgorithm.evaluate(executor);
             if (wcslen(positioningAlgo) > 0 && wcscmp(positioningAlgo, L"Default") != 0)
             {
-                LayoutCustomLabel(positioningAlgo, geometry, xform, style, style->rstyle, mm2px);
+                LayoutCustomLabel(positioningAlgo, geometry, xformScale, style, style->rstyle, mm2pxX);
             }
             else
             {
                 //apply the style to the geometry using the renderer
-                style->apply(geometry, m_serenderer);
+                style->apply(&applyCtx);
             }
         }
     }
