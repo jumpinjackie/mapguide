@@ -643,19 +643,19 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 }
 
 
-void SE_PointStyle::apply(LineBuffer* geometry, SE_Renderer* renderer)
+void SE_PointStyle::apply(SE_ApplyContext* cxt)
 {
-    renderer->ProcessPoint(geometry, (SE_RenderPointStyle*)rstyle);
+    cxt->renderer->ProcessPoint(cxt, (SE_RenderPointStyle*)rstyle);
 }
 
 
-void SE_LineStyle::apply(LineBuffer* geometry, SE_Renderer* renderer)
+void SE_LineStyle::apply(SE_ApplyContext* cxt)
 {
-    renderer->ProcessLine(geometry, (SE_RenderLineStyle*)rstyle);
+    cxt->renderer->ProcessLine(cxt, (SE_RenderLineStyle*)rstyle);
 }
 
 
-void SE_AreaStyle::apply(LineBuffer* geometry, SE_Renderer* renderer)
+void SE_AreaStyle::apply(SE_ApplyContext* cxt)
 {
-    renderer->ProcessArea(geometry, (SE_RenderAreaStyle*)rstyle);
+    cxt->renderer->ProcessArea(cxt, (SE_RenderAreaStyle*)rstyle);
 }

@@ -689,16 +689,16 @@ void KmlRenderer::AddExclusionRegion(RS_F_Point* /*fpts*/, int /*npts*/)
 // information obtained from cursory examination of the SE composite style.
 
 
-void KmlRenderer::ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style)
+void KmlRenderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
 {
     RS_FillStyle fs;
     RS_MarkerDef mdef(1.0, 1.0, 0.5, 0.5, 0.0, RS_Units_Device, L"", L"", fs);
 
-    ProcessMarker(geometry, mdef, !style->addToExclusionRegions, NULL);
+    ProcessMarker(ctx->geometry, mdef, !style->addToExclusionRegions, NULL);
 }
 
 
-void KmlRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
+void KmlRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
     RS_Color black(0,0,0,255);
     RS_LineStroke ls(black, 0.0, L"Solid", RS_Units_Device);
@@ -719,11 +719,11 @@ void KmlRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
     }
 
     //forward the feature to the regular ProcessPolyline API
-    ProcessPolyline(geometry, ls);
+    ProcessPolyline(ctx->geometry, ls);
 }
 
 
-void KmlRenderer::ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style)
+void KmlRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
     //not implemented upstream yet, but let's do something anyway
 
@@ -745,5 +745,5 @@ void KmlRenderer::ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style)
         }
     }
 
-    ProcessPolygon(geometry, fs);
+    ProcessPolygon(ctx->geometry, fs);
 }

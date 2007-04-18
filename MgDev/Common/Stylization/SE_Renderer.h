@@ -18,6 +18,7 @@
 #ifndef SE_RENDERER_H
 #define SE_RENDERER_H
 
+#include "SE_SymbolDefProxies.h"
 #include "SE_RenderProxies.h"
 
 class RS_FontEngine;
@@ -28,15 +29,16 @@ public:
     STYLIZATION_API SE_Renderer();
     STYLIZATION_API ~SE_Renderer();
 
-    // SE_RenderStyle, under associated xform, is in screen space, and geometry is in screen space
-    STYLIZATION_API virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style);
-    STYLIZATION_API virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
-    STYLIZATION_API virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style);
+    // SE_RenderStyle, under associated xform, is in screen space, and the
+    // geometry (in the context) is in screen space
+    STYLIZATION_API virtual void ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style);
+    STYLIZATION_API virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
+    STYLIZATION_API virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
 
-    // Draws the specified symbol using the given transform.  The supplied angle is in radians
-    // CCW, and should correspond to the rotation encoded in the transform.  Note that since the
-    // transform converts to renderer space, its rotation component must take into account whether
-    // y points up.
+    // Draws the specified symbol using the given transform.  The supplied angle
+    // is in radians CCW, and should correspond to the rotation encoded in the
+    // transform.  Note that since the transform converts to renderer space, its
+    // rotation component must take into account whether y points up.
     STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double angleRad);
 
     // Screen-space draw functions.  All angles are in degrees CCW.

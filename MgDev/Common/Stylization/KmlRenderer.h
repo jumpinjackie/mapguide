@@ -147,9 +147,9 @@ public:
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
-    virtual void ProcessPoint(LineBuffer* geometry, SE_RenderPointStyle* style);
-    virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
-    virtual void ProcessArea(LineBuffer* geometry, SE_RenderAreaStyle* style);
+    virtual void ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style);
+    virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
+    virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
 
 private:
     // Unimplemented Constructors/Methods
