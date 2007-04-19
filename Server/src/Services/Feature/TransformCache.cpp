@@ -176,3 +176,19 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
 
     return item;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Clear the specified Transform Cache map.
+///
+void TransformCache::Clear(TransformCacheMap& cacheMap)
+{
+    for (TransformCacheMap::iterator i = cacheMap.begin();
+        i != cacheMap.end(); ++i)
+    {
+        delete (*i).second;
+        (*i).second = NULL;
+    }
+
+    cacheMap.clear();
+}

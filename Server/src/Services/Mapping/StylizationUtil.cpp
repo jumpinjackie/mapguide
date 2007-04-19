@@ -950,13 +950,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
     printf("StylizeLayers() **MAPDONE** Layers:%d  Total Time:%6.4f (s)\n\n", layers->GetCount(), (GetTickCount()-dwStart)/1000.0);
     #endif
 
-    TransformCacheMap::iterator iter = transformCache.begin();
-    while (transformCache.end() != iter)
-    {
-        delete (*iter).second;
-        (*iter).second = NULL;
-        ++iter;
-    }
+    TransformCache::Clear(transformCache);
 }
 
 
@@ -1577,7 +1571,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
         //we don't want to crash out of GetMap just because the legend bitmap failed
         //for whatever reason
-        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgServerMappingService.DrawFTS")
+        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.DrawFTS")
 
         er.EndLayer();
         er.EndMap();
@@ -1600,7 +1594,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
     //we don't want to crash out of GetMap just because the legend bitmap failed
     //for whatever reason
-    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgServerMappingService.DrawFTS")
+    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.DrawFTS")
 
     return NULL;
 }
