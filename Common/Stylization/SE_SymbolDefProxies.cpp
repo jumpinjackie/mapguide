@@ -239,8 +239,9 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         textDef.valign() = RS_VAlignment_Half;
 
     RS_TextMetrics tm;
-    SE_Matrix txf;
     cxt->fonte->GetTextMetrics(ret->text, textDef, tm, false);
+
+    SE_Matrix txf;
     txf.rotate(textDef.rotation() * M_PI180);
     txf.translate(ret->position[0], ret->position[1]);
 

@@ -232,11 +232,19 @@ void LabelRenderer::BlastLabels()
                 for (size_t j=0; j<group.m_labels.size(); j++)
                 {
                     LR_LabelInfo& info = group.m_labels[j];
+
                     if (info.m_pts)
                     {
                         delete [] info.m_pts;
                         info.m_pts = NULL;
                         info.m_numpts = 0;
+                    }
+
+                    // the style was cloned when it was passed to the LabelRenderer
+                    if (info.m_sestyle)
+                    {
+                        delete info.m_sestyle;
+                        info.m_sestyle = NULL;
                     }
                 }
 
@@ -269,20 +277,29 @@ void LabelRenderer::BlastLabels()
     }
 
     //-------------------------------------------------------
-    // step 3 - clean up labeling paths
+    // step 3 - clean up labeling paths and styles
     //-------------------------------------------------------
 
     for (size_t i=0; i<m_labelGroups.size(); i++)
     {
         LR_OverpostGroup& group = m_labelGroups[i];
+
         for (size_t j=0; j<group.m_labels.size(); j++)
         {
             LR_LabelInfo& info = group.m_labels[j];
+
             if (info.m_pts)
             {
                 delete [] info.m_pts;
                 info.m_pts = NULL;
                 info.m_numpts = 0;
+            }
+
+            // the style was cloned when it was passed to the LabelRenderer
+            if (info.m_sestyle)
+            {
+                delete info.m_sestyle;
+                info.m_sestyle = NULL;
             }
         }
     }
@@ -440,7 +457,7 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
     RS_F_Point fpts[4];
     memcpy(fpts, info.m_sestyle->bounds, sizeof (fpts));
 
-    //now we will translate and orient the bounds with the given angle and position of the symbol
+    //translate and orient the bounds with the given angle and position of the symbol
     //apply position and rotation to the native bounds of the symbol
     double angleRad = info.m_tdef.rotation() * M_PI180;
     SE_Matrix m;
@@ -455,11 +472,6 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
     {
         if (OverlapsStuff(fpts, 4))
         {
-            //here are done with the style and we free it.
-            //it was cloned when it was passed to the LabelRenderer.
-            //delete info.m_sestyle;
-            //info.m_sestyle = NULL;
-
             return false;
         }
     }
@@ -489,11 +501,6 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
         m_serenderer->DrawScreenPolyline(&lb, &xform, 0xff000000, 0.0);
 #endif
     }
-
-    //here are done with the style and we free it.
-    //it was cloned when it was passed to the LabelRenderer.
-    delete info.m_sestyle;
-    info.m_sestyle = NULL;
 
     return true;
 }

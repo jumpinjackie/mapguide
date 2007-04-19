@@ -172,6 +172,24 @@ void Text::SetHeightScalable(const MdfString& heightScalable)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
+const MdfString& Text::GetAngle() const
+{
+    return this->m_sAngle;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Text::SetAngle(const MdfString& angle)
+{
+    this->m_sAngle = angle;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
 const MdfString& Text::GetPositionX() const
 {
     return this->m_sPositionX;
@@ -202,24 +220,6 @@ const MdfString& Text::GetPositionY() const
 void Text::SetPositionY(const MdfString& positionY)
 {
     this->m_sPositionY = positionY;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-const MdfString& Text::GetAngle() const
-{
-    return this->m_sAngle;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void Text::SetAngle(const MdfString& angle)
-{
-    this->m_sAngle = angle;
 }
 
 //-------------------------------------------------------------------------

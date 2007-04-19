@@ -892,22 +892,22 @@
       </xs:element>
       <xs:element name="ScaleX" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>The additional amount to scale the symbol horizontally in symbol space.</xs:documentation>
+          <xs:documentation>The additional amount to scale the symbol horizontally in symbol space.  Defaults to 1.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ScaleY" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>The additional amount to scale the symbol vertically in symbol space.</xs:documentation>
+          <xs:documentation>The additional amount to scale the symbol vertically in symbol space.  Defaults to 1.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="InsertionOffsetX" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies the additional amount to offset the symbol horizontally, in mm in device units, after rotation and scaling have been applied.  Applies only to point symbols.</xs:documentation>
+          <xs:documentation>Specifies the additional amount to offset the symbol horizontally, in mm in device units, after scaling and rotation have been applied.  Applies only to point symbols.  Defaults to 0.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="InsertionOffsetY" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies the additional amount to offset the symbol vertically, in mm in device units, after rotation and scaling have been applied.  Applies only to point symbols.</xs:documentation>
+          <xs:documentation>Specifies the additional amount to offset the symbol vertically, in mm in device units, after scaling and rotation have been applied.  Applies only to point symbols.  Defaults to 0.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="SizeContext" type="SizeContextType" minOccurs="0">
@@ -932,7 +932,7 @@
       </xs:element>
       <xs:element name="PositioningAlgorithm" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies the algorithm used to generate candidate positions for the symbol.  This must evaluate to one of: Default or EightSurrounding.  Default means generate one position using the feature geometry (used for normal rendering).  EightSurrounding means generate eight positions surrounding the feature geometry (used when labeling point features).</xs:documentation>
+          <xs:documentation>Specifies the algorithm used to generate candidate positions for the symbol.  If specified this must evaluate to one of: Default or EightSurrounding.  Default means generate one position using the feature geometry (used for normal rendering).  EightSurrounding means generate eight positions surrounding the feature geometry (used when labeling point features).</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>

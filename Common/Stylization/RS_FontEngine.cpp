@@ -21,7 +21,6 @@
 #include "RS_FontEngine.h"
 #include "Renderer.h"
 #include "SE_Renderer.h"
-#include "SE_Matrix.h"
 
 #define ROUND(x) (int)(floor(x+0.5))
 
@@ -715,9 +714,8 @@ double RS_FontEngine::GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_
     //
     //   * The face's height is the vertical distance from one baseline to
     //     the next when writing several lines of text.  Its value is always
-    //     positive.  The value can be computed as `ascender+descender+line_gap'.
+    //     positive.
 
-    // FreeType doesn't provide the capline - for now just use the ascent.
     double em_square_size = font->m_units_per_EM;
     double font_ascent    = font->m_ascender * actual_height / em_square_size;
     double font_descent   = font->m_descender * actual_height / em_square_size;

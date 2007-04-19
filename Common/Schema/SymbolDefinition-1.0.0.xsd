@@ -23,7 +23,7 @@
       </xs:element>
       <xs:element name="Description" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>A description of the symbol.</xs:documentation>
+          <xs:documentation>An optional description of the symbol.</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>
@@ -53,6 +53,16 @@
             </xs:annotation>
             <xs:complexType>
               <xs:sequence>
+                <xs:element name="SizeX" type="xs:string">
+                  <xs:annotation>
+                    <xs:documentation>The initial width of the resize box, in mm.  This must be greater than or equal to zero.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="SizeY" type="xs:string">
+                  <xs:annotation>
+                    <xs:documentation>The initial height of the resize box, in mm.  This must be greater than or equal to zero.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
                 <xs:element name="PositionX" type="xs:string">
                   <xs:annotation>
                     <xs:documentation>The initial x-coordinate of the resize box center, in mm.</xs:documentation>
@@ -61,16 +71,6 @@
                 <xs:element name="PositionY" type="xs:string">
                   <xs:annotation>
                     <xs:documentation>The initial y-coordinate of the resize box center, in mm.</xs:documentation>
-                  </xs:annotation>
-                </xs:element>
-                <xs:element name="SizeX" type="xs:string">
-                  <xs:annotation>
-                    <xs:documentation>The initial width of the resize box, in mm.</xs:documentation>
-                  </xs:annotation>
-                </xs:element>
-                <xs:element name="SizeY" type="xs:string">
-                  <xs:annotation>
-                    <xs:documentation>The initial height of the resize box, in mm.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="GrowControl" type="xs:string">
@@ -94,17 +94,17 @@
                 </xs:element>
                 <xs:element name="Angle" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the symbol angle, in degrees.  Only applies if AngleControl evaluates to FromAngle.</xs:documentation>
+                    <xs:documentation>Specifies the symbol angle, in degrees.  Only applies if AngleControl evaluates to FromAngle.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="OriginOffsetX" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the horizontal offset to apply to the symbol origin, in mm.  This offset is applied before the symbol is scaled and rotated.</xs:documentation>
+                    <xs:documentation>Specifies the horizontal offset to apply to the symbol origin, in mm.  This offset is applied before the symbol is scaled and rotated.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="OriginOffsetY" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the vertical offset to apply to the symbol origin, in mm.  This offset is applied before the symbol is scaled and rotated.</xs:documentation>
+                    <xs:documentation>Specifies the vertical offset to apply to the symbol origin, in mm.  This offset is applied before the symbol is scaled and rotated.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
               </xs:sequence>
@@ -133,27 +133,27 @@
                 </xs:element>
                 <xs:element name="Angle" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the symbol angle, in degrees.  Only applies if AngleControl evaluates to FromAngle.</xs:documentation>
+                    <xs:documentation>Specifies the symbol angle, in degrees.  Only applies if AngleControl evaluates to FromAngle.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="StartOffset" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies where the symbol distribution begins, relative to the start of the feature.</xs:documentation>
+                    <xs:documentation>Specifies where the symbol distribution begins, relative to the start of the feature.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="EndOffset" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies where the symbol distribution ends, relative to the end of the feature.</xs:documentation>
+                    <xs:documentation>Specifies where the symbol distribution ends, relative to the end of the feature.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="Repeat" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the separation between repeating symbols.</xs:documentation>
+                    <xs:documentation>Specifies the separation between repeating symbols.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="VertexAngleLimit" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the limiting angle, in degrees, by a which the feature geometry can change before some of the VertexControl options take effect.</xs:documentation>
+                    <xs:documentation>Specifies the limiting angle, in degrees, by a which the feature geometry can change before some of the VertexControl options take effect.  If specified this must be greater than or equal to zero.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="VertexJoin" type="xs:string" minOccurs="0">
@@ -163,7 +163,7 @@
                 </xs:element>
                 <xs:element name="DefaultPath" type="PathType" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the default path attributes to use when drawing the symbol.  These apply to any centerline that gets drawn where the symbol can't draw, and to path elements that don't specify attributes.  The geometry contained in this specify is ignored and should be empty.</xs:documentation>
+                    <xs:documentation>Specifies the default path attributes to use when drawing the symbol.  These apply to any centerline that gets drawn where the symbol can't draw, and to path elements that don't specify attributes.  The geometry contained in this path is ignored and should be empty.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
               </xs:sequence>
@@ -192,32 +192,32 @@
                 </xs:element>
                 <xs:element name="Angle" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>Specifies the angle of each repeating symbol, in degrees.  Only applies if AngleControl evaluates to FromAngle.</xs:documentation>
+                    <xs:documentation>Specifies the angle of each repeating symbol, in degrees.  Only applies if AngleControl evaluates to FromAngle.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="OriginX" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The x-coordinate of the symbol grid origin, in mm.  Only applies if OriginControl evaluates to Global or Local.</xs:documentation>
+                    <xs:documentation>The x-coordinate of the symbol grid origin, in mm.  Only applies if OriginControl evaluates to Global or Local.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="OriginY" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The y-coordinate of the symbol grid origin, in mm.  Only applies if OriginControl evaluates to Global or Local.</xs:documentation>
+                    <xs:documentation>The y-coordinate of the symbol grid origin, in mm.  Only applies if OriginControl evaluates to Global or Local.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="RepeatX" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The horizontal separation between symbols, in mm.</xs:documentation>
+                    <xs:documentation>The horizontal separation between symbols, in mm.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="RepeatY" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The vertical separation between symbols, in mm.</xs:documentation>
+                    <xs:documentation>The vertical separation between symbols, in mm.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="BufferWidth" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The width, in mm, of the buffer zone relative to the polygon boundary in which the symbol is rendered.</xs:documentation>
+                    <xs:documentation>The width, in mm, of the buffer zone relative to the polygon boundary in which the symbol is rendered.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
               </xs:sequence>
@@ -247,17 +247,17 @@
                       </xs:element>
                       <xs:element name="DisplayName" type="xs:string" minOccurs="0">
                         <xs:annotation>
-                          <xs:documentation>A short description of the parameter.  This can be used, for example, to ask the user to specify a parameter value.</xs:documentation>
+                          <xs:documentation>An optional short description of the parameter.  This can be used, for example, to ask the user to specify a parameter value.</xs:documentation>
                         </xs:annotation>
                       </xs:element>
                       <xs:element name="Description" type="xs:string" minOccurs="0">
                         <xs:annotation>
-                          <xs:documentation>A long description of the parameter.  This might include a description of useful values for this parameter.</xs:documentation>
+                          <xs:documentation>An optional long description of the parameter.  This might include a description of useful values for this parameter.</xs:documentation>
                         </xs:annotation>
                       </xs:element>
                       <xs:element name="AllowedValues" minOccurs="0">
                         <xs:annotation>
-                          <xs:documentation>A list of allowed values for this parameter.</xs:documentation>
+                          <xs:documentation>An optional list of allowed values for this parameter.</xs:documentation>
                         </xs:annotation>
                         <xs:complexType>
                           <xs:sequence>
@@ -303,7 +303,7 @@
                 </xs:choice>
                 <xs:element name="RenderingPass" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The rendering pass in which this symbol definition draws.  Symbol definitions that do not specifiy this will be drawn using rendering pass 0.</xs:documentation>
+                    <xs:documentation>The optional rendering pass in which this symbol definition draws.  If specified this must be greater than or equal to zero.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
               </xs:sequence>
@@ -349,7 +349,7 @@
           </xs:element>
           <xs:element name="LineWeight" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The weight to use when drawing the path outline, in mm.</xs:documentation>
+              <xs:documentation>The weight to use when drawing the path outline, in mm.  If specified this must be greater than or equal to zero.  Defaults to 0.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="LineWeightScalable" type="xs:string" minOccurs="0">
@@ -369,7 +369,7 @@
           </xs:element>
           <xs:element name="LineMiterLimit" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The limit to use when drawing miter joins.</xs:documentation>
+              <xs:documentation>The limit to use when drawing miter joins.  A miter join is trimmed if the ratio of the miter length to line weight is greater than the miter limit.  If specified this must be greater than zero.  Defaults to 10.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -411,12 +411,12 @@
           </xs:choice>
           <xs:element name="SizeX" type="xs:string">
             <xs:annotation>
-              <xs:documentation>The width of the image, in mm.</xs:documentation>
+              <xs:documentation>The width of the image, in mm.  This must be greater than zero.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="SizeY" type="xs:string">
             <xs:annotation>
-              <xs:documentation>The height of the image, in mm.</xs:documentation>
+              <xs:documentation>The height of the image, in mm.  This must be greater than zero.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="SizeScalable" type="xs:string" minOccurs="0">
@@ -424,19 +424,19 @@
               <xs:documentation>Boolean value which specifies whether the image sizes scale with the symbol.  This behavior is independent of the symbol's size context.  This must evaluate to True (default) or False.</xs:documentation>
             </xs:annotation>
           </xs:element>
+          <xs:element name="Angle" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>The angle of the image in symbol space, in degrees.  Defaults to 0.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
           <xs:element name="PositionX" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The x-coordinate of the image center in symbol space, in mm.</xs:documentation>
+              <xs:documentation>The x-coordinate of the image center in symbol space, in mm.  Defaults to 0.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="PositionY" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The y-coordinate of the image center in symbol space, in mm.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element name="Angle" type="xs:string" minOccurs="0">
-            <xs:annotation>
-              <xs:documentation>The angle of the image in symbol space, in degrees.</xs:documentation>
+              <xs:documentation>The y-coordinate of the image center in symbol space, in mm.  Defaults to 0.</xs:documentation>
             </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -477,7 +477,7 @@
           </xs:element>
           <xs:element name="Height" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The height of the text, in mm.</xs:documentation>
+              <xs:documentation>The height of the text, in mm.  If specified this must be greater than zero.  Defaults to 4.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="HeightScalable" type="xs:string" minOccurs="0">
@@ -485,19 +485,19 @@
               <xs:documentation>Boolean value which specifies whether the font height scales with the symbol.  This behavior is independent of the symbol's size context.  This must evaluate to True (default) or False.</xs:documentation>
             </xs:annotation>
           </xs:element>
+          <xs:element name="Angle" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>The angle of the text in symbol space, in degrees.  Defaults to 0.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
           <xs:element name="PositionX" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The x-coordinate of the text in symbol space, in mm.  Horizontal alignment of the text box is relative to this coordinate.</xs:documentation>
+              <xs:documentation>The x-coordinate of the text in symbol space, in mm.  Horizontal alignment of the text box is relative to this coordinate.  Defaults to 0.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="PositionY" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The y-coordinate of the text in symbol space, in mm.  Vertical alignment of the text box is relative to this coordinate.</xs:documentation>
-            </xs:annotation>
-          </xs:element>
-          <xs:element name="Angle" type="xs:string" minOccurs="0">
-            <xs:annotation>
-              <xs:documentation>The angle of the text in symbol space, in degrees.</xs:documentation>
+              <xs:documentation>The y-coordinate of the text in symbol space, in mm.  Vertical alignment of the text box is relative to this coordinate.  Defaults to 0.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="HorizontalAlignment" type="xs:string" minOccurs="0">
@@ -517,17 +517,17 @@
           </xs:element>
           <xs:element name="LineSpacing" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The spacing between individual lines of text in a multi-line text string, in mm.</xs:documentation>
+              <xs:documentation>The spacing between individual lines of text in a multi-line text string, in mm.  Defaults to 1.05 times the font height.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="TextColor" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The ARGB color used to draw the text.</xs:documentation>
+              <xs:documentation>The ARGB color used to draw the text.  Defaults to black.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="GhostColor" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The ARGB color used to draw the ghosted text.</xs:documentation>
+              <xs:documentation>The ARGB color used to draw the ghosted text.  If this element is missing or empty then no ghosting is drawn.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="Frame" minOccurs="0">
@@ -538,22 +538,22 @@
               <xs:sequence>
                 <xs:element name="LineColor" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The ARGB color used to draw the text frame border.</xs:documentation>
+                    <xs:documentation>The ARGB color used to draw the text frame border.  If this element is missing or empty then no frame border is drawn.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="FillColor" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The ARGB color used to fill the text frame.</xs:documentation>
+                    <xs:documentation>The ARGB color used to fill the text frame.  If this element is missing or empty then no fill is drawn.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="OffsetX" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The additional horizontal offset of the frame relative to the text box, in mm.</xs:documentation>
+                    <xs:documentation>The additional horizontal offset of the frame relative to the text box, in mm.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
                 <xs:element name="OffsetY" type="xs:string" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The additional vertical offset of the frame relative to the text box, in mm.</xs:documentation>
+                    <xs:documentation>The additional vertical offset of the frame relative to the text box, in mm.  Defaults to 0.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
               </xs:sequence>
