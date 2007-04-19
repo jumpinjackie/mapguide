@@ -33,17 +33,17 @@ BEGIN_NAMESPACE_MDFMODEL
         ResizeBox();
         virtual ~ResizeBox();
 
-        const MdfString& GetPositionX() const;
-        void SetPositionX(const MdfString& positionX);
-
-        const MdfString& GetPositionY() const;
-        void SetPositionY(const MdfString& positionY);
-
         const MdfString& GetSizeX() const;
         void SetSizeX(const MdfString& sizeX);
 
         const MdfString& GetSizeY() const;
         void SetSizeY(const MdfString& sizeY);
+
+        const MdfString& GetPositionX() const;
+        void SetPositionX(const MdfString& positionX);
+
+        const MdfString& GetPositionY() const;
+        void SetPositionY(const MdfString& positionY);
 
         const MdfString& GetGrowControl() const;
         void SetGrowControl(const MdfString& growControl);
@@ -54,10 +54,10 @@ BEGIN_NAMESPACE_MDFMODEL
         ResizeBox& operator=(const ResizeBox&);
 
         // Data members
-        MdfString m_sPositionX;
-        MdfString m_sPositionY;
         MdfString m_sSizeX;
         MdfString m_sSizeY;
+        MdfString m_sPositionX;
+        MdfString m_sPositionY;
         MdfString m_sGrowControl;
     };
 

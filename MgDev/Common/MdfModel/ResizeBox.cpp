@@ -43,42 +43,6 @@ ResizeBox::~ResizeBox()
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-const MdfString& ResizeBox::GetPositionX() const
-{
-    return this->m_sPositionX;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void ResizeBox::SetPositionX(const MdfString& positionX)
-{
-    this->m_sPositionX = positionX;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-const MdfString& ResizeBox::GetPositionY() const
-{
-    return this->m_sPositionY;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void ResizeBox::SetPositionY(const MdfString& positionY)
-{
-    this->m_sPositionY = positionY;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
 const MdfString& ResizeBox::GetSizeX() const
 {
     return this->m_sSizeX;
@@ -109,6 +73,42 @@ const MdfString& ResizeBox::GetSizeY() const
 void ResizeBox::SetSizeY(const MdfString& sizeY)
 {
     this->m_sSizeY = sizeY;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& ResizeBox::GetPositionX() const
+{
+    return this->m_sPositionX;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void ResizeBox::SetPositionX(const MdfString& positionX)
+{
+    this->m_sPositionX = positionX;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& ResizeBox::GetPositionY() const
+{
+    return this->m_sPositionY;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void ResizeBox::SetPositionY(const MdfString& positionY)
+{
+    this->m_sPositionY = positionY;
 }
 
 //-------------------------------------------------------------------------

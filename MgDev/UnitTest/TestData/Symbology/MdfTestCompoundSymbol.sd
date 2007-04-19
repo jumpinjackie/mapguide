@@ -24,9 +24,9 @@
           <SizeX>100.0</SizeX>
           <SizeY>100.0</SizeY>
           <SizeScalable>True</SizeScalable>
+          <Angle>0.0</Angle>
           <PositionX>0.0</PositionX>
           <PositionY>0.0</PositionY>
-          <Angle>0.0</Angle>
         </Image>
         <Image>
           <ResizeControl>'AddToResizeBox'</ResizeControl>
@@ -37,9 +37,9 @@
           <SizeX>100.0</SizeX>
           <SizeY>100.0</SizeY>
           <SizeScalable>True</SizeScalable>
+          <Angle>0.0</Angle>
           <PositionX>0.0</PositionX>
           <PositionY>0.0</PositionY>
-          <Angle>0.0</Angle>
         </Image>
         <Text>
           <ResizeControl>'AddToResizeBox'</ResizeControl>
@@ -50,9 +50,9 @@
           <Underlined>False</Underlined>
           <Height>10.0</Height>
           <HeightScalable>True</HeightScalable>
+          <Angle>0.0</Angle>
           <PositionX>0.0</PositionX>
           <PositionY>0.0</PositionY>
-          <Angle>0.0</Angle>
           <HorizontalAlignment>'Center'</HorizontalAlignment>
           <VerticalAlignment>'Baseline'</VerticalAlignment>
           <Justification>'Center'</Justification>
@@ -68,10 +68,10 @@
         </Text>
       </Graphics>
       <ResizeBox>
-        <PositionX>0.0</PositionX>
-        <PositionY>0.0</PositionY>
         <SizeX>50.0</SizeX>
         <SizeY>10.0</SizeY>
+        <PositionX>0.0</PositionX>
+        <PositionY>0.0</PositionY>
         <GrowControl>'GrowInXYMaintainAspect'</GrowControl>
       </ResizeBox>
       <PointUsage>
