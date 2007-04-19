@@ -49,9 +49,9 @@ void IOImage::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, image, SizeX, ch)
     else IF_STRING_PROPERTY(m_currElemName, image, SizeY, ch)
     else IF_STRING_PROPERTY(m_currElemName, image, SizeScalable, ch)
+    else IF_STRING_PROPERTY(m_currElemName, image, Angle, ch)
     else IF_STRING_PROPERTY(m_currElemName, image, PositionX, ch)
     else IF_STRING_PROPERTY(m_currElemName, image, PositionY, ch)
-    else IF_STRING_PROPERTY(m_currElemName, image, Angle, ch)
     else IOGraphicElement::ElementChars(ch);
 }
 
@@ -79,9 +79,9 @@ void IOImage::Write(MdfStream &fd, Image* image)
     EMIT_STRING_PROPERTY(fd, image, SizeX, false)
     EMIT_STRING_PROPERTY(fd, image, SizeY, false)
     EMIT_STRING_PROPERTY(fd, image, SizeScalable, true)
+    EMIT_STRING_PROPERTY(fd, image, Angle, true)
     EMIT_STRING_PROPERTY(fd, image, PositionX, true)
     EMIT_STRING_PROPERTY(fd, image, PositionY, true)
-    EMIT_STRING_PROPERTY(fd, image, Angle, true)
 
     dectab();
     fd << tab() << "</Image>" << std::endl; // NOXLATE

@@ -51,14 +51,14 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetSizeScalable() const;
         void SetSizeScalable(const MdfString& sizeScalable);
 
+        const MdfString& GetAngle() const;
+        void SetAngle(const MdfString& angle);
+
         const MdfString& GetPositionX() const;
         void SetPositionX(const MdfString& positionX);
 
         const MdfString& GetPositionY() const;
         void SetPositionY(const MdfString& positionY);
-
-        const MdfString& GetAngle() const;
-        void SetAngle(const MdfString& angle);
 
         virtual void AcceptVisitor(IGraphicElementVisitor& igeVisitor);
 
@@ -75,11 +75,9 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sSizeX;
         MdfString m_sSizeY;
         MdfString m_sSizeScalable;
-
+        MdfString m_sAngle;
         MdfString m_sPositionX;
         MdfString m_sPositionY;
-
-        MdfString m_sAngle;
     };
 
 END_NAMESPACE_MDFMODEL

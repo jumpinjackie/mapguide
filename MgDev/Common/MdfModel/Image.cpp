@@ -166,6 +166,24 @@ void Image::SetSizeScalable(const MdfString& sizeScalable)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
+const MdfString& Image::GetAngle() const
+{
+    return this->m_sAngle;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Image::SetAngle(const MdfString& angle)
+{
+    this->m_sAngle = angle;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
 const MdfString& Image::GetPositionX() const
 {
     return this->m_sPositionX;
@@ -196,24 +214,6 @@ const MdfString& Image::GetPositionY() const
 void Image::SetPositionY(const MdfString& positionY)
 {
     this->m_sPositionY = positionY;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-const MdfString& Image::GetAngle() const
-{
-    return this->m_sAngle;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE:
-// PARAMETERS:
-//-------------------------------------------------------------------------
-void Image::SetAngle(const MdfString& angle)
-{
-    this->m_sAngle = angle;
 }
 
 //-------------------------------------------------------------------------

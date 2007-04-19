@@ -377,11 +377,19 @@ void LabelRendererLocal::BlastLabels()
                 for (size_t j=0; j<group.m_labels.size(); j++)
                 {
                     LR_LabelInfoLocal& info = group.m_labels[j];
+
                     if (info.m_pts)
                     {
                         delete [] info.m_pts;
                         info.m_pts = NULL;
                         info.m_numpts = 0;
+                    }
+
+                    // the style was cloned when it was passed to the LabelRenderer
+                    if (info.m_sestyle)
+                    {
+                        delete info.m_sestyle;
+                        info.m_sestyle = NULL;
                     }
                 }
 
@@ -420,13 +428,19 @@ void LabelRendererLocal::BlastLabels()
                 else
                     success = ComputeSimpleLabelBounds(info);
 
-                //simple label or SE Label --> simply add one instance of
+                //simple label or SE label --> simply add one instance of
                 //it to the repeated infos collection. When we add repeated
                 //labels for polygons, this code will change.
                 LR_LabelInfoLocal copy = info;
                 copy.m_pts = NULL;
                 copy.m_numpts = 0;
                 repeated_infos.push_back(copy);
+
+                //NOTE: the code above copies any SE style pointer.  Rather than
+                //      clone the style and have the original deleted below, just
+                //      clear the pointer on the original label info.  The new
+                //      label info therefore now owns the SE style.
+                info.m_sestyle = NULL;
             }
 
             if (!success)
@@ -445,11 +459,19 @@ void LabelRendererLocal::BlastLabels()
         for (size_t j=0; j<group.m_labels.size(); j++)
         {
             LR_LabelInfoLocal& info = group.m_labels[j];
+
             if (info.m_pts)
             {
                 delete [] info.m_pts;
                 info.m_pts = NULL;
                 info.m_numpts = 0;
+            }
+
+            // the style was cloned when it was passed to the LabelRenderer
+            if (info.m_sestyle)
+            {
+                delete info.m_sestyle;
+                info.m_sestyle = NULL;
             }
         }
 
@@ -761,6 +783,16 @@ void LabelRendererLocal::BlastLabels()
 
             info.m_numpts = 0;
             info.m_numelems = 0;
+
+            // label infos in finalGroups should no longer have polyline data
+            _ASSERT(info.m_pts == NULL);
+
+            // the style was cloned when it was passed to the LabelRenderer
+            if (info.m_sestyle)
+            {
+                delete info.m_sestyle;
+                info.m_sestyle = NULL;
+            }
         }
     }
 
@@ -977,7 +1009,7 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
     RS_F_Point fpts[4];
     memcpy(fpts, info.m_sestyle->bounds, sizeof (fpts));
 
-    //now we will translate and orient the bounds with the given angle and position of the symbol
+    //translate and orient the bounds with the given angle and position of the symbol
     //apply position and rotation to the native bounds of the symbol
     double angleRad = info.m_tdef.rotation() * M_PI180;
     SE_Matrix m;
@@ -987,7 +1019,7 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
     for (int i=0; i<4; i++)
         m.transform(fpts[i].x, fpts[i].y);
 
-    // compute the overall rotated bounds
+    //compute the overall rotated bounds
     RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
     for (int i=0; i<4; i++)
         rotatedBounds.add_point(fpts[i]);
