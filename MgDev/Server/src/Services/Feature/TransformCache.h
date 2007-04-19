@@ -46,6 +46,8 @@ public:
                                                   MgCoordinateSystemFactory* csFactory,
                                                   MgFeatureService* svcFeature);
 
+    static void Clear(TransformCacheMap& cacheMap);
+
 private:
     MgCSTrans* m_xform;
     Ptr<MgCoordinateSystem> m_coordSys;

@@ -1140,7 +1140,11 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                                                      CREFSTRING wfsFilter,
                                                      INT32 maxFeatures)
 {
+    Ptr<MgByteReader> byteReader;
     TransformCacheMap transformCache;
+
+    MG_FEATURE_SERVICE_TRY()
+
     MgCoordinateSystemFactory fact;
     Ptr<MgCoordinateSystem> mapCs = (srs.empty()) ? NULL : fact.Create(srs);
 
@@ -1243,8 +1247,15 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     //return the file
     Ptr<MgByteSource> src = new MgByteSource(fileName, true);
     src->SetMimeType(MgMimeType::Xml);
+    byteReader = src->GetReader();
 
-    return src->GetReader();
+    MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.GetWfsFeature")
+
+    TransformCache::Clear(transformCache);
+
+    MG_FEATURE_SERVICE_THROW()
+
+    return byteReader.Detach();
 }
 
 

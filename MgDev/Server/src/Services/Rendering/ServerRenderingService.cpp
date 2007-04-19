@@ -844,6 +844,12 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                          INT32 layerAttributeFilter,
                          FeatureInfoRenderer* selRenderer)
 {
+    // Cache coordinate system transforms for the life of the
+    // stylization operation.
+    TransformCacheMap transformCache;
+
+    MG_TRY()
+
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): ** START **\n")));
     if (NULL == map || (NULL == geometry && featureFilter.empty()))
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -860,10 +866,6 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection",
             __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanZero", NULL);
     }
-
-    // Cache coordinate system transforms for the life of the
-    // stylization operation.
-    TransformCacheMap transformCache;
 
     // get the session ID
     STRING sessionId;
@@ -1063,6 +1065,12 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
     selRenderer->EndMap();
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): ** END **\n")));
+
+    MG_CATCH(L"MgServerFeatureService.GetWfsFeature")
+
+    TransformCache::Clear(transformCache);
+
+    MG_THROW()
 }
 
 void MgServerRenderingService::SetConnectionProperties(MgConnectionProperties*)
