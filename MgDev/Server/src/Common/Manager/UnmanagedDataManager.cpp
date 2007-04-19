@@ -187,15 +187,14 @@ void MgUnmanagedDataManager::GetFilesAndFolders(string& list, CREFSTRING mapping
         {
             STRING entryName = MG_TCHAR_TO_WCHAR(direntry->d_name);
             STRING fullDataPathname = fulldir + entryName;
-            MgDateTime createdDate = MgFileUtil::GetFileCreationTime(fullDataPathname);
-            MgDateTime modifiedDate = MgFileUtil::GetFileModificationTime(fullDataPathname);
 
             if (MgFileUtil::IsFile(fullDataPathname)
                 && storeFiles
                 && FilterFile(entryName, filters))
             {
                 INT64 fileSize = MgFileUtil::GetFileSize(fullDataPathname);
-  
+                MgDateTime createdDate = MgFileUtil::GetFileCreationTime(fullDataPathname);
+                MgDateTime modifiedDate = MgFileUtil::GetFileModificationTime(fullDataPathname);
                 AddFile(list, mappingName, subdir, entryName, fileSize, createdDate, modifiedDate);
             }
             else if (MgFileUtil::IsDirectory(fullDataPathname) 
@@ -208,7 +207,8 @@ void MgUnmanagedDataManager::GetFilesAndFolders(string& list, CREFSTRING mapping
                     INT32 numFolders = 0;
                     INT32 numFiles = 0;
                     GetNumberOfFilesAndSubfolders(fullDataPathname, numFolders, numFiles);
-
+                    MgDateTime createdDate = MgFileUtil::GetFileCreationTime(fullDataPathname);
+                    MgDateTime modifiedDate = MgFileUtil::GetFileModificationTime(fullDataPathname);
                     AddFolder(list, mappingName, subdir, entryName, numFolders, numFiles, createdDate, modifiedDate);
                 }
 
