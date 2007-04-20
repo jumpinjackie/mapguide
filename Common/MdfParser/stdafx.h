@@ -34,6 +34,8 @@
 #else
 
 #define _ASSERT(x)
+#define _wcsnicmp wcsncasecmp
+#define _wcsicmp wcscasecmp
 
 #endif //_WIN32
 
