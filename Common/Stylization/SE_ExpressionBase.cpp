@@ -115,19 +115,20 @@ void SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& exprstr, co
 }
 
 
-void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr, SE_Double& val)
+void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr, SE_Double& val, double defaultValue)
 {
-    ReplaceParameters(exprstr, L"0.0");
+    wchar_t fallback[64] = { 0 };
+    ::swprintf(fallback, 64, L"%.17g", defaultValue);
+
+    ReplaceParameters(exprstr, fallback);
     const wchar_t* cstr = m_buffer.c_str();
     size_t len = m_buffer.size();
     size_t chars = 0;
     val.expression = NULL;
+    val = defaultValue;
 
     if (len == 0)
-    {
-        val = 0;
         return;
-    }
 
     int ret = swscanf(cstr, L"%lf%n", &val.value, &chars);
 
@@ -138,19 +139,20 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
 }
 
 
-void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprstr, SE_Integer& val)
+void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprstr, SE_Integer& val, int defaultValue)
 {
-    ReplaceParameters(exprstr, L"0");
+    wchar_t fallback[32] = { 0 };
+    ::swprintf(fallback, 32, L"%d", defaultValue);
+
+    ReplaceParameters(exprstr, fallback);
     const wchar_t* cstr = m_buffer.c_str();
     size_t len = m_buffer.size();
     size_t chars = 0;
     val.expression = NULL;
+    val = defaultValue;
 
     if (len == 0)
-    {
-        val = 0;
         return;
-    }
 
     int ret = swscanf(cstr, L"%d%n", &val, &chars);
 
@@ -161,18 +163,16 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
 }
 
 
-void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprstr, SE_Boolean& val)
+void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprstr, SE_Boolean& val, bool defaultValue)
 {
-    ReplaceParameters(exprstr, L"false");
+    ReplaceParameters(exprstr, defaultValue? L"true" : L"false");
     const wchar_t* cstr = m_buffer.c_str();
     size_t len = m_buffer.size();
     val.expression = NULL;
+    val = defaultValue;
 
     if (len == 0)
-    {
-        val = false;
         return;
-    }
 
     if (_wcsicmp(cstr, L"true") == 0)
     {
@@ -189,14 +189,14 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
 }
 
 
-void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val)
+void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val, wchar_t* defaultValue)
 {
-    ReplaceParameters(exprstr, L"");
+    ReplaceParameters(exprstr, defaultValue);
 
     if (exprstr.empty())
     {
         val.expression = NULL;
-        val = L"";
+        val = defaultValue;
     }
     else
     {
@@ -269,19 +269,20 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
 }
 
 
-void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr, SE_Color& val)
+void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr, SE_Color& val, unsigned int defaultValue)
 {
-    ReplaceParameters(exprstr, L"FF000000");
+    wchar_t fallback[9] = { 0 };
+    ::swprintf(fallback, 9, L"%08x", defaultValue);
+
+    ReplaceParameters(exprstr, fallback);
     const wchar_t* cstr = m_buffer.c_str();
     size_t len = m_buffer.size();
     size_t chars = 0;
     val.expression = NULL;
+    val = defaultValue;
 
     if (len == 0)
-    {
-        val.value.argb = 0;
         return;
-    }
 
     int ret = swscanf(cstr, L"%X%n", &val.value.argb, &chars);
 

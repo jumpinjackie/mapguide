@@ -105,12 +105,12 @@ void IOPointTypeStyle::Write(MdfStream &fd, PointTypeStyle *pointTypeStyle, Vers
 
     //Property: DisplayAsText
     fd << tab() << "<DisplayAsText>"; // NOXLATE
-    fd << (BoolToStr(pointTypeStyle->IsDisplayAsText())) ? ("true") : ("false"); // NOXLATE
+    fd << (pointTypeStyle->IsDisplayAsText()? "true" : "false"); // NOXLATE
     fd << "</DisplayAsText>" << std::endl; // NOXLATE
 
     //Property: AllowOverpost
     fd << tab() << "<AllowOverpost>"; // NOXLATE
-    fd << (BoolToStr(pointTypeStyle->IsAllowOverpost())) ? ("true") : ("false"); // NOXLATE
+    fd << (pointTypeStyle->IsAllowOverpost()? "true" : "false"); // NOXLATE
     fd << "</AllowOverpost>" << std::endl; // NOXLATE
 
     //Property: Rules
