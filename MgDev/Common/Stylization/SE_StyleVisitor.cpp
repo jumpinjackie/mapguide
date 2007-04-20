@@ -61,10 +61,10 @@ SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp)
 SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 {
     SE_PointStyle* style = new SE_PointStyle();
-    ParseDoubleExpression(pointUsage.GetAngle(), style->angleDeg);
-    ParseDoubleExpression(pointUsage.GetOriginOffsetX(), style->originOffset[0]);
-    ParseDoubleExpression(pointUsage.GetOriginOffsetY(), style->originOffset[1]);
-    ParseStringExpression(pointUsage.GetAngleControl(), style->angleControl);
+    ParseDoubleExpression(pointUsage.GetAngle(), style->angleDeg, 0.0);
+    ParseDoubleExpression(pointUsage.GetOriginOffsetX(), style->originOffset[0], 0.0);
+    ParseDoubleExpression(pointUsage.GetOriginOffsetY(), style->originOffset[1], 0.0);
+    ParseStringExpression(pointUsage.GetAngleControl(), style->angleControl, L"FromGeometry");
 
     // set flag if all properties are constant
     style->cacheable = !(style->angleDeg.expression
@@ -79,15 +79,15 @@ SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
 {
     SE_LineStyle* style = new SE_LineStyle();
-    ParseStringExpression(lineUsage.GetAngleControl(), style->angleControl);
-    ParseStringExpression(lineUsage.GetUnitsControl(), style->unitsControl);
-    ParseStringExpression(lineUsage.GetVertexControl(), style->vertexControl);
-    ParseDoubleExpression(lineUsage.GetAngle(), style->angleDeg);
-    ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset);
-    ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset);
-    ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat);
-    ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->vertexAngleLimit);
-    ParseStringExpression(lineUsage.GetVertexJoin(), style->vertexJoin);
+    ParseStringExpression(lineUsage.GetAngleControl(), style->angleControl, L"FromGeometry");
+    ParseStringExpression(lineUsage.GetUnitsControl(), style->unitsControl, L"Absolute");
+    ParseStringExpression(lineUsage.GetVertexControl(), style->vertexControl, L"OverlapNone");
+    ParseDoubleExpression(lineUsage.GetAngle(), style->angleDeg, 0.0);
+    ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset, 0.0);
+    ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset, 0.0);
+    ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat, 0.0);
+    ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->vertexAngleLimit, 0.0);
+    ParseStringExpression(lineUsage.GetVertexJoin(), style->vertexJoin, L"Round");
 
     // set flag if all properties are constant
     style->cacheable = !(style->angleDeg.expression
@@ -107,15 +107,15 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
 SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
 {
     SE_AreaStyle* style = new SE_AreaStyle();
-    ParseStringExpression(areaUsage.GetAngleControl(), style->angleControl);
-    ParseStringExpression(areaUsage.GetOriginControl(), style->originControl);
-    ParseStringExpression(areaUsage.GetClippingControl(), style->clippingControl);
-    ParseDoubleExpression(areaUsage.GetAngle(), style->angleDeg);
-    ParseDoubleExpression(areaUsage.GetOriginX(), style->origin[0]);
-    ParseDoubleExpression(areaUsage.GetOriginY(), style->origin[1]);
-    ParseDoubleExpression(areaUsage.GetRepeatX(), style->repeat[0]);
-    ParseDoubleExpression(areaUsage.GetRepeatY(), style->repeat[1]);
-    ParseDoubleExpression(areaUsage.GetBufferWidth(), style->bufferWidth);
+    ParseStringExpression(areaUsage.GetAngleControl(), style->angleControl, L"FromGeometry");
+    ParseStringExpression(areaUsage.GetOriginControl(), style->originControl, L"Global");
+    ParseStringExpression(areaUsage.GetClippingControl(), style->clippingControl, L"Clip");
+    ParseDoubleExpression(areaUsage.GetAngle(), style->angleDeg, 0.0);
+    ParseDoubleExpression(areaUsage.GetOriginX(), style->origin[0], 0.0);
+    ParseDoubleExpression(areaUsage.GetOriginY(), style->origin[1], 0.0);
+    ParseDoubleExpression(areaUsage.GetRepeatX(), style->repeat[0], 0.0);
+    ParseDoubleExpression(areaUsage.GetRepeatY(), style->repeat[1], 0.0);
+    ParseDoubleExpression(areaUsage.GetBufferWidth(), style->bufferWidth, 0.0);
 
     // set flag if all properties are constant
     style->cacheable = !(style->angleDeg.expression
@@ -419,7 +419,7 @@ void SE_StyleVisitor::VisitPath(Path& path)
     SE_Color fillColor;
     const MdfString& geometry = path.GetGeometry();
 
-    ParseColorExpression(path.GetFillColor(), fillColor);
+    ParseColorExpression(path.GetFillColor(), fillColor, 0);
 
     if (m_primitive)
         delete m_primitive;
@@ -430,12 +430,12 @@ void SE_StyleVisitor::VisitPath(Path& path)
         m_primitive = primitive;
         primitive->geometry = m_bp->NewLineBuffer(4);
         ParseGeometry(geometry, *primitive->geometry);
-        ParseDoubleExpression(path.GetLineWeight(), primitive->weight);
-        ParseColorExpression(path.GetLineColor(), primitive->color);
-        ParseBooleanExpression(path.GetLineWeightScalable(), primitive->weightScalable);
-        ParseStringExpression(path.GetLineCap(), primitive->cap);
-        ParseStringExpression(path.GetLineJoin(), primitive->join);
-        ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit);
+        ParseDoubleExpression(path.GetLineWeight(), primitive->weight, 0.0);
+        ParseColorExpression(path.GetLineColor(), primitive->color, 0);
+        ParseBooleanExpression(path.GetLineWeightScalable(), primitive->weightScalable, true);
+        ParseStringExpression(path.GetLineCap(), primitive->cap, L"Round");
+        ParseStringExpression(path.GetLineJoin(), primitive->join, L"Round");
+        ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 10.0);
 
         // if the color is transparent there's no point in drawing this
         // path, so change it to black
@@ -456,12 +456,12 @@ void SE_StyleVisitor::VisitPath(Path& path)
         primitive->fill = fillColor;
         primitive->geometry = m_bp->NewLineBuffer(4);
         ParseGeometry(geometry, *primitive->geometry);
-        ParseDoubleExpression(path.GetLineWeight(), primitive->weight);
-        ParseColorExpression(path.GetLineColor(), primitive->color);
-        ParseBooleanExpression(path.GetLineWeightScalable(), primitive->weightScalable);
-        ParseStringExpression(path.GetLineCap(), primitive->cap);
-        ParseStringExpression(path.GetLineJoin(), primitive->join);
-        ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit);
+        ParseDoubleExpression(path.GetLineWeight(), primitive->weight, 0.0);
+        ParseColorExpression(path.GetLineColor(), primitive->color, 0);
+        ParseBooleanExpression(path.GetLineWeightScalable(), primitive->weightScalable, true);
+        ParseStringExpression(path.GetLineCap(), primitive->cap, L"Round");
+        ParseStringExpression(path.GetLineJoin(), primitive->join, L"Round");
+        ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 10.0);
 
         primitive->cacheable = !(primitive->weight.expression
                               || primitive->color.expression
@@ -504,8 +504,8 @@ void SE_StyleVisitor::VisitImage(Image& image)
     }
     else
     {
-        ParseStringExpression(image.GetResourceId(), primitive->pngResourceId);
-        ParseStringExpression(image.GetLibraryItemName(), primitive->pngResourceName);
+        ParseStringExpression(image.GetResourceId(), primitive->pngResourceId, L"");
+        ParseStringExpression(image.GetLibraryItemName(), primitive->pngResourceName, L"");
 
         if (primitive->pngResourceId.expression == NULL && primitive->pngResourceName.expression == NULL) // constant path
         {
@@ -521,12 +521,12 @@ void SE_StyleVisitor::VisitImage(Image& image)
             primitive->pngPtr = NULL;
     }
 
-    ParseDoubleExpression(image.GetPositionX(), primitive->position[0]);
-    ParseDoubleExpression(image.GetPositionY(), primitive->position[1]);
-    ParseDoubleExpression(image.GetSizeX(), primitive->extent[0]);
-    ParseDoubleExpression(image.GetSizeY(), primitive->extent[1]);
-    ParseDoubleExpression(image.GetAngle(), primitive->angleDeg);
-    ParseBooleanExpression(image.GetSizeScalable(), primitive->extentScalable);
+    ParseDoubleExpression(image.GetPositionX(), primitive->position[0], 0.0);
+    ParseDoubleExpression(image.GetPositionY(), primitive->position[1], 0.0);
+    ParseDoubleExpression(image.GetSizeX(), primitive->extent[0], 5.0);
+    ParseDoubleExpression(image.GetSizeY(), primitive->extent[1], 5.0);
+    ParseDoubleExpression(image.GetAngle(), primitive->angleDeg, 0.0);
+    ParseBooleanExpression(image.GetSizeScalable(), primitive->extentScalable, true);
 
     primitive->cacheable = !(primitive->position[0].expression
                           || primitive->position[1].expression
@@ -543,30 +543,30 @@ void SE_StyleVisitor::VisitText(Text& text)
     SE_Text* primitive = new SE_Text();
     m_primitive = primitive;
 
-    ParseStringExpression(text.GetString(), primitive->textString);
-    ParseStringExpression(text.GetFontName(), primitive->fontName);
-    ParseDoubleExpression(text.GetHeight(), primitive->height);
-    ParseDoubleExpression(text.GetAngle(), primitive->angleDeg);
-    ParseDoubleExpression(text.GetPositionX(), primitive->position[0]);
-    ParseDoubleExpression(text.GetPositionY(), primitive->position[1]);
-    ParseDoubleExpression(text.GetLineSpacing(), primitive->lineSpacing);
-    ParseBooleanExpression(text.GetHeightScalable(), primitive->heightScalable);
-    ParseBooleanExpression(text.GetBold(), primitive->bold);
-    ParseBooleanExpression(text.GetItalic(), primitive->italic);
-    ParseBooleanExpression(text.GetUnderlined(), primitive->underlined);
-    ParseStringExpression(text.GetHorizontalAlignment(), primitive->hAlignment);
-    ParseStringExpression(text.GetVerticalAlignment(), primitive->vAlignment);
-    ParseStringExpression(text.GetJustification(), primitive->justification);
-    ParseColorExpression(text.GetTextColor(), primitive->textColor);
-    ParseColorExpression(text.GetGhostColor(), primitive->ghostColor);
+    ParseStringExpression(text.GetString(), primitive->textString, L"");
+    ParseStringExpression(text.GetFontName(), primitive->fontName, L"Arial");
+    ParseDoubleExpression(text.GetHeight(), primitive->height, 4.0);
+    ParseDoubleExpression(text.GetAngle(), primitive->angleDeg, 0.0);
+    ParseDoubleExpression(text.GetPositionX(), primitive->position[0], 0.0);
+    ParseDoubleExpression(text.GetPositionY(), primitive->position[1], 0.0);
+    ParseDoubleExpression(text.GetLineSpacing(), primitive->lineSpacing, 1.05);
+    ParseBooleanExpression(text.GetHeightScalable(), primitive->heightScalable, true);
+    ParseBooleanExpression(text.GetBold(), primitive->bold, false);
+    ParseBooleanExpression(text.GetItalic(), primitive->italic, false);
+    ParseBooleanExpression(text.GetUnderlined(), primitive->underlined, false);
+    ParseStringExpression(text.GetHorizontalAlignment(), primitive->hAlignment, L"Center");
+    ParseStringExpression(text.GetVerticalAlignment(), primitive->vAlignment, L"Halfline");
+    ParseStringExpression(text.GetJustification(), primitive->justification, L"Center");
+    ParseColorExpression(text.GetTextColor(), primitive->textColor, 0xff000000);
+    ParseColorExpression(text.GetGhostColor(), primitive->ghostColor, 0);
 
     TextFrame* frame = text.GetFrame();
     if (frame)
     {
-        ParseColorExpression(frame->GetLineColor(), primitive->frameLineColor);
-        ParseColorExpression(frame->GetFillColor(), primitive->frameFillColor);
-        ParseDoubleExpression(frame->GetOffsetX(), primitive->frameOffset[0]);
-        ParseDoubleExpression(frame->GetOffsetY(), primitive->frameOffset[1]);
+        ParseColorExpression(frame->GetLineColor(), primitive->frameLineColor, 0);
+        ParseColorExpression(frame->GetFillColor(), primitive->frameFillColor, 0);
+        ParseDoubleExpression(frame->GetOffsetX(), primitive->frameOffset[0], 0.0);
+        ParseDoubleExpression(frame->GetOffsetY(), primitive->frameOffset[1], 0.0);
     }
 
     primitive->cacheable = !(primitive->textString.expression
@@ -625,7 +625,7 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
 
         if (m_primitive)
         {
-            ParseStringExpression(elem->GetResizeControl(), m_primitive->resizeControl);
+            ParseStringExpression(elem->GetResizeControl(), m_primitive->resizeControl, L"ResizeNone");
             m_style->symbol.push_back(m_primitive);
 
             // update the style's cacheable flag to take into account
@@ -640,11 +640,11 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
     m_style->useBox = (box != NULL);
     if (m_style->useBox)
     {
-        ParseDoubleExpression(box->GetSizeX(), m_style->resizeSize[0]);
-        ParseDoubleExpression(box->GetSizeY(), m_style->resizeSize[1]);
-        ParseDoubleExpression(box->GetPositionX(), m_style->resizePosition[0]);
-        ParseDoubleExpression(box->GetPositionY(), m_style->resizePosition[1]);
-        ParseStringExpression(box->GetGrowControl(), m_style->growControl);
+        ParseDoubleExpression(box->GetSizeX(), m_style->resizeSize[0], 1.0);
+        ParseDoubleExpression(box->GetSizeY(), m_style->resizeSize[1], 1.0);
+        ParseDoubleExpression(box->GetPositionX(), m_style->resizePosition[0], 0.0);
+        ParseDoubleExpression(box->GetPositionY(), m_style->resizePosition[1], 0.0);
+        ParseStringExpression(box->GetGrowControl(), m_style->growControl, L"GrowInXYMaintainAspect");
 
         m_style->cacheable &= !(m_style->resizeSize[0].expression
                              || m_style->resizeSize[1].expression
@@ -687,7 +687,7 @@ void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefi
         VisitSimpleSymbolDefinition(*def);
 
         if (m_style)
-            ParseIntegerExpression(sym->GetRenderingPass(), m_style->renderPass);
+            ParseIntegerExpression(sym->GetRenderingPass(), m_style->renderPass, 0);
 
         if (isRef)
             m_resIdStack.pop_back();
@@ -735,16 +735,16 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
 
         m_symbolization->context = instance->GetSizeContext();
 
-        ParseStringExpression(instance->GetPositioningAlgorithm(), m_symbolization->positioningAlgorithm);
+        ParseStringExpression(instance->GetPositioningAlgorithm(), m_symbolization->positioningAlgorithm, L"");
 
-        ParseBooleanExpression(instance->GetDrawLast(), m_symbolization->drawLast);
-        ParseBooleanExpression(instance->GetAddToExclusionRegion(), m_symbolization->addToExclusionRegions);
-        ParseBooleanExpression(instance->GetCheckExclusionRegion(), m_symbolization->checkExclusionRegions);
+        ParseBooleanExpression(instance->GetDrawLast(), m_symbolization->drawLast, false);
+        ParseBooleanExpression(instance->GetAddToExclusionRegion(), m_symbolization->addToExclusionRegions, false);
+        ParseBooleanExpression(instance->GetCheckExclusionRegion(), m_symbolization->checkExclusionRegions, false);
 
-        ParseDoubleExpression(instance->GetScaleX(), m_symbolization->scale[0]);
-        ParseDoubleExpression(instance->GetScaleY(), m_symbolization->scale[1]);
-        ParseDoubleExpression(instance->GetInsertionOffsetX(), m_symbolization->absOffset[0]);
-        ParseDoubleExpression(instance->GetInsertionOffsetY(), m_symbolization->absOffset[1]);
+        ParseDoubleExpression(instance->GetScaleX(), m_symbolization->scale[0], 1.0);
+        ParseDoubleExpression(instance->GetScaleY(), m_symbolization->scale[1], 1.0);
+        ParseDoubleExpression(instance->GetInsertionOffsetX(), m_symbolization->absOffset[0], 0.0);
+        ParseDoubleExpression(instance->GetInsertionOffsetY(), m_symbolization->absOffset[1], 0.0);
 
         def->AcceptVisitor(*this);
 

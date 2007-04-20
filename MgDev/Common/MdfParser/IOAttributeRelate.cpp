@@ -139,7 +139,7 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
 
     // Property: ForceOneToOne
     fd << tab() << "<ForceOneToOne>"; // NOXLATE
-    fd << (BoolToStr(pAttributeRelate->GetForceOneToOne())) ? ("true") : ("false"); // NOXLATE
+    fd << (pAttributeRelate->GetForceOneToOne()? "true" : "false"); // NOXLATE
     fd << "</ForceOneToOne>" << std::endl; // NOXLATE
 
     // Property: RelateProperties

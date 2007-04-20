@@ -517,7 +517,7 @@
           </xs:element>
           <xs:element name="LineSpacing" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The spacing between individual lines of text in a multi-line text string, in mm.  Defaults to 1.05 times the font height.</xs:documentation>
+              <xs:documentation>The spacing between individual lines of text in a multi-line text string, as a multiple of the font height.  If specified this must be greater than zero.  Defaults to 1.05.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="TextColor" type="xs:string" minOccurs="0">
