@@ -68,7 +68,7 @@ void IOImage::Write(MdfStream &fd, Image* image)
 
     if (image->GetContent().size() > 0)
     {
-        EMIT_STRING_PROPERTY(fd, image, Content, false)
+        EMIT_STRING_PROPERTY(fd, image, Content, false, NULL)
     }
     else
     {
@@ -76,12 +76,12 @@ void IOImage::Write(MdfStream &fd, Image* image)
         IOResourceRef::Write(fd, "Reference", image->GetResourceId(), image->GetLibraryItemName(), true); // NOXLATE
     }
 
-    EMIT_STRING_PROPERTY(fd, image, SizeX, false)
-    EMIT_STRING_PROPERTY(fd, image, SizeY, false)
-    EMIT_STRING_PROPERTY(fd, image, SizeScalable, true)
-    EMIT_STRING_PROPERTY(fd, image, Angle, true)
-    EMIT_STRING_PROPERTY(fd, image, PositionX, true)
-    EMIT_STRING_PROPERTY(fd, image, PositionY, true)
+    EMIT_DOUBLE_PROPERTY(fd, image, SizeX, false, 1.0)
+    EMIT_DOUBLE_PROPERTY(fd, image, SizeY, false, 1.0)
+    EMIT_BOOL_PROPERTY(fd, image, SizeScalable, true, true) // default is true
+    EMIT_DOUBLE_PROPERTY(fd, image, Angle, true, 0.0)       // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, image, PositionX, true, 0.0)   // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, image, PositionY, true, 0.0)   // default is 0.0
 
     dectab();
     fd << tab() << "</Image>" << std::endl; // NOXLATE

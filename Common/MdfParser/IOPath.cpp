@@ -65,14 +65,14 @@ void IOPath::Write(MdfStream &fd, Path* path, std::string name)
 
     IOGraphicElement::Write(fd, path);
 
-    EMIT_STRING_PROPERTY(fd, path, Geometry, false)
-    EMIT_STRING_PROPERTY(fd, path, FillColor, true)
-    EMIT_STRING_PROPERTY(fd, path, LineColor, true)
-    EMIT_STRING_PROPERTY(fd, path, LineWeight, true)
-    EMIT_STRING_PROPERTY(fd, path, LineWeightScalable, true)
-    EMIT_STRING_PROPERTY(fd, path, LineCap, true)
-    EMIT_STRING_PROPERTY(fd, path, LineJoin, true)
-    EMIT_STRING_PROPERTY(fd, path, LineMiterLimit, true)
+    EMIT_STRING_PROPERTY(fd, path, Geometry, false, NULL)
+    EMIT_STRING_PROPERTY(fd, path, FillColor, true, L"")         // default is empty string
+    EMIT_STRING_PROPERTY(fd, path, LineColor, true, L"")         // default is empty string
+    EMIT_DOUBLE_PROPERTY(fd, path, LineWeight, true, 0.0)        // default is 0.0
+    EMIT_BOOL_PROPERTY(fd, path, LineWeightScalable, true, true) // default is true
+    EMIT_STRING_PROPERTY(fd, path, LineCap, true, L"\'Round\'")  // default is 'Round'
+    EMIT_STRING_PROPERTY(fd, path, LineJoin, true, L"\'Round\'") // default is 'Round'
+    EMIT_DOUBLE_PROPERTY(fd, path, LineMiterLimit, true, 10.0)   // default is 10.0
 
     dectab();
     fd << tab() << "</" << name << ">" << std::endl;

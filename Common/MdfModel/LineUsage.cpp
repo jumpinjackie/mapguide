@@ -30,6 +30,18 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 LineUsage::LineUsage()
 {
+    // default values
+    // NOTE: update IOLineUsage::Write if you change these values
+    this->m_sAngleControl = L"\'FromGeometry\'";
+    this->m_sUnitsControl = L"\'Absolute\'";
+    this->m_sVertexControl = L"\'OverlapNone\'";
+    this->m_sAngle = L"0.0";
+    this->m_sStartOffset = L"0.0";
+    this->m_sEndOffset = L"0.0";
+    this->m_sRepeat = L"0.0";
+    this->m_sVertexAngleLimit = L"0.0";
+    this->m_sVertexJoin = L"\'Round\'";
+
     this->m_pDefaultPath = NULL;
 }
 

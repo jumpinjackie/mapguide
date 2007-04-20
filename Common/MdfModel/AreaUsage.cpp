@@ -29,6 +29,17 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 AreaUsage::AreaUsage()
 {
+    // default values
+    // NOTE: update IOAreaUsage::Write if you change these values
+    this->m_sAngleControl = L"\'FromGeometry\'";
+    this->m_sOriginControl = L"\'Global\'";
+    this->m_sClippingControl = L"\'Clip\'";
+    this->m_sAngle = L"0.0";
+    this->m_sOriginX = L"0.0";
+    this->m_sOriginY = L"0.0";
+    this->m_sRepeatX = L"0.0";
+    this->m_sRepeatY = L"0.0";
+    this->m_sBufferWidth = L"0.0";
 }
 
 //-------------------------------------------------------------------------

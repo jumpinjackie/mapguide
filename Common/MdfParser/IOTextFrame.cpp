@@ -68,10 +68,10 @@ void IOTextFrame::Write(MdfStream &fd, TextFrame* textFrame)
     fd << tab() << "<Frame>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, textFrame, LineColor, true)
-    EMIT_STRING_PROPERTY(fd, textFrame, FillColor, true)
-    EMIT_STRING_PROPERTY(fd, textFrame, OffsetX, true)
-    EMIT_STRING_PROPERTY(fd, textFrame, OffsetY, true)
+    EMIT_STRING_PROPERTY(fd, textFrame, LineColor, true, L"")   // empty string is default
+    EMIT_STRING_PROPERTY(fd, textFrame, FillColor, true, L"")   // empty string is default
+    EMIT_DOUBLE_PROPERTY(fd, textFrame, OffsetX, true, 0.0)     // 0.0 is default
+    EMIT_DOUBLE_PROPERTY(fd, textFrame, OffsetY, true, 0.0)     // 0.0 is default
 
     dectab();
     fd << tab() << "</Frame>" << std::endl; // NOXLATE

@@ -49,7 +49,7 @@ MapDefinition::MapDefinition(const MdfString& strName,
 , m_boxExtents(0.0, 0.0)
 {
     // default values
-    this->m_strBkGrnd = L"FFFFFFFF"; // NOXLATE
+    this->m_strBkGrnd = L"ffffffff"; // NOXLATE
 }
 
 //-------------------------------------------------------------------------

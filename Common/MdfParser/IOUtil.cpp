@@ -24,6 +24,7 @@ BEGIN_NAMESPACE_MDFPARSER
 bool tabsEnabled = true;
 int tabcount = 0;
 
+
 std::string tab()
 {
     std::string ret;
@@ -35,23 +36,30 @@ std::string tab()
     return ret;
 }
 
+
 void inctab()
 {
     tabcount++;
 }
+
+
 void dectab()
 {
     tabcount--;
 }
+
+
 void zerotab()
 {
     tabcount = 0;
 }
 
+
 void disableTabs()
 {
     tabsEnabled = false;
 }
+
 
 void UP(char ** str)
 {
@@ -63,6 +71,7 @@ void UP(char ** str)
         x++;
     }
 }
+
 
 std::wstring toMdfString(char * str)
 {
@@ -78,6 +87,7 @@ std::wstring toMdfString(char * str)
     return s;
 }
 
+
 std::string toCString(std::wstring str)
 {
     std::string s;
@@ -92,6 +102,7 @@ std::string toCString(std::wstring str)
 
     return s;
 }
+
 
 std::string EncodeString(std::wstring str)
 {
@@ -114,12 +125,14 @@ std::string EncodeString(std::wstring str)
     return out;
 }
 
-bool wstrToBool(const wchar_t *ch)
+
+bool wstrToBool(const wchar_t* ch)
 {
-    return (::wcscmp(ch, L"true") == 0);
+    return (_wcsicmp(ch, L"true") == 0);
 }
 
-double wstrToDouble(const wchar_t *ch)
+
+double wstrToDouble(const wchar_t* ch)
 {
     #ifdef _WIN32
         return _wtof(ch);
@@ -128,15 +141,75 @@ double wstrToDouble(const wchar_t *ch)
     #endif
 }
 
-int wstrToInt(const wchar_t *ch)
+
+int wstrToInt(const wchar_t* ch)
 {
     #ifdef _WIN32
         return _wtoi(ch);
     #else
         return (int)wcstol(ch, NULL, 10);  // radix is always 10
     #endif
-
 }
+
+
+// Returns true if the string was successfully converted.
+bool wstrToBool(const MdfModel::MdfString& str, bool& result)
+{
+    size_t len = str.size();
+    if (len == 0)
+        return false;
+
+    const wchar_t* cstr = str.c_str();
+
+    if (_wcsicmp(cstr, L"true") == 0)
+    {
+        result = true;
+        return true;
+    }
+
+    if (_wcsicmp(cstr, L"false") == 0)
+    {
+        result = false;
+        return true;
+    }
+
+    return false;
+}
+
+
+// Returns true if the string was successfully converted.
+bool wstrToDouble(const MdfModel::MdfString& str, double& result)
+{
+    size_t len = str.size();
+    if (len == 0)
+        return false;
+
+    const wchar_t* cstr = str.c_str();
+    size_t chars = 0;
+    int ret = swscanf(cstr, L"%lf%n", &result, &chars);
+    if (ret == 1 && chars == len)
+        return true;
+
+    return false;
+}
+
+
+// Returns true if the string was successfully converted.
+bool wstrToInt(const MdfModel::MdfString& str, int& result)
+{
+    size_t len = str.size();
+    if (len == 0)
+        return false;
+
+    const wchar_t* cstr = str.c_str();
+    size_t chars = 0;
+    int ret = swscanf(cstr, L"%d%n", &result, &chars);
+    if (ret == 1 && chars == len)
+        return true;
+
+    return false;
+}
+
 
 std::string IntToStr(int i)
 {
@@ -145,6 +218,7 @@ std::string IntToStr(int i)
     return buffer;
 }
 
+
 std::string DoubleToStr(double d)
 {
     char buffer[64];
@@ -152,12 +226,14 @@ std::string DoubleToStr(double d)
     return buffer;
 }
 
+
 std::string BoolToStr(bool b)
 {
     if(b)
         return std::string("true"); // NOXLATE
     return std::string("false"); // NOXLATE
 }
+
 
 std::string startStr(const std::string elementName)
 {
@@ -167,6 +243,7 @@ std::string startStr(const std::string elementName)
     return out;
 }
 
+
 std::string endStr(const std::string elementName)
 {
     std::string out("</"); // NOXLATE
@@ -174,5 +251,6 @@ std::string endStr(const std::string elementName)
     out.append(">"); // NOXLATE
     return out;
 }
+
 
 END_NAMESPACE_MDFPARSER

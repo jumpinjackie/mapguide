@@ -30,6 +30,11 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 SymbolDefinition::SymbolDefinition()
 {
+    // default values
+    // NOTE: update IOSimpleSymbolDefinition::Write and
+    //       IOCompoundSymbolDefinition::Write if you change these values
+//  this->m_sName = L"";
+//  this->m_sDescription = L"";
 }
 
 //-------------------------------------------------------------------------

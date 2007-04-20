@@ -76,10 +76,10 @@ void IOSimpleSymbol::Write(MdfStream &fd, SimpleSymbol* simpleSymbol)
         IOSimpleSymbolDefinition::Write(fd, simpleSymbol->GetSymbolDefinition(), false);
     else
     {
-        EMIT_STRING_PROPERTY(fd, simpleSymbol, ResourceId, false)
+        EMIT_STRING_PROPERTY(fd, simpleSymbol, ResourceId, false, NULL)
     }
 
-    EMIT_STRING_PROPERTY(fd, simpleSymbol, RenderingPass, true)
+    EMIT_INTEGER_PROPERTY(fd, simpleSymbol, RenderingPass, true, 0) // default is 0
 
     dectab();
     fd << tab() << "</SimpleSymbol>" << std::endl; // NOXLATE

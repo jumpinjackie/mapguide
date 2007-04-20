@@ -29,6 +29,25 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 Text::Text()
 {
+    // default values
+    // NOTE: update IOText::Write if you change these values
+//  this->m_sString = L"";
+    this->m_sFontName = L"\'Arial\'";
+    this->m_sBold = L"false";
+    this->m_sItalic = L"false";
+    this->m_sUnderlined = L"false";
+    this->m_sHeight = L"4.0";
+    this->m_sHeightScalable = L"true";
+    this->m_sAngle = L"0.0";
+    this->m_sPositionX = L"0.0";
+    this->m_sPositionY = L"0.0";
+    this->m_sHAlignment = L"\'Center\'";
+    this->m_sVAlignment = L"\'Halfline\'";
+    this->m_sJustification = L"\'Center\'";
+    this->m_sLineSpacing = L"1.05";
+    this->m_sTextColor = L"ff000000";
+//  this->m_sGhostColor = L"";
+
     this->m_pFrame = NULL;
 }
 
