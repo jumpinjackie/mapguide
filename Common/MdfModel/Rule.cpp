@@ -32,11 +32,7 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 Rule::Rule()
 {
-    //Default Settings
-    this->m_strFilter = L"";
-    this->m_strLegend = L"";
-    this->m_plblLabel = NULL;
-    this->AdoptLabel(new Label());
+    this->m_pLabel = new Label();
 }
 
 //-------------------------------------------------------------------------
@@ -45,7 +41,7 @@ Rule::Rule()
 //-------------------------------------------------------------------------
 Rule::~Rule()
 {
-    delete this->m_plblLabel;
+    delete this->m_pLabel;
 }
 
 //-------------------------------------------------------------------------
@@ -54,7 +50,7 @@ Rule::~Rule()
 //          for the Rule in the Legend.
 // RETURNS:
 //-------------------------------------------------------------------------
-const MdfString& Rule::GetLegendLabel()const
+const MdfString& Rule::GetLegendLabel() const
 {
     return this->m_strLegendLabel;
 }
@@ -80,7 +76,7 @@ void Rule::SetLegendLabel(const MdfString& strLegendLabel)
 //          that feature.
 // RETURNS: The Filter criteria string.
 //-------------------------------------------------------------------------
-const MdfString& Rule::GetFilter()const
+const MdfString& Rule::GetFilter() const
 {
      return this->m_strFilter;
 }
@@ -110,7 +106,7 @@ void Rule::SetFilter(const MdfString& strFilter)
 //-------------------------------------------------------------------------
 Label* Rule::GetLabel()
 {
-    return this->m_plblLabel;
+    return this->m_pLabel;
 }
 
 //-------------------------------------------------------------------------
@@ -121,16 +117,16 @@ Label* Rule::GetLabel()
 //          Symbolization and a Label, but must at least have one or the other.
 // PARAMETERS:
 //        Input:
-//          plblAdoptedLabel - Adopted Label object that is created on the heap.
-//                             It may be NULL.
+//          pLabel - Adopted Label object that is created on the heap.
+//                   It may be NULL.
 //-------------------------------------------------------------------------
-void Rule::AdoptLabel( Label* plblAdoptedLabel)
+void Rule::AdoptLabel(Label* pLabel)
 {
-    if( this->m_plblLabel != plblAdoptedLabel)
+    if (this->m_pLabel != pLabel)
     {
-        if (this->m_plblLabel != NULL)
-            delete this->m_plblLabel;
-        this->m_plblLabel = plblAdoptedLabel;
+        if (this->m_pLabel != NULL)
+            delete this->m_pLabel;
+        this->m_pLabel = pLabel;
     }
 }
 
@@ -142,7 +138,7 @@ void Rule::AdoptLabel( Label* plblAdoptedLabel)
 //-------------------------------------------------------------------------
 Label* Rule::OrphanLabel()
 {
-    Label* plblRet = this->m_plblLabel;
-    this->m_plblLabel = NULL;
-    return plblRet;
+    Label* ret = this->m_pLabel;
+    this->m_pLabel = NULL;
+    return ret;
 }

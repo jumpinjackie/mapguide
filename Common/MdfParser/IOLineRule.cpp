@@ -144,7 +144,7 @@ void IOLineRule::Write(MdfStream &fd, LineRule *lineRule, Version *version)
     // Write any previously found unknown XML
     if (!lineRule->GetUnknownXml().empty())
     {
-        fd << toCString(lineRule->GetUnknownXml()); 
+        fd << toCString(lineRule->GetUnknownXml());
     }
 
     dectab();

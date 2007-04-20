@@ -38,15 +38,15 @@ BEGIN_NAMESPACE_MDFMODEL
         GridScaleRangeCollection* GetScaleRanges();
 
         // Property : FeatureName
-        const MdfString& GetFeatureName()const;
+        const MdfString& GetFeatureName() const;
         void SetFeatureName(const MdfString &strFeatureName);
 
         // Property : Geometry
-        const MdfString& GetGeometry()const;
+        const MdfString& GetGeometry() const;
         void SetGeometry(const MdfString&  strGeometry);
 
         // Property : Filter
-        const MdfString& GetFilter()const;
+        const MdfString& GetFilter() const;
         void SetFilter(const MdfString& strFilter);
 
     private:

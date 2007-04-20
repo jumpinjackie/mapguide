@@ -24,13 +24,12 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the GridColorStyle class
 //-------------------------------------------------------------------------
-GridColorStyle::GridColorStyle()
-    : FeatureTypeStyle()
+GridColorStyle::GridColorStyle() : FeatureTypeStyle()
 {
-    m_spHillShade = NULL;
-    m_strTransparencyColor = L"";
-    m_dBrightnessFactor = 0;
-    m_dContrastFactor = 0;
+    // default values
+    this->m_spHillShade = NULL;
+    this->m_dBrightnessFactor = 0.0;
+    this->m_dContrastFactor = 0.0;
 }
 
 //-------------------------------------------------------------------------
@@ -38,7 +37,7 @@ GridColorStyle::GridColorStyle()
 //-------------------------------------------------------------------------
 GridColorStyle::~GridColorStyle()
 {
-    delete m_spHillShade;
+    delete this->m_spHillShade;
 }
 
 //-------------------------------------------------------------------------
@@ -48,7 +47,7 @@ GridColorStyle::~GridColorStyle()
 //-------------------------------------------------------------------------
 const HillShade* GridColorStyle::GetHillShade() const
 {
-    return m_spHillShade;
+    return this->m_spHillShade;
 }
 
 //-------------------------------------------------------------------------
@@ -58,7 +57,7 @@ const HillShade* GridColorStyle::GetHillShade() const
 //-------------------------------------------------------------------------
 HillShade* GridColorStyle::GetHillShade()
 {
-    return m_spHillShade;
+    return this->m_spHillShade;
 }
 
 //-------------------------------------------------------------------------
@@ -71,10 +70,10 @@ HillShade* GridColorStyle::GetHillShade()
 //-------------------------------------------------------------------------
 void GridColorStyle::AdoptHillShade(HillShade* pHillShade)
 {
-    if (m_spHillShade != pHillShade)
+    if (this->m_spHillShade != pHillShade)
     {
-        delete m_spHillShade;
-        m_spHillShade = pHillShade;
+        delete this->m_spHillShade;
+        this->m_spHillShade = pHillShade;
     }
 }
 
@@ -85,8 +84,8 @@ void GridColorStyle::AdoptHillShade(HillShade* pHillShade)
 //-------------------------------------------------------------------------
 HillShade* GridColorStyle::OrphanHillShade()
 {
-    HillShade* pRet = m_spHillShade;
-    m_spHillShade = NULL;
+    HillShade* pRet = this->m_spHillShade;
+    this->m_spHillShade = NULL;
     return pRet;
 }
 
@@ -98,7 +97,7 @@ HillShade* GridColorStyle::OrphanHillShade()
 //-------------------------------------------------------------------------
 const MdfString& GridColorStyle::GetTransparencyColor() const
 {
-    return m_strTransparencyColor;
+    return this->m_strTransparencyColor;
 }
 
 //-------------------------------------------------------------------------
@@ -111,7 +110,7 @@ const MdfString& GridColorStyle::GetTransparencyColor() const
 //-------------------------------------------------------------------------
 void GridColorStyle::SetTransparencyColor(const MdfString& strTransparencyColor)
 {
-    m_strTransparencyColor = strTransparencyColor;
+    this->m_strTransparencyColor = strTransparencyColor;
 }
 
 //-------------------------------------------------------------------------
@@ -122,7 +121,7 @@ void GridColorStyle::SetTransparencyColor(const MdfString& strTransparencyColor)
 //-------------------------------------------------------------------------
 double GridColorStyle::GetBrightnessFactor() const
 {
-    return m_dBrightnessFactor;
+    return this->m_dBrightnessFactor;
 }
 
 //-------------------------------------------------------------------------
@@ -135,7 +134,7 @@ double GridColorStyle::GetBrightnessFactor() const
 //-------------------------------------------------------------------------
 void GridColorStyle::SetBrightnessFactor(double dBrightnessFactor)
 {
-    m_dBrightnessFactor = dBrightnessFactor;
+    this->m_dBrightnessFactor = dBrightnessFactor;
 }
 
 //-------------------------------------------------------------------------
@@ -168,11 +167,11 @@ void GridColorStyle::SetContrastFactor(double dContrastFactor)
 //          concrete subclasses.
 // PARAMETERS:
 //      Input:
-//          ifsvVisitor - The IFeatureTypeStyleVisitor interface which sports
-//                     methods that accept the final concrete type this
-//                     PointTypeStyle represents as an argument.
+//          iftsVisitor - The IFeatureTypeStyleVisitor interface which sports
+//                        methods that accept the final concrete type this
+//                        GridColorStyle represents as an argument.
 //-------------------------------------------------------------------------
-void GridColorStyle::AcceptVisitor(IFeatureTypeStyleVisitor& ifsvVisitor)
+void GridColorStyle::AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor)
 {
-    ifsvVisitor.VisitGridColorStyle(*this);
+    iftsVisitor.VisitGridColorStyle(*this);
 }

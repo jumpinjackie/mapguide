@@ -74,7 +74,7 @@ void IOSymbol::Write(MdfStream &fd, Symbol *m_symbol)
         fd << "MappingUnits"; // NOXLATE
     else
         fd << "DeviceUnits"; // NOXLATE
-    fd << "</SizeContext>" << std::endl;  // NOXLATE
+    fd << "</SizeContext>" << std::endl; // NOXLATE
 
     // Property: SizeX
     fd << tab() << "<SizeX>"; // NOXLATE

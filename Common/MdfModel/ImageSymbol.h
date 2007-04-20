@@ -39,19 +39,19 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Property : Content
-        const MdfString& GetContent()const;
+        const MdfString& GetContent() const;
         void SetContent(const MdfString& content);
 
         // Property : ImageLibrary
-        const MdfString& GetImageLibrary()const;
+        const MdfString& GetImageLibrary() const;
         void SetImageLibrary(const MdfString& strImageLibrary);
 
         // Property : ImageName
-        const MdfString& GetImageName()const;
+        const MdfString& GetImageName() const;
         void SetImageName(const MdfString& strImageName);
 
         // Visitor Pattern method defined in Symbol.
-        virtual void AcceptVisitor(ISymbolVisitor& isvVisitor);
+        virtual void AcceptVisitor(ISymbolVisitor& isymVisitor);
 
     private:
         // Hidden copy constructor and assignment operator.

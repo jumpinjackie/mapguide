@@ -30,11 +30,12 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 Stroke::Stroke()
 {
-    this->SetUnit(MdfModel::Centimeters);
-    this->SetLineStyle(L"Solid"); // NOXLATE
-    this->SetThickness(L"0.0"); // NOXLATE
-    this->SetColor(L"ff000000"); // NOXLATE
-    this->SetSizeContext(MdfModel::DeviceUnits);
+    // default values
+    this->m_eUnit = MdfModel::Centimeters;
+    this->m_strLineStyle = L"Solid"; // NOXLATE
+    this->m_strThickness = L"0"; // NOXLATE
+    this->m_strColor = L"FF000000"; // NOXLATE
+    this->m_eSizeContext = MdfModel::DeviceUnits;
 }
 
 //-------------------------------------------------------------------------
@@ -51,7 +52,7 @@ Stroke::~Stroke()
 //          for dash/space sequences, plus decorations.
 // RETURNS: The LineStyle string.
 //-------------------------------------------------------------------------
-const MdfString& Stroke::GetLineStyle()const
+const MdfString& Stroke::GetLineStyle() const
 {
     return this->m_strLineStyle;
 }
@@ -75,7 +76,7 @@ void Stroke::SetLineStyle(const MdfString& strLineStyle)
 //          The Unit enum defines the measurement unit for the SizeX and SizeY properties.
 // RETURNS: The Unit enum value.
 //-------------------------------------------------------------------------
-LengthUnit Stroke::GetUnit()const
+LengthUnit Stroke::GetUnit() const
 {
     return this->m_eUnit;
 }
@@ -100,7 +101,7 @@ void Stroke::SetUnit(LengthUnit eUnit)
 //          to be displayed.
 // RETURNS: The string representation of the Thickness expression.
 //-------------------------------------------------------------------------
-const MdfString& Stroke::GetThickness()const
+const MdfString& Stroke::GetThickness() const
 {
     return this->m_strThickness;
 }
@@ -128,7 +129,7 @@ void Stroke::SetThickness(const MdfString& strThicknessExpr)
 //          will be applied to the Hatch pattern.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& Stroke::GetColor()const
+const MdfString& Stroke::GetColor() const
 {
     return this->m_strColor;
 }

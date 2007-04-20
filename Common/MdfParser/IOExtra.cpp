@@ -70,7 +70,7 @@ void IOExtra::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
-        this->map->SetExtents(Box2D(minX,minY,maxX,maxY));
+        this->map->SetExtents(Box2D(minX, minY, maxX, maxY));
         handlerStack->pop();
         this->map = NULL;
         m_startElemName = L"";

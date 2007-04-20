@@ -19,7 +19,7 @@
 #include "FeatureSource.h"
 
 using namespace MDFMODEL_NAMESPACE;
-        
+
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the FeatureSource
 // class.
@@ -27,10 +27,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 FeatureSource::FeatureSource()
 {
-    //Default Values
-    this->m_strProvider = L"";
-    this->m_strLongTransaction = L"";
-    this->m_strConfigurationDocument = L"";
 }
 
 //-------------------------------------------------------------------------
@@ -81,7 +77,7 @@ FeatureSource::GetSupplementalSpatialContextInfo()
 // PURPOSE: Accessor method for the Provider property.
 // RETURNS: A string representing the Provider.
 //-------------------------------------------------------------------------
-const MdfString& FeatureSource::GetProvider()const
+const MdfString& FeatureSource::GetProvider() const
 {
     return this->m_strProvider;
 }

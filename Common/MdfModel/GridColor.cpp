@@ -59,7 +59,7 @@ GridColorExplicit::~GridColorExplicit()
 //-------------------------------------------------------------------------
 const MdfString& GridColorExplicit::GetExplicitColor() const
 {
-    return m_strExplicitColor;
+    return this->m_strExplicitColor;
 }
 
 //-------------------------------------------------------------------------
@@ -71,7 +71,7 @@ const MdfString& GridColorExplicit::GetExplicitColor() const
 //-------------------------------------------------------------------------
 void GridColorExplicit::SetExplicitColor(const MdfString &strColor)
 {
-    m_strExplicitColor = strColor;
+    this->m_strExplicitColor = strColor;
 }
 
 //
@@ -99,7 +99,7 @@ GridColorBand::~GridColorBand()
 //-------------------------------------------------------------------------
 const MdfString& GridColorBand::GetBand() const
 {
-    return m_strBand;
+    return this->m_strBand;
 }
 
 //-------------------------------------------------------------------------
@@ -111,7 +111,7 @@ const MdfString& GridColorBand::GetBand() const
 //-------------------------------------------------------------------------
 void GridColorBand::SetBand(const MdfString& strBand)
 {
-    m_strBand = strBand;
+    this->m_strBand = strBand;
 }
 
 //

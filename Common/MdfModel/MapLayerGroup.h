@@ -37,13 +37,13 @@ BEGIN_NAMESPACE_MDFMODEL
     {
     public:
         // Construction, destruction, initialization
-        MapLayerGroup( const MdfString& strName);
+        MapLayerGroup(const MdfString& strName);
         virtual ~MapLayerGroup();
 
         // Operations
         // Property : Group
         // The optional name of the Group this MapLayerGroup belongs to.
-        const MdfString& GetGroup()const;
+        const MdfString& GetGroup() const;
         void SetGroup(const MdfString& pstrGroupName);
 
     private:
@@ -53,7 +53,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Data members
         // See corresponding properties for descriptions
-        MdfString  m_strGroup;
+        MdfString m_strGroup;
     };
 
     typedef MdfOwnerCollection<MapLayerGroup> MapLayerGroupCollection;

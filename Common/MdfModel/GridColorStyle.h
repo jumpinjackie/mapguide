@@ -60,7 +60,7 @@ BEGIN_NAMESPACE_MDFMODEL
         void SetContrastFactor(double dContrastFactor);
 
         // Visitor Pattern to be implemented by all subclasses
-        virtual void AcceptVisitor(IFeatureTypeStyleVisitor& ifsvVisitor);
+        virtual void AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor);
 
     private:
         // Hidden copy constructor and assignment operator.

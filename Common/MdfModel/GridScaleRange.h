@@ -49,13 +49,13 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Property : MinScale, optional.
         // Use 0 if not specified.
-        double GetMinScale()const;
-        void SetMinScale( const double& dMinScale);
+        double GetMinScale() const;
+        void SetMinScale(const double& dMinScale);
 
         // Property : MaxScale, optional
         // Use MAX_MAP_SCALE if not specified.
-        double GetMaxScale()const;
-        void SetMaxScale( const double& dMaxScale);
+        double GetMaxScale() const;
+        void SetMaxScale(const double& dMaxScale);
 
         // Property : SurfaceStyle, optional.
         const MdfModel::GridSurfaceStyle* GetSurfaceStyle() const;
@@ -92,7 +92,7 @@ BEGIN_NAMESPACE_MDFMODEL
         GridSurfaceStyle* m_spSurfaceStyle;
 
         // Grid Color Style
-        GridColorStyle*   m_spColorStyle;
+        GridColorStyle* m_spColorStyle;
     };
 
     typedef MdfOwnerCollection<GridScaleRange> GridScaleRangeCollection;

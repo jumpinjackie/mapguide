@@ -25,9 +25,9 @@ BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // Represents a version object. 
+    // Represents a version object.
     // The format of the version is Major.Minor.Revision.
-    // For example version 1.0.2, 
+    // For example version 1.0.2,
     // the Major number is 1, Minor number is 0, Revision number is 2.
     //-------------------------------------------------------------------------
     class MDFMODEL_API Version : public MdfRootObject
@@ -40,16 +40,16 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Property : Major
-        int GetMajor()const;
-        void SetMajor( const int& nMajorNumber);
+        int GetMajor() const;
+        void SetMajor(const int& nMajorNumber);
 
         // Property : Minor
-        int GetMinor()const;
-        void SetMinor( const int& nMinorNumber);
+        int GetMinor() const;
+        void SetMinor(const int& nMinorNumber);
 
         // Property : Revision
-        int GetRevision()const;
-        void SetRevision( const int& nRevisionNumber);
+        int GetRevision() const;
+        void SetRevision(const int& nRevisionNumber);
 
         bool operator==(const Version & version) const;
         bool operator>(const Version & version) const;

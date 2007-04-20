@@ -32,9 +32,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 Extension::Extension()
 {
-    //Default Values
-    this->m_strName = L"";
-    this->m_strFeatureClass = L"";
 }
 
 //-------------------------------------------------------------------------
@@ -89,7 +86,7 @@ void Extension::SetName(const MdfString& name)
 // PURPOSE: Accessor method for the FeatureClass property.
 // RETURNS: A string representing the FeatureClass.
 //-------------------------------------------------------------------------
-const MdfString& Extension::GetFeatureClass()const
+const MdfString& Extension::GetFeatureClass() const
 {
     return this->m_strFeatureClass;
 }
@@ -101,5 +98,3 @@ void Extension::SetFeatureClass(const MdfString& featureClass)
 {
     this->m_strFeatureClass = featureClass;
 }
-
-//End of file.

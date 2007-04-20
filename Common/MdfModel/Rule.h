@@ -62,7 +62,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Property : Label
         Label* GetLabel();
-        void AdoptLabel(Label* plblLabel);
+        void AdoptLabel(Label* pLabel);
         Label* OrphanLabel();
 
     protected:
@@ -82,7 +82,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_strFilter;
 
         // Label for multivariate theming.
-        Label* m_plblLabel;
+        Label* m_pLabel;
     };
 
     typedef MdfOwnerCollection<Rule> RuleCollection;

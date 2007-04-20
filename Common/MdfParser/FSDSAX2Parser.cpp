@@ -121,7 +121,7 @@ namespace MdfParser
     {
         MemBufInputSource memBufIS((const XMLByte*)(str),
                                    numBytes,
-                                   "MdfParse",  // NOXLATE
+                                   "MdfParse", // NOXLATE
                                    false);
         try
         {
@@ -178,7 +178,7 @@ namespace MdfParser
         // If the stack is empty, then check to see if we've encountered the
         // start of one of the below definitions. Allocate space for the object
         // we will be creating, create the appropriate IO object, passing in the reference
-        // to the object. Then push that IO object on top of the stack, to handle further 
+        // to the object. Then push that IO object on top of the stack, to handle further
         // parsing events. Then call the StartElement function of that IO object to initialize it.
         if (m_HandlerStack->empty())
         {
@@ -242,7 +242,7 @@ namespace MdfParser
 
         return parser.DetachFeatureSource();
     }
-    
+
     FeatureSource* FSDSAX2Parser::DetachFeatureSource()
     {
         FeatureSource* ret = m_pFeatureSource;

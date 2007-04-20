@@ -43,7 +43,7 @@ IOVectorLayerDefinition::IOVectorLayerDefinition()
     this->_layer = NULL;
 }
 
- 
+
 IOVectorLayerDefinition::IOVectorLayerDefinition(VectorLayerDefinition *layer)
 {
     this->_layer = layer;
@@ -162,25 +162,25 @@ void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featur
     inctab();
 
     //Property: ResourceId
-    fd << tab() << startStr(sResourceId); 
+    fd << tab() << startStr(sResourceId);
     fd << EncodeString(featureLayer->GetResourceID());
     fd << endStr(sResourceId) << std::endl;
 
     //Property: Opacity (optional)
     if (featureLayer->GetOpacity() != 1.0)
     {
-        fd << tab() << startStr(sOpacity); 
+        fd << tab() << startStr(sOpacity);
         fd << DoubleToStr(featureLayer->GetOpacity());
         fd << endStr(sOpacity) << std::endl;
     }
 
     //Property: FeatureName
-    fd << tab() << startStr(sFeatureName); 
+    fd << tab() << startStr(sFeatureName);
     fd << EncodeString(featureLayer->GetFeatureName());
-    fd << endStr(sFeatureName) << std::endl; 
+    fd << endStr(sFeatureName) << std::endl;
 
     //Property: FeatureNameType
-    fd << tab() << startStr(sFeatureNameType);  
+    fd << tab() << startStr(sFeatureNameType);
     if (featureLayer->GetFeatureNameType() == VectorLayerDefinition::FeatureClass)
         fd << "FeatureClass"; // NOXLATE
     else
@@ -190,9 +190,9 @@ void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featur
     //Property: Filter
     if (featureLayer->GetFilter().length() > 0)
     {
-        fd << tab() << startStr(sFilter); 
+        fd << tab() << startStr(sFilter);
         fd << EncodeString(featureLayer->GetFilter());
-        fd << endStr(sFilter) << std::endl; 
+        fd << endStr(sFilter) << std::endl;
     }
 
     //Property: PropertyMappings
@@ -204,28 +204,28 @@ void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featur
         IO->Write(fd, featureLayer->GetPropertyMappings()->GetAt(x));
         delete IO;
         dectab();
-        fd << tab() << endStr(sPropertyMapping) << std::endl; 
+        fd << tab() << endStr(sPropertyMapping) << std::endl;
     }
 
     //Property: Geometry
-    fd << tab() << startStr(sGeometry);  
+    fd << tab() << startStr(sGeometry);
     fd << EncodeString(featureLayer->GetGeometry());
-    fd << endStr(sGeometry) << std::endl; 
+    fd << endStr(sGeometry) << std::endl;
 
     //Property: Url
     if (featureLayer->GetUrl().length() > 0)
     {
-        fd << tab() << startStr(sUrl);  
+        fd << tab() << startStr(sUrl);
         fd << EncodeString(featureLayer->GetUrl());
-        fd << endStr(sUrl) << std::endl; 
+        fd << endStr(sUrl) << std::endl;
     }
 
     //Property: ToolTip
     if (featureLayer->GetToolTip().length() > 0)
     {
-        fd << tab() << startStr(sToolTip);  
+        fd << tab() << startStr(sToolTip);
         fd << EncodeString(featureLayer->GetToolTip());
-        fd << endStr(sToolTip) << std::endl; 
+        fd << endStr(sToolTip) << std::endl;
     }
 
     //Property: VectorScaleRange
@@ -239,7 +239,7 @@ void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featur
     // Write any previously found unknown XML
     if (!featureLayer->GetUnknownXml().empty())
     {
-        fd << toCString(featureLayer->GetUnknownXml()); 
+        fd << toCString(featureLayer->GetUnknownXml());
     }
 
     dectab();

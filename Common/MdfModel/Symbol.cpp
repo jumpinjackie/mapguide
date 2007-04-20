@@ -31,16 +31,16 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 Symbol::Symbol()
 {
-    //Default settings
+    // default values
     // 3 millimeters in default space (screen), and default units (centimeters)
-    this->m_strSizeX = L"0.3";  // NOXLATE
+    this->m_strSizeX = L"0.3"; // NOXLATE
     this->m_strSizeY = L"0.3"; // NOXLATE
-    this->m_strInsertionPointX = L"0.5";  // NOXLATE
+    this->m_strInsertionPointX = L"0.5"; // NOXLATE
     this->m_strInsertionPointY = L"0.5"; // NOXLATE
     this->m_bMaintainAspect = true;
-    this->SetSizeContext(MdfModel::DeviceUnits);
-    this->SetUnit(MdfModel::Centimeters);
-    this->SetRotation(L"0");
+    this->m_eSizeContext = MdfModel::DeviceUnits;
+    this->m_eUnit = MdfModel::Centimeters;
+    this->m_strRotation = L"0";
 }
 
 //-------------------------------------------------------------------------
@@ -55,7 +55,7 @@ Symbol::~Symbol()
 //          X size is stored in the specified units.
 // RETURNS: The string representation of the Expression:Double.
 //-------------------------------------------------------------------------
-const MdfString& Symbol::GetSizeX()const
+const MdfString& Symbol::GetSizeX() const
 {
     return this->m_strSizeX;
 }
@@ -77,7 +77,7 @@ void Symbol::SetSizeX(const MdfString& strSizeX)
 //          Y size is stored in the specified units.
 // RETURNS: The string representation of the Expression:Double.
 //-------------------------------------------------------------------------
-const MdfString& Symbol::GetSizeY()const
+const MdfString& Symbol::GetSizeY() const
 {
     return this->m_strSizeY;
 }
@@ -99,7 +99,7 @@ void Symbol::SetSizeY(const MdfString& strSizeY)
 //          X Insertion Point value ranges from 0 to 1 horizontally across the symbol.
 // RETURNS: The string representation of the Expression:Double.
 //-------------------------------------------------------------------------
-const MdfString& Symbol::GetInsertionPointX()const
+const MdfString& Symbol::GetInsertionPointX() const
 {
     return this->m_strInsertionPointX;
 }
@@ -121,7 +121,7 @@ void Symbol::SetInsertionPointX(const MdfString& strInsertionPointX)
 //          Y Insertion Point value ranges from 0 to 1 vertically across the symbol.
 // RETURNS: The string representation of the Expression:Double.
 //-------------------------------------------------------------------------
-const MdfString& Symbol::GetInsertionPointY()const
+const MdfString& Symbol::GetInsertionPointY() const
 {
     return this->m_strInsertionPointY;
 }
@@ -144,7 +144,7 @@ void Symbol::SetInsertionPointY(const MdfString& strInsertionPointY)
 //          their current aspect ratio while being edited by the UI.
 // RETURNS: Boolean. Default is true.
 //-------------------------------------------------------------------------
-bool Symbol::GetMaintainAspect()const
+bool Symbol::GetMaintainAspect() const
 {
     return this->m_bMaintainAspect;
 }
@@ -169,7 +169,7 @@ void Symbol::SetMaintainAspect(bool bMaintainAspect)
 //          is the Rotation applied to the Symbol for that feature.
 // RETURNS: A string representation of the Rotation expression.
 //-------------------------------------------------------------------------
-const MdfString& Symbol::GetRotation()const
+const MdfString& Symbol::GetRotation() const
 {
     return this->m_strRotation;
 }
@@ -194,7 +194,7 @@ void Symbol::SetRotation(const MdfString& strRotationExpr)
 //          are in screen space or map space.
 // RETURNS: The SizeContext enum value.
 //-------------------------------------------------------------------------
-SizeContext Symbol::GetSizeContext()const
+SizeContext Symbol::GetSizeContext() const
 {
     return this->m_eSizeContext;
 }
@@ -217,7 +217,7 @@ void Symbol::SetSizeContext(SizeContext eSizeContext)
 //          The Unit enum defines the measurement unit for the SizeX and SizeY properties.
 // RETURNS: The Unit enum value.
 //-------------------------------------------------------------------------
-LengthUnit Symbol::GetUnit()const
+LengthUnit Symbol::GetUnit() const
 {
     return this->m_eUnit;
 }

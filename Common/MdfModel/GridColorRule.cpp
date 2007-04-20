@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 GridColorRule::GridColorRule()
 {
-    m_spGridColor = NULL;
+    this->m_spGridColor = NULL;
 }
 
 //-------------------------------------------------------------------------
@@ -33,7 +33,7 @@ GridColorRule::GridColorRule()
 //-------------------------------------------------------------------------
 GridColorRule::~GridColorRule()
 {
-    delete m_spGridColor;
+    delete this->m_spGridColor;
 }
 
 //-------------------------------------------------------------------------
@@ -44,7 +44,7 @@ GridColorRule::~GridColorRule()
 //-------------------------------------------------------------------------
 const GridColor* GridColorRule::GetGridColor() const
 {
-    return m_spGridColor;
+    return this->m_spGridColor;
 }
 
 //-------------------------------------------------------------------------
@@ -55,7 +55,7 @@ const GridColor* GridColorRule::GetGridColor() const
 //-------------------------------------------------------------------------
 GridColor* GridColorRule::GetGridColor()
 {
-    return m_spGridColor;
+    return this->m_spGridColor;
 }
 
 //-------------------------------------------------------------------------
@@ -69,10 +69,10 @@ GridColor* GridColorRule::GetGridColor()
 //-------------------------------------------------------------------------
 void GridColorRule::AdoptGridColor(GridColor *pGridColor)
 {
-    if (m_spGridColor != pGridColor)
+    if (this->m_spGridColor != pGridColor)
     {
-        delete m_spGridColor;
-        m_spGridColor = pGridColor;
+        delete this->m_spGridColor;
+        this->m_spGridColor = pGridColor;
     }
 }
 
@@ -84,7 +84,7 @@ void GridColorRule::AdoptGridColor(GridColor *pGridColor)
 //-------------------------------------------------------------------------
 GridColor* GridColorRule::OrphanGridColor()
 {
-    GridColor* pRet = m_spGridColor;
-    m_spGridColor = NULL;
+    GridColor* pRet = this->m_spGridColor;
+    this->m_spGridColor = NULL;
     return pRet;
 }

@@ -54,7 +54,7 @@ void IOLineTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerSta
         m_startElemName = name;
         this->_lineTypeStyle = new LineTypeStyle();
         break;
-    
+
     case eLineRule:
         {
             IOLineRule *IO = new IOLineRule(this->_lineTypeStyle);
@@ -109,7 +109,7 @@ void IOLineTypeStyle::Write(MdfStream &fd, LineTypeStyle *lineTypeStyle, Version
     // Write any previously found unknown XML
     if (!lineTypeStyle->GetUnknownXml().empty())
     {
-        fd << toCString(lineTypeStyle->GetUnknownXml()); 
+        fd << toCString(lineTypeStyle->GetUnknownXml());
     }
 
     dectab();

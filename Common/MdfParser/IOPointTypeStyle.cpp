@@ -56,7 +56,7 @@ void IOPointTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerSt
         m_startElemName = name;
         this->_pointTypeStyle = new PointTypeStyle();
         break;
-    
+
     case ePointRule:
         {
             IOPointRule *IO = new IOPointRule(this->_pointTypeStyle);
@@ -124,7 +124,7 @@ void IOPointTypeStyle::Write(MdfStream &fd, PointTypeStyle *pointTypeStyle, Vers
     // Write any previously found unknown XML
     if (!pointTypeStyle->GetUnknownXml().empty())
     {
-        fd << toCString(pointTypeStyle->GetUnknownXml()); 
+        fd << toCString(pointTypeStyle->GetUnknownXml());
     }
 
     dectab();

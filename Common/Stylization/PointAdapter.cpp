@@ -124,7 +124,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     if (psym && psym->GetSymbol())
     {
         renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, 
-            theme.empty() ? NULL : &theme, zOffset, zExtrusion, elevType);
+            theme.empty()? NULL : &theme, zOffset, zExtrusion, elevType);
 
         //quick check if style is already cached
         RS_MarkerDef* cachedStyle = m_hPointSymCache[psym];

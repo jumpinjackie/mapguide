@@ -15,9 +15,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+// disable C4244 of io.h about int64 assigned to unsigned long
+#pragma warning(push)
+#pragma warning(disable: 4244)
+#include "geos.h"
+#pragma warning(pop)
+
 #include "GeometryCommon.h"
 #include "Buffer/buffer.h"
-#include "geos.h"
 #include "GeosUtil.h"
 #include "GeometryExceptionDef.h"
 #include "Spatial/SpatialUtility.h"

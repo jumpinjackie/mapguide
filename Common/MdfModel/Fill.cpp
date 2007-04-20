@@ -30,9 +30,10 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 Fill::Fill()
 {
-    this->SetFillPattern(L"Solid"); // NOXLATE
-    this->SetForegroundColor(L"ffffffff"); // NOXLATE
-    this->SetBackgroundColor(L"ff000000"); // NOXLATE
+    // default values
+    this->m_strFillPattern = L"Solid"; // NOXLATE
+    this->m_strForeColor = L"FFFFFFFF"; // NOXLATE
+    this->m_strBackColor = L"FF000000"; // NOXLATE
 }
 
 //-------------------------------------------------------------------------
@@ -49,7 +50,7 @@ Fill::~Fill()
 //          of feature geometry.
 // RETURNS: the FillPattern .
 //-------------------------------------------------------------------------
-const MdfString& Fill::GetFillPattern()const
+const MdfString& Fill::GetFillPattern() const
 {
     return this->m_strFillPattern;
 }
@@ -75,7 +76,7 @@ void Fill::SetFillPattern(const MdfString& strFillPattern)
 //          will be applied to the Fill pattern.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& Fill::GetForegroundColor()const
+const MdfString& Fill::GetForegroundColor() const
 {
     return this->m_strForeColor;
 }
@@ -102,7 +103,7 @@ void Fill::SetForegroundColor(const MdfString& strForegroundColor)
 //          is applied to the background before the Fill pattern is applied.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& Fill::GetBackgroundColor()const
+const MdfString& Fill::GetBackgroundColor() const
 {
     return this->m_strBackColor;
 }

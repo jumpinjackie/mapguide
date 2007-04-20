@@ -48,7 +48,7 @@ BEGIN_NAMESPACE_MDFMODEL
         RuleCollection* GetRules();
 
         // Visitor Pattern to be implemented by all subclasses
-        virtual void AcceptVisitor(IFeatureTypeStyleVisitor& ifsvVisitor) = 0;
+        virtual void AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor) = 0;
 
     private:
         // Data members

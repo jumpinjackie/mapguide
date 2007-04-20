@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef EXTENSION_H_  
+#ifndef EXTENSION_H_
 #define EXTENSION_H_
 
 #include "MdfModel.h"
@@ -24,7 +24,7 @@
 #include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
-    
+
 //-------------------------------------------------------------------------
 // DESCRIPTION:
 // Extension class defines the joins between feature classes
@@ -48,7 +48,7 @@ class MDFMODEL_API Extension : public MdfRootObject
         void SetName(const MdfString &name);
 
         // Property : FeatureClass
-        const MdfString& GetFeatureClass()const;
+        const MdfString& GetFeatureClass() const;
         void SetFeatureClass(const MdfString&  strFeatureClass);
 
     private:
@@ -75,4 +75,3 @@ class MDFMODEL_API Extension : public MdfRootObject
 
 END_NAMESPACE_MDFMODEL
 #endif // EXTENSION_H_
-// End of file.

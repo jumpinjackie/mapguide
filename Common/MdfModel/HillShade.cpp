@@ -25,10 +25,10 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 HillShade::HillShade()
 {
-    m_dAzimuth = 0;
-    m_dAltitude = 90;
-    m_dScaleFactor = 1;
-    m_strBandName = L"";
+    // default values
+    this->m_dAzimuth = 0.0;
+    this->m_dAltitude = 90.0;
+    this->m_dScaleFactor = 1.0;
 }
 
 //-------------------------------------------------------------------------
@@ -45,7 +45,7 @@ HillShade::~HillShade()
 //-------------------------------------------------------------------------
 const MdfString& HillShade::GetBand() const
 {
-    return m_strBandName;
+    return this->m_strBandName;
 }
 
 //-------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void HillShade::SetBand(const MdfString& strBandName)
 //-------------------------------------------------------------------------
 double HillShade::GetAzimuth() const
 {
-    return m_dAzimuth;
+    return this->m_dAzimuth;
 }
 
 //-------------------------------------------------------------------------
@@ -79,7 +79,7 @@ double HillShade::GetAzimuth() const
 //-------------------------------------------------------------------------
 void HillShade::SetAzimuth(double dAzimuth)
 {
-    m_dAzimuth = dAzimuth;
+    this->m_dAzimuth = dAzimuth;
 }
 
 //-------------------------------------------------------------------------
@@ -89,7 +89,7 @@ void HillShade::SetAzimuth(double dAzimuth)
 //-------------------------------------------------------------------------
 double HillShade::GetAltitude() const
 {
-    return m_dAltitude;
+    return this->m_dAltitude;
 }
 
 //-------------------------------------------------------------------------
@@ -101,7 +101,7 @@ double HillShade::GetAltitude() const
 //-------------------------------------------------------------------------
 void HillShade::SetAltitude(double dAltitude)
 {
-    m_dAltitude = dAltitude;
+    this->m_dAltitude = dAltitude;
 }
 
 //-------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void HillShade::SetAltitude(double dAltitude)
 //-------------------------------------------------------------------------
 double HillShade::GetScaleFactor() const
 {
-    return m_dScaleFactor;
+    return this->m_dScaleFactor;
 }
 
 //-------------------------------------------------------------------------
@@ -125,5 +125,5 @@ double HillShade::GetScaleFactor() const
 //-------------------------------------------------------------------------
 void HillShade::SetScaleFactor(double dScaleFactor)
 {
-    m_dScaleFactor = dScaleFactor;
+    this->m_dScaleFactor = dScaleFactor;
 }

@@ -33,15 +33,15 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 TextSymbol::TextSymbol()
 {
-    // Default Settings
+    // default values
     this->m_strText = L"";
     this->m_strFontName = L"Arial"; // NOXLATE
     this->m_strForeColor = L"FF000000"; // NOXLATE
     this->m_strBackColor = L"FFFFFFFF"; // NOXLATE
     this->m_eBackgroundStyle = TextSymbol::Ghosted;
-    this->m_strHrzAlignment = L"\'Center\'";  // NOXLATE
-    this->m_strVrtAlignment = L"\'Baseline\'";  // NOXLATE
-    this->m_strBold = L"false";  // NOXLATE
+    this->m_strHrzAlignment = L"\'Center\'"; // NOXLATE
+    this->m_strVrtAlignment = L"\'Baseline\'"; // NOXLATE
+    this->m_strBold = L"false"; // NOXLATE
     this->m_strItalic = L"false"; // NOXLATE
     this->m_strUnderlined = L"false"; // NOXLATE
     this->m_bAdvancedPlacement = false;
@@ -62,7 +62,7 @@ TextSymbol::~TextSymbol()
 //          It represents the text to display in this symbol.
 // RETURNS: String representation of the Text Expression:Text.
 //-------------------------------------------------------------------------
-const MdfString& TextSymbol::GetText()const
+const MdfString& TextSymbol::GetText() const
 {
     return this->m_strText;
 }
@@ -87,7 +87,7 @@ void TextSymbol::SetText(const MdfString& strTextExpr)
 //          the text.
 // RETURNS: Font name.
 //-------------------------------------------------------------------------
-const MdfString& TextSymbol::GetFontName()const
+const MdfString& TextSymbol::GetFontName() const
 {
     return this->m_strFontName;
 }
@@ -112,7 +112,7 @@ void TextSymbol::SetFontName(const MdfString& strFontName)
 //          will be applied to the Hatch pattern.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& TextSymbol::GetForegroundColor()const
+const MdfString& TextSymbol::GetForegroundColor() const
 {
     return this->m_strForeColor;
 }
@@ -139,7 +139,7 @@ void TextSymbol::SetForegroundColor(const MdfString& strForegroundColor)
 //          is applied to the background before the Hatch pattern is applied.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& TextSymbol::GetBackgroundColor()const
+const MdfString& TextSymbol::GetBackgroundColor() const
 {
     return this->m_strBackColor;
 }
@@ -167,7 +167,7 @@ void TextSymbol::SetBackgroundColor(const MdfString& strBackgroundColor)
 //          of the Symbol. It may be Ghosted, Opaque or Transparent.
 // RETURNS: BackgroundStyle enum value. Default is Opaque.
 //-------------------------------------------------------------------------
-TextSymbol::BackgroundStyle TextSymbol::GetBackgroundStyle()const
+TextSymbol::BackgroundStyle TextSymbol::GetBackgroundStyle() const
 {
     return this->m_eBackgroundStyle;
 }
@@ -194,7 +194,7 @@ void TextSymbol::SetBackgroundStyle(TextSymbol::BackgroundStyle eBackgroundStyle
 // RETURNS: The string representation of the Expression:String. Default is
 //          "Center".
 //-------------------------------------------------------------------------
-const MdfString& TextSymbol::GetHorizontalAlignment()const
+const MdfString& TextSymbol::GetHorizontalAlignment() const
 {
     return this->m_strHrzAlignment;
 }
@@ -222,7 +222,7 @@ void TextSymbol::SetHorizontalAlignment(const MdfString& strHrzAlignment)
 // RETURNS: The string representation of the Expression:String. Default is
 //          "Baseline".
 //-------------------------------------------------------------------------
-const MdfString& TextSymbol::GetVerticalAlignment()const
+const MdfString& TextSymbol::GetVerticalAlignment() const
 {
     return this->m_strVrtAlignment;
 }
@@ -248,7 +248,7 @@ void TextSymbol::SetVerticalAlignment(const MdfString& strVrtAlignment)
 //          It defines if the text is displayed bold.
 // RETURNS: String representation of the Bold Expression:Boolean.
 //-------------------------------------------------------------------------
-const MdfString& TextSymbol::GetBold()const
+const MdfString& TextSymbol::GetBold() const
 {
     return this->m_strBold;
 }
@@ -275,7 +275,7 @@ void TextSymbol::SetBold(const MdfString& strBoldExpr)
 //          It defines if the text is displayed Italic.
 // RETURNS: String representation of the Italic Expression:Boolean.
 //-------------------------------------------------------------------------
-const MdfString& TextSymbol::GetItalic()const
+const MdfString& TextSymbol::GetItalic() const
 {
     return this->m_strItalic;
 }
@@ -302,7 +302,7 @@ void TextSymbol::SetItalic(const MdfString& strItalicExpr)
 //          It defines if the text is displayed Underlined.
 // RETURNS: String representation of the Underlined Expression:Boolean.
 //-------------------------------------------------------------------------
-const MdfString& TextSymbol::GetUnderlined()const
+const MdfString& TextSymbol::GetUnderlined() const
 {
     return this->m_strUnderlined;
 }
@@ -329,7 +329,7 @@ void TextSymbol::SetUnderlined(const MdfString& strUnderlinedExpr)
 // only draws one label for a set of contiguous line features, and shrinks
 // the label font height to fit the length of a feature.
 //-------------------------------------------------------------------------
-bool TextSymbol::IsAdvancedPlacement()const
+bool TextSymbol::IsAdvancedPlacement() const
 {
     return this->m_bAdvancedPlacement;
 }
@@ -350,7 +350,7 @@ void TextSymbol::SetAdvancedPlacement(bool bAdvancedPlacement)
 // when adavanced label placement is in effect.  A value of 1.0 means that
 // no downsizing is allowed.  Valid values range from > 0 to 1.0.
 //-------------------------------------------------------------------------
-double TextSymbol::GetScaleLimit()const
+double TextSymbol::GetScaleLimit() const
 {
     return this->m_dScaleLimit;
 }
@@ -360,7 +360,7 @@ double TextSymbol::GetScaleLimit()const
 // when adavanced label placement is in effect.  A value of 1.0 means that
 // no downsizing is allowed.  Valid values range from > 0 to 1.0.
 //-------------------------------------------------------------------------
-void TextSymbol::SetScaleLimit( const double& dScaleLimit)
+void TextSymbol::SetScaleLimit(const double& dScaleLimit)
 {
     this->m_dScaleLimit = dScaleLimit;
 }
@@ -371,11 +371,11 @@ void TextSymbol::SetScaleLimit( const double& dScaleLimit)
 //          subclasses.
 // PARAMETERS:
 //      Input:
-//          isvVisitor - The ISymbolVisitor interface which sports methods
-//                       that accept the final concrete type this TextSymbol
-//                       represents as an argument.
+//          isymVisitor - The ISymbolVisitor interface which sports methods
+//                        that accept the final concrete type this TextSymbol
+//                        represents as an argument.
 //-------------------------------------------------------------------------
-void TextSymbol::AcceptVisitor(ISymbolVisitor& isvVisitor)
+void TextSymbol::AcceptVisitor(ISymbolVisitor& isymVisitor)
 {
-    isvVisitor.VisitTextSymbol(*this);
+    isymVisitor.VisitTextSymbol(*this);
 }

@@ -35,20 +35,20 @@ BEGIN_NAMESPACE_MDFMODEL
         virtual ~DrawingLayerDefinition();
 
         // Property : Sheet
-        const MdfString& GetSheet()const;
+        const MdfString& GetSheet() const;
         void SetSheet(const MdfString& strSheet);
 
         // Property : LayerFilter
-        const MdfString& GetLayerFilter()const;
+        const MdfString& GetLayerFilter() const;
         void SetLayerFilter(const MdfString& strLayerFilter);
 
         // Property : MinScale
-        double GetMinScale()const;
-        void SetMinScale( const double& dMinScale);
+        double GetMinScale() const;
+        void SetMinScale(const double& dMinScale);
 
         // Property : MaxScale
-        double GetMaxScale()const;
-        void SetMaxScale( const double& dMaxScale);
+        double GetMaxScale() const;
+        void SetMaxScale(const double& dMaxScale);
 
     private:
         // Hidden copy constructor and assignment operator.

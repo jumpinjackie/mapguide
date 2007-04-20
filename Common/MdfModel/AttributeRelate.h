@@ -52,7 +52,7 @@ BEGIN_NAMESPACE_MDFMODEL
         RelatePropertyCollection* GetRelateProperties();
 
         // Property : Name
-        const MdfString& GetName()const;
+        const MdfString& GetName() const;
         void SetName(const MdfString& joinName);
 
         // Property : ResourceId
@@ -60,7 +60,7 @@ BEGIN_NAMESPACE_MDFMODEL
         void SetResourceId(const MdfString &resourceId);
 
         // Property : AttributeClass
-        const MdfString& GetAttributeClass()const;
+        const MdfString& GetAttributeClass() const;
         void SetAttributeClass(const MdfString& featureClass);
 
         // Property: AttributeNameDelimiter
@@ -69,7 +69,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Attribute : RelateType
         RelateType          GetRelateType() const;
-        void                SetRelateType (RelateType type);
+        void                SetRelateType(RelateType type);
 
         // Attribute: ForceOneToOne
         bool                GetForceOneToOne() const;

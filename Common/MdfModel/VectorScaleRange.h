@@ -48,12 +48,12 @@ class MDFMODEL_API VectorScaleRange : public MdfRootObject
 
         // Operations
         // Property : MinScale
-        double GetMinScale()const;
-        void SetMinScale( const double& dMinScale);
+        double GetMinScale() const;
+        void SetMinScale(const double& dMinScale);
 
         // Property : MaxScale
-        double GetMaxScale()const;
-        void SetMaxScale( const double& dMaxScale);
+        double GetMaxScale() const;
+        void SetMaxScale(const double& dMaxScale);
 
         // Property : FeatureTypeStyles
         FeatureTypeStyleCollection* GetFeatureTypeStyles();

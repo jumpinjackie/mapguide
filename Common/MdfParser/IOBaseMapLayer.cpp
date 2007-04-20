@@ -45,7 +45,7 @@ void IOBaseMapLayer::StartElement(const wchar_t *name, HandlerStack *handlerStac
     if (m_currElemName == L"BaseMapLayer") // NOXLATE
     {
         m_startElemName = name;
-        this->mapLayerCommon = new BaseMapLayer(L"",L"");
+        this->mapLayerCommon = new BaseMapLayer(L"", L"");
     }
 }
 

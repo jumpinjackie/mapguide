@@ -162,16 +162,16 @@ std::string BoolToStr(bool b)
 std::string startStr(const std::string elementName)
 {
     std::string out("<"); // NOXLATE
-    out.append(elementName); 
-    out.append(">");  // NOXLATE
+    out.append(elementName);
+    out.append(">"); // NOXLATE
     return out;
 }
 
 std::string endStr(const std::string elementName)
 {
     std::string out("</"); // NOXLATE
-    out.append(elementName); 
-    out.append(">");  // NOXLATE
+    out.append(elementName);
+    out.append(">"); // NOXLATE
     return out;
 }
 

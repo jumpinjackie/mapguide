@@ -34,18 +34,13 @@ static MdfString stChainDelimiterSymbol = L".";
 //-------------------------------------------------------------------------
 RelateProperty::RelateProperty()
 {
-    //Default Values
-    this->m_strAttributeClassProperty = L"";
-    this->m_strFeatureClassProperty = L"";
-    this->m_strPrefixedFeatureClassProperty = L"";
-    this->m_strPrimaryAttributeRelate = L"";
 }
 
 RelateProperty::RelateProperty(const MdfString &rstrFeatureClassProperty,
                                const MdfString &rstrAttributeClassProperty,
                                const MdfString &primaryAttributeRelateName)
+: m_strAttributeClassProperty(rstrFeatureClassProperty)
 {
-    this->SetAttributeClassProperty(rstrAttributeClassProperty);
     this->SetFeatureClassProperty(rstrFeatureClassProperty, primaryAttributeRelateName);
 }
 
@@ -62,8 +57,7 @@ RelateProperty::~RelateProperty()
 //-------------------------------------------------------------------------
 const MdfString& RelateProperty::GetFeatureClassProperty(bool bStripPrimaryAttributeRelateName) const
 {
-    return (true == bStripPrimaryAttributeRelateName)
-        ? this->m_strFeatureClassProperty : this->m_strPrefixedFeatureClassProperty;
+    return bStripPrimaryAttributeRelateName? this->m_strFeatureClassProperty : this->m_strPrefixedFeatureClassProperty;
 }
 
 //-------------------------------------------------------------------------
@@ -74,9 +68,7 @@ const MdfString& RelateProperty::GetFeatureClassProperty(bool bStripPrimaryAttri
 //             case of a chain) or empty string
 //          propertyName - FeatureClassProperty
 //-------------------------------------------------------------------------
-void RelateProperty::SetFeatureClassProperty(
-    const MdfString& propertyName,
-    const MdfString& primaryAttributeRelateName)
+void RelateProperty::SetFeatureClassProperty(const MdfString& propertyName, const MdfString& primaryAttributeRelateName)
 {
     this->m_strFeatureClassProperty = propertyName;
     this->m_strPrimaryAttributeRelate = primaryAttributeRelateName;
@@ -105,7 +97,7 @@ const MdfString& RelateProperty::GetPrimaryAttributeRelateName() const
 // PURPOSE: Accessor method for the AttributeClassProperty property.
 // RETURNS: A string representing the AttributeClassProperty.
 //-------------------------------------------------------------------------
-const MdfString& RelateProperty::GetAttributeClassProperty()const
+const MdfString& RelateProperty::GetAttributeClassProperty() const
 {
     return this->m_strAttributeClassProperty;
 }
@@ -118,24 +110,21 @@ void RelateProperty::SetAttributeClassProperty(const MdfString& attributeClass)
     this->m_strAttributeClassProperty = attributeClass;
 }
 
-void RelateProperty::ParseDelimitedClassName (
-    const MdfString& delimitedName,
-    MdfString& AttributeRelateName,
-    MdfString& ClassName)
+void RelateProperty::ParseDelimitedClassName(const MdfString& delimitedName,
+                                             MdfString& attributeRelateName,
+                                             MdfString& propertyName)
 {
     size_t pos = delimitedName.find(stChainDelimiterSymbol);
     if (pos == std::wstring::npos)
     {
-        // string has no delimiter; no primary AttribuetRelate
-        AttributeRelateName = L"";
-        ClassName = delimitedName;
+        // string has no delimiter; no primary AttributeRelate
+        attributeRelateName = L"";
+        propertyName = delimitedName;
     }
     else
     {
         // primary AttributeRelate is found
-        AttributeRelateName = delimitedName.substr(0, pos);
-        ClassName = delimitedName.substr(++pos);
+        attributeRelateName = delimitedName.substr(0, pos);
+        propertyName = delimitedName.substr(++pos);
     }
 }
-
-//End of file.

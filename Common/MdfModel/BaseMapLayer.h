@@ -47,12 +47,12 @@ BEGIN_NAMESPACE_MDFMODEL
         // Operations
         // Property : Name
         // The name of BaseMapLayer. Must be a unique BaseMapLayer name.
-        const MdfString& GetName()const;
+        const MdfString& GetName() const;
         void SetName(const MdfString& strName);
 
         //Property : LayerResourceID
         // The Layer ResourceID that this BaseMapLayer refers to for its LayerDefinition object
-        const MdfString& GetLayerResourceID()const;
+        const MdfString& GetLayerResourceID() const;
         void SetLayerResourceID(const MdfString& strLayerResourceID);
 
         // Property : LayerDefinition
@@ -63,30 +63,30 @@ BEGIN_NAMESPACE_MDFMODEL
         // Property : Visible
         // Determines if this layer's data is initially visible or not.
         // Default is true.
-        bool IsVisible()const;
+        bool IsVisible() const;
         void SetVisible(bool bVisibility);
 
         // Property : Selectable
         // Determines if the features of this layer can be selected.
         // Default is true.
-        bool IsSelectable()const;
+        bool IsSelectable() const;
         void SetSelectable(bool bSelectable);
 
         // Property : ShowInLegend
         // Whether the legend should be displayed in the legend or not.
         // Default is true.
-        bool IsShowInLegend()const;
+        bool IsShowInLegend() const;
         void SetShowInLegend(bool bShowInLegend);
 
         // Property : LegendLabel
         // The optional legend label.
-        const MdfString& GetLegendLabel()const;
+        const MdfString& GetLegendLabel() const;
         void SetLegendLabel(const MdfString& pstrLegendLabel);
 
         // Property : ExpandInLegend
         // Determines if the layer's styles are shown in the legend.
         // Default is true.
-        bool IsExpandInLegend()const;
+        bool IsExpandInLegend() const;
         void SetExpandInLegend(bool bExpandInLegend);
 
     private:

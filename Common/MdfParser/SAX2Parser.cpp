@@ -260,7 +260,7 @@ void SAX2Parser::ParseString(const char* str, int numBytes)
 {
     MemBufInputSource memBufIS ((const XMLByte*)(str),
                                 numBytes,
-                                "MdfParse",  // NOXLATE
+                                "MdfParse", // NOXLATE
                                 false);
     try
     {

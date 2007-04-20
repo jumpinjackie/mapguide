@@ -32,36 +32,36 @@ BEGIN_NAMESPACE_MDFMODEL
     {
     public:
         // Construction, destruction, initialization
-        MapLayerGroupCommon( const MdfString& strName);
+        MapLayerGroupCommon(const MdfString& strName);
         virtual ~MapLayerGroupCommon();
 
         // Operations
         // Property : Name
         // The name of MapLayerGroupCommon. Must be a unique MapLayerGroupCommon name.
-        const MdfString& GetName()const;
+        const MdfString& GetName() const;
         void SetName(const MdfString& strName);
 
         // Property : Visible
         // Determines if this group's data is initially visible or not.
         // Default is true.
-        bool IsVisible()const;
+        bool IsVisible() const;
         void SetVisible(bool bVisible);
 
         // Property : ShowInLegend
         // Whether the group should be displayed in the legend or not.
         // Default is true.
-        bool IsShowInLegend()const;
+        bool IsShowInLegend() const;
         void SetShowInLegend(bool bLegend);
 
         // Property : ExpandInLegend
         // Determines if the Group should initially be expanded when shown in the legend.
         // Default is true.
-        bool IsExpandInLegend()const;
+        bool IsExpandInLegend() const;
         void SetExpandInLegend(bool bExpandInLegend);
 
         // Property : LegendLabel
         // The legend label for this group, if empty, the name should be used.
-        const MdfString& GetLegendLabel()const;
+        const MdfString& GetLegendLabel() const;
         void SetLegendLabel(const MdfString& strLegendLabel);
 
     private:

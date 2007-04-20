@@ -22,6 +22,9 @@
 #include "dwf/package/reader/PackageReader.h"
 #include "dwf/whiptk/whip_toolkit.h"
 
+// disable C4244 of XSerializeEngine about __w64 int assigned to unsigned long
+#pragma warning(push)
+#pragma warning(disable: 4244)
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/dom/DOMNode.hpp>
@@ -29,6 +32,7 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
+#pragma warning(pop)
 
 #include "ServerResourceService.h"
 

@@ -29,11 +29,8 @@ using namespace MDFMODEL_NAMESPACE;
 // PURPOSE: Construct and initialize an instance of the GridLayerDefinition class
 //-------------------------------------------------------------------------
 GridLayerDefinition::GridLayerDefinition(const MdfString& strDataResourceID)
-    : LayerDefinition(strDataResourceID)
+: LayerDefinition(strDataResourceID)
 {
-    m_strFeatureName = L"";
-    m_strGeometry = L"";
-    m_strFilter = L"";
 }
 
 //-------------------------------------------------------------------------
@@ -59,9 +56,9 @@ GridScaleRangeCollection* GridLayerDefinition::GetScaleRanges()
 //          used from the feature source.
 // RETURNS: A feature class name.
 //-------------------------------------------------------------------------
-const MdfString& GridLayerDefinition::GetFeatureName()const
+const MdfString& GridLayerDefinition::GetFeatureName() const
 {
-    return m_strFeatureName;
+    return this->m_strFeatureName;
 }
 
 //-------------------------------------------------------------------------
@@ -75,14 +72,14 @@ const MdfString& GridLayerDefinition::GetFeatureName()const
 //-------------------------------------------------------------------------
 void GridLayerDefinition::SetFeatureName(const MdfString& strFeatureName)
 {
-    m_strFeatureName = strFeatureName;
+    this->m_strFeatureName = strFeatureName;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the Geometry property.
 // RETURNS: A string representing the Geometry.
 //-------------------------------------------------------------------------
-const MdfString& GridLayerDefinition::GetGeometry()const
+const MdfString& GridLayerDefinition::GetGeometry() const
 {
     return this->m_strGeometry;
 }
@@ -100,7 +97,7 @@ void GridLayerDefinition::SetGeometry(const MdfString&  strGeometry)
 //          where clause that determines which features are returned.
 // RETURNS: SQL where clause.
 //-------------------------------------------------------------------------
-const MdfString& GridLayerDefinition::GetFilter()const
+const MdfString& GridLayerDefinition::GetFilter() const
 {
     return this->m_strFilter;
 }

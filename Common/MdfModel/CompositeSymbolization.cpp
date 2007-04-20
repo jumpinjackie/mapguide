@@ -56,11 +56,11 @@ SymbolInstanceCollection* CompositeSymbolization::GetSymbolCollection()
 //          subclasses.
 // PARAMETERS:
 //      Input:
-//          isYVisitor - The ISymbolizationVisitor interface which sports
-//                       methods that accept the final concrete type this
-//                       CompositeSymbolization represents as an argument.
+//          isymVisitor - The ISymbolizationVisitor interface which sports
+//                        methods that accept the final concrete type this
+//                        CompositeSymbolization represents as an argument.
 //-------------------------------------------------------------------------
-void CompositeSymbolization::AcceptVisitor(ISymbolizationVisitor& isyVisitor)
+void CompositeSymbolization::AcceptVisitor(ISymbolizationVisitor& isymVisitor)
 {
-    isyVisitor.VisitCompositeSymbolization(*this);
+    isymVisitor.VisitCompositeSymbolization(*this);
 }

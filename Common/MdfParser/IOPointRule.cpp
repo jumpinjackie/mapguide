@@ -58,7 +58,7 @@ void IOPointRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
         m_startElemName = name;
         this->_pointRule = new PointRule();
         break;
-    
+
     case ePointSymbolization2D:
         {
             IOPointSymbolization2D *IO = new IOPointSymbolization2D(this->_pointRule);
@@ -145,7 +145,7 @@ void IOPointRule::Write(MdfStream &fd, PointRule *pointRule, Version *version)
     // Write any previously found unknown XML
     if (!pointRule->GetUnknownXml().empty())
     {
-        fd << toCString(pointRule->GetUnknownXml()); 
+        fd << toCString(pointRule->GetUnknownXml());
     }
 
     dectab();

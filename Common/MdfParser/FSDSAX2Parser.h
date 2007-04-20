@@ -22,10 +22,10 @@
 
 typedef std::ostream MdfStream;
 
+// disable C4244 of XSerializeEngine about __w64 int assigned to unsigned long
+// disable C4267 of XmlScanner about size_t assigned to unsigned int
 #pragma warning(push)
-// Disable C4267 of XmlScanner about size_t assigned to unsigned int
-#pragma warning(disable:4267)
-
+#pragma warning(disable: 4244 4267)
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/TransService.hpp>
 #include <xercesc/sax2/SAX2XMLReader.hpp>
@@ -34,9 +34,9 @@ typedef std::ostream MdfStream;
 #include <xercesc/framework/XMLFormatter.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
-#include "SAX2ElementHandler.h"
-
 #pragma warning(pop)
+
+#include "SAX2ElementHandler.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -57,7 +57,7 @@ class MDFPARSER_API FSDSAX2Parser : public DefaultHandler
         // Succeeded is true if the parse has succeeded. As of now,
         // there are very loose constraints on this boolean.
         bool succeeded;
-        
+
         SAX2XMLReader          *m_Parser;
         // handlerStack is a stack of SAX2ElementHandlers (see the
         // typedef in SAX2ElementHandler.h). When the parser receives
@@ -65,7 +65,7 @@ class MDFPARSER_API FSDSAX2Parser : public DefaultHandler
         // of the handlerStack, which will be an instance of one of the IO classes,
         // who all implement the SAX2ElementHandler interface.
         HandlerStack* m_HandlerStack;
-        
+
         // Unfortunately, the SAX2 Parser doesn't necessarily send all the
         // characters that appear inside a tag in one call of characters()-
         // for example with escape characters it separates them into separate calls.
@@ -121,7 +121,7 @@ class MDFPARSER_API FSDSAX2Parser : public DefaultHandler
 
         static FeatureSource* CreateClone(FeatureSource *pFeatureSource);
         const MdfString& GetErrorMessage();
-};    
+};
 
 END_NAMESPACE_MDFPARSER
 #endif // _FSDPARSER_H
