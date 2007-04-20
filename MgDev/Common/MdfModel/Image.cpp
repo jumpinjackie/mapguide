@@ -29,6 +29,17 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 Image::Image()
 {
+    // default values
+    // NOTE: update IOImage::Write if you change these values
+//  this->m_sContent = L"";
+//  this->m_sResourceId = L"";
+//  this->m_sLibraryItemName = L"";
+    this->m_sSizeX = L"1.0";
+    this->m_sSizeY = L"1.0";
+    this->m_sSizeScalable = L"true";
+    this->m_sAngle = L"0.0";
+    this->m_sPositionX = L"0.0";
+    this->m_sPositionY = L"0.0";
 }
 
 //-------------------------------------------------------------------------

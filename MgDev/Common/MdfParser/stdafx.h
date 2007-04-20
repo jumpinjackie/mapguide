@@ -52,23 +52,85 @@
 #include "MdfParser.h"
 #include "IOUtil.h"
 
-#define EMIT_STRING_PROPERTY(stream, object, prop, optional)                    \
-            if (!optional || object->Get##prop().size() > 0)                    \
+#define EMIT_BOOL_PROPERTY(stream, object, prop, optional, defaultVal)          \
+            bool emit##prop = true;                                             \
+            const MdfString& str##prop = object->Get##prop();                   \
+            if (optional)                                                       \
+            {                                                                   \
+                if (str##prop.size() == 0)                                      \
+                    emit##prop = false;                                         \
+                else                                                            \
+                {                                                               \
+                    bool val;                                                   \
+                    if (wstrToBool(str##prop, val) && val == defaultVal)        \
+                        emit##prop = false;                                     \
+                }                                                               \
+            }                                                                   \
+            if (emit##prop)                                                     \
             {                                                                   \
                 stream << tab() << "<" #prop ">";                               \
-                stream << EncodeString(object->Get##prop());                    \
+                stream << EncodeString(str##prop);                              \
                 stream << "</" #prop ">" << std::endl;                          \
             }
 
-#define EMIT_DOUBLE_PROPERTY(stream, object, prop)                              \
-            stream << tab() << "<" #prop ">";                                   \
-            stream << DoubleToStr(object->Get##prop());                         \
-            stream << "</" #prop ">" << std::endl;
+#define EMIT_DOUBLE_PROPERTY(stream, object, prop, optional, defaultVal)        \
+            bool emit##prop = true;                                             \
+            const MdfString& str##prop = object->Get##prop();                   \
+            if (optional)                                                       \
+            {                                                                   \
+                if (str##prop.size() == 0)                                      \
+                    emit##prop = false;                                         \
+                else                                                            \
+                {                                                               \
+                    double val;                                                 \
+                    if (wstrToDouble(str##prop, val) && val == defaultVal)      \
+                        emit##prop = false;                                     \
+                }                                                               \
+            }                                                                   \
+            if (emit##prop)                                                     \
+            {                                                                   \
+                stream << tab() << "<" #prop ">";                               \
+                stream << EncodeString(str##prop);                              \
+                stream << "</" #prop ">" << std::endl;                          \
+            }
 
-#define EMIT_INTEGER_PROPERTY(stream, object, prop)                             \
-            stream << tab() << "<" #prop ">";                                   \
-            stream << IntToStr(object->Get##prop());                            \
-            stream << "</" #prop ">" << std::endl;
+#define EMIT_INTEGER_PROPERTY(stream, object, prop, optional, defaultVal)       \
+            bool emit##prop = true;                                             \
+            const MdfString& str##prop = object->Get##prop();                   \
+            if (optional)                                                       \
+            {                                                                   \
+                if (str##prop.size() == 0)                                      \
+                    emit##prop = false;                                         \
+                else                                                            \
+                {                                                               \
+                    int val;                                                    \
+                    if (wstrToInt(str##prop, val) && val == defaultVal)         \
+                        emit##prop = false;                                     \
+                }                                                               \
+            }                                                                   \
+            if (emit##prop)                                                     \
+            {                                                                   \
+                stream << tab() << "<" #prop ">";                               \
+                stream << EncodeString(str##prop);                              \
+                stream << "</" #prop ">" << std::endl;                          \
+            }
+
+#define EMIT_STRING_PROPERTY(stream, object, prop, optional, defaultVal)        \
+            bool emit##prop = true;                                             \
+            const MdfString& str##prop = object->Get##prop();                   \
+            if (optional)                                                       \
+            {                                                                   \
+                if (str##prop.size() == 0)                                      \
+                    emit##prop = false;                                         \
+                else if (_wcsicmp(str##prop.c_str(), defaultVal) == 0)          \
+                    emit##prop = false;                                         \
+            }                                                                   \
+            if (emit##prop)                                                     \
+            {                                                                   \
+                stream << tab() << "<" #prop ">";                               \
+                stream << EncodeString(str##prop);                              \
+                stream << "</" #prop ">" << std::endl;                          \
+            }
 
 #define EMIT_ENUM_2(stream, object, enumtype, prop, e1, e2, optIdx)             \
             enumtype::prop propVal##prop = object->Get##prop();                 \

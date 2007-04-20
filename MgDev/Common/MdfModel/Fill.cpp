@@ -32,8 +32,8 @@ Fill::Fill()
 {
     // default values
     this->m_strFillPattern = L"Solid"; // NOXLATE
-    this->m_strForeColor = L"FFFFFFFF"; // NOXLATE
-    this->m_strBackColor = L"FF000000"; // NOXLATE
+    this->m_strForeColor = L"ffffffff"; // NOXLATE
+    this->m_strBackColor = L"ff000000"; // NOXLATE
 }
 
 //-------------------------------------------------------------------------

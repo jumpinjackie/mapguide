@@ -29,6 +29,13 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 ResizeBox::ResizeBox()
 {
+    // default values
+    // NOTE: update IOResizeBox::Write if you change these values
+    this->m_sSizeX = L"1.0";
+    this->m_sSizeY = L"1.0";
+    this->m_sPositionX = L"0.0";
+    this->m_sPositionY = L"0.0";
+    this->m_sGrowControl = L"\'GrowInXYMaintainAspect\'";
 }
 
 //-------------------------------------------------------------------------

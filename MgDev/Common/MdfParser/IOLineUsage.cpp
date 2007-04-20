@@ -78,15 +78,15 @@ void IOLineUsage::Write(MdfStream &fd, LineUsage* lineUsage)
     fd << tab() << "<LineUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, lineUsage, AngleControl, true)
-    EMIT_STRING_PROPERTY(fd, lineUsage, UnitsControl, true)
-    EMIT_STRING_PROPERTY(fd, lineUsage, VertexControl, true)
-    EMIT_STRING_PROPERTY(fd, lineUsage, Angle, true)
-    EMIT_STRING_PROPERTY(fd, lineUsage, StartOffset, true)
-    EMIT_STRING_PROPERTY(fd, lineUsage, EndOffset, true)
-    EMIT_STRING_PROPERTY(fd, lineUsage, Repeat, true)
-    EMIT_STRING_PROPERTY(fd, lineUsage, VertexAngleLimit, true)
-    EMIT_STRING_PROPERTY(fd, lineUsage, VertexJoin, true)
+    EMIT_STRING_PROPERTY(fd, lineUsage, AngleControl, true, L"\'FromGeometry\'") // default is 'FromGeometry'
+    EMIT_STRING_PROPERTY(fd, lineUsage, UnitsControl, true, L"\'Absolute\'")     // default is 'Absolute'
+    EMIT_STRING_PROPERTY(fd, lineUsage, VertexControl, true, L"\'OverlapNone\'") // default is 'OverlapNone'
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, Angle, true, 0.0)                        // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, StartOffset, true, 0.0)                  // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, EndOffset, true, 0.0)                    // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, Repeat, true, 0.0)                       // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexAngleLimit, true, 0.0)             // default is 0.0
+    EMIT_STRING_PROPERTY(fd, lineUsage, VertexJoin, true, L"\'Round\'")          // default is 'Round'
 
     if (lineUsage->GetDefaultPath() != NULL)
         IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath");

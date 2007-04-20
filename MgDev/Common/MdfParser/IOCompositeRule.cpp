@@ -73,8 +73,8 @@ void IOCompositeRule::Write(MdfStream &fd, CompositeRule* compositeRule)
     fd << tab() << "<CompositeRule>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, compositeRule, LegendLabel, false)
-    EMIT_STRING_PROPERTY(fd, compositeRule, Filter, true)
+    EMIT_STRING_PROPERTY(fd, compositeRule, LegendLabel, false, NULL)
+    EMIT_STRING_PROPERTY(fd, compositeRule, Filter, true, L"") // default is empty string
 
     IOCompositeSymbolization::Write(fd, compositeRule->GetSymbolization());
 

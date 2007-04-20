@@ -62,9 +62,9 @@ void IOOverride::Write(MdfStream &fd, Override* pOverride)
     fd << tab() << "<Override>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, pOverride, SymbolName, false)
-    EMIT_STRING_PROPERTY(fd, pOverride, ParameterIdentifier, false)
-    EMIT_STRING_PROPERTY(fd, pOverride, ParameterValue, false)
+    EMIT_STRING_PROPERTY(fd, pOverride, SymbolName, false, NULL)
+    EMIT_STRING_PROPERTY(fd, pOverride, ParameterIdentifier, false, NULL)
+    EMIT_STRING_PROPERTY(fd, pOverride, ParameterValue, false, NULL)
 
     dectab();
     fd << tab() << "</Override>" << std::endl; // NOXLATE

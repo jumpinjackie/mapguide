@@ -42,11 +42,13 @@ BEGIN_NAMESPACE_MDFPARSER
 
     MDFPARSER_API std::string toCString(std::wstring str);
 
-    bool wstrToBool(const wchar_t *ch);
+    bool wstrToBool(const wchar_t* ch);
+    double wstrToDouble(const wchar_t* ch);
+    int wstrToInt(const wchar_t* ch);
 
-    double wstrToDouble(const wchar_t *ch);
-
-    int wstrToInt(const wchar_t *ch);
+    bool wstrToBool(const MdfModel::MdfString& str, bool& result);
+    bool wstrToDouble(const MdfModel::MdfString& str, double& result);
+    bool wstrToInt(const MdfModel::MdfString& str, int& result);
 
     std::string IntToStr(int i);
     std::string DoubleToStr(double d);

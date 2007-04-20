@@ -34,7 +34,7 @@ FontSymbol::FontSymbol() : m_character(0)
 {
     // default values
     this->m_strFontName = L"Arial"; // NOXLATE
-    this->m_strForeColor = L"FF000000"; // NOXLATE
+    this->m_strForeColor = L"ff000000"; // NOXLATE
     this->m_strBold = L"false"; // NOXLATE
     this->m_strItalic = L"false"; // NOXLATE
     this->m_strUnderlined = L"false"; // NOXLATE

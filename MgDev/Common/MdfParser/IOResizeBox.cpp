@@ -69,11 +69,11 @@ void IOResizeBox::Write(MdfStream &fd, ResizeBox* resizeBox)
     fd << tab() << "<ResizeBox>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, resizeBox, SizeX, false)
-    EMIT_STRING_PROPERTY(fd, resizeBox, SizeY, false)
-    EMIT_STRING_PROPERTY(fd, resizeBox, PositionX, false)
-    EMIT_STRING_PROPERTY(fd, resizeBox, PositionY, false)
-    EMIT_STRING_PROPERTY(fd, resizeBox, GrowControl, false)
+    EMIT_DOUBLE_PROPERTY(fd, resizeBox, SizeX, false, 1.0)
+    EMIT_DOUBLE_PROPERTY(fd, resizeBox, SizeY, false, 1.0)
+    EMIT_DOUBLE_PROPERTY(fd, resizeBox, PositionX, false, 0.0)
+    EMIT_DOUBLE_PROPERTY(fd, resizeBox, PositionY, false, 0.0)
+    EMIT_STRING_PROPERTY(fd, resizeBox, GrowControl, false, NULL)
 
     dectab();
     fd << tab() << "</ResizeBox>" << std::endl; // NOXLATE

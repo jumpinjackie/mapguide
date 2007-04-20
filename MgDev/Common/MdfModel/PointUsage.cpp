@@ -29,6 +29,12 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 PointUsage::PointUsage()
 {
+    // default values
+    // NOTE: update IOPointUsage::Write if you change these values
+    this->m_sAngleControl = L"\'FromGeometry\'";
+    this->m_sAngle = L"0.0";
+    this->m_sOriginOffsetX = L"0.0";
+    this->m_sOriginOffsetY = L"0.0";
 }
 
 //-------------------------------------------------------------------------

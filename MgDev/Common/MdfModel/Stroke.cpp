@@ -33,8 +33,8 @@ Stroke::Stroke()
     // default values
     this->m_eUnit = MdfModel::Centimeters;
     this->m_strLineStyle = L"Solid"; // NOXLATE
-    this->m_strThickness = L"0"; // NOXLATE
-    this->m_strColor = L"FF000000"; // NOXLATE
+    this->m_strThickness = L"0.0"; // NOXLATE
+    this->m_strColor = L"ff000000"; // NOXLATE
     this->m_eSizeContext = MdfModel::DeviceUnits;
 }
 
