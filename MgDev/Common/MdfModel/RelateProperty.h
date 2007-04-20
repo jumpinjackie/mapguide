@@ -15,21 +15,20 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RELATEPROPERTY_H_  
+#ifndef RELATEPROPERTY_H_
 #define RELATEPROPERTY_H_
 
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
 #include "MdfRootObject.h"
 
-namespace MdfModel
-{
-    
-//-------------------------------------------------------------------------
-// DESCRIPTION:
-// RelateProperty class defines the calculated properties from attributes
-// from the same feature class
-//-------------------------------------------------------------------------
+BEGIN_NAMESPACE_MDFMODEL
+
+    //-------------------------------------------------------------------------
+    // DESCRIPTION:
+    // RelateProperty class defines the calculated properties from attributes
+    // from the same feature class
+    //-------------------------------------------------------------------------
     class MDFMODEL_API RelateProperty : public MdfRootObject
     {
     public:
@@ -52,13 +51,13 @@ namespace MdfModel
         const MdfString& GetPrimaryAttributeRelateName() const;
 
         // Property : AttributeClassProperty
-        const MdfString& GetAttributeClassProperty()const;
+        const MdfString& GetAttributeClassProperty() const;
         void SetAttributeClassProperty(const MdfString& expression);
 
-        // Operations: parses the string "PrimaryAttributeReale.PropertyName"
-        static void ParseDelimitedClassName (const MdfString& delimitedName,
-                            MdfString& AttributeRelateName,
-                            MdfString& PropertyName);
+        // Operations: parses the string "PrimaryAttributeRelate.PropertyName"
+        static void ParseDelimitedClassName(const MdfString& delimitedName,
+                                            MdfString& attributeRelateName,
+                                            MdfString& propertyName);
     private:
         // Hidden copy constructor and assignment operator.
         RelateProperty(const RelateProperty&);
@@ -79,9 +78,7 @@ namespace MdfModel
     };
 
     typedef MdfOwnerCollection<RelateProperty> RelatePropertyCollection;
-    EXPIMP_TEMPLATE template
-        class MDFMODEL_API MdfOwnerCollection<RelateProperty>;
-}
+    EXPIMP_TEMPLATE template class MDFMODEL_API MdfOwnerCollection<RelateProperty>;
 
-#endif // RELATEPROPERTY_H_
-// End of file.
+END_NAMESPACE_MDFMODEL
+#endif //RELATEPROPERTY_H_

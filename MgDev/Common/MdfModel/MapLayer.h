@@ -41,7 +41,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Property : Group
         // The optional name of the Group this MapLayer belongs to.
-        const MdfString& GetGroup()const;
+        const MdfString& GetGroup() const;
         void SetGroup(const MdfString& strGroup);
 
     private:
@@ -50,8 +50,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MapLayer& operator=(const MapLayer&);
 
         // Data members
-        MdfString  m_strGroup;
-
+        MdfString m_strGroup;
     };
 
     typedef MdfOwnerCollection<MapLayer> MapLayerCollection;

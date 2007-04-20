@@ -31,11 +31,11 @@ using namespace MDFMODEL_NAMESPACE;
 //     Input:
 //          strName - the unique BaseMapLayer name. Cannot be an empty string.
 //-------------------------------------------------------------------------
-BaseMapLayer::BaseMapLayer(const MdfString& strName,const MdfString& strLayerResourceID)
-:m_strName(strName),m_strLayerResourceID(strLayerResourceID)
+BaseMapLayer::BaseMapLayer(const MdfString& strName, const MdfString& strLayerResourceID)
+: m_strName(strName)
+, m_strLayerResourceID(strLayerResourceID)
 {
-    //default setting for BaseMapLayer
-    this->m_strLegendLabel = L"";
+    // default values
     this->m_bVisible = true;
     this->m_bExpandInLegend = true;
     this->m_plyrLayer = NULL;
@@ -55,7 +55,7 @@ BaseMapLayer::~BaseMapLayer()
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor for the unique BaseMapLayer name.
 //-------------------------------------------------------------------------
-const MdfString& BaseMapLayer::GetName()const
+const MdfString& BaseMapLayer::GetName() const
 {
     return this->m_strName;
 }
@@ -68,17 +68,15 @@ const MdfString& BaseMapLayer::GetName()const
 //-------------------------------------------------------------------------
 void BaseMapLayer::SetName(const MdfString& strName)
 {
-    if(strName.length() > 0)
-    {
+    if (strName.length() > 0)
         this->m_strName = strName;
-    }
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor for the LayerDefinition resourceID that this BaseMapLayer references.
 // RETURNS:
 //-------------------------------------------------------------------------
-const MdfString& BaseMapLayer::GetLayerResourceID()const
+const MdfString& BaseMapLayer::GetLayerResourceID() const
 {
     return this->m_strLayerResourceID;
 }
@@ -92,10 +90,8 @@ const MdfString& BaseMapLayer::GetLayerResourceID()const
 //-------------------------------------------------------------------------
 void BaseMapLayer::SetLayerResourceID(const MdfString& strLayerResourceID)
 {
-    if( strLayerResourceID.length() > 0)
-    {
+    if (strLayerResourceID.length() > 0)
         this->m_strLayerResourceID = strLayerResourceID;
-    }
 }
 
 //-------------------------------------------------------------------------
@@ -127,7 +123,7 @@ void BaseMapLayer::SetLayerDefinition(LayerDefinition* plyrLayer)
 //          comes into range.
 // RETURNS: Default is true.
 //-------------------------------------------------------------------------
-bool BaseMapLayer::IsVisible()const
+bool BaseMapLayer::IsVisible() const
 {
     return this->m_bVisible;
 }
@@ -151,7 +147,7 @@ void BaseMapLayer::SetVisible(bool bVisibile)
 //          determines if a layers features may be selected.
 // RETURNS: Default is true.
 //-------------------------------------------------------------------------
-bool BaseMapLayer::IsSelectable()const
+bool BaseMapLayer::IsSelectable() const
 {
     return this->m_bSelectable;
 }
@@ -175,7 +171,7 @@ void BaseMapLayer::SetSelectable(bool bSelectable)
 //          not.
 // RETURNS: Default is true.
 //-------------------------------------------------------------------------
-bool BaseMapLayer::IsShowInLegend()const
+bool BaseMapLayer::IsShowInLegend() const
 {
     return this->m_bShowInLegend;
 }
@@ -196,7 +192,7 @@ void BaseMapLayer::SetShowInLegend(bool bShowInLegend)
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method to the LegendLabel.
 //-------------------------------------------------------------------------
-const MdfString& BaseMapLayer::GetLegendLabel()const
+const MdfString& BaseMapLayer::GetLegendLabel() const
 {
     return this->m_strLegendLabel;
 }
@@ -217,7 +213,7 @@ void BaseMapLayer::SetLegendLabel(const MdfString& strLegendLabel)
 //          whether the layer's styles are shown in the legend.
 // RETURNS: Default is true.
 //-------------------------------------------------------------------------
-bool BaseMapLayer::IsExpandInLegend()const
+bool BaseMapLayer::IsExpandInLegend() const
 {
     return this->m_bExpandInLegend;
 }

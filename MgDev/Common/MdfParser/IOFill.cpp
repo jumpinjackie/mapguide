@@ -109,7 +109,7 @@ void IOFill::Write(MdfStream &fd, Fill *fill)
     // Write any previously found unknown XML
     if (!fill->GetUnknownXml().empty())
     {
-        fd << toCString(fill->GetUnknownXml()); 
+        fd << toCString(fill->GetUnknownXml());
     }
 
     dectab();

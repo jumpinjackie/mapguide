@@ -37,7 +37,7 @@ BEGIN_NAMESPACE_MDFMODEL
         SymbolInstanceCollection* GetSymbolCollection();
 
         // Visitor Pattern method defined in Symbolization.
-        virtual void AcceptVisitor(ISymbolizationVisitor& isyVisitor);
+        virtual void AcceptVisitor(ISymbolizationVisitor& isymVisitor);
 
     private:
         // Hidden copy constructor and assignment operator.

@@ -1254,7 +1254,7 @@ WT_Result simple_process_polyline(WT_Polyline & polyline, WT_File & file)
     std::vector<int>* cntrs = NULL;
     const WT_Logical_Point* dstpts = rewriter->ProcessW2DPoints(
         file, polyline.points(), polyline.count(),
-        (isPolygon) ? LineBuffer::ctArea : LineBuffer::ctLine,
+        isPolygon? LineBuffer::ctArea : LineBuffer::ctLine,
         outpts, &cntrs);
 
     if (outpts > 0)

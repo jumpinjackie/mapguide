@@ -68,23 +68,23 @@ void IOElevationSettings::StartElement(const wchar_t *name, HandlerStack *handle
 
 void IOElevationSettings::ElementChars(const wchar_t *ch)
 {
-    if (m_currElemName == swZOffset) 
+    if (m_currElemName == swZOffset)
     {
         (this->_elevationSettings)->SetZOffsetExpression(ch);
     }
-    else if (m_currElemName == swZExtrusion) 
+    else if (m_currElemName == swZExtrusion)
     {
         (this->_elevationSettings)->SetZExtrusionExpression(ch);
     }
-    else if (this->m_currElemName == swUnit) 
+    else if (this->m_currElemName == swUnit)
     {
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
         (this->_elevationSettings)->SetUnit(unit);
     }
-    else if (m_currElemName == swZOffsetType) 
+    else if (m_currElemName == swZOffsetType)
     {
         ElevationSettings::ElevationType elevType;
-        if(::wcscmp(ch, L"Absolute") == 0) //NOXLATE
+        if(::wcscmp(ch, L"Absolute") == 0) // NOXLATE
         {
             elevType = ElevationSettings::Absolute;
         }
@@ -131,13 +131,13 @@ void IOElevationSettings::Write(MdfStream &fd, ElevationSettings *elevationSetti
     {
     case ElevationSettings::Absolute:
         {
-            fd << "Absolute"; //NOXLATE
+            fd << "Absolute"; // NOXLATE
             break;
         }
     case ElevationSettings::RelativeToGround:
     default:
         {
-            fd << "RelativeToGround"; //NOXLATE
+            fd << "RelativeToGround"; // NOXLATE
             break;
         }
     }
@@ -151,7 +151,7 @@ void IOElevationSettings::Write(MdfStream &fd, ElevationSettings *elevationSetti
     // Write any previously found unknown XML
     if (!elevationSettings->GetUnknownXml().empty())
     {
-        fd << toCString(elevationSettings->GetUnknownXml()); 
+        fd << toCString(elevationSettings->GetUnknownXml());
     }
 
     dectab();

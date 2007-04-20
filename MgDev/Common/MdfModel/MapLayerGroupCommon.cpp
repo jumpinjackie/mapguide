@@ -31,13 +31,13 @@ using namespace MDFMODEL_NAMESPACE;
 //     Input:
 //          strName - the unique MapLayerGroupCommon name. Cannot be an empty string.
 //-------------------------------------------------------------------------
-MapLayerGroupCommon::MapLayerGroupCommon(const MdfString& strName):m_strName(strName)
+MapLayerGroupCommon::MapLayerGroupCommon(const MdfString& strName)
+: m_strName(strName)
 {
-     //default setting for MapLayerGroupCommon
+    // default values
     this->m_bShowInLegend = true;
     this->m_bVisible = true;
     this->m_bExpandInLegend = true;
-    this->m_strLegendLabel = L"";
 }
 
 //-------------------------------------------------------------------------
@@ -51,7 +51,7 @@ MapLayerGroupCommon::~MapLayerGroupCommon()
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the MapLayerGroupCommon name.
 //-------------------------------------------------------------------------
-const MdfString& MapLayerGroupCommon::GetName()const
+const MdfString& MapLayerGroupCommon::GetName() const
 {
     return this->m_strName;
 }
@@ -64,10 +64,8 @@ const MdfString& MapLayerGroupCommon::GetName()const
 //-------------------------------------------------------------------------
 void MapLayerGroupCommon::SetName(const MdfString& strName)
 {
-    if( strName.length() > 0 )
-    {
+    if (strName.length() > 0)
         this->m_strName = strName;
-    }
 }
 
 //-------------------------------------------------------------------------
@@ -77,7 +75,7 @@ void MapLayerGroupCommon::SetName(const MdfString& strName)
 //          comes into range.
 // RETURNS: Default is true.
 //-------------------------------------------------------------------------
-bool MapLayerGroupCommon::IsVisible()const
+bool MapLayerGroupCommon::IsVisible() const
 {
     return this->m_bVisible;
 }
@@ -93,7 +91,7 @@ bool MapLayerGroupCommon::IsVisible()const
 //-------------------------------------------------------------------------
 void MapLayerGroupCommon::SetVisible(bool bVisible)
 {
-    this->m_bVisible = bVisible ;
+    this->m_bVisible = bVisible;
 }
 
 //-------------------------------------------------------------------------
@@ -102,7 +100,7 @@ void MapLayerGroupCommon::SetVisible(bool bVisible)
 //          not.
 // RETURNS: Default is true.
 //-------------------------------------------------------------------------
-bool MapLayerGroupCommon::IsShowInLegend()const
+bool MapLayerGroupCommon::IsShowInLegend() const
 {
     return this->m_bShowInLegend;
 }
@@ -125,7 +123,7 @@ void MapLayerGroupCommon::SetShowInLegend(bool bShowInLegend)
 //          Group should be initially expanded when shown in the viewer.
 // RETURNS: Default is true.
 //-------------------------------------------------------------------------
-bool MapLayerGroupCommon::IsExpandInLegend()const
+bool MapLayerGroupCommon::IsExpandInLegend() const
 {
     return this->m_bExpandInLegend;
 }
@@ -148,7 +146,7 @@ void MapLayerGroupCommon::SetExpandInLegend(bool bExpandInLegend)
 // PURPOSE: Accessor method to the optional LegendLabel. The legend label
 //          for this group.
 //-------------------------------------------------------------------------
-const MdfString& MapLayerGroupCommon::GetLegendLabel()const
+const MdfString& MapLayerGroupCommon::GetLegendLabel() const
 {
     return this->m_strLegendLabel;
 }

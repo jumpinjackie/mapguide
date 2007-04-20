@@ -40,7 +40,7 @@ const double VectorScaleRange::MAX_MAP_SCALE = 1000000000000.0; // one trillion
 //-------------------------------------------------------------------------
 VectorScaleRange::VectorScaleRange()
 {
-    //Default Settings
+    // default values
     this->m_dMinScale = 0.0;
     this->m_dMaxScale = MAX_MAP_SCALE;
     this->m_elevationSettings = NULL;
@@ -61,7 +61,7 @@ VectorScaleRange::~VectorScaleRange()
 //          scale range to fall within to make it "active".
 // RETURNS: The minimum value.
 //-------------------------------------------------------------------------
-double VectorScaleRange::GetMinScale()const
+double VectorScaleRange::GetMinScale() const
 {
     return this->m_dMinScale;
 }
@@ -76,7 +76,7 @@ double VectorScaleRange::GetMinScale()const
 //      Input:
 //          dMinScale - the minimum value.
 //-------------------------------------------------------------------------
-void VectorScaleRange::SetMinScale( const double& dMinScale)
+void VectorScaleRange::SetMinScale(const double& dMinScale)
 {
     this->m_dMinScale = dMinScale;
 }
@@ -87,7 +87,7 @@ void VectorScaleRange::SetMinScale( const double& dMinScale)
 //          scale range to fall within to make it "active".
 // RETURNS: The maximum value.
 //-------------------------------------------------------------------------
-double VectorScaleRange::GetMaxScale()const
+double VectorScaleRange::GetMaxScale() const
 {
     return this->m_dMaxScale;
 }
@@ -100,7 +100,7 @@ double VectorScaleRange::GetMaxScale()const
 //      Input:
 //          dMaxScale - The maximum value.
 //-------------------------------------------------------------------------
-void VectorScaleRange::SetMaxScale( const double& dMaxScale)
+void VectorScaleRange::SetMaxScale(const double& dMaxScale)
 {
     this->m_dMaxScale = dMaxScale;
 }
@@ -135,9 +135,7 @@ void VectorScaleRange::AdoptElevationSettings(ElevationSettings* elevationSettin
     if (this->m_elevationSettings != elevationSettings)
     {
         if (this->m_elevationSettings != NULL)
-        {
             delete this->m_elevationSettings;
-        }
         this->m_elevationSettings = elevationSettings;
     }
 }

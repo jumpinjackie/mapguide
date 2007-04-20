@@ -42,17 +42,17 @@ BEGIN_NAMESPACE_MDFMODEL
         // Operations
         // Property : Name
         // The name of the Map
-        const MdfString& GetName()const;
-        void SetName(const MdfString& strName) ;
+        const MdfString& GetName() const;
+        void SetName(const MdfString& strName);
 
         // Property : CoordinateSystem
         // The WKT string that represents the coordinate system for the MapDefinition.
-        const MdfString& GetCoordinateSystem()const;
-        void SetCoordinateSystem(const MdfString& strCoordinateSystem) ;
+        const MdfString& GetCoordinateSystem() const;
+        void SetCoordinateSystem(const MdfString& strCoordinateSystem);
 
         // Property : Extents
         // The extents to be used by the MapDefinition
-        const Box2D& GetExtents()const ;
+        const Box2D& GetExtents() const;
         void SetExtents(const Box2D& boxExtents);
 
         // Property : Background
@@ -75,11 +75,11 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Property : FiniteDisplayScales
         // The scales that the base map tiles can be displayed at
-        DisplayScaleCollection * GetFiniteDisplayScales();
+        DisplayScaleCollection* GetFiniteDisplayScales();
 
         // Property : BaseMapLayerGroups
         // The base map groups; used to define tiles for the HTML viewer.
-        BaseMapLayerGroupCollection * GetBaseMapLayerGroups();
+        BaseMapLayerGroupCollection* GetBaseMapLayerGroups();
 
 //#ifdef _WIN32
 #if _DEBUG

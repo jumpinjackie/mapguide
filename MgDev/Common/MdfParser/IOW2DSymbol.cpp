@@ -148,7 +148,7 @@ void IOW2DSymbol::Write(MdfStream &fd, W2DSymbol *symbol)
     // Write any previously found unknown XML
     if (!symbol->GetUnknownXml().empty())
     {
-        fd << toCString(symbol->GetUnknownXml()); 
+        fd << toCString(symbol->GetUnknownXml());
     }
 
     dectab();

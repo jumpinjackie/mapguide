@@ -151,7 +151,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                 //if (url && !url->empty())
                 //    EvalString(*url, eurl);
 
-                renderer->StartFeature(features, tip.empty() ? NULL : &tip, eurl.empty() ? NULL : &eurl, NULL);
+                renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, NULL);
                 renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_RGBA, imgW, imgH, intExt);
 
                 delete [] dst;
@@ -322,14 +322,14 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
         {
             unsigned char bits = *px++;
 
-            *dstptr++ = (bits & 0x80) ? fgc : bgc;
-            *dstptr++ = (bits & 0x40) ? fgc : bgc;
-            *dstptr++ = (bits & 0x20) ? fgc : bgc;
-            *dstptr++ = (bits & 0x10) ? fgc : bgc;
-            *dstptr++ = (bits & 0x08) ? fgc : bgc;
-            *dstptr++ = (bits & 0x04) ? fgc : bgc;
-            *dstptr++ = (bits & 0x02) ? fgc : bgc;
-            *dstptr++ = (bits & 0x01) ? fgc : bgc;
+            *dstptr++ = (bits & 0x80)? fgc : bgc;
+            *dstptr++ = (bits & 0x40)? fgc : bgc;
+            *dstptr++ = (bits & 0x20)? fgc : bgc;
+            *dstptr++ = (bits & 0x10)? fgc : bgc;
+            *dstptr++ = (bits & 0x08)? fgc : bgc;
+            *dstptr++ = (bits & 0x04)? fgc : bgc;
+            *dstptr++ = (bits & 0x02)? fgc : bgc;
+            *dstptr++ = (bits & 0x01)? fgc : bgc;
         }
 
         //do the last pixels of the row -- we may not need
@@ -338,6 +338,6 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
         unsigned char bits = *px++;
 
         for (int mask = 0x80; mask > last_bit_mask; mask /= 2)
-            *dstptr++ = (bits & mask) ? fgc : bgc;
+            *dstptr++ = (bits & mask)? fgc : bgc;
     }
 }

@@ -32,22 +32,15 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 AttributeRelate::AttributeRelate()
 {
-    //Default Values
-    this->m_strName = L"";
-    this->m_strResourceId = L"";
-    this->m_strAttributeClass = L"";
-    this->m_strAttributeNameDelimiter = L"";
+    // default values
     this->m_eRelateType = LeftOuter;
     this->m_bForceOneToOne = true;
 }
 
 AttributeRelate::AttributeRelate(const MdfString& joinName)
 {
-    //Default Values
+    // default values
     this->m_strName = joinName;
-    this->m_strResourceId = L"";
-    this->m_strAttributeClass = L"";
-    this->m_strAttributeNameDelimiter = L"";
     this->m_eRelateType = LeftOuter;
     this->m_bForceOneToOne = true;
 }
@@ -72,7 +65,7 @@ RelatePropertyCollection* AttributeRelate::GetRelateProperties()
 // PURPOSE: Accessor method for the Name property.
 // RETURNS: A pointer to a new Name.
 //-------------------------------------------------------------------------
-const MdfString& AttributeRelate::GetName()const
+const MdfString& AttributeRelate::GetName() const
 {
     return this->m_strName;
 }
@@ -113,7 +106,7 @@ void AttributeRelate::SetResourceId(const MdfString& resourceId)
 // PURPOSE: Accessor method for the AttributeClass property.
 // RETURNS: A string representing the AttributeClass.
 //-------------------------------------------------------------------------
-const MdfString& AttributeRelate::GetAttributeClass()const
+const MdfString& AttributeRelate::GetAttributeClass() const
 {
     return this->m_strAttributeClass;
 }
@@ -159,9 +152,9 @@ AttributeRelate::RelateType AttributeRelate::GetRelateType() const
 //      Input:
 //          typ - Relate type
 //-------------------------------------------------------------------------
-void AttributeRelate::SetRelateType (AttributeRelate::RelateType type)
+void AttributeRelate::SetRelateType(AttributeRelate::RelateType type)
 {
-    m_eRelateType = type;
+    this->m_eRelateType = type;
 }
 
 //-------------------------------------------------------------------------
@@ -170,7 +163,7 @@ void AttributeRelate::SetRelateType (AttributeRelate::RelateType type)
 //-------------------------------------------------------------------------
 bool AttributeRelate::GetForceOneToOne() const
 {
-    return m_bForceOneToOne;
+    return this->m_bForceOneToOne;
 }
 
 //-------------------------------------------------------------------------
@@ -181,7 +174,5 @@ bool AttributeRelate::GetForceOneToOne() const
 //-------------------------------------------------------------------------
 void AttributeRelate::SetForceOneToOne(bool bVal)
 {
-    m_bForceOneToOne = bVal;
+    this->m_bForceOneToOne = bVal;
 }
-
-//End of file.

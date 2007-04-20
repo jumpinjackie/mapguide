@@ -34,10 +34,10 @@ using namespace MDFMODEL_NAMESPACE;
 // Construction, destruction, initialization
 //-------------------------------------------------------------------------
 DrawingLayerDefinition::DrawingLayerDefinition(const MdfString& strDataResesourceID, const MdfString &strSheet)
-    :LayerDefinition(strDataResesourceID) , m_strSheet(strSheet)
+: LayerDefinition(strDataResesourceID)
+, m_strSheet(strSheet)
 {
-    //Default Settings
-    this->m_strLayerFilter = L"";
+    // default values
     this->m_dMinScale = 0.0;
     this->m_dMaxScale = VectorScaleRange::MAX_MAP_SCALE;
 }
@@ -55,7 +55,7 @@ DrawingLayerDefinition::~DrawingLayerDefinition()
 //          that is the source of all the feature data.
 // RETURNS: sheet name from the DWF file.
 //-------------------------------------------------------------------------
-const MdfString& DrawingLayerDefinition::GetSheet()const
+const MdfString& DrawingLayerDefinition::GetSheet() const
 {
     return this->m_strSheet;
 }
@@ -78,7 +78,7 @@ void DrawingLayerDefinition::SetSheet(const MdfString& strSheet)
 //          represents the layers to be extracted from the sheet.
 // RETURNS: Names of layers to be extracted from the sheet
 //-------------------------------------------------------------------------
-const MdfString& DrawingLayerDefinition::GetLayerFilter()const
+const MdfString& DrawingLayerDefinition::GetLayerFilter() const
 {
     return this->m_strLayerFilter;
 }
@@ -103,7 +103,7 @@ void DrawingLayerDefinition::SetLayerFilter(const MdfString& strLayerFilter)
 //          within which the DrawingLayerDefinition is drawn.
 // RETURNS: The minimum value.
 //-------------------------------------------------------------------------
-double DrawingLayerDefinition::GetMinScale()const
+double DrawingLayerDefinition::GetMinScale() const
 {
     return this->m_dMinScale;
 }
@@ -118,7 +118,7 @@ double DrawingLayerDefinition::GetMinScale()const
 //      Input:
 //          dMinScale - the minimum value.
 //-------------------------------------------------------------------------
-void DrawingLayerDefinition::SetMinScale( const double& dMinScale)
+void DrawingLayerDefinition::SetMinScale(const double& dMinScale)
 {
     this->m_dMinScale = dMinScale;
 }
@@ -129,7 +129,7 @@ void DrawingLayerDefinition::SetMinScale( const double& dMinScale)
 //          within which the DrawingLayerDefinition is drawn.
 // RETURNS: The maximum value.
 //-------------------------------------------------------------------------
-double DrawingLayerDefinition::GetMaxScale()const
+double DrawingLayerDefinition::GetMaxScale() const
 {
     return this->m_dMaxScale;
 }
@@ -142,7 +142,7 @@ double DrawingLayerDefinition::GetMaxScale()const
 //      Input:
 //          dMaxScale - The maximum value.
 //-------------------------------------------------------------------------
-void DrawingLayerDefinition::SetMaxScale( const double& dMaxScale)
+void DrawingLayerDefinition::SetMaxScale(const double& dMaxScale)
 {
     this->m_dMaxScale = dMaxScale;
 }

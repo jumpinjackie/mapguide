@@ -57,7 +57,7 @@ Version::~Version()
 // PURPOSE: Accessor method for the Major number.
 // RETURNS: the Major number .
 //-------------------------------------------------------------------------
-int Version::GetMajor()const
+int Version::GetMajor() const
 {
     return this->m_nMajorNumber;
 }
@@ -77,7 +77,7 @@ void Version::SetMajor(const int& nMajorNumber)
 // PURPOSE: Accessor method for the Minor number.
 // RETURNS: the Minor number .
 //-------------------------------------------------------------------------
-int Version::GetMinor()const
+int Version::GetMinor() const
 {
     return this->m_nMinorNumber;
 }
@@ -97,7 +97,7 @@ void Version::SetMinor(const int& nMinorNumber)
 // PURPOSE: Accessor method for the Revision number.
 // RETURNS: the Revision number .
 //-------------------------------------------------------------------------
-int Version::GetRevision()const
+int Version::GetRevision() const
 {
     return this->m_nRevisionNumber;
 }
@@ -130,7 +130,7 @@ MdfString Version::ToString()
 
     ss << this->m_nMajorNumber;
     ss >> strMajor;
-    
+
     ss.clear();
 
     ss << this->m_nMinorNumber;
@@ -148,7 +148,7 @@ MdfString Version::ToString()
 
 bool Version::operator==(const Version & version) const
 {
-    return m_nMajorNumber == version.m_nMajorNumber && 
+    return m_nMajorNumber == version.m_nMajorNumber &&
         m_nMinorNumber == version.m_nMinorNumber &&
         m_nRevisionNumber == version.m_nRevisionNumber;
 }

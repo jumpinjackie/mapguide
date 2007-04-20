@@ -32,8 +32,7 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 LineSymbolization2D::LineSymbolization2D()
 {
-    this->m_pstkStroke = NULL;
-    this->AdoptStroke(new Stroke());
+    this->m_pstkStroke = new Stroke();
 }
 
 //-------------------------------------------------------------------------
@@ -87,22 +86,22 @@ void LineSymbolization2D::AdoptStroke(Stroke* pstkAdoptedStroke)
 //-------------------------------------------------------------------------
 Stroke* LineSymbolization2D::OrphanStroke()
 {
-    Stroke * pstkRet = this->m_pstkStroke;
+    Stroke* pstkRet = this->m_pstkStroke;
     this->m_pstkStroke = NULL;
     return pstkRet;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Implementation of the Visitor pattern. The pure, virtual method
-//          is defined in Symbol and is implemented by all of its concrete
-//          subclasses.
+//          is defined in Symbolization and is implemented by all of its
+//          concrete subclasses.
 // PARAMETERS:
 //      Input:
-//          isvVisitor - The ISymbolVisitor interface which sports methods
-//                       that accept the final concrete type this MarkSymbol
-//                       represents as an argument.
+//          isymVisitor - The ISymbolizationVisitor interface which sports
+//                        methods that accept the final concrete type this
+//                        LineSymbolization2D represents as an argument.
 //-------------------------------------------------------------------------
-void LineSymbolization2D::AcceptVisitor(ISymbolizationVisitor& isyVisitor)
+void LineSymbolization2D::AcceptVisitor(ISymbolizationVisitor& isymVisitor)
 {
-    isyVisitor.VisitLineSymbolization2D(*this);
+    isymVisitor.VisitLineSymbolization2D(*this);
 }

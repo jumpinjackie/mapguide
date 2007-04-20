@@ -34,8 +34,6 @@ using namespace MDFMODEL_NAMESPACE;
 MapLayerGroup::MapLayerGroup(const MdfString& strName)
 : MapLayerGroupCommon(strName)
 {
-     //default setting for MapLayerGroup
-    this->m_strGroup = L"";
 }
 
 //-------------------------------------------------------------------------
@@ -52,7 +50,7 @@ MapLayerGroup::~MapLayerGroup()
 //          that is the parent of this MapLayerGroup.
 //RETURNS:
 //-------------------------------------------------------------------------
-const MdfString& MapLayerGroup::GetGroup()const
+const MdfString& MapLayerGroup::GetGroup() const
 {
     return this->m_strGroup;
 }

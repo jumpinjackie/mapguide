@@ -25,11 +25,11 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 ChannelBand::ChannelBand()
 {
-    this->m_strBand = L"";
-    m_dLowBand = 0;
-    m_dHighBand = 0;
-    m_nLowChannel = 0;
-    m_nHighChannel = 255;
+    // default values
+    this->m_dLowBand = 0.0;
+    this->m_dHighBand = 0.0;
+    this->m_nLowChannel = 0;
+    this->m_nHighChannel = 255;
 }
 
 //-------------------------------------------------------------------------
@@ -46,7 +46,7 @@ ChannelBand::~ChannelBand()
 //-------------------------------------------------------------------------
 const MdfString& ChannelBand::GetBand() const
 {
-    return m_strBand;
+    return this->m_strBand;
 }
 
 //-------------------------------------------------------------------------
@@ -58,7 +58,7 @@ const MdfString& ChannelBand::GetBand() const
 //-------------------------------------------------------------------------
 void ChannelBand::SetBand(const MdfString& strBand)
 {
-    m_strBand = strBand;
+    this->m_strBand = strBand;
 }
 
 //-------------------------------------------------------------------------
@@ -68,7 +68,7 @@ void ChannelBand::SetBand(const MdfString& strBand)
 //-------------------------------------------------------------------------
 double ChannelBand::GetLowBand() const
 {
-    return m_dLowBand;
+    return this->m_dLowBand;
 }
 
 //-------------------------------------------------------------------------
@@ -80,7 +80,7 @@ double ChannelBand::GetLowBand() const
 //-------------------------------------------------------------------------
 void ChannelBand::SetLowBand(double dLowBand)
 {
-    m_dLowBand = dLowBand;
+    this->m_dLowBand = dLowBand;
 }
 
 //-------------------------------------------------------------------------
@@ -90,7 +90,7 @@ void ChannelBand::SetLowBand(double dLowBand)
 //-------------------------------------------------------------------------
 double ChannelBand::GetHighBand() const
 {
-    return m_dHighBand;
+    return this->m_dHighBand;
 }
 
 //-------------------------------------------------------------------------
@@ -102,7 +102,7 @@ double ChannelBand::GetHighBand() const
 //-------------------------------------------------------------------------
 void ChannelBand::SetHighBand(double dHighBand)
 {
-    m_dHighBand = dHighBand;
+    this->m_dHighBand = dHighBand;
 }
 
 //-------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void ChannelBand::SetHighBand(double dHighBand)
 //-------------------------------------------------------------------------
 unsigned char ChannelBand::GetLowChannel() const
 {
-    return m_nLowChannel;
+    return this->m_nLowChannel;
 }
 
 //-------------------------------------------------------------------------
@@ -124,7 +124,7 @@ unsigned char ChannelBand::GetLowChannel() const
 //-------------------------------------------------------------------------
 void ChannelBand::SetLowChannel(unsigned char nLowChannel)
 {
-    m_nLowChannel = nLowChannel;
+    this->m_nLowChannel = nLowChannel;
 }
 
 //-------------------------------------------------------------------------
@@ -134,7 +134,7 @@ void ChannelBand::SetLowChannel(unsigned char nLowChannel)
 //-------------------------------------------------------------------------
 unsigned char ChannelBand::GetHighChannel() const
 {
-    return m_nHighChannel;
+    return this->m_nHighChannel;
 }
 
 //-------------------------------------------------------------------------
@@ -146,5 +146,5 @@ unsigned char ChannelBand::GetHighChannel() const
 //-------------------------------------------------------------------------
 void ChannelBand::SetHighChannel(unsigned char nHighChannel)
 {
-    m_nHighChannel = nHighChannel;
+    this->m_nHighChannel = nHighChannel;
 }

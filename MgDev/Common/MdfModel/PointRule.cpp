@@ -82,9 +82,9 @@ void PointRule::AdoptSymbolization(PointSymbolization2D* pflAdoptedSymbolization
 // RETURNS: Pointer to the orphaned PointSymbolization2D object. It may be NULL if it wasn't
 //          defined.
 //-------------------------------------------------------------------------
-PointSymbolization2D*  PointRule::OrphanSymbolization()
+PointSymbolization2D* PointRule::OrphanSymbolization()
 {
-    PointSymbolization2D* pRet = this->m_Symbolization ;
+    PointSymbolization2D* pRet = this->m_Symbolization;
     this->m_Symbolization = NULL;
     return pRet;
 }

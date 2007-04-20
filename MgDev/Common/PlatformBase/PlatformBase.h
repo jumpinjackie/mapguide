@@ -140,5 +140,4 @@
 #include "MapLayer/ReadOnlyLayerCollection.h"
 #include "MapLayer/SelectionBase.h"
 
-
 #endif

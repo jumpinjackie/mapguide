@@ -516,13 +516,13 @@ void SE_Renderer::DrawSymbolJoin(SE_RenderPrimitiveList& symbol, SE_PiecewiseTra
 }
 
 
-void SE_Renderer::AddLabelJoin(LineBuffer* geom, SE_RenderStyle* style, SE_PiecewiseTransform** xforms, int nxforms)
+void SE_Renderer::AddLabelJoin(LineBuffer* /*geom*/, SE_RenderStyle* /*style*/, SE_PiecewiseTransform** /*xforms*/, int /*nxforms*/)
 {
     /* TODO */
 }
 
 
-void SE_Renderer::AddExclusionRegionJoin(SE_PiecewiseTransform** xforms, int nxforms)
+void SE_Renderer::AddExclusionRegionJoin(SE_PiecewiseTransform** /*xforms*/, int /*nxforms*/)
 {
     /* TODO */
 }

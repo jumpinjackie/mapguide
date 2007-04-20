@@ -31,11 +31,9 @@ using namespace MDFMODEL_NAMESPACE;
 //     Input:
 //          strName - the unique MapLayer name. Cannot be an empty string.
 //-------------------------------------------------------------------------
-MapLayer::MapLayer(const MdfString& strName,const MdfString& strLayerResourceID)
+MapLayer::MapLayer(const MdfString& strName, const MdfString& strLayerResourceID)
 : BaseMapLayer(strName, strLayerResourceID)
 {
-    //default setting for MapLayer
-    this->m_strGroup = L"";
 }
 
 //-------------------------------------------------------------------------
@@ -52,7 +50,7 @@ MapLayer::~MapLayer()
 //          at the root level of the tree.
 //RETURNS:
 //-------------------------------------------------------------------------
-const MdfString& MapLayer::GetGroup()const
+const MdfString& MapLayer::GetGroup() const
 {
     return this->m_strGroup;
 }

@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef FEATURESOURCE_H_  
+#ifndef FEATURESOURCE_H_
 #define FEATURESOURCE_H_
 
 #include "MdfModel.h"
@@ -67,7 +67,7 @@ class MDFMODEL_API FeatureSource : public MdfRootObject
         FeatureSource& operator=(const FeatureSource&);
 
         // Collection of key/value pairs
-        NameStringPairCollection m_collParameters; 
+        NameStringPairCollection m_collParameters;
 
         // Collection of extensions
         ExtensionCollection m_collExtensions;
@@ -81,10 +81,9 @@ class MDFMODEL_API FeatureSource : public MdfRootObject
         // The long transaction to use when connected to the provider
         MdfString m_strLongTransaction;
 
-        // Configuration information needed for certain providers 
+        // Configuration information needed for certain providers
         MdfString m_strConfigurationDocument;
     };
 
 END_NAMESPACE_MDFMODEL
 #endif // FEATURESOURCE_H_
-// End of file.

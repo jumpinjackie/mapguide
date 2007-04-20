@@ -32,13 +32,11 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the MarkSymbol class.
 //-------------------------------------------------------------------------
-MarkSymbol::MarkSymbol(const Shape shape) : m_shape(shape)
+MarkSymbol::MarkSymbol(const Shape shape)
+: m_shape(shape)
 {
-    //default settings
-    this->m_pflFill = NULL;
-    this->m_pstkEdge = NULL;
-    this->AdoptEdge(new Stroke());
-    this->AdoptFill(new Fill());
+    this->m_pstkEdge = new Stroke();
+    this->m_pflFill = new Fill();
 }
 
 //-------------------------------------------------------------------------
@@ -54,7 +52,7 @@ MarkSymbol::~MarkSymbol()
 // PURPOSE: Access the shape of this symbol.
 // RETURNS: The shape enumeration.
 //-------------------------------------------------------------------------
-const MarkSymbol::Shape MarkSymbol::GetShape()const
+const MarkSymbol::Shape MarkSymbol::GetShape() const
 {
     return this->m_shape;
 }
@@ -95,7 +93,7 @@ Fill* MarkSymbol::GetFill()
 //-------------------------------------------------------------------------
 void MarkSymbol::AdoptFill(Fill* pflAdoptedFill)
 {
-    if(this->m_pflFill != pflAdoptedFill)
+    if (this->m_pflFill != pflAdoptedFill)
     {
         if (this->m_pflFill != NULL)
             delete this->m_pflFill;
@@ -113,7 +111,7 @@ void MarkSymbol::AdoptFill(Fill* pflAdoptedFill)
 //-------------------------------------------------------------------------
 Fill* MarkSymbol::OrphanFill()
 {
-    Fill* pflRet = this->m_pflFill ;
+    Fill* pflRet = this->m_pflFill;
     this->m_pflFill = NULL;
     return pflRet;
 }
@@ -143,7 +141,7 @@ Stroke* MarkSymbol::GetEdge()
 //-------------------------------------------------------------------------
 void MarkSymbol::AdoptEdge(Stroke* pstkAdoptedEdge)
 {
-    if(this->m_pstkEdge != pstkAdoptedEdge)
+    if (this->m_pstkEdge != pstkAdoptedEdge)
     {
         if (this->m_pstkEdge != NULL)
             delete this->m_pstkEdge;
@@ -173,11 +171,11 @@ Stroke* MarkSymbol::OrphanEdge()
 //          subclasses.
 // PARAMETERS:
 //      Input:
-//          isvVisitor - The ISymbolVisitor interface which sports methods
-//                       that accept the final concrete type this MarkSymbol
-//                       represents as an argument.
+//          isymVisitor - The ISymbolVisitor interface which sports methods
+//                        that accept the final concrete type this MarkSymbol
+//                        represents as an argument.
 //-------------------------------------------------------------------------
-void MarkSymbol::AcceptVisitor(ISymbolVisitor& isvVisitor)
+void MarkSymbol::AcceptVisitor(ISymbolVisitor& isymVisitor)
 {
-    isvVisitor.VisitMarkSymbol(*this);
+    isymVisitor.VisitMarkSymbol(*this);
 }

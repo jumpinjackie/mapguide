@@ -113,7 +113,7 @@ void IODrawingLayerDefinition::Write(MdfStream &fd, DrawingLayerDefinition *draw
     inctab();
 
     //Property: ResourceId
-    fd << tab() << "<ResourceId>";  // NOXLATE
+    fd << tab() << "<ResourceId>"; // NOXLATE
     fd << EncodeString(drawingLayer->GetResourceID());
     fd << "</ResourceId>" << std::endl; // NOXLATE
 
@@ -126,14 +126,14 @@ void IODrawingLayerDefinition::Write(MdfStream &fd, DrawingLayerDefinition *draw
     }
 
     // Property: Sheet
-    fd << tab() << "<Sheet>";  // NOXLATE
+    fd << tab() << "<Sheet>"; // NOXLATE
     fd << EncodeString(drawingLayer->GetSheet());
     fd << "</Sheet>" << std::endl; // NOXLATE
 
     //Property: LayerFilter (optional)
     if (drawingLayer->GetLayerFilter().length() > 0)
     {
-        fd << tab() << "<LayerFilter>";  // NOXLATE
+        fd << tab() << "<LayerFilter>"; // NOXLATE
         fd << EncodeString(drawingLayer->GetLayerFilter());
         fd << "</LayerFilter>" << std::endl; // NOXLATE
     }
@@ -157,7 +157,7 @@ void IODrawingLayerDefinition::Write(MdfStream &fd, DrawingLayerDefinition *draw
     // Write any previously found unknown XML
     if (!drawingLayer->GetUnknownXml().empty())
     {
-        fd << toCString(drawingLayer->GetUnknownXml()); 
+        fd << toCString(drawingLayer->GetUnknownXml());
     }
 
     dectab();

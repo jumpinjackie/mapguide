@@ -18,7 +18,7 @@
 //-------------------------------------------------------------------------
 // DESCRIPTION:
 // The Box2D class implementation.
-// TODO: The exact Role of this class has yet to be determined.Does it
+// TODO: The exact Role of this class has yet to be determined.  Does it
 //       play a functional role or is it simply a data store for other classes
 //       to pull values off.
 //-------------------------------------------------------------------------
@@ -33,13 +33,12 @@ using namespace MDFMODEL_NAMESPACE;
 //          class.
 // PARAMETERS:
 //        Input:
-//              dX,dY -  point in 2D space.
+//              dX, dY -  point in 2D space.
 //-------------------------------------------------------------------------
 Box2D::Box2D(const double& dX, const double& dY)
 {
     this->m_dX1 = this->m_dX2 = dX;
     this->m_dY1 = this->m_dY2 = dY;
-
 }
 
 //-------------------------------------------------------------------------
@@ -60,39 +59,39 @@ Box2D::Box2D(const double& dX1, const double& dY1,
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the minimum value in the X Axis.
 //-------------------------------------------------------------------------
-double Box2D::GetMinX()const
+double Box2D::GetMinX() const
 {
-    return (this->m_dX1 < this->m_dX2) ? this->m_dX1 : this->m_dX2;
+    return (this->m_dX1 < this->m_dX2)? this->m_dX1 : this->m_dX2;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the maximum value in the X Axis.
 //-------------------------------------------------------------------------
-double Box2D::GetMaxX()const
+double Box2D::GetMaxX() const
 {
-    return (this->m_dX1 > this->m_dX2) ? this->m_dX1 : this->m_dX2;
+    return (this->m_dX1 > this->m_dX2)? this->m_dX1 : this->m_dX2;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the minimum value in the Y Axis.
 //-------------------------------------------------------------------------
-double Box2D::GetMinY()const
+double Box2D::GetMinY() const
 {
-    return (this->m_dY1 < this->m_dY2) ? this->m_dY1 : this->m_dY2;
+    return (this->m_dY1 < this->m_dY2)? this->m_dY1 : this->m_dY2;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the maximum value in the Y Axis.
 //-------------------------------------------------------------------------
-double Box2D::GetMaxY()const
+double Box2D::GetMaxY() const
 {
-    return (this->m_dY1 > this->m_dY2) ? this->m_dY1 : this->m_dY2;
+    return (this->m_dY1 > this->m_dY2)? this->m_dY1 : this->m_dY2;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the first value in the X Axis.
 //-------------------------------------------------------------------------
-double Box2D::GetX1()const
+double Box2D::GetX1() const
 {
     return this->m_dX1;
 }
@@ -100,7 +99,7 @@ double Box2D::GetX1()const
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the second value in the X Axis.
 //-------------------------------------------------------------------------
-double Box2D::GetX2()const
+double Box2D::GetX2() const
 {
     return this->m_dX2;
 }
@@ -108,7 +107,7 @@ double Box2D::GetX2()const
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the first value in the Y Axis.
 //-------------------------------------------------------------------------
-double Box2D::GetY1()const
+double Box2D::GetY1() const
 {
     return this->m_dY1;
 }
@@ -116,7 +115,7 @@ double Box2D::GetY1()const
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the second value in the Y Axis.
 //-------------------------------------------------------------------------
-double Box2D::GetY2()const
+double Box2D::GetY2() const
 {
     return this->m_dY2;
 }

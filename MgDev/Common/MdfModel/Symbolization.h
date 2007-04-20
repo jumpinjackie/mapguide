@@ -41,7 +41,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Visitor Pattern method to be implemented by all concrete
         // subclasses.
-        virtual void AcceptVisitor(ISymbolizationVisitor& isyVisitor) = 0;
+        virtual void AcceptVisitor(ISymbolizationVisitor& isymVisitor) = 0;
 
     private:
         // Data members

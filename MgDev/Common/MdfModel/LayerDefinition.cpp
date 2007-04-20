@@ -41,8 +41,7 @@ using namespace MDFMODEL_NAMESPACE;
 LayerDefinition::LayerDefinition(const MdfString& strResourceID) :
     m_strResourceID(strResourceID)
 {
-    //Default Settings for LayerDefinition.
-    this->m_strLegend = L"";
+    // default values
     this->m_opacity = 1.0;
 }
 
@@ -60,7 +59,7 @@ LayerDefinition::~LayerDefinition()
 //          of all the data.
 // RETURNS: Name of the file.
 //-------------------------------------------------------------------------
-const MdfString& LayerDefinition::GetResourceID()const
+const MdfString& LayerDefinition::GetResourceID() const
 {
     return this->m_strResourceID;
 }
@@ -82,7 +81,7 @@ void LayerDefinition::SetResourceID(const MdfString& strResourceID)
 // PURPOSE: Accessor method for the double Opacity of the layer.
 // RETURNS: The layer's opacity as a double.
 //-------------------------------------------------------------------------
-const double LayerDefinition::GetOpacity()const
+const double LayerDefinition::GetOpacity() const
 {
     return this->m_opacity;
 }

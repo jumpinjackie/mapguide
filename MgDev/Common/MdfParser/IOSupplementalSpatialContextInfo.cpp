@@ -105,6 +105,6 @@ void IOSupplementalSpatialContextInfo::Write(MdfStream &fd, SupplementalSpatialC
     // Write any previously found unknown XML
     if (!ssContextInfo->GetUnknownXml().empty())
     {
-        fd << toCString(ssContextInfo->GetUnknownXml()); 
+        fd << toCString(ssContextInfo->GetUnknownXml());
     }
 }

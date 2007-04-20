@@ -32,9 +32,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 NameStringPair::NameStringPair()
 {
-    //Default Settings
-    this->m_strName = L"";
-    this->m_strValue = L"";
 }
 
 //-------------------------------------------------------------------------
@@ -45,9 +42,9 @@ NameStringPair::NameStringPair()
 //          strText - the associated text
 //-------------------------------------------------------------------------
 NameStringPair::NameStringPair(const MdfString& strName, const MdfString& strValue)
+: m_strName(strName)
+, m_strValue(strValue)
 {
-    this->m_strName = strName;
-    this->m_strValue = strValue;
 }
 
 //-------------------------------------------------------------------------

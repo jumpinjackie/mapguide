@@ -764,7 +764,7 @@ public:
     /// <summary>Gets the Gws Status associated with this exception.
     /// </summary>
     /// <returns>Returns the Gws status associated with the exception.</returns>
-    virtual EGwsStatus     GetStatus ()const  = 0;
+    virtual EGwsStatus     GetStatus () const  = 0;
 
     /// <summary>
     /// Gets the name value pair at index. These values may be the name of the

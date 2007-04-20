@@ -110,11 +110,11 @@ void IOAreaRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 
 void IOAreaRule::Write(MdfStream &fd, AreaRule *areaRule, Version *version)
 {
-    fd << tab() << "<AreaRule>" << std::endl;  // NOXLATE
+    fd << tab() << "<AreaRule>" << std::endl; // NOXLATE
     inctab();
 
     //Property: LegendLabel
-    fd << tab() << "<LegendLabel>";  // NOXLATE
+    fd << tab() << "<LegendLabel>"; // NOXLATE
     fd << EncodeString(areaRule->GetLegendLabel());
     fd << "</LegendLabel>" << std::endl; // NOXLATE
 
@@ -143,7 +143,7 @@ void IOAreaRule::Write(MdfStream &fd, AreaRule *areaRule, Version *version)
         // Write any previously found unknown XML
     if (!areaRule->GetUnknownXml().empty())
     {
-        fd << toCString(areaRule->GetUnknownXml()); 
+        fd << toCString(areaRule->GetUnknownXml());
     }
 
     dectab();

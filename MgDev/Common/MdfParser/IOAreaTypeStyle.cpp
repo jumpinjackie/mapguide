@@ -109,7 +109,7 @@ void IOAreaTypeStyle::Write(MdfStream &fd, AreaTypeStyle * areaTypeStyle, Versio
         // Write any previously found unknown XML
     if (!areaTypeStyle->GetUnknownXml().empty())
     {
-        fd << toCString(areaTypeStyle->GetUnknownXml()); 
+        fd << toCString(areaTypeStyle->GetUnknownXml());
     }
 
     dectab();

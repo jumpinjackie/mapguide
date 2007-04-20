@@ -39,14 +39,14 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Implementation of FeatureTypeStyle Visitor pattern method.
-        virtual void AcceptVisitor(IFeatureTypeStyleVisitor& ifsvVisitor);
+        virtual void AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor);
 
         // Property : DisplayAsText
-        bool IsDisplayAsText()const;
+        bool IsDisplayAsText() const;
         void SetDisplayAsText(bool bDisplayAsText);
 
         // Property : AllowOverpost
-        bool IsAllowOverpost()const;
+        bool IsAllowOverpost() const;
         void SetAllowOverpost(bool bAllowOverpost);
 
     private:

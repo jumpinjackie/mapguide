@@ -36,7 +36,7 @@ class MDFMODEL_API GridSurfaceStyle : public FeatureTypeStyle
         virtual ~GridSurfaceStyle();
 
         // Implementation of FeatureTypeStyle Visitor pattern method.
-        virtual void AcceptVisitor(IFeatureTypeStyleVisitor& ivtsvVisitor);
+        virtual void AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor);
 
         // Property : Band
         const MdfString& GetBand() const;

@@ -81,7 +81,7 @@ void Label::AdoptSymbol(TextSymbol* pflAdoptedSymbol)
 // RETURNS: Pointer to the orphaned Symbol object. It may be NULL if it wasn't
 //          defined.
 //-------------------------------------------------------------------------
-TextSymbol*  Label::OrphanSymbol()
+TextSymbol* Label::OrphanSymbol()
 {
     TextSymbol* pRet = this->m_Symbol;
     this->m_Symbol = NULL;

@@ -32,6 +32,7 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 PointTypeStyle::PointTypeStyle() : FeatureTypeStyle()
 {
+    // default values
     this->m_bAllowOverpost = false;
     this->m_bDisplayAsText = false;
 }
@@ -49,7 +50,7 @@ PointTypeStyle::~PointTypeStyle()
 //          be displayed as text labels.
 // RETURNS: Default is false.
 //-------------------------------------------------------------------------
-bool PointTypeStyle::IsDisplayAsText()const
+bool PointTypeStyle::IsDisplayAsText() const
 {
     return this->m_bDisplayAsText;
 }
@@ -72,7 +73,7 @@ void PointTypeStyle::SetDisplayAsText(bool bDisplayAsText)
 //          this PointTypeStyle.
 // RETURNS: Default is false.
 //-------------------------------------------------------------------------
-bool PointTypeStyle::IsAllowOverpost()const
+bool PointTypeStyle::IsAllowOverpost() const
 {
     return this->m_bAllowOverpost;
 }
@@ -95,12 +96,11 @@ void PointTypeStyle::SetAllowOverpost(bool bAllowOverpost)
 //          concrete subclasses.
 // PARAMETERS:
 //      Input:
-//          ifsvVisitor - The IFeatureTypeStyleVisitor interface which sports
-//                     methods that accept the final concrete type this
-//                     PointTypeStyle represents as an argument.
+//          iftsVisitor - The IFeatureTypeStyleVisitor interface which sports
+//                        methods that accept the final concrete type this
+//                        PointTypeStyle represents as an argument.
 //-------------------------------------------------------------------------
-void PointTypeStyle::AcceptVisitor(IFeatureTypeStyleVisitor&
-                                             ivtsvVisitor)
+void PointTypeStyle::AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor)
 {
-    ivtsvVisitor.VisitPointTypeStyle(*this);
+    iftsVisitor.VisitPointTypeStyle(*this);
 }

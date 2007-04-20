@@ -987,10 +987,8 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
     {
         FeatureTypeStyle* fts = styles->GetAt(i);
 
-        FeatureTypeStyleVisitor vis;
-        fts->AcceptVisitor(vis);
+        FeatureTypeStyleVisitor::eFeatureTypeStyle st = FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts);
 
-        FeatureTypeStyleVisitor::eFeatureTypeStyle st = vis.GetFeatureTypeStyle();
         RuleCollection* rules = fts->GetRules();
         switch (st)
         {

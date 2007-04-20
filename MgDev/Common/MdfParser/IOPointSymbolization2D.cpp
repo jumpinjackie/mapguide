@@ -150,7 +150,7 @@ void IOPointSymbolization2D::Write(MdfStream &fd, PointSymbolization2D *PointSym
     // Write any previously found unknown XML
     if (!PointSymbolization2D->GetUnknownXml().empty())
     {
-        fd << toCString(PointSymbolization2D->GetUnknownXml()); 
+        fd << toCString(PointSymbolization2D->GetUnknownXml());
     }
 
     dectab();

@@ -20,10 +20,13 @@
 #ifndef MG_XML_DEFS_H_
 #define MG_XML_DEFS_H_
 
+// disable C4244 of XSerializeEngine about __w64 int assigned to unsigned long
+#pragma warning(push)
+#pragma warning(disable: 4244)
+
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOM.hpp>
-
 
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMImplementationLS.hpp>
@@ -34,6 +37,8 @@
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/util/XMLUni.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
+
+#pragma warning(pop)
 
 #if defined(XERCES_NEW_IOSTREAMS)
 #include <iostream>

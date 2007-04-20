@@ -32,14 +32,11 @@ using namespace MDFMODEL_NAMESPACE;
 //          strName - the VectorLayerDefinition name. Cannot be an empty string.
 //-------------------------------------------------------------------------
 VectorLayerDefinition::VectorLayerDefinition(const MdfString& strDataResourceID, const MdfString &strFeatureName)
-    :LayerDefinition(strDataResourceID), m_strFeatureName(strFeatureName)
+: LayerDefinition(strDataResourceID)
+, m_strFeatureName(strFeatureName)
 {
-    //Default Values
+    // default values
     this->m_featureNameType = FeatureClass;
-    this->m_strFilter = L"";
-    this->m_strGeometry = L"";
-    this->m_strUrl = L"";
-    this->m_strToolTip = L"";
 }
 
 //-------------------------------------------------------------------------
@@ -55,7 +52,7 @@ VectorLayerDefinition::~VectorLayerDefinition()
 //          of the feature source.
 // RETURNS: A feature class or extension name.
 //-------------------------------------------------------------------------
-const MdfString& VectorLayerDefinition::GetFeatureName()const
+const MdfString& VectorLayerDefinition::GetFeatureName() const
 {
     return this->m_strFeatureName;
 }
@@ -78,7 +75,7 @@ void VectorLayerDefinition::SetFeatureName(const MdfString& strFeatureName)
 // PURPOSE: Gets a value determining the meaning of the FeatureName property value.
 // RETURNS: The type of value stored in the FeatureName property.
 //-------------------------------------------------------------------------
-VectorLayerDefinition::FeatureNameType VectorLayerDefinition::GetFeatureNameType()const
+VectorLayerDefinition::FeatureNameType VectorLayerDefinition::GetFeatureNameType() const
 {
     return this->m_featureNameType;
 }
@@ -109,7 +106,7 @@ NameStringPairCollection* VectorLayerDefinition::GetPropertyMappings()
 // PURPOSE: Accessor method for the Geometry property.
 // RETURNS: A string representing the Geometry.
 //-------------------------------------------------------------------------
-const MdfString& VectorLayerDefinition::GetGeometry()const
+const MdfString& VectorLayerDefinition::GetGeometry() const
 {
     return this->m_strGeometry;
 }
@@ -126,7 +123,7 @@ void VectorLayerDefinition::SetGeometry(const MdfString&  strGeometry)
 // PURPOSE: Accessor method for the Url property.
 // RETURNS: A string representing the Url.
 //-------------------------------------------------------------------------
-const MdfString& VectorLayerDefinition::GetUrl()const
+const MdfString& VectorLayerDefinition::GetUrl() const
 {
     return this->m_strUrl;
 }
@@ -143,7 +140,7 @@ void VectorLayerDefinition::SetUrl(const MdfString&  strUrl)
 // PURPOSE: Accessor method for the ToolTip property.
 // RETURNS: A string representing the ToolTip.
 //-------------------------------------------------------------------------
-const MdfString& VectorLayerDefinition::GetToolTip()const
+const MdfString& VectorLayerDefinition::GetToolTip() const
 {
     return this->m_strToolTip;
 }
@@ -161,7 +158,7 @@ void VectorLayerDefinition::SetToolTip(const MdfString&  strToolTip)
 //          where clause that determines which features are returned.
 // RETURNS: SQL where clause.
 //-------------------------------------------------------------------------
-const MdfString& VectorLayerDefinition::GetFilter()const
+const MdfString& VectorLayerDefinition::GetFilter() const
 {
     return this->m_strFilter;
 }

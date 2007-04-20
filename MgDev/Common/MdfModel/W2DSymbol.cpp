@@ -31,13 +31,10 @@ using namespace MDFMODEL_NAMESPACE;
 // PURPOSE: Construct and initialize an instance of the W2DSymbol class.
 //-------------------------------------------------------------------------
 W2DSymbol::W2DSymbol(const MdfString& strSymbolLibrary,
-                       const MdfString& strSymbolName):
-    m_strSymbolLibrary(strSymbolLibrary), m_strSymbolName(strSymbolName)
+                     const MdfString& strSymbolName)
+: m_strSymbolLibrary(strSymbolLibrary)
+, m_strSymbolName(strSymbolName)
 {
-    //default settings
-    this->SetAreaColor(L"");
-    this->SetLineColor(L"");
-    this->SetTextColor(L"");
 }
 
 //-------------------------------------------------------------------------
@@ -53,7 +50,7 @@ W2DSymbol::~W2DSymbol()
 //          the shape. Each shape is a 2D polygon.
 // RETURNS: The SymbolLibrary string.
 //-------------------------------------------------------------------------
-const MdfString& W2DSymbol::GetSymbolLibrary()const
+const MdfString& W2DSymbol::GetSymbolLibrary() const
 {
     return this->m_strSymbolLibrary;
 }
@@ -77,7 +74,7 @@ void W2DSymbol::SetSymbolLibrary(const MdfString& strSymbolLibrary)
 //          server in the SymbolLibrary. Each shape is a 2D polygon.
 // RETURNS: The SymbolName string.
 //-------------------------------------------------------------------------
-const MdfString& W2DSymbol::GetSymbolName()const
+const MdfString& W2DSymbol::GetSymbolName() const
 {
     return this->m_strSymbolName;
 }
@@ -102,7 +99,7 @@ void W2DSymbol::SetSymbolName(const MdfString& strSymbolName)
 //          will be applied to the fill for vector areas.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& W2DSymbol::GetAreaColor()const
+const MdfString& W2DSymbol::GetAreaColor() const
 {
     return this->m_strAreaColor;
 }
@@ -128,7 +125,7 @@ void W2DSymbol::SetAreaColor(const MdfString& strAreaColor)
 //          will be applied to vector lines.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& W2DSymbol::GetLineColor()const
+const MdfString& W2DSymbol::GetLineColor() const
 {
     return this->m_strLineColor;
 }
@@ -154,7 +151,7 @@ void W2DSymbol::SetLineColor(const MdfString& strLineColor)
 //          will be applied to fill for text areas.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& W2DSymbol::GetTextColor()const
+const MdfString& W2DSymbol::GetTextColor() const
 {
     return this->m_strTextColor;
 }
@@ -179,11 +176,11 @@ void W2DSymbol::SetTextColor(const MdfString& strTextColor)
 //          subclasses.
 // PARAMETERS:
 //      Input:
-//          isvVisitor - The ISymbolVisitor interface which sports methods
-//                       that accept the final concrete type this W2DSymbol
-//                       represents as an argument.
+//          isymVisitor - The ISymbolVisitor interface which sports methods
+//                        that accept the final concrete type this W2DSymbol
+//                        represents as an argument.
 //-------------------------------------------------------------------------
-void W2DSymbol::AcceptVisitor(ISymbolVisitor& isvVisitor)
+void W2DSymbol::AcceptVisitor(ISymbolVisitor& isymVisitor)
 {
-    isvVisitor.VisitW2DSymbol(*this);
+    isymVisitor.VisitW2DSymbol(*this);
 }

@@ -29,7 +29,7 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 
 BEGIN_NAMESPACE_MDFPARSER
-    
+
 class MDFPARSER_API IORelateProperty : public SAX2ElementHandler
 {
     private:

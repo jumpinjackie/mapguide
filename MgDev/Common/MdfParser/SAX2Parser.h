@@ -24,6 +24,11 @@
 #include "GridLayerDefinition.h"
 #include "SimpleSymbolDefinition.h"
 #include "CompoundSymbolDefinition.h"
+
+// disable C4244 of XSerializeEngine about __w64 int assigned to unsigned long
+// disable C4267 of XmlScanner about size_t assigned to unsigned int
+#pragma warning(push)
+#pragma warning(disable: 4244 4267)
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/TransService.hpp>
 #include <xercesc/sax2/SAX2XMLReader.hpp>
@@ -32,6 +37,8 @@
 #include <xercesc/framework/XMLFormatter.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
+#pragma warning(pop)
+
 #include "IOUtil.h"
 #include "SAX2ElementHandler.h"
 #include "Version.h"

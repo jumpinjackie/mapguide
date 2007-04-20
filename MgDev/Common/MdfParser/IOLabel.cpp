@@ -77,7 +77,7 @@ void IOLabel::StartElement(const wchar_t *name, HandlerStack *handlerStack)
         break;
 
     case eAdvancedPlacement:
-        if (this->_label) 
+        if (this->_label)
         {
             this->_label->GetSymbol()->SetAdvancedPlacement(true);
             this->m_handlingPlacement = true;
@@ -274,7 +274,7 @@ void IOLabel::Write(MdfStream &fd, Label *label)
         // Write any previously found unknown XML
         if (!label->GetUnknownXml().empty())
         {
-            fd << toCString(label->GetUnknownXml()); 
+            fd << toCString(label->GetUnknownXml());
         }
 
         dectab();

@@ -18,7 +18,7 @@
 //-------------------------------------------------------------------------
 // DESCRIPTION:
 // The MapDefinition class implementation.
-// All the data  objects in the MapDefinition (MapLayers, etc) are accessible through
+// All the data objects in the MapDefinition (MapLayers, etc) are accessible through
 // type safe collection classes. While these collection classes provide unfettered
 // access to all the stored objects, they are owned by the MapDefinition object.
 // Methods that have a prefix of "Adopt", imply that the object passed to them
@@ -44,10 +44,12 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 MapDefinition::MapDefinition(const MdfString& strName,
                              const MdfString& strCoordinateSystem)
-:m_strBkGrnd(L"FFFFFFFF"), // NOXLATE
-m_strName(strName),m_strCoordSys(strCoordinateSystem),
-m_boxExtents(0,0)
+: m_strName(strName)
+, m_strCoordSys(strCoordinateSystem)
+, m_boxExtents(0.0, 0.0)
 {
+    // default values
+    this->m_strBkGrnd = L"FFFFFFFF"; // NOXLATE
 }
 
 //-------------------------------------------------------------------------
@@ -61,7 +63,7 @@ MapDefinition::~MapDefinition(void)
 // PURPOSE: Is an accessor method for the MapDefinition name.
 // RETURNS: MapDefinition name.
 //-------------------------------------------------------------------------
-const MdfString& MapDefinition::GetName()const
+const MdfString& MapDefinition::GetName() const
 {
     return this->m_strName;
 }
@@ -81,7 +83,7 @@ void MapDefinition::SetName(const MdfString& strName)
 // PURPOSE: Accessor method for the Coordinate System string.
 // RETURNS: Returns the Coordinate System SRS string.
 //-------------------------------------------------------------------------
-const MdfString& MapDefinition::GetCoordinateSystem()const
+const MdfString& MapDefinition::GetCoordinateSystem() const
 {
     return this->m_strCoordSys;
 }
@@ -101,7 +103,7 @@ void MapDefinition::SetCoordinateSystem(const MdfString& strCoordinateSystem)
 // PURPOSE: Gets the extents of the MapDefinition.
 // RETURNS: Box2D
 //-------------------------------------------------------------------------
-const Box2D& MapDefinition::GetExtents()const
+const Box2D& MapDefinition::GetExtents() const
 {
     return this->m_boxExtents;
 }
@@ -147,7 +149,7 @@ void MapDefinition::SetBackgroundColor(const MdfString& strColor)
 //          The metadata consists of xml content.
 // RETURNS: Reference to a string.
 //-------------------------------------------------------------------------
-const MdfString& MapDefinition::GetMetadata()const
+const MdfString& MapDefinition::GetMetadata() const
 {
     return this->m_strMetadata;
 }
@@ -192,7 +194,7 @@ MapLayerGroupCollection* MapDefinition::GetLayerGroups()
 //          represent the scales that the base map tiles can be displayed at.
 // RETURNS: A pointer to a modifiable LayerGroupCollection.
 //-------------------------------------------------------------------------
-DisplayScaleCollection * MapDefinition::GetFiniteDisplayScales()
+DisplayScaleCollection* MapDefinition::GetFiniteDisplayScales()
 {
     return &this->m_finiteDisplayScales;
 }
@@ -202,7 +204,7 @@ DisplayScaleCollection * MapDefinition::GetFiniteDisplayScales()
 // define tiles for the HTML viewer.
 // RETURNS: A pointer to a modifiable BaseMapLayerGroupCollection.
 //-------------------------------------------------------------------------
-BaseMapLayerGroupCollection * MapDefinition::GetBaseMapLayerGroups()
+BaseMapLayerGroupCollection* MapDefinition::GetBaseMapLayerGroups()
 {
     return &this->m_baseMapLayerGroups;
 }
@@ -211,7 +213,7 @@ BaseMapLayerGroupCollection * MapDefinition::GetBaseMapLayerGroups()
 #ifdef _DEBUG
 int MapDefinition::DumpMemoryLeaks()
 {
-    return _CrtDumpMemoryLeaks( );
+    return _CrtDumpMemoryLeaks();
 }
 #endif
 #endif
